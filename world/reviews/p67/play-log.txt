@@ -1,0 +1,53 @@
+5247.5  shot cam-orbit-a
+5252.599999904633  shot cam-orbit-b
+5259.799999952316  shot cam-free-a
+5268.5  shot cam-free-b
+5275.799999952316  shot cam-follow-a
+5281.099999904633  shot cam-follow-b
+5285.900000095367  firefly started: Main.Plugin_firefly_catch.FireflyCatch
+5289.299999952316  shot firefly-card
+5306.400000095367  shot firefly-1
+5306.400000095367  firefly t=17.0 s: score 3 state playing
+5320.099999904633  shot firefly-2
+5320.099999904633  firefly t=31.0 s: score 4 state playing
+5335.099999904633  shot firefly-3
+5335.099999904633  firefly t=46.0 s: score 7 state playing
+5337.799999952316  shot firefly-end
+5337.799999952316  firefly end: score 8 state over
+5339.299999952316  shot firefly-again
+5339.299999952316  firefly after R: ready
+5345.200000047684  berry started: Main.Plugin_berry_race.BerryRace level 1
+5346.799999952316  shot berry-card
+5346.799999952316  berry card: card=Berry race | Ripe berries hang on the bushes, | and Hopscotch, Sir Sniffsalot and Truffle want them too! | Pick more than the critters in 60 seconds: | walk into a bush to shake its berries loose. |  | W / S  walk      A / D  turn      Shift  run |  | Press W to start
+5362.400000095367  shot berry-1
+5362.400000095367  berry t=16.0 s: me 7 critters [0, 0, 0] state playing
+5377.5  shot berry-2
+5377.5  berry t=31.0 s: me 7 critters [1, 1, 1] state playing
+5390.299999952316  shot berry-end
+5390.299999952316  berry end: me 8 critters [2, 2, 2] state over card=You win, 8 berries to 6! | A new best: 8 berries! | Next round: level 2, the critters hurry sooner! | Your 8 berries go to the basket by the cottage | (15 in it now). |  | Press R to play again
+5394.900000095367  hide started: Main.Plugin_hideseek.HideSeek
+5396.400000095367  shot hide-card
+5412.0  shot hide-1
+5412.0  hide t=16.0 s: found 1 t 15.0 hud Found 1/4    105 s left    a giggle 6 m ahead
+5427.0  shot hide-2
+5427.0  hide t=31.0 s: found 3 t 30.0 hud Found 3/4     90 s left    a giggle 14 m ahead
+5439.200000047684  shot hide-end
+5439.299999952316  hide end: found 4 of 4 followers at Float32[10.2, 6.0, 8.6, 3.1] m, card card=You found all 4 in 40.2 s! | A new best time! | Next round: level 2, 100 seconds! |  | Press R to play again
+5444.0  jump in: NeverendingGame.JumpIn
+5445.5  shot jump-0
+5451.5  shot jump-walk
+5453.400000095367  shot jump-e
+5453.400000095367  jump e: lumi action idle speech nothing
+5455.099999904633  shot jump-e2
+5455.099999904633  jump e2: lumi action idle speech NeverendingGame.Speech(5, "shh, the fish are listening", 202368.62691618418, 202371.12691618418)
+5456.799999952316  shot jump-space
+5456.799999952316  jump space: lumi action idle speech nothing
+5461.400000095367  shot jump-x
+5461.400000095367  jump x: lumi action idle speech NeverendingGame.Speech(7, "good nap", 202374.22691618287, 202376.72691618287)
+5463.200000047684  shot jump-h
+5463.200000047684  jump h: lumi action idle speech NeverendingGame.Speech(1, "...oops. Excuse me.", 202376.62691618231, 202379.12691618231)
+5467.5  shot jump-c
+5467.5  jump c: lumi action idle speech nothing
+5472.0  shot jump-g
+5472.0  jump g: lumi action idle speech NeverendingGame.Speech(8, "shh, the fish are listening", 202384.2935828472, 202386.7935828472)
+5480.5  shot jump-late

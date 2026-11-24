@@ -20,7 +20,7 @@ mutable struct ChatRun
     wrap_up_since::Float64
     interrupted::String
     stop_reason::String
-    tools::Int
+    first_msg::Int          # where the session's messages start in the chat
 end
 
 "The character's chat in the dashboard."
@@ -56,6 +56,10 @@ end
 tool_count(model, first::Int) = count(m -> occursin("Tool", string(typeof(m))),
                                       @view BonitoAgents.shared(model).msgs_store[first:end])
 
+"The tool calls a run made so far."
+tools(run::ChatRun) = tool_count(run.model, run.first_msg)
+tools(run::AgentRun) = run.tools
+
 "A message into the running turn (the steering the ACP runs do with `try_steer!`)."
 function try_steer!(run::ChatRun, text::AbstractString)
     BonitoAgents.send_message!(run.model, text; mode = :next)
@@ -76,8 +80,8 @@ function run_chat_session!(host, label::AbstractString, settings::AgentSettings,
     d = host.dashboard
     model = character_model(d)
     fresh_conversation!(d)
-    first_msg = length(BonitoAgents.shared(model).msgs_store) + 1
-    run = ChatRun(:agent, label, settings, model, time(), time() + 60settings.session_minutes, 0.0, "", "", 0)
+    run = ChatRun(:agent, label, settings, model, time(), time() + 60settings.session_minutes, 0.0, "", "",
+                  length(BonitoAgents.shared(model).msgs_store) + 1)
     host.current = run
     record!(host.activity, label, "host", "started in the dashboard chat")
     try
@@ -110,8 +114,10 @@ function run_chat_session!(host, label::AbstractString, settings::AgentSettings,
             send_turn!(model, next)
         end
     finally
-        run.tools = tool_count(model, first_msg)
         host.current = nothing
     end
+    record!(host.activity, label, "host", @sprintf("ended (%s) after %.1f min, %d tool calls",
+                                                   isempty(run.interrupted) ? run.stop_reason : run.interrupted,
+                                                   (time() - run.started) / 60, tools(run)))
     return run
 end

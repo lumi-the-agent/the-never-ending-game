@@ -229,6 +229,7 @@ function detour!(w, c, target, d)
             end
             if best !== nothing
                 DETOUR[c.id] = (best, w.t + 3.0)
+                push!(get!(STUCK, c.id, Float64[]), w.t)
                 NG.emit!(w, :hideseek_detour; who = c.name, x = round(best[1]; digits = 1), y = round(best[2]; digits = 1))
                 return best, flat(best, c.pos)
             end
@@ -237,6 +238,34 @@ function detour!(w, c, target, d)
         haskey(MOVED, c.id) || (MOVED[c.id] = last)
     end
     return target, d
+end
+
+# A found friend far behind or wedged (the garden fence and the pond are no props, so detours slid along
+# them: Gloop trailed 10.5 m, s68) takes one big boing over everything to its place in the parade.
+const LEAPS = Dict{Int32,Any}()      # id => (from, to, t0, T)
+const STUCK = Dict{Int32,Vector{Float64}}()   # id => times of its last detours
+
+function leap!(w, c, target, d, dt)
+    if !haskey(LEAPS, c.id)
+        recent = filter!(t -> w.t - t < 8, get!(STUCK, c.id, Float64[]))
+        (d > 9f0 || length(recent) >= 2 && d > 3f0) && standable(w, target, 0.4f0) || return false
+        LEAPS[c.id] = (c.pos, Point3f(target), w.t, 0.7 + 0.06d)
+        empty!(recent)
+        NG.say!(w, c, rand(w.rng, ("Wait for meee!", "Boing!", "Wheee!", "Coming!")); duration = 1.4)
+        NG.emit!(w, :hideseek_leap; who = c.name, d = round(d; digits = 1))
+    end
+    from, to, t0, T = LEAPS[c.id]
+    u = Float32(clamp((w.t - t0) / T, 0, 1))
+    p = from + (to - from) * u
+    c.pos = Point3f(p[1], p[2], NG.ground(w.island, (p[1], p[2]))[3] + 4f0 * (1.2f0 + 0.15f0 * flat(from, to)) * u * (1 - u))
+    c.yaw = atan(to[2] - from[2], to[1] - from[1])
+    c.action = :jump; c.goal.action = :jump
+    if u >= 1
+        delete!(LEAPS, c.id)
+        c.pos = NG.ground(w.island, (to[1], to[2]))
+        c.goal.action = :laugh
+    end
+    return true
 end
 
 function step_parade!(m, w, me, dt)
@@ -258,13 +287,14 @@ function step_parade!(m, w, me, dt)
         target = back + side * Point3f(-sin(me.yaw), cos(me.yaw), 0)
         standable(w, target, 0.4f0) || (target = back)     # the side slot is in a bush or a trunk: fall in line
         d = flat(target, c.pos)
+        leap!(w, c, target, d, dt) && continue
         target, d = detour!(w, c, target, d)
         if m.state === :over
             c.goal.action = :jump            # everyone found: the whole parade hops
         elseif d > 0.4f0
             # far behind: a catch-up sprint (the slow species fell 10 m behind a running Lumi, todo #338)
             NG.move_heading!(c, w, atan(target[2] - c.pos[2], target[1] - c.pos[1]), dt; run = d > 3, maxstep = d,
-                             speed = d > 4.5f0 ? 1.7f0 : 1f0)
+                             speed = d > 4.5f0 ? min(3f0, 1f0 + 0.22f0 * d) : 1f0)   # s68: 1.7x left one 10.6 m behind
             c.goal.action = c.action
         else
             c.goal.action = :idle

@@ -74,13 +74,28 @@ function start(root::AbstractString = dirname(dirname(dirname(@__DIR__))); agent
     end
     worker && start_service!(host, "worker", cfg -> "using NeverendingGame; NeverendingGame.run_worker()"; network = true)
     # the character's chat beside its game, where the sessions run (experimental, `[agent] chat`)
-    agent && cfg.agent_chat && (host.dashboard = serve_dashboard(jp.root; port = cfg.web_port + 10))
+    agent && cfg.agent_chat && (host.dashboard = start_dashboard(host))
     agent && (host.loop = errormonitor(@async work_loop(host, revise)))
     host.status_task = errormonitor(@async while host.running
         write_agent_status(host)
         sleep(5)
     end)
     return host
+end
+
+"""
+The dashboard (`serve_dashboard`), or `nothing` when it does not come up: a broken dashboard must
+not stop the host, whose sessions then run on its own agent client. The error goes to the log and
+the activity feed.
+"""
+function start_dashboard(host)
+    try
+        return serve_dashboard(host.jp.root; port = host.cfg.web_port + 10)
+    catch e
+        @error "the dashboard did not come up; sessions run without it" exception = (e, catch_backtrace())
+        record!(host.activity, "host", "error", "the dashboard did not come up, sessions run without it: " * sprint(showerror, e))
+        return nothing
+    end
 end
 
 # ── the two games ───────────────────────────────────────────────────────────
@@ -550,7 +565,7 @@ function finish_cycle!(host::Host, n::Int, t0, run, work_tokens)
     length(host.cycle_tokens) > 10 && popfirst!(host.cycle_tokens)
     append_jsonl(sessions_log(host.jp), Dict("n" => n, "started" => t0, "minutes" => round((time() - t0) / 60; digits = 1),
                                              "provider" => run.settings.provider, "model" => run.settings.model,
-                                             "tools" => run.tools, "stop" => run.stop_reason, "interrupted" => run.interrupted,
+                                             "tools" => tools(run), "stop" => run.stop_reason, "interrupted" => run.interrupted,
                                              "work_tokens" => round(work_tokens), "cycle_tokens" => round(cycle)))
     return true
 end
@@ -600,7 +615,7 @@ function status(host::Host)
     cur = run === nothing ? nothing :
           Dict("label" => run.label, "role" => String(run.role), "provider" => run.settings.provider,
                "model" => run.settings.model, "minutes" => round((time() - run.started) / 60; digits = 1),
-               "tools" => run.tools, "wrapping_up" => run.wrap_up_since > 0)
+               "tools" => tools(run), "wrapping_up" => run.wrap_up_since > 0)
     return Dict{String,Any}("state" => host.agent_state, "detail" => host.agent_detail, "current" => cur,
                             "sessions" => host.sessions, "reviews" => host.reviews,
                             "agent" => Dict("provider" => host.cfg.agent.provider, "model" => host.cfg.agent.model),

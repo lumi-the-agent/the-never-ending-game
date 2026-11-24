@@ -1,10 +1,14 @@
 # The host's own environment: what the privileged host process loads. It lives in the host's
 # read only checkout, so nothing the agent does to the game's environment reaches the host.
 #     julia --project=dev/NeverendingHost/host -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'
+# BonitoWorker is here because the dashboard's worker process starts in this environment
+# (`using BonitoWorker`).
 
 [deps]
+BonitoWorker = "98909ed9-6989-4829-81af-73688ee23085"
 NeverendingHost = "088cb569-6e3a-412a-a017-6794b7ab73bd"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 
 [sources]
+BonitoWorker = {path = "../../BonitoAgents/BonitoWorker"}
 NeverendingHost = {path = ".."}

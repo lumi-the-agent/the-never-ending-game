@@ -266,6 +266,10 @@ uitest("Berry race: start card names the rivals, a pick counts, critters race an
                            filter(a -> a isa NeverendingGame.AssetActor && a.asset == parentmodule(typeof(m)).BASKET_ASSET, game.world.actors))
 end
 
+"The steepest the camera looked down (degrees) during the last `steer_wad`, after its first 1.5 s."
+const PITCH = Ref(0.0)
+rig_pitch(game) = (d = game.rig.target - game.rig.eye; rad2deg(atan(-d[3], hypot(d[1], d[2]))))
+
 "Play like a person with W/A/D only: hold W, turn towards the nearest free target with A or D, for `seconds`."
 function steer_wad(game, target_of, seconds)
     c = creature(game.world, "Lumi")
@@ -273,7 +277,9 @@ function steer_wad(game, target_of, seconds)
     interact!(game, [KeyDown(K.w)])
     held = nothing
     t0 = time()
+    PITCH[] = 0.0
     while time() - t0 < seconds
+        time() - t0 > 1.5 && (PITCH[] = max(PITCH[], rig_pitch(game)))
         p = target_of()
         p === nothing && break
         d = NeverendingGame.wrap_angle(atan(p[2] - c.pos[2], p[1] - c.pos[1]) - c.yaw)
@@ -311,6 +317,7 @@ uitest("Berry race: a first play with only W/A/D picks 3 berries in 20 s from a 
     t0 = game.world.t
     steer_wad(game, () -> m.score >= 3 ? nothing : nearest(), 20)
     screenshot(game, "berry-wad")
+    check(PITCH[] <= 32, "the race camera looked down $(round(PITCH[]; digits = 1))° while W was held (a map, not a view ahead)")
     check(m.score >= 3, "W/A/D play picked $(m.score) berries in $(round(game.world.t - t0; digits = 1)) s (critters $(m.rival_score)), Lumi at $(c.pos)")
     m.t = 61.0
     wait_frames(game, 3)
@@ -338,6 +345,7 @@ uitest("Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, nev
     start = (c.pos, [round(norm(Vec2f(f[1] - c.pos[1], f[2] - c.pos[2])); digits = 1) for f in m.flies[1:3]])
     steer_wad(game, () -> m.score >= 3 ? nothing : nearest(), 20)
     screenshot(game, "firefly-wad")
+    check(PITCH[] <= 32, "the catch camera looked down $(round(PITCH[]; digits = 1))° while W was held (a map, not a view ahead)")
     check(m.score >= 3, "W/A/D play caught $(m.score) flies in 20 s, Lumi at $(c.pos); start $(start[1]) first flies at $(start[2]) m, caught $(m.caught), nearest free now $(nearest())")
     fly_click(game, "Stop")
 end
@@ -909,11 +917,12 @@ uitest("Hide and seek: friends hide behind trees, a first play with only W/A/D f
     target() = count(m.found) >= 2 ? nothing : something(Base.invokelatest(mod.hint_spot, m, c), Base.invokelatest(mod.hint_spot, m, c; heard_only = false), Some(nothing))
     steer_wad(game, target, 35)
     screenshot(game, "hideseek-found")
+    check(PITCH[] <= 32, "the seek camera looked down $(round(PITCH[]; digits = 1))° while W was held (a map, not a view ahead)")
     check(count(m.found) >= 2, "W/A/D play found $(count(m.found)) in $(round(m.t; digits = 1)) s; Lumi at $(c.pos), spots $(m.spots), hud $(P[:hud].text[])")
     f = [creature(w, id) for (k, id) in enumerate(m.hiders) if m.found[k]]
     check(all(o -> o.goal.kind === :found, f), "found friends do not follow: $([o.goal.kind for o in f])")
     wait_seconds(game, 2)
-    check(all(o -> mod.flat(o.pos, c.pos) < 4 + 1.2 * length(f), f), "found friends lag: $([round(mod.flat(o.pos, c.pos); digits = 1) for o in f]) m")
+    check(all(o -> mod.flat(o.pos, c.pos) < 4 + 1.2 * length(f), f), "found friends lag: $([(o.name, round(mod.flat(o.pos, c.pos); digits = 1), o.goal.kind, o.goal.action, o.action, NeverendingGame.species_of(o).name) for o in f]) m, Lumi $(c.action) state $(m.state)")
     m.t = mod.TIME_LIMIT + 1
     wait_frames(game, 3)
     check(m.state === :over && occursin("R to play again", P[:card].text[]), "no end card: $(P[:card].text[])")

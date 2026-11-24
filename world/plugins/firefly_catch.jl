@@ -116,8 +116,12 @@ Press W to start"""
 A chase camera for playing: always behind Lumi so W goes "into" the screen, rising over
 trees instead of swinging around them (the follow view turns around Lumi, which loses the player).
 """
+# every view looks down at most ~30° (s68: the two high ones, 34° and 54°, were taken whenever trees stood
+# behind Lumi, and the perfectionist played all three mini games looking down on a flat green map):
+# blocked low views turn to the side instead of rising
 const CHASE_VIEWS = ((0f0, 7f0, 3.2f0), (0f0, 5f0, 2f0), (0f0, 4f0, 1.3f0), (0.35f0, 6f0, 3f0), (-0.35f0, 6f0, 3f0),
-    (0.35f0, 4.5f0, 1.5f0), (-0.35f0, 4.5f0, 1.5f0), (0f0, 6.5f0, 5f0), (0.7f0, 5f0, 2f0), (-0.7f0, 5f0, 2f0), (0f0, 5f0, 7.5f0))
+    (0.35f0, 4.5f0, 1.5f0), (-0.35f0, 4.5f0, 1.5f0), (0f0, 6.5f0, 3.4f0), (0.7f0, 5f0, 2f0), (-0.7f0, 5f0, 2f0),
+    (1.1f0, 5.5f0, 2.8f0), (-1.1f0, 5.5f0, 2.8f0), (0f0, 4f0, 2.2f0))
 const CHASE_K = Ref(1)    # the view in use: kept while it stays about as good as the best, so the camera does not flicker
 
 """
@@ -157,8 +161,25 @@ function chase_camera!(game, c, dt; snap = false)
     eye = view(CHASE_K[])
     k = snap ? 1f0 : Float32(1 - exp(-3dt / 0.45))
     game.rig.mode = :fixed
-    game.rig.eye += k * (eye - game.rig.eye)
     game.rig.target += k * (target - game.rig.target)
+    game.rig.eye = orbit_lerp(game.rig.eye, eye, game.rig.target, k)
+end
+
+"""
+The eye moved a step `k` towards `eye`, around `target`: angle, distance and height each eased on their own,
+and never more than 30° above the target. A straight slide cut a chord past Lumi's head when it turned
+sharply, and the camera looked down 44° for a moment (s68, hide and seek).
+"""
+function orbit_lerp(cur::Point3f, eye::Point3f, target::Point3f, k::Float32)
+    c = cur - target; e = eye - target
+    rc = hypot(c[1], c[2]); re = hypot(e[1], e[2])
+    ac = rc < 0.3f0 ? atan(e[2], e[1]) : atan(c[2], c[1])
+    ae = atan(e[2], e[1])
+    da = mod(ae - ac + Float32(pi), 2f0 * Float32(pi)) - Float32(pi)
+    a = ac + k * da
+    r = max(rc, 0.3f0) + k * (re - max(rc, 0.3f0))
+    h = min(c[3] + k * (e[3] - c[3]), 0.577f0 * r)
+    return target + Point3f(r * cos(a), r * sin(a), h)
 end
 
 "Can a creature of radius `r` walk straight from `a` to `b` (land all the way, no trunk, bush or rock)?"

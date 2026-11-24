@@ -7,9 +7,9 @@ isdefined(Main, :BOING) || Core.eval(Main, :(const BOING = Dict{Symbol,Any}()))
 const NG = NeverendingGame
 const B = Main.BOING
 
-const STEM_H = 0.75f0          # m of stem under the cap
+const STEM_H = 1.3f0           # m of stem under the cap (s68: 0.75 under a whole ellipsoid hid it: a red lens on the grass)
 const CAP_R = 1.9f0            # cap radius
-const CAP_H = 0.85f0           # cap height (half ellipsoid)
+const CAP_H = 1.0f0            # cap height (a dome on the stem)
 const HOP_T = 0.6              # s from the ring onto the cap
 const NEXT_T = 1.15            # s between two launches in a party (several in the air at once)
 const GAP = (480.0, 720.0)     # sim seconds between parties (daytime)
@@ -117,16 +117,30 @@ function clear_plots!()
     B[:plots] = Dict{Symbol,Any}()
 end
 
+"A unit half sphere (z ≥ 0), outward normals: the toadstool's cap."
+function dome(n = 40, m = 14)
+    pts = Point3f[]; fs = GeometryBasics.GLTriangleFace[]
+    for j in 0:m, i in 0:n-1
+        t = (pi / 2) * j / m; f = 2pi * i / n
+        push!(pts, Point3f(sin(t) * cos(f), sin(t) * sin(f), cos(t)))
+    end
+    for j in 0:m-1, i in 0:n-1
+        a = j * n + i + 1; b = j * n + mod(i + 1, n) + 1; c = (j + 1) * n + i + 1; d = (j + 1) * n + mod(i + 1, n) + 1
+        push!(fs, GeometryBasics.GLTriangleFace(a, c, b), GeometryBasics.GLTriangleFace(b, c, d))
+    end
+    return GeometryBasics.Mesh(pts, fs; normal = Vec3f.(pts))
+end
+
 function build!(game)
     clear_plots!()
     sc = game.stage.scene
     c = B[:center]
     d = B[:plots]
-    stem = Makie.normal_mesh(Cylinder(Point3f(0, 0, -0.3), Point3f(0, 0, STEM_H + 0.3f0), 0.55f0))
+    stem = Makie.normal_mesh(Cylinder(Point3f(0, 0, -0.3), Point3f(0, 0, STEM_H + 0.1f0), 0.5f0))
     d[:stem] = mesh!(sc, stem; color = CREAM, name = :boing_stem)
     translate!(d[:stem], c)
-    # spotted cap: a red ellipsoid, a cream underside, white spots on the dome
-    d[:cap] = mesh!(sc, Sphere(Point3f(0), 1f0); color = RED, name = :boing_cap)
+    # spotted cap: a red dome, a cream underside (the gills), white spots on the dome
+    d[:cap] = mesh!(sc, dome(); color = RED, name = :boing_cap)
     d[:under] = mesh!(sc, Sphere(Point3f(0), 1f0); color = CREAM, name = :boing_under)
     spots = Point3f[]
     for (el, k) in ((0.35f0, 7), (0.8f0, 5), (1.25f0, 1))
@@ -158,7 +172,7 @@ function squash!(t)
     translate!(d[:under], c[1], c[2], z + 0.02f0)
 end
 
-cap_top() = B[:center] + Point3f(0, 0, STEM_H + CAP_H * 0.92f0)
+cap_top() = B[:center] + Point3f(0, 0, STEM_H + CAP_H * 0.97f0)
 
 # ---------------------------------------------------------------- flights
 

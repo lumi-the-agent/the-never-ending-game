@@ -70,6 +70,44 @@ function serve_site!(server::Bonito.Server, p::GamePaths)
     return server
 end
 
+"""
+    scene_page(fig, view; title) -> Bonito.App
+
+Only the 3D view of the dashboard figure `fig` (`view` is its scene), for pages that show the game
+beside other things: the host's dashboard embeds it. It is the same figure as the full page, so
+mouse and keyboard reach the game as they do there; everything outside the view's viewport is
+clipped and the view is scaled to fit the window. The scale goes into WGLMakie's own `winscale`,
+which sizes the canvas and maps the mouse (a CSS transform would move the picture but not the
+mouse). A page that embeds it gets the view's size as a message (`{sceneSize: [w, h]}`), to give
+it the view's proportions.
+"""
+function scene_page(fig::Figure, view::Scene; title::AbstractString)
+    return Bonito.App(; title) do session
+        rect = map(r -> [Int.(minimum(r))..., Int.(widths(r))...], session, viewport(view))
+        box = Bonito.DOM.div(fig; style = "position:absolute; overflow:hidden")
+        fit = Bonito.js"""
+            const box = $(box), rect = $(rect);
+            const fit = () => {
+                const canvas = box.querySelector('canvas'), screen = canvas && canvas.wglmakie_screen;
+                if (!screen) { setTimeout(fit, 100); return; }
+                const [x, y, w, h] = rect.value, H = screen.renderer._height;
+                const s = Math.min(window.innerWidth / w, window.innerHeight / h);
+                screen.winscale = s;
+                Object.assign(canvas.style, {position: 'absolute', width: s * screen.renderer._width + 'px',
+                    height: s * H + 'px', left: -s * x + 'px', top: -s * (H - y - h) + 'px'});
+                Object.assign(box.style, {width: s * w + 'px', height: s * h + 'px',
+                    left: (window.innerWidth - s * w) / 2 + 'px', top: (window.innerHeight - s * h) / 2 + 'px'});
+                if (window.parent !== window) window.parent.postMessage({sceneSize: [w, h]}, '*');
+            };
+            window.addEventListener('resize', fit);
+            rect.on(fit);
+            fit();
+        """
+        style = Bonito.DOM.style("html, body { margin: 0; height: 100%; overflow: hidden; background: #0b0d10; }")
+        return Bonito.DOM.div(style, box, fit)
+    end
+end
+
 "Copy `from` into `to` until either side ends, then close both (connections end with resets too)."
 function pipe_closing(from::IO, to::IO)
     try
@@ -98,6 +136,7 @@ function serve_web!(g::Game; port::Int = 8790, url::AbstractString = "")
     end
     server = Bonito.Server(app, "127.0.0.1", port; proxy_url = String(url))
     serve_site!(server, g.paths)
+    Bonito.route!(server, "/scene" => scene_page(fig, g.dash.view.scene; title = "The Neverending Game · the island"))
     path = web_socket(g.paths)
     mkpath(dirname(path))
     ispath(path) && rm(path)

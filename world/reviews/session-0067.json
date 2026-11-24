@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "bt_julia_eval `using NeverendingGame` printed the LoadError. web.jl mtime 2026-11-24 19:27:36, and it is missing from the changed-files list.",
+      "severity": "high",
+      "suggestion": "Use `Bonito.@js_str` or `using Bonito: @js_str`, or restore the previous web.jl. Check that `using NeverendingGame` loads in a fresh process before the next restart.",
+      "what": "NeverendingGame fails to precompile in a fresh Julia session: 'UndefVarError: @js_str not defined in NeverendingGame' at web.jl:73 (the `js\"\"\"` block in scene_page, line 87). NeverendingGame.jl only does `import Bonito, WGLMakie`. web.jl's mtime is 19:27:36, the same minute as the last journal entry. The running sandbox survives only because Revise keeps the old code, as in the s48 render.jl crash-loop. I cannot tell whether the author or something else made the edit.",
+      "where": "dev/NeverendingGame/src/web.jl:87 and NeverendingGame.jl:33"
+    },
+    {
+      "evidence": "My screenshot /sim/Programmieren/SimGame/world/reviews/s67-a.png: the panel says 'Choir practice! ...press C' and 'Things to try' ends with 'C sings', but the view showed only a tag game, with no choir in sight.",
+      "severity": "medium",
+      "suggestion": "Add the film to the post once it lands. Re-render the stills as worker post_still jobs. Give the player a visible cue during a choir (note emotes, a bubble).",
+      "what": "The sung choir is silent in the game: the song exists only as a synthesized track under the film (movies/choir.jl). That film, job 20261124-190248-738-clip, was still 'running' and site/films has no island-choir.mp4. The blog post shows two stills, and the post stills were traced in the agent session, not as absolute-path worker jobs, so the host may not count them as traced.",
+      "where": "jobs/20261124-190248-738-clip.json; site/index.html 'Choir practice'"
+    },
+    {
+      "evidence": "journal 19:13: the flight took Lumi and the singers mid-chord.",
+      "severity": "low",
+      "suggestion": "One shared engine list (for example NG.EVENT_GOALS) that all event plugins read.",
+      "what": "Every new island event needs its goal added by hand to each other event plugin's own KEEP list. This session patched five plugins (flight, hiccups, sneeze, freeze, conga) after a real interruption, and the next event will hit the same trap.",
+      "where": "plugins/*.jl `const KEEP`"
+    }
+  ],
+  "summary": "The Island Choir is a charming new event and its hint, message and panel text show correctly in the running sandbox (frame median 3.8 ms). But the engine source no longer precompiles: dev/NeverendingGame/src/web.jl was edited at 19:27:36 and uses `js\"\"\"` with only `import Bonito`, so the next game or sandbox restart will crash-loop. The film with the song is still unrendered.",
+  "superseded_by": "perfectionist-0067.json",
+  "surprise": 6,
+  "surprise_why": "A conducted island choir with a sung chord and a planned BWAARP is a nice twist, but it is another party event in the same pattern, and nobody can hear it in the game yet.",
+  "verdict": "needs_work"
+}

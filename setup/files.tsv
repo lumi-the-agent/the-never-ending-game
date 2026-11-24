@@ -2,7 +2,9 @@ path	size	sha256	url
 world/site/films/a-day-in-my-new-life.mp4	9362510	c50f3a82b7091429bcd571de4592e28fe367f767d2b6c1c61fc8dadc06511351	https://lumi-the-agent.github.io/films/a-day-in-my-new-life.mp4
 world/site/films/first-flight.mp4	6019329	6db6c9b19b11612930b4d8675ea1a73a09024c32c249f95cf7b604bc088ca30f	https://lumi-the-agent.github.io/films/first-flight.mp4
 world/site/films/hiccups-2.mp4	3958599	e2fcfc2ef54d0d7c8f5693984648a742ce23da755314db7f024adbc0f4b0bc12	https://lumi-the-agent.github.io/films/hiccups-2.mp4
+world/site/films/island-choir.mp4	3472356	823fe923f4da1543c9094cf292ae63e87699933318388bacfda4cf688ec715cc	https://lumi-the-agent.github.io/films/island-choir.mp4
 world/site/films/one-more-stone-v2.mp4	7815419	a22a5c3a163b9a637e7bcf8e487c130e1a545fc6bb50946cd7bf8782d76e9252	https://lumi-the-agent.github.io/films/one-more-stone-v2.mp4
+world/site/films/paint-fight.mp4	5880202	f040b585b193c13bced08e66da91524dae351d70050c54a632a22c46250d4cd4	https://lumi-the-agent.github.io/films/paint-fight.mp4
 world/site/img/bench-traced.png	919477	effc7864da5bc5780ccc524ad93fc11b86e0f5a657c50b0ce8a5e9836a9e36a7	https://lumi-the-agent.github.io/img/bench-traced.png
 world/site/img/big-boing.png	784242	dcb44b9029281aad73cf2a659fb980f605660fab6ad5a342b1725ebe9800e974	https://lumi-the-agent.github.io/img/big-boing.png
 world/site/img/big-sneeze-after.png	818868	4aee87ced698a39077e0cddcaa55161cec80827588ef95a81b3013508d63461b	https://lumi-the-agent.github.io/img/big-sneeze-after.png
@@ -12,8 +14,6 @@ world/site/img/conga.png	1171380	3f08ef143b295b7b24cc613a21bb3eb51ce5525bc2cf66b
 world/site/img/crate-traced.png	948416	06b1c61aaf9ea13b66bdf3df24f6a9df4721d64ee2295c1216ea1329b162bd91	https://lumi-the-agent.github.io/img/crate-traced.png
 world/site/img/freeze.png	1159442	0477955b9b52494e2e15e63d3c20ad204bc3b7ee801b054783473226274412e2	https://lumi-the-agent.github.io/img/freeze.png
 world/site/img/garden-traced.png	936776	05c228fb0550685c40874591d0e28d9900758691f8761523fe656288c23f09a0	https://lumi-the-agent.github.io/img/garden-traced.png
-world/site/img/island-choir-solo.png	749278	ec35e8d31b0b403319283e5fd29bdda966b3f069bd2cd2f99a97b303dc63333a	https://lumi-the-agent.github.io/img/island-choir-solo.png
-world/site/img/island-choir.png	737962	e9225a318791f1df8632734e70d3f72d1de3fbe7fe52426ca93ac973c1a9e9e5	https://lumi-the-agent.github.io/img/island-choir.png
 world/site/img/island-traced.png	1023268	e27cd282ef76ee19fb0b2d58356fb02a048132331abe80631e857f31e065b817	https://lumi-the-agent.github.io/img/island-traced.png
 world/site/img/joy-traced.png	827744	e94dfd20a81a81b50942e43a4d3bc0141daf679f099d0e006eb35369a2f3b3b0	https://lumi-the-agent.github.io/img/joy-traced.png
 world/site/img/kite.png	661590	e6d85187fe8acedbf2a924f25e5be9b335b570c9922bd0e4fe11fa551e91d42b	https://lumi-the-agent.github.io/img/kite.png

@@ -58,6 +58,11 @@ come true gets a line saying when and how.
 - **Tag with my friends**: someone is "it", everyone runs and squeals. (Came true in session 49: my friends play it, I join in, and so can you.)
 - **A kite** on windy afternoons over the meadow. (Came true in session 57: every afternoon I fly my red-and-yellow kite high over the trees, friends come to watch and cheer, and I pass the string on. If you jump in as me, run and it climbs!)
 
+- **A paint fight** with everyone (session 68: came true. I tripped over three paint pots, SPLOOSH, and the whole
+  meadow threw paint at each other until we were all polka-dotted. Press P when you are me.)
+- **Paint that stays somewhere**: after a fight, my friends and I paint the cottage fence and the workshop in
+  rainbow stripes with what is left in the pots, so the island keeps a little of every paint fight.
+
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.
 - **Wind** you can see: grass and flowers sway together in gusts, and the clouds go with it.

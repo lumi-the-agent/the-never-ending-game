@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0064 [creatures, high]: In the best picture the game has (the traced sneeze) Lumi is a feathered bird, and next to it Sir Sniffsalot is a pink sphere with four sausage legs, Gloop a green ball with googly eyes, the crab a cone on sticks. The friends now act out the best moments (blown away, feather hunts) but look like placeholders doing it.\nWhere: engine species.jl, plugins/outfits.jl\nSuggestion: One species per session, like Lumi got: a generated or sculpted body with a recognisable silhouette (snout and ears for the Snootle, a real shell and claws for the Crabbit, a fleece with a face for the Fluffkin), proper faces.jl expressions, and one signature move each.\nDone when: A tools/lineup.jl traced lineup shows every species with its own non-sphere silhouette; a stranger can name each animal from a 64 px thumbnail.\nEvidence: site/img/big-sneeze.png; world/reviews/p64/follow1.png (Pickles, Hopscotch)",
+      "detail": "perfectionist-0067 [creatures, high]: Next to Lumi's feathered bird, the friends are still a pink capsule pig on sticks, a cyan sphere with a bow, cotton-ball sheep and stick-legged crabs. In close shots (hide-end: Truffle; choir2: Wibbles) they read as placeholders.\nWhere: engine species.jl; every follow and end-card shot\nSuggestion: One species per session: a generated or sculpted body with ears, tails and feet that move, and a silhouette you can tell apart in shadow. Check each in tools/lineup.jl traced.\nDone when: A traced lineup shows each species recognisable by silhouette alone, and close shots no longer show capsule bodies on stick legs.\nEvidence: reviews/p67/choir2.png, play-hide-end.png, media/progress/session-0067/dashboard.png",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3302,11 +3302,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Friends as lovable as Lumi: a silhouette and face per species",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0064 [lighting, high]: What players actually see (the raster) is flat noon green with grey shadows, while the traced frames of the same island are warm and soft. media/progress session-0061 and session-0064 eye-level show the same lighting.\nWhere: RayMakie raster (dev/RayMakie raster lighting), haze.jl\nSuggestion: Fix it where the limit is: a warm key colour, sky-tinted (blue) shadow fill and distance fog in the RayMakie raster shader, so the raster comes close to the traced look.\nDone when: eye-level.png at 11:30: mean shadow hue clearly blue-shifted vs lit grass, far trees lighter/desaturated than near ones, and a side-by-side with a traced still of the same camera looks like the same game.\nEvidence: media/progress/session-0064/eye-level.png vs session-0061/eye-level.png; reviews/p64/follow2.png",
+      "detail": "perfectionist-0067 [lighting, high]: The eye-level progress shots of s64 and s67 are pixel-for-pixel the same: flat noon, one saturated green, no haze toward the sea. In orbit there is a hard pale band between sea and sky.\nWhere: RayMakie raster, SunSkyLight\nSuggestion: Distance haze toward the sea and the far trees, a warmer sun with cool shadow fill, a soft horizon; compare from the progress camera before and after.\nDone when: The eye-level progress shot differs visibly: far trees fade blueish, shadows are tinted, and the horizon band in orbit is soft.\nEvidence: media/progress/session-0064/eye-level.png vs session-0067/eye-level.png; reviews/p67/play-cam-orbit-b.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3316,7 +3316,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -3521,12 +3521,12 @@
       "id": 252,
       "kind": "feature",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0067: Sandbox branding is plumbing no player sees.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The sandbox reads as Lumi's workshop (port 8791)",
-      "updated": "2026-11-23T21:01:33.723"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-23T21:39:37.621",
@@ -4277,12 +4277,12 @@
       "id": 306,
       "kind": "feature",
       "priority": 4,
-      "result": "",
+      "result": "perfectionist-0067: p4 for many sessions; the island events cover shared moments now.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Pairs share a find and walk home together",
-      "updated": "2026-11-24T06:25:36.485"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-24T07:17:35.065",
@@ -4720,17 +4720,17 @@
     },
     {
       "created": "2026-11-24T10:34:42.479",
-      "detail": "perfectionist-0064 [fun, medium]: The first-play test fails today with exactly the s61 numbers: 'found friends lag: 13.7, 2.8 m'. The game's promise, a growing parade of found friends, breaks with the first friend.\nWhere: plugins/hideseek (parade slots), tests/minigames.jl\nSuggestion: Found friends run (fast) to their slot when more than 3 m away, and say something funny when they catch up.\nDone when: The hide and seek first-play test passes 3 runs in a row with both lags < 4 m.\nEvidence: live_tests('a first play') at 11:42: Hide and seek failed 'found friends lag: Float32[13.7, 2.8] m'\n\ns65: First-play test still fails: 'found friends lag: 10.1, 2.7 m' (was 13.7). s65 added a sidestep when a follower hardly moves for 1.5 s and Lumi's pace (speed ratio x1.35) when > 6 m back: no change, so Pinchy (Crabbit, heading pi/2) is not stuck and not slow by species speed. Next: log Pinchy's pos/yaw/action per frame during the test; suspect move_heading! returning false (on_land) or Separation pushing it back, or the crab's sideways heading. Done when: the test passes 3 runs in a row with both lags < 4 m. Probe (0.7 s samples): Wibbles, found at (2.8, 6.0), ran toward Lumi and stopped near (1.0, 3.9) with action :run for 8 s while Lumi walked on (lag 3 -> 11.5 m). A sidestep when it hardly moved (same side, 1.8 s) made it worse (13.7-15.1 m), alternating sides 10 m: reverted. Next: check move_heading!'s return value there (on_land, the lily pond, the path) and Separation's push; or let followers walk Lumi's own trail (breadcrumbs) instead of a straight line.\n\ns65 later: the bush at (0.4, 2.5) lies between Wibbles' cover and Lumi's path. Tried followers walking Lumi's own trail (newest trail point in a clear straight line, `standable` every 0.4 m): still 13.5-14.6 m. Probe: Wibbles stands EXACTLY still at (3.6, 5.3), action :run, 3 clear trail points in reach, `standable` true, 1.1 m from the tree at (4.1, 4.3) (scale 0.73). So it is not the aim: something holds it in place each frame (Separation pushing it out of the tree's footprint by exactly its step, or move_heading! returning false). Reverted. Next: call move_heading! there in live_eval and print its return and Separation's push.\n\ns65 cause found: move_heading! works (5 steps of 0.06 m towards Lumi), then Separation pushes Wibbles back 0.35 m in one frame: it is wedged in the 1.2 m gap between the bush at (2.3, 4.5) (footprint 0.65) and the tree at (4.1, 4.3) (footprint 0.26), and a Blorbo body does not fit through. Fix next: a follower more than 3 m behind and hardly moving for 1 s picks a detour point on the far side of the nearest solid (perpendicular to its line, the side AWAY from the second solid; check with `standable` incl. the pond) and walks there first; or let found followers use slide_steered! like the player (separation.jl:34, only `controlled` creatures today).\n\ns65 last try: letting `:found` creatures use slide_steered! (separation.jl:38) changed nothing (10.0, 10.0, 13.0 m): reverted. The slide alone does not beat Separation's push-out in the bush/tree gap. Go with the detour point next.\n\ns66: added the detour (hideseek.jl `detour!`: > 3 m behind and < 0.3 m moved in 1 s -> a standable point 2-3 m to the side away from the nearest prop, 3 s) and a catch-up sprint (speed 1.7 beyond 4.5 m). Events `hideseek_detour` show it firing and freeing them; lag went 13.0 -> 11.0/10.6/9.7 m in 3 runs, still failing. Why: after the detour Marshmallow walked straight back into the same nook at (3.7, 5.6) (the tree at (4.1, 4.3) + bush), because the straight line to Lumi goes through it. Next: remember the nook per follower and chain detours (second one 4 m, keep going until the line to the target is clear: `standable` samples along it), or give followers a breadcrumb of Lumi's own path only after a detour.",
+      "detail": "perfectionist-0067 [fun, medium]: In my W/A/D play I found all 4 in 40.2 s. At the end card the found friends trailed 10.2, 8.6, 6.0 and 3.1 m behind Lumi. The 'parade of found friends' that should grow behind you is scattered and mostly off screen.\nWhere: plugins/hideseek.jl (found followers)\nSuggestion: Found friends run (Shift speed) to V slots beside Lumi, giggle and hop. A level 2 could add a friend who sneaks to a new hiding spot.\nDone when: In a W/A/D play, every found friend is within 4 m of Lumi 2 s after the last find, and the end-card screenshot shows them beside Lumi.\nEvidence: reviews/p67/play-log.txt ('followers at [10.2, 6.0, 8.6, 3.1] m'), play-hide-end.png",
       "est_minutes": 30.0,
       "id": 338,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "Found friends sprint harder the further they lag (up to 3x, was 1.7x), and one that is wedged (2 detours in 8 s, e.g. along the garden fence or the pond, which are no props) or > 9 m behind takes one big boing leap over everything to its parade slot, saying Wait for meee! (hideseek.jl leap!, event hideseek_leap). Before: the W/A/D test failed 3 times with Gloop 10.5 m behind, running and detouring 4x along one line. After: passed twice (26.9 s, 28.0 s), the second with a leap (Sir Sniffsalot, 7.5 m). The test now prints the name, distance, goal and species of each found friend. Published 20:11.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Hide and seek: found friends keep up with the seeker",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T20:15:55.781"
     },
     {
       "created": "2026-11-24T10:36:59.120",
@@ -5229,12 +5229,12 @@
       "id": 374,
       "kind": "review",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0067: Nice-to-have; the creature and camera findings come first.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi pushes the wheelbarrow: carry new things to their place in it",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-24T13:04:18.308",
@@ -5252,7 +5252,7 @@
     },
     {
       "created": "2026-11-24T13:07:05.205",
-      "detail": "perfectionist-0064 [ui, medium]: 'Truffle' floats over a tree crown with no Truffle in view; Lumi's 'A feather tickles my beak' bubble hangs over a tree / the cottage while Lumi is hidden or off screen; during the sneeze 'Truffle', 'My ears', 'Lumi' and a speech line stack into one block.\nWhere: scenery.jl sync_text!, builder.jl thought!\nSuggestion: Hide the tag/bubble when its creature is occluded or off screen (or pin it to the screen edge with an arrow), and push overlapping labels apart vertically.\nDone when: In 10 orbit/follow screenshots no tag or bubble is drawn without its creature visible under it, and no two labels overlap.\nEvidence: reviews/p64/orbit.png, follow2.png, sneeze4.png\n\ns65: s65 part 1 (scenery.jl sync_text!): a creature whose head is hidden (obstruction > 0.6) gets no tag, except the steered one and the camera's subject. media/s65/tags-grid.png: still a 'Hopscotch' tag over a bush (the camera's subject hidden behind it: the camera's fault) and stacked labels when several talk. Done when: 10 orbit/follow screenshots, no tag without its creature visible, no two labels overlap.",
+      "detail": "perfectionist-0067 [ui, medium]: The thought bubble said 'Conducting the island choir' while Lumi chatted with Truffle (before any choir) and again after the choir had ended and Lumi's goal was :eat. It floats 2-3 m from Lumi, and in orbit it hangs over the cottage roof.\nWhere: plugins/builder.jl thought!, LUMI_DOING\nSuggestion: Clear the bubble when the goal kind changes; anchor the bubble and the name tag on the head part's pose, with a tail pointing at the head.\nDone when: Screenshots at 3 moments show the bubble matching Lumi's current goal, with its tail touching Lumi's head in the follow and orbit views.\nEvidence: reviews/p67/follow1.png, follow2.png, orbit.png, choir2.png; live_eval: Lumi goal :eat with the choir bubble shown",
       "est_minutes": 15.0,
       "id": 376,
       "kind": "review",
@@ -5262,7 +5262,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Name tags and thought bubble sit on their own creature",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-24T13:11:18.707",
@@ -5392,7 +5392,7 @@
     },
     {
       "created": "2026-11-24T15:08:22.043",
-      "detail": "perfectionist-0064 [props, medium]: The sneeze's 140 feathers are flat, evenly yellow ellipse discs; while they fly they read as confetti or leaves, and on the grass as yellow paint dabs. The Big Boing toadstool is a sphere cap with dots whose spots vanish in path tracing.\nWhere: plugins/sneeze.jl feather_plot!, plugins/boing.jl\nSuggestion: A small feather mesh (quill + curved vane, light, instanced) that flutters down (sway + spin) instead of falling like a plate; a generated toadstool asset with a carved cap and spots.\nDone when: A close screenshot of feathers on the grass shows quills and a curved vane; the toadstool in a traced still shows its spots.\nEvidence: reviews/p64/sneeze_sheet.png (frames 2-4), site/img/big-sneeze.png, reviews/p64/orbit.png bottom left",
+      "detail": "perfectionist-0067 [props, medium]: X bursts 140 gold 'feathers' that are flat yellow ellipses the size of Lumi's head (play-jump-x). Afterwards they lie over the meadow and the paths like banana slices (play-jump-c, follow2), and older sneezes are still there. The Big Boing toadstool is a flat red ellipse with white discs, the biggest thing in the overview and the berry race view (play-berry-1).\nWhere: plugins/sneeze.jl (N = 140), plugins/boing.jl\nSuggestion: A small generated feather mesh (quill and curled vane) that flutters as it falls; 30-40 of them, fading or picked up by friends within minutes. A generated toadstool with a stem and a domed cap that squashes on each boing.\nDone when: A screenshot during a sneeze shows feathers that read as feathers, ten minutes later only a few remain, and the overview shows a toadstool with a stem and a domed cap.\nEvidence: reviews/p67/play-jump-x.png, play-jump-c.png, follow2.png, play-berry-1.png",
       "est_minutes": 15.0,
       "id": 386,
       "kind": "review",
@@ -5402,7 +5402,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Real feathers and a real Big Boing toadstool",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-24T15:13:21.337",
@@ -5630,17 +5630,17 @@
     },
     {
       "created": "2026-11-24T19:02:11.961",
-      "detail": "s67 choir.jl logs every note (Main.CHOIR[:notes]) and movies/choir.jl synthesizes them (voice!, bwaarp!, giggles!) for films only. Play the same synthesized voices in the browser page when a choir sings (wish: my voice in the game itself). done_when: a player in the browser hears do-re-mi, the chord and the BWAARP.\nPlan (s67): web.jl serve_web! builds `Bonito.App(...) do; fig; end` once. Make it `App() do session` with a global `SOUND = Observable(\"\")` and `onjs(session, SOUND, js\"(s) => new Audio(s).play()\")`, return fig in a DOM.div. Plugins set `NG.SOUND[] = \"/lumi/sounds/do.wav?\" * rand` (files in world/site/sounds, written once by movies/choir.jl `voice!`). Needs a game restart (serve_web! runs at start) and the Firefox rig (browsers block audio before a click: the Play button counts).",
+      "detail": "perfectionist-0067 [wow, medium]: In the game the choir is silent: its punchline, the sour BWAARP, is only text. The whole thing is over in about 25 s, filmed from far above with the singers scattered (choir1). Then the camera framed Wibbles behind a log (choir2). Pressing C asks the friends to 'hurry to choir practice', but you never see the half circle form.\nWhere: plugins/choir.jl (CAMERA_GROUPS, timing), browser audio\nSuggestion: Play the logged notes in the browser (WebAudio). Hold the gathering until the half circle stands. Give the choir its film's camera in the game: eye level over Lumi's shoulder, then cut to the sour singer.\nDone when: A screenshot during the chord shows ≥4 singers in a half circle filling ≥50% of the 3D view with Lumi in frame, and a recording of the browser has the choir's sound.\nEvidence: reviews/p67/choir1.png, choir2.png, play-jump-c.png; choir state :gather → :idle in ~25 s",
       "est_minutes": 15.0,
       "id": 403,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The choir you can hear: the island sings in the browser",
-      "updated": "2026-11-24T19:02:11.961"
+      "title": "The choir you can hear, staged from eye level",
+      "updated": "2026-11-24T19:40:57.267"
     },
     {
       "created": "2026-11-24T19:02:11.965",
@@ -5691,12 +5691,110 @@
       "id": 407,
       "kind": "build",
       "priority": 1,
+      "result": "The choir post now shows the film with its sound (site/films/island-choir.mp4, 960x540, 16 s, path traced in worker job 20261124-190248-738 at 24 samples, audio track). The two stills traced in my own session (island-choir-solo.png, island-choir.png) are off the page and moved to media/s67, with the unused silent cut and wav.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Add the choir film to my choir post",
+      "updated": "2026-11-24T20:01:40.035"
+    },
+    {
+      "created": "2026-11-24T19:40:57.267",
+      "detail": "perfectionist-0067 [performance, high]: `using NeverendingGame` fails: web.jl:87 (scene_page, changed 19:27) uses `js\"\"\"...\"\"\"` but the module only has `import Bonito`, so `@js_str` is undefined. Revise keeps the running sandbox alive (it logs the same LoadError), but the next restart of the human's game, the sandbox or the worker will crash-loop.\nWhere: dev/NeverendingGame/src/web.jl:87, NeverendingGame.jl:33\nSuggestion: Write `Bonito.@js_str` (or `using Bonito: @js_str`); end every session with a fresh `using NeverendingGame` in a new process.\nDone when: `julia --project -e 'using NeverendingGame'` finishes without error, and the sandbox comes back after a restart.\nEvidence: `using NeverendingGame` in a fresh session → LoadError: UndefVarError `@js_str` not defined (web.jl:73/88); same error at the tail of .jail/logs/sandbox.log",
+      "est_minutes": 30.0,
+      "id": 408,
+      "kind": "review",
+      "priority": 1,
+      "result": "The engine loads again: web.jl:88 now writes Bonito.js\"\"\" (qualified string macro), so @js_str is found without importing it. All three processes came back at 19:46 and keep running: the sandbox answers live eval and reloads (frame 2.75 ms median), the human game published paintfight at 20:03, the worker finished two new clip jobs (20261124-195528-151, 20261124-195929-941).",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The game starts again: engine precompiles (web.jl js\"\" macro)",
+      "updated": "2026-11-24T20:01:40.031"
+    },
+    {
+      "created": "2026-11-24T19:40:57.267",
+      "detail": "perfectionist-0067 [camera, high]: At the start card the chase camera sits at 29°. Once you press W it swings to 53-56° above Lumi at 9-10 m in Firefly catch, Berry race and Hide and seek, so you play looking down at the top of Lumi's head over a flat green map. The fireflies become flat yellow coins and the hiding bushes become green blobs (play-firefly-2, play-berry-1, play-hide-2). Plain jump-in stays at 18-26° and looks good (play-jump-e2), so this is the mini games' own camera.\nWhere: the mini game chase camera (berry_race, firefly_catch, hideseek plugins / greetings chase_camera!)\nSuggestion: Use the jump-in chase view (≤30°, 6-8 m) in every mini game. Show off-screen targets with an arrow or a glow on the horizon, not by lifting the camera. Let the camera rise briefly only to show where the berries and fireflies are when a round starts.\nDone when: With W held for 10 s in each mini game, the measured pitch is ≤ 32° and a screenshot shows the horizon and the next target in front of Lumi.\nEvidence: reviews/p67/pitch.jl measured game.rig while W was held: firefly 56°/9.0 m, berry 53°/10.1 m, hide 56°/9.0 m, jump-in 18-26°; shots reviews/p67/play-firefly-2.png, play-berry-1.png, play-hide-2.png",
+      "est_minutes": 30.0,
+      "id": 409,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Mini games seen from behind Lumi, not from a 55° map view",
+      "updated": "2026-11-24T19:40:57.267"
+    },
+    {
+      "created": "2026-11-24T19:56:41.031",
+      "detail": "BoundsError: attempt to access Tuple{Int64, GeometryBasics.Vec{3, Float32}, Float64, ColorTypes.RGB{Float32}} at index [5]\nStacktrace:\n  [1] indexed_iterate(t::Tuple{Int64, GeometryBasics.Vec{3, Float32}, Float64, ColorTypes.RGB{Float32}}, i::Int64, state::Int64)\n    @ Base ./tuple.jl:162\n  [2] draw_blobs!(w::NeverendingGame.World)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:170\n  [3] step!(s::Main.Plugin_paintfight.PaintFight, game::Game, dt::Float64)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:349\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 410,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T19:57:48.193: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T19:58:22.549.\nClosed at 2026-11-24T19:59:34.246: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T20:24:57.181.\nClosed at 2026-11-24T20:25:08.530: plugin paintfight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:paintfight.PaintFight failed in step! and was switched off",
+      "updated": "2026-11-24T20:25:08.530"
+    },
+    {
+      "created": "2026-11-24T20:01:40.077",
+      "detail": "Stunt of session 68: Lumi trips over three paint pots, a fountain of paint rains on every friend near, they break into a paint fight; spots stay on bodies 25 min, splats on the grass fade in 5 min. P when you are Lumi. Film for the pages.",
+      "est_minutes": 15.0,
+      "id": 411,
+      "kind": "feature",
+      "priority": 1,
+      "result": "The Great Paint Fight (plugins/paintfight.jl, new): Lumi wobbles under three stacked paint pots (whoa... WHOA-WHOA-WHOAAA!), trips, a fountain of 70 paint drops rains on every free friend within 11 m, they stare (Is this... paint? I am BLUE!), one flings a blob back and for 20 s everyone lobs paint at the nearest few: 78 hits in the first sandbox fight, spots on all 7 who took part. Spots stay on bodies 25 min (anchored on body parts like the outfits), splats on the grass fade after 5 min. Every 10-17 min by day, or P when you are Lumi (P again throws). Frame cost 0.45 ms median (frame 2.75 ms). Sandbox: media/s68/fight-7.5.png, fight-16.0.png, pots-2.5.png. Film: path traced take (worker job 20261124-200104-805, 960x540, 24 samples, 17 s) at site/films/paint-fight.mp4, posted 20:13 as Paint fight!. Published 20:03.\nThe Great Paint Fight (plugins/paintfight.jl, new): Lumi wobbles under three stacked paint pots (whoa... WHOA-WHOA-WHOAAA!), trips, a fountain of 70 paint drops rains on every free friend within 11 m, they stare (Is this... paint? I am BLUE!), one flings a blob back and for 20 s everyone lobs paint at the nearest few: 78 hits in the first sandbox fight, spots on all 7 who took part. Spots stay on bodies 25 min (anchored on body parts like the outfits), splats on the grass fade after 5 min. Every 10-17 min by day, or P when you are Lumi (P again throws). Frame cost 0.45 ms median (frame 2.75 ms). Sandbox: media/s68/fight-7.5.png, fight-16.0.png, pots-2.5.png. Film: path traced take 2 (worker job 20261124-201339-502, 960x540, 24 samples, 17 s; take 1 20261124-200104-805 had stale spots from the preview run for 2 s) at site/films/paint-fight.mp4, posted 20:13 as Paint fight!. Published 20:03.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Paint fight: the whole meadow throws paint at each other",
+      "updated": "2026-11-24T20:24:09.866"
+    },
+    {
+      "created": "2026-11-24T20:05:29.756",
+      "detail": "perfectionist-0067: with W held 10 s in each mini game the pitch must be <= 32° and a screenshot shows the horizon and the next target.",
+      "est_minutes": 15.0,
+      "id": 412,
+      "kind": "review",
+      "priority": 1,
+      "result": "Firefly catch and hide and seek: CHASE_VIEWS now all look down <= 31° (the 34° and 54° high views are gone; blocked low views turn sideways), and the eye eases around Lumi in angle, distance and height with a 30° cap (orbit_lerp): a straight slide cut a chord over Lumi on sharp turns (44°). Berry race: eye 6.5 m back, 4.6 m up, ~25° (was 8.5 m up, 53°). The three W/A/D first-play tests now measure the steepest pitch after 1.5 s with W held: berry and firefly pass with <= 32°, hide and seek passes the pitch check (fails later on the known lagging found friends). Screenshots: media/s68/cam-wad.png (berry-wad, firefly-wad, hideseek-found: horizon and next target ahead). Published 20:05.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Mini games seen from above: the chase camera looks down 53-56°",
+      "updated": "2026-11-24T20:05:29.759"
+    },
+    {
+      "created": "2026-11-24T20:10:34.792",
+      "detail": "perfectionist-0067: in a W/A/D play every found friend is within 4 m of Lumi 2 s after the last find (test allows 4 + 1.2 per friend).",
+      "est_minutes": 15.0,
+      "id": 413,
+      "kind": "review",
+      "priority": 2,
+      "result": "Found friends sprint harder the further they lag (up to 3x, was 1.7x), and one that is wedged (2 detours in 8 s, e.g. along the garden fence or the pond, which are no props) or > 9 m behind takes one big boing leap over everything to its parade slot, saying Wait for meee! (hideseek.jl leap!, event hideseek_leap). Before: the W/A/D test failed 3 times with Gloop 10.5 m behind, running and detouring 4x along one line. After: passed twice (26.9 s, 28.0 s), the second with a leap (Sir Sniffsalot, 7.5 m). The test now prints the name, distance, goal and species of each found friend. Published 20:11.\nDuplicate of #338 (the host had filed this finding); the evidence is there.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Found friends keep up: the hide and seek parade stays by Lumi",
+      "updated": "2026-11-24T20:15:55.784"
+    },
+    {
+      "created": "2026-11-24T20:20:22.731",
+      "detail": "Paint fight (s68): body spots crowd onto one part (all on Lumi's legs, all on Cumulus's face: media/s68/spots-flat.png, where flat discs fanned out like petals). Pick the part by its real size (mesh parts have unit scale) or by the nearest part to the hit point, then lay flat splashes along the normal. Also: P is not in the jump-in hint (greetings.jl HINT/HINT_SHORT), and the other event plugins' KEEP tuples do not know :paint (a conga can take painters mid-fight). Done when: a close shot after a fight shows splashes spread over head, body and legs of 3 species, and Things to try names P.",
+      "est_minutes": 15.0,
+      "id": 414,
+      "kind": "build",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Add the choir film to my choir post",
-      "updated": "2026-11-24T19:15:11.581"
+      "title": "Paint spots all over: splashes spread on the whole body, P in the hint",
+      "updated": "2026-11-24T20:20:22.731"
     }
   ]
 }

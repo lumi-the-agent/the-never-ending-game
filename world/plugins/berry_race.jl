@@ -247,7 +247,7 @@ end
 firefly(game) = game.plugins["firefly_catch"].mod
 
 """
-A high chase camera: behind Lumi and well above the tree crowns, looking down a little ahead,
+A chase camera: behind Lumi and above it, looking down ~25° a little ahead,
 so W still goes "into" the screen and the bushes around are in view (the low firefly view hid
 Lumi under the big pines and crowns).
 """
@@ -257,8 +257,10 @@ function chase_camera!(game, c, dt; snap = false, low = false)
     # `low`: the start card's view, a friendly low look over Lumi's shoulder at the field, Lumi and
     # the rivals in the lower third under the card (tester s44: "looking steeply down at the start
     # line"); W rises to the high chase view
-    target = c.pos + 1.5f0 * fwd + Point3f(0, 0, low ? 0.9f0 : 0.4f0)
-    eye = c.pos - (low ? 5.5f0 : 4.5f0) * fwd + Point3f(0, 0, low ? 4.8f0 : 8.5f0)
+    # the race view looks down ~25° (s68: 8.5 m up it was 53°, a map of green blobs; the perfectionist
+    # asked for the horizon and the next bush ahead)
+    target = c.pos + (low ? 1.5f0 : 2.0f0) * fwd + Point3f(0, 0, low ? 0.9f0 : 0.6f0)
+    eye = c.pos - (low ? 5.5f0 : 6.5f0) * fwd + Point3f(0, 0, low ? 4.8f0 : 4.6f0)
     k = snap ? 1f0 : Float32(1 - exp(-3dt / 0.5))
     game.rig.mode = :fixed
     game.rig.eye += k * (eye - game.rig.eye)

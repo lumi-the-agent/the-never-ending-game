@@ -46,34 +46,34 @@ function BonitoAgents.app_jail(g::NeverendingGame, ::BonitoAgents.ProjectInfo)
 end
 
 """
-    GameView(port; width = 1280, height = 760)
+    GameView(port)
 
-The live game: its own page (WGLMakie, served by the game process on `port` of the machine the
-page came from), so a game that restarts is only a view that reloads. The game lays its dashboard
-out `width`×`height`; the view keeps that layout, scaled to the largest size the space it gets
-holds.
+The live game's 3D view: its `/scene` page (WGLMakie, served by the game process on `port` of the
+machine the page came from), so a game that restarts is only a view that reloads. The page tells
+the view's size; the card takes its proportions at the largest size the space holds.
 """
-Base.@kwdef struct GameView
+struct GameView
     port::Int
-    width::Int = 1280
-    height::Int = 760
 end
-GameView(port::Integer) = GameView(; port = Int(port))
 
 function Bonito.jsrender(session::Bonito.Session, v::GameView)
-    frame = DOM.iframe(; class = "ne-game", allow = "fullscreen",
-                       style = "width:$(v.width)px;height:$(v.height)px;transform-origin:0 0")
+    frame = DOM.iframe(; class = "ne-game", allow = "fullscreen")
     card = DOM.div(frame; class = "ne-game-card")
     area = DOM.div(card; class = "ne-game-area")
     fit = js"""
         const frame = $(frame), card = $(card), area = $(area);
-        frame.src = location.protocol + '//' + location.hostname + ':' + $(v.port) + '/';
+        frame.src = location.protocol + '//' + location.hostname + ':' + $(v.port) + '/scene';
+        let aspect = 1.25;
         const fit = () => {
-            const s = Math.min(area.clientWidth / $(v.width), area.clientHeight / $(v.height));
-            card.style.width = Math.floor(s * $(v.width)) + 'px';
-            card.style.height = Math.floor(s * $(v.height)) + 'px';
-            frame.style.transform = 'scale(' + s + ')';
+            const w = Math.min(area.clientWidth, area.clientHeight * aspect);
+            card.style.width = Math.floor(w) + 'px';
+            card.style.height = Math.floor(w / aspect) + 'px';
         };
+        window.addEventListener('message', e => {
+            if (e.source !== frame.contentWindow || !e.data || !e.data.sceneSize) return;
+            const [w, h] = e.data.sceneSize;
+            if (Math.abs(w / h - aspect) > 1e-3) { aspect = w / h; fit(); }
+        });
         new ResizeObserver(fit).observe(area);
         fit();
     """
@@ -83,7 +83,7 @@ end
 """
     IslandPanel(jp)
 
-How the character is and what the host does, as a row of cards under the game: its feeling and
+How the character is and what the host does, as a column of cards beside the game: its feeling and
 moods, the last thing that happened on the island for the first time, the reviewer's surprise and
 why, and the host's latest notes. Read again every few seconds while a page shows it.
 """
@@ -116,7 +116,7 @@ function island_state(jp::JailPaths)
             notes = last([a for a in feed if get(a, "kind", "") in ("host", "review")], 4),
             state = string(get(agent, "state", "off")), current = get(agent, "current", nothing), thought,
             blog = isempty(cfg.blog_repo) ? "" : pages_url(cfg.blog_repo),
-            repo = isempty(cfg.game_repo) ? "" : "https://github.com/$(cfg.game_repo)")
+            repo = isempty(cfg.game_repo) ? "" : "https://github.com/$(cfg.game_repo)", port = cfg.web_port)
 end
 
 "A label and a bar from 0 to 1."
@@ -145,7 +145,9 @@ end
 function topbar_dom(s)
     cur = s.current
     status = cur === nothing ? s.state : "$(s.state) · $(cur["label"]) · $(round(Int, cur["minutes"])) min"
-    links = filter(!isnothing, [isempty(s.blog) ? nothing : DOM.a("Blog"; href = s.blog, target = "_blank"),
+    links = filter(!isnothing, [DOM.a("Full game"; href = "#", target = "_blank", class = "ne-full-game",
+                                      onclick = js"event => { event.target.href = location.protocol + '//' + location.hostname + ':' + $(s.port) + '/'; }"),
+                                isempty(s.blog) ? nothing : DOM.a("Blog"; href = s.blog, target = "_blank"),
                                 isempty(s.repo) ? nothing : DOM.a("GitHub"; href = s.repo, target = "_blank")])
     return DOM.div(
         DOM.div(DOM.span("The Never Ending Game"; class = "ne-title"),
@@ -188,16 +190,14 @@ const DASHBOARD_STYLE = Bonito.Styles(
                "border" => "1px solid #e0d9cb", "padding" => "5px 12px", "border-radius" => "999px", "font-size" => "13px"),
     Bonito.CSS(".ne-links a:hover", "background" => "#ece6d8"),
     Bonito.CSS(".ne-main", "flex" => "1", "display" => "flex", "gap" => "18px", "padding" => "18px", "min-height" => "0"),
-    Bonito.CSS(".ne-left", "flex" => "1 1 0", "min-width" => "0", "display" => "flex", "flex-direction" => "column",
-               "gap" => "14px"),
-    Bonito.CSS(".ne-game-slot", "flex" => "1 1 0", "min-height" => "240px", "display" => "flex"),
+    Bonito.CSS(".ne-game-slot", "flex" => "1 1 0", "min-width" => "0", "display" => "flex"),
     Bonito.CSS(".ne-game-area", "flex" => "1 1 0", "min-width" => "0", "display" => "flex", "justify-content" => "center",
                "align-items" => "flex-start"),
     Bonito.CSS(".ne-game-card", "flex" => "0 0 auto", "border-radius" => "14px", "overflow" => "hidden",
                "background" => "#0b0d10", "box-shadow" => "0 6px 24px rgba(40,30,10,.18)"),
-    Bonito.CSS(".ne-game", "border" => "0", "display" => "block"),
-    Bonito.CSS(".ne-cards", "flex" => "0 0 auto", "display" => "grid",
-               "grid-template-columns" => "repeat(auto-fit, minmax(220px, 1fr))", "gap" => "14px"),
+    Bonito.CSS(".ne-game", "border" => "0", "display" => "block", "width" => "100%", "height" => "100%"),
+    Bonito.CSS(".ne-island", "flex" => "0 0 250px", "min-height" => "0", "overflow-y" => "auto"),
+    Bonito.CSS(".ne-cards", "display" => "flex", "flex-direction" => "column", "gap" => "12px"),
     Bonito.CSS(".ne-card", "background" => "#fffdf8", "border" => "1px solid #e6e0d4", "border-radius" => "14px",
                "padding" => "14px 16px", "font-size" => "13px", "line-height" => "1.45"),
     Bonito.CSS(".ne-card-title", "font-size" => "11px", "font-weight" => "600", "text-transform" => "uppercase",
@@ -219,8 +219,10 @@ const DASHBOARD_STYLE = Bonito.Styles(
     Bonito.CSS(".ne-note", "margin" => "4px 0", "color" => "#4b4f56", "display" => "-webkit-box",
                "-webkit-line-clamp" => "2", "-webkit-box-orient" => "vertical", "overflow" => "hidden"),
     Bonito.CSS(".ne-note-time", "color" => "#a39c90", "font-variant-numeric" => "tabular-nums"),
-    Bonito.CSS(".ne-chat", "flex" => "0 0 440px", "display" => "flex", "flex-direction" => "column", "min-height" => "0",
+    Bonito.CSS(".ne-chat", "flex" => "0 0 400px", "display" => "flex", "flex-direction" => "column", "min-height" => "0",
                "background" => "#fffdf8", "border" => "1px solid #e6e0d4", "border-radius" => "14px", "overflow" => "hidden"),
+    # the host drives the turns: BonitoAgents' own auto-continue would fight it
+    Bonito.CSS(".ne-chat .bt-yolo-bar", "display" => "none"),
     Bonito.CSS(".ne-chat-head", "padding" => "14px 18px 12px", "border-bottom" => "1px solid #eee8dc"),
     Bonito.CSS(".ne-chat-title", "font-weight" => "700", "font-size" => "16px"),
     Bonito.CSS(".ne-chat-sub", "font-size" => "12px", "color" => "#8a8377", "margin-top" => "2px"))
@@ -228,15 +230,16 @@ const DASHBOARD_STYLE = Bonito.Styles(
 """
     dashboard_layout(jp, chat...)
 
-The page: the top bar, the game and the island's cards on the left, the character's chat (`chat`,
-its widgets) on the right, under "Talk to ...".
+The page: the top bar, then the game, the island's cards and the character's chat (`chat`, its
+widgets, under "Talk to ...") side by side.
 """
 function dashboard_layout(jp::JailPaths, chat...)
     name = character_name(jp)
-    left = DOM.div(GameView(load_config(jp).web_port), IslandPanel(jp); class = "ne-left")
+    island = DOM.div(IslandPanel(jp); class = "ne-island")
     head = DOM.div(DOM.div("Talk to $name"; class = "ne-chat-title"),
                    DOM.div("$name reads what you write here between its steps."; class = "ne-chat-sub"); class = "ne-chat-head")
-    return DOM.div(DASHBOARD_STYLE, TopBar(jp), DOM.div(left, DOM.div(head, chat...; class = "ne-chat"); class = "ne-main");
+    return DOM.div(DASHBOARD_STYLE, TopBar(jp),
+                   DOM.div(GameView(load_config(jp).web_port), island, DOM.div(head, chat...; class = "ne-chat"); class = "ne-main");
                    class = "ne-layout")
 end
 

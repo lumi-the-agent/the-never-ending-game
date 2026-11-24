@@ -531,8 +531,11 @@ function thought!(game)
     # while Lumi speaks its line stands where the cloud would be: the thought waits (s49, the line covered the cloud)
     speaking = me !== nothing && any(s -> s.who == me.id && s.until > w.t, w.speech)
     pastime = me === nothing || !isdefined(Main, :LUMI_DOING) ? nothing : get(Main.LUMI_DOING, me.goal.kind, nothing)
+    # the work ("carrying paint pots...") only over a Lumi at work or between things: over a chat, a meal or a
+    # dance it said what Lumi was NOT doing (perfectionist s67: "Conducting the island choir" while it ate)
+    working = me !== nothing && me.goal.kind in (:build, :tinker, :wander, :idle)
     txt = me === nothing || me.controlled || game.minigame !== nothing || me.action === :sleep || speaking ? nothing :
-          pastime !== nothing ? pastime : current_thought(game)
+          pastime !== nothing ? pastime : working ? current_thought(game) : nothing
     # busy with a pastime of its own (the kite): the cloud says that, not the work (tester s57: "Making a
     # kite…" hung over Lumi while the kite was already up). Plugins fill `Main.LUMI_DOING[kind]`.
     px = txt === nothing ? nothing : NG.on_screen(st.scene, NG.head_point(w, me))
@@ -549,10 +552,10 @@ function thought!(game)
     # ran off the right edge, and a head near the top sent the cloud beside it: s51 suite, s52 shots)
     cx(x) = clamp(x, wd / 2 + 8, max(wd / 2 + 8, vw - wd / 2 - 8))
     c = Point2f(cx(px[1] + wd / 2 + 6), px[2] + 104)
-    pts = [px + Point2f(30, 30), px + Point2f(40, 52), px + Point2f(48, 74), c]
+    pts = [px + Point2f(8, 14), px + Point2f(18, 36), px + Point2f(30, 62), c]
     if c[2] + 24 > top     # a head near the top: lower, still above the name tag
         c = Point2f(cx(px[1] + wd / 2 + 6), px[2] + 66)
-        pts = [px + Point2f(22, 18), px + Point2f(30, 30), px + Point2f(38, 42), c]
+        pts = [px + Point2f(8, 10), px + Point2f(16, 22), px + Point2f(26, 36), c]
     end
     if c[2] + 24 > top     # no room above at all: beside the head
         c = Point2f(cx(px[1] + wd / 2 + 70), px[2] + 10)
@@ -564,7 +567,20 @@ function thought!(game)
     B[:thought_shown] = true
 end
 
+# what the bubble says for Lumi's everyday goals (s68: with the work shown only while Lumi works, the bubble
+# says what Lumi really does). A plugin's own line for its goal (kite, paint fight) wins.
+const EVERYDAY = Dict(:eat => "Mmm, snack time", :fish => "Come on, little fish...", :beachcomb => "Looking for shiny shells",
+    :sunbathe => "Warming my feathers", :tag => "You can't catch me!", :present => "A present for a friend",
+    :present_get => "A present for a friend", :conga => "Conga! Conga!", :flight => "Today I FLY!",
+    :boing => "BOING!", :boing_walk => "To the Big Boing!", :choir => "Conducting the island choir",
+    :pebble => "One more stone for the cairn", :dance => "Dancing!", :circle => "Dancing in the ring!",
+    :rain => "Splashing in the rain")
+
 function NG.start!(::Builder, game)
+    isdefined(Main, :LUMI_DOING) || Core.eval(Main, :(const LUMI_DOING = Dict{Symbol,String}()))
+    for (k, v) in EVERYDAY
+        haskey(Main.LUMI_DOING, k) || (Main.LUMI_DOING[k] = v)
+    end
     # the plots belong to one scene: another game in this process (the worker's quiet copy for each job) draws its own
     if get(B, :scene, nothing) !== game.stage.scene
         empty!(B[:plots]); delete!(B, :thought_plots)

@@ -1,0 +1,227 @@
+{
+ "verdict": "needs_work",
+ "summary": "I played all four modes with FakeInteraction, and each one works on a first try. Firefly catch: 8/8 in 43.7 s. Berry race: a win, 8 to 6. Hide and seek: all 4 found in 40.2 s. All three level up with a clear end card and 'R to play again'. Jump-in has a key for every gag (E wave, X sneeze, H hiccups, G flight, C choir). Lumi's failed flight, a bird spinning high in the sky saying '...uh oh.', is the funniest thing on screen. The picture has not moved for six sessions, though. The progress shots of s64 and s67 are the same flat noon. The friends are still primitives. The sneeze leaves big flat yellow ellipses all over the meadow. While you play, every mini game is filmed from 53-56° above, so the levels look like a map. And the engine does not precompile any more: the next restart of any game process will fail.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Unchanged since s61: an even flat noon in every shot, a hard pale band at the horizon in orbit (cam-orbit-b), no haze toward the sea; only traced stills have warmth."
+  },
+  "world": {
+   "score": 6,
+   "why": "Big progress since s20 (a whole island, sea, pond, flower field, cottage, workshop), but the overview is the same as at s64 apart from where the Big Boing toadstool sits."
+  },
+  "props": {
+   "score": 6,
+   "why": "The generated clay props are good (cottage, wheelbarrow, workbench, cairns), but the Big Boing toadstool is a flat red ellipse and the sneeze feathers are flat yellow ellipses that cover the ground (play-jump-x, play-jump-c)."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Lumi's feathered bird has expressions (a happy squint on the end card) and acting; the friends are capsule pigs, sphere blobs and crabs with stick legs; behaviour is lively (tag, choir, fishing)."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Three mini games that a first play wins in under a minute, with levels and bests that give a reason for a second round, plus seven keys for island gags in jump-in; up from 6 because all of it held up in real play."
+  },
+  "wow": {
+   "score": 6,
+   "why": "The flight launch and the sneeze burst are good to share; the choir has no sound in the game, and its 25 s run was filmed from far above."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Jump-in chase view is good (18-26° pitch); every mini game swings to 53-56° above Lumi while you play; island events are framed from far above or behind props (choir1, choir2)."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Clear HUDs (count, time, 'nearest 2 m ahead'), key hints and end cards; the thought bubble shows a stale 'Conducting the island choir' and floats away from Lumi."
+  },
+  "style": {
+   "score": 6,
+   "why": "Sculpted clay props and Lumi next to primitive friends, flat-disc fireflies and flat feather ellipses: two styles at once."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame median 3.1 ms, p95 4.9 ms at 30 fps through all mini games; the human's game still logs 'A frame failed: Timed out' (6 in game.log)."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "performance",
+   "title": "The game starts again: engine precompiles (web.jl js\"\" macro)",
+   "todo": null,
+   "what": "`using NeverendingGame` fails: web.jl:87 (scene_page, changed 19:27) uses `js\"\"\"...\"\"\"` but the module only has `import Bonito`, so `@js_str` is undefined. Revise keeps the running sandbox alive (it logs the same LoadError), but the next restart of the human's game, the sandbox or the worker will crash-loop.",
+   "where": "dev/NeverendingGame/src/web.jl:87, NeverendingGame.jl:33",
+   "evidence": "`using NeverendingGame` in a fresh session → LoadError: UndefVarError `@js_str` not defined (web.jl:73/88); same error at the tail of .jail/logs/sandbox.log",
+   "suggestion": "Write `Bonito.@js_str` (or `using Bonito: @js_str`); end every session with a fresh `using NeverendingGame` in a new process.",
+   "done_when": "`julia --project -e 'using NeverendingGame'` finishes without error, and the sandbox comes back after a restart."
+  },
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "Mini games seen from behind Lumi, not from a 55° map view",
+   "todo": null,
+   "what": "At the start card the chase camera sits at 29°. Once you press W it swings to 53-56° above Lumi at 9-10 m in Firefly catch, Berry race and Hide and seek, so you play looking down at the top of Lumi's head over a flat green map. The fireflies become flat yellow coins and the hiding bushes become green blobs (play-firefly-2, play-berry-1, play-hide-2). Plain jump-in stays at 18-26° and looks good (play-jump-e2), so this is the mini games' own camera.",
+   "where": "the mini game chase camera (berry_race, firefly_catch, hideseek plugins / greetings chase_camera!)",
+   "evidence": "reviews/p67/pitch.jl measured game.rig while W was held: firefly 56°/9.0 m, berry 53°/10.1 m, hide 56°/9.0 m, jump-in 18-26°; shots reviews/p67/play-firefly-2.png, play-berry-1.png, play-hide-2.png",
+   "suggestion": "Use the jump-in chase view (≤30°, 6-8 m) in every mini game. Show off-screen targets with an arrow or a glow on the horizon, not by lifting the camera. Let the camera rise briefly only to show where the berries and fireflies are when a round starts.",
+   "done_when": "With W held for 10 s in each mini game, the measured pitch is ≤ 32° and a screenshot shows the horizon and the next target in front of Lumi."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Lumi: a silhouette and face per species",
+   "todo": 236,
+   "what": "Next to Lumi's feathered bird, the friends are still a pink capsule pig on sticks, a cyan sphere with a bow, cotton-ball sheep and stick-legged crabs. In close shots (hide-end: Truffle; choir2: Wibbles) they read as placeholders.",
+   "where": "engine species.jl; every follow and end-card shot",
+   "evidence": "reviews/p67/choir2.png, play-hide-end.png, media/progress/session-0067/dashboard.png",
+   "suggestion": "One species per session: a generated or sculpted body with ears, tails and feet that move, and a silhouette you can tell apart in shadow. Check each in tools/lineup.jl traced.",
+   "done_when": "A traced lineup shows each species recognisable by silhouette alone, and close shots no longer show capsule bodies on stick legs."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
+   "todo": 237,
+   "what": "The eye-level progress shots of s64 and s67 are pixel-for-pixel the same: flat noon, one saturated green, no haze toward the sea. In orbit there is a hard pale band between sea and sky.",
+   "where": "RayMakie raster, SunSkyLight",
+   "evidence": "media/progress/session-0064/eye-level.png vs session-0067/eye-level.png; reviews/p67/play-cam-orbit-b.png",
+   "suggestion": "Distance haze toward the sea and the far trees, a warmer sun with cool shadow fill, a soft horizon; compare from the progress camera before and after.",
+   "done_when": "The eye-level progress shot differs visibly: far trees fade blueish, shadows are tinted, and the horizon band in orbit is soft."
+  },
+  {
+   "severity": "medium",
+   "category": "props",
+   "title": "Real feathers and a real Big Boing toadstool",
+   "todo": 386,
+   "what": "X bursts 140 gold 'feathers' that are flat yellow ellipses the size of Lumi's head (play-jump-x). Afterwards they lie over the meadow and the paths like banana slices (play-jump-c, follow2), and older sneezes are still there. The Big Boing toadstool is a flat red ellipse with white discs, the biggest thing in the overview and the berry race view (play-berry-1).",
+   "where": "plugins/sneeze.jl (N = 140), plugins/boing.jl",
+   "evidence": "reviews/p67/play-jump-x.png, play-jump-c.png, follow2.png, play-berry-1.png",
+   "suggestion": "A small generated feather mesh (quill and curled vane) that flutters as it falls; 30-40 of them, fading or picked up by friends within minutes. A generated toadstool with a stem and a domed cap that squashes on each boing.",
+   "done_when": "A screenshot during a sneeze shows feathers that read as feathers, ten minutes later only a few remain, and the overview shows a toadstool with a stem and a domed cap."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Hide and seek: found friends keep up with the seeker",
+   "todo": 338,
+   "what": "In my W/A/D play I found all 4 in 40.2 s. At the end card the found friends trailed 10.2, 8.6, 6.0 and 3.1 m behind Lumi. The 'parade of found friends' that should grow behind you is scattered and mostly off screen.",
+   "where": "plugins/hideseek.jl (found followers)",
+   "evidence": "reviews/p67/play-log.txt ('followers at [10.2, 6.0, 8.6, 3.1] m'), play-hide-end.png",
+   "suggestion": "Found friends run (Shift speed) to V slots beside Lumi, giggle and hop. A level 2 could add a friend who sneaks to a new hiding spot.",
+   "done_when": "In a W/A/D play, every found friend is within 4 m of Lumi 2 s after the last find, and the end-card screenshot shows them beside Lumi."
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "The choir you can hear, staged from eye level",
+   "todo": 403,
+   "what": "In the game the choir is silent: its punchline, the sour BWAARP, is only text. The whole thing is over in about 25 s, filmed from far above with the singers scattered (choir1). Then the camera framed Wibbles behind a log (choir2). Pressing C asks the friends to 'hurry to choir practice', but you never see the half circle form.",
+   "where": "plugins/choir.jl (CAMERA_GROUPS, timing), browser audio",
+   "evidence": "reviews/p67/choir1.png, choir2.png, play-jump-c.png; choir state :gather → :idle in ~25 s",
+   "suggestion": "Play the logged notes in the browser (WebAudio). Hold the gathering until the half circle stands. Give the choir its film's camera in the game: eye level over Lumi's shoulder, then cut to the sour singer.",
+   "done_when": "A screenshot during the chord shows ≥4 singers in a half circle filling ≥50% of the 3D view with Lumi in frame, and a recording of the browser has the choir's sound."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Name tags and thought bubble sit on their own creature",
+   "todo": 376,
+   "what": "The thought bubble said 'Conducting the island choir' while Lumi chatted with Truffle (before any choir) and again after the choir had ended and Lumi's goal was :eat. It floats 2-3 m from Lumi, and in orbit it hangs over the cottage roof.",
+   "where": "plugins/builder.jl thought!, LUMI_DOING",
+   "evidence": "reviews/p67/follow1.png, follow2.png, orbit.png, choir2.png; live_eval: Lumi goal :eat with the choir bubble shown",
+   "suggestion": "Clear the bubble when the goal kind changes; anchor the bubble and the name tag on the head part's pose, with a tail pointing at the head.",
+   "done_when": "Screenshots at 3 moments show the bubble matching Lumi's current goal, with its tail touching Lumi's head in the follow and orbit views."
+  }
+ ],
+ "todos": [
+  {
+   "id": 69,
+   "action": "keep",
+   "why": "Still happens: 6 'A frame failed: Timed out' in game.log."
+  },
+  {
+   "id": 343,
+   "action": "keep",
+   "why": "Still in sandbox.log (3 times, game.jl:405)."
+  },
+  {
+   "id": 385,
+   "action": "keep",
+   "why": "Still in sandbox.log (4 times)."
+  },
+  {
+   "id": 175,
+   "action": "keep",
+   "why": "Not shown as fixed."
+  },
+  {
+   "id": 402,
+   "action": "keep",
+   "why": "The human's own report; cause not found yet."
+  },
+  {
+   "id": 407,
+   "action": "keep",
+   "why": "Choir film job 20261124-190248-738-clip still running."
+  },
+  {
+   "id": 395,
+   "action": "keep",
+   "why": "The overview has not changed since s64; a new place north of the pond is still the biggest world gap."
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "Lumi is the hero; bird motion still matters."
+  },
+  {
+   "id": 291,
+   "action": "keep",
+   "why": "Giving presents is still missing as an interaction."
+  },
+  {
+   "id": 396,
+   "action": "keep",
+   "why": "Not verified this review."
+  },
+  {
+   "id": 389,
+   "action": "keep",
+   "why": "In jump-in, G (flight) took Lumi while C's choir was gathering (play-jump-c → play-jump-g)."
+  },
+  {
+   "id": 374,
+   "action": "drop",
+   "why": "Nice-to-have; the creature and camera findings come first."
+  },
+  {
+   "id": 252,
+   "action": "drop",
+   "why": "Sandbox branding is plumbing no player sees."
+  },
+  {
+   "id": 306,
+   "action": "drop",
+   "why": "p4 for many sessions; the island events cover shared moments now."
+  }
+ ],
+ "engine": [
+  {
+   "what": "NeverendingGame does not precompile: `js\"\"\"` in scene_page without Bonito's @js_str in scope. Running processes survive only through Revise.",
+   "evidence": "dev/NeverendingGame/src/web.jl:87; LoadError on `using NeverendingGame` and at the tail of .jail/logs/sandbox.log"
+  },
+  {
+   "what": "Worker asset jobs lose the GPU (VK_ERROR_DEVICE_LOST) on the nest mesh, twice; every job after one needs a worker restart.",
+   "evidence": "world/jobs/20261124-190216-595-asset.json"
+  }
+ ],
+ "process": "The author keeps putting sessions into island-wide comedy events (sneeze, hiccups, flight, choir) and their path traced films. They are inventive, and together with three solid mini games they make the game fun to play (fun up to 7). But six sessions have left the picture unchanged. The progress shots are identical, the visual todos #236 (friends), #237 (lighting), #386 (feathers and toadstool) and #395 (a new place) have not moved over the last three reviews, and each new event adds coordination plumbing (KEEP tuples, BUSY_GOALS). The next sessions should go to what fills every frame: the mini game camera (a quick, big win), one species redesign, one lighting pass, real feathers. The session also ended with an engine that does not precompile; a fresh `using NeverendingGame` must be the last check of every session. The human's goals: the island lives (strong), Lumi's pages (regular posts, the choir film pending), traced pictures (good), the look of the game (stalled).",
+ "addressed": true,
+ "agent_notes": {
+  "engine precompiles": "done (#408): web.jl uses Bonito.js\"\"\"; all three processes run again since 19:46.",
+  "mini game camera": "done (#412): chase views <= ~30 deg, orbit easing with a 30 deg cap; W/A/D tests measure pitch <= 32 (media/s68/cam-wad.png).",
+  "found friends keep up": "done (#338): harder catch-up sprint and a boing leap for wedged friends; test passes.",
+  "thought bubble": "half (#376 open): the bubble says what Lumi is doing (work only while working/wandering, else the goal's own line), tail starts at the head; name tags not looked at yet.",
+  "friends, lighting, feathers/toadstool, choir sound": "open as #236, #237, #386, #403: not reached this session (the stunt came first)."
+ }
+}
