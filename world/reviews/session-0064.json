@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s64-windup.png and s64-burst.png (pier, fishing, no sneeze); s64-now.png shows the system loaded ('system:sneeze.Sneeze') and the hint 'press X near friends to sneeze'.",
+      "severity": "medium",
+      "suggestion": "Add an obvious way to trigger it from the dashboard (or run it on first jump-in near friends), a sound clip (#390), and log a clear event when wind_up! is refused so it can be checked.",
+      "what": "I could not see the sneeze live: calling the plugin's wind_up! with Lumi walking to the pier left the dashboard on a crab/pig scene at the pier with no sneeze, feathers or bubbles after 9 s and 14 s. The event is gated (open land, 3+ friends near, up to 9 s camera wait), so a player will rarely see it; the 6-10 min timer plus gating makes it easy to miss, and the sneeze has no sound.",
+      "where": "plugins/sneeze.jl wind_up!/step!"
+    },
+    {
+      "evidence": "world/reviews/s64-now.png",
+      "severity": "low",
+      "suggestion": "Check the camera obstruction test also covers the idle overview.",
+      "what": "The default follow camera in the live overview framed the island from high up with a big pine filling the right third and Lumi out of sight; the new 'Things to try' text is fine, but nothing on screen shows Lumi or the sneeze at that moment.",
+      "where": "dashboard 3D view"
+    },
+    {
+      "evidence": "author images viewed; todo #360 detail",
+      "severity": "low",
+      "suggestion": "Tapered curved feather mesh; reframe freeze.png with Lumi inside; show the mood in crest or posture.",
+      "what": "Feathers in the traced still read as flat orange discs and hide Lumi; freeze.png has Lumi cut by the right edge, so 'every cast member whole' (#391) holds only loosely. #360 made :feel merely interruptible instead of showing the mood in posture as asked.",
+      "where": "site/img/big-sneeze.png, site/img/freeze.png, plugins/garden.jl, tag.jl"
+    }
+  ],
+  "summary": "The sneeze system is loaded and running in the sandbox, the 'Things to try' hint with X reads fine, and the traced stills show a funny burst; but my own attempt to force a sneeze did not produce one on screen, so the live event is verified only by the author's test and stills. Todo fixes (feel goal, boing) are plausible and their tests are reported passing.",
+  "superseded_by": "perfectionist-0064.json",
+  "surprise": 6,
+  "surprise_why": "Friends blown off their feet by Lumi's sneeze is a funny island-wide moment, but it is one more timed event like the Boing.",
+  "verdict": "pass"
+}

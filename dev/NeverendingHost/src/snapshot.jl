@@ -201,18 +201,41 @@ end
 ignore_line(path::AbstractString) = "/" * replace(path, r"([\[\]*?!#\\ ])" => s"\\\1")
 
 """
-    write_generated!(jp, dir, n, repo, pages, ignored, used)
+    latest_lines(jp, blog) -> String
+
+The README's lines on the newest post that shows a picture (a still or a film's poster), linked
+to the post on the blog: empty without a blog or such a post.
+"""
+function latest_lines(jp::JailPaths, blog::AbstractString)
+    page = joinpath(site_dir(jp), "index.html")
+    (isempty(blog) || !isfile(page)) && return ""
+    url = pages_url(blog)
+    for m in eachmatch(PIECE, read(page, String))
+        pic = something(match(r"<img\b[^>]*\ssrc=\"([^\"]+)\"", m[2]), match(r"\sposter=\"([^\"]+)\"", m[2]), Some(nothing))
+        (pic === nothing || !isfile(joinpath(site_dir(jp), pic[1]))) && continue
+        title = strip(replace(something(match(r"<h3>(.*?)</h3>"s, m[2]), Some(["a post"]))[1], r"<[^>]+>" => ""))
+        date = something(match(r"<span class=\"date\">([^<]*)</span>", m[2]), Some([""]))[1]
+        return "**Latest on the blog:** [$title]($url/#$(m[1])) ($date)\n\n[![$title]($url/$(pic[1]))]($url/#$(m[1]))"
+    end
+    return ""
+end
+
+"""
+    write_generated!(jp, dir, n, repo, blog, pages, ignored, used)
 
 The snapshot's own files: the README (`fork/README.md` of this package), `fork.jl`, the blog's
 files on GitHub Pages (`pages`: path, size, sha256, url), a `.gitignore` that keeps them and
 everything local (`ignored`) out of a fork's git, and the Manifest, config and asset catalog as
 a fork needs them.
 """
-function write_generated!(jp::JailPaths, dir::AbstractString, n::Int, repo::AbstractString, pages, ignored, used)
+function write_generated!(jp::JailPaths, dir::AbstractString, n::Int, repo::AbstractString, blog::AbstractString,
+                          pages, ignored, used)
     tmpl = joinpath(@__DIR__, "..", "fork")
     julia = match(r"^julia_version = \"(\d+\.\d+)"m, read(joinpath(jp.root, "Manifest.toml"), String))[1]
     readme = replace(read(joinpath(tmpl, "README.md"), String), "{{NAME}}" => character_name(jp), "{{SESSION}}" => string(n),
-                     "{{REPO}}" => repo, "{{JULIA}}" => julia, "{{DATE}}" => Dates.format(Dates.now(), "yyyy-mm-dd HH:MM"))
+                     "{{REPO}}" => repo, "{{JULIA}}" => julia, "{{DATE}}" => Dates.format(Dates.now(), "yyyy-mm-dd HH:MM"),
+                     "{{BLOG}}" => isempty(blog) ? "https://github.com/$repo" : pages_url(blog),
+                     "{{LATEST}}" => latest_lines(jp, blog))
     write(joinpath(dir, "README.md"), readme)
     cp(joinpath(tmpl, "fork.jl"), joinpath(dir, "fork.jl"); force = true)
     mkpath(joinpath(dir, "setup"))
@@ -257,7 +280,7 @@ function snapshot!(jp::JailPaths, cfg::HostConfig, n::Int)
                     pages_url(cfg.blog_repo) * "/" * join(splitpath(relpath(f, site)), '/'))
                    for f in files if places[f] === :pages])
     ignored = sort!(filter(f -> places[f] === :local, files))
-    write_generated!(jp, dir, n, repo, pages, ignored, used)
+    write_generated!(jp, dir, n, repo, cfg.blog_repo, pages, ignored, used)
     leaked = secret_files(jp, dir)
     isempty(leaked) || error("the game snapshot holds secrets, not published: " * join(leaked, ", "))
     # not forced: what this user never commits (their global git ignore: local settings, .env) stays out

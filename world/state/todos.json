@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0061 [creatures, high]: Next to the new Lumi, the friends look like placeholders: Sir Sniffsalot is a pink sphere on four tube legs with a cone snout; Wibbles and Gloop are cyan balls with googly eyes; the crabs and the sheep are better. A player reads Lumi as the art and the rest as programmer art.\nWhere: engine species.jl (pig, blob species), reviews/perfectionist-0061-shots/raster-after.png, follow2.png\nSuggestion: Do for one friend species per session what was done for Lumi: a generated, rigged mesh cut into parts (bird.jl piece_of), a body shape you recognise from behind, a painted face with brows. Start with the pig (most on screen).\nDone when: A lineup still (tools/lineup.jl, traced) shows at least two friend species with generated bodies, no visible sphere/cylinder parts, faces with brows; a close follow screenshot of the pig shows no tube legs.\nEvidence: raster-after.png: the pig in close-up is primitives; follow2.png: Wibbles is a sphere with a ribbon",
+      "detail": "perfectionist-0064 [creatures, high]: In the best picture the game has (the traced sneeze) Lumi is a feathered bird, and next to it Sir Sniffsalot is a pink sphere with four sausage legs, Gloop a green ball with googly eyes, the crab a cone on sticks. The friends now act out the best moments (blown away, feather hunts) but look like placeholders doing it.\nWhere: engine species.jl, plugins/outfits.jl\nSuggestion: One species per session, like Lumi got: a generated or sculpted body with a recognisable silhouette (snout and ears for the Snootle, a real shell and claws for the Crabbit, a fleece with a face for the Fluffkin), proper faces.jl expressions, and one signature move each.\nDone when: A tools/lineup.jl traced lineup shows every species with its own non-sphere silhouette; a stranger can name each animal from a 64 px thumbnail.\nEvidence: site/img/big-sneeze.png; world/reviews/p64/follow1.png (Pickles, Hopscotch)",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3302,11 +3302,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Friends as lovable as Lumi: a silhouette and face per species",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0061 [lighting, high]: The eye-level view at noon is unchanged since s52: evenly lit saturated green, shadows grey-blue, no distance haze, the trees look like glossy plastic. The traced frames of the same island are warm and soft: the raster the human watches all day does not look like the films.\nWhere: RayMakie raster (SunSkyLight fill, raster_material.jl), media/progress/session-0061/eye-level.png vs session-0058\nSuggestion: Fix it in RayMakie: warmer sun colour, coloured sky fill in the shadows (blue-violet, not grey), height/distance fog towards the horizon, lower specular on the crowns. Compare against a traced still from the same eye.\nDone when: Side-by-side eye-level raster vs traced at 11:00 from the same camera: shadow hue within 20 degrees of the traced one, far trees visibly hazier than near ones, mean luminance difference < 15%.\nEvidence: progress eye-level s58 vs s61: same light and colour; reviews/perfectionist-0061-shots/orbit2.png",
+      "detail": "perfectionist-0064 [lighting, high]: What players actually see (the raster) is flat noon green with grey shadows, while the traced frames of the same island are warm and soft. media/progress session-0061 and session-0064 eye-level show the same lighting.\nWhere: RayMakie raster (dev/RayMakie raster lighting), haze.jl\nSuggestion: Fix it where the limit is: a warm key colour, sky-tinted (blue) shadow fill and distance fog in the RayMakie raster shader, so the raster comes close to the traced look.\nDone when: eye-level.png at 11:30: mean shadow hue clearly blue-shifted vs lit grass, far trees lighter/desaturated than near ones, and a side-by-side with a traced still of the same camera looks like the same game.\nEvidence: media/progress/session-0064/eye-level.png vs session-0061/eye-level.png; reviews/p64/follow2.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3316,7 +3316,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -3334,7 +3334,7 @@
     },
     {
       "created": "2026-11-23T17:36:20.502",
-      "detail": "perfectionist-0061 [camera, medium]: In two minutes of follow view: a fence and bench block the bottom third in front of the pig; Wibbles shot from high above with only sea behind it and a fence along the bottom; the path traced view jumped to a high top-down overview. The chase view of the mini games puts Lumi's back over a quarter of the frame (hide and seek) so the way ahead is hidden.\nWhere: render.jl follow_view/camera_goal, lensclear.jl, greetings.jl chase_camera!\nSuggestion: Count low props (fences, benches, crates) as obstruction; cap the pitch so the horizon stays in frame; in the chase view pull back and lower so Lumi fills ~12% of the frame, a third from the bottom.\nDone when: 20 follow screenshots 5 s apart: none with a prop covering > 15% of the 3D view, the horizon in frame in all of them; a chase screenshot with Lumi under 15% of the view area.\nEvidence: reviews/perfectionist-0061-shots/raster-after.png, follow2.png, traced.png; tests/shots/hideseek-found.png",
+      "detail": "perfectionist-0064 [camera, medium]: At 11:40 the follow camera looked straight down at the dance ring: friends seen as tops of heads, a flower hat filling the middle of the frame. A live sneeze is framed from ~15 m and high, so the friends' head-over-heels flights are a few pixels.\nWhere: render.jl camera_goal / dancecircle CAMERA_GROUPS, sneeze.jl sneeze_group\nSuggestion: Clamp the pitch of every auto view (no more than ~35° down), and for the sneeze cut to a low, close side view that keeps Lumi and the nearest two flyers in frame, the way the traced still does.\nDone when: A 3-minute sampled run of the follow camera (a screenshot every 10 s) has no view steeper than 35°, and a live sneeze screenshot shows at least two airborne friends larger than 60 px.\nEvidence: reviews/p64/traced.png, reviews/p64/sneeze_sheet.png",
       "est_minutes": 15.0,
       "id": 239,
       "kind": "review",
@@ -3343,8 +3343,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow camera: no fence or crown across the frame, no shots straight down at the sea",
-      "updated": "2026-11-24T14:45:47.491"
+      "title": "Follow camera: no fence or crown across the frame, no shots straight down",
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-23T18:22:30.081",
@@ -4137,12 +4137,12 @@
       "id": 296,
       "kind": "look",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0064: site/img/workshop-traced.png exists and is in the workshop post in site/index.html.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "My workshop post gets a traced picture",
-      "updated": "2026-11-24T04:16:53.112"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-24T04:17:33.527",
@@ -4720,7 +4720,7 @@
     },
     {
       "created": "2026-11-24T10:34:42.479",
-      "detail": "perfectionist-0061 [fun, medium]: The first-play test still fails: after finding two friends, the first one trails 13.7 m behind (the second 2.9 m). The promise of the game, a growing parade of found friends, breaks on the first find.\nWhere: plugins/hideseek.jl (parade slots / follow speed)\nSuggestion: Found friends run (with a catch-up speed boost) to their parade slot; if > 8 m behind, they hop along with a little dash cue; at the end card all found friends stand around Lumi.\nDone when: The hide and seek first-play test passes 3 runs in a row with every found friend within 4 m at the check.\nEvidence: live_tests('first play'): 'found friends lag: Float32[13.7, 2.9] m'; tests/shots/hideseek-found.png",
+      "detail": "perfectionist-0064 [fun, medium]: The first-play test fails today with exactly the s61 numbers: 'found friends lag: 13.7, 2.8 m'. The game's promise, a growing parade of found friends, breaks with the first friend.\nWhere: plugins/hideseek (parade slots), tests/minigames.jl\nSuggestion: Found friends run (fast) to their slot when more than 3 m away, and say something funny when they catch up.\nDone when: The hide and seek first-play test passes 3 runs in a row with both lags < 4 m.\nEvidence: live_tests('a first play') at 11:42: Hide and seek failed 'found friends lag: Float32[13.7, 2.8] m'",
       "est_minutes": 30.0,
       "id": 338,
       "kind": "review",
@@ -4730,7 +4730,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Hide and seek: found friends keep up with the seeker",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-24T10:36:59.120",
@@ -5252,7 +5252,7 @@
     },
     {
       "created": "2026-11-24T13:07:05.205",
-      "detail": "perfectionist-0061 [ui, medium]: The s61 progress eye-level shows 'Pinchy' written across Lumi's chest and 'Lumi' floating a head above it. The s60 fix covers the player's creature only. The thought bubble meanwhile shows 'Asking for a shovel of my…' (cut off, and still there long after the session ended).\nWhere: scenery.jl sync_text!, builder.jl thought!; media/progress/session-0061/eye-level.png\nSuggestion: Move a tag only upwards over its own head, and fade the far one when two tags would overlap, rather than letting tags swap places. Thought text: a full short phrase that fits (no ellipsis), and it clears or changes to a rest thought when no session is working.\nDone when: The progress eye-level shot shows each tag over its own head; the bubble text has no '…' and differs between a working session and the quiet game.\nEvidence: media/progress/session-0061/eye-level.png (Pinchy tag on Lumi); every review screenshot shows the same cut-off bubble",
+      "detail": "perfectionist-0064 [ui, medium]: 'Truffle' floats over a tree crown with no Truffle in view; Lumi's 'A feather tickles my beak' bubble hangs over a tree / the cottage while Lumi is hidden or off screen; during the sneeze 'Truffle', 'My ears', 'Lumi' and a speech line stack into one block.\nWhere: scenery.jl sync_text!, builder.jl thought!\nSuggestion: Hide the tag/bubble when its creature is occluded or off screen (or pin it to the screen edge with an arrow), and push overlapping labels apart vertically.\nDone when: In 10 orbit/follow screenshots no tag or bubble is drawn without its creature visible under it, and no two labels overlap.\nEvidence: reviews/p64/orbit.png, follow2.png, sneeze4.png",
       "est_minutes": 15.0,
       "id": 376,
       "kind": "review",
@@ -5262,7 +5262,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Name tags and thought bubble sit on their own creature",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-24T13:11:18.707",
@@ -5341,12 +5341,12 @@
       "id": 382,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0064: Sessions 62-64 added five shared island moments (boing, freeze, conga, roll call, the sneeze with feather hunts); seen live.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A new shared moment: something the friends do together that surprises",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-24T14:52:56.767",
@@ -5392,17 +5392,17 @@
     },
     {
       "created": "2026-11-24T15:08:22.043",
-      "detail": "plugins/boing.jl draws the toadstool from spheres; its white spots (meshscatter on a scaled cap) vanish in path tracing (site/img/big-boing.png). Generate a bouncy toadstool asset (make-asset, swap in when the catalog has it, like garden.jl), flips in the air (pose pitch), a boing squeak. Done when: a traced still shows the generated toadstool with friends mid-air, and a live screenshot catches a flyer with the camera on the party.",
+      "detail": "perfectionist-0064 [props, medium]: The sneeze's 140 feathers are flat, evenly yellow ellipse discs; while they fly they read as confetti or leaves, and on the grass as yellow paint dabs. The Big Boing toadstool is a sphere cap with dots whose spots vanish in path tracing.\nWhere: plugins/sneeze.jl feather_plot!, plugins/boing.jl\nSuggestion: A small feather mesh (quill + curved vane, light, instanced) that flutters down (sway + spin) instead of falling like a plate; a generated toadstool asset with a carved cap and spots.\nDone when: A close screenshot of feathers on the grass shows quills and a curved vane; the toadstool in a traced still shows its spots.\nEvidence: reviews/p64/sneeze_sheet.png (frames 2-4), site/img/big-sneeze.png, reviews/p64/orbit.png bottom left",
       "est_minutes": 15.0,
       "id": 386,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A real toadstool for the Big Boing: carved cap, spots, somersaults",
-      "updated": "2026-11-24T15:08:22.043"
+      "title": "Real feathers and a real Big Boing toadstool",
+      "updated": "2026-11-24T17:06:57.223"
     },
     {
       "created": "2026-11-24T15:13:21.337",
@@ -5515,6 +5515,34 @@
       "status": "open",
       "title": "Bless you, plucked Lumi: after a sneeze I look bald for a while",
       "updated": "2026-11-24T16:40:06.835"
+    },
+    {
+      "created": "2026-11-24T17:06:57.223",
+      "detail": "perfectionist-0064 [world, medium]: Three sessions of whole-island events, but the island itself has not grown: the overview and eye-level progress shots are the same as s61. A player who comes back sees the same meadow, pond, cottage and beach.\nWhere: north of the pond (in front of the overview camera); meadow.jl regions\nSuggestion: A place with its own look and a reason to go there: a little waterfall and stream from a rocky rise, a hilltop lookout with a ruin, or a mossy glade with glowing mushrooms at night. Use generated assets and its own terrain colour, and give it a pastime the creatures use there.\nDone when: The overview progress shot shows a new, clearly different area; at least one creature pastime happens there (an event kind in the log).\nEvidence: media/progress/session-0061/overview.png vs session-0064/overview.png",
+      "est_minutes": 30.0,
+      "id": 395,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A new place north of the pond that the overview shows",
+      "updated": "2026-11-24T17:06:57.223"
+    },
+    {
+      "created": "2026-11-24T17:06:57.223",
+      "detail": "perfectionist-0064 [fun, low]: Firefly catch's first play, started right after a sneeze (sneeze state :after), caught 0 flies: Lumi moved 1.2 m in 20 s with W held. Run again later (sneeze :idle) it passed in 15 s. sneeze.jl finish! calls NG.choose_goal! on Lumi even when it is controlled, which happens exactly when a mini game starts.\nWhere: plugins/sneeze.jl finish! (line ~249)\nSuggestion: Skip controlled creatures in finish!, and leave_interactions!/face_open! Lumi when a mini game takes it mid-sneeze.\nDone when: A test that starts the firefly first play during a sneeze's :after phase catches 3 flies in 20 s.\nEvidence: live_tests('a first play') 11:42: 'W/A/D play caught 0 flies ... Lumi at (-1.46, 5.77) start (-1.29, 4.63)'; passed alone at 11:45",
+      "est_minutes": 30.0,
+      "id": 396,
+      "kind": "review",
+      "priority": 3,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A sneeze's end must not hand the steered Lumi a new goal",
+      "updated": "2026-11-24T17:06:57.223"
     }
   ]
 }

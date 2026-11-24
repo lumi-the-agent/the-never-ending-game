@@ -1,159 +1,382 @@
 {
-  "verdict": "needs_work",
-  "summary": "The island finally runs smoothly again (p95 6.9 ms in the human's game, was 200+ ms), and Lumi in path tracing is a real character: the traced day-film frames (golden bird, beak, spiky crest, on the pier with pigs and a sheep behind) are the best images this game has made. In the raster game itself little has moved since s58: the friends are still primitive spheres and tubes with googly eyes, noon is flat green, the follow camera still shoots over fences and down onto the sea, and name tags still land on the wrong body. Goal 2 (a released film) is still not reached after 61 sessions: one of the three day scenes failed in the worker.",
-  "scores": {
-    "lighting":    {"score": 5, "why": "Raster noon is still evenly lit green with grey-blue shadows (eye-level s61 = s58); path tracing is warm and soft but only in films and stills."},
-    "world":       {"score": 6, "why": "Varied regions (flower field, pond, beach cove, cairn spiral, workshop, pier) but the meadow between them is one carpet of identical grass tufts; the sea and sky are fine, not memorable."},
-    "props":       {"score": 6, "why": "34 generated assets used well (cottage, signpost, workshop bench, lanterns, logs), but the shovel and wheelbarrow wishes are still queued or unfinished, and the grass tufts and flowers are one repeated asset each."},
-    "creatures":   {"score": 6, "why": "Lumi is a recognisable, lovable bird, especially traced; the nine friends are still a sphere-and-tube pig, a blob with a beak, a cyan ball: the gap to Lumi makes them look like placeholders."},
-    "fun":         {"score": 6, "why": "Three mini games, each winnable on a first W/A/D play (4 of 5 first-play tests pass), but hide and seek is broken in its core promise (found friends trail 13.7 m behind) and no new interaction arrived since s58."},
-    "wow":         {"score": 5, "why": "The traced day film frames would be shareable, but nothing is released; the live game has no moment a stranger would clip."},
-    "camera":      {"score": 5, "why": "Follow camera showed a fence across the bottom third, then Wibbles from above with only sea behind it; path tracing switched to a high top-down view; the chase view puts Lumi's back over a quarter of the frame."},
-    "ui":          {"score": 5, "why": "In the s61 eye-level shot 'Pinchy' sits on Lumi's chest and 'Lumi' floats a head above it; the thought bubble shows a stale, cut-off 'Asking for a shovel of my…' for the whole review."},
-    "style":       {"score": 6, "why": "Clay-toy look holds across assets, but the glossy plastic tree crowns and the shiny primitive friends fight the matte painted Lumi and the STYLE.md 'matte vinyl' rule."},
-    "performance": {"score": 9, "why": "Sandbox frame p95 6.5 ms, the human's game p95 6.9 ms (state/perf.json), sync 0.7 ms; the 20+ slow-frame todos are fixed."}
-  },
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "CLAUDE.md lesson s45; progress eye-level s58 vs s61 identical",
+      "what": "RayMakie raster: no distance haze and grey shadow fill from SunSkyLight; the AmbientLight is ignored, so raster lighting can only be improved in RayMakie itself"
+    },
+    {
+      "evidence": "media/s61/day-16.mp4 (48 bytes), jobs/20261124-140032-*-clip.json",
+      "what": "Worker traced clips fail without a clear error after a few jobs (day-16.mp4 written as 48 bytes)"
+    }
+  ],
   "findings": [
     {
-      "severity": "high",
       "category": "wow",
+      "done_when": "world/releases/<date>-a-day-in-my-life/ holds the mp4 (>= 40 s, 3 scenes, no foreground blocker on Lumi in any extracted frame) and a note, a blog post links it, and say_to_human names the path.",
+      "evidence": "reviews/perfectionist-0061-shots/day-9.png (reeds cut Lumi), day-13.png (good); ls -la media/s61/day-16.mp4 = 48 bytes",
+      "severity": "high",
+      "suggestion": "Queue a restart before each traced scene; reframe the morning so nothing stands between camera and Lumi; give each scene a beat (Lumi does something with a result: a strut, a crest flop, a friend reacting), 45-60 s total with a title card and music/voice; write Lumi's verdict and the release note.",
       "title": "Release the day film: re-render the failed afternoon scene, cut, publish",
       "todo": 380,
       "what": "Goal 2 is still not reached after 61 sessions. The day film is the best candidate yet (traced Lumi on the pier and the hill read beautifully), but media/s61/day-16.mp4 is a 48-byte file (the worker scene failed), the two good scenes are only 8 s each, and in day-9 green reed stems stand across Lumi's legs in the foreground.",
-      "where": "media/s61/day-9.mp4, day-13.mp4, day-16.mp4; worker jobs 20261124-1400*",
-      "evidence": "reviews/perfectionist-0061-shots/day-9.png (reeds cut Lumi), day-13.png (good); ls -la media/s61/day-16.mp4 = 48 bytes",
-      "suggestion": "Queue a restart before each traced scene; reframe the morning so nothing stands between camera and Lumi; give each scene a beat (Lumi does something with a result: a strut, a crest flop, a friend reacting), 45-60 s total with a title card and music/voice; write Lumi's verdict and the release note.",
-      "done_when": "world/releases/<date>-a-day-in-my-life/ holds the mp4 (>= 40 s, 3 scenes, no foreground blocker on Lumi in any extracted frame) and a note, a blog post links it, and say_to_human names the path."
+      "where": "media/s61/day-9.mp4, day-13.mp4, day-16.mp4; worker jobs 20261124-1400*"
     },
     {
-      "severity": "high",
       "category": "creatures",
+      "done_when": "A lineup still (tools/lineup.jl, traced) shows at least two friend species with generated bodies, no visible sphere/cylinder parts, faces with brows; a close follow screenshot of the pig shows no tube legs.",
+      "evidence": "raster-after.png: the pig in close-up is primitives; follow2.png: Wibbles is a sphere with a ribbon",
+      "severity": "high",
+      "suggestion": "Do for one friend species per session what was done for Lumi: a generated, rigged mesh cut into parts (bird.jl piece_of), a body shape you recognise from behind, a painted face with brows. Start with the pig (most on screen).",
       "title": "Friends as lovable as Lumi: a silhouette and face per species",
       "todo": 236,
       "what": "Next to the new Lumi, the friends look like placeholders: Sir Sniffsalot is a pink sphere on four tube legs with a cone snout; Wibbles and Gloop are cyan balls with googly eyes; the crabs and the sheep are better. A player reads Lumi as the art and the rest as programmer art.",
-      "where": "engine species.jl (pig, blob species), reviews/perfectionist-0061-shots/raster-after.png, follow2.png",
-      "evidence": "raster-after.png: the pig in close-up is primitives; follow2.png: Wibbles is a sphere with a ribbon",
-      "suggestion": "Do for one friend species per session what was done for Lumi: a generated, rigged mesh cut into parts (bird.jl piece_of), a body shape you recognise from behind, a painted face with brows. Start with the pig (most on screen).",
-      "done_when": "A lineup still (tools/lineup.jl, traced) shows at least two friend species with generated bodies, no visible sphere/cylinder parts, faces with brows; a close follow screenshot of the pig shows no tube legs."
+      "where": "engine species.jl (pig, blob species), reviews/perfectionist-0061-shots/raster-after.png, follow2.png"
     },
     {
-      "severity": "high",
       "category": "lighting",
+      "done_when": "Side-by-side eye-level raster vs traced at 11:00 from the same camera: shadow hue within 20 degrees of the traced one, far trees visibly hazier than near ones, mean luminance difference < 15%.",
+      "evidence": "progress eye-level s58 vs s61: same light and colour; reviews/perfectionist-0061-shots/orbit2.png",
+      "severity": "high",
+      "suggestion": "Fix it in RayMakie: warmer sun colour, coloured sky fill in the shadows (blue-violet, not grey), height/distance fog towards the horizon, lower specular on the crowns. Compare against a traced still from the same eye.",
       "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
       "todo": 237,
       "what": "The eye-level view at noon is unchanged since s52: evenly lit saturated green, shadows grey-blue, no distance haze, the trees look like glossy plastic. The traced frames of the same island are warm and soft: the raster the human watches all day does not look like the films.",
-      "where": "RayMakie raster (SunSkyLight fill, raster_material.jl), media/progress/session-0061/eye-level.png vs session-0058",
-      "evidence": "progress eye-level s58 vs s61: same light and colour; reviews/perfectionist-0061-shots/orbit2.png",
-      "suggestion": "Fix it in RayMakie: warmer sun colour, coloured sky fill in the shadows (blue-violet, not grey), height/distance fog towards the horizon, lower specular on the crowns. Compare against a traced still from the same eye.",
-      "done_when": "Side-by-side eye-level raster vs traced at 11:00 from the same camera: shadow hue within 20 degrees of the traced one, far trees visibly hazier than near ones, mean luminance difference < 15%."
+      "where": "RayMakie raster (SunSkyLight fill, raster_material.jl), media/progress/session-0061/eye-level.png vs session-0058"
     },
     {
-      "severity": "medium",
       "category": "fun",
+      "done_when": "Two friends use it on their own within 10 min of sandbox time (event log), a screenshot catches one mid-air with the camera on it, and a play test launches a friend from Lumi with E.",
+      "evidence": "follow*.png, orbit*.png and the activity panel through the whole review",
+      "severity": "medium",
+      "suggestion": "Something physical and a little crazy: a seesaw or a mushroom trampoline where one friend launches another (arcing, squash and stretch, a bounce, a crowd cheering), a camera moment for it, and the player can launch a friend with E. Funny if it goes wrong (a friend lands in the pond).",
       "title": "A new shared moment: something the friends do together that surprises",
       "todo": null,
       "what": "Goal 1 (really cool interactions) got faces this session (yawns, trembling, gasps), but nothing new to DO or watch since the kite. The island's activity list is still 'off to the pier', 'chatting', 'eating berries'. Nothing in four minutes of watching was worth showing someone.",
-      "where": "plugins (new), the 'On the island now' panel during the review",
-      "evidence": "follow*.png, orbit*.png and the activity panel through the whole review",
-      "suggestion": "Something physical and a little crazy: a seesaw or a mushroom trampoline where one friend launches another (arcing, squash and stretch, a bounce, a crowd cheering), a camera moment for it, and the player can launch a friend with E. Funny if it goes wrong (a friend lands in the pond).",
-      "done_when": "Two friends use it on their own within 10 min of sandbox time (event log), a screenshot catches one mid-air with the camera on it, and a play test launches a friend from Lumi with E."
+      "where": "plugins (new), the 'On the island now' panel during the review"
     },
     {
-      "severity": "medium",
       "category": "fun",
+      "done_when": "The hide and seek first-play test passes 3 runs in a row with every found friend within 4 m at the check.",
+      "evidence": "live_tests('first play'): 'found friends lag: Float32[13.7, 2.9] m'; tests/shots/hideseek-found.png",
+      "severity": "medium",
+      "suggestion": "Found friends run (with a catch-up speed boost) to their parade slot; if > 8 m behind, they hop along with a little dash cue; at the end card all found friends stand around Lumi.",
       "title": "Hide and seek: found friends keep up with the seeker",
       "todo": 338,
       "what": "The first-play test still fails: after finding two friends, the first one trails 13.7 m behind (the second 2.9 m). The promise of the game, a growing parade of found friends, breaks on the first find.",
-      "where": "plugins/hideseek.jl (parade slots / follow speed)",
-      "evidence": "live_tests('first play'): 'found friends lag: Float32[13.7, 2.9] m'; tests/shots/hideseek-found.png",
-      "suggestion": "Found friends run (with a catch-up speed boost) to their parade slot; if > 8 m behind, they hop along with a little dash cue; at the end card all found friends stand around Lumi.",
-      "done_when": "The hide and seek first-play test passes 3 runs in a row with every found friend within 4 m at the check."
+      "where": "plugins/hideseek.jl (parade slots / follow speed)"
     },
     {
-      "severity": "medium",
       "category": "camera",
+      "done_when": "20 follow screenshots 5 s apart: none with a prop covering > 15% of the 3D view, the horizon in frame in all of them; a chase screenshot with Lumi under 15% of the view area.",
+      "evidence": "reviews/perfectionist-0061-shots/raster-after.png, follow2.png, traced.png; tests/shots/hideseek-found.png",
+      "severity": "medium",
+      "suggestion": "Count low props (fences, benches, crates) as obstruction; cap the pitch so the horizon stays in frame; in the chase view pull back and lower so Lumi fills ~12% of the frame, a third from the bottom.",
       "title": "Follow camera: no fence or crown across the frame, no shots straight down at the sea",
       "todo": 239,
       "what": "In two minutes of follow view: a fence and bench block the bottom third in front of the pig; Wibbles shot from high above with only sea behind it and a fence along the bottom; the path traced view jumped to a high top-down overview. The chase view of the mini games puts Lumi's back over a quarter of the frame (hide and seek) so the way ahead is hidden.",
-      "where": "render.jl follow_view/camera_goal, lensclear.jl, greetings.jl chase_camera!",
-      "evidence": "reviews/perfectionist-0061-shots/raster-after.png, follow2.png, traced.png; tests/shots/hideseek-found.png",
-      "suggestion": "Count low props (fences, benches, crates) as obstruction; cap the pitch so the horizon stays in frame; in the chase view pull back and lower so Lumi fills ~12% of the frame, a third from the bottom.",
-      "done_when": "20 follow screenshots 5 s apart: none with a prop covering > 15% of the 3D view, the horizon in frame in all of them; a chase screenshot with Lumi under 15% of the view area."
+      "where": "render.jl follow_view/camera_goal, lensclear.jl, greetings.jl chase_camera!"
     },
     {
-      "severity": "medium",
       "category": "ui",
+      "done_when": "The progress eye-level shot shows each tag over its own head; the bubble text has no '…' and differs between a working session and the quiet game.",
+      "evidence": "media/progress/session-0061/eye-level.png (Pinchy tag on Lumi); every review screenshot shows the same cut-off bubble",
+      "severity": "medium",
+      "suggestion": "Move a tag only upwards over its own head, and fade the far one when two tags would overlap, rather than letting tags swap places. Thought text: a full short phrase that fits (no ellipsis), and it clears or changes to a rest thought when no session is working.",
       "title": "Name tags and thought bubble sit on their own creature",
       "todo": 376,
       "what": "The s61 progress eye-level shows 'Pinchy' written across Lumi's chest and 'Lumi' floating a head above it. The s60 fix covers the player's creature only. The thought bubble meanwhile shows 'Asking for a shovel of my…' (cut off, and still there long after the session ended).",
-      "where": "scenery.jl sync_text!, builder.jl thought!; media/progress/session-0061/eye-level.png",
-      "evidence": "media/progress/session-0061/eye-level.png (Pinchy tag on Lumi); every review screenshot shows the same cut-off bubble",
-      "suggestion": "Move a tag only upwards over its own head, and fade the far one when two tags would overlap, rather than letting tags swap places. Thought text: a full short phrase that fits (no ellipsis), and it clears or changes to a rest thought when no session is working.",
-      "done_when": "The progress eye-level shot shows each tag over its own head; the bubble text has no '…' and differs between a working session and the quiet game."
+      "where": "scenery.jl sync_text!, builder.jl thought!; media/progress/session-0061/eye-level.png"
     },
     {
-      "severity": "low",
       "category": "props",
+      "done_when": "A sandbox publish screenshot shows Lumi behind the barrow with the new item in it; a screenshot of the shovel standing upright in the patch.",
+      "evidence": "reviews/perfectionist-0061-shots/traced.png (barrow parked in the stone spiral); jobs/20261124-140100-365-asset.json status queued",
+      "severity": "low",
+      "suggestion": "Lumi pushes the barrow with the new thing visible inside, wheel turning, and tips it out at the place; the shovel goes into the barrow when Lumi plants.",
       "title": "Lumi pushes the wheelbarrow: carry new things to their place in it",
       "todo": 374,
       "what": "Goal 4's 'things take time and materials' still shows as a crate on Lumi's head; the barrow stands at the cairn spiral (seen in the traced view) and the shovel asset job (20261124-140100-365) is still queued.",
-      "where": "plugins/builder.jl, wheelbarrow.jl, shovel.jl",
-      "evidence": "reviews/perfectionist-0061-shots/traced.png (barrow parked in the stone spiral); jobs/20261124-140100-365-asset.json status queued",
-      "suggestion": "Lumi pushes the barrow with the new thing visible inside, wheel turning, and tips it out at the place; the shovel goes into the barrow when Lumi plants.",
-      "done_when": "A sandbox publish screenshot shows Lumi behind the barrow with the new item in it; a screenshot of the shovel standing upright in the patch."
+      "where": "plugins/builder.jl, wheelbarrow.jl, shovel.jl"
     }
   ],
+  "process": "Session 61 picked well: the 200 ms frames that made the human's game stutter all morning were the most important player-facing problem, and are fixed (p95 6.9 ms). The day film is the right bet for goal 2, but sessions 58-61 kept starting films (dance, moves, day) and releasing none: finish one before starting another. Goal 1 (cool interactions) got only facial feelings since s58, no new thing to do. Goal 3 (rendering) moved only in the traced output, not in the raster the human watches. Goal 4 is the most active (Lumi's body, name, pages, voice, shovel/barrow wishes), but the shovel and barrow are still queued or parked rather than used in Lumi's work. Many rename fallouts (Jump in, failing play tests) cost time; the todo list was flooded with 23 duplicate slow-frame todos, now closed. Next sessions: release the day film, then one friend species redesign, then a new physical interaction.",
+  "scores": {
+    "camera": {
+      "score": 5,
+      "why": "Follow camera showed a fence across the bottom third, then Wibbles from above with only sea behind it; path tracing switched to a high top-down view; the chase view puts Lumi's back over a quarter of the frame."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "Lumi is a recognisable, lovable bird, especially traced; the nine friends are still a sphere-and-tube pig, a blob with a beak, a cyan ball: the gap to Lumi makes them look like placeholders."
+    },
+    "fun": {
+      "score": 6,
+      "why": "Three mini games, each winnable on a first W/A/D play (4 of 5 first-play tests pass), but hide and seek is broken in its core promise (found friends trail 13.7 m behind) and no new interaction arrived since s58."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "Raster noon is still evenly lit green with grey-blue shadows (eye-level s61 = s58); path tracing is warm and soft but only in films and stills."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Sandbox frame p95 6.5 ms, the human's game p95 6.9 ms (state/perf.json), sync 0.7 ms; the 20+ slow-frame todos are fixed."
+    },
+    "props": {
+      "score": 6,
+      "why": "34 generated assets used well (cottage, signpost, workshop bench, lanterns, logs), but the shovel and wheelbarrow wishes are still queued or unfinished, and the grass tufts and flowers are one repeated asset each."
+    },
+    "style": {
+      "score": 6,
+      "why": "Clay-toy look holds across assets, but the glossy plastic tree crowns and the shiny primitive friends fight the matte painted Lumi and the STYLE.md 'matte vinyl' rule."
+    },
+    "ui": {
+      "score": 5,
+      "why": "In the s61 eye-level shot 'Pinchy' sits on Lumi's chest and 'Lumi' floats a head above it; the thought bubble shows a stale, cut-off 'Asking for a shovel of my…' for the whole review."
+    },
+    "world": {
+      "score": 6,
+      "why": "Varied regions (flower field, pond, beach cove, cairn spiral, workshop, pier) but the meadow between them is one carpet of identical grass tufts; the sea and sky are fine, not memorable."
+    },
+    "wow": {
+      "score": 5,
+      "why": "The traced day film frames would be shareable, but nothing is released; the live game has no moment a stranger would clip."
+    }
+  },
+  "summary": "The island finally runs smoothly again (p95 6.9 ms in the human's game, was 200+ ms), and Lumi in path tracing is a real character: the traced day-film frames (golden bird, beak, spiky crest, on the pier with pigs and a sheep behind) are the best images this game has made. In the raster game itself little has moved since s58: the friends are still primitive spheres and tubes with googly eyes, noon is flat green, the follow camera still shoots over fences and down onto the sea, and name tags still land on the wrong body. Goal 2 (a released film) is still not reached after 61 sessions: one of the three day scenes failed in the worker.",
+  "superseded_by": "perfectionist-0064.json",
   "todos": [
-    {"id": 342, "action": "done", "why": "Frames p95 6.9 ms in the human's game (state/perf.json), 6.5 ms in the sandbox"},
-    {"id": 344, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 346, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 347, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 348, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 349, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 350, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 351, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 352, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 355, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 356, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 357, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 358, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 359, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 363, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 364, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 365, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 370, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 371, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 375, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 377, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 378, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 379, "action": "done", "why": "same: p95 6.9 ms live"},
-    {"id": 373, "action": "done", "why": "start_minigame!(game, JumpIn) in the sandbox gives a JumpIn (the Sprout lookup crash is gone)"},
-    {"id": 354, "action": "drop", "why": "duplicate of #380 (the same day film)"},
-    {"id": 345, "action": "drop", "why": "the strut/preen/hop belong in the day film #380; one film at a time"},
-    {"id": 184, "action": "drop", "why": "superseded by #380: release the day film first, the dance film can come back later"},
-    {"id": 362, "action": "drop", "why": "duplicate of #374 (barrow placement + pushing in one todo)"},
-    {"id": 324, "action": "drop", "why": "a case of #279 (one shared step-aside for stuck walks)"},
-    {"id": 69, "action": "keep", "why": "Bonito insert_plot timeout recurred today 10:26"},
-    {"id": 343, "action": "keep", "why": "unexplained ComputeGraph error, not shown fixed"},
-    {"id": 175, "action": "keep", "why": "night path tracing OOM not verified fixed"},
-    {"id": 325, "action": "keep", "why": "the human's request; three more moments got faces in s61, the found-friend gasp not seen on a face yet"},
-    {"id": 360, "action": "keep", "why": "mood.json is still bored 1.0; tests for patch/bench/tag with a bored Lumi not shown passing"},
-    {"id": 372, "action": "keep", "why": "voice is done; the failing play tests remain", "title": "Play tests that broke at the rename: patch, bench, ball kick, flower pick, publish"},
-    {"id": 332, "action": "keep", "why": "goal 4 'self': Lumi's walk and celebrations; the traced film shows them, the raster game barely"},
-    {"id": 291, "action": "keep", "why": "goal 1 interaction still open"},
-    {"id": 331, "action": "keep", "why": "partial fix only"},
-    {"id": 279, "action": "keep", "why": "covers #324 too"},
-    {"id": 381, "action": "keep", "why": "shovel asset job still queued"},
-    {"id": 315, "action": "keep", "why": "the human's request, not done"},
-    {"id": 224, "action": "drop", "why": "crowns no longer show black slits in this review's shots; gloss is covered by #237"},
-    {"id": 251, "action": "drop", "why": "superseded: the patch is a small corner, the friend species (#236) matter more"},
-    {"id": 265, "action": "drop", "why": "findable from Things to try since s50; the rest is minor"},
-    {"id": 266, "action": "drop", "why": "superseded by this review's mini game finding on hide and seek"},
-    {"id": 328, "action": "drop", "why": "superseded by the follow/chase camera finding (#239)"}
+    {
+      "action": "done",
+      "id": 342,
+      "why": "Frames p95 6.9 ms in the human's game (state/perf.json), 6.5 ms in the sandbox"
+    },
+    {
+      "action": "done",
+      "id": 344,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 346,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 347,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 348,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 349,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 350,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 351,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 352,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 355,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 356,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 357,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 358,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 359,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 363,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 364,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 365,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 370,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 371,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 375,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 377,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 378,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 379,
+      "why": "same: p95 6.9 ms live"
+    },
+    {
+      "action": "done",
+      "id": 373,
+      "why": "start_minigame!(game, JumpIn) in the sandbox gives a JumpIn (the Sprout lookup crash is gone)"
+    },
+    {
+      "action": "drop",
+      "id": 354,
+      "why": "duplicate of #380 (the same day film)"
+    },
+    {
+      "action": "drop",
+      "id": 345,
+      "why": "the strut/preen/hop belong in the day film #380; one film at a time"
+    },
+    {
+      "action": "drop",
+      "id": 184,
+      "why": "superseded by #380: release the day film first, the dance film can come back later"
+    },
+    {
+      "action": "drop",
+      "id": 362,
+      "why": "duplicate of #374 (barrow placement + pushing in one todo)"
+    },
+    {
+      "action": "drop",
+      "id": 324,
+      "why": "a case of #279 (one shared step-aside for stuck walks)"
+    },
+    {
+      "action": "keep",
+      "id": 69,
+      "why": "Bonito insert_plot timeout recurred today 10:26"
+    },
+    {
+      "action": "keep",
+      "id": 343,
+      "why": "unexplained ComputeGraph error, not shown fixed"
+    },
+    {
+      "action": "keep",
+      "id": 175,
+      "why": "night path tracing OOM not verified fixed"
+    },
+    {
+      "action": "keep",
+      "id": 325,
+      "why": "the human's request; three more moments got faces in s61, the found-friend gasp not seen on a face yet"
+    },
+    {
+      "action": "keep",
+      "id": 360,
+      "why": "mood.json is still bored 1.0; tests for patch/bench/tag with a bored Lumi not shown passing"
+    },
+    {
+      "action": "keep",
+      "id": 372,
+      "title": "Play tests that broke at the rename: patch, bench, ball kick, flower pick, publish",
+      "why": "voice is done; the failing play tests remain"
+    },
+    {
+      "action": "keep",
+      "id": 332,
+      "why": "goal 4 'self': Lumi's walk and celebrations; the traced film shows them, the raster game barely"
+    },
+    {
+      "action": "keep",
+      "id": 291,
+      "why": "goal 1 interaction still open"
+    },
+    {
+      "action": "keep",
+      "id": 331,
+      "why": "partial fix only"
+    },
+    {
+      "action": "keep",
+      "id": 279,
+      "why": "covers #324 too"
+    },
+    {
+      "action": "keep",
+      "id": 381,
+      "why": "shovel asset job still queued"
+    },
+    {
+      "action": "keep",
+      "id": 315,
+      "why": "the human's request, not done"
+    },
+    {
+      "action": "drop",
+      "id": 224,
+      "why": "crowns no longer show black slits in this review's shots; gloss is covered by #237"
+    },
+    {
+      "action": "drop",
+      "id": 251,
+      "why": "superseded: the patch is a small corner, the friend species (#236) matter more"
+    },
+    {
+      "action": "drop",
+      "id": 265,
+      "why": "findable from Things to try since s50; the rest is minor"
+    },
+    {
+      "action": "drop",
+      "id": 266,
+      "why": "superseded by this review's mini game finding on hide and seek"
+    },
+    {
+      "action": "drop",
+      "id": 328,
+      "why": "superseded by the follow/chase camera finding (#239)"
+    }
   ],
-  "engine": [
-    {"what": "RayMakie raster: no distance haze and grey shadow fill from SunSkyLight; the AmbientLight is ignored, so raster lighting can only be improved in RayMakie itself", "evidence": "CLAUDE.md lesson s45; progress eye-level s58 vs s61 identical"},
-    {"what": "Worker traced clips fail without a clear error after a few jobs (day-16.mp4 written as 48 bytes)", "evidence": "media/s61/day-16.mp4 (48 bytes), jobs/20261124-140032-*-clip.json"}
-  ],
-  "process": "Session 61 picked well: the 200 ms frames that made the human's game stutter all morning were the most important player-facing problem, and are fixed (p95 6.9 ms). The day film is the right bet for goal 2, but sessions 58-61 kept starting films (dance, moves, day) and releasing none: finish one before starting another. Goal 1 (cool interactions) got only facial feelings since s58, no new thing to do. Goal 3 (rendering) moved only in the traced output, not in the raster the human watches. Goal 4 is the most active (Lumi's body, name, pages, voice, shovel/barrow wishes), but the shovel and barrow are still queued or parked rather than used in Lumi's work. Many rename fallouts (Jump in, failing play tests) cost time; the todo list was flooded with 23 duplicate slow-frame todos, now closed. Next sessions: release the day film, then one friend species redesign, then a new physical interaction."
+  "verdict": "needs_work"
 }
