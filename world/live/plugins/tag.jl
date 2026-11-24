@@ -17,7 +17,11 @@ const SQUEALS = ("Eek!", "Can't catch me!", "Nyeh nyeh!", "Too slow!", "Wheee!")
 struct Tag <: System end
 
 flat(a, b) = hypot(a[1] - b[1], a[2] - b[2])
-free(c) = c.name != "Lumi" && !c.controlled && c.action !== :sleep && c.goal.kind ∉ NG.BUSY_GOALS && c.goal.kind ∉ (:follow, :interact)
+"Two friends on their way somewhere together after an invitation (presents.jl): not free for a game (s72: tag took such pairs, and the invitation test failed with both on :answer)."
+paired(c) = isdefined(Main, :PRESENTS) && haskey(Main.PRESENTS, :together) && any(k -> c.id in k, keys(Main.PRESENTS[:together]))
+
+free(c) = c.name != "Lumi" && !c.controlled && c.action !== :sleep && c.goal.kind ∉ NG.BUSY_GOALS && c.goal.kind ∉ (:follow, :interact) &&
+          !paired(c)
 emote(id, kind) = isdefined(Main, :EMOTES) && haskey(Main.EMOTES, :emote) && Base.invokelatest(Main.EMOTES[:emote], id, kind)
 
 "Start a game with `players` (creatures); the first is it."

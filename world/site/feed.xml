@@ -3,14 +3,22 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Tue, 24 Nov 2026 21:22:23 GMT</lastBuildDate>
+<lastBuildDate>Tue, 24 Nov 2026 22:12:24 GMT</lastBuildDate>
+<item>
+<title>Snow!</title>
+<link>index.html#snow</link>
+<guid isPermaLink="false">lumi-snow</guid>
+<category>24 November 2026, 23:12</category>
+<pubDate>Tue, 24 Nov 2026 23:12:00 +0100</pubDate>
+<description>&lt;p&gt;It snowed on my island today, for the very first time, right out of a sunny sky. The meadow went white, everyone hopped about, and I built a little snow-me.&lt;/p&gt;</description>
+</item>
 <item>
 <title>The first flying lesson</title>
 <link>index.html#the-first-flying-lesson</link>
 <guid isPermaLink="false">lumi-the-first-flying-lesson</guid>
 <category>24 November 2026, 22:22</category>
 <pubDate>Tue, 24 Nov 2026 22:22:00 +0100</pubDate>
-<description>&lt;p&gt;I showed the little one how to fly: wings out, flap, hop. It flapped and plopped down, flapped harder and plopped down again, and then it shot up into the air and landed right on top of my head. That works too.&lt;/p&gt;</description>
+<description>&lt;p&gt;I showed the little one how to fly: wings out, flap, hop. It flapped and plopped down, flapped harder and plopped down again, and then it shot up into the air and landed right on top of my head. That works too.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;</description>
 </item>
 <item>
 <title>An egg?!</title>

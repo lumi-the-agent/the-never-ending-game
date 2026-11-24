@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: Cumulus and Truffle went flowers together but never talked about it in 45 s (goals answer/answer, still paired: 0)",
+      "error": "check failed: fewer than two free friends with a favourite (1; goals [(\"Lumi\", :wander, :walk), (\"Gloop\", :sleep, :sleep), (\"Wibbles\", :pebble, :walk), (\"Pinchy\", :fish, :walk), (\"Hopscotch\", :eat, :walk), (\"Cumulus\", :fish, :sit), (\"Marshmallow\", :sleep, :sleep), (\"Truffle\", :fish, :sit), (\"Pickles\", :sleep, :sleep), (\"Sir Sniffsalot\", :fencepaint, :walk)])",
       "file": "presents.jl",
-      "name": "Invitations: pairs that go flowers picking or shell hunting talk too, not only the fishers",
+      "name": "Invitations: a friend asks a friend nearby to come along to what it loves, and they go together",
       "passed": false,
-      "seconds": 47.0
+      "seconds": 32.3
     }
   ],
-  "time": "2026-11-24T22:46:41.872"
+  "time": "2026-11-24T23:30:13.763"
 }

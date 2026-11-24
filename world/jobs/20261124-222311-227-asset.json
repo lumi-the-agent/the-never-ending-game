@@ -1,5 +1,6 @@
 {
   "created": "2026-11-24T22:23:11.227",
+  "finished": "2026-11-24T22:54:38.578",
   "id": "20261124-222311-227-asset",
   "kind": "asset",
   "params": {
@@ -9,6 +10,20 @@
       "blorbo"
     ]
   },
+  "result": {
+    "created": "2026-11-24T22:54:38.148",
+    "faces": 38604,
+    "id": "20261124-222311-227-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-222311-227-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-222311-227-asset/mesh.jls",
+    "prompt": "a cute squishy turquoise jelly blob creature with big shiny eyes, a little pink bow on top and two tiny stubby feet, soft gummy clay toy style, standing, seen from the side, three quarter view, full body",
+    "seconds": 1126.0,
+    "tags": [
+      "creature",
+      "blorbo"
+    ]
+  },
+  "seconds": 1131.0,
   "started": "2026-11-24T22:35:47.193",
-  "status": "running"
+  "status": "done"
 }

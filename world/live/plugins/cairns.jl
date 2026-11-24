@@ -316,14 +316,15 @@ const FLAG_COLOURS = (RGBf(0.93, 0.25, 0.3), RGBf(1.0, 0.55, 0.15), RGBf(1.0, 0.
                       RGBf(0.2, 0.5, 0.95), RGBf(0.6, 0.35, 0.9))
 
 function pennant()
-    pts = [Point3f(0, 0, 0), Point3f(0, 0, -0.2), Point3f(0.32, 0, -0.1)]
+    pts = [Point3f(0, 0, 0), Point3f(0, 0, -0.14), Point3f(0.22, 0, -0.07)]
     GeometryBasics.Mesh([pts; pts], [GeometryBasics.GLTriangleFace(1, 2, 3), GeometryBasics.GLTriangleFace(4, 6, 5)];
                         normal = [fill(Vec3f(0, -1, 0), 3); fill(Vec3f(0, 1, 0), 3)])
 end
 
 function draw_flags!(game)
     n = CAIRN[:n]
-    get(CAIRN, :flags_shown, -1) == n && return
+    get(CAIRN, :flags_shown, -1) == n && get(CAIRN, :flags_v, 0) == 2 && return
+    CAIRN[:flags_v] = 2
     CAIRN[:flags_shown] = n
     d = plots!(game)
     s0 = site(game)
@@ -333,13 +334,13 @@ function draw_flags!(game)
     if k > 0
         o, sz = stone(STACK)
         top = s0 + o + Point3f(0, 0, 0.5f0 * sz)
-        push!(poles, top); push!(psz, Vec3f(0.025, 0.025, 1.3))
-        push!(flags, top + Point3f(0, 0, 1.28f0)); push!(frot, NG.rot_z(0.4f0)); push!(fcol, FLAG_COLOURS[1])
+        push!(poles, top); push!(psz, Vec3f(0.015, 0.015, 0.7))   # short and thin: a 1.3 m pole ran through Lumi in the follow view (session-0071 review)
+        push!(flags, top + Point3f(0, 0, 0.69f0)); push!(frot, NG.rot_z(0.4f0)); push!(fcol, FLAG_COLOURS[1])
         for i in 1:(k - 1)
             a = 2pi * i / (k - 1) + 0.2
             q = NG.ground(game.world.island, (s0[1] + 2.75f0 * cos(a), s0[2] + 2.75f0 * sin(a)))
-            push!(poles, q); push!(psz, Vec3f(0.015, 0.015, 0.75))
-            push!(flags, q + Point3f(0, 0, 0.74f0)); push!(frot, NG.rot_z(Float32(a) + 1.2f0)); push!(fcol, FLAG_COLOURS[mod1(i, length(FLAG_COLOURS))])
+            push!(poles, q); push!(psz, Vec3f(0.01, 0.01, 0.45))
+            push!(flags, q + Point3f(0, 0, 0.44f0)); push!(frot, NG.rot_z(Float32(a) + 1.2f0)); push!(fcol, FLAG_COLOURS[mod1(i, length(FLAG_COLOURS))])
         end
     end
     if isempty(poles)

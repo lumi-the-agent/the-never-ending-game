@@ -28,7 +28,10 @@ end
 Conga() = Conga(:idle, Int32[], 0.0, 0.0, -1.0, 0.0, 0.0, Point3f(0))
 
 emote(id, kind) = isdefined(Main, :EMOTES) && haskey(Main.EMOTES, :emote) && Base.invokelatest(Main.EMOTES[:emote], id, kind)
-joins(c) = !c.controlled && c.action !== :sleep && c.goal.kind ∉ KEEP && (c.goal.kind ∉ NG.BUSY_GOALS || c.goal.kind in PULL)
+"Two friends on their way somewhere together after an invitation (presents.jl) stay together (s72)."
+paired(c) = isdefined(Main, :PRESENTS) && haskey(Main.PRESENTS, :together) && any(k -> c.id in k, keys(Main.PRESENTS[:together]))
+
+joins(c) = !c.controlled && c.action !== :sleep && c.goal.kind ∉ KEEP && (c.goal.kind ∉ NG.BUSY_GOALS || c.goal.kind in PULL) && !paired(c)
 
 "A wavy loop round the toadstool (inside the ring boing.jl keeps clear): the point `s` metres along it."
 function curve(w, c0, s)

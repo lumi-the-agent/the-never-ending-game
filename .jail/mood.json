@@ -1,12 +1,12 @@
 {
-  "boredom": 0.0,
+  "boredom": 0.27,
   "fatigue": {
-    "asset": 1.01,
-    "feature": 2.48,
-    "film": 2.31,
-    "picture": 0.19,
-    "polish": 2.48,
-    "post": 2.48,
+    "asset": 0.61,
+    "feature": 2.49,
+    "film": 2.39,
+    "picture": 0.11,
+    "polish": 2.49,
+    "post": 2.49,
     "self": 0.01,
     "sound": 0.01
   },
@@ -129,7 +129,7 @@
     "fencepaint",
     "lesson_start"
   ],
-  "joy": 0.79,
+  "joy": 0.49,
   "kinds_ever": [
     "post",
     "picture",
@@ -152,80 +152,45 @@
     "session": 71
   },
   "last_surprise": {
-    "score": 7,
-    "session": 70,
-    "why": "A golden egg hatches a tiny Lumi that follows you and persists in the saved game, a charming story beat."
+    "score": 4,
+    "session": 71,
+    "why": "The flying lesson is a sweet new moment, but it is small, and the rest is fixes and polish."
   },
-  "loneliness": 0.56,
-  "perceived_until": "2026-11-24T22:07:39",
+  "loneliness": 0.62,
+  "perceived_until": "2026-11-24T22:48:55",
   "plugin_fatigue": {
-    "beds.jl": 1.0,
-    "berry_race.jl": 0.22,
-    "boing.jl": 1.61,
-    "builder.jl": 0.59,
-    "bumpcue.jl": 0.6,
-    "cairns.jl": 1.0,
-    "choir.jl": 1.09,
-    "conga.jl": 1.1,
-    "egg.jl": 1.6,
-    "fencepaint.jl": 0.6,
-    "firefly_catch.jl": 1.22,
-    "flight.jl": 1.57,
-    "flylesson.jl": 1.0,
-    "freecam.jl": 1.0,
-    "freeze.jl": 1.1,
-    "garden.jl": 0.63,
-    "giant.jl": 0.96,
-    "greetings.jl": 0.61,
-    "haze.jl": 1.0,
-    "hiccups.jl": 1.13,
-    "hideseek.jl": 0.35,
-    "islandnow.jl": 0.13,
-    "lensclear.jl": 0.6,
-    "paintfight.jl": 2.18,
-    "presents.jl": 1.0,
-    "separation.jl": 0.49,
-    "sneeze.jl": 0.56
+    "beds.jl": 0.6,
+    "berry_race.jl": 0.13,
+    "boing.jl": 0.97,
+    "builder.jl": 0.35,
+    "bumpcue.jl": 0.36,
+    "cairns.jl": 1.6,
+    "choir.jl": 0.65,
+    "conga.jl": 1.66,
+    "egg.jl": 0.96,
+    "fencepaint.jl": 0.36,
+    "firefly_catch.jl": 0.73,
+    "flight.jl": 0.94,
+    "flylesson.jl": 0.6,
+    "freecam.jl": 0.6,
+    "freeze.jl": 0.66,
+    "garden.jl": 0.38,
+    "giant.jl": 0.58,
+    "greetings.jl": 0.37,
+    "haze.jl": 0.6,
+    "hiccups.jl": 0.68,
+    "hideseek.jl": 0.21,
+    "islandnow.jl": 0.08,
+    "lensclear.jl": 0.36,
+    "paintfight.jl": 1.31,
+    "presents.jl": 1.6,
+    "separation.jl": 0.29,
+    "sneeze.jl": 0.34,
+    "snowday.jl": 1.0,
+    "tag.jl": 1.0,
+    "wind.jl": 1.0
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 2.0,
-        "feature": 2.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "kinds": [
-        "asset",
-        "feature",
-        "polish"
-      ],
-      "new_assets": 2,
-      "new_pages": [],
-      "new_plugins": [
-        "haze.jl",
-        "meadowlife.jl"
-      ],
-      "points": 3.3,
-      "repeats": [],
-      "session": 53,
-      "touched": [
-        "berry_race.jl",
-        "builder.jl",
-        "clouds.jl",
-        "separation.jl",
-        "stars.jl"
-      ],
-      "values": {
-        "asset": 0.6,
-        "feature": 2.5,
-        "polish": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 2.0,
@@ -1277,6 +1242,49 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.5333333333333332,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/snow-day.mp4"
+      ],
+      "new_plugins": [
+        "snowday.jl",
+        "wind.jl"
+      ],
+      "points": 0.8,
+      "repeats": [],
+      "session": 72,
+      "touched": [
+        "cairns.jl",
+        "conga.jl",
+        "presents.jl",
+        "tag.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 0.4,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1317,13 +1325,16 @@
       "20261124-034756-627-asset",
       "20261124-122124-621-asset",
       "20261124-140100-365-asset",
-      "20261124-150825-248-asset"
+      "20261124-150825-248-asset",
+      "20261124-222311-224-asset",
+      "20261124-222311-227-asset"
     ],
     "pages": [
       "site/feed.xml",
       "site/index.html",
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/first-flight.mp4",
+      "site/films/flying-lesson.mp4",
       "site/films/giant-lumi.mp4",
       "site/films/hiccups-2.mp4",
       "site/films/island-choir.mp4",
@@ -1376,35 +1387,36 @@
       "areas.jl": 1.7954423929079912e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
-      "beds.jl": 1.795525442282372e9,
+      "beds.jl": 1.7955562532942293e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
-      "boing.jl": 1.7955494586096213e9,
+      "boing.jl": 1.795555908215006e9,
       "browsernight.jl": 1.7954000366191897e9,
       "builder.jl": 1.7955505696342282e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
-      "cairns.jl": 1.7955211366510177e9,
+      "cairns.jl": 1.7955564947319627e9,
       "camcut.jl": 1.795537398386316e9,
       "choir.jl": 1.7955516825863938e9,
       "clouds.jl": 1.7955032880001001e9,
       "conga.jl": 1.79555168258653e9,
       "dancecircle.jl": 1.7955211366490593e9,
-      "egg.jl": 1.7955531455882888e9,
+      "egg.jl": 1.795555803551552e9,
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
-      "firefly_catch.jl": 1.795547115352883e9,
-      "flight.jl": 1.7955494586097023e9,
+      "firefly_catch.jl": 1.795555851606885e9,
+      "flight.jl": 1.7955549579795728e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
-      "freecam.jl": 1.795521136652105e9,
+      "flylesson.jl": 1.7955547855262039e9,
+      "freecam.jl": 1.7955547184746377e9,
       "freeze.jl": 1.7955516825865855e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955517980778213e9,
       "greetings.jl": 1.7955494753290734e9,
-      "haze.jl": 1.7954853397788777e9,
+      "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795551682586644e9,
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7955439262951589e9,
@@ -1420,8 +1432,8 @@
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.79551174536962e9,
-      "paintfight.jl": 1.7955531053386307e9,
-      "presents.jl": 1.7955211366519678e9,
+      "paintfight.jl": 1.795554862049695e9,
+      "presents.jl": 1.7955566154256928e9,
       "rollcall.jl": 1.7955302465892146e9,
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
@@ -1435,11 +1447,11 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 26,
+    "posts": 27,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T22:11:24",
+  "started": "2026-11-24T22:55:07",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1468,7 +1480,10 @@
       "Bigsimr",
       "Geant4",
       "IntrinsicTimescales",
-      "MIRTio"
+      "MIRTio",
+      "WaterPhysics",
+      "WordCloud",
+      "ShipMMG"
     ],
     "vision": [
       "PPDocLayoutRunner",
@@ -1488,8 +1503,9 @@
       "BonsaiRunner",
       "FluxKleinRunner",
       "DemucsRunner",
-      "HorizonRunner"
+      "HorizonRunner",
+      "SAM2Runner"
     ]
   },
-  "surprise_seen": 70
+  "surprise_seen": 71
 }

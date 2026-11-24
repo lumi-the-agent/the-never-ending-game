@@ -145,6 +145,10 @@ uitest("Invitations: pairs that go flowers picking or shell hunting talk too, no
         t0 = w.t
         while !haskey(PR, :invite) && w.t - t0 < 40
             PR[:next_invite] = 0.0; wait_seconds(game, 1)
+            # keep the chosen two available while waiting: ball play or a race took one of them (s72),
+            # and an invitation needs both free
+            a.goal.kind in (:idle, :invite) || (a.goal = PRS.Goal(:idle, a.pos, :idle, 60.0, w.t + 60.0, true, 0, false))
+            b.goal.kind in (:idle, :wander, :invite) || (b.goal = PRS.Goal(:idle, b.pos, :idle, 60.0, w.t + 60.0, true, 0, false))
         end
         check(haskey(PR, :invite), "no invitation for $(k) within 40 s ($(a.name) $(a.goal.kind), $(b.name) $(b.goal.kind))")
         words = Set(string(x) for pair in mod.TOGETHER_WORDS[k] for x in pair)

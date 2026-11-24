@@ -243,7 +243,7 @@ const YES = ("Yes! Let's go!", "Ooh, I love that too!", "Race you there!")
 const NO = ("Maybe later...", "Hmm, not now.", "I'm happy here.")
 const EVERY_INVITE = 25.0
 free_friend(c) = !c.controlled && c.name != "Lumi" && c.action !== :sleep && c.goal.kind ∉ NG.BUSY_GOALS &&
-                 c.goal.kind ∉ (:follow, :interact, :sleep, :present_get, :answer) && !haskey(kept(), c.id)
+                 c.goal.kind ∉ (:follow, :interact, :sleep, :present_get, :answer, :tag) && !haskey(kept(), c.id)   # not out of a tag game (s72)
 
 "Two free friends close together: the one who loves a pastime invites the other; a friend who loves it too says yes."
 function invite!(w)
@@ -258,6 +258,8 @@ function invite!(w)
         w.t - get(asked, minmax(a.id, b.id), -1e9) < 240 && continue     # the same two asked a moment ago (s55: Pinchy asked Cumulus three times running)
         fa = favourite(a.name); fa === nothing && continue
         a.goal.kind === INVITE_GOAL[fa[1]] && continue
+        # only to a pastime that can start right now (s72: no free flower spot turned a yes into two wanderers)
+        Base.invokelatest(NG.start_goal, Val(INVITE_GOAL[fa[1]]), a, w) === nothing && continue
         fb = favourite(b.name)
         yes = (fb !== nothing && fb[1] === fa[1]) || rand(w.rng) < 0.4
         p = fa[1]
@@ -294,7 +296,12 @@ function answer_invite!(w)
     else
         # a refusal shows on both faces (todo #325): the inviter pouts, the one who said no looks sheepish,
         # then both go on with their day
-        NG.feel!(w, a, :pout; seconds = 2.2) || (a.goal = NG.start_goal(Val(:wander), a, w))
+        # the inviter still goes alone (a pout as a goal let the engine send it anywhere afterwards, and the
+        # invitation test caught it, s72): a sulk over its head instead
+        g = Base.invokelatest(NG.start_goal, Val(k), a, w)
+        g === nothing && (g = NG.start_goal(Val(:wander), a, w))
+        a.goal = g
+        emote(a.id, :sulk)
         NG.feel!(w, b, :shy; seconds = 2.0) || (b.goal = NG.Goal(:idle, b.pos, :idle, 3.0, w.t + 3.0, true, 0, false))
     end
     if yes && b.goal.kind === a.goal.kind && b.goal.kind !== :fish   # side by side: the guest heads for a spot beside the inviter's
@@ -305,11 +312,14 @@ function answer_invite!(w)
     end
     yes && (a.goal.run = b.goal.run = false)
     PR[:pair] = (a.id, w.t + 8.0, (a.id, b.id))
-    yes && (together()[(a.id, b.id)] = (k, w.t + 120.0, w.t + 10.0))       # the camera stays with them as they set off
+    yes && (together()[(a.id, b.id)] = (k, w.t + 120.0, w.t + 10.0))
+    yes && (pair_goals()[(a.id, b.id)] = (a.goal, b.goal))       # the camera stays with them as they set off
 end
 
 # Pairs out together: (a, b) => (goal kind, until, next words). While both are at it, they talk about it.
 together() = get!(() -> Dict{Tuple{Int32,Int32},Tuple{Symbol,Float64,Float64}}(), PR, :together)
+"The pastime goals each pair set off with, to put back when a chat pulls one of them away."
+pair_goals() = get!(() -> Dict{Tuple{Int32,Int32},Any}(), PR, :pair_goals)
 const TOGETHER_WORDS = Dict(
     :fish => (("Got one! A little silver one!", "Nice! Mine keeps nibbling..."), ("Shh, you'll scare them.", "Sorry! *whispers*"),
               ("This is the best spot.", "Told you!")),
@@ -323,7 +333,25 @@ const TOGETHER_WORDS = Dict(
 function step_together!(w)
     for (key, (k, until, next)) in collect(together())
         a, b = NG.creature(w, key[1]), NG.creature(w, key[2])
+        # a passer-by's chat (the engine's :interact) does not break up the pair: back to the pastime
+        # (s72: Pinchy was chatted away and the pair never talked; like greetings' step_followers!)
+        gs = get(pair_goals(), key, nothing)
+        if gs !== nothing && w.t <= until
+            for (c, g) in ((a, gs[1]), (b, gs[2]))
+                (c !== nothing && !c.controlled && c.goal.kind === :interact) || continue
+                NG.leave_interactions!(w, c)
+                c.goal = g
+            end
+        end
+        # whoever is there first waits for the other (s72: Gloop's flower picking ran out before Pinchy came,
+        # and Gloop went fishing): an arrived pastime lasts as long as the pair
+        if w.t <= until
+            for c in (a, b)
+                c !== nothing && c.goal.kind === k && c.goal.arrived && (c.goal.until = max(c.goal.until, min(until, w.t + 5.0)))
+            end
+        end
         if w.t > until || a.goal.kind !== k || b.goal.kind !== k
+            delete!(pair_goals(), key)
             delete!(together(), key)
             w.t <= until && head_home!(w, a, b, k)
             continue

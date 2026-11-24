@@ -4515,12 +4515,12 @@
       "id": 323,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "plugins/wind.jl (new): the grass tufts (280), the four flower varieties (187) and the dune grass (60) lean with the wind, tilted about their base 15 times a second; gusts roll downwind across the island as waves (up to ~16 deg), with a little flutter, and the wind turns and strengthens slowly over the day. 0.0 ms median, 0.11 ms p95 in the sandbox. The kite plugin's own wind and the clouds are not tied to it yet. Published 23:20.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Wind you can see: grass, flowers and clouds sway with the kite's wind",
-      "updated": "2026-11-24T08:45:53.831"
+      "updated": "2026-11-24T23:14:39.079"
     },
     {
       "created": "2026-11-24T08:45:53.834",
@@ -5977,6 +5977,48 @@
       "status": "open",
       "title": "Invitation pairs keep their plan: other events steal them",
       "updated": "2026-11-24T22:47:01.967"
+    },
+    {
+      "created": "2026-11-24T22:56:51.039",
+      "detail": "MethodError: no method matching Int64(::GeometryBasics.OffsetInteger{-1, UInt32})\nThe type `Int64` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  (::Type{T})(::T) where T<:Number\n   @ Core boot.jl:965\n  Int64(!Matched::Float64)\n   @ Base float.jl:919\n  Int64(!Matched::Float32)\n   @ Base float.jl:919\n  ...\n\nStacktrace:\n  [1] (::Main.Plugin_snowday.var\"#blanket!##8#blanket!##9\"{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}})(i::GeometryBasics.OffsetInteger{-1, UInt32})\n    @ Main.Plugin_snowday ./none:-1\n  [2] iterate\n    @ ./generator.jl:48 [inlined]\n  [3] iterate\n    @ ./iterators.jl:1262 [inlined]\n  [4] iterate\n    @ ./iterators.jl:1256 [inlined]\n  [5] _collect\n    @ ./array.jl:647 [inlined]\n  [6] collect\n    @ ./array.jl:641 [inlined]\n  [7] blanket!(game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:48\n  [8] start!(s::Main.Plugin_snowday.SnowDay, game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:255\n  [9] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 428,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T22:56:59.767: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T22:56:59.821.\nClosed at 2026-11-24T22:57:12.372: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T23:16:10.705.\nClosed at 2026-11-24T23:16:38.796: plugin snowday loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:snowday.SnowDay failed in start! and was switched off",
+      "updated": "2026-11-24T23:16:38.796"
+    },
+    {
+      "created": "2026-11-24T23:12:27.044",
+      "detail": "Stunt of session 72, the seasons wish.",
+      "est_minutes": 15.0,
+      "id": 429,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/snowday.jl (new): every 1-2 island days, by day (9-16 h), it snows: 600 flakes fall round what the camera looks at (none within 2 m of the lens), a white blanket (a 130x130 copy of the terrain) rises out of the ground in noise patches over 30 s until the meadow is white with grass and flowers poking through, the friends gasp, then shout SNOW!!! and hop (feel!), and Lumi rolls a snow-Lumi 1.5 m in front of itself (three balls growing in turn, coal eyes, a carrot beak, a twig crest, Ta-da! A little snow-me!); after 4 min it thaws over 30 s, the snowman melting with it. 0.29 ms a frame while it snows. The camera keeps Lumi and its snowman while it is built (Main.BIG_MOMENTS). Sandbox: media/s72/snow-3.png, snow-11.png. Film: path traced take (worker 20261124-230142-410, 960x540, 24 samples, 14 s) at site/films/snow-day.mp4, posted as Snow!. Published 23:02.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Snow day: it snows and the meadow turns white",
+      "updated": "2026-11-24T23:12:27.056"
+    },
+    {
+      "created": "2026-11-24T23:13:29.837",
+      "detail": "MethodError: no method matching Makie.Quaternionf(::Makie.Quaternionf)\nThe type `Makie.Quaternionf` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  Makie.Quaternion{T}(::Any, !Matched::Any, !Matched::Any, !Matched::Any) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:29\n  Makie.Quaternion{T}(!Matched::NTuple{4, T}) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:10\n  Makie.Quaternion{T}(!Matched::NTuple{4, Any}) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:9\n\nStacktrace:\n  [1] _broadcast_getindex_evalf\n    @ ./broadcast.jl:699 [inlined]\n  [2] _broadcast_getindex\n    @ ./broadcast.jl:672 [inlined]\n  [3] _getindex\n    @ ./broadcast.jl:620 [inlined]\n  [4] getindex\n    @ ./broadcast.jl:616 [inlined]\n  [5] copy\n    @ ./broadcast.jl:933 [inlined]\n  [6] materialize(bc::Base.Broadcast.Broadcasted{Base.Broadcast.DefaultArrayStyle{1}, Nothing, Type{Makie.Quaternionf}, Tuple{Vector{Makie.Quaternionf}}})\n    @ Base.Broadcast ./broadcast.jl:894\n  [7] find_plots!(game::Game)\n    @ Main.Plugin_wind /sim/Programmieren/SimGame/world/plugins/wind.jl:21\n  [8] start!(::Main.Plugin_wind.Wind, game::Game)\n    @ Main.Plugin_wind /sim/Programmieren/SimGame/world/plugins/wind.jl:56\n  [9] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 430,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T23:13:48.535: plugin wind loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:wind.Wind failed in start! and was switched off",
+      "updated": "2026-11-24T23:13:48.535"
     }
   ]
 }
