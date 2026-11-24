@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T00:05:47.906",
+  "finished": "2026-11-23T00:20:08.443",
+  "id": "20261123-000547-906-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a single low wide dome-shaped green leafy shrub seen from the side, three overlapping chunky rounded leaf clumps resting on the ground, a few small pink flowers, no pot, no stem, stylized cozy game prop, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T00:20:08.064",
+    "faces": 38376,
+    "id": "20261123-000547-906-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-000547-906-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-000547-906-asset/mesh.jls",
+    "prompt": "a single low wide dome-shaped green leafy shrub seen from the side, three overlapping chunky rounded leaf clumps resting on the ground, a few small pink flowers, no pot, no stem, stylized cozy game prop, soft hand-painted colors",
+    "seconds": 576.0,
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "seconds": 576.4,
+  "started": "2026-11-23T00:10:32.042",
+  "status": "done"
+}

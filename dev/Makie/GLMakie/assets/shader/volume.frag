@@ -1,0 +1,589 @@
+{{GLSL_VERSION}}
+
+// Sets which shading procedures to use
+// Options:
+// NO_SHADING           - skip shading calculation, handled outside
+// FAST_SHADING         - single point light (forward rendering)
+// MULTI_LIGHT_SHADING  - simple shading with multiple lights (forward rendering)
+{{shading}}
+
+// Writes "#define ENABLE_DEPTH" if the attribute is initialized as true
+// Otherwise writes nothing
+{{ENABLE_DEPTH}}
+
+bool is_clipped(vec4 pos) { return !((-pos.w < pos.z) && (pos.z < pos.w)); }
+
+// We will need to renormalize this to the 0..1 range OpenGL defaults to
+float clip_depth = 0.0;
+
+struct Nothing{ //Nothing type, to encode if some variable doesn't contain any data
+    bool _; //empty structs are not allowed
+};
+in vec3 frag_vert;
+
+{{volumedata_type}} volumedata;
+
+{{color_map_type}} color_map;
+{{color_type}} color;
+{{color_norm_type}} color_norm;
+uniform vec4 highclip;
+uniform vec4 lowclip;
+uniform vec4 nan_color;
+
+uniform float absorption = 1.0;
+uniform vec3 eyeposition;
+
+uniform mat4 modelinv;
+uniform int algorithm;
+uniform float isovalue;
+uniform float isorange;
+
+uniform mat4 model, projectionview;
+uniform int _num_clip_planes;
+uniform vec4 clip_planes[8];
+uniform float depth_shift;
+
+uniform int samples = 200;
+
+float _normalize(float val, float from, float to) { return (val-from) / (to - from);}
+
+vec4 get_color_from_cmap(float value, sampler1D color_map, vec2 colorrange) {
+    float cmin = colorrange.x;
+    float cmax = colorrange.y;
+    if (value <= cmax && value >= cmin) {
+        // in value range, continue!
+    } else if (value < cmin) {
+        return lowclip;
+    } else if (value > cmax) {
+        return highclip;
+    } else {
+        // isnan CAN be broken (of course) -.-
+        // so if outside value range and not smaller/bigger min/max we assume NaN
+        return nan_color;
+    }
+    float i01 = clamp((value - cmin) / (cmax - cmin), 0.0, 1.0);
+    // 1/0 corresponds to the corner of the colormap, so to properly interpolate
+    // between the colors, we need to scale it, so that the ends are at 1 - (stepsize/2) and 0+(stepsize/2).
+    float stepsize = 1.0 / float(textureSize(color_map, 0));
+    i01 = (1.0 - stepsize) * i01 + 0.5 * stepsize;
+    return texture(color_map, i01);
+}
+
+vec4 color_lookup(float intensity, Nothing color_map, Nothing norm, vec4 color) {
+    return color;
+}
+vec4 color_lookup(float intensity, samplerBuffer color_ramp, vec2 norm, Nothing color) {
+    return texelFetch(color_ramp, int(_normalize(intensity, norm.x, norm.y)*textureSize(color_ramp)));
+}
+vec4 color_lookup(float intensity, samplerBuffer color_ramp, Nothing norm, Nothing color) {
+    return vec4(0);  // stub method
+}
+vec4 color_lookup(float intensity, sampler1D color_ramp, vec2 norm, Nothing color) {
+    return get_color_from_cmap(intensity, color_ramp, norm);
+}
+vec4 color_lookup(vec4 data_color, Nothing color_ramp, Nothing norm, Nothing color) {
+    return data_color;  // stub method
+}
+vec4 color_lookup(float intensity, Nothing color_ramp, Nothing norm, Nothing color) {
+    return vec4(0);  // stub method
+}
+
+vec4 color_lookup(samplerBuffer colormap, int index) { return texelFetch(colormap, index); }
+vec4 color_lookup(sampler1D colormap, int index) { return texelFetch(colormap, index, 0); }
+vec4 color_lookup(Nothing colormap, int index) { return vec4(0); }
+
+vec3 gennormal(vec3 uvw, float d, vec3 o)
+{
+    // uvw samples positions (0..1 values)
+    // d is the sampling step. Could be any small value here
+    // o is half the uvw distance between two voxels. A distance smaller than
+    // that will result in equal positions when sampling on the edge of the
+    // volume, generating broken normals.
+    vec3 a, b;
+
+    float eps = 0.001;
+
+    // handle normals at edges!
+    if(uvw.x + d >= 1.0){
+        return vec3(1, 0, 0);
+    }
+    if(uvw.y + d >= 1.0){
+        return vec3(0, 1, 0);
+    }
+    if(uvw.z + d >= 1.0){
+        return vec3(0, 0, 1);
+    }
+
+    if(uvw.x - d <= 0.0){
+        return vec3(-1, 0, 0);
+    }
+    if(uvw.y - d <= 0.0){
+        return vec3(0, -1, 0);
+    }
+    if(uvw.z - d <= 0.0){
+        return vec3(0, 0, -1);
+    }
+
+    a.x = texture(volumedata, uvw - vec3(o.x, 0.0, 0.0)).r;
+    b.x = texture(volumedata, uvw + vec3(o.x, 0.0, 0.0)).r;
+
+    a.y = texture(volumedata, uvw - vec3(0.0, o.y, 0.0)).r;
+    b.y = texture(volumedata, uvw + vec3(0.0, o.y, 0.0)).r;
+
+    a.z = texture(volumedata, uvw - vec3(0.0, 0.0, o.z)).r;
+    b.z = texture(volumedata, uvw + vec3(0.0, 0.0, o.z)).r;
+
+    vec3 diff = a - b;
+    float n = length(diff);
+
+    if (n < 0.000000000001) // 1e-12
+        return diff;
+
+    return diff / n;
+}
+
+#ifndef NO_SHADING
+vec3 illuminate(vec3 world_pos, vec3 camdir, vec3 normal, vec3 base_color);
+#endif
+
+#ifdef NO_SHADING
+vec3 illuminate(vec3 world_pos, vec3 camdir, vec3 normal, vec3 base_color) {
+    return normal;
+}
+#endif
+
+// Simple random generator found: http://stackoverflow.com/questions/4200224/random-noise-functions-for-glsl
+float rand(){
+    return fract(sin(gl_FragCoord.x * 12.9898 + gl_FragCoord.y * 78.233) * 43758.5453);
+}
+
+vec4 volume(vec3 front, vec3 dir)
+{
+    /*
+    The per-voxel alpha channel is specified in units of opacity/length.
+    If our voxels are not isotropic, then the distance that we trace through
+    depends on the direction.
+
+    // Color Accumulation
+
+    1. As multiple over-blended layers
+
+    Let's consider that at each step we sample an RGBA color that then gets
+    blended by over operators in order (front over back). The general A over B
+    is given by:
+        a = A.a + B.a * (1 - A.a)
+        rgb = (A.rgb * A.a + B.rgb * B.a * (1 - A.a)) / a
+    With pre-multiplied alphas this simplifies to:
+        rgba = A + B * (1 - A.a)
+
+    We iterate through the volume front to back. This means we have A and add B
+    in each iteration. The alpha value of B is the sample alpha weighted by the
+    thickness of the sample:
+        B_alpha = step_size * sample.a
+    and the premultiplied color is:
+        B_color = B_alpha * sample.rgb
+    with blending we get:
+        A_color = A_color + B_color * (1 - A_alpha)
+        A_alpha = A_alpha + B_alpha * (1 - A_alpha)
+
+    When using transmittance = 1 - alpha instead of alpha for A:
+        A_color = A_color + B_color * A_trans
+        (1 - A_trans) = (1 - A_trans) + B_alpha * A_trans    | -1, * -1
+        <=> A_trans = A_trans - B_alpha * A_trans = A_trans * (1 - B_trans)
+
+    In total we get:
+    color = vec3(0)     // initial color has alpha = 0, which is premultiplied
+    transmittance = 1
+    for t = 0 .. N
+        rgb, density = sample(front + t * dir)
+        B_alpha = density * length(dir)
+        B_color = B_alpha * rgb
+        color += transmittance * B_color
+        transmittance *= 1 - B_alpha
+
+
+    2. More physical perspective
+
+    The light intensity decays in a medium following the Beer-Lambert law:
+        I(d) = I_0 * exp(-\int_0^d \sigma(t) dt)
+    where
+    - I is the light intensity
+    - d is the distance into the medium (i.e. d = length(n * dir))
+    - \sigma(t) is the particle density at some depth (i.e. at front + t * dir)
+
+    We can discretize this (\int -> \sum), pull the sum out of the exp
+    (\sum -> \prod) and Taylor expand exp (e^-x ≈ 1 - x) to get:
+        I(d) ≈ I_0 * \prod_0^d (1 - sigma(t) * delta_t)
+    in code terms:
+        transmittance(d) = 1 * \prod_0^d (1 - sample_density(front + t * dir) * length(dir))
+    which can be written iteratively as:
+        new_transmittance = prev_transmittance * (1 - new_sample_density * step_size)
+
+    We assume that the light intensity that is removed at each step is fully
+    reflected towards the viewer. Together with the sample color, we get:
+        reflected = prev_transmittance * new_sample_density * step_size * sample_rgb
+    To get the total color of the reflection, these terms needs to be summed
+
+    In total we get:
+        color = vec3(0)
+        transmittance = 1
+        for t = 0 .. N
+            rgb, density = sample(front + t * dir)
+            absorption = density * length(dir)
+            color += transmittance * absorption * rgb
+            transmittance *= 1 - absorption
+
+    3. Blending with scene/colorbuffer
+
+    Both versions output (premultiplied color, transmittance). Blending in Makie
+    (currently) assumes (color, alpha), so we need to reformat the output:
+        alpha = 1 - transmittance
+        color = premultiplied / alpha
+    */
+    vec3 pos = front;
+    float transmittance = 1.0; // transmittance
+    vec3 color_sum = vec3(0.0);
+    int i = 0;
+    float step_size = length(dir);
+
+    for (i; i < samples; ++i) {
+        float intensity = texture(volumedata, pos).x;
+        vec4 color_sample = color_lookup(intensity, color_map, color_norm, color);
+
+        float opacity = clamp(step_size * color_sample.a * absorption, 0.0, 1.0);
+        color_sum += (opacity * transmittance) * color_sample.rgb;
+        transmittance *= 1.0 - opacity;
+
+        if (transmittance <= 0.01)
+            break;
+
+        pos += dir;
+    }
+    return vec4(color_sum / (1.0 - transmittance), 1.0 - transmittance);
+}
+
+vec4 additivergba(vec3 front, vec3 dir)
+{
+    vec3 pos = front;
+    vec4 integrated_color = vec4(0., 0., 0., 0.);
+    float step_size = length(dir);
+    int i = 0;
+    for (i; i < samples ; ++i) {
+        vec4 density = absorption * step_size * texture(volumedata, pos);
+        integrated_color = 1.0 - (1.0 - integrated_color) * (1.0 - density);
+        pos += dir;
+    }
+    return integrated_color;
+}
+
+vec4 absorptionrgba(vec3 front, vec3 dir)
+{
+    vec3  pos = front;
+    float transmittance = 1.0;
+    vec3 color_sum = vec3(0.0);
+    int i = 0;
+    float step_size = length(dir);
+
+    for (i; i < samples ; ++i) {
+        vec4 color_sample = texture(volumedata, pos);
+
+        float opacity = step_size * color_sample.a * absorption;
+        color_sum += (transmittance * opacity) * color_sample.rgb;
+        transmittance *= 1.0 - opacity;
+
+        if (transmittance <= 0.01)
+            break;
+
+        pos += dir;
+    }
+    return vec4(color_sum / (1 - transmittance), 1 - transmittance);
+}
+
+vec4 volumeindexedrgba(vec3 front, vec3 dir)
+{
+    vec3 pos = front;
+    float transmittance = 1.0;
+    vec3 color_sum = vec3(0.0);
+    int i = 0;
+    float step_size = length(dir);
+
+    for (i; i < samples; ++i) {
+        int index = int(texture(volumedata, pos).x) - 1;
+        vec4 color_sample = color_lookup(color_map, index);
+
+        float opacity = step_size * color_sample.a * absorption;
+        color_sum += (transmittance * opacity) * color_sample.rgb;
+        transmittance *= 1.0 - opacity;
+
+        if (transmittance <= 0.01)
+            break;
+
+        pos += dir;
+    }
+    return vec4(color_sum / (1.0 - transmittance), 1.0 - transmittance);
+}
+
+vec4 contours(vec3 front, vec3 dir)
+{
+    vec3 pos = front;
+    float transmittance = 1.0;
+    vec3 color_sum = vec3(0.0);
+    int i = 0;
+    vec3 camdir = normalize(dir);
+    vec3 edge_gap = 0.5 / textureSize(volumedata, 0); // see gennormal
+#ifdef ENABLE_DEPTH
+    float depth = 100000.0;
+#endif
+    float step_size = length(dir);
+
+    for (i; i < samples; ++i) {
+        float intensity = texture(volumedata, pos).x;
+        vec4 density = color_lookup(intensity, color_map, color_norm, color);
+        float opacity = density.a;
+        if(opacity > 0.0)
+        {
+
+#ifdef ENABLE_DEPTH
+            vec4 frag_coord = projectionview * model * vec4(pos, 1);
+            if (is_clipped(frag_coord))
+            {
+                pos += dir;
+                continue;
+            }
+            else
+                depth = min(depth, frag_coord.z / frag_coord.w);
+#endif
+
+            vec3 opaque = density.rgb;
+            // Edges between finite and NaN values become black if we branch
+            // based on intensity (because we still get NaN normals) or a max
+            // intensity/unshaded density.rgb if decide based on N (because we
+            // skip shading). Neither is great so we pick the faster version
+            if (intensity < 1.0 || intensity > 0.0) // i.e. finite
+            {
+                vec3 N = gennormal(pos, step_size, edge_gap);
+                vec4 world_pos = model * vec4(pos, 1);
+                opaque = illuminate(world_pos.xyz / world_pos.w, camdir, N, density.rgb);
+            }
+            color_sum += (transmittance * opacity) * opaque;
+            transmittance *= 1.0 - opacity;
+            if (transmittance <= 0.01)
+                break;
+        }
+        pos += dir;
+    }
+#ifdef ENABLE_DEPTH
+    clip_depth = depth == 100000.0 ? clip_depth : depth;
+#endif
+    return vec4(color_sum / (1.0 - transmittance), 1.0 - transmittance);
+}
+
+vec4 isosurface(vec3 front, vec3 dir)
+{
+    vec3 pos = front;
+    vec4 c = vec4(0.0);
+    int i = 0;
+    vec4 diffuse_color = color_lookup(isovalue, color_map, color_norm, color);
+    vec3 camdir = normalize(dir);
+    vec3 edge_gap = 0.5 / textureSize(volumedata, 0); // see gennormal
+#ifdef ENABLE_DEPTH
+    float depth = 100000.0;
+#endif
+    float step_size = length(dir);
+
+    for (i; i < samples; ++i){
+        float density = texture(volumedata, pos).x;
+        if(abs(density - isovalue) < isorange)
+        {
+
+#ifdef ENABLE_DEPTH
+            vec4 frag_coord = projectionview * model * vec4(pos, 1);
+            if (is_clipped(frag_coord))
+            {
+                pos += dir;
+                continue;
+            }
+            else
+                depth = min(depth, frag_coord.z / frag_coord.w);
+#endif
+
+            vec3 N = gennormal(pos, step_size, edge_gap);
+            vec4 world_pos = model * vec4(pos, 1);
+            c = vec4(
+                illuminate(world_pos.xyz / world_pos.w, camdir, N, diffuse_color.rgb),
+                diffuse_color.a
+            );
+            break;
+        }
+        pos += dir;
+    }
+#ifdef ENABLE_DEPTH
+    clip_depth = depth == 100000.0 ? clip_depth : depth;
+#endif
+    return c;
+}
+
+bool less_than_max(float val, Nothing range) { return true; }
+bool less_than_max(float val, vec2 range) { return (val < range.y); }
+
+vec4 mip(vec3 front, vec3 dir)
+{
+    vec3 pos = front + dir;
+    int i = 0;
+    float maximum = -10000000000000000.0;
+    bool highclip_visible = highclip.a > 0.0;
+    bool has_finite_sample = false;
+
+    for (i; i < samples; ++i, pos += dir){
+        float density = texture(volumedata, pos).x;
+        has_finite_sample = has_finite_sample || (density < 1.0) || (density > 0.0);
+        // If highclip is transparent we exclude any values beyond the color
+        // range so that the largest (probably) visible value is preserved.
+        // We don't need this for lowclip because it will naturally get overwritten
+        // by larger values.
+        bool consider_sample = less_than_max(density, color_norm) || highclip_visible;
+        if (consider_sample && (maximum < density))
+            maximum = density;
+    }
+    // If none of the samples set has_finite_sample, then we must have only sampled
+    // nan values
+    if (!has_finite_sample)
+        return nan_color;
+
+    // If we still have the initial value then no value < color range maximum
+    // was found. In this case we should use highclip.
+    if (maximum == -10000000000000000.0)
+        maximum = 10000000000000000.0;
+
+    return color_lookup(maximum, color_map, color_norm, color);
+}
+
+uniform uint objectid;
+
+void write2framebuffer(vec4 color, uvec2 id);
+
+const float typemax = 100000000000000000000000000000000000000.0;
+
+
+bool process_clip_planes(inout vec3 p1, inout vec3 p2)
+{
+    float d1, d2;
+    for (int i = 0; i < _num_clip_planes; i++) {
+        // distance from clip planes with negative clipped
+        d1 = dot(p1.xyz, clip_planes[i].xyz) - clip_planes[i].w;
+        d2 = dot(p2.xyz, clip_planes[i].xyz) - clip_planes[i].w;
+
+        // both outside - clip everything
+        if (d1 < 0.0 && d2 < 0.0) {
+            p2 = p1;
+            return true;
+        }
+
+        // one outside - shorten segment
+        else if (d1 < 0.0)
+            // solve 0 = m * t + b = (d2 - d1) * t + d1 with t in (0, 1)
+            p1 = p1 - d1 * (p2 - p1) / (d2 - d1);
+        else if (d2 < 0.0)
+            p2 = p2 - d2 * (p1 - p2) / (d1 - d2);
+    }
+
+    return false;
+}
+
+
+bool no_solution(float x){
+    return abs(x) <= 0.0001 || isinf(x) || isnan(x);
+}
+
+void main()
+{
+#ifdef ENABLE_DEPTH
+    gl_FragDepth = gl_FragCoord.z;
+#endif
+
+
+    vec4 color;
+    vec3 eye_unit = vec3(modelinv * vec4(eyeposition, 1));
+    vec3 back_position = vec3(modelinv * vec4(frag_vert, 1));
+    vec3 dir = normalize(back_position - eye_unit);
+
+    // In model space (pre model application) the volume is defined in a const
+    // 0..1 box. If the camera is inside the box we start our rays from the
+    // camera position (eyeposition).
+    // TODO: Should we consider near here?
+
+    bool is_outside_box = (eye_unit.x < 0.0 || eye_unit.y < 0.0 || eye_unit.z < 0.0
+            || eye_unit.x > 1.0 || eye_unit.y > 1.0 || eye_unit.z > 1.0);
+
+    // Find the true ray interval through the unit box. The rasterized cube
+    // face only provides screen coverage; the exit point must not depend on
+    // front/back face classification.
+    if ((dir.x == 0.0 && dir.y == 0.0 && dir.z == 0.0) || isnan(dir.x) || isnan(dir.y) || isnan(dir.z))
+        discard;
+
+    // Find box - ray intersection so we can skip tracing rays outside the box
+    // Solve
+    //  cube_max = 1 = eye_unit + solution_1 * dir
+    //  cube_min = 0 = eye_unit + solution_0 * dir
+    vec3 solution_1 = (1.0 - eye_unit) / dir;
+    vec3 solution_0 = (0.0 - eye_unit) / dir;
+
+    vec3 solutions_min = min(solution_0, solution_1);
+    vec3 solutions_max = max(solution_0, solution_1);
+
+    // exclude inf/nan solutions from dir[i] = 0
+    solutions_min.x = no_solution(solutions_min.x) ? -typemax : solutions_min.x;
+    solutions_min.y = no_solution(solutions_min.y) ? -typemax : solutions_min.y;
+    solutions_min.z = no_solution(solutions_min.z) ? -typemax : solutions_min.z;
+    solutions_max.x = no_solution(solutions_max.x) ? typemax : solutions_max.x;
+    solutions_max.y = no_solution(solutions_max.y) ? typemax : solutions_max.y;
+    solutions_max.z = no_solution(solutions_max.z) ? typemax : solutions_max.z;
+
+    // We're inside the cube when every dimension has entered it (max of min solution)
+    // and none has left it (min of max solution)
+    float start_solution = max(max(solutions_min.x, solutions_min.y), solutions_min.z);
+    float stop_solution = min(min(solutions_max.x, solutions_max.y), solutions_max.z);
+
+    if (stop_solution < max(start_solution, 0.0))
+        discard;
+
+    vec3 start = eye_unit + (is_outside_box ? start_solution : 0.0) * dir;
+    vec3 stop = eye_unit + stop_solution * dir;
+
+#ifdef ENABLE_DEPTH
+    vec4 frag_coord = projectionview * model * vec4(start, 1);
+    clip_depth = frag_coord.z / frag_coord.w;
+#endif
+
+    // if completely clipped discard this ray tracing attempt
+    // TODO: this should discard samples too
+    if (process_clip_planes(start, stop))
+        discard;
+
+    vec3 step_in_dir = (stop - start) / samples;
+
+    // the algorithm numbers correspond to the order in the
+    // RaymarchAlgorithm enum defined in Makie types.jl
+    if(algorithm == 0)
+        color = isosurface(start, step_in_dir);
+    else if(algorithm == 1)
+        color = volume(start, step_in_dir);
+    else if(algorithm == 2)
+        color = mip(start, step_in_dir);
+    else if(algorithm == 3)
+        color = absorptionrgba(start, step_in_dir);
+    else if(algorithm == 4)
+        color = additivergba(start, step_in_dir);
+    else if(algorithm == 5)
+        color = volumeindexedrgba(start, step_in_dir);
+    else
+        color = contours(start, step_in_dir);
+
+#ifdef ENABLE_DEPTH
+    // By default OpenGL renormalizes depth to a 0..1 range. We need to do this
+    // manually here. (Should be generalizable with gl_DepthRange...)
+    gl_FragDepth = 0.5 * (clip_depth + depth_shift + 1);
+#endif
+
+    write2framebuffer(color, uvec2(objectid, 0));
+}

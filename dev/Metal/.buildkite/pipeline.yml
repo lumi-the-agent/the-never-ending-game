@@ -1,0 +1,208 @@
+# Commit message tags select what to run: `[only X]` runs only the listed steps, `[skip X]`
+# skips them, where X is a comma-separated list of: `tests` (everything but benchmarks),
+# `julia` (released Julia versions), `nightly`, `special`, `validation`, `benchmarks`. To limit
+# the load on the Metal runners, pull requests only test the oldest and newest supported Julia
+# release; the other Julia versions (including nightly) are tested on branch builds, or when
+# selected explicitly with `[only X]`. Draft pull requests only test the newest Julia release.
+# See also GPUCompiler.jl's CI, which uses the same tags. The documentation is built by
+# .github/workflows/Documentation.yml.
+steps:
+  - group: ":julia: Julia"
+    key: "julia"
+    steps:
+      # the newest release, also tested on draft pull requests
+      - &julia
+        label: "Julia {{matrix.julia}}"
+        plugins:
+          - JuliaCI/julia#v1:
+              version: "{{matrix.julia}}"
+          - JuliaCI/julia-test#v1:
+              test_args: "--quickfail --all --verbose"
+          - JuliaCI/julia-coverage#v1:
+              codecov: true
+              dirs:
+                - src
+                - lib
+        agents:
+          queue: "metal"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|julia)/ &&
+          (build.message =~ /\[only [^\]]*(tests|julia)/ || build.message !~ /\[only /)
+        timeout_in_minutes: 60
+        matrix:
+          setup:
+            julia:
+              - "1.13"
+
+      # the oldest release
+      - <<: *julia
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|julia)/ &&
+          (build.message =~ /\[only [^\]]*(tests|julia)/ ||
+           build.message !~ /\[only / && !build.pull_request.draft)
+        matrix:
+          setup:
+            julia:
+              - "1.10"
+
+      # intermediate releases, not tested on pull requests
+      - <<: *julia
+        agents: # remove once julia 1.11/1.12 have a release that supports M6 cpu
+          queue: "metal"
+          cpu: "apple-m1"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|julia)/ &&
+          (build.message =~ /\[only [^\]]*(tests|julia)/ ||
+           build.message !~ /\[only / && build.pull_request.id == null)
+        matrix:
+          setup:
+            julia:
+              - "1.11"
+              - "1.12"
+
+      # not tested on pull requests
+      - <<: *julia
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|nightly)/ &&
+          (build.message =~ /\[only [^\]]*(tests|nightly)/ ||
+           build.message !~ /\[only / && build.pull_request.id == null)
+        soft_fail: true
+        matrix:
+          setup:
+            julia:
+              - "1.14-nightly"
+              - "nightly"
+
+  # special tests
+  - group: ":eyes: Special"
+    depends_on: "julia"
+    steps:
+      - label: ":floppy_disk: Private Storage"
+        plugins:
+          - JuliaCI/julia#v1:
+              version: "1.13"
+          - JuliaCI/julia-test#v1:
+              test_args: "--quickfail --all --verbose"
+        agents:
+          queue: "metal"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|special)/ &&
+          (build.message =~ /\[only [^\]]*(tests|special)/ ||
+           build.message !~ /\[only / && !build.pull_request.draft)
+        timeout_in_minutes: 60
+        commands: |
+          echo -e "[Metal]\ndefault_storage = \"private\"" >LocalPreferences.toml
+      - label: ":mag: API validation"
+        plugins:
+          - JuliaCI/julia#v1:
+              version: "1.13"
+          - JuliaCI/julia-test#v1:
+              test_args: "--jobs=1 --quickfail --verbose --validate"
+          - JuliaCI/julia-coverage#v1:
+              codecov: true
+              dirs:
+                - src
+                - lib
+        commands: |
+          # blocking synchronization is easier to validate
+          echo -e "[Metal]\nnonblocking_synchronization = false" >LocalPreferences.toml
+        agents:
+          queue: "metal"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|special|validation)/ &&
+          (build.message =~ /\[only [^\]]*(tests|special|validation)/ ||
+           build.message !~ /\[only / && !build.pull_request.draft)
+        timeout_in_minutes: 60
+      # the opt-in Metal 4 command API (needs macOS 26 and a Metal 4 GPU, so only tested here)
+      - label: ":four: Metal 4 command API"
+        plugins:
+          - JuliaCI/julia#v1:
+              version: "1.13"
+          - JuliaCI/julia-test#v1:
+              test_args: "--quickfail --all --verbose"
+          - JuliaCI/julia-coverage#v1:
+              codecov: true
+              dirs:
+                - src
+                - lib
+        agents:
+          queue: "metal"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|special)/ &&
+          (build.message =~ /\[only [^\]]*(tests|special)/ ||
+           build.message !~ /\[only / && !build.pull_request.draft)
+        timeout_in_minutes: 60
+        commands: |
+          echo -e "[Metal]\ncommand_api = \"metal4\"" >LocalPreferences.toml
+      - label: ":mag: Metal 4 API validation"
+        plugins:
+          - JuliaCI/julia#v1:
+              version: "1.13"
+          - JuliaCI/julia-test#v1:
+              test_args: "--jobs=1 --quickfail --verbose --validate"
+        env:
+          # check other GPUs than the API validation job (which checks macOS 26), at a
+          # similar cost
+          JULIA_METAL_BACKEND_CHECK: "g17g@27,g18g@27"
+        commands: |
+          echo -e "[Metal]\ncommand_api = \"metal4\"\nnonblocking_synchronization = false" >LocalPreferences.toml
+        agents:
+          queue: "metal"
+        if: |
+          build.message !~ /\[skip [^\]]*(tests|special|validation)/ &&
+          (build.message =~ /\[only [^\]]*(tests|special|validation)/ ||
+           build.message !~ /\[only / && !build.pull_request.draft)
+        timeout_in_minutes: 60
+      # - label: ":ram: Large buffers"
+      #   plugins:
+      #     - JuliaCI/julia#v1:
+      #         version: "1.13"
+      #     - JuliaCI/julia-test#v1:
+      #         test_args: "--quickfail --verbose large"
+      #     - JuliaCI/julia-coverage#v1:
+      #         codecov: true
+      #         dirs:
+      #           - src
+      #           - lib
+      #   env:
+      #     MTL_DEBUG_LAYER: '1'
+      #     MTL_SHADER_VALIDATION: '1'
+      #   agents:
+      #     queue: "metal"
+      #   if: |
+      #     build.message =~ /\[only tests\]/ ||
+      #     build.message =~ /\[only large\]/ ||
+      #     build.message =~ /\[only special\]/ ||
+      #     build.message !~ /\[only/ && !build.pull_request.draft &&
+      #       build.message !~ /\[skip tests\]/ &&
+      #       build.message !~ /\[skip large\]/ &&
+      #       build.message !~ /\[skip special\]/
+      #   timeout_in_minutes: 15
+
+  - wait: ~
+    continue_on_failure: true
+
+  # the label determines the commit status context .github/workflows/Benchmark.yml reacts to
+  - label: ":racehorse: Benchmarks"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "1.13"
+    command: |
+      julia --project=perf -e '
+        using Pkg
+
+        println("--- :julia: Instantiating project")
+        Pkg.develop([PackageSpec(path=pwd())])
+
+        println("+++ :julia: Benchmarking")
+        include("perf/runbenchmarks.jl")'
+    artifact_paths:
+      - "benchmarks.json"
+    agents:
+      queue: "metal"
+      cpu: "apple-m1"
+    if: |
+      build.message !~ /\[skip [^\]]*(benchmarks)/ &&
+      (build.message =~ /\[only [^\]]*(benchmarks)/ ||
+       build.message !~ /\[only / && !build.pull_request.draft)
+    timeout_in_minutes: 30

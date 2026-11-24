@@ -1,0 +1,43 @@
+{
+  "verdict": "needs_work",
+  "summary": "The mini game is wired up and cheap (minigame step median 0.05 ms, frame median ~26 ms), but in the author's own screenshot the scene is almost black, the fireflies are flat white dots rather than glowing, and there is no start/end feedback or direction cue, so it is hard to play and not yet fun.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Fireflies do not read as glowing yellow fireflies: they render as flat, pure-white 2D discs on a near-black scene. The Emission material (color 1.0,0.9,0.35) does not show in the raster view. Some are cut off at the screen edge. The scene is so dark that terrain and Sprout are barely visible, so the playfield is unreadable.",
+      "where": "plugins/firefly_catch.jl:33-34; media/firefly2.png",
+      "evidence": "media/firefly2.png: white dots at (639,146), (432,543), (473,616), (486,656) on a black frame",
+      "suggestion": "Use a plain bright yellow/orange color for the marker (or a glow-sprite/halo) that works in the raster path. Add a soft larger translucent sphere. Fix the night lighting for the minigame or brighten the scene."
+    },
+    {
+      "severity": "medium",
+      "what": "Fireflies are scattered across 80% of the island radius with no hint where they are. With a dark scene and a follow camera that shows only a small area, the player can wander 45 s without seeing any. 8 flies in 45 s may be unwinnable or boring. There is no arrow, counter of the nearest one, or sound.",
+      "where": "plugins/firefly_catch.jl:30",
+      "evidence": "firefly2.png shows only 4 of 7 remaining flies on screen, all at the edges; the author's own capture was made by teleporting Sprout onto a firefly ('after moving Sprout'), not by playing with WASD",
+      "suggestion": "Spawn flies nearer to Sprout, or add an edge arrow or off-screen indicator toward the nearest firefly. Playtest with real WASD input and report how long a catch takes."
+    },
+    {
+      "severity": "medium",
+      "what": "Evidence is weak: one still with a staged catch. It shows no start state, no win or time-up message, and no WASD movement being exercised. `input!` is a no-op, so the WASD behaviour is delegated to JumpIn, and nothing shows that it works. The todo list in the screenshot also says 'Mini game Firefly catch (WASD) failed and was sto…', so an earlier run failed. The root cause is not recorded.",
+      "where": "media/firefly2.png; todos.json",
+      "evidence": "right panel of firefly2.png: 'Mini game Firefly catch (WASD) failed and was sto…'",
+      "suggestion": "Record why the earlier run failed, confirm it is fixed, and show a sequence (start, mid, win/lose) from the live game."
+    },
+    {
+      "severity": "low",
+      "what": "The HUD is legible (yellow with a dark stroke, 24 px), but it sits far above Sprout in empty dark space and at 1/8 vs 41 s shows no label. Sprout's own name label is thin and low-contrast.",
+      "where": "plugins/firefly_catch.jl:35-37",
+      "evidence": "media/firefly2.png at (435,269)",
+      "suggestion": "Pin the score/timer to a fixed screen corner, with a larger font, and say 'caught' on it."
+    },
+    {
+      "severity": "low",
+      "what": "Cleanup and robustness: caught flies are hidden by moving them to z=-50 instead of being removed, and the catch test and the wobble use the positions from before the update. The caught/time state is not reset if start! is called twice, because the plot is recreated but m.t/m.score are not zeroed. finished() keeps the game open 2 s after time-up with no further effect. Also random_land_point may return points near trees, and the flies are not checked for reachability.",
+      "where": "plugins/firefly_catch.jl:27-58",
+      "evidence": "code read",
+      "suggestion": "Reset t and score in start!, and hide the caught ones with a flag via per-point visibility or alpha."
+    }
+  ],
+  "addressed": true,
+  "addressed_note": "Session 6: #9/#15/#16 root cause found (failed meshscatter delete corrupts the render; fixed in firefly_catch.jl). Night light raised in scenery.jl. Tag overlap, camera framing and HUD pill remain as open todos."
+}

@@ -1,0 +1,29 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the bubble shows [\"planting a vegetable patch behind the cottage\"] (shown false)",
+      "file": "builder.jl",
+      "name": "Sprout thinks about the todo the agent is on: a cloud over its head with the doing todo in a few words",
+      "passed": false,
+      "seconds": 2.0
+    },
+    {
+      "error": "check failed: no bush with two critters near it for a race (2 free: [(\"Sprout\", :sleep), (\"Gloop\", :ball), (\"Wibbles\", :fish), (\"Pinchy\", :fish), (\"Hopscotch\", :fish), (\"Cumulus\", :pebble), (\"Marshmallow\", :fish), (\"Truffle\", :sleep), (\"Pickles\", :idle), (\"Sir Sniffsalot\", :pebble)])",
+      "file": "minigames.jl",
+      "name": "Wild berry race: critters race each other for ripe berries, the winner dances",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: Sprout does not sit with Gloop (sleep sleep)",
+      "file": "outfits.jl",
+      "name": "A lonely Sprout walks over to a friend and waves, and the friend says hello",
+      "passed": false,
+      "seconds": 17.4
+    }
+  ],
+  "passed": 98,
+  "session": 50,
+  "time": "2026-11-24T00:21:04",
+  "total": 101
+}

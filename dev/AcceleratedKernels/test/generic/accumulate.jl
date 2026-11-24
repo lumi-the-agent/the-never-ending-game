@@ -1,0 +1,825 @@
+@testset "accumulate: whole arrays" begin
+    Random.seed!(0)
+
+    # Single-block exclusive scan
+    for num_elems in 1:256
+        x = array_from_host(ones(Int32, num_elems))
+        y = copy(x)
+        AK.accumulate!(+, y; init=0, inclusive=false, alg=scan_alg(; block_size=128))
+        yh = Array(y)
+        @test all(yh .== 0:length(yh) - 1)
+    end
+
+    # Single block inclusive scan
+    for num_elems in 1:256
+        x = array_from_host(rand(1:1000, num_elems), Int32)
+        y = copy(x)
+        AK.accumulate!(+, y; init=0, alg=scan_alg(; block_size=128))
+        @test all(Array(y) .== accumulate(+, Array(x)))
+    end
+
+    # Large exclusive scan
+    for _ in 1:1000
+        num_elems = rand(1:100_000)
+        x = array_from_host(ones(Int32, num_elems))
+        y = copy(x)
+        AK.accumulate!(+, y; init=0, inclusive=false, alg=scan_alg())
+        yh = Array(y)
+        @test all(yh .== 0:length(yh) - 1)
+    end
+
+    # Non-uniform data exposes block-carry bugs that all-ones data masks.
+    for items_per_thread in (1, 3, 8)
+        for _ in 1:50
+            num_elems = rand(513:100_000)
+            block_size = rand([16, 32, 64, 128, 256])
+            init = rand(Int32(-100):Int32(100))
+            xh = rand(Int32(-9):Int32(9), num_elems)
+            y = array_from_host(xh)
+            AK.accumulate!(+, y; init, inclusive=false,
+                           alg=scan_alg(; block_size, items_per_thread))
+            @test Array(y) == (cumsum(xh) .- xh) .+ init
+        end
+    end
+
+    # The default limits shared-memory use for wide element types.
+    if KernelAbstractions.supports_float64(BACKEND)
+        xh = ComplexF64.(1:4097)
+        y = array_from_host(xh)
+        AK.accumulate!(+, y; init=0.0 + 0.0im, alg=scan_alg())
+        @test Array(y) == cumsum(xh)
+    end
+
+    # Large inclusive scan
+    for _ in 1:1000
+        num_elems = rand(1:100_000)
+        x = array_from_host(rand(1:1000, num_elems), Int32)
+        y = copy(x)
+        AK.accumulate!(+, y; init=0, alg=scan_alg())
+        @test all(Array(y) .== accumulate(+, Array(x)))
+    end
+
+    # Stress-testing small block sizes -> many blocks
+    for _ in 1:100
+        num_elems = rand(1:100_000)
+        x = array_from_host(rand(1:1000, num_elems), Int32)
+        y = copy(x)
+        AK.accumulate!(+, y; init=0, alg=scan_alg(; block_size=16))
+        @test all(Array(y) .== accumulate(+, Array(x)))
+    end
+
+    # Allowing N-dimensional arrays, still reduced as 1D
+    for _ in 1:100
+        n1 = rand(1:100)
+        n2 = rand(1:100)
+        n3 = rand(1:100)
+        vh = rand(Float32, n1, n2, n3)
+        v = array_from_host(vh)
+        AK.accumulate!(+, v; init=0, alg=scan_alg())
+        @test all(Array(v) .≈ accumulate(+, vh))
+    end
+
+    # The init value is respected
+    for _ in 1:100
+        num_elems = rand(1:100_000)
+        x = array_from_host(rand(1:1000, num_elems), Int32)
+        y = similar(x)
+        init = rand(-1000:1000)
+        AK.accumulate!(+, y, x; init=Int32(init), alg=scan_alg())
+        @test all(Array(y) .== accumulate(+, Array(x); init))
+    end
+
+    # Exclusive scan
+    x = array_from_host(ones(Int32, 10))
+    y = copy(x)
+    AK.accumulate!(+, y; init=0, inclusive=false, alg=scan_alg())
+    @test all(Array(y) .== 0:9)
+
+    # Test init value is respected with exclusive scan too
+    x = array_from_host(ones(Int32, 10))
+    y = copy(x)
+    init = 10
+    AK.accumulate!(+, y; init=Int32(init), inclusive=false, alg=scan_alg())
+    @test all(Array(y) .== 10:19)
+
+    # Test that undefined kwargs are not accepted
+    @test_throws MethodError AK.accumulate(+, y; init=10, dims=2, inclusive=false, bad=:kwarg,
+                                           alg=slice_alg())
+
+    # A workspace, reused
+    y = array_from_host(ones(Int32, 1000))
+    with_workspace(AK.accumulate!, +, y; init=Int32(0), inclusive=false, alg=scan_alg(; block_size=128))
+    @test Array(y) == 0:999
+
+    y = with_workspace(AK.accumulate, +, array_from_host(ones(Int32, 1000));
+                       init=0, inclusive=false, alg=scan_alg(; block_size=128))
+    @test Array(y) == 0:999
+
+    # Small tiles (block_size 16-64, 1 item/thread) maximise the number of carries between blocks
+    for _ in 1:100
+        num_elems = rand(5_000:200_000)
+        block_size = rand((16, 32, 64))
+        xh = rand(Int32(-9):Int32(9), num_elems)
+
+        yi = array_from_host(xh)
+        AK.accumulate!(+, yi; init=Int32(0), inclusive=true,
+                       alg=scan_alg(; block_size, items_per_thread=1))
+        @test Array(yi) == cumsum(xh)
+
+        init = rand(Int32(-50):Int32(50))
+        ye = array_from_host(xh)
+        AK.accumulate!(+, ye; init, inclusive=false,
+                       alg=scan_alg(; block_size, items_per_thread=1))
+        @test Array(ye) == (cumsum(xh) .- xh) .+ init
+    end
+end
+
+
+# Sequential reference scan of each slice along `dims` (a vector is one slice)
+function scan_reference(xh, dims; init, inclusive, op=matmul2)
+    out = similar(xh)
+    for I in CartesianIndices(Base.setindex(axes(xh), 1:1, dims))
+        acc = init
+        for k in axes(xh, dims)
+            J = Base.setindex(Tuple(I), k, dims)
+            if inclusive
+                acc = op(acc, xh[J...])
+                out[J...] = acc
+            else
+                out[J...] = acc
+                acc = op(acc, xh[J...])
+            end
+        end
+    end
+    out
+end
+
+
+@testset "accumulate: non-commutative" begin
+    Random.seed!(0)
+
+    # Single and multiple blocks, and more blocks than one block can scan (block_size=16), so that
+    # the block scan, the block-prefix carry and the chunked prefix carry are all
+    # exercised. On the CPU, `max_tasks=4` exercises the carry between tasks.
+    # With a neutral element, and without one (partial results then start from their first
+    # element)
+    for neutral in (I2, nothing), inclusive in (true, false),
+        (block_size, items_per_thread) in ((256, nothing), (16, 1), (32, 3))
+        # Includes exact tile boundaries (16 and 96 elements) and one past them
+        for n in (1, 2, 5, 16, 17, 96, 97, 100, 1000, 5000, 70_000)
+            xh = [randmat2() for _ in 1:n]
+            init = randmat2()
+            y = array_from_host(xh)
+            AK.accumulate!(matmul2, y; init, neutral, inclusive,
+                           alg=scan_alg(; max_tasks=4, block_size, items_per_thread))
+            @test Array(y) == scan_reference(xh, 1; init, inclusive)
+        end
+    end
+end
+
+
+if TEST_KERNELS
+@testset "accumulate: tile levels" begin
+    # With small tiles, the totals of the tiles take several levels of tiles themselves
+    Random.seed!(0)
+    alg = AK.ScanPrefixes(block_size=32, items_per_thread=2)
+    for n in (4097, 70_001, 300_000)
+        h = rand(Int32(-9):Int32(9), n)
+        v = array_from_host(h)
+        @test Array(AK.accumulate(+, v; alg)) == cumsum(h)
+        @test Array(AK.accumulate(+, v; init=Int32(3), inclusive=false, alg)) ==
+              vcat(Int32(3), Int32(3) .+ cumsum(h)[1:end-1])
+        xh = [randmat2() for _ in 1:n]
+        init = randmat2()
+        y = array_from_host(xh)
+        AK.accumulate!(matmul2, y; init, alg)
+        @test Array(y) == scan_reference(xh, 1; init, inclusive=true)
+        @test_throws ArgumentError AK.accumulate(+, v; alg=AK.ScanPrefixes(block_size=1, items_per_thread=1))
+        ws = AK.workspace(AK.accumulate!, +, similar(v), v; alg)
+        w = similar(v)
+        AK.accumulate!(+, w, v; alg, workspace=ws)
+        @test Array(w) == cumsum(h)
+    end
+end
+end
+
+
+@testset "accumulate: dims, non-commutative" begin
+    Random.seed!(0)
+
+    # Every GPU launch shape: a thread per slice (short contiguous slices staged in local memory,
+    # short slices, or many neighbouring ones) and a block per slice scanning tiles of it, each
+    # with the slices whole or (for the largest arrays) split into chunks whose totals are scanned
+    # in turn. Tiles of exactly one and two blocks' worth, and one element more, for both block
+    # sizes. Slices split into chunks of a length that isn't a multiple of the columns kernel's
+    # step.
+    for neutral in (I2, nothing), inclusive in (true, false), block_size in (64, 256)
+        S = neutral === nothing ? typeof(AK.Optional{Mat2}()) : Mat2
+        tile = !TEST_KERNELS ? 2 * block_size :
+               block_size * AK.resolve_scan(AK.SliceScan(; block_size), BACKEND, Mat2, 1,
+                                            S).items_per_thread
+        for (sz, dims) in (((3, 2000), 2), ((2000, 3), 1), ((2000, 3), 2), ((7, 600), 2),
+                           ((40, 5, 30), 1), ((40, 5, 30), 2), ((40, 5, 30), 3),
+                           ((3, tile), 2), ((3, tile + 1), 2), ((3, 2tile), 2), ((2tile + 1, 3), 1),
+                           ((32, 20_000), 2), ((64, 3, 500), 2), ((9, 4, 3000), 3), ((3, 70_000), 2),
+                           ((8, 6), 2), ((1, 5000, 2), 2), ((3, 200_000), 2), ((600_000, 1), 1),
+                           ((40, 300), 1), ((32, 12_345), 2))
+            xh = [randmat2() for _ in CartesianIndices(sz)]
+            init = randmat2()
+            y = array_from_host(xh)
+            AK.accumulate!(matmul2, y; init, neutral, inclusive, dims,
+                           alg=slice_alg(; max_tasks=4, block_size))
+            @test Array(y) == scan_reference(xh, dims; init, inclusive)
+        end
+    end
+end
+
+
+# Elements whose tiles take a smaller block than the tuning's to fit local memory (160 and 648
+# bytes: blocks of 64, of sub-groups on most GPUs, and of 16, smaller than one), with and
+# without a neutral element, inclusive and exclusive, of whole arrays (with several levels of
+# tile totals) and along `dims` in every launch shape (a thread per slice from local memory, or
+# stepping along it; a block per slice, whole or split)
+@testset "accumulate: large elements" begin
+    Random.seed!(0)
+    for N in (40, 162)
+        W = Large{N}
+        if TEST_KERNELS
+            a = AK.resolve_scan(scan_alg(), BACKEND, W, nothing)
+            @test a.block_size * (a.items_per_thread + 1) * sizeof(W) <= AK.LOCAL_MEMORY_BUDGET
+        end
+        for (sz, dims) in (((5000,), nothing), ((3, 300), 1), ((300, 40), 2), ((3, 2000), 2),
+                           ((2000, 3), 1))
+            xh = [W(rand(1:1000)) for _ in CartesianIndices(sz)]
+            alg = dims === nothing ? scan_alg() : slice_alg()
+            for neutral in (nothing, zero(W)), inclusive in (true, false)
+                init = inclusive ? nothing : W(7)
+                kw = init === nothing ? (;) : (; init)
+                res = AK.accumulate(large_add, array_from_host(xh); dims, neutral, inclusive,
+                                    alg, kw...)
+                @test Array(res) == scan_reference(xh, something(dims, 1); op=large_add,
+                                                   init=something(init, zero(W)), inclusive)
+            end
+        end
+    end
+end
+
+
+# CPU devices scan without sub-groups (`cpu_scan_tuning`), so on the host backend the tuning
+# turns them on, to check the sub-group block scans under PoCL, which runs sub-group operations
+# as barriers of the whole block: whole arrays reduced or scanned first (`reduce_then_scan`),
+# slices of a block each over several tiles, split or not, and `findall`'s compaction; with and
+# without a neutral element, and in element order
+function subgroup_scans()
+    for reduce_then_scan in (true, false)
+        @eval AK.scan_tuning(::typeof(BACKEND), ::Type) =
+            AK.ScanTuning(; subgroups=true, reduce_then_scan=$reduce_then_scan)
+        Base.invokelatest() do
+            @test AK.scan_subgroup_width(BACKEND, Int32, 256) !== Val(0)
+            for (sz, dims) in (((100_000,), nothing), ((3, 6200), 2), ((3, 70_000), 2))
+                xh = rand(Int32(-9):Int32(9), sz...)
+                alg = dims === nothing ? scan_alg() : slice_alg()
+                for op in (+, (a, b) -> a + b)
+                    res = AK.accumulate(op, array_from_host(xh); dims, alg)
+                    @test Array(res) == accumulate(+, xh; dims=something(dims, 1))
+                end
+                mh = [randmat2() for _ in CartesianIndices(sz)]
+                res = AK.accumulate(matmul2, array_from_host(mh); dims, alg)
+                @test Array(res) == scan_reference(mh, something(dims, 1); init=I2,
+                                                   inclusive=true)
+            end
+            xh = rand(Int32(-9):Int32(9), 100_000)
+            @test Array(AK.findall(>(0), array_from_host(xh); alg=FINDALL_ALG)) ==
+                  findall(>(0), xh)
+        end
+    end
+end
+if HOST_KERNELS
+    @testset "accumulate: sub-groups on the host backend" begin
+        try
+            subgroup_scans()
+        finally
+            @eval AK.scan_tuning(::typeof(BACKEND), ::Type) = AK.cpu_scan_tuning()
+        end
+    end
+end
+
+
+if TEST_KERNELS
+@testset "accumulate: dims, tiles of one element" begin
+    # Tiles of a single element: splitting a slice still shortens it
+    for dims in 1:2
+        xh = rand(Int32(1):Int32(9), 16, 16)
+        y = AK.accumulate!(+, array_from_host(xh); dims,
+                           alg=AK.SliceScan(block_size=1, items_per_thread=1))
+        @test Array(y) == accumulate(+, xh; dims)
+    end
+end
+
+@testset "accumulate: runs of each parity" begin
+    # Partials of 1 to 16 bytes, `Optional`s for an operator without a neutral element, whose
+    # runs of even length are padded in local memory (all but the primitive types of up to 4
+    # bytes)
+    Random.seed!(0)
+    for T in valid_backend_eltypes(BACKEND, [Int8, Int32, Float64]),
+        items_per_thread in (2, 5, 6, 16)
+        xh = T.(rand(-9:9, rand(1000:20_000)))
+        for op in (+, (a, b) -> a + b, (a, b) -> max(a, b))
+            y = AK.accumulate!(op, array_from_host(xh);
+                               alg=AK.ScanPrefixes(; block_size=64, items_per_thread))
+            @test Array(y) == accumulate(op, xh)
+            # (slices of a block each)
+            for (xm, dims) in ((reshape(xh[1:end - end % 2], 2, :), 2),
+                               (reshape(xh[1:end - end % 3], :, 3), 1))
+                y = AK.accumulate!(op, array_from_host(xm); dims,
+                                   alg=AK.SliceScan(; block_size=64, items_per_thread))
+                @test Array(y) == accumulate(op, xm; dims)
+            end
+        end
+    end
+end
+end
+
+
+@testset "accumulate: dims, converting elements" begin
+    Random.seed!(0)
+
+    # Elements enter as one-element reductions of the accumulator type as the kernels read
+    # them (`Base.reduce_first`): wider than the source, and narrower than the destination, for
+    # every launch shape
+    for (sz, dims) in (((40, 300), 1), ((40, 5, 30), 2), ((3, 2000), 2), ((2000, 3), 1),
+                       ((64, 3, 500), 2), ((3, 200_000), 2), ((600_000, 1), 1))
+        xh = rand(Int8(-100):Int8(100), sz...)
+        x = array_from_host(xh)
+        @test Array(AK.accumulate(Base.add_sum, x; dims, alg=slice_alg())) ==
+              accumulate(Base.add_sum, xh; dims)
+        bh = rand(Bool, sz...)
+        @test Array(AK.cumsum(array_from_host(bh); dims, alg=slice_alg())) == cumsum(bh; dims)
+        y = array_from_host(zeros(Int32, sz))
+        @test Array(AK.accumulate!(Base.add_sum, y, x; dims, alg=slice_alg())) ==
+              accumulate(Base.add_sum, xh; dims)
+    end
+end
+
+
+@testset "accumulate: bits-union elements" begin
+    Random.seed!(0)
+
+    # Running values of a bits-union type (`Optional`s of one, as these operators have no neutral
+    # element for it), with Base's result types: one tile, several, and with small tiles several
+    # levels of tile totals
+    for n in (1, 5, 1000, 70_001), mk in (mixed_numbers, some_missing),
+        alg in (scan_alg(), scan_alg(; block_size=32, items_per_thread=2, max_tasks=4))
+        h = mk(n)
+        v = array_from_host(h)
+        for (r, ref) in ((AK.cumsum(v; alg), cumsum(h)),
+                         (AK.accumulate(max, v; alg), accumulate(max, h)),
+                         (AK.accumulate(+, v; init=Int32(1), alg), accumulate(+, h; init=Int32(1))),
+                         (AK.accumulate(+, v; init=0f0, alg), accumulate(+, h; init=0f0)))
+            @test eltype(r) == eltype(ref) && isequal(Array(r), ref)
+        end
+        r = AK.accumulate(+, v; init=0f0, inclusive=false, alg)
+        @test isequal(Array(r), [0f0; accumulate(+, h; init=0f0)[1:end-1]])
+        # into a destination of Base's element type, which an `Int` `init` widens to an abstract
+        # type with `promote_type`
+        ref = accumulate(+, h; init=0)
+        @test isequal(Array(AK.accumulate!(+, similar(v, eltype(ref)), v; init=0, alg)), ref)
+    end
+
+    # A union of three members, which Base's inference widens to `Any`
+    h = Union{Missing, Int32, Float32}[i == 700 ? missing :
+                                       isodd(i) ? Int32(i % 5) : Float32(i % 3) for i in 1:1000]
+    r = AK.cumsum(array_from_host(h); alg=scan_alg())
+    @test eltype(r) == Union{Missing, Float32, Int} && isequal(Array(r), cumsum(h))
+
+    # Along `dims`, with every launch shape
+    for (sz, dims) in (((40, 300), 1), ((40, 5, 30), 2), ((3, 2000), 2), ((2000, 3), 1),
+                       ((64, 3, 500), 2), ((3, 200_000), 2), ((600_000, 1), 1)),
+        mk in (mixed_numbers, some_missing)
+        h = mk(sz...)
+        x = array_from_host(h)
+        r, ref = AK.cumsum(x; dims, alg=slice_alg()), cumsum(h; dims)
+        @test eltype(r) == eltype(ref) && isequal(Array(r), ref)
+        @test isequal(Array(AK.accumulate(min, x; dims, alg=slice_alg())), accumulate(min, h; dims))
+    end
+end
+
+
+@testset "accumulate: dims" begin
+    Random.seed!(0)
+
+    # Test all possible corner cases against Base.accumulate
+    for dims in 1:4
+        for isize in 0:3
+            for jsize in 0:3
+                for ksize in 0:3
+                    sh = rand(Int32(1):Int32(100), isize, jsize, ksize)
+                    s = array_from_host(sh)
+                    d = AK.accumulate(+, s; init=Int32(0), dims, alg=slice_alg())
+
+                    dh = Array(d)
+                    dhres = accumulate(+, sh; init=Int32(0), dims)
+                    @test dh == dhres
+                    @test eltype(dh) == eltype(dhres)
+                end
+            end
+        end
+    end
+
+    # Fuzzy correctness testing
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:100)
+            n2 = rand(1:100)
+            n3 = rand(1:100)
+            vh = rand(Int32(1):Int32(100), n1, n2, n3)
+            v = array_from_host(vh)
+
+            s = AK.accumulate(+, v; init=Int32(0), dims, alg=slice_alg())
+            sh = Array(s)
+            @test sh == accumulate(+, vh; init=Int32(0), dims)
+        end
+    end
+
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:100)
+            n2 = rand(1:100)
+            n3 = rand(1:100)
+            vh = rand(UInt32(1):UInt32(100), n1, n2, n3)
+            v = array_from_host(vh)
+
+            s = AK.accumulate(+, v; init=UInt32(0), dims, alg=slice_alg())
+            sh = Array(s)
+            @test sh == accumulate(+, vh; init=UInt32(0), dims)
+        end
+    end
+
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:100)
+            n2 = rand(1:100)
+            n3 = rand(1:100)
+            vh = rand(Float32, n1, n2, n3)
+            v = array_from_host(vh)
+
+            s = AK.accumulate(+, v; init=Float32(0), dims, alg=slice_alg())
+            sh = Array(s)
+            @test all(sh .≈ accumulate(+, vh; init=Float32(0), dims))
+        end
+    end
+
+    # The init value is respected
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:100)
+            n2 = rand(1:100)
+            n3 = rand(1:100)
+            vh = rand(Float32, n1, n2, n3)
+            v = array_from_host(vh)
+            init = rand(-1000:1000)
+            s = AK.accumulate(+, v; init=Float32(init), dims, alg=slice_alg())
+            sh = Array(s)
+            # (as a whole: where a running sum from a negative `init` passes zero, elements
+            # summed in another order differ in their leading digits)
+            @test sh ≈ accumulate(+, vh; init=Float32(init), dims)
+        end
+    end
+
+    # Exclusive scan
+    vh = ones(Int32, 10, 10)
+    v = array_from_host(vh)
+    s = AK.accumulate(+, v; init=0, dims=2, inclusive=false, alg=slice_alg())
+    sh = Array(s)
+    @test all([sh[i, :] == 0:9 for i in 1:10])
+
+    # Test init value is respected with exclusive scan too
+    vh = ones(Int32, 10, 10)
+    v = array_from_host(vh)
+    s = AK.accumulate(+, v; init=10, dims=2, inclusive=false, alg=slice_alg())
+    sh = Array(s)
+    @test all([sh[i, :] == 10:19 for i in 1:10])
+
+    # Test that undefined kwargs are not accepted
+    @test_throws MethodError AK.accumulate(+, v; init=10, dims=2, inclusive=false, bad=:kwarg,
+                                           alg=slice_alg())
+
+    # Test all options with bigger matrices
+    for D in [(1_000_000,3), (3,1_000_000)], dims in [1,2]
+        @testset let D = D, dims = dims
+            vh = ones(Float32, D)
+            v = array_from_host(vh)
+            s = AK.accumulate(+, v; init=0, dims)
+            sh = Array(s)
+            @test sh == accumulate(+, vh; init=0, dims)
+        end
+    end
+
+    # Testing different settings
+    AK.accumulate((x, y) -> x + 1, array_from_host(rand(Int32, 3, 4, 5)); init=Int32(0),
+                  neutral=Int32(0), dims=2, alg=slice_alg(; block_size=64))
+    AK.accumulate((x, y) -> x + 1, array_from_host(rand(Int32, 3, 4, 5)); init=Int32(0),
+                  neutral=Int32(0), dims=3, alg=slice_alg(; block_size=64))
+end
+
+
+@testset "cumsum" begin
+
+    Random.seed!(0)
+
+    # Simple correctness tests
+    v = array_from_host(1:100)
+    vh = Array(v)
+    @test Array(AK.cumsum(v; alg=scan_alg())) == cumsum(vh)
+
+    # Fuzzy testing
+    for _ in 1:100
+        num_elems = rand(1:100_000)
+        vh = rand(Float32, num_elems)
+        v = array_from_host(vh)
+        @test all(Array(AK.cumsum(v; alg=scan_alg())) .≈ cumsum(vh))
+    end
+
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:10)
+            n2 = rand(1:10)
+            n3 = rand(1:10)
+            vh = rand(Int32(-5):Int32(5), n1, n2, n3)
+            v = array_from_host(vh)
+
+            # Indexing into array as if linear; not supported in Base
+            # @test all(Array(AK.cumsum(v; alg=scan_alg())) .== cumsum(vh))
+
+            # Along dimensions
+            r = Array(AK.cumsum(v; dims, alg=slice_alg()))
+            rh = cumsum(vh; dims)
+
+            @test r == rh
+        end
+    end
+
+    # Test promotion to op-dictated type
+    xh = rand(Bool, 16)
+    x = array_from_host(xh)
+    @test Array(AK.cumsum(x; alg=scan_alg())) == cumsum(xh)
+
+    # Testing different settings
+    v = array_from_host(rand(-5:5, 100_000))
+    AK.cumsum(v; alg=scan_alg(; block_size=64))
+
+    # Test that undefined kwargs are not accepted
+    @test_throws MethodError AK.cumsum(v; init=10, bad=:kwarg, alg=scan_alg())
+
+    # The other settings are stress-tested in reduce
+end
+
+
+@testset "cumprod" begin
+
+    Random.seed!(0)
+
+    # Simple correctness tests
+    v = array_from_host(1:100)
+    vh = Array(v)
+    @test Array(AK.cumprod(v; alg=scan_alg())) == cumprod(vh)
+
+    vh = ones(Float32, 100_000)
+    v = array_from_host(vh)
+    @test Array(AK.cumprod(v; alg=scan_alg())) == vh
+
+    # Fuzzy testing
+    for _ in 1:100
+        for dims in 1:3
+            n1 = rand(1:10)
+            n2 = rand(1:10)
+            n3 = rand(1:10)
+            vh = rand(Int32(-5):Int32(5), n1, n2, n3)
+            v = array_from_host(vh)
+
+            # Indexing into array as if linear; not supported in Base
+            # @test all(Array(AK.cumprod(v; alg=scan_alg())) .== cumprod(vh))
+
+            # Along dimensions
+            r = Array(AK.cumprod(v; dims, alg=slice_alg()))
+            rh = cumprod(vh; dims)
+
+            @test r == rh
+        end
+    end
+
+    # Testing different settings
+    v = array_from_host(rand(-5:5, 100_000))
+    AK.cumprod(v; alg=scan_alg(; block_size=64))
+
+    # Test that undefined kwargs are not accepted
+    @test_throws MethodError AK.cumprod(v; init=10, bad=:kwarg, alg=scan_alg())
+
+    # The other settings are stress-tested in reduce
+end
+
+
+@testset "accumulate: contract" begin
+    Random.seed!(0)
+    xh = rand(Int32(-9):Int32(9), 20_000)
+    x = array_from_host(xh)
+
+    # Inclusive scans without `init` start from the first element; with it, `init` is applied
+    # once, also when the scan spans many blocks
+    alg = scan_alg(; block_size=32, items_per_thread=1, max_tasks=4)
+    @test Array(AK.accumulate(+, x; alg)) == cumsum(xh)
+    @test Array(AK.accumulate(+, x; init=Int32(5), alg)) == accumulate(+, xh; init=Int32(5))
+    # Exclusive scans start from `init`, else from the neutral element
+    @test Array(AK.accumulate(+, x; inclusive=false, alg)) == cumsum(xh) .- xh
+    @test Array(AK.accumulate(+, x; init=Int32(5), inclusive=false, alg)) ==
+          cumsum(xh) .- xh .+ 5
+    # Operators without a known neutral element
+    @test Array(AK.accumulate((a, b) -> a + b, x; alg)) == cumsum(xh)
+    @test Array(AK.accumulate((a, b) -> max(a, b), x; init=Int32(0), alg)) ==
+          accumulate(max, xh; init=Int32(0))
+    @test Array(AK.accumulate((a, b) -> a + b, x; init=Int32(5), inclusive=false, alg)) ==
+          cumsum(xh) .- xh .+ 5
+    @test_throws ArgumentError AK.accumulate((a, b) -> a + b, x; inclusive=false, alg)
+
+    # The same along `dims`
+    mh = rand(Int32(-9):Int32(9), 70, 300)
+    m = array_from_host(mh)
+    for dims in (1, 2), alg in (slice_alg(), slice_alg(; block_size=32, max_tasks=4))
+        @test Array(AK.accumulate(+, m; dims, alg)) == cumsum(mh; dims)
+        @test Array(AK.accumulate((a, b) -> a + b, m; dims, alg)) == cumsum(mh; dims)
+        @test Array(AK.accumulate(+, m; dims, init=Int32(2), inclusive=false, alg)) ==
+              cumsum(mh; dims) .- mh .+ 2
+        @test_throws ArgumentError AK.accumulate((a, b) -> a + b, m; dims, inclusive=false, alg)
+    end
+    # A `dims` beyond the array's makes every slice one element long: inclusive scans apply `init`
+    # to every element, and exclusive ones start every slice over
+    @test Array(AK.accumulate(+, m; dims=3, alg=slice_alg())) == mh
+    @test Array(AK.accumulate(+, m; dims=3, init=Int32(7), alg=slice_alg())) == mh .+ Int32(7)
+    @test Array(AK.accumulate(+, m; dims=3, init=7, alg=slice_alg())) == mh .+ 7
+    @test Array(AK.accumulate(+, m; dims=3, init=Int32(7), inclusive=false, alg=slice_alg())) ==
+          fill(Int32(7), size(mh))
+
+    # `accumulate` allocates the fold type of `op` from `init`'s type and the elements
+    h8 = Int8[1, 2, 100]
+    for (r, ref) in ((AK.accumulate(+, array_from_host(h8); alg=scan_alg()), accumulate(+, h8)),
+                     (AK.accumulate(+, array_from_host(h8); init=0, alg=scan_alg()),
+                      accumulate(+, h8; init=0)),
+                     (AK.cumsum(array_from_host(h8); alg=scan_alg()), cumsum(h8)),
+                     (AK.cumsum(array_from_host(Bool[1, 1, 0]); alg=scan_alg()), cumsum(Bool[1, 1, 0])),
+                     (AK.cumprod(array_from_host(Int8[2, 3]); alg=scan_alg()), cumprod(Int8[2, 3])))
+        @test eltype(r) === eltype(ref) && Array(r) == ref
+    end
+    @test Array(AK.accumulate(+, array_from_host(Int32[]); alg=scan_alg())) == Int32[]
+
+    # `init=nothing` is an initial value, not an omitted one: `op` applies it
+    @test_throws Exception AK.accumulate(+, x; init=nothing, alg=scan_alg())
+    something_add(a, b) = something(a, Int32(0)) + something(b, Int32(0))
+    @test Array(AK.accumulate(something_add, x; init=nothing, alg=scan_alg())) ==
+          accumulate(something_add, xh; init=nothing)
+
+    # The scan runs in the running-value type and converts only when storing (on oneAPI, a kernel
+    # whose conversion may throw an `InexactError` needs oneAPI.jl 2.9.2's device heap)
+    fh = Float32[0.5, 1.0, 2.0]
+    @test Array(AK.accumulate!(+, array_from_host(zeros(Int32, 3)), array_from_host(fh);
+                               init=0.5f0, alg=scan_alg())) ==
+          accumulate!(+, zeros(Int32, 3), fh; init=0.5f0)
+    @test Array(AK.accumulate!(+, array_from_host(zeros(Int32, 1, 3)),
+                               array_from_host(reshape(fh, 1, 3));
+                               init=0.5f0, dims=2, alg=slice_alg())) ==
+          accumulate!(+, zeros(Int32, 1, 3), reshape(fh, 1, 3); init=0.5f0, dims=2)
+    # Elements enter as one-element partial results, so `addmod`'s operands need not fit its
+    # result type
+    addmod(a, b) = Int32(mod(Int64(a) + Int64(b), 97))
+    bigs = Int64[2147483648, 1, 2]
+    @test Array(AK.accumulate(addmod, array_from_host(bigs); init=Int32(0), alg=scan_alg())) ==
+          accumulate(addmod, bigs; init=Int32(0))
+    # The running-value type starts from the destination's element type as well, so a wider
+    # destination holds the running values without a scratch array
+    @test Array(AK.accumulate!(*, array_from_host(zeros(Int, 4)), array_from_host(fill(0x10, 4));
+                               alg=scan_alg())) == [16, 256, 4096, 65536]
+    @test Array(AK.accumulate!(*, array_from_host(zeros(Int, 2, 3)),
+                               array_from_host(fill(0x10, 2, 3)); dims=2, alg=slice_alg())) ==
+          repeat([16 256 4096], 2)
+    if Float64 in valid_backend_eltypes(BACKEND, (Float64,))
+        @test Array(AK.accumulate!(+, array_from_host(zeros(Float64, 3)),
+                                   array_from_host(Float32[1.0f8, 1, -1.0f8]); alg=scan_alg())) ==
+              [1e8, 100000001, 1]
+    end
+    # `acctype` sets the running-value type, and `accumulate`'s element type
+    r = AK.accumulate(+, array_from_host(Int8[100, 100]); acctype=Int8, alg=scan_alg())
+    @test eltype(r) === Int8 && Array(r) == Int8[100, -56]
+    r = AK.cumsum(array_from_host(Int8[100, 100]); acctype=Int16, alg=scan_alg())
+    @test eltype(r) === Int16 && Array(r) == Int16[100, 200]
+    r = AK.accumulate!(+, array_from_host(zeros(Int32, 3)), array_from_host(Int8[100, 100, 100]);
+                       acctype=Int8, alg=scan_alg())
+    @test Array(r) == Int32[100, -56, 44]
+    @test_throws ArgumentError AK.accumulate(+, x; acctype=String, alg=scan_alg())
+    # A scan that never calls `op` only copies: along a `dims` beyond the array's without `init`,
+    # or of one element
+    @test Array(AK.accumulate!(+, array_from_host(zeros(Int32, 2)), array_from_host(Int32[1, 2]);
+                               dims=2, alg=slice_alg())) == [1, 2]
+    @test Array(AK.accumulate!(+, array_from_host(zeros(Int32, 2)), array_from_host(Int32[1, 2]);
+                               dims=2, init=Int32(1), alg=slice_alg())) == [2, 3]
+    if !TEST_KERNELS
+        @test AK.accumulate(+, ['a']; alg=scan_alg()) == ['a']   # (Base's fails on Julia 1.10)
+        @test AK.accumulate(coalesce, [missing, 1, 2]; init=0, alg=scan_alg()) ==
+              accumulate(coalesce, [missing, 1, 2]; init=0)
+    end
+    # Scans start from the exact neutral element, so the first element stays as it is
+    z = Array(AK.accumulate(+, array_from_host([-0.0f0, -0.0f0]); alg=scan_alg()))
+    @test Base.all(signbit, z)
+    if !TEST_KERNELS
+        # Values that are not bits types, on the host: elements enter as `Base.reduce_first`
+        # (a `Char` becomes a `String`), and the lanes of an operator without a neutral element
+        # are never stored empty
+        @test AK.accumulate(*, collect("abcdef"); alg=scan_alg(max_tasks=3, min_elems=2)) ==
+              accumulate(*, collect("abcdef"))
+        @test AK.accumulate((a, b) -> a * b, fill("x", 8); init="s", inclusive=false,
+                            alg=scan_alg(max_tasks=4, min_elems=2)) ==
+              ["s" * "x"^k for k in 0:7]
+    end
+    @test length(AK.accumulate(+, array_from_host(Int32[]); init=nothing, alg=scan_alg())) == 0
+    if !TEST_KERNELS
+        # An abstract running type, with the caller's neutral element
+        for alg in (scan_alg(), scan_alg(max_tasks=2, min_elems=2))
+            @test AK.accumulate(+, Real[1, 2.5, 3]; neutral=0, inclusive=false, alg) == [0, 1, 3.5]
+            @test AK.accumulate(+, [1, 2]; acctype=Real, neutral=0, inclusive=false, alg) == [0, 1]
+        end
+    end
+
+    # The destination is the source or does not overlap it
+    y = copy(x)
+    @test AK.accumulate!(+, y, y; alg=scan_alg()) === y
+    @test Array(y) == cumsum(xh)
+    # (where the array type lets `Base.mightalias` see the overlap: Metal's contiguous views are
+    # separate arrays)
+    if Base.mightalias(view(x, 2:100), view(x, 1:99))
+        @test_throws ArgumentError AK.accumulate!(+, view(x, 2:100), view(x, 1:99); alg=scan_alg())
+    end
+    @test_throws DimensionMismatch AK.accumulate!(+, array_from_host(zeros(Int32, 5)), x;
+                                                  alg=scan_alg())
+end
+
+
+@testset "accumulate: backend-free inputs" begin
+    # A range has no backend: the result is allocated on the one given
+    r = AK.cumsum(1:5; backend=BACKEND, alg=scan_alg())
+    @test get_backend(r) == BACKEND
+    @test Array(r) == cumsum(1:5)
+    r = AK.accumulate(+, 1:5; backend=BACKEND, init=10, alg=scan_alg())
+    @test Array(r) == accumulate(+, 1:5; init=10)
+end
+
+
+@testset "accumulate: dims of wrapped arrays" begin
+    # Linear indices of a permuted or strided view are not its storage offsets
+    h = reshape(Int32.(1:24), 4, 6)
+    for wrap in (A -> PermutedDimsArray(A, (2, 1)), A -> view(A, 1:2:4, :)), dims in (1, 2)
+        v = wrap(array_from_host(h))
+        @test Array(AK.accumulate!(+, v; dims, alg=slice_alg())) == accumulate(+, wrap(h); dims)
+    end
+end
+
+
+@testset "accumulate: offset axes" begin
+    # Arrays whose axes do not start at 1, as sources and destinations (with the same axes)
+    Random.seed!(0)
+    whole = TEST_KERNELS ? [scan_alg()] : [scan_alg(), scan_alg(max_tasks=4, min_elems=2)]
+    slices = TEST_KERNELS ? [slice_alg()] : [slice_alg(), slice_alg(max_tasks=4, min_elems=2)]
+    h = rand(Int32(-9):Int32(9), 1000)
+    for alg in whole, inclusive in (true, false)
+        expected = inclusive ? accumulate(+, h; init=10) : accumulate(+, [10; h[1:end-1]])
+        v = offset_from_host(h, (-3,))
+        AK.accumulate!(+, v; init=Int32(10), inclusive, alg)
+        @test Array(v.parent) == expected
+        dst = offset_from_host(zeros(Int32, 1000), (-3,))
+        with_workspace(AK.accumulate!, +, dst, offset_from_host(h, (-3,)); init=Int32(10),
+                       inclusive, alg)
+        @test Array(dst.parent) == expected
+        @test Array(AK.cumsum(offset_from_host(h, (-3,)); alg)) == cumsum(h)
+        # (into a narrower element type, through a scratch array of the accumulator type)
+        hb = rand(Int8(0):Int8(1), 100)
+        dst = offset_from_host(zeros(Int8, 100), (-3,))
+        AK.accumulate!(Base.add_sum, dst, offset_from_host(hb, (-3,)); inclusive, alg)
+        @test Array(dst.parent) == (inclusive ? cumsum(hb) : [0; cumsum(hb)[1:end-1]])
+        v = offset_from_host(Int32[5], (-3,))
+        AK.accumulate!(+, v; init=Int32(10), inclusive, alg)
+        @test Array(v.parent) == [inclusive ? 15 : 10]
+    end
+    hm = rand(Int32(-9):Int32(9), 30, 40)
+    for alg in slices, dims in (1, 2)
+        m = offset_from_host(hm, (-1, 3))
+        AK.accumulate!(+, m; dims, alg)
+        @test Array(m.parent) == cumsum(hm; dims)
+        dst = offset_from_host(zeros(Int32, 30, 40), (-1, 3))
+        AK.accumulate!(+, dst, offset_from_host(hm, (-1, 3)); dims, init=Int32(10),
+                       inclusive=false, alg)
+        @test Array(dst.parent) == (dims == 1 ?
+            vcat(fill(10, 1, 40), 10 .+ cumsum(hm; dims)[1:end-1, :]) :
+            hcat(fill(10, 30, 1), 10 .+ cumsum(hm; dims)[:, 1:end-1]))
+    end
+    # Along a dimension beyond the array's, every element is a slice
+    m = offset_from_host(hm, (-1, 3))
+    AK.accumulate!(+, m; dims=3, init=Int32(4), inclusive=false, alg=slice_alg())
+    @test Array(m.parent) == fill(4, 30, 40)
+end

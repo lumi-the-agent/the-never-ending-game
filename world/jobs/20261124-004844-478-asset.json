@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-24T00:48:44.478",
+  "finished": "2026-11-24T01:49:14.577",
+  "id": "20261124-004844-478-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 3000,
+    "prompt": "a short rustic wooden picket fence section with three rounded pickets and two rails, warm honey wood, stylized toy-like, seen from the side, standing on the ground",
+    "tags": [
+      "prop",
+      "fence",
+      "garden"
+    ]
+  },
+  "result": {
+    "created": "2026-11-24T01:49:14.189",
+    "faces": 2843,
+    "id": "20261124-004844-478-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-478-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-478-asset/mesh.jls",
+    "prompt": "a short rustic wooden picket fence section with three rounded pickets and two rails, warm honey wood, stylized toy-like, seen from the side, standing on the ground",
+    "seconds": 576.0,
+    "tags": [
+      "prop",
+      "fence",
+      "garden"
+    ]
+  },
+  "seconds": 579.0,
+  "started": "2026-11-24T01:39:35.350",
+  "status": "done"
+}

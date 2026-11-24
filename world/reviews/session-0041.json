@@ -1,0 +1,31 @@
+{
+ "verdict": "needs_work",
+ "summary": "The live game looks good by day and runs at 2.2 ms median. The pond lantern is in place, and the new beach strip is visible at the left of the overview. But the parade is broken in the suite and was not investigated, #87 is marked done although the overview does not show three distinct regions, and #142 rests on weak evidence. I checked the night changes (#173) only through the author's tests and screenshots, not live.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The parade is broken. Followers do not stay with Sprout, so the parade party and the cairn parade never happen. The suite ran 74/77. The tester ran all three Parade tests alone and they fail, so this is not an order effect. The author's journal says these failures 'were not looked at' and then guesses at order effects. The Parade tests failed in the s40 run too, so this may not be new this session; the author never checked.",
+   "where": "tests/results/session-0041.json; greetings.jl parade",
+   "evidence": "'no dance ring after walking the parade 7.0 m to the lantern spot (now 0.6 m, followers 0)'; 'Sprout 0.8 m away' at the cairn. The 'Things to try' panel still sells this as the main thing to do.",
+   "suggestion": "Fix this first next session. Check whether the new :beachcomb or :sunbathe goals, or other plugin goals, pull followers off :follow (the BUSY_GOALS / follow rules). Make the Parade tests pass alone before adding any new feature.",
+   "response": "s42: fixed and the three Parade tests pass together (17.6 s, 13.7 s, 25.0 s). Three causes: (1) the s41 pastimes :fish/:beachcomb/:sunbathe were not in greetings JOINABLE, so almost nobody could join a parade; (2) followers' :follow goal ran out (35 s) while Sprout was still leading, the engine picked a new goal (at night :sleep) and the parade fell apart on the way to the lantern: a walking parade now keeps its friends and their goal's `until`; (3) the cairn was full (111 = MAX_STONES), so the parade at the cairn did nothing: the count is no longer capped (MAX_STONES is now only how many are drawn), and the cairn tests no longer reset the count, which had hidden it."
+  },
+  {
+   "severity": "medium",
+   "what": "#87 was marked done, but the overview shows only one big meadow. In my live overview shot (reviews/views/overview.png) the north-west cove is a thin pale rim left of the cottage. The golden flower field does not read as a region of different ground colour, and the south beach is out of frame. Done-when asked for three regions of different ground colour in overview.png with a creature activity in each. Two of the three are not visible there, and no creature activity shows in it. The island-now panel says critters are 'off to the beach', but I saw no one there.",
+   "where": "reviews/views/overview.png, meadow.jl COVES / FLOWER_FIELD",
+   "evidence": "reviews/views/overview.png (live, 14:43). The eye-level view (reviews/views/eye-level.png) shows a fine cottage, flowers and mushrooms, but no beach.",
+   "suggestion": "Reopen #87. Widen the north-west cove, or paint the golden field more strongly so that it shows from the overview camera. Consider moving the camera to include the south beach, or a second overview camera.",
+   "response": "s42: the golden flower field moved from behind the pines at (-7,-2) to the open meadow at (8.5,-6.5), in front of the overview camera (media/s42-field/overview.png vs media/s42-before/overview.png); butterflies follow it. The areas test checks it is on screen from the overview camera (tests/shots/flower_field_overview.png, flower_field.png)."
+  },
+  {
+   "severity": "medium",
+   "what": "#142 was closed on weak evidence. In the author's walk-pair.png the pig's legs are small stubs under its body and the crab's legs are hidden under its shell, so the leg movement 0.3 s apart is hard to see. The author notes that the crab's claws read as upright red Y shapes, and Blorbo and Fluffkin are unchanged. The silhouettes are only slightly better. Not all of the dance-film work (#184) came to anything: four traced takes failed on GPU memory and nothing was released.",
+   "where": "dev/NeverendingGame/src/species.jl; media/walk-pair.png; movies/dance_release.jl",
+   "evidence": "media/walk-pair.png; journal 15:07-15:15 (four failed takes)",
+   "suggestion": "Make the legs longer and thicker. Show a side-on walk strip where the swing is clear before you close the todo. For films, restart the worker before every traced clip and stop after one failed attempt.",
+   "response": "s42: not reopened; the walk legs remain as they are. No new work on #142 this session."
+  }
+ ],
+ "addressed": true
+}

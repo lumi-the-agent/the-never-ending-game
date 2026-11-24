@@ -1,0 +1,82 @@
+# Development environment for the monorepo, Makie-style: `Pkg.activate(".")`
+# here and every package is dev'd from its subdirectory, so a change to
+# DNNKernels is visible to SAM2Runner without a resolve.
+#
+#     julia --project=. -e 'using Pkg; Pkg.instantiate()'
+#
+# Not a package itself — it has no `name`/`uuid`/`src`.
+#
+# The nine runners below `SAM2Runner` are scaffolded but not ported; see
+# `models-to-port.md`. They are listed here from the start on purpose — each one
+# loads and precompiles with no assets installed, so having them in the
+# environment costs nothing and means the port is the only thing left to do.
+[deps]
+# Named here as well as in `[sources]`: Pkg refuses a source for a package the
+# project does not depend on ("Sources for `Lava` not listed in `deps` or
+# `extras`"), so without this the documented `Pkg.activate(".")` workflow at the
+# top of this file does not resolve at all.
+Lava = "3a680b1f-cb25-4bee-9cf7-bc880b76dc8c"
+KernelInterface = "4ee993da-d684-4d17-a7dd-4e58e78d92bf"
+KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
+GPUArrays = "0c68f7d7-f131-5f86-a1c3-88cf8149b2d7"
+Raycore = "afc56b53-c9a9-482a-a956-d1d800e05559"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+Mantle = "8f4c1f2e-6a3d-4b71-9c05-2e7d8a1b6f34"
+Vulkan = "9f14b124-c50e-4008-a7d4-969b3a6cd68a"
+VulkanCore = "16167f82-ea26-5cba-b1de-ed6fd5e30a11"
+BasicVSRRunner = "80334b24-06e6-4f50-a0e2-378c5490f15d"
+BonsaiRunner = "f8e6003a-513a-4f5e-98bb-1b2c050ff941"
+DNNKernels = "b7e4a0c2-3f51-4d8e-9a1b-6c2d5e8f7a30"
+DeepFilterRunner = "76ab6b05-7ff6-4b1b-98e3-d56aa964097a"
+DemucsRunner = "a4515a7e-7709-4c13-8f3d-d3adf643ca1a"
+DepthAnythingRunner = "acf050f5-8d8b-44a6-839a-ace43aa41d7c"
+PPOCRRunner = "e16c7811-b8c1-4791-91d8-75b683fe5914"
+UVDocRunner = "7c6dc493-cef7-40e2-b25f-97e481222d57"
+PPDocLayoutRunner = "af74545c-bb7d-41de-988c-5d37636a6f7a"
+GPUFiltering = "0d8d4a14-6fb1-4aec-8b08-0f10adea08ad"
+GPUMeshing = "df37d806-2c47-48da-b0c3-16f66acdb262"
+HorizonRunner = "c0eeb82c-1b8f-4a93-afa6-9a61c12e097d"
+Hunyuan3DRunner = "1362f9cf-064b-4ee3-980c-c7d802e94ecc"
+KokoroRunner = "31480c1c-f298-4848-9ae9-978a73fb95d8"
+MatAnyoneRunner = "7c4d9e15-2b83-4f6a-a0d7-3e1b8f5c9a24"
+NeuralLUTRunner = "0f237b2a-cdac-4549-9dcd-ab780cc4b910"
+ProPainterRunner = "f30bad0e-6420-4ef0-ba68-abf723d394da"
+QwenImageRunner = "c9f7083c-8461-4622-afdd-95dfb5dadffd"
+RIFERunner = "091c3b0f-d4d3-44b9-a2bb-d2bc125c3573"
+SAM2Runner = "3f5b1e8a-9d42-4c7e-b16a-2c9d0e4f7a51"
+WhisperRunner = "6f1a5d52-5102-48dc-988e-ecb6f8c89f5e"
+
+# Lava is not in the General registry, so a fresh clone cannot resolve without
+# being told where it lives. `[sources]` (Julia 1.11+) is how: `Pkg.instantiate`
+# fetches it from the URL below instead of failing with "package not found".
+# The packages here are dev'd by path, which `[sources]` also expresses.
+
+[compat]
+Vulkan = "0.7"
+VulkanCore = "2"
+
+[sources]
+BasicVSRRunner = {path = "BasicVSRRunner"}
+BonsaiRunner = {path = "BonsaiRunner"}
+DNNKernels = {path = "DNNKernels"}
+DeepFilterRunner = {path = "DeepFilterRunner"}
+DemucsRunner = {path = "DemucsRunner"}
+DepthAnythingRunner = {path = "DepthAnythingRunner"}
+PPOCRRunner = {path = "PPOCRRunner"}
+UVDocRunner = {path = "UVDocRunner"}
+PPDocLayoutRunner = {path = "PPDocLayoutRunner"}
+GPUFiltering = {path = "GPUFiltering"}
+GPUMeshing = {path = "GPUMeshing"}
+HorizonRunner = {path = "HorizonRunner"}
+Hunyuan3DRunner = {path = "Hunyuan3DRunner"}
+KokoroRunner = {path = "KokoroRunner"}
+MatAnyoneRunner = {path = "MatAnyoneRunner"}
+NeuralLUTRunner = {path = "NeuralLUTRunner"}
+ProPainterRunner = {path = "ProPainterRunner"}
+QwenImageRunner = {path = "QwenImageRunner"}
+RIFERunner = {path = "RIFERunner"}
+SAM2Runner = {path = "SAM2Runner"}
+WhisperRunner = {path = "WhisperRunner"}
+Lava = {url = "https://github.com/SimonDanisch/Lava.jl", rev = "main"}
+Raycore = {url = "https://github.com/JuliaGeometry/Raycore.jl", rev = "51fc53c325f0015adea2166a947ca3f69851a65d"}
+Mantle = {url = "https://github.com/SimonDanisch/Mantle.jl", rev = "sd/lava-refactor"}

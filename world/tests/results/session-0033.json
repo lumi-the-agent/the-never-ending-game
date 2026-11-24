@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the pass does not roll towards Sprout",
+      "file": "minigames.jl",
+      "name": "Ball play: Sprout kicks the ball, a critter fetches it and passes it back",
+      "passed": false,
+      "seconds": 2.5
+    }
+  ],
+  "passed": 56,
+  "session": 33,
+  "time": "2026-11-23T08:41:30",
+  "total": 57
+}

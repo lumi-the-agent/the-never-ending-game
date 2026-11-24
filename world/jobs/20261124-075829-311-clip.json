@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-24T07:58:29.311",
+  "finished": "2026-11-24T08:07:08.874",
+  "id": "20261124-075829-311-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 18.3,
+      "post": "sunset",
+      "samples": 32,
+      "size": [
+        960,
+        540
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s56/sunset-test-18.3.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s56/sunset-test-18.3.png",
+    "post": "sunset"
+  },
+  "seconds": 97.1,
+  "started": "2026-11-24T08:05:31.738",
+  "status": "done"
+}

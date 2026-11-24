@@ -1,0 +1,132 @@
+{
+ "addressed": true,
+ "engine": [
+  {
+   "evidence": "CLAUDE.md lesson on browsernight.jl",
+   "what": "RayMakie raster has no sky or atmosphere model and WGLMakie's browser sky is a manual clear colour, so sky and fog polish must be faked per backend."
+  },
+  {
+   "evidence": "world/media/s27-trace-flowers.png, journal 04:18 session 27",
+   "what": "The worker's traced scene does not share plugin assets with the live scene (host-side scene builder), so path tracing cannot show what players see."
+  },
+  {
+   "evidence": "wait_frames error: 'only works inside a test run' (uitests.jl:142)",
+   "what": "interact! only runs inside a test run, so a reviewer cannot script UI play from a plain live eval without building a TestRun by hand."
+  }
+ ],
+ "findings": [
+  {
+   "category": "fun",
+   "done_when": "A scripted 60 s play with only W/A/D wins 3+ targets in the first 20 s, the end card shows a result and a visible change appears on the island.",
+   "evidence": "world/reviews/p27-br-late.png (You 0, Critters 12, berry 26 m), p27-ff-late.png (Fireflies 0/8, nearest 13 m)",
+   "severity": "high",
+   "suggestion": "Start from a meadow spot in daylight (or make the game set the time to dusk with lit lanterns), seed the first target within 5 m, give the player a head start and slow the rivals, add a reward you can see in the world afterwards (a lantern lit, a berry pie at the cottage, a title for the critter you beat) and a best score so a second play has a reason.",
+   "what": "The mini games are set up so the first play loses and feels dull: they start with Sprout on the pier at night, the nearest target is 13-26 m away, and the rivals scored 12 berries to my 0 in 30 s. A pier is a dead end, so W alone walks into planks.",
+   "where": "plugins/berry_race.jl, firefly_catch.jl start"
+  },
+  {
+   "category": "fun",
+   "done_when": "A 30 s recording shows 3+ creatures and Sprout in a synchronised activity with at least two camera cuts and a visible lasting result afterwards.",
+   "evidence": "journal session 27; todos 83, 92",
+   "severity": "high",
+   "suggestion": "Finish the dance circle first: at dusk the critters gather at the lanterns, Sprout joins with a rhythm key game, lanterns and fireflies respond, a camera orbit follows and the result is lasting (lit lanterns, flowers planted at a friend's door). Add one more shareable event (fishing contest on the pier, picnic at the cottage).",
+   "what": "There is no moment a player would show a friend. Interactions are a flower hand-over with a speech bubble and a ball rally; nothing builds, changes the island or looks spectacular. The dance circle and 'a moment to show a friend' have been open for several sessions.",
+   "where": "plugins/dancecircle.jl, flowergift.jl, goal 1"
+  },
+  {
+   "category": "lighting",
+   "done_when": "Screenshots at 17:00, 19:00 and 22:00 have mean luminance above 35% of the noon shot, show a warm lit area against cool shade and contain no hard-edged white shapes.",
+   "evidence": "p27-follow.png (16:06), p27b-orbit-2.png (17:23), p27-ff-late.png and p27-br-late.png (white rectangle)",
+   "severity": "high",
+   "suggestion": "Raise ambient and make it warm; add a golden hour (orange sun, peach horizon, long soft shadows), then a blue-hour night with lit windows and lantern pools; fix the moon glow quad (billboard with alpha falloff, no hard rectangle); give the sky a real gradient with clouds and the water a sky-colour reflection.",
+   "what": "The island is dark and murky for at least half of each day: shadows are blue-black, the sky is a flat navy/grey slab and the whole scene loses its colour from 16:00; in the mini games at night the screen is nearly black. A bright white parallelogram hangs in the sky during play.",
+   "where": "sun/sky/ambient, moon plugin"
+  },
+  {
+   "category": "camera",
+   "done_when": "Ten screenshots at random times show a creature's face unobstructed in the middle third and no plot covering over 30% of the frame.",
+   "evidence": "p27-follow.png (reeds), p27-overview.png (empty water), p27b-follow-2.png (planks) versus p27b-orbit-1.png",
+   "severity": "high",
+   "suggestion": "A director: pick the most interesting subject (an interaction pair, a gift, a fisher), frame from the side at 3/4 height with collision checks against reeds, trunks and the pier, cut every 8-15 s, and use the orbit view as the idle shot; follow only for the player.",
+   "what": "The default follow camera makes bad pictures: it sits inside cattails, behind Sprout over empty water, or with pier planks covering half the frame, while the orbit camera that shows the whole village is never the default and the follow view never cuts to what is happening.",
+   "where": "render.jl camera_goal, follow mode"
+  },
+  {
+   "category": "creatures",
+   "done_when": "A close screenshot of any creature shows eyes, mouth and a distinctive silhouette, and a 200 px silhouette test of the 10 creatures shows 10 distinguishable shapes.",
+   "evidence": "p27-ff-late.png (Hopscotch, Cumulus, Sprout), p27b-orbit-2.png",
+   "severity": "high",
+   "suggestion": "Make each species a textured model in the same clay style (big eyes, ears, tail, hat or scarf per individual) via make-asset, add squash and stretch, blinking, head turns toward friends, and mood posture.",
+   "what": "Creatures are spheres with stick legs and dot eyes; from the default camera two pigs and a sheep are hard to tell apart, nothing reads as a personality, and the crab on the pier is a flat red blob.",
+   "where": "species meshes"
+  },
+  {
+   "category": "style",
+   "done_when": "A traced still shows the generated trees and flowers; world/releases/<date>-<name>/ holds a video and its note.",
+   "evidence": "world/media/s27-trace-flowers.png vs progress/session-0027/overview.png; no world/releases/",
+   "severity": "high",
+   "suggestion": "One scene-building path for live and worker; then a 10 s path traced flower gift or dance circle with the side camera, 540p, cut in VideoEditor and released to world/releases/<date>-<name>/.",
+   "what": "Goal 2 is unreached: the worker's path traced stills ignore the plugins and show the old primitive island (sphere trees, stick flowers, grey ball Sprout), so no release exists and there is no releases folder.",
+   "where": "worker scene builder, todo 114/80"
+  },
+  {
+   "category": "world",
+   "done_when": "The overview shows at least four ground looks and water with a visible, animated shoreline.",
+   "evidence": "progress/session-0027/overview.png, p27b-orbit-1.png",
+   "severity": "medium",
+   "suggestion": "Noise-driven ground colour (grass, dry grass, dirt, sand), a beach with a foam line, a flower meadow, a rocky corner and a lookout hill; animate the water with a normal map and sky reflection.",
+   "what": "One hill, one pond. Ground is flat saturated green with no grass or dirt variation; water is a flat dark plane without shoreline foam or motion; nothing to walk to beyond the pond and the pier.",
+   "where": "terrain and water"
+  },
+  {
+   "category": "ui",
+   "done_when": "A dashboard screenshot has no black bar and no todo titles.",
+   "evidence": "p27-br-card.png, progress/session-0027/dashboard.png",
+   "severity": "medium",
+   "suggestion": "Fill the view box, hide name tags under cards, and replace the todo list with a small HUD (time, nearby creature mood, key caps).",
+   "what": "A black strip sits above the 3D view in every screenshot, start cards overlap name tags ('Gloo' behind the card), and the side panel prints dev todos like 'Record clips of the live game' to the player.",
+   "where": "dashboard layout, mini game cards"
+  }
+ ],
+ "process": "The work is mostly aimed at the right things: generated flora, flower gifts, readable text, and the session-27 journal is honest and specific. But goal 3 slipped backwards in the dusk and night look, goal 2 has no release and is blocked by the worker scene problem that was found only at the end of session 27, and goal 1 moved only by small steps (a gift, a rally) while the dance circle waits. The todo list holds about 60 stale or duplicate items (name tags, failed-frame reports) and the player panel prints them. Next sessions should fix the worker scene, the afternoon/night light and the camera director, then ship one showpiece interaction, and prune the todos.",
+ "scores": {
+  "camera": {
+   "score": 4,
+   "why": "Orbit and fixed (p27b-orbit-1.png, p27b-fixed-1.png) show the whole island clearly with the pond, cottage and creatures: the best views in the game. The default follow camera is poor: 16:06 reeds fill the frame, 16:09 Sprout's back over empty water, 17:13 pier planks cover half the picture. No director, no cuts, the gift camera is still an open todo."
+  },
+  "creatures": {
+   "score": 4,
+   "why": "Sheep, Sprout and the crab are blobs with stick limbs; faces are barely readable even in the close shot (p27-ff-late.png); from the orbit camera the pigs and sheep are indistinguishable specks. Behaviour (flower gifts, rallies) is ahead of the look."
+  },
+  "fun": {
+   "score": 3,
+   "why": "Played Firefly catch and Berry race through FakeInteraction. Both have a start card, key lights and a HUD, which is good. But both begin on the pier at night, the first berry is 26 m away, after 30 s the score was 'You 0, Critters 12' and the first firefly 13 m away, so a first-timer loses without a chance; Sprout moved only 2.3 m in 2 s of W. No reward, no change to the island, no reason to replay; flower gifts need the player to know to press E."
+  },
+  "lighting": {
+   "score": 4,
+   "why": "Noon (progress 0027) is soft and clean, but from ~16:00 the island turns dark teal-navy and muddy (p27-follow.png, p27b-orbit-*.png), at 18-20h it is near black, and a blown-out white parallelogram floats in the sky during both mini games (p27-ff-late.png, p27-br-late.png). Sky at dusk is a flat grey slab with a visible polygon edge."
+  },
+  "performance": {
+   "score": 8,
+   "why": "live_status frame median 1.7 ms, p95 4.3 ms at 30 fps even with a mini game running. Two todos about p95 364 ms and 815 ms slow frames are unexplained, and live screenshots take ~1 s."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated trees, bushes, flowers, mushrooms, cottage, signpost and stone lantern look like a real game by day (progress/session-0027/eye-level.png); but they are scattered evenly, not composed, and the pond (cylinder cattails, flat lily discs, grey spheres, planks) is still primitive (p27-follow.png)."
+  },
+  "style": {
+   "score": 5,
+   "why": "The clay-like generated flora and cottage are one coherent look; the primitive pond and pier, sphere creatures, flat green ground and the dark realistic dusk lighting do not match it."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Name tags and HUD text are now readable and mini game cards are clear; but a black strip sits above the 3D view in every shot, the start card overlaps a name tag ('Gloo' behind 'Firefly catch'), and the right panel prints internal todos ('+18 more', 'Record clips of the live game')."
+  },
+  "world": {
+   "score": 4,
+   "why": "One green hill with a pond, a pier and a dirt path; ground is a flat saturated green, water a flat dark sheet with no shoreline foam; no beach, meadow or second area to walk to (overview shots)."
+  }
+ },
+ "summary": "By day the island is now a charming toy diorama (generated trees, flowers, cottage), a clear step up from session 20 and from the review at session 24. But a player who sits down for a few minutes meets a dark, murky dusk and night, a follow camera that shows reeds or an empty pier, creatures that are still balls with stick legs, and two mini games that start Sprout on the pier in the dark where the opponents win 12 to 0. There is still no moment worth showing a friend and no path traced video, and the path tracer still draws the old sphere island.",
+ "verdict": "needs_work"
+}

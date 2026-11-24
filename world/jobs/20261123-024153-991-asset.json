@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T02:41:53.994",
+  "finished": "2026-11-23T02:52:57.537",
+  "id": "20261123-024153-991-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a small cluster of three chunky stylized meadow flowers with round pink and yellow petals on short green stems with two leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T02:52:57.146",
+    "faces": 39139,
+    "id": "20261123-024153-991-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-024153-991-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-024153-991-asset/mesh.jls",
+    "prompt": "a small cluster of three chunky stylized meadow flowers with round pink and yellow petals on short green stems with two leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "seconds": 659.0,
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "seconds": 662.2,
+  "started": "2026-11-23T02:41:55.029",
+  "status": "done"
+}

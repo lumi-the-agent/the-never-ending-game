@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "Mini games are now set up for a first win (new W/A/D tests) and traced stills show the generated trees and flowers instead of the primitive island. Frame time is fine (median 2.7 ms, p95 5.3 ms). The first-play win is not fully reliable, and the todo's 'visible change on the island' was not new work.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The Berry race 'first play with W/A/D' win is flaky. The tester's full-suite run got 2 berries in 20.6 s (critters 2,1,2) while it passed 3 of 3 in isolation. The #116 done_when ('3+ targets in the first 20 s') is therefore not guaranteed when the previous state differs.",
+   "where": "world/plugins/berry_race.jl; world/tests/minigames.jl (W/A/D test)",
+   "evidence": "world/tests/reports/session-0028.json; world/tests/shots/berry-wad.png",
+   "suggestion": "Find what the earlier test leaves behind (time of day, Sprout's heading or position, rival speed). Make the start line reset that, or slow the rivals or add berries within 5 m so the margin is clearly over 3 in 20 s."
+  },
+  {
+   "severity": "low",
+   "what": "The traced still proves plugin assets now load, but the framing is poor. Trees fill the frame and hide the cottage, and the sky shows a night-and-yellow split. It is not yet something to show a player. The worker also has no Revise, so the worker runs the new trace path only after a restart.",
+   "where": "world/media/s28/trace-plugins-mine2.png",
+   "evidence": "Image viewed: the dark glass-like Gloop body sits under a canopy, the sky is half starfield and half yellow.",
+   "suggestion": "Use trace-cottage2.png-style fixed cameras for the clip work, and confirm the worker restart shows the same scene."
+  },
+  {
+   "severity": "low",
+   "what": "The 'visible change on the island' part of #116 was not new work. It points to the basket and stone lantern that already existed, and the todo was closed without a scripted check that the end card shows a result and the world changed. There is no best score either.",
+   "where": "world/plugins/berry_race.jl, firefly_catch.jl",
+   "evidence": "Author's result says 'both existed already'.",
+   "suggestion": "Add a persistent best score or a clearly new world reward, and test that it appears."
+  }
+ ],
+ "addressed": true,
+ "response": "Session 29: the Berry race W/A/D flake is fixed (critters leave the 3 start-line berries and berries Sprout is nearer to while they walk); passes in the full suite and 4/4 repeats. Traced still framing (low) stays open in #80/#121. The visible change on the island (low) was not reworked this session."
+}

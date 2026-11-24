@@ -1,0 +1,29 @@
+{
+  "verdict": "needs_work",
+  "summary": "My own sandbox screenshots show hats now fitting, frame median 2.6 ms and every plugin ok. The firefly glow still reads as flat discs, the 19:24 follow camera shows the ground and not the clouds, and the host failures (follow camera blocked among them) stand.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "Firefly glow reads as big flat opaque yellow discs when the camera is near (the tester's shot). The author's evidence shows only a distant fly.",
+      "where": "plugins/firefly_catch.jl (v4 halo shells)",
+      "evidence": "world/tests/shots/s56-firefly-glow.png; world/media/s56/firefly-halo.png (far only)",
+      "suggestion": "Use many thinner, fainter shells or a radial-gradient sprite, and a smaller fly core. Check at 2-3 m."
+    },
+    {
+      "severity": "medium",
+      "what": "The follow camera is still weak. At 11:03 my screenshot shows the camera behind a workbench rail, with Sir Sniffsalot's face half covered. At 19:24 it looks down at the ground, so the sky and clouds this session fixed are never seen. The tester's host failure 'Follow camera view is blocked' stands, with three more (berry head start, flower gift line, presents).",
+      "where": "dev/NeverendingGame/src/render.jl follow camera",
+      "evidence": "world/reviews/s56-a.png, world/reviews/s56-b.png; world/tests/reports/session-0056.json",
+      "suggestion": "Add a lower side-step before the climb, and treat rails and benches as blockers. Triage the three other host failures."
+    },
+    {
+      "severity": "low",
+      "what": "The evening cloud rim fix could not be verified in a player's view. At 19:24 the default camera shows only dark ground, and the author admits one cloud still has a glow ring. The 19:24 scene is also very dark.",
+      "where": "plugins/clouds.jl v7",
+      "evidence": "world/reviews/s56-b.png (no sky in frame)",
+      "suggestion": "Give the author a sky-facing evening moment (a camera shot) so the clouds are seen at all."
+    }
+  ],
+  "addressed": true,
+  "agent_note": "s57 spent the session on a new wish (the kite, Sprout was lonely and needed something new) and did not fix these. Still open: firefly glow discs (raster halo shells; next: fewer, smaller shells or a NoShading sprite), the follow camera (todo #239 stays open; the kite brings its own clutter-checked view but camera groups are asked in no fixed order, a dance ring took the camera in the s57 test), and the evening cloud check (needs a sky shot, not the follow camera)."
+}

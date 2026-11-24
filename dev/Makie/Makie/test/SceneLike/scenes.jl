@@ -1,0 +1,173 @@
+@testset "Scenes" begin
+    scene = Scene()
+    @test propertynames(scene) == fieldnames(Scene)
+    @testset "getproperty(scene, :$field)" for field in fieldnames(Scene)
+        @test getproperty(scene, field) !== missing # well, just don't error
+    end
+    @test theme(nothing, :nonexistent, default = 1) == 1
+    @test theme(scene, :nonexistent, default = 1) == 1
+end
+
+@testset "Lighting" begin
+    @testset "Shading default" begin
+        # Based on number of lights
+        lights = Makie.AbstractLight[]
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == FastShading # Should this be NoShading?
+
+        # shading mode should be constant after the first get_shading_mode() call
+        # (Which should happen when the first renderobject is created)
+        push!(lights, PointLight(RGBf(0.1, 0.1, 0.1), Point3f(0)))
+        @test scene.compute.lighting_mode[] == FastShading
+
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == MultiLightShading
+
+        lights = Makie.AbstractLight[]
+        push!(lights, AmbientLight(RGBf(0.1, 0.1, 0.1)))
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == FastShading
+
+        push!(lights, DirectionalLight(RGBf(0.1, 0.1, 0.1), Vec3f(1)))
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == FastShading
+
+        push!(lights, PointLight(RGBf(0.1, 0.1, 0.1), Point3f(0)))
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == MultiLightShading
+
+        # Based on light types
+        lights = [SpotLight(RGBf(0.1, 0.1, 0.1), Point3f(0), Vec3f(1), Vec2f(0.2, 0.3))]
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == MultiLightShading
+
+        lights = [EnvironmentLight(1.0, rand(2, 2))]
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == FastShading # only affects RPRMakie so skipped here
+
+        lights = [PointLight(RGBf(0.1, 0.1, 0.1), Point3f(0))]
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == MultiLightShading
+
+        lights = [PointLight(RGBf(0.1, 0.1, 0.1), Point3f(0), Vec2f(0.1, 0.2))]
+        scene = Scene(lights = lights)
+        @test scene.compute.lighting_mode[] == MultiLightShading
+    end
+
+    @testset "MultiLightShading packs only the lights it supports" begin
+        # An EnvironmentLight listed first was packed as light 1 and the last
+        # PointLight dropped: the count came from the filtered list, the lights
+        # from the unfiltered one.
+        env = EnvironmentLight(1.0, fill(RGBf(1, 1, 1), 4, 4))
+        p1 = PointLight(RGBf(1, 0, 0), Point3f(1, 0, 0))
+        p2 = PointLight(RGBf(0, 1, 0), Point3f(0, 1, 0))
+        scene = Scene(lights = [env, p1, p2])
+        Makie.register_multi_light_computation(scene, 64, 5 * 64)
+        @test scene.compute[:N_lights][] == 2
+        @test scene.compute[:light_types][] == Int32[Makie.light_type(p1), Makie.light_type(p2)]
+        @test scene.compute[:light_colors][] == [RGBf(1, 0, 0), RGBf(0, 1, 0)]
+    end
+
+    @testset "Helper functions" begin
+        f, a, p = scatter(rand(Point3f, 10))
+        @test length(get_lights(a)) == 1
+
+        set_ambient_light!(a, RGBf(0, 0, 1))
+        @test a.scene.compute[:ambient_color][] == RGBf(0, 0, 01)
+
+        @test get_lights(a)[1].color != RGBf(1, 0, 0)
+        set_directional_light!(a, color = RGBf(1, 0, 0))
+        @test get_lights(a)[1].color == RGBf(1, 0, 0)
+
+        @test get_lights(a)[1].camera_relative != false
+        set_directional_light!(a, camera_relative = false)
+        @test get_lights(a)[1].camera_relative == false
+
+        @test get_lights(a)[1].direction != Vec3f(1, 0, 0)
+        set_directional_light!(a, direction = Vec3f(1, 0, 0))
+        @test get_lights(a)[1].direction == Vec3f(1, 0, 0)
+
+        @test a.scene.compute.shading[] == Makie.automatic
+        set_shading_algorithm!(a, MultiLightShading)
+        @test a.scene.compute.shading[] == MultiLightShading
+        @test_throws ErrorException set_directional_light!(a, color = RGBf(0, 0, 1))
+
+        set_shading_algorithm!(a, FastShading)
+        @test a.scene.compute.shading[] == FastShading
+        @test set_directional_light!(a, color = RGBf(0, 0, 1)) === nothing
+
+        set_shading_algorithm!(a, Makie.automatic)
+
+        set_lights!(a, [])
+        @test length(get_lights(a)) == 0
+
+        @test_throws ErrorException set_directional_light!(a, color = RGBf(0, 0, 1))
+
+        push_light!(a, PointLight(RGBf(1, 0, 0), Point3f(0)))
+        @test get_lights(a) == [PointLight(RGBf(1, 0, 0), Point3f(0))]
+
+        push_light!(a, PointLight(RGBf(0, 1, 0), Point3f(0)))
+        push_light!(a, PointLight(RGBf(0, 0, 1), Point3f(0)))
+        @test get_lights(a) == [PointLight(RGBf(1, 0, 0), Point3f(0)), PointLight(RGBf(0, 1, 0), Point3f(0)), PointLight(RGBf(0, 0, 1), Point3f(0))]
+
+        set_light!(a, 2, DirectionalLight(RGBf(1, 1, 1), Vec3f(1, 0, 0)))
+        @test get_lights(a) == [PointLight(RGBf(1, 0, 0), Point3f(0)), DirectionalLight(RGBf(1, 1, 1), Vec3f(1, 0, 0)), PointLight(RGBf(0, 0, 1), Point3f(0))]
+
+        @test_throws ErrorException set_directional_light!(a, color = RGBf(0, 0, 1))
+        @test_throws BoundsError set_light!(a, 10, color = RGBf(0, 0, 1))
+
+        set_lights!(a, [PointLight(RGBf(1, 1, 0), Vec3f(1))])
+        @test get_lights(a) == [PointLight(RGBf(1, 1, 0), Vec3f(1))]
+
+        @test_throws ErrorException set_directional_light!(a, color = RGBf(0, 0, 1))
+    end
+end
+
+@testset "onplot" begin
+    scene = Scene()
+    p = scatter!(scene, rand(10))
+    @test scene.onplot[] == Pair(true, p)
+    p2 = scatterlines!(scene, rand(10))
+    @test scene.onplot[] == Pair(true, p2)
+    delete!(scene, p)
+    @test scene.onplot[] == Pair(false, p)
+    p3 = lines!(scene, rand(10))
+    @test scene.onplot[] == Pair(true, p3)
+    buffer = []
+    on(x -> push!(buffer, x), scene.onplot)
+    Makie.free(scene)
+    @test Pair(false, p2) in buffer
+    @test Pair(false, p3) in buffer
+    @test length(buffer) == 2
+end
+
+@testset "scene teardown disconnects dependent child callbacks first" begin
+    root = Scene()
+    source = Scene(root)
+    dependent = Scene(root)
+    owned = Ref(0)
+    external = Ref(0)
+    on(dependent, source.onplot) do _
+        owned[] += 1
+    end
+    on(source.onplot) do _
+        external[] += 1
+    end
+
+    plot = scatter!(source, [Point2f(0)])
+    delete!(source, plot)
+    @test (owned[], external[]) == (2, 2)
+    plot = scatter!(source, [Point2f(1)])
+    delete!(source, plot)
+    @test (owned[], external[]) == (4, 4)
+    scatter!(source, [Point2f(2)])
+
+    # A legend in another child scene subscribes this way. Its computations
+    # must not run while the whole tree is being freed, including at shutdown
+    # after font caches have been released. External deletion observers remain.
+    Makie.free(root)
+    @test owned[] == 5
+    @test external[] == 6
+    @test isempty(dependent.deregister_callbacks)
+    @test isempty(root.children)
+end

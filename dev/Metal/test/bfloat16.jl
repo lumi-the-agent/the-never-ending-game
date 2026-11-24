@@ -1,0 +1,91 @@
+# BFloat16 tests.
+#
+# BFloat16 runs on Metal on every supported Julia: pre-1.13 it is stored as an `i16` with the
+# arithmetic emulated in Float32 by BFloat16s (correct, just not native), and on 1.13+ (Apple
+# silicon needs LLVM 19+) Julia emits the native `bfloat` IR type (JuliaGPU/Metal.jl#817, #298).
+# The execution tests run on both paths; the codegen tests assert that the native path actually
+# produces `bfloat` AIR rather than the i16 fallback.
+
+@testset "construction & conversion" begin
+    a = rand(Float32, 16)
+    @test Array(BFloat16.(MtlArray(a))) == BFloat16.(a)
+    @test Array(Float32.(MtlArray(BFloat16.(a)))) == Float32.(BFloat16.(a))
+end
+
+@testset "arithmetic" begin
+    @test testf((a, b) -> a .+ b, rand(BFloat16, 16), rand(BFloat16, 16))
+    @test testf((a, b) -> a .- b, rand(BFloat16, 16), rand(BFloat16, 16))
+    @test testf((a, b) -> a .* b, rand(BFloat16, 16), rand(BFloat16, 16))
+    @test testf(a -> BFloat16(2) .* a .+ BFloat16(1), rand(BFloat16, 16))
+end
+
+@testset "math" begin
+    # abs and min/max fold to native bfloat intrinsics on 1.13+ (the folds are exact),
+    # exercising the bfloat-to-float promotion in the AIR lowering; sqrt stays a float op.
+    @test testf(a -> abs.(a), rand(BFloat16, 16) .- BFloat16(0.5))
+    @test testf(a -> sqrt.(a), rand(BFloat16, 16))
+    @test testf((a, b) -> min.(a, b), rand(BFloat16, 16), rand(BFloat16, 16))
+    @test testf((a, b) -> max.(a, b), rand(BFloat16, 16), rand(BFloat16, 16))
+    @test testf((a, b) -> hypot.(a, b), rand(BFloat16, 16), rand(BFloat16, 16))
+    let z1 = Complex{BFloat16}.(rand(ComplexF32, 16)),
+        z2 = Complex{BFloat16}.(rand(ComplexF32, 16))
+        @test testf(a -> abs.(a), z1)
+        @test testf((a, b) -> hypot.(a, b), z1, z2)
+    end
+end
+
+@testset "reductions" begin
+    # min/max are exact and order-independent, so the GPU tree reduction matches the host
+    @test testf(maximum, rand(BFloat16, 128))
+    @test testf(minimum, rand(BFloat16, 128))
+    # sum/prod round in bfloat, so reduction order matters; keep the arrays small enough that
+    # the result stays within the comparison tolerance regardless of order
+    @test testf(sum, rand(BFloat16, 8))
+    @test testf(prod, rand(BFloat16, 8))
+    @test testf(sum, rand(Complex{BFloat16}, 8))
+end
+
+@testset "conversion from Float32" begin
+    # including NaN, infinities, signed zeros, subnormals and ties to even
+    f = vcat(randn(Float32, 1024), reinterpret.(Float32, rand(UInt32, 1024)),
+             Float32[Inf, -Inf, 0, -0.0, floatmin(Float32), nextfloat(0f0), floatmax(Float32)],
+             reinterpret.(Float32, 0x3f808000 .+ (UInt32(0):UInt32(3)) .<< 16))
+    @test isequal(Array(BFloat16.(MtlArray(f))), BFloat16.(f))
+    @test all(isnan, Array(BFloat16.(MtlArray(Float32[NaN, -NaN]))))
+
+    # the bits of a converted value, used as 32 bits (as by the shuffles of a `BFloat16`)
+    @test testf(a -> map(x -> reinterpret(UInt16, x + x) % UInt32, a), rand(BFloat16, 16))
+end
+
+# only the native path emits `bfloat`; on the i16 fallback there is nothing bfloat-specific to check
+if BFloat16s.llvm_arithmetic
+    bf16_add(c, a, b) = (i = thread_position_in_grid_1d(); @inbounds c[i] = a[i] + b[i]; return)
+    bf16_abs(c, a)    = (i = thread_position_in_grid_1d(); @inbounds c[i] = abs(a[i]); return)
+
+    @testset "codegen" begin
+        T = MtlDeviceVector{BFloat16,1}
+        # the kernel uses the native `bfloat` IR type, not an i16 emulation
+        ir = sprint(io -> Metal.code_llvm(io, bf16_add, Tuple{T,T,T}; kernel=true))
+        @test occursin(r"fadd[^\n]*bfloat", ir)
+        # bfloat reaches AIR, and abs is promoted to the f32 builtin AIR lacks for bfloat
+        air = sprint(io -> Metal.code_native(io, bf16_abs, Tuple{T,T}; kernel=true))
+        @test occursin("bfloat", air)
+        @test occursin("air.fabs.f32", air)
+    end
+end
+
+# The simdgroup-matrix AIR intrinsics are typed `bf16`. Before Julia 1.13 `BFloat16` lowers to
+# `i16`, so these calls reach AIR with `i16` operands until GPUCompiler's `promote_bf16_intrinsics!`
+# re-types them to native `bfloat`; on 1.13+ they are native to begin with. Either way the AIR must
+# carry `<64 x bfloat>` — this asserts that on every path (and so fails if the pass regresses).
+@testset "simdgroup matrix codegen" begin
+    sg_mul(c, a, b) = (simdgroup_store(simdgroup_multiply(simdgroup_load(a), simdgroup_load(b)), c); return)
+    T = MtlDeviceMatrix{BFloat16,1}
+    air = sprint(io -> Metal.code_native(io, sg_mul, Tuple{T,T,T}; kernel=true))
+    @test occursin("simdgroup_matrix_8x8_load.v64bf16", air)
+    @test occursin("simdgroup_matrix_8x8_multiply_accumulate.v64bf16", air)
+    @test occursin("simdgroup_matrix_8x8_store.v64bf16", air)
+    # native bfloat operands, not the i16 lowering
+    @test occursin("<64 x bfloat>", air)
+    @test !occursin("<64 x i16>", air)
+end

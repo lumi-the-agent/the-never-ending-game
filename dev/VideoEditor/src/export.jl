@@ -1,0 +1,322 @@
+"""
+    exportvideo(path, seq; kwargs...) -> path
+
+Render the sequence to a video file. Uses the same resolution machinery as
+the preview: timeline frame → `locate` → source frame → effect stack →
+crop warp — only here the crop is baked into the pixels and every timeline
+frame is written.
+
+Keywords:
+- `size`: output `(width, height)`; defaults to [`canvassize`](@ref) —
+  the first clip's crop region in source pixels.
+- `framerate`: defaults to the sequence framerate.
+- `codec_name` / `encoder_options`: passed through to `VideoIO.open_video_out`
+  (default H.264, `crf=20, preset="medium"`).
+- `pixel_format`: the encoded chroma layout, `yuv420p` by default. Left to
+  ffmpeg it would be `yuv444p` — RGB in, so 4:4:4 is the "best match" and no
+  chroma is thrown away — but that lands the file in H.264 *High 4:4:4
+  Predictive*, which no phone, TV or browser hardware decoder will touch. An
+  export that won't play on the device it was shot on is not an export. Pass
+  `VideoIO.AV_PIX_FMT_YUV444P` if you want the extra chroma and control the
+  player.
+- `audio`: mux the sources' audio along the cut list (see [`muxaudio`](@ref));
+  on by default, skipped automatically when no source has an audio stream.
+- `backend`: KA backend for the render chain. A GPU backend (e.g. `Mantle.defaultbackend()`)
+  runs tracks, effects, blends and the crop warp on device buffers — decode and
+  encode stay on the CPU with one upload/download per frame. Same kernels either
+  way, so the output is identical.
+- `progress`: called as `progress(done, total)` every 30 frames.
+
+Gaps render black (and sound silent).
+"""
+function exportvideo(path::AbstractString, seq::Sequence;
+                     size::Union{Nothing, Tuple{Int, Int}} = nothing,
+                     framerate::Real = seq.framerate,
+                     codec_name::Union{Nothing, String} = nothing,
+                     encoder_options::NamedTuple = (crf = 20, preset = "medium"),
+                     pixel_format = VideoIO.AV_PIX_FMT_YUV420P,
+                     audio::Bool = true,
+                     backend = Mantle.defaultbackend(),
+                     progress = nothing)
+    total = seqlength(seq)
+    total > 0 || error("empty sequence")   # before canvassize: it indexes clips[1]
+    canvas = something(size, canvassize(seq))
+    wantaudio = audio && (any(hasaudio, unique(audiopath(c.source) for c in seq.clips)) ||
+                         any(n -> !isempty(n.samples), seq.narration))
+    videopath = wantaudio ? tempname() * ".mp4" : path
+
+    outbuf = alloccanvas(backend, (canvas[1], canvas[2]))
+    hostout = zeros(RGB{N0f8}, canvas[1], canvas[2])         # encode staging (download target)
+    blackhost = zeros(RGB{N0f8}, canvas[1], canvas[2])       # gap/composite base for device canvases
+    readers = Dict{String, Any}()   # per-source decoder: GpuVideoStream or SequentialReader
+    engine = FxEngine(backend)      # the SAME effect graph the preview runs, exact policy
+
+    # ffmpeg takes the rate as an Int32 AVRational: a raw measured float
+    # (23.975288…) converts to an exact Rational with a 2^47 denominator and
+    # overflows — rationalize to the smallest fraction within a millihertz
+    fr = rationalize(Float64(framerate); tol = 1e-6)
+    writer = VideoIO.open_video_out(videopath, RGB{N0f8}, (canvas[2], canvas[1]);
+                                    framerate = fr, codec_name = codec_name,
+                                    encoder_options = encoder_options,
+                                    target_pix_fmt = pixel_format)
+    try
+        withfinalscenes(seq) do
+            for n in 0:(total - 1)
+                prefetchframeplanes!(seq, n)
+                renderframe!(outbuf, seq, n, readers, engine; black = blackhost)
+                writeframe!(writer, outbuf, hostout, backend)
+                progress === nothing || n % 30 == 0 && progress(n + 1, total)
+            end
+        end
+    finally
+        try
+            finishcacheprefetch!(seq)
+        finally
+            VideoIO.close_video_out!(writer)
+            foreach(close, values(readers))
+            emptyengine!(engine)
+        end
+    end
+    if wantaudio
+        muxaudio(videopath, seq, path)
+        rm(videopath)
+    end
+    progress === nothing || progress(total, total)
+    return path
+end
+
+"""
+    exportgif(path, seq; fps=15, loop=0, width=nothing, progress=nothing) -> path
+
+Export the sequence to an animated GIF. Renders the timeline (video-only,
+through the same pipeline as [`exportvideo`](@ref)) to a temp file, then builds
+an optimized palette (`palettegen`/`paletteuse`, Lanczos scaling) for clean
+colors. `fps` sets the GIF frame rate, `width` optionally downscales (height
+follows the aspect), and `loop` sets looping: `0` loops forever, `-1` plays
+once, `n` repeats `n` extra times.
+"""
+function exportgif(path::AbstractString, seq::Sequence; fps::Real = 15,
+                   loop::Integer = 0, width::Union{Nothing, Integer} = nothing,
+                   backend = Mantle.defaultbackend(), progress = nothing)
+    seqlength(seq) > 0 || error("empty sequence")
+    tmp = tempname() * ".mp4"
+    palette = tempname() * ".png"
+    try
+        exportvideo(tmp, seq; audio = false, backend = backend, progress = progress)
+        scale = width === nothing ? "scale=trunc(iw/2)*2:-2:flags=lanczos" :
+                "scale=$(Int(width)):-2:flags=lanczos"
+        vf = "fps=$(fps),$(scale)"
+        ff = FFMPEG_jll.ffmpeg()
+        run(pipeline(`$ff -y -i $tmp -vf "$vf,palettegen=stats_mode=diff" $palette`;
+                     stdout = devnull, stderr = devnull))
+        run(pipeline(`$ff -y -i $tmp -i $palette
+                      -lavfi "$vf [x]; [x][1:v] paletteuse=dither=bayer:bayer_scale=3"
+                      -loop $(Int(loop)) $path`; stdout = devnull, stderr = devnull))
+    finally
+        isfile(tmp) && rm(tmp)
+        isfile(palette) && rm(palette)
+    end
+    return path
+end
+
+"""
+    canvassize(seq) -> (width, height)
+
+Default export canvas: the first clip's crop region in source pixels
+(even multiples, as encoders require), or the source size when uncropped.
+"""
+function canvassize(seq::Sequence)
+    # An explicit canvas wins. Without one this falls back to the first clip's
+    # crop, which is what it always did and why deleting that clip used to change
+    # the project's resolution — the crop tool now records the size it produced
+    # instead of leaving it to be re-derived from whichever clip is first.
+    seq.canvas === nothing || return seq.canvas
+    isempty(seq.clips) && return (2, 2)
+    clip = seq.clips[1]
+    w = round(Int, clip.crop[3] * clip.source.width)
+    h = round(Int, clip.crop[4] * clip.source.height)
+    return (max(2 * (w ÷ 2), 2), max(2 * (h ÷ 2), 2))
+end
+
+"""
+Synchronous decoder for export: sequential reads, seeking only when the
+requested frame isn't the next one (clip boundaries, gaps). A graph source —
+[`sourceinto!`](@ref) decodes into its host staging buffer and uploads only
+when the graph runs on a device.
+"""
+mutable struct SequentialReader
+    const source::VideoSource
+    const reader::VideoIO.VideoReader
+    const host::RGBFrame   # decode staging (VideoIO needs host memory)
+    position::Int  # next frame the reader will produce
+
+    function SequentialReader(source::VideoSource)
+        reader = VideoIO.openvideo(source.path, target_format = VideoIO.AV_PIX_FMT_RGB24)
+        return new(source, reader,
+                   RGBFrame(undef, source.width, source.height), 0)
+    end
+end
+
+framesize(sr::SequentialReader) = (sr.source.width, sr.source.height)
+
+# Split the same way the streaming source is (see `decodesource`): the read
+# happens before the plan runs, the pass only moves the pixels. There is no
+# `served` to settle here — a sequential decode is exact by construction — but
+# one shape for every source is what keeps the source pass a single method.
+decodesource(sr::SequentialReader, frame::Integer; playing::Bool = false,
+             served = nothing, exact::Bool = false, chunks::Integer = 5) =
+    readframe!(sr.host, sr, frame)
+
+sourceinto!(out, sr::SequentialReader, f) = (out === f || copyto!(out, f); out)
+
+"The export canvas (downloaded to the host every frame; stays device-local —
+BAR/unified memory reads ~70 MB/s from the CPU, 8× slower than staged readback)."
+alloccanvas(backend, dims::NTuple{2, Int}) = KA.allocate(backend, RGB{N0f8}, dims)
+
+"Black canvas for gaps and the composite base (device canvases copy a host zero frame)."
+fillblack!(buf::RGBFrame, blackhost) = fill!(buf, RGB{N0f8}(0, 0, 0))
+fillblack!(buf, blackhost) = copyto!(buf, blackhost)
+
+"Publish the composed canvas to the encoder (device canvases download via `hostout`)."
+function writeframe!(writer, canvas, hostout, backend)
+    KA.synchronize(backend)
+    copyto!(hostout, canvas)
+    write(writer, PermutedDimsArray(hostout, (2, 1)))
+end
+
+"""
+The per-source export decoder — a DETERMINISTIC lane, decided by capability, not
+by catching errors: a GPU backend streams every codec the hardware session
+decodes (frames land device-resident through the chunked session — no host
+round-trip); everything else reads sequentially on the CPU. A failure to open
+the declared lane fails the export loudly instead of silently switching.
+"""
+function opendecoder(source::VideoSource, backend)
+    # The capability the docstring promises. Without it a Metal export reached
+    # `openstream`, whose decoder is Vulkan Video, failed with an `UndefVarError`
+    # on `Mantle.vk_context` and landed on the CPU through the `catch` below,
+    # warning once per source.
+    Mantle.videodecodes(backend) || return SequentialReader(source)
+    videocodec(source.path) in (:h264, :hevc) || return SequentialReader(source)
+    # A mezzanine, when one exists, IS the decodable version of this source — the
+    # streaming preview already opens on it, and this path did not, so a source
+    # that plays fine (open-GOP HEVC, transcoded once) still threw
+    # "not GOP-seekable" at every reader that came through here: the matte's frame
+    # reader, the agent views, the export.
+    mezz = mezzaninepath(source)
+    path = isfile(mezz) ? mezz : source.path
+    try
+        s = openstream(backend, path, source.width, source.height)
+        # PROBE, inside the `try`. `openstream` only demuxes: `GpuVideoStream`
+        # builds its `H264Decoder` lazily, per GOP, in `startfeed!`, and that is
+        # where the format checks live. So a profile the hardware cannot decode —
+        # 4:4:4 (`chroma_format_idc = 3`), more reference frames than the DPB
+        # allows — opened cleanly here and then threw from the FIRST READ, past
+        # this fallback, out through `framereader` and into whatever asked for a
+        # frame. The fallback was decoration for exactly the sources it existed
+        # for. `graysource` in campath.jl already does this; the analyses that
+        # use it have been fine, and this path had the same bug the whole time.
+        try
+            exactframeat!(s, 0)
+        catch
+            close(s)
+            rethrow()
+        end
+        return s
+    catch e
+        # a decoder that cannot open is not a reason to fail the render — the CPU
+        # reader can read anything ffmpeg can, it is only slower
+        @warn "GPU decode unavailable for $(basename(source.path)); reading on the CPU" exception = e
+        return SequentialReader(source)
+    end
+end
+
+"""
+    renderframe!(dest, seq, n, readers, engine; black) -> dest
+
+Timeline frame `n` of `seq`, finished: transition, track composite or single
+clip, every layer through the effect graph under the export policy (`exact`).
+
+This is the ONE definition of "what frame `n` looks like" — the encoder writes
+it, and the agent views ([`contactsheet`](@ref), [`framegrab`](@ref)) show it,
+so what an agent sees is by construction what the export produces. `readers`
+caches one decoder per source path; pass a canvas-sized `black` to avoid a
+per-frame allocation in a loop.
+
+There is no `scratch` any more: it was the incoming side of a dissolve, which had
+its own compositor — render both sides into host buffers, lerp on the host. A
+dissolve is two layers of the ONE composite now, so nothing here needs a second
+canvas.
+"""
+function renderuncachedframe!(dest::AnyRGBFrame, seq::Sequence, n::Integer,
+                      readers::Dict{String, Any}, engine::FxEngine;
+                      black::Union{Nothing, AbstractMatrix} = nothing)
+    tr = transitionat(seq, n)
+    sample = tr === nothing ? nothing : transitionsample(seq, tr, n)
+    if sample !== nothing
+        left, right, p = sample[1], sample[3], sample[5]
+        # The same one composite the preview runs — see `showtransition!`. Two
+        # renders into host buffers and a host lerp was the dissolve's own
+        # compositor, written twice (here and in the player) for one picture.
+        composite(engine, [left, right], n,
+                  (clip, _) -> get!(() -> opendecoder(clip.source, engine.backend),
+                                    readers, sourcepath(clip.source));
+                  canvas = Base.size(dest), exact = true,
+                  alphafor = (clip, _) -> clip === right ? Float64(p) : nothing) do canvas
+            copyto!(dest, canvas)
+        end || error("dissolve at frame $n could not be rendered")
+    elseif ntracks(seq) > 1 && length(clipsat(seq, n)) > 1
+        # the export tier of ONE composite (see `composite`): same layer loop the
+        # preview runs, only under the exact-decode policy
+        composite(engine, clipsat(seq, n), n,
+                  (clip, _) -> get!(() -> opendecoder(clip.source, engine.backend),
+                                    readers, sourcepath(clip.source));
+                  canvas = Base.size(dest), exact = true) do canvas
+            copyto!(dest, canvas)
+        end || error("composite at frame $n could not be rendered")
+    else
+        loc = locate(seq, n)
+        if loc === nothing
+            black === nothing ? fill!(dest, RGB{N0f8}(0, 0, 0)) : fillblack!(dest, black)
+        else
+            rendercanvas!(dest, loc[1], loc[2], readers, engine)
+        end
+    end
+    return dest
+end
+
+"""
+Render `clip` at source frame `srcframe` into `dest` (a canvas-sized buffer)
+through the SAME composite the preview runs — only under the export policy
+(`exact = true`: no nearest-frame stand-ins). `readers` caches one decoder per
+source path; the engine pools every working buffer.
+
+ONE clip is a composite of one. It used to be its own route — render the layer,
+then place it here — with a fast path for "the layer is already the canvas" and a
+`skipopacity` flag for when the caller meant to apply the alpha itself. Three
+statements about how a layer meets a canvas, in a file that is not where that is
+decided.
+"""
+function rendercanvas!(dest::AnyRGBFrame, clip::Clip, srcframe::Integer,
+                       readers::Dict{String, Any}, engine::FxEngine)
+    ok = composite(engine, [clip], timelineframe(clip, srcframe),
+                   (c, _) -> get!(() -> opendecoder(c.source, engine.backend),
+                                  readers, sourcepath(c.source));
+                   canvas = Base.size(dest), exact = true) do canvas
+        copyto!(dest, canvas)
+    end
+    ok || error("clip at source frame $srcframe could not be rendered")
+    return dest
+end
+
+function readframe!(dest::RGBFrame, sr::SequentialReader, n::Integer)
+    if n != sr.position
+        seek(sr.reader, frametime(sr.source, n))
+        sr.position = n
+    end
+    read!(sr.reader, PermutedDimsArray(dest, (2, 1)))
+    sr.position += 1
+    return dest
+end
+
+Base.close(sr::SequentialReader) = close(sr.reader)

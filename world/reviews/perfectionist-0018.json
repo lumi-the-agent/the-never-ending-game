@@ -1,0 +1,125 @@
+{
+  "verdict": "needs_work",
+  "summary": "The island is a green blob of identical lollipop trees with floating black name text; a few generated props (cottage, lantern, signpost) are the first real step up but are tiny and sparse. The follow camera is still stuck inside tree crowns, creatures are hard to see, and there is little to do beyond one firefly mini game.",
+  "scores": {
+    "lighting": {
+      "score": 4,
+      "why": "Daytime is bright with clear shadows now, but flat, no atmosphere, and night still does not render in the raster (todos 41/22)."
+    },
+    "world": {
+      "score": 3,
+      "why": "One flat grassy island with hundreds of copy-paste sphere trees; no areas, path, pond or pier; water is a flat blue plane."
+    },
+    "props": {
+      "score": 3,
+      "why": "Cottage, lantern, signpost and fruit tree are generated and charming, but 237 props are still spheres/rocks; the cottage is dwarfed by trees."
+    },
+    "creatures": {
+      "score": 4,
+      "why": "Blobby animals with little personality at distance; in follow view Sprout is a pile of blobs and the others are unseen."
+    },
+    "fun": {
+      "score": 2,
+      "why": "Only a firefly mini game; no goals, progression, building or reasons to return."
+    },
+    "camera": {
+      "score": 3,
+      "why": "Follow view is blocked by foliage (todo 2 open since session 1); the orbit view is fine but not a composed shot."
+    },
+    "ui": {
+      "score": 4,
+      "why": "Panel is readable and wrapped, but name tags are plain dark text without pills, overlap (Truffle/Wibbles, Hopscotch/Sprout, Cumulus on the cottage) and the todo list leaks internal bugs to the player."
+    },
+    "style": {
+      "score": 3,
+      "why": "Primitive spheres next to textured generated meshes look unrelated; STYLE.md is not visible in the result; asset textures are dark/different."
+    },
+    "performance": {
+      "score": 8,
+      "why": "live_status: frame median ~1 ms, p95 2.7 ms at 30 fps target; screenshot calls are slow (p95 115 s) but that is not gameplay."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "camera",
+      "what": "In follow mode the subject (Sprout) sits under huge tree crowns; most of the picture is leaves and the other creatures are not visible.",
+      "where": "follow camera, scenery.jl follow_view",
+      "evidence": "world/reviews/p18-follow.png",
+      "suggestion": "Raise and pull back the camera, fade/cull trees between camera and subject, and add a cinematic cut between creatures.",
+      "done_when": "a follow screenshot shows the followed creature unoccluded and large, with at least 3 other creatures or a landmark in frame."
+    },
+    {
+      "severity": "high",
+      "category": "props",
+      "what": "Almost all trees, bushes and rocks are the same sphere primitives; only four generated props exist and they are tiny.",
+      "where": "whole island",
+      "evidence": "world/reviews/p18-orbit.png; catalog has few assets",
+      "suggestion": "Generate 3-4 tree variants, bush, boulder, mushroom, fence and flower assets and replace spheres; group them in clusters with a cottage garden.",
+      "done_when": "over 80% of props in an orbit screenshot are generated meshes, with at least 3 visibly different tree shapes."
+    },
+    {
+      "severity": "high",
+      "category": "world",
+      "what": "No areas: one uniform meadow with no path, pond, pier or hill, so nothing invites exploring.",
+      "where": "terrain in world.json",
+      "evidence": "world/reviews/p18-orbit.png",
+      "suggestion": "Build a cottage clearing, a pond with a pier and a dirt path joining them; vary the terrain height and ground colour.",
+      "done_when": "an orbit screenshot shows at least 3 distinct zones joined by a visible path."
+    },
+    {
+      "severity": "high",
+      "category": "fun",
+      "what": "The only activity is the firefly mini game; the creatures live on their own and the player has no goals.",
+      "where": "plugins, dashboard",
+      "evidence": "state/world.json minigames: FireflyCatch only",
+      "suggestion": "Add a second mini game (fishing at the pier or gardening), a collection or decorate loop with visible rewards, and let creatures react to the player.",
+      "done_when": "two mini games exist with persistent scores, and a play session of 5 minutes shows a visible reward in the world."
+    },
+    {
+      "severity": "medium",
+      "category": "ui",
+      "what": "Name tags are bare dark text on green foliage and overlap; several are unreadable (Wibbles, Cumulus on the cottage).",
+      "where": "3D view labels",
+      "evidence": "world/reviews/p18-fixed.png",
+      "suggestion": "Draw a light pill behind the text, add leader lines, offset stacked tags and fade them with distance.",
+      "done_when": "no two tags overlap in follow, orbit and fixed screenshots with 10 creatures."
+    },
+    {
+      "severity": "medium",
+      "category": "lighting",
+      "what": "Lighting is flat with a hard bright sun; night is not visible in the raster and the todo for it has been open for a long time.",
+      "where": "scenery.jl sync_sun!, gamma",
+      "evidence": "todos 3, 19, 22, 41",
+      "suggestion": "Add a warm-golden-hour palette, a sky gradient and fog for depth, plus a night overlay tint with glowing flowers and lanterns.",
+      "done_when": "screenshots at daytime 0.2, 0.6 and 0.95 show distinct moods, with night luminance of at least 30."
+    },
+    {
+      "severity": "medium",
+      "category": "creatures",
+      "what": "Creatures are small blobs that all read the same at orbit distance and have no visible activity.",
+      "where": "creature actors",
+      "evidence": "world/reviews/p18-orbit.png",
+      "suggestion": "Give each species a distinct silhouette, ears/tail, bobbing walk and idle actions such as sleeping, eating or visiting the cottage.",
+      "done_when": "a close screenshot shows 3 distinct species silhouettes, and the event log shows at least 4 distinct behaviours."
+    },
+    {
+      "severity": "low",
+      "category": "ui",
+      "what": "The todo panel shows internal bugs (failed frame, plot names) to the player.",
+      "where": "right panel",
+      "evidence": "world/reviews/p18-follow.png",
+      "suggestion": "Show only player-facing goals and wishes.",
+      "done_when": "the panel has no stack-trace or log text."
+    }
+  ],
+  "engine": [
+    {
+      "what": "RayMakie raster lights only with a display-encoded film, so ambient and colour changes have no raster effect; also the slow live_screenshot (p95 115 s).",
+      "evidence": "todo 41; state/perf.json live:screenshot"
+    }
+  ],
+  "process": "Sessions mostly went to label tweaks, crash fixes, and test plumbing; the two review items about camera and the dark look sat open from session 1. Session 18's generated props are the right direction but only four exist and trees and rocks are unchanged. Not done in this review: path traced still and playing the mini game through FakeInteraction (time). Spend next sessions on camera occlusion, replacing primitives with assets, and areas with a path.",
+  "addressed": true,
+  "addressed_note": "Findings are todos #47 (areas), #46 (generated props), #2 (follow camera), #51 (second mini game), #53 (tags), #54 (creatures), #22 (night). The low finding (internal bugs in the panel) is fixed by the dashboard showing only player kinds and short titles (session 20)."
+}

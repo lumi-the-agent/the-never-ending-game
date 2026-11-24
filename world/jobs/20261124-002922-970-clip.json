@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-24T00:29:22.972",
+  "error": "LavaError during vk_alloc:\n  the Vulkan device is lost or retired\n  Suggestion: Call reset_device!(device) and allocate again on the device it returns, or restart Julia.\nStacktrace:\n  [1] refuselost\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/device.jl:464 [inlined]\n  [2] vk_alloc(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, nbytes::Int64; extra_usage::UInt32, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:208\n  [3] vk_alloc\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:204 [inlined]\n  [4] Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:52\n  [5] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:32 [inlined]\n  [6] #allocate#622\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/ka_backend.jl:57 [inlined]\n  [7] allocate\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/ka_backend.jl:50 [inlined]\n  [8] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:127 [inlined]\n  [9] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:130 [inlined]\n [10] Hikari.Scene(; backend::Mantle.LavaDevice, accel::Nothing, hw_accel::Bool)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/scene.jl:63\n [11] create_scene_state(rscene::Makie.Scene, screen::RayMakie.Screen, root_scene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:597\n [12] new_scene_state(screen::RayMakie.Screen, rscene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:833\n [13] init_scene!(screen::RayMakie.Screen, mscene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:740\n [14] colorbuffer(screen::RayMakie.Screen, format::Makie.ImageStorageFormat; figure::Nothing, clear::Bool, samples::Int64, px_per_unit::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1162\n [15] colorbuffer (repeats 2 times)\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155 [inlined]\n [16] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:90\n [17] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [18] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:196\n [19] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:252\n [20] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:225\n [21] top-level scope\n    @ none:1\n [22] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [23] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [24] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-24T00:44:52.622",
+  "id": "20261124-002922-970-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "visit",
+      "samples": 96,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/visit-traced.png",
+    "script": "movies/post_stills.jl"
+  },
+  "seconds": 52.8,
+  "started": "2026-11-24T00:43:59.861",
+  "status": "failed"
+}

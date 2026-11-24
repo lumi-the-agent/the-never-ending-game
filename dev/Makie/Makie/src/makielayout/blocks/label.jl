@@ -1,0 +1,80 @@
+function initialize_block!(l::Label, text; kwargs...)
+    if text isa AbstractObservable
+        on(str -> l.text = str, text, update = true)
+    else
+        l.text = text
+    end
+    initialize_block!(l; kwargs...)
+    return
+end
+
+function initialize_block!(l::Label)
+
+    topscene = l.blockscene
+    layoutobservables = l.layoutobservables
+
+    textpos = Observable(Point3f(0, 0, 0))
+    word_wrap_width = Observable(-1.0f0)
+    t = text!(
+        topscene, textpos, text = l.text, fontsize = l.fontsize, font = l.font, color = l.color,
+        visible = l.visible, align = (:center, :center), rotation = l.rotation, markerspace = :data,
+        justification = l.justification, lineheight = l.lineheight, word_wrap_width = word_wrap_width,
+        inspectable = false
+    )
+
+    textbb = Ref(BBox(0, 1, 0, 1))
+
+    onany(
+        topscene, l.text, l.fontsize, l.font, l.rotation, word_wrap_width,
+        l.padding, l.width, l.height, l.word_wrap
+    ) do _, _, _, _, _, pad, _, _, _
+        padding = to_lrbt_padding(pad)
+        textbb[] = Rect2f(boundingbox(t, :data))
+        autowidth = width(textbb[]) + padding[1] + padding[2]
+        autoheight = height(textbb[]) + padding[3] + padding[4]
+        if l.word_wrap[]
+            setautosize!(l, (nothing, autoheight))
+        else
+            setautosize!(l, (autowidth, autoheight))
+        end
+        # The text bounds can change without changing the layout's size. Keep
+        # alignment/wrapping current without asking the parent to solve again.
+        notify(layoutobservables.computedbbox)
+        return
+    end
+
+    onany(topscene, layoutobservables.computedbbox, l.padding) do bbox, pad
+        padding = to_lrbt_padding(pad)
+        if l.word_wrap[]
+            tw = width(bbox) - padding[1] - padding[2]
+        else
+            tw = width(textbb[])
+        end
+        th = height(textbb[])
+
+        box = bbox.origin[1]
+        boy = bbox.origin[2]
+
+        tx = box + padding[1] + 0.5 * tw
+        ty = boy + padding[3] + 0.5 * th
+        # only update if finite to avoid propagating NaNs
+        # Which happens for a "" label, which can't be recovered from.
+        if all(isfinite, (tx, ty))
+            textpos[] = Point3f(tx, ty, 0)
+        end
+
+        if l.word_wrap[] && (word_wrap_width[] != tw)
+            word_wrap_width[] = tw
+        end
+
+        return
+    end
+
+
+    # trigger first update, otherwise bounds are wrong somehow
+    notify(ComputePipeline.get_observable!(l.text))
+    # trigger bbox
+    layoutobservables.suggestedbbox[] = layoutobservables.suggestedbbox[]
+
+    return l
+end

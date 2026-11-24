@@ -1,0 +1,309 @@
+const __METAL_OS_LOG_TYPE_DEBUG__ = Int32(2)
+const __METAL_OS_LOG_TYPE_INFO__ = Int32(1)
+const __METAL_OS_LOG_TYPE_DEFAULT__ = Int32(0)
+const __METAL_OS_LOG_TYPE_ERROR__ = Int32(16)
+const __METAL_OS_LOG_TYPE_FAULT__ = Int32(17)
+
+export @mtlprintf
+
+@generated function promote_c_argument(arg)
+    # > When a function with a variable-length argument list is called, the variable
+    # > arguments are passed using C's old ``default argument promotions.'' These say that
+    # > types char and short int are automatically promoted to int, and type float is
+    # > automatically promoted to double. Therefore, varargs functions will never receive
+    # > arguments of type char, short int, or float.
+
+    if arg == Cchar || arg == Cshort
+        return :(Cint(arg))
+    elseif arg == Cfloat
+        return :(Cdouble(arg))
+    else
+        return :(arg)
+    end
+end
+
+function valist_size(dl, param_types)
+    size = 0
+    for pty in param_types
+        ps = LLVM.storage_size(dl, pty)
+        if size % ps == 0
+            size += ps
+        else
+            size += (size % ps) + ps
+        end
+    end
+
+    return size
+end
+
+"""
+    @mtlprintf(fmt::String, args...)
+
+Print a formatted string from a kernel, with C `printf` formatting. The format string has to
+be a literal. Arguments are passed as C variadic arguments, so use the length modifier of
+their type (e.g., `%d` for `Int32`, `%ld` for `Int64`, `%u` for `UInt32`, `%f` for
+`Float32`); the `%n` and `%s` conversions are not supported.
+
+Metal collects the output in a log buffer, which Metal.jl prints to the host's standard
+output when the kernel's command buffer completes. When the log buffer is full, further
+messages are dropped. Kernels that print are submitted in a command buffer of their own,
+bypassing command batching, and cannot run on virtualized GPUs or during a GPU frame
+capture.
+
+```julia
+@mtlprintf("thread %u: %f\n", thread_position_in_grid().x, 1f0)
+```
+"""
+macro mtlprintf(fmt::String, args...)
+    fmt_val = Val(Symbol(fmt))
+
+    return quote
+        _mtlprintf($fmt_val, $(map(arg -> :(promote_c_argument($arg)), esc.(args))...))
+    end
+end
+
+@llvmgenerated builder function _mtlprintf(::Val{fmt}, argspec...)::Nothing where {fmt}
+    T_void = LLVM.VoidType()
+    T_int32 = LLVM.Int32Type()
+    T_int64 = LLVM.Int64Type()
+    T_pint8 = LLVM.PointerType(LLVM.Int8Type())
+    T_pint8a2 = LLVM.PointerType(LLVM.Int8Type(), 2)
+
+    mod = current_module(builder)
+    param_types = LLVMType[arg.value_type for arg in argspec]
+
+    # create the vararg function that calls `air.os_log`
+    llvm_ft = LLVM.FunctionType(T_void, LLVMType[]; vararg = true)
+    llvm_f = LLVM.Function(mod, "metal_os_log", llvm_ft)
+    push!(llvm_f.function_attributes, EnumAttribute(:alwaysinline))
+
+    # generate IR
+    entry = BasicBlock(llvm_f, "entry")
+    position!(builder, LLVM.at_end(entry)) do
+        str = globalstring_ptr!(builder, String(fmt), addrspace = 2)
+        subsystem_str = null(T_pint8a2)
+        category_str = const_inttoptr(LLVM.ConstantInt(T_int64, -1), T_pint8a2)
+        log_type = LLVM.ConstantInt(T_int32, __METAL_OS_LOG_TYPE_DEFAULT__)
+
+        # compute argsize
+        dl = mod.datalayout
+        arg_size = LLVM.ConstantInt(T_int64, valist_size(dl, param_types))
+
+        alloc = alloca!(builder, T_pint8)
+        buffer = bitcast!(builder, alloc, T_pint8)
+        alloc_size = LLVM.ConstantInt(T_int64, LLVM.storage_size(dl, T_pint8))
+
+        # `llvm.va_start`/`llvm.va_end` are only overloaded on the pointer type since
+        # LLVM 19, so only pass that type to the intrinsics that are overloaded; the
+        # lifetime intrinsics lost their size operand in LLVM 22
+        function intrinsic(name)
+            intr = Intrinsic(name)
+            LLVM.Function(mod, intr, isoverloaded(intr) ? [T_pint8] : LLVMType[])
+        end
+        lifetime_args = LLVM.version() >= v"22" ? [buffer] : [alloc_size, buffer]
+
+        lifetime_start = intrinsic("llvm.lifetime.start")
+        call!(builder, lifetime_start.function_type, lifetime_start, lifetime_args)
+
+        va_start = intrinsic("llvm.va_start")
+        call!(builder, va_start.function_type, va_start, [buffer])
+
+        arg_ptr = load!(builder, T_pint8, alloc)
+
+        os_log_fty = LLVM.FunctionType(T_void, [T_pint8a2, T_pint8a2, T_int32, T_pint8a2, T_pint8, T_int64])
+        os_log = LLVM.Function(mod, "air.os_log", os_log_fty)
+        call!(builder, os_log_fty, os_log, [subsystem_str, category_str, log_type, str, arg_ptr, arg_size])
+
+        va_end = intrinsic("llvm.va_end")
+        call!(builder, va_end.function_type, va_end, [buffer])
+
+        lifetime_end = intrinsic("llvm.lifetime.end")
+        call!(builder, lifetime_end.function_type, lifetime_end, lifetime_args)
+
+        ret!(builder)
+    end
+
+    # call it with the arguments
+    call!(builder, llvm_ft, llvm_f, collect(LLVM.Value, argspec))
+    nothing
+end
+
+
+## print-like functionality
+
+export @mtlprint, @mtlprintln
+
+# simple conversions, defining an expression and the resulting argument type. nothing fancy,
+# `@mtlprint` pretty directly maps to `@mtlprintf`; we should just support `write(::IO)`.
+const mtlprint_conversions = [
+    Float32 => (x -> :(Float64($x)), Float64),
+    Ptr{<:Any} => (x -> :(reinterpret(Int, $x)), Ptr{Cvoid}),
+    LLVMPtr{<:Any} => (x -> :(reinterpret(Int, $x)), Ptr{Cvoid}),
+    Bool => (x -> :(Int32($x)), Int32),
+]
+
+# format specifiers
+const mtlprint_specifiers = Dict(
+    # integers
+    Int16 => "%hd",
+    Int32 => "%d",
+    Int64 => "%ld",
+    UInt16 => "%hu",
+    UInt32 => "%u",
+    UInt64 => "%lu",
+
+    # floating-point
+    Float32 => "%f",
+
+    # other
+    Cchar => "%c",
+    Ptr{Cvoid} => "%p",
+    Cstring => "%s",
+)
+
+@inline @generated function _mtlprint(parts...)
+    fmt = ""
+    args = Expr[]
+
+    for i in 1:length(parts)
+        part = :(parts[$i])
+        T = parts[i]
+
+        # put literals directly in the format string
+        if T <: Val
+            fmt *= string(T.parameters[1])
+            continue
+        end
+
+        # try to convert arguments if they are not supported directly
+        if !haskey(mtlprint_specifiers, T)
+            for (Tmatch, rule) in mtlprint_conversions
+                if T <: Tmatch
+                    part = rule[1](part)
+                    T = rule[2]
+                    break
+                end
+            end
+        end
+
+        # render the argument
+        if haskey(mtlprint_specifiers, T)
+            fmt *= mtlprint_specifiers[T]
+            push!(args, part)
+        elseif T <: Tuple
+            fmt *= "("
+            for (j, U) in enumerate(T.parameters)
+                if haskey(mtlprint_specifiers, U)
+                    fmt *= mtlprint_specifiers[U]
+                    push!(args, :($part[$j]))
+                    if j < length(T.parameters)
+                        fmt *= ", "
+                    elseif length(T.parameters) == 1
+                        fmt *= ","
+                    end
+                else
+                    @error("@mtlprint does not support values of type $U")
+                end
+            end
+            fmt *= ")"
+        elseif T <: String
+            @error("@mtlprint does not support non-literal strings")
+        elseif T <: Type
+            fmt *= string(T.parameters[1])
+        else
+            @warn("@mtlprint does not support values of type $T")
+            fmt *= "$(T)(...)"
+        end
+    end
+
+    return quote
+        @mtlprintf($fmt, $(args...))
+    end
+end
+
+"""
+    @mtlprint(xs...)
+    @mtlprintln(xs...)
+
+Print a textual representation of values `xs` from a kernel, followed by a newline for
+`@mtlprintln`. This builds on [`@mtlprintf`](@ref), choosing the format specifiers for you,
+and supports 16-, 32- and 64-bit integers, `Float32`, `Bool`, `Cchar`, pointers, and
+tuples of those. For other output, use `@mtlprintf` directly.
+
+Limited string interpolation is also possible:
+
+```julia
+    @mtlprint("Hello, World ", 42, "\\n")
+    @mtlprint "Hello, World \$(42)\\n"
+```
+"""
+macro mtlprint(parts...)
+    args = Union{Val, Expr, Symbol}[]
+
+    parts = [parts...]
+    while true
+        isempty(parts) && break
+
+        part = popfirst!(parts)
+
+        # handle string interpolation
+        if isa(part, Expr) && part.head == :string
+            parts = vcat(part.args, parts)
+            continue
+        end
+
+        # expose literals to the generator by using Val types
+        if isbits(part) # literal numbers, etc
+            push!(args, Val(part))
+        elseif isa(part, QuoteNode) # literal symbols
+            push!(args, Val(part.value))
+        elseif isa(part, String) # literal strings need to be interned
+            push!(args, Val(Symbol(part)))
+        else # actual values that will be passed to printf
+            push!(args, part)
+        end
+    end
+
+    return quote
+        _mtlprint($(map(esc, args)...))
+    end
+end
+
+@doc (@doc @mtlprint)
+macro mtlprintln(parts...)
+    return esc(
+        quote
+            Metal.@mtlprint($(parts...), "\n")
+        end
+    )
+end
+
+export @mtlshow
+
+"""
+    @mtlshow(ex)
+
+Print `ex` and its value from a kernel, like `Base.@show`, and return the value. The value
+has to be of a type that [`@mtlprint`](@ref) supports.
+
+```julia
+@mtlshow thread_position_in_grid().x
+```
+"""
+macro mtlshow(exs...)
+    blk = Expr(:block)
+    for ex in exs
+        push!(
+            blk.args, :(
+                Metal.@mtlprintln(
+                    $(sprint(Base.show_unquoted, ex) * " = "),
+                    begin
+                        local value = $(esc(ex))
+                    end
+                )
+            )
+        )
+    end
+    isempty(exs) || push!(blk.args, :value)
+    return blk
+end

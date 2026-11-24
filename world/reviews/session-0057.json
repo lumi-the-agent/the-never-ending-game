@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "The kite launches and flies (flyer set, kite up, 0.01 ms per frame), and the author's staged shot looks good. In my own live run at 13:30 the default follow camera never showed it: it stayed on tag players while Sprout flew the kite. A player who watches the game will mostly not see the headline feature, and its thought bubble stays stale.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "While the kite is flying (Sprout goal :kite, KITE[:flyer]=1, up=true), the follow camera does not go to it. Right after the launch it showed Pinchy and flowers, then Truffle playing tag, with no kite or string in frame. Another moment (tag) outranks the kite, and the author's own todo notes say a dance ring stole the camera in their test.",
+   "where": "plugins/kite.jl camera moment / CAMERA_MOMENTS ordering",
+   "evidence": "world/reviews/s57-flying.png and s57-flying2.png (13:32 and 13:33, kite up; held_subject was 4, then 8, not the flyer 1); compare the author's staged world/tests/shots/s57-kite.png",
+   "suggestion": "Register the kite in NG.MOMENTS_FIRST, or give the moment priority while it is up, so the kite view is what a watching player sees. Add a test that waits out a SUBJECT_HOLD while tag runs."
+  },
+  {
+   "severity": "medium",
+   "what": "Sprout's thought bubble still reads 'Making a kite to fly over\u2026' once the kite is already flying, and the player who jumps in as the holder gets no sign of where the kite is or that running lifts it (tester report).",
+   "where": "builder thought bubble over Sprout; kite controlled-holder camera/HUD",
+   "evidence": "world/tests/shots/s57-kite.png (bubble under the kite); tester report with x57-c-running.png, x57-d-standing.png",
+   "suggestion": "Clear the bubble at launch. Keep the kite in frame for the controlled holder and show a short 'run to lift the kite' hint."
+  },
+  {
+   "severity": "low",
+   "what": "The session's engine edit (faces.jl/species.jl pose_herd) and a camera splat bug crashed the sandbox. The host suite did not complete, so regression coverage for this session is thin. The sandbox is healthy now: all plugins ok, frame median 2.2 ms.",
+   "where": "dev/NeverendingGame/src/faces.jl, species.jl",
+   "evidence": "journal 08:51; tester report; live_status plugins all ok",
+   "suggestion": "Batch engine edits and check them in a quiet copy first."
+  }
+ ],
+ "addressed": true,
+ "response": "s58: (1) the kite camera now swings round to the sides and up when the flyer stands among crowns (it was boxed in, obstruction 5.2, so tag won); screenshot media/s58/kite-auto2.png shows Sprout, string and kite. (2) the thought bubble says 'Flying my kite, wheee!' while Sprout flies (Main.SPROUT_DOING, builder.jl). (3) jumped in as the holder: the kite flies ahead of the player, the chase view frames both from behind, a meter 'Kite \u25ae\u25ae\u25ae\u25af run to lift it, stop and it sinks' is shown, and running lifts the kite clearly (0.2 -> 1.1 rad); test 'Flying the kite as the player' passes, tests/shots/kite_play_running.png. Published."
+}

@@ -1,0 +1,97 @@
+shot firefly-0start
+firefly start card: Firefly catch  ·  Level 2
+The fireflies are quicker now!
+Catch all 8 glowing fireflies in 60 seconds.
+Follow the light beams. Fireflies drift away when you come close!
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot firefly-run1
+firefly t=12.0 hud='Fireflies 5/8    48 s left    nearest 9 m ahead'
+shot firefly-run2
+firefly t=24.0 hud='Fireflies 6/8    36 s left    nearest 2 m ahead'
+shot firefly-run3
+firefly t=36.0 hud='Fireflies 7/8    24 s left    nearest 5 m ahead'
+firefly after 42.0 s: score 8 state over hud 'All caught!'
+shot firefly-9end
+firefly end card: All 8 caught in 41.4 s!
+Your best: 0.0 s
+Next round: level 3, quicker fireflies!
+Your 8 fireflies fly to the lantern by the cottage (16 there now).
+
+Press R to play again
+shot firefly-replay
+after R: Firefly catch  ·  Level 3
+The fireflies are quicker now!
+Catch all 8 glowing fireflies in 60 seconds.
+Follow the light beams. Fireflies drift away when you come close!
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot berry-0start
+berry start card: Berry race  ·  Level 2: the critters hurry sooner!
+Ripe berries hang on the bushes,
+and Hopscotch, Sir Sniffsalot and Wibbles want them too!
+Pick more than the critters in 60 seconds:
+walk into a bush to shake its berries loose.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot berry-run1
+berry t=12.0 hud='You 7  ·  Critters 2  ·  48 s  ·  berry 11 m ahead'
+berry after 21.0 s: you 8 critters [3, 2, 1] state over hud 'You win! 8 to 6'
+shot berry-9end
+berry end card: You win, 8 berries to 6!
+A new best: 8 berries!
+Next round: level 3, the critters hurry sooner!
+Your 8 berries go to the basket by the cottage
+(19 in it now).
+
+Press R to play again
+shot berry-replay
+after R: Berry race  ·  Level 3: the critters hurry sooner!
+Ripe berries hang on the bushes,
+and Truffle, Pickles and Wibbles want them too!
+Pick more than the critters in 60 seconds:
+walk into a bush to shake its berries loose.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot hideseek-0start
+hideseek start card: Hide and seek
+Your friends hid behind trees and bushes while you counted to ten!
+Watch for giggles: a little note pops up over a hiding friend.
+Walk up close to find them. Find all 4 in 120 seconds.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot hideseek-run1
+hideseek t=13.0 hud='Found 1/4    108 s left    a giggle 8 m to your right'
+shot hideseek-run2
+hideseek t=25.0 hud='Found 2/4     96 s left    a giggle 14 m ahead'
+shot hideseek-run3
+hideseek t=36.0 hud='Found 3/4     84 s left    a giggle 5 m ahead'
+hideseek after 39.0 s: found 4/4 state over hud 'Found everyone!'
+shot hideseek-9after
+shot jumpin-0
+jump in: walking to Truffle
+shot jumpin-wave1
+after wave 1: (:answer, :wave)
+shot jumpin-wave2
+after wave 2: (:follow, :idle)
+shot jumpin-walk-run1
+shot jumpin-space
+after walk+space: (:follow, :walk) followers?
+tag: free critters 6 of 10
+tag: players Truffle, Wibbles, Pinchy start 4.1 m from Sprout
+shot tag-run1
+shot tag-run2
+shot tag-run3
+shot tag-run4
+tag after 45 s: game over tags 1 sprout in=false left=("Sprout", :idle, :walk, true)
+shot tag-9end

@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "Night follow camera now shows the cottage in lamplight, a lantern and the moon instead of a heap of sleepers; the chat/engine fix and a flying free camera are real. Frame median ~2.8 ms. Suite 52/53, with the ball-rally test still flaky.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Daytime-ish moment shots in the 20-sample sheet are still partly obstructed: a large bush fills the left of three consecutive chat frames, and one frame has a red crown/object covering the right third. The bush blocker did not fully clear these.",
+   "where": "media/s31/n20-sheet.png (row 1 col 3, row 2 cols 3-5)",
+   "evidence": "media/s31/n20-sheet.png",
+   "suggestion": "Raise the clearance radius for bushes and foliage in the moment camera, or re-pick the eye when the subject is not fully visible.",
+   "response": "s32: the follow/moment camera now counts a creature beside the subject as a blocker (only the subject itself is skipped), and group moments (ball rally) are framed from the side holding all players; the bush blocker stays. Not re-sampled at 20 hours this session."
+  },
+  {
+   "severity": "medium",
+   "what": "Ball rally test fails in the host run ('two passes in 1.0 s: too fast to see'). Critters pass the ball back instantly, which a player also experiences as unreadable. The author relaxed tests rather than slowing the pass.",
+   "where": "tests/minigames.jl (Critters pass the ball back and forth); tests/results/session-0031.json",
+   "evidence": "52/53 passed; the failure is a real pacing issue, not just a flaky test",
+   "suggestion": "Add a minimum delay (about 1.5 s) between passes in ballplay so a rally is followable.",
+   "response": "s32 fixed in the game, not the test: the fetcher traps the ball, holds it 0.55 s, and two critter passes are at least 1.7 s apart (events: 1.70 s and 1.73 s apart, before 0.83 s). The rally camera frames both critters and the ball (tests/shots/ball-rally.png)."
+  },
+  {
+   "severity": "low",
+   "what": "Night shots are a lot of near-identical cottage/moon views, and the free camera is not shown to differ much; the 'twenty samples at hours 0-6' goal covered only 00:36-02:06.",
+   "where": "plugins/nightshots.jl",
+   "evidence": "media/s31/n20-sheet.png: 9 of 20 frames are near-duplicates of the cottage",
+   "suggestion": "Vary the shot set (shore, pond, fireflies) and sample hours 3-6 too.",
+   "response": "s32: not addressed; night shot variety is a later camera todo."
+  }
+ ],
+ "addressed": true
+}

@@ -1,0 +1,207 @@
+using Test
+
+if get(ENV, "RAYMAKIE_TEST_LAVAPIPE", "false") == "true"
+    using Lavapipe_jll
+    ENV["VK_DRIVER_FILES"] = Lavapipe_jll.lvp_icd
+    ENV["VK_ICD_FILENAMES"] = Lavapipe_jll.lvp_icd
+end
+
+
+# The oldest hardware this should run on is an M1 (Apple GPU family 7) with
+# macOS 15. Without one, run the suite on any Apple silicon Mac with
+#
+#     JULIA_METAL_TARGET_GPUFAMILY=7 JULIA_METAL_TARGET_MACOS=15
+#
+# set before Metal compiles anything: every kernel and graphics stage is then
+# compiled as for that target, and one that uses a newer GPU's or system's
+# feature fails to compile. It cannot catch a bug in the M1's own GPU compiler.
+
+# Mantle registers the platform backend itself. The test sandbox need not list
+# its compiler packages as direct dependencies to select an available device.
+using Mantle
+const BACKEND = haskey(ENV, "RAYMAKIE_TEST_DEVICE") ?
+    Mantle.defaultdevice!(ENV["RAYMAKIE_TEST_DEVICE"]) : Mantle.defaultbackend()
+
+if get(ENV, "RAYMAKIE_TEST_LAVAPIPE", "false") == "true"
+    @testset "Lavapipe_jll test device" begin
+        @test isfile(Lavapipe_jll.lvp_icd)
+        @test occursin("llvmpipe", lowercase(Mantle.devicename(Mantle.todevice(Mantle.defaultbackend()))))
+    end
+end
+
+@info "RayMakie tests: using $(nameof(typeof(BACKEND)))"
+
+# The Vulkan backend module, or `nothing` on a machine running Metal.
+#
+# RayMakie's source is backend-agnostic; several of its TESTS are not, and name
+# things — `Mantle.LavaArray`, `Mantle.vk_flush!` — that moved into
+# `MantleVulkanExt` when the runtime did. A `Main`-level binding serves every
+# file, since they are all `include`d here. Files that use it are already behind
+# the `supports_batch_queue` / Vulkan-runtime guards further down.
+
+# Single-process test entry point.
+#
+# Only test files that are stable when chained together in a single session
+# are listed here. Several of the older files in this directory either
+#   (1) have zero `@test` assertions (println scripts: test_basic_gpu.jl,
+#       test_per_instance_colors.jl, test_smoke_volume{,_gpu}.jl), or
+#   (2) referenced removed APIs (test_materials_scene.jl) — FIXED, see below, or
+#   (3) bypass the RayMakie package init by `include()`-ing internal source
+#       files (test_lava_array_meshscatter.jl pulls in lava_arrays.jl by hand,
+#       which leaves the VulkanBatchQueue in a state that desyncs every
+#       subsequent RayMakie test in the same process), or
+#   (4) leave LavaArray finalizers attached to a semaphore whose timeline
+#       has been freed; running GC after them segfaults
+#       (test_caching_gc_correctness.jl).
+# Run those individually in fresh sessions when needed.
+#
+# (4) is FIXED — `Mantle.allocate_batch_queue!` now hands the context ownership of
+# every queue it returns, so a semaphore cannot be finalized while a buffer that
+# names it is still alive, and `release_batch_queue!` is the way back out; see
+# Mantle's vulkan/test_batch_queue_lifetime.jl for the invariant.
+#
+# An excluded test file rots, and its exclusion note rots with it: a file that
+# cannot reach its first assertion will keep being described by whatever hazard
+# it was excluded for. The leak regressions are the coverage least likely to be
+# duplicated elsewhere, so they are the ones worth keeping runnable.
+
+const TEST_FILES = [
+    # Source-only, no device: the architecture ledger goes first so it is
+    # reported before anything that can take a device down with it.
+    "test_lava_surface_ledger.jl",
+    # Pure dispatch, no device: which `gpu_read` a scatter attribute takes.
+    "test_gpu_read.jl",
+    "test_raycore_mesh_conversion.jl",
+    # CPU-only (no render), so it fails fast and before anything touches a device.
+    "test_pbrt_import_settings.jl",
+    "test_hw_accel_switch.jl",
+    "test_material_precedence.jl",
+    "test_colour_encoding.jl",
+    "test_sample_budget.jl",
+    "test_preview_density.jl",
+    "test_guide_grid.jl",
+    "test_poll_failure.jl",
+    "picking.jl",
+    "test_lava_meshscatter_pervec.jl",
+    "test_meshscatter_update_stress.jl",
+    "test_mesh_update_stress.jl",
+    "test_recolor_keeps_blas.jl",
+    "test_transform_update_hwtlas.jl",
+    "test_update_paths.jl",
+    "test_light_updates.jl",
+    "test_trace_visibility.jl",
+    "test_renderbuffers.jl",
+    "test_render_allocates_nothing.jl",
+    "test_arena_growth_frame.jl",
+    # Leak / GC regressions, read through the device's buffer and byte counts.
+    "test_materials_scene.jl",
+    "test_lines_topology.jl",
+    "test_screen_owns_its_tracer.jl",
+    "test_caching_gc_correctness.jl",
+    "test_meshscatter_traced_memory.jl",
+]
+
+# NOT listed: test_dolphin_update_stress.jl — and here is exactly what is known,
+# so the next person does not have to re-derive it (2026-08-25).
+#
+# It is no longer dead: it was ported off the removed `LIVE_BUFFERS` /
+# `GPU_LIVE_BYTES` globals and passes 7/7 standalone (~24 s), and 12/12 when run
+# after test_transform_update_hwtlas.jl. But in the full run above it errors:
+#
+#     TypeError: expected Mantle.CommandBatch, got Nothing
+#       Mantle/src/vulkan/runtime/launch.jl:298, in pack_args_direct!
+#
+# i.e. `bq.active_batch` is nothing where a recording batch is expected. Ruled
+# out: it is NOT the `queue_released` guard added to `vk_free!` at the same time
+# (the close-a-screen-then-dolphin pairing passes), and NOT the port itself
+# (standalone passes). So some other file earlier in this list leaves the queue
+# in a state dolphin does not tolerate; which one is unbisected.
+#
+# Run it on its own to get the leak coverage:
+#   julia --project=… -e 'using Test; include("test/test_dolphin_update_stress.jl")'
+
+# Point RayMakie at the backend that was found, once, before any file renders.
+# Individual files still override the device where they mean to.
+using RayMakie
+RayMakie.activate!(; device = BACKEND, visible = get(ENV, "MANTLE_TEST_WINDOWS", "1") != "0")
+
+# Rasterised overlays — lines, scatter, text drawn OVER the raytraced image.
+# They need a graphics pipeline, which is a backend capability rather than a
+# given. Asked as a capability, never as a vendor name: ungated on a device that
+# cannot rasterise these errored with `MethodError: no constructors have been
+# defined for Framebuffer` — ten of them, which reads as "RayMakie is broken"
+# rather than "this device cannot rasterise". RayMakie's `colorbuffer` already
+# has a direct-readback path for scenes with no overlays, and that is the one
+# such a backend takes.
+const GRAPHICS_TEST_FILES = [
+    "test_shader_asset_cache.jl",
+    "test_overlay_compositing.jl",
+    "test_figure_scene_routing.jl",
+    "test_interaction_overlays.jl",
+    "test_reference_frames.jl",
+    "test_text_3d.jl",
+    "test_text_antialiasing.jl",
+    "test_surface_paths.jl",
+    "test_window_frame.jl",
+    "test_window_blit.jl",
+    "test_window_input.jl",
+    "test_empty_plot_fills_later.jl",
+    "test_empty_figure.jl",
+    "test_device_arrays.jl",
+    "test_image_updates.jl",
+    "test_raster_alpha.jl",
+    "test_mesh_raster.jl",
+    "test_meshscatter_raster.jl",
+    "test_meshscatter_traced_interfaces.jl",
+    "test_uv_transform.jl",
+]
+
+# Named test files support focused device checks; an empty argument list runs all.
+const REQUESTED_TESTS = Set(ARGS)
+const UNKNOWN_TESTS = setdiff(REQUESTED_TESTS, Set([TEST_FILES; GRAPHICS_TEST_FILES]))
+isempty(UNKNOWN_TESTS) || error("Unknown RayMakie test files: $(join(sort!(collect(UNKNOWN_TESTS)), ", "))")
+
+@testset "RayMakie" begin
+    for fname in TEST_FILES
+        isempty(REQUESTED_TESTS) || fname in REQUESTED_TESTS || continue
+        @info "RayMakie tests" file = fname
+        @testset "$fname" begin
+            include(joinpath(@__DIR__, fname))
+        end
+    end
+
+    # `supports_graphics` — the question these files actually ask.
+    #
+    # This was `supports_batch_queue` while overlays composited by RECORDING INTO
+    # a batch queue, which Metal has no command pool or fence to build. RayMakie
+    # is on the render graph now and names no queue at all, so the old gate was
+    # skipping the three files that exercise the overlay path on every backend
+    # that rasterises without a batch queue — i.e. all of them on Metal, silently
+    # and with a green suite.
+    if Mantle.supports_graphics(BACKEND)
+        # `test_materials_scene.jl` used to `activate!` its whole config — CPU
+        # device, and `tonemap = nothing, exposure = 0.5` with it — into the
+        # global default theme and never put it back. Re-activating the DEVICE
+        # here fixed the half that had been noticed (a CPU screen has no
+        # overlays, and `HWTLAS(::CPU)` has no method); the tone map stayed off
+        # for every later file, which renders HDR radiance straight to white.
+        # That file passes its config per call now and leaks nothing, so this is
+        # a belt-and-braces line rather than the load-bearing one it was.
+        RayMakie.activate!(; device = BACKEND, visible = get(ENV, "MANTLE_TEST_WINDOWS", "1") != "0")
+        for fname in GRAPHICS_TEST_FILES
+            isempty(REQUESTED_TESTS) || fname in REQUESTED_TESTS || continue
+            if startswith(fname, "test_window") && get(ENV, "MANTLE_TEST_WINDOWS", "1") == "0"
+                @info "window test skipped (MANTLE_TEST_WINDOWS=0)" file = fname
+                @test_skip false
+                continue
+            end
+            @testset "$fname" begin
+                @info "RayMakie tests" file = fname
+                include(joinpath(@__DIR__, fname))
+            end
+        end
+    else
+        @info "RayMakie tests: this backend does not rasterise; skipping the overlay files" backend =
+            nameof(typeof(BACKEND)) files = GRAPHICS_TEST_FILES
+    end
+end

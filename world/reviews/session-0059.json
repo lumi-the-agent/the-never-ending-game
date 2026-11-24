@@ -1,0 +1,29 @@
+{
+  "verdict": "pass",
+  "summary": "Own sandbox screenshots (s59-r1/r3.png, dusk, follow camera) show the tag right above its own creature, readable, with 7 ms median frames and all plugins ok. The overlap case still misplaces Sprout's tag (tester), and the controls card covers the view.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "When two heads overlap on screen, tag_spots handles creatures nearest-first, so a nearer creature's tag takes the spot on Sprout's head and Sprout's own tag moves up about 80 px. A viewer again reads another name on the hero. The tester saw this (Pickles on Sprout's head, Sprout's tag floating). The todo's 'no tag over another creature' is only met when heads don't overlap.",
+      "where": "dev/NeverendingGame/src/scenery.jl:407 tag_spots / sync_text! sort order",
+      "evidence": "tester report session-0059 (Sprout tag ~80 px above the head); author evidence only shows spread-out creatures; my screenshots world/reviews/s59-r1.png and s59-r3.png only show a single creature (Marshmallow), so the crowded case stays untested by me",
+      "suggestion": "Sort the controlled or followed creature first, so its tag stays at its head and others move up. Or drop the tag of a creature whose head is covered, and add a test with two overlapping heads."
+    },
+    {
+      "severity": "low",
+      "what": "The 'You are Sprout' controls card covers the lower third of the 3D view for over 4 s while the player walks and runs, hiding the new strut.",
+      "where": "jump-in controls card",
+      "evidence": "tester report",
+      "suggestion": "Make the card smaller, move it to a corner, or fade it on the first key press."
+    },
+    {
+      "severity": "low",
+      "what": "At dusk with the steep follow camera, the speech line under the name ('Everything smells green.') is drawn over the creature's own body, and a tree crown covers half of the subject; the creature is hard to see.",
+      "where": "follow view, sandbox 20:16",
+      "evidence": "world/reviews/s59-r3.png",
+      "suggestion": "Lift tags with speech a few more pixels above the head, or avoid framing a creature behind a tree crown."
+    }
+  ],
+  "addressed": true,
+  "addressed_note": "s60: the controls card now shrinks to one line 1.5 s after the player walks off (greetings.jl, test 'controls card shrinks', tests/shots/birdplay-card-shrinks.png). The tag-overlap and dusk speech-line findings are not fixed yet (open for the next session, the name tag work belongs with #372's follow-ups)."
+}

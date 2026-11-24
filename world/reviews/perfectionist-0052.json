@@ -1,0 +1,197 @@
+{
+  "verdict": "needs_work",
+  "summary": "The island has more going on now: friends carry planks to Sprout's builds and cheer, there is a fenced vegetable patch with real carrots, and dusk finally has a mood (warm lamp pools, a golden sun path, a bench shot from behind out to sea). But the daytime picture a player sees most of the time is still pixel for pixel the s46/s49 eye-level shot (flat noon light, an empty meadow of grass tufts, blob creatures), and the new sunset sky shows stars in a bright sky, flat lilac cloud blobs and, traced, a doubled white sun disc over a black sea. All three mini games are still won on a first W/A/D play.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Dusk is better (lamp pools, golden path), but noon is still flat and shadowless-looking, and the sunset sky has stars by daylight and a black traced sea"
+    },
+    "world": {
+      "score": 6,
+      "why": "The garden and bench add places, but the meadow the eye-level camera shows is unchanged since s46: grass tufts and nothing else"
+    },
+    "props": {
+      "score": 6,
+      "why": "Generated carrots, fence and watering can are charming; cabbages are flat green discs, carrots lie on top of the soil, wild flowers grow inside the bed, fence corners double up"
+    },
+    "creatures": {
+      "score": 6,
+      "why": "Hats, joy faces and plank carrying help; the bodies are still the same blobs and creatures walk through each other (Sprout inside a found friend, Pickles inside Sprout on the pier)"
+    },
+    "fun": {
+      "score": 6,
+      "why": "Building with cheering friends is a real moment to watch; mini games are winnable but lopsided (berry race 4-0 with 56 s left)"
+    },
+    "camera": {
+      "score": 5,
+      "why": "Bench shot now from behind, but a passing creature's head fills it and the follow view still puts a bush in front of its subject"
+    },
+    "ui": {
+      "score": 5,
+      "why": "Unchanged dashboard; Sprout's name label floats a metre above it at the bench, the thought cloud reads well"
+    },
+    "style": {
+      "score": 6,
+      "why": "Cozy toy look holds in the garden and village; the sky (flat violet clouds, white dot stars over daylight) breaks it"
+    },
+    "performance": {
+      "score": 8,
+      "why": "Frame median 2.2 ms, p95 3.9 ms at 30 fps with 40 plugins"
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "lighting",
+      "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
+      "todo": 237,
+      "what": "The eye-level shot at 11:02 is the same flat, evenly lit green it was in s46 and s49: no warm key light, no cool shadow side, no distance haze; the far trees are as saturated as the near grass. All the lighting work of the last sessions went into dusk, which a player sees a small part of the day.",
+      "where": "RayMakie raster sun/sky (dev/Makie RayMakie), progress eye-level camera",
+      "evidence": "world/media/progress/session-0052/eye-level.png vs session-0049/eye-level.png (identical light)",
+      "suggestion": "Warm-tint the sun (~5500K) and cool the sky fill, add aerial perspective (blend towards a pale blue with distance in the raster shader), and a little rim/back light on creatures so they pop from the grass.",
+      "done_when": "The eye-level shot at 11:00 shows trees at the horizon visibly hazier (lower saturation, mean S at least 30% lower than the foreground grass) and shadow sides of trees bluer than lit sides (mean hue difference measurable)."
+    },
+    {
+      "severity": "high",
+      "category": "world",
+      "title": "Fill the empty meadows: flower patches, stones, logs, a landmark",
+      "todo": 238,
+      "what": "Three perfectionist reviews in a row the foreground of the eye-level view is the same field of identical grass tufts with a pink flower and a blue hydrangea; nothing there was touched while the south beach, bench and garden got work.",
+      "where": "plugins/meadow.jl, flora.jl; the meadow between cottage, path and big bush",
+      "evidence": "world/media/progress/session-0052/eye-level.png",
+      "suggestion": "Group props: a mossy stone circle, a fallen log with mushrooms, tall grass and flower drifts of 2-3 colours, a small stream or a hill with a tree as a focal point; vary tuft height/tint by patch.",
+      "done_when": "The eye-level progress shot has at least three prop types besides grass tufts in the lower half and differs visibly from session-0049/eye-level.png."
+    },
+    {
+      "severity": "high",
+      "category": "creatures",
+      "title": "Distinct creature silhouettes, and creatures that never walk into each other",
+      "todo": 236,
+      "what": "The creatures are still round blobs that differ mostly by colour and hat. And they pass through each other: in the hide and seek shot Sprout's body is half inside the friend it found; in the traced pier shot Pickles is inside Sprout.",
+      "where": "engine species.jl; separation.jl (player and followers)",
+      "evidence": "world/tests/shots/hideseek-found.png, world/reviews/p52/traced.png",
+      "suggestion": "Give each species one strong shape cue (long ears, a tail, legs, a crest) and per-creature size/proportion variation; keep body spheres apart also for the controlled creature and followers (push the follower, not the player).",
+      "done_when": "A lineup (tools/lineup.jl) where each species is recognisable as a black silhouette, and a minute of hide and seek with no two creature bodies overlapping by more than 10% of a radius (measured each frame)."
+    },
+    {
+      "severity": "medium",
+      "category": "style",
+      "title": "Sunset sky: no stars by daylight, soft clouds, one sun and its glitter",
+      "todo": 272,
+      "what": "At 18:22 with the sun a hand above the horizon, white dot stars hang in the bright sky; clouds are flat lavender blobs with no light side. The traced sunset still for the page shows a white sun disc with a second solid disc below it, stars mirrored on a black sea, and a thin seam line along the horizon. It is not on the page (rightly).",
+      "where": "plugins/stars.jl, clouds.jl, sunset.jl; site/img/sunset-traced.png",
+      "evidence": "world/reviews/p52/now1.png, world/reviews/p52/orbit1.png, world/site/img/sunset-traced.png",
+      "suggestion": "Fade stars in only once the sun is below the horizon; shade clouds with the sun colour from below/side (warm rim, cool body); in traced copies drop the reflection disc and let the glossy sea reflect the sun itself.",
+      "done_when": "A screenshot at 18:20 shows no stars and clouds with a visibly warmer lit side; a traced sunset still shows one sun, a glittering path on a sea that is not black (mean sea luminance > 0.15) and no seam line, and it is in the 'My sunset bench' post."
+    },
+    {
+      "severity": "medium",
+      "category": "props",
+      "title": "Vegetable patch: real cabbages, carrots in the ground, a tidy fence",
+      "todo": 251,
+      "what": "The patch reads as a garden and is charming, but up close the cabbages are flat light-green discs, the carrots lie on top of the soil like pulled vegetables, a hydrangea bush and a pink wild flower grow inside the bed, and the fence segments overlap at the corners with double rails. Growth over days is not visible in one look.",
+      "where": "plugins/garden.jl",
+      "evidence": "world/reviews/p52/garden.png",
+      "suggestion": "Sink carrots so only the leafy tops and orange shoulders show, use the cabbage mesh (or a layered leaf stand-in), keep flora out of the bed footprint, mitre the fence corners, and show rows at different growth stages so a visitor sees the progression.",
+      "done_when": "A close shot of the patch shows round leafy cabbages, carrot tops in the soil, no wild flora inside the fence, single rails at the corners, and three visibly different growth stages."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Follow camera: no bush or passer-by between the camera and the subject",
+      "todo": 239,
+      "what": "The follow view watched Sir Sniffsalot through a big bush filling the lower third; at the sunset bench a creature walking past put its head over the whole frame (Sprout and the sun hidden).",
+      "where": "render.jl follow_view/obstruction, lensclear.jl, lookout.jl bench_view",
+      "evidence": "world/reviews/p52/raster-after.png, world/reviews/p52/now1.png",
+      "suggestion": "Treat moving creatures as obstructions for fixed plugin views (fade them, or lift the eye for a moment) and test bushes within 3 m of the eye, not only near the target.",
+      "done_when": "20 follow-camera screenshots 5 s apart in the sandbox: none has a bush or creature covering more than 15% of the frame between the camera and the subject."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "Mini game rounds end too soon to build tension",
+      "todo": 266,
+      "what": "The berry race stood You 4, Critters 0 with 56 s left on a first play: the rivals never contest, so there is no race to feel. Winnable is right, a walkover is not.",
+      "where": "plugins/berry_race.jl, firefly_catch.jl",
+      "evidence": "world/tests/shots/berry-wad.png",
+      "suggestion": "Rubber-band the rivals (they speed up when far behind, slow when ahead), a golden berry in the last 20 s, a score race on the HUD with the critters' faces.",
+      "done_when": "Over three W/A/D first plays, the berry race score is within 2 at least once in the last 15 s and the player still wins at least two of three."
+    },
+    {
+      "severity": "low",
+      "category": "ui",
+      "title": "Sprout's name label floats a metre above it at the bench",
+      "todo": null,
+      "what": "In the bench shot the 'Sprout' label and the thought-cloud tail hang in the sky over the sea while Sprout sits far below on the bench; it reads like a label for nothing.",
+      "where": "name labels / builder.jl thought! anchor when sitting",
+      "evidence": "world/reviews/p52/now2.png",
+      "suggestion": "Anchor labels and the thought tail to the head part pose (pose_parts!), not the standing height.",
+      "done_when": "The bench shot shows the label within one head height above the sitting Sprout."
+    }
+  ],
+  "todos": [
+    {
+      "id": 5,
+      "action": "keep",
+      "why": "Blog has 10 posts and a feed; per-piece pages with verdicts still missing",
+      "title": "Sprout's pages become its blog: a page per piece with its verdict, traced still, RSS"
+    },
+    {
+      "id": 256,
+      "action": "drop",
+      "why": "Duplicate of #5 (now retitled to include the per-piece pages and verdicts)"
+    },
+    {
+      "id": 175,
+      "action": "keep",
+      "why": "Not tried at night yet; path tracing by day worked in this review"
+    },
+    {
+      "id": 160,
+      "action": "keep",
+      "why": "Not addressed"
+    },
+    {
+      "id": 184,
+      "action": "keep",
+      "why": "Goal 2: only the cairn film is released; the dance film is not"
+    },
+    {
+      "id": 224,
+      "action": "keep",
+      "why": "Orbit shots still show the same few lumpy crown shapes"
+    },
+    {
+      "id": 255,
+      "action": "keep",
+      "why": "Not measured as fixed"
+    },
+    {
+      "id": 265,
+      "action": "keep",
+      "why": "Findable now; a W/A/D player staying in for 40 s of tag not shown"
+    },
+    {
+      "id": 94,
+      "action": "keep",
+      "why": "Traced still shows Pickles, Sprout and Hopscotch on the pier together (reviews/p52/traced.png)"
+    },
+    {
+      "id": 258,
+      "action": "keep",
+      "why": "Firefly first-play passed here; the 'catching all' flake still unexplained"
+    }
+  ],
+  "engine": [
+    {
+      "what": "RayMakie raster has no distance fog/aerial perspective and ignores AmbientLight: haze and cool shadow fill can only come from the renderer",
+      "evidence": "todo #237 notes; world/media/progress/session-0052/eye-level.png"
+    },
+    {
+      "what": "Traced sunset: an emissive sun disc plus a separate reflection disc render as two solid white discs, the glossy sea comes out near black and mirrors star dots",
+      "evidence": "world/site/img/sunset-traced.png"
+    }
+  ],
+  "process": "Session 52 was mostly goal 4 and goal 1 work, and the best of it is real: friends who carry planks and cheer at a build, a garden with generated vegetables, a bench camera with a sunset path; the journal is honest about what does not work. But the work keeps going to new corners (south beach, bench, garden) while the frame a player sees most (noon meadow, eye level) has not changed across three perfectionist reviews, and the review findings from s49 (silhouettes, raster noon light, meadow) got no visible progress. Goal 1: moving (builder friends, visits, tag). Goal 2: one film released, the dance film still open since s44; nothing new released. Goal 3: dusk improved, noon and the traced sky are weak. Goal 4: strongest (thought cloud, garden, builder, blog with 10 posts, voice), but the sandbox still does not read as Sprout's workshop (#252) and per-piece verdict pages are missing. Next sessions should start with the eye-level meadow and noon light, and creature shapes, before adding another place.",
+  "addressed": true
+}

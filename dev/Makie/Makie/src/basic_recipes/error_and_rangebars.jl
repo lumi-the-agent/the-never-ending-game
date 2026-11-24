@@ -1,0 +1,308 @@
+"""
+Plots errorbars at (x, y) positions, extending by errors in the given `direction`.
+
+If you want to plot intervals from low to high values instead of relative errors, use `rangebars`.
+
+## Arguments
+
+* `xs, ys, error_both` Plots errorbars where `xs` and `ys` are `Real` or `AbstractVector{<:Real}`
+    setting positions per dimension, and `error_both` is a `Real` or `AbstractVector{<:Real}`
+    setting symmetric (±) y errors. If `direction = :x` these are interpreted as symmetric x errors
+    instead.
+* `xs, ys, error_low, error_high` Plots errorbars with separate lower and upper errors, where
+    `error_low` and `error_high` are `Real` or `AbstractVector{<:Real}` setting the lower and upper
+    errors. These are still relative to the position and are affected by `direction`.
+* `xs, ys, error_low_high` Plots errorbars where `error_low_high` is a `VecTypes{2, <:Real}` or
+    `AbstractVector{<:VecTypes{2, <:Real}}` which sets `error_low` and `error_high` together.
+* `xys, error_both` Plots errorbars where `xys` is a `VecTypes{2, <:Real}` (`Point`, `Vec` or `Tuple`)
+    or `AbstractVector{<:VecTypes}` setting (x, y) positions, and `error_both` sets symmetric errors.
+* `xys, error_low, error_high` Plots errorbars with positions set by `xys` and separate lower and upper errors.
+* `xys, error_low_high` Plots errorbars with positions set by `xys` and combined lower/upper errors.
+* `xy_error_both` A `VecTypes{3, <:Real}` or `AbstractVector{<:VecTypes{3, <:Real}}` which sets the
+    position together with `error_both`.
+* `xy_error_low_high` A `VecTypes{4, <:Real}` or `AbstractVector{<:VecTypes{4, <:Real}}` which sets
+    the position together with `error_low` and `error_high`.
+"""
+@recipe Errorbars (val_low_high::AbstractVector{<:Vec{4, <:Real}},) begin
+    documented_attributes(LineSegments)...
+
+    "The width of the whiskers or line caps in screen units."
+    whiskerwidth = 0
+    "The color of the lines. Can be an array to color each bar separately."
+    color = @inherit linecolor
+    "The direction in which the bars are drawn. Can be `:x` or `:y`."
+    direction = :y
+end
+
+const RealOrVec = Union{Real, RealVector}
+
+"""
+Plots rangebars at `val` in one dimension, extending from `low` to `high` in the
+other dimension given the chosen `direction`.
+
+If you want to plot errors relative to a reference value, use `errorbars`.
+
+## Arguments
+
+* `vals, lows, highs` Plots rangebars where `vals` is a `Real` or `AbstractVector{<:Real}` setting x
+    positions of bars, and `lows`, `highs` are `Real` or `AbstractVector{<:Real}` setting lower and
+    upper y positions of bars. If `direction = :x` this sets the y position and x positions instead.
+* `vals, low_highs` Plots rangebars where `low_highs` is an
+    `AbstractVector{<:Union{VecTypes{2, <:Real}, Interval}}` which sets the lower and upper bar y
+    positions together. Sets x positions instead if `direction = :x`.
+* `val_low_highs` An `AbstractVector{<:VecTypes{3, <:Real}}` setting the x position, lower y position
+    and upper y position of bars together. The coordinate interpretation will be swapped if `direction = :x`.
+"""
+@recipe Rangebars (val_low_high::AbstractVector{<:Vec{3, <:Real}},) begin
+    documented_attributes(LineSegments)...
+
+    "The width of the whiskers or line caps in screen units."
+    whiskerwidth = 0
+    "The color of the lines. Can be an array to color each bar separately."
+    color = @inherit linecolor
+    "The direction in which the bars are drawn. Can be `:x` or `:y`."
+    direction = :y
+end
+
+### conversions for errorbars
+
+argument_dim_kwargs(::Type{<:Union{Errorbars, Rangebars}}) = (:direction,)
+
+function argument_dims(::Type{<:Errorbars}, x, y, e; direction)
+    return ifelse(direction === :y, (1, 2, 2), (1, 2, 1))
+end
+
+function argument_dims(::Type{<:Errorbars}, x, y, l, h; direction)
+    return ifelse(direction === :y, (1, 2, 2, 2), (1, 2, 1, 1))
+end
+
+function argument_dims(::Type{<:Errorbars}, x, y, lh::VecTypesVector{2}; direction)
+    return ifelse(direction === :y, (1, 2, (2, 2)), (1, 2, (1, 1)))
+end
+
+function argument_dims(::Type{<:Errorbars}, xy::VecTypesVector{2}, e; direction)
+    return ifelse(direction === :y, ((1, 2), 2), ((1, 2), 1))
+end
+
+function argument_dims(::Type{<:Errorbars}, xy::VecTypesVector{2}, l, h; direction)
+    return ifelse(direction === :y, ((1, 2), 2, 2), ((1, 2), 1, 1))
+end
+
+function argument_dims(::Type{<:Errorbars}, xy::VecTypesVector{2}, lh::VecTypesVector{2}; direction)
+    return ifelse(direction === :y, ((1, 2), (2, 2)), ((1, 2), (1, 1)))
+end
+
+function argument_dims(::Type{<:Errorbars}, xye::VecTypesVector{3}; direction)
+    return ifelse(direction === :y, ((1, 2, 2),), ((1, 2, 1),))
+end
+
+function argument_dims(::Type{<:Errorbars}, xylh::VecTypesVector{4}; direction)
+    return ifelse(direction === :y, ((1, 2, 2, 2),), ((1, 2, 1, 1),))
+end
+
+function convert_arguments(::Type{<:Errorbars}, x::RealOrVec, y::RealOrVec, error_both::RealOrVec)
+    T = float_type(x, y, error_both)
+    xyerr = broadcast(x, y, error_both) do x, y, e
+        Vec4{T}(x, y, e, e)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(::Type{<:Errorbars}, x::RealOrVec, y::RealOrVec, error_low::RealOrVec, error_high::RealOrVec)
+    T = float_type(x, y, error_low, error_high)
+    xyerr = broadcast(Vec4{T}, x, y, error_low, error_high)
+    return (xyerr,)
+end
+
+
+function convert_arguments(::Type{<:Errorbars}, x::RealOrVec, y::RealOrVec, error_low_high::AbstractVector{<:VecTypes{2, T}}) where {T}
+    T_out = float_type(float_type(x, y), T)
+    xyerr = broadcast(x, y, error_low_high) do x, y, (el, eh)
+        Vec4{T_out}(x, y, el, eh)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(
+        ::Type{<:Errorbars}, xy::AbstractVector{<:VecTypes{2, T}},
+        error_both::RealOrVec
+    ) where {T}
+    T_out = float_type(T, float_type(error_both))
+    xyerr = broadcast(xy, error_both) do (x, y), e
+        Vec4{T_out}(x, y, e, e)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(::Type{<:Errorbars}, xy::AbstractVector{<:VecTypes{2, T}}, error_low::RealOrVec, error_high::RealOrVec) where {T <: Real}
+    T_out = float_type(T, float_type(error_low, error_high))
+    xyerr = broadcast(xy, error_low, error_high) do (x, y), el, eh
+        Vec4{T_out}(x, y, el, eh)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(::Type{<:Errorbars}, xy::AbstractVector{<:VecTypes{2, T1}}, error_low_high::AbstractVector{<:VecTypes{2, T2}}) where {T1 <: Real, T2 <: Real}
+    T_out = float_type(T1, T2)
+    xyerr = broadcast(xy, error_low_high) do (x, y), (el, eh)
+        Vec4{T_out}(x, y, el, eh)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(::Type{<:Errorbars}, xy_error_both::AbstractVector{<:VecTypes{3, T}}) where {T <: Real}
+    T_out = float_type(T)
+    xyerr = broadcast(xy_error_both) do (x, y, e)
+        Vec4{T_out}(x, y, e, e)
+    end
+    return (xyerr,)
+end
+
+function convert_arguments(::Type{<:Errorbars}, xy_low_high::VecTypesVector{4, T}) where {T <: Real}
+    T_out = float_type(T)
+    xyerr = broadcast(xy_low_high) do (x, y, l, h)
+        Vec4{T_out}(x, y, l, h)
+    end
+    return (xyerr,)
+end
+
+### conversions for rangebars
+
+function argument_dims(::Type{<:Rangebars}, x, l, h; direction)
+    return ifelse(direction === :y, (1, 2, 2), (2, 1, 1))
+end
+
+function argument_dims(::Type{<:Rangebars}, x, lh::VecTypesVector{2}; direction)
+    return ifelse(direction === :y, (1, (2, 2)), (2, (1, 1)))
+end
+
+function argument_dims(::Type{<:Rangebars}, xlh::VecTypesVector{3}; direction)
+    return ifelse(direction === :y, ((1, 2, 2),), ((2, 1, 1),))
+end
+
+function convert_arguments(::Type{<:Rangebars}, val::RealOrVec, low::RealOrVec, high::RealOrVec)
+    T = float_type(val, low, high)
+    val_low_high = broadcast(Vec3{T}, val, low, high)
+    return (val_low_high,)
+end
+
+function convert_arguments(
+        ::Type{<:Rangebars}, val::RealOrVec,
+        low_high::AbstractVector{<:VecTypes{2, T}}
+    ) where {T <: Real}
+    T_out = float_type(float_type(val), T)
+    T_out_ref = Ref{Type{T_out}}(T_out)  # for type-stable capture in the closure below
+    val_low_high = broadcast(val, low_high) do val, (low, high)
+        Vec3{T_out_ref[]}(val, low, high)
+    end
+    return (val_low_high,)
+end
+
+function convert_arguments(P::Type{<:Rangebars}, x::AbstractVector, y::AbstractVector{<:Interval})
+    return convert_arguments(P, x, endpoints.(y))
+end
+
+function convert_arguments(::Type{<:Rangebars}, x_low_high::VecTypesVector{3, T}) where {T <: Real}
+    T_out = float_type(T)
+    xlh = broadcast(x_low_high) do (x, l, h)
+        Vec3{T_out}(x, l, h)
+    end
+    return (xlh,)
+end
+
+### the two plotting functions create linesegpairs in two different ways
+### and then hit the same underlying implementation in `_plot_bars!`
+
+function Makie.plot!(plot::Errorbars{<:Tuple{AbstractVector{<:Vec{4, <:Real}}}})
+    return _plot_bars!(plot)
+end
+function Makie.plot!(plot::Rangebars{<:Tuple{AbstractVector{<:Vec{3, <:Real}}}})
+    return _plot_bars!(plot)
+end
+
+function to_ydirection(dir)
+    dir === :y && return true
+    dir === :x && return false
+    error("Invalid direction $dir. Options are :x and :y.")
+end
+
+reverse_if(cond, vec) = cond ? reverse(vec) : vec
+
+function inner_segment((x, y, l, h)::Vec4, in_y)
+    return in_y ? (Point2d(x, y - l), Point2d(x, y + h)) : (Point2d(x - l, y), Point2d(x + h, y))
+end
+function inner_segment((v, l, h)::Vec3, in_y)
+    return in_y ? (Point2d(v, l), Point2d(v, h)) : (Point2d(l, v), Point2d(h, v))
+end
+
+function generate_segments(data, in_y::Bool)
+    # using list comprehension leads to `push!()` with this
+    output = Vector{Point2d}(undef, 2 * length(data))
+    for (i, item) in enumerate(data)
+        output[2i - 1], output[2i] = inner_segment(item, in_y)
+    end
+    return output
+end
+
+function _plot_bars!(plot)
+    map!(to_ydirection, plot.attributes, [:direction], :is_in_y_direction)
+    map!(generate_segments, plot.attributes, [:val_low_high, :is_in_y_direction], :linesegpairs)
+    attr = plot.attributes
+    map!(attr, [:linewidth, :whiskerwidth, :is_in_y_direction], [:whisker_size, :whisker_visible]) do linewidth, whiskerwidth, dir
+        isvisible = !(linewidth == 0 || whiskerwidth == 0)
+        widths = reverse_if.(!dir, Vec2f.(whiskerwidth, linewidth))
+        if widths isa Vec2f
+            return widths, isvisible
+        end
+        return [widths[i] for i in 1:length(widths) for j in 1:2], isvisible
+    end
+
+    map!(attr, [:color], :whiskercolors) do color
+        # we have twice as many linesegments for whiskers as we have errorbars, so we
+        # need to duplicate colors if a vector of colors is given
+        if color isa AbstractVector
+            return repeat(to_color(color), inner = 2)::RGBColors
+        else
+            return to_color(color)::RGBAf
+        end
+    end
+    lattr = shared_attributes(plot, LineSegments)
+    linesegments!(plot, lattr, attr.linesegpairs)
+    sattr = shared_attributes(plot, Scatter)
+
+    scatter!(
+        plot, sattr, attr.linesegpairs; color = attr.whiskercolors,
+        markersize = attr.whisker_size, marker = Rect, visible = attr.whisker_visible,
+        markerspace = :pixel,
+    )
+    return plot
+end
+
+function plot_to_screen(plot, points::AbstractVector)
+    cam = parent_scene(plot).camera
+    space = to_value(get(plot, :space, :data))
+    spvm = clip_to_space(cam, :pixel) * space_to_clip(cam, space) *
+        f32_convert_matrix(plot, space) * transformationmatrix(plot)[]
+
+    transfunc = transform_func(plot)
+    return map(points) do p
+        transformed = apply_transform(transfunc, p)
+        p4d = spvm * to_ndim(Point4d, to_ndim(Point3d, transformed, 0), 1)
+        return Point2f(p4d) / p4d[4]
+    end
+end
+
+function plot_to_screen(plot, p::VecTypes)
+    cam = parent_scene(plot).camera
+    space = to_value(get(plot, :space, :data))
+    spvm = clip_to_space(cam, :pixel) * space_to_clip(cam, space) *
+        f32_convert_matrix(plot, space) * transformationmatrix(plot)[]
+    transformed = apply_transform(transform_func(plot), p)
+    p4d = spvm * to_ndim(Point4d, to_ndim(Point3d, transformed, 0), 1)
+    return Point2f(p4d) / p4d[4]
+end
+
+
+# ignore whiskers when determining data limits
+data_limits(bars::Union{Errorbars, Rangebars}) = data_limits(bars.plots[1])
+boundingbox(bars::Union{Errorbars, Rangebars}, space::Symbol = :data) = apply_transform_and_model(bars, data_limits(bars))

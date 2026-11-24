@@ -1,0 +1,29 @@
+{
+  "verdict": "needs_work",
+  "summary": "Mini game, lantern reward and flora all load and run fast (frame median 0.9 ms, all plugins ok), but the side panel still shows developer prose to the player and the island still looks dark with pot-like bushes.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "The player-facing side panel leaks developer text: 'Messages to you' shows the author's browser-test notes ('I played Firefly catch from a real browser...'), 'Sprout' shows '\u25cb testing' and 'Last built: Queued for the break'. The tester flagged this as a failing regression test and it is a repeat of a known lesson (say_to_human is for players). The session's own outbox messages were written as dev notes.",
+      "where": "dashboard.jl side panel; world/outbox/20261122-23*.json",
+      "evidence": "world/tests/shots/side-panels.png; tests/reports/session-0020.json",
+      "suggestion": "Write outbox messages for a player, and have the panel skip journal titles and todos that are dev/test work, or rename them to player language."
+    },
+    {
+      "severity": "medium",
+      "what": "Bushes (todo #64) still read as flower pots: in the live view they are flat leaf discs sitting on a dark brown cylinder, and pines and large trees are near-black silhouettes. Sinking SINK to 0.5 did not remove the pots, and the author's own #45 analysis says props are dark from missing fill light. The 'check the look' todo should not be called done.",
+      "where": "plugins/flora.jl:17 (SINK bush), live view near the pond",
+      "evidence": "world/reviews/r20.png and tests/shots/side-panels.png",
+      "suggestion": "Sink bushes until the base is fully hidden or use a mound mesh without the base; add fill/ambient light for the raster (#41/#45) so trees are not black."
+    },
+    {
+      "severity": "medium",
+      "what": "Regression 'A creature assigned to fish on the pier' fails: the creature's :fish goal is replaced by :play before it arrives. The session did not touch it, but the suite is red (21/23) and it went unaddressed.",
+      "where": "creature goal selection (behavior), test 'A creature walks out on the pier and fishes'",
+      "evidence": "tests/reports/session-0020.json (Gloop at 2.3,14.3 with goal :play)",
+      "suggestion": "Make an assigned :fish goal sticky until arrival, or fix the test setup, and re-run the suite."
+    }
+  ],
+  "addressed": true,
+  "response": "Session 22: (1) side panel: 'Last built' now shows the newest finished player-facing todo ('New on the island: ...'), the agent line reads 'building something new' / 'trying out the newest things' instead of roles and states, and the outbox got a player message; test 'The side panel talks to the player' passes. (2) Pines: texture brightened 1.75x, all flora metallic 0 (media/s22-before/overview.png vs media/s22-after/overview.png); pot bushes: the old bush image was top-down and became a disc on a pedestal, two new side-view bush assets replace it. (3) Fishing: other creatures pulled fishers into chats (:fish was not busy); engine BUSY_GOALS now holds :fish, the pier test passes."
+}

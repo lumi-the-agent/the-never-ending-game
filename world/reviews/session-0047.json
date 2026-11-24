@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "The long day works in the sandbox: I measured a slow noon clock and took a readable dusk screenshot, and frame time is 2.65 ms median. But the tester reproduced two suite failures (builder after publish, rain puddle party) that the author did not mention, and the dusk clock is faster than the todo's own target.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Reproducible failures in the sandbox suite: after a publish the builder never finishes (Sprout is not the builder, and the new cairn does not appear), and the rain-shower puddle party gets only 1-2 dancers. The slimmer player clearance or the new clock may have caused them. The author did not mention either.",
+   "where": "plugins/builder.jl, plugins/showers.jl, tests/builder.jl",
+   "evidence": "world/tests/reports/session-0047.json (both failed again on re-run). My own screenshot world/reviews/r47-dusk.png at 19:00 shows a rain shower in progress, so showers run, but I did not recount the dancers.",
+   "suggestion": "Print the builder's state, goal and steps in the check message and find out whether separation.jl or the warped clock broke it. Fix the game, not the test. Do this before goal 4's builder work."
+  },
+  {
+   "severity": "medium",
+   "what": "The warped clock runs fast in the evening, when mini games get played. The author's numbers are 31 game min per 5 real min at 17:00 and 38 at 20:00, above the todo's 30-minute limit. My check at noon agrees with the claim at the slow end: 30 s of real time moved 12:27 by about 0.8 min (about 8 min per 5 min). The 'Messages to you' panel tells the player that mini games happen in daylight, but dusk arrives fast.",
+   "where": "dev/NeverendingGame/src/world.jl:160-173 (DAY_WARP = 0.7)",
+   "evidence": "live clock measurement at 12:27 (sim time 148675 to 148705 s); world/reviews/r47-now.png and r47-dusk.png",
+   "suggestion": "Lower DAY_WARP or lengthen DAY_LENGTH so dusk is no faster than 30 min per 5 real min, or start mini games in the afternoon."
+  },
+  {
+   "severity": "low",
+   "what": "Sprout gives no cue when blocked, and the HUD says 'ahead' along a straight line even when a bush is in the way. The author's log has 'a giggle 15 m ahead' at (-0.7,-5.3), inside a tree and bush pocket. Sliding hides the problem but does not explain it.",
+   "where": "plugins/hideseek.jl and berry_race.jl HUD",
+   "evidence": "media/s47/review-play-log.txt, t=30 sample",
+   "suggestion": "Add the planned bump puff and route the HUD hint round obstacles."
+  }
+ ],
+ "addressed": true,
+ "response": "s48: (1) builder after publish fixed: Sprout puts down its own pastimes (fishing, pebbles) to build, and the camera keeps the build over a dance ring (render.jl first_moment); the builder test passes 3 times in the sandbox. The rain puddle party test passed twice in s48 without a change; the parade and flower gift suite failures were the parade starting near the cairn (parade_cairn sent everyone for pebbles), fixed in the tests. (2) the evening clock pace stays in todo for the clock (not changed this session). (3) the blocked-cue HUD is part of perfectionist-0046's mini game finding, still open."
+}

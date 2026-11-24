@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "media/s27-day-gift-carry.png",
+      "severity": "medium",
+      "suggestion": "Let the camera moment return a pair and use the side view that camera_goal already uses for interactions. Make that engine edit at the start of a session.",
+      "what": "The gift camera does not show the gift. In the day carry shot the follow camera sits behind the carrier, and the carried flower is a small pink tip behind a big pink body. The new 'flowergift' camera moment gives a view where the main feature of #106 is hard to see.",
+      "where": "plugins/flowergift.jl camera moment; render.jl camera_goal"
+    },
+    {
+      "evidence": "journal 04:18 and media/s27-trace-flowers.png, as described by the author",
+      "severity": "medium",
+      "suggestion": "Make this the first task next session: have the worker load the plugin scenery, or export the instanced asset plots.",
+      "what": "Path traced output ignores all plugin flora. The worker builds its scene without plugins, so the new flowers, trees and bushes are missing from traced stills. This blocks the path traced movie goal. The author found it but only queued a todo.",
+      "where": "worker scene build (engine)"
+    },
+    {
+      "evidence": "media/s27-flowers-day2.png; tester report",
+      "severity": "low",
+      "suggestion": "Shrink the blue clump a little and give the pier test a longer timeout, or fix why it is slow.",
+      "what": "The flower models look good at the pink and blue clump scale. The blue clump is large and bright, so a few dominate the foreground. Pier fishing timed out once in the suite (passed on rerun), so the suite can be flaky when the game is busy.",
+      "where": "plugins/flora.jl HEIGHT_ID; tests pier fishing"
+    }
+  ],
+  "summary": "The generated meadow flowers look clearly better than the old primitives, and the flower-gift loop (critter gifts, Sprout picks and gives with E, gap and regrow) works with tests. The camera does not show the gift well, and the session left worker path tracing without plugins unresolved.",
+  "superseded_by": "perfectionist-0027.json",
+  "verdict": "pass"
+}

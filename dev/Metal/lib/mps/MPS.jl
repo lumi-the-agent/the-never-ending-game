@@ -1,0 +1,84 @@
+"""
+    MPS
+
+Wrappers for Apple's [Metal Performance Shaders](https://developer.apple.com/documentation/metalperformanceshaders)
+framework, which follow Apple's API closely. Only part of the framework is wrapped.
+"""
+module MPS
+
+using ..Metal
+using .MTL
+using .MTL: MTLCommandBufferLike
+
+using CEnum
+using ObjectiveC, .Foundation
+
+import GPUArrays
+
+using BFloat16s: BFloat16
+
+const MtlFloat = Union{Float32, Float16}
+
+const MPSShape = NSArray#{NSNumber}
+Base.convert(::Type{MPSShape}, tuple::Union{Vector{<:Integer},NTuple{N, <:Integer}}) where N = NSArray(NSNumber.(collect(tuple)))
+
+"""
+    MPS.MPS_VALID_MATMUL_TYPES
+
+The combinations of input element type (of `A` and `B`) and output element type (of `C`),
+as `(input, output)` tuples, that [`MPS.matmul!`](@ref) supports.
+"""
+const MPS_VALID_MATMUL_TYPES =
+    [(Int8, Float16),
+     (Int8, Float32),
+     (Int16, Float32),
+     (Float16, Float16),
+     (Float16, Float32),
+     (Float32, Float32)]
+
+"""
+    MPS.MPS_VALID_MATVECMUL_TYPES
+
+The combinations of input element type (of `A` and `x`) and output element type (of `y`),
+as `(input, output)` tuples, that [`MPS.matvecmul!`](@ref) supports.
+"""
+const MPS_VALID_MATVECMUL_TYPES =
+    [(Float16, Float16),
+     (Float16, Float32),
+     (Float32, Float32)]
+
+# The MPS framework is not guaranteed to be resident: `__init__` (which loads frameworks)
+# is skipped during precompilation, and some environments (e.g. virtualized CI runners)
+# never provide the symbol at all. Treat a missing symbol as "not supported".
+function is_supported(dev::MTLDevice)
+    try
+        ccall(:MPSSupportsMTLDevice, Bool, (id{MTLDevice},), dev)
+    catch
+        false
+    end
+end
+
+# Load in generated enums and structs
+include("libmps.jl")
+
+include("size.jl")
+include("datatype.jl")
+
+# high-level wrappers
+include("command_buf.jl")
+include("kernel.jl")
+include("images.jl")
+include("matrix.jl")
+include("vector.jl")
+include("matrixrandom.jl")
+include("ndarray.jl")
+include("decomposition.jl")
+include("solve.jl")
+include("copy.jl")
+
+# integrations
+include("random.jl")
+
+Metal.@public MPS_VALID_MATMUL_TYPES, MPS_VALID_MATVECMUL_TYPES
+
+end

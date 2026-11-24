@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T08:06:14.113",
+  "finished": "2026-11-23T08:20:01.612",
+  "id": "20261123-080614-049-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a single small chunky stylized clump of thick grass blades seen from the side, resting on the ground, fresh green with lighter yellow-green tips, soft rounded cartoon shapes",
+    "tags": [
+      "grass",
+      "flora"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T08:20:01.400",
+    "faces": 39912,
+    "id": "20261123-080614-049-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-080614-049-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-080614-049-asset/mesh.jls",
+    "prompt": "a single small chunky stylized clump of thick grass blades seen from the side, resting on the ground, fresh green with lighter yellow-green tips, soft rounded cartoon shapes",
+    "seconds": 825.0,
+    "tags": [
+      "grass",
+      "flora"
+    ]
+  },
+  "seconds": 827.4,
+  "started": "2026-11-23T08:06:14.195",
+  "status": "done"
+}

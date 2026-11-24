@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: only 0 dancers",
+      "file": "minigames.jl",
+      "name": "Dance circle: critters dance in a ring by a lantern, Sprout walks in and they cheer",
+      "passed": false,
+      "seconds": 4.5
+    },
+    {
+      "error": "check failed: nobody ran after the ball (Sprout idle at 0.41 m from the ball; Gloop idle/idle at 4.9 m, can fetch true; rally 0; at the kick: fetch: Hopscotch)",
+      "file": "minigames.jl",
+      "name": "Ball play: Sprout kicks the ball, a critter fetches it and passes it back",
+      "passed": false,
+      "seconds": 2.0
+    }
+  ],
+  "passed": 49,
+  "session": 30,
+  "time": "2026-11-23T06:26:28",
+  "total": 51
+}

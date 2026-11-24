@@ -1,0 +1,368 @@
+"""
+The cross-frame memory bank and its read.
+
+This is the one graph that is authored rather than exported. `torch.export`
+traces whatever length the bank happened to hold, but the bank grows with the
+frame index, so the shape it recorded is not a fact about the model. What *is* a
+fact - measured in tools/enumerate.py across two clips at different resolutions -
+is that the bank saturates at `capacity = mem_frames * HW` tokens and never
+exceeds it. So it is allocated once at capacity, a validity count says how much
+is live, and the consumer masks (lava-dnn.md, `enumerate.py`).
+
+The mask is per *frame slot*, not per token: the bank only ever holds whole
+frames, so `mem_frames` booleans describe it completely.
+
+Slot 1 is permanent (the first frame, added `as_permanent='first'` in
+kv_memory_store.py:122) and is never evicted; the rest are a FIFO ring.
+Ordering does not matter to the reader - the affinity softmax and its top-k are
+permutation-invariant over memory tokens, and nothing indexes the bank by
+position - so eviction is a pointer bump, not a shift.
+"""
+
+mutable struct MemoryBank{K,V,B,R}
+    key::K              # (CAP, CK, B)
+    shrinkage::K        # (CAP, 1, B)
+    value::V            # (CAP, CV, NOBJ, B)
+    objmem::B           # (E+1, Q, NOBJ, B) streaming sum; last row of dim 1 is the count
+    # The Mantle buffers the four arrays above are the storage of.
+    #
+    # Held rather than discarded because a dropped device array frees NOTHING:
+    # Mantle returns a pool region on an explicit verb and never from a
+    # finalizer (`Mantle.trim!` says why), so a bank allocated with
+    # `KernelAbstractions.allocate` and then forgotten stayed resident for the
+    # process. At 512x288 with `mem_frames` slots that is the clip's whole
+    # memory, per clip. `release!` below is what returns it.
+    #
+    # `Mantle.Buffer` and not a raw allocation for the second reason too: it is
+    # PERSISTENT memory, which is what a bank that outlives every frame's
+    # transients has to be.
+    buffers::R
+    hw::Int             # tokens per frame
+    frames::Int         # capacity in frames
+    nvalid::Int         # live frames, 1..frames
+    next::Int           # next non-permanent slot to overwrite, 2..frames
+    engaged::Bool
+end
+
+function MemoryBank(backend, T, hw, frames, ck, cv, nobj, bs, q, embed)
+    cap = hw * frames
+    dev = M.todevice(backend)
+    bufs = (M.Buffer(dev, T, (cap, ck, bs)),
+            M.Buffer(dev, T, (cap, 1, bs)),
+            M.Buffer(dev, T, (cap, cv, nobj, bs)),
+            M.Buffer(dev, T, (embed + 1, q, nobj, bs)))
+    MemoryBank(M.storage(bufs[1]), M.storage(bufs[2]), M.storage(bufs[3]),
+               M.storage(bufs[4]), bufs, hw, frames, 0, 2, false)
+end
+
+"""
+    release!(bank)
+
+Return the bank's device memory. It does not come back on its own — see the
+note on `buffers`.
+
+Not `reset!`, which is a per-clip clear of the CONTENTS and leaves the bank
+usable. After this the arrays are gone and the bank is not.
+
+A method on Mantle's `release!` rather than a second name for it: it means the
+same thing here as it does for a recording, and two exported `release!`s are an
+ambiguity at every call site with both packages in scope.
+"""
+function M.release!(m::MemoryBank)
+    foreach(M.free!, m.buffers)
+    return m
+end
+
+slotrange(m::MemoryBank, s::Int) = ((s - 1) * m.hw + 1):(s * m.hw)
+
+"""
+    reset!(bank)
+
+`clear_temp_mem` (inference_core.py:92): the working memory and the object
+memory are dropped, which the warm-up does on every frame.
+"""
+function reset!(m::MemoryBank)
+    m.nvalid = 0
+    m.next = 2
+    m.engaged = false
+    fill!(m.objmem, zero(eltype(m.objmem)))
+    m
+end
+
+"""
+    add!(bank, key, shrinkage, value, summaries)
+
+`key`/`shrinkage` are `(w, h, C, B)`, `value` is `(w, h, CV, NOBJ, B)`, all at
+stride 16. The first add fills the permanent slot; later ones cycle the rest.
+"""
+function add!(m::MemoryBank, key, shrinkage, value, summaries)
+    hw = m.hw
+    slot = if !m.engaged
+        m.engaged = true
+        m.nvalid = 1
+        1
+    else
+        s = m.next
+        m.next = m.next == m.frames ? 2 : m.next + 1
+        m.nvalid = min(m.nvalid + 1, m.frames)
+        s
+    end
+    r = slotrange(m, slot)
+    ck, cv = size(m.key, 2), size(m.value, 2)
+    copyto!(view(m.key, r, :, :), reshape(key, hw, ck, :))
+    copyto!(view(m.shrinkage, r, :, :), reshape(shrinkage, hw, 1, :))
+    copyto!(view(m.value, r, :, :, :), reshape(value, hw, cv, size(m.value, 3), :))
+
+    # streaming average (memory_manager.py:318): the last row accumulates the
+    # count and the transformer divides by it
+    if slot == 1 && m.nvalid == 1
+        copyto!(m.objmem, summaries)
+    else
+        m.objmem .+= summaries
+    end
+    m
+end
+
+live(m::MemoryBank) = 1:(m.nvalid * m.hw)
+
+# ---------------------------------------------------------------- the read
+
+"""
+Anisotropic L2 similarity, `get_similarity` (memory_utils.py:7) with the
+selection term present.
+
+    sim[q, n] = (-Σ_c mk[n,c]² qe[q,c] + 2 Σ_c mk[n,c] qk[q,c] qe[q,c]
+                 - Σ_c qe[q,c] qk[q,c]²) * ms[n] / √CK
+
+One thread per (query, memory-token) pair; the reduction over channels is
+sequential in-thread. Padded slots are not reached because the launch covers
+only the live range.
+"""
+@inline function similarity_body(I, mk, ms, qk, qe, ::Val{CK}, scale) where {CK}
+    q, n, b = I
+    @inbounds begin
+        T = accum(eltype(mk))
+        asq = zero(T); ab = zero(T); bsq = zero(T)
+        for c in 1:CK
+            m = T(mk[n, c, b])
+            k = T(qk[q, c, b])
+            e = T(qe[q, c, b])
+            asq = muladd(m * m, e, asq)
+            ab = muladd(m, k * e, ab)
+            bsq = muladd(e, k * k, bsq)
+        end
+        (-asq + 2ab - bsq) * T(ms[n, 1, b]) * T(scale)
+    end
+end
+
+"""
+    topk_softmax_kernel!(sums, sim, Val(K), Val(ACC), Val(WG), N)
+
+One **workgroup** per query, not one thread.
+
+The original body ran one thread per query — 120 threads for the whole launch,
+about 0.2% occupancy on a 48-SM device — and kept its running top-K in a
+`K`-element tuple indexed by a runtime position. A dynamically indexed tuple
+cannot stay in registers, so the array spilled to local memory and every
+insertion copied the whole thing. It measured 3.2 ms of GPU time to produce 120
+numbers.
+
+Here the top-K lives in shared memory (indexed, never copied wholesale), the row
+scan and the write-back are spread across the workgroup, and the launch has one
+workgroup per query so the device is actually filled. The selection itself is
+still serial on lane 1: with K=30 out of N≈360 a parallel selection needs either
+K rounds of masked argmax or a full sort, both of which cost more barriers than
+the serial scan costs shared-memory operations.
+
+Numerics are unchanged, including upstream's exponentiation *without* subtracting
+the row max (memory_utils.py:59) — the values are negated distances and so are
+bounded above.
+"""
+function topk_softmax_kernel!(sums, sim, ::Val{K}, ::Val{ACC}, ::Val{WG},
+                                      nref) where {K,ACC,WG}
+    T = eltype(sim)
+    gq, gb = Tuple(KI.get_group_id())
+    tid, = Tuple(KI.get_local_id())
+    # The live slot count, READ FROM THE DEVICE. `sim` is declared at the bank's
+    # capacity so the plan can be recorded once, which means its second extent is
+    # the capacity and says nothing about how much of the bank is filled. Passing
+    # the count by value instead would bake it into the recording — see
+    # `Mantle.GPURef`, which is the storage a per-run value lives in.
+    N = Int32(@inbounds nref[1])
+
+    vals = KI.localmemory(ACC, Val((K,)))
+    idxs = KI.localmemory(Int32, Val((K,)))
+    tot = KI.localmemory(ACC, Val((1,)))
+
+    @inbounds if tid == 1
+        for j in 1:K
+            vals[j] = typemin(ACC)
+            idxs[j] = Int32(0)
+        end
+        for n in 1:N
+            v = ACC(sim[gq, n, gb])
+            if v > vals[K]
+                pos = K
+                while pos > 1 && v > vals[pos - 1]
+                    vals[pos] = vals[pos - 1]
+                    idxs[pos] = idxs[pos - 1]
+                    pos -= 1
+                end
+                vals[pos] = v
+                idxs[pos] = Int32(n)
+            end
+        end
+        s = zero(ACC)
+        for j in 1:K
+            s += exp(vals[j])
+        end
+        tot[1] = s
+        sums[gq, gb] = T(s)
+    end
+
+    KI.barrier()
+
+    # the row is zeroed cooperatively, then only the K survivors are written
+    @inbounds begin
+        n = tid
+        while n <= N
+            sim[gq, n, gb] = zero(T)
+            n += WG
+        end
+    end
+
+    KI.barrier()
+
+    @inbounds if tid == 1
+        s = tot[1]
+        for j in 1:K
+            idxs[j] > 0 && (sim[gq, idxs[j], gb] = T(exp(vals[j]) / s))
+        end
+    end
+    return nothing
+end
+
+"""
+`do_softmax` with top-k (memory_utils.py:59): only the `k` largest similarities
+per query survive, and note that upstream exponentiates them *without*
+subtracting the row max - the values are negated distances, so they are bounded
+above, and reproducing the reference means reproducing that.
+
+One thread per query. The k-selection is a running insertion into a fixed-size
+register array, so nothing is allocated and `k` is a type parameter.
+"""
+@inline function topk_softmax_body(I, sim, ::Val{K}) where {K}
+    q, b = I
+    @inbounds begin
+        T = eltype(sim)
+        N = size(sim, 2)
+        vals = ntuple(_ -> typemin(T), Val(K))
+        idxs = ntuple(_ -> 0, Val(K))
+        for n in 1:N
+            v = sim[q, n, b]
+            if v > vals[K]
+                # insertion sort into the running top-K
+                nv = vals; ni = idxs
+                pos = K
+                while pos > 1 && v > nv[pos - 1]
+                    nv = Base.setindex(nv, nv[pos - 1], pos)
+                    ni = Base.setindex(ni, ni[pos - 1], pos)
+                    pos -= 1
+                end
+                vals = Base.setindex(nv, v, pos)
+                idxs = Base.setindex(ni, n, pos)
+            end
+        end
+        s = zero(T)
+        for j in 1:K
+            s += exp(vals[j])
+        end
+        for n in 1:N
+            sim[q, n, b] = zero(T)
+        end
+        for j in 1:K
+            idxs[j] > 0 && (sim[q, idxs[j], b] = exp(vals[j]) / s)
+        end
+        s
+    end
+end
+
+"""`_readout` (memory_manager.py:77): `out[q, c, o] = Σ_n aff[q, n] v[n, c, o]`."""
+@inline function memreadout_body(I, aff, v, nref)
+    q, c, o, b = I
+    @inbounds begin
+        T = accum(eltype(v))
+        acc = zero(T)
+        # `1:N` and not `axes(aff, 2)`: `aff` is the capacity-shaped affinity, so
+        # its second extent is the bank's capacity rather than how much of it is
+        # live. Reading the count from the device is what lets the plan be
+        # recorded once for the clip.
+        for n in 1:Int(nref[1])
+            acc = muladd(T(aff[q, n, b]), T(v[n, c, o, b]), acc)
+        end
+        acc
+    end
+end
+
+"""
+    recordmemread(dev, bank, qk, qe, w, h, out, nref; topk) -> Mantle.Plan
+
+The memory read as ONE plan, recorded once for the clip and replayed every
+frame.
+
+Its three passes have a real dependency — the top-k pass normalises `sim` IN
+PLACE and the readout pass reads it — so declaring is what puts the barrier
+there rather than resting on the queue's ordering.
+
+**Nothing here changes between frames.** `qk` and `qe` are a recorded plan's
+outputs, so `call` hands back the same buffers every time; the bank's arrays
+and `out` are persistent. The one thing that does change is how much of the
+bank is live, and that goes in `nref` — a `GPURef` is "the storage a per-run
+value lives in", which is exactly this. A value passed directly would be baked
+in at record time and the plan would have to be rebuilt.
+
+`sim` is therefore declared at the bank's CAPACITY rather than at the live
+extent, and the affinity pass fills all of it. The slots past the live ones get
+affinities computed from bank memory nothing has written yet — garbage, and
+never read: both later passes are bounded by `nref`. The waste is one pass over
+the empty part of a bank that fills within `mem_frames` frames and is exact
+afterwards, and it buys a shape that does not depend on the frame.
+"""
+function recordmemread(dev, m::MemoryBank, qk, qe, w, h, out, nref; topk::Int=30)
+    hw = w * h
+    ck = size(m.key, 2)
+    bs = size(m.key, 3)
+    cap = size(m.key, 1)
+    T = accum(eltype(m.key))
+
+    qk2 = reshape(qk, hw, ck, bs)
+    qe2 = reshape(qe, hw, ck, bs)
+
+    g = M.Graph(dev)
+    sim = M.Transient.Buffer(g, T, (hw, cap, bs))
+    # `T(...)` on the HOST. `inv(sqrt(ck))` is a `Float64`, and passing one made the
+    # scale a double-precision kernel ARGUMENT — which the body then truncated per
+    # thread. A GPU that has no `double` cannot compile that at all, and the failure
+    # is an `InvalidIRError` from `Float32(::Float64)` rather than anything naming a
+    # scale. Rounding here is the same `fptrunc` on the same `Float64`, so the value
+    # is bit-identical; it just happens once instead of per thread.
+    #
+    # The whole `key`/`shrinkage`, not a `view` of the live prefix: the view existed
+    # only to tell the kernel where the live part ended, and `nref` does that now.
+    launch!(g, similarity_body, sim, m.key, m.shrinkage, qk2, qe2,
+            Val(ck), T(inv(sqrt(ck))); name = "similarity")
+
+    # `sums` is scratch the top-k pass writes and nothing reads; a transient is
+    # exactly that, and the placer can alias it.
+    sums = M.Transient.Buffer(g, T, (hw, bs))
+    let WG = 64
+        M.dispatch!(g, topk_softmax_kernel!,
+                    (sums, sim, Val(topk), Val(T), Val(WG), nref),
+                    (WG * hw, bs); group = (WG, 1), name = "topk_softmax")
+    end
+
+    launch!(g, memreadout_body, out, sim, m.value, nref; name = "memreadout")
+    plan = M.Plan(g)
+    M.record!(plan)
+    plan
+end

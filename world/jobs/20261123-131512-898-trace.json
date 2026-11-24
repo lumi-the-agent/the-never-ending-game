@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-23T13:15:12.898",
+  "finished": "2026-11-23T13:17:47.853",
+  "id": "20261123-131512-898-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -16.8,
+      -4.8,
+      2.6
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s39-traced-shore.png",
+    "samples": 128,
+    "target": [
+      4.8,
+      2.4,
+      3.1
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s39-traced-shore.png"
+  },
+  "seconds": 77.4,
+  "started": "2026-11-23T13:16:30.422",
+  "status": "done"
+}

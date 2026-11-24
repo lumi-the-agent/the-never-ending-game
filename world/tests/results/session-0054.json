@@ -1,0 +1,36 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Sprout did not set off to the bench at 17.6 h (goal tend)",
+      "file": "lookout.jl",
+      "name": "At sunset Sprout walks to the lookout bench and sits facing the sea, and a free friend nearby joins",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: a fetcher is left chasing after Stop",
+      "file": "minigames.jl",
+      "name": "Ball play: Sprout kicks the ball, a critter fetches it and passes it back",
+      "passed": false,
+      "seconds": 4.1
+    },
+    {
+      "error": "check failed: nobody sat down at the bench within 60 s of 17:36",
+      "file": "s51_play.jl",
+      "name": "Sunset bench: at dusk (20:00) nobody stays on the bench, within 12 s",
+      "passed": false,
+      "seconds": 62.0
+    },
+    {
+      "error": "check failed: Play did not start Jump in (Main.Plugin_berry_race.BerryRace)",
+      "file": "s51_play.jl",
+      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Sprout in view",
+      "passed": false,
+      "seconds": 2.9
+    }
+  ],
+  "passed": 118,
+  "session": 54,
+  "time": "2026-11-24T04:40:36",
+  "total": 122
+}

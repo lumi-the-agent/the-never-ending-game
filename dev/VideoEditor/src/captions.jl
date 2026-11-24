@@ -1,0 +1,278 @@
+"""
+Speech-to-text captions, from `WhisperRunner`.
+
+The fifth JuliaVision model in the editor, and the only one that produces text
+rather than pixels — so it lands as an overlay on the sequence rather than an
+effect on a clip. That is also where it belongs semantically: a caption tracks
+what is being said across the whole timeline, and a cut underneath it changes
+nothing about when a word is spoken.
+
+The transcript is stored once on the sequence and the overlay picks the line for
+the frame being rendered. It is not baked into per-frame text params, because
+those would have to be keyframed — a thousand keys on a `text` field, unreadable
+and unfixable — and because the transcript is the thing a user edits when the
+model mishears a word.
+"""
+
+"""
+    registertranscribe!(f)
+
+Install the speech model. `f(samples, rate) -> Vector{Caption}` takes MONO
+Float32 samples and their sample rate.
+
+Mono and a stated rate rather than the editor's stereo Int16: every model wants
+something different, and the conversion belongs on this side of the boundary
+where the editor's audio layout is known.
+"""
+
+registertranscribe!(f) = (INSTALLED.speech = f; nothing)
+hasspeechmodel() = INSTALLED.speech !== nothing
+
+"The built-in speech model: Whisper, from `WhisperRunner`. Built on first use."
+
+function whispertranscribe(samples::AbstractVector{Float32}, rate::Real)
+    if INSTALLED.whisper === nothing
+        INSTALLED.whisper = WhisperRunner.whisper(; backend = Mantle.defaultbackend())
+    end
+    # The runner defines its own sample rate and resamples nothing, so handing it
+    # audio at another rate transcribes a pitch-shifted signal — which comes back
+    # as plausible words rather than as an error.
+    r = Int(WhisperRunner.SAMPLERATE)
+    audio = rate == r ? samples : resampleaudio(samples, rate, r)
+    # `transcribe` returns `(text, segments)`: the whole transcript and the timed
+    # pieces. Iterating the tuple walks the String first, so every run died on
+    # `s.text` with "type String has no field text". The editor wants the segments:
+    # a caption needs a start and a stop, which the joined text does not have.
+    _, segs = WhisperRunner.transcribe(INSTALLED.whisper, audio)
+    return [Caption(s.start, s.stop, strip(s.text)) for s in segs if !isempty(strip(s.text))]
+end
+
+installtranscribe!() = registertranscribe!(whispertranscribe)
+
+"""
+    resampleaudio(x, from, to) -> Vector{Float32}
+
+Linear resample. Good enough here and nowhere else: speech recognition is
+band-limited well below where linear interpolation's aliasing lives, and the
+alternative is a filter design nobody would tune. Do not reuse this for audio
+that will be heard.
+"""
+function resampleaudio(x::AbstractVector{Float32}, from::Real, to::Real)
+    from == to && return collect(x)
+    n = max(1, floor(Int, length(x) * to / from))
+    out = Vector{Float32}(undef, n)
+    step = from / to
+    @inbounds for i in 1:n
+        t = (i - 1) * step + 1
+        j = floor(Int, t)
+        f = Float32(t - j)
+        a = x[clamp(j, 1, length(x))]
+        b = x[clamp(j + 1, 1, length(x))]
+        out[i] = (1 - f) * a + f * b
+    end
+    return out
+end
+
+"""
+    sequenceaudio(seq) -> (Vector{Float32}, rate)
+
+The timeline's audio as mono Float32, and its rate.
+
+Mixed through [`fillaudio!`](@ref) rather than read from a source, so what gets
+transcribed is what the edit plays: cuts, gaps and clip order included. A caption
+for audio the edit removed is worse than no caption at all.
+
+Extraction is synchronous here, unlike the preview's — `ensurepcm!` spawns and
+returns because playback cannot wait, and a transcript can and must.
+"""
+function sequenceaudio(seq::Sequence)
+    total = seqlength(seq)
+    total > 0 || return (Float32[], AUDIORATE)
+    tracks = Dict{String, Union{PCMTrack, Nothing}}()
+    for c in seq.clips
+        decodable(c.source) || continue          # nothing to hear from a rendered clip
+        haskey(tracks, sourcepath(c.source)) && continue
+        tracks[sourcepath(c.source)] = loadpcm(c.source)
+    end
+    # A timeline of rendered scenes may carry narration and nothing else.
+    isempty(seq.narration) && all(isnothing, values(tracks)) && return (Float32[], AUDIORATE)
+    nsamp = ceil(Int, total / seq.framerate * AUDIORATE)
+    buf = zeros(Int16, 2, nsamp)
+    fillaudio!(buf, seq, tracks, 0)
+    mono = Vector{Float32}(undef, nsamp)
+    @inbounds for i in 1:nsamp
+        mono[i] = (Float32(buf[1, i]) + Float32(buf[2, i])) / (2 * 32768f0)
+    end
+    return (mono, AUDIORATE)
+end
+
+"""
+    captionat(caps, seconds) -> String
+
+What is being said at `seconds`, or `""`.
+
+The last match wins when segments overlap, which they do at window boundaries:
+the later one is the more recent guess and reads correctly when a word is split
+across two windows.
+"""
+function captionat(caps, t::Real)
+    out = ""
+    for c in caps
+        c.start <= t <= c.stop && (out = c.text)
+    end
+    return out
+end
+
+"""
+    transcribe!(seq; progress = nothing) -> Vector{Caption}
+
+Transcribe the timeline's audio and store the result on `seq`.
+"""
+function transcribe!(seq::Sequence)
+    hasspeechmodel() || error("no speech model installed — see registertranscribe!")
+    audio, rate = sequenceaudio(seq)
+    isempty(audio) && error("this timeline has no audio to transcribe")
+    caps = INSTALLED.speech(audio, rate)
+    empty!(seq.captions)                  # the field is `const`: replace contents
+    append!(seq.captions, caps)
+    return seq.captions
+end
+
+
+"The words of a narration or caption as said: Kokoro's stress marks, punctuation and case removed."
+saidwords(text) = filter(!isempty, split(lowercase(replace(replace(text, r"\[([^\[\]]+)\]\([^)]*\)" => s"\1"),
+                                                             r"[^A-Za-z0-9' ]" => " "))))
+
+"Word-level edit distance."
+function editdistance(a, b)
+    d = collect(0:length(b))
+    for i in eachindex(a)
+        prev = d[1]; d[1] = i
+        for j in eachindex(b)
+            tmp = d[j+1]
+            d[j+1] = min(d[j+1] + 1, d[j] + 1, prev + (a[i] == b[j] ? 0 : 1))
+            prev = tmp
+        end
+    end
+    return d[end]
+end
+
+"""
+    checknarration(seq; tolerance = 0.1) -> Vector{(label, words, differences, heard)}
+
+Whether every narration says its text where the edit plays it: the edit's audio
+while each line is heard ([`narrationspan`](@ref)) is transcribed by the
+installed speech model ([`registertranscribe!`](@ref)) and compared word by word
+with the line's text (stress marks, punctuation and case aside). Line by line,
+because the model's segments run across neighbouring lines. It writes numbers
+as digits and some words in another spelling, so a few differences are normal;
+a line differing in more than `tolerance` of its words, or cut away, is an
+error naming it and what was heard.
+"""
+function checknarration(seq::Sequence; tolerance = 0.1)
+    hasspeechmodel() || error("no speech model installed — see registertranscribe!")
+    audio, rate = sequenceaudio(seq)
+    return map(seq.narration) do nar
+        span = narrationspan(seq, nar)
+        span === nothing && error("the narration $(repr(nar.label)) is cut away")
+        a = clamp(floor(Int, first(span) * rate) + 1, 1, length(audio))
+        b = clamp(ceil(Int, last(span) * rate), a, length(audio))
+        heard = join((c.text for c in INSTALLED.speech(audio[a:b], rate)), " ")
+        expected = saidwords(nar.text)
+        differences = editdistance(expected, saidwords(heard))
+        differences <= tolerance * length(expected) ||
+            error("the narration $(repr(nar.label)) does not say its text; heard: $heard")
+        (label = nar.label, words = length(expected), differences, heard)
+    end
+end
+
+"""
+    captionscene(seq; canvas, y, size) -> Makie.SceneSpec
+
+The transcript as a scene: one text plot whose string comes from the sequence's
+captions at the frame being drawn.
+
+The text is not keyframed and never was — a key per spoken word would make the
+transcript unfixable. It is an input: the plot's `text` attribute is driven from
+the caption list by the clip's position, which is the same mechanism a
+cross-dissolve and an audio-reactive number use (see `ParamInput`). Until it is
+bound the clip shows the line at its own first frame.
+"""
+function captionscene(seq::Sequence; canvas::Tuple{Integer, Integer} = (1920, 1080),
+                     y::Real = 0.12, size::Real = 0.05)
+    W, H = canvas
+    fps = seq.framerate > 0 ? seq.framerate : 25.0
+    return pixelscene(Makie.PlotSpec(:Text, [Makie.Point2f(0.5 * W, y * H)];
+                                     text = captionat(seq.captions, 0.0),
+                                     fontsize = Float32(size * H),
+                                     color = Makie.to_color(:white),
+                                     strokecolor = Makie.to_color(:black),
+                                     strokewidth = Float32(0.12 * size * H),
+                                     align = (:center, :center), name = :captions))
+end
+
+"""
+    captiontext!(clip, seq, sf) -> nothing
+
+Put the line spoken at source frame `sf` on a caption clip's text plot.
+
+Called from the source update, so the string is written where every other
+per-frame value is written and the scene the renderer holds open is the one that
+gets it.
+"""
+function captiontext!(clip::Clip, seq::Sequence, sf::Integer)
+    spec = scenespecof(clip)
+    spec === nothing && return nothing
+    part = partbyname(spec, :captions)
+    part === nothing && return nothing
+    fps = seq.framerate > 0 ? seq.framerate : 25.0
+    part.plot.kwargs[:text] = captionat(seq.captions, timelineframe(clip, sf) / fps)
+    return nothing
+end
+
+
+
+"""
+    captionindexat(seq, frame) -> Int
+
+Which caption covers timeline `frame`, or 0.
+
+Frames here, seconds in the [`Caption`](@ref): the UI asks with a playhead and
+the transcript is stored in the model's units, so the conversion happens at the
+boundary rather than in either of them.
+"""
+function captionindexat(seq::Sequence, frame::Integer)
+    fps = seq.framerate > 0 ? seq.framerate : 25.0
+    t = frame / fps
+    idx = 0
+    for (i, c) in enumerate(seq.captions)
+        c.start <= t <= c.stop && (idx = i)     # last match, like `captionat`
+    end
+    return idx
+end
+
+"""
+    editcaption!(player, text) -> Bool
+
+Replace the text of the caption under the playhead.
+
+A transcript is a *guess*, and the one thing a user reliably wants to do with a
+guess is correct it. Without this the Whisper integration is read-only: you can
+generate captions, see them, move them and restyle them, and the moment the model
+mishears a name your only recourse is to re-run it and get the same answer.
+
+Undoable, because a correction is an edit — and because the next full transcribe
+replaces the whole transcript, which is exactly when you want the old wording
+back.
+"""
+function editcaption!(player::Player, text::AbstractString)
+    seq = player.sequence
+    i = captionindexat(seq, player.playhead[])
+    i == 0 && (setstatus!(player, "captions: none under the playhead"); return false)
+    snapshot!(player)
+    old = seq.captions[i]
+    seq.captions[i] = Caption(old.start, old.stop, String(text))
+    showplayhead!(player)
+    setstatus!(player, "caption updated")
+    return true
+end

@@ -1,0 +1,93 @@
+#
+# matrix random descriptor
+#
+
+export MPSMatrixRandomDistributionDescriptor
+
+# @objcwrapper managed = true MPSMatrixRandomDistributionDescriptor <: NSObject
+
+function MPSMatrixRandomDefaultDistributionDescriptor()
+    return @objc [MPSMatrixRandomDistributionDescriptor defaultDistributionDescriptor]::MPSMatrixRandomDistributionDescriptor
+end
+
+# Default constructor
+MPSMatrixRandomDistributionDescriptor() = MPSMatrixRandomDefaultDistributionDescriptor()
+
+function MPSMatrixRandomNormalDistributionDescriptor(mean, standardDeviation)
+    return @objc [MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:mean::Float32
+                                                        standardDeviation:standardDeviation::Float32]::MPSMatrixRandomDistributionDescriptor
+end
+
+function MPSMatrixRandomNormalDistributionDescriptor(mean, standardDeviation, minimum, maximum)
+    return @objc [MPSMatrixRandomDistributionDescriptor normalDistributionDescriptorWithMean:mean::Float32
+                                                        standardDeviation:standardDeviation::Float32
+                                                        minimum:minimum::Float32
+                                                        maximum:maximum::Float32]::MPSMatrixRandomDistributionDescriptor
+end
+
+function MPSMatrixRandomUniformDistributionDescriptor(minimum, maximum)
+    return @objc [MPSMatrixRandomDistributionDescriptor uniformDistributionDescriptorWithMinimum:minimum::Float32
+                                                        maximum:maximum::Float32]::MPSMatrixRandomDistributionDescriptor
+end
+
+# @objcwrapper managed = true MPSMatrixRandom <: MPSKernel
+
+function encode!(cmdbuf::MTLCommandBufferLike, kernel::MPSMatrixRandomLike, destinationMatrix::MPSMatrixLike)
+    @objc [kernel::id{MPSMatrixRandom} encodeToCommandBuffer:cmdbuf::id{MTLCommandBuffer}
+                         destinationMatrix:destinationMatrix::id{MPSMatrix}]::Nothing
+end
+function encode!(cmdbuf::MTLCommandBufferLike, kernel::MPSMatrixRandomLike, destinationVector::MPSVectorLike)
+    @objc [kernel::id{MPSMatrixRandom} encodeToCommandBuffer:cmdbuf::id{MTLCommandBuffer}
+                         destinationVector:destinationVector::id{MPSVector}]::Nothing
+end
+
+# @objcwrapper managed = true MPSMatrixRandomMTGP32 <: MPSMatrixRandom
+# @objcwrapper managed = true MPSMatrixRandomPhilox <: MPSMatrixRandom
+
+# the initializers that use the default distribution over-release the descriptor they
+# create, crashing when the autorelease pool is drained, so always pass a descriptor.
+for R in [:MPSMatrixRandomMTGP32, :MPSMatrixRandomPhilox]
+    @eval begin
+        $R(device) = $R(device, UInt32, 0)
+        $R(device, destinationDataType, seed) =
+            $R(device, destinationDataType, seed, MPSMatrixRandomDefaultDistributionDescriptor())
+        function $R(device, destinationDataType, seed, distributionDescriptor)
+            return @objc [[$R alloc]::id{$R} initWithDevice:device::id{MTLDevice}
+                                      destinationDataType:destinationDataType::MPSDataType
+                                      seed:seed::NSUInteger
+                                      distributionDescriptor:distributionDescriptor::id{MPSMatrixRandomDistributionDescriptor}]::$R
+        end
+    end
+end
+
+synchronize_state(kern::MPSMatrixRandomMTGP32, cmdbuf::MTLCommandBufferLike) =
+    @objc [kern::id{MPSMatrixRandomMTGP32} synchronizeStateOnCommandBuffer:cmdbuf::id{MTLCommandBuffer}]::Nothing
+
+
+@inline function _mpsmat_rand!(randkern::MPSMatrixRandomLike,
+                        dest::MtlArray{T}, ::Type{T2};
+                        queue = global_queue(randkern.device),
+                        async::Bool=false) where {T,T2}
+    bytesize = sizeof(dest)
+
+    cmdbuf = if bytesize % 16 == 0 && dest.offset == 0
+        MTLCommandBuffer(queue) do cmdbuf
+            vecDesc = MPSVectorDescriptor(bytesize ÷ sizeof(T2), T2)
+            mpsdest = MPSVector(dest, vecDesc)
+            encode!(cmdbuf, randkern, mpsdest)
+        end
+    else
+        MTLCommandBuffer(queue) do cmdbuf
+            len = UInt(ceil(bytesize / sizeof(T2)) * 4)
+            vecDesc = MPSVectorDescriptor(len, T2)
+            tempVec = MPSTemporaryVector(cmdbuf, vecDesc)
+            encode!(cmdbuf, randkern, tempVec)
+            MTLBlitCommandEncoder(cmdbuf) do enc
+                MTL.append_copy!(enc, Base.unsafe_convert(MTLBuffer, dest), dest.offset, tempVec.data, tempVec.offset, bytesize)
+            end
+        end
+    end
+
+    async || synchronize(cmdbuf)
+    return
+end

@@ -1,0 +1,716 @@
+using .MTL
+
+@testset "devices" begin
+
+devs = devices()
+@test length(devs) > 0
+
+dev = MTLDevice(1)
+@test dev == devs[1]
+
+if length(devs) > 1
+    @test dev != devs[2]
+end
+
+compact_str = sprint(io->show(io, dev))
+full_str = sprint(io->show(io, MIME"text/plain"(), dev))
+
+@test dev.name isa NSString
+@test dev.lowPower isa Bool
+@test dev.removable isa Bool
+@test dev.hasUnifiedMemory isa Bool
+@test dev.registryID isa Integer
+@test dev.maxTransferRate isa Integer
+
+@test dev.recommendedMaxWorkingSetSize isa Integer
+@test dev.maxThreadgroupMemoryLength isa Integer
+@test dev.maxThreadsPerThreadgroup isa MTL.MTLSize
+@test dev.argumentBuffersSupport isa MTL.MTLArgumentBuffersTier
+@test dev.maxBufferLength isa Integer
+
+@test dev.currentAllocatedSize isa Integer
+@test Metal.total_memory(dev) == Int(dev.recommendedMaxWorkingSetSize)
+@test Metal.free_memory(dev) == max(Metal.total_memory(dev) - Int(dev.currentAllocatedSize), 0)
+
+@test is_m1(dev) isa Bool
+@test is_m2(dev) isa Bool
+@test is_m3(dev) isa Bool
+@test is_m4(dev) isa Bool
+
+@test MTL.MTLCreateSystemDefaultDevice() isa MTLDevice
+
+end
+
+@testset "storage_type" begin
+    @test convert(MTL.MTLStorageMode, Metal.SharedStorage) == MTL.MTLStorageModeShared
+    @test convert(MTL.MTLStorageMode, Metal.ManagedStorage) == MTL.MTLStorageModeManaged
+    @test convert(MTL.MTLStorageMode, Metal.PrivateStorage) == MTL.MTLStorageModePrivate
+    @test convert(MTL.MTLStorageMode, Metal.Memoryless) == MTL.MTLStorageModeMemoryless
+
+    @test convert(MTL.MTLResourceOptions, Metal.SharedStorage) == MTL.MTLResourceStorageModeShared
+    @test convert(MTL.MTLResourceOptions, Metal.ManagedStorage) == MTL.MTLResourceStorageModeManaged
+    @test convert(MTL.MTLResourceOptions, Metal.PrivateStorage) == MTL.MTLResourceStorageModePrivate
+    @test convert(MTL.MTLResourceOptions, Metal.Memoryless) == MTL.MTLResourceStorageModeMemoryless
+
+    @test convert(MTL.MTLResourceOptions, MTL.MTLStorageModeShared) == MTL.MTLResourceStorageModeShared
+    @test convert(MTL.MTLResourceOptions, MTL.MTLStorageModeManaged) == MTL.MTLResourceStorageModeManaged
+    @test convert(MTL.MTLResourceOptions, MTL.MTLStorageModePrivate) == MTL.MTLResourceStorageModePrivate
+    @test convert(MTL.MTLResourceOptions, MTL.MTLStorageModeMemoryless) == MTL.MTLResourceStorageModeMemoryless
+
+    @test MTL.MTLResourceStorageModeShared == MTL.MTLStorageModeShared
+    @test MTL.MTLStorageModeManaged == MTL.MTLResourceStorageModeManaged
+    @test MTL.MTLResourceStorageModePrivate == MTL.MTLStorageModePrivate
+    @test MTL.MTLStorageModeMemoryless == MTL.MTLResourceStorageModeMemoryless
+end
+
+@testset "compile options" begin
+
+opts = MTLCompileOptions()
+
+compact_str = sprint(io->show(io, opts))
+full_str = sprint(io->show(io, MIME"text/plain"(), opts))
+
+@test opts.fastMathEnabled isa Bool
+val = !opts.fastMathEnabled
+opts.fastMathEnabled = val
+@test opts.fastMathEnabled == val
+
+@test opts.languageVersion isa VersionNumber
+opts.languageVersion = v"1.0"
+@test opts.languageVersion == v"1.0"
+
+@test convert(MTL.MTLLanguageVersion, v"4.1") == MTL.MTLLanguageVersion4_1
+@test convert(VersionNumber, MTL.MTLLanguageVersion4_1) == v"4.1"
+if Metal.macos_version() >= v"27"
+    opts.languageVersion = v"4.1"
+    @test opts.languageVersion == v"4.1"
+end
+
+end
+
+@testset "libraries" begin
+
+dev = first(devices())
+opts = MTLCompileOptions()
+
+let lib = MTLLibrary(dev, "", opts)
+    @test lib.device == dev
+    @test lib.label === nothing
+    lib.label = "MyLibrary"
+    @test lib.label == "MyLibrary"
+    @test isempty(lib.functionNames)
+end
+
+metal_code = read(joinpath(@__DIR__, "..", "dummy.metal"), String)
+let lib = MTLLibrary(dev, metal_code, opts)
+    @test lib.device == dev
+    @test lib.label === nothing
+    fns = lib.functionNames
+    @test length(fns) == 2
+    @test "kernel_1" in fns
+    @test "kernel_2" in fns
+end
+
+binary_path = joinpath(@__DIR__, "..", "dummy.metallib")
+let lib = MTLLibraryFromFile(dev, binary_path)
+    @test lib.device == dev
+    @test lib.label === nothing
+    fns = lib.functionNames
+    @test length(fns) == 2
+    @test "kernel_1" in fns
+    @test "kernel_2" in fns
+end
+
+binary_code = read(binary_path)
+let lib = MTLLibraryFromData(dev, binary_code)
+    @test lib.device == dev
+    @test lib.label === nothing
+    fns = lib.functionNames
+    @test length(fns) == 2
+    @test "kernel_1" in fns
+    @test "kernel_2" in fns
+
+    compact_str = sprint(io->show(io, lib))
+    full_str = sprint(io->show(io, MIME"text/plain"(), lib))
+end
+
+end
+
+@testset "functions" begin
+
+desc = MTLFunctionDescriptor()
+
+compact_str = sprint(io->show(io, desc))
+full_str = sprint(io->show(io, MIME"text/plain"(), desc))
+
+@test desc.name === nothing
+desc.name = "MyKernel"
+@test desc.name == "MyKernel"
+
+@test desc.specializedName === nothing
+desc.specializedName = "MySpecializedKernel"
+@test desc.specializedName == "MySpecializedKernel"
+
+
+dev = first(devices())
+lib = MTLLibraryFromFile(dev, joinpath(@__DIR__, "..", "dummy.metallib"))
+fun = MTLFunction(lib, "kernel_1")
+
+compact_str = sprint(io->show(io, fun))
+full_str = sprint(io->show(io, MIME"text/plain"(), fun))
+
+@test fun.device == dev
+@test fun.label === nothing
+fun.label = "MyKernel"
+@test fun.label == "MyKernel"
+@test fun.name == "kernel_1"
+@test fun.functionType == MTL.MTLFunctionTypeKernel
+
+end
+
+@testset "events" begin
+
+dev = first(devices())
+
+let ev = MTLEvent(dev)
+    # paravirtualized GPUs do not populate the event's device back-reference
+    @test ev.device == dev broken=MTL.is_virtual(dev)
+    @test ev.label === nothing
+    ev.label = "MyEvent"
+    @test ev.label == "MyEvent"
+end
+
+let ev = MTLSharedEvent(dev)
+    # This returns nothing, which aligns with the description from the Metal SDK headers.
+    #     Interestingly, under validation, a device is returned.
+    @test ev.device === nothing broken=shader_validation
+    @test ev.label === nothing
+    ev.label = "MyEvent"
+    @test ev.label == "MyEvent"
+    @test ev.signaledValue == 0
+end
+
+end
+
+@testset "fences" begin
+
+dev = first(devices())
+
+let fen = MTLFence(dev)
+    @test fen.device == dev
+end
+
+end
+
+@testset "heap" begin
+
+dev = first(devices())
+
+let desc = MTLHeapDescriptor()
+    @test desc.type == MTL.MTLHeapTypeAutomatic
+    desc.type = MTL.MTLHeapTypePlacement
+    @test desc.type == MTL.MTLHeapTypePlacement
+
+    @test desc.size == 0
+    desc.size = 1024
+    @test desc.size == 1024
+
+    @test desc.storageMode == MTL.MTLStorageModePrivate
+    desc.storageMode = MTL.MTLStorageModeShared
+    @test desc.storageMode == MTL.MTLStorageModeShared
+
+    @test desc.cpuCacheMode == MTL.MTLCPUCacheModeDefaultCache
+    desc.cpuCacheMode = MTL.MTLCPUCacheModeWriteCombined
+    @test desc.cpuCacheMode == MTL.MTLCPUCacheModeWriteCombined
+
+    @test desc.hazardTrackingMode == MTL.MTLHazardTrackingModeDefault
+    desc.hazardTrackingMode = MTL.MTLHazardTrackingModeUntracked
+    @test desc.hazardTrackingMode == MTL.MTLHazardTrackingModeUntracked
+
+    @test desc.resourceOptions == MTL.MTLResourceStorageModeShared |
+                                  MTL.MTLResourceCPUCacheModeWriteCombined |
+                                  MTL.MTLResourceHazardTrackingModeUntracked
+    desc.resourceOptions = MTL.MTLResourceStorageModePrivate |
+                           MTL.MTLResourceCPUCacheModeDefaultCache |
+                           MTL.MTLResourceHazardTrackingModeDefault
+    @test desc.resourceOptions == MTL.MTLResourceStorageModePrivate |
+                                  MTL.MTLResourceCPUCacheModeDefaultCache |
+                                  MTL.MTLResourceHazardTrackingModeDefault
+
+    # setting resource options should be reflected in individual fields
+    @test desc.storageMode == MTL.MTLStorageModePrivate
+    @test desc.cpuCacheMode == MTL.MTLCPUCacheModeDefaultCache
+    @test desc.hazardTrackingMode == MTL.MTLHazardTrackingModeDefault
+end
+
+desc = MTLHeapDescriptor()
+desc.size = 0x4000 # TODO: use heapBufferSizeAndAlign
+let heap = MTLHeap(dev, desc)
+    @test heap.label === nothing
+    heap.label = "MyHeap"
+    @test heap.label == "MyHeap"
+
+    @test heap.type == desc.type
+
+    @test heap.size == desc.size
+
+    # NOTE: these checks are fragile, as the heap options seems to depend on the requested size
+
+    #=@test=# heap.storageMode == desc.storageMode
+
+    #=@test=# heap.cpuCacheMode == desc.cpuCacheMode
+
+    #=@test=# heap.hazardTrackingMode == desc.hazardTrackingMode
+
+    #=@test=# heap.resourceOptions == desc.resourceOptions
+end
+
+end
+
+@testset "buffers" begin
+
+dev = first(devices())
+
+# JuliaGPU/Metal.jl#732
+@test_throws TypeError MTLBuffer(dev, 8; storage=2)
+
+buf = MTLBuffer(dev, 8; storage=SharedStorage)
+
+@test buf.length == 8
+@test sizeof(buf) == 8
+
+# MTLResource properties
+@test buf.device == dev
+@test buf.label === nothing
+buf.label = "MyBuffer"
+@test buf.label == "MyBuffer"
+@test buf.gpuAddress isa Ptr{Cvoid}
+
+@test contents(buf) isa Ptr{Cvoid}
+@test convert(Ptr{UInt8}, buf) isa Ptr{UInt8}
+
+free(buf)
+
+end
+
+@testset "command queue" begin
+
+dev = first(devices())
+
+cmdq = MTLCommandQueue(dev)
+
+@test cmdq.device == dev
+@test cmdq.label === nothing
+cmdq.label = "MyCommandQueue"
+@test cmdq.label == "MyCommandQueue"
+
+end
+
+@testset "command buffer" begin
+
+dev = first(devices())
+cmdq = MTLCommandQueue(dev)
+
+
+cmdbuf = MTLCommandBuffer(cmdq)
+
+@test cmdbuf.device == dev
+@test cmdbuf.commandQueue == cmdq
+@test cmdbuf.label === nothing
+cmdbuf.label = "MyCommandBuffer"
+@test cmdbuf.label == "MyCommandBuffer"
+@test cmdbuf.error === nothing
+@test cmdbuf.status == MTL.MTLCommandBufferStatusNotEnqueued
+@test cmdbuf.kernelStartTime == 0
+@test cmdbuf.kernelEndTime == 0
+@test cmdbuf.GPUStartTime == 0
+@test cmdbuf.GPUEndTime == 0
+
+let ev = MTLSharedEvent(dev)
+    @test ev.signaledValue == 0
+    encode_signal!(cmdbuf, ev, 42)
+    encode_wait!(cmdbuf, ev, 21)
+    commit!(cmdbuf)
+    wait_completed(cmdbuf)
+    @test ev.signaledValue == 42
+end
+
+cmdbuf = MTLCommandBuffer(cmdq)
+scheduled = Ref(false)
+completed = Ref(false)
+on_scheduled(cmdbuf) do buf
+    scheduled[] = true
+end
+on_completed(cmdbuf) do buf
+    completed[] = true
+end
+@test scheduled[] == false
+@test completed[] == false
+@test cmdbuf.status == MTL.MTLCommandBufferStatusNotEnqueued
+enqueue!(cmdbuf)
+@test cmdbuf.status == MTL.MTLCommandBufferStatusEnqueued
+commit!(cmdbuf)
+# XXX: happens too quickly to test for committed status
+#@test cmdbuf.status == MTL.MTLCommandBufferStatusCommitted
+wait_completed(cmdbuf) == MTL.MTLCommandBufferStatusCompleted
+@test cmdbuf.status == MTL.MTLCommandBufferStatusCompleted
+retry(; delays=[0, 0.1, 1]) do
+    scheduled[] || error("scheduled callback not called")
+    completed[] || error("completed callback not called")
+end()
+@test scheduled[] == true
+@test completed[] == true
+
+# an enqueued command buffer holds up its queue, so it's also committed when encoding fails
+cmdbuf = MTLCommandBuffer(cmdq)
+@test_throws ErrorException commit!(cmdbuf) do buf
+    error("failed to encode")
+end
+@test cmdbuf.status >= MTL.MTLCommandBufferStatusCommitted
+
+# ...which requires encoders to be ended when they fail
+cmdbuf = MTLCommandBuffer(cmdq)
+@test_throws ErrorException commit!(cmdbuf) do buf
+    MTLBlitCommandEncoder(buf) do enc
+        error("failed to encode")
+    end
+end
+@test cmdbuf.status >= MTL.MTLCommandBufferStatusCommitted
+
+desc = MTLCommandBufferDescriptor()
+
+@test desc.retainedReferences == true
+desc.retainedReferences = false
+@test desc.retainedReferences == false
+
+@test desc.errorOptions == MTL.MTLCommandBufferErrorOptionNone
+desc.errorOptions = MTL.MTLCommandBufferErrorOptionEncoderExecutionStatus
+@test desc.errorOptions == MTL.MTLCommandBufferErrorOptionEncoderExecutionStatus
+
+cmq = MTLCommandQueue(device())
+cmdbuf = MTLCommandBuffer(cmq, desc)
+if !runtime_validation
+    # when the debug layer is activated, Metal seems to retain all resources?
+    @test cmdbuf.retainedReferences == false
+end
+@test cmdbuf.errorOptions == MTL.MTLCommandBufferErrorOptionEncoderExecutionStatus
+
+end
+
+@testset "compute pipeline" begin
+
+dev = first(devices())
+lib = MTLLibraryFromFile(dev, joinpath(@__DIR__, "..", "dummy.metallib"))
+fun = MTLFunction(lib, "kernel_1")
+
+pipeline = MTLComputePipelineState(dev, fun)
+
+@test pipeline.device == dev
+@test pipeline.label === nothing
+
+@test pipeline.maxTotalThreadsPerThreadgroup isa Integer
+@test pipeline.threadExecutionWidth isa Integer
+@test pipeline.staticThreadgroupMemoryLength == 0
+
+
+desc = MTLComputePipelineDescriptor()
+
+compact_str = sprint(io->show(io, desc))
+full_str = sprint(io->show(io, MIME"text/plain"(), desc))
+
+@test desc.label === nothing
+desc.label = "foo"
+@test desc.label == "foo"
+
+@test desc.computeFunction === nothing
+desc.computeFunction = fun
+@test desc.computeFunction == fun
+
+@test desc.threadGroupSizeIsMultipleOfThreadExecutionWidth == false
+desc.threadGroupSizeIsMultipleOfThreadExecutionWidth = true
+@test desc.threadGroupSizeIsMultipleOfThreadExecutionWidth == true
+
+@test desc.maxTotalThreadsPerThreadgroup isa Integer
+# setting this may fail, so use the same value
+desc.maxTotalThreadsPerThreadgroup = pipeline.maxTotalThreadsPerThreadgroup
+
+@test desc.maxCallStackDepth == 1
+desc.maxCallStackDepth = 2
+@test desc.maxCallStackDepth == 2
+
+# create a pipeline via the descriptor path; it must match the function path
+desc2 = MTLComputePipelineDescriptor()
+desc2.computeFunction = fun
+pipeline_desc = MTLComputePipelineState(dev, desc2)
+@test pipeline_desc isa MTLComputePipelineState
+@test pipeline_desc.maxTotalThreadsPerThreadgroup == pipeline.maxTotalThreadsPerThreadgroup
+@test pipeline_desc.threadExecutionWidth == pipeline.threadExecutionWidth
+
+end
+
+@testset "function constants" begin
+
+# Function constants are general Metal API surface: values supplied at `MTLFunction`
+# specialization that the kernel reads directly. Exercise the wrappers (by name and by index,
+# plain and through a pipeline descriptor) on MSL source with a `[[function_constant(0)]]`
+# ulong.
+dev = first(devices())
+src = """
+#include <metal_stdlib>
+using namespace metal;
+constant ulong reloc_word [[function_constant(0)]];
+kernel void fc_test(device ulong* out [[buffer(0)]]) {
+    out[0] = reloc_word;
+}
+"""
+lib = MTLLibrary(dev, src)
+
+# the constant the kernel declares
+@test length(MTLFunction(lib, "fc_test").functionConstantsDictionary) == 1
+
+word = 0x1122_3344_5566_7788
+
+function run_fc(fun)
+    pso = MTLComputePipelineState(dev, fun)
+    buf = MTLBuffer(dev, sizeof(UInt64); storage=MTL.SharedStorage)
+    cmdbuf = MTLCommandBuffer(MTLCommandQueue(dev))
+    MTLComputeCommandEncoder(cmdbuf) do cce
+        set_function!(cce, pso)
+        set_buffer!(cce, buf, 0, 1)
+        MTL.dispatchThreadgroups!(cce, MTL.MTLSize(1, 1, 1), MTL.MTLSize(1, 1, 1))
+    end
+    MTL.commit!(cmdbuf)
+    MTL.wait_completed(cmdbuf)
+    return unsafe_load(convert(Ptr{UInt64}, buf))
+end
+
+# by name (`setConstantValue:type:withName:`, the path the loader uses)
+let fcv = MTLFunctionConstantValues()
+    MTL.setConstantValue!(fcv, Ref(word), MTL.MTLDataTypeULong, "reloc_word")
+    fun = MTLFunction(lib, "fc_test", fcv)
+    @test run_fc(fun) == word
+end
+
+# by index (`setConstantValue:type:atIndex:`)
+let fcv = MTLFunctionConstantValues()
+    MTL.setConstantValue!(fcv, Ref(word), MTL.MTLDataTypeULong, 0)
+    fun = MTLFunction(lib, "fc_test", fcv)
+    @test run_fc(fun) == word
+
+    # a specialized function still works through the descriptor path (binary-archive interop)
+    desc = MTLComputePipelineDescriptor()
+    desc.computeFunction = fun
+    @test MTLComputePipelineState(dev, desc) isa MTLComputePipelineState
+end
+
+end
+
+@testset "binary archive" begin
+
+dev = first(devices())
+lib = MTLLibraryFromFile(dev, joinpath(@__DIR__, "..", "dummy.metallib"))
+fun = MTLFunction(lib, "kernel_1")
+
+desc = MTLBinaryArchiveDescriptor()
+bin = MTLBinaryArchive(dev, desc)
+
+compact_str = sprint(io->show(io, desc))
+full_str = sprint(io->show(io, MIME"text/plain"(), desc))
+
+@test desc.url === nothing
+desc.url = NSFileURL("/tmp/foo")
+@test desc.url == NSFileURL("/tmp/foo")
+
+pipeline_desc = MTLComputePipelineDescriptor()
+pipeline_desc.computeFunction = fun
+
+add_functions!(bin, pipeline_desc)
+# paravirtualized GPUs cannot reliably compile functions into a serializable form,
+# leaving the archive with no items eligible for serialization
+if !MTL.is_virtual(dev)
+    mktempdir() do dir
+        path = joinpath(dir, "kernel.bin")
+        write(path, bin)
+        @test isfile(path)
+        @test filesize(path) > 0
+
+        # reload the serialized archive and confirm content-keyed matching: the archived
+        # function is served from it (a hit under FailOnBinaryArchiveMiss), while a
+        # function absent from it misses.
+        reloaded = MTLBinaryArchive(dev, path)
+
+        # shader validation relies on live shader instrumentation, making it incompatible
+        # with binary archives: instrumented pipelines are keyed differently, so archived
+        # (uninstrumented) binaries never match and every lookup misses.
+        if !shader_validation
+            hit_desc = MTLComputePipelineDescriptor()
+            hit_desc.computeFunction = fun
+            hit_desc.binaryArchives = NSArray([reloaded])
+            @test MTLComputePipelineState(dev, hit_desc;
+                      options=MTL.MTLPipelineOptionFailOnBinaryArchiveMiss) isa MTLComputePipelineState
+        end
+
+        fun2 = MTLFunction(lib, "kernel_2")
+        miss_desc = MTLComputePipelineDescriptor()
+        miss_desc.computeFunction = fun2
+        miss_desc.binaryArchives = NSArray([reloaded])
+        # a function absent from the archive misses; creation throws (an NSError, which
+        # is not `<: Exception`, so catch broadly)
+        missed = try
+            MTLComputePipelineState(dev, miss_desc;
+                                    options=MTL.MTLPipelineOptionFailOnBinaryArchiveMiss)
+            false
+        catch
+            true
+        end
+        @test missed
+    end
+end
+
+end
+
+@testset "async_copy" begin
+    N = 1024
+    signal_value = 2
+
+    dev = first(devices())
+    A = MtlArray(rand(Float32, N))
+    B = MtlArray(rand(Float32, N))
+    a = Array{Float32}(undef, N)
+
+    queue1 = Metal.MTLCommandQueue(dev)
+    queue2 = Metal.MTLCommandQueue(dev)
+    buf1 = Metal.MTLCommandBuffer(queue1)
+    buf2 = Metal.MTLCommandBuffer(queue2)
+    event = Metal.MTLEvent(dev)
+
+
+    Metal.encode_wait!(buf2, event, signal_value)
+    commit!(buf2)
+
+    unsafe_copyto!(dev, pointer(a), pointer(B), N, queue=queue1, async=true) # GPU -> CPU
+    unsafe_copyto!(dev, pointer(A), pointer(a), N, queue=queue1, async=true) # CPU -> GPU
+
+    Metal.encode_signal!(buf1, event, signal_value)
+    commit!(buf1)
+
+
+    Metal.wait_completed(buf2)
+
+    @test isapprox(a, Array(A))
+    @test isapprox(a, Array(B))
+end
+
+# Issue #192
+@testset "append_fillbuffer!" begin
+    for (T, val) in ((UInt8, 2), (Int8, 2), (Int8, -2))
+        arr = Metal.zeros(T, 4)
+
+        buf = Base.unsafe_convert(MTL.MTLBuffer, arr)
+        Metal.unsafe_fill!(device(), Metal.MtlPtr{T}(buf, 0), T(val), 4)
+
+        @test all(Array(arr) .== val)
+    end
+end
+
+# residency sets are a macOS 15 feature that paravirtualized GPUs do not implement
+if !MTL.is_virtual(first(devices()))
+@testset "residency sets" begin
+
+dev = first(devices())
+
+let desc = MTLResidencySetDescriptor()
+    @test isnothing(desc.label)
+    desc.label = "Test MTLResidencySetDescriptor"
+    @test desc.label == "Test MTLResidencySetDescriptor"
+
+    @test desc.initialCapacity == 0
+    desc.initialCapacity = 2
+    @test desc.initialCapacity == 2
+end
+
+desc = MTLResidencySetDescriptor()
+desc.initialCapacity = 2
+let rset = MTLResidencySet(dev, desc)
+    alloc1 = MTL.MTLBuffer(dev, 400)
+    alloc2 = MTL.MTLBuffer(dev, 1024)
+    allocs = [alloc1, alloc2]
+
+    # default parameters
+
+    @test isnothing(rset.label)
+    @test rset.device == dev
+    @test rset.allocationCount == 0
+    @test rset.allocatedSize == 0
+    @test isempty(rset.allAllocations)
+    @test rset.retainCount == 1
+    @test contains(rset.description, "ResidencySet")
+    @test !MTL.contains_allocation(rset, alloc1)
+    # @test contains(String(rset.description), "ResidencySet")
+
+    # one allocation
+    MTL.add_allocation!(rset, alloc1)
+    @test MTL.contains_allocation(rset, alloc1)
+    @test alloc1 in rset.allAllocations
+    @test rset.allocationCount == 1
+    @test rset.allocatedSize == 0 # Updated after it's committed
+    commit!(rset)
+    @test rset.allocationCount == 1
+    @test rset.allocatedSize > 0
+    MTL.remove_allocation!(rset, alloc1)
+    @test !MTL.contains_allocation(rset, alloc1)
+    @test rset.allocationCount == 1
+    @test rset.allocatedSize > 0
+    commit!(rset)
+    @test rset.allocationCount == 0
+    @test rset.allocatedSize == 0
+
+    # two allocations
+
+    MTL.add_allocations!(rset, allocs)
+    @test MTL.contains_allocation(rset, alloc2)
+    @test MTL.contains_allocation(rset, alloc2)
+    @test alloc1 in rset.allAllocations
+    @test alloc2 in rset.allAllocations
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize == 0 # Updated after it's committed
+    commit!(rset)
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize > 0
+    MTL.remove_allocations!(rset, allocs)
+    @test !MTL.contains_allocation(rset, alloc1)
+    @test !MTL.contains_allocation(rset, alloc2)
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize > 0
+    commit!(rset)
+    @test rset.allocationCount == 0
+    @test rset.allocatedSize == 0
+
+    # two allocations but different
+
+    MTL.add_allocations!(rset, allocs, 2)
+    @test MTL.contains_allocation(rset, alloc2)
+    @test MTL.contains_allocation(rset, alloc2)
+    @test alloc1 in rset.allAllocations
+    @test alloc2 in rset.allAllocations
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize == 0 # Updated after it's committed
+    commit!(rset)
+    MTL.request_residency!(rset) # ensure no crash
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize > 0
+    MTL.end_residency!(rset) # ensure no crash
+    MTL.remove_all_allocations!(rset)
+    @test !MTL.contains_allocation(rset, alloc1)
+    @test !MTL.contains_allocation(rset, alloc2)
+    @test rset.allocationCount == 2
+    @test rset.allocatedSize > 0
+    commit!(rset)
+    @test rset.allocationCount == 0
+    @test rset.allocatedSize == 0
+end
+
+end # @testset "residency sets" begin
+end
+
+# TODO: continue adding tests

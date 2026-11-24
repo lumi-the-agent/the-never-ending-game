@@ -1,0 +1,43 @@
+{
+  "failed": [
+    {
+      "error": "check failed: 12 flora plots: copies must share one instanced plot per variety",
+      "file": "assets.jl",
+      "name": "Island flora is generated, bright enough, and never metallic",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: Marshmallow did not reach the find (pos Float32[4.527788, -14.294997, 1.0558119], target Float32[5.3434997, -16.743681, 0.5993198], goal beachcomb, action walk)",
+      "file": "beach.jl",
+      "name": "A critter walks down to the beach and finds a shell or a starfish",
+      "passed": false,
+      "seconds": 0.6
+    },
+    {
+      "error": "check failed: Sprout did not walk on W",
+      "file": "minigames.jl",
+      "name": "Firefly catch: start card, W starts, keys light up, a catch counts, R restarts",
+      "passed": false,
+      "seconds": 9.7
+    },
+    {
+      "error": "check failed: Wibbles did not thank: [\"Hello hello!\"]",
+      "file": "minigames.jl",
+      "name": "Flower gift: a critter carries a picked flower to a friend, who thanks it with hearts",
+      "passed": false,
+      "seconds": 15.0
+    },
+    {
+      "error": "check failed: no dance ring after walking the parade 7.0 m to the lantern spot (now 0.6 m, followers 0, the three now Tuple{String, Symbol, Symbol, Float32}[(\"Gloop\", :fish, :sit, 16.7), (\"Wibbles\", :sleep, :sleep, 7.9), (\"Pinchy\", :sleep, :walk, 20.6)], Sprout controlled true, game NeverendingGame.JumpIn)",
+      "file": "minigames.jl",
+      "name": "Parade party: a parade of three led to a lantern turns into a dance ring with Sprout in the middle",
+      "passed": false,
+      "seconds": 44.7
+    }
+  ],
+  "passed": 73,
+  "session": 43,
+  "time": "2026-11-23T17:06:37",
+  "total": 78
+}

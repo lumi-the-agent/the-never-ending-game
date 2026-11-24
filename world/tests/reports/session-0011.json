@@ -1,0 +1,10 @@
+{"session": 11,
+ "summary": "The host's suite could not run (game was down) but the game was back for me: all 8 existing tests plus my new one pass. Budget line renders live and todos/activity/agent wrap without ellipses; the one 'frame failed: tokens_day' event in today's log predates the fix and did not recur.",
+ "failures": [
+  {"what": "Creature name label is clipped at the right edge of the 3D view (\"Pickles\" cut to \"Pickle\")",
+   "steps": "Open the dashboard with follow camera; a creature near the right edge of the viewport",
+   "expected": "Labels near the edge stay fully visible or are hidden/shifted",
+   "actual": "The label is cut off by the viewport border (minor, cosmetic)",
+   "screenshot": "world/tests/shots/side-panels.png"}
+ ],
+ "tests_added": ["Dashboard side panels show budget, todos and activity without ellipses or a failed frame"]}

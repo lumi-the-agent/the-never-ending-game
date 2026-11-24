@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-24T02:39:09.355",
+  "finished": "2026-11-24T03:02:05.339",
+  "id": "20261124-023909-355-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 3000,
+    "prompt": "a single fallen mossy log lying on its side with a small mushroom, seen from the side, resting on the ground, stylized clay-toy look, soft rounded shapes"
+  },
+  "result": {
+    "created": "2026-11-24T03:02:04.902",
+    "faces": 2853,
+    "id": "20261124-023909-355-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-023909-355-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-023909-355-asset/mesh.jls",
+    "prompt": "a single fallen mossy log lying on its side with a small mushroom, seen from the side, resting on the ground, stylized clay-toy look, soft rounded shapes",
+    "seconds": 703.0,
+    "tags": []
+  },
+  "seconds": 705.7,
+  "started": "2026-11-24T02:50:19.434",
+  "status": "done"
+}

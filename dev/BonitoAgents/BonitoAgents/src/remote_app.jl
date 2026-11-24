@@ -1,0 +1,1081 @@
+# Embed an interactive Bonito App that lives in a worker eval process into a host
+# browser Session by piping the Bonito protocol RAW over a channel of the
+# worker's link: the eval worker connects to its worker's local relay, which
+# opens the channel for the chat (`accept_worker_channel`). The eval worker
+# renders + owns the observables; the BonitoAgents server is a byte relay
+# between that channel and the browser, plus the one server-side asset mirror
+# (the browser fetches assets over HTTP). There is NO Malt on the frame path —
+# every Bonito frame is just bytes, both directions. Malt (via BonitoMCP's own
+# link to its workers) is used ONLY to bootstrap the worker: include
+# RemoteProxy, build the bridge, start the dial. See BonitoMCP/RemoteProxy.jl.
+#
+# Wire format on the channel: `[tag][payload]`.
+#   * `D` (data)    — a Bonito frame, piped verbatim (worker→browser and back).
+#   * `C` (control) — a small msgpack dict for the few request/response ops:
+#                     `asset_read` (lazy range fetch), `asset_url` (expose a
+#                     worker-disk file as a streamable asset), `close` (a
+#                     subsession), and the worker→host `asset_add`/`asset_remove` push.
+
+const Malt = BonitoMCP.Malt   # only the BonitoMCP-side bootstrap touches Malt
+
+const TAG_DATA = UInt8('D')
+const TAG_CTRL = UInt8('C')
+
+# One per worker process (keyed by project). Owns the bridge's channel, the stable
+# per-worker asset registry (a `ChildAssetServer` of the dashboard's one
+# `HTTPAssetServer`, so proxied assets outlive any transient render session), the
+# pending control-request table, and the current browser root connection that
+# worker→browser frames relay onto.
+mutable struct EvalBridge
+    prefix::String                       # bridge parent.id == route_to_remote namespace
+    # The owning chat. Nothing reads it today — the registry is keyed by project,
+    # so the key IS this value — but it is what lets a bridge be found by
+    # anything other than that key, which the env_path fix noted in
+    # `serve_eval_bridge` needs. Kept deliberately rather than re-derived later.
+    project_id::String
+    ws::Any                              # the bridge's channel; swapped on reconnect under wlock
+    wlock::ReentrantLock                 # serialize frame sends to the worker AND ws-swap
+    asset_host::Bonito.ChildAssetServer
+    pending::Dict{Int, Channel{Any}}     # control req-id → reply channel
+    pending_lock::ReentrantLock
+    reqid::Threads.Atomic{Int}
+    # Per browser TAB routing. A worker→browser DATA frame carries its page-root
+    # prefix (see relay_writer); `page_conns[prefix]` is that tab's live browser
+    # connection. `tab_prefix[root.id]` maps a tab's host root session to its
+    # page-root prefix (attach-once + reconnect rebind). Replaces the old single
+    # `root_conn`, so two tabs on one project no longer clobber each other's relay.
+    page_conns::Dict{String, Any}        # page-root prefix => browser connection
+    tab_prefix::Dict{String, String}     # browser root id => page-root prefix
+    pc_lock::ReentrantLock
+    open_lock::ReentrantLock             # serialize per-tab open_root round-trips
+    # Worker→browser frames that arrived while a page-root had NO browser
+    # connection (bridge connect → first-mount window, tab-switch, reconnect). Dropping
+    # them silently was the root cause of the "plot spinner never finishes" hang.
+    # Bucketed PER page-root prefix; flushed in order on that tab's next
+    # attach/reconnect (`flush_parked!`); the byte-cap drops OLDEST first (warn).
+    parked::Dict{String, Vector{Vector{UInt8}}}
+    parked_bytes::Int
+    parked_lock::ReentrantLock
+end
+
+const PARKED_BYTE_CAP = 64 * 1024 * 1024  # 64 MB per bridge
+
+# Reconnects compare prefix (== BRIDGE[].parent.id on the worker): same prefix
+# means same BRIDGE[] / same routes, swap WS. `ws === nothing` ⇒ disconnected,
+# awaiting redial.
+make_eval_bridge(prefix::AbstractString, project_id::AbstractString, ws, host) = EvalBridge(
+    String(prefix), String(project_id), ws, ReentrantLock(), host,
+    Dict{Int,Channel{Any}}(), ReentrantLock(),
+    Threads.Atomic{Int}(0),
+    Dict{String,Any}(), Dict{String,String}(), ReentrantLock(), ReentrantLock(),
+    Dict{String,Vector{Vector{UInt8}}}(), 0, ReentrantLock())
+
+# Park a worker→browser frame until a browser connection attaches. Overflow
+# drops the OLDEST frames: the newest ones are the likeliest to matter (the
+# most recent snapshot/bundle), and the pull/re-mount paths heal older losses.
+function park_frame!(eb::EvalBridge, prefix::AbstractString, payload::Vector{UInt8})
+    @lock eb.parked_lock let
+        q = get!(() -> Vector{Vector{UInt8}}(), eb.parked, String(prefix))
+        push!(q, payload)
+        eb.parked_bytes += length(payload)
+        dropped = 0
+        while eb.parked_bytes > PARKED_BYTE_CAP && length(q) > 1
+            old = popfirst!(q)
+            eb.parked_bytes -= length(old)
+            dropped += 1
+        end
+        dropped == 0 ||
+            @warn "eval relay: parked-frame cap hit; dropped oldest frames" dropped prefix maxlog = 5
+    end
+    return
+end
+
+# Flush parked frames IN ORDER to `rc`. Failures re-park the remainder (the
+# connection died mid-flush; the next attach retries).
+function flush_parked!(eb::EvalBridge, prefix::AbstractString, rc)
+    rc === nothing && return
+    lock(eb.parked_lock) do
+        q = get(eb.parked, String(prefix), nothing)
+        (q === nothing || isempty(q)) && return
+        n = length(q)
+        while !isempty(q)
+            payload = q[1]
+            try
+                write(rc, payload)
+            catch e
+                @warn "eval relay: parked-frame flush failed; keeping remainder for next attach" exception = (e,) remaining = length(q) prefix
+                return
+            end
+            popfirst!(q)
+            eb.parked_bytes -= length(payload)
+        end
+        @info "eval relay: flushed parked frames to browser" frames = n prefix
+    end
+    return
+end
+
+# Read an eval bridge for `project_id` under `state.lock` (T11). Writers
+# (`serve_eval_bridge`, `teardown_eval_bridge!`) mutate `state.eval_workers` under the
+# same lock, so UI tasks that just `get(state.eval_workers, …)` raced a concurrent
+# insert/delete (Dict rehash). All reads go through here.
+eval_bridge_for(state::ServerState, project_id::AbstractString) =
+    @lock state.lock begin
+        get(state.eval_workers, String(project_id), nothing)
+    end
+
+# Where a chat's bridges are filed: its own sessions' under the chat, an eval
+# host's (remote_eval.jl) under the chat and the host's worker, so a chat that
+# runs Julia here and on another machine keeps both live.
+eval_bridge_key(project_id::AbstractString, host_worker::AbstractString) =
+    isempty(host_worker) ? String(project_id) : String(project_id) * "\0" * String(host_worker)
+
+"""
+    bridge_for_ref(state, project_id, ref) -> Union{EvalBridge,Nothing}
+
+The bridge a result `ref` ("prefix/uuid") was parked on: the one of the chat's
+bridges with that prefix. Without one (its session is gone) the chat's own
+bridge, whose mount then fails fast to the static fallback.
+"""
+function bridge_for_ref(state::ServerState, project_id::AbstractString, ref::AbstractString)
+    prefix = first(split(ref, '/'; limit = 2))
+    host_keys = String(project_id) * "\0"
+    @lock state.lock begin
+        for (key, eb) in state.eval_workers
+            (key == project_id || startswith(key, host_keys)) && eb.prefix == prefix && return eb
+        end
+        get(state.eval_workers, String(project_id), nothing)
+    end
+end
+
+# ── Raw frame transport to the worker ───────────────────────────────────────
+function send_tagged(eb::EvalBridge, tag::UInt8, payload::AbstractVector{UInt8})
+    buf = Vector{UInt8}(undef, length(payload) + 1)
+    @inbounds buf[1] = tag
+    copyto!(buf, 2, payload, firstindex(payload), length(payload))
+    lock(eb.wlock) do
+        ws = eb.ws
+        # Bridge torn down (worker session ended / restart!): `ws === nothing` — a
+        # late browser→worker frame has nowhere to go. Drop it silently; without
+        # this guard `send(::Nothing, …)` throws a MethodError that the catch turns
+        # into a scary "frame send failed" warning on every teardown frame.
+        ws === nothing && return
+        try
+            HTTP.WebSockets.send(ws, buf)
+        catch e
+            # The expected failure here is a send racing the bridge's channel
+            # dropping/swapping. Anything else is real signal — `@debug` would
+            # silently hide it (default log level Info), so `@warn` so the
+            # actual exception type/message is visible during diagnosis.
+            @warn "eval bridge: frame send failed" exception = (e, catch_backtrace()) tag = Char(tag) bytes = length(buf) prefix = eb.prefix
+        end
+    end
+    return nothing
+end
+send_data(eb::EvalBridge, bytes::AbstractVector{UInt8}) = send_tagged(eb, TAG_DATA, bytes)
+send_ctrl(eb::EvalBridge, dict)                         = send_tagged(eb, TAG_CTRL, Bonito.MsgPack.pack(dict))
+
+# A browser→worker DATA frame for a specific page-root carries that root's prefix
+# (symmetric to the worker's `PageDriver`): [TAG_DATA][UInt8 len][prefix][packed].
+function send_data_prefixed(eb::EvalBridge, prefix::AbstractString, payload::AbstractVector{UInt8})
+    pfx = codeunits(String(prefix))
+    env = Vector{UInt8}(undef, length(pfx) + 1 + length(payload))
+    @inbounds env[1] = UInt8(length(pfx))
+    copyto!(env, 2, pfx, firstindex(pfx), length(pfx))
+    copyto!(env, 2 + length(pfx), payload, firstindex(payload), length(payload))
+    return send_data(eb, env)
+end
+
+# Per-page inbound driver: `route_to_remote` matched a browser frame to page-root
+# `prefix`; forward it to the worker tagged with `prefix` so `serve_bridge` routes
+# it to that page-root's inbox. One is registered per open page-root. Assets stay
+# shared, so `proxy_fetch` still routes through the bridge (`eb`), not per-page.
+struct PageForward
+    eb::EvalBridge
+    prefix::String
+end
+Bonito.proxy_forward(pf::PageForward, data) =
+    send_data_prefixed(pf.eb, pf.prefix, Bonito.MsgPack.pack(data))
+
+# EvalBridge is the host-side proxy driver for Bonito's proxy framework: Bonito
+# routes browser→worker frames through `proxy_forward`, and serves proxied asset
+# byte ranges through `proxy_fetch`. We re-pack the DECODED frame as plain
+# (uncompressed) msgpack so the worker's bridge — which runs uncompressed —
+# handles it regardless of the browser connection's compression. `proxy_fetch`
+# runs on the HTTP asset-handler task (not the relay loop), so its `call_ctrl`
+# round-trip can't deadlock the relay.
+Bonito.proxy_forward(eb::EvalBridge, data) = send_data(eb, Bonito.MsgPack.pack(data))
+Bonito.proxy_fetch(eb::EvalBridge, key, start, stop) =
+    ctrl_bytes(call_ctrl(eb, "asset_read"; key = key, start = start, stop = stop))
+
+# Expose a worker-disk file to the browser as a streamable proxied asset and
+# return its host-relative `/assets/<key>` url. Range reads are proxied on demand
+# (no whole-file copy to the host), so a `<video src=…>` scrubs by pulling only
+# the bytes it needs. Media wants a streamable url, not a Bonito session — so this
+# is a plain url for a plain <img>/<video>, no App/subsession.
+worker_asset_url(eb::EvalBridge, path::AbstractString) =
+    String(call_ctrl(eb, "asset_url"; path = String(path)))
+
+# A control request that expects a reply (asset_read / asset_url). The bridge
+# relay loop resolves it via `pending`; this runs on a DIFFERENT task (a chat
+# command or an HTTP asset handler), so the wait can't deadlock the relay.
+function call_ctrl(eb::EvalBridge, op::AbstractString; timeout = 30.0, redial_grace = 10.0, kw...)
+    # Disconnected window (WS dropped, worker redialing): the worker's
+    # dial_loop reconnects within a couple of seconds, so WAIT that window out
+    # instead of failing instantly — an instant failure here was what left
+    # fragments without their JS module (asset fetch during a redial → module
+    # never loads → permanent spinner). Only error once the grace runs out.
+    # `redial_grace = 0` restores fail-fast (tests, callers with own retry).
+    if eb.ws === nothing
+        deadline = time() + redial_grace
+        while eb.ws === nothing && time() < deadline
+            sleep(0.1)
+        end
+        eb.ws === nothing &&
+            error("eval bridge disconnected (worker did not redial within $(redial_grace)s); '$op' not sent")
+    end
+    id = Threads.atomic_add!(eb.reqid, 1)
+    ch = Channel{Any}(1)
+    @lock eb.pending_lock begin; eb.pending[id] = ch; end
+    send_ctrl(eb, Dict{String,Any}("op" => op, "id" => id,
+                                   (String(k) => v for (k, v) in kw)...))
+    try
+        Base.timedwait(() -> isready(ch), timeout) === :ok || error("remote control '$op' timed out")
+        result = take!(ch)
+        # Worker-side handle_control sends back an `err` field on exception;
+        # handle_worker_control wrapped it as an Exception. Rethrow so the
+        # caller sees the failure right away rather than a malformed value.
+        result isa Exception && throw(result)
+        return result
+    finally
+        @lock eb.pending_lock begin; delete!(eb.pending, id); end
+    end
+end
+
+# Byte payloads of a control message. Bonito's MsgPack packs a `Vector{UInt8}` as
+# an extension (an eval process), a worker sends a bin (`BonitoWorker.WireBytes`).
+# A list of numbers is what a worker from before `WireBytes` sends, until it updates.
+ctrl_bytes(::Nothing) = nothing
+ctrl_bytes(x::Bonito.MsgPack.Extension) = x.data
+ctrl_bytes(x::Vector{UInt8}) = x
+ctrl_bytes(x::AbstractVector) = Vector{UInt8}(x)
+
+# Worker→host control frame (runs on the relay loop task).
+function handle_worker_control(eb::EvalBridge, msg::AbstractDict)
+    op = msg["op"]
+    if op == "reply"
+        # `pop!` (not `get`) under the lock so exactly ONE side owns the channel
+        # (T9). With a `get`, a concurrent `fail_pending!` could fill the
+        # capacity-1 channel first and this `put!` would then block the relay
+        # loop forever. Popping means whichever of {reply, fail_pending!} gets
+        # the entry first is the sole writer; the other finds it gone.
+        ch = @lock eb.pending_lock let
+            id = Int(msg["id"])
+            haskey(eb.pending, id) ? pop!(eb.pending, id) : nothing
+        end
+        # Worker can reply with `err` (string showerror) instead of `val` when
+        # `handle_control` raised. Surface as an Exception so `call_ctrl` throws
+        # immediately — no 30 s timedwait, no swallowed failures. The `put!` is
+        # safe (we own the channel) but the caller may have already given up
+        # (closed it) on timeout — that's not an error.
+        if ch !== nothing
+            try
+                put!(ch,
+                    haskey(msg, "err") ? ErrorException(String(msg["err"])) :
+                                         get(msg, "val", nothing))
+            catch e
+                e isa InvalidStateException || rethrow()
+            end
+        end
+    elseif op == "asset_add"
+        k = String(msg["key"])
+        cached = ctrl_bytes(msg["cached"])
+        # Non-eager assets are fetched lazily via `proxy_fetch(eb, …)` on the HTTP
+        # asset-handler task (never this relay loop), so no deadlock.
+        Bonito.register_proxy_asset!(eb.asset_host,
+            Bonito.RemoteAsset(k, String(msg["mime"]), Int(msg["total"]), cached, eb))
+    elseif op == "asset_remove"
+        Bonito.release_proxy_asset!(eb.asset_host, String(msg["key"]))
+    end
+    return
+end
+
+# Fail every in-flight `call_ctrl` waiting on this bridge with a clean error —
+# called when the WS drops, so callers don't sit on a 30 s timeout for replies
+# that physically can't come back over the dead socket.
+function fail_pending!(eb::EvalBridge, why::AbstractString)
+    drained = @lock eb.pending_lock let
+        pp = collect(values(eb.pending))
+        empty!(eb.pending)
+        pp
+    end
+    err = ErrorException(why)
+    for ch in drained
+        isready(ch) || put!(ch, err)
+    end
+    return nothing
+end
+
+# Process one inbound frame from the worker: DATA → queue for the browser (so a
+# slow browser can't block the relay loop); CTRL → handle inline (reply routing +
+# asset register, all fast). Extracted so the decoupling is unit-testable.
+function relay_frame!(eb::EvalBridge, outbound::Channel{Vector{UInt8}}, data::AbstractVector{UInt8})
+    isempty(data) && return nothing
+    tag = @inbounds data[1]
+    payload = @view data[2:end]
+    if tag == TAG_DATA
+        isopen(outbound) && put!(outbound, Vector{UInt8}(payload))
+    elseif tag == TAG_CTRL
+        handle_worker_control(eb, Bonito.MsgPack.unpack(Vector{UInt8}(payload)))
+    end
+    return nothing
+end
+
+# Drain queued worker→browser frames to the current root connection, IN ORDER, on
+# a dedicated task — so a slow `write` stalls only this writer, never the relay
+# loop's control-frame handling.
+#
+# A `write(rc, payload)` failure means a worker→browser frame is dropped — and
+# dropping frames mid-render is exactly what produces "the plot loaded the
+# initial bundle but live updates never arrive" symptoms (the worker side sees
+# clean sends, the browser-side console sees nothing, and nothing's logged
+# because the original code only `@debug`'d the failure). Promote to `@warn`
+# so the actual exception is visible AND emit a one-shot info as soon as the
+# first frame after a failure DOES go through, so the recovery (tab reload,
+# WS swap, etc.) is also visible.
+function relay_writer(eb::EvalBridge, outbound::Channel{Vector{UInt8}})
+    for enveloped in outbound
+        # Enveloped `[UInt8 len][prefix][frame]` — route the frame to the browser
+        # tab bound to `prefix`; a frame for an unbound/dead tab parks under its
+        # prefix and flushes on that tab's next attach/reconnect.
+        isempty(enveloped) && continue
+        plen = Int(@inbounds enveloped[1])
+        prefix  = String(@view enveloped[2:1+plen])
+        payload = Vector{UInt8}(@view enveloped[2+plen:end])
+        rc = lock(() -> get(eb.page_conns, prefix, nothing), eb.pc_lock)
+        if rc === nothing
+            park_frame!(eb, prefix, payload)
+            continue
+        end
+        # Ordering: anything parked for this tab must go out before this frame.
+        flush_parked!(eb, prefix, rc)
+        if lock(() -> (q = get(eb.parked, prefix, nothing); q !== nothing && !isempty(q)), eb.parked_lock)
+            park_frame!(eb, prefix, payload)
+            continue
+        end
+        try
+            write(rc, payload)
+        catch e
+            # The connection died under us: park this frame too — the next attach
+            # (re-mount, reconnect) delivers it instead of losing it.
+            @warn "eval relay: browser write failed (frame parked for next attach)" exception = (e, catch_backtrace()) bytes = length(payload) prefix
+            park_frame!(eb, prefix, payload)
+        end
+    end
+    return nothing
+end
+
+# The bridge of an eval worker, on the channel its relay opened for `project_id`,
+# with `prefix` naming its bridge (`BRIDGE[].parent.id` on the worker). This task
+# IS the worker→browser relay (and the worker→host control reader) for as long
+# as the channel lives.
+function serve_eval_bridge(state::ServerState, ws::WorkerLink.LinkChannel, project_id::String, prefix::String)
+    if isempty(prefix)
+        @warn "eval bridge rejected: empty bridge prefix (worker RemoteProxy bridge setup failed)" project_id
+        WorkerLink.abort(ws, "empty bridge prefix")
+        return
+    end
+    if state.srv === nothing
+        @warn "eval bridge with no live server — cannot proxy assets" project_id
+        WorkerLink.abort(ws, "no live server")
+        return
+    end
+    # Before the bridge is installed: nothing else may be the channel's first frame.
+    accept_channel(ws)
+
+    # Existing bridge for this project? Decide reconnect vs. replace by comparing
+    # `prefix` against `BRIDGE[].parent.id` on the worker side. Same prefix ⇒
+    # same `BRIDGE[]` (routes intact) ⇒ swap the channel into the existing EvalBridge.
+    # Different prefix ⇒ stale routes ⇒ hard-replace.
+    #
+    # ⚠ KNOWN LIMITATION — a different prefix does NOT always mean the worker
+    # restarted. The registry is keyed by PROJECT, but eval SESSIONS are keyed by
+    # `env_path` (BonitoMCP's `JuliaSession` pool), so one chat that evals in two
+    # envs has two live workers dialing this same project_id, and the second
+    # evicts the first here. That is what `test_bt_eval_e2e.jl`'s "env_path
+    # isolation" testset intermittently reports as "(result not live — worker
+    # gone and no snapshot)".
+    #
+    # Keying this registry by `prefix` instead (so both envs keep a bridge) was
+    # tried on 2026-08-17 and REVERTED: it regressed `eval_embed_park` and
+    # `two_tab` into a flood of `Cannot read properties of null (reading
+    # 'parentNode')` rejections in the browser. A genuinely restarted worker's
+    # old bridge then survives, and its host-side wiring keeps relaying to a tab
+    # whose DOM is gone — the retire path below (`clear_bridge_wiring!`) is what
+    # stops that today. Whether prefix-keying actually fixes the env_path testset
+    # was NOT established (the runs meant to show it never executed), so treat
+    # that as an open question, not a known-good design.
+    #
+    # Doing this properly needs the channel header to carry `env_path`, so "same
+    # project + same env, new prefix" (a restart ⇒ retire) can be told from
+    # "different env" (⇒ coexist), and the retire path kept for the former.
+    # Until then one bridge per project stands, and the two-env case is the
+    # known cost.
+    #
+    # The get-and-install is done under `state.lock` so it's atomic w.r.t.
+    # `teardown_eval_bridge!` (which mutates state.eval_workers under the same lock) —
+    # otherwise a concurrent teardown could delete the entry between our read and
+    # write. The heavy cleanup (fail_pending, asset-host close, wiring clear) is
+    # disjoint by prefix from the fresh bridge, so we do it AFTER releasing the
+    # lock rather than holding it across those other locks.
+    eb, to_fail, to_retire = @lock state.lock let
+        existing = get(state.eval_workers, project_id, nothing)
+        if existing !== nothing && existing.prefix == prefix
+            @info "eval worker reconnected" project_id prefix
+            @lock existing.wlock begin; existing.ws = ws; end
+            (existing, existing, nothing)          # fail its orphaned pending below
+        else
+            fresh = make_eval_bridge(prefix, project_id, ws, Bonito.HTTPAssetServer(state.srv))
+            state.eval_workers[project_id] = fresh
+            @info "eval bridge connected — raw bridge installed" project_id prefix
+            (fresh, nothing, existing)             # retire the old (different-prefix) bridge below
+        end
+    end
+    to_fail === nothing ||
+        fail_pending!(to_fail, "eval bridge reconnected; in-flight request dropped")
+    if to_retire !== nothing
+        @info "eval bridge displaced by a new dial on the same project (worker restart, OR a second env_path — see the note above)" project_id old_prefix = to_retire.prefix new_prefix = prefix
+        # Old bridge is (usually) a dead worker process — fail orphans, drop its
+        # asset host, and clear its host-side wiring so the fresh bridge
+        # re-attaches cleanly and the old one stops relaying to this tab.
+        fail_pending!(to_retire, "eval bridge replaced by a new worker; in-flight request dropped")
+        try
+            close(to_retire.asset_host)
+        catch e
+            @warn "eval bridge: asset_host close failed during worker-replace" exception = (e, catch_backtrace()) prefix = to_retire.prefix
+        end
+        clear_bridge_wiring!(to_retire)
+    end
+
+    # Worker→browser writes are DECOUPLED from this relay loop. The loop also
+    # delivers control REPLIES (asset_read / asset_url), so a slow or CPU-bound
+    # browser (WGLMakie, or headless software-WebGL) that drains its socket slowly
+    # would otherwise block the loop on `write(rc, …)` and starve those replies →
+    # 30s `call_ctrl` timeouts ("asset_read timed out" / stuck "loading…"). Data
+    # frames go onto a bounded queue drained by a dedicated `relay_writer`; the
+    # loop stays responsive to control frames regardless of browser speed. The
+    # bound also back-pressures a runaway stream (a full queue blocks the loop —
+    # degrading to the old behavior, never worse) so it can't grow without bound.
+    outbound = Channel{Vector{UInt8}}(2048)
+    writer = Base.errormonitor(@async relay_writer(eb, outbound))
+    try
+        for msg in ws
+            # Per-frame guard: a single malformed/raising frame must NOT tear down
+            # the whole relay (which would strand every pending control reply).
+            try
+                data = msg isa AbstractVector{UInt8} ? msg : Vector{UInt8}(codeunits(String(msg)))
+                relay_frame!(eb, outbound, data)
+            catch e
+                @warn "eval bridge: dropping bad frame" exception = (e, catch_backtrace())
+            end
+        end
+    catch e
+        is_peer_gone(e) ||
+            @warn "eval bridge relay loop ended" exception = (e, catch_backtrace())
+    finally
+        close(outbound)   # stop the writer task
+        # Channel gone. Fail in-flight requests (no reply can arrive over it) and
+        # mark the bridge disconnected so `call_ctrl` fails fast instead of
+        # hanging the full timeout. We DON'T tear the bridge down here: its
+        # lifetime is the eval worker's Julia session, not this channel. The
+        # worker's `dial_loop` redials (same prefix → the reconnect branch swaps
+        # the channel back in, routes + registered apps intact). Teardown happens
+        # only with the worker session — see `teardown_eval_bridge!`. The identity
+        # guard avoids clobbering a channel a concurrent reconnect swapped in.
+        fail_pending!(eb, "eval bridge channel dropped; awaiting redial")
+        @lock eb.wlock begin
+            eb.ws === ws && (eb.ws = nothing)
+        end
+    end
+    return
+end
+
+# Clear a bridge's host-side wiring: its `attach_bridge_host!` attach-once guard
+# — so a later bridge (same tab) re-attaches cleanly instead of
+# short-circuiting on a stale attach tag.
+function clear_bridge_wiring!(eb::EvalBridge)
+    @lock eb.pc_lock begin
+        empty!(eb.page_conns)
+        empty!(eb.tab_prefix)
+    end
+    # A retired bridge's parked frames belong to a dead worker session — drop them.
+    @lock eb.parked_lock begin
+        empty!(eb.parked)
+        eb.parked_bytes = 0
+    end
+    return nothing
+end
+
+# Tear an eval bridge down — tied to the eval worker's Julia SESSION lifecycle,
+# NOT to its channel (a drop just awaits redial; see serve_eval_bridge's
+# finally). Called from the normal project/worker teardown (`stop_session!`,
+# worker disconnect): releases the proxied asset host, fails in-flight control
+# requests, drops host-side wiring, and evicts from state.eval_workers. Idempotent.
+function teardown_eval_bridge!(state::ServerState, project_id::AbstractString)
+    eb = @lock state.lock let
+        e = get(state.eval_workers, String(project_id), nothing)
+        e === nothing || delete!(state.eval_workers, String(project_id))
+        e
+    end
+    eb === nothing && return nothing
+    # A share host's bridge (shares.jl) leaves the login gate's list with it.
+    lock(() -> delete!(state.shares.bridges, eb.prefix), state.shares.lock)
+    fail_pending!(eb, "eval bridge torn down (worker session ended)")
+    # Don't swallow the asset-host close failure (T12) — mirror the sibling at
+    # the worker-replace path which logs it. The bridge is being retired either
+    # way, so we log and continue rather than abort the teardown.
+    try
+        close(eb.asset_host)
+    catch e
+        @warn "eval bridge: asset_host close failed during teardown" exception = (e, catch_backtrace()) prefix = eb.prefix
+    end
+    clear_bridge_wiring!(eb)
+    @info "eval bridge torn down with worker session" project_id prefix = eb.prefix
+    return nothing
+end
+
+# ── MCP-process control channel ─────────────────────────────────────────────
+# The BonitoMCP stdio server (NOT its Malt eval worker) connects this through
+# its worker's relay (`MCPChannel`, mcp_relay.jl) so the chat can interrupt an
+# in-flight bt_julia_eval per tool — without cancelling the whole agent turn.
+# Distinct from the eval bridge on purpose: the eval worker runs user code and
+# can be too busy to service a control frame; the MCP process never runs user
+# code and owns the reliable `Malt.interrupt` lever.
+#
+# Wire (JSON per message):
+#   server → mcp:  {"op": "interrupt_eval", "request_id", "env_path"?}
+#   mcp → server:  {"type": "interrupt_result", "request_id", "interrupted": n}
+# Replies route through the same `pending_rpcs` machinery as worker RPCs.
+
+function mcp_ctrl_for(state::ServerState, project_id::AbstractString)
+    channels = mcp_channels_for(state, project_id)
+    return isempty(channels) ? nothing : first(channels)
+end
+
+# A confirmed message in the active turn should release voluntary waits,
+# without cancelling the turn or interrupting the work it is waiting for.
+function wake_agent_waits!(model)
+    for ws in mcp_channels_for(model.state, model.project_id)
+        try
+            HTTP.WebSockets.send(ws, JSON.json(Dict{String,Any}("op" => "wake_waits")))
+        catch e
+            (e isa HTTP.WebSockets.WebSocketError || e isa Base.IOError ||
+             e isa EOFError || e isa WorkerLink.LinkDead ||
+             (e isa ErrorException && !isopen(ws))) || rethrow()
+            @warn "Could not wake agent waits after message delivery" project_id=model.project_id exception=(e, catch_backtrace())
+        end
+    end
+    return nothing
+end
+
+# The tool card may open before its MCP process connects or enters the wait.
+# Query after registering the waiter to cover input delivered in that gap.
+function dev_op(state::ServerState, ::Val{:wait_input}, args::AbstractDict, caller::String)
+    model = lock(() -> get(state.chat_models, caller, nothing), state.lock)
+    model === nothing && return false
+    s = shared(model)
+    id = String(get(args, "tool_id", ""))
+    return @lock s.lock let
+        any(e -> e isa PendingSend && e.status === :submitted && e.mode === :next &&
+                has_other_turn(s, e.span.turn),
+            s.pending_sends) && return true
+        # An older turn's wait cannot consume this turn's initial prompt as
+        # new input if its tool card has not been rendered yet.
+        # An overlapping prompt must not hide input from the earlier turn's
+        # wait. Its newer baseline includes the correction we need to notice.
+        baseline = minimum((e.span.nstore0 for e in s.pending_sends
+            if e isa PendingSend && e.status === :sent && e.span !== nothing); init = typemax(Int))
+        baseline == typemax(Int) && (baseline = 0)
+        input = false
+        for i in length(s.msgs_store):-1:(baseline + 1)
+            msg = s.msgs_store[i]
+            if msg isa MCPToolMsg && tool_key(msg) in ("bt_wait","bt_process","bt_sudo","bt_ssh") &&
+                    (isempty(id) || tool_id(msg) == id)
+                return input
+            end
+            msg isa UserMsg && (input = true)
+        end
+        return false
+    end
+end
+
+function handle_mcp_ctrl_frame!(state, ws, d, project_id, host_worker)
+    if get(d, "type", "") == "run_update"
+        # A run started, ended or was collected (eval_runs.jl). Unsolicited,
+        # like the stdout chunks; from an eval host it carries its worker.
+        run_update!(state, project_id, host_worker, d; control=ws)
+    elseif get(d, "type", "") == "process_update"
+        # One of the chat's processes started or stopped (processes.jl).
+        record_process!(state, project_id, host_worker, d)
+    elseif get(d, "type", "") == "eval_stream_chunk"
+        # Unsolicited live-stdout push (no request_id): route it to the
+        # matching running eval's tail, prefixed with the host's worker id
+        # so it cannot reach a local eval on the same env_path.
+        route_eval_chunk!(state, project_id,
+            (isempty(host_worker) ? "" : host_worker * "\0") * String(get(d, "route", "")), String(get(d, "chunk", "")))
+    elseif get(d, "type", "") == "dev_request" && isempty(host_worker)
+        # The other direction: the chat's MCP asking the server
+        # something — a debug chat's `bt_dev_*` tool (dev_api.jl), or
+        # any chat's `bt_julia_eval(worker = …)` (remote_eval.jl).
+        # Answered on its own task — a `memory` call with `deep=true`
+        # walks the object graph for seconds, a relayed eval waits for
+        # its checkpoint — and must not stall this read loop (which
+        # also carries eval stdout and interrupt replies).
+        @async handle_dev_request(state, ws, d; project_id)
+    else
+        rid = get(d, "request_id", nothing)
+        rid isa AbstractString && !isempty(rid) &&
+            deliver_rpc_response!(state, String(rid), Dict{String,Any}(d))
+    end
+    return nothing
+end
+
+"""
+    handle_dev_request(state, ws, frame; project_id = "")
+
+Answer a `{type:"dev_request", dev_id, op, args}` frame from a chat's MCP
+process (see `dev_api.jl` and `remote_eval.jl` for the ops; `project_id` is the
+chat the channel belongs to, which the remote-eval ops key their permission on).
+ALWAYS replies — an op that throws comes back as `ok:false` with the message,
+because the tool on the other side is waiting on a channel and a dropped reply
+would hang it until its timeout.
+"""
+function handle_dev_request(state::ServerState, ws, frame::AbstractDict;
+                            project_id::AbstractString = "")
+    id = get(frame, "dev_id", nothing)
+    reply = try
+        args = get(frame, "args", Dict{String,Any}())
+        # In the newest world: this task descends from the channel's read loop,
+        # which keeps the methods there were when the chat connected. An app
+        # loaded since (`load_app!`) would be invisible to it, its tools
+        # included, in every chat that was already open.
+        result = Base.invokelatest(dev_request, state, String(get(frame, "op", "")),
+                                   args isa AbstractDict ? args : Dict{String,Any}(),
+                                   String(project_id))
+        Dict{String,Any}("op" => "dev_reply", "dev_id" => id, "ok" => true, "result" => result)
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "dev request failed" op = get(frame, "op", "") exception = (e, catch_backtrace())
+        Dict{String,Any}("op" => "dev_reply", "dev_id" => id, "ok" => false,
+                         "error" => sprint(showerror, e))
+    end
+    try
+        HTTP.WebSockets.send(ws, JSON.json(reply))
+    catch e
+        @warn "dev reply send failed" exception = e
+    end
+    return nothing
+end
+
+# Sink registry key: one live eval tail per (chat, eval session). `route` is the
+# eval session's env_path as the MCP tags it (see BonitoMCP.stream_route),
+# matched against the tool's normalized env_path in `eval_stream_loop!`.
+eval_sink_key(project_id::AbstractString, route::AbstractString) = "$project_id\0$route"
+
+"""
+    route_eval_chunk!(state, project_id, route, chunk)
+
+Deliver a live stdout/stderr chunk (pushed by the MCP over its channel) to the
+matching running eval's tail loop. With no tail listening, a running run's last
+`keep` bytes wait for its card (`eval_stream_pending`); anything else is dropped.
+The live stream is a display side-channel; the agent's copy of the output rides
+the MCP tool response separately.
+"""
+function route_eval_chunk!(state::ServerState, project_id::AbstractString,
+                           route::AbstractString, chunk::AbstractString; keep::Int = 8192)
+    isempty(chunk) && return nothing
+    key = eval_sink_key(project_id, route)
+    ch = @lock state.lock let
+        sink = get(state.eval_stream_sinks, key, nothing)
+        # A running run whose card does not listen yet: kept for it.
+        held = get(state.eval_stream_pending, key, nothing)
+        sink === nothing && held !== nothing &&
+            (state.eval_stream_pending[key] = String(last(held * chunk, keep)))
+        sink
+    end
+    ch === nothing && return nothing
+    try
+        isopen(ch) && put!(ch, chunk)
+    catch e
+        # channel closed between the read and the put — the tail loop is gone
+        e isa InvalidStateException || rethrow()
+    end
+    return nothing
+end
+
+"""
+    interrupt_project_eval!(state, project_id; env_path=nothing, timeout=15.0) -> Int
+
+SIGINT the in-flight `bt_julia_eval` of `project_id`'s MCP server — the
+chat-side half of the per-tool ⊗ stop button. `env_path` scopes the
+interrupt to one eval session; `nothing` interrupts every in-flight eval of
+that chat's MCP process (it serves exactly one chat, so that's safe).
+Returns how many evals were interrupted. Throws when the project has no
+live control channel (the agent or its MCP server is not up yet).
+"""
+function interrupt_project_eval!(state::ServerState, project_id::AbstractString;
+                                 env_path::Union{AbstractString,Nothing} = nothing,
+                                 timeout::Real = 15.0)
+    channels = mcp_channels_for(state, project_id)
+    isempty(channels) && error(
+        "no MCP control channel for this chat — the agent's MCP server " *
+        "has no channel through its worker (not started yet)")
+    n = 0
+    errors = Exception[]
+    for ws in channels
+        try
+            n += interrupt_over_channel!(state, ws, env_path, timeout, "interrupt_eval")
+        catch e
+            e isa InterruptException && rethrow()
+            push!(errors, e)
+            @warn "interrupt on an MCP client failed" project_id exception=(e, catch_backtrace())
+        end
+    end
+    # The chat's evals on OTHER workers (remote_eval.jl) are stopped the same
+    # way, through their hosts' channels.
+    for (wid, hws) in eval_hosts_of(state, project_id)
+        try
+            n += interrupt_over_channel!(state, hws, env_path, timeout, "interrupt_eval on host $(wid)")
+        catch e
+            e isa InterruptException && rethrow()
+            @warn "interrupt on an eval host failed" project_id worker_id = wid exception = e
+        end
+    end
+    n == 0 && !isempty(errors) && throw(first(errors))
+    return n
+end
+
+"""
+    interrupt_run!(state, project_id, run; timeout = 15.0) -> Bool
+
+Stop one run, through the process that runs it: the chat's own MCP, or its eval
+host on the run's worker. False when that process says it had already finished.
+"""
+function interrupt_run!(state::ServerState, project_id::AbstractString, run::ChatRun;
+                        timeout::Real = 15.0)
+    ws = if run.control === nothing
+        channels = mcp_channels_for(state, project_id, run.worker_id)
+        length(channels) > 1 && error("the owning MCP client for $(run.id) has not announced its run yet")
+        isempty(channels) ? nothing : only(channels)
+    else
+        run.control.value
+    end
+    (ws === nothing || !isopen(ws)) && error("the process running $(run.id) is not connected")
+    return interrupt_over_channel!(state, ws, nothing, timeout, "interrupt $(run.id)";
+                                   run = run.id) > 0
+end
+
+function interrupt_over_channel!(state::ServerState, ws, env_path, timeout::Real, what::AbstractString;
+                                 run::Union{String,Nothing} = nothing)
+    rid, ch = register_rpc!(state)
+    resp = try
+        payload = Dict{String,Any}("op" => "interrupt_eval", "request_id" => rid)
+        env_path === nothing || (payload["env_path"] = String(env_path))
+        run === nothing || (payload["run"] = run)
+        HTTP.WebSockets.send(ws, JSON.json(payload))
+        take_pending!(state, ch, rid, timeout, what)
+    finally
+        unregister_rpc!(state, rid)   # T10: no leak on send failure
+        untrack_mcp_request!(ws, rid)
+    end
+    resp isa AbstractDict || error("$(what): unexpected response shape")
+    # The process tried and failed: its own words, not a timeout's guess.
+    haskey(resp, "error") && error("$(what): $(resp["error"])")
+    return Int(get(resp, "interrupted", 0))
+end
+
+# The name of the ONE MCP server we inject into every chat (see
+# `bring_up_project_session!`). Named in a const because two places need to agree
+# on it: the one that builds the server, and `refresh_injected_env` — which must
+# re-point OURS and leave any other entry alone.
+const INJECTED_MCP_NAME = "btworker"
+
+# The environment the server gives our MCP server: which chat it serves, and
+# whether it offers the dev tools. How it reaches the server is the worker's
+# business: the worker adds a grant to its local relay to the launch entry
+# (BonitoWorker's `inject_mcp_grant`), so neither a server address nor a secret
+# is handed to the MCP process or anything it spawns.
+function mcp_env(state::ServerState, project_id::AbstractString)
+    env = Dict{String,String}("BONITOAGENTS_PROJECT_ID" => String(project_id),
+        "BONITOAGENTS_INSTRUCTIONS" => agents_prompt_appendix(state, project_id),
+        "BONITOAGENTS_PROCESS_EPOCH" => managed_process_epoch(state,project_id))
+    # The ONE thing that turns on the `bt_dev_*` server-introspection tools in
+    # that chat's MCP process. Keyed on the project's persisted `dev_mode` flag,
+    # so a normal chat can never see them — not even one whose cwd happens to be
+    # the BonitoAgents checkout.
+    p = get(state.projects[], String(project_id), nothing)
+    p !== nothing && p.dev_mode && (env["BONITOAGENTS_DEV_TOOLS"] = "1")
+    return env
+end
+
+"""
+    refresh_injected_env(mcp, state, project_id) -> Vector{MCPServer}
+
+`mcp` with OUR injected server's environment re-derived from live state, ready
+to spawn. Everything else about it (command, args) and every other entry is left
+untouched.
+
+Called from `start!(::WorkerAgent)` so the environment an MCP process is spawned
+with always reflects the project as it is NOW, not as it was when the chat's
+`WorkerAgent` was constructed. `MCPServer` is immutable, so this rebuilds the
+one entry rather than mutating it.
+
+An empty `project_id` (no project matched the agent's worker + path) means there
+is nothing to derive from, so the existing environment is kept — overwriting it
+with `mcp_env(state, "")` would blank the project id the MCP needs to
+speak for its chat.
+"""
+function refresh_injected_env(mcp::AbstractVector{ACP.MCPServer}, state::ServerState,
+                              project_id::AbstractString)
+    (isempty(mcp) || isempty(project_id)) && return mcp
+    env = mcp_env(state, project_id)
+    return ACP.MCPServer[s.name == INJECTED_MCP_NAME ?
+                         ACP.MCPServer(s.name, s.command; args = s.args, env = env) : s
+                         for s in mcp]
+end
+
+# ── Host-side page-root wiring (per stable browser tab root session) ─────────
+#
+# On a tab's FIRST RemoteRef mount, open a per-page proxied root on the worker and
+# bind its prefix ↔ this tab: worker→browser DATA frames tagged with the prefix
+# route to this tab's connection (`page_conns`), and browser→worker frames route
+# back through a per-tab `PageForward`. Bound to the tab's STABLE root session
+# (owns the websocket), NOT the transient `dom_in_js` sub. Returns the page-root
+# prefix so the caller can `mount(root=prefix, …)`. Idempotent per tab (opens are
+# serialized under `open_lock`); the page-root is closed when the tab closes.
+function ensure_page_root!(root::Bonito.Session, eb::EvalBridge)
+    @lock eb.open_lock let
+        existing = lock(() -> get(eb.tab_prefix, root.id, nothing), eb.pc_lock)
+        if existing !== nothing
+            # Reconnect / re-mount on a known tab: rebind its connection + flush.
+            @lock eb.pc_lock begin; eb.page_conns[existing] = Bonito.connection(root); end
+            flush_parked!(eb, existing, Bonito.connection(root))
+            return existing
+        end
+        # Mint the worker-side page-root (round-trip; rare, so under open_lock so
+        # concurrent first-mounts on this tab share one root).
+        prefix = String(call_ctrl(eb, "open_root"))
+        @lock eb.pc_lock begin
+            eb.tab_prefix[root.id] = prefix
+            eb.page_conns[prefix] = Bonito.connection(root)
+        end
+        flush_parked!(eb, prefix, Bonito.connection(root))
+
+        # Rebind + flush on every (re)connect of this tab's websocket, so a
+        # reconnect can't leave the relay pointed at the dead connection.
+        Bonito.on(root.on_open) do _
+            @lock eb.pc_lock begin; eb.page_conns[prefix] = Bonito.connection(root); end
+            flush_parked!(eb, prefix, Bonito.connection(root))
+        end
+
+        # browser → worker: route THIS page-root's inbound frames to the worker,
+        # tagged with `prefix` (`PageForward`), so `serve_bridge` lands them in the
+        # right page-root inbox. `route_to_remote` matches `prefix` / `prefix/…`.
+        Bonito.register_remote!(root, Bonito.RemoteSession(prefix, PageForward(eb, prefix)))
+
+        Bonito.on(root.on_close) do _
+            Bonito.unregister_remote!(root, prefix)
+            @lock eb.pc_lock begin
+                delete!(eb.page_conns, prefix)
+                delete!(eb.tab_prefix, root.id)
+            end
+            @lock eb.parked_lock let
+                q = pop!(eb.parked, prefix, nothing)
+                q === nothing || (eb.parked_bytes -= sum(length, q; init = 0))
+            end
+            send_ctrl(eb, Dict{String,Any}("op" => "close_root", "root" => prefix))
+        end
+        return prefix
+    end
+end
+
+# Close a proxied worker subsession (best-effort): a `close` control frame. The
+# worker's `close_subsession` releases its asset (1→0 → `asset_remove`) and emits
+# `free_session(sub_id)` back through the bridge, dropping the browser-side
+# objects/listeners a removed mount left on shared observables.
+close_remote_sub!(eb::EvalBridge, sub_id::AbstractString) =
+    (send_ctrl(eb, Dict{String,Any}("op" => "close", "sub" => String(sub_id))); nothing)
+
+# ── RemoteRef: a worker-held eval RESULT as a composable value ───────────────
+# (spec: docs/superpowers/specs/2026-07-15-remote-ref-design.md)
+#
+# The worker PARKS the result value in a page-invisible holder session
+# (`RemoteProxy.remote_ref`) and the chat receives only its id. Rendering is
+# serialize-on-mount: `jsrender` asks the worker (the "mount" control op) to
+# render the held App into a FRESH, disposable render-subsession targeted at
+# our placeholder node — delivered as one atomic `UpdateSession` through the
+# relay (the page polls for the node, so the reply racing the DOM mount is
+# fine). Static-first: the placeholder shows `snapshot` (or a not-live note)
+# immediately and the UpdateSession REPLACES it — a dead bridge, an evicted
+# holder, a slow worker, or a lost reply all degrade to the same visible
+# static state. Nothing can hang.
+#
+# Ownership: each mount's LOCAL session owns its OWN render-sub — collapse
+# discards the local `dom_in_js` sub, its `on_close` closes the render-sub on
+# the worker (Julia-first deletion, so the page frees via `free_session`).
+# The holder is never touched by mount lifecycles, so collapse → re-expand
+# (fresh local session → fresh mount → fresh render-sub) can never be killed
+# by a stale close, and the page GC collecting an unmounted render-sub is
+# correct behavior.
+struct RemoteRef
+    bridge::Union{Nothing, EvalBridge}   # THIS worker incarnation; the id's prefix pins validity
+    session_id::String                   # worker-side holder session id ("prefix/uuid")
+    snapshot::String                     # static html fallback; "" = none yet
+    # Whether the viewer may close it: the ✕ frees the parked value for EVERY
+    # viewer, which is the owner's call in a chat and nobody's on a shared link.
+    closable::Bool
+end
+RemoteRef(bridge, session_id, snapshot) = RemoteRef(bridge, session_id, snapshot, true)
+
+function Bonito.jsrender(session::Bonito.Session, r::RemoteRef)
+    body = isempty(r.snapshot) ?
+        Bonito.DOM.div("(result not live — worker gone and no snapshot)"; class = "bt-tool-empty") :
+        HTML(r.snapshot)
+    eb = r.bridge
+    if eb === nothing || eb.ws === nothing
+        return Bonito.jsrender(session, Bonito.DOM.div(body; class = "bt-remote-ref"))
+    end
+    # A ✕ that CLOSES the app completely: unmount the live render AND evict the
+    # worker-side holder (frees the parked value — its observables, and for a plot
+    # the scene/GPU data). Reclaims memory on a heavy page of apps/plots; a later
+    # re-expand degrades to the static/"freed" state (the value is gone). `freed`
+    # is wired here (not in the async) so an early click is never lost; the async
+    # backfills the render-sub id it must also close.
+    freed = Bonito.Observable(false)
+    close_button = !r.closable ? nothing : Bonito.DOM.button("✕"; class = "bt-embed-close",
+        title = "Close this app and free its memory",
+        onclick = Bonito.js"(e) => { e.stopPropagation(); $(freed).notify(true); }")
+    # A mount replaces its target's children. Keep the owner's close control
+    # outside that target so it survives the first live render.
+    content = Bonito.DOM.div(body; class = "bt-remote-content")
+    node = Bonito.DOM.div(close_button, content; class = "bt-remote-ref")
+    node_id = Bonito.uuid(session, node)
+    content_id = Bonito.uuid(session, content)
+    render_sub = Ref{Union{Nothing,String}}(nothing)
+    Bonito.on(session, freed) do yes
+        yes || return
+        rs = render_sub[]
+        rs === nothing || close_remote_sub!(eb, rs)          # unmount the live render
+        send_ctrl(eb, Dict{String,Any}("op" => "evict", "sub" => r.session_id))   # free the holder value
+        isopen(session) && Bonito.evaljs(session, Bonito.js"""(() => {
+            const n = $(node);
+            if (n) n.innerHTML = '<div class="bt-tool-empty">app closed &amp; freed</div>';
+        })()""")
+    end
+    # Routing must live on the ROOT (owns the tab's websocket); `session` is the
+    # transient `dom_in_js` sub the tool body renders in. `ensure_page_root!`
+    # round-trips (open_root) so it runs inside the async mount, not in jsrender.
+    Base.errormonitor(@async try
+        prefix = ensure_page_root!(Bonito.root_session(session), eb)
+        sub = String(call_ctrl(eb, "mount"; sub = r.session_id, root = prefix, node = content_id))
+        render_sub[] = sub
+        Bonito.on(session, session.on_close) do _
+            close_remote_sub!(eb, sub)
+        end
+        # The local session closed, or the user hit ✕, while the round trip was in
+        # flight: the listeners above never fire, so close directly.
+        (Bonito.isclosed(session) || freed[]) && close_remote_sub!(eb, sub)
+    catch e
+        # The placeholder keeps showing the static state; a re-expand retries
+        # with a fresh mount.
+        @warn "RemoteRef mount failed (static fallback stays)" exception = (e,) session_id = r.session_id
+    end)
+    return Bonito.jsrender(session, node)
+end
+
+# Exact decode of the worker's result descriptor json — the ONE place the
+# eval wire format is recognized (`{"remote_ref": "prefix/uuid", "errored":
+# bool, "repr": …, "repr_mime": …}`; the `errored` field marks a parked
+# CapturedException). Returns nothing for anything else: the block is then plain
+# output text. This is boundary decoding of our own versioned format, not
+# content sniffing.
+function descriptor_dict(payload::AbstractString)
+    s = String(payload)
+    startswith(s, "{") || return nothing
+    d = try
+        JSON.parse(s)
+    catch e
+        e isa InterruptException && rethrow()
+        return nothing
+    end
+    d isa AbstractDict || return nothing
+    get(d, "remote_ref", nothing) isa AbstractString || return nothing
+    return d
+end
+
+function result_descriptor(payload::AbstractString)
+    d = descriptor_dict(payload)
+    d === nothing && return nothing
+    # (The descriptor also carries `repr`, the worker's own rendering. It is NOT
+    # used for the live card — see the note in `remote_result` for why the
+    # static snapshot stays empty. `result_repr` decodes it for the chat export.)
+    return (ref = String(d["remote_ref"]), errored = get(d, "errored", false) === true)
+end
+
+# The value as the descriptor echoes it for the agent: `repr` and what it is,
+# `repr_mime` ("text/html" for an app or plot, BonitoMCP's `summary_html`;
+# "text/plain" otherwise, and for descriptors from workers without the field).
+function result_repr(payload::AbstractString)
+    d = descriptor_dict(payload)
+    d === nothing && return nothing
+    r, mime = get(d, "repr", ""), get(d, "repr_mime", "text/plain")
+    return (text = r isa AbstractString ? String(r) : "",
+            mime = mime isa AbstractString ? String(mime) : "text/plain")
+end
+
+# Boundary decode of the eval wire's Bonito-version-mismatch marker, emitted by
+# BonitoMCP when the project env's Bonito is too old for the live-render bridge:
+# `{"bonito_upgrade":{"current","need","env","add"}}`. Returns nothing otherwise
+# (so a normal output block is untouched). Same boundary-decode discipline as
+# `result_descriptor` — our own versioned format, not content sniffing.
+function bonito_upgrade_descriptor(payload::AbstractString)
+    s = String(payload)
+    startswith(s, "{\"bonito_upgrade\"") || return nothing
+    d = try
+        JSON.parse(s)
+    catch e
+        e isa InterruptException && rethrow()
+        return nothing
+    end
+    (d isa AbstractDict && get(d, "bonito_upgrade", nothing) isa AbstractDict) || return nothing
+    u = d["bonito_upgrade"]
+    return (current = String(get(u, "current", "?")),
+            need    = String(get(u, "need", "?")),
+            env     = String(get(u, "env", "")),
+            add     = String(get(u, "add", "")))
+end
+
+# Build the RemoteRef from the persisted result payload (the final content
+# block). Current payloads are the JSON descriptor (see `result_descriptor`);
+# pre-RemoteRef history persisted the rendered html itself — which is exactly
+# a static snapshot, so it maps onto the same value with no live bridge.
+function remote_result(state::ServerState, payload::AbstractString, project_id::AbstractString)
+    desc = result_descriptor(payload)
+    desc === nothing && return RemoteRef(nothing, "", String(payload))
+    # The holder id is `Bonito.Session(parent).id`, "<bridge prefix>/<uuid>":
+    # its prefix names the bridge it lives on, which may be an eval host's on
+    # another worker (`bridge_for_ref`).
+    #
+    # The snapshot is deliberately EMPTY here, even though the descriptor
+    # carries the worker's `repr` and the "Static-first" note above describes
+    # showing it. Passing it through was tried on 2026-08-17 and backed out: for
+    # a display type `repr` is `RemoteProxy.summary_html`, i.e. the app's real
+    # markup — so the static placeholder would carry the very classes that
+    # `test_bt_eval_e2e.jl`'s "renders as a LIVE Bonito fragment" testset uses to
+    # tell a live mount from a text fallback ("A text-fallback repr would NOT
+    # carry that class"). Wiring the fallback up is a real improvement — a slow
+    # mount currently shows "(result not live)" where the value belongs — but it
+    # has to come WITH a liveness assertion a static snapshot cannot satisfy
+    # (the interactive-counter testset below is the shape that works), or it
+    # silently guts that coverage.
+    return RemoteRef(bridge_for_ref(state, project_id, desc.ref), desc.ref, "")
+end

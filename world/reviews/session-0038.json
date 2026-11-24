@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "The sea horizon is now clean in the before/after eye-level pair, and the island has turquoise shallows with foam and glints, at a frame median of about 2 ms. I judged this from the author's screenshots and perf.json only; I did not run the live game or the browser.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "In the overview shot the sea turns near-black navy toward the bottom of the frame. The shallows are pretty, but the open sea is a dark vignette rather than a lit sea. The traced check of the new sky, queued for release v2, was still not confirmed, and the glints and the horizon seen from eye level were never checked in the browser.",
+   "where": "media/s38/shallows-noon.png, lower half; plugins/shallows.jl",
+   "evidence": "media/s38/shallows-noon.png. The author's own notes list the traced look, the glints in the browser and the eye-level horizon in the browser as not checked.",
+   "suggestion": "Lighten the deep-water colour and fade a little haze into it, so the sea stays blue at the frame edge. Check the traced clip and the browser horizon before calling #171 fully done."
+  },
+  {
+   "severity": "low",
+   "what": "The 'before' half of cmp3.png still shows only a faint hatch at the horizon. The sawtooth is clearly gone on the right, but the proof is a small crop. It rests on tests/horizon.jl, whose ripple threshold of 0.03 is loose.",
+   "where": "media/s38/cmp3.png; tests/horizon.jl",
+   "evidence": "cmp3.png: the left half has a fine hatch near the far left, and the right half is clean.",
+   "suggestion": "Keep one full-width eye-level horizon screenshot from the live game as evidence for the next review."
+  },
+  {
+   "severity": "low",
+   "what": "The tester did not drive the shallows, glints or rain changes by hand. The full suite had 4 failures that passed when rerun, and the author attributed all four to flakiness without a root cause.",
+   "where": "world/tests/reports/session-0038.json; journal entry 38 (7)",
+   "evidence": "Journal: 63/67 in the full suite, with 4 passing alone.",
+   "suggestion": "Watch the follow-camera clear-view test. If it fails again, print the subject and the obstruction in its message."
+  }
+ ],
+ "addressed": true,
+ "response": "s39: [medium] the open sea from above: plugins/shallows.jl v6 extends the colour ring past 12 m with a lit mid blue (alpha 0.45-0.5) that fades out by 110 m, so the horizon stays the sky's. Same camera, same shower: media/s39-sea-before/overview.png vs media/s39-sea-after/overview.png, mean grey of the sea pixels in the top-left 0.239 -> 0.273, visibly blue instead of navy; tests/horizon.jl still passes. The traced check stays with release v2 (#169). [low] cmp3 crop/threshold: not revisited, the horizon test passed again. [low] flaky suite: #148 stays open for the root causes. Traced check (s39): media/s39-traced-overview.png, 128 samples at 10:30: the open sea is a deep lit blue around the turquoise shallows, no navy vignette."
+}

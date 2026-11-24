@@ -1,0 +1,1125 @@
+using Metal: metal_support
+using SpecialFunctions
+using FileCheck
+import Base.FastMath
+
+############################################################################################
+# codegen
+#
+# Verify that high-level math/integer operations lower to the expected AIR intrinsics. This
+# pins the *lowering* (which AIR intrinsic each operation emits), complementing the numerical
+# `execution` tests below. It guards both the operations handled by an explicit
+# `@device_override` here (the transcendentals) and the ones whose AIR intrinsic is emitted by
+# GPUCompiler rather than Metal.jl — `sqrt`/`fma`/`floor`/`ceil`/`trunc`/`round`, `abs`,
+# integer `min`/`max`, the 3-argument `min`/`max` fused to `air.min3`/`air.max3`, the bit
+# intrinsics, and the NaN-propagating float `min`/`max` — so a back-end change that stops
+# emitting them is caught here instead of silently regressing performance.
+#
+# Operations with an LLVM intrinsic (emitted by Julia, or by the overrides here) keep it in the
+# Julia-generated IR and only become `air.*` during machine-code generation, so those are
+# inspected through `Metal.code_air` (which lowers, downgrades, and disassembles). The ones
+# without an LLVM intrinsic call their `air.*` function directly, so `Metal.code_llvm` (no
+# metallib build needed) suffices.
+# Each function is spliced into the compiled closure via `@eval` so the call is a concrete,
+# specializable call (a captured `Function` would dispatch dynamically and never lower).
+
+# integer types paired with their AIR mangling: `iN` width suffix and `s`/`u` signedness.
+const INT_TYPES = [(Int8, "i8", "s"), (UInt8, "i8", "u"), (Int16, "i16", "s"),
+                   (UInt16, "i16", "u"), (Int32, "i32", "s"), (UInt32, "i32", "u"),
+                   (Int64, "i64", "s"), (UInt64, "i64", "u")]
+
+@testset "codegen" begin
+
+############################################################################################
+# floating-point
+
+# Group A: `Base.f(::Float32/::Float16)` -> `air.f.{f32,f16}`, and the fast-math variant
+# `FastMath.f_fast(::Float32)` -> `air.fast_f.f32`. Float16 `sin`/`cos` go through Float32
+# instead: the half builtins are inaccurate on M1-class GPUs (JuliaGPU/Metal.jl#985).
+FLOAT_A = [acos, acosh, asin, asinh, atan, atanh, cos, cosh,
+           exp, exp2, exp10, log, log2, log10, sin, sinh, tan, tanh]
+@testset "$f" for f in FLOAT_A
+    root = string(f)
+    fast = getfield(FastMath, Symbol(root, "_fast"))
+    half = f in (sin, cos) ? "f32" : "f16"
+    @eval begin
+        @test @filecheck begin
+            @check $("@air.$root.f32")
+            Metal.code_air(x -> $f(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check $("@air.$root.$half")
+            Metal.code_air(x -> $f(x), Tuple{Float16})
+        end
+        @test @filecheck begin
+            @check $("@air.fast_$root.f32")
+            Metal.code_air(x -> $fast(x), Tuple{Float32})
+        end
+    end
+end
+
+# Group B: precise `Base.f` (f32+f16) but the fast variant is `Metal.f_fast` (no FastMath).
+@testset "$root" for root in ("cospi", "sinpi", "tanpi")
+    f    = getfield(Base, Symbol(root))
+    fast = getfield(Metal, Symbol(root, "_fast"))
+    @eval begin
+        @test @filecheck begin
+            @check $("@air.$root.f32")
+            Metal.code_llvm(x -> $f(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check $("@air.$root.f16")
+            Metal.code_llvm(x -> $f(x), Tuple{Float16})
+        end
+        @test @filecheck begin
+            @check $("@air.fast_$root.f32")
+            Metal.code_llvm(x -> $fast(x), Tuple{Float32})
+        end
+    end
+end
+
+# Group C: Metal-specific functions (no `Base` equivalent), precise f32+f16 + fast f32.
+@testset "$root" for root in ("fract", "rint", "rsqrt")
+    f    = getfield(Metal, Symbol(root))
+    fast = getfield(Metal, Symbol(root, "_fast"))
+    @eval begin
+        @test @filecheck begin
+            @check $("@air.$root.f32")
+            Metal.code_air(x -> $f(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check $("@air.$root.f16")
+            Metal.code_air(x -> $f(x), Tuple{Float16})
+        end
+        @test @filecheck begin
+            @check $("@air.fast_$root.f32")
+            Metal.code_air(x -> $fast(x), Tuple{Float32})
+        end
+    end
+end
+
+# Group D: fast-only Metal helpers (`air.fast_*.f32`, no precise or f16 variant).
+@testset "$root" for root in ("ceil", "floor", "round", "trunc")
+    fast = getfield(Metal, Symbol(root, "_fast"))
+    @eval @test @filecheck begin
+        @check $("@air.fast_$root.f32")
+        Metal.code_air(x -> $fast(x), Tuple{Float32})
+    end
+end
+
+# two-argument float functions, each with a fast variant.
+@testset "atan2" begin
+    @eval begin
+        @test @filecheck begin
+            @check "@air.atan2.f32"
+            Metal.code_air((x, y) -> atan(x, y), Tuple{Float32,Float32})
+        end
+        @test @filecheck begin
+            @check "@air.atan2.f16"
+            Metal.code_air((x, y) -> atan(x, y), Tuple{Float16,Float16})
+        end
+        @test @filecheck begin
+            @check "@air.fast_atan2.f32"
+            Metal.code_air((x, y) -> $(FastMath.atan_fast)(x, y), Tuple{Float32,Float32})
+        end
+    end
+end
+@testset "pow" begin
+    @eval begin
+        @test @filecheck begin
+            @check "@air.pow.f32"
+            Metal.code_air((x, y) -> x^y, Tuple{Float32,Float32})
+        end
+        @test @filecheck begin
+            @check "@air.pow.f16"
+            Metal.code_air((x, y) -> x^y, Tuple{Float16,Float16})
+        end
+        @test @filecheck begin
+            @check "@air.fast_pow.f32"
+            Metal.code_air((x, y) -> $(FastMath.pow_fast)(x, y), Tuple{Float32,Float32})
+        end
+    end
+end
+@testset "powr" begin
+    @eval begin
+        @test @filecheck begin
+            @check "@air.powr.f32"
+            Metal.code_llvm((x, y) -> $(Metal.powr)(x, y), Tuple{Float32,Float32})
+        end
+        @test @filecheck begin
+            @check "@air.powr.f16"
+            Metal.code_llvm((x, y) -> $(Metal.powr)(x, y), Tuple{Float16,Float16})
+        end
+        @test @filecheck begin
+            @check "@air.fast_powr.f32"
+            Metal.code_llvm((x, y) -> $(Metal.powr_fast)(x, y), Tuple{Float32,Float32})
+        end
+    end
+end
+
+# Cube root has an accurate refinement and a division-free fast-math polynomial.
+@testset "cbrt" begin
+    precise_ir = sprint(io -> Metal.code_llvm(io, x -> cbrt(x), Tuple{Float32}))
+    fast_ir = sprint(io -> Metal.code_llvm(io, x -> (@fastmath cbrt(x)), Tuple{Float32}))
+    @test occursin("fdiv fast float", precise_ir)
+    @test !occursin(r"\bfdiv\b", fast_ir)
+    @test !occursin(r"\bdouble\b", precise_ir)
+    @test !occursin(r"\bdouble\b", fast_ir)
+end
+
+# individually-shaped float intrinsics.
+@testset "misc" begin
+    @eval begin
+        # fma: f16 is a front-end override; f32 is the native llvm.fma the back-end lowers
+        # (have_fma(::MetalCompilerTarget) is true).
+        @test @filecheck begin
+            @check "@air.fma.f16"
+            Metal.code_air((a, b, c) -> fma(a, b, c), Tuple{Float16,Float16,Float16})
+        end
+        @test @filecheck begin
+            @check "@air.fma.f32"
+            Metal.code_air((a, b, c) -> fma(a, b, c), Tuple{Float32,Float32,Float32})
+        end
+        # sqrt: f16 is a front-end override; f32 (and the fast f32 form) come from the
+        # back-end's llvm.sqrt lowering.
+        @test @filecheck begin
+            @check "@air.sqrt.f16"
+            Metal.code_air(x -> sqrt(x), Tuple{Float16})
+        end
+        @test @filecheck begin
+            @check "@air.sqrt.f32"
+            Metal.code_air(x -> sqrt(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check "@air.fast_sqrt.f32"
+            Metal.code_air(x -> $(FastMath.sqrt_fast)(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check "@air.sincos.f32"
+            Metal.code_air(x -> sincos(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check "@air.sincos.f32"
+            Metal.code_air(x -> sincos(x), Tuple{Float16})
+        end
+        @test @filecheck begin
+            @check "@air.fast_sincos.f32"
+            Metal.code_air(x -> $(FastMath.sincos_fast)(x), Tuple{Float32})
+        end
+    end
+end
+
+# The transcendentals are emitted as LLVM intrinsics (on LLVMs that have them), with the fast
+# variants marked `afn`, so that LLVM can optimize them and `fastmath=true` relaxes them.
+@testset "LLVM intrinsics" begin
+    @eval begin
+        @test @filecheck begin
+            @check "call float @llvm.exp.f32"
+            Metal.code_llvm(x -> exp(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check "call afn float @llvm.exp.f32"
+            Metal.code_llvm(x -> $(FastMath.exp_fast)(x), Tuple{Float32})
+        end
+        # (intrinsics of newer LLVMs)
+        @test @filecheck begin
+            @check $(Base.libllvm_version >= v"19" ? "call float @llvm.tan.f32" : "@air.tan.f32")
+            Metal.code_llvm(x -> tan(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check $(Base.libllvm_version >= v"20" ? "call afn float @llvm.atan2.f32" :
+                                                "@air.fast_atan2.f32")
+            Metal.code_llvm((x, y) -> $(FastMath.atan_fast)(x, y), Tuple{Float32,Float32})
+        end
+        @test @filecheck begin
+            @check $(Base.libllvm_version >= v"20" ? "@llvm.sincos.f32" : "@air.sincos.f32")
+            Metal.code_llvm(x -> sincos(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check "@air.fast_exp.f32"
+            @check "@air.fast_sin.f32"
+            Metal.code_air(x -> exp(x) + sin(x), Tuple{Float32}; fastmath=true)
+        end
+        # constant arguments fold
+        @test @filecheck begin
+            @check_not "@air.exp"
+            Metal.code_air(() -> exp(1f0), Tuple{})
+        end
+    end
+
+    # LLVM rewrites some calls into others, which need lowering too, but must not introduce
+    # calls to the C library (e.g. `ldexpf`, `exp10f` or `tanf`), which Metal doesn't have.
+    @testset "$name" for (name, f, T) in (
+            ("pow(2, i)", i -> 2f0^Float32(i), Int32),
+            ("exp2(i)", i -> exp2(Float32(i)), Int32),
+            ("pow(10, x)", x -> 10f0^x, Float32),
+            ("pow(x, 2)", x -> x^2f0, Float32),
+            ("sin/cos", x -> @fastmath(sin(x) / cos(x)), Float32))
+        # (compilation rejects calls to unknown functions)
+        ir = sprint(io -> Metal.code_air(io, f, Tuple{T}))
+        @test !occursin("@llvm.", ir)
+    end
+end
+
+# floor/ceil/trunc/round moved from front-end `@device_override`s to the back-end's lowering
+# of the LLVM intrinsics Julia emits. `round` lowers to `air.rint` (round-to-nearest-even,
+# matching Julia's `RoundNearest`), not the ties-away `air.round` the old override emitted.
+@testset "rounding $root" for (root, fn) in
+        (("floor", floor), ("ceil", ceil), ("trunc", trunc), ("rint", round))
+    @eval begin
+        @test @filecheck begin
+            @check $("@air.$root.f32")
+            Metal.code_air(x -> $fn(x), Tuple{Float32})
+        end
+        @test @filecheck begin
+            @check $("@air.$root.f16")
+            Metal.code_air(x -> $fn(x), Tuple{Float16})
+        end
+    end
+end
+
+# NaN-propagating float min/max are lowered to air.fmin/air.fmax by GPUCompiler.
+@testset "float $name $T" for T in (Float32, Float16), (fn, name) in ((min, "fmin"), (max, "fmax"))
+    @eval @test @filecheck begin
+        @check $("@air.$name.f$(8*sizeof(T))")
+        Metal.code_air((x, y) -> $fn(x, y), Tuple{$T,$T})
+    end
+end
+
+# clamp and sign use the (correct) Base fallbacks now; they must not emit a phantom AIR
+# intrinsic (the dropped air.clamp/air.sign overrides — JuliaGPU/Metal.jl removed these).
+@testset "no phantom intrinsic" begin
+    @eval begin
+        @test @filecheck begin
+            @check_not "air.clamp"
+            Metal.code_air((x, lo, hi) -> clamp(x, lo, hi), Tuple{Float32,Float32,Float32})
+        end
+        @test @filecheck begin
+            @check_not "air.sign"
+            Metal.code_air(x -> sign(x), Tuple{Float32})
+        end
+    end
+end
+
+############################################################################################
+# integer
+
+# abs: signed only (Base.abs(::Unsigned) is the identity, no intrinsic) -> air.abs.s.iN
+@testset "abs $T" for (T, iN, sgn) in INT_TYPES
+    sgn == "s" || continue
+    @eval @test @filecheck begin
+        @check $("@air.abs.s.$iN")
+        Metal.code_air(x -> abs(x), Tuple{$T})
+    end
+end
+
+# 2-argument min/max -> air.{min,max}.{s,u}.iN
+@testset "$name $T" for (T, iN, sgn) in INT_TYPES, (fn, name) in ((min, "min"), (max, "max"))
+    @eval @test @filecheck begin
+        @check $("@air.$name.$sgn.$iN")
+        Metal.code_air((x, y) -> $fn(x, y), Tuple{$T,$T})
+    end
+end
+
+# 3-argument min/max -> air.{min,max}3.{s,u}.iN (GPUCompiler fuses the chained llvm intrinsics)
+@testset "$name 3-arg $T" for (T, iN, sgn) in INT_TYPES, (fn, name) in ((min, "min3"), (max, "max3"))
+    @eval @test @filecheck begin
+        @check $("@air.$name.$sgn.$iN")
+        Metal.code_air((x, y, z) -> $fn(x, y, z), Tuple{$T,$T,$T})
+    end
+end
+
+# bit intrinsics (no signedness suffix) -> air.{clz,ctz,popcount,reverse_bits}.iN
+@testset "$name $T" for (T, iN, sgn) in INT_TYPES,
+                        (fn, name) in ((leading_zeros, "clz"), (trailing_zeros, "ctz"),
+                                       (count_ones, "popcount"), (bitreverse, "reverse_bits"))
+    @eval @test @filecheck begin
+        @check $("@air.$name.$iN")
+        Metal.code_air(x -> $fn(x), Tuple{$T})
+    end
+end
+
+# cmp: LLVM 19+ folds Julia's `ifelse` chain into `llvm.{s,u}cmp`, which AIR lacks
+@testset "cmp $T" for (T, iN, sgn) in INT_TYPES
+    @eval @test @filecheck begin
+        @check_not "@llvm.{{[su]}}cmp"
+        @check $("icmp $(sgn)lt $iN")
+        Metal.code_air((x, y) -> cmp(x, y), Tuple{$T,$T})
+    end
+end
+
+# mul_hi: no LLVM intrinsic, so the @device_override here supplies air.mul_hi.{s,u}.iN
+@testset "mul_hi $T" for (T, iN, sgn) in INT_TYPES
+    @eval @test @filecheck begin
+        @check $("@air.mul_hi.$sgn.$iN")
+        Metal.code_llvm((x, y) -> $(Metal.mulhi)(x, y), Tuple{$T,$T})
+    end
+end
+
+end
+
+
+############################################################################################
+# execution
+#
+# Verify that the GPU results match the host over representative inputs.
+
+FLOAT_MATH_INTR_FUNCS_1_ARG = [
+    # Common functions
+    # saturate, # T saturate(T x) Clamp between 0.0 and 1.0
+    sign, # T sign(T x) returns 0.0 if x is NaN
+
+    # float math
+    acos, # T acos(T x)
+    asin, # T asin(T x)
+    asinh, # T asinh(T x)
+    atan, # T atan(T x)
+    atanh, # T atanh(T x)
+    ceil, # T ceil(T x)
+    cos, # T cos(T x)
+    cosh, # T cosh(T x)
+    cospi, # T cospi(T x)
+    exp, # T exp(T x)
+    exp2, # T exp2(T x)
+    exp10, # T exp10(T x)
+    abs, #T [f]abs(T x)
+    floor, # T floor(T x)
+    # ilogb, # Ti ilogb(T x)
+    log, # T log(T x)
+    log2, # T log2(T x)
+    log10, # T log10(T x)
+    round, # T round(T x)
+    sin, # T sin(T x)
+    sinh, # T sinh(T x)
+    sinpi, # T sinpi(T x)
+    sqrt, # sqrt(T x)
+    tan, # T tan(T x)
+    tanh, # T tanh(T x)
+    tanpi, # T tanpi(T x)
+    trunc, # T trunc(T x)
+]
+
+FLOAT_MATH_INTR_FUNCS_2_ARG = [
+    # Common function
+    # step, # T step(T edge, T x) Returns 0.0 if x < edge, otherwise it returns 1.0
+
+    # float math
+    atan, # T atan2(T x, T y) Compute arc tangent of y over x.
+    # fdim, # T fdim(T x, T y)
+    max, # T [f]max(T x, T y)
+    min, # T [f]min(T x, T y)
+    # fmod, # T fmod(T x, T y)
+    # frexp, # T frexp(T x, Ti &exponent)
+    # ldexp, # T ldexp(T x, Ti k)
+    # modf, # T modf(T x, T &intval)
+    hypot, # NOT MSL but tested the same
+]
+
+FLOAT_MATH_INTR_FUNCS_3_ARG = [
+    # Common functions
+    # mix, # T mix(T x, T y, T a) # x+(y-x)*a
+    # smoothstep, # T smoothstep(T edge0, T edge1, T x)
+    fma, # T fma(T a, T b, T c)
+    max, # T max3(T x, T y, T z)
+    # median3, # T median3(T x, T y, T z)
+    min, # T min3(T x, T y, T z)
+]
+
+INT_MATH_INTR_FUNCS_1_ARG = [
+    # integer math
+    abs,
+    leading_zeros,  # air.clz
+    trailing_zeros, # air.ctz
+    count_ones,     # air.popcount
+    bitreverse,     # air.reverse_bits
+]
+
+INT_MATH_INTR_FUNCS_2_ARG = [
+    # int math
+    # absdiff, # Tu absdiff(T x, T y)
+    # addsat, # T addsat(T x, T y)
+    # hadd, # T hadd(T x, T y)
+    max, # T max(T x, T y)
+    min, # T min(T x, T y)
+    Metal.mulhi, # T mulhi(T x, T y)
+    # rhadd, # T rhadd(T x, T y)
+    # rotate, # T rotate(T v, T i)
+    # subsat, # T subsat(T x, T y)
+]
+
+INT_MATH_INTR_FUNCS_3_ARG = [
+    # Common functions
+    # clamp, # T clamp(T x, T minval, T maxval)
+    # madhi, # T madhi(T a, T b, T c)
+    # madsat, # T madsat(T a, T b, T c)
+    max, # T max3(T x, T y, T z)
+    # median3, # T median3(T x, T y, T z)
+    min, # T min3(T x, T y, T z)
+]
+
+@testset "execution" begin
+
+@testset "float math" begin
+# 1-arg functions
+@testset "$(fun)()::$T" for fun in FLOAT_MATH_INTR_FUNCS_1_ARG, T in (Float32, Float16)
+    cpuarr = if fun in [log, log2, log10, sqrt]
+        rand(T, 4)
+    else
+        T[0.0, -0.0, rand(T), -rand(T)]
+    end
+
+    mtlarr = MtlArray(cpuarr)
+
+    mtlout = fill!(similar(mtlarr), 0)
+
+    function kernel(res, arr)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(arr[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = length(mtlout) kernel(mtlout, mtlarr)
+    @eval @test Array($mtlout) ≈ $fun.($cpuarr)
+end
+# 2-arg functions
+@testset "$(fun)()::$T" for T in (Float32, Float16), fun in FLOAT_MATH_INTR_FUNCS_2_ARG
+    N = 4
+    arr1 = randn(T, N)
+    arr2 = randn(T, N)
+    mtlarr1 = MtlArray(arr1)
+    mtlarr2 = MtlArray(arr2)
+
+    mtlout = fill!(similar(mtlarr1), 0)
+
+    function kernel(res, x, y)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(x[idx], y[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2)
+    @eval @test Array($mtlout) ≈ $fun.($arr1, $arr2)
+end
+# 3-arg functions
+@testset "$(fun)()::$T" for T in (Float32, Float16), fun in FLOAT_MATH_INTR_FUNCS_3_ARG
+    N = 4
+    arr1 = randn(T, N)
+    arr2 = randn(T, N)
+    arr3 = randn(T, N)
+
+    mtlarr1 = MtlArray(arr1)
+    mtlarr2 = MtlArray(arr2)
+    mtlarr3 = MtlArray(arr3)
+
+    mtlout = fill!(similar(mtlarr1), 0)
+
+    function kernel(res, x, y, z)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(x[idx], y[idx], z[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2, mtlarr3)
+    @eval @test Array($mtlout) ≈ $fun.($arr1, $arr2, $arr3)
+end
+end
+
+@testset "unique float math" begin
+@testset "$T" for T in (Float32, Float16)
+    let # acosh
+        arr = T[0, rand(T, 3)...] .+ T(1)
+        buffer = MtlArray(arr)
+        vec = acosh.(buffer)
+        @test Array(vec) ≈ acosh.(arr)
+    end
+
+    let # cbrt
+        specials = T[0, -0.0, Inf, -Inf, NaN, 1, -1, 8, -27, 1000,
+                     floatmax(T), -floatmax(T), floatmin(T), nextfloat(zero(T)), -nextfloat(zero(T))]
+        # Exercise every exponent and each subnormal normalization shift, including
+        # values on either side of the boundaries.
+        powers = T[ldexp(one(T), e) for e in
+                   exponent(nextfloat(zero(T))):exponent(floatmax(T))]
+        boundaries = vcat(prevfloat.(powers), powers, nextfloat.(powers))
+        arr = vcat(specials, boundaries, -boundaries,
+                   reinterpret.(T, rand(Base.uinttype(T), 1024)))
+        if T === Float32
+            # Inputs with the largest measured errors in the precise and fast paths.
+            hard = reinterpret(Float32, UInt32[0x000db5b0, 0x000db5b1, 0x000db5b2,
+                                               0x40fa9b03, 0x40fa9b04, 0x40fa9b05])
+            append!(arr, hard)
+            append!(arr, -hard)
+        end
+        got = Array(cbrt.(MtlArray(arr)))
+        expected = cbrt.(arr)
+        @test all(got[i] === expected[i] for i in eachindex(specials) if !isnan(specials[i]))
+        @test all(isnan, got[isnan.(arr)])
+        # Allow one representable step from the CPU result.
+        ulps(a, b) = abs(Int(reinterpret(Base.uinttype(T), a)) - Int(reinterpret(Base.uinttype(T), b)))
+        @test all(isnan(expected[i]) || ulps(got[i], expected[i]) <= 1 for i in eachindex(arr))
+        @test all(signbit.(got) .== signbit.(expected))
+        if T === Float32
+            # A Float64 reference distinguishes nearly half-ulp errors from a full ulp.
+            @test all(eachindex(arr)) do i
+                !isfinite(arr[i]) && return true
+                ref = cbrt(Float64(arr[i]))
+                abs(Float64(got[i]) - ref) <= 0.51 * Float64(eps(Float32(ref)))
+            end
+            fastgot = Array(map(x -> (@fastmath cbrt(x)), MtlArray(arr)))
+            @test all(eachindex(arr)) do i
+                x = arr[i]
+                if !isfinite(x) || iszero(x)
+                    return reinterpret(UInt32, fastgot[i]) == reinterpret(UInt32, x)
+                end
+                ref = cbrt(Float64(x))
+                abs(Float64(fastgot[i]) - ref) <= 2.5 * Float64(eps(Float32(ref)))
+            end
+            @test all(signbit.(fastgot) .== signbit.(arr))
+        end
+    end
+
+    let # rsqrt (Metal-specific, no Base equivalent; compare the GPU intrinsic to 1/sqrt)
+        arr = rand(T, 4)
+        d = MtlArray(arr)
+        o = similar(d)
+        function kernel(res, x)
+            idx = thread_position_in_grid().x
+            res[idx] = Metal.rsqrt(x[idx])
+            return nothing
+        end
+        Metal.@sync @metal threads = length(arr) kernel(o, d)
+        @test Array(o) ≈ 1 ./ sqrt.(arr)
+    end
+
+    let # fract (Metal-specific, no Base equivalent; compare the GPU intrinsic to mod(x, 1))
+        arr = T[0.0, -0.0, rand(T), -rand(T)]
+        d = MtlArray(arr)
+        o = similar(d)
+        function kernel(res, x)
+            idx = thread_position_in_grid().x
+            res[idx] = Metal.fract(x[idx])
+            return nothing
+        end
+        Metal.@sync @metal threads = length(arr) kernel(o, d)
+        @test Array(o) ≈ mod.(arr, 1)
+    end
+
+    let # sincos
+        N = 4
+        arr = rand(T, N)
+        bufferA = MtlArray(arr)
+        bufferB = MtlArray(arr)
+        function intr_test3(arr_sin, arr_cos)
+            idx = thread_position_in_grid().x
+            sinres, cosres = sincos(arr_cos[idx])
+            arr_sin[idx] = sinres
+            arr_cos[idx] = cosres
+            return nothing
+        end
+
+        Metal.@sync @metal threads = N intr_test3(bufferA, bufferB)
+        @test Array(bufferA) ≈ sin.(arr)
+        @test Array(bufferB) ≈ cos.(arr)
+    end
+
+    let # clamp
+        N = 4
+        in = randn(T, N)
+        minval = fill(T(-0.6), N)
+        maxval = fill(T(0.6), N)
+
+        mtlin = MtlArray(in)
+        mtlminval = MtlArray(minval)
+        mtlmaxval = MtlArray(maxval)
+
+        mtlout = fill!(similar(mtlin), 0)
+
+        function kernel(res, x, y, z)
+            idx = thread_position_in_grid().x
+            res[idx] = clamp(x[idx], y[idx], z[idx])
+            return nothing
+        end
+        Metal.@sync @metal threads = N kernel(mtlout, mtlin, mtlminval, mtlmaxval)
+        @test Array(mtlout) == clamp.(in, minval, maxval)
+    end
+
+    let #pow
+        N = 4
+        arr1 = rand(T, N)
+        arr2 = rand(T, N)
+        mtlarr1 = MtlArray(arr1)
+        mtlarr2 = MtlArray(arr2)
+
+        mtlout = fill!(similar(mtlarr1), 0)
+
+        function kernel(res, x, y)
+            idx = thread_position_in_grid().x
+            res[idx] = x[idx]^y[idx]
+            return nothing
+        end
+        Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2)
+        @test Array(mtlout) ≈ arr1 .^ arr2
+    end
+
+    let #pow with Integer exponent (Issue 552)
+        N = 4
+        arr2 = [-1, 0, 1, 2, 3, rand(-10:10, N)...]
+        arr1 = rand(T, length(arr2))
+        mtlarr1 = MtlArray(arr1)
+        mtlarr2 = MtlArray(arr2)
+
+        mtlout = fill!(similar(mtlarr1), 0)
+
+        function kernel(res, x, y)
+            idx = thread_position_in_grid().x
+            res[idx] = x[idx]^y[idx]
+            return nothing
+        end
+        Metal.@sync @metal threads = length(mtlout) kernel(mtlout, mtlarr1, mtlarr2)
+        @test Array(mtlout) ≈ arr1 .^ arr2
+    end
+
+    let #powr
+        N = 4
+        arr1 = rand(T, N)
+        arr2 = rand(T, N)
+        mtlarr1 = MtlArray(arr1)
+        mtlarr2 = MtlArray(arr2)
+
+        mtlout = fill!(similar(mtlarr1), 0)
+
+        function kernel(res, x, y)
+            idx = thread_position_in_grid().x
+            res[idx] = Metal.powr(x[idx], y[idx])
+            return nothing
+        end
+        Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2)
+        @test Array(mtlout) ≈ arr1 .^ arr2
+    end
+
+    let # log1p
+        arr = T.(collect(LinRange(nextfloat(-1.0f0), 10.0f0, 20)))
+        buffer = MtlArray(arr)
+        cpures = log1p.(arr)
+        @test Array(log1p.(buffer)) ≈ log1p.(arr)
+    end
+
+    let # erf
+        arr = T[-1.0, -0.5, 0.0, 1.0e-3, 1.0, 2.0, 5.5]
+        buffer = MtlArray(arr)
+        cpures = SpecialFunctions.erf.(arr)
+        @test Array(SpecialFunctions.erf.(buffer)) ≈ cpures
+    end
+
+    let # erfc
+        arr = T.(collect(LinRange(nextfloat(-3.0f0), 3.0f0, 20)))
+        buffer = MtlArray(arr)
+        cpures = SpecialFunctions.erfc.(arr)
+        @test Array(SpecialFunctions.erfc.(buffer)) ≈ cpures
+    end
+
+    let # erfinv
+        arr = T.(collect(LinRange(-1.0f0, 1.0f0, 20)))
+        buffer = MtlArray(arr)
+        cpures = SpecialFunctions.erfinv.(arr)
+        @test Array(SpecialFunctions.erfinv.(buffer)) ≈ cpures
+    end
+
+    let # expm1
+        arr = T.(collect(LinRange(nextfloat(-88.0f0), 88.0f0, 100)))
+        buffer = MtlArray(arr)
+        cpures = expm1.(arr)
+        @test Array(expm1.(buffer)) ≈ cpures
+    end
+
+
+    let # nextafter
+        function nextafter_test(X, y)
+            idx = thread_position_in_grid().x
+            X[idx] = Metal.nextafter(X[idx], y)
+            return nothing
+        end
+
+        # Check the code is generated as expected
+        outval = T(0)
+        function nextafter_out_test()
+            Metal.nextafter(outval, outval)
+            return
+        end
+
+        N = 4
+        arr = rand(T, N)
+
+        buffer1 = MtlArray(arr)
+        Metal.@sync @metal threads = N nextafter_test(buffer1, typemax(T))
+        @test Array(buffer1) == nextfloat.(arr)
+        Metal.@sync @metal threads = N nextafter_test(buffer1, typemin(T))
+        @test Array(buffer1) == arr
+
+        ir = sprint(io->(@device_code_llvm io=io dump_module=true @metal nextafter_out_test()))
+        @test occursin(Regex("@air\\.nextafter\\.f$(8*sizeof(T))"), ir)
+    end
+
+    let # hypot/abs of complex values, which lower to scalar hypot (JuliaGPU/Metal.jl#932)
+        N = 4
+        z1 = randn(Complex{T}, N)
+        z2 = randn(Complex{T}, N)
+        d1 = MtlArray(z1)
+        d2 = MtlArray(z2)
+
+        # like on the host, hypot of complex values returns a real
+        mtlout = MtlArray(zeros(T, N))
+        mtlflags = MtlArray(zeros(Bool, N))
+        function kernel(res, flags, x, y)
+            idx = thread_position_in_grid().x
+            h = hypot(x[idx], y[idx])
+            res[idx] = h
+            flags[idx] = h isa Real
+            return nothing
+        end
+        Metal.@sync @metal threads = N kernel(mtlout, mtlflags, d1, d2)
+        @test Array(mtlout) ≈ hypot.(z1, z2)
+        @test all(Array(mtlflags))
+
+        @test Array(abs.(d1)) ≈ abs.(z1)
+    end
+
+    # Borrowed from the Julia "Irrationals compared with Rationals and Floats" testset
+    @testset "Comparisons with $irr" for irr in (π, ℯ)
+        @eval function convert_test(res)
+            res[1] = $T($irr, RoundDown) < $irr
+            res[2] = $T($irr, RoundUp) > $irr
+            res[3] = !($T($irr, RoundDown) > $irr)
+            res[4] = !($T($irr, RoundUp) < $irr)
+            return nothing
+        end
+
+        res = MtlArray(zeros(Bool, 4))
+        Metal.@sync @metal convert_test(res)
+        @test all(Array(res))
+    end
+end
+end
+
+# Ops whose Metal intrinsic has IEEE edge-case behavior that differs from Julia's: Metal's
+# `sign` returns 0 for NaN (Julia returns NaN), `air.fmin`/`air.fmax` are non-NaN-propagating
+# (Julia's min/max propagate NaN), and `air.round` rounds half away from zero (Julia rounds
+# half to even). Metal.jl deliberately routes these through Base / a NaN-correcting back-end
+# lowering instead of the raw intrinsic, so the GPU result should match the host. Compare
+# against Julia's own result over NaN/±Inf/±0/tie inputs using `isequal` (NaN == NaN, and
+# -0.0 != +0.0) rather than hard-coding the expected values, so a regression to the raw-
+# intrinsic semantics is caught without baking that behavior into the test.
+@testset "edge-case semantics match Julia" begin
+@testset "$T" for T in (Float32, Float16)
+    let # sign
+        x = T[NaN, Inf, -Inf, T(0), T(-0.0), T(1.5), T(-1.5)]
+        d = MtlArray(x)
+        function kernel(o, a)
+            i = thread_position_in_grid().x
+            @inbounds o[i] = sign(a[i])
+            return
+        end
+        o = similar(d)
+        Metal.@sync @metal threads=length(x) kernel(o, d)
+        @test isequal(Array(o), sign.(x))
+    end
+
+    # min/max: NaN in either operand, both signed zeros, and ±Inf
+    xs = T[NaN, NaN, T(0),    T(-0.0), Inf,  -Inf, T(1), NaN,  T(-0.0)]
+    ys = T[T(1), NaN, T(-0.0), T(0),   T(1), T(1), NaN,  -Inf, T(0)]
+    @testset "$op" for op in (min, max)
+        dx, dy = MtlArray(xs), MtlArray(ys)
+        function kernel(o, a, b)
+            i = thread_position_in_grid().x
+            @inbounds o[i] = op(a[i], b[i])
+            return
+        end
+        o = similar(dx)
+        Metal.@sync @metal threads=length(xs) kernel(o, dx, dy)
+        @test isequal(Array(o), op.(xs, ys))
+    end
+
+    let # clamp
+        x  = T[NaN, Inf, -Inf, T(0.5), T(-0.5), T(2), T(-2)]
+        lo = fill(T(-1), length(x)); hi = fill(T(1), length(x))
+        dx, dlo, dhi = MtlArray(x), MtlArray(lo), MtlArray(hi)
+        function kernel(o, a, b, c)
+            i = thread_position_in_grid().x
+            @inbounds o[i] = clamp(a[i], b[i], c[i])
+            return
+        end
+        o = similar(dx)
+        Metal.@sync @metal threads=length(x) kernel(o, dx, dlo, dhi)
+        @test isequal(Array(o), clamp.(x, lo, hi))
+    end
+
+    let # round: Julia rounds half to even (via air.rint), not half away (air.round)
+        x = T[0.5, 1.5, 2.5, 3.5, -0.5, -1.5, -2.5, -3.5]
+        d = MtlArray(x)
+        function kernel(o, a)
+            i = thread_position_in_grid().x
+            @inbounds o[i] = round(a[i])
+            return
+        end
+        o = similar(d)
+        Metal.@sync @metal threads=length(x) kernel(o, d)
+        @test isequal(Array(o), round.(x))
+    end
+
+    T == Float32 && let # round_fast rounds half away from zero, keeping the sign of zero
+        x = T[0.5, 2.5, -0.5, -2.5, -0.3, -0.0, 0.49999997]
+        d = MtlArray(x)
+        function kernel(o, a)
+            i = thread_position_in_grid().x
+            @inbounds o[i] = Metal.round_fast(a[i])
+            return
+        end
+        o = similar(d)
+        Metal.@sync @metal threads=length(x) kernel(o, d)
+        @test isequal(Array(o), round.(x, RoundNearestTiesAway))
+    end
+
+    let # powers of 2 and 10, which LLVM rewrites
+        n = Int32.(-10:10)
+        d = MtlArray(n)
+        function kernel(o, a, z)
+            i = thread_position_in_grid().x
+            @inbounds e = typeof(z)(a[i])
+            @inbounds o[i] = (2^e, exp2(e), 10^(e/4))
+            return
+        end
+        o = MtlArray{NTuple{3,T}}(undef, length(n))
+        Metal.@sync @metal threads=length(n) kernel(o, d, zero(T))
+        # (exact once LLVM turns these into `ldexp`, otherwise within a few ulp)
+        @test all(isapprox.(first.(Array(o)), T(2).^T.(n); rtol=4eps(T)))
+        @test all(isapprox.(getindex.(Array(o), 2), exp2.(T.(n)); rtol=4eps(T)))
+        @test all(isapprox.(getindex.(Array(o), 3), T(10).^(T.(n)./T(4)); rtol=4eps(T)))
+    end
+end
+end
+
+@testset "int math" begin
+# 1-arg functions
+@testset "$(fun)()::$T" for fun in INT_MATH_INTR_FUNCS_1_ARG, T in (Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64)
+    cpuarr = T[0.0, -0.0, rand(T), -rand(T)]
+
+    mtlarr = MtlArray(cpuarr)
+
+    mtlout = fill!(similar(mtlarr), 0)
+
+    function kernel(res, arr)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(arr[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = length(mtlout) kernel(mtlout, mtlarr)
+    @eval @test Array($mtlout) ≈ $fun.($cpuarr)
+end
+# 2-arg functions
+@testset "$(fun)()::$T" for T in (Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64), fun in INT_MATH_INTR_FUNCS_2_ARG
+    N = 4
+    arr1 = rand(T, N)
+    arr2 = rand(T, N)
+    mtlarr1 = MtlArray(arr1)
+    mtlarr2 = MtlArray(arr2)
+
+    mtlout = fill!(similar(mtlarr1), 0)
+
+    function kernel(res, x, y)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(x[idx], y[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2)
+    @eval @test Array($mtlout) ≈ $fun.($arr1, $arr2)
+end
+@testset "cmp()::$T" for T in (Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64)
+    x = T[0, 1, 2, typemin(T), typemax(T)]
+    y = T[1, 1, 1, typemax(T), typemin(T)]
+    @test Array(cmp.(MtlArray(x), MtlArray(y))) == cmp.(x, y)
+end
+# 3-arg functions
+@testset "$(fun)()::$T" for T in (Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64), fun in INT_MATH_INTR_FUNCS_3_ARG
+    N = 4
+    arr1 = rand(T, N)
+    arr2 = rand(T, N)
+    arr3 = rand(T, N)
+
+    mtlarr1 = MtlArray(arr1)
+    mtlarr2 = MtlArray(arr2)
+    mtlarr3 = MtlArray(arr3)
+
+    mtlout = fill!(similar(mtlarr1), 0)
+
+    function kernel(res, x, y, z)
+        idx = thread_position_in_grid().x
+        res[idx] = fun(x[idx], y[idx], z[idx])
+        return nothing
+    end
+    Metal.@sync @metal threads = N kernel(mtlout, mtlarr1, mtlarr2, mtlarr3)
+    @eval @test Array($mtlout) ≈ $fun.($arr1, $arr2, $arr3)
+end
+end
+
+@testset "complex" begin
+    a = rand(ComplexF32,4)
+    bufferA = MtlArray(a)
+    vecA = Array(sqrt.(bufferA))
+    @test vecA ≈ sqrt.(a)
+
+    # Complex power
+    let
+        x = ComplexF32[1 + 2im, -3 + 4im, 2 - 0.5im]
+        dx = MtlArray(x)
+
+        @test Array(dx .^ 0.5f0) ≈ x .^ 0.5f0
+        @test Array(dx .^ ComplexF32(0.5, -0.25)) ≈ x .^ ComplexF32(0.5, -0.25)
+    end
+
+    # Division
+    let
+        N = 10
+
+        x = rand(ComplexF32, N)
+        y = rand(ComplexF32, N)
+
+        dx = MtlArray(x)
+        dy = MtlArray(y)
+
+
+        z = x ./ y
+        dz = dx ./ dy
+
+        @test Array(dz) ≈ z
+
+        # Over/Underflow tests
+        as = MtlArray([Complex{Float32}(2.0e20, 2.0e20), Complex{Float32}(1.0e-25, 1.0e-25)])
+        @test all(Array(as ./ as) .≈ Complex{Float32}(1.0, 0.0))
+    end
+
+    # Base performs these in double precision (JuliaGPU/Metal.jl#871)
+    let
+        x = ComplexF32[1 + 2im, -3 + 4im, 2 - 0.5im, 1f30 + 1im, 1f-30 - 1f-30im]
+        dx = MtlArray(x)
+        @test Array(inv.(dx)) ≈ inv.(x)
+        @test Array(3 ./ dx) ≈ 3 ./ x
+        @test Array(atan.(dx)) ≈ atan.(x)
+        @test Array(dx[1:3] .^ -2) ≈ x[1:3] .^ -2
+        @test Array(dx ./ dx) ≈ ones(ComplexF32, length(x))
+        dz = MtlArray([2f38 + 2f38im])
+        @test Array(dz ./ dz) == [1]
+    end
+end
+
+# Base methods that compute single-precision results in double precision, replaced by
+# GPUToolbox.Overlays.float64_overrides
+@testset "Float64-free fallbacks" begin
+    x = Float32[7, -7, 1, 6, 3, 514, 1f7, 270.00122, 45, 135.5, -89.99, 179.99, 1000]
+    y = Float32[2, 2, 0.1, 0.1, 0.3, 0.75, 3, 0.25, 7, -0.3, 1.5, 9, 0.1]
+    dx, dy = MtlArray(x), MtlArray(y)
+
+    # JuliaGPU/Metal.jl#972
+    @testset "$f" for f in (div, fld, cld, rem, mod, ÷)
+        @test Array(f.(dx, dy)) == f.(x, y)
+    end
+    @test Array(div.(dx, dy, RoundNearest)) == div.(x, y, RoundNearest)
+    @test Array(first.(divrem.(dx, dy))) == first.(divrem.(x, y))
+
+    # JuliaGPU/Metal.jl#973
+    @testset "$f" for f in (sind, cosd, tand, secd, cotd)
+        @test Array(f.(dx)) ≈ f.(x)
+    end
+    @test Array(last.(sincosd.(dx))) ≈ last.(sincosd.(x))
+    @test Array(sind.(MtlArray(Float16[30, 45, 180]))) ≈ sind.(Float16[30, 45, 180])
+
+    @test Array(first.(sincospi.(dy))) ≈ first.(sincospi.(y))
+    @test Array(cispi.(dy)) ≈ cispi.(y)
+
+    # mixed Float32/Int32 comparisons and integer powers
+    i = Int32[7, -7, 16777217, typemax(Int32), 0, 514, 10000000, 270, 45, 136, -90, 180, 1000]
+    di = MtlArray(i)
+    @test Array(dx .< di) == (x .< i)
+    @test Array(dx .== di) == (x .== i)
+    @test Array(Float16.(dx) .<= di) == (Float16.(x) .<= i)
+    @test Array(MtlArray(fill(-1f0, 3)) .^ MtlArray([16777217, 16777216, -3])) == [-1, 1, -1]
+end
+
+# Float16 sin/cos must match the CPU, which computes them in Float32 (JuliaGPU/Metal.jl#985).
+# The CPU and GPU Float32 results can differ in the last bit, which flips the rounding to
+# Float16 near ties, so allow 1 ulp.
+@testset "Float16 $f" for f in (sin, cos, first ∘ sincos, last ∘ sincos)
+    x = filter(isfinite, reinterpret(Float16, collect(typemin(UInt16):typemax(UInt16))))
+    y, ref = Array(f.(MtlArray(x))), f.(x)
+    @test all(abs.(Float32.(y) .- Float32.(ref)) .<= eps.(ref))
+    @test signbit.(y) == signbit.(ref)
+end
+
+# `@fastmath x^n` with an integer `n` emits `llvm.powi`, which AIR lacks. GPUCompiler expands
+# it into multiplies in the same order as the CPU does, so the results should be identical.
+@testset "fastmath integer power" begin
+    pow(x, n) = @fastmath x^n
+    pow_const(x) = @fastmath x^-5
+
+    xs = Float32[0, -0.0, 1, -1, 0.5, -1.5, 3.7, -3.7, Inf, -Inf, NaN]
+    ns = Int32[-7:7; typemin(Int32); typemax(Int32)]
+    x, n = vec([x for x in xs, n in ns]), vec([n for x in xs, n in ns])
+    @test isequal(Array(pow.(MtlArray(x), MtlArray(n))), pow.(x, n))
+    @test isequal(Array(pow_const.(MtlArray(xs))), pow_const.(xs))
+
+    # the CPU computes Float16 powers in Float32
+    h, m = Float16[0.5, -1.5, 3, -3, 1.25], Int32[-3, 2, 5, -4, 7]
+    @test Array(pow.(MtlArray(h), MtlArray(m))) ≈ pow.(h, m)
+end
+
+# Apple's back-end can't select a 64-bit multiplication with overflow check, as used by
+# `checked_mul` and thus `Rational` arithmetic (#570); GPUCompiler expands it using `mul_hi`.
+@testset "multiplication with overflow $T" for T in (Int64, UInt64)
+    edge = T[0, 1, 3, typemax(T), typemin(T), typemax(T) ÷ 2 + 1, T(2)^31, T(2)^32]
+    T <: Signed && append!(edge, T[-1, -3, -(T(2)^31), -(T(2)^32)])
+    x, y = vec([x for x in edge, y in edge]), vec([y for x in edge, y in edge])
+    mulo(x, y) = Base.Checked.mul_with_overflow(x, y)
+    @test Array(mulo.(MtlArray(x), MtlArray(y))) == mulo.(x, y)
+
+    @test Array(map(x -> x * 3 // 2, MtlArray(T[1, 4]))) == T[1, 4] .* 3 .// 2
+end
+
+# Apple's macOS 26 back-end gets the overflow flag of signed 16 to 64-bit additions and
+# subtractions wrong (e.g. `0 + -1` overflows), which GPUCompiler expands instead
+@testset "addition and subtraction with overflow $T" for T in (Int8, Int16, Int32, Int64, UInt32, UInt64)
+    edge = T[0, 1, 2, typemax(T), typemin(T), typemax(T) ÷ 2, typemax(T) ÷ 2 + 1]
+    T <: Signed && append!(edge, T[-1, -2, typemin(T) + 1])
+    x, y = vec([x for x in edge, y in edge]), vec([y for x in edge, y in edge])
+    for op in (Base.Checked.add_with_overflow, Base.Checked.sub_with_overflow)
+        @test Array(op.(MtlArray(x), MtlArray(y))) == op.(x, y)
+    end
+
+    T == Int64 && @test Array(map(q -> q - 1//2, MtlArray([1//3, 2//1]))) == [-1//6, 3//2]
+end
+
+# Julia 1.10 formats the messages of errors that `Rational` arithmetic can throw, which
+# crashed LLVM; GPUToolbox's `throw_overrides` throw them with a constant message instead
+@testset "rational arithmetic" begin
+    qs = [1//3, -5//7, 3//2, 7//-4, 0//1, 2^40//3]
+    f(q) = muladd(q, 2//3, -q)
+    @test Array(map(f, MtlArray(qs))) == f.(qs)
+    @test Array(map(-, MtlArray(qs))) == -qs
+end
+
+# Base compares rationals using the 128-bit products of their numerators and denominators,
+# which GPUToolbox computes in 64-bit words instead (#550)
+@testset "rational comparisons" begin
+    xs = Float32[0, -1, 1.4, 1.5, 1.6, Inf, NaN]
+    @test Array(map(x -> x < 3 // 2, MtlArray(xs))) == (xs .< 3 // 2)
+
+    qs = [1//3, -5//7, 3//2, typemax(Int)//2, 2^40//3, -typemax(Int)//(2^40 + 1)]
+    ns = [0, -1, 2, 2^35, typemax(Int), typemin(Int)]
+    fs = Float32[0.3, -0.7, 1.5, 2f0^62, 3.6f11, -Inf]
+    for op in (<, <=, cmp)
+        @test Array(op.(MtlArray(qs), MtlArray(fs))) == op.(qs, fs)
+        @test Array(op.(MtlArray(fs), MtlArray(qs))) == op.(fs, qs)
+    end
+    for op in (<, <=)
+        @test Array(op.(MtlArray(qs), MtlArray(reverse(qs)))) == op.(qs, reverse(qs))
+        @test Array(op.(MtlArray(qs), MtlArray(ns))) == op.(qs, ns)
+        @test Array(op.(MtlArray(ns), MtlArray(qs))) == op.(ns, qs)
+    end
+end
+
+end

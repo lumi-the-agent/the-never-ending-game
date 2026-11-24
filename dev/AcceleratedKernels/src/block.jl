@@ -1,0 +1,260 @@
+# Block-level device primitives shared by the algorithm families: reductions and scans of a
+# block's values, loads, scans and stores of a block's tile, and vector loads.
+
+# Tree-reduce the `@groupsize()[1]` values in `sdata` into `sdata[1]`; the group size must be a power
+# of two. All threads in the group must call it, after writing their value and synchronising.
+@inline function reduce_group!(@context, op, sdata, ithread)
+    # The group size is static, so this loop has a constant trip count; the conversion keeps the
+    # index arithmetic in `ithread`'s integer type.
+    s = typeof(ithread)(@groupsize()[1] >> 1)
+    while s > 0x0
+        if ithread < s
+            sdata[ithread + 0x1] = op(sdata[ithread + 0x1], sdata[ithread + s + 0x1])
+        end
+        @synchronize()
+        s >>= 0x1
+    end
+end
+
+
+# The sub-group width `W` for a block scan or reduction of `T` in blocks of `block_size` threads,
+# as a `Val`, or `Val(0)` for the local-memory one. Sub-groups must be enabled by the tuning,
+# linear (from KernelAbstractions 0.10), able to shuffle `T`, and `W ≤ block_size ≤ W²`, as one
+# sub-group combines the sub-groups' values.
+@static if isdefined(KernelAbstractions, :KernelInterface)
+    function subgroup_width(backend, ::Type{T}, block_size) where {T}
+        KI.supports_linear_subgroups(backend) && KI.supports_shuffle(backend, T) || return Val(0)
+        W = KI.sub_group_size(backend)
+        return ispow2(W) && W <= block_size <= W * W ? Val(W) : Val(0)
+    end
+else
+    subgroup_width(backend, T, block_size) = Val(0)
+end
+scan_subgroup_width(backend, ::Type{T}, block_size) where {T} =
+    tuning(scan_tuning, backend, T).subgroups ? subgroup_width(backend, T, block_size) : Val(0)
+reduce_subgroup_width(backend, ::Type{T}, block_size) where {T} =
+    tuning(reduce_tuning, backend, T).subgroups ? subgroup_width(backend, T, block_size) : Val(0)
+
+# The local memory of a block reduction or scan of `N` values (see `block_reduce` and
+# `block_exclusive_scan`): a value per sub-group, or per thread without sub-groups
+@inline block_slots(N, ::Val{W}) where {W} = W == 0 ? N : N ÷ W
+
+# Reduce the values `x` of the block's threads with `op` into the result of thread 0, with
+# `sdata` of `block_slots(@groupsize()[1], subgroups)` elements. All threads in the block must
+# call it. With a sub-group width `W` (see `reduce_subgroup_width`), each sub-group reduces its
+# values, and then the sub-groups' values (as CUB's `BLOCK_REDUCE_WARP_REDUCTIONS`), in the order
+# of the threads; else a tree in local memory, which needs `op` to be commutative. It does
+# not synchronize after reading `sdata`, so a block that reduces again must first.
+@inline function block_reduce(@context, op, sdata, x, ithread, ::Val{0})
+    sdata[ithread + 0x1] = x
+    @synchronize()
+    @inline reduce_group!(@context, op, sdata, ithread)
+    return sdata[0x1]
+end
+@static if isdefined(KernelAbstractions, :KernelInterface)
+@inline function block_reduce(@context, op, sdata, x, ithread, ::Val{W}) where {W}
+    N = @groupsize()[1]
+    x = KI.sub_group_reduce(op, x)
+    N == W && return x
+    nsg = N ÷ W
+    if ithread % W == 0x0
+        sdata[ithread ÷ W + 0x1] = x
+    end
+    @synchronize()
+    # (every sub-group combines the sub-groups' values, as some backends (PoCL) need the
+    # sub-groups of a block to run the same sub-group operations; thread 0's is the result)
+    return KI.sub_group_reduce(op, sdata[ithread % nsg + 0x1], nsg)
+end
+end
+
+
+# Exclusive scan of the values `x` of the block's threads, seeded with `seed`, with `sdata` of
+# `block_slots(block_size, subgroups)` elements: returns the thread's prefix and the block's
+# total. All threads in the block must call it. Operands are combined in element order (earlier
+# on the left), so `op` need not be commutative. With a sub-group width `W` (see
+# `scan_subgroup_width`), each sub-group scans its values, and then the sub-groups' totals (every
+# sub-group does, as PoCL needs the sub-groups of a block to run the same sub-group operations);
+# else it scans in local memory. A block that scans again must synchronize first. (It
+# keeps its bounds checks: without them, the carry pass of `slice_tiles_kernel!` took 101 instead
+# of 64 registers on an RTX 5080, and scanned a `(2, 10^7)` array along `dims=2` 72% slower.)
+@inline function block_exclusive_scan(@context, op, sdata, x, seed, block_size, ithread,
+                                      ::Val{0})
+    sdata[ithread + 0x1] = x
+    return block_exclusive_scan!(@context, op, sdata, seed, block_size, ithread)
+end
+
+@inline function block_exclusive_scan(@context, op, sdata, x, seed, block_size, ithread,
+                                      ::Val{W}) where {W}
+    lane = ithread % W
+    sg = ithread ÷ W
+    nsg = block_size ÷ W
+    incl = KI.sub_group_scan(op, x)
+    if lane == W - 1
+        sdata[sg + 0x1] = incl
+    end
+    @synchronize()
+    # (lanes beyond the sub-groups only affect results that are not used)
+    t = lane < nsg ? sdata[lane + 0x1] : seed
+    sg_excl = KI.sub_group_exclusive_scan(op, t, seed)
+    sg_prefix = KI.shfl(sg_excl, sg + 0x1)
+    block_total = KI.shfl(op(sg_excl, t), nsg)
+    prev = KI.shfl_up(incl, 1)
+    return (lane == 0 ? sg_prefix : op(sg_prefix, prev)), block_total
+end
+
+# The scan in local memory of one value per thread, `totals[ithread + 1]`, which it overwrites
+@inline function block_exclusive_scan!(@context, op, totals, seed, block_size, ithread)
+    # Up-sweep
+    offset = one(ithread)
+    d = block_size >> 0x1
+    while d > 0x0
+        @synchronize()
+        if ithread < d
+            ai = offset * (0x2 * ithread + 0x1) - 0x1
+            bi = offset * (0x2 * ithread + 0x2) - 0x1
+            totals[bi + 0x1] = op(totals[ai + 0x1], totals[bi + 0x1])
+        end
+        offset = offset << 0x1
+        d = d >> 0x1
+    end
+
+    @synchronize()
+    block_total = op(seed, totals[block_size])
+    @synchronize()
+    if ithread == 0x0
+        totals[block_size] = seed
+    end
+
+    # Down-sweep to an exclusive scan.
+    d = one(ithread)
+    while d < block_size
+        offset = offset >> 0x1
+        @synchronize()
+        if ithread < d
+            ai = offset * (0x2 * ithread + 0x1) - 0x1
+            bi = offset * (0x2 * ithread + 0x2) - 0x1
+            t = totals[ai + 0x1]
+            totals[ai + 0x1] = totals[bi + 0x1]
+            totals[bi + 0x1] = op(totals[bi + 0x1], t)
+        end
+        d = d << 0x1
+    end
+    @synchronize()
+
+    return totals[ithread + 0x1], block_total
+end
+
+
+# A block's tile of `block_size * ITEMS` elements in local memory, as in CUB's BlockLoad,
+# BlockScan and BlockStore: loaded and stored in striped order (thread `t` takes positions `t`,
+# `t + block_size`, ...), so that neighbouring threads access neighbouring elements, and scanned
+# in blocked order (thread `t` takes the run of positions `t * ITEMS` onwards). Position `p` of
+# the tile holds element `k = offset + p` of a sequence of `len` elements, `src[index(k)]`.
+# A kernel that only passes its functions on to these names their types (`op::OP`): Julia does
+# not specialize on a function argument that is not called, and CUDA.jl then specializes the
+# kernel again on every launch (about 150 ns).
+#
+# In local memory, the runs are `tile_stride` elements apart. The threads of a sub-group access
+# their runs at once, so with an even stride they hit the same few banks: 8 `Optional{Float32}`
+# partials, 64 bytes apart, made 11 wavefronts per access on CUDA (RTX 5080). An odd stride
+# pads each run by one element, as CUB pads its BlockExchange tiles, and spreads the runs over
+# the banks. Runs of primitive types of up to 4 bytes keep their length: at the default 8 items,
+# LLVM accesses them as 16-byte vectors, which conflict at most 2-way, and padding broke the
+# vectors' alignment. The scalar accesses took more registers, which cost an occupancy step on
+# Metal (M1) and AMDGPU (gfx1036) and made a `Float32` scan along `dims=1` 6-16% slower.
+
+# The stride of runs of `items` positions of type `T`, and the local-memory length of a tile
+tile_stride(::Type{T}, items) where {T} =
+    isprimitivetype(T) && sizeof(T) <= 4 ? items : items | 1
+tile_length(::Type{T}, block_size, items) where {T} = block_size * tile_stride(T, items)
+
+# The local-memory index of position `p` of a tile of `T`
+@inline function tile_slot(::Type{T}, p, items) where {T}
+    return (tile_stride(T, items) == items ? p : p + p ÷ items) + 0x1
+end
+
+# Load `lift(seed, load(src[index(k)]))` into the tile, and `seed` past the sequence's end
+Base.@propagate_inbounds function tile_load!(tile, src, load, seed, index, offset, len, ithread,
+                                             block_size, ::Val{ITEMS}) where {ITEMS}
+    j = 0
+    while j < ITEMS
+        p = j * block_size + ithread
+        k = offset + p
+        tile[tile_slot(eltype(tile), p, ITEMS)] = k < len ? lift(seed, load(src[index(k)])) : seed
+        j += 1
+    end
+end
+
+# Store the tile's elements into `v[index(k)]`
+Base.@propagate_inbounds function tile_store!(v, tile, index, offset, len, ithread, block_size,
+                                              ::Val{ITEMS}) where {ITEMS}
+    j = 0
+    while j < ITEMS
+        p = j * block_size + ithread
+        k = offset + p
+        if k < len
+            store_partial!(v, index(k), tile[tile_slot(eltype(tile), p, ITEMS)])
+        end
+        j += 1
+    end
+end
+
+# Scan each thread's run in place, as CUB's ThreadScan, and return its total for the block scan
+Base.@propagate_inbounds function thread_scan!(op, tile, seed, ithread,
+                                               ::Val{ITEMS}) where {ITEMS}
+    run = ithread * tile_stride(eltype(tile), ITEMS)
+    acc = seed
+    k = 0
+    while k < ITEMS
+        acc = op(acc, tile[run + k + 0x1])
+        tile[run + k + 0x1] = acc
+        k += 1
+    end
+    return acc
+end
+
+# Combine the thread's scanned run with its `prefix` from the block scan, into the run's
+# inclusive or exclusive scan; with a `carry`, that is combined on the left of each result.
+Base.@propagate_inbounds function tile_prefix!(op, tile, prefix, carry, seed, inclusive,
+                                               ithread, ::Val{ITEMS}) where {ITEMS}
+    run = ithread * tile_stride(eltype(tile), ITEMS)
+    prev = seed
+    k = 0
+    while k < ITEMS
+        r = tile[run + k + 0x1]
+        x = op(prefix, inclusive ? r : prev)
+        tile[run + k + 0x1] = isnothing(carry) ? x : op(carry, x)
+        prev = r
+        k += 1
+    end
+end
+
+
+# Aligned load of `W` consecutive elements as one LLVM vector (`load <W x T>, align W*sizeof(T)`).
+# Julia 1.12 (LLVM 17+) passes `LLVMPtr` as an opaque `ptr`; older versions pass it as `i8*`,
+# which needs a bitcast to the vector pointer type.
+@generated function vload(::Val{W}, ptr::Core.LLVMPtr{T, AS}) where {W, T, AS}
+    lt = T === Float32 ? "float" : T === Float64 ? "double" : "i$(8 * sizeof(T))"
+    vt = "<$W x $lt>"
+    align = W * sizeof(T)
+    ir = @static if VERSION >= v"1.12-"
+        """
+        %res = load $vt, ptr addrspace($AS) %0, align $align
+        ret $vt %res
+        """
+    else
+        """
+        %ptr = bitcast i8 addrspace($AS)* %0 to $vt addrspace($AS)*
+        %res = load $vt, $vt addrspace($AS)* %ptr, align $align
+        ret $vt %res
+        """
+    end
+    return quote
+        $(Expr(:meta, :inline))
+        Base.llvmcall($ir, NTuple{W, Core.VecElement{T}}, Tuple{Core.LLVMPtr{T, AS}}, ptr)
+    end
+end
+
+# Fold a vector into the thread-local accumulator. `W` is known at compile time.
+@inline fold_vector(f, op, acc, v::NTuple{W, Core.VecElement}) where {W} =
+    foldl(op, ntuple(k -> f(@inbounds v[k].value), Val(W)); init = acc)

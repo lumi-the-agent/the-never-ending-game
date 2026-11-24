@@ -1,0 +1,26 @@
+{"session": 50,
+ "summary": "I played the Jump-in card, the 'Things to try' panel, the Messages panel and the watering camera in the sandbox. Two problems are real: the Messages panel cuts the newest message mid-sentence and says Sprout has no voice although the voice exists, and the watering camera did not stay on Sprout while it watered. Of the three suite failures, the thought bubble reproduces every time and the other two passed alone.",
+ "failures": [
+  {"what": "The 'Messages to you' panel cuts the newest message mid-sentence, and the message is stale",
+   "steps": "Open the sandbox dashboard and read 'Messages to you' (the latest world/outbox message, 46 words, 236 characters).",
+   "expected": "A message that fits the 5 panel lines (about 45 words) and is true now.",
+   "actual": "The panel ends with 'It's on my' and never shows 'wish list now'. The message also says 'I have no voice yet!', but world/site/voice/hello.mp3 exists and the journal says Sprout got a voice at 23:51.",
+   "screenshot": "world/tests/shots/s50-jumpin-2s.png"},
+  {"what": "The watering camera moment did not put the camera on Sprout while it watered",
+   "steps": "In the sandbox: Sprout awake at 11:00, goal :tend with the garden's next_tend reset to 0. After Sprout reached the gate (goal :tend, arrived), poll AUTO_SUBJECT for up to 10 s (test 'While Sprout waters the patch the follow camera watches Sprout').",
+   "expected": "The follow camera watches Sprout at the gate while it waters, as the journal's 00:09 entry says.",
+   "actual": "The camera stayed on another creature (subject id 4, then 9 in two runs). The watering lasts only TEND_TIME = 10 s, and the follow camera holds its previous subject for 6 s (SUBJECT_HOLD). In the second run the goal had become :tag before the camera switched. This is a plausible cause, not a confirmed one.",
+   "screenshot": "world/tests/shots/s50-garden-moment.png"},
+  {"what": "The thought bubble does not show (suite failure, reproduced alone)",
+   "steps": "live_tests('Sprout thinks about'): doing todo 'planting a vegetable patch behind the cottage', follow camera on an awake Sprout, wait 2 s.",
+   "expected": "The cloud with the todo in a few words is shown over Sprout's head.",
+   "actual": "The text is correct but thought_shown is false. It failed on both runs.",
+   "screenshot": "world/tests/shots/builder_thought.png"},
+  {"what": "Two suite tests are flaky with sleepers and busy critters (berry race: 'no bush with two critters near it'; lonely Sprout: 'Sprout does not sit with Gloop (sleep sleep)')",
+   "steps": "Run the full suite. Both pass when run alone.",
+   "expected": "The same result in the suite as alone.",
+   "actual": "They fail in the suite when Sprout and Gloop are asleep and the others are busy. The state left by earlier tests is the likely cause.",
+   "screenshot": ""}
+ ],
+ "tests_added": ["The latest message to the human fits the 5 lines of the Messages panel (about 200 characters)", "While Sprout waters the patch the follow camera watches Sprout (garden moment)", "Jump in: the key card is big at 2 s and shrinks to one line of keys by 8 s"]
+}

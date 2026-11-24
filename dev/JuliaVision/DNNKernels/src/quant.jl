@@ -1,0 +1,974 @@
+"""
+Int8 weights: W8A16, per-output-channel symmetric.
+
+Autoregressive decode is one token against the whole parameter set, so it reads
+every weight once per token and does one multiply-add with each. It is therefore
+bandwidth-bound outright, and the only way to make it faster is to move fewer
+bytes. K2 Horizon 32B at fp16 is 69.6 GB per token, which on a device that reads
+at ~220 GB/s is a 306 ms floor no kernel can beat. At int8 it is 34.8 GB and the
+floor is 158 ms.
+
+**Per output channel, symmetric, no zero point.** `scale[m] = max_k |W[m,k]|/127`
+and `q[m,k] = round(W[m,k]/scale[m])`, so a row's largest weight lands exactly on
+±127 and the dequantised value is `q * scale`. Per-channel rather than per-tensor
+because one outlier row would otherwise crush the resolution of every other row;
+symmetric rather than affine because a zero point costs a second read in the
+inner loop and weight distributions here are centred.
+
+Activations stay fp16 (W8A16). Quantising them too would halve the activation
+traffic as well, but activations are kilobytes against the weights' gigabytes,
+and an fp16 activation keeps the accumulation exact against the same reference.
+
+**Quantised on the DEVICE, at load.** The host loop is 33.5 G elements and takes
+minutes; three passes on the GPU take about a second, and the fp16 copy is freed
+as soon as its rows are packed, so peak memory is the largest single weight above
+the int8 total rather than both sets at once.
+
+**Stored as `UInt32`, four rows to a word, and that is not a detail.** What this
+device gives you depends on how many bytes each LANE loads, not on how many the
+wave does. Measured with a plain streaming read, 2 GiB:
+
+    element   elem/thread     GB/s
+    Int8               64    143.9
+    Int8              256    114.9
+    Float16            64    166.3
+    Float32            64    225.1
+    UInt32             64    221.8
+    UInt32            256    226.9
+
+A one-byte load per lane reaches 144 GB/s and a four-byte load reaches 227 — and
+227 GB/s is also exactly what llama.cpp gets out of this GPU. So the packed word
+holds four CONSECUTIVE OUTPUT ROWS, one thread unpacks it into four accumulators,
+and `x[k]` is a broadcast load every lane shares.
+"""
+
+struct QInt8Matrix{Q,S}
+    q::Q            # (cld(M,4), K) UInt32: four consecutive rows per word
+    scale::S        # (M,)   Float32, one per output channel
+    m::Int          # true row count; `q` is padded up to a multiple of four
+end
+
+"""
+Packed INT8 weight in Comfy's ConvRot basis.
+
+`q` has the same four-output-row `UInt32` packing as [`QInt8Matrix`](@ref).
+The only semantic difference is that the right operand is transformed by the
+normalized regular Hadamard matrix, independently in `group_size`-wide blocks,
+before multiplication. The representation and kernels are backend-independent.
+"""
+struct ConvRotQInt8Matrix{Q,S}
+    q::Q
+    scale::S
+    m::Int
+    group_size::Int
+end
+
+Base.size(A::ConvRotQInt8Matrix) = (A.m, size(A.q, 2))
+Base.size(A::ConvRotQInt8Matrix, i::Integer) = i == 1 ? A.m : size(A.q, i)
+Base.eltype(::ConvRotQInt8Matrix) = Float16
+Base.ndims(::ConvRotQInt8Matrix) = 2
+
+"""Host view of a safetensors INT8 `[M,K]` matrix (stored by Julia as `(K,M)`)."""
+struct ConvRotQInt8HostMatrix{Q,S}
+    q::Q
+    scale::S
+    group_size::Int
+end
+
+Base.size(A::ConvRotQInt8HostMatrix) = (size(A.q, 2), size(A.q, 1))
+Base.size(A::ConvRotQInt8HostMatrix, i::Integer) = size(A)[i]
+Base.eltype(::ConvRotQInt8HostMatrix) = Float16
+Base.ndims(::ConvRotQInt8HostMatrix) = 2
+
+"""Host view of Comfy's packed asymmetric W4A8+ConvRot matrix."""
+struct W4A8ConvRotHostMatrix{Q,R,S,C}
+    q::Q                    # checkpoint `[M,K/2]`, Julia `(K/2,M)`
+    s_rel::R                # E4M3FN bits, checkpoint `[M,K/group]`
+    s_channel::S            # Float32, one per output row
+    codebook::C             # Float32[16]
+    group_size::Int
+    convrot_group_size::Int
+end
+
+Base.size(A::W4A8ConvRotHostMatrix) = (size(A.q, 2), 2size(A.q, 1))
+Base.size(A::W4A8ConvRotHostMatrix, i::Integer) = size(A)[i]
+Base.eltype(::W4A8ConvRotHostMatrix) = Float16
+Base.ndims(::W4A8ConvRotHostMatrix) = 2
+
+Base.size(A::QInt8Matrix) = (A.m, size(A.q, 2))
+Base.size(A::QInt8Matrix, i::Integer) = i == 1 ? A.m : size(A.q, i)
+Base.eltype(::QInt8Matrix) = Float16          # what it dequantises to
+Base.ndims(::QInt8Matrix) = 2
+
+# A quantised weight is a pair of resident arrays rather than an AbstractArray
+# itself. `residentweights` still passes every weight through `toback`, so carry
+# that operation through the wrapper. Each component uses `toback`'s ordinary
+# backend-kind check and is therefore unchanged when it already lives there.
+toback(backend, A::QInt8Matrix) =
+    QInt8Matrix(toback(backend, A.q), toback(backend, A.scale), A.m)
+
+toback(backend, A::ConvRotQInt8Matrix) =
+    ConvRotQInt8Matrix(toback(backend, A.q), toback(backend, A.scale), A.m,
+                       A.group_size)
+
+# Rows per packed word. Fixed at four by `UInt32`; named so the arithmetic reads.
+const Q8ROWS = 4
+
+"""
+Output words one thread packs, which is how this kernel stops being a
+transpose done a byte at a time.
+
+The checkpoint stores `q` as `(K, M)` — `K` contiguous — and the GEMM wants
+`(M/4, K)` with the packed rows contiguous, so the two disagree on which axis
+is fast and SOMETHING has to cross that. A thread per output word with the
+word index fast reads four bytes `K` apart and, across a wave, sixty-four
+groups of those `4K` apart: one byte used of every cache line fetched, 48 MB of
+weight turning into ~6 GB of traffic. Qwen-Image 2.1's `12288 x 4096` measured
+**189.9 ms, 505 MB/s**.
+
+Giving each thread `GPT` CONSECUTIVE output words and making `k` the fast axis
+fixes both sides at once. The thread writes `GPT * 4` contiguous bytes, so at
+32 that is a full 128-byte line; and for each of the four bytes in a word,
+consecutive threads read consecutive `k`, so every read is coalesced too. Same
+kernel, same output bit for bit: **3.62 ms, 26.5 GB/s, 52x**.
+
+    GPT      8      16      32      64
+    ms    9.28    5.36    3.62    3.97
+"""
+const Q8PACK_WORDS = 32
+
+function checkpoint_q8pack_kernel!(q32, q, K::Int32,
+                                                     M::Int32, MG::Int32,
+                                                     ::Val{GPT}) where {GPT}
+    # A 2-D range, so recovering `k` and the word group costs no integer
+    # division by a runtime extent — which is its own 3x elsewhere in this
+    # package (see `attn_flash_cm_merge!`).
+    kk, gg = Tuple(KI.get_global_id())
+    # The bounds check `@kernel` used to insert. The `gg` axis has a workgroup of
+    # one and so divides; `kk` has 256 and `K` need not be a multiple of it, so
+    # the last workgroup ran past the end of the `k` axis. The `g < MG` test
+    # below covers the other axis and never covered this one.
+    kk <= K || return nothing
+    k = Int32(kk) - Int32(1)
+    gb = (Int32(gg) - Int32(1)) * Int32(GPT)
+    @inbounds for w in Int32(0):Int32(GPT - 1)
+        g = gb + w
+        if g < MG
+            word = UInt32(0)
+            Base.Cartesian.@nexprs 4 r -> begin
+                m = g * Int32(4) + Int32(r - 1)
+                if m < M
+                    byte = reinterpret(UInt8, q[k + Int32(1) + m * K])
+                    word |= UInt32(byte) << (8 * (r - 1))
+                end
+            end
+            q32[Int32(1) + g + k * MG] = word
+        end
+    end
+    return nothing
+end
+
+"""Upload and repack a Comfy `int8_tensorwise` ConvRot checkpoint matrix."""
+function convrotqint8(backend, q::AbstractMatrix{Int8}, scale;
+                      group_size::Integer=256)
+    K, M = size(q)
+    K % group_size == 0 || throw(DimensionMismatch(
+        "ConvRot group size $group_size does not divide K=$K"))
+    length(scale) in (1, M) || throw(DimensionMismatch(
+        "INT8 scale has $(length(scale)) entries for M=$M"))
+    dev = Mantle.todevice(backend)
+    g = Mantle.Graph(dev)
+    dq = Mantle.Buffer(dev, q)
+    ds = Mantle.Buffer(dev, Float32.(vec(scale)))
+    MG = cld(M, Q8ROWS)
+    packed = Mantle.Buffer(dev, UInt32, (MG, K))
+    Mantle.dispatch!(g, checkpoint_q8pack_kernel!,
+                     (packed, dq, Int32(K), Int32(M), Int32(MG), Val(Q8PACK_WORDS)),
+                     (K, cld(MG, Q8PACK_WORDS)); group = (256, 1),
+                     name = "checkpoint_q8pack")
+    runonce!(g)
+    # The int8 source is consumed by the pack and nothing reads it again.
+    # `free!` retires rather than destroys, so this does not have to wait.
+    Mantle.free!(dq)
+    ConvRotQInt8Matrix(packed, ds, M, Int(group_size))
+end
+
+toback(backend, A::ConvRotQInt8HostMatrix) =
+    convrotqint8(backend, A.q, A.scale; group_size=A.group_size)
+
+@inline function f8e4m3fn(x::UInt8)
+    sign = (x & 0x80) == 0 ? 1f0 : -1f0
+    exponent = Int32((x >> 3) & 0x0f)
+    mantissa = Int32(x & 0x07)
+    exponent == 0 && return sign * Float32(mantissa) * 0.001953125f0 # 2^-9
+    exponent == 15 && mantissa == 7 && return Float32(NaN)
+    sign * (1f0 + Float32(mantissa) * 0.125f0) * exp2(Float32(exponent - 7))
+end
+
+# `Q8PACK_WORDS` consecutive words a thread with `k` fast, for the reason
+# `checkpoint_q8pack_kernel!` gives: the destination is contiguous in the row
+# group and the source in `k`, so a thread per word with the group fast uses
+# one byte of every line it fetches.
+function w4a8_pack_kernel!(q32, q, srel,
+                                             codebook, K::Int32, M::Int32,
+                                             MG::Int32, GS::Int32, MGD::Int32,
+                                             GOFF::Int32, ::Val{GPT}) where {GPT}
+    kk, gg = Tuple(KI.get_global_id())
+    # The bounds check `@kernel` used to insert. The `gg` axis has a workgroup of
+    # one and so divides; `kk` has 256 and `K` need not be a multiple of it, so
+    # the last workgroup ran past the end of the `k` axis. The `g < MG` test
+    # below covers the other axis and never covered this one.
+    kk <= K || return nothing
+    k = Int32(kk) - Int32(1)
+    gb = (Int32(gg) - Int32(1)) * Int32(GPT)
+    @inbounds for w in Int32(0):Int32(GPT - 1)
+        rg = gb + w
+        if rg < MG
+            word = UInt32(0)
+            Base.Cartesian.@nexprs 4 r -> begin
+                m = rg * Int32(4) + Int32(r - 1)
+                if m < M
+                    packed = reinterpret(UInt8, q[(k ÷ Int32(2)) + Int32(1) + m * (K ÷ Int32(2))])
+                    code = iseven(k) ? (packed & 0x0f) : (packed >> 4)
+                    sr = f8e4m3fn(srel[(k ÷ GS) + Int32(1) + m * (K ÷ GS)])
+                    v = round(clamp(codebook[Int32(code) + Int32(1)] * sr, -127f0, 127f0))
+                    byte = reinterpret(UInt8, unsafe_trunc(Int8, v))
+                    word |= UInt32(byte) << (8 * (r - 1))
+                end
+            end
+            # The destination may be a STACK of parts: this one owns the row
+            # groups from `GOFF`, and a group is four output rows, so a part
+            # whose row count is not a multiple of four cannot be stacked.
+            q32[(rg + GOFF) + Int32(1) + k * MGD] = word
+        end
+    end
+    return nothing
+end
+
+"""Upload Comfy `asym_w4a8_int8` storage and decode its INT4 grid to packed INT8."""
+function w4a8convrot(backend, q::AbstractMatrix{Int8}, s_rel::AbstractMatrix{UInt8},
+                     s_channel, codebook; group_size::Integer=16,
+                     convrot_group_size::Integer=256)
+    KH, M = size(q)
+    K = 2KH
+    size(s_rel) == (K ÷ group_size, M) || throw(DimensionMismatch(
+        "W4A8 relative scales are $(size(s_rel)); expected $((K ÷ group_size, M))"))
+    length(s_channel) == M || throw(DimensionMismatch("W4A8 channel scale length mismatch"))
+    length(codebook) == 16 || throw(DimensionMismatch("W4A8 codebook must have 16 entries"))
+    K % convrot_group_size == 0 || throw(DimensionMismatch(
+        "ConvRot group size $convrot_group_size does not divide K=$K"))
+    dev = Mantle.todevice(backend)
+    g = Mantle.Graph(dev)
+    dq, dr = Mantle.Buffer(dev, q), Mantle.Buffer(dev, s_rel)
+    ds = Mantle.Buffer(dev, Float32.(vec(s_channel)))
+    dc = Mantle.Buffer(dev, Float32.(vec(codebook)))
+    MG = cld(M, Q8ROWS)
+    packed = Mantle.Buffer(dev, UInt32, (MG, K))
+    w4a8pack!(g, packed, dq, dr, dc, K, M, group_size, MG, 0)
+    runonce!(g)
+    # The INT4 storage and its codebook are consumed by the decode; the
+    # per-channel scale is the weight and stays.
+    foreach(Mantle.free!, (dq, dr, dc))
+    ConvRotQInt8Matrix(packed, ds, M, Int(convrot_group_size))
+end
+
+"""
+Declare the decode of one W4A8 part into row groups `goff...` of `packed`.
+
+Takes the GRAPH rather than the backend: the stacked form below decodes several
+parts into one pack, and those are passes of one graph writing disjoint row
+ranges of one buffer — which is a thing Mantle can see and schedule, and a
+sequence of bare launches is not.
+"""
+function w4a8pack!(g, packed, q, s_rel, codebook, K::Integer, M::Integer,
+                   group_size::Integer, mgdest::Integer, goff::Integer)
+    mg = cld(M, Q8ROWS)
+    Mantle.dispatch!(g, w4a8_pack_kernel!,
+                     (packed, q, s_rel, codebook, Int32(K), Int32(M),
+                      Int32(mg), Int32(group_size), Int32(mgdest), Int32(goff),
+                      Val(Q8PACK_WORDS)),
+                     (K, cld(mg, Q8PACK_WORDS)); group = (256, 1),
+                     name = "w4a8_pack")
+    packed
+end
+
+"""
+    w4a8convrot(backend, parts) -> ConvRotQInt8Matrix
+
+The stacked form: `fuseqkv`'s three projections, or a gate/up pair, as one
+matrix. Each part decodes into its own row range of a single pack, which is the
+only way to assemble these — a part's storage is four output rows to a `UInt32`
+word after decoding, and the 16-value codebook is per tensor, so there is
+nothing to concatenate before the decode.
+"""
+function w4a8convrot(backend, parts::AbstractVector{<:W4A8ConvRotHostMatrix})
+    first_part = first(parts)
+    K = size(first_part, 2)
+    group_size = first_part.group_size
+    convrot_group_size = first_part.convrot_group_size
+    all(p -> size(p, 2) == K, parts) || throw(DimensionMismatch(
+        "stacked W4A8 matrices disagree on their input width"))
+    all(p -> p.group_size == group_size && p.convrot_group_size == convrot_group_size,
+        parts) || throw(ArgumentError("stacked W4A8 matrices disagree on their group sizes"))
+    all(p -> size(p, 1) % Q8ROWS == 0, parts) || throw(ArgumentError(
+        "a stacked W4A8 part must have a multiple of $Q8ROWS output rows"))
+    M = sum(p -> size(p, 1), parts)
+    MG = cld(M, Q8ROWS)
+    dev = Mantle.todevice(backend)
+    g = Mantle.Graph(dev)
+    packed = Mantle.Buffer(dev, UInt32, (MG, K))
+    ds = Mantle.Buffer(dev, Float32.(reduce(vcat, (vec(p.s_channel) for p in parts))))
+    # ONE graph for every part: they write disjoint row ranges of one pack, so
+    # this is the submission Mantle can build rather than N of them.
+    sources = Any[]
+    goff = 0
+    for p in parts
+        dq, dr = Mantle.Buffer(dev, p.q), Mantle.Buffer(dev, p.s_rel)
+        dc = Mantle.Buffer(dev, Float32.(vec(p.codebook)))
+        append!(sources, (dq, dr, dc))
+        w4a8pack!(g, packed, dq, dr, dc, K, size(p, 1), group_size, MG, goff)
+        goff += size(p, 1) ÷ Q8ROWS
+    end
+    runonce!(g)
+    foreach(Mantle.free!, sources)
+    ConvRotQInt8Matrix(packed, ds, M, Int(convrot_group_size))
+end
+
+toback(backend, A::W4A8ConvRotHostMatrix) =
+    w4a8convrot(backend, A.q, A.s_rel, A.s_channel, A.codebook;
+                group_size=A.group_size, convrot_group_size=A.convrot_group_size)
+
+"""
+    ispackedquantmatrix(W) -> Bool
+
+Whether `W` is a host weight whose packing already presents the `(M, K)`
+orientation a GEMM reads — the torch `[M, K]` checkpoint layout, kept as
+packed words rather than as an array that can be permuted.
+
+`hoistpermutes` asks this. A dense weight arrives as `(K, M)` and its `t()` view
+is materialised into a real `(M, K)` weight; a packed matrix is *stored* that way
+already, so the same view is the matrix itself and materialising it would mean
+transposing a representation that has no strided form.
+"""
+ispackedquantmatrix(::Any) = false
+ispackedquantmatrix(::ConvRotQInt8HostMatrix) = true
+ispackedquantmatrix(::W4A8ConvRotHostMatrix) = true
+
+"""
+    stackrows(parts) -> matrix
+
+Concatenate packed checkpoint matrices along their output rows.
+
+`fuseqkv` stacks the three attention projections, or a gate/up pair, into one
+GEMM. A dense stack is assembled on the device row range by row range; a packed
+one cannot be, because four output rows share a `UInt32` word. It is assembled
+in the checkpoint's own layout instead — `q` is stored `(K, M)`, so stacking
+output rows is `hcat`, and the per-channel scales stack the same way — and the
+result is packed once, by the same path any single matrix takes.
+"""
+function stackrows(parts::AbstractVector{<:ConvRotQInt8HostMatrix})
+    group = first(parts).group_size
+    all(p -> p.group_size == group, parts) || throw(ArgumentError(
+        "stacked ConvRot matrices disagree on their group size"))
+    all(p -> size(p.scale, 1) == 1, parts) || throw(ArgumentError(
+        "stacked ConvRot matrices must carry one scale per output channel"))
+    ConvRotQInt8HostMatrix(reduce(hcat, (p.q for p in parts)),
+                           reduce(hcat, (p.scale for p in parts)), group)
+end
+
+
+"""
+Two radix-4 stages of the ConvRot transform, in registers.
+
+A 256-wide group is four stages at strides 1, 4, 16 and 64, and a thread that
+holds SIXTEEN elements spaced `S` apart does two of them without talking to any
+other thread: `S = 1` covers strides 1 and 4, `S = 16` covers 16 and 64. Two
+launches, four traversals of the tensor, no shared memory and no barrier.
+
+The two forms this replaced, measured on Qwen-Image 2.1's largest activation
+(4096 x 4118 fp16) on an 8060S:
+
+    a pass per stage, eight traversals          7.87 ms
+    one pass, group staged in shared memory    12.13 ms
+    two passes, sixteen elements in registers   ? ms
+
+Shared memory looked like the obvious answer and is the slowest of the three:
+64-thread workgroups over a 512-byte group spend their time on four barriers,
+not on four adds. Unrolling the stages so every stride is a compile-time shift
+did not move it either.
+
+Each stage rounds to `eltype(out)`, which is the rounding the pass-per-stage
+kernel had, so a group validated against the checkpoint's own decode keeps the
+same error. Not the same BITS: against a host implementation of the staged form
+this agrees to one fp16 ulp, because the compiler is free to reassociate
+`a + b + c - d` and does.
+"""
+function convrot_pass_kernel!(
+        out, input, ::Val{S}, ::Val{SETS}, ::Val{G}, n::Int64) where {S,SETS,G}
+    j = Int64(KI.get_global_id().x) - Int64(1)
+    g = j ÷ Int64(SETS)
+    w = j - g * Int64(SETS)
+    base = g * Int64(G) + (S == 1 ? w * Int64(16) : w) + Int64(1)
+    if base <= n
+        @inbounds begin
+            v = convrot16(ntuple(i -> Float32(input[base + Int64((i - 1) * S)]), Val(16)),
+                          eltype(out))
+            Base.Cartesian.@nexprs 16 i -> out[base + Int64((i - 1) * S)] = eltype(out)(v[i])
+        end
+    end
+    return nothing
+end
+
+"""One radix-4 stage of the transform on four values, each rounded to `T`."""
+@inline convrot4(a, b, c, d, ::Type{T}) where {T} =
+    (Float32(T(( a + b + c - d) * 0.5f0)), Float32(T(( a + b - c + d) * 0.5f0)),
+     Float32(T(( a - b + c + d) * 0.5f0)), Float32(T((-a + b + c + d) * 0.5f0)))
+
+"""
+Two stages over sixteen registers: stride 1 across them, then stride 4. Both
+are the same symmetric 4x4, and both round to `T` in between.
+"""
+@inline function convrot16(v::NTuple{16,Float32}, ::Type{T}) where {T}
+    a1 = convrot4(v[1], v[2], v[3], v[4], T)
+    a2 = convrot4(v[5], v[6], v[7], v[8], T)
+    a3 = convrot4(v[9], v[10], v[11], v[12], T)
+    a4 = convrot4(v[13], v[14], v[15], v[16], T)
+    # `aK[q]` is element `4(K-1) + q`; the stride-4 stage mixes `a1..a4` at one
+    # `q`, and element `4(k-1) + q` of the result is `bq[k]`.
+    b1 = convrot4(a1[1], a2[1], a3[1], a4[1], T)
+    b2 = convrot4(a1[2], a2[2], a3[2], a4[2], T)
+    b3 = convrot4(a1[3], a2[3], a3[3], a4[3], T)
+    b4 = convrot4(a1[4], a2[4], a3[4], a4[4], T)
+    (b1[1], b2[1], b3[1], b4[1], b1[2], b2[2], b3[2], b4[2],
+     b1[3], b2[3], b3[3], b4[3], b1[4], b2[4], b3[4], b4[4])
+end
+
+"""
+The first ConvRot pass with a SwiGLU in front of it.
+
+A SwiGLU MLP's down projection rotates `silu(gate) * up`, and as two ops that
+product was written (101 MB at Qwen-Image 2.1's `12288 x 4118`) only for the
+rotation to read it straight back. This pass reads the two halves where the
+stacked up projection left them and never writes the product.
+
+`gate` and `up` are flat parents: element `(r, c)` of the `K x N` product is at
+`gb + r + c * gcol` and `ub + r + c * ucol`, 0-based `r` and `c`. A thread's
+sixteen elements are consecutive rows of one column, because the group divides
+`K`. The SwiGLU rounds to `H` where [`swiglu_run_kernel!`](@ref) rounds to its
+output type, so this computes what the two kernels computed.
+"""
+function convrot_swiglu_kernel!(out, gate, up, gb::Int32, ub::Int32, gcol::Int32, ucol::Int32,
+                                ::Val{H}, ::Val{K}, ::Val{SETS}, ::Val{G},
+                                n::Int32) where {H,K,SETS,G}
+    # Int32 throughout. With these indices in Int64 Lava miscompiles the
+    # sixteen adjacent reads into an address outside `gate`: a GPUVM fault at
+    # Qwen-Image 2.1's `512 x 4118`, the same bug as `q8gemm.jl`'s pair loads.
+    # `convrotpass!` checks that every index fits.
+    j = Int32(KI.get_global_id().x) - Int32(1)
+    g = j ÷ Int32(SETS)
+    w = j - g * Int32(SETS)
+    base = g * Int32(G) + w * Int32(16)
+    if base < n
+        c = base ÷ Int32(K)
+        gi = gb + (base - c * Int32(K)) + c * gcol
+        ui = ub + (base - c * Int32(K)) + c * ucol
+        @inbounds begin
+            v = convrot16(ntuple(Val(16)) do i
+                    x = Float32(gate[gi + Int32(i - 1)])
+                    Float32(H(Float32(H(x / (1f0 + exp(-x)))) * Float32(up[ui + Int32(i - 1)])))
+                end, eltype(out))
+            Base.Cartesian.@nexprs 16 i -> out[base + Int32(i)] = eltype(out)(v[i])
+        end
+    end
+    return nothing
+end
+
+"""
+    convrot_passes(input, group_size) -> (strides, sets, ndrange)
+
+The strides a ConvRot group needs, sixteen elements to a thread. A group of 256
+is two passes; the general power-of-four case is `log4(G) ÷ 2` of them, and an
+odd stage count has no register form here.
+"""
+function convrot_passes(input, group_size::Integer)
+    K = size(input, 1)
+    K % group_size == 0 || throw(DimensionMismatch("ConvRot group size does not divide input"))
+    stages = round(Int, log(4, group_size))
+    4^stages == group_size || throw(ArgumentError("ConvRot group size must be a power of four"))
+    iseven(stages) || throw(ArgumentError(
+        "ConvRot group $group_size has $stages stages; the register form takes two at a time"))
+    strides = Tuple(16^(i - 1) for i in 1:(stages ÷ 2))
+    (strides, group_size ÷ 16, length(input) ÷ 16)
+end
+
+function convrot(ctx::Ctx, input, group_size::Integer)
+    K = size(input, 1)
+    K % group_size == 0 || throw(DimensionMismatch("ConvRot group size does not divide input"))
+    stages = round(Int, log(4, group_size))
+    4^stages == group_size || throw(ArgumentError("ConvRot group size must be a power of four"))
+    out = scratch!(ctx, eltype(input), size(input)...)
+    strides, sets, ndrange = convrot_passes(input, group_size)
+    n = Int64(length(input))
+    src = input
+    for S in strides
+        harnesslaunch!(ctx.backend, convrot_pass_kernel!, out, src, Val(S), Val(sets),
+                                               Val(Int(group_size)), n; ndrange, workgroupsize = 256)
+        src = out
+    end
+    out
+end
+
+@inline q8byte(w::UInt32, r::Integer) =
+    Float32(reinterpret(Int8, UInt8((w >> (8 * r)) & 0x000000ff)))
+
+# ── quantisation ─────────────────────────────────────────────────────────────
+
+function q8scale_kernel!(s, W, M::Int32, K::Int32)
+    m = KI.get_global_id().x
+    if m <= M
+        @inbounds begin
+            mx = 0f0
+            mi = Int32(m)
+            for k in Int32(0):(K - Int32(1))
+                mx = max(mx, abs(Float32(W[mi + k * M])))
+            end
+            s[m] = mx / 127f0
+        end
+    end
+    return nothing
+end
+
+function q8pack_kernel!(q32, W, s,
+                                          M::Int32, MG::Int32, n::Int64)
+    i = KI.get_global_id().x
+    if i <= n
+        @inbounds begin
+            l = Int32(i) - Int32(1)
+            g = l % MG                 # 0-based group of four rows
+            k = l ÷ MG                 # 0-based column
+            w = UInt32(0)
+            Base.Cartesian.@nexprs 4 r -> begin
+                m = g * Int32(4) + Int32(r - 1) + Int32(1)
+                if m <= M
+                    sc = s[m]
+                    v = sc == 0f0 ? 0f0 : Float32(W[m + k * M]) / sc
+                    b = unsafe_trunc(Int8, round(clamp(v, -127f0, 127f0)))
+                    w |= UInt32(reinterpret(UInt8, b)) << (8 * (r - 1))
+                end
+            end
+            q32[i] = w
+        end
+    end
+    return nothing
+end
+
+# Quantizing straight out of the checkpoint layout — no transpose, every read
+# contiguous — was written, made bit-identical, and MEASURED SLOWER. Three
+# paired full builds each, alternating, everything hot: 13.65 s with it against
+# 11.17 s without (spreads of 0.1 s, disjoint). Fusing it everywhere rather than
+# only where the shape suited it was worse again. Removed.
+#
+# Two lessons in it. The transpose is not what a warm build spends its time on:
+# 9.3 s of a 11.2 s build is the 69.6 GB host-to-device copy, and no kernel
+# change touches that. And the per-shape microbenchmark that motivated this
+# measured `toback(PermutedDimsArray(host))` against
+# `quantizeint8(PermutedDimsArray(device))` — only the first included the
+# upload, which invented a 2-3x speedup that did not exist. Pair the samples and
+# time the whole build.
+
+"""
+    quantizeint8(backend, W) -> QInt8Matrix
+
+Pack a device-resident `(M, K)` float weight. `W` is not modified and the caller
+drops it.
+
+A `Mantle.Buffer` as well as an array, because a resident weight is a pool
+region now — that is what `toback` hands back, and this is what reads it.
+"""
+function quantizeint8(backend, W::Union{AbstractMatrix,Mantle.Buffer{<:Any,2}})
+    # `rows` and not `M`: `M` is this module's alias for `Mantle`, and the
+    # obvious spelling of the row count shadows it for the rest of the body.
+    rows, K = size(W)
+    MG = cld(rows, Q8ROWS)
+    dev = Mantle.todevice(backend)
+    g = Mantle.Graph(dev)
+    s = Mantle.Buffer(dev, Float32, (rows,))
+    q32 = Mantle.Buffer(dev, UInt32, (MG, K))
+    # The pack pass READS `s`. Declared, that dependency is inferred from what
+    # the two kernels touch and `Barriers` puts one between them; launched back
+    # to back it rested on the queue's own ordering.
+    Mantle.dispatch!(g, q8scale_kernel!, (s, W, Int32(rows), Int32(K)), rows;
+                     group = 256, name = "q8scale")
+    Mantle.dispatch!(g, q8pack_kernel!,
+                     (q32, W, s, Int32(rows), Int32(MG), Int64(MG) * K), MG * K;
+                     group = 256, name = "q8pack")
+    runonce!(g)
+    QInt8Matrix(q32, s, rows)
+end
+
+
+# ── the GEMV ─────────────────────────────────────────────────────────────────
+#
+# Split over K as well as rows, for the same reason `Mantle.gemv_splitk_kernel!`
+# does: one thread per output row cannot fill the device when M is small, and
+# decode's M runs from 1024 to 250624. The scale is applied once, in the
+# reduction, so the inner loop is a plain int-to-float multiply-add.
+#
+# `P` is padded to `MG * 4` rows so the hot loop stores four values with no
+# bounds test; the reduction only ever reads the first M of them.
+
+function q8gemv_kernel!(P, q32, x, MG::Int32,
+                                          MP::Int32, K::Int32, KC::Int32, ntot::Int32)
+    lin = KI.get_global_id().x
+    if lin <= ntot
+        @inbounds begin
+            l = Int32(lin) - Int32(1)
+            g = l % MG                  # consecutive lanes -> consecutive words
+            sp = l ÷ MG                 # 0-based K split
+            k1 = min(sp * KC + KC, K)
+            Base.Cartesian.@nexprs 4 r -> acc_r = 0f0
+            k = sp * KC
+            while k < k1
+                # One four-byte load of four rows, and one broadcast load of the
+                # activation that every lane in the wave shares.
+                w = q32[g + Int32(1) + k * MG]
+                xv = Float32(x[k + Int32(1)])
+                Base.Cartesian.@nexprs 4 r -> begin
+                    acc_r = muladd(q8byte(w, r - 1), xv, acc_r)
+                end
+                k += Int32(1)
+            end
+            o = g * Int32(4) + Int32(1) + sp * MP
+            Base.Cartesian.@nexprs 4 r -> (P[o + Int32(r - 1)] = acc_r)
+        end
+    end
+    return nothing
+end
+
+function q8reduce_kernel!(C, P, s, bias,
+                                            M::Int32, MP::Int32, S::Int32,
+                                            ::Val{HASBIAS}, epi = identity) where {HASBIAS}
+    m = KI.get_global_id().x
+    if m <= M
+        @inbounds begin
+            acc = P[m]
+            for j in Int32(1):(S - Int32(1))
+                acc += P[m + j * MP]
+            end
+            acc *= s[m]
+            HASBIAS && (acc += Float32(bias[m]))
+            # Preserve the rounding of the former separate activation pass.
+            C[m] = eltype(C)(epi(eltype(C)(acc)))
+        end
+    end
+    return nothing
+end
+
+# Reduce a stacked gate/up projection without writing either activation.
+function q8gateup_reduce!(out, parts, scale, H::Int32, MP::Int32, S::Int32,
+                          gateoff::Int32, upoff::Int32, ::Val{T}) where {T}
+    i = Int32(KI.get_global_id().x)
+    if i <= H
+        gi, ui = gateoff + i, upoff + i
+        @inbounds begin
+            gv, uv = parts[gi], parts[ui]
+            for sp in Int32(1):(S - Int32(1))
+                gv += parts[gi + sp * MP]
+                uv += parts[ui + sp * MP]
+            end
+            gv = Float32(T(gv * scale[gi]))
+            uv = Float32(T(uv * scale[ui]))
+            # Keep both the projection and SiLU rounding points.
+            out[i] = eltype(out)(Float32(eltype(out)(gv / (1f0 + exp(-gv)))) * uv)
+        end
+    end
+    return nothing
+end
+
+# Reuse each packed weight across a short batch without padding its columns.
+const Q8SMALL_KERNELS = Dict{Int,Any}()
+# A/B switch for full-model validation against the wider INT8 path.
+const Q8SMALL = Ref(true)
+const Q8EPILOGUE = Ref(true)
+# Deep projections win once weight traffic offsets the second dispatch.
+# Measured by tools/bench_q8_small.jl with alternating recorded replays.
+q8small_applicable(m, k, n) = Q8SMALL[] && 2 <= n <= 8 && k > m && m * k >= 1_048_576
+for N in 2:8
+    name = Symbol("q8small_", N, "!")
+    @eval function $name(P, q32, x, MG::Int32, MP::Int32, K::Int32,
+                         KC::Int32, ntot::Int32)
+        lin = Int32(KI.get_global_id().x) - Int32(1)
+        if lin < ntot
+            g, sp = lin % MG, lin ÷ MG
+            Base.Cartesian.@nexprs $N j -> Base.Cartesian.@nexprs 4 r -> (acc_j_r = 0f0)
+            k = sp * KC
+            k1 = min(k + KC, K)
+            @inbounds while k < k1
+                w = q32[g + Int32(1) + k * MG]
+                Base.Cartesian.@nexprs 4 r -> (wr_r = q8byte(w, r - 1))
+                Base.Cartesian.@nexprs $N j -> begin
+                    xv_j = Float32(x[k + Int32(1) + Int32(j - 1) * K])
+                    Base.Cartesian.@nexprs 4 r -> (acc_j_r = muladd(wr_r, xv_j, acc_j_r))
+                end
+                k += Int32(1)
+            end
+            @inbounds Base.Cartesian.@nexprs $N j -> begin
+                o = g * Int32(4) + (Int32(j - 1) + sp * Int32($N)) * MP
+                Base.Cartesian.@nexprs 4 r -> (P[o + Int32(r)] = acc_j_r)
+            end
+        end
+        return nothing
+    end
+    Q8SMALL_KERNELS[N] = getfield(@__MODULE__, name)
+end
+
+function q8small_reduce!(out, parts, scale, bias, epi,
+                         M::Int32, MP::Int32, N::Int32, S::Int32,
+                         ::Val{HASBIAS}) where {HASBIAS}
+    i = Int32(KI.get_global_id().x) - Int32(1)
+    if i < M * N
+        row, col = i % M, i ÷ M
+        base = row + col * MP + Int32(1)
+        acc = 0f0
+        @inbounds begin
+            for sp in Int32(0):(S - Int32(1))
+                acc += parts[base + sp * MP * N]
+            end
+            acc *= scale[row + Int32(1)]
+            HASBIAS && (acc += Float32(bias[row + Int32(1)]))
+            out[i + Int32(1)] = eltype(out)(epi(acc))
+        end
+    end
+    return nothing
+end
+
+function q8small_dispatch!(g, out, A::QInt8Matrix, B, parts, bias, epi; name="q8small")
+    m, k = size(A); n = size(B, 2)
+    mg, mp, splits = size(A.q, 1), 4size(A.q, 1), size(parts, 3)
+    M.dispatch!(g, Q8SMALL_KERNELS[n],
+        (parts, A.q, B, Int32(mg), Int32(mp), Int32(k),
+         Int32(cld(k, splits)), Int32(mg * splits)), mg * splits;
+        group = 256, name)
+    M.dispatch!(g, q8small_reduce!,
+        (out, parts, A.scale, bias === nothing ? A.scale : bias, epi,
+         Int32(m), Int32(mp), Int32(n), Int32(splits), Val(bias !== nothing)),
+        m * n; group = 256, name = "$name.reduce")
+    out
+end
+
+function q8dequant_kernel!(W, q32, s,
+                                             M::Int32, MG::Int32, n::Int64)
+    i = KI.get_global_id().x
+    if i <= n
+        @inbounds begin
+            l = Int32(i) - Int32(1)
+            g = l % MG
+            k = l ÷ MG
+            w = q32[i]
+            Base.Cartesian.@nexprs 4 r -> begin
+                m = g * Int32(4) + Int32(r - 1) + Int32(1)
+                if m <= M
+                    W[m + k * M] = eltype(W)(q8byte(w, r - 1) * s[m])
+                end
+            end
+        end
+    end
+    return nothing
+end
+
+# Threads to aim for. The row axis is `MG`, a quarter of M, because each thread
+# already owns four rows.
+#
+# CLOSEST to the target, not the first split past it. `while S*MG < target` walks
+# one doubling too far whenever `MG` does not divide the target neatly, and that
+# doubling halves the chunk each thread gets: `26624 x 5120` measures 215 GB/s at
+# `S = 8` (53k threads) and 196 at `S = 16` (106k). Measured, GB/s:
+#
+#     shape (M x K)       S=1   S=2   S=4   S=8  S=16  S=32  S=64
+#      8192 x  5120        19    36    58   106   172   182   167
+#      1024 x  5120         3     7    17    32    49    69    77
+#      5120 x  8192        14    25    41    83   135   130   170
+#     26624 x  5120        44    89   174   215   196   207   191
+#      5120 x 26624        11    24    40    82   134   206   179
+#    250624 x  5120       216   219   202   213   211   206   200
+const Q8SPLIT_BIAS = Ref(3)
+
+@inline function q8split(M::Int, K::Int)
+    MG = cld(M, Q8ROWS)
+    # Biased BELOW the raw thread target. Every doubling also halves the K-chunk
+    # each thread reduces and doubles the partials the second pass has to read,
+    # and the measurements bracket the target from both sides — `5120 x 26624`
+    # wants 0.62x it and `5120 x 8192` 1.25x — so the cheaper side is the right
+    # default. `5120 x 26624` is 208 GB/s at 0.62x against 192 at 1.25x.
+    target = (Mantle.GEMV_TARGET_THREADS * Q8SPLIT_BIAS[]) ÷ 4
+    best, bestd = 1, abs(MG - target)
+    S = 1
+    while cld(K, 2S) >= Mantle.GEMV_MIN_CHUNK
+        S *= 2
+        d = abs(S * MG - target)
+        d < bestd && ((best, bestd) = (S, d))
+    end
+    best
+end
+
+# ── single-dispatch GEMV ─────────────────────────────────────────────────────
+#
+# The split-K GEMV above is two dispatches: one writes `S` partial planes, a
+# second adds them. That second dispatch is a barrier, and decode issues 257
+# matmuls, so it is 257 extra pipeline drains plus a full round trip through the
+# partials. Measured on K2 Horizon 32B: the matmuls run at 224.9 GB/s when
+# nothing separates them and 214.7 GB/s in the graph, where they cannot overlap.
+#
+# Here the split lives INSIDE the workgroup. 256 threads are laid out as `RG`
+# row-groups by `KS = 256 / RG` k-splits; each thread reduces its own chunk of K
+# for four rows, the partials meet in shared memory, and the same workgroup
+# writes the finished output. One dispatch, no partial planes.
+#
+# `RG` is chosen so the launch is about as wide as the split-K version was:
+# `cld(MG, RG) * 256` threads. Shared memory is `RG * 4 * KS = 1024` floats
+# whatever `RG` is, which is why the layout is written this way round.
+const Q8WG = 256
+
+for RG in (1, 2, 4, 8, 16, 32, 64, 128, 256)
+    kname = Symbol("q8gemv1_kernel_", RG, "!")
+    KS = Q8WG ÷ RG
+    @eval function $kname(C, q32, x, sc,
+                                            bias, MG::Int32, M::Int32, K::Int32,
+                                            ::Val{HASBIAS}) where {HASBIAS}
+        sh = KI.localmemory(Float32, Val((Q8WG * 4,)))
+        t = KI.get_local_id().x - 1
+        wg = KI.get_group_id().x - 1
+        r = Int32(t % $RG)                    # row-group within the workgroup
+        sp = Int32(t ÷ $RG)                   # which k-split
+        g = Int32(wg) * Int32($RG) + r        # global row-group
+        KC = cld(K, Int32($KS))
+        k1 = min(sp * KC + KC, K)
+        @inbounds begin
+            Base.Cartesian.@nexprs 4 i -> acc_i = 0f0
+            if g < MG
+                k = sp * KC
+                while k < k1
+                    w = q32[g + Int32(1) + k * MG]
+                    xv = Float32(x[k + Int32(1)])
+                    Base.Cartesian.@nexprs 4 i -> begin
+                        acc_i = muladd(q8byte(w, i - 1), xv, acc_i)
+                    end
+                    k += Int32(1)
+                end
+            end
+            # Partials for this thread's four rows, contiguous per row so the
+            # reduction below walks them without a stride.
+            base = (r * Int32(4)) * Int32($KS) + sp
+            Base.Cartesian.@nexprs 4 i -> (sh[base + Int32(i - 1) * Int32($KS) + Int32(1)] = acc_i)
+        end
+        KI.barrier()
+        # `RG * 4` outputs per workgroup, `Q8WG` threads: one pass when there are
+        # fewer outputs than threads, a strided loop when there are more.
+        @inbounds begin
+            o = Int32(t)
+            while o < Int32($RG) * Int32(4)
+                a = 0f0
+                b0 = o * Int32($KS)
+                for j in Int32(0):(Int32($KS) - Int32(1))
+                    a += sh[b0 + j + Int32(1)]
+                end
+                m = Int32(wg) * Int32($RG) * Int32(4) + o
+                if m < M
+                    v = a * sc[m + Int32(1)]
+                    HASBIAS && (v += Float32(bias[m + Int32(1)]))
+                    C[m + Int32(1)] = eltype(C)(v)
+                end
+                o += Int32(Q8WG)
+            end
+        end
+    end
+end
+
+const Q8GEMV1_KERNELS = Dict(1 => q8gemv1_kernel_1!, 2 => q8gemv1_kernel_2!,
+                             4 => q8gemv1_kernel_4!, 8 => q8gemv1_kernel_8!,
+                             16 => q8gemv1_kernel_16!, 32 => q8gemv1_kernel_32!,
+                             64 => q8gemv1_kernel_64!, 128 => q8gemv1_kernel_128!,
+                             256 => q8gemv1_kernel_256!)
+
+"""
+    Q8SINGLE[] = false
+
+Use the single-dispatch GEMV. **Off by default, because it is slower.**
+
+The reasoning for it was sound and the measurement disagreed: 5.85 tok/s against
+6.06 on K2 Horizon 32B. The second dispatch it removes turns out to cost nothing
+— running the partial kernel alone, without any reduction, takes 148.5 ms
+against 148.9 for both, and 156.1 against 156.0 when serialised. What the split-K
+path pays is the RAMP of each GEMV when it cannot overlap the next one, and
+moving the reduction into the workgroup does not help that while adding a
+barrier every 256 threads must reach.
+
+Kept, and kept off, because it is the natural thing to try next and this is the
+measurement that says not to.
+"""
+const Q8SINGLE = Ref(false)
+
+"""Row-groups per workgroup: aim for the same launch width the split-K rule picks."""
+@inline function q8rowgroups(M::Int, K::Int)
+    MG = cld(M, Q8ROWS)
+    best, bestd = 1, typemax(Int)
+    for RG in (1, 2, 4, 8, 16, 32, 64, 128, 256)
+        RG <= MG || continue
+        cld(K, Q8WG ÷ RG) >= Mantle.GEMV_MIN_CHUNK || continue
+        d = abs(cld(MG, RG) * Q8WG - (Mantle.GEMV_TARGET_THREADS * Q8SPLIT_BIAS[]) ÷ 4)
+        d < bestd && ((best, bestd) = (RG, d))
+    end
+    best
+end
+
+"""
+    q8gemv!(ctx, out, A::QInt8Matrix, x, bias) -> out
+
+`out = A * x` for a single column `x`, dequantising in the inner loop.
+"""
+function q8gemv!(ctx, out, A::QInt8Matrix, x, bias)
+    M, K = size(A)
+    MG = size(A.q, 1)
+    # `Mantle.storage`: a packed weight's fields are `Mantle.Buffer`s, the pool
+    # regions that own the bytes, and a BARE launch has no graph to resolve them
+    # against — `dispatch!` does that itself, while `harnesslaunch!` packs what it
+    # is given and a `Buffer` is not a bitstype. Identity on anything already an
+    # array.
+    q, sc = Mantle.storage(A.q), Mantle.storage(A.scale)
+    if Q8SINGLE[]
+        RG = q8rowgroups(M, K)
+        harnesslaunch!(ctx.backend, Q8GEMV1_KERNELS[RG],
+            out, q, x, sc, bias === nothing ? sc : bias,
+            Int32(MG), Int32(M), Int32(K), Val(bias !== nothing);
+            ndrange = cld(MG, RG) * Q8WG, workgroupsize = Q8WG)
+        return out
+    end
+    MP = MG * Q8ROWS
+    S = q8split(M, K)
+    KC = cld(K, S)
+    P = Mantle.splitscratch(out, MP, 1, S)
+    harnesslaunch!(ctx.backend, q8gemv_kernel!, P, q, x, Int32(MG), Int32(MP), Int32(K),
+                                     Int32(KC), Int32(MG * S); ndrange = MG * S, workgroupsize = 256)
+    harnesslaunch!(ctx.backend, q8reduce_kernel!,
+        out, P, sc, bias === nothing ? sc : bias,
+        Int32(M), Int32(MP), Int32(S), Val(bias !== nothing); ndrange = M, workgroupsize = 256)
+    out
+end
+
+"""
+    q8dequant(ctx, A::QInt8Matrix) -> fp16 matrix in the workspace
+
+For `N > 1`. A prompt pass does `N` multiply-adds per weight, so it is
+compute-bound and can afford one extra pass to hand the cooperative-matrix GEMM
+the dense fp16 operand it needs — which is what llama.cpp's `mul_mm` does too,
+dequantising a tile into shared memory before the tensor-core loop.
+"""
+function q8dequant(ctx, A::QInt8Matrix)
+    M, K = size(A)
+    MG = size(A.q, 1)
+    W = scratch!(ctx.ws, ctx.backend, Float16, M, K)
+    harnesslaunch!(ctx.backend, q8dequant_kernel!, W, Mantle.storage(A.q),
+                                        Mantle.storage(A.scale), Int32(M), Int32(MG),
+                                        Int64(MG) * K; ndrange = MG * K, workgroupsize = 256)
+    W
+end

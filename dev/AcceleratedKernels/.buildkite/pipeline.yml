@@ -1,0 +1,109 @@
+# Tests on GPU back-ends, on the oldest and newest supported Julia release only: the CPU tests
+# on GitHub Actions cover the releases in between (on branch builds). Draft pull requests skip
+# them, unless selected by name in the last commit message: `[only cuda]`, `[only metal, oneapi]`
+# or `[only tests]` for all of them. `[skip amdgpu]` or `[skip tests]` does the opposite.
+steps:
+
+  # CUDA
+  - label: "CUDA - Julia {{matrix.version}}"
+    matrix:
+      setup:
+        version:
+          - "1.10"
+          - "1.13"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "{{matrix.version}}"
+    command: |
+      julia test/promote.jl cuda
+      julia -e 'using Pkg
+                println("--- :julia: Instantiating environment")
+                Pkg.develop(path=".")
+                println("+++ :julia: Running tests")
+                Pkg.test("AcceleratedKernels")'
+    agents:
+      queue: "cuda"
+    if: |
+      build.message !~ /\[skip [^\]]*(tests|cuda)/ &&
+      (build.message =~ /\[only [^\]]*(tests|cuda)/ ||
+       build.message !~ /\[only / && !build.pull_request.draft)
+    timeout_in_minutes: 30
+
+  # AMDGPU
+  - label: "AMDGPU - Julia {{matrix.version}}"
+    matrix:
+      setup:
+        version:
+          - "1.10"
+          - "1.13"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "{{matrix.version}}"
+    command: |
+      julia test/promote.jl amdgpu
+      julia -e 'using Pkg
+                println("--- :julia: Instantiating environment")
+                Pkg.develop(path=".")
+                println("+++ :julia: Running tests")
+                Pkg.test("AcceleratedKernels")'
+    agents:
+      queue: "rocm"
+      rocmgpu: "*"
+    if: |
+      build.message !~ /\[skip [^\]]*(tests|amdgpu)/ &&
+      (build.message =~ /\[only [^\]]*(tests|amdgpu)/ ||
+       build.message !~ /\[only / && !build.pull_request.draft)
+    timeout_in_minutes: 30
+
+  # oneAPI
+  - label: "oneAPI - Julia {{matrix.version}}"
+    matrix:
+      setup:
+        version:
+          - "1.10"
+          - "1.13"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "{{matrix.version}}"
+    command: |
+      julia test/promote.jl oneapi
+      julia -e 'using Pkg
+                println("--- :julia: Instantiating environment")
+                Pkg.develop(path=".")
+                println("+++ :julia: Running tests")
+                Pkg.test("AcceleratedKernels")'
+    agents:
+      queue: "oneapi"
+    if: |
+      build.message !~ /\[skip [^\]]*(tests|oneapi)/ &&
+      (build.message =~ /\[only [^\]]*(tests|oneapi)/ ||
+       build.message !~ /\[only / && !build.pull_request.draft)
+    timeout_in_minutes: 30
+
+  # Metal
+  - label: "Metal - Julia {{matrix.version}}"
+    matrix:
+      setup:
+        version:
+          - "1.10"
+          - "1.13"
+    plugins:
+      - JuliaCI/julia#v1:
+          version: "{{matrix.version}}"
+    command: |
+      julia test/promote.jl metal
+      julia -e 'using Pkg
+                println("--- :julia: Instantiating environment")
+                Pkg.develop(path=".")
+                println("+++ :julia: Running tests")
+                Pkg.test("AcceleratedKernels")'
+    agents:
+      queue: "metal"
+    if: |
+      build.message !~ /\[skip [^\]]*(tests|metal)/ &&
+      (build.message =~ /\[only [^\]]*(tests|metal)/ ||
+       build.message !~ /\[only / && !build.pull_request.draft)
+    timeout_in_minutes: 30
+
+env:
+  JULIA_PKG_PRECOMPILE_AUTO: false

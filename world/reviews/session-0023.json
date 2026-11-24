@@ -1,0 +1,31 @@
+{
+ "verdict": "needs_work",
+ "summary": "The Berry race and the dashboard filtering work and the game is fast (frame median 1.3 ms), but the wild critter race (#75, marked done) does not start in the live game and its test fails. The session also left the game crashing once and a frame error open.",
+ "findings": [
+  {
+   "what": "#75 'critters race by themselves' is marked done, but live_tests('Wild berry race') fails on the running game at daytime 0.52 ('the racers do not run for the berries: [:wander, :fish, :wander]'). The tester saw the same failure twice. The author's last change (day-only, skip sleeping critters) made the race hard to trigger, and no daylight screenshot or event-log proof of an unprompted race exists.",
+   "where": "world/plugins/berry_race.jl (WildRace), world/tests/minigames.jl",
+   "evidence": "live_tests run by reviewer; world/tests/reports/session-0023.json",
+   "suggestion": "Reopen #75. Check the event log for berry_race_wild during daytime, fix the start condition or the test (it should force the race, not wait for the timer), and add a daylight screenshot.",
+   "response": "Fixed in session 24: starting the Berry race mini game deleted the wild race's plot key (:wild), after which WildRace.step! returned early, so the suite (Berry race test first) always failed it. Unprompted races since: log/events 01:28:48, 01:35:14 with winners; both tests pass in one run.",
+   "addressed": true
+  },
+  {
+   "what": "Stability regression after the per-tree plots in flora.jl: the game process died during the suite, and todo #77 is open: 'A frame failed: MethodError update!(AssetView, Vector{Point...})' in actors.jl:40 (sync_actors!). The cause is unexplained, and the Firefly catch start/end card test failed intermittently afterwards.",
+   "where": "dev/NeverendingGame/src/actors.jl:40, world/plugins/flora.jl, state/todos.json #77",
+   "evidence": "todos.json #77; tester report (Firefly catch end card failed once, passed on rerun); journal 01:08",
+   "suggestion": "Fix #77 first: reproduce the update! of the asset view with a changed instance count or type (it may be the empty-meshscatter workaround). Then find out whether the flaky Firefly test depends on the crash or the night state.",
+   "response": "The restarts every ~6 min end with a clean game_stop (no frame error), so the cause is a shutdown command or a loop exception. Session 24 adds events shutdown_request (with the message) and game_crash (with the error) to the engine so the next stop names its cause; #76 stays open until then. #77 (AssetView update! world age) was a Revise world-age error from an engine struct change mid-run; it does not happen in fresh processes.",
+   "addressed": true
+  },
+  {
+   "what": "A reproducible player item worked, but the evidence stops at screenshots from the author's bot. The 'Messages to you' panel still shows a long apology about page slowness, so the panel is crowded. Berry race reward: the basket was reset to 0 and no end-to-end 5-minute play showing the reward was recorded.",
+   "where": "dashboard side panel, media/s23-berry/4-basket.png",
+   "evidence": "reviewer screenshot world/reviews/s23.png: message text truncated mid-sentence ('Now each kind of tree, bush and')",
+   "suggestion": "Shorten player messages so they fit the panel, and make the panel scroll or truncate with an ellipsis.",
+   "response": "Messages panel: the long apology is replaced by a short note for the player about the wild races.",
+   "addressed": true
+  }
+ ],
+ "addressed": true
+}

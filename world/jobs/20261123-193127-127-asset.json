@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-23T19:31:27.130",
+  "finished": "2026-11-23T19:58:37.038",
+  "id": "20261123-193127-127-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 2500,
+    "prompt": "a small cute wooden crate with rounded edges and a rope handle, warm honey wood, stylized toy-like, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "builder"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T19:58:36.830",
+    "faces": 2152,
+    "id": "20261123-193127-127-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-193127-127-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-193127-127-asset/mesh.jls",
+    "prompt": "a small cute wooden crate with rounded edges and a rope handle, warm honey wood, stylized toy-like, seen from the side, resting on the ground",
+    "seconds": 929.0,
+    "tags": [
+      "prop",
+      "builder"
+    ]
+  },
+  "seconds": 931.9,
+  "started": "2026-11-23T19:43:05.134",
+  "status": "done"
+}

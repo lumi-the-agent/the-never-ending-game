@@ -1,0 +1,36 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the critters did not give Sprout a head start: [:invite, :wait, :invite] at 0.49999999999999994 s",
+      "file": "minigames.jl",
+      "name": "Berry race: start card names the rivals, a pick counts, critters race and eat, the basket fills",
+      "passed": false,
+      "seconds": 5.0
+    },
+    {
+      "error": "check failed: Wibbles gave nothing to say: [\"Sprout! Look what I found!\"] (partner 1, friend 2, Sprout controlled false, minigame Nothing)",
+      "file": "minigames.jl",
+      "name": "Flower gift: a critter carries a picked flower to a friend, who thanks it with hearts",
+      "passed": false,
+      "seconds": 8.6
+    },
+    {
+      "error": "check failed: the present never reached Pickles (stage gone, Sprout sleep/walk, 12.5 m away)",
+      "file": "presents.jl",
+      "name": "Presents: Sprout knows each friend's favourite and carries the right present to one of them",
+      "passed": false,
+      "seconds": 22.4
+    },
+    {
+      "error": "check failed: trees or hills block the follow view (obstruction 0.6232853; the goal view's 0.44002092, eye 0.48 m from it; subject 10, shot false)",
+      "file": "separation.jl",
+      "name": "The follow camera has a clear view of its creature",
+      "passed": false,
+      "seconds": 2.9
+    }
+  ],
+  "passed": 127,
+  "session": 56,
+  "time": "2026-11-24T08:14:32",
+  "total": 131
+}

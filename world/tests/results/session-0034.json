@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Sprout fills only 10.0% of the view height",
+      "file": "separation.jl",
+      "name": "The follow camera shows its creature big: at least 15% of the view height",
+      "passed": false,
+      "seconds": 3.3
+    }
+  ],
+  "passed": 58,
+  "session": 34,
+  "time": "2026-11-23T09:37:49",
+  "total": 59
+}

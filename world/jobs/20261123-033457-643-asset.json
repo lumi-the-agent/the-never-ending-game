@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T03:34:57.643",
+  "finished": "2026-11-23T03:52:14.356",
+  "id": "20261123-033457-643-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a small round clump of chunky stylized pale blue and white meadow flowers with thick rounded petals and plump green leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T03:52:14.356",
+    "faces": 38625,
+    "id": "20261123-033457-643-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-033457-643-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-033457-643-asset/mesh.jls",
+    "prompt": "a small round clump of chunky stylized pale blue and white meadow flowers with thick rounded petals and plump green leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "seconds": 475.0,
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "seconds": 475.4,
+  "started": "2026-11-23T03:44:19.004",
+  "status": "done"
+}

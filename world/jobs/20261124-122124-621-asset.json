@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-24T12:21:24.623",
+  "finished": "2026-11-24T12:31:53.958",
+  "id": "20261124-122124-621-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 8000,
+    "prompt": "a small wooden garden wheelbarrow with one red wheel and a green painted tub, stylized cozy toy-like, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "tool"
+    ]
+  },
+  "result": {
+    "created": "2026-11-24T12:31:53.569",
+    "faces": 7935,
+    "id": "20261124-122124-621-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-122124-621-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-122124-621-asset/mesh.jls",
+    "prompt": "a small wooden garden wheelbarrow with one red wheel and a green painted tub, stylized cozy toy-like, seen from the side, resting on the ground",
+    "seconds": 622.0,
+    "tags": [
+      "prop",
+      "tool"
+    ]
+  },
+  "seconds": 627.1,
+  "started": "2026-11-24T12:21:26.625",
+  "status": "done"
+}

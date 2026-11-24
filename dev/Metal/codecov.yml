@@ -1,0 +1,10 @@
+coverage:
+  ignore:
+    - "lib/*/lib*.jl"
+    - "res/"
+    - "doc/"
+    - "perf/"
+  status:
+    patch: false
+    project: false
+    changes: false

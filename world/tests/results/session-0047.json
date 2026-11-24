@@ -1,0 +1,36 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the builder is not Sprout (who 8, Sprout walk fish)",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 0.5
+    },
+    {
+      "error": "check failed: Gloop gave nothing to say: [\"For you, Sprout!\"] (partner 1, friend 3, Sprout controlled false, minigame Nothing)",
+      "file": "minigames.jl",
+      "name": "Flower gift: a critter carries a picked flower to a friend, who thanks it with hearts",
+      "passed": false,
+      "seconds": 15.6
+    },
+    {
+      "error": "check failed: only [\"Hopscotch\", \"Wibbles\"] came to the puddle party; roles Tuple{String, Symbol, Symbol, Float32}[(\"Hopscotch\", :party, :rain, 1.2), (\"Wibbles\", :party, :rain, 1.4)]",
+      "file": "minigames.jl",
+      "name": "Rain shower: each critter takes it its own way; Sprout splashing in the open brings them all to a puddle party",
+      "passed": false,
+      "seconds": 47.8
+    },
+    {
+      "error": "check failed: no dance ring after walking the parade 7.0 m to the lantern spot (now 0.6 m, followers 0, the three now Tuple{String, Symbol, Symbol, Float32}[(\"Gloop\", :dance, :dance, 7.0), (\"Wibbles\", :pebble, :walk, 1.1), (\"Pinchy\", :idle, :idle, 15.2)], why they left [\"Sprout not steered\", \"Sprout not steered\", \"Sprout not steered\"], Sprout controlled true, game NeverendingGame.JumpIn)",
+      "file": "minigames.jl",
+      "name": "Parade party: a parade of three led to a lantern turns into a dance ring with Sprout in the middle",
+      "passed": false,
+      "seconds": 42.5
+    }
+  ],
+  "passed": 87,
+  "session": 47,
+  "time": "2026-11-23T21:12:17",
+  "total": 91
+}

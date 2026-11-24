@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-24T09:33:27.472",
+  "finished": "2026-11-24T09:52:45.844",
+  "id": "20261124-093327-472-image",
+  "kind": "image",
+  "params": {
+    "prompt": "a lanky teal heron-like bird caretaker with long thin legs, an oversized straw hat and a watering can, cute chunky toy-like 3D game character, soft clay look, bold simple shapes, big expressive eyes, full body, front three-quarter view, standing on the ground"
+  },
+  "result": {
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-093327-472-image/image.png",
+    "seed": 42
+  },
+  "seconds": 152.1,
+  "started": "2026-11-24T09:50:13.759",
+  "status": "done"
+}

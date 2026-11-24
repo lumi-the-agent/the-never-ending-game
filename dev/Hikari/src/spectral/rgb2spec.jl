@@ -1,0 +1,312 @@
+# RGB to Spectrum Conversion using Sigmoid Polynomial
+# Runtime lookup using precomputed tables (pbrt-v4 compatible)
+
+# ============================================================================
+# RGBSigmoidPolynomial - Represents a smooth spectrum from 3 coefficients
+# ============================================================================
+
+"""
+    RGBSigmoidPolynomial
+
+Represents a smooth spectrum using a sigmoid-wrapped polynomial.
+The spectrum value at wavelength λ is: sigmoid(c0*λ² + c1*λ + c2)
+where sigmoid(x) = 0.5 + x / (2*sqrt(1 + x²))
+
+This provides a smooth, bounded [0,1] spectrum from just 3 coefficients.
+"""
+struct RGBSigmoidPolynomial
+    c0::Float32
+    c1::Float32
+    c2::Float32
+end
+
+"""Sigmoid function for spectrum evaluation"""
+@propagate_inbounds function sigmoid(x::Float32)::Float32
+    if isinf(x)
+        return x > 0 ? 1.0f0 : 0.0f0
+    end
+    return 0.5f0 + x / (2.0f0 * sqrt(1.0f0 + x * x))
+end
+
+"""Evaluate spectrum at wavelength λ (in nm)"""
+@propagate_inbounds function (poly::RGBSigmoidPolynomial)(lambda::Float32)::Float32
+    # Polynomial: c0*λ² + c1*λ + c2
+    x = poly.c0 * lambda * lambda + poly.c1 * lambda + poly.c2
+    return sigmoid(x)
+end
+
+"""Maximum value of the spectrum (for normalization)"""
+function max_value(poly::RGBSigmoidPolynomial)::Float32
+    # Check endpoints
+    result = max(poly(360.0f0), poly(830.0f0))
+
+    # Check critical point of polynomial (where derivative = 0)
+    # d/dλ(c0*λ² + c1*λ + c2) = 2*c0*λ + c1 = 0  =>  λ = -c1/(2*c0)
+    if poly.c0 != 0
+        lambda_crit = -poly.c1 / (2.0f0 * poly.c0)
+        if 360.0f0 <= lambda_crit <= 830.0f0
+            result = max(result, poly(lambda_crit))
+        end
+    end
+
+    return result
+end
+
+# ============================================================================
+# RGBToSpectrumTable - Lookup table for RGB to polynomial coefficients
+# ============================================================================
+
+"""
+    RGBToSpectrumTable{V1, V5}
+
+Precomputed lookup table for converting RGB colors to RGBSigmoidPolynomial coefficients.
+Uses trilinear interpolation for smooth results.
+
+Parameterized by array types for GPU compatibility:
+- V1: 1D array type for scale (AbstractVector{Float32})
+- V5: 5D array type for coeffs (AbstractArray{Float32, 5})
+
+Use `to_gpu(ArrayType, table)` to convert to GPU-compatible arrays.
+"""
+struct RGBToSpectrumTable{V1 <: AbstractVector{Float32}, V5 <: AbstractArray{Float32, 5}, VD <: AbstractVector{Float32}}
+    res::Int32
+    scale::V1           # [res] - z-axis (max component) scale values
+    coeffs::V5          # [3, res, res, res, 3] - [maxc, z, y, x, coeff]
+    d65_values::VD      # [107] - D65 illuminant values as GPU array (avoids NTuple runtime indexing on Metal)
+end
+
+"""
+    rgb_to_spectrum(table, rgb) -> RGBSigmoidPolynomial
+
+Convert an RGB color to a sigmoid polynomial spectrum representation.
+RGB values should be in [0, 1] range.
+"""
+@propagate_inbounds function rgb_to_spectrum(table::RGBToSpectrumTable, r::Float32, g::Float32, b::Float32)
+    # Clamp to valid range
+    r = clamp(r, 0.0f0, 1.0f0)
+    g = clamp(g, 0.0f0, 1.0f0)
+    b = clamp(b, 0.0f0, 1.0f0)
+
+    # Handle uniform RGB (gray) - special case
+    if r == g && g == b
+        # For gray, polynomial is constant: sigmoid(c2) = r
+        # Solving: 0.5 + c2/(2*sqrt(1+c2²)) = r
+        # => c2 = (r - 0.5) / sqrt(r * (1 - r))
+        c2 = if r > 0.0f0 && r < 1.0f0
+            (r - 0.5f0) / sqrt(r * (1.0f0 - r))
+        elseif r <= 0.0f0
+            -1.0f10  # Very negative -> sigmoid ≈ 0
+        else
+            1.0f10   # Very positive -> sigmoid ≈ 1
+        end
+        return RGBSigmoidPolynomial(0.0f0, 0.0f0, c2)
+    end
+
+    # Find maximum component and remap - use Int32, no type asserts
+    maxc = r > g ? (r > b ? Int32(1) : Int32(3)) : (g > b ? Int32(2) : Int32(3))
+    z = maxc == Int32(1) ? r : (maxc == Int32(2) ? g : b)
+
+    # Get components for x and y based on maxc
+    # maxc=1(R): x=G, y=B; maxc=2(G): x=B, y=R; maxc=3(B): x=R, y=G
+    x_comp = maxc == Int32(1) ? g : (maxc == Int32(2) ? b : r)
+    y_comp = maxc == Int32(1) ? b : (maxc == Int32(2) ? r : g)
+
+    # Remap other components relative to max
+    res = table.res  # Already Int32
+    x = x_comp * Float32(res - Int32(1)) / z
+    y = y_comp * Float32(res - Int32(1)) / z
+
+    # The z node below `z`: the table's nodes increase, so the search replaces
+    # reading all `res` of them for every colour lifted to a spectrum.
+    zi = find_interval(i -> table.scale[i] < z, res - Int32(1))
+
+    # Compute integer indices and fractional offsets
+    xi = min(u_int32(x) + Int32(1), res - Int32(1))
+    yi = min(u_int32(y) + Int32(1), res - Int32(1))
+
+    dx = x - Float32(xi - Int32(1))
+    dy = y - Float32(yi - Int32(1))
+    @inbounds dz = (z - table.scale[zi]) / (table.scale[zi + Int32(1)] - table.scale[zi])
+
+    # Trilinear interpolation of coefficients - fully unrolled, no closures
+    coeffs = table.coeffs
+    @inbounds begin
+        # Coefficient 0 (c0)
+        c0 = (1.0f0 - dz) * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi, yi, xi, Int32(1)] + dx * coeffs[maxc, zi, yi, xi+Int32(1), Int32(1)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi, yi+Int32(1), xi, Int32(1)] + dx * coeffs[maxc, zi, yi+Int32(1), xi+Int32(1), Int32(1)])
+        ) + dz * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi, xi, Int32(1)] + dx * coeffs[maxc, zi+Int32(1), yi, xi+Int32(1), Int32(1)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi, Int32(1)] + dx * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi+Int32(1), Int32(1)])
+        )
+
+        # Coefficient 1 (c1)
+        c1 = (1.0f0 - dz) * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi, yi, xi, Int32(2)] + dx * coeffs[maxc, zi, yi, xi+Int32(1), Int32(2)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi, yi+Int32(1), xi, Int32(2)] + dx * coeffs[maxc, zi, yi+Int32(1), xi+Int32(1), Int32(2)])
+        ) + dz * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi, xi, Int32(2)] + dx * coeffs[maxc, zi+Int32(1), yi, xi+Int32(1), Int32(2)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi, Int32(2)] + dx * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi+Int32(1), Int32(2)])
+        )
+
+        # Coefficient 2 (c2)
+        c2 = (1.0f0 - dz) * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi, yi, xi, Int32(3)] + dx * coeffs[maxc, zi, yi, xi+Int32(1), Int32(3)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi, yi+Int32(1), xi, Int32(3)] + dx * coeffs[maxc, zi, yi+Int32(1), xi+Int32(1), Int32(3)])
+        ) + dz * (
+            (1.0f0 - dy) * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi, xi, Int32(3)] + dx * coeffs[maxc, zi+Int32(1), yi, xi+Int32(1), Int32(3)]) +
+                     dy * ((1.0f0 - dx) * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi, Int32(3)] + dx * coeffs[maxc, zi+Int32(1), yi+Int32(1), xi+Int32(1), Int32(3)])
+        )
+    end
+
+    return RGBSigmoidPolynomial(c0, c1, c2)
+end
+
+# Convenience method
+rgb_to_spectrum(table::RGBToSpectrumTable, rgb::NTuple{3, Float32}) =
+    rgb_to_spectrum(table, rgb[1], rgb[2], rgb[3])
+
+# ============================================================================
+# Spectrum Types using RGBSigmoidPolynomial
+# ============================================================================
+
+"""
+    RGBIlluminantSpectrum
+
+Illuminant spectrum for light sources, matching pbrt-v4's RGBIlluminantSpectrum.
+Stores RGB coefficients and multiplies by D65 illuminant when sampled.
+
+Fields:
+- `poly::RGBSigmoidPolynomial` - Sigmoid polynomial for spectral shape
+- `scale::Float32` - Scale factor (2 * max(r,g,b) from construction)
+
+When sampled at wavelength λ: returns `scale * poly(λ) * D65(λ)`
+"""
+struct RGBIlluminantSpectrum <: Spectrum
+    poly::RGBSigmoidPolynomial
+    scale::Float32
+end
+
+# RGBIlluminantSpectrum doesn't have a .c field like other Spectrum subtypes,
+# so we need to override generic Spectrum arithmetic that assumes .c.
+# Scaling adjusts the scale factor; is_black checks if scale is zero.
+Base.:*(f::Number, s::RGBIlluminantSpectrum) = RGBIlluminantSpectrum(s.poly, s.scale * Float32(f))
+Base.:*(s::RGBIlluminantSpectrum, f::Number) = RGBIlluminantSpectrum(s.poly, s.scale * Float32(f))
+Base.:/(s::RGBIlluminantSpectrum, f::Number) = RGBIlluminantSpectrum(s.poly, s.scale / Float32(f))
+is_black(s::RGBIlluminantSpectrum) = s.scale == 0f0
+Base.isnan(s::RGBIlluminantSpectrum) = isnan(s.scale)
+
+# Single wavelength evaluation (matches pbrt-v4's operator())
+@propagate_inbounds function (s::RGBIlluminantSpectrum)(lambda::Float32)::Float32
+    # Note: sample_d65 is defined in uplift.jl, must be available at runtime
+    return s.scale * s.poly(lambda) * sample_d65(lambda)
+end
+
+# Maximum value of D65 illuminant (peak at ~560nm where D65 ≈ 100)
+# This is used for MaxValue computation matching pbrt-v4's illuminant->MaxValue()
+const D65_MAX_VALUE = 100.0f0
+
+"""
+    max_value(s::RGBIlluminantSpectrum) -> Float32
+
+Maximum value of the spectrum, matching pbrt-v4's RGBIlluminantSpectrum::MaxValue():
+    scale * rsp.MaxValue() * illuminant->MaxValue()
+"""
+@propagate_inbounds function max_value(s::RGBIlluminantSpectrum)::Float32
+    return s.scale * max_value(s.poly) * D65_MAX_VALUE
+end
+
+"""
+    rgb_illuminant_spectrum(table::RGBToSpectrumTable, r, g, b) -> RGBIlluminantSpectrum
+    rgb_illuminant_spectrum(table::RGBToSpectrumTable, rgb::RGB) -> RGBIlluminantSpectrum
+
+Create an illuminant spectrum from RGB values, matching pbrt-v4's RGBIlluminantSpectrum constructor.
+"""
+function rgb_illuminant_spectrum(table::RGBToSpectrumTable, r::Float32, g::Float32, b::Float32)::RGBIlluminantSpectrum
+    # Find scale factor (matches pbrt-v4: scale = 2 * max(r,g,b))
+    m = max(r, g, b)
+    if m <= 0
+        return RGBIlluminantSpectrum(RGBSigmoidPolynomial(0.0f0, 0.0f0, -1.0f10), 0.0f0)
+    end
+
+    # Normalize RGB by scale and get polynomial
+    # pbrt-v4: rsp = cs.ToRGBCoeffs(scale ? rgb / scale : RGB(0, 0, 0))
+    scale = 2.0f0 * m
+    poly = rgb_to_spectrum(table, r / scale, g / scale, b / scale)
+
+    return RGBIlluminantSpectrum(poly, scale)
+end
+
+# Convenience overload accepting RGB type directly
+rgb_illuminant_spectrum(table::RGBToSpectrumTable, rgb::RGB{Float32}) =
+    rgb_illuminant_spectrum(table, rgb.r, rgb.g, rgb.b)
+rgb_illuminant_spectrum(table::RGBToSpectrumTable, rgb::RGB) =
+    rgb_illuminant_spectrum(table, Float32(rgb.r), Float32(rgb.g), Float32(rgb.b))
+
+# ============================================================================
+# Table Loading
+# ============================================================================
+
+# Type alias for CPU table
+const RGBToSpectrumTableCPU = RGBToSpectrumTable{Vector{Float32}, Array{Float32, 5}, Vector{Float32}}
+
+# Global table instance (loaded lazily) - always CPU version
+const SRGB_TABLE = Ref{Union{Nothing, RGBToSpectrumTableCPU}}(nothing)
+
+"""Load the sRGB spectrum table from raw binary format"""
+function load_srgb_table_binary(path::String)::RGBToSpectrumTableCPU
+    open(path, "r") do io
+        res = read(io, Int32)
+        scale = Vector{Float32}(undef, res)
+        read!(io, scale)
+        coeffs = Array{Float32, 5}(undef, 3, res, res, res, 3)
+        read!(io, coeffs)
+        return RGBToSpectrumTable(res, scale, coeffs, d65_cpu_values())
+    end
+end
+
+"""Save the sRGB spectrum table to raw binary format"""
+function save_srgb_table_binary(path::String, table::RGBToSpectrumTable)
+    open(path, "w") do io
+        write(io, table.res)
+        write(io, Array(table.scale))   # Convert to CPU array if needed
+        write(io, Array(table.coeffs))  # Convert to CPU array if needed
+    end
+end
+
+# The table is the `srgb_spectrum_table` artifact. To regenerate it, run
+# `RGB2SpecGen.generate_rgb2spec_table(64)` from `rgb2spec_gen.jl`, write it with
+# `save_srgb_table_binary` and publish the folder with `assets/publish.jl`.
+"""Load the sRGB spectrum table."""
+function get_srgb_table()::RGBToSpectrumTableCPU
+    if SRGB_TABLE[] === nothing
+        SRGB_TABLE[] = load_srgb_table_binary(joinpath(artifact"srgb_spectrum_table", "srgb_spectrum_table.dat"))
+    end
+    return SRGB_TABLE[]
+end
+
+# ============================================================================
+# GPU Conversion
+# ============================================================================
+
+"""
+    to_gpu(mem, table::RGBToSpectrumTable) -> RGBToSpectrumTable
+
+The table on the device, in memory the render state owns. `coeffs` keeps its
+five dimensions — a `Mantle.Buffer` is shaped, and `rgb_to_spectrum` indexes it
+with five indices.
+"""
+to_gpu(mem::DeviceMemory, table::RGBToSpectrumTable) =
+    RGBToSpectrumTable(table.res,
+                       upload!(mem, table.scale),
+                       upload!(mem, table.coeffs),
+                       upload!(mem, table.d65_values))
+
+function Adapt.adapt_structure(to, table::RGBToSpectrumTable)
+    RGBToSpectrumTable(
+        table.res,
+        Adapt.adapt(to, table.scale),
+        Adapt.adapt(to, table.coeffs),
+        Adapt.adapt(to, table.d65_values),
+    )
+end

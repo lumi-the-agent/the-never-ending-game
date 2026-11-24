@@ -1,0 +1,140 @@
+"""
+    Metal
+
+Program Apple GPUs from Julia: GPU arrays ([`MtlArray`](@ref)), kernels written in Julia
+([`@metal`](@ref)), and wrappers of Apple's [Metal](https://developer.apple.com/documentation/metal)
+(`Metal.MTL`), [Metal Performance Shaders](https://developer.apple.com/documentation/metalperformanceshaders)
+(`Metal.MPS`) and Metal Performance Shaders Graph ([`Metal.MPSGraphs`](@ref)) frameworks.
+"""
+module Metal
+
+using GPUArrays
+using Adapt
+using GPUCompiler
+using GPUToolbox
+using LLVM, LLVM.IR, LLVM.Build
+using LLVM.Interop
+import LLVMDowngrader_jll
+using Preferences: @load_preference, load_preference
+using ObjectiveC, .CoreFoundation, .Foundation, .Dispatch, .OS
+import ObjectiveC: is_macos
+import KernelAbstractions
+import KernelInterface
+import UnsafeAtomics
+using BFloat16s: BFloat16s, BFloat16
+using ScopedValues
+
+using Reexport: @reexport
+
+# `@public foo, bar` → `public foo, bar` on Julia ≥ 1.11, nothing on older.
+# `public` is only parseable at module top-level on all Julia versions, so a
+# bare `@static if ...; public foo; end` would fail at parse time. Taking the
+# names through a macro sidesteps that: `foo, bar` parses as a plain tuple,
+# and we splice its members into an `Expr(:public, ...)` the lowerer accepts.
+macro public(names)
+    @static if VERSION >= v"1.11"
+        syms = names isa Symbol ? (names,) :
+               Meta.isexpr(names, :tuple) ? names.args :
+               error("@public expects a symbol or a comma-separated list of symbols")
+        return esc(Expr(:public, syms...))
+    else
+        return nothing
+    end
+end
+
+include("version.jl")
+include("storage_type.jl")
+
+# core library
+include("../lib/mtl/MTL.jl")
+using .MTL
+export MTL
+
+# essential stuff
+include("state.jl")
+include("memory_pressure.jl")
+include("command_batching.jl")
+include("command_batching4.jl")
+include("synchronization.jl")
+include("initialization.jl")
+
+# device functionality
+include("device/utils.jl")
+include("device/pointer.jl")
+include("device/array.jl")
+include("device/runtime.jl")
+include("device/intrinsics/version.jl")
+include("device/intrinsics/arguments.jl")
+include("device/intrinsics/math.jl")
+include("device/intrinsics/synchronization.jl")
+include("device/intrinsics/memory.jl")
+include("device/intrinsics/simd.jl")
+include("device/intrinsics/tensor.jl")
+include("device/intrinsics/atomics.jl")
+include("device/malloc.jl")
+include("device/intrinsics/output.jl")
+include("device/random.jl")
+include("device/quirks.jl")
+
+# array essentials
+include("pool.jl")
+include("memory.jl")
+include("array.jl")
+
+# compiler implementation
+include("metallib/container.jl")
+include("metallib/model.jl")
+include("metallib/builder.jl")
+include("metallib/show.jl")
+include("metallib/airr.jl")
+include("compiler/compilation.jl")
+include("compiler/exceptions.jl")
+include("compiler/execution.jl")
+include("compiler/reflection.jl")
+
+# libraries
+include("../lib/mps/MPS.jl")
+export MPS
+include("../lib/mpsgraphs/MPSGraphs.jl")
+export MPSGraphs
+
+# LinearAlgebra
+include("gemm.jl")
+include("linalg.jl")
+
+# array implementation
+include("utilities.jl")
+include("profiling.jl")
+include("broadcast.jl")
+include("accumulate.jl")
+include("sorting.jl")
+include("random.jl")
+include("fft.jl")
+
+# KernelInterface
+include("MetalKernels.jl")
+import .MetalKernels: MetalBackend
+export MetalBackend
+
+include("deprecated.jl")
+
+# command-line tools
+include("metallib/cli.jl")
+# whether precompilation workloads can use the GPU, e.g., to compile kernels
+can_precompile() = is_macos(v"15") && Sys.ARCH === :aarch64 &&
+                   @load_preference("precompile", true) && !isempty(devices())
+
+# whether precompilation workloads can also launch kernels, which needs a command queue
+# that can't be created when the `command_api` preference selects an API this system
+# doesn't support (`__init__` reports that). also used by the workloads of downstream
+# packages, like AcceleratedKernels' Metal extension. (on Julia 1.10, workloads shouldn't
+# compile kernels that call into `Base`, see `precompile.jl`)
+can_precompile_launches() =
+    can_precompile() &&
+    (COMMAND_API === :metal3 || metal4_unsupported_reason(device()) === nothing)
+
+if can_precompile()
+    include("precompile.jl")
+end
+
+end # module

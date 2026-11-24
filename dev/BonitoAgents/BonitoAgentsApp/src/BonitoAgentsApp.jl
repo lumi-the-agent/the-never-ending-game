@@ -1,0 +1,460 @@
+# BonitoAgents desktop app: one process that boots the BonitoAgents server on
+# loopback, registers this machine as a local worker, and shows the dashboard
+# in the user's default browser. The process runs until interrupted (Ctrl+C).
+#
+# This is the entry point AppBundler packages into the distributable bundles
+# (`julia -m BonitoAgentsApp`, or the bundled launcher binary).
+module BonitoAgentsApp
+
+import Bonito
+using BonitoAgents
+using BonitoWorker
+import Downloads
+using PrecompileTools: @setup_workload, @compile_workload
+
+export desktop
+# AppBundler's launcher starts the app as `julia --eval="using BonitoAgentsApp" -- args…`:
+# Julia invokes `Main.main` after the eval, and `main` only ends up bound in
+# Main if we export it.
+export main
+
+# Platform-conventional persistent data root for the desktop app. Unlike
+# `BonitoAgents.dev_server` (ephemeral tempdirs), the desktop app keeps its
+# state across launches: projects, chats and the worker identity survive.
+#
+# USER_DATA is the AppBundler/AppEnv convention for the user data directory;
+# the bundled launcher sets it to the same platform path so app state and the
+# Julia depot cache live under the same root. Honour it here so --data-dir
+# (which sets USER_DATA at runtime) moves all state consistently.
+function data_root()
+    haskey(ENV, "USER_DATA") && return ENV["USER_DATA"]
+    base = if Sys.iswindows()
+        get(ENV, "LOCALAPPDATA", joinpath(homedir(), "AppData", "Local"))
+    elseif Sys.isapple()
+        joinpath(homedir(), "Library", "Application Support")
+    else
+        get(ENV, "XDG_DATA_HOME", joinpath(homedir(), ".local", "share"))
+    end
+    return joinpath(base, "BonitoAgents")
+end
+
+mutable struct AppHandle
+    url           :: String
+    state         :: BonitoAgents.ServerState
+    worker_id     :: String
+    worker_proc   :: Base.Process   # the local worker runs as a SEPARATE process (`bonitoagents worker`)
+    closed        :: Threads.Atomic{Bool}
+end
+
+"""
+    start_app(; port = nothing) -> AppHandle
+
+Start the BonitoAgents server on loopback and launch a local worker process
+(`bonitoagents worker`) against it. State persists under [`data_root`](@ref)
+across launches:
+
+  - `state/`         workers.json / projects.json + chat persistence
+  - `working/`       canonical project copies (server side)
+  - `projects/`      worker-side project checkouts
+  - `worker-config/` stable worker identity (`worker_id`)
+
+`port = nothing` picks a free ephemeral port. Returns an [`AppHandle`](@ref);
+`close(handle)` kills the worker process, then stops the server.
+"""
+# Command that re-execs THIS process as `bonitoagents worker`. `Base.julia_cmd()`
+# carries the same interpreter + sysimage (`-J`), so in a bundle the worker reuses
+# the app's baked-in precompilation instead of compiling from scratch.
+#
+# The child resolves `-m BonitoAgentsApp` the way this process does: our project as
+# `--project` (`Base.julia_cmd()` does not carry one), and startup files on, so a
+# bundle's own `startup.jl` (AppEnv) sets the worker up exactly like the app, with
+# the bundled precompiled packages. With `--startup-file=no` the worker skipped it
+# and tried to rebuild every package into ~/.julia. This used to be done by
+# exporting `JULIA_LOAD_PATH`/`JULIA_DEPOT_PATH` into the process env — which every
+# descendant then inherited, including the Malt eval workers that are supposed to
+# resolve against the USER'S project. We never touch the ambient environment, so
+# nothing downstream has to repair it.
+function worker_command(; server_url, worker_id, projects_root, data_dir)
+    jl = Base.julia_cmd()
+    # Opt-in tracing for the precompile harness: when BONITOAGENTS_TRACE_DIR is
+    # set (precompile/capture.sh), the worker self-traces method compilation to a
+    # per-worker file. The ACP / agent-side paths compile HERE, not in the server
+    # process, so this is how they reach the precompile statement list. No-op
+    # (empty Cmd interpolates away) in normal runs.
+    tracedir = get(ENV, "BONITOAGENTS_TRACE_DIR", "")
+    trace = isempty(tracedir) ? `` :
+            `--trace-compile=$(joinpath(tracedir, "worker-$(worker_id).jl"))`
+    return `$jl $trace --project=$(Base.active_project())
+            -m BonitoAgentsApp worker
+            --server-url=$server_url --worker-id=$worker_id
+            --projects-root=$projects_root --data-dir=$data_dir`
+end
+
+# Stop the worker subprocess: SIGTERM, a short grace, then SIGKILL. A worker
+# parked in its control-WS receive loop acts on a queued SIGTERM only sluggishly
+# (like the production install), so escalate once the grace lapses. IOError from
+# kill = it already exited, which is the goal; anything else surfaces.
+function stop_worker_proc!(proc::Base.Process; grace_s::Real = 1.5)
+    process_exited(proc) && return
+    try; kill(proc); catch e; e isa Base.IOError || rethrow(); end
+    for _ in 1:ceil(Int, grace_s / 0.05)
+        process_exited(proc) && return
+        sleep(0.05)
+    end
+    try; kill(proc, Base.SIGKILL); catch e; e isa Base.IOError || rethrow(); end
+    for _ in 1:40
+        process_exited(proc) && return
+        sleep(0.05)
+    end
+    process_exited(proc) || @warn "BonitoAgents app: worker still alive after SIGKILL" pid = getpid(proc)
+    return
+end
+
+function start_app(; port::Union{Int,Nothing} = nothing)
+    root        = data_root()
+    state_dir   = mkpath(joinpath(root, "state"))
+    working_dir = mkpath(joinpath(root, "working"))
+    worker_cfg  = mkpath(joinpath(root, "worker-config"))
+    projects    = mkpath(joinpath(root, "projects"))
+
+    state  = BonitoAgents.serve(; host = "127.0.0.1",
+                                  port = something(port, 0),
+                                  manage_harnesses = true,
+                                  state_dir     = state_dir,
+                                  working_dir   = working_dir)
+    url = "http://127.0.0.1:$(state.srv.port)"
+
+    # Persist the worker identity in our data root (instead of a scratchspace)
+    # so the dashboard recognises this machine across launches.
+    ENV["BONITOAGENTS_CONFIG_DIR"] = worker_cfg
+    worker_id = BonitoWorker.load_or_generate_worker_id()
+    # Launch the worker as a SEPARATE process (`bonitoagents worker`), not an
+    # in-process task: a worker crash / wedge can't take down the dashboard, and
+    # it mirrors the production install (the worker is always its own process).
+    # Reuses this bundle's binary + sysimage via `worker_command`, so there's no
+    # extra compilation and `./bonitoagents` is still the single command to run.
+    # Worker output → its own log under the data root (not interleaved with the
+    # desktop's stdout), mirroring the production install's worker.log.
+    worker_log = joinpath(worker_cfg, "worker.log")
+    worker_cmd = worker_command(; server_url = url,
+                                  worker_id = worker_id,
+                                  projects_root = projects, data_dir = root)
+    worker_proc = run(pipeline(worker_cmd; stdout = worker_log, stderr = worker_log,
+                               append = true); wait = false)
+    @info "BonitoAgents app: worker process started" pid = getpid(worker_proc) log = worker_log
+
+    return AppHandle(url, state, worker_id, worker_proc, Threads.Atomic{Bool}(false))
+end
+
+# Idempotent: first close stops the Bonito server (bounded drain, mirroring
+# dev_server's close); the worker subprocess is killed in close() above.
+function Base.close(h::AppHandle)
+    prev = Threads.atomic_cas!(h.closed, false, true)
+    prev && return h
+    @info "BonitoAgents app: shutting down" url = h.url
+    # Kill the worker process FIRST: its control WS then drops so the server
+    # close below can drain its WS handlers (a still-connected worker would
+    # deadlock that drain — the worker only disconnects when the server goes
+    # away), and its reconnect loop stops retrying against the closing server.
+    stop_worker_proc!(h.worker_proc)
+    BonitoAgents.close_worker_links!(h.state)
+    close_task = Base.errormonitor(@async close(h.state.srv))
+    for _ in 1:200
+        istaskdone(close_task) && break
+        sleep(0.05)
+    end
+    istaskdone(close_task) ||
+        @warn "BonitoAgents app: server close did not finish in time"
+    delete!(ENV, "BONITOAGENTS_CONFIG_DIR")
+    return h
+end
+
+# Block until close(h) from elsewhere or Ctrl+C (used by --no-window mode).
+function BonitoAgents.wait!(h::AppHandle)
+    try
+        while !h.closed[]
+            sleep(1.0)
+        end
+    catch e
+        e isa InterruptException || rethrow()
+    end
+    return h
+end
+
+# Open the dashboard in the user's default browser. Unlike the old ElectronCall
+# window there's no window-close event to react to — the browser tab is just a
+# viewer over the loopback server — so the desktop lifecycle now matches the
+# headless path: the process runs until close(h) or Ctrl+C (see `desktop`).
+# Non-fatal when no browser is available (headless / CI / SSH): warn and keep
+# serving so the printed URL can be opened manually. `openurl` shells out to the
+# platform opener (open / xdg-open / powershell start) and returns false if none
+# is found — it never throws, so it's safe on a server with no display.
+function open_browser(url::String)
+    if !Bonito.HTTPServer.openurl(url)
+        @warn "BonitoAgents: couldn't open a browser automatically — open the URL manually" url
+    end
+    return
+end
+
+"""
+    desktop(; port = nothing, window = true)
+
+Run the BonitoAgents desktop app: server + local worker + dashboard. With
+`window = true` (default) the dashboard is opened in the user's default browser;
+with `window = false` only the URL is printed (headless / CI). Either way it
+blocks until Ctrl+C (or `close` from elsewhere), then shuts the server down.
+This is what `julia -m BonitoAgentsApp` runs.
+"""
+function desktop(; port::Union{Int,Nothing} = nothing, window::Bool = true)
+    h = start_app(; port)
+    try
+        window && open_browser(h.url)
+        println("BonitoAgents running at $(h.url) — Ctrl+C to stop.")
+        BonitoAgents.wait!(h)
+    finally
+        close(h)
+    end
+    return
+end
+
+const USAGE = """
+BonitoAgents — one bundle, three roles.
+
+Usage: bonitoagents [MODE] [options]
+
+Modes (default: desktop):
+  desktop                 server + local worker + dashboard in your browser
+  server                  headless dashboard server (workers dial back to it)
+  worker                  connect this machine to a remote server as a worker
+
+Desktop options:
+  --port=N                bind the dashboard to a fixed port (default: ephemeral)
+  --no-window             run server + local worker only; print the URL
+  --data-dir=PATH         store all app state under PATH
+
+Server options:
+  --port=N                listen port (default: 8038)
+  --host=HOST             bind host (default: 127.0.0.1, this machine only).
+                          Another address (e.g. 0.0.0.0) serves a trusted network
+                          without the login proxy: no login, and workers join
+                          with a credential from "Add worker"
+  --public-url=URL        base URL workers dial back to (default: auto)
+  --state-dir=PATH        workers.json / projects.json / chats
+  --log-file=PATH         server log (default: <state-dir>/logs/server.log)
+  --working-dir=PATH      canonical project copies
+  --data-dir=PATH         store all server state under PATH
+
+Worker options:
+  --server-url=URL        dashboard server to connect to (required)
+  --credential=NAME:PASS  the worker credential from "Add worker";
+                          BONITOAGENTS_WORKER_CREDENTIAL keeps it off the command line
+  --worker-id=ID          stable worker id (default: persisted/generated)
+  --projects-root=PATH    where project checkouts live
+  --data-dir=PATH         store all worker state under PATH
+
+Default data dir: ~/.local/share/BonitoAgents (Linux),
+~/Library/Application Support/BonitoAgents (macOS),
+%LOCALAPPDATA%\\BonitoAgents (Windows).
+"""
+
+# --key=value → opts["key"]="value"; bare --flag → opts["flag"]="". Errors on
+# anything not starting with `--`, so a typo fails loudly instead of being
+# silently ignored.
+# One parser for both entry points. This used to be a second implementation that
+# accepted `--key=value` ONLY, so `bonitoagents server --port 8080` — the form
+# `bin/bonitoagents-server` documents and accepts — failed here.
+parse_opts(args) = BonitoAgents.parse_server_args(collect(String, args))
+
+# `desktop`: server + local worker + dashboard opened in the user's browser.
+function run_desktop(args)
+    port = nothing
+    window = true
+    for arg in args
+        if arg == "--no-window"
+            window = false
+        elseif startswith(arg, "--port=")
+            port = parse(Int, split(arg, '='; limit = 2)[2])
+        elseif startswith(arg, "--data-dir=")
+            ENV["USER_DATA"] = split(arg, '='; limit = 2)[2]
+        else
+            println(stderr, "Unknown desktop argument: $arg\n")
+            print(stderr, USAGE)
+            return 1
+        end
+    end
+    desktop(; port, window)
+    return 0
+end
+
+# `server`: headless dashboard. Same start as `bin/bonitoagents-server` — this
+# supplies DEFAULTS (our shared data dir) and nothing else. Hand-writing the
+# `serve(...)` call here a second time is what let the two drift: the file-log
+# redirect lived in this copy alone, so the systemd deployment (which runs
+# `-m BonitoAgents`) had no log file at all.
+function run_server(args)
+    opts = parse_opts(args)
+    haskey(opts, "data-dir") && (ENV["USER_DATA"] = opts["data-dir"])
+    root = data_root()
+    BonitoAgents.start_server(opts;
+        state_dir   = mkpath(joinpath(root, "state")),
+        working_dir = mkpath(joinpath(root, "working")))
+    block_until_interrupt()
+    return 0
+end
+
+# `worker`: dial back to a remote server. connect_and_serve loops internally
+# (reconnect-forever), so it blocks until interrupted.
+function run_worker(args)
+    opts = parse_opts(args)
+    haskey(opts, "data-dir") && (ENV["USER_DATA"] = opts["data-dir"])
+    for req in ("server-url",)
+        haskey(opts, req) && !isempty(opts[req]) && continue
+        println(stderr, "worker: --$req is required\n")
+        print(stderr, USAGE)
+        return 1
+    end
+    root     = data_root()
+    projects = get(opts, "projects-root", mkpath(joinpath(root, "projects")))
+    ENV["BONITOAGENTS_CONFIG_DIR"] = mkpath(joinpath(root, "worker-config"))
+    # A daemon that owns its stdout, same as the server mode above: without this
+    # the bundle's worker logged to whatever launched it, and
+    # `bt_dev_logs(source=<worker>)` had nothing to read. AFTER the config dir is
+    # set — that is what `worker_log_path()` resolves against.
+    BonitoWorker.start_file_log!(BonitoWorker.worker_log_path())
+    worker_id = get(opts, "worker-id", "")
+    isempty(worker_id) && (worker_id = BonitoWorker.load_or_generate_worker_id())
+    BonitoWorker.connect_and_serve(;
+        server_url    = opts["server-url"],
+        credential    = get(opts, "credential", get(ENV, "BONITOAGENTS_WORKER_CREDENTIAL", "")),
+        worker_id     = worker_id,
+        projects_root = projects)
+    return 0
+end
+
+function block_until_interrupt()
+    try
+        while true
+            sleep(3600)
+        end
+    catch e
+        e isa InterruptException || rethrow()
+    end
+    return
+end
+
+function (@main)(args)
+    args = collect(String, args)
+    # Help is matched before mode-defaulting so `--help`/`-h` (which start with
+    # `-`, and would otherwise fall through to desktop) print usage.
+    if !isempty(args) && first(args) in ("-h", "--help", "help")
+        print(USAGE)
+        return 0
+    end
+    # First non-flag token selects the mode; default is `desktop`.
+    mode = (!isempty(args) && !startswith(first(args), "-")) ? popfirst!(args) : "desktop"
+    if mode == "desktop"
+        return run_desktop(args)
+    elseif mode == "server"
+        return run_server(args)
+    elseif mode == "worker"
+        return run_worker(args)
+    else
+        println(stderr, "Unknown mode: $mode\n")
+        print(stderr, USAGE)
+        return 1
+    end
+end
+
+@setup_workload begin
+    @compile_workload begin
+        mktempdir() do dir
+            state = BonitoAgents.serve(;
+                host          = "127.0.0.1",
+                port          = 0,
+                state_dir     = mkpath(joinpath(dir, "state")),
+                working_dir   = mkpath(joinpath(dir, "working")),
+                # The scan would start every installed agent to list its
+                # sessions, and precompilation then waits on those processes.
+                scan_on_connect = false)
+            url = "http://127.0.0.1:$(state.srv.port)"
+            # Bake the WORKER handshake. The desktop app spawns a second Julia
+            # process (`-m BonitoAgentsApp worker`) whose connection (dial, link
+            # handshake, control channel) JIT-compiles on every launch — the
+            # dominant cold-start cost to a usable dashboard. Connect a worker
+            # IN-PROCESS against our own server; it registers, and `close(worker)`
+            # below ends it. The client WS uses HTTP's IO poller, which
+            # `cleanup_globals()` (at the end) shuts down — the same teardown
+            # Bonito's own workload relies on — so there is no lingering handle
+            # in the precompile image.
+            worker = BonitoWorker.Worker(BonitoWorker.WorkerConfig(;
+                server_url    = url,
+                worker_id     = "precompile-worker",
+                name          = "precompile",
+                mcp_command   = first(Base.julia_cmd().exec),
+                mcp_arguments = String[],
+                projects_root = mkpath(joinpath(dir, "projects"))))
+            worker_task = Threads.@spawn BonitoWorker.serve(worker; retry_delay = 0.1)
+            # Wait (bounded) for the handshake to register the worker so the
+            # dashboard fetch below renders the worker-present path too.
+            for _ in 1:300
+                BonitoAgents.worker_connected(state, "precompile-worker") && break
+                sleep(0.01)
+            end
+            # Fetch the dashboard via Downloads (libcurl), NOT HTTP/Reseau: the
+            # HTTP client spins up Reseau's global event loop, whose timer is
+            # still alive when the precompile image is serialized ("waiting for
+            # IO to finish" — a leaked uv handle). libcurl keeps its handles
+            # internal and releases them when the download returns, so the
+            # render path still precompiles (fast first paint) without leaking.
+            # `grace = 0`: the default Downloader keeps its libcurl event loop
+            # alive for 30s after the last request via a Timer — which would be
+            # the lingering handle. grace=0 tears it down immediately.
+            try
+                Downloads.download(url, devnull;
+                                   headers = ["Connection" => "close"],
+                                   downloader = Downloads.Downloader(; grace = 0))
+            catch e
+                @warn "precompile workload: dashboard fetch failed; the page path stays uncompiled" exception = (e, catch_backtrace())
+            end
+            # The libcurl GET above compiles the HTML serve path but never runs
+            # the client JS, so the LIVE path a browser drives stays cold — the
+            # 2-5s "until visible": websocket session announce → init_session →
+            # init-message flush → observable updates → evaljs round-trip. Bonito's
+            # own `serve_workload` speaks that exact frontend protocol against a
+            # loopback ws client (no browser needed), so it compiles into our
+            # pkgimage with the dashboard's real component types loaded. Its server
+            # + IO poller are torn down by `cleanup_globals()` at the end.
+            try
+                Bonito.serve_workload(BonitoAgents.dashboard_app(state))
+            catch e
+                @warn "precompile workload: serve_workload failed; the live page path stays uncompiled" exception = (e, catch_backtrace())
+            end
+            # End the worker BEFORE closing the server: a connected worker
+            # DEADLOCKS the server's WS-handler drain (the worker only leaves
+            # once the server goes away, and `close` waits on its handler). Then
+            # end the server's side of the link, whose tasks would otherwise
+            # outlive the server for the link's grace period.
+            close(worker)
+            for _ in 1:500
+                istaskdone(worker_task) && break
+                sleep(0.01)
+            end
+            BonitoAgents.close_worker_links!(state)
+            # Close the sessions the render created (compiles teardown paths too),
+            # then the server — which stops its accept loop AND its 1-Hz cleanup
+            # task (whose `sleep(1)` would otherwise be a lingering timer).
+            for (_, v) in state.srv.routes.table
+                v isa Bonito.App && !isnothing(v.session[]) && close(v.session[])
+            end
+            close(state.srv)
+        end
+        # Stop Bonito's global cleanup machinery + clear server globals, then run
+        # finalizers and yield so no background task / libuv handle survives into
+        # the precompile image.
+        Bonito.cleanup_globals()
+        GC.gc()
+        yield()
+    end
+end
+
+end # module BonitoAgentsApp

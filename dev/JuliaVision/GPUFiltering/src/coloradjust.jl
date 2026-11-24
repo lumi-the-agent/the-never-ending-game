@@ -1,0 +1,107 @@
+"""
+    ColorAdjustments(; brightness=0, contrast=1, saturation=1, temperature=0)
+
+Fused per-pixel color correction parameters (all Float32, isbits):
+`brightness` additive in [-1, 1], `contrast` multiplicative around 0.5,
+`saturation` mix against luma (0 = grayscale, 1 = unchanged),
+`temperature` warm/cool shift in [-1, 1] (positive = warmer).
+"""
+struct ColorAdjustments
+    brightness::Float32
+    contrast::Float32
+    saturation::Float32
+    temperature::Float32
+end
+
+function ColorAdjustments(; brightness::Real = 0, contrast::Real = 1,
+                          saturation::Real = 1, temperature::Real = 0)
+    return ColorAdjustments(Float32(brightness), Float32(contrast),
+                            Float32(saturation), Float32(temperature))
+end
+
+isneutral(adj::ColorAdjustments) =
+    adj.brightness == 0 && adj.contrast == 1 && adj.saturation == 1 && adj.temperature == 0
+
+function coloradjust_kernel!(img, adjp)
+    I, inside = workitem(size(img))
+    inside || return nothing
+    adj = paramvalue(adjp)
+    px = img[I]
+    av = alphaof(px)
+    c = straight(tofloat(px), av)   # contrast and brightness are not linear in coverage
+    # temperature: opposing red/blue gains
+    r = c.r * (1.0f0 + 0.25f0 * adj.temperature)
+    g = c.g
+    b = c.b * (1.0f0 - 0.25f0 * adj.temperature)
+    # saturation: mix with Rec.709 luma
+    luma = 0.2126f0 * r + 0.7152f0 * g + 0.0722f0 * b
+    r = luma + (r - luma) * adj.saturation
+    g = luma + (g - luma) * adj.saturation
+    b = luma + (b - luma) * adj.saturation
+    # contrast around mid-gray, then brightness
+    r = (r - 0.5f0) * adj.contrast + 0.5f0 + adj.brightness
+    g = (g - 0.5f0) * adj.contrast + 0.5f0 + adj.brightness
+    b = (b - 0.5f0) * adj.contrast + 0.5f0 + adj.brightness
+    img[I] = premul(eltype(img), r, g, b, av)
+    return nothing
+end
+
+"""
+    coloradjust!(img; brightness=0, contrast=1, saturation=1, temperature=0)
+    coloradjust!(img, adj::ColorAdjustments)
+
+In-place fused brightness/contrast/saturation/temperature adjustment.
+"""
+coloradjust!(img::AbstractMatrix{<:AnyRGB}; kwargs...) =
+    coloradjust!(img, ColorAdjustments(; kwargs...))
+
+function coloradjust!(img::AbstractMatrix{<:AnyRGB}, adj::ColorAdjustments)
+    isneutral(adj) && return img
+    launch!(device(img), coloradjust_kernel!, (img, adj), size(img))
+    return img
+end
+
+function channellinear_kernel!(img, gainp, offsetp)
+    I, inside = workitem(size(img))
+    inside || return nothing
+    gain = Vec3f(paramvalue(gainp))
+    offset = Vec3f(paramvalue(offsetp))
+    px = img[I]
+    av = alphaof(px)
+    c = straight(tofloat(px), av)   # the OFFSET is what makes this non-linear
+    img[I] = premul(eltype(img),
+                    c.r * gain[1] + offset[1],
+                    c.g * gain[2] + offset[2],
+                    c.b * gain[3] + offset[3], av)
+    return nothing
+end
+
+"""
+    channellinear!(img, gain::Vec3f, offset::Vec3f)
+
+In-place per-channel linear transform `c' = c * gain + offset` — the
+building block for frame-to-frame color/exposure stabilization.
+"""
+function channellinear!(img::AbstractMatrix{<:AnyRGB}, gain::Vec3f, offset::Vec3f)
+    gain == Vec3f(1) && offset == Vec3f(0) && return img
+    launch!(device(img), channellinear_kernel!, (img, gain, offset), size(img))
+    return img
+end
+
+"""
+    channelstats(img) -> (mean::Vec3f, std::Vec3f)
+
+Per-channel mean and standard deviation — one fused reduction that runs
+wherever `img` lives: a host loop for a CPU array, a device `mapreduce`
+for a GPU array (only 6 floats cross the bus).
+"""
+function channelstats(img::AbstractMatrix{<:AnyRGB})
+    acc = mapreduce(+, img; init = zero(Vec{6, Float32})) do c
+        r = Float32(red(c)); g = Float32(green(c)); b = Float32(blue(c))
+        Vec{6, Float32}(r, g, b, r * r, g * g, b * b)
+    end
+    n = Float32(length(img))
+    μ = Vec3f(acc[1], acc[2], acc[3]) ./ n
+    σ = sqrt.(max.(Vec3f(acc[4], acc[5], acc[6]) ./ n .- μ .* μ, 0.0f0))
+    return μ, σ
+end

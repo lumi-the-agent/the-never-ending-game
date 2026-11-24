@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T03:34:56.089",
+  "finished": "2026-11-23T03:44:19.004",
+  "id": "20261123-033456-088-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a single chunky stylized meadow flower with five thick round pink petals and a big yellow center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T03:44:18.614",
+    "faces": 38154,
+    "id": "20261123-033456-088-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-033456-088-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-033456-088-asset/mesh.jls",
+    "prompt": "a single chunky stylized meadow flower with five thick round pink petals and a big yellow center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, soft hand painted colors",
+    "seconds": 559.0,
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "seconds": 561.8,
+  "started": "2026-11-23T03:34:56.876",
+  "status": "done"
+}

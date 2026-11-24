@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T12:19:44.309",
+  "finished": "2026-11-23T12:56:35.199",
+  "id": "20261123-121944-306-clip",
+  "kind": "clip",
+  "params": {
+    "call": "cairn_movie",
+    "kwargs": {
+      "fps": 24,
+      "samples": 128,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/clips/one-more-stone-128-clean.mp4",
+    "script": "movies/cairn_release.jl"
+  },
+  "result": {
+    "frames": 323,
+    "hour": 16.649305555586636,
+    "path": "/sim/Programmieren/SimGame/world/media/clips/one-more-stone-128-clean.mp4",
+    "seconds_per_frame": 6.645619753344509,
+    "tdone": 5.375
+  },
+  "seconds": 2194.2,
+  "started": "2026-11-23T12:20:00.808",
+  "status": "done"
+}

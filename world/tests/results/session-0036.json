@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: nobody answered the wave (Wibbles is interact)",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": false,
+      "seconds": 1.6
+    },
+    {
+      "error": "check failed: Gloop and Wibbles overlap: 0.74 m apart",
+      "file": "separation.jl",
+      "name": "Creatures never stand inside each other",
+      "passed": false,
+      "seconds": 0.1
+    }
+  ],
+  "passed": 59,
+  "session": 36,
+  "time": "2026-11-23T11:02:07",
+  "total": 61
+}

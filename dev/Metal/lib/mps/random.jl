@@ -1,0 +1,137 @@
+using Random
+using Metal: DefaultStorageMode
+
+"""
+    MPS.RNG([device], [seed])
+
+A random number generator backed by Metal Performance Shaders' Philox generator
+([`MPSMatrixRandomPhilox`](https://developer.apple.com/documentation/metalperformanceshaders/mpsmatrixrandomphilox)).
+It fills `MtlArray`s with uniformly distributed `Float32`s or integers (`rand!`), or normally
+distributed `Float32`s (`randn!`); other element types are not supported. Every task has one,
+returned by [`Metal.mps_rng`](@ref).
+"""
+mutable struct RNG <: AbstractRNG
+    device::MTLDevice
+    uniformInteger::MPSMatrixRandomPhilox
+    uniformFloat32::MPSMatrixRandomPhilox
+    normalFloat32::MPSMatrixRandomPhilox
+end
+
+
+make_seed() = Base.rand(RandomDevice(), UInt)
+
+function RNG(device::MTLDevice, seed::Integer)
+    seed = seed%UInt
+    RNG(device,
+        MPSMatrixRandomPhilox(device, UInt32, seed, MPSMatrixRandomDefaultDistributionDescriptor()),
+        MPSMatrixRandomPhilox(device, Float32, seed, MPSMatrixRandomUniformDistributionDescriptor(0, 1)),
+        MPSMatrixRandomPhilox(device, Float32, seed, MPSMatrixRandomNormalDistributionDescriptor(0, 1)),)
+end
+RNG(seed::Integer) = RNG(device(), seed)
+RNG(device::MTLDevice) = RNG(device, make_seed())
+
+RNG() = RNG(device(), make_seed())
+
+function Random.seed!(rng::RNG, seed::Integer)
+    rng.uniformInteger = MPSMatrixRandomPhilox(rng.device, UInt32, seed, MPSMatrixRandomDefaultDistributionDescriptor())
+    rng.uniformFloat32 = MPSMatrixRandomPhilox(rng.device, Float32, seed, MPSMatrixRandomUniformDistributionDescriptor(0, 1))
+    rng.normalFloat32  = MPSMatrixRandomPhilox(rng.device, Float32, seed, MPSMatrixRandomNormalDistributionDescriptor(0, 1))
+    return rng
+end
+
+Random.seed!(rng::RNG) = Random.seed!(rng, make_seed())
+
+function default_rng()
+    dev = device()
+
+    rngs = get!(task_local_storage(), :MetalMPSRNG) do
+        Dict{MTLDevice,RNG}()
+    end::Dict{MTLDevice,RNG}
+
+    get!(rngs, dev) do
+        RNG(dev)
+    end
+end
+
+const UniformTypes = [Float32,UInt8,Int8,UInt16,Int16,UInt32,Int32,UInt64,Int64]
+const UniformType = Union{[Type{T} for T in UniformTypes]...}
+const UniformArray = MtlArray{<:Union{Float32,UInt8,Int8,UInt16,Int16,UInt32,Int32,UInt64,Int64}}
+# `MtlArray{<:Union{...}}` would also match arrays of isbits unions of these types, whose
+# selector bytes MPS doesn't fill
+const UniformIntegerArray = Union{[MtlArray{T} for T in UniformTypes if T <: Integer]...}
+function Random.rand!(rng::RNG, A::UniformIntegerArray)
+    isempty(A) && return A
+    _mpsmat_rand!(rng.uniformInteger, A, UInt32)
+    return A
+end
+
+function Random.rand!(rng::RNG, A::MtlArray{Float32})
+    isempty(A) && return A
+    _mpsmat_rand!(rng.uniformFloat32, A, Float32)
+    return A
+end
+
+const NormalType = Type{Float32}
+const NormalArray = MtlArray{<:Float32}
+function Random.randn!(rng::RNG, A::MtlArray{Float32})
+    isempty(A) && return A
+    _mpsmat_rand!(rng.normalFloat32, A, Float32)
+    # Workaround for upstream MPSMatrixRandom bug (#474): the normal generator is
+    # an inverse-CDF transform z = Phi^-1(u) of a uniform u in [0,1) at 2^-23
+    # resolution. When u draws exactly 0 (rate 2^-23 ~ 1.2e-7), Phi^-1(0) = -Inf
+    # yields a NaN. Apple never excludes the 0 endpoint, and the min/max-clamped
+    # descriptor doesn't help (its clamp uses ordered comparisons that pass NaN
+    # through), so scrub the rare non-finite values here.
+    A .= ifelse.(isfinite.(A), A, zero(eltype(A)))
+    return A
+end
+
+# CPU arrays
+function Random.rand!(rng::RNG, A::Union{[AbstractArray{T} for T in UniformTypes]...})
+    T, N = eltype(A), ndims(A)
+    isempty(A) && return A
+    if MTL.can_alloc_nocopy(pointer(A), sizeof(A))
+        mtlA = unsafe_wrap(MtlArray{T, N}, A)
+        rand!(rng, mtlA)
+    else
+        B = MtlArray{T, N, SharedStorage}(undef, size(A))
+        rand!(rng, B)
+        copyto!(A, B)
+    end
+    return A
+end
+
+function Random.randn!(rng::RNG, A::AbstractArray{T, N}) where {T <: Float32, N}
+    isempty(A) && return A
+    if MTL.can_alloc_nocopy(pointer(A), sizeof(A))
+        mtlA = unsafe_wrap(MtlArray{T, N}, A)
+        randn!(rng, mtlA)
+    else
+        B = MtlArray{T, N, SharedStorage}(undef, size(A))
+        randn!(rng, B)
+        copyto!(A, B)
+    end
+    return A
+end
+
+# Out of place
+Random.rand(rng::RNG, T::UniformType, dims::Dims; storage=DefaultStorageMode) =
+    Random.rand!(rng, MtlArray{T,length(dims),storage}(undef, dims...))
+Random.randn(rng::RNG, T::NormalType, dims::Dims; storage=DefaultStorageMode) =
+    Random.randn!(rng, MtlArray{T,length(dims),storage}(undef, dims...))
+
+# support all dimension specifications
+Random.rand(rng::RNG, T::UniformType, dim1::Integer, dims::Integer...; storage=DefaultStorageMode) =
+    Random.rand!(rng, MtlArray{T,length(dims) + 1,storage}(undef, dim1, dims...))
+Random.randn(rng::RNG, T::NormalType, dim1::Integer, dims::Integer...; storage=DefaultStorageMode) =
+    Random.randn!(rng, MtlArray{T,length(dims) + 1,storage}(undef, dim1, dims...))
+
+# untyped out-of-place
+Random.rand(rng::RNG, dim1::Integer, dims::Integer...; storage=DefaultStorageMode) =
+    Random.rand!(rng, MtlArray{Float32,length(dims) + 1,storage}(undef, dim1, dims...))
+Random.randn(rng::RNG, dim1::Integer, dims::Integer...; storage=DefaultStorageMode) =
+    Random.randn!(rng, MtlArray{Float32,length(dims) + 1,storage}(undef, dim1, dims...))
+
+# scalars
+Random.rand(rng::RNG, T::UniformType=Float32; storage=SharedStorage) = rand(rng, T, 1; storage)[1]
+Random.randn(rng::RNG, T::NormalType=Float32; storage=SharedStorage) = randn(rng, T, 1; storage)[1]

@@ -1,0 +1,123 @@
+{
+ "verdict": "needs_work",
+ "summary": "By day the island is a decent toy diorama and the mini games are now fair and give a small payoff (a basket by the cottage, a best score), but the game a player meets at night, which is most of the clock I sampled, is dark: the follow camera parks on a heap of sleeping critters under overlapping name tags and Z's, and the sky is an empty navy. Creatures are still sphere bodies with hats, the island is still one hill and one pond, and path tracing is noisy with discs for lights. No release video exists for goal 2.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "Day clean but flat; at 00:00-01:30 the sky is empty navy, shadows are hard blobs, and motes are hard discs (cam1-follow.png, pt.png). Clouds (s30) help only by day; sky gradient and horizon band still open."
+  },
+  "world": {
+   "score": 4,
+   "why": "Same single hill, pond, path and cottage as session 20 (overview.png in session-0020 vs 0030); more trees and a tint on the ground, but no new area, beach, stream or elevation."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated trees, boulders, bushes, cottage and basket are charming and grouped; the progress is slow (few new props since s27)."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Hats, bows and scarves give identity and the sleeping Z's are readable, but bodies are spheres with stub limbs; the crab from above is a flat blob; in sleep they pile into one unreadable heap."
+  },
+  "fun": {
+   "score": 4,
+   "why": "I played Berry race and Firefly catch through interact! (the suite's first-play tests, 10 s and 14 s, both won with W/A/D only): clear start card, key hints, 'You win 3 to 0', a best score and berries to the cottage basket (10 in it). A second play has a small reason, but the payoff is a number and a basket far from the action, and at night the rivals are asleep."
+  },
+  "camera": {
+   "score": 4,
+   "why": "Follow camera at 00:04 and 00:16 frames a pile of sleeping critters with overlapping tags and trees cropping the top (cam1-follow.png); the orbit and free modes show the same high view and look identical (cam2, cam3); progress shots are always taken at night."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Dark panel is readable and the start/end cards are good, but the right column is a long text message and stale Sprout status ('2 min, 23 steps' while playing), the dropdown stays on the last played game (Firefly catch) after a test, and a black strip sits above the 3D view."
+  },
+  "style": {
+   "score": 5,
+   "why": "Chunky painted look is cohesive in the raster; path tracing (pt.png) shows heavy noise, glowing discs and fur-like speckle that do not match the raster, and the browser needs its own colours."
+  },
+  "performance": {
+   "score": 8,
+   "why": "live_status: frame median 1.7 ms, p95 3.4 ms at 30 fps with 17 plugins; during path tracing the frame stays 3.7 ms median."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "camera",
+   "what": "At night the follow camera settles on the sleeping creatures: a heap of bodies under four overlapping name tags and a cloud of Z's, with a tree crown cropping the top of the frame. Orbit and free modes are the same high view and add nothing.",
+   "where": "follow/orbit/free camera, rig and name tags",
+   "evidence": "reviews/p30/cam1-follow.png, cam4-follow.png, cam2-orbit.png, cam3-free.png",
+   "suggestion": "Write the camera director (#119): choose the best current event (chat, gift, dance, a game), frame two faces 3/4 from the front at eye height, ray-test the lens against foliage, and during sleep either cut to a calm night view (cottage window light, fireflies, moon) or a single sleeper close-up with one tag. Make free a real fly camera and orbit a slow turn.",
+   "done_when": "Twenty follow screenshots at hours 0-6 show at most one name tag overlapping a subject, the subject's head unobstructed, and orbit/free differ from the default view."
+  },
+  {
+   "severity": "high",
+   "category": "style",
+   "what": "Goal 2 is not reached: no releases/ folder and no video; the only traced still has a hard black cutout on the path edge and flat ground, and a live path traced frame is grainy with fur-like speckle and glowing discs.",
+   "where": "worker trace jobs, world/releases (missing)",
+   "evidence": "media/s30/trace-outfits.png, reviews/p30/pt.png",
+   "suggestion": "Pick a 10-15 s real moment (the berry win with the cheering critters, or the dance circle at dusk), build a dolly and two cuts with VideoEditor, fix the path edge and sea in trace, render at 128+ samples with denoise at golden hour, and release with a note.",
+   "done_when": "world/releases/<date>-<name>/ holds an mp4 plus note; a frame crop shows no black edge and no visible grain at 1280x720."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "what": "The best interaction is still a counter: the mini games end on a card and a number in a basket far from where you play, nothing around the creatures changes, and at night the rival critters are asleep so Berry race has no race.",
+   "where": "plugins/berry_race.jl, firefly_catch.jl, flowergift.jl",
+   "evidence": "reviews/p30/berry-wad-end.png ('10 in it now'), firefly-wad.png (Gloop, Truffle asleep with Z's)",
+   "suggestion": "Make the win a scene: the critters carry you to the cottage, a berry pie appears on a table with lit windows and all critters cheer and dance; fireflies caught fill a lantern string that stays lit. Run the games at dusk so rivals are awake, or have a woken rival.",
+   "done_when": "After a win a screenshot shows a lasting visible object or scene at the cottage and the critters reacting; a second play shows a best score and the new object counts up."
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "what": "The island is the same one hill, pond and orange path as session 20: ground is smooth green, the shoreline a hard line, no second area.",
+   "where": "terrain/scenery plugins",
+   "evidence": "media/progress/session-0020/overview.png vs session-0030/overview.png; reviews/p30/cam2-orbit.png",
+   "suggestion": "Add a rocky outcrop with a stream, a sandy beach with the pier lit by lanterns, a meadow of wildflowers and dirt patches; soften the shore with foam.",
+   "done_when": "The overview shows at least three ground types and a soft shoreline with foam."
+  },
+  {
+   "severity": "medium",
+   "category": "creatures",
+   "what": "Creatures are sphere bodies with stub legs; hats help but the crab from above is a flat blob and sleeping critters merge into one pile.",
+   "where": "species and pose code, outfits.jl",
+   "evidence": "reviews/p30/cam1-follow.png, trace-outfits.png",
+   "suggestion": "Give each species a distinct silhouette (curly tail and snout for pigs, wool tufts for sheep, raised claws for the crab) and larger eyes with highlights; have sleepers curl up on separate spots with blankets or beds.",
+   "done_when": "A silhouette render of all 10 creatures shows 10 shapes and sleepers lie at least 1.5 m apart."
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "what": "Night has an empty navy sky and hard shadow blobs; motes are hard discs that turn into big discs in path tracing.",
+   "where": "sky, nightglow plugins",
+   "evidence": "reviews/p30/cam1-follow.png, pt.png, progress session-0030/eye-level.png",
+   "suggestion": "Add a horizon glow gradient, a milky way of stars, soft shadows or ambient fill, warm window light and lantern pools, and soft gradient sprites for motes.",
+   "done_when": "Mean luminance of the night 3D view at 01:00 is at least 0.12, motes have soft edges in a 2x crop, and the sky shows a visible gradient."
+  },
+  {
+   "severity": "low",
+   "category": "ui",
+   "what": "Panels are stale or text-heavy: Sprout's status says '2 min 23 steps' during a mini game, the dropdown remains on the last mini game after Stop, and the Messages panel is a paragraph cut off at five lines.",
+   "where": "dashboard panels",
+   "evidence": "reviews/p30/berry-wad-end.png, pt.png (menu reads 'Firefly catch')",
+   "suggestion": "Show the current activity, a short icon feed of the last events, and reset the menu on Stop; move the status line into the scene.",
+   "done_when": "A screenshot during Berry race shows the race in the Sprout line and no paragraph longer than two lines."
+  }
+ ],
+ "engine": [
+  {
+   "what": "WGLMakie browser ignores Hikari materials and shows different colours; browser sky and sea need hand-set colours.",
+   "evidence": "CLAUDE.md lessons; s30 sea fix"
+  },
+  {
+   "what": "RayMakie raster has hard shadows and a path tracer with no denoiser in the live view, so glow discs and fur noise show.",
+   "evidence": "reviews/p30/pt.png"
+  },
+  {
+   "what": "Reviewers cannot script interact! outside a test run (wait_frames errors), so mini games can only be played through the existing suite.",
+   "evidence": "src/uitests.jl:142; todo #124"
+  }
+ ],
+ "process": "Session 30 spent its time on outfits, clouds, the browser sea colour, hat tips and a flaky-test note: small, cosmetic and mostly daytime. Earlier sessions did fix the first-play mini games, which I confirmed. The standing blockers have sat open for three or more reviews: the camera director (#119), world variety (#122) and the path traced video (goal 2, no release). The progress shots are taken only at night, so the daylight clouds and look are not in the sequence. Next sessions should do one large visible thing each: a camera director plus a calm night view, a win scene with a lasting object, then a real video project.",
+ "addressed": true
+}

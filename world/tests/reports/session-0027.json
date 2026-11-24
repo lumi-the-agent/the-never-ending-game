@@ -1,0 +1,8 @@
+{"session": 27,
+ "summary": "The host suite could not finish at first (game restart); after it, the full suite ran 44/45, then the one failure (pier fishing timed out at 120 s while the game was busy) passed on rerun in 20 s. Both flower gift tests (critter gift, Sprout picks and gives with E) pass; no new tests needed because they are already in the suite.",
+ "failures": [{"what": "'A creature walks out on the pier and fishes' timed out once after 120 s in the suite run after the restart",
+   "steps": "Run the whole suite right after a game restart; the pier test is the one at about 21 s normally",
+   "expected": "Passes in about 20 s",
+   "actual": "check failed: timed out after 120.0 s once; it passed alone on rerun (20.2 s). Possibly a slow frame spell (frame p95 738 ms) after the restart, so flaky rather than broken",
+   "screenshot": "world/tests/shots/areas_overview.png"}],
+ "tests_added": []}

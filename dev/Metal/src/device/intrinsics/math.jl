@@ -1,0 +1,522 @@
+# Math function mappings to Metal intrinsics
+
+# We try to rely on LLVM intrinsics as much as possible, as emitted by Julia or by the
+# overrides here, and lowered to AIR intrinsics by GPUCompiler.jl. Only functions without
+# an LLVM intrinsic call AIR functions directly.
+
+using Base: FastMath
+using Base.Math: throw_complex_domainerror
+import Core: Float16, Float32
+
+# TODO:
+# - wrap all intrinsics from include/metal/metal_math
+# - add support for vector types
+
+### Constants
+
+# without consistent overlays (Julia 1.10), the overlays on Base's throw paths prevent the
+# BigFloat-based conversion from being evaluated at compile time.
+@static if !HAS_CONSISTENT_OVERLAY
+for T in (:Float16,:Float32), R in (RoundUp, RoundDown), irr in (π, ℯ)
+    @eval @device_override $T(::typeof($irr), ::typeof($R)) = $@eval($T($irr,$R))
+end
+end
+
+### Common Intrinsics
+
+@device_function clamp_fast(x::Float32, minval::Float32, maxval::Float32) = ccall("extern air.fast_clamp.f32", llvmcall, Cfloat, (Cfloat, Cfloat, Cfloat), x, minval, maxval)
+
+### Floating Point Intrinsics
+
+# Metal only supports single and half-precision floating-point types (and their vector counterparts)
+# For single precision types, there are precise and fast variants
+
+# Call the LLVM math intrinsic `name`, which GPUCompiler lowers to the AIR function of the
+# same name, or with `fast` to its relaxed f32 variant (by marking the call `afn`). Unlike
+# calls to AIR functions, LLVM can fold and simplify these, and Enzyme can differentiate
+# them. LLVMs that predate the intrinsic get the AIR function directly.
+@llvmgenerated builder function llvm_math(::Val{name}, ::Val{fast}, args::T...
+                                         )::T where {name, fast, T<:Union{Float16,Float32}}
+    typ = convert(LLVMType, T)
+    mod = current_module(builder)
+    intr = tryparse(Intrinsic, "llvm.$name")
+    f = if intr !== nothing
+        LLVM.Function(mod, intr, [typ])
+    else
+        fn = "air.$(fast && T === Float32 ? "fast_" : "")$name.$(T === Float32 ? "f32" : "f16")"
+        LLVM.Function(mod, fn, LLVM.FunctionType(typ, LLVMType[typ for _ in args]))
+    end
+    call = call!(builder, f.function_type, f, collect(LLVM.Value, args))
+    fast && (call.fast_math = (; afn=true))
+    return call
+end
+
+@static if VERSION < v"1.12"
+    @device_override Base.min(x::Float16, y::Float16) = ccall("llvm.minimum.f16", llvmcall, Float16, (Float16, Float16), x, y)
+    @device_override Base.max(x::Float16, y::Float16) = ccall("llvm.maximum.f16", llvmcall, Float16, (Float16, Float16), x, y)
+end
+
+@device_override FastMath.acos_fast(x::Float32) = llvm_math(Val(:acos), Val(true), x)
+@device_override Base.acos(x::Float32) = llvm_math(Val(:acos), Val(false), x)
+@device_override Base.acos(x::Float16) = llvm_math(Val(:acos), Val(false), x)
+
+@device_override FastMath.acosh_fast(x::Float32) = ccall("extern air.fast_acosh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.acosh(x::Float32) = ccall("extern air.acosh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.acosh(x::Float16) = ccall("extern air.acosh.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override FastMath.asin_fast(x::Float32) = llvm_math(Val(:asin), Val(true), x)
+@device_override Base.asin(x::Float32) = llvm_math(Val(:asin), Val(false), x)
+@device_override Base.asin(x::Float16) = llvm_math(Val(:asin), Val(false), x)
+
+@device_override FastMath.asinh_fast(x::Float32) = ccall("extern air.fast_asinh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.asinh(x::Float32) = ccall("extern air.asinh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.asinh(x::Float16) = ccall("extern air.asinh.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override FastMath.atan_fast(x::Float32) = llvm_math(Val(:atan), Val(true), x)
+@device_override Base.atan(x::Float32) = llvm_math(Val(:atan), Val(false), x)
+@device_override Base.atan(x::Float16) = llvm_math(Val(:atan), Val(false), x)
+
+@device_override FastMath.atan_fast(x::Float32, y::Float32) = llvm_math(Val(:atan2), Val(true), x, y)
+@device_override Base.atan(x::Float32, y::Float32) = llvm_math(Val(:atan2), Val(false), x, y)
+@device_override Base.atan(x::Float16, y::Float16) = llvm_math(Val(:atan2), Val(false), x, y)
+
+@device_override FastMath.atanh_fast(x::Float32) = ccall("extern air.fast_atanh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.atanh(x::Float32) = ccall("extern air.atanh.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.atanh(x::Float16) = ccall("extern air.atanh.f16", llvmcall, Float16, (Float16,), x)
+
+@device_function ceil_fast(x::Float32) = llvm_math(Val(:ceil), Val(true), x)
+
+@device_override FastMath.cos_fast(x::Float32) = llvm_math(Val(:cos), Val(true), x)
+@device_override Base.cos(x::Float32) = llvm_math(Val(:cos), Val(false), x)
+# no Float16 cos, see `sin` below
+
+@device_override FastMath.cosh_fast(x::Float32) = llvm_math(Val(:cosh), Val(true), x)
+@device_override Base.cosh(x::Float32) = llvm_math(Val(:cosh), Val(false), x)
+@device_override Base.cosh(x::Float16) = llvm_math(Val(:cosh), Val(false), x)
+
+@device_function cospi_fast(x::Float32) = ccall("extern air.fast_cospi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.cospi(x::Float32) = ccall("extern air.cospi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.cospi(x::Float16) = ccall("extern air.cospi.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override FastMath.exp_fast(x::Float32) = llvm_math(Val(:exp), Val(true), x)
+@device_override Base.exp(x::Float32) = llvm_math(Val(:exp), Val(false), x)
+@device_override Base.exp(x::Float16) = llvm_math(Val(:exp), Val(false), x)
+
+@device_override FastMath.exp2_fast(x::Float32) = llvm_math(Val(:exp2), Val(true), x)
+@device_override Base.exp2(x::Float32) = llvm_math(Val(:exp2), Val(false), x)
+@device_override Base.exp2(x::Float16) = llvm_math(Val(:exp2), Val(false), x)
+
+@device_override FastMath.exp10_fast(x::Float32) = llvm_math(Val(:exp10), Val(true), x)
+@device_override Base.exp10(x::Float32) = llvm_math(Val(:exp10), Val(false), x)
+@device_override Base.exp10(x::Float16) = llvm_math(Val(:exp10), Val(false), x)
+
+@device_function floor_fast(x::Float32) = llvm_math(Val(:floor), Val(true), x)
+
+# Float16 override necessary because `Base.have_fma(::Float16)` results in a runtime call
+@device_override Base.fma(a::Float16, b::Float16, c::Float16) = llvm_math(Val(:fma), Val(false), a, b, c)
+
+@device_function fract_fast(x::Float32) = ccall("extern air.fast_fract.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_function fract(x::Float32) = ccall("extern air.fract.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_function fract(x::Float16) = ccall("extern air.fract.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override FastMath.log_fast(x::Float32) = llvm_math(Val(:log), Val(true), x)
+@device_override Base.log(x::Float32) = llvm_math(Val(:log), Val(false), x)
+@device_override Base.log(x::Float16) = llvm_math(Val(:log), Val(false), x)
+
+@device_override FastMath.log2_fast(x::Float32) = llvm_math(Val(:log2), Val(true), x)
+@device_override Base.log2(x::Float32) = llvm_math(Val(:log2), Val(false), x)
+@device_override Base.log2(x::Float16) = llvm_math(Val(:log2), Val(false), x)
+
+@device_override FastMath.log10_fast(x::Float32) = llvm_math(Val(:log10), Val(true), x)
+@device_override Base.log10(x::Float32) = llvm_math(Val(:log10), Val(false), x)
+@device_override Base.log10(x::Float16) = llvm_math(Val(:log10), Val(false), x)
+
+# Implementation of `log1p(::Float32)` from openlibm's `log1pf`
+# https://github.com/JuliaMath/openlibm
+const ln2_hi = 0.6931381f0
+const ln2_lo = 9.058001f-6
+const Lp1 = 0.6666667f0
+const Lp2 = 0.4f0
+const Lp3 = 0.2857143f0
+const Lp4 = 0.22222199f0
+const Lp5 = 0.18183573f0
+const Lp6 = 0.15313838f0
+const Lp7 = 0.14798199f0
+
+@device_override function Base.Math.log1p(x::Float32)
+    hx = reinterpret(Int32, x)
+    ax = hx & 0x7fffffff  # |x|
+
+    k = 1
+    if hx < 0x3ed413d0  # x < sqrt(2) - 1
+        if ax >= 0x3f800000  # |x| ≥ 1
+            if x == -1
+                return -Inf32
+            elseif isnan(x)
+                return NaN32
+            else  # x < -1
+                # TODO: switch to throw_complex_domainerror_neg1 for next Julia release
+                throw_complex_domainerror(:log1p, x)
+            end
+        end
+
+        if ax < 0x38000000  # |x| < 2^-15
+            if ax < 0x33800000 # |x| < 2^-24
+                return x  # Inexact
+            else
+                return x - x * x * 0.5f0
+            end
+        end
+
+        if hx > 0 || hx <= reinterpret(Int32, 0xbe95f619)  # (sqrt(2)/2)-1 <= x
+            k = 0
+            f = x
+            hu = 1f0
+        end
+    end  # hx < 0x3ed413d0
+
+    if hx >= 0x7f800000
+        return x + x
+    end
+
+    if k ≠ 0
+        if hx < 0x5a000000
+            u = 1f0 + x
+            hu = reinterpret(Int32, u)
+            k = (hu >> 23) - 127
+            c = k > 0 ? 1f0 - (u - x) : x - (u - 1f0)
+            c /= u
+        else
+            u = x
+            hu = reinterpret(Int32, u)
+            k = (hu >> 23) - 127
+            c = 0f0
+        end
+
+        hu &= 0x007fffff
+
+        if hu < 0x3504f4  # u < sqrt(2)
+            u = reinterpret(Float32, hu | 0x3f800000)
+        else
+            k += 1
+            u = reinterpret(Float32, hu | 0x3f000000)
+            hu = (0x00800000 - hu) >> 2
+        end
+        f = u - 1f0
+    end
+
+    hfsq = 0.5f0 * f * f
+
+    if hu == 0  # |f| < 2^-20
+        if f == 0
+            if k == 0
+                return 0f0
+            else
+                c += k * ln2_lo
+                return k * ln2_hi + c
+            end
+        end
+        R = hfsq * (1f0 - Lp1 * f)
+        if k == 0
+            return f - R
+        else
+            return k * ln2_hi - ((R - (k * ln2_lo + c)) - f)
+        end
+    end
+
+    s = f / (2f0 + f)
+    z = s * s
+    R = z * (Lp1 + z * (Lp2 + z * (Lp3 + z * (Lp4 + z * (Lp5 + z * (Lp6 + z * Lp7))))))
+    if k == 0
+        return f - (hfsq - s * (hfsq + R))
+    else
+        return k * ln2_hi - ((hfsq - (s * (hfsq + R) + (k * ln2_lo + c))) - f)
+    end
+end
+
+
+@device_override FastMath.pow_fast(x::Float32, y::Float32) = llvm_math(Val(:pow), Val(true), x, y)
+@device_override Base.:(^)(x::Float32, y::Float32) = llvm_math(Val(:pow), Val(false), x, y)
+@device_override Base.:(^)(x::Float16, y::Float16) = llvm_math(Val(:pow), Val(false), x, y)
+
+# Base computes the power by squaring in Float32; use the native power instead.
+@device_override @inline function Base.:(^)(x::Float16, y::Integer)
+    y == -1 && return inv(x)
+    y == 0 && return one(x)
+    y == 1 && return x
+    y == 2 && return x * x
+    y == 3 && return x * x * x
+    x^Float16(y)
+end
+
+@device_function powr_fast(x::Float32, y::Float32) = ccall("extern air.fast_powr.f32", llvmcall, Cfloat, (Cfloat, Cfloat), x, y)
+@device_function powr(x::Float32, y::Float32) = ccall("extern air.powr.f32", llvmcall, Cfloat, (Cfloat, Cfloat), x, y)
+@device_function powr(x::Float16, y::Float16) = ccall("extern air.powr.f16", llvmcall, Float16, (Float16, Float16), x, y)
+
+@device_function rint_fast(x::Float32) = llvm_math(Val(:rint), Val(true), x)
+@device_function rint(x::Float32) = llvm_math(Val(:rint), Val(false), x)
+@device_function rint(x::Float16) = llvm_math(Val(:rint), Val(false), x)
+
+@device_function round_fast(x::Float32) = llvm_math(Val(:round), Val(true), x)
+
+@device_function rsqrt_fast(x::Float32) = ccall("extern air.fast_rsqrt.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_function rsqrt(x::Float32) = ccall("extern air.rsqrt.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_function rsqrt(x::Float16) = ccall("extern air.rsqrt.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override FastMath.sin_fast(x::Float32) = llvm_math(Val(:sin), Val(true), x)
+@device_override Base.sin(x::Float32) = llvm_math(Val(:sin), Val(false), x)
+# no Float16 sin/cos/sincos: Base computes them in Float32. On M1, `air.{sin,cos}.f16` are
+# approximations that are off by up to thousands of ulp (JuliaGPU/Metal.jl#985).
+
+@static if tryparse(Intrinsic, "llvm.sincos") !== nothing    # LLVM 20+
+    @llvmgenerated builder function llvm_sincos(::Val{fast}, x::Float32
+                                               )::NTuple{2,Float32} where {fast}
+        f = LLVM.Function(current_module(builder), Intrinsic("llvm.sincos"), [LLVM.FloatType()])
+        call = call!(builder, f.function_type, f, [x])
+        fast && (call.fast_math = (; afn=true))
+        # LLVM returns a struct, Julia a tuple (array)
+        res = UndefValue(convert(LLVMType, NTuple{2,Float32}))
+        for i in 0:1
+            res = insert_value!(builder, res, extract_value!(builder, call, i), i)
+        end
+        return res
+    end
+    @device_override FastMath.sincos_fast(x::Float32) = llvm_sincos(Val(true), x)
+    @device_override Base.sincos(x::Float32) = llvm_sincos(Val(false), x)
+else
+    @device_override function FastMath.sincos_fast(x::Float32)
+        c = Ref{Cfloat}()
+        s = @typed_ccall("air.fast_sincos.f32", llvmcall, Cfloat, (Cfloat, Ptr{Cfloat}), x, c)
+        (s, c[])
+    end
+    @device_override function Base.sincos(x::Float32)
+        c = Ref{Cfloat}()
+        s = @typed_ccall("air.sincos.f32", llvmcall, Cfloat, (Cfloat, Ptr{Cfloat}), x, c)
+        (s, c[])
+    end
+end
+
+@device_override FastMath.sinh_fast(x::Float32) = llvm_math(Val(:sinh), Val(true), x)
+@device_override Base.sinh(x::Float32) = llvm_math(Val(:sinh), Val(false), x)
+@device_override Base.sinh(x::Float16) = llvm_math(Val(:sinh), Val(false), x)
+
+@device_function sinpi_fast(x::Float32) = ccall("extern air.fast_sinpi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.sinpi(x::Float32) = ccall("extern air.sinpi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.sinpi(x::Float16) = ccall("extern air.sinpi.f16", llvmcall, Float16, (Float16,), x)
+
+@device_override Base.sqrt(x::Float16) = llvm_math(Val(:sqrt), Val(false), x)
+
+@device_override FastMath.tan_fast(x::Float32) = llvm_math(Val(:tan), Val(true), x)
+@device_override Base.tan(x::Float32) = llvm_math(Val(:tan), Val(false), x)
+@device_override Base.tan(x::Float16) = llvm_math(Val(:tan), Val(false), x)
+
+@device_override FastMath.tanh_fast(x::Float32) = llvm_math(Val(:tanh), Val(true), x)
+@device_override Base.tanh(x::Float32) = llvm_math(Val(:tanh), Val(false), x)
+@device_override Base.tanh(x::Float16) = llvm_math(Val(:tanh), Val(false), x)
+
+@device_function tanpi_fast(x::Float32) = ccall("extern air.fast_tanpi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.tanpi(x::Float32) = ccall("extern air.tanpi.f32", llvmcall, Cfloat, (Cfloat,), x)
+@device_override Base.tanpi(x::Float16) = ccall("extern air.tanpi.f16", llvmcall, Float16, (Float16,), x)
+
+@device_function trunc_fast(x::Float32) = llvm_math(Val(:trunc), Val(true), x)
+
+@device_function function nextafter(x::Float32, y::Float32)
+    ccall("extern air.nextafter.f32", llvmcall, Cfloat, (Cfloat, Cfloat), x, y)
+end
+@device_function function nextafter(x::Float16, y::Float16)
+    ccall("extern air.nextafter.f16", llvmcall, Float16, (Float16, Float16), x, y)
+end
+
+# Without LLVM `bfloat` arithmetic, BFloat16s converts from `Float32` by rounding the bits as
+# an integer: `isnan(x) ? 0x7fc0 : (bits + bias) >> 16`. Apple's back-end drops the shift of
+# that select when its result is used as 32 bits, e.g. when a shuffle or a `Complex{BFloat16}`
+# widens it, so use the hardware conversion that the `bfloat` path emits.
+if !BFloat16s.llvm_arithmetic
+    @device_override BFloat16(x::Float32) =
+        Base.llvmcall("""%b = fptrunc float %0 to bfloat
+                         %i = bitcast bfloat %b to i16
+                         ret i16 %i""", BFloat16, Tuple{Float32}, x)
+end
+
+@device_override Base.hypot(x::BFloat16, y::BFloat16) = BFloat16(hypot(Float32(x), Float32(y)))
+@device_override Base.hypot(x::Complex{BFloat16}, y::Complex{BFloat16}) = BFloat16(hypot(ComplexF32(x), ComplexF32(y)))
+
+### Integer Intrinsics
+
+@static if VERSION < v"1.12"
+    @device_override Base.bitreverse(x::Int16)  = ccall("llvm.bitreverse.i16", llvmcall, Int16, (Int16,), x)
+    @device_override Base.bitreverse(x::UInt16) = ccall("llvm.bitreverse.i16", llvmcall, UInt16, (UInt16,), x)
+    @device_override Base.bitreverse(x::Int32)  = ccall("llvm.bitreverse.i32", llvmcall, Int32, (Int32,), x)
+    @device_override Base.bitreverse(x::UInt32) = ccall("llvm.bitreverse.i32", llvmcall, UInt32, (UInt32,), x)
+    @device_override Base.bitreverse(x::Int64)  = ccall("llvm.bitreverse.i64", llvmcall, Int64, (Int64,), x)
+    @device_override Base.bitreverse(x::UInt64) = ccall("llvm.bitreverse.i64", llvmcall, UInt64, (UInt64,), x)
+end
+
+@static if isdefined(Base, :mul_hi) # VERSION >= v"1.13.0-"
+    @device_override Base.mul_hi(x::Int64, y::Int64)   = ccall("extern air.mul_hi.s.i64", llvmcall, Int64, (Int64, Int64), x, y)
+    @device_override Base.mul_hi(x::UInt64, y::UInt64) = ccall("extern air.mul_hi.u.i64", llvmcall, UInt64, (UInt64, UInt64), x, y)
+    @device_override Base.mul_hi(x::Int32, y::Int32)   = ccall("extern air.mul_hi.s.i32", llvmcall, Int32, (Int32, Int32), x, y)
+    @device_override Base.mul_hi(x::UInt32, y::UInt32) = ccall("extern air.mul_hi.u.i32", llvmcall, UInt32, (UInt32, UInt32), x, y)
+    @device_override Base.mul_hi(x::Int16, y::Int16)   = ccall("extern air.mul_hi.s.i16", llvmcall, Int16, (Int16, Int16), x, y)
+    @device_override Base.mul_hi(x::UInt16, y::UInt16) = ccall("extern air.mul_hi.u.i16", llvmcall, UInt16, (UInt16, UInt16), x, y)
+    @device_override Base.mul_hi(x::Int8, y::Int8)     = ccall("extern air.mul_hi.s.i8", llvmcall, Int8, (Int8, Int8), x, y)
+    @device_override Base.mul_hi(x::UInt8, y::UInt8)   = ccall("extern air.mul_hi.u.i8", llvmcall, UInt8, (UInt8, UInt8), x, y)
+    const mulhi = Base.mul_hi
+else
+    @device_override Base.MultiplicativeInverses._mul_high(x::Int64, y::Int64)   = ccall("extern air.mul_hi.s.i64", llvmcall, Int64, (Int64, Int64), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::UInt64, y::UInt64) = ccall("extern air.mul_hi.u.i64", llvmcall, UInt64, (UInt64, UInt64), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::Int32, y::Int32)   = ccall("extern air.mul_hi.s.i32", llvmcall, Int32, (Int32, Int32), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::UInt32, y::UInt32) = ccall("extern air.mul_hi.u.i32", llvmcall, UInt32, (UInt32, UInt32), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::Int16, y::Int16)   = ccall("extern air.mul_hi.s.i16", llvmcall, Int16, (Int16, Int16), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::UInt16, y::UInt16) = ccall("extern air.mul_hi.u.i16", llvmcall, UInt16, (UInt16, UInt16), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::Int8, y::Int8)     = ccall("extern air.mul_hi.s.i8", llvmcall, Int8, (Int8, Int8), x, y)
+    @device_override Base.MultiplicativeInverses._mul_high(x::UInt8, y::UInt8)   = ccall("extern air.mul_hi.u.i8", llvmcall, UInt8, (UInt8, UInt8), x, y)
+    const mulhi = Base.MultiplicativeInverses._mul_high
+end
+
+# From: https://forums.developer.nvidia.com/t/a-faster-and-more-accurate-implementation-of-expm1f/48085/2
+# Original license copied below:
+#  Copyright (c) 2015-2023 Norbert Juffa
+#  All rights reserved.
+#
+#  Redistribution and use in source and binary forms, with or without
+#  modification, are permitted provided that the following conditions
+#  are met:
+#
+#  1. Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+#
+#  2. Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+#  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+#  A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+#  HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+#  SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+#  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+#  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+#  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+#  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+#  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+@device_override function Base.expm1(a::Float32)
+    # exp(a) = 2**i * exp(f); i = rintf (a / log(2))
+    j = fma(1.442695f0, a, 12582912.0f0)
+    j = j - 12582912.0f0
+    i = unsafe_trunc(Int32, j)
+    f = fma(j, -6.93145752f-1, a) # log_2_hi
+    f = fma(j, -1.42860677f-6, f) # log_2_lo
+
+    # approximate r = exp(f)-1 on interval [-log(2)/2, +log(2)/2]
+    s = f * f
+    if a == 0.0f0
+        s = a # ensure -0 is passed through
+    end
+
+    # err = 0.997458  ulp1 = 11094007
+    r = fma(1.98423862f-4, f, 1.39347673f-3)
+    t = fma(8.33342969f-3, f, 4.16667424f-2)
+    r = fma(r, s, t)
+    r = fma(r, f, 1.66666701f-1)
+    r = fma(r, f, 4.99999970f-1)
+    # if i == 0, expm1(a) = z
+    # if i == 1, expm1(a) = 2*(r*(f*f)+f+0.5)
+    # if (i < 0) || (i > 1) expm1(a) = 2*((r*(f*f)+f)*t-0.5+t)
+    u = (j == 1) ? (f + 0.5f0) : f
+    v = fma(r, s, u)
+    s = 0.5f0
+    t = ldexp(s, i)
+    y = t - s
+    x = (t - y) - s # double-float canonicalization of difference
+    r = fma(v, t, x) + y
+    r = r + r
+
+    if j == 0
+        r = v
+    end
+
+    if j == 1
+        r = v + v
+    end
+
+    # handle severe overflow and underflow
+    if abs(a - 1.0f0) > 88.0f0
+        r = 2^a
+        r = fma(r, r, -1.0f0)
+    end
+
+    return r
+end
+
+### Cube root
+
+# Base refines cbrt(::Float32) in Float64, which Metal does not support.
+# Reduce the argument to [1, 8) and approximate with a polynomial. The accurate
+# path adds a compensated Newton step. Integer reduction preserves subnormals despite FTZ.
+@inline function _cbrt(x::Float32, fast::Bool)
+    u = reinterpret(UInt32, x) & 0x7fffffff
+    if u == 0 || u >= 0x7f800000
+        # Preserve ±0, ±Inf and NaN. Floating-point comparisons would also treat
+        # subnormal inputs as zero.
+        return x
+    end
+
+    # argument reduction
+    e = (u >> 23) % Int32
+    m = u & 0x007fffff
+    if e == 0
+        # subnormal: normalize the significand
+        sh = (leading_zeros(m) - 8) % Int32
+        m = (m << sh) & 0x007fffff
+        e = Int32(1) - sh
+    end
+    # Add 150 = 3*50 to the unbiased exponent (e - 127) so division rounds
+    # down even for subnormals. Remove the extra factor of 2^50 when scaling.
+    e += Int32(23)
+    q = e ÷ Int32(3)
+    r = e - Int32(3) * q
+    ym = reinterpret(Float32, 0x3f800000 | m) # in [1, 2)
+
+    if fast
+        # Degree-7 relative minimax fit on [1, 2], centered at 1.5 to reduce
+        # cancellation (see res/cbrt.jl for the Remez fit). No refinement;
+        # measured maximum error is 2.43 ulp over all positive finite Float32
+        # inputs on an M3 Pro.
+        t = evalpoly(ym - 1.5f0, (1.1447142f0, 0.25438076f0, -0.056532383f0,
+                                0.020943526f0, -0.009240592f0, 0.004472713f0,
+                                -0.0027573353f0, 0.0015908186f0))
+    else
+        # Degree-5 relative minimax fit on [1, 2], computed with Remez in
+        # 256-bit arithmetic and rounded to Float32.
+        t = fma(0.005348548f0, ym, -0.05038654f0)
+        t = fma(t, ym, 0.20277724f0)
+        t = fma(t, ym, -0.4692287f0)
+        t = fma(t, ym, 0.83816004f0)
+        t = fma(t, ym, 0.47333068f0)
+    end
+    # Scale by cbrt(2)^r.
+    t *= r == 0 ? 1f0 : (r == 1 ? 1.2599211f0 : 1.587401f0)
+
+    if !fast
+        y = reinterpret(Float32, (((Int32(127) + r) % UInt32) << 23) | m) # in [1, 8)
+        # Compensate for the rounding of t*t when computing the Newton residual.
+        s = t * t
+        sl = fma(t, t, -s)          # rounding error in s
+        res = fma(s, t, -y)
+        res = fma(sl, t, res)       # approximates t^3 - y
+        # Only the small correction needs division, with a normal divisor near
+        # [3, 12]. Fast division retains the measured maximum error of 0.50003 ulp
+        # on an M3 Pro. The residual above must keep its explicit FMAs.
+        t -= FastMath.div_fast(res, 3f0 * s)
+    end
+
+    # Scale by 2^(q-50) and restore the sign. Every nonzero result is normal.
+    t = reinterpret(Float32, reinterpret(UInt32, t) + (((q - Int32(50)) % UInt32) << 23))
+    return copysign(t, x)
+end
+
+@device_override Base.cbrt(x::Float32) = _cbrt(x, false)
+@device_override FastMath.cbrt_fast(x::Float32) = _cbrt(x, true)

@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the critters all do the same: Dict(\"Pinchy\" => :jump, \"Marshmallow\" => :idle)",
+      "file": "minigames.jl",
+      "name": "Rain shower: each critter takes it its own way; Sprout splashing in the open brings them all to a puddle party",
+      "passed": false,
+      "seconds": 4.1
+    },
+    {
+      "error": "check failed: Pickles and Sir Sniffsalot overlap: 1.34 m apart",
+      "file": "separation.jl",
+      "name": "Creatures never stand inside each other",
+      "passed": false,
+      "seconds": 0.1
+    }
+  ],
+  "passed": 62,
+  "session": 37,
+  "time": "2026-11-23T11:56:12",
+  "total": 64
+}

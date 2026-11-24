@@ -1,0 +1,57 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Sprout never reached the gate (goal tend, at Float32[-9.74672, 6.5935974, 1.8205978])",
+      "file": "explore50.jl",
+      "name": "While Sprout waters the patch the follow camera watches Sprout (garden moment)",
+      "passed": false,
+      "seconds": 91.0
+    },
+    {
+      "error": "check failed: Sprout never watered (goal tend, at Float32[-9.014192, 7.1466146, 1.7879546], gate Float32[-10.5, 8.0, 1.945417])",
+      "file": "garden.jl",
+      "name": "Sprout's vegetable patch: fenced rows by the pond, and Sprout walks there to water it and the plants grow",
+      "passed": false,
+      "seconds": 46.5
+    },
+    {
+      "error": "check failed: Sprout never reached the bench (goal sleep, at Float32[-9.739751, 6.6078987, 1.8209382], 6.7 m away)",
+      "file": "lookout.jl",
+      "name": "At sunset Sprout walks to the lookout bench and sits facing the sea, and a free friend nearby joins",
+      "passed": false,
+      "seconds": 61.3
+    },
+    {
+      "error": "check failed: nobody answered the wave (Pinchy is wander)",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": false,
+      "seconds": 2.0
+    },
+    {
+      "error": "check failed: a bored Sprout said [\"That was fun! Again tomorrow?\"]",
+      "file": "outfits.jl",
+      "name": "Sprout shows how it feels: a bored Sprout sighs and looks out from under heavy lids",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: Sprout does not sit with Wibbles (interact sit, Wibbles pebble walk, hour 11.2)",
+      "file": "outfits.jl",
+      "name": "A lonely Sprout walks over to a friend and waves, and the friend says hello",
+      "passed": false,
+      "seconds": 15.9
+    },
+    {
+      "error": "check failed: the follow camera saw faces in only 15 of 49 samples",
+      "file": "separation.jl",
+      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
+      "passed": false,
+      "seconds": 24.7
+    }
+  ],
+  "passed": 120,
+  "session": 55,
+  "time": "2026-11-24T06:49:31",
+  "total": 127
+}

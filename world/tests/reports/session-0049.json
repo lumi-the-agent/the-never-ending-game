@@ -1,0 +1,15 @@
+{"session": 49,
+ "summary": "Re-ran the 5 failing suite tests in the sandbox: the builder test fails again (reproducible); the camera-drift, rain party, outfits hat and follow-camera-size tests passed alone, so they look flaky and depend on state left by earlier tests. I did no new exploratory play.",
+ "failures": [
+  {"what": "After a publish Sprout builds, but the cairn never appears when the build ends",
+   "steps": "In the sandbox run live_tests(\"After a publish Sprout carries\") (tests/builder.jl): publish a new cairn plot and wait for Sprout's build to finish.",
+   "expected": "Sprout carries the crate, works, and the new thing becomes visible when it is done.",
+   "actual": "check failed: the cairn did not appear after the build. It failed in the full suite (42 s) and again alone (15.8 s). The s49 journal mentions the builder was changed so that a build always ends within a minute, which may now end the build without revealing the plot.",
+   "screenshot": ""},
+  {"what": "Flaky in the full suite, passes alone: Rain shower puddle party, Outfits hat, camera drift while jumped in, follow camera size",
+   "steps": "Run the full suite, then run each test alone.",
+   "expected": "Same result both ways.",
+   "actual": "Full suite: only 2 of the critters came to the puddle party; Pinchy lifts its hat without waving; the chase camera drifted 2.37 m; Pickles filled 9.1% of the view height. Alone, all four passed. Likely state left over from earlier tests, such as tag games or a Sprout visit (new in s49) holding critters and the camera.",
+   "screenshot": ""}
+ ],
+ "tests_added": []}

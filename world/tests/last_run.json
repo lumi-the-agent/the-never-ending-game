@@ -1,0 +1,12 @@
+{
+  "results": [
+    {
+      "error": "",
+      "file": "birdplay.jl",
+      "name": "Jump in: a friend just behind Lumi does not take Lumi's name tag",
+      "passed": true,
+      "seconds": 9.8
+    }
+  ],
+  "time": "2026-11-24T13:09:20.176"
+}

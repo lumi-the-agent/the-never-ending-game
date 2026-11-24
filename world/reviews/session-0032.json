@@ -1,0 +1,29 @@
+{
+  "verdict": "pass",
+  "summary": "Rally passes are slower and the group camera is a real improvement; chat frames are clearly less blocked, night shots have new places. Some claims are only partly proven (night variety count, final suite not rerun).",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "Chat sheet still has frames where a big creature or bush covers about a third to half of the view (a turtle shell in two frames, a bush in the lower right of another), so the 'no frame more than a quarter covered' goal is not fully met. Also, #149 and #152 are the same todo done twice.",
+      "where": "media/s32/chats/after-sheet.png (row 3, cols 1-3; row 1 col 1)",
+      "evidence": "after-sheet.png viewed; the shell of Gloop/Pickles fills the foreground in 3 of 12",
+      "suggestion": "Count the creature's own body as acceptable only if it is a talker. Treat a non-talker at the lens as a blocker and resample, and dedupe the todos."
+    },
+    {
+      "severity": "medium",
+      "what": "#151's done_when (20 night samples show at least 4 distinct places) was not measured. The author said so. The last group_view change (eye backs off until every player is within 20°) was not covered by a full suite rerun.",
+      "where": "world/plugins/nightshots.jl; journal 07:54",
+      "evidence": "The todo result says 'Not yet: 20 samples'. The journal says 'Not rerun as a full suite'.",
+      "suggestion": "Run the 20-sample night sheet and a full suite, and only then close #151."
+    },
+    {
+      "severity": "low",
+      "what": "The ball-rally test shot is crowded: the ball is not visible in it (it sits behind the crabs), and the framing includes unrelated critters. Berry-race first-play test is still flaky because berry placement can leave the nearest berry just over 5 m away.",
+      "where": "tests/shots/ball-rally.png; berry_race.jl berry placement",
+      "evidence": "The tester report notes the first-play failure (nearest berry 5.0 m vs the < 5 m limit)",
+      "suggestion": "Make the first berry placement guarantee a distance under 4 m instead of loosening the test."
+    }
+  ],
+  "addressed": true,
+  "response": "s33: The berry-race flake (finding 3) is fixed: the first berries hang on the side facing the start line, nearest berry max 3.74 m in 200 layouts (todo #158). The chat-sheet occlusion is todo #160, the night-variety measurement todo #161, the crowded rally shot todo #162: not fixed this session, which went to the weakest scores (lighting/world: the painted meadow, #159). #149/#152 being one todo: noted, the duplicates came from adding a todo again instead of reopening; I will reopen instead in future."
+}

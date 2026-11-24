@@ -1,0 +1,70 @@
+function light_calc(x::Makie.ShadingAlgorithm)
+    if x === NoShading
+        return "#define NO_SHADING"
+    elseif x === FastShading
+        return "#define FAST_SHADING"
+    elseif x === MultiLightShading
+        return "#define MULTI_LIGHT_SHADING"
+        # elseif x === :PBR # TODO?
+    else
+        @warn "Did not recognize shading value :$x. Defaulting to FastShading."
+        return "#define FAST_SHADING"
+    end
+end
+
+@nospecialize
+function draw_surface(screen, main, data::Dict)
+    primitive = triangle_mesh(Rect2(0.0f0, 0.0f0, 1.0f0, 1.0f0))
+    to_opengl_mesh!(screen.glscreen, data, primitive)
+    shading = data[:shading]
+    @gen_defaults! data begin
+        scale = nothing
+        position = nothing
+        position_x = nothing => Texture
+        position_y = nothing => Texture
+        position_z = nothing => Texture
+        image = nothing => Texture
+        normal = shading != NoShading
+        invert_normals = false
+        backlight = 0.0f0
+    end
+    @gen_defaults! data begin
+        color = nothing => Texture
+        color_map = nothing => Texture
+        color_norm = nothing
+        fetch_pixel = false
+        matcap = nothing => Texture
+
+        nan_color = RGBAf(1, 0, 0, 1)
+        highclip = RGBAf(0, 0, 0, 0)
+        lowclip = RGBAf(0, 0, 0, 0)
+
+        uv_transform = Mat{2, 3, Float32}(1, 0, 0, -1, 0, 1)
+        instances = const_lift(x -> (size(x, 1) - 1) * (size(x, 2) - 1), main) => "number of planes used to render the surface"
+        px_per_unit = 1.0f0
+        strokewidth = 0.0f0
+        strokecolor = RGBAf(0, 0, 0, 0)
+        stroke_data = nothing => TextureBuffer
+    end
+    return RenderObject(screen.glscreen, data)
+end
+
+@specialize
+
+function default_shader(screen::Screen, @nospecialize(robj::RenderObject), plot::Surface, view::Dict{String, String})
+    shading = Makie.get_shading_mode(plot)
+    view["shading"] = light_calc(shading)
+    view["picking_mode"] = "#define PICKING_INDEX_FROM_UV"
+    view["MAX_LIGHTS"] = "#define MAX_LIGHTS $(screen.config.max_lights)"
+    view["MAX_LIGHT_PARAMETERS"] = "#define MAX_LIGHT_PARAMETERS $(screen.config.max_light_parameters)"
+
+    stroke_enabled = !iszero(robj.uniforms[:strokewidth])
+    shader = GLVisualizeShader(
+        screen,
+        "util.vert", "surface.vert",
+        (stroke_enabled ? ("mesh.geom",) : ())...,
+        "fragment_output.frag", "lighting.frag", "mesh.frag", (stroke_enabled ? "mesh_stroke.frag" : "mesh_nostroke.frag"),
+        view = view
+    )
+    return shader
+end

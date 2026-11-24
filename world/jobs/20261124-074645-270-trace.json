@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-24T07:46:45.270",
+  "finished": "2026-11-24T07:50:21.632",
+  "id": "20261124-074645-270-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      0.0,
+      -32.0,
+      24.0
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/img/island-traced.png",
+    "samples": 96,
+    "target": [
+      0.0,
+      2.0,
+      0.0
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/island-traced.png"
+  },
+  "seconds": 87.6,
+  "started": "2026-11-24T07:48:53.997",
+  "status": "done"
+}

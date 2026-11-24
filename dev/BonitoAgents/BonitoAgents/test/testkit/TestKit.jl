@@ -1,0 +1,2723 @@
+"""
+TestKit: realistic end-to-end test harness for BonitoAgents.
+
+The whole production stack runs unchanged (real `dev_server`, real worker, real
+subprocess spawn, real ACP JSON-RPC over the worker WebSocket, real websockets).
+The ONLY thing swapped is the agent: the test enables the `MockAgent` provider
+(`BT_ENABLE_MOCK_AGENT`) and makes it the default (`BT_DEFAULT_PROVIDER`), so the
+worker spawns the `MockACP` package (`julia -m MockACP`) like any other provider —
+no bash wrapper, no `agent_bin` override. MockACP runs in "dispatcher" mode: it
+dials back to a TCP dispatcher in THIS process, which invokes a user-supplied
+`agent::Function` per prompt and translates its returned event list into the ACP
+frames the chat would have seen from real claude.
+
+Usage:
+
+    using TestKit
+
+    server = dev_server(agent = msg -> [
+        text("I'll edit that file."),
+        edit("/sim/foo.jl", "old contents", "new contents"),
+        text("Done."),
+    ])
+    try
+        open_browser(server)
+        navigate(server, "/")
+        new_chat(server)
+        send_message(server, "please edit foo.jl")
+        wait_for(server, "tool message landed",
+                 \"\"\"document.querySelector('.bt-tool-msg[data-msg-id]')\"\"\")
+        screenshot(server, "/tmp/edit-tool.png")
+        click(server, ".bt-tool-msg .bt-tool-header")
+        screenshot(server, "/tmp/edit-tool-expanded.png")
+    finally
+        close(server)
+    end
+
+Event constructors (`text`, `edit`, `bash`, `thought`, `end_turn`) build a
+small DSL the dispatcher serialises to JSON for the mock binary.
+
+STRICT E2E POLICY (see CONVENTIONS.md "E2E tests — STRICT policy"): drive
+EVERYTHING through this harness — `dev_server` + a real electron browser by URL
+(`open_browser`/`new_chat`/`send_message`/`click`/`wait_for`/`eval_js`), asserting
+ONLY on the rendered DOM, exactly as a user would. Do NOT hand-spawn Malt/eval
+workers, call `*_handler`/`render_eval_html`/internals, or otherwise bypass the
+chat inside an e2e test. Eval packages → a committed test env (e.g. `test/evalenv`)
++ warmup, never a runtime-built tmp project.
+"""
+module TestKit
+
+using JSON, Sockets, Base64
+import SHA, HTTP
+import BonitoAgents as BT
+import BonitoMCP
+import BonitoWorker
+import ElectronCall
+const ECT = ElectronCall.Testing   # browser driving: open_window/eval_js/wait_for/screenshot
+
+include("fake_node.jl")   # a Node mirror + npm registry for the managed agent adapters
+
+# `Pkg.test` runs the test process with `JULIA_LOAD_PATH="@:<testdir>"` — note
+# the missing `@stdlib`. Every process spawned from here inherits it, including
+# the Malt EVAL workers, which then cannot load a single stdlib: `using Markdown`
+# inside an eval fails with "Package Markdown not found in current path", against
+# a committed evalenv that correctly expects stdlibs to come from `@stdlib`.
+# Production never sees this — nothing exports the variable there (see
+# BonitoAgentsApp's `worker_command`, which passes `--project` on the command
+# line precisely so descendants keep a clean environment) — so clearing it here
+# RESTORES production conditions rather than faking them.
+#
+# Safe for this process: Julia reads the variable into `LOAD_PATH` once at
+# startup and never re-reads it, so our own resolution is untouched and only
+# children change. And TestKit is loaded inside ReTestItems' test workers, never
+# in the parent, so the runner's own worker spawning is unaffected.
+function __init__()
+    delete!(ENV, "JULIA_LOAD_PATH")
+    return nothing
+end
+
+# Re-pointing an MCP dial-back must never abort a bring-up or a teardown — the
+# server it pointed at may already be gone, and half-torn-down state is worse
+# than none. But it must not be SILENT either: a dial-back that failed to reset
+# is precisely how a live bridge leaks from one suite into the next, where it
+# shows up much later as embeds that render and are dead. Warn and continue.
+function reset_dialback_or_warn(reset!::Function, what::AbstractString)
+    try
+        reset!()
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "TestKit: could not reset the $what dial-back" exception = e
+    end
+    return nothing
+end
+
+export TestServer, dev_server, add_worker!, drop_worker_connection!,
+       text, user, thought, edit, bash, todo, usage, commands, delay, tool, tool_update,
+       kimi_tool, codex_mcp_tool, codex_shell, codex_image, REPLAY_FN,
+       post_turn,
+       sub_text, sub_tool,
+       diff_block, text_block, image_block, error_reply, crash, end_turn,
+       mcp_call, bt_eval, bt_continue,
+       open_browser, navigate, to_dashboard, new_chat, open_chat, open_discover!,
+       send_message, switch_agent, set_window_size, emulate_phone, tap, swipe,
+       click, click_until, click_text, set_input, wheel_into_view,
+       exit_success,
+       screenshot, eval_js, wait_for, current_chat_id,
+       js_errors, clear_js_errors, check_console!
+
+# ── Event DSL ──────────────────────────────────────────────────────────────
+# Each constructor returns a small `Dict` carrying the event type + payload.
+# The mock binary's dispatcher loop maps these to ACP frames.
+
+text(s::AbstractString)                 = Dict("type" => "text",    "text"  => String(s))
+# A replayed USER turn — only meaningful inside a `REPLAY_FN` script (the
+# session/load history the mock re-streams); prompts never produce user events.
+user(s::AbstractString)                 = Dict("type" => "user",    "text"  => String(s))
+
+"""
+    post_turn(events; delay_ms = 300) -> Dict
+
+Agent event carrying frames the mock emits BETWEEN TURNS — `delay_ms` after the
+prompt response, with no turn open. Mirrors the real wire (see
+test/fixtures/bg_subagent_wire.jsonl): a background subagent's tagged activity
+(`sub_text`/`sub_tool`) keeps flowing after end_turn, the main agent's
+auto-wake completion announcement arrives as untagged `text`, and the agent
+ends that turn of its own with `usage(; origin = "task-notification")`.
+"""
+post_turn(events::Vector; delay_ms = 300) =
+    Dict{String,Any}("type" => "post_turn", "events" => events,
+                     "delay_ms" => Float64(delay_ms))
+
+"""
+    recorded(update) -> Dict
+
+An event, in a turn or a `post_turn`, that emits one `session/update` exactly as
+a real agent sent it: `update` is the frame's `params.update`, from a captured
+wire such as AgentClientProtocol/test/fixtures/claude_idle_compaction_wire.jsonl.
+"""
+recorded(update::AbstractDict) = Dict{String,Any}("type" => "recorded", "update" => update)
+
+"""
+    hold(until_file) -> Dict
+
+Keep the prompt's answer back until `until_file` exists, or until the next prompt
+arrives, which gets the answer out first. claude-agent-acp holds the answer while
+a background subagent that the prompt started or revived runs
+(AgentClientProtocol/test/fixtures/claude_bg_subagent_hold_wire.jsonl). Put the
+reply's result (`reply_result`) before it, and what the agent says once the
+subagent ended after it.
+"""
+hold(until_file::AbstractString) = Dict{String,Any}("type" => "hold", "until_file" => String(until_file))
+
+"""
+    reply_result(; origin = "human") -> Dict
+
+The `usage_update` claude-agent-acp sends at a cycle's result: with the session's
+cost, tagged with the cycle's origin (`human` for the reply to a prompt,
+`task-notification` for the agent's report on finished background work).
+"""
+reply_result(; origin::AbstractString = "human") = usage(40000, 1000000; cost = 0.25, origin)
+
+"""
+    bg_agent_launch(id, agent_id, output_file; description, prompt) -> Vector
+
+The frames claude-agent-acp 0.101 sends when the agent starts a subagent in the
+background with its Agent tool, as captured (claude_bg_subagent_hold_wire.jsonl):
+the call, its streamed arguments, the launch result naming the subagent and its
+transcript, and the `completed` that comes with the launch.
+"""
+function bg_agent_launch(id::AbstractString, agent_id::AbstractString, output_file::AbstractString;
+                         description::AbstractString = "helper",
+                         prompt::AbstractString = "Work in the background, then reply done.")
+    meta = Dict{String,Any}("claudeCode" => Dict{String,Any}("toolName" => "Agent"))
+    input = Dict{String,Any}("description" => description, "prompt" => prompt,
+                             "subagent_type" => "general-purpose", "run_in_background" => true)
+    launched = "Async agent launched successfully.\nagentId: $(agent_id)\noutput_file: $(output_file)"
+    return [
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call", "toolCallId" => id, "_meta" => meta,
+            "name" => "Agent", "rawInput" => Dict{String,Any}(), "status" => "pending",
+            "title" => "Task", "kind" => "think", "content" => Any[])),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id,
+            "_meta" => meta, "rawInput" => input, "title" => description)),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id,
+            "_meta" => Dict{String,Any}("claudeCode" => Dict{String,Any}("toolName" => "Agent",
+                "toolResponse" => Dict{String,Any}("isAsync" => true, "status" => "async_launched",
+                    "agentId" => agent_id, "description" => description, "prompt" => prompt,
+                    "outputFile" => output_file, "canReadOutputFile" => true, "canContinueAgent" => true))))),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id,
+            "_meta" => meta, "status" => "completed",
+            "content" => [Dict{String,Any}("type" => "content",
+                "content" => Dict{String,Any}("type" => "text", "text" => launched))])),
+    ]
+end
+
+"""
+    send_message_resume(id, agent_id; message) -> Vector
+
+The frames of a SendMessage call that runs the finished or stopped subagent
+`agent_id` again, as captured: the call, its arguments, the result naming the
+resumed subagent (`resumedAgentId`), and its `completed`.
+"""
+function send_message_resume(id::AbstractString, agent_id::AbstractString;
+                             message::AbstractString = "Go on with the next step.")
+    meta = Dict{String,Any}("claudeCode" => Dict{String,Any}("toolName" => "SendMessage"))
+    result = Dict{String,Any}("success" => true, "message" => "Resuming agent $(first(agent_id, 7))",
+                              "resumedAgentId" => agent_id, "revivedAgentId" => agent_id)
+    return [
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call", "toolCallId" => id, "_meta" => meta,
+            "name" => "SendMessage", "rawInput" => Dict{String,Any}(), "status" => "pending",
+            "title" => "SendMessage", "kind" => "other", "content" => Any[])),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id, "_meta" => meta,
+            "rawInput" => Dict{String,Any}("to" => agent_id, "summary" => "more work", "message" => message))),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id,
+            "_meta" => Dict{String,Any}("claudeCode" => Dict{String,Any}("toolName" => "SendMessage",
+                "toolResponse" => result)))),
+        recorded(Dict{String,Any}("sessionUpdate" => "tool_call_update", "toolCallId" => id, "_meta" => meta,
+            "status" => "completed",
+            "content" => [Dict{String,Any}("type" => "content",
+                "content" => Dict{String,Any}("type" => "text", "text" => JSON.json(result)))])),
+    ]
+end
+
+# Scripted `session/load` replay: `REPLAY_FN[]` maps a session id to the event
+# list (user/text/thought/tool) the mock re-streams as the resumed session's
+# history — how the real agent replays its jsonl. Default: no replay, which is
+# what every pre-existing resume test expects. Set per test, reset in `finally`.
+const REPLAY_FN = Ref{Function}(sid -> Any[])
+thought(s::AbstractString)              = Dict("type" => "thought", "text"  => String(s))
+edit(path, old, new; id = nothing)      = begin
+    d = Dict{String,Any}("type" => "edit", "path" => String(path),
+                          "old" => String(old), "new" => String(new))
+    id === nothing || (d["id"] = String(id))
+    d
+end
+bash(command, output; id = nothing) = begin
+    d = Dict{String,Any}("type" => "bash", "command" => String(command),
+                          "output" => String(output))
+    id === nothing || (d["id"] = String(id))
+    d
+end
+"""
+    mcp_call(tool; id = nothing, args...) -> Dict
+
+By default, a tool simulator that runs the BonitoMCP handler in the test
+process. This does NOT test agent/MCP launch or environment propagation.
+Pass `real_process=true` to launch MCP from the worker-supplied ACP config.
+Use `arguments=Dict(...)` for tool arguments named `id`, since `id` here names
+the tool call card.
+The simulator uses: Malt worker per `env_path`,
+real `--project` activation, real captured stdout/value/errors. The
+dispatcher executes it in the test process and pipes the resulting MCP
+content blocks back to the mock as ACP tool_call frames announced under
+`mcp__btworker__<tool>`. `args` are the tool arguments (`nothing`-valued
+ones are dropped; `env_path = nothing` opts into BonitoMCP's ephemeral-temp
+session, same as the default in production). `bt_eval` / `bt_continue` are
+sugar over this.
+"""
+mcp_call(tool::AbstractString; id = nothing, real_process::Bool = false, args...) = begin
+    d = Dict{String,Any}("type" => real_process ? "worker_mcp_call" : "mcp_call", "tool" => String(tool))
+    id === nothing || (d["id"] = String(id))
+    for (k, v) in pairs(args)
+        v === nothing || (d[String(k)] = v)
+    end
+    d
+end
+bt_eval(code; env_path = nothing, id = nothing, timeout = nothing, worker = nothing,
+        background = nothing, real_process = false) =
+    mcp_call("bt_julia_eval"; id, code = String(code), env_path, timeout, worker, background, real_process)
+# bt_julia_continue reattaches to the in-flight eval after a soft-timeout
+# checkpoint — its call carries NO code argument, exactly like real claude.
+bt_continue(; env_path = nothing, timeout = nothing, id = nothing) =
+    mcp_call("bt_julia_continue"; id, env_path, timeout)
+
+# Content-block specs for the generic `tool` event. `diff_block` renders as a
+# Monaco DiffEditor; `text_block` as a tool text block (grep-style lines render
+# as search rows; `"<label>:\n<body>"` with label in stdout/result/error/stderr
+# renders as a bt_julia_eval section); `image_block` as the picture a Read of an
+# image file returns, its bytes in the content.
+diff_block(path, old, new) = Dict("type" => "diff", "path" => String(path),
+                                  "old" => String(old), "new" => String(new))
+text_block(s::AbstractString) = Dict("type" => "text", "text" => String(s))
+image_block(bytes::AbstractVector{UInt8}, mime::AbstractString) =
+    Dict("type" => "image", "data" => base64encode(bytes), "mimeType" => String(mime))
+
+"""
+    kimi_tool(name; kind, args, content, status, id, human_title) -> Dict
+
+Agent event for a tool call in KIMI's wire dialect instead of claude's — the
+shape captured verbatim from the real `kimi acp` binary (fixtures live in
+`AgentClientProtocol/test/fixtures/kimi_*.jsonl`).
+
+Use it whenever a test needs to prove the chat copes with a NON-claude agent:
+there is no `_meta.claudeCode` envelope, so the tool is identified only by the
+ACP `title` on its opening frame, that title is then replaced by a human
+sentence, and the arguments arrive as streamed partial-JSON `content` before a
+single late `rawInput`. `name` is the real tool name (`"Bash"`, `"Grep"`,
+`"mcp__btworker__bt_julia_eval"`, …) and `args` its argument dict.
+
+Everything else in TestKit emits claude's shape, so a scenario can mix both.
+"""
+kimi_tool(name; kind = "other", args = Dict{String,Any}(), content = Any[],
+          status = "completed", id = nothing, human_title = nothing) = begin
+    d = Dict{String,Any}("type" => "kimi_tool", "name" => String(name),
+                         "kind" => String(kind),
+                         "args" => Dict{String,Any}(args),
+                         "content" => content, "status" => String(status))
+    id          === nothing || (d["id"]          = String(id))
+    human_title === nothing || (d["human_title"] = String(human_title))
+    d
+end
+
+"""
+    codex_mcp_tool(server, tool; args, output, error, status, id) -> Dict
+
+Agent event for an MCP tool call in CODEX's wire dialect — the shape captured
+verbatim from `@agentclientprotocol/codex-acp` (fixtures live in
+`AgentClientProtocol/test/fixtures/codex_*.jsonl`).
+
+Codex neither names the tool the canonical way nor passes its arguments
+through: the call is WRAPPED as `rawInput = {server, tool, arguments}` under the
+title `mcp.<server>.<tool>`, and the result comes back only in
+`rawOutput.result` (the MCP `CallToolResult`), never as content.
+
+`output` is the list of text blocks the tool returned — for a tool that FAILED
+on its own terms (a `bt_julia_eval` that raised) that is the stacktrace, and the
+call still completes, which is what the real wire does. `error` is the separate
+MCP-layer failure (`rawOutput.error`), which does mark the call failed.
+"""
+codex_mcp_tool(server, tool; args = Dict{String,Any}(), output = String[],
+               error = nothing, status = error === nothing ? "completed" : "failed",
+               id = nothing) = begin
+    d = Dict{String,Any}("type" => "codex_tool", "server" => String(server),
+                         "tool" => String(tool), "args" => Dict{String,Any}(args),
+                         "output" => [String(t) for t in output],
+                         "status" => String(status))
+    error === nothing || (d["error"] = String(error))
+    id    === nothing || (d["id"]    = String(id))
+    d
+end
+
+"""
+    codex_image(path; id) -> Dict
+
+Agent event for codex's image VIEW: a `resource_link` naming a file on the
+worker rather than the image bytes. claude and kimi send an `ImageContent`
+full of base64, so this is the only dialect where the chat has to go and fetch
+the file itself — which it does through the same `ShowTool` widget `bt_show`
+uses.
+"""
+codex_image(path; id = nothing) = begin
+    d = Dict{String,Any}("type" => "codex_image", "path" => String(path))
+    id === nothing || (d["id"] = String(id))
+    d
+end
+
+"""
+    codex_shell(command; output, exit_code, status, id, cwd) -> Dict
+
+Agent event for a shell call in CODEX's wire dialect: the tool is titled with
+the command line itself (so no name fallback can fire), the opening content is a
+bare `terminal` pointer we never subscribe to, and the output arrives only as
+`rawOutput.formatted_output`.
+"""
+codex_shell(command; output = "", exit_code = 0, status = "completed",
+            id = nothing, cwd = nothing) = begin
+    d = Dict{String,Any}("type" => "codex_tool", "command" => String(command),
+                         "output" => String(output), "exit_code" => Int(exit_code),
+                         "status" => String(status))
+    id  === nothing || (d["id"]  = String(id))
+    cwd === nothing || (d["cwd"] = String(cwd))
+    d
+end
+
+"""
+    codex_compaction(; complete, id) -> Dict
+
+Agent event for codex compacting the conversation: a nameless `think` tool
+titled "Compact conversation", tagged only by its AIR `contextCompaction` meta.
+`complete = false` leaves it open, which is what a compaction that FAILED does
+on the real wire.
+"""
+codex_compaction(; complete::Bool = true, id = nothing) = begin
+    d = Dict{String,Any}("type" => "codex_compaction", "complete" => complete)
+    id === nothing || (d["id"] = String(id))
+    d
+end
+
+"""
+    codex_failure(title; category, severity, id) -> Dict
+
+Agent event that ends the turn the way codex does when it FAILED: a plain
+`end_turn` whose response carries the failure record (AIR `sessionFailure`).
+Real ids look like `<turn id>:error`.
+"""
+codex_failure(title::AbstractString; category = "limit", severity = "error",
+              id = "turn-$(rand(UInt32)):error") =
+    Dict{String,Any}("type" => "codex_failure", "record" => Dict{String,Any}(
+        "id" => String(id), "revision" => 1, "category" => String(category),
+        "severity" => String(severity), "title" => String(title), "actions" => Any[]))
+
+"""
+    tool(; kind, title, status, content, tool_name, id, complete, open_status,
+           raw_input) -> Dict
+
+Agent event for a generic tool call of any `kind` ("edit", "search",
+"execute", "other"). `content` is a vector of `diff_block` / `text_block`.
+Pass `complete = false` to leave the bubble live (open) for follow-up
+`tool_update`s; `open_status` sets the opening status (default "in_progress").
+`raw_input` is the tool call's argument dict (ACP's `rawInput`) — it rides the
+opening `tool_call` frame and feeds the eval extras (code preview, ⏱ timeout
+badge, ⊗ stop) and the ✎ editable-path derivation. Real claude-agent-acp
+STREAMS tool input, so the common shape is to open with an EMPTY `raw_input`
+and ship the real args on a later [`tool_update`](@ref) (which also forwards
+`raw_input`).
+"""
+tool(; kind = "other", title = "tool", status = "completed", content = Any[],
+       tool_name = nothing, id = nothing, complete = true,
+       open_status = "in_progress", raw_input = nothing) = begin
+    d = Dict{String,Any}("type" => "tool", "kind" => String(kind),
+                         "title" => String(title), "status" => String(status),
+                         "content" => content, "complete" => complete,
+                         "open_status" => String(open_status))
+    id        === nothing || (d["id"]        = String(id))
+    tool_name === nothing || (d["tool_name"] = String(tool_name))
+    raw_input === nothing || (d["raw_input"] = Dict{String,Any}(raw_input))
+    d
+end
+
+"""
+    tool_update(id; status, content, raw_input) -> Dict
+
+Agent event that updates an already-open tool (matched by `id`) — flip its
+status and/or ship more content, without restating its identity. `raw_input`
+streams (merges) the tool call's arguments AFTER the announcement, exactly the
+way real claude-agent-acp delivers tool input: ACP merges it into the live
+`MCPCall`/`GenericTool`, so the eval extras (code preview, ⏱, ⊗) and the ✎
+editable-path hint materialise on this in-flight update rather than the empty
+opening header.
+"""
+tool_update(id; status = nothing, content = nothing, raw_input = nothing,
+            raw_output = nothing) = begin
+    d = Dict{String,Any}("type" => "tool_update", "id" => String(id))
+    status     === nothing || (d["status"]     = String(status))
+    content    === nothing || (d["content"]    = content)
+    raw_input  === nothing || (d["raw_input"]  = Dict{String,Any}(raw_input))
+    # A terminal update with `raw_output` (and no content) = real claude-agent-acp
+    # for a completed Edit: the diff rode earlier updates; this frame is just the
+    # "… updated successfully …" rawOutput.
+    raw_output === nothing || (d["raw_output"] = String(raw_output))
+    d
+end
+
+"""
+    sub_text(parent_id, s) -> Dict
+
+Agent event that emits the SAME `agent_message_chunk` frame as [`text`](@ref)
+but tagged `_meta.claudeCode.parentToolUseId = parent_id` — the way
+claude-agent-acp forwards a running SUBAGENT's prose. The chat must route it
+into the parent Task bubble's activity feed, never the main transcript.
+"""
+sub_text(parent_id, s::AbstractString) = Dict{String,Any}(
+    "type" => "sub_text", "parent" => String(parent_id), "text" => String(s))
+
+"""
+    sub_tool(parent_id; kind, title, status, id, update = false) -> Dict
+
+Agent event that emits a subagent TOOL frame tagged with
+`_meta.claudeCode.parentToolUseId = parent_id`: a `tool_call` announcement by
+default, or (with `update = true`) a `tool_call_update` that flips the
+already-announced sub-tool's status — mirroring the frames claude-agent-acp
+forwards for a subagent's tool use. Feeds the parent Task bubble's activity
+feed (one entry per sub-tool id, status rewritten in place).
+"""
+sub_tool(parent_id; kind = "other", title = "tool", status = "in_progress",
+         id = nothing, update = false) = begin
+    d = Dict{String,Any}("type" => "sub_tool", "parent" => String(parent_id),
+                         "kind" => String(kind), "title" => String(title),
+                         "status" => String(status), "update" => update)
+    id === nothing || (d["id"] = String(id))
+    d
+end
+
+"""
+    todo(entries) -> Dict
+
+Agent event that emits a `plan` SessionUpdate (the channel real
+claude-agent-acp uses for todos). `entries` is a vector of NamedTuples with
+`content`, `status` ("pending" | "in_progress" | "completed") and an optional
+`priority` ("high" | "medium" | "low", default "medium"). Re-emitting mutates
+the one live list in the taskbar; pair with `delay` to hold the turn open
+while asserting against the live panel.
+"""
+todo(entries::AbstractVector) = Dict("type" => "todo",
+    "entries" => [Dict("content"  => String(e.content),
+                       "status"    => String(e.status),
+                       "priority"  => String(get(e, :priority, "medium"))) for e in entries])
+
+"""
+    usage(used, size; cost = nothing, origin = nothing, thinking_tokens = nothing) -> Dict
+
+Agent event that emits a `usage_update` SessionUpdate (context/cost
+telemetry, the shape claude-agent-acp ≥ 0.44 sends after every assistant
+message). Drives the header context meter. `origin` tags it the way the agent
+tags a cycle's result (`_meta["_claude/origin"].kind`): `"task-notification"`
+at the end of a cycle the agent ran on its own, which is where that turn ends.
+`thinking_tokens` is the estimate claude-agent-acp sends while the model thinks
+(`_meta["_claude/thinkingTokens"]`), shown on the chat's reasoning line.
+"""
+function usage(used::Integer = 0, size::Integer = 0; cost = nothing, origin = nothing,
+               thinking_tokens = nothing)
+    ev = Dict{String,Any}("type" => "usage", "used" => used, "size" => size)
+    cost === nothing || (ev["cost"] = Float64(cost))
+    origin === nothing || (ev["origin"] = String(origin))
+    thinking_tokens === nothing || (ev["thinking_tokens"] = Int(thinking_tokens))
+    return ev
+end
+
+"""
+    commands(cmds) -> Dict
+
+Agent event that emits an `available_commands_update` SessionUpdate (the
+complete slash-command set). `cmds` is a vector of NamedTuples with `name`,
+`description` and an optional `hint` (argument hint) — the shape the composer
+autocomplete consumes.
+"""
+commands(cmds::AbstractVector) = Dict("type" => "commands",
+    "commands" => [begin
+            hint = get(c, :hint, nothing)
+            d = Dict{String,Any}("name" => String(c.name),
+                                 "description" => String(c.description))
+            d["input"] = hint === nothing ? nothing : Dict("hint" => String(hint))
+            d
+        end for c in cmds])
+
+"""
+    delay(ms; until_file = "") -> Dict
+
+Agent event that sleeps `ms` milliseconds in the mock WITHOUT ending the
+turn, so frames already emitted (a pinned todo, an in-progress tool) stay
+live while the test asserts against them.
+With `until_file`, the test releases the delay by creating that file after
+observing the intermediate DOM; `ms` remains the upper bound.
+"""
+delay(ms::Real; until_file::AbstractString = "") =
+    Dict("type" => "delay", "ms" => Float64(ms), "until_file" => String(until_file))
+
+"""
+    error_reply(message) -> Dict
+
+Agent event: answer the prompt with a JSON-RPC error (the agent is alive but
+failed). The chat renders an inline `[error: <message>]` bubble.
+"""
+error_reply(message::AbstractString) = Dict("type" => "error_reply", "message" => String(message))
+
+"""
+    crash() -> Dict
+
+Agent event that HARD-KILLS the mock agent subprocess mid-prompt (`exit(1)`),
+exactly like a real claude-agent-acp dying. No `session/prompt` response is
+ever sent, so the chat's pending read fails with EOFError/ConnectionClosed →
+`is_session_dead_error` → `session_alive` flips false and the header restart
+button gains its dead/pulse class (`.bt-header-restart-dead`). Clicking it runs
+`restart_chat_session!`, which respawns a fresh mock agent and revives the chat.
+"""
+crash()                              = Dict("type" => "crash")
+
+end_turn(; stopReason = "end_turn")  = Dict("type" => "end", "stopReason" => String(stopReason))
+
+# Normalise whatever the agent function returned into a Vector{Dict}. The
+# convention is "missing `end` event = auto-append end_turn".
+function normalise(events)
+    out = Dict[]
+    if events isa AbstractDict
+        push!(out, events)
+    elseif events isa AbstractString
+        push!(out, text(events))
+    else
+        for e in events
+            e isa AbstractDict || error("TestKit: agent event must be a Dict, got $(typeof(e))")
+            push!(out, e)
+        end
+    end
+    if isempty(out) || String(get(last(out), "type", "")) != "end"
+        push!(out, end_turn())
+    end
+    return out
+end
+
+# ── TestServer ────────────────────────────────────────────────────────────
+
+"An account's way in through Authelia: password and authenticator secret (base32)."
+struct Login
+    user::String
+    password::String
+    secret::String
+end
+
+mutable struct TestServer
+    h::BT.DevHandle
+    agent_fn::Ref{Function}            # mutable so tests can swap mid-run
+    dispatcher_sock::Sockets.TCPServer
+    dispatcher_port::Int
+    dispatcher_task::Task
+    # Browser handle, lazily opened by `open_browser` so headless server
+    # tests (no GUI) don't pay the Electron cost.
+    browser::Ref{Any}                  # ElectronCall.Testing.TestContext | nothing
+    closed::Ref{Bool}
+    # Default window size for `open_browser`, from `dev_server`'s
+    # browser_width/browser_height. Held here rather than dropped on the floor:
+    # they used to be accepted and then ignored, so a test asking for a phone
+    # viewport got 1280px and every layout assertion in it passed for the wrong
+    # reason.
+    browser_size::Tuple{Int,Int}
+    # `dev_server(proxy = true)`: the admin's login through Authelia; `nothing`
+    # for a server without the proxy.
+    admin::Union{Login,Nothing}
+    # The time step of the last one-time code each account used: Authelia takes a
+    # code once, so a second login within the same 30 s waits for the next one.
+    otp_used::Dict{String,Int}
+    # The workers `add_worker!` started, stopped with the server (`close`).
+    extra_workers::Vector{@NamedTuple{proc::Base.Process, worker_id::String, config::String}}
+end
+
+# The worker relay grant this process's in-process MCP channels (control, and
+# the eval workers' live-render bridges) are armed with; see `with_mcp_env`.
+const ARMED_GRANT = Ref("")
+
+# Tear the in-process MCP's channels down, so the next MCP call re-arms them.
+function disarm_mcp!(why::AbstractString)
+    reset_dialback_or_warn(BonitoMCP.reset_ctrl_dialback!, "ctrl ($why)")
+    reset_dialback_or_warn(BonitoMCP.reset_eval_dialback!, "eval ($why)")
+    ARMED_GRANT[] = ""
+    return nothing
+end
+
+# A chat's MCP process dies with its server, and its running evals with it. The
+# in-process MCP stands in for all of them and outlives the server, so an eval a
+# test left running (it timed out into `:running` and nobody continued) would
+# make the next item's eval on the same env fail with "already in flight".
+function settle_mcp_evals!(; timeout::Real = 60.0)
+    BonitoMCP.interrupt_in_flight!(nothing; background = true) == 0 && return nothing
+    @warn "TestKit: an eval was still in flight at server teardown; interrupted it"
+    m = BonitoMCP.manager()
+    settled() = lock(m.lock) do
+        all(s -> s.in_flight === nothing, values(m.sessions))
+    end
+    timedwait(settled, timeout) === :ok ||
+        error("TestKit: in-flight evals did not settle within $(timeout)s of the interrupt")
+    return nothing
+end
+
+"""
+    scrub_mock_env!()
+
+Remove a previous mock `dev_server`'s ENV leftovers from this process. The
+mock knobs are only meaningful to the mock provider, EXCEPT
+`BT_DEFAULT_PROVIDER`, which is a general knob — only remove it when it holds
+a value the mock path itself set (a user's own `BT_DEFAULT_PROVIDER=MiMoCode`
+stays untouched).
+"""
+function scrub_mock_env!()
+    for k in ("BT_ENABLE_MOCK_AGENT", "BT_MOCK_ACP_SCENARIO",
+              "BT_MOCK_ACP_DISPATCHER", "BT_MOCK_PROJECT",
+              "BT_MOCK_ACP_IGNORE_CANCEL", "BT_MOCK_ACP_CANCEL_DELAY_MS",
+              "BT_MOCK_ACP_STRICT_LOAD", "BT_MOCK_ACP_MANY_CHOICES",
+              "BT_MOCK_ACP_SESSION_CONFIG", "BT_MOCK_ACP_VARIANT")
+        delete!(ENV, k)
+    end
+    get(ENV, "BT_DEFAULT_PROVIDER", "") in ("MockCode", "MockCode2") &&
+        delete!(ENV, "BT_DEFAULT_PROVIDER")
+    return nothing
+end
+
+"""
+    kill_worker!(s::TestServer)
+
+Take the dev worker down the way a dying machine would: SIGKILL its whole
+process group. The handle in `s.h.worker_proc` is juliaup's launcher with the
+real julia as its child, so `kill(s.h.worker_proc)` alone reaches only the
+launcher and leaves the worker, and its control socket, alive — the server then
+sees nothing until it shuts down itself.
+"""
+function kill_worker!(s::TestServer)
+    proc = s.h.worker_proc
+    proc === nothing && error("kill_worker!: this dev server has no worker process handle")
+    kill_worker!(proc)
+    return s
+end
+
+# The same for a worker spawned by `add_worker!`, whose handle is the launcher too.
+function kill_worker!(proc::Base.Process)
+    BonitoWorker.kill_process_group!(proc)
+    try
+        kill(proc, Base.SIGKILL)
+    catch e
+        e isa Base.IOError || rethrow()
+    end
+    return proc
+end
+
+"""
+    drop_worker_connection!(s::TestServer) -> link
+
+Drop the dev worker's connection the way a network blip does: the server's end
+of the socket closes and both sides see the connection end, while the worker
+process, its agents and the link stay. The worker reconnects after its retry
+delay (5 s), and the link must RESUME, replaying whatever was in flight. Returns
+the server's link, so a test can check it was resumed rather than replaced.
+"""
+function drop_worker_connection!(s::TestServer)
+    link = lock(() -> only(values(s.h.state.worker_links)), s.h.state.lock)
+    BT.WorkerLink.disconnect!(link)
+    return link
+end
+
+"""
+    dev_server(; agent = msg -> end_turn(), port = nothing, kwargs...) -> TestServer
+
+Start a real BonitoAgents dev server, swap the worker's `claude-agent-acp`
+with the mock script, and route every prompt back to `agent`. The
+returned `TestServer` is the handle every helper takes as its first arg.
+
+`mock = false` keeps the worker on its REAL default provider (an actual
+`claude-agent-acp` from PATH / `CLAUDE_AGENT_ACP`) while still returning a
+`TestServer` with all the browser/eval helpers — used to seed genuine agent
+sessions (e.g. the docs-walkthrough rig); `agent` is then ignored.
+
+`scan_on_connect = false` (the default here): the server does not scan the
+worker's agent sessions when it connects. That scan reads the machine's real
+agent history into the dashboard and starts every installed agent to list its
+sessions, so a test would render whatever the box running it happens to have.
+Tests that need a discover tree seed `state.discovered` instead.
+"""
+# The long-lived `SharedServer` stack, if some item in this process started one.
+#
+# ONE dev_server at a time per process is the rule (a server is an electron
+# window, a worker subprocess and a mock agent), and ~70 of the e2e items bring
+# their own. That used to be free: with one item per CI job, an item that built
+# its own server ran in a process where the shared one had never started. Under
+# sharding an earlier item starts it and it stays up, so an own-server item runs
+# two full stacks at once — which is exactly how `e2e:worker_zombie` and
+# `e2e:panel_move_scroll` began timing out on CI while passing locally.
+#
+# `SharedServer` registers a releaser here; `dev_server` calls it before building
+# a new stack, and the shared one restarts lazily the next time an item asks for
+# it. That only works within ONE TestKit module: an own-server item takes it from
+# SharedServer (`setup = [SharedServer]`, `const TestKit = SharedServer.TestKit`).
+# An item that includes its own copy gets its own, empty `RELEASE_SHARED`, and its
+# server runs next to the shared one.
+const RELEASE_SHARED = Ref{Any}(nothing)
+
+"Register how to tear the shared stack down (called by the SharedServer setup)."
+register_shared_release!(f) = (RELEASE_SHARED[] = f; nothing)
+
+"Tear down the shared stack if one is up, so this process runs one at a time."
+function release_shared!()
+    f = RELEASE_SHARED[]
+    f === nothing && return nothing
+    f()
+    return nothing
+end
+
+function dev_server(; agent::Function = (_msg -> end_turn()),
+                      port::Union{Int,Nothing} = nothing,
+                      browser_width::Int  = 1280,
+                      browser_height::Int = 820,
+                      ignore_cancel::Bool = false,
+                      prompt_queueing::Bool = true,
+                      prompt_receipts::Bool = true,
+                      receipt_delay_ms::Int = 0,
+                      active_steering::Bool = false,
+                      steering_idle_behavior::String = "",
+                      scenario::Union{String,Nothing} = nothing,
+                      cancel_delay_ms::Union{Int,Nothing} = nothing,
+                      mock::Bool = true,
+                      many_choices::Bool = false,
+                      session_config::Bool = false,
+                      strict_load::Bool = false,
+                      scan_on_connect::Bool = false,
+                      proxy::Bool = false,
+                      tunnel::Bool = false,
+                      kwargs...)
+    ensure_display!()
+    # One stack at a time in this process — see `RELEASE_SHARED` above. A
+    # SharedServer item later in the shard rebuilds it lazily.
+    release_shared!()
+    agent_ref = Ref{Function}(agent)
+
+    # 1. Stand up the TCP dispatcher BEFORE we start the dev server, so the
+    #    moment the worker spawns a mock agent for the first chat it can
+    #    connect back without retry. (Harmlessly idle when mock = false.)
+    sock = listen(Sockets.IPv4(0x7f000001), 0)   # 127.0.0.1:<auto>
+    disp_port = Sockets.getsockname(sock)[2]
+    dispatcher_task = Base.errormonitor(@async begin
+        while isopen(sock)
+            client = try
+                accept(sock)
+            catch e
+                e isa Base.IOError || rethrow()   # the listener closed at teardown
+                break
+            end
+            Base.errormonitor(@async handle_client(client, agent_ref))
+        end
+    end)
+
+    # 2. Enable the mock as a real, selectable provider. It is no longer a bash
+    #    wrapper handed to the worker as `agent_bin` — it's the AgentProviders
+    #    `MockAgent` descriptor, which launches the `MockACP` package
+    #    (`julia -m MockACP`) like any other agent. We just:
+    #      • include it in the provider list   (BT_ENABLE_MOCK_AGENT)
+    #      • make it the test env's default     (BT_DEFAULT_PROVIDER=MockCode)
+    #      • point MockACP at THIS process's dispatcher socket + scenario
+    #      • tell it which project resolves MockACP (the BonitoAgents test env)
+    #    These reach BOTH the server (this process) and the worker (its child)
+    #    because `dev_server` writes `agent_env` into `ENV` before spawning the
+    #    worker, which inherits it (and the spawned MockACP inherits it in turn).
+    test_env = abspath(joinpath(@__DIR__, ".."))   # .../BonitoAgents/test — where MockACP is a dep
+    agent_env = mock ? Dict{String,String}(
+        "BT_ENABLE_MOCK_AGENT"   => "1",
+        "BT_DEFAULT_PROVIDER"    => "MockCode",
+        "BT_MOCK_ACP_SCENARIO"   => "dispatcher",
+        "BT_MOCK_ACP_DISPATCHER" => "127.0.0.1:$(disp_port)",
+        "BT_MOCK_PROJECT"        => test_env,
+    ) : Dict{String,String}()
+    # `BT.dev_server` copies `agent_env` into the PROCESS ENV (so the worker
+    # subprocess inherits it) — which means a prior mock dev_server in this
+    # same Julia process left all of the above behind, and its opt-in knobs
+    # below too. Nothing may inherit that. A `mock = false` server's chats would
+    # default to MockCode and dial the DEAD dispatcher port of the closed mock
+    # server ("ACP connection closed" on every bind). A mock server inherited
+    # the knobs it did not ask for: after `worker_move` (strict load) every
+    # later server's resume failed with "Session not found", and after
+    # `cancel_escalation` (ignore cancel) the rebuilt shared server's agent
+    # ignored every cancel. Scrub before starting, always.
+    scrub_mock_env!()
+    # Opt-in: make the mock IGNORE `session/cancel` (wedged-agent simulation) so a
+    # test can drive the chat's re-cancel → force-close escalation.
+    ignore_cancel && (agent_env["BT_MOCK_ACP_IGNORE_CANCEL"] = "1")
+    agent_env["BT_MOCK_ACP_PROMPT_QUEUEING"] = string(prompt_queueing)
+    agent_env["BT_MOCK_ACP_PROMPT_RECEIPTS"] = string(prompt_receipts)
+    agent_env["BT_MOCK_ACP_RECEIPT_DELAY_MS"] = string(receipt_delay_ms)
+    agent_env["BT_MOCK_ACP_STEERING_IDLE_BEHAVIOR"] = steering_idle_behavior
+    agent_env["BT_MOCK_ACP_ACTIVE_STEERING"] = string(active_steering)
+    # Opt-in: run a BUILT-IN MockACP scenario instead of the dispatcher. The
+    # dispatcher is scripted from the test process and is therefore always a
+    # well-behaved agent — it answers when the script says to. The badly-behaved
+    # cancel shapes (`cancel_orphan_tool`, `slow_cancel`, `swallow_next_prompt`)
+    # have to live in the mock itself, because what they model is the agent NOT
+    # doing what the client expects.
+    if scenario !== nothing
+        agent_env["BT_MOCK_ACP_SCENARIO"] = scenario
+        delete!(agent_env, "BT_MOCK_ACP_DISPATCHER")
+    end
+    cancel_delay_ms === nothing ||
+        (agent_env["BT_MOCK_ACP_CANCEL_DELAY_MS"] = string(cancel_delay_ms))
+    # Make the agent advertise a 12-choice `model` config option, so the header
+    # renders the SEARCHABLE picker (`.bt-msearch`) rather than a native select.
+    many_choices && (agent_env["BT_MOCK_ACP_MANY_CHOICES"] = "1")
+    session_config && (agent_env["BT_MOCK_ACP_SESSION_CONFIG"] = "1")
+    # Make the mock as strict as Claude Code about WHERE a session lives:
+    # `session/load` fails unless the transcript sits under the encoded cwd it
+    # is loaded in. What "continue this chat on another worker" has to satisfy.
+    strict_load && (agent_env["BT_MOCK_ACP_STRICT_LOAD"] = "1")
+
+    # Behind the real login proxy: Caddy and Authelia in front, the admin with a
+    # fresh password and authenticator secret, the worker through Caddy. Behind a
+    # tunnel (`tunnel = true`): the same login, asked by the server itself, and
+    # a stand-in for cloudflared in front.
+    login = proxy || tunnel
+    admin = login ? Login("admin", bytes2hex(rand(UInt8, 12)), base32(rand(UInt8, 20))) : nothing
+    bins = login ? proxy_binaries() : nothing
+    proxy_kw = login ? (; proxy = BT.DevProxy(; caddy_bin = bins.caddy, authelia_bin = bins.authelia,
+                                              valkey_bin = bins.valkey,
+                                              admin = admin.user, password = admin.password,
+                                              totp_secret = admin.secret, tunnel)) : (;)
+    h = BT.dev_server(; port = port, agent_env = agent_env, scan_on_connect, proxy_kw..., kwargs...)
+    sleep(0.8)   # let the worker WS dial in before tests start poking
+    # Clean slate for the in-process MCP (armed lazily on the first MCP call,
+    # see invoke_mcp) in case a prior test tore down without close().
+    disarm_mcp!("server bring-up")
+
+    return TestServer(h, agent_ref, sock, disp_port, dispatcher_task,
+                       Ref{Any}(nothing), Ref(false),
+                       (browser_width, browser_height), admin, Dict{String,Int}(),
+                       @NamedTuple{proc::Base.Process, worker_id::String, config::String}[])
+end
+
+# Dispatcher loop per mock-agent connection. Reads one `{"prompt": "...",
+# "mcp_env": {...}}` per session/prompt, invokes the agent function, streams the
+# resulting events back as line-delimited JSON. For high-level events that need
+# real MCP execution (`bt_eval`), the dispatcher runs the corresponding
+# BonitoMCP handler IN THIS PROCESS, in the environment the chat's MCP launch
+# entry carries (`mcp_env`), then forwards the result blocks to the mock as a
+# `bt_eval_result` event the mock knows how to wrap as ACP tool_call frames.
+# This keeps the bt_* execution real (same Malt worker, same env_path, same
+# package resolution, the worker relay's real grant) without making the mock
+# binary itself an MCP client.
+function handle_client(client, agent_ref::Ref{Function})
+    try
+        while !eof(client)
+            line = readline(client)   # a closed client is the IOError below
+            isempty(line) && continue
+            msg = JSON.parse(line)
+            # session/load replay request: serve the scripted history for this
+            # session id (REPLAY_FN, default empty) and terminate the stream.
+            if haskey(msg, "replay")
+                events = try
+                    Base.invokelatest(REPLAY_FN[], String(msg["replay"]))
+                catch e
+                    @warn "TestKit REPLAY_FN threw" exception = e
+                    Any[]
+                end
+                for ev in events
+                    println(client, JSON.json(ev)); flush(client)
+                end
+                println(client, JSON.json(Dict("type" => "end"))); flush(client)
+                continue
+            end
+            prompt = String(get(msg, "prompt", ""))
+            mcp_env = get(msg, "mcp_env", nothing)
+            # On a resumed session the server prepends a transcript of the prior
+            # conversation, with the user's real new message after a "My new
+            # message:" divider. A real agent reads the transcript and replies to
+            # the new message; the scripted test agents instead branch on the
+            # prompt text, so hand them ONLY the new message — otherwise replayed
+            # history (e.g. a past "crash now") would wrongly re-trigger them.
+            if occursin("My new message:", prompt)
+                prompt = String(strip(last(split(prompt, "My new message:"; limit = 2))))
+            end
+            response = try
+                # invokelatest so tests can swap `agent_fn` mid-run (the
+                # dispatcher task is spawned before those closures exist).
+                normalise(Base.invokelatest(agent_ref[], prompt))
+            catch e
+                # Surface the test's agent-fn crash in the chat as a
+                # synthetic agent message, so the test still sees something
+                # rather than the prompt hanging forever.
+                [text("agent fn threw: $(sprint(showerror, e))"), end_turn()]
+            end
+            for ev in response
+                forward_event(client, ev, mcp_env)
+            end
+        end
+    catch e
+        e isa Base.IOError || @warn "TestKit dispatcher client crashed" exception=e
+    finally
+        close(client)   # idempotent
+    end
+end
+
+# Per-event dispatch — high-level events get rewritten into the lower-level
+# `bt_eval_result` event the mock knows how to map to ACP frames; everything
+# else is forwarded verbatim.
+function forward_event(client, ev::AbstractDict, mcp_env)
+    t = String(get(ev, "type", ""))
+    if t == "mcp_call"
+        invoke_mcp(client, ev, mcp_env)
+    else
+        println(client, JSON.json(ev)); flush(client)
+    end
+end
+
+# Run BonitoMCP.julia_eval_handler with the args from the event. The
+# handler spawns / reuses a Malt worker keyed by `env_path`, executes the
+# code with `--project=$env_path`, and returns MCP content blocks +
+# isError. We forward those to the mock as a structured event the mock
+# turns into ACP `tool_call` + `tool_call_update` frames carrying the
+# same content.
+#
+# Run `f` as the chat's MCP process would: in the environment its launch entry
+# carries, i.e. the worker relay's grant for that chat. With it the eval
+# worker's live-render bridge lands in `state.eval_workers[project_id]` (what the
+# chat looks up when mounting) and live stdout streams over the control channel.
+# In production each chat has its own MCP process; here one process stands in
+# for all of them, so a different grant than last time (another chat, a
+# restarted session, another server) re-arms its channels. The eval workers
+# stay warm; only their bridges re-dial.
+function with_mcp_env(f, env::AbstractDict)
+    rest = Dict{String,String}(String(k) => String(v) for (k, v) in env)
+    token = get(rest, "BONITOAGENTS_CONTROL_TOKEN", "")
+    token == ARMED_GRANT[] || (disarm_mcp!("new grant"); ARMED_GRANT[] = token)
+    # The grant goes to the MCP the way a real one keeps it, never into ENV:
+    # the eval workers this process starts must not inherit it.
+    BonitoMCP.take_relay_grant!(rest)
+    prev = Dict(k => get(ENV, k, nothing) for k in keys(rest))
+    for (k, v) in rest
+        ENV[k] = v
+    end
+    try
+        # Armed, this process reports itself as the chat's MCP, so the chat's
+        # process record names the test process. The dev worker refuses to
+        # kill a process it runs under (BonitoWorker `runs_this_worker`);
+        # before it did, closing an eval chat killed the whole test run.
+        BonitoMCP.start_ctrl_dialback!()   # idempotent while armed
+        return f()
+    finally
+        for (k, v) in prev
+            v === nothing ? delete!(ENV, k) : (ENV[k] = v)
+        end
+    end
+end
+
+function invoke_mcp(client, ev::AbstractDict, mcp_env)
+    tool = String(get(ev, "tool", "bt_julia_eval"))
+    # Everything besides the event bookkeeping IS the tool's argument dict —
+    # `mcp_call` sugar (bt_eval / bt_continue) puts args at the top level.
+    args = get(ev,"arguments",nothing)
+    args === nothing && (args = Dict{String,Any}(String(k) => v for (k, v) in ev
+                            if String(k) ∉ ("type", "tool", "id")))
+
+    tool_id = String(get(ev, "id", "te_$(rand(UInt32))"))
+    # Real claude opens the tool bubble BEFORE the MCP call runs, streams the
+    # args on an update, and the status stays PENDING for the whole call —
+    # that's what the chat's live affordances (compact code preview, stdout
+    # stream tail, stop button, elapsed clock) key on. Announce first, run after.
+    open_ev = Dict{String,Any}(
+        "type" => "bt_eval_open", "tool_id" => tool_id,
+        "tool" => "mcp__btworker__" * tool,
+        "code" => String(get(ev, "code", "")),
+        "env_path" => get(ev, "env_path", nothing),
+        # The call's whole argument dict, as claude streams it into rawInput.
+        "args" => copy(args))
+    haskey(ev, "timeout") && (open_ev["timeout"] = ev["timeout"])
+    haskey(ev, "worker")  && (open_ev["worker"]  = ev["worker"])
+    println(client, JSON.json(open_ev)); flush(client)
+    # What Claude Code sends with every `tools/call` (`_meta["claudecode/toolUseId"]`,
+    # which BonitoMCP's dispatch copies into the arguments): the card's own id.
+    args["_tool_use_id"] = tool_id
+
+    # Dispatch by NAME through the registry, the way a real MCP process does.
+    # This used to hardcode the two eval handlers and fall through to
+    # `julia_eval_handler` for everything else — so `mcp_call("bt_wait")` ran the
+    # eval handler with no `code` and came back "error: empty code" in
+    # milliseconds. The test then measured a turn that was never blocked and had
+    # no way to tell that from a broken tool. Any registered tool is callable now.
+    # `call_tool` reaches the server's app tools too (BonitoMCP tools/app_tools.jl),
+    # over the control channel `with_mcp_env` arms with this chat's grant.
+    runner() = something(BonitoMCP.call_tool(tool, args),
+        Dict{String,Any}("content" => Any[Dict("type" => "text",
+            "text" => "TestKit: no MCP tool named `$tool` (have: " *
+                      join((t.name for t in BonitoMCP.available_tools()), ", ") *
+                      " and the server's app tools)")],
+            "isError" => true))
+    result = try
+        # No launch env is the standalone case (no live bridge → text fallback,
+        # still a valid result). With one, the eval's live stdout streams over
+        # the REAL control channel to the chat's tail and the result renders to
+        # a LIVE Bonito fragment over the eval bridge, same as production.
+        mcp_env === nothing ? runner() : with_mcp_env(runner, mcp_env)
+    catch e
+        Dict{String,Any}(
+            "content" => Any[Dict("type" => "text",
+                                   "text" => "TestKit mcp_call crash: $(sprint(showerror, e))")],
+            "isError" => true,
+        )
+    end
+
+    out = Dict{String,Any}(
+        "type"     => "bt_eval_result",
+        "tool_id"  => tool_id,
+        "tool"     => "mcp__btworker__" * tool,
+        "code"     => String(get(ev, "code", "")),
+        "env_path" => get(ev, "env_path", nothing),
+        "content"  => get(result, "content", Any[]),
+        "is_error" => Bool(get(result, "isError", false)),
+        "opened"   => true,   # bt_eval_open already emitted the pending frames
+    )
+    println(client, JSON.json(out)); flush(client)
+end
+
+"""
+    add_worker!(s; name = "worker-extra", credential = "", worker_id = ...) -> Base.Process
+
+Spawn an ADDITIONAL worker process against the same dev server (its own config
+dir + projects root), exactly as a second machine running the installer would.
+Behind the proxy it comes in like any worker there: through Caddy, with the
+`credential` "Add worker" issued (the one its install command carries),
+trusting Caddy's certificate authority. Returns the worker process so the test
+can later `kill` it to simulate that machine going offline; `close(s)` stops it
+(and the agents it started) in any case. `worker_id` defaults to a fresh id;
+set it explicitly for fixtures that depend on a stable machine identity.
+"""
+function add_worker!(s::TestServer; name::AbstractString = "worker-extra", credential::AbstractString = "",
+                     worker_id::AbstractString = "test-" * String(name) * "-" * string(time_ns(); base = 16))
+    cfg  = mktempdir(prefix = "bonitoagents-test-wcfg2-")
+    root = mktempdir(prefix = "bonitoagents-test-w2root-")
+    prev = get(ENV, "BONITOAGENTS_CONFIG_DIR", nothing)
+    ENV["BONITOAGENTS_CONFIG_DIR"] = cfg
+    # A distinct, pinned worker id so it registers as a separate worker. Not
+    # `rand`: inside a `@testset` the RNG is reseeded, so two runs in one process
+    # would pick the same id.
+    write(joinpath(cfg, "worker_id"), worker_id)
+    rig = s.h.proxy
+    url = rig === nothing ? s.h.url : "https://127.0.0.1:$(s.h.state.auth.config.https_port)"
+    BonitoWorker.write_config!(; server_url = url, credential,
+                                 projects_root = root, name = String(name))
+    proc, _ = rig === nothing ? BonitoWorker.spawn_worker() :
+        withenv(BonitoWorker.spawn_worker, "JULIA_SSL_CA_ROOTS_PATH" => rig.root_cert)
+    prev === nothing ? delete!(ENV, "BONITOAGENTS_CONFIG_DIR") : (ENV["BONITOAGENTS_CONFIG_DIR"] = prev)
+    push!(s.extra_workers, (proc = proc, worker_id = worker_id, config = cfg))
+    return proc
+end
+
+function Base.close(s::TestServer)
+    s.closed[] && return s
+    s.closed[] = true
+    # Tear down the in-process MCP's channels armed for `s` (see with_mcp_env),
+    # rather than leave them retrying against this dead server's worker.
+    # `reset_eval_dialback!` keeps the warm eval workers alive (just drops their
+    # bridge) so the NEXT dev_server re-dials fresh.
+    disarm_mcp!("server teardown")
+    ctx = s.browser[]
+    ctx === nothing || close_browser(ctx)         # ECT.close is itself best-effort
+    isopen(s.dispatcher_sock) && close(s.dispatcher_sock)
+    close(s.h)
+    # The workers `add_worker!` started go with the server, and so do the agents
+    # they started (their own process groups, see `close(::DevHandle)`). They used
+    # to be each test's job, done as its last step or not at all: every run left
+    # a few behind, reconnecting to a dead port at ~600 MB each.
+    for w in s.extra_workers
+        BT.stop_worker_proc!(w.proc)
+        BonitoWorker.reap_agents_owned_by(w.worker_id, w.config)
+    end
+    empty!(s.extra_workers)
+    # The mock knobs `BT.dev_server` wrote into ENV stay: another TestServer may
+    # still be up in this process (an item that includes its own TestKit cannot
+    # release the shared one), and without `BT_DEFAULT_PROVIDER` its next chat
+    # would start the REAL default agent. `dev_server` scrubs them on bring-up.
+    settle_mcp_evals!()   # last: if it throws, the stack is already down
+    return s
+end
+
+"""
+    exit_success()
+
+Force-terminate the test process with code 0, bypassing Julia's atexit/thread
+join. Call as the LAST line of an e2e script: the @testset has already printed
+its result (a failing one throws first, so reaching here means it passed), but a
+degraded headless Electron / wedged Reseau poller thread can stall Julia's
+normal shutdown so the process never exits on its own. `_exit` sidesteps that.
+"""
+function exit_success()
+    flush(stdout)
+    flush(stderr)
+    ccall(:_exit, Cvoid, (Cint,), Cint(0))
+end
+
+# ── DISPLAY/XAUTHORITY plumbing ────────────────────────────────────────────
+# Subprocesses spawned by claude-agent-acp / the MCP worker don't inherit
+# the parent shell's X env. Detect the live X socket + xauth cookie and
+# set them so Electron can render into the user's session.
+function ensure_display!()
+    if isempty(get(ENV, "DISPLAY", ""))
+        socks = filter(s -> startswith(s, "X"), readdir("/tmp/.X11-unix"))
+        isempty(socks) && return     # no X — caller probably wants headless
+        ENV["DISPLAY"] = ":" * first(sort(socks; rev = true))[2:end]
+    end
+    if isempty(get(ENV, "XAUTHORITY", ""))
+        uid = parse(Int, strip(read(`id -u`, String)))
+        rdir = "/run/user/$uid"
+        if isdir(rdir)
+            cands = filter(f -> startswith(f, "xauth"), readdir(rdir; sort = true))
+            isempty(cands) || (ENV["XAUTHORITY"] = joinpath(rdir, first(cands)))
+        end
+    end
+    return nothing
+end
+
+# ── Browser helpers ───────────────────────────────────────────────────────
+
+"""
+    open_browser(s; width = 1280, height = 820, route = "/")
+
+Open one Electron window pointed at the dev server. Idempotent — the
+second call closes the prior window and opens a fresh one.
+`route` can also be an absolute URL, for example a public share on another host.
+"""
+# `offscreen = true` (the DEFAULT) renders via OSR so requestAnimationFrame runs
+# at ~60fps instead of the ~1.5fps a plain hidden window's compositor produces —
+# the whole e2e suite exercises rAF-paced scroll/animation code, so faithful
+# timing is the correct default. Pass `offscreen = false` to opt a specific test
+# back onto the plain hidden-window path (e.g. to bisect an OSR-only difference).
+function open_browser(s::TestServer; width::Int = s.browser_size[1],
+                       height::Int = s.browser_size[2],
+                       route::AbstractString = "/", offscreen::Bool = true)
+    ensure_display!()
+    old = s.browser[]
+    old === nothing || close_browser(old)
+    url = occursin(r"^https?://", route) ? String(route) : s.h.url * route
+    # Behind the proxy each browser keeps cookies of its own: Electron's default
+    # profile is shared by every window, so a second browser would be logged in
+    # as the first. Without a GPU (CI) WebGL runs on SwiftShader, and Chromium
+    # warns about that fallback unless it was asked for. With a GPU the flag
+    # does nothing.
+    electron_args = String["--enable-unsafe-swiftshader"]
+    s.admin === nothing || push!(electron_args, "--user-data-dir=$(mktempdir())")
+    # ElectronCall.Testing.open_window already forces --ozone-platform=x11 and
+    # sets backgroundThrottling=false + paintWhenInitiallyHidden=true, so
+    # capturePage on the headless (show=false) window stays fresh.
+    # `offscreen = true` switches to OSR so requestAnimationFrame runs at ~60fps
+    # instead of the ~1.5fps a plain hidden window's compositor produces — needed
+    # for tests that exercise rAF-paced scroll timing (momentum, follow-restore).
+    # Only pass the kwarg when actually requested: the CI/test env pins a git
+    # ElectronCall that predates `offscreen`, so the default path must call the
+    # old signature. OSR is opt-in and only resolves against the dev checkout.
+    # Opened blank and loaded only once the console is captured: what the page
+    # logs while it boots (Bonito's session init) is exactly what matters.
+    # ELECTRON_DISABLE_SECURITY_WARNINGS: an unpackaged Electron warns about the
+    # page's CSP allowing eval (Bonito evaluates its js""). Browsers never print
+    # that, so it would fail every item without saying anything about the app.
+    ctx = withenv("ELECTRON_DISABLE_SECURITY_WARNINGS" => "true") do
+        offscreen ?
+            ECT.open_window(; width = width, height = height, show = false, offscreen = true, electron_args) :
+            ECT.open_window(; width = width, height = height, show = false, electron_args)
+    end
+    capture_console!(ctx)
+    follow_pane_scope!(ctx)
+    s.admin === nothing || trust_test_ca!(ctx)
+    s.browser[] = ctx
+    ElectronCall.load(ctx.window, ElectronCall.URI(url))
+    sleep(3.0)                     # let the dashboard mount + the chat session boot
+    install_pane_scope!(s)
+    return s
+end
+
+# Under the shared runner the chat-pane KeyedList keeps ONE `.bt-chatpane` per
+# opened chat in the DOM (only the active one visible) — that's the product's
+# fast-switch design. But the suites read message state via global selectors
+# like `document.querySelector('.bt-messages')`, which would grab the FIRST
+# (often a hidden, stale) pane once more than one chat has been opened.
+#
+# This shim makes the global `document.querySelector(All)` resolve chat-MESSAGE
+# selectors (`.bt-messages`, `.bt-agent-msg`, `.bt-user-msg`, `.bt-tool-*`,
+# `.bt-plan-msg`, `.bt-taskbar-*`, `.bt-thinking`, …) within the VISIBLE chat
+# pane — i.e. the rendered DOM the user actually sees, which is exactly the
+# contract ("scope to its OWN chat"). It falls through to native for every other
+# selector, and the app's own JS already scopes `.bt-messages` per-pane
+# (`pane.querySelector`), so this never perturbs the product runtime. Installed
+# fresh on every `open_browser` (so a reconnect re-arms it).
+const PANE_SCOPE_JS = raw"""(() => {
+        if (window.__btPaneScopeInstalled) return true;
+        window.__btPaneScopeInstalled = true;
+        // NB: deliberately NOT scoping `.bt-embed`, `.bw-ws-panel`, `.bt-slot`
+        // (app_detach moves embeds OUT of the chat pane into workspace panels —
+        // scoping those would hide a detached embed), nor sidebar/dashboard/lens
+        // header selectors (single, not per-pane).
+        const MSG = /(^|[\s,>])\.bt-(messages|agent-msg|user-msg|tool-msg|tool-title|tool-header|tool-body|tool-status|tool-summary|plan-msg|taskbar|new-msg-pill|thinking|diff-block|search-row|eval-section|section-label|multi-diff|busy|text-input|send-btn|lens|header-provider)/;
+        const empty = document.createDocumentFragment().querySelectorAll('*');
+        // The OPEN chat's pane (the one the sidebar selected), also while a tab
+        // of the same workspace group, such as a file or the change review, is in
+        // front of it: tests drive their chat from those tabs. Hidden chats keep
+        // their layout (content-visibility), so `offsetParent` cannot tell them
+        // apart; `aria-hidden` can. With no chat open, nothing matches.
+        const visiblePane = () => {
+            const panes = [...document.querySelectorAll('.bt-view-chats .bt-chatpane, .bt-chatpane')];
+            return panes.find(p => p.getAttribute('aria-hidden') !== 'true') || null;
+        };
+        const wrap = (orig, all) => function(sel) {
+            if (typeof sel === 'string' && MSG.test(sel) && !sel.includes('.bt-chatpane')) {
+                const p = visiblePane();
+                if (p) return all ? p.querySelectorAll(sel) : p.querySelector(sel);
+                if (Document.prototype.querySelector.call(document, '.bt-chatpane')) return all ? empty : null;
+            }
+            return orig.call(this, sel);
+        };
+        document.querySelector    = wrap(Document.prototype.querySelector,    false);
+        document.querySelectorAll = wrap(Document.prototype.querySelectorAll, true);
+        return true;
+    })()"""
+
+# Every page load of the test window gets the shim, from Electron's main
+# process. Installing it only in `open_browser`/`navigate` left it off after any
+# other reload (the connection guard's, `location.reload()` in a test), and the
+# items after that one counted hidden panes: the failures appeared only late in
+# a long shared-server run.
+function follow_pane_scope!(ctx::ECT.TestContext)
+    run(ctx.app, """(() => {
+        const wc = electron.BrowserWindow.fromId($(ctx.window.id)).webContents;
+        const shim = $(json(PANE_SCOPE_JS));
+        wc.on('dom-ready', () => wc.executeJavaScript(shim)
+            .catch(e => console.error('TestKit: pane-scope shim not installed on ' + wc.getURL() + ': ' + e)));
+        return true;
+    })()""")
+    return ctx
+end
+
+install_pane_scope!(s::TestServer) = (eval_js(s, PANE_SCOPE_JS); s)
+
+"""
+    eval_js(s, code) -> Any
+
+Run JavaScript in the browser; the value of the last expression is
+returned to Julia (via Electron's JSON bridge). Long-running JS should
+return primitive types only — no DOM refs.
+"""
+# Thrown when the Electron bridge doesn't answer within the per-call watchdog.
+# TYPED so `wait_for` can tell "bridge was busy for THIS poll" (retry within its
+# own budget) apart from a real JS/bridge error (rethrow). A bare `error()` would
+# force string-matching at the catch site.
+struct BridgeTimeout <: Exception
+    secs::Float64
+    code::String
+end
+Base.showerror(io::IO, e::BridgeTimeout) =
+    print(io, "eval_js timed out after $(e.secs)s (Electron bridge wedged?): ",
+          first(replace(e.code, r"\s+" => " "), 90))
+
+function eval_js(s::TestServer, code::AbstractString; timeout::Real = 20)
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    # Hard-bound the bridge round-trip: a wedged/overloaded Electron renderer (e.g.
+    # right after a 500-message flood) must NEVER hang the harness. If the bridge
+    # doesn't answer in `timeout`s we throw — the caller fails fast instead of the
+    # whole run deadlocking. (This is the foundation that makes `wait_for` — and
+    # therefore every suite — impossible to deadlock.)
+    res = Ref{Any}(nothing); ex = Ref{Any}(nothing); done = Ref(false)
+    # @async (thread 1, cooperative): the ECT bridge waits on an IPC response which
+    # yields, so this outer watchdog loop still gets scheduled and can time out.
+    @async begin
+        try; res[] = ECT.eval_js(ctx, String(code)); catch e; ex[] = e; finally; done[] = true; end
+    end
+    t0 = time()
+    while !done[] && time() - t0 < timeout; sleep(0.02); end
+    done[] || throw(BridgeTimeout(Float64(timeout), String(code)))
+    ex[] === nothing || throw(ex[])
+    return res[]
+end
+
+# ── Browser console ─────────────────────────────────────────────────────────
+# Every warning and error a test browser logs, recorded by Electron's MAIN
+# process (the window's `console-message` event). The sink this replaces lived
+# inside the page and saw only uncaught exceptions: Bonito reports a failing
+# closure with console.error and a handler it could not attach with
+# console.warn, and every reload wiped the sink. The main process sees each
+# message of the window from before its first page load until it closes, and
+# answers even while the renderer is pegged.
+
+# The browsers this process has open, and what closed ones logged that no check
+# has seen yet. One per process because the per-item check runs after the item
+# and has no handle on the servers the item opened and closed.
+struct ConsoleLog
+    lock::ReentrantLock
+    open::Vector{ECT.TestContext}
+    unchecked::Vector{Any}
+end
+const CONSOLE = ConsoleLog(ReentrantLock(), ECT.TestContext[], Any[])
+
+function capture_console!(ctx::ECT.TestContext)
+    run(ctx.app, """(() => {
+        const wc = electron.BrowserWindow.fromId($(ctx.window.id)).webContents;
+        const log = global.__btConsole = [];
+        const gpuLost = global.__btGpuLost = global.__btGpuLost || [];
+        // One parameter: Electron warns when a listener takes the older
+        // positional arguments; everything is on the event.
+        wc.on('console-message', (e) => {
+            if (e.level !== 'warning' && e.level !== 'error') return;
+            // Chromium's report that the GPU process lost a WebGL context. It
+            // prints this only for such a loss (webgl_rendering_context_base.cc:
+            // displayed for kRealLostContext alone), never for anything a page
+            // does. Without a GPU (CI) the GPU process exits under load ("GPU
+            // process exited unexpectedly: exit_code=512") and every live
+            // context reports it; e2e:composer_wobble failed on one (2026-11-16).
+            // Whether the page recovers is e2e:file_view's to check. Kept apart
+            // and logged by `check_console!`, not counted against the page.
+            if (e.message === 'WebGL: CONTEXT_LOST_WEBGL: loseContext: context lost') {
+                gpuLost.push({page: wc.getURL(), time: Date.now()});
+                return;
+            }
+            // The GPU process's notes on the machine's graphics driver, not the
+            // page's: without a GPU (CI) every WebGL frame is read back for the
+            // software compositor, and Chromium says so ("GPU stall due to
+            // ReadPixels"). Driver errors still count.
+            if (/^\\[\\.WebGL-[^\\]]*\\]GL Driver Message \\([^,]*, Performance,/.test(e.message)) return;
+            log.push({type: e.level, message: String(e.message), source: String(e.sourceId ?? ''),
+                      line: e.lineNumber, page: wc.getURL(), time: Date.now()});
+        });
+        return true;
+    })()""")
+    lock(() -> push!(CONSOLE.open, ctx), CONSOLE.lock)
+    return ctx
+end
+
+# The window's logged warnings and errors; `take` also empties the log.
+function console_entries(ctx::ECT.TestContext; take::Bool = false)
+    v = run(ctx.app, take ? "global.__btConsole.splice(0)" : "global.__btConsole.slice()")
+    return v === nothing ? Any[] : collect(Any, v)
+end
+
+# Close a test browser's window, keeping what it logged for the next
+# `check_console!`. The browser (`ctx.app`) goes with its last window
+# (`another_tab` opens more).
+function close_browser(ctx::ECT.TestContext)
+    entries = if ctx.app.exists && isopen(ctx.window)
+        try
+            console_entries(ctx; take = true)
+        catch e
+            e isa ElectronCall.ElectronCallError || rethrow()
+            Any[Dict("type" => "error", "message" => "the browser's console log was unreadable at close: $(sprint(showerror, e))")]
+        end
+    else
+        Any[]
+    end
+    tabs_left = lock(CONSOLE.lock) do
+        filter!(c -> c !== ctx, CONSOLE.open)
+        append!(CONSOLE.unchecked, entries)
+        any(c -> c.app === ctx.app, CONSOLE.open)
+    end
+    if !tabs_left
+        close(ctx)
+    elseif isopen(ctx.window)
+        close(ctx.window)
+    end
+    return nothing
+end
+
+"""
+    js_errors(s) -> Vector
+
+Every warning and error the browser console logged since the last
+`clear_js_errors`, uncaught exceptions included. Each entry has `type`
+("warning" or "error"), `message`, `source` and `line`.
+"""
+js_errors(s::TestServer) = s.browser[] === nothing ? Any[] : console_entries(s.browser[])
+
+"""
+    clear_js_errors(s)
+
+Forget what the browser console logged so far.
+"""
+function clear_js_errors(s::TestServer)
+    s.browser[] === nothing || console_entries(s.browser[]; take = true)
+    return nothing
+end
+
+"""
+    check_console!() -> Vector{String}
+
+Every warning and error any browser of this process logged since the last
+check, open and closed browsers alike, one line each. The suite runs
+`@test isempty(check_console!())` after every item, so a page that logs a
+warning or an error fails the item that made it.
+"""
+function check_console!()
+    open = lock(() -> copy(CONSOLE.open), CONSOLE.lock)
+    entries = Any[]
+    for ctx in open
+        append!(entries, console_entries(ctx; take = true))
+        lost = run(ctx.app, "(global.__btGpuLost || []).splice(0)")
+        lost === nothing || isempty(lost) ||
+            @info "the browser's GPU process lost WebGL contexts (not counted as page warnings)" n = length(lost) pages = unique(String[l["page"] for l in lost])
+    end
+    lock(CONSOLE.lock) do
+        prepend!(entries, CONSOLE.unchecked)
+        empty!(CONSOLE.unchecked)
+    end
+    return [string(e["type"], ": ", e["message"],
+                   isempty(get(e, "source", "")) ? "" : " ($(e["source"]):$(get(e, "line", "?")))")
+            for e in entries]
+end
+
+# (Removed `refresh_eval_session!`.) It `restart!`-ed the whole eval worker at
+# each test's START to dodge a stale per-env dial-back — a racy stand-in that
+# also threw away warm compile state. The dial-back is now re-pointed
+# deterministically, without killing the worker, at the two points where the
+# bridge's identity changes: dev_server CLOSE (`Base.close(::TestServer)`, the
+# server changed) and `new_chat` (the PROJECT changed — the server keys bridges
+# by project id). Tests never need to ask for it.
+
+"""
+    wait_for(s, label, js_predicate; timeout = 8, describe = nothing) -> Bool
+
+Poll `js_predicate` (a JS expression returning truthy/falsy) until it's
+truthy or `timeout` seconds elapse. Returns the truthy value (or `false`).
+`describe`, a JS expression, says in the timeout error what the page showed.
+"""
+function wait_for(s::TestServer, label::AbstractString, predicate::AbstractString;
+                   timeout::Real = 8, interval::Real = 0.1,
+                   describe::Union{Nothing,AbstractString} = nothing)
+    t0 = time()
+    code = "(() => { try { return " * String(predicate) * "; } catch (e) { return false; } })()"
+    # Per-poll bound is SHORT (≤5s): if the renderer is momentarily pinned (e.g.
+    # synchronously rendering a 500-row flood) THIS poll's round-trip is abandoned
+    # and we retry within `timeout`, instead of one 20s round-trip eating the whole
+    # budget — or worse, throwing and aborting the suite. A genuinely dead bridge
+    # makes every poll BridgeTimeout, so we still exhaust `timeout` and throw below
+    # (bounded detector intact). Only the bridge-timeout is swallowed; a real
+    # eval/bridge error rethrows.
+    poll = min(Float64(timeout), 5.0)
+    while time() - t0 < timeout
+        v = try
+            eval_js(s, code; timeout = poll)
+        catch e
+            e isa BridgeTimeout || rethrow()
+            nothing
+        end
+        v in (false, nothing) || return v
+        sleep(interval)
+    end
+    shown = describe === nothing ? "" : " (the page showed: $(repr(eval_js(s, describe))))"
+    error("wait_for timed out after $(timeout)s: $label$shown")
+end
+
+"""
+    click(s, css_selector)
+
+Click the first element matching the CSS selector. Throws if it's missing.
+"""
+function click(s::TestServer, selector::AbstractString)
+    sel = String(selector)
+    # Prefer the VISIBLE match. SharedServer keeps other chats' panes mounted but
+    # hidden, so a bare `querySelector` on a pane element (`.bt-stop-btn`,
+    # `.bt-yolo-bar`, …) could resolve to a STALE pane and click the wrong chat.
+    # Targeting the visible one auto-scopes every click to the active pane, so a
+    # test can't leak across panes by accident. Falls back to the first match
+    # when nothing is "visible" (e.g. a global dashboard control), preserving old
+    # behaviour for non-pane selectors.
+    #
+    # `VIS`, not `offsetParent`: a hidden pane is `content-visibility: hidden`,
+    # whose elements keep their offsetParent. The offsetParent test picked the
+    # hidden chat's Yolo button and armed the wrong chat.
+    ok = eval_js(s, """(() => {
+        const els = [...document.querySelectorAll($(json(sel)))];
+        const el = els.find($VIS) || els[0];
+        if (!el) return false;
+        el.click();
+        return true;
+    })()""")
+    ok === true || error("click: no element matched $sel")
+    return s
+end
+
+"Toggle the current chat's messaging permission through its actual menu."
+function set_chat_messaging(s::TestServer, enabled::Bool = true)
+    pane = "document.querySelector('.bt-chatpane[aria-hidden=false]')"
+    menu = "$pane.querySelector('.bt-header-menu')"
+    item = "$menu.querySelector('.bt-header-messaging')"
+    wait_for(s, "messaging switch ready", "!!$item")
+    eval_js(s, "$item.classList.contains('bt-cap-on')") == enabled && return nothing
+    eval_js(s, "if (!$menu.classList.contains('bw-menu-open')) $menu.querySelector('.bw-menu-trigger').click(); true")
+    wait_for(s, "chat menu open", "$menu.classList.contains('bw-menu-open')")
+    eval_js(s, "$item.click(); true")
+    wait_for(s, "messaging switch applied", "$item.classList.contains('bt-cap-on') === $(enabled)")
+    return nothing
+end
+
+"""
+    real_click(s, css_selector)
+
+Click the middle of the first visible match with TRUSTED mouse input
+(`sendInputEvent`), the way a person does: unlike `click`, it also does what the
+browser itself does on a click, such as selecting text.
+"""
+function real_click(s::TestServer, selector::AbstractString)
+    point = eval_js(s, """(() => {
+        const el = [...document.querySelectorAll($(json(String(selector))))].find(e => e.checkVisibility());
+        if (!el) return null;
+        el.scrollIntoView({block: 'center'});
+        const r = el.getBoundingClientRect();
+        return [Math.round(r.left + r.width / 2), Math.round(r.top + r.height / 2)];
+    })()""")
+    point === nothing && error("real_click: no visible element matched $selector")
+    x, y = point
+    ctx = s.browser[]
+    ECT.send_input(ctx, "{type: 'mouseMove', x: $x, y: $y}")
+    sleep(0.05)
+    ECT.send_input(ctx, "{type: 'mouseDown', x: $x, y: $y, button: 'left', clickCount: 1}")
+    sleep(0.05)
+    ECT.send_input(ctx, "{type: 'mouseUp', x: $x, y: $y, button: 'left', clickCount: 1}")
+    return s
+end
+
+"""
+    press_key!(s, key)
+
+Press and release `key` ("Home", "End", "PageUp", ...) with real keyboard
+input, delivered to whatever has focus, as a user's key press is.
+"""
+function press_key!(s::TestServer, key::AbstractString)
+    ctx = s.browser[]
+    ECT.send_input(ctx, "{type: 'keyDown', keyCode: $(json(String(key)))}")
+    ECT.send_input(ctx, "{type: 'keyUp', keyCode: $(json(String(key)))}")
+    return s
+end
+
+"""
+    drag_rail!(s, f; hold = 0.5) -> String
+
+Drag the visible chat's rail thumb (the scrollbar by message count) to fraction
+`f` of its track with real mouse input, hold it there `hold` seconds (a resting
+thumb jumps there) and let go. Returns the label the rail showed while held,
+e.g. "Message 150 of 300".
+"""
+function drag_rail!(s::TestServer, f::Real; hold::Real = 0.5)
+    pane = "document.querySelector('.bt-chatpane[aria-hidden=false]')"
+    r = eval_js(s, """(() => { const rail = $pane?.querySelector('.bt-rail');
+        if (!rail || rail.classList.contains('bt-rail-hidden')) return null;
+        const t = rail.querySelector('.bt-rail-thumb').getBoundingClientRect(), b = rail.getBoundingClientRect();
+        return [t.left + t.width / 2, t.top + t.height / 2, b.top + t.height / 2, b.height - t.height]; })()""")
+    r === nothing && error("drag_rail!: the visible chat shows no rail")
+    x, y0, top, range = round(Int, r[1]), round(Int, r[2]), r[3], r[4]
+    y1 = round(Int, top + f * range)
+    ctx = s.browser[]
+    ECT.send_input(ctx, "{type: 'mouseMove', x: $x, y: $y0}")
+    ECT.send_input(ctx, "{type: 'mouseDown', x: $x, y: $y0, button: 'left', clickCount: 1}")
+    for k in 1:10
+        y = round(Int, y0 + (y1 - y0) * k / 10)
+        ECT.send_input(ctx, "{type: 'mouseMove', x: $x, y: $y, button: 'left'}")
+        sleep(0.02)
+    end
+    sleep(hold)
+    label = eval_js(s, "$pane.querySelector('.bt-rail-label').textContent")
+    ECT.send_input(ctx, "{type: 'mouseUp', x: $x, y: $y1, button: 'left', clickCount: 1}")
+    return String(label)
+end
+
+"""
+    wheel_into_view(s, scroller, target; step = 150) -> Bool
+
+Wheel `scroller` from its left padding until `target` is in view: its top, and
+its bottom unless it is taller than the view. A step that overshoots is halved.
+Both are JS expressions for an element; a `target` not on the page counts as
+above. Needs `ECT.install_cursor`.
+"""
+function wheel_into_view(s::TestServer, scroller::AbstractString, target::AbstractString;
+                         step::Real = 150, max_steps::Integer = 120)
+    ctx = s.browser[]
+    ECT.move_to(ctx, ECT.JS("(() => { const r = $(scroller).getBoundingClientRect(); " *
+                            "return [r.left + 3, r.top + r.height / 2]; })()"); duration = 0.05)
+    where() = eval_js(s, """(() => { const e = $(target); if (!e) return -1;
+        const r = e.getBoundingClientRect(), c = $(scroller).getBoundingClientRect();
+        if (r.top < c.top + 40) return -1;
+        return r.top > c.bottom - 80 || (r.bottom > c.bottom - 40 && r.height < c.height - 120) ? 1 : 0; })()""")
+    dy, last = Float64(step), 0
+    for _ in 1:max_steps
+        w = where()
+        w == 0 && return true
+        w == -last && (dy /= 2)
+        last = w
+        # Measured once the scroller's own listeners have seen the step.
+        eval_js(s, "(() => { window.__btWheeled = false; $(scroller).addEventListener('scroll', " *
+                   "() => { window.__btWheeled = true; }, {once: true}); return true; })()")
+        ECT.wheel(ctx, dy * w; steps = 1)
+        wait_for(s, "the wheel step scrolled", "window.__btWheeled"; timeout = 5)
+    end
+    return where() == 0
+end
+
+# Click the first visible `selector` repeatedly until `predicate` holds — rides
+# out the race where a framework wires the click handler after the element
+# mounts (so a lone synthetic click is dropped). Delegates to the ElectronCall
+# primitive; errors if the state never appears.
+function click_until(s::TestServer, selector::AbstractString, predicate::AbstractString;
+                     timeout::Real = 15, interval::Real = 0.3)
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    ECT.click_until(ctx, String(selector), String(predicate);
+                    timeout = Float64(timeout), interval = Float64(interval)) ||
+        error("click_until: '$selector' did not produce the expected state within $(timeout)s")
+    return s
+end
+
+"""
+    navigate(s, route)
+
+Drive the BonitoAgents dashboard to a project / view. `route` can be one of:
+
+  * `"/"`               — root dashboard
+  * `"/?pid=<id>"`      — opens the chat for project `<id>` (server pushes
+                          `current_view` via its standard URL handling)
+
+For routes that aren't direct URLs, prefer the high-level helpers
+(`new_chat`, `open_project`) below.
+"""
+function navigate(s::TestServer, route::AbstractString)
+    base = s.h.url
+    eval_js(s, "window.__btNavigationPending = true; location.href = $(json(base * String(route)))")
+    # `.bt-shell`, the app's root: `.bt-app` exists only while a chat is open,
+    # so a reload onto the dashboard never satisfied the wait.
+    wait_for(s, "new document loaded",
+        "window.__btNavigationPending !== true && document.readyState === 'complete' && !!document.querySelector('.bt-shell')";
+        timeout = 60)
+    # Navigation replaces the document and its selector wrappers. Without
+    # reinstalling these, the next suite can read a hidden chat's message
+    # count instead of the active chat after a reload test.
+    install_pane_scope!(s)
+    return s
+end
+
+# ── The login proxy ────────────────────────────────────────────────────────
+# `dev_server(proxy = true)` puts the real Caddy and Authelia in front, so a test
+# logs in the way a person does: Authelia's form, then a one-time code from an
+# authenticator app, which `totp` computes from the account's secret.
+
+"Caddy, Authelia and Valkey for `dev_server(proxy = true)`, downloaded once and checksum-verified."
+proxy_binaries() = BT.fetch_proxy_binaries(joinpath(get(ENV, "XDG_CACHE_HOME", joinpath(homedir(), ".cache")),
+                                                    "bonitoagents-test", "proxy-bin"))
+
+const BASE32 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
+
+function base32(bytes::AbstractVector{UInt8})
+    bits = join(string(b; base = 2, pad = 8) for b in bytes)
+    bits *= "0"^((5 - length(bits) % 5) % 5)
+    return join(BASE32[parse(Int, bits[i:i+4]; base = 2) + 1] for i in 1:5:length(bits))
+end
+
+function unbase32(text::AbstractString)
+    bits = join(string(findfirst(==(c), BASE32) - 1; base = 2, pad = 5) for c in text)
+    return [parse(UInt8, bits[i:i+7]; base = 2) for i in 1:8:(length(bits) - 7)]
+end
+
+"The RFC 6238 one-time code for `secret` in time step `step` (30 s steps, 6 digits, SHA-1)."
+function totp(secret::AbstractString, step::Integer)
+    h = SHA.hmac_sha1(unbase32(secret), reverse(reinterpret(UInt8, [UInt64(step)])))
+    o = h[end] & 0x0f
+    code = (UInt32(h[o+1] & 0x7f) << 24) | (UInt32(h[o+2]) << 16) | (UInt32(h[o+3]) << 8) | UInt32(h[o+4])
+    return lpad(string(code % UInt32(1_000_000)), 6, '0')
+end
+
+"The page's host: the dashboard's, or Authelia's portal (`auth.…`)."
+page_host(s::TestServer) = String(eval_js(s, "location.host"))
+
+const AUTHELIA_ERRORS = "[...document.querySelectorAll('[data-slot=toast][data-type=error]')]"
+
+# What Authelia logged last, bar the steady stream of "not logged in" redirects:
+# why it refused someone.
+function authelia_log_tail(s::TestServer; lines::Int = 15)
+    f = joinpath(s.h.proxy.dir, "authelia.log")
+    isfile(f) || return "(no Authelia log)"
+    kept = filter(l -> !occursin("is not authorized to user <anonymous>", l), readlines(f))
+    return "--- Authelia's log ---\n" * join(kept[max(1, end - lines + 1):end], "\n")
+end
+
+"""
+    login!(s, login = s.admin)
+
+Log in through Authelia from its portal, where `open_browser` lands behind the
+proxy: the form, then the one-time code. Returns once the dashboard is up.
+"""
+function login!(s::TestServer, login::Login = s.admin)
+    wait_for(s, "Authelia's login form", "!!document.querySelector('#username-textfield')"; timeout = 30)
+    set_input(s, "#username-textfield", login.user)
+    set_input(s, "#password-textfield", login.password)
+    # Errors already on screen (a refusal just before) are not this attempt's.
+    before = eval_js(s, "$(AUTHELIA_ERRORS).length")
+    click(s, "#sign-in-button")
+    past = wait_for(s, "the one-time code form",
+        """(() => { if (document.querySelectorAll('input[autocomplete=off]').length >= 5) return 'code';
+                    const e = $(AUTHELIA_ERRORS);
+                    return e.length > $(before) ? e.map(x => x.textContent.trim()).join(' ') : false; })()""";
+        timeout = 30)
+    past == "code" || error("login!: Authelia refused $(login.user)'s password: $(past)\n" * authelia_log_tail(s))
+    enter_code!(s, login)
+    wait_for(s, "the dashboard after the login", "!!document.querySelector('.bt-dash')"; timeout = 60)
+    install_pane_scope!(s)
+    return s
+end
+
+# The one-time code for `login` now. Authelia takes a code once: after one in
+# this 30 s step, this waits for the next.
+function next_code!(s::TestServer, login::Login)
+    step = floor(Int, time() / 30)
+    if get(s.otp_used, login.user, -1) >= step
+        sleep(30 * (step + 1) - time() + 0.5)
+        step = floor(Int, time() / 30)
+    end
+    s.otp_used[login.user] = step
+    return totp(login.secret, step)
+end
+
+"""
+    api_login!(s, login = s.admin)
+
+Log in through Authelia's API from the open page, without leaving it: what a
+login in another tab of the same browser does to this one.
+"""
+function api_login!(s::TestServer, login::Login = s.admin)
+    code = next_code!(s, login)
+    r = eval_js(s, """(async () => {
+        const post = (p, b) => fetch('/authelia/api/' + p, {method: 'POST',
+            headers: {'Content-Type': 'application/json'}, body: JSON.stringify(b)}).then(r => r.status);
+        const a = await post('firstfactor', {username: $(json(login.user)), password: $(json(login.password)),
+                                             keepMeLoggedIn: false});
+        if (a !== 200) return 'the password step answered ' + a;
+        const b = await post('secondfactor/totp', {token: $(json(code))});
+        return b === 200 ? true : 'the code step answered ' + b; })()""")
+    r === true || error("api_login!: $(r)\n" * authelia_log_tail(s))
+    return s
+end
+
+"""
+    enter_code!(s, login)
+
+Type the current one-time code for `login` into Authelia's code boxes, as an
+authenticator app's user does. Authelia takes a code once: after one in this
+30 s step, it waits for the next.
+"""
+function enter_code!(s::TestServer, login::Login)
+    code = next_code!(s, login)
+    # One digit per box, as typing does; the component gathers them and submits.
+    eval_js(s, """(() => {
+        const boxes = [...document.querySelectorAll('input[autocomplete=one-time-code], input[autocomplete=off]')]
+            .filter(e => !e.id.endsWith('hidden-input'));
+        const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set;
+        $(json(code)).split('').forEach((d, i) => {
+            boxes[i].focus(); set.call(boxes[i], d);
+            boxes[i].dispatchEvent(new Event('input', {bubbles: true})); });
+        return true; })()""")
+    return s
+end
+
+"""
+    invite_login(s, user) -> Login
+
+What a new account's invite page shows once, in browser `s`: its password and
+its authenticator (the `otpauth://` link a password manager takes), as the
+`Login` that signs in with them.
+"""
+function invite_login(s::TestServer, user::AbstractString)
+    password = String(wait_for(s, "the new password", "(document.querySelector('.pw') || {}).textContent || false";
+                               timeout = 30))
+    uri = String(wait_for(s, "the authenticator", "(document.querySelector('.uri') || {}).textContent || false";
+                          timeout = 30))
+    return Login(String(user), password, match(r"[?&]secret=([A-Z2-7]+)", uri)[1])
+end
+
+# Behind the proxy the pages come with a certificate from Caddy's own CA. The
+# browser trusts the test CA's names (`*.localhost`, 127.0.0.1) as a machine that
+# installed the CA would, from before its first request: its pages then have no
+# certificate errors, which a passkey needs (`add_passkey_device!`). Set up only
+# once a page was open, the trust needed every connection closed to take effect,
+# which killed the page's payload fetches in flight ("Failed to fetch").
+function trust_test_ca!(ctx)
+    run(ctx.app, """(() => {
+        BrowserWindow.fromId($(ctx.window.id)).webContents.session.setCertificateVerifyProc((req, cb) =>
+            cb(/(^|\\.)localhost\$|^127\\.0\\.0\\.1\$/.test(req.hostname) ? 0 : -3));
+        return true; })()""")
+    return ctx
+end
+
+"""
+    add_passkey_device!(s) -> String
+
+Give browser `s` what keeps passkeys, as a password manager (Proton Pass) or a
+security key does: Chrome's virtual authenticator, which holds discoverable
+credentials and verifies its user. Returns the device's id.
+"""
+function add_passkey_device!(s::TestServer)
+    ctx = s.browser[]
+    return String(run(ctx.app, """(async () => {
+        const d = BrowserWindow.fromId($(ctx.window.id)).webContents.debugger;
+        if (!d.isAttached()) d.attach('1.3');
+        await d.sendCommand('WebAuthn.enable', {enableUI: false});
+        const r = await d.sendCommand('WebAuthn.addVirtualAuthenticator', {options: {
+            protocol: 'ctap2', transport: 'internal', hasResidentKey: true,
+            hasUserVerification: true, isUserVerified: true, automaticPresenceSimulation: true}});
+        return r.authenticatorId; })()"""))
+end
+
+"The passkeys `device` (`add_passkey_device!`) of browser `s` holds, as `(rp, user)`."
+function passkeys(s::TestServer, device::AbstractString)
+    ctx = s.browser[]
+    creds = run(ctx.app, """(async () => {
+        const d = BrowserWindow.fromId($(ctx.window.id)).webContents.debugger;
+        const r = await d.sendCommand('WebAuthn.getCredentials', {authenticatorId: $(json(device))});
+        return r.credentials.filter(c => c.isResidentCredential).map(c => [c.rpId, c.userName]); })()""")
+    return [(String(c[1]), String(c[2])) for c in creds]
+end
+
+"""
+    add_passkey!(s; name = "Proton Pass")
+
+Add a passkey for whoever is signed in in browser `s`, as they would: the
+Passkeys part of their account card, a name, "Add a passkey", and the browser's
+device makes it (`add_passkey_device!` first). They stay on the dashboard.
+"""
+function add_passkey!(s::TestServer; name::AbstractString = "Proton Pass")
+    wait_for(s, "the Passkeys part of the account card", "!!document.querySelector('.bt-passkey-add')"; timeout = 30)
+    set_input(s, ".bt-passkey-name-input", name)
+    click(s, ".bt-passkey-add")
+    wait_for(s, "the passkey added", "document.querySelector('.bt-passkey-status').textContent.startsWith('passkey added')";
+             timeout = 30)
+    return s
+end
+
+"The passkeys the account card lists, by name (once its list has loaded)."
+listed_passkeys(s::TestServer) = String.(eval_js(s,
+    "[...document.querySelectorAll('.bt-passkey-row .bt-passkey-name')].map(e => e.textContent)"))
+
+"""
+    create_passkey_from_invite!(s)
+
+On a new account's page in browser `s`: "Create my passkey", which signs them in
+and has the browser's device make it (`add_passkey_device!` first). Returns once
+the dashboard is up.
+"""
+function create_passkey_from_invite!(s::TestServer)
+    click(s, "#create-passkey")
+    outcome = wait_for(s, "the dashboard after the passkey", """(() => {
+        if (document.querySelector('.bt-dash')) return true;
+        const t = (document.getElementById('passkey-status') || {}).textContent || '';
+        return t.startsWith('That did not work') ? t : false; })()"""; timeout = 60)
+    outcome === true || error("create_passkey_from_invite!: " * String(outcome))
+    install_pane_scope!(s)
+    return s
+end
+
+"""
+    passkey_login!(s)
+
+Sign in with a passkey alone: "Sign in with a passkey" on Authelia's login page,
+answered by the browser's device. Returns once the dashboard is up.
+"""
+function passkey_login!(s::TestServer)
+    wait_for(s, "Authelia's login form", "!!document.querySelector('#passkey-sign-in-button')"; timeout = 30)
+    click(s, "#passkey-sign-in-button")
+    wait_for(s, "the dashboard after the passkey", "!!document.querySelector('.bt-dash')"; timeout = 60)
+    install_pane_scope!(s)
+    return s
+end
+
+"""
+    another_browser(s; route = "/") -> TestServer
+
+A second browser on the same server, with cookies of its own: another person
+logged in at the same time (`login!` into it). Everything that takes a
+`TestServer` drives it. Close it with `close_browser!`, never `close`, which
+stops the server.
+"""
+function another_browser(s::TestServer; route::AbstractString = "/")
+    b = TestServer(s.h, s.agent_fn, s.dispatcher_sock, s.dispatcher_port, s.dispatcher_task,
+                   Ref{Any}(nothing), Ref(false), s.browser_size, s.admin, s.otp_used, s.extra_workers)
+    open_browser(b; route)
+    return b
+end
+
+# Fault injection on this fixture's real login process; browsers keep their
+# cookies, as they do through a service restart on an installed server.
+function restart_login!(s::TestServer)
+    rig = s.h.proxy
+    rig === nothing && error("restart_login!: this server has no login service")
+    BT.stop_worker_proc!(rig.authelia)
+    cfg = s.h.state.auth.config
+    logfile = joinpath(rig.dir, "authelia.log")
+    rig.authelia = run(pipeline(`setpriv --pdeathsig KILL -- $(cfg.authelia_bin) --config $(BT.authelia_config_file(cfg))`;
+                               stdout = logfile, stderr = logfile); wait = false)
+    function ready()
+        process_running(rig.authelia) || return false
+        try
+            close(Sockets.connect(Sockets.IPv4(0x7f000001), cfg.authelia_port))
+            return true
+        catch e
+            e isa Base.IOError || rethrow()
+            return false
+        end
+    end
+    timedwait(ready, 30.0; pollint = 0.1) === :ok ||
+        error("restart_login!: the login service did not restart; see $(logfile)")
+    return s
+end
+
+function restart_session_store!(s::TestServer)
+    rig = s.h.proxy
+    rig === nothing && error("restart_session_store!: this fixture has no login proxy")
+    BT.stop_worker_proc!(rig.session_store)
+    rig.session_store = BT.start_session_store(proxy_binaries().valkey, s.h.state.auth.config.session_socket;
+                                               log = joinpath(rig.dir, "sessions.log"))
+    return s
+end
+
+"""
+    another_tab(s; route = "/") -> TestServer
+
+A second tab of the browser `s` drives, on `route`: the same cookies, so the
+same login. Everything that takes a `TestServer` drives it. Close it with
+`close_browser!`, which closes only the tab.
+"""
+function another_tab(s::TestServer; route::AbstractString = "/")
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    # What `ECT.open_window` gives its window: hidden, painting, unthrottled.
+    win = ElectronCall.Window(ctx.app; show = false, width = s.browser_size[1], height = s.browser_size[2],
+                              webPreferences = Dict{String,Any}("offscreen" => true, "disableDialogs" => true,
+                                  "backgroundThrottling" => false, "paintWhenInitiallyHidden" => true))
+    # The CI-pinned ElectronCall predates Testing.keep_headless!. Set these
+    # window options through Electron, which both supported versions expose.
+    run(ctx.app, """(() => {
+        const wc = electron.BrowserWindow.fromId($(win.id)).webContents;
+        wc.setWindowOpenHandler(() => ({action: 'allow',
+            overrideBrowserWindowOptions: {show: false, webPreferences: {offscreen: true}}}));
+        wc.session.on('will-download', (e, item) =>
+            item.setSavePath(electron.app.getPath('temp') + '/' + item.getFilename()));
+        return true; })()""")
+    tab = ECT.TestContext(ctx.app, win, false)
+    capture_console!(tab)
+    follow_pane_scope!(tab)
+    t = TestServer(s.h, s.agent_fn, s.dispatcher_sock, s.dispatcher_port, s.dispatcher_task,
+                   Ref{Any}(tab), Ref(false), s.browser_size, s.admin, s.otp_used, s.extra_workers)
+    ElectronCall.load(win, ElectronCall.URI(s.h.url * route))
+    return t
+end
+
+function close_browser!(s::TestServer)
+    ctx = s.browser[]
+    ctx === nothing || close_browser(ctx)
+    s.browser[] = nothing
+    return s
+end
+
+"""
+    login_refused(s, login) -> String
+
+Try to log in with `login` from Authelia's form and return what Authelia says
+when it refuses (a wrong password, a disabled or removed account). Throws if it
+lets them in instead.
+"""
+function login_refused(s::TestServer, login::Login)
+    wait_for(s, "Authelia's login form", "!!document.querySelector('#username-textfield')"; timeout = 30)
+    set_input(s, "#username-textfield", login.user)
+    set_input(s, "#password-textfield", login.password)
+    # Authelia says why in a toast (the same words for a wrong password and a
+    # disabled account: it does not tell which). One from before is not this one.
+    before = eval_js(s, "$(AUTHELIA_ERRORS).length")
+    click(s, "#sign-in-button")
+    refusal = wait_for(s, "Authelia's refusal",
+        """(() => { if (document.querySelectorAll('input[autocomplete=off]').length >= 5 || document.querySelector('.bt-dash'))
+                        return 'LET IN';
+                    const e = $(AUTHELIA_ERRORS);
+                    return e.length > $(before) ? e.map(x => x.textContent.trim()).join(' ') : false; })()""";
+        timeout = 30, interval = 0.1)
+    refusal == "LET IN" && error("login_refused: Authelia let $(login.user) in")
+    # Authelia's page logs the refused request as an error. That refusal is
+    # what was asked for; anything else the console holds stays for the check.
+    run(s.browser[].app, """(() => { global.__btConsole = global.__btConsole.filter(e =>
+        !(e.message.includes('Request failed with status code 401') && e.source.includes('/static/js/portal')));
+        return true; })()""")
+    return String(refusal)
+end
+
+# A Settings section, by its heading: `expr` is JS run with `sec` bound to it.
+section_js(title::AbstractString, expr::AbstractString) = """(() => {
+    const h = [...document.querySelectorAll('h2')].find(h => h.textContent.trim() === $(json(title)));
+    const sec = h && h.closest('.bt-section').parentElement;
+    if (!sec) return false;
+    return $(expr); })()"""
+accounts_js(expr::AbstractString) = section_js("Accounts", expr)
+invites_js(expr::AbstractString) = section_js("Invites", expr)
+
+"Wait until the Accounts section's status line says `text`; returns the line."
+account_status(s::TestServer, text::AbstractString; timeout::Real = 30) =
+    wait_for(s, "account status '$(text)'",
+        accounts_js("sec.querySelector('.bt-admin-status').textContent.includes($(json(text))) && " *
+                    "sec.querySelector('.bt-admin-status').textContent"); timeout)
+
+"""
+    add_account_ui!(s, name; display_name = name, groups = "") -> Login
+
+Add an account the way an admin does: Settings, "Add account…", the form, and
+return what it shows once, the password and the authenticator, as the `Login`
+the admin passes on.
+"""
+function add_account_ui!(s::TestServer, name::AbstractString; display_name::AbstractString = name,
+                         groups::AbstractString = "")
+    to_settings(s)
+    eval_js(s, accounts_js("sec.querySelector('.bt-add-account').click() || true"))
+    wait_for(s, "the Add account form", accounts_js("!!sec.querySelector('.bw-modal-card .bt-add-account-submit')"); timeout = 10)
+    eval_js(s, accounts_js("""(() => {
+        const form = sec.querySelector('.bw-modal-card .bt-form');
+        const set = (label, v) => {
+            const el = [...form.querySelectorAll('label')].find(l => l.textContent.trim() === label).nextElementSibling;
+            Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(el, v);
+            el.dispatchEvent(new Event('input', {bubbles: true})); };
+        set('Account', $(json(name))); set('Full name', $(json(display_name)));
+        return true; })()"""))
+    isempty(groups) || pick_groups!(s, accounts_js("sec.querySelector('.bw-modal-card .bt-group-pick')"),
+                                    strip.(split(groups, ','; keepempty = false)))
+    sleep(0.3)   # the inputs reach the server before the click that reads them
+    eval_js(s, accounts_js("sec.querySelector('.bt-add-account-submit').click() || true"))
+    account_status(s, "account $(name) added")
+    uri = String(wait_for(s, "the authenticator for $(name)",
+        accounts_js("(sec.querySelector('.bt-admin-secret .bt-admin-uri') || {}).textContent || false"); timeout = 30))
+    return Login(String(name), shown_password(s, name), match(r"[?&]secret=([A-Z2-7]+)", uri)[1])
+end
+
+# (`innerText`: the lines of what is shown stay apart, and the password ends
+# where its line does.)
+"The password the Accounts section shows for `name`, once."
+shown_password(s::TestServer, name::AbstractString) = String(wait_for(s, "the password for $(name)",
+    accounts_js("(sec.querySelector('.bt-admin-secret').innerText.match(/Password for $(name), shown only now: (\\S+)/) || [false, false])[1]");
+    timeout = 30))
+
+"Pick `label` (\"Disable\", \"Make admin\", …) from the ⋯ menu of `name`'s row in the Accounts table."
+function account_action!(s::TestServer, name::AbstractString, label::AbstractString)
+    to_settings(s)
+    # Any account change re-renders the whole table, and a new row's menu takes
+    # clicks only once its script has run, about a millisecond after the row is
+    # in the page (e2e:proxy_accounts clicked into that gap on CI). So click
+    # while it is closed: a wired menu opens within the click, so a retry never
+    # closes it again.
+    menu = """(() => {
+        const row = sec.querySelector('tr[data-account=' + JSON.stringify($(json(name))) + ']');
+        // The actions menu, not the group picker (a menu too) in the same row.
+        return row && row.querySelector('.bt-admin-menu-cell .bw-menu'); })()"""
+    wait_for(s, "$(repr(label)) in $(name)'s ⋯ menu", accounts_js("""(() => {
+        const m = $menu;
+        if (!m) return false;
+        if (!m.classList.contains('bw-menu-open')) m.querySelector('.bw-menu-trigger').click();
+        const b = m.classList.contains('bw-menu-open') &&
+            [...m.querySelectorAll('.bw-menu-item')].find(x => x.textContent.trim() === $(json(label)));
+        if (!b) return false;
+        window.confirm = () => true;   // "Remove" asks first
+        b.click(); return true; })()"""); timeout = 30,
+        describe = accounts_js("""(() => { const m = $menu;
+            return m ? [...m.querySelectorAll('.bw-menu-item')].map(x => x.textContent.trim()).join(', ') : 'no row'; })()"""))
+    return s
+end
+
+"""
+    pick_groups!(s, picker_js, groups)
+
+Choose exactly `groups` in a group picker, the way a person does: open it, tick
+and untick, add the names that are not on the list through its field, and close
+it, which saves. `picker_js` is a JS expression for the picker (`.bt-group-pick`).
+"""
+function pick_groups!(s::TestServer, picker_js::AbstractString, groups::AbstractVector{<:AbstractString})
+    # The picker is a sub-session: on a slow machine its button is on the page
+    # before its click handler is, and a click then does nothing.
+    wait_for(s, "the group list open", """(() => { const m = $(picker_js);
+        if (!m) return false;
+        if (!m.classList.contains('bw-menu-open')) m.querySelector('.bt-group-trigger').click();
+        return m.classList.contains('bw-menu-open'); })()"""; timeout = 20)
+    ok = eval_js(s, """(() => {
+        const m = $(picker_js);
+        const want = $(json(collect(String, groups)));
+        for (const g of want) {
+            if ([...m.querySelectorAll('.bt-group-item input')].some(i => i.value === g)) continue;
+            const field = m.querySelector('.bt-group-new-name');
+            if (!field) return g + ' is not on the list, and there is no field for a new group';
+            field.value = g;
+            m.querySelector('.bt-group-add').click();
+        }
+        m.querySelectorAll('.bt-group-item input').forEach(i => { i.checked = want.includes(i.value); });
+        document.body.click();   // closing the list saves it
+        return true; })()""")
+    ok === true || error("pick_groups!: $(ok)")
+    return s
+end
+
+"Put `name` in exactly `groups` from its row of the Accounts table."
+function set_account_groups_ui!(s::TestServer, name::AbstractString, groups::AbstractVector{<:AbstractString})
+    to_settings(s)
+    pick_groups!(s, accounts_js("sec.querySelector('tr[data-account=' + JSON.stringify($(json(name))) + '] .bt-group-pick')"),
+                 groups)
+    return s
+end
+
+"Share the (first) worker with exactly `groups` from its card, as its owner does."
+function share_worker_ui!(s::TestServer, groups::AbstractVector{<:AbstractString})
+    to_dashboard(s)
+    picker = "document.querySelector('.bt-worker-cell .bt-worker-sharing .bt-group-pick')"
+    wait_for(s, "the worker's sharing picker", "!!$(picker)"; timeout = 60)
+    pick_groups!(s, picker, groups)
+    wait_for(s, "the share saved", "document.querySelector('.bt-worker-sharing').textContent.includes('shared')";
+             timeout = 30, describe = "document.querySelector('.bt-worker-sharing')?.textContent")
+    return s
+end
+
+"""
+    reload!(s) -> :dashboard | :portal
+
+Load the dashboard's address again, as a person reloading does; returns where it
+lands: the dashboard, or Authelia's portal (not logged in, or refused).
+"""
+function reload!(s::TestServer)
+    eval_js(s, "location.href = $(json(s.h.url * "/")); true")
+    where = wait_for(s, "the dashboard or the login portal",
+        "document.querySelector('.bt-dash') ? 'dashboard' : document.querySelector('#username-textfield') ? 'portal' : false";
+        timeout = 30)
+    where == "dashboard" && install_pane_scope!(s)
+    return Symbol(where)
+end
+
+"Is the page's connection to the server gone (the server closed its session)?"
+dropped(s::TestServer) = eval_js(s, "document.body.textContent.includes('The link to the server dropped')") === true
+
+"The \"Signed in as …\" line of the account card."
+signed_in_as(s::TestServer) = String(wait_for(s, "the account card",
+    "([...document.querySelectorAll('.bt-card')].map(c => c.textContent).find(t => t.includes('Signed in as')) || '').match(/Signed in as [^.]*\\./)?.[0] || false";
+    timeout = 30))
+
+"The h2 section headings on the page."
+headings(s::TestServer) = String.(eval_js(s, "[...document.querySelectorAll('h2')].map(h => h.textContent.trim())"))
+
+"Log out through the account card's link; returns once Authelia's form is back."
+function logout!(s::TestServer)
+    eval_js(s, """(() => { const a = [...document.querySelectorAll('a')]
+        .find(a => (a.innerText||'').trim() === 'Log out'); a.click(); return true; })()""")
+    wait_for(s, "Authelia's login form", "!!document.querySelector('#username-textfield')"; timeout = 30)
+    return s
+end
+
+# ── UI action primitives ───────────────────────────────────────────────────
+# Everything below drives the real UI (clicks, typing) instead of poking
+# server-side models, so the tests exercise the same path a user does.
+
+# Visible-only filter: the dashboard keeps several pickers in the DOM at once and
+# only one is shown; every opened chat keeps its pane. Visible to a test means
+# rendered (`checkVisibility`), or part of the OPEN chat while a
+# tab of its workspace group (a file, the change review) is in front of it, unless
+# something between it and that panel is `display: none` (a closed menu). Tests
+# drive their chat from those tabs, as they could when hidden panels only had
+# `visibility: hidden`. Other chats' panes stay excluded. They keep their layout
+# under `content-visibility: hidden`, so `offsetParent` cannot tell them apart.
+const VIS = """(el => {
+    if (!el) return false;
+    if (el.checkVisibility()) return true;
+    const panel = el.closest('.bw-ws-panel[data-bw-visible=false]');
+    if (!panel || !el.closest('.bt-chatpane[aria-hidden=false]')) return false;
+    for (let n = el; n && n !== panel; n = n.parentElement)
+        if (getComputedStyle(n).display === 'none') return false;
+    return true;
+})"""
+
+"Click the first *visible* button whose trimmed text equals `label`."
+function click_text(s::TestServer, label::AbstractString)
+    ok = eval_js(s, """(() => {
+        const b = [...document.querySelectorAll('button')].filter($VIS)
+            .find(b => (b.innerText||'').trim() === $(json(String(label))));
+        if (!b) return false; b.click(); return true; })()""")
+    ok === true || error("click_text: no visible button labelled $(repr(label))")
+    return s
+end
+
+# Like `click_text` but RE-CLICKS the visible button labelled `label` until
+# `predicate` (a JS expression) is truthy — the text-matched twin of
+# `click_until`. Rides out the cold-mount race where Bonito wires a button's
+# onclick only AFTER it mounts, so the FIRST synthetic click lands before the
+# handler attaches and is silently dropped (a lone `click_text` then hangs on a
+# form that never opens); the re-click loop also absorbs a slow first
+# server-side render of the target UI. Returns the truthy value; errors if the
+# state never appears.
+function click_text_until(s::TestServer, label::AbstractString, predicate::AbstractString;
+                          timeout::Real = 30, interval::Real = 0.4)
+    t0 = time()
+    clickjs = """(() => {
+        const b = [...document.querySelectorAll('button')].filter($VIS)
+            .find(b => (b.innerText||'').trim() === $(json(String(label))));
+        if (b) b.click(); return true; })()"""
+    check = "(() => { try { return " * String(predicate) * "; } catch (e) { return false; } })()"
+    while time() - t0 < timeout
+        eval_js(s, clickjs)   # (re-)click if present; no-op if the button is gone
+        v = try
+            eval_js(s, check; timeout = min(Float64(timeout), 5.0))
+        catch e
+            e isa BridgeTimeout || rethrow()
+            nothing
+        end
+        v in (false, nothing) || return v
+        sleep(interval)
+    end
+    error("click_text_until: '$label' did not produce the expected state within $(timeout)s")
+end
+
+"""
+    set_input(s, selector, value; placeholder = nothing)
+
+Set the first *visible* input/textarea matching `selector` (optionally narrowed
+to one whose placeholder equals `placeholder`) and fire an `input` event so
+Bonito handlers run.
+"""
+function set_input(s::TestServer, selector::AbstractString, value::AbstractString;
+                   placeholder::Union{Nothing,AbstractString} = nothing)
+    narrow = placeholder === nothing ? "" :
+        "els = els.filter(e => (e.placeholder||'') === $(json(String(placeholder))));"
+    ok = eval_js(s, """(() => {
+        let els = [...document.querySelectorAll($(json(String(selector))))].filter($VIS);
+        $narrow
+        const el = els[0]; if (!el) return false;
+        el.focus();
+        const set = Object.getOwnPropertyDescriptor(el.constructor.prototype, 'value').set;
+        set.call(el, $(json(String(value))));
+        el.dispatchEvent(new Event('input', {bubbles: true}));
+        return true; })()""")
+    ok === true || error("set_input: no visible element for $(repr(selector))")
+    return s
+end
+
+"Go to the Settings page by clicking its entry in the sidebar."
+function to_settings(s::TestServer)
+    # By its view, not its label: the icon rail (collapsed, or a phone) hides the text.
+    eval_js(s, "document.querySelector('.bt-side-item[data-project-id=\"settings\"]').click(); true")
+    wait_for(s, "the Settings page",
+        "(() => { const v = document.querySelector('.bt-view-settings'); return !!v && getComputedStyle(v).display !== 'none'; })()";
+        timeout = 10)
+    return s
+end
+
+"Go to the dashboard by clicking the Home entry in the sidebar."
+function to_dashboard(s::TestServer)
+    # By its view, as `to_settings`: Home is an icon without text.
+    eval_js(s, "document.querySelector('.bt-side-item[data-project-id=\"\"]')?.click(); true")
+    sleep(0.6)
+    return s
+end
+
+"""
+    worker_log_tail(s; lines = 40) -> String
+
+The end of this dev_server's worker log, formatted for appending to an error —
+or `""` when the worker looks healthy or has no log to show.
+
+Why this exists: when the SHARED server's worker dies, every later item fails on
+`new_chat` with the same "scan_sessions … timed out — worker may be offline or
+stuck". One run produced 34 identical copies of it and not one word about the
+cause; the worker's own log was right there on disk and nothing looked at it. The
+server-side throw (`worker_client.jl`) cannot do this — a production worker is on
+another machine and has no log we can read — so it belongs here, where we spawned
+the worker ourselves and know where it writes.
+"""
+function worker_log_tail(s::TestServer; lines::Int = 40)
+    cfg = try
+        s.h.worker_config
+    catch e
+        e isa InterruptException && rethrow()
+        return ""
+    end
+    # HOW it died, first — this is the part that always has an answer. The log
+    # often does not: a worker taken down by SIGKILL loses everything Julia had
+    # buffered, so `worker.log` is empty in exactly the case worth diagnosing.
+    # Exit code and signal survive that, and they separate the three stories the
+    # bare "worker may be offline or stuck" cannot: killed by a signal, exited on
+    # its own with a code, or still running (so it is wedged, not gone).
+    signalled = false
+    state = if s.h.worker_proc === nothing
+        "no worker process handle"
+    elseif process_running(s.h.worker_proc)
+        "RUNNING (so: wedged, not dead)"
+    else
+        p = s.h.worker_proc
+        sig = p.termsignal
+        code = p.exitcode
+        signalled = sig != 0
+        signalled ? "killed by signal $sig" : "exited with code $code"
+    end
+    # Only where it is true: a RUNNING worker with an empty log has simply not
+    # said anything yet, which is a different (and less alarming) fact.
+    why_empty = signalled ? " (a signalled worker loses its buffered output)" : ""
+
+    path = joinpath(String(cfg), "worker.log")
+    isfile(path) || return "\n\n── worker: $state; no log at $path ──"
+    txt = try
+        read(path, String)
+    catch e
+        e isa InterruptException && rethrow()
+        return "\n\n── worker: $state; log unreadable: $(sprint(showerror, e)) ──"
+    end
+    ls = split(chomp(txt), '\n')
+    isempty(strip(txt)) &&
+        return "\n\n── worker: $state; log at $path is EMPTY$why_empty ──"
+    return "\n\n── worker: $state — last $(min(lines, length(ls))) of $(length(ls)) " *
+           "log lines ──\n" * join(ls[max(1, end - lines + 1):end], "\n")
+end
+
+"""
+    new_chat(s; cwd = mktempdir(), title = "") -> String
+
+Create a fresh chat the way a user does: on a worker card, "+ Project", type
+`cwd` into the folder picker's single path field, and hit Create. Blocks until
+the chat view is open. Returns the new chat's project id. `title` is accepted
+but unused (the picker names a project after its folder's basename).
+"""
+function new_chat(s::TestServer; cwd::AbstractString = mktempdir(),
+                                   title::AbstractString = "",
+                                   worker::AbstractString = "")
+    # `title` is accepted for call-site compatibility but no longer drives the
+    # UI: the per-worker picker has no Name field, so a project is named after
+    # its folder's basename (dashboard.jl `project_name_from_path`, via the
+    # card's Create → `do_import`). The suite keys on the returned project id,
+    # not the sidebar title, so this is safe. `cwd` is the folder the chat is
+    # created from. `worker` names the card to press "+ Project" on; with two
+    # workers up the cards follow the worker list's order (a Dict), so a test
+    # that needs the chat on a particular worker must say which.
+    to_dashboard(s)
+    # Wait for a worker card to be on screen. Its "+ Project" toggle is the only
+    # create path now (the dashboard's global "+ New project" form is gone).
+    CARD_BTN_JS = """[...document.querySelectorAll('button')].some(b =>
+        b.checkVisibility() && (b.innerText || '').trim() === '+ Project')"""
+    PICKER_PATH_VISIBLE = "[...document.querySelectorAll('.bt-picker-path')].some($VIS)"
+    wait_for(s, "worker card on screen", CARD_BTN_JS; timeout = 30)
+    # "+ Project" is a TOGGLE (`picker_state` flips between this worker and ""),
+    # so it must NOT go through `click_text_until`: that re-clicks blind on a
+    # fixed interval and flips the form straight back shut. Check first, click a
+    # single time, and only retry if nothing opened — which still covers the
+    # cold-mount race where Bonito wires the handler after the first synthetic
+    # click lands. Generous timeout: the FIRST new_chat against a fresh server
+    # also compiles the whole folder-picker UI server-side.
+    # Find AND click in ONE evaluation, rather than via `click_text`. `click_text`
+    # re-queries the DOM after its own visibility check, and the dashboard's
+    # worker cards are a KeyedList that re-renders whenever `state.projects`
+    # notifies — so a button confirmed a moment earlier can be swapped out before
+    # the click lands. That gap is what made `new_chat` throw "no visible button
+    # labelled +Project" when called right after another chat was created (seen
+    # in `e2e:header_collapse`, which does exactly that between testsets).
+    CLICK_CARD_BTN_JS = """(() => {
+        const cards = [...document.querySelectorAll('.bt-card')].filter(c =>
+            $(isempty(worker) ? "true" : "(c.querySelector('input.bt-card-name')?.value || '').trim() === $(json(String(worker)))"));
+        const b = cards.flatMap(c => [...c.querySelectorAll('button')]).find(b =>
+            b.checkVisibility() && (b.innerText || '').trim() === '+ Project');
+        if (!b) return false; b.click(); return true; })()"""
+    opened = false
+    for _ in 1:5
+        eval_js(s, PICKER_PATH_VISIBLE) === true && (opened = true; break)
+        if eval_js(s, CLICK_CARD_BTN_JS) !== true
+            sleep(0.5)      # mid-re-render — the next pass re-finds the fresh node
+            continue
+        end
+        # Poll for ~6s before re-clicking: a slow first open must not be toggled
+        # shut by a second blind click (the toggle race `open_card_picker!` pins).
+        for _ in 1:30
+            eval_js(s, PICKER_PATH_VISIBLE) === true && (opened = true; break)
+            sleep(0.2)
+        end
+        opened && break
+    end
+    opened || error("new_chat: could not open a worker card's folder picker")
+    # The path field IS the selection — the one editable text field. Set it to
+    # `cwd`; there is no "Choose"/breadcrumb to commit through. A path that
+    # doesn't exist yet is created on the worker at Create time (`ensure_dir`),
+    # so a `mktempdir()` that already exists is the norm.
+    set_input(s, ".bt-picker-path", String(cwd))
+    click_text(s, "Create")
+    # The chat view renders only after the ACP session binds, which spawns a
+    # fresh agent subprocess — cold start can take the better part of a minute,
+    # so wait generously. But race it against the form's own error line
+    # (`.bt-error`): a rejected Create never opens a chat, and without this the
+    # run burns the full timeout and reports "chat view opened" instead of the
+    # reason the server gave.
+    # The FORM's error only. The worker card's discover panel renders session-
+    # scan failures with the same class inside `.bt-errors-list`, and the server
+    # auto-scans on a worker's first connect — spawning every installed ACP
+    # provider, which can outlive the 15s scan budget on a busy box. That is
+    # real UI, not a rejected Create.
+    FORM_ERROR = "[...document.querySelectorAll('.bt-error')].find(e => !e.closest('.bt-errors-list'))"
+    ok = wait_for(s, "chat view opened (or form error)",
+        "(() => { if ($FORM_ERROR) return true; " *
+        "return !!document.querySelector('.bt-text-input') && !!document.querySelector('.bt-chatpane'); })()";
+        timeout = 90)
+    err = eval_js(s, "(() => { const e = $FORM_ERROR; " *
+                     "return e ? (e.innerText||'').trim() : ''; })()")
+    isempty(String(err)) || error("new_chat: the dashboard rejected Create — $(err)" *
+                                  worker_log_tail(s))
+    # The ACP session binds asynchronously; until it does, the sidebar hasn't
+    # marked the new chat active and a re-render can briefly drop `.bt-text-input`.
+    # Gate on the new chat actually being SELECTED (non-empty active pid) AND its
+    # input being visible — otherwise `new_chat` can return mid-bind and the next
+    # `send_message` races a flicker. This matters most under the shared runner,
+    # where a populated sidebar makes the bind lag longer.
+    wait_for(s, "new chat selected + input live",
+             "(() => { const a=document.querySelector('.bt-side-item.bt-side-active'); " *
+             "return !!a && !!(a.getAttribute('data-project-id')) && " *
+             "[...document.querySelectorAll('.bt-text-input')].some($VIS); })()";
+             timeout = 90)
+    sleep(0.5)
+    pid = current_chat_id(s)
+    return pid
+end
+
+"""
+    open_chat(s, pid_or_title)
+
+Open an existing chat by clicking its sidebar entry, matched by project id
+(`data-project-id`) or by a substring of its title.
+"""
+function open_chat(s::TestServer, key::AbstractString; timeout = 30)
+    k = json(String(key))
+    entry = """(() => {
+        const items = [...document.querySelectorAll('.bt-side-item')];
+        return items.find(e => e.getAttribute('data-project-id') === $k) ||
+               items.find(e => (e.innerText||'').includes($k)) || null; })()"""
+    # The sidebar is a part of its own: after a page load its rows arrive after
+    # the shell `navigate` waits for, and a slow runner was still without them.
+    wait_for(s, "the sidebar entry for $(repr(key))", "!!$(entry)"; timeout)
+    eval_js(s, "$(entry).click(); true")
+    wait_for(s, "chat view", "!!document.querySelector('.bt-text-input')"; timeout = 10)
+    return s
+end
+
+"""
+    switch_agent(s, label)
+
+Switch the chat's agent/provider via the header dropdown, e.g. "Mock Agent",
+"Claude Code", "MiMo Code", "OpenCode", "Kimi Code". The chat must be open.
+"""
+function switch_agent(s::TestServer, label::AbstractString)
+    l = json(String(label))
+    # The provider control is a `dropdown_pill`, not a native <select> (the
+    # project bans those). Its rows carry the click handler themselves, so
+    # clicking the row IS the selection — no need to open the list first.
+    ok = eval_js(s, """(() => {
+        const pick = document.querySelector('.bt-header-provider-pick');
+        const wrap = pick && pick.closest('.bt-msearch');
+        if (!wrap) return false;
+        const item = [...wrap.querySelectorAll('.bt-msearch-item')]
+            .find(o => (o.textContent||'').trim() === $l);
+        if (!item) return false;
+        item.click();
+        return true; })()""")
+    ok === true || error("switch_agent: provider option $(repr(label)) not found")
+    return s
+end
+
+"""
+    agent_options(s) -> Vector{String}
+
+Every agent/provider the header dropdown offers, in display order.
+"""
+function agent_options(s::TestServer)
+    return eval_js(s, """(() => {
+        const pick = document.querySelector('.bt-header-provider-pick');
+        const wrap = pick && pick.closest('.bt-msearch');
+        return wrap ? [...wrap.querySelectorAll('.bt-msearch-item')]
+            .map(o => (o.textContent||'').trim()) : [];
+    })()""")
+end
+
+"""
+    current_agent(s) -> String
+
+The agent/provider the header dropdown currently shows.
+"""
+function current_agent(s::TestServer)
+    v = eval_js(s, """(() => {
+        const pick = document.querySelector('.bt-header-provider-pick');
+        const val  = pick && pick.querySelector('.bt-msearch-value');
+        return val ? (val.textContent||'').trim() : "";
+    })()""")
+    return v === nothing ? "" : String(v)
+end
+
+"""
+    set_window_size(s, w, h)
+
+Resize the renderer viewport via Chromium device emulation (more reliable than
+`BrowserWindow.setSize` on headless Linux). Drives the CSS `@media` breakpoints
+the responsive layout reads.
+"""
+function set_window_size(s::TestServer, w::Integer, h::Integer)
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    ECT.set_window_size(ctx, Int(w), Int(h))
+    return s
+end
+
+"""
+    emulate_phone(f, s; width = 390, height = 844)
+
+Run `f()` with the page as a phone: a mobile viewport and touch input, so
+`(hover: none)` holds and [`tap`](@ref) / [`swipe`](@ref) arrive as touch. The
+window is a desktop again afterwards (the next item on a shared server expects one).
+"""
+function emulate_phone(f, s::TestServer; width::Integer = 390, height::Integer = 844)
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    wc = "electron.BrowserWindow.fromId($(ctx.window.id)).webContents"
+    run(ctx.app, """(async () => { const wc = $wc;
+        wc.enableDeviceEmulation({screenPosition: 'mobile', screenSize: {width: $width, height: $height},
+            viewSize: {width: $width, height: $height}, viewPosition: {x: 0, y: 0}, deviceScaleFactor: 3, scale: 1});
+        globalThis.__btPhoneAttached = !wc.debugger.isAttached();
+        if (globalThis.__btPhoneAttached) wc.debugger.attach('1.3');
+        await wc.debugger.sendCommand('Emulation.setTouchEmulationEnabled', {enabled: true, maxTouchPoints: 5});
+        return true; })()""")
+    try
+        return f()
+    finally
+        run(ctx.app, """(async () => { const wc = $wc;
+            await wc.debugger.sendCommand('Emulation.setTouchEmulationEnabled', {enabled: false});
+            if (globalThis.__btPhoneAttached) wc.debugger.detach();
+            wc.disableDeviceEmulation();
+            return true; })()""")
+    end
+end
+
+"""
+    record_trace(f, s; categories = ["devtools.timeline"]) -> Vector{Any}
+
+Run `f()` while Chromium records a performance trace, as DevTools' Performance
+panel does, and return its events. `UpdateLayoutTree` events carry
+`args["elementCount"]`, the elements a style recalculation touched.
+"""
+function record_trace(f, s::TestServer; categories = ["devtools.timeline"])
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    path = tempname() * ".json"
+    run(ctx.app, "electron.contentTracing.startRecording({included_categories: $(json(categories))}).then(() => true)")
+    try
+        f()
+    finally
+        run(ctx.app, "electron.contentTracing.stopRecording($(json(path))).then(() => true)")
+    end
+    events = JSON.parsefile(path)["traceEvents"]
+    rm(path)
+    return events
+end
+
+# A touch gesture through the page's debugger (attached by `emulate_phone`).
+touch(s::TestServer, events::AbstractString) = run(s.browser[].app, """(async () => {
+    const wc = electron.BrowserWindow.fromId($(s.browser[].window.id)).webContents;
+    const T = (type, x, y) => wc.debugger.sendCommand('Input.dispatchTouchEvent',
+        {type, touchPoints: type === 'touchEnd' ? [] : [{x, y}]});
+    $events
+    return true; })()""")
+
+"""
+    tap(s, selector)
+
+A touch tap on the centre of the first rendered element matching `selector`.
+Inside [`emulate_phone`](@ref).
+"""
+function tap(s::TestServer, selector::AbstractString)
+    # What is drawn: another chat's pane keeps its layout boxes under
+    # `content-visibility: hidden`, so a box alone aimed the finger at a hidden
+    # pane's element, and it landed on whatever the open chat has there.
+    xy = eval_js(s, """(() => { const e = [...document.querySelectorAll($(json(selector)))].find(e => e.checkVisibility());
+        if (!e) return null; const r = e.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; })()""")
+    xy === nothing && error("tap: nothing rendered matches $(selector)")
+    # A finger lands only on what is on the screen.
+    w, h = eval_js(s, "[innerWidth, innerHeight]")
+    (0 <= xy[1] <= w && 0 <= xy[2] <= h) || error("tap: $(selector) is off the screen, at $(xy)")
+    touch(s, "await T('touchStart', $(xy[1]), $(xy[2])); await T('touchEnd');")
+    return s
+end
+
+"""
+    swipe(s, dy; x = 200, y = 450)
+
+A finger drag of `dy` pixels (positive moves the content down, scrolling up),
+in frames like a real one. The finger rests before it lifts, so no fling
+carries the page on afterwards. Inside [`emulate_phone`](@ref).
+"""
+function swipe(s::TestServer, dy::Real; x::Real = 200, y::Real = 450, steps::Integer = 12)
+    touch(s, """await T('touchStart', $x, $y);
+        for (let i = 1; i <= $steps; i++) { await T('touchMove', $x, $y + $dy * i / $steps); await new Promise(r => setTimeout(r, 16)); }
+        await new Promise(r => setTimeout(r, 200));
+        await T('touchMove', $x, $y + $dy);
+        await T('touchEnd');""")
+    return s
+end
+
+"""
+    send_message(s, text)
+
+Type `text` into the chat composer and click send, the same path a user takes.
+A chat must be open (see [`new_chat`](@ref) / [`open_chat`](@ref)).
+"""
+function send_message(s::TestServer, txt::AbstractString)
+    # Right after a (re)load the composer is in the DOM before its pane shows
+    # (e2e:job_progress sent into it on CI); a user types once it is visible.
+    wait_for(s, "a visible chat composer",
+             "[...document.querySelectorAll('.bt-text-input')].some($VIS)"; timeout = 30)
+    set_input(s, ".bt-text-input", String(txt))   # set_input already visibility-filters
+    # Click the VISIBLE send button (the active pane's), never a hidden pane's.
+    ok = eval_js(s, "(() => { const b=[...document.querySelectorAll('.bt-send-btn')].find($VIS); if(!b)return false; b.click(); return true; })()")
+    ok === true || error("send_message: no visible send button (.bt-send-btn) — is a chat open?")
+    return s
+end
+
+"""
+    current_chat_id(s) -> String
+
+Project id of the chat currently open in the browser, read from the active
+sidebar entry (`.bt-side-item.bt-side-active`). Empty string on the dashboard.
+"""
+function current_chat_id(s::TestServer)
+    pid = eval_js(s, """(() => { const a=document.querySelector('.bt-side-item.bt-side-active');
+        return a ? (a.getAttribute('data-project-id') || '') : ''; })()""")
+    return String(pid === nothing ? "" : pid)
+end
+
+"""
+    open_discover!(s::TestServer; timeout = 15)
+
+Open every worker's "projects" list and every folder in it, and wait for the session
+rows: they're built when they're opened.
+"""
+function open_discover!(s::TestServer; timeout::Real = 15)
+    wait_for(s, "rows in the discover list", """(() => {
+        document.querySelectorAll('details.bt-discover-panel, details.bt-group').forEach(d => d.open = true);
+        return document.querySelector('.bt-session-row') !== null;
+    })()"""; timeout)
+    return nothing
+end
+
+"""
+    screenshot(s, path)
+
+Save a PNG of the complete renderer viewport, including an emulated phone
+viewport taller than the host window. Blocks until the file lands on disk.
+"""
+function screenshot(s::TestServer, path::AbstractString; timeout::Real = 8)
+    ctx = s.browser[]
+    ctx === nothing && error("open_browser first")
+    path = abspath(String(path))
+    mkpath(dirname(path))
+    # Phone emulation can exceed the host surface. Enlarge that surface
+    # before capture, then clip to the emulated viewport (no blank desktop).
+    # CDP captureBeyondViewport temporarily changes Electron's emulated layout.
+    run(ctx.app, """(async () => {
+        const win = electron.BrowserWindow.fromId($(ctx.window.id));
+        const wc = win.webContents;
+        const viewport = await wc.executeJavaScript('({width:innerWidth,height:innerHeight})');
+        const original = win.getContentSize();
+        try {
+            win.setContentSize(Math.max(original[0], viewport.width), Math.max(original[1], viewport.height));
+            await wc.executeJavaScript('new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))');
+            const shot = await wc.capturePage({x:0,y:0,width:viewport.width,height:viewport.height});
+            require('fs').writeFileSync($(json(path)), shot.toPNG());
+        } finally { win.setContentSize(...original); }
+    })()""")
+    return path
+end
+
+# Tiny JSON-encode helper (no JSON3 dep in the test module).
+json(x) = JSON.json(x)
+
+end # module

@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "tests/last_run.json; tester report. My own screenshot reviews/s58-now.png shows only the free camera at the workshop, no kite in flight.",
+      "severity": "medium",
+      "suggestion": "Re-create or re-adopt the kite and holder when the player stops and replays; keep that test green.",
+      "what": "After Stop, Play again gives no kite (Sprout goes sunbathing). The new test 'Play, Stop, Play again works and the meter comes back' fails (60 s timeout) in tests/last_run.json, and the tester saw the same. A player who stops the kite once cannot fly it again that afternoon.",
+      "where": "plugins/kite.jl, tests/s58_play.jl"
+    },
+    {
+      "evidence": "reviews/s58-now.png",
+      "severity": "low",
+      "suggestion": "Clear or rewrite the news line when a todo is marked done.",
+      "what": "The 'New on the island' line in the Sprout panel still says 'Sprout's back looks like a face on the sunset bench', although #329 is done. A player reads it as an open problem. The panel also says Sprout 'feels bored' while a new body is being made.",
+      "where": "Sprout panel, top right"
+    },
+    {
+      "evidence": "tester report; media/s58/satchel-after.png",
+      "severity": "low",
+      "suggestion": "Fade the hint bar while running and frame Sprout larger.",
+      "what": "While running with the kite, Sprout is small and partly under the key-hint bar. The jump-in view can be blocked by a house or a friend. The satchel from the front is a brown blob with a brass dot.",
+      "where": "chase camera, HUD hint bar"
+    }
+  ],
+  "summary": "My own live screenshot shows the sandbox healthy (frame median 3.5 ms, p95 6.2 ms, all 45 plugins ok, camcut ~0 ms), so the tester's 208 ms was restart noise. The kite, satchel and gift fixes work in the author's evidence and tests, but Play-again-after-Stop gives no kite and the author's own test for it fails.",
+  "superseded_by": "perfectionist-0058.json",
+  "verdict": "pass"
+}

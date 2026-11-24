@@ -1,0 +1,92 @@
+# The Neverending Game host. Read again before every session, so edits take
+# effect without a restart.
+
+[agent]
+# Any AgentProviders name: ClaudeCode, Codex, OpenCode, KimiCode, MiMoCode.
+provider = "ClaudeCode"
+# Empty: the provider's default (ClaudeCode's is Sonnet). ClaudeCode: "opus",
+# "sonnet", ...; OpenCode: "openrouter/<model id>" (put OPENROUTER_API_KEY into
+# .jail/secrets/env/).
+model = "opus"
+session_minutes = 45
+# Seconds between two sessions.
+cooldown = 20
+# true: finish the running session, start no new one.
+pause = true
+
+[review]
+# A separate agent judges finished work. It never sees the implementer's
+# conversation, only the results; a different model keeps it from sharing
+# the implementer's taste.
+enabled = true
+provider = "ClaudeCode"
+model = "sonnet"
+session_minutes = 15
+# Every this many work sessions a perfectionist review (art director, game
+# designer, demanding player) scores the whole game 0-10 per category
+# (world/reviews/quality.jsonl); its findings become the author's next todos.
+perfectionist_every = 3
+perfectionist_minutes = 30
+# It sets the direction for the next sessions: worth the builder's model.
+perfectionist_model = "opus"
+
+[budget]
+# Tokens per rolling 24 hours, all agents together. Counted from Claude Code's
+# transcripts: input + cache writes + output + cache reads × cache_read_weight.
+# Free models (OpenCode "*-free") do not count. 0: no cap, sessions never wait.
+tokens_per_day = 0
+cache_read_weight = 0.1
+# Above this fraction a running session is told to wrap up.
+low_fraction = 0.85
+
+[game]
+# "auto": the dashboard also opens as a RayMakie window on this machine's
+# desktop when one runs (through its X server, XWayland; the game's jail gets
+# the X socket and its cookie, nothing else); "yes" / "no" to force. While the
+# display sleeps the window is throttled, the game runs on.
+window = "no"
+# Browsers draw the same dashboard with WGLMakie at http://<this machine>:web_port
+# (the host forwards the port to the game's jail).
+web_port = 8790
+fps = 30
+width = 1280
+height = 720
+threads = 8
+
+[network]
+# Hosts every agent session may reach (port 443 only), on top of its
+# provider's. "*.x" matches subdomains.
+allow = [
+    "pkg.julialang.org", "*.pkg.julialang.org", "storage.julialang.net",
+    "github.com", "codeload.github.com", "objects.githubusercontent.com",
+    "release-assets.githubusercontent.com",
+]
+
+[providers.ClaudeCode]
+hosts = ["api.anthropic.com"]
+
+[providers.Codex]
+hosts = ["api.openai.com", "chatgpt.com", "*.chatgpt.com", "auth.openai.com"]
+
+[providers.OpenCode]
+hosts = ["openrouter.ai", "opencode.ai", "*.opencode.ai", "models.dev", "registry.npmjs.org"]
+
+[providers.KimiCode]
+hosts = ["api.moonshot.ai", "api.moonshot.cn", "api.kimi.com"]
+
+[providers.MiMoCode]
+hosts = ["api.xiaomimimo.com"]
+
+[github]
+# The host publishes for Lumi after every session, with the token in
+# ~/.config/neverending (outside every jail); Lumi never writes online.
+# Lumi's pages (world/site), served by GitHub Pages.
+blog = ""
+# The whole game, one commit and tag per session: what people fork.
+game = ""
+# The commits' author address (the account's GitHub noreply address).
+email = ""
+
+[jail]
+# "auto": jailed with bubblewrap where it is installed (Linux); "no": plain processes.
+mode = "auto"

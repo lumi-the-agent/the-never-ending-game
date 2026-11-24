@@ -1,0 +1,10 @@
+{"session": 25,
+ "summary": "The two failures from the host's run (wave answer, dance ring) did not reproduce: both pass alone and the full suite passes 38/38 on a rerun. They look like state-dependent flakes (creature busy/idle or not near the ring at suite start), not hard bugs.",
+ "failures": [
+  {"what": "Flaky: in the host's suite run, a wave at Pinchy got no answer (Pinchy idle) and the dance ring never formed within 40 s",
+   "steps": "Run the full suite right after a work session; depends on what creatures are doing at that moment (fishing, sleeping, away from the ring)",
+   "expected": "A waved-at creature answers; critters gather in the ring when the test asks",
+   "actual": "Failed once in the host run (check: nobody answered the wave (Pinchy is idle); dancers never stood in the ring after 40 s). Both pass alone and in a full rerun (38/38).",
+   "screenshot": "world/tests/shots/jumpin-friend.png"}
+ ],
+ "tests_added": []}

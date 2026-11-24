@@ -1,0 +1,103 @@
+METAL := xcrun -sdk macosx metal
+METALLIB := xcrun -sdk macosx metallib
+MACOSX_VERSIONS := 11 12 13 14 15 26
+
+# sources that need a dedicated rule (see below)
+SPECIAL_SOURCES := dependencies.metal dependencies_helper.metal coreimage.metal dylib.metal imports.metal \
+                   optional_constants.metal used_constants.metal
+
+SOURCES := $(filter-out $(SPECIAL_SOURCES),$(wildcard *.metal))
+METALLIBS := $(foreach ver,$(MACOSX_VERSIONS),$(SOURCES:.metal=.$(ver).metallib))
+
+# libraries packaged by the standalone `metallib` tool instead of the compiler driver
+STANDALONE_METALLIBS := kernel.standalone.metallib dependencies.standalone.metallib
+
+SPECIAL_METALLIBS := coreimage.metallib dylib.metallib imports.metallib kernels.compressed.metallib \
+                     optional_constants.metallib used_constants.metallib sources.long.metallib
+
+# unlinked AIR, to build libraries from
+AIR_MODULES := optional_constants.air used_constants.air used_constants.O0.air
+
+# Metal.jl kernels (see res/airr/kernels.jl), and a library of them that Apple's toolchain
+# linked, to compare our reflection data with
+JULIA := julia
+JULIA_KERNELS := julia/vadd.air julia/structs.air julia/reduce_groups.air julia/pointers.air
+
+# Apple's decoding of the reflection data of every library that has some, to check ours
+OBJDUMP := xcrun -sdk macosx metal-objdump
+REFLECTIONS = $(patsubst %.metallib,reflection/%.txt,$(wildcard *.metallib))
+
+.PHONY: all
+all: $(METALLIBS) $(STANDALONE_METALLIBS) $(SPECIAL_METALLIBS) $(AIR_MODULES) julia.metallib
+
+.PHONY: reflections
+reflections: $(REFLECTIONS)
+
+reflection/%.txt: %.metallib
+	@mkdir -p reflection
+	$(OBJDUMP) -ml --reflection $< > $@
+	@grep -q "Reflection No" $@ || $(RM) $@
+
+.PHONY: clean
+clean:
+	$(RM) $(METALLIBS) $(STANDALONE_METALLIBS) $(SPECIAL_METALLIBS) $(AIR_MODULES) \
+	      $(JULIA_KERNELS) julia.metallib
+
+define METALLIB_RULE
+%.${1}.metallib: %.metal
+	$$(METAL) -mmacosx-version-min=${1} $$(shell head -n1 $$< | cut -c4-) -o $$@ $$<
+endef
+$(foreach ver,$(MACOSX_VERSIONS),$(eval $(call METALLIB_RULE,$(ver))))
+
+%.standalone.metallib: %.metal
+	$(METAL) -mmacosx-version-min=13 -c -o $*.air $<
+	$(METALLIB) -o $@ $*.air
+	$(RM) $*.air
+
+dependencies.standalone.metallib: dependencies.metal dependencies_helper.metal
+	$(METAL) -mmacosx-version-min=13 -c -o dependencies.air dependencies.metal
+	$(METAL) -mmacosx-version-min=13 -c -o dependencies_helper.air dependencies_helper.metal
+	$(METALLIB) --function-dependencies -o $@ dependencies.air dependencies_helper.air
+	$(RM) dependencies.air dependencies_helper.air
+
+coreimage.metallib: coreimage.metal
+	$(METAL) -mmacosx-version-min=13 -fcikernel -c -o coreimage.air $<
+	$(METALLIB) --cikernel -o $@ coreimage.air
+	$(RM) coreimage.air
+
+dylib.metallib: dylib.metal
+	$(METAL) -mmacosx-version-min=13 -dynamiclib -install_name @loader_path/$@ -o $@ $<
+
+imports.metallib: imports.metal dylib.metallib
+	$(METAL) -mmacosx-version-min=13 -o $@ $^
+
+# compressed modules and reflection need metallib v1.2.9 (macOS 26)
+kernels.compressed.metallib: kernels.metal
+	$(METAL) -mmacosx-version-min=26 -Xlinker --compress-sections -o $@ $<
+
+# a source path too long for the ustar format, which the source archive puts in a pax header
+X20 := xxxxxxxxxxxxxxxxxxxx
+LONG_DIR := /tmp/metal.jl-long/$(X20)$(X20)$(X20)/$(X20)$(X20)$(X20)/$(X20)$(X20)$(X20)/$(X20)$(X20)$(X20)
+sources.long.metallib: sources.metal
+	mkdir -p $(LONG_DIR)
+	cp $< $(LONG_DIR)/sources.metal
+	$(METAL) -mmacosx-version-min=26 -frecord-sources -o $@ $(LONG_DIR)/sources.metal
+	$(RM) -r /tmp/metal.jl-long
+
+# function constants in an unlinked module, and as the linker records them
+optional_constants.air: optional_constants.metal
+	$(METAL) -mmacosx-version-min=15 -c -o $@ $<
+optional_constants.metallib: optional_constants.metal
+	$(METAL) -mmacosx-version-min=15 -o $@ $<
+used_constants.air: used_constants.metal
+	$(METAL) -mmacosx-version-min=15 -c -o $@ $<
+used_constants.metallib: used_constants.metal
+	$(METAL) -mmacosx-version-min=15 -o $@ $<
+used_constants.O0.air: used_constants.metal
+	$(METAL) -mmacosx-version-min=15 -O0 -c -o $@ $<
+
+julia/%.air: ../../res/airr/kernels.jl
+	@mkdir -p julia
+	$(JULIA) --project=.. $< $* $@
+julia.metallib: $(JULIA_KERNELS)
+	$(METAL) -o $@ $^

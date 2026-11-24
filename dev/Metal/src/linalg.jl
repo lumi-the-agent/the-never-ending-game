@@ -1,0 +1,651 @@
+using LinearAlgebra
+using LinearAlgebra: MulAddMul, wrap, wrapper_char, _unwrap
+using .MPS
+using .MPS: MPS_VALID_MATMUL_TYPES, MPS_VALID_MATVECMUL_TYPES, MPSSolveFloat, lu_info
+
+@inline function supports_mps_matmul(A, B, C, valid_types)
+    MPS.is_supported(device(C)) &&
+        eltype(A) == eltype(B) &&
+        (eltype(A), eltype(C)) in valid_types
+end
+
+
+# Supported values:
+#   :auto     - best available: vendor (MPSGraph/MPS) where supported, else a native kernel
+#   :MPS      - MetalPerformanceShaders
+#   :MPSGraph - MetalPerformanceShadersGraph
+#   :GPUArrays- the generic GPUArrays kernel
+#   :native   - best of Metal.jl's own kernels (tensor → simd → scalar), picked per operands
+#   :simd     - force the simdgroup_matrix kernel (Float16/Float32)
+#   :scalar     - force the scalar shared-memory kernel (any eltype)
+#   :tensor   - force the Metal 4 tensor-ops kernel (Metal4 device, plain C=A*B)
+# The native kernels live in src/gemm.jl.
+@public matmul_alg
+
+"""
+    Metal.matmul_alg
+
+A `ScopedValue` that selects the algorithm `LinearAlgebra.mul!` (and `*`) uses for
+`MtlArray` matrix-matrix and matrix-vector products:
+
+- `:auto` (default): MPSGraph where it supports the operands, otherwise `:native`.
+- `:MPSGraph`: [`MPSGraphs.matmul!`](@ref) and [`MPSGraphs.matvecmul!`](@ref).
+- `:MPS`: [`MPS.matmul!`](@ref) and [`MPS.matvecmul!`](@ref).
+- `:native`: the best of Metal.jl's own kernels for the operands, of `:tensor`, `:simd` and
+  `:scalar`.
+- `:tensor`: a Metal 4 tensor-operations kernel, for plain `C = A*B` products of `Float16`,
+  `BFloat16`, `Float32`, `Int8` and `UInt8` inputs with the output types `matmul2d` supports
+  for them, as listed in the [Metal Shading Language
+  specification](https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf);
+  only matrix-matrix products. `BFloat16` needs macOS 26.1 and `UInt8` needs macOS 26.4.
+- `:simd`: a SIMD-group matrix kernel.
+- `:scalar`: a kernel without SIMD-group matrices, for any element type.
+- `:GPUArrays`: the generic GPUArrays.jl kernel.
+
+An algorithm that doesn't support the operands throws an error. Set it for a block of code
+with `with`, from `Base.ScopedValues` (on Julia 1.10, from the ScopedValues.jl package):
+
+```julia
+using LinearAlgebra, Base.ScopedValues
+A = Metal.rand(Float32, 64, 64); B = Metal.rand(Float32, 64, 64)
+C = with(Metal.matmul_alg => :MPS) do
+    A * B
+end
+```
+"""
+const matmul_alg = ScopedValue(:auto)
+matmul_alg_error(alg, inT, outT, vec) = error("Matrix-$(vec ? "Vector" : "Matrix") multiplication algorithm `:$alg` is not supported for input eltype $inT and output eltype $outT.")
+
+# LinearAlgebra's wrapper_char only ever produces 'N'/'T'/'C' or the Symmetric/Hermitian
+# wrapper chars 'S'/'s'/'H'/'h', all of which the native GEMM kernels handle (the MPS
+# paths only the former); gemm_char normalizes an AbstractChar (e.g. a
+# LinearAlgebra.WrapperChar) to the plain Char the kernels specialize on.
+@inline is_ntc(t) = (t == 'N') || (t == 'T') || (t == 'C')
+@inline gemm_char(t) = Char(t)
+
+matmul_alg_invalid(alg, vec) =
+    error(":$alg is not a valid $(vec ? "matvecmul" : "matmul") algorithm. Options are: `:auto`, `:MPS`, `:MPSGraph`, `:GPUArrays`, `:native`, `:simd`, `:scalar`$(vec ? "" : ", `:tensor`")")
+
+# shared native-kernel path: a forced :simd/:tensor kernel must support the operands
+# (the scalar kernel handles anything); :native/:auto let gemm! pick the kernel
+@inline function native_matmul!(C, tA, tB, A, B, alpha, beta, alg)
+    cA = gemm_char(tA); cB = gemm_char(tB)
+    if alg === :simd
+        supports_simd_matmul(C, A, B, cA, cB, alpha, beta) ||
+            matmul_alg_error(alg, eltype(A), eltype(C), false)
+    elseif alg === :tensor
+        supports_tensor_matmul(C, A, B, cA, cB, alpha, beta) ||
+            matmul_alg_error(alg, eltype(A), eltype(C), false)
+    end
+    kernel = (alg === :native || alg === :auto) ? :auto : alg
+    gemm!(C, cA, cB, A, B, alpha, beta; kernel)
+end
+
+# GPUArrays' generic kernel, which needs α and β converted like the native kernels do
+generic_matmul!(C, tA, tB, A, B, alpha, beta) =
+    GPUArrays.generic_matmatmul!(C, wrap(A, tA), wrap(B, tB),
+                                 device_scalar(alpha), device_scalar(beta))
+
+# a product with an empty dimension is finished before any backend is chosen: MPS asserts on
+# zero-sized buffers, and the result does not depend on A or B anyway. C is either empty (M or
+# N == 0), or only β applies (K == 0).
+function empty_matmul!(C, beta)
+    isempty(C) && return C
+    beta = device_scalar(beta)
+    # broadcast rather than `rmul!`, which doesn't take views of GPU arrays
+    iszero(beta) ? fill!(C, zero(eltype(C))) : (C .*= beta)
+end
+
+function LinearAlgebra.mul!(C::MtlMatrix, tA, tB, A::MtlMatrix, B::MtlMatrix,
+                                             alpha::Number, beta::Number)
+    mA, nA = LinearAlgebra.lapack_size(tA, A)
+    mB, nB = LinearAlgebra.lapack_size(tB, B)
+
+    if nA != mB
+        throw(DimensionMismatch("A has dimensions ($mA,$nA) but B has dimensions ($mB,$nB)"))
+    end
+    if size(C) != (mA, nB)
+        throw(DimensionMismatch("C has dimensions $(size(C)), should have ($mA,$nB)"))
+    end
+
+    if C === A || B === C
+        throw(ArgumentError("output matrix must not be aliased with input matrix"))
+    end
+
+    if mA == 0 || nA == 0 || nB == 0
+        return empty_matmul!(C, beta)
+    end
+
+    alg = matmul_alg[]
+    # the MPS path only handles plain transpose/adjoint operands; only probe MPSGraph
+    # support when a branch below can actually use it
+    ntc = is_ntc(tA) && is_ntc(tB)
+    mpsgraph_supported = (alg === :MPSGraph || alg === :auto) &&
+        MPSGraphs.supports(MPSGraphs.matmul!, C, A, B, alpha, beta; tA, tB)
+    # If possible, dispatch to MPSGraphs, then performance shaders
+    if alg === :MPSGraph || (alg === :auto && mpsgraph_supported)
+        mpsgraph_supported || matmul_alg_error(alg, eltype(A), eltype(C), false)
+        MPSGraphs.matmul!(C, A, B, alpha, beta; tA, tB)
+    elseif alg === :native || alg === :auto || alg === :simd || alg === :scalar || alg === :tensor
+        native_matmul!(C, tA, tB, A, B, alpha, beta, alg)
+    elseif alg === :MPS
+        (ntc && supports_mps_matmul(A, B, C, MPS_VALID_MATMUL_TYPES)) || matmul_alg_error(alg, eltype(A), eltype(C), false)
+        MPS.matmul!(C, A, B, alpha, beta; tA, tB)
+    elseif alg === :GPUArrays
+        generic_matmul!(C, tA, tB, A, B, alpha, beta)
+    else
+        matmul_alg_invalid(alg, false)
+    end
+end
+
+function LinearAlgebra.mul!(C::MtlMatrixOperand, tA, tB,
+                                             A::MtlMatrixOperand, B::MtlMatrixOperand,
+                                             alpha::Number, beta::Number)
+    mA, nA = LinearAlgebra.lapack_size(tA, A)
+    mB, nB = LinearAlgebra.lapack_size(tB, B)
+
+    if nA != mB
+        throw(DimensionMismatch("A has dimensions ($mA,$nA) but B has dimensions ($mB,$nB)"))
+    end
+    if size(C) != (mA, nB)
+        throw(DimensionMismatch("C has dimensions $(size(C)), should have ($mA,$nB)"))
+    end
+
+    if C === A || B === C
+        throw(ArgumentError("output matrix must not be aliased with input matrix"))
+    end
+
+    if mA == 0 || nA == 0 || nB == 0
+        return empty_matmul!(C, beta)
+    end
+
+    alg = matmul_alg[]
+    if alg === :native || alg === :auto || alg === :simd || alg === :scalar || alg === :tensor
+        native_matmul!(C, tA, tB, A, B, alpha, beta, alg)
+    elseif alg === :GPUArrays
+        generic_matmul!(C, tA, tB, A, B, alpha, beta)
+    elseif alg === :MPS || alg === :MPSGraph
+        matmul_alg_error(alg, eltype(A), eltype(C), false)
+    else
+        matmul_alg_invalid(alg, false)
+    end
+end
+
+if isdefined(LinearAlgebra, :generic_matmatmul_wrapper!)
+    function LinearAlgebra.generic_matmatmul_wrapper!(C::MtlMatrixOperand{T},
+                                                      tA::AbstractChar, tB::AbstractChar,
+                                                      A::MtlMatrixOperand{T},
+                                                      B::MtlMatrixOperand{T},
+                                                      alpha::Number, beta::Number,
+                                                      val::LinearAlgebra.BlasFlag.SyrkHerkGemm) where {T<:LinearAlgebra.BlasFloat}
+        LinearAlgebra.mul!(C, tA, tB, A, B, alpha, beta)
+    end
+end
+
+function LinearAlgebra.mul!(C::MtlVector, tA::AbstractChar, A::MtlMatrix, B::MtlVector,
+                                             alpha::Number, beta::Number)
+    mA, nA = LinearAlgebra.lapack_size(tA, A)
+    mB = length(B)
+    mC = length(C)
+
+    if nA != mB
+        throw(DimensionMismatch("A has dimensions ($mA,$nA) but B is a vector of length ($mB)"))
+    end
+    if mC != mA
+        throw(DimensionMismatch("C has length ($mC), should have ($mA)"))
+    end
+
+    if B === C
+        throw(ArgumentError("output matrix must not be aliased with input matrix"))
+    end
+
+    if mA == 0 || nA == 0 || mB == 0
+        return empty_matmul!(C, beta)
+    end
+
+    alg = matmul_alg[]
+    # the MPS path only handles plain transpose/adjoint operands; only probe MPSGraph
+    # support when a branch below can actually use it
+    ntc = is_ntc(tA)
+    mpsgraph_supported = (alg === :MPSGraph || alg === :auto) &&
+        MPSGraphs.supports(MPSGraphs.matvecmul!, C, A, B, alpha, beta; tA)
+    # If possible, dispatch to MPSGraphs, then performance shaders
+    if alg === :MPSGraph || (alg === :auto && mpsgraph_supported)
+        mpsgraph_supported || matmul_alg_error(alg, eltype(A), eltype(C), true)
+        MPSGraphs.matvecmul!(C, A, B, alpha, beta; tA)
+    elseif alg === :native || alg === :auto || alg === :simd || alg === :scalar
+        # matrix-vector products go through the native gemv; `:simd`/`:scalar` force the
+        # kernel. The tensor kernel is matrix-only, so `:tensor` isn't handled here and
+        # falls through to the unsupported-algorithm error below.
+        cA = gemm_char(tA)
+        kernel = (alg === :simd || alg === :scalar) ? alg : :auto
+        alg === :simd && (supports_simd_matmul(C, A, B, cA, 'N', alpha, beta) ||
+            matmul_alg_error(alg, eltype(A), eltype(C), true))
+        gemv!(C, cA, A, B, alpha, beta; kernel)
+    elseif alg === :MPS
+        (ntc && supports_mps_matmul(A, B, C, MPS_VALID_MATVECMUL_TYPES)) || matmul_alg_error(alg, eltype(A), eltype(C), true)
+        MPS.matvecmul!(C, A, B, alpha, beta; tA)
+    elseif alg === :GPUArrays
+        generic_matmul!(C, tA, 'N', A, B, alpha, beta)
+    else
+        matmul_alg_invalid(alg, true)
+    end
+end
+
+## products with views
+
+# GPUArrays intercepts products involving a strided view before LinearAlgebra's BLAS dispatch,
+# and sends those that aren't valid BLAS operands (stepped rows, reversed columns, Symmetric or
+# Hermitian views, products with a vector) to its generic kernel. The native kernels take any
+# range view, so intercept products of Metal operands first to keep `matmul_alg` in effect.
+
+const MtlVectorRangeView{T} =
+    SubArray{T,1,<:MtlArray{T},<:Tuple{Vararg{Union{Base.RangeIndex,Base.ReshapedUnitRange}}}}
+const MtlVectorOperand{T} = Union{MtlVector{T},MtlVectorRangeView{T}}
+const MtlWrappedMatrixOperand{T} = Union{
+    MtlMatrixOperand{T},
+    Adjoint{T,<:MtlMatrixOperand{T}},
+    Transpose{T,<:MtlMatrixOperand{T}},
+    Symmetric{T,<:MtlMatrixOperand{T}},
+    Hermitian{T,<:MtlMatrixOperand{T}},
+}
+
+has_view(As...) = any(A -> _unwrap(A) isa SubArray, As)
+
+# the vector as an n×1 matrix operand over the same memory, or `nothing` if it has no
+# such range view (e.g. a row of a matrix)
+as_column(v::MtlVector) = reshape(v, :, 1)
+as_column(v::SubArray{<:Any,1,<:MtlArray,<:Tuple{AbstractRange}}) =
+    view(reshape(parent(v), :, 1), only(parentindices(v)), 1:1)
+function as_column(v::SubArray{<:Any,1,<:MtlMatrix,<:Tuple{AbstractRange,Integer}})
+    i, j = parentindices(v)
+    view(parent(v), i, j:j)
+end
+as_column(v) = nothing
+
+# matrix-vector products with a view, as a GEMM with single-column operands; dense ones take
+# the `mul!` method above
+function view_matvecmul!(C, tA, A, B, alpha, beta)
+    mA, nA = LinearAlgebra.lapack_size(tA, A)
+    nA == length(B) ||
+        throw(DimensionMismatch("A has dimensions ($mA,$nA) but B is a vector of length ($(length(B)))"))
+    length(C) == mA || throw(DimensionMismatch("C has length ($(length(C))), should have ($mA)"))
+    (mA == 0 || nA == 0) && return empty_matmul!(C, beta)
+
+    alg = matmul_alg[]
+    if alg === :native || alg === :auto || alg === :simd || alg === :scalar
+        Cm, Bm = as_column(C), as_column(B)
+        if Cm !== nothing && Bm !== nothing
+            LinearAlgebra.mul!(Cm, tA, 'N', A, Bm, alpha, beta)
+        elseif alg === :auto
+            generic_matmul!(C, tA, 'N', A, B, alpha, beta)
+        else
+            matmul_alg_error(alg, eltype(A), eltype(C), true)
+        end
+    elseif alg === :GPUArrays
+        generic_matmul!(C, tA, 'N', A, B, alpha, beta)
+    elseif alg === :MPS || alg === :MPSGraph || alg === :tensor
+        matmul_alg_error(alg, eltype(A), eltype(C), true)
+    else
+        matmul_alg_invalid(alg, true)
+    end
+    return C
+end
+
+# GPUArrays intercepts the 5-argument `mul!` on Julia 1.10, and `_mul!` (where LinearAlgebra
+# unwraps the operands) on later versions; products without views keep LinearAlgebra's
+# implementation, as they do there
+const intercepted_mul! = VERSION < v"1.11" ? LinearAlgebra.mul! : LinearAlgebra._mul!
+
+@eval begin
+    @inline function LinearAlgebra.$(nameof(intercepted_mul!))(
+            C::MtlMatrixOperand, A::MtlWrappedMatrixOperand, B::MtlWrappedMatrixOperand,
+            alpha::Number, beta::Number)
+        has_view(C, A, B) || return invoke(intercepted_mul!,
+            Tuple{AbstractMatrix,AbstractVecOrMat,AbstractVecOrMat,Number,Number},
+            C, A, B, alpha, beta)
+        LinearAlgebra.mul!(C, wrapper_char(A), wrapper_char(B), _unwrap(A), _unwrap(B),
+                           alpha, beta)
+    end
+
+    @inline function LinearAlgebra.$(nameof(intercepted_mul!))(
+            C::MtlVectorOperand, A::MtlWrappedMatrixOperand, B::MtlVectorOperand,
+            alpha::Number, beta::Number)
+        has_view(C, A, B) || return invoke(intercepted_mul!,
+            Tuple{AbstractVector,AbstractVecOrMat,AbstractVector,Number,Number},
+            C, A, B, alpha, beta)
+        view_matvecmul!(C, wrapper_char(A), _unwrap(A), B, alpha, beta)
+    end
+end
+
+# Julia < 1.13 dispatches on the non-public `generic_matvecmul!` and `generic_matmatmul!`,
+# which JuliaLang/LinearAlgebra.jl#1671 superseded by the `mul!` methods above. Forward from
+# the old names, both the alpha/beta variants (1.12) and the ones taking a final MulAddMul
+# (1.10 and 1.11).
+@static if VERSION < v"1.13.0-rc4"
+    LinearAlgebra.generic_matvecmul!(C::MtlVector, tA::AbstractChar, A::MtlMatrix, B::MtlVector, alpha::Number, beta::Number) =
+        LinearAlgebra.mul!(C, tA, A, B, alpha, beta)
+    LinearAlgebra.generic_matvecmul!(C::MtlVector, tA::AbstractChar, A::MtlMatrix, B::MtlVector, _add::MulAddMul) =
+        LinearAlgebra.mul!(C, tA, A, B, _add.alpha, _add.beta)
+    for T in (:MtlMatrix, :MtlMatrixOperand)
+        @eval begin
+            LinearAlgebra.generic_matmatmul!(C::$T, tA, tB, A::$T, B::$T, alpha::Number, beta::Number) =
+                LinearAlgebra.mul!(C, tA, tB, A, B, alpha, beta)
+            LinearAlgebra.generic_matmatmul!(C::$T, tA, tB, A::$T, B::$T, _add::MulAddMul) =
+                LinearAlgebra.mul!(C, tA, tB, A, B, _add.alpha, _add.beta)
+        end
+    end
+end
+
+@inline checkpositivedefinite(status) =
+    status != MPS.MPSMatrixDecompositionStatusNonPositiveDefinite || throw(PosDefException(status))
+
+# GPU-compatible accessors of the LU decomposition properties
+function Base.getproperty(F::LU{T, <:MtlMatrix}, d::Symbol) where {T}
+    m, n = size(F)
+    if d === :L
+        L = tril!(getfield(F, :factors)[1:m, 1:min(m, n)])
+        L[1:m+1:end] .= one(T)
+        return L
+    else
+        invoke(getproperty, Tuple{LU{T}, Symbol}, F, d)
+    end
+end
+
+# Metal's pivoting sequence needs to be iterated sequentially...
+# TODO: figure out a GPU-compatible way to get the permutation matrix
+LinearAlgebra.ipiv2perm(v::MtlVector, maxi::Integer) =
+    LinearAlgebra.ipiv2perm(Array(v), maxi)
+LinearAlgebra.ipiv2perm(v::MtlVector{<:Any, CPUStorage}, maxi::Integer) =
+    LinearAlgebra.ipiv2perm(unsafe_wrap(Array, v), maxi)
+
+function LinearAlgebra.lu(A::MtlMatrix{T};
+                                           check::Bool = true) where {T <: MPSSolveFloat}
+    M, N = size(A)
+    # MPS aborts on empty matrices
+    (M == 0 || N == 0) && return LinearAlgebra.LU(similar(A), similar(A, UInt32, 0), 0)
+    dev = device()
+    queue = global_queue(dev)
+
+    At = MtlMatrix{T, PrivateStorage}(undef, (N, M))
+    mps_a = MPSMatrix(A)
+    mps_at = MPSMatrix(At)
+
+    cmdbuf = MPSCommandBuffer(queue) do cbuf
+        kernel = MPSMatrixCopy(dev, N, M, false, true)
+        descriptor = MPSMatrixCopyDescriptor(mps_a, mps_at)
+        encode!(cbuf, kernel, descriptor)
+    end
+
+    P = similar(A, UInt32, 1, min(N, M))
+    status = MtlArray{MPS.MPSMatrixDecompositionStatus, 0, SharedStorage}(undef)
+
+    commitAndContinue!(cmdbuf) do cbuf
+        mps_p = MPSMatrix(P)
+        kernel = MPSMatrixDecompositionLU(dev, M, N)
+        encode!(cbuf, kernel, mps_at, mps_at, mps_p, status)
+    end
+
+    B = similar(A, M, N)
+
+    commit!(cmdbuf) do cbuf
+        mps_b = MPSMatrix(B)
+        kernel = MPSMatrixCopy(dev, M, N, false, true)
+        descriptor = MPSMatrixCopyDescriptor(mps_at, mps_b)
+        encode!(cbuf, kernel, descriptor)
+    end
+
+    p = vec(P) .+ UInt32(1)
+
+    synchronize(cmdbuf)
+
+    info = lu_info(status[], B)
+    check && LinearAlgebra.checknonsingular(info)
+
+    return LinearAlgebra.LU(B, p, info)
+end
+
+function check_lu_success(info, allowsingular)
+    if VERSION >= v"1.11.0-DEV.1535"
+        if info < 0 # zero pivot error from unpivoted LU
+            LinearAlgebra.checknozeropivot(-info)
+        else
+            allowsingular || LinearAlgebra.checknonsingular(info)
+        end
+    else
+        LinearAlgebra.checknonsingular(info)
+    end
+end
+
+# TODO: dispatch on pivot strategy
+function LinearAlgebra.lu!(A::MtlMatrix{T};
+                                            check::Bool = true,
+                                            allowsingular::Bool = false) where {T <: MPSSolveFloat}
+    M, N = size(A)
+    # MPS aborts on empty matrices
+    (M == 0 || N == 0) && return LinearAlgebra.LU(A, similar(A, UInt32, 0), 0)
+    dev = device()
+    queue = global_queue(dev)
+
+    At = MtlMatrix{T, PrivateStorage}(undef, (N, M))
+    mps_a = MPSMatrix(A)
+    mps_at = MPSMatrix(At)
+
+    cmdbuf = MPSCommandBuffer(queue) do cbuf
+        kernel = MPSMatrixCopy(dev, N, M, false, true)
+        descriptor = MPSMatrixCopyDescriptor(mps_a, mps_at)
+        encode!(cbuf, kernel, descriptor)
+    end
+
+    P = similar(A, UInt32, 1, min(N, M))
+    status = MtlArray{MPS.MPSMatrixDecompositionStatus, 0, SharedStorage}(undef)
+
+    commitAndContinue!(cmdbuf) do cbuf
+        mps_p = MPSMatrix(P)
+        kernel = MPSMatrixDecompositionLU(dev, M, N)
+        encode!(cbuf, kernel, mps_at, mps_at, mps_p, status)
+    end
+
+    commit!(cmdbuf) do cbuf
+        kernel = MPSMatrixCopy(dev, M, N, false, true)
+        descriptor = MPSMatrixCopyDescriptor(mps_at, mps_a)
+        encode!(cbuf, kernel, descriptor)
+    end
+
+    p = vec(P) .+ UInt32(1)
+
+    synchronize(cmdbuf)
+
+    info = lu_info(status[], A)
+    check && check_lu_success(info, allowsingular)
+
+    return LinearAlgebra.LU(A, p, info)
+end
+
+function Base.:\(A::MtlMatrix{T}, B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    if size(A, 1) == size(A, 2)
+        return MPS.solve_lu(A, B)
+    else
+        return invoke(Base.:\, Tuple{AbstractMatrix, AbstractVecOrMat}, A, B)
+    end
+end
+
+function LinearAlgebra.ldiv!(F::LU{T,<:MtlMatrix{T}},
+                             B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    return MPS.solve_lu(F, B)
+end
+
+function Base.:\(F::LU{T,<:MtlMatrix{T}},
+                 B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    return ldiv!(F, copy(B))
+end
+
+function LinearAlgebra.cholesky!(A::MtlMatrix{T},
+                                 ::LinearAlgebra.NoPivot=LinearAlgebra.NoPivot();
+                                 check::Bool=true) where {T<:MPSSolveFloat}
+    factors, info = MPS.decompose_cholesky!(A; uplo='U')
+    check && checkpositivedefinite(info)
+    return LinearAlgebra.Cholesky(factors, 'U', info)
+end
+
+function LinearAlgebra.cholesky(A::MtlMatrix{T},
+                                ::LinearAlgebra.NoPivot=LinearAlgebra.NoPivot();
+                                check::Bool=true) where {T<:MPSSolveFloat}
+    return cholesky!(copy(A), LinearAlgebra.NoPivot(); check)
+end
+
+for wrapper in (:Symmetric, :Hermitian)
+    @eval begin
+        function LinearAlgebra.cholesky!(A::$wrapper{T,<:MtlMatrix{T}},
+                                         ::LinearAlgebra.NoPivot=LinearAlgebra.NoPivot();
+                                         check::Bool=true) where {T<:MPSSolveFloat}
+            factors, info = MPS.decompose_cholesky!(parent(A); uplo=A.uplo)
+            check && checkpositivedefinite(info)
+            return LinearAlgebra.Cholesky(factors, A.uplo, info)
+        end
+
+        function LinearAlgebra.cholesky(A::$wrapper{T,<:MtlMatrix{T}},
+                                        ::LinearAlgebra.NoPivot=LinearAlgebra.NoPivot();
+                                        check::Bool=true) where {T<:MPSSolveFloat}
+            factors, info = MPS.decompose_cholesky(parent(A); uplo=A.uplo)
+            check && checkpositivedefinite(info)
+            return LinearAlgebra.Cholesky(factors, A.uplo, info)
+        end
+    end
+end
+
+function LinearAlgebra.ldiv!(C::Cholesky{T,<:MtlMatrix{T}},
+                             B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    return MPS.solve_cholesky(C, B)
+end
+
+function Base.:\(C::Cholesky{T,<:MtlMatrix{T}},
+                 B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    return ldiv!(C, copy(B))
+end
+
+@inline function triangular_upper(uplo::AbstractChar)
+    uplo == 'U' && return true
+    uplo == 'L' && return false
+    throw(ArgumentError("invalid triangular storage: $uplo"))
+end
+
+@inline function triangular_unit(diag::AbstractChar)
+    diag == 'U' && return true
+    diag == 'N' && return false
+    throw(ArgumentError("invalid triangular diagonal: $diag"))
+end
+
+@inline function triangular_transpose(tfun::Function)
+    tfun === identity && return false
+    (tfun === transpose || tfun === adjoint) && return true
+    throw(ArgumentError("unsupported triangular operation"))
+end
+
+function LinearAlgebra.generic_trimatdiv!(C::MtlVecOrMat{T}, uploc, isunitc,
+                                          tfun::Function, A::MtlMatrix{T},
+                                          B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+    return MPS.solve_triangular(A, B; upper=triangular_upper(uploc),
+                                unit=triangular_unit(isunitc),
+                                transpose=triangular_transpose(tfun), out=C)
+end
+
+function LinearAlgebra.generic_mattridiv!(C::MtlMatrix{T}, uploc, isunitc,
+                                          tfun::Function, A::MtlMatrix{T},
+                                          B::MtlMatrix{T}) where {T<:MPSSolveFloat}
+    return MPS.solve_triangular(B, A; upper=triangular_upper(uploc),
+                                unit=triangular_unit(isunitc),
+                                transpose=triangular_transpose(tfun),
+                                right=true, out=C)
+end
+
+for (triangle, upper, unit) in ((:UpperTriangular, true, false),
+                                (:UnitUpperTriangular, true, true),
+                                (:LowerTriangular, false, false),
+                                (:UnitLowerTriangular, false, true))
+    @eval begin
+        function LinearAlgebra.ldiv!(A::$triangle{T,<:MtlMatrix{T}},
+                                     B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+            return MPS.solve_triangular(parent(A), B; upper=$upper, unit=$unit)
+        end
+
+        function Base.:\(A::$triangle{T,<:MtlMatrix{T}},
+                         B::MtlVecOrMat{T}) where {T<:MPSSolveFloat}
+            return ldiv!(A, copy(B))
+        end
+
+        function LinearAlgebra.rdiv!(B::MtlMatrix{T},
+                                     A::$triangle{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+            return MPS.solve_triangular(parent(A), B; upper=$upper, unit=$unit,
+                                        right=true)
+        end
+
+        function LinearAlgebra.rdiv!(B::MtlMatrix{T},
+                                     A::$triangle{T,<:Union{Transpose{T,<:MtlMatrix{T}},
+                                                            Adjoint{T,<:MtlMatrix{T}}}}) where {T<:MPSSolveFloat}
+            return MPS.solve_triangular(parent(parent(A)), B; upper=$(!upper),
+                                        unit=$unit, transpose=true, right=true)
+        end
+    end
+end
+
+function lu_pivot_sign(ipiv::MtlVector)
+    return isodd(count(ipiv .!= (1:length(ipiv)))) ? -1 : 1
+end
+
+function metal_identity(A::MtlMatrix{T,S}, n::Integer) where {T,S}
+    return MtlMatrix{T,S}(I, n, n)
+end
+
+function LinearAlgebra.det(F::LU{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    LinearAlgebra.checksquare(F.factors)
+    LinearAlgebra.issuccess(F) || return zero(T)
+    return prod(diag(F.factors)) * T(lu_pivot_sign(F.ipiv))
+end
+
+function LinearAlgebra.logabsdet(F::LU{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    LinearAlgebra.checksquare(F.factors)
+    LinearAlgebra.issuccess(F) || return (log(zero(T)), zero(T))
+    d = diag(F.factors)
+    return (mapreduce(x -> log(abs(x)), +, d), prod(sign, d) * T(lu_pivot_sign(F.ipiv)))
+end
+
+function LinearAlgebra.logdet(F::LU{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    logabs, sgndet = logabsdet(F)
+    return logabs + log(sgndet)
+end
+
+function LinearAlgebra.det(C::Cholesky{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    LinearAlgebra.checksquare(C.factors)
+    LinearAlgebra.issuccess(C) || return zero(T)
+    return prod(abs2, diag(C.factors))
+end
+
+function LinearAlgebra.logdet(C::Cholesky{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    LinearAlgebra.checksquare(C.factors)
+    LinearAlgebra.issuccess(C) || return log(zero(T))
+    return 2 * mapreduce(log, +, diag(C.factors))
+end
+
+function LinearAlgebra.logabsdet(C::Cholesky{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+    return (logdet(C), one(T))
+end
+
+for op in (:det, :logabsdet, :logdet)
+    @eval function LinearAlgebra.$op(A::MtlMatrix{T}) where {T<:MPSSolveFloat}
+        LinearAlgebra.checksquare(A)
+        return LinearAlgebra.$op(lu(A; check=false))
+    end
+end
+
+function LinearAlgebra.inv(A::MtlMatrix{T}) where {T<:MPSSolveFloat}
+    n = LinearAlgebra.checksquare(A)
+    return A \ metal_identity(A, n)
+end
+
+for factorization in (:LU, :Cholesky)
+    @eval function LinearAlgebra.inv(F::$factorization{T,<:MtlMatrix{T}}) where {T<:MPSSolveFloat}
+        n = LinearAlgebra.checksquare(F.factors)
+        return ldiv!(F, metal_identity(F.factors, n))
+    end
+end

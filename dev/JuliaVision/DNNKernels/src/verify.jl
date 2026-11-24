@@ -1,0 +1,413 @@
+"""
+Layer-by-layer verification against the PyTorch reference activations.
+
+lava-dnn.md, Verification order: "Layer-by-layer, not end-to-end. The first
+mismatching layer is the bug."
+
+A fixed tolerance cannot express that. Float32 reassociation makes the absolute
+error grow as √n through a reduction, and a squashing nonlinearity then rescales
+whatever came in - `segment` reaches a conv with relative error 3e-6 on a
+magnitude-1100 tensor, and the sigmoid after it reports 2e-5 "relative" purely
+because its own range is 1. Neither is a bug, and no single threshold separates
+them from one.
+
+So the criterion is **amplification**: an op is suspect when its output error is
+much larger than the error already present on its inputs. A genuine bug creates
+error out of nothing (the aliasing bug that corrupted `full` produced 1.0 from
+inputs that were exact), while drift only ever carries error forward.
+
+**That last clause is false at an ill-conditioned op, for every implementation.**
+Whisper's fp16 encoder amplifies 1576x at `add_42` — block 20's feed-forward,
+at eight of its 1500 frames — and PyTorch's own fp16 amplifies **415x** at the
+same node against its own fp32, on the same `max|Δ|` this criterion uses. (In
+*rel rms* the same event is 12x, because the eight frames are a thousandth of
+the tensor: which statistic is quoted changes the number by 35x and not the
+conclusion.) Flagging the op says nothing about whose arithmetic
+it is. Where a *second* reference precision exists, the control is to ask whether
+the reference amplifies there too; `tools/verify_whisper.jl` does exactly that
+before counting a flagged node as a failure. Without that control, this criterion
+will report a correct half-precision port as broken at whichever op the model is
+worst conditioned at.
+"""
+
+struct LayerDiff
+    index::Int
+    id::String
+    aten::String
+    maxabs::Float64
+    relative::Float64
+    inflow::Float64      # largest error already on the inputs
+    shape::Tuple
+end
+
+"""
+    maxerr(a, b)
+
+Largest absolute difference, with `-Inf` treated as equal to `-Inf`.
+
+`scalar_tensor(-inf)` feeds the attention mask, and `(-Inf) - (-Inf)` is NaN.
+Since every comparison against NaN is false, a plain `maximum(abs.(a .- b))`
+makes such a buffer pass *whatever* it contains - so a genuinely NaN result
+would have been reported as correct. Anything that differs and is not finite is
+an outright mismatch.
+"""
+function maxerr(a, b)
+    m = 0.0
+    for (x, y) in zip(a, b)
+        isequal(x, y) && continue
+        d = abs(Float64(x) - Float64(y))
+        isfinite(d) || return Inf
+        d > m && (m = d)
+    end
+    m
+end
+
+"""
+    tohost(x)
+
+A device result as a host `Array`, and anything already on the host unchanged.
+
+The comparison below walks both tensors element by element, which on a device
+array is one transfer per element — where it is permitted at all. `verifygraph`
+was CPU-only for that reason, and SAM 2's encoder had to be checked by a
+separate end-to-end script (`tools/bench_sam2.jl`) because 1493 ops at 1024x1024
+are not something a CPU backend finishes. Downloading each result once makes the
+layer-by-layer criterion available on whichever backend actually runs the model,
+which for anything the size of Whisper's encoder is the only one there is.
+"""
+tohost(x) = x
+tohost(x::Array) = x
+tohost(x::AbstractArray) = collect(x)
+
+"""
+    declaredvalues(g, inputs, weights; dims, backend, overrides) -> Dict{String,Any}
+
+Every buffer's value after ONE declared run, on the host.
+
+Layer-by-layer verification needs each intermediate to still hold what its own op
+wrote, and a transient does not: the placer aliases it the moment its last reader
+has run, which is the whole point of declaring liveness. `keepall` turns that off
+for this one run — every buffer gets storage of its own, at the cost of the sum of
+them all rather than the peak (5.68 GiB against ~1 for SAM 2's encoder at
+1024x1024). That is affordable once and not per call, which is why it is a
+keyword on `emitgraph` and not the default.
+
+`overrides` pins a buffer to a given value: its producing op is not emitted and
+the value is written in before the run. `verifygraph` uses it for a Bool
+predicate that flipped, so the ops downstream are still judged on their own
+arithmetic.
+"""
+function declaredvalues(g::Graph, inputs::AbstractDict, weights::AbstractDict;
+                        dims, backend=nothing, device=nothing,
+                        overrides::AbstractDict = Dict{String,Any}())
+    backend !== nothing && device !== nothing &&
+        throw(ArgumentError("pass either `device` or `backend`, not both"))
+    dev = M.todevice(device === nothing ? backend : device)
+    mantlegraph, emitctx = emitgraph(dev, g, residentweights(dev, g, weights), dims;
+                                     keepall = true, skip = keys(overrides))
+    for (id, x) in Iterators.flatten((inputs, overrides))
+        haskey(emitctx.res, id) || continue
+        dst = M.storage(emitctx.res[id])
+        copyto!(dst, reshape(convert(Array{eltype(dst)}, tohost(x)), size(dst)))
+    end
+    plan = M.Plan(mantlegraph)
+    M.record!(plan)
+    M.run!(plan)
+    M.waitidle(dev)
+    # Downloaded BEFORE `free!`, since freeing the plan returns the storage.
+    values = Dict{String,Any}()
+    for (id, r) in emitctx.res
+        # `Mantle.storage` is the identity on anything that is not a resource, so
+        # a host scalar and a resident weight come through unchanged.
+        values[id] = tohost(M.storage(r))
+    end
+    M.free!(plan)
+    # And the buffers the EMIT owns, which `free!(plan)` does not cover: under
+    # `keepall` every buffer in the graph is one. Every value above is already a
+    # host array, so nothing here still needs them.
+    freeowned!(emitctx)
+    return values
+end
+
+"""
+    verifygraph(graphpath, refs, weights; dims, backend, atol, amplify)
+
+`refs` is the dict from `readsafetensors`, keyed `"<graph>/in<i>"` and
+`"<graph>/node/<node>"`. Inputs are taken from the refs so each graph is checked
+in isolation - an upstream graph's error cannot mask a downstream one.
+
+Flags the first op whose error exceeds `atol` *and* is more than `amplify` times
+the error on its inputs.
+
+Takes a loaded `Graph` as well as a path, so a *prefix* of a graph can be
+checked on its own. Whisper's encoder is 32 identical blocks; running two of
+them covers every op type it uses for a sixteenth of the arithmetic, which is
+the difference between a CPU-backend check that finishes and one that does not.
+"""
+function verifygraph(g::Graph, refs::AbstractDict, weights::AbstractDict;
+                     dims, backend=nothing, device=nothing,
+                     atol=1e-4, rtol=1e-3, rtol16=3e-2, amplify=4.0, verbose=true)
+    backend !== nothing && device !== nothing &&
+        throw(ArgumentError("pass either `device` or `backend`, not both"))
+    dev = M.todevice(device === nothing ? (backend === nothing ? M.Device() : backend) : device)
+    inputs = Dict{String,Any}()
+    for (i, name) in enumerate(g.inputs)
+        k = "$(g.name)/in$(i-1)"
+        haskey(refs, k) || error("no reference input $k")
+        # Host, not uploaded: an input is an owned buffer the declared graph
+        # holds and `declaredvalues` writes it with `copyto!`, so uploading here
+        # would only be downloaded again.
+        inputs[name] = refs[k]
+    end
+
+    # THE DECLARED PATH, which is the only path there is.
+    #
+    # `declaredvalues`, so the tool verifies what `Model` actually submits and
+    # not a second path with its own allocation.
+    values = declaredvalues(g, inputs, weights; dims, device = dev)
+
+    # A flipped predicate changes the graph's behaviour discontinuously, so
+    # everything after it diverges for a reason that is not a bug. Pin the tie
+    # points to the reference and re-run, so the layers downstream are still
+    # checked strictly rather than drowned by the consequence.
+    pinned, flips = Dict{String,Any}(), Dict{String,Int}()
+    for op in g.ops
+        k = "$(g.name)/node/$(op.out)"
+        got = get(values, op.out, nothing)
+        (got === nothing || got isa Tuple || !haskey(refs, k)) && continue
+        eltype(got) === Bool || continue
+        size(got) == size(refs[k]) || continue
+        n = count(tohost(got) .!= refs[k])
+        n > 0 && (pinned[op.out] = refs[k]; flips[op.out] = n)
+    end
+    isempty(pinned) || (values = declaredvalues(g, inputs, weights;
+                                                dims, device = dev, overrides = pinned))
+
+    err = Dict{String,Float64}()          # per-buffer error carried so far
+    # fp16 precision is transitive: once a value has passed through an fp16
+    # buffer it only carries fp16 accuracy, whatever dtype it is stored in
+    # afterwards. aggregate() (tensor_utils.py) divides p by 1-p with p clamped
+    # to 1-1e-7, which amplifies that inherited error by orders of magnitude in
+    # a buffer torch keeps in fp32.
+    half = Dict{String,Bool}()
+    for id in g.inputs
+        err[id] = 0.0
+        half[id] = eltype(inputs[id]) === Float16
+    end
+
+    # Constant-folded weights carry errors the op loop below cannot see: the
+    # fold happened at build time, so the buffer has no op and is never
+    # checked — but the reference dump may still name it, and ops downstream
+    # then inherit its error with no attribution (SAM 2's `clone_1`: torch
+    # folded it in fp16, we fold in fp32, and `add_8` two views later was
+    # flagged for the 0.0188 that entered here). Check the ones the refs name,
+    # record rather than flag — the dtype-aware gate in the op loop treats the
+    # inherited error as fp16-tainted, which is what it is.
+    for (id, b) in g.buffers
+        (b.kind === :weight && !isempty(b.key)) || continue
+        k = "$(g.name)/node/$id"
+        haskey(refs, k) || continue
+        w = get(weights, b.key, nothing)
+        w === nothing && continue
+        # `M.storage` because a resident weight is a `Mantle.Buffer`, which
+        # `tohost` passes through untouched: SAM 2's gate errored here, in
+        # `maxerr`'s `zip`, on the first folded weight its refs name.
+        got, want = tohost(M.storage(w)), refs[k]
+        (size(got) == size(want) && eltype(got) !== Bool && eltype(want) !== Bool) || continue
+        err[id] = maxerr(got, want)
+        half[id] = eltype(want) === Float16 || b.dtype === Float16
+    end
+
+    # Reffed VIEW buffers have the same invisibility: in a rewritten graph a
+    # view is buffer metadata, not an op, so the loop below never compares it —
+    # and a wrong selection (SAM 2's `select_9` picking a mask token) only
+    # surfaces ops later, as a GEMM "creating" rel-1.0 error. Resolve each
+    # reffed view through the same machinery execution uses and record its
+    # error, so attribution starts at the view instead of its consumer.
+    # Declared, a view is a resource like any other and `declaredvalues` has
+    # already downloaded it, so this is a lookup and not a rebuild of a Julia
+    # wrapper. A view a rewrite pass orphaned is simply absent from `res`,
+    # because nothing
+    # asked for it.
+    for (id, b) in g.buffers
+        b.kind === :view || continue
+        k = "$(g.name)/node/$id"
+        (haskey(refs, k) && haskey(values, id)) || continue
+        got, want = values[id], refs[k]
+        (size(got) == size(want) && eltype(got) !== Bool && eltype(want) !== Bool) || continue
+        err[id] = maxerr(got, want)
+        half[id] = eltype(want) === Float16 || b.dtype === Float16
+    end
+    diffs = LayerDiff[]
+    ties = Tuple{String,Int,Int}[]
+    worst, worstid, checked = 0.0, "", 0
+    producer = Dict(op.out => op for op in g.ops)
+
+    # A view inherits its parent's error; a weight has none. An op the reference
+    # dump does not cover carries its inputs' error FORWARD — an unchecked node
+    # is not a fresh zero. Without that walk, an error that legitimately entered
+    # through a checked-and-passed fp16 node (SAM 2's `view_9`, held to rtol16)
+    # reappears at the first unchecked op downstream as if created there, and
+    # the growth gate flags an op that only reported what it was handed.
+    # Memoised into `err`: the graph is a DAG, so the naive walk is exponential.
+    function inerr(id)
+        haskey(err, id) && return err[id]
+        b = get(g.buffers, id, nothing)
+        b === nothing && return 0.0
+        b.kind === :view && !isempty(b.of) && return inerr(b.of)
+        op = get(producer, id, nothing)
+        op === nothing && return 0.0
+        e = maximum((inerr(x) for x in op.ins); init = 0.0)
+        err[id] = e
+        e
+    end
+
+    function inhalf(id)
+        haskey(half, id) && return half[id]
+        b = get(g.buffers, id, nothing)
+        b === nothing && return false
+        b.dtype === Float16 && return true
+        b.kind === :view && !isempty(b.of) && return inhalf(b.of)
+        false
+    end
+
+    # Where each view chain ends, for the folded-activation repointing below.
+    viewroot = Dict{String,String}()
+    for (id, b) in g.buffers
+        b.kind === :view || continue
+        rid = b.of
+        while haskey(g.buffers, rid) && g.buffers[rid].kind === :view &&
+              !isempty(g.buffers[rid].of)
+            rid = g.buffers[rid].of
+        end
+        viewroot[id] = rid
+    end
+
+    for (i, op) in enumerate(g.ops)
+        k = "$(g.name)/node/$(op.out)"
+        got = get(values, op.out, nothing)
+        got === nothing && continue
+        got isa Tuple && (got = got[1]; k = "$(g.name)/node/$(op.out).0")
+        # An op carrying a folded activation stores POST-activation values while
+        # the dump's `node/<op.out>` is pre-activation — comparing those flags a
+        # relu as "the GEMM zeroed half the vector" (SAM 2's `addmm_32`). The
+        # folded-away relu/gelu survives as an alias view with its own ref;
+        # compare against that.
+        if haskey(op.attrs, "act") || haskey(op.attrs, "epilogue")
+            for (id2, b2) in g.buffers
+                # Only `alias.default` views: the folds create exactly one, for
+                # the folded-away op's output. A plain reshape view of the same
+                # root holds PRE-activation values and its ref must not be used.
+                (b2.kind === :view && b2.viewop == "alias.default" &&
+                 get(viewroot, id2, "") == op.out) || continue
+                k2 = "$(g.name)/node/$id2"
+                haskey(refs, k2) || continue
+                k = k2
+                break
+            end
+        end
+        haskey(refs, k) || continue
+        got = tohost(got)
+        want = refs[k]
+        flow = maximum(Float64[inerr(x) for x in op.ins]; init=0.0)
+
+        if size(got) != size(want)
+            push!(diffs, LayerDiff(i, op.id, op.aten, Inf, Inf, flow, size(got)))
+            verbose && println("  [$i/$(length(g.ops))] SHAPE $(op.id) ($(op.aten)): " *
+                               "$(size(got)) vs reference $(size(want))")
+            break
+        end
+
+        # A boolean output is a discontinuous function of its inputs, so an
+        # fp32-epsilon difference upstream flips it outright rather than
+        # perturbing it. object_transformer.py:193 compares logits against
+        # their own max, which is an exact tie whenever the winning channel is
+        # the one being tested - any reimplementation, or a different cuDNN
+        # version, can break that tie the other way. Report it and keep going;
+        # a systematically wrong predicate shows up as a large fraction.
+        if eltype(got) === Bool || eltype(want) === Bool
+            if haskey(flips, op.out)
+                n = flips[op.out]
+                push!(ties, (op.id, n, length(got)))
+                verbose && println("  [$i/$(length(g.ops))] TIE $(op.id) ($(op.aten)): " *
+                                   "$n/$(length(got)) elements differ " *
+                                   "($(round(100n / length(got), sigdigits=2))%), " *
+                                   "pinned to reference to isolate downstream layers")
+            end
+            err[op.out] = 0.0
+            half[op.out] = any(inhalf, op.ins)
+            continue
+        end
+
+        d = maxerr(got, want)
+        err[op.out] = d
+        checked += 1
+        scale = maximum(abs.(Float64.(want)); init=0.0)
+        rel = scale > 0 ? d / scale : d
+        d > worst && ((worst, worstid) = (d, op.id))
+
+        # Two conditions, because either alone gives false positives.
+        #
+        # Relative gate: the error must exceed the dtype's own precision,
+        # otherwise it is just rounding. Per-dtype, and taken over the inputs as
+        # well as the output - fp16 has eps 9.8e-4, and an fp16 value feeding an
+        # op whose result is fp32 still only carries fp16 precision.
+        #
+        # Growth: the error must have actually appeared *here*. A reduction over
+        # n terms legitimately scales its inputs' absolute error by ~Σ|w|, and an
+        # elementwise op simply carries it forward, so an op that reports exactly
+        # what it was handed has not done anything wrong. A genuine bug creates
+        # error from inputs that were fine.
+        tainted = eltype(want) === Float16 || any(inhalf, op.ins)
+        half[op.out] = tainted
+        gate = tainted ? rtol16 : rtol
+        if d > atol && rel > gate && d > amplify * max(flow, eps(Float32))
+            push!(diffs, LayerDiff(i, op.id, op.aten, d, rel, flow, size(got)))
+            verbose && println("  [$i/$(length(g.ops))] FIRST MISMATCH $(op.id) ($(op.aten)): " *
+                               "max|Δ| = $(round(d, sigdigits=4)) (rel $(round(rel, sigdigits=3))) " *
+                               "from inputs carrying $(round(flow, sigdigits=3)), shape $(size(got))")
+            break
+        end
+    end
+
+    if isempty(diffs) && verbose
+        println("  $(g.name): $checked/$(length(g.ops)) ops within tolerance " *
+                "(worst accumulated max|Δ| = $(round(worst, sigdigits=4)) at $worstid)" *
+                (isempty(ties) ? "" : ", $(length(ties)) tie-sensitive predicate(s)"))
+    end
+    (isempty(diffs), diffs, ties)
+end
+
+"""
+    coverage(graphpath) -> (implemented, missing)
+
+Which ATen ops in a graph this library can DECLARE, without emitting anything.
+
+Declare, not run. This asked `runop!` — the eager library — while every caller
+had long since moved to the declared path, so it was answering about the half
+being deleted. A graph is runnable when `emitgraph` can place every one of its
+ops into a Mantle graph, and that is `emitop!` plus the [`NOISEOPS`](@ref
+NOISEOPS) `emitgraph` declares itself.
+"""
+function coverage(g::Graph)
+    impl, miss = String[], String[]
+    for op in unique(o.aten for o in g.ops)
+        if op in NOISEOPS
+            push!(impl, op)
+            continue
+        end
+        # the catch-all `::Val{A} where A` matches everything, so hasmethod is
+        # useless here; the dispatched-on parameter is concrete only for a real
+        # implementation
+        sig = Base.unwrap_unionall(which(emitop!, Tuple{EmitCtx,Op,Val{Symbol(op)}}).sig)
+        isconcretetype(sig.parameters[4]) ? push!(impl, op) : push!(miss, op)
+    end
+    (sort(impl), sort(miss))
+end
+
+# Path forms, kept because `tools/` scripts hold paths to trees they generated
+# themselves. Library and test callers take the `Graph` methods above.
+coverage(graphpath::AbstractString) = coverage(loadgraph(graphpath))
+
+verifygraph(graphpath::AbstractString, refs::AbstractDict, weights::AbstractDict; kw...) =
+    verifygraph(loadgraph(graphpath), refs, weights; kw...)

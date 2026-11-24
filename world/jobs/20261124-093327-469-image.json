@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-24T09:33:27.469",
+  "finished": "2026-11-24T09:50:13.758",
+  "id": "20261124-093327-469-image",
+  "kind": "image",
+  "params": {
+    "prompt": "a small plump magenta radish creature with wild leafy hair, stubby arms holding a tiny trowel, big grin, cute chunky toy-like 3D game character, soft clay look, bold simple shapes, big expressive eyes, full body, front three-quarter view, standing on the ground"
+  },
+  "result": {
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-093327-469-image/image.png",
+    "seed": 44
+  },
+  "seconds": 456.9,
+  "started": "2026-11-24T09:42:36.841",
+  "status": "done"
+}

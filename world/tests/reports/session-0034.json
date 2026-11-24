@@ -1,0 +1,8 @@
+{"session":34,
+ "summary":"Reviewed the host suite result (58/59) and the failing follow-camera screenshot. I did not run new interactive exploration this session, so no new tests were added.",
+ "failures":[{"what":"Follow camera test 'shows its creature big (>=15%)' fails: Sprout fills only 10.0% of the view height. The screenshot shows a different creature (a crab in a party hat) filling about 35% of the view, so the camera follows a moment subject while the test measures Sprout from interesting_subject. Either the test measures the wrong creature, or the camera is not framing the creature the game picked.",
+ "steps":"Run the full suite at about 19:13 game time, rig.mode=:follow, rig.subject==0, then the test in tests/separation.jl line 22.",
+ "expected":"The test measures the creature the camera actually frames (or the camera frames Sprout at >=15%).",
+ "actual":"Check fails: 'Sprout fills only 10.0% of the view height' while a crab is large in frame.",
+ "screenshot":"world/tests/shots/follow_big.png"}],
+ "tests_added":[]}

@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "Good player-visible gains (moon, ball play with pass counter, browser sky, rallies). But the tester's full suite run has 2 failures and the rally test is a night no-op, so stability claims (#96, #103) are not met in the host suite.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "#96 is marked done but the 'wave next to a sleeper' test still fails in the host suite run (Gloop asleep, Sir Sniffsalot eating/busy, nobody answered). The new +100/+50 scoring does not help when the only awake creature is busy, so the player still sees no answer to a wave.",
+   "where": "plugins/greetings.jl wave!, tests/minigames.jl",
+   "evidence": "tests/reports/session-0026.json failure 1; journal: failed 2 of 7 runs",
+   "suggestion": "Let a busy (eating) creature answer when no free one exists, or make the test choose a free awake critter; rerun until 5 in a row."
+  },
+  {
+   "severity": "medium",
+   "what": "#103 (stable ball tests) is claimed done, but the rally test passes in 0.1 s at night because rallies are intentionally skipped, and day-time stability was not rerun (3/5 before the later fixes). Rallies are therefore effectively untested in the suite. Also Firefly catch timed out after 120 s in the full run, possibly a leftover from the new ball and rally goals.",
+   "where": "tests/minigames.jl rally test; plugins/ballplay.jl RALLIES=true",
+   "evidence": "tests/last_run.json (0.1 s pass); tester report failures 2 and 3",
+   "suggestion": "Make the rally test force daytime (or set the time) so it truly checks 4+ passes; check that ball and rally goals do not leak into Firefly catch."
+  },
+  {
+   "severity": "low",
+   "what": "#97 was closed with no change; the proof is a single screenshot at 23:50 under the moon and the 02:00 darkness from review s25 was not rechecked. #100's camera moment was dropped, which differs from its done_when.",
+   "where": "todos #97, #100",
+   "evidence": "media/s26-trees-night-before.png",
+   "suggestion": "Check a late-night (02:00) overview again and note the dropped camera moment honestly in the todo."
+  }
+ ],
+ "addressed": true,
+ "response": "Session 27. (1) The wave: the real cause was not the scoring. When the player jumped in while Sprout was in a chat, the chat kept setting Sprout's action to :talk every frame, so E (:wave) never reached greetings (the failure says 'Sprout idle, last talk'). JumpIn start! now calls leave_interactions! (engine play.jl): Sprout leaves the chat, the partner goes back to its life. With a chat forced before each run, both wave tests passed 6 of 6. (2) Rallies: the rally test now plays a rally at night too (start_rally!(...; night_ok = true), while still checking that no rally starts by itself at night), so it really tests passes. Day runs showed two real bugs: big critters (body radius 0.8) were held 1.2 m off the ball by Separation and never caught it (reach now grows with the critter's size), and two critters side by side ping-ponged 3 passes in a second (the receiver now waits 0.8 s after a pass; the test checks passes are not too fast to see). 5 of 5 passes after the fix. A full suite run: 42 of 43 (Firefly catch and Dance circle passed); the one failure, Ball play, passed 4 of 4 alone: it now also checks that Sprout walked on W and compares kick times with the time before the kick, so the next failure says why. (3) #97/#100: not rechecked this session (no 02:00 night in the session window); noted honestly here."
+}

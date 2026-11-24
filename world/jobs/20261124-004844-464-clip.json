@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-24T00:48:44.464",
+  "finished": "2026-11-24T00:54:20.998",
+  "id": "20261124-004844-464-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "tag",
+      "samples": 96,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/tag-traced.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/tag-traced.png",
+    "post": "tag"
+  },
+  "seconds": 76.8,
+  "started": "2026-11-24T00:53:04.217",
+  "status": "done"
+}

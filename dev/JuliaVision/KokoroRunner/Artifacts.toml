@@ -1,0 +1,15 @@
+[kokoro]
+git-tree-sha1 = "e72003e9926bfa5f1b1061c7f32803918d8090a8"
+lazy = true
+
+    [[kokoro.download]]
+    sha256 = "fe2333483e6405b74aabaa8ae8d2767b8b630acfb6dbd9e57be9ba8e0ff3848e"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/kokoro.tar.gz"
+
+[kokoro-refs]
+git-tree-sha1 = "fe412eddc54a4c28a29bf7bf9fdb11821db24fdc"
+lazy = true
+
+    [[kokoro-refs.download]]
+    sha256 = "9861fef6c7132c1e31083ccdcfe3603916f2d7533de40846889ca50da69b8c5d"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/kokoro-refs.tar.gz"

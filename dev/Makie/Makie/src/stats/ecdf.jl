@@ -1,0 +1,67 @@
+function ecdf_xvalues(ecdf::StatsBase.ECDF, npoints)
+    x = ecdf.sorted_values
+    n = length(x)
+    npoints ≥ n && return float(unique(x))
+    return @inbounds range(x[1], x[n]; length = npoints)
+end
+
+used_attributes(::Type{<:Plot}, ::StatsBase.ECDF) = (:npoints,)
+function convert_arguments(P::Type{<:Plot}, ecdf::StatsBase.ECDF; npoints = 10_000)
+    ptype = plottype(P, Stairs)
+    x0 = ecdf_xvalues(ecdf, npoints)
+    if ptype <: Stairs
+        kwargs = (; step = :post)
+        x1 = x0[1]
+        x = [x1 - eps(x1); x0]
+    else
+        kwargs = NamedTuple()
+        x = x0
+    end
+    return to_plotspec(ptype, convert_arguments(ptype, x, ecdf(x)); kwargs...)
+end
+
+function convert_arguments(P::Type{<:Plot}, x::RealVector, ecdf::StatsBase.ECDF)
+    ptype = plottype(P, Stairs)
+    kwargs = ptype <: Stairs ? (; step = :post) : NamedTuple()
+    return to_plotspec(ptype, convert_arguments(ptype, x, ecdf(x)); kwargs...)
+end
+
+function convert_arguments(P::Type{<:Plot}, x0::AbstractInterval{<:Real}, ecdf::StatsBase.ECDF)
+    xmin, xmax = extrema(x0)
+    z = ecdf_xvalues(ecdf, Inf)
+    n = length(z)
+    imin, imax = findfirst(>(xmin), z), findlast(<(xmax), z)
+    idx_min = imin === nothing ? n + 1 : imin
+    idx_max = imax === nothing ? -1 : imax
+    x = [xmin - eps(oftype(z[1], xmin)); xmin; view(z, idx_min:idx_max); xmax]
+    return convert_arguments(P, x, ecdf)
+end
+
+"""
+Plot the empirical cumulative distribution function (ECDF) of data values.
+
+## Arguments
+
+* `values::AbstractVector{<:Real}` is the data for which to compute and plot the ECDF.
+"""
+@recipe ECDFPlot begin
+    documented_attributes(Stairs)...
+    "Controls the resolution of the plot by setting the number of points used to draw the ECDF."
+    npoints = 10_000
+    "Optional statistical weights for the values. If provided, a weighted ECDF is plotted."
+    weights = StatsBase.Weights(Float64[])
+end
+
+argument_dims(::Type{<:ECDFPlot}, x) = (1,)
+
+used_attributes(::Type{<:ECDFPlot}, ::AbstractVector) = (:npoints, :weights)
+
+function Makie.convert_arguments(
+        ::Type{<:ECDFPlot},
+        x::RealVector;
+        npoints = 10_000,
+        weights = StatsBase.Weights(Float64[]),
+    )
+    ecdf = StatsBase.ecdf(x; weights = weights)
+    return convert_arguments(Stairs, ecdf; npoints = npoints)
+end

@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-22T22:18:03.724",
+  "finished": "2026-11-22T22:32:43.271",
+  "id": "20261122-221803-724-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 15000,
+    "prompt": "a round green leafy bush with small pink flowers, chunky rounded shapes, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T22:32:43.271",
+    "faces": 14878,
+    "id": "20261122-221803-724-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-221803-724-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-221803-724-asset/mesh.jls",
+    "prompt": "a round green leafy bush with small pink flowers, chunky rounded shapes, soft hand-painted colors",
+    "seconds": 445.0,
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "seconds": 444.6,
+  "started": "2026-11-22T22:25:18.705",
+  "status": "done"
+}

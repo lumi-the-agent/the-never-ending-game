@@ -1,0 +1,58 @@
+name: Load
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches:
+      - main
+    tags: '*'
+
+permissions:
+  contents: read
+
+  # needed for julia-actions/cache to delete old caches
+  actions: write
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} (load)
+    runs-on: ${{ matrix.os }}
+    if: github.event.pull_request.draft == false
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - '1'
+        os:
+          - 'ubuntu-latest'
+          - 'macOS-15-intel'
+          - 'macOS-26-intel'
+          - 'windows-latest'
+
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: 'default'
+
+      # this only checks that Metal.jl loads, so skip the dependencies' precompilation
+      # workloads, which account for about a third of a cold precompile
+      - name: Disable precompilation workloads
+        shell: bash
+        run: |
+          cat > LocalPreferences.toml <<EOF
+          [PrecompileTools]
+          precompile_workloads = false
+          EOF
+
+      - uses: julia-actions/cache@v3
+      - uses: julia-actions/julia-buildpkg@v1
+
+      - name: Test that Metal loads but is not functional
+        shell: julia --color=yes --project=. {0}
+        run: |
+          using Metal
+          @assert Metal.functional() == false "Metal.functional() should report false on unsupported platforms"

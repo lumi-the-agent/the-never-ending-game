@@ -1,0 +1,199 @@
+# Materialize iterators once so validation does not consume the dimensions used by the loop.
+function check_reverse_dims(A, dims)
+    dims isa Colon && return dims
+    applicable(iterate, dims) ||
+        throw(ArgumentError("dims must be an integer, an iterable of integers, or `:`, got $dims"))
+    dims = Tuple(dims)
+    for d in dims
+        d isa Integer ||
+            throw(ArgumentError("dims must be integers, got $dims"))
+        1 <= d <= ndims(A) ||
+            throw(ArgumentError("dimension $d is out of range 1:$(ndims(A))"))
+    end
+    allunique(dims) || throw(ArgumentError("dims $dims contains duplicates"))
+    return dims
+end
+
+
+# Split along the last non-singleton reversed dimension. For odd extents, the middle
+# slice mirrors onto itself; the index ordering guard swaps each pair in it only once.
+function reverse_dims!(
+    v::AbstractArray{T, N}, dims, backend;
+    kwargs...
+) where {T, N}
+    rev_dims = ntuple(d -> (d in dims) && size(v, d) > 1, N)
+    half_dim = findlast(rev_dims)
+    isnothing(half_dim) && return v
+
+    ref = size(v) .+ 1
+    lin_idx = LinearIndices(v)
+    reduced_size = ntuple(d -> ifelse(d == half_dim, cld(size(v, d), 2), size(v, d)), N)
+    nd_idx = CartesianIndices(reduced_size)
+
+    foreachindex_on(1:Base.prod(reduced_size), backend; kwargs...) do i
+        idx = Tuple(nd_idx[i])
+        index_in = lin_idx[idx...]
+        idx_mirror = ifelse.(rev_dims, ref .- idx, idx)
+        index_out = lin_idx[idx_mirror...]
+        @inbounds if index_in < index_out
+            temp = v[index_out]
+            v[index_out] = v[index_in]
+            v[index_in] = temp
+        end
+    end
+
+    v
+end
+
+
+function reverse_dims!(
+    dst::AbstractArray, src::AbstractArray{T, N}, dims, backend;
+    kwargs...
+) where {T, N}
+    rev_dims = ntuple(d -> (d in dims) && size(src, d) > 1, N)
+    ref = size(src) .+ 1
+    lin_idx = LinearIndices(src)
+    nd_idx = CartesianIndices(src)
+
+    foreachindex_on(eachindex(src), backend; kwargs...) do i
+        idx = Tuple(nd_idx[i])
+        idx_mirror = ifelse.(rev_dims, ref .- idx, idx)
+        index_out = lin_idx[idx_mirror...]
+        @inbounds dst[index_out] = src[i]
+    end
+
+    dst
+end
+
+
+"""
+    reverse!(
+        v::AbstractArray;
+        backend=nothing,
+        dims=:,
+        block_size::Int=256,
+        max_tasks::Int=Threads.nthreads(),
+        min_elems::Int=1,
+    ) -> v
+
+Reverse `v` in-place and return it. With `dims=:` (the default) the whole array is reversed; pass
+`dims=d` (an integer or an iterable of distinct integers in `1:ndims(v)`) to reverse only along
+those dimensions. `dims=()` leaves `v` unchanged. `backend` is derived from `v`; the other
+keywords are those of [`foreachindex`](@ref).
+
+No temporary array is allocated.
+
+To reverse a contiguous sub-range of a vector, reverse a view: `AK.reverse!(@view v[lo:hi])`.
+
+# Examples
+```julia
+import CUDA
+import AcceleratedKernels as AK
+
+v = CUDA.CuArray(1:100_000)
+AK.reverse!(v)
+
+m = CUDA.CuArray(reshape(1:12, 3, 4))
+AK.reverse!(m; dims=2)          # reverse the columns
+```
+"""
+function reverse!(
+    v::AbstractArray;
+    backend::Union{Nothing, Backend}=nothing,
+    dims=:,
+    block_size::Int=256,
+    max_tasks::Int=Threads.nthreads(),
+    min_elems::Int=1,
+)
+    backend = resolve_backend(backend, v)
+    launch = (; block_size, max_tasks, min_elems)
+    check_launch(; launch...)      # before the early returns
+    dims = check_reverse_dims(v, dims)
+    if !(dims isa Colon)
+        reverse_dims!(one_based(v), dims, backend; launch...)
+        return v
+    end
+
+    len = length(v)
+    len <= 1 && return v
+
+    lo = firstindex(v)
+    hi = lastindex(v)
+
+    # Swap each pair once; an odd-length array keeps its middle element.
+    foreachindex_on(1:(len ÷ 2), backend; launch...) do i
+        left = lo + i - 1
+        right = hi - i + 1
+        @inbounds begin
+            temp = v[left]
+            v[left] = v[right]
+            v[right] = temp
+        end
+    end
+
+    v
+end
+
+
+"""
+    reverse!(
+        dst::AbstractArray, src::AbstractArray;
+        backend=nothing,
+        dims=:,
+        block_size::Int=256,
+        max_tasks::Int=Threads.nthreads(),
+        min_elems::Int=1,
+    ) -> dst
+
+Write the reverse of `src` into `dst` and return `dst`; `src` is left unchanged. `dst` must not
+overlap `src` (an `ArgumentError`). With `dims=:` (the default), the whole array is reversed and
+only the lengths must match; with an integer or iterable of distinct dimensions, the sizes must
+match (else a `DimensionMismatch`). `dims=()` copies `src` unchanged. Elements are converted to the destination element type on assignment.
+`backend` is derived from `dst` and `src`; the other keywords are those of
+[`foreachindex`](@ref).
+"""
+function reverse!(
+    dst::AbstractArray, src::AbstractArray;
+    backend::Union{Nothing, Backend}=nothing,
+    dims=:,
+    block_size::Int=256,
+    max_tasks::Int=Threads.nthreads(),
+    min_elems::Int=1,
+)
+    backend = resolve_backend(backend, dst, src)
+    launch = (; block_size, max_tasks, min_elems)
+    check_launch(; launch...)      # before the early returns
+    dims = check_reverse_dims(src, dims)
+    check_dst(dst, src, "reverse!"; shape=dims isa Colon ? length : size, in_place=false)
+    length(src) == 0 && return dst
+    if !(dims isa Colon)
+        reverse_dims!(one_based(dst), one_based(src), dims, backend; launch...)
+        return dst
+    end
+
+    len = length(src)
+    lo_src = firstindex(src)
+    lo_dst = firstindex(dst)
+
+    # (linear indices, also for sources whose `eachindex` is Cartesian)
+    foreachindex_on(1:len, backend; launch...) do i
+        @inbounds dst[lo_dst + (len - i)] = src[lo_src + (i - 1)]
+    end
+
+    dst
+end
+
+
+"""
+    reverse(v::AbstractArray; kwargs...)
+
+Return a reversed copy of `v`, leaving `v` unchanged. With `dims=:` (the default) the whole array is
+reversed; pass `dims=d` to reverse only along those dimensions, matching `Base.reverse`. The
+keywords are those of [`reverse!`](@ref).
+
+Prefer [`reverse!`](@ref) when you do not need to keep `v`; it avoids the allocation.
+"""
+function reverse(v::AbstractArray; backend::Union{Nothing, Backend}=nothing, kwargs...)
+    backend = resolve_backend(backend, v)
+    return reverse!(similar_on(backend, v), v; backend, kwargs...)
+end

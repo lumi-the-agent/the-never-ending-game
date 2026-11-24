@@ -1,0 +1,43 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the cairn did not appear after the build",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 42.2
+    },
+    {
+      "error": "check failed: the chase camera drifted 2.3705976 m behind a Sprout standing still",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Sprout, free turns with the mouse",
+      "passed": false,
+      "seconds": 5.2
+    },
+    {
+      "error": "check failed: only [\"Sir Sniffsalot\", \"Truffle\"] came to the puddle party; roles Tuple{String, Symbol, Symbol, Float32}[(\"Sir Sniffsalot\", :party, :rain, 1.5), (\"Truffle\", :party, :rain, 1.3)]",
+      "file": "minigames.jl",
+      "name": "Rain shower: each critter takes it its own way; Sprout splashing in the open brings them all to a puddle party",
+      "passed": false,
+      "seconds": 24.3
+    },
+    {
+      "error": "check failed: Pinchy lifts its hat without waving",
+      "file": "outfits.jl",
+      "name": "Outfits: every critter wears its own hat, scarf, bow or crown, on its head as it moves",
+      "passed": false,
+      "seconds": 2.3
+    },
+    {
+      "error": "check failed: Pickles fills only 9.1% of the view height",
+      "file": "separation.jl",
+      "name": "The follow camera shows its creature big: at least 15% of the view height",
+      "passed": false,
+      "seconds": 3.6
+    }
+  ],
+  "passed": 95,
+  "session": 49,
+  "time": "2026-11-23T23:15:01",
+  "total": 100
+}

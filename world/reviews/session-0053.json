@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "The meadow work is real and costs nothing in frame time: my screenshots of the sandbox show stones, toadstools, daisies and logs, and the median frame time is 1.9 ms. The sunset todo is still only partly done, the evening scene is very dark at 18:24, and the bench panel still says 'watches the sunset' at 11:00.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "At 18:24 my live screenshot shows the whole scene as almost black-green: the ground is dark and only two or three fireflies are lit. The sun is supposedly still above the horizon until about 19.9, so this looks like night and not like a warm sunset. The author only checked the cloud and star colours, not how the scene looks overall. Todo #272 is also marked done although the traced sunset still and the 'My sunset bench' post are not finished.",
+   "where": "evening lighting (clouds.jl, stars.jl, sunset.jl); todo #272",
+   "evidence": "world/reviews/s53-dusk.png (18:24, dark scene, follow camera close on Sir Sniffsalot); the author's own result says 'NOT done' for the traced still.",
+   "suggestion": "Check the whole-island look at 18:20 to 19:30 from the usual cameras, not only the sky. Reopen #272 until the traced still with a bright sea is in the post."
+  },
+  {
+   "severity": "medium",
+   "what": "At 11:02 the 'On the island now' panel says 'Cumulus watches the sunset from the bench' (the tester saw the same). My screenshot shows Cumulus on the bench in the rain at midday. Also, the berry race is not reliably won on a first play (tester report), and this session changed the rivals to go for other bushes early, which may have made it harder.",
+   "where": "plugins/lookout.jl and islandnow.jl wording; plugins/berry_race.jl",
+   "evidence": "world/reviews/s53-now.png; world/tests/reports/session-0053.json",
+   "suggestion": "Say 'sits on the bench' unless it is evening. Run several first-play berry races and give level 1 rivals a smaller head start."
+  },
+  {
+   "severity": "low",
+   "what": "The meadow clusters are visible and read well in the author's shot, but the first-time player's 'Messages to you' panel still shows the old haze/pink-clump text (all five lines used), and the jump-in chase camera still fails its test when run alone (9.5 m back).",
+   "where": "Messages panel; jump-in camera",
+   "evidence": "world/reviews/s53-now.png; tester report",
+   "suggestion": "Replace the message with one about the new meadow things. Fix the chase distance."
+  }
+ ],
+ "addressed": true,
+ "addressed_note": "s54: evening light now follows the sunset (engine light_phase, todo #288, media/s54/dusk-before.png vs dusk-after.png); bench sitters leave outside the evening (tests/s54_evening.jl); chase camera's farthest view is 7.7 m (was 9.5); new player message replaces the haze text. Not yet: the first-play berry race balance (6-8 losses in 1 of 4 runs) stays open for next session."
+}

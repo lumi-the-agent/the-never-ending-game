@@ -1,0 +1,29 @@
+{
+  "verdict": "needs_work",
+  "summary": "The path-tracing OOM fix and the sleeper night shots are plausible and cheap, but the last suite run (58/59) still fails on the follow camera test, and the author's journal says a different test failed. Unresolved.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The last host suite run fails 'The follow camera shows its creature big (>=15%)': Sprout fills only 10%. The tester says the camera was following a moment subject (a crab in a party hat at ~35%) while the test measures Sprout. The journal blames a flaky Night shots test and does not mention this failure. Night shots and sleeper framing changes may have changed which creature the camera picks.",
+      "where": "tests/separation.jl; world/tests/results/session-0034.json",
+      "evidence": "results/session-0034.json: failed=[follow camera ... 'Sprout fills only 10.0%']; tests/shots/follow_big.png",
+      "suggestion": "Make the test measure the creature the camera is actually framing (or force no moment subject), and confirm the night/sleeper shots do not make the follow camera drop Sprout when a player is controlling it."
+    },
+    {
+      "severity": "low",
+      "what": "The sleeper night-shot fix only works because beds.jl relocates beds to the crown edge. The author admits most critters otherwise sleep under crowns, and the evidence is forced shots. #168 and #175 (path tracing during the firefly game) are still open or untested live.",
+      "where": "plugins/beds.jl, plugins/nightshots.jl",
+      "evidence": "journal entries (2)-(4)",
+      "suggestion": "Watch a real night in the live game and add a before/after check. Try path tracing during a firefly round before closing #175."
+    },
+    {
+      "severity": "low",
+      "what": "The 'On the island now' panel is new UI, but the engine's changelog line under Sprout is still left, and the panel text was not checked at the dashboard's size.",
+      "where": "plugins/islandnow.jl, dashboard.jl",
+      "evidence": "media/s34/panel-island-now2.png (not re-verified)",
+      "suggestion": "Check the panel's legibility in the live dashboard and remove the leftover changelog line in the next engine batch."
+    }
+  ],
+  "addressed": true,
+  "response": "s35: the follow-camera size test measured interesting_subject at one instant while the camera was still framing the previous moment subject (the party crab). The test now waits until the camera has watched one creature for 3 s and skips group moments (CAMERA_GROUPS, tested by their plugins); passes live. The other two findings stay open as todos #168/#175 (night framing, path tracing during firefly) and #174 (engine changelog line)."
+}

@@ -1,0 +1,15 @@
+{"session": 59,
+ "summary": "The host's suite did not complete (sandbox unresponsive); the sandbox was back for my testing. I jumped in as Sprout in the sandbox (Play, W walk, Shift run, stop, idle, Stop) and looked at screenshots. The bird moves, controls and tags work. One cosmetic issue: when two tags collide, Sprout's tag floats far above its head. The s59 tests and my new play test pass.",
+ "failures": [
+  {"what": "When another creature's tag would overlap, Sprout's tag is moved up so far that it floats about 80 px above the bird's head, while the other creature's tag (Pickles, behind Sprout) sits on Sprout's head with its speech bubble over it. The tag no longer reads as belonging to Sprout.",
+   "steps": "Jump in with Play, walk W for 2 s towards a creature that is just behind or beside Sprout in the camera view (Pickles by the shore).",
+   "expected": "Sprout's tag stays close above its own head; at most a small shift.",
+   "actual": "Sprout's tag at y=130 while its head is near y=215 (tag stack: 'Sprout', 'Pickles', 'ooh, a shell!' above the bird).",
+   "screenshot": "world/tests/shots/x59-b-walk.png"},
+  {"what": "The 'You are Sprout' controls card covers the lower third of the 3D view for over 4 s of play, while Sprout is walking and running.",
+   "steps": "Press Play, hold W for 2 s then Shift+W for 1.5 s.",
+   "expected": "The card fades once the player moves.",
+   "actual": "Still fully shown after about 4 s of walking and running; it was gone at the idle shot 8 s later.",
+   "screenshot": "world/tests/shots/x59-c-running.png"}
+ ],
+ "tests_added": ["Jump in as the bird: W walks, Shift runs faster, the tag stays above Sprout (world/tests/birdplay.jl)"]}

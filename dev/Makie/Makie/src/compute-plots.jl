@@ -1,0 +1,1615 @@
+using Base: RefValue
+using ComputePipeline: AbstractComputeGraph, ComputeGraphView
+
+# TODO: Should this be moved to ComputePipeline? Or do we want to keep
+# ShaderAbstractions out of it?
+function ComputePipeline.add_input!(
+        attr::ComputeGraph, key::Symbol,
+        value::ShaderAbstractions.UpdatableArray
+    )
+    x = ComputePipeline._add_input!(identity, attr, key, value)
+    # Let Sampler/Buffer updates get processed first, before notifying the
+    # compute graph, so that the resolved plot has the new data
+    on(_ -> update!(attr, key => value), ShaderAbstractions.updater(value).update, priority = -1)
+    return x
+end
+
+function ComputePipeline.add_input!(
+        conversion_func, attr::ComputeGraph,
+        key::Symbol, value::ShaderAbstractions.UpdatableArray
+    )
+    x = ComputePipeline._add_input!(conversion_func, attr, key, value)
+    on(_ -> update!(attr, key => value), ShaderAbstractions.updater(value).update, priority = -1)
+    return x
+end
+
+ComputePipeline.add_input!(f, p::Plot, args...; kwargs...) = add_input!(f, p.attributes, args...; kwargs...)
+ComputePipeline.add_input!(p::Plot, args...; kwargs...) = add_input!(p.attributes, args...; kwargs...)
+
+Base.haskey(x::Plot, key) = haskey(x.attributes, key)
+Base.get(f::Function, x::Plot, key::Symbol) = haskey(x.attributes, key) ? x.attributes[key] : f()
+Base.get(x::Plot, key::Symbol, default) = get(() -> default, x, key)
+
+Base.getindex(plot::Plot, key::Symbol) = getproperty(plot, key)
+Base.setindex!(plot::Plot, val, key::Symbol) = setproperty!(plot, key, val)
+function Base.setindex!(plot::Plot, val, key::Int)
+    sym = Symbol("arg", key)
+    return setindex!(plot, val, sym)
+end
+
+
+function data_limits(plot::Plot)::Rect3d
+    if haskey(plot, :data_limits)
+        return plot.data_limits[]
+    end
+    isempty(plot.plots) && return Rect3d()
+    bb_ref = Base.RefValue(data_limits(plot.plots[1]))
+    for i in 2:length(plot.plots)
+        update_boundingbox!(bb_ref, data_limits(plot.plots[i]))
+    end
+    return bb_ref[]
+end
+
+function ComputePipeline.update!(plot::Plot, dict)
+    ComputePipeline.update!(plot.attributes, dict)
+    return
+end
+function ComputePipeline.update!(plot::Plot; args...)
+    ComputePipeline.update!(plot.attributes; args...)
+    return
+end
+
+function ComputePipeline.update!(plot::Plot, args...; attr...)
+    kw = [Pair{Symbol, Any}(Symbol(:arg, i), arg) for (i, arg) in enumerate(args)]
+    for (a, v) in attr
+        push!(kw, Pair{Symbol, Any}(a, v))
+    end
+    ComputePipeline.update!(plot.attributes, kw)
+    return
+end
+
+function Base.getproperty(plot::Plot, key::Symbol)
+    if key in fieldnames(typeof(plot))
+        return getfield(plot, key)
+    end
+    return plot.attributes[key]
+end
+
+function Base.setproperty!(plot::Plot, key::Symbol, val::Observable)
+    error(
+        "Setting an Attribute ($key) to an Observable is no longer allowed.\n" *
+            "If you are using attributes as storage in a recipe, i.e. `plot[key] = map/lift(...)` " *
+            "either track the Observable as a variable `var = map/lift(...)` or consider using " *
+            "`register_computation!()` or the ComputePipelines `map!()` methods.\n" *
+            "If you are trying to create a new input to a ComputeGraph use `add_input!(graph, key, obs)` explicitly."
+    )
+end
+
+function Base.setproperty!(plot::Plot, key::Symbol, val)
+    if key in fieldnames(typeof(plot))
+        return Base.setfield!(plot, key, val)
+    end
+    attr = plot.attributes
+    if haskey(attr.inputs, key)
+        setproperty!(attr, key, val)
+    elseif ComputePipeline.has_nested_key(attr, key)
+        nested_update!(plot, key, val)
+    else
+        add_input!(attr, key, val)
+        # maybe best to not make assumptions about user attributes?
+        # CairoMakie rasterize needs this (or be treated with more care)
+        ComputePipeline.set_type!(attr[key], Any)
+    end
+    return plot
+end
+
+function nested_update!(plot::P, key::Symbol, val) where {P}
+    doc_attr = documented_attributes(P)
+    updates = Pair{Symbol, Any}[]
+    prepare_nested_update!(updates, doc_attr, doc_attr.nesting.keytables[1][key], val)
+    update!(plot.attributes, updates)
+    return
+end
+
+function prepare_nested_update!(updates, attr, layer, val)
+    @assert layer > 0 # Should be given since we check `has_nested_key` in setproperty
+    for (key, idx) in attr.nesting.keytables[layer]
+        haskey(val, key) || continue
+        if idx > 0
+            prepare_nested_update!(updates, attr, idx, to_value(val[key]))
+        else
+            push!(updates, attr.merged_keys[-idx] => to_value(val[key]))
+        end
+    end
+    return
+end
+
+# This is data_limits(), not boundingbox()
+# TODO: Should data_limits() be simplified to be purely based on converted arguments?
+function scatter_limits(positions, space::Symbol, markerspace::Symbol, scale, offset, rotation, marker_offset)
+    if space === markerspace
+        bb = Rect3d()
+        for (i, p) in enumerate(positions)
+            marker_pos = to_ndim(Point3d, p, 0) + sv_getindex(marker_offset, i)
+            quad_origin = to_ndim(Vec3d, sv_getindex(offset, i), 0)
+            quad_size = Vec2d(sv_getindex(scale, i))
+            quad_rotation = sv_getindex(rotation, i)
+
+            quad_origin = quad_rotation * quad_origin
+            quad_v1 = quad_rotation * Vec3d(quad_size[1], 0, 0)
+            quad_v2 = quad_rotation * Vec3d(0, quad_size[2], 0)
+
+            bb = update_boundingbox(bb, marker_pos + quad_origin)
+            bb = update_boundingbox(bb, marker_pos + quad_origin + quad_v1)
+            bb = update_boundingbox(bb, marker_pos + quad_origin + quad_v2)
+            bb = update_boundingbox(bb, marker_pos + quad_origin + quad_v1 + quad_v2)
+        end
+        return bb
+    else
+        return Rect3d(positions)
+    end
+end
+
+function meshscatter_data_limits(positions, marker_bb, scales, rotation)
+    # fast path for constant markersize
+    if scales isa VecTypes{3} && rotation isa Quaternion
+        bb = Rect3d(positions)
+        marker_bb = rotation * (marker_bb * scales)
+        return Rect3d(minimum(bb) + minimum(marker_bb), widths(bb) + widths(marker_bb))
+    else
+        # TODO: optimize const scale, var rot and var scale, const rot
+        return limits_with_marker_transforms(positions, scales, rotation, marker_bb)
+    end
+end
+
+function meshscatter_boundingbox(_positions, model, transform_marker, marker_bb, scales, rotation)
+    positions = _project(model, _positions)
+    # fast path for constant markersize
+    if scales isa VecTypes{3} && rotation isa Quaternion
+        bb = Rect3d(positions)
+        marker_bb = rotation * (marker_bb * scales)
+        if transform_marker
+            model = model[Vec(1, 2, 3), Vec(1, 2, 3)]
+            corners = [model * p for p in coordinates(marker_bb)]
+            mini = minimum(corners)
+            maxi = maximum(corners)
+            return Rect3d(minimum(bb) + mini, widths(bb) + maxi - mini)
+        end
+        return Rect3d(minimum(bb) + minimum(marker_bb), widths(bb) + widths(marker_bb))
+    else
+        # TODO: optimize const scale, var rot and var scale, const rot
+        if transform_marker
+            return limits_with_marker_transforms(positions, scales, rotation, model, marker_bb)
+        else
+            return limits_with_marker_transforms(positions, scales, rotation, marker_bb)
+        end
+    end
+end
+
+add_alpha(color, alpha) = add_alpha(Colors.color(color), Colors.alpha(color), alpha)
+add_alpha(rgb, a::T, alpha) where {T} = RGBA(rgb, a * T(alpha))
+
+function register_colormapping_without_color!(attr::ComputeGraph)
+    map!(attr, [:colormap, :alpha], [:alpha_colormap, :raw_colormap, :color_mapping, :color_mapping_type]) do icm, a
+        # Raw colormap from ColorGradient, which isn't scaled. We need to preserve this for later steps
+        # This only differs from alpha_colormap in that it doesn't resample PlotUtils.ColorGradient...
+        raw_colormap = _to_colormap(icm)::Vector{RGBAf}
+        conv_colormap = to_colormap(icm)
+        if a < 1.0
+            alpha_colormap = add_alpha.(conv_colormap, a)
+            raw_colormap .= add_alpha.(raw_colormap, a)
+        else
+            alpha_colormap = conv_colormap
+        end
+        color_mapping = icm isa PlotUtils.ColorGradient ? icm.values : nothing
+        type = to_colormapping_type(icm)
+        if length(conv_colormap) == 0
+            error("Converted colormap must contain colors.")
+        end
+        return (alpha_colormap, raw_colormap, color_mapping, type)
+    end
+
+    for key in (:lowclip, :highclip)
+        sym = Symbol(key, :_color)
+        map!(attr, [key, :alpha_colormap], sym) do input, cmap
+            if input === automatic || input === nothing
+                return ifelse(key == :lowclip, first(cmap), last(cmap))
+            else
+                return to_color(input)
+            end
+        end
+    end
+    return
+end
+
+"""
+    register_dim_converted_color!(plot; kwargs...)
+
+Initializes color dim converts if the current color values are dim convertible,
+i.e. if `dim_conversion_from_args` returns a dim convert, and adds a computation
+to convert convert colors. If they are not dim convertible, an
+`ComputePipeline.alias!` mapping is added instead.
+
+## Keyword Arguments
+
+- `colorname = :color` defines the color input node (before dim converts)
+- `outputname = :dc_color` defines the color output node (after color dim converts)
+- `cdc_color = :color_dim_convert` defines the name of the color dim convert node
+- `force = false` forces dim converts to apply to colors if set to `true`. This
+    is only relevant when color dim converts are passed to the plot (i.e.
+    synchronized with another) and causes an error when this plot does not have
+    compatible color data.
+"""
+register_dim_converted_color!(plot::Plot; kwargs...) = register_dim_converted_color!(plot.attributes; kwargs...)
+function register_dim_converted_color!(
+        attr::ComputeGraph;
+        colorname = :color, outputname = :dc_color, cdc_name = :color_dim_convert,
+        force = false
+    )
+    color = attr[colorname][]
+    if force || !isa(dim_conversion_from_args(color), Union{Nothing, NoDimConversion})
+        update_dim_conversion!(attr[cdc_name][], color)
+
+        map!(attr, [:resolved_cdc, colorname], outputname) do dc, color
+            converted = convert_dim_value(dc, attr, color, nothing)
+            return to_color(converted)
+        end
+    else
+        ComputePipeline.alias!(attr, colorname, outputname)
+    end
+    return
+end
+
+function register_scaled_color!(attr::ComputeGraph)
+    map!(
+        attr,
+        [:dc_color, :colorscale, :alpha],
+        [:raw_color, :scaled_color, :fetch_pixel, :auto_colorrange]
+    ) do color, colorscale, alpha
+        if color isa Union{AbstractArray{<:Real}, Real}
+            scaled = smallfloat_convert.(apply_scale(colorscale, color))
+            auto_colorrange = Vec2f(distinct_extrema_nan(scaled))
+            T = eltype(scaled)
+            val = clamp.(scaled, -floatmax(T), floatmax(T))
+            return color, val, false, auto_colorrange
+        elseif color isa AbstractPattern
+            val = ShaderAbstractions.Sampler(add_alpha.(to_image(color), alpha), x_repeat = :repeat)
+        elseif color isa ShaderAbstractions.Sampler
+            val = color
+        elseif color isa AbstractArray
+            # Converted RGBA textures already have the required representation.
+            # Preserve their storage when alpha makes no change, including after
+            # switching back from a non-identity alpha value.
+            val = alpha == 1 && eltype(color) === RGBAf ? color : add_alpha.(color, alpha)
+        else
+            val = add_alpha(color, alpha)
+        end
+        return color, val, color isa AbstractPattern, nothing
+    end
+    return
+end
+
+function process_color_value(dim_convert, scale, value, auto)
+    if value === automatic
+        return auto
+    elseif value isa Real
+        return apply_scale(scale, value)
+    else
+        return apply_scale(scale, convert_dim_value(dim_convert, value))
+    end
+end
+
+function combined_colorrange(dc, scale, colorrange, autorange)
+    colorrange === automatic && return Vec2f(autorange)
+    if colorrange[1] isa Real && colorrange[2] isa Real && colorrange[1] > colorrange[2]
+        error("colorrange = $colorrange must be sorted.")
+    end
+    low = process_color_value(dc, scale, first(colorrange), first(autorange))
+    high = process_color_value(dc, scale, last(colorrange), last(autorange))
+    if low ≈ high
+        delta = max(0.5f0, abs(Float32(low)))
+        return Vec2f(low - delta, high + delta)
+    else
+        # The colorscale could swap the meaning of low and high, e.g. -x, 1/x
+        return Vec2f(min(low, high), max(low, high))
+    end
+end
+
+function register_colorrange!(
+        attr;
+        colorrange = :colorrange, colorscale = :colorscale,
+        auto_colorrange = :auto_colorrange, output = :scaled_colorrange,
+        resolved_color_dim_convert = :resolved_cdc,
+    )
+    # This may not exist if this function is called outside of `register_colormapping`
+    if !haskey(attr, resolved_color_dim_convert)
+        add_constant!(attr, resolved_color_dim_convert, NoDimConversion())
+    end
+
+    map!(
+        attr,
+        [resolved_color_dim_convert, colorrange, colorscale, auto_colorrange],
+        output
+    ) do dc, colorrange, colorscale, _autorange
+        # colors are actual colors, so no colormapping
+        isnothing(_autorange) && return nothing
+
+        autorange = dc isa CategoricalConversion ? distinct_extrema_nan(first.(dc.int_to_category)) : _autorange
+        return combined_colorrange(dc, colorscale, colorrange, autorange)
+    end
+
+    return
+end
+
+function register_colormapping!(attr::ComputeGraph, colorname = :color)
+    register_colormapping_without_color!(attr)
+    register_dim_converted_color!(attr; colorname)
+    register_scaled_color!(attr)
+    register_colorrange!(attr)
+    return
+end
+
+"""
+    register_position_transforms!(plot[; kwargs...])
+
+Registers computations that apply `transform_func` and `float32convert` to a
+position input. Positions need to be an array of point-like data. The
+`float32convert` will also always generate `:model_f32c` which should be used
+instead of `model` after `float32convert` is applied.
+
+## Keyword Arguments
+
+- `input_name = :positions` sets the input to which `transform_func` applies
+- `transformed_name = Symbol(input_name, :_transformed)` sets the name of positions after `transform_func` application
+- `transformed_f32c_name = Symbol(transformed_name, :_f32c)` sets the name of positions after `float32convert` application
+
+See also: [`register_positions_transformed!`](@ref), [`register_positions_transformed_f32c!`](@ref)
+"""
+function register_position_transforms!(plot::Plot; kwargs...)
+    return register_position_transforms!(plot.attributes; kwargs...)
+end
+
+function register_position_transforms!(
+        attr::ComputeGraph;
+        input_name::Symbol = :positions,
+        transformed_name::Symbol = Symbol(input_name, :_transformed),
+        transformed_f32c_name::Symbol = Symbol(transformed_name, :_f32c),
+    )
+    register_positions_transformed!(attr; input_name, output_name = transformed_name)
+    register_positions_transformed_f32c!(attr, input_name = transformed_name, output_name = transformed_f32c_name)
+    return
+end
+
+"""
+    register_positions_transformed!(plot[; input_name = :positions, output_name = :positions_transformed])
+
+Registers `output_name` containing positions with the transform function of the plot applied to `input_name`.
+
+See also: [`register_position_transforms!`](@ref), [`register_positions_transformed_f32c!`](@ref)
+"""
+function register_positions_transformed!(plot::Plot; input_name = :positions, output_name = :positions_transformed)
+    return register_positions_transformed!(plot.attributes; input_name, output_name)
+end
+
+function register_positions_transformed!(
+        attr::ComputeGraph;
+        input_name::Symbol = :positions, output_name::Symbol = :positions_transformed
+    )
+    haskey(attr.outputs, input_name) || error("$input_name not found while trying to register positions transforms")
+    map!(apply_transform, attr, [:transform_func, input_name], output_name)
+    return
+end
+
+"""
+    register_positions_transformed_f32c!(plot[; input_name = :positions, output_name = :positions_transformed])
+
+Registers `output_name` containing positions with the parent scenes float32convert applied to `input_name`.
+Note that this does not apply transformation functions.
+
+See also: [`register_position_transforms!`](@ref), [`register_positions_transformed!`](@ref)
+"""
+function register_positions_transformed_f32c!(
+        plot::Plot; input_name = :positions_transformed, output_name = :positions_transformed_f32c
+    )
+    return register_positions_transformed_f32c!(plot.attributes; input_name, output_name)
+end
+
+function register_positions_transformed_f32c!(
+        attr::ComputeGraph;
+        input_name::Symbol = :positions_transformed, output_name::Symbol = :positions_transformed_f32c
+    )
+    # model_f32c is the model matrix after processing f32c. Backends should rely
+    # on it if it applies to :positions_transformed_f32c
+
+    # TODO: These are simplified, skipping what's commented out
+    register_model_f32c!(attr)
+
+    register_computation!(
+        attr, [input_name, :model, :f32c, :space], [output_name]
+    ) do (positions, model, f32c, space), changed, @nospecialize(last)
+
+        trans, scale = decompose_translation_scale_matrix(model)
+        # is_rot_free = is_translation_scale_matrix(model)
+        if !is_data_space(space) || isnothing(f32c) || (is_identity_transform(f32c) && is_float_safe(scale, trans))
+            pos = changed[1] ? el32convert(positions) : skip_update
+            return (pos,)
+        elseif false # is_identity_transform(f32c) && !is_float_safe(scale, trans)
+            # edge case: positions not float safe, model not float safe but result in float safe range
+            # (this means positions -> world not float safe, but appears float safe)
+        elseif false # is_float_safe(scale, trans) && is_rot_free
+            # fast path: can swap order of f32c and model, i.e. apply model on GPU
+        elseif false # is_rot_free
+            # fast path: can merge model into f32c and skip applying model matrix on CPU
+        else
+            # TODO: avoid reallocating?
+            output = map(positions) do point
+                p4d = to_ndim(Point4d, to_ndim(Point3d, point, 0), 1)
+                p4d = model * p4d
+                return f32_convert(f32c, p4d[Vec(1, 2, 3)])
+            end
+            return (output,)
+        end
+    end
+    return
+end
+
+function register_model_f32c!(attr)
+    map!(attr, [:model, :f32c, :space], :model_f32c) do model, f32c, space
+        trans, scale = decompose_translation_scale_matrix(model)
+
+        # is_rot_free = is_translation_scale_matrix(model)
+        if !is_data_space(space) || isnothing(f32c) || (is_identity_transform(f32c) && is_float_safe(scale, trans))
+            return Mat4f(model)
+        elseif false # is_identity_transform(f32c) && !is_float_safe(scale, trans)
+            # edge case: positions not float safe, model not float safe but result in float safe range
+            # (this means positions -> world not float safe, but appears float safe)
+        elseif false # is_float_safe(scale, trans) && is_rot_free
+            # fast path: can swap order of f32c and model, i.e. apply model on GPU
+        elseif false # is_rot_free
+            # fast path: can merge model into f32c and skip applying model matrix on CPU
+        else
+            return Mat4f(I)
+        end
+    end
+
+    return
+end
+
+# Split for text compat
+function register_arguments!(::Type{P}, attr::ComputeGraph, user_kw, input_args) where {P}
+    inputs = _register_input_arguments!(attr, input_args)
+    expanded_args = _register_expand_arguments!(P, attr, inputs, to_value.(input_args))
+    _register_argument_conversions!(P, attr, user_kw, expanded_args)
+    return
+end
+
+function _register_input_arguments!(attr::ComputeGraph, input_args::Tuple)
+    inputs = map(enumerate(input_args)) do (i, arg)
+        sym = Symbol(:arg, i)
+        add_input!(attr, sym, arg)
+        # If `arg` is a Computed then the type restrictions of arg will automatically
+        # pass down here. (There is no point in loosening them and it's also currently
+        # not allowed. `arg` could still be Any and if it is it would transfer to "sym")
+        # If `arg` is not a Computed node, then we fix the type to Any to allow type changes
+        isa(arg, Computed) || ComputePipeline.set_type!(attr[sym], Any)
+        return sym
+    end
+    return inputs
+end
+
+function _register_expand_arguments!(::Type{P}, attr, inputs, input_args, is_merged = false) where {P}
+    # is_merged = true means that multiple arguments are collected in one input, i.e.:
+    #   true:   one input where attr[input][] = (arg1, arg2, ...)
+    #   false:  multiple inputs where map(k -> attr[k][], inputs) = [arg1, arg2, ...]
+    # this is used in text
+
+    PTrait = conversion_trait(P, input_args...)
+    expanded = something(expand_dimensions(PTrait, input_args...), input_args)
+    # call it args for backwards compatibility (plot.args)
+    map!(attr, inputs, :args) do input_args...
+        args = values(is_merged ? input_args[1] : input_args)
+        args_exp = expand_dimensions(PTrait, args...)
+        return something(args_exp, args)
+    end
+    # This can change types, so force Any type in Compute node
+    ComputePipeline.unsafe_init!(attr.args, Ref{Any}(expanded))
+    return expanded
+end
+
+# Julia 1.10 compat
+function _filter(f, xs::NamedTuple)
+    isempty(xs) && return xs
+    fkeys = filter(k -> f(xs[k]), keys(xs))
+    vals = map(k -> xs[k], fkeys)
+    return NamedTuple{fkeys}(map(k -> xs[k], fkeys))
+end
+
+function add_convert_kwargs!(graph, user_kw, P, args)
+    conv_attributes = used_attributes(P, args...)
+    conv_attr_input = Symbol[]
+    for key in conv_attributes
+        if !haskey(graph.inputs, key)
+            default = pop!(user_kw, key, key === :space ? :data : nothing)
+            add_input!(graph, key, default)
+            ComputePipeline.set_type!(graph[key], Any)
+            push!(conv_attr_input, key)
+        end
+    end
+    register_computation!(graph, conv_attr_input, [:convert_kwargs]) do inputs, @nospecialize(changed), @nospecialize(last)
+        return (_filter(!isnothing, inputs),)
+    end
+    ComputePipeline.set_type!(graph[:convert_kwargs], Any)
+    return
+end
+
+function add_dim_converts!(::Type{P}, attr::ComputeGraph, dim_converts, args, args_converted, user_kw) where {P}
+    # Get dim of each argument. This needs to be reactive if we allow dynamic
+    # attributes that change dim-mapping, e.g. direction
+    kwarg_names = argument_dim_kwargs(P)
+
+    # initialize the necessary attributes early
+    for key in kwarg_names
+        if !haskey(attr.inputs, key)
+            default = lookup_default(P, nothing, user_kw, key)
+            default isa Inherit && error("$key must be initialized without `@inherit` to be used as a argument_dims kwarg.")
+            # haskey(defaults, key) || error("Cannot use `argument_dim_kwargs(::$P) = (:$key, ...)` as it is not a valid recipe Attribute.")
+            add_input!(attr, key, default)
+        end
+    end
+
+    kwargs = NamedTuple{kwarg_names}([getproperty(attr, name)[] for name in kwarg_names])
+    dim_tuple = argument_dims(P, args_converted...; kwargs...)
+
+    if dim_tuple === nothing
+        # args declared not dim-convertible by argument_dims().
+        ComputePipeline.alias!(attr, :args, :dim_converted)
+        return args
+
+    elseif !(dim_tuple isa Tuple)
+        # Format check
+        error("`arguments_dims() must return a `Tuple` of integers or `Nothing` but returned $dim_tuple")
+    end
+
+    # If convert_arguments() caused a change in dim-convertable arguments they
+    # should apply before treating dim converts
+    if args_converted !== args
+        map!(attr, [:args, :convert_kwargs], :recursive_convert) do args, kwargs
+            return convert_arguments(P, args...; kwargs...)
+        end
+        ComputePipeline.unsafe_init!(attr.recursive_convert, args_converted)
+        input = :recursive_convert
+    else
+        input = :args
+    end
+
+    # Add node for arg -> dim mapping. Should be dynamic for attributes like
+    # direction at least.
+    map!(attr, [input, kwarg_names...], :arg_dims) do args, kwargs...
+        nt = NamedTuple{kwarg_names}(kwargs)
+        return argument_dims(P, args...; nt...)
+    end
+
+    # This sets conversions per dimension if they have not already been set.
+    # If a recipe has multiple arguments for one dimension that dimension may
+    # be set multiple times here (but only the first one will actually be used)
+    maxdim = 0
+    for (i, dim) in enumerate(dim_tuple)
+        dim == 0 && continue
+        if dim isa Integer
+            if dim == 4
+                update_dim_conversion!(attr.color_dim_convert[], args_converted[i])
+            else
+                update_dim_conversion!(dim_converts, dim, args_converted[i])
+            end
+            maxdim = max(maxdim, dim)
+        else
+            for (j, d) in enumerate(dim)
+                if d == 4
+                    update_dim_conversion!(attr.color_dim_convert[], args_converted[i], j)
+                else
+                    update_dim_conversion!(dim_converts, d, args_converted[i], j)
+                end
+                maxdim = max(maxdim, d)
+            end
+        end
+    end
+
+    # Add input containing Symbol(:dim_convert_, i) which triggers when the
+    # conversion changes. (One per dimension, so use unique on dim_tuple)
+    # Note that the order in dim_convert_names is important
+    dim_convert_names = Symbol[]
+    for i in 1:maxdim
+        push!(dim_convert_names, i == 4 ? :resolved_cdc : Symbol(:dim_convert_, i))
+        if i < 4 # 4 already got added if maxdim == 4
+            obs = convert(Observable{Any}, needs_tick_update_observable(Observable{Any}(dim_converts[i])))
+            converts_updated = map!(x -> dim_converts[i], Observable{Any}(), obs)
+            add_input!(attr, Symbol(:dim_convert_, i), converts_updated)
+        end
+    end
+
+    # Apply dim_convert
+    # TODO: Do we really need last here?
+    register_computation!(
+        attr, [input, :arg_dims, dim_convert_names...], [:dim_converted]
+    ) do (expanded, dims, converts...), changed, last
+
+        last_vals = isnothing(last) ? ntuple(i -> nothing, length(dims)) : last.dim_converted
+        result = ntuple(length(expanded)) do i
+            # argument i is associated with the dim convert of dimension dims[i]
+            if i <= length(dims) && dims[i] != 0
+                if dims[i] isa Integer
+                    return convert_dim_value(converts[dims[i]], attr, expanded[i], last_vals[i])
+                else
+                    # Vector{<:VecTypes} case, where dim converts are expected to
+                    # return an array for VecTypes dimension
+                    # These arrays are repackaged as a Point array which hopefully
+                    # goes through the remaining conversions without issues
+                    parts = map(eachindex(dims[i]), dims[i]) do idx, dim
+                        return convert_dim_value(converts[dim], attr, expanded[i], last_vals[i], idx)
+                    end
+                    return Point.(parts...)
+                end
+            else
+                return expanded[i]
+            end
+        end
+        return (Ref{Any}(result),)
+    end
+
+    return
+end
+
+function error_check_convert_arguments(P, args, user_kw, args_converted)
+    if args_converted isa Tuple
+        return :Tuple
+    elseif args_converted isa Union{PlotSpec, AbstractVector{PlotSpec}, GridLayoutSpec}
+        return :SpecApi
+    else
+        _join(a, b) = "$a, $b"
+        args_splatted = mapreduce(x -> "::$(typeof(x))", _join, args)
+        kwargs_splatted = mapreduce(kv -> "$(kv[1])", _join, user_kw)
+        if isempty(kwargs_splatted)
+            call = "convert_arguments($P, $args_splatted)"
+        else
+            call = "convert_arguments($P, $args_splatted; $kwargs_splatted)"
+        end
+        error("Result of `$call` needs to be a Tuple or SpecApi object, but is `$args_converted`.")
+    end
+end
+
+function _register_argument_conversions!(::Type{P}, attr::ComputeGraph, user_kw, args) where {P}
+    dim_converts = to_value(get!(() -> DimConversions(), user_kw, :dim_conversions))::DimConversions
+    add_input!(attr, :dim_conversions, dim_converts)
+
+    add_convert_kwargs!(attr, user_kw, P, args)
+    kw = attr.convert_kwargs[]
+    args_converted = convert_arguments(P, args...; kw...)
+    error_check_convert_arguments(P, args, user_kw, args_converted)
+    status = got_converted(P, conversion_trait(P, args...), args_converted)
+
+    # Controls whether the plot is forced to apply dim converts or allowed to
+    # use plain data in a dim_convert scene. Typically true for plots to scenes
+    # and false for plots to other plots
+    force_dimconverts = pop!(user_kw, :force_dimconverts)::Bool
+    doc_attr = documented_attributes(P)
+    space::Symbol = if haskey(user_kw, :space)
+        to_value(user_kw[:space])
+    else
+        default = get_flat_default(doc_attr, :space, :data)
+        default isa Symbol ? default : :data
+    end
+
+    # TODO: Can't infer types here because dim_conversions[i] are of unknown type
+    dim_converted = if !is_data_space(space)
+        # dim converts do not apply in relative, pixel or clip space
+        ComputePipeline.alias!(attr, :args, :dim_converted)
+        args
+    elseif force_dimconverts && needs_dimconvert(dim_converts)
+        add_dim_converts!(P, attr, dim_converts, args, args_converted, user_kw)
+    elseif (status === true || status === SpecApi)
+        # Nothing needs to be done, since we can just use convert_arguments without dim_converts
+        # And just pass the arguments through
+        ComputePipeline.alias!(attr, :args, :dim_converted)
+        args
+    elseif isnothing(status) || status === false # we don't know (e.g. recipes) or incomplete conversion
+        add_dim_converts!(P, attr, dim_converts, args, args_converted, user_kw)
+    end
+    # backwards compatibility for plot.converted (and not only compatibility, but it's just convenient to have)
+
+    map!(attr, [:dim_converted, :convert_kwargs], :converted) do dim_converted, convert_kwargs
+        val = convert_arguments(P, dim_converted...; convert_kwargs...)
+        rtype = error_check_convert_arguments(P, dim_converted, convert_kwargs, val)
+        return rtype === :Tuple ? val : (val,)
+    end
+
+    # If dim converts didn't do anything we can use the previous result of
+    # `convert_arguments()` to init the node
+    if attr.dim_converted[] === args
+        result_type = error_check_convert_arguments(P, args, user_kw, args_converted)
+        x = result_type === :Tuple ? args_converted : (args_converted,)
+        ComputePipeline.unsafe_init!(attr.converted, x)
+    end
+
+    converted = attr[:converted][]
+    n_args = length(converted)
+    map!(attr, :converted, [argument_names(P, n_args)...]) do converted
+        return converted # destructure
+    end
+
+    add_input!(attr, :transform_func, identity)
+    ComputePipeline.set_type!(attr.transform_func, Any)
+
+    add_input!(attr, :f32c, :uninitialized)
+
+    return
+end
+
+function register_marker_computations!(attr::ComputeGraph)
+
+    # TODO: allowing user supplied atlas for e.g. sprite animations would be nice...
+
+    return map!(
+        attr, [:marker, :markersize, :font],
+        [:quad_offset, :quad_scale]
+    ) do marker, markersize, font
+        atlas = get_texture_atlas()
+        quad_scale = rescale_marker(atlas, marker, font, markersize)
+        quad_offset = offset_marker(atlas, marker, font, markersize)
+
+        return (quad_offset, quad_scale)
+    end
+end
+
+const PrimitivePlotTypes = Union{
+    Scatter, Lines, LineSegments, Glyphs, Mesh,
+    MeshScatter, Image, Heatmap, Surface, Voxels, Volume,
+}
+
+"""
+    uses_convert_attribute(::Type{<:Plot})
+
+Returns true for plot types that opt in to using `convert_attribute`
+infrastructure. This is `false` by default for recipes.
+"""
+uses_convert_attribute(::Type{<:PrimitivePlotTypes}) = true
+uses_convert_attribute(::Type{<:AbstractPlot}) = false
+
+function ComputePipeline.register_computation!(f, p::Plot, inputs::Vector, outputs::Vector{Symbol})
+    return register_computation!(f, p.attributes, inputs, outputs)
+end
+function Base.map!(f, p::Plot, inputs::Union{Vector, ComputePipeline.InputNodeTypes}, outputs::Union{Vector, ComputePipeline.OutputNodeTypes})
+    return map!(f, p.attributes, inputs, outputs)
+end
+ComputePipeline.select!(f, p::Plot, args...) = select!(f, p.attributes, args...)
+ComputePipeline.select!(p::Plot, args...) = select!(p.attributes, args...)
+
+struct AttributeConvert{Key, Plot} <: Function end
+@inline AttributeConvert(key, plot) = AttributeConvert{key, plot}()
+Base.nameof(::AttributeConvert{Key, Plot}) where {Key, Plot} = "AttributeConvert{$(Key), $(Plot)}"
+function (::AttributeConvert{key, plot})(value) where {key, plot}
+    return convert_attribute(value, Key{key}(), Key{plot}())
+end
+function (::AttributeConvert{key, plot})(value, @nospecialize(changed), @nospecialize(cached)) where {key, plot}
+    return (convert_attribute(value[1], Key{key}(), Key{plot}()),)
+end
+function ComputePipeline.get_callback_info(::AttributeConvert{key, plot}, value) where {key, plot}
+    return ComputePipeline.get_callback_info(convert_attribute, value, Key{key}(), Key{plot}())
+end
+
+struct CycleConvert{F} <: Function
+    callback::F
+    palettes::Attributes
+    graph::ComputeGraph
+    key::Symbol
+end
+
+(cc::CycleConvert)(val, @nospecialize(changed), @nospecialize(cached)) = (cc(val[1]),)
+function (cc::CycleConvert)(value)
+    if value isa Cycled
+        cycle = cc.graph.cycle[]::Cycle
+        x = get_cycle_attribute(cc.palettes, cc.key, value.i, cycle)
+        return cc.callback(x)
+    elseif value === :cycled
+        cycle = cc.graph.cycle[]::Cycle
+        cycle_index = cc.graph.cycle_index[]::Int
+        x = get_cycle_attribute(cc.palettes, cc.key, cycle_index, cycle)
+        return cc.callback(x)
+    else
+        return cc.callback(value)
+    end
+end
+
+function get_next_cycle_index(scene, name)
+    lookup = scene.compute[:cycle_counters][]::Dict{Symbol, Int}
+    cycle_index = get(lookup, name, 0) + 1
+    lookup[name] = cycle_index
+    return cycle_index
+end
+
+function add_theme!(plot::Plot{Func}, scene::Scene) where {Func}
+    # So far we have set attributes based on the plot defaults and keyword
+    # arguments. In this function we now resolve `@inherit`ed attributes and
+    # apply `theme[plotsym(T)]` if it exists.
+
+    graph = plot.attributes
+    user_kw = plot.kw
+    T = Plot{Func}
+    attr = documented_attributes(T)
+    name = plotsym(T)
+
+    # Handle cycling
+    if has_flat_key(attr, :cycle)
+        # This will increment the scenes cycle counter for this plot type (plotsym)
+        # when the first CycleConvert uses it. After that it will just grab the
+        # cached cycle index.
+        map!(() -> get_next_cycle_index(scene, name), graph, Symbol[], :cycle_index)
+
+        if !haskey(user_kw, :cycle)
+            _cycle = to_value(lookup_default(attr, scene, name, NamedTuple(), :cycle))
+            graph.cycle = _cycle
+        end
+    else
+        add_constant!(graph, :cycle_index, 0)
+        graph.cycle = Cycle([])
+    end
+
+    cycle = graph.cycle[]::Cycle
+
+    # Because we only adjust the callbacks of inputs that are in Cycle at this
+    # point in time, adding more attributes to cycle after creating the plot does
+    # not work. Adjusting which palettes are used for each attribute works though
+    for name in attrsyms(cycle)
+        # Should passthroughs be able to cycle?
+        # (i.e. should we change graph[name].parent instead?)
+        if haskey(graph.inputs, name)
+            input = graph.inputs[name]
+            input.f = CycleConvert(input.f, scene.theme.palette, graph, name)
+
+        end
+    end
+
+    exclude = Set{Symbol}([:transformation, :model, :transform_func])
+
+    # TODO: Should add_theme!() be allowed to set used_attributes?
+    # That would require add_convert_kwargs!() to not delete them from kwargs
+    # so that user input doesn't get overwritten here
+    conv_attributes = used_attributes(T, graph.args[]...)
+    union!(exclude, conv_attributes)
+
+    add_theme!(plot, attr, scene, exclude, user_kw, cycle)
+
+    # not resolving this during init can rarely change ordering.
+    # E.g. in "annotation manual", where ylims! somehow resolves cycled
+    # attributes of the annotations without the lines plot through
+    # plotlist updates, causing lines to get a different cycled color
+    for name in attrsyms(cycle)
+        if haskey(graph.inputs, name)
+            graph[name][]
+        end
+    end
+
+    process_attribute_deprecations!(graph, attr, user_kw)
+
+    return
+end
+
+register_camera!(scene::Scene, plot::Plot) = register_camera!(plot.attributes, scene.compute)
+
+function argument_error(PTrait, P, attr, user_kw, converted)
+    args = attr.args[]
+    used_attr = used_attributes(P, args...) # ensure that P is registered
+    kw = Dict([k => v for (k, v) in user_kw if k in used_attr])
+    kw_str = isempty(kw) ? "" : " and kw: $(kw)"
+    kw_convert = isempty(kw) ? "" : "; kw..."
+    conv_trait = PTrait isa NoConversion ? "" : " (With conversion trait $(PTrait))"
+    types = types_for_plot_arguments(P, PTrait)
+    dim_converts_info = if haskey(attr, :arg_dims)
+        """
+        If the result contains dim convert related types, e.g. Unitful types, \
+        Dates types or Categorical values, the application of dim converts likely \
+        failed. Dim converts were called with
+            $(typeof(attr.dim_converted.parent.inputs[1][]))
+        which were mapped to dimensions $(attr.arg_dims[]). If this is not the \
+        correct mapping argument_dims(::Type{<:$(P)}, args...) may need to be \
+        implemented or convert_arguments(...) may need stricter typing to \
+        prevent early conversions.
+        """
+    else
+        space = haskey(attr, :space) ? attr[:space][] : :data
+        """
+        (Dim converts were not applied. This happens if `space = $space` \
+        is not in data space or if the target type of the conversion is reachable \
+        without dim converts.)
+        """
+    end
+    throw(
+        ArgumentError(
+            """
+
+            Conversion failed for $(P)$(conv_trait) with args:
+                $(typeof(args)) $(kw_str)
+            Got converted to:
+                $(typeof(converted))
+            $(P) requires to convert to argument types
+                $(types),
+            which convert_arguments didn't succeed in. To fix this overload \
+            convert_arguments(P, args...$(kw_convert)) for Type{<:$(P)} or $(PTrait) \
+            and return an object of the correct type.
+            $dim_converts_info
+            """
+        )
+    )
+end
+
+function Plot{Func}(user_args::Tuple, user_attributes::Union{Dict, NamedTuple}) where {Func}
+    isempty(user_args) && throw(ArgumentError("Failed to construct plot: No plot arguments given."))
+
+    P = Plot{Func}
+
+    if first(user_args) isa Attributes
+        # This should keep user_args[1] unchanged, in case they get reused.
+        attr = convert(Dict{Symbol, Any}, attributes(first(user_args)))
+        foreach(p -> get!(user_attributes, p[1], p[2]), pairs(attr))
+        return build_plot(P, nothing, Base.tail(user_args), user_attributes)
+    elseif first(user_args) isa AbstractComputeGraph
+        return build_plot(P, user_args[1], Base.tail(user_args), user_attributes)
+    else
+        return build_plot(P, nothing, user_args, user_attributes)
+    end
+end
+
+function init_graph!(build_callback, graph, attr, is_primitive, kwargs, parent)
+    exclude = (:transformation, :transform_func)
+    prepare_graph_for_attributes!(graph, attr, exclude, is_primitive = is_primitive)
+    add_from_kwargs!(build_callback, graph, attr, kwargs, exclude)
+    if !isnothing(parent)
+        exclude_from_parent = (:model, :transformation, :transform_func, :model_f32c)
+        connect_parent!(build_callback, graph, parent, attr, exclude_from_parent)
+    end
+    add_remaining_inputs!(build_callback, graph, attr, exclude)
+    return
+end
+
+function add_attributes!(::Type{P}, graph, parent, kwargs) where {P <: Plot}
+    attr = documented_attributes(P)
+    name = Makie.plotkey(P)
+
+    # Cycle is added here to allow `plot(..., cycle = Observable(...))`. Updating
+    # cycle may only change which attribute maps to which, not which attributes
+    # are cycled (see add_theme!())
+    if !haskey(graph, :cycle)
+        _cycle = get(kwargs, :cycle, :uninitialized)
+        add_input!(AttributeConvert(:cycle, name), graph, :cycle, _cycle)
+    end
+
+    if uses_convert_attribute(P)
+        init_graph!(key -> AttributeConvert(key, name), graph, attr, true, kwargs, parent)
+    else
+        init_graph!(key -> compute_identity, graph, attr, false, kwargs, parent)
+    end
+
+    if !haskey(graph, :model)
+        add_input!(graph, :model, Mat4d(I))
+    end
+
+    return
+end
+
+function build_plot(::Type{P}, parent, user_args, user_attributes) where {P}
+    graph = ComputeGraph()
+
+    # If the user passes a color_dim_convert or it is extracted from a parent
+    # plot in _create_plot! it is initialized here. If we generate it from
+    # arguments or color it is initialized later
+    cdc_init = pop!(user_attributes, :color_dim_convert, ColorDimConvert())
+    register_color_dim_convert!(graph, to_value(cdc_init))
+
+    register_arguments!(P, graph, user_attributes, user_args)
+    converted = graph.converted[]
+    PTrait = conversion_trait(P, graph.args[]...)
+    if got_converted(P, PTrait, converted) == false
+        argument_error(PTrait, P, graph, user_attributes, converted)
+    end
+
+    # compiler can't infer this, but FinalPlotFunc may differ (e.g. qqnorm -> qqplot)
+    ArgTyp = typeof(converted)
+    FinalPlotFunc = plotfunc(plottype(P, converted...))
+
+    add_attributes!(Plot{FinalPlotFunc}, graph, parent, user_attributes)
+
+    return Plot{FinalPlotFunc, ArgTyp}(user_attributes, graph)
+end
+
+# should this just be connect_plot?
+function connect_plot!(parent::SceneLike, plot::Plot{Func}) where {Func}
+    scene = parent_scene(parent)
+    attr = plot.attributes
+    add_theme!(plot, scene)
+    plot.parent = parent
+
+    if attr.inputs[:f32c].value !== :uninitialized
+        error("plot.f32c must not be resolved before the scene is connected!")
+    end
+    if scene.float32convert === nothing # this is statically a Nothing or Float32Convert
+        attr.f32c = nothing
+    else
+        on(plot, scene.float32convert.scaling, update = true) do f32c
+            attr.f32c = f32c
+            return
+        end
+    end
+
+    handle_transformation!(plot, parent)
+
+    if plot isa PrimitivePlotTypes
+        register_camera!(scene, plot)
+    end
+    calculated_attributes!(Plot{Func}, plot)
+    add_resolved_shading!(plot, scene)
+
+    if !haskey(plot, :rasterize)
+        # just always convert for for simplicity
+        convert = AttributeConvert(:rasterize, plotsym(typeof(plot)))
+        add_input!(convert, plot.attributes, :rasterize, get(plot.kw, :rasterize, false))
+    end
+
+    plot!(plot)
+
+    # Used to add things like `label` for Legend
+    for (k, v) in plot.kw
+        if !haskey(plot.attributes, k)
+            add_input!(plot.attributes, k, v)
+        end
+    end
+
+    return
+end
+
+function collect_all_connected_nodes(computed::ComputePipeline.Computed, tracked = Set{Symbol}())
+    push!(tracked, computed.name)
+    for edge in computed.parent.dependents
+        for node in edge.outputs
+            collect_all_connected_nodes(node)
+        end
+    end
+    return tracked
+end
+
+Observables.to_value(computed::ComputePipeline.Computed) = computed[]
+
+function attribute_per_pos!(attr, attribute::Symbol, output_name::Symbol)
+    return map!(attr, [attribute, :positions], output_name) do vec, positions
+        if !(vec isa AbstractVector)
+            return vec
+        end
+        NP = length(positions)
+        NC = length(vec)
+        NP == NC && return vec
+        if NP ÷ 2 == NC
+            output = [vec[div(i + 1, 2)] for i in 1:NP]
+            return output
+        end
+        error("Color vector length $(NC) does not match position length $(NP)")
+        return vec
+    end
+end
+
+function color_per_mesh(ccolors, vertes_per_mesh)
+    result = Vector{eltype(ccolors)}(undef, sum(vertes_per_mesh))
+    i = 1
+    for (cs, len) in zip(ccolors, vertes_per_mesh)
+        for j in 1:len
+            result[i] = cs
+            i += 1
+        end
+    end
+    return result
+end
+
+function register_mesh_decomposition!(attr)
+    # :arg1 is user input, :mesh is after convert_arguments and dim converts
+    map!(attr, :mesh, [:positions, :faces, :normals, :texturecoordinates]) do merged
+        # For MetaMesh, decompose the inner mesh directly to avoid
+        # iterating over views (slow and triggers deprecation warnings).
+        m = merged isa GeometryBasics.MetaMesh ? merged.mesh : merged
+        pos = coordinates(m)
+        faces = decompose(GLTriangleFace, m)
+        normies = normals(m)
+        texturecoords = texturecoordinates(m)
+        return (pos, faces, normies, texturecoords)
+    end
+
+    map!(
+        attr, [:arg1, :mesh, :color],
+        [:mesh_color, :interpolate_in_fragment_shader, :has_per_mesh_colors]
+    ) do meshes, merged, color
+        if hasproperty(merged, :color)
+            return (merged.color, true, false)
+        elseif meshes isa Vector{<:AbstractGeometry} && color isa AbstractVector && length(color) == length(meshes)
+            _color = color_per_mesh(color, map(x -> length(coordinates(x)), meshes))
+            return (_color, false, true)
+        else
+            return (color, true, false)
+        end
+    end
+    ComputePipeline.set_type!(attr.mesh_color, Any)
+
+    return
+end
+
+# Note: bit-exact matching means duplicated vertices with float noise stay separate,
+# e.g. a UV sphere seam evaluated at both 0 and 2pi gets classified as two boundary
+# edges. Such meshes should be fixed at generation time to share seam positions exactly.
+function canonical_vertex_ids(positions)
+    canonical = Dict{eltype(positions), Int}()
+    return Int[get!(canonical, p, i) for (i, p) in enumerate(positions)]
+end
+
+function count_mesh_edges(faces, canonical_ids)
+    counts = Dict{NTuple{2, Int}, Int}()
+    for f in faces
+        n = length(f)
+        for i in 1:n
+            edge = minmax(canonical_ids[f[i]], canonical_ids[f[mod1(i + 1, n)]])
+            edge[1] == edge[2] && continue
+            counts[edge] = get(counts, edge, 0) + 1
+        end
+    end
+    return counts
+end
+
+# Picks up to two wing edges for the corner `v` of a triangle whose other corners are
+# `o1` and `o2`, and writes them into `indices`/`widths` at `slot` and `slot + 1`
+# (index 0 marks an unused slot). The two candidates closest in angle to the triangle's
+# own edges are kept, tracked in a single pass so that no intermediate list is built.
+function corner_wings!(indices, widths, slot, incident_edges, positions, v, o1, o2, own_min_width)
+    at(u) = to_ndim(Point3d, positions[u], 0)
+    direction(u) = normalize(Vec3d(at(u) - at(v)))
+    d1 = direction(o1)
+    d2 = direction(o2)
+    plane_normal = normalize(cross(d1, d2))
+
+    best_u = 0
+    best_w = 0.0f0
+    best_score = -Inf
+    second_u = 0
+    second_w = 0.0f0
+    second_score = -Inf
+
+    for (u, width) in incident_edges
+        (u == o1 || u == o2) && continue
+        # A wing band can only enter this triangle by crossing one of the triangle's own
+        # edges at the corner. If those are themselves stroked at least as wide, the
+        # junction is already covered and the wing would only risk painting stray bands
+        # on curved surfaces (e.g. a triangle sphere with strokeedges = :all).
+        width > own_min_width || continue
+        du = direction(u)
+        # A wing that leaves the triangle's plane belongs to a face seen at an angle, so
+        # its stroke band should not continue onto this triangle (it would project as a
+        # stray band across the face). Slight non-planarity is allowed for curved surfaces.
+        out_of_plane = abs(dot(plane_normal, du))
+        (!isnan(out_of_plane) && out_of_plane < 0.3) || continue
+
+        score = max(dot(du, d1), dot(du, d2))
+        isnan(score) && (score = -Inf)
+        # `*_u == 0` keeps empty slots fillable when every candidate scores -Inf
+        if best_u == 0 || score > best_score
+            second_u, second_w, second_score = best_u, best_w, best_score
+            best_u, best_w, best_score = u, width, score
+        elseif second_u == 0 || score > second_score
+            second_u, second_w, second_score = u, width, score
+        end
+    end
+
+    indices[slot] = best_u
+    widths[slot] = best_w
+    indices[slot + 1] = second_u
+    widths[slot + 1] = second_w
+    return
+end
+
+"""
+    stroke_edge_data(mesh, gl_faces, strokeedges)
+
+Computes the per-triangle edge information needed to stroke visible mesh edges in a
+backend shader. A stroked edge gets a width multiplier of 1 if it lies on the mesh
+boundary (belongs to exactly one face of `mesh`) and 0.5 if it is shared between faces
+and `strokeedges === :all` (so both adjacent faces together render one full stroke width).
+Edges that do not appear in `faces(mesh)`, i.e. those introduced by triangulating
+non-triangular faces, are never stroked. Vertices are matched by position, so edges
+remain shared even if faces reference duplicated vertices.
+
+Returns three vectors with one element per triangle in `gl_faces`:
+
+- `edge_widths::Vector{Vec3f}`: width multipliers of the triangle's own edges,
+  ordered 1-2, 2-3, 3-1, with 0 for edges that are not stroked.
+- `wing_indices::Vector{Vec{6, Int32}}` and `wing_widths::Vector{Vec{6, Float32}}`:
+  per corner (two slots each), stroked edges that are incident to the corner vertex but
+  are not edges of the triangle itself, given as the vertex index of the other edge
+  endpoint and the edge's width multiplier. Index 0 marks an unused slot. Without these
+  "wings", a stroke band that continues past a corner into a neighboring triangle would
+  be cut off at the triangulation edge, leaving notches. Only edges roughly coplanar with
+  the triangle qualify, and if more than two remain, the two closest in angle to the
+  triangle's own edges at that corner are kept, since those are the ones whose bands can
+  reach into the triangle.
+"""
+function stroke_edge_data(mesh, gl_faces, strokeedges::Symbol)
+    positions = coordinates(mesh)
+    canonical_ids = canonical_vertex_ids(positions)
+    counts = count_mesh_edges(faces(mesh), canonical_ids)
+    shared_width = strokeedges === :all ? 0.5f0 : 0.0f0
+    edge_width(count) = count == 0 ? 0.0f0 : (count == 1 ? 1.0f0 : shared_width)
+
+    incident = Dict{Int, Vector{Tuple{Int, Float32}}}()
+    for (edge, count) in counts
+        width = edge_width(count)
+        width == 0.0f0 && continue
+        push!(get!(Vector{Tuple{Int, Float32}}, incident, edge[1]), (edge[2], width))
+        push!(get!(Vector{Tuple{Int, Float32}}, incident, edge[2]), (edge[1], width))
+    end
+
+    no_wings = Tuple{Int, Float32}[]
+    edge_widths = Vector{Vec3f}(undef, length(gl_faces))
+    wing_indices = Vector{Vec{6, Int32}}(undef, length(gl_faces))
+    wing_widths = Vector{Vec{6, Float32}}(undef, length(gl_faces))
+    indices = zeros(Int32, 6)
+    widths = zeros(Float32, 6)
+
+    for (t, f) in enumerate(gl_faces)
+        corners = (canonical_ids[f[1]], canonical_ids[f[2]], canonical_ids[f[3]])
+        edge_widths[t] = Vec3f(
+            ntuple(3) do i
+                edge_width(get(counts, minmax(corners[i], corners[mod1(i + 1, 3)]), 0))
+            end
+        )
+
+        for i in 1:3
+            v = corners[i]
+            o1 = corners[mod1(i + 1, 3)]
+            o2 = corners[mod1(i + 2, 3)]
+            own_min_width = min(edge_widths[t][i], edge_widths[t][mod1(i + 2, 3)])
+            corner_wings!(
+                indices, widths, 2 * (i - 1) + 1, get(incident, v, no_wings),
+                positions, v, o1, o2, own_min_width
+            )
+        end
+        wing_indices[t] = Vec{6, Int32}(indices)
+        wing_widths[t] = Vec{6, Float32}(widths)
+    end
+
+    return edge_widths, wing_indices, wing_widths
+end
+
+# The edge data only depends on whether stroking is on, not on how wide the stroke is.
+# Depending on this flag rather than on :strokewidth keeps width changes from
+# recomputing the mesh adjacency, which is by far the most expensive part of stroking.
+function register_stroke_enabled!(attr)
+    haskey(attr, :stroke_enabled) && return
+    map!(!iszero, attr, :strokewidth, :stroke_enabled)
+    return
+end
+
+function register_mesh_stroke!(attr)
+    register_stroke_enabled!(attr)
+    return map!(
+        attr, [:mesh, :faces, :strokeedges, :stroke_enabled],
+        [:stroke_edge_widths, :stroke_wing_indices, :stroke_wing_widths]
+    ) do mesh, gl_faces, strokeedges, stroke_enabled
+        if !stroke_enabled
+            return (Vec3f[], Vec{6, Int32}[], Vec{6, Float32}[])
+        end
+        return stroke_edge_data(mesh, gl_faces, strokeedges)
+    end
+end
+
+# Packs stroke data into 9 texture texels per triangle for backend shaders: 3x the corner
+# positions with the width multiplier of the edge from that corner to the next, then per
+# corner 2x wing edge endpoints with their width multipliers (width 0 = unused slot).
+function register_stroke_data!(attr)
+    haskey(attr, :stroke_data_packed) && return attr[:stroke_data_packed]
+    return map!(
+        attr,
+        [:positions_transformed_f32c, :faces, :stroke_edge_widths, :stroke_wing_indices, :stroke_wing_widths],
+        :stroke_data_packed
+    ) do positions, faces, edge_widths, wing_indices, wing_widths
+        isempty(edge_widths) && return fill(Vec4f(0), 9)
+        at(idx) = to_ndim(Point3f, positions[idx], 0.0f0)
+        data = Vector{Vec4f}(undef, 9 * length(faces))
+        for (t, f) in enumerate(faces)
+            base = 9 * (t - 1)
+            for i in 1:3
+                p = at(f[i])
+                data[base + i] = Vec4f(p[1], p[2], p[3], edge_widths[t][i])
+            end
+            for k in 1:6
+                idx = wing_indices[t][k]
+                if idx == 0
+                    data[base + 3 + k] = Vec4f(0)
+                else
+                    p = at(idx)
+                    data[base + 3 + k] = Vec4f(p[1], p[2], p[3], wing_widths[t][k])
+                end
+            end
+        end
+        return data
+    end
+end
+
+# Computes stroke edge data for the quad grid of a surface. The quad mesh is built
+# inside the computation and only when stroking is active, so unstroked surfaces do
+# not pay for CPU mesh construction. :stroke_faces lists the triangles the edge data
+# refers to, matching the triangulation order of the surface_as_mesh :faces node.
+function register_surface_stroke!(attr)
+    haskey(attr, :stroke_edge_widths) && return
+    haskey(attr, :positions_transformed_f32c) || add_surface_vertex_positions!(attr)
+    register_stroke_enabled!(attr)
+    map!(
+        attr, [:positions_transformed_f32c, :z, :strokeedges, :stroke_enabled],
+        [:stroke_edge_widths, :stroke_wing_indices, :stroke_wing_widths, :stroke_faces]
+    ) do positions, z, strokeedges, stroke_enabled
+        if !stroke_enabled
+            return (Vec3f[], Vec{6, Int32}[], Vec{6, Float32}[], GLTriangleFace[])
+        end
+        m = surface2mesh(positions, size(z))
+        gl_faces = decompose(GLTriangleFace, m)
+        return (stroke_edge_data(m, gl_faces, strokeedges)..., gl_faces)
+    end
+    return
+end
+
+# Packs surface stroke data in grid cell (GPU instance) order with two triangle slots per
+# cell, so that a shader rendering the surface as one instanced quad per cell can fetch
+# the data at `2 * instance + primitive`. Cells removed for containing NaN get zero
+# entries. Each triangle's cell is identified by its smallest vertex index, the cell's
+# lower-left corner, which both triangles of a quad contain; the triangle containing the
+# lower-right corner is the first slot, matching the triangulation of the unit rect.
+function register_surface_stroke_data!(attr)
+    register_surface_stroke!(attr)
+    haskey(attr, :stroke_data_packed) && return
+    map!(
+        attr,
+        [:positions_transformed_f32c, :z, :stroke_faces, :stroke_edge_widths, :stroke_wing_indices, :stroke_wing_widths],
+        :stroke_data_packed
+    ) do positions, z, faces, edge_widths, wing_indices, wing_widths
+        isempty(edge_widths) && return fill(Vec4f(0), 9)
+        nx = size(z, 1)
+        ncells = (size(z, 1) - 1) * (size(z, 2) - 1)
+        data = fill(Vec4f(0), 9 * 2 * ncells)
+        at(idx) = to_ndim(Point3f, positions[idx], 0.0f0)
+        for (t, f) in enumerate(faces)
+            fi = (Base.to_index(f[1]), Base.to_index(f[2]), Base.to_index(f[3]))
+            corner = minimum(fi)
+            i0 = (corner - 1) % nx
+            j0 = (corner - 1) ÷ nx
+            slot = (corner + 1) in fi ? 0 : 1
+            base = 9 * (2 * (i0 + j0 * (nx - 1)) + slot)
+            for i in 1:3
+                p = at(f[i])
+                data[base + i] = Vec4f(p[1], p[2], p[3], edge_widths[t][i])
+            end
+            for k in 1:6
+                idx = wing_indices[t][k]
+                if idx == 0
+                    data[base + 3 + k] = Vec4f(0)
+                else
+                    p = at(idx)
+                    data[base + 3 + k] = Vec4f(p[1], p[2], p[3], wing_widths[t][k])
+                end
+            end
+        end
+        return data
+    end
+    return
+end
+
+# optionally converts uv_transform to the one used with patterns (different defaults)
+function register_pattern_uv_transform!(attr; modelname = :model_f32c, colorname = :color)
+    register_computation!(
+        attr,
+        [:uv_transform, :projectionview, :viewport, modelname, colorname, :fetch_pixel],
+        [:pattern_uv_transform]
+    ) do (uvt, pv, vp, model, pattern, is_pattern), changed, cached
+
+        needs_update = isnothing(cached) || changed.fetch_pixel || is_pattern || changed.uv_transform
+        if needs_update
+            if is_pattern
+                # This changes what `automatic` converts to
+                input_uvt = haskey(attr.inputs, :uv_transform) ? attr.inputs[:uv_transform].value : uvt
+                new_uvt = pattern_uv_transform(input_uvt, pv * model, widths(vp), pattern)
+                return (new_uvt,)
+            else
+                return (uvt,)
+            end
+        else
+            return skip_update
+        end
+    end
+    return
+end
+
+
+function calculated_attributes!(::Type{Image}, plot::Plot)
+    attr = plot.attributes
+    calculated_attributes!(Heatmap, plot)
+    # this must not sort to preserve inverse value ranges (e.g. 1..0), data_limits
+    # must must sort to generate non-negative widths in that case
+    map!(attr, [:x, :y], :positions) do x, y
+        mini = Vec3d(first(x), first(y), 0)
+        maxi = Vec3d(last(x), last(y), 0)
+        return decompose(Point2d, Rect2d(mini, maxi .- mini))
+    end
+    return register_position_transforms!(attr)
+end
+
+function calculated_attributes!(::Type{Heatmap}, plot::Plot)
+    attr = plot.attributes
+    register_colormapping!(attr, :image)
+    return map!(attr, [:x, :y], :data_limits) do x, y
+        mini = Vec3d(minimum(x), minimum(y), 0)
+        maxi = Vec3d(maximum(x), maximum(y), 0)
+        return Rect3d(mini, maxi .- mini)
+    end
+end
+
+function calculated_attributes!(::Type{Surface}, plot::Plot)
+    attr = plot.attributes
+    map!(attr, [:z, :color], :color_with_default) do z, color
+        return isnothing(color) ? z : color
+    end
+    register_colormapping!(attr, :color_with_default)
+    return map!(attr, [:x, :y, :z], :data_limits) do x, y, z
+        xlims = extrema_nan(x)
+        ylims = extrema_nan(y)
+        zlims = extrema_nan(z)
+        mini, maxi = Vec3d.(xlims, ylims, zlims)
+        return Rect3d(mini, maxi .- mini)
+    end
+end
+
+function calculated_attributes!(::Type{Scatter}, plot::Plot)
+    attr = plot.attributes
+    register_marker_computations!(attr)
+    register_colormapping!(attr)
+    register_position_transforms!(attr)
+    map!(attr, :rotation, [:converted_rotation, :billboard]) do rotation
+        return (convert_attribute(rotation, key"rotation"()), rotation isa Billboard)
+    end
+    return map!(attr, [:positions, :space, :markerspace, :quad_scale, :quad_offset, :converted_rotation, :marker_offset], :data_limits) do args...
+        return scatter_limits(args...)
+    end
+
+end
+
+function calculated_attributes!(::Type{MeshScatter}, plot::Plot)
+    attr = plot.attributes
+    register_colormapping!(attr)
+    register_position_transforms!(attr)
+    register_pattern_uv_transform!(attr)
+    map!(attr, :marker, [:vertex_position, :faces, :normal, :uv]) do mesh
+        faces = decompose(GLTriangleFace, mesh)
+        normals = decompose_normals(mesh)
+        texturecoordinates = decompose_uv(mesh)
+        positions = decompose(Point3f, mesh)
+        return (positions, faces, normals, texturecoordinates)
+    end
+    map!(Rect3d, attr, :marker, :marker_bb)
+    map!(meshscatter_data_limits, attr, [:positions, :marker_bb, :markersize, :rotation], :data_limits)
+    map!(
+        meshscatter_boundingbox, attr, [
+            :positions_transformed, :model,
+            :transform_marker, :marker_bb, :markersize, :rotation,
+        ], :boundingbox
+    )
+    return
+end
+
+
+function calculated_attributes!(::PointBased, plot::Plot)
+    attr = plot.attributes
+    map!(attr, :positions, :data_limits) do positions
+        return Rect3d(positions)
+    end
+    return register_position_transforms!(attr)
+end
+
+
+function calculated_attributes!(::Type{Lines}, plot::Plot)
+    attr = plot.attributes
+    register_colormapping!(attr)
+    ComputePipeline.alias!(attr, :linewidth, :uniform_linewidth)
+    return calculated_attributes!(PointBased(), plot)
+end
+
+function calculated_attributes!(::Type{LineSegments}, plot::Plot)
+    attr = plot.attributes
+    attribute_per_pos!(attr, :color, :synched_color)
+    register_colormapping!(attr, :synched_color)
+    attribute_per_pos!(attr, :linewidth, :uniform_linewidth)
+    return calculated_attributes!(PointBased(), plot)
+end
+
+function calculated_attributes!(::Type{Mesh}, plot::Plot)
+    attr = plot.attributes
+    register_mesh_decomposition!(attr)
+    register_mesh_stroke!(attr)
+    register_colormapping!(attr, :mesh_color)
+    calculated_attributes!(PointBased(), plot)
+    return register_pattern_uv_transform!(attr, colorname = :mesh_color)
+end
+
+function calculated_attributes!(::Type{Volume}, plot::Plot)
+    attr = plot.attributes
+    ComputePipeline.alias!(attr, :model, :model_f32c)
+    register_colormapping!(attr, :volume)
+    return map!(attr, [:x, :y, :z], :data_limits) do x, y, z
+        mini, maxi = Vec3.(x, y, z)
+        return Rect3d(mini, maxi .- mini)
+    end
+end
+
+
+get_colormapping(plot::Plot) = get_colormapping(plot, plot.attributes)
+function get_colormapping(plot, attr::ComputePipeline.ComputeGraph)
+    isnothing(attr[:scaled_colorrange][]) && return nothing
+    haskey(attr, :cb_colormapping) && return attr[:cb_colormapping][]
+    map!(attr, [:colorrange, :raw_color], :unscaled_colorrange) do colorrange, color
+        if colorrange === automatic
+            return isempty(color) ? Vec2f(0, 10) : Vec2f(distinct_extrema_nan(color))
+        elseif first(colorrange) == automatic
+            lastcolor = last(colorrange)
+            return Vec2f(min(first(distinct_extrema_nan(color)), lastcolor), lastcolor)
+        elseif last(colorrange) == automatic
+            firstcolor = first(colorrange)
+            return Vec2f(firstcolor, max(firstcolor, last(distinct_extrema_nan(color))))
+        else
+            lo, hi = Vec2f(colorrange)
+            lo == hi || return Vec2f(lo, hi)
+            delta = max(0.5f0, abs(lo))
+            return Vec2f(lo - delta, hi + delta)
+        end
+    end
+
+    attributes = [
+        :raw_color, :alpha_colormap, :raw_colormap, :colorscale, :color_mapping, :unscaled_colorrange,
+        :lowclip, :highclip, :nan_color, :color_mapping_type, :scaled_colorrange, :scaled_color,
+    ]
+
+    # keep it cached somewhere so we don't recreate it multiple times
+    return get!(attr.observables, :_ColorMapping_obs) do
+        N = ndims(attr[:raw_color][])
+        Cin = typeof(attr[:raw_color][])
+        Cout = typeof(attr[:scaled_color][])
+        observables = map(name -> ComputePipeline.get_observable!(attr[name]), attributes)
+        return Observable(ColorMapping{N, Cin, Cout}(observables...))
+    end[]
+end
+
+function register_world_normalmatrix!(attr, modelname = :model_f32c)
+    return map!(attr, modelname, :world_normalmatrix) do m
+        return Mat3f(transpose(inv(m[Vec(1, 2, 3), Vec(1, 2, 3)])))
+    end
+end
+
+function register_view_normalmatrix!(attr, modelname = :model_f32c)
+    return map!(attr, [:view, modelname], :view_normalmatrix) do view, model
+        i3 = Vec3(1, 2, 3)
+        nm = transpose(inv(view[i3, i3] * Mat3f(model[i3, i3])))
+        return nm
+    end
+end
+
+# For precompilation we want a second resolve
+# Since that compiles a few more functions
+# TODO, make this unnecessary by a better ComputeGraph implementation?
+second_resolve(fig::Figure, resolve_symbol) = second_resolve(Makie.get_scene(fig), resolve_symbol)
+second_resolve(fig, resolve_symbol) = second_resolve(fig.figure, resolve_symbol)
+function second_resolve(scene::Scene, resolve_symbol)
+    return for_each_atomic_plot(scene) do plot
+        for (k, input) in plot.attributes.inputs
+            ComputePipeline.mark_dirty!(input)
+        end
+        if haskey(plot, resolve_symbol)
+            plot[resolve_symbol][]
+        end
+    end
+end

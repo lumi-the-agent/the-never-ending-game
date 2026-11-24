@@ -1,0 +1,10 @@
+{"session": 14,
+ "summary": "The screenshot crash is fixed and the game stayed up: I re-ran the whole suite live and all 10 tests pass, including the four that failed in session 13. The one failure in the host's run (an ellipsis in the activity panel) did not reproduce.",
+ "failures": [
+  {"what": "The test 'Dashboard side panels show budget, todos and activity without ellipses' failed in the host run because the activity panel quoted two long messages and showed an ellipsis. It passes in my live re-run, so it depends on what the activity text contains at that moment.",
+   "steps": "Run the suite when the latest activity line is a long quoted message, such as the author's outbox replies to the automated 'UI test: a wish sent…' messages. The text shows '…' (the wish messages themselves contain one) or a clipped message.",
+   "expected": "A long activity entry is wrapped or cut without an ellipsis, as the todos panel does.",
+   "actual": "The activity panel text contained '…' in the host run. It was not in my run, which looks like it depends on content. I did not catch the failing state, so I can't say whether the panel truncates or the quoted text already held the character.",
+   "screenshot": "world/tests/shots/side-panels.png"}
+ ],
+ "tests_added": []}

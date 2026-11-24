@@ -1,0 +1,373 @@
+"""
+What a running graph carries with it: the execution context and the per-run
+diagnostics.
+
+Both live here rather than next to `execute!` because the kernel entry points
+take a `Ctx` — `sdpa(ctx, q, k, v, …)`, `convolution!(ctx, out, x, w, …)` — and a
+method signature naming a type needs that type to exist when the method is
+defined. `graph.jl` is the only thing above this file.
+"""
+
+"""
+    caps(device) -> M.DeviceCaps
+
+What the kernels need to know about the device they are about to run on,
+answered **once per context**, at construction, from a live device.
+
+This is `kernel-library-review.md` finding 9. Five numbers were hardcoded at
+their call sites — 48 shader cores, 32 lanes to a subgroup, a 48 KB shared
+budget, a 256-thread launch group, a 48-workgroup occupancy floor — each written
+while there was one card to be wrong about. Across an Ada desktop, an RDNA3 iGPU
+whose compute subgroup may be 64, and lavapipe, they are wrong in fact and not
+merely in principle: `NW * 32` computes the wrong workgroup size on a wave64
+device, and every tiling decision keyed on it inherits the error.
+
+None of these may be captured at module scope (`GUARDRAILS.md` §8): they describe
+a device, so a second device must get its own answers.
+
+## The type is Lava's
+
+Every one of these is a question about the device, so the device is what answers
+them: `M.DeviceCaps` is the record, and a copy of it here would be a second
+record that can drift.
+
+What stays here is the one number that is *not* a device fact:
+[`launchgroup`](@ref), which is this library's measured default for `launch!`.
+
+## Where the device comes from
+
+The execution owner is passed in explicitly. A KernelAbstractions backend is a
+kernel-launch descriptor, not a general device handle; ROCm's is an empty value
+and cannot identify a HIP device, stream, pool or capability record.
+"""
+# Through Mantle, not `Lava.caps` directly: the backend's extension converts its
+# own record into the portable one, so this stays right when a second backend
+# exists and wrong-by-construction if it did the conversion here.
+caps(d::M.Device) = M.caps(d)
+caps(b::KernelAbstractions.Backend) = caps(M.todevice(b))
+
+"""
+    NoiseSource
+
+Where a graph's `rand`/`randn_like` get their values.
+
+Two of them, and the second is a measurement instrument. Kokoro's `SineGen`
+draws a noise floor for its harmonic-plus-noise excitation, so the model is
+genuinely stochastic: two calls on identical input produce different audio, and
+comparing either against a reference measures two unrelated random streams.
+
+**Seeding does not fix that across languages.** A seeded PyTorch reference and a
+seeded Julia run draw from different generators, so the noise term survives at
+full strength. Zeroing it on both sides removes the term and leaves the
+deterministic path — which is the part a port can actually be held to.
+"""
+abstract type NoiseSource end
+
+"""
+    RandomNoise(rng = Random.default_rng())
+
+The real thing, and the default. The immediate executor draws from `rng` on the
+host. A declared graph uses `rng` once to seed a persistent device counter, then
+advances and expands that counter inside every replay so randomness is not
+frozen into the recorded plan.
+"""
+struct RandomNoise{R} <: NoiseSource
+    rng::R
+end
+RandomNoise() = RandomNoise(Random.default_rng())
+
+"""
+    ZeroNoise()
+
+Every draw is zero. For parity runs against a reference that has had the same
+thing done to it — see `tools/verify_kokoro.py`.
+
+Not a fake `AbstractRNG`: a generator that returns zero forever violates the
+contract every other caller relies on, and would be reachable from anything that
+asks a `Ctx` for randomness later.
+"""
+struct ZeroNoise <: NoiseSource end
+
+"""
+    draw(source, f, T, dims) -> Array{T}
+
+`f` is `rand` or `randn`; `dims` the shape wanted.
+"""
+draw(n::RandomNoise, f, ::Type{T}, dims) where {T} = f(n.rng, T, dims...)
+draw(::ZeroNoise, ::Any, ::Type{T}, dims) where {T} = zeros(T, dims...)
+
+"""
+    launchgroup(dev) -> Int
+
+Threads `launch!` asks for by default: 256, or the device's limit if it is lower.
+
+The one number in a `Ctx`'s device record that Lava does not own. 256 is measured
+— it is a property of these kernels, not of the card — and the clamp is the part
+that is the device's.
+"""
+launchgroup(dev::M.DeviceCaps) = min(256, dev.workgrouplimit)
+
+@static if !Sys.isapple()
+    # Through `storage`, because an operand is now often a `Mantle.Buffer` —
+    # the pool region that owns the bytes — and every caller of this is asking
+    # about the BYTES: whether they are this backend's, dense, and therefore
+    # addressable by a cooperative-matrix kernel. A `Buffer` wrapping exactly
+    # such a region would answer `false` to the bare type test and decline a
+    # shape the kernel handles, which is what happened to the masked prefill
+    # and to `q8gemm_tiling`. `storage` is the identity on anything that is
+    # already an array.
+    islavaarray(x) = Mantle.storage(x) isa Mantle.LavaArray
+else
+    islavaarray(x) = false
+end
+
+"""
+    Diagnostics(; optimes, opdouble, opdoublefilter, planmisses, launches)
+
+Per-run instrumentation. Every field is off by default and free when off: the
+cost of an inactive diagnostic is one `=== nothing` on a field of a struct the
+caller already holds.
+
+Fields and not module-level `Ref`s: a `Ctx` reaches every kernel entry point it
+is handed to, so nothing has to be threaded through by hand. What that buys is
+**two differently instrumented runs in one process**, and tests that never save
+and restore module state a failure could leave flipped.
+
+A `Model` carries one from construction (`m.diag`), so instrumenting a whole
+`step!` is `m.diag.optimes = Dict{String,Tuple{Int,Float64}}()` and no signature
+changes.
+
+`optimes` and `opdouble` instrumented the INTERPRETED run and have nothing left
+to measure: `execute!` is gone and a recorded plan cannot attribute device time
+to a source-level op. `launches` and `planmisses` still answer.
+"""
+Base.@kwdef mutable struct Diagnostics
+    # ── `aten name => (count, milliseconds)`, by synchronising around every op.
+    #
+    # Deliberately a *serialising* measurement — it is the only kind that
+    # attributes device time to a source-level op — so the totals run longer than
+    # the step does. On this model the difference is small: removing every
+    # barrier from a step only buys ~3 ms of 46, i.e. the dispatches barely
+    # overlap anyway.
+    optimes::Union{Nothing,Dict{String,Tuple{Int,Float64}}} = nothing
+
+    # ── Name of an ATen op to run *twice* per step.
+    #
+    # The step's wall time then grows by that op's real cost, which is the only
+    # way to attribute device time here without the measurement swamping what it
+    # measures: syncing around each op costs ~0.4 ms a time and buries a 640-op
+    # step under 240 ms of its own barriers, and per-dispatch timestamps
+    # serialise and inflate just as badly. Running an idempotent op a second time
+    # perturbs nothing — the result is identical — and the difference is measured
+    # on an otherwise untouched step.
+    #
+    # `"*"` matches every aten, which is only useful together with
+    # `opdoublefilter`: it costs a *set* of ops spanning several atens in one
+    # measurement instead of one run per aten, so the answer carries one run's
+    # error rather than the sum of eight.
+    opdouble::String = ""
+
+    # ── Narrow `opdouble` to a subset of an op family: `(ctx, op) -> Bool`.
+    #
+    # Attribution has to happen *in situ*. Standalone convolution microbenchmarks
+    # on this setup are unusable — identical code timed one shape at 16 us and
+    # 116 us in consecutive runs — while doubling an op inside a captured,
+    # replayed step has been stable all along, because the measurement is a whole
+    # step and the perturbation is the only thing that changes. This makes that
+    # technique reach a single shape instead of a whole family, which is what
+    # per-shape convolution cost needs.
+    opdoublefilter::Union{Nothing,Function} = nothing
+
+    # ── Every id `dest` could not place, as `id => (count, bytes)`.
+    #
+    # The counterpart to Lava's allocation trace, which sees only what reaches
+    # the pool and is therefore blind to a `Recycler` hit — memory that is just
+    # as resident. This answers the question that one cannot: *which op* is still
+    # allocating outside the plan, and how much. Getting SAM 2's encoder from
+    # 1 649 MB of unplanned allocation per call to 106 MB was four rounds of
+    # reading this and `Mantle.dump_alloc_trace()` together.
+    #
+    # A miss is not automatically a bug: a tuple output the planner skips, or a
+    # handler asking for a dtype the reservation was not sized for, both land
+    # here legitimately. It is a list of candidates, not of faults.
+    planmisses::Union{Nothing,Dict{String,Tuple{Int,Int}}} = nothing
+
+    # ── Every `launch!` as `(ndrange, workgroup) => (count, groups)`.
+    #
+    # For finding launches that do not fill the device. A grid of 64 workgroups
+    # on a 48-SM card leaves most of it idle however good the kernel is, and that
+    # is invisible in a per-op timing table — it shows up only as one op being
+    # inexplicably slow. `Mantle.with_dispatch_timing` says *which dispatch*; this
+    # says *which launch site and what shape*.
+    launches::Union{Nothing,Dict{Tuple{Dims,Dims},Tuple{Int,Dims}}} = nothing
+end
+
+"""Ids `dest` could not place, largest first."""
+function planmisses(d::Diagnostics)
+    m = d.planmisses
+    m === nothing && return NamedTuple[]
+    [(; id, count = v[1], bytes = v[2]) for (id, v) in
+     sort(collect(m); by = x -> -x[2][2])]
+end
+
+# Parameterised on the backend AND the slab type — see the note on `Model` in
+# driver.jl. The slab matters as much as the backend: `slabview` has two methods,
+# and the `::Vector{UInt8}` one returns a HOST array. With `slab::Any` both are
+# live, so `dest` hands back something untyped, `get_backend(out)` in `launch!`
+# cannot be resolved, and inference explores `Kernel{CPU}` — which is how 3 948
+# CPU kernel specialisations (`cpu_ndmap!`, `cpu_conv2d_igemm!`, …) ended up in
+# SAM 2's package image despite nothing here ever running on the CPU. Their
+# `__run` takes every argument as `Any`, so their call edges span whole method
+# tables and any newly loaded package throws them away.
+struct Ctx{B,N,S,P,W,L,R}
+    values::Dict{String,Any}
+    graph::Graph
+    dims::NamedTuple
+    backend::B
+    dev::M.DeviceCaps          # what this backend's device can do — see `caps`
+    runscalls::Bool            # whether this execution path may invoke libraries
+
+    # ── Let an attention whose extents do not divide the tile take the fused
+    # cooperative-matrix path anyway, padded and masked.
+    #
+    # A property of *this graph run*, which is why it is here and not in the device
+    # (it is not a device fact) and not in a plan (the plan is per call). SAM 2's
+    # decoder wants it and its encoder does not: the decoder's attentions are 23
+    # tokens and want exactly this, while the encoder has six `Lq = 16` calls that
+    # would go along at 50% waste and cost **+2.12 ms of encode** for nothing.
+    # Measured interleaved in one process on the autocast export, which is the
+    # only form that means anything for a 4 ms call on a shared card: decode
+    # 8.24 -> 4.22 ms with the clamp, encode 118.63 -> 120.75. (On an RTX 4000
+    # Ada; the Radeon 8060S APU runs the same encode in ~270 ms — 2.3x is the
+    # card, not a regression.)
+    #
+    # A field and not a `Ref` a caller sets around the decode: `flashcm_tiling`
+    # reads it six frames down, inside `runop!`, and `Ctx` reaches every
+    # `runop!`. It also leaves no state a decoder error could leave switched on
+    # for the next encode.
+    clampattn::Bool
+
+    # ── May attention take the coopmat2 kernel?
+    #
+    # On, because it is measured faster on every shape it accepts — -27% on SAM
+    # 2's global attention blocks and -45% on the windowed ones — and it declines
+    # the rest (`flashcm2_tiling`).
+    #
+    # A field rather than a global for the reason `clampattn` is one: it is a
+    # property of a run. It is the kill switch for a newly routed kernel — the
+    # thing to flip first when attention looks wrong — and `test_flash_cm2.jl`
+    # asserts that flipping it really does hand the call back to `FlashCMPlan`,
+    # because an off switch nothing exercises is one that quietly stops working.
+    #
+    # It is NOT how the model-level A/B is done: `bench_sam2.jl` empties
+    # `wggran` on the device caps instead, which makes the whole planner decide
+    # as if the card had no workgroup-scope matrices, and needs no flag threaded
+    # through `Model` and `call`.
+    flashcm2::Bool
+
+    # ── Where `rand`/`randn_like` get their values.
+    #
+    # A property of this run, like `clampattn`. Kokoro's `SineGen` draws a noise
+    # floor, so the model is genuinely stochastic and two calls on identical
+    # input differ — which makes it uncomparable to a reference by default. A
+    # [`ZeroNoise`](@ref) run removes that term and leaves the deterministic path,
+    # which is the part a port can be held to.
+    #
+    # A noise SOURCE rather than an `AbstractRNG` because zeroing is not a random
+    # stream: a fake RNG returning zeros would have to satisfy a contract it
+    # violates, and `rand(rng)` returning 0.0 forever is a trap for anything else
+    # that reaches for it.
+    noise::N
+    slab::S                       # UInt8 scratch slab, or nothing
+    plan::P                       # Slab (plan.jl), or nothing
+    outid::Base.RefValue{String}  # output id of the op currently running
+    ws::W                         # Workspace for kernel-internal scratch, or nothing
+    lazy::L                       # Set of ids that may stay unmaterialised (fuse.jl)
+    rec::R                        # Recycler for unplanned allocations, or nothing
+    diag::Diagnostics             # per-run instrumentation, all off by default
+end
+
+"""
+    scratch!(ctx, T, dims...) -> array
+
+Working storage a kernel needs and no ATen graph names: the tensor-core
+convolution's im2col matrix, an fp32 GEMM destination, a plane per split-K
+split.
+
+**An immediate call allocates.** The declared path takes scratch from the graph
+instead — `scratch(emitctx, T, dims…)` is a `Transient.Buffer`, so `Place` sizes
+it against every other buffer in the graph and `Aliasing` hands its bytes on at
+its last use. That is strictly better and it is what a model does. What is left
+for this one is a kernel called DIRECTLY, with no graph to plan against: a unit
+test, and the `X!` half of the `X_launches`/`X!`/`X_dispatch!` split that lets a
+shape's kernel be chosen in one place and submitted two ways.
+
+`Workspace` was the third answer — a bump arena reset per op, because the
+interpreted run allocated per op and that drove Lava's pool into repeated
+`reclaim on OOM retry`. It went with the interpreted run, and the arena's reason
+went with it: nothing calls these in a loop any more.
+"""
+scratch!(::Nothing, backend, ::Type{T}, dims::Integer...) where {T} =
+    KernelAbstractions.allocate(backend, T, dims...)
+
+@inline scratch!(ctx::Ctx, ::Type{T}, dims::Integer...) where {T} =
+    scratch!(ctx.ws, ctx.backend, T, dims...)
+
+# Nothing to reset when there is no arena. A method rather than a
+# `ws === nothing` test at each call site.
+reset!(::Nothing) = nothing
+
+# `dev` is derived from `backend` and never passed in. It costs one query per
+# context — once per graph execution — and each of those reads a field Lava
+# filled at device creation, so it does not go near the driver on the hot path.
+#
+# ONE constructor, all keywords. There were five telescoping positional forms
+# (review finding 6), which is a shape that only ever grows: `slab, plan, outid,
+# ws, lazy, rec, diag` is seven arguments in a fixed order with `nothing` as most
+# of them, and adding `clampattn` in the middle of that would have been a bug
+# nobody could see. A keyword is also self-documenting at the call site.
+#
+# The four remaining `Any` fields became type PARAMETERS rather than named types
+# because `Slab`, `Workspace` and `Recycler` are all defined in files included
+# after this one. Parameters cost nothing here: there are two live combinations,
+# the graph path and the bare `Ctx(backend)`, not a combinatorial spread. And the
+# typing is load-bearing rather than tidiness — see the note above on `slab`,
+# where `::Any` put 3 948 CPU kernel specialisations into SAM 2's package image.
+function Ctx(values, graph, dims, target;
+             slab = nothing, plan = nothing, outid = Ref(""), ws = nothing,
+             lazy = nothing, rec = nothing, diag::Diagnostics = Diagnostics(),
+             clampattn::Bool = false, flashcm2::Bool = true,
+             noise::NoiseSource = RandomNoise())
+    Ctx(values, graph, dims, M.todevice(target);
+        slab, plan, outid, ws, lazy, rec, diag, clampattn, flashcm2, noise)
+end
+
+function Ctx(values, graph, dims, dev::M.Device;
+             slab = nothing, plan = nothing, outid = Ref(""), ws = nothing,
+             lazy = nothing, rec = nothing, diag::Diagnostics = Diagnostics(),
+             clampattn::Bool = false, flashcm2::Bool = true,
+             noise::NoiseSource = RandomNoise())
+    backend = dev
+    Ctx(values, graph, dims, backend, caps(dev), M.runscalls(dev),
+        clampattn, flashcm2, noise,
+        slab, plan, outid, ws, lazy, rec, diag)
+end
+
+"""
+    Ctx(backend; ws = nothing, rec = nothing, diag = Diagnostics())
+
+A context with no graph behind it.
+
+For the two callers that are not running a graph and still need the backend, the
+workspace and the diagnostics in one object: the driver's memory read, which sits
+*between* graphs, and any direct call to a kernel entry point — which is what a
+test does, and the reason `sdpa(ctx, …)` is as reachable from a test as
+`sdpa(…; backend, ws)` was.
+
+The empty `Graph` costs one small allocation and is never read: nothing on this
+path asks for `ctx.graph`, because nothing on it has an op id.
+"""
+Ctx(backend; kw...) =
+    Ctx(Dict{String,Any}(), Graph("", String[], String[], String[],
+                                  Dict{String,Buffer}(), String[], Op[]),
+        NamedTuple(), backend; kw...)

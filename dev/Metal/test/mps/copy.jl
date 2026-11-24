@@ -1,0 +1,56 @@
+# XXX: Why 64-bit Integers broken? Same behaviour with Swift
+copy_is_broken(T) = sizeof(T) >= 8
+
+function copytest(src, srctrans, dsttrans)
+    dev = device()
+    queue = global_queue(dev)
+    dst = if srctrans == dsttrans
+        similar(src)
+    else
+        similar(transpose(src))
+    end
+
+    if dsttrans
+        cprows,cpcols = size(dst)
+    else
+        cpcols,cprows = size(dst)
+    end
+
+    cmdbuf = MTL.MTLCommandBuffer(queue) do cbuf
+        srcMPS = MPS.MPSMatrix(src)
+        dstMPS = MPS.MPSMatrix(dst)
+
+        copydesc = MPS.MPSMatrixCopyDescriptor(srcMPS, dstMPS)
+        copykern = MPS.MPSMatrixCopy(dev, cprows, cpcols, srctrans, dsttrans)
+        MPS.encode!(cbuf, copykern, copydesc)
+    end
+    MTL.wait_completed(cmdbuf)
+    return dst
+end
+
+Ts = collect(values(MPS.jl_mps_to_typ))
+for T in Ts, dim in ((16,16), (10,500), (500,10), (256,512))
+    @testset let T = T, dim = dim
+        srcMat = MtlArray(rand(T, dim))
+
+        dstMat = copytest(srcMat, false, false)
+        @test Array(dstMat) == Array(srcMat) broken=copy_is_broken(T)
+
+        dstMat = copytest(srcMat, true, false)
+        @test Array(dstMat) == Array(transpose(srcMat)) broken=copy_is_broken(T)
+
+        dstMat = copytest(srcMat, false, true)
+        @test Array(dstMat) == Array(transpose(srcMat)) broken=copy_is_broken(T)
+
+        dstMat = copytest(srcMat, true, true)
+        @test Array(dstMat) == Array(srcMat) broken=copy_is_broken(T)
+    end
+end
+
+# MPS aborts the process on empty copies
+@testset "empty" begin
+    dev = device()
+    @test_throws ArgumentError MPS.MPSMatrixCopy(dev, 0, 16, false, false)
+    @test_throws ArgumentError MPS.MPSMatrixCopy(dev, 16, 0, false, false)
+    @test_throws ArgumentError MPS.MPSMatrixCopy(dev, 0, 0, false, true)
+end

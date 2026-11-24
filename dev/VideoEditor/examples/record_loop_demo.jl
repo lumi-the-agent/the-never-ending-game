@@ -1,0 +1,205 @@
+# Mouse-driven walkthrough: turn a handheld bird clip into a STABILIZED, seamless,
+# full-cycle loop and export it as a GIF — every step driven by the on-screen mouse
+# (FakeInteraction renders a real cursor + click state), the way a user actually does it.
+#
+#   play the raw clip (nest box drifts) → Camera-lock stabilize the whole clip (GPU) →
+#   cut off the shaky intro with the split tool → "Make seamless loop" (finds the full
+#   ~13 s behavioural cycle where the bird goes around and comes back) → play the loop →
+#   export as a looping GIF (export dock, GIF format).
+#
+# RULES (same as record_demo.jl): everything VISIBLE is a mouse/keyboard event — never
+# mutate observables or call editor functions from the events list. The only script-side
+# state pokes are INSTRUMENTATION (STABILIZING flag) so we can time-lapse the GPU-analysis
+# wait in post; they don't drive any on-screen interaction.
+
+ENV["DISPLAY"] = get(ENV, "DISPLAY", ":1")
+# XAUTHORITY rotates across reboots — pick the newest xauth_* if not already set.
+if !haskey(ENV, "XAUTHORITY")
+    xs = filter(f -> startswith(basename(f), "xauth_"), readdir("/run/user/1000"; join = true))
+    isempty(xs) || (ENV["XAUTHORITY"] = last(sort(xs; by = mtime)))
+end
+ENV["XDG_RUNTIME_DIR"] = get(ENV, "XDG_RUNTIME_DIR", "/run/user/1000")
+
+using VideoEditor, GLMakie, Makie, Mantle
+import VideoEditor as VE
+import KernelAbstractions as KA
+import FFMPEG_jll
+
+isdefined(Main, :FakeInteraction) ||
+    include(joinpath(@__DIR__, "..", "..", "Makie", "docs", "fake_interaction.jl"))
+using .FakeInteraction: Wait, WaitUntil, MouseTo, LeftClick, LeftDown, LeftUp, Lazy, KeyPress, TypeText
+
+const DEMOLOOP = joinpath(@__DIR__, "..", "..", "..", "media", "demo_loop.mp4")
+const RAW_MP4  = joinpath(tempdir(), "loop_walkthrough_raw.mp4")
+const OUT_MP4  = joinpath(@__DIR__, "..", "..", "..", "media", "loop_walkthrough.mp4")
+const OUT_GIF  = joinpath(tempdir(), "bird_fullcycle.gif")
+
+GLMakie.activate!(; visible = false, framerate = 30)
+# NOT `analysisbackend = Mantle.defaultbackend()`. the GPU context belongs to whichever
+# thread touches it FIRST, and constructing the backend here makes that MAIN —
+# after which every analysis on the pinned worker dies with "BatchQueue is
+# single-writer; cross-thread sweep forbidden". The constructor makes the device
+# on its GPU worker, and `autodetectgpu!` (spawned by it) then turns on GPU
+# playback; wait for that rather than racing it.
+player = Player(DEMOLOOP)
+let t0 = time()
+    while player.gpupreview === nothing && time() - t0 < 90
+        sleep(0.2)
+    end
+    player.gpupreview !== nothing ||
+        @warn "GPU autodetect did not enable the GPU tier — the walkthrough will run on the CPU tier"
+end
+# DO NOT set `player.gpupreview = nothing` here. Importing the shared Vulkan
+# texture into GL fails on this machine ("GL import of the shared texture
+# failed", glbridge.jl:175 — the same known failure test_gpu.jl:218 carries), and
+# the editor handles it correctly: it pauses and says so in the status bar. That
+# banner is ugly in a recording, but clearing the field after `autodetectgpu!`
+# has already wired the preview is worse — it leaves the preview plot pointing at
+# a torn-down path and the walkthrough renders GREEN/BLACK STRIPES instead of
+# video. Measured both ways: correct picture + banner, or broken picture.
+# Turning the tier off properly would need an inverse of `setupgpupreview!`.
+fig = player.fig
+resize!(fig, 1440, 900)
+sleep(4.0)                                   # let the thumbnail strip fill
+Makie.disconnect!(player.screen, Makie.mouse_position)   # keep the real OS mouse out
+fig.scene.events.hasfocus[] = false
+player.fxwidgets[:exportpath][] = OUT_GIF    # off-camera: preset the export path
+
+# Warm the GPU kernels off-camera (the first GPU analysis compiles them).
+#
+# `rungpusync`, not `rungpu` + `while !done[]`: fire-and-forget gives the caller
+# no way to hear that the job failed, so when the worker died on a lost device
+# this spun forever at full CPU with nothing on screen and nothing in the log.
+# The sync form carries the exception back and rethrows it here.
+VE.rungpusync(player) do
+    VE.analyzemotion!(VE.Clip(VideoSource(DEMOLOOP), 0, 48, 0, (0., 0., 1., 1.));
+                      backend = Mantle.defaultbackend())
+end
+
+# ------------------------------------------------------------------ helpers
+block_center(b) = FakeInteraction.relative_pos(b, (0.5, 0.5))
+function timeline_pos(t; yfrac = 0.5)
+    ax = player.timeline.axis; lims = ax.finallimits[]; vp = ax.scene.viewport[]
+    frac = (Float64(t) - lims.origin[1]) / lims.widths[1]
+    Point2f(vp.origin[1] + frac * vp.widths[1], vp.origin[2] + yfrac * vp.widths[2])
+end
+function menu_pos(menu, rely)  # rely 0.5 = the closed button; -(i-0.5) = open option i
+    bb = menu.layoutobservables.computedbbox[]
+    Point2f(bb.origin[1] + bb.widths[1] / 2, bb.origin[2] + rely * bb.widths[2])
+end
+
+buttons = [c for c in fig.content if c isa Makie.Button]
+play_btn = first(b for b in buttons if b.label[] in ("Play", "Pause"))
+fx_btn   = first(b for b in buttons if b.label[] == "FX")
+out_btn  = first(b for b in buttons if b.label[] == "Out")
+split_btn = first(b for b in buttons if b.label[] == "✂")
+# Stabilize is an effect kind now, so these are built by ITS CARD and do not
+# exist until the clip carries the effect — accessors, read at event time.
+mode_menu() = player.fxwidgets[:modemenu]
+stabilize_btn() = player.fxwidgets[:analyze]
+"""
+Add an effect the way a user does: open "+ Add effect…", type enough of its name
+to filter, Enter takes the first hit. The card is what carries the mode menu and
+the analyze button, so it has to be created on camera — a script-side
+`seteffect!` would make it appear with no visible cause.
+"""
+addeffect_events(query) = [
+    Lazy(_ -> MouseTo(block_center(player.fxwidgets[:addeffect]))), LeftClick(), Wait(0.9),
+    TypeText(query), Wait(0.7),
+    KeyPress(Makie.Keyboard.enter), Wait(1.3),
+]
+loop_btn = player.fxwidgets[:gifloop]      # the "GIF loop" checkbox
+fmt_menu = player.fxwidgets[:exportformat]
+export_go = player.fxwidgets[:exportgo]
+
+# held-key badge (so viewers see Esc etc.)
+key_badge = Observable(" ")
+on(Makie.events(fig).keyboardbutton) do e
+    e.action == Makie.Keyboard.press && e.key == Makie.Keyboard.escape ?
+        (key_badge[] = "Esc") : (key_badge[] = " ")
+end
+Makie.text!(fig.scene, key_badge; position = Point2f(720, 880), space = :pixel,
+            align = (:center, :top), fontsize = 34, font = :bold,
+            color = RGBAf(0.85, 0.15, 0.15, 1), strokecolor = :white, strokewidth = 3,
+            overdraw = true)
+
+# instrumentation: during every async wait (GPU analysis, loop search, GIF export) throttle
+# the record loop to ~real time (else a WaitUntil spins at max encode speed and records tens
+# of thousands of frames) AND collect those frame indices so post can time-lapse each span.
+const TIMELAPSE = Ref(false)
+const SLOW_FRAMES = Int[]
+const MAXFRAME = Ref(0)
+recfunc = (i, t) -> (MAXFRAME[] = i; TIMELAPSE[] && (push!(SLOW_FRAMES, i); sleep(1 / 30)); nothing)
+
+# condition predicates (recording load makes GPU analysis time vary wildly — wait on the
+# RESULT, not a guessed duration, so make-loop never runs on a half-stabilized clip)
+hasmotion() = !isempty(player.sequence.clips) && player.sequence.clips[1].motiontrack !== nothing
+looptrimmed() = VE.seqduration(player.sequence) < 15.0
+exported() = occursin("exported", player.status[])
+
+# -------------------------------------------------------------------- events
+K = Makie.Keyboard
+events = [
+    Wait(1.2),
+
+    # [1] the raw handheld clip — play it: it opens with a shaky zoom-in and DRIFTS
+    MouseTo(block_center(play_btn)), LeftClick(), Wait(4.0),
+    KeyPress(K.space), Wait(0.6),
+
+    # [2] cut off the shaky zoom-in intro FIRST with the SPLIT TOOL (crosshair cursor):
+    # click the timeline at 5 s to cut, Esc puts the tool away, click the intro clip, X deletes it.
+    # (Cutting the zoom BEFORE stabilizing is the whole point — locking a 5× zoom would just
+    #  magnify the frame into mush; the steady nest-box section locks cleanly.)
+    MouseTo(block_center(split_btn)), LeftClick(), Wait(0.8),
+    Lazy(_ -> MouseTo(timeline_pos(5.0))), LeftClick(), Wait(1.1),
+    KeyPress(K.escape), Wait(0.5),
+    Lazy(_ -> MouseTo(timeline_pos(2.5))), LeftClick(), Wait(0.6),
+    KeyPress(K.x), Wait(1.3),
+
+    # [3] Camera-lock stabilize the STEADY clip (GPU): select it, open the mode menu to show
+    # the modes, pick "Camera lock", click "Stabilize clip". The status counts the frames; the
+    # view glides into the auto-crop when it's done. (analysis wait time-lapsed in post)
+    Lazy(_ -> MouseTo(timeline_pos(8.0))), LeftClick(), Wait(0.6),
+    addeffect_events("stabil")...,                        # the card, on camera
+    Lazy(_ -> MouseTo(menu_pos(mode_menu(), 0.5))), LeftClick(), Wait(1.6),
+    Lazy(_ -> MouseTo(menu_pos(mode_menu(), -0.5))), LeftClick(), Wait(0.8),
+    Lazy(_ -> (TIMELAPSE[] = true; MouseTo(block_center(stabilize_btn())))), LeftClick(),
+    WaitUntil(hasmotion; timeout = 500.0),          # wait for the GPU analysis to finish
+
+    # [4] the auto-crop glides in (normal speed = a nice reveal), then play the stabilized
+    # clip: background nailed, no zoom-magnification, only the birds move
+    Lazy(_ -> (TIMELAPSE[] = false; MouseTo(block_center(play_btn)))), Wait(2.5),
+    LeftClick(), Wait(3.5),
+    KeyPress(K.space), Wait(0.6),
+
+    # [5] "Make seamless loop" — finds the full behavioural cycle (bird goes around and returns)
+    # and trims the timeline to it
+    Lazy(_ -> MouseTo(timeline_pos(8.0))), LeftClick(), Wait(0.5),
+    Lazy(_ -> (TIMELAPSE[] = true; MouseTo(block_center(loop_btn)))), LeftClick(),
+    WaitUntil(looptrimmed; timeout = 120.0),
+
+    # [6] play the finished loop — it goes around completely and comes back seamlessly
+    Lazy(_ -> (TIMELAPSE[] = false; MouseTo(block_center(play_btn)))), Wait(1.0),
+    LeftClick(), Wait(14.0),
+    KeyPress(K.space), Wait(0.6),
+
+    # [7] export as a looping GIF: open the export dock, set format = gif, Export GIF
+    MouseTo(block_center(out_btn)), LeftClick(), Wait(1.2),
+    Lazy(_ -> MouseTo(menu_pos(fmt_menu, 0.5))), LeftClick(), Wait(1.0),
+    Lazy(_ -> MouseTo(menu_pos(fmt_menu, -3.5))), LeftClick(), Wait(0.8),   # 4th option = gif
+    Lazy(_ -> (TIMELAPSE[] = true; MouseTo(block_center(export_go)))), LeftClick(),
+    WaitUntil(exported; timeout = 150.0),
+    Lazy(_ -> (TIMELAPSE[] = false; MouseTo(block_center(export_go)))), Wait(2.5),   # show "exported …"
+]
+
+FakeInteraction.interaction_record(recfunc, fig, RAW_MP4, events; fps = 30, px_per_unit = 1)
+close(player)
+
+# ---- collapse the dead time ------------------------------------------------
+# Recording the editor while it does heavy GPU/CPU work (analysis, loop search,
+# GIF export) starves the record loop, so the raw is minutes of a near-static
+# frame between the real beats. mpdecimate drops the duplicate frames and we
+# re-time to a constant 30 fps — the mouse moves, playback and edits survive,
+# the dead waits collapse to a beat each.
+run(`$(FFMPEG_jll.ffmpeg()) -y -i $RAW_MP4 -vf "mpdecimate=hi=64*10:lo=64*4:frac=0.05,setpts=N/30/TB" -r 30 -c:v libx264 -crf 22 -pix_fmt yuv420p $OUT_MP4`)
+@info "saved walkthrough" OUT_MP4 gif = OUT_GIF

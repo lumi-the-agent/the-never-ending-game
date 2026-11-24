@@ -1,0 +1,182 @@
+# broadcasting
+
+import Base.Broadcast: BroadcastStyle, Broadcasted
+
+struct MtlArrayStyle{N,S} <: AbstractGPUArrayStyle{N} end
+MtlArrayStyle{M,S}(::Val{N}) where {N,M,S} = MtlArrayStyle{N,S}()
+
+# identify the broadcast style of a (wrapped) MtlArray
+BroadcastStyle(::Type{<:MtlArray{T,N,S}}) where {T,N,S} = MtlArrayStyle{N,S}()
+BroadcastStyle(W::Type{<:WrappedMtlArray{T,N}}) where {T,N} =
+    MtlArrayStyle{N, storagemode(Adapt.unwrap_type(W))}()
+
+# when we are dealing with different buffer styles, we cannot know
+# which one is better, so use shared memory
+BroadcastStyle(::MtlArrayStyle{N1, S1},
+               ::MtlArrayStyle{N2, S2}) where {N1,N2,S1,S2} =
+    MtlArrayStyle{max(N1, N2), SharedStorage}()
+
+# resolve ambiguity: different N, same memory type
+BroadcastStyle(::MtlArrayStyle{N1, S},
+               ::MtlArrayStyle{N2, S}) where {N1,N2,S} =
+    MtlArrayStyle{max(N1, N2), S}()
+
+# allocation of output arrays
+Base.similar(::Broadcasted{MtlArrayStyle{N, S}}, ::Type{T}, dims) where {T, N, S} =
+    similar(MtlArray{T,length(dims),S}, dims)
+
+# a static version of CartesianIndices that helps avoiding integer division
+# (at the expense of additional compilation)
+struct StaticCartesianIndices{N, I} end
+StaticCartesianIndices(iter::CartesianIndices{N}) where {N} =
+    StaticCartesianIndices{N, iter.indices}()
+StaticCartesianIndices(x) = StaticCartesianIndices(CartesianIndices(x))
+Base.CartesianIndices(iter::StaticCartesianIndices{N, I}) where {N, I} =
+    CartesianIndices{N, typeof(I)}(I)
+Base.@propagate_inbounds Base.getindex(I::StaticCartesianIndices, i::Integer) =
+    CartesianIndices(I)[Int(i)]
+Base.length(I::StaticCartesianIndices) = length(CartesianIndices(I))
+function Base.show(io::IO, I::StaticCartesianIndices)
+    print(io, "Static")
+    show(io, CartesianIndices(I))
+end
+
+# specialization of the broadcast implementation to avoid expensive integer divisions
+const _broadcast_shapes = Base.IdDict()
+const BROADCAST_SPECIALIZATION_THRESHOLD = 10
+@inline function Base.materialize!(::Style, dest, bc::Broadcasted) where {Style<:MtlArrayStyle}
+    return _copyto!(dest, Broadcast.instantiate(Broadcasted{Style}(bc.f, bc.args, axes(dest))))
+end
+@inline Base.copyto!(dest::MtlArray, bc::Broadcasted{Nothing}) =
+    _copyto!(dest, bc) # Keep it for ArrayConflict
+@inline Base.copyto!(dest::AbstractArray, bc::Broadcasted{<:MtlArrayStyle}) =
+    _copyto!(dest, bc)
+@inline function _copyto!(dest::AbstractArray, bc::Broadcasted)
+    axes(dest) == axes(bc) || Broadcast.throwdm(axes(dest), axes(bc))
+    isempty(dest) && return dest
+    bc = Broadcast.preprocess(dest, bc)
+
+    # if this is a common broadcast shape, specialize the kernel on it
+    Is = CartesianIndices(dest)
+    if !haskey(_broadcast_shapes, Is)
+        _broadcast_shapes[Is] = 1
+    else
+        _broadcast_shapes[Is] += 1
+    end
+    if _broadcast_shapes[Is] > BROADCAST_SPECIALIZATION_THRESHOLD
+        function broadcast_cartesian_static(dest, bc, Is)
+            i = Int(thread_position_in_grid().x)
+            stride = threads_per_grid().x
+            while 1 <= i <= length(dest)
+                I = @inbounds Is[i]
+                @inbounds dest[I] = bc[I]
+                i += stride
+            end
+            return
+        end
+
+        Is = StaticCartesianIndices(Is)
+        kernel = @metal launch=false broadcast_cartesian_static(dest, bc, Is)
+        elements = cld(length(dest), 4)
+        threads = min(elements, kernel.maxthreads)
+        groups = cld(min(elements, typemax(UInt32).-threads), threads)
+        kernel(dest, bc, Is; threads, groups)
+        return dest
+    end
+
+    # try to use the most appropriate hardware index to avoid integer division
+    if ndims(dest) == 1 ||
+       (isa(IndexStyle(dest), IndexLinear) && isa(IndexStyle(bc), IndexLinear))
+        function broadcast_linear(dest, bc)
+            i = Int(thread_position_in_grid().x)
+            stride = threads_per_grid().x
+            while 1 <= i <= length(dest)
+                @inbounds dest[i] = bc[i]
+                i += stride
+            end
+            return
+        end
+
+        kernel = @metal launch=false broadcast_linear(dest, bc)
+        elements = cld(length(dest), 4)
+        threads = min(elements, kernel.maxthreads)
+        elements = size(dest)
+    elseif ndims(dest) == 2
+        function broadcast_2d(dest, bc)
+            i = Int(thread_position_in_grid().x)
+            y = Int(thread_position_in_grid().y)
+            @inbounds stride1, stride2, _ = threads_per_grid()
+            @inbounds dim1, dim2 = size(dest)
+            while 1 <= i <= dim1
+                j = y
+                while 1 <= j <= dim2
+                    I = CartesianIndex(i, j)
+                    @inbounds dest[I] = bc[I]
+                    j += stride2
+                end
+                i += stride1
+            end
+            return
+        end
+
+        kernel = @metal launch=false broadcast_2d(dest, bc)
+
+        maxThreads = kernel.maxthreads
+        w = min(size(dest, 1), maxThreads)
+        h = min(size(dest, 2), maxThreads ÷ w)
+        threads = (w, h)
+        elements = size(dest)
+    elseif ndims(dest) == 3
+        function broadcast_3d(dest, bc)
+            i = Int(thread_position_in_grid().x)
+            y = Int(thread_position_in_grid().y)
+            z = Int(thread_position_in_grid().z)
+            @inbounds stride1, stride2, stride3 = threads_per_grid()
+            @inbounds dim1, dim2, dim3 = size(dest)
+            while 1 <= i <= dim1
+                j = y
+                while 1 <= j <= dim2
+                    k = z
+                    while 1 <= k <= dim3
+                        I = CartesianIndex(i, j, k)
+                        @inbounds dest[I] = bc[I]
+                        k += stride3
+                    end
+                    j += stride2
+                end
+                i += stride1
+            end
+            return
+        end
+
+        kernel = @metal launch=false broadcast_3d(dest, bc)
+
+        maxThreads = kernel.maxthreads
+        w = min(size(dest, 1), maxThreads)
+        h = min(size(dest, 2), maxThreads ÷ w)
+        d = min(size(dest, 3), maxThreads ÷ (w*h))
+        threads = (w, h, d)
+        elements = size(dest)
+    else
+        function broadcast_cartesian(dest, bc)
+            i = Int(thread_position_in_grid().x)
+            stride = threads_per_grid().x
+            while 1 <= i <= length(dest)
+                I = @inbounds CartesianIndices(dest)[i]
+                @inbounds dest[I] = bc[I]
+                i += stride
+            end
+            return
+        end
+
+        kernel = @metal launch=false broadcast_cartesian(dest, bc)
+        elements = cld(length(dest), 4)
+        threads = min(elements, kernel.maxthreads)
+    end
+
+    groups = cld.(min.(elements, typemax(UInt32) .- (2 .* threads)), threads)
+
+    kernel(dest, bc; threads, groups)
+
+    return dest
+end

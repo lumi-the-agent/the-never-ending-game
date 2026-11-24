@@ -1,0 +1,161 @@
+struct Triangle{TMetadata} <: AbstractGeometry{3, Float32}
+    vertices::SVector{3,Point3f}
+    normals::SVector{3,Normal3f}
+    tangents::SVector{3,Vec3f}
+    uv::SVector{3,Point2f}
+    metadata::TMetadata
+end
+
+function area(t::Triangle)
+    vs = vertices(t)
+    0.5f0 * norm((vs[2] - vs[1]) × (vs[3] - vs[1]))
+end
+
+function is_degenerate(vs::AbstractVector{Point3f})::Bool
+    v = (vs[3] - vs[1]) × (vs[2] - vs[1])
+    (v ⋅ v) ≈ 0f0
+end
+
+vertices(t::Triangle) = t.vertices
+normals(t::Triangle) = t.normals
+tangents(t::Triangle) = t.tangents
+uvs(t::Triangle) = t.uv
+
+@inline function edge_function(vs)
+    @_inbounds Point3f(
+        vs[2][1] * vs[3][2] - vs[2][2] * vs[3][1],
+        vs[3][1] * vs[1][2] - vs[3][2] * vs[1][1],
+        vs[1][1] * vs[2][2] - vs[1][2] * vs[2][1],
+    )
+end
+
+object_bound(t::Triangle) = mapreduce(
+    v -> Bounds3((v)),
+    ∪, vertices(t)
+)
+
+world_bound(t::Triangle) = reduce(∪, Bounds3.(vertices(t)))
+
+"""
+    empty_triangle(::Type{Triangle{TMeta}}) -> Triangle{TMeta}
+
+Zero-initialized `Triangle` suitable as a no-hit sentinel. All vertex, normal,
+tangent, and uv components are 0; metadata is field-wise zero-constructed
+(works for any POD struct whose primitive fields have `zero(T)` defined).
+
+Takes the full Triangle type (not just the metadata type) so callers can
+write `empty_triangle(eltype(triangles))` directly.
+"""
+function empty_triangle(::Type{Triangle{TMeta}}) where TMeta
+    Triangle{TMeta}(
+        SVector{3,Point3f}(Point3f(0,0,0), Point3f(0,0,0), Point3f(0,0,0)),
+        SVector{3,Normal3f}(Normal3f(0,0,0), Normal3f(0,0,0), Normal3f(0,0,0)),
+        SVector{3,Vec3f}(Vec3f(0,0,0), Vec3f(0,0,0), Vec3f(0,0,0)),
+        SVector{3,Point2f}(Point2f(0,0), Point2f(0,0), Point2f(0,0)),
+        zero_struct(TMeta),
+    )
+end
+
+"""
+    zero_struct(::Type{T}) -> T
+
+Field-wise zero-initialise a POD struct `T`.  Recursive over `fieldtype(T, i)`
+so nested structs (e.g. `Triangle{TriangleMeta}` where `TriangleMeta` has
+`UInt32` fields) work without requiring `zero(T)` to be defined on the outer
+type.  Falls back to `zero(T)` for primitive leaves.
+"""
+@generated function zero_struct(::Type{T}) where T
+    nf = fieldcount(T)
+    if nf == 0
+        # Primitive leaf — use Base.zero.
+        return :(zero(T))
+    else
+        fields = [:(zero_struct($(fieldtype(T, i)))) for i in 1:nf]
+        return Expr(:call, T, fields...)
+    end
+end
+
+function maxaxis(vec::Vec3)
+    max_val = vec[1]
+    max_idx = Int32(1)
+    Base.Cartesian.@nexprs 3 i -> begin
+        if vec[i] > max_val
+            max_val = vec[i]
+            max_idx = Int32(i)
+        end
+    end
+    return max_idx
+end
+
+@inline function to_ray_coordinate_space(
+        vertices::AbstractVector{Point3f}, ray::AbstractRay,
+    )
+    # Compute permutation.
+    kz = maxaxis(map(abs, ray.d))
+    kx = kz + Int32(1)
+    kx == Int32(4) && (kx = Int32(1))
+    ky = kx + Int32(1)
+    ky == Int32(4) && (ky = Int32(1))
+    permutation = Vec3(kx, ky, kz)
+    # Permute ray direction.
+    d = map(x-> ray.d[x], permutation)
+    # Compute shear.
+    denom = 1f0 / d[3]
+    shear = Point3f(-d[1] * denom, -d[2] * denom, denom)
+    # Translate, apply permutation and shear to vertices.
+    rkz = ray.o[kz]
+    tvs = ntuple(3) do i
+        v = vertices[i]
+        vo = map(x-> (v-ray.o)[x], permutation)
+        return vo + Point3f(
+            shear[1] * (v[kz] - rkz),
+            shear[2] * (v[kz] - rkz),
+            0.0f0,
+        )
+    end
+    return SVector{3, Point3f}(tvs), shear
+end
+
+@inline function intersect(triangle::Triangle, ray::AbstractRay)::Tuple{Bool,Float32,Point3f}
+    verts = vertices(triangle)
+    return intersect_triangle(verts, ray)
+end
+
+@inline function intersect_p(t::Triangle, ray::Union{Ray,RayDifferentials}, ::Bool=false)
+    intersect_triangle(t.vertices, ray)[1]
+end
+
+@inline function intersect_triangle(
+        vs::SVector{3, Point3f}, ray::Union{Ray,RayDifferentials}
+    )
+    barycentric = Point3f(0)
+    t_hit = 0f0
+    is_degenerate(vs) && return false, t_hit, barycentric
+    t_vs, shear = to_ray_coordinate_space(vs, ray)
+    # Compute edge function coefficients.
+    edges = edge_function(t_vs)
+    if iszero(edges)
+        return false, t_hit, barycentric
+    end
+    # Perform triangle edge & determinant tests.
+    # Point is inside a triangle if all edges have the same sign.
+    any(edges .< 0.0f0) && any(edges .> 0.0f0) && return false, t_hit, barycentric
+
+    det = sum(edges)
+    det ≈ 0f0 && return false, t_hit, barycentric
+    # Compute scaled hit distance to triangle.
+    shear_z = shear[3]
+    t_scaled = (
+        edges[1] * t_vs[1][3] * shear_z
+        + edges[2] * t_vs[2][3] * shear_z
+        + edges[3] * t_vs[3][3] * shear_z
+    )
+    # Test against t_max range.
+    det < 0f0 && (t_scaled >= 0f0 || t_scaled < ray.t_max * det) && return false, t_hit, barycentric
+    det > 0f0 && (t_scaled <= 0f0 || t_scaled > ray.t_max * det) && return false, t_hit, barycentric
+    # Compute barycentric coordinates and t value for triangle intersection.
+    inv_det = 1.0f0 / det
+    barycentric = edges .* inv_det
+    t_hit = t_scaled * inv_det
+    return true, t_hit, barycentric
+end

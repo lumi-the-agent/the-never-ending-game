@@ -1,0 +1,626 @@
+################################################################################
+#                    Poly - the not so primitive, primitive                    #
+################################################################################
+
+deref(x) = x
+deref(x::Base.RefValue) = x[]
+
+"""
+Special method for polys so we don't fall back to atomic meshes, which are much more
+complex and slower to draw than standard paths with single color.
+"""
+function draw_plot(scene::Scene, screen::Screen, poly::Poly)
+    # dispatch on input arguments to poly to use smarter drawing methods than
+    # meshes if possible.
+    # however, since recipes exist, we can't explicitly handle all cases here
+    # so, we should also take a look at converted
+    # First, we check whether a `draw_poly` method exists for the input arguments
+    # before conversion:
+    if Base.hasmethod(draw_poly, Tuple{Scene, Screen, typeof(poly), typeof.(deref(poly.args[]))...})
+        return draw_poly(scene, screen, poly, deref(poly.args[])...)
+        # If not, we check whether a `draw_poly` method exists for the arguments after conversion
+        # (`plot.converted`).  This allows anything which decomposes to be checked for.
+    elseif Base.hasmethod(draw_poly, Tuple{Scene, Screen, typeof(poly), typeof.(deref(poly.converted[]))...})
+        return draw_poly(scene, screen, poly, deref(poly.converted[])...)
+        # In the worst case, we return to drawing the polygon as a mesh + lines.
+    else
+        return draw_poly_as_mesh(scene, screen, poly)
+    end
+end
+
+# Override `is_cairomakie_atomic_plot` to allow `poly` to remain a unit,
+# instead of auto-decomposing in lines and mesh.
+is_cairomakie_atomic_plot(plot::Poly) = true
+
+
+function draw_poly_as_mesh(scene, screen, poly)
+    for i in eachindex(poly.plots)
+        draw_plot(scene, screen, poly.plots[i])
+    end
+    return
+end
+
+########################################
+### outline methods (::Vector{<:VecTypes{2}})
+########################################
+
+function linepattern_spacing(tilesize::NTuple{2, Int}, normal::Vec2f)
+    a = abs(normal[1] * tilesize[1])
+    b = abs(normal[2] * tilesize[2])
+    return if a < 1.0f-6
+        b
+    elseif b < 1.0f-6
+        a
+    else
+        min(a, b)
+    end
+end
+
+function draw_linepattern_hatch!(ctx, pattern::Makie.LinePattern, bbox, offset::VecTypes{2})
+    x1, y1, x2, y2 = bbox
+    cx = (x1 + x2) / 2
+    cy = (y1 + y2) / 2
+    linecolor = pattern.colors[1]
+    for (dir, width, origin) in zip(pattern.dirs, pattern.widths, pattern.origins)
+        # Negate Y: LinePattern directions are in tile space (Y-up) but Cairo
+        # draws in screen space (Y-down).  The rasterized path handles this via
+        # reverse(to_image(); dims=2); here we flip the direction instead.
+        dir_screen = Vec2f(dir[1], -dir[2])
+        dir_norm = normalize(dir_screen)
+        normal = normalize(Vec2f(-dir_screen[2], dir_screen[1]))
+        spacing = linepattern_spacing(pattern.tilesize, normal)
+        base_origin = origin .+ offset
+
+        min_k = Inf
+        max_k = -Inf
+        for (corner_x, corner_y) in ((x1, y1), (x1, y2), (x2, y1), (x2, y2))
+            k = dot(Vec2f(corner_x, corner_y) .- base_origin, normal)
+            min_k = min(min_k, k)
+            max_k = max(max_k, k)
+        end
+
+        start_idx = floor(Int, min_k / spacing) - 1
+        end_idx = ceil(Int, max_k / spacing) + 1
+        line_length = hypot(x2 - x1, y2 - y1) * 2
+
+        Cairo.set_line_width(ctx, width)
+        Cairo.set_source_rgba(ctx, rgbatuple(linecolor)...)
+        Cairo.set_line_cap(ctx, Cairo.CAIRO_LINE_CAP_BUTT)
+
+        for i in start_idx:end_idx
+            k = i * spacing
+            p_line = base_origin .+ normal .* k
+            t0 = dot(Vec2f(cx, cy) .- p_line, dir_norm)
+            p0 = p_line .+ dir_norm .* t0
+            start_point = p0 .- dir_norm .* line_length
+            end_point = p0 .+ dir_norm .* line_length
+            Cairo.move_to(ctx, start_point[1], start_point[2])
+            Cairo.line_to(ctx, end_point[1], end_point[2])
+        end
+        Cairo.stroke(ctx)
+    end
+    return
+end
+
+function draw_linepattern_fill!(
+        ctx, pattern::Makie.LinePattern, offset::VecTypes{2}, path_builder::Function; rebuild_path::Bool = false
+    )
+    Cairo.save(ctx)
+    path_builder()
+    x1, y1, x2, y2 = Cairo.path_extents(ctx)
+    bgcolor = pattern.colors[2]
+    if alpha(bgcolor) > 0
+        Cairo.set_source_rgba(ctx, rgbatuple(bgcolor)...)
+        Cairo.fill_preserve(ctx)
+    end
+    Cairo.clip(ctx)
+    Cairo.new_path(ctx)
+    draw_linepattern_hatch!(ctx, pattern, (x1, y1, x2, y2), offset)
+    Cairo.restore(ctx)
+    if rebuild_path
+        path_builder()
+    end
+    return
+end
+
+function draw_linepattern_fill!(path_builder::Function, ctx, pattern::Makie.LinePattern, offset::VecTypes{2}; rebuild_path::Bool = false)
+    return draw_linepattern_fill!(ctx, pattern, offset, path_builder; rebuild_path)
+end
+
+function draw_poly(scene::Scene, screen::Screen, poly, points::Vector{<:Point2})
+    color = to_cairo_color(poly.color[], poly)
+    strokecolor = to_cairo_color(poly.strokecolor[], poly.plots[2])
+    strokestyle = Makie.convert_attribute(poly.linestyle[], key"linestyle"())
+
+    miter_limit = to_cairo_miter_limit(poly.miter_limit[])
+    joinstyle = to_cairo_joinstyle(poly.joinstyle[])
+    linecap = to_cairo_linecap(poly.linecap[])
+
+    draw_poly(
+        scene, screen, poly, points, color,
+        poly.model[], strokecolor, strokestyle, poly.strokewidth[], miter_limit, joinstyle, linecap
+    )
+    if color isa Cairo.CairoPattern
+        pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+    return
+end
+
+function draw_poly(scene::Scene, screen::Screen, poly, points::Vector{<:Point3})
+    if !to_value(get(poly, :project_point3_to_2d, false))
+        return draw_poly_as_mesh(scene, screen, poly)
+    end
+    points2 = map(p -> Point2f(p[1], p[2]), points)
+    return draw_poly(scene, screen, poly, points2)
+end
+
+function draw_poly(scene::Scene, screen::Screen, poly, points_list::Vector{<:Vector{<:Point2}})
+    color = to_cairo_color(poly.color[], poly)
+    strokecolor = to_cairo_color(poly.strokecolor[], poly.plots[2])
+    strokestyle = Makie.convert_attribute(poly.linestyle[], key"linestyle"())
+
+    miter_limit = to_cairo_miter_limit(poly.miter_limit[])
+    joinstyle = to_cairo_joinstyle(poly.joinstyle[])
+    linecap = to_cairo_linecap(poly.linecap[])
+
+    broadcast_foreach(
+        points_list, color,
+        strokecolor, poly.strokewidth[], Ref(poly.model[])
+    ) do points, color, strokecolor, strokewidth, model
+        draw_poly(scene, screen, poly, points, color, model, strokecolor, strokestyle, strokewidth, miter_limit, joinstyle, linecap)
+    end
+    if color isa Cairo.CairoPattern
+        pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+    return
+end
+
+function draw_poly(scene::Scene, screen::Screen, poly, points_list::Vector{<:Vector{<:Point3}})
+    if !to_value(get(poly, :project_point3_to_2d, false))
+        return draw_poly_as_mesh(scene, screen, poly)
+    end
+    points2 = map(ps -> map(p -> Point2f(p[1], p[2]), ps), points_list)
+    return draw_poly(scene, screen, poly, points2)
+end
+
+draw_poly(scene::Scene, screen::Screen, poly, circle::Circle) = draw_poly(scene, screen, poly, decompose(Point2f, circle))
+
+# when color is a Makie.AbstractPattern, we don't need to go to Mesh
+function draw_poly(
+        scene::Scene, screen::Screen, poly, points::Vector{<:Point2}, color::Union{Colorant, Cairo.CairoPattern},
+        model, strokecolor, strokestyle, strokewidth, miter_limit, joinstyle, linecap
+    )
+    space = poly.space[]
+    points = apply_transform(transform_func(poly), points)
+    points = clip_poly(poly.clip_planes[], points, space, model)
+    points = _project_position(scene, space, points, model, true)
+
+    Cairo.move_to(screen.context, points[1]...)
+    for p in points[2:end]
+        Cairo.line_to(screen.context, p...)
+    end
+    Cairo.close_path(screen.context)
+
+    set_source(screen.context, color)
+
+    Cairo.fill_preserve(screen.context)
+    Cairo.set_source_rgba(screen.context, rgbatuple(to_color(strokecolor))...)
+    Cairo.set_line_width(screen.context, strokewidth)
+    set_miter_limit(screen.context, miter_limit)
+    Cairo.set_line_join(screen.context, joinstyle)
+    Cairo.set_line_cap(screen.context, linecap)
+
+    pattern = to_cairo_linestyle(strokestyle, strokewidth)
+    if !isnothing(pattern)
+        Cairo.set_dash(screen.context, pattern)
+    end
+    Cairo.stroke(screen.context)
+    return
+end
+
+function draw_poly(
+        scene::Scene, screen::Screen, poly, points::Vector{<:Point2}, color::Makie.LinePattern,
+        model, strokecolor, strokestyle, strokewidth, miter_limit, joinstyle, linecap
+    )
+    space = poly.space[]
+    points = apply_transform(transform_func(poly), points)
+    points = clip_poly(poly.clip_planes[], points, space, model)
+    points = _project_position(scene, space, points, model, true)
+
+    offset = linepattern_offset(scene, model)
+    draw_linepattern_fill!(screen.context, color, offset; rebuild_path = true) do
+        Cairo.move_to(screen.context, points[1]...)
+        for p in points[2:end]
+            Cairo.line_to(screen.context, p...)
+        end
+        Cairo.close_path(screen.context)
+    end
+
+    Cairo.set_source_rgba(screen.context, rgbatuple(to_color(strokecolor))...)
+    Cairo.set_line_width(screen.context, strokewidth)
+    set_miter_limit(screen.context, miter_limit)
+    Cairo.set_line_join(screen.context, joinstyle)
+    Cairo.set_line_cap(screen.context, linecap)
+
+    pattern = to_cairo_linestyle(strokestyle, strokewidth)
+    if !isnothing(pattern)
+        Cairo.set_dash(screen.context, pattern)
+    end
+    Cairo.stroke(screen.context)
+    return
+end
+
+# As a general fallback, draw all polys as meshes.
+# This also applies for e.g. per-vertex color.
+function draw_poly(
+        scene::Scene, screen::Screen, poly, points, color,
+        model, strokecolor, strokestyle, strokewidth, miter_limit, joinstyle, linecap
+    )
+    return draw_poly_as_mesh(scene, screen, poly)
+end
+
+########################################
+### GeometryPrimtive and BezierPath methods
+########################################
+
+draw_poly(scene::Scene, screen::Screen, poly, rect::Rect2) = draw_poly(scene, screen, poly, [rect])
+draw_poly(scene::Scene, screen::Screen, poly, bezierpath::BezierPath) = draw_poly(scene, screen, poly, [bezierpath])
+
+function draw_poly(scene::Scene, screen::Screen, poly, shapes::Vector{<:Union{Rect2, BezierPath}})
+    model = poly.model[]::Mat4d
+    space = poly.space[]::Symbol
+    planes = poly.clip_planes[]::Vector{Plane3f}
+
+    projected_shapes = map(shapes) do shape
+        clipped = clip_shape(planes, shape, space, model)
+        return project_shape(poly, space, clipped, model)
+    end
+
+    color = to_cairo_color(poly.color[], poly)
+
+    linestyle = Makie.convert_attribute(poly.linestyle[], key"linestyle"())
+    strokecolor = to_cairo_color(poly.strokecolor[], poly.plots[2])
+
+    miter_limit = to_cairo_miter_limit(poly.miter_limit[])
+    joinstyle = to_cairo_joinstyle(poly.joinstyle[])
+    linecap = to_cairo_linecap(poly.linecap[])
+
+    broadcast_foreach(projected_shapes, color, strokecolor, poly.strokewidth[]) do shape, c, sc, sw
+        shape isa Makie.BezierPath && isempty(shape.commands) && return
+
+        if c isa Makie.LinePattern
+            offset = linepattern_offset(scene, model)
+            draw_linepattern_fill!(screen.context, c, offset; rebuild_path = true) do
+                create_shape_path!(screen.context, shape)
+            end
+        else
+            create_shape_path!(screen.context, shape)
+            set_source(screen.context, c)
+            Cairo.fill_preserve(screen.context)
+        end
+
+        pattern = to_cairo_linestyle(linestyle, sw)
+        if !isnothing(pattern)
+            Cairo.set_dash(screen.context, pattern)
+        end
+        set_source(screen.context, sc)
+        Cairo.set_line_width(screen.context, sw)
+        set_miter_limit(screen.context, miter_limit)
+        Cairo.set_line_join(screen.context, joinstyle)
+        Cairo.set_line_cap(screen.context, linecap)
+        Cairo.stroke(screen.context)
+    end
+    if color isa Cairo.CairoPattern
+        pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+    return
+end
+
+function project_shape(scene, space, shape::BezierPath, model)
+    commands = Makie.PathCommand[]
+    for cmd in shape.commands
+        if cmd isa EllipticalArc
+            bezier = Makie.elliptical_arc_to_beziers(cmd)
+            for b in bezier.commands
+                push!(commands, project_command(b, scene, space, model))
+            end
+        else
+            push!(commands, project_command(cmd, scene, space, model))
+        end
+    end
+    return BezierPath(commands)
+end
+
+function create_shape_path!(ctx, r::Rect2)
+    return Cairo.rectangle(ctx, origin(r)..., widths(r)...)
+end
+
+function create_shape_path!(ctx, b::BezierPath)
+    isempty(b.commands) && return
+    if !isa(first(b.commands), MoveTo)
+        error("The first command in a BezierPath must be `MoveTo`, but is $(first(b.commands)).")
+    end
+
+    for cmd in b.commands
+        path_command(ctx, cmd)
+    end
+
+    # match W/GLMakie
+    if !isa(last(b.commands), ClosePath)
+        Cairo.close_path(ctx)
+    end
+    return
+end
+
+function polypath(ctx, polygon)
+    isempty(polygon) && return nothing
+    ext = decompose(Point2f, polygon.exterior)
+    Cairo.set_fill_type(ctx, Cairo.CAIRO_FILL_RULE_EVEN_ODD)
+    Cairo.move_to(ctx, ext[1]...)
+    for point in ext[2:end]
+        Cairo.line_to(ctx, point...)
+    end
+    Cairo.close_path(ctx)
+    interiors = decompose.(Point2f, polygon.interiors)
+    for interior in interiors
+        # Cairo needs to have interiors counter clockwise
+        n = length(interior)
+        Cairo.move_to(ctx, interior[1]...)
+        for idx in 2:n
+            point = interior[idx]
+            Cairo.line_to(ctx, point...)
+        end
+        Cairo.close_path(ctx)
+    end
+    return
+end
+
+draw_poly(scene::Scene, screen::Screen, poly, polygon::Polygon) = draw_poly(scene, screen, poly, [polygon])
+draw_poly(scene::Scene, screen::Screen, poly, multipolygon::MultiPolygon) = draw_poly(scene, screen, poly, multipolygon.polygons)
+
+function draw_poly(scene::Scene, screen::Screen, poly, polygons::AbstractArray{<:Polygon})
+    model = poly.model[]
+    space = poly.space[]
+    projected_polys = map(polygons) do polygon
+        return project_polygon(poly, space, polygon, poly.clip_planes[], model)
+    end
+
+    color = to_cairo_color(poly.color[], poly)
+    strokecolor = to_cairo_color(poly.strokecolor[], poly.plots[2])
+    strokestyle = Makie.convert_attribute(poly.linestyle[], key"linestyle"())
+
+    miter_limit = to_cairo_miter_limit(poly.miter_limit[])
+    joinstyle = to_cairo_joinstyle(poly.joinstyle[])
+    linecap = to_cairo_linecap(poly.linecap[])
+
+    broadcast_foreach(projected_polys, color, strokecolor, poly.strokewidth[]) do po, c, sc, sw
+        if c isa Makie.LinePattern
+            offset = linepattern_offset(scene, model)
+            draw_linepattern_fill!(screen.context, c, offset; rebuild_path = true) do
+                polypath(screen.context, po)
+            end
+        else
+            polypath(screen.context, po)
+            set_source(screen.context, c)
+            Cairo.fill_preserve(screen.context)
+        end
+        set_source(screen.context, sc)
+        Cairo.set_line_width(screen.context, sw)
+        pattern = to_cairo_linestyle(strokestyle, sw)
+        if !isnothing(pattern)
+            Cairo.set_dash(screen.context, pattern)
+        end
+        set_miter_limit(screen.context, miter_limit)
+        Cairo.set_line_join(screen.context, joinstyle)
+        Cairo.set_line_cap(screen.context, linecap)
+        Cairo.stroke(screen.context)
+    end
+
+    if color isa Cairo.CairoPattern
+        pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+    return
+end
+
+function draw_poly(scene::Scene, screen::Screen, poly, polygons::AbstractArray{<:MultiPolygon})
+    model = poly.model[]
+    space = poly.space[]
+    projected_polys = map(polygons) do polygon
+        project_multipolygon(poly, space, polygon, poly.clip_planes[], model)
+    end
+
+    color = to_cairo_color(poly.color[], poly)
+    strokecolor = to_cairo_color(poly.strokecolor[], poly.plots[2])
+    strokestyle = Makie.convert_attribute(poly.linestyle[], key"linestyle"())
+
+    miter_limit = to_cairo_miter_limit(poly.miter_limit[])
+    joinstyle = to_cairo_joinstyle(poly.joinstyle[])
+    linecap = to_cairo_linecap(poly.linecap[])
+    broadcast_foreach(projected_polys, color, strokecolor, poly.strokewidth[]) do mpo, c, sc, sw
+        for po in mpo.polygons
+            if c isa Makie.LinePattern
+                offset = linepattern_offset(scene, model)
+                draw_linepattern_fill!(screen.context, c, offset; rebuild_path = true) do
+                    polypath(screen.context, po)
+                end
+            else
+                polypath(screen.context, po)
+                set_source(screen.context, c)
+                Cairo.fill_preserve(screen.context)
+            end
+            set_source(screen.context, sc)
+            Cairo.set_line_width(screen.context, sw)
+            pattern = to_cairo_linestyle(strokestyle, sw)
+            if !isnothing(pattern)
+                Cairo.set_dash(screen.context, pattern)
+            end
+            set_miter_limit(screen.context, miter_limit)
+            Cairo.set_line_join(screen.context, joinstyle)
+            Cairo.set_line_cap(screen.context, linecap)
+            Cairo.stroke(screen.context)
+        end
+    end
+
+    if color isa Cairo.CairoPattern
+        pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+    return
+end
+
+
+################################################################################
+#                                     Band                                     #
+#     Override because band is usually a polygon, but because it supports      #
+#        gradients as well via `mesh` we have to intercept the poly use        #
+################################################################################
+
+function band_segment_ranges(lowerpoints, upperpoints)
+    ranges = UnitRange{Int}[]
+    start = nothing
+
+    for i in eachindex(lowerpoints, upperpoints)
+        if isnan(lowerpoints[i]) || isnan(upperpoints[i])
+            if start !== nothing && i - start > 1 # more than one point
+                push!(ranges, start:(i - 1))
+            end
+            start = nothing
+        elseif start === nothing
+            start = i
+        elseif i == lastindex(lowerpoints)
+            push!(ranges, start:i)
+        end
+    end
+    return ranges
+end
+
+# we can draw an array-colored band using a linear gradient if it's a "normal" band
+# in which all upper/lower values with the same index are at the same x value.
+# the linear gradient will look much better than falling back to mesh drawing, which
+# results in many little triangles when colors are semitransparent and a jagged corner
+function is_linear_gradient_compatible(band)
+    return all(zip(band[1][], band[2][])) do (p1, p2)
+        p1 isa Point2 && p2 isa Point2 && p1[1] == p2[1]
+    end
+end
+
+function draw_plot(
+        scene::Scene, screen::Screen,
+        band::Band{<:Tuple{<:AbstractVector{<:Point2}, <:AbstractVector{<:Point2}}}
+    )
+    if is_linear_gradient_compatible(band) || !(band.color[] isa AbstractArray)
+        color = to_cairo_color(band.color[], band)
+
+        model = band.model[]
+        space = band.space[]
+
+        xdir::Bool = band.direction[] === :x
+
+        upperpoints = xdir ? band[1][] : reverse.(band[1][])
+        lowerpoints = xdir ? band[2][] : reverse.(band[2][])
+
+        for rng in band_segment_ranges(lowerpoints, upperpoints)
+            points_segment = vcat(@view(lowerpoints[rng]), reverse(@view(upperpoints[rng])))
+            points = clip_poly(band.clip_planes[], points_segment, space, model)
+            points = project_position.(Ref(band), space, points, Ref(model))
+            build_path = function ()
+                Cairo.move_to(screen.context, points[1]...)
+                for p in points[2:end]
+                    Cairo.line_to(screen.context, p...)
+                end
+                Cairo.close_path(screen.context)
+                return
+            end
+            if color isa AbstractVector
+                build_path()
+                # for the gradient we use all points, irrespective of clipping
+                lower_proj = project_position.(Ref(band), space, points_segment[1:(end ÷ 2)], Ref(model))
+                p_first = lower_proj[begin]
+                p_last = lower_proj[end]
+                P = typeof(p_last)
+                # the gradient must be parallel to x or y axis
+                p_last = xdir ? P(p_last[1], p_first[2]) : P(p_first[1], p_last[2])
+                dist = p_last - p_first
+                pat = Cairo.pattern_create_linear(p_first..., p_last...)
+                for (p, c) in zip(lower_proj, color)
+                    i = xdir ? 1 : 2
+                    fraction = (p[i] - p_first[i]) / dist[i]
+                    Cairo.pattern_add_color_stop_rgba(pat, fraction, red(c), green(c), blue(c), alpha(c))
+                end
+                Cairo.set_source(screen.context, pat)
+                Cairo.fill(screen.context)
+                Cairo.destroy(pat)
+            elseif color isa Makie.LinePattern
+                offset = linepattern_offset(scene, model)
+                draw_linepattern_fill!(screen.context, color, offset, build_path)
+            else
+                build_path()
+                set_source(screen.context, color)
+                Cairo.fill(screen.context)
+            end
+        end
+
+        if color isa Cairo.CairoPattern
+            pattern_set_matrix(color, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+        end
+
+        for p in band.plots
+            p isa Mesh && continue
+            draw_plot(scene, screen, p)
+        end
+    else
+        for p in band.plots
+            draw_plot(scene, screen, p)
+        end
+    end
+
+    return nothing
+end
+
+# Override `is_cairomakie_atomic_plot` to allow this dispatch of `band` to remain a unit,
+# instead of auto-decomposing in lines and mesh.
+function is_cairomakie_atomic_plot(plot::Band{<:Tuple{<:AbstractVector{<:Point2}, <:AbstractVector{<:Point2}}})
+    return true
+end
+
+#################################################################################
+#                                  Tricontourf                                  #
+# Tricontourf creates many disjoint polygons that are adjacent and form contour #
+#  bands, however, at the gaps we see white antialiasing artifacts. Therefore   #
+#               we override behavior and draw each band in one go               #
+#################################################################################
+
+function draw_plot(scene::Scene, screen::Screen, tric::Tricontourf)
+
+    pol = only(tric.plots)::Poly
+    colornumbers = pol.color[]
+    colors = to_cairo_color(colornumbers, pol)
+    polygons = pol[1][]
+    model = pol.model[]
+    space = pol.space[]
+    projected_polys = project_polygon.(Ref(tric), space, polygons, Ref(tric.clip_planes[]), Ref(model))
+
+    function draw_tripolys(polys, colornumbers, colors)
+        for (i, (pol, colnum, col)) in enumerate(zip(polys, colornumbers, colors))
+            polypath(screen.context, pol)
+            if i == length(colornumbers) || colnum != colornumbers[i + 1]
+                set_source(screen.context, col)
+                Cairo.fill(screen.context)
+            end
+        end
+        return
+    end
+
+    draw_tripolys(projected_polys, colornumbers, colors)
+
+    if colors isa Cairo.CairoPattern
+        pattern_set_matrix(colors, Cairo.CairoMatrix(1, 0, 0, 1, 0, 0))
+    end
+
+    return
+end
+
+# Override `is_cairomakie_atomic_plot` to allow `Tricontourf` to remain a unit,
+# instead of auto-decomposing in lines and mesh.
+function is_cairomakie_atomic_plot(plot::Tricontourf)
+    return true
+end

@@ -1,0 +1,250 @@
+# ============================================================================
+# pbrt_to_makie — Convert pbrt scene files to Makie scenes
+# ============================================================================
+# Exercises the full Makie → RayMakie → Hikari conversion path.
+# Any energy mismatch between rendering this vs. render_pbrt indicates
+# a bug in the Makie→Hikari conversion (to_trace_light, material handling, etc.)
+
+struct PBRTMakieResult
+    scene::Makie.Scene
+    resolution::Tuple{Int, Int}
+    fov::Float32
+    integrator_settings::NamedTuple
+    sensor::Hikari.PixelSensor
+    sensor_name::String
+    filter::Hikari.AbstractFilter
+end
+
+"""
+    pbrt_to_makie(filename::AbstractString) -> PBRTMakieResult
+
+Parse a pbrt-v4 scene file and build a Makie `Scene` using standard Makie API
+(`PointLight`, `DirectionalLight`, `mesh!`, etc.).
+
+Lights are created through the same path a user would use, so any energy
+mismatch between `render_pbrt` and `pbrt_to_makie + RayMakie` is a real bug
+in `to_trace_light` or the material conversion.
+"""
+function pbrt_to_makie(filename::AbstractString)
+    pbrt = Hikari.parse_pbrt(filename)
+
+    settings = Hikari.pbrt_settings(pbrt)
+    xres, yres = settings.resolution
+    fov = settings.fov
+    # Extract eye / target / up from the world-to-camera matrix.
+    #
+    # The DIRECTION must come from the matrix, not from the file's raw `LookAt`
+    # numbers: pbrt concatenates `LookAt` onto the CTM, so a leading transform
+    # (Crown's `Scale -1 1 1`) is part of the camera orientation, and the
+    # handedness difference between `pbrt_lookat` and `Raycore.look_at`
+    # documented in `Hikari/src/pbrt/scene_builder.jl:102-139` is already baked
+    # in. Only the DISTANCE has to be recovered separately, because a rigid
+    # transform is identical for every target along the view ray.
+    #
+    # It matters for interaction, not rendering: `Camera3D` scales pan by
+    # `2*norm(lookat-eye)/height` and zoom by `lookat - zoom_step*viewdir`,
+    # while rotation is angular. Pinning the target 1 unit ahead (which this
+    # did) left Crown panning 0.14 and zooming 0.10 world units per gesture
+    # against ~90x43x100 of geometry, i.e. visibly dead, with rotation fine.
+    ctw = inv(pbrt.camera_transform)
+    eye = Point3f(ctw[1,4], ctw[2,4], ctw[3,4])
+    forward = normalize(Vec3f(-ctw[1,3], -ctw[2,3], -ctw[3,3]))
+    lookat_distance = pbrt.camera_lookat_distance
+    target = eye + forward * (lookat_distance > 0f0 ? lookat_distance : 1f0)
+    up = normalize(Vec3f(ctw[1,2], ctw[2,2], ctw[3,2]))
+
+    # --- Create Makie Scene ---
+    scene = Scene(size=(xres, yres); lights=Makie.AbstractLight[], ambient=RGBf(0, 0, 0))
+    cam3d!(scene)
+    update_cam!(scene, eye, target, up)
+    # pbrt-v4 cameras.cpp: fov refers to the *shorter* image dimension. Makie's
+    # cam3d uses vertical FOV unconditionally. For tall images (width<height,
+    # like Crown's 1000×1400) we must convert horizontal→vertical so the scene
+    # is framed identically: scene reads as zoomed-in otherwise.
+    aspect = Float32(xres) / Float32(yres)
+    makie_fov = if aspect >= 1f0
+        fov  # pbrt fov = vertical; matches Makie
+    else
+        rad2deg(2 * atan(tan(deg2rad(fov) / 2) / aspect))
+    end
+    scene.camera_controls.fov[] = Float64(makie_fov)
+    # Lens is in world units, so unlike fov it needs no aspect conversion.
+    # `to_trace_camera` lifts both into Hikari.PerspectiveCamera.
+    scene.camera_controls.lens_radius[] = Float64(settings.lens_radius)
+    scene.camera_controls.focal_distance[] = Float64(settings.focal_distance)
+
+    # --- Hikari textures, materials and media from pbrt data ---
+    hikari_textures = Hikari.build_pbrt_textures(pbrt)
+    mat_cache = Hikari.build_pbrt_materials(pbrt, hikari_textures)
+    media_cache = Hikari.build_pbrt_media(pbrt)
+
+    # --- Add lights as Makie lights ---
+    for lrec in pbrt.lights
+        pbrt_light_to_makie!(scene, lrec, pbrt)
+    end
+
+    # --- Add shapes with materials ---
+    for srec in pbrt.shapes
+        pbrt_shape_to_makie!(scene, srec, pbrt, mat_cache, media_cache, hikari_textures)
+    end
+
+    # A scene that never issues `LookAt` (`camera_lookat_distance == 0`) has no
+    # recorded distance, so derive one from the geometry now that the shapes are
+    # in. Only possible here, after the shapes are added.
+    #
+    # Moving the target along the view ray leaves the view matrix mathematically
+    # unchanged -- `look_at` normalizes the direction -- so this rescales
+    # pan/zoom without reframing anything. Not bit-identical, though: measured
+    # on Crown the Float32 rounding of `normalize` shifts the matrix by 1.9e-6,
+    # which is orders of magnitude below a pixel but will not survive an exact
+    # image comparison.
+    #
+    # `data_limits` is a rough proxy: a single oversized plot inflates it (on
+    # Crown a ±100 light proxy dominates geometry that is really ~90x43x100).
+    # That is acceptable for a fallback and is why the recorded distance is
+    # preferred whenever the file provides one.
+    if lookat_distance <= 0f0
+        lims = Makie.data_limits(scene)
+        c = (minimum(lims) .+ maximum(lims)) ./ 2
+        d = norm(Vec3f(c) - Vec3f(eye))
+        if isfinite(d) && d > 1.0f-6
+            update_cam!(scene, eye, eye + forward * Float32(d), up)
+        end
+    end
+
+    return PBRTMakieResult(scene, (xres, yres), fov, settings.integrator, settings.sensor,
+                           settings.sensor_name, settings.filter)
+end
+
+"""
+    Hikari.VolPath(res::PBRTMakieResult; kwargs...)
+
+Build an integrator whose defaults come from the parsed `.pbrt` instead of from
+Hikari's own, which disagree with pbrt-v4 on two knobs that both silently darken
+specular highlights:
+
+| knob | pbrt-v4 default | Hikari default |
+|---|---|---|
+| `regularize` | `false` (`cpu/integrators.cpp:817`) | `true` |
+| `maxcomponentvalue` | `Infinity` (`film.cpp:576`) | `10f0` |
+
+A scene that omits both — crown.pbrt does — therefore renders with its specular
+lobes roughened AND its bright samples clamped, moving energy out of highlights
+and into their surroundings. Measured on crown that was a 1.6 % global energy
+deficit concentrated entirely in the bright quintiles.
+
+`pbrt_to_makie` parsed these correctly all along; there was just no way to apply
+them short of copying each field by hand, so every caller inherited the wrong
+defaults. Explicit keywords still win over the file.
+"""
+function Hikari.VolPath(res::PBRTMakieResult;
+                        samples::Int = res.integrator_settings.samples,
+                        max_depth::Int = res.integrator_settings.max_depth,
+                        regularize::Bool = res.integrator_settings.regularize,
+                        russian_roulette_depth::Int = res.integrator_settings.russian_roulette_depth,
+                        max_component_value::Real = res.integrator_settings.max_component_value,
+                        sensor::Hikari.PixelSensor = res.sensor,
+                        filter::Hikari.AbstractFilter = res.filter,
+                        kwargs...)
+    return Hikari.VolPath(; samples, max_depth, regularize, russian_roulette_depth,
+                          max_component_value, sensor, filter, kwargs...)
+end
+
+"""
+    screen_config(res::PBRTMakieResult) -> NamedTuple
+
+The `.pbrt` file's tracer settings as RayMakie screen config, for the same reason
+as `Hikari.VolPath(res)`:
+
+```julia
+res = pbrt_to_makie("crown.pbrt")
+colorbuffer(res.scene; backend = RayMakie, RayMakie.screen_config(res)...)
+```
+"""
+function screen_config(res::PBRTMakieResult)
+    s = res.integrator_settings
+    return (; samples = s.samples, max_depth = s.max_depth, regularize = s.regularize,
+            russian_roulette_depth = s.russian_roulette_depth,
+            max_component_value = s.max_component_value, sensor = res.sensor, filter = res.filter)
+end
+
+# ============================================================================
+# Light conversion: pbrt light → Makie light
+# ============================================================================
+
+function pbrt_light_to_makie!(scene, lrec::Hikari.PBRTLightRecord, pbrt)
+    entity = lrec.entity
+    type = lowercase(entity.type)
+
+    if type == "point"
+        rgb = Hikari.pbrt_get_rgb(entity, "I", (1.0, 1.0, 1.0))
+        sc = Float32(Hikari.pbrt_get_float(entity, "scale", 1.0))
+        from = Hikari.pbrt_get_rgb(entity, "from", (0.0, 0.0, 0.0))
+        pos = Vec3f(Float32(from[1]), Float32(from[2]), Float32(from[3]))
+        if lrec.transform != Hikari.IDENTITY4
+            p4 = lrec.transform * Vec4f(pos[1], pos[2], pos[3], 1f0)
+            pos = Vec3f(p4[1] / p4[4], p4[2] / p4[4], p4[3] / p4[4])
+        end
+        color = RGBf(Float32(rgb[1]) * sc, Float32(rgb[2]) * sc, Float32(rgb[3]) * sc)
+        push_light!(scene, Makie.PointLight(color, pos))
+
+    elseif type == "distant"
+        rgb = Hikari.pbrt_get_rgb(entity, "L", (1.0, 1.0, 1.0))
+        sc = Float32(Hikari.pbrt_get_float(entity, "scale", 1.0))
+        from = Hikari.pbrt_get_rgb(entity, "from", (0.0, 0.0, 0.0))
+        to = Hikari.pbrt_get_rgb(entity, "to", (0.0, 0.0, 1.0))
+        dir = Vec3f(Float32(to[1] - from[1]), Float32(to[2] - from[2]),
+                    Float32(to[3] - from[3]))
+        color = RGBf(Float32(rgb[1]) * sc, Float32(rgb[2]) * sc, Float32(rgb[3]) * sc)
+        push_light!(scene, Makie.DirectionalLight(color, dir))
+
+    elseif type == "spot"
+        rgb = Hikari.pbrt_get_rgb(entity, "I", (1.0, 1.0, 1.0))
+        sc = Float32(Hikari.pbrt_get_float(entity, "scale", 1.0))
+        cone = Float32(Hikari.pbrt_get_float(entity, "coneangle", 30.0))
+        delta = Float32(Hikari.pbrt_get_float(entity, "conedeltaangle", 5.0))
+        from = Hikari.pbrt_get_rgb(entity, "from", (0.0, 0.0, 0.0))
+        pos = Vec3f(Float32(from[1]), Float32(from[2]), Float32(from[3]))
+        to = Hikari.pbrt_get_rgb(entity, "to", (0.0, 0.0, 1.0))
+        target = Vec3f(Float32(to[1]), Float32(to[2]), Float32(to[3]))
+        dir = normalize(target - pos)
+        color = RGBf(Float32(rgb[1]) * sc, Float32(rgb[2]) * sc, Float32(rgb[3]) * sc)
+        # Makie SpotLight angles are in radians: [falloff_start, total_width]
+        falloff_start_rad = Float32(deg2rad(cone - delta))
+        total_width_rad = Float32(deg2rad(cone))
+        push_light!(scene, Makie.SpotLight(color, pos, dir, Vec2f(falloff_start_rad, total_width_rad)))
+
+    elseif type == "infinite"
+        filename = Hikari.pbrt_get_string(entity, "filename", "")
+        sc = Float32(Hikari.pbrt_get_float(entity, "scale", 1.0))
+        if !isempty(filename)
+            path = isabspath(filename) ? filename : joinpath(pbrt.base_dir, filename)
+            if isfile(path)
+                env_path = Hikari.convert_envmap_to_srgb(path)
+                img = Hikari.FileIO.load(env_path)
+                push_light!(scene, Makie.EnvironmentLight(sc, img))
+                return
+            end
+        end
+        # Fallback: constant infinite light → ambient
+        rgb = Hikari.pbrt_get_rgb(entity, "L", (1.0, 1.0, 1.0))
+        color = RGBf(Float32(rgb[1]) * sc, Float32(rgb[2]) * sc, Float32(rgb[3]) * sc)
+        if haskey(scene.compute, :ambient_color)
+            scene.compute[:ambient_color][] = color
+        end
+
+    else
+        @warn "pbrt_to_makie: unsupported light type '$type'"
+    end
+end
+
+# ============================================================================
+# Shape conversion: pbrt shape → mesh! call with Hikari material
+# ============================================================================
+
+function pbrt_shape_to_makie!(scene, srec::Hikari.PBRTShapeRecord, pbrt,
+                              mat_cache, media_cache, hikari_textures)
+    geom = Hikari.build_pbrt_shape(srec, pbrt)
+    geom === nothing && return
+    mesh!(scene, geom; material = Hikari.pbrt_shape_material(srec, mat_cache, media_cache, pbrt, hikari_textures))
+end

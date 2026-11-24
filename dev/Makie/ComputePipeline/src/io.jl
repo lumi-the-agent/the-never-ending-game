@@ -1,0 +1,462 @@
+function Base.show(io::IO, computed::Computed)
+    return if isdefined(computed, :value) && isassigned(computed.value)
+        print(IOContext(io, :limit => true), "Computed(:", computed.name, ", ", computed.value[], ")")
+    else
+        print(io, "Computed(:", computed.name, ", #undef)")
+    end
+end
+
+function Base.show(io::IO, ::MIME"text/plain", computed::Computed)
+    println(io, "Computed:")
+    println(io, "  name = :", computed.name)
+    if hasparent(computed)
+        if computed.parent isa Input
+            println(io, "  parent = ", computed.parent)
+        else
+            println(io, "  parent = ", computed.parent, " @ output ", computed.parent_idx)
+        end
+    else
+        println(io, "parent = #undef")
+    end
+    v = isdefined(computed, :value) && isassigned(computed.value) ? computed.value[] : "#undef"
+    print(io, "  value = ")
+    print(IOContext(io, :limit => true), v)
+    return print(io, "\n  dirty = ", isdirty(computed))
+end
+
+_edge_callback_name(f::Function) = "$(nameof(f))"
+_edge_callback_name(f::MapFunctionWrapper) = "(::MapFunctionWrapper($(_edge_callback_name(f.user_func))))"
+_edge_callback_name(functor) = "$(repr(functor))"
+
+edge_callback_name(f::Function, call = "(…)") = "$(_edge_callback_name(f))$call"
+edge_callback_name(f::MapFunctionWrapper, call = "(…)") = "$(_edge_callback_name(f))$call"
+edge_callback_name(functor, call = "(…)") = "$(_edge_callback_name(functor))$call"
+
+
+# This should mirror the inputs and outputs a ComputeEdge callback uses
+_get_named_inputs(edge::ComputeEdge) = _get_named_data(edge.inputs, NamedTuple())
+_get_named_outputs(edge::ComputeEdge) = _get_named_data(edge.outputs, nothing)
+function _get_named_data(collection, fallback)
+    if all(c -> isdefined(c, :value) && isassigned(c.value), collection)
+        N = length(collection)
+        names = ntuple(i -> collection[i].name, N)
+        values = ntuple(i -> collection[i].value[], N)
+        return NamedTuple{names}(values)
+    else
+        return fallback
+    end
+end
+
+# Get the function called by the edge with its input types
+function get_callback_info(edge::Input)
+    return get_callback_info(edge.f, edge.value)
+end
+function get_callback_info(edge::ComputeEdge)
+    return _get_callback_info(edge.callback, edge)
+end
+
+# Underscore to avoid dispatch issues with the `f, args...` method
+function _get_callback_info(callback, edge::ComputeEdge)
+    input = _get_named_inputs(edge)
+    changed = NamedTuple{keys(input)}(ntuple(x -> true, length(keys(input))))
+    output = _get_named_outputs(edge)
+    return get_callback_info(callback, input, changed, output)
+end
+function _get_callback_info(callback::MapFunctionWrapper, edge::ComputeEdge)
+    N = length(edge.inputs)
+    input_types = ntuple(N) do i
+        node = edge.inputs[i]
+        return is_initialized(node) ? typeof(node.value[]) : Any
+    end
+    return callback.user_func, input_types
+end
+
+# catch-all for the final user function being called.
+# could be:
+#   f(inputs, changed, cached) from register_computation!()
+#   f(input) from MapFunctionWrapper in map!(), callbacks in Input
+# or some other syntax due to a wrapper created in another package
+get_callback_info(f, args...) = f, typeof.(args)
+
+# map!(f, attr, ...) call which drops changed, cached and NamedTuple
+# for add_input!(f, key, value)
+function get_callback_info(f::MapFunctionWrapper, inputs)
+    return get_callback_info(f.user_func, values(inputs))
+end
+
+# add_input!(key, value)
+get_callback_info(f::typeof(identity), arg) = f, (typeof(arg),)
+
+
+# Generate a string pointing to the location of the callback function in edge.
+function edge_callback_location(edge)
+    f, arg_types = get_callback_info(edge)
+    return edge_callback_location(f, arg_types)
+end
+function edge_callback_location(f, arg_types::Tuple)
+    try
+        method = Base.which(f, arg_types)
+        return "$(method.file):$(method.line)"
+    catch e
+        return "unknown method location"
+    end
+end
+
+# Generate a string with the edges callback function signature and location.
+function edge_callback_to_string(edge)
+    f, arg_types = get_callback_info(edge)
+    return edge_callback_to_string(f, arg_types)
+end
+function edge_callback_to_string(f, arg_types::Tuple)
+    arg_str = join(("::$T" for T in arg_types), ", ")
+    arg_str = replace(arg_str, "Base.RefValue" => "Ref")
+    func = edge_callback_name(f, "($arg_str)")
+    loc = edge_callback_location(f, arg_types)
+    return "$func", "$loc"
+end
+
+function Base.show(io::IO, edge::ComputeEdge)
+    N1 = length(edge.inputs)
+    N2 = length(edge.outputs)
+    N3 = length(edge.dependents)
+    return print(
+        io, "ComputeEdge(",
+        edge_callback_name(edge.callback), ", ",
+        N1, " input$(N1 == 1 ? "" : 's'), ",
+        N2, " output$(N2 == 1 ? "" : 's'), ",
+        N3, " dependent$(N3 == 1 ? "" : 's'))"
+    )
+end
+
+function Base.show(io::IO, ::MIME"text/plain", edge::ComputeEdge)
+    println(io, "ComputeEdge:")
+
+    f, loc = edge_callback_to_string(edge)
+    println(io, "  callback:\n    $f")
+    printstyled(io, "    @ $loc\n", color = :light_black)
+
+    print(io, "  inputs:")
+    for (dirty, v) in zip(edge.inputs_dirty, edge.inputs)
+        if dirty
+            printstyled(io, "\n    ↻ $v", color = :light_black)
+        else
+            print(io, "\n    ✓ ", v)
+        end
+    end
+
+    print(io, "\n  outputs:")
+    for v in edge.outputs
+        if isdirty(v)
+            printstyled(io, "\n    ↻ $v", color = :light_black)
+        else
+            print(io, "\n    ✓ ", v)
+        end
+    end
+
+    print(io, "\n  dependents:")
+    for v in edge.dependents
+        if isdirty(v)
+            printstyled(io, "\n    ↻ $v", color = :light_black)
+        else
+            print(io, "\n    ✓ ", v)
+        end
+    end
+    return
+end
+
+
+function Base.show(io::IO, input::Input)
+    return print(io, "Input(:", input.name, ", ", input.value, ")")
+end
+
+function Base.show(io::IO, ::MIME"text/plain", input::Input)
+    println(io, "Input:")
+    println(io, "  name:     :", input.name)
+    println(io, "  value:    ", input.value)
+    f, loc = edge_callback_to_string(input)
+    print(io, "  callback: $f")
+    printstyled(io, " @ $loc\n", color = :light_black)
+    print(io, "  output:   ")
+    if isdirty(input)
+        printstyled(io, "↻ $(input.output)\n", color = :light_black)
+    else
+        println(io, "✓ ", input.output)
+    end
+    print(io, "  dependents:")
+    for v in input.dependents
+        if isdirty(v)
+            printstyled(io, "\n    ↻ $v", color = :light_black)
+        else
+            println(io, "\n    ✓ ", v)
+        end
+    end
+    return
+end
+
+
+# TODO: Maybe keep track of edges in Graph?
+function collect_edges(graph::ComputeGraph)
+    cache = Set{ComputeEdge}()
+    # recipes skip inputs when connecting so just checking inputs is not enough
+    foreach(computed -> collect_edges(computed, cache), values(graph.outputs))
+    return cache
+end
+function collect_edges(computed::Computed, cache::Set{ComputeEdge} = Set{ComputeEdge}())
+    return collect_edges(computed.parent, cache)
+end
+function collect_edges(input::Input, cache::Set{ComputeEdge} = Set{ComputeEdge}())
+    for edge in input.dependents
+        collect_edges(edge, cache)
+    end
+    return cache
+end
+function collect_edges(edge::ComputeEdge, cache::Set{ComputeEdge})
+    if !(edge in cache)
+        push!(cache, edge)
+        foreach(e -> collect_edges(e, cache), edge.dependents)
+    end
+    return
+end
+count_edges(graph::ComputeGraph) = length(collect_edges(graph))
+count_edges(input::Input) = length(collect_edges(input))
+
+
+function Base.show(io::IO, graph::ComputeGraph)
+    N1 = length(graph.inputs)
+    N2 = length(graph.outputs)
+    N3 = count_edges(graph)
+    return print(
+        io, "ComputeGraph(",
+        N1, " input$(N1 == 1 ? "" : 's'), ",
+        N2, " output$(N2 == 1 ? "" : 's'), ",
+        N3, " edge$(N3 == 1 ? "" : 's'))"
+    )
+end
+
+function Base.show(io::IO, ::MIME"text/plain", graph::ComputeGraph)
+    if isempty(graph.inputs) && isempty(graph.outputs)
+        print(io, "ComputeGraph()")
+        return io
+    end
+
+    println(io, "ComputeGraph():")
+
+    print(io, "  Inputs:")
+    ks = sort!(collect(keys(graph.inputs)), by = string)
+    pad = mapreduce(k -> length(string(k)), max, ks, init = 0)
+    for k in ks
+        print(io, "\n    :", rpad(string(k), pad), " => ", graph.inputs[k])
+    end
+
+    print(io, "\n\n  Outputs:")
+    ks = sort!(collect(keys(graph.outputs)), by = string)
+    pad = mapreduce(k -> length(string(k)), max, ks, init = 0)
+    for k in ks
+        output = graph.outputs[k]
+        print(io, "\n    :", rpad(string(k), pad), " => ")
+        printstyled(io, "$output", color = ifelse(isdirty(output), :light_black, :normal))
+    end
+    return io
+end
+
+
+function Base.showerror(io::IO, re::ResolveException{SelectException})
+    try
+        trace_error(io, re.start, re.error.edge)
+    catch e
+        println(io, "#error")
+    end
+    print(io, "Due to ")
+    printstyled(io, "ERROR: ", color = :light_red, bold = true)
+    Base.showerror(io, re.error)
+end
+
+Base.showerror(io::IO, se::SelectException) = print(io, se.msg)
+
+function Base.showerror(io::IO, re::ResolveException)
+    try
+        trace_error(io, re.start)
+    catch e
+        println(io, "#error")
+    end
+    print(io, "Due to ")
+    printstyled(io, "ERROR: ", color = :light_red, bold = true)
+    Base.showerror(io, re.error)
+end
+
+function collect_dirty(computed::Computed, marked = Set{Symbol}())
+    hasparent(computed) && collect_dirty(computed.parent, marked)
+    return marked
+end
+function collect_dirty(edge::ComputeEdge, marked = Set{Symbol}())
+    if (isdirty(edge) || any(edge.inputs_dirty))
+        all(x -> x.name in marked, edge.outputs) && return marked
+        foreach(output -> push!(marked, output.name), edge.outputs)
+        foreach(input -> collect_dirty(input, marked), edge.inputs)
+    end
+    return marked
+end
+function collect_dirty(edge::Input, marked = Set{Symbol}())
+    edge.dirty && push!(marked, edge.name)
+    return marked
+end
+
+# Error handling tools
+function trace_error(io::IO, computed::Computed, stop_at = nothing)
+    print(io, "Failed to resolve ")
+    printstyled(io, "$(computed.name):\n", color = :red)
+    if hasparent(computed)
+        marked = collect_dirty(computed)
+        push!(marked, computed.name)
+        trace_error(io, computed.parent, marked, stop_at)
+    end
+    return
+end
+
+function trace_error(io::IO, edge::ComputeEdge, stop_at = nothing)
+    return trace_error(io, edge, collect_dirty(edge), stop_at)
+end
+
+function trace_error(io::IO, computed::Computed, marked::Set, stop_at = nothing)
+    hasparent(computed) && trace_error(io, computed.parent, marked, stop_at)
+    return
+end
+
+function trace_error(io::IO, edge::ComputeEdge, marked::Set, stop_at = nothing)
+    if isdirty(edge)
+        print(io, "[ComputeEdge] ")
+
+        outputs = join((output.name for output in edge.outputs), ", ")
+        printstyled(io, outputs, color = :red)
+
+        func = edge_callback_name(edge.callback, "")
+        print(io, " = ", func, "((")
+
+        N = length(edge.inputs)
+        was_dirty = false
+        for i in eachindex(edge.inputs)
+            name = edge.inputs[i].name
+            c = ifelse(was_dirty, :light_black, ifelse(name in marked, :red, :light_green))
+            was_dirty |= name in marked # only mark first unresolved input
+            printstyled(io, name, color = c)
+            print(io, ", ")
+        end
+        println(io, "), changed, cached)")
+
+        printstyled(io, "  @ $(edge_callback_location(edge))\n", color = :light_black)
+
+        idx = findfirst(computed -> computed.name in marked, edge.inputs)
+        if isnothing(idx) || stop_at === edge # All resolved or marked as stopping point
+            print(io, "  with edge inputs:")
+            ioc = IOContext(io, :limit => true)
+            for (input, dirty) in zip(edge.inputs, edge.inputs_dirty)
+                c = ifelse(dirty, :normal, :light_black)
+                printstyled(io, "\n    ", input.name, " = ", color = c)
+                if isdirty(input)
+                    val = is_initialized(input) ? input.value[] : "#undef"
+                    printstyled(ioc, val * " (outdated)", color = :light_black)
+                else
+                    show(ioc, input.value[])
+                end
+            end
+            println(io)
+            isnothing(idx) && print_root_inputs(io, edge)
+        else # idx is first dirty
+            trace_error(io, edge.inputs[idx], marked, stop_at)
+        end
+    end
+    return
+end
+
+function print_root_inputs(io::IO, edge::ComputeEdge)
+    root_inputs = Set{Symbol}()
+    for input in edge.inputs
+        trace_inputs!(input, root_inputs)
+    end
+    return println(io, "Triggered by update of:\n  ", join(values(root_inputs), ", ", " or "))
+end
+function trace_inputs!(edge::ComputeEdge, root_inputs)
+    foreach(c -> trace_inputs!(c, root_inputs), edge.inputs)
+    return
+end
+function trace_inputs!(computed::Computed, root_inputs)
+    hasparent(computed) && trace_inputs!(computed.parent, root_inputs)
+    return
+end
+function trace_inputs!(input::Input, root_inputs)
+    push!(root_inputs, input.name)
+    return
+end
+
+function trace_error(io::IO, edge::Input, marked = nothing, stop_at = nothing)
+    print(io, "[Input] ")
+    if edge.dirty
+        printstyled(io, edge.name, color = :red)
+        func = edge_callback_name(edge.f, "")
+        println(io, " = ", func, '(', edge.value, ")")
+        printstyled(io, "  @ $(edge_callback_location(edge))\n", color = :light_black)
+    else
+        printstyled(io, "$(edge.name)\n", color = :green)
+    end
+    return
+end
+
+"""
+    show_inputs(node)
+
+Traces and prints all recursive inputs to a node.
+"""
+show_inputs(node::Computed) = show_inputs(stdout, node)
+function show_inputs(io::IO, node::Computed, tab = 0)
+    println(io, "    "^tab, node)
+    return show_inputs(io, node.parent, tab + 1)
+end
+function show_inputs(io::IO, node::Input, tab = 0)
+    return println(io, "    "^tab, node)
+end
+function show_inputs(io::IO, edge::ComputeEdge, tab = 0)
+    for node in edge.inputs
+        show_inputs(io, node, tab)
+    end
+    return
+end
+
+"""
+    show_outputs(node)
+
+Traces and prints all recursive inputs to a node.
+"""
+show_outputs(node::Computed) = show_outputs(stdout, node)
+function show_outputs(io::IO, node::Computed, tab = 0)
+    return show_outputs_rec(io, node.parent, tab)
+end
+
+function show_edge(io::IO, input::Input, tab = 0)
+    println(io, "    "^tab, "Input(", input.name, ")")
+    return
+end
+
+function show_edge(io::IO, edge::ComputeEdge, tab = 0)
+    inputs = "(" * join(string.(getproperty.(edge.inputs, :name)), ", ") * ")"
+    outputs = "(" * join(string.(getproperty.(edge.outputs, :name)), ", ") * ")"
+    println(io, "    "^tab, inputs, " --> ", outputs)
+    return
+end
+
+function show_outputs_rec(io::IO, edge::AbstractEdge, tab = 0)
+    show_edge(io, edge, tab)
+    for e in edge.dependents
+        show_outputs_rec(io, e, tab + 1)
+    end
+    return
+end
+
+source_info_str(edge::TypedEdge) = source_info_str(edge.output_nodes[1].parent)
+function source_info_str(compute_edge::ComputeEdge)
+    input_names = map(x -> x.name, compute_edge.inputs)
+    output_names = map(x -> x.name, compute_edge.outputs)
+    callback_name, callback_loc = edge_callback_to_string(compute_edge)
+    str = "Triggered by `map!` or `register_computation!` connecting $input_names " *
+        "to $output_names with callback $callback_name defined at $callback_loc."
+    return str
+end

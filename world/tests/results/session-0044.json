@@ -1,0 +1,43 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the field is out of the overview",
+      "file": "areas.jl",
+      "name": "The golden flower field on the open south-east meadow is planted with flowers you can pick, in view of the overview",
+      "passed": false,
+      "seconds": 1.5
+    },
+    {
+      "error": "check failed: the horizon (row 238) ripples by 0.049 along the line: a sawtooth band (/sim/Programmieren/SimGame/world/tests/shots/horizon.png)",
+      "file": "horizon.jl",
+      "name": "The sea horizon is a clean line, no jagged sawtooth band",
+      "passed": false,
+      "seconds": 0.6
+    },
+    {
+      "error": "check failed: Truffle does not follow after the second wave (answer); others: [(\"Wibbles\", :answer), (\"Truffle\", :answer)], greeted Dict{Int32, Float64}(8 => 111572.50000040022, 3 => 111573.03333373366), t 111573.50000040043",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": false,
+      "seconds": 2.2
+    },
+    {
+      "error": "check failed: nobody answered the wave (the sleeper Wibbles is sleep, Gloop is play; Sprout idle, controlled true, last idle, greeted Dict{Int32, Float64}(5 => 111574.70000040067, 8 => 111572.50000040022, 3 => 111573.03333373366), carries a pebble false, a flower true)",
+      "file": "minigames.jl",
+      "name": "A wave next to a sleeper goes to the awake creature a step further away",
+      "passed": false,
+      "seconds": 1.6
+    },
+    {
+      "error": "check failed: nobody joined the parade (walked 15.9 m to Cumulus, now 0.0 m, idle, followers String[])",
+      "file": "minigames.jl",
+      "name": "Parade: two friends follow Sprout, a curious critter the parade walks up to joins, Space ripples hops down the line",
+      "passed": false,
+      "seconds": 26.4
+    }
+  ],
+  "passed": 76,
+  "session": 44,
+  "time": "2026-11-23T18:01:22",
+  "total": 81
+}

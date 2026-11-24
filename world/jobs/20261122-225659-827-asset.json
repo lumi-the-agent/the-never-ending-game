@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-22T22:56:59.827",
+  "finished": "2026-11-22T23:25:00.724",
+  "id": "20261122-225659-827-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a cluster of three small rounded grey stones with moss, chunky soft shapes, flat bottom, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "rock"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T23:25:00.334",
+    "faces": 38429,
+    "id": "20261122-225659-827-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-225659-827-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-225659-827-asset/mesh.jls",
+    "prompt": "a cluster of three small rounded grey stones with moss, chunky soft shapes, flat bottom, soft hand-painted colors",
+    "seconds": 712.0,
+    "tags": [
+      "prop",
+      "rock"
+    ]
+  },
+  "seconds": 715.4,
+  "started": "2026-11-22T23:13:05.339",
+  "status": "done"
+}

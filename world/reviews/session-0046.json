@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s46-c1.png and s46-c3.png, both showing the truncated text",
+      "severity": "medium",
+      "suggestion": "Shorten the message to about 40 words. Keep only 'Sprout carries new things over in a crate and sets them down with Ta-da!'.",
+      "what": "The 'Messages to you' panel text about the builder is cut mid-sentence ('If you're playing as Sprout, a'). It is five wrapped lines and too long, which breaks the project's own ~45 word rule. The player never reads how it ends.",
+      "where": "Messages to you panel (outbox message for s46)"
+    },
+    {
+      "evidence": "world/reviews/s46-c3.png (carrying under a tree), the author's media/s46/live-2.png",
+      "severity": "medium",
+      "suggestion": "Swap in the generated crate asset (20261123-193127-127-asset). Make the camera view the carry from a clear side.",
+      "what": "The crate is a small plain brown cube on Sprout's head, with no lid, rope or arms holding it. Close up it looks like a placeholder box. In the follow shot it sits under a tree crown and is half hidden by foliage, so the build is not very readable.",
+      "where": "plugins/builder.jl CRATE"
+    },
+    {
+      "evidence": "world/reviews/s46-c1.png vs s46-c3.png",
+      "severity": "low",
+      "suggestion": "Use one phrase for the state, and name who carries and what ('Pickles carries the cairn over').",
+      "what": "Sprout's status line says 'looking over the newest things' while 'On the island now' says 'Sprout carries something new over' at the same moment, and the carrier in one shot was Pickles while Sprout was player-steered. The wording disagrees between panels.",
+      "where": "plugins/islandnow.jl and the Sprout panel"
+    }
+  ],
+  "summary": "Triggered a build in the sandbox and watched it: Sprout carries a crate to the spot, and the follow camera stays on the builder. The session's fixes work and frame time is fine (median 2.5 ms, builder 0.01 ms). The crate is a plain placeholder cube, the explanatory message is cut off in the panel, and the panel text is inconsistent.",
+  "superseded_by": "perfectionist-0046.json",
+  "verdict": "pass"
+}

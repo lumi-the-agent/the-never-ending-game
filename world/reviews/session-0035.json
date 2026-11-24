@@ -1,0 +1,31 @@
+{
+  "verdict": "pass",
+  "summary": "The cairn goal works as claimed (count persists at 23 stones, tests pass, frame median 2.6 ms). The player-facing gain is small, and most of the session went into clip tooling that is not released yet.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The cairn is a small landmark. In the live view the stacked stones are tiny and sit at the edge of the frame. The session's main goal, a traced movie, produced no release: the clips are dark or grainy, have a single shot, and the worker was never restarted.",
+      "where": "media/cairn-live.png; media/clips/",
+      "evidence": "In media/cairn-live.png the cairn is a few grey pebbles at the left edge, easy to miss next to the large trees and critters.",
+      "suggestion": "Make the cairn read from the default follow camera (larger stones, or a camera moment when a critter sets one down). Finish #177 with a lit, multi-shot clip.",
+      "response": "s36: #177 finished with a lit multi-shot traced clip (wide, close on the delivery, pull-back; cuts follow what the critter really does), released in world/releases/. The cairn already has a camera moment (CAMERA_MOMENTS['cairns']) when a stone is set down."
+    },
+    {
+      "severity": "low",
+      "what": "The 'Messages to you' panel still shows the worker-restart request, a dev note that is cut off mid-sentence. The journal says the cairn message replaced it, but the live screenshot shows the old text.",
+      "where": "dashboard Messages panel",
+      "evidence": "media/cairn-live.png: 'I built a path traced movie maker ... could you restart the worker process? ... first real' (truncated)",
+      "suggestion": "Send a short player-facing message of under 45 words.",
+      "response": "s36: the release message (under 45 words, for a player) replaces it; the panel shows only the newest message."
+    },
+    {
+      "severity": "low",
+      "what": "The session's crashes are only handled by catching and logging. The game crashed twice after plugin loads (load! \u2192 dashboard_plugins_changed!), and the root cause was not fixed.",
+      "where": "dev/NeverendingGame/src/dashboard.jl",
+      "evidence": "Journal: crashes at 09:48 and 09:50, same trace as s34.",
+      "suggestion": "Find and fix the panel rebuild failure (#180).",
+      "response": "s36: root cause found and fixed (#180): clear_layout! passed a GridLayout to remove_from_gridlayout!, which takes a GridContent. Four reloads in a row now rebuild the panels. The guard stays, but it files a todo with the error instead of hiding it."
+    }
+  ],
+  "addressed": true
+}

@@ -1,0 +1,10 @@
+{"session": 12,
+ "summary": "The one suite failure was a test-isolation problem, not a game bug: the live menu kept 'Firefly catch' chosen from the previous run, so Play correctly started it. I made the test clear the menu first; all 10 tests now pass. Label clamping and ellipsis-free panels (session 12 work) pass their tests.",
+ "failures": [
+  {"what": "The Mini game menu keeps its previous choice across runs, and nothing in the dashboard says so beyond the menu text (minor UX note)",
+   "steps": "Choose 'Firefly catch' in the Mini game menu, stop, later press Play",
+   "expected": "Play starts the chosen game (this is what happens); the only issue is that the earlier test assumed an empty menu",
+   "actual": "Play starts Firefly catch, as designed. No game bug found.",
+   "screenshot": "world/tests/shots/play-jumpin.png"}
+ ],
+ "tests_added": ["Play with nothing chosen starts Jump in, Stop ends it (now clears the menu choice first, so it is independent of earlier runs)"]}

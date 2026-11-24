@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-24T00:48:44.465",
+  "finished": "2026-11-24T01:05:27.874",
+  "id": "20261124-004844-465-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 6000,
+    "prompt": "a small cozy wooden garden bench with a curved backrest and four short legs, stylized toy-like, soft hand-painted colors, seen from the side at an angle, resting on the ground",
+    "tags": [
+      "bench",
+      "lookout",
+      "furniture"
+    ]
+  },
+  "result": {
+    "created": "2026-11-24T01:05:27.673",
+    "faces": 5869,
+    "id": "20261124-004844-465-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-465-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-465-asset/mesh.jls",
+    "prompt": "a small cozy wooden garden bench with a curved backrest and four short legs, stylized toy-like, soft hand-painted colors, seen from the side at an angle, resting on the ground",
+    "seconds": 664.0,
+    "tags": [
+      "bench",
+      "lookout",
+      "furniture"
+    ]
+  },
+  "seconds": 666.9,
+  "started": "2026-11-24T00:54:21.008",
+  "status": "done"
+}

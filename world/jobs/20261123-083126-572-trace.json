@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-23T08:31:26.573",
+  "finished": "2026-11-23T08:32:44.926",
+  "id": "20261123-083126-572-trace",
+  "kind": "trace",
+  "params": {
+    "path": "/sim/Programmieren/SimGame/world/media/meadow/traced-meadow.png",
+    "samples": 128
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/meadow/traced-meadow.png"
+  },
+  "seconds": 77.2,
+  "started": "2026-11-23T08:31:27.756",
+  "status": "done"
+}

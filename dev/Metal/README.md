@@ -1,0 +1,159 @@
+# Metal.jl
+
+*Programming Apple Silicon GPUs in Julia using the Metal framework*
+
+[![][doi-img]][doi-url] [![][docs-stable-img]][docs-stable-url] [![][docs-dev-img]][docs-dev-url] [![][buildkite-img]][buildkite-url] [![][codecov-img]][codecov-url] [![][benchmark-img]][benchmark-url]
+
+[doi-img]: https://zenodo.org/badge/262279120.svg
+[doi-url]: https://zenodo.org/badge/latestdoi/262279120
+
+[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
+[docs-stable-url]: https://metal.juliagpu.org/stable/
+
+[docs-dev-img]: https://img.shields.io/badge/docs-dev-blue.svg
+[docs-dev-url]: https://metal.juliagpu.org/dev/
+
+[buildkite-img]: https://badge.buildkite.com/a9b335b7d5d4d7ea90b031057728de9d1e9a73d5bcd9d89655.svg?branch=main
+[buildkite-url]: https://buildkite.com/julialang/metal-dot-jl
+
+[codecov-img]: https://codecov.io/gh/JuliaGPU/Metal.jl/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/JuliaGPU/Metal.jl
+
+[benchmark-img]: https://img.shields.io/badge/benchmarks-Chart-yellowgreen
+[benchmark-url]: https://juliagpu.org/perf/?pkg=metal
+
+
+## Requirements
+
+-  Mac device with M-series chip
+-  Julia 1.10-1.13
+-  macOS 15-27
+
+These requirements are fairly strict, and are due to our limited development
+resources (manpower, hardware). Supported OS versions follow Apple's support,
+which is typically the three latest major verions.
+The full test suite runs on macOS 27 hardware; older macOS versions are covered
+by a subset of the tests on virtual GPUs.
+
+
+## Quick start
+
+Metal.jl can be installed with the Julia package manager. From the Julia REPL, type `]` to
+enter the Pkg REPL mode and run:
+
+```
+pkg> add Metal
+```
+
+Or, equivalently, via the `Pkg` API:
+
+```julia-repl
+julia> import Pkg; Pkg.add("Metal")
+```
+
+For an overview of the toolchain in use, you can run the following command after
+importing the package:
+
+```julia-repl
+julia> using Metal
+
+julia> using Metal; Metal.versioninfo()
+macOS 27.3.0, Darwin 27.3.0
+
+Toolchain:
+- Julia: 1.13.4
+- LLVM: 20.1.8
+- Metal: 4.1 (MSL), 2.9 (AIR), 1.2.9 (metallib)
+
+Julia packages:
+- Metal.jl: 1.12.1
+- GPUArrays: 12.2.0
+- GPUCompiler: 2.23.3
+- KernelAbstractions: 0.10.8
+- KernelInterface: 0.4.6
+- ObjectiveC: 7.2.0
+- LLVM: 10.4.3
+- LLVMDowngrader_jll: 0.12.2+0
+
+1 device:
+- Apple M2 Max (30 GPU cores, 64.000 KiB allocated; Apple8, Metal4 family)
+```
+
+
+## Array abstraction
+
+The easiest way to work with Metal.jl, is by using its array abstraction.
+The `MtlArray` type is both meant to be a convenient container for device
+memory, as well as provide a data-parallel abstraction for using the GPU
+without writing your own kernels:
+
+```julia-repl
+julia> a = MtlArray([1])
+1-element MtlVector{Int64, Metal.SharedStorage}:
+ 1
+
+julia> a .+ 1
+1-element MtlVector{Int64, Metal.SharedStorage}:
+ 2
+```
+
+
+## Kernel programming
+
+The above array abstractions are all implemented using Metal kernels written
+in Julia. These kernels follow a similar programming style to Julia's other
+GPU back-ends, and with that deviate from how kernels are implemented in Metal C
+(i.e., indexing intrinsics are functions not arguments, arbitrary aggregate arguments
+are supported, etc):
+
+```julia-repl
+julia> function vadd(a, b, c)
+           i = thread_position_in_grid().x
+           c[i] = a[i] + b[i]
+           return
+       end
+vadd (generic function with 1 method)
+
+julia> a = MtlArray([1,1,1,1]); b = MtlArray([2,2,2,2]); c = similar(a);
+
+julia> @metal threads=2 groups=2 vadd(a, b, c);
+
+julia> Array(c)
+4-element Vector{Int64}:
+ 3
+ 3
+ 3
+ 3
+```
+
+
+## Metal API wrapper
+
+Finally, all of the above functionality is made possible by interfacing with the Metal
+libraries through [ObjectiveC.jl](https://github.com/JuliaInterop/ObjectiveC.jl). We provide
+low-level objects and functions that map to the Objective-C Metal API. These low-level API
+wrappers, along with some slightly higher-level Julia wrappers, are available in the `MTL`
+submodule exported by Metal.jl:
+
+```julia-repl
+julia> using Metal
+
+julia> dev = device()
+<AGXG13XDevice: 0x14c17f200>
+    name = Apple M1 Pro
+
+julia> dev.name
+NSString("Apple M1 Pro")
+```
+
+## Contributing
+If you want to help improve this package, look at the [contributing page](https://metal.juliagpu.org/stable/developers/contributing/) for more details.
+
+> [!IMPORTANT]
+> If your pull request contains substantial contributions from a generative AI tool, please disclose so with details, and review all changes before opening. This also applies to other content, such as issues, discussions, and comments. You are expected to understand any code, issue, or comment you submit as if you had written it yourself.
+
+
+## Acknowledgements
+
+This package builds upon the experience of several
+Julia contributors to [CUDA.jl](https://github.com/JuliaGPU/CUDA.jl), [AMDGPU.jl](https://github.com/JuliaGPU/AMDGPU.jl) and [oneAPI.jl](https://github.com/JuliaGPU/oneAPI.jl).

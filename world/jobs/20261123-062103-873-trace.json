@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-23T06:21:03.876",
+  "finished": "2026-11-23T06:24:31.758",
+  "id": "20261123-062103-873-trace",
+  "kind": "trace",
+  "params": {
+    "path": "/sim/Programmieren/SimGame/world/media/s30/trace-outfits.png",
+    "samples": 256,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s30/trace-outfits.png"
+  },
+  "seconds": 206.4,
+  "started": "2026-11-23T06:21:05.053",
+  "status": "done"
+}

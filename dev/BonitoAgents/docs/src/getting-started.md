@@ -1,0 +1,188 @@
+# Getting Started
+
+## Install
+
+Install the desktop app on the machine where you want agents to work. The bundle
+includes Julia, a local server and a worker; it opens the workspace in your browser.
+
+Linux / macOS:
+
+```bash
+curl -fsSL https://agents.bonito.sh/install.sh | sh
+```
+
+Windows (PowerShell):
+
+```powershell
+irm https://agents.bonito.sh/install.ps1 | iex
+```
+
+## Your first chat
+
+1. Choose a project folder and start a chat.
+2. Pick an agent and sign in with your own account if needed.
+3. Give it a concrete task. For example:
+
+   > Find and fix one small issue in this project. Run the relevant checks and
+   > show me the diff. Leave the changes uncommitted.
+
+4. Use **⋯ → Review changes** in the chat header to inspect the patch. Ask about a line or send
+   feedback, then have the agent run the relevant checks.
+
+When a task produces a plot, notebook, report or app, ask the agent to show it.
+Open the result beside the chat so you can inspect it while you refine the work.
+
+[See a complete workflow](@ref "A Day with BonitoAgents") · [Choose an agent](@ref "Agent Providers")
+
+## Updating and installer options
+
+Start it again any time with `bonito-agents`. **Re-run the same install line to
+auto-update** to the newest release; it skips the download when you are already
+current. Useful flags: `bonito-agents --port=8038` (fixed port), `--no-window`
+(don't open a browser), `--data-dir=PATH` (relocate state). Pass installer
+options after `-- `, e.g. `… | sh -s -- --no-run` to install without starting
+or `… | sh -s -- --uninstall` to remove it (raw `.tar.gz` bundles are also
+attached to
+[GitHub releases](https://github.com/SimonDanisch/BonitoAgents.jl/releases)).
+
+Projects, chat history and the machine's worker identity persist across
+restarts and updates under the platform data directory
+(`~/.local/share/BonitoAgents` on Linux, `~/Library/Application
+Support/BonitoAgents` on macOS, `%LOCALAPPDATA%\BonitoAgents` on Windows) and
+are never touched by install/update/uninstall.
+
+Node and the agent adapters (Claude Code's and Codex's) are installed for you,
+in a private Node install, and kept up to date. What stays yours is logging in
+to the agents: for Claude Code, install it and run `claude` once to log in.
+
+## From source
+
+If you would rather run from a checkout (you need
+[Julia](https://julialang.org/install/) 1.12+), the desktop entry point does
+the same thing, giving you dashboard server + local worker + UI in your browser:
+
+```bash
+git clone https://github.com/SimonDanisch/BonitoAgents.jl
+cd BonitoAgents.jl
+julia --project=BonitoAgentsApp -e 'using Pkg; Pkg.instantiate()'
+julia --project=BonitoAgentsApp -m BonitoAgentsApp
+```
+
+## One server, many machines
+
+Run the server somewhere always reachable, like a home server or a VPS, with a
+domain name. The setup script
+[`BonitoAgents/assets/install_server.sh`](https://github.com/SimonDanisch/BonitoAgents.jl/blob/main/BonitoAgents/assets/install_server.sh)
+installs it on Linux:
+
+```bash
+bash BonitoAgents/assets/install_server.sh
+```
+
+It asks how people reach the server, its domain and the admin account, and
+saves the answers before anything can go wrong: a second run offers them again
+(`--reconfigure` asks anew). The server only listens on localhost; people sign in
+through Authelia, which runs next to it as a systemd service. At the end the
+script prints a setup link for the admin account: opening it makes your passkey
+(Proton Pass, your phone or computer, a security key), which signs you in from
+then on. A password and an authenticator code are on the same page, folded away,
+for when a passkey is not an option. Lost access? `install_server.sh
+--setup-link` makes a new link.
+
+Re-running the script updates the install. It stops and starts every service,
+Authelia included, and Authelia keeps logins in memory, so everyone has to log
+in again afterwards. To restart only the dashboard, use
+`sudo systemctl restart bonitoagents-server`.
+
+**Behind a tunnel** (the default): something in front of the machine brings
+HTTPS, e.g. a Cloudflare Tunnel with the public hostname `team.example.com`
+pointing at `http://localhost:8038`. Nothing else is needed from the tunnel: the
+server asks Authelia about every request itself, serves the login page under the
+same name (`https://team.example.com/authelia`), and marks its responses private
+so the tunnel's cache keeps nothing. No certificates, DNS records or open ports
+on the machine.
+
+**Directly** (`--tls acme`): the script sets up Caddy in front for HTTPS (a
+Let's Encrypt certificate), with the login on `auth.team.example.com`. Before it
+asks for a certificate it checks that both names resolve to the machine and that
+port 80 reaches it, and stops with a message saying what is missing.
+
+To try a direct install out first, `--acme-staging` takes certificates from Let's
+Encrypt's staging CA (no rate limits; browsers warn about them), and
+`BonitoAgents/test/deploy/smoke.sh https://team.example.com --staging` checks
+the result from any machine: the certificate, the login redirect, the public
+installer, and that `/w` refuses workers without a credential. On a LAN without
+a public domain, `--tls internal` uses Caddy's own certificate authority
+instead; every browser and worker machine then has to trust its root
+certificate, whose path the installer prints.
+
+Admins manage people on the Settings page (the gear in the sidebar, or the
+Settings button on the dashboard): an invite link lets one person create their
+own account and its passkey in one step (behind a tunnel; behind Caddy the page
+shows a password and authenticator instead), and the Accounts section adds
+accounts directly, puts them in groups and disables them from each row's ⋯
+menu. Members see only their
+own chats and workers, plus the workers an owner shared with one of their
+groups. Everyone lists, adds and removes passkeys on their account card, and gets
+a new password or authenticator there; admins can do the latter from the
+Accounts table. No mail is involved anywhere.
+
+A login ends after a week without use and after four weeks at most; an open
+tab counts as use. When a login ends, every tab of that browser says so with a
+"Your login has ended" card and waits instead of sending you to the login page.
+Log in again in any one tab and the others carry on by themselves, a chat
+opened in the meantime included. Each login replaces the browser's session and
+would throw its other tabs out mid-request, so no tab asks for a login the
+browser already has. Behind a tunnel that includes a login page left open from
+a logged-out moment: it moves on to the dashboard as soon as another tab is
+logged in.
+
+Then, for each machine that should run agents, click **Add worker** on the
+dashboard and run the command it shows on that machine. The machine needs
+`julia` on its PATH; the installer stops with a message if it is missing.
+
+```bash
+# Linux / macOS
+curl -fsSL https://team.example.com/install.sh | sh -s w-...
+
+# Windows (PowerShell)
+& ([scriptblock]::Create((irm https://team.example.com/install.ps1))) w-...
+```
+
+Each worker has its own credential; revoking it on the dashboard disconnects
+that machine. The installer puts the worker packages into a shared `@bonito-agents` Julia
+environment, registers the machine under a stable identity, and (on Linux)
+sets up a systemd user service so the worker survives reboots. The machine
+appears in the dashboard seconds later. To update, re-run the command without
+the credential: the machine keeps the one it has, and the installer always
+installs the code revision the server is running.
+
+## Your first project
+
+From the dashboard home:
+
+- **Discover**: the worker scans for existing Claude Code sessions on that
+  machine. Any folder you have used `claude` in shows up and can be imported
+  with its conversation history.
+- **Pick a folder**: browse the worker's filesystem and turn any directory
+  into a project.
+- **From GitHub**: clone a repository straight onto a worker.
+
+Discover, folder picking and cloning live on each worker's own card, so the
+machine is chosen before the folder is. **Copy project** (on the Settings page) is the
+one that crosses machines: it snapshots a project's files onto another worker as
+a new project. To carry an existing chat elsewhere instead, with its files *and*
+the agent's memory, use that chat's ⋯ menu → *Continue on*.
+
+Opening a project starts (or resumes) its agent lazily on the first message.
+The provider dropdown in the chat header selects which agent runs, Claude
+Code by default. See [Agent Providers](@ref).
+
+## Your first chat
+
+Type into the composer and send. The agent's turn streams into the
+transcript: prose as it is generated, each tool call as a pill that expands
+into a diff viewer or terminal output, questions as forms you answer inline.
+While an agent works you can open project files from the sidebar tree, edit
+them in Monaco, and arrange everything in tabs and splits. See
+[The Chat](@ref).

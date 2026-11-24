@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-23T06:49:36.715",
+  "finished": "2026-11-23T06:52:56.125",
+  "id": "20261123-064936-651-trace",
+  "kind": "trace",
+  "params": {
+    "path": "/sim/Programmieren/SimGame/world/media/s31/trace-path.png",
+    "samples": 256,
+    "size": [
+      1280,
+      720
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s31/trace-path.png"
+  },
+  "seconds": 198.1,
+  "started": "2026-11-23T06:49:37.640",
+  "status": "done"
+}

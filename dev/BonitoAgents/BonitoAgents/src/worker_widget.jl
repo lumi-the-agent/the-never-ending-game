@@ -1,0 +1,696 @@
+# KeyedList-friendly widget for one worker row. Held stable per worker_id
+# in dashboard_dom's `worker_cards` Dict; picker form + discover panel
+# are sub-DOMs toggled via class-bound Observables so their state
+# (folder picker selection, scan results, focus) survives open/close.
+
+mutable struct WorkerCard
+    state            :: ServerState
+    worker_id        :: String          # KeyedList key
+    error_obs        :: Observable{String}
+    picker_state     :: Observable{String}    # worker_id of the open picker
+    gh_state         :: Observable{String}    # worker_id of the open GitHub form
+    discover_state   :: Observable{String}    # worker_id of the open panel
+    busy             :: Observable            # BUSY_IDLE-shape NamedTuple
+    discover_busy    :: Observable{Bool}
+    discover_results :: Observable{Vector{Dict{String,Any}}}
+    do_import        :: Function
+    do_github        :: Function
+    trigger_scan     :: Function
+    remote_picker    :: RemoteFolderPicker
+    name_obs         :: Observable{String}
+    initials_obs     :: Observable{String}
+end
+
+# Where the folder picker should open for `worker_id`: the worker's own working
+# directory, which it reports as `projects_root` (BonitoWorker defaults it to the
+# `pwd()` the operator installed from). That is the folder the user thinks of as
+# "where my projects are" — the picker used to open at the worker's $HOME
+# instead, which on a machine that keeps its code elsewhere meant browsing down
+# from `/home/<user>` on every single create.
+#
+# "" if the worker hasn't said hello yet; `list_dir` reads that as $HOME, which
+# is the only sensible fallback when we don't know any better.
+function worker_start_dir(state::ServerState, worker_id::AbstractString)
+    w = get(state.workers[], String(worker_id), nothing)
+    w === nothing && return ""
+    return normalize_worker_path(w.projects_root)
+end
+
+function WorkerCard(state::ServerState, worker_id::AbstractString;
+                     error_obs::Observable{String},
+                     picker_state::Observable{String},
+                     gh_state::Observable{String},
+                     discover_state::Observable{String},
+                     busy::Observable,
+                     discover_busy::Observable{Bool},
+                     discover_results::Observable{Vector{Dict{String,Any}}},
+                     do_import::Function,
+                     do_github::Function,
+                     trigger_scan::Function)
+    w0 = get(state.workers[], worker_id, nothing)
+    initial_name     = w0 === nothing ? worker_id : w0.name
+    initial_initials = w0 === nothing ? derive_initials(worker_id) :
+                                        worker_initials(w0)
+    WorkerCard(state, String(worker_id),
+                error_obs, picker_state, gh_state, discover_state,
+                busy, discover_busy, discover_results,
+                do_import, do_github, trigger_scan,
+                RemoteFolderPicker(state, String(worker_id),
+                                   worker_start_dir(state, worker_id)),
+                Observable(initial_name),
+                Observable(initial_initials))
+end
+
+Base.hash(c::WorkerCard, h::UInt) = hash(c.worker_id, hash(:WorkerCard, h))
+Base.:(==)(a::WorkerCard, b::WorkerCard) = a.worker_id == b.worker_id
+
+# Compact, persistent feedback for the worker's relationship to this server
+# build; the note below the card says what it means and whether to act. The
+# badge stays after a successful reconnect, so an update does not appear to have
+# done nothing. `working` steps run by themselves: they get a spinner and the
+# time they have taken, so a slow install does not look stuck.
+function worker_update_badge(online::Bool, state::Symbol, message::AbstractString = "")
+    title = String(message)
+    badge(label, tone; working = false) =
+        (label = label, class = "bt-pill bt-pill-$(tone) bt-worker-update-badge", title = title, working = working)
+    # Restarting is the one step a worker is offline for, and the one that would
+    # otherwise read as a plain "offline".
+    (online || state === :restarting) ||
+        return (label = "", class = "bt-pill bt-hidden", title = "", working = false)
+    state === :current &&
+        return (label = "Up to date", class = "bt-pill bt-pill-online bt-worker-update-badge",
+                title = "This worker matches the server build", working = false)
+    state === :requested  && return badge("Starting update", "syncing"; working = true)
+    state === :installing && return badge("Installing update", "syncing"; working = true)
+    state === :restarting && return badge("Restarting", "syncing"; working = true)
+    state === :waiting    && return badge("Update queued", "warn")
+    state === :failed     && return badge("Update failed", "error")
+    state === :reinstall  && return badge("Reinstall needed", "warn")
+    return badge("Update available", "warn")
+end
+
+# The note's tone: an update running by itself is information, not a warning.
+update_note_class(state::Symbol) =
+    state in (:requested, :installing, :restarting) ? "bt-worker-update-note bt-worker-update-note-info" :
+    state === :failed ? "bt-worker-update-note bt-worker-update-note-error" : "bt-worker-update-note"
+
+# The badge as a node. A working step's timer counts on in the browser
+# (`update_timer_ticker`) from `since`, so it needs no re-render per second.
+function render_update_badge(w::Union{WorkerInfo,Nothing})
+    w === nothing && return DOM.span(""; class = "bt-pill bt-hidden")
+    b = worker_update_badge(isopen(w), w.update_state, w.update_message)
+    b.working || return DOM.span(b.label; class = b.class, title = b.title)
+    return DOM.span(DOM.span(""; class = "bt-spinner bt-spinner-sm"),
+                    DOM.span(b.label),
+                    DOM.span(elapsed_str(time() - w.update_since); class = "bt-update-elapsed",
+                             dataStarted = string(w.update_since));
+                    class = b.class, title = b.title)
+end
+
+# One ticker per card for its update timer; the badge is rebuilt on every step,
+# each time with the step's own start. Stops once the card left the page.
+update_timer_ticker(card) = js"""
+    (card => {
+        const es = sec => sec <= 1 ? "" : sec < 60 ? Math.round(sec) + "s"
+            : (() => { const m = Math.floor(sec / 60), s = Math.round(sec - 60 * m);
+                       return s === 0 ? m + "m" : m + "m" + s + "s"; })();
+        let seen = false;
+        const iv = setInterval(() => {
+            if (!card.isConnected) { if (seen) clearInterval(iv); return; }
+            seen = true;
+            const now = Date.now() / 1000;
+            card.querySelectorAll('.bt-update-elapsed[data-started]').forEach(el => {
+                el.textContent = es(now - parseFloat(el.dataset.started)); });
+        }, 1000);
+    })($(card))
+"""
+
+function render_part(session::Bonito.Session, c::WorkerCard)   # timed: diagnostics.jl
+    state, wid = c.state, c.worker_id
+    # A worker shared with someone's group (`share_worker!`) shows them its name
+    # and lets them start chats on it; renaming, updating, sharing, removing it
+    # and importing its machine's sessions stay with whoever manages it.
+    manage = let w = get(state.workers[], wid, nothing)
+        w === nothing || can_manage(state, w)
+    end
+
+    # `:restarting`: offline because it installed an update, and back by itself.
+    status_obs = map(state.workers) do workers
+        w = get(workers, wid, nothing)
+        w === nothing ? :unknown :
+            !isopen(w) ? (w.update_state === :restarting ? :restarting : :offline) :
+            w.update_state !== :current ? :update : :online
+    end
+    subtitle_obs = map(state.workers) do workers
+        w = get(workers, wid, nothing)
+        w === nothing ? "(removed)" : worker_subtitle(w)
+    end
+    is_online_obs = map(s -> s == :online || s == :update, status_obs)
+    title_attr = let w = get(state.workers[], wid, nothing)
+        w === nothing ? "(removed)" :
+            "$(w.hostname) · home: $(w.home)"
+    end
+
+    new_proj_btn = Bonito.Button("+ Project"; style=nothing, class = "bw-btn bw-btn-secondary")
+    on(session, new_proj_btn.value) do clicked
+        clicked || return
+        opening = c.picker_state[] != wid
+        # EVERY open starts at the worker's working directory — not just the
+        # first. The picker instance is stable per card (that's what keeps a
+        # Bonito re-render from resetting it mid-browse), so without this it
+        # reopens wherever the last create left it, or worse onto a path typed
+        # into the address bar that never existed: the folder rows then come
+        # back empty and "+ New folder" fails on the missing parent, with no way
+        # back but retyping. `reset_to_worker!` also clears the stale selection
+        # and error, and re-reads `projects_root` in case the worker reconnected
+        # from somewhere else. Same thing the dashboard's New Project form does
+        # via its `on(np_worker)` listener.
+        opening && reset_to_worker!(c.remote_picker, wid, worker_start_dir(state, wid))
+        c.picker_state[]   = opening ? wid : ""
+        c.error_obs[]      = ""
+    end
+
+    gh_btn = Bonito.Button("+ From GitHub"; style=nothing, class = "bw-btn bw-btn-secondary")
+    on(session, gh_btn.value) do clicked
+        clicked || return
+        c.gh_state[] = c.gh_state[] == wid ? "" : wid
+        c.error_obs[] = ""
+    end
+
+    name_input = DOM.input(
+        type  = "text",
+        value = c.name_obs,
+        class = "bt-card-name bt-card-name-edit",
+        title = "Click to rename — Enter to save, Esc to cancel",
+        onblur    = js"event => $(c.name_obs).notify(event.target.value)",
+        onkeydown = js"""event => {
+            if (event.key === 'Enter')  { event.target.blur(); }
+            if (event.key === 'Escape') {
+                event.target.value = event.target.defaultValue;
+                event.target.blur();
+            }
+        }""")
+    on(session, c.name_obs) do v
+        new = strip(String(v))
+        cur = haskey(state.workers[], wid) ? state.workers[][wid].name : wid
+        isempty(new) && (c.name_obs[] = cur; return)
+        new == cur && return
+        try
+            rename_worker!(state, wid, new)
+            c.error_obs[] = ""
+        catch e
+            c.error_obs[] = "Rename failed: $(sprint(showerror, e))"
+            c.name_obs[]  = cur
+        end
+    end
+
+    # `[DT]` tag — short worker initials shown next to every chat/project that
+    # lives on this worker. Up to 4 chars (room for a short emoji). Empty
+    # input clears the override and the UI falls back to derive_initials(name).
+    # The pill and card stripe use the worker's fixed colour: the same ring the
+    # sidebar draws around this machine's chat icons.
+    initials_input = DOM.input(
+        type      = "text",
+        value     = c.initials_obs,
+        maxlength = 4,
+        class     = "bt-card-initials bt-card-initials-edit",
+        title     = "Worker tag (1–4 chars, emoji ok) — shown as [XX] in chat labels; its colour rings this machine's chat icons",
+        onblur    = js"event => $(c.initials_obs).notify(event.target.value)",
+        onkeydown = js"""event => {
+            if (event.key === 'Enter')  { event.target.blur(); }
+            if (event.key === 'Escape') {
+                event.target.value = event.target.defaultValue;
+                event.target.blur();
+            }
+        }""")
+    on(session, c.initials_obs) do v
+        new = strip(String(v))
+        w_now = get(state.workers[], wid, nothing)
+        cur = w_now === nothing ? derive_initials(wid) : worker_initials(w_now)
+        new == cur && return
+        try
+            set_worker_initials!(state, wid, new)
+            # Snap the input to the canonical render (derived if cleared).
+            c.initials_obs[] = worker_initials(state.workers[][wid])
+            c.error_obs[]    = ""
+        catch e
+            c.error_obs[] = "Initials update failed: $(sprint(showerror, e))"
+            c.initials_obs[] = cur
+        end
+    end
+
+    status_dot_obs = map(status_obs) do s
+        status_dot(s === :restarting ? :update : s)
+    end
+    update_badge = map(workers -> render_update_badge(get(workers, wid, nothing)), state.workers)
+
+    # The note shows for every non-current state; the button only where the
+    # worker can act on it (a `:reinstall` worker does not know `force_update`).
+    # ALWAYS a node, hidden when there is nothing to say — never `nothing`.
+    # `map` types its Observable from the FIRST result, so a union of `nothing`
+    # and a node makes every later notify of the other kind throw
+    # ("Cannot convert Nothing to Node{HTMLSVG}", and the mirror image).
+    # `safe_notify!` then skips this listener for good, and the card's update
+    # notice silently stops tracking the worker — observed on the live server,
+    # once per worker notify. Same shape as `update_btn_class` below.
+    update_notice = map(state.workers) do workers
+        w = get(workers, wid, nothing)
+        quiet = w === nothing || w.update_state === :current
+        DOM.span(quiet ? "" : w.update_message;
+                 class = quiet ? "bt-worker-update-note bt-hidden" : update_note_class(w.update_state))
+    end
+    # The managed agent adapters the worker reports (its harnesses.jl), and why
+    # the last install failed. Always a node, for the same reason as above. Not
+    # the update note's amber: what is installed is information, not a warning;
+    # only a failure is red.
+    adapters_note = map(session, state.workers) do workers
+        w = get(workers, wid, nothing)
+        installed = w === nothing ? Dict{String,String}() : w.harnesses
+        err = w === nothing ? "" : w.harness_error
+        list = isempty(installed) ? "" :
+            "adapters: " * join(("$(last(split(k, '/'))) $(v)" for (k, v) in sort!(collect(installed))), " · ")
+        DOM.div(
+            DOM.span(list; class = isempty(list) ? "bt-hidden" : ""),
+            DOM.span(isempty(err) ? "" : "adapter install failed: " * err;
+                     class = isempty(err) ? "bt-hidden" : "bt-worker-adapters-error");
+            class = isempty(list) && isempty(err) ? "bt-worker-adapters bt-hidden" : "bt-worker-adapters")
+    end
+    # Shown while the update waits for something (`:available`, `:waiting`,
+    # `:failed`). `force_worker_update!` flips the worker to `:requested`, which
+    # hides it while the worker's steps run; the replacement worker's hello
+    # flips it to `:current`, leaving the compact success badge visible.
+    update_btn = Bonito.Button("Update now"; style=nothing, class = "bw-btn bw-btn-secondary")
+    on(session, update_btn.value) do clicked
+        clicked || return
+        @async try
+            force_worker_update!(state, wid)
+            c.error_obs[] = ""
+        catch e
+            c.error_obs[] = "Could not update: $(sprint(showerror, e))"
+        end
+    end
+    update_btn_class = map(state.workers) do workers
+        w = get(workers, wid, nothing)
+        w !== nothing && w.update_state in (:available, :waiting, :failed) ? "" : "bt-hidden"
+    end
+
+    # Remove worker. The confirm() lives in JS so we never fire the
+    # destructive call without an explicit OK; only then does the trigger
+    # Observable flip and the Julia handler run `remove_worker!`.
+    remove_trigger = Observable(false)
+    on(session, remove_trigger) do go
+        go || return
+        try
+            remove_worker!(state, wid)
+            c.error_obs[] = ""
+        catch e
+            c.error_obs[] = "Remove failed: $(sprint(showerror, e))"
+        end
+    end
+    remove_btn = DOM.div("✕";
+        class = "bt-card-remove",
+        title = "Remove this worker",
+        onclick = js"""event => {
+            event.stopPropagation();
+            if (confirm("Remove this worker and its projects from the list?\n\nChat history files are kept on disk. A worker whose process is still running may reconnect."))
+                $(remove_trigger).notify(true);
+        }""")
+
+    # Render both action variants; toggle visibility via class. Keeps the
+    # Bonito.Button instances mounted so click handlers don't churn.
+    # A restarting worker shows neither: its badge says where it is.
+    online_class  = map(o -> o ? "bt-card-actions" : "bt-card-actions bt-hidden", is_online_obs)
+    offline_class = map(s -> s in (:offline, :unknown) ? "bt-card-actions" : "bt-card-actions bt-hidden",
+                        status_obs)
+    actions_block = DOM.div(
+        DOM.div(new_proj_btn, gh_btn, manage ? DOM.div(update_btn; class = update_btn_class) : DOM.div();
+                class = online_class),
+        DOM.div(DOM.span("offline"; class = "bt-pill bt-pill-muted"); class = offline_class))
+
+    manage || (initials_input = DOM.span(c.initials_obs; class = "bt-card-initials");
+               name_input = DOM.span(c.name_obs; class = "bt-card-name"))
+    card_body = DOM.div(
+        DOM.div(status_dot_obs, initials_input, name_input, update_badge;
+                class = "bt-card-title"),
+        DOM.div(subtitle_obs; class = "bt-card-meta", title = title_attr);
+        class = "bt-card-body")
+
+    # Top row of the worker pill: identity, then the actions, then the remove ✕
+    # at the far right (after the buttons, not floating in the middle of the
+    # title row). The discover details lives inside the SAME pill (below this
+    # row), so a worker with a collapsed project list takes the same space as a
+    # bare card — no separate pill underneath.
+    card_row = manage ? DOM.div(card_body, actions_block, remove_btn; class = "bt-card-row") :
+                        DOM.div(card_body, actions_block; class = "bt-card-row")
+
+    is_picking_obs = map(s -> s == wid, c.picker_state)
+    picker_form    = render_remote_picker_form(session, c, wid)
+    picker_class   = map(p -> p ? "bt-form-wrapper" : "bt-form-wrapper bt-hidden", is_picking_obs)
+    picker_block   = DOM.div(picker_form; class = picker_class)
+
+    is_gh_obs = map(s -> s == wid, c.gh_state)
+    gh_form   = render_github_form(session, c, wid)
+    gh_class  = map(g -> g ? "bt-form-wrapper" : "bt-form-wrapper bt-hidden", is_gh_obs)
+    gh_block  = DOM.div(gh_form; class = gh_class)
+
+    # Project list is a `<details>` nested INSIDE the card so the closed state is
+    # just a thin "▸ projects (N)" toggle row — no separate pill chrome. Fed
+    # from state.discovered (no scan needed on first paint); the per-card Rescan
+    # button refreshes it.
+    card = AppCard(card_row, update_notice, adapters_note,
+                   worker_sharing_row(state.auth, session, state, wid),
+                   manage ? render_discover_panel(session, c, wid) : DOM.div();
+                   class = "bt-card bt-worker-card", dataWorkerId = wid,
+                   style = Styles("--bt-worker" => worker_color(state, wid)))
+
+    return Bonito.jsrender(session,
+        DOM.div(card, picker_block, gh_block, update_timer_ticker(card); class = "bt-worker-cell"))
+end
+
+function render_remote_picker_form(session::Bonito.Session, c::WorkerCard, wid::String)
+    create_btn = Bonito.Button("Create"; style=nothing, class = "bw-btn")
+    cancel_btn = Bonito.Button("Cancel"; style=nothing, class = "bw-btn bw-btn-secondary")
+    rp = c.remote_picker
+
+    on(session, create_btn.value) do clicked
+        clicked || return
+        # A second click while this one runs is dropped by `do_import`'s latch,
+        # and a later import of the same folder reuses its chat.
+        # The path field IS the selection — nothing else to resolve. A path that
+        # doesn't exist yet ("type /newname to create it") is created on the
+        # WORKER here (mkpath) before import; `do_import` itself stays strict
+        # because the discover-session resume path needs an existing cwd.
+        chosen = picker_path(rp)
+        if isempty(chosen)
+            c.error_obs[] = "Enter a folder path first."
+            return
+        end
+        @async try
+            real = ensure_worker_dir(c.state, wid, chosen)
+            c.do_import(wid, real)
+        catch e
+            c.error_obs[] = "Failed to create folder: $(sprint(showerror, e))"
+        end
+    end
+    on(session, cancel_btn.value) do clicked
+        clicked || return
+        is_busy_running(c.busy[]) && return
+        c.picker_state[] = ""
+        c.error_obs[]    = ""
+    end
+
+    display_name_obs = map(c.state.workers) do workers
+        w = get(workers, wid, nothing)
+        w === nothing ? wid : w.name
+    end
+    label_obs = map(n -> "Folder on $n", display_name_obs)
+
+    DOM.div(
+        DOM.label(label_obs),
+        DOM.div(remote_folder_picker_render(session, rp)),
+        DOM.div(cancel_btn, create_btn, class = "bt-form-actions");
+        class = "bt-form")
+end
+
+# Per-worker "From GitHub" form. The worker clone flow needs a worker, so it
+# lives on the worker card (like "+ From GitHub" lives next to "+ Project");
+# the old dashboard "+ From GitHub" that carried its own worker select is gone.
+function render_github_form(session::Bonito.Session, c::WorkerCard, wid::String)
+    open_btn  = Bonito.Button("Open"; style=nothing, class = "bw-btn")
+    cancel_btn = Bonito.Button("Cancel"; style=nothing, class = "bw-btn bw-btn-secondary")
+    url       = Observable("")
+    err       = Observable("")
+
+    on(session, open_btn.value) do clicked
+        clicked || return
+        refuse_if_busy(c.busy, c.error_obs, "Can't clone right now") && return
+        u = String(strip(url[]))
+        if isempty(u)
+            err[] = "GitHub URL required."
+            return
+        end
+        @async try
+            p = c.do_github(wid, u)
+            err[] = ""
+            c.gh_state[] = ""
+            c.error_obs[] = ""
+        catch e
+            err[] = sprint(showerror, e)
+        end
+    end
+    on(session, cancel_btn.value) do clicked
+        clicked || return
+        c.gh_state[] = ""
+        c.error_obs[] = ""
+    end
+
+    display_name_obs = map(c.state.workers) do workers
+        w = get(workers, wid, nothing)
+        w === nothing ? wid : w.name
+    end
+    label_obs = map(n -> "Clone into $n", display_name_obs)
+
+    DOM.div(
+        DOM.label(label_obs),
+        DOM.input(type = "text", placeholder = "https://github.com/<owner>/<repo>",
+                  value = url, class = "bt-gh-url",
+                  oninput = js"event => $(url).notify(event.target.value)"),
+        DOM.div("Repo → just clone. Issue/PR → clone + auto-prompt 'fix this'.";
+                style = Styles("font-size" => "var(--bw-font-size-xs)",
+                               "color" => "var(--bw-text-muted)",
+                               "margin-bottom" => "4px")),
+        map(err) do m
+            isempty(m) ? DOM.div() :
+                DOM.div(m; style = Styles("color" => "var(--bw-error, #b91c1c)",
+                                          "font-size" => "var(--bw-font-size-sm)"))
+        end,
+        DOM.div(cancel_btn, open_btn, class = "bt-form-actions");
+        class = "bt-form")
+end
+
+# Persistent folder→threads browser for one worker. Reads from the
+# server-side `state.discovered[wid]` cache (saved to discovered.json), so the
+# tree survives a restart with no re-scan; the per-card Rescan button refreshes
+# it. Only the header is built with the page. The rest is built when it first
+# opens (`discover_panel_body`).
+function render_discover_panel(session::Bonito.Session, c::WorkerCard, wid::String)
+    # Per-card scan-in-flight flag so rescanning one worker doesn't spin every
+    # other worker's panel.
+    scan_busy = Observable(false)
+    rescan_trigger = Observable(false)
+    on(session, rescan_trigger) do go
+        go || return
+        scan_busy[] && return
+        scan_busy[] = true
+        @async try
+            scan_and_store!(c.state, wid)
+        catch e
+            c.error_obs[] = "Scan failed: $(sprint(showerror, e))"
+        finally
+            scan_busy[] = false
+        end
+    end
+
+    # Resume / Import / + New thread all funnel through ONE session-local `pick`
+    # observable + the ONE delegated panel listener below. It's created in THIS
+    # render's session (like `rescan_trigger`), so `$(pick)` is guaranteed to be
+    # in GLOBAL_OBJECT_CACHE at click time. The previous code interpolated the
+    # SHARED `import_path` from `dashboard_dom`'s scope — registered in a
+    # DIFFERENT session than the card's — so the client lookup returned null and
+    # `.notify` threw "Key N not found", silently killing Resume while the
+    # optimistic "Resuming…" label still flipped. (bonito skill: never
+    # interpolate a shared Observable into a sub-session's render.) The bridge to
+    # the shared `c.do_import` keeps the actual import logic in one place.
+    pick = Observable(Dict{String,Any}())
+    on(session, pick) do payload
+        isempty(payload) && return
+        path = String(get(payload, "path", ""))
+        isempty(path) && return
+        sid_raw = get(payload, "session_id", nothing)
+        resume_session_id = (sid_raw === nothing || isempty(String(sid_raw))) ?
+                                nothing : String(sid_raw)
+        w_name = String(get(payload, "worker", ""))
+        prov_raw = get(payload, "provider", nothing)
+        provider = (prov_raw === nothing || isempty(String(prov_raw))) ?
+                       nothing : String(prov_raw)
+        title = String(get(payload, "title", ""))
+        pick[] = Dict{String,Any}()              # reset so the same row can re-fire
+        isempty(w_name) && return
+        # Double-clicks: `do_import` drops a second one while the first runs.
+        c.do_import(w_name, path; resume_session_id = resume_session_id,
+                    provider = provider, title)
+    end
+    # Plain DOM (not Bonito.Button) so the onclick can `preventDefault` the
+    # enclosing <details> summary toggle (Rescan should NOT collapse the panel
+    # — it should open it so the spinner / refreshed tree are visible), and
+    # `stopPropagation` belt-and-braces.
+    rescan_btn = DOM.span("↻ Rescan";
+        class = "bw-btn bw-btn-secondary",
+        style = Styles("cursor" => "pointer"),
+        onclick = js"""event => {
+            event.preventDefault(); event.stopPropagation();
+            const d = event.currentTarget.closest('details');
+            if (d) d.open = true;
+            $(rescan_trigger).notify(true);
+        }""")
+
+    # This worker's persisted scan results (worker_id → Vector of session dicts).
+    results_obs = map(session, c.state.discovered) do d
+        get(d, wid, Dict{String,Any}[])
+    end
+
+    # Live count of distinct project folders for the inline "projects (N)" label.
+    # Same dedup the groups_obs builder uses (skip errors + subagents).
+    project_count_obs = map(session, results_obs) do results
+        seen = Set{String}()
+        for r in results
+            haskey(r, "error") && continue
+            String(get(r, "kind", "session")) == "subagent" && continue
+            push!(seen, String(get(r, "path", "")))
+        end
+        length(seen)
+    end
+    title_obs = map(n -> "projects ($n)", session, project_count_obs)
+
+    # The tree is built when it first opens, so a page load pays for the header
+    # only. Rescan inside the header preventDefaults the toggle and force-opens,
+    # so the user always sees scan progress + refreshed results.
+    panel = BonitoWidgets.Collapsible(
+        Any[DOM.span(title_obs; class = "bt-discover-title"),
+            DOM.div(rescan_btn; class = "bt-discover-actions")],
+        () -> discover_panel_body(session, c, wid, results_obs, scan_busy);
+        expanded = false, class = "bt-discover-panel", header_class = "bt-discover-header")
+
+    # One delegated click for the whole panel: every session row AND the
+    # per-group "+ New thread" button share ONE listener (matched by the
+    # `data-bt-action="session-pick"` attr) instead of N per-row onclick rebinds,
+    # and it covers what's built later. It notifies the SESSION-LOCAL `pick` above:
+    # `$(pick)` resolves because it was created in this render's session, unlike
+    # the old cross-session `import_path` (see the `pick` comment).
+    on_click = js"""(ev) => {
+        const btn = ev.target.closest('[data-bt-action="session-pick"]');
+        if (!btn) return;
+        ev.preventDefault();   // "+ New thread" sits in a folder's header, this isn't a toggle
+        // Optimistic UI: the controller-side import is async, so flip the
+        // label + dim immediately so the user sees the click landed. (The
+        // "+ New thread" span has no Resume/Import label, leave its text.)
+        btn.classList.add('bt-clicked');
+        const t = btn.textContent.trim();
+        if (t === 'Resume')      btn.textContent = 'Resuming…';
+        else if (t === 'Import') btn.textContent = 'Importing…';
+        $(pick).notify({
+            path:       btn.dataset.btSessionPath || '',
+            session_id: btn.dataset.btSessionId   || '',
+            provider:   btn.dataset.btProvider    || '',
+            worker:     btn.dataset.btWorkerId    || '',
+            title:      btn.dataset.btSessionTitle || '',
+        });
+    }"""
+    # `display: contents` so the wrapper is transparent to the card's layout.
+    return DOM.div(panel; style = Styles("display" => "contents"), onclick = on_click)
+end
+
+# What an open discover panel shows: a spinner, an empty note and errors, whose
+# class-bound observables flip visibility, and one folder per cwd with its session rows.
+function discover_panel_body(session::Bonito.Session, c::WorkerCard, wid::String,
+                             results_obs::Observable, scan_busy::Observable{Bool})
+    # Session ids that are an OPEN chat in the homebar on this worker (a project
+    # whose `resume_session_id` matches AND that `chat_in_sidebar` shows). Used
+    # to tag those discover rows with an "in sidebar" pill — the rows stay
+    # VISIBLE (discover is unconditional; hiding them made sessions look lost
+    # whenever sidebar state and discover disagreed). Clicking such a row reuses
+    # the existing thread (`find_thread` dedup), never a duplicate. Session-
+    # scoped (`map(session, …)`) so the listener deregisters with the browser
+    # session rather than leaking onto the long-lived `state.projects`.
+    imported_sids = map(session, c.state.projects) do projects
+        Set(String(p.resume_session_id) for p in values(projects)
+            if p.resume_session_id !== nothing && p.worker_id == wid && chat_in_sidebar(p))
+    end
+
+    display_name_obs = map(session, c.state.workers) do workers
+        w = get(workers, wid, nothing)
+        w === nothing ? wid : w.name
+    end
+    spinner_msg_obs = map(n -> "Scanning $n for Claude Code sessions…", session, display_name_obs)
+    spinner_class = map(b -> b ? "bt-spinner-row" : "bt-spinner-row bt-hidden", session, scan_busy)
+    spinner_block = DOM.div(
+        DOM.div(class = "bt-spinner"),
+        DOM.span(spinner_msg_obs);
+        class = spinner_class)
+
+    empty_msg_obs = map(n -> "No Claude Code sessions found on $n yet — click Rescan.", session, display_name_obs)
+    show_empty_obs = map(session, scan_busy, results_obs) do busy, results
+        !busy && isempty(results)
+    end
+    empty_class = map(show -> show ? "bt-empty" : "bt-empty bt-hidden", session, show_empty_obs)
+    empty_block = DOM.div(empty_msg_obs; class = empty_class)
+
+    # Errors are 0..N small spans, rebuilt via map(); KeyedList overkill.
+    # Not while a rescan runs: the error is the previous attempt's, and next to
+    # the spinner it read as this one having failed already.
+    errors_obs = map(session, results_obs, scan_busy) do results, busy
+        DOM.div(
+            (DOM.div("Error: $(r["error"])"; class = "bt-error")
+             for r in results if haskey(r, "error") && !busy);
+            class = "bt-errors-list")
+    end
+
+    # Two-level rendering: one project group per cwd, each containing the
+    # session/subagent rows from that project. The list re-renders only when a
+    # folder appears, goes or moves, and a folder's rows only when they differ
+    # from what it shows, so nothing re-renders on the frequent `state.projects`
+    # notifications. This keeps a folder's rows and open state across rescans, and
+    # is pruned each tick for folders that disappeared between scans.
+    folder_state = Dict{String, Tuple{Observable{Vector{SessionRow}}, Observable{Bool}}}()
+
+    # `state.projects` is a dependency too: a chat rename pins a new title on the
+    # matching project, and `pinned_titles` reflects it onto the discovered row
+    # (live, and across restarts since the title is persisted).
+    groups_obs = map(session, results_obs, imported_sids, c.state.projects; ignore_equal_values = true) do results, imported, projects
+        titles = pinned_titles(projects, wid)
+        by_path  = Dict{String, Vector{Any}}()
+        latest_by_path = Dict{String, Float64}()
+        for r in results
+            haskey(r, "error") && continue
+            # Subagents share their parent's process and aren't user-startable.
+            # Surface only top-level sessions. A project whose only entries are
+            # subagents (e.g. older Claude Code versions that didn't persist the
+            # parent jsonl) drops out of the list entirely.
+            String(get(r, "kind", "session")) == "subagent" && continue
+            p = String(get(r, "path", ""))
+            # Discover renders the worker's scan UNCONDITIONALLY — a session
+            # that's already an open chat stays VISIBLE with an "in sidebar"
+            # pill (hiding it made sessions look lost whenever sidebar state
+            # and discover disagreed); clicking it reuses the existing thread
+            # (`find_thread` dedup). The only drop — "project folder no longer
+            # exists" — happens WORKER-side in `entry_from_jsonl` (the paths
+            # live on the worker's disk; an `isdir` here on the server box
+            # would wrongly drop every row of a remote worker).
+            push!(get!(by_path, p, Any[]), r)
+            ts = get(r, "last_used", 0.0)
+            t = ts isa Number ? Float64(ts) : 0.0
+            t > get(latest_by_path, p, 0.0) && (latest_by_path[p] = t)
+        end
+        out = SessionGroup[]
+        for (p, rs) in by_path
+            sort!(rs; by = r -> -Float64(get(r, "last_used", 0.0)))
+            rows = SessionRow[SessionRow(c, r; titles, imported) for r in rs]
+            rows_obs, expanded = get!(folder_state, p) do
+                (Observable(rows; ignore_equal_values = true), Observable(false))
+            end
+            rows_obs[] = rows
+            push!(out, SessionGroup(p, basename(p), group_summary_string(rs), wid, rows_obs, expanded))
+        end
+        # Prune stale cache entries (paths no longer present).
+        for k in collect(keys(folder_state))
+            haskey(by_path, k) || delete!(folder_state, k)
+        end
+        sort!(out; by = g -> -get(latest_by_path, g.path, 0.0))
+        return out
+    end
+
+    folders = map(session, groups_obs) do groups
+        DOM.div(BonitoWidgets.CollapsibleList(BonitoWidgets.Collapsible.(groups); class = "bt-discover-section"))
+    end
+    return DOM.div(spinner_block, empty_block, errors_obs, folders)
+end

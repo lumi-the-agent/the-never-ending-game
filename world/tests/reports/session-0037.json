@@ -1,0 +1,15 @@
+{"session": 37,
+ "summary": "Re-ran the two suite failures alone: both pass, so they are order/state dependent flakes in the full suite, not reproducible failures. I did no further exploratory play this session.",
+ "failures": [
+  {"what": "Rain shower test: critters' actions all the same in the full suite (Pinchy :jump, Marshmallow :idle, only 2 distinct actions)",
+   "steps": "Run the full suite; the shower test runs after earlier tests. Alone (live_tests 'Rain shower') it passes in 43 s.",
+   "expected": "At least 3 different actions among critters 4 s into a shower",
+   "actual": "Only two critters were in s.roles with 2 distinct actions (jump, idle): probably few free critters left over from earlier tests (can_join) or roles that are not visible as distinct actions at that instant",
+   "screenshot": "world/tests/shots/shower-reactions.png"},
+  {"what": "Creatures overlap in the full suite: Pickles and Sir Sniffsalot 1.34 m apart (below 0.95*(r1+r2))",
+   "steps": "Run the full suite; the test only waits 5 frames after pushing one creature into another. Alone it passes.",
+   "expected": "Separation keeps all creature pairs apart",
+   "actual": "A pair not involved in the teleport (Pickles, Sir Sniffsalot) was still overlapping: likely an interaction (chat/shower/dance) holding them close, or Separation giving the push to only one creature at the shore",
+   "screenshot": ""}
+ ],
+ "tests_added": []}

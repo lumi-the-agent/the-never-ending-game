@@ -1,0 +1,31 @@
+{
+ "session": 52,
+ "summary": "Played the build with helpers in the sandbox (screenshots tests/shots/s52_build_helpers.png, s52x-work.png, s52x-done.png): friends come with planks over their heads, ask 'Can I watch?', stand by, and cheer with hearts/notes; the bench camera view looks along the sunset. Two suite failures are real game issues: the long thought cloud and the bored Sprout line. Two more suite failures were not re-investigated.",
+ "failures": [
+  {
+   "what": "Sprout's thought cloud is a whole sentence, not a few words, and covers a large part of the 3D view",
+   "steps": "Watch Sprout at work in follow view during a build (builder thought file holds 'resting after a busy night of building with my friends')",
+   "expected": "A short cloud (at most ~6 words) over Sprout's head",
+   "actual": "An 8-word cloud spanning most of the view width (the text said by the agent is not shortened by few_words, only the todo title is)",
+   "screenshot": "world/tests/shots/s52x-work.png"
+  },
+  {
+   "what": "Bored Sprout says 'Can I play?' in the suite",
+   "steps": "Suite test 'Sprout shows how it feels: a bored Sprout sighs...'",
+   "expected": "A sigh and heavy lids, no talk",
+   "actual": "Said 'Can I play?'",
+   "screenshot": ""
+  },
+  {
+   "what": "Suite: new cairn plots not hidden at publish (builder test) and Gloop/Wibbles overlapping 0.79 m on :pebble walks",
+   "steps": "Run the suite tests 'After a publish Sprout carries a crate...' and 'Creatures never stand inside each other'",
+   "expected": "Plots hidden while building; creatures keep distance",
+   "actual": "Both still fail in the host run; I did not find the cause (my own build run passed and showed helpers working)",
+   "screenshot": "world/tests/shots/s52x-done.png"
+  }
+ ],
+ "tests_added": [
+  "Friends come to Sprout's build with a plank, stand by while it works and cheer when it appears",
+  "The bench camera at sunset sits behind the sitters and looks out at the sun, low and close"
+ ]
+}

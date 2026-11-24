@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "media/glow-night-eye-level.png shows scattered stemmed flowers across the meadow.",
+      "severity": "medium",
+      "suggestion": "Cluster the flowers in groups near trees and paths, cut the count, and either drop the stems or add the generated asset. Check the result in the real browser.",
+      "what": "Todo #79 asked for a generated glowing-mushroom asset, fewer and in clusters, with the same frame time. The author instead reshaped the flowers into petalled blooms: still 858 instances, scattered one by one on thin stems, and still the engine's primitive props. The result is less lollipop-like, but a sparse scatter of small stemmed flowers fills the night frame and there is no clustering near trees or paths. The todo was marked done on a reduced scope. The author's own note says the browser look is unchecked.",
+      "where": "plugins/nightglow.jl; media/glow-night-eye-level.png"
+    },
+    {
+      "evidence": "The journal states 'one-off' errors, and the stack traces show frame! calling changed methods.",
+      "severity": "low",
+      "suggestion": "Keep #76 open until a game_crash or shutdown_request event has been seen in the log.",
+      "what": "Todos #56 and #77 (Revise world-age MethodErrors) were closed with 'nothing to fix'. They were seen once each, and the root cause is the known hot-reload hazard from engine edits. The author edited engine files (play.jl, render.jl) this session. A restart every ~6 min with no recorded cause (#76) is still open.",
+      "where": "state/todos.json"
+    },
+    {
+      "evidence": "Journal: 'the teleport-and-wait-3-frames checks are still timing-sensitive'.",
+      "severity": "low",
+      "suggestion": "Wait on a condition (position change or caught state) instead of a fixed frame count.",
+      "what": "The wild-race evidence has no daylight mid-race screenshot, and the Firefly night test is still timing-sensitive (teleport and wait 3 frames), so it may flake.",
+      "where": "tests/minigames.jl"
+    }
+  ],
+  "summary": "Wild berry races now run again and the watching camera follows them; Firefly catch works at night (tester: 31/31, no failures). Frame median is 1.7 ms, p95 3.3 ms. The night flowers got better but the todo was only partly done.",
+  "superseded_by": "perfectionist-0024.json",
+  "verdict": "pass"
+}

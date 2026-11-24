@@ -1,0 +1,379 @@
+export MtlInlineTensor, matmul2d_descriptor, TensorOpsMatmul2D,
+       matmul2d_multiply, matmul2d_multiply_accumulate
+
+using Core: LLVMPtr
+using BFloat16s: BFloat16
+
+# Wrappers for Metal 4 tensor-ops / `mpp::tensor_ops` device-side APIs.
+
+# A tensor descriptor is opaque, thread-private memory, which the `air.*` intrinsics
+# initialize and read through a pointer. Its size is only known to the back end (it is what
+# `air.get_descriptor_size_tensor` returns, and differs between macOS versions), so
+# `finish_ir!` replaces every descriptor's storage with an `alloca` sized like Apple's front
+# end does. This placeholder type only gives that storage an identity: Julia code never
+# reads or writes it.
+primitive type TensorDescriptor 8 end
+const TensorDescriptorStorage = Base.RefValue{TensorDescriptor}
+
+
+## Declarations
+
+# What the pointer parameters of the tensor functions point to, in order, as Apple's front
+# end declares them: `:tensor` (the opaque `%struct._tensor_t`), `:matmul2d_descriptor` or
+# `:i8`. Our pointers are untyped, so `finish_ir!` passes these on to the AIR downgrader,
+# after it has rewritten the calls for the targeted AIR version. The matmul2d entry points
+# are linked against Apple's library when the pipeline is created, which reportedly fails
+# on macOS 27.3 if the types differ; the `air.*` intrinsics need them for Apple's verifier.
+const MATMUL2D_RUN_V2 = r"^(__tensorops_impl_matmul2d_op_run(?:_(?:dv|tg)_[a-z0-9]+){3})_v2$"
+const TENSOR_POINTEES = [
+    # (name, number of parameters) => pointees
+    (r"^air\.init_strided_private_tensor\.i32\.(global|local)$", 9) =>
+        (:tensor, :i8, :i8, :i8, :i8),
+    # (AIR 2.8, without the scales operands)
+    (r"^air\.init_strided_private_tensor\.i32\.(global|local)$", 6) =>
+        (:tensor, :i8, :i8, :i8),
+    (r"^air\.slice_private_tensor_private_tensor\.s\.i32$", 5) =>
+        (:tensor, :tensor, :i8, :i8),
+    (r"^air\.get_extent_private_tensor\.i32$", 4) => (:tensor,),
+    (r"^air\.get_extent_private_tensor\.i32$", 3) => (:tensor,),
+    (MATMUL2D_RUN_V2, 20) =>
+        (:matmul2d_descriptor, :i8, :i8, :i8),
+    # (before macOS 27)
+    (r"^__tensorops_impl_matmul2d_op_run(_(dv|tg)_[a-z0-9]+){3}$", 8) =>
+        (:matmul2d_descriptor, :i8, :i8, :i8),
+]
+
+function tensor_pointees(fn::String, nparams::Int)
+    known = false
+    for ((re, n), pointees) in TENSOR_POINTEES
+        occursin(re, fn) || continue
+        n == nparams && return pointees
+        known = true
+    end
+    known && error("unexpected declaration of $fn with $nparams parameters")
+    return nothing
+end
+
+
+## Tensor descriptor primitives (`air.*` intrinsics).
+
+# These thin `air.*` wrappers must inline. The constructors and `view` below hand them
+# descriptor storage through a `Ref`; that `Ref` only stays a stack `alloca` (rather than a
+# heap allocation, which GPUCompiler then rejects) as long as it never crosses a call boundary.
+
+# The element-type code stored in a tensor descriptor, as emitted by Apple's Metal frontend
+# for `air.init_strided_private_tensor` (an AIR-internal enum, distinct from both
+# `MTLTensorDataType` and `__tensor_ops_datatype`). The descriptor's own strides/extents are
+# in elements; this code is what address computations that only see the descriptor (notably
+# `air.slice_*` origin folding, as of macOS 27) use to scale to bytes, so passing the wrong
+# code misaddresses any non-4-byte element type.
+tensor_datatype(::Type{Float32})  = Int8(0)
+tensor_datatype(::Type{Float16})  = Int8(1)
+tensor_datatype(::Type{BFloat16}) = Int8(2)
+tensor_datatype(::Type{Int8})     = Int8(3)
+tensor_datatype(::Type{UInt8})    = Int8(4)
+tensor_datatype(::Type{Int16})    = Int8(5)
+tensor_datatype(::Type{UInt16})   = Int8(6)
+tensor_datatype(::Type{Int32})    = Int8(7)
+tensor_datatype(::Type{UInt32})   = Int8(8)
+
+# Build an `i32`-indexed strided tensor view over a device-memory buffer. These are emitted
+# in the form of AIR 2.9, which appends a pointer into the same address space as the data,
+# an index and an `i8`, for which Apple's frontend always passes `null, 0, -1` (presumably
+# describing blockwise-quantization scales, which these views don't have); `finish_ir!`
+# drops them for AIR 2.8.
+@device_function @inline init_strided_tensor_device!(
+    handle::TensorDescriptorStorage,
+    rank::Int16,
+    data::LLVMPtr{UInt8, AS.Device},
+    extents::NTuple{<:Any, Int32},
+    strides::NTuple{<:Any, Int32},
+    datatype::Int8,
+) = ccall("extern air.init_strided_private_tensor.i32.global", llvmcall,
+          Cvoid,
+          (Ref{TensorDescriptor}, Int16, LLVMPtr{UInt8, AS.Device},
+           Ref{Int32}, Ref{Int32}, Int8, LLVMPtr{UInt8, AS.Device}, Int32, Int8),
+          handle, rank, data, extents, strides, datatype,
+          reinterpret(LLVMPtr{UInt8, AS.Device}, C_NULL), Int32(0), Int8(-1))
+
+@device_function @inline init_strided_tensor_threadgroup!(
+    handle::TensorDescriptorStorage,
+    rank::Int16,
+    data::LLVMPtr{UInt8, AS.ThreadGroup},
+    extents::NTuple{<:Any, Int32},
+    strides::NTuple{<:Any, Int32},
+    datatype::Int8,
+) = ccall("extern air.init_strided_private_tensor.i32.local", llvmcall,
+          Cvoid,
+          (Ref{TensorDescriptor}, Int16, LLVMPtr{UInt8, AS.ThreadGroup},
+           Ref{Int32}, Ref{Int32}, Int8, LLVMPtr{UInt8, AS.ThreadGroup}, Int32, Int8),
+          handle, rank, data, extents, strides, datatype,
+          reinterpret(LLVMPtr{UInt8, AS.ThreadGroup}, C_NULL), Int32(0), Int8(-1))
+
+# (in the form of AIR 2.9 too, which appends an operand Apple's frontend passes as `i16 0`)
+@device_function @inline get_extent_private_tensor(handle::TensorDescriptorStorage,
+                                                   rank::Int16, dim::Int16) =
+    ccall("extern air.get_extent_private_tensor.i32", llvmcall,
+          Int32, (Ref{TensorDescriptor}, Int16, Int16, Int16),
+          handle, rank, dim, Int16(0))
+
+@device_function @inline slice_private_tensor!(
+    dst::TensorDescriptorStorage,
+    src::TensorDescriptorStorage,
+    rank::Int16,
+    origin::NTuple{<:Any, Int32},
+    extents::NTuple{<:Any, Int32},
+) = ccall("extern air.slice_private_tensor_private_tensor.s.i32", llvmcall,
+          Cvoid,
+          (Ref{TensorDescriptor}, Ref{TensorDescriptor}, Int16, Ref{Int32}, Ref{Int32}),
+          dst, src, rank, origin, extents)
+
+
+## High-level inline-tensor wrapper.
+
+"""
+    MtlInlineTensor{T, R, AS}
+
+A tensor view of an `MtlDeviceArray` or `MtlThreadGroupArray`, for the Metal 4 tensor
+operations (MSL's `tensor_inline`), which need a GPU in the Metal 4 family and macOS 26. `T`
+is the element type, `R` the rank and `AS` the address space of the array.
+
+Extents and strides follow Julia's column-major convention, matching the array: the first
+dimension is contiguous. `MtlInlineTensor(A)` views all of `A`, and `MtlInlineTensor(A, dims)`
+and `MtlInlineTensor(A, dims, strides)` set an explicit shape. `view(t, origin, dims)` slices
+a tile, with a 1-based `origin`.
+
+Like MSL's `tensor_inline`, an `MtlInlineTensor` lives on the stack of the kernel, and
+compilation fails if Julia cannot keep it there. Only use tensors in code that is inlined
+into the kernel, don't choose between tensors at run time (e.g. with `ifelse`), and don't
+carry a tensor from one loop iteration to the next. Taking views inside a loop of a tensor
+created before it is fine.
+"""
+struct MtlInlineTensor{T, R, AS}
+    storage::TensorDescriptorStorage
+end
+
+# column-major packed strides: stride(1) = 1, stride(k) = prod(extents[1:k-1]).
+@inline function packed_strides(extents::NTuple{R, Int32}) where {R}
+    ntuple(Val(R)) do k
+        s = Int32(1)
+        for j in 1:(k - 1)
+            s *= extents[j]
+        end
+        s
+    end
+end
+
+# In-kernel constructors (packed strides):
+@device_function @inline function MtlInlineTensor{T, R, AS.Device}(
+        data::MtlDeviceArray{T, <:Any, AS.Device},
+        extents::NTuple{R, <:Integer}) where {T, R}
+    e = unsafe_trunc.(Int32, extents)
+    storage = Ref{TensorDescriptor}()
+    init_strided_tensor_device!(storage, Int16(R),
+                                reinterpret(LLVMPtr{UInt8, AS.Device}, pointer(data)),
+                                e, packed_strides(e), tensor_datatype(T))
+    return MtlInlineTensor{T, R, AS.Device}(storage)
+end
+
+@device_function @inline function MtlInlineTensor{T, R, AS.ThreadGroup}(
+        data::MtlDeviceArray{T, <:Any, AS.ThreadGroup},
+        extents::NTuple{R, <:Integer}) where {T, R}
+    e = unsafe_trunc.(Int32, extents)
+    storage = Ref{TensorDescriptor}()
+    init_strided_tensor_threadgroup!(storage, Int16(R),
+                                     reinterpret(LLVMPtr{UInt8, AS.ThreadGroup}, pointer(data)),
+                                     e, packed_strides(e), tensor_datatype(T))
+    return MtlInlineTensor{T, R, AS.ThreadGroup}(storage)
+end
+
+# Explicit-stride variants:
+@device_function @inline function MtlInlineTensor{T, R, AS.Device}(
+        data::MtlDeviceArray{T, <:Any, AS.Device},
+        extents::NTuple{R, <:Integer},
+        strides::NTuple{R, <:Integer}) where {T, R}
+    storage = Ref{TensorDescriptor}()
+    init_strided_tensor_device!(storage, Int16(R),
+                                reinterpret(LLVMPtr{UInt8, AS.Device}, pointer(data)),
+                                unsafe_trunc.(Int32, extents),
+                                unsafe_trunc.(Int32, strides), tensor_datatype(T))
+    return MtlInlineTensor{T, R, AS.Device}(storage)
+end
+
+@device_function @inline function MtlInlineTensor{T, R, AS.ThreadGroup}(
+        data::MtlDeviceArray{T, <:Any, AS.ThreadGroup},
+        extents::NTuple{R, <:Integer},
+        strides::NTuple{R, <:Integer}) where {T, R}
+    storage = Ref{TensorDescriptor}()
+    init_strided_tensor_threadgroup!(storage, Int16(R),
+                                     reinterpret(LLVMPtr{UInt8, AS.ThreadGroup}, pointer(data)),
+                                     unsafe_trunc.(Int32, extents),
+                                     unsafe_trunc.(Int32, strides), tensor_datatype(T))
+    return MtlInlineTensor{T, R, AS.ThreadGroup}(storage)
+end
+
+# Convenience: infer rank and address space from the inputs.
+@inline MtlInlineTensor(data::MtlDeviceArray{T, <:Any, A}) where {T, A} =
+    MtlInlineTensor{T, ndims(data), A}(data, size(data))
+
+@inline MtlInlineTensor(data::MtlDeviceArray{T, <:Any, A},
+                        extents::NTuple{R, <:Integer}) where {T, R, A} =
+    MtlInlineTensor{T, R, A}(data, extents)
+
+@inline MtlInlineTensor(data::MtlDeviceArray{T, <:Any, A},
+                        extents::NTuple{R, <:Integer},
+                        strides::NTuple{R, <:Integer}) where {T, R, A} =
+    MtlInlineTensor{T, R, A}(data, extents, strides)
+
+Base.eltype(::Type{<:MtlInlineTensor{T}}) where {T} = T
+Base.eltype(::MtlInlineTensor{T}) where {T} = T
+
+# Slice a tile. Origins are 1-based, like Julia's `view` (the underlying intrinsic is
+# 0-based, so subtract one here).
+@device_function @inline function Base.view(
+        t::MtlInlineTensor{T, R, A},
+        origin::NTuple{R, <:Integer},
+        extents::NTuple{R, <:Integer}) where {T, R, A}
+    storage = Ref{TensorDescriptor}()
+    slice_private_tensor!(storage, t.storage, Int16(R),
+                          Int32.(origin) .- Int32(1), Int32.(extents))
+    return MtlInlineTensor{T, R, A}(storage)
+end
+
+
+## matmul2d descriptor (mirrors `mpp::tensor_ops::matmul2d_descriptor`).
+
+"""
+    Matmul2DMode
+
+Whether a [`TensorOpsMatmul2D`](@ref) operation overwrites its destination
+(`matmul2d_multiply`, `C = A*B`) or adds to it (`matmul2d_multiply_accumulate`,
+`C += A*B`).
+"""
+@enum Matmul2DMode::Int32 begin
+    matmul2d_multiply            = 0
+    matmul2d_multiply_accumulate = 1
+end
+@public Matmul2DMode
+
+"""
+    matmul2d_descriptor(M, N, [K]; transpose_left=false, transpose_right=false,
+                        relaxed_precision=false, mode=matmul2d_multiply)
+
+Describe a matrix multiplication `C[M, N] = A[M, K] * B[K, N]` for [`TensorOpsMatmul2D`](@ref),
+like MSL's `matmul2d_descriptor`. `K` defaults to `-1`, meaning it is taken from the operands
+at run time. `transpose_left` and `transpose_right` transpose `A` and `B`; `mode` is a
+[`Matmul2DMode`](@ref).
+
+For an outer `K`-loop where each iteration accumulates a partial product into the
+destination, set `mode = matmul2d_multiply_accumulate` and zero the destination before the
+loop. A typical pattern:
+
+```julia
+# C[M, N] = A[M, K] * B[K, N], accumulated over K-tiles of width TileK
+op = TensorOpsMatmul2D{matmul2d_descriptor(M, N, TileK;
+                                           mode = matmul2d_multiply_accumulate),
+                       Int32(NSIMD)}()
+for s in 0:(nslices - 1)
+    k0 = Int32(s) * Int32(TileK)
+    sA = view(tA, (Int32(1), k0 + Int32(1)), (Int32(M), Int32(TileK)))
+    sB = view(tB, (k0 + Int32(1), Int32(1)), (Int32(TileK), Int32(N)))
+    op(sA, sB, tC)
+end
+```
+
+Limitation: the loop trip count needs to be kept dynamic (not a compile-time constant) to
+avoid crashing Apple's back-end.
+"""
+struct matmul2d_descriptor
+    m::Int32
+    n::Int32
+    k::Int32
+    transpose_left::Int8
+    transpose_right::Int8
+    relaxed_precision::Int8
+    matmul_mode::Matmul2DMode
+end
+
+matmul2d_descriptor(m::Integer, n::Integer, k::Integer = -1;
+                    transpose_left::Bool = false,
+                    transpose_right::Bool = false,
+                    relaxed_precision::Bool = false,
+                    mode::Matmul2DMode = matmul2d_multiply) =
+    matmul2d_descriptor(Int32(m), Int32(n), Int32(k),
+                        Int8(transpose_left), Int8(transpose_right),
+                        Int8(relaxed_precision), mode)
+
+
+## matmul2d run (inline-tensor → inline-tensor variant).
+
+const TENSOR_DESC_INLINE = Int32(2)   # `__tensor_ops_tensor_descriptor_type::tensor_inline`
+
+# Element-type suffix for `__tensorops_impl_matmul2d_op_run_*` symbols.
+# TODO: expose the 4-bit integer formats
+tensorops_suffix(::Type{Float16})       = "f16"
+tensorops_suffix(::Type{Float32})       = "f32"
+tensorops_suffix(::Type{BFloat16})      = "b16"
+tensorops_suffix(::Type{Int8})          = "i8"
+tensorops_suffix(::Type{UInt8})         = "ui8"
+tensorops_suffix(::Type{Int32})         = "i32"
+
+# Address-space prefix for the run helpers
+tensorops_AS_prefix(::Val{AS.Device})      = "dv"
+tensorops_AS_prefix(::Val{AS.ThreadGroup}) = "tg"
+
+"""
+    TensorOpsMatmul2D{DESC, NSIMD}
+
+A matrix multiplication with Metal 4 tensor operations (MSL's `tensor_ops::matmul2d`), on
+[`MtlInlineTensor`](@ref)s. `DESC` is a [`matmul2d_descriptor`](@ref), and `NSIMD` the number
+of SIMD-groups that execute the operation together (`execution_simdgroups<N>` in MSL).
+
+Construct it with `TensorOpsMatmul2D(desc, Val(NSIMD))`, and call it to compute `C = A*B` (or
+`C += A*B` with `mode = matmul2d_multiply_accumulate`):
+
+```julia
+op = TensorOpsMatmul2D(matmul2d_descriptor(64, 32), Val(4))
+op(A, B, C)            # C[64, 32] = A[64, K] * B[K, 32]
+```
+"""
+struct TensorOpsMatmul2D{DESC, NSIMD} end
+
+TensorOpsMatmul2D(desc::matmul2d_descriptor, ::Val{NSIMD}) where {NSIMD} =
+    TensorOpsMatmul2D{desc, Int32(NSIMD)}()
+
+@device_function @inline @generated function (::TensorOpsMatmul2D{DESC, NSIMD})(
+        A::MtlInlineTensor{TA, 2, AA},
+        B::MtlInlineTensor{TB, 2, AB},
+        C::MtlInlineTensor{TC, 2, AC}) where {DESC, NSIMD, TA, TB, TC, AA, AB, AC}
+    # matmul2d produces its (row-major) output as the transpose of the Julia column-major
+    # one, so `C = A*B` follows from running it with the operands swapped (its left = B, its
+    # right = A) and the descriptor's m/n (and transpose flags) swapped to match. DESC is a
+    # compile-time parameter, so this rewrite is constant-folded.
+    apple = matmul2d_descriptor(DESC.n, DESC.m, DESC.k,
+                                DESC.transpose_right, DESC.transpose_left,
+                                DESC.relaxed_precision, DESC.matmul_mode)
+    # the entry point of macOS 27, which takes per operand the data type and block sizes of
+    # quantization scales (here none) and the static extents (here dynamic, -1). `finish_ir!`
+    # calls the original one instead when targeting older versions.
+    sym = "__tensorops_impl_matmul2d_op_run" *
+          "_$(tensorops_AS_prefix(Val(AB)))_$(tensorops_suffix(TB))" *
+          "_$(tensorops_AS_prefix(Val(AA)))_$(tensorops_suffix(TA))" *
+          "_$(tensorops_AS_prefix(Val(AC)))_$(tensorops_suffix(TC))_v2"
+    quote
+        # matmul2d needs its thread count as a constant, so not `threads_per_simdgroup()`
+        threads = Int32(NSIMD) * simdgroup_size()
+        ccall($"extern $sym", llvmcall, Cvoid,
+              (Ref{matmul2d_descriptor},
+               Ref{TensorDescriptor}, Int32, Int32, Int32, Int32, Int32, Int32,
+               Ref{TensorDescriptor}, Int32, Int32, Int32, Int32, Int32, Int32,
+               Ref{TensorDescriptor}, Int32, Int32, Int32,
+               Int32),
+              $(QuoteNode(apple)),
+              B.storage, $TENSOR_DESC_INLINE, Int32(0), Int32(0), Int32(0), Int32(-1), Int32(-1),
+              A.storage, $TENSOR_DESC_INLINE, Int32(0), Int32(0), Int32(0), Int32(-1), Int32(-1),
+              C.storage, $TENSOR_DESC_INLINE, Int32(-1), Int32(-1),
+              threads)
+        return nothing
+    end
+end

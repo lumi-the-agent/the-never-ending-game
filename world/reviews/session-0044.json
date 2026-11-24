@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "In my own live follow shots (daytime) the camera mostly works: faces show, the view held and the dropdown reads 'Camera: follow', frame median 4 ms. But the subject is often pushed to the edge or corner of the frame, and the author's night grid still shows a sleeper hidden behind the ball, so 'face unobstructed in every shot' is not met.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Follow framing is off: in 2 of 4 live shots 3 s apart the creature sits at the frame edge/corner (Cumulus cut off at the right edge looking at a stone spiral; a crab in the bottom-right corner under a big empty path), instead of the third-line framing the todo asked for. The stone-spiral shot shows the cairn group view, not a creature face.",
+   "where": "render.jl follow_view / held_subject / CAIRN group view",
+   "evidence": "world/reviews/r44-sheet.png (frames 2 and 4); r44-follow-2.png, r44-follow-4.png",
+   "suggestion": "Aim the look point at the subject (not past it), keep it within the middle third, and bias the eye so the subject isn't cropped; check with a test that the subject's screen position is inside the frame centre area."
+  },
+  {
+   "severity": "medium",
+   "what": "At night the held follow shot is often blocked: in the author's 10-shot grid, shots 3-7 show a sleeper half behind the red ball and shots 1 and 10 sit under tree crowns. The 6 s hold keeps a bad framing several shots in a row. The todo's 'face unobstructed' criterion is not met.",
+   "where": "render.jl held_subject / face_view",
+   "evidence": "media/s44-follow-grid-b.png shots 3-7, 1, 10",
+   "suggestion": "Score the view with NG.obstruction including the ball and tree crowns; re-pick the eye when blocked; test face visibility."
+  },
+  {
+   "severity": "medium",
+   "what": "Camera mode is not respected: after a mini game the camera always returns to Follow even if the player chose Orbit/Free, and setting free mode from code resets eye/target (free_start! runs next frame), so the overview check misses the flower field. Berry race level 2 card shows 'Press W to start' twice.",
+   "where": "plugins/freecam.jl free_start!; plugins/berry_race.jl",
+   "evidence": "tester report session-0044",
+   "suggestion": "Remember the chosen mode and restore it after mini games; skip free_start! when eye/target are set explicitly; print the prompt once."
+  }
+ ],
+ "addressed": true,
+ "response": "s45: (1) edge framing: the follow camera slid ~1 s to a new subject with it 12-50 deg off centre; plugins/camcut.jl now cuts on a subject change (probe: 1 cut per subject switch, 1-4 deg off once on a creature, 0.3 ms). (2) night: frame_with_sleeper allowed views up to 180 deg from the face (backs of sleepers); now face or side only (|da|<=1.5), the :sleeper shot uses it too (media/s45/night-grid.png before, nightB-grid.png after: eye 25-70 deg off the face). (3) freecam.jl: the camera the player picked (orbit/free with its eye) returns after any mini game or jump-in; free_start! only on the player's own menu pick, so code-set :fixed cameras keep eye/target. Berry race/hideseek/firefly: HUD prompt hidden while the start card shows, card smaller and higher (0.64)."
+}

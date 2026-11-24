@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "tests/shots/side-panels.png and tests/shots/explore-s18.png (near Truffle) show the broken shape. media/s18j.png is framed so the trees are tiny and the defect is hidden.",
+      "severity": "high",
+      "suggestion": "Look at the placed asset from close up before claiming it works. Regenerate the tree or remove it, and crop or reject the base patch. Do not place assets the render does not match.",
+      "what": "The generated fruit-tree asset renders as a twisted dark-brown trunk with no crown on a flat orange ground square. It was placed 3x next to the cottage, so it clashes with the round stylised trees. The journal calls this 'trees placed'. Mesh or texture generation failed, or the image was a bad pick.",
+      "where": "assets/20261122-2146*-asset (tree), left of the cottage in tests/shots/side-panels.png"
+    },
+    {
+      "evidence": "media/s18j.png, tests/shots/side-panels.png. 'Next on the list' also shows dev items such as 'RayMakie raster … gamma' and 'A frame failed: a plot named Symbol(...)'.",
+      "severity": "medium",
+      "suggestion": "Filter or rewrite outbox text and thoughts for the player view. Show only player-relevant todos, or hide the list.",
+      "what": "Player-facing panels still show internal talk. 'Messages to you' says 'UI test: a wish sent', 'automated UI tests' and 'token budget is nearly used up'. Sprout's thoughts say 'Subject 0 = Sprout, probably a separate avatar' and 'Now wait for the remaining jobs'. The journal says token counts were removed from the dashboard, but the text still leaks through these messages.",
+      "where": "right-hand side panel, Sprout and Messages to you sections"
+    },
+    {
+      "evidence": "tests/shots/side-panels.png",
+      "severity": "low",
+      "suggestion": "Shorten the placeholder to 'Wish…' or widen the field. Do the label clamping the author already planned.",
+      "what": "The wish box placeholder 'Tell Sprout what y' is clipped. Name labels overlap each other and the speech bubble, for example 'Sir Sniffsalot' under a bubble.",
+      "where": "bottom bar text field; creature labels in the 3D view"
+    }
+  ],
+  "summary": "The generated cottage and signpost look good and frame time is fine (median ~1.5 ms), but the generated tree was placed three times and renders as a twisted trunk on an orange patch. Agent and test talk is still shown to the player.",
+  "superseded_by": "perfectionist-0018.json",
+  "verdict": "needs_work"
+}

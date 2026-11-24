@@ -1,0 +1,99 @@
+name: Doc and Reference Images Preview Cleanup
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  doc-preview-cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout gh-pages branch
+        uses: actions/checkout@v7
+        with:
+          ref: gh-pages
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1'
+      - name: Check for stale PR previews and reference images
+        shell: julia {0}
+        run: |
+          using Pkg
+          pkg"activate --temp"
+          pkg"add HTTP JSON3"
+
+          using HTTP
+          using JSON3
+          using Dates
+
+          repo = ENV["GITHUB_REPOSITORY"]
+          retention_days = 14
+
+          # Collect PR previews from both docs and reference_images directories
+          pr_previews_docs = if isdir("previews")
+              map(filter(startswith("PR"), readdir("previews"))) do dir
+                  parse(Int, match(r"PR(\d*)", dir)[1])
+              end
+          else
+              Int[]
+          end
+
+          pr_previews_refimgs = if isdir("reference_images")
+              map(filter(startswith("PR"), readdir("reference_images"))) do dir
+                  parse(Int, match(r"PR(\d*)", dir)[1])
+              end
+          else
+              Int[]
+          end
+
+          all_pr_numbers = unique(vcat(pr_previews_docs, pr_previews_refimgs))
+          @info "Found $(length(pr_previews_docs)) doc previews and $(length(pr_previews_refimgs)) reference image previews"
+
+          function all_prs()
+              query_prs(page) = JSON3.read(HTTP.get("https://api.github.com/repos/$repo/pulls?per_page=100;page=$(page)").body)
+              prs = []
+              page = 1
+              while true
+                  page_prs = query_prs(page)
+                  isempty(page_prs) && break
+                  append!(prs, page_prs)
+                  page += 1
+              end
+              return prs
+          end
+          prs = all_prs()
+          open_within_threshold = map(x -> x.number, filter(prs) do pr
+              time = DateTime(pr.updated_at[1:19], ISODateTimeFormat)
+              return pr.state == "open" && Dates.days(now() - time) <= retention_days
+          end)
+
+          stale_pr_numbers = setdiff(all_pr_numbers, open_within_threshold)
+          @info "Found $(length(stale_pr_numbers)) stale PR previews to remove"
+
+          if isempty(stale_pr_numbers)
+              @info "No stale previews to remove"
+              exit(1)
+          end
+
+          # Remove stale previews from both directories
+          for pr in stale_pr_numbers
+              # Remove doc preview if it exists
+              if pr in pr_previews_docs
+                  path = joinpath("previews", "PR$pr")
+                  @info "Removing doc preview: $path"
+                  run(`git rm -rf $path`)
+              end
+              # Remove reference images preview if it exists
+              if pr in pr_previews_refimgs
+                  path = joinpath("reference_images", "PR$pr")
+                  @info "Removing reference images preview: $path"
+                  run(`git rm -rf $path`)
+              end
+          end
+      - name: Push changes
+        run: |
+          git config user.name "Documenter.jl"
+          git config user.email "documenter@juliadocs.github.io"
+          git commit -m "delete preview"
+          git branch gh-pages-new $(echo "delete history" | git commit-tree HEAD^{tree})
+          git push --force origin gh-pages-new:gh-pages

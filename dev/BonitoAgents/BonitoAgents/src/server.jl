@@ -1,0 +1,1169 @@
+# Path to the BonitoAgents package's assets/ (install.jl, bonitoagents.js)
+const ASSETS_DIR    = normpath(joinpath(@__DIR__, "..", "assets"))
+# Monorepo root (sibling of BonitoAgents/) — contains BonitoMCP/, BonitoWorker/, AgentClientProtocol/.
+const MONOREPO_ROOT = normpath(joinpath(@__DIR__, "..", ".."))
+
+# The public repository workers are installed from, and the monorepo packages
+# `install.jl` puts into a worker's `@bonito-agents` environment from it (its
+# `SPECS`; keep the two in step). The "Debug BonitoAgents" chat develops these
+# same packages from a clone of this repo on the worker (`ensure_debug_project!`).
+const WORKER_REPO_URL = "https://github.com/SimonDanisch/BonitoAgents.jl"
+const WORKER_REPO_PACKAGES = ["RemoteSync", "WorkerLink", "BonitoWorker", "BonitoMCP", "AgentProviders"]
+
+# The worker installer is a cross-platform Julia script (`curl … | julia -`).
+# It Pkg.add's BonitoWorker + BonitoMCP from the public GitHub repo into a
+# shared `@bonito-agents` env — no tar bundle, no per-package source trees, runs
+# identically on Linux / macOS / Windows. See assets/install.jl.
+#
+# Around it sit two tiny per-shell bootstraps so the install one-liner mirrors
+# the familiar `curl URL | sh` shape on each OS. They only check that `julia`
+# is on PATH and then hand off to install.jl — they do NOT install juliaup
+# (Julia is a prerequisite the user installs separately).
+
+Base.include_dependency(joinpath(ASSETS_DIR, "install.jl"))
+Base.include_dependency(joinpath(ASSETS_DIR, "install.sh"))
+Base.include_dependency(joinpath(ASSETS_DIR, "install.ps1"))
+
+const INSTALL_SCRIPT = read(joinpath(ASSETS_DIR, "install.jl"), String)
+const INSTALL_SH     = read(joinpath(ASSETS_DIR, "install.sh"),  String)
+const INSTALL_PS1    = read(joinpath(ASSETS_DIR, "install.ps1"), String)
+
+"""
+    serve(; host, port, public_url, auth, state_dir, working_dir) → Bonito.Server
+
+Start the BonitoAgents dashboard server, in one of three ways (identity.jl):
+for this machine (`LocalAuth`, the default: localhost only, whoever reaches it is
+the one account, and so is every worker); for a trusted network (`NetworkAuth`:
+any `host`, still no login, workers join with a credential from "Add worker");
+or behind the login proxy the installer sets up (`ProxyAuth(...)`, from
+`<state_dir>/proxy.json`: localhost only, Caddy + Authelia authenticate every
+request and say who it is from).
+
+Routes:
+  /                       — dashboard (workers + projects)
+  /p/<project_id>         — chat UI for one project
+  /install                — OS-sniffing bootstrap (`curl … | sh` / `irm … | iex`)
+  /install.sh             — bash wrapper (Linux / macOS)
+  /install.ps1            — PowerShell wrapper (Windows)
+  /install.jl             — cross-platform worker installer (used by the wrappers)
+  /w            (WS)      — the ONE connection each worker holds open: a WorkerLink
+                            carrying its control channel, its agents' ACP sessions
+                            and its file transfers (see worker_client.jl)
+
+`public_url` is the base URL workers see (and what the install script tells
+them to dial back); behind the proxy it defaults to `https://<domain>`.
+`manage_harnesses` sends workers the agent adapters to keep installed
+(`harness_spec`). Off by default, so a test or dev server never has its workers
+download Node and npm packages; the server processes (`start_server`, the
+desktop app) turn it on.
+
+`state_dir`   overrides where workers.json / projects.json are persisted
+              (default: `~/.local/share/bonitoagents-server`).
+`apps`        the apps the server runs, by type (`(BonitoTodo.TodoApp, MyApp)`;
+              see apps.jl). Passing this is explicit; by default the built-ins
+              plus installed opt-in plugins are used (`[bonitoagents] plugin = true`).
+`working_dir` overrides where canonical project copies live on the server.
+              Each project lives at `<working_dir>/<name>` and is mirrored
+              onto the worker at `<worker.projects_root>/<name>`.
+              (default: `~/bonitoagents-server`)
+"""
+function serve(; host::String        = "127.0.0.1",
+                 port::Int           = 8038,
+                 public_url::Union{String,Nothing}   = nothing,
+                 auth::AuthMode      = LocalAuth(),
+                 manage_harnesses::Bool = false,
+                 state_dir::Union{String,Nothing}   = nothing,
+                 working_dir::Union{String,Nothing} = nothing,
+                 heartbeat_interval::Real = 15.0,
+                 heartbeat_deadline::Real = 45.0,
+                 worker_link_grace::Real = 300.0,
+                 scan_on_connect::Bool = true,
+                 log_file::Union{String,Nothing} = nothing,
+                 apps = nothing)
+    check_host(auth, host)
+    # `nothing` OR `""` (env-var roundtrip) → use the platform default. Anything
+    # else is taken as an absolute override.
+    isvalid(s) = s !== nothing && !isempty(String(s))
+    sd = isvalid(state_dir)   ? String(state_dir)   :
+         joinpath(homedir(), ".local", "share", "bonitoagents-server")
+    wd = isvalid(working_dir) ? String(working_dir) :
+         joinpath(homedir(), "bonitoagents-server")
+
+    # Start recording our own log output BEFORE anything else can log, so the
+    # debug chat's `bt_dev_logs` sees the whole life of the server rather than
+    # "everything after the first browser connected". Idempotent + process-wide
+    # (the logger is); a second `serve()` in the same process shares the ring.
+    #
+    # The FILE comes first and the ring second: the file is a redirect of fd 1
+    # and 2, so it also catches what never reaches a logger at all — an
+    # `errormonitor` task death, the runtime's fatal-signal thread dump — and it
+    # is the only one of the two that survives the restart you do when a server
+    # hangs.
+    #
+    # OPT-IN, and it defaults OFF on purpose. This REDIRECTS fd 1 and 2, so a
+    # library that did it by default would silently swallow the output of every
+    # caller — a REPL, a script, a test runner (nine unit tests call `serve()`
+    # directly, and the first version of this took their stdout with it). The
+    # SERVER BINARY asks for it; nothing else does. `""` means "the default path
+    # under state_dir".
+    if log_file !== nothing
+        BonitoWorker.start_file_log!(isempty(log_file) ?
+            joinpath(sd, "logs", "server.log") : log_file)
+    end
+    install_log_ring!()
+    SERVER_STARTED[] == 0.0 && (SERVER_STARTED[] = time())
+
+    # The ordinary server entry point discovers packages deliberately marked as
+    # plugins in its active environment. Passing `apps` remains the explicit,
+    # deterministic path for tests and embedders.
+    apps === nothing && (apps = (BUILTIN_APPS..., load_plugins!()...))
+    state = ServerState(; state_dir = sd, working_dir = wd, auth, manage_harnesses,
+                          heartbeat_interval = heartbeat_interval,
+                          heartbeat_deadline = heartbeat_deadline,
+                          worker_link_grace = worker_link_grace,
+                          scan_on_connect = scan_on_connect, apps)
+
+    # Mark all loaded workers offline; they'll flip online when they re-dial.
+    for w in values(state.workers[])
+        w.online[] = false
+    end
+    # Before any worker can connect: the first handshakes after a deploy are the
+    # ones that bring the new build to the workers.
+    resolve_worker_build!(state.worker_build)
+
+    # Survive long browser disconnects (phone goes into pocket, laptop sleeps,
+    # network blip) by keeping SOFT_CLOSED sessions alive for an hour, so the
+    # browser can reconnect to the SAME session with all of its Observable
+    # state — current view, popup geometry, chat consumer task — intact.
+    # The new-tab case still falls back to the localStorage last-route memory
+    # wired in the sidebar onload.
+    Bonito.set_cleanup_time!(1.0)   # hours
+
+    # Single-page app: sidebar + dashboard/chat swap. No per-project routes.
+    # Behind a tunnel every request passes the authentication handler first (tunnel.jl).
+    app = unified_app(state)
+    srv = Bonito.Server(context -> timed_page(state, app, context), host, port;
+                        proxy_url = ".", handler = authenticated_handler(auth, state.shares, state.timings))
+    state.srv = srv
+
+    # online_url uses the post-start srv.port — handles port=0 → ephemeral
+    # AND EADDRINUSE → port+1 retry without us tracking the actual port.
+    # An EMPTY public_url counts as unset too (the CLI entry point passes ""
+    # when --public-url was omitted; `something("", …)` would have kept the
+    # empty string and templated install scripts with a blank SERVER_URL).
+    base_url = (public_url === nothing || isempty(public_url)) ?
+        default_public_url(auth, srv, host) : public_url
+    # The dashboard's install snippet renders the SAME url the install routes
+    # are templated with — never a "<your-server>" placeholder.
+    state.base_url[] = rstrip(base_url, '/')
+    add_install_routes!(srv, state, base_url)
+    add_acp_log_routes!(srv, state)
+    add_download_routes!(srv, state)
+    add_invite_routes!(srv, state)
+    add_export_routes!(srv, state)
+    add_worker_ws_routes!(srv, state)
+    add_share_routes!(srv, state)
+    # Nothing to say: reaching it is the answer (`login_guard`).
+    Bonito.route!(srv, LOGIN_CHECK_ROUTE => _ -> HTTP.Response(204))
+    Bonito.route!(srv, PAGE_TIMING_ROUTE => context -> page_timing_response(state, context.request))
+    Bonito.route!(srv, CONSOLE_ROUTE => context -> console_beacon_response(state, context.request))
+    Bonito.route!(srv, LOGIN_SCRIPT_ROUTE => _ -> HTTP.Response(200,
+        ["Content-Type" => "text/javascript; charset=utf-8", "Cache-Control" => "no-cache"], read(LOGIN_JS)))
+
+    # The background-output poller is no longer a server-wide loop — it's
+    # per-ChatModel now, spawned in `start_chat_client!` and torn down
+    # when the chat goes away. Closes the "global loop forever walking
+    # every chat's msgs_store" mismatch with the taskbar's per-chat
+    # mental model. See `start_background_poller!` in chat.jl.
+
+    # Show the SAME canonical url the UI + worker-install snippet use (`base_url`
+    # = the configured --public-url, or the detected address) — not the bind-based
+    # `online_url(srv)` (0.0.0.0/localhost), which mismatched the dashboard's
+    # "add worker" url whenever --public-url was set.
+    # Behind the proxy the server owns Caddy's and Authelia's config (worker
+    # credentials, accounts): bring both in line with what it has on record.
+    apply_proxy!(state)
+    import_setup_link!(state)
+    watch_authelia_log!(state)
+    @info "BonitoAgents dashboard running" url=base_url state=sd auth=nameof(typeof(auth))
+    announce(auth, base_url)
+    return state
+end
+
+# Where the server may listen. Behind the proxy and on one machine, localhost
+# only: Caddy forwards to it there, and a server that lets every worker in must
+# not be reachable by other machines. A trusted network's, anywhere.
+check_host(::ProxyAuth, host::AbstractString) = is_loopback(host) ||
+    error("behind the login proxy the server listens on localhost only (got --host $(host)): " *
+          "Caddy forwards to it")
+check_host(::TunnelAuth, host::AbstractString) = is_loopback(host) ||
+    error("behind a tunnel the server listens on localhost only (got --host $(host)): " *
+          "the tunnel forwards to it")
+check_host(::LocalAuth, host::AbstractString) = is_loopback(host) ||
+    error("a server for this machine lets every worker in, so it listens on localhost only " *
+          "(got --host $(host)); on a network, workers need credentials: `auth = NetworkAuth()` " *
+          "(`bonito-agents server --host …` picks it)")
+check_host(::NetworkAuth, host::AbstractString) = true
+
+announce(::AuthMode, url::AbstractString) =
+    @info "Workers: \"Add worker\" on the dashboard gives the install command for a machine."
+announce(::LocalAuth, url::AbstractString) =
+    @info "Workers: only this machine reaches this server (localhost); `--host 0.0.0.0` lets other machines in."
+announce(auth::TunnelAuth, url::AbstractString) =
+    @info "Behind a tunnel: point it at http://127.0.0.1:$(auth.config.port) for $(url); people log in " *
+          "at $(portal_url(auth)). Workers: \"Add worker\" on the dashboard gives the install command."
+announce(::NetworkAuth, url::AbstractString) =
+    @warn "No login: anyone who reaches $(url) uses the dashboard, and through it the workers' " *
+          "machines; nothing is encrypted. Workers join with a credential from \"Add worker\". " *
+          "For more than a trusted network, put the login proxy in front " *
+          "(BonitoAgents/assets/install_server.sh)."
+
+# Where workers and browsers reach the server when no --public-url says so.
+default_public_url(auth::LoginAuth, srv, host) = dashboard_url(auth)
+default_public_url(::LocalAuth, srv, host) = Bonito.online_url(srv, "")
+# Other machines dial it: at the address it listens on, or on a wildcard bind at
+# this machine's own (`--public-url` says otherwise, e.g. for a host name).
+function default_public_url(::NetworkAuth, srv, host)
+    addr = host in ("0.0.0.0", "::") ? string(Sockets.getipaddr()) : host
+    return "http://$(occursin(':', addr) ? "[$(addr)]" : addr):$(srv.port)"
+end
+
+# Behind the proxy or a tunnel, the port is the one it forwards to.
+listen_port(auth::LoginAuth, opts::AbstractDict) = auth.config.port
+listen_port(::OpenAuth, opts::AbstractDict) = parse(Int, get(opts, "port", "8038"))
+
+# ── Package entry point ──────────────────────────────────────────────────────
+# `julia --project=<monorepo root> -m BonitoAgents [flags]` starts the server and
+# blocks. No env vars: defaults are baked in (port 8038, localhost), and a
+# `proxy.json` in the state dir (written by install_server.sh) puts it behind
+# Caddy + Authelia. Override any default with a flag:
+#
+#   julia --project=. -m BonitoAgents
+#   julia --project=. -m BonitoAgents --port 8080
+#   julia --project=. -m BonitoAgents --host 0.0.0.0     # a trusted network, no login
+#
+# Flags: --port --host --public-url --state-dir --working-dir --log-file
+"""
+    start_server(opts; state_dir, working_dir) -> Bonito.Server
+
+Configure and start a server PROCESS from parsed command-line options. The one
+place that turns options into a `serve()` call, so the two entry points —
+`bin/bonitoagents-server` (`julia -m BonitoAgents`, the systemd deployment) and
+the desktop bundle's `bonitoagents server` — differ in their DEFAULTS and in
+nothing else.
+
+They used to be two hand-written copies of the same call, and the copies drifted:
+the file-log redirect was added to the app's copy only, so the server that runs a
+whole fleet wrote no log at all and a hang left nothing behind but journald on the
+server host. `state_dir`/`working_dir` are the defaults a caller wants when the
+user passed no `--state-dir`/`--working-dir` (the app roots them under its shared
+data dir; the daemon uses the XDG-ish path below).
+
+Unlike `serve()`, this is for a process that OWNS its stdout, so the file log is
+on: `--log-file` overrides it, `""` means `<state-dir>/logs/server.log`. That file
+is what `bt_dev_logs(source="server")` reads, and the only log that survives the
+restart you do when the server wedges.
+"""
+function start_server(opts::AbstractDict;
+                      state_dir::AbstractString =
+                          joinpath(homedir(), ".local", "share", "bonitoagents-server"),
+                      working_dir::AbstractString = "")
+    sd = let v = get(opts, "state-dir", ""); isempty(v) ? state_dir : v end
+    wd = let v = get(opts, "working-dir", ""); isempty(v) ? working_dir : v end
+    host = get(opts, "host", "127.0.0.1")
+    auth = auth_mode(sd; host)
+    return serve(;
+        auth,
+        host,
+        port          = listen_port(auth, opts),
+        public_url    = get(opts, "public-url", ""),
+        manage_harnesses = true,
+        state_dir     = sd,
+        working_dir   = wd,
+        log_file      = get(opts, "log-file", ""),
+    )
+end
+
+function (@main)(args::Vector{String})
+    start_server(parse_server_args(args))
+    wait()
+    return 0
+end
+
+# Tiny CLI parser: accepts `--key value` and `--key=value`; errors on anything
+# else so a typo fails loudly instead of silently using a default.
+function parse_server_args(args::Vector{String})
+    opts = Dict{String,String}()
+    i = 1
+    while i <= length(args)
+        a = args[i]
+        startswith(a, "--") ||
+            error("unexpected argument `$a` (use --key value or --key=value)")
+        body = a[3:end]
+        if occursin('=', body)
+            k, v = split(body, '='; limit = 2)
+            opts[String(k)] = String(v); i += 1
+        else
+            i < length(args) || error("missing value for --$body")
+            opts[body] = args[i + 1]; i += 2
+        end
+    end
+    return opts
+end
+
+# HTTP routes
+#
+# /install        — sniffs `User-Agent` and serves either the bash or PS1
+#                   wrapper. PowerShell's Invoke-RestMethod sets a UA that
+#                   contains the literal "PowerShell"; curl/wget/everything
+#                   else falls through to the bash wrapper.
+# /install.sh     — always bash wrapper. Useful when /install's sniff guesses
+#                   wrong, or when fetched from a browser to inspect.
+# /install.ps1    — always PowerShell wrapper. Same.
+# /install.jl     — the cross-platform Julia installer the wrappers fetch.
+# None of them carries a secret: the proxy serves them to anyone, since a new
+# machine fetches them before it has a credential (it gets one from "Add worker").
+function add_install_routes!(srv::Bonito.Server, state::ServerState, public_url::String)
+    text, shell = "text/plain; charset=utf-8", "text/x-shellscript; charset=utf-8"
+    Bonito.route!(srv, "/install.jl" => _ -> install_response(state, INSTALL_SCRIPT, public_url, text))
+    Bonito.route!(srv, "/install.sh" => _ -> install_response(state, INSTALL_SH, public_url, shell))
+    Bonito.route!(srv, "/install.ps1" => _ -> install_response(state, INSTALL_PS1, public_url, text))
+    Bonito.route!(srv, "/install" => function(context)
+        is_ps = occursin("PowerShell", HTTP.header(context.request, "User-Agent", ""))
+        install_response(state, is_ps ? INSTALL_PS1 : INSTALL_SH, public_url, is_ps ? text : shell)
+    end)
+end
+
+# An install script for the worker build the server offers. None before it has
+# resolved one: a guessed build would differ from the one the new worker is
+# offered at its first connect, and it would reinstall right away.
+function install_response(state::ServerState, template::AbstractString, public_url::String,
+                          content_type::AbstractString)
+    spec = worker_update_spec(state)
+    spec === nothing && return HTTP.Response(503,
+        ["Content-Type" => "text/plain; charset=utf-8", "Retry-After" => "60"],
+        body = "The server has not found out which build to install yet (is GitHub reachable " *
+               "from it?). Try again in a minute.\n")
+    return HTTP.Response(200, ["Content-Type" => content_type],
+                         body = render_install_script(template, public_url, spec))
+end
+
+# ── ACP wire-frame log routes ────────────────────────────────────────────────
+#
+# /acp-log            — HTML index of projects that have an acp.jsonl
+# /acp-log/<pid>      — the raw JSONL (one {"ts","dir","msg"} envelope per
+#                       line), append-only, written by `acp_frame_logger`.
+#                       Refresh the tab to see new frames.
+#
+# Served straight from disk (state_dir/chats/<pid>/acp.jsonl) so logs are
+# readable even when no live ChatModel exists for the project. Legacy
+# project-id-less chats (<cwd>/.bonitoAgents) are deliberately NOT exposed.
+function add_acp_log_routes!(srv::Bonito.Server, state::ServerState)
+    index_handler = function(context)
+        chats_root = joinpath(state.state_dir, "chats")
+        ids = isdir(chats_root) ?
+            filter(id -> isfile(joinpath(chats_root, id, "acp.jsonl")) &&
+                         request_sees_chat(state, context.request, id),
+                   sort!(readdir(chats_root))) :
+            String[]
+        items = map(ids) do id
+            p = get(state.projects[], id, nothing)
+            label = esc_html(p === nothing ? id : "$(p.name) ($id)")
+            "<li><a href=\"/acp-log/$id\">$label</a></li>"
+        end
+        body = isempty(items) ?
+            "<p>No ACP logs yet — open a chat and send a message.</p>" :
+            "<ul>" * join(items) * "</ul>"
+        html = "<!doctype html><html><head><meta charset=\"utf-8\">" *
+               "<title>ACP wire logs</title></head>" *
+               "<body><h1>ACP wire logs</h1>$body</body></html>"
+        HTTP.Response(200, ["Content-Type" => "text/html; charset=utf-8"], body=html)
+    end
+    # Both slash variants — String routes match the URI path exactly, so
+    # "/acp-log/" (what a browser autocompletes to) needs its own entry.
+    Bonito.route!(srv, "/acp-log"  => index_handler)
+    Bonito.route!(srv, "/acp-log/" => index_handler)
+    Bonito.route!(srv, ACP_LOG_ROUTE_RE => function(context)
+        pid = String(context.match.captures[1])
+        request_sees_chat(state, context.request, pid) || return unknown_chat(pid)
+        acp_log_response(state, pid)
+    end)
+end
+
+# Every route keyed by a chat answers only who may see that chat (a member: their
+# own; an admin: all, including logs of chats no longer on record), and answers
+# everyone else as if the chat did not exist.
+function request_sees_chat(state::ServerState, request, project_id::AbstractString)
+    user = request_user(state.auth, request)
+    user === nothing && return false
+    p = get(state.projects[], String(project_id), nothing)
+    return p === nothing ? is_admin(user) : visible(user, p)
+end
+
+unknown_chat(project_id::AbstractString) =
+    HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                  body = "unknown project '$(project_id)'\n")
+
+# `request.target` includes the query string, hence the `($|\?)` arm; the
+# `/?` tolerates a trailing slash after the id. The charset (no `.`, no `/`)
+# makes path traversal impossible.
+const ACP_LOG_ROUTE_RE = r"^/acp-log/([A-Za-z0-9_-]+)/?(?:$|\?)"
+
+# Plain function (no live HTTP server needed) so tests can call it directly.
+function acp_log_response(state::ServerState, project_id::AbstractString)
+    # Defense-in-depth: the route regex already constrains the charset, but
+    # never join an unvalidated id into a filesystem path.
+    occursin(r"^[A-Za-z0-9_-]+$", project_id) ||
+        return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "invalid project id\n")
+    path = joinpath(state.state_dir, "chats", String(project_id), "acp.jsonl")
+    isfile(path) ||
+        return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "no ACP log for project '$project_id'\n")
+    return HTTP.Response(200,
+        ["Content-Type"  => "text/plain; charset=utf-8",
+         "Cache-Control" => "no-cache"],
+        body = read(path, String))
+end
+
+# /export/<pid> — download the chat as one Markdown file that is also a
+# BonitoBook notebook (`export_chat_markdown`, chat_export.jl). Built on demand
+# from the live ChatModel, so the chat must be open (which it is whenever the
+# Export item is on screen). Like every chat-keyed route, it answers only who
+# may see the chat (`request_sees_chat`).
+const EXPORT_ROUTE_RE = r"^/export/([A-Za-z0-9_-]+)/?(?:$|\?)"
+
+function add_export_routes!(srv::Bonito.Server, state::ServerState)
+    Bonito.route!(srv, EXPORT_ROUTE_RE => function(context)
+        pid = String(context.match.captures[1])
+        request_sees_chat(state, context.request, pid) || return unknown_chat(pid)
+        export_response(state, pid)
+    end)
+end
+
+function export_response(state::ServerState, project_id::AbstractString)
+    model = lock(() -> get(state.chat_models, String(project_id), nothing), state.lock)
+    model === nothing &&
+        return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "no open chat for project '$project_id' — open it first\n")
+    md    = export_chat_markdown(model)
+    fname = export_filename(model)
+    return HTTP.Response(200,
+        ["Content-Type"        => "text/markdown; charset=utf-8",
+         "Content-Disposition" => "attachment; filename=\"$fname\"",
+         "Cache-Control"       => "no-cache"],
+        body = md)
+end
+
+# /download/<pid>?path=<worker-abs-path> — stream a worker file back to the
+# browser as an attachment. The file tree's ⤓ button navigates here. The bytes
+# are streamed from the worker as the browser takes them (`WorkerFileStream`),
+# never copied to the server first, so the download starts at once whether or
+# not the project is synced to the server. The `path` MUST live
+# inside the project's worker tree — a normalized-prefix check blocks traversal /
+# arbitrary worker reads. The route regex captures only the pid; the path rides
+# in the query string (so slashes survive without extra encoding rules).
+const DOWNLOAD_ROUTE_RE = r"^/download/([A-Za-z0-9_-]+)"
+
+function add_download_routes!(srv::Bonito.Server, state::ServerState)
+    Bonito.route!(srv, r"^/worker-file/([A-Za-z0-9_-]+)(?:$|\?)" => function(context)
+        wid = String(context.match.captures[1])
+        params = HTTP.queryparams(HTTP.URI(context.request.target))
+        worker_file_response(state, context.request, wid,
+            String(get(params, "path", "")), String(get(params, "token", "")))
+    end)
+    Bonito.route!(srv, WORKER_FOLDER_ROUTE_RE => function(context)
+        wid, folder, token, path = context.match.captures
+        worker_folder_response(state, context.request, String(wid), String(folder),
+                               String(token), String(path))
+    end)
+    Bonito.route!(srv, DOWNLOAD_ROUTE_RE => function(context)
+        pid    = String(context.match.captures[1])
+        request_sees_chat(state, context.request, pid) || return unknown_chat(pid)
+        params = HTTP.queryparams(HTTP.URI(context.request.target))
+        download_response(state, pid, String(get(params, "path", "")))
+    end)
+    Bonito.route!(srv, ATTACHMENT_ROUTE_RE => function(context)
+        pid    = String(context.match.captures[1])
+        request_sees_chat(state, context.request, pid) || return unknown_chat(pid)
+        params = HTTP.queryparams(HTTP.URI(context.request.target))
+        attachment_response(state, pid, String(get(params, "file", "")))
+    end)
+    Bonito.route!(srv, r"^/attachment-upload/([A-Za-z0-9_-]+)(?:$|\?)" => function(context)
+        pid = String(context.match.captures[1])
+        request_sees_chat(state, context.request, pid) || return unknown_chat(pid)
+        attachment_upload(state, context.request, pid)
+    end)
+end
+
+# URL signatures depend only on persisted worker identity, path, and the server's
+# URL key. Signing limits access to files exposed by the UI, including bt_show
+# files outside the project tree. No browser/eval session owns or unregisters them.
+worker_file_token(state::ServerState, worker_id::String, path::String) =
+    bytes2hex(SHA.hmac_sha256(state.url_key, codeunits(JSON.json([worker_id, path]))))
+
+function worker_file_url(state::ServerState, worker_id::String, path::String; fresh::Bool = false)
+    token = worker_file_token(state, worker_id, path)
+    url = "/worker-file/$(HTTP.escapeuri(worker_id))?path=$(HTTP.escapeuri(path))&token=$token"
+    # An already displayed <img> lets Chromium reuse decoded pixels for the
+    # same URL without any HTTP revalidation, even with Cache-Control:no-cache.
+    # New previews need a new request identity. The signature remains tied to
+    # worker/path, so old links survive session teardown and range reads work.
+    return fresh ? url * "&view=$(uuid4())" : url
+end
+
+# A worker from before range reads cannot stream a file, and a file is never
+# copied whole to the server to be shown instead (that made a video or a
+# download wait for the whole file): it is told to update.
+too_old_to_stream() = HTTP.Response(502, ["Content-Type" => "text/plain; charset=utf-8", "Cache-Control" => "no-store"],
+    body = "this worker is too old to stream files; update it from the dashboard\n")
+
+function worker_file_response(state::ServerState, request, worker_id::String,
+                              path::String, token::String)
+    isempty(path) && return HTTP.Response(400, "missing path")
+    token == worker_file_token(state, worker_id, path) ||
+        return HTTP.Response(403, "invalid file token")
+    return serve_worker_file(state, request, worker_id, path)
+end
+
+# /worker-folder/<wid>/<folder>/<token>/<path>: any file under a signed worker
+# folder, by its path relative to that folder. It's what a file with relative
+# references needs (a glTF's buffers and textures, an OBJ's .mtl): the browser
+# resolves them against the URL it loaded the file from, so they arrive here as
+# more paths under the same folder. `<folder>` is the worker path in hex, one URL
+# segment whatever it contains; the token signs it like `worker_file_token`
+# signs a file, tagged so that neither passes for the other.
+const WORKER_FOLDER_ROUTE_RE = r"^/worker-folder/([A-Za-z0-9_-]+)/((?:[0-9a-f]{2})+)/([0-9a-f]{64})/([^?#]+)"
+
+worker_folder_token(state::ServerState, worker_id::String, folder::String) =
+    bytes2hex(SHA.hmac_sha256(state.url_key, codeunits(JSON.json(["folder", worker_id, folder]))))
+
+"The URL of `path` (relative to the worker `folder`) under a signed folder grant."
+function worker_folder_url(state::ServerState, worker_id::String, folder::String, path::AbstractString)
+    segments = join(HTTP.escapeuri.(splitpath(path)), "/")
+    return "/worker-folder/$(HTTP.escapeuri(worker_id))/$(bytes2hex(codeunits(folder)))/" *
+           "$(worker_folder_token(state, worker_id, folder))/$(segments)"
+end
+
+function worker_folder_response(state::ServerState, request, worker_id::String,
+                                folder_hex::String, token::String, path::String)
+    folder = String(hex2bytes(folder_hex))
+    token == worker_folder_token(state, worker_id, folder) ||
+        return HTTP.Response(403, "invalid folder token")
+    # Decoded before normalising, so an escaped `..` is caught like a plain one.
+    file = normpath(joinpath(folder, HTTP.unescapeuri(path)))
+    Bonito.is_path_contained(folder, file) ||
+        return HTTP.Response(403, "outside the shared folder")
+    return serve_worker_file(state, request, worker_id, file)
+end
+
+# Bytes `start:stop` of a worker file as a response body that is sent while it
+# is read. Read whole first, a video (which the browser asks for as `bytes=0-`,
+# all of it) or a download showed nothing until every 256 KiB piece had made its
+# round trip through the tunnel: seconds to minutes, and a download clicked again
+# meanwhile started over in parallel. Now the first piece goes out after one
+# round trip, and `ahead` pieces are asked for at a time so the trips overlap. A
+# browser that stops taking bytes (a paused video) stops the reading: nothing is
+# asked for more than `ahead` pieces past what it took.
+mutable struct WorkerFileStream
+    state::ServerState
+    worker_id::String
+    path::String
+    next::Int                   # first byte not asked for yet
+    stop::Int                   # last byte to send
+    ahead::Int
+    piece_bytes::Int            # at most the worker's FILE_RANGE_BYTES
+    pieces::Vector{Task}        # asked for, in file order
+    piece::Vector{UInt8}        # being sent
+    pos::Int                    # its next byte to send
+end
+
+WorkerFileStream(state::ServerState, worker_id::String, path::String, start::Int, stop::Int;
+                 ahead::Int = 4, piece_bytes::Int = 256 * 1024) =
+    WorkerFileStream(state, worker_id, path, start, stop, ahead, piece_bytes, Task[], UInt8[], 1)
+
+# The response body: HTTP.jl pulls it in small buffers as the browser takes it.
+# A piece still being read when the browser goes away is left to finish.
+worker_file_body(s::WorkerFileStream) = HTTP.CallbackBody(dst -> stream_into!(dst, s), () -> nothing)
+
+function ask_ahead!(s::WorkerFileStream)
+    while length(s.pieces) < s.ahead && s.next <= s.stop
+        offset, count = s.next, min(s.piece_bytes, s.stop - s.next + 1)
+        push!(s.pieces, Threads.@spawn read_piece(s, offset, count))
+        s.next += count
+    end
+    return nothing
+end
+
+function read_piece(s::WorkerFileStream, offset::Int, count::Int)
+    bytes = read_worker_file_range(s.state, s.worker_id, s.path, offset, count)
+    length(bytes) == count || error("file changed while reading: $(s.path)")
+    return bytes
+end
+
+# Fill `dst` from the piece being sent, taking the next one when it is used up;
+# the number of bytes written, 0 at the end. A read that failed ends the
+# response there (the headers are out, so a cut connection is all that is left
+# to say), and is logged.
+function stream_into!(dst::Vector{UInt8}, s::WorkerFileStream)
+    if s.pos > length(s.piece)
+        ask_ahead!(s)
+        isempty(s.pieces) && return 0
+        task = popfirst!(s.pieces)
+        s.piece = try
+            fetch(task)
+        catch e
+            e isa TaskFailedException || rethrow()
+            @warn "worker file: read failed while sending it" worker_id = s.worker_id path = s.path exception = task.result
+            throw(task.result)
+        end
+        s.pos = 1
+        ask_ahead!(s)
+    end
+    n = min(length(dst), length(s.piece) - s.pos + 1)
+    copyto!(dst, 1, s.piece, s.pos, n)
+    s.pos += n
+    return n
+end
+
+# The bytes of a worker file (or the requested range of them), read through the
+# worker's control connection on every request, so they are always current.
+#
+# HTTP.jl sends a response with a Content-Length only once all of it is in
+# memory (HTTP/1, as the server is reached), and streams one without. So a
+# range (what a video asks for, `bytes=0-` first) is answered with at most
+# `max_range` bytes and its length, as media servers do: the browser plays them
+# within moments and asks for the next part itself, and a seek asks for the
+# part it needs. A request for the whole file (an image, the file opened
+# directly) streams without a length.
+function serve_worker_file(state::ServerState, request, worker_id::String, path::String;
+                           max_range::Int = 2 * 1024 * 1024)
+    try
+        info = stat_worker_path(state, worker_id, path)
+        info.isfile || return HTTP.Response(404, ["Cache-Control" => "no-store"],
+                                            "file no longer exists on worker")
+        mime = string(Bonito.file_mimetype(path))
+        info.range_reads || return too_old_to_stream()
+        # A preview that is re-rendered or enlarged asks again (no-cache): answer
+        # from the stat instead of moving the whole file through the worker.
+        etag = "\"$(info.size)-$(info.mtime)\""
+        HTTP.header(request, "If-None-Match", "") == etag &&
+            return HTTP.Response(304, ["ETag" => etag, "Cache-Control" => "no-cache"])
+        range_header = HTTP.header(request, "Range", "")
+        if_range = HTTP.header(request, "If-Range", "")
+        isempty(if_range) || if_range == etag || (range_header = "")   # changed: send it whole
+        range = Bonito.parse_byte_range(range_header, info.size)
+        if range === nothing && !isempty(range_header)
+            return HTTP.Response(416, ["Content-Range" => "bytes */$(info.size)"])
+        end
+        headers = ["Content-Type" => mime, "Cache-Control" => "no-cache", "ETag" => etag,
+                   "Accept-Ranges" => "bytes"]
+        if range === nothing
+            return HTTP.Response(200, headers;
+                body = worker_file_body(WorkerFileStream(state, worker_id, path, 0, info.size - 1)))
+        end
+        start, stop = range
+        stop = min(stop, start + max_range - 1)
+        push!(headers, "Content-Length" => string(stop - start + 1),
+                       "Content-Range" => "bytes $start-$stop/$(info.size)")
+        return HTTP.Response(206, headers;
+                             body = worker_file_body(WorkerFileStream(state, worker_id, path, start, stop)))
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "worker file: read failed" worker_id path exception = (e, catch_backtrace())
+        return HTTP.Response(502, ["Cache-Control" => "no-store"], "could not read file from worker")
+    end
+end
+
+# /attachment/<pid>?file=<name> — serve a pasted/dropped image from the
+# project's `.bt-attachments/` dir so user bubbles can render it INLINE
+# (`msg_to_dict(::UserMsg)` builds these URLs). Unlike /download this reads
+# the SERVER mirror directly — `save_attachment` wrote the file there, so no
+# worker round-trip — and serves inline with the real image mime. `file` must
+# be a bare filename; anything path-like is rejected (the attachment dir is
+# the whole exposed surface). Filenames are timestamp+uuid — immutable — so
+# the response is cacheable forever.
+const ATTACHMENT_ROUTE_RE = r"^/attachment/([A-Za-z0-9_-]+)"
+
+# Bare, well-formed filename only: no separators, so it cannot leave the
+# attachment dir, and not hidden (the dir's `.uploads/` holds partial files).
+is_attachment_name(file::AbstractString) = occursin(r"^[A-Za-z0-9_-][A-Za-z0-9_.-]*$", file)
+
+plain_response(status::Integer, message::AbstractString) =
+    HTTP.Response(status, ["Content-Type" => "text/plain; charset=utf-8"], body = message * "\n")
+
+function attachment_response(state::ServerState, project_id::AbstractString,
+                             file::AbstractString)
+    occursin(r"^[A-Za-z0-9_-]+$", project_id) || return plain_response(404, "invalid project id")
+    proj = get(state.projects[], project_id, nothing)
+    proj === nothing && return plain_response(404, "unknown project '$project_id'")
+    is_attachment_name(file) || return plain_response(403, "invalid attachment name")
+    path = joinpath(proj.server_path, ATTACHMENT_DIR_NAME, file)
+    isfile(path) || return plain_response(404, "no such attachment")
+    # Images and PDFs show in the browser; anything else is a download. Sent
+    # as the browser takes it, not read whole first: an attachment can be a
+    # video. No Content-Length, or HTTP.jl would hold it back until complete.
+    ext = lowercase(lstrip(splitext(file)[2], '.'))
+    mime = ext == "pdf" ? "application/pdf" : get(ATTACHMENT_MIME_BY_EXT, ext, nothing)
+    headers = mime === nothing ?
+        ["Content-Type" => "application/octet-stream",
+         "Content-Disposition" => "attachment; filename=\"$(download_filename(file))\""] :
+        ["Content-Type" => mime]
+    io = open(path)
+    return HTTP.Response(200, [headers; "Cache-Control" => "public, max-age=31536000, immutable"];
+        body = HTTP.CallbackBody(dst -> readbytes!(io, dst, length(dst)), () -> close(io)))
+end
+
+# /attachment-upload/<pid>?upload=<id>&offset=<n>&total=<n>&name=<file name>
+# One chunk of a file attachment, written at `offset`. Chunks, over plain
+# HTTP: small enough for any proxy's default body limit, never a whole video in
+# memory, and off the chat's websocket (whose messages stop at 16 MiB). The last
+# one moves the file into `.bt-attachments` under a name of its own and copies
+# it to the worker; its answer says where the file is and whether the worker
+# has it.
+function attachment_upload(state::ServerState, request::HTTP.Request, project_id::AbstractString;
+                           chunk_max::Integer = 1024 * 1024, file_max::Integer = 2 * 1024^3)
+    # A header no form or plain cross-site request can carry: another site's
+    # page would need a CORS preflight, which nothing here answers. Without it
+    # any page the user visits could write files into their chats.
+    HTTP.header(request, "X-BT-Upload") == "1" || return plain_response(403, "missing X-BT-Upload header")
+    proj = get(state.projects[], project_id, nothing)
+    proj === nothing && return plain_response(404, "unknown project '$project_id'")
+    params = HTTP.queryparams(HTTP.URI(request.target))
+    upload = get(params, "upload", "")
+    occursin(r"^[A-Za-z0-9-]{8,64}$", upload) || return plain_response(400, "invalid upload id")
+    part = joinpath(proj.server_path, ATTACHMENT_DIR_NAME, ".uploads", upload * ".part")
+    # Removed from the composer before it finished: drop what arrived.
+    if request.method == "DELETE"
+        rm(part; force = true)
+        return json_response(Dict{String,Any}("removed" => true))
+    end
+    request.method == "POST" || return plain_response(405, "POST one chunk per request, or DELETE the upload")
+    offset = tryparse(Int, get(params, "offset", ""))
+    total  = tryparse(Int, get(params, "total", ""))
+    (offset === nothing || total === nothing || offset < 0) && return plain_response(400, "offset and total are byte counts")
+    total <= file_max || return plain_response(413, "file too large: $(total) bytes, at most $(file_max)")
+    chunk = request_bytes(request.body)
+    length(chunk) <= chunk_max || return plain_response(413, "chunk too large: at most $(chunk_max) bytes")
+    offset + length(chunk) <= total || return plain_response(400, "chunk runs past the file's size")
+    mkpath(dirname(part))
+    have = isfile(part) ? filesize(part) : 0
+    have == offset || return plain_response(409, "expected the chunk at offset $(have)")
+    open(io -> write(io, chunk), part, "a")
+    received = offset + length(chunk)
+    received < total && return json_response(Dict{String,Any}("received" => received))
+    rel, on_worker = finish_attachment_upload!(state, proj, part, get(params, "name", ""))
+    return json_response(Dict{String,Any}("received" => received, "path" => rel, "on_worker" => on_worker))
+end
+
+json_response(d::AbstractDict) =
+    HTTP.Response(200, ["Content-Type" => "application/json", "Cache-Control" => "no-store"], body = JSON.json(d))
+
+# The complete upload: renamed into the attachment dir, then to the worker so
+# the agent can open it. A worker out of reach keeps it on the server; sending
+# the message tries again (`process_attachments!`).
+function finish_attachment_upload!(state::ServerState, proj::ProjectInfo, part::AbstractString,
+                                   original::AbstractString)
+    rel = joinpath(ATTACHMENT_DIR_NAME, attachment_file_name(original))
+    abs = joinpath(proj.server_path, rel)
+    mv(part, abs)
+    on_worker = reachable(state, proj.worker_id) && try
+        send_file_to_worker!(state, proj.worker_id, abs, joinpath(proj.worker_path, rel); handoff_timeout = 30.0)
+        true
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "attachment upload: copy to the worker failed; it goes with the message" worker = proj.worker_id rel exception = e
+        false
+    end
+    return rel, on_worker
+end
+
+# Unique, and still recognisable to the agent and the user: the time, a short
+# random part, and the original name with anything but [A-Za-z0-9._-] replaced.
+function attachment_file_name(original::AbstractString)
+    base = replace(basename(String(original)), r"[^A-Za-z0-9._-]" => "_")
+    base = lstrip(base, '.')
+    isempty(base) && (base = "file")
+    length(base) > 80 && (base = last(base, 80))
+    return "$(Dates.format(now(UTC), "yyyy-mm-dd_HHMMSS"))_$(string(uuid4())[1:8])_$(base)"
+end
+
+# Strip anything that could break (or smuggle a header into) the
+# Content-Disposition filename. Keep it plain.
+download_filename(name::AbstractString) =
+    replace(String(name), r"[\"\r\n\\/]" => "_")
+
+# Plain function (no live HTTP server needed) so tests can call it directly.
+function download_response(state::ServerState, project_id::AbstractString,
+                           path::AbstractString)
+    occursin(r"^[A-Za-z0-9_-]+$", project_id) ||
+        return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "invalid project id\n")
+    proj = get(state.projects[], project_id, nothing)
+    proj === nothing &&
+        return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "unknown project '$project_id'\n")
+    isempty(path) &&
+        return HTTP.Response(400, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "missing ?path\n")
+    # Security: the requested path must resolve INSIDE the project's worker tree.
+    wroot = normpath(String(proj.worker_path))
+    npath = normpath(String(path))
+    (npath == wroot || startswith(npath, wroot * "/")) ||
+        return HTTP.Response(403, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "path is outside the project\n")
+    headers = ["Content-Type"        => "application/octet-stream",
+               "Content-Disposition" => "attachment; filename=\"$(download_filename(basename(npath)))\"",
+               "Cache-Control"       => "no-cache"]
+    try
+        info = stat_worker_path(state, proj.worker_id, npath)
+        info.isfile || return HTTP.Response(404, ["Content-Type" => "text/plain; charset=utf-8"],
+                                            body = "no such file on the worker\n")
+        info.range_reads || return too_old_to_stream()
+        # Sent while it is read (`WorkerFileStream`): the browser shows the
+        # download at once, instead of after the whole file has crossed to the
+        # server. Without its size: with a Content-Length HTTP.jl would hold the
+        # whole response back (see `serve_worker_file`).
+        return HTTP.Response(200, headers;
+            body = worker_file_body(WorkerFileStream(state, proj.worker_id, npath, 0, info.size - 1)))
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "download: fetch from worker failed" project_id path exception = (e, catch_backtrace())
+        return HTTP.Response(502, ["Content-Type" => "text/plain; charset=utf-8"],
+                             body = "could not fetch file from worker\n")
+    end
+end
+
+esc_html(s::AbstractString) = replace(s,
+    "&" => "&amp;", "<" => "&lt;", ">" => "&gt;", "\"" => "&quot;")
+
+# Substitute the server URL + the worker build into a templated install script.
+# install.jl guards against being run with the `{{ }}` placeholders intact, so a
+# raw fetch of any asset (bypassing these routes) fails loudly.
+render_install_script(template::AbstractString, public_url::String, spec::AbstractDict) =
+    replace(template,
+        "{{SERVER_URL}}"    => public_url,
+        "{{REV}}"           => spec["rev"],
+        "{{SOURCE_ID}}"     => spec["source_id"],
+        "{{BONITO_URL}}"    => spec["bonito_url"],
+        "{{BONITO_REV}}"    => spec["bonito_rev"],
+    )
+
+"""
+    worker_update_spec(state; max_age = 60) -> Union{Dict,Nothing}
+
+The worker build to hand a worker, as last resolved (`WorkerBuild`), without
+waiting: `nothing` until a resolve succeeded. One tried more than `max_age`
+seconds ago is resolved again in the background, so a checkout on the server
+reaches the workers without a restart.
+"""
+function worker_update_spec(state::ServerState; max_age::Real = 60.0)
+    b = state.worker_build
+    return @lock b.lock begin
+        if time() - b.tried_at > max_age && (b.resolving === nothing || istaskdone(b.resolving))
+            b.tried_at = time()
+            b.resolving = Base.errormonitor(@async resolve_worker_build!(b))
+        end
+        b.spec
+    end
+end
+
+# Resolve the build now and keep it. A failure is logged and keeps the last one.
+function resolve_worker_build!(b::WorkerBuild)
+    lock(() -> (b.tried_at = time()), b.lock)
+    spec = try
+        b.resolve()
+    catch e
+        e isa InterruptException && rethrow()
+        @warn "could not resolve the worker build; workers are offered the last one" last = b.spec exception = e
+        return nothing
+    end
+    lock(() -> (b.spec = spec), b.lock)
+    return spec
+end
+
+# The version identity sent to an installed worker after it authenticates on the
+# control WebSocket. Keep it in terms of source specs, rather than a package
+# version: workers and servers commonly run feature branches where every
+# Project.toml says the same development version. Asks GitHub, so it can take
+# a while or throw: handshakes read it through `worker_update_spec`.
+function current_worker_update_spec()
+    bonito_url, bonito_rev = current_bonito_install_spec()
+    rev = current_repo_rev()
+    return Dict{String,Any}(
+        "repo"       => "https://github.com/SimonDanisch/BonitoAgents.jl",
+        "rev"        => rev,
+        "source_id"  => current_repo_source_id(rev),
+        "bonito_url" => bonito_url,
+        "bonito_rev" => bonito_rev,
+    )
+end
+
+# A branch name cannot tell a worker whether it is on yesterday's `main` or
+# today's. Prefer the server's reachable commit as its update identity and only
+# fall back to the install ref when the deployment is not a usable git checkout.
+function current_repo_source_id(ref::AbstractString = current_repo_rev())
+    pkg = pkgdir(@__MODULE__)
+    pkg === nothing && return String(ref)
+    repo_root = abspath(pkg, "..")
+    ispath(joinpath(repo_root, ".git")) || return String(ref)
+    sha = strip(git_read(repo_root, "rev-parse", "HEAD"))
+    return sha_on_origin(repo_root, sha) ? String(sha) : String(ref)
+end
+
+"""
+    current_repo_rev() -> String
+
+Branch (or sha) the server is currently running from, used to template the
+worker `install.jl` so a fresh `curl … | sh` lands the workers on the exact
+same revision the server is serving. Lets a dev iterate on a feature branch
+without users needing to know its name — they just re-run the curl one-liner.
+
+Resolves in order:
+
+  1. `BONITOAGENTS_INSTALL_REV` env var (escape hatch for ops who want to pin
+     workers to a stable tag while running the server from `main`).
+  2. The monorepo's checked-out branch (best-effort via `git rev-parse
+     --abbrev-ref HEAD`; falls back to the exact sha when the repo is in
+     detached-HEAD state).
+  3. No git working tree (a release bundle, or installed via `Pkg.add`):
+     the `v<version>` tag for a clean release version — a bundle is built
+     FROM that tag (build-app.yml), so workers land on exactly the code the
+     server runs. A prerelease/build-suffixed version (e.g. `0.2.0-DEV` on
+     `main` between releases) can only guess `"main"`.
+
+Asks GitHub (`git ls-remote`) and throws when git fails or takes too long:
+handshakes and install scripts read it through `worker_update_spec`, which
+resolves it again every minute, so a `git checkout` on the server side
+propagates without a restart.
+"""
+function current_repo_rev()
+    override = get(ENV, "BONITOAGENTS_INSTALL_REV", "")
+    isempty(override) || return override
+
+    pkg = pkgdir(@__MODULE__)
+    pkg === nothing && return install_rev_for(pkgversion(@__MODULE__))
+    # `pkgdir` returns `<monorepo>/BonitoAgents`; the monorepo (where `.git`
+    # lives) is one level up. `.git` may be a directory (normal clone) or a
+    # file (submodule / worktree); both count.
+    repo_root = abspath(pkg, "..")
+    return git_head_ref_of(repo_root, install_rev_for(pkgversion(@__MODULE__)))
+end
+
+# The install rev for a git-less deployment, from the running package version:
+# a clean release version maps to its `v<version>` tag (what release bundles
+# are built from); a prerelease/build suffix or unknown version means "not a
+# tagged release" — `main` is the only honest guess then.
+install_rev_for(v::Union{VersionNumber,Nothing}) =
+    v !== nothing && isempty(v.prerelease) && isempty(v.build) ? "v$(v)" : "main"
+
+# `(branch | sha)` for a working-tree path that a worker's `Pkg.add(rev = …)`
+# can ACTUALLY resolve against the remote. Returns `default` when the path isn't
+# a git checkout or nothing usable is reachable on origin; throws when git fails
+# (`git_read`), offline for one. Not a fallback then: that would name another
+# build than the last answer, and every auto-updating worker would reinstall.
+#
+# The subtlety: `git rev-parse --abbrev-ref HEAD` happily returns a branch name
+# that only exists locally — e.g. a feature branch that was merged and DELETED on
+# the remote. Templating that into the installer makes every worker install fail
+# with "Did not find rev <branch>". So we only hand back the branch when origin
+# still has it; otherwise the exact sha if THAT is reachable on origin; otherwise
+# the caller's default (a `v<version>` tag or "main").
+function git_head_ref_of(path::AbstractString, default::AbstractString)
+    ispath(joinpath(path, ".git")) || return String(default)
+    branch = strip(git_read(path, "rev-parse", "--abbrev-ref", "HEAD"))
+    sha    = strip(git_read(path, "rev-parse", "HEAD"))
+    branch != "HEAD" && branch_on_origin(path, branch) && return String(branch)
+    sha_on_origin(path, sha) && return String(sha)
+    return String(default)
+end
+
+# Does origin still publish this branch? Authoritative: a network `ls-remote`.
+branch_on_origin(path::AbstractString, branch::AbstractString) =
+    !isempty(strip(git_read(path, "ls-remote", "--heads", "origin", branch)))
+
+# Is this sha reachable from a remote-tracking branch (so `Pkg.add(rev=sha)` can
+# fetch it)? `git branch -r` lists ONLY remote-tracking refs, so a non-empty
+# result means some origin branch contains the commit. Fast (local refs).
+sha_on_origin(path::AbstractString, sha::AbstractString) =
+    !isempty(strip(git_read(path, "branch", "-r", "--contains", sha)))
+
+# `git -C path args…`'s output; throws when git fails. Bounded: `ls-remote`
+# waits on the network, and a stalled connection does not end by itself, so
+# after `timeout` seconds git is killed and this throws too.
+function git_read(path::AbstractString, args::AbstractString...; timeout::Real = 15.0)
+    err = IOBuffer()
+    p = open(pipeline(addenv(`git -C $path $args`, "GIT_TERMINAL_PROMPT" => "0"); stderr = err))
+    killed = Ref(false)
+    timer = Timer(timeout) do _
+        killed[] = true
+        kill(p)
+    end
+    out = try
+        read(p, String)
+    finally
+        close(timer)
+    end
+    what = "`git $(join(args, ' '))` in $(path)"
+    # Not waited for then: git's network helper may still hold its stderr.
+    killed[] && error("$(what) did not finish within $(timeout)s")
+    wait(p)
+    success(p) || error("$(what) failed: $(strip(String(take!(err))))")
+    return out
+end
+
+"""
+    current_bonito_install_spec() -> (url::String, rev::String)
+
+The `(url, rev)` pair the worker should pin Bonito at, so the worker's eval
+sessions (which `BonitoMCP` proxies through) use the SAME Bonito version
+the server ships its dashboard with — without that, a fresh worker installed
+via `curl … | sh` resolves Bonito off the registry and the remote-app
+protocol (proxy frames, dial-back, `id_prefix`) drifts vs. the server's.
+
+Resolution order, mirroring `current_repo_rev`:
+
+  1. `BONITOAGENTS_BONITO_URL` + `BONITOAGENTS_BONITO_REV` env vars
+     (ops can pin workers to a published tag while the server itself
+     dev-tracks a path).
+  2. The active project's `[sources]` `Bonito = {url, rev}` literal
+     (the normal case when the monorepo's Project.toml pins a feature
+     branch).
+  3. `[sources]` `Bonito = {path = "..."}` (the dev case where Bonito is
+     dev'd next to the monorepo): walk into the path and derive
+     `url = remote.origin.url`, `rev = current branch | sha`. This is
+     what makes `git checkout` on the dev's Bonito propagate to workers.
+  4. Fallback `(github.com/SimonDanisch/Bonito.jl, "master")`.
+
+A git checkout is asked the way `current_repo_rev` asks, so this throws the way
+it does.
+"""
+function current_bonito_install_spec()
+    url_env = get(ENV, "BONITOAGENTS_BONITO_URL", "")
+    rev_env = get(ENV, "BONITOAGENTS_BONITO_REV", "")
+    (!isempty(url_env) && !isempty(rev_env)) && return (url_env, rev_env)
+
+    default_url = "https://github.com/SimonDanisch/Bonito.jl.git"
+    default_rev = "master"
+    bonito_uuid = Base.UUID("824d6782-a2ef-11e9-3a09-e5662e0c26f8")
+
+    # 1. Project file `[sources]` literal — the common monorepo case.
+    project_file = Base.active_project()
+    src = project_file === nothing ? nothing :
+          get(Pkg.Types.read_project(project_file).sources, "Bonito", nothing)
+    if src !== nothing && haskey(src, "url")
+        return (String(src["url"]), String(get(src, "rev", default_rev)))
+    elseif src !== nothing && haskey(src, "path")
+        p = String(src["path"])
+        got = spec_from_git_path(isabspath(p) ? p : normpath(joinpath(dirname(project_file), p)),
+                                 default_url, default_rev)
+        got === nothing || return got
+    end
+
+    # 2. Manifest's resolved Bonito entry. Covers two cases the `[sources]`
+    # path above misses: (a) the outer dev project Pkg.develop'd Bonito so
+    # there's no project-level `[sources]` block, only a path in the
+    # manifest; (b) Bonito is `Pkg.add`'d directly from a git url+rev (so
+    # `git_source` / `git_revision` come through populated). For path-tracked,
+    # walk the working tree the same way as the `[sources]` path branch.
+    info = get(manifest_dependencies(), bonito_uuid, nothing)
+    if info !== nothing
+        info.git_source !== nothing && info.git_revision !== nothing &&
+            return (String(info.git_source), String(info.git_revision))
+        if info.is_tracking_path && info.source isa AbstractString
+            got = spec_from_git_path(String(info.source), default_url, default_rev)
+            got === nothing || return got
+        end
+    end
+
+    return (default_url, default_rev)
+end
+
+# The active environment's resolved packages. None when its manifest does not
+# cover its project (Pkg refuses then), as for a server loaded through a stacked
+# environment.
+function manifest_dependencies()
+    try
+        return Pkg.dependencies()
+    catch e
+        e isa Pkg.Types.PkgError || rethrow()
+        return Dict{Base.UUID,Pkg.API.PackageInfo}()
+    end
+end
+
+# Resolve a working-tree path into a `(remote_url, branch_or_sha)` pair.
+# Returns `nothing` if the path isn't a git checkout — callers fall back to
+# their own defaults. Throws when git fails (`git_head_ref_of`).
+function spec_from_git_path(path::AbstractString, default_url::AbstractString,
+                            default_rev::AbstractString)
+    ispath(joinpath(path, ".git")) || return nothing
+    # Exits 1 when no origin is set: the default url then.
+    remote = strip(read(ignorestatus(`git -C $path config --get remote.origin.url`), String))
+    return (isempty(remote) ? String(default_url) : String(remote), git_head_ref_of(path, default_rev))
+end
+
+# WebSocket routes (worker-side connection terminus). Each closure captures
+# `state` so the route handler picks up the same instance the dashboard reads
+# from / the chat writes into.
+function add_worker_ws_routes!(srv::Bonito.Server, state::ServerState)
+    # A worker's ONE connection: control, its agents' ACP streams, file
+    # transfers, and the channels its local relay opens for MCP processes and
+    # eval workers are all channels on this link (worker_client.jl).
+    Bonito.HTTPServer.websocket_route!(srv, "/w" => (ctx, ws) ->
+        handle_worker_link(state, ws, ctx.request))
+end
+
+"""
+    timed_page(state, app, context) -> HTTP.Response
+
+The page (`app`), its build recorded as a `:page` timing with the parts
+`page_phase` measured. Bonito renders the page in this task, so the parts land
+in the table this sets up.
+"""
+function timed_page(state::ServerState, app::App, context)
+    request = context.request
+    phases = task_local_storage(:bt_page_phases, Dict{Symbol,Float64}())
+    request.context[:page_phases] = phases      # the gate's slow-request warning prints them
+    t0 = time()
+    try
+        return Bonito.HTTPServer.apply_handler(app, context)
+    finally
+        took = time() - t0
+        phases[:render] = took - get(phases, :handler, 0.0)
+        record_timing!(state, :page, took; target = first(request.target, 120),
+                       tab = get(request.context, :tab, ""), client = client_address(request),
+                       phases = phase_summary(phases; min_s = 0.001))
+        delete!(task_local_storage(), :bt_page_phases)
+    end
+end
+
+"""
+    page_timing_response(state, request; slow_ms = 5000) -> HTTP.Response
+
+Log what a page reports about its own load (`page_load_report`), as a warning
+when it took longer than `slow_ms` to become usable or never did, and keep it as
+a `:browser_load` timing.
+"""
+function page_timing_response(state::ServerState, request::HTTP.Request; slow_ms::Integer = 5000)
+    request.method == "POST" || return plain_response(405, "POST a page's load report")
+    body = request_bytes(request.body)
+    length(body) <= 16_384 || return plain_response(413, "a load report is small")
+    report = JSON.parse(String(body))
+    report isa AbstractDict || return plain_response(400, "a load report is a JSON object")
+    ms(k) = (v = get(report, k, nothing); v isa Real ? round(Int, v) : nothing)
+    usable = something(ms("chat_settled"), ms("connected"), Some(nothing))
+    fields = (; client = client_address(request), why = string(get(report, "why", "")),
+              view = string(get(report, "view", "")), html_ms = ms("html"), scripts_ms = ms("scripts"),
+              connected_ms = ms("connected"), chat_ms = ms("chat_settled"),
+              status = string(get(report, "status", "")), hidden = get(report, "hidden", nothing) === true,
+              slowest = get(report, "slow", Any[]))
+    if usable === nothing || usable > slow_ms
+        @warn "slow page load" fields...
+    else
+        @info "page load" fields...
+    end
+    # Never usable: the time it waited before giving up (`why = "gave_up"`).
+    waited = something(usable, ms("waited"), Some(0)) / 1000
+    record_timing!(state, :browser_load, waited; fields...)
+    return HTTP.Response(204)
+end

@@ -1,0 +1,94 @@
+"""
+Draws horizontal lines across an `Axis`.
+
+## Arguments
+
+* `ys` Positions where lines will be drawn in data coordinates. Can be a `Real` or
+    `AbstractVector{<:Real}`. The lines span from `xmin` to `xmax` in relative coordinates (0 to 1).
+* `xmin, xmax` Attributes for setting the start and end positions of lines in relative (0 .. 1) space.
+    Can be a `Real` or `AbstractVector{<:Real}`
+"""
+@recipe HLines (ys::Union{Real, RealVector},) begin
+    "The start of the lines in relative axis units (0 to 1) along the x dimension."
+    xmin = 0
+    "The end of the lines in relative axis units (0 to 1) along the x dimension."
+    xmax = 1
+    documented_attributes(LineSegments)...
+end
+
+"""
+Draws vertical lines across an `Axis`.
+
+## Arguments
+
+* `xs` Positions where lines will be drawn in data coordinates. Can be a `Real` or
+    `AbstractVector{<:Real}`. The lines span from `ymin` to `ymax` in relative coordinates (0 to 1).
+* `ymin, ymax` Attributes for setting the start and end positions of lines in relative (0 .. 1) space.
+    Can be a `Real` or `AbstractVector{<:Real}`
+"""
+@recipe VLines (xs::Union{Real, RealVector},) begin
+    "The start of the lines in relative axis units (0 to 1) along the y dimension."
+    ymin = 0
+    "The start of the lines in relative axis units (0 to 1) along the y dimension."
+    ymax = 1
+    documented_attributes(LineSegments)...
+end
+
+function projview_to_2d_limits(plot::AbstractPlot)
+    scene = parent_scene(plot)
+    return lift(
+        plot, f32_conversion_obs(scene), scene.camera.projectionview, ignore_equal_values = true
+    ) do f32c, pv
+        xmin, xmax = minmax((((-1, 1) .- pv[1, 4]) ./ pv[1, 1])...)
+        ymin, ymax = minmax((((-1, 1) .- pv[2, 4]) ./ pv[2, 2])...)
+        origin = Vec2d(xmin, ymin)
+        return inv_f32_convert(f32c, Rect2d(origin, Vec2d(xmax, ymax) - origin))
+    end
+end
+
+argument_dims(::Type{<:HLines}, y) = (2,)
+argument_dims(::Type{<:VLines}, x) = (1,)
+
+function Makie.plot!(p::Union{HLines, VLines})
+    mi = p isa HLines ? (:xmin) : (:ymin)
+    ma = p isa HLines ? (:xmax) : (:ymax)
+    converted_name = p isa HLines ? (:ys) : (:xs)
+    add_axis_limits!(p)
+    map!(p.attributes, [:axis_limits_transformed, converted_name, mi, ma, :transform_func], :points) do lims, vals, mi, ma, transf
+        points = Point2d[]
+        min_x, min_y = minimum(lims)
+        max_x, max_y = maximum(lims)
+        broadcast_foreach(vals, mi, ma) do val, mi, ma
+            if p isa HLines
+                x_mi = min_x + (max_x - min_x) * mi
+                x_ma = min_x + (max_x - min_x) * ma
+                val = _apply_y_transform(transf, val)
+                push!(points, Point2d(x_mi, val))
+                push!(points, Point2d(x_ma, val))
+            elseif p isa VLines
+                y_mi = min_y + (max_y - min_y) * mi
+                y_ma = min_y + (max_y - min_y) * ma
+                val = _apply_x_transform(transf, val)
+                push!(points, Point2d(val, y_mi))
+                push!(points, Point2d(val, y_ma))
+            end
+        end
+        return points
+    end
+    linesegments!(p, Attributes(p), p.points, transformation = :inherit_model)
+    return p
+end
+
+function data_limits(p::HLines)
+    isempty(p[1][]) && return Rect3d(Point3d(NaN, NaN, 0), Vec3d(0, 0, 0))
+    ymin, ymax = extrema(p[1][])
+    return Rect3d(Point3d(NaN, ymin, 0), Vec3d(NaN, ymax - ymin, 0))
+end
+
+function data_limits(p::VLines)
+    isempty(p[1][]) && return Rect3d(Point3d(NaN, NaN, 0), Vec3d(0, 0, 0))
+    xmin, xmax = extrema(p[1][])
+    return Rect3d(Point3d(xmin, NaN, 0), Vec3d(xmax - xmin, NaN, 0))
+end
+
+boundingbox(p::Union{HLines, VLines}, space::Symbol = :data) = apply_transform_and_model(p, data_limits(p))

@@ -1,0 +1,34 @@
+## descriptor
+
+export MPSMatrixCopyDescriptor
+
+# @objcwrapper MPSMatrixCopyDescriptor <: NSObject
+
+function MPSMatrixCopyDescriptor(sourceMatrix, destinationMatrix, offsets = MPSMatrixCopyOffsets(Cuint(0), Cuint(0), Cuint(0), Cuint(0)))
+    return @objc [MPSMatrixCopyDescriptor descriptorWithSourceMatrix:sourceMatrix::id{MPSMatrix}
+                                          destinationMatrix:destinationMatrix::id{MPSMatrix}
+                                          offsets:offsets::MPSMatrixCopyOffsets]::MPSMatrixCopyDescriptor
+end
+
+
+## kernel
+
+export MPSMatrixCopy, encode!
+
+# @objcwrapper managed = true MPSMatrixCopy <: MPSKernel
+
+function MPSMatrixCopy(dev, copyRows, copyColumns, sourcesAreTransposed, destinationsAreTransposed)
+    copyRows > 0 && copyColumns > 0 ||
+        throw(ArgumentError("`copyRows` and `copyColumns` must be larger than zero"))
+
+    return @objc [[MPSMatrixCopy alloc]::id{MPSMatrixCopy} initWithDevice:dev::id{MTLDevice}
+                                                      copyRows:copyRows::NSUInteger
+                                                      copyColumns:copyColumns::NSUInteger
+                                                      sourcesAreTransposed:sourcesAreTransposed::Bool
+                                                      destinationsAreTransposed:destinationsAreTransposed::Bool]::MPSMatrixCopy
+end
+
+function encode!(cmdbuf::MTLCommandBufferLike, kernel::MPSMatrixCopyLike, copyDescriptor)
+    @objc [kernel::id{MPSMatrixCopy} encodeToCommandBuffer:cmdbuf::id{MTLCommandBuffer}
+                                     copyDescriptor:copyDescriptor::id{MPSMatrixCopyDescriptor}]::Nothing
+end

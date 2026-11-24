@@ -1,0 +1,74 @@
+function generic_plot_attributes(::Type{LineAxis})
+    return OAttributes(
+        endpoints = (Point2f(0, 0), Point2f(100, 0)),
+        trimspine = false,
+        limits = (0.0f0, 100.0f0),
+        flipped = false,
+        flip_vertical_label = false,
+        ticksize = 6.0f0,
+        tickwidth = 1.0f0,
+        tickcolor = RGBf(0, 0, 0),
+        tickalign = 0.0f0,
+        ticks = Makie.automatic,
+        tickformat = Makie.automatic,
+        ticklabelalign = (:center, :top),
+        ticksvisible = true,
+        ticklabelrotation = 0.0f0,
+        ticklabelsize = 20.0f0,
+        ticklabelcolor = RGBf(0, 0, 0),
+        ticklabelsvisible = true,
+        spinewidth = 1.0f0,
+        label = "label",
+        labelsize = 20.0f0,
+        labelcolor = RGBf(0, 0, 0),
+        labelvisible = true,
+        ticklabelspace = Makie.automatic,
+        ticklabelpad = 3.0f0,
+        labelpadding = 5.0f0,
+        reversed = false,
+        minorticksvisible = true,
+        minortickalign = 0.0f0,
+        minorticksize = 4.0f0,
+        minortickwidth = 1.0f0,
+        minortickcolor = :black,
+        minorticks = Makie.automatic,
+        minorticksused = false,
+        scale = identity,
+        unit_in_ticklabel = true,
+        suffix_formatter = "",
+        unit_in_label = false,
+    )
+end
+
+
+function attributenames(::Type{LegendEntry})
+    return (
+        :label, :labelsize, :labelfont, :labelcolor, :labelhalign, :labelvalign,
+        :patchsize, :patchstrokecolor, :patchstrokewidth, :patchcolor,
+        :linepoints, :linewidth, :linecolor, :linestyle, :linecap, :joinstyle, :linecolorrange, :linecolormap,
+        :markerpoints, :markersize, :markerstrokewidth, :markercolor, :markerstrokecolor, :markercolorrange, :markercolormap,
+        :polypoints, :polystrokewidth, :polycolor, :polystrokecolor, :polycolorrange, :polycolormap, :alpha,
+    )
+end
+
+function extractattributes(attributes::Attributes, typ::Type)
+    extracted = Attributes()
+    for name in attributenames(typ)
+        if haskey(attributes, name)
+            extracted[name] = attributes[name]
+        end
+    end
+    return extracted
+end
+
+function extractattributes(attributes::ComputeGraph, typ::Type)
+    extracted = Attributes()
+    for name in attributenames(typ)
+        if haskey(attributes, name)
+            extracted[name] = ComputePipeline.get_observable!(attributes[name])
+        end
+    end
+    return extracted
+end
+
+extractattributes(leg::Legend, typ::Type) = extractattributes(leg.attributes, typ)

@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/r15.png (live screenshot, right panel, grey activity block)",
+      "severity": "medium",
+      "suggestion": "Summarise or shorten activity text at its source (activity_line) so each line is a complete short phrase. Alternatively, keep a visible truncation marker and fix the test to expect it.",
+      "what": "wrap_text deletes every '…' from the text and then silently drops lines past maxlines. The panel shows no ellipsis, but it also gives no sign that text was cut. Activity lines end mid-sentence, e.g. 'tester: 0 problems; I re-ran the whole suite live and all 10 tests pass, including the activity-panel ellipsis test that failed in session' and 'asked to wrap up (the budget is running low),'. The change makes the test pass rather than making the panel read well.",
+      "where": "dev/NeverendingGame/src/dashboard.jl:208-226, activity panel at line 282"
+    },
+    {
+      "evidence": "world/reviews/r15.png",
+      "severity": "medium",
+      "suggestion": "Map events to plain-language lines such as 'a reviewer checked the last work'. Hide internal provider messages.",
+      "what": "The activity panel shows raw agent and tester text ('review: tester: 0 problems; I re-ran...', 'started ClaudeCode (sonnet)', 'provider cannot take mid-turn messages'). A human cannot read these as game status. The author left this undone.",
+      "where": "right panel, activity block"
+    },
+    {
+      "evidence": "journal and tester report text. The live frame still looks flat. The 'Truffle' label is dim and far from its creature, and labels overlap trees.",
+      "severity": "low",
+      "suggestion": "Take the night look next session. Check why a restart takes 5 minutes.",
+      "what": "Nothing visible was added. The night look (#22/#41) and the label clipping were not done. The tester only re-ran the suite and did no exploratory play, so those two issues were not checked. The game restart took about 5 minutes.",
+      "where": "journal 2026-11-22, tester report session-0015"
+    },
+    {
+      "evidence": "world/reviews/r15.png",
+      "severity": "low",
+      "suggestion": "Do not post outbox messages about automated test wishes.",
+      "what": "The budget line reads 'tokens today: 2.86M of 3.0M · about 0 more work sessions'. It is accurate but alarming to a human. The 'Messages to you' panel also shows messages that tell the human to ignore the automated UI-test wishes, which is noise.",
+      "where": "right panel"
+    }
+  ],
+  "summary": "The ellipsis test now passes and the game runs at 30 fps, but the fix only removes the symptom: the activity panel still cuts sentences off mid-word and shows raw agent text. The session shipped no player-visible change.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

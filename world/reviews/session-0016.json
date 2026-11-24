@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/tests/shots/side-panels.png",
+      "severity": "medium",
+      "suggestion": "Clamp labels to the viewport, nudge overlapping labels apart, and fade or hide labels of occluded creatures. Do this first next session, as the author planned.",
+      "what": "Creature name labels overlap and are clipped. Pinky and Marshmallow sit on top of each other, and 'Snoop' is cut off by a tree and the panel edge. Labels are drawn through the tree crowns.",
+      "where": "3D viewport, upper right"
+    },
+    {
+      "evidence": "world/tests/shots/side-panels.png",
+      "severity": "medium",
+      "suggestion": "Show one short plain-language status line. Strip markdown and backticks. Hide the technical end-of-turn details.",
+      "what": "The activity panel shows raw agent text: quoted sentences, a backticked file path and 'ended (end_turn) after 0.7 min, 6 tool calls'. It is long, grey and low contrast, and reads as a log rather than as something the human wants to follow.",
+      "where": "Right panel, Sprout section"
+    },
+    {
+      "evidence": "world/tests/shots/side-panels.png; the journal says the budget was about 96% used",
+      "severity": "low",
+      "suggestion": "Reserve budget for one small visible fix per session. Filter automated UI-test messages out of the human-facing panel.",
+      "what": "The token budget is exhausted ('about 0 more work sessions'), and the session was spent on a journal entry only. The todo list shows the night look (#22/#41) and camera occlusion still open. The 'Messages to you' panel shows replies to automated UI-test wishes, which is noise for the human.",
+      "where": "Right panel, bottom; journal 2026-11-22"
+    },
+    {
+      "evidence": "Header reads '30 fps' in the screenshot",
+      "severity": "low",
+      "suggestion": "None.",
+      "what": "I did not run the live game or measure frame times. With no code change there is no new performance risk; the header shows 30 fps. The suite passes 10/10.",
+      "where": "world/tests/results/session-0016.json"
+    }
+  ],
+  "summary": "No game code changed this session (journal, outbox and test artefacts only), so there is nothing new to judge as working or fast. The dashboard still shows the known label and activity-panel problems, and the session stopped at 96% of the token budget before starting any of them.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

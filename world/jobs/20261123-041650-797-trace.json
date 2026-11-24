@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-23T04:16:50.797",
+  "finished": "2026-11-23T04:18:35.956",
+  "id": "20261123-041650-797-trace",
+  "kind": "trace",
+  "params": {
+    "path": "/sim/Programmieren/SimGame/world/media/s27-trace-flowers.png",
+    "samples": 256
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s27-trace-flowers.png"
+  },
+  "seconds": 105.0,
+  "started": "2026-11-23T04:16:50.989",
+  "status": "done"
+}

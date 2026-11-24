@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: two passes in 1.0 s: too fast to see",
+      "file": "minigames.jl",
+      "name": "Critters pass the ball back and forth by themselves, the camera watches",
+      "passed": false,
+      "seconds": 1.3
+    }
+  ],
+  "passed": 52,
+  "session": 31,
+  "time": "2026-11-23T07:16:09",
+  "total": 53
+}

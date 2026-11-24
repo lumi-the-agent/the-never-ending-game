@@ -1,0 +1,375 @@
+# Video Reading
+
+## Reading Video Files
+
+VideoIO contains a simple high-level interface which allows reading of
+video frames from a supported video file (or from a camera device, shown later).
+
+The simplest form will load the entire video into memory as a vector of image arrays.
+
+```julia
+using VideoIO
+VideoIO.load("video.mp4")
+```
+```@docs
+VideoIO.load
+```
+
+Frames can be read sequentially until the end of the file:
+
+```julia
+using VideoIO
+
+# Construct a AVInput object to access the video and audio streams in a video container
+# io = VideoIO.open(video_file)
+io = VideoIO.testvideo("annie_oakley") # for testing purposes
+
+# Access the video stream in an AVInput, and return a VideoReader object:
+f = VideoIO.openvideo(io) # you can also use a file name, instead of a AVInput
+
+img = read(f)
+
+while !eof(f)
+    read!(f, img)
+    # Do something with frames
+end
+close(f)
+```
+
+```@docs
+VideoIO.openvideo
+```
+
+Alternatively, you can open the video stream in a file directly with
+`VideoIO.openvideo(filename)`, without making an intermediate `AVInput`
+object, if you only need the video.
+
+VideoIO also provides an iterator interface for `VideoReader`, which
+behaves like other mutable iterators in Julia (e.g. Channels). If iteration is
+stopped early, for example with a `break` statement, then it can be resumed in
+the same spot by iterating on the same `VideoReader` object. Consequently, if
+you have already iterated over all the frames of a `VideoReader` object, then it
+will be empty for further iteration unless its position in the video is changed
+with `seek`.
+
+```julia
+using VideoIO
+
+f = VideoIO.openvideo("video.mp4")
+for img in f
+    # Do something with img
+end
+# Alternatively use collect(f) to get all of the frames
+
+# Further iteration will show that f is now empty
+@assert isempty(f)
+
+close(f)
+```
+
+Seeking through the video can be achieved via `seek(f, seconds::Float64)` and `seekstart(f)` to return to the start.
+```@docs
+VideoIO.seek
+```
+```@docs
+VideoIO.seekstart
+```
+
+Frames can be skipped without reading frame content via `skipframe(f)` and `skipframes(f, n)`
+```@docs
+VideoIO.skipframe
+```
+```@docs
+VideoIO.skipframes
+```
+
+Total available frame count is available via `counttotalframes(f)`
+```@docs
+VideoIO.counttotalframes
+```
+
+The video framerate can be read via `framerate(f)`
+```@docs
+VideoIO.framerate
+```
+
+Metadata about the most recently read frame (frame type and keyframe status) is
+available via `frame_metadata(f)`. This is useful for inspecting GOP structure
+and finding recovery points (the next keyframe) after a decoding error.
+```@docs
+VideoIO.frame_metadata
+VideoIO.FrameMetadata
+```
+
+### Codec motion vectors
+
+Opening a video with `export_mvs = true` asks the decoder to export the block
+motion vectors it used for inter-frame prediction (e.g. for H.264). After each
+`read`/`read!`, they are available via `motion_vectors(f)`:
+
+```julia
+f = VideoIO.openvideo(filename, export_mvs = true)
+while !eof(f)
+    img = read(f)
+    mvs = VideoIO.motion_vectors(f)  # empty for I-frames
+end
+close(f)
+```
+
+These are the encoder's compression decisions, not measured optical flow, but
+they provide a fast approximate motion signal — see
+[Motion-vector based registration](@ref) for robust global-motion estimation
+from them (via the experimental `VideoIO.VideoRegistration` module, which may
+move to a separate package in the future).
+
+```@docs
+VideoIO.motion_vectors
+VideoIO.MotionVector
+VideoIO.displacement
+VideoIO.src_position
+VideoIO.dst_position
+VideoIO.correspondences
+```
+
+### Changing the target pixel format for reading
+It can be helpful to be explicit in which pixel format you wish to read frames as.
+Here a grayscale video is read and parsed into a `Vector(Array{UInt8}}`
+```julia
+f = VideoIO.openvideo(filename, target_format=VideoIO.AV_PIX_FMT_GRAY8)
+
+while !eof(f)
+    img = reinterpret(UInt8, read(f))
+end
+close(f)
+```
+
+### Hardware-accelerated decoding
+
+VideoIO can use GPU-based decode pipelines when the underlying FFmpeg build
+supports hardware acceleration.  Passing `hwaccel = :<device>` to `openvideo`
+or `VideoReader` enables this:
+
+```julia
+# macOS (VideoToolbox)
+f = VideoIO.openvideo("video.mp4", hwaccel = :videotoolbox)
+
+# Linux with VA-API (Intel/AMD)
+f = VideoIO.openvideo("video.mp4", hwaccel = :vaapi)
+
+# Linux/Windows with CUDA (NVIDIA)
+f = VideoIO.openvideo("video.mp4", hwaccel = :cuda)
+
+img = read(f)   # RGB{N0f8} — identical interface to software decoding
+close(f)
+```
+
+Decoded frames are automatically downloaded from the hardware surface to CPU
+memory for you, so `read` returns the same element types and dimensions as with
+software decoding.  Hardware decoding therefore requires no changes to
+downstream image-processing code.
+
+To discover which device types the current FFmpeg build supports, and whether
+they are actually usable on this machine:
+
+```julia
+# Compile-time support (may include devices without usable hardware)
+VideoIO.available_hw_devices()  # e.g. [:videotoolbox, :vaapi]
+
+# Runtime probe — returns true only if the device can be opened
+VideoIO.hwaccel_available(:videotoolbox)  # true on macOS with hardware
+VideoIO.hwaccel_available(:vaapi)         # false on systems without GPU
+
+# Filter to working devices
+working = filter(VideoIO.hwaccel_available, VideoIO.available_hw_devices())
+```
+
+```@docs
+VideoIO.available_hw_devices
+```
+```@docs
+VideoIO.hwaccel_available
+```
+
+**Requirements:**  Hardware decoding requires an FFmpeg build compiled with
+the relevant hardware acceleration library (VideoToolbox, CUDA, VAAPI, etc.).
+The standard `FFMPEG_jll` packages include VideoToolbox support on macOS and
+may include VAAPI/CUDA on Linux depending on the version.  Use
+`hwaccel_available` to check whether hardware is actually accessible at
+runtime before relying on it.
+
+### Strict Mode for Data Integrity
+
+When data integrity is critical, use
+`strict = true` to detect corrupted videos instead of applying error concealment:
+
+```julia
+try
+    video = VideoIO.openvideo("measurement.mp4", strict=true)
+    for frame in video
+        analyze(frame)  # FFmpeg will reject detected corruption
+    end
+    close(video)
+catch e
+    if e isa VideoCorruptionError
+        @error "Video corrupted" exception=e
+        # Handle appropriately: reject measurement, prompt retake, etc.
+    end
+end
+```
+
+By default (`strict=false`), FFmpeg conceals decoder errors for smooth playback.
+However, error concealment algorithms vary across FFmpeg versions, causing
+non-deterministic results. Strict mode asks FFmpeg to fail on detected
+bitstream/CRC errors and raises `VideoCorruptionError` for decoder-reported
+corruption. **Note:** Corruption detection is codec and container dependent;
+not all corruption may be detectable.
+
+- **More deterministic decoding** across FFmpeg versions
+- **Rejects synthetic pixels** from probabilistic error reconstruction when detected
+- **Fail-fast behavior** when corruption is detected
+
+```@docs
+VideoIO.VideoCorruptionError
+```
+
+## Reading Camera Output
+Frames can be read iteratively
+```julia
+using VideoIO
+cam = VideoIO.opencamera()
+fps = VideoIO.framerate(cam)
+for i in 1:100
+    img = read(cam)
+    sleep(1/fps)
+end
+```
+To change settings such as the frame rate or resolution of the captured frames, set the
+appropriate value in the `options` positional argument.
+```julia
+julia> opts = VideoIO.DEFAULT_CAMERA_OPTIONS
+VideoIO.AVDict with 2 entries:
+  "framerate"    => "30"
+  "pixel_format" => "uyvy422"
+
+julia> opts["framerate"] = "24"
+"24"
+
+julia> opts["video_size"] = "640x480"
+"640x480"
+
+julia> opencamera(VideoIO.DEFAULT_CAMERA_DEVICE[], VideoIO.DEFAULT_CAMERA_FORMAT[], opts)
+VideoReader(...)
+```
+
+Or more simply, change the default. For example:
+```julia
+julia> VideoIO.DEFAULT_CAMERA_OPTIONS["video_size"] = "640x480"
+
+julia> VideoIO.DEFAULT_CAMERA_OPTIONS["framerate"] = 30
+
+julia> julia> opencamera()
+VideoReader(...)
+```
+
+## Reading Audio
+
+The audio stream of a video (or of a plain audio file) can be decoded into
+Julia matrices with one row per sample and one column per channel. The
+simplest form decodes a whole stream into memory, returning the samples and
+their sample rate in Hz:
+
+```julia
+using VideoIO
+samples, fs = VideoIO.loadaudio("video.mp4")             # e.g. 584704×2 Matrix{Float32}, 44100
+mono, fs = VideoIO.loadaudio("video.mp4", samplerate = 16000, nchannels = 1, start = 10, duration = 5)
+```
+```@docs
+VideoIO.loadaudio
+```
+
+For streaming access, `openaudio` returns an `AudioReader` that behaves much
+like a `VideoReader`: `read(a)` returns the next codec-sized block of samples,
+`read(a, n)` returns exactly `n` samples (fewer at the end of the stream),
+`read!(a, buf)` fills a preallocated `Matrix`, and iterating over the reader
+yields blocks until `eof`. `seek`, `seekstart`, `gettime`, and `close` work as
+for video readers, with seeking accurate to the sample. Times follow the
+container's own timeline, so `gettime` after the first read need not be exactly
+zero (MP3 files, for instance, start at the encoder delay of 0.023 s).
+
+```julia
+using VideoIO
+a = openaudio("video.mp4", samplerate = 16000, nchannels = 1)  # Float32 samples in [-1, 1]
+fs = VideoIO.samplerate(a)
+buf = zeros(Float32, 1024, VideoIO.nchannels(a))
+while !eof(a)
+    block = read(a, 1024)   # 1024×1 (or fewer rows at the end)
+    # Do something with block
+end
+close(a)
+```
+
+Floating point element types (`Float32`, `Float64`) are scaled to `[-1, 1]`;
+integer element types (`UInt8`, `Int16`, `Int32`) use their full range.
+Resampling and channel remixing are performed by FFmpeg's `libswresample`.
+
+```@docs
+VideoIO.openaudio
+VideoIO.AudioReader
+VideoIO.samplerate
+VideoIO.nchannels
+VideoIO.sample_eltype
+```
+```@docs
+read(::VideoIO.AudioReader)
+read(::VideoIO.AudioReader, ::Integer)
+read!(::VideoIO.AudioReader{T}, ::AbstractVecOrMat{T}) where {T}
+seek(::VideoIO.AudioReader, ::Number)
+VideoIO.gettime(::VideoIO.AudioReader)
+```
+
+### Reading video and audio together
+
+Open both streams from the same `AVInput` so that they share one demuxer.
+Seeking either reader repositions both. Note that packets are decoded in file
+order, so decoded frames of the stream that is read less often are queued in
+memory until they are consumed: read the two streams roughly in step, or seek
+before reading if you only need a portion.
+
+```julia
+io = VideoIO.open("video.mp4")
+v = openvideo(io)
+a = openaudio(io)
+img = read(v)
+block = read(a)
+close(io)
+```
+
+### Extracting audio to a file
+
+To write the audio stream of a video to a standalone audio file, use
+`VideoIO.extract_audio`. The output container is chosen from the file
+extension, and the compressed stream can be copied without re-encoding when
+the container allows it.
+
+```julia
+VideoIO.extract_audio("video.mp4", "audio.wav")
+VideoIO.extract_audio("video.mp4", "audio.m4a", codec = "copy")
+VideoIO.extract_audio("video.mp4", "speech.wav", samplerate = 16000, nchannels = 1, start = 60, duration = 30)
+```
+```@docs
+VideoIO.extract_audio
+```
+
+## Video Properties & Metadata
+```@docs
+VideoIO.get_start_time
+```
+```@docs
+VideoIO.get_time_duration
+```
+```@docs
+VideoIO.get_duration
+```
+```@docs
+VideoIO.get_number_frames
+```

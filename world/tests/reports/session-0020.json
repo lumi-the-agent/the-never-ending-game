@@ -1,0 +1,15 @@
+{"session": 20,
+ "summary": "The new mini games and the rest of the suite pass (21 of 23), but two regression tests still fail: the side panel again shows developer text (journal/todo prose with 'testing', 'real browser', 'Queued for the break'), and a creature sent to the pier does not stay fishing.",
+ "failures": [
+  {"what": "The side panel shows developer talk to the player",
+   "steps": "Open the dashboard and read the right-hand panel ('Last built' and 'Next on the list')",
+   "expected": "Only player-facing text about the island and its features",
+   "actual": "'Last built: Queued for the break' is followed by the author's journal prose ('I played Firefly catch from a real browser the way you do... ') and a todo list headed '○ testing'",
+   "screenshot": "world/tests/shots/side-panels.png"},
+  {"what": "A creature assigned to fish on the pier drops the fishing goal before it arrives",
+   "steps": "Run the test 'A creature walks out on the pier and fishes': give a non-controlled creature the :fish goal, put it at the root of the pier, wait 18 s",
+   "expected": "The creature reaches the end of the pier and is fishing (goal :fish, arrived)",
+   "actual": "Gloop was at (2.3, 14.3, 1.4) with goal :play, so the fishing goal was replaced by another goal before it arrived",
+   "screenshot": "world/tests/shots/fishing.png"}
+ ],
+ "tests_added": []}

@@ -1,0 +1,44 @@
+module OpenCLExt
+
+using OpenCL
+import AcceleratedKernels as AK
+
+# CPU devices (e.g. PoCL) get the tunings of the host backend's kernels.
+#
+# Partial results flag whether they are set with a `Bool` on PoCL: with the wider flag, its
+# work-group vectorizer accesses partials in local memory with AVX-512 gathers and scatters, and
+# scans of 10^4 to 10^7 Float32s without a neutral element take 1.0-1.4x as long. Other drivers
+# keep the wider flag. Intel's CPU runtime (2026.21) vectorizes those accesses with gathers too,
+# but scans along `dims=1` of Float32 matrices take 0.81-0.85x the time they take with a `Bool`
+# (0.98-1.3x along `dims=2` of 8-row matrices), and it crashes compiling `accumulate!` with one.
+# On an Arc A770, scans take 0.73-1.0x as long with the wider flag; NVIDIA's runtime runs both
+# alike.
+is_pocl(dev::cl.Device) = dev.platform.name == "Portable Computing Language"
+function AK.reduce_tuning(::OpenCLBackend, ::Type)
+    dev = cl.device()
+    dev.device_type === :cpu || return AK.ReduceTuning()
+    return AK.cpu_reduce_tuning(wide_optional_flag=!is_pocl(dev))
+end
+function AK.scan_tuning(::OpenCLBackend, ::Type)
+    dev = cl.device()
+    dev.device_type === :cpu || return AK.ScanTuning()
+    return AK.cpu_scan_tuning(wide_optional_flag=!is_pocl(dev))
+end
+
+# Sorting random keys with PoCL on a Ryzen 9 9950X. `BitonicSort` sorts whole arrays of up to 128
+# elements 1.4-1.9x faster than `MergeSort`, and slices of up to 1024 elements along `dims`
+# 1.4-40x faster in arrays of 2^16 elements or more (up to 39% slower in arrays of 2^12).
+# `RadixSort` sorts whole arrays of 2^17 32-bit elements 1.9-2.2x faster and of 2^19 64-bit
+# elements 1.7-2x faster; along `dims`, it sorts 32-bit slices of 512 elements and 64-bit slices
+# of 2^18 in arrays of those sizes or larger 1.05-7.7x faster.
+# GPU devices have not been measured, so they keep `MergeSort`.
+function AK.sort_tuning(::OpenCLBackend, ::Type{T}) where {T}
+    cl.device().device_type === :cpu || return AK.SortTuning()
+    sizeof(T) <= 4 ?
+    AK.SortTuning(bitonic_max_len=128, radix_min_len=1 << 17, bitonic_max_slice_len=1024,
+                  radix_min_slice_len=512) :
+    AK.SortTuning(bitonic_max_len=128, radix_min_len=1 << 19, bitonic_max_slice_len=1024,
+                  radix_min_slice_len=1 << 18)
+end
+
+end

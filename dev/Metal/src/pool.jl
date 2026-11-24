@@ -1,0 +1,216 @@
+export alloc, free
+
+using Printf
+
+# allocation statistics
+
+mutable struct AllocStats
+    Base.@atomic alloc_count::Int
+    Base.@atomic alloc_bytes::Int
+
+    Base.@atomic free_count::Int
+    Base.@atomic free_bytes::Int
+
+    Base.@atomic total_time::Float64
+end
+
+AllocStats() = AllocStats(0, 0, 0, 0, 0.0)
+
+Base.copy(alloc_stats::AllocStats) =
+    AllocStats(alloc_stats.alloc_count, alloc_stats.alloc_bytes,
+               alloc_stats.free_count, alloc_stats.free_bytes,
+               alloc_stats.total_time)
+
+Base.:(-)(a::AllocStats, b::AllocStats) = (;
+    alloc_count = a.alloc_count - b.alloc_count,
+    alloc_bytes = a.alloc_bytes - b.alloc_bytes,
+    free_count  = a.free_count  - b.free_count,
+    free_bytes  = a.free_bytes  - b.free_bytes,
+    total_time  = a.total_time  - b.total_time)
+
+const alloc_stats = AllocStats()
+
+
+"""
+    alloc(device, bytesize, [ptr]; storage=PrivateStorage, hazard_tracking, cache_mode)
+
+Allocate an `MTLBuffer` of `bytesize` bytes on `device`, initialized with the memory at the
+CPU pointer `ptr` if given, or with zeros otherwise. Free it with [`free`](@ref). `storage`
+is [`Metal.PrivateStorage`](@ref) or [`Metal.SharedStorage`](@ref); a buffer initialized
+from `ptr` cannot be private. `hazard_tracking` and `cache_mode` take
+[`MTLResourceOptions`](https://developer.apple.com/documentation/metal/mtlresourceoptions)
+values from `Metal.MTL`.
+
+Without a `ptr`, the buffer is padded to whole 4-byte words (and at least one): Metal does not
+support empty buffers, and GPUCompiler implements 8- and 16-bit atomics on the containing
+32-bit word. Buffers initialized from, or wrapping, host memory must be non-empty.
+"""
+function alloc(dev::Union{MTLDevice,MTLHeap}, sz::Integer, args...; kwargs...)
+    # pad allocations to whole words: atomics on 8- and 16-bit values access the containing
+    # 32-bit word, which has to be part of the buffer (Metal's shader validation enforces
+    # that). this also keeps a real buffer behind empty arrays, so that they can be bound
+    # to kernels, queried, labeled, etc. like any other array. host-backed buffers can't be
+    # padded, as that would read or wrap memory beyond the caller's allocation.
+    if isempty(args)
+        sz = max(cld(sz, 4), 1) * 4
+    end
+
+    maybe_collect(dev)
+    @static if COMMAND_API === :metal4
+        has_freed_buffers() && Base.@lock submission_lock process_freed!()
+    end
+
+    time = Base.@elapsed begin
+        buf = alloc_buffer_with_retry(dev, sz, args...; kwargs...)
+        @static if COMMAND_API === :metal4
+            track_allocation!(buf)
+        end
+    end
+
+    Base.@atomic alloc_stats.alloc_count + 1
+    Base.@atomic alloc_stats.alloc_bytes + sz
+    Base.@atomic alloc_stats.total_time + time
+
+    return buf
+end
+
+function alloc_buffer_with_retry(dev::Union{MTLDevice,MTLHeap}, sz::Integer, args...; kwargs...)
+    try
+        return MTLBuffer(dev, sz, args...; kwargs...)
+    catch err
+        err isa OutOfMemoryError || rethrow()
+        GC.gc(true)
+        device_synchronize()
+        return MTLBuffer(dev, sz, args...; kwargs...)
+    end
+end
+
+"""
+    free(buffer::MTLBuffer)
+
+Free a buffer allocated with [`alloc`](@ref). Freeing a buffer twice is undefined behavior.
+"""
+function free(buf::MTLBuffer)
+    sz::Int = buf.length
+
+    time = Base.@elapsed begin
+        @static if COMMAND_API === :metal4
+            # Metal 4 command buffers don't retain the buffers they use, so this may
+            # have to wait (see `process_freed!`). finalizers can't take the lock, but
+            # an explicit free releases right away when no work uses the buffer.
+            defer_release!(buf)
+            GC.in_finalizer() || Base.@lock submission_lock process_freed!()
+        else
+            release(buf)
+        end
+    end
+
+    Base.@atomic alloc_stats.free_count + 1
+    Base.@atomic alloc_stats.free_bytes + sz
+    Base.@atomic alloc_stats.total_time + time
+    return
+end
+
+
+## utilities
+
+@public var"@allocated", var"@time"
+
+"""
+    Metal.@allocated ex
+
+Evaluate `ex`, discarding its value, and return the number of bytes of GPU memory that
+Metal.jl allocated during the evaluation.
+"""
+macro allocated(ex)
+    quote
+        let
+            local f
+            function f()
+                b0 = alloc_stats.alloc_bytes[]
+                $(esc(ex))
+                alloc_stats.alloc_bytes[] - b0
+            end
+            f()
+        end
+    end
+end
+
+"""
+    Metal.@time ex
+
+Evaluate `ex`, and print the time it took and the CPU and GPU memory it allocated, like
+`Base.@time`. The GPU is synchronized right before and after evaluating `ex`, so the time
+includes the GPU work of `ex` and excludes earlier work.
+"""
+macro time(ex)
+    quote
+        local val, cpu_time,
+            cpu_alloc_size, cpu_gc_time, cpu_mem_stats,
+            gpu_alloc_size, gpu_mem_time, gpu_mem_stats = @timed $(esc(ex))
+
+        local cpu_alloc_count = Base.gc_alloc_count(cpu_mem_stats)
+        local gpu_alloc_count = gpu_mem_stats.alloc_count
+
+        Printf.@printf("%10.6f seconds", cpu_time)
+        for (typ, gctime, memtime, bytes, allocs) in
+            (("CPU", cpu_gc_time, 0, cpu_alloc_size, cpu_alloc_count),
+             ("GPU", 0, gpu_mem_time, gpu_alloc_size, gpu_alloc_count))
+            if bytes != 0 || allocs != 0
+                allocs, ma = Base.prettyprint_getunits(allocs, length(Base._cnt_units), Int64(1000))
+                if ma == 1
+                    Printf.@printf(" (%d%s %s allocation%s: ", allocs, Base._cnt_units[ma], typ, allocs==1 ? "" : "s")
+                else
+                    Printf.@printf(" (%.2f%s %s allocations: ", allocs, Base._cnt_units[ma], typ)
+                end
+                print(Base.format_bytes(bytes))
+                if gctime > 0
+                    Printf.@printf(", %.2f%% gc time", 100*gctime/cpu_time)
+                end
+                if memtime > 0
+                    Printf.@printf(", %.2f%% memmgmt time", 100*memtime/cpu_time)
+                end
+                print(")")
+            else
+                if gctime > 0
+                    Printf.@printf(", %.2f%% %s gc time", 100*gctime/cpu_time, typ)
+                end
+                if memtime > 0
+                    Printf.@printf(", %.2f%% %s memmgmt time", 100*memtime/cpu_time, typ)
+                end
+            end
+        end
+        println()
+
+        val
+    end
+end
+
+macro timed(ex)
+    quote
+        while false; end # compiler heuristic: compile this block (alter this if the heuristic changes)
+
+        # coarse synchronization to exclude effects from previously-executed code
+        synchronize()
+
+        local gpu_mem_stats0 = copy(alloc_stats)
+        local cpu_mem_stats0 = Base.gc_num()
+        local cpu_time0 = time_ns()
+
+        # fine-grained synchronization of the code under analysis
+        local val = @sync $(esc(ex))
+
+        local cpu_time1 = time_ns()
+        local cpu_mem_stats1 = Base.gc_num()
+        local gpu_mem_stats1 = copy(alloc_stats)
+
+        local cpu_time = (cpu_time1 - cpu_time0) / 1e9
+
+        local cpu_mem_stats = Base.GC_Diff(cpu_mem_stats1, cpu_mem_stats0)
+        local gpu_mem_stats = gpu_mem_stats1 - gpu_mem_stats0
+
+        (value=val, time=cpu_time,
+         cpu_bytes=cpu_mem_stats.allocd, cpu_gctime=cpu_mem_stats.total_time / 1e9, cpu_gcstats=cpu_mem_stats,
+         gpu_bytes=gpu_mem_stats.alloc_bytes, gpu_memtime=gpu_mem_stats.total_time, gpu_memstats=gpu_mem_stats)
+    end
+end

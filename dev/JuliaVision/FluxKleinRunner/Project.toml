@@ -1,0 +1,21 @@
+name = "FluxKleinRunner"
+uuid = "df7e011a-8407-4227-af4d-11f9843eaa40"
+version = "0.1.0"
+
+[deps]
+DNNKernels = "b7e4a0c2-3f51-4d8e-9a1b-6c2d5e8f7a30"
+JSON3 = "0f8b85d8-7281-11e9-16c2-39a750bddbf1"
+KernelAbstractions = "63c18a36-062a-441e-b654-da1e3ab1ce7c"
+Mantle = "8f4c1f2e-6a3d-4b71-9c05-2e7d8a1b6f34"
+QwenImageRunner = "c9f7083c-8461-4622-afdd-95dfb5dadffd"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+# QwenImageRunner is here for its Qwen byte-level BPE tokenizer only (the FLUX
+# checkpoints ship the same tokenizer files); the tokenizer wants a package of
+# its own, then this dependency goes.
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

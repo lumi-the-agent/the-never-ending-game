@@ -1,0 +1,102 @@
+# Graphics pipeline image/heatmap rendering for overlay.
+# Renders a textured quad using hardware texture sampling.
+# Vertex shader expands screen-space corners to a quad with UV interpolation.
+# Fragment shader samples the RGBA texture at interpolated UV.
+
+function get_image_pipeline!(screen)
+    get!(screen.gfx_pipelines, :image) do
+        GraphicsPipeline(; vertex = VertexShader(image_overlay_vertex;
+                                                outputs = (uv = Vec2f,)),
+                           fragment = FragmentShader(image_overlay_fragment; textures = 1),
+                           blend = Premultiplied(),
+                           topology = TriangleList(),
+                           cull = NoCull(),
+                           depth = DepthLessEq())
+    end
+end
+
+# ── Vertex Shader ──
+# 6 vertices (2 triangles) covering the screen-space quad.
+# BDA args: screen_bl (Vec2f), screen_tr (Vec2f), res (Vec2f), depth (Float32), fxaa (Int32)
+# Outputs: UV coordinates for fragment texture sampling.
+
+function image_overlay_vertex(
+    screen_bl::Vec2f,
+    screen_tr::Vec2f,
+    res::Vec2f,
+    depth::Float32,
+    fxaa::Int32,
+)
+    vid = vertex_index()
+
+    # Quad corners in screen space
+    # T1: BL, BR, TL  T2: BR, TR, TL
+    pos = if vid == Int32(1)
+        screen_bl                                    # BL
+    elseif vid == Int32(2)
+        Vec2f(screen_tr[1], screen_bl[2])            # BR
+    elseif vid == Int32(3) || vid == Int32(6)
+        Vec2f(screen_bl[1], screen_tr[2])            # TL
+    elseif vid == Int32(4)
+        Vec2f(screen_tr[1], screen_bl[2])            # BR
+    else  # vid == 5
+        screen_tr                                    # TR
+    end
+
+    # `v` FOLLOWS THE DATA, not the screen: the texture is uploaded in Makie's
+    # `img[i, j]` order, so v = 0 is `j = 1`, which is the image's LOW y — the
+    # row the caller placed at `y_min`. The visually bottom corner therefore
+    # takes v = 0.
+    #
+    # This said v = 1 there, which was right only while `project_to_screen`
+    # produced y-UP pixels: that put `y_min` at the top of the quad, and the two
+    # flips cancelled into an image that looked upright in the wrong PLACE.
+    # Fixing the projection alone exposed the second one.
+    uv = if vid == Int32(1)
+        Vec2f(0f0, 0f0)   # BL → the image's (x_min, y_min) corner
+    elseif vid == Int32(2) || vid == Int32(4)
+        Vec2f(1f0, 0f0)   # BR
+    elseif vid == Int32(3) || vid == Int32(6)
+        Vec2f(0f0, 1f0)   # TL
+    else  # vid == 5
+        Vec2f(1f0, 1f0)   # TR
+    end
+
+    ndc = screen_to_ndc(pos, res[1], res[2])
+    # The plane's own depth, as every other overlay draw has it. A constant 0
+    # here is the NEAREST depth: an image then hid every line, marker and
+    # label background drawn over it in its axis, whatever their z.
+    return (position = Vec4f(ndc[1], ndc[2], depth, 1f0), uv = uv)
+end
+
+# ── Fragment Shader ──
+# Samples the RGBA texture at interpolated UV, premultiplies alpha.
+
+function image_overlay_fragment(
+    inputs,
+    screen_bl::Vec2f,
+    screen_tr::Vec2f,
+    res::Vec2f,
+    depth::Float32,
+    fxaa::Int32,
+)
+    # `sample_texture_2d` per component, which is the portable verb every backend
+    # answers. `GfxTexture2D(0)[uv]` was Lava's spelling and stopped existing when
+    # the shader vocabulary moved to KernelInterface — the name resolved to nothing,
+    # and an image or a heatmap failed to compile its fragment stage while every
+    # other overlay in the same figure drew.
+    u = inputs.uv[1]
+    v = inputs.uv[2]
+    r = sample_texture_2d(UInt32(0), u, v, UInt32(0))
+    g = sample_texture_2d(UInt32(0), u, v, UInt32(1))
+    b = sample_texture_2d(UInt32(0), u, v, UInt32(2))
+    a = sample_texture_2d(UInt32(0), u, v, UInt32(3))
+
+    # Premultiply alpha for Porter-Duff compositing
+    # A transparent fragment must not claim DEPTH: with writes on, an
+    # alpha-zero corner of a glyph or marker quad occludes whatever should
+    # have shown through it. Discarding is what lets a BLENDED pass use a
+    # depth buffer, which is how a scene's z translation gets honoured.
+    a < 1f-3 && discard()
+    return raster_output(Vec4f(r * a, g * a, b * a, a), fxaa)
+end

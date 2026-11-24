@@ -1,0 +1,20 @@
+{"session": 19,
+ "summary": "Dashboard, Play/Stop and camera work and asset frames run fine. The player panels still show developer talk and the wish box placeholder is still clipped; the session's dashboard fixes were not live yet (need a game restart).",
+ "failures": [
+  {"what": "Player-facing panels still show developer/test talk",
+   "steps": "Look at the right-hand panel in the live dashboard",
+   "expected": "Only in-world messages and look/world/feature todos",
+   "actual": "'Messages to you' says 'ignoring UI-test wishes... token budget is nearly used up'; Sprout's lines say 'I wrote the verdict... file parses as valid JSON'; 'Next on the list' lists RayMakie raster, texture exposure and other dev todos",
+   "screenshot": "world/tests/shots/explore-s19.png"},
+  {"what": "Wish box placeholder still clipped: 'Tell Sprout what y'",
+   "steps": "Look at the bottom bar of the live dashboard",
+   "expected": "Short placeholder that fits (the journal says it was shortened to 'Wish…')",
+   "actual": "The live game still has 'Tell Sprout what you wish for…', cut off mid-word. The dashboard.jl change was not applied; the game needs a restart.",
+   "screenshot": "world/tests/shots/explore-s19.png"},
+  {"what": "The regression suite could not run: the game went away during the tests",
+   "steps": "Host run after session 19",
+   "expected": "Suite completes",
+   "actual": "Game was restarting (precompiling engine edits); live_tests reported a run already in progress at first",
+   "screenshot": "world/tests/shots/explore-s19.png"}
+ ],
+ "tests_added": ["Wish box placeholder is short enough to show in full", "Player panels show no developer talk"]}

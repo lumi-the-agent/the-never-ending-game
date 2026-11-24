@@ -1,0 +1,1070 @@
+module RayMakie
+
+using Makie, Hikari, Colors, LinearAlgebra, GeometryBasics, Raycore, KernelAbstractions
+using GeometryBasics: SVector
+using Makie: Observable, on, colorbuffer, to_value
+using Makie: Quaternionf
+using GeometryBasics: VecTypes
+# `StaticVector` tells one value apart from a buffer of them in a shader; see `gpu_read`.
+using StaticArrays: StaticVector
+using Colors: N0f8, Colorant
+using ImageCore: RGBA, RGB, clamp01nan
+import Makie.Observables
+# Two packages, split by what each name IS.
+#
+# `Lava` is the SPIR-V compiler: the shader-stage intrinsics a shader body calls,
+# the enums a pipeline is DESCRIBED with, and the device-side array. None of it
+# needs a device to exist.
+#
+# `Mantle` is the runtime: the pipeline that gets built, the framebuffer it draws
+# into, the textures, the queue, the host array. All of it needs one.
+#
+# No `import Lava` and no shader names taken from it. Lava depends on Vulkan, so
+# importing it here is what stops RayMakie loading on a machine with no driver,
+# and the names it would supply are Mantle's anyway: `vertex_index`,
+# `frag_coord_*` and the topologies are declared there, and the
+# location-based varying API (`set_position!`, `gfx_output`/`gfx_input`,
+# `geom_input`) is replaced by a declarative `varyings = (…)` with a vertex
+# stage returning `(position = …, …)`.
+import Mantle
+# The runtime half, and all of it Mantle's portable spelling. A driver-named
+# concrete (`VulkanFramebuffer`, `VulkanTexture2D`, `VulkanSampler`) exists only
+# where that backend does, so naming one here makes RayMakie a package that
+# cannot load on a Mac. The abstract types are Mantle's; the backend supplies
+# the concretes.
+# No `allocate_batch_queue!` / `release_batch_queue!`: a frame is a `Mantle.Plan`
+# and `run!` owns the submission, so this package names no queue at all.
+import Mantle: DeviceArray, GraphicsPipeline, Framebuffer, OffscreenTarget, WindowTarget,
+               Texture2D, Sampler, SampledTexture, bind_textures,
+               upload_texture_data!, mipmapped,
+               supports_graphics, waitidle
+# Fixed-function state: what a pipeline IS, not what compiles it.
+import Mantle: Premultiplied, Opaque, PerAttachment, NoWrite, TriangleList, NoCull, DepthOff, DepthLess, DepthLessEq, DepthLessEqReadOnly
+# The stages a pipeline is made of, and the device-side names a shader body calls.
+# Phase 2.8 ported the shaders instead of the names: each stage declares its own
+# `outputs`, a field that belongs to the primitive is `Flat{T}` there, and a
+# geometry body emits through `emit!`/`endprimitive!` so the same source can reach
+# a native geometry stage or a mesh stage.
+import Mantle: VertexShader, FragmentShader, GeometryShader, Flat,
+               emit!, endprimitive!,
+               vertex_index, VertexIndex, instance_index, frag_coord_x, frag_coord_y,
+               clip_y, dFdx, dFdy, sample_texture_2d, discard,
+               LineStripAdjacency, LineListAdjacency, TriangleStrip, PointList, LineList
+
+"""
+The Vulkan backend module, for the four things the OVERLAY path still needs from
+it, or `nothing` where that backend is not loaded.
+
+`ensure_compiled_with_shader!`, `pack_gfx_args` and `pin!` are backend internals,
+not Mantle API, and the overlay compositor calls all three.
+
+`alloc_index_buffer` was a fourth, at five call sites. It is `Mantle.indexbuffer`
+now: a portable verb, because the difference it covers is real — Vulkan requires
+the index-buffer usage bit at allocation and Metal does not — and a real
+difference is what a backend hook is for.
+They were written `Mantle.ensure_compiled_with_shader!` and so on, which worked
+while the runtime lived in Mantle and became `UndefVarError` the moment it moved
+into `MantleVulkanExt`.
+
+Reaching the extension by name rather than repairing the spelling, because the
+spelling was not the problem: this is the one path in RayMakie that is not
+backend-agnostic, and it should SAY so until the graphics API grows the verbs it
+needs. `use_bindings!(bq, …)` next door is the same gap from the other side — a
+Vulkan-shaped signature left in the portable API.
+
+There is no `vulkanbackend()` fetching a backend module by name: `Mantle`
+compiles its backend in at parse time, so the call sites in `screen.jl` name
+`Mantle` directly.
+"""
+# No `import Mantle: VK`. The Vulkan handle types — viewport, scissor, pixel
+# format — are the runtime's, not a renderer's, and a module-level
+# `const … = VK.FORMAT_…` is what stops RayMakie loading without a driver. Formats are now written as Julia element types (`BGRA{N0f8}`), which
+# is what `Mantle.vkformat` lowers, and viewport/scissor go through
+# `Mantle.set_viewport!`. What genuinely needs a graphics pipeline is gated on
+# `Mantle.supports_graphics`.
+using Adapt
+using GPUArraysCore: AbstractGPUArray
+using Atomix
+using Makie.ComputePipeline: register_computation!, add_input!
+
+# GPU-array overloads for Makie's conversion + bounds path
+include("gpu_arrays.jl")
+
+# Overlay rasterization (included directly, no submodule)
+include("overlay/Overlay.jl")
+
+
+# =============================================================================
+# RayMakieState
+# =============================================================================
+
+"""
+The Makie lights a traced scene was given, and the keys their Hikari lights are
+stored under — one key per Makie light, or two for a `SunSkyLight` (its sky and
+its sun) — so `sync_lights!` can replace them in place when they change.
+"""
+mutable struct TracedLights
+    lights::Vector{Makie.AbstractLight}
+    keys::Vector{Vector{Hikari.SetKey}}
+    ambient::RGBf
+    ambient_key::Union{Nothing, Hikari.SetKey}
+end
+
+mutable struct RayMakieState
+    makie_scene::Makie.Scene
+    # `nothing` for an overlay-only scene, which has no film at all. It used to
+    # get one the size of the whole drawable — and then every path that reads a
+    # film skipped it, because a 2D scene's plots are drawn by the overlay pass
+    # and its background is painted by `postprocess_and_composite!`'s opening
+    # `fill!`. Allocated, never written, never read: ~197 MB each, and the video
+    # editor's UI is 105 scenes, so opening it reserved 20.7 GB and the next
+    # arena got `0 B available`.
+    film::Union{Hikari.Film,Nothing}
+    camera::Union{Observable, Nothing}
+    hikari_scene::Union{Hikari.AbstractScene, Nothing}
+    needs_film_clear::Bool
+    # This scene's own path tracer, built from the screen's settings; `nothing`
+    # for an overlay-only scene. Its own and nobody else's: see `ScreenConfig`.
+    integrator::Union{Nothing, Hikari.VolPath}
+    # True for 2D scenes: only overlay rendering, no ray tracing
+    overlay_only::Bool
+    # Lifecycle: true after close(screen) — prevents operations on freed GPU resources
+    closed::Bool
+    # Trace-path rebuild accounting. A rebuild whose only dirty geometry input is
+    # `positions_transformed_f32c` and/or `normals` is one a BLAS refit could
+    # have avoided; anything else (faces, mesh, uv) changed topology or layout
+    # and needs a new BVH regardless. Only that distinction is counted, because
+    # it is the only one that decides whether refit is worth having — a plain
+    # "updates vs rebuilds" ratio reads best on a scene where nothing changed at
+    # all and the compute node never re-ran.
+    refit_eligible_rebuilds::Int
+    topology_rebuilds::Int
+    # The scene's lights as last handed to the tracer; `nothing` for an
+    # overlay-only scene. See `sync_lights!`.
+    lights::Union{Nothing, TracedLights}
+    # The guide grid the film's depth, normal and albedo were last filled with,
+    # 0 once the film is cleared. See `refresh_guides!`.
+    guide_grid::Int
+end
+
+# Helper to get HWTLAS from state
+get_tlas(state::RayMakieState) = state.hikari_scene.accel
+
+# =============================================================================
+# Legacy Overlay Render Objects (kept for backward compat during transition)
+# All new draw_atomic methods produce RenderObject instead.
+# =============================================================================
+
+abstract type OverlayRenderObject end
+
+# =============================================================================
+# Plot conversion helpers (shared across plot types)
+# =============================================================================
+
+include("plots/common.jl")
+
+# =============================================================================
+# Raytrace vs overlay dispatch
+# =============================================================================
+
+"""
+    should_raytrace(camera_controls) -> Bool
+
+Determine from the camera type whether a scene should be raytraced.
+3D cameras → true, 2D/pixel cameras → false.
+"""
+should_raytrace(::Makie.AbstractCamera3D) = true
+should_raytrace(::Makie.Camera3D) = true
+should_raytrace(::Makie.Axis3Camera) = true
+should_raytrace(::Makie.OldCamera3D) = true
+should_raytrace(::Any) = false  # Camera2D, PixelCamera, RelativeCamera, EmptyCamera
+
+"""
+    should_raytrace(plot::Makie.Plot) -> Bool
+
+Determine from the plot type whether it should be raytraced.
+3D geometry → true, 2D overlays → false.
+"""
+should_raytrace(::Makie.Plot{Makie.mesh}) = true
+should_raytrace(::Makie.Plot{Makie.meshscatter}) = true
+should_raytrace(::Makie.Plot{Makie.surface}) = true
+should_raytrace(::Makie.Plot{Makie.volume}) = true
+should_raytrace(::Makie.Plot) = false  # scatter, lines, text, image, heatmap → overlay
+
+"""
+    should_raytrace(scene, plot) -> Bool
+
+A plot should be raytraced only if BOTH its scene has a 3D camera AND the
+plot type is a raytraceable primitive.
+"""
+should_raytrace(scene::Makie.Scene, plot::Makie.Plot) =
+    should_raytrace(scene.camera_controls) && should_raytrace(plot)
+
+# =============================================================================
+# Scene initialization and polling
+# =============================================================================
+
+function has_atomic_plots(scene::Makie.Scene)
+    found = Ref(false)
+    Makie.for_each_atomic_plot(scene) do _
+        found[] = true
+    end
+    return found[]
+end
+
+# Check if target is the same scene or a descendant of parent
+function scene_contains(parent::Makie.Scene, target::Makie.Scene)
+    parent === target && return true
+    for child in parent.children
+        scene_contains(child, target) && return true
+    end
+    return false
+end
+
+"""
+    build_materials_tuple(materials_list::Vector) -> Tuple
+
+Group materials by type into a tuple of vectors for MaterialScene.
+"""
+function build_materials_tuple(materials_list::Vector)
+    if isempty(materials_list)
+        return (Hikari.Diffuse[],)
+    end
+
+    type_to_materials = Dict{DataType, Vector}()
+    type_order = DataType[]
+
+    for mat in materials_list
+        T = typeof(mat)
+        if !haskey(type_to_materials, T)
+            type_to_materials[T] = T[]
+            push!(type_order, T)
+        end
+        push!(type_to_materials[T], mat)
+    end
+
+    return Tuple([type_to_materials[T] for T in type_order])
+end
+
+# =============================================================================
+# Light conversion
+# =============================================================================
+
+# Hikari's transport is spectral, so every colour goes through the RGB
+# constructors, which normalise photometrically the way pbrt-v4 does.
+function to_trace_light(light::Makie.AmbientLight)
+    color = light.color isa Observable ? light.color[] : light.color
+    return Hikari.AmbientLight(RGB{Float32}(RGBf(color)))
+end
+
+function to_trace_light(light::Makie.PointLight)
+    c = RGBf(light.color)
+    return Hikari.PointLight(RGB{Float32}(c.r, c.g, c.b), Vec3f(light.position))
+end
+
+function to_trace_light(light::Makie.SunSkyLight)
+    ground_albedo = Hikari.RGBSpectrum(light.ground_albedo.r, light.ground_albedo.g, light.ground_albedo.b)
+    # Pre-bake Hosek-Wilkie sky to EnvironmentLight + separate SunLight (pbrt-v4 approach).
+    # Returns a tuple — caller handles pushing both lights.
+    return Hikari.sunsky_to_envlight(
+        direction=Vec3f(light.direction),
+        intensity=Float32(light.intensity),
+        turbidity=light.turbidity,
+        ground_albedo=ground_albedo,
+        ground_enabled=light.ground_enabled,
+    )
+end
+
+function to_trace_light(light::Makie.DirectionalLight)
+    c = RGBf(light.color)
+    return Hikari.DirectionalLight(RGB{Float32}(c.r, c.g, c.b), Vec3f(light.direction))
+end
+
+function to_trace_light(light::Makie.SpotLight)
+    c = RGBf(light.color)
+    pos = Point3f(light.position)
+    target = pos + normalize(Vec3f(light.direction))
+    # Makie SpotLight angles: [inner_angle, outer_angle] in radians
+    falloff_start = rad2deg(light.angles[1])
+    total_width = rad2deg(light.angles[2])
+    return Hikari.SpotLight(RGB{Float32}(c.r, c.g, c.b), pos, target,
+                            Float32(total_width), Float32(falloff_start))
+end
+
+function to_trace_light(light::Makie.EnvironmentLight)
+    data = map(c -> Hikari.RGBSpectrum(c.r, c.g, c.b), light.image)
+    rotation = Hikari.rotation_matrix(light.rotation_angle, light.rotation_axis)
+    env_map = Hikari.EnvironmentMap(data, rotation)
+    photometric_scale = light.intensity / Hikari.D65_PHOTOMETRIC
+    return Hikari.EnvironmentLight(env_map, Hikari.RGBSpectrum(photometric_scale))
+end
+
+to_trace_light(light) = nothing
+
+# =============================================================================
+# Camera conversion
+# =============================================================================
+
+function to_trace_camera(scene::Makie.Scene, film; screen_window=nothing)
+    return to_trace_camera(scene.camera_controls, scene, film; screen_window)
+end
+
+function to_trace_camera(cc::Makie.Camera3D, scene::Makie.Scene, film; screen_window=nothing)
+    aspect = film.resolution[1] / film.resolution[2]
+    sw = isnothing(screen_window) ? Hikari.Bounds2(Point2f(-aspect, -1.0f0), Point2f(aspect, 1.0f0)) : screen_window
+    return lift(scene, cc.eyeposition, cc.lookat, cc.upvector, cc.fov, cc.lens_radius, cc.focal_distance) do eyeposition, lookat, upvector, fov, lens_radius, focal_distance
+        view = Hikari.look_at(
+            Point3f(eyeposition), Point3f(lookat), Vec3f(upvector),
+        )
+        return Hikari.PerspectiveCamera(
+            view, sw,
+            0.0f0, 1.0f0, Float32(lens_radius), Float32(focal_distance), Float32(fov),
+            film
+        )
+    end
+end
+
+# Fallback: use scene.camera view/projection matrices (works with Axis3, etc.)
+# The model matrix is NOT folded into the view — it is already baked into
+# meshscatter/mesh instance transforms via plot[:model]. Folding it here
+# would double-apply the transform, making geometry appear too small.
+function to_trace_camera(cc, scene::Makie.Scene, film; screen_window=nothing)
+    cam = scene.camera
+    resolution = Point2f(film.resolution)
+    sw = screen_window  # may be nothing (full viewport) or Bounds2 (cropped)
+    return lift(scene, cam.view, cam.projection) do view, proj
+        if isnothing(sw)
+            return Hikari.MatrixCamera(Mat4f(view), Mat4f(proj), resolution)
+        else
+            return Hikari.MatrixCamera(Mat4f(view), Mat4f(proj), resolution, sw)
+        end
+    end
+end
+
+# =============================================================================
+# Overlay rendering
+# =============================================================================
+
+include("overlay_rendering.jl")
+
+# =============================================================================
+# Screen (must come after overlay_rendering.jl, before plot draw_atomic)
+# =============================================================================
+
+include("screen.jl")
+include("picking.jl")
+include("raster_view.jl")
+include("renderbuffers.jl")
+
+# =============================================================================
+# draw_atomic: per-plot-type conversion via compute graph
+# (must come after screen.jl since they reference Screen type)
+# =============================================================================
+
+# Fallback: no-op for unsupported plot types
+function draw_atomic(screen, scene, plot::Makie.AbstractPlot)
+    return nothing
+end
+
+include("plots/mesh.jl")
+include("plots/raster_material.jl")
+include("plots/image.jl")
+include("plots/meshscatter.jl")
+include("plots/surface.jl")
+include("plots/volume.jl")
+include("plots/lines.jl")
+include("plots/scatter_overlay.jl")
+include("plots/text_overlay.jl")
+
+# =============================================================================
+# init_scene! — create Hikari scene from Makie scene, call draw_atomic per plot
+# =============================================================================
+
+trace_lights(l::Tuple) = l
+trace_lights(l::Hikari.Light) = (l,)
+trace_lights(::Nothing) = ()
+
+"""
+    retrace(set, keys, old, light) -> trace lights
+
+What `light` is traced as, now that it replaces `old`, whose trace lights are
+stored in `set` under `keys`.
+"""
+retrace(set, keys, old, light) = trace_lights(to_trace_light(light))
+
+# A sun and sky that only got brighter or dimmer: the sky's map does not depend
+# on the intensity, which is the map's scale. It was baked again (512² texels,
+# 13 wavelengths each) for every frame of a dimming sun; now the stored map is
+# kept, its texture slot with it, and the scale and the sun are new.
+function retrace(set, keys, old::Makie.SunSkyLight, light::Makie.SunSkyLight)
+    (old.direction == light.direction && old.turbidity == light.turbidity &&
+     old.ground_albedo == light.ground_albedo && old.ground_enabled == light.ground_enabled) ||
+        return trace_lights(to_trace_light(light))
+    sky = set[keys[1]]
+    return (Hikari.EnvironmentLight(sky.env_map, Hikari.RGBSpectrum(light.intensity / Hikari.D65_PHOTOMETRIC)),
+        Hikari.SunLight(
+            Hikari.sunsky_sun_rgb(Vec3f(light.direction); light.intensity, light.turbidity),
+            -normalize(Vec3f(light.direction))
+        ),
+    )
+end
+
+# Asked on every sample (`sync_lights!`), so it reads the node's own typed `Ref`
+# rather than `node[]`: `resolve!` returns `Any`, which boxes the colour — 12 B
+# per sample, and a dynamic `RGBf(::Any)` on top of it was another 32. A node
+# that is dirty has changed, and resolving it then is the point. The `::RGBf` on
+# the `RGBf(::Any)` branches is what keeps the RETURN type `RGBf`: inference does
+# not assume a constructor called on `Any` returns its type, and an `Any` return
+# boxed the colour on the fast branch too.
+function scene_ambient(rscene)
+    haskey(rscene.compute, :ambient_color) || return RGBf(0, 0, 0)
+    node = rscene.compute[:ambient_color]
+    Makie.ComputePipeline.isdirty(node) && return RGBf(node[])::RGBf
+    ref = node.value
+    return ref isa Base.RefValue{RGBf} ? ref[] : RGBf(node[])::RGBf
+end
+
+"""
+Whether the scene's ambient colour is no longer the traced one, asked every
+sample of a still scene and so without reading the colour out: a node's value
+read untyped is boxed, and `ambient_differs` compares it behind a barrier that
+returns a `Bool`.
+"""
+function ambient_changed(rscene::Makie.Scene, tl::TracedLights)
+    haskey(rscene.compute, :ambient_color) || return tl.ambient != RGBf(0, 0, 0)
+    node = rscene.compute[:ambient_color]
+    # The edge, not the node: resolving a node also returns its value, boxed.
+    Makie.ComputePipeline.hasparent(node) && Makie.ComputePipeline.resolve!(node.parent)
+    return ambient_differs(node.value, tl)
+end
+ambient_differs(value::Base.RefValue{RGBf}, tl::TracedLights) = value[] != tl.ambient
+
+"Whether the tracer lights the scene with a sky (a `SunSkyLight` or an `EnvironmentLight`)."
+has_sky(hikari_scene) = any(T -> T <: Hikari.EnvironmentLight, hikari_scene.lights.data_order)
+
+function init_lights!(hikari_scene, rscene)
+    makie_lights = copy(Makie.get_lights(rscene))
+    keys = [Hikari.SetKey[push!(hikari_scene.lights, l) for l in trace_lights(to_trace_light(light))]
+            for light in makie_lights]
+
+    # Add ambient light if present, but skip if we already have SunSkyLight or EnvironmentLight
+    ambient = scene_ambient(rscene)
+    ambient_key = nothing
+    if !has_sky(hikari_scene) && ambient != RGBf(0, 0, 0)
+        ambient_key = push!(hikari_scene.lights, Hikari.AmbientLight(RGB{Float32}(ambient)))
+    end
+
+    # Note: area lights (emissive meshes) are added later during draw_atomic,
+    # so the light list may be empty here. That's OK.
+    return TracedLights(makie_lights, keys, ambient, ambient_key)
+end
+
+"""
+    sync_lights!(state)
+
+Hand the tracer the lights the scene has now. A light that moved or dimmed
+(`set_light!`) is replaced in place and the film restarts; the tracer used to
+keep the lights it was built with, so a light following the camera stayed where
+it started and a dimmed sun never dimmed.
+
+The Hikari light set cannot remove an entry, so a scene whose light COUNT or a
+light's KIND changed after its first frame is refused rather than drawn with
+lights it no longer has.
+"""
+sync_lights!(state::RayMakieState) = sync_lights!(state, Makie.get_lights(state.makie_scene))
+
+# A function barrier: `get_lights` reads the compute graph and infers as `Any`, and
+# every `length`, `eachindex` and `getindex` below was a dynamic call with its
+# result boxed, every sample. Dispatching once on what it returned types the loop.
+function sync_lights!(state::RayMakieState, current::AbstractVector)
+    tl = state.lights
+    length(current) == length(tl.lights) || error(
+        "RayMakie: this scene had $(length(tl.lights)) lights when it was first traced and has " *
+        "$(length(current)) now. A traced scene can move and change its lights (`set_light!`), " *
+        "not add or remove them.")
+    changed = false
+    # By index, not `enumerate`: the lights are a `Vector{AbstractLight}`, and an
+    # `(i, light)` tuple of a concrete light type is built — type and all — on the
+    # heap for every light of every sample.
+    for i in eachindex(current)
+        light = current[i]
+        light === tl.lights[i] && continue
+        new = retrace(state.hikari_scene.lights, tl.keys[i], tl.lights[i], light)
+        length(new) == length(tl.keys[i]) || error(
+            "RayMakie: light $i changed from a $(typeof(tl.lights[i])) to a $(typeof(light)) after the scene was first traced.")
+        for (key, l) in zip(tl.keys[i], new)
+            Hikari.update_light!(state.hikari_scene, key, l)
+        end
+        tl.lights[i] = light
+        changed = true
+    end
+    if ambient_changed(state.makie_scene, tl)
+        ambient = scene_ambient(state.makie_scene)
+        if tl.ambient_key !== nothing
+            Hikari.update_light!(state.hikari_scene, tl.ambient_key, Hikari.AmbientLight(RGB{Float32}(ambient)))
+            changed = true
+        elseif !has_sky(state.hikari_scene)
+            error("RayMakie: this scene was first traced without an ambient light, and one cannot be added afterwards.")
+        end
+        # under a sky the ambient light is not traced (see `init_lights!`), so it may change freely
+        tl.ambient = ambient
+    end
+    changed && (state.needs_film_clear = true)
+    return state
+end
+
+"""
+    scene_viewport_px(scene, ppu) -> Rect2f
+
+A scene's rectangle in DRAWABLE PIXELS.
+
+`Makie.viewport` is in scene UNITS, and a drawable is `px_per_unit` times bigger
+than the window is in units. Anything that SIZES a render target or INDEXES the
+output buffer needs the pixel rectangle; reading `Makie.viewport` straight gives
+the right answer only at `px_per_unit == 1`, which is every offscreen render and
+no Retina window.
+
+That is what `surface(rand(20, 20))` came out of: the ray-traced film of an
+`Axis3` sub-scene was sized from the viewport in units — 568x418 — and blitted
+1:1 into a 1200x900 drawable, so the traced image sat at a quarter of the area in
+the bottom-left corner while the axis decorations, which DID go through this
+conversion in `overlay_rendering.jl`, were drawn at full size around it.
+"""
+function scene_viewport_px(scene::Makie.Scene, ppu::Real)
+    vp = Makie.viewport(scene)[]
+    ppu == 1 && return Rect2f(vp)
+    s = Float32(ppu)
+    return Rect2f(Point2f(vp.origin) .* s, Point2f(vp.widths) .* s)
+end
+
+# Compute Film resolution and NDC screen_window for a sub-scene viewport
+# clipped to the root figure bounds. Axis3 may request oversized viewports
+# that extend beyond the figure — we only render the visible sub-region.
+#
+# Everything here is in PIXELS: `root_w`/`root_h` are the drawable's, and the
+# viewport is converted. They used to be mixed — a viewport in units clipped
+# against a root in pixels — which is only harmless while the two are the same.
+# The NDC window below is built from RATIOS, so it is unchanged by the scale.
+function compute_scene_resolution(rscene::Makie.Scene, root_w::Int, root_h::Int, ppu::Real)
+    vp = scene_viewport_px(rscene, ppu)
+    vp_w, vp_h = Makie.widths(vp)
+    vx, vy = vp.origin
+
+    vis_x0 = max(0f0, -vx)
+    vis_y0 = max(0f0, -vy)
+    vis_x1 = min(vp_w, Float32(root_w) - vx)
+    vis_y1 = min(vp_h, Float32(root_h) - vy)
+
+    visible_w = max(1f0, vis_x1 - vis_x0)
+    visible_h = max(1f0, vis_y1 - vis_y0)
+    resolution = Point2f(visible_w, visible_h)
+
+    # NDC screen window for the visible sub-region.
+    # Full viewport maps [0..vp_w] → NDC [-1..1].
+    ndc_x0 = -1f0 + 2f0 * vis_x0 / vp_w
+    ndc_y0 = -1f0 + 2f0 * vis_y0 / vp_h
+    ndc_x1 = -1f0 + 2f0 * vis_x1 / vp_w
+    ndc_y1 = -1f0 + 2f0 * vis_y1 / vp_h
+    screen_window = (vis_x0 == 0f0 && vis_y0 == 0f0 && vis_x1 == vp_w && vis_y1 == vp_h) ?
+        nothing :
+        Hikari.Bounds2(Point2f(ndc_x0, ndc_y0), Point2f(ndc_x1, ndc_y1))
+
+    return resolution, screen_window
+end
+
+function create_scene_state(rscene::Makie.Scene, screen, root_scene::Makie.Scene)
+    ka_backend = screen.config.device
+
+    # In PIXELS, like the film it sizes and the buffer it is composited into.
+    ppu = screen.px_per_unit
+    root_w, root_h = round(Int, size(root_scene)[1] * ppu), round(Int, size(root_scene)[2] * ppu)
+    if rscene === root_scene
+        # Scene IS the root — use full size, no viewport clipping.
+        # The viewport origin may be a Figure-level offset that doesn't apply here.
+        resolution = Point2f(Float32(root_w), Float32(root_h))
+        screen_window = nothing
+    else
+        resolution, screen_window = compute_scene_resolution(rscene, root_w, root_h, ppu)
+    end
+
+    film = Hikari.Film(
+        resolution;
+        filter=PIXEL_FILTER(),
+        crop_bounds=Hikari.Bounds2(Point2f(0.0f0), Point2f(1.0f0)),
+        diagonal=1.0f0, scale=1.0f0,
+    )
+
+    hikari_scene = Hikari.Scene(backend=ka_backend, hw_accel=screen.config.hw_accel)
+    lights = init_lights!(hikari_scene, rscene)
+
+    # Onto the backend, in memory the film owns
+    film = Hikari.Film(ka_backend, film)
+
+    # Create camera with screen_window for the visible sub-region
+    camera = to_trace_camera(rscene, film; screen_window)
+
+    # Clear film when Makie camera changes (rotation, zoom, pan)
+
+    state = RayMakieState(rscene, film, camera, hikari_scene, false,
+                          new_volpath(screen.config), false, false, 0, 0, lights, 0)
+    # Guard: only clear film when the projection matrix actually changes.
+    # Makie's Observable fires on every notify(), even when the value is identical.
+    # Without this guard, GLMakie re-renders (triggered by overlay image updates)
+    # fire spurious projectionview notifications that reset accumulation every frame.
+    last_pv = Ref(copy(rscene.camera.projectionview[]))
+    on(rscene, rscene.camera.projectionview) do pv
+        if pv != last_pv[]
+            last_pv[] = copy(pv)
+            state.needs_film_clear = true
+        end
+    end
+    return state
+end
+
+# Create a lightweight overlay-only state: no ray-tracing scene, no camera, and
+# NO FILM. All overlay scenes draw into the one framebuffer the overlay pass
+# owns, with viewport-remapped projection matrices — so a per-scene film is not
+# "the same buffer" in a second copy, it is a buffer nothing ever reads.
+function create_overlay_only_state(scene::Makie.Scene, screen)
+    state = RayMakieState(scene, nothing, nothing, nothing, false, nothing, true, false, 0, 0, nothing, 0)
+    return state
+end
+
+"""
+    shown(scene) -> Bool
+
+Whether `scene` is drawn at all: it and every scene it sits in `visible`, which
+is what `visible = false` on a scene means to every Makie backend. A state's
+film and its plots were drawn whatever its scene said, so a hidden `LScene`
+stayed on screen.
+"""
+shown(scene::Makie.Scene) = scene.visible[] && (isnothing(scene.parent) || shown(scene.parent))
+
+"""Whether a state has a picture of its own to composite: traced (not overlay-only) and shown."""
+composites(state) = !state.overlay_only && shown(state.makie_scene)
+
+"""
+    collect_overlay_scenes(scene, raster) -> Vector{Scene}
+
+Walk the scene tree and return all visible scenes that contain overlay-eligible
+plots; with `raster`, every plot is one.
+"""
+function collect_overlay_scenes(scene::Makie.Scene, raster::Bool)
+    result = Makie.Scene[]
+    collect_overlay_scenes!(result, scene, raster)
+    return result
+end
+
+function collect_overlay_scenes!(result, scene::Makie.Scene, raster::Bool)
+    scene.visible[] || return
+    if has_overlay_plots(scene, raster)
+        push!(result, scene)
+    end
+    for child in scene.children
+        collect_overlay_scenes!(result, child, raster)
+    end
+end
+
+"""
+    overlay_root_states(screen) -> Vector{RayMakieState}
+
+The scene states whose overlays are drawn: one per INDEPENDENT scene tree.
+
+`collect_overlay_robjs` walks a state's scene AND every scene under it, so a child
+scene that also has a state of its own would have its plots drawn TWICE — once from
+the root, and once from itself. The two draws do not even land in the same place:
+the viewport is measured as `root_h - origin_y`, and from a child state `root_h` is
+that child's own height, so the second copy sits off by the difference. In an `Axis`
+inside a `Figure` that was every line, sprite and glyph drawn again 55 pixels up.
+"""
+function overlay_root_states(screen)
+    states = screen.scene_states
+    return filter(states) do ss
+        # By SCENE and not by state: `scene_contains` counts a scene as containing
+        # itself, and two states over the same scene would otherwise each rule the
+        # other out and neither would be drawn.
+        !any(other -> other.makie_scene !== ss.makie_scene &&
+                      scene_contains(other.makie_scene, ss.makie_scene), states)
+    end
+end
+
+# `raster` is the screen's MODE. Deciding from the plot and camera types alone
+# said a 3D scene of traceable plots has nothing to rasterise, which is only true
+# while the screen traces: in RASTER mode an `Axis3`'s surface built its raster
+# object and was never drawn, because its scene was never walked. (An `LScene`
+# got away with it by holding its own axis lines.)
+function has_overlay_plots(scene::Makie.Scene, raster::Bool)
+    found = false
+    for p in scene.plots
+        Makie.for_each_atomic_plot(p) do ap
+            if raster || !should_raytrace(scene, ap)
+                found = true
+            end
+        end
+    end
+    return found
+end
+
+"""
+Collect ALL scenes in the tree that have atomic plots, regardless of camera type.
+"""
+function collect_all_scenes_with_plots(scene::Makie.Scene)
+    result = Makie.Scene[]
+    collect_all_with_plots!(result, scene)
+    return result
+end
+
+function collect_all_with_plots!(result, scene::Makie.Scene)
+    # Only collect scenes that directly own plots (not via children).
+    # A scene "directly owns" plots if scene.plots is non-empty.
+    has_own_plots = !isempty(scene.plots)
+    if has_own_plots
+        push!(result, scene)
+    end
+    # Always recurse into children — each child scene (Axis3, Axis, etc.)
+    # should be collected independently so it gets its own RayMakieState.
+    for child in scene.children
+        collect_all_with_plots!(result, child)
+    end
+end
+
+function init_scene!(screen, mscene::Makie.Scene)
+    ka_backend = screen.config.device
+
+    # Collect ALL scenes with plots — both 3D (raytraced) and 2D (overlay)
+    all_scenes = collect_all_scenes_with_plots(mscene)
+
+    empty!(screen.scene_states)
+
+    for rscene in all_scenes
+        state = new_scene_state(screen, rscene)
+        is_rt = !state.overlay_only
+        push!(screen.scene_states, state)
+        screen.state = state
+
+        # Call draw_atomic on the plots THIS scene owns — should_raytrace(scene,
+        # plot) then decides RT vs overlay.
+        #
+        # `rscene.plots`, not `for_each_atomic_plot(rscene)`: the latter recurses
+        # into `scene.children` as well, so a parent claimed its CHILDREN's
+        # plots. In a `Figure` the root scene comes first, is `EmptyCamera` and
+        # therefore overlay-only with `hikari_scene === nothing`, and it drew
+        # every `Axis3`'s meshes against itself — where `draw_atomic` reads
+        # `!should_raytrace(scene, plot) || isnothing(hikari_scene)` and takes
+        # the raster path. The compute node caches that decision, and by the time
+        # the axis's own state came up the plot already had a
+        # `:trace_renderobject` and was skipped. Net effect: NOTHING in a Figure
+        # was ever raytraced — an `Axis3` sphere came out as a flat disc of the
+        # raw plot colour, with an empty HWTLAS and an all-zero film.
+        # `collect_overlay_robjs` already walks scenes this way.
+        for plot in rscene.plots
+            Makie.for_each_atomic_plot(plot) do p
+                (haskey(p, :trace_renderobject) || haskey(p, :raster_renderobject)) ||
+                    draw_atomic(screen, rscene, p)
+            end
+        end
+
+        poll_all_plots(screen, rscene)
+
+        if is_rt
+            Hikari.sync!(state.hikari_scene)
+
+            # Tell the camera how big the scene is, so its clip planes enclose
+            # the geometry.
+            #
+            # Via `bounding_sphere`, NOT `near`/`far`. Under `Camera3D`'s default
+            # `clipping_mode = :adaptive` those two are FACTORS, not distances:
+            # `near = view_dist * near` and
+            # `far = max(radius(bounding_sphere) / tand(fov/2), view_dist) * far`.
+            # Writing absolute distances into them (`near = dist - 2r`,
+            # `far = dist + 2r`) multiplies them by the view distance a second
+            # time, so a camera 6.7 units out gets a near plane
+            # at 21.9 — past everything in the scene. The raytraced path never
+            # noticed, because `to_trace_camera(::Camera3D, …)` builds its
+            # `PerspectiveCamera` from eye/lookat/up/fov and ignores the
+            # projection matrix. The RASTER overlays use that matrix, and every
+            # `lines!`, `scatter!` and `text!` in a 3D scene was clipped away by
+            # it — including every part of an `Axis3`.
+            #
+            # `bounding_sphere` is what `:adaptive` already consults, and it only
+            # ever pushes `far` outwards, so a scene larger than its view
+            # distance stays visible and nothing gets clipped that was not
+            # clipped before.
+            #
+            # Note: do NOT call Makie.center!(rscene) here — it resets the
+            # camera position, overriding user-configured camera in create_scene.
+            if rscene.camera_controls isa Makie.Camera3D
+                cc = rscene.camera_controls
+                bounds = state.hikari_scene.bounds[]
+                if bounds[1].p_min[1] < bounds[1].p_max[1]
+                    sphere = bounds[2]
+                    cc.bounding_sphere[] = Sphere(Point3d(sphere.center), Float64(sphere.r))
+                    # bounding_sphere is not one of the observables Camera3D
+                    # listens on, so the matrices need rebuilding by hand. The
+                    # two-argument form only recomputes them; it does not move
+                    # the camera.
+                    Makie.update_cam!(rscene, cc)
+                end
+                state.needs_film_clear = true
+            end
+        end
+    end
+
+    # A figure with no plots yet has no states: it is its background, which
+    # `colorbuffer` fills, and plots added later get their scene's state from
+    # `insert!` (`scene_state!`). It used to throw "No renderable scenes found."
+
+    # Pre-allocate full-figure output buffer, from the pool the screen owns.
+    root_w, root_h = size(mscene)
+    screen.memory === nothing || Hikari.free!(screen.memory)
+    screen.memory = Hikari.DeviceMemory(ka_backend)
+    screen.output_buffer = Hikari.alloc!(screen.memory, RGBA{Float32}, (Int(root_h), Int(root_w)))
+
+    screen.state = isempty(screen.scene_states) ? nothing : first(screen.scene_states)
+    return screen.state
+end
+
+"""
+    new_scene_state(screen, rscene) -> RayMakieState
+
+The state `init_scene!` gives a scene with plots: traced for a 3D camera, overlay
+only otherwise.
+"""
+new_scene_state(screen, rscene::Makie.Scene) =
+    should_raytrace(rscene.camera_controls) ? create_scene_state(rscene, screen, screen.scene) :
+                                              create_overlay_only_state(rscene, screen)
+
+# =============================================================================
+# poll_all_plots — trigger compute graph resolution for all registered plots
+# =============================================================================
+
+const POLL_ERROR_LOGGED = Set{UInt64}()
+
+function poll_all_plots(screen, mscene)
+    Makie.for_each_atomic_plot(mscene) do p
+        pp = Makie.parent_scene(p)
+        pp.visible[] || return nothing
+        # BOTH slots: a plot that can go either way has one per renderer, and
+        # the one that is not in use resolves to `nothing` cheaply.
+        for slot in (:trace_renderobject, :raster_renderobject)
+            haskey(p, slot) || continue
+            # Resolve only what is dirty. Reading the node resolves it AND hands
+            # back its value, and the value is a render object whose material
+            # is a large isbits struct: through a `Computed` that read boxed
+            # it, one box per plot per sample, for a scene where nothing had
+            # changed — 7 KB a sample on the materials scene. `isdirty` is the
+            # same question without the value.
+            c = p[slot]
+            Makie.ComputePipeline.isdirty(c) || continue
+            try
+                c[]  # triggers resolution
+            catch e
+                oid = objectid(p)
+                if oid ∉ POLL_ERROR_LOGGED
+                    push!(POLL_ERROR_LOGGED, oid)
+                    @error "RayMakie: failed to resolve $slot for $(typeof(p))" exception=(e, catch_backtrace())
+                end
+                # A missing/stale render object is not a valid current frame.
+                # Let preview/export/farm callers report failure and retry.
+                rethrow()
+            end
+        end
+    end
+end
+
+# =============================================================================
+# delete_trace_robj! — remove a plot's render object from the HWTLAS
+# =============================================================================
+
+"""
+    setrasterize!(screen, on::Bool)
+
+Switch the screen between tracing and rasterising, and make every plot notice.
+
+The flag alone is not enough: `draw_atomic` decides the path ONCE and caches the
+answer in the plot's `trace_renderobject`, a compute node. So the mode is declared as one of
+that node's INPUTS (`:raster_path`), and setting it here is what invalidates the
+cached object — the pipeline then rebuilds it down the other path. Reading the
+screen inside the node instead would change the answer it WOULD give while
+every plot kept the object it had already built.
+"""
+function setrasterize!(screen, on::Bool)
+    screen.rasterize == on && return screen
+    screen.rasterize = on
+    # DROP both slots and let `draw_atomic` build them again.
+    #
+    # Marking the mode input dirty is not enough on its own: a compute node's
+    # output slot takes its type from the first value it holds, so the slot that
+    # held a Hikari handle cannot then hold `nothing`, and the node's new answer
+    # has nowhere to go. Deleting the attributes means the next `draw_atomic`
+    # creates fresh slots, which is also what `delete!`/`insert!` do for a plot
+    # that is genuinely replaced.
+    for ss in screen.scene_states
+        screen.state = ss
+        Makie.for_each_atomic_plot(ss.makie_scene) do p
+            haskey(p.attributes, :raster_path) || return nothing
+            drop_render_objects!(screen, p)
+            return nothing
+        end
+        ss.needs_film_clear = true
+    end
+    # Each state rebuilds the plots its OWN scene holds, as `init_scene!` builds
+    # them: walking `ss.makie_scene` recursively let the figure's root state, which
+    # comes first and traces nothing, claim an `Axis3`'s plots. Their trace node
+    # then held that state's `nothing` for a Hikari scene, and switching back to
+    # tracing left them rasterised.
+    for ss in screen.scene_states
+        screen.state = ss
+        for plot in ss.makie_scene.plots
+            Makie.for_each_atomic_plot(plot) do p
+                (haskey(p, :trace_renderobject) || haskey(p, :raster_renderobject)) ||
+                    draw_atomic(screen, ss.makie_scene, p)
+                return nothing
+            end
+        end
+    end
+    return screen
+end
+
+"""
+    drop_render_objects!(screen, p)
+
+Tear down EVERY render object `p` holds, so the next `draw_atomic` builds it
+from scratch.
+
+Both slots. A plot that can go either way registers `:trace_renderobject` AND
+`:raster_renderobject`, one of them holding `nothing`, and `init_scene!` and
+`insert!` skip a plot holding EITHER key. Dropping only the trace slot, as the
+`hw_accel` switch did after the raster path was added, left every mesh skipped
+by the rebuild: an empty scene, a blank film, and no error. `:raster_path` goes
+with them because it is the input both nodes read, and `draw_atomic` adds it
+back with the screen's current value.
+"""
+function drop_render_objects!(screen, p::Makie.AbstractPlot)
+    delete_trace_robj!(screen, p)
+    for key in (:raster_renderobject, :raster_path)
+        haskey(p.attributes, key) && delete!(p.attributes, key, force = true, recursive = true)
+    end
+    return nothing
+end
+
+function delete_trace_robj!(screen, plot::Makie.AbstractPlot)
+    haskey(plot.attributes, :trace_renderobject) || return
+
+    # If all scene states are closed (screen was close()'d), GPU resources are already freed.
+    # Do NOT resolve the Observable — it triggers ComputePipeline re-evaluation which would
+    # try to push! into freed GPU arrays. Just remove the attribute key and return.
+    all_closed = all(ss -> ss.closed, screen.scene_states)
+    if isempty(screen.scene_states) || all_closed
+        delete!(plot.attributes, :trace_renderobject, force=true, recursive=true)
+        return
+    end
+
+    # Deleting must never *create* the render object.  `computed[]` resolves the
+    # edge, and an edge that never resolved builds its TypedEdge on first
+    # resolve — whose constructor re-runs draw_atomic and push!es the mesh into
+    # a Hikari scene whose GPU arrays may already have been freed, tripping
+    # `resize!(::LavaArray): the backing DataRef was already freed`.  This bites
+    # even when the screen is still open (the guard above only covers the
+    # all-closed case), because `free(scene)` deletes plots one by one.
+    #
+    # If the edge never resolved there is no render object on the GPU, so there
+    # is nothing to delete; otherwise read the cached value rather than
+    # re-resolving, since what we must tear down is what actually exists.
+    computed = plot.attributes[:trace_renderobject]
+    if !Makie.ComputePipeline.is_resolved(computed)
+        delete!(plot.attributes, :trace_renderobject, force=true, recursive=true)
+        return
+    end
+    robj = computed[]
+    isnothing(robj) && return
+
+    # Find which scene state owns this plot
+    pscene = Makie.parent_scene(plot)
+    for ss in screen.scene_states
+        ss.closed && continue
+        ss.hikari_scene === nothing && continue
+        if scene_contains(ss.makie_scene, pscene)
+            delete_trace_handles!(ss.hikari_scene, robj)
+            ss.needs_film_clear = true
+            break
+        end
+    end
+
+    delete!(plot.attributes, :trace_renderobject, force=true, recursive=true)
+end
+
+# pbrt scene → Makie scene converter (for testing RayMakie against pbrt-v4 references)
+include("pbrt_to_makie.jl")
+
+# Standalone Vulkan viewer (GLFW + Lava swapchain, no GLMakie)
+include("vulkan_viewer.jl")
+
+# Export RayMakie-specific types
+export Screen, ScreenConfig, activate!, colorbuffer, vulkan_viewer, wait_viewer
+export setrasterize!, isprogressive
+export pbrt_to_makie, PBRTMakieResult
+
+# Re-export DenoiseConfig from Hikari for convenience
+const DenoiseConfig = Hikari.DenoiseConfig
+export DenoiseConfig
+
+# re-export Makie, including deprecated names
+for name in names(Makie, all=true)
+    if Base.isexported(Makie, name)
+        @eval using Makie: $(name)
+        @eval export $(name)
+    end
+end
+
+# ── PrecompileTools workload: bake the hw_accel render path's host inference ──
+# Cold startup of a ray-traced render has two costs: compiling its kernels and
+# shader stages (GPUCompiler → LLVM → SPIR-V), and Julia's own inference and
+# codegen of colorbuffer → VolPath → Lava launch. Rendering a small scene during
+# precompilation removes both for what it covers: PrecompileTools keeps the
+# inferred host code, and the SPIR-V is kept with each kernel's `CodeInstance`
+# (`Lava.compile_or_lookup`), so it goes into RayMakie's package image too.
+#
+# What this can and cannot bake: the RT stages and workqueue kernels are keyed on
+# the scene's whole material multi-type-set, so the material-set-specific
+# specialization is only bakeable by a workload rendering that exact scene. The
+# SCENE-GENERIC half (colorbuffer, screen, buffer alloc, BVH/AS build, RT
+# pipeline setup, camera, integrator core) is not, and it dominates — a single
+# one-Diffuse-sphere render here cut the unrelated 15-material `materials` scene's
+# cold host codegen from ~45s to ~10s.
+#
+# Rendering needs a working device, and precompilation does not always get one.
+# It is on by default; toggle it the standard PrecompileTools way, via Preferences:
+#     using RayMakie, Preferences
+#     set_preferences!(RayMakie, "precompile_workload" => false; force = true)  # disable
+#
+# "No backend here" is ASKED, not caught. It is the ordinary answer on Apple and
+# says nothing is wrong: a GPU package must not touch the device while
+# `jl_generating_output` is set, so `Metal.__init__` returns early, `functional()`
+# is false, and nothing registers. `defaultbackend()` throws for that, and the
+# throw was reported with a twenty-line backtrace on EVERY build of RayMakie and
+# of anything depending on it — which reads as a broken install. The remaining
+# `try` is for the other case, a device that registers and then fails to render.
+Mantle.@setup_workload begin
+    if isempty(Mantle.availablebackends())
+        @debug "RayMakie: precompilation has no GPU backend; skipping the GPU workload"
+    else
+        dev = Mantle.defaultbackend()
+        try
+            Mantle.@compile_workload begin
+                scene = Scene(size = (96, 72),
+                              lights = [PointLight(RGBf(30, 30, 30), Vec3f(4, 5, 6))])
+                cam3d!(scene)
+                mesh!(scene, Sphere(Point3f(0, 0, 0), 0.9f0);
+                    material = Hikari.Diffuse(color = (0.6, 0.6, 0.6))
+                )
+                activate!(; device = dev)
+                colorbuffer(scene; backend = RayMakie, samples = 1, max_depth = 4, hw_accel = true)
+            end
+        catch e
+            @warn "RayMakie GPU precompile workload skipped" exception = (e, catch_backtrace())
+        end
+    end
+end
+
+end

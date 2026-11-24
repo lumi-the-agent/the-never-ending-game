@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "error from sync_lights! (RayMakie.jl:501) via colorbuffer(game.screen); tester report session-0013",
+      "severity": "high",
+      "suggestion": "Create the ambient light when the scene is built (before the first trace) and only update its color afterwards, or drop the ambient call. Re-run the suite and confirm screenshot() works.",
+      "what": "Screenshots of the live dashboard throw 'this scene was first traced without an ambient light, and one cannot be added afterwards' (4 UI tests fail, the tester re-ran them live and saw the same failures). The only lighting change this session is set_ambient_light! in sync_sun!, which adds an ambient light to a scene that was traced without one.",
+      "where": "dev/NeverendingGame/src/scenery.jl:249; world/tests/results/session-0013.json"
+    },
+    {
+      "evidence": "journal says raster ignores lights",
+      "severity": "medium",
+      "suggestion": "Revert the lighting change, or do night as a screen-space overlay or gamma setting that is verified in a screenshot. Mark the todo as not done.",
+      "what": "The night tint does nothing visible. The author's screenshots s13-night.png and s13-night2.png show no change even with an extreme blue light, because the raster path ignores lights without gamma. The code was left in anyway as dead behaviour, and the journal does not mention the screenshot breakage.",
+      "where": "scenery.jl:246-249; media/s13-night*.png"
+    },
+    {
+      "evidence": "perf.json frame p95 2.49 ms",
+      "severity": "low",
+      "suggestion": "Find what crashes on a time jump and add a test.",
+      "what": "Jumping the time with w.t restarted the live game. The cause was not investigated. Frame time is fine (frame median 1.4 ms, p95 2.5 ms), so speed is not the issue.",
+      "where": "journal 17:26; state/perf.json"
+    }
+  ],
+  "summary": "The night tint has no visible effect (author's own screenshots show it), and it very likely broke every screenshot of the live dashboard: the new set_ambient_light! call adds an ambient light after the first trace, which RayMakie forbids.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "fail"
+}

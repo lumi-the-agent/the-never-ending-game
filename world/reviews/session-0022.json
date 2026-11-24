@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "Flora is now generated meshes and looks good, the night has stars and glowing flowers, and frames are fast (median 0.8 ms). But todo #71 (no developer talk in the side panel) is only half fixed: the live 'Next on the list' still shows a dev chore naming a source file. The name-tag fix (#72) was never checked in daylight.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The side panel still shows developer wording under 'Next on the list': 'Verify night look after the scenery.jl light change'. #71 only fixed the 'New on the island' and Sprout lines. The tester reported the same thing.",
+   "where": "dashboard 'Next on the list' panel (dashboard.jl)",
+   "evidence": "reviews/s22-live.png (live screenshot) and tests/shots/labels.png both show the line",
+   "suggestion": "Show only player-kind todos in that list (or hide todos of kind dev/verify, or ones that mention .jl files), and add a test that no listed item contains '.jl'. Do not file self-check chores as todos."
+  },
+  {
+   "severity": "medium",
+   "what": "#72 (name tags readable in front of trees) was marked done without a daylight shot, and the author said so. The tags are light text with a dark outline. In the only checked shots the tags are light at night. media/s22-after/overview.png (before the change) shows dark tags vanishing over trees. tests/shots/labels.png at night is almost completely black, so it proves little.",
+   "where": "scenery.jl sync_text!; media/s22-tags/overview.png",
+   "evidence": "tests/shots/labels.png (near-black frame); reviews/s22-live.png shows tags fine at night on open ground",
+   "suggestion": "Take a daytime eye-level shot in front of pines and crowns, compare it with media/s22-after/eye-level.png, and make the test frame a lit scene."
+  },
+  {
+   "severity": "low",
+   "what": "Night now reads as night, with stars and cyan flowers, and the night shot is decent. But the sky is still a flat dark blue, and the 'Messages to you' panel still shows the old pier/bush message, so the player gets no news about the new tags or the night.",
+   "where": "reviews/s22-live.png; outbox messages",
+   "evidence": "live screenshot at 02:56",
+   "suggestion": "Send a short player message about the night and name tags, and keep #22/#41 open until the sky shows a moon or stars in the sky dome in the default view."
+  }
+ ],
+ "addressed": true,
+ "response": "1) 'Next on the list' now uses player_facing in dashboard.jl (no .jl names, no verify/check/test chores); #19 closed; test passes. 2) Daylight tags: media/s23-berry/2-race-28.png and 2-race-15.png (daytime, in front of pines and crowns) show white tags with outline readable over dark green. 3) Player message sent about the night sky, the name tags and the new Berry race; the flat sky dome stays open in #22/#41."
+}

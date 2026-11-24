@@ -1,0 +1,160 @@
+# COV_EXCL_START
+ENV["ENABLE_COMPUTE_CHECKS"] = "true"
+using Test
+using LinearAlgebra
+using Markdown
+using Compat # allequal(f, itr) on Julia < 1.11
+
+using Makie
+using Makie.Observables
+using Makie.GeometryBasics
+using Makie.PlotUtils
+using Makie.FileIO
+using Makie.IntervalSets
+using GeometryBasics: Pyramid
+using Makie.ComputePipeline: ResolveException
+using Makie: volume
+
+# for texting bounding boxes
+function Base.isapprox(r1::Rect{D}, r2::Rect{D}; kwargs...) where {D}
+    left = vcat(minimum(r1), widths(r1))
+    right = vcat(minimum(r2), widths(r2))
+    return all((isnan.(left) .& isnan.(right)) .| (left .≈ right))
+end
+
+function collect_files_rec(path = @__DIR__)
+    filepaths = String[]
+    for path_or_file in readdir(path)
+        if isfile(joinpath(path, path_or_file))
+            push!(filepaths, path_or_file)
+        else
+            result = collect_files_rec(joinpath(path, path_or_file))
+            append!(filepaths, joinpath.(path_or_file, result))
+        end
+    end
+    return filepaths
+end
+
+# Sanity check - are we including all test files?
+all_files = collect_files_rec()
+included = open(@__FILE__) do io
+    output = Set{String}()
+    for line in eachline(io)
+        m = match(r"include\(\"(.+)\"\)", line)
+        if !isnothing(m)
+            push!(output, only(m.captures))
+        end
+    end
+    return output
+end
+
+missing_includes = String[]
+for filepath in all_files
+    if endswith(filepath, ".jl") && filepath !== "runtests.jl"
+        if !in(filepath, included)
+            push!(missing_includes, filepath)
+        end
+    end
+end
+
+@test isempty(missing_includes)
+
+# COV_EXCL_STOP
+
+@testset "Unit tests" begin
+
+    # Tests that don't or barely rely on other components. I.e. they don't create
+    # scenes, plots etc or only use them to get auxiliary data, e.g. a projection matrix
+    @testset "Isolated Tests" begin
+        include("isolated/bezier.jl")
+        include("isolated/quaternions.jl")
+        include("isolated/observables.jl")
+        include("isolated/timing.jl")
+        include("isolated/Plane.jl")
+        include("isolated/render_pipeline.jl")
+        include("isolated/texture_atlas.jl")
+        include("isolated/datetime_ticks.jl")
+        include("isolated/argument_docs.jl")
+        include("isolated/recipes.jl") # @recipe, @Block generated code
+        include("isolated/showoff.jl")
+        include("isolated/derive_colors.jl")
+        include("isolated/patterns.jl")
+    end
+
+    @testset "Plots" begin
+        include("plots/primitives.jl")
+        include("plots/generic_attributes.jl")
+        include("plots/text.jl")
+        include("plots/barplot.jl")
+        include("plots/bracket.jl")
+        include("plots/hist.jl")
+        include("plots/poly.jl")
+        include("plots/mesh_stroke.jl")
+        include("plots/arrows.jl")
+        include("plots/contour.jl")
+        include("plots/contourf.jl")
+        include("plots/tricontour.jl")
+        include("plots/voronoiplot.jl")
+        include("plots/datashader.jl")
+        include("plots/deterministic_order.jl")
+        include("plots/volumeslices.jl")
+        include("plots/statistical_tests.jl")
+        include("plots/recipes.jl")
+        include("plots/inherited_attributes.jl")
+        include("plots/deprecations.jl")
+    end
+
+    @testset "Scenes, Blocks & Figures" begin
+        include("SceneLike/scenes.jl")
+        include("SceneLike/figures.jl")
+        include("SceneLike/makielayout.jl")
+        include("SceneLike/card.jl")
+        include("SceneLike/paramform_filter.jl")
+        include("SceneLike/subfigure.jl")
+        include("SceneLike/Colorbar.jl")
+        include("SceneLike/PolarAxis.jl")
+        include("events_isolation.jl")
+    end
+
+    @testset "GUI" begin
+        include("gui.jl")
+    end
+
+    @testset "Conversion & Projection Pipeline" begin
+        # TODO: move some things in here
+        include("conversions/convert_arguments.jl")
+        # from here
+        include("conversions/conversions.jl")
+        include("conversions/convert_attributes.jl")
+
+        include("conversions/dim-converts.jl")
+        include("conversions/transformations.jl")
+        include("conversions/float32convert.jl")
+        include("conversions/cameras.jl")
+        include("conversions/projection_math.jl")
+
+        include("conversions/recipe_projections.jl")
+    end
+
+    @testset "Interactivity" begin
+        include("interactivity/events.jl")
+        include("interactivity/MouseStateMachine.jl")
+        include("interactivity/camera_controls.jl")
+        include("interactivity/Axis.jl")
+        include("interactivity/Axis3.jl")
+        include("interactivity/DataInspector.jl")
+        include("interactivity/EditableText.jl")
+        include("interactivity/pick_tracking.jl")
+    end
+
+    include("boundingboxes.jl")
+    include("updating.jl")
+    include("deprecated.jl")
+    include("specapi.jl")
+    include("pipeline.jl")
+    include("record.jl")
+    include("ray_casting.jl")
+
+    # for short tests of resolved issues
+    include("issues.jl")
+end

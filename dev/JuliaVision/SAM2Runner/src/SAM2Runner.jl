@@ -1,0 +1,529 @@
+"""
+SAM 2.1 with no first-call latency.
+
+A thin package around `DNNKernels.SAM2` whose only job is the workload: it runs a
+real segmentation during its own precompilation, so that both halves of the
+cold-start cost are paid once, at `Pkg.precompile`, instead of by whoever clicks
+first.
+
+The two halves are separate problems and need both mechanisms:
+
+  * **Julia inference** — `execute!`, `runop!`, the broadcast machinery, the KA
+    launch path. Measured at ~62 s for SAM 2's encoder, and the larger half.
+    `PrecompileTools` keeps it in the package image.
+  * **SPIR-V** — 99 kernels. Lava keeps each compiled kernel with its
+    `CodeInstance`, so the ones the workload compiles go into the package image
+    as well. An edited kernel recompiles on its own.
+
+`@compile_workload` covers both at once, which is why the workload is written
+once and not twice.
+"""
+module SAM2Runner
+
+using Lava, DNNKernels, KernelAbstractions, ColorTypes
+# The graphs run as Mantle plans — see `plansfor`. `import`, not `using`:
+# `Mantle.run!` and `Mantle.Buffer` collide with names here and in Base.
+import Mantle
+const M = Mantle
+using ColorTypes: RGB, red, green, blue
+# Through ColorTypes rather than as a direct dependency: the workload needs the
+# editor's exact frame element type and nothing else from FixedPointNumbers.
+const N0f8 = ColorTypes.FixedPointNumbers.N0f8
+using Mantle: @setup_workload, @compile_workload
+using LazyArtifacts
+# `Model`, `call` and `toback` are the graph-calling layer, which stays in the
+# kernel library. `SAM2`, `encode`, `decode`, `prompt` and `segment` are this
+# package's own — see `sam2.jl`, moved here from `DNNKernels/src`.
+using DNNKernels: Model, call, toback, loadgraph, readsafetensors
+
+# SAM 2.1's driver: the type, the two graphs, and the verbs over them.
+include("sam2.jl")
+
+export SAM2, encode, decode, prompt
+export segment, defaultmodel, unloadmodel!
+export sam2model, runsam2, sam2segmenter
+export sam2graph, sam2weights, sam2refs, ready
+
+const KA = KernelAbstractions
+
+"""
+    assetdir() -> String
+
+Where the model's graph and weights live: its artifact, downloaded on first use
+and cached across every environment on this machine.
+
+**Changing these assets means re-binding the artifact**, not editing a directory.
+Re-export, then `julia --project=. tools/make_artifacts.jl sam2-large` — that hashes
+the new content and rewrites `../Artifacts.toml`, so this call resolves to it
+immediately. Uploading is only needed to publish it to anyone else.
+"""
+assetdir() = @artifact_str("sam2-large")
+
+"""
+    refsdir() -> String
+
+The PyTorch reference activations the test suite compares against — a separate
+artifact from the weights because they are 1.2 GB and only the tests read them.
+A caller that just wants to segment a picture never fetches these.
+"""
+refsdir() = @artifact_str("sam2-large-refs")
+
+"""
+    sam2graphs() -> Dict{String,Graph}
+
+Both graphs, keyed the way `Model` and `m.graphs[...]` name them.
+
+This exists because `Model` takes loaded objects rather than paths: which
+artifact holds SAM 2, and which graphs it wants, are this package's knowledge
+and not the runtime's. Weights are [`sam2weights`](@ref), below. Internal for
+the same reason `assetdir` is — nothing outside this file may name the layout
+inside the artifact.
+"""
+sam2graphs() = Dict(n => loadgraph(joinpath(assetdir(), "$n.json"))
+                    for n in ("sam2_encoder", "sam2_decoder"))
+
+"""
+    sam2model(; backend, res, kw...) -> SAM2
+
+Load the model. Separate from [`runsam2`](@ref) so the workload can build it in
+`@setup_workload`, where the loading is *not* what is being cached.
+
+Anything else `SAM2` accepts is forwarded — `cacheinputs`, `segmenttie`. Those
+are policy on the model, and a caller building through this convenience
+constructor could not reach them at all; `SAM2` is immutable, so it could not set
+them afterwards either. (`cacheinputs` is inert, like `replaydecode`: the
+conversion it gated moved into `encode`.)
+
+`replaydecode` is accepted and inert: it switched off a capture of the decoder
+whose buffers a garbage collection between two clicks could free underneath it.
+The decoder is a recorded Mantle plan, which holds references to everything it
+names, so there is no such fault to work around.
+"""
+function sam2model(; backend = nothing, device = nothing, res::Int = 1024, kw...)
+    backend !== nothing && device !== nothing &&
+        throw(ArgumentError("pass either `device` or `backend`, not both"))
+    target = device === nothing ?
+             (backend === nothing ? Mantle.Device() : Mantle.todevice(backend)) :
+             Mantle.todevice(device)
+    return SAM2(sam2graphs(), sam2weights(); device = target, res, kw...)
+end
+
+# ── What callers outside this package may ask for ────────────────────────────
+#
+# `assetdir` and `refsdir` are INTERNAL. They name where the artifact happens to
+# put things, and nothing outside this file may call them or `joinpath` onto
+# them: a re-export that moves a file would then break callers that never knew
+# they depended on the layout. What a caller wants is the graph, the weights or
+# the references — so it asks for those, and `dir` is a config keyword whose
+# default is the artifact.
+#
+# This is the shape `BasicVSRRunner`, `DeepFilterRunner` and the rest use. A
+# runner that drifts from it is one whose callers build paths by hand.
+
+"""
+    sam2graph(name) -> Graph
+
+An exported ATen graph by name — `"sam2_encoder"` or `"sam2_decoder"`. Throws
+with the path it looked in rather than returning `nothing` for the caller to trip
+over later.
+"""
+function sam2graph(name::AbstractString)
+    dir = assetdir()
+    p = joinpath(dir, "$name.json")
+    isfile(p) || throw(ArgumentError(
+        "SAM 2: graph `$name` ($p) is missing from the `sam2-large` artifact, a packaging error (see JuliaVision's tools/README.md)."))
+    return loadgraph(p)
+end
+
+"""
+    sam2weights() -> Dict
+
+The exported state dict, keyed the way the graph's `:weight` buffers name it.
+"""
+function sam2weights()
+    dir = assetdir()
+    p = joinpath(dir, "weights.safetensors")
+    isfile(p) || throw(ArgumentError("SAM 2 weights not found at $p"))
+    return readsafetensors(p)
+end
+
+"""
+    sam2refs() -> Dict
+
+The PyTorch reference activations, from the `sam2-large-refs` artifact. Test-only
+material, which is why it is a separate artifact: a caller that just wants to
+segment a picture never fetches 1.2 GB of fixtures.
+"""
+function sam2refs()
+    dir = refsdir()
+    p = joinpath(dir, "refs.safetensors")
+    isfile(p) || throw(ArgumentError(
+        "SAM 2 reference activations not found at $p — the `sam2-large-refs` " *
+        "artifact is bound but does not contain them."))
+    return readsafetensors(p)
+end
+
+"""
+    ready() -> Bool
+
+Whether the assets are installed. Workloads and tests both branch on this,
+because neither may fail on a machine that has not fetched the artifact.
+"""
+ready() =
+    isfile(joinpath(assetdir(), "weights.safetensors")) &&
+    isfile(joinpath(assetdir(), "sam2_encoder.json"))
+
+"""
+    runsam2(model, image, points, labels; pick = :best) -> (mask, score)
+
+One frame, one set of clicks: embed, then decode. `image` is `(res, res, 3, 1)`
+in 0..1 RGB on the model's backend, `points` are `(x, y)` normalized, `labels`
+`true` for foreground.
+
+Returns the 256x256 mask **logits** and the model's predicted IoU. Thresholding
+and resampling belong to the caller, which knows the frame it came from.
+
+This is the function the workload runs, and therefore the one whose whole call
+tree is precompiled. A path it does not take is a path that still compiles on
+first use — see the `missing_kernels` test.
+"""
+function runsam2(model::SAM2, image, points, labels; pick = :best)
+    feats = encode(model, image)
+    return segment(model, feats, points, labels; pick)
+end
+
+"""
+    runsam2(model, image) -> (mask, score)
+
+One centre click — the smallest complete call, and what the workload uses.
+"""
+runsam2(model::SAM2, image) = runsam2(model, image, [(0.5, 0.5)], [true])
+
+"""
+    resizeto!(img, frame, res) -> img
+
+Nearest-neighbour resample of `frame` into the model's square `res × res × 3`
+input buffer.
+
+Its own function, and `img` concretely typed, because it is 3.1 million
+iterations: reached through a `Ref{Any}`, every `img[i, j, c, 1] = …` is a
+dynamically dispatched, boxed `setindex!` at **~740 ms per call**, three times
+the encode it feeds. The same loop with a
+typed destination is 3.2 ms.
+
+That cost was invisible to every GPU profile — `Mantle.with_dispatch_timing` says
+the encode is 98% GPU-bound and it is; this sits entirely outside it, in front.
+"""
+function resizeto!(img::Array{Float32,4}, frame::AbstractMatrix, res::Integer)
+    w, h = size(frame)
+    # SAM resizes to a *square*, so normalized coordinates map straight through
+    # and a click needs no aspect correction.
+    @inbounds for j in 1:res, i in 1:res
+        c = frame[clamp(round(Int, (i - 0.5) * w / res + 0.5), 1, w),
+                  clamp(round(Int, (j - 0.5) * h / res + 0.5), 1, h)]
+        img[i, j, 1, 1] = Float32(red(c))
+        img[i, j, 2, 1] = Float32(green(c))
+        img[i, j, 3, 1] = Float32(blue(c))
+    end
+    img
+end
+
+"""
+    sam2segmenter(model; pick = :confident) -> f
+
+A segmenter matching `VideoEditor.registersegmenter!`'s contract:
+`f(frame, points; key) -> Matrix{UInt8}`.
+
+Lives in this package rather than in a script so it can be *precompiled*. That
+is not tidiness: with the kernels compiled and this closure defined at the call
+site, the editor's first click still cost 41 s, 97% of it Julia inferring this
+function and everything it reaches. Code that is not in a package cannot be in a
+package image.
+
+`key` identifies the frame so the embedding is computed once per marked frame
+rather than once per click — 0.9 s against 1.4 s here, and the difference grows
+with every point the user adds.
+
+`pick` defaults to `:confident` rather than SAM's own `:best`, because what this
+produces is a matte *seed*: `segment` in `sam2.jl` documents the measurement, but in
+short, argmax over a predicted score will hand back a mask that sits at the
+threshold and speckles when it is resampled to frame resolution. `:best` remains
+available and remains exactly what PyTorch does.
+"""
+function sam2segmenter(model::SAM2; pick = :confident)
+    cachekey = Ref{Any}(nothing)
+    cachefeats = Ref{Any}(nothing)
+    # Concretely typed, unlike the two above: this one is *indexed* three million
+    # times per call, and `Ref{Any}` made every one of those a dynamic dispatch.
+    # The other two are read once each, where `Any` costs nothing.
+    host = Ref{Array{Float32,4}}()
+    res = model.res
+    backend = model.model.backend
+    return function (frame::AbstractMatrix, points; key = nothing)
+        w, h = size(frame)
+        feats = if key !== nothing && cachekey[] == key && cachefeats[] !== nothing
+            cachefeats[]
+        else
+            # Resized inside the miss branch, because `img` feeds nothing but the
+            # encode. It ran on every call for a while, and on the path that
+            # matters — the second and later clicks on one marked frame — that is
+            # 2.7 ms of a 16.7 ms click spent producing a buffer nobody reads.
+            isassigned(host) || (host[] = zeros(Float32, res, res, 3, 1))
+            img = resizeto!(host[], frame, res)
+            f = encode(model, toback(backend, img))
+            KA.synchronize(backend)
+            cachekey[] = key; cachefeats[] = f
+            f
+        end
+        logits, _ = segment(model, feats, [(p[1], p[2]) for p in points],
+                            [p[3] for p in points]; pick)
+        return maskatframe(Array(logits), w, h)
+    end
+end
+
+# ─────────────────────────────────────────────────────────── the one-call form
+#
+# Everything above takes a model, or a backend, or a closure that owns an
+# embedding cache. That is the right shape for the editor, which holds a model
+# for the length of a session and knows which frame it is on. It is the wrong
+# shape for "I have a picture and a click".
+
+"""
+The default model, built on first use and kept.
+
+One `Ref`, not a registry: there is exactly one sensible default model and the
+alternative — a dict keyed by resolution or backend — would be a cache nobody
+asked for. Anything that wants a *different* model builds one with
+[`sam2model`](@ref) and passes it, which every method below accepts.
+
+Holding it is the point. Building the model reads a graph and ~900 MB of
+weights; on this card that is ~3 s, and paying it per call would make the
+convenience form useless for the thing it is for.
+"""
+const DEFAULT_MODEL = Ref{Any}(nothing)
+
+"""
+    defaultmodel(; backend = nothing, device = nothing) -> SAM2
+
+The shared model, built on first call. Throws with the path it looked in when
+the weights are not installed, rather than returning `nothing` for the caller to
+trip over later.
+"""
+function defaultmodel(; backend = nothing, device = nothing)
+    backend !== nothing && device !== nothing &&
+        throw(ArgumentError("pass either `device` or `backend`, not both"))
+    m = DEFAULT_MODEL[]
+    m === nothing || return m::SAM2
+    dir = assetdir()
+    isfile(joinpath(dir, "weights.safetensors")) || throw(ArgumentError(
+        "SAM 2.1: weights.safetensors ($dir) is missing from the `sam2-large` artifact, a packaging error (see JuliaVision's tools/README.md)."))
+    m = sam2model(; backend, device)
+    DEFAULT_MODEL[] = m
+    return m
+end
+
+"""
+    segment(image, points; …) -> Matrix{UInt8}
+
+Segment `image` from a few clicks. The whole API, for the case where you have a
+picture and want the object under the cursor:
+
+```julia
+using SAM2Runner
+mask = segment(img, [(0.5, 0.5)])              # one click, in the middle
+mask = segment(img, [(0.3, 0.4), (0.8, 0.9)])  # two things to include
+mask = segment(img, [(0.5, 0.5, true), (0.1, 0.1, false)])   # and one to exclude
+```
+
+`image` is any matrix of colours. `points` are **normalized** `(x, y)` in
+`0..1`, optionally with a third element: `true` for a point that is on the
+object (the default), `false` for one that is not. Returns a `UInt8` mask the
+same size as `image`, `0xff` inside the object and `0x00` outside.
+
+`key` identifies the picture so that repeated calls on the same one reuse its
+embedding — 0.9 s against 1.4 s here, and the gap widens with every extra
+click. Pass anything cheap that is equal for equal images; the frame number, in
+an editor. Leave it out and every call re-embeds, which is correct but slower.
+
+`model` takes a model other than the shared default, and `pick` chooses between
+SAM's own argmax (`:best`) and the tie-break this defaults to (`:confident`) —
+see [`sam2segmenter`](@ref) for why a matte seed wants the latter.
+
+The first call pays for building the model, ~3 s of reading weights. Every call
+after that is the network.
+"""
+function segment(image::AbstractMatrix, points::AbstractVector;
+                            key = nothing, model::Union{Nothing,SAM2} = nothing,
+                            pick = :confident, backend = nothing, device = nothing)
+    m = model === nothing ? defaultmodel(; backend, device) : model
+    seg = get!(SEGMENTERS, (objectid(m), pick)) do
+        sam2segmenter(m; pick)
+    end
+    return seg(image, normalizepoints(points); key)
+end
+
+"""
+    segment(image, x, y; …) -> Matrix{UInt8}
+
+One click, spelled as two numbers. `segment(img, 0.5, 0.5)`.
+"""
+segment(image::AbstractMatrix, x::Real, y::Real; kw...) =
+    segment(image, [(x, y)]; kw...)
+
+"""
+Segmenter closures by `(model, pick)`. They are not free — each owns the host
+staging buffer and the embedding cache that makes `key` work — so a caller that
+alternates between two pictures still gets the caching it came for.
+"""
+const SEGMENTERS = Dict{Tuple{UInt,Symbol},Any}()
+
+"""
+`(x, y)` and `(x, y, inside)` both accepted, because requiring the third element
+makes the common case — every point is on the object — read worse than it is.
+"""
+normalizepoints(points) = [(Float64(p[1]), Float64(p[2]),
+                            length(p) >= 3 ? Bool(p[3]) : true) for p in points]
+
+"""
+Forget the shared model and its segmenters, releasing the weights.
+
+For a long-running process that is done with SAM 2 — the editor closing a
+project, a script moving on — since the model holds ~900 MB of VRAM and the
+`Ref` is what keeps it reachable.
+"""
+function unloadmodel!()
+    DEFAULT_MODEL[] = nothing
+    empty!(SEGMENTERS)
+    return nothing
+end
+
+"""
+`(256, 256)` mask logits as a 0/255 mask at frame resolution: bilinear, then
+thresholded at zero — SAM's own convention, and why the decoder returns logits
+rather than probabilities.
+
+**The largest single cost of a click** if written out literally: two divides,
+two floors, four clamps and four scattered loads per output pixel, 2.07 million
+times, is 8.1 ms for 1920x1080 against 3.3 for the decode itself. None of that
+varies per pixel — `x0`, `x1` and `tx` depend on `i` alone and are identical
+down every column, and for one output row the two source rows are fixed. So the
+x mapping is tabulated once, the two source rows are blended into a 256-long
+vector once per row, and the inner loop is two loads and two multiply-adds
+against a cache-resident vector. **8.10 -> 1.04 ms**, bit-identical output
+(checked over the full frame, both loop orders interleaved), and the click it
+sits in goes 16.7 -> 4.6 ms.
+"""
+function maskatframe(lg::AbstractMatrix, w::Integer, h::Integer)
+    mw, mh = size(lg)
+    out = Matrix{UInt8}(undef, w, h)
+    x0s = Vector{Int}(undef, w); x1s = Vector{Int}(undef, w)
+    txs = Vector{Float32}(undef, w)
+    @inbounds for i in 1:w
+        fx = ((i - 0.5) / w) * mw + 0.5
+        x0 = clamp(floor(Int, fx), 1, mw)
+        x0s[i] = x0; x1s[i] = min(x0 + 1, mw); txs[i] = Float32(fx - x0)
+    end
+    row = Vector{Float32}(undef, mw)
+    @inbounds for j in 1:h
+        fy = ((j - 0.5) / h) * mh + 0.5
+        y0 = clamp(floor(Int, fy), 1, mh); y1 = min(y0 + 1, mh)
+        ty = Float32(fy - y0); ty1 = 1 - ty
+        for k in 1:mw
+            row[k] = ty1 * lg[k, y0] + ty * lg[k, y1]
+        end
+        for i in 1:w
+            tx = txs[i]
+            v = (1 - tx) * row[x0s[i]] + tx * row[x1s[i]]
+            out[i, j] = v > 0 ? 0xff : 0x00
+        end
+    end
+    return out
+end
+
+# ---------------------------------------------------------------- the workload
+#
+# Guarded on the assets and on a working device: precompilation must not fail on
+# a machine without either, it should just produce a package with nothing cached.
+# Anything thrown here would otherwise break `using SAM2Runner` for everyone.
+# Measured, so that nobody has to guess whether this block earns its 100 s of
+# precompile time. First `runsam2` on a cold process, instances still needing
+# inference:
+#
+#     without this workload   67 545 instances   228.8 s
+#     with it                  6 116 instances    52.3 s
+#
+# 91% of the instances and 77% of the inference, gone. What remains is the tail —
+# call shapes this block does not reach, not a failure of the mechanism.
+@setup_workload begin
+    dir = assetdir()
+    ready = isdir(dir) && isfile(joinpath(dir, "weights.safetensors")) &&
+            isfile(joinpath(dir, "sam2_encoder.json"))
+    if ready
+        try
+            # During package-image construction dependency `__init__` methods
+            # have not registered their probes yet. `Device()` is Mantle's
+            # platform-selected device and therefore works both there and at
+            # runtime without naming Vulkan or Metal.
+            backend = Mantle.Device()
+            res = 1024
+
+            # The frame type the editor actually hands a segmenter, and the
+            # point vector it actually builds. Small on purpose — the shape does
+            # not matter, only that every method on the path gets inferred.
+            frame = fill(RGB{N0f8}(0.4, 0.5, 0.6), 64, 48)
+            points = [(0.5, 0.5, true), (0.25, 0.75, false)]
+
+            @compile_workload begin
+                # Building the model is INSIDE the workload, and that is the
+                # point rather than an accident. Loading runs the graph's
+                # constant folding on the device — `arange`, `cumsum`, the
+                # `sin`/`cos` positional encodings, `repeatouter` — which is 46
+                # kernels. Left out of the package image they cost 37 s of every
+                # cold start, and it read as "loading weights is slow" because
+                # nothing attributed it.
+                model = sam2model(; backend)
+                image = toback(backend, zeros(Float32, res, res, 3, 1))
+                mask, score = runsam2(model, image)
+                # Force the results across the host boundary: the download path
+                # has kernels and specialisations of its own, and it is on every
+                # real call.
+                Array(mask)
+                # The four-argument form, which is what somebody with a picture
+                # and a click actually calls, and which the two-argument one does
+                # NOT reach: its centre prompt is built without going through
+                # `prompt`'s point encoding. Leaving it out left 46 kernels
+                # out of the package image — `arange_body`, `cumsum_body`,
+                # `repeatouter`, `safetrunc` and the scalar broadcasts around
+                # them — and they were recompiled in every process that ever ran
+                # this package, because a kernel compiled after precompilation
+                # is kept only for its session.
+                m2, _ = runsam2(model, image, [(0.5, 0.5), (0.25, 0.75)], [true, false])
+                Array(m2)
+                # And the path the EDITOR takes, which is a different one: the
+                # closure `sam2segmenter` returns specialises on the frame type,
+                # and `runsam2` above never reaches it. Leaving it out was worth
+                # 45 s on the first click even with the kernels compiled and every
+                # method already in this package — being precompilable is not the
+                # same as being precompiled.
+                seg = sam2segmenter(model)
+                seg(frame, points; key = 1)
+                seg(frame, points; key = 1)          # the cached-embedding branch
+                KA.synchronize(backend)
+            end
+        catch err
+            # The catch is here so precompilation survives a machine with no
+            # driver, and the message must not imply anything milder than what
+            # happened: this workload runs the same code a caller runs, so if it
+            # threw for a reason other than a missing device, first use throws
+            # too, so a message reading "first use will compile" would hide a
+            # package that cannot build its plans at all.
+            @warn "SAM2Runner: workload FAILED, not skipped — unless this is a " *
+                  "machine without a working device, first use will throw the " *
+                  "same error" exception = (err, catch_backtrace())
+        end
+    else
+        @info "SAM2Runner: no assets at $dir — nothing precompiled"
+    end
+end
+
+end # module

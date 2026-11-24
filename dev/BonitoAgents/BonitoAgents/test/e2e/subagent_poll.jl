@@ -1,0 +1,136 @@
+# End-to-end: a background subagent's taskbar pill is finalized DETERMINISTICALLY
+# off its transcript `outputFile`'s CONTENT — the subagent's final response ends
+# its turn with `"stop_reason":"end_turn"`, which lands EXACTLY when it finishes
+# (verified live against a real claude-agent-acp subagent). The wire `completed`
+# is the launch-ack lie; the fd-close is worthless (the transcript is written
+# append-per-line, so the fd reads "closed" between every write while the subagent
+# is still alive). Only the `end_turn` marker in the content is the real signal.
+# Proves the poller + real worker clear busy at end_turn, and NOT before.
+#
+# Regression (the launch race): the `outputFile` PATH lands on the wire before the
+# file is on disk. A MISSING file, and a still-streaming file with no `end_turn`,
+# must NOT read as done — else the pill vanishes while the subagent runs on.
+using Test
+isdefined(@__MODULE__, :TestKit) || include(joinpath(@__DIR__, "..", "testkit", "TestKit.jl"))
+using .TestKit
+const TK = TestKit
+
+function run_suite(server)
+    BA = TestKit.BT
+    @testset "BonitoAgents subagent poll completion" begin
+        pid   = TK.new_chat(server; title = "SubPoll")
+        model = server.h.state.chat_models[pid]
+        @test BA.bg_worker_id(server.h.state, model) !== nothing   # a real worker
+
+        # The subagent's transcript path — NOT created yet (the launch race: the
+        # path is known before the file lands on disk).
+        outpath = tempname() * ".output"
+        @test !isfile(outpath)
+
+        # A background subagent pill whose poll target is that (missing) file.
+        task = BA.TaskToolMsg(
+            BA.Message("sub-poll-1", "other", "", "Investigate", "in_progress",
+                       "", time(), nothing, model);
+            description = "dig around", is_background = true)
+        task.bg_output_path = outpath
+        BA.push!(BA.chat_taskbar(model), task)
+        lock(BA.shared(model).lock) do; push!(BA.shared(model).msgs_store, task); end
+
+        # (A) MISSING file must NOT read as done — absence is not completion. The
+        # bar's loop must keep it live + pinned through several ticks (the race).
+        sleep(2.5)
+        @test BA.in_taskbar(task) == true
+        @test BA.is_pinned(model, "sub-poll-1")
+
+        # (B) The transcript materializes and the subagent is WORKING: entries with
+        # tool calls (`stop_reason":"tool_use"`), NO `end_turn` yet → stays pinned.
+        open(outpath, "w") do io
+            println(io, """{"type":"user","message":{"role":"user","content":"dig around"}}""")
+            println(io, """{"type":"assistant","message":{"role":"assistant","stop_reason":"tool_use","content":[{"type":"tool_use","name":"Bash"}]}}""")
+        end
+        sleep(2.5)
+        @test BA.in_taskbar(task) == true
+        @test BA.is_pinned(model, "sub-poll-1")
+
+        # (C) The subagent produces its FINAL response — a text message that ends
+        # its turn with `stop_reason":"end_turn"`. That is the subagent's own
+        # deterministic finish, and the bar's loop must SEE it within a few 1 Hz
+        # ticks — no ⊗ needed.
+        #
+        # It does not end the pill. The agent still has to auto-wake and say what
+        # happened, and that used to be invisible because the pill vanished right
+        # here. The slot now stays and relabels; see `BgPhase`.
+        open(outpath, "a") do io
+            println(io, """{"type":"assistant","message":{"role":"assistant","stop_reason":"end_turn","content":[{"type":"text","text":"Done: found the marker."}]}}""")
+        end
+        waiting = false
+        t0 = time()
+        while time() - t0 < 12
+            (task.phase isa BA.AwaitingReport) && (waiting = true; break)
+            sleep(0.5)
+        end
+        @test waiting
+        @test BA.in_taskbar(task)                       # still on screen...
+        @test BA.is_pinned(model, "sub-poll-1")
+        @test BA.taskbar_activity(task, time()) == "finished — waiting for the agent"
+        @test BA.tool_finished_at(task) === nothing     # ... and not finalized yet
+
+        # (D) A boundary retires it: `retire_reporting!`, which runs at every
+        # turn of ours and when the agent's own turn ends. Not edge-only: this
+        # task finished with nothing to report, so no turn of the agent's opened.
+        BA.retire_reporting!(model)
+        @test task.phase isa BA.Reported
+        gone = false
+        t0 = time()
+        while time() - t0 < 12
+            (!BA.in_taskbar(task) && !BA.is_pinned(model, "sub-poll-1")) && (gone = true; break)
+            sleep(0.5)
+        end
+        @test gone
+        @test BA.tool_finished_at(task) !== nothing
+    end
+    @testset "a transcript longer than one read still finishes" begin
+        # A subagent that reads a lot of code writes megabytes; `end_turn` is on
+        # its LAST line. Reading the file from the top with a 4 MB cap never
+        # reached it, so such an agent read "running" forever.
+        model = server.h.state.chat_models[TK.current_chat_id(server)]
+        outpath = tempname() * ".output"
+        line = """{"type":"assistant","message":{"role":"assistant","stop_reason":"tool_use","content":[{"type":"text","text":"$(repeat("x", 1000))"}]}}"""
+        open(outpath, "w") do io
+            for _ in 1:5000; println(io, line); end        # ~5 MB, still working
+        end
+        task = BA.TaskToolMsg(
+            BA.Message("sub-poll-big", "other", "", "Read everything", "in_progress",
+                       "", time(), nothing, model);
+            description = "read everything", is_background = true)
+        task.bg_output_path = outpath
+        BA.push!(BA.chat_taskbar(model), task)
+        lock(BA.shared(model).lock) do; push!(BA.shared(model).msgs_store, task); end
+        sleep(2.5)
+        @test task.phase isa BA.Executing
+        open(outpath, "a") do io
+            println(io, """{"type":"assistant","message":{"role":"assistant","stop_reason":"end_turn","content":[{"type":"text","text":"Done."}]}}""")
+        end
+        done = false
+        t0 = time()
+        while time() - t0 < 30
+            (task.phase isa BA.AwaitingReport || task.phase isa BA.Reporting) && (done = true; break)
+            sleep(0.5)
+        end
+        @test done
+        BA.retire_reporting!(model)
+        rm(outpath; force = true)
+    end
+    return server
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    server = TK.dev_server(agent = (_p -> [TK.text("ready"), TK.end_turn()]))
+    try
+        TK.open_browser(server)
+        run_suite(server)
+    finally
+        close(server)
+    end
+    TK.exit_success()
+end

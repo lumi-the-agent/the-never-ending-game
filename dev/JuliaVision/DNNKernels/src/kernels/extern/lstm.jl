@@ -1,0 +1,192 @@
+# `aten::lstm` as ONE op, with the timestep loop inside a single kernel.
+#
+# ## Why this exists rather than letting export unroll it
+#
+# `run_decompositions()` expands a recurrent layer into one copy of the cell per
+# timestep. Measured on a 12-step bidirectional LSTM: **1 node becomes 532**, and
+# the count grows with the sequence. Kokoro has six of them, which is why its two
+# graphs were 7298 ops for a 30-token utterance and would be tens of thousands
+# for a paragraph. At Lava's ~63 us per dispatch that is seconds of host time
+# before any arithmetic happens.
+#
+# Keeping `aten.lstm.input` whole (see `tools/export_kokoro.py:decomptable`) took
+# Kokoro to 369 + 1435 ops. This is the implementation that makes that possible.
+#
+# ## The decomposition, which is cuDNN's
+#
+# The gate pre-activation is
+#
+#     G[:, t] = W_ih x_t + b_ih  +  W_hh h_{t-1} + b_hh
+#
+# and the first half **does not depend on `h`**, so it is one GEMM over the whole
+# sequence, fully parallel, done before the loop. Only `W_hh h` is sequential.
+# That turns the per-step work from `(4H x (D + H))` into `(4H x H)` — for
+# Kokoro, 917k MACs down to 262k — and, more importantly, leaves a loop whose
+# body is small enough to live inside one workgroup.
+#
+# ## One workgroup, `4H` threads, the whole sequence
+#
+# `h` and `c` stay in shared memory for the entire loop; thread `g` owns gate `g`
+# and reads `W_hh[:, g]`, which is contiguous in the reversed layout. Two barriers
+# per step: one after the gates are written, one after `h`/`c` are updated. The
+# alternative — a dispatch per timestep — is 2T launches at 63 us each, which for
+# a 98-frame sequence is 12 ms of host time for 26 MFLOP of arithmetic.
+#
+# `W_hh` is re-read from global every step (1 MB for `H = 256`), which is an L2
+# hit after the first one; that is the price of not having enough registers to
+# hold it.
+#
+# ## It is read TRANSPOSED, and that is worth 6x
+#
+# The natural layout puts `W_hh` at `(H, 4H)`, so gate `g`'s column is contiguous
+# — for **one** thread. Adjacent threads are then `H` floats apart and every warp
+# issues 32 separate transactions per step. Measured: 4.2 ms for 30 timesteps of
+# `H = 256`, which is 0.13 ms to do 262k multiply-adds.
+#
+# Transposing once into `(4H, H)` makes the inner index `WhhT[g, k]`: for a fixed
+# `k` adjacent `g` are adjacent addresses, so a warp reads one contiguous line.
+# The transpose is one pass over 1 MB per call against `T` passes inside the
+# loop, so it pays for itself at `T = 2`.
+
+"""
+    lstm_kernel!(out, Gx, WhhT, bhh, h0, c0, T, rowoff, Val(H), Val(reverse))
+
+One direction of a single-layer LSTM over a whole sequence.
+
+`H` and `reverse` arrive as `Val` because both must be compile-time constants:
+`@localmem` sizes have to be, and sizing shared memory from a *local variable*
+compiles, runs, and writes **nothing** (`lava-localmem-silent-miscompile`).
+`reverse` being static makes the loop's direction a folded branch rather than a
+per-step select.
+
+`Val` and not an `@eval`-generated kernel per `(H, reverse)`, which cannot be
+**precompiled**: `@eval` into a closed module during a downstream package's
+`@compile_workload` raises *"Evaluation into the closed module `DNNKernels`
+breaks incremental compilation"*, so the workload silently skips and every first
+call in a fresh process pays the compile it exists to remove. It would also need
+`invokelatest` at the constructor and the launch to get past the world age the
+`@eval` creates.
+
+Gate order is torch's: `i, f, g, o`, each `H` wide, stacked in that order down
+the `4H` axis.
+"""
+function lstm_kernel!(
+        out, Gx, WhhT, bhh, h0, c0,
+        T::Int, rowoff::Int, ::Val{H}, ::Val{REV}) where {H,REV}
+    gates = KI.localmemory(Float32, Val((4H,)))
+    hs = KI.localmemory(Float32, Val((H,)))
+    cs = KI.localmemory(Float32, Val((H,)))
+
+    g = KI.get_local_id().x                 # 1 .. 4H, one per gate
+    @inbounds if g <= H
+        hs[g] = h0[g]
+        cs[g] = c0[g]
+    end
+    KI.barrier()
+
+    for step in 1:T
+        # Static direction: the reverse pass reads the sequence backwards but
+        # writes each result at its OWN timestep, so the two halves of the
+        # output line up.
+        t = REV ? T - step + 1 : step
+        @inbounds begin
+            acc = bhh[g] + Gx[g, t]
+            for k in 1:H
+                # `WhhT[g, k]`: adjacent threads, adjacent addresses.
+                acc = muladd(WhhT[g, k], hs[k], acc)
+            end
+            gates[g] = acc
+        end
+        KI.barrier()
+        @inbounds if g <= H
+            i = 1.0f0 / (1.0f0 + exp(-gates[g]))
+            f = 1.0f0 / (1.0f0 + exp(-gates[g + H]))
+            z = tanh(gates[g + 2H])
+            o = 1.0f0 / (1.0f0 + exp(-gates[g + 3H]))
+            c = muladd(f, cs[g], i * z)
+            cs[g] = c
+            hv = o * tanh(c)
+            hs[g] = hv
+            out[rowoff + g, t] = hv
+        end
+        KI.barrier()
+    end
+    return nothing
+end
+
+"""
+    lstmconfig(op, x, ps) -> (D, nsteps, H, ndir)
+
+The shapes one `aten::lstm.input` is, with every configuration that would be a
+DIFFERENT recurrence refused.
+
+Both routes read this. Each carried its own copy of the same refusals, which is
+one fact in two places and exactly the kind that drifts: the element-type check
+belongs to `lstm_kernel!`'s `@localmem Float32` and so to both of them, and only
+one had it.
+
+Refused rather than approximated, because each of these is another recurrence
+and not a slower path to this one. Multi-layer feeds its own output back in;
+`batch_first = false` puts the sequence on a different axis of every operand;
+`train = true` means the dropout between layers applies, and dropout is not the
+identity there; a batch needs a wider GEMM and an index in the kernel. None of
+them has a caller yet, and a graph that wants one gets a refusal naming which.
+"""
+function lstmconfig(op::Op, x, ps)
+    Bool(something(get(op.attrs, "arg3", nothing), true)) || error(
+        "DNNKernels: `lstm` (op $(op.id)) has has_biases = false, and both " *
+        "biases are read unconditionally: `b_ih` in the input projection, " *
+        "`b_hh` in the loop.")
+    nlayers = Int(something(get(op.attrs, "arg4", nothing), 1))
+    nlayers == 1 || error(
+        "DNNKernels: `lstm` (op $(op.id)) has num_layers = $(nlayers). A layer " *
+        "feeds the next, so this is a loop over the whole of the below with an " *
+        "intermediate per layer.")
+    Bool(something(get(op.attrs, "arg6", nothing), false)) && error(
+        "DNNKernels: `lstm` (op $(op.id)) has train = true, so its dropout of " *
+        "$(get(op.attrs, "arg5", 0)) applies between layers. Inference is what " *
+        "is implemented, and dropout is not the identity in training.")
+    Bool(something(get(op.attrs, "arg8", nothing), false)) || error(
+        "DNNKernels: `lstm` (op $(op.id)) has batch_first = false, which puts " *
+        "the sequence on a different axis of every operand.")
+    ndir = Bool(something(get(op.attrs, "arg7", nothing), false)) ? 2 : 1
+    length(ps) == 4 * ndir || error(
+        "DNNKernels: `lstm` (op $(op.id)) has $(length(ps)) parameters for " *
+        "$(ndir) direction(s), and each direction takes four.")
+    eltype(x) === Float32 || error(
+        "DNNKernels: `lstm` (op $(op.id)) has a $(eltype(x)) input. " *
+        "`lstm_kernel!` carries `h` and `c` in `@localmem Float32`, so a " *
+        "narrower input would be accumulated wider than it was stored and a " *
+        "wider one truncated.")
+    size(x, 3) == 1 || error(
+        "DNNKernels: `lstm` (op $(op.id)) has batch $(size(x, 3)). The " *
+        "recurrence is one workgroup per direction with no batch axis.")
+    # `w_hh` is `(H, 4H)` in the reversed layout, so its first extent is `H`.
+    return (size(x, 1), size(x, 2), size(ps[2], 1), ndir)
+end
+
+"""
+    lstm!(ctx, out, x, weights, T, H; bidirectional) -> out
+
+`x` is `(D, T)`, `out` is `((1 + bidirectional) * H, T)`.
+
+`weights` is torch's flat parameter list for one layer:
+`w_ih, w_hh, b_ih, b_hh` and, when bidirectional, the same four again with
+`_reverse`. In the reversed layout `w_ih` is `(D, 4H)` and `w_hh` is `(H, 4H)`.
+"""
+function lstm!(ctx, out, x, w_ih, w_hh, b_ih, b_hh, h0, c0, T::Int, H::Int,
+               rowoff::Int, reverse::Bool)
+    D = size(w_ih, 1)
+    # The input projection for EVERY timestep, in one GEMM. `transpose(w_ih)` is
+    # `(4H, D)`, `x` is `(D, T)`, so `Gx` is `(4H, T)`; the bias is broadcast
+    # along the sequence and added here so the loop only carries `b_hh`.
+    Gx = scratch!(ctx, eltype(x), 4H, T)
+    matmul!(ctx, Gx, transpose(w_ih), x, b_ih)
+    # `(H, 4H)` -> `(4H, H)`, so the loop below reads coalesced. See the header.
+    WhhT = similar(w_hh, eltype(w_hh), 4H, H)
+    permutedims!(WhhT, w_hh, (2, 1))
+    harnesslaunch!(ctx.backend, lstm_kernel!, out, Gx, WhhT, b_hh, h0, c0, T, rowoff,
+                              Val(H), Val(reverse);
+                              ndrange = 4H, workgroupsize = 4H)
+    return out
+end

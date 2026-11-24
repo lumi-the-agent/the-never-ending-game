@@ -1,0 +1,2147 @@
+# Needs a display and a GPU. Skipped when the worker has no session, which is the
+# default for bt_julia_eval: see docs, DISPLAY/XAUTHORITY are not inherited.
+#
+# ── This file BLOCKS on some X setups, and the guard below cannot see it ──
+#
+# Measured 2026-08-27 on DISPLAY=:1 with a live X server: `GLFW.Init()` succeeds,
+# the guard therefore passes, and the process then sits at 100% CPU indefinitely
+# inside window creation. `timeout -s TERM` after 600 s gives:
+#
+#     _glfwCreateWindowX11   libglfw.so
+#     glfwCreateWindow       libglfw.so
+#     CreateWindow           GLFW/src/glfw3.jl:600
+#     VulkanWindow           Mantle/src/vulkan/graphics/window.jl:78
+#     Window                 Mantle/src/vulkan/graph.jl:140
+#
+# Nothing above that frame is Mantle's, and no test output is produced before it,
+# so a suite that reaches this file never finishes. `DISPLAY` being set is not
+# the same question as "a window can be created here" — an X server with no
+# window manager answers the first and hangs the second — and there is no way to
+# ask the second without risking the hang.
+#
+# Deliberately NOT auto-skipped. A skip that hides a hang is how a test file rots
+# unnoticed, and this one had already spent the runtime move unable to run at all
+# (it names `Rasterizer`, whose export was left behind in `Lava.jl`, so it
+# errored on its first pipeline). Run it directly, on a session with a window
+# manager, and give it a timeout:
+#
+#     timeout 900 julia --project -e 'using Mantle, Test; include("test/test_window.jl")'
+using Mantle, Test
+# Here rather than in the branch below, which is one top-level expression: the
+# `@kernel` in it is expanded before any of it runs, so a `using` inside cannot
+# be what binds the macro.
+using KernelAbstractions
+# Same reason as above: a `@kernel` body using `Atomix.@atomic` is expanded with
+# the rest of the branch, so a `using` inside it cannot be what binds the name.
+using Atomix
+const M = Mantle
+# The barriers of the per-resource walk, which a plan that cannot be recorded runs on.
+perresource(g; kw...) = M.compile!(M.Compile(g; kw...))
+# The backend this run is for. `runtests.jl` runs this file once per available
+# backend (`Mantle.eachbackend()`); a bare `include` from the REPL gets the
+# default one. Nothing below names a backend, which is the point: these testsets
+# check PORTABLE behaviour, on whichever backend is there.
+include(joinpath(@__DIR__, "testbackend.jl"))
+
+
+# The probe has to be at top level: `@eval using GLFW` followed by `GLFW.Init()`
+# inside one function body cannot see the new binding (world age), so it always
+# reported "no display" even when there was one.
+# Validation is deliberately NOT enabled here. Synchronization validation costs
+# 212 ms/frame against 0.16 ms without it, a factor of 1300, which turns this
+# file from seconds into tens of minutes. The barrier check lives in
+# bench/validate.jl and is run on purpose.
+
+# Whether a window can be opened, asked of GLFW rather than of X11.
+#
+# This was `isempty(get(ENV, "DISPLAY", ""))`, which is an X11 question. macOS
+# never sets DISPLAY, so on the machine where the Metal backend is under test
+# this file skipped ITSELF — on top of hardcoding `VulkanAPI()` 35 times. Two
+# independent reasons the window tests could not have caught the clip-space
+# flip or the wrong drawable extent, and a person found both by looking.
+using GLFW, GeometryBasics, LinearAlgebra, ColorTypes
+using ColorTypes.FixedPointNumbers: N0f8
+if !(Sys.isapple() || !isempty(get(ENV, "DISPLAY", "")))
+    @info "no display; skipping window tests"
+else
+    GLFW.Init() || error("GLFW.Init failed")
+
+    # Driven through the portable `Window(backend, w, h)` and not a backend's
+    # own window type, so nothing here reaches for a backend module.
+    include(joinpath(@__DIR__, "..", "bench", "two_scatters.jl"))
+
+    # Reads along rows and writes down columns, which is the shape of anything
+    # that shades a g-buffer, and the one the workgroup size matters for.
+    @kernel function transpose_scale!(dst, @Const(src), w::Int32, h::Int32, a::Float32)
+        ix, iy = @index(Global, NTuple)
+        @inbounds dst[(ix - Int32(1)) * h + iy] = src[(iy - Int32(1)) * w + ix] * a
+    end
+
+    # Two of these chained is the smallest thing that can tell whether the
+    # launches inside one pass are ordered against each other.
+    @kernel function bump!(dst, @Const(src), k::Float32)
+        i = @index(Global)
+        @inbounds dst[i] = src[i] + k
+    end
+
+    # A fullscreen pass: the triangle comes from the vertex index, so the vertex
+    # stage takes no arguments and the fragment stage is the one with a buffer.
+    function fullscreen_vertex()
+        v = vertex_index()
+        p = v == Int32(1) ? Vec4f(-1, -1, 0, 1) :
+            v == Int32(2) ? Vec4f(3, -1, 0, 1) : Vec4f(-1, 3, 0, 1)
+        (position = p,)
+    end
+    function ramp_fragment(inputs, src, w::Int32, h::Int32)
+        x = unsafe_trunc(Int32, frag_coord_x())
+        y = unsafe_trunc(Int32, frag_coord_y())
+        @inbounds v = src[y * w + x + Int32(1)]
+        Vec4f(v, 0.25f0, 1f0 - v, 1f0)
+    end
+    RAMP = Rasterizer(; vertex = VertexShader(fullscreen_vertex),
+                        fragment = FragmentShader(ramp_fragment),
+                        topology = TriangleList(),
+                        blend = Opaque(),
+                        cull = NoCull(),
+                        depth = DepthOff())
+
+    # Quads stacked up the image, six vertices each, so how many are drawn is
+    # readable off the picture as how much of it is lit.
+    function band_vertex(nb::Int32)
+        v = vertex_index() - Int32(1)
+        band = v ÷ Int32(6)
+        c = v - band * Int32(6)
+        k = c == Int32(0) ? Int32(0) : c == Int32(1) ? Int32(1) : c == Int32(2) ? Int32(2) :
+            c == Int32(3) ? Int32(0) : c == Int32(4) ? Int32(2) : Int32(3)
+        fx = (k == Int32(1) || k == Int32(2)) ? 1f0 : 0f0
+        fy = (k == Int32(2) || k == Int32(3)) ? 1f0 : 0f0
+        y0 = -1f0 + 2f0 * Float32(band) / Float32(nb)
+        y1 = -1f0 + 2f0 * Float32(band + Int32(1)) / Float32(nb)
+        (position = Vec4f(-1f0 + 2f0 * fx, y0 + (y1 - y0) * fy, 0.5f0, 1f0),
+         color = Vec4f(1, 1, 1, 1))
+    end
+    band_fragment(inputs) = inputs.color
+    BANDS = Rasterizer(; vertex = VertexShader(band_vertex; outputs = (color = Vec4f,)),
+                         fragment = FragmentShader(band_fragment),
+                         topology = TriangleList(),
+                         blend = Opaque(),
+                         cull = NoCull(),
+                         depth = DepthOff())
+
+    @kernel function set_draw!(cmds, k::AbstractVector{UInt32})
+        @inbounds cmds[1] = DrawIndirectCommand(UInt32(6) * k[1], UInt32(1), UInt32(0), UInt32(0))
+    end
+
+    @kernel function frombytes!(dst, @Const(src))
+        i = @index(Global)
+        @inbounds dst[i] = Float32(src[i] & 0x000000ff)
+    end
+    @kernel function scaleby!(dst, @Const(src), a::Float32)
+        i = @index(Global)
+        @inbounds dst[i] = src[i] * a
+    end
+
+    # GLFW sizes a window in screen coordinates and a swapchain in pixels, and on
+    # a Retina display one is twice the other. The ratio is asked of the window
+    # rather than of the display: X11 reports a content scale and still sizes
+    # windows in pixels. `handle` is the GLFW window on every backend's window.
+    function resizewindow!(win, w, h)
+        fw, fh = GLFW.GetFramebufferSize(win.handle)
+        ww, wh = GLFW.GetWindowSize(win.handle)
+        GLFW.SetWindowSize(win.handle, round(Int, w * ww / fw), round(Int, h * wh / fh))
+    end
+
+    # A quad at a given depth, and a fragment that writes no attachment, which is
+    # what a depth-only pass has to be able to say.
+    function depthonly_vertex(z::Float32)
+        v = vertex_index() - Int32(1)
+        k = v == Int32(0) ? Int32(0) : v == Int32(1) ? Int32(1) : v == Int32(2) ? Int32(2) :
+            v == Int32(3) ? Int32(0) : v == Int32(4) ? Int32(2) : Int32(3)
+        fx = (k == Int32(1) || k == Int32(2)) ? 1f0 : 0f0
+        fy = (k == Int32(2) || k == Int32(3)) ? 1f0 : 0f0
+        # the left half only, so the right half keeps the clear value
+        (position = Vec4f(-1f0 + fx, -1f0 + 2f0 * fy, z, 1f0),)
+    end
+    depthonly_fragment(inputs) = nothing
+    DEPTHONLY = Rasterizer(; vertex = VertexShader(depthonly_vertex),
+                             fragment = FragmentShader(depthonly_fragment),
+                             topology = TriangleList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+
+    @testset "two scatters share one pipeline" begin
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "mantle test")
+        s = build(dev, win, 50_000, 20_000)
+        a, b = s.a, s.b
+
+        # A has a vector colour and a scalar size; B has the opposite. If the
+        # binding types differed they would compile two shaders.
+        @test typeof(a) !== typeof(b)
+        @test M.npipelines(s.plan) == 1
+
+        for _ in 1:30
+            M.run!(s.plan)
+        end
+        KernelAbstractions.synchronize(dev)
+        img = M.screenshot(win)
+        close(win)
+
+        bg = img[1, 1]
+        @test count(p -> p != bg, img) > length(img) ÷ 100   # something was drawn
+    end
+
+    @testset "the advect pass actually moves the points" begin
+        # The camera orbiting is not the simulation running. An earlier version of
+        # this demo had no compute pass at all: the cloud rotated, looked alive,
+        # and every position was the one it was uploaded with.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "advect")
+        s = Base.invokelatest(build, dev, win, 20_000, 10_000)
+
+        before = copy(Array(s.a.positions))
+        for _ in 1:30
+            s.dt[] = 1f0 / 60
+            M.run!(s.plan)
+        end
+        KernelAbstractions.synchronize(dev)
+        after = Array(s.a.positions)
+        close(win)
+
+        moved = [norm(after[i] - before[i]) for i in eachindex(before)]
+        @test count(<(1e-6), moved) == 0            # none of them stood still
+        @test sum(moved) / length(moved) > 0.05     # and they went somewhere
+        @test maximum(norm, after) <= 1.6f0 + 1e-4  # the shell reflection holds
+
+        # The render pass reads what the compute pass wrote, so it must wait for
+        # it. Nothing declares that: `use(..., write)` is Storage and `Attribute`
+        # is Vertices, and the barrier falls out of the pair.
+        adv, scat = s.plan.passes
+        @test any(t -> Mantle.writes(t.from), scat.pre)
+
+        # And the first pass of a frame is not free either. A plan is replayed, so
+        # "first" is only first *within* a frame: the previous frame's draw read
+        # these positions and this frame's advect overwrites them.
+        # `isempty(adv.pre)` is the assertion for a frame that starts from
+        # nothing, which holds only while every frame is flushed.
+        @test !isempty(adv.pre)
+        @test any(t -> Vertices in t.waits, adv.pre)
+    end
+
+    # A compute-only graph, for the two things that are only visible without a
+    # surface: nothing presents, so nothing submits on its own.
+    function advect_plan(dev, n)
+        g = M.Graph(dev)
+        pos = M.Buffer(dev, cloud(n))
+        vel = M.Buffer(dev, drift(n))
+        M.dispatch!(g, advect!, (pos, vel, 1f0 / 60, 1.4f0), n; name = "advect")
+        (plan = M.record!(M.Plan(g)), pos = pos)
+    end
+
+    @testset "a headless plan runs many times without a submit between" begin
+        # A plan with a surface submits every frame inside `present_frame!`. One
+        # without submits when something asks it to, so several frames land in
+        # the same batch. That is where an argument ring deadlocks: the frame
+        # that first reuses a slot waits for a timeline value the queue was
+        # never given, and `vkWaitSemaphores` is a foreign call,
+        # so the wait could not be interrupted, profiled or garbage collected —
+        # the process was simply gone. Found by running a compute-only graph 30
+        # times. There is no ring and no wait now; what this pins is that the
+        # runs still accumulate correctly and nothing is left unsubmitted.
+        dev = M.Device(TESTBACKEND)
+        s = Base.invokelatest(advect_plan, dev, 20_000)
+        before = copy(Array(M.storage(s.pos)))
+        for _ in 1:9
+            M.run!(s.plan)
+        end
+        KernelAbstractions.synchronize(dev)
+
+        # Nothing a later frame could wait for is still sitting unsubmitted: the
+        # plan's last token is no newer than everything the device was given.
+        @test Mantle.argtoken(s.plan.args) <= Mantle.fence(dev)
+        after = Array(M.storage(s.pos))
+        moved = [norm(after[i] - before[i]) for i in eachindex(before)]
+        @test count(<(1e-6), moved) == 0
+        @test maximum(norm, after) <= 1.4f0 + 1e-4
+    end
+
+    @testset "a frame never compiles a kernel" begin
+        # Recording has to be atomic against the Julia scheduler, because a frame
+        # holds an acquired swapchain image from `acquire_next_image!` until
+        # `present_frame!`. Compiling breaks that: it shells out to `spirv-opt`,
+        # and waiting on a subprocess is a task switch.
+        #
+        # Through KernelAbstractions per frame it compiles once per kernel after
+        # *any* method definition anywhere in the session, because the launch
+        # plan is keyed on
+        # `Base.get_world_counter()`. A plan now resolves its dispatches when it
+        # is built, the same as its draws.
+        #
+        # The assertion is on yielding rather than on time: a compile that took
+        # no measurable time would still be a compile inside a frame, and a
+        # machine under load would still not yield here.
+        dev = M.Device(TESTBACKEND)
+        s = Base.invokelatest(advect_plan, dev, 4_096)
+        M.run!(s.plan)                       # the frame that may compile
+        KernelAbstractions.synchronize(dev)
+
+        @eval $(gensym("bump"))() = 1         # what every eval in a session does
+        stop = Ref(false)
+        ticks = Ref(0)
+        canary = @async while !stop[]
+            ticks[] += 1
+            yield()
+        end
+        yield()
+
+        # `invokelatest`, because a testset is one top-level expression: the
+        # global counter moved above, but this task's world age would not until
+        # the expression ended, and the compiler cache reads the task's. Without
+        # it the frame runs in the world it was compiled in and the test cannot
+        # fail.
+        before = ticks[]
+        Base.invokelatest(M.run!, s.plan)
+        yielded = ticks[] - before
+        stop[] = true
+        wait(canary)
+        @test yielded == 0
+    end
+
+    # What `build_chain` (bench/chain.jl) computes from its `raw` bytes, on the
+    # host: `unpack!`, then `stages` passes of `blur!`, in the kernels' own
+    # index order and layout.
+    function chainreference(raw::Vector{UInt8}, w, h, stages)
+        img = Vector{Vec4f}(undef, w * h)
+        for i in 1:w, j in 1:h
+            b = ((j - 1) * w + i - 1) * 4
+            img[(i - 1) * h + j] = Vec4f(raw[b + 3], raw[b + 2], raw[b + 1], 255f0) / 255f0
+        end
+        for _ in 1:stages
+            next = similar(img)
+            for i in 1:w, j in 1:h
+                acc = zero(Vec4f)
+                for dj in -1:1, di in -1:1
+                    acc += img[(clamp(i + di, 1, w) - 1) * h + clamp(j + dj, 1, h)]
+                end
+                next[(i - 1) * h + j] = acc / 9f0
+            end
+            img = next
+        end
+        return img
+    end
+
+    @testset "transients are placed, not allocated separately" begin
+        # A chain where stage k reads t[k] and writes t[k+1]: only adjacent
+        # transients are ever live together, so every other one can share bytes.
+        # This is the allocator from the headless tests, driving real memory.
+        include(joinpath(@__DIR__, "..", "bench", "chain.jl"))
+        dev = M.Device(TESTBACKEND)
+        # No window: the graph never names one. The benchmark's frame loop copies
+        # the framebuffer into `raw` and blits the chain's output to a window by
+        # hand, outside the graph and through one backend's own calls.
+        s = Base.invokelatest(build_chain, dev, nothing, 20_000)
+
+        peak = M.peakbytes(s.plan)
+        naive = Mantle.naivebytes(s.plan)
+        @test peak < naive                       # aliasing happened at all
+        @test peak <= naive ÷ 2 + 2^20           # about two buffers, not five
+
+        # And sharing bytes changed nothing: from the same `raw`, the chain
+        # computes what the host does. Seeded right before the run, because no
+        # pass writes `raw` and a later stage may take its bytes.
+        bytes = rand(UInt8, length(s.raw))
+        copyto!(M.storage(s.raw), bytes)
+        M.run!(s.plan)
+        KernelAbstractions.synchronize(dev)
+        got = Array(M.storage(s.out))
+        want = Base.invokelatest(chainreference, bytes, W, H, STAGES)
+        @test length(got) == length(want)
+        @test maximum(k -> maximum(abs.(got[k] - want[k])), eachindex(want)) < 1f-4
+    end
+
+    @testset "interleaved chains stay correct with coalesced barriers" begin
+        # Eight independent chains interleaved over disjoint buffers. A recorded
+        # plan's buffer barrier is global, so one covers the passes after it
+        # (`test_recorded_buffer_sync.jl`): fewer barriers than passes, at least
+        # one, and a second run of the chains reproduces the first.
+        include(joinpath(@__DIR__, "..", "bench", "independent.jl"))
+        dev = M.Device(TESTBACKEND)
+        emitted(pl) = count(pp -> !isempty(pp.pre), pl.passes)
+        unaliased = Base.invokelatest(build_interleaved, dev, 1 << 12, 8, 6; alias = false)
+        @test 0 < emitted(unaliased.plan) <= length(unaliased.plan.passes)
+        s = Base.invokelatest(build_interleaved, dev, 1 << 12, 8, 6)
+        @test 0 < emitted(s.plan) <= length(s.plan.passes)
+
+        # Seeded before each run: each chain's first buffer is a transient no pass
+        # writes, aliased with transients that are written, so an unseeded run
+        # reads the previous run's output.
+        seedchains!() = for row in s.bufs
+            copyto!(M.storage(row[1]), zeros(Float32, length(row[1])))
+        end
+
+        seedchains!()
+        M.run!(s.plan)
+        KernelAbstractions.synchronize(dev)
+        reference = Array(M.storage(s.bufs[1][end]))
+
+        seedchains!()
+        M.run!(s.plan)
+        KernelAbstractions.synchronize(dev)
+        @test Array(M.storage(s.bufs[1][end])) == reference
+    end
+
+    @kernel function clear_and_tally!(c, tally)
+        c[1] = UInt32(0)
+        Atomix.@atomic :monotonic tally[1] += UInt32(1)
+    end
+    @kernel function bump_counter!(c)
+        i = @index(Global)
+        Atomix.@atomic :monotonic c[1] += UInt32(1)
+    end
+
+    @testset "a windowed frame runs every pass, every frame" begin
+        # A windowed plan is emitted per frame into a one-shot the present
+        # submits. Emitted into an open batch instead, whose command buffer a
+        # recorder splits mid-frame every few thousand dispatches, a present
+        # submits only the last segment: a frame that does nothing, once every
+        # threshold, with no validation error because nothing about it is
+        # invalid. What this pins is that every pass of every frame reaches the
+        # device. For
+        # this graph — clear a counter in the first pass, accumulate into it
+        # later — a lost clear means the counter never restarts. `tally` is
+        # monotonic on purpose, because the counter itself cannot detect a
+        # skipped frame: a cleared-then-refilled counter sits at exactly its
+        # previous correct value.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 64, 64; title = "every frame", vsync = false)
+        g = M.Graph(dev)
+        cnt, tally = M.Buffer(dev, UInt32[0]), M.Buffer(dev, UInt32[0])
+        M.dispatch!(g, clear_and_tally!, (cnt,
+                                              tally), 1; name = "clear")
+        M.dispatch!(g, bump_counter!, (cnt,), 512; name = "accumulate")
+        screen = M.Surface(g, win)
+        M.render!(g, "present", screen => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+        end
+        plan = M.Plan(g)
+        frames = 40
+        for _ in 1:frames
+            M.run!(plan)
+            Mantle.flush!(dev)
+        end
+        @test Int(Array(tally)[1]) == frames        # every frame ran its first pass
+        @test Int(Array(cnt)[1]) == 512             # and the counter restarted each time
+        close(win)
+    end
+
+    @kernel function fill_span!(dst, base::Int32, v::Float32)
+        i = @index(Global)
+        @inbounds dst[base + i] = v
+    end
+
+    # A real reader: it takes the span it reads and puts the result somewhere
+    # else, so what the pass does to `src` is a read and nothing more. A kernel
+    # that only loaded would be one whose accesses the graph still has to order —
+    # and one an optimiser is free to delete.
+    @kernel function sum_span!(out, @Const(src), base::Int32)
+        i = @index(Global)
+        @inbounds out[i] = src[base + i]
+    end
+
+    @testset "disjoint slices of one buffer are not ordered against each other" begin
+        # Ported from Vulkan-ValidationLayers,
+        # tests/unit/sync_val_positive.cpp: PositiveSyncVal.BufferCopyNonOverlappedRegions —
+        # two writes into non-overlapping regions of one buffer, asserted there to
+        # raise no hazard. Tracking a buffer whole says it does, and the barrier
+        # between them orders memory neither pass touches.
+        #
+        # `range` hands the slice its own resource id, so the existing
+        # per-resource walk answers this without knowing anything about ranges.
+        # Per resource, each pass has a real loop-carried WAW against the previous
+        # frame, and two resources mean neither waits on the other. A recording's
+        # head barrier covers that WAW, which leaves only a real overlap inside it.
+        dev = M.Device(TESTBACKEND)
+        n = 256
+        build(ranged) = begin
+            g = M.Graph(dev)
+            b = M.Buffer(dev, zeros(Float32, n))
+            lo = ranged ? M.slice(g, b, 1:128) : b
+            hi = ranged ? M.slice(g, b, 129:256) : b
+            M.dispatch!(g, fill_span!, (lo, Int32(0), 1f0), 128; name = "lower")
+            M.dispatch!(g, fill_span!, (hi, Int32(128), 2f0), 128; name = "upper")
+            (; g, b, plan = M.record!(M.Plan(g)))
+        end
+        # The update pass every plan with a declared buffer has is excluded — it
+        # touches the same resources the compute passes do, so it changes no
+        # count, but excluding it keeps the comparison about the passes' own
+        # hazards. What distinguishes whole from sliced is the number of
+        # DISTINCT resources that appear in any transition: one buffer, or two
+        # disjoint slices.
+        touched(pl) = unique(t.resource for pp in pl.passes if pp.pass.kind !== :update
+                             for t in pp.pre)
+
+        whole = build(false)
+        @test length(touched(whole.plan)) == 1      # one resource: ordered, needlessly
+
+        sliced = build(true)
+        @test isempty(touched(sliced.plan))         # no overlap: nothing to wait on
+        @test length(touched(perresource(sliced.g))) == 2 # two: independent
+
+        # And it still computes the right thing, which is the point of not
+        # ordering them: both halves land.
+        M.run!(sliced.plan)
+        KernelAbstractions.synchronize(dev)
+        got = Array(sliced.b)
+        @test all(==(1f0), got[1:128]) && all(==(2f0), got[129:256])
+
+        # Same file, PositiveSyncVal.WriteAndReadNonOverlappedUniformBufferRegions:
+        # a write to one region and a *read* of another. Write-after-write is not
+        # the only pair that matters — the wait set is built differently for a
+        # read (the one previous state) than for a write (every outstanding
+        # reader), so RAW and WAR go down a different path than the case above.
+        #
+        # Counting resources does not say it here: a slice this graph only ever
+        # reads is seeded from its own last use, so it needs no transition of
+        # its own. What distinguishes the two spellings is whether the *reader*
+        # waits on the WRITER — whole-buffer gives it a WriteOnly -> ReadOnly
+        # against the writer, and disjoint slices give it nothing of the
+        # writer's to wait for. (It always waits on the host store the update
+        # pass may land, which is the same transition either way.)
+        SW = M.Storage{M.BufferKind,M.WriteOnly}
+        readerwaits(ranged) = begin
+            g = M.Graph(dev)
+            b = M.Buffer(dev, zeros(Float32, n))
+            out = M.Buffer(dev, zeros(Float32, 128))
+            lo = ranged ? M.slice(g, b, 1:128) : b
+            hi = ranged ? M.slice(g, b, 129:256) : b
+            M.dispatch!(g, fill_span!, (lo, Int32(0), 3f0), 128; name = "write low")
+            M.dispatch!(g, sum_span!, (out, hi, Int32(128)), 128; name = "read high")
+            reader = only(pp for pp in M.Plan(g).passes if pp.pass.name == "read high")
+            any(t -> t.from === SW, reader.pre)
+        end
+        @test readerwaits(false)           # whole buffer: RAW against the writer
+        @test !readerwaits(true)           # disjoint slices: nothing of the writer's to wait for
+
+        # The control, and the failure mode that matters: naming a range must not
+        # make everything independent. Identical ranges are the same resource and
+        # stay ordered — if this ever reads 2, ranges have stopped meaning
+        # anything and every test above passes for the wrong reason.
+        gs = M.Graph(dev)
+        bs = M.Buffer(dev, zeros(Float32, n))
+        for nm in ("first", "second")
+            M.dispatch!(gs, fill_span!, (M.slice(gs, bs, 1:128), Int32(0), 5f0), 128;
+                        name = nm)
+        end
+        @test length(touched(M.Plan(gs))) == 1
+
+        # Partial overlap. `1:128` and `64:200` share `64:128`, so the two passes
+        # do have a hazard and must stay ordered — while a third pass on `201:256`
+        # touches none of it and must not be dragged in. This is the case the
+        # atomic-segment partition exists for: the cuts fall at 1, 64, 129, 201.
+        gp = M.Graph(dev)
+        bp = M.Buffer(dev, zeros(Float32, n))
+        M.dispatch!(gp, fill_span!, (M.slice(gp, bp, 1:128), Int32(0), 6f0), 128;
+                    name = "low")
+        M.dispatch!(gp, fill_span!, (M.slice(gp, bp, 64:200), Int32(63), 7f0), 137;
+                    name = "mid")
+        M.dispatch!(gp, fill_span!, (M.slice(gp, bp, 201:256), Int32(200), 8f0), 56;
+                    name = "tail")
+        segs(pl, name) = Set(t.resource for p in pl.passes if p.pass.name == name
+                             for t in p.pre)
+        # `mid` overlaps `low`, so it waits; `tail` overlaps neither and does not.
+        pp = M.Plan(gp)
+        @test !isempty(segs(pp, "mid"))
+        @test isempty(segs(pp, "low"))
+        @test isempty(segs(pp, "tail"))
+        walked = perresource(gp)
+        lowseg, midseg, tailseg = segs(walked, "low"), segs(walked, "mid"), segs(walked, "tail")
+        @test !isempty(intersect(lowseg, midseg))    # they share the 64:128 segment
+        @test isempty(intersect(lowseg, tailseg))    # and share nothing with the tail
+
+        # Slicing a buffer partitions it, and a later whole-buffer usage then
+        # stands for every segment: four transitions, one per segment. They are
+        # the same hazard, so they are ONE entry in what a backend lowers to a
+        # barrier (`barrierhazards`, which drops the resource) rather than one
+        # per segment — otherwise naming a range anywhere makes every whole use
+        # of that buffer cost a barrier per cut.
+        gm = M.Graph(dev)
+        bm = M.Buffer(dev, zeros(Float32, n))
+        for (k, r) in enumerate((1:64, 65:128, 129:192, 193:256))
+            M.dispatch!(gm, fill_span!, (M.slice(gm, bm, r), Int32(first(r) - 1),
+                                         Float32(k)), length(r); name = "part $k")
+        end
+        M.dispatch!(gm, fill_span!, (bm, Int32(0), 9f0), n; name = "whole")
+        pm = M.Plan(gm)
+        whole = only(pp for pp in pm.passes if pp.pass.name == "whole")
+        @test length(whole.pre) == 4                              # four segments
+        @test length(M.barrierhazards(whole.pre)) == 1            # one hazard
+
+        # Out of bounds is still a mistake worth naming.
+        g2 = M.Graph(dev)
+        b2 = M.Buffer(dev, zeros(Float32, n))
+        @test_throws ArgumentError M.slice(g2, b2, 200:400)
+
+        # A sliced *transient* still gets its handover. The handover is derived
+        # per transient and looked its usage up by that transient's own id, so a
+        # pass naming only a slice answered `nothing` and the caller skipped the
+        # barrier — losing the one hazard no per-resource sequence can see,
+        # silently. `usage_of` counts a slice as naming its parent, and the wait
+        # set is gathered across every id the vacating tenant is tracked under.
+        g3 = M.Graph(dev)
+        a3 = M.Transient.Buffer(g3, Float32, n)
+        b3 = M.Transient.Buffer(g3, Float32, n)
+        M.dispatch!(g3, fill_span!, (a3, Int32(0), 1f0), n; name = "fill a")
+        keep3 = M.Buffer(dev, zeros(Float32, n))
+        M.dispatch!(g3, sum_span!, (keep3, a3, Int32(0)), n; name = "read a")
+        M.dispatch!(g3, fill_span!, (M.slice(g3, b3, 1:128), Int32(0), 2f0), 128;
+                    name = "slice of b")
+        out3 = M.Buffer(dev, zeros(Float32, n))
+        M.dispatch!(g3, sum_span!, (out3, b3, Int32(0)), n; name = "drain")
+        p3 = M.Plan(g3; alias = true)
+        # `b` takes over `a`'s bytes, and the pass that first writes it names only
+        # a slice. The handover is the transition with no resource of its own.
+        @test any(t -> t.resource == 0, vcat((pp.pre for pp in p3.passes)...))
+    end
+
+    @testset "the emitted set is the per-resource hazard set, exactly" begin
+        # A barrier on one buffer cannot stand in for one on another, so the
+        # required set is one entry per state change on each resource's own usage
+        # sequence, written out by hand.
+        #
+        # Two chains of three stages over disjoint buffers, interleaved. Per
+        # chain, with `b[k]` the buffer stage k reads:
+        #   b[1]  read at s1 only          — the replayed state is already
+        #                                    ReadOnly, so no transition at all
+        #   b[2]  written s1, read s2      — WAR at s1, RAW at s2
+        #   b[3]  written s2, read s3      — WAR at s2, RAW at s3
+        #   b[4]  written s3, never read   — WAW at s3 against the last frame
+        # Five per chain, ten in total, landing 1/2/2 across the three passes.
+        #
+        # Asserted as two subset checks rather than one equality, because the two
+        # directions are different bugs and want different messages: a missing
+        # entry is a race, a spurious one is serialisation nobody asked for. The
+        # pair is also what makes the test unsatisfiable by a degenerate answer —
+        # emitting nothing fails the first, one unconditional barrier per pass
+        # fails the second.
+        include(joinpath(@__DIR__, "..", "bench", "independent.jl"))
+        dev = M.Device(TESTBACKEND)
+        SR = M.Storage{M.BufferKind,M.ReadOnly}
+        SW = M.Storage{M.BufferKind,M.WriteOnly}
+        chains, stages = 2, 3
+        s = Base.invokelatest(build_interleaved, dev, 1 << 10, chains, stages; alias = false)
+
+        required = Set()
+        for c in 1:chains, k in 1:stages
+            k > 1 && push!(required, ("c$c s$k", s.g.ids[s.bufs[c][k]], SW, SR, Set([SW])))
+            from = k == stages ? SW : SR      # the tail buffer is written and never read
+            push!(required, ("c$c s$k", s.g.ids[s.bufs[c][k + 1]], from, SW, Set([from])))
+        end
+        @test length(required) == 10
+
+        emitted(pl) = Set((pp.pass.name, t.resource, t.from, t.to, Set(t.waits))
+                          for pp in pl.passes for t in pp.pre)
+
+        got = emitted(perresource(s.g; alias = false))
+        # A missing entry is a race; an extra one serialises for nothing.
+        @test issubset(required, got)
+        @test issubset(got, required)
+    end
+
+    # How a backend lowers these sets is its own: Vulkan's is one
+    # `VkMemoryBarrier2` per distinct (stage, access) tuple and no buffer barrier,
+    # a host function of the transitions that belongs with the host lowering
+    # tables, not in a file that runs on every backend.
+
+    # `fuzz` (bench/fuzz.jl) opens a device of its own on one named backend. The
+    # per-case `check` takes the device, so the sweep runs here, on the one under
+    # test, and adds up the same counts.
+    function fuzzcases(dev, seeds; kw...)
+        rs = [check(dev, s; kw...) for s in seeds]
+        (wrong = count(r -> !r.correct, rs),
+         emitted_total = sum(r -> r.emitted, rs))
+    end
+
+    @testset "the local hazard set holds over a corpus, not one topology" begin
+        # One hand-derived topology says the shape is right; it does not say the
+        # derivation is right in general. This drives the same equality from an
+        # oracle built out of the rules — `needs_transition` plus the wait-set
+        # rule — over random read/write/readwrite usages, where WAR, WAW, RAW and
+        # read-after-read all occur without any liveness constraint to arrange.
+        #
+        # Persistent buffers and no aliasing on purpose: an alias handover is a
+        # hazard between two resources that never mention each other, so it comes
+        # from the placer and not from any usage sequence. It has its own test.
+        include(joinpath(@__DIR__, "..", "bench", "stress.jl"))
+        dev = M.Device(TESTBACKEND)
+        nbufs, npasses, seeds = 5, 12, 1:20
+
+        # Swept over how often a usage names a range, because slicing is the case
+        # the hand-written tests above cover by example only. The generator draws
+        # both bounds from one small set, so identical, disjoint *and* partially
+        # overlapping slices of a buffer all occur — and the oracle derives the
+        # atomic partition itself rather than reading it off the compiler. Both
+        # sides are keyed by `(parent, span)`, so agreeing on ids is not what
+        # makes them agree.
+        spurious = 0; missing_total = 0; required_total = 0; uncovered = 0
+        for sl in (0.0, 0.5), s in seeds
+            u = usage_graph(dev, MersenneTwister(s),
+                            [M.Buffer(dev, fill(Float32(i), 256)) for i in 1:nbufs],
+                            npasses; slicing = sl)
+            walked = perresource(u.g; alias = false)
+            oracle = local_hazards(u.g, walked)
+            got = normalized(u.g, walked)
+            required_total += length(oracle)
+            missing_total += length(setdiff(oracle, got))
+            spurious += length(setdiff(got, oracle))
+            uncovered += length(uncovered_hazards(u.g, u.plan))
+        end
+        # A missing entry is a race; an extra one serialises for nothing.
+        @test missing_total == 0
+        @test spurious == 0
+        @test required_total > 0
+        # A recording has fewer barriers, and each hazard is still ordered.
+        @test uncovered == 0
+    end
+
+    @testset "derived barriers agree with the backend on random DAGs" begin
+        # Elision is where races come from, and a race that happens to give the
+        # right answer proves nothing. Three separate bugs were found here:
+        #   - aliased transients need a barrier at the reuse boundary, which
+        #     per-resource tracking cannot see (RPS calls it ResourceAliasingInfo)
+        #   - a covering barrier only covers a later dependency if its masks are
+        #     at least as wide; a write-only alias barrier does not make a
+        #     subsequent read visible
+        #   - comparing every transient is meaningless once they are aliased
+        include(joinpath(@__DIR__, "..", "bench", "fuzz.jl"))
+        r = Base.invokelatest(fuzzcases, M.Device(TESTBACKEND), 1:20)
+        @test r.wrong == 0
+        @test r.emitted_total > 0
+    end
+
+    @kernel function sched_write!(dst, v::Float32)
+        i = @index(Global)
+        @inbounds dst[i] = v
+    end
+    @kernel function sched_accum!(dst, @Const(src))
+        i = @index(Global)
+        @inbounds dst[i] += src[i]
+    end
+
+    @testset "the schedule matches RPS on its own benchmark" begin
+        # Ported from AMD's Render Pipeline Shaders,
+        # tests/console/test_scheduler.rpsl :: memory_saving, with the expected
+        # orders from test_scheduler.cpp. Six independent producer/consumer pairs
+        # over six transients, every consumer writing one output.
+        #
+        # RPS asserts the whole node sequence, which is the part worth taking: our
+        # own scheduler test pins two pass names, and two names are satisfied by
+        # schedules that are wrong from the third onwards. Their two expectations
+        # map exactly onto our two policies —
+        #   default / performance   PushExpectedRange(0, 12, 1)   -> 0..11
+        #   RPS_SCHEDULE_PREFER_MEMORY_SAVING_BIT
+        #                           PushExpectedRange(i, i+7, 6)  -> (0,6) (1,7) ...
+        # — which is `Overlap` and `Compact`, and Mantle produces both.
+        dev = M.Device(TESTBACKEND)
+        n = 256
+        mk(pol) = begin
+            g = M.Graph(dev)
+            out = M.Buffer(dev, zeros(Float32, n))
+            ts = [M.Transient.Buffer(g, Float32, n) for _ in 1:6]
+            for i in 1:6
+                M.dispatch!(g, sched_write!, (ts[i], Float32(i)), n; name = "draw$(i-1)")
+            end
+            for i in 1:6
+                M.dispatch!(g, sched_accum!, (out,
+                                                  ts[i]), n; name = "blt$(i-1)")
+            end
+            M.Plan(g; policy = pol)
+        end
+        order(pl) = [pp.pass.name for pp in pl.passes]
+
+        fast, small = mk(M.Overlap()), mk(M.Compact())
+        # First the update pass every plan with a declared buffer has (the
+        # host-written `out`), then RPS's sequence.
+        @test order(fast) == vcat(["updates"], ["draw$i" for i in 0:5], ["blt$i" for i in 0:5])
+        @test order(small) == vcat(["updates"], [["draw$i", "blt$i"] for i in 0:5]...)
+        # And the reason the second order exists: one transient alive at a time
+        # instead of six.
+        @test M.peakbytes(small) * 6 == M.peakbytes(fast)
+
+        # Their other case, `program_order` — draws 0-5, blts 6-11, then twelve
+        # alternating draw/blt over the same transients — is deliberately *not*
+        # asserted by sequence. RPS expects the second round of draws hoisted
+        # (12,14..22 then 13,15..23); we keep declaration order, and measured,
+        # the two cost exactly the same per resource: 24 barriers, 36 transitions,
+        # 6144 peak, for their order and ours alike. Grouping independent work paid
+        # when a barrier stopped everything; per-resource barriers already scope to
+        # what each pass touches, so the choice is between equals. A recording's
+        # global barriers keep the same barrier count, and a grouped order merges
+        # more of the hazards inside them: 14 entries for their order, 19 for ours.
+        #
+        # Which is what their own harness says to do about it — `unorderedEqual`,
+        # for graphs where several orders are legal. So: assert the schedule is a
+        # linear extension of the DAG, and that it costs no more than theirs.
+        # `hoist` picks between the two declaration orders for passes 12-23.
+        program_order(hoist) = begin
+            g = M.Graph(dev)
+            out = M.Buffer(dev, zeros(Float32, n))
+            ts = [M.Transient.Buffer(g, Float32, n) for _ in 1:6]
+            dr = (id, i) -> M.dispatch!(g, sched_write!, (ts[i], Float32(id)), n;
+                                        name = "$id")
+            bl = (id, i) -> M.dispatch!(g, sched_accum!, (out, ts[i]), n; name = "$id")
+            for i in 1:6; dr(i - 1, i); end
+            for i in 1:6; bl(i + 5, i); end
+            if hoist                                    # RPS: every draw, then every blt
+                for i in 1:6; dr(10 + 2i, i); end
+                for i in 1:6; bl(11 + 2i, i); end
+            else                                        # as declared: alternating
+                for i in 1:6; dr(10 + 2i, i); bl(11 + 2i, i); end
+            end
+            M.Plan(g; policy = M.Overlap())
+        end
+        forced, ours = program_order(true), program_order(false)
+        barriers(pl) = count(pp -> !isempty(pp.pre), pl.passes)
+        cost(pl) = (barriers(pl), sum(length(pp.pre) for pp in pl.passes))
+        @test cost(perresource(ours.graph; policy = M.Overlap())) ==
+              cost(perresource(forced.graph; policy = M.Overlap()))
+        @test barriers(ours) == barriers(forced)
+        @test M.peakbytes(ours) == M.peakbytes(forced)
+
+        # A linear extension of the DAG: a pass declared earlier that shares a
+        # written resource has to still come first. Rebuilt from the usages here,
+        # rather than read off the compiler, so a scheduler that reordered past a
+        # dependency would fail this and not merely disagree with RPS.
+        decl = ours.graph.passes
+        pos = Dict(pp.pass.name => k for (k, pp) in enumerate(ours.passes))
+        ok = true
+        for j in eachindex(decl), i in 1:(j - 1)
+            dep = any(((idi, Ui),) -> any(((idj, Uj),) ->
+                          idi == idj && (M.writes(Ui) || M.writes(Uj)), decl[j].usages),
+                      decl[i].usages)
+            dep && pos[decl[i].name] > pos[decl[j].name] && (ok = false)
+        end
+        @test ok
+    end
+
+    @testset "scheduling reorders passes and cuts peak memory" begin
+        # Six independent chains declared interleaved. Declaration order keeps
+        # every chain's buffers alive at once; the memory-saving policy discovers
+        # chain-major order by itself and the peak drops accordingly.
+        dev = M.Device(TESTBACKEND)
+        mk(pol) = begin
+            g = M.Graph(dev)
+            bufs = [[M.Transient.Buffer(g, Float32, 1 << 12) for _ in 1:5] for _ in 1:6]
+            for s in 1:4, c in 1:6
+                M.dispatch!(g, stir!, (bufs[c][s + 1],
+                                           bufs[c][s], 1.0f0), 1 << 12; name = "c$c s$s")
+            end
+            M.Plan(g; policy = pol)
+        end
+        loose, tight = mk(M.Overlap()), mk(M.Compact())
+        @test M.peakbytes(tight) < M.peakbytes(loose)
+        @test [pp.pass.name for pp in loose.passes][1:2] == ["c1 s1", "c2 s1"]   # interleaved
+        @test [pp.pass.name for pp in tight.passes][1:2] == ["c1 s1", "c1 s2"]   # chain-major
+    end
+
+    @testset "reordering preserves results" begin
+        # A schedule may only permute passes within the DAG, so both policies must
+        # compute what the CPU replay says. Checked absolutely rather than by
+        # comparing the two: agreement alone would also be satisfied by both being
+        # wrong the same way.
+        include(joinpath(@__DIR__, "..", "bench", "fuzz.jl"))
+        dev = M.Device(TESTBACKEND)
+        for pol in (M.Overlap(), M.Compact())
+            r = Base.invokelatest(fuzzcases, dev, 1:12; passes = 12, policy = pol)
+            @test r.wrong == 0
+        end
+    end
+
+    @testset "aliasing trades memory against barriers" begin
+        # RPS ships DEFAULT_MEMORY and DEFAULT_PERFORMANCE because sharing bytes
+        # forces ordering between the passes that use them. Our design document
+        # claims both wins at once; this is the measurement that says otherwise.
+        dev = M.Device(TESTBACKEND)
+        mk(al) = begin
+            g = M.Graph(dev)
+            bufs = [M.Transient.Buffer(g, Float32, 1 << 12) for _ in 1:12]
+            for i in 2:12
+                M.dispatch!(g, stir!, (bufs[i],
+                                           bufs[i - 1], 1.0f0), 1 << 12; name = "p$i")
+            end
+            M.Plan(g; alias = al)
+        end
+        on, off = mk(true), mk(false)
+        @test M.peakbytes(on) < M.peakbytes(off)
+        @test count(pp -> !isempty(pp.pre), on.passes) >=
+              count(pp -> !isempty(pp.pre), off.passes)
+    end
+
+    @testset "a second draw does not erase the first" begin
+        # One begin/end per pass with the clear as pass configuration. Issuing a
+        # fresh draw! per item transitions from UNDEFINED each time and discards
+        # everything before it, which shows up as `both` being darker than either.
+        lit(which) = begin
+            dev = M.Device(TESTBACKEND)
+            win = M.Window(TESTBACKEND, W, H; title = "t")
+            sa, sb = cloud(50_000), cloud(20_000)
+            a = Scatter(M.Buffer(dev, sa), M.Buffer(dev, tint.(sa)), M.GPURef(dev, 2.0f0))
+            b = Scatter(M.Buffer(dev, sb), M.GPURef(dev, Vec4f(0.10, 0.04, 0.01, 1)),
+                        M.Buffer(dev, 1.0f0 .+ 3.0f0 .* rand(Float32, 20_000)))
+            mvp = M.GPURef(dev, camera(0.7f0))
+            g = M.Graph(dev); screen = M.Surface(g, win)
+            picked = which === :a ? (a,) : which === :b ? (b,) : (a, b)
+            M.render!(g, "s", screen => M.Clear((0.02f0, 0.02f0, 0.04f0, 1f0))) do p
+                for s in picked
+                    M.draw!(p, SCATTER, bind(p, s, mvp), s.positions)
+                end
+            end
+            plan = M.Plan(g)
+            for _ in 1:20; GLFW.PollEvents(); M.run!(plan); end
+            KernelAbstractions.synchronize(dev)
+            img = M.screenshot(win); close(win)
+            # A colour is not indexable: `p[1]` is a `MethodError` on
+            # `BGRA{N0f8}`, and ColorTypes' accessors are the way in. The sum is
+            # over all three channels, so it does not matter that BGRA stores
+            # them in the other order.
+            sum(Float64(red(p)) + Float64(green(p)) + Float64(blue(p)) for p in img)
+        end
+        la, lb, lo = lit(:a), lit(:b), lit(:both)
+        @test lo > la
+        @test lo > lb
+    end
+
+    @testset "transient render targets are placed and aliased" begin
+        # Two 1000x750 targets whose lifetimes do not overlap. The placer should
+        # give the second the first's bytes, and the result must not change:
+        # target A is copied out before B is rendered, so sharing is legal.
+        include(joinpath(@__DIR__, "..", "bench", "targets.jl"))
+        dev = M.Device(TESTBACKEND)
+        # The same points for both: `cloud` is random, so two graphs built from
+        # separate calls differ for a reason that has nothing to do with aliasing.
+        pts = Base.invokelatest(cloud, 20_000)
+        tight = Base.invokelatest(build_targets, dev, 20_000; points = pts)
+        loose = Base.invokelatest(build_targets, dev, 20_000; points = pts, alias = false)
+
+        E = Mantle
+        imgtrans(pl) = [i for (i, t) in enumerate(pl.graph.transients) if t isa E.TransientImage]
+
+        # Placed and aliased means the two targets land at the SAME offset in
+        # their arena — that is what sharing bytes is — and unaliased means they
+        # do not. Asserted on the placement rather than on a slab size, because
+        # the slab is the driver's physical image requirement (tiling included)
+        # and the logical `nbytes` is not the same number.
+        ti, li = imgtrans(tight.plan), imgtrans(loose.plan)
+        @test length(ti) == 2
+        @test allequal(tight.plan.offsets[i] for i in ti)     # both share the bytes
+        @test !allequal(loose.plan.offsets[i] for i in li)    # kept apart
+
+        # And the peak is exactly one target's physical size less when they
+        # share it: the second target's offset in the unaliased plan IS that
+        # size, and the aliased plan gives it back.
+        onephys = maximum(loose.plan.offsets[i] for i in li)
+        @test onephys > 0
+        @test loose.plan.peak - tight.plan.peak == onephys
+
+        got = map((tight, loose)) do s
+            M.run!(s.plan)
+            KernelAbstractions.synchronize(dev)
+            Array(M.storage(s.out))
+        end
+        @test got[1] == got[2]                 # aliasing changed nothing
+        # Against the background, not an absolute threshold. The tint is scaled
+        # by 0.06 and the combine averages two 8-bit images, so a lit pixel is
+        # around 0.05 and a fixed `> 0.5` would pass on a blank frame only by
+        # counting alpha, which is 1 everywhere.
+        # `p[2]` and NOT `ColorTypes.green`: these pixels are `Vec{4,Float32}`
+        # from a transient target's readback, not the `BGRA{N0f8}` a screenshot
+        # gives, and a `Vec` is indexable. Changing both sites to the accessor
+        # broke this one.
+        green = [p[2] for p in got[1]]
+        @test count(>(minimum(green) + 0.02f0), green) > 1000
+    end
+
+    # A resize is asynchronous: the compositor applies it when it applies it, and
+    # a frame drawn before that lands in a swapchain that is about to be replaced,
+    # so the next readback finds an image nothing has drawn into. Render until the
+    # swapchain matches what was asked for, then draw the frames the assertion
+    # reads. Without this the tests below fail one time in several, and the size
+    # assertion still passes — it is only the pixels that are missing.
+    function resize_and_settle!(dev, plan, win, w, h)
+        resizewindow!(win, w, h)
+        for _ in 1:200
+            M.run!(plan)
+            size(win) == (w, h) && break
+        end
+        for _ in 1:6; M.run!(plan); end
+        KernelAbstractions.synchronize(dev)
+        return size(win)
+    end
+
+    @testset "the swapchain follows a window resize" begin
+        # A resize is not reliably reported: OUT_OF_DATE is what a driver *may*
+        # return, and SUBOPTIMAL is a success code that never reaches an error
+        # branch. On this platform neither arrives — the window shrank and the
+        # swapchain keeps presenting at the previous size, which the compositor
+        # scales,
+        # so it looks blurry and reads back at the wrong resolution. What notices
+        # is comparing the framebuffer size against what the swapchain was built
+        # for, every frame.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "resize")
+        s = Base.invokelatest(build, dev, win, 20_000, 10_000)
+        for _ in 1:10; M.run!(s.plan); end
+        KernelAbstractions.synchronize(dev)
+        @test size(M.screenshot(win)) == (W, H)
+
+        for (w, h) in ((640, 480), (1280, 900), (300, 200))
+            resize_and_settle!(dev, s.plan, win, w, h)
+            img = M.screenshot(win)
+            @test size(img) == (w, h)          # the swapchain went with it
+            bg = img[1, 1]
+            @test count(p -> p != bg, img) > length(img) ÷ 100   # and still drew
+        end
+        close(win)
+    end
+
+    @testset "a transient given a target follows it through a resize" begin
+        # `Transient.Image(g, Float32, screen)` takes its size from the surface
+        # rather than from a tuple, so a window resize carries it along: the image
+        # is recreated and everything is placed again, which is a recompile
+        # because a different size is different offsets, different aliasing and
+        # therefore different barriers.
+        zfrag(inputs) = inputs.color
+        zpipe = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                             fragment = FragmentShader(zfrag),
+                             topology = PointList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 800, 600; title = "tracking depth")
+        g = M.Graph(dev)
+        screen = M.Surface(g, win)
+        z = M.Transient.Image(g, Float32, screen)
+        pts = cloud(20_000)
+        sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 4f0))
+        mvp = M.GPURef(dev, camera(0f0))
+        M.render!(g, "depth", screen => M.Clear((0.02f0, 0.02f0, 0.04f0, 1f0)),
+                  z => M.Clear(1f0)) do p
+            M.draw!(p, zpipe, bind(p, sc, mvp), sc.positions)
+        end
+        plan = M.Plan(g)
+        for _ in 1:5; M.run!(plan); end
+        KernelAbstractions.synchronize(dev)
+        @test size(z) == (800, 600)
+        small = M.peakbytes(plan)
+
+        for (w, h) in ((1200, 900), (400, 300))
+            resize_and_settle!(dev, plan, win, w, h)
+            @test size(z) == (w, h)                  # the depth target went along
+            # One screenshot for both assertions: a readback acquires an image,
+            # and right after a resize the one the presentation engine hands back
+            # may be a new image nothing has drawn into yet.
+            img = M.screenshot(win)
+            @test size(img) == (w, h)
+            bg = img[1, 1]
+            @test count(p -> p != bg, img) > length(img) ÷ 100   # and still drew
+        end
+        # Placed again at each size, so the arena tracks it rather than staying
+        # at whatever the first frame needed.
+        @test M.peakbytes(plan) < small              # 400x300 needs less than 800x600
+        close(win)
+    end
+
+    @testset "an attachment that stops covering the render area is an error" begin
+        # The swapchain follows a resize; a transient sized when the graph was
+        # built does not. Growing the window past it makes every frame violate
+        # VUID-VkRenderingInfo-pNext-06079, which RADV draws anyway — so it is a
+        # wrong picture unless something says so.
+        zfrag(inputs) = inputs.color
+        zpipe = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                             fragment = FragmentShader(zfrag),
+                             topology = PointList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 800, 600; title = "resize mismatch")
+        g = M.Graph(dev)
+        screen = M.Surface(g, win)
+        z = M.Transient.Image(g, Float32, size(win))
+        pts = cloud(2_000)
+        sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 3f0))
+        mvp = M.GPURef(dev, camera(0f0))
+        M.render!(g, "depth", screen => M.Clear((0f0, 0f0, 0f0, 1f0)), z => M.Clear(1f0)) do p
+            M.draw!(p, zpipe, bind(p, sc, mvp), sc.positions)
+        end
+        plan = M.Plan(g)
+        M.run!(plan)                              # same size: fine
+        KernelAbstractions.synchronize(dev)
+
+        resizewindow!(win, 1200, 900)
+        sleep(0.2)
+        @test_throws ErrorException M.run!(plan)  # bigger window, same depth target
+        close(win)
+    end
+
+    @testset "a resize the acquire notices is refit before the frame is recorded" begin
+        # `GLFW.GetFramebufferSize` asks X directly, so a resize can land between
+        # `beginframe!`'s sync and the acquire. The acquire's own sync then
+        # rebuilt the swapchain UNDER a frame whose attachments were already
+        # refit for the previous size: a 1200x900 colour target beside an 800x600
+        # depth target, which is VUID-VkRenderingInfo-pNext-06079 and, on
+        # NVIDIA, a lost device two frames later. Measured 2026-09-07 with
+        # `out/resize_race_mwe.jl`: about one resize cycle in three. The acquire
+        # is in `beforeframe!` now, ahead of `refit!`, so whatever the acquire
+        # notices is what the frame is refit for.
+        #
+        # Forced rather than raced: the window is resized between the two steps
+        # `run!` takes, with X asked until it reports the new size. That the
+        # image is acquired before the refit is checked by `execute!` itself: a
+        # frame whose image was not acquired fails there with an error, before
+        # anything mismatched reaches the device.
+        zfrag(inputs) = inputs.color
+        zpipe = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                             fragment = FragmentShader(zfrag),
+                             topology = PointList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 800, 600; title = "resize at acquire")
+        g = M.Graph(dev)
+        screen = M.Surface(g, win)
+        z = M.Transient.Image(g, Float32, screen)
+        pts = cloud(2_000)
+        sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 3f0))
+        mvp = M.GPURef(dev, camera(0f0))
+        M.render!(g, "depth", screen => M.Clear((0f0, 0f0, 0f0, 1f0)), z => M.Clear(1f0)) do p
+            M.draw!(p, zpipe, bind(p, sc, mvp), sc.positions)
+        end
+        plan = M.Plan(g)
+        for _ in 1:3; M.run!(plan); end
+        M.waitidle(dev)
+
+        M.beforeframe!(dev, plan)                  # poll, sync at 800x600, acquire
+        resizewindow!(win, 1200, 900)
+        t0 = time()
+        fbsize() = (fb = GLFW.GetFramebufferSize(win.handle); (Int(fb[1]), Int(fb[2])))
+        while fbsize() != (1200, 900) && time() - t0 < 5; sleep(0.01); end
+        @test fbsize() == (1200, 900)              # X has applied it; the swapchain has not
+        M.refit!(plan)
+        M.checkextents(plan)
+        @test size(z) == (800, 600)                # sized for the image the frame acquired
+        M.execute!(dev, plan)                      # must record at that size, not rebuild
+        M.waitidle(dev)                            # a mismatched frame loses the device here
+        M.run!(plan)
+        M.waitidle(dev)
+        @test size(win) == (1200, 900)             # the next frame follows the resize
+        @test size(z) == (1200, 900)               # and its attachments with it
+        close(win)
+    end
+
+    @testset "a readback returns the image it acquired" begin
+        # A readback acquires an image when no frame is in flight. Leaving it
+        # outstanding is invisible once and a deadlock in a loop: a swapchain
+        # has two or three images, so the fourth readback waits forever inside
+        # vkAcquireNextImageKHR for one that is never handed back. Found by
+        # measuring two graphs against one window, which hung on the second.
+        #
+        # Asserted through what the window allows afterwards rather than on not
+        # hanging: a window refuses a second image while it holds one (next
+        # testset), so an image a readback left outstanding makes the next
+        # readback, or the acquire after the loop, an error on the spot instead
+        # of a wait that stops the suite.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 256, 256; title = "readback pairing", vsync = false)
+        for _ in 1:6
+            @test size(M.screenshot(win)) == (256, 256)
+        end
+        M.beginframe!(win)
+        M.acquire_next_image!(win)
+        M.present_frame!(dev, win)
+        close(win)
+    end
+
+    # A triangle whose three channels all differ. A display wants `BGRA{N0f8}` and
+    # an offscreen target is usually `RGBA{N0f8}`: the shader writes `(r, g, b, a)`
+    # either way and the attachment's format reorders them, so a pipeline compiled
+    # for the wrong one swaps red and blue, which still looks like a plausible
+    # image. Hence channels compared, not eyeballed.
+    tinted_vertex(pos) = (position = pos[Int(vertex_index())],
+                          tint = Vec4f(0.8f0, 0.3f0, 0.1f0, 1f0))
+    tinted_fragment(inputs) = inputs.tint
+    TINTED = Rasterizer(; vertex = VertexShader(tinted_vertex; outputs = (tint = Vec4f,)),
+                          fragment = FragmentShader(tinted_fragment),
+                          topology = TriangleList(),
+                          blend = Opaque(),
+                          cull = NoCull(),
+                          depth = DepthOff())
+
+    @testset "a window shows what an offscreen target holds, channel for channel" begin
+        dev = M.Device(TESTBACKEND)
+        tri = M.Buffer(dev, Vec4f[(-0.9, -0.9, 0, 1), (0.9, -0.9, 0, 1), (0, 0.9, 0, 1)])
+        function draw_into(target_of)
+            g = M.Graph(dev)
+            t = target_of(g)
+            M.render!(g, "tri", t => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+                M.draw!(p, TINTED, (tri,), 3)
+            end
+            return M.Plan(g), t
+        end
+        win = M.Window(TESTBACKEND, 256, 256; title = "surface vs target", vsync = false)
+        plan_win, screen = draw_into(g -> M.Surface(g, win))
+        # A surface answers what an image does, which is what lets a render pass
+        # bind it without knowing which it has.
+        @test M.target_extent(screen) == size(win)
+        @test eltype(screen) == BGRA{N0f8}
+        # An offscreen framebuffer the caller made, read back after the frame.
+        fb = M.Framebuffer(TESTBACKEND, size(win)...; depth = false, color_format = RGBA{N0f8})
+        plan_off, _ = draw_into(g -> fb)
+        M.run!(M.record!(plan_off))
+        KernelAbstractions.synchronize(dev)
+        a = M.readback_framebuffer(fb)
+        # Every image the platform cycles through drawn, so the one a screenshot
+        # is handed holds this scene.
+        for _ in 1:6; M.run!(plan_win); end
+        KernelAbstractions.synchronize(dev)
+        b = M.screenshot(win)
+        @test size(b) == size(a)
+        for ch in (red, green, blue, alpha)
+            @test all(p -> ch(p[1]) == ch(p[2]), zip(a, b))
+        end
+        # ...and it drew, with a tint that really is asymmetric, so the
+        # comparison above could have failed.
+        @test count(p -> red(p) > 0.5, b) > length(b) ÷ 10
+        @test red(a[128, 128]) != blue(a[128, 128])
+        close(win)
+    end
+
+    @testset "a second frame started under an open one is an error" begin
+        # Recording is not atomic against the Julia scheduler: compiling a kernel
+        # mid-frame yields, and the launch plan is keyed on the world counter, so
+        # one method definition anywhere in the session is enough to make the next
+        # frame compile. A second task rendering the same window then arrives at
+        # `acquire_next_image!` between the acquire and the present, and waits on
+        # the fence the missing present would have signalled. That wait is a
+        # blocking foreign call, so the task holding the frame is never scheduled
+        # again, GC stops, and the process cannot be interrupted or profiled.
+        #
+        # Found by measuring a running demo from the REPL, which wedged the whole
+        # session. A regression here hangs the suite rather than failing it —
+        # that is exactly what the check is for.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, 256, 256; title = "one frame at a time", vsync = false)
+        M.beginframe!(win)
+        M.acquire_next_image!(win)
+
+        # The error is caught to be read: what it says is the assertion, and it
+        # must name which of the two cases this is.
+        err = try; M.acquire_next_image!(win); catch e; e; end
+        @test err isa ErrorException && occursin("the same task", err.msg)
+
+        other = fetch(@async(try; M.acquire_next_image!(win); nothing; catch e; e; end))
+        @test other isa ErrorException && occursin("another task", other.msg)
+
+        # The refused acquires changed nothing, so the frame that owns the image
+        # can still finish, and the window hands out the next one afterwards —
+        # twice, so the second present is seen to have given its image back too.
+        M.present_frame!(dev, win)
+        for _ in 1:2
+            M.acquire_next_image!(win)
+            M.present_frame!(dev, win)
+        end
+        close(win)
+    end
+
+    @testset "closing a window destroys what it owns" begin
+        # `close` has to destroy the swapchain, its views and the surface as
+        # well as the GLFW window: Julia does not run finalizers at exit, so
+        # leaving them to one ends every process with
+        # VUID-vkDestroyInstance-instance-00629 reporting a leaked VkSurfaceKHR,
+        # and every resize leaked a swapchain's worth of image views.
+        #
+        # The surface needs destroying by name rather than by `finalize`: Lava
+        # wraps it around the pointer GLFW returns without going through
+        # Vulkan.jl's `init_handle!`, so it has no destructor and no finalizer.
+        #
+        # What a leak looks like is a validation message at exit, which no
+        # assertion here can see; what can be seen is that a closed window says
+        # so, closes twice, and refuses a frame with an error rather than asking
+        # the driver about a destroyed handle, which is a segfault.
+        win = M.Window(TESTBACKEND, 64, 64; title = "close test", vsync = false)
+        @test isopen(win)
+
+        close(win)
+        @test !isopen(win)
+        close(win)                                          # idempotent
+        @test_throws ErrorException M.beginframe!(win)
+
+        # The close button: `isopen` says so before anything is torn down,
+        # which is what a render loop polls. On Metal, `close` once only marked
+        # the window closed and the OS window stayed up, frozen on its last frame.
+        win = M.Window(TESTBACKEND, 64, 64; title = "close button", vsync = false)
+        GLFW.SetWindowShouldClose(win.handle, true)
+        @test !isopen(win)
+        close(win)
+        @test !isopen(win)
+    end
+
+    @testset "each load op reaches its pass and does what it says" begin
+        # Discard is the point of the exercise: inferring the op from whether a
+        # clear colour was given can only ever pick CLEAR or LOAD, so a pass that
+        # covers every pixel pays for a load it discards. Which attachment op each
+        # one lowers to is the backend's table, not this file's.
+        @test Mantle.clearvalue(M.Keep) === nothing
+        @test Mantle.clearvalue(M.Clear(Vec4f(0.1, 0.2, 0.3, 1))) == (0.1f0, 0.2f0, 0.3f0, 1f0)
+
+        # And all three actually render. The target is a transient, so its state
+        # before the pass is Undefined and the barrier into it comes from there.
+        dev = M.Device(TESTBACKEND)
+        pts = cloud(20_000)
+        for (op, want) in ((M.Clear((0f0, 0f0, 0f0, 1f0)), M.ColorAttachment{true}),
+                           (M.Discard, M.ColorAttachment{true}),
+                           (M.Keep, M.ColorAttachment{false}))
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, BGRA{ColorTypes.FixedPointNumbers.N0f8}, (256, 256))
+            raw = M.Transient.Buffer(g, UInt8, 256 * 256 * 4)
+            mvp = M.GPURef(dev, camera(0f0))
+            pos = M.Buffer(dev, pts); col = M.Buffer(dev, tint.(pts)); siz = M.GPURef(dev, 3f0)
+            M.render!(g, "p", img => op) do p
+                M.draw!(p, SCATTER, (M.Attribute(p, pos), M.Attribute(p, col),
+                                     M.Attribute(p, siz), mvp, Int32(1), Int32(0)), pos)
+            end
+            M.copy!(g, "read", raw, img)
+            plan = M.record!(M.Plan(g))
+            # The render pass, not the update pass every plan with a buffer
+            # puts first.
+            rp = first(p for p in plan.graph.passes if p.kind === :render)
+            @test last(first(rp.usages)) === want
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            px = reshape(Array(M.storage(raw)), 4, :)
+            lit = count(j -> Int(px[1, j]) + Int(px[2, j]) + Int(px[3, j]) > 40, axes(px, 2))
+            @test lit > 1000
+        end
+
+        # What each op does to what is already there, which the loop above cannot
+        # see: its target starts undefined every time. A first pass clears to
+        # blue; the second draws the lower of two bands white and leaves the other
+        # half to its op. `Keep` has to show the first pass's blue there and
+        # `Clear` its own black; `Discard` promises nothing about it, so only the
+        # band is checked. Counted rather than located, so the result does not
+        # depend on which way up the target is.
+        N = 64
+        function overdraw(op)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, BGRA{N0f8}, (N, N))
+            raw = M.Transient.Buffer(g, UInt8, N * N * 4)
+            M.render!(g, "first", img => M.Clear((0f0, 0f0, 1f0, 1f0))) do p
+            end
+            M.render!(g, "second", img => op) do p
+                M.draw!(p, BANDS, (Int32(2),), 6)
+            end
+            M.copy!(g, "read", raw, img)
+            plan = M.record!(M.Plan(g))
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            px = reshape(Array(M.storage(raw)), 4, :)        # B, G, R, A per pixel
+            rgb(r, gr, b) = count(j -> (px[3, j], px[2, j], px[1, j]) == (r, gr, b), axes(px, 2))
+            (white = rgb(0xff, 0xff, 0xff), blue = rgb(0x00, 0x00, 0xff),
+             black = rgb(0x00, 0x00, 0x00))
+        end
+        half = N * N ÷ 2
+        kept = overdraw(M.Keep)
+        @test kept.white == half && kept.blue == half       # the first pass's clear survived
+        cleared = overdraw(M.Clear((0f0, 0f0, 0f0, 1f0)))
+        @test cleared.white == half && cleared.black == half # and here it was replaced
+        @test overdraw(M.Discard).white == half
+    end
+
+    @testset "a depth attachment decides which fragment wins" begin
+        # Two points at the same place, one near and one far. Without depth the
+        # later draw wins, which is why the order is the control: with a depth
+        # attachment the near one has to win in *both* orders.
+        opaque_frag(inputs) = inputs.color
+        ZPIPE = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                             fragment = FragmentShader(opaque_frag),
+                             topology = PointList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+        FLAT = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                            fragment = FragmentShader(opaque_frag),
+                            topology = PointList(),
+                            blend = Opaque(),
+                            cull = NoCull(),
+                            depth = DepthOff())
+
+        N = 64
+        dev = M.Device(TESTBACKEND)
+        ident = Mat4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1)
+        mvp = M.GPURef(dev, ident)
+        # z is NDC depth here, so 0.3 is nearer than 0.7.
+        near = Scatter(M.Buffer(dev, [Vec3f(0, 0, 0.3)]),
+                       M.GPURef(dev, Vec4f(0, 0, 1, 1)), M.GPURef(dev, 40f0))
+        far = Scatter(M.Buffer(dev, [Vec3f(0, 0, 0.7)]),
+                      M.GPURef(dev, Vec4f(1, 0, 0, 1)), M.GPURef(dev, 40f0))
+
+        function shot(order, pipe; withdepth = true)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, BGRA{ColorTypes.FixedPointNumbers.N0f8}, (N, N))
+            raw = M.Transient.Buffer(g, UInt8, N * N * 4)
+            z = withdepth ? M.Transient.Image(g, Float32, (N, N)) : nothing
+            att = withdepth ? (img => M.Clear((0f0, 0f0, 0f0, 1f0)), z => M.Clear(1f0)) :
+                              (img => M.Clear((0f0, 0f0, 0f0, 1f0)),)
+            M.render!(g, "scene", att...) do p
+                for s in order
+                    M.draw!(p, pipe, bind(p, s, mvp), s.positions)
+                end
+            end
+            M.copy!(g, "read", raw, img)
+            plan = M.record!(M.Plan(g))
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            px = reshape(Array(M.storage(raw)), 4, N, N)
+            (blue = Int(px[1, N ÷ 2, N ÷ 2]), red = Int(px[3, N ÷ 2, N ÷ 2]), plan = plan)
+        end
+
+        # The declaration reaches the usage sequence, and a cleared depth target
+        # discards, so its barrier comes from UNDEFINED like any other transient.
+        probe = shot((near, far), ZPIPE)
+        @test any(last(u) === M.Depth{M.ReadWrite,M.NoAccess,true}
+                  for u in first(p for p in probe.plan.graph.passes if p.kind === :render).usages)
+
+        for order in ((near, far), (far, near))
+            got = shot(order, ZPIPE)
+            @test got.blue > 200        # the near point
+            @test got.red < 50
+        end
+
+        # The control: with no depth attachment the same two draws are decided by
+        # order alone, so this is what the test above would have measured if the
+        # attachment had done nothing.
+        @test shot((near, far), FLAT; withdepth = false).red > 200
+        @test shot((far, near), FLAT; withdepth = false).blue > 200
+
+        # And the depth buffer itself, rather than its effect on colour: the
+        # target is copied out like any other image, which needs the depth aspect
+        # in the copy region and TRANSFER_SRC in the image's usage.
+        g = M.Graph(dev)
+        img = M.Transient.Image(g, BGRA{ColorTypes.FixedPointNumbers.N0f8}, (N, N))
+        z = M.Transient.Image(g, Float32, (N, N))
+        raw = M.Transient.Buffer(g, Float32, N * N)
+        M.render!(g, "scene", img => M.Clear((0f0, 0f0, 0f0, 1f0)), z => M.Clear(1f0)) do p
+            for s in (near, far)
+                M.draw!(p, ZPIPE, bind(p, s, mvp), s.positions)
+            end
+        end
+        M.copy!(g, "read z", raw, z)
+        plan = M.record!(M.Plan(g))
+        M.run!(plan)
+        KernelAbstractions.synchronize(dev)
+        zs = reshape(Array(M.storage(raw)), N, N)
+        @test zs[N ÷ 2, N ÷ 2] ≈ 0.3f0 atol = 1e-5   # the near point's z, not the far one's
+        @test zs[1, 1] ≈ 1f0                          # and the clear everywhere else
+    end
+
+    @testset "several colour targets, written by one fragment" begin
+        # The fragment returns a tuple, and element i goes to attachment i. Two
+        # targets that get different colours is the whole claim: one attachment
+        # written twice would pass any test that only looked at one of them.
+        two_frag(inputs) = (inputs.color, Vec4f(0, 1, 0, 1))
+        MRT = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                           fragment = FragmentShader(two_frag),
+                           topology = PointList(),
+                           blend = Opaque(),
+                           cull = NoCull(),
+                           depth = DepthOff())
+
+        N = 64
+        dev = M.Device(TESTBACKEND)
+        mvp = M.GPURef(dev, Mat4f(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1))
+        blue = Scatter(M.Buffer(dev, [Vec3f(0, 0, 0.5)]),
+                       M.GPURef(dev, Vec4f(0, 0, 1, 1)), M.GPURef(dev, 40f0))
+
+        g = M.Graph(dev)
+        T = BGRA{ColorTypes.FixedPointNumbers.N0f8}
+        a = M.Transient.Image(g, T, (N, N))
+        b = M.Transient.Image(g, T, (N, N))
+        ra = M.Transient.Buffer(g, UInt8, N * N * 4)
+        rb = M.Transient.Buffer(g, UInt8, N * N * 4)
+        M.render!(g, "gbuffer", a => M.Clear((0f0, 0f0, 0f0, 1f0)),
+                                b => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+            M.draw!(p, MRT, bind(p, blue, mvp), blue.positions)
+        end
+        M.copy!(g, "read a", ra, a)
+        M.copy!(g, "read b", rb, b)
+        # `alias = false` because the reader is outside the graph. Nothing in the
+        # graph reads `ra` or `rb`, so their intervals end where they are written,
+        # they do not overlap, and the placer is right to give them the same bytes
+        # — at which point both readbacks return whichever copy ran last. That is
+        # aliasing working, not MRT failing, and it cost a debugging detour.
+        plan = M.record!(M.Plan(g; alias = false))
+
+        # Both attachments are declared, so both get a derived barrier.
+        @test count(u -> last(u) <: M.ColorAttachment,
+                    first(p for p in plan.graph.passes if p.kind === :render).usages) == 2
+
+        # And each copy transitions its own source. A layout change is per image,
+        # so the barrier the first copy emitted cannot have put the second target
+        # into TRANSFER_SRC however wide its stage and access masks were — but the
+        # coalescing tested it by masks alone and dropped the second transition.
+        # Synchronization validation reports the second copy reading its source in
+        # COLOR_ATTACHMENT_OPTIMAL; the pixels below come out right anyway, which
+        # is why this is asserted on the derived transitions rather than on the
+        # picture: each copy carries one into `CopySrc` for its OWN source. The
+        # layout change a backend makes of it is that backend's.
+        copies = [pp for pp in plan.passes if pp.pass.kind === :copy]
+        @test length(copies) == 2
+        for (name, src) in (("read a", a), ("read b", b))
+            pp = only(pp for pp in copies if pp.pass.name == name)
+            @test any(t -> t.resource == plan.graph.ids[src] && t.to === M.CopySrc, pp.pre)
+        end
+
+        M.run!(plan)
+        KernelAbstractions.synchronize(dev)
+        pa = reshape(Array(M.storage(ra)), 4, N, N)
+        pb = reshape(Array(M.storage(rb)), 4, N, N)
+        c = N ÷ 2
+        @test Int(pa[1, c, c]) > 200 && Int(pa[2, c, c]) < 50    # target 0: blue
+        @test Int(pb[2, c, c]) > 200 && Int(pb[1, c, c]) < 50    # target 1: green
+
+        # Attachments that disagree about their size share one render area, so it
+        # is a compile error rather than a partly-covered second target.
+        h = M.Graph(dev)
+        big = M.Transient.Image(h, T, (N, N))
+        small = M.Transient.Image(h, T, (N ÷ 2, N ÷ 2))
+        M.render!(h, "mismatched", big => M.Clear((0f0, 0f0, 0f0, 1f0)),
+                                   small => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+            M.draw!(p, MRT, bind(p, blue, mvp), blue.positions)
+        end
+        @test_throws ArgumentError M.Plan(h)
+    end
+
+    # Three sources of new positions, built here rather than by including
+    # `bench/three_updates.jl`: that file is an eval-block script now, and
+    # including it would start its render loop.
+    function three_plots(dev, win, n; profile = false)
+        g = M.Graph(dev)
+        screen = M.Surface(g, win)
+        dt = 1f0 / 60
+        mk(c) = Scatter(M.Buffer(dev, c), M.Buffer(dev, tint.(c)), M.GPURef(dev, 2f0))
+        a, b, c = cloud(n), cloud(n), cloud(n)
+        sim, gpu, cpu = mk(a), mk(b), mk(c)
+
+        simvel = M.Buffer(dev, drift(n))
+        M.dispatch!(g, advect!, (sim.positions, simvel, dt, 1.4f0), n; name = "advect")
+
+        gpuvel = M.Buffer(dev, drift(n))
+        cpupos, cpuvel = copy(c), drift(n)
+        mvp = M.GPURef(dev, camera(0f0))
+        M.render!(g, "three", screen => M.Clear((0.02f0, 0.02f0, 0.04f0, 1f0))) do p
+            for s in (sim, gpu, cpu)
+                M.draw!(p, SCATTER, bind(p, s, mvp), s.positions)
+            end
+        end
+        (; plan = M.Plan(g; profile), dev, dt, n, sim, gpu, cpu,
+           gpuvel, cpupos, cpuvel)
+    end
+
+    function three_step!(s)
+        # An unmodelled launch writing the plot's buffer directly: nothing in
+        # the graph knows it happened, and the next run reads what it wrote.
+        advect!(s.dev)(M.storage(s.gpu.positions), M.storage(s.gpuvel), s.dt, 1.4f0;
+                                  ndrange = s.n)
+        advect!(s.cpupos, s.cpuvel, s.dt, 1.4f0)
+        # A host array, stored: a copy, because the store retains what it is
+        # given and the CPU simulation mutates `cpupos` before the next frame.
+        s.cpu.positions[:] = copy(s.cpupos)
+    end
+
+    @testset "three sources of new positions in one graph" begin
+        # A compute pass in the graph, an unmodelled launch outside it writing
+        # the plot's buffer, and a host array stored through the buffer. The
+        # three differ only in where the bytes come from.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "three updates")
+        s = Base.invokelatest(three_plots, dev, win, 5_000)
+        @test M.npipelines(s.plan) == 1          # three plots, one shader
+
+        plots = (s.sim, s.gpu, s.cpu)
+        before = map(p -> copy(Array(p.positions)), plots)
+        for _ in 1:20
+            Base.invokelatest(three_step!, s)
+            M.run!(s.plan)
+            KernelAbstractions.synchronize(dev)
+        end
+        after = map(p -> Array(p.positions), plots)
+
+        for (b, a) in zip(before, after)
+            @test count(<(1e-6), [norm(a[i] - b[i]) for i in eachindex(b)]) == 0
+            @test maximum(norm, a) <= 1.4f0 + 1e-4      # each stayed in its shell
+        end
+        # And the three are genuinely separate simulations.
+        @test after[1] != after[2] && after[2] != after[3]
+
+        # A store from another task reaches the next frame: it retains a
+        # reference and touches no device API, so where it is made from is free.
+        fresh = cloud(5_000)
+        fetch(Threads.@spawn (s.cpu.positions[:] = fresh))
+        M.run!(s.plan)
+        KernelAbstractions.synchronize(dev)
+        @test Array(s.cpu.positions) == fresh
+        close(win)
+    end
+
+    @testset "a profiled plan times every pass" begin
+        # `profile = true` is the whole of it, and asking an unprofiled plan is an
+        # error rather than a table of zeros.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "profiled")
+
+        plain = Base.invokelatest(three_plots, dev, win, 5_000)
+        @test_throws ArgumentError M.timings(plain.plan)
+
+        s = Base.invokelatest(three_plots, dev, win, 5_000; profile = true)
+        for _ in 1:30
+            Base.invokelatest(three_step!, s)
+            M.run!(s.plan)
+            KernelAbstractions.synchronize(dev)
+        end
+        ts = M.timings(s.plan)
+
+        @test [t.name for t in ts] == [pp.pass.name for pp in s.plan.passes]
+        @test [t.kind for t in ts] == [:update, :compute, :render]
+        # Timestamps came back for every pass, and they are times rather than
+        # zeros: a query pool that is never reset, or read with the wrong stride,
+        # gives exactly zeros. GPU times only where the device has timestamp
+        # queries; without them `gpu_ms` is NaN and the host side is the answer.
+        for t in ts
+            # The update pass lands its stores as a transfer the profiler does
+            # not bracket, so it carries no GPU or host sample; the passes that
+            # run kernels do.
+            t.kind === :update && continue
+            @test t.samples > 0
+            if Mantle.timestamps(dev)
+                @test 0 < t.gpu_ms < 100
+            end
+            @test 0 < t.host_ms < 100
+        end
+        # Kept bounded: the ring is NSAMPLES long however long the plan runs.
+        @test all(t -> t.samples <= M.NSAMPLES, ts)
+        close(win)
+    end
+
+    @testset "a frame waits for what the last one left" begin
+        # A plan is replayed, so frame N+1's first use of a resource follows frame
+        # N's last use of it — and with frames in flight the two overlap on the
+        # GPU. Seeding the tracker with `Undefined` each frame left the first
+        # barrier with no source scope: nothing to wait for. Synchronization
+        # validation calls it a write-after-write against the previous frame's
+        # store op, and it is a race the moment the loop stops flushing.
+        zfrag(inputs) = inputs.color
+        zpipe = Rasterizer(; vertex = VertexShader(scatter_vertex; outputs = (color = Vec4f,)),
+                             fragment = FragmentShader(zfrag),
+                             topology = PointList(),
+                             blend = Opaque(),
+                             cull = NoCull(),
+                             depth = DepthLess())
+        dev = M.Device(TESTBACKEND)
+        g = M.Graph(dev)
+        T = BGRA{ColorTypes.FixedPointNumbers.N0f8}
+        img = M.Transient.Image(g, T, (64, 64))
+        z = M.Transient.Image(g, Float32, (64, 64))
+        pts = cloud(500)
+        sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 2f0))
+        mvp = M.GPURef(dev, camera(0f0))
+        M.render!(g, "scene", img => M.Clear((0f0, 0f0, 0f0, 1f0)), z => M.Clear(1f0)) do p
+            M.draw!(p, zpipe, bind(p, sc, mvp), sc.positions)
+        end
+        plan = M.Plan(g)
+
+        # The transition into the depth target starts from the previous frame's
+        # depth write, not from `Undefined`, so it has something to wait for. The
+        # clear discards, so a backend with layouts still transitions from
+        # UNDEFINED; that lowering is the backend's, the wait is the graph's.
+        rp = first(pp for pp in plan.passes if pp.pass.kind === :render)
+        zt = only(t for t in rp.pre if t.resource == plan.graph.ids[z])
+        @test zt.from <: M.Depth
+        @test any(w -> w <: M.Depth, zt.waits)
+    end
+
+    @testset "a scalar attribute is written in place" begin
+        # A scalar is a one-element buffer, so a new value is a one-element write:
+        # inline in the command buffer, four bytes riding along with the frame.
+        # Renaming would be absurd for that, and it must not happen — a scalar and
+        # a per-element attribute are one pipeline precisely because the binding
+        # is the same shape, and swapping the store would be a needless allocation.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "scalar update")
+        pts = cloud(1_000)
+        sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 2f0))
+        mvp = M.GPURef(dev, camera(0f0))
+        g = M.Graph(dev)
+        screen = M.Surface(g, win)
+        M.render!(g, "plot", screen => M.Clear((0.02f0, 0.02f0, 0.04f0, 1f0))) do p
+            M.draw!(p, SCATTER, bind(p, sc, mvp), sc.positions)
+        end
+        plan = M.Plan(g)
+        store = sc.markersize.store
+
+        M.run!(plan)                                  # nothing stored
+        KernelAbstractions.synchronize(dev)
+        @test Array(M.storage(sc.markersize))[1] == 2f0
+
+        sc.markersize[] = 9f0
+        M.run!(plan)
+        KernelAbstractions.synchronize(dev)
+        @test Array(M.storage(sc.markersize))[1] == 9f0   # the new value arrived
+        @test sc.markersize.store === store               # in the same buffer
+        close(win)
+    end
+
+    @testset "a store writes at the reserved position, whole or ranged" begin
+        # Both write in place, inline in the command buffer, at the update pass
+        # the graph placed ahead of the render that reads them. A whole-buffer
+        # store that RENAMES into a fresh store is what a recording cannot
+        # follow; nothing renames, and a ranged store moves only its range.
+        dev = M.Device(TESTBACKEND)
+        win = M.Window(TESTBACKEND, W, H; title = "store")
+
+        function scene(n)
+            pts = cloud(n)
+            sc = Scatter(M.Buffer(dev, pts), M.Buffer(dev, tint.(pts)), M.GPURef(dev, 2f0))
+            mvp = M.GPURef(dev, camera(0f0))
+            g = M.Graph(dev)
+            screen = M.Surface(g, win)
+            M.render!(g, "plot", screen => M.Clear((0.02f0, 0.02f0, 0.04f0, 1f0))) do p
+                M.draw!(p, SCATTER, bind(p, sc, mvp), sc.positions)
+            end
+            (; sc, g, plan = M.Plan(g), before = copy(pts))
+        end
+
+        # The reserved position is a pass, ahead of the render that reads it,
+        # and every buffer the draw binds is what a store can be waiting on.
+        w = Base.invokelatest(scene, 5_000)
+        @test [pp.pass.name for pp in w.plan.passes] == ["updates", "plot"]
+        @test any(r -> r === w.sc.positions, w.plan.hostwritten)
+
+        # A clean frame stores nothing: the barrier is derived as if it fired,
+        # but nothing is emitted when the source access never happened.
+        store0 = w.sc.positions.store
+        M.run!(w.plan); KernelAbstractions.synchronize(dev)
+        @test w.sc.positions.store === store0
+
+        fresh = cloud(5_000)
+        w.sc.positions[:] = fresh
+        M.run!(w.plan); KernelAbstractions.synchronize(dev)
+        @test w.sc.positions.store === store0             # in place
+        @test Array(w.sc.positions) == fresh
+
+        # And it stays that store, however many stores land in it.
+        for _ in 1:8
+            w.sc.positions[:] = cloud(5_000)
+            M.run!(w.plan); KernelAbstractions.synchronize(dev)
+            @test w.sc.positions.store === store0
+        end
+
+        # Ranged: only the declared range moves.
+        v = Base.invokelatest(scene, 5_000)
+        s0 = v.sc.positions.store
+        v.sc.positions[1:100] = [Vec3f(9, 9, 9) for _ in 1:100]
+        M.run!(v.plan); KernelAbstractions.synchronize(dev)
+        got = Array(v.sc.positions)
+        @test v.sc.positions.store === s0
+        @test all(got[1:100] .== Ref(Vec3f(9, 9, 9)))
+        @test got[101:end] == v.before[101:end]
+        close(win)
+    end
+
+    @testset "a transient nothing uses says so" begin
+        # Liveness derives the interval from use, so one that nothing touches
+        # keeps `typemax(Int)` as its first pass and reaches the placer as an
+        # inverted span. That reported the allocator's internals for a mistake in
+        # the graph, and named neither the transient nor what to do about it.
+        include(joinpath(@__DIR__, "..", "bench", "chain.jl"))
+        dev = M.Device(TESTBACKEND)
+        g = M.Graph(dev)
+        used = M.Transient.Buffer(g, Float32, 1 << 10)
+        M.Transient.Buffer(g, Float32, 1 << 9)          # declared, never used
+        src = M.Buffer(dev, rand(Float32, 1 << 10))
+        M.dispatch!(g, stir!, (used,
+                                   src, 2.0f0), 1 << 10; name = "c")
+        @test_throws "is never used by any pass" M.Plan(g)
+    end
+
+    # There is no `custom!` pass to test: one that declares what it touches but
+    # not how, whose body is a zero-argument callable run with a command buffer
+    # open.
+    #
+    # The graph derives hazards between passes; inside an opaque body it derives
+    # nothing, so ordering the launches INSIDE one means handing the body a
+    # QUEUE and arranging that queue's heuristics around it — lift the
+    # concurrent group so the automatic per-dispatch barrier comes back for the
+    # body's own launches, arm a skip so the FIRST of them skips the one the
+    # pass already emitted, and disarm it afterwards in case the body launched
+    # nothing. Three pieces of queue state, to compensate for a declaration that
+    # does not say what it is doing.
+    #
+    # A hardware-RT pass is a `trace!` for the same reason: a `custom!` body
+    # packs its own arguments while it runs, and a recorded plan never runs the
+    # body again — see `Hikari/test/test_trace_pass_rebind.jl`.
+
+    @testset "a dispatch takes a workgroup size" begin
+        # The default partitions an ndrange along its first axis, so for anything
+        # image-shaped a workgroup is one long row and one of the two accesses is
+        # uncoalesced. A square group costs 0.061 ms here against 0.127 ms, and
+        # 0.12 against 1.06 for the four-component write a real g-buffer pass
+        # does. The assertion is on the result rather than the time, because how
+        # much it is worth is the driver's business and that it is correct is not.
+        w, h = 256, 128
+        dev = M.Device(TESTBACKEND)
+        src = rand(Float32, w * h)
+        transposed(group) = begin
+            g = M.Graph(dev)
+            a = M.Buffer(dev, src)
+            out = M.Buffer(dev, zeros(Float32, w * h))
+            M.dispatch!(g, transpose_scale!,
+                            (out, a,
+                             Int32(w), Int32(h), 2.0f0), (w, h); group, name = "transpose")
+            M.run!(M.record!(M.Plan(g)))
+            KernelAbstractions.synchronize(dev)
+            Array(out)
+        end
+        want = [2.0f0 * src[(y - 1) * w + x] for x in 1:w for y in 1:h]
+        @test Base.invokelatest(transposed, nothing) == want
+        @test Base.invokelatest(transposed, (16, 16)) == want
+    end
+
+    @testset "a fragment shader reads a buffer per pixel" begin
+        # What deferred shading is: a fullscreen pass whose vertex stage makes a
+        # triangle out of `vertex_index()` and takes nothing, and whose fragment
+        # stage reads the g-buffer. Without it the lighting has to go image ->
+        # buffer -> compute -> blit, which is three full-screen copies a frame.
+        N = 64
+        dev = M.Device(TESTBACKEND)
+        g = M.Graph(dev)
+        # A horizontal ramp, so a transposed read or an off-by-one shows up as a
+        # gradient in the wrong direction rather than as "something was drawn".
+        vals = Float32[(x - 1) / N for y in 1:N for x in 1:N]
+        src = M.Buffer(dev, vals)
+        img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+        out = M.Transient.Buffer(g, UInt32, N * N)
+        M.render!(g, "light", img => M.Discard) do p
+            M.draw!(p, RAMP, (), 3;
+                    frag_args = (src, Int32(N), Int32(N)))
+        end
+        M.copy!(g, "read", out, img)
+        plan = M.record!(M.Plan(g))
+        M.run!(plan)
+        KernelAbstractions.synchronize(dev)
+
+        px = Array(M.storage(out))
+        red(i) = Float32(px[i] & 0xff) / 255
+        @test red(1) < 0.02
+        @test abs(red(N ÷ 2) - 0.5) < 0.03
+        @test red(N) > 0.97
+        @test red(N * N) > 0.97          # the last row ramps the same way
+
+        # One push constant range, so the arguments belong to one stage. Caught
+        # where the draw is written, not as one stage failing to compile against
+        # an argument it never declared.
+        h = M.Graph(dev)
+        other = M.Transient.Image(h, RGBA{N0f8}, (N, N))
+        @test_throws "both stages" M.render!(h, "both", other => M.Discard) do p
+            M.draw!(p, RAMP, (M.Attribute(p, src),), 3;
+                    frag_args = (src, Int32(N), Int32(N)))
+        end
+    end
+
+    @testset "a draw count the GPU wrote" begin
+        # What GPU culling needs to be worth anything: a compute pass decides how
+        # much there is to draw and the draw reads that number from device
+        # memory. Without it the count has to come from the host, so culling can
+        # compact a list but never shorten the draw, and every culled instance
+        # still costs a vertex invocation that collapses outside the clip volume.
+        #
+        # The element type is what makes the draw indirect, so this also pins
+        # that a buffer of `DrawIndirectCommand` is allocated with
+        # INDIRECT_BUFFER_BIT — without it the draw is a validation error a long
+        # way from the allocation.
+        N, NB = 64, 8
+        dev = M.Device(TESTBACKEND)
+        kref = M.GPURef(dev, UInt32(3))
+        g = M.Graph(dev)
+        cmds = M.Buffer(dev, Mantle.DrawIndirectCommand, 1)
+        img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+        out = M.Transient.Buffer(g, UInt32, N * N)
+        M.dispatch!(g, set_draw!, (cmds, kref), 1; name = "count")
+        M.render!(g, "bands", img => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+            M.draw!(p, BANDS, (Int32(NB),), cmds)
+        end
+        M.copy!(g, "read", out, img)
+        plan = M.record!(M.Plan(g))
+
+        # The draw declares `Indirect` on it, so the compute write is ordered
+        # against DRAW_INDIRECT and not against the vertex stage.
+        E = Mantle
+        bands = only(p for p in plan.graph.passes if p.name == "bands")
+        @test any(u -> last(u) === Mantle.Indirect, bands.usages)
+
+        litbands() = begin
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            px = reshape(Array(M.storage(out)), N, N)      # row major, so [x, y]
+            count(y -> px[N ÷ 2, y] != 0xff000000, 1:N) ÷ (N ÷ NB)
+        end
+        @test litbands() == 3
+        kref[] = UInt32(6)
+        @test litbands() == 6
+        kref[] = UInt32(1)
+        @test litbands() == 1          # and it shrinks, so nothing is stale
+    end
+
+    @testset "a draw is clipped to its own viewport" begin
+        # A plotting frame is many draws into ONE pass, each clipped to a
+        # different rectangle — an axis. Before this the rectangle could only be
+        # set imperatively between draws, which the graph has no place for: it
+        # reorders passes, so "whatever the previous draw set" is not a value.
+        #
+        # `BANDS` with one band is a quad over the whole clip volume, so where
+        # the white lands is the viewport and nothing else.
+        N, q = 64, 16
+        # Makie's pixel convention, which is also the one a negative height is
+        # for: `y` names the BOTTOM edge and the height is negative, so clip +y
+        # is at the top on every backend.
+        mk(x, y, w, h) = (Float32(x), Float32(y + h), Float32(w), -Float32(h))
+        whole = mk(0, 0, N, N)
+
+        function quadrants(vps; passvp = whole)
+            dev = M.Device(TESTBACKEND)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+            out = M.Transient.Buffer(g, UInt32, N * N)
+            M.render!(g, "split", img => M.Clear((0f0, 0f0, 0f0, 1f0));
+                      viewport = passvp) do p
+                for vp in vps
+                    M.draw!(p, BANDS, (Int32(1),), 6; viewport = vp)
+                end
+            end
+            M.copy!(g, "read", out, img)
+            plan = M.record!(M.Plan(g))
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            px = reshape(Array(M.storage(out)), N, N)      # row major, so [x, y]
+            lit(x, y) = px[x, y] != 0xff000000
+            (tl = lit(q, q), tr = lit(3q, q), bl = lit(q, 3q), br = lit(3q, 3q))
+        end
+
+        # A viewport covering the target lights all of it, whichever way the
+        # height is signed: the sign is orientation, not extent.
+        @test quadrants([whole]) == (tl = true, tr = true, bl = true, br = true)
+        @test quadrants([(0f0, 0f0, Float32(N), Float32(N))]) ==
+              (tl = true, tr = true, bl = true, br = true)
+
+        # One quarter each, and TOGETHER in one pass: neither draw's rectangle
+        # reaches the other. The two are diagonal, so the result also pins the
+        # orientation rather than only the clipping.
+        lo, hi = mk(0, 0, 32, 32), mk(32, 32, 32, 32)
+        @test quadrants([lo]) == (tl = true, tr = false, bl = false, br = false)
+        @test quadrants([hi]) == (tl = false, tr = false, bl = false, br = true)
+        @test quadrants([lo, hi]) == (tl = true, tr = false, bl = false, br = true)
+        @test quadrants([hi, lo]) == (tl = true, tr = false, bl = false, br = true)
+
+        # A draw that names none takes the pass's.
+        @test quadrants([nothing]; passvp = lo) ==
+              (tl = true, tr = false, bl = false, br = false)
+
+        # The one shape that cannot be resolved: some draws name a rectangle,
+        # others do not, and the pass has no default. The extent the others want
+        # is the whole target but its SIGN is the caller's convention, so core
+        # asks rather than guesses — silently inheriting whichever draw ran
+        # before is the bug this whole mechanism exists to rule out.
+        dev = M.Device(TESTBACKEND)
+        g = M.Graph(dev)
+        img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+        M.render!(g, "mixed", img => M.Clear((0f0, 0f0, 0f0, 1f0))) do p
+            M.draw!(p, BANDS, (Int32(1),), 6; viewport = lo)
+            M.draw!(p, BANDS, (Int32(1),), 6)
+        end
+        @test_throws "some draws set a viewport" M.record!(M.Plan(g))
+    end
+
+    @testset "a graph draw can be indexed and instanced" begin
+        # The other two things a Makie frame is made of. A line strip and a mesh
+        # are INDEXED, and sprites are INSTANCED; the graph could express
+        # neither, so an overlay had to be recorded by hand — which is also why
+        # RayMakie kept its own submission path.
+        N = 64
+        # One unit quad in the lower-left quarter of clip space, shifted a full
+        # quarter to the right per instance, so the lit AREA reads off as how
+        # many instances ran and how much of the quad the indices named.
+        function quad_vertex(_::Int32)
+            v = vertex_index() - Int32(1)
+            i = instance_index() - Int32(1)
+            fx = (v == Int32(1) || v == Int32(2)) ? 1f0 : 0f0
+            fy = (v == Int32(2) || v == Int32(3)) ? 1f0 : 0f0
+            (position = Vec4f(-1f0 + fx + Float32(i), -1f0 + fy, 0.5f0, 1f0),
+             color = Vec4f(1, 1, 1, 1))
+        end
+        QUAD = Rasterizer(; vertex = VertexShader(quad_vertex; outputs = (color = Vec4f,)),
+                            fragment = FragmentShader(band_fragment),
+                            topology = TriangleList(), blend = Opaque(),
+                            cull = NoCull(), depth = DepthOff())
+
+        function litcount(ninst, idx)
+            dev = M.Device(TESTBACKEND)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+            out = M.Transient.Buffer(g, UInt32, N * N)
+            ib = M.indexbuffer(dev, idx)
+            M.render!(g, "geo", img => M.Clear((0f0, 0f0, 0f0, 1f0));
+                      viewport = (0, 0, N, N)) do p
+                M.draw!(p, QUAD, (Int32(0),), length(idx);
+                        indices = ib, instances = ninst)
+            end
+            M.copy!(g, "read", out, img)
+            plan = M.record!(M.Plan(g))
+            M.run!(plan)
+            KernelAbstractions.synchronize(dev)
+            count(!=(0xff000000), Array(M.storage(out)))
+        end
+
+        quad = UInt32[0, 1, 2, 0, 2, 3]
+        one = litcount(1, quad)
+        @test one == (N ÷ 2)^2               # exactly the quarter of clip space it names
+        @test litcount(2, quad) == 2one      # the second instance drew, and elsewhere
+
+        # HALF the indices is half the quad, so `count` is an index count and not
+        # a vertex count. Not exact: the two triangles share a diagonal and both
+        # fill rules put those pixels somewhere, so the halves are ~N/2 apart.
+        tri = litcount(1, UInt32[0, 1, 2])
+        @test 0.4one < tri < 0.6one
+        @test litcount(2, UInt32[0, 1, 2]) == 2tri
+    end
+
+    @testset "an aliased region waits for what the vacating tenant last did" begin
+        # The handover barrier is the one transition no per-resource sequence can
+        # produce: the hazard is between two transients that never mention each
+        # other. Assumed — "wait for every stage, both directions" — it is
+        # correct and unfalsifiable. Assembled instead from what the placer says
+        # vacated the bytes and what the state walk says that
+        # transient was last doing.
+        #
+        # So the discriminating question is whether the handover *follows* the
+        # old tenant. Two graphs, identical except for what last touched the
+        # memory: if the barrier is derived they differ, and if it is assumed they
+        # cannot. Which stage masks a backend makes of it is that backend's.
+        N = 256
+        dev = M.Device(TESTBACKEND)
+
+        # (a) the vacating transient was last *read by a shader*
+        function shaderlast(dev)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+            raw = M.Transient.Buffer(g, UInt32, N * N)
+            later = M.Transient.Buffer(g, Float32, N * N)
+            mid = M.Buffer(dev, zeros(Float32, N * N)); out = M.Buffer(dev, zeros(Float32, N * N))
+            M.render!(g, "clear", img => M.Clear((0.25f0, 0f0, 0f0, 1f0))) do p
+            end
+            M.copy!(g, "read", raw, img)
+            # the last thing raw sees
+            M.dispatch!(g, frombytes!, (mid, raw), N * N; name = "consume")
+            # later takes raw's bytes here
+            M.dispatch!(g, scaleby!, (later, mid, 2f0), N * N; name = "fill")
+            M.dispatch!(g, scaleby!, (out, later, 1f0), N * N; name = "out")
+            (; plan = M.record!(M.Plan(g)), out)
+        end
+
+        # (b) the vacating transient was last *written by a copy* and never read
+        function copylast(dev)
+            g = M.Graph(dev)
+            img = M.Transient.Image(g, RGBA{N0f8}, (N, N))
+            raw = M.Transient.Buffer(g, UInt32, N * N)
+            later = M.Transient.Buffer(g, Float32, N * N)
+            seed = M.Buffer(dev, fill(3f0, N * N)); out = M.Buffer(dev, zeros(Float32, N * N))
+            M.render!(g, "clear", img => M.Clear((0.25f0, 0f0, 0f0, 1f0))) do p
+            end
+            M.copy!(g, "read", raw, img)           # the last thing raw sees
+            # later takes raw's bytes here
+            M.dispatch!(g, scaleby!, (later, seed, 2f0), N * N; name = "fill")
+            M.dispatch!(g, scaleby!, (out, later, 1f0), N * N; name = "out")
+            (; plan = M.record!(M.Plan(g)), out)
+        end
+
+        # The alias handover is the transition that names no resource: `later`
+        # taking `raw`'s bytes. Its `from` is what the vacating transient last
+        # did. Read from the transition, not the lowered barrier masks, because
+        # both graphs also carry the transfer barrier of a host-written buffer's
+        # store (`seed`/`mid`), which puts the copy stage in a fill-pass barrier
+        # in EITHER case, so the masks do not tell the two apart.
+        aliashandover(plan) = only(t for pp in plan.passes if pp.pass.name == "fill"
+                                   for t in pp.pre if t.resource == 0)
+
+        a = Base.invokelatest(shaderlast, dev)
+        b = Base.invokelatest(copylast, dev)
+        @test M.peakbytes(a.plan) < M.naivebytes(a.plan)   # they really do share bytes
+        @test M.peakbytes(b.plan) < M.naivebytes(b.plan)
+
+        # The handover tracks the vacating tenant: a copy wrote it in one, a
+        # shader read it in the other.
+        @test aliashandover(b.plan).from === M.CopyDst
+        @test aliashandover(a.plan).from !== M.CopyDst
+
+        # And they compute what they should, the same on every run.
+        for s in (a, b)
+            M.run!(s.plan)
+            KernelAbstractions.synchronize(dev)
+            reference = Array(s.out)
+            M.run!(s.plan)
+            KernelAbstractions.synchronize(dev)
+            @test Array(s.out) == reference
+            @test all(>(0f0), reference)
+        end
+    end
+
+    @testset "a timestamp pair that cannot be from one frame is dropped" begin
+        # The queries are UInt64, so an end before its start wraps rather than
+        # going negative: 1.8e19 ns, which `timings` reports as 1.8e14 ms. Seen
+        # in the wild while rebuilding a profiled plan with frames still in
+        # flight — the pool is reset at the head of each frame's recording, and a
+        # read that races it can take one word from each frame with both
+        # availability bits set.
+        E = Mantle
+        @test E.elapsed(UInt64(100), UInt64(350), 1.0) == 250.0
+        @test E.elapsed(UInt64(100), UInt64(100), 2.0) == 0.0
+        @test E.elapsed(UInt64(350), UInt64(100), 1.0) === nothing
+        @test E.elapsed(typemax(UInt64), UInt64(0), 1.0) === nothing
+    end
+
+    @testset "a render pass with only a depth target" begin
+        # A shadow map is a pass that writes depth and nothing else, so a render
+        # pass does not need a colour target. The render area then has to
+        # come from the depth attachment, because there is nothing else to take it
+        # from, and the fragment shader has to be allowed to write no attachment.
+        N = 64
+        dev = M.Device(TESTBACKEND)
+        g = M.Graph(dev)
+        z = M.Transient.Image(g, Float32, (N, N))
+        out = M.Transient.Buffer(g, Float32, N * N)
+        M.render!(g, "depth only", z => M.Clear(1f0)) do p
+            M.draw!(p, DEPTHONLY, (0.35f0,), 6)
+        end
+        M.copy!(g, "read z", out, z)
+        plan = M.record!(M.Plan(g))
+
+        pass = only(pp for pp in plan.passes if pp.pass.name == "depth only")
+        @test isempty(pass.pass.targets)          # no colour attachment at all
+        @test pass.pass.depth === z
+
+        M.run!(plan)
+        KernelAbstractions.synchronize(dev)
+        zs = reshape(Array(M.storage(out)), N, N)   # row major, so [x, y]
+        @test zs[N ÷ 4, N ÷ 2] ≈ 0.35f0 atol = 1e-5   # the quad's depth, written
+        @test zs[3N ÷ 4, N ÷ 2] ≈ 1f0                 # and the clear beside it
+    end
+end

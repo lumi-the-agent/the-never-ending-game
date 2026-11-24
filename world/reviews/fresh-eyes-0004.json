@@ -1,0 +1,50 @@
+{
+  "verdict": "needs_work",
+  "summary": "The game is fast (frame median ~1 ms, p95 ~2.6 ms) but looks dark and muddy, the camera often shows tree crowns/ground rather than creatures, and there is nothing to play: no plugins, systems, actors or mini games are loaded.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Nothing to do: live_status shows plugins={}, systems=[], actors=0, minigames=[]. The 'Mini game' dropdown and Play button have nothing behind them; the world is 10 static-ish creatures wandering.",
+      "where": "live_status(); bottom bar of dashboard",
+      "evidence": "live_status() at 2026-11-22 ~17:15: plugins=Dict(), systems=[], minigames=[]",
+      "suggestion": "Ship one small plugin with a system and a playable mini game (already on the todo list) and hide or disable the Mini game picker until one exists."
+    },
+    {
+      "severity": "high",
+      "what": "Scene is too dark and muddy: at 17:05-17:17 (daytime 0.71) grass is near-black green, shadowed trees are almost black, creatures look dim and low contrast. Not cozy.",
+      "where": "viewport, whole scene lighting",
+      "evidence": "world/reviews/fe4-1.png, fe4-3.png",
+      "suggestion": "Raise ambient/sky fill light, lift the minimum light at dusk, brighten the grass albedo, soften shadow darkness."
+    },
+    {
+      "severity": "high",
+      "what": "Follow camera is badly framed: in fe4-1 a huge tree crown fills the upper right and the followed creature (Sprout) is small, partly occluded and viewed steeply from above; other creatures are hidden behind foliage. Close-up shots are mostly ground.",
+      "where": "camera rig, mode :follow",
+      "evidence": "world/reviews/fe4-1.png",
+      "suggestion": "Fade or cull tree crowns between camera and subject, raise the camera distance with a lower pitch, and keep the subject and neighbours inside the frame."
+    },
+    {
+      "severity": "medium",
+      "what": "Name tags have no backing and little contrast against the dark and bright patches; they are thin and sit far from the creature when it is near the edge (Marshmallow, Pinchy clipped near the viewport border). Tags show for creatures hidden behind trees.",
+      "where": "viewport overlays",
+      "evidence": "world/reviews/fe4-1.png, fe4-3.png",
+      "suggestion": "Add a dark pill background or outline, hide tags for occluded creatures, clamp inside the viewport with margin."
+    },
+    {
+      "severity": "medium",
+      "what": "Side panel is hard to read: the status text is small and grey, quotes are truncated mid-sentence with '…', and 'Next on the list' items are cut off. It shows agent internals ('a reviewer checks the last work', cost in $) rather than anything about the creatures' lives. 'Messages to you' is empty.",
+      "where": "right panel",
+      "evidence": "world/reviews/fe4-1.png",
+      "suggestion": "Wrap instead of truncating, enlarge the grey text, show creature moods or events, and move cost and agent chatter to a collapsed section."
+    },
+    {
+      "severity": "low",
+      "what": "live:screenshot costs a lot: median 1.27 s, p95 54 s, and live:eval p95 0.98 s. Normal frames are fine (p95 ~2.6 ms), so only a screenshot stalls the game.",
+      "where": "state/perf.json",
+      "evidence": "perf.json live:screenshot p95_ms 54296",
+      "suggestion": "Render screenshots off the frame loop or at lower cost. Note the first screenshot probably paid compile time."
+    }
+  ],
+  "addressed": true,
+  "addressed_note": "Session 6: #9/#15/#16 root cause found (failed meshscatter delete corrupts the render; fixed in firefly_catch.jl). Night light raised in scenery.jl. Tag overlap, camera framing and HUD pill remain as open todos."
+}

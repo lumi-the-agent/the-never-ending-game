@@ -1,0 +1,8 @@
+{"session": 33,
+ "summary": "Meadow and berry race tests pass. The suite's one failure (Ball play: 'the pass does not roll towards Sprout') did not reproduce: the test passed 4 of 4 runs alone, so it is intermittent in the full suite. I added no tests and took no new screenshots this session.",
+ "failures": [{"what": "Ball play test fails intermittently in the full suite: the pass does not roll towards Sprout",
+   "steps": "Run the full suite; the ball test is at the end of minigames.jl. live_tests('Ball play') alone passed 4 of 4 times.",
+   "expected": "After the critter passes the ball back, its velocity points towards Sprout.",
+   "actual": "In the host run the velocity dot product to Sprout was <= 0. Likely state left by an earlier test or a pass that has already stopped. I did not find the cause.",
+   "screenshot": "world/tests/shots/ball-rally.png"}],
+ "tests_added": []}

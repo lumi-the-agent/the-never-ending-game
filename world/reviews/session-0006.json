@@ -1,0 +1,43 @@
+{
+ "verdict": "needs_work",
+ "summary": "The firefly stop! failure (#16) is not fixed: stop! still delete!s the HUD text and the same trace_parts MethodError is reported on the live game. The night light change is unverified at night and the screenshots from the author's own 'fixed' claim do not show the game being played.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The #16 stack trace was the delete! of a Makie Text plot (Glyphs, the HUD), not the meshscatter. The fix only stopped deleting the meshscatter; stop! still calls delete!(game.stage.scene, m.hud). I started and stopped the minigame live and 'Mini game Firefly catch (WASD) failed in stop!' (same trace_parts(::RayMakie.RenderObject) MethodError) was logged again at 16:34:51. The 'Next on the list' panel also still shows that todo. Todo #16 was marked done wrongly. The viewport stayed fine in my run, but the failure reproduces every play/stop and may corrupt the render again.",
+   "where": "plugins/firefly_catch.jl:65 (delete!(game.stage.scene, m.hud))",
+   "evidence": "world/log/events-2026-11-22.jsonl, entry after play_start t=1906.6; reviews/ff_after.png",
+   "suggestion": "Do the same for the HUD as for the flies: create the text plot once, reuse it, set text=\"\" and visible=false on stop. Or draw the HUD as a dashboard panel/Makie Label outside the traced scene. Then re-run 2 start/stop cycles and check the event log for 'failed', not only the screenshot."
+  },
+  {
+   "severity": "medium",
+   "what": "In play, no fireflies are visible in the dashboard view (follow camera), so the game cannot be judged as fun or playable. The HUD '0/8 42 s' is grey-beige and blurred (smeared stroke), poor contrast against the sky, and it sits close to the 'Sprout' tag. Flies are random points up to 0.8*island radius, with no direction hint, so the player cannot tell where to go.",
+   "where": "plugins/firefly_catch.jl:30-35 (flies, hud style)",
+   "evidence": "reviews/ff_play.png",
+   "suggestion": "Spawn flies near Sprout/in view (and brighter/larger), add an arrow or count of distance, and make the HUD larger with a darker backing/stroke. Show a screenshot where at least one fly is visible."
+  },
+  {
+   "severity": "medium",
+   "what": "Todo #17 (night readable) is marked done but the author admits it was not verified at night; the journal (6b) then re-tuned the values by measurement (night mean gray 32-39), yet the todo result still cites the old numbers (moon 0.4, ambient 0.12/0.13/0.18) which no longer match scenery.jl (ambient 0.22/0.24/0.32). Ambient needs a game restart to apply; I did not see evidence a restart happened after the final change. The night is now flat/bright rather than pretty (the todo list itself still says 'Pretty night: blue moon tint').",
+   "where": "dev/NeverendingGame/src/scenery.jl:137,181",
+   "evidence": "media/lum_19.png, lum_22.png, night3.png exist; todo result text vs scenery.jl",
+   "suggestion": "Update the todo result to the real values, restart, screenshot at 21:00 and attach it. Raising ambient to fix 'dark' flattens the day (noon 99 vs 53 at dawn); consider lights over ambient."
+  },
+  {
+   "severity": "low",
+   "what": "Frame time is on the edge of the budget: frame median 28.9 ms, p95 50 ms (render 27 ms), perf.json earlier p95 56 ms. Over 33 ms at p95. The 'Frames are slow' todo is still open and this session did not move it.",
+   "where": "live_status frame_ms",
+   "evidence": "NeverendingGame.live_status() at review time",
+   "suggestion": "Look at render cost (shadows, emissive meshscatter), not just the plugins."
+  },
+  {
+   "severity": "low",
+   "what": "Code hides a limitation: the module-global FLY_PLOT keeps a plot that is invisible-but-still-in-the-scene across plugin reloads (hot reload resets the Ref, so a second meshscatter gets created at each reload and leaks into the traced scene). Also uses a fixed N_FLIES parking array (-50 z) rather than a real hide.",
+   "where": "plugins/firefly_catch.jl:3,29-36",
+   "evidence": "code reading",
+   "suggestion": "Store the shared plot on the game/stage (e.g. in a field or scene attribute) so it survives reload, or fix RayMakie delete (patch in world/patches/)."
+  }
+ ],
+ "addressed": true,
+ "addressed_note": "Session 7: stop! now hides the HUD/flies (no delete!); verified live play+stop at 16:38 and 16:49, no new \"failed in stop!\" after 16:34 (events log). HUD now shows nearest-fly distance, bigger font, thicker stroke. Night todos stay open (#19, #22); perf #24 open."
+}

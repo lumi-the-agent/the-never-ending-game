@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-22T21:46:37.774",
+  "finished": "2026-11-22T22:17:55.276",
+  "id": "20261122-214637-773-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 15000,
+    "prompt": "a cluster of three big red spotted toadstool mushrooms, chunky rounded shapes, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "mushroom"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T22:17:55.275",
+    "faces": 14397,
+    "id": "20261122-214637-773-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-214637-773-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214637-773-asset/mesh.jls",
+    "prompt": "a cluster of three big red spotted toadstool mushrooms, chunky rounded shapes, soft hand-painted colors",
+    "seconds": 472.0,
+    "tags": [
+      "prop",
+      "mushroom"
+    ]
+  },
+  "seconds": 472.2,
+  "started": "2026-11-22T22:10:03.051",
+  "status": "done"
+}

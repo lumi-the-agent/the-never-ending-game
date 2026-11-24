@@ -1,0 +1,125 @@
+{
+ "verdict": "needs_work",
+ "summary": "At night the island is dark and murky: heavy dark-green trees, a muddy ground, small glowing flowers, and white name tags that float over everything. The eye-level shot (cottage, signpost, pink critter, stars) is charming, but the overview and follow cameras are dim and cluttered and the creatures are tiny or hidden. It reads as a hobby project with a few nice props, not yet a cozy game. Only the progress screenshots and the journal were reviewed; I did not play the mini games or run a path traced still this time.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "Night is very dark and low-contrast; the ground is a flat olive with big black shadow blobs, and the sky and stars are the best part. The new flower blooms are a small gain."
+  },
+  "world": {
+   "score": 3,
+   "why": "One grassy hill with trees, a pond and a cottage; no biome variety, no visible water or sky drama, and the terrain is smooth and empty in the foreground."
+  },
+  "props": {
+   "score": 4,
+   "why": "The cottage, signpost, mushrooms and berry bush are good; the pine trees are dark faceted blobs and the rocks are dull. Props are scattered, with few groupings or story spots."
+  },
+  "creatures": {
+   "score": 4,
+   "why": "The pink pig close-up is cute, but in the overview creatures are tiny or hidden under trees and are identified only by labels. Sprout is a pale blob. Few visible interactions."
+  },
+  "fun": {
+   "score": 2,
+   "why": "Mostly watching. The mini games (berry race, firefly catch) exist but the journal shows sessions spent on tests failing at night and on the W key. No reason to play twice or to show someone."
+  },
+  "camera": {
+   "score": 3,
+   "why": "Follow camera sits too high and far, so the subject is a small blob; overview is a dim tilted shot with trees in the way. The eye-level view is the only well composed one."
+  },
+  "ui": {
+   "score": 4,
+   "why": "Dashboard is clean and tags are readable, but the 'Next on the list' and dev-style messages are plain text, and all ten tags float at once, which is cluttered."
+  },
+  "style": {
+   "score": 3,
+   "why": "Stylised props (cottage, pig) sit next to flat primitive trees and a dark realistic-ish ground. STYLE.md only appeared in session 24."
+  },
+  "performance": {
+   "score": 8,
+   "why": "30 fps, frame median about 1.7 ms and p95 about 3.3 ms. The game restarts about every 6 minutes for an unknown cause (todo #76)."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "fun",
+   "what": "There is no moment a player would show a friend. The mini games are simple and the creatures rarely interact in view.",
+   "where": "mini games, creature behaviour",
+   "evidence": "journal 2026-11-23 (sessions spent on test timing and the W key); media/progress/session-0024/overview.png shows ten idle labels",
+   "suggestion": "Build one creature-to-creature moment that happens in the open (e.g. a shared berry feast or dance circle, a chase with a visible reaction) and make the player able to join it with one key.",
+   "done_when": "a 20 s clip from the follow camera shows two or more creatures reacting to each other and the player, with visible emotes"
+  },
+  {
+   "severity": "high",
+   "category": "camera",
+   "what": "The follow and overview cameras make creatures tiny and often hidden behind trees; Sprout is a small blob in the middle of the frame.",
+   "where": "media/progress/session-0024/dashboard.png, overview.png",
+   "evidence": "dashboard.png: Sprout occupies about 4% of the frame; overview.png: most creatures are under crowns",
+   "suggestion": "Use a lower, closer chase camera with a slight look-ahead and fade or push away blocking trees, and cut to the eye-level style shot that already works.",
+   "done_when": "a follow screenshot shows the subject filling at least 15% of frame height with nothing in front of it"
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "what": "Night is murky: the ground is a flat dark olive, the trees are near-black, and there is no moonlight or pools of warm light.",
+   "where": "overview.png and dashboard.png",
+   "evidence": "mean luminance very low in the lower two thirds of both shots",
+   "suggestion": "Add a cool moon key light with a rim on tree crowns, warm window and lantern pools by the cottage, bloom on the flowers, and fog toward the horizon. Lift the ground colour toward blue-green.",
+   "done_when": "the night overview shows readable silhouettes and at least two warm light pools, and the ground is clearly lighter than the shadows"
+  },
+  {
+   "severity": "high",
+   "category": "props",
+   "what": "The conifers and broadleaf trees are heavy dark faceted blobs that dominate every frame and look unrelated to the cottage and creatures.",
+   "where": "overview.png, dashboard.png foreground",
+   "evidence": "large dark pines in the left and centre of overview.png",
+   "suggestion": "Replace the main tree shapes with a stylised generated asset set (round, soft, slightly lighter crowns with colour variety), instanced; check page load time.",
+   "done_when": "the same overview camera shows trees in at least three distinct shapes and tints, with the canopy lighter than the trunks"
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "what": "The island has one biome. There is no beach, water edge, cliff or flower meadow area to walk to.",
+   "where": "world layout",
+   "evidence": "overview.png shows a single grass hill",
+   "suggestion": "Add a shoreline with sand and visible water, and a flower meadow area, each with its own props and light.",
+   "done_when": "an overview screenshot shows at least three differently coloured ground areas, including water"
+  },
+  {
+   "severity": "medium",
+   "category": "creatures",
+   "what": "Creatures are readable only by name tags; shapes and faces are small, and few show emotion.",
+   "where": "overview.png",
+   "evidence": "labels 'Pickles', 'Truffle' mark small blobs",
+   "suggestion": "Give each species a distinct silhouette, bigger eyes and ears, and a mood emote above the head that shows when it matters; show the tag only for the followed or nearest creature.",
+   "done_when": "an overview shows at most three tags and each creature is identifiable by shape"
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "what": "All ten name tags are drawn at once over the scene, covering trees and each other.",
+   "where": "scene overlay",
+   "evidence": "overview.png",
+   "suggestion": "Show tags only within a distance or for the followed creature, fading in and out.",
+   "done_when": "overview shows no overlapping tags"
+  },
+  {
+   "severity": "medium",
+   "category": "style",
+   "what": "Goal 2 (a path traced video) has no release yet and no releases/ folder exists; there is no sign of a movie in the shipped work.",
+   "where": "world/releases",
+   "evidence": "ls world/releases: not found; todo 'A movie of island life, path traced' still open",
+   "suggestion": "Finish a replay-to-VideoEditor pipeline and render a 20-30 s path traced clip of the eye-level cottage view at dusk.",
+   "done_when": "world/releases/<date>-<name>/ contains the video and a note"
+  }
+ ],
+ "engine": [
+  {
+   "what": "RayMakie raster cannot draw an empty meshscatter, and Revise world-age errors can crash the live game on engine edits.",
+   "evidence": "CLAUDE.md lessons learned"
+  }
+ ],
+ "process": "The author works mostly on the right areas (readability, night flowers, the W key fix) and now keeps a STYLE.md, but too much of the recent time goes into test timing and plumbing (night walk failures, restart cause) while the dominant look (trees, night light, camera) barely changed since the first progress shots. Goal 1 has partial work (races, greetings) with no visible payoff in a screenshot; goal 2 has no release or movie pipeline yet; goal 3 moved a little (flower blooms, stars). Next sessions should fix what fills every frame: camera, tree look and night light, then a path traced clip.",
+ "addressed": true,
+ "engine_note": "Both engine items are known: empty meshscatter patch in patches/raymakie-empty-meshscatter.md; Revise world-age is mitigated by invokelatest and batching engine edits (todo #76)."
+}

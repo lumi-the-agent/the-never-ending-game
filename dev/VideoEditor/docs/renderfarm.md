@@ -1,0 +1,340 @@
+# Live scenes and render farms
+
+A film is an ordinary saved `.videoedit` sequence. Scene clips, footage, effects,
+cuts, transitions and audio all go through `renderframe!`, the editor's existing
+finished-output compositor. The farm distributes timeline frames; it does not
+implement another movie renderer.
+
+Dispatch uses bounded adjacent batches (16 frames by default), not one network
+round trip per frame. `renderfarm!(job, workers; batchsize=16)` leases only
+missing, compatible frames; faster slots request more batches. GPU renderers
+must live in separate processes from the coordinator. Native `FarmSlot` results
+stream through `foreachfarmresult` and are validated/committed individually.
+After a partial batch failure only its uncommitted frames are retried. Pause
+drains already leased batches, and resume retains every valid committed frame.
+`status.json` includes the batch size and each worker's latest batch elapsed,
+render and first-result times. Custom transports can specialize
+`foreachfarmresult(accept, resource, frames)` to stream bounded results without
+retaining a full batch of HDR masters in memory.
+
+Preview quality is an editor-session preference. Farm frames always use the
+project canvas, final sample budget and full procedural detail. Recipes with an
+optional `preview!(pixel_scale)` detail callback receive `1.0` before final
+animation evaluation. Reduced previews do not change saved artistic controls.
+
+## A keyframed scene clip
+
+The scene file builds the named Makie plots once:
+
+```julia
+using Makie
+function buildscene(canvas, args)
+    scene = Scene(; size=canvas, camera=cam3d!)
+    subject = mesh!(scene, Sphere(Point3f(0), 1f0); name=:subject, color=:orange)
+    return (scene=scene,)
+end
+```
+
+Animation is saved as ordinary property tracks. Named plots expose translation,
+rotation, scale and editable attributes; cameras and lights use the same tracks.
+Seeking backwards and farm frames arriving in any order evaluate those saved
+values. The scene is built lazily and retained across cuts. Saved sources and
+colour grades are shared resources rather than copies in every shot.
+
+The [scene editing guide](scene-editing.md) describes grading, numeric camera
+controls, grouped objects, keyframes and restoring the original animation.
+
+```julia
+using VideoEditor, RayMakie
+VideoEditor.usebackend!(RayMakie)
+build = programscene("scene.jl")
+clip = sceneclip(VideoEditor.buildscene(build); build, frames=240,
+                 canvas=(1920,1080), framerate=24)
+keyframes!(clip,"subject.translation[1]",[0=>0.,120=>1.,239=>0.];ease=:smooth)
+clip.source.bakewith = :RayMakie
+clip.source.bakescreenopts = Dict{Symbol,Any}(:rasterize=>false, :samples=>100,
+    :denoise=>false, :device=>"Mantle.defaultbackend()")
+clip.source.soundtrack = abspath("audio.wav")   # optional; follows source trims
+seq = Sequence([clip],24)
+saveproject("movie.videoedit",seq)
+```
+
+The script and its indirect includes/assets must be declared as render inputs.
+Scene code is executable Julia, just like the animation project's other code.
+The procedural choreography remains code; this adapter does not convert every
+motion or expression into editor keyframes.
+
+## Recording a simulation as animation tracks
+
+A history-dependent simulation can run once, in source-frame order, before
+editing or distributing its frames:
+
+```julia
+tracks = recordsceneanimation!(clip, joinpath(projectroot,"recordings","run-001"))
+saveproject("movie.videoedit", seq)
+```
+
+The saved recipe must construct fresh simulation state. Recording uses a fresh
+scene, leaving editor overrides separate. It discovers named plots' writable
+numeric/array inputs, transforms, the scene's 3D camera and lights. Derived Makie
+transformation matrices are excluded. On playback the scene is constructed once,
+its simulation updater is bypassed, and the requested samples are restored before
+editor overrides. The same recording is shared across cuts and uses their source
+clock, including trims and speed changes. Farm bundles include and rebase the
+recording files automatically.
+
+Array tracks contain exact recorded samples, not scalar Bézier anchors. They
+appear in the existing object inspector with their current shape and sample count,
+and can be shown as timeline bands, cut and retimed. Scalar properties retain
+the usual editable Bézier controls. Per-element array editing and interpolation
+between simulation samples are not implemented. A missing source-frame sample
+is an error; it is never replaced with a nearby frame.
+
+For simulation outputs outside a scene, use the same recorder directly:
+
+```julia
+tracks = recordanimation(joinpath(projectroot,"recordings","wave-001"),0:239;
+                         framerate=24) do frame,fps
+    advance_simulation!(frame/fps)
+    Dict(Symbol("wave.arg3")=>wave_height, Symbol("sensor.color")=>sensor_pixels)
+end
+```
+
+`RecordedRef(track.path)` supplies the track through the existing parameter-input
+graph. Numeric, point, colour and complex arrays are supported, including changing
+shapes. Samples stream to binary files during recording; repeated consecutive
+values share storage. Playback memory-maps the data and reads only the requested
+sample. Completed recordings are immutable; use a new directory when simulation
+inputs change. Keep those files with the project.
+
+Recording captures native supported inputs, rather than arbitrary Julia state or
+topology changes. Unnamed plots, changing plot topology, nested-camera discovery
+and procedural control callbacks that recompute geometry are not converted by
+this operation. Such controls need a new recording when their simulation inputs
+change; editing a recorded native transform or attribute needs no resimulation.
+
+## Jobs and workers
+
+A job is a snapshot of everything its frames are made of, so a worker renders
+exactly what the coordinator would, with nothing to compare afterwards:
+
+```julia
+job = renderjob("movie.videoedit", "renders/job-001";
+                inputs=["included.jl", "model.glb"])
+renderer = farmrenderer(job)
+try
+    workers = [FarmWorker("local GPU", ids -> farmframes!(renderer,ids))]
+    renderfarm!(job,workers)
+    encodefarm!(job.directory,"movie.mp4"; crf=17, audio=true)
+finally
+    closefarm!(renderer)
+end
+```
+
+### File-backed volume sequences
+
+`FileSeriesRef(paths, times; package, loader, options)` declares immutable
+snapshot files as ordinary project inputs. A `ParamInput(:sample, series,
+ParamRef(:time))` reads the keyed time, retains only the two bracketing files,
+and returns `BlendedInput(a, b, weight)`. The scene receives this via an ordinary
+data argument (`Observable{Any}(nothing)` is a suitable unbound default).
+The volume/material consumer interpolates on the GPU; the input graph does not
+allocate a blended host volume. Outside the sequence range the endpoints hold.
+
+An empty `package` uses FileIO; otherwise `loader` names an installed package's
+function accepting `path; options...`. Use a shared normalization across outputs
+when deriving emission coefficients, not a new display exposure per snapshot.
+This is snapshot interpolation (fast-light), not time-dependent transport along
+each individual ray.
+
+The files and loader package are discovered automatically by `renderjob`, paths
+are rebased on workers, and the addresses, loader options and keyed time survive
+save/load. File data and GPU resources are never embedded in the project file.
+Replace inputs through the editor's mutation/binding API when changing an edit;
+do not mutate referenced snapshot data behind a valid frame cache.
+
+`renderjob` writes `renders/job-001/job/`: the project and its sidecars, the
+files it reads (soundtracks, recordings, scene scripts, and declared `inputs`;
+files under `root`, the project's folder by default, keep their relative paths
+so `include` works) and `environment/Project.toml`, the code. That Project.toml
+pins every package the job loads (VideoEditor, the scenes' final backends, the
+packages scene recipes come from, and everything they need) to what this
+machine runs: a package developed from a git checkout is a `[sources]` entry
+with its remote's `url`, the commit as `rev` and its `subdir` in a monorepo;
+a registered package an exact `[compat]` version; Julia its exact version; and
+the environment's package preferences come along. A checkout with uncommitted
+changes or a commit on no remote branch cannot be fetched by a worker:
+`renderjob` names every such package and stops. `portable = false` pins
+developed packages by `path` instead, for farm clients on this machine only.
+
+The same edit asked for again resumes its job; a changed edit, file or package
+is refused for that directory (make a new job), so frames never mix.
+
+Transport callbacks accept indices and return `farmframes!` results: PNG bytes
+and timings. Scenes, decoders and GPU objects stay in the worker. RPCs can run
+on arbitrary threads; rendering is routed to the GPU's owning thread. A callable
+worker may implement `Base.close`, which the coordinator invokes at completion,
+pause or failure. Plain functions leave resource ownership to callers.
+
+## Farm clients: other machines and every GPU
+
+The editor runs a farm server; every `Player` starts one and logs the command
+that offers a machine's GPUs to it:
+
+```sh
+julia -m FarmClient all 192.168.178.92:7600
+julia -m FarmClient 7900,NVIDIA 192.168.178.92:7600   # only these GPUs
+```
+
+`FarmClient` is a standard-library-only package in this repository. Install it
+once per machine that renders, into the default environment:
+
+```julia
+import Pkg
+Pkg.add(url = "https://github.com/SimonDanisch/VideoEditor.jl", subdir = "FarmClient")
+```
+
+The first argument picks GPUs: `all` discrete and integrated ones, or a
+comma-separated list of indices or parts of their names. Run a client on the
+editor's own machine as well for its GPUs. A client waits for the server and
+reconnects when the editor restarts, so it can keep running.
+
+```julia
+workers = farmworkers(job)       # this session's server: farmserver()
+renderfarm!(job, workers)
+encodefarm!(job.directory, "movie.mp4")
+```
+
+`farmworkers` sends every connected client the job's snapshot. The client
+can be restricted to one existing application environment by setting
+`VIDEOEDITOR_FARM_PROJECT` to that root directory (or passing `project` to
+`FarmClient.Client`). In this mode it validates the root's package pins and
+preferences against the job, then launches all GPU children with that root.
+It never installs, activates, or overwrites a job-specific Pkg environment;
+a mismatch is reported instead. Synchronize that root's packages before
+offering the client. A job made with `portable = false` pins each developed
+package by the hash of its code (`Project.toml`, `Artifacts.toml`, `src`,
+`ext`, `assets`), so a root whose packages are copies synchronized into other
+folders, uncommitted work included, passes; a portable job pins them by commit. GPU inventories and job data stay in the client cache.
+
+Without this setting, the client
+unpacks it, instantiates `environment/Project.toml` with the job's Julia
+version (`julia +<version>` through juliaup, or its own Julia if it is that
+version; automatic precompilation off), asks the job's VideoEditor which GPUs
+there are (`farmgpus`) and starts a renderer per GPU in it (`farmchild`, the
+GPU chosen by index). Each renderer, once ready, connects back to the server and
+joins the running render, so frames start on the first GPU while slower
+machines still install or compile. Environments are kept by their Project.toml
+under `~/.videoeditor/farm` and reused; packages and compiled code live in the
+ordinary Julia depot. The first job on a machine installs and compiles, which
+takes minutes. A GPU that cannot be opened is reported and left out. Closing a
+GPU's worker, or a dropped connection, ends its renderer and frees the GPU; a
+lock file per GPU keeps two jobs from sharing one. A renderer whose device is
+lost (a GPU reset) reports the failed frame and ends; its client starts it
+again and the GPU joins the running render anew, its frames retried elsewhere
+meanwhile.
+
+Messages are TOML headers with byte payloads, not Julia serialization, so the
+editor, client and renderer may run different Julia or VideoEditor versions.
+The connections are plain TCP without authentication: a client renders what
+the server it was pointed at sends, and the server hands every connected client
+the job's files. Run the farm on a network you trust.
+
+Every `Player` offers **Export → Render on farm…** and **Ctrl+P → Render on LAN
+farm** (`registerlanfarm!`), enabled while a client is connected. It snapshots
+the edit, renders on every offered GPU, shows progress, then uses the Export
+panel's chosen file, H.264/H.265, quality, preset and audio settings. Farm
+output supports MP4/MKV/MOV. GIF still uses the local export action.
+`registerfarm!` registers any other transport the same way.
+
+## Resume and verification
+
+Faster workers take more frames. A failed worker retries unfinished requests;
+completed PNGs have atomic commits and receipts naming the job and the PNG's
+hash. Run `renderfarm!` again on the same job to resume.
+
+`pausefarm!(job.directory)` stops new dispatch after current frames finish.
+Remove `pause.requested` before resuming. `farmstatus` reads progress/errors;
+`frames/*.json` records worker and render time per frame. A directory lock prevents
+two coordinators from writing one job. After a coordinator process is killed,
+remove its stale `coordinator.lock` only after confirming it is no longer running.
+
+Encoding requires every frame receipt, checks output dimensions and decoded frame
+count, checks audio presence when requested, and fully decodes the result before
+publishing it. Scene soundtracks mix on their source clocks, including cuts and
+speed changes. Rendered narration is saved as binary PCM; synthesize it before
+preparing a job so workers need no speech model.
+
+## Backend selection and current cache limits
+
+Farm rendering uses the scene's saved final backend and screen options. For
+RayMakie movies, use GPU rasterization for editor previews and
+`bakewith = :RayMakie` with `rasterize = false` for final frames. Loading GLMakie is not proof
+that it renders the scene: VideoEditor currently imports it for its editor
+window. The package's small `test/renderfarm.jl` fixture explicitly chooses
+GLMakie to test scheduling, receipts, transfer and encoding; it does not verify
+GPU ray tracing.
+
+Resume reuses verified frames from the **same immutable job**. `carryframes!`
+also retains finished frames when an edit is made into another job. Without
+keywords it requires the same edit and inputs. For trims and insertions, pass
+`frames = [destination => original, ...]`: each pair is checked against the
+saved clips, effects and source frames, and all declared input files must stay
+unchanged. Clip IDs must be preserved when editing. Transitions and driven
+picture dependencies are conservatively refused. Code changes remain the
+caller's responsibility, as with carrying an identical edit after a renderer fix.
+The images and requested track planes share storage through hard links; receipts
+retain the original job and frame number. A flattened source cannot supply a
+layered destination and is refused. No original image or receipt is changed. The scheduler then
+renders only the new job's missing frames. Narration is taken from its revised
+project when encoding, independently of picture reuse.
+
+A project with track caches (`enabletrackcache!`) gets separate track PNGs back:
+the graded picture and the transparent labels remain compositable. Retention of
+the large linear HDR/auxiliary buffers is controlled independently:
+
+| Job options | Retained data | Edits that reuse tracing |
+|---|---|---|
+| `planes=true, hdr=false` | Track PNGs and finished composites | Labels, languages, placement/cuts preserving source pictures |
+| `planes=true, hdr=true` | Track PNGs, HDR/auxiliary buffers and composites | Also grading and denoising |
+| `planes=false` | Finished composites only | Identical finished frames only; labels are burned in |
+
+Use `hdr=false` to save space while retaining editable picture/label layers.
+Disabling HDR must not be implemented by disabling `planes`. Existing jobs
+without an `hdr` setting keep their original retention policy.
+Held pictures can reuse an equivalent graded PNG without an HDR master; their
+key includes the effect stack so different grading is never silently reused.
+
+A worker renders into caches of its own, outside the snapshot, and returns the
+selected data with the frame (`farmlayers!`). Temporary HDR files are discarded
+on the worker when `hdr=false`; they are not read into transfer payloads or
+stored by the coordinator. The coordinator keeps track PNGs under
+`<job>/trackframes` and names their hashes in the frame's receipt.
+`adoptfarmcache!(seq, job)` takes them into the edit's caches wherever the
+clip's frame is unchanged since the job was made. Label edits reuse the graded
+picture PNG even without HDR. Grade/denoise edits need retained HDR to avoid
+tracing again:
+
+```julia
+seq = loadproject(project)
+enabletrackcache!(seq, project * ".frames")
+saveproject(project, seq)
+job = renderjob(project, directory; hdr=false)
+renderfarm!(job, farmworkers(job); reuse=seq)
+adoptfarmcache!(seq, job)   # before editing it further
+saveproject(project, seq)
+```
+
+For another language, load this saved project and change its label clips and
+narration through the editor's mutation API. Preserve picture clip IDs and
+source clocks; do not rebuild the whole sequence to change text. `saveproject`
+to another filename shares immutable cached planes through hard links where
+supported, so language versions do not duplicate pictures. Writing a new label
+publishes a new file and leaves the original version intact. Use ordinary
+`exportvideo` to composite translated labels over the cached pictures. With
+`hdr=false`, this requires no HDR source cache and no further ray tracing.
+
+`encodefarm!` currently encodes all verified PNGs again, then mixes/muxes audio.
+There is no cached video-stream remux path for an audio-only edit. Changes to
+speech timing can also affect visuals when a scene follows narration cues;
+those changed pictures must be rendered even if the rest of the film is carried.

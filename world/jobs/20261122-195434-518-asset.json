@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-22T19:54:34.562",
+  "finished": "2026-11-22T20:05:19.237",
+  "id": "20261122-195434-518-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a small stylized stone lantern with moss on its roof, chunky rounded shapes, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "stone",
+      "lantern"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T20:05:18.832",
+    "faces": 188578,
+    "id": "20261122-195434-518-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-195434-518-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-195434-518-asset/mesh.jls",
+    "prompt": "a small stylized stone lantern with moss on its roof, chunky rounded shapes, soft hand-painted colors",
+    "seconds": 640.0,
+    "tags": [
+      "prop",
+      "stone",
+      "lantern"
+    ]
+  },
+  "seconds": 643.3,
+  "started": "2026-11-22T19:54:35.549",
+  "status": "done"
+}

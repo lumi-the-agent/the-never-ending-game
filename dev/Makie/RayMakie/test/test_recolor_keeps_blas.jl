@@ -1,0 +1,53 @@
+using Test
+# No `using Lava`: none of this file names one, and loading it drags in the
+# Vulkan loader — which is not there on every machine this suite runs on, so
+# the whole file errored before its first test rather than running on the
+# backend `runtests.jl` already found and activated.
+using Makie, RayMakie, Hikari, GeometryBasics, Raycore
+
+# Recolouring a mesh must not tear down its BLAS and rebuild it.
+# `trace_color_tex` in `mesh_trace_dispatch!`'s `needs_rebuild` set, beside
+# `faces` and `positions`, does exactly that, even though the colour only
+# reaches `extract_material` in `push_to_scene_simple` and never touches the
+# geometry.
+#
+# Nothing about the image says which path ran, so this asserts on the handle: a
+# rebuild calls `delete_trace_handles!` and re-pushes, producing a new TLAS
+# instance, while a material update leaves it alone. Without that, "recolour is
+# cheap" is only ever a claim about the source.
+#
+# Read colours with `Hikari.constant_value`, NOT `Kd.data[]` — a ConstTexture
+# keeps its value in `constval` and leaves `data` an uninitialised 0-dim array,
+# so `data[]` reads denormal garbage that compares unequal to everything and
+# makes this test look like it passes.
+@testset "recolour keeps the BLAS" begin
+    scene = Makie.Scene(size = (64, 64))
+    Makie.Camera3D(scene)
+    p = mesh!(scene, Rect3f(Vec3f(-1), Vec3f(2)), color = :red)
+    screen = RayMakie.Screen(scene; device = Mantle.defaultbackend(), visible = false)
+    # The Screen constructor does not build the scene; `colorbuffer` does it
+    # lazily and so does this.
+    RayMakie.init_scene!(screen, scene)
+
+    before = p.attributes[:trace_renderobject][]
+    @test before !== nothing
+    @test hasproperty(before, :handle)
+    n_before = Raycore.n_instances(screen.scene_states[1].hikari_scene.accel)
+
+    p.color = :blue
+    RayMakie.poll_all_plots(screen, scene)
+    after = p.attributes[:trace_renderobject][]
+
+    # Same instance, same instance count: no delete + re-push happened.
+    @test after.instance_idx == before.instance_idx
+    @test Raycore.n_instances(screen.scene_states[1].hikari_scene.accel) == n_before
+    # A colour after a colour: the material keeps its type and its slot.
+    @test typeof(after.material) === typeof(before.material)
+    # And the colour actually reached the material, so this is not passing by
+    # doing nothing at all.
+    @test Hikari.constant_value(before.material.color) != Hikari.constant_value(after.material.color)
+    # `==`, not `≈`: RGBSpectrum has no isapprox method.
+    @test Hikari.constant_value(after.material.color) == Hikari.RGBSpectrum(0.0f0, 0.0f0, 1.0f0, 1.0f0)
+
+    close(screen)
+end

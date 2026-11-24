@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-22T23:47:56.825",
+  "finished": "2026-11-22T23:49:22.707",
+  "id": "20261122-234756-825-trace",
+  "kind": "trace",
+  "params": {
+    "path": "/sim/Programmieren/SimGame/world/media/s20-trace-island.png",
+    "samples": 256
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s20-trace-island.png"
+  },
+  "seconds": 84.2,
+  "started": "2026-11-22T23:47:58.520",
+  "status": "done"
+}

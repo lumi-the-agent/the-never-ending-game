@@ -1,0 +1,166 @@
+# Lava's test suite: a Julia→SPIR-V compiler, tested without a GPU.
+#
+# This file drove 136 includes across three tiers until 2026-08-27, when the
+# Vulkan runtime moved to `Mantle/src/vulkan/`. 128 of them went with it, to
+# `Mantle/test/vulkan/` — every test that needed a device, a queue, a pool or a
+# `LavaArray`. What is left needs none of those, which is the point: **this suite
+# runs on a machine with no Vulkan driver.**
+#
+#   Tier 1   SPIR-V emission. Compile a kernel, disassemble it, check the
+#            instructions. `spirv/` holds one file per stage and feature.
+#   Tier 1b  Compiler IR passes, on LLVM IR, before any SPIR-V exists.
+#   Tier 2   Validation and structure: every builtin through `spirv-val`, the
+#            emitter's capability decisions, hand-built modules, workgroup
+#            layout, source maps and compile errors, and the kernel cache.
+#
+# There is no Tier 3: GPU execution is Mantle's.
+#
+# `compile_and_disasm` reaches `spirv-val` and `spirv-dis` through
+# `SPIRV_Tools_jll`, which are binaries rather than a driver — that is what makes
+# a compiler suite runnable in CI on a box with no GPU.
+
+using Test
+using Lava
+# The portable shader vocabulary is KernelInterface's: the stage tests name
+# `Lava.vertex_index`, not `Lava.vertex_index`.
+import KernelInterface
+
+# "No Vulkan driver" means no GPU, not no loader. `src/Lava.jl` builds the
+# compiler only under `@static if Vulkan.HAS_LOADER`, and macOS has no loader, so
+# there the module is empty. This suite said so as `UndefVarError:
+# lava_method_table` from its first include; it says it plainly instead.
+# `@static`, so the imports below stay at top level on the machines that run them.
+@static if !Lava.Vulkan.HAS_LOADER
+@info "Lava tests: no Vulkan loader here, so Lava builds no compiler and there is nothing to test"
+@testset "Lava.jl" begin
+    @test_skip Lava.Vulkan.HAS_LOADER
+end
+else
+
+# Loaded once; each test file guards with `@isdefined(SPIRVTestUtils)` so it also
+# runs standalone, which is how a file gets run while a feature is being added.
+include(joinpath(@__DIR__, "test_mul_high_override.jl"))
+include(joinpath(@__DIR__, "spirv_test_utils.jl"))
+import .SPIRVTestUtils: check, check_not, check_dag, check_sequence, check_count,
+    check_regex, normalize_spirv, compare_golden, compile_and_disasm,
+    spirv_opt_roundtrip, check_vendor_safety, compile_with_llc
+
+@testset "Lava.jl" begin
+
+    # ── Tier 1: SPIR-V emission ──────────────────────────────────────────────
+    #
+    # One file per stage and feature: compute, vertex, fragment, geometry,
+    # tessellation, ray query, math
+    # intrinsics, control flow, memory, types. Each compiles a kernel and checks
+    # the disassembly, so a wrong instruction fails here rather than on a device.
+    @testset "Tier 1: SPIR-V Emission" begin
+        spirv_dir = joinpath(@__DIR__, "spirv")
+        for f in sort(readdir(spirv_dir; join = true))
+            endswith(f, ".jl") || continue
+            @info "Running $(basename(f))..."
+            include(f)
+        end
+    end
+
+    # ── Tier 1b: compiler IR passes ──────────────────────────────────────────
+    # On LLVM IR, before any SPIR-V exists.
+    @testset "Tier 1b: Compiler IR passes" begin
+        include(joinpath(@__DIR__, "test_replace_unreachable.jl"))
+        include(joinpath(@__DIR__, "test_cfg_traversal.jl"))
+        include(joinpath(@__DIR__, "test_pointee_type_map.jl"))
+        include(joinpath(@__DIR__, "test_barrier_skipping_paths.jl"))
+        include(joinpath(@__DIR__, "test_constexpr_phi_operand.jl"))
+        include(joinpath(@__DIR__, "test_constant_struct_operand.jl"))
+        include(joinpath(@__DIR__, "test_select_of_alloca_elements.jl"))
+        include(joinpath(@__DIR__, "test_private_alias_bounds.jl"))
+        include(joinpath(@__DIR__, "test_punned_store_into_array.jl"))
+        include(joinpath(@__DIR__, "test_select_private_device_load.jl"))
+        include(joinpath(@__DIR__, "test_subword_integer_alloca.jl"))
+        include(joinpath(@__DIR__, "test_memcpy_chunk_alignment.jl"))
+        include(joinpath(@__DIR__, "test_memset_run_time_length.jl"))
+        include(joinpath(@__DIR__, "test_pointer_table_phi.jl"))
+        include(joinpath(@__DIR__, "test_phi_pointee_agrees.jl"))
+        include(joinpath(@__DIR__, "test_exact_narrowing.jl"))
+        include(joinpath(@__DIR__, "test_exact_division.jl"))
+        include(joinpath(@__DIR__, "test_odd_integers.jl"))
+        include(joinpath(@__DIR__, "test_constexpr_null_global.jl"))
+        include(joinpath(@__DIR__, "test_private_gep_phi.jl"))
+        include(joinpath(@__DIR__, "test_managed_argument_inlining.jl"))
+        include(joinpath(@__DIR__, "test_uninitialized_allocations.jl"))
+        include(joinpath(@__DIR__, "test_private_array_choices.jl"))
+        include(joinpath(@__DIR__, "test_private_helper_arguments.jl"))
+        include(joinpath(@__DIR__, "test_private_argument_copies.jl"))
+        include(joinpath(@__DIR__, "test_pointer_field_integer_load.jl"))
+        include(joinpath(@__DIR__, "test_typepun_layout_cache.jl"))
+        include(joinpath(@__DIR__, "test_phi_pointee_recovery.jl"))
+        include(joinpath(@__DIR__, "test_byte_step_before_typed_gep.jl"))
+        include(joinpath(@__DIR__, "test_pointer_select_storage.jl"))
+        include(joinpath(@__DIR__, "test_retype_float_lanes.jl"))
+        include(joinpath(@__DIR__, "test_retype_word_lanes.jl"))
+        include(joinpath(@__DIR__, "test_dynamic_memset.jl"))
+    end
+
+    # ── Tier 2: validation and structure ─────────────────────────────────────
+
+    # An `llvmcall` intrinsic emits nothing until a kernel calls it, so a builtin
+    # with no caller has never been through spirv-val. That is not hypothetical:
+    # `lava_workgroup_size` emits a module Vulkan rejects and 26955 passing tests
+    # said nothing, because not one built a module containing it.
+    @testset "SPIR-V builtin validation" begin
+        include(joinpath(@__DIR__, "test_builtin_validation.jl"))
+    end
+
+    # What the emitter may declare, and who tells it. Not a context ref read for
+    # two booleans: a record the runtime pushes,
+    # which is the last thing that had to go before the move was possible.
+    # Asserted on the emitted SPIR-V: flip the record, the capability changes.
+    @testset "target features" begin
+        include(joinpath(@__DIR__, "test_target_features.jl"))
+    end
+
+    # The module builder used directly: a compute shader and three ray-tracing
+    # shaders assembled instruction by instruction, through spirv-val.
+    @testset "hand-built shader modules" begin
+        include(joinpath(@__DIR__, "test_handbuilt_shaders.jl"))
+    end
+
+    # Packed size and alignment of vector types in workgroup memory.
+    @testset "workgroup vector layout" begin
+        include(joinpath(@__DIR__, "test_workgroup_vector_layout.jl"))
+    end
+
+    # SPIR-V id → Julia line, and the errors a kernel that cannot compile
+    # raises: which helper, why, and what to do about it.
+    @testset "source maps and compile errors" begin
+        include(joinpath(@__DIR__, "test_source_mapping.jl"))
+    end
+
+    # The boundary itself, from the source: no file in this package names
+    # `Vulkan`, `VkContext` or `vk_context` in code, and the package does not
+    # depend on Vulkan.jl. Costs no device time and is what keeps the split real.
+    @testset "compiler / runtime split" begin
+        include(joinpath(@__DIR__, "test_compiler_runtime_split.jl"))
+    end
+
+    # The kernel cache: SPIR-V kept with each `CodeInstance`, found again in a
+    # new world and from the package image, compiled again after an edit.
+    @testset "compile cache" begin
+        include(joinpath(@__DIR__, "test_compile_cache.jl"))
+        include(joinpath(@__DIR__, "test_inferred_cache.jl"))
+        include(joinpath(@__DIR__, "test_parallel_compile.jl"))
+        include(joinpath(@__DIR__, "test_readonly_loads.jl"))
+    end
+
+    # SPV_NV_tensor_addressing layout emission.
+    @testset "tensor opcodes" begin
+        include(joinpath(@__DIR__, "test_tensor_opcodes.jl"))
+    end
+
+    # Two fixed per-kernel overheads that were pure waste. Pinned so they do not
+    # come back; measures compile time, not run time, so no device is involved.
+    @testset "compile overhead" begin
+        include(joinpath(@__DIR__, "test_compile_overhead.jl"))
+    end
+end
+
+end # @static if Vulkan.HAS_LOADER

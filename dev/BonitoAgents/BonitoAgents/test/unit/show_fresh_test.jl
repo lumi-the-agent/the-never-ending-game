@@ -1,0 +1,197 @@
+@testitem "unit:show_fresh" tags = [:unit] begin
+
+# "bt_show and friends show old files when they have the same path" (#34).
+#
+# The server keeps a MIRROR of every worker file it has been asked to display.
+# Paths get reused constantly — a re-rendered plot, a re-recorded video, an
+# edited source file all keep their name — so "we already have a file at this
+# destination" is not a cache hit, and treating it as one is how the chat ends up
+# showing yesterday's plot with today's caption.
+#
+# The fix is a freshness key: the worker's `(size, mtime)` at the moment a
+# transfer landed. Only a stamp that still matches skips the re-fetch. These
+# tests run against a REAL worker over the real transfer path, because the whole
+# bug lived in the interaction between the two sides.
+
+using Test
+import BonitoAgents
+using HTTP
+const BT = BonitoAgents
+
+@testset "mirror freshness against a live worker" begin
+    h = BT.dev_server(; port = 0)
+    try
+        registered = false
+        for _ in 1:60
+            isempty(h.state.workers[]) || (registered = true; break)
+            sleep(0.5)
+        end
+        @test registered
+        st = h.state
+        wid = first(keys(st.workers[]))
+
+        # A project whose worker tree and server mirror are DIFFERENT directories,
+        # so every read has to go through a real worker transfer (the shared-FS
+        # short-circuit would hide the bug entirely).
+        worker_dir = mktempdir()
+        server_dir = mktempdir()
+        pid = "fresh-test"
+        st.projects[][pid] = BT.ProjectInfo(pid, "Fresh", wid, server_dir, worker_dir,
+                                            BT.now(BT.UTC))
+        probe = joinpath(worker_dir, "plot.png")
+        show_tool = BT.ShowTool(st, pid, server_dir, "plot.png")
+        mirror = BT.show_server_path(show_tool)
+        @test mirror == joinpath(server_dir, "plot.png")
+
+        @testset "first read fetches" begin
+            write(probe, "VERSION-ONE")
+            @test BT.fetch_show_file(show_tool) == mirror
+            @test read(mirror, String) == "VERSION-ONE"
+        end
+
+        @testset "an unchanged file is NOT re-fetched" begin
+            # The stamp matches, so the mirror is served as-is. Proven by writing
+            # to the MIRROR behind the fetcher's back: a re-fetch would overwrite
+            # this, a cache hit keeps it.
+            write(mirror, "SERVED-FROM-CACHE")
+            @test BT.fetch_show_file(show_tool) == mirror
+            @test read(mirror, String) == "SERVED-FROM-CACHE"
+            write(mirror, "VERSION-ONE")   # put it back
+        end
+
+        @testset "the same path with NEW content re-fetches" begin
+            sleep(0.02)
+            write(probe, "VERSION-TWO")
+            @test BT.fetch_show_file(show_tool) == mirror
+            @test read(mirror, String) == "VERSION-TWO"
+        end
+
+        @testset "a same-SIZE rewrite re-fetches too" begin
+            # The case a size-only check misses, and the common one: an image
+            # re-rendered at the same dimensions, a file edited in place.
+            sleep(0.02)
+            write(probe, "VERSION-TRE")     # same length as VERSION-TWO
+            @test filesize(probe) == 11
+            @test BT.fetch_show_file(show_tool) == mirror
+            @test read(mirror, String) == "VERSION-TRE"
+        end
+
+        @testset "a deleted-then-recreated file is picked up" begin
+            sleep(0.02)
+            rm(probe)
+            write(probe, "VERSION-FOUR")
+            @test read(BT.fetch_show_file(show_tool), String) == "VERSION-FOUR"
+        end
+
+        @testset "with no worker, a stale mirror beats an error" begin
+            # Offline (or an unknown project): showing the last known version is
+            # the right call — but only because there is no way to get a fresher
+            # one, never as a shortcut.
+            orphan = BT.ShowTool(st, "no-such-project", server_dir, "plot.png")
+            @test BT.fetch_show_file(orphan) == mirror
+            @test read(mirror, String) == "VERSION-FOUR"
+            # …and a file we have never had, with no worker, is an error rather
+            # than a silent blank.
+            @test_throws Exception BT.fetch_show_file(
+                BT.ShowTool(st, "no-such-project", server_dir, "never-seen.png"))
+        end
+
+        @testset "the stamp table is keyed per destination" begin
+            write(joinpath(worker_dir, "other.png"), "OTHER-ONE")
+            other = BT.ShowTool(st, pid, server_dir, "other.png")
+            @test read(BT.fetch_show_file(other), String) == "OTHER-ONE"
+            # Two entries, one per mirrored file — and updating one must not
+            # invalidate the other.
+            @test length(st.show_mirror_stamps) >= 2
+            write(mirror, "STILL-CACHED")
+            @test read(BT.fetch_show_file(show_tool), String) == "STILL-CACHED"
+        end
+
+        @testset "stat_worker_path carries the mtime the stamp needs" begin
+            info = BT.stat_worker_path(st, wid, probe)
+            @test info.isfile && info.size > 0 && info.mtime > 0
+        end
+
+        @testset "disk URLs outlive displays and serve fresh byte ranges" begin
+            # There is no eval bridge in this rig. These requests go through the
+            # real worker connection, with different server/worker directories.
+            payload = repeat(UInt8[0, 1, 2, 3, 255], 120_000)
+            special = joinpath(worker_dir, "a #? ü.png")
+            write(special, payload)
+            url = BT.worker_file_url(st, wid, special)
+            base = "http://127.0.0.1:$(st.srv.port)"
+            getfile(headers = Pair{String,String}[]) = HTTP.get(base * url, headers; status_exception=false)
+            @test getfile().body == payload  # crosses several control frames
+            r = getfile(["Range" => "bytes=262140-262160"])
+            @test r.status == 206
+            @test r.body == payload[262141:262161]
+            @test HTTP.header(r, "Content-Range") == "bytes 262140-262160/600000"
+            @test HTTP.header(r, "Cache-Control") == "no-cache"
+            @test getfile(["Range" => "bytes=-5"]).body == payload[end-4:end]
+            @test getfile(["Range" => "bytes=599995-"]).body == payload[end-4:end]
+            @test getfile(["Range" => "bytes=600000-"]).status == 416
+
+            # Served from the worker, never from a copy on the server.
+            @test !isdir(joinpath(st.state_dir, "worker-files"))
+
+            # The same URL still works with no chat record, and changing bytes
+            # under the same path cannot leave a cached proxy asset behind.
+            saved = pop!(st.projects[], pid)
+            try
+                write(special, "new bytes")
+                @test String(getfile().body) == "new bytes"
+                restored = BT.ServerState(state_dir=st.state_dir, working_dir=mktempdir())
+                @test BT.worker_file_url(restored, wid, special) == url
+            finally
+                st.projects[][pid] = saved
+            end
+            @test HTTP.get(base * url * "x"; status_exception=false).status == 403
+            other = replace(url, "path=" => "path=x")
+            @test HTTP.get(base * other; status_exception=false).status == 403
+            rm(special)
+            @test getfile().status == 404
+        end
+
+        @testset "a signed folder serves files by their paths relative to each other" begin
+            # A model and the texture it names, in a folder whose name needs
+            # escaping: what a glTF or an OBJ with its .mtl asks the browser for.
+            scene = joinpath(worker_dir, "scene #1 ü")
+            mkpath(joinpath(scene, "textures"))
+            write(joinpath(scene, "model.gltf"), "MODEL")
+            write(joinpath(scene, "textures", "wood.png"), "WOOD")
+            write(joinpath(worker_dir, "secret.txt"), "SECRET")
+            base = "http://127.0.0.1:$(st.srv.port)"
+            fetch(url) = HTTP.get(base * url; status_exception = false)
+            model = BT.worker_folder_url(st, wid, scene, "model.gltf")
+            @test String(fetch(model).body) == "MODEL"
+            # The browser resolves `textures/wood.png` against the model's URL.
+            stem = model[1:end - length("model.gltf")]
+            @test String(fetch(stem * "textures/wood.png").body) == "WOOD"
+            @test fetch(stem * "textures/nothing.png").status == 404
+            # Nothing outside the folder, however the way out is spelled.
+            for escape in ("../secret.txt", "%2e%2e/secret.txt", "..%2fsecret.txt",
+                           "%2F" * HTTP.escapeuri(joinpath(worker_dir, "secret.txt")[2:end]))
+                r = fetch(stem * escape)
+                @test r.status == 403 && String(r.body) != "SECRET"
+            end
+            # The grant is the folder the token signs, and only that.
+            token = BT.worker_folder_token(st, wid, scene)
+            @test fetch(replace(model, token => reverse(token))).status == 403
+            hex = bytes2hex(codeunits(scene))
+            @test fetch(replace(model, hex => bytes2hex(codeunits(worker_dir)))).status == 403
+            # A token for one FILE does not open the folder of the same name.
+            @test BT.worker_file_token(st, wid, scene) != token
+            @test fetch(replace(model, token => BT.worker_file_token(st, wid, scene))).status == 403
+
+            # A model's folder is its project, so `../textures/` reaches; outside
+            # any project it is the model's own folder.
+            proj = st.projects[][pid]
+            @test BT.reference_folder(proj, joinpath(scene, "model.gltf")) == worker_dir
+            @test BT.reference_folder(proj, "/elsewhere/models/m.obj") == "/elsewhere/models"
+        end
+    finally
+        close(h)
+    end
+end
+
+end

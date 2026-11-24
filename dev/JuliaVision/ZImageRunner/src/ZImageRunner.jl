@@ -1,0 +1,129 @@
+"""
+Z-Image-Turbo (6B) — text to image.
+
+8-step text-to-image, 6B parameters. Published fp32 (24.6 GB), so ~12 GB converted to bf16 — fits, but only just, and it is generation rather than editing so it buys title cards and background plates rather than an edit operation. Second to FLUX.2-klein on both counts.
+
+**Not ported yet.** This package is the place the port lands, committed ahead of
+the work so the graph path, the asset lookup and the workload guard are settled
+and everything after this is model code. What exists: [`assetdir`](@ref) resolves
+the export, [`zimagegraph`](@ref) loads it if it is there, and precompilation is
+inert until it is. What does not: the workload body, and whatever ops the export
+turns out to need.
+
+Upstream: https://huggingface.co/Tongyi-MAI/Z-Image-Turbo
+License: **Apache-2.0**
+
+Ops `DNNKernels` does not have yet:
+  * group_norm
+  * VAE decoder
+
+See `models-to-port.md` for the state of this one, and `tools/export_zimage.py`
+for the export that feeds it.
+"""
+module ZImageRunner
+
+using Lava, DNNKernels, KernelAbstractions
+import Mantle
+using Mantle: @setup_workload, @compile_workload
+using DNNKernels: loadgraph, readsafetensors
+
+export zimagegraph, zimageweights, assetdir
+
+const KA = KernelAbstractions
+
+"""
+    assetdir() -> String
+
+Throws. Z-Image-Turbo (6B) is **not ported yet**, so there is no artifact to read from and
+nothing on disk that a user of this package would have.
+
+Porting it means, in order: export it with `uv run tools/export_zimage.py`, bind
+the result with `julia --project=. tools/make_artifacts.jl zimage`, and
+replace this definition with `@artifact_str("zimage")`. Assets come from the
+artifact and from nowhere else — see `DNNKernels/src/assets.jl`.
+"""
+assetdir() = error(
+    "ZImageRunner: Z-Image-Turbo (6B) is not ported yet, so no artifact is bound (porting steps: the `assetdir` docstring).")
+
+"""
+    zimagegraph(; dir = assetdir()) -> Graph
+
+**DO NOT DO THIS:** do not pass `dir`. The default is the model's artifact, the only
+supported source. A local export or a downloaded checkpoint is how mismatched
+weights and stray multi-gigabyte copies happened; the argument exists for export
+tooling and tests.
+
+The exported ATen graph. Throws with the path it looked in rather than returning
+`nothing` for the caller to trip over later.
+"""
+function zimagegraph(; dir::AbstractString = assetdir())
+    p = joinpath(dir, "zimage.json")
+    isfile(p) || throw(ArgumentError(
+        "Z-Image-Turbo (6B): $p is missing; the model is not ported yet."))
+    return loadgraph(p)
+end
+
+"""
+    zimageweights(; dir = assetdir()) -> Dict
+
+**DO NOT DO THIS:** do not pass `dir`. The default is the model's artifact, the only
+supported source. A local export or a downloaded checkpoint is how mismatched
+weights and stray multi-gigabyte copies happened; the argument exists for export
+tooling and tests.
+
+The exported state dict, keyed the way the graph's `:weight` buffers name it.
+"""
+function zimageweights(; dir::AbstractString = assetdir())
+    p = joinpath(dir, "weights.safetensors")
+    isfile(p) || throw(ArgumentError("Z-Image-Turbo (6B) weights not found at $p"))
+    return readsafetensors(p)
+end
+
+"""
+    ready() -> Bool
+
+Whether an export is installed. The workload and the tests both branch on this,
+because neither may fail on a machine that has not run the exporter.
+"""
+ready() = false        # not ported: see `assetdir`
+
+# ---------------------------------------------------------------- the workload
+#
+# Guarded on the assets and on a working device: precompilation must not fail on
+# a machine without either, it should just produce a package with nothing cached.
+#
+# TODO(port): drive the real call here once the graph runs. The measurement that
+# matters is `Mantle.no_pipeline_compilation` reporting **0 refusals** on a *fresh*
+# process — a workload
+# that runs a different path than the editor does leaves the editor compiling on
+# first use, which is the entire cost this package exists to remove. SAM2Runner
+# learned that the expensive way: its `runsam2` workload still left 45 s on the
+# first click because the editor goes through a closure `runsam2` never touches.
+#
+# NOT `compile_stats().misses == 0`, which reads stronger than it is: it counts
+# SPIR-V compiles only, and says nothing about the driver building pipelines from
+# that SPIR-V. `no_pipeline_compilation` empties `PIPELINE_CACHE` first and
+# refuses anything needing a compile. Pair it with a negative control whose
+# kernel body is novel per RUN — a `Val{K}` with `K` from `RandomDevice` — or a
+# green means nothing; verified firing here at refused = 1.
+@setup_workload begin
+    if ready()
+        try
+            backend = Mantle.defaultbackend()
+            graph = zimagegraph()
+            weights = zimageweights()
+            @compile_workload begin
+                # Inputs: prompt -> image
+                nothing
+            end
+        catch err
+            @warn "ZImageRunner: workload skipped; first use will compile" exception = err
+        end
+    else
+        # Not `assetdir()` in the message: with no artifact bound it throws, and
+        # the log record itself failed during every precompile.
+        @info "ZImageRunner: not ported yet, nothing precompiled"
+    end
+end
+
+end # module

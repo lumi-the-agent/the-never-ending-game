@@ -1,0 +1,410 @@
+# RayMakie Caching, GC, and Correctness Tests
+#
+# Tests Screen lifecycle, colorbuffer() flow, film clearing on dirty,
+# close() cleanup, scene state management, and rendering correctness.
+# Each test runs on the default device and reads its buffer count, so a leak shows
+# on every device.
+
+using Test
+using RayMakie
+using Makie
+using Hikari
+using Raycore
+using GeometryBasics
+using KernelAbstractions
+using Mantle
+# Through Makie: Colors is not a test dependency, so `using Colors` only loaded
+# in an environment that happened to have it.
+using Makie.Colors
+
+const _gpu_device = Mantle.defaultbackend()
+
+# Helper: create a minimal Makie scene with one sphere
+function _make_makie_scene(; sz=(32, 32))
+    scene = Scene(; size=sz, lights=[PointLight(RGBf(20, 20, 20), Point3f(0, 0, 5))])
+    cam3d!(scene)
+    cam = cameracontrols(scene)
+    cam.eyeposition[] = Vec3f(0, -3, 1)
+    cam.lookat[] = Vec3f(0, 0, 0)
+    cam.upvector[] = Vec3f(0, 0, 1)
+    cam.fov[] = 40
+    update_cam!(scene, cam)
+
+    mesh!(scene, Sphere(Point3f(0, 0, 0.5), 0.5f0);
+        material = Hikari.Diffuse(color = (0.8, 0.2, 0.2))
+    )
+
+    return scene
+end
+
+# Helper: flush GPU and GC to get accurate buffer counts
+function _flush_all!()
+    GC.gc(true)
+    Mantle.flush!(Mantle.Device())
+    Mantle.drain!(Mantle.batchqueue(Mantle.Device()))
+    GC.gc(true)
+    Mantle.drain!(Mantle.batchqueue(Mantle.Device()))
+end
+
+@testset "RayMakie Caching, GC & Correctness" begin
+
+    # ── 1. Screen lifecycle ──
+    @testset "Screen lifecycle" begin
+        @testset "create and close screen" begin
+            scene = _make_makie_scene()
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            screen = RayMakie.Screen(scene)
+            display(screen, scene)
+
+            @test !isnothing(screen.state)
+            @test !isempty(screen.scene_states)
+            @test screen.state.closed == false
+
+            close(screen)
+
+            @test isempty(screen.scene_states)
+            @test isnothing(screen.state)
+        end
+
+        @testset "close is idempotent" begin
+            scene = _make_makie_scene()
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            screen = RayMakie.Screen(scene)
+            display(screen, scene)
+
+            close(screen)
+            close(screen)  # Should not error
+            @test isempty(screen.scene_states)
+        end
+    end
+
+    # ── 2. colorbuffer() correctness ──
+    @testset "colorbuffer correctness" begin
+        @testset "produces valid image" begin
+            scene = _make_makie_scene(; sz=(32, 32))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            img = colorbuffer(scene; backend=RayMakie, samples=2, max_depth=4, hw_accel=false)
+
+            @test size(img) == (32, 32)
+
+            # Has non-zero content
+            has_color = any(px -> (red(px) + green(px) + blue(px)) > 0.01f0, img)
+            @test has_color
+
+            # No NaN
+            @test !any(px -> isnan(red(px)) || isnan(green(px)) || isnan(blue(px)), img)
+
+            screen = Makie.getscreen(scene)
+            if screen !== nothing
+                close(screen)
+            end
+        end
+
+        @testset "repeated colorbuffer calls are stable" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=nothing, gamma=1.0f0)
+
+            img1 = colorbuffer(scene; backend=RayMakie, samples=2, max_depth=2, hw_accel=false)
+            img2 = colorbuffer(scene; backend=RayMakie, samples=2, max_depth=2, hw_accel=false)
+
+            @test size(img1) == size(img2)
+
+            # Both images should have content
+            mean1 = sum(px -> Float64(red(px) + green(px) + blue(px)) / 3, img1) / length(img1)
+            mean2 = sum(px -> Float64(red(px) + green(px) + blue(px)) / 3, img2) / length(img2)
+            @test mean1 > 0.001
+            @test mean2 > 0.001
+
+            screen = Makie.getscreen(scene)
+            if screen !== nothing
+                close(screen)
+            end
+        end
+    end
+
+    # ── 3. Scene state management ──
+    @testset "scene state management" begin
+        @testset "film allocated at correct resolution" begin
+            # Wider than any platform's minimum for a framed window. This one is
+            # SHOWN, and Windows does not let a framed window be narrower than its
+            # minimum track width — 116 units on the LapWin laptop, so a 48-unit
+            # scene got a 116-unit drawable and this asserted the OS's limit.
+            scene = _make_makie_scene(; sz=(160, 100))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            screen = RayMakie.Screen(scene)
+            display(screen, scene)
+
+            state = screen.state
+            @test !isnothing(state)
+            # Makie scene size=(w,h) but framebuffer is stored as (h,w) — and in
+            # PIXELS, which is `px_per_unit` times the units the scene is laid
+            # out in. This asserted `(32, 48)` and read `(46, 70)` on any display
+            # whose scale is not 1; the film has always been in pixels, since it
+            # is what the drawable is blitted from.
+            # Against the DRAWABLE, not against `round(Int, 48 * ppu)`, for the
+            # same reason `test_window_frame.jl` is: the window may be given a
+            # pixel more than it asked for, and `48 * 1.4479166` is `69.4999…`.
+            # The film is the drawable; that the drawable is the scene's size in
+            # units is the second assertion.
+            # After a frame: the screen opens at a GUESSED scale (the primary
+            # monitor's, 1 when the display sleeps), corrects the window to its
+            # own scale, and the drawable follows on the first frame. Read before
+            # one, the film was the guess: (80, 50) units on the 2x workers.
+            colorbuffer(screen)
+            ppu = Makie.px_per_unit(screen)
+            @test size(state.film.framebuffer) == size(screen.output_buffer)
+            fh, fw = size(state.film.framebuffer)
+            @test (round(Int, fw / ppu), round(Int, fh / ppu)) == (160, 100)
+
+            close(screen)
+        end
+
+        @testset "needs_film_clear resets accumulation" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=nothing, gamma=1.0f0)
+
+            screen = RayMakie.Screen(scene)
+            display(screen, scene)
+
+            state = screen.state
+            @test !isnothing(state)
+
+            # After init, film should need clearing on first render
+            @test state.needs_film_clear == false || state.needs_film_clear == true
+
+            close(screen)
+        end
+    end
+
+    # ── 4. Memory cleanup ──
+    @testset "memory cleanup" begin
+        @testset "close frees GPU memory" begin
+            _flush_all!()
+            baseline = Mantle.live_buffer_count()
+
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            img = colorbuffer(scene; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            Mantle.flush!(Mantle.Device())
+
+            # After render on GPU, many buffers should be allocated
+            during = Mantle.live_buffer_count()
+            @test during > baseline
+
+            screen = Makie.getscreen(scene)
+            @test screen !== nothing
+            state = screen.state
+            @test state.closed == false
+            @test state.hikari_scene !== nothing
+
+            # Close screen — should free ALL GPU resources and mark closed
+            close(screen)
+
+            @test state.closed == true
+            @test state.hikari_scene === nothing  # _free_state_gpu! nulled it
+            @test state.integrator.state === nothing
+
+            _flush_all!()
+            after = Mantle.live_buffer_count()
+            @test after < during
+
+            # empty!(scene) after close should not crash (the critical fix)
+            empty!(scene)
+        end
+
+        @testset "buffer count stable across renders" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            # Warmup
+            img = colorbuffer(scene; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            Mantle.flush!(Mantle.Device())
+            _flush_all!()
+            baseline = Mantle.live_buffer_count()
+
+            # Multiple renders — should not leak
+            for _ in 1:5
+                img = colorbuffer(scene; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+                Mantle.flush!(Mantle.Device())
+            end
+            _flush_all!()
+            after = Mantle.live_buffer_count()
+            @test after == baseline
+
+            screen = Makie.getscreen(scene)
+            if screen !== nothing
+                close(screen)
+            end
+        end
+
+        @testset "sequential scenes — no leak" begin
+            _flush_all!()
+            baseline = Mantle.live_buffer_count()
+
+            # Scene 1: render and fully clean up
+            scene1 = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+            colorbuffer(scene1; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            screen1 = Makie.getscreen(scene1)
+            close(screen1)
+            empty!(scene1)
+
+            _flush_all!()
+            after1 = Mantle.live_buffer_count()
+
+            # Scene 2: render and fully clean up
+            scene2 = _make_makie_scene(; sz=(16, 16))
+            colorbuffer(scene2; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            screen2 = Makie.getscreen(scene2)
+            close(screen2)
+            empty!(scene2)
+
+            _flush_all!()
+            after2 = Mantle.live_buffer_count()
+
+            # Neither scene should leave residual buffers
+            @test after1 <= baseline + 5  # Small tolerance for kernel/pipeline caches
+            @test after2 <= after1 + 2    # Second scene should not grow beyond first
+        end
+    end
+
+    # ── 5. Tracer close lifecycle ──
+    @testset "tracer close lifecycle" begin
+        @testset "closing the screen empties each scene's tracer" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            img = colorbuffer(scene; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            screen = Makie.getscreen(scene)
+            vp = screen.state.integrator
+
+            # The scene's own tracer has state after a render…
+            @test vp.state !== nothing
+
+            # …and closing the screen clears all of its caches.
+            close(screen)
+            @test vp.state === nothing
+            @test vp.filter_sampler_gpu === nothing
+        end
+    end
+
+    # ── 6. delete! scene cleanup ──
+    @testset "delete! scene cleanup" begin
+        @testset "delete! cleans up state" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+
+            screen = RayMakie.Screen(scene)
+            display(screen, scene)
+
+            @test !isnothing(screen.state)
+
+            Base.delete!(screen, scene)
+            @test isnothing(screen.state)
+            # `delete!` drops the scene, not the window: without this the render
+            # loop `display` started kept running after the file finished, 34867
+            # frames on 2026-10-07 until the next file's device reset failed it.
+            close(screen)
+        end
+
+        # Regression (2026-04-20): Makie's `free(scene)` → `empty!(scene)` →
+        # `delete!(scene, plot)` calls `delete_trace_robj!` while the screen's
+        # scene_states are still alive (screen wasn't explicitly closed first).
+        # Resolving the compute graph via `plot.attributes[
+        # :trace_renderobject][]` there re-runs `draw_atomic` → `push!(scene,
+        # mat)` → `update!(::LavaArray)`, which hits `ArgumentError: Attempt to
+        # use a freed reference` whenever MultiTypeSet cache slots have been
+        # released by an HW-accel rebuild upstream. `delete_trace_robj!` wraps
+        # the resolution in try/catch and falls through to attribute-
+        # delete on failure.
+        @testset "empty!(scene) without close(screen) does not crash" begin
+            scene = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+            colorbuffer(scene; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            @test_nowarn empty!(scene)
+            screen = Makie.getscreen(scene)
+            screen !== nothing && close(screen)
+        end
+    end
+
+    # ── 7. Different material rendering ──
+    @testset "material rendering correctness" begin
+        @testset "different materials produce different images" begin
+            # Scene 1: red diffuse
+            scene1 = Scene(; size=(16, 16), lights=[PointLight(RGBf(20, 20, 20), Point3f(0, 0, 5))])
+            cam3d!(scene1)
+            cam1 = cameracontrols(scene1)
+            cam1.eyeposition[] = Vec3f(0, -3, 1)
+            cam1.lookat[] = Vec3f(0, 0, 0)
+            update_cam!(scene1, cam1)
+            mesh!(scene1, Sphere(Point3f(0, 0, 0.5), 0.5f0);
+                material = Hikari.Diffuse(color = (0.9, 0.1, 0.1))
+            )
+
+            # Scene 2: blue diffuse
+            scene2 = Scene(; size=(16, 16), lights=[PointLight(RGBf(20, 20, 20), Point3f(0, 0, 5))])
+            cam3d!(scene2)
+            cam2 = cameracontrols(scene2)
+            cam2.eyeposition[] = Vec3f(0, -3, 1)
+            cam2.lookat[] = Vec3f(0, 0, 0)
+            update_cam!(scene2, cam2)
+            mesh!(scene2, Sphere(Point3f(0, 0, 0.5), 0.5f0);
+                material = Hikari.Diffuse(color = (0.1, 0.1, 0.9))
+            )
+
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=nothing, gamma=1.0f0)
+
+            img1 = colorbuffer(scene1; backend=RayMakie, samples=4, max_depth=4, hw_accel=false)
+
+            img2 = colorbuffer(scene2; backend=RayMakie, samples=4, max_depth=4, hw_accel=false)
+
+            # Red scene should have more red, blue scene more blue
+            mean_r1 = sum(px -> Float64(red(px)), img1) / length(img1)
+            mean_b1 = sum(px -> Float64(blue(px)), img1) / length(img1)
+            mean_r2 = sum(px -> Float64(red(px)), img2) / length(img2)
+            mean_b2 = sum(px -> Float64(blue(px)), img2) / length(img2)
+
+            @test mean_r1 > mean_b1  # Red scene has more red
+            @test mean_b2 > mean_r2  # Blue scene has more blue
+
+            for s in (scene1, scene2)
+                screen = Makie.getscreen(s)
+                screen !== nothing && close(screen)
+            end
+        end
+    end
+end
+
+# ── GC cleanup path (separate top-level testset) ──
+# Must be outside the main testset so prior tests' variables are GC-eligible.
+@testset "GC cleanup path" begin
+    @testset "dropping scene frees GPU resources via finalizer" begin
+        # Flush everything from prior tests
+        for _ in 1:3
+            GC.gc(true); sleep(0.05)
+            Mantle.flush!(Mantle.Device()); Mantle.drain!(Mantle.batchqueue(Mantle.Device()))
+        end
+        baseline = Mantle.live_buffer_count()
+
+        # Create, render, DROP — rely entirely on GC (no explicit close)
+        let
+            s = _make_makie_scene(; sz=(16, 16))
+            RayMakie.activate!(; device=_gpu_device, exposure=1.0f0, tonemap=:aces, gamma=2.2f0)
+            colorbuffer(s; backend=RayMakie, samples=1, max_depth=2, hw_accel=false)
+            Mantle.flush!(Mantle.Device())
+        end
+        # All references out of scope — Scene finalizer should close screen
+        for _ in 1:3
+            GC.gc(true); sleep(0.1)
+            Mantle.flush!(Mantle.Device()); Mantle.drain!(Mantle.batchqueue(Mantle.Device()))
+        end
+
+        after = Mantle.live_buffer_count()
+        @test after <= baseline + 5
+    end
+end

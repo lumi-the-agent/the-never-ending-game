@@ -1,0 +1,6 @@
+{"session":48,
+"summary":"Re-ran the three suite failures in the sandbox: the builder and firefly tests pass alone (they fail only in the full suite), the side-panel 'verdict' failure is a real player-facing text bug. I did not explore further.",
+"failures":[
+{"what":"The player's side panel shows development wording: Sprout's welcome message says 'each finished thing gets my honest verdict'.","steps":"Open the dashboard and read the 'Messages to you' side panel (suite test in areas.jl line ~52).","expected":"Player-readable text without development words such as 'verdict'.","actual":"Panel shows: 'Yes! I'll be your island gnome. I work while you're away: my tools will be places on the island, each finished thing gets my honest verdict, and my own pages start at /sprout/.'","screenshot":"world/tests/shots/areas_overview.png"},
+{"what":"Builder test and Firefly catch test fail in the full suite but pass alone (state left over from earlier tests).","steps":"Run the full suite; then live_tests('Sprout carries a crate') and live_tests('Firefly catch: catching all') separately.","expected":"Pass in the suite as well.","actual":"In the suite: build did not finish in 70 s (Sprout build idle); firefly round did not end after 8 catches (score 0). Alone: both pass.","screenshot":"world/tests/shots/builder_work.png"}],
+"tests_added":[]}

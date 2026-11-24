@@ -1,0 +1,10 @@
+started Main.Plugin_firefly_catch.FireflyCatch
+start pos Float32[0.3, -2.0, 2.5]
+t1 Float32[1.1, -0.6, 2.4] Main.Plugin_firefly_catch.FireflyCatch 
+t2 Float32[0.1, 0.7, 2.5] Main.Plugin_firefly_catch.FireflyCatch 
+t3 Float32[-1.5, 0.3, 2.6] Main.Plugin_firefly_catch.FireflyCatch 
+t4 Float32[-1.7, -1.3, 2.7] Main.Plugin_firefly_catch.FireflyCatch 
+t5 Float32[-0.3, -2.2, 2.5] Main.Plugin_firefly_catch.FireflyCatch 
+t6 Float32[1.0, -1.2, 2.4] Main.Plugin_firefly_catch.FireflyCatch 
+t7 Float32[0.6, 0.4, 2.5] Main.Plugin_firefly_catch.FireflyCatch 
+t8 Float32[-1.0, 0.7, 2.5] Main.Plugin_firefly_catch.FireflyCatch 

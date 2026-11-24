@@ -1,0 +1,38 @@
+[docs_renders]
+git-tree-sha1 = "3f01f8d546e28ba0424cb91802ed02eb44036014"
+lazy = true
+
+    [[docs_renders.download]]
+    sha256 = "a15ca1bd8d5f9c005d1c438801111c0b727a8093f9d0bb77274811f68f2b8a7b"
+    url = "https://github.com/JuliaGraphics/Hikari.jl/releases/download/assets/docs_renders-3f01f8d546e28ba0424cb91802ed02eb44036014.tar.gz"
+
+[logo_ball]
+git-tree-sha1 = "071d1859d5c9633bbf3930a342b01227c5f92a93"
+lazy = true
+
+    [[logo_ball.download]]
+    sha256 = "26d3d1811503e5ba98c54ad52e7f3736bc42088b66ac05b424953d8e6a0495ec"
+    url = "https://github.com/JuliaGraphics/Hikari.jl/releases/download/assets/logo_ball-071d1859d5c9633bbf3930a342b01227c5f92a93.tar.gz"
+
+[oidn]
+git-tree-sha1 = "142512dd114af71ad79f80a27a21f45a79bf8276"
+lazy = true
+
+    [[oidn.download]]
+    sha256 = "743c3e2aff8c220d5d70fe6cb970fb3d36f2702d2693c61d1d148e404cf37cd6"
+    url = "https://github.com/RenderKit/oidn/releases/download/v2.5.1/oidn-2.5.1.x86_64.linux.tar.gz"
+
+[pbrt_references]
+git-tree-sha1 = "4ef58e5cd6d0055a1ee3ada90ea089c2d1089632"
+lazy = true
+
+    [[pbrt_references.download]]
+    sha256 = "c8f8015796c541aa97a59a0dbfebcbf14cdb72abafaa771d0bc48caa45b182d3"
+    url = "https://github.com/JuliaGraphics/Hikari.jl/releases/download/assets/pbrt_references-4ef58e5cd6d0055a1ee3ada90ea089c2d1089632.tar.gz"
+
+[srgb_spectrum_table]
+git-tree-sha1 = "cf631c24837681138d48c9e53adc6f4798c0c25f"
+
+    [[srgb_spectrum_table.download]]
+    sha256 = "f545502e68f54f1f4fa5302bbab38be2209ef65c5c34a1970a8b96c610b5b6f1"
+    url = "https://github.com/JuliaGraphics/Hikari.jl/releases/download/assets/srgb_spectrum_table-cf631c24837681138d48c9e53adc6f4798c0c25f.tar.gz"

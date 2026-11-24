@@ -1,0 +1,23 @@
+[ppocr_docori]
+git-tree-sha1 = "deab56798467bd973cb240fb00ae480cae007afc"
+lazy = true
+
+    [[ppocr_docori.download]]
+    sha256 = "7371477e4eb62a4fba9f0eef811bd6e7a0c1fd9fb68aadadd82d8156b1bb3cd9"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/ppocr_docori.tar.gz"
+
+[ppocrv6_det]
+git-tree-sha1 = "83d4850e1980de370802e21ec324738d2c464a01"
+lazy = true
+
+    [[ppocrv6_det.download]]
+    sha256 = "e97bd0e406027d20997e642220739c0220141429ddcf919523e5c60af3384936"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/ppocrv6_det.tar.gz"
+
+[ppocrv6_rec]
+git-tree-sha1 = "451142e8dc1cf2fb64337bdcd66ed0682060579d"
+lazy = true
+
+    [[ppocrv6_rec.download]]
+    sha256 = "c7256f1f0f92d0b610927d34724c3c78777c6c2eab08893888fc32fa28b64309"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/ppocrv6_rec.tar.gz"

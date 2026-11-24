@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-22T21:46:27.161",
+  "finished": "2026-11-22T22:05:23.779",
+  "id": "20261122-214627-161-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 15000,
+    "prompt": "a short wooden signpost with two arrow boards on a thick post, chunky rounded shapes, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "sign"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T22:05:23.778",
+    "faces": 14291,
+    "id": "20261122-214627-161-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-214627-161-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214627-161-asset/mesh.jls",
+    "prompt": "a short wooden signpost with two arrow boards on a thick post, chunky rounded shapes, soft hand-painted colors",
+    "seconds": 349.0,
+    "tags": [
+      "prop",
+      "sign"
+    ]
+  },
+  "seconds": 349.4,
+  "started": "2026-11-22T21:59:34.382",
+  "status": "done"
+}

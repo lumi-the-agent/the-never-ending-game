@@ -1,0 +1,24 @@
+{"session": 53,
+ "summary": "I played the berry race (4 whole W/A/D races from the menu), Jump in with its camera and the meadow at noon through FakeInteraction, and looked at the screenshots. Jump in's chase camera sits 9.5 m back and fails its suite test again in isolation. A first-play berry race is not reliably won, and a bench sitter is still shown as watching the sunset at 11:00. Five of the six host failures passed when run alone, so I count them as order-dependent.",
+ "failures": [
+  {"what": "The jumped-in chase camera sits 9.5 m behind Sprout; the suite test 'While jumped in, the camera menu still counts' still fails when run alone",
+   "steps": "Menu: Jump in (WASD), Play, wait 2.5 s (tests/s53_play.jl 'Menu: choosing Jump in...', tests/dashboard.jl 'While jumped in, the camera menu still counts'). Measure the distance from game.rig.eye to Sprout.",
+   "expected": "The chase eye is under 8 m behind Sprout, as the dashboard test requires (it measured 7.96 m in an earlier run of mine).",
+   "actual": "9.52 m, looking 0 m off Sprout in both tests. The camera is correct but about 1.5 m further back than it was, after the s53 camera or meadowlife changes. The screenshot looks fine.",
+   "screenshot": "world/tests/shots/s53-jump-walk.png"},
+  {"what": "A first-play berry race (level 1, W/A/D only, always walking to the nearest free berry) is not reliably won",
+   "steps": "Menu: Berry race (WASD), Play, W, steer to the nearest berry with A/D. Four runs from the same start.",
+   "expected": "A first play is winnable, and the journal says the player won 8 to 6.",
+   "actual": "Results were 6 to 8 (the critters won), 8 to 6, 7 to 7 and 8 to 6. In every run one critter picks 4 berries. All 14 berries are gone after about 32 to 38 s of the 60 s, so the race is over early. I did not find out what the game does on a 7 to 7 tie. The new test 'Berry race from the menu...' fails whenever the player ends 2 or more behind.",
+   "screenshot": "world/tests/shots/x53-berry-end.png"},
+  {"what": "The 'On the island now' panel says 'Cumulus watches the sunset from the bench' at 11:00 in the morning",
+   "steps": "Jump the clock to 11:00 with skip_to_hour! (tests/s53_play.jl 'Meadow life by day') and read the right-hand panel; the 'Messages to you' panel next to it shows a stale message.",
+   "expected": "The bench sitter's status matches the time of day, for example 'sits on the bench'. A short wait after the jump is allowed.",
+   "actual": "The status still says sunset 2 s after the jump to 11:00. The screenshot shows Cumulus on the bench at noon. This may only be a lag in the panel after a clock jump, which a player would not cause.",
+   "screenshot": "world/tests/shots/s53-meadow-noon.png"}
+ ],
+ "tests_added": [
+  "Menu: choosing Jump in (WASD) and pressing Play jumps in, with a chase camera that keeps Sprout in view",
+  "Berry race from the menu: start card, a whole W/A/D race ends with every berry taken, rivals score, and the player is not left far behind",
+  "Meadow life by day: stones, daisies, toadstools, stumps and logs are drawn in the meadow"
+ ]}

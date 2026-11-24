@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: no berry within 5 m of the start line: nearest Float32[5.0, 5.6, 5.8]",
+      "file": "minigames.jl",
+      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "passed": false,
+      "seconds": 3.4
+    }
+  ],
+  "passed": 54,
+  "session": 32,
+  "time": "2026-11-23T07:57:58",
+  "total": 55
+}

@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "results: 'Sprout never reached the gate (goal tend, at -9.75,6.59)', 'never reached the bench (6.7 m away, at -9.74,6.61)'; tester report",
+      "severity": "medium",
+      "suggestion": "Reproduce the walk from that spot. Check whether the fence or pond solids or a carried-present/visit goal wedge it. Add the builder's unstuck! side-step or a gate waypoint, then re-run garden, lookout and explore50.",
+      "what": "Sprout stops at about (-9.7, 6.6) in three suite tests (garden walk to the gate at (-10.5, 8.0), the explore50 garden camera moment, the lookout bench walk). Goals at the stop are tend or sleep, so it is a movement wedge, not a goal bug. The tester calls the garden walk a real bug. A player would see Sprout frozen by the pond fence instead of watering or sitting at sunset. The journal says only that the failing tests passed when rerun, and it does not mention this.",
+      "where": "world/tests/results/session-0055.json; plugins/garden.jl walk to gate"
+    },
+    {
+      "evidence": "tester: five pass alone, fail in the suite",
+      "severity": "medium",
+      "suggestion": "Make invitations and presents skip while a test or mini game owns Sprout or its nearby creatures. Print the state in those checks and confirm the new plugin is not the cause.",
+      "what": "Several suite tests fail only in the full run (wave answer, bored Sprout line, lonely Sprout, follow-camera faces 15/49). The new plugin adds more free-friend behaviour: invitations every 25 s, 5 s-scale presents, and pairs that stop and face each other. That plausibly steals creatures and chat lines from those tests, and 'Pinchy is wander' and 'That was fun! Again tomorrow?' look like such interference. Dismissing them as order-dependent flakes is unverified.",
+      "where": "plugins/presents.jl invite!/step_together!; tests/minigames.jl, outfits.jl"
+    },
+    {
+      "evidence": "author results say 'Not done'",
+      "severity": "low",
+      "suggestion": "Keep the remaining parts as open todos, so the next session does not assume they are finished.",
+      "what": "Three todos are closed with parts undone: the panel line for who loves what, chats about favourites, and walking back together or sharing a find. Also, the journal's early 'walking back together' claim is only partly covered.",
+      "where": "todos #300, #301, #305"
+    }
+  ],
+  "summary": "Presents, invitations and shared-pastime chats work in the sandbox (own screenshots: Sir Sniffsalot holds a yellow flower, 124 present/invite events logged, frame median 2.7 ms, presents system 0.04 ms). The suite still fails on Sprout getting stuck at one spot near the vegetable patch, and the author did not look into it.",
+  "superseded_by": "perfectionist-0055.json",
+  "verdict": "needs_work"
+}

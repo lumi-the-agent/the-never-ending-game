@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "last_run.json: passed=False, 18.4 s, 'ring never started dancing'",
+      "severity": "high",
+      "suggestion": "Reproduce in the live game and print the ring state (dancers, goals, distance to spot) in the failure. Fix the cause (for example, followers busy or the spot unreachable) instead of loosening the test.",
+      "what": "'Parade party' test fails in the latest recorded run: 'the ring never started dancing'. The author reported it passing at 14:14. Either it is flaky or the final revert of the field dance spot left it broken. A player leading a parade to the lantern may get no dance.",
+      "where": "tests/last_run.json; plugins/greetings.jl parade_party!, plugins/dancecircle.jl dance_spots"
+    },
+    {
+      "evidence": "journal 14:12 and 14:14",
+      "severity": "medium",
+      "suggestion": "Add a second reachable spot, or move the pond and cairn exclusions so the existing spots survive.",
+      "what": "Skipping dance spots near the pond and cairn left a single lantern spot (10.4, 6.4). The parade-to-lantern feature depends on one location, and a field spot was tried and reverted. If a creature or bush blocks that spot, the feature silently does nothing.",
+      "where": "plugins/dancecircle.jl dance_spots"
+    },
+    {
+      "evidence": "journal 13:56 and 14:06",
+      "severity": "low",
+      "suggestion": "Keep the pond and cairn exclusions in one shared helper, so spawn, dance and idle targets all use the same rule.",
+      "what": "Making the pond solid for every creature and the player is an engine-wide push in separation.jl, with a cairn moved by SITE_VERSION. Both rely on tests that start Sprout from open ground, so they are fragile if the layout changes again.",
+      "where": "plugins/separation.jl, plugins/cairns.jl"
+    }
+  ],
+  "summary": "Parade crowd, ripple, cairn move and pond-as-solid are real player-visible gains with fast frames (3.7 ms median). But the newest recorded test run (tests/last_run.json, 14:33) fails the new 'Parade party' test, and the lantern dance destination now has only one spot. Live check (reviews/s40-now.png, dusk, 30 fps, all plugins ok, frame median 2.3 ms): the new hint text reads well, but the camera shows a conifer covering Sprout and Wibbles, and I did not see a parade in action.",
+  "superseded_by": "perfectionist-0040.json",
+  "verdict": "needs_work"
+}

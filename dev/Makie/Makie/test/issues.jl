@@ -1,0 +1,200 @@
+@testset "Issues" begin
+    @testset "#659 Volume errors if data is not a cube" begin
+        fig, ax, vplot = volume(1 .. 8, 1 .. 8, 1 .. 10, rand(8, 8, 10))
+        lims = Makie.data_limits(vplot)
+        lo, hi = extrema(lims)
+        @test all(lo .<= 1)
+        @test all(hi .>= (8, 8, 10))
+    end
+
+    @testset "#1939 `merge` precedence for `Attributes`" begin
+        # See https://github.com/MakieOrg/Makie.jl/issues/1939
+        a1 = Attributes(a = 1, b = 2)
+        a2 = Attributes(a = 4, c = 3)
+        @test merge(a1, a2)[:a] == 4
+
+        a1 = Attributes(a = 1, b = 2)
+        a2 = Attributes(a = 4, c = 3)
+        merge!(a1, a2)
+        @test a1[:a] == 4 && haskey(a1, :c)
+
+        a1 = Attributes(a = 1, b = 2)
+        a2 = Attributes(a = 4, c = 3)
+        Makie.mergeleft!(a1, a2)
+        @test a1[:a] == 1 && haskey(a1, :c)
+    end
+
+    @testset "#3979 lossy matrix multiplication" begin
+        ps = Point{3, Float64}[[436132.5523666298, 7.002123574681671e6, 505.0239189387989], [436132.5523666298, 7.002123574681671e6, 1279.2437345933633], [436132.5523666298, 7.002884453296079e6, 505.0239189387989], [436132.5523666298, 7.002884453296079e6, 1279.2437345933633], [437151.16775504407, 7.002123574681671e6, 505.0239189387989], [437151.16775504407, 7.002123574681671e6, 1279.2437345933633], [437151.16775504407, 7.002884453296079e6, 505.0239189387989], [437151.16775504407, 7.002884453296079e6, 1279.2437345933633]]
+        f, a, p = scatter(ps)
+        Makie.update_state_before_display!(f)
+        # sanity check: old behavior should fail
+        M = Makie.Mat4f(Makie.clip_to_space(a.scene.camera, :data)) *
+            Makie.Mat4f(Makie.space_to_clip(a.scene.camera, :data))
+        @test !(M ≈ I)
+        # this should not
+        M = Makie.clip_to_space(a.scene.camera, :data) * Makie.space_to_clip(a.scene.camera, :data)
+        @test M ≈ I atol = 1.0e-4
+    end
+
+    @testset "#4416 Merging attributes" begin
+        # See https://github.com/MakieOrg/Makie.jl/pull/4416
+        theme1 = Theme(Axis = (; titlesize = 10))
+        theme2 = Theme(Axis = (; xgridvisible = false))
+        merged_theme = merge(theme1, theme2)
+        # Test that merging themes does not modify leftmost argument
+        @test !haskey(theme1.Axis, :xgridvisible)
+        @test !haskey(theme2.Axis, :titlesize)  # sanity check other argument
+    end
+
+    @testset "#4722 Transformation passthrough" begin
+        scene = Scene(camera = campixel!)
+        p = text!(scene, L"\frac{1}{2}")
+        translate!(scene, 0, 0, 10)
+        @test isassigned(p.transformation.parent)
+        @test isassigned(p.plots[1].transformation.parent)
+
+        @test scene.transformation.model[][3, 4] == 10.0
+        @test p.transformation.model[][3, 4] == 10.0
+        @test p.plots[1].transformation.model[][3, 4] == 10.0
+    end
+
+    @testset "#4883 colorscale that breaks sort" begin
+        data = Float32.(Makie.peaks())
+        f, a, p = image(data; colorscale = -)
+        @test p.scaled_colorrange[][1] == -maximum(data)
+        @test p.scaled_colorrange[][2] == -minimum(data)
+        @test issorted(p.scaled_colorrange[])
+    end
+
+    @testset "#4957 axis cycling for same plot type with different argument types" begin
+        @testset "Lines" begin
+            f, a, p1 = lines(rand(Float64, 10))
+            p2 = lines!(a, rand(Float32, 10))
+            p3 = lines!(a, rand(Float64, 10))
+
+            palette_colors = a.scene.theme.palette.color
+
+            @test p1.color[] == palette_colors[1]
+            @test p2.color[] == palette_colors[2]
+            @test p3.color[] == palette_colors[3]
+
+            p4 = lines!(a, rand(Float32, 10))
+            @test p4.color[] == palette_colors[4]
+        end
+
+        @testset "Poly" begin
+            poly1 = Makie.GeometryBasics.Polygon(Point2f[(0, 0), (0, 1), (1, 1), (1, 0), (0, 0)])
+            multipoly1 = Makie.GeometryBasics.MultiPolygon([poly1, poly1])
+
+            f, a, p1 = poly(poly1; alpha = 1)
+            p2 = poly!(a, [poly1, poly1])
+            p3 = poly!(a, multipoly1)
+
+            # convert to RGBf here, because poly decreases alpha by 0.2
+            palette_colors = a.scene.theme.palette.patchcolor
+
+            @test p1.color[] == palette_colors[1]
+            @test p2.color[] == palette_colors[2]
+            @test p3.color[] == palette_colors[3]
+        end
+    end
+
+    @testset "`default_attribute` with Attributes containing Attributes" begin
+        foo = Attributes(; bar = 1)
+        @test propertynames(foo) == (:bar,)
+
+        pl = Scatter((1:4,), Dict{Symbol, Any}(:force_dimconverts => true))
+        @test Set(propertynames(pl)) == keys(pl.attributes.outputs)
+    end
+
+    @testset "Menu option resize before display" begin
+        fig = Figure()
+        menu = Menu(fig[1, 1]; options = zip(["no options"], [nothing]))
+        labels = ["A", "B", "C", "D", "E", "F", "G", "H"]
+        values = collect(1:8)
+        menu.options[] = zip(labels, values)
+        p = menu.blockscene.children[1].plots[2]
+        glyphs = p.plots[1]
+        # should not error
+        p.positions_transformed_f32c[]
+        glyphs.quad_offset[]
+        glyphs.sdf_marker_shape[]
+        glyphs.sdf_uv[]
+        @test true
+    end
+
+    @testset "Menu search filter matching nothing" begin
+        # A query that matched nothing emptied the per-option color vectors. The
+        # next query that DID match then resolved the option text plot against
+        # them and threw a BoundsError inside the compute graph, which takes the
+        # whole render loop down with it — the menu was dead from then on.
+        fig = Figure()
+        menu = Menu(
+            fig[1, 1]; options = ["Brightness", "Color balance", "Stabilization"],
+            searchable = true, default = nothing
+        )
+        Makie.update_state_before_display!(fig)
+        menu.is_open[] = true
+        texts = menu.blockscene.children[1].plots[2]
+
+        foreach(c -> events(fig).unicode_input[] = c, "zq")   # matches nothing
+        @test isempty(texts.text[])
+        @test isempty(texts.color[])
+
+        events(fig).keyboardbutton[] = Makie.KeyEvent(Keyboard.backspace, Keyboard.press)
+        @test texts.text[] == ["Stabilization"]               # one match again
+        @test length(texts.color[]) == 1                      # …and it has a color
+        texts.positions_transformed_f32c[]                    # resolves: must not throw
+
+        events(fig).keyboardbutton[] = Makie.KeyEvent(Keyboard.backspace, Keyboard.press)
+        @test length(texts.text[]) == length(texts.color[]) == 3
+    end
+
+    @testset "#5744 to_rotation resolution" begin
+        v = normalize(Vec3f(0.001, 0, -1))
+        @assert v !== Vec3f(0, 0, -1)
+        @test to_rotation(v) !== to_rotation(Vec3f(0, 0, -1))
+    end
+
+    @testset "#5024 no Linestyle warning in SpecApi" begin
+        f, a, p = plotlist(S.Lines(rand(10), linestyle = :dash))
+        @test_logs p.plots[1].linestyle[]
+    end
+
+    @testset "#5858 x/y/zlims! with dim convert values, #5859 DateTime in Axis3 lims!" begin
+        x = DateTime(2026, 1, 1):Day(1):DateTime(2026, 1, 10)
+        f, a, p = lines(x, x)
+        # shouldn't error
+        xlims!(first(x), last(x))
+        ylims!(first(x), last(x))
+        lines!(Axis3(f[1, 2]), x, x, x)
+        xlims!(first(x), last(x))
+        ylims!(first(x), last(x))
+        zlims!(first(x), last(x))
+    end
+
+    @testset "#5349, no type pinning of cycle-able attributes passed to recipes" begin
+        color = Observable{Any}(:red)
+        f, a, p = textlabel(0, 0, text = "Abc", background_color = color)
+        @test p.plots[2].plots[1].scaled_color[] == to_color(:red)
+        # type-pinning would error with this because we change Symbol -> Tuple
+        color[] = (:blue, 0.5)
+        @test p.plots[2].plots[1].scaled_color[] == to_color((:blue, 0.5))
+    end
+
+    @testset "#5499 reactive scene backgroundcolor" begin
+        bgcol = Observable(colorant"green")
+        fig = Figure(backgroundcolor = bgcol)
+        @test fig.scene.backgroundcolor[] == to_color(bgcol[])
+        bgcol[] = colorant"red"
+        @test fig.scene.backgroundcolor[] == to_color(bgcol[])
+        @assert !haskey(fig.scene.compute, :backgroundcolor) "May need to update test?"
+        graph = Makie.ComputeGraph()
+        Makie.add_input!(graph, :background, :green)
+        scene = Scene(backgroundcolor = graph.background)
+        @test scene.backgroundcolor[] == to_color(:green)
+        Makie.update!(graph; background = :red)
+        @test scene.backgroundcolor[] == to_color(:red)
+    end
+end

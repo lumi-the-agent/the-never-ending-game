@@ -1,0 +1,15 @@
+{"session": 30,
+ "summary": "Re-ran the two suite failures (Dance circle, Ball play) 4 times each on the live game: all passed when run alone, so they only fail inside the full suite run (order/state dependent flakiness). I did no further exploration and added no tests.",
+ "failures": [
+  {"what": "Dance circle test fails with 'only 0 dancers' during the full suite run",
+   "steps": "Run the full live suite; the Dance circle test (minigames.jl) runs after earlier tests. Alone it passes 4/4.",
+   "expected": "Critters gather in a ring by the lantern and dance",
+   "actual": "0 dancers in the suite run (likely state left over from an earlier test, or time of day)",
+   "screenshot": "world/tests/shots/dancecircle.png"},
+  {"what": "Ball play test fails with 'nobody ran after the ball' during the full suite run",
+   "steps": "Run the full suite; Ball play kicks the ball, Sprout idle 0.41 m from it, Gloop idle at 4.9 m with can-fetch true, rally 0, fetch assigned to Hopscotch at the kick. Alone it passes 4/4.",
+   "expected": "A critter chases the ball and passes it back",
+   "actual": "Fetch was assigned to Hopscotch at the kick, but nobody ran after the ball. Possibly the assigned fetcher was far away or busy (the author's LAST_KICK data points at this); it did not show up in isolation.",
+   "screenshot": "world/tests/shots/ballplay-pass.png"}
+ ],
+ "tests_added": []}

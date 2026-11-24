@@ -1,0 +1,15 @@
+[AppBundler]
+bundler = "juliaimg"
+windowed = true
+juliaimg_precompile = true
+juliaimg_incremental = false
+juliaimg_strip_debug = true
+juliaimg_strip_docs = true
+selfsign = true
+
+app_name = "BonitoAgents"
+app_display_name = "BonitoAgents"
+app_summary = "Agentic coding dashboard"
+app_description = "BonitoAgents desktop app: local server + worker + dashboard for running coding agents on your machines."
+publisher_name = "Simon Danisch"
+bundle_identifier = "com.github.simondanisch.bonitoagents"

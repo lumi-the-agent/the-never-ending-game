@@ -1,0 +1,2637 @@
+#=
+## Notes on resolve/dirty state:
+
+Dirty state is encoded in edges. Nodes only hold on to dirty state temporarily
+in resolve!() while passing on state to dependents.
+
+mark_dirty!() sets edge state to dirty, traveling down the the graph. If an
+edge is marked dirty, all its dependents are also marked dirty.
+
+resolve!() sets edge state to not dirty (resolved). Edges are selected by
+traveling up the graph, but state is still updated top to bottom because we
+need to resolve parent computations before a dependent computation can resolve.
+
+Assuming resolve!() and mark_dirty!() do not run at the same time (and the
+initial state is appropriate), an edge being dirty implies that all of its
+dependents are dirty. Equivalently, an edge being resolved implies that all its
+parents are resolved. Thus:
+- mark_dirty!() may stop propagating down if an edge is marked dirty
+- resolve!() may stop propagating up if an edge is marked resolved
+Note that mark_resolved!() and unsafe_init!() (and whatever else may affect
+resolved/dirty state) must keep state consistent with the rule(s) above to allow
+early exits in mark_dirty!() and resolve!() (and themselves).
+
+
+## Notes on concurrency
+
+There are a lot of problems to find not just with asynchronous graph
+interactions, many of which are probed by the concurrency tests.
+
+As mentioned above, `mark_dirty!()`, `resolve!()` and other functions affecting
+dirty state are not allowed to change that state at the same time. Consider a
+graph `a -> b -> c` as an example:
+- resolve!(c) walks up too a, resolves a, marks a resolved
+- mark_dirty!(a) interjects and marks a, b, c as dirty (or just a if it exits early)
+- resolve!(c) continues, marking b, c resolved
+We now have broken the rules from above as `a` is marked dirty but its dependent
+`b` is not.
+
+A node in the graph can be an input to multiple edges. To keep the results of
+these edges consistent, the value of the node is not allowed to change between
+them. This means no direct updating of that node (i.e. no setindex!(),
+setproperty!(), update!()) and no re-resolve!() of the parent edge (which may
+have updated inputs) is allowed.
+
+Note that users could (technically) try to update a node in the callback of an
+edge. In that case the value setting function as well as mark dirty run within
+the same Task, so ReentrantLock will not block the execution. This may lead to
+corrupt state or desynchronized data with ReentrantLock, or deadlocks with a
+more aggressive lock. Note as well that edge locks are likely to lock multiple
+times since one edge may be the parent of multiple other edges.
+
+Note that Observable outputs can further complicate this. Without them, one node
+value and the states of a subset of edges update.¹ With them, update also needs
+to queue an observable update, which requires a resolve itself. While the node
+may already be freed by the original resolve, the observable-based resolve may
+also target nodes that the original resolve still owns.
+
+¹ Updating state can be a non-issue here. At the start of resolve, we can go
+through all the involved edges, copy their "dirty" state to a new resolve state
+variable and mark their normal state as "resolved", under exclusion of
+mark_dirty!(). We can then base decision on the resolve state variable during
+edge resolve while mark_dirty!() can already update state for the next resolve!().
+
+Some general notes:
+- Per graph locks are also complicated, because multiple graphs can be connected.
+  resolve!() could try locking child_graph, then parent_graph, while update
+  functions may try to lock parent_graph, then child_graph (deadlock potential)
+- Graphs may also connect circularly, e.g. graph1.x -> graph2.x,
+  graph2.y -> graph1.y. So graph relationships may loop, while the underlying
+  edges don't
+- update!() promises to update all variables in sync, i.e. in such a way that
+  resolve!() either uses all the values from before update!() or all the values
+  from after. This means update!() must wait for all the variables to be
+  accessible.
+=#
+
+module ComputePipeline
+
+if isdefined(Base, :Experimental)
+    isdefined(Base.Experimental, Symbol("@optlevel")) && Base.Experimental.@optlevel 1
+    isdefined(Base.Experimental, Symbol("@max_methods")) && Base.Experimental.@max_methods 1
+end
+
+using Preferences
+
+const ENABLE_COMPUTE_CHECKS = @load_preference("ENABLE_COMPUTE_CHECKS", false)
+const LOG_NOTHING_SKIP = @load_preference("LOG_NOTHING_SKIP", false)
+const LOG_NOTHING_SPLAT = @load_preference("LOG_NOTHING_SPLAT", false)
+const LOG_REPEATEDLY = Ref(false)
+const LOGGING_IDS = Set{UInt64}()
+
+enable_debugging!() = set_debug!(true)
+disable_debugging!() = set_debug!(false)
+function set_debug!(value::Bool)
+    if value != ENABLE_COMPUTE_CHECKS
+        @set_preferences!("ENABLE_COMPUTE_CHECKS" => value)
+        @info "Changing the debug mode requires restarting Julia to take effect!"
+    end
+    return
+end
+
+"""
+    log_nothing_skip(value::Bool)
+
+Enables or disables extended logging for `nothing -> skip_update` deprecations.
+
+To prevent this from logging the same edge repeatedly, only edges with a unique
+combination of callback, input names and output names are logged. This can be
+changed by setting `ComputePipeline.LOG_REPEATEDLY[] = false` at any time.
+"""
+function log_nothing_skip(value::Bool)
+    if value != LOG_NOTHING_SKIP
+        @set_preferences!("LOG_NOTHING_SKIP" => value)
+        @info "Changing the logging mode requires restarting Julia to take effect!"
+    end
+    return
+end
+
+"""
+    log_nothing_splat(value::Bool)
+
+Enables or disables extended logging for `return nothing` being used to initialize
+multiple outputs.
+
+To prevent this from logging the same edge repeatedly, only edges with a unique
+combination of callback, input names and output names are logged. This can be
+changed by setting `ComputePipeline.LOG_REPEATEDLY[] = false` at any time.
+"""
+function log_nothing_splat(value::Bool)
+    if value != LOG_NOTHING_SPLAT
+        @set_preferences!("LOG_NOTHING_SPLAT" => value)
+        @info "Changing the logging mode requires restarting Julia to take effect!"
+    end
+    return
+end
+
+function logging_id(callback, inputs, outputs)
+    inputhash = mapreduce(n -> n.name, (a, b) -> hash(b, a), inputs, init = UInt64(0))
+    outputhash = mapreduce(n -> n.name, (a, b) -> hash(b, a), outputs, init = UInt64(0))
+    return hash(callback, hash(inputhash, outputhash))
+end
+
+function should_log(id::UInt64)
+    if LOG_REPEATEDLY[]
+        return true
+    else
+        if id in LOGGING_IDS
+            return false
+        else
+            push!(LOGGING_IDS, id)
+            return true
+        end
+    end
+end
+
+using Observables
+
+using Base: RefValue, tail
+
+include("nesting.jl")
+
+const GLOBAL_LOCK = ReentrantLock()
+
+deref(r::RefValue) = r[]
+deref(x) = x
+
+abstract type AbstractEdge end
+
+"""
+    struct Computed
+
+A `Computed` represents a node in the `ComputeGraph`. It should not be created
+directly but be generated by [`add_input!`](@ref) or [`register_computation!`](@ref).
+
+A `Computed` can be accessed from the graph by `graph[:name]` where `:name` is
+the name the node was created with. Its value is returned by `graph[:name][]`
+which also runs any pending updates.
+"""
+mutable struct Computed
+    name::Symbol
+    # if a parent edge got resolved and updated this computed, dirty is temporarily true
+    # so that the edges dependents can update their inputs accordingly
+    dirty::Bool
+
+    value::RefValue
+    parent::AbstractEdge
+    parent_idx::Int # index of parent.outputs this value refers to
+    Computed(name) = new(name, false)
+    function Computed(name, value::RefValue)
+        return new(name, false, value)
+    end
+    function Computed(name, value::RefValue, parent::AbstractEdge, idx::Integer)
+        return new(name, false, value, parent, idx)
+    end
+    function Computed(name, edge::AbstractEdge, idx::Integer)
+        p = new(name, false)
+        p.parent = edge
+        p.parent_idx = idx
+        return p
+    end
+end
+
+hasparent(computed::Computed) = isdefined(computed, :parent)
+getparent(computed::Computed) = hasparent(computed) ? computed.parent : nothing
+function Base.eltype(computed::Computed)
+    isdefined(computed, :value) || computed[]
+    return eltype(computed.value)
+end
+
+"""
+    is_resolved(computed::Computed) -> Bool
+
+Whether `computed` already holds a value, *without* triggering a resolve.
+
+An edge output only gets its `value` assigned on the first `resolve!`, so this
+answers "has this ever been computed" without causing it to be computed. That
+distinction matters during teardown: `computed[]` on a never-resolved edge
+builds its `TypedEdge`, and that constructor runs the edge callback — so asking
+for a value can create the very resource the caller is trying to destroy.
+"""
+is_resolved(computed::Computed) = isdefined(computed, :value)
+
+"""
+    struct SkipUpdate
+
+Type of `skip_update` which is used to declare a `ComputeEdge` output as unchanged.
+"""
+struct SkipUpdate end
+
+"""
+    skip_update = ComputePipeline.SkipUpdate()
+
+A special return type for `ComputeEdge` callbacks which marks one output or all
+outputs as unchanged. Any unchanged output will not be updated and will not
+propagate updates. I.e. if all inputs of a dependent edge are either marked as
+unchanged by `skip_update` or weren't changed to begin with, the edge will not
+update.
+
+## Examples
+
+```
+map!(..., :output) do ...
+    return skip_update # skip output
+end
+
+map!(..., [:output1, :output2]) do ...
+    return skip_update, 1 # skip output1, set output 2
+end
+
+map!(..., [:output1, :output2]) do ...
+    return skip_update # skip both
+end
+```
+"""
+const skip_update = SkipUpdate()
+export skip_update
+
+struct TypedEdge{InputTuple, OutputTuple, F}
+    callback::F
+    inputs::InputTuple
+    inputs_dirty::Vector{Bool}
+    outputs::OutputTuple
+    output_nodes::Vector{Computed}
+end
+
+"""
+    struct ComputeEdge
+
+A `ComputeEdge` represents the computation connecting one set of nodes to another.
+They are considered internal and should not be interacted with or created directly.
+"""
+struct ComputeEdge{T} <: AbstractEdge
+    graph::T
+    callback::Function
+
+    inputs::Vector{Computed}
+    inputs_dirty::Vector{Bool}
+
+    outputs::Vector{Computed}
+    got_resolved::RefValue{Bool}
+
+    # edges, that rely on outputs from this edge
+    # Mainly needed for mark_dirty!(edge) to propagate to all dependents
+    dependents::Vector{ComputeEdge{T}}
+    # whether the edge has been resolved at least once (unlike got_resolved
+    # this is never reset). The first resolve runs the callback dynamically;
+    # the TypedEdge island is only built on the first re-resolve, so edges
+    # that never update (most plots are static) never pay for inferring the
+    # typed resolve chain.
+    resolved_once::RefValue{Bool}
+    typed_edge::RefValue{TypedEdge}
+end
+
+struct ResolveException{E <: Exception} <: Exception
+    start::Computed
+    error::E
+end
+
+struct SelectException <: Exception
+    msg::String
+    edge::ComputeEdge
+end
+
+function ComputeEdge(f, graph::T, input::Computed, output::Computed) where {T}
+    return ComputeEdge{ComputeGraph}(
+        graph, f, [input], [true], [output], RefValue(false),
+        ComputeEdge[], RefValue(false), RefValue{TypedEdge}()
+    )
+end
+
+logging_id(e::TypedEdge) = logging_id(e.output_nodes[1].parent)
+logging_id(e::ComputeEdge) = logging_id(e.callback, e.inputs, e.outputs)
+
+function _get_named_change(::NamedTuple{Names}, dirty) where {Names}
+    values = ntuple(i -> dirty[i], Val(length(Names)))
+    return NamedTuple{Names, NTuple{length(Names), Bool}}(values)
+end
+
+TypedEdge(edge::ComputeEdge) = TypedEdge(edge.callback, edge)
+
+function TypedEdge(callback, edge::ComputeEdge)
+    N = length(edge.inputs)
+    names = ntuple(i -> edge.inputs[i].name, N)
+    values = ntuple(i -> edge.inputs[i].value, N)
+    inputs = NamedTuple{names}(values)
+    # force `callback` and `inputs` types to be inferred so the rest of the
+    # constructor can be type stable
+    return Base.invokelatest(TypedEdge, edge, callback, inputs)
+end
+
+Base.@nospecializeinfer @noinline function throw_invalid_result_types(edge::ComputeEdge, @nospecialize(result::Tuple))
+    invalid_results = [output.name => value for (output, value) in zip(edge.outputs, result) if !is_node_value_valid(value)]
+    strings = map(kv -> "$(kv[1]) = ::$(typeof(kv[2]))", invalid_results)
+    str = join(strings, ", ")
+    error("Edge callback returned invalid types for outputs: [$str]")
+end
+
+Base.@nospecializeinfer @noinline function throw_length_mismatch(edge::Union{ComputeEdge, TypedEdge}, @nospecialize(result::Tuple))
+    m = first(methods(edge.callback))
+    line = string(m.file, ":", m.line)
+    error("Result needs to have same length. Found: $(result), for func $(line)")
+end
+
+Base.@nospecializeinfer @noinline function throw_invalid_result(@nospecialize(result::Any))
+    error("Wrong type as result $(typeof(result)). Needs to be Tuple with one element per output. Value: $result")
+end
+
+@noinline function warn_nothing_init(edge::ComputeEdge)
+    if LOG_NOTHING_SPLAT
+        if should_log(logging_id(edge))
+            @warn(
+                "Initializing multiple outputs with `return nothing` is deprecated. " *
+                    "Use a tuple `(nothing, nothing, ...)` to initialize each individually. " *
+                    source_info_str(edge)
+            )
+        end
+    else
+        # This only triggers once, so it's not very useful for actually fixing
+        # upstream map!/register_computation! methods
+        Base.depwarn(
+            "Initializing multiple outputs with `return nothing` is deprecated. " *
+                "Use a tuple `(nothing, nothing, ...)` to initialize each individually. " *
+                source_info_str(edge),
+            :warn_nothing_init
+        )
+    end
+    return
+end
+
+function TypedEdge(edge::ComputeEdge, f, inputs)
+    dirty = _get_named_change(inputs, edge.inputs_dirty)
+    result = f(map(getindex, inputs), dirty, nothing)
+    outputs = _init_outputs(result, edge)
+    return TypedEdge(f, inputs, edge.inputs_dirty, outputs, edge.outputs)
+end
+
+function _init_outputs(result::Tuple, edge::ComputeEdge)
+    all(is_node_value_valid, result) || throw_invalid_result_types(edge, result)
+    length(result) == length(edge.outputs) || throw_length_mismatch(edge, result)
+
+    outputs = ntuple(length(result)) do i
+        v = result[i] isa RefValue ? result[i] : slotfor(result[i])
+        if isdefined(edge.outputs[i], :value)
+            store!(edge.outputs[i], v[]) # set value of existing node
+        else
+            edge.outputs[i].value = v # initialize to fully typed RefValue
+        end
+        return edge.outputs[i].value
+    end
+    foreach(node -> node.dirty = true, edge.outputs)
+
+    return outputs
+end
+
+function _init_outputs(::Nothing, edge::ComputeEdge)
+    if LOG_NOTHING_SPLAT
+        if should_log(logging_id(edge))
+            @warn(
+                "Initializing multiple outputs with `return nothing` is deprecated. " *
+                    "Use a tuple `(nothing, nothing, ...)` to initialize each individually. " *
+                    source_info_str(edge)
+            )
+        end
+    else
+        # This only triggers once, so it's not very useful for actually fixing
+        # upstream map!/register_computation! methods
+        Base.depwarn(
+            "Initializing multiple outputs with `return nothing` is deprecated. " *
+                "Use a tuple `(nothing, nothing, ...)` to initialize each individually. " *
+                source_info_str(edge),
+            :TypedEdge
+        )
+    end
+
+    outputs = ntuple(length(edge.outputs)) do i
+        if isdefined(edge.outputs[i], :value)
+            edge.outputs[i].value[] = nothing
+        else
+            edge.outputs[i].value = slotfor(nothing)
+        end
+        return edge.outputs[i].value
+    end
+    foreach(node -> node.dirty = false, edge.outputs)
+
+    return outputs
+end
+
+function _init_outputs(result, ::ComputeEdge)
+    error("Wrong type as result $(typeof(result)). Needs to be Tuple with one element per output or nothing. Value: $result")
+end
+
+
+"""
+    struct Input
+
+A `Input` represents an entry point to the `ComputeGraph`. Like [`Computed`](@ref)
+it should not be created directly, but rely on [`add_input!`](@ref). It should
+be updated by `update!(graph, input_name = new_value)` to correctly update the
+state of the compute graph.
+"""
+mutable struct Input{T} <: AbstractEdge
+    graph::T
+    name::Symbol
+    value::Any
+    f::Any
+    output::Computed
+    dirty::Bool
+    dependents::Vector{ComputeEdge{T}}
+    force_update::Bool
+end
+
+Base.setproperty!(::Input, ::Symbol, ::Observable) = error("Setting the value of an ::Input to an Observable is not allowed")
+Base.setproperty!(::Input, ::Symbol, ::Computed) = error("Setting the value of an ::Input to a Computed is not allowed")
+
+function Input(graph, name, @nospecialize(value), f::F, output, force_update = false) where {F}
+    return Input{ComputeGraph}(
+        graph, name, value, f, output, true, ComputeEdge{ComputeGraph}[], force_update
+    )
+end
+
+abstract type AbstractComputeGraph end
+
+"""
+    ComputeGraph()
+
+Creates a new empty `ComputeGraph`.
+
+Inputs can be added to the graph using [`add_input`](@ref). Computations and the
+connected outputs can be added with [`register_computation!`](@ref).
+
+To update an input, `update!(graph, input_name = new_value)` can be used. To get
+an up-to-date value from an output use `graph[:output_name][]`.
+
+## Example:
+
+```
+graph = ComputeGraph()
+
+add_input!(graph, :first_node, 1)
+map!(graph, :first_node, :derived_node) do input
+    return 2 * input
+end
+
+update!(graph, first_node = 2)
+graph[:derived_node][]
+```
+"""
+struct ComputeGraph <: AbstractComputeGraph
+    inputs::Dict{Symbol, Input}
+    outputs::Dict{Symbol, Computed}
+    nesting::NestedSearchTree
+    onchange::Observable{Set{Symbol}}
+    obs_to_notify::Set{Symbol}
+    observables::Dict{Symbol, Observable}
+    should_deepcopy::Set{Symbol}
+    observerfunctions::Vector{Observables.ObserverFunction}
+    obs_to_update::Vector{Observable}
+end
+
+# This is used for typed edge initialization
+is_node_value_valid(x) = true
+is_node_value_valid(x::RefValue) = isassigned(x) ? is_node_value_valid(x[]) : false
+# shouldn't have those in input.value or computed.value[]
+function is_node_value_valid(::Union{T, RefValue{T}}) where {
+        T <: Union{Computed, Input, ComputeGraph, ComputeEdge, SkipUpdate},
+    }
+    return false
+end
+
+"""
+    get_observable!(graph::ComputeGraph, key::Symbol[; use_deepcopy = true])
+
+Returns an observable which contains the up to date value of the graph node with name `key`.
+
+Note that in order for the Observable to be up to date, the respective node needs
+to resolve immediately after being marked dirty. This may cause the graph to
+update more frequently.
+
+Within the compute graph, data can be updated in-place by using cached values.
+This makes it impossible for the compute graph to know whether that data has
+changed as the old data is not available anymore. In these cases updates are
+always propagated and observables are always triggered. If the observable is
+used to (eventually) update an input of the node it represents, this could lead
+to infinite loops of equal updates. To prevent these, the data in the Observable
+is a `deepcopy` of the data in the compute node and their data is compared
+before updating.
+Setting `use_deepcopy = false` will turn this safeguard off, removing both the
+deepcopy and the equality check. In this case in-place updates of the node will
+always trigger observable updates. Any other duplicate updates will be skipped.
+"""
+function get_observable!(attr::ComputeGraph, key::Symbol; use_deepcopy = true)
+    # Because we allow output arrays to be reused it can be impossible to tell
+    # if the data has updated. In this case the data is marked as dirty/changed
+    # and added to the `onchange`. If this data is fed into an Observable which
+    # updates the graph it can lead to infinite loops.
+    # To prevent this we have to disambiguate the data and do == checks here.
+    # This requires us to copy data every time we update and we can't use
+    # `copy` because that is not always available (e.g. not for Rect)
+    return get!(attr.observables, key) do
+        if use_deepcopy
+            push!(attr.should_deepcopy, key)
+        end
+        # resolve first so eltype can work
+        val = attr.outputs[key]
+        initial_value = use_deepcopy ? deepcopy(val[]) : val[]
+        # The graph already does ignore_equal_values = true checks when data is
+        # not updated in-place, so it's useless to add it here
+        return Observable{eltype(val.value)}(initial_value)
+    end
+end
+
+function get_observable!(c::Computed; use_deepcopy = true)
+    if hasparent(c)
+        p = getparent(c)
+        return get_observable!(p.graph, c.name; use_deepcopy = use_deepcopy)
+    else
+        error("Cannot get observable for Computed without parent")
+    end
+end
+
+# ComputeEdge(f) = ComputeEdge(f, Computed[])
+function ComputeEdge(f, graph::ComputeGraph, inputs::Vector{Computed})
+    return ComputeEdge{ComputeGraph}(
+        graph, f, inputs, fill(true, length(inputs)), Computed[], RefValue(false),
+        ComputeEdge[], RefValue(false), RefValue{TypedEdge}()
+    )
+end
+
+function ComputeGraph()
+    graph = ComputeGraph(
+        Dict{Symbol, Input}(), Dict{Symbol, Computed}(),
+        NestedSearchTree(),
+        Observable(Set{Symbol}()), Set{Symbol}(),
+        Dict{Symbol, Observable}(), Set{Symbol}(),
+        Observables.ObserverFunction[], Observable[]
+    )
+
+    on(graph.onchange) do changeset
+        # Remove node names not backed by observables
+        intersect!(changeset, keys(graph.observables))
+        isempty(changeset) && return
+
+        obs_to_notify = graph.obs_to_notify
+
+        # update values without triggering observables and add all updated names
+        # to obs_to_notify
+        while !isempty(changeset)
+            # Remove the key before resolve so that if the resolve triggers the
+            # changeset again we don't try to resolve the same node twice.
+            # (This might not be reachable anymore)
+            key = pop!(changeset)
+
+            # Still necessary?
+            haskey(graph.observables, key) || continue
+
+            val = graph.outputs[key][]
+            obs = graph.observables[key]
+
+            # Trust the graph to discard equal values. This doesn't work for
+            # anything updated in-place
+            if !(key in graph.should_deepcopy)
+                obs.val = val
+                push!(obs_to_notify, key)
+            elseif !is_same(obs[], val) # treat in-place updates (use isequal to handle NaN correctly)
+                obs.val = deepcopy(val)
+                push!(obs_to_notify, key)
+            else # same value (with deepcopy), skip update
+                # delete!(changeset, key)
+            end
+        end
+
+
+        # trigger observables from obs_to_notify.
+        # Separating this from changeset allows notify to cause another
+        # on(onchange) to trigger without issues.
+        # - value setting & empty!(changeset) doesn't delete from obs_to_notify
+        # - the inner on(onchange) adds to the obs_to_notify Set, so no notifies
+        #   don't duplicate
+        while !isempty(obs_to_notify)
+            key = pop!(obs_to_notify)
+            notify(graph.observables[key])
+        end
+
+        return Consume(false)
+    end
+
+    return graph
+end
+
+"""
+    alias!(graph::ComputeGraph, input::Symbol, output::Symbol)
+
+Creates `output` as an alias of `input`.
+"""
+function alias!(attr::AbstractComputeGraph, key::Symbol, alias_key::Symbol)
+    # TODO: more efficient implementation!
+    register_computation!(compute_identity, attr, [key], [alias_key])
+    return attr
+end
+
+function isdirty(computed::Computed)
+    return hasparent(computed) && isdirty(computed.parent)
+end
+
+
+isdirty(edge::ComputeEdge) = !edge.got_resolved[]
+
+"""
+    mark_resolved!(computed)
+
+Mark the parent edge of a compute node as resolved, so that the node will no
+longer try to update. This will be undone the next time any (recursive) input
+to the node is updated.
+"""
+function mark_resolved!(computed::Computed)
+    if hasparent(computed)
+        try
+            mark_resolved!(computed.parent)
+        catch e
+            rethrow(ResolveException(computed, e))
+        end
+    end
+    return
+end
+function mark_resolved!(edge::ComputeEdge)
+    if !edge.got_resolved[]
+        @lock GLOBAL_LOCK begin
+            foreach(locked_resolve!, edge.inputs)
+            edge.got_resolved[] = true
+            fill!(edge.inputs_dirty, false)
+        end
+    end
+    return
+end
+mark_resolved!(edge::Input) = edge.dirty = false
+
+"""
+    mark_dirty!(x)
+
+Marks a compute node or edge and all its dependents dirty, and triggers
+Observables dependent on the graph. It is generally recommended to use `notify`
+instead of this function.
+"""
+function mark_dirty!(computed::Computed)
+    hasparent(computed) || return
+    mark_dirty!(computed, computed.parent.graph.obs_to_update)
+    return
+end
+function mark_dirty!(computed::Computed, obs_to_update)
+    hasparent(computed) || return
+    # This is called if we do not start mark_dirty!() from an Input. In this
+    # case we need to set `computed.dirty` so `resolve!()` knows the node has
+    # changed even though the computation has not marked it.
+    @lock GLOBAL_LOCK begin
+        computed.dirty = true
+        locked_mark_dirty!(computed.parent, obs_to_update)
+    end
+    update_observables!(obs_to_update)
+    return
+end
+
+mark_dirty!(x::AbstractEdge) = mark_dirty!(x, x.graph.obs_to_update)
+function mark_dirty!(x::ComputeEdge, obs_to_update)
+    @lock GLOBAL_LOCK begin
+        if !any(x.inputs_dirty) # make sure the edge will actually resolve
+            x.inputs_dirty .= true
+        end
+        locked_mark_dirty!(x, obs_to_update)
+    end
+    update_observables!(obs_to_update)
+    return
+end
+
+function mark_dirty!(x::Input, obs_to_update)
+    @lock GLOBAL_LOCK begin
+        locked_mark_dirty!(x, obs_to_update)
+    end
+    update_observables!(obs_to_update)
+    return
+end
+
+"""
+    locked_mark_dirty!(x, obs_to_update)
+
+Marks a compute node or edge and all its dependents dirty. This assumes the
+compute graph is already locked and that observables are updated outside of this
+function. This should not be used externally.
+"""
+locked_mark_dirty!(x::AbstractEdge) = locked_mark_dirty!(x, x.graph.obs_to_update)
+function locked_mark_dirty!(x::Computed, obs_to_update = x.parent.graph.obs_to_update)
+    # if a node is dirty its parents dependents should be marked dirty
+    x.dirty = true
+    for dep in x.parent.dependents
+        isdirty(x.parent) || mark_input_dirty!(x.parent, dep)
+        locked_mark_dirty!(dep, obs_to_update)
+    end
+    x.dirty = false
+    # And if it has an observable that observable should be marked to trigger.
+    g = x.parent.graph
+    push!(g.onchange.val, x.name)
+    g.onchange in obs_to_update || push!(obs_to_update, g.onchange)
+    return
+end
+
+function locked_mark_dirty!(edge::ComputeEdge, obs_to_update::Vector{Observable})
+    if edge.got_resolved[]
+        # Assumes this is the same graph as edge.outputs (for parent -> child graph edges)
+        g = edge.graph
+        for output in edge.outputs
+            push!(g.onchange.val, output.name)
+            g.onchange in obs_to_update || push!(obs_to_update, g.onchange)
+        end
+
+        edge.got_resolved[] = false
+        for dep in edge.dependents
+            locked_mark_dirty!(dep, obs_to_update)
+        end
+    end
+    return
+end
+
+function locked_mark_dirty!(input::Input, obs_to_update::Vector{Observable})
+    push!(input.graph.onchange.val, input.name)
+    if !(input.graph.onchange in obs_to_update)
+        push!(obs_to_update, input.graph.onchange)
+    end
+
+    input.dirty = true
+    for edge in input.dependents
+        locked_mark_dirty!(edge, obs_to_update)
+    end
+    return
+end
+
+update_observables!(comp::Computed) = update_observables!(comp.parent)
+update_observables!(edge::Input) = update_observables!(edge.graph)
+update_observables!(edge::ComputeEdge) = update_observables!(edge.graph)
+update_observables!(graph::ComputeGraph) = update_observables!(graph.obs_to_update)
+function update_observables!(obs_to_update::Vector{Observable})
+    foreach(notify, obs_to_update)
+    empty!(obs_to_update)
+    return
+end
+
+Base.notify(node::Union{Computed, Input}) = mark_dirty!(node)
+
+function Base.setindex!(computed::Computed, @nospecialize(value))
+    if computed.parent isa Input
+        return setindex!(computed.parent, value)
+    else
+        @lock GLOBAL_LOCK begin
+            store!(computed, value)
+            locked_mark_dirty!(computed)
+        end
+        update_observables!(computed)
+        return value
+    end
+end
+
+# Inputs are strictly 1:1 edges (from input.value -> output), so we don't need
+# to worry about avoiding changes to input.value between multiple dependents.
+# However we do technically still need to protect it while the callback runs.
+Base.setindex!(input::Input, @nospecialize(value)) = _setindex!(input, value, input.force_update)
+function _setindex!(input::Input, @nospecialize(value), force_update = false)
+    if !force_update && is_same(input.value, value)
+        return value
+    end
+    @lock GLOBAL_LOCK begin
+        input.value = value
+        locked_mark_dirty!(input)
+        tracks_fields(input.graph, input.name) &&
+            store_versions!(input.graph, input.name, set_all(input.graph.inputs[fields_key(input.name)].value, value))
+    end
+    update_observables!(input)
+    return value
+end
+
+
+function _setproperty!(attr::ComputeGraph, key::Symbol, @nospecialize(value))
+    input = attr.inputs[key]
+    # Skip if the value is the same as before
+    if !input.force_update && is_same(input.value, value)
+        return value
+    end
+    @lock GLOBAL_LOCK begin
+        # can't notify observables immediately here, because update may call this
+        # multiple times for a synchronized update (would cause desync)
+        input.value = value
+        locked_mark_dirty!(input)
+        # A value assigned whole sets every field of it.
+        tracks_fields(attr, key) && store_versions!(attr, key, set_all(attr.inputs[fields_key(key)].value, value))
+    end
+    return value
+end
+
+# ── Fields of an input ──────────────────────────────────────────────────────
+
+struct FieldVersions <: AbstractDict{Symbol, Int}
+    roots::Dict{Symbol, Int}
+    paths::Dict{Tuple, Int}
+end
+Base.length(v::FieldVersions) = length(v.roots)
+Base.iterate(v::FieldVersions, state...) = iterate(v.roots, state...)
+Base.getindex(v::FieldVersions, key::Symbol) = v.roots[key]
+Base.get(v::FieldVersions, key::Symbol, default) = get(v.roots, key, default)
+Base.copy(v::FieldVersions) = FieldVersions(copy(v.roots), copy(v.paths))
+
+"""
+    track_fields!(graph, key)
+
+Track assignments to fields of the struct input `key` holds, including nested fields such as
+`graph.material.a.roughness = value`. The input `Symbol(key, :_fields)` counts assignments per
+top-level field; `field_was_set(current, previous, path)` distinguishes nested assignments from
+replacement of a whole ancestor. A value assigned whole sets all its fields.
+
+This also detects arrays changed in place and assigned again, while leaving unrelated images
+untouched. A nested field's value can be read or assigned through `graph.material.a.color[]`.
+"""
+function track_fields!(graph::ComputeGraph, key::Symbol)
+    tracks_fields(graph, key) && return graph
+    versions = FieldVersions(Dict{Symbol, Int}(), Dict{Tuple, Int}())
+    add_input!(graph, fields_key(key), set_all(versions, graph.inputs[key].value))
+    return graph
+end
+
+"""The input holding how often each field of input `key` was set (`track_fields!`)."""
+fields_key(key::Symbol) = Symbol(key, :_fields)
+tracks_fields(graph::ComputeGraph, key::Symbol) = haskey(graph.inputs, fields_key(key))
+
+"""`versions` with every field of `value` set once more."""
+function set_all(versions::FieldVersions, value)
+    roots = copy(versions.roots)
+    # Retain counters of fields absent in a replacement type: restoring that type
+    # must not reset its versions to values a consumer has already seen.
+    for field in union(keys(roots), fieldnames(typeof(value)))
+        roots[field] = get(roots, field, 0) + 1
+    end
+    paths = copy(versions.paths)
+    paths[()] = get(paths, (), 0) + 1
+    return FieldVersions(roots, paths)
+end
+
+function set_field(versions::FieldVersions, path::Tuple)
+    roots = copy(versions.roots)
+    roots[first(path)] = get(roots, first(path), 0) + 1
+    paths = copy(versions.paths)
+    paths[path] = get(paths, path, 0) + 1
+    return FieldVersions(roots, paths)
+end
+
+"""Whether `path`, or an ancestor assigned as a whole, was set since `previous`."""
+field_was_set(current::FieldVersions, previous::FieldVersions, field::Symbol) =
+    field_was_set(current, previous, (field,))
+function field_was_set(current::FieldVersions, previous::FieldVersions, path::Tuple)
+    return any(0:length(path)) do n
+        prefix = path[1:n]
+        get(current.paths, prefix, 0) != get(previous.paths, prefix, 0)
+    end
+end
+
+function store_versions!(graph::ComputeGraph, key::Symbol, versions::FieldVersions)
+    input = graph.inputs[fields_key(key)]
+    input.value = versions
+    locked_mark_dirty!(input)
+    return
+end
+
+"""
+    with_field(x, field, value)
+
+`x` with `field` set to `value` and every other field as it was, rebuilt through its type's name,
+so a parametric type takes the type of `value`. Overload it for a type whose constructor does not
+take its fields positionally.
+"""
+with_field(x, field::Symbol, value) =
+    Base.typename(typeof(x)).wrapper(map(f -> f === field ? value : getfield(x, f), fieldnames(typeof(x)))...)
+with_field(x::NamedTuple, field::Symbol, value) = merge(x, NamedTuple{(field,)}((value,)))
+
+struct InputField{Path}
+    node::Computed
+end
+
+field_value(value, path::Tuple{}) = value
+field_value(value, path::Tuple) = field_value(getfield(value, first(path)), Base.tail(path))
+Base.getindex(field::InputField{Path}) where {Path} = field_value(getfield(field, :node)[], Path)
+Observables.to_value(field::InputField) = field[]
+Base.setindex!(field::InputField{Path}, value) where {Path} =
+    set_input_field!(getfield(field, :node), Path, value)
+Base.propertynames(field::InputField) = fieldnames(typeof(field[]))
+Base.show(io::IO, field::InputField{Path}) where {Path} =
+    print(io, "Computed field ", getfield(field, :node).name, '.', join(Path, '.'))
+
+function input_field(node::Computed, path::Tuple)
+    input = getparent(node)
+    value = input isa Input ? input.value : node[]
+    field_value(value, path) # Refuse a missing field at the access that names it.
+    return InputField{path}(node)
+end
+
+@inline function Base.getproperty(node::Computed, field::Symbol)
+    hasfield(Computed, field) && return getfield(node, field)
+    return input_field(node, (field,))
+end
+Base.getproperty(field::InputField{Path}, name::Symbol) where {Path} =
+    input_field(getfield(field, :node), (Path..., name))
+Base.setproperty!(field::InputField{Path}, name::Symbol, value) where {Path} =
+    set_input_field!(getfield(field, :node), (Path..., name), value)
+
+with_field_path(x, ::Tuple{}, value) = value
+function with_field_path(x, path::Tuple, value)
+    field = first(path)
+    hasfield(typeof(x), field) || error("$(typeof(x)) has no field `$field`.")
+    return with_field(x, field, with_field_path(getfield(x, field), Base.tail(path), value))
+end
+
+"""
+    node.field = value
+
+Set one field of the struct an input holds, the input `node` is the output of: the input is
+updated to the struct with that field changed (`with_field`), and where its fields are tracked
+(`track_fields!`) that field alone counts as set.
+"""
+function Base.setproperty!(node::Computed, field::Symbol, value)
+    hasfield(Computed, field) && return setfield!(node, field, convert(fieldtype(Computed, field), value))
+    return set_input_field!(node, (field,), value)
+end
+
+function set_input_field!(node::Computed, path::Tuple, value)
+    input = getparent(node)
+    input isa Input || error("Only the fields of an input can be set; $(node.name) is computed.")
+    graph = input.graph
+    @lock GLOBAL_LOCK begin
+        input.value = with_field_path(input.value, path, value)
+        locked_mark_dirty!(input)
+        if tracks_fields(graph, input.name)
+            versions = set_field(graph.inputs[fields_key(input.name)].value, path)
+            store_versions!(graph, input.name, versions)
+        end
+    end
+    update_observables!(graph)
+    return value
+end
+
+function Base.setproperty!(attr::ComputeGraph, key::Symbol, @nospecialize(value))
+    _setproperty!(attr, key, value)
+    update_observables!(attr)
+    return value
+end
+
+"""
+    update!(graph; kwargs...)
+    update!(graph, pairs::Pair{Symbol, Any}...)
+
+Updates any number of inputs in the graph based on the passed `key = value`
+keyword arguments. The `key` refers to the name of the input and the `value` is
+the new value.
+
+## Example:
+
+```
+graph = ComputeGraph()
+add_input!(graph, :first_node, 1)
+update!(graph, first_node = 2)
+update!(graph, :first_node => 2)
+```
+"""
+update!(attr::AbstractComputeGraph; kwargs...) = update!(attr, [Pair{Symbol, Any}(k, v) for (k, v) in kwargs])
+update!(attr::AbstractComputeGraph, dict::Dict) = _update!(attr, dict)
+update!(attr::AbstractComputeGraph, pairs::Pair...) = _update!(attr, [Pair(k, v) for (k, v) in pairs])
+update!(attr::AbstractComputeGraph, pairs::AbstractVector{<:Pair}) = _update!(attr, pairs)
+
+function _update!(attr::ComputeGraph, values)
+    @lock GLOBAL_LOCK begin
+        for (_key, value) in values
+            key = merged_key(_key)
+            if haskey(attr.inputs, key)
+                _setproperty!(attr, key, value)
+            else
+                error("Attribute $key not found in ComputeGraph")
+            end
+        end
+    end
+    update_observables!(attr)
+    return attr
+end
+
+Base.haskey(attr::ComputeGraph, key::Symbol) = haskey(attr.outputs, key) || haskey(attr.nesting, key)
+Base.haskey(graph::ComputeGraph, key::Symbol, keys::Symbol...) = haskey(graph.nesting, key, keys...)
+Base.haskey(graph::ComputeGraph, keys::Tuple{Vararg{Symbol}}) = haskey(graph, keys...)
+
+hasinput(attr::ComputeGraph, key::Symbol) = haskey(attr.inputs, key)
+hasinput(graph::ComputeGraph, key::Symbol, keys::Symbol...) = hasinput(graph, merged_key(key, keys...))
+hasinput(graph::ComputeGraph, keys::Tuple{Vararg{Symbol}}) = hasinput(graph, merged_key(keys...))
+
+has_nested_key(graph::ComputeGraph, key::Symbol) = haskey(graph.nesting, key)
+has_leaf_key(graph::ComputeGraph, key::Symbol) = haskey(graph.outputs, key)
+
+Base.get(attr::ComputeGraph, key::Symbol, default) = get(attr.outputs, key, default)
+Base.keys(graph::ComputeGraph) = keys(graph.outputs)
+
+function Base.getproperty(attr::ComputeGraph, key::Symbol)
+    # more efficient to hardcode?
+    key === :inputs && return getfield(attr, :inputs)
+    key === :outputs && return getfield(attr, :outputs)
+    key === :nesting && return getfield(attr, :nesting)
+    key === :onchange && return getfield(attr, :onchange)
+    key === :obs_to_notify && return getfield(attr, :obs_to_notify)
+    key === :observables && return getfield(attr, :observables)
+    key === :observerfunctions && return getfield(attr, :observerfunctions)
+    key === :obs_to_update && return getfield(attr, :obs_to_update)
+    key === :lock && return getfield(attr, :lock)
+    key === :should_deepcopy && return getfield(attr, :should_deepcopy)
+    return attr[key]
+end
+
+"""
+    struct ComputeGraphView
+
+A `ComputeGraphView` represents a nested ComputedGraph. It is returned when
+accessing the parent of a nested node within a ComputeGraph.
+"""
+struct ComputeGraphView <: AbstractComputeGraph
+    parent::ComputeGraph
+    nested_trace::TemporarySearchResult
+end
+
+"""
+    ComputeGraphView(parent, key::Symbol)
+
+Manually creates a view into a ComputeGraph.
+"""
+function ComputeGraphView(parent::ComputeGraph, key::Symbol)
+    if !haskey(parent, key)
+        add_path!(parent.nesting, key)
+    end
+    return parent[key]
+end
+
+function ComputeGraphView(view::ComputeGraphView, key::Symbol)
+    if !haskey(view, key)
+        add_key!(
+            root(view).nesting,
+            view.nested_trace.next_index,
+            (key,), false
+        )
+    end
+    return view[key]
+end
+
+root(g::ComputeGraph) = g
+root(v::ComputeGraphView) = v.parent
+
+function Base.show(io::IO, view::ComputeGraphView)
+    trace = view.nested_trace
+    level_dict = trace.parent.keytables[trace.next_index]
+    _show_view_from_table(io, level_dict)
+    return
+end
+
+function _show_view_from_table(io::IO, level_dict::Dict)
+    ks = collect(keys(level_dict))
+    kstr = if length(ks) > 5
+        ":$(ks[1]), :$(ks[2]), :$(ks[3]),..."
+    else
+        join(Ref(':') .* string.(ks), ", ")
+    end
+    print(io, "ComputeGraphView($kstr)")
+    return
+end
+
+function Base.show(io::IO, ::MIME"text/plain", view::ComputeGraphView)
+    attr = view.parent
+    trace = view.nested_trace
+
+    level = trace.next_index
+    level_dict = trace.parent.keytables[level]
+    base_key = merged_key(trace)
+
+    print(io, "Nested view of ComputeGraph at graph.$base_key containing:")
+    for (key, val) in level_dict
+        full_key = Symbol(base_key, :(.), key)
+        if is_final_level(val)
+            node = get(attr.inputs, full_key, attr.outputs[full_key])
+            print(io, "\n  ", key, " => ", node)
+        else
+            next_level_dict = trace.parent.keytables[val]
+            print(io, "\n  ", key, " => ")
+            _show_view_from_table(io, next_level_dict)
+        end
+    end
+
+    return
+end
+
+Base.keys(view::ComputeGraphView) = keys(view.nested_trace)
+recursive_keys(view::ComputeGraphView) = recursive_keys(view.nested_trace)
+merged_key(view::ComputeGraphView) = merged_key(view.nested_trace)
+
+Base.haskey(view::ComputeGraphView, keys::Symbol...) = haskey(view.nested_trace, keys...)
+Base.haskey(view::ComputeGraphView, keys::Tuple{Vararg{Symbol}}) = haskey(view.nested_trace, keys...)
+
+hasinput(view::ComputeGraphView, keys::Symbol...) = hasinput(view.parent, merged_key(view.nested_trace, key, keys...))
+hasinput(view::ComputeGraphView, keys::Tuple{Vararg{Symbol}}) = hasinput(view.parent, merged_key(view.nested_trace, keys...))
+
+
+has_leaf_key(view::ComputeGraphView, key::Symbol) = isfinal(view.nested_trace[key])
+
+# Generates pairs for `foo(; kwargs...)`
+function Base.iterate(view::ComputeGraphView)
+    ks = keys(view)
+    return iterate(view, (ks, iterate(ks)))
+end
+
+function Base.iterate(view::ComputeGraphView, state)
+    ks, substate = state
+    if isnothing(substate)
+        return nothing
+    else
+        key, key_state = substate
+        return key => view[key], (ks, iterate(ks, key_state))
+    end
+end
+
+function Base.length(view::ComputeGraphView)
+    trace = view.nested_trace
+    level = trace.next_index
+    return length(trace.parent.keytables[level])
+end
+
+Base.eltype(::Type{ComputeGraphView}) = Union{Pair{Symbol, ComputeGraphView}, Pair{Symbol, Computed}}
+
+# only collects outputs as those are useful to create a child graph
+# TODO: these don't really fit together
+# Base.pairs(graph::ComputeGraph) = graph.outputs # not nested
+Base.pairs(view::ComputeGraphView) = (p for p in view) # nested
+
+function Base.getindex(attr::ComputeGraph, key::Symbol)
+    if haskey(attr.outputs, key)
+        return attr.outputs[key]
+    else
+        temp_result = attr.nesting[key]
+        return ComputeGraphView(attr, temp_result)
+    end
+end
+
+function Base.propertynames(attr::ComputeGraphView)
+    return collect(keys(attr.parent.nesting.keytables[attr.nested_trace.next_index]))
+end
+function Base.getproperty(attr::ComputeGraphView, key::Symbol)
+    hasfield(ComputeGraphView, key) && return getfield(attr, key)
+    return getindex(attr, key)
+end
+
+function Base.getindex(attr::AbstractComputeGraph, keys::Tuple{Vararg{Symbol}})
+    return getindex(attr, keys...)
+end
+
+function Base.getindex(attr::AbstractComputeGraph, key1::Symbol, key2::Symbol, keys::Symbol...)
+    return getindex(getindex(attr, key1), key2, keys...)
+end
+
+function Base.getindex(attr::ComputeGraphView, key::Symbol)
+    temp_result = attr.nested_trace[key]
+    if isfinal(temp_result)
+        merged = merged_key(temp_result)
+        return attr.parent.outputs[merged]
+    else
+        return ComputeGraphView(attr.parent, temp_result)
+    end
+end
+# Compat for (graph.attributes[]::Attributes)[:entry]/.entry
+Base.getindex(attr::ComputeGraphView) = attr
+
+function Base.setproperty!(attr::ComputeGraphView, key::Symbol, value)
+    temp_result = attr.nested_trace[key]
+    merged = merged_key(temp_result)
+    if isfinal(temp_result)
+        setproperty!(attr.parent, merged, value)
+    else
+        error("Can't set $merged as it is an incomplete path to a compute node.")
+    end
+    return
+end
+
+function Base.setindex!(attr::ComputeGraphView, value, key1::Symbol, key2::Symbol, keys::Symbol...)
+    return setindex!(getindex(attr, key1), value, key2, keys...)
+end
+
+function Base.setindex!(attr::ComputeGraphView, value, key::Symbol)
+    temp_result = attr.nested_trace[key]
+    if isfinal(temp_result)
+        merged = merged_key(temp_result)
+        return setindex!(attr.parent[merged], value)
+    else
+        error("Can't set $merged as it is an incomplete path to a compute node.")
+    end
+end
+
+function _update!(view::ComputeGraphView, values)
+    root = merged_key(view.nested_trace.keys)
+    new_values = [Pair(merged_key(root, k), v) for (k, v) in values]
+    return _update!(view.parent, new_values)
+end
+
+# function Base.setindex!(attr::AbstractComputeGraph, g::ComputeGraph, key::Symbol)
+#     if !(isempty(g.inputs) && isempty(g.outputs))
+#         error("graph[key] = ComputeGraph() is only allowed with empty ComputeGraphs")
+#     end
+#     return ComputeGraphView(attr, key)
+# end
+
+isdirty(input::Input) = input.dirty
+
+Base.getindex(computed::Computed) = resolve!(computed)
+
+################################################################################
+
+# After resolving a parent edge, inform the dependent edge about the nodes the
+# parent updated.
+function mark_input_dirty!(parent::ComputeEdge, edge::ComputeEdge)
+    @assert parent.got_resolved[]
+    for i in eachindex(edge.inputs)
+        edge.inputs_dirty[i] |= getfield(edge.inputs[i], :dirty)
+    end
+    return
+end
+
+function mark_input_dirty!(parent::Input, edge::ComputeEdge)
+    @assert !parent.dirty # should got resolved
+    for i in eachindex(edge.inputs)
+        edge.inputs_dirty[i] |= getfield(edge.inputs[i], :dirty)
+    end
+    return
+end
+
+"""
+    slotfor(value) -> RefValue
+
+The storage an output node is created with on its FIRST resolve.
+
+`RefValue(value)` for a real value — the point of the first resolve is to type
+the slot concretely, and everything downstream reads it through that type.
+
+`Ref{Any}` for `nothing`, because `nothing` is not a value here: [`set_result!`]
+(@ref) below reads it as "this output did not CHANGE", so a callback that
+answers it on the first resolve has said nothing about the type at all.
+`RefValue(nothing)` took it literally and made a `RefValue{Nothing}`, which can
+never hold anything else — so the next resolve, the one with real data, died on
+`convert(Nothing, x)` and kept dying, for the life of the graph.
+
+What that cost: a plot created EMPTY and filled later could never draw. RayMakie's
+`draw_atomic` for `lines` and `text` answers `(nothing,)` while a plot has fewer
+than two points, which is the ordinary state of a GUI's plots before the first
+interaction — the video editor's crop rectangle gets its points on the first
+drag, and after this it got them and was never drawn again.
+
+"""
+slotfor(@nospecialize(value)) = RefValue(value)
+slotfor(::Nothing) = Ref{Any}(nothing)
+
+"""
+    store!(node::Computed, value)
+
+Put `value` in `node`'s slot.
+
+The slot is typed by the first value it held, and the typed edges that write and
+read it captured that `RefValue` concretely, which is what makes them type
+stable. A value of another type does not fit: a plot's `color` going from one
+colour to one per element is that case, and it failed with "Cannot convert
+Vector{RGBA{Float32}} to RGBA{Float32}" in every node downstream of the input,
+so the plot stayed broken for good. Such a value gets a new slot of its own
+type, and every typed edge holding the old slot is rebuilt around the new one
+(`retyped!`). The callbacks do not run for that; the next resolve runs them as
+usual. A slot declared wider with [`set_type!`](@ref) takes any value of its
+type, as before.
+"""
+function store!(node::Computed, @nospecialize(value))
+    slot = node.value
+    if value isa eltype(slot)
+        slot[] = value
+    else
+        node.value = RefValue(value)
+        retyped!(node)
+    end
+    return
+end
+
+"""
+    retyped!(node::Computed)
+
+Rebuild the typed edges that captured `node`'s previous slot: the edge writing it
+(its outputs) and the edges reading it (their inputs). An edge that was never
+resolved has no typed edge yet and builds one with the new slot when it is.
+"""
+function retyped!(node::Computed)
+    writer = getparent(node)
+    rebuild_typed!(writer)
+    writer === nothing || foreach(rebuild_typed!, writer.dependents)
+    return
+end
+
+"""
+    rebuild_typed!(edge)
+
+Rebuild `edge`'s typed edge around the slots its nodes hold now. An edge whose
+outputs share their inputs' slots (`compute_identity`, which is how a plot reads
+its parent's nodes) takes the new input slots as its outputs' too, which
+re-types those outputs, so the edges reading them are rebuilt in turn. Before
+this, such an output kept the old slot and the value it last had: a `poly`
+created empty and filled later converted its `Float32` meshes, and its child
+mesh plot went on drawing the empty `Float64` vector from before, while its
+colours had the new length.
+"""
+function rebuild_typed!(edge::ComputeEdge)
+    # A first resolve runs the callback dynamically and builds no typed edge
+    # (`dynamic_resolve!`); an identity edge resolved that way still shares its
+    # inputs' slots, so it follows them too.
+    edge.resolved_once[] || isassigned(edge.typed_edge) || return
+    moved = follow_slots!(edge.callback, edge)
+    isassigned(edge.typed_edge) && (edge.typed_edge[] = TypedEdge_no_call(edge))
+    moved && foreach(rebuild_typed!, edge.dependents)
+    return
+end
+rebuild_typed!(::Union{Input, Nothing}) = nothing
+
+"""
+    follow_slots!(callback, edge) -> Bool
+
+Point the outputs of `edge` at its inputs' slots if the edge shares them, and
+answer whether any output got a new slot. Only `compute_identity` shares.
+"""
+follow_slots!(@nospecialize(callback), ::ComputeEdge) = false
+
+function set_result!(edge::TypedEdge, result, i, value)
+    # Dereference once so callbacks returning `Ref{Any}(x)` (the type-narrowing
+    # opt-out) are seen through by `is_same`. Comparing the raw Ref wrapper never
+    # equals the stored (dereferenced) value, so the output would stay perpetually dirty.
+    new_val = deref(value)
+    if LOG_NOTHING_SKIP && isnothing(new_val) && should_log(logging_id(edge))
+        @warn(
+            "Found `map!` or `register_computation!` callback which returns " *
+                "nothing for one of its outputs. This might be incorrect since " *
+                "nothing has been replaced by `skip_update` for marking outputs " *
+                "as unchanged. " * source_info_str(edge)
+        )
+    end
+
+    if (new_val === skip_update) || is_same(edge.outputs[i][], new_val)
+        edge.output_nodes[i].dirty = false
+    else
+        edge.output_nodes[i].dirty = true
+        store!(edge.output_nodes[i], new_val)
+    end
+    if !isempty(result)
+        next_val = first(result)
+        rem = Base.tail(result)
+        set_result!(edge, rem, i + 1, next_val)
+    end
+    return
+end
+
+function set_result!(edge::TypedEdge, result::Tuple)
+    length(result) == length(edge.outputs) || throw_length_mismatch(edge, result)
+    next_val = first(result)
+    rem = Base.tail(result)
+    return set_result!(edge, rem, 1, next_val)
+end
+
+function set_result!(edge::TypedEdge, ::SkipUpdate)
+    foreach(x -> x.dirty = false, edge.output_nodes)
+    return
+end
+
+function set_result!(edge::TypedEdge, ::Nothing)
+    if LOG_NOTHING_SPLAT || LOG_NOTHING_SKIP
+        if should_log(logging_id(edge))
+            @warn(
+                "Returning `nothing` in `map!` and `register_computation!` callbacks " *
+                    "has been deprecated in favor of returning `skip_update` to allow " *
+                    "outputs to update to `nothing`. Setting all outputs to `nothing` " *
+                    "should be done with a tuple. " * source_info_str(edge)
+            )
+        end
+    else
+        Base.depwarn(
+            "Returning `nothing` in `map!` and `register_computation!` callbacks " *
+                "has been deprecated in favor of returning `skip_update` to allow " *
+                "outputs to update to `nothing`.  Setting all outputs to `nothing` " *
+                "should be done with a tuple. Use " *
+                "`ComputePipeline.log_nothing_skip(true)` to find problematic methods.",
+            :locked_resolve!
+        )
+    end
+    foreach(x -> x.dirty = false, edge.output_nodes)
+    return
+end
+
+function set_result!(::TypedEdge, ::T) where {T}
+    error("Needs to return a Tuple with one element per output or nothing, but returned $T")
+end
+
+is_same(@nospecialize(old), @nospecialize(new)) = false
+is_same(old::Symbol, new::Symbol) = old == new
+function is_same(old::T, new::T) where {T}
+    if isbitstype(T)
+        # We can compare immutable isbits type per value with `===`
+        return old === new
+    else
+        # For mutable types, we can only compare them if they're not pointing to the same  object
+        # If they are the same, we have to give up since we can't test if they got mutated in-between
+        # Otherwise we can compare by equivalence
+        same_object = old === new
+        return same_object ? false : isequal(old, new)
+    end
+end
+function is_same(old::Array, new::Array)
+    # All empty arrays share the same memory, so their pointers tell nothing about
+    # aliasing. Two distinct empty arrays hold no data that could have changed.
+    old !== new && isempty(old) && isempty(new) && return isequal(old, new)
+    # same pointer means memory aliased (which does not require old === new)
+    # and same memory means we can't compare before and after => assume not same
+    is_distinct = pointer(old) !== pointer(new)
+    return is_distinct && isequal(old, new)
+end
+
+# do we want this type stable?
+# This is how we could get a type stable callback body for resolve
+function locked_resolve!(edge::TypedEdge)
+    if any(edge.inputs_dirty) # only call if inputs changed
+        dirty = _get_named_change(edge.inputs, edge.inputs_dirty)
+        vals = map(getindex, edge.outputs)
+        names = ntuple(Val(length(vals))) do i
+            edge.output_nodes[i].name
+        end
+        last = NamedTuple{names}(vals)
+        result = edge.callback(map(getindex, edge.inputs), dirty, last)
+        set_result!(edge, result)
+    end
+    return
+end
+
+function locked_resolve!(input::Input)
+    input.dirty || return
+    value = input.f(input.value)
+    if isdefined(input.output, :value)
+        store!(input.output, deref(value))
+    else
+        input.output.value = value isa RefValue ? value : RefValue(value)
+    end
+    input.dirty = false
+    input.output.dirty = true
+    for edge in input.dependents
+        mark_input_dirty!(input, edge)
+    end
+    input.output.dirty = false
+    return
+end
+
+function locked_resolve!(computed::Computed)
+    if hasparent(computed)
+        locked_resolve!(computed.parent)
+    end
+    return
+end
+
+# Not actually called, but maybe useful for understanding what it does?
+"""
+    select(idx::Int, choices...)
+
+Returns `choices[idx]`.
+
+This function is not directly called when used as the callback in `map` or
+`register_computation!`. It is instead replaced by resolving the node which
+supplies `idx` and node which supplies `choices[idx]`, leaving all other nodes
+unresolved/dirty. The edge output gets the result as if `select` was called
+directly, but doesn't pay the cost of resolving unused inputs.
+"""
+select(i::Int, choices...) = choices[i]
+
+function locked_resolve!(edge::ComputeEdge)
+    edge.got_resolved[] && return
+
+    # special case to resolve just one of many options
+    # Note: dispatching on callback type is much slower than ===
+    if edge.callback === select || edge.callback === ifelse
+        # resolve selected index
+        locked_resolve!(edge.inputs[1])
+        edge.inputs_dirty[1] = false
+
+        # resolve and forward picked choice
+        if edge.callback === select
+            idx = 1 + edge.inputs[1].value[]::Int
+            N = length(edge.inputs)
+        else
+            # ifelse(input...) means true = 1 = input[2], false = 0 = input[3]
+            idx = 3 - edge.inputs[1].value[]::Bool
+            N = 3
+        end
+
+        if !(2 <= idx <= N)
+            throw(
+                SelectException(
+                    "Selection index $(idx - 1) is out of bounds for indexing $(length(edge.inputs) - 1) inputs.",
+                    edge
+                )
+            )
+        end
+
+        locked_resolve!(edge.inputs[idx])
+        edge.inputs_dirty[idx] = false
+        new_value = edge.inputs[idx].value[]
+
+        output = edge.outputs[1]
+        if is_initialized(output)
+            output.dirty = !is_same(output.value[], new_value)
+            output.value[] = new_value
+        else
+            output.dirty = true
+            output.value = RefValue(new_value)
+        end
+    else
+        foreach(locked_resolve!, edge.inputs)
+        if !isassigned(edge.typed_edge)
+            if edge.resolved_once[]
+                # First re-resolve: build the typed island from the values the
+                # dynamic first resolve produced (without calling back), then
+                # resolve it normally so the callback sees correct changed
+                # flags and cached values (incl. `skip_update` semantics).
+                edge.typed_edge[] = TypedEdge_no_call(edge)
+                locked_resolve!(edge.typed_edge[])
+            else
+                dynamic_resolve!(edge)
+                edge.resolved_once[] = true
+            end
+        else
+            locked_resolve!(edge.typed_edge[])
+        end
+        fill!(edge.inputs_dirty, false)
+    end
+
+    edge.got_resolved[] = true
+    for dep in edge.dependents
+        mark_input_dirty!(edge, dep)
+    end
+    foreach(comp -> comp.dirty = false, edge.outputs)
+    return
+end
+
+function resolve!(computed::Computed)
+    if hasparent(computed)
+        try
+            resolve!(computed.parent)
+        catch e
+            if e isa ResolveException
+                rethrow(e)
+            else
+                rethrow(ResolveException(computed, e))
+            end
+        end
+    end
+    return computed.value[]
+end
+
+# Resolve once without specializing the typed update path for a static plot.
+# Dispatching on the callback lets a callback bring its own first resolve.
+dynamic_resolve!(edge::ComputeEdge) = dynamic_resolve!(edge.callback, edge)
+
+function dynamic_resolve!(@nospecialize(callback), edge::ComputeEdge)
+    names = Tuple(Symbol[input.name for input in edge.inputs])
+    values = Tuple(Any[input.value[] for input in edge.inputs])
+    dirty = Tuple(Bool[d for d in edge.inputs_dirty])
+    result = Base.invokelatest(callback, NamedTuple{names}(values), NamedTuple{names}(dirty), nothing)
+    return set_result!(edge, result)
+end
+
+# These run for every result type, so they must not specialize on it. That is
+# also why validity isn't checked with `all`, which compiles per tuple type.
+function set_result!(edge::ComputeEdge, @nospecialize(result::Tuple))
+    for value in result
+        is_node_value_valid(value) || throw_invalid_result_types(edge, result)
+    end
+    length(result) == length(edge.outputs) || throw_length_mismatch(edge, result)
+    for i in eachindex(edge.outputs)
+        r = result[i]
+        node = edge.outputs[i]
+        if isdefined(node, :value)
+            store!(node, deref(r)) # set value of existing node (e.g. from set_type!)
+        else
+            node.value = r isa RefValue ? r : slotfor(r)
+        end
+        node.dirty = true
+    end
+    return
+end
+
+function set_result!(edge::ComputeEdge, ::Nothing)
+    warn_nothing_init(edge)
+    for node in edge.outputs
+        if isdefined(node, :value)
+            node.value[] = nothing
+        else
+            node.value = slotfor(nothing)
+        end
+        node.dirty = false
+    end
+    return
+end
+
+set_result!(::ComputeEdge, @nospecialize(result)) = throw_invalid_result(result)
+
+function resolve!(edge::AbstractEdge)
+    @lock GLOBAL_LOCK begin
+        locked_resolve!(edge)
+    end
+    return
+end
+
+
+"""
+    add_input!([callback], compute_graph, name::Symbol, value)
+    add_input!([callback], compute_graph, names::Symbol..., value)
+    add_input!([callback], compute_graph, names::Tuple, value)
+
+Adds a new input to the given `compute_graph`. The input is referred to by the
+given `name` and is initialized with the given `value`. If a `callback` is given
+any new value will be passed to `callback(name, new_value)` before being stored
+in the compute graph.
+
+If multiple `names` are given either as a tuple or as multiple arguments, the
+input is treated as a nested input. This means the node is accessed in a nested
+fashion, e.g. `graph.a.b.c` with `add_input!(graph, :a, :b, :c, value)`. This
+type of nesting can also occur by passing a nested view into the compute graph,
+e.g. `add_input!(graph.a, :b, :c, value)`.
+
+## Example:
+
+```
+graph = ComputeGraph()
+
+add_input!(graph, :first_node, 1)
+add_input!((k, v) -> Float32(v), graph, :second_node, 2)
+add_input!(graph, (:outer, :inner), 1)
+add_input!(graph.outer, :middle, :inner, 1)
+```
+"""
+add_input!
+
+# add_input!([func, ], attr, args...) handles multi-key -> tuple of keys
+# add_input!([func, ], attr, tuple, val) handles nesting, creates single key
+# add_input!([func, ], attr, key, val) handles value based processing
+# _add_input!(func, attr, key, val) handles node insertion
+
+# Since attr.input return the Computed node after the Input it's convenient to
+# have this work with Computed
+"""
+    enable_forced_updates!(input)
+
+Sets `input.forced_update = true` which makes the `Input` propagate same value
+updates to the `Computed` node they connect to. To further propagate same
+value updates through `ComputeEdge`s, wrap the values to propagate in
+`ExplicitUpdate(value, :force)`.
+"""
+function enable_forced_updates!(node::Computed)
+    input = node.parent
+    input isa Input || error("Forced updates are only implemented for Inputs. Use ExplicitUpdate(data, :force) otherwise.")
+    enable_forced_updates!(input)
+    return
+end
+function enable_forced_updates!(input::Input)
+    input.force_update = true
+    return
+end
+
+function add_input!(attr::ComputeGraph, args...; force_update = false)
+    add_input!(attr, Base.front(args), last(args))
+    if force_update
+        enable_forced_updates!(getindex(attr, Base.front(args)...).parent)
+    end
+    return attr
+end
+
+function add_input!(attr::ComputeGraphView, args...)
+    combined = (attr.nested_trace.keys..., Base.front(args)...)
+    return add_input!(attr.parent, combined, last(args))
+end
+
+function add_input!(attr::ComputeGraph, keys::Tuple, value)
+    key = handle_nested_keys(attr, keys)
+    return add_input!(attr, key, value)
+end
+
+add_input!(attr::ComputeGraph, key::Symbol, value) = _add_input!(identity, attr, key, value)
+
+function add_input!(conversion_func, attr::ComputeGraph, args...; force_update = false)
+    add_input!(conversion_func, attr, Base.front(args), last(args))
+    if force_update
+        enable_forced_updates!(getindex(attr, Base.front(args)...).parent)
+    end
+    return attr
+end
+
+function add_input!(conversion_func, attr::ComputeGraphView, args...)
+    combined = (attr.nested_trace.keys..., Base.front(args)...)
+    return add_input!(conversion_func, attr.parent, combined, last(args))
+end
+
+function add_input!(conversion_func, attr::ComputeGraph, keys::Tuple, value)
+    key = handle_nested_keys(attr, keys)
+    return add_input!(conversion_func, attr, key, value)
+end
+
+function add_input!(conversion_func, attr::ComputeGraph, key::Symbol, value)
+    return _add_input!(conversion_func, attr, key, value)
+end
+
+function handle_nested_keys(attr::ComputeGraph, names::Tuple)
+    if isempty(names)
+        throw(
+            ArgumentError(
+                "`add_input!([callback], attr, names..., value)` requires at least one name and one value."
+            )
+        )
+    end
+
+    if !all(name -> name isa Symbol, names)
+        first_bad = findfirst(name -> !isa(name, Symbol), names)
+        throw(
+            ArgumentError(
+                "`add_input!([callback], attr, names..., value) requires all names to be Symbols, " *
+                    "but name $(first_bad) is a $(typeof(names[first_bad]))."
+            )
+        )
+    end
+
+    if length(names) == 1
+        return only(names)
+    else
+        add_key!(attr.nesting, names)
+        return merged_key(names)
+    end
+end
+
+function cleanup_nested_key!(attr::ComputeGraph, key::Symbol)
+    names = Symbol.(split(string(key), '.'))
+    delete_key!(attr.nesting, names)
+    return
+end
+
+function _add_input!(func::F, attr::ComputeGraph, key::Symbol, value) where {F}
+    @assert !(value isa Computed)
+    if haskey(attr.inputs, key) || _is_invalid_output_target(attr, key, Computed[])
+        # If this is a nested key we should not clean it up because it belongs
+        # to something else
+        error("Cannot attach input with name $key - already exists!")
+    end
+
+    output = get!(attr.outputs, key, Computed(key))
+    input = Input(attr, key, value, func, output)
+    _maybe_transfer_dependents!(input, output)
+    output.parent = input
+    output.parent_idx = 1
+    attr.inputs[key] = input
+    return attr
+end
+
+function add_inputs!(conversion_func, attr::ComputeGraph; kw...)
+    for (k, v) in pairs(kw)
+        add_input!(conversion_func, attr, k, v)
+    end
+    return attr
+end
+
+compute_identity(inputs::NamedTuple, ::NamedTuple, @nospecialize(cached)) = values(inputs)
+compute_identity(arg) = arg
+compute_identity(args...) = args
+
+
+function _recreate_typed_edge(te::TypedEdge{IT, OT, F}, inputs) where {IT, OT, F}
+    N = length(inputs)
+    values = ntuple(i -> inputs[i].value, N)
+    return TypedEdge{IT, OT, F}(
+        te.callback,
+        IT(values),
+        te.inputs_dirty,
+        te.outputs,
+        te.output_nodes
+    )
+end
+
+function _update_refs_in_dependents!(edge::ComputeEdge)
+    for dep in edge.dependents
+        if isdefined(dep, :typed_edge) && isassigned(dep.typed_edge)
+            dep.typed_edge[] = _recreate_typed_edge(dep.typed_edge[], dep.inputs)
+        end
+    end
+    return
+end
+
+function TypedEdge(edge::ComputeEdge, f::typeof(compute_identity), inputs)
+    if length(inputs) != length(edge.outputs)
+        error("A `compute_identity` callback requires the length of inputs and outputs to match.")
+    end
+
+    # use input refs as output refs so we don't even need to evaluate the callback
+    for i in eachindex(values(inputs))
+        edge.outputs[i].value = inputs[i]
+        edge.outputs[i].dirty = true
+    end
+
+    # If the outputs of this egde were previously orphaned by delete! or by being
+    # created with add_node! they may have added dependents that were already
+    # resolved with the old ref's. Fix them.
+    _update_refs_in_dependents!(edge)
+
+    return TypedEdge(f, inputs, edge.inputs_dirty, inputs, edge.outputs)
+end
+
+# A rebuilt identity edge shares its inputs' new slots (`rebuild_typed!`).
+function follow_slots!(::typeof(compute_identity), edge::ComputeEdge)
+    moved = false
+    for (input, output) in zip(edge.inputs, edge.outputs)
+        output.value === input.value && continue
+        output.value = input.value
+        output.dirty = true
+        moved = true
+    end
+    return moved
+end
+
+function dynamic_resolve!(::typeof(compute_identity), edge::ComputeEdge)
+    if length(edge.inputs) != length(edge.outputs)
+        error("A `compute_identity` callback requires the length of inputs and outputs to match.")
+    end
+
+    # use input refs as output refs like the typed edge above
+    for i in eachindex(edge.inputs)
+        edge.outputs[i].value = edge.inputs[i].value
+        edge.outputs[i].dirty = true
+    end
+    return
+end
+
+function locked_resolve!(edge::TypedEdge{IT, OT, typeof(compute_identity)}) where {IT, OT}
+    # outputs are identical to inputs, so just copy the input state. To be safe
+    # don't overwrite any `dirty = true` state with false (maybe a problem if
+    # the input gets resolved?)
+    for i in eachindex(edge.inputs_dirty)
+        edge.output_nodes[i].dirty |= edge.inputs_dirty[i]
+    end
+    return
+end
+
+"""
+    add_input!([callback], compute_graph, name::Symbol, node::Computed)
+
+Connects an output `node` of another compute graph to the given `compute_graph`.
+
+This does not create a settable input, meaning you cannot use
+`update!(graph, name = new_value)` to update it. It is solely updated by the
+connected node.
+"""
+function add_input!(attr::ComputeGraph, key::Symbol, value::Computed)
+    if _is_invalid_output_target(attr, key, (value,))
+        if is_child_of(value, attr.outputs[key])
+            error("Cannot attach throughput with name :$key as this would create a loop!")
+        else
+            error("Cannot attach throughput with name :$key - already exists!")
+        end
+    end
+    register_computation!(compute_identity, attr, [value], [key])
+    return attr
+end
+
+# for recipe -> primitive (mostly)
+function add_input!(conversion_func, attr::ComputeGraph, key::Symbol, value::Computed)
+    if haskey(attr.outputs, key)
+        error("Cannot attach throughput with name $key - already exists!")
+    end
+    map!(conversion_func, attr, value, key)
+    return attr
+end
+
+# Note: These don't work with add_input!(attr, key1, key2, ..., value)
+function add_input!(attr::ComputeGraph, key::Symbol, value::ComputeGraphView)
+    return add_input!(attr::ComputeGraph, (key,), value)
+end
+function add_input!(attr::ComputeGraph, nested_keys::Tuple{Vararg{Symbol}}, value::ComputeGraphView)
+    for source_key in keys(value)
+        add_input!(attr, (nested_keys..., source_key), getindex(value, source_key))
+    end
+    return attr
+end
+function add_input!(f, attr::ComputeGraph, key::Symbol, value::ComputeGraphView)
+    return add_input!(f, attr::ComputeGraph, (key,), value)
+end
+function add_input!(f, attr::ComputeGraph, nested_keys::Tuple{Vararg{Symbol}}, value::ComputeGraphView)
+    for source_key in keys(value)
+        add_input!(f, attr, (nested_keys..., source_key), getindex(value, source_key))
+    end
+    return attr
+end
+
+"""
+    add_input!([callback], compute_graph, name::Symbol, obs::Observable)
+
+Connects an `Observable` as a input to the given `compute_graph`. The input will
+be updated automatically whenever the observable updates. It can also be updated
+through the usual `update!(graph, name = new_value)` call.
+
+The Observable listener is set up with `priority = typemax(Int)-1` and
+`Consume(false)`. This means it will take precedence over all but `typemax(Int)`
+priority and not block later updates.
+"""
+function add_input!(attr::ComputeGraph, k::Symbol, obs::Observable)
+    add_input!(attr, k, obs[])
+    # typemax-1 so it doesn't get disturbed by other listeners but can still be
+    # blocked by a typemax obs
+    # Setting it to lower priority, axis and colorbar don't get the latest update
+    # Still need to investigate why exactly
+    of = on(obs; priority = typemax(Int) - 1) do new_val
+        setproperty!(attr, k, new_val)
+        return Consume(false)
+    end
+    push!(attr.observerfunctions, of)
+    return attr
+end
+
+function add_input!(f, attr::ComputeGraph, k::Symbol, obs::Observable)
+    add_input!(f, attr, k, obs[])
+    of = on(obs, priority = typemax(Int) - 1) do new_val
+        setproperty!(attr, k, new_val)
+        return Consume(false)
+    end
+    push!(attr.observerfunctions, of)
+    return attr
+end
+
+"""
+    add_constant!(graph, name::Symbol, value)
+    add_constant!(graph, nested_names::Symbol..., value)
+
+Adds a constant to the Graph. A constant is not connected to an `Input` and thus
+can't change through compute graph resolution.
+"""
+function add_constant!(attr::ComputeGraph, k::Symbol, value)
+    haskey(attr, k) && return
+    map!(() -> value, attr, Symbol[], k)
+    return attr
+end
+
+function add_constant!(attr::ComputeGraph, keys::Tuple, value)
+    combined = handle_nested_keys(attr, keys)
+    return add_constant!(attr, combined, value)
+end
+
+function add_constant!(attr::ComputeGraph, args...)
+    return add_constant!(attr, Base.front(args), last(args))
+end
+
+function add_constant!(attr::ComputeGraphView, args...)
+    combined = (attr.nested_trace.keys..., Base.front(args)...)
+    return add_constant!(attr.parent, combined, last(args))
+end
+
+function add_constants!(attr::AbstractComputeGraph; kw...)
+    for (k, v) in pairs(kw)
+        add_constant!(attr, k, v)
+    end
+    return attr
+end
+
+get_callback(computed::Computed) = hasparent(computed) ? computed.parent.callback : nothing
+
+"""
+    register_computation!(callback, compute_graph, input_names, output_names)
+
+Registers a new computation which transforms the given inputs to a new set of
+outputs. Both the inputs and outputs are referred to by name. The inputs must
+exist when the function is called. The outputs are usually created by this
+function.
+
+The callback function must accept 3 arguments:
+- `inputs::NamedTuple` which contains the `input_names` and input values in the order given to `register_computation`
+- `changed::NamedTuple` which a `Bool` per input name signifying whether the input has been updated since the last execution of `callback`
+- `cached::Tuple` which contain the last outputs returned by function. If no previous outputs exist `cached = nothing`.
+
+Note that specific outputs or all outputs can be marked as "unchanged" with
+`return ..., skip_update, ...` or `return skip_update` respectively.
+
+## Example:
+
+```julia
+graph = ComputeGraph()
+add_input!(graph, :input1, 1)
+add_input!(graph, :input2, 1)
+
+register_computation!(graph, [:input1, :input2], [:output1, :output2]) do inputs, changed, cached
+    input1, input2 = inputs
+    has_input1_changed, has_input2_changed2 = changed
+    cached_output1, cached_output2 = cached
+
+    # compute new outputs
+
+    return (new_output1, new_output2)
+end
+```
+
+See also: [`add_input!`](@ref), [`map!`](@ref)
+"""
+Base.@nospecializeinfer function register_computation!(@nospecialize(f::Base.Callable), attr::ComputeGraph, inputs::Vector{Symbol}, outputs::Vector{Symbol})
+    if !all(k -> haskey(attr.outputs, k), inputs)
+        missing_keys = filter(k -> !haskey(attr.outputs, k), inputs)
+        error("Could not register computation: Inputs $missing_keys not found.")
+    end
+    _inputs = Computed[attr.outputs[k] for k in inputs]
+    register_computation!(f, attr, _inputs, outputs)
+    return
+end
+
+get_node(attr::ComputeGraph, name::Symbol) = attr.outputs[name]
+get_node(attr::ComputeGraph, keys::Tuple) = attr.outputs[merged_key(keys)]
+get_node(::AbstractComputeGraph, node::Computed) = node
+
+get_node(attr::ComputeGraph, path::Symbol, name::Symbol) = get_node(attr, merged_key(path, name))
+get_node(attr::ComputeGraph, path::Symbol, keys::Tuple) = get_node(attr, path, merged_key(keys))
+get_node(attr::ComputeGraph, path::Symbol, node::Computed) = node
+
+function get_node(view::ComputeGraphView, name::Symbol)
+    return get_node(view.parent, merged_key(view.nested_trace), name)
+end
+function get_node(view::ComputeGraphView, keys::Tuple)
+    return get_node(view.parent, merged_key(view.nested_trace), keys)
+end
+
+const InputNodeTypes = Union{Computed, Symbol, Tuple{Vararg{Symbol}}}
+const OutputNodeTypes = Union{Symbol, Tuple{Vararg{Symbol}}}
+
+convert_to_nodes(attr::ComputeGraph, inputs::InputNodeTypes) = [get_node(attr, inputs)]
+convert_to_nodes(attr::ComputeGraph, inputs::Vector) = get_node.(Ref(attr), inputs)
+convert_to_nodes(attr::ComputeGraph, path, inputs) = get_node.(Ref(attr), Ref(path), inputs)
+function convert_to_nodes(view::ComputeGraphView, inputs)
+    return convert_to_nodes(view.parent, merged_key(view.nested_trace), inputs)
+end
+
+# [computed, symbol] is an Any Vector so no eltype here
+Base.@nospecializeinfer function register_computation!(
+        @nospecialize(f::Base.Callable), attr::ComputeGraph, inputs::Vector, outputs::Vector{Symbol}
+    )
+    _inputs = convert_to_nodes(attr, inputs)
+    register_computation!(f, attr, _inputs, outputs)
+    return
+end
+
+to_nested_trace(s::Symbol) = (s,)
+to_nested_trace(t::Tuple) = t
+to_nested_trace(v::Vector{Symbol}) = tuple(v...)
+to_nested_trace(view::ComputeGraphView) = to_nested_trace(view.nested_trace.keys)
+to_nested_trace(a, b) = tuple(to_nested_trace(a)..., to_nested_trace(b)...)
+
+function handle_nested_outputs(view::ComputeGraphView, outputs::Vector, path::Symbol = merged_key(view.nested_trace))
+    attr = view.parent
+
+    # combine Symbol or Tuple references with view and lower them to Symbols in
+    # the parent graph. If a nested node is used, register it
+    added_nesting = Symbol[]
+    _outputs = Vector{Symbol}(undef, length(outputs))
+    for (i, namelike) in enumerate(outputs)
+        combined_name = merged_key(path, namelike)
+        if !haskey(view, namelike)
+            add_key!(attr.nesting, to_nested_trace(view, namelike))
+            push!(added_nesting, combined_name)
+        end
+        _outputs[i] = combined_name
+    end
+
+    return added_nesting, _outputs
+end
+
+function handle_nested_outputs(attr::ComputeGraph, outputs::Vector)
+    # Register nesting for Tuple inputs and lower them to Symbols
+    added_nesting = Symbol[]
+    _outputs = Vector{Symbol}(undef, length(outputs))
+    for (i, namelike) in enumerate(outputs)
+        if namelike isa Symbol
+            _outputs[i] = namelike
+        elseif namelike isa Tuple
+            combined_name = merged_key(namelike)
+            if !haskey(attr.nesting, namelike...)
+                add_key!(attr.nesting, namelike)
+                push!(added_nesting, combined_name)
+            end
+            _outputs[i] = combined_name
+        else
+            error("Could not process output $namelike - must be a Symbol or Tuple.")
+        end
+    end
+
+    return added_nesting, _outputs
+end
+
+function register_computation!(f::Base.Callable, attr::AbstractComputeGraph, inputs::Vector, outputs::Vector)
+    _inputs = convert_to_nodes(attr, inputs)
+    added_nesting, _outputs = handle_nested_outputs(attr, outputs)
+
+    try
+        register_computation!(f, root(attr), _inputs, _outputs)
+    catch e
+        # If we fail to create the computation we remove the nesting information
+        # we added
+        for name in added_nesting
+            cleanup_nested_key!(root(attr), name)
+        end
+        rethrow(e)
+    end
+    return
+end
+
+function check_boxed_values(f)
+    names = propertynames(f)
+    name_values = map(x -> x => getfield(f, x), names)
+    boxed = filter(p -> p[2] isa Core.Box, name_values)
+    return if !isempty(boxed)
+        boxed_str = map(boxed) do (k, v)
+            box = isdefined(v, :contents) ? typeof(v.contents) : "#undef"
+            return "$(k)::Core.Box($(box))"
+        end
+        error("Cannot register computation: Callback function cannot use boxed values: $(first(methods(f))), $(join(boxed_str, ",")). This might be caused by a variable of the same name existing inside and outside a `do ... end` block.")
+    end
+end
+
+macro ifelse_enabled(enabled_expr, disabled_expr = :())
+    if ENABLE_COMPUTE_CHECKS
+        return esc(enabled_expr)
+    else
+        return esc(disabled_expr)
+    end
+end
+
+function assert_same_computation(@nospecialize(f), attr::ComputeGraph, inputs, outputs)
+    # Check this so we can type assert later
+    if any(k -> haskey(attr.inputs, k), outputs)
+        input_nodes = [k for k in outputs if haskey(attr.inputs, k)]
+        if any(name -> hasparent(attr.outputs[name]) && attr.outputs[name].parent isa Input, input_nodes)
+            error("One or multiple edge outputs already exist as graph inputs: $input_nodes")
+        end
+    end
+
+    idx = findfirst(name -> attr.outputs[name].parent.callback !== invalid_callback, outputs)
+
+    if isnothing(idx)
+        # All outputs are orphaned. We previously only counted orphans if they
+        # create loops, so this case means that all outputs loop.
+        input_names = [input.name for input in inputs]
+        error("Cannot register computation: All outputs $outputs feed into one or more of the given inputs $input_names, creating loops.")
+    else
+        # Maybe some orphans, maybe not
+
+        e = attr.outputs[outputs[idx]].parent::ComputeEdge
+
+        # Check that the edge is shared
+        if any(k -> attr.outputs[k].parent::ComputeEdge !== e, outputs)
+
+            # Otherwise collect problems (looping orphans, edge msismatches)
+            problems = String["Cannot register computation:"]
+            for name in outputs
+                node = attr.outputs[name]
+                edge = node.parent::ComputeEdge
+                if edge.callback === invalid_callback
+                    for input in inputs
+                        if is_child_of(input, node)
+                            push!(problems, "    Output $name feeds into input $(input.name), creating a loop.")
+                        end
+                    end
+                elseif edge !== e
+                    push!(problems, "    Parent edge of $name is not the same as $(outputs[idx]).")
+                end
+            end
+
+            error(join(problems, '\n'))
+        end
+
+        # Check that the requested inputs are the inputs of the new edge
+        if length(e.inputs) != length(inputs) || e.inputs != inputs
+            error(
+                "Cannot register computation: Outputs already have a parent compute edge with different inputs.\n" *
+                    "   New: (" * join([n.name for n in inputs], ", ") * ") -> (" * join(outputs, ", ") * ")\n" *
+                    "   Old: (" * join([n.name for n in e.inputs], ", ") * ") -> (" * join([n.name for n in e.outputs], ", ") * ")"
+            )
+        end
+
+        # Check that the same callback is used
+        # TODO: === is much faster, but why?
+        if @ifelse_enabled(e.callback != f, e.callback !== f)
+            # We should only care about input arg types...
+            func1, loc1 = edge_callback_to_string(f, (NamedTuple, NamedTuple, Nothing))
+            func2, loc2 = edge_callback_to_string(e)
+            error(
+                "Cannot register computation: The outputs already have a parent compute edge using " *
+                    "a different callback function.\n  Given: $func1 $loc1\n  Found: $func2 $loc2\n  $(methods(f))"
+            )
+        end
+    end
+
+    # edge already exists so we can
+    return
+end
+
+function _is_invalid_output_target(graph, name, inputs)
+    if haskey(graph.outputs, name) && hasparent(graph.outputs[name])
+        edge = graph.outputs[name].parent
+        # Input and normal ComputeEdges are invalid
+        if edge isa Input || edge.callback !== invalid_callback
+            return true
+        else
+            # ComputeEdge with invalid_callback is valid if it does not create loops
+            # i.e. if none of the inputs are a child of graph[name]
+            return any(input -> is_child_of(input, graph.outputs[name]), inputs)
+        end
+    else
+        # doesn't exist or no parent edge - valid
+        return false
+    end
+end
+
+function _maybe_transfer_dependents!(to::AbstractEdge, from::Computed)
+    # `add_node!` and `delete!(edge)` produce nodes with parent where the
+    # parent may track some dependents (and nothing more). These need to be
+    # added to the new edge.
+    new_dependents = to.dependents
+    if hasparent(from)
+        # Don't trigger obs resolve here (don't use mark_dirty!)
+        @lock GLOBAL_LOCK locked_mark_dirty!(from)
+        for dep in (from.parent::ComputeEdge{ComputeGraph}).dependents
+            if !in(dep, new_dependents)
+                push!(new_dependents, dep)
+            end
+        end
+    end
+    return
+end
+
+Base.@nospecializeinfer function register_computation!(
+        @nospecialize(f::Base.Callable), attr::ComputeGraph,
+        inputs::Vector{Computed}, outputs::Vector{Symbol}
+    )
+    @ifelse_enabled(check_boxed_values(f))
+
+    if any(k -> haskey(attr.outputs, k), outputs)
+        # Allow nodes freed by `delete!` or created via `add_node!`. These have a
+        # parent edge only to track dependents. Exclude them here.
+        N_existing = count(name -> _is_invalid_output_target(attr, name, inputs), outputs)
+        if N_existing == 0
+            # fine, we won't be overwriting an edge
+        elseif N_existing == length(outputs)
+            # TODO: Maybe differentiate orphan edges from collisions here?
+            assert_same_computation(f, attr, inputs, outputs)
+            # edge already exists so we can return
+            return
+        else
+            existing = [k for k in outputs if haskey(attr.outputs, k) && hasparent(attr.outputs[k])]
+            looping = [k for k in existing if any(input -> is_child_of(input, attr.outputs[k]), inputs)]
+            if isempty(looping)
+                combined = join(existing, ", ")
+                error("Cannot register computation: Some outputs already have parent compute edges: $combined")
+            else
+                combined = join(looping, ", ")
+                error("Cannot register computation: Some outputs feed into the given inputs, creating loops: $combined")
+            end
+        end
+    end
+
+    new_edge = ComputeEdge(f, attr, inputs)
+
+    for input in inputs
+        hasparent(input) || error("Computed should be guaranteed to have a parent edge, but does not.")
+        # Edges can have multiple outputs so multiple inputs of this edge could
+        # come from the same edge
+        parent_edge = input.parent::AbstractEdge
+        dependents = parent_edge.dependents::Vector{ComputeEdge{ComputeGraph}}
+        if !in(new_edge, dependents)
+            push!(dependents, new_edge)
+        end
+    end
+
+    is_compute_identity = f === compute_identity
+
+    # use order of namedtuple, which should not change!
+    for (i, symbol) in enumerate(outputs)
+        # Either grab the existing node or create a new uinitialized node
+        output = get!(attr.outputs, symbol, Computed(symbol))
+        _maybe_transfer_dependents!(new_edge, output)
+        output.parent = new_edge
+        output.parent_idx = i
+        output.dirty = true
+        push!(new_edge.outputs, output)
+        # needs === refs in input and output
+        if is_compute_identity && is_initialized(inputs[i])
+            output.value = inputs[i].value
+        end
+    end
+
+    if is_compute_identity # changing output refs may affect dependents
+        _update_refs_in_dependents!(new_edge)
+    end
+
+    update_observables!(attr)
+
+    return
+end
+
+struct MapFunctionWrapper{pack, FT} <: Function
+    user_func::FT
+    MapFunctionWrapper(f::FT, pack = true) where {FT} = new{pack, FT}(f)
+end
+
+MapFunctionWrapper(::typeof(compute_identity), pack = true) = compute_identity
+MapFunctionWrapper(::typeof(select), pack = true) = select
+MapFunctionWrapper(::typeof(ifelse), pack = true) = ifelse
+is_packed(::MapFunctionWrapper{pack}) where {pack} = pack
+
+function (x::MapFunctionWrapper{true})(inputs, @nospecialize(changed), @nospecialize(cached))
+    result = x.user_func(values(inputs)...)
+    return (result,)
+end
+function (x::MapFunctionWrapper{false})(inputs, @nospecialize(changed), @nospecialize(cached))
+    result = x.user_func(values(inputs)...)
+    return result
+end
+
+# Overwrite this to allow map! to ignore input name collisions (for cross-graph maps)
+function TypedEdge(callback::MapFunctionWrapper, edge::ComputeEdge)
+    N = length(edge.inputs)
+    inputs = ntuple(i -> edge.inputs[i].value, N)
+    # force `callback` and `inputs` types to be inferred so the rest of the
+    # constructor can be type stable
+    return Base.invokelatest(TypedEdge, edge, callback, inputs)
+end
+
+function TypedEdge(edge::ComputeEdge, f::MapFunctionWrapper{pack}, inputs) where {pack}
+    _result = f.user_func(map(getindex, inputs)...)
+    result = pack ? (_result,) : _result
+    outputs = _init_outputs(result, edge)
+    return TypedEdge(f, inputs, edge.inputs_dirty, outputs, edge.outputs)
+end
+
+function locked_resolve!(edge::TypedEdge{Inputs, Outputs, <:MapFunctionWrapper{pack}}) where {Inputs, Outputs, pack}
+    if any(edge.inputs_dirty) # only call if inputs changed
+        args = map(getindex, edge.inputs)
+        _result = edge.callback.user_func(args...)
+        result = pack ? (_result,) : _result
+        set_result!(edge, result)
+    end
+    return
+end
+
+"""
+    map!(f, compute_graph, inputs, outputs; init=nothing)
+
+Registers a new ComputeEdge in the `compute_graph` which connects one or multiple
+`inputs` to one or multiple `outputs`.
+
+Inputs can be:
+- a `Symbol` referring to a node in the `compute_graph`
+- a `Tuple{Vararg{Symbol}}` referring to a nested node in the `compute_graph`
+- a `Computed`, i.e. a node of any compute graph
+- a `Vector` containing any of the above
+
+Outputs can be a `Symbol`, `Tuple{Vararg{Symbol}}` or a `Vector` of either.
+They can not be compute nodes.
+
+If a `ComputeGraphView` is passed as the `compute_graph` any `Symbol` and `Tuple`
+input and output will be relative to the view. For example, input `:b` will be
+interpreted as `graph.a.b` if `graph.a` is passed as the `compute_graph`.
+
+The callback function `f` will be called with the values of the inputs as arguments.
+If `outputs` is a single `Symbol` or `Tuple`, the function is expected to return
+one output. Otherwise it is expected to return a tuple of outputs, one for each
+target specified in `outputs`. It is also possible to mark a specific output or
+all outputs as "unchanged" with `return ..., skip_update, ...` or
+`return skip_update` respectively.
+
+Optionally `init` can be specified to immediately initialize the outputs without
+calling `f`. For a single output the value can be provided directly. For multiple
+outputs a tuple with matching size is needed, like with `f`.
+
+```julia
+graph = ComputeGraph()
+add_input!(graph, :input1, 2)
+add_input!(graph, :input2, 1)
+
+other_graph = ComputeGraph()
+add_input!(other_graph, :input, 3)
+
+map!(x -> 2x, graph, :input1, :output1)
+map!((x, y) -> x+y, graph, [:input1, other_graph.input], :output2)
+map!((x, y) -> (x+y, x-y), graph, [:input1, :input2], [:output3, :output4])
+
+# With initial values
+map!(x -> 2x, graph, :input1, :output5; init=0)
+map!((x, y) -> (x+y, x-y), graph, [:input1, :input2], [:output6, :output7]; init=(0, 0))
+
+# Nesting
+add_input!(graph, :nested, :input1, -1)
+add_input!(graph, :nested, :input2, -2)
+map!(+, graph, [(:nested, :input1), :input1], (:nested, :output1))
+map!(+, graph.nested, [:input2, graph.input2], :output2)
+```
+
+See also: [`add_input!`](@ref), [`register_computation!`](@ref)
+"""
+function Base.map!(f, attr::AbstractComputeGraph, input::InputNodeTypes, output::OutputNodeTypes; init = nothing)
+    register_computation!(MapFunctionWrapper(f), attr, [input], [output])
+    isnothing(init) || unsafe_init!(attr, output, init)
+    return attr
+end
+
+function Base.map!(f, attr::AbstractComputeGraph, inputs::Vector, output::OutputNodeTypes; init = nothing)
+    register_computation!(MapFunctionWrapper(f), attr, inputs, [output])
+    isnothing(init) || unsafe_init!(attr, output, init)
+    return attr
+end
+
+function Base.map!(f, attr::AbstractComputeGraph, inputs::Vector, outputs::Vector; init = nothing)
+    register_computation!(MapFunctionWrapper(f, false), attr, inputs, outputs)
+    isnothing(init) || unsafe_init!(attr, outputs, init)
+    return attr
+end
+
+function Base.map!(f, attr::AbstractComputeGraph, inputs::InputNodeTypes, outputs::Vector; init = nothing)
+    register_computation!(MapFunctionWrapper(f, false), attr, [inputs], outputs)
+    isnothing(init) || unsafe_init!(attr, outputs, init)
+    return attr
+end
+
+function unsafe_init!(graph::AbstractComputeGraph, name_or_node, val)
+    return unsafe_init!(get_node(graph, name_or_node), val)
+end
+
+function unsafe_init!(graph::AbstractComputeGraph, name_or_nodes::Vector, values)
+    if !(values isa Tuple && length(values) == length(name_or_nodes))
+        error("Initial values for map! must be given as a Tuple matching the number of outputs")
+    end
+
+    for (name_or_node, val) in zip(name_or_nodes, values)
+        unsafe_init!(get_node(graph, name_or_node), val)
+    end
+    return
+end
+
+function take_last!(channel::Channel; wait = false)
+    return lock(channel) do
+        result = wait ? take!(channel) : skip_update
+        while isready(channel)
+            result = take!(channel)
+        end
+        return result
+    end
+end
+
+"""
+    map_latest!(f, compute_graph::ComputeGraph, inputs::Vector{Symbol}, outputs::Vector{Symbol}; spawn=false, init=nothing)
+
+Registers an asynchronous computation in the `compute_graph` that processes only the
+most recent input changes, skipping intermediate updates if the computation is still running.
+
+This is useful for expensive computations where intermediate results are not needed, such as:
+- Heavy image processing or rendering operations
+- Slow network requests
+- Complex data analysis or simulations
+
+## Behavior
+
+When inputs change:
+- any new value is put in a queue to be computed
+- If multiple updates occur while computing, only the **most recent** input values are
+  kept; intermediate values are discarded
+- The outputs return cached values while the computation is in progress
+- finishing a computation invalidates the graph, so on the next poll the latest result is returned
+
+The first call to retrieve outputs will block until the initial computation completes,
+unless `init` is provided.
+
+## Arguments
+- `f`: Callback function that receives input values as individual arguments and returns
+  a tuple of output values
+- `compute_graph`: The compute graph to register the computation in
+- `inputs`: Vector of Symbol names referring to input nodes in the graph
+- `outputs`: Vector of Symbol names for the output nodes to be created
+- `spawn=false`: If `true`, runs the background worker on a separate thread. If `false`,
+  runs an async task.
+- `init=nothing`: Optional tuple of initial values for the output nodes. Must match the
+  number of outputs. This allows the outputs to have a value before the first computation
+  completes.
+
+## Example
+
+```julia
+graph = ComputeGraph()
+add_input!(graph, :image_data, initial_image)
+add_input!(graph, :filter_strength, 1.0)
+
+# Register expensive async computation that skips intermediate updates
+map_latest!(graph, [:image_data, :filter_strength], [:filtered_image]) do img, strength
+    # This expensive operation only runs on the latest inputs
+    result = expensive_filter(img, strength)
+    return (result,)
+end
+
+# Rapidly update inputs - only the final values will be processed
+for i in 1:100
+    update!(graph, filter_strength = i / 10.0)
+end
+graph[:filtered_image][] # poll to trigger computation queue
+sleep(0.1) # wait for a computation to finish to not get old result
+result = graph[:filtered_image][]
+```
+"""
+function map_latest!(f, attr::ComputeGraph, inputs::Vector{Computed}, outputs::Vector{Symbol}; spawn = false, init = nothing)
+    update_key = Symbol(:_update_trigger_, string(hash((inputs, outputs))))
+    add_input!(attr, update_key, 0)
+    input_node = attr.inputs[update_key]
+    # TODO, should both channels be size 1?
+    # Channel for input requests
+    input_channel = Channel{Any}(2)
+    # Background worker task that processes computation requests
+    result_channel = Channel(2; spawn = spawn) do result_channel
+        while isopen(input_channel)
+            try
+                # Take the first item (blocking if empty)
+                fetched_inputs = take_last!(input_channel; wait = true)
+                # Process the most recent inputs
+                result = f(fetched_inputs...)
+                # Put result in the result channel
+                put!(result_channel, result)
+                # Notify that we got a new value, for the below computation to run
+                update!(attr, update_key => input_node.value::Int + 1)
+            catch e
+                @error "Error in background computation task" exception = (e, catch_backtrace())
+            end
+        end
+    end
+
+    register_computation!(attr, [update_key, inputs...], outputs) do inputs, changed, last
+        user_inputs = tail(values(inputs))
+        # Blocking wait for first result, this can't be avoided, since the node needs to be initialized
+        isnothing(last) && return f(user_inputs...)
+        # Always queue new computation unless no user inputs changed
+        if any(tail(values(changed)))
+            take_last!(input_channel) # discard old inputs
+            put!(input_channel, user_inputs)
+        end
+        # Always return the last result
+        # if there is non, this returns nothing, which signals no update
+        return take_last!(result_channel)
+    end
+
+    if !isnothing(init)
+        @assert init isa Tuple && length(init) == length(outputs) "Initial values for map_latest! must be given as a Tuple matching the number of outputs"
+        for (i, val) in enumerate(init)
+            unsafe_init!(attr.outputs[outputs[i]], val)
+        end
+    end
+
+    return
+end
+
+function map_latest!(f, attr::AbstractComputeGraph, inputs::Vector, outputs::Vector; kwargs...)
+    _inputs = convert_to_nodes(attr, inputs)
+    added_nesting, _outputs = handle_nested_outputs(attr, outputs)
+
+    try
+        map_latest!(f, root(attr), _inputs, _outputs; kwargs...)
+    catch e
+        # If we fail to create the computation we remove the nesting information
+        # we added
+        for name in added_nesting
+            cleanup_nested_key!(root(attr), name)
+        end
+        rethrow(e)
+    end
+    return
+end
+
+include("io.jl")
+include("observables_compat.jl")
+include("utils.jl")
+include("modification.jl")
+
+export Computed, ComputeEdge, is_resolved
+export ComputeGraph
+export register_computation!, map_latest!
+export add_input!, add_inputs!, add_constant!, add_constants!
+export update!
+export track_fields!
+export hasinput
+
+end

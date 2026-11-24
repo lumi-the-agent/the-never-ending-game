@@ -1,0 +1,265 @@
+{
+ "verdict": "needs_work",
+ "summary": "By day the island is a charming clay-toy diorama (overview and the hide-and-seek frame are good) and the three mini games are clear, winnable and answer every key; the path traced overview is lovely. But the raster is far behind the traced look (dark navy sea, hazy horizon band in orbit), nights are dark, the chat and dance moments are filmed badly (Sprout's chat hidden behind a conifer crown, the follow camera looking down on Sprout while five critters dance elsewhere), the island is still one hill, and the side panel is a text wall.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Day is warm and soft with good shadows (11:50 overview); 21:32 overview is murky green-black, no lit windows, sea a flat navy slab. The traced overview (s39) has turquoise shallows the raster lacks."
+  },
+  "world": {
+   "score": 5,
+   "why": "Pond, pier, cottage, flower field, cairn and signpost now, but still one hill with the s20 silhouette; the beach/cove is still queued; no second place with its own props."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated trees, toadstools, hydrangeas, tufts, stone pile look good close up (traced still); tree crowns repeat, black holes show in some crowns, groves are scattered not composed."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Sheep with legs and a hat reads well in the traced still; in the raster the pigs and blobs are spheres with stub feet and a hat. Faces and walk cycles barely register. Z marks, notes and emotes do the work."
+  },
+  "fun": {
+   "score": 5,
+   "why": "Played Firefly catch, Hide and seek and Berry race through the test driver: each has a clear goal card, key pills and a live HUD line; hide and seek (giggle notes, found friends following) is the best. But all three are 60-120 s counters with little reason to play twice, and the parade/dance is not obviously triggered from a first minute."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Eye-level and overview framings are pleasing by day; the follow/default view hid Sprout and Wibbles chatting behind a conifer crown for 20+ s; orbit shows a hard haze band above the sea; mini games use a top-down chase that loses the world."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Controls and HUD pills are readable; right column is a wall of announcement text and an 'on the island now' list; black strip above the 3D view persists; menu labels still read 'Camera: free' whatever the mode."
+  },
+  "style": {
+   "score": 6,
+   "why": "One clay-toy language across assets, but sea, sky and the saturated tufts differ between raster, browser and traced."
+  },
+  "performance": {
+   "score": 8,
+   "why": "live_status: frame median 2.1 ms, p95 4.1 ms, 30 fps held; live:status and screenshots spike but are not per-frame."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Creatures with real silhouettes: limbs, ears, tails, walk cycles",
+   "todo": 142,
+   "what": "In the raster most critters are pink or white spheres with stub feet and a hat; only the sheep reads as an animal. In every close shot (hide-and-seek, chat) the creature is the focal point and it is the weakest thing in the frame.",
+   "where": "tests/shots/hideseek-found.png, media/progress/session-0040/dashboard.png",
+   "evidence": "Compare with the traced sheep in releases/2026-11-23-one-more-stone-v2/still.png",
+   "suggestion": "Give each species generated parts: ears, tail, four real legs, a head turn and walk bounce; idle blinks and tail wags.",
+   "done_when": "A 3 m screenshot of three species shows different silhouettes, and a frame pair 0.3 s apart shows leg or tail movement."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Dusk and night that look cozy: lit windows, lanterns, warm pools",
+   "todo": 173,
+   "what": "The 21:32 overview is dark green-black; cottage windows do not glow, lantern pools are small, the sea is a flat navy slab. By day the same island looks lovely.",
+   "where": "media/progress/session-0040/overview.png vs reviews/p40/views/overview.png",
+   "evidence": "Day vs night shots from the same camera",
+   "suggestion": "Warm window glow and spill, a moonlit sea with a bright horizon, bluer ambient so shadows are not black, lanterns near paths.",
+   "done_when": "Mean gray of the 3D area at 22:00 is above the s40 value and the cottage windows are visibly warm in the overview shot."
+  },
+  {
+   "severity": "high",
+   "category": "world",
+   "title": "A second and third place: flower meadow and beach with their own props",
+   "todo": 87,
+   "what": "The island is still one green hill ringed by a thin sand edge; the beach/cove assets are still queued after two sessions. In traced stills the sandy rim and turquoise shallows look best, in the raster they are almost invisible.",
+   "where": "overview.png",
+   "evidence": "media/s39-traced-overview.png (turquoise shallows, sand) vs reviews/p40/views/overview.png (dark sea)",
+   "suggestion": "Build the cove with shells, driftwood, a boat and a path; bring the turquoise shallow gradient to the raster and the browser sea.",
+   "done_when": "The overview shows three regions of different ground colour and a creature activity in each, and the raster sea shows a light turquoise band at the shore."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Cameras with a subject: eye-level, orbit and night Berry race",
+   "todo": 168,
+   "what": "The default follow view framed a chat from behind a giant conifer crown for over 20 s (only name tags visible); orbit shows a hard horizontal haze edge; during Firefly/Berry race the chase view looks straight down on Sprout.",
+   "where": "reviews/p40/cam-follow.png, reviews/p40/mode-orbit.png, tests/shots/firefly-wad.png",
+   "evidence": "screenshots at 11:07-11:23 and 11:45",
+   "suggestion": "Reject candidate eye points with a crown or trunk between lens and both subjects (chat framing), soften the orbit horizon, and tilt the mini-game chase to 35 degrees so the meadow ahead shows.",
+   "done_when": "Three follow screenshots 10 s apart during a chat all show both faces, and the Firefly catch frame shows the horizon."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A shareable moment: creatures play a game together and Sprout joins",
+   "todo": 140,
+   "what": "Dancing happened (5 creatures 'dancing in the circle') but the follow camera showed Sprout's back on an empty path at that time; the player gets no cue that something to join is going on. Games are counters.",
+   "where": "reviews/p40/mode-follow.png (panel says dancing, view shows none)",
+   "evidence": "11:39 screenshot",
+   "suggestion": "Cut the camera to a group shot when a dance ring forms, add a 'join in' prompt and a second ring (#222); make hide and seek a daily event with a score history.",
+   "done_when": "A screenshot while 3+ dance shows the ring in frame, and the Parade party test passes for two dance spots."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Dashboard panel: a live picture of the island instead of changelog text",
+   "todo": 174,
+   "what": "The right column repeats 'New: Sprout's parade...' and a 4-line 'Things to try' for every minute of play; the 'On the island now' list is text.",
+   "where": "right column",
+   "evidence": "every screenshot in reviews/p40",
+   "suggestion": "A minimap with creature dots and the dance spot, a small activity feed with icons; collapse the instructions after the first play. Also show the real camera mode in the menu label.",
+   "done_when": "Screenshot shows a minimap and at most three lines of text; menu label matches the mode."
+  },
+  {
+   "severity": "low",
+   "category": "ui",
+   "title": "A black strip sits above the 3D view in every screenshot",
+   "todo": 123,
+   "what": "A dark gap of about 18 px between the status line and the view persists in every screenshot.",
+   "where": "top of 3D view",
+   "evidence": "all screenshots",
+   "suggestion": "Follow the todo leads; overlay the status text inside the LScene.",
+   "done_when": "The 3D view starts directly under the status text."
+  },
+  {
+   "severity": "low",
+   "category": "props",
+   "title": "Tree crowns show black holes and repeat the same two shapes",
+   "todo": null,
+   "what": "Several generated tree crowns show dark pits and every grove uses the same two crown shapes.",
+   "where": "releases/...v2/still.png, reviews/p40/views/overview.png",
+   "evidence": "traced still tree crowns",
+   "suggestion": "Regenerate or remesh the crown assets, add two more variants (blossom, autumn) and group trees in clusters with undergrowth.",
+   "done_when": "A traced still shows no dark pits and at least four distinct tree looks."
+  }
+ ],
+ "todos": [
+  {
+   "id": 156,
+   "action": "done",
+   "why": "game_still/game_clip and the :clip job take scripted cameras; the release films use them."
+  },
+  {
+   "id": 169,
+   "action": "done",
+   "why": "releases/2026-11-23-one-more-stone-v2 exists with a clean horizon."
+  },
+  {
+   "id": 38,
+   "action": "done",
+   "why": "Wrapped dashboard text fits (seen in every screenshot)."
+  },
+  {
+   "id": 129,
+   "action": "done",
+   "why": "Sky is blue in the eye-level progress shot at 11:50."
+  },
+  {
+   "id": 162,
+   "action": "drop",
+   "why": "Test-shot nicety, no player impact."
+  },
+  {
+   "id": 112,
+   "action": "drop",
+   "why": "Covered by the camera finding (#168)."
+  },
+  {
+   "id": 92,
+   "action": "drop",
+   "why": "The dance circle exists; remaining work is in #222 and #140."
+  },
+  {
+   "id": 69,
+   "action": "keep",
+   "why": "System problem; closes itself when it stops."
+  },
+  {
+   "id": 104,
+   "action": "keep",
+   "why": "System problem; closes itself when it stops."
+  },
+  {
+   "id": 148,
+   "action": "keep",
+   "why": "Flaky suite items still real."
+  },
+  {
+   "id": 184,
+   "action": "keep",
+   "why": "Second film serves goal 2."
+  },
+  {
+   "id": 222,
+   "action": "keep",
+   "why": "Part of the shareable moment."
+  },
+  {
+   "id": 5,
+   "action": "keep",
+   "why": "Blog needed for goal 2."
+  },
+  {
+   "id": 42,
+   "action": "keep",
+   "why": "Night look."
+  },
+  {
+   "id": 61,
+   "action": "keep",
+   "why": "Night look."
+  },
+  {
+   "id": 160,
+   "action": "keep",
+   "why": "Chat camera covered by shell or bush: seen again (conifer crown hid the chat)."
+  },
+  {
+   "id": 74,
+   "action": "keep",
+   "why": "Same crown-occlusion problem as the chat camera."
+  },
+  {
+   "id": 147,
+   "action": "keep",
+   "why": "Check still open."
+  },
+  {
+   "id": 165,
+   "action": "keep",
+   "why": "Check still open."
+  },
+  {
+   "id": 175,
+   "action": "keep",
+   "why": "Path tracing toggle robustness."
+  },
+  {
+   "id": 204,
+   "action": "keep",
+   "why": "Film idea."
+  },
+  {
+   "id": 59,
+   "action": "keep",
+   "why": "World content."
+  },
+  {
+   "id": 60,
+   "action": "keep",
+   "why": "Interaction content."
+  }
+ ],
+ "engine": [
+  {
+   "what": "set_camera! (dashboard.jl:179) only understands the exact menu strings 'Camera: follow' / 'Camera: orbit'; anything else silently becomes :fixed. The 'Camera: free' label stays on screen in every mode.",
+   "evidence": "set_camera!(game, 'orbit') left the view unchanged; every screenshot shows 'Camera: free'"
+  },
+  {
+   "what": "interact! only works inside a test run by the live game (wait_frames errors from live_eval), so a reviewer cannot play ad hoc, only through the suite.",
+   "evidence": "live eval: wait_frames only works inside a test run by the live game"
+  },
+  {
+   "what": "RayMakie raster cannot draw empty meshscatters and Hikari emissive plots leak in path tracing; patches already exist.",
+   "evidence": "CLAUDE.md lessons, world/patches/"
+  }
+ ],
+ "process": "The author mostly builds things a player sees (parade, butterflies, pond, flower field, cairn, a path traced release), and goals 1 and 2 moved (a v2 film is out). But the biggest dominant things - creature silhouettes (#142), night lighting (#173), the beach region (#87), camera blind spots and the raster sea compared with the traced one - have stayed open for many sessions while smaller features pile on, and the dance spot count went down to one this session. Goal 3 moved least: the traced stills are far better than the raster and the browser. Next: creature parts, night lighting, the cove, a dance-ring camera, and the second film (#184).",
+ "addressed": true
+}

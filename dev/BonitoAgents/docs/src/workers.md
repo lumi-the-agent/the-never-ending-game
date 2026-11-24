@@ -1,0 +1,149 @@
+# Workers & Machines
+
+Every machine that should run agents gets a **worker**: a small Julia process
+that dials out to your server, keeps a stable identity, and does everything
+local, from spawning agents to reading and writing project files to scanning
+for existing sessions.
+
+## Adding a machine
+
+Click **Add worker** on the dashboard and run the command it shows on the new
+machine. The command carries the machine's credential, which is shown only
+once:
+
+```bash
+# Linux / macOS
+curl -fsSL https://<your-server>/install.sh | sh -s w-...
+
+# Windows (PowerShell)
+& ([scriptblock]::Create((irm https://<your-server>/install.ps1))) w-...
+```
+
+The machine needs `julia` on its PATH; the installer stops with a message if it
+is missing. Then it:
+
+1. installs the worker packages into a shared `@bonito-agents` Julia
+   environment, pinned to the same code revision the server runs so server
+   and workers can't drift apart,
+2. records the worker config (server URL, credential and a stable `worker_id`)
+   in a Julia scratchspace,
+3. starts the worker and, on Linux, installs a systemd user service
+   (`bonito-worker`) so it survives reboots.
+
+The worker then installs a private Node and the agent adapters
+(`claude-agent-acp`, `codex-acp`) itself, at the versions the server declares,
+and updates them while no chat runs there. Admins set those versions under
+*Agent adapters* on the Settings page. Logging in to an agent stays with the
+machine's user: for Claude Code, install it and run `claude` once. The installer
+notes when Claude Code was never used on the machine.
+
+To update, run the command again without the credential: the machine keeps the
+one it has, moves to the server's current revision and restarts the service.
+
+## Identity and renames
+
+A machine registers under a persistent `worker_id`. The display name defaults
+to something like `simon-a1b2` and can be renamed in its dashboard card; the
+rename sticks across reconnects because the server remembers it, not the
+worker. Projects are attached to the worker id, so reinstalling the worker
+keeps every project reachable.
+
+## Reconnects and liveness
+
+Workers reconnect automatically: on a normal disconnect the retry loop
+re-dials every few seconds. Half-open "zombie" links, from a laptop suspend or
+a Wi-Fi to LAN switch, where neither end sees an error, are caught by
+heartbeats. The server pings each worker and force-closes silent links: the
+worker flips to *offline* in the UI within a minute, and requests against it
+fail fast with a toast instead of hanging. The worker watches for those pings
+and re-dials over the current network when they stop, reaping any agent
+sessions the server had already abandoned.
+
+## After a worker crash
+
+A worker that crashes in the middle of a chat's turn (killed, out of memory, a
+segfault) takes the agent with it. When it is back, each chat whose turn it cut
+off gets one automatic message asking the agent to check where things stand and
+carry on; nothing else is continued. This never rests on a guess:
+
+- The worker says it crashed. Each run of it has an id in its pidfile, which a
+  normal exit removes, and so does everyone who stops it on purpose: updates and
+  re-installs, and the systemd unit's `ExecStop` (Julia 1.12.7 cannot be relied
+  on to exit cleanly on SIGTERM, so the unit does it before the signal). A new
+  run that finds the file of a run that is gone, from the same boot of the
+  machine, reports that run as crashed. A reboot, a shutdown or a power loss
+  never counts; neither does a dropped connection, which just resumes.
+- The server knows which chats were mid-turn: those with a prompt of ours
+  delivered and unanswered when the worker's link first went down, and nothing
+  queued behind it.
+- Nothing happened in the chat since: a message sent, a stop clicked, a restart
+  or a closed chat means it is not continued.
+- A turn that was itself such a continuation is not continued again, so a turn
+  that crashes its worker cannot loop.
+
+What was noted lives in the server's memory: a server restart in between
+continues nothing. A worker running outside systemd (macOS, Windows) that is
+killed from outside, not stopped through the installer, counts as crashed.
+
+## Files between server and worker
+
+Project trees move with librsync-based directory sync (import, and continuing
+a chat on another worker); single files move over a dedicated transfer channel.
+The file editor always stats and re-fetches through the worker before showing
+content, and *Save* writes back to the worker. The server-side mirror is a
+cache, never the source of truth. Oversized or binary files are refused with a
+clear message before any transfer starts.
+
+## Continuing a chat on another worker
+
+A chat's ⋯ menu lists every other online worker under *Continue on*. Picking
+one opens a new chat on that worker that picks up where this one is; the
+original chat stays as it is, on its worker, with whatever it is running. The
+agent's own record of the conversation is copied first: for Claude Code the
+transcript, the subagent transcripts and the project memory under
+`~/.claude/projects/`, rewritten to the new working directory, so the new chat
+resumes with the agent's memory. Then the project's files travel through the
+server to the other worker's projects root (the push only adds; nothing already
+there is removed).
+
+It waits for a turn in flight to end (stop it or wait), so the new chat starts
+from a finished answer. If the record can't be carried (a provider without a
+movable record, the source offline, a failed transfer) the new chat starts
+fresh. With the source worker offline, only a project the server holds a synced
+copy of can be continued. The source chat's progress row and sidebar indicator
+track the copy and report its outcome, using the same jobs as Julia progress.
+
+## Running Julia on another machine
+
+An agent can evaluate Julia on any other online worker
+(`bt_julia_eval(code; worker = "MacBook")`, see
+[Julia Tools & Live Apps](@ref)). That traffic needs no new network path:
+requests, replies, streamed stdout and interrupts all ride the authenticated
+connections the workers already hold open to the server.
+
+```text
+chat MCP → local daemon → server → target daemon → eval host
+           loopback       existing worker links    loopback
+```
+
+Both ends of the chain are loopback, so an agent's MCP process never learns the
+server URL or the server secret; it talks to its own machine's worker over a
+token scoped to that one chat. The server sits in the middle and enforces the
+chat's **Remote julia** switch on every call, which is why flipping it off ends
+remote evals immediately, with no restart. If a worker drops, its pending calls
+fail with an error instead of hanging, and a reconnect re-establishes the path.
+
+## Managing workers
+
+The worker keeps its identity in `worker_id` and backs it up in `config.json`.
+If the ID file is missing or empty, it restores the saved ID automatically.
+Keep these files when reinstalling: existing chats refer to this identity.
+If both copies are missing from an existing installation, startup reports an
+error instead of silently registering a different worker.
+
+Each worker card on the dashboard shows its status dot, lets you rename it,
+and offers *Rescan* to refresh the discovered-sessions list. The `worker.log`
+lives next to the worker config (a Julia scratchspace by default; the exact
+path is printed at install time, and `BONITOAGENTS_CONFIG_DIR` overrides it).
+Removing a machine is `systemctl --user disable --now bonito-worker` plus
+deleting that config dir.

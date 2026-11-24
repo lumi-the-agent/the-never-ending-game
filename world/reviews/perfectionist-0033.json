@@ -1,0 +1,123 @@
+{
+  "verdict": "needs_work",
+  "summary": "By day and in the orbit/fixed views the island is a cozy clay diorama (lit cottage, pond with lilies, fireflies, lumpy trees), clearly better than at session 20. But the default follow camera at night showed an empty starry sky with two tree crowns and no creature, the sea is a flat black slab with a banded horizon, creatures are still blobs, and both mini games are 60 s counters behind a large text card. Path tracing is not usable: the one traced still is a grey grainy ball on a pier over black water, and turning live path tracing on ran the GPU out of memory and left raster screenshots failing. Goal 2 has no release.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Cottage window glow, lamp pools, moon halo and fireflies look cozy; but the follow/orbit night frames are mostly near-black ground, the sea is a dark slab, and the sky band at the horizon is banded/stripey (p33-cam-orbit-a.png)."
+    },
+    "world": {
+      "score": 5,
+      "why": "Meadow repaint, pond with lilies and cattails and a cottage are charming, but it is one hill, one pond, one path; the surrounding sea is empty and flat."
+    },
+    "props": {
+      "score": 6,
+      "why": "Generated trees, tufts, cottage, lantern, signpost are good and instanced; the same crowns and grass tufts repeat and fill the foreground of every shot."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "Sleeping crabs/pigs read as lumps; only hats and 'Z's tell them apart. In the traced still Sprout is a grey sphere with a leaf. Rarely large enough in frame to see faces."
+    },
+    "fun": {
+      "score": 4,
+      "why": "Firefly catch and Berry race work (all 9 play tests passed: start card, W starts, keys light up, win card with best score and basket count) but are 60 s counters; the start card covers most of the view; Ball play test fails (Pinchy did not pass the ball back, goal fetch, 12 s)."
+    },
+    "camera": {
+      "score": 4,
+      "why": "Follow camera at 02:35 framed only sky and tree crowns (p33-cam-follow-a.png); orbit/fixed are good, but the default is the worst. Dance circle join shot showed a hillside with fireflies and no dancers (tests/shots/dancecircle-join.png)."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Key hint overlays and the HUD key row are clear and readable; side panel is half empty, status text ('walking the whole island with a critical eye') and a changelog message are not useful to a player."
+    },
+    "style": {
+      "score": 6,
+      "why": "Clay trees, cottage and pond are one look; the flat grey rocks, the black sea and the grainy traced grey Sprout fall out of it."
+    },
+    "performance": {
+      "score": 8,
+      "why": "frame median 3.8 ms, p95 4.7 ms live at 30 fps with 214 props; but toggling path tracing in the live game OOMs the GPU (see engine)."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "camera",
+      "what": "The default follow camera shows no creature: at night it parked on an empty sky with two tree crowns and a moon (02:35), the game's longest stretch of the clock. Dance circle and ball joins also show scenery instead of the action.",
+      "where": "world/reviews/p33-cam-follow-a.png, tests/shots/dancecircle-join.png",
+      "evidence": "p33-cam-follow-a.png: no creature, 70% sky; p33-cam-orbit-a.png and fixed-b show the island fine",
+      "suggestion": "Follow must always keep a creature in the lower third at 15-25% of the view height; if it cannot, cut to the orbit/fixed shot instead of looking up. Test it by sampling the camera every 30 s over a full day and projecting creature positions into the frame.",
+      "done_when": "24 sampled follow frames over a game day each contain at least one creature >= 15% of the view height, none with a crown filling > 15% of the frame"
+    },
+    {
+      "severity": "high",
+      "category": "fun",
+      "what": "Goal 2 is not reached and path tracing is not usable: no releases/ folder, the newest traced still (media/meadow/traced-meadow-eye.png) is still the pier camera, a grey grainy sphere over black water; and live path tracing ran out of GPU memory and then every live_screenshot failed with 'Failed to resolve trace_renderobject'.",
+      "where": "world/releases (missing), worker trace jobs, firefly/mote meshscatters",
+      "evidence": "p33 live_path_tracing(true): LavaError pool_alloc cannot allocate 293 MB, 3.38 GB reserved; afterwards live_screenshot failed for minutes with false path_tracing state (reviewer left the game in this state, a restart is needed)",
+      "suggestion": "Make the traced scene light: cap emission motes/fireflies (one instanced mesh with few faces, or skip them in trace), fix the worker's eye/target, then render a 15 s traced clip of a real moment (berry race finish, dance circle). Also make the raster path recover when a trace allocation fails.",
+      "done_when": "world/releases/<date>-<name>/ holds an mp4 and a note, and turning live path tracing on and off leaves live_screenshot working"
+    },
+    {
+      "severity": "high",
+      "category": "fun",
+      "what": "Interaction between creatures is shallow: critters chat, dance and pass a ball, but nothing they do leaves a trace in the world, and the Ball play test currently fails (Pinchy never passes it back). Mini games are 60 s score counters with a big card over the picture.",
+      "where": "Things to try panel; minigames; tests/ballplay",
+      "evidence": "live_tests('Ball play'): 'Pinchy did not pass the ball back (streak 0, goal fetch, 12.0 s)'; firefly-start.png card covers 70% of the screen",
+      "suggestion": "Add one lasting creature-driven loop (critters bring berries/flowers to build a shared garden or campfire spot that grows and that the player can join with one key), shrink start cards to a corner, and fix the ball pass.",
+      "done_when": "a 60 s unattended recording shows critters adding a visible object to the world, and the ball test passes 3/3 runs"
+    },
+    {
+      "severity": "medium",
+      "category": "world",
+      "what": "The sea is a flat dark slab with a hard banded horizon; the island is the only place in the world.",
+      "where": "p33-cam-orbit-a.png top third",
+      "evidence": "orbit and fixed shots: the top third is a uniform navy plane with grey stripes at the horizon",
+      "suggestion": "Give the sea wave normals, foam at the shore, a few distant islets and a lit horizon glow; add a second area (rocky shore or pine ridge) with its own palette.",
+      "done_when": "an orbit screenshot shows foam/waves and distant land, and two screenshots from different spots show two distinct areas"
+    },
+    {
+      "severity": "medium",
+      "category": "creatures",
+      "what": "Creatures are blobs: sleeping crab and pig are two lumps; Sprout in a trace is a grey ball with a leaf and no face.",
+      "where": "p33-cam-orbit-a.png lower left, traced-meadow-eye.png",
+      "evidence": "images listed",
+      "suggestion": "Make a generated mesh per species with eyes, ears, tail and idle motion, and give Sprout a face and a texture so it reads in a traced still.",
+      "done_when": "a 400 px close-up of each species shows eyes and a distinct silhouette"
+    },
+    {
+      "severity": "medium",
+      "category": "lighting",
+      "what": "At night most of the ground is near-black with hard shadow pools; only the cottage and the lantern glow.",
+      "where": "p33-cam-orbit-a.png, progress overview",
+      "evidence": "overview.png: lower half almost black",
+      "suggestion": "Cool moon fill light, softer shadows and a warm path of light from the cottage windows; keep fireflies as small point glows.",
+      "done_when": "mean luminance of the 3D area at night is above 0.18 with shadows still visibly blue-tinted"
+    },
+    {
+      "severity": "low",
+      "category": "ui",
+      "what": "The right panel is half empty and shows a changelog message and a generic status line.",
+      "where": "dashboard right column",
+      "evidence": "p33-cam-*.png: same 'New: the meadow is alive' text for the whole session",
+      "suggestion": "Show friends and moods with small portraits and one next thing to try.",
+      "done_when": "the panel shows live creature info and no changelog text"
+    }
+  ],
+  "engine": [
+    {
+      "what": "Live path tracing OOMs the GPU (Lava pool_alloc 293-388 MB with 3.4 GB reserved) with the many emissive firefly/mote meshscatters, and afterwards the raster screenshot path also fails to resolve trace_renderobject until the game restarts.",
+      "evidence": "dev/Makie/RayMakie/src/plots/meshscatter.jl:379, Mantle memory.jl:577; reproduced by live_path_tracing(true) at night, then live_screenshot failed 10+ times"
+    },
+    {
+      "what": "The worker has no Revise and ignores eye/target in trace jobs until it restarts.",
+      "evidence": "jobs/20261123-083322-691-trace.json asked for the meadow eye, result is the pier view"
+    },
+    {
+      "what": "WGLMakie has no sky model, so the browser sky differs from the raster.",
+      "evidence": "CLAUDE.md browsernight lesson"
+    }
+  ],
+  "process": "The author spends most sessions on things a player sees (meadow, tufts, flora, outfits, browser check) and writes real tests, and the 9 mini game play tests pass. But goal 2 is untouched after 33 sessions and the path tracing route is actually broken (GPU OOM, wrong camera in traced stills), goal 1 gets only incremental mini game fixes, and the default camera, the thing on screen all the time, is still failing at night. Next session: fix the follow camera framing with a sampled test, make the trace scene light enough to render, ship one traced clip, and build one lasting creature loop.",
+  "addressed": true
+}

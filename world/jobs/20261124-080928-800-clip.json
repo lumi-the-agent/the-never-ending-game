@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T08:09:28.800",
+  "finished": "2026-11-24T08:15:45.621",
+  "id": "20261124-080928-800-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "thought",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/thought-traced.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/thought-traced.png",
+    "post": "thought"
+  },
+  "seconds": 139.7,
+  "started": "2026-11-24T08:13:25.905",
+  "status": "done"
+}

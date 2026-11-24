@@ -1,0 +1,10 @@
+started Main.Plugin_berry_race.BerryRace
+start pos Float32[0.3, -2.0, 2.5]
+t1 Float32[-0.6, -3.5, 2.3] Main.Plugin_berry_race.BerryRace 
+t2 Float32[0.2, -4.6, 2.1] Main.Plugin_berry_race.BerryRace 
+t3 Float32[1.7, -4.0, 2.3] Main.Plugin_berry_race.BerryRace 
+t4 Float32[1.9, -2.4, 2.3] Main.Plugin_berry_race.BerryRace 
+t5 Float32[0.5, -1.6, 2.5] Main.Plugin_berry_race.BerryRace 
+t6 Float32[-0.8, -2.5, 2.5] Main.Plugin_berry_race.BerryRace 
+t7 Float32[-0.4, -4.1, 2.2] Main.Plugin_berry_race.BerryRace 
+t8 Float32[1.2, -4.3, 2.2] Main.Plugin_berry_race.BerryRace 

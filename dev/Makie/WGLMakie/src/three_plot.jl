@@ -1,0 +1,189 @@
+# We use objectid to find objects on the js side
+js_uuid(object) = string(objectid(object))
+
+function Bonito.print_js_code(io::IO, plot::AbstractPlot, context::Bonito.JSSourceContext)
+    uuids = js_uuid.(Makie.collect_atomic_plots(plot))
+    # This is a bit more complicated then it has to be, since evaljs / on_document_load
+    # isn't guaranteed to run after plot initialization in an App... So, if we don't find any plots,
+    # we have to check again after inserting new plots
+    return Bonito.print_js_code(
+        io, js"""(new Promise(resolve => {
+            $(WGL).then(WGL=> {
+                const find = ()=> {
+                    const plots = WGL.find_plots($(uuids))
+                    if (plots.length > 0) {
+                        resolve(plots)
+                    } else {
+                        WGL.on_next_insert(find)
+                    }
+                };
+                find()
+            })
+        }))""", context
+    )
+end
+
+function Bonito.print_js_code(io::IO, scene::Scene, context::Bonito.JSSourceContext)
+    # Some large scenes can initialize slowly in app mode; allow configurable retry window.
+    retry_delay_ms = max(1, something(tryparse(Int, get(ENV, "WGLMAKIE_SCENE_RETRY_DELAY_MS", "100")), 100))
+    total_wait_ms = max(retry_delay_ms, something(tryparse(Int, get(ENV, "WGLMAKIE_SCENE_RETRY_TOTAL_MS", "60000")), 60000))
+    max_retries = max(100, cld(total_wait_ms, retry_delay_ms))
+
+    code = js"""$(WGL).then(WGL=> {
+        function try_find_scene(_retries) {
+            let retries = _retries || 0;
+            const max_retries = $(max_retries);
+            const retry_delay = $(retry_delay_ms);
+            const scene = WGL.find_scene($(js_uuid(scene)));
+            if (scene) {
+                return Promise.resolve(scene);
+            } else if (retries < max_retries) {
+                return new Promise(resolve => {
+                    setTimeout(() => {
+                        try_find_scene(retries + 1).then(resolve);
+                    }, retry_delay);
+                });
+            } else {
+                return Promise.reject(new Error("Scene not found after retries"));
+            }
+        }
+        return try_find_scene();
+    })"""
+    return Bonito.print_js_code(io, code, context)
+end
+
+
+# Named so the browser resize callback can be precompiled.
+function apply_real_size!(
+        screen::Screen, scene::Scene, scene_serialized_task::Makie.TrackedTask,
+        scene_serialized::Observable{Union{Nothing, Dict{Symbol, Any}}},
+        done_init::Observable{Any}, initial_size::Tuple{Int, Int}, size_arr
+    )
+    try
+        size_tuple = (round.(Int, (size_arr))...,)
+        # Resize the scene to the actual canvas size before serialization
+        serialized = fetch(scene_serialized_task)
+        if size_tuple != initial_size
+            # resize before sending - since all changes should be captured in the serialized observables
+            # We dont need to serialize again!
+            resize!(scene, size_tuple...)
+        end
+        if screen.needs_resync
+            # plots were inserted/deleted after the eager serialization
+            # started - take a fresh snapshot
+            screen.needs_resync = false
+            serialized = serialize_scene(screen.session, scene, serialized)
+        end
+        # Now serialize with the correct size
+        scene_serialized[] = serialized
+    catch e
+        @warn "Error resizing/serializing scene" exception = (e, catch_backtrace())
+        done_init[] = e
+    end
+    return
+end
+
+function three_display(screen::Screen, session::Session, scene::Scene)
+    config = screen.config
+    window_open = scene.events.window_open
+    initial_size = size(scene)
+    canvas_width = lift(x -> [round.(Int, widths(x))...], scene, viewport(scene))
+    is_offline = Bonito.root_session(session).connection isa Bonito.NoConnection
+    # Observable to receive the actual canvas size from JS after resize_to calculation
+    real_size = Observable{Any}(nothing)
+    # Create observable for scene serialization that updates asynchronously
+    scene_serialized = Observable{Union{Nothing, Dict{Symbol, Any}}}(nothing)
+    done_init = Observable{Any}(nothing)
+    function request_resync()
+        screen.needs_resync = false
+        scene_serialized[] = serialize_scene(session, scene, scene_serialized[])
+        empty!(screen.displayed_scenes)
+        mark_as_displayed!(screen, scene)
+        return
+    end
+    if is_offline
+        # For offline connections, we have to serialize immediately
+        # Since we can't do any round trip communication
+        scene_serialized[] = serialize_scene(session, scene)
+    else
+        scene_serialized_task = Makie.async_tracked() do alive
+            alive[] || return nothing
+            ser = serialize_scene(session, scene)
+            return ser
+        end
+        # Wait for real size to be determined, then resize scene and serialize
+        on(session, real_size) do size_arr
+            Makie.async_tracked() do should_close
+                apply_real_size!(
+                    screen, scene, scene_serialized_task, scene_serialized,
+                    done_init, initial_size, size_arr
+                )
+            end
+            return
+        end
+        # First initialization is handled by real_size; reconnect refreshes stale scenes.
+        on(session, session.on_open) do _
+            if screen.needs_resync && isready(screen.plot_initialized)
+                request_resync()
+            end
+            return
+        end
+    end
+    width, height = initial_size
+    # Create canvas
+    canvas = DOM.m(
+        "canvas";
+        tabindex = "0",
+        # Set with/height to have a good initial size - might not match the final size with scaling etc,
+        # but this will be adjusted in JS - this helps with less re-layouting
+        width = "$(width)px",
+        height = "$(height)px",
+        style = "display: block",
+        # Pass JupyterLab specific attributes to prevent it from capturing keyboard shortcuts
+        # and to suppress the JupyterLab context menu in Makie plots, see:
+        # https://jupyterlab.readthedocs.io/en/4.2.x/extension/notebook.html#keyboard-interaction-model
+        # https://jupyterlab.readthedocs.io/en/4.2.x/extension/extension_points.html#context-menu
+        dataLmSuppressShortcuts = true, dataJpSuppressContextMenu = nothing,
+    )
+
+    # Get spinner from config (will be constructed from theming)
+    # Wrapper contains canvas and spinner as siblings, plus widgets will be added later
+    # position: relative is needed for:
+    # 1. absolute positioning of spinner on top of canvas
+    # 2. absolute positioning of widgets (HTML widgets, etc.)
+    wrapper = DOM.div(canvas, config.spinner; style = "width: 100%; height: 100%; position: relative;")
+    comm = Observable(Dict{String, Any}())
+
+    # Every figure connects the page's glyph request channel, including cached plots.
+    glyph_request = glyph_sync!(session).request
+    evaljs(
+        session, js"""
+        $(WGL).then(WGL => {
+            WGL.set_glyph_request($(glyph_request));
+            WGL.setup_scene_init(
+                $(session.id),
+                $wrapper,
+                $canvas,
+                $width,
+                $height,
+                $(config.resize_to),
+                $(config.px_per_unit),
+                $(config.scalefactor),
+                $(real_size),
+                $canvas_width,
+                $(scene_serialized),
+                $comm,
+                $(config.framerate),
+                $(config.render_on_demand),
+                $(done_init)
+            )
+        })
+        """
+    )
+    # push!(Bonito.children(wrapper), jss)
+    on(session, done_init) do val
+        window_open[] = true
+    end
+    connect_scene_events!(screen, scene, comm)
+    return wrapper, done_init, request_resync
+end

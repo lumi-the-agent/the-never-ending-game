@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-23T13:57:32.979",
+  "finished": "2026-11-23T14:07:42.344",
+  "id": "20261123-135732-976-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 8000,
+    "prompt": "a single chunky stylized piece of pale weathered driftwood, smooth rounded clay-toy look, soft warm grey and sand colours, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "beach"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T14:07:42.137",
+    "faces": 7820,
+    "id": "20261123-135732-976-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-135732-976-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135732-976-asset/mesh.jls",
+    "prompt": "a single chunky stylized piece of pale weathered driftwood, smooth rounded clay-toy look, soft warm grey and sand colours, seen from the side, resting on the ground",
+    "seconds": 606.0,
+    "tags": [
+      "prop",
+      "beach"
+    ]
+  },
+  "seconds": 608.6,
+  "started": "2026-11-23T13:57:33.777",
+  "status": "done"
+}

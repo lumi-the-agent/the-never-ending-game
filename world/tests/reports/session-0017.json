@@ -1,0 +1,4 @@
+{"session": 17,
+ "summary": "Both session-16 findings are fixed: labels stay inside the view without overlap (new screenshot shows clean labels) and the Sprout activity panel no longer shows backticks or stop reasons. Suite passes; I added one test for the activity text.",
+ "failures": [],
+ "tests_added": ["Activity text has no backticks, tool-call counts or stop reasons"]}

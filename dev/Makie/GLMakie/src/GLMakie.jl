@@ -1,0 +1,178 @@
+module GLMakie
+
+if isdefined(Base, :Experimental) && isdefined(Base.Experimental, Symbol("@max_methods"))
+    # GLMakie doesn't do much work, besides assembling shaders.
+    # If it does, code should be 100% inferable, so hopefully shouldn't be influenced by this
+    @eval Base.Experimental.@max_methods 1
+end
+
+const DEBUG = Ref(false)
+
+using ModernGL, FixedPointNumbers, Colors, GeometryBasics
+using Makie, FileIO
+
+using Makie: @key_str, Key, broadcast_foreach, to_ndim, NativeFont
+using Makie: Scene, Lines, Text, Image, Heatmap, Scatter
+using Makie: convert_attribute, @extractvalue, LineSegments
+using Makie: @get_attribute, to_value, to_colormap, extrema_nan
+using Makie: ClosedInterval, (..)
+using Makie: to_native
+using Makie: spaces, is_data_space, is_pixel_space, is_relative_space, is_clip_space
+using Makie: BudgetedTimer, reset!
+import Makie: to_font, el32convert, Shape, CIRCLE, RECTANGLE, ROUNDED_RECTANGLE, DISTANCEFIELD, TRIANGLE
+
+using ShaderAbstractions
+using FreeTypeAbstraction
+using GeometryBasics: StaticVector
+using Observables
+
+using Base: RefValue
+import Base: push!, isopen, show
+using Base.Iterators: repeated, drop
+
+using LinearAlgebra
+
+# re-export Makie, including deprecated names
+for name in names(Makie, all = true)
+    if Base.isexported(Makie, name)
+        @eval using Makie: $(name)
+        @eval export $(name)
+    end
+end
+
+import ShaderAbstractions: Sampler, Buffer
+export Sampler, Buffer
+
+struct ShaderSource
+    typ::GLenum
+    source::String
+    name::String
+    last_modified::Float64
+end
+
+"""
+    ShaderSource(filepath::String)
+
+Loads the source code from the given filepath. The shader type is derived from
+the file extension (.vert, .frag, .geom or .comp).
+"""
+function ShaderSource(path::String)
+    Base.include_dependency(path)
+    typ = GLAbstraction.shadertype(splitext(path)[2])
+    source = read(path, String)
+    name = String(path)
+    last_modified = mtime(path)
+    return ShaderSource(typ, source, name, last_modified)
+end
+
+# To speed up hashing shader compilation, look at mtime(file) (last modified)
+# instead of hashing the entire content.
+Base.hash(x::ShaderSource, h::UInt) = hash(x.name, hash(x.last_modified, h))
+
+const shader_counter = Ref(0)
+function next_shader_num()
+    shader_counter[] = shader_counter[] + 1
+    return shader_counter[]
+end
+
+"""
+    ShaderSource(code::String, type::Symbol[, name])
+
+Bundles the given source code with a shader type for later shader compilation.
+`type` can be :vert, :frag, :geom or :comp.
+
+Use `loadshader(filename)` to load a cached shader from GLMakie's assets folder.
+"""
+function ShaderSource(source::String, type::Symbol, name = "inline_shader$(next_shader_num())")
+    type2gltype = (comp = GL_COMPUTE_SHADER, vert = GL_VERTEX_SHADER, frag = GL_FRAGMENT_SHADER, geom = GL_GEOMETRY_SHADER)
+    return ShaderSource(type2gltype[type], source, name, 0.0)
+end
+
+const SHADER_DIR = normpath(joinpath(@__DIR__, "..", "assets", "shader"))
+const LOADED_SHADERS = Dict{String, ShaderSource}()
+const WARN_ON_LOAD = Ref(false)
+
+function loadshader(name)
+    return get!(LOADED_SHADERS, name) do
+        if WARN_ON_LOAD[]
+            @warn("Reloading shader")
+        end
+        return ShaderSource(joinpath(SHADER_DIR, name))
+    end
+end
+
+function load_all_shaders(folder)
+    for name in readdir(folder)
+        path = joinpath(folder, name)
+        if isdir(path)
+            load_all_shaders(path)
+        elseif any(x -> endswith(name, x), [".frag", ".vert", ".geom"])
+            path = relpath(path, SHADER_DIR)
+            loadshader(replace(path, "\\" => "/"))
+        end
+    end
+    return
+end
+
+
+gl_texture_atlas() = Makie.get_texture_atlas(2048, 64)
+
+# don't put this into try catch, to not mess with normal errors
+include("gl_backend.jl")
+
+# We load all shaders to compile them into the package Image
+# Making them relocatable
+load_all_shaders(SHADER_DIR)
+WARN_ON_LOAD[] = true
+
+function __init__()
+    activate!()
+    macos_set_dock_visible(false)
+    # trigger OpenGL cleanup to avoid errors in debug mode
+    return atexit(GLMakie.closeall)
+end
+
+function macos_set_dock_visible(visible::Bool)
+    Sys.isapple() || return
+    return try
+        nsapp_class = @ccall objc_getClass("NSApplication"::Cstring)::Ptr{Cvoid}
+        shared_app_sel = @ccall sel_registerName("sharedApplication"::Cstring)::Ptr{Cvoid}
+        set_policy_sel = @ccall sel_registerName("setActivationPolicy:"::Cstring)::Ptr{Cvoid}
+        nsapp = @ccall objc_msgSend(nsapp_class::Ptr{Cvoid}, shared_app_sel::Ptr{Cvoid})::Ptr{Cvoid}
+
+        NSApplicationActivationPolicyRegular = 0
+        NSApplicationActivationPolicyAccessory = 1
+        val = visible ? NSApplicationActivationPolicyRegular : NSApplicationActivationPolicyAccessory
+        @ccall objc_msgSend(nsapp::Ptr{Cvoid}, set_policy_sel::Ptr{Cvoid}, val::Clong)::Ptr{Cvoid}
+
+        if visible
+            macos_set_dock_icon(Makie.assetpath("icon_transparent.png"))
+        end
+    catch e
+        @warn "Failed to set dock visibility" e
+    end
+end
+
+function macos_set_dock_icon(path::String)
+    Sys.isapple() || return
+    nsstring_class = @ccall objc_getClass("NSString"::Cstring)::Ptr{Cvoid}
+    str_sel = @ccall sel_registerName("stringWithUTF8String:"::Cstring)::Ptr{Cvoid}
+    path_nsstr = @ccall objc_msgSend(nsstring_class::Ptr{Cvoid}, str_sel::Ptr{Cvoid}, path::Cstring)::Ptr{Cvoid}
+
+    nsimage_class = @ccall objc_getClass("NSImage"::Cstring)::Ptr{Cvoid}
+    alloc_sel = @ccall sel_registerName("alloc"::Cstring)::Ptr{Cvoid}
+    init_file_sel = @ccall sel_registerName("initWithContentsOfFile:"::Cstring)::Ptr{Cvoid}
+    image = @ccall objc_msgSend(nsimage_class::Ptr{Cvoid}, alloc_sel::Ptr{Cvoid})::Ptr{Cvoid}
+    image = @ccall objc_msgSend(image::Ptr{Cvoid}, init_file_sel::Ptr{Cvoid}, path_nsstr::Ptr{Cvoid})::Ptr{Cvoid}
+
+    nsapp_class = @ccall objc_getClass("NSApplication"::Cstring)::Ptr{Cvoid}
+    shared_app_sel = @ccall sel_registerName("sharedApplication"::Cstring)::Ptr{Cvoid}
+    nsapp = @ccall objc_msgSend(nsapp_class::Ptr{Cvoid}, shared_app_sel::Ptr{Cvoid})::Ptr{Cvoid}
+    set_icon_sel = @ccall sel_registerName("setApplicationIconImage:"::Cstring)::Ptr{Cvoid}
+    return @ccall objc_msgSend(nsapp::Ptr{Cvoid}, set_icon_sel::Ptr{Cvoid}, image::Ptr{Cvoid})::Ptr{Cvoid}
+end
+
+
+include("precompiles.jl")
+
+end

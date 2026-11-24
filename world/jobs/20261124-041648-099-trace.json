@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-24T04:16:48.102",
+  "finished": "2026-11-24T04:21:10.068",
+  "id": "20261124-041648-099-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -10.545986075468344,
+      12.00795280830586,
+      3.86010205745697
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/img/workshop-traced.png",
+    "samples": 128,
+    "target": [
+      -9.78819751739502,
+      7.272216510772705,
+      2.4601020574569703
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/workshop-traced.png"
+  },
+  "seconds": 254.6,
+  "started": "2026-11-24T04:16:55.278",
+  "status": "done"
+}

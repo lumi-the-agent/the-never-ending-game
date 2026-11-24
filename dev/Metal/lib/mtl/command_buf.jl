@@ -1,0 +1,463 @@
+#
+# command buffer descriptor
+#
+
+export MTLCommandBufferDescriptor
+
+# @objcwrapper managed = true MTLCommandBufferDescriptor <: NSObject
+
+function MTLCommandBufferDescriptor()
+    return @objc [MTLCommandBufferDescriptor new]::MTLCommandBufferDescriptor
+end
+
+
+
+#
+# command buffer
+#
+
+export MTLCommandBuffer, enqueue!, wait_scheduled, wait_completed, encode_signal!,
+       encode_wait!, commit!, on_scheduled, on_completed, CommandBufferError
+
+# @objcwrapper MTLCommandBuffer <: NSObject
+
+function MTLCommandBuffer(queue::MTLCommandQueue)
+    @objc [queue::id{MTLCommandQueue} commandBuffer]::MTLCommandBuffer
+end
+
+function MTLCommandBuffer(queue::MTLCommandQueue, desc::MTLCommandBufferDescriptor)
+    @objc [queue::id{MTLCommandQueue} commandBufferWithDescriptor:desc::id{MTLCommandBufferDescriptor}]::MTLCommandBuffer
+end
+
+function MTLCommandBuffer(f::Base.Callable, queue::MTLCommandQueue,
+                          desc::MTLCommandBufferDescriptor=MTLCommandBufferDescriptor())
+    cmdbuf = MTLCommandBuffer(queue, desc)
+    commit!(f, cmdbuf)
+    return cmdbuf
+end
+
+"""
+    enqueue!(cmdbuf::MTLCommandBuffer)
+
+Enqueueing a command buffer reserves a place for the command buffer on the command
+queue without committing the command buffer for execution. When this command buffer
+is later committed, it keeps its position in the queue. You enqueue command buffers
+so that you can create multiple command buffers with a fixed order of execution without
+encoding the command buffers serially. You can use other threads to encode commands
+into the command buffers and those threads can complete in any order.
+
+[enqueue](https://developer.apple.com/documentation/metal/mtlcommandbuffer/1443019-enqueue?language=objc)
+"""
+function enqueue!(cmdbuf::MTLCommandBufferLike)
+    cmdbuf.status in [MTLCommandBufferStatusCompleted, MTLCommandBufferStatusEnqueued] &&
+        error("Cannot enqueue an already enqueued command buffer")
+    submit(cmdbuf, false) do
+        @objc [cmdbuf::id{MTLCommandBuffer} enqueue]::Nothing
+    end
+end
+
+struct CommandBufferErrorInfo
+    domain::String
+    code::Int
+    description::String
+    command_buffer_label::Union{Nothing,String}
+    queue_label::Union{Nothing,String}
+end
+
+"""
+    CommandBufferError
+
+An error reported by one or more Metal command buffers at a synchronization boundary.
+The `errors` field contains the original `NSError` domain, code, and description, plus
+the command-buffer and queue labels when available.
+"""
+struct CommandBufferError <: Exception
+    errors::Vector{CommandBufferErrorInfo}
+end
+
+function Base.showerror(io::IO, exc::CommandBufferError)
+    n = length(exc.errors)
+    print(io, "CommandBufferError: ", n == 1 ? "Metal command buffer failed" :
+                                           "$n Metal command buffers failed")
+    for info in exc.errors
+        print(io, "\nNSError: ", info.description, " (", info.domain,
+              ", code ", info.code, ")")
+        labels = String[]
+        info.command_buffer_label === nothing ||
+            push!(labels, "command buffer $(repr(info.command_buffer_label))")
+        info.queue_label === nothing || push!(labels, "queue $(repr(info.queue_label))")
+        isempty(labels) || print(io, " [", join(labels, ", "), "]")
+    end
+end
+
+"""
+    MTL4Submission
+
+The completion state of Metal 4 command buffers that were committed together (see
+[`commit_tracked!`](@ref)). Metal 4 command buffers are recycled as soon as they are
+committed, so unlike a Metal 3 `MTLCommandBuffer` they can't be asked whether they have
+completed: their commit feedback, and a shared event the queue signals after them, report
+it instead.
+"""
+mutable struct MTL4Submission
+    # signalled to `value` by the queue once the GPU is done with the command buffers
+    const event::MTLSharedEvent
+    const value::UInt64
+    const label::Union{Nothing,String}
+    const queue_label::Union{Nothing,String}
+    # whether a feedback handler reports completion. without one (e.g., while generating
+    # output, where Metal's threads can't run Julia code), only the event does, and errors
+    # aren't reported.
+    const feedback::Bool
+    # set by the feedback handler, after the error and timings
+    Base.@atomic completed::Bool
+    Base.@atomic error::Union{Nothing,CommandBufferErrorInfo}
+    Base.@atomic gpu_start::Float64
+    Base.@atomic gpu_end::Float64
+end
+
+# what is tracked per queue: Metal 3 command buffers, or Metal 4 submissions
+const Submission = Union{MTLCommandBufferLike,MTL4Submission}
+
+mutable struct QueueSubmissionState
+    pending::Vector{Submission}
+    errors::Union{Nothing,Vector{CommandBufferErrorInfo}}
+end
+
+QueueSubmissionState() = QueueSubmissionState(Submission[], nothing)
+
+const last_committed_lock = ReentrantLock()
+const last_committed_per_queue = Dict{id{MTLCommandQueue},Submission}()
+
+const submission_state_per_queue = Dict{id{MTLCommandQueue},QueueSubmissionState}()
+
+# how many command buffers (or Metal 4 submissions) were committed to each queue
+const committed_per_queue = Dict{id{MTLCommandQueue},Int}()
+
+function command_buffer_error_info(cmdbuf::MTLCommandBufferLike)
+    err = cmdbuf.error
+    err === nothing && return CommandBufferErrorInfo(
+        "MTLCommandBufferErrorDomain", 0, "Metal did not provide an NSError",
+        _object_label(cmdbuf), _object_label(cmdbuf.commandQueue))
+    return CommandBufferErrorInfo(String(err.domain), Int(err.code),
+                                  String(err.localizedDescription),
+                                  _object_label(cmdbuf),
+                                  _object_label(cmdbuf.commandQueue))
+end
+
+function _object_label(obj)
+    label = obj.label
+    return label === nothing ? nothing : String(label)
+end
+
+# Keep this state-accounting primitive independent from Objective-C objects so its
+# ordering and pruning semantics can be tested deterministically.
+function _prune_completed_submissions!(pending, errors, is_completed, error_info)
+    n = 0
+    for submission in pending
+        is_completed(submission) || break
+        info = error_info(submission)
+        if info !== nothing
+            if errors === nothing
+                errors = [info]
+            else
+                push!(errors, info)
+            end
+        end
+        n += 1
+    end
+    n == 0 || deleteat!(pending, 1:n)
+    return errors
+end
+
+is_completed(cmdbuf::MTLCommandBufferLike) = cmdbuf.status >= MTLCommandBufferStatusCompleted
+
+error_info(cmdbuf::MTLCommandBufferLike) =
+    cmdbuf.status == MTLCommandBufferStatusError ? command_buffer_error_info(cmdbuf) : nothing
+
+function prune_completed_submissions!(state::QueueSubmissionState)
+    state.errors = _prune_completed_submissions!(state.pending, state.errors,
+                                                 is_completed, error_info)
+    return
+end
+
+function record_committed!(cmdbuf::Submission, key::id{MTLCommandQueue})
+    @lock last_committed_lock begin
+        state = get!(submission_state_per_queue, key) do
+            QueueSubmissionState()
+        end
+        # Completed successes can be forgotten immediately. Completed failures are
+        # reduced to diagnostics, so command-buffer retention stays bounded during
+        # long-running submission workloads without explicit synchronization.
+        prune_completed_submissions!(state)
+        push!(state.pending, cmdbuf)
+        last_committed_per_queue[key] = cmdbuf
+        committed_per_queue[key] = get(committed_per_queue, key, 0) + 1
+    end
+    return
+end
+
+function take_queue_submissions(queue::MTLCommandQueue)
+    key = pointer(queue)
+    @lock last_committed_lock begin
+        last = get(last_committed_per_queue, key, nothing)
+        state = pop!(submission_state_per_queue, key, nothing)
+        return last, state
+    end
+end
+
+function take_all_submissions()
+    @lock last_committed_lock begin
+        last = collect(values(last_committed_per_queue))
+        states = isempty(submission_state_per_queue) ? nothing :
+                 collect(values(submission_state_per_queue))
+        empty!(submission_state_per_queue)
+        return last, states
+    end
+end
+
+function finish_submissions!(state::QueueSubmissionState)
+    prune_completed_submissions!(state)
+    isempty(state.pending) ||
+        error("Command buffer did not reach a terminal state after queue synchronization")
+    return state.errors
+end
+
+function pending_submission_count(queue::MTLCommandQueue)
+    key = pointer(queue)
+    @lock last_committed_lock begin
+        state = get(submission_state_per_queue, key, nothing)
+        state === nothing ? 0 : length(state.pending)
+    end
+end
+
+# optional profiling hook. when set, it is invoked for every committed command buffer.
+const profile_hook = Ref{Any}(nothing)
+
+# optional submission hook. when set, it is invoked as `hook(f, cmdbuf, commit)` to enqueue
+# (`commit=false`) or commit (`commit=true`) a command buffer, which happens by calling `f()`.
+const submit_hook = Ref{Any}(nothing)
+
+@inline function submit(f, cmdbuf::MTLCommandBufferLike, commit::Bool)
+    hook = submit_hook[]
+    hook === nothing ? f() : hook(f, cmdbuf, commit)
+end
+
+# optional profiling data for operation metadata (e.g. kernel dimensions, copy sizes).
+const profile_metadata = Ref{Any}(nothing)
+
+struct ProfileCollector
+    lock::ReentrantLock
+    metadata::IdDict{Any,Vector{Any}}
+    records::Vector{Tuple{String,Any}}
+end
+
+ProfileCollector() = ProfileCollector(ReentrantLock(), IdDict{Any,Vector{Any}}(),
+                                      Tuple{String,Any}[])
+
+@inline function note_operation!(collector::ProfileCollector, cmdbuf::Submission, op)
+    @lock collector.lock begin
+        ops = get(collector.metadata, cmdbuf, nothing)
+        if ops === nothing
+            ops = Any[]
+            collector.metadata[cmdbuf] = ops
+        end
+        push!(ops, op)
+    end
+    return
+end
+
+"""
+    last_committed(queue::MTLCommandQueue)::Union{MTL.Submission, Nothing}
+
+Return the most recently committed command buffer (or Metal 4 submission) on `queue`, or
+`nothing` if nothing has been committed.
+"""
+function last_committed(queue::MTLCommandQueue)
+    key = pointer(queue)
+    @lock last_committed_lock begin
+        get(last_committed_per_queue, key, nothing)
+    end
+end
+
+"""
+    committed(queue::MTLCommandQueue)::Int
+
+Return how many command buffers (or Metal 4 submissions) were committed to `queue`,
+including those that Metal.jl committed for the batches of a `BatchedCommandQueue`.
+"""
+function committed(queue::MTLCommandQueue)
+    key = pointer(queue)
+    @lock last_committed_lock begin
+        get(committed_per_queue, key, 0)
+    end
+end
+
+function commit!(cmdbuf::MTLCommandBufferLike)
+    submit(cmdbuf, true) do
+        commit_with_queue_key!(cmdbuf, pointer(cmdbuf.commandQueue))
+    end
+end
+
+function commit!(cmdbuf::MTLCommandBufferLike, queue::MTLCommandQueue)
+    submit(cmdbuf, true) do
+        commit_with_queue_key!(cmdbuf, pointer(queue))
+    end
+end
+
+function commit_with_queue_key!(cmdbuf::MTLCommandBufferLike, key::id{MTLCommandQueue})
+    cmdbuf.status in [MTLCommandBufferStatusCompleted, MTLCommandBufferStatusCommitted] &&
+        error("Cannot commit an already committed/completed command buffer")
+    @objc [cmdbuf::id{MTLCommandBuffer} commit]::Nothing
+    # Record every submission for error accounting. The most recent buffer remains
+    # the queue tail used by synchronization, while older completed buffers are
+    # pruned or summarized by `record_committed!`.
+    record_committed!(cmdbuf, key)
+    hook = profile_hook[]
+    hook === nothing || hook(cmdbuf)
+    return
+end
+
+function commit!(f::Base.Callable, cmdbuf::MTLCommandBufferLike)
+    enqueue!(cmdbuf)
+    ret = encode_enqueued(f, cmdbuf)
+    commit!(cmdbuf)
+    return ret
+end
+
+# call `f` to encode into an enqueued command buffer. Metal holds back everything that is
+# committed to a queue after an enqueued command buffer until that buffer is committed
+# too, so also commit it when `f` throws.
+function encode_enqueued(f, cmdbuf::MTLCommandBufferLike)
+    try
+        return f(cmdbuf)
+    catch
+        cmdbuf.status == MTLCommandBufferStatusEnqueued && commit!(cmdbuf)
+        rethrow()
+    end
+end
+
+function use_residency_set!(cmdbuf::MTLCommandBufferLike, resset::MTLResidencySet)
+    @objc [cmdbuf::id{MTLCommandBuffer} useResidencySet:resset::id{MTLResidencySet}]::Nothing
+end
+
+function use_residency_sets!(cmdbuf::MTLCommandBufferLike, ressets, count)
+    @objc [cmdbuf::id{MTLCommandBuffer} useResidencySets:ressets::Ptr{id{MTLResidencySet}}
+                                                count:count::NSUInteger]::Nothing
+end
+
+"""
+    wait_scheduled(commandBuffer)
+
+Blocks execution of the current thread until the command buffer is scheduled.
+This method returns after the command buffer has been scheduled and all code
+blocks registered by addScheduledHandler: have been invoked. A command buffer
+is considered scheduled after all its dependencies are resolved, and it is sent
+to the GPU for execution.
+"""
+function wait_scheduled(cmdbuf::MTLCommandBufferLike)
+    @objc [cmdbuf::id{MTLCommandBuffer} waitUntilScheduled]::Nothing
+end
+
+"""
+    wait_completed(cmdbuf::MTLCommandBuffer)
+
+Blocks execution of the current thread until execution of the command
+buffer is completed.
+This method returns after the command buffer is completed and all code
+blocks registered by addCompletedHandler: are invoked.
+"""
+function wait_completed(cmdbuf::MTLCommandBufferLike)
+    @objc [cmdbuf::id{MTLCommandBuffer} waitUntilCompleted]::Nothing
+end
+
+"""
+    encode_signal!(cmdbuf::MTLCommandBuffer, ev::MTLEvent, val::UInt)
+
+Encodes a command that signals the given event, updating it to a new value.
+
+You can't encode a signal event if the command buffer has an active command encoder.
+Metal signals the event after all commands scheduled prior to this command
+have finished executing. If the new event value is greater than the event's
+current value, Metal updates the event's value to the new value. Commands
+waiting on the event are allowed to run if the new value is equal to or
+greater than the value for which they are waiting. For shared events, this
+update similarly triggers notification handlers waiting on the event.
+"""
+function encode_signal!(cmdbuf::MTLCommandBufferLike,
+                         ev, val::Integer)
+    @objc [cmdbuf::id{MTLCommandBuffer} encodeSignalEvent:ev::id{MTLEvent}
+                                     value:val::UInt64]::Nothing
+end
+
+"""
+    encode_wait!(cmdbuf::MTLCommandBuffer, ev::MTLEvent, val::UInt)
+
+Encodes a command that blocks the execution of the command buffer
+until the given event reaches the given value.
+
+You can't encode a signal event if the command buffer has an active command encoder.
+When the device object reaches the command for the wait event, the
+device object waits until the event is signaled with a value
+equal to or larger than the provided value. While waiting, the
+GPU executes commands that appear earlier than the wait command,
+but doesn't start any commands that appear after it. Execution continues
+immediately if the event already has an equal or larger value.
+"""
+function encode_wait!(cmdbuf::MTLCommandBufferLike,
+                       ev, val::Integer)
+    @objc [cmdbuf::id{MTLCommandBuffer} encodeWaitForEvent:ev::id{MTLEvent}
+                                     value:val::UInt64]::Nothing
+end
+
+function _command_buffer_callback(f)
+    # convert the incoming pointer, and discard any return value
+    function wrapper(ptr)
+        try
+            f(ptr == nil ? nothing : MTLCommandBuffer(ptr))
+        catch err
+            # we might be on an unmanaged thread here, so display the error
+            # (otherwise it may get lost, or worse, crash Julia)
+            @error "Command buffer callback encountered an error: " * sprint(showerror, err)
+        end
+        return
+    end
+    @objcblock(wrapper, Nothing, (id{MTLCommandBuffer},))
+end
+
+"""
+    on_scheduled(cmdbuf::MTLCommandBuffer) do cbuf
+        ...
+        return
+    end
+
+Execute a block of code when execution of the command buffer is scheduled.
+"""
+function on_scheduled(f::Base.Callable, cmdbuf::MTLCommandBufferLike)
+    block = _command_buffer_callback(f)
+    @objc [cmdbuf::id{MTLCommandBuffer} addScheduledHandler:block::id{NSBlock}]::Nothing
+end
+
+"""
+    on_completed(cmdbuf::MTLCommandBuffer) do cbuf
+        ...
+        return
+    end
+
+Execute a block of code when execution of the command buffer is completed.
+"""
+function on_completed(f::Base.Callable, cmdbuf::MTLCommandBufferLike)
+    block = _command_buffer_callback(f)
+    @objc [cmdbuf::id{MTLCommandBuffer} addCompletedHandler:block::id{NSBlock}]::Nothing
+end
+
+"""
+    on_completed(cmdbuf::MTLCommandBuffer, cond::Base.AsyncCondition)
+
+Signal `cond` when execution of the command buffer is completed, without running
+Julia code on Metal's completion-handler thread.
+"""
+function on_completed(cmdbuf::MTLCommandBufferLike, cond::Base.AsyncCondition)
+    block = @objcasyncblock(cond)
+    @objc [cmdbuf::id{MTLCommandBuffer} addCompletedHandler:block::id{NSBlock}]::Nothing
+end

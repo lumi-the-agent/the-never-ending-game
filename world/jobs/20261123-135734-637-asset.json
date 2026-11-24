@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-23T13:57:34.637",
+  "finished": "2026-11-23T14:16:25.115",
+  "id": "20261123-135734-637-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 8000,
+    "prompt": "a small group of three stylized seashells, a pink scallop and two cream spiral shells, chunky clay-toy look, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "beach"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T14:16:25.115",
+    "faces": 7899,
+    "id": "20261123-135734-637-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-135734-637-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135734-637-asset/mesh.jls",
+    "prompt": "a small group of three stylized seashells, a pink scallop and two cream spiral shells, chunky clay-toy look, seen from the side, resting on the ground",
+    "seconds": 523.0,
+    "tags": [
+      "prop",
+      "beach"
+    ]
+  },
+  "seconds": 522.8,
+  "started": "2026-11-23T14:07:42.344",
+  "status": "done"
+}

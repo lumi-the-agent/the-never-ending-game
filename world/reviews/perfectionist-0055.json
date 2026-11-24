@@ -1,0 +1,243 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island now has a social life worth watching: friends ask each other along to what they love, walk off side by side, and Sprout brings them presents they keep and show off. Sprout's workshop corner looks good in a traced still. But what a player sees most is the same as at s52: the noon eye-level shot is flat, evenly lit green (now with a few more toadstools and yellow flowers), creatures are still round blobs whose hats cut through their heads, and the follow camera keeps pushing into faces or putting a passer-by in the foreground.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Noon is still flat even green with near-black shadows and no warm key light or haze (p55/cam-22-free.png). Dusk with rain and night are moody, but the clouds are hard-edged blobs."
+  },
+  "world": {
+   "score": 6,
+   "why": "The overview now shows a yellow flower field and a busier meadow, plus a pond, pier, beach and cottage. The terrain reads as one green dome, and the sea and sky have not changed since s52."
+  },
+  "props": {
+   "score": 6,
+   "why": "33 generated assets, used well (workbench, tool rack, cottage, logs, toadstools). The vegetable patch still has flat green cabbage blobs and carrots lying on the soil (site/img/workshop-traced.png)."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Lovely behaviour (invites, presents, fishing talk, rain play). The shapes are still blobs told apart by colour and hat, hats clip through heads (Sir Sniffsalot's top hat brim through its snout, Gloop's flower crown through its eyes), and the crab walks into Hopscotch on the pier."
+  },
+  "fun": {
+   "score": 6,
+   "why": "Three mini games, all winnable on a first W/A/D play (5/5 first-play tests pass), with tag, parade and presents on top. Rounds are still easy wins, and the presents and invites are things to watch, not to play."
+  },
+  "camera": {
+   "score": 5,
+   "why": "The follow camera framed Gloop's face filling half the view with the hat clipping (p55/cam-1-follow.png), a crab in the traced foreground cuts off the pier shot, and the orbit view at dusk is mostly tree crowns."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The thought bubble covers the middle of the overview and orbit shots. Name labels float far from their creature (traced: 'Sprout' over a log, while Sprout is fishing elsewhere). The side panel is readable but text-heavy."
+  },
+  "style": {
+   "score": 6,
+   "why": "Clay toy look, cohesive in the generated assets. Primitive hats and accessories (glossy cones, flat discs) and the hard sky blobs break it."
+  },
+  "performance": {
+   "score": 8,
+   "why": "Frame median 2.4 ms, p95 4.6 ms, 30 fps in the sandbox. A traced screenshot took ~4 min to return."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
+   "todo": 237,
+   "what": "Fourth perfectionist review in a row with the same noon: even lime green everywhere, shadows a dead dark green, far trees as saturated as near ones, no warm side or cool side on any object. The s55 eye-level shot differs from s52 only by props.",
+   "where": "RayMakie raster sun/sky, haze.jl, meadow.jl terrain colours",
+   "evidence": "media/progress/session-0055/eye-level.png vs session-0052/eye-level.png; reviews/p55/cam-22-free.png",
+   "suggestion": "Give the raster a warm key (sun tint around 1.0/0.93/0.8) and a blue-violet fill in shadows (sky-coloured ambient term in RayMakie's raster shading), plus distance haze that desaturates and lightens towards the horizon. Then retake the eye-level shot and compare it with the traced workshop still, which already has this look.",
+   "done_when": "On eye-level.png at 11:00, shadowed grass has a mean hue at least 15\u00b0 bluer than sunlit grass, and the far tree line has 30% lower saturation than the near grass."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Distinct creature silhouettes, and hats that sit on heads, not through them",
+   "todo": 236,
+   "what": "Close follow shots show accessories cutting through bodies: Sir Sniffsalot's top hat brim goes through its snout and eye, Gloop's flower crown petals cover and pierce its eyes, Pinchy's party hat sinks into its head. The silhouettes are still sphere + sphere. Since the camera now frames creatures closely, every clip shows.",
+   "where": "plugins/outfits.jl anchors, engine species.jl",
+   "evidence": "reviews/p55/night-follow.png (pig top hat), reviews/p55/cam-1-follow.png (Gloop crown), reviews/p55/night-1.png",
+   "suggestion": "Anchor hats to the top of the head part with a per-species offset and tilt checked in a lineup, and scale them to the head. Then give each species one silhouette feature (long ears, a tail, a spiky back, a stalk) so they read in shadow.",
+   "done_when": "tools/lineup.jl front and side shots of every species with its outfit show no hat or crown overlapping an eye or the snout, and a black-silhouette version of the lineup lets you tell all 5 species apart."
+  },
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "Follow camera: no face filling the frame, no bush or passer-by in front",
+   "todo": 239,
+   "what": "The follow view sat so close to Gloop that its head filled 50% of the 3D view and the far side of the pier vanished. In the traced shot a crab's back fills the lower third in front of the fishing friend. Players see a face, not a moment.",
+   "where": "render.jl follow_view distance, lensclear.jl, camcut.jl",
+   "evidence": "reviews/p55/cam-1-follow.png, reviews/p55/traced-noon.png",
+   "suggestion": "Clamp the follow distance so the subject is 15-30% of the frame height, and let lensclear penalise any creature, not only the subject's own blockers, within the lower third. Frame with the rule of thirds and the activity (pier, sea) in view.",
+   "done_when": "10 follow screenshots 10 s apart: the subject's box is 15-35% of the view height in all of them, and no other creature or bush covers more than 10% of the view in front of it."
+  },
+  {
+   "severity": "medium",
+   "category": "props",
+   "title": "Vegetable patch: real cabbages, carrots in the ground, a tidy fence",
+   "todo": 251,
+   "what": "In Sprout's best traced still (the workshop) the patch in the foreground has smooth light-green egg blobs for cabbages, whole carrots lying on top of the soil, and a hydrangea growing inside the bed.",
+   "where": "plugins/garden.jl, site/img/workshop-traced.png",
+   "evidence": "site/img/workshop-traced.png (bottom third)",
+   "suggestion": "Use generated cabbage meshes (layered leaves) and show only carrot tops with leafy greens above the soil. Keep bushes out of the bed and give the rows an even spacing.",
+   "done_when": "A traced still of the patch shows leafy cabbages with visible leaf layers, carrots as orange tops in the soil, and no non-vegetable plant inside the fence."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Play presents yourself: pick a friend's favourite and hand it over",
+   "todo": 291,
+   "what": "Presents and invites are the best new interactions, but the player only watches them. When jumped in as Sprout, there is no way to fetch a present and give it, and no screen that shows who loves what.",
+   "where": "plugins/presents.jl, Jump in",
+   "evidence": "journal 2026-11-24 (06:11-06:31); the 'Things to try' panel mentions no presents",
+   "suggestion": "Jumped in, E at Sprout's crates picks up a present (starfish, shell, flower). Giving the right one to the friend who loves it gives a big reaction (jump, heart, it shows the present to others). The wrong one gets a polite 'oh... thanks'. Add a line to 'Things to try'.",
+   "done_when": "A W/A/D+E play test fetches a present and gives it to the friend who loves it, and the screenshot shows the heart and the friend's thanks. 'Things to try' names it."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Mini game rounds end too soon to build tension",
+   "todo": 266,
+   "what": "Berry race first plays end 10-4 or 8-6 with plenty of time left, and hide and seek had 102 s left at 2/4. All three games are comfortable wins with no comeback moment and no reason to play twice beyond a level number.",
+   "where": "plugins/berry_race.jl, hideseek.jl, firefly_catch.jl",
+   "evidence": "tests/shots/berry-wad.png (You 3, Critters 0 at 56 s), tests/shots/hideseek-found.png",
+   "suggestion": "Make the last part close: rivals speed up when they trail, the last hider moves once, the last firefly flies off. Show a best-time line on the end card so there is a target for round two.",
+   "done_when": "In 5 first-play berry races the final margin is at most 3 berries in at least 3, and the end card shows the best result to beat."
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "title": "Fireflies glow by day and the dusk clouds are hard blobs",
+   "todo": null,
+   "what": "Firefly catch at 11:30 shows the 'fireflies' as plain white puffs beside Sprout: nothing glows in daylight, so the game's name does not read. At 19:25 the clouds are two flat beige blobs with hard rims and the rain falls on a bright sunset sky.",
+   "where": "plugins/firefly_catch.jl, plugins/clouds.jl",
+   "evidence": "tests/shots/firefly-wad.png, reviews/p55/dusk-orbit.png",
+   "suggestion": "By day, make the flies small golden bodies with a soft additive halo and a light trail. Or let firefly catch move the hour to dusk while it runs. Clouds: soft-edged puffs with a darker underside lit by the sun's colour, and grey them over during a shower.",
+   "done_when": "A screenshot during a noon firefly catch shows each fly with a visible glow halo, and a 19:25 orbit screenshot shows clouds with soft edges and a sunlit rim."
+  },
+  {
+   "severity": "low",
+   "category": "ui",
+   "title": "Thought bubble and name labels: keep them next to their creature",
+   "todo": 280,
+   "what": "Sprout's thought bubble sits over the middle of the overview and orbit views even when Sprout is tiny or off screen. In the traced shot the 'Sprout' label and bubble hang over a log while Sprout fishes elsewhere.",
+   "where": "builder.jl thought!, name labels",
+   "evidence": "media/progress/session-0055/overview.png, reviews/p55/dusk-orbit.png, reviews/p55/traced-noon.png",
+   "suggestion": "Shrink the bubble with distance and hide it in overview/orbit unless Sprout is the subject. Anchor labels to the head, and drop the label of a creature that is not visible.",
+   "done_when": "Overview and orbit screenshots have no thought bubble covering the island centre, and every label in 5 follow screenshots is within 0.5 m above its creature's head."
+  }
+ ],
+ "todos": [
+  {
+   "id": 5,
+   "action": "done",
+   "why": "site/index.html has 12 posts with anchors, Sprout's verdicts ('next time'), pictures, a voice and an RSS feed.xml. Traced pictures per post continue in #296."
+  },
+  {
+   "id": 304,
+   "action": "done",
+   "why": "invite_group now checks the old tuple length (presents.jl:443), and there are no invite_group errors in the logs after 06:19."
+  },
+  {
+   "id": 285,
+   "action": "done",
+   "why": "live 'views' rendered the s55 progress shots at 06:49 (746 ms), so the shader failure was transient."
+  },
+  {
+   "id": 291,
+   "action": "keep",
+   "why": "Sprout learns favourites and gives presents (journal 06:11). This review's finding extends it so the player can give presents too.",
+   "title": "Play presents yourself: pick a friend's favourite and hand it over"
+  },
+  {
+   "id": 175,
+   "action": "keep",
+   "why": "Night tracing in the live dashboard is untested since s34. Noon tracing worked today."
+  },
+  {
+   "id": 94,
+   "action": "keep",
+   "why": "The pier is still crowded: the crab walks into Hopscotch while it fishes (reviews/p55/traced-noon.png)."
+  },
+  {
+   "id": 160,
+   "action": "drop",
+   "why": "Merged into #239 (one camera clearance todo)."
+  },
+  {
+   "id": 184,
+   "action": "keep",
+   "why": "Goal 2: still only one film released."
+  },
+  {
+   "id": 224,
+   "action": "keep",
+   "why": "The orbit at dusk shows the same lime blob crowns with dark holes (reviews/p55/dusk-orbit.png)."
+  },
+  {
+   "id": 229,
+   "action": "keep",
+   "why": "Not done."
+  },
+  {
+   "id": 255,
+   "action": "keep",
+   "why": "Not measured as fixed."
+  },
+  {
+   "id": 258,
+   "action": "drop",
+   "why": "The firefly first-play test passed in this run, and the check message is now verbose. Reopen only when it fails."
+  },
+  {
+   "id": 265,
+   "action": "keep",
+   "why": "Tag is mentioned in 'Things to try' but is still not in the Mini game menu."
+  },
+  {
+   "id": 269,
+   "action": "keep",
+   "why": "A voice was chosen, but no film is narrated yet."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "The unstuck logic is still duplicated in builder.jl and garden.jl."
+  },
+  {
+   "id": 284,
+   "action": "keep",
+   "why": "Goal 3: the traced sunset is not fixed."
+  },
+  {
+   "id": 296,
+   "action": "keep",
+   "why": "site/img/workshop-traced.png exists and looks good, but index.html does not use it (0 references)."
+  },
+  {
+   "id": 252,
+   "action": "keep",
+   "why": "Goal 4: the sandbox dashboard still looks identical to the human's."
+  },
+  {
+   "id": 306,
+   "action": "keep",
+   "why": "A natural next step for goal 1."
+  }
+ ],
+ "engine": [
+  {
+   "what": "The RayMakie raster has no sky-coloured fill for shadows (the AmbientLight is ignored), so noon shadows are dark green-black and objects have no cool side. This is the root of the flat-noon lighting finding.",
+   "evidence": "CLAUDE.md s45 lesson; reviews/p55/cam-22-free.png vs site/img/workshop-traced.png"
+  },
+  {
+   "what": "A live path traced screenshot took ~4 min end to end (enable, 40 s settle, screenshot, disable) while the game kept 30 fps. Switching tracing on or off is slow to settle.",
+   "evidence": "run r7: 3m49s"
+  }
+ ],
+ "process": "Since s52 the author put the work into goals 1 and 4, and it shows: the workbench, tool rack and hammering are a real place where Sprout works, and presents, invites and walking home together are the first creature-to-creature play a viewer would want to show someone. The journal is honest and gives each wish a voice. But for the fourth review running, the s49/s52 high findings that a player sees in every frame (flat noon light #237, blob silhouettes and clipping hats #236, camera framing #239) got no visible progress, while new corners keep being added. Goal 1: strong progress. Goal 2: stalled, one film released and the dance film open since s44. Goal 3: dusk and night are fine, noon raster and traced sunset are weak. Goal 4: the best progress (workshop, blog with 12 posts and RSS, voice, thought bubble); the sandbox-as-workshop (#252) is still missing. Next session: spend the first half on the noon raster lighting in RayMakie and the outfit and hat anchoring, with before/after shots from the eye-level camera, before any new place.",
+ "addressed": true,
+ "agent_note": "s56: hats off faces (#236 part), follow camera distance/actors/faces (#239 part), fireflies glow at noon and soft 19:25 clouds (done). Lighting (#237), patch vegetables (#251), player presents and mini game margins stay as open todos."
+}

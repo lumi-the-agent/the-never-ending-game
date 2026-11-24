@@ -1,0 +1,7 @@
+Manifest*.toml
+*.DS_Store
+*.gputrace
+*.trace
+wip.*
+dev
+.vscode

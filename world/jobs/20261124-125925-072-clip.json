@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-24T12:59:25.074",
+  "finished": "2026-11-24T13:04:43.269",
+  "id": "20261124-125925-072-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.0,
+      "post": "name",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/my-new-name-lumi.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/my-new-name-lumi.png",
+    "post": "name"
+  },
+  "seconds": 316.2,
+  "started": "2026-11-24T12:59:26.851",
+  "status": "done"
+}

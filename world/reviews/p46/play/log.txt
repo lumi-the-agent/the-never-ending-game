@@ -1,0 +1,112 @@
+shot firefly-0start
+firefly start card: Firefly catch
+Catch all 8 glowing fireflies in 60 seconds.
+Follow the light beams. Fireflies drift away when you come close!
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot firefly-run1
+firefly t=7.0 hud='Fireflies 2/8    54 s left    nearest 2 m ahead' at Float32[4.8, 2.8] yaw -0.05 act walk near Tuple{Symbol, Float32}[(:tree, 3.32), (:tree, 1.36), (:tree, 2.92), (:bush, 2.3), (:rock, 2.51), (:rock, 3.03)] crit Tuple{String, Float32}[]
+shot firefly-run2
+firefly t=12.0 hud='Fireflies 3/8    48 s left    nearest 4 m ahead' at Float32[7.9, -1.3] yaw -1.37 act walk near Tuple{Symbol, Float32}[(:tree, 3.03), (:tree, 2.72), (:rock, 3.35), (:rock, 2.21)] crit Tuple{String, Float32}[]
+shot firefly-run3
+firefly t=19.0 hud='Fireflies 4/8    42 s left    nearest 2 m ahead' at Float32[9.7, -7.1] yaw -1.81 act walk near Tuple{Symbol, Float32}[(:rock, 2.17), (:rock, 2.02)] crit Tuple{String, Float32}[("Wibbles", 1.5)]
+shot firefly-run4
+firefly t=24.0 hud='Fireflies 5/8    37 s left    nearest 16 m ahead' at Float32[11.6, -4.4] yaw 1.27 act walk near Tuple{Symbol, Float32}[] crit Tuple{String, Float32}[]
+shot firefly-run5
+firefly t=30.0 hud='Fireflies 5/8    31 s left    nearest 9 m ahead' at Float32[12.9, 1.8] yaw 1.49 act walk near Tuple{Symbol, Float32}[(:bush, 0.97), (:bush, 2.96), (:rock, 1.48)] crit Tuple{String, Float32}[]
+shot firefly-run6
+firefly t=36.0 hud='Fireflies 5/8    25 s left    nearest 2 m ahead' at Float32[14.0, 8.3] yaw 1.49 act walk near Tuple{Symbol, Float32}[(:tree, 3.49), (:tree, 3.14), (:tree, 3.7)] crit Tuple{String, Float32}[]
+shot firefly-run7
+firefly t=42.0 hud='Fireflies 6/8    19 s left    nearest 19 m ahead' at Float32[11.3, 11.4] yaw 3.03 act walk near Tuple{Symbol, Float32}[(:tree, 0.75)] crit Tuple{String, Float32}[]
+shot firefly-run8
+firefly t=48.0 hud='Fireflies 6/8    13 s left    nearest 13 m ahead' at Float32[5.1, 13.0] yaw 3.03 act walk near Tuple{Symbol, Float32}[(:tree, 1.82), (:tree, 2.65), (:tree, 3.51), (:tree, 2.7), (:rock, 1.68), (:rock, 3.31)] crit Tuple{String, Float32}[]
+shot firefly-run9
+firefly t=55.0 hud='Fireflies 6/8     8 s left    nearest 7 m ahead' at Float32[-1.0, 14.6] yaw 3.03 act walk near Tuple{Symbol, Float32}[(:rock, 2.45)] crit Tuple{String, Float32}[]
+shot firefly-run10
+firefly t=60.0 hud='Fireflies 6/8     2 s left    nearest 1 m ahead' at Float32[-6.8, 15.9] yaw 2.81 act walk near Tuple{Symbol, Float32}[(:tree, 1.51), (:tree, 3.08), (:tree, 3.05), (:tree, 2.33), (:tree, 2.32), (:tree, 1.93), (:rock, 2.75)] crit Tuple{String, Float32}[("Truffle", 1.9)]
+firefly after 61.0 s: score 6 state playing hud 'Fireflies 6/8     2 s left    nearest 1 m ahead'
+shot firefly-9end
+firefly end card: Time's up! You caught 7 of 8.
+Tip: Shift runs, fireflies drift away from you
+Your 7 fireflies fly to the lantern by the cottage (18 there now).
+
+Press R to play again
+shot firefly-replay
+after R: Firefly catch
+Catch all 8 glowing fireflies in 60 seconds.
+Follow the light beams. Fireflies drift away when you come close!
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot berry-0start
+berry start card: Berry race  ·  Level 4: the critters hurry sooner!
+Ripe berries hang on the bushes,
+and Marshmallow, Pinchy and Cumulus want them too!
+Pick more than the critters in 60 seconds:
+walk into a bush to shake its berries loose.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot berry-run1
+berry t=6.0 hud='You 5  ·  Critters 1  ·  54 s  ·  berry 5 m ahead' at Float32[7.8, 2.8] yaw -0.8 act run near Tuple{Symbol, Float32}[(:tree, 0.32), (:tree, 3.67), (:bush, 3.17), (:bush, 1.24), (:rock, 2.96), (:rock, 2.86), (:rock, 1.09)] crit Tuple{String, Float32}[]
+shot berry-run2
+berry t=13.0 hud='You 6  ·  Critters 3  ·  48 s  ·  berry 16 m ahead' at Float32[1.1, -1.9] yaw 3.07 act run near Tuple{Symbol, Float32}[(:tree, 3.54), (:tree, 2.78), (:tree, 3.53), (:bush, 3.01)] crit Tuple{String, Float32}[]
+shot berry-run3
+berry t=18.0 hud='You 6  ·  Critters 7  ·  42 s  ·  berry 3 m ahead' at Float32[-12.0, -2.6] yaw 3.07 act run near Tuple{Symbol, Float32}[(:bush, 3.04), (:rock, 2.49)] crit Tuple{String, Float32}[]
+berry after 20.0 s: you 7 critters [3, 1, 3] state over hud 'A tie: 7 each'
+shot berry-9end
+berry end card: A tie, 7 berries each!
+Tip: hold Shift to run,
+go for berries the critters are not after
+Your best: 10 berries
+Your 7 berries go to the basket by the cottage
+(58 in it now).
+
+Press R to play again
+shot berry-replay
+after R: Berry race  ·  Level 4: the critters hurry sooner!
+Ripe berries hang on the bushes,
+and Hopscotch, Wibbles and Marshmallow want them too!
+Pick more than the critters in 60 seconds:
+walk into a bush to shake its berries loose.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot hideseek-0start
+hideseek start card: Hide and seek  ·  Level 3
+Your friends hid behind trees and bushes while you counted to ten!
+Watch for giggles: a little note pops up over a hiding friend.
+Walk up close to find them. Find all 4 in 80 seconds.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+shot hideseek-run1
+hideseek t=6.0 hud='Found 1/4     74 s left    a giggle 15 m behind you' at Float32[1.8, 4.7] yaw 1.09 act walk near Tuple{Symbol, Float32}[(:tree, 2.13), (:bush, -0.07), (:bush, 1.93), (:rock, 3.25)] crit Tuple{String, Float32}[("Hopscotch", 1.1)]
+shot hideseek-run2
+hideseek t=12.0 hud='Found 1/4     68 s left    a giggle 10 m ahead' at Float32[-2.3, 1.9] yaw -2.11 act walk near Tuple{Symbol, Float32}[(:bush, 2.16), (:rock, 1.26)] crit Tuple{String, Float32}[]
+shot hideseek-run3
+hideseek t=18.0 hud='Found 1/4     62 s left    a giggle 4 m ahead' at Float32[-5.9, -3.5] yaw -2.33 act walk near Tuple{Symbol, Float32}[(:tree, 3.44), (:bush, 1.7), (:rock, 2.54)] crit Tuple{String, Float32}[]
+shot hideseek-run4
+hideseek t=24.0 hud='Found 2/4     57 s left    a giggle 3 m ahead' at Float32[-5.1, -9.0] yaw -1.45 act walk near Tuple{Symbol, Float32}[(:tree, 2.89), (:tree, 3.28), (:tree, 1.6), (:bush, 3.08), (:bush, 3.15), (:rock, 3.07), (:rock, 2.24), (:rock, 3.47), (:rock, 3.18)] crit Tuple{String, Float32}[]
+shot hideseek-run5
+hideseek t=30.0 hud='Found 3/4     51 s left    a giggle 15 m ahead' at Float32[-0.7, -5.3] yaw 0.75 act walk near Tuple{Symbol, Float32}[(:tree, 1.49), (:tree, 1.22), (:tree, 2.56), (:tree, 0.22), (:bush, 0.8), (:bush, 0.16), (:bush, 1.63)] crit Tuple{String, Float32}[]
+shot hideseek-run6
+hideseek t=36.0 hud='Found 3/4     46 s left    a giggle 9 m ahead' at Float32[3.8, -1.0] yaw 0.75 act walk near Tuple{Symbol, Float32}[(:tree, 1.76), (:tree, 1.0), (:bush, 3.25)] crit Tuple{String, Float32}[]
+hideseek after 42.0 s: found 4/4 state over hud 'Found everyone!'
+shot hideseek-9after
+shot jumpin-0
+jump in: walking to Cumulus
+shot jumpin-wave1
+after wave 1: (:answer, :wave)
+shot jumpin-wave2
+after wave 2: (:follow, :walk)
+shot jumpin-walk-run1
+shot jumpin-walk-run2
+shot jumpin-space
+after walk+space: (:follow, :walk) followers?

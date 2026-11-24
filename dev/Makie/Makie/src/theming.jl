@@ -1,0 +1,414 @@
+#=
+Conservative 7-color palette from Points of view: Color blindness, Bang Wong - Nature Methods
+https://www.nature.com/articles/nmeth.1618?WT.ec_id=NMETH-201106
+=#
+function wong_colors(alpha = 1.0)
+    colors = [
+        RGB(0 / 255, 114 / 255, 178 / 255), # blue
+        RGB(230 / 255, 159 / 255, 0 / 255), # orange
+        RGB(0 / 255, 158 / 255, 115 / 255), # green
+        RGB(204 / 255, 121 / 255, 167 / 255), # reddish purple
+        RGB(86 / 255, 180 / 255, 233 / 255), # sky blue
+        RGB(213 / 255, 94 / 255, 0 / 255), # vermilion
+        RGB(240 / 255, 228 / 255, 66 / 255), # yellow
+    ]
+    return RGBAf.(colors, alpha)
+end
+
+function generate_default_palette(backgroundcolor = :white)
+    bgc = to_color(backgroundcolor)
+    return Attributes(
+        color = wong_colors(1),
+        patchcolor = map(c -> lerp(bgc, c, 0.8f0), wong_colors(1)),
+        marker = [:circle, :utriangle, :cross, :rect, :diamond, :dtriangle, :pentagon, :xcross],
+        linestyle = [nothing, :dash, :dot, :dashdot, :dashdotdot],
+        side = [:left, :right]
+    )
+end
+
+const DEFAULT_PALETTES = generate_default_palette()
+
+const DEFAULT_ACCENT_COLOR = RGBf((79, 122, 214) ./ 255...)
+
+# Rec. 709 / sRGB luminance coefficients.
+_relative_luminance(c) = 0.2126f0 * red(c) + 0.7152f0 * green(c) + 0.0722f0 * blue(c)
+
+"""
+    derive_colors(; accent = Makie.DEFAULT_ACCENT_COLOR,
+                    gray = automatic,
+                    background = :white)
+
+Derive a complete set of UI role colors from a small set of user inputs. The
+result is a `NamedTuple` of nine `RGBf` values that Block defaults can pull
+from via the theme's nested `colors` block.
+
+Inputs:
+- `accent`: primary accent color used for active, checked, and focused states.
+- `gray`: the "contrast pole" mixed with `background` to produce neutrals.
+  `automatic` picks pure black for light backgrounds and pure white for dark
+  ones. Pass a tinted color (e.g. a slightly warm dark) to bias all neutrals
+  toward that hue.
+- `background`: the canvas background. Its luminance also selects the default
+  contrast pole when `gray = automatic`.
+
+Returns roles: `background`, `surface`, `surface_subtle`, `border`, `text`,
+`text_muted`, `text_on_accent`, `accent`, `accent_subtle`. State conventions
+across Blocks: idle uses `surface`, hover uses `accent_subtle`, and
+active/checked/focused uses `accent`.
+
+Mixing happens in Oklab so equal weights between `background` and `gray`/
+`accent` give perceptually-even steps. The weights are picked to give a
+familiar light-mode appearance (≈92% surface, ≈74% border, ≈50% muted text)
+while remaining well-balanced when `gray` or `background` is tinted.
+"""
+function derive_colors(;
+        accent = DEFAULT_ACCENT_COLOR,
+        gray = automatic,
+        background = :white,
+    )
+    bg = RGBf(to_color(background))
+    a = RGBf(to_color(accent))
+    auto_pole = _relative_luminance(bg) >= 0.5f0 ? RGBf(0, 0, 0) : RGBf(1, 1, 1)
+    g = RGBf(to_color(default_automatic(gray, auto_pole)))
+
+    # Text on an accent fill must contrast with the accent itself, not with the
+    # page background — pick by accent luminance regardless of `gray`.
+    text_on_accent = _relative_luminance(a) >= 0.5f0 ? RGBf(0, 0, 0) : RGBf(1, 1, 1)
+
+    return (
+        background = bg,
+        surface = lerp_oklab(bg, g, 0.06),
+        surface_subtle = lerp_oklab(bg, g, 0.03),
+        border = lerp_oklab(bg, g, 0.2),
+        text = g,
+        text_muted = lerp_oklab(bg, g, 0.4),
+        text_on_accent = text_on_accent,
+        accent = a,
+        accent_subtle = lerp_oklab(bg, a, 0.45),
+    )
+end
+
+const DEFAULT_COLORS = derive_colors()
+
+const MAKIE_DEFAULT_THEME = Attributes(
+    palette = DEFAULT_PALETTES,
+    font = :regular,
+    fonts = Attributes(
+        regular = "TeX Gyre Heros Makie",
+        bold = "TeX Gyre Heros Makie Bold",
+        italic = "TeX Gyre Heros Makie Italic",
+        bold_italic = "TeX Gyre Heros Makie Bold Italic",
+    ),
+    colors = Attributes(DEFAULT_COLORS),
+    fontsize = 14,
+    textcolor = :black,
+    text_handler = nothing,
+    padding = Vec3f(0.05),
+    figure_padding = 16,
+    rowgap = 18,
+    colgap = 18,
+    backgroundcolor = :white,
+    colormap = :viridis,
+    marker = :circle,
+    markersize = 9,
+    markercolor = :black,
+    markerstrokecolor = :black,
+    markerstrokewidth = 0,
+    markerfont = "TeX Gyre Heros Makie",
+    linecolor = :black,
+    linewidth = 1.5,
+    linestyle = nothing,
+    linecap = :butt,
+    joinstyle = :miter,
+    miter_limit = pi / 3,
+    patchcolor = RGBf(0.4, 0.4, 0.4),
+    patchstrokecolor = :black,
+    patchstrokewidth = 0,
+    size = (600, 450), # 4/3 aspect ratio
+    visible = true,
+    Axis = Attributes(),
+    Axis3 = Attributes(),
+    Figure = Attributes(),
+    legend = Attributes(),
+    axis_type = automatic,
+    camera = automatic,
+    limits = Observable{Any}(automatic),
+    SSAO = Attributes(
+        # enable = false,
+        bias = 0.025f0,       # z threshold for occlusion
+        radius = 0.5f0,       # range of sample positions (in world space)
+        blur = Int32(2),      # A (2blur+1) by (2blur+1) range is used for blurring
+        # N_samples = 64,       # number of samples (requires shader reload)
+    ),
+    inspectable = true,
+    clip_planes = Observable(Plane3f[]),
+
+    # Vec is equivalent to 36° right/east, 39° up/north from camera position
+    # The order here is Vec3f(right of, up from, towards) viewer/camera
+    light_direction = Vec3f(-0.45679495, -0.6293204, -0.6287243),
+    camera_relative_light = true, # Only applies to default DirectionalLight
+    light_color = RGBf(0.5, 0.5, 0.5),
+    ambient = RGBf(0.45, 0.45, 0.45),
+
+    # Note: this can be set too
+    # lights = AbstractLight[
+    #     AmbientLight(RGBf(0.55, 0.55, 0.55)),
+    #     DirectionalLight(RGBf(0.8, 0.8, 0.8), Vec3f(2/3, 2/3, 1/3))
+    # ],
+
+    CairoMakie = Attributes(
+        px_per_unit = 2.0,
+        pt_per_unit = 0.75,
+        antialias = :best,
+        visible = true,
+        start_renderloop = false,
+        pdf_version = nothing
+    ), GLMakie = Attributes(
+        # Renderloop
+        renderloop = automatic,
+        pause_renderloop = false,
+        vsync = false,
+        render_on_demand = true,
+        framerate = 30.0,
+        px_per_unit = automatic,
+        scalefactor = automatic,
+
+        # GLFW window attributes
+        float = false,
+        focus_on_show = false,
+        decorated = true,
+        title = "Makie",
+        fullscreen = false,
+        debugging = false,
+        monitor = nothing,
+        visible = true,
+
+        # Shader constants & Postproccessor
+        oit = true,
+        fxaa = true,
+        ssao = false,
+        render_pipeline = automatic,
+        # This adjusts a factor in the rendering shaders for order independent
+        # transparency. This should be the same for all of them (within one rendering
+        # pipeline) otherwise depth "order" will be broken.
+        transparency_weight_scale = 1000.0f0,
+        # maximum number of lights with shading = MultiLightShading
+        max_lights = 64,
+        max_light_parameters = 5 * 64
+    ), WGLMakie = Attributes(
+        framerate = 30.0,
+        render_on_demand = true,
+        resize_to = nothing,
+        # DEPRECATED in favor of resize_to
+        # still needs to be here to gracefully deprecate it
+        resize_to_body = nothing,
+        px_per_unit = automatic,
+        scalefactor = automatic,
+        use_html_widgets = false,
+        spinner = automatic
+    ),
+
+    RPRMakie = Attributes(
+        iterations = 200,
+        resource = automatic,
+        plugin = automatic,
+        max_recursion = 10
+    ),
+
+    RayMakie = Attributes(
+        samples = nothing,   # samples per finished frame; nothing → Hikari.VolPath's default
+        # The path tracer's settings. `automatic` keeps Hikari.VolPath's own default.
+        max_depth = automatic,
+        hw_accel = true,     # hardware ray tracing where the device has it
+        regularize = automatic,
+        russian_roulette_depth = automatic,
+        max_component_value = automatic,
+        sensor = automatic,  # a Hikari.PixelSensor
+        filter = automatic,  # a Hikari pixel filter, e.g. Hikari.MitchellFilter()
+        exposure = 1.0f0,
+        tonemap = :aces,
+        gamma = 2.2f0,
+        device = automatic,  # a Mantle device or backend; automatic → Mantle.defaultbackend()
+        denoise = false,     # Enable à-trous wavelet denoising
+        denoise_config = nothing,  # DenoiseConfig(iterations=5, sigma_color=4.0, ...)
+        visible = true,      # Open a window with interactive render loop on display()
+        title = "RayMakie",  # Window title
+        vsync = true,        # V-sync for window rendering
+        # Let samples build up across reads instead of restarting each one —
+        # what a path-traced viewport does. `colorbuffer`'s `clear` defaults to
+        # the negation of this, so a backend-generic caller like
+        # `recordframe!` converges while the camera stands still.
+        accumulate = false,
+        # Draw raytraceable plots through the raster path instead. Same scene,
+        # same camera, same lights — only the path changes.
+        rasterize = false,
+        # FXAA over the raster path, for plots with `fxaa = true`, as in GLMakie.
+        fxaa = true,
+        # The raster path's shadow map for the brightest directional light.
+        shadows = true,
+        shadow_resolution = 2048,
+        shadow_distance = 40.0f0,
+        # Ambient occlusion on the raster path: directions (0 = off), map size, reach.
+        ambient_occlusion = 0,
+        ao_resolution = 512,
+        ao_distance = 12.0f0
+    )
+)
+
+const CURRENT_DEFAULT_THEME = deepcopy(MAKIE_DEFAULT_THEME)
+const THEME_LOCK = Base.ReentrantLock()
+
+value_or_obs_deepcopy(o::Observable{T}) where {T} = Observable{T}(o[])
+value_or_obs_deepcopy(x) = x
+
+"""
+    merge_theme!(target::Attributes, source::Attributes[; deepcopy_observables = false])
+
+Merges two themes recursively.
+
+Any attributes already set in `target` are preserved. Note that this is different
+from `Base.merge!(target, source)` which would overwrite them.
+
+Nested attributes are placed in a new `Attributes` container to avoid changes in
+`target` affecting `source`.
+
+Observable attributes are treated as values by default. This means that
+observables are added to `target` as is, and updating them will affect the same
+observable in source. With `deepcopy_observables = false` a new Observable with
+the same content is created, so that this connection is severed.
+"""
+function merge_theme!(target::Attributes, source::Attributes; deepcopy_observables = false)
+    dict = attributes(target)
+    for (key, value) in source
+        if haskey(dict, key)
+            # merge nested theme
+            if dict[key] isa Attributes && value isa Attributes
+                merge_theme!(dict[key], value; deepcopy_observables)
+            end
+        else
+            if value isa Attributes
+                # different Attributes object so modifying target doesn't affect source
+                dict[key] = merge_theme!(Attributes(), value; deepcopy_observables)
+            else
+                dict[key] = deepcopy_observables ? value_or_obs_deepcopy(value) : value
+            end
+        end
+    end
+    return target
+end
+
+function fast_theme_copy(attributes; deepcopy_observables = true)
+    return merge_theme!(Attributes(), attributes; deepcopy_observables)
+end
+
+current_default_theme() = CURRENT_DEFAULT_THEME
+
+"""
+    set_theme!(theme; kwargs...)
+
+Set the global default theme to `theme` and add / override any attributes given
+as keyword arguments.
+"""
+function set_theme!(new_theme = Attributes(); kwargs...)
+    lock(THEME_LOCK) do
+        empty!(CURRENT_DEFAULT_THEME)
+        # Globally defined themes should not be changed by changing anything in
+        # a scene.theme, so they should deepcopy Observables. The passed theme
+        # might be a globally define done, MAKIE_DEFAULT_THEME is one.
+        # TODO: Should we do `map(identity, obs)` instead of `Observable(obs[])`
+        # so that updates can still pass down? Would `off.(revserse(obs.inputs))`
+        # in empty!(CURRENT_DEFAULT_THEME) be enough to clean this up?
+        resolved_theme = merge_theme!(
+            fast_theme_copy(new_theme, deepcopy_observables = true),
+            MAKIE_DEFAULT_THEME, deepcopy_observables = true
+        )
+        # Observables from kwargs should be reused as is, so updating those
+        # Observables can affect the current theme.
+        resolved_theme = mergeleft!(Theme(kwargs), resolved_theme)
+        merge!(CURRENT_DEFAULT_THEME, resolved_theme)
+    end
+    return
+end
+
+"""
+    with_theme(f, theme = Theme(); kwargs...)
+
+Calls `f` with `theme` temporarily activated. Attributes in `theme`
+can be overridden or extended with `kwargs`. The previous theme is always
+restored afterwards, no matter if `f` succeeds or fails.
+
+Example:
+
+```julia
+my_theme = Theme(size = (500, 500), color = :red)
+with_theme(my_theme, color = :blue, linestyle = :dashed) do
+    scatter(randn(100, 2))
+end
+```
+"""
+function with_theme(f, theme = Theme(); kwargs...)
+    return lock(THEME_LOCK) do
+        previous_theme = fast_theme_copy(CURRENT_DEFAULT_THEME)
+        try
+            set_theme!(theme; kwargs...)
+            f()
+        catch e
+            rethrow(e)
+        finally
+            set_theme!(previous_theme)
+        end
+    end
+end
+
+theme(::Nothing, key::Symbol; default = nothing) = theme(key; default)
+theme(::Nothing) = CURRENT_DEFAULT_THEME
+theme(key::Symbol; default = nothing) = get(CURRENT_DEFAULT_THEME, key, default)
+
+"""
+    update_theme!(with_theme::Theme; kwargs...)
+
+Update the current theme incrementally. This means that only the keys given in `with_theme` or through keyword arguments are changed,
+the rest is left intact.
+Nested attributes are either also updated incrementally, or replaced if they are not attributes in the new theme.
+
+# Example
+To change the default colormap to `:greys`, you can pass that attribute as
+a keyword argument to `update_theme!` as demonstrated below.
+```julia
+update_theme!(colormap=:greys)
+```
+
+This can also be achieved by passing an object of types `Attributes` or `Theme`
+as the first and only positional argument:
+```julia
+update_theme!(Attributes(colormap=:greys))
+update_theme!(Theme(colormap=:greys))
+```
+"""
+function update_theme!(with_theme = Attributes(); kwargs...)
+    return lock(THEME_LOCK) do
+        new_theme = mergeleft!(with_theme, Attributes(kwargs))
+        _update_attrs!(CURRENT_DEFAULT_THEME, new_theme)
+        return
+    end
+end
+
+function _update_attrs!(attrs1, attrs2)
+    for (key, value) in attrs2
+        _update_key!(attrs1, key, value)
+    end
+    return
+end
+
+function _update_key!(theme, key::Symbol, content)
+    return theme[key] = content
+end
+
+function _update_key!(theme, key::Symbol, content::Attributes)
+    if haskey(theme, key) && theme[key] isa Attributes
+        _update_attrs!(theme[key], content)
+    else
+        theme[key] = content
+    end
+    return theme
+end

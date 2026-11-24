@@ -1,0 +1,874 @@
+# For things that aren't as plot related
+
+@reference_test "picking" begin
+    scene = Scene(size = (230, 370))
+    campixel!(scene)
+
+    sc1 = scatter!(scene, [20, NaN, 20], [20, NaN, 50], marker = Rect, markersize = 20)
+    sc2 = scatter!(scene, [50, 50, 20, 50], [20, 50, 80, 80], marker = Circle, markersize = 20, color = [:red, :red, :transparent, :red])
+    ms = meshscatter!(scene, [20, NaN, 50], [110, NaN, 110], markersize = 10)
+    l1 = lines!(scene, [20, 50, 50, 20, 20], [140, 140, 170, 170, 140], linewidth = 10)
+    l2 = lines!(scene, [20, 50, NaN, 20, 50], [200, 200, NaN, 230, 230], linewidth = 20, linecap = :round)
+    ls = linesegments!(scene, [20, 50, NaN, NaN, 20, 50], [260, 260, NaN, NaN, 290, 290], linewidth = 20, linecap = :square)
+    tp = text!(scene, Point2f[(15, 320), (NaN, NaN), (15, 350)], text = ["█ ●", "hi", "●"], fontsize = 20, align = (:left, :center))
+    gp = tp.plots[1]
+
+    i = image!(scene, 80 .. 140, 20 .. 50, to_color.([:red :blue; :green :orange; :black :lightblue]), interpolate = false)
+    s = surface!(scene, 80 .. 140, 80 .. 110, [1 2; 3 4; 5 6], interpolate = false)
+    hm = heatmap!(scene, [80, 110, 140], [140, 170], [1 4; 2 5; 3 6])
+    # mesh coloring should match triangle placements
+    m = mesh!(scene, Point2f.([80, 80, 110, 110], [200, 230, 200, 230]), [1 2 3; 2 3 4], color = [1, 1, 1, 2])
+    vx = voxels!(scene, (65, 155), (245, 305), (-1, 1), reshape([1, 2, 3, 4, 5, 6], (3, 2, 1)), shading = NoShading)
+    vol = volume!(scene, 80 .. 110, 320 .. 350, -1 .. 1, reshape(1:8, 2, 2, 2))
+
+    # reversed axis
+    i2 = image!(scene, 210 .. 180, 20 .. 50, to_color.([:red :green; :blue :orange]))
+    s2 = surface!(scene, 210 .. 180, 80 .. 110, [1 2; 3 4], interpolate = false)
+    hm2 = heatmap!(scene, [210, 180], [140, 170], [1 2; 3 4])
+
+    # for ranged picks
+    m2 = mesh!(
+        scene,
+        Point2f[(190, 330), (200, 330), (190, 340), (200, 340)],
+        [1 2 4; 1 4 3]
+    )
+
+    scene # for easy reviewing of the plot
+
+    # render one frame to generate picking texture
+    colorbuffer(scene, px_per_unit = 2)
+
+    # verify that heatmap path is used for heatmaps
+    if Symbol(Makie.current_backend()) == :WGLMakie
+        # / 3 since its already flattened
+        @test (length(WGLMakie.create_shader(scene, hm)[:faces]) / 3) > 2
+        @test (length(WGLMakie.create_shader(scene, hm2)[:faces]) / 3) > 2
+    elseif Symbol(Makie.current_backend()) == :GLMakie
+        screen = scene.current_screens[1]
+        for plt in (hm, hm2)
+            robj = screen.cache[objectid(plt)]
+            shaders = first(values(robj.variants)).program.shader
+            names = [string(shader.name) for shader in shaders]
+            @test any(name -> endswith(name, "heatmap.vert"), names) && any(name -> endswith(name, "heatmap.frag"), names)
+        end
+    else
+        error("picking tests are only meant to run on GLMakie & WGLMakie")
+    end
+
+    # raw picking tests
+    @testset "pick(scene, point)" begin
+        @testset "scatter" begin
+            @test pick(scene, Point2f(20, 20)) == (sc1, 1)
+            @test pick(scene, Point2f(29, 59)) == (sc1, 3)
+            @test pick(scene, Point2f(57, 58)) == (nothing, 0) # maybe fragile
+            @test pick(scene, Point2f(57, 13)) == (sc2, 1) # maybe fragile
+            @test pick(scene, Point2f(20, 80)) == (nothing, 0)
+            @test pick(scene, Point2f(50, 80)) == (sc2, 4)
+        end
+
+        @testset "meshscatter" begin
+            @test pick(scene, (20, 110)) == (ms, 1)
+            @test pick(scene, (44, 117)) == (ms, 3)
+            @test pick(scene, (57, 117)) == (nothing, 0)
+        end
+
+        @testset "lines" begin
+            # Bit less precise since joints aren't strictly one segment or the other
+            @test pick(scene, 22, 140) == (l1, 2)
+            @test pick(scene, 48, 140) == (l1, 2)
+            @test pick(scene, 50, 142) == (l1, 3)
+            @test pick(scene, 50, 168) == (l1, 3)
+            @test pick(scene, 48, 170) == (l1, 4)
+            @test pick(scene, 22, 170) == (l1, 4)
+            @test pick(scene, 20, 168) == (l1, 5)
+            @test pick(scene, 20, 142) == (l1, 5)
+
+            # more precise checks around borders (these maybe off by a pixel due to AA)
+            @test pick(scene, 20, 200) == (l2, 2)
+            @test pick(scene, 30, 209) == (l2, 2)
+            @test pick(scene, 30, 211) == (nothing, 0)
+            @test pick(scene, 59, 200) == (l2, 2)
+            @test pick(scene, 61, 200) == (nothing, 0)
+            @test pick(scene, 57, 206) == (l2, 2)
+            @test pick(scene, 57, 208) == (nothing, 0)
+            @test pick(scene, 40, 230) == (l2, 5) # nan handling
+        end
+
+        @testset "linesegments" begin
+            @test pick(scene, 8, 260) == (nothing, 0) # off by a pixel due to AA
+            @test pick(scene, 10, 260) == (ls, 2)
+            @test pick(scene, 30, 269) == (ls, 2)
+            @test pick(scene, 30, 271) == (nothing, 0)
+            @test pick(scene, 59, 260) == (ls, 2)
+            @test pick(scene, 61, 260) == (nothing, 0)
+
+            @test pick(scene, 8, 290) == (nothing, 0) # off by a pixel due to AA
+            @test pick(scene, 10, 290) == (ls, 6)
+            @test pick(scene, 30, 280) == (ls, 6)
+            @test pick(scene, 30, 278) == (nothing, 0) # off by a pixel due to AA
+            @test pick(scene, 59, 290) == (ls, 6)
+            @test pick(scene, 61, 290) == (nothing, 0)
+        end
+
+        @testset "text" begin
+            @test pick(scene, 15, 320) == (gp, 1)
+            @test pick(scene, 13, 320) == (nothing, 0)
+            # edge checks, further outside due to AA
+            @test pick(scene, 20, 306) == (nothing, 0)
+            @test pick(scene, 20, 320) == (gp, 1)
+            @test pick(scene, 20, 333) == (nothing, 0)
+            # space is counted
+            @test pick(scene, 43, 320) == (gp, 3)
+            @test pick(scene, 48, 324) == (gp, 3)
+            @test pick(scene, 49, 326) == (nothing, 0)
+            # characters at nan position are counted
+            @test pick(scene, 20, 350) == (gp, 6)
+        end
+
+        @testset "image" begin
+            # outside border
+            for p in vcat(
+                    [(x, y) for x in (79, 141) for y in (21, 49)],
+                    [(x, y) for x in (81, 139) for y in (19, 51)]
+                )
+                @test pick(scene, p) == (nothing, 0)
+            end
+
+            # cell centered checks
+            @test pick(scene, 90, 30) == (i, 1)
+            @test pick(scene, 110, 30) == (i, 2)
+            @test pick(scene, 130, 30) == (i, 3)
+            @test pick(scene, 90, 40) == (i, 4)
+            @test pick(scene, 110, 40) == (i, 5)
+            @test pick(scene, 130, 40) == (i, 6)
+
+            # precise check (around cell intersection)
+            @test pick(scene, 100 - 1, 35 - 1) == (i, 1)
+            @test pick(scene, 100 + 1, 35 - 1) == (i, 2)
+            @test pick(scene, 100 - 1, 35 + 1) == (i, 4)
+            @test pick(scene, 100 + 1, 35 + 1) == (i, 5)
+
+            @test pick(scene, 120 - 1, 35 - 1) == (i, 2)
+            @test pick(scene, 120 + 1, 35 - 1) == (i, 3)
+            @test pick(scene, 120 - 1, 35 + 1) == (i, 5)
+            @test pick(scene, 120 + 1, 35 + 1) == (i, 6)
+
+            # reversed axis check
+            @test pick(scene, 200, 30) == (i2, 1)
+            @test pick(scene, 190, 30) == (i2, 2)
+            @test pick(scene, 200, 40) == (i2, 3)
+            @test pick(scene, 190, 40) == (i2, 4)
+        end
+
+        @testset "surface" begin
+            # outside border
+            for p in vcat(
+                    [(x, y) for x in (79, 141) for y in (81, 109)],
+                    [(x, y) for x in (81, 139) for y in (79, 111)]
+                )
+                @test pick(scene, p) == (nothing, 0)
+            end
+
+            # cell centered checks
+            @test pick(scene, 90, 90) == (s, 1)
+            @test pick(scene, 110, 90) == (s, 2)
+            @test pick(scene, 130, 90) == (s, 3)
+            @test pick(scene, 90, 100) == (s, 4)
+            @test pick(scene, 110, 100) == (s, 5)
+            @test pick(scene, 130, 100) == (s, 6)
+
+            # precise check (around cell intersection)
+            @test pick(scene, 95 - 1, 95 - 1) == (s, 1)
+            @test pick(scene, 95 + 1, 95 - 1) == (s, 2)
+            @test pick(scene, 95 - 1, 95 + 1) == (s, 4)
+            @test pick(scene, 95 + 1, 95 + 1) == (s, 5)
+
+            @test pick(scene, 125 - 1, 95 - 1) == (s, 2)
+            @test pick(scene, 125 + 1, 95 - 1) == (s, 3)
+            @test pick(scene, 125 - 1, 95 + 1) == (s, 5)
+            @test pick(scene, 125 + 1, 95 + 1) == (s, 6)
+
+            # reversed axis check
+            @test pick(scene, 200, 90) == (s2, 1)
+            @test pick(scene, 190, 90) == (s2, 2)
+            @test pick(scene, 200, 100) == (s2, 3)
+            @test pick(scene, 190, 100) == (s2, 4)
+        end
+
+        @testset "heatmap" begin
+            # outside border
+            for p in vcat(
+                    [(x, y) for x in (64, 156) for y in (126, 184)],
+                    [(x, y) for x in (66, 154) for y in (124, 186)]
+                )
+                @test pick(scene, p) == (nothing, 0)
+            end
+
+            # cell centered checks
+            @test pick(scene, 80, 140) == (hm, 1)
+            @test pick(scene, 110, 140) == (hm, 2)
+            @test pick(scene, 140, 140) == (hm, 3)
+            @test pick(scene, 80, 170) == (hm, 4)
+            @test pick(scene, 110, 170) == (hm, 5)
+            @test pick(scene, 140, 170) == (hm, 6)
+
+            # precise check (around cell intersection)
+            @test pick(scene, 94, 154) == (hm, 1)
+            @test pick(scene, 96, 154) == (hm, 2)
+            @test pick(scene, 94, 156) == (hm, 4)
+            @test pick(scene, 96, 156) == (hm, 5)
+
+            @test pick(scene, 124, 154) == (hm, 2)
+            @test pick(scene, 126, 154) == (hm, 3)
+            @test pick(scene, 124, 156) == (hm, 5)
+            @test pick(scene, 126, 156) == (hm, 6)
+
+            # reversed axis check
+            @test pick(scene, 210, 140) == (hm2, 1)
+            @test pick(scene, 180, 140) == (hm2, 2)
+            @test pick(scene, 210, 170) == (hm2, 3)
+            @test pick(scene, 180, 170) == (hm2, 4)
+        end
+
+        @testset "mesh" begin
+            @test pick(scene, 80, 200)[1] == m
+            @test pick(scene, 79, 200) == (nothing, 0)
+            @test pick(scene, 80, 199) == (nothing, 0)
+            @test pick(scene, 81, 201) == (m, 3)
+            @test pick(scene, 81, 225) == (m, 3)
+            @test pick(scene, 105, 201) == (m, 3)
+            @test pick(scene, 85, 229) == (m, 4)
+            @test pick(scene, 109, 205) == (m, 4)
+            @test pick(scene, 109, 229) == (m, 4)
+            @test pick(scene, 109, 229)[1] == m
+            @test pick(scene, 111, 230) == (nothing, 0)
+            @test pick(scene, 110, 231) == (nothing, 0)
+        end
+
+        @testset "voxel" begin
+            # outside border
+            for p in vcat(
+                    [(x, y) for x in (64, 156) for y in (246, 304)],
+                    [(x, y) for x in (66, 154) for y in (244, 306)]
+                )
+                @test pick(scene, p) == (nothing, 0)
+            end
+
+            # cell centered checks
+            @test pick(scene, 80, 260) == (vx, 1)
+            @test pick(scene, 110, 260) == (vx, 2)
+            @test pick(scene, 140, 260) == (vx, 3)
+            @test pick(scene, 80, 290) == (vx, 4)
+            @test pick(scene, 110, 290) == (vx, 5)
+            @test pick(scene, 140, 290) == (vx, 6)
+
+            # precise check (around cell intersection)
+            @test pick(scene, 94, 274) == (vx, 1)
+            @test pick(scene, 96, 274) == (vx, 2)
+            @test pick(scene, 94, 276) == (vx, 4)
+            @test pick(scene, 96, 276) == (vx, 5)
+
+            @test pick(scene, 124, 274) == (vx, 2)
+            @test pick(scene, 126, 274) == (vx, 3)
+            @test pick(scene, 124, 276) == (vx, 5)
+            @test pick(scene, 126, 276) == (vx, 6)
+        end
+
+        @testset "volume" begin
+            # volume doesn't produce indices because we can't resolve the depth of
+            # the pick
+            @test pick(scene, 80, 320)[1] == vol
+            @test pick(scene, 79, 320) == (nothing, 0)
+            @test pick(scene, 80, 319) == (nothing, 0)
+            @test pick(scene, 81, 321) == (vol, 0)
+            @test pick(scene, 81, 349) == (vol, 0)
+            @test pick(scene, 109, 321) == (vol, 0)
+            @test pick(scene, 109, 349) == (vol, 0)
+            @test pick(scene, 109, 349)[1] == vol
+            @test pick(scene, 111, 350) == (nothing, 0)
+            @test pick(scene, 110, 351) == (nothing, 0)
+        end
+    end
+
+
+    @testset "ranged pick/pick_sorted" begin
+        @testset "scatter" begin
+            @test pick(scene, Point2f(40, 60), 10) == (sc2, 2)
+        end
+        @testset "meshscatter" begin
+            @test pick(scene, (35, 117), 10) == (ms, 3)
+        end
+        @testset "lines" begin
+            @test pick(scene, 10, 160, 10) == (l1, 5)
+            @test pick(scene, 40, 218, 10) == (l2, 5)
+        end
+        @testset "linesegments" begin
+            @test pick(scene, 5, 280, 10) == (ls, 6)
+        end
+        @testset "text" begin
+            @test pick(scene, 32, 320, 10) == (gp, 1)
+            @test pick(scene, 35, 320, 10) == (gp, 3)
+        end
+        @testset "image" begin
+            @test pick(scene, 98, 15, 10) == (i, 1)
+            @test pick(scene, 102, 15, 10) == (i, 2)
+            @test pick(scene, 200, 15, 10) == (i2, 1)
+            @test pick(scene, 190, 15, 10) == (i2, 2)
+        end
+        @testset "surface" begin
+            @test pick(scene, 93, 75, 10) == (s, 1)
+            @test pick(scene, 97, 75, 10) == (s, 2)
+            @test pick(scene, 200, 75, 10) == (s2, 1)
+            @test pick(scene, 190, 75, 10) == (s2, 2)
+        end
+        @testset "heatmap" begin
+            @test pick(scene, 93, 120, 10) == (hm, 1)
+            @test pick(scene, 97, 120, 10) == (hm, 2)
+            @test pick(scene, 200, 120, 10) == (hm2, 1)
+            @test pick(scene, 190, 120, 10) == (hm2, 2)
+        end
+        @testset "mesh" begin
+            @test pick(scene, 115, 230, 10) == (m, 4)
+        end
+        @testset "voxel" begin
+            @test pick(scene, 93, 240, 10) == (vx, 1)
+            @test pick(scene, 97, 240, 10) == (vx, 2)
+        end
+        @testset "volume" begin
+            @test pick(scene, 75, 320, 10) == (vol, 0)
+        end
+        @testset "range" begin
+            # mesh!(scene, Rect2f(200, 330, 10, 10))
+            # verify borders
+            @test pick(scene, 189, 331) == (nothing, 0)
+            @test pick(scene, 191, 329) == (nothing, 0)
+            @test pick(scene, 191, 331) == (m2, 4)
+            @test pick(scene, 199, 339) == (m2, 4)
+            @test pick(scene, 201, 339) == (nothing, 0)
+            @test pick(scene, 199, 341) == (nothing, 0)
+
+            @testset "horizontal" begin
+                @test pick(scene, 170, 335, 19) == (nothing, 0)
+                @test pick(scene, 170, 335, 21) == (m2, 3)
+                @test pick(scene, 220, 335, 19) == (nothing, 0)
+                @test pick(scene, 220, 335, 21) == (m2, 4)
+            end
+
+            @testset "vertical" begin
+                @test pick(scene, 205, 310, 19) == (nothing, 0)
+                @test pick(scene, 205, 310, 21) == (m2, 4)
+                @test pick(scene, 205, 360, 19) == (nothing, 0)
+                @test pick(scene, 205, 360, 22) == (m2, 4) # off by one?
+            end
+            @testset "diagonals" begin
+                # 190, 330
+                @test pick(scene, 180, 320, 14) == (nothing, 0)
+                @test pick(scene, 180, 320, 15) == (m2, 4)
+                @test pick(scene, 180, 350, 14) == (nothing, 0)
+                @test pick(scene, 180, 350, 15) == (m2, 3)
+                @test pick(scene, 210, 320, 14) == (nothing, 0)
+                @test pick(scene, 210, 320, 15) == (m2, 4)
+                @test pick(scene, 210, 350, 14) == (nothing, 0)
+                @test pick(scene, 210, 350, 16) == (m2, 4) # off by one?
+            end
+        end
+    end
+
+    # pick_sorted
+    @testset "pick_sorted" begin
+        list = Makie.pick_sorted(scene, Vec2(100, 100), 50)
+        @test length(list) == 14
+        @test list[1] == (s, 5)
+        @test list[2] == (s, 2)
+        @test list[3] == (s, 4)
+        @test list[4] == (s, 1)
+        @test list[5] == (s, 6)
+        @test list[6] == (hm, 2)
+        @test list[7] == (s, 3)
+        @test list[8] == (hm, 1)
+        @test list[9] == (hm, 3)
+        @test list[10] == (ms, 3)
+        @test list[11] == (sc2, 4)
+        @test list[12] == (l1, 3)
+        @test list[13] == (l1, 2)
+        @test list[14] == (sc2, 2)
+    end
+
+    #=
+    For Verification
+    Note that the text only marks the index in the picking list. The position
+    that is closest (that pick_sorted used) is somewhere else in the marked
+    element. Check scene2 to see the pickable regions if unsure
+
+    list = Makie.pick_sorted(scene, Vec2(100, 100), 50)
+    ps = Point2f[]
+    for (p, idx) in list
+        if p isa Union{Surface, Heatmap}
+            data = Point2f.(p.converted[1][], collect(p.converted[2][])')
+            push!(ps, data[idx])
+        else
+            push!(ps, p.converted[1][][idx])
+        end
+    end
+    scatter!(scene, Vec2f(100, 100), color = :white, strokecolor = :black, strokewidth = 2, overdraw = true)
+    text!(
+        scene, ps, text = ["$i" for i in 1:14],
+        strokecolor = :white, strokewidth = 2,
+        align = (:center, :center), overdraw = true)
+    =#
+
+    # pick(scene, Rect)
+    # grab all indices and generate a plot for them (w/ fixed px_per_unit)
+    full_screen = last.(pick(scene, scene.viewport[]))
+
+    scene2 = Scene(size = 2.0 .* widths(scene.viewport[]))
+    campixel!(scene2)
+    image!(scene2, full_screen, colormap = :viridis)
+    scene2
+end
+
+@reference_test "Transformations and space" begin
+    transforms = [:automatic, :inherit, :inherit_transform_func, :inherit_model, :nothing]
+    spaces = [:data, :pixel, :relative, :clip]
+
+    t = Transformation(
+        x -> 2 * x,
+        scale = Vec3f(0.75, 2, 1),
+        rotation = qrotation(Vec3f(0, 0, 1), 0.3)
+    )
+
+    grid = vcat(
+        [Point2f(x, y) for x in -1:6 for y in (-1, 6)],
+        [Point2f(x, y) for y in -1:6 for x in (-1, 6)]
+    )
+
+    f = Figure(size = (450, 550))
+    for (i, transform) in enumerate(transforms)
+        Label(f[i, 0], [":automatic", ":inherit", "transform_func", "model", ":nothing"][i], rotation = pi / 2, tellheight = false)
+        for (j, space, scale) in zip(eachindex(spaces), spaces, [1, 20, 0.2, 0.2])
+            a = LScene(f[i, j], show_axis = false, scenekw = (camera = cam2d!, transformation = t))
+            linesegments!(a, grid, transformation = :nothing, color = :lightgray)
+            # text!(a, Point2f(6,6), text = "$space", align = (:right, :top), transformation = :nothing)
+            scatter!(
+                a,
+                [scale * Point2f(cos(x), sin(x)) for x in range(0.2, 1.3, length = 11)],
+                transformation = transform, space = space
+            )
+        end
+    end
+    for (j, space) in enumerate(spaces)
+        Label(f[0, j], ":space", tellwidth = false)
+    end
+
+    f
+end
+
+# otherwise positions of jittered points change
+Makie.RAINCLOUD_RNG[] = RNG.STABLE_RNG
+
+# helper function for collecting the state of each tooltip
+function collect_di_state!(states, di, attr_names)
+    tt = di.dynamic_tooltip
+    state = map(name -> getproperty(tt, name)[], attr_names)
+    push!(states, state)
+    return
+end
+
+# helper function for checking the state matches up
+function test_di_state(di, state, attr_names, i)
+    tt = di.dynamic_tooltip
+    for (name, value) in zip(attr_names, state)
+        if name === :positions
+            getproperty(tt, name)[] ≈ value || @info "Failed test $i with Attribute $name"
+            @test getproperty(tt, name)[] ≈ value rtol = 1.0e-4
+        else
+            getproperty(tt, name)[] == value || @info "Failed test $i with Attribute $name"
+            @test getproperty(tt, name)[] == value
+        end
+    end
+    return
+end
+
+@reference_test "DataInspector" begin
+    RNG.seed_rng!() # for local execution
+
+    attr_names = (:positions, :text, :visible, :placement, :model, :space)
+    states = [(Point{3, Float64}[[20.0, 20.0, 0.0]], "(20.000, 20.000)", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[90.0, 20.0, 0.0]], "(90.000, 20.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[20.0, 40.0, 0.0]], "(20.000, 40.000)", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[37.69230782985687, 28.46153825521469, 0.0]], "(37.692, 28.462)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[30.0, 60.0, 0.0]], "(30.000, 60.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[60.0, 50.0, 0.0]], "(60.000, 50.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[29.999998092651367, 100.0, 0.0]], "(30.000, 100.000)", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[90.0, 110.0, 3.25]], "(90.000, 110.000, 3.250)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[130.0, 20.0, 0.0]], "1.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[150.0, 90.0, 0.0]], "4.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[200.0, 20.0, 0.0]], "(200.000, 20.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[200.0, 45.0, 0.0]], "(200.000, 45.000)\n(0, 30.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[196.0, 72.0, 0.0]], "(196.000, 72.000, 0)\n(-48.000, -16.000, 0)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[200.0, 45.0, 0.0]], "(200.000, 45.000)\n(0, 30.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[196.0, 72.0, 0.0]], "(196.000, 72.000, 0)\n(-48.000, -16.000, 0)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[260.0, 30.0, 0.0]], "0.333", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[259.9999998410543, 93.3333331743876, 0.0]], "2.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[204.99997973442078, 107.49998986721039, 0.0]], "(205.000, 126.667)\n(205.000, 88.333)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[17.651653289794922, 153.07676696777344, 0.0]], "(17.652, 153.077)", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[66.0, 162.58578491210938, 0.0]], "1.414", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[90.0, 152.0, 0.0]], "(90.000, 152.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[4.367025852203369, 0.038466792553663254, 0.0]], "(4.367, 0.038467)", true, :above, [1.0 0.0 0.0 135.0; 0.0 700.0 0.0 140.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[160.0, 155.0, 0.0]], "±10.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[175.0, 155.0, 0.0]], "140.000 .. 170.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[209.99911499023438, 156.66641235351562, 0.0]], "16.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[237.49924101775025, 34.0, 0.0]], "(237.499, 34.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 140.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[264.99998212181765, 153.99999210000752, 0.0]], "13.000", true, :left, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[20.0, 175.00000029802322, 0.0]], "(20.000, 175.000)", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[0.6923919320106506, 209.0, 0.0]], "0.045761", true, :right, [70.0 0.0 0.0 -40.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[1.0285714864730835, 194.0, 0.0]], "(1.029, 194.000)", true, :above, [70.0 0.0 0.0 -40.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[1.130394812494225, 193.70112005725545, 0.0]], "(1.130, 193.701)", true, :above, [70.0 0.0 0.0 -40.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[60.0, 210.0, 0.0]], "(60.000, 210.000)", true, :below, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[55.50000011920929, 194.4999998807907, 0.0]], "(55.500, 194.500)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[76.5, 206.5, 0.0]], "(76.500, 206.500)", true, :below, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[101.00000001490116, 200.0, 0.0]], "(101.000, 200.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[130.0, 195.0, 0.0]], "(130.000, 195.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[155.0000043035159, 24.0, 0.0]], "(155.000, 24.000)", true, :below, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 190.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[185.0, 193.0, 0.0]], "50.500", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[0.6092928647994995, 193.0, 0.0]], "0.046985", true, :above, [20.0 0.0 0.0 190.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[1.3942478895187378, 208.0, 0.0]], "0.049843", true, :below, [20.0 0.0 0.0 190.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[240.0, 10.0, 0.0]], "(240.000, 10.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 190.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data)]
+
+    scene = Scene(camera = campixel!, size = (290, 230))
+
+    # bottom rect (roughly 0..290 x 0..140)
+
+    # primitives
+    scatter!(scene, Point2f(20), markersize = 30)
+    meshscatter!(scene, Point2f[(90, 20), (90, 60)], marker = Rect2f(-1, -1, 2, 2), markersize = 15)
+    lines!(scene, [10, 30, 50, 70], [40, 40, 10, 10], linewidth = 10)
+    linesegments!(scene, [10, 50, 60, 60], [60, 60, 70, 30], linewidth = 10)
+    mesh!(scene, Rect2f(10, 80, 40, 40))
+    surface!(scene, 60 .. 100, 80 .. 120, [1 2; 3 4])
+    heatmap!(scene, [120, 140, 160], [10, 30, 50], [1 2; 3 4])
+    image!(scene, 120 .. 160, 60 .. 100, [1 2; 3 4])
+
+    # barplot, arrows, contourf, volumeslices, band, spy,
+    barplot!(scene, [180, 200, 220], [40, 20, 60])
+    arrows2d!(scene, Point2f[(200, 30)], Vec2f[(0, 30)], shaftwidth = 4, tiplength = 15, tipwidth = 12)
+    arrows3d!(
+        scene, Point3f[(220, 80, 0)], Vec3f[(-48, -16, 0)],
+        shaftradius = 2.5, tiplength = 15, tipradius = 7, markerscale = 1.0
+    )
+    contourf!(scene, 240 .. 280, 10 .. 50, [1 2 1; 2 0 2; 1 2 1], levels = 3)
+    spy!(scene, 240 .. 280, 60 .. 100, [1 2 1; 2 0 2; 1 2 1])
+    band!(scene, [150, 180, 210, 240], [110, 80, 90, 110], [120, 110, 130, 120])
+
+    # lines!(scene, [0, 285, 285], [135, 135, 0])
+
+    # below top row
+    arc!(scene, Point2f(25, 140), 15, pi / 3, pi, linewidth = 10)
+    contour!(scene, 40:5:80, 140:5:180, [sqrt(x^2 + y^2) for x in -4:4, y in -4:4], levels = 3, linewidth = 5)
+    crossbar!(scene, [90, 105], [160, 160], [140, 145], [170, 165], width = 15)
+    p = density!(scene, 10 .* sin.(1:100))
+    translate!(p, 135, 140, 0)
+    scale!(p, 1, 700, 1)
+    errorbars!(scene, [160], [155], [10], linewidth = 5, whiskerwidth = 10)
+    rangebars!(scene, [175], [140], [170], linewidth = 5, whiskerwidth = 10)
+    hexbin!(scene, 200 .+ 10 .* sin.(1:100), 160 .+ 10 .* cos.(1:100), bins = 4)
+    p = hist!(scene, 230 .+ 10 .* sin.(1:100), bins = 4)
+    translate!(p, 0, 140, 0)
+    pie!(scene, 260, 160, [3, 5, 7, 11, 13], radius = 15, color = 1:5)
+    poly!(scene, [10, 30, 20], [170, 165, 180])
+
+    # top row
+    p = rainclouds!(scene, ones(100), 200 .+ 10 .* sin.(1:100))
+    translate!(p, -40, 0, 0)
+    scale!(p, 70, 1, 1)
+    scatterlines!(scene, [60, 50, 60], [190, 200, 210], linewidth = 3, markersize = 10)
+    series!(scene, [Point2f.([80, 70, 80], [190, 200, 210])], linewidth = 4)
+    stairs!(scene, [90, 100, 110], [190, 210, 200], linewidth = 4)
+    stem!(scene, [120, 130], [200, 210], offset = 190, stemwidth = 3, trunkwidth = 3, markersize = 10)
+    p = stephist!(scene, 150 .+ 10 .* sin.(1:70), bins = 4, linewidth = 4)
+    translate!(p, 0, 190, 0)
+    tricontourf!(scene, 180 .+ 15 .* sin.(1:100), 200 .+ 15 .* cos.(1:100), 1:100, levels = 3)
+    p = violin!(scene, ones(100), 200 .+ 10 .* sin.(range(0, 10, length = 100) .^ 2), side = ifelse.(1:100 .> 50, :left, :right))
+    translate!(p, 190, 0, 0)
+    scale!(p, 20, 1, 1)
+    v = p
+    p = waterfall!(scene, [230, 240], [25, -15])
+    translate!(p, 0, 190, 0)
+
+    # mouse positions for targeting each plot
+    mps = [
+        # 0..285 x 0..135 block
+        (20, 20), (90, 20), (20, 40), (40, 30), (30, 60), (55, 50), (30, 100),
+        (90, 110), (130, 20), (150, 90), (200, 10), (200, 35),
+        (217, 79), (200, 45), (181, 67), (260, 30), (260, 90), (205, 110),
+        # top-1 row
+        (17, 153), (67, 163), (90, 152), (139, 153), (160, 163), (175, 150), (210, 156),
+        (235, 145), (265, 154), (20, 175),
+        # top row
+        (17, 209), (32, 194), (39, 193), (61, 211), (56, 195), (76, 207), (101, 199),
+        (130, 195), (155, 214), (185, 193), (205, 193), (214, 208), (242, 208),
+    ]
+
+    # any plot with an indicator should get a refimage, everything else should
+    # just verify state
+    make_refimg = Bool[
+        # same blocks as above, not that that helps much
+        0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 1, 0, 1, # index 1 .. 18
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, # 1 per plot here, 19...28
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, # 29 .. 41
+    ]
+
+    e = events(scene)
+    # Prevent the hover event Channel getting closed
+    e.window_open[] = true
+    # blocking = true forces immediately resolution of DataInspector updates
+    di = Makie.DataInspector(
+        scene, offset = 5.0, fontsize = 12, outline_linewidth = 1,
+        textpadding = (2, 2, 2, 2),
+        blocking = true, no_tick_discard = true
+    )
+    # force indicator plots to be created for WGLMakie
+    Makie.get_indicator_plot(di, Lines)
+    Makie.get_indicator_plot(di, LineSegments)
+    Makie.get_indicator_plot(di, Scatter)
+    scene
+
+    st = Makie.Stepper(scene)
+
+    # record
+    for i in eachindex(mps)
+        mp = mps[i]
+
+        @test !di.dynamic_tooltip.visible[] # verify cleanup
+
+        wait_for_data_inspector(scene, di, true) do
+            e.mouseposition[] = mp
+        end
+
+        # collect_di_state!(states, di, attr_names)
+        test_di_state(di, states[i], attr_names, i)
+
+        if make_refimg[i]
+            Makie.step!(st)
+        else
+            # if this is false we skipped a plot that uses indicators
+            @test all(p -> !p.visible[], values(di.indicator_cache))
+        end
+
+        # remove tooltip so we don't select it
+        wait_for_data_inspector(scene, di, false) do
+            e.mouseposition[] = (1.0, 1.0)
+        end
+    end
+
+    st
+end
+
+@reference_test "DataInspector continued" begin
+    f = Figure(size = (450, 750))
+    col3d = f[1, 1]
+    data3d = reshape(sin.(1:1000), (10, 10, 10))
+    volumeslices(col3d[1, 1], 1:10, 1:10, 1:10, data3d)
+    voxels(col3d[2, 1], data3d)
+    contour3d(col3d[3, 1], 1:10, 1:10, reshape(10 .* sin.(1:100), (10, 10)), linewidth = 3)
+    wireframe(col3d[4, 1], Rect3d(0, 0, 0, 1, 1, 1))
+
+    col2d = f[1, 2]
+    x = sin.(1:10_000) .* sin.(0.1:0.1:1000)
+    y = sin.(2:2:20000) .* sin.(5:5:50000)
+    datashader(col2d[1, 1], Point2f.(x, y), async = false)
+    heatmap(col2d[2, 1], Resampler(reshape(sin.(1:1_000_000), (1000, 1000))))
+    ablines(col2d[3, 1], 0, 1.0)
+    hlines!(1)
+    vlines!(1)
+    hspan!(9, 10)
+    vspan!(9, 10)
+
+    colsize!(f.layout, 1, 125)
+
+    e = events(f)
+    e.window_open[] = true # Prevent the hover event Channel from getting closed
+
+    dis = []
+    for a in f.content
+        di = Makie.DataInspector(a, blocking = true, no_tick_discard = true)
+        # force indicator plots to be created for WGLMakie
+        Makie.get_indicator_plot(di, LineSegments)
+        Makie.get_indicator_plot(di, Lines)
+        Makie.get_indicator_plot(di, Scatter)
+        push!(dis, di)
+    end
+
+    mps = [
+        # 3D
+        (97.0, 658.0), (65.0, 634.0), (98.0, 471.0), (75.0, 314.0), (102.0, 140.0),
+        # 2D
+        (315.0, 632.0), (312.0, 387.0), (362.0, 226.0), (410.0, 146.0), (311.0, 134.0),
+        (210.0, 151.0), (305.0, 41.0),
+    ]
+
+    st = Makie.Stepper(f)
+
+    # record
+    for mp in mps
+        idx = findfirst(block -> mp in block.scene.viewport[], f.content)
+
+        wait_for_data_inspector(f, dis[idx], true) do
+            e.mouseposition[] = mp
+        end
+        Makie.step!(st)
+
+        # remove tooltip so we don't select it
+        wait_for_data_inspector(f, dis[idx], false) do
+            e.mouseposition[] = (1.0, 1.0)
+        end
+
+        # verify cleanup
+        @test !any(di -> di.dynamic_tooltip.visible[], dis)
+    end
+
+    st
+end
+
+@reference_test "DataInspector persistent tooltips" begin
+    xy = [Point2f(x, y) for x in -2:2 for y in -2:2]
+    f = Figure(size = (400, 400))
+    a, p = scatter(f[1, 1], xy, markersize = 20)
+    di = Makie.DataInspector(a)
+    e = events(f)
+    f
+
+    st = Makie.Stepper(f)
+
+    # Make 3 persistent tooltips
+    mps = [(135, 290), (213, 209), (291, 130)]
+    e.keyboardbutton[] = Makie.KeyEvent(Keyboard.left_shift, Keyboard.press)
+    for mp in mps
+        wait_for_data_inspector(f, di) do
+            e.mouseposition[] = mp
+        end
+        e.mousebutton[] = Makie.MouseButtonEvent(Mouse.left, Mouse.press)
+        e.mousebutton[] = Makie.MouseButtonEvent(Mouse.left, Mouse.release)
+    end
+    e.keyboardbutton[] = Makie.KeyEvent(Keyboard.left_shift, Keyboard.release)
+    wait_for_data_inspector(f, di) do
+        e.mouseposition[] = (80, 340) # keep the mouse away from markers
+    end
+
+    Makie.step!(st)
+
+    # check that tooltips move with axis changes
+    Makie.xlims!(a, -4, 4)
+    Makie.ylims!(a, -3, 4)
+
+    Makie.step!(st)
+
+    # remove center tooltip
+    e.keyboardbutton[] = Makie.KeyEvent(Keyboard.left_shift, Keyboard.press)
+    wait_for_data_inspector(f, di) do
+        e.mouseposition[] = (210, 220)
+    end
+    e.mousebutton[] = Makie.MouseButtonEvent(Mouse.left, Mouse.press)
+    e.mousebutton[] = Makie.MouseButtonEvent(Mouse.left, Mouse.release)
+    e.keyboardbutton[] = Makie.KeyEvent(Keyboard.left_shift, Keyboard.release)
+    wait_for_data_inspector(f, di) do
+        e.mouseposition[] = (80, 340) # keep the mouse away from markers
+    end
+
+    Makie.step!(st)
+
+    # check that model is included
+    translate!(p, 0, 1, 0)
+
+    Makie.step!(st)
+
+    st
+end
+
+@reference_test "DataInspector in log space" begin
+    attr_names = (:positions, :text, :visible, :placement, :model, :space)
+
+    f = Figure(size = (600, 500))
+    ax = Axis(f[1, 1], xscale = log10, yscale = log10)
+    ylims!(ax, 0.6, 2.5)
+    xlims!(ax, 0.008, 1.5)
+
+    rangebars!([0.01], [0.7], [2.2], linewidth = 5, color = :green)
+    errorbars!([0.014], [1.4], [0.7], linewidth = 5, color = :blue)
+    arrows2d!(Point2f(0.02, 0.7), Vec2f(0, 1.5))
+    arrows3d!(Point2f(0.03, 0.7), Vec2f(0, 1.5))
+    meshscatter!(0.05, 1.8, markersize = 0.1)
+
+    text!(0.05, 1.25, text = "0", fontsize = 20, align = (:center, :center))
+    scatter!(0.05, 1.1, markersize = 20)
+    barplot!([0.05], [1.0], fillto = 0.7, width = 0.01)
+    lines!([0.08, 0.08], [0.7, 2.2], linewidth = 10)
+    linesegments!([0.12, 0.12], [0.7, 2.2], linewidth = 10)
+
+    heatmap!(0.24 .. 0.4, 1.7 .. 1.9, Resampler([1 2; 3 4]))
+    image!(0.15 .. 0.5, 1.3 .. 1.5, [1 2; 3 4], colormap = :viridis)
+    heatmap!(0.24 .. 0.4, 1.1 .. 1.2, [1 2; 3 4])
+    surface!(0.15 .. 0.5, 0.85 .. 1.0, [1 1; 0 0; 1 1], shading = NoShading)
+    mesh!(Rect2f(0.15, 0.7, 0.5, 0.1))
+
+    violin!(fill(1, 100), 1.5 .+ 0.5 .* sin.(1:100))
+
+    f
+
+    di = DataInspector(ax)
+    colorbuffer(f)
+    e = events(f)
+
+    # One per plot, in order
+    mpos = [
+        # WGLMakie had a bug where invisible tooltips were still pickable.
+        # (116, 310) is inside the previous tooltip, to check that this doesn't
+        # happen anymore.
+        # TODO: If/once picking can fully ignore the tooltip, move it to (116, 325)
+        # to check that that is working too (no flicker when tooltip covers picked area)
+        (82, 325), (116, 310),
+        (152, 350), (192, 350),
+        (243, 380), (243, 270), (243, 230), (243, 180),
+        (290, 325), (331, 325),
+        (430, 400), (430, 300), (420, 250), (430, 170), (430, 110),
+        (570, 300),
+    ]
+    indicator_indices = [5, 8, 11, 12, 13, 15]
+    states = Any[(Point{3, Float64}[[-2.0, 0.16136800223497494, 0.0]], "0.700 .. 2.200", true, :right, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.853871964321762, 0.146128035678238, 0.0]], "±0.700", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.698970014043257, 0.0937603555436011, 0.0]], "(0.020000, 1.241)\n(0, 1.500)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.5228787549875757, 0.0937603555436011, 0.0]], "(0.030000, 1.241)\n(0, 1.500)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.3010299956639813, 0.25527250510330607, 0.0]], "(0.050000, 1.800)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.3010299956639813, 0.09691001300805642, 0.0]], "(0.050000, 1.250)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.3010299956639813, 0.04139268515822508, 0.0]], "(0.050000, 1.100)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.3010299956639813, 0.0, 0.0]], "(0.050000, 1.000)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-1.0969100130080565, 0.17598864218819055, 0.0]], "(0.080000, 1.500)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.9208187539523752, 0.17598864218819055, 0.0]], "(0.120, 1.500)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.438039094209671, 0.2768024802207947, 0.0]], "4.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.4919283092021942, 0.14109061658382416, 0.0]], "2.913", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.6197887659072876, 0.0791812613606453, 0.0]], "2.000", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.49192829634113217, -0.04037907175276083, 0.01135124173015356]], "(0.322, 0.911, 0.011351)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[-0.4919283092021942, -0.12413430958986282, 0.0]], "(0.322, 0.751)", true, :above, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data), (Point{3, Float64}[[0.10839772969484329, 0.14109061658382416, 0.0]], "0.687", true, :left, [1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0], :data)]
+
+    st = Makie.Stepper(f)
+
+    for i in eachindex(mpos)
+        mp = mpos[i]
+
+        @test !di.dynamic_tooltip.visible[] # verify cleanup
+
+        wait_for_data_inspector(f.scene, di, true) do
+            e.mouseposition[] = mp
+        end
+
+        # collect_di_state!(states, di, attr_names)
+        test_di_state(di, states[i], attr_names, i)
+
+        if i in indicator_indices
+            Makie.step!(st)
+        else
+            # if this is false we skipped a plot that uses indicators
+            @test all(p -> !p.visible[], values(di.indicator_cache))
+        end
+
+        # remove tooltip so we don't select it
+        wait_for_data_inspector(f.scene, di, false) do
+            e.mouseposition[] = (1.0, 1.0)
+        end
+    end
+
+    st
+end
+
+function create_test_plot()
+    # Grid scatter
+    x, y = repeat(1:10, 8), repeat(1:8, inner = 10)
+    f, ax, pl = scatter(x, y, color = x .* y, markersize = 25)
+    # Text with uncommon chars (no custom fonts)
+    text!(ax, 5, 6, text = "∫∂∇αβγ←→€¥", fontsize = 40, align = (:center, :center))
+    text!(ax, 5, 4, text = "◆●▲½⅓∞≈", fontsize = 40, color = :darkred, strokewidth = 2, strokecolor = :white, align = (:center, :center))
+    str = "abcdefg"
+    # one more sample than glyphs: the stored reference mapped `color = 1:8` over 7 chars
+    cols = resample_cmap(:turbo, length(str) + 1)
+    per_char = rich((rich(string(c); color = col) for (c, col) in zip(str, cols))...)
+    text!(ax, 5, 2, text = per_char, fontsize = 60, align = (:center, :center), font = assetpath("fonts", "blkchcry.ttf"))
+    return f
+end
+
+@reference_test "Threading Test" begin
+    ref = copy(colorbuffer(create_test_plot()))
+    chan = Channel{Matrix{RGBAf}}(Inf)
+    runs = Channel{Int}(100)
+    Threads.@threads for i in 1:100
+        f = create_test_plot()
+        fetch(
+            Makie.spawnat(1) do
+                thread_ref = copy(colorbuffer(f))
+                if !(ref ≈ thread_ref)
+                    put!(chan, thread_ref)
+                end
+                put!(runs, i)
+            end
+        )
+    end
+    close(chan)
+    close(runs)
+    vals = collect(chan)
+    runs_vals = collect(runs)
+    @test Set(runs_vals) == Set(1:100)
+    s = Scene(size = reverse(size(ref)))
+    if isempty(vals)
+        image!(s, -1 .. 1, -1 .. 1, rotr90(ref))
+    else
+        val, idx = findmax(x -> ReferenceTests.compare_images(x, ref), vals)
+        println("Failing with comparison value: ", val)
+        image!(s, -1 .. 1, -1 .. 1, rotr90(vals[idx]))
+    end
+    s
+end

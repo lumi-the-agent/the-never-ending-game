@@ -1,0 +1,540 @@
+# ==============================================================================
+# Instanced BVH - GPU Kernels with KernelAbstractions
+# ==============================================================================
+#
+# Follows KA best practices:
+# - @kernel only for parallel dispatch
+# - All logic in regular type-stable Julia functions
+# - Minimal code inside @kernel functions
+
+import KernelAbstractions as KA
+using KernelAbstractions: @index
+using Atomix: @atomic
+
+# ==============================================================================
+# GPU Kernel 0: Fill arrays (workaround for OpenCL fill! struct issue)
+# ==============================================================================
+
+"""GPU kernel: Fill array with a value (workaround for OpenCL's fill! not supporting structs)."""
+KA.@kernel function fill_bvhnode2_kernel!(arr, val)
+    i = @index(Global, Linear)
+    @inbounds arr[i] = val
+end
+
+"""GPU kernel: Fill array with sequential indices [1, 2, 3, ..., n]."""
+KA.@kernel function iota_kernel!(arr)
+    i = @index(Global, Linear)
+    @inbounds arr[i] = i
+end
+
+# ==============================================================================
+# GPU Kernel 0b: Compute Instance World AABBs
+# ==============================================================================
+
+"""
+    rootbounds(x) -> Bounds3
+
+The bounds of what an instance instances, in its own space. The TLAS management
+kernels read nothing else of a BLAS, so they take either the BLASes themselves
+(the dynamic TLAS keeps a device array of isbits ones) or only their root bounds
+(`build_tlas`, whose BLASes are host structs of arrays, which no kernel can take).
+"""
+@inline rootbounds(b::BLAS) = b.root_aabb
+@inline rootbounds(b::Bounds3) = b
+
+"""The world-space box of instance `inst`: its BLAS's box with all 8 corners transformed."""
+@inline function instance_world_aabb(inst::InstanceDescriptor, blas_array::AbstractVector)::Bounds3
+    local_aabb = rootbounds(blas_array[inst.blas_index])
+    world_aabb = Bounds3()
+    for c in 1:8
+        world_aabb = world_aabb ∪ Bounds3(transform_point(inst.transform, corner(local_aabb, c)))
+    end
+    return world_aabb
+end
+
+"""GPU kernel: Compute world AABBs for all instances, storing min/max points separately."""
+KA.@kernel function compute_instance_aabbs_kernel!(
+    aabb_mins::AbstractVector{Point3f},
+    aabb_maxs::AbstractVector{Point3f},
+    @Const(instances),
+    @Const(blas_array)
+)
+    i = @index(Global, Linear)
+    @inbounds begin
+        b = instance_world_aabb(instances[i], blas_array)
+        aabb_mins[i] = b.p_min
+        aabb_maxs[i] = b.p_max
+    end
+end
+
+# ==============================================================================
+# GPU Kernel 1: Calculate Morton Codes
+# ==============================================================================
+
+"""
+Calculate Morton code for a single primitive.
+This is a regular Julia function, callable from CPU or GPU.
+"""
+@inline function calculate_morton_code_for_prim(
+    prim_idx::Int,
+    primitives::AbstractVector{<:Triangle},
+    scene_min::Point3f,
+    scene_extent::Vec3f
+)::UInt32
+    tri_aabb = world_bound(primitives[prim_idx])
+    centroid = 0.5f0 * (tri_aabb.p_min + tri_aabb.p_max)
+    normalized = (centroid - scene_min) ./ scene_extent
+    return morton_code_30bit(normalized)
+end
+
+"""GPU kernel: Parallel dispatch for Morton code calculation."""
+KA.@kernel function calculate_morton_codes_kernel!(
+    morton_codes,
+    primitives,
+    scene_min,
+    scene_extent
+)
+    i = @index(Global, Linear)
+    @inbounds morton_codes[i] = calculate_morton_code_for_prim(i, primitives, scene_min, scene_extent)
+end
+
+# ==============================================================================
+# GPU Kernel 2: Emit Topology
+# ==============================================================================
+
+"""
+Build topology for one internal node.
+Regular Julia function for testability.
+"""
+@inline function build_topology_for_node(
+    idx::Int32,
+    morton_codes::AbstractVector{UInt32},
+    n_prims::Int32
+)::BVHNode2
+    # Helper functions
+    @inline leaf_idx(j::Int32) = n_prims - Int32(1) + j
+
+    # Find span
+    span_left, span_right = find_span_for_node(idx, morton_codes, n_prims)
+
+    # Find split
+    split = find_split_in_span(span_left, span_right, morton_codes, n_prims)
+
+    # Determine children
+    # If split is at boundary, it's a leaf. Otherwise it's a valid internal node.
+    child0 = (split == span_left) ? leaf_idx(split) : split
+    child1_idx = split + Int32(1)
+    child1 = (child1_idx == span_right) ? leaf_idx(child1_idx) : child1_idx
+
+    return BVHNode2(
+        Point3f(0), Point3f(0), Point3f(0), Point3f(0),
+        UInt32(child0), UInt32(child1), INVALID_NODE
+    )
+end
+
+"""GPU kernel: Parallel topology emission."""
+KA.@kernel function emit_topology_kernel!(nodes, morton_codes, n_prims::Int32)
+    i = @index(Global, Linear)
+    idx = Int32(i)
+    if idx < n_prims
+        @inbounds nodes[idx] = build_topology_for_node(idx, morton_codes, n_prims)
+    end
+end
+
+# ==============================================================================
+# GPU Kernel 3: Set Parent Pointers
+# ==============================================================================
+
+"""Set parent pointers for one node's children. Regular Julia function."""
+@inline function set_parents_for_node(
+    node_idx::Int32,
+    nodes::AbstractVector{BVHNode2}
+)::Tuple{Int32, BVHNode2, Int32, BVHNode2}
+    @inbounds node = nodes[node_idx]
+    child0_idx = Int32(node.child0)
+    child1_idx = Int32(node.child1)
+
+    @inbounds old0 = nodes[child0_idx]
+    @inbounds old1 = nodes[child1_idx]
+
+    new0 = BVHNode2(
+        old0.aabb0_min, old0.aabb0_max, old0.aabb1_min, old0.aabb1_max,
+        old0.child0, old0.child1, UInt32(node_idx)
+    )
+    new1 = BVHNode2(
+        old1.aabb0_min, old1.aabb0_max, old1.aabb1_min, old1.aabb1_max,
+        old1.child0, old1.child1, UInt32(node_idx)
+    )
+
+    return (child0_idx, new0, child1_idx, new1)
+end
+
+"""GPU kernel: Parallel parent pointer assignment."""
+KA.@kernel function set_parent_pointers_kernel!(nodes, n_prims::Int32)
+    i = @index(Global, Linear)
+    idx = Int32(i)
+    if idx < n_prims
+        child0_idx, new0, child1_idx, new1 = set_parents_for_node(idx, nodes)
+        @inbounds nodes[child0_idx] = new0
+        @inbounds nodes[child1_idx] = new1
+    end
+end
+
+# ==============================================================================
+# GPU Kernel 4: Create Leaf Nodes
+# ==============================================================================
+
+"""Create leaf node for one primitive. Regular Julia function."""
+@inline function create_leaf_for_prim(
+    prim_idx::Int,
+    primitives::AbstractVector{<:Triangle},
+    parent_node::BVHNode2,
+    n_prims::Int32
+)::BVHNode2
+    # Store triangle vertices directly in leaf node (BVH2IL format)
+    tri = primitives[prim_idx]
+    verts = tri.vertices
+    v0 = verts[1]
+    v1 = verts[2]
+    v2 = verts[3]
+
+    return BVHNode2(
+        v0, v1, v2, Point3f(0),  # Store v0, v1, v2 in aabb slots
+        INVALID_NODE, UInt32(prim_idx), parent_node.parent
+    )
+end
+
+"""GPU kernel: Parallel leaf node creation."""
+KA.@kernel function create_leaf_nodes_kernel!(nodes, primitives, n_prims::Int32)
+    i = @index(Global, Linear)
+    if i <= n_prims
+        @inline leaf_idx(j::Int) = Int(n_prims) - 1 + j
+        leaf_node_idx = leaf_idx(i)
+        @inbounds parent_node = nodes[leaf_node_idx]
+        @inbounds nodes[leaf_node_idx] = create_leaf_for_prim(i, primitives, parent_node, n_prims)
+    end
+end
+
+# ==============================================================================
+# Refit AABBs Kernel (Parallel Bottom-Up)
+# ==============================================================================
+
+"""
+Parallel bottom-up AABB refit using atomic counters.
+
+Each thread starts at a leaf and walks up the tree. Uses atomic operations
+to ensure each internal node is updated exactly once after both children are ready.
+Based on RadeonRays Refit kernel.
+"""
+#     bvh_publish_fence()
+#
+# Device-scope memory fence ordering a BVH node's AABB store against the atomic
+# counter that publishes it.
+#
+# The bottom-up refit kernels below are Karras' scheme: each of a node's two
+# children increments the parent's arrival counter, the second arriver reads
+# BOTH children and writes their boxes into the parent. That handoff is a
+# release/acquire pair — the writing thread's store to `nodes[child]` must be
+# visible to whichever thread later observes the counter reach 2 — and an atomic
+# RMW uses explicit acquire/release ordering: the second arrival acquires the
+# first arrival's published child and releases its own child. There is no
+# algorithmic dependency on a global total order across different counters.
+# That ordering does not survive to every backend (Atomix's Metal extension has
+# `# TODO: respect ordering` and emits `memory_order_relaxed`), so the ordering
+# has to be stated here, once, for everyone.
+#
+# Without it the second arriver can read a child node the first arriver has
+# written but not yet published, and the parent inherits a stale or zero box.
+# The symptom is a BVH that is *mostly* right: a handful of interior nodes get
+# boxes too small, rays miss geometry that is really there, and the render loses
+# scattered light. It is also non-deterministic, so two builds of the same scene
+# disagree.
+#
+# The default is a no-op where the counter RMW preserves acquire/release.
+# Backends whose Atomix operations are relaxed override this with a device fence.
+@inline bvh_publish_fence() = nothing
+
+KA.@kernel function refit_aabbs_kernel!(
+    nodes,
+    update_flags,
+    n_prims::Int32,
+    leaves
+)
+    prim_idx = @index(Global, Linear)
+
+    # Start at parent of this leaf
+    leaf_idx = leaf_index(prim_idx, n_prims)
+    @inbounds parent_idx = nodes[leaf_idx].parent
+
+    # Walk up the tree
+    while parent_idx != INVALID_NODE
+        # Atomic increment: mark this node as visited
+        # If new_value == 1: we're first thread (was 0), bail out
+        # If new_value == 2: we're second thread (was 1), update AABB and continue
+        # Note: @atomicswap doesn't work on OpenCL, so we use @atomic += instead
+        # Release: everything this thread wrote to `nodes[...]` above must be
+        # visible before the counter below tells the sibling it may be read.
+        bvh_publish_fence()
+        new_value = @inbounds @atomic :acquire_release update_flags[parent_idx] += UInt32(1)
+
+        if new_value == UInt32(2)
+            # Acquire: pair with the sibling's release before reading its node.
+            bvh_publish_fence()
+            # Second thread arrived - compute AABB from both children
+            @inbounds begin
+                node = nodes[parent_idx]
+                child0 = node.child0
+                child1 = node.child1
+
+                is_child0_internal = child0 < n_prims
+                is_child1_internal = child1 < n_prims
+
+                aabb0 = node_aabb(leaves, nodes[child0], is_child0_internal)
+                aabb1 = node_aabb(leaves, nodes[child1], is_child1_internal)
+
+                # Update this node's AABBs
+                updated_node = BVHNode2(
+                    aabb0.p_min, aabb0.p_max,
+                    aabb1.p_min, aabb1.p_max,
+                    node.child0, node.child1, node.parent
+                )
+                nodes[parent_idx] = updated_node
+                # Move to parent
+                parent_idx = node.parent
+            end
+        else
+            # First thread - bail out
+            break
+        end
+    end
+end
+
+# ==============================================================================
+# TLAS-Specific Kernels
+# ==============================================================================
+
+"""
+Calculate Morton code for a single instance centroid.
+"""
+@inline function calculate_tlas_morton_code(
+    inst_idx::Int,
+    instances::AbstractVector{InstanceDescriptor},
+    blas_array::AbstractVector,
+    scene_min::Point3f,
+    scene_extent::Vec3f
+)::UInt32
+    inst = instances[inst_idx]
+    local_aabb = rootbounds(blas_array[inst.blas_index])
+
+    # Transform centroid to world space
+    local_center = 0.5f0 * (local_aabb.p_min + local_aabb.p_max)
+    world_center = transform_point(inst.transform, local_center)
+
+    # Normalize and compute Morton code
+    normalized = (world_center - scene_min) ./ scene_extent
+    return morton_code_30bit(normalized)
+end
+
+"""GPU kernel: Calculate Morton codes for TLAS instances."""
+KA.@kernel function calculate_tlas_morton_codes_kernel!(
+    morton_codes,
+    @Const(instances),
+    @Const(blas_array),
+    scene_min,
+    scene_extent
+)
+    i = @index(Global, Linear)
+    @inbounds morton_codes[i] = calculate_tlas_morton_code(
+        i, instances, blas_array, scene_min, scene_extent
+    )
+end
+
+"""
+Create TLAS leaf node for one instance (stores world-space AABB, not triangle vertices).
+"""
+@inline function create_tlas_leaf_for_instance(
+    sorted_leaf_idx::Int,
+    sorted_indices::AbstractVector{<:Integer},
+    instances::AbstractVector{InstanceDescriptor},
+    blas_array::AbstractVector,
+    parent::UInt32
+)::BVHNode2
+    # Get original instance index (sorted_indices maps sorted position -> original position)
+    original_idx = sorted_indices[sorted_leaf_idx]
+    world_aabb = instance_world_aabb(instances[original_idx], blas_array)
+
+    return BVHNode2(
+        world_aabb.p_min, world_aabb.p_max, Point3f(0), Point3f(0),
+        INVALID_NODE, UInt32(original_idx - 1),  # 0-indexed instance index
+        parent
+    )
+end
+
+"""GPU kernel: Create TLAS leaf nodes."""
+KA.@kernel function create_tlas_leaf_nodes_kernel!(
+    nodes,
+    @Const(sorted_indices),
+    @Const(instances),
+    @Const(blas_array),
+    n_instances::Int32
+)
+    i = @index(Global, Linear)
+    if i <= n_instances
+        leaf_node_idx = Int(n_instances) - 1 + i
+        @inbounds parent = nodes[leaf_node_idx].parent
+        @inbounds nodes[leaf_node_idx] = create_tlas_leaf_for_instance(
+            i, sorted_indices, instances, blas_array, parent
+        )
+    end
+end
+
+# ==============================================================================
+# GPU Dynamic Update Kernels
+# ==============================================================================
+
+"""
+GPU kernel: the transforms of one batch, `transforms[i]` for its instance `i`,
+into its instance `first_idx + i - 1` and its record `records[i]`. Each keeps
+its geometry, flags, id and mask.
+"""
+KA.@kernel function update_instance_transforms_offset_kernel!(
+    instances,
+    records,
+    @Const(transforms),
+    n_particles::Int32,
+    first_idx::Int32
+)
+    i = @index(Global, Linear)
+    if i <= n_particles
+        @inbounds begin
+            inst_idx = first_idx + i - Int32(1)
+            old_inst = instances[inst_idx]
+            transform = transforms[i]
+            instances[inst_idx] = InstanceDescriptor(
+                old_inst.blas_index,
+                old_inst.instance_id,
+                transform,
+                mat3x4_inverse(transform),
+                old_inst.flags,
+                old_inst.mask
+            )
+            old_record = records[i]
+            records[i] = InstanceRecord(transform, old_record.id, old_record.mask)
+        end
+    end
+end
+
+"""
+GPU kernel: the records of one batch, as a kernel may have written them, into
+its instances: record `i` becomes instance `first_idx + i - 1`'s transform, its
+inverse, its id and its mask. The instance keeps its geometry and its flags.
+"""
+KA.@kernel function apply_instance_records_kernel!(
+    instances,
+    @Const(records),
+    n::Int32,
+    first_idx::Int32
+)
+    i = @index(Global, Linear)
+    if i <= n
+        @inbounds begin
+            inst_idx = first_idx + i - Int32(1)
+            old_inst = instances[inst_idx]
+            r = records[i]
+            instances[inst_idx] = InstanceDescriptor(
+                old_inst.blas_index,
+                r.id,
+                r.transform,
+                mat3x4_inverse(r.transform),
+                old_inst.flags,
+                r.mask
+            )
+        end
+    end
+end
+
+"""
+GPU kernel: Update TLAS leaf node AABBs from instance transforms.
+
+After transforms are updated, this kernel recomputes world-space AABBs for
+all leaf nodes. Must run before the refit (`refit_lbvh!`).
+
+NOTE: Leaf nodes are Morton-sorted, so we must use the stored instance index
+(child1) to look up the correct instance.
+"""
+KA.@kernel function update_tlas_leaf_aabbs_kernel!(
+    nodes,
+    @Const(instances),
+    @Const(blas_array),
+    n_instances::Int32
+)
+    i = @index(Global, Linear)
+    if i <= n_instances
+        @inbounds begin
+            leaf_node_idx = Int(n_instances) - 1 + i
+            old_node = nodes[leaf_node_idx]
+
+            # Get the actual instance index from the leaf node (stored as 0-indexed in child1)
+            world_aabb = instance_world_aabb(instances[Int(old_node.child1) + 1], blas_array)
+
+            # Update leaf node with new AABB (preserve topology)
+            nodes[leaf_node_idx] = BVHNode2(
+                world_aabb.p_min, world_aabb.p_max, Point3f(0), Point3f(0),
+                old_node.child0, old_node.child1, old_node.parent
+            )
+        end
+    end
+end
+
+"""
+GPU kernel: Batch update materials based on particle velocities.
+
+Updates material colors using a heat-map based on velocity magnitude.
+Also updates metallic/roughness with per-particle noise variation.
+"""
+KA.@kernel function update_particle_materials_kernel!(
+    materials,
+    @Const(positions),
+    @Const(velocities),
+    @Const(radii),
+    n_particles::Int32,
+    max_speed::Float32
+)
+    i = @index(Global, Linear)
+    if i <= n_particles
+        @inbounds begin
+            vel = velocities[i]
+            speed = sqrt(vel[1]^2 + vel[2]^2 + vel[3]^2)
+
+            # Velocity to heat color (same as CPU version)
+            t = clamp(speed / max_speed, 0.0f0, 1.0f0)
+            color = if t < 0.25f0
+                s = t / 0.25f0
+                RGB{Float32}(0.1f0, 0.2f0 + 0.5f0 * s, 0.8f0)
+            elseif t < 0.5f0
+                s = (t - 0.25f0) / 0.25f0
+                RGB{Float32}(0.1f0 + 0.6f0 * s, 0.7f0, 0.8f0 - 0.6f0 * s)
+            elseif t < 0.75f0
+                s = (t - 0.5f0) / 0.25f0
+                RGB{Float32}(0.7f0 + 0.3f0 * s, 0.7f0 - 0.4f0 * s, 0.2f0 - 0.1f0 * s)
+            else
+                s = (t - 0.75f0) / 0.25f0
+                RGB{Float32}(1.0f0, 0.3f0 + 0.7f0 * s, 0.1f0 + 0.9f0 * s)
+            end
+
+            # Noise for metallic/roughness variety
+            noise = sin(Float32(i) * 0.1f0) * 0.5f0 + 0.5f0
+            metallic = 0.3f0 + noise * 0.6f0
+            roughness = 0.2f0 + (1.0f0 - noise) * 0.4f0
+
+            materials[i] = Material(color, metallic, roughness, 1.0f0, 0.0f0)
+        end
+    end
+end
+
+# Export kernel helper functions for testing
+export calculate_morton_code_for_prim, build_topology_for_node
+export set_parents_for_node, create_leaf_for_prim
+export calculate_tlas_morton_code, create_tlas_leaf_for_instance
+export update_instance_transforms_offset_kernel!, apply_instance_records_kernel!, update_tlas_leaf_aabbs_kernel!
+export update_particle_materials_kernel!

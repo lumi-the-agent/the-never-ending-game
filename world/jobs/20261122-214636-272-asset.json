@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-22T21:46:36.272",
+  "finished": "2026-11-22T22:10:03.051",
+  "id": "20261122-214636-272-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 15000,
+    "prompt": "a chunky round-crowned fruit tree with a thick curvy trunk and fluffy leaves, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "tree"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T22:10:03.051",
+    "faces": 14132,
+    "id": "20261122-214636-272-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-214636-272-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214636-272-asset/mesh.jls",
+    "prompt": "a chunky round-crowned fruit tree with a thick curvy trunk and fluffy leaves, soft hand-painted colors",
+    "seconds": 279.0,
+    "tags": [
+      "prop",
+      "tree"
+    ]
+  },
+  "seconds": 279.3,
+  "started": "2026-11-22T22:05:23.779",
+  "status": "done"
+}

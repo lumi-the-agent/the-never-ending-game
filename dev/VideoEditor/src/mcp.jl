@@ -1,0 +1,519 @@
+"""
+    mcpserve!(player; port=8765) -> MCPServer
+
+Expose the live editor as an MCP server (streamable HTTP transport), so an
+AI agent can inspect and edit the open project. Attach from Claude Code:
+
+    claude mcp add --transport http videoedit http://localhost:8765
+
+Tools: get_state, get_frame (rendered preview incl. stabilization/effects/
+crop), seek, play, pause, split_at, delete_clip_at, move_clip, set_crop,
+set_color, set_blur, set_sharpen, analyze_color, analyze_motion (both
+async — poll get_state), export, save_project.
+
+All editor mutations are funneled through a command channel executed on
+the task that created the server (call `mcpserve!` from the main thread),
+so HTTP handler threads never touch Makie observables directly.
+"""
+mutable struct MCPServer
+    const player::Player
+    const commands::Channel{Function}
+    server::Any
+    executor::Task
+
+    function MCPServer(player::Player)
+        return new(player, Channel{Function}(32), nothing)
+    end
+end
+
+function mcpserve!(player::Player; port::Integer = 8765)
+    srv = MCPServer(player)
+    srv.executor = @async for f in srv.commands
+        f()
+    end
+    srv.server = HTTP.serve!("127.0.0.1", port) do req
+        handlemcp(srv, req)
+    end
+    @info "MCP server listening — attach with: claude mcp add --transport http videoedit http://localhost:$port"
+    return srv
+end
+
+function stop!(srv::MCPServer)
+    close(srv.commands)
+    srv.server === nothing || close(srv.server)
+    return nothing
+end
+
+"Run `f()` on the editor task and return its result to the calling (HTTP) task."
+function runoneditor(f::Function, srv::MCPServer)
+    result = Channel{Any}(1)
+    put!(srv.commands, () -> put!(result, try
+        f()
+    catch e
+        Dict("isError" => true, "message" => sprint(showerror, e))
+    end))
+    return take!(result)
+end
+
+# ------------------------------------------------------------------ protocol
+
+function handlemcp(srv::MCPServer, req::HTTP.Request)
+    req.method == "POST" || return HTTP.Response(405)
+    msg = JSON.parse(String(req.body))
+    method = get(msg, "method", "")
+    id = get(msg, "id", nothing)
+    id === nothing && return HTTP.Response(202)  # notification
+    result = if method == "initialize"
+        Dict("protocolVersion" => get(get(msg, "params", Dict()), "protocolVersion", "2025-03-26"),
+             "capabilities" => Dict("tools" => Dict()),
+             "serverInfo" => Dict("name" => "VideoEditor", "version" => "0.1.0"))
+    elseif method == "tools/list"
+        Dict("tools" => tooldefinitions())
+    elseif method == "tools/call"
+        calltool(srv, msg["params"]["name"], get(msg["params"], "arguments", Dict()))
+    else
+        return jsonrpc(id; error = Dict("code" => -32601, "message" => "unknown method $method"))
+    end
+    return jsonrpc(id; result)
+end
+
+function jsonrpc(id; result = nothing, error = nothing)
+    body = Dict{String, Any}("jsonrpc" => "2.0", "id" => id)
+    error === nothing ? (body["result"] = result) : (body["error"] = error)
+    return HTTP.Response(200, ["Content-Type" => "application/json"], JSON.json(body))
+end
+
+textcontent(x) = Dict("content" => [Dict("type" => "text", "text" => x isa String ? x : JSON.json(x))])
+
+"""
+An MCP image reply: the PNG, plus the manifest that says what is IN it (cell
+numbers → times). A picture without that mapping is a picture an agent can look
+at but not point at.
+"""
+function imagecontent(img::AbstractMatrix, manifest = nothing)
+    io = IOBuffer()
+    PNGFiles.save(io, PermutedDimsArray(img, (2, 1)))
+    content = Any[Dict("type" => "image", "data" => Base64.base64encode(take!(io)),
+                       "mimeType" => "image/png")]
+    manifest === nothing ||
+        push!(content, Dict("type" => "text", "text" => JSON.json(manifest)))
+    return Dict("content" => content)
+end
+
+tool(name, description, props = Dict(), required = String[]) =
+    Dict("name" => name, "description" => description,
+         "inputSchema" => Dict("type" => "object", "properties" => props, "required" => required))
+
+num(description) = Dict("type" => "number", "description" => description)
+str(description) = Dict("type" => "string", "description" => description)
+
+function tooldefinitions()
+    t = num("timeline time in seconds")
+    tools = Any[
+        tool("get_state", "Project state: clips (source ranges, timeline placement, crop, effects, stabilization flags), playhead, duration."),
+        tool("get_frame", "Rendered preview PNG at a timeline time — includes stabilization, color correction, effects and crop (what export will produce).",
+             Dict("time" => t, "width" => Dict("type" => "integer", "description" => "preview width px (default 480)")), ["time"]),
+        # ---- seeing the edit without filling the context: one image per call,
+        # each answer says what to call next (see src/agentview.jl)
+        tool("view_sheet",
+             "SEE a whole time range in ONE image: `cells` rendered frames (effects, crop, " *
+             "stabilization — what export produces) tiled in a numbered grid, plus a manifest " *
+             "mapping every cell number to its time. START HERE, then call view_sheet again on " *
+             "the interval around an interesting cell — each level divides the span by `cells`, " *
+             "so three calls take 10 minutes down to single frames. Default 64 cells in a " *
+             "512 px image costs ~350 vision tokens.",
+             Dict("time_start" => num("range start in seconds (default 0)"),
+                  "time_end" => num("range end in seconds (default: end of sequence)"),
+                  "cells" => Dict("type" => "integer", "description" => "frames in the grid (default 64)"),
+                  "size" => Dict("type" => "integer", "description" => "image size in px (default 512)"))),
+        tool("view_strip",
+             "SEE a SHORT span in order: `count` rendered frames side by side in one row, bigger " *
+             "than sheet cells — for reading a gesture, a cut or a transition frame by frame.",
+             Dict("time_start" => t, "time_end" => t,
+                  "count" => Dict("type" => "integer", "description" => "frames (default 8)"),
+                  "height" => Dict("type" => "integer", "description" => "row height px (default 120)")),
+             ["time_start", "time_end"]),
+        tool("view_region",
+             "ZOOM IN SPATIALLY: one normalized rectangle (x, y from top-left, w, h in 0..1) of the " *
+             "rendered frame at `time`, at real pixel detail — use it when a sheet cell shows " *
+             "something too small to judge.",
+             Dict("time" => t, "x" => num("left 0..1"), "y" => num("top 0..1"),
+                  "w" => num("width 0..1"), "h" => num("height 0..1"),
+                  "width" => Dict("type" => "integer", "description" => "output width px (default 480)")),
+             ["time", "x", "y", "w", "h"]),
+        tool("find_change",
+             "Bisect a time range for the moment the picture stops resembling the frame at " *
+             "`time_start` by more than `threshold` (0..1, default 0.08) — a cut, a flash, a " *
+             "subject leaving. O(log n) renders instead of a scan. Returns the time and how big " *
+             "the difference is, or nothing when the range never changes that much. The cuts of " *
+             "the EDIT itself need no search — they are clip boundaries in get_state.",
+             Dict("time_start" => num("range start (default 0)"), "time_end" => num("range end (default: end)"),
+                  "threshold" => num("mean abs gray difference 0..1, default 0.08"))),
+        tool("seek", "Move the playhead.", Dict("time" => t), ["time"]),
+        tool("play", "Start playback."),
+        tool("pause", "Pause playback."),
+        tool("split_at", "Split the clip containing the given time.", Dict("time" => t), ["time"]),
+        tool("delete_clip_at", "Ripple-delete the clip containing the given time.", Dict("time" => t), ["time"]),
+        tool("move_clip", "Move clip (1-based index) to start at a new time. Fails on overlap.",
+             Dict("clip" => Dict("type" => "integer"), "start_time" => t), ["clip", "start_time"]),
+        tool("set_crop", "Set a clip's crop as a normalized rect (x, y from top-left, w, h in 0..1). Full frame = 0,0,1,1.",
+             Dict("time" => t, "x" => num("left"), "y" => num("top"), "w" => num("width"), "h" => num("height")),
+             ["time", "x", "y", "w", "h"]),
+        tool("set_color", "Set color correction of the clip at time. Neutral: brightness 0, contrast 1, saturation 1, temperature 0.",
+             Dict("time" => t, "brightness" => num("-1..1"), "contrast" => num("0.5..2"),
+                  "saturation" => num("0..2"), "temperature" => num("-1..1 (positive=warmer)")), ["time"]),
+        tool("set_blur", "Set gaussian blur sigma (0 = off) of the clip at time.",
+             Dict("time" => t, "sigma" => num("0..8")), ["time", "sigma"]),
+        tool("set_sharpen", "Set unsharp-mask amount (0 = off) of the clip at time.",
+             Dict("time" => t, "amount" => num("0..2")), ["time", "amount"]),
+        tool("analyze_color", "Start color/exposure flicker stabilization analysis for the clip at time (async — poll get_state for has_colortrack).",
+             Dict("time" => t), ["time"]),
+        tool("analyze_motion", "Start camera shake stabilization analysis for the clip at time (async, ~0.4x realtime — poll get_state for has_motiontrack).",
+             Dict("time" => t, "mode" => str("similarity (default, camera lock — like a tripod) | tripod (affine, legacy) | perspective (also fix keystoning) | smooth (keep camera moves)")), ["time"]),
+        tool("analyze_object", "Object lock: track the subject at the given position (normalized 0..1, from the top-left, in the clip's first frame) and pin it in place (async — poll get_state for has_motiontrack).",
+             Dict("time" => t, "x" => num("0..1"), "y" => num("0..1")), ["time", "x", "y"]),
+        tool("find_loop", "Find the best seamless-loop cut inside the clip at `time`: returns start_time/end_time (seconds) of the segment whose stabilized, brightness-normalized content matches most closely (e.g. a bird back in ~the same pose), so it loops with the least seam. Analyze motion first for a clean match. Trim to [start_time, end_time] then export as a looping gif.",
+             Dict("time" => t, "min_seconds" => num("shortest loop, default 1.5"), "max_seconds" => num("longest loop, default 6")), ["time"]),
+        tool("export", "Render the sequence to a file. `format` mp4 (default) or gif (animated, looping). Blocks until done.",
+             Dict("path" => str("output path"), "format" => str("mp4 (default) or gif"),
+                  "crf" => Dict("type" => "integer", "description" => "mp4 quality, default 20"),
+                  "fps" => Dict("type" => "integer", "description" => "gif frame rate, default 15"),
+                  "loop" => Dict("type" => "integer", "description" => "gif looping: 0 = forever (default), -1 = play once")), ["path"]),
+        tool("save_project", "Save the edit metadata as a project file.", Dict("path" => str("output path")), ["path"]),
+        tool("add_source", "Append a video file as a new clip at the end of the timeline (a differing framerate is conformed to the sequence).",
+             Dict("path" => str("video file path")), ["path"]),
+    ]
+    # every addable effect kind → one tool each (reflects new kinds on every list)
+    for p in addablekinds()
+        props = Dict{String, Any}("time" => t)
+        for pr in p.params
+            props[String(pr.name)] = num("$(pr.label) ($(pr.min)..$(pr.max), default $(pr.default))")
+        end
+        push!(tools, tool("effect_$(p.name)", "Apply the '$(p.label)' effect to the clip at `time`.", props, ["time"]))
+    end
+    push!(tools, tool("define_effect",
+        "Author and register a NEW effect plugin at runtime, then use it via effect_<name> " *
+        "(it also appears in the editor's Add-effect menu and is keyframable). `code` is a Julia " *
+        "snippet that calls `registerplugin!(name::Symbol, label, params::Vector{FxParam}, kind)`, " *
+        "where `kind(p) -> Pointwise((c,uv) -> Vec3f)` or `Stencil(radius) do sample,r,uv ... end`; " *
+        "`c` is the pixel (Vec3f, 0..1), `uv` its coordinate (Vec2f, 0..1²), `sample(di,dj)` a neighbor. " *
+        "Example: `registerplugin!(:invert, \"Invert\", FxParam[], p -> Pointwise((c,uv)->Vec3f(1,1,1)-c))`. " *
+        "After defining, re-list tools to see effect_<name>.",
+        Dict("code" => str("Julia snippet calling registerplugin!")), ["code"]))
+    return tools
+end
+
+# ---------------------------------------------------------------- tool calls
+
+function calltool(srv::MCPServer, name::String, args)
+    player = srv.player
+    seq = player.sequence
+    attime(t) = clamp(round(Int, Float64(t) * seq.framerate), 0, max(seqlength(seq) - 1, 0))
+    clipattime(t) = begin
+        loc = locate(seq, attime(t))
+        loc === nothing ? nothing : loc[1]
+    end
+
+    if name == "get_frame"
+        img = renderpreview(player, Float64(args["time"]), Int(get(args, "width", 480)))
+        return imagecontent(img)
+    elseif name == "view_sheet"
+        # decode-heavy and read-only: runs on the HTTP task, never on the editor's
+        # executor (a 64-frame render would stall the render loop for a second)
+        t1 = Float64(get(args, "time_end", seqduration(seq)))
+        img, manifest = contactsheet(seq, Float64(get(args, "time_start", 0.0)), t1;
+                                     cells = Int(get(args, "cells", 64)),
+                                     size = Int(get(args, "size", 512)))
+        return imagecontent(img, Dict("cells" => manifest,
+                                      "hint" => "call view_sheet again with time_start/time_end " *
+                                                "around an interesting cell to zoom in"))
+    elseif name == "view_strip"
+        img, manifest = filmstrip(seq, Float64(args["time_start"]), Float64(args["time_end"]);
+                                  count = Int(get(args, "count", 8)),
+                                  height = Int(get(args, "height", 120)))
+        return imagecontent(img, Dict("frames" => manifest))
+    elseif name == "view_region"
+        img = regiongrab(seq, Float64(args["time"]),
+                         (Float64(args["x"]), Float64(args["y"]),
+                          Float64(args["w"]), Float64(args["h"]));
+                         width = Int(get(args, "width", 480)))
+        return imagecontent(img)
+    elseif name == "find_change"
+        found = findchange(seq, Float64(get(args, "time_start", 0.0)),
+                           Float64(get(args, "time_end", seqduration(seq)));
+                           threshold = Float64(get(args, "threshold", 0.08)))
+        return textcontent(found === nothing ?
+                           Dict("changed" => false) :
+                           Dict("changed" => true, "time" => found[1], "difference" => found[2]))
+    elseif name == "export"
+        # runs on the HTTP task: only reads edit metadata, and must not
+        # starve the editor's executor (and with it the render loop) for its
+        # multi-second duration. Stays on the CPU backend — GPU dispatches
+        # would have to come from the pinned worker, and this call must
+        # return the path synchronously.
+        fmt = lowercase(String(get(args, "format", "mp4")))
+        path = if fmt == "gif"
+            exportgif(String(args["path"]), seq; fps = Int(get(args, "fps", 15)),
+                      loop = Int(get(args, "loop", 0)))
+        else
+            crf = Int(get(args, "crf", 20))
+            exportvideo(String(args["path"]), seq; encoder_options = (crf = crf, preset = "medium"))
+        end
+        return textcontent(Dict("exported" => path))
+    elseif name == "find_loop"
+        # decode-heavy read of the source; safe off the editor task
+        clip = clipattime(args["time"])
+        clip === nothing && return textcontent("no clip at that time")
+        a, b, score = runanalysissync(player) do   # GPU decode runs on the worker
+            findloop(clip; minseconds = Float64(get(args, "min_seconds", 1.5)),
+                     maxseconds = Float64(get(args, "max_seconds", 6.0)),
+                     backend = player.analysisbackend)
+        end
+        fps = seq.framerate
+        # clip-relative source offsets → timeline seconds
+        t0 = (clip.start + a) / fps
+        t1 = (clip.start + b) / fps
+        return textcontent(Dict("start_time" => round(t0, digits = 3),
+                                "end_time" => round(t1, digits = 3),
+                                "loop_seconds" => round((b - a) / fps, digits = 2),
+                                "seam_score" => round(score, digits = 4)))
+    elseif name == "define_effect"
+        # author + register a new plugin (mutates the global registry, not the player)
+        before = Set(p.name for p in effectkinds())
+        definepluginfromcode!(String(args["code"]))
+        added = [String(p.name) for p in effectkinds() if !(p.name in before)]
+        return textcontent(Dict("registered" => added,
+            "call_with" => ["effect_$n" for n in added],
+            "note" => "re-list tools (tools/list) to see the new effect_<name> tool"))
+    end
+
+    result = runoneditor(srv) do
+        if name == "get_state"
+            statedict(player)
+        elseif name == "seek"
+            player.playhead[] = attime(args["time"])
+            "playhead at frame $(player.playhead[])"
+        elseif name == "play"
+            play!(player); "playing"
+        elseif name == "pause"
+            pause!(player); "paused"
+        elseif name == "split_at"
+            snapshot!(player)
+            split!(seq, attime(args["time"]))
+            redraw!(player)
+            statedict(player)
+        elseif name == "delete_clip_at"
+            snapshot!(player)
+            deleteclip!(seq, attime(args["time"]))
+            player.playhead[] = clamp(player.playhead[], 0, max(seqlength(seq) - 1, 0))
+            redraw!(player)
+            statedict(player)
+        elseif name == "move_clip"
+            snapshot!(player)
+            clip = seq.clips[Int(args["clip"])]
+            ok = moveclip!(seq, clip, round(Int, Float64(args["start_time"]) * seq.framerate))
+            redraw!(player)
+            ok ? statedict(player) : "move rejected: would overlap another clip"
+        elseif name == "set_crop"
+            snapshot!(player)
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            clip.crop = (Float64(args["x"]), Float64(args["y"]), Float64(args["w"]), Float64(args["h"]))
+            redraw!(player)
+            "crop set"
+        elseif name == "set_color"
+            snapshot!(player)
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            seteffect!(clip, ColorEffect(brightness = get(args, "brightness", 0), contrast = get(args, "contrast", 1),
+                                         saturation = get(args, "saturation", 1), temperature = get(args, "temperature", 0)))
+            redraw!(player)
+            "color set"
+        elseif name == "set_blur"
+            snapshot!(player)
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            seteffect!(clip, BlurEffect(Float32(args["sigma"])))
+            redraw!(player)
+            "blur set"
+        elseif name == "set_sharpen"
+            snapshot!(player)
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            seteffect!(clip, SharpenEffect(1.0f0, Float32(args["amount"])))
+            redraw!(player)
+            "sharpen set"
+        elseif name == "analyze_color"
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            runanalysis(() -> analyzecolor!(clip; backend = player.analysisbackend), player)
+            "color analysis started — poll get_state"
+        elseif name == "analyze_motion"
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            mode = Symbol(get(args, "mode", "similarity"))
+            mode in (:similarity, :tripod, :perspective, :smooth) || return "unknown mode $mode"
+            oldcrop = clip.crop
+            job = () -> try
+                analyzemotion!(clip; mode, backend = player.analysisbackend)
+                # hide the warp's replicate borders, like the GUI's Stabilize
+                W, H = clip.source.width, clip.source.height
+                newcrop = cropintersect(oldcrop, bordercrop(clip.motiontrack, W, H))
+                put!(player.uiqueue, () -> (clip.crop = newcrop; redraw!(player)))
+            catch e
+                @error "motion analysis failed" exception = (e, catch_backtrace())
+            end
+            runanalysis(job, player)
+            "motion analysis ($mode) started — poll get_state"
+        elseif name == "analyze_object"
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            point = (Float64(args["x"]) * clip.source.width,
+                     Float64(args["y"]) * clip.source.height)
+            job = () -> analyzeobject!(clip, point; backend = player.analysisbackend)
+            runanalysis(job, player)
+            "object lock analysis started — poll get_state"
+        elseif name == "save_project"
+            isempty(seq.clips) && return "nothing to save — the timeline is empty"
+            # the PLAYER method: the matte marks and repairs live there, not on the
+            # sequence, and the sequence-only method drops them without a word
+            saveproject(String(args["path"]), player)
+        elseif name == "add_source"
+            clip = addsource!(player, String(args["path"]))  # snapshots itself
+            statedict(player)
+        elseif startswith(name, "effect_") && kindbyname(Symbol(name[8:end])) !== nothing
+            clip = clipattime(args["time"])
+            clip === nothing && return "no clip at that time"
+            p = kindbyname(Symbol(name[8:end]))
+            snapshot!(player)
+            nt = NamedTuple(pr.name => Float64(get(args, String(pr.name), pr.default)) for pr in p.params)
+            seteffect!(clip, p.make(nt))
+            redraw!(player)
+            "applied $(p.label)"
+        else
+            Dict("isError" => true, "message" => "unknown tool $name")
+        end
+    end
+    return textcontent(result)
+end
+
+"""
+    effectinfo(fx) -> Dict
+
+One effect as an MCP client SEES it: what it is and what its parameters are set
+to, flat, with no curve.
+
+Deliberately not the project format. This is a description for a reader, so a
+parameter is one number under its name; the file is a round trip, so it carries
+labels, ranges and every keyframe. They were the same function once, which meant
+neither could change without breaking the other.
+"""
+effectinfo(fx::Effect) = Dict{String, Any}(
+    "kind" => String(fx.kind), "id" => string(fx.id), "enabled" => fx.enabled[],
+    "params" => Dict{String, Any}(String(p.name) => jsonvalue(valueat(p, 0))
+                                  for p in fx.params))
+
+"""
+    jsonvalue(v) -> JSON-able
+
+A parameter value as something `JSON.print` can write.
+
+One method per kind of value and a fallback that ERRORS, rather than an untyped
+`collect(Float64.(v))` catching everything not a `Real` — that is not dispatch
+but a guess: it happened to work for anything broadcastable and would have failed
+unreadably for anything else.
+"""
+jsonvalue(v::Bool) = v
+jsonvalue(v::Real) = Float64(v)
+jsonvalue(v::Symbol) = String(v)
+jsonvalue(v::AbstractString) = String(v)
+jsonvalue(v::GeometryBasics.Vec) = Float64[Float64(x) for x in v]   # Vec2f, Vec3f, …
+jsonvalue(v::Color3) = Float64[red(v), green(v), blue(v)]
+jsonvalue(v::TransparentColor) = Float64[red(v), green(v), blue(v), alpha(v)]
+jsonvalue(v) = error("no `jsonvalue` method for $(typeof(v)) — an MCP client " *
+                     "cannot be shown a parameter of a type nothing converts")
+
+function statedict(player::Player)
+    seq = player.sequence
+    fps = seq.framerate
+    return Dict(
+        "duration_seconds" => seqduration(seq),
+        "framerate" => fps,
+        "frames" => seqlength(seq),
+        "canvas" => collect(canvassize(seq)),
+        "tracks" => ntracks(seq),        # stacked layers; clips of the same frame composite
+        "playhead_seconds" => player.playhead[] / fps,
+        "playing" => player.playing[],
+        "clips" => [Dict(
+            "index" => i,
+            "track" => clip.track,
+            "timeline_start" => clip.start / fps,
+            "timeline_end" => clipend(clip) / fps,
+            "source" => sourcepath(clip.source),
+            "source_in" => clip.src_in / clip.source.framerate,
+            "crop" => collect(clip.crop),
+            "id" => string(clip.id),
+            "effects" => [effectinfo(s) for s in clip.effects],
+            # keyframed parameters — their values vary ACROSS the clip, so a single
+            # frame does not describe it; view_sheet the clip's range to see them
+            "animated" => sort!([string(fx.kind, ".", prm.name) for fx in clip.effects
+                                 for prm in fx.params if isanimated(prm)]),
+            "has_colortrack" => clip.colortrack !== nothing,
+            "has_motiontrack" => clip.motiontrack !== nothing,
+        ) for (i, clip) in enumerate(seq.clips)],
+    )
+end
+
+"Render a WYSIWYG preview frame (stabilization + effects + crop) at time `t`."
+function renderpreview(player::Player, t::Float64, width::Int)
+    seq = player.sequence
+    isempty(seq.clips) && return zeros(RGB{N0f8}, clamp(width, 64, 1920),
+                                       round(Int, 9 / 16 * clamp(width, 64, 1920)))
+    n = clamp(round(Int, t * seq.framerate), 0, max(seqlength(seq) - 1, 0))
+    loc = locate(seq, n)
+    canvas = canvassize(seq)
+    pw = clamp(width, 64, 1920)
+    ph = max(round(Int, canvas[2] / canvas[1] * pw), 16)
+    preview = RGBFrame(undef, pw, ph)
+    loc === nothing && return fill!(preview, RGB{N0f8}(0, 0, 0))
+    clip, srcframe = loc
+
+    sp = pool(player, clip)
+    scratch = RGBFrame(undef, sp.source.width, sp.source.height)
+    settarget!(sp.worker, srcframe)
+    deadline = time() + 3.0
+    while !fetchframe!(scratch, sp.ring, srcframe)
+        sleep(0.01)
+        time() > deadline && error("frame $srcframe not decodable within 3s")
+    end
+    # the same graph as preview/export; a private engine on the declared backend —
+    # this runs on the MCP task, the player's engine pool belongs to the render thread.
+    # Built, run and freed on the thread that owns the device, like the track
+    # previews: rendered on the MCP task, it died on `WrongThread` whenever the
+    # GPU worker owned the device, which is how the editor sets it up.
+    return onthread(mantlethread(Mantle)) do
+        engine = FxEngine(player.analysisbackend)
+        try
+            render(engine, scratch, clip, Int(srcframe)) do out
+                # `preview` is the HOST frame the MCP encodes, and `out` lives on
+                # `player.analysisbackend`. `warp!` runs on the source's backend, so
+                # the two cannot be spanned in one call — with a GPU analysis backend
+                # this handed a host `Matrix` to a GPU kernel and failed inside
+                # GPUCompiler. Crop on the device, then bring the result down.
+                b = KA.get_backend(out)
+                if typeof(b) === typeof(KA.get_backend(preview))
+                    warp!(preview, out, clip.crop)
+                    KA.synchronize(b)
+                else
+                    tmp = KA.allocate(b, eltype(preview), size(preview)...)
+                    warp!(tmp, out, clip.crop)
+                    KA.synchronize(b)
+                    copyto!(preview, tmp)
+                end
+            end
+        finally
+            emptyengine!(engine)
+        end
+        preview
+    end
+end

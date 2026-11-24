@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-24T07:46:45.216",
+  "finished": "2026-11-24T07:48:53.996",
+  "id": "20261124-074645-212-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -7.0,
+      7.6,
+      3.4
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/img/garden-traced.png",
+    "samples": 96,
+    "target": [
+      -10.4,
+      9.8,
+      2.0
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/garden-traced.png"
+  },
+  "seconds": 126.9,
+  "started": "2026-11-24T07:46:47.051",
+  "status": "done"
+}

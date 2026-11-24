@@ -1,0 +1,303 @@
+ENV["ENABLE_COMPUTE_CHECKS"] = "true"
+
+run(
+    `julia -e "using Makie.ComputePipeline; ComputePipeline.enable_debugging!(); ComputePipeline.log_nothing_splat(true)"`
+)
+
+using Makie
+using GLMakie, Test
+using FileIO
+using Libdl
+using GeometryBasics
+using GeometryBasics: origin
+using Random
+using ReferenceTests
+
+if Sys.islinux() && Base.pkgversion(GLMakie.GLFW) >= v"4"
+    @testset "headless subprocess" begin
+        mktempdir() do runtime_dir
+            cmd = `$(Base.julia_cmd()) --startup-file=no --project=$(dirname(Base.active_project())) $(joinpath(@__DIR__, "headless.jl"))`
+            env = copy(ENV)
+            delete!(env, "DISPLAY")
+            delete!(env, "WAYLAND_DISPLAY")
+            env["XDG_RUNTIME_DIR"] = runtime_dir
+            env["JULIA_GLFW_PLATFORM"] = "null"
+            @test success(pipeline(setenv(cmd, env); stdout = stdout, stderr = stderr))
+            if isempty(Libdl.find_library(["libOSMesa.so.8", "libOSMesa.so.6", "libOSMesa.so"]))
+                # With no OSMesa fallback installed, disabling EGL vendors
+                # exercises loading and error reporting without any driver.
+                env["__EGL_VENDOR_LIBRARY_FILENAMES"] = joinpath(runtime_dir, "no-vendor.json")
+                env["GLMAKIE_TEST_NO_DRIVER"] = "true"
+                @test success(pipeline(setenv(cmd, env); stdout = stdout, stderr = stderr))
+            end
+        end
+    end
+end
+
+# verify OpenGL object cleanup
+GLMakie.DEBUG[] = true
+
+deref(x) = x
+deref(x::Base.RefValue) = x[]
+
+if !deref(GLMakie.ModernGL.enable_opengl_debugging)
+    # can't error, since we can't enable debugging for users
+    @warn("TESTING WITHOUT OPENGL DEBUGGING")
+end
+
+GLMakie.activate!(framerate = 1.0, scalefactor = 1.0)
+@testset "GLMakie" begin
+    @testset "mimes" begin
+        Makie.inline!(true)
+        f, ax, pl = scatter(1:4)
+        @test showable("image/png", f)
+        @test showable("image/jpeg", f)
+        # see https://github.com/MakieOrg/Makie.jl/pull/2167
+        @test !showable("blaaa", f)
+        Makie.inline!(false)
+    end
+
+    # run the unit test suite
+    include("isolated_tests.jl")
+    include("unit_tests.jl")
+
+    @testset "Reference Tests" begin
+        @testset "refimages" begin
+            ReferenceTests.mark_broken_tests()
+            attempted_tests, recording_dir = @include_reference_tests GLMakie "refimages.jl" joinpath(@__DIR__, "glmakie_refimages.jl")
+            missing_images, scores, exempt = ReferenceTests.record_comparison(recording_dir, "GLMakie"; attempted_tests)
+            ReferenceTests.test_comparison(scores; threshold = 0.05, exempt)
+        end
+
+        GLMakie.closeall()
+        GC.gc(true) # make sure no finalizers act up!
+    end
+
+    @testset "Tick Events" begin
+        function check_tick(tick, state, count)
+            @test tick.state == state
+            @test tick.count == count
+            @test tick.time > 1.0e-9
+            @test tick.delta_time > 1.0e-9
+        end
+
+        f, a, p = scatter(rand(10))
+        @test events(f).tick[] == Makie.Tick()
+
+        filename = "$(tempname()).png"
+        try
+            save(filename, f)
+            tick = events(f).tick[]
+            @test tick.state == Makie.OneTimeRenderTick
+            @test tick.count == 0
+            @test tick.time == 0.0
+            @test tick.delta_time == 0.0
+        finally
+            rm(filename)
+        end
+
+        f, a, p = scatter(rand(10))
+        filename = "$(tempname()).mp4"
+        try
+            tick_record = Makie.Tick[]
+            on(tick -> push!(tick_record, tick), events(f).tick)
+            record(_ -> nothing, f, filename, 1:10, framerate = 30)
+
+            start = findfirst(tick -> tick.state == Makie.OneTimeRenderTick, tick_record)
+            dt = 1.0 / 30.0
+
+            for (i, tick) in enumerate(tick_record[start:end])
+                @test tick.state == Makie.OneTimeRenderTick
+                @test tick.count == i - 1
+                @test tick.time ≈ dt * (i - 1)
+                @test tick.delta_time ≈ dt
+            end
+        finally
+            rm(filename)
+        end
+
+        f, a, p = scatter(rand(10))
+        filename = "$(tempname()).mp4"
+        frame_folder = splitext(filename)[1] * "_frames"
+        try
+            tick_record = Makie.Tick[]
+            on(tick -> push!(tick_record, tick), events(f).tick)
+            record_longrunning(
+                _ -> nothing, f, filename, 1:4;
+                framerate = 30, overwrite = true
+            )
+
+            ticks = filter(tick -> tick.state == Makie.OneTimeRenderTick, tick_record)
+            @test length(ticks) == 5 # initial state plus one advance per frame
+            for (i, tick) in enumerate(ticks)
+                @test tick.count == i - 1
+                @test tick.time ≈ (i - 1) / 30
+                @test tick.delta_time ≈ 1 / 30
+            end
+        finally
+            rm(filename; force = true)
+            rm(frame_folder; recursive = true, force = true)
+        end
+
+        # test destruction of tick overwrite
+        f, a, p = scatter(rand(10))
+        let
+            io = VideoStream(f)
+            @test events(f).tick[] == Makie.Tick(Makie.OneTimeRenderTick, 0, 0.0, 1.0 / io.options.framerate)
+            nothing
+        end
+        tick = Makie.Tick(Makie.UnknownTickState, 1, 1.0, 1.0)
+        events(f).tick[] = tick
+        @test events(f).tick[] == tick
+
+
+        f, a, p = scatter(rand(10))
+        tick_record = Makie.Tick[]
+        on(t -> push!(tick_record, t), events(f).tick)
+        screen = GLMakie.Screen(render_on_demand = true, framerate = 30.0, pause_rendering = false, visible = false)
+        display(screen, f.scene)
+        sleep(0.15)
+        GLMakie.pause_renderloop!(screen)
+        sleep(0.1)
+        GLMakie.closeall()
+
+        # Why does it start with a skipped tick?
+        i = 1
+        while tick_record[i].state == Makie.SkippedRenderTick
+            check_tick(tick_record[1], Makie.SkippedRenderTick, i)
+            i += 1
+        end
+
+        check_tick(tick_record[i], Makie.RegularRenderTick, i)
+        i += 1
+
+        while tick_record[i].state == Makie.SkippedRenderTick
+            check_tick(tick_record[i], Makie.SkippedRenderTick, i)
+            i += 1
+        end
+
+        while (i <= length(tick_record)) && (tick_record[i].state == Makie.PausedRenderTick)
+            check_tick(tick_record[i], Makie.PausedRenderTick, i)
+            i += 1
+        end
+
+        @test i == length(tick_record) + 1
+    end
+
+
+    # NOTE: Keep this at the end! It also verifies that all cleanup is complete after
+    #       all other tests have finished
+
+    @testset "gl object deletion" begin
+        GLMakie.closeall()
+
+        # image so we have a user generated texture in the mix
+        # texture atlas is triggered by text
+        # include SSAO to make sure its cleanup works too
+        f, a, p = image(rand(4, 4))
+
+        # make sure switching the render pipeline doesn't cause errors
+        screen = display(f, ssao = true, visible = false)
+        colorbuffer(screen)
+        screen = display(f, ssao = false, visible = false)
+        colorbuffer(screen)
+        screen = display(f, ssao = true, visible = false)
+        colorbuffer(screen)
+
+        # verify that SSAO is active
+        @test :SSAO1 in map(x -> x.name, screen.render_pipeline.parent.stages)
+
+        framebuffer = screen.framebuffer_manager
+        framebuffer_depth = GLMakie.get_depth_buffer(GLMakie.display_framebuffer(screen))
+        framebuffer_textures = copy(screen.framebuffer_manager.buffers)
+        framebuffer_children = copy(screen.framebuffer_manager.children)
+        atlas_textures = first.(values(GLMakie.atlas_texture_cache))
+        shaders = vcat([[shader for shader in values(shaders)] for shaders in values(screen.shader_cache.shader_cache)]...)
+        programs = [program for program in values(screen.shader_cache.program_cache)]
+        pipeline = copy(screen.render_pipeline.stages)
+        robjs = last.(screen.renderlist)
+
+        GLMakie.destroy!(screen)
+
+        @testset "Texture Atlas" begin
+            @test !isempty(atlas_textures)
+            for tex in atlas_textures
+                @test tex.id == 0
+            end
+        end
+
+        @testset "Framebuffer" begin
+            # FramebufferManager object
+            @test isempty(framebuffer.children)
+            @test isempty(framebuffer.buffers)
+
+            @test !isempty(framebuffer_textures)
+            for tex in framebuffer_textures
+                @test tex.id == 0
+            end
+
+            @test !isempty(framebuffer_children)
+            for fb in framebuffer_children
+                @test fb.id == 0
+                # TODO: Should we bother clearing the attachment and buffer lists?
+                @test all(x -> x.id == 0, fb.buffers)
+            end
+        end
+
+        @testset "ShaderCache" begin
+            @test !isempty(shaders)
+            for shader in shaders
+                @test shader.id == 0
+            end
+            @test !isempty(programs)
+            for program in programs
+                @test program.id == 0
+            end
+        end
+
+        function validate_robj(robj)
+            for uniform in robj.uniforms
+                if to_value(uniform) isa GLMakie.GLAbstraction.GPUArray
+                    @test to_value(uniform).id == 0
+                end
+            end
+            for inst in values(robj.variants)
+                @test inst.vertexarray.id == 0
+                @test inst.program.id == 0
+                for shader in inst.program.shader
+                    @test shader.id == 0
+                end
+            end
+            if robj.indices isa GLMakie.GLAbstraction.GPUArray
+                @test robj.indices.id == 0
+            end
+            for buffer in values(robj.buffers)
+                @test buffer.id == 0
+            end
+        end
+
+        @testset "PostProcessors" begin
+            @test length(pipeline) == 10
+            for stage in pipeline
+                if hasfield(typeof(stage), :robj)
+                    validate_robj(getfield(stage, :robj))
+                end
+            end
+        end
+
+        @testset "RenderObjects" begin
+            @test !isempty(robjs)
+            for robj in robjs
+                validate_robj(robj)
+            end
+        end
+
+        # Check that no finalizers triggered on un-freed objects throughout all tests
+        GC.gc(true)
+        @test GLMakie.GLAbstraction.FAILED_FREE_COUNTER[] == 0
+    end
+end
+
+using Makie.ComputePipeline
+ComputePipeline.disable_debugging!()
+ComputePipeline.log_nothing_splat(false)

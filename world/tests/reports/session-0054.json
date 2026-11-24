@@ -1,0 +1,9 @@
+{"session":54,
+ "summary":"Host suite 118/122. Four failures: two sunset-bench tests (likely side effect of the new evening light/clock change, #288), a ball-play Stop check, and a Jump-in test where Play does not start the berry race. I did not explore further in this session, so causes are unconfirmed.",
+ "failures":[
+ {"what":"Sprout does not walk to the lookout bench at 17.6 h (goal stays 'tend')","steps":"Run lookout.jl test 'At sunset Sprout walks to the lookout bench...' (clock set to 17.6 h)","expected":"Sprout sets off to the bench at sunset","actual":"Sprout kept goal :tend (check failed in 0.1 s)","screenshot":""},
+ {"what":"Nobody sits on the sunset bench within 60 s of 17:36","steps":"Run s51_play.jl 'Sunset bench: at dusk (20:00) nobody stays on the bench'","expected":"a critter sits down on the bench in the evening, leaves at dusk","actual":"nobody sat down within 60 s of 17:36. Possibly the bench schedule no longer matches the new light_phase (sunset moved later, #288)","screenshot":""},
+ {"what":"Ball play: a fetcher keeps chasing after Stop","steps":"Run minigames.jl 'Ball play: Sprout kicks the ball, a critter fetches it and passes it back'","expected":"after Stop no critter chases the ball","actual":"a fetcher is left chasing after Stop","screenshot":""},
+ {"what":"Jump in from the camera menu: Play does not start the berry race","steps":"Run s51_play.jl 'Jumped in: the camera menu switches orbit and follow...'","expected":"Play starts Jump in (BerryRace) so the camera menu can be tested","actual":"Play did not start Jump in (Main.Plugin_berry_race.BerryRace); may be left over state from the berry race changes (#289, #298)","screenshot":""}
+ ],
+ "tests_added":[]}

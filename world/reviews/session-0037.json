@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "Summer showers with rain, greyed light, wet meadow, rainbow and a puddle party are visible and cheap (frame median 2.7 ms). The final suite run was 62/64, and one of the two failures is the new rain test. The 'creatures stuck' fix is only partly proven.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The new rain test is order-dependent. In the last full run (tests/results/session-0037.json) it failed with 'the critters all do the same: Pinchy :jump, Marshmallow :idle'. The author's own figure was 3 of 4 passes. The tester also could not reproduce the failure alone, so in the full suite critters may not react individually, or the test is too strict.",
+   "where": "world/tests/minigames.jl (Rain shower test), plugins/showers.jl",
+   "evidence": "world/tests/results/session-0037.json; tester report session-0037",
+   "suggestion": "Print the state of every critter (goal and role) in the check message. Find which earlier test leaves them in a shared state, and fix it in the game rather than in the test."
+  },
+  {
+   "severity": "medium",
+   "what": "After the #190 fix, the 'Creatures never stand inside each other' test still fails in the full suite: Pickles and Sir Sniffsalot are 1.34 m apart. The same two names were the stuck pair in #190. The 12 s unstick! may drop the goal while the pair are still overlapping, or it may leave their targets overlapping. The 'no goal longer than 2 min' test that #190 asked for is also not clearly in place; the author only did a one-off 200 s sample.",
+   "where": "plugins/separation.jl unstick!, tests/separation.jl",
+   "evidence": "results/session-0037.json failed list",
+   "suggestion": "Check whether the pair is still stuck. Add the asserting test over a 2 min sample, with the creature names and goals in the message."
+  },
+  {
+   "severity": "low",
+   "what": "The wet ground is not checked in the browser and the sun dim steps (4 sky bakes) are not timed there. The author says so. In the screenshot (media/shower-party-live.png) the rain streaks and dark sky read well, but the puddle party is only a few critters bobbing with notes. The 'distinct emotes, 4 creatures, 20 s clip' bar of #140 has no clip as evidence.",
+   "where": "plugins/showers.jl; media/shower-party-live.png",
+   "evidence": "The 'On the island now' panel shows 5 critters all 'splashing in the puddles', so the reactions look uniform.",
+   "suggestion": "Check the browser with tests/browser/loadtime.mjs. Record a short clip of the shower and party for the human."
+  }
+ ],
+ "addressed": true,
+ "response": "s38: Rain test: printed who left the shower; two real game bugs. (1) The wild berry race pulled any racer back every frame, even after a shower took it, and the winner then danced off the shower (berry_race.jl RACE_GOALS: a racer taken away is out; the race ends when all are gone; new test 'a racer taken away is not pulled back'). (2) A shelterer with a bay between it and the tree was turned back by the coast and dropped out (showers.jl shelter_spot now needs a land path, else it stays as :nose). Overlap test: no overlap in 60 s of live sampling and the full suite passed it; its message now prints goals, actions, props near both. Wave tests: the cairn took E beside loose pebbles (seen: 'cairn e' at the press time); tests now wave from spots free of flowers AND pebbles (e_free). Full suite run: 64/65 before the wave fix, wave tests 9/9 after. The browser wet-ground check and a party clip are still open."
+}

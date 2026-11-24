@@ -1,0 +1,11 @@
+[Makie]
+precompile_workload = false
+
+[GLMakie]
+precompile_workload = false
+
+[WGLMakie]
+precompile_workload = false
+
+[RayMakie]
+precompile_workload = false

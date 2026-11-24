@@ -1,0 +1,433 @@
+{
+  "assets": [
+    {
+      "created": "2026-11-22T20:05:18.832",
+      "faces": 188578,
+      "id": "20261122-195434-518-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-195434-518-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-195434-518-asset/mesh.jls",
+      "prompt": "a small stylized stone lantern with moss on its roof, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 640.0,
+      "tags": [
+        "prop",
+        "stone",
+        "lantern"
+      ]
+    },
+    {
+      "created": "2026-11-22T21:59:34.002",
+      "faces": 14943,
+      "id": "20261122-214627-077-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-214627-077-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214627-077-asset/mesh.jls",
+      "prompt": "a cozy small cottage with a red tiled roof, round chimney, wooden door and round window, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 782.0,
+      "tags": [
+        "prop",
+        "house"
+      ]
+    },
+    {
+      "created": "2026-11-22T22:05:23.778",
+      "faces": 14291,
+      "id": "20261122-214627-161-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-214627-161-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214627-161-asset/mesh.jls",
+      "prompt": "a short wooden signpost with two arrow boards on a thick post, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 349.0,
+      "tags": [
+        "prop",
+        "sign"
+      ]
+    },
+    {
+      "created": "2026-11-22T22:17:55.275",
+      "faces": 14397,
+      "id": "20261122-214637-773-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-214637-773-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-214637-773-asset/mesh.jls",
+      "prompt": "a cluster of three big red spotted toadstool mushrooms, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 472.0,
+      "tags": [
+        "prop",
+        "mushroom"
+      ]
+    },
+    {
+      "created": "2026-11-22T22:25:18.705",
+      "faces": 14338,
+      "id": "20261122-221801-999-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-221801-999-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-221801-999-asset/mesh.jls",
+      "prompt": "a single chunky green broadleaf tree with a short straight brown trunk and a big round fluffy crown, trunk ends flat at the bottom, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 435.0,
+      "tags": [
+        "prop",
+        "tree"
+      ]
+    },
+    {
+      "created": "2026-11-22T22:32:43.271",
+      "faces": 14878,
+      "id": "20261122-221803-724-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-221803-724-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-221803-724-asset/mesh.jls",
+      "prompt": "a round green leafy bush with small pink flowers, chunky rounded shapes, soft hand-painted colors",
+      "seconds": 445.0,
+      "tags": [
+        "prop",
+        "bush"
+      ]
+    },
+    {
+      "created": "2026-11-22T23:04:58.531",
+      "faces": 38365,
+      "id": "20261122-225654-964-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-225654-964-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-225654-964-asset/mesh.jls",
+      "prompt": "a chunky stylized pine tree, layered round dark green tiers on a short brown trunk, trunk ends flat at the bottom, soft hand-painted colors",
+      "seconds": 483.0,
+      "tags": [
+        "prop",
+        "tree"
+      ]
+    },
+    {
+      "created": "2026-11-22T23:12:06.894",
+      "faces": 39114,
+      "id": "20261122-225656-623-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-225656-623-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-225656-623-asset/mesh.jls",
+      "prompt": "a big smooth rounded grey boulder with patches of green moss, chunky soft shapes, flat bottom, soft hand-painted colors",
+      "seconds": 428.0,
+      "tags": [
+        "prop",
+        "rock"
+      ]
+    },
+    {
+      "created": "2026-11-22T23:25:00.334",
+      "faces": 38429,
+      "id": "20261122-225659-827-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-225659-827-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-225659-827-asset/mesh.jls",
+      "prompt": "a cluster of three small rounded grey stones with moss, chunky soft shapes, flat bottom, soft hand-painted colors",
+      "seconds": 712.0,
+      "tags": [
+        "prop",
+        "rock"
+      ]
+    },
+    {
+      "created": "2026-11-22T23:46:56.410",
+      "faces": 38887,
+      "id": "20261122-234150-385-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261122-234150-385-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-234150-385-asset/mesh.jls",
+      "prompt": "a slender stylized birch tree with a white trunk with dark marks and a light yellow-green fluffy crown, trunk ends flat at the bottom, soft hand-painted colors",
+      "seconds": 306.0,
+      "tags": [
+        "prop",
+        "tree"
+      ]
+    },
+    {
+      "created": "2026-11-23T00:20:08.064",
+      "faces": 38376,
+      "id": "20261123-000547-906-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-000547-906-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-000547-906-asset/mesh.jls",
+      "prompt": "a single low wide dome-shaped green leafy shrub seen from the side, three overlapping chunky rounded leaf clumps resting on the ground, a few small pink flowers, no pot, no stem, stylized cozy game prop, soft hand-painted colors",
+      "seconds": 576.0,
+      "tags": [
+        "prop",
+        "bush"
+      ]
+    },
+    {
+      "created": "2026-11-23T00:31:52.087",
+      "faces": 39696,
+      "id": "20261123-001304-442-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-001304-442-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-001304-442-asset/mesh.jls",
+      "prompt": "a single round fluffy green hedge bush seen from the side, chunky rounded leaf clumps resting on the ground, a few tiny yellow berries, no pot, no trunk, stylized cozy game prop, soft hand-painted colors",
+      "seconds": 704.0,
+      "tags": [
+        "prop",
+        "bush"
+      ]
+    },
+    {
+      "created": "2026-11-23T00:43:28.865",
+      "faces": 38926,
+      "id": "20261123-003412-747-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-003412-747-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-003412-747-asset/mesh.jls",
+      "prompt": "a round woven wicker basket seen from the side, resting on the ground, heaped full of shiny red berries, chunky rounded shapes, warm honey brown wicker, soft hand-painted look",
+      "seconds": 555.0,
+      "tags": [
+        "prop",
+        "basket"
+      ]
+    },
+    {
+      "created": "2026-11-23T02:52:57.146",
+      "faces": 39139,
+      "id": "20261123-024153-991-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-024153-991-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-024153-991-asset/mesh.jls",
+      "prompt": "a small cluster of three chunky stylized meadow flowers with round pink and yellow petals on short green stems with two leaves, seen from the side, resting on the ground, soft hand painted colors",
+      "seconds": 659.0,
+      "tags": [
+        "flora",
+        "flower"
+      ]
+    },
+    {
+      "created": "2026-11-23T03:44:18.614",
+      "faces": 38154,
+      "id": "20261123-033456-088-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-033456-088-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-033456-088-asset/mesh.jls",
+      "prompt": "a single chunky stylized meadow flower with five thick round pink petals and a big yellow center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, soft hand painted colors",
+      "seconds": 559.0,
+      "tags": [
+        "flora",
+        "flower"
+      ]
+    },
+    {
+      "created": "2026-11-23T03:52:14.356",
+      "faces": 38625,
+      "id": "20261123-033457-643-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-033457-643-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-033457-643-asset/mesh.jls",
+      "prompt": "a small round clump of chunky stylized pale blue and white meadow flowers with thick rounded petals and plump green leaves, seen from the side, resting on the ground, soft hand painted colors",
+      "seconds": 475.0,
+      "tags": [
+        "flora",
+        "flower"
+      ]
+    },
+    {
+      "created": "2026-11-23T04:26:57.078",
+      "faces": 39458,
+      "id": "20261123-041652-323-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-041652-323-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-041652-323-asset/mesh.jls",
+      "prompt": "a single chunky stylized yellow meadow flower like a small daisy with thick round butter yellow petals and an orange center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, no pot, soft hand painted colors",
+      "seconds": 501.0,
+      "tags": [
+        "flora",
+        "flower"
+      ]
+    },
+    {
+      "created": "2026-11-23T08:20:01.400",
+      "faces": 39912,
+      "id": "20261123-080614-049-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-080614-049-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-080614-049-asset/mesh.jls",
+      "prompt": "a single small chunky stylized clump of thick grass blades seen from the side, resting on the ground, fresh green with lighter yellow-green tips, soft rounded cartoon shapes",
+      "seconds": 825.0,
+      "tags": [
+        "grass",
+        "flora"
+      ]
+    },
+    {
+      "created": "2026-11-23T14:07:42.137",
+      "faces": 7820,
+      "id": "20261123-135732-976-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-135732-976-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135732-976-asset/mesh.jls",
+      "prompt": "a single chunky stylized piece of pale weathered driftwood, smooth rounded clay-toy look, soft warm grey and sand colours, seen from the side, resting on the ground",
+      "seconds": 606.0,
+      "tags": [
+        "prop",
+        "beach"
+      ]
+    },
+    {
+      "created": "2026-11-23T14:16:25.115",
+      "faces": 7899,
+      "id": "20261123-135734-637-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-135734-637-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135734-637-asset/mesh.jls",
+      "prompt": "a small group of three stylized seashells, a pink scallop and two cream spiral shells, chunky clay-toy look, seen from the side, resting on the ground",
+      "seconds": 523.0,
+      "tags": [
+        "prop",
+        "beach"
+      ]
+    },
+    {
+      "created": "2026-11-23T14:22:40.974",
+      "faces": 7923,
+      "id": "20261123-135736-240-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-135736-240-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135736-240-asset/mesh.jls",
+      "prompt": "a single stylized coral-orange starfish, chunky rounded clay-toy look, seen from slightly above and the side, resting on the ground",
+      "seconds": 376.0,
+      "tags": [
+        "prop",
+        "beach"
+      ]
+    },
+    {
+      "created": "2026-11-23T14:30:17.315",
+      "faces": 7920,
+      "id": "20261123-135737-841-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-135737-841-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-135737-841-asset/mesh.jls",
+      "prompt": "a small clump of stylized pale green dune grass with a few thin tall blades, chunky clay-toy look, seen from the side, resting on the ground, no pot",
+      "seconds": 456.0,
+      "tags": [
+        "prop",
+        "beach"
+      ]
+    },
+    {
+      "created": "2026-11-23T19:58:36.830",
+      "faces": 2152,
+      "id": "20261123-193127-127-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261123-193127-127-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-193127-127-asset/mesh.jls",
+      "prompt": "a small cute wooden crate with rounded edges and a rope handle, warm honey wood, stylized toy-like, seen from the side, resting on the ground",
+      "seconds": 929.0,
+      "tags": [
+        "prop",
+        "builder"
+      ]
+    },
+    {
+      "created": "2026-11-24T01:05:27.673",
+      "faces": 5869,
+      "id": "20261124-004844-465-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-465-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-465-asset/mesh.jls",
+      "prompt": "a small cozy wooden garden bench with a curved backrest and four short legs, stylized toy-like, soft hand-painted colors, seen from the side at an angle, resting on the ground",
+      "seconds": 664.0,
+      "tags": [
+        "bench",
+        "lookout",
+        "furniture"
+      ]
+    },
+    {
+      "created": "2026-11-24T01:29:38.968",
+      "faces": 2332,
+      "id": "20261124-004844-471-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-471-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-471-asset/mesh.jls",
+      "prompt": "a small young seedling sprout with two round green leaves on a short stem, stylized cozy toy-like, seen from the side, standing in soil, no pot",
+      "seconds": 565.0,
+      "tags": [
+        "plant",
+        "seedling",
+        "garden"
+      ]
+    },
+    {
+      "created": "2026-11-24T01:39:18.259",
+      "faces": 2414,
+      "id": "20261124-004844-475-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-475-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-475-asset/mesh.jls",
+      "prompt": "a bunch of three orange carrots with leafy green tops lying together, stylized cozy toy-like, seen from the side, resting on the ground",
+      "seconds": 569.0,
+      "tags": [
+        "plant",
+        "vegetable",
+        "garden"
+      ]
+    },
+    {
+      "created": "2026-11-24T01:49:14.189",
+      "faces": 2843,
+      "id": "20261124-004844-478-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-478-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-478-asset/mesh.jls",
+      "prompt": "a short rustic wooden picket fence section with three rounded pickets and two rails, warm honey wood, stylized toy-like, seen from the side, standing on the ground",
+      "seconds": 576.0,
+      "tags": [
+        "prop",
+        "fence",
+        "garden"
+      ]
+    },
+    {
+      "created": "2026-11-24T01:59:13.332",
+      "faces": 3968,
+      "id": "20261124-004844-481-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-481-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-481-asset/mesh.jls",
+      "prompt": "a small cute green metal watering can with a long spout, stylized toy-like, soft hand-painted colors, seen from the side, resting on the ground",
+      "seconds": 589.0,
+      "tags": [
+        "prop",
+        "tool",
+        "garden"
+      ]
+    },
+    {
+      "created": "2026-11-24T02:50:11.670",
+      "faces": 2828,
+      "id": "20261124-023909-261-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-023909-261-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-023909-261-asset/mesh.jls",
+      "prompt": "a short chunky tree stump with green moss on top and little roots, seen from the side, resting on the ground, stylized clay-toy look, soft rounded shapes",
+      "seconds": 659.0,
+      "tags": []
+    },
+    {
+      "created": "2026-11-24T03:02:04.902",
+      "faces": 2853,
+      "id": "20261124-023909-355-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-023909-355-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-023909-355-asset/mesh.jls",
+      "prompt": "a single fallen mossy log lying on its side with a small mushroom, seen from the side, resting on the ground, stylized clay-toy look, soft rounded shapes",
+      "seconds": 703.0,
+      "tags": []
+    },
+    {
+      "created": "2026-11-24T04:02:58.473",
+      "faces": 37691,
+      "id": "20261124-034756-569-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-034756-569-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-034756-569-asset/mesh.jls",
+      "prompt": "a small sturdy wooden workbench with a little vice, a hammer and wood shavings on top, warm honey wood, stylized toy-like, soft hand-painted colors, seen from the side at an angle, resting on the ground",
+      "seconds": 882.0,
+      "tags": [
+        "prop",
+        "workshop"
+      ]
+    },
+    {
+      "created": "2026-11-24T04:12:36.535",
+      "faces": 39107,
+      "id": "20261124-034756-627-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-034756-627-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-034756-627-asset/mesh.jls",
+      "prompt": "a small wooden wall rack with garden tools hanging on it, a little shovel, a rake and a watering can, stylized toy-like, soft hand-painted colors, seen from the front, standing on the ground",
+      "seconds": 568.0,
+      "tags": [
+        "prop",
+        "workshop"
+      ]
+    },
+    {
+      "created": "2026-11-24T12:31:53.569",
+      "faces": 7935,
+      "id": "20261124-122124-621-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-122124-621-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-122124-621-asset/mesh.jls",
+      "prompt": "a small wooden garden wheelbarrow with one red wheel and a green painted tub, stylized cozy toy-like, seen from the side, resting on the ground",
+      "seconds": 622.0,
+      "tags": [
+        "prop",
+        "tool"
+      ]
+    }
+  ]
+}

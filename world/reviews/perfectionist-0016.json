@@ -1,0 +1,157 @@
+{
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "world/journal/2026-11-22.md 17:26; world/media/s13-night.png, s13-night2.png; todo #41",
+      "what": "The RayMakie raster ignores changes to light colour and ambient light unless the screen has gamma set (a display-encoded film), so tinting the sun or moon does nothing in the live dashboard."
+    },
+    {
+      "evidence": "world/reviews/session-0013.json; journal 17:39",
+      "what": "An ambient light cannot be added to a RayMakie scene after its first trace ('this scene was first traced without an ambient light, and one cannot be added afterwards'); adding one broke every screenshot."
+    },
+    {
+      "evidence": "todos #15, #16, #25; dev/Makie/RayMakie/src/plots/mesh.jl:1114",
+      "what": "RayMakie cannot delete! a plot from a traced scene (there is no trace_parts method for RayMakie.RenderObject), and the failed delete leaves the viewport black until a restart, so plugins have to hide plots and keep them forever."
+    },
+    {
+      "evidence": "dev/Hikari/src/scene-mesh.jl:133 via dev/Makie/RayMakie/src/plots/meshscatter.jl:192; .jail/logs/game.log tail, restart at 19:46:22",
+      "what": "Meshscatter in Hikari/RayMakie does not support per-instance emissive materials: a meshscatter with Hikari.Emission fails in trace_renderobject ('use the single-transform push! for each emitter'), and the game died when a traced frame was rendered after a round of Firefly catch."
+    },
+    {
+      "evidence": "dev/NeverendingGame/src/scenery.jl:257-270; todo #7",
+      "what": "Every new SunSkyLight direction re-bakes the sky (about 35 ms), so the sun can only move in 1 degree steps without frame spikes."
+    },
+    {
+      "evidence": "world/reviews/perfectionist-shots/browser-1.png, browser-2.png (no shadows, no sea, grey-blue void)",
+      "what": "WGLMakie (the browser view) draws neither shadows nor the SunSkyLight sky, so the browser look is a flatter, different game unless the author fakes sky and water with explicit colours."
+    },
+    {
+      "evidence": "journal 16:15 and 17:45; world/state/perf.json live:screenshot median 7633 ms; 27 game starts in .jail/logs/game.log",
+      "what": "Host: a game restart takes 1-5 minutes, the first live screenshot after it about 55 s, and every screenshot about 7.6 s, so iterating on visuals is slow."
+    },
+    {
+      "evidence": ".jail/home-review and .jail/home-test transcripts (0.68M + 0.27M weighted tokens); .jail/sessions.jsonl",
+      "what": "Host: the 3M daily budget counts the reviewer and tester too. Today 0.95M of 3M (32%) went to review and test agents and 2.04M to the author, whose 16 sessions added up to 66 minutes of work."
+    },
+    {
+      "evidence": "world/outbox/*.json (11 of 15 about test wishes); world/reviews/perfectionist-shots/follow.png right panel",
+      "what": "Host: the UI tests send wishes through the real inbox, and RULES.md rule 8 makes the author answer messages first. Most outbox messages, and the whole 'Messages to you' panel, are replies to test wishes."
+    }
+  ],
+  "findings": [
+    {
+      "category": "world",
+      "done_when": "An orbit-camera screenshot shows at least 3 areas that look different at a glance, each with a landmark, joined by a visible path, under a horizon with sky and clouds; world.json lists the areas; frame p95 stays under 33 ms.",
+      "evidence": "world/state/world.json: flower 160, tree 40, rock 30, bush 14, ball 1, actors 0; world/reviews/perfectionist-shots/follow.png, browser-1.png",
+      "severity": "high",
+      "suggestion": "Design the island as 4 named areas with one landmark each and build one area per session. Sprout's garden: cottage, fence, vegetable patch, mailbox. A beach: wooden pier, rowing boat, shells. A mushroom grove: dense trees, caps that glow at night. A pond: a waterfall or stream with stepping stones. Connect them with paths painted into the terrain vertex colours (packed earth, pebbles) and gently flattened. Add terrain variety (a cliff edge, a lookout hill), grass tufts as one instanced meshscatter, a foam ring at the shore, and a sky dome with a horizon gradient and a few soft cloud clusters. Store the areas in world.json so creatures can have favourite places.",
+      "what": "The island is still the generated seed-1 starter world, untouched in 16 sessions: one round hill of a single saturated green, a thin sand rim and a flat sea plane, with 40 trees, 14 bushes, 30 rocks and 160 flowers sprinkled at random. It has no places: no path, house, pier, pond, stream, cliff, bridge or landmark, nothing that sets one part of the island apart from another. No sky or horizon is ever in frame: the raster shows a navy plane, the browser a grey void.",
+      "where": "dev/NeverendingGame/src/world.jl:195-219 (new_world), scenery.jl:174-198 (Stage); the whole 3D view"
+    },
+    {
+      "category": "props",
+      "done_when": "catalog.json has at least 8 assets whose image.png has transparent borders and a whole object; a follow-camera screenshot shows 3 or more generated props near Sprout that match the creatures' style; frame p95 is under 33 ms with them placed.",
+      "evidence": "world/assets/20261122-194439-779-asset/image.png (alpha sampled on a 128 px grid: 254-255 everywhere, pedestal cropped); no world/assets/catalog.json; world/reviews/perfectionist-shots/follow.png",
+      "severity": "high",
+      "suggestion": "Fix the pipeline once, then make props in bulk. 1) Add a fixed style suffix from STYLE.md to every prompt: 'a single whole object, centred, entire object visible with margin, plain white background, stylised toy-like 3D clay render, chunky rounded shapes, soft pastel colours, no text'. 2) Add a real cut-out step (SAM2Runner and MatAnyoneRunner are in the environment), and reject an image whose border is not transparent or whose object touches the edge. 3) Before every break, queue a starter kit of 10-12 props (cottage, picket fence, lantern, wooden pier, rowing boat, mailbox, beehive, mushroom cluster, tree stump, well, signpost, campfire) and two real tree models to replace the lollipops. Place them as small groups (a bench with a lantern and a flower bed), not scattered.",
+      "what": "Every prop is a unit sphere or cylinder: trees are a brown cylinder under three green balls, bushes are three balls, rocks are pale squashed eggs, flowers are pins with a coloured head. There is no world/assets/catalog.json: the author never ran the asset pipeline (todo #8 open since 15:57). The first asset job, submitted by the human's helper, shows that the pipeline as written gives Trellis2 unusable input. The image is fully opaque (alpha 254-255 everywhere; the ', isolated on a transparent background' suffix was ignored), its base is cut off by the bottom edge, it sits on a brown gradient, and it is a photoreal mossy stone, not the glossy toy look of the creatures.",
+      "where": "scenery.jl:76-115 (add_static_props!), assets.jl:83-98 (run_job :image), world/assets/20261122-194439-779-asset/image.png"
+    },
+    {
+      "category": "fun",
+      "done_when": "A follow-camera screenshot during play shows at least 3 glowing yellow flies in frame; a catch shows a visible effect; the end card shows a best score that survives a game restart; turning path tracing on after a play leaves game.log free of errors; pressing E next to a creature in Jump in gives a visible reaction (FakeInteraction test).",
+      "evidence": "world/tests/shots/minigame-Firefly_catch__WASD_.png (fly pixels at (634,157), (847,104), (843,124) are RGB 0,0,0); world/reviews/perfectionist-shots/minigame-fireflycatchwasd.png (no fly visible, HUD drawn over 'Even this?', 'Sprout' and 'Marshmallow'); .jail/logs/game.log tail: 'per-instance emissive materials are not supported', game restart 19:46:22",
+      "severity": "high",
+      "suggestion": "Make the firefly game a real loop. Flies glow warm yellow and work in the raster, the tracer and the browser: one emitter per fly via the single-transform push!, or a bright unlit sphere with a soft halo. They spawn 4-10 m ahead of the camera, drift, and dart away when Sprout runs. A catch shows a pop of sparks and a counter flying into the HUD; the game opens with 3-2-1 and ends on a results card with the best time. Set it at dusk or night so it is the reason the night exists, and give a lasting reward: caught fireflies fill a jar lamp at Sprout's house. Then add direct interactions in Jump in: E next to a creature boops, waves or offers a berry, and the creature answers with an emote and a line.",
+      "what": "There is nothing to do. The only mini game, Firefly catch, renders its fireflies as pure black dots in the live raster, and in daylight none are in frame at all. The player walks around a 24 m island under a floating '0/8 41 s nearest 5 m' with no direction. A catch gives no pop, sound or effect, the end is one line of text, and there is no best score or reward, so there is no reason to play twice. Playing it once leaves an Emission meshscatter in the scene that the path tracer cannot handle: the next traced frame threw and the game process died at 19:46. Beyond that the player cannot touch the world: no clicking, petting, feeding or talking to a creature, no gifts.",
+      "where": "world/plugins/firefly_catch.jl; dev/NeverendingGame/src/play.jl; 3D view"
+    },
+    {
+      "category": "camera",
+      "done_when": "Of ten follow-mode screenshots taken 5 s apart, at least 8 show a creature's eyes and have foliage covering less than 15% of the frame; follow, orbit and free give three different screenshots; a FakeInteraction mouse drag in free mode changes the next screenshot.",
+      "evidence": "world/reviews/perfectionist-shots/follow.png and orbit.png (note from the human's helper: the three mode screenshots were captured within one frame, so they show the same moment and say nothing about the modes themselves; check each mode live); world/reviews/fresh16-1.png (all green, camera inside a crown)",
+      "severity": "high",
+      "suggestion": "Replace the chase cam with a small director. Use 3/4 front shots that show faces, a two-shot that frames both partners of a Chat, Boop or DanceOff, and a slow establishing orbit of an area every 30-60 s, with cuts or eased moves between them, rule-of-thirds framing and a lower height. Fade or hide the canopy instances between the camera and the subject (the canopy is one meshscatter) instead of only swinging the camera around. In free mode stop calling look!, so the LScene's own mouse controls work. Check each mode on its own.",
+      "what": "The follow camera sits behind and above the subject, so the centre of the frame is Sprout's blank back (no face). Tree crowns fill 30-40% of the frame from the foreground (follow.png) or all of it when the camera ends up inside a crown (fresh16-1.png). 'Camera: free' is not free: update_camera! calls look! every frame with the rig's fixed eye and target, which undoes any mouse orbit or zoom in the LScene at once.",
+      "where": "dev/NeverendingGame/src/render.jl:29-57 (camera_goal, update_camera!), scenery.jl:336-365 (blocked, follow_view), dashboard.jl:156-158 (set_camera!)"
+    },
+    {
+      "category": "ui",
+      "done_when": "The default dashboard screenshot has no token counts, exit codes, test messages or todo jargon; the feed shows at least 3 events from the last minute; no name is clipped or shown for a creature that is not visible; a browser screenshot at 1920x1080 shows the dashboard filling the window.",
+      "evidence": "world/reviews/perfectionist-shots/follow.png, browser-1.png, browser-2.png; world/outbox: 11 of 15 messages are about test wishes",
+      "severity": "high",
+      "suggestion": "Make the panel about the island. Show a cast list with a small portrait, name, mood and what each creature is doing ('Truffle is sniffing the roses'), a plain-language event feed ('Gloop booped Pinchy', 'Cumulus won a dance-off'), mini game cards with best scores, and one line about what Sprout is building today. Put budget, exits and todos behind a collapsed 'Workshop' toggle. Show names only for creatures that are on screen and not hidden, and in Jump in only for the nearest few. Make the browser figure fill the window.",
+      "what": "A third of the screen is the developer's console, not the game. It shows 'waiting for budget: 2.99M of 3.00M tokens', 'game exited with code 0 after 939.7 s' three times, 'Messages to you' saying Sprout ignored automated UI-test wishes, and 'Next on the list' items about 'a display-encoded film (gamma set)'. After six sessions of label work, names of off-screen creatures are pinned to the left edge and cut off ('umulus', 'ckles', 'oop' in follow.png; in browser-2.png a column of 7 names with no creatures). In the browser the dashboard is a fixed 1280x720 figure in the top-left corner of a 4K window, and the rest of the window is white.",
+      "where": "dashboard.jl:268-310 (update_dashboard!), scenery.jl:274-324 (clamp_dx, stack_offsets, sync_text!), web.jl serve_web!; the right panel and the 3D view"
+    },
+    {
+      "category": "lighting",
+      "done_when": "Screenshots at 07:00, 12:00, 18:00 and 23:00 on the island clock are clearly different: day mean grey 90 or more; night 30-50 with a blue cast and at least 5 warm light points. A traced still at 18:00 shows warm long shadows without visible grain.",
+      "evidence": "world/reviews/perfectionist-shots/raster-earlier.png vs traced-earlier.png; world/tests/shots/minigame-Firefly_catch__WASD_.png (19:36, mean grey 34.7); journal 17:26 (night tint invisible in the raster)",
+      "severity": "medium",
+      "suggestion": "Work with what the raster honours: drive the time of day through colours you own. Use a per-hour palette that tints the terrain vertex colours, the sky dome and the sea (warm gold at 17-19 h, blue-violet at night). Add lanterns, windows and glowing mushrooms that look lit and switch on at dusk, and stars on the dome. Lift the shadow colour with a cheap ambient-occlusion or shade term baked into the terrain vertex colours. Make golden hour the hero look. Write the gamma request into world/patches once, then stop spending sessions on it. For traced stills, add denoising (JuliaVision has OIDNRunner).",
+      "what": "The lighting is a single hard sun. Core shadows under trees are near-black green blobs, the sea is a flat navy plane, and there is no ambient occlusion, rim light, fog or colour in the shadows. The time of day barely reads: 00:43 looks like noon (fresh16-1.png, fresh16-3.png), 19:36 is a murky dark green (mean grey 35 in the 3D view), and the night never gets a moon, stars or a single warm light. Four sessions on the night look produced nothing visible because light colour changes do not show in the raster. The path traced still (traced-earlier.png) is the same picture plus grain.",
+      "where": "scenery.jl:131-164 (sun, stage_lights, night_factor), scenery.jl:257-270 (sync_sun!)"
+    },
+    {
+      "category": "creatures",
+      "done_when": "A follow screenshot shows the eyes of at least 3 creatures and an emote icon during a Chat, Boop or DanceOff; a 6th species is in world.json and its behaviour shows in a screenshot; the event log has at least one new event kind.",
+      "evidence": "world/reviews/perfectionist-shots/follow.png (Sprout from behind, the sheep and pig small at the edges); world/log/events-2026-11-22.jsonl (say 1311, kick 219, ate 215, Chat 176, Boop 71, DanceOff 37, no other creature events)",
+      "severity": "medium",
+      "suggestion": "Make them read as characters. Put emote icons over their heads (heart, zzz, note, !) tied to actions and mood, add a soft rim or outline so white Fluffkins stand apart from pale rocks, and make heads and eyes slightly larger. Every few sessions, add a new species with a place and a behaviour: a bird that lands in tree crowns and sings, a fish that jumps at the pier, a mole that pops out in the garden, a firefly swarm at night. Give each creature a home, a favourite spot in an area and a daily routine (breakfast at the berry bush, a nap under a tree, gathering at the campfire at dusk).",
+      "what": "The creatures are the best-made thing in the game: googly eyes that blink, cheeks, snoots, wool puffs, a jelly with a yolk, gaits and dances in species.jl. But on screen they are small pale blobs, seen from behind or half hidden by trees, so their faces and dances are almost never visible. No species, behaviour or interaction was added in 16 sessions; the event log shows the same Chat, Boop, DanceOff, kick and eat loop that the starter engine had.",
+      "where": "dev/NeverendingGame/src/species.jl, behavior.jl:221-390; 3D view"
+    },
+    {
+      "category": "performance",
+      "done_when": "live_status reports render median and p95 and a browser fps; the header shows the measured value; render p95 is under 33 ms with the new props in place; at most one unplanned restart in a day of play.",
+      "evidence": "world/state/perf.json (frame median 1.34 ms, live:screenshot 7633 ms); world/reviews/fresh-eyes-0016.json (render p95 52.5 / 52.4 / 34.4 ms); .jail/logs/game.log: 27 'start game' lines",
+      "severity": "medium",
+      "suggestion": "Measure the frames people see: RayMakie's render time on this machine and the browser's frame rate (a Bonito JS callback that reports requestAnimationFrame timing). Put both into perf.json and the header. Keep a quality fallback (fewer flowers, cheaper shadows) for when p95 goes over 33 ms. Treat every process death as a high-priority todo with the log tail attached.",
+      "what": "The header's '30 fps' does not measure what anyone sees: it is min(30, 1000 / frame), and since the JPEG stream was removed, frame! does no rendering at all. The last time rendering was measured it took median 22-26 ms and p95 42-61 ms, which is visible stutter. A live screenshot takes 7.6 s. The game process started 27 times today (segfaults, a SIGQUIT, failed precompiles, the 19:46 emissive crash), and each restart costs 1-5 minutes.",
+      "where": "dashboard.jl:272-276 (status line), game.jl:304-334 (frame!), world/state/perf.json"
+    }
+  ],
+  "process": "No. This is the first perfectionist review, so these scores are the baseline. Sixteen sessions added up to 66 minutes of actual author work (.jail/sessions.jsonl: sessions of 1-14 minutes, median about 3, although 45 are allowed), and almost none of it went into anything a player would call content. The loop explains why. session.md step 2 puts 'address open review findings' before any new work, and the per-session reviewer judges only the last diff (does it work, is the text readable, is the evidence complete). So every review produces three to five nits about the previous fix, and those become the next session's work. Name tags were the subject of sessions 1, 2, 3, 4, 10 and 12 and are the plan for session 17; dashboard text wrapping took 11, 12 and 15; firefly crash fixes took 6-8. The night look took 6b, 13 and 14 with nothing visible, because of a raster limit the author should have handed to world/patches after one try. Todo #8 (try the asset pipeline), #4 (movies) and #5 (blog) have been open since the first minute and were never touched. world.json is still the generated starter island, there is one plugin, and no worker job was ever queued, although RULES.md rule 9 says to queue them before breaks. Each short session also pays a fixed cost: re-reading the rules, skills, reviews and todos, and waiting through 1-5 minute game restarts. A third of the daily 3M tokens goes to the reviewer and tester. There is no STYLE.md and no roadmap, so 'the most valuable todo' is whatever the last review complained about; AGENTS.md 'Lessons learned' still reads '(add here)', so lessons stay buried in the journal and get rediscovered. What the loop should make the author do: (1) fewer, longer sessions that use the 45 minutes, each with one content goal from a roadmap of areas, creatures and games (for example 'the beach: pier, boat, shells, a crab mini game'); (2) every session ships at least one thing a player sees in the 3D view (a prop set, an area, a creature, an interaction), and a session without one is a fail unless a crash blocked it; (3) the per-session review blocks only on crashes, regressions and broken features, with at most two findings, and low-severity findings never become todos; polish is batched and judged by this scorecard, with quality.jsonl tracking the scores; (4) write STYLE.md now, and queue 8-12 asset jobs before every break so the worker makes props while no agent runs; (5) time-box engine limits to one attempt, then a patch file and a workaround; (6) move lessons into AGENTS.md, and send test wishes to a test inbox so that 'answer the human first' means the human.",
+  "scores": {
+    "camera": {
+      "score": 3,
+      "why": "The chase cam shows Sprout's blank back with crowns filling 30-40% of the frame, sometimes sits inside a crown; 'free' is frozen because look! runs every frame; follow, orbit and free shots are byte-identical."
+    },
+    "creatures": {
+      "score": 4,
+      "why": "The best part: 5 species with googly eyes, cheeks, snoots, wool, jelly, blink, gait and dance code, but on screen they are small pale blobs seen from behind or half hidden by trees; no new species or behaviour in 16 sessions."
+    },
+    "fun": {
+      "score": 2,
+      "why": "One mini game with black or invisible fireflies, no direction cue, no feedback on a catch, no best score or reward; no way to touch creatures (click, pet, feed, talk); playing it and then tracing killed the game at 19:46."
+    },
+    "lighting": {
+      "score": 3,
+      "why": "One hard sun with near-black core shadows, a flat navy sea, no AO, rim light, fog or coloured shade; 00:43 looks like noon, 19:36 is murky (mean grey 35), night has no moon, stars or warm lights; the traced still is the same picture plus grain."
+    },
+    "performance": {
+      "score": 4,
+      "why": "Sim and sync take 1.3 ms median (2.3 ms p95), but the header's '30 fps' leaves out rendering, the last render measurement was p95 42-61 ms, a live screenshot costs 7.6 s, and the game process started 27 times today."
+    },
+    "props": {
+      "score": 2,
+      "why": "Four prop types built from unit spheres and cylinders (lollipop trees, three-ball bushes, egg rocks, pin flowers); no catalog.json, the author never ran the asset pipeline, and the first job (by the human's helper) gives an opaque, cropped, photoreal image."
+    },
+    "style": {
+      "score": 3,
+      "why": "Glossy toy creatures and primitive props agree as a 'toy box', but there is no STYLE.md, the palette is saturated flat green plus navy, the browser look (no water, no shadows, grey void) is a different game, and the first generated asset is photoreal moss stone."
+    },
+    "ui": {
+      "score": 3,
+      "why": "The right third is developer internals (tokens, exit codes, test-wish replies, gamma todos); off-screen names pinned and clipped at the left edge ('umulus', 'ckles', 'oop'); HUD, speech and names pile up in play; the browser view is a fixed 1280x720 figure in a corner."
+    },
+    "world": {
+      "score": 2,
+      "why": "Still the generated seed-1 starter island: one round green hill, a sand rim, a flat sea plane, props sprinkled at random; no areas, paths, landmarks, water features, sky or horizon in frame; nothing added in 16 sessions."
+    }
+  },
+  "summary": "A player sees a small toy island: one round, uniformly bright green hill with lollipop trees, egg-shaped rocks and pin flowers. Ten cute but tiny creatures are mostly seen from behind or through tree crowns, and a third of the screen is the developer's token budget, exit codes and replies to automated tests. The only thing to do is a firefly hunt whose fireflies render as black dots or not at all, and after 16 sessions the world is still the generated starter island: the only changes a player would notice are brighter daylight and bigger name tags.",
+  "superseded_by": "perfectionist-0018.json",
+  "verdict": "fail"
+}

@@ -1,0 +1,36 @@
+{
+  "verdict": "needs_work",
+  "summary": "The stop! crash looks fixed: the plugin now hides the plots instead of deleting them, and the events log shows no new 'failed in stop!' after the last one at about 16:34. The game itself is not shown to work, because no firefly appears in any screenshot.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "The fireflies were never seen in the evidence. The todo says 'Firefly catch' is done, but the only screenshot (ff_play2.png) shows the HUD '0/8 40 s nearest 8 m' and no glowing spheres. The author's own journal admits 'Flies themselves were not visible'. A catch game with invisible targets is not playable or fun. The HUD says nearest 8 m, so the flies may just be off screen, but nothing shows that.",
+      "where": "plugins/firefly_catch.jl:40-45 (meshscatter!, markersize 0.14, Emission strength 8)",
+      "evidence": "media/ff_play2.png, media/ff_play.png",
+      "suggestion": "Show a screenshot with a fly on screen. Make the flies larger (about 0.3) and add a visible cue, such as a screen-edge arrow toward the nearest one. Check that Hikari Emission renders under the raster preview, or use a plain bright color."
+    },
+    {
+      "severity": "medium",
+      "what": "The fix is a workaround and it rests on a real stop-path failure that was never seen passing. The plots are never deleted and are kept in a Main global, so there is a permanent leak. If update! or visible toggling on the hidden plot also hits RayMakie's trace_parts gap, it will fail silently. The first play after a fresh start still creates plots, and the second play reuses them, so the reuse path is the one that needs testing across a plugin hot reload. The Makie.update! on a plot with visible=false is also never checked.",
+      "where": "plugins/firefly_catch.jl:3-6, 62-68",
+      "evidence": "7 'failed in stop!' events in log/events-2026-11-22.jsonl, the last at t\u22481908; the author reports only 2 post-fix plays",
+      "suggestion": "Add a regression test or live eval that plays and stops 3 times and across a reload, and report the failure count. Report the missing trace_parts(RenderObject) method in RayMakie via world/patches/."
+    },
+    {
+      "severity": "medium",
+      "what": "The todo list still shows 'Mini game Firefly catch (WASD) failed in stop!' as open and 'Frames are slow: p95 47 ms (budget 33 ms)'. The author's perf.json shows frame p95 2.25 ms, so the numbers disagree. The slow-frame claim was left untouched and there is no measurement of frame time while the minigame is playing.",
+      "where": "dashboard sidebar 'Next on the list' in media/ff_play2.png; state/perf.json",
+      "evidence": "ff_play2.png sidebar; perf.json frame p95 2.25 ms, minigame median 0.01 ms",
+      "suggestion": "Close the stale failure todo, and measure live_status frame times during play, not only at idle."
+    },
+    {
+      "severity": "low",
+      "what": "The HUD text is legible: yellow, size 28, dark stroke, over the sprout. It floats at roughly the sprout's head and overlaps the 'Sprout' name label region, and the 'nearest N m' hint is only useful if the flies can be seen.",
+      "where": "HUD in media/ff_play2.png",
+      "evidence": "media/ff_play2.png",
+      "suggestion": "Pin the HUD to a fixed screen position, such as the top center of the view, instead of following the sprout."
+    }
+  ],
+  "addressed": true,
+  "response": "Flies verified visible (media/ff_b.png, ff_c.png); perf measured 1.7 ms p95 while playing; todos 24/26/27 closed."
+}

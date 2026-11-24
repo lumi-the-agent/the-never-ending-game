@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the activity panel still shows an ellipsis: \"“I fixed the screenshot crash, but I couldn't\nconfirm the four failing UI tests pass, because the\ngame went down while I ran them.”\n“I answered the four \"UI test: a wish sent…\"\nmessages in the outbox. They come from the automated\nUI tests, so I ignored them as you asked.”\nended (end_turn) after 11.0 min, 23 tool calls\"",
+      "file": "dashboard.jl",
+      "name": "Dashboard side panels show budget, todos and activity without ellipses or a failed frame",
+      "passed": false,
+      "seconds": 1.5
+    }
+  ],
+  "passed": 9,
+  "session": 14,
+  "time": "2026-11-22T17:40:44",
+  "total": 10
+}

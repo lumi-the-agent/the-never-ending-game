@@ -1,0 +1,131 @@
+# Agent Providers
+
+Agents plug in as **provider descriptors**
+([`AgentProviders`](https://github.com/SimonDanisch/BonitoAgents.jl/tree/main/AgentProviders)):
+a name, the binary and arguments to spawn, and provider-specific environment.
+The worker resolves and spawns the binary, so `Sys.which` runs on the machine
+that owns it, and the same descriptor list drives the provider dropdown in the
+chat header, so server and worker can never disagree about what is available.
+
+Everything speaks the
+[Agent Client Protocol](https://agentclientprotocol.com) (ACP): one agent
+process per project, spawned on the first message and reaped when idle.
+
+## Session config
+
+Each chat's header carries the agent's own settings as pills: the **permission
+mode** (how much it may do before asking), the **effort** or thinking level, and
+whatever else the provider reports, such as the model. The options come over ACP
+from the running agent, so the list always matches the provider. Change them for
+one chat in its header, or set fleet-wide starting points under *Defaults* on
+the Settings page, which every new chat inherits.
+
+## Switching agents
+
+The agent pill in the chat's header switches a chat to another provider at any
+time. The next turn starts a fresh session under the new agent, and because
+that agent has never seen the conversation, BonitoAgents hands it the last 60
+user and agent messages along with your next message. The files, the machine,
+the transcript and the BonitoAgents tools stay the same. The switch is kept only
+once the new agent's session is up; if it cannot start (a binary that is not
+installed, a missing login), the chat goes back to the previous agent and says
+why.
+
+So when one provider runs out of credits, has an outage, or simply gets stuck on
+a problem, the conversation carries on under another one. Nothing about a
+project, a transcript or a tool belongs to the agent that started it.
+
+## Managed adapters
+
+Claude Code and Codex reach ACP through adapter packages
+(`@agentclientprotocol/claude-agent-acp`, `@agentclientprotocol/codex-acp`).
+Each worker installs those itself, into a private Node and npm prefix that
+leaves the machine's own Node alone, at the versions the server declares. It
+updates them while no chat runs there, so a running agent never has its files
+replaced underneath it. Admins pick the versions, `latest` or a pinned one, and
+the Node release under *Agent adapters* on the Settings page. An explicit
+override such as `CLAUDE_AGENT_ACP` still wins.
+
+## Claude Code
+
+The default provider. Its adapter is managed (see above); what stays with each
+worker machine's user is the login. Install Claude Code there and run `claude`
+once to log in.
+
+Because Claude Code keeps its session files on the worker, **Discover** can
+list every folder you have ever used `claude` in and import it as a project,
+including the conversation history, which the dashboard reconciles into its
+transcript. Resuming a session continues it with the same context, now with
+the dashboard's rendering, file tree and live-app tooling on top.
+
+## MiMo, OpenCode and Kimi Code
+
+Descriptors for [MiMo](https://github.com/XiaomiMiMo),
+[OpenCode](https://github.com/sst/opencode) and
+[Kimi Code](https://github.com/MoonshotAI) ship in the registry (all three
+expose ACP under an `acp` subcommand). They are not managed: the worker runs
+whichever binary its PATH has, so install them yourself on each worker that
+should run them. Select them per chat from the provider dropdown; switching
+providers mid-project starts the next turn under the new agent, which gets the
+conversation so far (see [Switching agents](@ref)).
+
+## Codex
+
+[Codex](https://github.com/openai/codex) speaks its own app-server protocol
+rather than ACP, so it plugs in through a separate adapter, `codex-acp`, that
+spawns Codex and translates. The adapter is managed like Claude Code's. To log
+in, install the Codex CLI on **each worker that should run Codex**, as the user
+that runs the worker, and run `codex login` there. Instead, you can set
+`CODEX_API_KEY` or `OPENAI_API_KEY` in the worker's environment and restart the
+worker.
+
+The adapter also bundles a compatible Codex runtime; set `CODEX_PATH` to point
+it at a different one, or `CODEX_AGENT_ACP` to run a different adapter build.
+It reports its model, reasoning effort and approval mode as session-config pills
+like any other provider, and advertises ACP `session/list`, so **Discover** finds
+Codex sessions on the worker too.
+
+Codex ends a turn that failed (an exhausted usage limit, an outage) as a normal
+turn end and reports the failure only in the response's metadata. The chat
+shows it as a **Provider error** notice in Codex's own words and treats the turn
+as failed, which also stops Yolo. Before a turn whose context is nearly full,
+Codex compacts the conversation; that shows as a *Compact conversation* card
+and does not count as the agent doing work.
+
+Kimi Code and Codex both advertise ACP `session/load`. BonitoAgents stores the
+provider together with its session id, so reopening a project routes the id back
+to the agent that created it.
+
+### Tool cards across providers
+
+`bt_julia_eval` and the other `btworker` tools render as the same typed cards
+whichever agent calls them, even though ACP leaves it up to the agent how to
+identify an MCP tool. Claude Code states the name in a `_meta` extension, Kimi
+puts it in the ACP title as `mcp__btworker__bt_julia_eval`, OpenCode as
+`btworker_bt_julia_eval`, and Kimi streams the arguments as content text rather
+than `rawInput`. Codex names no tool at all: it wraps the call as
+`rawInput = {server, tool, arguments}` and returns the result only in
+`rawOutput`: an MCP `CallToolResult` for an MCP tool, `formatted_output` for a
+shell command, whose live output it otherwise offers as a terminal handle. All
+of these are normalised back to `(server, tool)` plus the real arguments and
+content, so the code preview, output pane and live embeds behave the same
+everywhere. A recognised tool is also TITLED by its own name, so a
+`bt_julia_eval` card reads `bt_julia_eval` whoever ran it, rather than
+inheriting whatever the agent chose to call it. A tool we don't recognise is
+left untouched and shows the generic card.
+
+## The mock agent
+
+`MockAgent` is a deterministic, scriptable ACP agent used by the test suite and
+by the token-free
+[walkthrough recorder](https://github.com/SimonDanisch/BonitoAgents.jl/blob/main/examples/walkthrough_mock.jl).
+A Julia function maps each prompt to a list of protocol events (text chunks,
+tool calls with diffs, live-app pushes, delays for pacing). It only appears in
+the dropdown when `BT_ENABLE_MOCK_AGENT` is set, which is handy for demos and
+UI work without burning tokens.
+
+## Adding your own
+
+A provider is a small struct: binary, args, env, capability flags. If your
+tool speaks ACP (or you can wrap it so it does), a descriptor is all it takes
+for it to show up in the dropdown on every worker that has the binary.

@@ -1,0 +1,20 @@
+{"session": 18,
+ "summary": "Suite passes and Play/Stop work, but the generated tree asset renders as a malformed brown trunk with an orange ground patch, and the player-facing panels still leak agent/dev talk (token budget, UI tests).",
+ "failures": [
+  {"what": "A generated fruit-tree asset looks broken: a twisted brown trunk with a flat orange square base and no crown, next to the round stylised trees",
+   "steps": "Open the dashboard in follow camera near Sprout and the cottage and look at the left of the view",
+   "expected": "A tree that matches the island's style (STYLE.md)",
+   "actual": "A dark brown, noisy trunk on an orange flat patch, visually clashing",
+   "screenshot": "world/tests/shots/explore-s18.png"},
+  {"what": "'Messages to you' panel and Sprout's thoughts show internal agent/test talk to the player",
+   "steps": "Look at the right-hand panel",
+   "expected": "In-world messages for the player",
+   "actual": "Text like 'This session is short because the token budget is nearly used up' and 'ignoring UI-test wishes' is shown; the 'Next on the list' panel lists dev todos (RayMakie raster, plot names, asset textures dark)",
+   "screenshot": "world/tests/shots/explore-s18.png"},
+  {"what": "Wish box placeholder is clipped: 'Tell Sprout what y'",
+   "steps": "Look at the bottom bar",
+   "expected": "Full placeholder or a shorter one that fits",
+   "actual": "Text cut off mid-word",
+   "screenshot": "world/tests/shots/explore-s18.png"}
+ ],
+ "tests_added": []}

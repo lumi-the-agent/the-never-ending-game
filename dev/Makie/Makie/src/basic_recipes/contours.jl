@@ -1,0 +1,767 @@
+function contour_label_formatter(level::Real)::String
+    lev_short = round(level; digits = 2)
+    return string(isinteger(lev_short) ? round(Int, lev_short) : lev_short)
+end
+
+"""
+Draws 2D lines on the grid defined by `xs` and `ys` where the `data` values match
+a level value.
+
+This can also be called with four arguments `xs, ys, zs` and `data`. In this case
+2D surfaces are drawn based on the `data` values assigned to each point in the
+3D grid defined by `xs`, `ys` and `zs`.
+"""
+@recipe Contour begin
+    """
+    The color of the contour lines. If `nothing`, the color is determined by the numerical values of the
+    contour levels in combination with `colormap` and `colorrange`.
+    """
+    color = nothing
+    """
+    Controls the number and location of the contour lines. Can be either
+
+    - an `Int` that produces n equally wide levels or bands
+    - an `AbstractVector{<:Real}` that lists n consecutive edges from low to high, which result in n-1 levels or bands
+    """
+    levels = 5
+    "Sets the width of contour lines. Can be set per level."
+    linewidth = 1.0
+    "Sets the dash pattern of contour lines. See `?lines`."
+    linestyle = nothing
+    """
+    Sets the type of line cap used for contour lines. Options are `:butt` (flat without extrusion),
+    `:square` (flat with half a linewidth extrusion) or `:round`.
+    """
+    linecap = @inherit linecap
+    """
+    Controls the rendering at line corners. Options are `:miter` for sharp corners,
+    `:bevel` for cut-off corners, and `:round` for rounded corners. If the corner angle
+    is below `miter_limit`, `:miter` is equivalent to `:bevel` to avoid long spikes.
+    """
+    joinstyle = @inherit joinstyle
+    """"
+    Sets the minimum inner line join angle below which miter joins truncate. See
+    also `Makie.miter_distance_to_angle`.
+    """
+    miter_limit = @inherit miter_limit
+    """
+    If `true`, adds text labels to the contour lines.
+    """
+    labels = false
+    "The font of the contour labels."
+    labelfont = @inherit font
+    "Color of the contour labels, if `nothing` it matches `color` by default."
+    labelcolor = nothing  # matches color by default
+    """
+    Formats the numeric values of the contour levels to strings.
+    """
+    labelformatter = contour_label_formatter
+    "Font size of the contour labels"
+    labelsize = 10 # arbitrary
+    """
+    Position of the contour labels along their lines, from -1 to 1. On an open line,
+    0 is the middle of its longest visible piece and -1 and 1 are its ends, with 1
+    the end further right on screen. On a closed loop, the value is an angle around
+    the loop's center on screen: 0 is the top, positive values go clockwise and -1
+    and 1 both mean the bottom, so labels of nested loops line up. `nothing` removes
+    the label.
+
+    Can be one value for all lines or a vector with one entry per level. Each entry
+    can again be a vector with one value per line of that level, because a level
+    can consist of several lines. The lines of a level are ordered from left to
+    right in data space, by the leftmost vertex of a loop or the left end of an
+    open line.
+    """
+    labelposition = 0.0
+    "Distance in pixels between a contour label and the ends of the line around it."
+    labelpadding = 5
+    """
+    Sets the tolerance for sampling of a `level` in 3D contour plots.
+    """
+    isorange = automatic
+    "Controls whether 3D contours consider depth. Turning this off may improve performance."
+    enable_depth = true
+    mixin_colormap_attributes()...
+    mixin_generic_plot_attributes()...
+end
+
+"""
+Draws lines in the 2D grid defined by `xs` and `ys` where the `z` values match
+a level value. The z-height of the line will be given by the level value.
+
+3D contour plots exist in two variants:
+* `contour` implements a variant showing multiple isosurfaces, i.e. surfaces that sample the same
+    value from a 3D array.
+* `contour3d` computes the same isolines as a 2D `contour` plot but renders them in 3D at z values
+    equal to their level.
+"""
+@recipe Contour3d begin
+    documented_attributes(Contour)...
+end
+
+"""
+    label_anchor(pixel_line, labelposition, label_width = 0.0)
+
+Find where to put the label of a contour line, given its vertices projected to
+pixel space. Returns `(; from, to, t, direction, line_length)`: the label sits at
+fraction `t` between the vertices `from` and `to`, is oriented along the pixel space
+vector `direction` and belongs to a visible piece of `line_length` pixels. Returns
+`nothing` if no segment is visible.
+
+`labelposition` ranges from -1 to 1. On an open line, 0 is the middle by arc length
+of its longest finite piece and at -1 and 1 a label of `label_width` pixels touches
+its ends, with 1 the end further right. On a closed loop, positions are measured by the angle the loop sweeps
+around its centroid, clockwise from the topmost crossing with the vertical through
+the centroid at 0, so that -1 and 1 both lead halfway around. For loops that every
+ray from the centroid crosses once, this is the angle of that ray, so labels of
+nested loops line up. The result does not depend on the start point or direction
+of the line.
+"""
+label_anchor(pixel_line, labelposition, label_width = 0.0) = label_anchor(line_geometry(pixel_line), pixel_line, labelposition, label_width)
+
+struct OpenContourLine
+    longest_pieces::Vector{Vector{Int}}
+    line_length::Float64
+end
+
+struct ContourLoop
+    center::Point2d
+    walk::Vector{Tuple{Tuple{Int, Int}, Float64, Float64}}
+    sweeps::Vector{Float64}
+    total_sweep::Float64
+    line_length::Float64
+end
+
+const ContourLineGeometry = Union{Nothing, OpenContourLine, ContourLoop}
+
+"""
+    line_geometry(pixel_line)
+
+The parts of finding a label anchor on `pixel_line` that do not depend on the label,
+so they are only recomputed when the projected line changes.
+"""
+function line_geometry(pixel_line)::ContourLineGeometry
+    is_closed_line(pixel_line) || return open_line_geometry(pixel_line, collect(eachindex(pixel_line)))
+    cycle = collect(firstindex(pixel_line):(lastindex(pixel_line) - 1))
+    gap = findfirst(i -> !is_finite_point(pixel_line[i]), cycle)
+    gap === nothing && return loop_geometry(pixel_line, cycle)
+    return open_line_geometry(pixel_line, rotate_cycle(cycle, gap))
+end
+
+is_finite_point(p) = all(isfinite, p)
+
+is_closed_line(vertices) = length(vertices) > 2 && first(vertices) == last(vertices)
+
+function open_line_geometry(pixel_line, path)
+    pieces = [left_to_right(pixel_line, path[run]) for run in finite_runs(view(pixel_line, path))]
+    piece_lengths = [path_length(pixel_line, piece) for piece in pieces]
+    longest_length = maximum(piece_lengths; init = 0.0)
+    longest_length > 0 || return nothing
+    return OpenContourLine(pieces[piece_lengths .== longest_length], longest_length)
+end
+
+function loop_geometry(pixel_line, cycle)
+    clockwise = is_counterclockwise(pixel_line, cycle) ? reverse(cycle) : cycle
+    n = length(clockwise)
+    segments = [(clockwise[j], clockwise[mod1(j + 1, n)]) for j in 1:n]
+    center = area_centroid([Point2d(pixel_line[i]) for i in clockwise])
+    origin = top_crossing(pixel_line, segments, center[1])
+    origin === nothing && return nothing
+
+    j0, t0 = origin
+    walk = [(segments[j0], t0, 1.0); [(segments[mod1(j0 + k, n)], 0.0, 1.0) for k in 1:(n - 1)]; (segments[j0], 0.0, t0)]
+    sweeps = [swept_angle(pixel_line, center, segment, t_start, t_stop) for (segment, t_start, t_stop) in walk]
+    total_sweep = sum(sweeps)
+    total_sweep > 0 || return nothing
+    return ContourLoop(center, walk, sweeps, total_sweep, path_length(pixel_line, [clockwise; first(clockwise)]))
+end
+
+label_anchor(::Nothing, pixel_line, labelposition, label_width) = nothing
+
+function label_anchor(line::OpenContourLine, pixel_line, labelposition, label_width)
+    center_range = max(line.line_length - label_width, 0.0)
+    distance = (line.line_length - center_range) / 2 + (1 + labelposition) / 2 * center_range
+    anchors = [anchor_at_distance(pixel_line, piece, distance) for piece in line.longest_pieces]
+    leftmost = argmin(anchor -> Tuple(anchor_point(pixel_line, anchor)), anchors)
+    return with_line_length(leftmost, line.line_length)
+end
+
+function label_anchor(loop::ContourLoop, pixel_line, labelposition, label_width)
+    target = mod(labelposition, 2) / 2 * loop.total_sweep
+    covered = 0.0
+    for ((segment, t_start, _), sweep) in zip(loop.walk, loop.sweeps)
+        if sweep > 0 && covered + sweep >= target
+            t = t_at_swept_angle(pixel_line, loop.center, segment, t_start, target - covered)
+            return with_line_length(segment_anchor(pixel_line, segment, t), loop.line_length)
+        end
+        covered += sweep
+    end
+    segment, t_start, _ = first(loop.walk)
+    return with_line_length(segment_anchor(pixel_line, segment, t_start), loop.line_length)
+end
+
+with_line_length(anchor, line_length) = merge(anchor, (; line_length))
+
+cross2(u, v) = u[1] * v[2] - u[2] * v[1]
+
+angle_between(u, v) = atan(cross2(u, v), u[1] * v[1] + u[2] * v[2])
+
+point_on_segment(pixel_line, (from, to), t) = lerp(Point2d(pixel_line[from]), Point2d(pixel_line[to]), t)
+
+segment_anchor(pixel_line, (from, to), t) = (; from, to, t, direction = Vec2d(pixel_line[to] - pixel_line[from]))
+
+function area_centroid(points)
+    edges = zip(points, circshift(points, -1))
+    double_area = sum(cross2(a, b) for (a, b) in edges)
+    double_area == 0 && return sum(points) / length(points)
+    return sum((a + b) * cross2(a, b) for (a, b) in edges) / (3 * double_area)
+end
+
+function top_crossing(pixel_line, segments, x)
+    crossings = Tuple{Int, Float64, Float64}[]
+    for (j, (from, to)) in enumerate(segments)
+        a, b = pixel_line[from], pixel_line[to]
+        if min(a[1], b[1]) <= x < max(a[1], b[1])
+            t = (x - a[1]) / (b[1] - a[1])
+            push!(crossings, (j, t, a[2] + t * (b[2] - a[2])))
+        end
+    end
+    isempty(crossings) && return nothing
+    j, t, _ = crossings[argmax(last.(crossings))]
+    return j, t
+end
+
+function swept_angle(pixel_line, center, segment, t_start, t_stop)
+    start = point_on_segment(pixel_line, segment, t_start) - center
+    stop = point_on_segment(pixel_line, segment, t_stop) - center
+    return abs(angle_between(start, stop))
+end
+
+function t_at_swept_angle(pixel_line, center, segment, t_start, angle)
+    from, to = segment
+    a, direction = Point2d(pixel_line[from]), Vec2d(pixel_line[to] - pixel_line[from])
+    start = point_on_segment(pixel_line, segment, t_start) - center
+    target_angle = atan(start[2], start[1]) + sign(cross2(start, direction)) * angle
+    ray = Vec2d(cos(target_angle), sin(target_angle))
+    return clamp(-cross2(a - center, ray) / cross2(direction, ray), t_start, 1.0)
+end
+
+function is_counterclockwise(pixel_line, cycle)
+    ps = [pixel_line[i] for i in cycle]
+    return sum(cross2(a, b) for (a, b) in zip(ps, circshift(ps, -1))) > 0
+end
+
+left_to_right(pixel_line, path) = isless(Tuple(pixel_line[last(path)]), Tuple(pixel_line[first(path)])) ? reverse(path) : path
+
+function finite_runs(vertices)
+    runs = UnitRange{Int}[]
+    run_start = nothing
+    for i in eachindex(vertices)
+        if !is_finite_point(vertices[i])
+            run_start === nothing || push!(runs, run_start:(i - 1))
+            run_start = nothing
+        elseif run_start === nothing
+            run_start = i
+        end
+    end
+    run_start === nothing || push!(runs, run_start:lastindex(vertices))
+    return runs
+end
+
+segment_length(pixel_line, from, to) = Float64(norm(pixel_line[to] - pixel_line[from]))
+
+path_length(pixel_line, path) = sum(segment_length(pixel_line, path[j], path[j + 1]) for j in 1:(length(path) - 1); init = 0.0)
+
+function anchor_at_distance(pixel_line, path, distance)
+    covered = 0.0
+    for j in 1:(length(path) - 1)
+        from, to = path[j], path[j + 1]
+        len = segment_length(pixel_line, from, to)
+        if len > 0 && covered + len >= distance
+            t = (distance - covered) / len
+            t <= 0 && return vertex_anchor(pixel_line, path, j)
+            t >= 1 && return vertex_anchor(pixel_line, path, j + 1)
+            return (; from, to, t, direction = Vec2d(pixel_line[to] - pixel_line[from]))
+        end
+        covered += len
+    end
+    return vertex_anchor(pixel_line, path, length(path))
+end
+
+function vertex_anchor(pixel_line, path, j)
+    closed = first(path) == last(path)
+    before = j > 1 ? path[j - 1] : closed ? path[end - 1] : path[j]
+    after = j < length(path) ? path[j + 1] : closed ? path[2] : path[j]
+    return (; from = path[j], to = path[j], t = 0.0, direction = Vec2d(pixel_line[after] - pixel_line[before]))
+end
+
+anchor_point(line, anchor) = lerp(line[anchor.from], line[anchor.to], anchor.t)
+
+anchor_angle(anchor) = to_upright_angle(atan(anchor.direction[2], anchor.direction[1]))
+
+function contourlines(::Type{<:T}, contours, labels) where {T <: Union{Contour3d, Contour}}
+    PT = T <: Contour3d ? Point3f : Point2f
+
+    points = PT[]
+    # index relates to the drawn line segments, outputs is (level, count)
+    elements_per_segment = Pair{UInt32, UInt32}[]
+    levels = Float32[]
+
+    for (lvl, c) in enumerate(Contours.levels(contours))
+        # Contours.jl traces cells in `Dict` order, so a line starts anywhere and runs either way,
+        # and the lines of a level come in any order
+        level_lines = sort!([canonical_line_order(elem.vertices) for elem in Contours.lines(c)]; by = first)
+        for vertices in level_lines
+            for p in vertices
+                push!(points, to_ndim(PT, p, c.level))
+            end
+            push!(points, PT(NaN32))
+            push!(elements_per_segment, lvl => length(vertices) + 1)
+            labels && push!(levels, c.level)
+        end
+    end
+    return points, elements_per_segment, levels
+end
+
+to_levels(x::AbstractVector{<:Number}, cnorm) = x
+
+function to_levels(n::Integer, cnorm)
+    zmin, zmax = cnorm
+    dz = (zmax - zmin) / (n + 1)
+    return range(zmin + dz; step = dz, length = n)
+end
+
+conversion_trait(::Type{<:Contour3d}) = VertexGrid()
+conversion_trait(::Type{<:Contour}) = VertexGrid()
+conversion_trait(::Type{<:Contour}, x, y, z, ::Union{Function, AbstractArray{<:Number, 3}}) = VolumeLike()
+conversion_trait(::Type{<:Contour}, ::AbstractArray{<:Number, 3}) = VolumeLike()
+
+# 3D Contour
+
+function plot!(plot::Contour{<:Tuple{X, Y, Z, Vol}}) where {X, Y, Z, Vol}
+    map!(nan_extrema, plot, :converted_4, :value_range)
+    map!(default_automatic, plot, [:colorrange, :value_range], :tight_colorrange)
+
+    map!(to_levels, plot, [:levels, :value_range], :value_levels)
+
+    # the default isorange should be smaller than the gap between levels, but not
+    # so small that surfaces disappear/get skipped
+    map!(plot, [:isorange, :value_levels, :value_range], :computed_isorange) do isorange, value_levels, (min, max)
+        if isorange === automatic
+            if length(value_levels) > 1
+                minstep = minimum(value_levels[2:end] .- value_levels[1:(end - 1)])
+                return 0.1 * minstep
+            else
+                return 0.1 * (max - min)
+            end
+        else
+            return isorange
+        end
+    end
+
+    # The colorrange and colormap needs to be padded with RGBAf(..., 0) so that
+    # samples outside the colorrange are not drawn
+    map!(plot, [:tight_colorrange, :computed_isorange], :padded_colorrange) do (min, max), isorange
+        return (min - 2isorange, max + 2isorange)
+    end
+
+    map!(plot, [:value_levels, :tight_colorrange], :clamped_levels) do levels, (min, max)
+        return filter(lvl -> min <= lvl <= max, levels)
+    end
+
+    map!(to_colormap, plot, :colormap, :input_colormap)
+
+    map!(
+        plot,
+        [:clamped_levels, :tight_colorrange, :padded_colorrange, :computed_isorange, :alpha, :input_colormap],
+        :computed_colormap
+    ) do levels, tight_colorrange, (min, max), isorange, alpha, cmap
+        # We need colormap values for the full color range (with padding)
+        # We also need enough color values to have samples in
+        # `level - isorange .. level + isorange`, otherwise we might skip over
+        # isosurfaces
+        # GLMakie texture size is typically limited 8192+
+        # WGLMakie texture size may be limited to 4096+
+        N_raw = ceil(Int, 2.5 * (max - min) / isorange)
+        if N_raw > 4096
+            min_isorange = (max - min) / 4096
+            @warn "Isorange maybe too small to resolve iso surfaces. Try `isorange > $min_isorange`"
+        end
+        N = clamp(N_raw, 100, 4096)
+
+        clip_range = tight_colorrange[1] - isorange .. tight_colorrange[2] + isorange
+        return map(1:N) do i
+            isoval = min + (i - 1) / (N - 1) * (max - min)
+            c = Colors.color(interpolated_getindex(cmap, isoval, tight_colorrange))
+            if isoval in clip_range && any(lvl -> lvl - isorange < isoval < lvl + isorange, levels)
+                return RGBAf(c, alpha)
+            else
+                return RGBAf(c, 0.0)
+            end
+        end
+    end
+
+    volume!(
+        plot, plot.attributes,
+        plot.converted_1, plot.converted_2, plot.converted_3, plot.converted_4,
+        alpha = 1.0, # don't apply alpha 2 times
+        algorithm = 7, # contour algorithm
+        colorrange = plot.padded_colorrange,
+        colormap = plot.computed_colormap,
+        isorange = 0.0 # unused, but needs to be a float
+    )
+
+    return plot
+end
+
+color_per_level(color, args...) = color_per_level(to_color(color), args...)
+color_per_level(color::Colorant, _, _, _, _, levels) = fill(color, length(levels))
+color_per_level(colors::AbstractVector, args...) = color_per_level(to_colormap(colors), args...)
+
+function color_per_level(colors::AbstractVector{<:Colorant}, _, _, _, _, levels)
+    if length(levels) == length(colors)
+        return colors
+    else
+        # TODO resample?!
+        error("For a contour plot, `color` with an array of colors needs to
+        have the same length as `levels`.
+        Found $(length(colors)) colors, but $(length(levels)) levels")
+    end
+end
+
+function color_per_level(::Nothing, colormap, colorscale, colorrange, a, levels)
+    cmap = to_colormap(colormap)
+    return map(levels) do level
+        c = interpolated_getindex(cmap, colorscale(level), colorscale.(colorrange))
+        RGBAf(color(c), alpha(c) * a)
+    end
+end
+
+function to_contour(x, y, z::AbstractMatrix{ET}, levels) where {ET}
+    # Compute contours
+    xv, yv = to_vector(x, size(z, 1), ET), to_vector(y, size(z, 2), ET)
+    return Contours.contours(xv, yv, z, convert(Vector{ET}, levels))
+end
+
+# Overload for matrix-like x and y lookups for contours
+# Just removes the `to_vector` invocation
+function to_contour(x::AbstractMatrix{<:Real}, y::AbstractMatrix{<:Real}, z::AbstractMatrix{ET}, levels) where {ET}
+    return Contours.contours(x, y, z, convert(Vector{ET}, levels))
+end
+
+function has_changed(old_args, new_args)
+    length(old_args) === length(new_args) || return true
+    for (old, new) in zip(old_args, new_args)
+        old != new && return true
+    end
+    return false
+end
+
+without_separator(line_range) = line_range[begin:(end - 1)]
+
+function line_ranges(elements_per_segment)
+    counts = Int.(last.(elements_per_segment))
+    return [(level, (stop - count + 1):stop) for ((level, _), count, stop) in zip(elements_per_segment, counts, cumsum(counts))]
+end
+
+"""
+    labelposition_per_line(labelposition, line_levels, levels)
+
+Resolve the `labelposition` attribute to one value (a number or `nothing`) per contour
+line, given the level index of each line and the level values.
+"""
+labelposition_per_line(labelposition, line_levels, levels) = fill(labelposition, length(line_levels))
+
+function labelposition_per_line(labelposition::AbstractVector, line_levels, levels)
+    length(labelposition) == length(levels) || error(
+        "`labelposition` has $(length(labelposition)) entries, but the plot has $(length(levels)) levels. " *
+            "Pass one value for all lines, or one entry per level, where each entry is a number, `nothing` " *
+            "or a vector with one number or `nothing` per line of that level."
+    )
+    lines_per_level = [count(==(level), line_levels) for level in eachindex(levels)]
+    lines_seen = zeros(Int, length(levels))
+    return map(line_levels) do level
+        lines_seen[level] += 1
+        level_positions = labelposition[level]
+        level_positions isa AbstractVector || return level_positions
+        length(level_positions) == lines_per_level[level] || error(
+            "`labelposition[$level]` has $(length(level_positions)) entries, but level $(levels[level]) " *
+                "has $(lines_per_level[level]) lines."
+        )
+        return level_positions[lines_seen[level]]
+    end
+end
+
+repeat_level_data_per_vertex(counts, x) = x
+function repeat_level_data_per_vertex(counts, x::AbstractVector{T}) where {T}
+    output = T[]
+    for (lvl, count) in counts
+        append!(output, fill(x[lvl], count))
+    end
+    return output
+end
+
+"""
+    label_fits_line(line_length, box, padding)
+
+Whether a label with the unrotated bounding `box` is drawn on a visible line piece
+of `line_length` pixels. The piece has to be long enough for the padded label plus
+`min_line_beside_label` pixels of visible line on each side.
+"""
+label_fits_line(line_length, box, padding) = line_length >= widths(box)[1] + 2 * padding + 2 * min_line_beside_label
+
+const min_line_beside_label = 5
+
+pad_label_box(box, padding) = Rect2d(minimum(box) .- padding, widths(box) .+ 2padding)
+
+"""
+    label_gap_masked_line(line, pixel_line, center, angle, box)
+
+Cut the part of `line` out that lies inside `box`, the label box in the frame of a
+label at `center` rotated by `angle`. Positions are compared in pixel space via
+`pixel_line`, and the line is cut exactly at the box edges, so the gap does not
+depend on where the vertices of the line are.
+"""
+function label_gap_masked_line(line, pixel_line, center, angle, box)
+    local_line = to_label_frame.(pixel_line, Ref(center), angle)
+
+    masked = empty(line)
+    push_gap!() = (isempty(masked) || isnan(last(masked))) || push!(masked, eltype(line)(NaN))
+    for i in eachindex(line, local_line)
+        if i > firstindex(line)
+            t_enter, t_exit = segment_box_overlap(local_line[i - 1], local_line[i], box)
+            if t_enter < t_exit
+                a, b = line[i - 1], line[i]
+                t_enter > 0 && push!(masked, a + t_enter * (b - a))
+                push_gap!()
+                t_exit < 1 && push!(masked, a + t_exit * (b - a))
+            end
+        end
+        if is_inside_box(local_line[i], box) || !is_finite_point(line[i])
+            push_gap!()
+        else
+            push!(masked, line[i])
+        end
+    end
+    return masked
+end
+
+function to_label_frame(p, center, angle)
+    dx, dy = p[1] - center[1], p[2] - center[2]
+    return Point2d(cos(angle) * dx + sin(angle) * dy, cos(angle) * dy - sin(angle) * dx)
+end
+
+is_inside_box(p, box) = all(minimum(box) .< p .< maximum(box))
+
+function segment_box_overlap(a, b, box)
+    t_enter, t_exit = 0.0, 1.0
+    direction = b - a
+    for k in 1:2
+        low, high = minimum(box)[k] - a[k], maximum(box)[k] - a[k]
+        if direction[k] == 0
+            low < 0 < high || return (1.0, 0.0)
+        else
+            t1, t2 = minmax(low / direction[k], high / direction[k])
+            t_enter, t_exit = max(t_enter, t1), min(t_exit, t2)
+        end
+    end
+    return t_enter, t_exit
+end
+
+function plot!(plot::T) where {T <: Union{Contour, Contour3d}}
+    map!(nan_extrema, plot, :converted_3, :zrange)
+    map!(plot, [:levels, :zrange], :zlevels) do levels, zrange
+        zmin, zmax = zrange
+        isapprox(zmin, zmax) && return eltype(zrange)[]
+        if levels isa AbstractVector{<:Number}
+            return levels
+        elseif levels isa Integer
+            to_levels(levels, zrange)
+        else
+            error("Level needs to be Vector of iso values, or a single integer to for a number of automatic levels")
+        end
+    end
+    map!(plot, [:colorrange, :zrange], :computed_colorrange) do colorrange, zrange
+        zmin, zmax = default_automatic(colorrange, zrange)
+        isapprox(zmin, zmax) || return (zmin, zmax)
+        delta = max(one(zmin), abs(zmin))
+        return (zmin - delta, zmax + delta)
+    end
+
+    map!(
+        color_per_level, plot,
+        [:color, :colormap, :colorscale, :computed_colorrange, :alpha, :zlevels],
+        :level_colors
+    )
+
+    map!(to_contour, plot, [:converted_1, :converted_2, :converted_3, :zlevels], :contour)
+
+    map!(
+        plot,
+        [:contour, :labels],
+        [:contour_points, :elements_per_segment, :computed_levels]
+    ) do args...
+        return contourlines(T, args...)
+    end
+
+    map!(plot, [:elements_per_segment, :level_colors, :labels], :computed_lbl_colors) do counts, colors, labels
+        return labels ? [colors[i] for (i, _) in counts] : RGBAf[]
+    end
+
+    # TODO:
+    # Should we make yes/no labels a constructor-time decisions so we can avoid
+    # all the extra work for it entirely?
+    # (i.e. no text plot, no boundingboxes, no projections?)
+
+    register_projected_positions!(plot, Point2f, input_name = :contour_points, output_space = :pixel)
+
+    map!(plot, [:computed_levels, :labelformatter], :text_strings) do levels, formatter
+        # Allow inconsistent output types (String, LaTexString, RichText) from formatter
+        return Ref{Any}(formatter.(levels))
+    end
+
+    map!(plot, [:labelcolor, :computed_lbl_colors], :text_color) do user_color, computed_color
+        return ifelse(user_color === nothing, computed_color, to_color(user_color))
+    end
+
+    map!(levels -> fill(Point3f(NaN), length(levels)), plot, :computed_levels, :label_measurement_positions)
+    label_measurements = text!(
+        plot,
+        plot.label_measurement_positions;
+        text = plot.text_strings,
+        align = (:center, :center),
+        fontsize = plot.labelsize,
+        font = plot.labelfont,
+        visible = false,
+        inspectable = false,
+    )
+    # TODO: Compute the label boxes without a hidden text plot once the text rework or #5852 allows it
+    # TODO: Also think about `use_labels`: Can these be branched out more effectively with an `ifelse`
+    # edge? (See final_line_points)
+    register_raw_string_boundingboxes!(label_measurements)
+    add_input!(plot.attributes, :label_string_boxes, label_measurements.raw_string_boundingboxes)
+    map!(boxes -> Rect2d.(boxes), plot, :label_string_boxes, :label_frame_boxes)
+
+    map!(
+        plot, [:labels, :pixel_contour_points, :elements_per_segment], :label_line_geometries
+    ) do use_labels, pixel_points, elements_per_segment
+        use_labels || return ContourLineGeometry[]
+        return ContourLineGeometry[
+            line_geometry(view(pixel_points, without_separator(line_range)))
+                for (_, line_range) in line_ranges(elements_per_segment)
+        ]
+    end
+
+    map!(
+        plot,
+        [:labels, :labelposition, :zlevels, :label_frame_boxes, :label_line_geometries, :contour_points, :pixel_contour_points, :elements_per_segment],
+        [:label_anchor_positions, :text_rotation, :label_pixel_positions, :label_line_lengths]
+    ) do use_labels, labelposition, levels, boxes, geometries, points, pixel_points, elements_per_segment
+        positions = eltype(points)[]
+        rotations = Float32[]
+        pixel_positions = Point2f[]
+        line_lengths = Float64[]
+        use_labels || return positions, rotations, pixel_positions, line_lengths
+
+        line_positions = labelposition_per_line(labelposition, first.(elements_per_segment), levels)
+        for ((_, line_range), line_position, box, geometry) in zip(line_ranges(elements_per_segment), line_positions, boxes, geometries)
+            line_without_separator = without_separator(line_range)
+            pixel_line = view(pixel_points, line_without_separator)
+            anchor = line_position === nothing ? nothing : label_anchor(geometry, pixel_line, line_position, widths(box)[1])
+            if anchor === nothing
+                push!(positions, eltype(points)(NaN))
+                push!(rotations, 0.0f0)
+                push!(pixel_positions, Point2f(NaN))
+                push!(line_lengths, 0.0)
+            else
+                push!(positions, anchor_point(view(points, line_without_separator), anchor))
+                push!(rotations, anchor_angle(anchor))
+                push!(pixel_positions, anchor_point(pixel_line, anchor))
+                push!(line_lengths, anchor.line_length)
+            end
+        end
+        return positions, rotations, pixel_positions, line_lengths
+    end
+
+    map!(
+        plot,
+        [:label_anchor_positions, :label_line_lengths, :label_frame_boxes, :labelpadding],
+        [:text_positions, :label_fits]
+    ) do positions, line_lengths, boxes, padding
+        fits = label_fits_line.(line_lengths, boxes, padding)
+        return map((fit, p) -> fit ? p : eltype(positions)(NaN), fits, positions), fits
+    end
+
+    text!(
+        plot,
+        plot.text_positions;
+        color = plot.text_color,
+        rotation = plot.text_rotation,
+        text = plot.text_strings,
+        align = (:center, :center),
+        fontsize = plot.labelsize,
+        font = plot.labelfont,
+        transform_marker = false
+    )
+
+    map!(
+        plot,
+        [:labels, :label_fits, :label_pixel_positions, :label_frame_boxes, :text_rotation, :labelpadding, :contour_points, :pixel_contour_points, :elements_per_segment],
+        [:masked_lines, :masked_elements_per_segment]
+    ) do use_labels, fits, centers, boxes, angles, padding, points, pixel_points, elements_per_segment
+        use_labels || return points, elements_per_segment
+
+        masked = empty(points)
+        masked_elements_per_segment = empty(elements_per_segment)
+        for (n, (level, line_range)) in enumerate(line_ranges(elements_per_segment))
+            line = view(points, line_range)
+            pixel_line = view(pixel_points, line_range)
+            if fits[n]
+                box = pad_label_box(boxes[n], padding)
+                line = label_gap_masked_line(line, pixel_line, centers[n], angles[n], box)
+            end
+            append!(masked, line)
+            push!(masked_elements_per_segment, level => length(line))
+        end
+
+        return masked, masked_elements_per_segment
+    end
+
+    select!(plot, :labels, :masked_lines, :contour_points, :final_line_points)
+
+    map!(repeat_level_data_per_vertex, plot, [:masked_elements_per_segment, :level_colors], :contour_colors)
+    map!(repeat_level_data_per_vertex, plot, [:masked_elements_per_segment, :linewidth], :contour_linewidth)
+
+    lines!(
+        plot, plot.final_line_points;
+        color = plot.contour_colors,
+        linewidth = plot.contour_linewidth,
+        linestyle = plot.linestyle,
+        linecap = plot.linecap,
+        joinstyle = plot.joinstyle,
+        miter_limit = plot.miter_limit,
+        visible = plot.visible,
+        transparency = plot.transparency,
+        overdraw = plot.overdraw,
+        inspectable = plot.inspectable,
+        depth_shift = plot.depth_shift,
+        space = plot.space,
+    )
+
+    # toggle to debug labels
+    # map!(bbs -> merge(map(GeometryBasics.mesh, bbs)), plot, texts.string_boundingboxes, :bbs2d)
+    # wireframe!(plot, plot.bbs2d, space = :pixel)
+
+    return plot
+end
+
+function data_limits(plot::Contour{<:Tuple{X, Y, Z}}) where {X, Y, Z}
+    mini_maxi = extrema_nan.((plot[1][], plot[2][]))
+    mini = Vec3d(first.(mini_maxi)..., 0)
+    maxi = Vec3d(last.(mini_maxi)..., 0)
+    return Rect3d(mini, maxi .- mini)
+end
+
+function boundingbox(plot::Union{Contour, Contour3d}, space::Symbol = :data)
+    return apply_transform_and_model(plot, data_limits(plot))
+end

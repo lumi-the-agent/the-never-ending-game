@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "The bench, sun, pink sky and golden path exist and look good in the author's manual view, but in my own sandbox screenshot at 18:45 the default follow camera looks down on the bench from the side, with no sun in frame. The suite also has 5 failures, including the new bench test.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The default evening camera does not show the sunset. In my sandbox screenshot at 18:45 (follow camera) the view is from above and from the side. Sprout's cloud and Gloop on a barely recognisable bench fill the frame, dark sea is on the right, and the sun and pink band are not visible. The good picture (sunset-path-3.png) used a hand-placed free camera. The tester and the author's diary report the same problem.",
+   "where": "plugins/lookout.jl CAMERA_GROUPS / camera at the bench",
+   "evidence": "world/reviews/s51-evening.png (my screenshot) vs media/s51/sunset-path-3.png (author's)",
+   "suggestion": "Aim group_view or CAMERA_SHOTS from behind the bench along the sun direction, lower the eye, and add a test that the camera looks within about 40 degrees of the sun while the sitting is on."
+  },
+  {
+   "severity": "medium",
+   "what": "The session's suite run has 5 failures: the new bench test ('still on the bench at 20:00: Pickles'), two builder tests (hidden cairn plots, thought cloud position) and two jump-in tests (camera menu, key card timeout). The bench failure was called flaky because it passes alone, but a sitter still on the bench after the 19:54 get-up time may be a real bug.",
+   "where": "tests/results/session-0051.json; plugins/lookout.jl",
+   "evidence": "results/session-0051.json; tester report",
+   "suggestion": "Print the sitters' goals and the time in the check message and fix the cause rather than loosening the test. Check whether the builder and jump-in failures came from this session's changes."
+  },
+  {
+   "severity": "low",
+   "what": "The bench is still plain planks. The generated bench and vegetables are waiting on a worker that keeps losing its GPU.",
+   "where": "plugins/lookout.jl bench, worker jobs",
+   "evidence": "sunset-path-3.png shows a flat brown box",
+   "suggestion": "Finish the generated bench job and check that the swap happens by itself."
+  }
+ ],
+ "addressed": true,
+ "response": "s52: the bench camera is fixed: CAMERA_GROUPS may now return its own view (render.jl), lookout.jl gives one 4.5 m behind the bench, 1.9 m up, looking out along SUNWARD (media/s52/bench-before.png vs bench-after3.png, tests/shots/s51-lookout.png). Sitters now sit on the seat (pos pinned to the spot) and at dusk their goal is replaced, so a friend still walking there leaves too (the 'still on the bench at 20:00: Pickles' failure). The builder/jump-in suite failures were not touched this session."
+}

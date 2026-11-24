@@ -1,0 +1,156 @@
+#=
+Taken from https://github.com/MakieOrg/StatsMakie.jl/blob/master/src/typerecipes/distribution.jl
+The StatMakie.jl package is licensed under the MIT "Expat" License:
+    Copyright (c) 2018: Pietro Vertechi. =#
+
+# pick a nice default x range given a distribution
+function default_range(dist::Distribution, alpha = 0.0001)
+    minval = isfinite(minimum(dist)) ? minimum(dist) : quantile(dist, alpha)
+    maxval = isfinite(maximum(dist)) ? maximum(dist) : quantile(dist, 1 - alpha)
+    return minval .. maxval
+end
+
+isdiscrete(::Distribution) = false
+isdiscrete(::Distribution{<:VariateForm, <:Discrete}) = true
+
+support(dist::Distribution) = default_range(dist)
+support(dist::Distribution{<:VariateForm, <:Discrete}) = UnitRange(endpoints(default_range(dist))...)
+
+convert_arguments(P::Type{<:AbstractPlot}, dist::Distribution) = convert_arguments(P, support(dist), dist)
+
+function convert_arguments(P::Type{<:AbstractPlot}, x::Union{Interval, AbstractVector}, dist::Distribution)
+    default_ptype = isdiscrete(dist) ? ScatterLines : Lines
+    ptype = plottype(P, default_ptype)
+    return to_plotspec(ptype, convert_arguments(ptype, x, x -> pdf(dist, x)))
+end
+# -----------------------------------------------------------------------------
+# qqplots (M. K. Borregaard implementation from StatPlots)
+
+"""
+Draw a Q-Q plot, comparing quantiles of two distributions.
+
+## Arguments
+
+* `x, y` are the two samples to compare, given as `AbstractVector{<:Real}`. The first argument can
+    also be an abstract distribution or distribution type, e.g. `Normal(0, 1)` or `Normal`. The
+    latter will be fit to the `y` sample.
+"""
+@recipe QQPlot (points::PointVector{2, <:Real}, line::PointVector{2, <:Real}) begin
+    filtered_attributes(ScatterLines, exclude = (:joinstyle, :miter_limit))...
+    """
+    The attribute `qqline` determines how to compute a fit line for the Q-Q plot.
+    Possible values are the following:
+    - `:identity` draws the identity line.
+    - `:fit` computes a least squares line fit of the quantile pairs.
+    - `:fitrobust` computes the line that passes through the first and third quartiles of the distributions.
+    - `:none` omits drawing the line.
+    Broadly speaking, `qqline = :identity` is useful to see if `x` and `y` follow the same distribution,
+    whereas `qqline = :fit` and `qqline = :fitrobust` are useful to see if the distribution of `y` can be
+    obtained from the distribution of `x` via an affine transformation.
+    """
+    qqline = :none
+end
+
+function attribute_groups(::Type{<:QQPlot})
+    groups = attribute_groups(ScatterLines)
+    idx = findfirst(entry -> entry[1] == "Line Attributes", groups)
+    group = groups[idx][2]
+    push!(group, :qqline)
+    return groups
+end
+
+"""
+Draw a Q-Q plot of data against the standard normal distribution.
+
+Shorthand for `qqplot(Normal(0,1), y)`. This is useful to test if `y` is normally distributed.
+See [`qqplot`](@ref) for more details on the `qqline` attribute and other options.
+
+## Arguments
+
+* `y::AbstractVector{<:Real}` is a sample to compare against the standard normal distribution.
+"""
+@recipe QQNorm (points::PointVector{2, <:Real}, line::PointVector{2, <:Real}) begin
+    documented_attributes(QQPlot)...
+end
+
+attribute_groups(::Type{<:QQNorm}) = attribute_groups(QQPlot)
+
+# Compute points and line for the qqplot
+function fit_qqplot(x, y; qqline = :none)
+    if !(qqline in (:identity, :fit, :fitrobust, :none))
+        msg = "valid values for qqline are :identity, :fit, :fitrobust or :none, " *
+            "encountered " * repr(qqline)
+        throw(ArgumentError(msg))
+    end
+    h = qqbuild(x, y)
+    points = Point2f.(h.qx, h.qy)
+    qqline === :none && return points, Point2f[]
+    xs = collect(extrema(h.qx))
+    if qqline === :identity
+        ys = xs
+    elseif qqline === :fit
+        itc, slp = hcat(fill!(similar(h.qx), 1), h.qx) \ h.qy
+        ys = @. slp * xs + itc
+    else # if qqline === :fitrobust
+        quantx, quanty = quantile.(Ref(x), [0.25, 0.75]), quantile.(Ref(y), [0.25, 0.75])
+        slp = (quanty[2] - quanty[1]) / (quantx[2] - quantx[1])
+        ys = @. quanty + slp * (xs - quantx)
+    end
+    return points, Point2f.(xs, ys)
+end
+
+# Fit distribution type, otherwise leave first argument unchanged
+maybefit(D::Type{<:Distribution}, y) = Distributions.fit(D, y)
+maybefit(x, _) = x
+
+argument_dims(::Type{<:QQPlot}, x, y) = (1, 2)
+argument_dims(::Type{<:QQNorm}, y) = (2,)
+
+function convert_arguments(
+        ::Type{<:QQPlot}, points::VecTypesVector{2, <:Real},
+        lines::VecTypesVector{2, <:Real}; qqline = :none
+    )
+    return (convert_arguments(PointBased(), points)[1], convert_arguments(PointBased(), lines)[1])
+end
+
+function convert_arguments(::Type{<:QQPlot}, x′, y::RealVector; qqline = :none)
+    x = maybefit(x′, y)
+    points, line = fit_qqplot(x, y; qqline = qqline)
+    return (points, line)
+end
+
+function convert_arguments(::Type{<:QQPlot}, y::RealVector; qqline = :none, distribution = nothing)
+    if distribution === nothing
+        throw(ArgumentError("When calling QQPlot with a single array argument, the `distribution` keyword argument must be provided"))
+    end
+    x = maybefit(distribution, y)
+    points, line = fit_qqplot(x, y; qqline = qqline)
+    return (points, line)
+end
+
+function convert_arguments(::Type{<:QQNorm}, y; qqline = :none, distribution = Distributions.Normal(0, 1))
+    return convert_arguments(QQPlot, y; qqline = qqline, distribution = distribution)
+end
+
+used_attributes(::Type{<:QQNorm}, y) = (:qqline,)
+used_attributes(::Type{<:QQPlot}, x, y) = (:qqline,)
+used_attributes(::Type{<:QQPlot}, y) = (:qqline, :distribution)
+
+plottype(::Type{<:QQNorm}, args...) = QQPlot
+plottype(::Type{<:QQNorm}, ::Type{Plot{plot}}) = QQNorm # resolve ambiguity hit in AlgebraOfGraphics
+
+function Makie.plot!(p::QQPlot)
+    map!(default_automatic, p, [:markercolor, :color], :real_markercolor)
+    map!(default_automatic, p, [:markercolormap, :colormap], :real_markercolormap)
+    map!(default_automatic, p, [:markercolorrange, :colorrange], :real_markercolorrange)
+
+    scatter!(
+        p, Attributes(p), p[1];
+        color = p.real_markercolor,
+        colormap = p.real_markercolormap,
+        colorrange = p.real_markercolorrange,
+    )
+    linesegments!(p, Attributes(p), p[2])
+
+    return p
+end

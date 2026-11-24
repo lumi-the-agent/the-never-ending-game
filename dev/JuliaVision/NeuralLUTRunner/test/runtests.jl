@@ -1,0 +1,140 @@
+"""
+Until the port runs, this asserts the two things that are true now and must stay
+true: the package loads on a machine with no assets, and the asset lookup names
+a real place rather than throwing something unreadable.
+
+The latency test that matters — `compile_stats().misses == 0` in a fresh process
+— belongs here once the workload drives the real call. See SAM2Runner/test for
+the shape it should take; it has to run in a subprocess because Julia's
+compile-time counter is per-process.
+"""
+
+using Test, NeuralLUTRunner
+
+@testset "NeuralLUTRunner" begin
+    # No `assetdir()`. It is internal — it names where the artifact happens
+    # to put things, so a test that calls it has to know the layout and a
+    # re-export that moves a file breaks a test that never knew it depended
+    # on that. Ask for the graph and the weights instead.
+    if NeuralLUTRunner.ready()
+        @info "Image-Adaptive 3D LUT: export present"
+        g = NeuralLUTRunner.neurallutgraph()
+        @test g !== nothing
+        w = NeuralLUTRunner.neurallutweights()
+        @test !isempty(w)
+    else
+        @info "Image-Adaptive 3D LUT: no export; run tools/export_neurallut.py"
+        # The error has to name the path — a caller who has not run the exporter
+        # should be told where to put it, not handed a MethodError later.
+        @test_throws ArgumentError NeuralLUTRunner.neurallutgraph()
+    end
+end
+
+# The declared graph, end to end, against a host reference. Guarded on the
+# export the same way the testset above is: with no assets there is no graph to
+# declare.
+NeuralLUTRunner.ready() && include(joinpath(@__DIR__, "test_declared.jl"))
+
+# ---------------------------------------------------------------- latency
+#
+# The test the scaffold's docstring promised, in a **subprocess**: Julia's
+# compile-time counter is per-process, and "the workload covers the editor's
+# path" is only a claim about a *fresh* one.
+#
+# It asserts `no_pipeline_compilation` — which empties `PIPELINE_CACHE` first, so
+# a Julia-side hit cannot mask a cold `VkPipelineCache` — rather than
+# `compile_stats().misses`, which counts SPIR-V compiles only and says nothing
+# about the driver building pipelines from that SPIR-V.
+#
+# And it asserts a **negative control** in the same process, because a green from
+# an instrument that cannot fire is worth nothing: this repo has hit that class
+# three times. The control's kernel body is novel per RUN, so neither Lava's
+# cache nor the driver's cross-process one can serve it. If it does not refuse,
+# the zero above means nothing and the test fails on that instead.
+const LATENCY_SUBPROCESS = raw"""
+using NeuralLUTRunner, KernelAbstractions, Lava, ColorTypes
+import Mantle
+const KA = KernelAbstractions
+
+# What "compiled nothing" means here: a driver that can be forbidden to compile (Vulkan's
+# pipeline cache), or the kernel compile count of a device that has no such switch.
+forbidden(f, ::Mantle.Device) = f()
+forbidden(f, dev::Mantle.LavaDevice) = Mantle.no_pipeline_compilation(f; ctx = dev)
+refusals(dev::Mantle.Device) = Mantle.kernelcompiles(dev).misses
+refusals(dev::Mantle.LavaDevice) = dev.diag.pipeline_compiles_refused
+
+backend = Mantle.Device()
+model = neurallut(; backend)
+img = KA.allocate(backend, RGB{Float32}, 256, 256)
+fill!(img, RGB{Float32}(0.3f0, 0.5f0, 0.7f0))
+out = similar(img)
+KA.synchronize(backend)
+
+Mantle.resetkernelcompiles!(backend)
+Base.cumulative_compile_timing(true)   # off by default, and then the count stays 0
+c0 = Base.cumulative_compile_time_ns()
+wall = @elapsed forbidden(backend) do
+    grade!(out, img, predictlut(model, img))
+    KA.synchronize(backend)
+end
+c1 = Base.cumulative_compile_time_ns()
+refused = refusals(backend)
+
+@kernel function _novel!(o, ::Val{K}) where {K}
+    i = @index(Global)
+    o[i] = o[i] * Float32(K) + Float32(K)
+end
+probe = KA.allocate(backend, Float32, 1024)
+fill!(probe, 1.0f0); KA.synchronize(backend)
+forbidden(backend) do
+    # `time_ns()` rather than `Random`: novel per RUN either way, and the
+    # test environment has no Random.
+    _novel!(backend)(probe, Val(Int(time_ns() % 1_000_000)); ndrange = 1024)
+    KA.synchronize(backend)
+end
+control = refusals(backend)
+
+h = Array(out)
+println("RESULT ", (; refused, control, compile = (c1[1] - c0[1]) / 1e9, wall,
+                      finite = all(c -> isfinite(red(c)) && isfinite(green(c)), h)))
+"""
+
+@testset "NeuralLUTRunner: a fresh process compiles no pipelines" begin
+    if !NeuralLUTRunner.ready()
+        @info "no neural LUT export; skipping the latency test"
+    else
+        script = tempname() * ".jl"
+        write(script, LATENCY_SUBPROCESS)
+        # `ignorestatus` so a crashed subprocess still hands back its output:
+        # otherwise `read` throws, the output is lost, and a crash is
+        # indistinguishable from "no GPU here" — which would let this testset
+        # pass with zero assertions, the exact failure it exists to catch.
+        # stderr to a file and read it back: `read(cmd, String)` captures stdout
+        # only, so a subprocess that dies with a stacktrace hands back "" and the
+        # diagnosis is lost exactly when it is needed.
+        errfile = tempname()
+        stdout_ = read(pipeline(ignorestatus(
+            `$(Base.julia_cmd()) --project=$(Base.active_project()) $script`),
+            stderr = errfile), String)
+        out = stdout_ * (isfile(errfile) ? read(errfile, String) : "")
+        lines = split(out, '\n')
+        i = findfirst(l -> startswith(l, "RESULT "), lines)
+        # Only a machine with no driver. A needle that matches any stack trace naming the
+        # device type turned every crash of this subprocess into a skipped test.
+        nodevice = occursin("no GPU backend", out) || occursin("no Vulkan", out) ||
+                   occursin("VK_ERROR_INCOMPATIBLE_DRIVER", out)
+        if i === nothing && nodevice
+            @info "no working device; skipping the latency test"
+        elseif i === nothing
+            @error "latency subprocess produced no RESULT" out
+            @test false
+        else
+            r = eval(Meta.parse(lines[i][8:end]))
+            @info "neural LUT, first call in a fresh process" r
+            @test r.finite                 # the grade is still a real image
+            @test r.control > 0            # …and the instrument can fire at all
+            @test r.refused == 0           # every pipeline was already cached
+            @test r.compile < 5.0          # the package image is being used
+        end
+    end
+end

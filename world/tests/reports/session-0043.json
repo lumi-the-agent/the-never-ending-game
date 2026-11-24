@@ -1,0 +1,10 @@
+{"session": 43,
+ "summary": "Human was not busy. Of the 5 suite failures, Firefly catch, Flower gift, Parade party and the beach find pass on re-run alone (flaky in the full suite, state left over from earlier tests). The flora test failed consistently only because s43 added 2 field varieties (12 plots) and the test capped at 10; I raised the cap to 16 (still one instanced plot per variety).",
+ "failures": [
+  {"what": "Four tests pass alone but fail in the full suite run: beachcomb find (Marshmallow stuck walking at the find), Firefly catch (Sprout did not walk on W), Flower gift (Wibbles did not thank), Parade party (no dance ring; followers :fish/:sleep, Sprout controlled)",
+   "steps": "Run the full suite after session 43 (all five of these ran late, after parade and butterfly tests), then re-run each with live_tests(pattern)",
+   "expected": "Same result alone and in the suite",
+   "actual": "Fail in the suite, pass alone: likely leftover state (a controlled Sprout, parade followers, creatures asleep or fishing) from earlier tests",
+   "screenshot": "world/tests/shots/firefly-wad.png"}
+ ],
+ "tests_added": []}

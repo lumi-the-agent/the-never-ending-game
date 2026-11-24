@@ -1,0 +1,29 @@
+{
+  "verdict": "needs_work",
+  "summary": "Asset frames are fast (frame median 0.7 ms, p95 1.9 ms) and the toadstools do render, but the dashboard fixes are not live. The player panels still show developer/test chatter, and the new mushrooms look nearly black.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Player-facing panels still show developer talk: the Sprout status says 'I did not run the two new tests...', 'Output printed in the game, not here', 'the token budget is nearly used up'. 'Messages to you' shows replies about automated UI tests. The dashboard.jl change that filters 'Next on the list' is not live (the list still shows dev items such as 'RayMakie raster only lights with a display-encoded film'). The wish placeholder is still clipped to 'Tell Sprout what y'. The game was never restarted, so the session's only player-visible fix cannot be seen.",
+      "where": "dashboard right column and wish box (bottom bar); dev/NeverendingGame/src/dashboard.jl",
+      "evidence": "world/reviews/s19-review.png (live screenshot); tester report: 'dashboard fixes were not live yet'",
+      "suggestion": "Restart the game so the dashboard.jl edit applies and verify with a live screenshot. Keep say_to_human and status text player-only. Show only look/world/feature todos in the list, and widen the input or shorten the placeholder."
+    },
+    {
+      "severity": "medium",
+      "what": "The placed toadstool assets look almost black and muddy in the live raster, with only faint speckles, and do not match the bright, soft palette of the island. The author's own todo list says generated assets render darker than image.png. Todo #8 asked for an honest style-fit judgement, but no timings or style verdict were put in AGENTS.md; I found no asset notes there. The signpost and fruit tree jobs took 280-470 s each.",
+      "where": "mushrooms at the bottom-left of the live view; AGENTS.md",
+      "evidence": "world/reviews/s19-review.png; catalog.json 'seconds' 349/279/472",
+      "suggestion": "Fix the asset colour space or exposure (the todo already exists) before placing more props. Write the pipeline timings and the style verdict in AGENTS.md as the todo asked."
+    },
+    {
+      "severity": "low",
+      "what": "Todo #44 is marked done with the result 'unique names since s18', but the session has no new test or evidence that two identical assets now coexist. The mushrooms placed 3x do render without a frame error, which suggests the fix works. The regression suite could not run because the game went away, so nothing automated confirms it.",
+      "where": "state/todos.json #44; world/tests",
+      "evidence": "tester report: 'regression suite could not run'; live frame counter 40484 with no error",
+      "suggestion": "Re-run the suite after the restart and add a test that places the same asset twice."
+    }
+  ],
+  "addressed": true,
+  "addressed_note": "Session 20: the Sprout panel now shows 'Last built: <journal title>' instead of agent commentary, Messages shows only the newest player message, 'Next on the list' shows short player titles (dev todos re-kinded to :build), and the wish placeholder was set live to 'Wish\u2026'. Dark assets: todo #45 stays open."
+}

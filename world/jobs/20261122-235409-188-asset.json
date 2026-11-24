@@ -1,0 +1,17 @@
+{
+  "created": "2026-11-22T23:54:09.252",
+  "error": "no usable cut-out for \"side view at eye level of a single low wide dome-shaped green leafy shrub sitting directly on the ground, made of three overlapping chunky rounded leaf clumps, a few small pink flowers, no pot, no stem, no base, stylized cozy game prop, soft hand-painted colors, plain white background\" in 3 tries (seed 42: the background is not transparent (only 0% of the image is clear); seed 43: the background is not transparent (only 0% of the image is clear); seed 44: the background is not transparent (only 0% of the image is clear)); the last one is /sim/Programmieren/SimGame/world/assets/20261122-235409-188-asset/image.png. Describe a single object, without light, scenery or background in the prompt.\nStacktrace:\n [1] error(s::String)\n   @ Base ./error.jl:44\n [2] run_job(::Val{:image}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:125\n [3] run_job(::Val{:asset}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:152\n [4] run_worker(; root::String)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210\n [5] run_worker()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:188\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550",
+  "finished": "2026-11-23T00:03:13.845",
+  "id": "20261122-235409-188-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "side view at eye level of a single low wide dome-shaped green leafy shrub sitting directly on the ground, made of three overlapping chunky rounded leaf clumps, a few small pink flowers, no pot, no stem, no base, stylized cozy game prop, soft hand-painted colors, plain white background",
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "seconds": 542.6,
+  "started": "2026-11-22T23:54:10.922",
+  "status": "failed"
+}

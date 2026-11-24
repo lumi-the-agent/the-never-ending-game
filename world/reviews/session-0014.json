@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/tests/last_run.json shows 10/10 pass, which contradicts the journal.",
+      "severity": "medium",
+      "suggestion": "Read the game log from the failed run. Say whether the cause was the ambient-light throw or a separate restart bug, and add a regression test that takes a screenshot and then checks the game is still alive.",
+      "what": "The author's journal says the live tests killed the game and the 4 UI tests are unverified. The cause was never found. The tester's rerun passed, but nobody explained why the game died and did not restart for 10 minutes. The crash may not be fully fixed.",
+      "where": "journal/2026-11-22.md; game log"
+    },
+    {
+      "evidence": "world/reviews/r14.png",
+      "severity": "medium",
+      "suggestion": "Add gamma or a display-encoded film in the live raster, or fake the ambient with emissive or sky colour, so dusk stays readable.",
+      "what": "The scene is very dark and murky at 17:54 (daytime 0.75). The tree trunks and ground are nearly black, and the creature labels sit on a dark blue-grey background. The ambient fix removed the crash but did not improve readability. The night tint (#22/#41) remains undone because the raster ignores light colour without gamma.",
+      "where": "3D view, world/reviews/r14.png"
+    },
+    {
+      "evidence": "world/reviews/r14.png; the host run failed the ellipsis test but the tester's rerun passed",
+      "severity": "low",
+      "suggestion": "Clip or summarise the activity lines to a fixed length with a deliberate marker, and make the test use fixed fixture text.",
+      "what": "The activity panel prints raw agent and tester text, cut off mid-sentence, such as 'review: tester: 1 problems; The screenshot crash is fixed: I re-ran the whole...'. 'Messages to you' also shows truncated bodies. The earlier ellipsis test failure in the host run depends on this content, so the test is flaky by design.",
+      "where": "dashboard side panels"
+    },
+    {
+      "evidence": "the changed-files list",
+      "severity": "low",
+      "suggestion": "Describe each of these changes in the journal.",
+      "what": "The change in dashboard.jl, timing.jl, todos.jl and Project.toml is unrelated to the one-line fix. The journal does not explain it, so it is hard to review.",
+      "where": "dev/NeverendingGame/src/*"
+    }
+  ],
+  "summary": "The screenshot crash is fixed: the game is up, a live screenshot works, frame median is 0.8 ms (p95 1.9 ms) and all 10 UI tests pass in the last run. But the session delivered only a one-line fix, the night look is still open, and the author never confirmed the game restart behaviour.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

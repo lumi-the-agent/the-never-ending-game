@@ -1,0 +1,19 @@
+{
+  "created": "2026-11-23T23:35:06.576",
+  "error": "ArgumentError: Mantle: this device is retired (`retire!`, `reset_device!`, or the process is exiting), so nothing is allocated on it. Allocate on the device `reset_device!` returned.\nStacktrace:\n  [1] refuseretired\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/runtime/lifecycle.jl:98 [inlined]\n  [2] #acquire!#17\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:443 [inlined]\n  [3] acquire!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:440 [inlined]\n  [4] allocate(pool::Mantle.Pool, dev::Mantle.LavaDevice, kind::Mantle.Persistent, ::Type{UInt32}, dims::Tuple{Int64, Int64}; align::Int64, blocksize::Int64, constraint::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:96\n  [5] allocate\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:86 [inlined]\n  [6] persistentarray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/resources.jl:203 [inlined]\n  [7] Buffer\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/resources.jl:166 [inlined]\n  [8] w4a8convrot(backend::Mantle.LavaDevice, parts::Vector{DNNKernels.W4A8ConvRotHostMatrix{Matrix{Int8}, Matrix{UInt8}, Vector{Float32}, Vector{Float32}}})\n    @ DNNKernels /sim/Programmieren/SimGame/dev/JuliaVision/DNNKernels/src/quant.jl:319\n  [9] toback(backend::Mantle.LavaDevice, A::DNNKernels.RowCat{Float16, Vector{DNNKernels.W4A8ConvRotHostMatrix{Matrix{Int8}, Matrix{UInt8}, Vector{Float32}, Vector{Float32}}}})\n    @ DNNKernels /sim/Programmieren/SimGame/dev/JuliaVision/DNNKernels/src/model.jl:198\n [10] DNNKernels.Model(graphs::Dict{String, DNNKernels.Graph}, weights::Dict{String, Any}; backend::Mantle.LavaDevice, device::Nothing, memevery::Int64, memframes::Int64, topk::Int64, fuse::Bool, fuseattn::Bool, quantize::Bool, quantcache::Nothing, record::Bool, halfconvs::Bool, consume::Bool)\n    @ DNNKernels /sim/Programmieren/SimGame/dev/JuliaVision/DNNKernels/src/model.jl:520\n [11] Model\n    @ /sim/Programmieren/SimGame/dev/JuliaVision/DNNKernels/src/model.jl:326 [inlined]\n [12] qwenimagetextencoder(; backend::Mantle.LavaDevice, dir::String, compact::Dict{String, Any}, processor_dir::String)\n    @ QwenImageRunner /sim/Programmieren/SimGame/dev/JuliaVision/QwenImageRunner/src/textencoder.jl:207\n [13] generate(prompt::String; width::Int64, height::Int64, steps::Int64, seed::Int64, backend::Mantle.LavaDevice)\n    @ QwenImageRunner /sim/Programmieren/SimGame/dev/JuliaVision/QwenImageRunner/src/QwenImageRunner.jl:954\n [14] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [15] run_job(::Val{:image}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:123\n [16] run_job(::Val{:asset}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:162\n [17] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:252\n [18] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:225\n [19] top-level scope\n    @ none:1\n [20] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [21] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [22] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-23T23:46:18.256",
+  "id": "20261123-233506-576-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 4000,
+    "prompt": "a small cute green metal watering can with a long spout, stylized toy-like, soft hand-painted colors, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "tool",
+      "garden"
+    ]
+  },
+  "seconds": 0.1,
+  "started": "2026-11-23T23:46:18.114",
+  "status": "failed"
+}

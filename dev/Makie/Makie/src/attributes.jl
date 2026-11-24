@@ -1,0 +1,293 @@
+const Theme = Attributes
+
+Base.broadcastable(x::AbstractScene) = Ref(x)
+Base.broadcastable(x::AbstractPlot) = Ref(x)
+Base.broadcastable(x::Attributes) = Ref(x)
+
+# The rules that we use to convert values to a Observable in Attributes
+value_convert(x::Observables.AbstractObservable) = Observables.observe(x)
+value_convert(@nospecialize(x)) = x
+
+# We transform a tuple of observables into a Observable(tuple(values...))
+function value_convert(x::NTuple{N, Union{Any, Observables.AbstractObservable}}) where {N}
+    result = Observable(to_value.(x))
+    onany((args...) -> args, x...)
+    return result
+end
+
+value_convert(x::NamedTuple) = Attributes(x)
+
+# for easier compat
+function OAttributes(args...; kwargs...)
+    attr = Attributes(args...; kwargs...)
+    for (k, v) in attr
+        if v isa Union{Attributes, Observable, ComputeGraphView, Computed}
+            attr[k] = v
+        else
+            attr[k] = Observable{Any}(v)
+        end
+    end
+    return attr
+end
+
+Base.@nospecializeinfer function build_nested_attr_dict(@nospecialize(pairs::NamedTuple))
+    d = Dict{Symbol, Any}()
+    T = typeof(nt)
+    for i in 1:nfields(nt)
+        val = getfield(nt, i)
+        d[fieldname(T, i)] = val isa NamedTuple ? Attributes(val) : val
+    end
+    return d
+end
+Base.@nospecializeinfer function build_nested_attr_dict(@nospecialize(pairs))
+    d = Dict{Symbol, Any}()
+    for (k, v) in pairs
+        d[k] = v isa NamedTuple ? Attributes(v) : v
+    end
+    return d
+end
+
+Attributes(; kw_args...) = Attributes(build_nested_attr_dict(kw_args))
+Attributes(pairs::Dict) = Attributes(build_nested_attr_dict(pairs))
+Attributes(pairs::Pair...) = Attributes(build_nested_attr_dict(pairs))
+Attributes(pairs::AbstractVector) = Attributes(build_nested_attr_dict(pairs))
+Attributes(pairs::Iterators.Pairs) = Attributes(build_nested_attr_dict(pairs))
+Attributes(nt::NamedTuple) = Attributes(; nt...)
+
+attributes(x::Attributes) = getfield(x, :attributes)
+attributes(x::AbstractPlot) = getfield(x, :attributes)
+Base.keys(x::Attributes) = keys(x.attributes)
+Base.values(x::Attributes) = values(x.attributes)
+
+function Base.iterate(x::Attributes, state...)
+    s = iterate(keys(x), state...)
+    s === nothing && return nothing
+    return (s[1] => x[s[1]], s[2])
+end
+
+function Base.copy(attr::Attributes)
+    return Attributes(copy(attributes(attr)))
+end
+
+function Base.deepcopy(obs::Observable)
+    return Observable{Any}(to_value(obs))
+end
+
+function Base.deepcopy(attributes::Attributes)
+    result = Attributes()
+    for (k, v) in attributes
+        # We need to create a new Signal to have a real copy
+        result[k] = deepcopy(v)
+    end
+    return result
+end
+
+Base.filter(f, x::Attributes) = Attributes(filter(f, attributes(x)))
+function Base.empty!(x::Attributes)
+    empty_rec!(x::Attributes)
+    return x
+end
+empty_rec!(x::Attributes) = empty_rec!(attributes(x))
+function empty_rec!(attr::Dict)
+    for (key, val) in attr
+        empty_rec!(val)
+    end
+    empty!(attr)
+    return
+end
+empty_rec!(obs::Observable) = Observables.clear(obs)
+empty_rec!(::Any) = nothing
+
+Base.length(x::Attributes) = length(attributes(x))
+
+function Base.merge!(target::Attributes, args::Attributes...)
+    for elem in args
+        # PERF: `Base.merge!` uses `sizehint!` to allocate all at once but most often the input would already have all
+        # the keys from the default attributes so no significant allocation happens.
+        for (key, value) in attributes(elem)
+            tvalue = to_value(value)
+            if haskey(target, key) && (tvalue isa Attributes && target[key] isa Attributes)
+                # if nested attribute, we merge recursively
+                Base.merge!(target[key], tvalue)
+            else
+                target[key] = value
+            end
+        end
+    end
+    return target
+end
+
+# `Base.merge!` with left precedence that merges recursively same as merge on `Attributes`
+function mergeleft!(target::Attributes, args::Attributes...)
+    for elem in args
+        # PERF: Preallocation <- user attributes filled with defaults -> most keys are new to target
+        @static if VERSION >= v"1.11"
+            sizehint!(target.attributes, length(target) + length(attributes(elem)); shrink = false)
+        else
+            sizehint!(target.attributes, length(target) + length(attributes(elem)))
+        end
+        for (key, value) in attributes(elem)
+            if !haskey(target, key)
+                target[key] = value
+            else
+                tvalue = to_value(value)
+                if tvalue isa Attributes && target[key] isa Attributes
+                    # if nested attribute, we merge recursively
+                    mergeleft!(target[key], tvalue)
+                end
+            end
+            # target already has a value for `key`
+        end
+    end
+    return target
+end
+
+Base.merge(target::Attributes, args::Attributes...) = merge!(deepcopy(target), args...)
+
+function Base.getproperty(x::Union{Attributes, AbstractPlot}, key::Symbol)
+    return if hasfield(typeof(x), key)
+        getfield(x, key)
+    else
+        getindex(x, key)
+    end
+end
+
+function Base.setproperty!(x::Union{Attributes, AbstractPlot}, key::Symbol, value::NamedTuple)
+    return x[key] = Attributes(value)
+end
+function Base.setindex!(x::Attributes, value::NamedTuple, key::Symbol)
+    return x[key] = Attributes(value)
+end
+
+function Base.setproperty!(x::Union{Attributes, AbstractPlot}, key::Symbol, value)
+    return if hasfield(typeof(x), key)
+        setfield!(x, key, value)
+    else
+        setindex!(x, value, key)
+    end
+end
+
+function Base.getindex(x::Attributes, key::Symbol)
+    return attributes(x)[key]
+end
+
+function Base.setindex!(x::Attributes, value, key::Symbol)
+    return if haskey(x, key) && (x.attributes[key] isa Observable)
+        x.attributes[key][] = value
+    else
+        x.attributes[key] = value
+    end
+end
+
+function Base.setindex!(x::Attributes, value::Observable, key::Symbol)
+    return x.attributes[key] = value
+end
+
+_indent_attrs(s, n) = join(split(s, '\n'), "\n" * " "^n)
+
+function Base.show(io::IO, ::MIME"text/plain", attr::Attributes)
+
+    io = IOContext(io, :compact => true)
+
+    d = Dict()
+    print(io, """Attributes with $(length(attr)) $(length(attr) != 1 ? "entries" : "entry")""")
+
+    if length(attr) < 1
+        return
+    end
+
+    print(io, ":")
+
+    ks = sort(collect(keys(attr)), by = lowercase ∘ String)
+    maxlength = maximum(length ∘ String, ks)
+
+    for k in ks
+        print(io, "\n  ")
+        print(io, k)
+        print(io, " => ")
+        v = to_value(attr[k])
+        if v isa Attributes
+            print(io, _indent_attrs(repr(v), 2))
+        else
+            print(io, to_value(attr[k]))
+        end
+    end
+    return
+end
+
+Base.show(io::IO, attr::Attributes) = print(io, "Attributes()")
+theme(x::AbstractPlot) = x.attributes
+isvisible(x) = haskey(x, :visible) && to_value(x[:visible])
+
+#dict interface
+const AttributeOrPlot = Union{AbstractPlot, Attributes}
+Base.pop!(x::AttributeOrPlot, args...) = pop!(x.attributes, args...)
+Base.haskey(x::AttributeOrPlot, key) = haskey(x.attributes, key)
+Base.delete!(x::AttributeOrPlot, key) = delete!(x.attributes, key)
+function Base.get!(f::Function, x::AttributeOrPlot, key::Symbol)
+    if haskey(x, key)
+        return x[key]
+    else
+        val = f()
+        x[key] = val
+        return x[key]
+    end
+end
+Base.get!(x::AttributeOrPlot, key::Symbol, default) = get!(() -> default, x, key)
+Base.get(f::Function, x::AttributeOrPlot, key::Symbol) = haskey(x, key) ? x[key] : f()
+Base.get(x::AttributeOrPlot, key::Symbol, default) = get(() -> default, x, key)
+
+# This is a bit confusing, since for a plot it returns the attribute from the arguments
+# and not a plot for integer indexing. But, we want to treat plots as "atomic"
+# so from an interface point of view, one should assume that a plot doesn't contain subplots
+# Plot plots break this assumption in some way, but the way to look at it is,
+# that the plots contained in a Plot plot are not subplots, but _are_ actually
+# the plot itself.
+function Base.getindex(plot::Plot, idx::Integer)
+    name = argument_names(plot)[idx]
+    return plot.attributes[name]
+end
+
+function Base.getindex(plot::Plot, idx::UnitRange{<:Integer})
+    names = argument_names(plot)[idx]
+    return getindex.((plot.attributes,), names)
+end
+Base.setindex!(plot::Plot, value, idx::Integer) = (plot.args[idx][] = value)
+Base.length(plot::Plot) = length(plot.converted)
+
+
+function Base.getindex(x::AttributeOrPlot, key::Symbol, key2::Symbol, rest::Symbol...)
+    dict = to_value(x[key])
+    dict isa Attributes || error("Trying to access $(typeof(dict)) with multiple keys: $key, $key2, $(rest)")
+    return dict[key2, rest...]
+end
+
+function Base.setindex!(x::AttributeOrPlot, value, key::Symbol, key2::Symbol, rest::Symbol...)
+    dict = to_value(x[key])
+    # dict isa Attributes || error("Trying to access $(typeof(dict)) with multiple keys: $key, $key2, $(rest)")
+    return dict[key2, rest...] = value
+end
+
+# a few shortcut functions to make attribute conversion easier
+function get_attribute(dict, key, default = nothing)
+    if haskey(dict, key)
+        value = to_value(dict[key])
+        value isa Automatic && return default
+        plot_k = plotkey(dict)
+        if isnothing(plot_k)
+            return convert_attribute(value, Key{key}())
+        else
+            return convert_attribute(value, Key{key}(), Key{plot_k}())
+        end
+    else
+        return default
+    end
+end
+
+function Base.propertynames(x::Attributes)
+    return (keys(x.attributes)...,)
+end
+
+function Base.propertynames(x::AbstractPlot)
+    return (keys(x.attributes.outputs)...,)
+end

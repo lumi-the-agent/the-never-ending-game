@@ -1,0 +1,7 @@
+{"session":23,
+"summary":"The host's suite could not run (game was down); I waited for game.sock and ran the full suite on the restarted game: 29 of 31 pass. The Wild berry race test fails every time, and the Firefly catch end-card test failed once and then passed. I did not add tests.",
+"failures":[
+{"what":"Wild berry race: the racers do not run for the berries","steps":"live_tests(\"Wild berry race\") on the live game (failed 2 of 2 runs, 0.1 s each)","expected":"Critters near a ripe bush run for the berries, the winner dances","actual":"check failed: the racers do not run for the berries: [:eat, :splash, :social] (their behaviour states are not a race). The test returns in 0.1 s, so the race may not start at all, or the test's expectation no longer matches the code. The author's journal says the race only starts by day and skips sleeping critters.","screenshot":""},
+{"what":"Firefly catch: the round does not end after 8 catches (flaky)","steps":"Full suite run: live_tests(\"\"); the test 'Firefly catch: catching all ends with the end card...'","expected":"After 8 catches the round ends with the end card","actual":"check failed: the round did not end after 8 catches (state playing, score 6). It passed when run alone right afterwards, so it is timing-dependent. The author's journal also lists unexplained Firefly start-card failures after the restart.","screenshot":"world/tests/shots/firefly-end.png"}
+],
+"tests_added":[]}

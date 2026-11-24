@@ -1,0 +1,28 @@
+# ============================================================================
+# Overlay Rendering — Lava graphics pipeline (vertex/geometry/fragment shaders)
+# ============================================================================
+
+# Marker shape constants (matching GLMakie's distance_shape.frag)
+const CIRCLE = UInt8(0)
+const RECTANGLE = UInt8(1)
+const ROUNDED_RECTANGLE = UInt8(2)
+const DISTANCEFIELD = UInt8(3)
+const TRIANGLE_SHAPE = UInt8(4)
+const CROSS = UInt8(5)
+const DIAMOND = UInt8(6)
+const HEXAGON = UInt8(7)
+const STAR = UInt8(8)
+
+include("primitives.jl")    # SDF helpers (aastep, smoothstep) — used by fragment shaders
+include("fxaa.jl")          # the fxaa attachment every stage writes, and the FXAA pass
+
+# Graphics pipeline infrastructure
+include("gfx_pipeline.jl")  # framebuffer, atlas, screen_to_ndc
+include("renderobject.jl")  # RenderObject, update_robj!, construct_robj
+
+# Shader files (each contains vert/geom/frag + pipeline + setup function)
+include("lines.jl")
+include("scatter.jl")
+include("mesh.jl")
+include("shadow.jl")        # the directional light's shadow map, for mesh.jl
+include("gfx_image.jl")

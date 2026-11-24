@@ -1,0 +1,259 @@
+# Agents — the SERVER-side live agent.
+#
+# Provider DESCRIPTORS (ClaudeCodeAgent/MiMoAgent/OpenCodeAgent/KimiAgent/CodexAgent/MockAgent), their
+# `provider_name`/`label`/`icon` dispatch, and `current_providers()` /
+# `find_provider` live in the AgentProviders package — the single source of truth,
+# shared with the worker. This file defines the live agent the SERVER drives:
+# `WorkerAgent`, which asks a registered worker to spawn the chosen provider's
+# binary and drives ACP over a channel of the worker's link.
+#
+# Public surface (the verbs):
+#
+#     start!(a; on_frame)  dial + ACP handshake; stores the live client IN a
+#     stop!(a)             tear the session down
+#     isopen(a)            is the session live (Base.isopen)
+#     client(a)            the live ACP.Client (or nothing)
+#     replay(a)            session/load history captured at start! (empty for fresh)
+#     provider_name/label/icon(a)   read from the agent's provider descriptor
+#     agent_cwd(a)         the path the agent sees as its working directory
+
+import AgentProviders: AgentProvider, BinAgent,
+                       ClaudeCodeAgent, MiMoAgent, OpenCodeAgent, KimiAgent, CodexAgent,
+                       MockAgent,
+                       provider_name, label, icon,
+                       current_providers, find_provider
+
+# Replay defaults to empty — only resuming agents (a WorkerAgent with a
+# resume_session_id) capture session/load history.
+replay(::AgentProvider) = ACP.Message[]
+
+# The client `_meta` sent at `initialize`. The AIR extension goes only to agents
+# that use it: codex-acp for its session-failure notices, and the mocks standing
+# in for it. claude-agent-acp takes any client carrying `_meta.jetbrains.air` for
+# JetBrains AIR and then leaves out what we read: the `outputFile` of an async
+# subagent (its card never finished), tool names, parent tool ids.
+client_meta(::BinAgent) = Dict{String,Any}()
+client_meta(::Union{CodexAgent,MockAgent,AgentProviders.MockAgent2}) = ACP.session_notice_capability()
+
+# ── WorkerAgent — the worker path as a first-class agent ──────────────────────
+# Instead of spawning a local subprocess, a WorkerAgent opens a channel to a
+# registered worker, and the worker runs the chosen provider's binary on it: one
+# ACP line per message, both ways. The `provider` field is the singleton
+# descriptor (a `BinAgent`) the worker should run; `provider_name(provider)` is
+# the string sent over the wire. `client`/`ws`/`replay` are populated by `start!`.
+mutable struct WorkerAgent <: AgentProvider
+    state              :: ServerState
+    worker_id          :: String
+    worker_path        :: String
+    # The chat this agent speaks for. Several chats can share one worker AND
+    # one folder, so (worker_id, worker_path) does not identify a chat; the MCP
+    # identity, the dev-tools grant and the prompt appendix all key on THIS.
+    project_id         :: String
+    mcp                :: Vector{ACP.MCPServer}
+    resume_session_id  :: Union{String,Nothing}
+    provider           :: BinAgent                  # which provider the worker spawns
+    handler            :: ACP.Handler
+    ws                 :: Ref{Any}                  # the ACP channel (a WorkerLink.LinkChannel)
+    client             :: Union{ACP.Client,Nothing}
+    replay             :: Vector{ACP.Message}
+    # Serialises start!/stop! for THIS agent: a ✕-close (stop_session! → stop!)
+    # can land mid-bind and null `ws[]` out from under the half-built connection.
+    bind_lock          :: ReentrantLock
+    # Set by stop! (under bind_lock): this agent is permanently dead. A turn
+    # buffered past a chat's close can still reach start! AFTER stop! already
+    # ran on the (lazy, still-unbound) agent — without this flag start! would
+    # bind it, spawning an orphaned subprocess nothing reaps. A reopen always
+    # builds a FRESH WorkerAgent, so latching this closed is correct.
+    closed             :: Bool
+    # From the agent's own `initialize` handshake: can it session/load? Gates
+    # whether we persist its session id.
+    loads_sessions     :: Bool
+end
+
+# Default provider is ClaudeCode, overridable via `BT_DEFAULT_PROVIDER` — set by
+# the test harness to "MockCode" so new chats run the mock (and so CI without a
+# real claude-agent-acp binary works). Production leaves it unset.
+default_provider() = find_provider(get(ENV, "BT_DEFAULT_PROVIDER", "ClaudeCode"))
+
+"""
+    project_provider(p::ProjectInfo) -> BinAgent
+
+The agent a project opens with: the one it was last used with (`p.provider`),
+or the default when it has never been switched or when the stored name isn't
+installed here. Silent about the fallback — the bring-up in `dashboard.jl`
+reports it, the cosmetic callers (title repair, overview snippets) don't care.
+"""
+function project_provider(p::ProjectInfo)
+    p.provider === nothing && return default_provider()
+    for prov in current_providers()
+        provider_name(prov) == p.provider && return prov
+    end
+    return default_provider()
+end
+
+WorkerAgent(state::ServerState, worker_id::AbstractString, worker_path::AbstractString;
+            project_id::AbstractString = "",
+            mcp = ACP.MCPServer[],
+            resume_session_id::Union{String,Nothing} = nothing,
+            provider::BinAgent = default_provider(),
+            handler::ACP.Handler = ACP.DiscardHandler()) =
+    WorkerAgent(state, String(worker_id), String(worker_path), String(project_id),
+                collect(ACP.MCPServer, mcp), resume_session_id, provider, handler,
+                Ref{Any}(nothing), nothing, ACP.Message[], ReentrantLock(), false,
+                false)   # loads_sessions: set by the handshake in start!
+
+# The agent the worker sees as its cwd is the worker-side path.
+agent_cwd(a::WorkerAgent) = a.worker_path
+replay(a::WorkerAgent)    = a.replay
+client(a::WorkerAgent)    = a.client
+Base.isopen(a::WorkerAgent) = a.client !== nothing && isopen(a.client)
+provider_name(a::WorkerAgent) = provider_name(a.provider)
+label(a::WorkerAgent)         = label(a.provider)
+icon(a::WorkerAgent)          = icon(a.provider)
+
+# Never bound → never handshook → we don't know, so don't persist an id.
+loads_sessions(::AgentProvider) = false
+loads_sessions(a::WorkerAgent)  = a.loads_sessions
+
+# Share the agent's `ws` Ref so a single channel is the one truth on teardown.
+# Typed on `WorkerAgent` so it does NOT collide with `ACP.WorkerTransport`'s
+# default `WorkerTransport(::Any)` (the collision broke precompilation).
+ACP.WorkerTransport(a::WorkerAgent) = ACP.WorkerTransport(a.ws)
+
+# The worker's I/O is an `ACP.WorkerTransport` over the session's channel, so the
+# generic ACP `Connection` can drive line-level frames over it. The WorkerAgent
+# owns one; `start!` wires its `ws` Ref to the agent's.
+function start!(a::WorkerAgent; on_frame::Union{Function,Nothing} = nothing)
+    a.client === nothing || return a       # fast idempotent path
+    lock(a.bind_lock)
+    try
+    a.client === nothing || return a       # re-check under the lock
+    a.closed && return a                    # stop! already ran: dead agent (a turn buffered
+                                            # past close); don't re-bind — a reopen makes a fresh one
+    # The chat this session belongs to. NOT cosmetic: the MCP environment (and
+    # with it which chat's "Remote julia" / "Dev mode" switches its tools obey)
+    # and the system-prompt appendix below are derived from it. This used to be
+    # looked up as "the first project on this worker with this folder", which
+    # with two chats on one folder handed the newer chat's tools the OLDER
+    # chat's identity: its switch read on, the agent was refused (2026-09-15).
+    project_id = a.project_id
+    isempty(project_id) &&
+        error("agent for $(a.worker_path) on '$(a.worker_id)' was built without its chat's project id")
+    reachable(a.state, a.worker_id) ||
+        error("Worker '$(a.worker_id)' is not connected")
+
+    # Re-derived on every bring-up, NOT taken from what `a.mcp` was built with.
+    # `mcp_env` reads the project's live `dev_mode`, and the appendix
+    # three lines down already reads live state — caching one while deriving the
+    # other is what made the "Dev mode" toggle half-work: it composed the
+    # briefing into the system prompt (live) while the `bt_dev_*` tools never
+    # appeared, because a restart re-`start!`s the SAME agent object and so
+    # respawned the MCP with the environment the chat had at its FIRST bring-up.
+    # No number of restarts could fix that; only closing and reopening the chat.
+    mcp_list = mcp_list_payload(refresh_injected_env(a.mcp, a.state, project_id))
+
+    pname = provider_name(a)
+    # Claude's: the BUILT-IN house rules + the user's editable AGENTS.md as a
+    # system-prompt append, and its session options (`session_meta`).
+    prompt_meta = session_meta(a.provider, a.state, project_id)
+
+    # The worker spawns the agent when the channel opens and answers once it
+    # runs; a spawn failure comes back as the reason. The transport shares the
+    # agent's `ws` Ref, so this is also what `stop!` closes.
+    transport = ACP.WorkerTransport(a)
+    a.ws[] = open_worker_channel(a.state, a.worker_id, Dict(
+        "kind"       => "acp",
+        "project_id" => project_id,
+        "cwd"        => a.worker_path,
+        "mcpServers" => mcp_list,
+        "provider"   => pname); priority = 1)
+
+    # Claude-like agents start turns of their own and mark where they end; the
+    # connection opens and ends those (`ACP.AgentTurn`).
+    conn = ACP.Connection(transport, a.handler; on_frame,
+                          agent_turns = reports_autonomous_origin(a.provider))
+    init = ACP.send_request(conn, "initialize", Dict(
+        "protocolVersion"    => 1,
+        "clientCapabilities" => Dict(
+            "fs" => Dict{String,Any}("readTextFile" => true, "writeTextFile" => true),
+            "_meta" => client_meta(a.provider),
+            "elicitation" => a.provider.elicitation),
+        "clientInfo"         => Dict{String,Any}("name"    => "BonitoAgents.WorkerAgent",
+                                     "version" => "0.1.0")))
+    init_caps = get(ACP._result_dict(init), "agentCapabilities", nothing)
+    a.loads_sessions = init_caps isa AbstractDict &&
+                       get(init_caps, "loadSession", false) === true
+
+    # Resuming → `session/load` (the agent re-streams history as session/update
+    # notifications; `replay_history` captures them). Fresh → `session/new`, no
+    # replay. The response carries the session-config blocks either way. Only
+    # Claude honours the `_meta.systemPrompt.preset` AGENTS.md append.
+    new_session() = ACP.send_request(conn, "session/new",
+        merge(Dict{String,Any}("cwd" => a.worker_path, "mcpServers" => mcp_list), prompt_meta))
+
+    session_id, msgs, result = if a.resume_session_id !== nothing
+        @info "ACP: resuming session" cwd=a.worker_path resume=a.resume_session_id
+        load_params = merge(Dict(
+            "sessionId"  => a.resume_session_id,
+            "cwd"        => a.worker_path,
+            "mcpServers" => mcp_list,
+        ), prompt_meta)
+        # A stored id the agent can't load any more (rotated, pruned, or written
+        # by a different agent) must open a fresh session, not kill the chat.
+        # The project self-heals: `record_bound_session!` writes the fresh id
+        # over the dead one, and the local history rides forward as a prelude.
+        try
+            rmsgs, load_result = ACP.replay_history(conn, load_params)
+            a.resume_session_id, rmsgs, load_result
+        catch e
+            e isa InterruptException && rethrow()
+            @warn "ACP: session/load failed, starting a fresh session" exception=e cwd=a.worker_path resume=a.resume_session_id
+            a.resume_session_id = nothing
+            fresh = new_session()
+            fresh["sessionId"], ACP.Message[], fresh
+        end
+    else
+        fresh = new_session()
+        fresh["sessionId"], ACP.Message[], fresh
+    end
+
+    a.client = ACP.Client(conn, session_id, a.worker_path, ACP._result_dict(result))
+    # Only explicit prompt queueing permits overlapping session/prompt requests.
+    # A separate steering extension is a different operation: treating it as
+    # queueing can strand an earlier prompt's completion waiter forever.
+    caps = init_caps isa AbstractDict ? init_caps : Dict{String,Any}()
+    meta = get(caps, "_meta", Dict{String,Any}())
+    a.client.session_result["bonitoPromptQueueing"] =
+        get(get(meta, "claudeCode", Dict{String,Any}()), "promptQueueing", false) === true
+    a.client.session_result["bonitoPromptReceipts"] = get(meta, "promptReceipts", false) === true
+    steering = get(get(ACP._result_dict(init), "_meta", Dict{String,Any}()), "steering", Dict{String,Any}())
+    a.client.session_result["bonitoSteeringIdleBehavior"] = get(steering, "idleBehavior", "")
+    a.client.session_result["bonitoActiveSteering"] =
+        get(steering, "supported", false) === true &&
+        (get(steering, "activeOnly", false) === true || get(steering, "idleBehavior", "") == "promptRequired")
+    a.replay = msgs
+    return a
+    finally
+        unlock(a.bind_lock)
+    end
+end
+
+function stop!(a::WorkerAgent; permanent::Bool = false)
+    # Hold bind_lock so a mid-bind stop! WAITS for the bind to finish (then a.client
+    # is set and we close cleanly) instead of nulling ws[] under the half-built conn.
+    @lock a.bind_lock begin
+        # `permanent=true` (stop_session! on a CLOSED/evicted chat) latches the
+        # agent dead so a turn buffered past close can't lazily re-bind it into an
+        # orphaned subprocess. Done UNDER bind_lock so it races cleanly with a
+        # concurrent start!: either start! already holds the lock (we wait, then
+        # close the freshly-bound client → reaped) or it runs after us (sees
+        # `closed` → aborts). Restart / worker-reconnect pass permanent=false:
+        # they stop! then re-bind the SAME agent, so they must NOT latch.
+        permanent && (a.closed = true)
+        a.client === nothing || close(a.client)
+        a.client = nothing
+        a.replay = ACP.Message[]
+        a.ws[] = nothing
+    end
+    return a
+end

@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T00:13:04.442",
+  "finished": "2026-11-23T00:31:52.087",
+  "id": "20261123-001304-442-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a single round fluffy green hedge bush seen from the side, chunky rounded leaf clumps resting on the ground, a few tiny yellow berries, no pot, no trunk, stylized cozy game prop, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T00:31:52.087",
+    "faces": 39696,
+    "id": "20261123-001304-442-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-001304-442-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-001304-442-asset/mesh.jls",
+    "prompt": "a single round fluffy green hedge bush seen from the side, chunky rounded leaf clumps resting on the ground, a few tiny yellow berries, no pot, no trunk, stylized cozy game prop, soft hand-painted colors",
+    "seconds": 704.0,
+    "tags": [
+      "prop",
+      "bush"
+    ]
+  },
+  "seconds": 703.6,
+  "started": "2026-11-23T00:20:08.443",
+  "status": "done"
+}

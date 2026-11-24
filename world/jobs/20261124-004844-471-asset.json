@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-24T00:48:44.471",
+  "finished": "2026-11-24T01:29:39.372",
+  "id": "20261124-004844-471-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 2500,
+    "prompt": "a small young seedling sprout with two round green leaves on a short stem, stylized cozy toy-like, seen from the side, standing in soil, no pot",
+    "tags": [
+      "plant",
+      "seedling",
+      "garden"
+    ]
+  },
+  "result": {
+    "created": "2026-11-24T01:29:38.968",
+    "faces": 2332,
+    "id": "20261124-004844-471-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-471-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-471-asset/mesh.jls",
+    "prompt": "a small young seedling sprout with two round green leaves on a short stem, stylized cozy toy-like, seen from the side, standing in soil, no pot",
+    "seconds": 565.0,
+    "tags": [
+      "plant",
+      "seedling",
+      "garden"
+    ]
+  },
+  "seconds": 568.5,
+  "started": "2026-11-24T01:20:10.688",
+  "status": "done"
+}

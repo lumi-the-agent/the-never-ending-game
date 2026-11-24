@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+    tags: '*'
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+jobs:
+  test:
+    name: Tests (Julia ${{ matrix.version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ['1.12', '1']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install xvfb (GLFW pulled in by Mantle needs an X display at module __init__)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ matrix.version }}
+          arch: x64
+      - uses: julia-actions/cache@v2
+      # The suite runs on Mantle's default device; a runner has no GPU, so that is
+      # lavapipe from Lavapipe_jll, a test dependency.
+      - uses: julia-actions/julia-runtest@v1
+        with:
+          # --check-bounds=auto: GPU kernels crash with
+          # --check-bounds=yes because bounds checking injects error paths that
+          # can't compile to SPIR-V.
+          check_bounds: auto
+          # Wrap julia with xvfb-run so GLFW's __init__ (transitively loaded
+          # via Mantle) can call glfwInit() on a headless runner.
+          prefix: xvfb-run --auto-servernum

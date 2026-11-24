@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: sky colour RGBA{Float32}(0.24982157, 0.33859262, 0.46385527, 1.0) at night factor 0.6142798",
+      "file": "assets.jl",
+      "name": "The browser sky follows the time of day (blue by day, navy at night)",
+      "passed": false,
+      "seconds": 0.2
+    }
+  ],
+  "passed": 66,
+  "session": 38,
+  "time": "2026-11-23T12:43:06",
+  "total": 67
+}

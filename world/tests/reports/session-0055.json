@@ -1,0 +1,15 @@
+{"session":55,
+"summary":"Re-ran the 7 suite failures alone in the sandbox. Five pass alone (lookout bench, wave answer, bored Sprout, lonely Sprout, follow-camera faces), so they are order-dependent flakes. The vegetable-patch walk fails again and is a real bug. I added no new tests.",
+"failures":[
+{"what":"Sprout never reaches the vegetable patch gate when it goes to water. It stops about 1.5 m short, near (-9.97, 6.54), and the gate is at (-10.5, 8.0). Goals seen at the stop: tend, sleep, and seek_friend with action wave.",
+ "steps":"live_tests(\"garden moment\") or live_tests(\"vegetable patch\"), both repeatable in the sandbox. Run garden moment on its own and wait about 90 s.",
+ "expected":"Sprout walks to the gate, waters the rows, and the follow camera watches it.",
+ "actual":"In 3 of 3 runs Sprout stayed near (-9.7..-11.1, 6.5..8.1) and never arrived. The garden test also failed once in the vegetable-patch run with 'Sprout did not set off to the patch (goal seek_friend, action wave)'. This looks like another plugin (presents or friend visits) replacing the tend goal, or Sprout wedged near the fence or pond. The lookout bench test failed in the suite with Sprout stuck at the same spot (-9.74, 6.6), so the spot is probably a nook that traps Sprout.",
+ "screenshot":""},
+{"what":"Several tests fail only in the full suite and pass alone: the lookout bench sit, the wave answer (Pinchy stays wander), a bored Sprout saying 'That was fun! Again tomorrow?', the lonely Sprout sitting with Wibbles, and the follow camera seeing faces in only 15 of 49 samples.",
+ "steps":"Run the full suite. Then run each test alone with live_tests(\"<name>\").",
+ "expected":"The same result in both.",
+ "actual":"All five pass alone. A likely cause is state left by the new presents.jl features: invitations, pair walks and carried presents that alter goals, speech and the camera subject. The 'That was fun!' line is the new walk-back chat from presents.jl. Together with the garden failure, Sprout seems to get stuck near (-9.7, 6.6) after presents or invitations.",
+ "screenshot":""}
+],
+"tests_added":[]}

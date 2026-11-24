@@ -1,0 +1,58 @@
+using AcceleratedKernels
+using Documenter
+using DocumenterCodeBlocks: CodeBlocks
+
+include("DocHelpers.jl")
+
+
+makedocs(;
+    modules=[AcceleratedKernels],
+    authors="Andrei-Leonard Nicusan <a.l.nicusan@gmail.com> and contributors",
+    sitename="AcceleratedKernels.jl",
+    plugins=[
+        CodeBlocks(; line_counter=:named),
+    ],
+    format=Documenter.HTML(;
+        canonical="https://juliagpu.github.io/AcceleratedKernels.jl/",
+        edit_link="main",
+        assets=String[],
+        sidebar_sitename=false,
+
+        # Only create web pretty-URLs on the CI
+        prettyurls = get(ENV, "CI", nothing) == "true",
+    ),
+    pages=[
+        "Overview" => "index.md",
+        "Benchmarks" => "benchmarks.md",
+        "Manual" =>[
+            "Using Different Backends" => "api/using_backends.md",
+            "Algorithms and Backends" => "api/algorithms.md",
+            "General Loops" => "api/foreachindex.md",
+            "Map" => "api/map.md",
+            "Sorting" => "api/sort.md",
+            "Reduce" => "api/reduce.md",
+            "MapReduce" => "api/mapreduce.md",
+            "Accumulate" => "api/accumulate.md",
+            "Binary Search" => "api/searchsorted.md",
+            "Find All" => "api/findall.md",
+            "Reverse" => "api/reverse.md",
+            "Predicates" => "api/predicates.md",
+            "Arithmetics" => "api/arithmetics.md",
+            "Scratch Memory" => "api/workspace.md",
+            "Custom Structs" => "api/custom_structs.md",
+            "Task Partitioning" => "api/task_partition.md",
+            "Differences from Base" => "api/differences.md",
+        ],
+        "Testing" => "testing.md",
+        "Tuning and Capabilities" => "tuning.md",
+        "Debugging Kernels" => "debugging.md",
+        "Roadmap" => "roadmap.md",
+        "References" => "references.md",
+    ],
+    checkdocs=:all,
+)
+
+deploydocs(;
+    repo="github.com/JuliaGPU/AcceleratedKernels.jl",
+    devbranch="main",
+)

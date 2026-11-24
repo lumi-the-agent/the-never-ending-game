@@ -1,0 +1,276 @@
+{
+ "verdict": "needs_work",
+ "summary": "Played live (follow, orbit, free cameras; Firefly catch and Berry race through interact!, dusk to night) and compared with s20/s35/s36 progress shots. By day the clay-toy island is cozy and the pier chat with a fishing Sprout is the best frame in the game, but the island geometry is unchanged since session 20, the sea is a flat grey slab with a sawtooth horizon, dusk/night play is dark, and some critters sit 'off to the berry bushes' for hours. The mini games are clear and winnable but are counters; nothing yet is a moment to show a friend.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Day is clean; orbit-b.png shows flat grey sea and a hard sawtooth horizon; at 17:18-19:36 the pier and forest fall to near black (pier-chat shot, br-end.png), though the lantern pool at 19:19 (br-start.png) is lovely."
+  },
+  "world": {
+   "score": 5,
+   "why": "Overview of s36 vs s20: same hill, pond, path and pier, more trees; no new area in 16 sessions; sea is a slab."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated trees, mushrooms, tufts, signpost and cottage share a clay look; little grouping into scenes (camp, garden, market) and rocks are generic."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Hats, a beret, notes and hearts add charm (br-start.png 'Whee, dizzy!'), but bodies are blobs and Pickles/Sir Sniffsalot read 'off to the berry bushes' at 13:26, 16:14, 16:33 and 19:19."
+  },
+  "fun": {
+   "score": 4,
+   "why": "Played both: Firefly catch has a clear card, key hints and a live '7 m to your left' cue (good); Berry race showed 'You 0 - Critters 2' after 15 s in a dark top-down view. Still counters, no moment to show a friend."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Follow on the pier (follow-a.png) and the fishing chat (ff-mid at 17:18) frame well; orbit/free show a flat grey sea and empty sky band; Berry race top-down at night is dark with Sprout tiny; eye-level progress shot is identical in s35 and s36."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Panel text is stale: Sprout shows 'walking the whole island with a critical eye' while the player is in a mini game, 'New on the island: The carried pebble is hard to see' and a changelog message stay for hours; right column half empty; HUD pill in mini games is good."
+  },
+  "style": {
+   "score": 6,
+   "why": "Clay-toy look is cohesive in raster and traced still; the traced still shows a jagged horizon band and noisy fur and the browser look differs."
+  },
+  "performance": {
+   "score": 8,
+   "why": "30 fps, median frame about 3 ms reported by the author."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "A shareable moment: creatures play a game together and Sprout joins",
+   "todo": "140",
+   "what": "Interactions are counters (catch 8 fireflies, race to berries) and one-off emotes. Nothing emerges between creatures that a player would want to show someone.",
+   "where": "plugins: mini games, cairns, ballplay, dancecircle",
+   "evidence": "world/reviews/p36/ff-mid.png (17:18): Sprout fishing and chatting with Truffle on the pier is the one frame that tells a story; mini games show only counters",
+   "suggestion": "Grow that pier chat into an event: creatures gather with their own props (rod, lantern, picnic), react to each other with distinct emotes, Sprout joins with E. Frame it with a group camera and make it visible in the world afterwards.",
+   "done_when": "A 20 s clip of the event shows at least 4 creatures reacting distinctly, and the play test shows Sprout joining changes what the others do."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Creatures with real silhouettes: limbs, ears, tails, walk cycles",
+   "todo": "142",
+   "what": "Most critters are spheres with stub legs; at overview distance the pig and sheep are only blobs and Sprout is a white egg seen from behind.",
+   "where": "creature species code, progress overview.png and dashboard.png",
+   "evidence": "media/progress/session-0036/dashboard.png (Sprout egg) vs releases/.../still.png (sheep with face reads better).",
+   "suggestion": "Give each species a distinct silhouette (long ears, tail, snout, wool tufts), a bounce walk with squash and stretch, and idle behaviours (scratch, yawn, look at flowers). Generate head or body meshes as assets.",
+   "done_when": "Cropped screenshots of three species at overview distance are told apart without name tags; a walk cycle visible in a 1 s frame strip."
+  },
+  {
+   "severity": "high",
+   "category": "world",
+   "title": "A second and third place: flower meadow and beach with their own props",
+   "todo": "87",
+   "what": "The whole island is one grass hill; the sea is a dark slab. Nothing to walk toward.",
+   "where": "terrain and areas plugins; overview.png",
+   "evidence": "media/progress/session-0036/overview.png: uniform green with trees scattered, black-navy sea.",
+   "suggestion": "Make 2-3 clearly different regions (sandy cove with driftwood and shells, flower meadow with butterflies, mossy rock grove) with their own colours and props, and lit paths between them.",
+   "done_when": "Overview screenshot shows at least three differently coloured regions; each has 5+ props unique to it."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Creatures that get stuck: 'off to the berry bushes' for hours",
+   "todo": null,
+   "what": "Pickles and Sir Sniffsalot are listed as 'off to the berry bushes' at 13:26, 16:14, 16:33, and again at 19:19: they appear to be stuck on the way, never arriving. A player watching sees creatures not living.",
+   "where": "On the island now panel, berry race / wild race goals",
+   "evidence": "world/reviews/p36/follow-a.png, orbit-b.png, br-start.png (same two names across 6 game hours); progress shot session-0036 dashboard.png",
+   "suggestion": "Find why they never arrive (path blocked by trees/Separation, goal never reaching berries), give every goal a timeout and re-pick, and log creatures whose goal lasts over 90 s as a test failure.",
+   "done_when": "A 30 min live sample shows no creature with the same goal longer than 2 min; a test asserts it."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Soft sea and a gradient horizon with no jagged band",
+   "todo": "171",
+   "what": "Sea is a flat navy slab in the raster and the traced still shows a jagged grey sawtooth along the horizon.",
+   "where": "sea mesh, horizon; releases still.png at y=240",
+   "evidence": "world/reviews/p36/orbit-b.png and free-a.png: flat grey slab, hard sawtooth line at the horizon; releases still.png shows the same band",
+   "suggestion": "Fix the horizon band (see todo 131), add depth colour from shore to open water, foam at the beach, sky reflection.",
+   "done_when": "Traced still and raster overview show no sawtooth and a visible shore-to-deep gradient."
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "title": "Dusk and night that look cozy: lit windows, lanterns, warm pools",
+   "todo": "173",
+   "what": "Night ground is near black with hard shadow blobs; the cottage and lanterns give too little light.",
+   "where": "night frames; lamplight, moon plugins",
+   "evidence": "world/reviews/p36/ff-mid.png (17:18 pier nearly black), br-end.png (19:36 forest black, Sprout tiny top-down); br-start.png lantern pool shows what works",
+   "suggestion": "Warm lit windows on the cottage, lantern pools, blue moon fill and a lifted ambient so shapes read.",
+   "done_when": "Mean luminance of the 3D area at 23:00 is above a set threshold and a night screenshot shows warm pools around 3 light sources."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Cameras with a subject: eye-level, orbit and night Berry race",
+   "todo": "168",
+   "what": "The eye-level progress shot frames empty grass and tufts; no creature in view. Overview is a generic orbit.",
+   "where": "camera plugins, eye-level.png",
+   "evidence": "world/reviews/p36/orbit-a/b.png (sea and sky, island small), br-end.png (top-down dark); media/progress eye-level.png identical in s35 and s36",
+   "suggestion": "Eye-level cameras pick a creature or event, use a low angle with foreground framing and depth of field feel; overview orbits slowly with a target.",
+   "done_when": "Three random eye-level shots over a day each contain a creature taking more than 5% of the frame."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Dashboard panel: a live picture of the island instead of changelog text",
+   "todo": "174",
+   "what": "Right panel is half empty; 'New on the island: The carried pebble is hard to see' and the 'Messages to you' changelog read as dev notes; the list of creatures is text. Sprout's status line says 'walking the whole island with a critical eye' even while the player plays a mini game.",
+   "where": "right panel, all dashboard screenshots",
+   "evidence": "world/reviews/p36/follow-a.png: stale Sprout status + 'carried pebble' note; dashboard half empty",
+   "suggestion": "Creature portraits with mood icons, a small island map with dots, a friendship or cairn counter; messages short and for a player.",
+   "done_when": "Dashboard shows portraits and a mini map; no panel contains the words pebble/tested/session."
+  }
+ ],
+ "todos": [
+  {
+   "id": 3,
+   "action": "drop",
+   "why": "Day scene is now bright; night is covered by 173."
+  },
+  {
+   "id": 4,
+   "action": "done",
+   "why": "The movie One more stone is released; v2 is finding 7."
+  },
+  {
+   "id": 90,
+   "action": "done",
+   "why": "First traced video released in releases/."
+  },
+  {
+   "id": 93,
+   "action": "done",
+   "why": "game_clip records the game; used for the release."
+  },
+  {
+   "id": 28,
+   "action": "done",
+   "why": "Firefly HUD now says 'nearest 7 m to your left' (ff-mid.png)"
+  },
+  {
+   "id": 33,
+   "action": "done",
+   "why": "Firefly HUD now says 'nearest 7 m to your left' (ff-mid.png)"
+  },
+  {
+   "id": 139,
+   "action": "drop",
+   "why": "Release exists; superseded by finding 7 / todo 169."
+  },
+  {
+   "id": 121,
+   "action": "drop",
+   "why": "Traced stills now exist and work; superseded."
+  },
+  {
+   "id": 117,
+   "action": "drop",
+   "why": "Superseded by todo 140."
+  },
+  {
+   "id": 141,
+   "action": "drop",
+   "why": "Duplicate of 87/122."
+  },
+  {
+   "id": 122,
+   "action": "drop",
+   "why": "Duplicate of 87."
+  },
+  {
+   "id": 119,
+   "action": "drop",
+   "why": "Follow camera now frames Sprout; superseded by 168."
+  },
+  {
+   "id": 143,
+   "action": "drop",
+   "why": "Duplicate of 173."
+  },
+  {
+   "id": 144,
+   "action": "drop",
+   "why": "Duplicate of 174."
+  },
+  {
+   "id": 53,
+   "action": "drop",
+   "why": "Name tags are fine in the current shots."
+  },
+  {
+   "id": 54,
+   "action": "drop",
+   "why": "Duplicate of 142."
+  },
+  {
+   "id": 88,
+   "action": "drop",
+   "why": "Duplicate of 142."
+  },
+  {
+   "id": 134,
+   "action": "keep",
+   "why": "Face details feed the creature finding."
+  },
+  {
+   "id": 135,
+   "action": "done",
+   "why": "Sky has gradient and clouds in the day screenshots."
+  },
+  {
+   "id": 123,
+   "action": "keep",
+   "why": "Black strip above 3D view still visible in the screenshots."
+  },
+  {
+   "id": 175,
+   "action": "keep",
+   "why": "Path tracing stability matters for goal 2."
+  },
+  {
+   "id": 131,
+   "action": "keep",
+   "why": "Horizon sawtooth still visible in the traced still."
+  },
+  {
+   "id": 172,
+   "action": "drop",
+   "why": "Duplicate of 142."
+  },
+  {
+   "id": 83,
+   "action": "drop",
+   "why": "Duplicate of 140."
+  },
+  {
+   "id": 169,
+   "action": "keep",
+   "why": "Release v2 (cleaner 128-sample take, no horizon band, blog) still open for goal 2"
+  },
+  {
+   "id": 18,
+   "action": "keep",
+   "why": "Firefly pill/best score still to verify"
+  }
+ ],
+ "engine": [
+  {
+   "what": "The traced still shows a jagged sawtooth horizon across the sea (sea mesh edge or sky seam).",
+   "evidence": "releases/2026-11-23-one-more-stone/still.png y~240"
+  },
+  {
+   "what": "Browser (WGLMakie) has no sky and differs in saturation from the raster.",
+   "evidence": "CLAUDE.md lessons on browsernight and saturated tints"
+  }
+ ],
+ "process": "The author has shipped goal 2's first release and keeps good evidence habits, but sessions 35-36 went into the cairn (carry offset, camera group) and worker plumbing, while the dominant things a player sees, creature silhouettes, the sea, the night and a second area, barely moved in three reviews. Goal 1 gets small increments instead of one big event; goal 3 improved the day look but night and the sea lag. Next sessions should spend whole sessions on creatures, a new area and the night, with before/after screenshots. Live check: the sim moves 24 game minutes per day, so a first look at the game at dusk (when most players arrive) is dark; spend a session on dusk/night readability.",
+ "addressed": true
+}

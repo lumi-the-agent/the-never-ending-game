@@ -1,0 +1,1910 @@
+import GPUToolbox
+
+dummy() = return
+
+@testset "@metal" begin
+    @test_throws UndefVarError @metal undefined()
+    @test_throws MethodError @metal dummy(1)
+end
+
+@testset "launch configuration" begin
+    @metal dummy()
+
+    threads = 1
+    @metal threads dummy()
+    @metal threads=1 dummy()
+    @metal threads=(1,1) dummy()
+    @metal threads=(Int32(1),Int64(1)) dummy()
+    @metal threads=(1,1,1) dummy()
+    @metal threads=(Int8(1),Int32(1),1) dummy()
+
+    groups = 1
+    @metal groups dummy()
+    @metal groups=1 dummy()
+    @metal groups=(1,1) dummy()
+    @metal groups=(Int32(1),Int64(1)) dummy()
+    @metal groups=(1,1,1) dummy()
+    @metal groups=(Int8(1),Int32(1),1) dummy()
+
+    @metal macos=Metal.macos_version() dummy()
+    @metal metal=Metal.metal_support() dummy()
+    @metal air=Metal.air_support() dummy()
+
+    @test_throws InexactError @metal threads=(-2) dummy()
+    @test_throws InexactError @metal groups=(-2) dummy()
+    @test_throws ArgumentError @metal threads=(1025) dummy()
+    @test_throws ArgumentError @metal threads=(1000,2) dummy()
+end
+
+@testset "launch=false" begin
+    k = @metal launch=false dummy()
+    k()
+    k(; threads=1)
+
+    # TODO: kernel introspection
+end
+
+@testset "threadgroup size hints" begin
+    # maxthreads is forwarded to the GPUCompiler target
+    @test Metal.compiler_config(device(); maxthreads=256).target.maxthreads == 256
+    # and applied to the compute pipeline
+    k = Metal.mtlfunction(dummy; maxthreads=256)
+    @test k.pipeline.maxTotalThreadsPerThreadgroup == 256
+    @test k.maxthreads == 256
+    k(; threads=256)
+    @test_throws ArgumentError k(; threads=512)
+    # and accepted by the `@metal` macro
+    @metal maxthreads=256 dummy()
+    k = @metal launch=false maxthreads=256 dummy()
+    @test k.maxthreads == 256
+
+    # invalid sizes are rejected before reaching Metal, which would abort or fail to compile
+    @test_throws ArgumentError Metal.compiler_config(device(); maxthreads=0)
+    @test_throws ArgumentError Metal.compiler_config(device(); maxthreads=2048)
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=0)
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=(32, 0, 1))
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=(1, 1, 1, 1))
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=2048)
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=(32, 32, 2))
+    @test_throws ArgumentError Metal.compiler_config(device(); minthreads=(1 << 32, 1 << 32, 1))
+
+    # minthreads requires macOS 26, independent of the targeted Metal version
+    if Metal.macos_version() >= v"26"
+        # sizes are normalized to three dimensions
+        @test Metal.compiler_config(device(); minthreads=32).target.minthreads == (32, 1, 1)
+        @test Metal.compiler_config(device(); minthreads=(8, 4)).target.minthreads == (8, 4, 1)
+        @test Metal.compiler_config(device(); metal=v"3.2", minthreads=32).target.minthreads == (32, 1, 1)
+        @test_throws ArgumentError Metal.compiler_config(device(); minthreads=32, maxthreads=16)
+
+        k = Metal.mtlfunction(dummy; minthreads=(32, 1, 1))
+        @test k.pipeline.requiredThreadsPerThreadgroup == MTL.MTLSize(32, 1, 1)
+        @test k.pipeline.maxTotalThreadsPerThreadgroup == 32
+        @test k.reqthreads == MTL.MTLSize(32, 1, 1)
+        k(; threads=32)
+        k(; threads=(32, 1, 1))
+        # launching with any other threadgroup size is rejected up front,
+        # whether it has fewer or more threads, or the same number in another shape
+        @test_throws "should equal the kernel's minthreads (32, 1, 1)" k(; threads=16)
+        @test_throws "should equal the kernel's minthreads (32, 1, 1)" k(; threads=64)
+        @test_throws "should equal the kernel's minthreads (32, 1, 1)" k(; threads=(16, 2))
+    else
+        @test_throws ArgumentError Metal.compiler_config(device(); minthreads=32)
+    end
+end
+
+@testset "compiler crash reports" begin
+    # the shape of a real report: a JSON header line, then a pretty-printed JSON body
+    report(pid, reasons) = """
+        {"app_name":"MTLCompilerService","bug_type":"309"}
+        {
+          "pid" : 1234,
+          "responsiblePid" : $pid,
+          "responsibleProc" : "julia",
+          "termination" : {"code":1,"namespace":"METAL","reasons":[$(join(map(repr, reasons), ","))]},
+          "threads" : [{"frames":[{"symbol":"abort_with_reason"}]}]
+        }
+        """
+    reasons = ["unable to legalize instruction: %7:_(s16) = 191 %0:_, %6:_", "Context:",
+               "%0:_(s16) = 90 %2:_(p64) :: (load (s16) from `i16 addrspace(64)*`)",
+               "(in function: agc.main)"]
+
+    mktempdir() do dir
+        write(joinpath(dir, "MTLCompilerService-stale.ips"), report(42, ["stale"]))
+        sleep(0.01)
+        started = time()
+        write(joinpath(dir, "MTLCompilerService-other.ips"), report(43, ["other process"]))
+        write(joinpath(dir, "ReportCrash-unrelated.ips"), report(42, ["unrelated"]))
+        @test Metal.compiler_crash_report(started; dir, pid=42, timeout=0) === nothing
+
+        path = joinpath(dir, "MTLCompilerService-ours.ips")
+        write(path, report(42, reasons))
+        @test Metal.compiler_crash_report(started; dir, pid=42, timeout=0) == (path, reasons)
+    end
+
+    @test Metal.crash_reasons(report(42, String[]), 42) === nothing
+    @test Metal.compiler_crash_report(time(); dir="/nonexistent", timeout=0) === nothing
+end
+
+@testset "AIR verification" begin
+    # a call to an AIR function that doesn't exist
+    unknown_air_function(a) = (a[1] = ccall("extern air.unknown.f32", llvmcall, Float32, ()); nothing)
+    a = MtlArray{Float32}(undef, 1)
+
+    # asking for verification without a verifier fails instead of skipping it
+    withenv("JULIA_METAL_VERIFY_AIR" => "true", "METAL_TOOLCHAIN" => mktempdir()) do
+        @test_throws "metal-opt was not found" @metal launch=false unknown_air_function(a)
+    end
+
+    # the error of a rejected kernel names the verifier and points to the dumped artifacts
+    function verifier_error(env...)
+        dir = mktempdir()
+        msg = withenv("JULIA_METAL_VERIFY_AIR" => "true", "JULIA_METAL_DUMP_DIR" => dir,
+                      "BUILDKITE" => nothing, env...) do
+            try
+                @metal launch=false unknown_air_function(a)
+                ""
+            catch err
+                sprint(showerror, err)
+            end
+        end
+        files = readdir(dir; join=true)
+        @test sort(map(f -> splitext(f)[2], files)) == [".air", ".ll", ".metallib"]
+        @test all(f -> occursin(f, msg), files)
+        return msg
+    end
+
+    # a verifier that can't be run counts as a rejection
+    let dir = mktempdir()
+        touch(joinpath(dir, "metal-opt"))   # not executable
+        msg = verifier_error("METAL_TOOLCHAIN" => dir)
+        @test occursin("Failed to run metal-opt", msg)
+        @test occursin("(verifier: $(joinpath(dir, "metal-opt")), unknown version)", msg)
+    end
+
+    if Metal.verify_air()
+        tool = Metal.air_verifier()
+        msg = verifier_error()
+        @test occursin("invalid AIR function air.unknown.f32", msg)
+        @test occursin("(verifier: $tool, $(Metal.apple_tool_version(tool)))", msg)
+        @test Metal.apple_tool_version(tool) != "unknown version"
+    end
+end
+
+@testset "back-end check" begin
+    a = MtlArray{Float32}(undef, 1)
+    # (kernels loaded from the cache aren't checked, so every test compiles a new one)
+    check(f, targets, env...) = withenv("JULIA_METAL_BACKEND_CHECK" => targets, env...) do
+        @metal launch=false f(a)
+    end
+
+    @test_throws "Invalid JULIA_METAL_BACKEND_CHECK target 'g17g@x'" check(a -> nothing, "g17g@x")
+    @test_throws "Invalid JULIA_METAL_BACKEND_CHECK target 'M5'" check(a -> nothing, "g13g, M5")
+    @test_throws "Invalid JULIA_METAL_BACKEND_CHECK target ''" check(a -> nothing, "g13g,")
+
+    # asking for a check without the back end fails instead of skipping it
+    @test_throws "applegpu-nt was not found" check(a -> nothing, "g17g",
+        "METAL_TOOLCHAIN" => mktempdir(), "JULIA_METAL_VERIFY_AIR" => nothing)
+
+    # targets are compiled for as they would be on that system
+    let cfg = Metal.compiler_config(device(); macos=v"27", fastmath=true)
+        target = Metal.backend_config(cfg, 10, v"26").target
+        @test (target.macos, target.air, target.metal) == (v"26", v"2.8", v"4.0")
+        @test target.apple_family == 10 && target.fastmath
+        # a newer system loads the kernel as it is
+        target = Metal.backend_config(cfg, 11, v"28").target
+        @test (target.macos, target.air, target.metal) == (v"27", v"2.9", v"4.1")
+    end
+    # (keeping versions that were lower already)
+    let cfg = Metal.compiler_config(device(); macos=v"27", metal=v"3.2")
+        target = Metal.backend_config(cfg, 10, v"26").target
+        @test (target.macos, target.air, target.metal) == (v"26", v"2.8", v"3.2")
+    end
+
+    # (with the release toolchain for macOS 27, which `--validate` requires anyway)
+    supported(target) = try
+        Metal.backend_family(Metal.backend_tools(), only(withenv(Metal.backend_targets,
+                                                                 "JULIA_METAL_BACKEND_CHECK" => target)))
+        true
+    catch
+        false
+    end
+    if !all(supported, ("g13g@26", "g17g@26", "g17g@27"))
+        @test_skip "Apple's back end for macOS 26 and 27 not available"
+    else
+        @test_throws "does not support applegpu_g18g on macOS 26.0" check(a -> nothing, "g18g@26")
+
+        # an M5 running macOS 26 crashes on a float atomic add after a device fence, which
+        # GPUCompiler avoids on Apple10 GPUs only: the kernel has to be compiled for one
+        fenced_add(a) = (Metal.atomic_thread_fence(Metal.MemoryFlagDevice, Metal.memory_order_seq_cst);
+                         Metal.atomic_fetch_add_explicit(pointer(a), 1f0); nothing)
+        @test check(fenced_add, "g17g@26") isa Metal.HostKernel
+        # ... which the back end would otherwise reject
+        function raw_fenced_add(a)
+            ccall("extern air.atomic.fence", llvmcall, Cvoid, (Int32, Int32, Int32), 1, 5, 2)
+            ccall("extern air.atomic.global.add.f32", llvmcall, Float32,
+                  (Core.LLVMPtr{Float32,1}, Float32, Int32, Int32, Bool), pointer(a), 1f0, 0, 2, true)
+            return
+        end
+        dir = joinpath(mktempdir(), "with space")
+        # (the verifier rejects the untyped pointer of the raw call)
+        msg = try
+            check(raw_fenced_add, "g13g@26,g17g@26", "JULIA_METAL_VERIFY_AIR" => nothing,
+                  "JULIA_METAL_DUMP_DIR" => dir, "BUILDKITE" => nothing)
+            ""
+        catch err
+            sprint(showerror, err)
+        end
+        @test occursin("for applegpu_g17g (Apple10) on macOS 26.0", msg)
+        @test occursin("LLVM ERROR: cannot select", msg)
+        @test !occursin("applegpu_g13g", msg)
+        # with the files and the command to reproduce it
+        files = filter(f -> occursin(f, msg), readdir(dir; join=true))
+        @test sort(map(f -> splitext(f)[2], files)) == [".air", ".ll", ".metallib", ".mtlp-json"]
+        command = only(filter(contains("-platform_version"), split(msg, '\n')))
+        proc, out = Metal.run_tool(Cmd(Base.shell_split(command)))
+        @test !success(proc)
+        @test occursin("LLVM ERROR: cannot select", out)
+
+        # kernels are compiled for the target's GPU family, which can be lower than the host's
+        min64(a) = (Metal.atomic_min_explicit(pointer(a), UInt64(42)); nothing)
+        withenv("JULIA_METAL_BACKEND_CHECK" => "g13g") do
+            @test_throws r"back-end check of applegpu_g13g.*\n.*64-bit atomic min/max requires Apple8"s @metal launch=false gpufamily=MTL.MTLGPUFamilyApple8 min64(MtlArray{UInt64}(undef, 1))
+        end
+
+        # the offline back end can't encode floating-point log arguments, so those
+        # kernels aren't checked (when this fails, Apple has fixed that)
+        @test_logs (:debug, r"Skipping the back-end check") min_level=Base.CoreLogging.Debug match_mode=:any check(a -> (@mtlprintf("%f\n", a[1]); nothing), "g17g@27")
+    end
+end
+
+@testset "kernel labels" begin
+    function labelled_kernel(a, x)
+        a[1] = x
+        return
+    end
+    a = MtlArray(zeros(Float32, 1))
+
+    # pipelines are only labelled when labelling resources, which this enables rather than
+    # running in a `-g2` process (see "resource labelling")
+    function with_labels(f, enabled)
+        default = Metal.label_resources_default[]
+        Metal.label_resources_default[] = enabled
+        try
+            f()
+        finally
+            Metal.label_resources_default[] = default
+        end
+    end
+    if Metal.LABEL_RESOURCES === nothing
+        with_labels(false) do
+            # (otherwise, after the generated function)
+            k = @metal launch=false labelled_kernel(a, 1)
+            @test String(k.pipeline.label) == "labelled_kernel"
+            k(a, 1)
+            @test Array(a) == [1f0]
+        end
+    end
+
+    with_labels(true) do
+        k = @metal launch=false labelled_kernel(a, 1f0)
+        # the pipeline is named after the Julia signature, not the mangled entry point
+        label = "labelled_kernel(::MtlDeviceVector{Float32, 1}, ::Float32)"
+        @test String(k.pipeline.label) == label
+
+        # (and names the debug group around each dispatch)
+        k(a, 2f0)
+        @test Array(a) == [2f0]
+
+        # closures are named after the function they were defined as
+        function outer_function(a)
+            inner_kernel(x) = (a[1] = x; return)
+            return inner_kernel
+        end
+        k = @metal launch=false outer_function(a)(1f0)
+        @test String(k.pipeline.label) == "inner_kernel(::Float32)"
+
+        # anonymous functions are named after where they were defined
+        k = @metal launch=false (x -> (a[1] = x; return))(1f0)
+        @test occursin(r"^anonymous@execution\.jl:\d+\(::Float32\)$", String(k.pipeline.label))
+
+        # long signatures are abbreviated
+        long_kernel(a, x) = (a[1] = 1; return)
+        k = @metal launch=false long_kernel(a, ntuple(Val, 40))
+        label = String(k.pipeline.label)
+        @test length(label) <= Metal.MAX_KERNEL_LABEL
+        @test startswith(label, "long_kernel(::MtlDeviceVector{Float32, 1}, ::Tuple{")
+    end
+
+    # the generated function is named after the Julia function, unless named explicitly
+    entry(f, tt; kwargs...) = Metal.compile_to_metallib(Metal.GPUCompiler.CompilerJob(
+        Metal.methodinstance(typeof(f), tt), Metal.compiler_config(device(); kwargs...))).entry
+    @test entry(labelled_kernel, Tuple{MtlDeviceVector{Float32, 1}, Float32}) == "labelled_kernel"
+    @test entry(labelled_kernel, Tuple{MtlDeviceVector{Float32, 1}, Float32};
+                name="custom") == "custom"
+    function kernel_factory()
+        inner_kernel(x) = return
+        return inner_kernel
+    end
+    @test entry(kernel_factory(), Tuple{Float32}) == "inner_kernel"
+    @test entry(x -> return, Tuple{Float32}) == "anonymous"
+
+    # specializations of a kernel share a name, but are separate libraries
+    function update!(a, x)
+        a[1] = x
+        return
+    end
+    @test entry(update!, Tuple{MtlDeviceVector{Float32, 1}, Float32}) == "update_"
+    b = MtlArray(zeros(Int32, 1))
+    @metal update!(a, 3f0)
+    @metal update!(b, Int32(4))
+    @test Array(a) == [3f0]
+    @test Array(b) == [4]
+end
+
+@testset "inference" begin
+    foo() = @metal dummy()
+    @inferred foo()
+    # the kernel object is constructed on every launch, so its fields should be inferred
+    fields = only(Base.return_types(Metal.link_kernel, (Core.MethodInstance,)))
+    @test Any ∉ fieldtypes(fields)
+
+    # with arguments, we call mtlconvert
+    kernel(a) = return
+    bar(a) = @metal kernel(a)
+    @inferred bar(MtlArray([1]))
+
+    # keyword-argument handling relies on concrete evaluation of helpers that grow
+    # arrays, which our overlays of error paths must not inhibit
+    function range_kernel(a)
+        a[1] = last(range(1; step=2, length=3))
+        return
+    end
+    a = MtlArray([0])
+    @metal range_kernel(a)
+    @test Array(a) == [5]
+end
+
+@testset "launch code is shared between kernels" begin
+    # linking, encoding and submitting a launch doesn't depend on the kernel's signature,
+    # so launching kernels with new signatures should not compile it again
+    function store_kernel(a, x)
+        a[1] = x
+        return
+    end
+    nspecs(f) = length(collect(Base.specializations(only(methods(f)))))
+    # (linking is specialized on the compiler keywords, so other tests add some)
+    linker = Metal.KernelLinker(typeof(store_kernel), Tuple{}, (;))
+    @metal store_kernel(MtlArray(zeros(Int64, 1)), one(Int64))
+    nlinkers = nspecs(linker)
+    for T in (Int32, Float32, Int16)
+        @metal store_kernel(MtlArray(zeros(T, 1)), one(T))
+    end
+    synchronize()
+
+    @test nspecs(linker) == nlinkers
+    for f in (Metal.launch_kernel, Metal.try_launch, Metal.launch, Metal.launch_logging!,
+              Metal.submit_launch!, Metal.encode_launch!)
+        @test nspecs(f) <= 1
+    end
+end
+
+
+@testset "large arguments" begin
+    function last_kernel(out, t)
+        out[1] = t[end]
+        return
+    end
+    out = MtlArray(zeros(Float32, 1))
+    @metal last_kernel(out, ntuple(Float32, 1024))
+    @test Array(out) == [1024f0]
+    if Metal.COMMAND_API !== :metal4
+        # Metal 3 can only pass 4 KiB by value (the Metal 4 backend copies to a buffer)
+        @test_throws "limited to 4096 bytes" @metal last_kernel(out, ntuple(Float32, 1025))
+    end
+end
+
+
+@testset "GPU addresses as arguments" begin
+    # only buffers can be bound to pointer parameters
+    function store_kernel(p)
+        unsafe_store!(p, 42f0)
+        return
+    end
+    a = MtlArray(zeros(Float32, 1))
+    p = reinterpret(Core.LLVMPtr{Float32,1}, MTL.gpu_address(pointer(a).buffer))
+    @test_throws "Argument 1 should be an MtlArray, MtlPtr or MTLBuffer" @metal store_kernel(p)
+    @metal store_kernel(pointer(a))
+    @test Array(a) == [42f0]
+end
+
+
+@testset "reflection" begin
+    Metal.code_lowered(dummy, Tuple{})
+    Metal.code_typed(dummy, Tuple{})
+    Metal.code_warntype(devnull, dummy, Tuple{})
+    Metal.code_llvm(devnull, dummy, Tuple{})
+    Metal.code_air(devnull, dummy, Tuple{})
+
+    @device_code_lowered @metal dummy()
+    @device_code_typed @metal dummy()
+    @device_code_warntype io=devnull @metal dummy()
+    @device_code_llvm io=devnull @metal dummy()
+    @device_code_air io=devnull @metal dummy()
+
+    mktempdir() do dir
+        @device_code dir=dir @metal dummy()
+    end
+
+    @test_throws ErrorException @device_code_lowered nothing
+
+    # make sure kernel name aliases are preserved in the generated code
+    @test occursin("dummy", sprint(io->(@device_code_llvm io=io optimize=false @metal dummy())))
+    @test occursin("dummy", sprint(io->(@device_code_llvm io=io @metal dummy())))
+
+    # `code_llvm` shows the IR as generated by Julia, with generic LLVM intrinsics;
+    # `code_air` shows it lowered to AIR (downgraded and disassembled again)
+    let
+        sqrt_kernel(x) = (unsafe_store!(x, sqrt(unsafe_load(x))); return)
+        llvm = sprint(io->Metal.code_llvm(io, sqrt_kernel, Tuple{Core.LLVMPtr{Float32,1}}))
+        @test occursin("llvm.sqrt.f32", llvm)
+        @test !occursin("air.sqrt.f32", llvm)
+
+        air = sprint(io->Metal.code_air(io, sqrt_kernel, Tuple{Core.LLVMPtr{Float32,1}}))
+        @test occursin("air.sqrt.f32", air)
+        @test !occursin("llvm.sqrt.f32", air)
+
+        # the AIR module contains kernel-related metadata
+        air_mod = sprint(io->Metal.code_air(io, sqrt_kernel, Tuple{Core.LLVMPtr{Float32,1}};
+                                            kernel=true, dump_module=true))
+        @test occursin("air.kernel", air_mod)
+        @test occursin("air.version", air_mod)
+    end
+
+    # make sure invalid kernels can be partially reflected upon
+    let
+        invalid_kernel() = throw()
+        @test_throws Metal.InvalidIRError @metal invalid_kernel()
+        @test_throws Metal.InvalidIRError @grab_output @device_code_warntype @metal invalid_kernel()
+        out, err = @grab_output begin
+            try
+                @device_code_warntype @metal invalid_kernel()
+            catch
+            end
+        end
+        @test occursin("Body::Union{}", err)
+    end
+
+    # set name of kernel
+    @test occursin("mykernel", sprint(io->(@device_code_llvm io=io begin
+        @metal name="mykernel" dummy()
+    end)))
+
+    # set the optimization level
+    let
+        # forwarded to the GPUCompiler `CompilerConfig`
+        @test Metal.compiler_config(device(); opt_level=1).opt_level == 1
+        # and accepted by the `@metal` macro
+        @metal opt_level=1 dummy()
+        # and it actually changes the optimization the pipeline performs: a
+        # fixed-trip-count loop is left as-is at -O0 but cleaned up at -O2
+        function sum_kernel(x)
+            acc = zero(Float32)
+            for i in 1:8
+                acc += unsafe_load(x, i)
+            end
+            unsafe_store!(x, acc, 1)
+            return
+        end
+        tt = Tuple{Core.LLVMPtr{Float32,1}}
+        ir_O0 = sprint(io->Metal.code_llvm(io, sum_kernel, tt; opt_level=0))
+        ir_O2 = sprint(io->Metal.code_llvm(io, sum_kernel, tt; opt_level=2))
+        @test ir_O0 != ir_O2
+    end
+
+    # set macOS, AIR, and Metal versions
+    let
+        @test_throws ArgumentError Metal.compiler_config(
+            device(); gpufamily=MTL.MTLGPUFamilyMetal3)
+        @test Metal.compiler_config(
+            device(); gpufamily=MTL.MTLGPUFamilyApple7).params.apple_family == 7
+        # newer than any device we test on, but code can still be generated for it
+        @test Metal.compiler_config(
+            device(); gpufamily=MTL.MTLGPUFamilyApple11).params.apple_family == 11
+        @test !isempty(sprint(io->Metal.code_llvm(io, dummy, Tuple{};
+                                                  gpufamily=MTL.MTLGPUFamilyApple11)))
+
+        @test occursin("""!{!"Metal", i32 3, i32 2, i32 1}""",
+                       sprint(io->Metal.code_llvm(io, dummy, Tuple{}; metal=v"3.2.1",
+                                                      dump_module=true, kernel=true)))
+
+        @test occursin("!{i32 3, i32 2, i32 1}",
+                       sprint(io->Metal.code_llvm(io, dummy, Tuple{}; air=v"3.2.1",
+                                                      dump_module=true, kernel=true)))
+
+        @test occursin("""!"SDK Version", [3 x i32] [i32 15, i32 2, i32 1]}""",
+                       sprint(io->Metal.code_llvm(io, dummy, Tuple{}; macos=v"15.2.1",
+                                                      dump_module=true, kernel=true)))
+
+        # compatibility versions are normalized to marketing versions
+        @test occursin("""!"SDK Version", [3 x i32] [i32 26, i32 2, i32 1]}""",
+                       sprint(io->Metal.code_llvm(io, dummy, Tuple{}; macos=v"16.2.1",
+                                                      dump_module=true, kernel=true)))
+
+        # targeting macOS < 15, or the AIR versions that come with it, is not supported
+        @test_throws "Metal.jl requires macOS 15" begin
+            Metal.code_llvm(devnull, dummy, Tuple{}; macos=v"14")
+        end
+        @test_throws "Metal.jl requires macOS 15" begin
+            Metal.code_llvm(devnull, dummy, Tuple{}; macos=v"14", metal=v"3.2")
+        end
+        @test_throws "Metal.jl requires AIR 2.7" begin
+            Metal.code_llvm(devnull, dummy, Tuple{}; air=v"2.6")
+        end
+
+        # The offline compiler raises AIR to the floor required by the selected MSL
+        # language version, even when the deployment target supports an older AIR.
+        @test Metal.compiler_config(device(); macos=v"15", metal=v"4.0").target.air == v"2.8"
+        @test Metal.compiler_config(device(); macos=v"15", metal=v"4.1").target.air == v"2.9"
+        @test_throws "Metal 4.1.0 requires AIR 2.9.0" begin
+            Metal.code_llvm(devnull, dummy, Tuple{}; metal=v"4.1", air=v"2.8")
+        end
+
+        # like the offline compiler, everything follows one effective deployment target:
+        # a language version that needs a newer macOS raises the target, including the
+        # metallib's file format and platform version.
+        function compiled_library(; kwargs...)
+            cfg = Metal.compiler_config(device(); kernel=true, kwargs...)
+            src = Metal.methodinstance(typeof(dummy), Tuple{}, Base.get_world_counter())
+            job = Metal.CompilerJob(src, cfg, Base.get_world_counter())
+            lib = read(IOBuffer(Metal.compile_to_metallib(job).metallib), Metal.MetalLib)
+            return cfg.target, lib
+        end
+        let (target, lib) = compiled_library(; macos=v"15", metal=v"4.1")
+            @test target.macos == v"27"
+            @test target.air == v"2.9"
+            @test lib.file_version == v"1.2.9"
+            @test lib.platform_version == v"27"
+        end
+        let (target, lib) = compiled_library(; macos=v"15", metal=v"4.0")
+            @test target.macos == v"26"
+            @test target.air == v"2.8"
+            @test lib.file_version == v"1.2.9"
+            @test lib.platform_version == v"26"
+        end
+        # targets newer than the host can be compiled, but loading them fails with a
+        # clear error. the newest macOS shares its versions with whatever comes next, so
+        # test with an AIR version the host doesn't support (which Apple's verifier doesn't
+        # know either).
+        let air = VersionNumber(2, Metal.air_support().minor + 1)
+            @test !isempty(sprint(io->Metal.code_llvm(io, dummy, Tuple{}; air)))
+            # (not `@test_throws`, which passes on Apple's error: `NSError` isn't an `Exception`)
+            err = try
+                withenv("JULIA_METAL_VERIFY_AIR" => nothing,
+                        "JULIA_METAL_BACKEND_CHECK" => nothing) do
+                    @metal launch=false air=air dummy()
+                end
+            catch err
+                err
+            end
+            @test err isa ErrorException
+            @test occursin("which this system (macOS $(Metal.macos_version())) cannot load",
+                           sprint(showerror, err))
+        end
+        let host = Metal.macos_version(), target = Metal.compiler_config(device()).target
+            # what the host compiles for by default, or for an older or newer macOS that
+            # uses the same versions, can be loaded
+            @test Metal.check_loadable(target) === nothing
+            @test Metal.check_loadable((; macos=v"15", air=v"2.7", metal=v"3.2")) === nothing
+            @test Metal.check_loadable((; target.air, target.metal,
+                                          macos=VersionNumber(host.major + 1))) === nothing
+            @test Metal.check_loadable((; target.macos,
+                                          air=VersionNumber(target.air.major, target.air.minor, 1),
+                                          metal=VersionNumber(target.metal.major, target.metal.minor, 1))) === nothing
+            # unsupported AIR or MSL versions can't be
+            @test_throws ErrorException Metal.check_loadable(
+                (; target.macos, target.metal, air=VersionNumber(2, Metal.air_support().minor + 1)))
+            @test_throws ErrorException Metal.check_loadable(
+                (; target.macos, target.air, metal=VersionNumber(4, Metal.metal_support().minor + 1)))
+        end
+        let (target, lib) = compiled_library(; macos=v"15", metal=v"3.2")
+            @test target.macos == v"15"
+            @test target.air == v"2.7"
+            @test lib.file_version == v"1.2.8"
+            @test lib.platform_version == v"15"
+        end
+    end
+
+    @test Metal.return_type(identity, Tuple{Int}) === Int
+    @test Metal.return_type(sin, Tuple{Float32}) === Float32
+    @test Metal.return_type(getindex, Tuple{MtlDeviceArray{Float32,1,1},Int32}) === Float32
+    @test Metal.return_type(getindex, Tuple{Base.RefValue{Integer}}) === Integer
+end
+
+
+
+function tester(A)
+    idx = thread_position_in_grid().x
+    A[idx] = Int(5)
+    return nothing
+end
+
+bufferSize = 8
+bufferA = MtlArray{Int,1,Metal.SharedStorage}(undef, tuple(bufferSize))
+vecA = unsafe_wrap(Vector{Int}, pointer(bufferA), tuple(bufferSize))
+
+struct EncodeFailure
+    x::Int32
+end
+
+Adapt.adapt_structure(to::Metal.Adaptor, x::EncodeFailure) =
+    to.cce === nothing ? x : error("intentional encode failure")
+
+failed_encode_kernel(x) = return
+
+function failed_batch_increment_kernel(A)
+    A[1] += Int32(1)
+    return
+end
+
+@testset "synchronization" begin
+    @metal threads=(bufferSize) tester(bufferA)
+    synchronize()
+    @test all(vecA .== Int(5))
+end
+
+@testset "command queue batching" begin
+    function increment_kernel(A)
+        A[1] = A[1] + Int32(1)
+        return
+    end
+
+    function write_kernel(A, value)
+        A[1] = value
+        return
+    end
+
+    queue = global_queue(device())
+    A = MtlArray(Int32[0])
+    synchronize(queue)
+
+    for _ in 1:8
+        @metal threads=1 queue=queue increment_kernel(A)
+    end
+    if !Metal.command_batching() || Metal.profiling_command_buffers()
+        @test !Metal.has_open_batch(queue)
+    elseif Metal.command_batching_ops() > 1
+        @test queue.nops == 8
+    end
+    synchronize(queue)
+    @test Array(A) == Int32[8]
+    @test !Metal.has_open_batch(queue)
+
+    @metal threads=1 queue=queue submit=true increment_kernel(A)
+    @test !Metal.has_open_batch(queue)
+    synchronize(queue)
+    @test Array(A) == Int32[9]
+
+    B = MtlArray(Int32[0])
+    Metal.unsafe_copyto!(device(B), pointer(B), pointer(A), 1; queue, async=true)
+    @metal threads=1 queue=queue increment_kernel(B)
+    synchronize(queue)
+    @test Array(B) == Int32[10]
+
+    C = MtlArray{UInt8}(undef, 4)
+    Metal.unsafe_fill!(device(C), pointer(C), UInt8(3), length(C); queue, async=true)
+    synchronize(queue)
+    @test Array(C) == fill(UInt8(3), 4)
+
+    D = MtlArray(UInt8[0])
+    synchronize(queue)
+    @metal threads=1 queue=queue write_kernel(D, UInt8(1))
+    cmdbuf = MTL.MTLCommandBuffer(queue)
+    if !Metal.command_batching() || Metal.profiling_command_buffers()
+        @test !Metal.has_open_batch(queue)
+    elseif Metal.command_batching_ops() > 1
+        @test queue.nops == 1
+    end
+    @metal threads=1 queue=queue write_kernel(D, UInt8(2))
+    MTL.MTLBlitCommandEncoder(cmdbuf) do enc
+        buf = Base.unsafe_convert(MTL.MTLBuffer, D)
+        MTL.append_fillbuffer!(enc, buf, UInt8(3), sizeof(D), D.offset)
+    end
+    MTL.commit!(cmdbuf)
+    synchronize(queue)
+    @test Array(D) == UInt8[3]
+end
+
+@testset "batching policy of a queue" begin
+    function policy_increment_kernel(A)
+        A[1] = A[1] + Int32(1)
+        return
+    end
+    A = MtlArray(Int32[0])
+    batching = Metal.command_batching() && !Metal.profiling_command_buffers()
+    n = Metal.command_batching_ops() + 1
+
+    # without autoflush, the batch is committed by its owner only
+    bq = BatchedCommandQueue(MTL.MTLCommandQueue(device()); autoflush=false)
+    for _ in 1:n
+        @metal threads=1 queue=bq policy_increment_kernel(A)
+    end
+    if batching
+        @test bq.nops == n
+        @test MTL.committed(bq.queue) == 0
+    end
+    synchronize(bq)
+    @test Array(A) == Int32[n]
+    batching && @test MTL.committed(bq.queue) == 1
+    bq.autoflush = true
+    for _ in 1:n
+        @metal threads=1 queue=bq policy_increment_kernel(A)
+    end
+    @test bq.nops < n
+    batching && @test MTL.committed(bq.queue) == 2
+    synchronize(bq)
+    @test Array(A) == Int32[2n]
+
+    # with one command buffer in flight, submitting waits for the previous one
+    bq = BatchedCommandQueue(MTL.MTLCommandQueue(device()); inflight=1)
+    for _ in 1:4
+        @metal threads=1 queue=bq submit=true policy_increment_kernel(A)
+        @test Metal.pending_cleanup_count(bq) == 0
+    end
+    synchronize(bq)
+    @test Array(A) == Int32[2n + 4]
+    @test_throws ArgumentError BatchedCommandQueue(MTL.MTLCommandQueue(device()); inflight=0)
+end
+
+@testset "pipelines for indirect command buffers" begin
+    function indirect_kernel(A)
+        A[1] = Int32(1)
+        return
+    end
+    A = MtlArray(Int32[0])
+    tt = Tuple{Core.Typeof(Metal.mtlconvert(A))}
+    direct = Metal.mtlfunction(indirect_kernel, tt)
+    indirect = Metal.mtlfunction(indirect_kernel, tt; indirect=true)
+    @test !direct.pipeline.supportIndirectCommandBuffers
+    @test indirect.pipeline.supportIndirectCommandBuffers
+    # both are cached, and share the compiled code
+    @test Metal.mtlfunction(indirect_kernel, tt).pipeline === direct.pipeline
+    @test Metal.mtlfunction(indirect_kernel, tt; indirect=true).pipeline === indirect.pipeline
+    # and launch like any other
+    indirect(A)
+    @test Array(A) == Int32[1]
+end
+
+@testset "kernel state of launches encoded elsewhere" begin
+    function state_kernel(A)
+        A[1] = Int32(42)
+        return
+    end
+    A = MtlArray(Int32[0])
+    kernel = @metal launch=false state_kernel(A)
+    state = Metal.KernelState(kernel; seed=UInt32(7))
+    @test state.random_seed == 7
+    resources = Metal.kernel_resources(kernel)
+    @test length(resources) == 2    # no relocation table
+    @test reinterpret(UInt64, state.malloc_buf) == UInt64(MTL.gpu_address(resources[1]))
+    @test reinterpret(UInt64, state.exception_info) == UInt64(MTL.gpu_address(resources[2]))
+    @test reinterpret(UInt64, state.reloc_table) == 0
+end
+
+function inject_command_buffer_error!(queue, info)
+    key = pointer(queue)
+    Base.@lock MTL.last_committed_lock begin
+        state = get!(MTL.submission_state_per_queue, key) do
+            MTL.QueueSubmissionState()
+        end
+        if state.errors === nothing
+            state.errors = [info]
+        else
+            push!(state.errors, info)
+        end
+    end
+    return
+end
+
+@testset "command buffer error accounting" begin
+    @testset "deterministic pruning" begin
+        pending = collect(1:5)
+        errors = String[]
+        MTL._prune_completed_submissions!(pending, errors,
+                                          x -> x <= 4,
+                                          x -> iseven(x) ? "failure $x" : nothing)
+        @test pending == [5]
+        @test errors == ["failure 2", "failure 4"]
+
+        pending = collect(1:3)
+        errors = MTL._prune_completed_submissions!(pending, nothing,
+                                                   x -> x <= 2,
+                                                   _ -> nothing)
+        @test pending == [3]
+        @test errors === nothing
+    end
+
+    @testset "successful direct submissions and bounded retention" begin
+        queue = MTL.MTLCommandQueue(device())
+        for _ in 1:64
+            cmdbuf = MTL.MTLCommandBuffer(queue)
+            MTL.commit!(cmdbuf)
+            MTL.wait_completed(cmdbuf)
+            @test MTL.pending_submission_count(queue) <= 1
+        end
+        @test synchronize(queue) === nothing
+        @test MTL.pending_submission_count(queue) == 0
+    end
+
+    @testset "earlier failure and duplicate suppression" begin
+        queue = MTL.MTLCommandQueue(device())
+        queue.label = "error accounting queue"
+
+        earlier = MTL.MTLCommandBuffer(queue)
+        earlier.label = "failed earlier command buffer"
+        MTL.commit!(earlier)
+        MTL.wait_completed(earlier)
+
+        info = MTL.CommandBufferErrorInfo("MTLCommandBufferErrorDomain", 2,
+                                          "The GPU operation timed out",
+                                          String(earlier.label), String(queue.label))
+        inject_command_buffer_error!(queue, info)
+
+        later = MTL.MTLCommandBuffer(queue)
+        MTL.commit!(later)
+        err = try
+            synchronize(queue)
+            nothing
+        catch exc
+            exc
+        end
+        @test err isa Metal.CommandBufferError
+        @test only(err.errors) == info
+        message = sprint(showerror, err)
+        @test occursin("MTLCommandBufferErrorDomain", message)
+        @test occursin("code 2", message)
+        @test occursin("The GPU operation timed out", message)
+        @test occursin("failed earlier command buffer", message)
+        @test occursin("error accounting queue", message)
+
+        # The synchronization boundary claims the failure before reporting it.
+        @test synchronize(queue) === nothing
+    end
+
+    @testset "device synchronization" begin
+        queue = MTL.MTLCommandQueue(device())
+        cmdbuf = MTL.MTLCommandBuffer(queue)
+        MTL.commit!(cmdbuf)
+        info = MTL.CommandBufferErrorInfo("MTLCommandBufferErrorDomain", 8,
+                                          "Out of memory", nothing, nothing)
+        inject_command_buffer_error!(queue, info)
+        @test_throws Metal.CommandBufferError device_synchronize()
+        @test device_synchronize() === nothing
+    end
+
+    @testset "MPS intermediate submissions" begin
+        queue = MTL.MTLCommandQueue(device())
+        mpsbuf = MPS.MPSCommandBuffer(queue)
+        submitted = mpsbuf.commandBuffer
+        MPS.commitAndContinue!(mpsbuf)
+        @test MTL.last_committed(queue) == submitted
+        @test MTL.committed(queue) == 1
+
+        MTL.commit!(mpsbuf)
+        @test synchronize(queue) === nothing
+    end
+
+    @testset "MPS encoding failures" begin
+        # an enqueued command buffer holds up its queue until it's committed
+        queue = MTL.MTLCommandQueue(device())
+        mpsbuf = MPS.MPSCommandBuffer(queue)
+        submitted = mpsbuf.commandBuffer
+        @test_throws ErrorException MPS.commitAndContinue!(mpsbuf) do cbuf
+            error("failed to encode")
+        end
+        @test submitted.status >= MTL.MTLCommandBufferStatusCommitted
+
+        mpsbuf = MPS.MPSCommandBuffer(queue)
+        submitted = mpsbuf.commandBuffer
+        @test_throws ErrorException MTL.commit!(mpsbuf) do cbuf
+            error("failed to encode")
+        end
+        @test submitted.status >= MTL.MTLCommandBufferStatusCommitted
+        @test synchronize(queue) === nothing
+    end
+end
+
+@testset "command batching tunables" begin
+    env = "JULIA_METAL_TEST_BATCHING_TUNABLE"
+    withenv(env => nothing) do
+        @test Metal.load_command_batching_tunable("test_tunable", env, 7) == 7
+        @test_throws ArgumentError Metal.load_command_batching_tunable("test_tunable", env, 0)
+        @test_throws ArgumentError Metal.load_command_batching_tunable("test_tunable", env, "7")
+    end
+
+    withenv(env => "9") do
+        @test Metal.load_command_batching_tunable("test_tunable", env, 7) == 9
+    end
+    withenv(env => "0") do
+        @test_throws ArgumentError Metal.load_command_batching_tunable("test_tunable", env, 7)
+    end
+    withenv(env => "-1") do
+        @test_throws ArgumentError Metal.load_command_batching_tunable("test_tunable", env, 7)
+    end
+    withenv(env => "not-an-int") do
+        @test_throws ArgumentError Metal.load_command_batching_tunable("test_tunable", env, 7)
+    end
+end
+
+@testset "failed batch encoding" begin
+    queue = global_queue(device())
+    synchronize(queue)
+
+    @test_throws ErrorException @metal threads=1 queue=queue failed_encode_kernel(EncodeFailure(1))
+    @test !Metal.has_open_batch(queue)
+    @test queue.backend.encoder === nothing
+    @test queue.nops == 0
+
+    A = MtlArray(Int32[0])
+    synchronize(queue)
+    @metal threads=1 queue=queue failed_batch_increment_kernel(A)
+    @test_throws ErrorException @metal threads=1 queue=queue failed_encode_kernel(EncodeFailure(2))
+
+    if Metal.command_batching() && !Metal.profiling_command_buffers() &&
+       Metal.command_batching_ops() > 1
+        @test Metal.has_open_batch(queue)
+        @test queue.backend.encoder === nothing
+        @test queue.nops == 1
+    end
+
+    @metal threads=1 queue=queue failed_batch_increment_kernel(A)
+    synchronize(queue)
+    @test Array(A) == Int32[2]
+end
+
+@testset "kernel launch cleanup" begin
+    function scalar_arg_kernel(A, val)
+        A[1] = val
+        return
+    end
+
+    A = MtlArray{Int32}(undef, 1)
+    kernel = @metal launch=false scalar_arg_kernel(A, Int32(1))
+
+    kernel(A, Int32(1))
+    synchronize()
+
+    stats0 = copy(Metal.alloc_stats)
+    kernel(A, Int32(2))
+    synchronize()
+    stats1 = copy(Metal.alloc_stats)
+    diff = stats1 - stats0
+
+    @test Array(A) == Int32[2]
+    @test diff.alloc_count == diff.free_count
+    @test diff.alloc_bytes == diff.free_bytes
+end
+
+@testset "device synchronization" begin
+    t = @async begin
+        @metal threads=(bufferSize) tester(bufferA)
+    end
+    wait(t)
+    device_synchronize()
+    @test all(vecA .== Int(5))
+end
+
+@testset "synchronization after a task finished" begin
+    # work left behind by a finished task, in its own queue, is committed and waited for
+    # by the next synchronization of any other task
+    for spawn in (f -> @async(f()), f -> Threads.@spawn(f()))
+        a = Metal.zeros(Float32, 16; storage=Metal.PrivateStorage)
+        synchronize()
+        t = spawn() do
+            a .= 1f0
+            global_queue(device())
+        end
+        queue = fetch(t)
+        @test Array(a) == ones(Float32, 16)
+        @test !Metal.has_open_batch(queue)
+        @test isempty(Metal.pending_commands(queue))
+        @test MTL.is_completed(MTL.last_committed(queue.queue))
+    end
+
+    # host reads of shared memory
+    b = Metal.zeros(Float32, 16; storage=Metal.SharedStorage)
+    synchronize()
+    wait(@async b .= 2f0)
+    @test Metal.@allowscalar b[end] == 2f0
+end
+
+@testset "handing off arrays between tasks" begin
+    n = 1 << 16
+
+    # accessing an array waits for the work of the task that last used it, even if that
+    # task is still running and hasn't synchronized
+    @testset "$S" for S in (Metal.PrivateStorage, Metal.SharedStorage)
+        a = Metal.zeros(Float32, n; storage=S)
+        synchronize()
+        used = Channel{Nothing}(1)
+        release = Channel{Nothing}(1)
+        t = @async begin
+            a .= 1f0
+            put!(used, nothing)
+            take!(release)
+        end
+        take!(used)
+        @test Array(a) == ones(Float32, n)
+        S === Metal.SharedStorage && @test a[1] == 1f0
+        put!(release, nothing)
+        wait(t)
+    end
+
+    # using an array on the GPU waits for the task that last used it
+    a = Metal.zeros(Float32, n)
+    to_t1, to_t2 = Channel{Int}(1), Channel{Int}(1)
+    t1 = @async for i in 1:10
+        take!(to_t1)
+        a .+= 1f0
+        put!(to_t2, i)
+    end
+    t2 = @async for i in 1:10
+        take!(to_t2)
+        a .*= 2f0
+        i < 10 && put!(to_t1, i)
+    end
+    put!(to_t1, 0)
+    wait(t1)
+    wait(t2)
+    @test Array(a) == fill(Float32(foldl((x, _) -> 2(x + 1), 1:10; init=0)), n)
+
+    # MPS operations register the arrays they use
+    A, B = Metal.rand(Float32, 64, 64), Metal.rand(Float32, 64, 64)
+    C = similar(A)
+    wait(@async MPS.matmul!(C, A, B))
+    @test Array(C) ≈ Array(A) * Array(B)
+end
+
+# a gate that keeps a command buffer from completing until it is opened. this keeps the
+# cooperative synchronization tests independent of timing: waiting for that command buffer
+# can only return after whoever opens the gate has run.
+#
+# the command buffer is held back by an enqueued but uncommitted blocker, so the GPU does not
+# start it and cannot abort it (as it does with command buffers that wait on an event for more
+# than a few seconds). a watchdog on a foreign thread commits the blocker when the gate is
+# opened. if the test does not do so in time (e.g., because the thread that should open the
+# gate is blocked by the wait, or a task never gets to run), the watchdog commits it anyway
+# instead of letting the test hang, and records that it timed out.
+mutable struct SyncGate
+    const blocker::MTL.MTLCommandBuffer
+    const control::MTL.MTLSharedEvent   # signaled to open the gate
+    const watchdog_done::Base.Event
+    @atomic timed_out::Bool
+end
+
+const GATE_TIMEOUT_MS = 60_000
+
+function gate_watchdog(ptr::Ptr{Cvoid})
+    gate = unsafe_pointer_to_objref(ptr)::SyncGate
+    MTL.waitUntilSignaledValue(gate.control, 1, GATE_TIMEOUT_MS) ||
+        @atomic gate.timed_out = true
+    # bypass the submission tracking, which is not ours to touch from this thread
+    @objc [gate.blocker::id{MTL.MTLCommandBuffer} commit]::Nothing
+    notify(gate.watchdog_done)
+    return
+end
+
+open_gate!(gate::SyncGate) = (gate.control.signaledValue = 1)
+gate_is_open(gate::SyncGate) = gate.control.signaledValue >= 1
+gate_timed_out(gate::SyncGate) = @atomic gate.timed_out
+
+# run `f(gate)` after committing a command buffer to the current task's queue that only
+# completes once the gate is opened, returning whether `f` returned `true` and the gate was
+# opened before the timeout.
+function gated(f)
+    dev = device()
+    queue = Metal.global_queue(dev)
+    gate = SyncGate(MTL.MTLCommandBuffer(queue), MTL.MTLSharedEvent(dev), Base.Event(), false)
+    MTL.enqueue!(gate.blocker)
+    cmdbuf = MTL.MTLCommandBuffer(queue)
+    result = GC.@preserve gate begin
+        # run the watchdog on a thread from libdispatch's pool, which Julia adopts
+        dispatch_queue = ccall(:dispatch_get_global_queue, Ptr{Cvoid}, (Clong, Culong), 0, 0)
+        ccall(:dispatch_async_f, Cvoid, (Ptr{Cvoid}, Ptr{Cvoid}, Ptr{Cvoid}),
+              dispatch_queue, pointer_from_objref(gate),
+              @cfunction(gate_watchdog, Cvoid, (Ptr{Cvoid},)))
+        try
+            # this also commits pending work, which thus completes before the gate opens
+            MTL.commit!(cmdbuf)
+            f(gate)
+        finally
+            open_gate!(gate)
+            wait(gate.watchdog_done)
+            cmdbuf.status == MTL.MTLCommandBufferStatusNotEnqueued || MTL.wait_completed(cmdbuf)
+        end
+    end
+    return result && !gate_timed_out(gate)
+end
+
+# run `f` while another task on the same thread opens the gate, but only after it got to run
+# many more times than the polling at the start of a wait yields (so that the wait is likely
+# handed to a worker thread). returns whether `f` only returned after the gate was opened.
+function open_gate_during(f, gate::SyncGate)
+    opener = @async begin
+        for _ in 1:10_000
+            yield()
+        end
+        open_gate!(gate)
+    end
+    try
+        f()
+        gate_is_open(gate)
+    finally
+        wait(opener)
+    end
+end
+
+gated_oob_kernel(a) = (a[2] = 1f0; return)  # out-of-bounds store on a length-1 array
+
+@testset "cooperative synchronization" begin
+    a = Metal.zeros(Float32, 1)
+
+    # with blocking synchronization, nothing else can run on the thread while waiting
+    if Metal.use_nonblocking_synchronization
+        for sync in (synchronize, device_synchronize)
+            # other tasks can run while waiting for the GPU
+            @test gated() do gate
+                open_gate_during(sync, gate)
+            end
+
+            # errors are still reported after a wait that was handed to a worker thread
+            @metal threads=1 gated_oob_kernel(a)
+            @test gated() do gate
+                open_gate_during(gate) do
+                    @test_throws Metal.KernelException sync()
+                end
+            end
+        end
+
+        # waiting does not keep other tasks from using Metal, and they cannot starve the
+        # wait: another task keeps launching kernels and synchronizing until the wait
+        # returns, and the gate is only opened once it has done so while we were waiting.
+        @test gated() do gate
+            waiting = Ref(false)
+            returned = Ref(false)
+            started = Base.Event()
+            iterated = Base.Event()
+            other = @async try
+                while !returned[] && !gate_timed_out(gate)
+                    @metal dummy()
+                    synchronize()
+                    notify(started)
+                    waiting[] && notify(iterated)
+                end
+            finally
+                notify(started)
+                notify(iterated)
+            end
+            opener = @async begin
+                wait(iterated)
+                open_gate!(gate)
+            end
+            try
+                wait(started)
+                waiting[] = true
+                synchronize()
+                gate_is_open(gate)
+            finally
+                returned[] = true
+                wait(other)
+                wait(opener)
+            end
+        end
+    end
+
+    # `device_synchronize` only cleans up after completed work, as other tasks may commit
+    # while it waits (simulated here by bypassing the submission tracking)
+    event = MTL.MTLSharedEvent(device())
+    queue = MTL.MTLCommandQueue(device())
+    bq = Metal.batched_queue(queue)
+    cmdbuf = MTL.MTLCommandBuffer(queue)
+    MTL.encode_wait!(cmdbuf, event, 1)
+    @objc [cmdbuf::id{MTL.MTLCommandBuffer} commit]::Nothing
+    Metal.defer_cleanup!(bq, cmdbuf, Any[])
+    try
+        device_synchronize()
+        @test Metal.pending_cleanup_count(bq) == 1
+    finally
+        event.signaledValue = 1
+        MTL.wait_completed(cmdbuf)
+    end
+    device_synchronize()
+    @test Metal.pending_cleanup_count(bq) == 0
+end
+
+@testset "REPL task synchronization" begin
+    synchronize()
+
+    tls = task_local_storage()
+    had_device = haskey(tls, :MTLDevice)
+    old_device = had_device ? tls[:MTLDevice] : nothing
+    had_device && delete!(tls, :MTLDevice)
+
+    try
+        A = Core.eval(@__MODULE__, Metal.synchronize_metal_tasks(quote
+            function repl_task_sync_kernel(A)
+                A[1] = Int32(1)
+                return
+            end
+
+            t = @async begin
+                A = MtlArray(Int32[0])
+                @metal threads=1 repl_task_sync_kernel(A)
+                A
+            end
+            fetch(t)
+        end))
+
+        @test Array(A) == Int32[1]
+    finally
+        had_device && task_local_storage(:MTLDevice, old_device)
+    end
+end
+
+@testset "device-side exceptions" begin
+    # a device exception must not wedge the GPU (JuliaGPU/Metal.jl#433); it should
+    # complete cleanly and surface to the host as a `KernelException` on synchronize.
+    function throwing_kernel(a)
+        a[2] = 1f0      # out-of-bounds store on a length-1 array
+        return
+    end
+    function fill_one(a)
+        a[thread_position_in_grid_1d()] = 1f0
+        return
+    end
+
+    a = Metal.zeros(Float32, 1)
+    @metal threads=1 throwing_kernel(a)
+    @test_throws Metal.KernelException synchronize()
+
+    # the position of the thread that threw is recorded
+    function throw_at_three(a)
+        if thread_position_in_threadgroup().x == 3 && threadgroup_position_in_grid().x == 2
+            a[2] = 1f0  # out-of-bounds store on a length-1 array
+        end
+        return
+    end
+    @metal threads=4 groups=2 throw_at_three(a)
+    exc = try
+        synchronize()
+        nothing
+    catch err
+        err
+    end
+    @test exc isa Metal.KernelException
+    @test exc.thread == (3, 1, 1)
+    @test exc.threadgroup == (2, 1, 1)
+    @test exc.name == "BoundsError"
+    @test exc.reason == "Out-of-bounds array access"
+
+    # the mailbox is reset on read, and the GPU stays usable afterwards
+    b = Metal.zeros(Float32, 4)
+    @metal threads=4 fill_one(b)
+    synchronize()
+    @test Array(b) == ones(Float32, 4)
+end
+
+@testset "bounds checks keep a local array off the device heap" begin
+    # the bounds error of a checked `MVector` access must not make the array escape: it
+    # would then be allocated on the device heap, which a large launch exhausts
+    using StaticArrays
+    function local_array(out, ns)
+        j = thread_position_in_grid_1d()
+        s = MVector{16, Float32}(undef)
+        i = Int32(1)
+        while i <= ns[j]
+            s[i] = i
+            i += Int32(1)
+        end
+        out[j] = s[mod1(j, 16)]
+        return
+    end
+
+    tt = Tuple{MtlDeviceVector{Float32, 1}, MtlDeviceVector{Int32, 1}}
+    @test !occursin("gc_pool_alloc", sprint(io->Metal.code_llvm(io, local_array, tt; kernel=true)))
+
+    n = 32768
+    ns = MtlArray(fill(Int32(16), n))
+    out = Metal.zeros(Float32, n)
+    @metal threads=256 groups=cld(n, 256) local_array(out, ns)
+    synchronize()
+    @test Array(out) == Float32[mod1(j, 16) for j in 1:n]
+end
+
+@testset "exception reporting per debug level" begin
+    # `@metal debug_level=` controls how much an exception reports, independent of the
+    # session's `-g` (it's part of the compile cache key, resolved at codegen), so all three
+    # tiers can be checked in one process regardless of how the suite was launched.
+    bounds_oob(a) = (a[2] = 1f0; return)   # out-of-bounds on a length-1 array
+    nonquirk(out, d) = (out[1] = 1 ÷ d[1]; return)   # divide-by-zero -> throw(DivideError())
+    function throw_at(dl, kernel, args...)
+        @metal threads=1 debug_level=dl kernel(args...)
+        try; synchronize(); nothing; catch err; err; end
+    end
+
+    # -g0: only that an exception occurred, and where
+    exc0 = throw_at(0, bounds_oob, Metal.zeros(Float32, 1))
+    @test exc0 isa Metal.KernelException
+    @test isempty(exc0.name)
+    @test isempty(exc0.reason)
+    @test exc0.thread == (1, 1, 1)
+    @test exc0.threadgroup == (1, 1, 1)
+    @test isempty(exc0.backtrace)
+
+    # -g1: also the type and reason
+    exc1 = throw_at(1, bounds_oob, Metal.zeros(Float32, 1))
+    @test exc1.name == "BoundsError"
+    @test exc1.reason == "Out-of-bounds array access"
+    @test exc1.thread == (1, 1, 1)
+    @test isempty(exc1.backtrace)
+    @test occursin("A BoundsError was thrown by thread 1×1×1 in threadgroup 1×1×1",
+                   sprint(showerror, exc1))
+
+    # a throw that isn't overridden is reported with the name the compiler gives it
+    excn = throw_at(1, nonquirk, Metal.zeros(Int32, 1), MtlArray(Int32[0]))
+    @test excn isa Metal.KernelException
+    @test excn.name == "exception"
+
+    # GPUToolbox's shared overrides throw through `Overlays.device_throw`, which reports
+    # like a quirk
+    shared_throw(a) = (GPUToolbox.Overlays.device_throw(ArgumentError, Val(Symbol("shared reason"))); return)
+    excs = throw_at(1, shared_throw, Metal.zeros(Float32, 1))
+    @test excs.name == "ArgumentError"
+    @test excs.reason == "shared reason"
+
+    # ... such as the `Rational` errors whose messages Julia 1.10 and 1.11 format at run time
+    rational_den(a, d) = (a[1] = Rational(1, d[1]); return)
+    rational_neg(a, n) = (a[1] = -(n[1] // 1); return)
+    exct = throw_at(1, rational_den, MtlArray([0//1]), MtlArray([typemin(Int)]))
+    @test exct isa Metal.KernelException
+    if isdefined(Base, :__throw_rational_argerror_typemin)
+        @test exct.name == "ArgumentError"
+        @test exct.reason == "invalid rational: denominator can't be typemin"
+    end
+    exct = throw_at(1, rational_neg, MtlArray([0//1]), MtlArray([typemin(Int)]))
+    @test exct isa Metal.KernelException
+    if VERSION < v"1.12-"
+        @test exct.name == "OverflowError"
+        @test exct.reason == "rational numerator is typemin"
+    end
+
+    # -g2: adds a device stack trace, which reaches the kernel
+    exc2 = throw_at(2, bounds_oob, Metal.zeros(Float32, 1))
+    @test exc2.name == "BoundsError"
+    @test exc2.reason == "Out-of-bounds array access"
+    @test exc2.thread == (1, 1, 1)
+    @test exc2.threadgroup == (1, 1, 1)
+    @test endswith(first(exc2.backtrace)[1], "throw_boundserror")
+    @test last(exc2.backtrace)[1] == "bounds_oob"
+    @test occursin("Stacktrace:", sprint(showerror, exc2))
+
+    # the device only records the throw site, so long paths are reported in full
+    file = joinpath("/", "a"^150, "kernel.jl")
+    include_string(@__MODULE__, "long_path_oob(a) = (a[2] = 1f0; return)", file)
+    exc3 = throw_at(2, long_path_oob, Metal.zeros(Float32, 1))
+    frame = only(filter(frame -> frame[1] == "long_path_oob", exc3.backtrace))
+    @test frame[2] == file
+end
+
+@testset "loops with many exits" begin
+    # every bounds check is an exit of the loops around it. With enough of them, Apple's
+    # compiler used to hang, skip code, or report a spurious exception (#1127).
+    function loop_exits_body(y, w, e)
+        s = 0f0
+        for j in 1:2, i in 1:2
+            s += y[i, j, e] * w[i] * w[j]
+        end
+        return s
+    end
+    function loop_exits_body_x(x, y, w, e)
+        s = 0f0
+        for j in 1:2, i in 1:2
+            s += y[i, j, e] * w[i] * w[j] * x[1, i, j, e]
+        end
+        return s
+    end
+    w = (0.1f0, 0.4f0, 0.4f0, 0.1f0)
+
+    # K unrolled steps in a loop that doesn't run, followed by K more
+    function loop_exits_kernel(dst, x, y, w, n, ::Val{K}) where {K}
+        i = Int(thread_position_in_grid_1d())
+        dst[i] = -2f0
+        acc = 0f0
+        t = 0
+        while t < n
+            for s in 0:(K - 1)
+                acc += loop_exits_body_x(x, y, w, t + s * 256 + i)
+            end
+            t += K * 256
+        end
+        for s in 0:(K - 1)
+            acc += loop_exits_body_x(x, y, w, t + s * 256 + i)
+        end
+        dst[i] = acc
+        return
+    end
+    # K = 4 used to skip the final store, K = 8 to hang the compiler
+    @testset "K = $K" for K in (4, 6, 8)
+        x = Metal.ones(Float32, 1, 2, 2, 256 * K)
+        y = Metal.ones(Float32, 2, 2, 256 * K)
+        dst = Metal.zeros(Float32, 256)
+        @metal threads=256 loop_exits_kernel(dst, x, y, w, 0, Val(K))
+        @test all(≈(0.25f0 * K), Array(dst))
+    end
+
+    # a loop that does run, with a tail loop; used to throw a `KernelException`
+    function loop_exits_stepped(dst, y, w, n, ::Val{K}) where {K}
+        i = Int(thread_position_in_grid_1d())
+        acc = 0f0
+        t = 0
+        while t + K * 1024 <= n
+            for s in 0:(K - 1)
+                acc += loop_exits_body(y, w, t + s * 1024 + i)
+            end
+            t += K * 1024
+        end
+        while t + i <= n
+            acc += loop_exits_body(y, w, t + i)
+            t += 1024
+        end
+        dst[i] = acc
+        return
+    end
+    let n = 1024 * 32
+        y = Metal.ones(Float32, 2, 2, n)
+        dst = Metal.zeros(Float32, 1024)
+        @metal threads=256 groups=4 loop_exits_stepped(dst, y, w, n, Val(14))
+        @test all(≈(0.25f0 * 32), Array(dst))
+    end
+
+    # exceptions in such loops are still reported, and only the threads that throw skip
+    # the rest of the kernel
+    function loop_exits_throw(dst, y, stride)
+        i = Int(thread_position_in_grid_1d())
+        dst[i] = -2f0
+        acc = 0f0
+        for s in 0:7
+            acc += y[i + s * stride[i]]
+        end
+        dst[i] = acc
+        return
+    end
+    y = Metal.ones(Float32, 64)
+    dst = Metal.zeros(Float32, 32)
+    stride = MtlArray([i <= 16 ? 1 : 100 for i in 1:32])
+    @metal threads=32 loop_exits_throw(dst, y, stride)
+    @test_throws Metal.KernelException synchronize()
+    @test Array(dst) == [fill(8f0, 16); fill(-2f0, 16)]
+end
+
+@testset "launch params" begin
+    vecA .= 0
+    @metal threads=(2) tester(bufferA)
+    synchronize()
+    @test all(vecA == Int.([5, 5, 0, 0, 0, 0, 0, 0]))
+    vecA .= 0
+
+    @metal groups=(3) threads=(2) tester(bufferA)
+    synchronize()
+    @test all(vecA == Int.([5, 5, 5, 5, 5, 5, 0, 0]))
+    vecA .= 0
+
+    dev = device()
+    queue = MTL.MTLCommandQueue(dev)
+    @metal threads=(3) queue=queue tester(bufferA)
+    synchronize(queue)
+    @test all(vecA == Int.([5, 5, 5, 0, 0, 0, 0, 0]))
+    vecA .= 0
+
+    @test_throws InexactError @metal threads=(-2) tester(bufferA)
+    @test_throws InexactError @metal groups=(-2) tester(bufferA)
+    @test_throws ArgumentError @metal threads=(1025) tester(bufferA)
+    @test_throws ArgumentError @metal threads=(1000,2) tester(bufferA)
+
+    @test_throws ArgumentError @metal threads=(1024,1,1) groups=(4194304,1,1) tester(bufferA)
+    @test_throws ArgumentError @metal threads=(1,1024,1) groups=(1,4194304,1) tester(bufferA)
+    @test_throws ArgumentError @metal threads=(1,1,1024) groups=(1,1,4194304) tester(bufferA)
+end
+
+############################################################################################
+
+@testset "argument passing" begin
+    @testset "buffer argument" begin
+        function kernel(ptr)
+            unsafe_store!(ptr, 42)
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel(pointer(a))
+        @test Array(a)[] == 42
+    end
+
+    @testset "scalar argument" begin
+        function kernel(ptr, val)
+            unsafe_store!(ptr, val)
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel(pointer(a), 42)
+        @test Array(a)[] == 42
+    end
+
+    @testset "array argument" begin
+        function kernel(ptr, vals)
+            unsafe_store!(ptr, vals[1])
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel(pointer(a), (42,))
+        @test Array(a)[] == 42
+    end
+
+    @testset "struct argument" begin
+        function kernel(ptr, vals)
+            unsafe_store!(ptr, vals[1] + vals[2])
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel(pointer(a), (20, Int32(22)))
+        @test Array(a)[] == 42
+    end
+
+    @testset "indirect struct argument" begin
+        function kernel(obj)
+            unsafe_store!(obj[1], obj[2])
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel((pointer(a), 42))
+        @test Array(a)[] == 42
+    end
+
+    @testset "nested indirect struct argument" begin
+        function kernel(obj)
+            unsafe_store!(obj[1][1], obj[2])
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel(((pointer(a), 0), 42))
+        @test Array(a)[] == 42
+    end
+
+    @testset "array in struct argument" begin
+        function kernel(obj)
+            unsafe_store!(obj[1], obj[2][1]+obj[2][2])
+            return
+        end
+
+        a = MtlArray([1])
+        @metal kernel((pointer(a), (20,22)))
+        @test Array(a)[] == 42
+    end
+
+    @testset "unused mutable types" begin
+        function kernel(T, ptr)
+            unsafe_store!(ptr, one(T))
+            return
+        end
+
+        a = MtlArray([0])
+        @metal kernel(Int, pointer(a))
+        @test Array(a)[] == 1
+    end
+
+    @testset "argument converting to a ghost type" begin
+        # `Base.Fix1` capturing a type converts to a closure without fields,
+        # so it doesn't occupy a parameter slot, unlike its unconverted form
+        function kernel(f, ptr, val)
+            unsafe_store!(ptr, f(val))
+            return
+        end
+
+        a = MtlArray([0f0])
+        @metal kernel(Base.Fix1(convert, Float32), pointer(a), 42)
+        @test Array(a)[] == 42f0
+    end
+
+    @testset "CPU array argument" begin
+        kernel(a) = return
+        a = MtlArray([1f0])
+        b = [1f0]
+        for f in (() -> @metal(kernel(b)), () -> a .+ b)
+            err = try f(); nothing catch err; err end
+            @test err isa ArgumentError
+            @test occursin("MtlArray", sprint(showerror, err))
+        end
+    end
+
+    @testset "wrong number of arguments" begin
+        kernel(ptr) = return
+        a = MtlArray([0])
+        k = @metal launch=false kernel(pointer(a))
+        @test_throws ArgumentError k()
+    end
+
+    @testset "captured arrays" begin
+        # arrays captured by the kernel function are converted at launch, like arguments,
+        # so that their buffers are declared to the encoder (as shader validation requires)
+        let a = MtlArray(Float32[1, 2, 3, 4]), b = Metal.zeros(Float32, 4)
+            kernel = () -> (i = thread_position_in_grid().x; @inbounds b[i] = 2f0 * a[i]; nothing)
+            @metal threads=4 kernel()
+            @test Array(b) == Float32[2, 4, 6, 8]
+        end
+
+        # the kernel object keeps the arrays it captures alive
+        function captured_kernel(b)
+            a = MtlArray([42])
+            kernel = @metal launch=false (() -> (@inbounds b[1] = a[1]; nothing))()
+            kernel, WeakRef(a)
+        end
+        let b = MtlArray([0])
+            kernel, a = captured_kernel(b)
+            GC.gc(true)
+            @test a.value !== nothing
+            kernel()
+            @test Array(b) == [42]
+        end
+    end
+
+    @testset "dynamically indexed closure argument" begin
+        # the closure used to be copied to the stack, where the dynamic indexing of `w` kept
+        # it alive, and the back-end miscompiled the kernel (#1018)
+        function kernel(out, f)
+            i = thread_position_in_grid().x
+            n = length(out)
+            if i > n
+                return
+            elseif i == n
+                out[i] = f(i)
+            else
+                out[i] = f(i) + 0f0 * f(i + 1)
+            end
+            return
+        end
+        make_f(u, J, w) = el -> begin
+            V = 0f0
+            for k in 1:4, j in 1:4, i in 1:4
+                V += J[i, j, k, el] * w[i] * w[j] * w[k] * u[1, i, j, k, el]
+            end
+            return V
+        end
+
+        len = 512
+        u = ones(Float32, 1, 4, 4, 4, len)
+        J = repeat(reshape(Float32.(1:len), 1, 1, 1, len), 4, 4, 4)
+        w = (1f0, 2f0, 3f0, 4f0)
+        out = Metal.zeros(Float32, len)
+        @metal threads=256 groups=cld(len, 256) kernel(out, make_f(MtlArray(u), MtlArray(J), w))
+        @test Array(out) == map(make_f(u, J, w), 1:len)
+    end
+end
+
+@testset "read-only arrays" begin
+    function const_copy(A, B)
+        i = thread_position_in_grid().x
+        @inbounds A[i] = Base.Experimental.Const(B)[i]
+        return
+    end
+    function const_copy_2d(A, B)
+        i, j = thread_position_in_grid().x, thread_position_in_grid().y
+        @inbounds A[i, j] = Base.Experimental.Const(B)[i, j]
+        return
+    end
+
+    A = Metal.zeros(Float32, 64)
+    B = MtlArray(rand(Float32, 64))
+    ir = sprint(io -> Metal.@device_code_llvm io=io raw=true @metal threads=length(A) const_copy(A, B))
+    @test Array(A) == Array(B)
+    @test occursin("!invariant.load", ir)
+
+    A = Metal.zeros(Float32, 8, 8)
+    B = MtlArray(rand(Float32, 8, 8))
+    @metal threads=size(A) const_copy_2d(A, B)
+    @test Array(A) == Array(B)
+
+    # loading through a pointer into a read-only array
+    function const_pointer_copy(A, B)
+        i = thread_position_in_grid().x
+        C = Base.Experimental.Const(B)
+        @inbounds A[i] = unsafe_load(pointer(C, i)) + unsafe_load(pointer(C))
+        return
+    end
+    A = Metal.zeros(Float32, 64)
+    B = MtlArray(rand(Float32, 64))
+    @metal threads=length(A) const_pointer_copy(A, B)
+    @test Array(A) == Array(B) .+ Array(B)[1]
+end
+
+@testset "Symbols in device memory" begin
+    # loaded as a pointer into thread memory, a Symbol used to lose its upper bits (#1017)
+    syms = MtlArray([(:begin, :end), (:end, :begin)])
+    @test Array(map(t -> t[1] === :begin, syms)) == [true, false]
+end
+
+@testset "odd-width integers" begin
+    # Metal's back-end cannot handle integers whose width is not a power of two: arithmetic
+    # and underaligned loads crash it, and naturally-aligned stores overwrite the bytes after
+    # the value (#1125). LLVM's SROA emits such integers, e.g. to copy an aggregate's padding.
+    data = UInt8.(1:32)
+    function access(op, T, offset, align)
+        q = "$T addrspace(1)*"
+        body = if op == :copy   # to the start of the buffer
+            """%v = load $T, $q %src, align $align
+               %dst = bitcast i8 addrspace(1)* %p to $q
+               store $T %v, $q %dst, align $align
+               ret i64 0"""
+        elseif op == :store
+            """store $T -1, $q %src, align $align
+               ret i64 0"""
+        elseif op == :arith
+            """%v = load $T, $q %src, align $align
+               %a = add $T %v, %v
+               %s = lshr $T %a, 4
+               %r = zext $T %s to i64
+               ret i64 %r"""
+        elseif op == :sdiv
+            """%v = load $T, $q %src, align $align
+               %a = add $T %v, %v
+               %d = sdiv $T %a, -7
+               %r = sext $T %d to i64
+               ret i64 %r"""
+        else
+            """%v = load $T, $q %src, align $align
+               %r = $op $T %v to i64
+               ret i64 %r"""
+        end
+        ir = """
+            define i64 @entry(i8 addrspace(1)* %p) #0 {
+              %gep = getelementptr i8, i8 addrspace(1)* %p, i64 $offset
+              %src = bitcast i8 addrspace(1)* %gep to $q
+              $body
+            }
+            attributes #0 = { alwaysinline }"""
+        kernel = @eval function (out, buf)
+            ptr = reinterpret(Core.LLVMPtr{UInt8,1}, pointer(buf))
+            out[] = Base.llvmcall(($ir, "entry"), UInt64, Tuple{Core.LLVMPtr{UInt8,1}}, ptr)
+            return
+        end
+        out = MtlArray([UInt64(0)])
+        buf = MtlArray(data)
+        Base.invokelatest(() -> @metal kernel(out, buf))
+        return Array(out)[], Array(buf)
+    end
+
+    @testset "$op $T at offset $offset, align $align" for op in (:zext, :sext, :arith, :sdiv),
+            (T, offset, align) in (("i12", 1, 1), ("i24", 5, 1), ("i24", 4, 4),
+                                   ("i40", 1, 1), ("i48", 2, 2), ("i56", 1, 1),
+                                   ("i56", 8, 8))
+        bits = parse(Int, T[2:end])
+        val = UInt64(0)
+        for (i, byte) in enumerate(data[offset+1:offset+cld(bits, 8)])
+            val |= UInt64(byte) << (8 * (i - 1))
+        end
+        mask = typemax(UInt64) >> (64 - bits)
+        val &= mask
+        if op == :sext && val >> (bits - 1) == 1
+            val |= ~mask
+        elseif op == :arith
+            val = ((2val) & mask) >> 4
+        elseif op == :sdiv
+            a = Int128((2val) & mask)
+            a >= Int128(1) << (bits - 1) && (a -= Int128(1) << bits)
+            val = reinterpret(UInt64, Int64(div(a, -7)))
+        end
+        @test access(op, T, offset, align) == (val, data)
+    end
+
+    @testset "$op $T at offset $offset, align $align" for op in (:store, :copy),
+            (T, offset, align) in (("i24", 5, 1), ("i24", 4, 4), ("i40", 8, 8),
+                                   ("i56", 9, 1), ("i56", 8, 8), ("i72", 8, 8),
+                                   ("i96", 4, 4))
+        nbytes = parse(Int, T[2:end]) ÷ 8
+        expected = copy(data)
+        if op == :store
+            expected[offset+1:offset+nbytes] .= 0xff
+        else
+            expected[1:nbytes] = data[offset+1:offset+nbytes]
+        end
+        @test access(op, T, offset, align) == (0, expected)
+    end
+end
+
+@testset "compilation cache" begin
+    mod = @eval module $(gensym())
+        @noinline child() = return
+        kernel() = child()
+    end
+
+    count() = Metal.compilations[]
+    launch() = @metal mod.kernel()
+
+    # the initial launch compiles
+    n = count()
+    Base.invokelatest(launch)
+    @test count() == n+1
+
+    # a second launch hits the cache
+    Base.invokelatest(launch)
+    @test count() == n+1
+
+    # jobs differing only in codegen-level settings get their own artifacts...
+    Metal.mtlfunction(mod.kernel, Tuple{}; name="custom")
+    @test count() == n+2
+    # ... which are cached as well
+    Metal.mtlfunction(mod.kernel, Tuple{}; name="custom")
+    @test count() == n+2
+
+    # reflection observes already-compiled kernels (by forcing recompilation,
+    # which must leave the cached entry in a usable state)
+    @test !isempty(sprint(io->(@device_code_llvm io=io Base.invokelatest(launch))))
+    n = count()
+    Base.invokelatest(launch)
+    @test count() == n
+
+    # redefining the kernel recompiles...
+    @eval mod kernel() = (child(); child())
+    Base.invokelatest(launch)
+    @test count() == n+1
+    # ... as does redefining a callee
+    @eval mod @noinline child() = nothing
+    Base.invokelatest(launch)
+    @test count() == n+2
+end
+
+@testset "resource labelling" begin
+    # enable labelling here rather than in a `-g2` process: that would precompile Metal
+    # again, and later sessions would load that image without the kernels it precompiles
+    default = Metal.label_resources_default[]
+    Metal.label_resources_default[] = true
+    try
+        @test Metal.label_resources()
+
+        function kernel(a)
+            a[thread_position_in_grid().x] += 1f0
+            return
+        end
+
+        # a new queue creates its own command API objects, labelling them
+        queue = MTL.MTLCommandQueue(device())
+        a = Metal.zeros(Float32, 4)
+        @test startswith(String(a.data[].buffer.label), "MtlArray{Float32,1,")
+        @metal threads=4 queue=queue kernel(a)
+        synchronize(queue)
+        @test Array(a) == ones(Float32, 4)
+    finally
+        Metal.label_resources_default[] = default
+    end
+end
+
+@testset "device-side reinterpret to a stronger alignment" begin
+    function kernel(y, a, offset)
+        ptr = reinterpret(Core.LLVMPtr{Int32,Metal.AS.Device}, pointer(a)) + offset
+        x = MtlDeviceArray{Int32,1,Metal.AS.Device}((2,), ptr)
+        b = reinterpret(Int64, x)
+        @inbounds y[1] = b[1]
+        return
+    end
+    a = MtlArray([1, 2])
+    y = Metal.zeros(Int, 1)
+    @metal kernel(y, a, 8)
+    @test Array(y)[] == 2
+    @test_throws Metal.KernelException begin
+        @metal kernel(y, a, 4)
+        synchronize()
+    end
+end

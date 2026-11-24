@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-24T00:48:44.475",
+  "finished": "2026-11-24T01:39:18.642",
+  "id": "20261124-004844-475-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 2500,
+    "prompt": "a bunch of three orange carrots with leafy green tops lying together, stylized cozy toy-like, seen from the side, resting on the ground",
+    "tags": [
+      "plant",
+      "vegetable",
+      "garden"
+    ]
+  },
+  "result": {
+    "created": "2026-11-24T01:39:18.259",
+    "faces": 2414,
+    "id": "20261124-004844-475-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-004844-475-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-004844-475-asset/mesh.jls",
+    "prompt": "a bunch of three orange carrots with leafy green tops lying together, stylized cozy toy-like, seen from the side, resting on the ground",
+    "seconds": 569.0,
+    "tags": [
+      "plant",
+      "vegetable",
+      "garden"
+    ]
+  },
+  "seconds": 571.7,
+  "started": "2026-11-24T01:29:46.653",
+  "status": "done"
+}

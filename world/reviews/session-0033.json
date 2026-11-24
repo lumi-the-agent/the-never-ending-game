@@ -1,0 +1,26 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "Tester report: it failed in the full suite and passed 4 of 4 alone. The author's journal says 'Not run: the full suite'.",
+      "suggestion": "Run the full suite, print the ball and critter state in the failing check, and look for state left over from the previous test.",
+      "what": "The full test suite was not run this session, and the tester saw an intermittent Ball play failure ('the pass does not roll towards Sprout') that nobody has investigated. CLAUDE.md says such flakes are often real game bugs.",
+      "where": "tests/ ball play; world/tests/reports/session-0033.json"
+    },
+    {
+      "evidence": "In the eye-level half the grass between tufts is nearly the same flat green. The shade pools are only clearly visible in the overview.",
+      "suggestion": "Vary tuft scale, rotation and tint per instance, and strengthen the clearing/hollow contrast at eye level.",
+      "what": "The ground is still fairly uniform at eye level. The painted clearings and hollows are subtle in the left-vs-right shots. Most of the visible change comes from the tufts, which are all the same green and similar size, so they read as repeated stamps.",
+      "where": "plugins/meadow.jl, media/meadow/tufts-compare2.png (top row)"
+    },
+    {
+      "evidence": "Journal s33: 'Stays open'; chat-ab-sheet2.png.",
+      "suggestion": "Do the engine change for group views in follow_view at the start of a session, and check the 2 worse chat shots.",
+      "what": "#160 (camera blocked by crowns and bushes during chats) is only partly fixed. The A/B on 12 forced chats showed 5 better, 5 same and 2 worse. The traced-still camera problem (#165) is also unresolved. The raster-vs-browser tint difference is accepted without a fix.",
+      "where": "plugins/lensclear.jl"
+    }
+  ],
+  "summary": "The meadow repaint and the 280 instanced grass tufts are visible in the eye-level and overview shots, and cost nothing per frame (frame median 3.6 ms, p95 5.1 ms). The berry-race start fix and the browser check are credible. I only looked at the author's compare image and the perf numbers, not the live game.",
+  "superseded_by": "perfectionist-0033.json",
+  "verdict": "pass"
+}

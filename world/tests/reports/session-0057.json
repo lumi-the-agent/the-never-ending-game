@@ -1,0 +1,14 @@
+{"session":57,
+ "summary":"The host suite did not complete (sandbox stopped answering), so I did not run it. I played the kite as a person in the sandbox: watched it fly, then jumped in with Play, held W, stood still and pressed Stop. The kite flies, the string stays with Sprout when the player jumps in, standing lowers it, and Stop frees Sprout. I found two problems with what the player sees.",
+ "failures":[
+  {"what":"After jumping in as the kite holder, the kite is not in view and nothing tells the player where it is or that running lifts it",
+   "steps":"Sandbox, 13:30, wait until Sprout flies the kite (kite up), click Play (Jump in), hold W 4 s, stand 6 s, screenshot",
+   "expected":"The player sees the kite (or a hint such as 'run to lift the kite'), and can tell running raises it",
+   "actual":"The follow camera sits between two big trees and shows only a bit of string leaving the top of the frame. The kite is out of frame and the Jump-in HUD still says only 'WASD walk, E wave, Space jump'. Running 4 s changed the kite height only from 0.83 to 0.87, and standing 6 s lowered it to 0.66, so the change is hard to notice.",
+   "screenshot":"world/tests/shots/x57-c-running.png"},
+  {"what":"Sprout's thought bubble still reads 'Making a kite to fly over…' while the kite is already flying",
+   "steps":"Wait until the kite is up at 13:30 and take a screenshot",
+   "expected":"The bubble describes what Sprout is doing now (flying the kite) or is gone",
+   "actual":"The bubble 'Making a kite to fly over…' hangs over Sprout, who is already holding the string. The side panel also says 'Feels lonely. Nobody has come to play with me' while the kite flies.",
+   "screenshot":"world/tests/shots/x57-a-flying.png"}],
+ "tests_added":["Jumping in with Play while the kite flies makes the player the holder; standing lets it sink; Stop frees Sprout (tests/kite_play.jl)"]}

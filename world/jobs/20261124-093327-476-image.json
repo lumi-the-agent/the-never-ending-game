@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-24T09:33:27.476",
+  "finished": "2026-11-24T10:00:24.598",
+  "id": "20261124-093327-476-image",
+  "kind": "image",
+  "params": {
+    "prompt": "a chubby golden mole gardener with round goggles pushed up on its head, a red scarf and huge digging paws, cute chunky toy-like 3D game character, soft clay look, bold simple shapes, big expressive eyes, full body, front three-quarter view, standing on the ground"
+  },
+  "result": {
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-093327-476-image/image.png",
+    "seed": 44
+  },
+  "seconds": 458.8,
+  "started": "2026-11-24T09:52:45.845",
+  "status": "done"
+}

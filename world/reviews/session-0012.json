@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s12-live.png (live screenshot taken during review)",
+      "severity": "high",
+      "suggestion": "Clamp x as well as y using the real text width, not only the 0.4*fs/char estimate. Better, measure with Makie's boundingbox of the label, or hide a label whose creature is mostly off screen. Re-check with creatures near each corner and add a test that places creatures there.",
+      "what": "Name labels are still cut off by the 3D view edge: 'Marshmallo' is clipped on the right, and on the left 'lus', 'lescotch' and 'fle' are clipped and overlap each other. The todo says labels are clamped inside the view, and the author's screenshot shows only the three labels that were already fine.",
+      "where": "scenery.jl stack_offsets / label width estimate; top-left and top-right of the 3D view"
+    },
+    {
+      "evidence": "world/reviews/s12-live.png, activity panel",
+      "severity": "medium",
+      "suggestion": "Summarise before wrapping (first sentence or the first_line of the review summary), or allow more lines. Do not cut a sentence at an arbitrary line.",
+      "what": "wrap_text drops trailing lines silently. The activity panel now ends mid-sentence ('...the live menu kept 'Firefly catch' chosen from the'), which is no clearer than the ellipsis it replaced. It also hides that text was cut.",
+      "where": "dashboard.jl:225 and the call at dashboard.jl:270 (maxlines = 3)"
+    },
+    {
+      "evidence": "grep -rn wrap_line in src finds only the definition",
+      "severity": "low",
+      "suggestion": "Delete it.",
+      "what": "wrap_line at dashboard.jl:206 still appends '…'. grep finds no caller, so it is dead code that contradicts the new no-ellipsis rule.",
+      "where": "dashboard.jl:206"
+    },
+    {
+      "evidence": "tester report session-0012",
+      "severity": "low",
+      "suggestion": "Show the selection on the Play button, or reset the menu after a game ends.",
+      "what": "The tester noted the mini game menu keeps its previous choice across runs. The author did not address it.",
+      "where": "dashboard menu"
+    }
+  ],
+  "summary": "Perf is fine (frame median 1.2 ms, p95 2.3 ms) and the activity panel no longer shows an ellipsis, but the live game still clips name labels at the left and right view edges, which is the todo's main claim.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

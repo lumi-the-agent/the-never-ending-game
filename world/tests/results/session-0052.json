@@ -1,0 +1,36 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the new cairn plots are not hidden while it is being built",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 1.0
+    },
+    {
+      "error": "check failed: the thought is not a few words: resting after a busy night of building with my friends",
+      "file": "builder.jl",
+      "name": "Sprout thinks about the todo the agent is on: a cloud over its head with the doing todo in a few words",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: a bored Sprout said [\"Can I play?\"]",
+      "file": "outfits.jl",
+      "name": "Sprout shows how it feels: a bored Sprout sighs and looks out from under heavy lids",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: Gloop and Wibbles overlap: 0.79 m apart: (\"Gloop\", :pebble, :walk, false, (0.0f0, -6.1f0, 2.0f0), Tuple{Symbol, Float32}[(:tree, 1.2), (:tree, 1.4), (:tree, 0.6), (:bush, 1.0), (:bush, 2.0), (:bush, 2.1)]) (\"Wibbles\", :pebble, :walk, false, (0.8f0, -6.2f0, 1.9f0), Tuple{Symbol, Float32}[(:tree, 1.6), (:tree, 1.2), (:tree, 1.2), (:bush, 1.6), (:bush, 2.6), (:bush, 2.8)]), interactions 0, minigame Nothing",
+      "file": "separation.jl",
+      "name": "Creatures never stand inside each other",
+      "passed": false,
+      "seconds": 0.4
+    }
+  ],
+  "passed": 104,
+  "session": 52,
+  "time": "2026-11-24T02:21:39",
+  "total": 108
+}

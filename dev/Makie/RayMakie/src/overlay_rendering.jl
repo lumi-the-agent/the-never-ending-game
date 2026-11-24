@@ -1,0 +1,531 @@
+# =============================================================================
+# Overlay Rendering — draws RenderObjects via Lava graphics pipeline
+# =============================================================================
+
+# DELETED: `render_overlays!` / `render_overlays_gfx!`, which opened a
+# `Mantle.pass!` and recorded every overlay into it, per frame. A frame is a
+# GRAPH now — see `frame_plan!` — so the overlays are declared beside the blit
+# instead of recorded after it, and the two submissions became one.
+
+# =============================================================================
+# Sub-scene backgrounds (GPU fill)
+# =============================================================================
+
+function render_subscene_backgrounds!(postprocess, root_scene)
+    root_h, root_w = size(postprocess)
+    for child in root_scene.children
+        bg = to_value(child.backgroundcolor)
+        bg_rgba = RGBA{Float32}(bg)
+        (bg_rgba.r ≈ 1f0 && bg_rgba.g ≈ 1f0 && bg_rgba.b ≈ 1f0) && continue
+        bg_rgba.alpha < 0.01f0 && continue
+        vp = child.viewport[]
+        x0 = max(1, round(Int, vp.origin[1]) + 1)
+        x1 = min(root_w, round(Int, vp.origin[1] + vp.widths[1]))
+        y_top = root_h - round(Int, vp.origin[2] + vp.widths[2]) + 1
+        y_bot = root_h - round(Int, vp.origin[2])
+        y0 = max(1, y_top); y1 = min(root_h, y_bot)
+        bg_fill = RGBA{Float32}(bg_rgba.r * bg_rgba.alpha, bg_rgba.g * bg_rgba.alpha, bg_rgba.b * bg_rgba.alpha, 1f0)
+        bg_rgba.alpha ≈ 1f0 && (view(postprocess, y0:y1, x0:x1) .= Ref(bg_fill))
+    end
+end
+
+# =============================================================================
+# Draw a single RenderObject inside the active render pass
+# =============================================================================
+
+function declare_overlay_draw!(p, robj::RenderObject, cell, viewport, default_vp)
+    # DECLARED, not recorded. `Mantle.draw!` on a `PassHandle` pushes a `DrawCall`
+    # onto the graph's pass and the plan compiles it once; the hand-recorded
+    # version called `Mantle.compile_draw` here, every frame, for every object.
+    #
+    # `cell` is a `Mantle.DrawBinding`, and it is why this plan survives a zoom.
+    # `projectionview` and `model` are ARGUMENTS — plain `Mat4f` values in the
+    # tuple — a tick count is a VERTEX COUNT, and a relaid-out plot gets a new
+    # index buffer. All four change when the limits do and none of them is a plot
+    # appearing or disappearing, so all four are rebound rather than baked; see
+    # `rebind_overlay_args!`.
+    #
+    # The SAME list on both stages, which is what a Makie render object is: the
+    # fragment stage reads the colormap its vertex stage indexed. One push
+    # constant range, two stages declaring the same layout over it.
+    Mantle.draw!(p, robj.pipeline, cell;
+                 frag_args = Mantle.drawargs(cell),
+                 viewport = viewport === nothing ? default_vp : viewport,
+                 scissor = robj.uniforms[:pixel_scissor])
+    # No `pin!` and no `hold!`. What the draw reads is reachable from `robj`,
+    # which outlives the plan; the plan holds what it names for as long as it
+    # lives, which is core's job and not this package's.
+    return nothing
+end
+
+# =============================================================================
+# Main render pass — collect and draw all RenderObjects
+# =============================================================================
+
+# GLMakie's handle_overdraw disables both depth testing and depth writes.
+# Keep the original pipeline so switching the plot attribute back restores its
+# own depth mode (including read-only depth for transparent meshes).
+overlay_without_depth(p::GraphicsPipeline) = GraphicsPipeline(;
+    vertex = p.vertex, fragment = p.fragment, geometry = p.geometry,
+    tess_control = p.tess_control, tess_eval = p.tess_eval,
+    blend = p.blend, cull = p.cull, topology = p.topology, depth = Mantle.DepthOff())
+overlay_without_depth(p::Mantle.MeshPipeline) = Mantle.MeshPipeline(;
+    object = p.object, mesh = p.mesh, fragment = p.fragment,
+    blend = p.blend, cull = p.cull, depth = Mantle.DepthOff())
+
+function sync_overlay_overdraw!(robj::RenderObject, plot)
+    overdraw = Bool(Makie.to_value(plot.overdraw))
+    if overdraw
+        original = get!(robj.uniforms, :depth_pipeline, robj.pipeline)
+        robj.pipeline = get!(robj.uniforms, :overdraw_pipeline) do
+            overlay_without_depth(original)
+        end
+    elseif haskey(robj.uniforms, :depth_pipeline)
+        robj.pipeline = robj.uniforms[:depth_pipeline]
+    end
+    return nothing
+end
+
+"""
+    collect_overlay_robjs(state, root_scene, raster; scenes = nothing)
+
+Every raster render object the overlay pass would draw for `state`, each paired
+with the viewport rect it belongs in.
+
+Shared with `colorbuffer`, which has to know whether there is anything to draw
+*before* it commits to the slow path (blit to a BGRA framebuffer, render, read
+back, convert). Asking one function both times is what stops "are there
+overlays?" and "which overlays?" from being different questions. Answering the
+first with `overlay_only`, which is a property of the scene's CAMERA, makes a 3D
+scene holding `lines!`, `scatter!` or `text!` build their render objects and then
+draw none of them: an `Axis3` with no spines, ticks or labels.
+"""
+function collect_overlay_robjs(state::RayMakieState, root_scene::Makie.Scene, raster::Bool;
+                               scenes = nothing)
+    robjs = Tuple{RenderObject, NTuple{4, Float32}}[]
+    # A hidden state's scene draws nothing: `collect_overlay_scenes` checks the
+    # scenes BELOW a root, and this is the check for the root itself.
+    shown(state.makie_scene) || return robjs
+
+    overlay_scenes = if scenes !== nothing
+        scenes
+    elseif state.overlay_only
+        collect_overlay_scenes(state.makie_scene, raster)
+    else
+        [state.makie_scene]
+    end
+
+    # The ROOT's height, because that is the space `vp.origin` is measured in —
+    # a scene's viewport is placed in the figure, not in itself — and the flip
+    # below turns a y-up origin into a y-down one.
+    #
+    # This read `size(state.makie_scene)`, which is the same scene as the root
+    # for an overlay-only state and therefore right for every 2D figure. For a
+    # TRACED state it is the sub-scene: an `LScene` 368 units tall in a 400-unit
+    # figure flipped against 368 and drew every decoration 32 units too high, so
+    # the axis box, its ticks and its labels sat above the surface they belong
+    # to while the traced image itself was in the right place. Mixing a
+    # sub-scene's height with a root-space origin, which is the same mistake as
+    # sizing a film in units and blitting it into pixels.
+    root_h = size(root_scene)[2]
+    for rscene in overlay_scenes
+        vp = Makie.viewport(rscene)[]
+        clip = Makie.effective_clip(rscene)
+        any(<=(0), clip.widths) && continue
+        vp_y = Float32(root_h - vp.origin[2])
+        vp_rect = (Float32(vp.origin[1]), vp_y, Float32(vp.widths[1]), -Float32(vp.widths[2]))
+        # The scene's glowing meshes light it in RASTER mode, so they are
+        # gathered before any of its draws resolves its light buffers.
+        raster && sync_raster_emitters!(rscene)
+        for p in rscene.plots
+            Makie.for_each_atomic_plot(p) do ap
+                # `:raster_renderobject` first: a plot that can go both ways
+                # writes the raster one there and leaves `:trace_renderobject`
+                # `nothing`. Plots that are only ever overlays still use the
+                # older name.
+                slot = haskey(ap, :raster_renderobject) ? :raster_renderobject :
+                       haskey(ap, :trace_renderobject)  ? :trace_renderobject  : nothing
+                slot === nothing && return nothing
+                ap.visible[] || return nothing
+                # A render object that exists but will not resolve is a BROKEN
+                # plot, not an absent one. This was `catch; return nothing`, which
+                # made a plot that fails to build indistinguishable from one that
+                # simply draws nothing. `maxlog` because this runs every frame.
+                robj = try
+                    ap[slot][]
+                catch e
+                    @error("RayMakie: an overlay render object failed to resolve; \
+                            this plot will not be drawn",
+                           plot = typeof(ap), exception = (e, catch_backtrace()), maxlog = 1)
+                    return nothing
+                end
+                if robj isa RenderObject && robj.visible
+                    sync_overlay_overdraw!(robj, ap)
+                    robj.uniforms[:scene_scissor] = (
+                        clip.origin[1], root_h - clip.origin[2] - clip.widths[2],
+                        clip.widths[1], clip.widths[2])
+                    # Compact IDs are private to this screen. `pick` resolves
+                    # them back to plots; editor object identities stay separate.
+                    robj.uniforms[:pick_plot] = ap
+                    push!(robjs, (robj, vp_rect))
+                end
+                return nothing
+            end
+        end
+    end
+    return robjs
+end
+
+"""
+    require_drawable(backend, pipeline)
+
+Throw unless `backend` can run every stage this pipeline declares.
+
+Asked before the pass opens rather than discovered from a shader compile. It
+THROWS, and that is the point: an overlay that cannot be drawn is not a degraded
+image, it is a WRONG one — no axis grid, no ticks, no labels, no scatter, no
+lines — and a renderer that drops it and reports success produces something
+nobody reading the picture can tell is incomplete. A skip with a warning is not
+an option here.
+
+A geometry stage needs EITHER a backend that has one or a backend that has a mesh
+pipeline, because `Mantle.compile_draw` lowers a geometry pipeline onto a mesh one
+where the stage does not exist. That is why this asks two questions and not one,
+and why nothing above here branches on which of the two ran.
+"""
+function require_drawable(backend, p::Mantle.GraphicsPipeline)
+    if p.geometry !== nothing && !Mantle.supports_geometry_stage(backend) &&
+            !Mantle.supports_mesh_pipeline(backend)
+        error("""
+            $(nameof(typeof(backend))) has neither a geometry stage nor a mesh
+            pipeline, and this overlay declares a geometry stage, so it CANNOT be
+            drawn — and it must not be silently dropped.
+
+              vertex stage    $(Mantle.stagefunction(p.vertex))
+              geometry stage  $(Mantle.stagefunction(p.geometry))
+
+            A backend with a mesh pipeline runs this through
+            `Mantle.lower_geometry_to_mesh`, which is what Metal does. One with
+            neither has to grow one of the two.""")
+    end
+    if p.tess_control !== nothing && !Mantle.supports_tessellation(backend)
+        error("$(nameof(typeof(backend))) has no tessellation, and this overlay " *
+              "declares one: $(Mantle.stagefunction(p.vertex)).")
+    end
+    return nothing
+end
+
+function require_drawable(backend, p::Mantle.MeshPipeline)
+    Mantle.supports_mesh_pipeline(backend) || error("""
+        $(nameof(typeof(backend))) has no mesh pipeline, and this overlay IS one —
+        its geometry is written by a stage rather than read from a buffer, so
+        there is nothing to fall back to.
+
+          mesh stage  $(Mantle.stagefunction(p.mesh))
+
+        A plot drawn this way has no vertex-stream form to lower onto; the
+        backend has to grow the stage.""")
+    return nothing
+end
+
+"""
+    frame_draws!(p, screen, source, cells, robjs, w, h)
+
+Declare a whole composited frame onto one render pass: the traced image, then
+every overlay on top of it.
+
+ONE pass, because that is what it is. It used to be `Mantle.blit!` — itself a
+pass with one fullscreen draw — followed by a second `Mantle.pass!` for the
+overlays, two submissions where the second only ever ran straight after the
+first. The graph makes the difference visible: the blit is a draw like any
+other, it just wants a different viewport, and per-draw viewports are why it
+can share the pass.
+"""
+function frame_draws!(p, screen, source, cells, robjs, w, h)
+    # Y-flipped: a negative height puts clip-space +Y at the top, matching
+    # Makie's pixel convention, and this is the default every overlay that does
+    # not name its own rect takes.
+    default_vp = (0f0, Float32(h), Float32(w), -Float32(h))
+    # The blit is NOT y-flipped — `Mantle.blit!` spells it `viewport!(p, 0, 0, w, h)`
+    # and its shader is written for that. Two conventions in one pass is exactly
+    # the case a per-draw viewport exists for.
+    Mantle.checkblitsize(source, w, h)
+    Mantle.draw!(p, get_composite_blit_pipeline!(screen), (), 3;
+                 frag_args = (source, Int32(w), Int32(h)),
+                 viewport = (0f0, 0f0, Float32(w), Float32(h)))
+    for (i, (robj, vp)) in enumerate(robjs)
+        declare_overlay_draw!(p, robj, cells[i], vp, default_vp)
+    end
+    return nothing
+end
+
+"""
+    frame_signature(robjs, args, w, h)
+
+What a frame plan FIXES, as opposed to what it merely reads. `args` is
+[`build_args`](@ref) of each object, built once for the frame and handed to
+[`rebind_overlay_args!`](@ref) too.
+
+A plan compiles each pipeline around its argument TYPES and fixes whether each
+draw is indexed. It fixes none of the values: the arguments, the count, the
+index buffer and the instance count all live in a `Mantle.DrawBinding` per
+object and are rebound every frame. So a camera move, a tick recount, a colour
+change and new contents in an existing buffer are all invisible here, which is
+the point. What is left rebuilds a plan: a plot appearing or disappearing, a
+plot's pipeline or argument types changing, a viewport moving, a window opening
+or resizing.
+"""
+function frame_signature(robjs, args, w, h)
+    (w, h,
+     map(robjs, args) do (robj, vp), a
+         # Everything else is the cell's, and the plan reads the cell on every
+         # run: a plan holding cells cannot be recorded (Mantle refuses), so it
+         # is emitted afresh each frame, and `packdraw!`/`emitdraw!` take the
+         # arguments — buffer addresses included — the count, the index buffer,
+         # the instances and the texture table from the cell as it is then.
+         #
+         # This used to carry every device array's identity, the counts and the
+         # texture table's identity too, from when frames were RECORDED and all
+         # of those were baked into the command buffer. Kept after the frame
+         # stopped being recorded, they rebuilt the plan whenever a mesh changed
+         # its triangle count — a whirlpool's hole moving through the sea made
+         # every frame of a film compile its plan from scratch.
+         #
+         # `isnothing(indices)`: WHETHER a draw is indexed decides the command
+         # the backend emits. Whether it samples textures decides its layout.
+         (objectid(robj), objectid(robj.pipeline), vp, robj.uniforms[:pixel_scissor],
+          isnothing(get(robj.buffers, :indices, nothing)), isnothing(robj.bindings),
+          # The argument TYPES, because those are the pipeline and the layout.
+          # `typeof` of the tuple says the same as a tuple of each argument's
+          # type and is one `DataType`, so every entry has the same concrete
+          # type and the vector compares without boxing.
+          typeof(a))
+     end)
+end
+
+"""
+    overlay_binding(robj, dev) -> Mantle.DrawBinding
+
+Everything `robj` re-reads each frame, in the cell its draw will read it from.
+
+An indexed draw's count is an INDEX count; a non-indexed one's is a vertex count
+and carries the instance count with it. That choice is compiled in — it decides
+which command the backend records — so it is made here, once, and `rebind!` can
+only ever supply the same kind.
+"""
+function overlay_binding(robj::RenderObject, dev, args = build_args(robj))
+    ix = get(robj.buffers, :indices, nothing)
+    return ix === nothing ?
+        Mantle.DrawBinding(dev, args, robj.vertex_count; instances = robj.instances,
+                           bindings = robj.bindings) :
+        Mantle.DrawBinding(dev, args, length(ix); indices = ix, bindings = robj.bindings)
+end
+
+"""
+    rebind_overlay_args!(cells, robjs, args, dev)
+
+Put this frame's values into the cells the plan draws from; `args` are the
+objects' [`build_args`](@ref), the ones [`frame_signature`](@ref) was taken of.
+
+This is the per-frame work, and all of it: no compile, no graph, no recording.
+`Mantle.rebind!` refuses a value of a different type, which is the check
+`frame_signature` does not have to make — a changed type is a changed pipeline
+and would have rebuilt the plan anyway.
+"""
+function rebind_overlay_args!(cells, robjs, args, dev)
+    for (i, (robj, _)) in enumerate(robjs)
+        ix = get(robj.buffers, :indices, nothing)
+        if ix === nothing
+            Mantle.rebind!(cells[i], dev, args[i], robj.vertex_count;
+                           instances = robj.instances, bindings = robj.bindings)
+        else
+            Mantle.rebind!(cells[i], dev, args[i], length(ix); indices = ix,
+                           bindings = robj.bindings)
+        end
+    end
+    return nothing
+end
+
+"""
+One pixel of a frame copied out of an image into a buffer, which holds it row by row and not
+column-major like the Julia arrays `Mantle.blit_fragment` reads.
+"""
+function frame_blit_fragment(_inputs, colour, width::Int32, height::Int32)
+    x = unsafe_trunc(Int32, Mantle.frag_coord_x())
+    y = unsafe_trunc(Int32, Mantle.frag_coord_y())
+    return Mantle.blitcolor(colour[y * width + x + Int32(1)])
+end
+
+"""
+    frame_plan!(screen, key, mktarget, clear, source, robjs, w, h; finish)
+
+The compiled plan for one composited frame, built on first use and reused until
+[`frame_signature`](@ref) changes.
+
+`mktarget(g)` makes the attachment inside the graph being built — a
+`Mantle.Surface` for the window, a `Mantle.Transient.Image` for a readback.
+`finish(g, target)` runs AFTER the render pass is declared and answers with
+whatever the caller needs back out of the plan: a readback adds a copy pass and
+hands back the buffer it copies into. Two callbacks and not one because the
+order the passes are declared in is the order they read: a copy that names the
+target has to be declared after the pass that fills it. `key` separates the two
+target kinds, because a screen has both and they are not interchangeable.
+"""
+function frame_plan!(screen, key::Symbol, mktarget, clear, source, robjs, w, h;
+                     finish = (g, target) -> nothing)
+    # `todevice`: a screen keeps the BACKEND its user named, and a graph is
+    # built on the device.
+    dev = Mantle.todevice(screen.config.device)
+    # FXAA only when a plot asked for it: with every flag 0 the pass returns each
+    # pixel unchanged (its early exit), so skipping it is exact.
+    fxaa = screen.config.fxaa && any(((robj, _),) -> wants_fxaa(robj), robjs)
+    # Before the overlays are bound: it writes the light matrix into every mesh
+    # that receives. Which meshes cast is fixed by the plan, the matrix is not.
+    shadow = shadow_frame(screen, robjs)
+    jobs = shadow === nothing ? () : shadow_jobs(shadow)
+    args = [build_args(robj; fxaa = screen.config.fxaa) for (robj, _) in robjs]
+    sig = (key, objectid(source), fxaa, shadow_signature(shadow), frame_signature(robjs, args, w, h))
+    cached = get(screen.frame_plans, key, nothing)
+    if cached !== nothing && cached[1] == sig
+        cells, shadowcells = cached[4]
+        rebind_overlay_args!(cells, robjs, args, dev)
+        rebind_shadow_cells!(shadowcells, dev, jobs)
+        return cached[2], cached[3]
+    end
+    if cached !== nothing
+        if screen.fb_readback_buf !== nothing && screen.fb_readback_buf.frame.pixels === cached[3].pixels
+            screen.fb_readback_buf = nothing
+        end
+        Mantle.free!(cached[2])
+        Mantle.free!(cached[3].pixels)
+    end
+
+    cells = [overlay_binding(robj, dev, args[i]) for (i, (robj, _)) in enumerate(robjs)]
+    shadowcells = shadow_cells(dev, jobs)
+    g = Mantle.Graph(dev)
+    shadow === nothing || shadow_pass!(g, screen, shadow, jobs, shadowcells)
+    target = mktarget(g)
+    # The depth attachment the overlay pipelines test against. `Float32` is what
+    # makes it one: a single-component 32-bit float attachment is `D32_SFLOAT`
+    # and nothing else in Vulkan is.
+    #
+    # The pipelines compare with `DepthLessEq`, not `DepthLess`. Plots WITHIN a
+    # scene share its z — a menu's option backgrounds and their labels are both
+    # at 200 — so a strict test rejects whichever is drawn second and the labels
+    # vanish into their own background. Equal depth passing means draw order
+    # still decides inside a scene, and z only decides between scenes, which is
+    # exactly the split Makie's convention asks for.
+    #
+    # Sized FROM the target, not to `(w, h)`: a transient given a target follows
+    # it, and `run!` refits it when the window has been resized — which a
+    # backend may notice only inside the frame, after this plan was built.
+    # Fixed at `(w, h)`, a resized window drew one frame against a depth buffer
+    # of the old size, `checkextents` refused it, and the render loop died: on
+    # Metal, every drag of a window corner. The composite below draws through
+    # an explicit viewport, so that one frame lands in the old rectangle and the
+    # next is built at the new size.
+    #
+    # Every stage writes a second attachment, its plot's `fxaa` flag, cleared to 0
+    # as GLMakie clears its object ids.
+    noflag = Mantle.Clear((UInt32(0), UInt32(0), UInt32(0), UInt32(0)))
+    # Persistent metadata is the last displayed frame, not an arena transient
+    # that another pass may alias. FXAA and small picking reads share these bytes.
+    flag_px = Mantle.Buffer(dev, RASTER_METADATA, w * h)
+    if fxaa || key === :window
+        # The frame goes to images of its own and FXAA writes the target. FIXED at
+        # `(w, h)`, not following the target: `copy!` moves them into buffers of
+        # `w * h` pixels, and a window resized inside the frame would otherwise
+        # copy a larger image into them. `Discard`, because the blit is the first
+        # draw and covers every pixel.
+        colour = Mantle.Transient.Image(g, COMPOSITE_FORMAT, (w, h))
+        flag = Mantle.Transient.Image(g, RASTER_METADATA, (w, h))
+        depth = Mantle.Transient.Image(g, Float32, (w, h))
+        Mantle.render!(g, "frame", colour => Mantle.Discard, flag => noflag,
+                       depth => Mantle.Clear(1f0)) do p
+            frame_draws!(p, screen, source, cells, robjs, w, h)
+        end
+        colour_px = Mantle.Transient.Buffer(g, COMPOSITE_FORMAT, w * h)
+        Mantle.copy!(g, "read colour", colour_px, colour)
+        Mantle.copy!(g, "read fxaa", flag_px, flag)
+        Mantle.render!(g, fxaa ? "fxaa" : "present", target => Mantle.Discard) do p
+            pipeline = fxaa ? get_fxaa_pipeline!(screen) : get!(screen.gfx_pipelines, :plain_blit) do
+                GraphicsPipeline(;vertex=VertexShader(Mantle.blit_vertex),
+                    fragment=FragmentShader(frame_blit_fragment),blend=Opaque(),cull=NoCull(),depth=DepthOff())
+            end
+            args = fxaa ? (colour_px, flag_px, Int32(w), Int32(h)) : (colour_px,Int32(w),Int32(h))
+            Mantle.draw!(p, pipeline, (), 3;
+                         frag_args = args,
+                         viewport = (0f0, 0f0, Float32(w), Float32(h)))
+        end
+    else
+        flag = Mantle.Transient.Image(g, RASTER_METADATA, target)
+        depth = Mantle.Transient.Image(g, Float32, target)
+        Mantle.render!(g, "frame", target => clear, flag => noflag,
+                       depth => Mantle.Clear(1f0)) do p
+            frame_draws!(p, screen, source, cells, robjs, w, h)
+        end
+    end
+    (fxaa || key === :window) || Mantle.copy!(g, "read metadata", flag_px, flag)
+    extra = (; result = finish(g, target), pixels = flag_px, size = (w,h), ppu = screen.px_per_unit,
+              plots = [get(robj.uniforms, :pick_plot, nothing) for (robj, _) in robjs])
+    # NOT `record!`: a windowed plan draws to a different swapchain image every
+    # frame and core refuses to record one. An unrecorded plan re-emits per
+    # frame, which is also what lets a rebound cell be seen — a recording packs
+    # its arguments once and `Mantle.rebind!` on one is refused by name.
+    plan = Mantle.Plan(g)
+    # …but a plan that CAN be recorded must be: core refuses to run one that was
+    # not. That is the offscreen readback of a frame with no overlay draw, so no
+    # cell to rebind — `colorbuffer` of a live window showing only traced plots,
+    # which failed every time and returned after the loop's 60 s stall fallback.
+    Mantle.recordable(plan) && Mantle.record!(plan)
+    screen.frame_plans[key] = (sig, plan, extra, (cells, shadowcells))
+    return plan, extra
+end
+
+"""
+    overlay_robjs(screen; scenes = nothing)
+
+Every overlay draw for the whole screen, from the ROOT states only.
+
+`collect_overlay_robjs` answers for one state; a root's collection already
+covers the scenes below it. Polling is separate and has to touch every state,
+because each resolves its own scene's plots — see `poll_all_plots`.
+"""
+function overlay_robjs(screen; scenes = nothing)
+    robjs = Tuple{RenderObject, NTuple{4, Float32}}[]
+    for ss in overlay_root_states(screen)
+        screen.state = ss
+        append!(robjs, collect_overlay_robjs(ss, screen.scene, screen.rasterize; scenes))
+    end
+    # Match GLMakie's SortPlots: label backings must be blended before their
+    # text, even when the recipe inserts the text first. Depth testing alone
+    # cannot recover the backing beneath a partially covered glyph edge.
+    # See-through meshes still follow opaque draws because they write no depth.
+    sort!(robjs; by = ((robj, _),) -> (
+        get(robj.uniforms, :see_through, false)::Bool,
+        Makie.transformationmatrix(robj.uniforms[:pick_plot])[][3, 4]
+    ), alg = Base.Sort.DEFAULT_STABLE)
+    for (i, (robj, _)) in enumerate(robjs)
+        robj.uniforms[:pixel_scissor] = map(x -> round(Int, x * screen.px_per_unit),
+                                          robj.uniforms[:scene_scissor])
+        # Offscreen setdensity! and window content-scale changes can happen
+        # after the plot's render object was built. As in GLMakie's RenderPlots,
+        # each draw uses the current screen density, not the creation density.
+        haskey(robj.uniforms, :px_per_unit) &&
+            (robj.uniforms[:px_per_unit] = screen.px_per_unit)
+        i <= typemax(Int32) || error("too many raster objects for picking")
+        robj.uniforms[:fxaa] = reinterpret(Int32, (UInt32(i) << 1) |
+            (reinterpret(UInt32, robj.uniforms[:fxaa]) & UInt32(1)))
+    end
+    # Every pipeline checked BEFORE the graph is built, so one this backend
+    # cannot run is a named error rather than a half-composited frame.
+    for (robj, _) in robjs
+        require_drawable(screen.config.device, robj.pipeline)
+    end
+    # `Makie.viewport` answers in UNITS and the target is in PIXELS, so the
+    # rectangles are scaled by the same number the drawable was. At
+    # `px_per_unit == 1` this is the identity and nothing moves.
+    ppu = screen.px_per_unit
+    ppu == 1 && return robjs
+    return [(robj, map(v -> v * ppu, vp)) for (robj, vp) in robjs]
+end

@@ -1,0 +1,222 @@
+{
+ "verdict": "needs_work",
+ "summary": "For the first time the island has a hero you can recognise from across the meadow: Sprout is now a shaggy golden bird with a beak, a crest, long grey legs and a painted face, and the kite gives it an afternoon ritual. Around it, though, the friends are still pale blobs and pink pigs, the name tags float a metre or two off their owners (a friend's name sits on the bird), and the noon eye-level view is the same flat, evenly lit green as at s52 and s55. Play is pleasant and every mini game can be won on a first try, but the follow and mini game cameras still often look down from above or put a tree crown across half the frame.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Overview at 13:24 has real tree shadows and the traced stills are bright and clean, but the eye-level noon view is still flat saturated green with no warm/cool contrast or haze (unchanged since s52)."
+  },
+  "world": {
+   "score": 6,
+   "why": "Pleasant island with clear areas (cottage, pond, flower field, workshop, cairn spiral, beach), but the meadow is a uniform carpet of identical grass tufts and the sea is an empty plane."
+  },
+  "props": {
+   "score": 6,
+   "why": "33 generated assets in real use (workbench, cottage, toadstools, crates); crowns still show black slits in traced stills; grass tufts are identical copies."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Sprout's new bird body is a big step (readable silhouette and face), but the four friend species are still smooth blobs and pigs with floating hats beside it, and the bird stands rigid with no strut or fidgets yet."
+  },
+  "fun": {
+   "score": 6,
+   "why": "Kite, presents, invites, tag and three winnable mini games; but in the kite chase view the kite is off screen (only a string), and hide and seek's found friends fall 14 m behind."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Follow view put a tree crown over half the frame (p58/follow1.png) and often looks down from 4-5 m; mini games run in a near top-down view; free mode sticks after tests."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Panels readable, but name labels and the thought bubble sit 1-2 m off their creatures since Sprout got taller: 'Wibbles' over the bird, 'Sprout' over a bush."
+  },
+  "style": {
+   "score": 6,
+   "why": "Toy-like clay look holds, but the shaggy textured bird is a different material language from the glossy smooth friends next to it."
+  },
+  "performance": {
+   "score": 8,
+   "why": "Sandbox 3.3 ms median / 5.9 ms p95 over 10k frames; the slow-frame todos come from the progress-shot command and game restarts, not play."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Sprout: a silhouette and face per species",
+   "todo": 236,
+   "what": "Next to the new golden bird, the friends look like placeholders: Snootles are pink pigs, Blorbos teal balls, Fluffkins cotton balls on sticks. In the traced kite picture the hats float as discs above the heads (orange disc over the grey blob, pink disc over the Snootle).",
+   "where": "engine species.jl / outfits.jl",
+   "evidence": "world/reviews/p58/m2.png, world/reviews/p58/cam2_follow.png, world/site/img/kite.png",
+   "suggestion": "Give each friend species the same care as the bird: one strong shape idea each (ears, tails, a shell with legs, long snout), the painted face system, and hats that sit on the head mesh in both raster and trace.",
+   "done_when": "A lineup (tools/lineup.jl) shows five species you can tell apart in black silhouette, and a traced still shows every hat touching its head."
+  },
+  {
+   "severity": "high",
+   "category": "ui",
+   "title": "Name tags and thought bubble sit on their own creature",
+   "todo": 280,
+   "what": "Since Sprout became a tall bird, the 'Sprout' tag and thought bubble hang over the bush to its left, and another friend's name ('Wibbles') sits on the bird's head. A viewer reads the wrong name on the hero.",
+   "where": "label and thought bubble anchors (render.jl / builder.jl thought!)",
+   "evidence": "world/reviews/p58/follow1.png ('Wibbles' on the bird), m2.png and m3.png ('Sprout' over the bush, 1-2 m left of the bird)",
+   "suggestion": "Anchor every tag at the creature's head (per species height, the bird's crest top), hide tags that would overlap another creature's head, and keep the bubble's tail pointing at Sprout's head.",
+   "done_when": "Four follow screenshots 5 s apart: every tag's centre within 40 px above its own creature's head, and no tag over another creature."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
+   "todo": 237,
+   "what": "Fifth review in a row: the eye-level shot at noon is evenly lit, saturated green from front to back; nothing tells the time of day or gives depth, while the traced stills of the same place look warm and soft.",
+   "where": "RayMakie raster (SunSkyLight fill), haze.jl",
+   "evidence": "media/progress/session-0058/eye-level.png vs session-0055/eye-level.png (unchanged)",
+   "suggestion": "Warm key light, cool blue-tinted shadow fill, aerial perspective that fades the far trees towards the sky colour, and slightly lower grass saturation, in the raster where the limit is.",
+   "done_when": "Same eye-level camera at 13:00: the far tree line is measurably lighter and bluer than the foreground (mean hue/luminance difference), and cast shadows read as cool, not black-green."
+  },
+  {
+   "severity": "medium",
+   "category": "creatures",
+   "title": "Sprout moves like a bird: strut, crest flop, fidgets, celebrations",
+   "todo": 332,
+   "what": "The bird body arrived but it plays the old blob's poses: it stands rigid with arms down, and walks without a bob; the wishes in WISHES.md ('Me') are not built yet. #325 (moments use NG.feel! faces) belongs to the same work.",
+   "where": "engine bird.jl / pose code, feelings.jl",
+   "evidence": "world/tests/shots/s58_kite_running_view.png, world/reviews/p58/m3.png",
+   "suggestion": "A bouncy strut with head bob, crest secondary motion after stops, an idle preen or foot tap, a wing-spread hop when a build appears, a droopy crest when lonely, and the painted face changing with each.",
+   "done_when": "A 10 s raster clip of Sprout walking, stopping and celebrating shows the head bob, the crest swinging after the stop and a wing-spread hop."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow camera: no tree crown or bush across half the frame",
+   "todo": 239,
+   "what": "Following Sir Sniffsalot, a tree crown filled the whole left half of the view; most follow shots look down from 4-5 m so creatures are small tops of heads. Mini games use a near top-down view (berry-wad.png, firefly-wad.png) where the bird is a shaggy orange smear.",
+   "where": "render.jl follow_view / camcut.jl / mini game cameras",
+   "evidence": "world/reviews/p58/cam1_follow.png, cam2_follow.png, world/tests/shots/berry-wad.png",
+   "suggestion": "Prefer eye-level side views and cut rather than climb when a crown is in the way; give mini games the low chase view the kite already has.",
+   "done_when": "Of 6 follow screenshots 8 s apart, none has foliage over more than 15% of the 3D view, and the subject's face is visible in at least 4."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A low kite view: Sprout and the kite in one picture at any spot",
+   "todo": 328,
+   "what": "Running with the kite as Sprout, the chase camera shows the bird and a string that leaves the top of the frame: the kite itself, the reward, is never on screen.",
+   "where": "plugins/kite.jl chase view",
+   "evidence": "world/tests/shots/s58_kite_running_view.png",
+   "suggestion": "Pull the camera back and tilt up so the kite sits in the upper third while Sprout runs, or keep the kite at a lower string angle while it is steered.",
+   "done_when": "A jump-in kite screenshot while running shows both Sprout and the whole kite diamond in the 3D view."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Hide and seek: found friends keep up with the seeker",
+   "todo": null,
+   "what": "In the first-play test, a friend found earlier trailed 13.8 m behind while the other was at 1.7 m: the parade of found friends falls apart, so the round loses its 'gathering your friends' payoff. The test failed in this review's run.",
+   "where": "plugins/hideseek.jl parade slots",
+   "evidence": "live_tests(\"first play\"): 'check failed: found friends lag: Float32[13.8, 1.7] m'; world/tests/shots/hideseek-found.png",
+   "suggestion": "Let found friends run (faster than Sprout) and route round the cover they were hiding behind; a little cheer when they catch up.",
+   "done_when": "The hide and seek first-play test passes 3 of 3 with every found friend within 4 m."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Release the dance film (readable dancers), then the next",
+   "todo": 184,
+   "what": "Goal 2 is stalled: one release (the cairn stone, s35/v2) and the dance film open since s44. Now that Sprout is a bird, a short film of 'a day in my new life' would be the obvious showpiece.",
+   "where": "movies/, world/releases/",
+   "evidence": "world/releases has only 2026-11-23-one-more-stone(-v2)",
+   "suggestion": "Pick one strong moment (kite with cheering friends, or the dance ring), directed :fixed shots, traced in the worker with a restart first, title card, note and blog post.",
+   "done_when": "A new folder in world/releases with a path traced mp4 of at least 20 s and a note, linked from the blog."
+  }
+ ],
+ "todos": [
+  {
+   "id": 335,
+   "action": "drop",
+   "why": "The slow frames are the progress-shot command (live:views 23.7 s) and restarts; the sandbox runs at 3.3 ms median / 5.9 ms p95 over 10k frames."
+  },
+  {
+   "id": 336,
+   "action": "drop",
+   "why": "Same as #335: measured during live:views, not play."
+  },
+  {
+   "id": 318,
+   "action": "done",
+   "why": "Transient world-age error during the s58 engine body edits; both games restarted and the sandbox ran 10k frames without it."
+  },
+  {
+   "id": 321,
+   "action": "done",
+   "why": "Transient Dashboard field error from a mid-run engine edit; gone after the restart."
+  },
+  {
+   "id": 334,
+   "action": "done",
+   "why": "Transient body_radius world-age error from the bird edits; no repeat since the restart."
+  },
+  {
+   "id": 167,
+   "action": "drop",
+   "why": "Duplicate of #175 (path tracing out of GPU memory makes screenshots fail)."
+  },
+  {
+   "id": 175,
+   "action": "keep",
+   "why": "Not retested at night in this review; still a risk with glowing plots."
+  },
+  {
+   "id": 284,
+   "action": "drop",
+   "why": "Duplicate of #315 (the human's traced sunset request), keep that one."
+  },
+  {
+   "id": 307,
+   "action": "done",
+   "why": "Fireflies now carry a warm glow halo by day (tests/shots/firefly-wad.png) and the dusk clouds got soft edges (s56)."
+  },
+  {
+   "id": 224,
+   "action": "keep",
+   "why": "Black slits still show in broadleaf crowns in site/img/bench-traced.png."
+  },
+  {
+   "id": 251,
+   "action": "keep",
+   "why": "Vegetable patch meshes not yet verified as real cabbages/carrots."
+  },
+  {
+   "id": 255,
+   "action": "keep",
+   "why": "Dusk clock speed not remeasured."
+  },
+  {
+   "id": 265,
+   "action": "keep",
+   "why": "Staying in tag as a W/A/D player still open."
+  },
+  {
+   "id": 266,
+   "action": "keep",
+   "why": "Berry race 4-0 and hide and seek 2/4 with 102 s left in this review's runs: still no tension."
+  },
+  {
+   "id": 291,
+   "action": "keep",
+   "why": "The player still cannot hand a present over themselves."
+  }
+ ],
+ "engine": [
+  {
+   "what": "set_camera!(game, choice) only understands the menu strings ('Camera: follow'); any other string silently sets :fixed, which freecam then treats as the free camera.",
+   "evidence": "dev/NeverendingGame/src/dashboard.jl:188; set_camera!(game, \"follow\") left the menu on 'Camera: free' (world/reviews/p58/cam1_follow.png)"
+  },
+  {
+   "what": "Engine edits while the games run produce world-age frame failures that become p1 todos (#318, #321, #334) and restarts of the human's game (0 fps for a minute after restart, frame p95 27 s in live_status).",
+   "evidence": "sandbox/log/events-2026-11-24.jsonl body_radius 'may be too new'; live_status(game = :live) right after restart"
+  }
+ ],
+ "process": "Since s55 the work went to goal 1 and 4 with real results: the kite is a proper afternoon ritual friends join, flower gifts now arrive, the satchel was fixed, and (with the human's push) Sprout finally has a body people can recognise, the single biggest visual gain in many reviews. But the pattern from the last four reviews continues: the high findings a player sees in every frame (flat noon raster light #237, the friends' silhouettes #236, camera framing #239) got only small steps, and new work again went into a new corner (kite) while its own view still hides the kite. Goal 1: good progress (kite, gifts). Goal 2: stalled, no new release since the cairn film. Goal 3: traced stills look good; the raster noon still flat. Goal 4: strong (workshop, watering, kite, the new body, a page with traced pictures); Sprout's mood says bored and lonely after a session of only edits. Next session: animate the bird (strut, crest, fidgets, feel! faces) and fix the label anchors, since the hero is now what every frame shows, then spend real time on the friends' silhouettes and the raster noon light, and queue a film of the bird's day for goal 2.",
+ "addressed": true,
+ "addressed_note": "s59: filed as todos by the host. Done: name tags on their own creatures (#280). Part done: the bird's strut, planted feet, fidgets and hop (#332; crest flop and wing spread still open). The rest stay open todos (#236 friends, #237 lighting, camera, kite view, hide and seek parade, film)."
+}

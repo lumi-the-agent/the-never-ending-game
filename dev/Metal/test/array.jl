@@ -1,0 +1,1081 @@
+using ScopedValues
+
+STORAGEMODES = [Metal.SharedStorage, Metal.PrivateStorage]
+
+let arr = MtlVector{Int}(undef, 1)
+    @test sizeof(arr) == 8
+    @test length(arr) == 1
+    @test eltype(arr) == Int
+end
+
+let arr = MtlVector{Int}(undef, 0)
+    @test sizeof(arr) == 0
+end
+
+@testset "constructors" begin
+    xs = MtlArray{Int8}(undef, 2, 3)
+    @test device(xs) == device()
+    @test Base.elsize(xs) == sizeof(Int8)
+    @test xs.data[].buffer.length == 8  # padded to whole words
+    xs2 = MtlArray{Int8, 2}(xs)
+    @test xs2.data[].buffer.length == 8
+    @test pointer(xs2) != pointer(xs)
+
+    @test (pointer(xs2) + 3) == (3 + pointer(xs2))
+    @test (pointer(xs2) + 3) - 3 == pointer(xs2)
+
+    # GPU address exposed via UInt/Int, so `UInt(ptr) % N == 0` alignment
+    # checks work the same as for a regular Ptr. value must track pointer
+    # arithmetic on the offset.
+    for SM in STORAGEMODES
+        ys = MtlArray{Int8,1,SM}(undef, 128)
+        p = pointer(ys)
+        @test p isa Metal.MtlPtr
+        @test UInt(p) isa UInt
+        @test Int(p) == UInt(p) % Int
+        @test UInt(p) == UInt(ys.data[].buffer.gpuAddress) + ys.offset
+        @test UInt(p + 7) == UInt(p) + 7
+        # fresh allocations should be aligned enough for typical SIMD use
+        @test UInt(p) % 16 == 0
+        @test UInt(p + 16) % 16 == 0
+    end
+
+    @test collect(MtlArray([1 2; 3 4])) == [1 2; 3 4]
+    @test collect(mtl([1, 2, 3])) == [1, 2, 3]
+    @test testf(vec, rand(Float32, 5,3))
+    @test mtl(1:3) === 1:3
+
+
+    # Page 22 of https://developer.apple.com/metal/Metal-Shading-Language-Specification.pdf
+    # Only bfloat missing
+    supported_number_types = [Float16  => Float16,
+                              Float32  => Float32,
+                              Float64  => Float32,
+                              Bool     => Bool,
+                              Int16    => Int16,
+                              Int32    => Int32,
+                              Int64    => Int64,
+                              Int8     => Int8,
+                              UInt16   => UInt16,
+                              UInt32   => UInt32,
+                              UInt64   => UInt64,
+                              UInt8    => UInt8]
+    # Test supported types and ensure only Float64 get converted to Float32
+    for (SrcType, TargType) in supported_number_types
+        @test mtl(SrcType[1]) isa MtlArray{TargType}
+        @test mtl(Complex{SrcType}[1+1im]) isa MtlArray{Complex{TargType}}
+    end
+
+    # test the regular adaptor
+    @test Adapt.adapt(MtlArray, [1 2;3 4]) isa MtlArray{Int, 2, Metal.DefaultStorageMode}
+    @test Adapt.adapt(MtlArray{Float32}, [1 2;3 4]) isa MtlArray{Float32, 2, Metal.DefaultStorageMode}
+    @test Adapt.adapt(MtlArray{Float32, 2}, [1 2;3 4]) isa MtlArray{Float32, 2, Metal.DefaultStorageMode}
+    @test Adapt.adapt(MtlArray{Float32, 2, Metal.SharedStorage}, [1 2;3 4]) isa MtlArray{Float32, 2, Metal.SharedStorage}
+    @test Adapt.adapt(MtlMatrix{ComplexF32, Metal.SharedStorage}, [1 2;3 4]) isa MtlArray{ComplexF32, 2, Metal.SharedStorage}
+    @test Adapt.adapt(MtlArray{Float32, 2, Metal.PrivateStorage}, [1 2;3 4]) isa MtlArray{Float32, 2, Metal.PrivateStorage}
+    @test Adapt.adapt(MtlMatrix{ComplexF32, Metal.PrivateStorage}, [1 2;3 4]) isa MtlArray{ComplexF32, 2, Metal.PrivateStorage}
+    @test Adapt.adapt(MtlArray{Float16}, Float64[1]) isa MtlArray{Float16}
+
+    # unspecified type parameters are taken from the source array (#363)
+    @test Adapt.adapt(MtlMatrix, [1 2;3 4]) isa MtlArray{Int, 2, Metal.DefaultStorageMode}
+    @test Adapt.adapt(MtlArray{<:Any, <:Any, Metal.PrivateStorage}, [1 2;3 4]) isa MtlArray{Int, 2, Metal.PrivateStorage}
+    @test Adapt.adapt(MtlVector{<:Any, Metal.PrivateStorage}, [1, 2]) isa MtlArray{Int, 1, Metal.PrivateStorage}
+    @test Adapt.adapt(MtlArray{Float32, <:Any, Metal.PrivateStorage}, [1 2;3 4]) isa MtlArray{Float32, 2, Metal.PrivateStorage}
+    let xs = Adapt.adapt(MtlArray{<:Any, <:Any, Metal.PrivateStorage}, (Float32[1], Int32[1 2]))
+        @test xs[1] isa MtlArray{Float32, 1, Metal.PrivateStorage}
+        @test xs[2] isa MtlArray{Int32, 2, Metal.PrivateStorage}
+    end
+    @test_throws MethodError Adapt.adapt(MtlVector{Float32}, [1 2;3 4])
+    @test_throws ArgumentError Adapt.adapt(MtlArray{<:Real}, ComplexF32[1])
+    let xs = MtlArray{Float32, 1, Metal.PrivateStorage}([1])
+        @test Adapt.adapt(MtlArray, xs) === xs
+        @test Adapt.adapt(MtlArray{Float32}, xs) === xs
+        @test Adapt.adapt(MtlArray{Int32}, xs) isa MtlArray{Int32, 1, Metal.PrivateStorage}
+        @test Adapt.adapt(typeof(xs), xs) === xs
+        @test Adapt.adapt(MtlArray{<:Any, <:Any, Metal.SharedStorage}, xs) isa MtlArray{Float32, 1, Metal.SharedStorage}
+    end
+
+    # Test a few explicitly unsupported types
+    @test_throws "MtlArray only supports element types that are stored inline" MtlArray(BigInt[1])
+    @test_throws "Metal does not support Float64 values" MtlArray(Float64[1])
+    @test_throws "Metal does not support Int128 values" MtlArray(Int128[1])
+    @test_throws "Metal does not support UInt128 values" MtlArray(UInt128[1])
+
+    @test collect(Metal.zeros(2, 2)) == zeros(Float32, 2, 2)
+    @test collect(Metal.ones(2, 2)) == ones(Float32, 2, 2)
+
+    @test collect(Metal.fill(0, 2, 2)) == zeros(Float32, 2, 2)
+    @test collect(Metal.fill(1, 2, 2)) == ones(Float32, 2, 2)
+
+    @testset "mtl composite eltype conversion" begin
+        using StaticArrays
+        @test mtl(fill(SVector{2, Float64}(1.0, 2.0), 10)) isa MtlArray{SVector{2, Float32}}
+        @test mtl(fill(SVector{2, Float32}(1.0f0, 2.0f0), 10)) isa MtlArray{SVector{2, Float32}}
+        @test mtl(fill(SVector{2, ComplexF64}(1.0+1.0im, 2.0+2.0im), 10)) isa MtlArray{SVector{2, ComplexF32}}
+        @test mtl(fill(SVector{2, ComplexF32}(1.0f0+1.0f0im, 2.0f0+2.0f0im), 10)) isa MtlArray{SVector{2, ComplexF32}}
+
+        # No implicit conversion for MtlArray constructor, only for mtl
+        @test_throws "Metal does not support Float64 values" MtlArray(fill(SVector{2, Float64}(1.0, 2.0), 10))
+        @test_throws "Metal does not support Float64 values" MtlArray(fill(SVector{2, ComplexF64}(1.0, 2.0), 10))
+    end
+end
+
+@testset "copyto!" begin
+    @testset "$S" for S in [Metal.PrivateStorage, Metal.SharedStorage]
+        @testset "$T" for T in [Float16, Float32, Bool, Int16, Int32, Int64, Int8, UInt16, UInt32, UInt64, UInt8]
+            dim = (1000, 17, 10)
+            A = rand(T, dim)
+            mtlA = mtl(A; storage = S)
+
+            #cpu -> gpu
+            res = Metal.zeros(T, dim; storage = S)
+            copyto!(res, A)
+            @test Array(res) == Array(A)
+
+            #gpu -> cpu
+            res = zeros(T, dim)
+            copyto!(res, mtlA)
+            @test Array(res) == Array(mtlA)
+
+            #gpu -> gpu
+            res = Metal.zeros(T, dim; storage = S)
+            copyto!(res, mtlA)
+            @test Array(res) == Array(mtlA)
+        end
+
+        # Large array, only test Float32
+        A = rand(Float32, 32 * 2^20)
+        mtlA = mtl(A; storage = S)
+        res = similar(A)
+        copyto!(res, mtlA)
+        @test Array(res) == Array(mtlA)
+    end
+end
+
+check_storagemode(arr, smode) = Metal.storagemode(arr) == smode
+
+# There is some repetition to the GPUArrays tests to test for different storagemodes
+@testset "$SM storageMode $dim" for SM in STORAGEMODES, dim in [(10,10,10), (1000,17,10)] # The second one purposefully made to always be bigger than 16KiB
+
+    N = length(dim)
+
+    # mtl
+    let arr = mtl(rand(2,2); storage= SM)
+        @test check_storagemode(arr,  SM)
+    end
+
+    # type and dimensionality specified, accepting dims as series of Ints
+    let arr = MtlArray{Int,3,SM}(undef, dim[1],dim[2],dim[3])
+        @test check_storagemode(arr, SM)
+    end
+    let arr = MtlArray{Int,2,SM}(undef, (dim[1],dim[2]))
+        @test check_storagemode(arr, SM)
+    end
+
+    # empty vector constructor
+    let arr = MtlArray{Int,1,SM}(undef, 0)
+        @test check_storagemode(arr, SM)
+    end
+    let arr = MtlVector{Int,SM}()
+        @test check_storagemode(arr, SM)
+    end
+
+    ## interop with other arrays
+    let arr = MtlArray{Float32,N,SM}(rand(Float32,dim))
+        @test check_storagemode(arr, SM)
+    end
+    let arr = MtlArray{Float32,N,SM}(rand(Int,dim))
+        @test check_storagemode(arr, SM)
+    end
+
+    # constructing new MtlArray from MtlArray
+    let arr = MtlArray{Int,N,SM}(rand(Int,dim))
+        arr2 = MtlArray{Int,N,SM}(arr)
+        @test check_storagemode(arr2, SM)
+    end
+
+    # fill, zeros, ones
+    let arr = Metal.fill(rand(Float32), dim; storage=SM)
+        @test check_storagemode(arr, SM)
+    end
+
+    let arr = Metal.zeros(Float32, dim; storage=SM)
+        @test check_storagemode(arr, SM)
+    end
+
+    let arr = Metal.ones(Float32, dim; storage=SM)
+        @test check_storagemode(arr, SM)
+    end
+
+    for SM2 in STORAGEMODES
+        let arr = MtlArray{Int,N,SM}(rand(Int,dim))
+            arr2 = MtlArray{Int,N,SM2}(arr)
+            @test check_storagemode(arr2, SM2)
+        end
+    end
+
+    # private storage errors.
+    if SM == Metal.PrivateStorage
+        let arr_mtl = Metal.zeros(Float32, dim...; storage=Metal.PrivateStorage)
+            @test is_private(arr_mtl) && !is_shared(arr_mtl)
+            @test_throws "Cannot access the contents of a private buffer" unsafe_wrap(Array{Float32}, arr_mtl, dim)
+            @test_throws "Cannot access the contents of a private buffer" Base.unsafe_convert(Ptr{Float32}, arr_mtl)
+        end
+
+        let b = rand(Float32, 10)
+            arr_mtl = mtl(b; storage=Metal.PrivateStorage)
+            @test_throws ErrorException arr_mtl[1]
+            @test Metal.@allowscalar arr_mtl[1] == b[1]
+        end
+    elseif SM == Metal.SharedStorage
+        let arr_mtl = Metal.zeros(Float32, dim...; storage=Metal.SharedStorage)
+            @test !is_private(arr_mtl) && is_shared(arr_mtl)
+            @test unsafe_wrap(Array{Float32}, arr_mtl) isa Array{Float32}
+            @test Base.unsafe_convert(Ptr{Float32}, arr_mtl) isa Ptr{Float32}
+            @test Base.unsafe_convert(Ptr{Float16}, arr_mtl) isa Ptr{Float16}
+        end
+
+        let b = rand(Float32, 10)
+            arr_mtl = mtl(b; storage=Metal.SharedStorage)
+            @test arr_mtl[1] == b[1]
+
+            # test setting values with shared storage
+            arr_mtl[2] = 3
+            @test arr_mtl[2] == 3
+        end
+    end
+end
+
+# Also tests changing storagemode
+@testset "similar" begin
+    check_similar(::MtlArray{T,N,S}, typ, dim, sm) where {T,N,S} =
+        T == typ && N == dim && S == sm
+    # similar
+    typ1 = Int
+    typ2 = Float32
+    dim1 = (10,10,10)
+    n1   = length(dim1)
+    dim2 = dim1[1:2]
+    n2   = length(dim2)
+    sm1  = Metal.SharedStorage
+    sm2  = Metal.PrivateStorage
+
+    arr = MtlArray{typ1, n1, sm1}(undef, dim1)
+
+    s1 = similar(arr)
+    @test check_similar(s1,typ1,n1,sm1)
+
+    s2 = similar(arr, dim2)
+    @test check_similar(s2,typ1,n2,sm1)
+
+    s3 = similar(arr, typ2, dim2)
+    @test check_similar(s3,typ2,n2,sm1)
+
+    # s4-s6 test for changing storagemode
+    s4 = similar(arr; storage=sm2)
+    @test check_similar(s4,typ1,n1,sm2)
+
+    s5 = similar(arr, dim2; storage=sm2)
+    @test check_similar(s5,typ1,n2,sm2)
+
+    s6 = similar(arr, typ2, dim2; storage=sm2)
+    @test check_similar(s6,typ2,n2,sm2)
+
+end
+
+@testset "fill" begin
+    @testset "$T" for T in [Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64,
+                                Float16, Float32]
+        b = rand(T)
+
+        # Dims in tuple
+        let A = Metal.fill(b, (10, 10, 10, 1000))
+            B = fill(b, (10, 10, 10, 1000))
+            @test Array(A) == B
+        end
+
+        let M = Metal.fill(b, (10, 10))
+            B = fill(b, (10, 10))
+            @test Array(M) == B
+        end
+
+        let V = Metal.fill(b, (10,))
+            B = fill(b, (10,))
+            @test Array(V) == B
+        end
+
+        #Dims already unpacked
+        let A = Metal.fill(b, 10, 1000, 1000)
+            B = fill(b, 10, 1000, 1000)
+            @test Array(A) == B
+        end
+
+        let M = Metal.fill(b, 10, 10)
+            B = fill(b, 10, 10)
+            @test Array(M) == B
+        end
+
+        let V = Metal.fill(b, 10)
+            B = fill(b, 10)
+            @test Array(V) == B
+        end
+    end
+end
+
+@testset "fill!" begin
+    @testset "$T" for T in [Int8, UInt8, Int16, UInt16, Int32, UInt32, Int64, UInt64,
+                                Float16, Float32]
+        b = rand(T)
+
+        # Dims in tuple
+        let A = MtlArray{T,3}(undef, (10, 1000, 1000))
+            fill!(A, b)
+            @test all(Array(A) .== b)
+        end
+
+        let M = MtlMatrix{T}(undef, (10, 10))
+            fill!(M, b)
+            @test all(Array(M) .== b)
+        end
+
+        let V = MtlVector{T}(undef, (10,))
+            fill!(V, b)
+            @test all(Array(V) .== b)
+        end
+
+        # Dims already unpacked
+        let A = MtlArray{T,4}(undef, 10, 10, 10, 1000)
+            fill!(A, b)
+            @test all(Array(A) .== b)
+        end
+
+        let M = MtlMatrix{T}(undef, 10, 10)
+            fill!(M, b)
+            @test all(Array(M) .== b)
+        end
+
+        let V = MtlVector{T}(undef, 10)
+            fill!(V, b)
+            @test all(Array(V) .== b)
+        end
+
+        # 0-length array
+        let A = MtlArray{T}(undef, 0)
+            b = rand(T)
+            fill!(A, b)
+            @test A isa MtlArray{T,1}
+            @test Array(A) == fill(b, 0)
+        end
+    end
+end
+
+# https://github.com/JuliaGPU/CUDA.jl/issues/2191
+@testset "preserving storage mode" begin
+    altStorage = Metal.DefaultStorageMode != Metal.SharedStorage ? Metal.SharedStorage : Metal.PrivateStorage
+
+    a = mtl([1]; storage=altStorage)
+    @test Metal.storagemode(a) == altStorage
+
+    # storage mode should be preserved
+    b = a .+ 1
+    @test Metal.storagemode(b) == altStorage
+
+    # when there's a conflict, we should defer to shared memory
+    c = mtl([1]; storage=Metal.PrivateStorage)
+    d = mtl([1]; storage=Metal.SharedStorage)
+    e = c .+ d
+    @test Metal.storagemode(e) == Metal.SharedStorage
+end
+
+@testset "resizing" begin
+    a = MtlArray([1,2,3])
+
+    resize!(a, 3)
+    @test length(a) == 3
+    @test Array(a) == [1,2,3]
+
+    resize!(a, 5)
+    @test length(a) == 5
+    @test Array(a)[1:3] == [1,2,3]
+
+    resize!(a, 2)
+    @test length(a) == 2
+    @test Array(a)[1:2] == [1,2]
+
+    b = MtlArray{Int}(undef, 0)
+    @test length(b) == 0
+    resize!(b, 1)
+    @test length(b) == 1
+
+    # resizing to zero elements (issue #981)
+    resize!(a, 0)
+    @test length(a) == 0
+    @test Array(a) == Int[]
+    resize!(a, 1)
+    @test length(a) == 1
+end
+
+@testset "host synchronization" begin
+    # GPU operations are asynchronous, so accessing an array from the host needs to wait
+    # for the pending operations that use it.
+    n = 1 << 16
+
+    @testset "$S resize!" for S in STORAGEMODES
+        a = Metal.zeros(Float32, n; storage=S)
+        a .= 1f0
+        resize!(a, 2n)
+        @test Array(a)[1:n] == ones(Float32, n)
+    end
+
+    @testset "scalar access" begin
+        a = Metal.zeros(Float32, n; storage=Metal.SharedStorage)
+        a .= 1f0
+        @test a[n] == 1f0
+
+        # writing from the host waits for pending GPU reads
+        b = similar(a)
+        b .= a .+ 1f0
+        a[1] = 42f0
+        @test Array(b)[1] == 2f0
+    end
+
+    @testset "unsafe_wrap(Array, ...)" begin
+        a = Metal.zeros(Float32, n; storage=Metal.SharedStorage)
+        a .= 1f0
+        @test unsafe_wrap(Array, a) == ones(Float32, n)
+    end
+
+    @testset "wrapped MtlPtr" begin
+        a = Metal.zeros(Float32, n; storage=Metal.SharedStorage)
+        b = unsafe_wrap(MtlArray, pointer(a), (n,))
+        b .= 1f0
+        @test a[n] == 1f0
+    end
+end
+
+function _alignedvec(::Type{T}, n::Integer, alignment::Integer = 16384) where {T}
+    ispow2(alignment) || throw(ArgumentError("$alignment is not a power of 2"))
+    alignment ≥ sizeof(Int) || throw(ArgumentError("$alignment is not a multiple of $(sizeof(Int))"))
+    isbitstype(T) || throw(ArgumentError("$T is not a bitstype"))
+    p = Ref{Ptr{T}}()
+    err = ccall(:posix_memalign, Cint, (Ref{Ptr{T}}, Csize_t, Csize_t), p, alignment, n * sizeof(T))
+    iszero(err) || throw(OutOfMemoryError())
+    return unsafe_wrap(Array, p[], n, own = true)
+end
+
+@testset "unsafe_wrap" begin
+    @testset "cpu array incremented" begin
+        @testset "wrap cpu" begin
+            @testset "check cpu" begin # cpu array checked first
+                arr = _alignedvec(Float32, 16384 * 2)
+                fill!(arr, one(eltype(arr)))
+                marr = Metal.@sync unsafe_wrap(MtlVector{Float32}, arr)
+
+                @test all(arr .== 1)
+                @test all(marr .== 1)
+
+                arr .+= 1
+                @test all(arr .== 2)
+                @test all(marr .== 2)
+            end
+
+            @testset "check gpu" begin # gpu array checked first
+                arr = _alignedvec(Float32, 16384 * 2)
+                fill!(arr, one(eltype(arr)))
+                marr = Metal.@sync unsafe_wrap(MtlVector{Float32}, arr)
+
+                @test all(marr .== 1)
+                @test all(arr .== 1)
+
+                arr .+= 1
+                @test all(marr .== 2)
+                @test all(arr .== 2)
+            end
+        end
+
+        @testset "wrap gpu" begin
+            @testset "check cpu" begin # cpu array checked first
+                marr = Metal.@sync Metal.ones(Float32, 18000; storage = Metal.SharedStorage)
+                arr = unsafe_wrap(Vector{Float32}, marr)
+
+                @test all(arr .== 1)
+                @test all(marr .== 1)
+
+                arr .+= 1
+                @test all(arr .== 2)
+                @test all(marr .== 2)
+            end
+
+            @testset "check gpu" begin # gpu array checked first
+                marr = Metal.@sync Metal.ones(Float32, 18000; storage = Metal.SharedStorage)
+                arr = unsafe_wrap(Vector{Float32}, marr)
+
+                @test all(marr .== 1)
+                @test all(arr .== 1)
+
+                arr .+= 1
+                @test all(marr .== 2)
+                @test all(arr .== 2)
+            end
+        end
+    end
+
+    @testset "gpu array incremented" begin
+        @testset "wrap cpu" begin
+            @testset "check cpu" begin # cpu array checked first
+                arr = _alignedvec(Float32, 16384 * 2)
+                fill!(arr, one(eltype(arr)))
+                marr = Metal.@sync unsafe_wrap(MtlVector{Float32}, arr)
+
+                @test all(arr .== 1)
+                @test all(marr .== 1)
+
+                Metal.@sync marr .+= 1
+                @test all(arr .== 2)
+                @test all(marr .== 2)
+            end
+
+            @testset "check gpu" begin # gpu array checked first
+                arr = _alignedvec(Float32, 16384 * 2)
+                fill!(arr, one(eltype(arr)))
+                marr = Metal.@sync unsafe_wrap(MtlVector{Float32}, arr)
+
+                @test all(marr .== 1)
+                @test all(arr .== 1)
+
+                marr .+= 1
+                @test all(marr .== 2)
+                @test all(arr .== 2)
+            end
+        end
+
+        @testset "wrap gpu" begin
+            @testset "check cpu" begin # cpu array checked first
+                marr = Metal.@sync Metal.ones(Float32, 18000; storage = Metal.SharedStorage)
+                arr = unsafe_wrap(Vector{Float32}, marr)
+
+                @test all(arr .== 1)
+                @test all(marr .== 1)
+
+                Metal.@sync marr .+= 1
+                @test all(arr .== 2)
+                @test all(marr .== 2)
+            end
+
+            @testset "check gpu" begin # gpu array checked first
+                marr = Metal.@sync Metal.ones(Float32, 18000; storage = Metal.SharedStorage)
+                arr = unsafe_wrap(Vector{Float32}, marr)
+
+                @test all(marr .== 1)
+                @test all(arr .== 1)
+
+                marr .+= 1
+                @test all(marr .== 2)
+                @test all(arr .== 2)
+            end
+        end
+    end
+
+    @testset "Issue #451" begin
+        a = mtl(reshape(Float32.(1:60), 5,4,3);storage=Metal.SharedStorage)
+        view_a = @view a[:,1:4,2]
+        b = copy(unsafe_wrap(Array, view_a))
+        c = Array(view_a)
+
+        @test b == c
+    end
+
+    # test that you cannot create an array with a different eltype
+    marr3 = mtl(zeros(Float32, 10); storage = Metal.SharedStorage)
+    @test_throws MethodError unsafe_wrap(Array{Float16}, marr3)
+
+    @testset "wrap unaligned host memory" begin
+        # small arrays are neither page-aligned nor a multiple of the page size
+        a = Float32[1, 2, 3, 4]
+        b = unsafe_wrap(MtlArray, a)
+        @test b isa MtlVector{Float32, Metal.SharedStorage}
+        @test pointer(b; storage=Metal.SharedStorage) == pointer(a)
+        Metal.@sync b .+= 1
+        @test a == [2, 3, 4, 5]
+        a[1] = 10
+        @test Array(b) == [10, 3, 4, 5]
+        @test pointer(unsafe_wrap(Array, b)) == pointer(a)
+
+        m = rand(Float32, 3, 5)
+        @test unsafe_wrap(MtlArray, m) isa MtlMatrix{Float32}
+        @test Array(unsafe_wrap(MtlArray{Float32}, m)) == m
+        @test Array(unsafe_wrap(MtlMatrix{Float32}, m)) == m
+        GC.@preserve m begin
+            @test Array(unsafe_wrap(MtlArray, pointer(m, 2), 4)) == m[2:5]
+            @test Array(unsafe_wrap(MtlArray, pointer(m, 2), (2, 2))) == reshape(m[2:5], 2, 2)
+        end
+        @test isempty(unsafe_wrap(MtlArray, Float32[]))
+
+        # other data on the wrapped pages is left alone
+        c = zeros(UInt32, 64)
+        GC.@preserve c begin
+            d = unsafe_wrap(MtlArray, pointer(c, 5), 8)
+            Metal.@sync d .= 1
+        end
+        @test c == [zeros(UInt32, 4); ones(UInt32, 8); zeros(UInt32, 52)]
+
+        # the wrapper keeps the array alive
+        e = unsafe_wrap(MtlArray, fill(1.0f0, 1000))
+        GC.gc(true)
+        @test sum(e) == 1000
+
+        @test_throws ArgumentError unsafe_wrap(MtlArray, Ptr{Float32}(C_NULL), 1)
+        @test_throws ArgumentError unsafe_wrap(MtlArray, Any[1])
+        @test_throws ArgumentError unsafe_wrap(MtlVector{Float32}, Float32[1], (2,))
+        @test_throws ArgumentError unsafe_wrap(MtlVector{Float32}, Float32[1, 2], (1, 2))
+        @test_throws ArgumentError unsafe_wrap(MtlVector{Float32, Metal.PrivateStorage}, a)
+        @test_throws ArgumentError unsafe_wrap(MtlArray, a; storage=Metal.PrivateStorage)
+        @test unsafe_wrap(MtlVector{Float32, Metal.SharedStorage}, a) isa MtlVector{Float32}
+        # reinterpreting an array's memory is allowed, as long as it fits
+        @test Array(unsafe_wrap(MtlVector{UInt32}, a)) == reinterpret(UInt32, a)
+        GC.@preserve c begin
+            @test_throws ArgumentError unsafe_wrap(MtlArray, Ptr{Float32}(pointer(c) + 1), 1)
+            @test_throws ArgumentError unsafe_wrap(MtlArray{Float32}, pointer(c), 4)
+            @test_throws ArgumentError unsafe_wrap(MtlMatrix{UInt32}, pointer(c), 4)
+            @test unsafe_wrap(MtlVector{UInt32}, pointer(c), 4) isa MtlVector{UInt32}
+            @test_throws OverflowError unsafe_wrap(MtlArray, pointer(c), (typemax(Int) ÷ 2, 4))
+            @test_throws OverflowError unsafe_wrap(MtlArray, pointer(c), (2^31, 2^31, 4))
+            maxlen = Metal.MTL.max_buffer_length(device())
+            @test_throws ArgumentError unsafe_wrap(MtlArray, pointer(c), maxlen ÷ 4 + 1)
+        end
+    end
+
+    # shader validation keeps buffers alive, so their memory is never released
+    get(ENV, "MTL_SHADER_VALIDATION", "0") == "1" ||
+    @testset "wrapped memory is released once Metal is done with it" begin
+        collected = Threads.Atomic{Bool}(false)
+        function wrap_tracked()
+            host = zeros(Float32, 16)
+            finalizer(_ -> collected[] = true, host)
+            return unsafe_wrap(MtlArray, host)
+        end
+        a = wrap_tracked()
+        GC.gc(true)
+        @test !collected[]
+        Metal.unsafe_free!(a)
+        # Metal signals the deallocation asynchronously
+        t = time()
+        while !collected[] && time() - t < 10
+            GC.gc(true)
+            sleep(0.05)
+        end
+        @test collected[]
+    end
+
+    @testset "wrap MtlPtr as multi-dimensional array" begin
+        dims = (2, 3, 4, 5, 6)
+        n = prod(dims)
+        vec = MtlVector{Float32}(undef, n)
+        vec .= Float32.(1:n)
+
+        marr = unsafe_wrap(MtlArray, pointer(vec), dims)
+        @test marr isa MtlArray{Float32, 5}
+        @test size(marr) == dims
+        @test Array(marr) == reshape(Float32.(1:n), dims)
+
+        # the buffer is shared: changes are visible in both views
+        Metal.@sync marr .+= 1
+        @test Array(vec) == Float32.(2:(n + 1))
+
+        # single-dimension wrapping
+        mvec = unsafe_wrap(MtlArray, pointer(vec), n)
+        @test mvec isa MtlArray{Float32, 1}
+        @test size(mvec) == (n,)
+        @test Array(mvec) == Array(vec)
+    end
+end
+
+@testset "ReshapedArray" begin
+    @test Array(sum(reshape(Metal.ones(3, 10)', (5, 3, 2)); dims=1)) == fill(5, (1,3,2))
+    @test Array(sum(reshape(PermutedDimsArray(reshape(mtl(collect(Float32, 1:30)), 5, 3, 2), (3, 1, 2)), (10, 3)); dims=1)) ==
+        sum(reshape(PermutedDimsArray(reshape(Float32.(1:30), 5, 3, 2), (3, 1, 2)), (10, 3)); dims=1)
+end
+
+@testset "device-side views" begin
+    function view_kernel!(out, a, f)
+        v = f(a)
+        i = thread_position_in_grid().x
+        if i <= length(v)
+            @inbounds out[i] = v[i]
+        end
+        return
+    end
+
+    a = collect(Float32, 1:20)
+    da = MtlArray(a)
+    @testset "$name" for (name, f) in (
+            ("unit range",       a -> view(a, 2:5)),
+            ("colon",            a -> view(a, :)),
+            ("view of view",     a -> view(view(a, 2:9), :)),      # #1092
+            ("nested ranges",    a -> view(view(a, 2:15), 3:7)),
+            ("step range",       a -> view(a, 1:2:15)),
+            ("reverse range",    a -> view(a, 10:-1:3)),
+            ("matrix column",    a -> view(reshape(a, 4, 5), :, 3)),
+            ("matrix row",       a -> view(reshape(a, 4, 5), 2, :)),
+        )
+        expected = f(a)
+        out = Metal.zeros(Float32, length(expected))
+        @metal threads=length(expected) view_kernel!(out, da, f)
+        @test Array(out) == expected
+    end
+
+    # writes through a view must land in the parent
+    function write_kernel!(a)
+        v = view(view(a, 3:12), 1:3:10)
+        i = thread_position_in_grid().x
+        @inbounds v[i] = -v[i]
+        return
+    end
+    b = copy(a)
+    db = MtlArray(b)
+    @metal threads=4 write_kernel!(db)
+    w = view(view(b, 3:12), 1:3:10); w .= .-w
+    @test Array(db) == b
+end
+
+@testset "reinterpret of view with non-aligned offset" begin
+    # reinterpreting a view to a larger element type where the byte offset
+    # is not a multiple of the new element size
+    a = MtlArray(Int16[1,2,3,4,5,6,7,8,9])
+    v = view(a, 2:7)  # offset of 1 Int16 = 2 bytes
+    r = reinterpret(Int32, v)  # Int32 = 4 bytes; 2 is not a multiple of 4
+    @test Array(r) == reinterpret(Int32, @view Array(a)[2:7])
+
+    # kernels require aligned elements
+    @test_throws ArgumentError r .+ Int32(1)
+    @test Array(copy(r) .+ Int32(1)) == reinterpret(Int32, @view Array(a)[2:7]) .+ Int32(1)
+    # empty arrays have no elements to access
+    e = reinterpret(Int32, view(a, 2:1))
+    @test isempty(Metal.mtlconvert(e))
+end
+
+@testset "aliasing" begin
+    x = MtlArray([1, 2])
+    y = view(x, 2:2)
+    @test Base.mightalias(x, x)
+    @test Base.mightalias(x, y)
+    z = view(x, 1:1)
+    @test Base.mightalias(x, z)
+    @test !Base.mightalias(y, z)
+
+    a = copy(y)::typeof(x)
+    @test !Base.mightalias(x, a)
+    b = Base.unaliascopy(y)::typeof(y)
+    @test !Base.mightalias(x, b)
+
+    # contiguous views are MtlArrays with an offset into the parent's buffer,
+    # which should still alias wrapped arrays (like SubArrays) of that buffer
+    x = MtlArray(1:16)
+    @test Base.mightalias(view(x, 2:16), view(x, 15:-1:1))
+    @test Base.mightalias(view(x, 1:2:15), view(x, 2:9))
+    @test Base.mightalias(view(x, 2:16), view(reinterpret(Int32, x), 1:2:31))
+    @test !Base.mightalias(view(x, 2:16), view(MtlArray(1:16), 15:-1:1))
+
+    # an array wrapped from a pointer into another one's buffer
+    y = view(x, 2:16)
+    z = unsafe_wrap(MtlArray, pointer(y), size(y))
+    @test Base.mightalias(y, view(z, 15:-1:1))
+
+    # so in-place broadcasts between them should make a copy first
+    n = 2^20
+    x = MtlArray{Float32}(1:n)
+    view(x, 2:n) .= view(x, n-1:-1:1)
+    @test Array(x) == [1; n-1:-1:1]
+
+    # empty arrays alias nothing, also on Julia 1.10
+    @test !Base.mightalias(MtlArray(Int[]), MtlArray(Float32[]))
+    @test !Base.mightalias(view(MtlArray(zeros(Float32, 2, 0)), 1:1, :), MtlArray(Int[]))
+
+    # disjoint parts of one array may be each other's source and destination
+    x = MtlArray(collect(1:10))
+    @test Array(sum!(view(x, 1:1), view(x, 2:10))) == [54]
+    @test Array(cumsum!(view(x, 1:5), view(x, 6:10))) == cumsum(6:10)
+end
+
+@testset "sort" begin
+    v = Float32[7, 2, 5, 4, 9, 1, 6, 3]
+    d_v = MtlArray(v)
+    @test Array(sort(d_v)) == sort(v)
+    @test Array(sort(d_v; rev=true)) == sort(v; rev=true)
+
+    sort!(d_v)
+    @test Array(d_v) == sort(v)
+
+    A = reshape(Float32[7, 2, 5, 4, 9, 1, 6, 3, 8, 0, 10, 11], 3, 4)
+    d_A = MtlArray(A)
+    for dim in 1:2
+        @test Array(sort(d_A; dims=dim)) == sort(A; dims=dim)
+        @test Array(sort(d_A; dims=dim, rev=true)) == sort(A; dims=dim, rev=true)
+
+        tmp = copy(d_A)
+        sort!(tmp; dims=dim)
+        @test Array(tmp) == sort(A; dims=dim)
+
+        p = sortperm(d_A; dims=dim)
+        @test Array(p) == sortperm(A; dims=dim)
+        @test A[Array(p)] == sort(A; dims=dim)
+
+        p = similar(d_A, Int)
+        sortperm!(p, d_A; dims=dim, rev=true)
+        @test Array(p) == sortperm(A; dims=dim, rev=true)
+        @test A[Array(p)] == sort(A; dims=dim, rev=true)
+    end
+
+    @test Array(sortperm(MtlArray(v))) == sortperm(v)
+
+    nan_v = Float32[1, NaN, -1, 0, 2]
+    d_nan_v = MtlArray(nan_v)
+    @test isequal(Array(sort(d_nan_v)), sort(nan_v))
+    @test isequal(Array(sort(d_nan_v; rev=true)), sort(nan_v; rev=true))
+    @test Array(sortperm(d_nan_v)) == sortperm(nan_v)
+
+    nan_A = Float32[1 NaN 2; -1 0 NaN]
+    d_nan_A = MtlArray(nan_A)
+    for dim in 1:2
+        @test isequal(Array(sort(d_nan_A; dims=dim)), sort(nan_A; dims=dim))
+        p = sortperm(d_nan_A; dims=dim)
+        @test Array(p) == sortperm(nan_A; dims=dim)
+        @test isequal(nan_A[Array(p)], sort(nan_A; dims=dim))
+    end
+
+    # algorithms: AcceleratedKernels' are accepted, sortperm is stable unless allowed not to be
+    AK = Metal.GPUArrays.AK
+    dup_v = Float32.(rand(1:10, 10_000))
+    @test Array(sort(MtlArray(dup_v); alg=AK.MergeSort())) == sort(dup_v)
+    @test Array(sortperm(MtlArray(dup_v))) == sortperm(dup_v)
+    @test Array(sortperm(MtlArray(dup_v); alg=AK.MergeSort())) == sortperm(dup_v)
+    p = Array(sortperm(MtlArray(dup_v); alg=QuickSort))
+    @test dup_v[p] == sort(dup_v)
+    @test_throws ArgumentError sort(MtlArray(dup_v); alg=Base.Sort.ScratchQuickSort())
+end
+
+@testset "accumulate" begin
+    for n in (0, 1, 2, 3, 10, 10_000, 16384, 16384+1) # small, large, odd & even, pow2 and not
+        @test testf(x->accumulate(+, x), rand(Float32, n))
+        @test testf(x->accumulate(+, x), rand(Float32, n, 2))
+        @test testf(Base.Fix2((x,y)->accumulate(+, x; init=y), rand(Float32)), rand(Float32, n))
+    end
+
+    # multidimensional
+    for (sizes, dims) in ((2,) => 2,
+                          (3,4,5) => 2,
+                          (1, 70, 50, 20) => 3,)
+        @test testf(x->accumulate(+, x; dims=dims), rand(-10:10, sizes))
+        @test testf(x->accumulate(+, x), rand(-10:10, sizes))
+    end
+
+    # using initializer
+    for (sizes, dims) in ((2,) => 2,
+                          (3,4,5) => 2,
+                          (1, 70, 50, 20) => 3)
+        @test testf(Base.Fix2((x,y)->accumulate(+, x; dims=dims, init=y), rand(-10:10)), rand(-10:10, sizes))
+        @test testf(Base.Fix2((x,y)->accumulate(+, x; init=y), rand(-10:10)), rand(-10:10, sizes))
+    end
+
+    # in place
+    @test testf(x->(accumulate!(+, x, copy(x)); x), rand(Float32, 2))
+
+    # specialized
+    @test testf(cumsum, rand(Float32, 2))
+    @test testf(cumprod, rand(Float32, 2))
+
+    scan_input = reshape(Float32[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37], 3, 4)
+    product_input = scan_input ./ 10
+    for alg in (:native, :MPSGraph), dims in 1:2
+        @with (Metal.scan_alg => alg) begin
+            @test Array(accumulate(+, MtlArray(scan_input); dims)) ≈
+                accumulate(+, scan_input; dims)
+            @test Array(accumulate(*, MtlArray(product_input); dims)) ≈
+                accumulate(*, product_input; dims)
+            @test Array(cumsum(MtlArray(scan_input); dims)) ≈ cumsum(scan_input; dims)
+            @test Array(cumprod(MtlArray(product_input); dims)) ≈
+                cumprod(product_input; dims)
+        end
+    end
+    for alg in (:native, :auto), dims in 1:2
+        @with (Metal.scan_alg => alg) begin
+            @test Array(accumulate(max, MtlArray(scan_input); dims)) ≈
+                accumulate(max, scan_input; dims)
+            @test Array(accumulate(min, MtlArray(scan_input); dims)) ≈
+                accumulate(min, scan_input; dims)
+        end
+    end
+
+    @with (Metal.scan_alg => :MPSGraph) begin
+        # min, max using MPSGraph supported for Integers
+        int_input = Int32.(scan_input)
+        @test Array(accumulate(max, MtlArray(int_input); dims=1)) ≈
+            accumulate(max, int_input; dims=1)
+        @test Array(accumulate(min, MtlArray(int_input); dims=2)) ≈
+            accumulate(min, int_input; dims=2)
+
+        # but not for floating point
+        nan_input = Float32[1, NaN, 0.5, 2]
+        @test_throws ArgumentError accumulate(max, MtlArray(nan_input))
+        @test_throws ArgumentError accumulate(min, MtlArray(nan_input))
+
+        # an `init` of the input's element type
+        @test Array(accumulate(+, MtlArray(scan_input); dims=1, init=1.0f0)) ≈
+            accumulate(+, scan_input; dims=1, init=1.0f0)
+
+        # invalid eltype and kwargs
+        @test_throws ArgumentError accumulate(+, MtlArray(Complex{Int32}.(int_input)))
+        @test_throws ArgumentError accumulate(+, MtlArray(int_input); dims=1, init=1)
+    end
+
+    large_nan_input = ones(Float32, Metal.mpsgraph_scan_threshold + 1)
+    large_nan_input[2] = NaN
+    @test isequal(Array(accumulate(max, MtlArray(large_nan_input))),
+                  accumulate(max, large_nan_input))
+    @test isequal(Array(accumulate(min, MtlArray(large_nan_input))),
+                  accumulate(min, large_nan_input))
+end
+
+@testset "findall" begin
+    # 1D
+    @test testf(x->findall(x), rand(Bool, 1000))
+    @test testf(x->findall(y->y>Float32(0.5), x), rand(Float32,1000))
+
+    # Set storage mode to a different one than the default
+    let storage=Metal.DefaultStorageMode == Metal.PrivateStorage ? Metal.SharedStorage : Metal.PrivateStorage
+        x = mtl(rand(Float32,100); storage)
+        out = findall(y->y>Float32(0.5), x)
+        @test Metal.storagemode(x) == Metal.storagemode(out)
+    end
+
+    # ND
+    let x = rand(Bool, 0, 0)
+      @test findall(x) == Array(findall(MtlArray(x)))
+    end
+    let x = rand(Bool, 1000, 1000)
+        @test findall(x) == Array(findall(MtlArray(x)))
+    end
+    let x = rand(Float32, 1000, 1000)
+        @test findall(y->y>Float32(0.5), x) == Array(findall(y->y>Float32(0.5), MtlArray(x)))
+    end
+
+    # ambiguity
+    let f = in(3)
+        x = MtlArray([1, 2, 3, 4, 5, 3])
+        @test Array(findall(f, x)) == [3, 6]
+    end
+end
+
+@testset "broadcast" begin
+    testf(f, x) = Array(f(MtlArray(x))) ≈ f(x)
+
+    @test testf(x->max.(x, zero(Float32)), randn(Float32, 1000))
+    @test testf(x->min.(x, one(Float32)), randn(Float32, 1000))
+    @test testf(x->min.(max.(x, zero(Float32)), one(Float32)), randn(Float32, 1000))
+    @test testf(x->max.(min.(x, one(Float32)), zero(Float32)), randn(Float32, 1000))
+
+    # Bool scalar broadcast assignment (issue #766): the conversion code
+    # path constructs an InexactError box on its dead trap branch, which
+    # used to leave an unresolved `jl_int64_type` reference in the metallib.
+    let x = MtlArray{Bool}(undef, 2)
+        x .= 1
+        @test Array(x) == [true, true]
+        x .= Int32(0)
+        @test Array(x) == [false, false]
+        x .= true
+        @test Array(x) == [true, true]
+        x .= Float16(0)
+        @test Array(x) == [false, false]
+
+        # an inexact conversion throws on the device, through the `Bool(::Real)` quirk
+        # rather than by constructing an `InexactError` box
+        @test_throws Metal.KernelException begin
+            x .= 2
+            synchronize()
+        end
+    end
+
+    # preserving buffer types
+    let x = Metal.zeros(Float32, 1; storage=Metal.PrivateStorage)
+        y = x .+ 1
+        @test is_private(y)
+    end
+
+    # when storages are different, choose shared
+    let x = Metal.zeros(Float32, 1; storage=Metal.SharedStorage), y = Metal.zeros(Float32, 1; storage=Metal.PrivateStorage)
+        z = x .+ y
+        @test is_shared(z)
+    end
+
+    let x = Metal.zeros(Float32, 2, 2; storage=Metal.SharedStorage), y = Metal.zeros(Float32, 2; storage=Metal.PrivateStorage)
+        z = x .+ y
+        @test is_shared(z)
+    end
+end
+
+@testset "large map reduce" begin
+  big_size = 100_005
+  a = rand(Float32, big_size, 31)
+  c = MtlArray(a)
+
+  expected = minimum(a, dims=2)
+  actual = minimum(c, dims=2)
+  @test expected == Array(actual)
+
+  expected = findmax(a, dims=2)
+  actual = findmax(c, dims=2)
+  @test expected == map(Array, actual)
+
+  expected = sum(a, dims=2)
+  actual = sum(c, dims=2)
+  @test expected ≈ Array(actual)
+
+  a = rand(Int, big_size, 31)
+  c = MtlArray(a)
+
+  expected = minimum(a, dims=2)
+  actual = minimum(c, dims=2)
+  @test expected == Array(actual)
+
+  expected = findmax(a, dims=2)
+  actual = findmax(c, dims=2)
+  @test expected == map(Array, actual)
+
+  expected = sum(a, dims=2)
+  actual = sum(c, dims=2)
+  @test expected == Array(actual)
+end
+
+@testset "1-byte reduce over a length-2 dim" begin
+  # Reducing a 2-row array along dims=2 launches the partial-reduction kernel on exactly two
+  # threadgroups, addressing its result/input through a chained byte `getelementptr`. The AGX
+  # back-end miscompiles a 1-byte access made that way (it drops the first threadgroup) unless
+  # GPUCompiler coalesces the GEP chain (`merge_byte_gep_chains!`); without it the first row
+  # comes back corrupted. Covers both the 1-byte output store (`maximum`/`minimum`/`any`/`all`)
+  # and the 1-byte input load on the non-shuffle path (`sum` of `Int8`/`UInt8`, whose output is
+  # promoted to `Int64`). Deterministic inputs so a dropped first row always shows up.
+  @testset "n=$n" for n in (2, 3, 4, 8, 16)
+    @testset "$T" for T in (Int8, UInt8)
+      a = reshape(T.(1:2n), 2, n)        # row 1 = odds, row 2 = evens
+      c = MtlArray(a)
+      @test Array(maximum(c; dims=2)) == maximum(a; dims=2)
+      @test Array(minimum(c; dims=2)) == minimum(a; dims=2)
+      @test Array(sum(c; dims=2))     == sum(a; dims=2)
+    end
+    b = falses(2, n); b[1, :] .= true    # row 1 all true, row 2 all false
+    d = MtlArray(b)
+    @test Array(any(d; dims=2)) == any(b; dims=2)
+    @test Array(all(d; dims=2)) == all(b; dims=2)
+  end
+end
+
+@testset "mapreducedim! returning same type" begin
+    R = transpose(Metal.zeros(Float32, 2, 3))
+    A = MtlArray(rand(Float32, 3, 2, 10))
+    @test @inferred(Base.mapreducedim!(identity, +, R, A)) === R
+
+    R = transpose(Metal.zeros(Int16, 2, 3))
+    A = MtlArray(rand(Int16.(0:10), 3, 2, 10))
+    @test @inferred(sum!(abs2, R, A)) === R
+    @test Array(R) ≈ dropdims(sum(abs2, Array(A); dims=3); dims = 3)
+end

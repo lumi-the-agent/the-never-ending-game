@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Gloop did not reach the fishing spot (pos Float32[2.3048487, 14.336215, 1.3830894], goal play)",
+      "file": "areas.jl",
+      "name": "A creature walks out on the pier and fishes",
+      "passed": false,
+      "seconds": 18.0
+    },
+    {
+      "error": "check failed: side panel mentions 'test': ○ testing\nLast built: Queued for the break\nI played Firefly catch from a real browser the\nway you do, with mouse and keyboard: clicking\nPlay gives the island view your keys, W starts\nit, A/D turn, Shift runs, and the keys light\nup as you press them. That run also showed the\n▶ Real trees, bushes and boulders instead of\n  spheres\n· A pretty night\n· A second mini game with a reward you can see on\n  the island\n· A movie of island life, path traced\n  + 14 more",
+      "file": "areas.jl",
+      "name": "The side panel talks to the player, not about development",
+      "passed": false,
+      "seconds": 0.1
+    }
+  ],
+  "passed": 21,
+  "session": 20,
+  "time": "2026-11-22T23:49:33",
+  "total": 23
+}

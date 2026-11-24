@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Gloop did not reach the fishing spot (pos Float32[1.3571807, 22.778746, 0.65500003], goal fish)",
+      "file": "areas.jl",
+      "name": "A creature walks out on the pier and fishes",
+      "passed": false,
+      "seconds": 18.0
+    },
+    {
+      "error": "check failed: only 0 emotes on screen over Marshmallow",
+      "file": "minigames.jl",
+      "name": "Emotes float over creatures: hearts, notes, z's",
+      "passed": false,
+      "seconds": 2.1
+    }
+  ],
+  "passed": 66,
+  "session": 39,
+  "time": "2026-11-23T13:24:31",
+  "total": 68
+}

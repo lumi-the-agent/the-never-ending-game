@@ -1,0 +1,75 @@
+[project]
+name = "videoedit-tools"
+version = "0.1.0"
+description = "Dev-only Python tooling: export MatAnyone2 to DNNKernels (see lava-dnn.md)"
+requires-python = ">=3.12,<3.13"
+
+# Only what matanyone2's inference path actually imports, plus the exporter's own
+# needs. The upstream pyproject additionally pulls gradio/PySide6/pycocotools/
+# thinplate/cchardet for training + the demo app; none of that is on the
+# inference path, so matanyone2 itself is installed --no-deps.
+dependencies = [
+    "torch",
+    "torchvision",
+    "torchaudio",
+    "numpy",
+    "opencv-python-headless",
+    "pillow",
+    "imageio[ffmpeg]",
+    "hydra-core",
+    "omegaconf",
+    "tqdm",
+    "typer",
+    # The bounds are what the pinned `diffusers-src` (Qwen-Image 2.1) imports
+    # need; `export_qwenimage21.py` names both when they are missing.
+    "huggingface-hub>=1.31",
+    "transformers>=5.17",
+    "requests",
+    "safetensors",
+    "duckdb>=1.5.5",
+    "pandas>=3.0.5",
+    "pyarrow>=25.0.0",
+    "gdown>=6.1.0",
+    "demucs>=4.0.1",
+    "kokoro>=0.9.4",
+    "soundfile>=0.14.0",
+    "matplotlib>=3.11.1",
+    "scipy>=1.17.1",
+    "diffusers>=0.39.0",
+    # `sam2`, run from its `sam2-src` artifact rather than installed, imports it
+    # in `hieradet.py`; without it Hydra reports the failed import as "Error
+    # locating target 'sam2.modeling.backbones.hieradet.Hiera'".
+    "iopath>=0.1.10",
+    "accelerate>=1.14.0",
+    "sentencepiece>=0.2.2",
+    "protobuf>=7.35.1",
+    # Hunyuan3D-2.1's import chain, declared here rather than installed by hand.
+    # `export_hunyuan3d.py` used to say `uv pip install --no-deps timm`; a later
+    # `uv sync` removed it again, because a package nothing declares is a package
+    # uv is entitled to delete. timm: `moe_layers.py` imports three names from it
+    # and uses none, but diffusers feature-detects it through `find_spec` so a
+    # stub does not work. scikit-image: `surface_extractors.py` marching cubes,
+    # which is also the reference the Julia side is measured against. trimesh:
+    # `pipelines.py` imports it at module scope.
+    "timm>=1.0.0",
+    "scikit-image>=0.25.0",
+    "trimesh>=4.0.0",
+    # `postprocessors.py`'s three mesh filters, and the reference the Julia port
+    # of them is measured against — including its Hausdorff filter, which judges
+    # both sides of that comparison so neither is scored by its own metric.
+    # Its filter semantics are not documented well enough to port by reading:
+    # `nbfaceratio` turned out to be a truncated integer threshold against the
+    # LARGEST component, over edge-connected components, and each of those was
+    # settled by running this package.
+    "pymeshlab>=2025.7",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+torchvision = { index = "pytorch-cu128" }
+torchaudio = { index = "pytorch-cu128" }

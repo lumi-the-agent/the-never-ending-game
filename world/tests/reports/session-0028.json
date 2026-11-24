@@ -1,0 +1,8 @@
+{"session": 28,
+ "summary": "Suite 47/48; the one failure (Berry race W/A/D play, 2 berries in 20.6 s) did not reproduce: the test passed 3 times alone and once together with the other Berry race tests. It is flaky, so the first-play win is not guaranteed.",
+ "failures": [{"what": "Berry race first play with only W/A/D sometimes picks only 2 of 3 berries in 20 s",
+   "steps": "Run the full suite (state left by earlier tests) and play Berry race holding W and steering with A/D toward the nearest bush; passes in isolation (11.7-14.6 s).",
+   "expected": "3 berries in 20 s from the meadow start line every time",
+   "actual": "In the suite run: 2 berries in 20.6 s (critters [2,1,2]), Sprout at (-8.07,-3.98,2.08). In isolation it passed 3 of 3, so the margin is thin or depends on the previous test's state.",
+   "screenshot": "world/tests/shots/berry-wad.png"}],
+ "tests_added": []}

@@ -1,0 +1,15 @@
+{"session": 29,
+ "summary": "Suite 48/49 at the host run; a full re-run gave 48/49 again but with a different failure, so two tests are flaky in full-suite runs while passing alone (Jump in wave 4/4 alone, 3/3 in a double-wave loop). Berry race W/A/D tests pass.",
+ "failures": [
+  {"what": "Flaky: the second E wave does not make the creature follow (it stays in :answer)",
+   "steps": "Run the whole suite (live_tests()); 'Jump in: E waves and a creature answers, a second wave makes it follow' failed at the host run with 'Pinchy does not follow after the second wave (answer)'. Run alone 4 of 4 passes; a loop of 3 wave-twice trials also followed each time.",
+   "expected": "Two waves within 12 s at the same creature make it follow Sprout.",
+   "actual": "In the full suite the creature still answers after the second wave (the second wave probably went to another creature or the 12 s window was missed). I added world time, greeted table and all answering/following creatures to the check message so the next failure shows which.",
+   "screenshot": "world/tests/shots/jumpin-friend.png"},
+  {"what": "Flaky: Flower gift: the flower is still drawn after the gift",
+   "steps": "Full suite re-run (live_tests()) after the host run: 'Flower gift: a critter carries a picked flower to a friend, who thanks it with hearts' failed with 'the flower is still drawn after the gift'. It passed in the host run.",
+   "expected": "After the gift the carried flower plot is gone.",
+   "actual": "The flower is still drawn at the check.",
+   "screenshot": "world/tests/shots/flower-gift-thanks.png"}
+ ],
+ "tests_added": []}

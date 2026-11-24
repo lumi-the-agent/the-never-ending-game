@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Pinchy does not follow after the second wave (answer)",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": false,
+      "seconds": 2.1
+    }
+  ],
+  "passed": 48,
+  "session": 29,
+  "time": "2026-11-23T05:41:23",
+  "total": 49
+}

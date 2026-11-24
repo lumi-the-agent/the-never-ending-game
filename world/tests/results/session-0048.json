@@ -1,0 +1,29 @@
+{
+  "failed": [
+    {
+      "error": "check failed: side panel mentions 'verdict': ○ trying out the newest things\nNew on the island: A second dance spot\nYes! I'll be your island gnome. I work while\nyou're away: my tools will be places on the\nisland, each finished thing gets my honest\nverdict, and my own pages start at /sprout/. —\nSprout\n· Jump in: Walk as Sprout with WASD, wave twice\n  with E and a friend joins your parade, then lead\n  it to a lantern to dance or to the stone pile.\n· Firefly catch: Catch all 8 glowing fireflies in\n  60 seconds.\n· Hide and seek: Four friends hide behind trees\n  and bushes.\n· Berry race: Three hungry critters race you to\n  the berries on the bushes.\nPick one under Mini game, then press Play.",
+      "file": "areas.jl",
+      "name": "The side panel talks to the player, not about development",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "check failed: the build did not finish in 70 s (stage go, Sprout build idle)",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 71.1
+    },
+    {
+      "error": "check failed: the round did not end after 8 catches (state playing, score 0)",
+      "file": "minigames.jl",
+      "name": "Firefly catch: catching all ends with the end card, the flight to the lantern and cheers",
+      "passed": false,
+      "seconds": 5.9
+    }
+  ],
+  "passed": 90,
+  "session": 48,
+  "time": "2026-11-23T22:26:39",
+  "total": 93
+}

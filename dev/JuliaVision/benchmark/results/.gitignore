@@ -1,0 +1,7 @@
+# Timestamped runs and `latest.json` are the point of this folder: a history to
+# judge against. Everything else here is a hand-off or a one-off — the raw
+# PyTorch JSON the suite regenerates every run, and whatever a person wrote
+# while testing a single model.
+torch-raw.json
+torch-*.json
+smoke*.json

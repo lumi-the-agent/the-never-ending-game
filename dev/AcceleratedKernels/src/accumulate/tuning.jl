@@ -1,0 +1,201 @@
+# Selection and tuning of scan algorithms; the steps are those of sorting (src/sort/tuning.jl).
+
+
+"""
+    ScanPrefixes(; block_size=nothing, items_per_thread=nothing)
+
+GPU scan of a whole array in tiles of `block_size * items_per_thread` elements (`block_size` a
+power of two up to 1024): each block reduces its tile, the tiles' totals are scanned the same
+way, and each block then scans its tile from the total of the tiles before it. On devices whose
+[`ScanTuning`](@ref) says so (CPUs), the blocks instead scan their tile first and then add the
+total of the tiles before it. No block waits for another, so it runs on every backend. The
+default `items_per_thread` is the largest, up to 8, whose tile fits in the tuning's local-memory
+budget.
+"""
+Base.@kwdef struct ScanPrefixes <: ScanAlgorithm
+    block_size::Union{Nothing, Int} = nothing
+    items_per_thread::Union{Nothing, Int} = nothing
+end
+
+"""
+    SliceScan(; block_size=nothing, items_per_thread=nothing)
+
+GPU scan of each slice along `dims`. Short slices, and slices whose neighbours are next to them in
+memory (when the dimensions before `dims` hold several elements), are scanned by one thread
+each; other slices by one block each, in tiles of `block_size * items_per_thread` consecutive
+elements (`block_size` a power of two up to 1024, smaller for short slices). When that leaves too
+few threads to fill the device, each slice is split into chunks, which takes two more passes: one
+over the source to reduce each chunk, and a scan of the chunks' totals.
+"""
+Base.@kwdef struct SliceScan <: ScanAlgorithm
+    block_size::Union{Nothing, Int} = nothing
+    items_per_thread::Union{Nothing, Int} = nothing
+end
+
+
+"""
+    ScanTuning(; kwargs...)
+
+Values that drive `Auto` selection and fill unset algorithm fields for scans on one device, as
+returned by [`scan_tuning`](@ref).
+
+- `block_size`: the block size of every scan kernel algorithm. The kernels hold a tile of
+  partial results and a partial result per thread in local memory, so for large element types
+  it is lowered, to a power of two, until a tile of one item per thread fits `local_mem_bytes`;
+  an explicit `block_size` is kept.
+- `local_mem_bytes`, `max_items`: the default `items_per_thread` of the kernel algorithms is the
+  largest that keeps a tile of the element type within `local_mem_bytes`, and at most
+  `max_items`. It is derived from the effective `block_size`, so an explicit `block_size` gets a
+  matching default.
+- `threads_min_elems`: the default `min_elems` of `CPUThreads.Partitioned`; at least 2.
+- `target_blocks`: the blocks a `SliceScan` aims to launch, splitting its slices into chunks when
+  they would take fewer.
+- `slice_serial_len`: `SliceScan` scans slices of at most this many elements with one thread each.
+- `slice_column_inner`: `SliceScan` scans with one thread per slice when the dimensions before
+  `dims` hold at least this many elements, so that neighbouring threads load neighbouring
+  elements. (Contiguous slices short enough for a block's worth to fit `local_mem_bytes` are
+  scanned one per thread from local memory.)
+- `slice_min_chunk`: the fewest elements per thread of a `SliceScan` that splits its slices.
+- `slice_columns_len`: in arrays too small to split, `SliceScan` scans slices of at most this
+  many elements with one thread each (as for `slice_column_inner`), and longer ones a block each.
+- `slice_split_min`: `SliceScan` splits the slices it scans with one thread each only in arrays
+  of at least this many elements.
+- `slice_split_tiles`: `SliceScan` splits slices it scans with a block each when there are too
+  few to fill the device and a block would scan more than this many tiles.
+- `reduce_then_scan`: whether `ScanPrefixes` reduces the tiles and then scans them from their
+  prefix, which reads the source twice and writes the result once; or scans the tiles and then
+  adds their prefix, which reads and writes the result twice. GPUs are faster with the former,
+  CPUs, whose caches hold the result, with the latter.
+- `subgroups`: whether the kernel algorithms scan the values of a block with sub-group
+  operations, where the backend has them (from KernelAbstractions 0.10), rather than in local
+  memory. CPUs, whose sub-group operations synchronize the whole block, scan faster without.
+- `wide_optional_flag`: as for [`ReduceTuning`](@ref).
+
+The `SliceScan` settings were measured on CUDA (RTX 5080 and 2070).
+"""
+Base.@kwdef struct ScanTuning
+    block_size::Int = 256
+    local_mem_bytes::Int = LOCAL_MEMORY_BUDGET
+    max_items::Int = 8
+    threads_min_elems::Int = 2
+    target_blocks::Int = 256
+    slice_serial_len::Int = 8
+    slice_column_inner::Int = 4
+    slice_min_chunk::Int = 16
+    slice_columns_len::Int = 64
+    slice_split_min::Int = 1 << 16
+    slice_split_tiles::Int = 4
+    reduce_then_scan::Bool = true
+    subgroups::Bool = true
+    wide_optional_flag::Bool = true
+end
+
+"""
+    scan_tuning(backend, T) -> ScanTuning
+
+The scan tuning for element type `T` (the running-value type the scan computes in; see
+[`accumulate!`](@ref)) on `backend`'s current device; see [`sort_tuning`](@ref) for the
+conventions.
+"""
+scan_tuning(::Backend, ::Type) = ScanTuning()
+tuning_type(::typeof(scan_tuning)) = ScanTuning
+# CPU devices (the host backend's, and OpenCL's CPU devices) implement sub-group operations with
+# barriers of the whole block, and keep a scanned tile in their caches for adding its prefix
+cpu_scan_tuning(; kwargs...) = ScanTuning(; reduce_then_scan=false, subgroups=false, kwargs...)
+scan_tuning(::HostBackend, ::Type) = cpu_scan_tuning()
+
+
+"""
+    resolve_scan(alg, backend, T, dims, S=T) -> Algorithm
+
+Resolve `alg` for a scan of element type `T` along `dims` (`nothing` for the whole array in
+linear order) on `backend`, whose kernels hold partial results of type `S` in local memory (an
+`Optional` when the operator has no known neutral element). Returns `ScanPrefixes`, `SliceScan`
+or `CPUThreads.Partitioned` with every field set, or throws an `ArgumentError`.
+"""
+function resolve_scan(alg::Algorithm, backend::Backend, ::Type{T}, dims,
+                      ::Type{S}=T) where {T, S}
+    t = tuning(scan_tuning, backend, T)
+    a = alg isa Auto ? select_scan(backend, dims) : alg
+    a = fill_defaults(a, t, S)
+    check_scan(a, backend, S, dims)
+    return a
+end
+
+function select_scan(backend, dims)
+    runs_threads(backend) && return CPUThreads.Partitioned()
+    return dims === nothing ? ScanPrefixes() : SliceScan()
+end
+
+function check_fields(a::Union{ScanPrefixes, SliceScan})
+    check_block_size(a)
+    check_positive(a, :items_per_thread)
+    nothing
+end
+
+# The size of a partial result of type `T` in the scans' local memory; types that kernels cannot
+# store, which `check_scan` rejects, get a placeholder
+scan_sizeof(::Type{T}) where {T} = kernel_storable(T) ? max(local_sizeof(T), 1) : 1
+
+# The largest number of items per thread whose tile fits the tuning's local-memory budget, next
+# to the block's `block_size` per-thread totals (hence the `- 1`), with the runs padded to
+# `tile_stride`. Block sizes that `check_scan` rejects get a placeholder.
+function default_items_per_thread(t::ScanTuning, block_size::Int, ::Type{T}) where {T}
+    1 <= block_size <= 1024 || return 1
+    slots = t.local_mem_bytes ÷ (block_size * scan_sizeof(T)) - 1
+    items = clamp(slots, 1, max(t.max_items, 1))
+    return tile_stride(T, items) <= slots ? items : max(items - 1, 1)
+end
+
+# The tuning's block size, lowered to a power of two whose tile of one item per thread and
+# per-thread totals, two partial results per thread, fit its local-memory budget (as CUB's
+# `MemBoundScaling`). It is not lowered below 2, as `ScanPrefixes` needs tiles of two elements,
+# so partial results of more than a quarter of the budget exceed it.
+function default_block_size(t::ScanTuning, ::Type{T}) where {T}
+    n = t.local_mem_bytes ÷ (2 * scan_sizeof(T))
+    return min(t.block_size, n < 2 ? 2 : prevpow(2, n))
+end
+
+function fill_defaults(a::A, t::ScanTuning,
+                       ::Type{T}) where {A <: Union{ScanPrefixes, SliceScan}, T}
+    block_size = something(a.block_size, default_block_size(t, T))
+    items_per_thread = isnothing(a.items_per_thread) ? default_items_per_thread(t, block_size, T) :
+                                                       a.items_per_thread
+    return A(block_size, items_per_thread)
+end
+fill_defaults(a::CPUThreads.Partitioned, t::ScanTuning, T) = fill_threads(a, t)
+fill_defaults(a::Algorithm, t::ScanTuning, T) =
+    throw(ArgumentError("$(algname(a)) is not a scan algorithm"))
+
+function check_scan(a::ScanPrefixes, backend, ::Type{T}, dims) where {T}
+    check_fields(a)
+    require_kernels(a, backend)
+    check_bits_eltype(a, T)
+    dims === nothing || throw(ArgumentError(
+        "$(algname(a)) scans whole arrays; scan along `dims` with `SliceScan` or `Auto()`"))
+    # ScanPrefixes scans its tiles' totals in tiles too, which a tile of one element never shrinks
+    check_tile(a; min=2)
+    nothing
+end
+
+function check_scan(a::SliceScan, backend, ::Type{T}, dims) where {T}
+    check_fields(a)
+    require_kernels(a, backend)
+    check_bits_eltype(a, T)
+    dims === nothing && throw(ArgumentError(
+        "SliceScan scans along `dims`; scan whole arrays with `ScanPrefixes` or `Auto()`"))
+    check_tile(a)
+    nothing
+end
+
+function check_scan(a::CPUThreads.Partitioned, backend, T, dims)
+    check_fields(a)
+    require_threads(a, backend)
+    # Each task's part must hold two elements for the exclusive scan's carries
+    a.min_elems >= 2 || throw(ArgumentError(
+        "CPUThreads.Partitioned: scans need `min_elems` of at least 2, got $(a.min_elems)"))
+    nothing
+end
+
+check_bits_eltype(a, ::Type{T}) where {T} = kernel_storable(T) || throw(ArgumentError(
+    "$(algname(a)): the element type $T is not a bits type or bits union, which the kernels need"))

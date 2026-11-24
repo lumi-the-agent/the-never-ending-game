@@ -1,0 +1,40 @@
+# The graph fixtures used by DNNKernels' tests, deliberately bound here as well
+# as in their owning runners.
+#
+# Artifacts are content-addressed, so an identical `git-tree-sha1` in two
+# `Artifacts.toml` files resolves to ONE directory in `~/.julia/artifacts` — this
+# costs a binding, not a download.
+#
+# Why duplicate rather than depend on the runners: five of this package's eight
+# test files were importing `SAM2Runner`/`MatAnyoneRunner` purely to obtain a
+# *fixture*. The pass tests (`foldoutcasts`, `constfold`, `plan`, `diagnostics`)
+# are tests of DNNKernels, and a test that lives away from its subject rots
+# quietly — but a kernel library whose suite cannot run without a model package
+# installed is backwards too. Binding the graphs here keeps the tests with what
+# they test and drops the dependency.
+#
+# The cost is that a re-export must update both files. `tools/make_artifacts.jl`
+# writes them together for that reason.
+[matanyone]
+git-tree-sha1 = "9369a61552c2e3141ac5f515e2f5475df2df4abc"
+lazy = true
+
+    [[matanyone.download]]
+    sha256 = "1b1dfd64eeffdea0c44f22ee873e1e755bfce632cbe434dbe93bdc7a060c9f9a"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/matanyone.tar.gz"
+
+[sam2-large]
+git-tree-sha1 = "495f67add8178497d11163d71e9d5929138b470b"
+lazy = true
+
+    [[sam2-large.download]]
+    sha256 = "1bcd6b66cd1800317563379886633e5a68a50c7e7886a223acc757a252b8d243"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/sam2-large.tar.gz"
+
+[kokoro]
+git-tree-sha1 = "e72003e9926bfa5f1b1061c7f32803918d8090a8"
+lazy = true
+
+    [[kokoro.download]]
+    sha256 = "fe2333483e6405b74aabaa8ae8d2767b8b630acfb6dbd9e57be9ba8e0ff3848e"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/kokoro.tar.gz"

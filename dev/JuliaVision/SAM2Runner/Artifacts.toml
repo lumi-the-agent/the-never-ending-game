@@ -1,0 +1,15 @@
+[sam2-large]
+git-tree-sha1 = "4131d81f998c35e3ab2ce9cc5eae0442965c0f26"
+lazy = true
+
+    [[sam2-large.download]]
+    sha256 = "9ce000faaec65445db52e522d4a9f134fd4a0db483bf18ac685f88781efdfd1e"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/sam2-large.tar.gz"
+
+[sam2-large-refs]
+git-tree-sha1 = "d9e330f072dfe2f50531f4fca885ffe0814f9af7"
+lazy = true
+
+    [[sam2-large-refs.download]]
+    sha256 = "22a58fbc8d895a53de74caf66312d86eb462ae7153e9c43b49af32b0146624b9"
+    url = "https://github.com/SimonDanisch/JuliaVision/releases/download/assets-v1/sam2-large-refs.tar.gz"

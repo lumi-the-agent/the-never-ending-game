@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "The sheet shows Truffle and Pickles as identical pink balls apart from the beret and scarf. Cumulus and Marshmallow are identical white balls apart from the hat.",
+      "severity": "medium",
+      "suggestion": "Keep #120 open, or split it so the remaining silhouette/model work stays tracked. Add a real silhouette test (a flat-coloured render of all 10, compared pairwise) before calling it done.",
+      "what": "Todo #120 is marked done, but its done-when (10 distinguishable silhouettes at 200 px, distinctive models) is not met. The bodies are still spheres with sticks, and the hats are the only per-individual difference. The sheep and the pigs differ mostly by hat colour, and the crab is still a flat blob from above. The author's own 'not done' note admits the missing models.",
+      "where": "plugins/outfits.jl; media/s30/outfits-sheet2.png"
+    },
+    {
+      "evidence": "results: passed 49, total 51. The Ball play message says Sprout is idle 0.41 m from the ball and 'at the kick: fetch: Hopscotch', so a fetcher was chosen but never moved.",
+      "severity": "medium",
+      "suggestion": "Find the leftover state (a mini game, interaction or follower from a previous test) and reset it in the tests. Correct the 'suite 50/50' claim.",
+      "what": "The full suite fails twice (Dance circle 'only 0 dancers', Ball play 'nobody ran after the ball'). The results file says 49/51, while the todo result says 50/50. Both tests pass alone, so they depend on state left by earlier tests. The author only added a diagnostic (todo #137) and did not fix the cause.",
+      "where": "tests/results/session-0030.json; tests/minigames.jl"
+    },
+    {
+      "evidence": "The single cloud is a small white smudge on a flat light-blue sky.",
+      "severity": "low",
+      "suggestion": "Add the sky gradient and make the browser clouds bigger or shaded.",
+      "what": "The browser sea fix works (blue up to the horizon at noon). The clouds are flat white blobs in the browser, with no sky gradient, and #135 is still open.",
+      "where": "media/browser-s30c/load-6s.png"
+    }
+  ],
+  "summary": "The hats, faces, blue browser sea and clouds are visible and cheap (outfits 0.7 ms median). Todo #120 is only partly met: the bodies are still the same spheres. The full suite is not green: 49/51.",
+  "superseded_by": "perfectionist-0030.json",
+  "verdict": "pass"
+}

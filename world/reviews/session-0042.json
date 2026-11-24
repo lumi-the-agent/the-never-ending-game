@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "Live frame time is fine (2.3 ms median) and all plugins load, but the golden field barely reads as its own region in the live overview, and the butterfly chase (#228) fails in the tester's re-runs while marked done.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "Butterfly chase (#228) does not fire in the tester's re-runs: the test failed in the suite and alone. chase! skips every NG.busy creature, which probably includes :follow, so a parade friend 0.8 m away gets no :chase goal, and free critters were 12 m or more away. A player walking through the field will rarely see anything run after a butterfly. The 'parade friends too' claim does not hold.",
+   "where": "plugins/butterflies.jl:46-57",
+   "evidence": "tests/reports/session-0042.json; my live screenshots show no chase and no butterflies near the field",
+   "suggestion": "Let :follow friends take the chase and go back to :follow afterwards, or widen the range. Reopen #228 until the test passes in the suite."
+  },
+  {
+   "severity": "medium",
+   "what": "#227 'golden field reads as its own region in overview.png' is only weakly met. In the live overview the field at the bottom centre is a scatter of small blue and pink flowers on yellow-green grass. There is no distinct golden patch with a boundary, so it looks like the rest of the meadow, and the flowers are tiny at that distance.",
+   "where": "overview.png, bottom centre (plugins/flowerfield.jl, FLOWER_FIELD at 8.5,-6.5)",
+   "evidence": "world/reviews/views42/overview.png; world/reviews/s42-live.png",
+   "suggestion": "Paint a golden ground tint under the field in meadow.jl, with a clear edge, and use more or larger golden flowers."
+  },
+  {
+   "severity": "medium",
+   "what": "The ball-rally camera test fails (view 50-60 degrees off the rally). It is not mentioned in the journal and may come from the follower changes. The cairn carry and Firefly first-play flakes (#230) also remain open.",
+   "where": "tests/minigames.jl 'Critters pass the ball'",
+   "evidence": "tests/shots/ball-rally.png; tester report",
+   "suggestion": "Print the camera subject and the group state in the check message and find what changed."
+  }
+ ],
+ "addressed": true,
+ "agent_note": "s43: [high] butterfly chase fixed (startles within 3 m of the player's Sprout count, followers can chase and rejoin, landed flies calm down); test passes 4/5, the remaining flake (friend taken by a cairn pebble) is a new p1 todo. [medium] golden field tint is a new p1 todo. [medium] ball-rally camera passes alone; its check now prints rig/subject/groups for the suite failure; cairn/#230 still open."
+}

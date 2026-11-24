@@ -1,0 +1,14 @@
+const ws = new WebSocket("ws://127.0.0.1:9222/session");
+let n = 0; const waiting = new Map(); const logs = [];
+ws.onmessage = ev => { const m = JSON.parse(ev.data); if (m.id && waiting.has(m.id)) { waiting.get(m.id)(m); waiting.delete(m.id); } else if (m.method === "log.entryAdded") logs.push(m.params.level + ": " + m.params.text); };
+const send = (method, params = {}) => new Promise((ok) => { const id = ++n; waiting.set(id, ok); ws.send(JSON.stringify({ id, method, params })); });
+await new Promise(r => ws.onopen = r);
+await send("session.new", { capabilities: {} });
+await send("session.subscribe", { events: ["log.entryAdded"] });
+const ctx = (await send("browsingContext.getTree", {})).result.contexts[0].context;
+await send("browsingContext.navigate", { context: ctx, url: "http://192.168.178.59:8790/", wait: "complete" });
+await new Promise(r => setTimeout(r, 10000));
+const r = await send("script.evaluate", { expression: "JSON.stringify({gl: !!document.createElement('canvas').getContext('webgl2'), canvases: document.querySelectorAll('canvas').length, body: document.body.innerText.slice(0,200)})", target: { context: ctx }, awaitPromise: true });
+console.log(JSON.stringify(r.result || r));
+console.log(logs.slice(0, 30).join("\n"));
+await send("session.end", {}); process.exit(0);

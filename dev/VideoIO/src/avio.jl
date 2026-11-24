@@ -1,0 +1,1865 @@
+# AVIcodec_type
+import Base: read, read!, show, close, eof, isopen, seek, seekstart
+
+export read,
+    read!,
+    read_raw,
+    read_raw!,
+    pump,
+    openvideo,
+    opencamera,
+    playvideo,
+    viewcam,
+    play,
+    gettime,
+    skipframe,
+    skipframes,
+    counttotalframes,
+    raw_frame_size,
+    out_frame_size,
+    raw_pixel_format,
+    out_bytes_size,
+    out_frame_eltype,
+    available_hw_devices,
+    available_hw_encoders,
+    hwaccel_available,
+    frame_metadata,
+    FrameMetadata,
+    VideoCorruptionError,
+    motion_vectors,
+    MotionVector,
+    correspondences
+
+"""
+    VideoCorruptionError(message)
+
+Exception thrown by [`openvideo`](@ref) / `decode` when the decoder reports
+a bitstream error, CRC failure, or corrupt frame flags while reading a video
+opened with `strict = true`. This indicates FFmpeg detected corruption that
+would otherwise result in error-concealed pixels.
+"""
+struct VideoCorruptionError <: Exception
+    message::String
+end
+
+Base.showerror(io::IO, e::VideoCorruptionError) =
+    print(io, "VideoCorruptionError: ", e.message)
+
+const ReaderBitTypes = Union{UInt8,UInt16}
+const ReaderNormedTypes = Normed{T} where {T<:ReaderBitTypes}
+const ReaderGrayTypes = Gray{T} where {T<:ReaderNormedTypes}
+const ReaderRgbTypes = RGB{T} where {T<:ReaderNormedTypes}
+const ReaderElTypes = Union{ReaderGrayTypes,ReaderRgbTypes,ReaderNormedTypes,ReaderBitTypes}
+const PermutedArray{T,N,perm,iperm,AA<:StridedArray} = Base.PermutedDimsArrays.PermutedDimsArray{T,N,perm,iperm,AA}
+const VidArray{T,N} = Union{StridedArray{T,N},PermutedArray{T,N}}
+
+const VidRawBuff = StridedArray{UInt8}
+
+const VIO_ALIGN = 32
+
+"""
+    available_hw_devices() -> Vector{Symbol}
+
+Return a list of hardware device type names (as `Symbol`s) supported by the
+current FFmpeg build. Each element is a valid value for the `hwaccel` keyword
+argument of `openvideo`.
+
+# Example
+```julia
+VideoIO.available_hw_devices()  # e.g. [:videotoolbox] on macOS
+```
+"""
+function available_hw_devices()
+    types = Symbol[]
+    t = AV_HWDEVICE_TYPE_NONE
+    while true
+        t = av_hwdevice_iterate_types(t)
+        t == AV_HWDEVICE_TYPE_NONE && break
+        name_ptr = av_hwdevice_get_type_name(t)
+        name_ptr != C_NULL && push!(types, Symbol(unsafe_string(name_ptr)))
+    end
+    return types
+end
+
+"""
+    available_hw_encoders() -> Vector{String}
+
+Return a list of hardware-accelerated video encoder names (as `String`s)
+available in the current FFmpeg build.
+
+# Example
+```julia
+VideoIO.available_hw_encoders()  # e.g. ["h264_videotoolbox", "hevc_videotoolbox"] on macOS
+```
+"""
+function available_hw_encoders()
+    encoders = String[]
+    opaque = Ref{Ptr{Cvoid}}(C_NULL)
+    while true
+        codec_ptr = av_codec_iterate(opaque)
+        codec_ptr == C_NULL && break
+        av_codec_is_encoder(codec_ptr) == 0 && continue
+        codec = AVCodecPtr(codec_ptr)
+        codec.type != AVMEDIA_TYPE_VIDEO && continue
+        is_hw = (codec.capabilities & AV_CODEC_CAP_HARDWARE) != 0
+        if !is_hw
+            # Also detect codecs with hw_config entries (e.g. h264_videotoolbox
+            # lacks AV_CODEC_CAP_HARDWARE but has hw_config). Require a real
+            # device_type to exclude SW codecs that also have hw_config entries.
+            # Iterate all config indices (not just 0) to avoid missing encoders
+            # whose primary hw config is not at index 0.
+            i = Cint(0)
+            while !is_hw
+                cfg_ptr = avcodec_get_hw_config(codec_ptr, i)
+                cfg_ptr == C_NULL && break
+                cfg = unsafe_load(cfg_ptr)
+                is_hw = cfg.device_type != AV_HWDEVICE_TYPE_NONE
+                i += Cint(1)
+            end
+        end
+        is_hw && push!(encoders, unsafe_string(codec.name))
+    end
+    return encoders
+end
+
+"""
+    hwaccel_available(sym::Symbol) -> Bool
+
+Return `true` if the hardware device type `sym` is both supported by the
+current FFmpeg build *and* functional on this machine (i.e. the underlying
+hardware or driver is present and can be opened).
+
+Unlike `available_hw_devices()`, which only reflects compile-time support,
+this function actually attempts to create the device context.
+
+# Example
+```julia
+VideoIO.hwaccel_available(:videotoolbox)  # true on macOS with Apple Silicon/Intel
+VideoIO.hwaccel_available(:vaapi)         # false on systems without GPU hardware
+```
+"""
+function hwaccel_available(sym::Symbol)
+    device_type = av_hwdevice_find_type_by_name(string(sym))
+    device_type == AV_HWDEVICE_TYPE_NONE && return false
+    hw_ctx = Ref{Ptr{AVBufferRef}}(C_NULL)
+    ret = av_hwdevice_ctx_create(hw_ctx, device_type, C_NULL, C_NULL, Cint(0))
+    ret < 0 && return false
+    av_buffer_unref(hw_ctx)
+    return true
+end
+
+function _vio_parse_hwaccel(sym::Symbol)
+    device_type = av_hwdevice_find_type_by_name(string(sym))
+    device_type == AV_HWDEVICE_TYPE_NONE &&
+        error("Hardware device type ':$(sym)' not found or not supported by this FFmpeg build. " *
+              "Available types: $(available_hw_devices())")
+    return device_type
+end
+
+abstract type StreamContext end
+
+# An audio-visual input stream/file
+mutable struct AVInput{I}
+    io::I
+    format_context::AVFormatContextPtr
+    avio_context::AVIOContextPtr
+    avio_ctx_buffer_size::UInt
+    packet::AVPacketPtr
+
+    unknown_indices::Vector{Int}
+    video_indices::Vector{Int}
+    audio_indices::Vector{Int}
+    data_indices::Vector{Int}
+    subtitle_indices::Vector{Int}
+    attachment_indices::Vector{Int}
+
+    listening::Set{Int}
+    stream_contexts::Dict{Int,StreamContext}
+
+    isopen::Bool
+    finished::Bool
+end
+
+function show(io::IO, avin::AVInput)
+    println(io, "AVInput(", avin.io, ", ...), with")
+    (len = length(avin.video_indices)) > 0 && println(io, "  $len video stream(s)")
+    (len = length(avin.audio_indices)) > 0 && println(io, "  $len audio stream(s)")
+    (len = length(avin.data_indices)) > 0 && println(io, "  $len data stream(s)")
+    (len = length(avin.subtitle_indices)) > 0 && println(io, "  $len subtitle stream(s)")
+    (len = length(avin.attachment_indices)) > 0 && println(io, "  $len attachment stream(s)")
+    return (len = length(avin.unknown_indices)) > 0 && println(io, "  $len unknown stream(s)")
+end
+
+const TRANSCODE = true
+const NO_TRANSCODE = false
+
+"""
+    MotionVector
+
+A single block motion vector exported by the decoder (see FFmpeg's
+`AVMotionVector`). Motion vectors describe where the predictor for a block in
+the current frame was taken from in a reference frame:
+
+    src_x = dst_x + motion_x / motion_scale
+    src_y = dst_y + motion_y / motion_scale
+
+# Fields
+- `source::Int32`: negative if the reference frame is in the past, positive if
+  it is in the future (B-frame backward prediction). Note that this does not
+  identify *which* reference frame was used.
+- `w::UInt8`, `h::UInt8`: width and height of the predicted block, in pixels
+- `src_x::Int16`, `src_y::Int16`: absolute source position (rounded to pixels).
+  Use [`src_position`](@ref) for the sub-pixel position.
+- `dst_x::Int16`, `dst_y::Int16`: absolute position of the block in the current frame
+- `flags::UInt64`: currently unused by FFmpeg
+- `motion_x::Int32`, `motion_y::Int32`: motion vector components, in
+  `1 / motion_scale` pixel units
+- `motion_scale::UInt16`: sub-pixel resolution of `motion_x`/`motion_y` (e.g. 4
+  for quarter-pel)
+"""
+struct MotionVector
+    source::Int32
+    w::UInt8
+    h::UInt8
+    src_x::Int16
+    src_y::Int16
+    dst_x::Int16
+    dst_y::Int16
+    flags::UInt64
+    motion_x::Int32
+    motion_y::Int32
+    motion_scale::UInt16
+end
+
+MotionVector(av::libffmpeg.AVMotionVector) = MotionVector(
+    av.source, av.w, av.h, av.src_x, av.src_y, av.dst_x, av.dst_y, av.flags,
+    av.motion_x, av.motion_y, av.motion_scale,
+)
+
+"""
+    displacement(mv::MotionVector) -> (dx, dy)
+
+Sub-pixel displacement from the destination block to its source in the
+reference frame, in pixels: `src = dst .+ displacement(mv)`.
+"""
+function displacement(mv::MotionVector)
+    if mv.motion_scale == 0 # defensive; FFmpeg always sets a nonzero scale
+        return (Float64(mv.src_x - mv.dst_x), Float64(mv.src_y - mv.dst_y))
+    end
+    return (mv.motion_x / Float64(mv.motion_scale), mv.motion_y / Float64(mv.motion_scale))
+end
+
+"""
+    dst_position(mv::MotionVector) -> (x, y)
+
+Position of the predicted block in the current frame, in pixels.
+"""
+dst_position(mv::MotionVector) = (Float64(mv.dst_x), Float64(mv.dst_y))
+
+"""
+    src_position(mv::MotionVector) -> (x, y)
+
+Sub-pixel position of the prediction source in the reference frame, in pixels.
+"""
+src_position(mv::MotionVector) = dst_position(mv) .+ displacement(mv)
+
+"""
+    correspondences(mvs::AbstractVector{MotionVector};
+                    past_only = true, min_block_size = 4,
+                    max_displacement = Inf, frame_size = nothing,
+                    border = 0) -> (dst::Matrix{Float64}, src::Matrix{Float64})
+
+Convert motion vectors into point correspondences suitable for transform
+fitting (e.g. with `VideoIO.VideoRegistration`), applying basic plausibility
+filters. Source positions are computed at sub-pixel resolution from
+`motion_x / motion_scale`.
+
+Filters:
+- `past_only`: drop vectors whose reference frame is in the future
+  (`source > 0`, i.e. B-frame backward prediction).
+- `min_block_size`: drop vectors from blocks smaller than this (either
+  dimension); small partitions tend to be unstable.
+- `max_displacement`: drop vectors whose displacement magnitude (pixels)
+  exceeds this.
+- `frame_size = (width, height)` with `border`: drop vectors whose destination
+  or source point lies outside the frame (shrunk by `border` pixels on each
+  side). Requires `frame_size` to be provided.
+
+Returns `n×2` matrices `dst` (current-frame points) and `src`
+(reference-frame points), row-aligned, with columns `(x, y)` in pixels.
+"""
+function correspondences(
+    mvs::AbstractVector{MotionVector};
+    past_only::Bool = true,
+    min_block_size::Integer = 4,
+    max_displacement::Real = Inf,
+    frame_size::Union{Nothing,Tuple{<:Real,<:Real}} = nothing,
+    border::Real = 0,
+)
+    dst = Float64[]
+    src = Float64[]
+    for mv in mvs
+        past_only && mv.source > 0 && continue
+        (mv.w < min_block_size || mv.h < min_block_size) && continue
+        dx, dy = displacement(mv)
+        hypot(dx, dy) > max_displacement && continue
+        x, y = dst_position(mv)
+        if frame_size !== nothing
+            w, h = frame_size
+            inframe(px, py) = border <= px <= w - border && border <= py <= h - border
+            (inframe(x, y) && inframe(x + dx, y + dy)) || continue
+        end
+        push!(dst, x, y)
+        push!(src, x + dx, y + dy)
+    end
+    n = length(dst) ÷ 2
+    return permutedims(reshape(dst, 2, n)), permutedims(reshape(src, 2, n))
+end
+
+# Read AV_FRAME_DATA_MOTION_VECTORS side data from a decoded frame. Returns an
+# empty vector when the frame carries none (e.g. I-frames).
+function extract_motion_vectors(frame)
+    sd = av_frame_get_side_data(frame, libffmpeg.AV_FRAME_DATA_MOTION_VECTORS)
+    check_ptr_valid(sd, false) || return MotionVector[]
+    sd_loaded = unsafe_load(sd)
+    n = Int(sd_loaded.size ÷ sizeof(libffmpeg.AVMotionVector))
+    mvs = Vector{MotionVector}(undef, n)
+    data = Ptr{libffmpeg.AVMotionVector}(sd_loaded.data)
+    for i in 1:n
+        mvs[i] = MotionVector(unsafe_load(data, i))
+    end
+    return mvs
+end
+
+mutable struct VideoReader{transcode,T<:GraphType,I} <: StreamContext
+    avin::AVInput{I}
+    stream_index0::Int
+
+    codec_context::AVCodecContextPtr
+
+    frame_queue::Vector{Vector{UInt8}}
+    frame_graph::T
+    graph_input_occupied::Bool
+    bits_per_result_pixel::Int
+
+    flush::Bool
+    finished::Bool
+    last_consumed_pts::Int64  # Track PTS of last frame returned to user
+    last_pict_type::AVPictureType # Picture type of last frame returned to user
+    last_keyframe::Bool           # Whether last frame returned to user was a keyframe
+    input_pix_fmt::Cint       # Effective sw pixel format feeding the frame graph
+    hw_recv_frame::AVFramePtr # AVFramePtr(C_NULL) for SW; allocated frame for HW
+    _swscale_options::OptionsT    # Saved for HW format rebuild
+    _sws_color_options::OptionsT  # Saved for HW format rebuild
+    strict::Bool                  # Throw VideoCorruptionError on decoder bitstream errors
+    export_mvs::Bool              # Decoder exports motion vector side data
+    mv_queue::Vector{Vector{MotionVector}} # MVs of decoded-but-unconsumed frames (FIFO, parallels frame queue)
+    last_motion_vectors::Vector{MotionVector} # MVs of last frame returned to user
+    meta_queue::Vector{Tuple{Int64,AVPictureType,Bool}} # (pts, pict_type, keyframe) of decoded-but-unconsumed frames (FIFO)
+end
+
+"""
+    load(filename::String, args...; kwargs...)
+
+Load video file `filename` into memory as vector of image arrays, setting `args` and `kwargs` on the `openvideo` process.
+"""
+function load(filename::String, args...; kwargs...)
+    openvideo(filename, args...; kwargs...) do io
+        return collect(io)
+    end
+end
+
+show(io::IO, vr::VideoReader) = print(io, "VideoReader(...)")
+
+function iterate(r::VideoReader, state = 0)
+    eof(r) && return
+    return read(r), state + 1
+end
+
+is_finished(r::VideoReader) = r.finished
+
+IteratorSize(::Type{<:VideoReader}) = Base.SizeUnknown()
+
+IteratorEltype(::Type{<:VideoReader}) = Base.EltypeUnknown()
+
+convert(::Type{Rational{T}}, r::AVRational) where {T} = Rational{T}(r.num, r.den)
+convert(::Type{Rational}, r::AVRational) = Rational(r.num, r.den)
+convert(::Type{AVRational}, r::Rational) = AVRational(numerator(r), denominator(r))
+
+# Pump input for data
+function pump(avin::AVInput)
+    while avin.isopen && !avin.finished
+        ret = disable_sigint() do
+            return av_read_frame(avin.format_context, avin.packet)
+        end
+
+        if ret < 0
+            if ret == VIO_AVERROR_EOF
+                avin.finished = true
+                break
+            elseif ret == -Libc.EAGAIN
+                # Nothing ready yet - for live streams, this is normal
+                # Return -1 to indicate no frame available right now
+                return -1
+            else
+                # Real error - treat as EOF
+                avin.finished = true
+                break
+            end
+        end
+        stream_index = avin.packet.stream_index
+        if stream_index in avin.listening
+            # Decode the packet, and check if the frame is complete
+            r = avin.stream_contexts[stream_index]
+            decode(r, avin.packet)
+            av_packet_unref(avin.packet)
+
+            # If the frame is complete, we're done
+            frame_is_queued(r) && return Int(stream_index)
+        else
+            # If we're not listening to this stream, skip it
+            av_packet_unref(avin.packet)
+        end
+    end
+    if avin.finished
+        for (stream_index, r) in pairs(avin.stream_contexts)
+            if !r.finished
+                decode(r, C_NULL) # Flush packet
+                r.flush = true
+                frame_is_queued(r) && return stream_index
+            end
+        end
+    end
+    return -1
+end
+
+pump(r::StreamContext) = pump(r.avin)
+
+function pump_until_frame(r, err = false)
+    while !frame_is_queued(r)
+        idx = pump(r.avin)
+        if idx == r.stream_index0
+            break
+        elseif idx == -1
+            # av_read_frame returned EAGAIN (nothing ready yet) or EOF
+            if r.avin.finished
+                # Real EOF - no more frames coming
+                err ? throw(EOFError()) : return false
+            else
+                # EAGAIN - nothing ready yet, wait a bit and retry
+                sleep(0.01)  # 10ms as recommended by FFmpeg docs
+                continue
+            end
+        end
+        # idx is some other stream index, continue pumping
+    end
+    return true
+end
+
+# This will point to _read_packet, but is set in __init__()
+const read_packet = Ref{Ptr{Cvoid}}(C_NULL)
+
+function _read_packet(avin_ptr::Ptr, pbuf::Ptr{UInt8}, buf_size::Cint)
+    avin = unsafe_pointer_to_objref(avin_ptr)
+    out = unsafe_wrap(Array, pbuf, (buf_size,))
+    return convert(Cint, readbytes!(avin.io, out))
+end
+
+function AVIOContextPtr(avin::AVInput{<:IO})
+    avin_ptr = pointer_from_objref(avin)
+    return AVIOContextPtr(avin.avio_ctx_buffer_size, avin_ptr, read_packet[])
+end
+
+function open_avinput(avin::AVInput, io::IO, input_format = C_NULL, options = C_NULL)
+    !isreadable(io) && error("IO not readable")
+
+    # These allow control over how much of the stream to consume when
+    # determining the stream type
+    # TODO: Change these defaults if necessary, or allow user to set
+    #av_opt_set(avin.format_context "probesize", "100000000", 0)
+    #av_opt_set(avin.format_context, "analyzeduration", "1000000", 0)
+
+    # Allocate the io buffer used by AVIOContext
+    # Must be done with av_malloc, because it could be reallocated
+    avio_context = AVIOContextPtr(avin)
+    avin.avio_context = avio_context
+    avin.format_context.pb = @preserve avio_context unsafe_convert(Ptr{AVIOContext}, avio_context)
+
+    # "Open" the input
+    ret = avformat_open_input(avin.format_context, C_NULL, input_format, options)
+    if ret != 0
+        error("Unable to open input: $(av_error_string(ret))")
+    end
+
+    return nothing
+end
+
+function open_avinput(avin::AVInput, source::AbstractString, input_format = C_NULL, options = C_NULL)
+    ret = avformat_open_input(avin.format_context, source, input_format, options)
+    ret != 0 && error("Could not open $source: $(av_error_string(ret))")
+    return nothing
+end
+
+function AVInput(
+    source::T,
+    input_format = C_NULL,
+    options = C_NULL;
+    avio_ctx_buffer_size = 4096, # recommended value by FFMPEG documentation
+) where {T<:Union{IO,AbstractString}}
+
+    # Register all codecs and formats
+
+    packet = AVPacketPtr()
+    format_context = AVFormatContextPtr()
+    avio_context = AVIOContextPtr(C_NULL)
+
+    # Allocate this object (needed to pass into AVIOContext in open_avinput)
+    avin = AVInput{T}(
+        source,
+        format_context,
+        avio_context,
+        avio_ctx_buffer_size,
+        packet,
+        [Int[] for i in 1:6]...,
+        Set(Int[]),
+        Dict{Int,StreamContext}(),
+        false,
+        false,
+    )
+
+    # Set up the format context and open the input, based on the type of source
+    open_avinput(avin, source, input_format, options)
+    avin.isopen = true
+
+    # Get the stream information
+    ret = avformat_find_stream_info(avin.format_context, C_NULL)
+    ret < 0 && error("Unable to find stream information")
+
+    for i in 1:format_context.nb_streams
+        codec_type = format_context.streams[i].codecpar.codec_type
+        target_array =
+            codec_type == AVMEDIA_TYPE_VIDEO ? avin.video_indices :
+            codec_type == AVMEDIA_TYPE_AUDIO ? avin.audio_indices :
+            codec_type == AVMEDIA_TYPE_DATA ? avin.data_indices :
+            codec_type == AVMEDIA_TYPE_SUBTITLE ? avin.subtitle_indices :
+            codec_type == AVMEDIA_TYPE_ATTACHMENT ? avin.attachment_indices : avin.unknown_indices
+        push!(target_array, i - 1)
+        # Set the stream to discard all packets. Individual StreamContexts can
+        # re-enable streams.
+        format_context.streams[i].discard = AVDISCARD_ALL
+    end
+    return avin
+end
+
+get_stream(avin::AVInput, stream_index0) = avin.format_context.streams[stream_index0+1]
+get_stream(r::VideoReader) = get_stream(r.avin, r.stream_index0)
+
+function VideoReader(
+    avin::AVInput{I},
+    video_stream = 1;
+    transcode::Bool = true,
+    target_format::Union{Nothing,Cint} = nothing,
+    pix_fmt_loss_flags = 0,
+    target_colorspace_details = nothing,
+    allow_vio_gray_transform = true,
+    swscale_options::OptionsT = (;),
+    sws_color_options::OptionsT = (;),
+    thread_count::Union{Nothing,Int} = Sys.CPU_THREADS,
+    hwaccel::Union{Nothing,Symbol} = nothing,
+    strict::Bool = false,
+    export_mvs::Bool = false,
+) where {I}
+    export_mvs && hwaccel !== nothing &&
+        error("`export_mvs` requires software decoding and cannot be combined with `hwaccel`")
+    bad_px_type = transcode && target_format !== nothing && !is_pixel_type_supported(target_format)
+    bad_px_type && error("Unsupported pixel format $target_format")
+
+    1 <= video_stream <= length(avin.video_indices) || error("video stream $video_stream not found")
+
+    stream_index0 = avin.video_indices[video_stream]
+
+    # Find decoder
+    stream = get_stream(avin, stream_index0)
+    codec = avcodec_find_decoder(stream.codecpar.codec_id)
+    check_ptr_valid(codec, false) || error("Failed to find decoder")
+
+    # Tell the demuxer to retain packets from this stream
+    stream.discard = AVDISCARD_DEFAULT
+
+    # Create decoder context
+    codec_context = AVCodecContextPtr(codec) # Allocates
+    codec_context.thread_count = thread_count === nothing ? codec_context.thread_count : thread_count
+    # Transfer parameters to decoder context
+    ret = avcodec_parameters_to_context(codec_context, stream.codecpar)
+    ret < 0 && error("Could not copy the codec parameters to the decoder")
+    codec_context.pix_fmt < 0 && error("Unknown pixel format")
+    stream_pix_fmt = codec_context.pix_fmt  # snapshot before hwaccel may change it
+
+    # Strict mode: ask the decoder to fail loudly on bitstream/CRC errors
+    # instead of silently concealing them. Must be set before avcodec_open2.
+    if strict
+        codec_context.err_recognition = Int32(codec_context.err_recognition |
+            libffmpeg.AV_EF_EXPLODE | libffmpeg.AV_EF_CRCCHECK | libffmpeg.AV_EF_BITSTREAM)
+    end
+
+    # Ask the decoder to export motion vectors as frame side data. Must be set
+    # before avcodec_open2.
+    if export_mvs
+        codec_context.flags2 = Cint(codec_context.flags2 | libffmpeg.AV_CODEC_FLAG2_EXPORT_MVS)
+    end
+
+    # Set up hardware acceleration if requested
+    device_type = AV_HWDEVICE_TYPE_NONE
+    if hwaccel !== nothing
+        device_type = _vio_parse_hwaccel(hwaccel)
+        hw_ctx = Ref{Ptr{AVBufferRef}}(C_NULL)
+        ret_hw = av_hwdevice_ctx_create(hw_ctx, device_type, C_NULL, C_NULL, Cint(0))
+        ret_hw < 0 && error("Failed to create '$hwaccel' HW device context — " *
+            "hardware may not be present or driver not loaded. " *
+            "Use `VideoIO.hwaccel_available(:$hwaccel)` to check before use.")
+        codec_context.hw_device_ctx = av_buffer_ref(hw_ctx[])
+        av_buffer_unref(hw_ctx)  # release our ref; codec holds its own
+    end
+
+    # Open the decoder
+    ret = disable_sigint() do
+        lock(VIO_LOCK) do
+            return avcodec_open2(codec_context, codec, C_NULL)
+        end
+    end
+    ret < 0 && error("Could not open codec")
+
+    # Determine the effective software pixel format that will feed the frame graph.
+    # With hwaccel the codec may update pix_fmt to the HW format; sw_pix_fmt holds
+    # the software format that frames will be in after av_hwframe_transfer_data.
+    # When sw_pix_fmt is not yet set (NONE), use a device-specific known native format:
+    # VideoToolbox always downloads to NV12 (semi-planar YUV) for 8-bit content.
+    input_pix_fmt = if device_type != AV_HWDEVICE_TYPE_NONE
+        sw_fmt = codec_context.sw_pix_fmt
+        if sw_fmt != AV_PIX_FMT_NONE
+            sw_fmt
+        elseif device_type == AV_HWDEVICE_TYPE_VIDEOTOOLBOX
+            AV_PIX_FMT_NV12
+        else
+            stream_pix_fmt
+        end
+    else
+        stream_pix_fmt
+    end
+    hw_recv_frame = device_type != AV_HWDEVICE_TYPE_NONE ? AVFramePtr() : AVFramePtr(C_NULL)
+
+    if target_format === nothing # automatically determine format
+        dst_pix_fmt, pix_fmt_loss = _vio_determine_best_pix_fmt(input_pix_fmt; loss_flags = pix_fmt_loss_flags)
+    else
+        dst_pix_fmt = target_format
+    end
+
+    if target_colorspace_details === nothing
+        colorspace_details = get(VIO_DEFAULT_TRANSFER_COLORSPACE_DETAILS, dst_pix_fmt, VIO_DEFAULT_COLORSPACE_DETAILS)
+    else
+        colorspace_details = target_colorspace_details
+    end
+    bit_depth, padded_bits_per_pixel = pix_fmt_to_bits_per_pixel(dst_pix_fmt)
+    width = codec_context.width
+    height = codec_context.height
+
+    use_vio_gray_transform =
+        transcode &&
+        input_pix_fmt == dst_pix_fmt &&
+        allow_vio_gray_transform &&
+        dst_pix_fmt in VIO_GRAY_SCALE_TYPES &&
+        colorspace_details.color_range != codec_context.color_range
+
+    @debug "use_vio_gray_transform" use_vio_gray_transform
+    @debug "transcode" transcode
+    @debug "pixel format" input_pix_fmt dst_pix_fmt (input_pix_fmt == dst_pix_fmt)
+    @debug "allow transform" allow_vio_gray_transform
+    @debug "allowed pix format" (dst_pix_fmt in VIO_GRAY_SCALE_TYPES)
+    @debug "color_range" colorspace_details.color_range codec_context.color_range (
+        colorspace_details.color_range != codec_context.color_range
+    )
+
+    if use_vio_gray_transform
+        frame_graph = GrayTransform()
+        set_basic_frame_properties!(frame_graph.dstframe, width, height, dst_pix_fmt)
+        frame_graph.src_depth = frame_graph.dst_depth = bit_depth
+        frame_graph.dstframe.color_range = colorspace_details.color_range
+    elseif !transcode || input_pix_fmt == dst_pix_fmt
+        frame_graph = AVFramePtr()
+    else
+        frame_graph = SwsTransform(
+            width,
+            height,
+            input_pix_fmt,
+            codec_context.color_primaries,
+            codec_context.color_range,
+            dst_pix_fmt,
+            colorspace_details.color_primaries,
+            colorspace_details.color_range,
+            sws_color_options,
+            swscale_options,
+        )
+        set_basic_frame_properties!(frame_graph.dstframe, width, height, dst_pix_fmt)
+        # Store destination colorspace details on the frame so _vio_rebuild_sws_for_hw!
+        # can recover them without falling back to format-derived defaults.
+        frame_graph.dstframe.color_range = colorspace_details.color_range
+        frame_graph.dstframe.color_primaries = colorspace_details.color_primaries
+    end
+
+    vr = VideoReader{transcode,typeof(frame_graph),I}(
+        avin,
+        stream_index0,
+        codec_context,
+        Vector{UInt8}[],
+        frame_graph,
+        false,
+        padded_bits_per_pixel,
+        false,
+        false,
+        AV_NOPTS_VALUE,  # Initialize last_consumed_pts to no timestamp
+        AV_PICTURE_TYPE_NONE,  # Initialize last_pict_type to none
+        false,  # Initialize last_keyframe to false
+        input_pix_fmt,
+        hw_recv_frame,
+        swscale_options,
+        sws_color_options,
+        strict,
+        export_mvs,
+        Vector{MotionVector}[],
+        MotionVector[],
+        Tuple{Int64,AVPictureType,Bool}[],
+    )
+
+    push!(avin.listening, stream_index0)
+    avin.stream_contexts[stream_index0] = vr
+
+    return vr
+end
+
+VideoReader(s::Union{IO,AbstractString}, args...; kwargs...) = VideoReader(AVInput(s), args...; kwargs...)
+
+# a convenience function for getting the aspect ratio
+function aspect_ratio(f::VideoReader)
+    aspect_num = f.codec_context.sample_aspect_ratio.num
+    aspect_den = f.codec_context.sample_aspect_ratio.den
+    aspect_ratio = (aspect_den == 0) ? Cint(0) // Cint(1) : aspect_num // aspect_den
+    # if the stored aspect ratio is nonsense then we default to one. OBS, this
+    # might still be wrong for some videos and an unnecessary test for most
+    if iszero(aspect_ratio) || isnan(aspect_ratio) || isinf(aspect_ratio)
+        fixed_aspect = 1 // 1
+    else
+        fixed_aspect = aspect_ratio
+    end
+    return fixed_aspect
+end
+
+# From https://www.ffmpeg.org/doxygen/trunk/structAVCodecContext.html
+#=
+# time_base
+
+This is the fundamental unit of time (in seconds) in terms of which frame timestamps are represented.
+For fixed-fps content, timebase should be 1/framerate and timestamp increments should be identically 1. This often, but not always is the inverse of the frame rate or field rate for video. 1/time_base is not the average frame rate if the frame rate is not constant.
+Like containers, elementary streams also can store timestamps, 1/time_base is the unit in which these timestamps are specified. As example of such codec time base see ISO/IEC 14496-2:2001(E) vop_time_increment_resolution and fixed_vop_rate (fixed_vop_rate == 0 implies that it is different from the framerate)
+
+# ticks_per_frame
+
+For some codecs, the time base is closer to the field rate than the frame rate.
+Most notably, H.264 and MPEG-2 specify time_base as half of frame duration if no telecine is used ...
+Set to time_base ticks per frame. Default 1, e.g., H.264/MPEG-2 set it to 2.
+=#
+"""
+    framerate(f::VideoReader)
+
+Read the framerate of a VideoReader object.
+"""
+function framerate(f::VideoReader)
+    # Try codec_context time_base first
+    # NOTE: In modern FFmpeg (4+), codec_context.time_base is primarily used for encoding
+    # and is marked as unused (and is often 0/1) for decoding. This path may not be reachable with modern video files.
+    # The fallback paths below using stream.r_frame_rate/avg_frame_rate are more reliable.
+    # See: https://ffmpeg.org/doxygen/trunk/structAVCodecContext.html#ab7bfeb9fa5840aac090e2b0bd0ef7589
+    tb = f.codec_context.time_base
+    if tb.num != 0
+        # FFmpeg 8+ deprecated ticks_per_frame in favor of AV_CODEC_PROP_FIELDS for decoding.
+        # See: https://github.com/FFmpeg/FFmpeg/commit/7d1d61cc5f57708434ba720b03234b3dd93a4d1e
+        # For field-based codecs (H.264/MPEG-2), the time_base represents field duration,
+        # so we divide by 2 to get frame rate. Check AV_CODEC_PROP_FIELDS flag via codec_descriptor.
+        ticks = 1  # default for progressive video
+        if f.codec_context.codec_descriptor != C_NULL
+            ticks = (f.codec_context.codec_descriptor.props & AV_CODEC_PROP_FIELDS) == 0 ? 1 : 2
+        end
+        fps = tb.den // tb.num // ticks
+        if isfinite(fps) && fps > 0
+            return fps
+        end
+    end
+
+    # Fallback to stream r_frame_rate if codec_context time_base is invalid
+    stream = f.avin.format_context.streams[f.stream_index0 + 1]
+    rfr = stream.r_frame_rate
+    if rfr.den != 0
+        fps = rfr.num // rfr.den
+        if isfinite(fps) && fps > 0
+            return fps
+        end
+    end
+
+    # Last resort: try avg_frame_rate
+    afr = stream.avg_frame_rate
+    if afr.den != 0
+        fps = afr.num // afr.den
+        if isfinite(fps) && fps > 0
+            return fps
+        end
+    end
+
+    # If all else fails, throw an error
+    error("Unable to determine valid framerate from codec_context.time_base, stream.r_frame_rate, or stream.avg_frame_rate")
+end
+height(f::VideoReader) = f.codec_context.height
+width(f::VideoReader) = f.codec_context.width
+
+"""
+    FrameMetadata
+
+Metadata about a decoded video frame.
+
+# Fields
+- `pict_type::Char`: Frame type ('I' for keyframe, 'P' for predicted, 'B' for
+  bidirectional, 'S'/'i'/'p' for SVC-P/SI/SP, '?' if unknown)
+- `is_keyframe::Bool`: Whether this frame is a keyframe (I-frame)
+- `pts::Int64`: Presentation timestamp
+"""
+struct FrameMetadata
+    pict_type::Char
+    is_keyframe::Bool
+    pts::Int64
+end
+
+function pict_type_char(pict_type_val)
+    if pict_type_val == AV_PICTURE_TYPE_I
+        'I'
+    elseif pict_type_val == AV_PICTURE_TYPE_P
+        'P'
+    elseif pict_type_val == AV_PICTURE_TYPE_B
+        'B'
+    elseif pict_type_val == AV_PICTURE_TYPE_S
+        'S'
+    elseif pict_type_val == AV_PICTURE_TYPE_SI
+        'i'  # lowercase for SI
+    elseif pict_type_val == AV_PICTURE_TYPE_SP
+        'p'  # lowercase for SP
+    else
+        '?'
+    end
+end
+
+"""
+    frame_metadata(r::VideoReader) -> FrameMetadata
+
+Get metadata about the most recently read frame.
+
+Returns frame type, keyframe status, and presentation timestamp. This is useful
+for determining GOP structure and recovery points after decoding errors.
+
+# Example
+```julia
+video = openvideo("video.mp4")
+frame = read(video)
+meta = frame_metadata(video)
+if meta.is_keyframe
+    println("Frame is a keyframe (", meta.pict_type, "-frame)")
+end
+```
+
+# Note
+This reflects the last frame returned to the user by `read`/`read!`. It is reset
+after seeking and is undefined before the first frame has been read.
+"""
+function frame_metadata(r::VideoReader)
+    return FrameMetadata(pict_type_char(r.last_pict_type), r.last_keyframe, r.last_consumed_pts)
+end
+
+"""
+    motion_vectors(r::VideoReader) -> Vector{MotionVector}
+
+Return the decoder motion vectors for the most recently read frame.
+
+The video must have been opened with `export_mvs = true` (see [`openvideo`](@ref)),
+otherwise an error is thrown. Returns an empty vector for frames without motion
+vector side data (e.g. I-frames, or codecs that do not export motion vectors).
+
+Motion vectors are the encoder's *compression decisions*, not measured optical
+flow: they are block-based, may reference non-adjacent frames, and can be
+missing or misleading around scene cuts and intra-coded regions. See the
+(experimental) `VideoIO.VideoRegistration` module for robust global-motion
+estimation from these vectors.
+
+# Example
+```julia
+video = openvideo("video.mp4", export_mvs = true)
+frame = read(video)
+mvs = motion_vectors(video)
+```
+
+# Note
+This reflects the last frame returned to the user by `read`/`read!`. It is
+reset after seeking and is empty before the first frame has been read.
+"""
+function motion_vectors(r::VideoReader)
+    r.export_mvs || error(
+        "Motion vector export not enabled. Open the video with `export_mvs = true`.",
+    )
+    return r.last_motion_vectors
+end
+
+# Does not check input size, meant for internal use only
+function stash_graph_input!(imgbuf, r::VideoReader, align = VIO_ALIGN)
+    frame = graph_input_frame(r)
+    av_image_copy_to_buffer(
+        imgbuf,
+        length(imgbuf),
+        Ref(frame.data),
+        Ref(frame.linesize),
+        r.input_pix_fmt,
+        r.codec_context.width,
+        r.codec_context.height,
+        align,
+    )
+    return imgbuf
+end
+
+stash_graph_input(r, align = VIO_ALIGN) = stash_graph_input!(Vector{UInt8}(undef, out_bytes_size(r, align)), r, align)
+
+# Copy the planes stashed in `imgbuf` (see `stash_graph_input!`) into a fresh
+# buffer owned by the graph input frame.
+function unpack_stashed_planes!(r::VideoReader, imgbuf)
+    frame = graph_input_frame(r)
+    width = r.codec_context.width
+    height = r.codec_context.height
+    av_frame_unref(frame)
+    set_basic_frame_properties!(frame, width, height, r.input_pix_fmt)
+    src_data = Vector{Ptr{UInt8}}(undef, 8)
+    src_linesize = Vector{Cint}(undef, 8)
+    ret = av_image_fill_arrays(src_data, src_linesize, imgbuf, r.input_pix_fmt, width, height, VIO_ALIGN)
+    ret < 0 && error("Could not interpret stashed frame data: $(av_error_string(ret))")
+    GC.@preserve imgbuf av_image_copy(
+        convert(Ptr{Ptr{UInt8}}, field_ptr(frame, :data)),
+        convert(Ptr{Cint}, field_ptr(frame, :linesize)),
+        src_data,
+        src_linesize,
+        r.input_pix_fmt,
+        width,
+        height,
+    )
+    return r
+end
+
+# Helper function to check decode operation return codes in strict mode
+function check_decode_return(r::VideoReader, ret::Integer, where::AbstractString)
+    if ret < 0 && ret != -Libc.EAGAIN
+        # AVERROR_INVALIDDATA is defined as UInt32, but FFmpeg returns Int32
+        # Convert to signed for comparison
+        if r.strict && ret == reinterpret(Int32, libffmpeg.AVERROR_INVALIDDATA)
+            throw(VideoCorruptionError("$where: bitstream corruption detected: $(av_error_string(ret))"))
+        end
+        error("$where: $(av_error_string(ret))")
+    end
+end
+
+function decode(r::VideoReader, packet)
+    # Do we already have a complete frame that hasn't been consumed?
+    r.finished && return
+    if graph_blocked(r)
+        push!(r.frame_queue, stash_graph_input(r))
+        remove_graph_input!(r)
+    end
+    pret = 0
+    if !r.flush
+        pret = avcodec_send_packet(r.codec_context, packet)
+        check_decode_return(r, pret, "avcodec_send_packet")
+    end
+    recv_frame = check_ptr_valid(r.hw_recv_frame, false) ? r.hw_recv_frame : graph_input_frame(r)
+    fret = avcodec_receive_frame(r.codec_context, recv_frame)
+    if fret == 0
+        if check_ptr_valid(r.hw_recv_frame, false)
+            if check_ptr_valid(r.hw_recv_frame.hw_frames_ctx, false)
+                # True hardware frame — download from GPU surface to CPU memory.
+                # Leave dst->format at AV_PIX_FMT_NONE (-1) so av_hwframe_transfer_data
+                # auto-selects the sw_format from hw_frames_ctx (FFmpeg ≥7.0 behaviour).
+                ret = av_hwframe_transfer_data(graph_input_frame(r), r.hw_recv_frame, Cint(0))
+                av_frame_unref(r.hw_recv_frame)
+                ret < 0 && error("Could not transfer HW frame to CPU: $(av_error_string(ret)) [code $ret]")
+            else
+                # hw_frames_ctx is not set — HW decoder fell back to software for this
+                # frame (e.g. VideoToolbox on very small or unsupported content).
+                # The frame is already CPU-accessible; use it directly.
+                av_frame_move_ref(graph_input_frame(r), r.hw_recv_frame)
+            end
+            # Lazily fix the SwsTransform / input_pix_fmt if the actual sw_format
+            # differs from our initial guess (e.g. VT returns YUVJ420P not NV12).
+            actual_sw_fmt = Cint(graph_input_frame(r).format)
+            if actual_sw_fmt != r.input_pix_fmt
+                if r.frame_graph isa SwsTransform
+                    _vio_rebuild_sws_for_hw!(r, actual_sw_fmt)
+                else
+                    # No SwsTransform to update; just track the real format so that
+                    # raw_pixel_format(), stash_graph_input!, and unpack_stashed_planes!
+                    # all use the correct format (affects transcode=false paths).
+                    r.input_pix_fmt = actual_sw_fmt
+                end
+            end
+        end
+        # In strict mode, check if the decoded frame is marked as corrupt
+        if r.strict
+            frame = graph_input_frame(r)
+            if (frame.flags & libffmpeg.AV_FRAME_FLAG_CORRUPT) != 0
+                throw(VideoCorruptionError("Decoded frame marked corrupt (AV_FRAME_FLAG_CORRUPT)"))
+            end
+            if frame.decode_error_flags != 0
+                throw(VideoCorruptionError("Decoded frame has decode errors (decode_error_flags=$(frame.decode_error_flags))"))
+            end
+        end
+        # Capture motion vector side data now: it is lost if the frame is later
+        # stashed to the byte-buffer frame queue. Consumed FIFO alongside frames.
+        r.export_mvs && push!(r.mv_queue, extract_motion_vectors(graph_input_frame(r)))
+        # Likewise timestamps and picture type: a stashed frame is raw bytes only.
+        let frame = graph_input_frame(r)
+            push!(r.meta_queue, (frame.pts, frame.pict_type, (frame.flags & AV_FRAME_FLAG_KEY) != 0))
+        end
+        r.graph_input_occupied = true
+    elseif fret == VIO_AVERROR_EOF
+        r.finished = true
+    elseif fret != -Libc.EAGAIN
+        check_decode_return(r, fret, "avcodec_receive_frame")
+    end
+    if !r.finished && !r.flush && pret == -Libc.EAGAIN
+        pret2 = avcodec_send_packet(r.codec_context, packet)
+        check_decode_return(r, pret2, "avcodec_send_packet (retry)")
+    end
+    return
+end
+
+graph_input_frame(r::VideoReader) = graph_input_frame(r.frame_graph)
+graph_output_frame(r::VideoReader) = graph_output_frame(r.frame_graph)
+
+# Rebuild the SwsContext when the actual hw download format differs from the
+# format it was originally configured for (determined lazily on first HW frame).
+function _vio_rebuild_sws_for_hw!(r::VideoReader, actual_sw_fmt::Cint)
+    fg = r.frame_graph
+    dst_pix_fmt     = Cint(fg.dstframe.format)
+    dst_color_range  = fg.dstframe.color_range   # set at VideoReader construction
+    dst_primaries    = fg.dstframe.color_primaries # set at VideoReader construction
+    new_sws = SwsTransform(
+        r.codec_context.width, r.codec_context.height, actual_sw_fmt,
+        r.codec_context.color_primaries, r.codec_context.color_range,
+        dst_pix_fmt, dst_primaries, dst_color_range,
+        r._sws_color_options, r._swscale_options,
+    )
+    fg.sws_context = new_sws.sws_context
+    fg.srcframe.format = actual_sw_fmt
+    r.input_pix_fmt = actual_sw_fmt
+end
+
+unsupported_retrieval_format(fmt) = error("Unsupported format $(fmt)")
+
+function drop_frame!(r::VideoReader)
+    if isempty(r.frame_queue)
+        if graph_blocked(r)
+            remove_graph_input!(r)
+            r.export_mvs && !isempty(r.mv_queue) && popfirst!(r.mv_queue)
+            !isempty(r.meta_queue) && popfirst!(r.meta_queue)
+        end
+    else
+        if r.graph_input_occupied
+            push!(r.frame_queue, stash_graph_input(r))
+            remove_graph_input!(r)
+        end
+        popfirst!(r.frame_queue)
+        r.export_mvs && !isempty(r.mv_queue) && popfirst!(r.mv_queue)
+        !isempty(r.meta_queue) && popfirst!(r.meta_queue)
+    end
+    return r
+end
+
+function drop_frames!(r::VideoReader)
+    empty!(r.frame_queue)
+    empty!(r.mv_queue)
+    empty!(r.meta_queue)
+    return remove_graph_input!(r)
+end
+
+n_queued_frames(r::VideoReader) = length(r.frame_queue) + r.graph_input_occupied
+
+function fill_graph_input!(r::VideoReader)
+    pump_until_frame(r)
+
+    # Get the oldest frame stored by VideoReader
+
+    # If we have an unprocessed frames in the queue
+    if !isempty(r.frame_queue)
+        # But also a decoded frame
+        if graph_blocked(r)
+            # Then move the decoded frame to the back of the queue
+            push!(r.frame_queue, stash_graph_input(r))
+        end
+        unpack_stashed_planes!(r, popfirst!(r.frame_queue))
+        r.graph_input_occupied = true
+    end
+end
+
+execute_graph!(r::VideoReader) = exec!(r.frame_graph)
+
+function transfer_graph_output!(buf, r::VideoReader)
+    bytes_per_pixel, nrem = divrem(r.bits_per_result_pixel, 8)
+    nrem > 0 && error("Unsupported pixel size")
+    return transfer_frame_to_img_buf!(buf, graph_output_frame(r), bytes_per_pixel)
+end
+
+# Helper function to capture PTS and metadata of the current frame
+function capture_pts!(r::VideoReader, frame)
+    if isempty(r.meta_queue)
+        pts, pict_type, keyframe = frame.pts, frame.pict_type, (frame.flags & AV_FRAME_FLAG_KEY) != 0
+    else
+        pts, pict_type, keyframe = popfirst!(r.meta_queue)
+    end
+    if pts != AV_NOPTS_VALUE
+        r.last_consumed_pts = pts
+    end
+    r.last_pict_type = pict_type
+    r.last_keyframe = keyframe
+    if r.export_mvs && !isempty(r.mv_queue)
+        r.last_motion_vectors = popfirst!(r.mv_queue)
+    end
+    return r
+end
+
+# Converts a grabbed frame to the correct format (RGB by default)
+function _retrieve!(r::VideoReader, buf)
+    fill_graph_input!(r)
+    execute_graph!(r)
+    transfer_graph_output!(buf, r)
+
+    # Capture the PTS of the frame we're about to return to the user
+    capture_pts!(r, graph_input_frame(r))
+
+    remove_graph_input!(r)
+    return buf
+end
+
+function retrieve!(r::VideoReader{TRANSCODE}, buf::VidArray{T}) where {T<:ReaderElTypes}
+    if !out_img_check(r, buf)
+        throw(ArgumentError("Buffer is the wrong size, element type, or stride"))
+    end
+    return _retrieve!(r, buf)
+end
+
+function _retrieve_raw!(r, buf::VidRawBuff, align = VIO_ALIGN)
+    fill_graph_input!(r)
+
+    # Capture the PTS of the frame we're about to return to the user
+    capture_pts!(r, graph_input_frame(r))
+
+    stash_graph_input!(buf, r, align)
+    remove_graph_input!(r)
+    return buf
+end
+
+function retrieve_raw!(r, buf::VidRawBuff, align = VIO_ALIGN)
+    pump_until_frame(r)  # pump first: lazy HW format correction may update r.input_pix_fmt
+    if !raw_buff_check(buf, r, align)
+        throw(ArgumentError("Buffer is the wrong size or stride"))
+    end
+    return _retrieve_raw!(r, buf, align)
+end
+
+# Converts a grabbed frame to the correct format (RGB by default)
+# TODO: type stability?
+function retrieve(r::VideoReader{TRANSCODE}) # true=transcode
+    pix_fmt = out_frame_format(r)
+    if !is_pixel_type_supported(pix_fmt)
+        unsupported_retrieval_format(pix_fmt)
+    end
+    elt = VIO_PIX_FMT_DEF_ELTYPE_LU[pix_fmt]
+    width, height = out_frame_size(r)
+    buf = PermutedDimsArray(Matrix{elt}(undef, width, height), (2, 1))
+
+    return _retrieve!(r, buf)
+end
+
+retrieve!(r::VideoReader{NO_TRANSCODE}, buf::VidRawBuff, args...) = retrieve_raw!(r, buf, args...)
+
+function retrieve_raw(r::VideoReader, align = VIO_ALIGN)
+    pump_until_frame(r)  # pump first: lazy HW format correction may update r.input_pix_fmt
+    imgbuf = Vector{UInt8}(undef, out_bytes_size(r, align))  # sized for the real format
+    _retrieve_raw!(r, imgbuf, align)
+    return imgbuf, align
+end
+
+retrieve(r::VideoReader{NO_TRANSCODE}, align::Integer = 1) = retrieve_raw(r, align)[1]
+
+# Utility functions
+
+open(filename::AbstractString) = AVInput(filename) # not exported
+
+"""
+    openvideo(file[, video_stream = 1]; <keyword arguments>) -> reader
+    openvideo(f, ...)
+
+Open `file` and create an object to read and decode video stream number
+`video_stream`. `file` can either be a `AVInput` created by `VideoIO.open`,
+the name of a file as an `AbstractString`, or instead an `IO` object. However,
+support for `IO` objects is incomplete, and does not currently work with common
+video containers such as `*.mp4` files.
+
+Frames can be read from the `reader` with `read` or `read!`, or alternatively by
+using the iterator interface provided for `reader`. To close the `reader`,
+simply use `close`. Seeking within the reader can be accomplished using `seek`,
+`seekstart`. Frames can be skipped with `skipframe`, or `skipframes`. The
+current time in the video stream can be accessed with `gettime`. Details about
+the frame dimension can be found with `out_frame_size`. The total number of
+frames can be found with `counttotalframes`.
+
+If called with a single argument function as the first argument, the `reader`
+will be passed to the function, and will be closed once the call returns whether
+or not an error occurred.
+
+The decoder options and conversion to Julia arrays is controlled by the keyword
+arguments listed below.
+
+# Keyword arguments
+
+  - `transcode::Bool = true`: Determines whether decoded frames are transferred
+    into a Julia matrix with easily interpretable element type, or instead
+    returned as raw byte buffers.
+  - `target_format::Union{Nothing, Cint} = nothing`: Determines the target pixel
+    format that decoded frames will be transformed into before being transferred
+    to an output array. This can either by a `VideoIO.AV_PIX_FMT_*` value
+    corresponding to a FFmpeg
+    [`AVPixelFormat`]
+    (https://ffmpeg.org/doxygen/4.1/pixfmt_8h.html#a9a8e335cf3be472042bc9f0cf80cd4c5),
+    and must then also be a format supported by the VideoIO, or instead
+    `nothing`, in which case the format will be automatically chosen by FFmpeg.
+    This list of currently supported pixel formats, and the matrix element type
+    that each pixel format corresponds with, are elements of
+    `VideoIO.VIO_PIX_FMT_DEF_ELTYPE_LU`.
+  - `pix_fmt_loss_flags = 0`: Loss flags to control how transfer pixel format is
+    chosen. Only valid if `target_format = nothing`. Flags must correspond to
+    FFmpeg
+    [loss flags]
+    (http://ffmpeg.org/doxygen/2.5/pixdesc_8h.html#a445e6541dde2408332c216b8d0accb2d).
+  - `target_colorspace_details = nothing`: Information about the color space
+    of output Julia arrays. If `nothing`, then this will correspond to a
+    best-effort interpretation of `Colors.jl` for the corresponding element
+    type. To override these defaults, create a `VideoIO.VioColorspaceDetails`
+    object using the appropriate `AVCOL_` definitions from FFmpeg, or use
+    `VideoIO.VioColorspaceDetails()` to use the FFmpeg defaults. To avoid
+    rescaling limited color range data (mpeg) to full color range output (jpeg),
+    then set this to `VideoIO.VioColorspaceDetails()` to avoid additional
+    scaling by `sws_scale`.
+  - `allow_vio_gray_transform = true`: Instead of using `sws_scale` for gray data,
+    use a more accurate color space transformation implemented in `VideoIO` if
+    `allow_vio_gray_transform = true`. Otherwise, use `sws_scale`.
+  - `swscale_options::OptionsT = (;)`: A `Namedtuple`, or `Dict{Symbol, Any}` of
+    options for the swscale object used to perform color space scaling. Options
+    must correspond with options for FFmpeg's
+    [scaler](https://ffmpeg.org/ffmpeg-all.html#Scaler-Options) filter.
+  - `sws_color_options::OptionsT = (;)`: Additional keyword arguments passed to
+    [sws_setColorspaceDetails]
+    (http://ffmpeg.org/doxygen/2.5/group__libsws.html#ga541bdffa8149f5f9203664f955faa040).
+  - `thread_count::Union{Nothing, Int} = Sys.CPU_THREADS`: The number of threads the codec is
+    allowed to use or `nothing` for default codec behavior. Defaults to `Sys.CPU_THREADS`.
+  - `hwaccel::Union{Nothing, Symbol} = nothing`: If set to a `Symbol` such as `:videotoolbox`
+    (macOS), `:cuda` (NVIDIA), `:vaapi` (Linux/Intel), or `:qsv`, the corresponding FFmpeg
+    hardware-accelerated decoder is used.  Decoded frames are automatically downloaded from the
+    hardware surface to the CPU before being presented to the rest of the VideoIO pipeline, so
+    the element type and pixel format of the returned frames are identical to software decoding.
+    Use `VideoIO.available_hw_devices()` to query the device types supported by the current
+    FFmpeg build.  Throws an error if the requested device type is not available.
+  - `strict::Bool = false`: When `true`, the decoder is opened with the FFmpeg
+    `AV_EF_EXPLODE | AV_EF_CRCCHECK | AV_EF_BITSTREAM` error-recognition flags,
+    so bitstream / CRC errors propagate out of the decoder instead of being
+    silently concealed. Additionally, successfully decoded frames are checked for
+    corruption flags. Such errors are raised as a [`VideoCorruptionError`](@ref).
+    Use this when reproducibility / data integrity matters. Note that corruption
+    detection is codec and container dependent. The default (`false`) preserves
+    standard "lossy playback" behaviour.
+  - `export_mvs::Bool = false`: When `true`, the decoder is opened with the
+    FFmpeg `AV_CODEC_FLAG2_EXPORT_MVS` flag so that block motion vectors are
+    exported for each decoded frame; retrieve them with
+    [`motion_vectors`](@ref) after each `read`/`read!`. Only supported by
+    software decoders that expose motion vectors (e.g. H.264/MPEG), and cannot
+    be combined with `hwaccel`.
+
+# Example
+
+```julia
+# Normal mode (default) - errors concealed for smooth playback
+video = openvideo("video.mp4")
+for frame in video
+    display(frame)
+end
+close(video)
+
+# Strict mode - reject corrupted videos
+try
+    openvideo("corrupted.mp4", strict=true) do video
+        for frame in video
+            analyze(frame)  # FFmpeg will reject detected corruption
+        end
+    end
+catch e
+    e isa VideoCorruptionError || rethrow()
+    @error "Video corruption detected" exception=e
+end
+```
+"""
+openvideo(s::Union{IO,AbstractString,AVInput}, args...; kwargs...) = VideoReader(s, args...; kwargs...)
+
+function openvideo(f, args...; kwargs...)
+    r = openvideo(args...; kwargs...)
+    try
+        f(r)
+    finally
+        close(r)
+    end
+end
+
+"""
+    read(reader::VideoReader) -> frame::PermutedDimsArray{Matrix{T}}
+
+Allocate a matrix `frame` and fill it with the next video frame from `reader`,
+advancing the video stream. For details about the frame matrix, see `read!`.
+"""
+read(r::VideoReader, args...) = retrieve(r, args...)
+
+"""
+    read_raw(reader::VideoReader[, align = VideoIO.VIO_ALIGN]) ->
+        (buff::Vector{UInt8}, align::Int)
+
+Allocate a `Vector{UInt8}` and return the bytes and scanline memory alignment of
+the next untransformed frame of `reader`, advancing the video stream.
+"""
+read_raw(r::VideoReader, args...) = retrieve_raw(r, args...)
+
+"""
+    read!(reader::VideoReader, buf::Union{PermutedArray{T,N}, Array{T,N}}) where T<:ReaderElTypes
+
+Read a frame from `reader` into array `buf`, which can either be a regular array
+or a permuted view of a regular array, and advance the video stream. `buf` must
+be scanline-major, meaning that adjacent pixels on the same horizontal line of
+the video frame are also adjacent in memory. The element type of `buf` must be
+one of the supported element types, any key of
+`VideoIO.VIO_DEF_ELTYPE_PIX_FMT_LU`, and must match the pixel format chosen when
+`reader` was created. For any supported `Gray` element type, VideoIO will also
+support the corresponding `Normed` or `Unsigned` element types as well. The size
+of `buf` must correspond to the size of `out_frame_size`. If `buf` is a regular
+array, then frame width must correspond to the number of rows of `buf`, and
+conversely if `buf` is a `PermutedDimsArray` view, frame width must correspond
+to the number of columns in the view.
+"""
+read!(r::VideoReader, buf::AbstractArray{T}) where {T<:ReaderElTypes} = retrieve!(r, buf)
+
+"""
+    read_raw!(reader, buf[, align = VideoIO.VIO_ALIGN])
+
+Read the next frame in the video stream described by `reader`, and transfer the
+untransformed bytes into `buf`, which has scanline memory alignment `align`.
+`buf` must be `out_bytes_size` long.
+"""
+read_raw!(r::VideoReader, buf, args...) = retrieve_raw!(r, buf, args...)
+
+isopen(avin::AVInput{I}) where {I<:IO} = isopen(avin.io)
+isopen(avin::AVInput) = avin.isopen
+isopen(r::VideoReader) = isopen(r.avin)
+
+"""
+    raw_frame_size(reader) -> (width, height)
+
+Return the dimensions of the raw frames returned by `reader`.
+"""
+raw_frame_size(r::VideoReader) = (r.codec_context.width, r.codec_context.height)
+
+"""
+    out_frame_size(reader) -> (width, height)
+
+Return frame dimensions, `(width, height)` of frames returned by `read(reader)`.
+`read` will return frames as `PermutedDimsArray` views of Julia matrices with
+the frame height spanning the rows of the matrix, and frame width spanning the
+columns. The underlying array has the opposite orientation.
+"""
+function out_frame_size end
+
+out_frame_size(r::VideoReader{<:Any,AVFramePtr}) = raw_frame_size(r)
+out_frame_size(t::SwsTransform) = (t.dstframe.width, t.dstframe.height)
+out_frame_size(r::VideoReader{TRANSCODE,SwsTransform}) = out_frame_size(r.frame_graph)
+
+"""
+    raw_pixel_format(reader) -> Cint
+
+Return the pixel format for frames of `reader`. The return value will be a
+`Cint` corresponding to `VideoIO.AV_PIX_FMT_*`, which corresponds to a
+[`AVPixelFormat`]
+(https://ffmpeg.org/doxygen/4.1/pixfmt_8h.html#a9a8e335cf3be472042bc9f0cf80cd4c5).
+This will determine the format of byte arrays returned by `read_raw`, and
+`read_raw!`.
+"""
+raw_pixel_format(r::VideoReader) = r.input_pix_fmt
+
+out_frame_format(r::VideoReader{<:Any,AVFramePtr}) = raw_pixel_format(r)
+out_frame_format(t::SwsTransform) = t.dstframe.format
+out_frame_format(t::GrayTransform) = t.dstframe.format
+out_frame_format(r::VideoReader{TRANSCODE,SwsTransform}) = out_frame_format(r.frame_graph)
+out_frame_format(r::VideoReader{TRANSCODE,GrayTransform}) = out_frame_format(r.frame_graph)
+
+"""
+    out_frame_eltype(reader) -> T
+
+Return the Julia eltype `T` of matrices returned by `read(reader)`.
+"""
+out_frame_eltype(r::VideoReader) = VIO_PIX_FMT_DEF_ELTYPE_LU[out_frame_format(r)]
+
+out_img_size_check(r, buf) = all(size(buf) .>= out_frame_size(r))
+out_img_size_check(r, buf::PermutedDimsArray) = out_img_size_check(r, parent(buf))
+
+out_img_eltype_check(::Type{T}, p) where {T<:UInt8} = p == AV_PIX_FMT_GRAY8
+out_img_eltype_check(::Type{T}, p) where {T<:UInt16} = p == AV_PIX_FMT_GRAY10LE
+out_img_eltype_check(::Type{X}, p) where {T,X<:Normed{T}} = out_img_eltype_check(T, p)
+out_img_eltype_check(::Type{X}, p) where {T,X<:Gray{T}} = out_img_eltype_check(T, p)
+out_img_eltype_check(::Type{T}, p) where {T<:RGB{N0f8}} = p == AV_PIX_FMT_RGB24
+out_img_eltype_check(::Type{T}, p) where {T<:RGB{N6f10}} = p == AV_PIX_FMT_GBRP10LE
+
+out_img_eltype_check(fmt::Integer, ::AbstractArray{T}) where {T} = out_img_eltype_check(T, fmt)
+out_img_eltype_check(r, buf) = out_img_eltype_check(out_frame_format(r), buf)
+
+stride_check(buf) = stride(buf, 1) == 1
+stride_check(buf::PermutedDimsArray) = stride_check(parent(buf))
+
+out_img_check(r, buf) = out_img_size_check(r, buf) & out_img_eltype_check(r, buf) & stride_check(buf)
+
+"""
+    out_bytes_size(reader[, align = VideoIO.VIO_ALIGN])
+
+Return the number required to store the raw frame data for frames of `reader`
+with memory alignment for each scanline `align`. Input bye buffers to
+`read_raw!` must be this length.
+"""
+function out_bytes_size end
+
+function out_bytes_size(fmt, width, height, align = VIO_ALIGN)
+    align > 0 || throw(ArgumentError("align must be greater than zero"))
+    sz = av_image_get_buffer_size(fmt, width, height, align)
+    sz < 0 && error("Could not determine the buffer size")
+    return sz
+end
+out_bytes_size(r, args...) = out_bytes_size(raw_pixel_format(r), out_frame_size(r)..., args...)
+
+out_bytes_size_check(buf, r, args...) = sizeof(buf) == out_bytes_size(r, args...)
+
+raw_buff_check(buf, r, args...) = out_bytes_size_check(buf, r, args...) & stride_check(buf)
+
+graph_blocked(r) = r.graph_input_occupied # TODO: make sure the last frame was made available
+frame_is_queued(r::StreamContext) = !isempty(r.frame_queue) || graph_blocked(r)
+frame_is_queued(avin::AVInput) = mapreduce(frame_is_queued, |, values(avin.stream_contexts), init = false)
+
+function remove_graph_input!(r::VideoReader)
+    av_frame_unref(graph_input_frame(r))
+    return r.graph_input_occupied = false
+end
+
+seconds_to_timestamp(s, time_base::Rational) = round(Int, s / time_base)
+seconds_to_timestamp(s, time_base::AVRational) = seconds_to_timestamp(s, convert(Rational, time_base))
+
+get_video_stream_index(s::VideoReader) = findfirst(x -> x == s.stream_index0, s.avin.video_indices)
+
+"""
+    gettime(s::VideoReader)
+
+Return timestamp of the last returned frame, if available. Else, return `0.0`.
+"""
+function gettime(s::VideoReader)
+    # No frame has been read
+    t = position(s)
+    t == nothing && return 0.0
+    return Float64(t)
+end
+
+# To be called for all stream contexts following a seek of AVInput
+function reset_file_position_information!(r::VideoReader, _)
+    avcodec_flush_buffers(r.codec_context)
+    drop_frames!(r)
+    r.flush = false
+    r.last_consumed_pts = AV_NOPTS_VALUE  # Reset position tracking after seek
+    r.last_pict_type = AV_PICTURE_TYPE_NONE
+    r.last_keyframe = false
+    # Fresh vector rather than empty! — the user may hold the returned vector
+    r.last_motion_vectors = MotionVector[]
+    return r.finished = false
+end
+
+get_frame_presentation_time(stream, frame) = convert(Rational, stream.time_base) * convert(Rational, frame.pts)
+
+function get_frame_period_timebase(r::VideoReader)
+    # This is probably not valid for many codecs, frame period in timebase
+    # units
+    stream = get_stream(r)
+    time_base = convert(Rational, stream.time_base)
+    time_base == 0 && return nothing
+    frame_rate = convert(Rational, stream.r_frame_rate)
+    frame_period_timebase = round(Int64, 1 / (frame_rate * time_base))
+    return frame_period_timebase
+end
+
+"""
+    seek(reader::VideoReader, seconds)
+
+Seeks into the parent `AVInput` using this video stream's index. See [`seek`]
+for `AVInput`.
+"""
+function seek(r::VideoReader, seconds::Number)
+    !isopen(r) && throw(ErrorException("Video input stream is not open!"))
+    video_stream_idx = get_video_stream_index(r)
+    seek(r.avin, seconds, video_stream_idx)
+    return r
+end
+
+function seek_trim(r::VideoReader, seconds::Number)
+    stream = get_stream(r)
+    time_base = convert(Rational, stream.time_base)
+    time_base == 0 && error("No time base")
+    target_pts = seconds_to_timestamp(seconds, time_base)
+    frame_rate = convert(Rational, stream.r_frame_rate)
+    frame_period_timebase = round(Int64, 1 / (frame_rate * time_base))
+    gotframe = pump_until_frame(r, false)
+    # If advancing another frame would still leave us before the target
+    while gotframe
+        pts = next_frame_pts(r)
+        (pts != AV_NOPTS_VALUE && pts + frame_period_timebase <= target_pts) || break
+        drop_frame!(r)
+        gotframe = pump_until_frame(r, false)
+    end
+end
+
+# pts of the next frame `read` would return: the front of the queue, or the
+# graph input frame when nothing is queued
+next_frame_pts(r::VideoReader) = isempty(r.meta_queue) ? graph_input_frame(r).pts : r.meta_queue[1][1]
+
+"""
+    seek(avin::AVInput, seconds::AbstractFloat, video_stream::Integer=1)
+
+Seek through the container format `avin` so that the next frame returned by
+the stream indicated by `video_stream` is the one being shown at `seconds`:
+the frame whose presentation interval holds `seconds`, so its timestamp can be
+up to one frame period earlier. A target before the stream lands on its first
+frame. Other readers sharing `avin` are repositioned to `seconds` as well.
+"""
+function seek(avin::AVInput{T}, seconds::Number, video_stream::Integer = 1) where {T<:AbstractString}
+    return _seek_stream!(avin, seconds, avin.video_indices[video_stream])
+end
+
+# Seconds of data a reader needs to decode before `seek` output is accurate
+seek_preroll(::StreamContext) = 0.0
+
+# Seek the container using the time base of stream `stream_index0`, landing
+# far enough before `seconds` for every attached reader's decoder to warm up,
+# then reposition every attached reader (video or audio) to `seconds`.
+function _seek_stream!(avin::AVInput{<:AbstractString}, seconds::Number, stream_index0::Integer)
+    stream = get_stream(avin, stream_index0)
+    time_base = convert(Rational, stream.time_base)
+    time_base == 0 && error("No time base for stream")
+    pts = seconds_to_timestamp(seconds, time_base)
+    # Land far enough before the target for every attached reader's decoder to warm up
+    preroll = maximum(seek_preroll, values(avin.stream_contexts); init = 0.0)
+    target = seconds_to_timestamp(max(seconds - preroll, 0), time_base)
+    reader = avin.stream_contexts[stream_index0]
+    # In containers without a seek index (e.g. MPEG-TS), the demuxer's seek plus the decoder's wait
+    # for a keyframe can make the first decoded frame land up to a GOP *after* `target`, and `seek_trim`
+    # only drops frames, so it cannot recover (#427). So check where the first frame landed and, while
+    # it is past the target, seek again from further back — one second, then doubling. Every reader is
+    # checked: in MPEG-TS an audio stream lands on target while a video stream sharing the input waits
+    # for its next keyframe. Once the target is before the container's start time, seek to the start
+    # through the container's default stream instead, and stop there. A seek through the stream itself is
+    # not reliable near the start: a target at or just before the first keyframe can land on the next
+    # one, and a seek through an audio stream cannot reach a video keyframe that comes before the first
+    # audio packet. If the start time is unknown, stop once backing off no longer moves any landing.
+    fc_start = avin.format_context.start_time
+    container_start = fc_start == AV_NOPTS_VALUE ? typemin(Int64) : seconds_to_timestamp(fc_start // AV_TIME_BASE, time_base)
+    land!(margin) = seek_landing_pts!(avin, stream_index0, target - margin; from_start = target - margin < container_start)
+    margin = 0
+    previous = nothing
+    landed = AV_NOPTS_VALUE
+    while true
+        landed = land!(margin)
+        times = [landing_time(r) for r in values(avin.stream_contexts)]
+        late = (landed != AV_NOPTS_VALUE && landed > target) || any(>(seconds), times)
+        (!late || target - margin < container_start || (fc_start == AV_NOPTS_VALUE && isequal((landed, times), previous))) && break
+        previous = (landed, times)
+        margin = margin == 0 ? seconds_to_timestamp(1, time_base) : 2margin
+    end
+    if landed == AV_NOPTS_VALUE
+        seek_trim(reader, seconds)
+    elseif landed < pts
+        # Trim forward to the frame whose [pts, pts + period) holds the target. The period is measured from the decoded
+        # timestamps rather than taken from `r_frame_rate` (as `seek_trim` does): on field-coded interlaced video
+        # `r_frame_rate` and `frame.duration` are the *field* period, half the frame period, so a target between two
+        # frames landed on the later one. A frame is only known to be the one once the next has been decoded, so when
+        # that next frame is past the target, seek to the same point again, which lands on the same frame.
+        current = landed
+        while true
+            drop_frame!(reader)
+            if !pump_until_frame(reader, false) || next_frame_pts(reader) == AV_NOPTS_VALUE
+                break
+            end
+            next = next_frame_pts(reader)
+            if next > pts
+                land!(margin) == current || seek_trim(reader, seconds)
+                break
+            end
+            next + (next - current) > pts && break
+            current = next
+        end
+    end
+    # The other readers last: the re-seek above resets every reader, and pumping for `reader` queues
+    # frames for the others, which `seek_trim` allows for.
+    for r in values(avin.stream_contexts)
+        r === reader || seek_trim(r, seconds)
+    end
+    return avin
+end
+
+_seek_stream!(avin::AVInput{<:IO}, args...) = throw(ErrorException("Sorry, Seeking is not supported from IO streams"))
+
+# Seek the container to `target_pts` in the stream `stream_index0`, or to its start by its default stream if
+# `from_start`, reset every stream's decoding state, and decode the first frame of stream `stream_index0`, returning its
+# pts (`AV_NOPTS_VALUE` if there is no frame or it has no timestamp).
+function seek_landing_pts!(avin::AVInput, stream_index0, target_pts; from_start::Bool = false)
+    fc = avin.format_context
+    if from_start
+        # A second early, as a seek to exactly the first keyframe can land on the next one
+        ret = avformat_seek_file(fc, -1, typemin(Int), fc.start_time - AV_TIME_BASE, typemax(Int), 0)
+        seconds = fc.start_time / AV_TIME_BASE
+    else
+        ret = avformat_seek_file(fc, stream_index0, typemin(Int), target_pts, typemax(Int), 0)
+        seconds = Float64(target_pts * convert(Rational, get_stream(avin, stream_index0).time_base))
+    end
+    ret < 0 && throw(ErrorException("Could not seek in stream"))
+    avin.finished = false
+    seconds = max(seconds, 0.0)
+    for r in values(avin.stream_contexts)
+        reset_file_position_information!(r, seconds)
+    end
+    return landing_pts(avin.stream_contexts[stream_index0])
+end
+
+landing_pts(r::VideoReader) = pump_until_frame(r, false) ? next_frame_pts(r) : AV_NOPTS_VALUE
+# Only a video reader driving a seek trims frame by frame; an audio reader is trimmed from wherever it landed
+landing_pts(::StreamContext) = AV_NOPTS_VALUE
+
+# Time (s) of the first output of a reader after a seek, NaN if unknown
+function landing_time(r::VideoReader)
+    pump_until_frame(r, false) || return NaN
+    pts = next_frame_pts(r)
+    pts == AV_NOPTS_VALUE && return NaN
+    return Float64(pts * convert(Rational, get_stream(r).time_base))
+end
+
+"""
+    seekstart(reader::VideoReader)
+
+Seek to time zero of the parent `AVInput` using `reader`'s stream index. See
+`seekstart` for `AVInput` objects.
+"""
+seekstart(s::VideoReader, args...) = seek(s, 0, args...)
+
+"""
+    seekstart(avin::AVInput{T}, video_stream_index=1) where T <: AbstractString
+
+Seek to time zero of AVInput object.
+"""
+seekstart(avin::AVInput{<:AbstractString}, args...) = seek(avin, 0, args...)
+
+seekstart(avin::AVInput{<:IO}, args...) = throw(ErrorException("Sorry, Seeking is not supported from IO streams"))
+
+"""
+    skipframe(s::VideoReader; throwEOF=true)
+
+Skip the next frame. If End of File is reached, EOFError thrown if throwEOF=true.
+Otherwise returns true if EOF reached, false otherwise.
+"""
+function skipframe(s::VideoReader; throwEOF = true)
+    gotframe = pump_until_frame(s, throwEOF)
+    gotframe && drop_frame!(s)
+    return !gotframe
+end
+
+"""
+    skipframes(s::VideoReader, n::Int; throwEOF=true) -> n
+
+Skip the next `n` frames. If End of File is reached and `throwEOF=true`,
+a `EOFError` will be thrown. Returns the number of frames that were skipped.
+"""
+function skipframes(s::VideoReader, n::Int; throwEOF = true)
+    for i in 1:n
+        skipframe(s, throwEOF = throwEOF) && return i - 1
+    end
+    return n
+end
+
+"""
+    counttotalframes(reader) -> n::Int
+
+Count the total number of frames in the video by seeking to start, skipping
+through each frame, and seeking back to the start.
+
+For a faster alternative that relies on video container metadata, try `get_number_frames`.
+"""
+function counttotalframes(s::VideoReader)
+    seekstart(s)
+    n = 0
+    while true
+        skipframe(s, throwEOF = false) && break
+        n += 1
+    end
+    seekstart(s)
+    return n
+end
+
+function eof(avin::AVInput)
+    !isopen(avin) && return true
+    frame_is_queued(avin) && return false
+    allfinished = mapreduce(is_finished, &, values(avin.stream_contexts), init = true)
+    allfinished && return true
+    got_frame = pump(avin) != -1
+    if got_frame
+        return false
+    end
+    # pump returned -1: either EAGAIN (no frame ready yet) or actual EOF.
+    # Only report EOF if the stream actually finished.
+    return avin.finished
+end
+
+# Stream-specific EOF: keep pumping the container while packets only feed other
+# streams, so that a reader sharing an `AVInput` with others is not fooled by
+# frames queued for those other streams.
+function eof_stream(r::StreamContext)
+    isopen(r) || return true
+    frame_is_queued(r) && return false
+    is_finished(r) && return true
+    while true
+        idx = pump(r.avin)
+        idx == r.stream_index0 && return false
+        # -1: either EAGAIN (live source, nothing ready yet) or the container
+        # and every decoder is exhausted
+        idx == -1 && return r.avin.finished
+    end
+end
+
+eof(r::VideoReader) = eof_stream(r)
+
+close(r::VideoReader) = close(r.avin)
+
+# Free AVIOContext object when done
+function close(avin::AVInput)
+    avin.isopen || return
+    avin.isopen = false
+
+    empty!(avin.stream_contexts)
+    empty!(avin.listening)
+    if check_ptr_valid(avin.format_context, false)
+        # Replace the existing object in avin with a null pointer. The finalizer
+        # for AVFormatContextPtr will close it and clean up its memory
+        disable_sigint() do
+            avformat_close_input(avin.format_context) # This is also done in the finalizer,
+            # but closing the input here means users won't have to wait for the GC to run
+            # before trying to remove the file
+            return avin.format_context = AVFormatContextPtr(Ptr{AVFormatContext}(C_NULL))
+        end
+    end
+
+    if check_ptr_valid(avin.avio_context, false)
+        # Replace the existing object in avin with a null pointer. The finalizer
+        # will close it and clean up its memory
+        disable_sigint() do
+            return avin.avio_context = AVIOContextPtr(Ptr{AVIOContext}(C_NULL))
+        end
+    end
+    return nothing
+end
+
+function position(r::VideoReader)
+    # Return the timestamp of the last frame returned to the user
+    r.last_consumed_pts == AV_NOPTS_VALUE && return nothing
+
+    # Convert PTS to seconds using stream time_base
+    stream = get_stream(r)
+    time_base = convert(Rational, stream.time_base)
+    time_base == 0 && return nothing
+
+    return r.last_consumed_pts * time_base
+end
+
+### Camera Functions
+
+const DEFAULT_CAMERA_FORMAT = Ref{Any}()
+const CAMERA_DEVICES = String[]
+const DEFAULT_CAMERA_DEVICE = Ref{String}()
+const DEFAULT_CAMERA_OPTIONS = AVDict()
+
+function get_camera_devices(idev, idev_name)
+    camera_devices = String[]
+
+    read_vid_devs = false
+    lines = FFMPEG.exe(`-list_devices true -f $idev -i $idev_name`, collect = true)
+
+    for line in lines
+        if occursin("video devices", line)
+            read_vid_devs = true
+            continue
+        elseif occursin("audio devices", line) || occursin("exit", line) || occursin("error", line)
+            read_vid_devs = false
+            continue
+        end
+
+        if read_vid_devs
+            m = match(r"""\[.*"(.*)".?""", line)
+            if m !== nothing
+                cap = m.captures[1]
+                if cap !== nothing
+                    push!(camera_devices, cap)
+                end
+            end
+
+            # Alternative format (TODO: could be combined with the regex above)
+            m = match(r"""\[.*\] \[[0-9]\] (.*)""", line)
+            if m !== nothing
+                cap = m.captures[1]
+                if cap !== nothing
+                    push!(camera_devices, cap)
+                end
+            end
+        end
+    end
+
+    return camera_devices
+end
+
+function opencamera(device = nothing, format = nothing, options = nothing, args...; kwargs...)
+    if isnothing(device) || isnothing(format) || isnothing(options) || isempty(CAMERA_DEVICES)
+        # do this only if needed
+        init_camera_devices()
+        init_camera_settings()
+    end
+
+    if isnothing(device)
+        device = DEFAULT_CAMERA_DEVICE[]
+    end
+    if isnothing(format)
+        format = DEFAULT_CAMERA_FORMAT[]
+    end
+    if isnothing(options)
+        options = DEFAULT_CAMERA_OPTIONS
+    end
+
+    camera = AVInput(device, format, options)
+    return VideoReader(camera, args...; kwargs...)
+end

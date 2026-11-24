@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: W/A/D play picked 2 berries in 20.6 s (critters [2, 1, 2]), Sprout at Float32[-8.07122, -3.9779305, 2.0849571]",
+      "file": "minigames.jl",
+      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "passed": false,
+      "seconds": 25.4
+    }
+  ],
+  "passed": 47,
+  "session": 28,
+  "time": "2026-11-23T05:13:20",
+  "total": 48
+}

@@ -1,0 +1,50 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/fresh16-1.png (almost all green, only floating labels visible) vs fresh16-3.png",
+      "severity": "high",
+      "suggestion": "Raycast from the target to the camera and pull the camera in or lift it when occluded; fade or cut away tree crowns near the camera.",
+      "what": "Camera in follow mode can end up inside or against a tree crown/terrain, filling the view with flat green so no creature is visible. Creatures are also mostly hidden behind tree crowns (already on the todo list).",
+      "where": "main 3D view"
+    },
+    {
+      "evidence": "3 samples: frame p95 56.0 / 61.0 / 42.2 ms; render p95 52.5 / 52.4 / 34.4 ms. Screenshots also have a p95 of 6.5 s.",
+      "severity": "high",
+      "suggestion": "Cut the raster cost: fewer or merged props (245), cheaper shadows, lower render resolution. Add a quality fallback when p95 is above 33 ms. Have the header show the measured fps, not the target.",
+      "what": "Frame time is over budget. Median frame is 23-28 ms, but p95 is 42-61 ms, so it visibly stutters, while the header claims '30 fps'. Almost all of the time is in render (median 22-26 ms, p95 35-52 ms). Sim, panels and sync are small.",
+      "where": "live_status frame_ms (render, frame)"
+    },
+    {
+      "evidence": "fresh16-1.png and fresh16-3.png",
+      "severity": "medium",
+      "suggestion": "Clamp labels inside the viewport, lay them out to avoid overlap, hide labels for occluded creatures, and show only the nearest ones or the followed one at full size.",
+      "what": "Name labels overlap and clump (Pinchy/Marshmallow/Sniffsalot/Wibbles/Pickles) and clip at the edges (the 'es' and 'good hop' fragments at the left and top in fresh16-1.png). Labels float without any link to the creature they name, and some creatures are hidden behind trees.",
+      "where": "viewport labels"
+    },
+    {
+      "evidence": "fresh16-3.png",
+      "severity": "medium",
+      "suggestion": "Filter test messages out of the human inbox view, put the agent's internals in a collapsed section, and lift the contrast and size of the grey text.",
+      "what": "The side panel shows internal process state, not game content: 'review: needs_work…', 'asked to wrap up (budget running low), provider cannot take mid-turn messages', token counts, and test-generated messages ('UI test: a wish sent'). It is noisy and hard to read for a viewer. The grey small text has low contrast.",
+      "where": "right panel, Sprout / Messages to you"
+    },
+    {
+      "evidence": "fresh16-1.png vs fresh16-3.png taken ~16 s apart: scene differs only by camera",
+      "severity": "medium",
+      "suggestion": "Give creatures visible activity (walking, interacting, speech bubbles) and put the current event in the header. Fix the night look so the 'daytime' value matches what is drawn.",
+      "what": "Nothing in the world is happening. The creatures stand still, 'watching' shows no events, and no minigame or goal is visible. The scene is also dull: the night/atmosphere work is only on the todo list and daytime is about 0.03-0.04, yet the view is brightly lit, so the day/night cycle is not apparent.",
+      "where": "main view and header ('watching')"
+    },
+    {
+      "evidence": "'about 0 more work sessions'",
+      "severity": "low",
+      "suggestion": "Reserve budget for fixes to the camera and frame time before adding features.",
+      "what": "The last session changed no game code (token budget used up), so there is nothing new to judge. The token budget is 2.97M of 3.0M, which blocks further work sessions.",
+      "where": "side panel"
+    }
+  ],
+  "summary": "The island looks pleasant when the camera is good, but the camera sometimes sits inside a tree crown (a full screen of green), frame times miss the 33 ms budget at p95, and name labels pile up.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

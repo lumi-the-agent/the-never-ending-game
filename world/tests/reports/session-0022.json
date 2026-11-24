@@ -1,0 +1,8 @@
+{"session": 22,
+ "summary": "Play/Stop (double clicks), stray keys with no mini game, and the night view all behave; the suite passes. One player-facing problem: the 'Next on the list' panel shows developer wording.",
+ "failures": [{"what": "The 'Next on the list' panel shows a developer todo: 'Verify night look after the scenery.jl light change' (names a source file, is a dev chore).",
+   "steps": "Open the dashboard and read the 'Next on the list' panel in the right column.",
+   "expected": "Only player-facing items (e.g. 'A pretty night', 'A second mini game').",
+   "actual": "The fourth item reads 'Verify night look after the scenery.jl light change'.",
+   "screenshot": "world/tests/shots/explore-day.png"}],
+ "tests_added": ["The 'Next on the list' panel names no source files"]}

@@ -1,0 +1,21 @@
+Manifest.toml
+*.jl.cov
+*.jl.*.cov
+*.jl.mem
+/docs/build/
+
+# python bytecode from tools/
+__pycache__/
+*.pyc
+
+# Workspace layout: the model exports live at the workspace root (`gen/`),
+# which is one level above this repo since the monorepo move. Fourteen tools
+# still resolve them as `@__DIR__/../gen`, so a symlink puts them where those
+# tools look. It is per-machine, hence ignored rather than committed.
+gen
+# --track-allocation=user output; never source
+*.mem
+
+# Scratch scripts for a bring-up session: setup snippets re-run by hand,
+# not part of the package or its tests.
+tmp/

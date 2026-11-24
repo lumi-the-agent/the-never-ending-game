@@ -1,0 +1,247 @@
+# VideoEditor.jl
+
+A GPU-accelerated non-destructive video editor in Julia: GLMakie UI,
+KernelAbstractions image processing (via GPUFiltering.jl, CPU or Lava/Vulkan),
+VideoIO/FFmpeg decode + export.
+
+```julia
+using VideoEditor
+p = Player("footage.mp4")           # opens the editor window
+addsource!(p, "more.mp4")           # append another video (or drop the file onto the window)
+
+saveproject("edit.videoedit", p.sequence)
+exportvideo("out.mp4", p.sequence)  # bakes crop/effects/stabilization + muxes
+                                    # the sources' audio along the cut list
+
+srv = mcpserve!(p)                  # expose the live editor to AI agents (see below)
+```
+
+Sequences can mix any number of sources (each decodes through its own
+background worker); resolutions may differ, framerates must match.
+
+For procedural movies, see [scene editing](docs/scene-editing.md) for colour
+controls, camera and object transforms, actor timing and expressions, keyframes,
+speech editing and restoring original motion.
+The [walkthrough regression guide](docs/testing.md) describes reproducible mouse
+and keyboard tests using Makie's existing interaction helpers.
+
+Heavy sources — above full HD, or heavyweight codecs like DNxHR/ProRes —
+automatically get a background **preview proxy** (720p h264, cached across
+sessions); scrubbing and playback switch to it when ready while analysis,
+export and the project file keep the original. Tune or trigger manually
+with `Player(...; proxyheight, proxythreshold)` / `startproxy!(p, source)`.
+
+With a Lava GPU, `Player(path; analysisbackend = LavaBackend(),
+gpupreview = true)` runs the whole presentation on the GPU: one frame
+upload, motion/color tracks and effects as Vulkan kernels, and the result
+displayed through a zero-copy shared texture (Vulkan↔GL external memory) —
+2.1× the CPU preview throughput at 1080p with the CPU freed for decoding.
+Renders identically to the CPU path (WYSIWYG-verified) and falls back to
+it automatically on any error.
+
+## Keys
+
+Live RayMakie raster scenes support click selection in the preview. The inspector
+shows the picked object and its linked performance controls, including static
+transforms. **All objects** returns to the full scene and its animation filter.
+**Scene view** opens an independent orbit camera over the same GPU geometry:
+drag the coloured XYZ handles to move, rotate or scale; right-drag orbits,
+middle-drag pans, and the wheel zooms. These view controls do not edit the film
+camera. **Frame selection** brings the selected object and its handles into view.
+**Camera path** selects the shot camera in the existing left inspector and highlights
+its timeline lanes. Clicking a parameter lane or anchor scrolls to its named
+control in that inspector. Use the inspector's diamonds to add keys; dragging the camera
+or object handles edits those same fields and curves. Each drag is one Undo step.
+The animation filter shows the selected object's original animated parameters;
+turn it off to access static parameters as well. A field edited with a 3D handle
+is also shown while the filter is on.
+
+Recipes return a scene. Animate its named plots with property tracks such as
+`keyframes!(clip, "actor.rotation[3]", keys)`, and key native camera,
+plot and light properties directly. All animation lives in these tracks;
+recipes do not supply frame callbacks or samplers. Equal parameter values reuse
+the same traced source master. Offline simulations can be recorded once with
+`recordsceneanimation!(clip, directory; producer)` and replayed as data inputs.
+
+| Key | Action |
+|---|---|
+| Space | play / pause |
+| ← / → | step one frame (Shift: ±10) |
+| S | split at playhead |
+| Ctrl+S | save the project next to the first source (reopen with `Player(path)`) |
+| X / Del | ripple-delete clip at playhead |
+| C | crop mode — drag a rect on the preview (Esc cancels, R resets) |
+| A | analyze color/exposure stabilization for clip at playhead (background) |
+| M | analyze camera-shake stabilization for clip at playhead (background) |
+
+Stabilization lives on the effect panel: pick a mode — *Camera lock*
+(default: hold the scene like a tripod — reference patches from the first
+frame, 4-DOF similarity fit, the same approach as DaVinci's
+Similarity + Camera Lock), *Object lock* (follow a **moving** subject and
+pin it in place — click "Stabilize clip", then click the subject in the
+preview; Esc cancels), the legacy *Tripod*/*Tripod + perspective* flow
+fits, or *Smooth* (keep intentional camera moves, remove shake) — then
+"Stabilize clip". The panel names the mode already on the clip, the result
+label shows the measured correction, "Hold to compare original" shows the
+unstabilized frames while pressed, and the lock modes auto-crop the warp
+borders. Re-analyzing replaces the previous stabilization (the crop is
+re-derived from your original framing, not stacked), and "Remove
+stabilization" (button or right-click modal) restores that framing —
+both undoable. The status line next to Export shows analysis progress.
+
+## Layout
+
+A vertical toolbar runs down the far left; next to it is one docked panel slot
+that the **FX** (effects & stabilization), **Bin** (media) and **Out** (export)
+panels share — a panel opens there instead of overlaying the preview. The tool
+icons below **arm**: split (✂) and crop (▢) change the cursor to a crosshair
+and act where you click — split cuts the timeline at the click position (not
+the playhead), crop drags a rectangle on the preview; ✕/↶/↷ (delete/undo/redo)
+act at the playhead. The inspector occupies the full editing height, with the
+timeline below the preview area. The preview toolbar switches between the film,
+the 3D scene, or both side by side. The preview fills the available width when a
+crop/zoom makes it wider than the source.
+
+- **Bin** — imported sources, each with a first-frame thumbnail. Drop video
+  files anywhere on the window (any number at once) and they land here — the
+  Bin opens itself, the drop zone counts the files through, and the status
+  line accounts for every one of them (imported / already in the bin / would
+  not open). The zone is also a button: clicking it opens a native file
+  dialog. From there, press a row and drag it onto the timeline (a translucent
+  drop-region preview shows where it lands) to place a clip.
+- **Out** — output path (native save dialog), format (mp4/mkv/mov or animated
+  **gif**), codec, quality (crf), preset, audio toggle, and GIF fps/loop; then
+  *Export video* / *Export GIF* renders in the background.
+
+Timeline: left-drag scrubs (thumbnail preview while dragging, exact frame on
+release), drag a clip *edge* to trim it (the handle appears right on the edge
+and just past it), Ctrl+left-drag moves a clip (snaps to edges/playhead),
+scroll zooms, right-drag pans. The FX panel edits the clip under the playhead.
+
+## Architecture
+
+Edits are metadata (`Sequence` of `Clip`s: source ranges, timeline placement,
+crop rect, effect stack, stabilization tracks). Frames are produced on demand:
+
+```
+decode (worker thread, ring buffer) → motion warp → color track →
+effect stack (GPUFiltering kernels) → preview (crop via axis limits)
+                                    → export  (crop baked via warp!)
+```
+
+Preview and export share the same resolution machinery, so what you see is
+what renders. Stabilization tracks are keyed by absolute source frame and
+survive splits.
+
+## MCP server (AI editing)
+
+`mcpserve!(player; port=8765)` starts an MCP endpoint inside the editor
+process. Attach Claude Code:
+
+```
+claude mcp add --transport http videoedit http://localhost:8765
+```
+
+The agent can then inspect state, look at rendered frames, cut, move, crop,
+grade, stabilize and export — e.g. "look through this video, cut out the
+boring parts and make it warmer" works against the live editor window.
+
+### Seeing the edit without filling the context
+
+A frame per second of footage buries a model in tokens, so the viewing API
+(`src/agentview.jl`, MCP tools `view_sheet` / `view_strip` / `view_region` /
+`find_change`) is a **zoom**, not a dump. Every image is rendered by
+`renderframe!` — the function the encoder writes — so what the agent sees IS
+what the export produces: effects, keyframes, stabilization, crop, transitions,
+track composites.
+
+| call | what you get | cost |
+| --- | --- | --- |
+| `contactsheet(seq)` | the whole timeline as one numbered grid | 64 frames ≈ 350 vision tokens (512 px) |
+| `contactsheet(seq, t0, t1)` | the same for the interval a cell pointed at | one image per zoom level |
+| `filmstrip(seq, t0, t1)` | a short span in one row, bigger | ~8 frames |
+| `regiongrab(seq, t, rect)` | one rectangle of one frame at real pixel detail | one image |
+| `findchange(seq, t0, t1)` | the moment the picture changes, by bisection | O(log n) renders |
+
+Each sheet returns a manifest (`index → time, frame, clip`), so "cell 27" is a
+time you can zoom into: every level divides the span by the cell count, and
+three levels take ten minutes down to single frames. Cuts of the *edit* need no
+search at all — they are clip boundaries in `get_state` / `viewsummary(seq)`.
+
+```julia
+sheet, manifest = contactsheet(player)            # where is anything interesting?
+t = manifest[27].time                             # cell 27 → 6.5 s
+sheet2, _ = contactsheet(player, t - 0.5, t + 0.5)   # …and zoom in
+detail = regiongrab(player, t, (0.4, 0.3, 0.2, 0.2)) # …or zoom spatially
+```
+
+## Demo
+
+`examples/record_demo.jl` records a full feature walkthrough
+(`media/editor_demo.mp4`, ~135 s) by driving the real UI with synthetic
+mouse, keyboard and file-drop events (FakeInteraction from Makie/docs) —
+playback, stepping, scrubbing, timeline zoom, split/delete, right-click
+modal, edge trim + undo, Ctrl+drag clip moves, dropping a second video
+onto the window, crop, grading, "Tripod + perspective" stabilization
+(analyzed on the GPU) with the A/B hold-compare, object lock (the
+birdhouse is clicked in the preview and pinned), and export. Everything
+on screen is a real interaction; re-record after UI changes with
+`include(...)`.
+
+Playback has **audio**: each source's track is extracted once into the
+scratch cache (memory-mapped, no RAM cost) and a feeder mixes the cut list
+into PipeWire (`pw-cat`) while playing — cuts, trims, gaps and mute sources
+all follow the edit. Zero extra dependencies; silently off when PipeWire
+isn't available (`Player(...; audiopreview = false)` disables it).
+
+## Frame-granular track caches
+
+Raytraced scenes also retain a separate, lossless Float32 HDR source master
+with albedo, normal, depth and coverage planes and separate raster overlays.
+`LinearGradeEffect`, `HDRDenoiseEffect` and `ToneMapEffect` operate
+non-destructively before the display-referred GPU chain. Effect changes dirty
+only derived track/composite frames, not the traced source. The source master
+and its mutation metadata persist alongside the project.
+
+The current source format is uncompressed (roughly 55 MB per 720p frame);
+plan disk space accordingly. The spatial denoiser is a reference filter.
+Native `OIDNDenoiseEffect` is supplied by the optional OIDNRunner extension,
+including guide prefiltering. Hikari extracts material-aware albedo and world
+normals; obsolete guides are refused. `refreshguides!(clip,sf)` updates guides
+with primary rays only, retaining the original radiance and coverage.
+
+`enabletrackcache!(seq, directory)` enables independent post-effect RGBA caches
+per track and a separate composite cache. Dirty source frames are recorded by
+mutation hooks, not inferred by comparing edit histories. Cached planes and
+dirty-frame metadata persist through `saveproject` / `loadproject`.
+
+Makie scene clips default to raster. Use
+`setrenderconfig!(clip; raytrace=true, samples=256)` to opt into raytracing.
+Put transparent raster labels on a separate track: changing their parameters or
+`setsceneargs!` does not rerender the underlying scene. `setframevalue!`
+changes exactly one discrete frame of a hold/linear parameter curve; ordinary
+interpolated key edits invalidate their affected segments.
+
+For external mutations, declare their scope with
+`mutateframe!(callback, seq, track, timelineframe)`,
+`mutateframes!`, or `invalidateclip!(clip; frames=sourceframes)`.
+Filesystem writes and nested array changes do not emit mutation events.
+Moving a clip reuses its source planes; extending its out-point renders only
+new frames when the existing animation remains unchanged.
+
+Regression checks: run `test/trackcache.jl` in an environment providing
+VideoEditor, RayMakie and Mantle. They exercise one-frame edits, extensions,
+placement changes, save/reopen and mutation during an in-flight render.
+
+## Known limitations
+
+- preview audio has ~0.1–0.2 s of pipe latency (export stays sample-exact);
+  no audio effects/crossfades
+- sources must share the sequence framerate (frame-exact model, no resampling)
+
+## Live scenes and render farms
+
+Procedural Makie scenes can be saved as timeline sources and exported through
+a resumable GPU farm: the editor runs a farm server, every machine that renders
+offers its GPUs with `julia -m FarmClient all <server>`, and each job carries a
+pinned environment of its code for the clients to instantiate. See [the scene and farm guide](docs/renderfarm.md).

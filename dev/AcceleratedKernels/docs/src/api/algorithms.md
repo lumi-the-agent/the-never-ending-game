@@ -1,0 +1,69 @@
+### Algorithms and backends
+
+Every algorithmic operation takes an `alg` keyword. Its default,
+[`Auto()`](@ref AcceleratedKernels.Auto), lets AcceleratedKernels choose the algorithm and its
+settings; any other value is an algorithm you choose, with the settings you give it.
+
+```@docs
+AcceleratedKernels.Algorithm
+AcceleratedKernels.Auto
+AcceleratedKernels.CPUThreads
+```
+
+The algorithm types of each operation are documented with it, for [sorting](sort.md),
+[reductions](reduce.md), [scans](accumulate.md), [`findall`](findall.md) and
+[`any`/`all`](predicates.md).
+
+#### How `Auto` chooses
+
+`Auto` looks at the backend and its current device, the element type, the layout (a whole array or
+slices along `dims`, and their length) and the ordering, never at the array's contents. On the host
+backend it chooses the family's `CPUThreads` algorithm, which runs on Julia threads. On a GPU it
+follows per-device tuning values: for sorting, `BitonicSort` for short arrays and slices,
+`RadixSort` for long ones of the element types it supports and `MergeSort` otherwise, subject to
+`Auto`'s requirements (`MergeSort` on devices whose backend has not been measured); for
+reductions, `BlockReduce`; for scans, `ScanPrefixes` for whole arrays and `SliceScan` along
+`dims`; for `findall`, `ScanScatter`; for `any`/`all`, `ConcurrentWrite` (`ViaReduce` on oneAPI
+and Metal).
+
+Algorithms carry their settings as fields, and a field left at `nothing` takes the device's
+tuned value:
+```julia
+AK.sort!(v; alg=AK.RadixSort())                   # the device's block size and items per thread
+AK.sort!(v; alg=AK.RadixSort(block_size=512))     # 512 threads, the device's items per thread
+```
+
+Explicit algorithms are checked before any data is touched: an algorithm the operation, the
+element type, the ordering or the backend cannot run, or an invalid setting, is an
+`ArgumentError`. Each new combination of settings compiles new kernels.
+
+#### The `backend` keyword
+
+Operations run on the backend of their arrays: `backend` is derived from every array argument,
+the destination first, and all of them must agree. Ranges, `CartesianIndices`, `LinearIndices`,
+numbers and other non-array arguments do not count. An array that wraps others (one whose `parent`
+is another array, or a tuple of arrays) counts as the arrays it wraps: a view or a reshape, but
+also a lazy array such as a [MappedArrays.jl](https://github.com/JuliaArrays/MappedArrays.jl)
+`mappedarray(f, A, B)`, so that a lazy array computed from ranges does not count either. If no
+argument determines the backend (e.g. a loop over a range), the operation runs on the host.
+
+Pass `backend` explicitly for arrays that cannot tell (a range to be processed on a GPU, for
+instance), for lazy arrays whose function reads device arrays it captures rather than wraps, or
+for memory that several backends can access. AcceleratedKernels does not check that the backend
+can reach the arrays. The device and stream are those of the calling task, as set by the backend
+package (e.g. `CUDA.device!`); make sure the arrays live on that device.
+
+Results of operations on a lazy array (e.g. `AK.sort(mappedarray(f, A))`) are allocated with its
+`similar` method, or on `backend` if it has none of its own (Base's fallback gives a host `Array`)
+or wraps no memory. Running a GPU kernel over a lazy array needs a version of it that the kernel
+can use: an `isbits` lazy array (`mappedarray(abs2, 1:n)`) is passed as it is, while one wrapping
+device arrays needs an [Adapt.jl](https://github.com/JuliaGPU/Adapt.jl) rule for its type, as
+Base's views and reshapes have. MappedArrays.jl does not define such rules yet, so a
+`mappedarray` of GPU arrays cannot be processed on the GPU.
+
+#### The host backend
+
+Arrays in host memory (`Array` and views of it) are on the host backend. `Auto` processes them on
+Julia threads with the `CPUThreads` algorithms. On KernelAbstractions 0.10 the host backend also
+runs AcceleratedKernels' GPU kernels (on PoCL), so an explicit kernel algorithm such as
+`MergeSort()` works on host arrays there; on KernelAbstractions 0.9 it is an `ArgumentError`.

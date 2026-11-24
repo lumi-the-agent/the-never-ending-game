@@ -1,0 +1,50 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/fe12-1.png, fe12-3.png",
+      "severity": "high",
+      "suggestion": "Only label creatures near the camera or the focused one, de-overlap labels (push apart or fade by distance), clamp to the view rect, and use a lower-contrast outline for far labels.",
+      "what": "Name labels overlap into unreadable clusters (Sprout/Marshmallow/Pinchy/Gloop/Sir Sniffsalot/Hopscotch stacked on a tree crown in shot 1) and get cut off at the view edge or by creatures (\"Pinc\", \"Wibb\", \"Spr\" in shot 3). The first label is also clipped at the top edge.",
+      "where": "3D view, name labels"
+    },
+    {
+      "evidence": "fe12-3.png; todo 'creatures are hidden behind tree crowns'",
+      "severity": "high",
+      "suggestion": "Frame the followed creature with a pitch limit that keeps the horizon in the upper third, add occlusion handling (pull in or fade tree crowns), and cut to interactions.",
+      "what": "Camera 'follow' often shows empty ground or sea (shot 3: half the frame is water, creatures sit tiny at the shoreline) or creatures hidden behind tree crowns (the todo list itself says so). The viewer rarely sees a creature doing something interesting.",
+      "where": "camera follow mode"
+    },
+    {
+      "evidence": "fe12-1.png, fe12-3.png",
+      "severity": "medium",
+      "suggestion": "Deduplicate messages, show one friendly line per item, hide internal reviewer and tool-call text behind a details toggle, and show a short 'what's happening on the island' feed instead.",
+      "what": "The right panel is wall-to-wall text. The 'Sprout' status shows reviewer logs ('review: needs_work: Perf is fine ... but the live game still clips'), the same message is duplicated twice in 'Messages to you', and the todo list is internal jargon (lum >= 30, scenery.jl, w.t). A viewer cannot tell what the game is or what to do.",
+      "where": "right panel"
+    },
+    {
+      "evidence": "fe12-1.png vs fe12-3.png: only positions change",
+      "severity": "medium",
+      "suggestion": "Add small action icons or emotes and a short event ticker (ate, fought, met); make the sim produce visible interactions.",
+      "what": "Nothing in the 3D view tells the viewer what the creatures are doing. Speech bubbles are rare ('I had a dream I was a Blorbo' once in three shots), and there are no needs, mood or goal indicators. The world feels idle for a 'neverending game'.",
+      "where": "creature behaviour and feedback"
+    },
+    {
+      "evidence": "fe12-3.png",
+      "severity": "medium",
+      "suggestion": "Add ground texture variation, a horizon sky gradient and sun/moon, and finish the night look.",
+      "what": "Sky and island look flat: a saturated green ground with sparse tiny flowers, a plain blue-gray sea wall, no sky/clouds at the horizon. The clock reads 10:39 but the 'pretty night' item is still undone, so there is no day/night mood.",
+      "where": "environment and lighting"
+    },
+    {
+      "evidence": "fe12-1.png",
+      "severity": "low",
+      "suggestion": "Give the minigame a visible call-to-action and a short description, and raise the contrast of the status text.",
+      "what": "The top bar and bottom controls are small and low-contrast ('watching', 'Camera: follow'). The Firefly catch minigame is hidden behind a dropdown with no hint of what it is.",
+      "where": "top bar and bottom controls"
+    }
+  ],
+  "summary": "Performance is excellent (frame median ~0.6-1.4 ms, p95 under 2.5 ms) and the world is charming, but name labels collide and clip, the side panel is dense text, and it is unclear what a viewer should do.",
+  "superseded_by": "perfectionist-0016.json",
+  "verdict": "needs_work"
+}

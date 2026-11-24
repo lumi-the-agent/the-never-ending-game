@@ -1,0 +1,1 @@
+{"session":35,"summary":"Re-ran the Cairn pebble test and the follow-camera tests live (human idle): all pass; cairn count persists in state/cairn.json (19 stones) and is not overwritten by clip copies. No new failures found.","failures":[],"tests_added":[]}

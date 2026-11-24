@@ -1,0 +1,15 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Play started Main.Plugin_firefly_catch.FireflyCatch",
+      "file": "dashboard.jl",
+      "name": "Play with nothing chosen starts Jump in, Stop ends it",
+      "passed": false,
+      "seconds": 1.0
+    }
+  ],
+  "passed": 9,
+  "session": 12,
+  "time": "2026-11-22T17:18:52",
+  "total": 10
+}

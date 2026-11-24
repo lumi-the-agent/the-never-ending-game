@@ -1,0 +1,396 @@
+@testset "Reading of various example file formats" begin
+    swscale_options = (sws_flags="accurate_rnd+full_chroma_inp+full_chroma_int",)
+    for testvid in values(VideoIO.TestVideos.videofiles)
+        name = testvid.name
+        test_frameno = testvid.testframe
+        @testset "Reading $(testvid.name)" begin
+            testvid_path = joinpath(VideoIO.TestVideos.videodir, name)
+            comparison_frame = make_comparison_frame_png(load, testvid_path, test_frameno)
+            f = VideoIO.testvideo(testvid_path)
+            v = VideoIO.openvideo(f; swscale_options=swscale_options)
+            try
+                time_seconds = VideoIO.gettime(v)
+                @test time_seconds == 0
+                @test VideoIO.framerate(v) == testvid.framerate
+                @test get_fps(testvid_path) == testvid.framerate # ffprobe sanity check
+                width, height = VideoIO.out_frame_size(v)
+                @test VideoIO.width(v) == width
+                @test VideoIO.height(v) == height
+                @test VideoIO.out_frame_eltype(v) == RGB{N0f8}
+                if size(comparison_frame, 1) > height
+                    trimmed_comparison_frame = comparison_frame[1+size(comparison_frame, 1)-height:end, :]
+                else
+                    trimmed_comparison_frame = comparison_frame
+                end
+
+                fps1 = VideoIO.framerate(v)
+
+                # Find the first non-trivial image
+                first_img = read(v)
+
+                # fps should be the same before and after first read
+                fps2 = VideoIO.framerate(v)
+                @test fps1 == fps2
+
+                first_time = VideoIO.gettime(v)
+                seekstart(v)
+                img = read(v)
+                @test VideoIO.gettime(v) == first_time
+                @test img == first_img
+                @test size(img) == VideoIO.out_frame_size(v)[[2, 1]]
+
+                # no scaling currently
+                @test VideoIO.out_frame_size(v) == VideoIO.raw_frame_size(v)
+                @test VideoIO.raw_pixel_format(v) == 0 # true for current test videos
+                i = 1
+                while i < test_frameno
+                    read!(v, img)
+                    i += 1
+                end
+                test_compare_frames(img, trimmed_comparison_frame, required_accuracy)
+                test_time = VideoIO.gettime(v)
+                seek(v, test_time)
+                raw_img = parent(img)
+                read!(v, raw_img) # VideoReader should accept scanline-major images
+                test_compare_frames(img, trimmed_comparison_frame, required_accuracy)
+                @test VideoIO.gettime(v) == test_time
+                if size(img, 1) != size(img, 2)
+                    # Passing an arrray that is not scanline-major does not work
+                    @test_throws ArgumentError read!(v, similar(img))
+                    @test VideoIO.gettime(v) == test_time
+                end
+                @test_throws(ArgumentError, read!(v, similar(raw_img, size(raw_img) .- 1)))
+                @test_throws MethodError read!(v, similar(raw_img, Rational{Int}))
+                @test_throws ArgumentError read!(v, similar(raw_img, Gray{N0f8}))
+                @test VideoIO.gettime(v) == test_time
+
+                seekstart(v)
+                for i in 1:50
+                    read!(v, img)
+                end
+                fiftieth_frame = copy(img)
+                fiftytime = VideoIO.gettime(v)
+
+                while !eof(v)
+                    read!(v, img)
+                end
+
+                seek(v, fiftytime)
+                read!(v, img)
+
+                @test img == fiftieth_frame
+
+                seekstart(v)
+                start_t = VideoIO.gettime(v)
+                @test start_t <= 0
+                buff, align = VideoIO.read_raw(v, 1)
+                @test VideoIO.out_bytes_size(v) == length(buff)
+                @test align == 1
+                buff_bak = copy(buff)
+                seekstart(v)
+                VideoIO.read_raw!(v, buff, 1)
+                last_time = VideoIO.gettime(v)
+                @test buff == buff_bak
+                @test_throws(ArgumentError, VideoIO.read_raw!(v, similar(buff, size(buff) .- 1)))
+                @test_throws MethodError VideoIO.read_raw!(v, similar(buff, Int))
+                @test VideoIO.gettime(v) == last_time
+                notranscode_buff = VideoIO.openvideo(read, testvid_path, transcode=false)
+                @test notranscode_buff == buff_bak
+
+                # read first frames again, and compare
+                read_frameno!(img, v, test_frameno)
+                test_compare_frames(img, trimmed_comparison_frame, required_accuracy)
+
+                # make sure read! works with both PermutedDimsArray and Array
+                # The above tests already use read! for PermutedDimsArray,
+                # so just test the type of img
+                @test typeof(img) <: PermutedDimsArray
+
+                img_p = parent(img)
+                @assert typeof(img_p) <: Array
+                # img is a view of img_p, so calling read! on img_p should alter img
+                #
+                # first, zero img out to be sure we get the desired result from
+                # calls to read on img_p!
+                fill!(img, zero(eltype(img)))
+                # Then get the first frame, which uses read!
+                read_frameno!(img_p, v, test_frameno)
+                # Finally compare the result to make sure it's right
+                test_compare_frames(img, trimmed_comparison_frame, required_accuracy)
+
+                # Skipping & frame counting
+                VideoIO.seekstart(v)
+                VideoIO.skipframe(v)
+                VideoIO.skipframes(v, 10)
+                @test VideoIO.counttotalframes(v) == VideoIO.TestVideos.videofiles[name].numframes
+            finally
+                close(f)
+            end
+
+            if occursin("annie_oakley", name)
+                framestack = VideoIO.load(testvid_path)
+                @test length(framestack) == VideoIO.TestVideos.videofiles[name].numframes
+                # summarysize is not stable across Julia versions, so only test frame count
+                f = File{DataFormat{:OGG}}(testvid_path)
+                framestack = VideoIO.fileio_load(f)
+                @test length(framestack) == VideoIO.TestVideos.videofiles[name].numframes
+                path, io = mktemp()
+                f = File{DataFormat{:MP4}}(path * ".mp4")
+                VideoIO.fileio_save(f, framestack)
+                @test isfile(path * ".mp4")
+                @test stat(path * ".mp4").size > 0
+                framestack = nothing
+                GC.gc()
+            end
+        end
+    end
+end
+@memory_profile
+
+@testset "Reading monochrome videos" begin
+    testvid_path = joinpath(VideoIO.TestVideos.videodir, "annie_oakley.ogg")
+    # Test that limited range YCbCr values are translated to "full range"
+    minp, maxp = VideoIO.openvideo(get_video_extrema, testvid_path, target_format=VideoIO.AV_PIX_FMT_GRAY8)
+    @test typeof(minp) == Gray{N0f8}
+    @test minp.val.i < 16
+    @test maxp.val.i > 235
+    # Disable automatic rescaling
+    minp, maxp = VideoIO.openvideo(
+        get_video_extrema,
+        testvid_path,
+        target_format=VideoIO.AV_PIX_FMT_GRAY8,
+        target_colorspace_details=VideoIO.VioColorspaceDetails(),
+    )
+    @test minp.val.i >= 16
+    @test maxp.val.i <= 235
+    GC.gc()
+end
+@memory_profile
+
+@testset "Reading RGB video as monochrome" begin
+    @testset "Iterative" begin
+        io = VideoIO.testvideo("ladybird")
+        VideoIO.openvideo(io, target_format=VideoIO.AV_PIX_FMT_GRAY8) do f
+            img = read(f)
+            for i in 1:10
+                read!(f, img)
+            end
+            @test eltype(img) == Gray{N0f8}
+        end
+    end
+    @testset "Full load" begin
+        testvid_path = joinpath(VideoIO.TestVideos.videodir, "ladybird.mp4")
+        vid = VideoIO.load(testvid_path, target_format=VideoIO.AV_PIX_FMT_GRAY8)
+        @test eltype(first(vid)) == Gray{N0f8}
+    end
+    GC.gc()
+end
+@memory_profile
+
+@testset "IO reading of various example file formats" begin
+    swscale_options = (sws_flags="accurate_rnd+full_chroma_inp+full_chroma_int",)
+    for testvid in values(VideoIO.TestVideos.videofiles)
+        name = testvid.name
+        test_frameno = testvid.testframe
+        # TODO: fix me?
+        (startswith(name, "ladybird") || startswith(name, "NPS")) && continue
+        @testset "Testing $name" begin
+            testvid_path = joinpath(VideoIO.TestVideos.videodir, name)
+            comparison_frame = make_comparison_frame_png(load, testvid_path, test_frameno)
+            filename = joinpath(videodir, name)
+            VideoIO.openvideo(filename; swscale_options=swscale_options) do v
+                width, height = VideoIO.out_frame_size(v)
+                if size(comparison_frame, 1) > height
+                    trimmed_comparison_frame = comparison_frame[1+size(comparison_frame, 1)-height:end, :]
+                else
+                    trimmed_comparison_frame = comparison_frame
+                end
+                img = read(v)
+                i = 1
+                while i < test_frameno
+                    read!(v, img)
+                    i += 1
+                end
+                test_compare_frames(img, trimmed_comparison_frame, required_accuracy)
+                while !eof(v)
+                    read!(v, img)
+                end
+
+                # Iterator interface
+                VT = typeof(v)
+                @test Base.IteratorSize(VT) === Base.SizeUnknown()
+                @test Base.IteratorEltype(VT) === Base.EltypeUnknown()
+
+                VideoIO.seekstart(v)
+                i = 0
+                local first_frame
+                local last_frame
+                for frame in v
+                    i += 1
+                    if i == 1
+                        first_frame = frame
+                    end
+                    last_frame = frame
+                end
+                @test i == VideoIO.TestVideos.videofiles[name].numframes
+                # test that the frames returned by the iterator have distinct storage
+                if i > 1
+                    @test first_frame !== last_frame
+                end
+
+                ## Test that iterator is mutable, and continues where iteration last
+                ## stopped.
+                @test iterate(v) === nothing
+            end
+            GC.gc()
+        end
+    end
+
+    VideoIO.testvideo("ladybird") # coverage testing
+    @test_throws ErrorException VideoIO.testvideo("rickroll")
+    @test_throws ErrorException VideoIO.testvideo("")
+    GC.gc()
+end
+@memory_profile
+
+@testset "Reading video metadata" begin
+    @testset "Reading Storage Aspect Ratio: SAR" begin
+        # currently, the SAR of all the test videos is 1, we should get another video with a valid SAR that is not equal to 1
+        vids = Dict("ladybird.mp4" => 1, "black_hole.webm" => 1, "crescent-moon.ogv" => 1, "annie_oakley.ogg" => 1)
+        @test all(VideoIO.aspect_ratio(VideoIO.openvideo(joinpath(videodir, k))) == v for (k, v) in vids)
+    end
+    @testset "Reading video duration, start date, and duration" begin
+        # tesing the duration and date & time functions:
+        file = joinpath(videodir, "annie_oakley.ogg")
+        @test VideoIO.get_duration(file) == 24224200 / 1e6
+        @test VideoIO.get_start_time(file) == DateTime(1970, 1, 1)
+        @test VideoIO.get_time_duration(file) == (DateTime(1970, 1, 1), 24224200 / 1e6)
+        @test VideoIO.get_number_frames(file) === nothing
+    end
+    @testset "Reading the number of frames from container" begin
+        file = joinpath(videodir, "ladybird.mp4")
+        @test VideoIO.get_number_frames(file) == 398
+        @test VideoIO.get_number_frames(file, 0) == 398
+        @test_throws ArgumentError VideoIO.get_number_frames(file, -1)
+        @test_throws ErrorException VideoIO.get_number_frames("Not_a_file")
+    end
+end
+
+@testset "Frame metadata (pict_type / keyframe)" begin
+    file = joinpath(videodir, "annie_oakley.ogg")
+    v = VideoIO.openvideo(file)
+    try
+        read(v)
+        meta = VideoIO.frame_metadata(v)
+        # The first frame of a video is always a keyframe (I-frame)
+        @test meta isa VideoIO.FrameMetadata
+        @test meta.pict_type == 'I'
+        @test meta.is_keyframe == true
+
+        # Subsequent frames are non-keyframes until the next GOP boundary
+        found_non_keyframe = false
+        for _ in 1:10
+            eof(v) && break
+            read(v)
+            m = VideoIO.frame_metadata(v)
+            @test m.pict_type in ('I', 'P', 'B', 'S', 'i', 'p', '?')
+            if !m.is_keyframe
+                found_non_keyframe = true
+                @test m.pict_type != 'I'
+            end
+        end
+        @test found_non_keyframe
+
+        # Seeking resets the metadata
+        VideoIO.seek(v, 0.0)
+        meta_after_seek = VideoIO.frame_metadata(v)
+        @test meta_after_seek.pict_type == '?'
+        @test meta_after_seek.is_keyframe == false
+    finally
+        close(v)
+    end
+end
+@memory_profile
+
+@testset "Seeking in MPEG-TS lands on the target frame (#427)" begin
+    # MPEG-TS has no seek index, and a seek there used to land up to a GOP after the target.
+    fps = 25
+    tspath = joinpath(tempdir(), "videoio_seek_427.ts")
+    source = `-f lavfi -i testsrc2=size=160x120:rate=$fps -t 10`
+    FFMPEG.exe(`-y -v error $source -c:v libx264 -g 13 -pix_fmt yuv420p -f mpegts $tspath`)
+    try
+        v = VideoIO.openvideo(tspath)
+        try
+            img = read(v)
+            t0 = VideoIO.gettime(v)
+            # the frame whose [pts, pts + period) holds the target, or the first frame before the stream
+            for s in (-1.0, 0.0, 0.01, 0.04, 0.2, 0.5, 0.52, 1.0, 1.3, 2.0, 7.77)
+                seek(v, t0 + s)
+                read!(v, img)
+                expected = t0 + max(0, floor(Int, round(s * fps, digits = 3))) / fps
+                @test VideoIO.gettime(v) ≈ expected atol = 1 / 2fps
+            end
+        finally
+            close(v)
+        end
+    finally
+        rm(tspath, force = true)
+    end
+    # With a GOP longer than the first one-second back-off, that back-off can land on the second keyframe as well,
+    # so an unchanged landing frame does not yet mean the seek is at the start of the stream.
+    FFMPEG.exe(`-y -v error $source -c:v libx264 -g 50 -pix_fmt yuv420p -f mpegts $tspath`)
+    try
+        v = VideoIO.openvideo(tspath)
+        try
+            img = read(v)
+            t0 = VideoIO.gettime(v)
+            for s in (0.96, 1.0, 1.5, 1.96)
+                seek(v, t0 + s)
+                read!(v, img)
+                @test VideoIO.gettime(v) ≈ t0 + floor(Int, round(s * fps, digits = 3)) / fps atol = 1 / 2fps
+            end
+        finally
+            close(v)
+        end
+    finally
+        rm(tspath, force = true)
+    end
+end
+
+@testset "Seeking in field-coded interlaced video lands on the target frame (#468)" begin
+    # On field-coded (PAFF) H.264 with one packet per field, `r_frame_rate` is the field rate, twice the rate at which
+    # decoded frames arrive, so trimming a seek by it dropped the frame holding a target in the second half of its
+    # interval. ffmpeg has no PAFF encoder, so this uses FI1_Sony_E from the ITU-T H.264.1 (JVT) conformance suite
+    # (I and P frames only, so pts = dts) and gives its field packets 1/50 s timestamps, as in the MPEG-TS from a 50i
+    # camcorder.
+    fps = 25
+    rawpath = joinpath(tempdir(), "videoio_seek_468.jsv")
+    Downloads.download("https://github.com/JuliaIO/VideoIO.jl/releases/download/test-videos/FI1_Sony_E.jsv", rawpath)
+    try
+        for (fmt, ext) in (("mpegts", "ts"), ("mp4", "mp4"))
+            path = joinpath(tempdir(), "videoio_seek_468.$ext")
+            FFMPEG.exe(`-y -v error -f h264 -framerate $(2fps) -i $rawpath -c copy -bsf:v setts=pts=DTS -f $fmt $path`)
+            try
+                @test get_fps(path) == 2fps # the field rate, the case that used to fail
+                v = VideoIO.openvideo(path)
+                try
+                    img = read(v)
+                    t0 = VideoIO.gettime(v)
+                    # 17 frames; the frame whose [pts, pts + period) holds the target, or the first frame before the stream
+                    for s in (-1.0, 0.0, 0.01, 0.02, 0.04, 0.06, 0.2, 0.22, 0.3, 0.5, 0.52, 0.58, 0.63)
+                        seek(v, t0 + s)
+                        read!(v, img)
+                        expected = t0 + max(0, floor(Int, round(s * fps, digits = 3))) / fps
+                        @test VideoIO.gettime(v) ≈ expected atol = 1 / 2fps
+                    end
+                finally
+                    close(v)
+                end
+            finally
+                rm(path, force = true)
+            end
+        end
+    finally
+        rm(rawpath, force = true)
+    end
+end

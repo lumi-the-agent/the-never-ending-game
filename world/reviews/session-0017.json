@@ -1,0 +1,22 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s17r.png (Sprout panel)",
+      "severity": "low",
+      "suggestion": "Drop any sentence that loses its object after stripping, or replace code spans with a short word such as 'a file'. Cut review lines at a word or sentence boundary with an ellipsis.",
+      "what": "plain_text strips the backtick spans and leaves broken sentences in the activity panel, e.g. 'I found no failures, and the report is at.' and a review line cut off mid-word ('...and the').",
+      "where": "dev/NeverendingGame/src/dashboard.jl:294 plain_text, and the activity panel"
+    },
+    {
+      "evidence": "world/reviews/s17r.png",
+      "severity": "low",
+      "suggestion": "Do the planned generated props and a path or area next session. Pick a camera that is not blocked by canopies.",
+      "what": "The scene is still mostly a dark shadowed slope with a creature half-hidden under a tree crown. The weak scores (props, fun, world) were not touched, as the author says.",
+      "where": "main 3D view"
+    }
+  ],
+  "summary": "Both fixes work in the live game: labels stay inside the view and do not overlap, and the Sprout panel no longer shows backticks, tool lines or stop reasons. Frame time is fine (median about 1-2 ms, 30 fps). The change is small and nothing else a player sees got better.",
+  "superseded_by": "perfectionist-0018.json",
+  "verdict": "pass"
+}

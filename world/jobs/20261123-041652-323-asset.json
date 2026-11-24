@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-23T04:16:52.323",
+  "finished": "2026-11-23T04:26:57.078",
+  "id": "20261123-041652-323-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a single chunky stylized yellow meadow flower like a small daisy with thick round butter yellow petals and an orange center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, no pot, soft hand painted colors",
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "result": {
+    "created": "2026-11-23T04:26:57.078",
+    "faces": 39458,
+    "id": "20261123-041652-323-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-041652-323-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-041652-323-asset/mesh.jls",
+    "prompt": "a single chunky stylized yellow meadow flower like a small daisy with thick round butter yellow petals and an orange center on a thick short green stem with two plump leaves, seen from the side, resting on the ground, no pot, soft hand painted colors",
+    "seconds": 501.0,
+    "tags": [
+      "flora",
+      "flower"
+    ]
+  },
+  "seconds": 501.1,
+  "started": "2026-11-23T04:18:35.956",
+  "status": "done"
+}

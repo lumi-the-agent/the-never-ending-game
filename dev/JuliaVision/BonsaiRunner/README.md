@@ -1,0 +1,129 @@
+# BonsaiRunner
+
+Text-only Mantle runtime for Prism's
+[Ternary Bonsai 2 27B PTQ1 GGUF](https://huggingface.co/prism-ml/Ternary-Bonsai-2-27B-gguf).
+The checkpoint stays in its 1.58-bit PTQ1 representation on the GPU; it is not
+expanded into a dense 27B matrix set.
+
+```julia
+using BonsaiRunner, Mantle
+
+model = Bonsai2(device=Mantle.Device("nvidia"))
+s = session(model)
+prompt = chatprompt(["user" => "Explain Vulkan barriers."])
+print(generate(s, prompt; max_tokens=256))
+```
+
+## Example
+
+[`docs/examples/bonsai.jl`](../docs/examples/bonsai.jl), `thinking = false`,
+greedy:
+
+> **In three sentences: why does a Vulkan compute shader need a pipeline barrier
+> between two dispatches that share a buffer?**
+>
+> Vulkan requires explicit synchronization because the driver does not guarantee
+> that the results of a previous compute dispatch are visible to subsequent
+> commands until a barrier is issued. Without a pipeline barrier, the second
+> dispatch may begin executing before the first has finished writing to the
+> shared buffer, leading to undefined behavior or data races. The barrier ensures
+> that all previous writes to the buffer are complete and visible before the next
+> dispatch reads from or writes to it.
+
+86 tokens at **29.3 tokens/s**, after a 35-token prompt at 29.2 tokens/s (to
+the first token), on a Radeon 8060S (RADV, 2026-10-10). An M5 (Metal) answers in
+90 tokens, its last sentence worded differently, at 14.3 tokens/s after the
+prompt at 22.0 tokens/s; it throttles within seconds, and cool it decodes at
+about 17 tokens/s.
+
+## Devices and checkpoints
+
+The device selector is optional and uses `Mantle.Device()` by default. Another
+session can use another device in the same process because the backend and all
+state belong to the model:
+
+```julia
+amd = Bonsai2(device=Mantle.Device("radeon"), context=4096)
+cpu = Bonsai2(device=Mantle.Device("lavapipe"), context=256)
+```
+
+`Bonsai2()` resolves the official PTQ1 GGUF from four lazy Julia
+artifacts attached to JuliaVision's `assets-v1` release. Four parts are required
+because the 5.95 GB checkpoint exceeds GitHub's 2 GiB per-asset limit. On first
+use BonsaiRunner downloads and verifies each part, assembles the original GGUF
+in its Scratch.jl cache, and verifies the upstream SHA-256. Allow about 12 GB of
+local storage for the artifact parts plus the assembled mmap-ready file.
+
+The runtime has batch-one greedy decode, the 48 Gated DeltaNet states, the
+checkpoint's byte-level Qwen tokenizer, and the complete 64-layer forward pass.
+`session(model)` records the fixed decode graph once; each `step!` updates the
+token and position GPU references and replays its ~900 passes in one
+submission, ending with the greedy pick so only one token id is read back.
+`prefill!` ingests prompts in 2048-token chunks by default. Each chunk is one
+recorded graph of wide matrix kernels, which Mantle cuts into submissions below
+desktop GPU watchdog limits without giving up prompt-wide weight and activation
+reuse:
+
+```julia
+logits = prefill!(s, encode(model.tokenizer, prompt))
+text = generate(session(model), prompt; max_tokens=256)
+```
+
+Sampling policies and vision input remain follow-up work.
+
+`context=nothing`, the default, exposes the checkpoint's native 262,144-token
+limit. A session initially allocates one 4,096-token KV page and doubles its
+capacity when needed. K and V are symmetric Q8 with one Float32 scale per head
+and token, costing 33,280 bytes per context token across all 16 attention
+layers: about 130 MiB for the initial page and 7.75 GiB at 250,000 tokens. The
+recurrent state is about 144 MiB per session. Use `session(model; kv_page=...)`
+to change the allocation granularity or `context=...` to impose a smaller cap.
+
+## Local API and OpenCode
+
+From the workspace environment containing BonsaiRunner and JSON3:
+
+```sh
+python3 dev/JuliaVision/tools/bonsai_server.py --project /path/to/VulkanDev
+```
+
+The server reuses the artifact checkpoint, loads it once, warms the GPU paths,
+then reports readiness at `http://127.0.0.1:8092/health`. It exposes
+`GET /v1/models` and streaming/non-streaming `POST /v1/chat/completions` with
+model ID `bonsai-27b`. Requests run one at a time with two resident conversation slots. Exact token
+prefixes reuse their KV and recurrent state; edited, shortened or unrelated
+histories reset recurrence while retaining compiled plans. Usage reports
+`prompt_tokens_details.cached_tokens`, and non-streaming replies include separate
+prefill/decode timings. `cache_prompt: false` forces a fresh-state comparison.
+Requests have
+thinking disabled, a 16,384-token combined context limit and up to 4,096 output
+tokens. This is greedy text generation: temperature is not sampled, and tools,
+images and other multimodal input are not supported. The stdlib Python HTTP
+frontend drives a resident Julia worker; no additional Python packages are needed.
+Keep the listener local; it is not an authenticated public service.
+
+Add a separate provider to OpenCode's existing configuration:
+
+```json
+{
+  "provider": {
+    "bonsai-local": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "BonsaiRunner (local)",
+      "options": {"baseURL": "http://127.0.0.1:8092/v1", "apiKey": "local"},
+      "models": {
+        "bonsai-27b": {
+          "name": "Bonsai 27B (local, text editing)",
+          "tool_call": false,
+          "reasoning": false,
+          "limit": {"context": 16384, "output": 4096}
+        }
+      }
+    }
+  }
+}
+```
+
+Select `bonsai-local/bonsai-27b` in OpenCode. Use a text-only agent with tools
+disabled for editing; this endpoint does not provide coding-agent tool execution.
+A caller such as BonitoAgents continues to use OpenCode's provider configuration.

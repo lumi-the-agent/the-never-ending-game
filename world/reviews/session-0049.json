@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "tests/results/session-0049.json: 'the cairn did not appear after the build'; tester report",
+      "severity": "high",
+      "suggestion": "Reproduce in the sandbox, log the job end reason, make sure the forced-end path still places the cairn.",
+      "what": "After a publish Sprout builds, but the cairn does not appear when the build ends; the builder test fails reproducibly (tester re-ran it, failed again). Likely tied to the new forced-end timeout (WALK_LIMIT+2 WORK) or the pastime cancelling; goal 4's core loop is broken.",
+      "where": "plugins/builder.jl; tests/builder.jl"
+    },
+    {
+      "evidence": "world/reviews/s49-a.png (dance ring, ^ ^ eyes on the crab), world/reviews/s49-b.png (cloud with Sprout out of view, 'Good evening' at 12:19)",
+      "severity": "medium",
+      "suggestion": "Hide the cloud when Sprout is occluded/off-subject or keep Sprout framed; make the greeting time-independent; use a lower camera at dance rings so faces read.",
+      "what": "Thought cloud 'teaching my friends to play tag' is legible, but in my live shot the follow camera watched Pinchy and Sir Sniffsalot and Sprout was hidden behind a tree: only the name label and cloud show at the screen top, far from the creatures in frame. Also the welcome message says 'Good evening' at 12:19 midday. In the dance-ring shot (high, tight camera) the ^ ^ eyes show on only some of the dancers and are small.",
+      "where": "builder.jl cloud placement; welcome text; camera for dance ring"
+    },
+    {
+      "evidence": "tests/results/session-0049.json failed list",
+      "severity": "medium",
+      "suggestion": "Clear moments/goals on stop!, add new goal kinds to BUSY_GOALS/JOINABLE, reopen unfinished todo parts.",
+      "what": "Full suite still fails 4 other tests (camera drift 2.4 m, rain party 2 attendees, Pinchy hat, follow camera 9.1% < 15%). They pass alone but the new camera moments/goals (feelings, tag, end-card front views) may leave state behind; several todos were marked done with parts openly left (#250, #257, #264).",
+      "where": "plugins/feelings.jl, tag.jl; tests/results/session-0049.json"
+    }
+  ],
+  "summary": "The session adds visible life: ^ ^ eyes on dancers and a readable thought cloud over Sprout, with frame time fine (median 2.6 ms, p95 4.4 ms, all plugins ok). But the builder test fails reproducibly (cairn never appears after a publish build), 4 more suite tests fail, and the cloud shows without Sprout in frame.",
+  "superseded_by": "perfectionist-0049.json",
+  "verdict": "needs_work"
+}

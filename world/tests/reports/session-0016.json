@@ -1,0 +1,15 @@
+{"session": 16,
+ "summary": "Session 16 changed no game code (journal only); the suite passes 10/10. I only reviewed the side-panels screenshot and did not run new interactive play, so the issues below are what is visible there and they are already known to the author.",
+ "failures": [
+  {"what": "Creature name labels overlap each other and are cut off or hidden",
+   "steps": "Open the dashboard in follow camera and look at the creatures near the trees on the right.",
+   "expected": "Each name label is fully readable and labels do not sit on top of each other or on scenery.",
+   "actual": "Pinchy and Marshmallow labels are stacked close together. The label at the right edge shows only the tail of 'Snoop' and is clipped by the viewport edge and the cloud-shaped object.",
+   "screenshot": "world/tests/shots/side-panels.png"},
+  {"what": "Activity panel shows raw agent text",
+   "steps": "Look at the Sprout panel at the top right.",
+   "expected": "Short human-readable status.",
+   "actual": "The panel shows raw quoted agent output, including backticked file paths such as `world/outbox/20261122-174926-032.json` and phrases like 'it says I'm ignoring the ended (end_turn) after 0.7 min, 6 tool calls'.",
+   "screenshot": "world/tests/shots/side-panels.png"}
+ ],
+ "tests_added": []}

@@ -1,0 +1,183 @@
+name: CI-CPU
+on:
+  push:
+    branches:
+      - main
+    tags: ['*']
+  pull_request:
+
+concurrency:
+  # Skip intermediate builds: always.
+  # Cancel intermediate builds: only if it is a pull request build.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
+
+env:
+  JULIA_PKG_PRECOMPILE_AUTO: false
+
+jobs:
+  test:
+    name: Julia ${{ matrix.version }} - ${{ matrix.os }} - ${{ matrix.arch }} - nthreads ${{ matrix.env.JULIA_NUM_THREADS }} - ${{ github.event_name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    permissions: # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # pull requests only test the oldest and newest supported release
+        version: ${{ fromJSON(github.event_name == 'pull_request' && '["1.10", "1.13"]' ||
+                              '["1.10", "1.11", "1.12", "1.13"]') }}
+        os:
+          - ubuntu-latest
+          - macOS-latest
+          - windows-latest
+          - macOS-15-intel
+        arch:
+          - x64
+          - x86
+          - aarch64
+        env:
+          - JULIA_NUM_THREADS: 1
+          - JULIA_NUM_THREADS: 2
+        exclude:
+          # single-threaded runs only on one platform
+          - { env: { JULIA_NUM_THREADS: 1 }, os: macOS-latest }
+          - { env: { JULIA_NUM_THREADS: 1 }, os: macOS-15-intel }
+          - { env: { JULIA_NUM_THREADS: 1 }, os: windows-latest }
+          - { env: { JULIA_NUM_THREADS: 1 }, arch: x86 }
+          # the Intel macOS runners are slow and scarce, so pull requests only use them for
+          # the newest release (on other events, this matches the excluded x86 variant)
+          - os: macOS-15-intel
+            version: '1.10'
+            arch: ${{ github.event_name == 'pull_request' && 'x64' || 'x86' }}
+          - os: macOS-15-intel
+            arch: x86
+          - os: macOS-15-intel
+            arch: aarch64
+          - os: macOS-latest
+            arch: x86
+          - os: macOS-latest
+            arch: x64
+          - os: ubuntu-latest
+            arch: aarch64
+          - os: windows-latest
+            arch: aarch64
+          # PoCL, KernelAbstractions' host back-end, isn't built for 32-bit Windows
+          - os: windows-latest
+            arch: x86
+        # nightly is not tested on pull requests
+        include: >-
+          ${{ fromJSON(github.event_name == 'pull_request' && '[]' || '[
+          {"version": "nightly", "os": "ubuntu-latest", "arch": "x64", "env": {"JULIA_NUM_THREADS": 2}},
+          {"version": "nightly", "os": "macOS-latest", "arch": "aarch64", "env": {"JULIA_NUM_THREADS": 2}},
+          {"version": "nightly", "os": "windows-latest", "arch": "x64", "env": {"JULIA_NUM_THREADS": 2}}]') }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: ${{ matrix.arch }}
+      - uses: julia-actions/cache@v3
+      - uses: julia-actions/julia-buildpkg@v1
+      - uses: julia-actions/julia-runtest@v1
+        env:
+          JULIA_NUM_THREADS: ${{ matrix.env.JULIA_NUM_THREADS }}
+  OpenCL:
+    name: OpenCL - Julia ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        version: ${{ fromJSON(github.event_name == 'pull_request' && '["1.10", "1.13"]' ||
+                              '["1.10", "1.11", "1.12", "1.13"]') }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: x64
+      - uses: julia-actions/cache@v3
+      - uses: julia-actions/julia-buildpkg@v1
+      - name: Promote OpenCL to test dependency
+        run: julia test/promote.jl opencl
+      - uses: julia-actions/julia-runtest@v1
+      # GPUCompiler writes the module of a failed back-end compilation or SPIR-V validation
+      # to $RUNNER_TEMP/gpucompiler-dumps (releases before JuliaGPU/GPUCompiler.jl#1077: to
+      # /tmp/jl_*), to attach to a bug report
+      - name: Upload compilation dumps
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: compilation-dumps-${{ github.job }}-${{ matrix.version }}
+          path: |
+            ${{ runner.temp }}/gpucompiler-dumps/
+            /tmp/jl_*.bc
+            /tmp/jl_*.spv
+          if-no-files-found: ignore
+  cpuKA:
+    # KernelAbstractions 0.10 (unreleased, `main`) runs AcceleratedKernels' kernels on the host
+    # backend, through PoCL; `--cpu-ka` tests them there.
+    name: KA 0.10 host kernels - Julia ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions: # needed to allow julia-actions/cache to proactively delete old caches that it has created
+      actions: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        version:
+          - '1.10'
+          - '1.13'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: ${{ matrix.version }}
+          arch: x64
+      - uses: julia-actions/cache@v3
+      - name: Develop AcceleratedKernels and KernelAbstractions main into the test environment
+        # KernelInterface is unregistered and only reaches KernelAbstractions through its
+        # `[sources]`, which Julia 1.10 ignores, so develop it explicitly.
+        run: |
+          julia --project=test -e '
+            using Pkg
+            Pkg.develop([PackageSpec(path="."),
+                         PackageSpec(url="https://github.com/JuliaGPU/KernelAbstractions.jl"),
+                         PackageSpec(url="https://github.com/JuliaGPU/KernelAbstractions.jl",
+                                     subdir="lib/KernelInterface")])'
+      - name: Run tests
+        # only the generic tests: the others, Aqua included, do not depend on the backend
+        run: julia --project=test test/runtests.jl --cpu-ka cpu-ka/
+      # GPUCompiler writes the module of a failed back-end compilation or SPIR-V validation
+      # to $RUNNER_TEMP/gpucompiler-dumps (releases before JuliaGPU/GPUCompiler.jl#1077: to
+      # /tmp/jl_*), to attach to a bug report
+      - name: Upload compilation dumps
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: compilation-dumps-${{ github.job }}-${{ matrix.version }}
+          path: |
+            ${{ runner.temp }}/gpucompiler-dumps/
+            /tmp/jl_*.bc
+            /tmp/jl_*.spv
+          if-no-files-found: ignore
+  docs:
+    name: Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: julia-actions/setup-julia@v3
+        with:
+          version: '1'
+      - uses: julia-actions/julia-buildpkg@latest
+      - uses: julia-actions/julia-docdeploy@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}

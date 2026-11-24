@@ -1,0 +1,43 @@
+# using GPUArrays
+
+group = addgroup!(SUITE, "kernel")
+
+# These launches aren't synchronized, so with too many evaluations per sample the queue's
+# in-flight command buffer limit (64 by default) makes them wait on the GPU, and the result
+# depends on the number of evaluations `tune!` picks. Synchronizing in `setup` doesn't help:
+# launching onto an idle queue is slower, so that would measure something else.
+group["launch"] = @benchmarkable @metal(identity(nothing)) evals=10
+
+let lib = MTL.MTLLibrary(device(), "kernel void noop() {}")
+    pipeline = MTL.MTLComputePipelineState(device(), MTL.MTLFunction(lib, "noop"))
+    group["metalcall"] = @benchmarkable metalcall($pipeline, Tuple{}) evals=10
+end
+
+# group["occupancy"] = @benchmarkable begin
+#     kernel = @metal launch=false identity(nothing)
+#     GPUArrays.launch_heuristic(Metal.mtlArrayBackend(), kernel.f; elements=1, elements_per_thread=1)
+#     return
+# end
+
+src = Metal.rand(Float32, 512, 1000)
+dest = similar(src)
+function indexing_kernel(dest, src)
+    i = thread_position_in_grid().x
+    @inbounds dest[i] = src[i]
+    return
+end
+group["indexing"] = @async_benchmarkable @metal threads=size(src,1) groups=size(src,2) $indexing_kernel($dest, $src)
+
+function checked_indexing_kernel(dest, src)
+    i = thread_position_in_grid().x
+    dest[i] = src[i]
+    return
+end
+group["indexing_checked"] = @async_benchmarkable @metal threads=size(src,1) groups=size(src,2) $checked_indexing_kernel($dest, $src)
+
+function rand_kernel(dest::AbstractArray{T}) where {T}
+    i = thread_position_in_grid().x
+    dest[i] = rand(T)
+    return
+end
+group["rand"] = @async_benchmarkable @metal threads=size($dest,1) groups=size($dest,2) $rand_kernel($dest)

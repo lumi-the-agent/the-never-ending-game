@@ -1,0 +1,22 @@
+{
+  "failed": [
+    {
+      "error": "check failed: nobody answered the wave (Pinchy is idle)",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": false,
+      "seconds": 1.6
+    },
+    {
+      "error": "check failed: the dancers never stood in the ring (after 40.0 s)",
+      "file": "minigames.jl",
+      "name": "Dance circle: critters dance in a ring by a lantern, Sprout walks in and they cheer",
+      "passed": false,
+      "seconds": 40.0
+    }
+  ],
+  "passed": 36,
+  "session": 25,
+  "time": "2026-11-23T02:49:55",
+  "total": 38
+}

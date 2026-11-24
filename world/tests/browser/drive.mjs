@@ -1,0 +1,45 @@
+// Plays the dashboard in a real Firefox (WebDriver BiDi): load, click Play, hold keys, screenshots.
+// usage: node drive.mjs <outdir>   (Firefox must run with --remote-debugging-port=9222)
+import fs from "node:fs";
+const OUT = process.argv[2];
+const ws = new WebSocket("ws://127.0.0.1:9222/session");
+let n = 0; const waiting = new Map();
+ws.onmessage = ev => { const m = JSON.parse(ev.data); if (m.id && waiting.has(m.id)) { waiting.get(m.id)(m); waiting.delete(m.id); } };
+const send = (method, params = {}) => new Promise((ok, fail) => { const id = ++n; console.log("->", method);
+  setTimeout(() => fail(new Error(method + " timed out")), 20000);
+  waiting.set(id, m => m.type === "error" ? fail(new Error(method + ": " + m.error + " " + m.message)) : ok(m.result));
+  ws.send(JSON.stringify({ id, method, params })); });
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+await new Promise(r => ws.onopen = r);
+console.log("open"); await send("session.new", { capabilities: {} }); console.log("session");
+const ctx = (await send("browsingContext.getTree", {})).contexts[0].context;
+await send("browsingContext.navigate", { context: ctx, url: "http://192.168.178.59:8790/", wait: "none" });
+const shot = async name => { const r = await send("browsingContext.captureScreenshot", { context: ctx });
+  fs.writeFileSync(`${OUT}/${name}.png`, Buffer.from(r.data, "base64")); console.log("shot", name); };
+const evaluate = async expr => (await send("script.evaluate", { expression: expr, target: { context: ctx }, awaitPromise: true })).result;
+for (let i = 0; i < 60; i++) { const r = await evaluate("document.querySelectorAll('canvas').length"); if (r.value > 0) break; await sleep(500); }
+await sleep(6000);
+const rect = JSON.parse((await evaluate("JSON.stringify(document.querySelector('canvas').getBoundingClientRect())")).value);
+console.log("canvas", JSON.stringify(rect));
+await shot("b1-loaded");
+const fig = (x, y) => ({ x: Math.round(rect.left + x * rect.width / 1280), y: Math.round(rect.top + (720 - y) * rect.height / 720) });
+const play = fig(253, 25);
+const mouse = acts => send("input.performActions", { context: ctx, actions: [{ type: "pointer", id: "mouse", actions: acts }] });
+const keys = acts => send("input.performActions", { context: ctx, actions: [{ type: "key", id: "kb", actions: acts }] });
+await mouse([{ type: "pointerMove", x: play.x, y: play.y }, { type: "pointerDown", button: 0 }, { type: "pause", duration: 80 }, { type: "pointerUp", button: 0 }]);
+console.log("focus after Play click:", (await evaluate("document.activeElement && document.activeElement.tagName")).value);
+await sleep(2000);
+await shot("b2-after-play");
+await keys([{ type: "keyDown", value: "w" }, { type: "pause", duration: 700 }]);
+await shot("b3-holding-w");
+await keys([{ type: "pause", duration: 1500 }, { type: "keyUp", value: "w" }]);
+await keys([{ type: "keyDown", value: "a" }, { type: "pause", duration: 600 }, { type: "keyUp", value: "a" }]);
+await keys([{ type: "keyDown", value: "" }, { type: "keyDown", value: "w" }, { type: "pause", duration: 1500 }]);
+await shot("b4-running");
+await keys([{ type: "keyUp", value: "w" }, { type: "keyUp", value: "" }]);
+await sleep(500);
+await mouse([{ type: "pointerMove", x: play.x, y: play.y }, { type: "pointerDown", button: 0 }, { type: "pause", duration: 80 }, { type: "pointerUp", button: 0 }]);
+await sleep(1500);
+await shot("b5-after-stop");
+await send("session.end", {}).catch(() => {});
+process.exit(0);

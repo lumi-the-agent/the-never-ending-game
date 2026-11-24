@@ -1,0 +1,29 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the camera does not frame the rally: Float32[1.9, 50.3, 5.0]° off its view line",
+      "file": "minigames.jl",
+      "name": "Critters pass the ball back and forth by themselves, the camera watches",
+      "passed": false,
+      "seconds": 2.2
+    },
+    {
+      "error": "check failed: walking to the cairn did not set the stone down: carrying false, 180 stones (was 178), Sprout 2.5 m from the cairn",
+      "file": "minigames.jl",
+      "name": "Cairn: Sprout picks up a loose pebble with E, walks it over with W/A/D and sets it on the cairn, the critters cheer",
+      "passed": false,
+      "seconds": 15.3
+    },
+    {
+      "error": "check failed: nobody chased the butterflies: Tuple{String, Symbol, Float32}[(\"Gloop\", :follow, 1.6), (\"Wibbles\", :wander, 21.6), (\"Pinchy\", :wander, 18.7), (\"Hopscotch\", :social, 4.7), (\"Cumulus\", :flowers, 1.4), (\"Marshmallow\", :fish, 29.4), (\"Truffle\", :interact, 17.1), (\"Pickles\", :interact, 16.1), (\"Sir Sniffsalot\", :sunbathe, 17.6)]",
+      "file": "minigames.jl",
+      "name": "Butterflies: Sprout walking into the flower field startles them up, and a critter nearby runs after one and pounces",
+      "passed": false,
+      "seconds": 12.0
+    }
+  ],
+  "passed": 75,
+  "session": 42,
+  "time": "2026-11-23T16:12:47",
+  "total": 78
+}

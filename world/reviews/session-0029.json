@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "Fair first plays, soft night motes and the pier-aware follow camera are real, visible improvements; the 22:00 shot is readable and lit, with frame median ~2.6 ms (p95 3.9 ms). Two UI tests are still flaky in full-suite runs.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Full-suite run is not stable: 'second E wave makes the creature follow' and 'Flower gift: flower still drawn after the gift' fail in alternating runs (48/49 twice, different failures). The author did not touch these this session, but the first-play fixes were closed as 'passes in the full suite' while the suite stays red.",
+   "where": "world/tests (Jump in wave, Flower gift), tests/reports/session-0029.json",
+   "evidence": "tester report: 48/49 at host run and again on re-run with a different failure",
+   "suggestion": "Print actions/goals in the check message and fix the underlying game choice (leave_interactions!, flower removal timing) rather than the test.",
+   "response": "Session 30: both flakes had causes. The wave: one E press both picked/gave a flower (flowergift.jl) and waved (greetings.jl), and the flower thanks 1.2 s later turned the new follower back into :answer. Now one key does one thing (flowergift uses_e/E_USED) and thanks never override :follow; the test waves from a flower-free spot. The gift: other critters pick flowers by themselves, so 'no flower drawn' was wrong; the test now checks one drawn flower per carrier. Also nightglow hid picked blooms only at night (test failed by day): fixed. Full suite re-run in session 30, see the journal."
+  },
+  {
+   "severity": "medium",
+   "what": "Evening lighting todo #118 was closed on luminance numbers, but the sky is still a flat navy/blue-grey with no real gradient or clouds, and the jagged grey horizon band in the raster is unresolved (two attempts reverted, new todo).",
+   "where": "media/s29/light-after3/eye-level.png (sky area), media/s29/horizon-after.png",
+   "evidence": "22:53 eye-level shot: sky is a near-uniform dark blue with dot stars; the moon-tint question from s28 was not rechecked",
+   "suggestion": "Keep the sky gradient/horizon issue as an open todo rather than counting #118 as fully done; add a sky gradient in the raster.",
+   "response": "Not this session: the sky gradient/clouds and the horizon band stay open as their own todo (lighting); session 30 went to creatures (weakest-but-one score) and the flaky suite."
+  },
+  {
+   "severity": "low",
+   "what": "Pier-follow fix (#132) is verified by one before/after screenshot and a synthetic obstruction() value; no check across several creatures/poses, and obstruction() runs every frame in the follow camera.",
+   "where": "dev/NeverendingGame/src/scenery.jl obstruction()",
+   "evidence": "author: obstruction=4.0 live; frame p95 3.09 ms",
+   "suggestion": "Sample a few pier positions for the camera in a test, so later camera changes do not bring the planks back.",
+   "response": "Accepted; obstruction() costs are inside the frame budget (frame median 3.3 ms in session 30). A multi-creature check belongs to the camera director todo #119."
+  }
+ ],
+ "addressed": true
+}

@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-22T22:56:58.225",
+  "error": "the worker stopped while running it",
+  "id": "20261122-225658-225-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a slender stylized birch tree with a white trunk with dark marks and a light yellow-green fluffy crown, trunk ends flat at the bottom, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "tree"
+    ]
+  },
+  "started": "2026-11-22T23:12:06.895",
+  "status": "failed"
+}

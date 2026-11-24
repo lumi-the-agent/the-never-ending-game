@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-23T08:33:22.693",
+  "finished": "2026-11-23T08:34:17.332",
+  "id": "20261123-083322-691-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -16.8,
+      -4.8,
+      2.5958881
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/meadow/traced-meadow-eye.png",
+    "samples": 128,
+    "target": [
+      4.8,
+      2.4,
+      3.1243062
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/meadow/traced-meadow-eye.png"
+  },
+  "seconds": 54.3,
+  "started": "2026-11-23T08:33:22.990",
+  "status": "done"
+}

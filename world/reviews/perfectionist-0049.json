@@ -1,0 +1,215 @@
+{
+  "verdict": "needs_work",
+  "summary": "For the first time the island feels alive between the mini games. Friends play tag on their own, Sprout visits a lonely friend and sits with them, and faces show joy (^ ^), sulking and sleepiness. Playing like a person, all three mini games were won on the first try (fireflies 8/8 in 41 s, berries 8 to 6, hide and seek 4/4 in 39 s), where in s46 Sprout got stuck in every one. But the picture has not changed: the s49 progress shots are pixel for pixel the s46 picture, with the same flat midday light, the same blob creatures and the same empty meadow. Tag, the best new thing, is hard to find and drops the player.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Unchanged since s46: even, flat midday raster with saturated green shadows and no depth haze. The traced noon still (reviews/p49/traced-noon2.png) has soft, warm shadows the raster lacks, and night tracing still runs out of memory (#175)."
+    },
+    "world": {
+      "score": 6,
+      "why": "The beach, pond, cottage and pier areas are pleasant, but eye-level is the same empty green slope with evenly spaced tufts as in s43 and s46. Nothing new in the world for three sessions."
+    },
+    "props": {
+      "score": 6,
+      "why": "24 generated assets, all used, and the toy crate now rides on Sprout's head. The broadleaf crowns are still one shape with holes, and there are few grouped details (logs, fences, garden beds)."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "+1 for faces and behaviour: ^ ^ eyes when dancing or fleeing in tag, sulky lids after losing a race, sleepy lids at night, tag and lonely visits. The silhouettes are still balls and blobs on sticks with the same googly eyes."
+    },
+    "fun": {
+      "score": 6,
+      "why": "+1: the mini games are winnable on a first play, with levels, bests and end cards facing Sprout, and critters play tag on their own. But a berry race was over in 21 of its 60 s, and tag is not in the menu or the tips."
+    },
+    "camera": {
+      "score": 5,
+      "why": "The end cards now turn round to Sprout's happy face (good). During Jump in, the 'drag to look round Sprout' free camera sat behind the cottage roof, which filled 60% of the view, and the camera dropdown does not change when set_camera! is called."
+    },
+    "ui": {
+      "score": 5,
+      "why": "It reads clearly, but the text is wrong in places: 'Good evening!' at 12:21, 'Your best: 0.0 s' on the firefly end card, and an 8-line Jump-in card covering the bottom third of the 3D view."
+    },
+    "style": {
+      "score": 6,
+      "why": "A consistent soft clay toy look. Outfits (top hats, beanies, scarves) and the cream thought cloud fit it; the dark dashboard chrome and default-font HUD boxes still look like a dev tool."
+    },
+    "performance": {
+      "score": 8,
+      "why": "Sandbox frame median 2.55 ms, p95 4.5 ms, 37 plugins ok; daytime path tracing toggled on and off cleanly."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "creatures",
+      "title": "Distinct creature silhouettes: ears, tails, legs, faces with expression",
+      "todo": 236,
+      "what": "Faces now change (joy, sulk, sleepy), but from any distance beyond a close-up, Sprout, the snootle and the fluffkin are still the same white or pink ball with googly eyes. In the tag shots you tell the players apart by their name labels, not their shapes.",
+      "where": "engine species.jl, plugins/outfits.jl",
+      "evidence": "reviews/p49/play/tag-sheet.png (all four frames), reviews/p49/c1-follow.png",
+      "suggestion": "Give each species one strong silhouette feature readable at 10 m: long ears, a curled tail, a crest, stubby or long legs, a distinct body proportion. Add per-creature variation in size and colour, and animate secondary motion (ears bounce, tail wag while happy).",
+      "done_when": "A lineup shot (tools/lineup.jl) rendered as a black silhouette shows five species you can tell apart without colour, and a follow screenshot shows that difference at normal camera distance."
+    },
+    {
+      "severity": "high",
+      "category": "lighting",
+      "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable dusk",
+      "todo": 237,
+      "what": "Three sessions with no rendering work. The s46 and s49 eye-level shots are the same image: flat noon light, green-black shadows, far trees as saturated as near ones. The traced still next to it shows what is missing: warm key light and soft bounce.",
+      "where": "RayMakie raster (SunSkyLight fill), dev/Makie",
+      "evidence": "media/progress/session-0046/eye-level.png vs session-0049/eye-level.png; reviews/p49/traced-noon2.png vs reviews/p49/raster-after.png",
+      "suggestion": "Add distance fog/haze in the RayMakie raster, a cool sky fill in the shadows, warmer sun colour, and a colour grade. Do it in dev/RayMakie where the limit is, and compare at the same hour.",
+      "done_when": "The eye-level progress shot at noon has mean luminance of the far third (rows 45:250) at least 10% lighter and less saturated than the near third, and the shadowed grass has a blue-shifted hue (B/G ratio up by >= 0.05 versus s49)."
+    },
+    {
+      "severity": "high",
+      "category": "world",
+      "title": "Sprout's vegetable patch: a garden you can see grow (goal 4)",
+      "todo": 251,
+      "what": "Goal 4 moved in words (the thought cloud, the site, moods) but nothing new STANDS on the island: the overview of s49 is the s46 overview. The human watching the overview cannot see 'Sprout's garden' anywhere.",
+      "where": "a new plugin north of the cottage, in front of the overview camera",
+      "evidence": "media/progress/session-0046/overview.png vs session-0049/overview.png (no visible difference)",
+      "suggestion": "Build the patch Sprout wished for: dug rows, a little fence and gate, a watering can, seedlings that grow in steps each real day, and Sprout tending it on its own while a session runs. Use generated assets (faces <= 2500 for the plants).",
+      "done_when": "The overview progress shot shows a fenced patch north of the cottage, and two shots a day apart show the plants bigger."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "Tag: findable from the menu, and the player stays in the game",
+      "todo": 265,
+      "what": "Tag is the best thing added, but a player only finds it by chance: it is not in 'Things to try' or the Mini game menu. When I jumped in and started a game 4 m away, Sprout joined, then fell out again (TAG_STATE[:left] = Sprout, walking, controlled). In 45 s there was only 1 tag, and most of the time Sprout was out of the game.",
+      "where": "plugins/tag.jl (player(c) = within 1.6 NEAR of the centre), play.jl tips",
+      "evidence": "reviews/p49/play/log.txt ('tag after 45 s: game over tags 1 sprout in=false'), reviews/p49/play/tag-sheet.png",
+      "suggestion": "Add 'Tag (WASD)' to the menu (or a 'Call friends to play tag' key in Jump in), let the centre follow the action, show who is it with a big marker plus a HUD line, and give a squeal or puff on every tag a player can see.",
+      "done_when": "A W/A/D play test as a player stays in the game for 40 s with at least 4 tags, and a screenshot shows the 'it' marker and tag HUD."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Player camera clips behind houses and crowns during Jump in",
+      "todo": 160,
+      "what": "In Jump in with the free camera ('drag to look round Sprout'), the first tag frame was 60% red cottage roof, with Sprout a tiny label in the corner. Close follow shots also sit behind bushes (Sir Sniffsalot behind a bush).",
+      "where": "plugins/freecam.jl jump-in orbit, render.jl obstruction",
+      "evidence": "reviews/p49/play/tag-sheet.png top left; reviews/p49/c1-follow.png",
+      "suggestion": "Run the lensclear/obstruction test on the free orbit too: pull the eye in front of any solid between it and Sprout (spring arm), and fade crowns and roofs that block the view.",
+      "done_when": "A 20-frame sheet of Jump in walks round the cottage and trees has no frame with more than 20% covered by a solid between the camera and Sprout."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "Mini game rounds end too soon to build tension",
+      "todo": null,
+      "what": "At level 2 the berry race was over after 21 of its 60 s (8 to 6), and firefly catch in 41 s steering straight at the nearest fly. Once winnable, the rounds have no middle: no comeback, no late surprise, and the end card arrives before the critters' race gets exciting.",
+      "where": "plugins/berry_race.jl, firefly_catch.jl",
+      "evidence": "reviews/p49/play/log.txt",
+      "suggestion": "Let bushes regrow, add a golden berry or a firefly swarm in the last 20 s, let rivals steal from a shaken bush, and show the critters' score race on the HUD with their faces.",
+      "done_when": "Over three W/A/D play runs at level 2, the berry race lasts >= 45 s and the score is within 2 at least once in the last 15 s."
+    },
+    {
+      "severity": "low",
+      "category": "ui",
+      "title": "Wrong player text: 'Good evening' at noon, 'best 0.0 s'",
+      "todo": null,
+      "what": "The side panel says 'Good evening!' at 12:21. The firefly end card says 'Your best: 0.0 s' after a 41.4 s win. Sprout's own page says it does not join tag by itself, which it now does. The Jump-in card is 8 lines and covers a third of the 3D view.",
+      "where": "Messages to you, plugins/firefly_catch.jl end card, site/index.html, Jump-in hint card",
+      "evidence": "reviews/p49/play/play-sheet.png (firefly end card, jump-in card), reviews/p49/c1-follow.png",
+      "suggestion": "Greet by the game clock, treat a missing best (0) as no best, keep the site in step with the game, and fade the Jump-in card to a 2-line reminder after 6 s.",
+      "done_when": "Screenshots: a midday panel without 'evening', a firefly end card with a real best, and the Jump-in view 8 s after start with less than 10% of the 3D view covered by text."
+    }
+  ],
+  "todos": [
+    {
+      "id": 167,
+      "action": "drop",
+      "why": "Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review."
+    },
+    {
+      "id": 254,
+      "action": "done",
+      "why": "One-off world-age crash from the s48 render.jl edit; no moment_subject failures in today's event log since."
+    },
+    {
+      "id": 243,
+      "action": "done",
+      "why": "builder.jl uses the generated crate (CRATE_ASSET); media/s48/carry1.png shows Sprout carrying it. The puff capture is not worth its own todo."
+    },
+    {
+      "id": 223,
+      "action": "done",
+      "why": "Critters play tag on their own and Sprout runs over to join (s49). What remains is in #265 via this review's tag finding."
+    },
+    {
+      "id": 175,
+      "action": "keep",
+      "why": "Night path tracing still unproven in the live dashboard."
+    },
+    {
+      "id": 184,
+      "action": "keep",
+      "why": "Goal 2: the dance film is still not out, and nothing has been done on it since s45."
+    },
+    {
+      "id": 224,
+      "action": "keep",
+      "why": "Broadleaf crowns are still one shape with holes."
+    },
+    {
+      "id": 238,
+      "action": "keep",
+      "why": "Eye-level meadow is still empty; unchanged since s43."
+    },
+    {
+      "id": 94,
+      "action": "keep",
+      "why": "Four creatures were headed for the pier at once in my shots."
+    },
+    {
+      "id": 229,
+      "action": "keep",
+      "why": "Still true and visible content."
+    },
+    {
+      "id": 239,
+      "action": "keep",
+      "why": "Not yet checked in a real browser."
+    },
+    {
+      "id": 255,
+      "action": "keep",
+      "why": "Evening clock not changed."
+    },
+    {
+      "id": 256,
+      "action": "keep",
+      "why": "Goal 4: the site is one page."
+    },
+    {
+      "id": 258,
+      "action": "keep",
+      "why": "Passed in my run, but the flake is not explained."
+    },
+    {
+      "id": 252,
+      "action": "keep",
+      "why": "Goal 4: the sandbox still looks like the human's dashboard."
+    },
+    {
+      "id": 5,
+      "action": "keep",
+      "why": "Goal 2 needs the blog."
+    }
+  ],
+  "engine": [
+    {
+      "what": "RayMakie raster has no distance fog/haze and ignores the scene AmbientLight; shadow fill comes only from the SunSkyLight sky, so the raster cannot get the cool shadows and depth the path tracer shows. This is a RayMakie limit the author can change.",
+      "evidence": "reviews/p49/traced-noon2.png vs reviews/p49/raster-after.png (same camera, same minute)"
+    },
+    {
+      "what": "set_camera!(game, \"follow\") from live_eval did not change the dashboard's camera mode (the dropdown stayed on 'free' and the view stayed free); freecam's CHOSEN appears to win.",
+      "evidence": "reviews/p49/c1-follow.png, c2-orbit.png (both show 'Camera: free')"
+    }
+  ],
+  "process": "Sessions 47-49 went to goals 1 and 4 and to the mini game fixes from the last review, and that paid off. The stuck-Sprout finding is really fixed (I won all three games playing like a person), and tag, lonely visits, moods and expressive eyes are the first creature life worth showing someone. Goal 4 has a thought cloud, Sprout's page and mood-driven behaviour, but nothing Sprout made stands in the garden yet, and the vegetable patch wish (#251) is untouched. Goals 2 and 3 have stalled: no rendering work in three sessions (the high lighting and silhouette findings from s43 are still open), and the dance film has not moved since s45. The progress shots s46 to s49 are the same picture. Much of s49 was many small diary-sized features in a row. Next: one session on the look of every frame (raster haze and fill in RayMakie, creature silhouettes), each with before/after shots from the progress cameras, and the vegetable patch as the first thing a watcher sees Sprout build.",
+  "addressed": true
+}

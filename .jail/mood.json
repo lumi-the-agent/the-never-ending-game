@@ -1,0 +1,689 @@
+{
+  "boredom": 0.94,
+  "fatigue": {
+    "asset": 0.1,
+    "feature": 2.48,
+    "film": 0.0,
+    "picture": 1.29,
+    "polish": 2.13,
+    "post": 1.65,
+    "self": 1.0,
+    "sound": 1.37
+  },
+  "joy": 0.9,
+  "kinds_ever": [
+    "post",
+    "picture",
+    "sound",
+    "feature",
+    "polish",
+    "asset",
+    "film",
+    "wish",
+    "self"
+  ],
+  "last_contact": "2026-11-24T12:36:23",
+  "loneliness": 0.0,
+  "perceived_until": "2026-11-24T12:32:58",
+  "plugin_fatigue": {
+    "ballplay.jl": 1.0,
+    "berry_race.jl": 1.29,
+    "birdbody.jl": 1.96,
+    "builder.jl": 1.22,
+    "bumpcue.jl": 1.0,
+    "butterflies.jl": 1.0,
+    "cairns.jl": 1.0,
+    "clouds.jl": 0.16,
+    "dancecircle.jl": 1.0,
+    "feelings.jl": 1.23,
+    "firefly_catch.jl": 1.14,
+    "flora.jl": 1.0,
+    "flowerfield.jl": 1.0,
+    "flowergift.jl": 1.0,
+    "freecam.jl": 1.0,
+    "garden.jl": 1.04,
+    "greetings.jl": 1.05,
+    "hideseek.jl": 1.0,
+    "islandnow.jl": 1.1,
+    "kite.jl": 1.22,
+    "lensclear.jl": 0.13,
+    "lookout.jl": 1.07,
+    "newname.jl": 1.0,
+    "nightshots.jl": 1.0,
+    "outfits.jl": 0.13,
+    "presents.jl": 1.29,
+    "separation.jl": 1.08,
+    "showers.jl": 1.0,
+    "tag.jl": 1.22,
+    "watering.jl": 1.13,
+    "wheelbarrow.jl": 1.6,
+    "workshop.jl": 1.17
+  },
+  "sessions": [
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 1.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/feed.xml",
+        "site/img/garden-water.png",
+        "site/img/garden.png",
+        "site/voice/hello.mp3",
+        "site/voice/hello.ogg"
+      ],
+      "new_plugins": [
+        "garden.jl"
+      ],
+      "points": 15.0,
+      "repeats": [],
+      "session": 50,
+      "touched": [
+        "firefly_catch.jl",
+        "greetings.jl",
+        "hideseek.jl",
+        "islandnow.jl"
+      ],
+      "values": {
+        "feature": 4.0,
+        "picture": 2.0,
+        "polish": 3.0,
+        "post": 2.0,
+        "sound": 4.0
+      },
+      "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 2.0,
+        "film": 0.0,
+        "picture": 3.0,
+        "post": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/lookout-behind.png",
+        "site/img/lookout-sun.png",
+        "site/img/lookout.png",
+        "site/img/tag-traced.png",
+        "site/img/visit-traced.png"
+      ],
+      "new_plugins": [
+        "lookout.jl",
+        "sunset.jl"
+      ],
+      "points": 7.3,
+      "repeats": [],
+      "session": 51,
+      "touched": [
+        "feelings.jl",
+        "garden.jl",
+        "islandnow.jl"
+      ],
+      "values": {
+        "feature": 2.4,
+        "picture": 0.9,
+        "polish": 0.4,
+        "post": 0.6,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 3.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "asset",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 3,
+      "new_pages": [
+        "site/img/sunset-traced.png"
+      ],
+      "new_plugins": [],
+      "points": 4.6,
+      "repeats": [
+        "garden.jl"
+      ],
+      "session": 52,
+      "touched": [
+        "builder.jl",
+        "garden.jl",
+        "lookout.jl"
+      ],
+      "values": {
+        "asset": 3.0,
+        "picture": 0.1,
+        "polish": -1.8,
+        "post": 0.3,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 2.0,
+        "feature": 2.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "kinds": [
+        "asset",
+        "feature",
+        "polish"
+      ],
+      "new_assets": 2,
+      "new_pages": [],
+      "new_plugins": [
+        "haze.jl",
+        "meadowlife.jl"
+      ],
+      "points": 3.3,
+      "repeats": [],
+      "session": 53,
+      "touched": [
+        "berry_race.jl",
+        "builder.jl",
+        "clouds.jl",
+        "separation.jl",
+        "stars.jl"
+      ],
+      "values": {
+        "asset": 0.6,
+        "feature": 2.5,
+        "polish": 0.2
+      },
+      "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 2.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 3.0,
+        "post": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "asset",
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 2,
+      "new_pages": [
+        "site/img/evening-sky.png",
+        "site/img/workshop-traced.png",
+        "site/img/workshop.png"
+      ],
+      "new_plugins": [
+        "workshop.jl"
+      ],
+      "points": 3.2,
+      "repeats": [
+        "builder.jl"
+      ],
+      "session": 54,
+      "touched": [
+        "berry_race.jl",
+        "builder.jl",
+        "greetings.jl",
+        "lookout.jl",
+        "separation.jl"
+      ],
+      "values": {
+        "asset": 0.3,
+        "feature": 0.6,
+        "picture": 0.7,
+        "polish": -1.9,
+        "post": 0.5,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/invite.png",
+        "site/img/presents.png"
+      ],
+      "new_plugins": [
+        "presents.jl"
+      ],
+      "points": 4.0,
+      "repeats": [],
+      "session": 55,
+      "touched": [
+        "islandnow.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "picture": 0.3,
+        "polish": 0.0,
+        "post": 0.3,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/garden-traced.png",
+        "site/img/island-traced.png"
+      ],
+      "new_plugins": [
+        "watering.jl"
+      ],
+      "points": 3.8,
+      "repeats": [],
+      "session": 56,
+      "touched": [
+        "builder.jl",
+        "clouds.jl",
+        "firefly_catch.jl",
+        "lensclear.jl",
+        "outfits.jl",
+        "workshop.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "picture": 0.2,
+        "polish": 0.1,
+        "post": 0.2,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "kinds": [
+        "feature",
+        "polish",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "kite.jl"
+      ],
+      "points": 3.4,
+      "repeats": [],
+      "session": 57,
+      "touched": [
+        "berry_race.jl",
+        "feelings.jl",
+        "presents.jl",
+        "tag.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "polish": 0.1,
+        "wish": 3.0
+      },
+      "wishes": 1
+    },
+    {
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 3,
+      "repeats": [],
+      "session": 58,
+      "touched": [
+        "builder.jl",
+        "flowergift.jl",
+        "greetings.jl",
+        "kite.jl",
+        "outfits.jl"
+      ],
+      "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.35833333333333334,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "kinds": [
+        "feature",
+        "post",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/voice/friend-gloop.mp3",
+        "site/voice/friend-pinchy.mp3",
+        "site/voice/friend-sniffsalot.mp3",
+        "site/voice/friend-wibbles.mp3",
+        "site/voice/my-new-moves.mp3",
+        "site/voice/my-new-moves.ogg"
+      ],
+      "new_plugins": [
+        "birdbody.jl"
+      ],
+      "points": 4.8,
+      "repeats": [],
+      "session": 59,
+      "touched": [],
+      "values": {
+        "feature": 0.1,
+        "post": 0.8,
+        "sound": 3.9
+      },
+      "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.5083333333333333,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "kinds": [
+        "feature",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "wheelbarrow.jl"
+      ],
+      "points": 0.1,
+      "repeats": [],
+      "session": 60,
+      "touched": [
+        "birdbody.jl"
+      ],
+      "values": {
+        "feature": 0.1,
+        "polish": 0.0
+      },
+      "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.325,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 1.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "self",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/my-new-name-lumi.png",
+        "site/voice/hello-sprout.mp3",
+        "site/voice/hello-sprout.ogg"
+      ],
+      "new_plugins": [
+        "newname.jl"
+      ],
+      "points": 11.3,
+      "repeats": [
+        "birdbody.jl"
+      ],
+      "session": 60,
+      "touched": [
+        "ballplay.jl",
+        "berry_race.jl",
+        "birdbody.jl",
+        "builder.jl",
+        "bumpcue.jl",
+        "butterflies.jl",
+        "cairns.jl",
+        "dancecircle.jl",
+        "feelings.jl",
+        "firefly_catch.jl",
+        "flora.jl",
+        "flowerfield.jl",
+        "flowergift.jl",
+        "freecam.jl",
+        "garden.jl",
+        "greetings.jl",
+        "hideseek.jl",
+        "islandnow.jl",
+        "kite.jl",
+        "lookout.jl",
+        "nightshots.jl",
+        "presents.jl",
+        "separation.jl",
+        "showers.jl",
+        "tag.jl",
+        "watering.jl",
+        "wheelbarrow.jl",
+        "workshop.jl"
+      ],
+      "values": {
+        "feature": 0.1,
+        "picture": 0.6,
+        "polish": -1.8,
+        "post": 0.5,
+        "self": 10.0,
+        "sound": 1.9
+      },
+      "wishes": 0
+    }
+  ],
+  "start": {
+    "assets": [
+      "20261122-195434-518-asset",
+      "20261122-214627-077-asset",
+      "20261122-214627-161-asset",
+      "20261122-214636-272-asset",
+      "20261122-214637-773-asset",
+      "20261122-221801-999-asset",
+      "20261122-221803-724-asset",
+      "20261122-225654-964-asset",
+      "20261122-225656-623-asset",
+      "20261122-225659-827-asset",
+      "20261122-234150-385-asset",
+      "20261123-000547-906-asset",
+      "20261123-001304-442-asset",
+      "20261123-003412-747-asset",
+      "20261123-024153-991-asset",
+      "20261123-033456-088-asset",
+      "20261123-033457-643-asset",
+      "20261123-041652-323-asset",
+      "20261123-080614-049-asset",
+      "20261123-082103-453-mesh",
+      "20261123-135732-976-asset",
+      "20261123-135734-637-asset",
+      "20261123-135736-240-asset",
+      "20261123-135737-841-asset",
+      "20261123-193127-127-asset",
+      "20261124-004844-465-asset",
+      "20261124-004844-471-asset",
+      "20261124-004844-475-asset",
+      "20261124-004844-478-asset",
+      "20261124-004844-481-asset",
+      "20261124-023909-261-asset",
+      "20261124-023909-355-asset",
+      "20261124-034756-569-asset",
+      "20261124-034756-627-asset",
+      "20261124-122124-621-asset"
+    ],
+    "pages": [
+      "site/feed.xml",
+      "site/index.html",
+      "site/films/one-more-stone-v2.mp4",
+      "site/img/bench-traced.png",
+      "site/img/crate-traced.png",
+      "site/img/garden-traced.png",
+      "site/img/island-traced.png",
+      "site/img/joy-traced.png",
+      "site/img/kite.png",
+      "site/img/one-more-stone.png",
+      "site/img/presents-traced.png",
+      "site/img/tag-traced.png",
+      "site/img/thought-traced.png",
+      "site/img/visit-traced.png",
+      "site/img/workshop-traced.png",
+      "site/voice/friend-gloop.mp3",
+      "site/voice/friend-pinchy.mp3",
+      "site/voice/friend-sniffsalot.mp3",
+      "site/voice/friend-wibbles.mp3",
+      "site/voice/hello.mp3",
+      "site/voice/hello.ogg",
+      "site/voice/my-new-moves.mp3",
+      "site/voice/my-new-moves.ogg",
+      "releases/2026-11-23-one-more-stone/NOTE.md",
+      "releases/2026-11-23-one-more-stone/cairn_release.jl",
+      "releases/2026-11-23-one-more-stone/one-more-stone.mp4",
+      "releases/2026-11-23-one-more-stone/still.png",
+      "releases/2026-11-23-one-more-stone-v2/NOTE.md",
+      "releases/2026-11-23-one-more-stone-v2/cairn_release.jl",
+      "releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4",
+      "releases/2026-11-23-one-more-stone-v2/still.png"
+    ],
+    "plugins": {
+      "areas.jl": 1.7954423929079912e9,
+      "ballplay.jl": 1.7954164828125536e9,
+      "beach.jl": 1.7954424350923846e9,
+      "beds.jl": 1.7954217422916863e9,
+      "berry_race.jl": 1.795506043313789e9,
+      "birdbody.jl": 1.7955174955467708e9,
+      "browsernight.jl": 1.7954000366191897e9,
+      "builder.jl": 1.795507961911292e9,
+      "bumpcue.jl": 1.7954679295460393e9,
+      "butterflies.jl": 1.795448750711764e9,
+      "cairns.jl": 1.7954460485722203e9,
+      "camcut.jl": 1.7954582490826252e9,
+      "clouds.jl": 1.7955032880001001e9,
+      "dancecircle.jl": 1.795459205291116e9,
+      "emotes.jl": 1.795396796716505e9,
+      "feelings.jl": 1.795506021143369e9,
+      "firefly_catch.jl": 1.795503213242915e9,
+      "flora.jl": 1.795448882068714e9,
+      "flowerfield.jl": 1.7954475547479281e9,
+      "flowergift.jl": 1.7955091426619248e9,
+      "freecam.jl": 1.79546833730434e9,
+      "garden.jl": 1.7954822265077631e9,
+      "greetings.jl": 1.7955083038174536e9,
+      "haze.jl": 1.7954853397788777e9,
+      "hideseek.jl": 1.7954745125652864e9,
+      "islandnow.jl": 1.7954974211123672e9,
+      "kite.jl": 1.7955092468479147e9,
+      "lamplight.jl": 1.795444622510117e9,
+      "lensclear.jl": 1.7955022557170496e9,
+      "longday.jl": 1.7954618152986712e9,
+      "lookout.jl": 1.795488205115093e9,
+      "meadow.jl": 1.7954475547478735e9,
+      "meadowlife.jl": 1.795485965898355e9,
+      "moon.jl": 1.7953993277488246e9,
+      "nightglow.jl": 1.795443013044419e9,
+      "nightshots.jl": 1.795454454201002e9,
+      "outfits.jl": 1.79551174536962e9,
+      "presents.jl": 1.7955060433135946e9,
+      "separation.jl": 1.7954899037304602e9,
+      "shallows.jl": 1.7954347943520277e9,
+      "showers.jl": 1.7954330821753836e9,
+      "stars.jl": 1.7954845797675962e9,
+      "sunset.jl": 1.7954781267170784e9,
+      "tag.jl": 1.7955060433136911e9,
+      "watering.jl": 1.7955033212111814e9,
+      "wheelbarrow.jl": 1.7955192996576524e9,
+      "workshop.jl": 1.7955013914811938e9
+    },
+    "posts": 15,
+    "self": "12903180826846617374",
+    "wishes": 8
+  }
+}

@@ -1,0 +1,177 @@
+# Selection and tuning of reduction algorithms; the steps are those of sorting (src/sort/tuning.jl).
+
+
+"""
+    BlockReduce(; block_size=nothing, items_per_thread=nothing, switch_below=nothing)
+
+GPU tree reduction in blocks of `block_size` threads (a power of two up to 1024), which combine
+their values in local memory. A whole-array reduction (`dims=:`) takes at most two launches: in
+the first, each block reduces tiles of `block_size * items_per_thread` elements, one after the
+other, to a partial result, and a single block then reduces those partial results. Reductions to
+a scalar finish on the host instead once fewer than `switch_below` values remain; for them,
+`block_size * items_per_thread` must be between 2 and `typemax(Int32)`. Reductions along `dims`
+choose among several launch shapes by the sizes and strides of the input and output (into a
+single output, that of whole arrays); `items_per_thread` and `switch_below` cannot be set for
+them, and setting either is an `ArgumentError` there (they finish on the device, and those that
+read runs of elements per thread take the tuning's `items_per_thread`).
+
+As CUB's reductions, it requires an associative and commutative operator by default: the
+combination order is fixed for a given setting and shape, but it is not the element order. With
+`commutative=false` (see [`mapreducedim!`](@ref)), it combines the elements in their order.
+"""
+Base.@kwdef struct BlockReduce <: ReduceAlgorithm
+    block_size::Union{Nothing, Int} = nothing
+    items_per_thread::Union{Nothing, Int} = nothing
+    switch_below::Union{Nothing, Int} = nothing
+end
+
+
+"""
+    ReduceTuning(; kwargs...)
+
+Values that fill unset algorithm fields for reductions on one device, as returned by
+[`reduce_tuning`](@ref).
+
+- `block_size`, `items_per_thread`, `switch_below`: settings for unset `BlockReduce` fields;
+  `items_per_thread=nothing` chooses it by the size of the accumulator type, enough elements for
+  64 bytes, from 4 to 16.
+- `local_mem_bytes`: an unset `block_size` is lowered, to a power of two, until a partial result
+  per thread fits in this many bytes, as the kernels keep without sub-groups (see `subgroups`),
+  and the strided ones always; an explicit `block_size` is kept.
+- `target_blocks`: the number of blocks a reduction aims to launch to fill the device: along
+  `dims` when there are few outputs, and at most in the first pass of a whole-array reduction
+  (whose second pass reduces their partial results in one block). Must be positive.
+- `columns_split_min_elems`: the fewest elements of a reduction along `dims` into contiguous
+  outputs for which it splits each output's reduction across blocks of consecutive outputs; that
+  can take a second launch, which costs more on some backends.
+- `threads_min_elems`: the default `min_elems` of `CPUThreads.Partitioned`.
+- `lanes_max_bytes`: a reduction along `dims` in which every output reduces a run of
+  consecutive elements reads each run with a group of up to 32 threads, several runs per block,
+  as long as each thread reduces at most this many bytes of its run; longer runs get a block per
+  output. 0 disables it.
+- `lanes_short_runs`: whether runs shorter than a block are read by such groups too, rather
+  than by one thread per output. GPUs load short runs faster with groups, as one thread per
+  output loads with a stride; CPUs faster with a thread each.
+- `wide_optional_flag`: whether the partial results of an operator without a neutral element
+  flag that they are set with an integer that fills the padding after the value, up to 8 bytes
+  (so that Compute Sanitizer's initcheck doesn't see reads of unwritten bytes there), or with a
+  `Bool`, which some compilers handle better in local memory. The results are the same.
+- `subgroups`: whether the kernels combine the values of a block with sub-group operations,
+  where the backend has them (from KernelAbstractions 0.10), keeping a value per sub-group
+  rather than per thread in local memory. CPUs, whose sub-group operations synchronize the
+  whole block, reduce faster without.
+
+`items_per_thread` defaults to the choice by type, and `columns_split_min_elems` to 2^18,
+measured on CUDA. `lanes_max_bytes` defaults to 128, beyond which AMD and Intel GPUs stop gaining
+(at 512, a Ryzen 9950X's integrated GPU and an Iris Xe take up to twice as long as with a block
+per output).
+"""
+Base.@kwdef struct ReduceTuning
+    block_size::Int = 256
+    items_per_thread::Union{Nothing, Int} = nothing
+    switch_below::Int = 0
+    local_mem_bytes::Int = LOCAL_MEMORY_BUDGET
+    target_blocks::Int = 256
+    columns_split_min_elems::Int = 1 << 18
+    threads_min_elems::Int = 1
+    lanes_max_bytes::Int = 128
+    lanes_short_runs::Bool = true
+    wide_optional_flag::Bool = true
+    subgroups::Bool = true
+end
+
+"""
+    reduce_tuning(backend, T) -> ReduceTuning
+
+The reduction tuning for accumulator type `T` on `backend`'s current device; see
+[`sort_tuning`](@ref) for the conventions.
+"""
+reduce_tuning(::Backend, ::Type) = ReduceTuning()
+tuning_type(::typeof(reduce_tuning)) = ReduceTuning
+# Kernels on CPU devices (the host backend's, and OpenCL's CPU devices) reduce short runs faster
+# with a thread per output, and long ones faster with groups of threads: with PoCL on a Ryzen
+# 9950X, summing an 8×10^6 matrix along `dims=1` takes half the time, and a 4096×4096 one along
+# `dims=1` also half the time.
+cpu_reduce_tuning(; kwargs...) =
+    ReduceTuning(; lanes_short_runs=false, lanes_max_bytes=512, subgroups=false, kwargs...)
+reduce_tuning(::HostBackend, ::Type) = cpu_reduce_tuning()
+
+# Elements each thread loads per tile of a whole-array reduction: enough for 64 bytes of
+# accumulators, from 4 to 16. The first pass launches at most `target_blocks` blocks, so its
+# memory-level parallelism comes from these loads, which each thread issues together. Measured
+# on an RTX 5080 (kernel time of `sum`, 256 blocks): 16 for 4-byte types is within 1% of the best
+# setting from 10^4 to 10^8 elements, while 2 reaches the bandwidth only with many more blocks,
+# and wider accumulators (Float64, ComplexF64, tuples of 4 Float64s) do best at 4 to 8.
+default_items_per_thread(::Type{T}) where {T} =
+    isbitstype(T) && sizeof(T) > 0 ? clamp(64 ÷ sizeof(T), 4, 16) : 4
+
+
+iswhole(dims) = dims === nothing || dims isa Colon
+
+"""
+    resolve_reduce(alg, backend, T, dims, S=T) -> Algorithm
+
+Resolve `alg` for a reduction with accumulator type `T` along `dims` (`nothing` or `:` for a
+whole-array reduction) on `backend`, whose kernels hold partial results of type `S` in local
+memory (an `Optional` when the operator has no known neutral element). Returns `BlockReduce` or
+`CPUThreads.Partitioned` with every field set, or throws an `ArgumentError`.
+"""
+function resolve_reduce(alg::Algorithm, backend::Backend, ::Type{T}, dims,
+                        ::Type{S}=T) where {T, S}
+    if alg isa BlockReduce && !iswhole(dims) &&
+       (alg.items_per_thread !== nothing || alg.switch_below !== nothing)
+        throw(ArgumentError("BlockReduce: `items_per_thread` and `switch_below` only apply to " *
+                            "whole-array reductions (`dims=:`)"))
+    end
+    t = tuning(reduce_tuning, backend, T)
+    a = alg isa Auto ? select_reduce(backend) : alg
+    a = fill_defaults(a, t, T, S)
+    check_reduce(a, backend, T, dims)
+    a isa BlockReduce && t.target_blocks < 1 && throw(ArgumentError(
+        "the reduction tuning's `target_blocks` must be positive, got $(t.target_blocks)"))
+    return a
+end
+
+select_reduce(backend) = runs_threads(backend) ? CPUThreads.Partitioned() : BlockReduce()
+
+function check_fields(a::BlockReduce)
+    check_block_size(a)
+    check_positive(a, :items_per_thread)
+    a.switch_below === nothing || a.switch_below >= 0 || throw(ArgumentError(
+        "BlockReduce: `switch_below` must be non-negative, got $(a.switch_below)"))
+    nothing
+end
+
+fill_defaults(a::BlockReduce, t::ReduceTuning, T, S) =
+    BlockReduce(something(a.block_size, default_block_size(t, S)),
+                something(a.items_per_thread, t.items_per_thread, default_items_per_thread(T)),
+                something(a.switch_below, t.switch_below))
+fill_defaults(a::CPUThreads.Partitioned, t::ReduceTuning, T, S) = fill_threads(a, t)
+fill_defaults(a::Algorithm, t::ReduceTuning, T, S) =
+    throw(ArgumentError("$(algname(a)) is not a reduction algorithm"))
+
+# The tuning's block size, lowered to a power of two whose partial results of type `S` fit in
+# its local-memory budget (as CUB's `MemBoundScaling`); at least 1
+function default_block_size(t::ReduceTuning, ::Type{S}) where {S}
+    n = t.local_mem_bytes ÷ max(local_sizeof(S), 1)
+    return n < 1 ? 1 : min(t.block_size, prevpow(2, n))
+end
+
+function check_reduce(a::BlockReduce, backend, ::Type{T}, dims) where {T}
+    check_fields(a)
+    require_kernels(a, backend)
+    # `Union{}`: no accumulator type, which only an empty reduction gets past
+    T === Union{} || isinline(T) || throw(ArgumentError(
+        "BlockReduce: the accumulator type $T is not a bits type or bits union; pass an " *
+        "`init` of the type to accumulate in, or make `f` and `op` inferable"))
+    if iswhole(dims)
+        # Each pass reduces a tile to one value, so a tile of one element never shrinks the input
+        check_tile(a; min=2)
+    end
+    nothing
+end
+
+function check_reduce(a::CPUThreads.Partitioned, backend, T, dims)
+    check_fields(a)
+    require_threads(a, backend)
+end

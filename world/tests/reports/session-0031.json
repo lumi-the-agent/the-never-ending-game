@@ -1,0 +1,8 @@
+{"session":31,
+ "summary":"Suite 52/53 at the host run; the one failure (ball rally 'two passes in 1.0 s') passed when rerun alone (1.9 s), so it is intermittent. I did not do a broader exploratory play-through this session.",
+ "failures":[{"what":"Ball rally: critters pass the ball back and forth so fast the player cannot follow it (3 rally counts within 1.0 s)",
+  "steps":"Run the full suite, test 'Critters pass the ball back and forth by themselves, the camera watches' (tests/minigames.jl); the rally reached 3 within two 0.5 s polls.",
+  "expected":"Passes are spaced long enough to see (at least about 1.5 s for 2 passes).",
+  "actual":"Failed in the full suite with 'two passes in 1.0 s: too fast to see'; passes when run alone. Likely a leftover critter from an earlier test (state that outlives a test) passing the ball back instantly.",
+  "screenshot":"world/tests/shots/ballplay-pass.png"}],
+ "tests_added":[]}

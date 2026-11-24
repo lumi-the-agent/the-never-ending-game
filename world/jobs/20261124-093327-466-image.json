@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-24T09:33:27.466",
+  "finished": "2026-11-24T09:42:36.840",
+  "id": "20261124-093327-466-image",
+  "kind": "image",
+  "params": {
+    "prompt": "a round bright orange salamander gardener with a huge green leaf sprouting from its head, a little tool satchel and big feet, cute chunky toy-like 3D game character, soft clay look, bold simple shapes, big expressive eyes, full body, front three-quarter view, standing on the ground"
+  },
+  "result": {
+    "image": "/sim/Programmieren/SimGame/world/assets/20261124-093327-466-image/image.png",
+    "seed": 44
+  },
+  "seconds": 548.5,
+  "started": "2026-11-24T09:33:28.358",
+  "status": "done"
+}

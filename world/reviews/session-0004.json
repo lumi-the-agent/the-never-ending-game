@@ -1,0 +1,36 @@
+{
+  "verdict": "needs_work",
+  "summary": "The viewport clamp for name tags and speech is a small, sensible change and its screenshot shows 'Marshmallow' fully visible at the right edge. But todo #9 (crash) was closed with no fix and no cause, and #12 was closed with the result 'x'. The clustered tags still read as 'TiSirSniffsalot'. I could not take a live screenshot: NeverendingGame will not load in my Julia session because the JSON package is missing.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Todo #9 (game exited with code 1 twice) was marked done as 'not reproducible', with no root cause. The author had the sync! trace at game.jl:289 right after a live reload of scenery.jl, but did not keep the top of the trace. The same session then edited scenery.jl and sync_text!, so the code path implicated in the crash was changed again. Closing it hides the risk.",
+      "where": "world/state/todos.json id 9; log/agent-2026-11-22.jsonl lines 57 and 60; scenery.jl sync_text!",
+      "evidence": "Host events: 'game exited with code 1 after 54.1 s' and 'after 61.3 s' at 16:10-16:12. The todo result says the trace was lost.",
+      "suggestion": "Reopen #9. Reproduce by hot-reloading scenery.jl in the live game and capture the full exception (for example wrap sync! in try/catch and log the stacktrace to events). Make reload of Stage-affecting code fail safe."
+    },
+    {
+      "severity": "medium",
+      "what": "Todo #12 (nudge overlapping name tags apart in pixel space) was closed with the result 'x' ('accidentally closed'), and a duplicate was added. The tags still overlap: in the author's own screenshot Ti, Sir and Sniffsalot render as 'TiSirSniffsalot'. This is the exact case #12 described.",
+      "where": "world/state/todos.json id 12; media/clamp-tags.png at left, around (30-145, 281)",
+      "evidence": "media/clamp-tags.png shows 'TiSirSniffsalot' as one unreadable string.",
+      "suggestion": "Restore #12 to open, or confirm that the replacement todo is open. Then do a greedy pass in sync_text!: sort labels by pixel x, and if two boxes overlap, stack the later one upward by one line height. clamp_dx already projects to pixels, so the same loop can compute the y offsets."
+    },
+    {
+      "severity": "low",
+      "what": "clamp_dx guesses label width as 0.32*fs*n+6 px. This is wrong for wide glyphs such as 'W' and 'M' and for non-ASCII names, so labels can still clip by a few pixels. It also calls Makie.project once per label per frame and uses a Float32 viewport width read from size(scene). The offset is recomputed even when nothing moved.",
+      "where": "dev/NeverendingGame/src/scenery.jl:252-258",
+      "evidence": "Code reading only. I could not measure it live. The author's perf.json shows frame median 1.32 ms and sync median 1.06 ms, which is well under 33 ms.",
+      "suggestion": "Use Makie's text bounding box (pixel size) for the real width, or at least add a margin. Only recompute offsets when the points or the viewport change."
+    },
+    {
+      "severity": "low",
+      "what": "The evidence is thin. It is one screenshot showing one label near the right edge, with no left-edge or speech-bubble clamp case and no before/after. The screenshot also shows the tags without the dark halo that session 2 claimed, so legibility over bright grass is moderate.",
+      "where": "media/clamp-tags.png",
+      "evidence": "Pinchy, Sprout and Marshmallow are thin white text on a mid-green background.",
+      "suggestion": "Show a speech bubble clamped at the left edge, and check that the halo is still drawn. Keep the pill-background todo (#11) on the list."
+    }
+  ],
+  "addressed": true,
+  "addressed_note": "Session 6: #9/#15/#16 root cause found (failed meshscatter delete corrupts the render; fixed in firefly_catch.jl). Night light raised in scenery.jl. Tag overlap, camera framing and HUD pill remain as open todos."
+}

@@ -1,0 +1,199 @@
+# End-to-end: the per-chat file tree in the sidebar + the editor open-guard.
+#
+# Each open chat's sidebar entry carries a ▸ toggle that reveals a lazy,
+# searchable file tree of that project (scanned on the worker over the
+# `list_dir` / `list_project_files` RPCs). This exercises:
+#   * the ▸ toggle reveals the tree and lazy-loads the project root (dirs first)
+#   * expanding a directory lazy-loads its children
+#   * the search box fuzzy-filters the project file index to a flat hit list
+#   * clicking a file opens it as a Monaco panel (the guarded open path)
+#   * clicking a BINARY file opens it too — as a hex dump. The viewer has a view
+#     for every kind now, so the old "not a text file" refusal is gone.
+#   * the open-guard's remaining job: a file that can't be opened AT ALL (here,
+#     one past the text-view size cap) flashes a toast and opens NO panel
+#
+using Test
+isdefined(@__MODULE__, :TestKit) || include(joinpath(@__DIR__, "..", "testkit", "TestKit.jl"))
+using .TestKit
+const TK = TestKit
+
+# A project with a small known tree: nested dirs, a binary file (hex view), an
+# oversize text file (open-guard), and a .git/ that must NOT show up in the
+# search index.
+const CWD = mktempdir()
+mkpath(joinpath(CWD, "src"))
+mkpath(joinpath(CWD, "test"))
+mkpath(joinpath(CWD, ".git"))
+write(joinpath(CWD, "Project.toml"),         "name = \"X\"\n")
+write(joinpath(CWD, "src", "main.jl"),        "println(\"hi from main\")\n")
+write(joinpath(CWD, "test", "runtests.jl"),   "using Test\n")
+write(joinpath(CWD, ".git", "config"),        "[core]\n")
+write(joinpath(CWD, "blob.bin"),              repeat("x", 4096))  # binary ext → hex view
+write(joinpath(CWD, "huge.txt"),              repeat("a", 3_000_000))  # > the 2 MB text cap → guard
+# Ranking fixture: an EXACT basename match buried deep, plus a shallow file the
+# query only matches as a scattered subsequence — the exact one must rank first.
+mkpath(joinpath(CWD, "pkg"));        write(joinpath(CWD, "pkg", "zebra.jl"),          "module Zebra end\n")
+mkpath(joinpath(CWD, "z", "e", "b")); write(joinpath(CWD, "z", "e", "b", "rare_animal.jl"), "# z-e-b-r-a subsequence noise\n")
+# Readability fixture: a hit whose containing directory is far longer than its
+# filename — reported as rows rendering "z…" next to a full-width path.
+const DEEPDIR = joinpath("dev", "JuliaVision", ".venv-rocm", "lib", "python3.11", "site-packages")
+mkpath(joinpath(CWD, DEEPDIR)); write(joinpath(CWD, DEEPDIR, "demos.zip"), "PK\x03\x04 not really a zip")
+
+labels(sel) = "[...document.querySelectorAll('$(sel)')].map(e => e.textContent)"
+row_for(name) = "[...document.querySelectorAll('.bt-tree-row')].find(r => r.querySelector('.bt-tree-label')?.textContent === $(TK.json(name)))"
+
+function run_suite(server)
+    @testset "BonitoAgents file tree + open-guard (UI-only)" begin
+        pid = TK.new_chat(server; cwd = CWD, title = "Tree")
+        # The file rows carry WORKER-absolute paths — wait for the push, then read it.
+        state = server.h.state
+        worker_path = ""
+        for _ in 1:60
+            p = get(state.projects[], pid, nothing)
+            if p !== nothing && !isempty(p.worker_path)
+                worker_path = p.worker_path; break
+            end
+            sleep(0.5)
+        end
+        @test !isempty(worker_path)
+        panel_sel(abs) = ".bw-ws-panel[data-panel-id=\"file:$(abs)\"]"
+
+        @testset "the chat entry has a file-tree expand hint" begin
+            @test TK.wait_for(server, "tree hint present",
+                "document.querySelectorAll('.bt-side-tree-hint').length === 1"; timeout = 24) == true
+            @test TK.eval_js(server, "document.querySelectorAll('.bt-side-tree-wrap').length") == 1
+        end
+
+        @testset "the hint reveals the tree and lazy-loads the root (dirs first)" begin
+            TK.eval_js(server, "document.querySelector('.bt-side-tree-hint').click(); true")
+            @test TK.wait_for(server, "tree open",
+                "document.querySelector('.bt-side-chat.bt-tree-open') !== null"; timeout = 18) == true
+            @test TK.wait_for(server, "root rows loaded",
+                "document.querySelectorAll('.bt-side-tree-wrap .bt-tree-row').length >= 4"; timeout = 36) == true
+            # Dirs first (alpha), then files (case-insensitive alpha):
+            # pkg/src/test/z, then blob.bin/huge.txt/Project.toml.
+            @test TK.eval_js(server, labels(".bt-side-tree-wrap .bt-tree-row .bt-tree-label")) ==
+                  ["dev", "pkg", "src", "test", "z", "blob.bin", "huge.txt", "Project.toml"]
+        end
+
+        @testset "expanding a directory lazy-loads its children" begin
+            TK.eval_js(server, "$(row_for("src"))?.click(); true")
+            @test TK.wait_for(server, "src expanded shows main.jl",
+                "[...document.querySelectorAll('.bt-tree-label')].some(e => e.textContent === 'main.jl')"; timeout = 24) == true
+        end
+
+        @testset "a deep hit keeps its FILENAME readable" begin
+            # Flexbox shrinks items in proportion to their content, so the long
+            # directory used to keep the row and the filename you searched for
+            # collapsed to an ellipsis. The name must never be the clipped one,
+            # and the path is trimmed to its tail (`…/python3.11/site-packages`)
+            # server-side so the head can't eat the rail either.
+            TK.eval_js(server, """(() => { const s = document.querySelector('.bt-tree-search');
+                s.value = 'demos.zip'; s.dispatchEvent(new Event('input', {bubbles: true})); })()""")
+            @test TK.wait_for(server, "search finds demos.zip",
+                "[...document.querySelectorAll('.bt-tree-label')].some(e => e.textContent === 'demos.zip')";
+                timeout = 24) == true
+            probe = TK.eval_js(server, """(() => {
+                const row = [...document.querySelectorAll('.bt-tree-row')]
+                    .find(r => r.querySelector('.bt-tree-label')?.textContent === 'demos.zip');
+                if (!row) return null;
+                const name = row.querySelector('.bt-tree-label');
+                const path = row.querySelector('.bt-tree-relpath');
+                return { name: name.textContent,
+                         path: path ? path.textContent : '',
+                         nameClipped: name.scrollWidth > name.clientWidth + 1,
+                         nameWidth:   Math.round(name.getBoundingClientRect().width),
+                         title:       row.getAttribute('title') || '' };
+            })()""")
+            @test probe !== nothing
+            @test probe["nameClipped"] == false            # the filename is whole
+            @test Int(probe["nameWidth"]) > 40             # ...and actually laid out
+            @test startswith(probe["path"], "…/")          # head dropped
+            @test endswith(probe["path"], "site-packages") # tail kept
+            @test occursin("demos.zip", probe["title"])    # full path still on hover
+            TK.screenshot(server, joinpath(tempdir(), "file_tree_deep_hit.png"))
+        end
+
+        @testset "search fuzzy-filters the project file index" begin
+            TK.eval_js(server, """(() => { const s = document.querySelector('.bt-tree-search');
+                s.value = 'runtst'; s.dispatchEvent(new Event('input', {bubbles:true})); return true; })()""")
+            @test TK.wait_for(server, "search finds runtests.jl",
+                "[...document.querySelectorAll('.bt-tree-label')].some(e => e.textContent === 'runtests.jl')"; timeout = 24) == true
+            # .git/config must NOT be in the index.
+            @test TK.eval_js(server,
+                "[...document.querySelectorAll('.bt-tree-label')].every(e => e.textContent !== 'config')") == true
+            # Ranking: an exact basename match (deep `pkg/zebra.jl`) must rank
+            # ABOVE a file the query only hits as a scattered subsequence
+            # (`z/e/b/rare_animal.jl`) — the bug that buried exact matches.
+            TK.eval_js(server, """(() => { const s = document.querySelector('.bt-tree-search');
+                s.value = 'zebra.jl'; s.dispatchEvent(new Event('input', {bubbles:true})); return true; })()""")
+            @test TK.wait_for(server, "exact match ranks first",
+                "(document.querySelector('.bt-tree-row .bt-tree-label')?.textContent || '') === 'zebra.jl'"; timeout = 24) == true
+            # Clear search → back to the tree.
+            TK.eval_js(server, """(() => { const s = document.querySelector('.bt-tree-search');
+                s.value = ''; s.dispatchEvent(new Event('input', {bubbles:true})); return true; })()""")
+            @test TK.wait_for(server, "tree restored",
+                "[...document.querySelectorAll('.bt-tree-label')].some(e => e.textContent === 'Project.toml')"; timeout = 18) == true
+        end
+
+        @testset "clicking a file opens it as an editor panel" begin
+            abs = joinpath(worker_path, "src", "main.jl")
+            TK.eval_js(server, "$(row_for("main.jl"))?.click(); true")
+            @test TK.wait_for(server, "main.jl editor panel",
+                "!!document.querySelector('$(panel_sel(abs))')"; timeout = 45) == true
+            @test TK.wait_for(server, "main.jl content loaded",
+                "(document.querySelector('$(panel_sel(abs)) .monaco-editor-div')?.__btEditor?.getValue() || '').includes('hi from main')"; timeout = 36) == true
+        end
+
+        @testset "a binary file opens as a hex dump" begin
+            # It used to toast "not a text file". Every kind has a view now, so
+            # clicking opaque bytes shows you the bytes.
+            TK.eval_js(server, "$(row_for("blob.bin"))?.click(); true")
+            @test TK.wait_for(server, "blob.bin opens as a hex view",
+                """(() => {
+                    const v = [...document.querySelectorAll('.bw-ws-panel .bt-file-view')]
+                        .find(e => (e.querySelector('.bt-file-editor-path')?.textContent || '')
+                                   .endsWith('/blob.bin'));
+                    return !!v && v.dataset.kind === 'binary'
+                        && !!v.querySelector('pre.bt-fv-hex')
+                        && v.querySelector('.monaco-editor-div') === null;
+                })()"""; timeout = 36) == true
+        end
+
+        @testset "the open-guard reports an un-openable file and opens NO panel" begin
+            # What's left for the guard: things no viewer can help with. A text
+            # file past the editor's size cap is the case a user actually hits.
+            before = TK.eval_js(server, "document.querySelectorAll('.bw-ws-panel').length")
+            TK.eval_js(server, "$(row_for("huge.txt"))?.click(); true")
+            @test TK.wait_for(server, "guard message shown in the progress card",
+                "document.querySelector('.bt-prog.bt-prog-err') !== null"; timeout = 30) == true
+            msg = TK.eval_js(server, "document.querySelector('.bt-prog-err .bt-prog-title').textContent")
+            @test occursin("huge.txt", msg) && occursin("Can't open", msg)
+            sleep(1.0)
+            @test TK.eval_js(server, "document.querySelectorAll('.bw-ws-panel').length") == before
+        end
+
+        @testset "the hint collapses the tree again" begin
+            # The chip reads "▴ hide files" while open; clicking it must close the
+            # tree (drop `.bt-tree-open`) and hide the rows.
+            @test TK.eval_js(server, "document.querySelector('.bt-side-tree-hint').textContent.includes('hide')") == true
+            TK.eval_js(server, "document.querySelector('.bt-side-tree-hint').click(); true")
+            @test TK.wait_for(server, "tree collapsed",
+                "document.querySelector('.bt-side-chat.bt-tree-open') === null"; timeout = 18) == true
+            @test TK.eval_js(server,
+                "[...document.querySelectorAll('.bt-side-tree-wrap .bt-tree-row')].filter(r => r.offsetParent !== null).length") == 0
+        end
+    end
+    return server
+end
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    server = TK.dev_server(agent = (_msg -> TK.end_turn()))
+    try
+        TK.open_browser(server)
+        run_suite(server)
+    finally
+        close(server)
+    end
+    TK.exit_success()
+end

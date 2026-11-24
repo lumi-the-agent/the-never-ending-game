@@ -1,0 +1,10 @@
+{"session": 13,
+ "summary": "Dashboard behaviour (Play/Stop, WASD, camera menu, wish box, label placement) works, but every test that takes a screenshot fails: colorbuffer on the live screen throws a RayMakie ambient-light error. I re-ran the suite live and got the same 4 failures, so they are not stale.",
+ "failures": [
+  {"what": "Taking a screenshot of the dashboard (Makie.colorbuffer(game.screen), used by screenshot()) throws 'RayMakie: this scene was first traced without an ambient light, and one cannot be added afterwards.' from sync_lights! (RayMakie.jl:501).",
+   "steps": "In the live game run live_tests() or call NeverendingGame.screenshot(game, \"x\"). Tests that fail: 'Play with nothing chosen starts Jump in, Stop ends it', 'Every mini game in the menu starts and stops', 'A wish typed and sent with Enter reaches the inbox and clears the box', 'Dashboard side panels show budget, todos and activity without ellipses or a failed frame'. Probable cause: session 13 added Makie.set_ambient_light! in scenery.jl sync_sun! while the traced screenshot scene had no ambient light (ambient_key === nothing), so ambient_changed fires and errors. The dashboard scene in dashboard.jl:77 and the stage scene in scenery.jl:184 set ambient differently.",
+   "expected": "A screenshot is saved and the test continues. Screenshots also let the author and reviewer see the world.",
+   "actual": "The test errors at uitests.jl:164 (colorbuffer). The 6 tests that do not screenshot pass.",
+   "screenshot": "world/tests/shots/play-jumpin.png"}
+ ],
+ "tests_added": []}

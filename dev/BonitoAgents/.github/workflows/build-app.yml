@@ -1,0 +1,248 @@
+# Build the BonitoAgentsApp desktop bundles (ElectronCall + local server +
+# worker) with AppBundler on every push to main and every v* tag.
+#
+# - main pushes / manual runs: bundles end up as workflow artifacts.
+# - tag pushes: a GitHub release is created for the tag (if it doesn't exist
+#   yet) and the bundles are attached to it.
+#
+# Adapted from AppBundler's recipes/workflows/GitHub.yml.
+name: Build app bundles
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      upload_tag:
+        description: 'Optional: existing release tag to upload the bundles to'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: build-app-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+# Don't eagerly auto-precompile on instantiate. The meta env would otherwise
+# precompile Conda/PyCall BEFORE Pkg.build() sets up the conda env (that pass
+# fails and is thrown away), and the app stack would be compiled into ~/.julia
+# only for AppBundler to recompile it into the bundle's own depot. With this off,
+# AppBundler compiles lazily on load and the app compiles once, in the bundle.
+# (Explicit precompile / load-time precompile still happen — this only suppresses
+# the post-instantiate auto pass.)
+env:
+  JULIA_PKG_PRECOMPILE_AUTO: '0'
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every platform ships the SAME format: a relocatable .tar.gz (no
+        # notarization / MSIX signing). The bundle carries the right launcher
+        # per OS (.sh on unix, .bat on Windows) + an install script; users
+        # extract and run. macOS bundles get an extra post-build pass that
+        # ad-hoc re-signs the Mach-O binaries (see the "Fix macOS bundle" step)
+        # — without it macOS SIGKILLs the bundled Julia at launch.
+        include:
+          - runner: macos-latest
+            os: macos
+            arch: aarch64
+            bundle: tarball
+          - runner: macos-15-intel
+            os: macos
+            # `x86_64`, NOT `x64`: `--target-arch` is passed straight to Julia's
+            # BinaryPlatforms.MacOS(arch), which only accepts `x86_64`/`aarch64`
+            # ("x64" is Julia's *download* label, not a platform arch).
+            arch: x86_64
+            bundle: tarball
+          - runner: ubuntu-latest
+            os: linux
+            arch: x86_64
+            bundle: tarball
+            xvfb: true
+          - runner: ubuntu-24.04-arm
+            os: linux
+            arch: aarch64
+            bundle: tarball
+            xvfb: true
+          - runner: windows-latest
+            os: windows
+            arch: x86_64
+            bundle: tarball
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: '1.12'
+
+      - uses: julia-actions/cache@v2
+
+      - name: Instantiate AppBundler (meta env)
+        run: julia --project=BonitoAgentsApp/meta -e 'using Pkg; Pkg.instantiate(); Pkg.build()'
+
+      - name: Instantiate app project
+        run: julia --project=BonitoAgentsApp -e 'using Pkg; Pkg.instantiate()'
+
+      - name: Build bundle
+        run: >
+          ${{ matrix.xvfb && 'xvfb-run -s ''-screen 0 1024x768x24''' || '' }}
+          julia --project=BonitoAgentsApp/meta -m AppBundler build BonitoAgentsApp
+          --build-dir=build --target-arch=${{ matrix.arch }}
+          --target-os=${{ matrix.os }}
+          --target-bundle=${{ matrix.bundle }}
+
+      # AppBundler ships the macOS `tarball` target UNSIGNED, and the bundled
+      # Mach-O binaries carry signatures that pass `codesign --verify` yet fail
+      # macOS's runtime page validation → the bundled Julia is SIGKILLed at
+      # launch ("Code Signature Invalid / Invalid Page") on every stock Mac.
+      # Re-sign every Mach-O ad-hoc so the bundle actually runs (and restore the
+      # REPL precompile test helpers if a stripped build removed them). Runs
+      # natively on each mac runner, so it signs the matching arch. See the
+      # script header for the full story.
+      - name: Fix macOS bundle (ad-hoc sign + REPL test helpers)
+        if: matrix.os == 'macos'
+        run: |
+          set -euo pipefail
+          for t in build/*.tar.gz; do
+            bash .github/scripts/macos-fix-bundle.sh "$t"
+          done
+
+      # Install the bundle the way users do (install.sh into a fresh HOME, so a
+      # path baked in at build time can't hide behind the build tree) and start
+      # it: the dashboard has to answer and this machine's worker to register.
+      # Windows does the same through install.ps1 in the next step.
+      - name: Smoke test the installed bundle
+        if: matrix.os != 'windows'
+        run: |
+          set -euo pipefail
+          export HOME="$RUNNER_TEMP/smoke-home"
+          mkdir -p "$HOME"
+          BONITOAGENTS_TARBALL="$(ls build/*.tar.gz | head -1)" sh install.sh --no-run
+          case "$(uname -s)" in
+            Darwin) data="$HOME/Library/Application Support/BonitoAgents" ;;
+            *)      data="$HOME/.local/share/BonitoAgents" ;;
+          esac
+          "$HOME/.local/bin/bonito-agents" --no-window --port=8099 > "$RUNNER_TEMP/smoke.log" 2>&1 &
+          if ! curl -sf -o /dev/null --retry 150 --retry-connrefused --retry-delay 2 --max-time 10 --retry-max-time 600 http://127.0.0.1:8099/; then
+            echo "::error::the installed bundle didn't serve its dashboard"; cat "$RUNNER_TEMP/smoke.log"; exit 1
+          fi
+          for i in $(seq 1 60); do
+            grep -qs '"hostname"' "$data/state/workers.json" && break
+            sleep 2
+          done
+          if ! grep -qs '"hostname"' "$data/state/workers.json"; then
+            echo "::error::the installed bundle's worker never registered"; cat "$RUNNER_TEMP/smoke.log"; exit 1
+          fi
+          echo "dashboard up, worker registered"
+          pkill -f '[B]onitoAgentsApp' || true
+
+      # The same check on Windows: install.ps1 into a fresh user profile (Julia's
+      # homedir() is USERPROFILE, the app's data root is under LOCALAPPDATA).
+      - name: Smoke test the installed bundle (Windows)
+        if: matrix.os == 'windows'
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $env:USERPROFILE = Join-Path $env:RUNNER_TEMP 'smoke-home'
+          $env:LOCALAPPDATA = Join-Path $env:USERPROFILE 'AppData\Local'
+          New-Item -ItemType Directory -Force -Path $env:LOCALAPPDATA | Out-Null
+          $env:BONITOAGENTS_TARBALL = (Get-ChildItem build\*.tar.gz | Select-Object -First 1).FullName
+          $env:BONITOAGENTS_NORUN = '1'
+          .\install.ps1
+          # install.ps1 creates the (still empty) state folder for older bundles;
+          # this bundle has to create it itself, as when it is unpacked by hand.
+          Remove-Item (Join-Path $env:LOCALAPPDATA 'BonitoAgents')
+          $prefix = Join-Path $env:LOCALAPPDATA 'BonitoAgents-app'
+          $workers = Join-Path $env:LOCALAPPDATA 'BonitoAgents\state\workers.json'
+          $out = Join-Path $env:RUNNER_TEMP 'smoke.out.log'
+          $err = Join-Path $env:RUNNER_TEMP 'smoke.err.log'
+          $app = Start-Process -FilePath (Join-Path $env:LOCALAPPDATA 'BonitoAgents-bin\bonito-agents.cmd') `
+                   -ArgumentList '--no-window', '--port=8099' -NoNewWindow -PassThru `
+                   -RedirectStandardOutput $out -RedirectStandardError $err
+          $null = $app.Handle   # keeps the exit code readable once it has exited
+          $started = Get-Date
+          function Show-Log($tail) {
+            foreach ($f in $out, $err) {
+              if (Test-Path $f) { if ($tail) { Get-Content $f -Tail $tail } else { Get-Content $f } }
+            }
+          }
+          function Fail($msg) { Write-Host "::error::$msg"; Show-Log 0; exit 1 }
+          # Wait for $ready, and say what the app is doing every minute, so even a
+          # cancelled run shows where it got stuck.
+          function Wait-For($what, $minutes, $ready) {
+            $report = (Get-Date).AddMinutes(1)
+            while (-not (& $ready)) {
+              $s = [int]((Get-Date) - $started).TotalSeconds
+              if ($app.HasExited) { Fail "the installed bundle exited with code $($app.ExitCode) after $s s, before $what" }
+              if ((Get-Date) -gt $started.AddMinutes($minutes)) { Fail "no $what after $s s" }
+              if ((Get-Date) -gt $report) { Write-Host "--- still waiting for $what after $s s:"; Show-Log 20; $report = (Get-Date).AddMinutes(1) }
+              Start-Sleep -Seconds 2
+            }
+            Write-Host "$what after $([int]((Get-Date) - $started).TotalSeconds) s"
+          }
+          Wait-For 'the dashboard' 15 { curl.exe -sf -o NUL --max-time 10 http://127.0.0.1:8099/; $LASTEXITCODE -eq 0 }
+          Wait-For 'a registered worker' 17 { (Test-Path $workers) -and (Select-String -Quiet -Path $workers -Pattern '"hostname"') }
+          Write-Host "dashboard up, worker registered"
+          # End the app, its worker and anything else the installed bundle runs.
+          taskkill.exe /T /F /PID $app.Id | Out-Null
+          Get-CimInstance Win32_Process | Where-Object { $_.ExecutablePath -and $_.ExecutablePath.StartsWith($prefix) } |
+            ForEach-Object { taskkill.exe /T /F /PID $_.ProcessId | Out-Null }
+          exit 0
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: bonitoagents-${{ matrix.os }}-${{ matrix.arch }}
+          path: build/*
+          retention-days: 14
+
+  upload:
+    name: Upload to release
+    runs-on: ubuntu-latest
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/') || github.event.inputs.upload_tag != ''
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
+
+      - name: Create release (tag pushes) and upload bundles
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG_NAME="${{ github.event.inputs.upload_tag || github.ref_name }}"
+          echo "Uploading to release: $TAG_NAME"
+
+          if ! gh release view "$TAG_NAME" > /dev/null 2>&1; then
+            gh release create "$TAG_NAME" --verify-tag --generate-notes \
+              --title "$TAG_NAME"
+          fi
+
+          find artifacts/ -type f | while read -r file; do
+            # Stable, version-free asset names: bonitoagents-<os>-<arch>.<ext>
+            # (the artifact dir is already `bonitoagents-<os>-<arch>`). This keeps
+            # `/releases/latest/download/<asset>` URLs permanent, so install.sh
+            # never has to know the version.
+            platform="$(basename "$(dirname "$file")")"   # bonitoagents-<os>-<arch>
+            case "$file" in
+              *.tar.gz) ext=".tar.gz" ;;
+              *)        ext=".${file##*.}" ;;
+            esac
+            name="${platform}${ext}"
+            echo "Uploading: $file as $name"
+            cp "$file" "/tmp/$name"
+            gh release upload "$TAG_NAME" "/tmp/$name" --clobber
+          done
+
+          echo "All bundles uploaded."

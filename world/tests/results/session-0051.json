@@ -1,0 +1,64 @@
+{
+  "failed": [
+    {
+      "error": "check failed: the new cairn plots are not hidden while it is being built",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 1.2
+    },
+    {
+      "error": "check failed: the cloud is not above Sprout's head (cloud Float32[652.42413, 549.53357], head Float32[426.2285, 520.7131])",
+      "file": "builder.jl",
+      "name": "Sprout thinks about the todo the agent is on: a cloud over its head with the doing todo in a few words",
+      "passed": false,
+      "seconds": 0.5
+    },
+    {
+      "error": "check failed: follow while jumped in is no chase camera: eye 9.518929 m from Sprout, looking 4.7776757e-7 m off it",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Sprout, free turns with the mouse",
+      "passed": false,
+      "seconds": 4.2
+    },
+    {
+      "error": "check failed: timed out after 120.0 s",
+      "file": "explore50.jl",
+      "name": "Jump in: the key card is big at 2 s and shrinks to one line of keys by 8 s",
+      "passed": false,
+      "seconds": 125.6
+    },
+    {
+      "error": "check failed: still on the bench at 20:00: [\"Pickles\"]",
+      "file": "lookout.jl",
+      "name": "At sunset Sprout walks to the lookout bench and sits facing the sea, and a free friend nearby joins",
+      "passed": false,
+      "seconds": 8.7
+    },
+    {
+      "error": "check failed: Gloop gave nothing to say: [\"For you, Pinchy!\"] (partner 4, friend 3, Sprout controlled false, minigame Nothing)",
+      "file": "minigames.jl",
+      "name": "Flower gift: a critter carries a picked flower to a friend, who thanks it with hearts",
+      "passed": false,
+      "seconds": 16.4
+    },
+    {
+      "error": "check failed: no clear framing for the pier at night",
+      "file": "minigames.jl",
+      "name": "Night shots visit the pond and the pier too, each with a clear view",
+      "passed": false,
+      "seconds": 0.0
+    },
+    {
+      "error": "check failed: Sprout does not sit with Hopscotch (tend walk, Hopscotch pebble walk, hour 11.2)",
+      "file": "outfits.jl",
+      "name": "A lonely Sprout walks over to a friend and waves, and the friend says hello",
+      "passed": false,
+      "seconds": 19.8
+    }
+  ],
+  "passed": 98,
+  "session": 51,
+  "time": "2026-11-24T01:18:32",
+  "total": 106
+}

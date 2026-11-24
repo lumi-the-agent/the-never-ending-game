@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-23T08:21:03.453",
+  "finished": "2026-11-23T08:27:45.345",
+  "id": "20261123-082103-453-mesh",
+  "kind": "mesh",
+  "params": {
+    "faces": 2500,
+    "image": "/sim/Programmieren/SimGame/world/assets/20261123-080614-049-asset/image.png",
+    "texture": 1024
+  },
+  "result": {
+    "faces": 2383,
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261123-082103-453-mesh/mesh.jls"
+  },
+  "seconds": 401.6,
+  "started": "2026-11-23T08:21:03.734",
+  "status": "done"
+}

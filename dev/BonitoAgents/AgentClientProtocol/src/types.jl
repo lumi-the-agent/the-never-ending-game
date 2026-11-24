@@ -1,0 +1,986 @@
+# ACP protocol types, ported from agentclientprotocol/python-sdk schema.
+# Schema ref: v0.11.2  (PROTOCOL_VERSION = 1)
+
+# ── Content blocks ────────────────────────────────────────────────────────────
+
+struct TextContent
+    text::String
+end
+
+struct ImageContent
+    data::String      # base64
+    mime_type::String
+end
+
+# A REFERENCE to a file rather than its bytes. codex-acp's image view is the one
+# that sends these: reading a PNG yields
+#     {"type":"resource_link","name":"/abs/x.png","uri":"/abs/x.png"}
+# instead of an `ImageContent` full of base64 (which is what claude and kimi
+# send). The better protocol of the two — the file already lives on the worker
+# and we can stream it — but it is a distinct block and must not be flattened
+# into text: parsed as one it became `TextContent("")`, so the card rendered
+# "(empty)" with a "0 bytes" summary and the image was simply gone.
+#
+# `uri` is whatever the agent put there. codex sends a bare absolute path; the
+# spec also allows a real URI scheme, so consumers check before treating it as
+# a local path (see `resource_link_path`).
+struct ResourceLink
+    name::String
+    uri::String
+end
+
+const ContentBlock = Union{TextContent, ImageContent, ResourceLink}
+
+"""
+    resource_link_path(c::ResourceLink) -> String or nothing
+
+`c`'s target as a local filesystem path — a bare absolute path, or a `file://`
+URI — and `nothing` for anything else (http(s), or a relative/opaque uri we
+can't resolve on the worker).
+"""
+function resource_link_path(c::ResourceLink)
+    startswith(c.uri, "file://") && return c.uri[8:end]
+    occursin(r"^[A-Za-z][A-Za-z0-9+.-]*://", c.uri) && return nothing
+    return startswith(c.uri, "/") ? c.uri : nothing
+end
+
+# ── Tool-call content ─────────────────────────────────────────────────────────
+
+struct ToolCallLocation
+    path::String
+    line::Union{Int,Nothing}
+end
+
+struct DiffContent
+    path::String
+    old_text::Union{String,Nothing}
+    new_text::String
+end
+
+# ── Session-update notifications (agent → client) ────────────────────────────
+# Discriminated by "sessionUpdate" field.
+
+abstract type SessionUpdate end
+
+
+
+struct AgentMessageChunk <: SessionUpdate
+    content::ContentBlock
+end
+
+struct UserMessageChunk <: SessionUpdate
+    content::ContentBlock
+end
+
+struct AgentThoughtChunk <: SessionUpdate
+    content::ContentBlock
+end
+
+struct PlanEntry
+    content::String
+    priority::String   # "high" | "medium" | "low"
+    status::String     # "pending" | "in_progress" | "completed"
+end
+
+struct PlanUpdate <: SessionUpdate
+    entries::Vector{PlanEntry}
+end
+
+struct ToolCallNotif <: SessionUpdate
+    tool_call_id::String
+    title::String
+    kind::String       # "read" | "edit" | "delete" | "move" | "search" | "execute" | "think" | "fetch" | "other"
+    status::String     # "pending" | "in_progress" | "completed" | "failed"
+    content::Vector    # Vector of ContentBlock | DiffContent
+    locations::Vector{ToolCallLocation}
+    # claude-agent-acp surfaces the *actual* tool name and the unparsed input
+    # via `_meta.claudeCode.toolName` and `rawInput` on the wire — the parser
+    # reads them out so downstream consumers can dispatch on concrete typed
+    # `ToolCall`s (`BashCall` / `TodoWriteCall` / …) instead of probing the
+    # generic `title` string. Empty `tool_name` means a non-claude-agent
+    # backend that didn't fill the meta hint; the dispatcher falls back to
+    # `GenericTool`.
+    tool_name::String
+    raw_input::Dict{String,Any}
+    raw::AbstractDict  # untouched ACP update params (for round-trip persistence)
+end
+
+struct ToolCallUpdateNotif <: SessionUpdate
+    tool_call_id::String
+    title::Union{String,Nothing}
+    kind::Union{String,Nothing}
+    status::Union{String,Nothing}
+    content::Vector
+    locations::Vector{ToolCallLocation}
+    tool_name::Union{String,Nothing}
+    raw_input::Union{Dict{String,Any},Nothing}
+    raw::AbstractDict
+end
+
+
+
+struct UnknownUpdate <: SessionUpdate
+    session_update::String
+    raw::AbstractDict
+end
+
+# Opt-in, versioned codex-acp extension. Classification comes exclusively from
+# this metadata envelope; agent_message_chunk text is never inspected.
+struct SessionNoticeNotif <: SessionUpdate
+    record::Dict{String,Any}
+end
+
+session_notice_capability() = Dict{String,Any}("jetbrains" => Dict{String,Any}("air" => Dict(
+    "version" => 1, "capabilities" => ["sessionFailure"])))
+
+# The version-1 AIR envelope (`_meta.jetbrains.air`) a frame carries, or nothing.
+function air_meta(params::AbstractDict)
+    value = params
+    for key in ("_meta", "jetbrains", "air")
+        value = get(value, key, nothing)
+        value isa AbstractDict || return nothing
+    end
+    get(value, "version", nothing) == 1 || return nothing
+    return value
+end
+
+"""
+    session_notice_record(params) -> Union{Dict{String,Any},Nothing}
+
+The session-failure record a frame carries in its AIR envelope, or `nothing`.
+
+Two frames carry one. A `session_info_update` reports a notice while the turn
+runs (a retry warning, a stalled transport). The `session/prompt` RESPONSE
+reports how the turn ended: codex-acp (2.2.2, captured in
+`test/fixtures/codex_usage_limit_responses.json`) resolves a FAILED turn as a
+plain `end_turn` and puts the failure only there, as a record with
+`severity = "error"`. Nothing else on the wire says the turn failed.
+"""
+function session_notice_record(params::AbstractDict)
+    value = air_meta(params)
+    value === nothing && return nothing
+    record = get(value, "sessionFailure", nothing)
+    record isa AbstractDict || return nothing
+    all(k -> get(record, k, nothing) isa AbstractString, ("id", "severity", "title")) || return nothing
+    isempty(record["id"]) && return nothing
+    get(record, "revision", nothing) isa Integer || return nothing
+    record["revision"] >= 0 || return nothing
+    record["severity"] in ("warning", "error") || return nothing
+    return Dict{String,Any}(record)
+end
+
+# claude-agent-acp forwards every SUBAGENT session/update (text chunks,
+# tool_calls, tool_call_updates of a running Task/Agent tool) as a normal
+# update whose `_meta.claudeCode.parentToolUseId` names the parent Task's
+# tool_use id; top-level updates carry no such tag. The parser wraps tagged
+# updates so the per-turn coalescer (messages.jl) can divert them out of the
+# main message stream instead of interleaving subagent prose/tools into the
+# top-level reply.
+struct SubagentUpdate <: SessionUpdate
+    parent_tool_use_id::String
+    update::SessionUpdate
+end
+
+"""
+    parent_tool_use_id(u::SessionUpdate) -> Union{String,Nothing}
+
+The parent Task tool_use id a subagent-originated update is tagged with
+(`_meta.claudeCode.parentToolUseId`), or `nothing` for top-level updates.
+"""
+parent_tool_use_id(::SessionUpdate) = nothing
+parent_tool_use_id(u::SubagentUpdate) = u.parent_tool_use_id
+
+"""
+    tool_call_id(u::SessionUpdate) -> Union{String,Nothing}
+
+The tool call an update is about, or `nothing` for updates that aren't about a
+tool. Used to recover an owner the wire omitted: claude-agent-acp does NOT tag
+every frame of a subagent's tool — captured live, one tool arrives
+`tool_call`(tagged) → `tool_call_update`(UNTAGGED, carrying the toolResponse) →
+`tool_call_update`(tagged). The untagged frame is still that subagent's, and its
+`toolCallId` says so.
+"""
+tool_call_id(::SessionUpdate) = nothing
+tool_call_id(u::ToolCallNotif) = u.tool_call_id
+tool_call_id(u::ToolCallUpdateNotif) = u.tool_call_id
+tool_call_id(u::SubagentUpdate) = tool_call_id(u.update)
+
+# Whether an update reports its tool as finished, so a remembered owner can be
+# forgotten once its last frame has been delivered.
+tool_is_terminal(::SessionUpdate) = false
+tool_is_terminal(u::ToolCallNotif) = u.status in ("completed", "failed")
+tool_is_terminal(u::ToolCallUpdateNotif) = u.status in ("completed", "failed")
+tool_is_terminal(u::SubagentUpdate) = tool_is_terminal(u.update)
+
+"""
+    is_agent_work(u::SessionUpdate) -> Bool
+
+Whether `u` is the agent DOING something, as opposed to telling us about the
+session. Content the user watches appear — prose, thoughts, tool calls, plans —
+is work; `available_commands` / `current_mode` / `session_info` / `usage` are
+metadata that arrives on bind and at turn boundaries.
+
+The distinction matters because these updates also arrive with NO prompt open,
+and only work starts a turn of the agent's own (`AgentTurn`): a fresh session
+emits `available_commands_update` right after `session/new`, and a chat that has
+done nothing must not look busy for it.
+
+A context compaction (`CONTEXT_COMPACTION_TOOL`) is housekeeping, not work. On
+its own it is a whole cycle with no end on the wire: claude-agent-acp 0.101
+compacts an idle session by itself, and that cycle has no result tagged with an
+origin (captured in test/fixtures/claude_idle_compaction_wire.jsonl). A turn it
+opened would stay open until the next prompt's answer or a forced close. Work
+after a compaction still opens a turn.
+
+`SubagentUpdate` is work, but reaches this only in tests — on the wire it is
+addressed to its owner before liveness is ever consulted.
+"""
+is_agent_work(::SessionUpdate) = false
+is_agent_work(::AgentMessageChunk) = true
+is_agent_work(::AgentThoughtChunk) = true
+is_agent_work(::PlanUpdate) = true
+is_agent_work(u::ToolCallNotif) = u.tool_name != CONTEXT_COMPACTION_TOOL
+is_agent_work(u::ToolCallUpdateNotif) = u.tool_name != CONTEXT_COMPACTION_TOOL
+is_agent_work(::SubagentUpdate) = true
+
+# ── Autonomous cycles ────────────────────────────────────────────────────────
+# claude-agent-acp tags the `usage_update` it sends at a CYCLE'S RESULT with
+# `_meta["_claude/origin"].kind`. For a cycle the model ran on its own (it
+# reports back on backgrounded work, or answers a peer) that tag is where the
+# cycle ends, and the connection ends its `AgentTurn` there.
+#
+# The set is the adapter's own `AUTONOMOUS_RESULT_ORIGINS` (acp-agent.js): work
+# the model did on its own. The user's turn is tagged `human`, and
+# `auto-continuation` continues the user's turn, so neither counts. Verified in
+# both captured wires, also for a cancelled cycle.
+const AUTONOMOUS_ORIGINS = ("task-notification", "peer", "coordinator",
+                            "observer", "observer-activity")
+
+"""
+    is_autonomous_origin(kind) -> Bool
+
+Whether an origin tag marks the result of a cycle the model ran on its own.
+`nothing` (an untagged frame) is not a result at all, so it is not one.
+"""
+is_autonomous_origin(::Nothing) = false
+is_autonomous_origin(kind::AbstractString) = kind in AUTONOMOUS_ORIGINS
+
+# ── The message stream ───────────────────────────────────────────────────────
+# Whole, ordered messages coalesced from the raw `session/update` soup. The
+# concrete kinds live in messages.jl; the abstract type is here because
+# `Connection` needs the boundary marker below.
+abstract type Message end
+
+# A boundary on a stream, not content. Travels the stream like a message so it
+# arrives in wire order: the coalescer seals its state when it reaches one (the
+# trailing text bubble ends, tools the agent never resolved are force-failed),
+# then forwards it, and the consumer signals `done` once everything ahead of the
+# boundary is rendered.
+#
+# That is what makes "the turn is over" a checkable fact on a CONTINUOUS stream.
+# The main thread does not stop existing between prompts — the agent auto-wakes
+# and keeps talking on it — so end-of-turn cannot be "the channel closed". It is
+# a marker, and waiting on one is the render barrier end-of-turn cleanup needs.
+#
+# `done` is a LATCH, not a mailbox: the consumer CLOSES it, and every waiter —
+# one, none, or the same caller twice — is released. A one-shot `put!`/`take!`
+# looks equivalent and is not: the second `take!` blocks forever on an empty
+# channel. That is exactly what an error path does, since it wants the barrier
+# both before it renders the error and again in its cleanup.
+#
+# `bind(done, task)` composes with this: if the renderer dies, the channel closes
+# and the waiter is released the same way.
+struct StreamFlush <: Message
+    done::Channel{Nothing}
+    # Whether the span this boundary ends was ABANDONED — i.e. it resolved
+    # `cancelled`, so any tool of its that never reported terminal never will.
+    #
+    # The coalescer needs the distinction because a tool's `updates` channel is
+    # closed on its terminal frame, and the CONSUMER blocks draining that
+    # channel. A handed-off turn's live tool must survive (a `bt_julia_eval`
+    # still running when the next prompt goes out); a CANCELLED turn's live tool
+    # must be released, or the consumer waits on a channel nothing will ever
+    # close and the whole chat stops rendering — messages pile up unseen until a
+    # reload replays them.
+    abandoned::Bool
+end
+StreamFlush(abandoned::Bool = false) = StreamFlush(Channel{Nothing}(1), abandoned)
+
+# Release everyone waiting on this boundary. Idempotent.
+signal_rendered!(m::StreamFlush) = (isopen(m.done) && close(m.done); nothing)
+
+# Block until `m` has been rendered (or the renderer is gone). Idempotent, and
+# safe to call from several tasks.
+function wait_rendered(m::StreamFlush)
+    try
+        take!(m.done)
+    catch e
+        e isa InvalidStateException || rethrow()   # closed = signalled
+    end
+    return nothing
+end
+
+# ── Turns ────────────────────────────────────────────────────────────────────
+"""
+    Turn
+
+One run of the agent's loop: a prompt of ours (`PromptTurn`) or a cycle the
+agent started itself (`AgentTurn`). Only the connection ends one, where the wire
+says it ended. `over` is a latch closed at the end (`wait`, `isover`); `flush`
+marks the end on the main stream.
+"""
+abstract type Turn end
+
+"""
+A `session/prompt` of ours. Over at the agent's answer (`response` takes the
+stop reason or the error) or when the connection dies. Its `flush` goes on the
+main stream at the answer's frame, so steering cannot merge the next prompt's
+text into this one's bubble.
+
+The agent's reply to it can be over before the answer: claude-agent-acp holds the
+answer while a background subagent that the prompt started or revived runs, and
+answers when the subagent is done or the next prompt arrives. `replied` is closed
+where the reply ends (the result of its cycle, or the answer if that comes first),
+and `reply` goes on the main stream there. A replied prompt is no longer an open
+turn: what the agent does after it is a cycle of its own (`AgentTurn`).
+"""
+struct PromptTurn <: Turn
+    id::Int
+    response::Channel{Any}
+    flush::StreamFlush
+    over::Channel{Nothing}
+    reply::StreamFlush
+    replied::Channel{Nothing}
+end
+PromptTurn(id::Int) = PromptTurn(id, Channel{Any}(1), StreamFlush(), Channel{Nothing}(0),
+                                 StreamFlush(), Channel{Nothing}(0))
+
+"Whether the agent's reply to `t` is over (its answer may still be held)."
+isreplied(t::PromptTurn) = !isopen(t.replied)
+
+"Block until the agent's reply to `t` is over: its result, its answer, or teardown."
+wait_replied(t::PromptTurn) = (wait_closed(t.replied); nothing)
+
+"""
+A cycle the agent started itself (needs `Connection(...; agent_turns = true)`).
+Opens at a work frame while no turn is open, announced by `TurnStarted`. Over at
+its autonomous-origin result, a non-cancelled answer to a prompt of ours, or
+teardown.
+"""
+struct AgentTurn <: Turn
+    flush::StreamFlush
+    over::Channel{Nothing}
+end
+AgentTurn() = AgentTurn(StreamFlush(), Channel{Nothing}(0))
+
+"Whether `t` is over."
+isover(t::Turn) = !isopen(t.over)
+
+# The connection's, and the only way a turn ends.
+end_turn!(t::Turn) = (close(t.over); nothing)
+
+"Block until `t` is over."
+Base.wait(t::Turn) = (wait_closed(t.over); nothing)
+
+"""
+    wait_over(turns; timeout) -> Bool
+
+Block until every turn in `turns` is over, or `timeout` seconds have passed.
+Returns whether they are all over.
+"""
+function wait_over(turns; timeout::Real)
+    deadline = time() + timeout
+    return all(t -> wait_closed(t.over; timeout = deadline - time()), turns)
+end
+
+# Block until `latch` closes or `timeout` passes; whether it closed. A latch is
+# a channel nothing is put on: closing it reaches every waiter.
+function wait_closed(latch::Channel; timeout::Real = Inf)
+    isopen(latch) || return true
+    if !isfinite(timeout)
+        for _ in latch end
+        return true
+    end
+    timeout > 0 || return false
+    result = Channel{Bool}(2)              # room for both answers: neither put! blocks
+    timer = Timer(_ -> put!(result, false), timeout)
+    Base.errormonitor(@async ((for _ in latch end); put!(result, true)))
+    closed = take!(result)
+    close(timer)
+    return closed
+end
+
+"""
+    TurnStarted(turn)
+
+On the main stream, ahead of the first thing an `AgentTurn` says: the agent
+started a turn of its own. Ours need no announcement, `prompt!` hands them back.
+"""
+struct TurnStarted <: Message
+    turn::AgentTurn
+end
+
+# ── Session config options ────────────────────────────────────────────────────
+# ACP "Session Config Options": the session-setup response MAY carry a list of
+# select-type options (`configOptions`) with their current values; the agent
+# notifies changes via `config_option_update` / `current_mode_update` session
+# updates. claude-agent-acp reports mode/model/effort this way (plus legacy
+# `modes` / claude-specific `models` blocks, which `parse_config_options`
+# falls back to for agents that don't send `configOptions`).
+
+struct ConfigOptionChoice
+    value::String
+    name::String
+    description::Union{String,Nothing}
+end
+
+struct ConfigOption
+    id::String                           # "mode" | "model" | "effort" | …
+    name::String                         # human label, e.g. "Model"
+    description::Union{String,Nothing}
+    category::Union{String,Nothing}      # "mode" | "model" | "thought_level" | …
+    current_value::String
+    choices::Vector{ConfigOptionChoice}
+end
+
+struct ConfigOptionUpdateNotif <: SessionUpdate
+    options::Vector{ConfigOption}        # spec: payload is the COMPLETE state
+end
+
+struct CurrentModeUpdateNotif <: SessionUpdate
+    mode_id::String
+end
+
+# Context/cost telemetry (`usage_update`): claude-agent-acp sends it after
+# each assistant message — total tokens in context (`used`), the model's
+# context window (`size`), and (≥ v0.44) the cumulative session cost. The
+# `_meta["_claude/origin"].kind` tag distinguishes autonomous work (e.g.
+# "task-notification" follow-ups) from user turns.
+struct UsageUpdateNotif <: SessionUpdate
+    used::Int
+    size::Int
+    cost_amount::Union{Float64,Nothing}
+    cost_currency::Union{String,Nothing}
+    origin_kind::Union{String,Nothing}
+    # Claude Code's estimate of the tokens the model has thought so far in this
+    # response (`_meta["_claude/thinkingTokens"]`), on the updates
+    # claude-agent-acp sends while the model thinks; `nothing` on every other.
+    thinking_tokens::Union{Int,Nothing}
+end
+UsageUpdateNotif(used, size, cost_amount, cost_currency, origin_kind) =
+    UsageUpdateNotif(used, size, cost_amount, cost_currency, origin_kind, nothing)
+
+# One slash command (`available_commands_update`): pushed at session start
+# and re-pushed whenever claude's command set changes. `hint` is the
+# flattened `input.hint` argument hint, when the command takes arguments.
+struct CommandInfo
+    name::String
+    description::String
+    hint::Union{String,Nothing}
+end
+
+struct AvailableCommandsUpdateNotif <: SessionUpdate
+    commands::Vector{CommandInfo}
+end
+
+_opt_desc(x) = x isa AbstractString && !isempty(x) ? String(x) : nothing
+
+function parse_config_option(d::AbstractDict)::ConfigOption
+    choices = ConfigOptionChoice[]
+    for c in get(d, "options", [])
+        c isa AbstractDict || continue
+        push!(choices, ConfigOptionChoice(
+            String(get(c, "value", "")),
+            String(get(c, "name", "")),
+            _opt_desc(get(c, "description", nothing))))
+    end
+    return ConfigOption(
+        String(get(d, "id", "")),
+        String(get(d, "name", "")),
+        _opt_desc(get(d, "description", nothing)),
+        _opt_desc(get(d, "category", nothing)),
+        String(get(d, "currentValue", "")),
+        choices)
+end
+
+"""
+    parse_config_options(result) -> Vector{ConfigOption}
+
+Typed view over a raw session-setup result (`session/new` / `session/load`).
+Primary source is the spec'd `configOptions` list. When absent, synthesizes
+options from the legacy `modes` block (ACP spec) and the claude-agent-acp
+`models` block, so spec-only agents still yield a usable list.
+"""
+function parse_config_options(result::AbstractDict)::Vector{ConfigOption}
+    raw = get(result, "configOptions", nothing)
+    if raw isa AbstractVector && !isempty(raw)
+        return [parse_config_option(d) for d in raw if d isa AbstractDict]
+    end
+    # Fallback synthesis for agents without configOptions.
+    opts = ConfigOption[]
+    modes = get(result, "modes", nothing)
+    if modes isa AbstractDict
+        choices = [ConfigOptionChoice(String(get(m, "id", "")),
+                                      String(get(m, "name", "")),
+                                      _opt_desc(get(m, "description", nothing)))
+                   for m in get(modes, "availableModes", []) if m isa AbstractDict]
+        isempty(choices) || push!(opts, ConfigOption(
+            "mode", "Mode", nothing, "mode",
+            String(get(modes, "currentModeId", "")), choices))
+    end
+    models = get(result, "models", nothing)
+    if models isa AbstractDict
+        choices = [ConfigOptionChoice(String(get(m, "modelId", "")),
+                                      String(get(m, "name", "")),
+                                      _opt_desc(get(m, "description", nothing)))
+                   for m in get(models, "availableModels", []) if m isa AbstractDict]
+        isempty(choices) || push!(opts, ConfigOption(
+            "model", "Model", nothing, "model",
+            String(get(models, "currentModelId", "")), choices))
+    end
+    return opts
+end
+
+current_choice(o::ConfigOption)::Union{ConfigOptionChoice,Nothing} =
+    (i = findfirst(c -> c.value == o.current_value, o.choices);
+     i === nothing ? nothing : o.choices[i])
+
+"""
+    choice_label(o, c) -> String
+
+Display label for ONE choice. For the MODEL option, "default" is an ALIAS in
+claude-agent-acp — the real model lives in the resolved choice's description
+("Opus 4.8 with 1M context · Best for everyday, complex tasks"), so we surface
+its first segment instead of the word "Default". "(recommended)" is redundant
+noise once the real model shows, so strip it. Every other option (mode, effort,
+explicit models) shows its plain choice name — their descriptions are
+explanations, not values. Cross-agent: reads only standard ACP choice fields.
+"""
+function choice_label(o::ConfigOption, c::ConfigOptionChoice)::String
+    if o.category == "model" && c.value == "default" &&
+       c.description !== nothing && !isempty(strip(c.description))
+        return String(strip(first(split(c.description, '·'))))
+    end
+    return String(strip(replace(c.name, r"\s*\(recommended\)\s*$"i => "")))
+end
+
+# Short display label for the option's CURRENT value (see `choice_label`).
+pill_label(o::ConfigOption)::String =
+    (c = current_choice(o); c === nothing ? o.current_value : choice_label(o, c))
+
+# ── Parsing helpers ───────────────────────────────────────────────────────────
+
+function parse_content_block(d::AbstractDict)::ContentBlock
+    t = get(d, "type", "")
+    if t == "image"
+        return ImageContent(get(d, "data", ""), get(d, "mimeType", "image/png"))
+    elseif t == "resource_link"
+        uri = String(get(d, "uri", ""))
+        return ResourceLink(String(get(d, "name", uri)), uri)
+    end
+    # default: text
+    return TextContent(get(d, "text", ""))
+end
+
+function parse_tool_content_item(d::AbstractDict)
+    t = get(d, "type", "")
+    if t == "diff"
+        return DiffContent(get(d, "path", ""), get(d, "oldText", nothing), get(d, "newText", ""))
+    elseif t == "content"
+        return parse_content_block(get(d, "content", Dict()))
+    elseif t == "terminal"
+        # `{"type":"terminal","terminalId":…}` is a POINTER, not content: the
+        # client is meant to stream the live output over `terminal/output`,
+        # which we don't implement. Rendering the placeholder text put a literal
+        # "[tool content: terminal]" in the card body for the whole run (codex
+        # opens every shell call this way), and it is not replaced until the
+        # terminal frame — the real output arrives in `rawOutput` instead (see
+        # `tool_output_content`). Dropping it leaves the content empty, which is
+        # exactly what that fallback keys on.
+        return nothing
+    else
+        return TextContent("[tool content: $t]")
+    end
+end
+
+# A frame's `content` list: parsed items, with the ones that carry nothing
+# renderable (see the `terminal` arm) and any non-object entry dropped, rather
+# than throwing and losing the whole frame.
+function parse_tool_content(raw)
+    out = []
+    raw isa AbstractVector || return out
+    for x in raw
+        x isa AbstractDict || continue
+        c = parse_tool_content_item(x)
+        c === nothing || push!(out, c)
+    end
+    return out
+end
+
+# kimi's acp-adapter JSON-stringifies any non-string tool RESULT into a single
+# text block (`toolResultToAcpContent`), so a ReadMediaFile result reaches the
+# wire as ONE TextContent holding the JSON of
+#     [text("<image path=…>"), image_url(data-uri), text("</image>")]
+# — which the UI renders as a giant base64 blob. The SAME part array rides
+# verbatim in `rawOutput`, so re-materialize real content blocks from it: text
+# parts stay text (minus kimi's <image …>/</video> scaffolding, whose path is
+# already in `locations`), and `image_url`/`video_url` data URIs become
+# ImageContent, the shape the renderer's media branch understands. Returns
+# `nothing` when rawOutput isn't such an array — every other agent, kimi's own
+# string results, an unrecognized part, or a non-data-URI media URL — leaving
+# `content` untouched rather than partially rewritten.
+
+"""
+    tool_output_content(rout) -> Vector or nothing
+
+A tool result that arrived only as `rawOutput`, re-materialized as content
+blocks — or `nothing` when `rawOutput` is not one of the known result shapes,
+leaving the frame's own content untouched.
+
+Three real shapes, all verified on the wire:
+
+  claude-agent-acp  a bare STRING: a FAILED MCP tool's result comes with no
+                    content blocks at all (acp.jsonl — the fused
+                    "```julia\n…\n```\nerror:\n…" text of a bt_julia_eval
+                    DomainError); success frames carry real blocks instead.
+  codex-acp         `{"result":{"content":[…]},"error":null}` for an MCP call —
+                    the MCP `CallToolResult` verbatim, never mirrored into
+                    content — or `{"result":null,"error":{"message":"…"}}` when
+                    the call failed.
+  codex-acp         `{"formatted_output":"NATIVEPROBE\n","exit_code":0}` for a
+                    shell command, whose live output it only ever offers as a
+                    `terminal` pointer we don't subscribe to.
+
+Without this a codex tool card is empty: every result it produces lands here
+and nowhere else.
+"""
+function tool_output_content(rout)
+    rout isa AbstractString && return isempty(rout) ? nothing : [TextContent(String(rout))]
+    rout isa AbstractDict || return nothing
+    # An MCP envelope is identified by either key — `error` alone is what a
+    # failed call sends, and `result` is null there.
+    if haskey(rout, "result") || haskey(rout, "error")
+        err = get(rout, "error", nothing)
+        if err !== nothing
+            err isa AbstractString && return [TextContent(String(err))]
+            msg = err isa AbstractDict ? get(err, "message", nothing) : nothing
+            return [TextContent(msg isa AbstractString ? String(msg) : JSON.json(err))]
+        end
+        res = get(rout, "result", nothing)
+        res isa AbstractDict || return nothing
+        blocks = get(res, "content", nothing)
+        blocks isa AbstractVector || return nothing
+        out = [parse_content_block(b) for b in blocks if b isa AbstractDict]
+        return isempty(out) ? nothing : out
+    end
+    fo = get(rout, "formatted_output", nothing)
+    return fo isa AbstractString && !isempty(fo) ? [TextContent(String(fo))] : nothing
+end
+
+const MEDIA_DATA_URI_RE = r"^data:([^;,]+);base64,(.*)$"s
+
+function media_parts_content(rout)
+    rout isa AbstractVector || return nothing
+    ismedia(p) = p isa AbstractDict &&
+                 get(p, "type", "") in ("image_url", "video_url")
+    any(ismedia, rout) || return nothing
+    content = []
+    for p in rout
+        if p isa AbstractDict && get(p, "type", "") == "text"
+            t = get(p, "text", "")
+            occursin(r"^</?(?:image|video)(?:\s+path=\"[^\"]*\")?>$", t) && continue
+            push!(content, TextContent(t))
+        elseif ismedia(p)
+            u = get(p, "imageUrl", get(p, "videoUrl", Dict()))
+            u = u isa AbstractDict ? get(u, "url", "") : ""
+            m = match(MEDIA_DATA_URI_RE, u)
+            m === nothing && return nothing
+            push!(content, ImageContent(String(m.captures[2]), String(m.captures[1])))
+        else
+            return nothing
+        end
+    end
+    return content
+end
+
+function parse_location(d::AbstractDict)
+    # `line` is spec'd as a scalar, but some agents send a non-scalar (a range
+    # `[start,end]`, or a malformed value). Coerce anything that isn't an integer
+    # to `nothing` instead of letting the `ToolCallLocation` constructor throw
+    # `convert(Union{Int,Nothing}, ::Vector)` — which previously surfaced as a
+    # swallowed "ACP dispatch failed" warning and dropped the whole frame.
+    line = get(d, "line", nothing)
+    ToolCallLocation(get(d, "path", ""), line isa Integer ? Int(line) : nothing)
+end
+
+# claude-agent-acp tags every tool_call(_update) with the real Claude Code
+# tool name + the raw argument dict via the `_meta.claudeCode` envelope. The
+# envelope is optional on the spec, so absence is fine — `parse_tool_call`
+# falls back to `GenericTool` when `tool_name` is empty.
+#
+# Other agents don't ship that envelope, but they still identify MCP tools:
+# they put the canonical `mcp__<server>__<tool>` name in the ACP `title`.
+# Verified against kimi 0.29.2 driving the real btworker server — its
+# `tool_call` frame is
+#     {"toolCallId":"0:tool_…","title":"mcp__btworker__bt_julia_eval",
+#      "kind":"other","status":"pending","content":[…]}
+# with NO `_meta` and NO `rawInput` anywhere in the turn. Without the fallback
+# below `tool_name` stays empty, every such call lands in `GenericTool`, and
+# BonitoAgents renders a bare generic card instead of the typed eval card —
+# the same tool looking completely different depending on which agent ran it.
+#
+# The fallback is deliberately narrow: only a title in the `mcp__a__b` form is
+# taken as a name, which is the exact shape `build_tool_call` already parses
+# and not something a human-readable title collides with. A title that isn't in
+# that form leaves `tool_name` empty and behaves exactly as before.
+function parse_claude_meta(params::AbstractDict; title_names::Bool = false)
+    meta = get(params, "_meta", nothing)
+    name = ""
+    if meta isa AbstractDict
+        cc = get(meta, "claudeCode", nothing)
+        if cc isa AbstractDict
+            v = get(cc, "toolName", "")
+            # claude-agent-acp names its compaction `compact` (see CONTEXT_COMPACTION_TOOL).
+            v isa AbstractString && (name = v == "compact" ? CONTEXT_COMPACTION_TOOL : String(v))
+        end
+    end
+    isempty(name) && (name = codex_tool_name(params))
+    if isempty(name)
+        t = get(params, "title", nothing)
+        if t isa AbstractString &&
+           (is_mcp_tool_name(t) || (title_names && looks_like_tool_name(t)))
+            name = String(t)
+        end
+    end
+    rinput = get(params, "rawInput", nothing)
+    rinput_d = rinput isa AbstractDict ?
+                 Dict{String,Any}(String(k) => v for (k, v) in rinput) :
+                 Dict{String,Any}()
+    # codex-acp wraps MCP calls in an envelope instead of naming them the way
+    # every other agent does — unwrap it to the canonical name + arguments.
+    cx = codex_mcp_envelope(rinput_d)
+    cx === nothing && return (name, rinput_d)
+    return cx
+end
+
+"""
+    CONTEXT_COMPACTION_TOOL
+
+The tool name a context compaction gets: the agent's runtime summarising the
+conversation so it fits its context window again.
+
+codex-acp reports one as a nameless `think` tool call titled "Compact
+conversation", tagged only by a `contextCompaction` key in its `_meta`: at the
+top in 1.11.0, inside the AIR envelope (`_meta.jetbrains.air`) in 2.2.2 (both
+captured in `test/fixtures/codex_*compaction.jsonl`). It runs before a turn
+whenever the context is nearly full, so it says nothing about whether the agent
+did anything. Without a name it is indistinguishable from real tool work, and a
+Codex turn that failed at the compaction step looked like a turn that worked.
+
+claude-agent-acp reports one the same way, titled "Compact conversation", and
+names it `compact` in `_meta.claudeCode.toolName` on every frame (0.101.0,
+captured in `test/fixtures/claude_idle_compaction_wire.jsonl`). Besides the ones
+inside a turn, that adapter compacts an idle session on its own, with no prompt
+open.
+"""
+const CONTEXT_COMPACTION_TOOL = "ContextCompaction"
+
+# A tool name only codex-acp's `_meta` tags give, or "".
+function codex_tool_name(params::AbstractDict)
+    meta = get(params, "_meta", nothing)
+    meta isa AbstractDict || return ""
+    air = air_meta(params)
+    compaction = haskey(meta, "contextCompaction") ||
+                 (air !== nothing && haskey(air, "contextCompaction"))
+    return compaction ? CONTEXT_COMPACTION_TOOL : ""
+end
+
+"""
+    codex_mcp_envelope(raw_input) -> (name, arguments) or nothing
+
+codex-acp's MCP tool-call envelope, unwrapped to the canonical
+`mcp__<server>__<tool>` name plus the tool's OWN arguments — or `nothing` when
+`raw_input` isn't one.
+
+codex-acp (verified 1.11.0 against the real btworker MCP server, captured into
+test/fixtures/codex_mcp_tool_call.jsonl) is the only agent so far that neither
+names the tool the canonical way nor passes its arguments through:
+
+    {"sessionUpdate":"tool_call","toolCallId":"exec-…","kind":"execute",
+     "title":"mcp.btworker.bt_julia_eval",
+     "rawInput":{"server":"btworker","tool":"bt_julia_eval",
+                 "arguments":{"code":"1+1"}},
+     "_meta":{"is_mcp_tool_call":true}}
+
+Taken at face value that is a nameless `GenericTool` whose "arguments" are
+`server`/`tool`/`arguments` — no eval card, and an empty code preview. The
+dot-separated title can't be split safely (both halves may contain dots), but
+the envelope itself is unambiguous, so the ENVELOPE is what we key on.
+
+The `_meta` flag rides only the OPENING frame — the terminal `tool_call_update`
+repeats the same `rawInput` with no `_meta` at all — so the flag cannot be the
+discriminator or a completed MCP call would re-wrap its own arguments. The
+shape is: exactly the three keys, `server`/`tool` non-empty strings,
+`arguments` an object.
+"""
+function codex_mcp_envelope(raw_input::AbstractDict)
+    length(raw_input) == 3 || return nothing
+    server = get(raw_input, "server", nothing)
+    tool   = get(raw_input, "tool", nothing)
+    args   = get(raw_input, "arguments", nothing)
+    server isa AbstractString && !isempty(server) || return nothing
+    tool   isa AbstractString && !isempty(tool)   || return nothing
+    args isa AbstractDict || return nothing
+    return ("mcp__$(server)__$(tool)",
+            Dict{String,Any}(String(k) => v for (k, v) in args))
+end
+
+# A bare tool NAME rather than a human-readable title. Kimi labels its native
+# tools with Claude's own names — `Read`, `Bash`, `Agent` — on the opening
+# `tool_call`, which is the only thing that identifies e.g. a shell call as a
+# shell call once `_meta` is absent. It then REPLACES the title on a later frame
+# with a sentence ("Reading hello.txt", "Running: echo …", "Launching explore
+# agent: …"), so the name is only trustworthy on that opening frame — hence the
+# `title_names` opt-in, set for `tool_call` and NOT for `tool_call_update`.
+#
+# Whitespace is the discriminator: every real tool name is a single token, and
+# every human title kimi produced contains a space. A non-matching title just
+# leaves the name empty, exactly as before.
+looks_like_tool_name(s::AbstractString) =
+    !isempty(s) && ncodeunits(s) <= 64 && !occursin(r"\s", s)
+
+# `mcp__<server>__<tool>` with both parts non-empty — the MCP naming convention
+# every ACP agent uses for tools it got from an MCP server.
+function is_mcp_tool_name(s::AbstractString)
+    startswith(s, "mcp__") || return false
+    rest = SubString(s, 6)
+    sep = findfirst("__", String(rest))
+    sep === nothing && return false
+    return first(sep) > 1 && last(sep) < lastindex(rest)
+end
+
+# Defensive extraction of the subagent tag: the `_meta` envelope is optional
+# and any level may be missing or malformed — everything short of a non-empty
+# string id means "top-level update".
+function parse_parent_tool_use_id(params::AbstractDict)::Union{String,Nothing}
+    meta = get(params, "_meta", nothing)
+    meta isa AbstractDict || return nothing
+    cc = get(meta, "claudeCode", nothing)
+    cc isa AbstractDict || return nothing
+    v = get(cc, "parentToolUseId", nothing)
+    return v isa AbstractString && !isempty(v) ? String(v) : nothing
+end
+
+function parse_session_update(params::AbstractDict)::SessionUpdate
+    u = parse_session_update_kind(params)
+    pid = parse_parent_tool_use_id(params)
+    return pid === nothing ? u : SubagentUpdate(pid, u)
+end
+
+# The kind-discriminated body (untagged view). Split from the public entry so
+# the SubagentUpdate wrap happens in exactly one place.
+function parse_session_update_kind(params::AbstractDict)::SessionUpdate
+    kind = get(params, "sessionUpdate", "")
+    if kind == "agent_message_chunk"
+        return AgentMessageChunk(parse_content_block(get(params, "content", Dict())))
+    elseif kind == "user_message_chunk"
+        return UserMessageChunk(parse_content_block(get(params, "content", Dict())))
+    elseif kind == "session_info_update"
+        record = session_notice_record(params)
+        return record === nothing ? UnknownUpdate(kind, params) : SessionNoticeNotif(record)
+    elseif kind == "agent_thought_chunk"
+        return AgentThoughtChunk(parse_content_block(get(params, "content", Dict())))
+    elseif kind == "plan"
+        entries = [PlanEntry(get(e, "content", ""), get(e, "priority", "medium"), get(e, "status", "pending"))
+                   for e in get(params, "entries", [])]
+        return PlanUpdate(entries)
+    elseif kind == "tool_call"
+        content = parse_tool_content(get(params, "content", []))
+        locs = [parse_location(l) for l in get(params, "locations", [])]
+        # Opening frame: the title may still be the bare tool name (see
+        # `looks_like_tool_name`), which is the only handle a non-claude agent
+        # gives us on WHICH tool this is.
+        name, rinput = parse_claude_meta(params; title_names = true)
+        return ToolCallNotif(
+            get(params, "toolCallId", ""),
+            get(params, "title", ""),
+            get(params, "kind", "other"),
+            get(params, "status", "pending"),
+            content, locs, name, rinput, params
+        )
+    elseif kind == "tool_call_update"
+        content = parse_tool_content(get(params, "content", []))
+        # Some agents report a tool's RESULT only in `rawOutput`, with no
+        # content blocks at all. Normalize the asymmetry HERE so every
+        # downstream consumer (snaps, persistence, renderers) only ever sees
+        # content. Terminal frames only: a mid-flight rawOutput would race the
+        # real content blocks. See `tool_output_content` for the shapes.
+        if isempty(content) && get(params, "status", nothing) in ("completed", "failed")
+            c = tool_output_content(get(params, "rawOutput", nothing))
+            c === nothing || (content = c)
+        end
+        # Media results (kimi's ReadMediaFile) arrive only as a JSON-stringified
+        # blob in `content`; the structured part array is in `rawOutput` — see
+        # `media_parts_content`. Terminal frames only, same no-race rationale as
+        # the rawOutput-string normalization above.
+        if get(params, "status", nothing) in ("completed", "failed")
+            media = media_parts_content(get(params, "rawOutput", nothing))
+            media !== nothing && (content = media)
+        end
+        locs = [parse_location(l) for l in get(params, "locations", [])]
+        name, rinput = parse_claude_meta(params)
+        # Updates often omit meta + rawInput — preserve `nothing` so the
+        # dispatcher knows "no new info" vs "agent renamed the tool".
+        return ToolCallUpdateNotif(
+            get(params, "toolCallId", ""),
+            get(params, "title", nothing),
+            get(params, "kind", nothing),
+            get(params, "status", nothing),
+            content, locs,
+            isempty(name) ? nothing : name,
+            isempty(rinput) ? nothing : rinput,
+            params
+        )
+    elseif kind == "config_option_update"
+        # Spec: the payload is the COMPLETE updated configuration state.
+        opts = [parse_config_option(d)
+                for d in get(params, "configOptions", []) if d isa AbstractDict]
+        return ConfigOptionUpdateNotif(opts)
+    elseif kind == "current_mode_update"
+        # claude-agent-acp sends the new mode under `currentModeId` (verified on
+        # the wire, v0.42.0); the ACP spec's own field name is `modeId`. Read the
+        # claude form first, fall back to the spec form, so both agents work.
+        return CurrentModeUpdateNotif(
+            String(get(params, "currentModeId", get(params, "modeId", ""))))
+    elseif kind == "usage_update"
+        # Wire shape (verified, claude-agent-acp v0.44.0 source + logs):
+        # {used:: tokens in context, size:: context window, cost::
+        # {amount, currency} (≥ 0.44), _meta::{"_claude/origin"::{kind,…}}}.
+        cost = get(params, "cost", nothing)
+        meta = get(params, "_meta", nothing)
+        origin = meta isa AbstractDict ? get(meta, "_claude/origin", nothing) : nothing
+        okind = origin isa AbstractDict ? get(origin, "kind", nothing) : nothing
+        thinking = meta isa AbstractDict ? get(meta, "_claude/thinkingTokens", nothing) : nothing
+        return UsageUpdateNotif(
+            round(Int, get(params, "used", 0)),
+            round(Int, get(params, "size", 0)),
+            cost isa AbstractDict ? Float64(get(cost, "amount", 0.0)) : nothing,
+            cost isa AbstractDict ? String(get(cost, "currency", "USD")) : nothing,
+            okind isa AbstractString ? String(okind) : nothing,
+            thinking isa Real && isfinite(thinking) ? round(Int, thinking) : nothing)
+    elseif kind == "available_commands_update"
+        cmds = CommandInfo[]
+        for c in get(params, "availableCommands", [])
+            c isa AbstractDict || continue
+            input = get(c, "input", nothing)
+            hint = input isa AbstractDict ? get(input, "hint", nothing) : nothing
+            push!(cmds, CommandInfo(
+                String(get(c, "name", "")),
+                String(get(c, "description", "")),
+                hint isa AbstractString ? String(hint) : nothing))
+        end
+        return AvailableCommandsUpdateNotif(cmds)
+    else
+        return UnknownUpdate(kind, params)
+    end
+end

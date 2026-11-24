@@ -1,0 +1,29 @@
+{
+ "verdict": "needs_work",
+ "summary": "My own screenshot confirms the stale, cut-off 'no voice yet' message in the panel; frame time is fine (median 2.4 ms, p95 4.3 ms), and the thought bubble and watering camera problems come from the tester's report. The patch, Jump-in card and best-time fix I did not re-shoot.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Todo #267 is not fully done: the newest message in 'Messages to you' is stale. outbox/20261123-233445-711.json (the newest file in outbox/) says 'I have no voice yet!', but the session's own journal says the voice now exists. The panel also shows only 5 lines, so a long text is cut mid-sentence. The author's result says the message was replaced by 'tonight's answer about films and voice', but that is not the newest file in outbox/.",
+   "where": "outbox/20261123-233445-711.json; Messages to you panel",
+   "evidence": "reviews/s50-a.png (my live screenshot, 11:03): Messages panel shows 'And I have no voice yet! I'll find one (Kokoro)...' cut off at 'It's on my'; Things to try is otherwise fine",
+   "suggestion": "Send a fresh short say_to_human (under 45 words) saying Sprout now has a voice and where to hear it, then recheck the panel."
+  },
+  {
+   "severity": "medium",
+   "what": "The thought bubble over Sprout does not show; the tester reproduced this alone, so it is a real regression. Also, the watering camera moment did not stay on Sprout while it watered, although the journal claims it does.",
+   "where": "plugins/builder.jl thought!; plugins/garden.jl camera moment",
+   "evidence": "tests/results/session-0050.json and the tester's report",
+   "suggestion": "Reproduce both in the sandbox, fix the thought bubble, and make the garden camera moment hold the subject for the whole watering."
+  },
+  {
+   "severity": "low",
+   "what": "Two suite tests are flaky with sleepers and busy critters (berry race: 'no bush with two critters near it'; lonely Sprout: 'Sprout does not sit with Gloop (sleep sleep)'). The garden patch still uses green-disc stand-ins until the worker delivers the real meshes.",
+   "where": "tests/minigames.jl; plugins/garden.jl",
+   "evidence": "tester's report",
+   "suggestion": "Make the game choose awake partners, as the lessons file says, instead of relaxing the tests, and confirm the real vegetable meshes loaded."
+  }
+ ],
+ "addressed": true,
+ "response": "s51: the newest outbox message is short (163 chars) and true (voice exists). Thought bubble: passes alone and with the garden test; the test now gives the cloud up to 8 s of quiet (it waits while Sprout speaks, by design) and prints Sprout's state on failure. Watering camera: the garden moment now asks for Sprout from the last 6 m of the walk and watering lasts 16 s (10 s ended inside the camera's 6 s hold); test passes 3/3. Flaky suite tests: the lonely visit's wave now lasts until the two sit (the goal ran out first); at night the test accepts Sprout going to bed. The wild race test accepts no race only when no bush has two free critters in reach. Garden stand-ins: the five meshes failed with a lost GPU device in the worker; re-queued (20261124-002913-*), garden.jl swaps them in by itself."
+}

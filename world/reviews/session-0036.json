@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "results/session-0036.json: 59/61 passed. The tester reports the same two failures in the full suite and none in isolation.",
+      "severity": "medium",
+      "suggestion": "Run the cairn tests and then the wave and separation tests in one live_tests call. Make sure the cairn cheer and pickup clear leftover goals, interactions and carried state (NG.leave_interactions!), and that the cheering critters do not crowd into each other.",
+      "what": "Full-suite failures after the new cairn tests: 'nobody answered the wave (Wibbles is interact)' and 'Gloop and Wibbles overlap: 0.74 m apart'. The tester found both pass in isolation, which suggests state left over from the cairn tests or the new cairn code (an interaction, a cheering turn, or the group camera). The author's journal does not mention them.",
+      "where": "world/tests/results/session-0036.json; plugins/cairns.jl (Sprout set-down cheer), tests/minigames.jl"
+    },
+    {
+      "evidence": "Frame viewed: the sheep hovers mid-air at the left, a dotted horizon line runs across the whole width, and Cumulus carries the pebble on its hat.",
+      "severity": "medium",
+      "suggestion": "Check the 128-sample take and release it as v2 if it is cleaner. Fix the horizon band (#131) and the floating sheep before calling the film final.",
+      "what": "The released film's still shows flaws a viewer sees immediately. The foreground sheep floats above the ground with no legs visible. A grainy dotted horizon band cuts across the sea. The cairn is lit but the carried pebble is small and hard to find. The 128-sample worker take was never checked.",
+      "where": "releases/2026-11-23-one-more-stone/still.png"
+    },
+    {
+      "evidence": "The todo results say 'I triggered last_set by hand' and 'raster copy'. Frame median is fine at 2.84 ms.",
+      "severity": "low",
+      "suggestion": "Check one natural critter delivery in the live game and confirm that the camera frames it and that the stone is visible on the hat.",
+      "what": "Cairn camera and carried-stone claims rest on staged evidence: the group-camera shot was triggered by hand (last_set set manually), and the hat-carry shot came from a raster copy, not the live game.",
+      "where": "media/cairn-group-cam.png, media/cairn-carry-hat.png"
+    }
+  ],
+  "summary": "Real player-facing gains (Sprout carries stones to the cairn, a released film, the panel-rebuild crash fixed), but the host suite ended 59/61 and the author did not look into the two failures that appear after the new cairn tests.",
+  "superseded_by": "perfectionist-0036.json",
+  "verdict": "needs_work"
+}

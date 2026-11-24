@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-22T22:18:02.062",
+  "finished": "2026-11-22T22:25:18.705",
+  "id": "20261122-221801-999-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 15000,
+    "prompt": "a single chunky green broadleaf tree with a short straight brown trunk and a big round fluffy crown, trunk ends flat at the bottom, chunky rounded shapes, soft hand-painted colors",
+    "tags": [
+      "prop",
+      "tree"
+    ]
+  },
+  "result": {
+    "created": "2026-11-22T22:25:18.705",
+    "faces": 14338,
+    "id": "20261122-221801-999-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261122-221801-999-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261122-221801-999-asset/mesh.jls",
+    "prompt": "a single chunky green broadleaf tree with a short straight brown trunk and a big round fluffy crown, trunk ends flat at the bottom, chunky rounded shapes, soft hand-painted colors",
+    "seconds": 435.0,
+    "tags": [
+      "prop",
+      "tree"
+    ]
+  },
+  "seconds": 435.4,
+  "started": "2026-11-22T22:18:03.289",
+  "status": "done"
+}

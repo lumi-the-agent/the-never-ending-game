@@ -1,0 +1,50 @@
+{
+  "failed": [
+    {
+      "error": "check failed: Pinchy did not reach the find (pos Float32[5.821132, -12.832794, 1.2106111], target Float32[5.1639295, -17.783104, 0.3581901], goal tag, action run)",
+      "file": "beach.jl",
+      "name": "A critter walks down to the beach and finds a shell or a starfish",
+      "passed": false,
+      "seconds": 15.0
+    },
+    {
+      "error": "check failed: the build did not finish in 70 s (stage go, Sprout build idle)",
+      "file": "builder.jl",
+      "name": "After a publish Sprout carries a crate to the new thing, works there, and it appears when Sprout is done",
+      "passed": false,
+      "seconds": 74.0
+    },
+    {
+      "error": "check failed: the bubble shows [\"Letting the far trees fade softly…\"] (shown false; Sprout idle/build, controlled false, speaking true, minigame false, hour 11.4)",
+      "file": "builder.jl",
+      "name": "Sprout thinks about the todo the agent is on: a cloud over its head with the doing todo in a few words",
+      "passed": false,
+      "seconds": 8.0
+    },
+    {
+      "error": "check failed: follow while jumped in is no chase camera: eye 9.518929 m from Sprout, looking 0.0 m off it",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Sprout, free turns with the mouse",
+      "passed": false,
+      "seconds": 4.2
+    },
+    {
+      "error": "check failed: Play did not start Jump in (Main.Plugin_berry_race.BerryRace)",
+      "file": "s51_play.jl",
+      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Sprout in view",
+      "passed": false,
+      "seconds": 2.8
+    },
+    {
+      "error": "check failed: trees or hills block the follow view (obstruction 0.9273162; the goal view's 0.017650366, eye 3.32 m from it; subject 1, shot false)",
+      "file": "separation.jl",
+      "name": "The follow camera has a clear view of its creature",
+      "passed": false,
+      "seconds": 3.0
+    }
+  ],
+  "passed": 108,
+  "session": 53,
+  "time": "2026-11-24T03:30:32",
+  "total": 114
+}

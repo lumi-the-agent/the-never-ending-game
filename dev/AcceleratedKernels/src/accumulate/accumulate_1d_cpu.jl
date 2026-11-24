@@ -1,0 +1,54 @@
+function accumulate_1d_cpu!(
+    op, v::AbstractArray, backend::Backend, alg::CPUThreads.Partitioned;
+    init,
+    seed,
+    inclusive::Bool,
+)
+    # For exclusive accumulation, each task section / chunk must have at least 2 elements to be
+    # correct (otherwise we have to include more complicated logic in the threaded code); the
+    # resolution checks `min_elems`
+    max_tasks, min_elems = alg.max_tasks, alg.min_elems
+
+    start = scan_start(v, init, seed)
+    _, op = seeded_ops(PartialInputs(), op, seed)
+
+    if task_count(length(v), max_tasks, min_elems) == 1
+        @inbounds serial_scan!(op, v, v, identity, identity, eachindex(v), start, seed,
+                               inclusive)
+        return v
+    end
+
+    # Scan each task's section with the requested inclusivity, seeding only the first one with
+    # `start`, and save each section's total
+    tp = TaskPartitioner(length(v), max_tasks, min_elems)
+    shared = Vector{typeof(seed)}(undef, tp.num_tasks)
+    itask_partition(tp) do itask, irange
+        shared[itask] = @inbounds serial_scan!(op, v, v, identity, identity, irange,
+                                               itask == 1 ? start : seed, seed, inclusive)
+    end
+
+    # Scan the tasks' totals serially: there are few tasks, even on 144-thread HPC nodes
+    @inbounds serial_scan!(op, shared, shared, identity, identity, eachindex(shared), seed, seed,
+                           true)
+
+    # Combine each element after the first task's with the total of the tasks before it, on the
+    # left. An exclusive section starts from `seed`, which may be an unset `Optional` that cannot
+    # be stored: its first element is the running total itself.
+    itask_partition(tp) do itask, irange
+        @inbounds begin
+            if itask != 1
+                carry = shared[itask - 1]
+                for i in irange
+                    v[i] = if !inclusive && i == first(irange)
+                        lower(eltype(v), carry)
+                    else
+                        lower(eltype(v), op(carry, lift(seed, v[i])))
+                    end
+                end
+            end
+        end
+    end
+
+    return v
+end
+
