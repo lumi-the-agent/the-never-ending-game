@@ -1,14 +1,14 @@
 {
-  "boredom": 0.28,
+  "boredom": 0.0,
   "fatigue": {
-    "asset": 0.62,
-    "feature": 1.49,
-    "film": 1.0,
-    "picture": 2.24,
-    "polish": 1.42,
-    "post": 1.31,
-    "self": 0.22,
-    "sound": 0.29
+    "asset": 0.37,
+    "feature": 1.89,
+    "film": 0.6,
+    "picture": 2.34,
+    "polish": 1.85,
+    "post": 1.79,
+    "self": 0.13,
+    "sound": 0.17
   },
   "happened": [
     "Boop",
@@ -83,9 +83,14 @@
     "freeze_end",
     "boing_party_end",
     "roll_call_end",
-    "cabbage"
+    "cabbage",
+    "sneeze_landed",
+    "sneeze_feather",
+    "sneeze",
+    "sneeze_windup",
+    "sneeze_end"
   ],
-  "joy": 0.83,
+  "joy": 0.86,
   "kinds_ever": [
     "post",
     "picture",
@@ -100,54 +105,59 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "cabbage"
+      "sneeze_landed",
+      "sneeze_feather",
+      "sneeze",
+      "sneeze_windup",
+      "sneeze_end"
     ],
-    "session": 63
+    "session": 64
   },
   "last_surprise": {
-    "score": 6,
-    "session": 62,
-    "why": "A giant bouncy toadstool that flings the whole island into the sky is a real twist; freeze, conga and roll call are more of the same kind of group event."
+    "score": 5,
+    "session": 63,
+    "why": "A narrated, path traced film of a day on the island is a new kind of output, but the game itself did not change."
   },
-  "loneliness": 0.0,
-  "perceived_until": "2026-11-24T15:27:48",
+  "loneliness": 0.07,
+  "perceived_until": "2026-11-24T16:16:59",
   "plugin_fatigue": {
-    "ballplay.jl": 0.22,
-    "beds.jl": 0.36,
-    "berry_race.jl": 0.28,
-    "birdbody.jl": 0.43,
-    "boing.jl": 0.6,
-    "builder.jl": 0.62,
-    "bumpcue.jl": 0.22,
-    "butterflies.jl": 0.22,
-    "cairns.jl": 0.22,
-    "conga.jl": 0.6,
-    "dancecircle.jl": 0.22,
-    "feelings.jl": 0.26,
-    "firefly_catch.jl": 0.25,
-    "flora.jl": 0.22,
-    "flowerfield.jl": 0.22,
-    "flowergift.jl": 0.22,
-    "freecam.jl": 0.22,
-    "freeze.jl": 0.6,
-    "garden.jl": 0.22,
-    "greetings.jl": 0.83,
-    "hideseek.jl": 0.58,
-    "islandnow.jl": 0.24,
-    "kite.jl": 0.26,
-    "lensclear.jl": 0.39,
-    "lookout.jl": 0.23,
-    "newname.jl": 0.22,
-    "nightshots.jl": 0.22,
-    "presents.jl": 0.28,
-    "rollcall.jl": 0.6,
-    "separation.jl": 0.23,
-    "shovel.jl": 0.36,
-    "showers.jl": 0.58,
-    "tag.jl": 0.26,
-    "watering.jl": 0.25,
-    "wheelbarrow.jl": 0.35,
-    "workshop.jl": 0.25
+    "ballplay.jl": 0.13,
+    "beds.jl": 0.22,
+    "berry_race.jl": 0.17,
+    "birdbody.jl": 0.26,
+    "boing.jl": 1.36,
+    "builder.jl": 0.37,
+    "bumpcue.jl": 0.13,
+    "butterflies.jl": 0.13,
+    "cairns.jl": 0.13,
+    "conga.jl": 0.36,
+    "dancecircle.jl": 0.13,
+    "feelings.jl": 0.16,
+    "firefly_catch.jl": 0.15,
+    "flora.jl": 0.13,
+    "flowerfield.jl": 0.13,
+    "flowergift.jl": 0.13,
+    "freecam.jl": 0.13,
+    "freeze.jl": 0.36,
+    "garden.jl": 1.13,
+    "greetings.jl": 1.5,
+    "hideseek.jl": 0.35,
+    "islandnow.jl": 0.14,
+    "kite.jl": 0.16,
+    "lensclear.jl": 0.23,
+    "lookout.jl": 0.14,
+    "newname.jl": 0.13,
+    "nightshots.jl": 0.13,
+    "presents.jl": 0.17,
+    "rollcall.jl": 0.36,
+    "separation.jl": 0.14,
+    "shovel.jl": 0.22,
+    "showers.jl": 0.35,
+    "sneeze.jl": 1.0,
+    "tag.jl": 1.16,
+    "watering.jl": 0.15,
+    "wheelbarrow.jl": 0.21,
+    "workshop.jl": 0.15
   },
   "sessions": [
     {
@@ -822,6 +832,70 @@
         "picture": 0.3
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "sneeze_landed",
+          "who": 8
+        },
+        {
+          "kind": "sneeze_feather",
+          "who": 5
+        },
+        {
+          "kind": "sneeze",
+          "who": 4
+        },
+        {
+          "kind": "sneeze_windup",
+          "who": 4
+        },
+        {
+          "kind": "sneeze_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/big-sneeze-after.png",
+        "site/img/big-sneeze.png"
+      ],
+      "new_plugins": [
+        "sneeze.jl"
+      ],
+      "points": 1.5,
+      "repeats": [],
+      "session": 64,
+      "touched": [
+        "boing.jl",
+        "garden.jl",
+        "greetings.jl",
+        "tag.jl"
+      ],
+      "values": {
+        "feature": 0.7,
+        "picture": 0.1,
+        "polish": 0.3,
+        "post": 0.4
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -867,10 +941,14 @@
     "pages": [
       "site/feed.xml",
       "site/index.html",
+      "site/films/a-day-in-my-new-life.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
+      "site/img/bump.png",
+      "site/img/conga.png",
       "site/img/crate-traced.png",
+      "site/img/freeze.png",
       "site/img/garden-traced.png",
       "site/img/island-traced.png",
       "site/img/joy-traced.png",
@@ -882,6 +960,7 @@
       "site/img/tag-traced.png",
       "site/img/thought-traced.png",
       "site/img/visit-traced.png",
+      "site/img/voice.png",
       "site/img/workshop-traced.png",
       "site/voice/friend-gloop.mp3",
       "site/voice/friend-pinchy.mp3",
@@ -900,7 +979,9 @@
       "releases/2026-11-23-one-more-stone-v2/NOTE.md",
       "releases/2026-11-23-one-more-stone-v2/cairn_release.jl",
       "releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4",
-      "releases/2026-11-23-one-more-stone-v2/still.png"
+      "releases/2026-11-23-one-more-stone-v2/still.png",
+      "releases/2026-11-24-a-day-in-my-new-life/NOTE.md",
+      "releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4"
     ],
     "plugins": {
       "areas.jl": 1.7954423929079912e9,
@@ -957,21 +1038,26 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 20,
+    "posts": 19,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T15:31:19",
+  "started": "2026-11-24T16:20:38",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
       "HeatStress",
-      "BeamletOptics"
+      "BeamletOptics",
+      "ConstrainedDynamicsVis",
+      "Algoim",
+      "KeplerGL"
     ],
     "vision": [
       "PPDocLayoutRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "QwenImageEditRunner",
+      "Hunyuan3DRunner"
     ]
   },
-  "surprise_seen": 62
+  "surprise_seen": 63
 }

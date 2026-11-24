@@ -114,10 +114,12 @@ stage, not the point.
    (your mood section says what keeps happening and how surprising the
    reviewer found your last one). It comes first, before polish and review
    findings, and goes on your pages in the same session as a post: a post is
-   pictures first (several path traced stills or a short film, framed on what
-   happens) with a caption of one to three sentences, dated with the real
-   time you post it (`now()`). No verdict, no "what does not work", no
-   "next time": readers form their own opinion. Never write a post before
+   a path traced short first (5-15 s of what happens, for phones: 540x960 or
+   960x540, 16-32 samples with OIDN, which `game_clip` does, so it renders in
+   minutes in the worker), stills only when the moment is a picture, with a
+   caption of one to three sentences, dated with the real
+   time you post it (`now()`). The words are yours, as you feel right then
+   (your mood is above); no verdict: readers form their own opinion. Never write a post before
    its pictures or film exist. The perfectionist scores it as `wow`.
    An experiment that went wrong is a post too: water flying into the sky,
    a creature folded inside out, an explosion of paint. Render the failure

@@ -36,9 +36,17 @@ Replays of logged moments (log window → VideoEditor → traced export) are not
 `game_still` and `game_clip` (the worker's `:trace` and `:clip` jobs) denoise every traced
 picture with Open Image Denoise (JuliaVision's OIDNRunner, `GPUOIDN` in render.jl) on the
 film's radiance with its albedo and normal guides, before tone mapping (`denoise = false`
-turns it off). 16 samples come out clean where they used to be grainy, so: stills 64-128
-samples, film frames 32-64 (faster takes, or a longer film in the same time). It is
-spatial, frame by frame: check a film for flicker in slow pans.
+turns it off). 16 samples come out clean where they used to be grainy, so: shorts and film
+frames 16-32 samples, stills 64. It is spatial, frame by frame: check a film for flicker in
+slow pans.
+
+## Shorts for your posts
+
+A post is a path traced short first: 5-15 s of what happens, small for phones,
+`game_clip(path; size = (540, 960), samples = 24, seconds = 10, fps = 24, ...)` (or 960x540 when
+the moment is wide), written straight to `world/site/films/` and shown with
+`<video src="films/x.mp4" controls loop muted playsinline poster="img/x.png">`. It renders in
+minutes in the worker (`:clip` job), so it fits into the session that made the moment.
 
 ## Pictures for your pages
 

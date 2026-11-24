@@ -5033,12 +5033,12 @@
       "id": 360,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "s64: a feeling's stance (:feel goal) no longer blocks the patch (garden.jl) or Lumi joining tag (tag.jl): both accept :feel as interruptible. Sandbox, mood proud (Lumi was in 'feel proud' when it failed before the fix): 'Lumi's vegetable patch' passed, 'Tag: Lumi (nobody steering it) runs over and joins' passed (both failed with 'goal feel' just before). Lookout bench passed. Published.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Bored but busy: a bored Lumi's sighing ('feel' goal) blocks the patch, the bench and tag",
-      "updated": "2026-11-24T12:20:28.308"
+      "updated": "2026-11-24T16:39:36.849"
     },
     {
       "created": "2026-11-24T12:21:40.672",
@@ -5201,12 +5201,12 @@
       "id": 372,
       "kind": "fix",
       "priority": 1,
-      "result": "s60: new hello as Lumi (KokoroRunner am_puck, 10.4 s, pronounce Lumi => lˈumi) in site/voice/hello.mp3/.ogg (old ones kept as hello-sprout.*); Whisper heard: \"Hello, I'm Lumi the big golden bird with the spiky crest, I used to be Sprout but the human gave me a new name...\". Still open: the four play tests that failed in the sandbox (patch, bench, ball kick, flower pick).\ns61: also failing, before and after s61's hideseek edit: 'Hide and seek ... first play with only W/A/D finds 2' -> found friends lag [13.7, 2.1] m 2 s after the second find (the FIRST found friend stays far behind).\ns61: 'After a publish Lumi carries a crate...' failed twice with different checks (friend still watching / no crate, Lumi's goal eat during :work) with and without s61's builder edit.",
+      "result": "s60: new hello as Lumi (KokoroRunner am_puck, 10.4 s, pronounce Lumi => lˈumi) in site/voice/hello.mp3/.ogg (old ones kept as hello-sprout.*); Whisper heard: \"Hello, I'm Lumi the big golden bird with the spiky crest, I used to be Sprout but the human gave me a new name...\". Still open: the four play tests that failed in the sandbox (patch, bench, ball kick, flower pick).\ns61: also failing, before and after s61's hideseek edit: 'Hide and seek ... first play with only W/A/D finds 2' -> found friends lag [13.7, 2.1] m 2 s after the second find (the FIRST found friend stays far behind).\ns61: 'After a publish Lumi carries a crate...' failed twice with different checks (friend still watching / no crate, Lumi's goal eat during :work) with and without s61's builder edit.\ns64 sandbox: patch, bench, flower pick (E by a flower) and tag-join pass. Ball kick and 'Tag: critters play' failed because a Big Boing party started before the test kept every critter on the toadstool; boing.jl now ends a running party when a test starts ('test'). Re-run: both pass. Published.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Play tests that broke at the rename: patch, bench, ball kick, flower pick, publish",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T16:39:36.852"
     },
     {
       "created": "2026-11-24T12:52:29.709",
@@ -5448,7 +5448,7 @@
     },
     {
       "created": "2026-11-24T15:56:22.578",
-      "detail": "Wish 'My voice in the game itself' (WISHES.md). Kokoro am_puck clips (short, few) for Lumi's hop, sulk, proud; a squeak per species on boing. Play them in the dashboard page (Bonito, the human's browser), only when the camera is near. Done when: a browser test (tests/browser/drive.mjs) records an audio element playing on a boing, and the human can hear it.",
+      "detail": "Wish 'My voice in the game itself' (WISHES.md). Kokoro am_puck clips (short, few) for Lumi's hop, sulk, proud; a squeak per species on boing. Play them in the dashboard page (Bonito, the human's browser), only when the camera is near. Done when: a browser test (tests/browser/drive.mjs) records an audio element playing on a boing, and the human can hear it. s64: first candidate, the Big Sneeze's 'ah... ah... AH-CHOOOO!' (sneeze.jl emits :sneeze_windup and :sneeze): one Kokoro clip, played when the wind-up starts. Where: web.jl serve_web! builds the page as `Bonito.App(() -> fig)`; return `DOM.div(fig, sound_player)` with a Bonito Observable{String} of clip urls (site/voice is served at /lumi/voice/) and a js onchange that does `new Audio(url).play()` (autoplay is allowed after the Play click). Changing the App needs a game restart: batch it.",
       "est_minutes": 15.0,
       "id": 390,
       "kind": "feature",
@@ -5467,12 +5467,54 @@
       "id": 391,
       "kind": "polish",
       "priority": 2,
+      "result": "s64: post_stills.jl open_meadow now keeps 6 m from the lookout bench and 6.5 m from the patch fence (plugin plots, not props). Re-traced in the worker at 128 spp with absolute paths (jobs 20261124-165116-940/-943): site/img/conga.png shows Lumi leading Pinchy, Cumulus, Gloop, Truffle and Wibbles in the open meadow, every one uncovered and > 1/20 of the frame; site/img/freeze.png shows the five statues and Lumi, none covered (Lumi at the right edge). Same file names, the posts are unchanged.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Better blog pictures: re-stage the conga and FREEZE! stills in the open meadow",
+      "updated": "2026-11-24T16:55:09.451"
+    },
+    {
+      "created": "2026-11-24T16:22:52.661",
+      "detail": "UndefRefError: access to undefined reference\nStacktrace:\n  [1] getproperty\n    @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:941 [inlined]\n  [2] store!(node::ComputePipeline.Computed, value::Any)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1318\n  [3] macro expansion\n    @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:792 [inlined]\n  [4] macro expansion\n    @ ./lock.jl:376 [inlined]\n  [5] setindex!(computed::ComputePipeline.Computed, value::Any)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:791\n  [6] draw_feathers!(s::Main.Plugin_sneeze.Sneeze, w::NeverendingGame.World)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:66\n  [7] step!(s::Main.Plugin_sneeze.Sneeze, game::Game, dt::Float64)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:287\n  [8] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [10] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [11] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [12] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [13] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [14] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [15] top-level scope\n    @ none:1\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [18] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 392,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T16:23:33.565: plugin sneeze loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:sneeze.Sneeze failed in step! and was switched off",
+      "updated": "2026-11-24T16:23:33.565"
+    },
+    {
+      "created": "2026-11-24T16:36:09.579",
+      "detail": "Stunt s64: plugins/sneeze.jl. Every 6-10 min by day Lumi winds up (ah... ah...), sneezes a storm of 140 golden feathers, friends within 9.5 m are blown back in arcs, land dizzy, shout bless you and run to collect feathers. X sneezes when jumped in.",
+      "est_minutes": 15.0,
+      "id": 393,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Sandbox events 16:28: sneeze_windup n=6 (Gloop, Wibbles, Hopscotch, Marshmallow, Truffle, Sir Sniffsalot), sneeze n=6, 6 sneeze_landed, 3 sneeze_feather (Marshmallow, Hopscotch, Wibbles), sneeze_end. Play test 'Sneeze: jumped in as Lumi, X sneezes' passes (tests/shots/sneeze-player.png: feathers on the grass, hint 'X sneeze'). Frame p95 6.1 ms, sneeze system 0.0 ms. Traced stills site/img/big-sneeze.png, big-sneeze-after.png (128 spp, worker), post 'AH-CHOOOO!'. Published.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The Big Sneeze: Lumi sneezes the friends off their feet",
+      "updated": "2026-11-24T16:36:14.810"
+    },
+    {
+      "created": "2026-11-24T16:40:06.835",
+      "detail": "s64 follow-up (self): after the Big Sneeze (plugins/sneeze.jl) Lumi stands there plucked: crest flat, a few feathers missing (bird.jl crest/wing parts scaled down for ~2 min, the shy face), and grows them back with a shake. Friends who caught a feather wear it upright on the head (S[:worn], 25 min). Done when: a sandbox screenshot right after a sneeze shows Lumi visibly plucked, and one 2 min later shows it fluffed again.",
+      "est_minutes": 15.0,
+      "id": 394,
+      "kind": "feature",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Better blog pictures: re-stage the conga and FREEZE! stills in the open meadow",
-      "updated": "2026-11-24T16:13:08.107"
+      "title": "Bless you, plucked Lumi: after a sneeze I look bald for a while",
+      "updated": "2026-11-24T16:40:06.835"
     }
   ]
 }

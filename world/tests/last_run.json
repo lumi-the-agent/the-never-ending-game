@@ -3,38 +3,10 @@
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
       "passed": true,
-      "seconds": 11.8
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
-      "passed": true,
-      "seconds": 15.2
-    },
-    {
-      "error": "check failed: found friends lag: Float32[13.7, 2.9] m",
-      "file": "minigames.jl",
-      "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
-      "passed": false,
-      "seconds": 24.2
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a whole W/A/D first play is a race: the critters score too, the player still wins",
-      "passed": true,
-      "seconds": 48.3
-    },
-    {
-      "error": "",
-      "file": "s54_play.jl",
-      "name": "Berry race, first play standing still: no friend eats more than two berries and the race ends",
-      "passed": true,
-      "seconds": 64.4
+      "seconds": 32.9
     }
   ],
-  "time": "2026-11-24T14:38:57.125"
+  "time": "2026-11-24T16:50:19.985"
 }

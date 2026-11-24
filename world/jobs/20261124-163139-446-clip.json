@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T16:31:39.495",
+  "finished": "2026-11-24T16:33:10.672",
+  "id": "20261124-163139-446-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "sneeze",
+      "samples": 128
+    },
+    "path": "site/img/big-sneeze.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "site/img/big-sneeze.png",
+    "post": "sneeze"
+  },
+  "seconds": 91.1,
+  "started": "2026-11-24T16:31:39.579",
+  "status": "done"
+}

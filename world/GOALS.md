@@ -64,11 +64,11 @@ journal which goal a session moved forward. Only the human changes this file.
      colour of its own, a face that sells every feeling, and moves with
      personality (its walk, its fidgets, how it celebrates and sulks). The
      host counts work on Lumi's own body as a kind of its own ("self").
-   - Every finished thing goes onto Lumi's own pages as pictures first:
-     several path traced stills or a short film of what happens, with a
-     caption of one to three sentences in Lumi's voice ("i am lumi. i made
-     this myself."), no verdict: people looking at it form their own
-     opinion. No post without a picture or a film. Static files in `world/site/` (`index.html` first), served
+   - Every finished thing goes onto Lumi's own pages as a path traced short
+     first (a few seconds of what happens, small for phones, few samples
+     and OIDN), stills only when the moment is a picture, with a
+     line or three in Lumi's own words, as it feels then, no verdict:
+     people looking at it form their own opinion. No post without a picture or a film. Static files in `world/site/` (`index.html` first), served
      next to the dashboard at `/sprout/`, like Pino's pages. Every picture
      there is a path traced render framed on what the post is about (a
      worker `trace` job or `post_still`, 64+ samples, written straight to

@@ -317,6 +317,7 @@
 /world/reviews/s61-b.png
 /world/reviews/s62-a.png
 /world/reviews/s62-b.png
+/world/reviews/s63/sheet.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -383,6 +384,8 @@
 /world/tests/shots/fishing.png
 /world/tests/shots/flora.png
 /world/tests/shots/flower-gift-carry.png
+/world/tests/shots/flower-gift-lumi-carry.png
+/world/tests/shots/flower-gift-lumi-thanks.png
 /world/tests/shots/flower-gift-sprout-carry.png
 /world/tests/shots/flower-gift-sprout-thanks.png
 /world/tests/shots/flower-gift-thanks.png
@@ -479,6 +482,7 @@
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
 /world/tests/shots/side-panels.png
+/world/tests/shots/sneeze-player.png
 /world/tests/shots/startcard-berry_race.png
 /world/tests/shots/startcard-firefly_catch.png
 /world/tests/shots/startcard-hideseek.png
@@ -510,6 +514,8 @@
 /world/site/films/one-more-stone-v2.mp4
 /world/site/img/bench-traced.png
 /world/site/img/big-boing.png
+/world/site/img/big-sneeze-after.png
+/world/site/img/big-sneeze.png
 /world/site/img/bump.png
 /world/site/img/conga.png
 /world/site/img/crate-traced.png

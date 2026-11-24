@@ -19,6 +19,8 @@ function open_meadow(w)
         m = min(m, minimum(a -> a isa NG.AssetActor ? flatd(a.pos, (x, y)) - 2f0 * a.scale - 2f0 : 99f0, w.actors; init = 99f0))
         # the Big Boing toadstool (s62, a plugin plot, not an actor) took the open meadow
         isdefined(Main, :BOING) && haskey(Main.BOING, :center) && (m = min(m, flatd(Main.BOING[:center], (x, y)) - 8f0))
+        # the lookout bench and the vegetable patch with its fence (plugin plots) stood in front of the s63 conga
+        m = min(m, flatd((-16f0, 9f0), (x, y)) - 6f0, flatd((-10.5f0, 10f0), (x, y)) - 6.5f0)
         m > bd && (bd = m; best = (x, y))
     end
     return best
@@ -38,7 +40,9 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "feelings" => ("Pickles", "Wibbles", "Truffle", "Lumi"),
                   "freeze" => ("Wibbles", "Truffle", "Cumulus", "Pinchy", "Gloop", "Lumi"),
                   "conga" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Cumulus", "Pinchy"),
-                  "voice" => ("Lumi", "Gloop"), "bump" => ("Lumi",))
+                  "voice" => ("Lumi", "Gloop"), "bump" => ("Lumi",),
+                  "sneeze" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
+                  "sneeze2" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -258,6 +262,34 @@ function setup_post!(g, post)
         NG.say!(w, by_name(w, "Lumi"), "Hello!"; duration = 10)
         c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
         return c + Point3f(0.6f0, -3.4f0, 1.7f0), c + Point3f(0, 0, 0.8f0)
+    elseif post == "sneeze" || post == "sneeze2"   # s64 the Big Sneeze: friends blown head over heels in a storm of golden feathers
+        x, y = open_meadow(w)
+        sn = plugin(g, "sneeze")
+        S = Main.SNEEZE[:sys]
+        me = pose!(w, by_name(w, "Lumi"), (x, y + 0.6f0), -pi / 2, post == "sneeze" ? :proud : :shy; phase = 0.35f0)
+        Base.invokelatest(sn.burst!, S, w, me)
+        T = post == "sneeze" ? 0.5 : 4.0
+        for _ in 1:round(Int, 30T)
+            w.t += 1 / 30
+            Base.invokelatest(sn.fly_feathers!, S, w, 1 / 30)
+        end
+        Base.invokelatest(sn.draw_feathers!, S, w)
+        names = ("Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus")
+        angs = (-2.2f0, -1.05f0, 0.0f0, pi - 0.2f0, 0.95f0)
+        for (k, n) in enumerate(names)
+            a = angs[k]
+            if post == "sneeze"   # mid-air, spinning backwards
+                r = 2.2f0 + 0.5f0 * k % 3
+                c = pose!(w, by_name(w, n), (x + r * cos(a), y + 0.6f0 + r * sin(a)), a + pi + 0.9f0 * sin(5k), :scared; phase = 0.2f0 * k)
+                c.pos += Point3f(0, 0, 0.5f0 + 0.35f0 * (k % 3))
+            else                  # landed among the feathers: dizzy, one proudly holding its find
+                r = 3.6f0 + 0.4f0 * (k % 2)
+                act = (:laugh, :gasp, :proud, :laugh, :gasp)[k]
+                pose!(w, by_name(w, n), (x + r * cos(a), y + 0.6f0 + r * sin(a)), a + pi, act; phase = 0.3f0)
+            end
+        end
+        c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
+        return c + Point3f(0.5f0, -7.4f0, 2.6f0), c + Point3f(0, 0.6f0, 1.3f0)
     elseif post == "bump"         # "Oof! Something's in the way": Lumi walked nose first into a big bush
         best = nothing; bd = 99f0
         for p in w.props

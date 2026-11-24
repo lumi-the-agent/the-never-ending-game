@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T16:44:48.028",
+  "finished": "2026-11-24T16:48:01.520",
+  "id": "20261124-164448-028-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "sneeze2",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/big-sneeze-after.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/big-sneeze-after.png",
+    "post": "sneeze2"
+  },
+  "seconds": 98.1,
+  "started": "2026-11-24T16:46:23.435",
+  "status": "done"
+}

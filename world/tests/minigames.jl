@@ -1455,3 +1455,28 @@ uitest("Berry race: a whole W/A/D first play is a race: the critters score too, 
     total0 == 0 && foreach(a -> NeverendingGame.despawn!(game.world, a),
                            filter(a -> a isa NeverendingGame.AssetActor && a.asset == mod.BASKET_ASSET, game.world.actors))
 end
+
+uitest("Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet") do game
+    NG = NeverendingGame
+    w = game.world
+    game.minigame === nothing || fly_click(game, "Stop")
+    game.dash.play_menu.i_selected[] = 0
+    wait_frames(game, 2)
+    fly_click(game, "Play")
+    check(game.minigame isa NG.JumpIn, "Play did not jump in")
+    me = creature(w, "Lumi")
+    S = Main.SNEEZE[:sys]
+    S.state === :idle || wait_seconds(game, 25.0)
+    near0 = [(c.name, c.goal.kind, round(hypot(c.pos[1] - me.pos[1], c.pos[2] - me.pos[2]); digits = 1)) for c in w.creatures if c !== me]
+    p0 = Dict(c.id => c.pos for c in w.creatures)
+    interact!(game, [KeyPress(Keyboard.x; duration = 0.3)])
+    check(S.state !== :idle, "X did not start a sneeze (state $(S.state))")
+    check(any(s -> s.who == me.id && occursin("ah", lowercase(s.text)), w.speech), "Lumi did not say ah...: $([s.text for s in w.speech if s.who == me.id])")
+    wait_seconds(game, 5.0)
+    check(any(s -> s.who == me.id && (occursin("CHOO", s.text) || occursin("oops", s.text)), w.speech) || S.state !== :wind,
+          "no AH-CHOO after 5 s (state $(S.state))")
+    blown = [c.name for c in w.creatures if c.id in S.friends && hypot(c.pos[1] - p0[c.id][1], c.pos[2] - p0[c.id][2]) > 1.0]
+    check(length(blown) == length(S.friends), "friends in reach $(S.friends) but only $(blown) were blown away; before: $(near0)")
+    screenshot(game, "sneeze-player")
+    fly_click(game, "Stop")
+end

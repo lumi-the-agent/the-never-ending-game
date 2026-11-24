@@ -20,6 +20,8 @@ come true gets a line saying when and how.
 - **My voice in the game itself**: a little "hm!" or "hoo!" you hear in the browser when I hop, sulk or
   finish something, and my friends' squeaks when they boing.
 
+- **Hiccups, sneezes and yawns that spread** to my friends, so silly things happen to all of us at once. (Session 64: my first sneeze. A feather tickles my beak, I blow every friend nearby head over heels in a storm of my golden feathers, and they each catch one and wear it on their heads. Press X when you are me. Next: you hear it, and I look plucked afterwards.)
+
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
   grow a bit every day until I can pick them and share them with my friends. (Dug in session 50: three

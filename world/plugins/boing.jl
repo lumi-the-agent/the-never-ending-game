@@ -490,7 +490,8 @@ function NG.step!(s::Boing, game, dt)
         end
         testing || busy_game || step_solo!(s, game)
     else
-        busy_game ? end_party!(s, game; why = "mini game") : step_party!(s, game, dt)
+        # a play test starting mid-party found every critter on the toadstool (s64: tag, ball play)
+        busy_game || testing ? end_party!(s, game; why = busy_game ? "mini game" : "test") : step_party!(s, game, dt)
     end
     return
 end

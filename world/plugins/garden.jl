@@ -278,7 +278,7 @@ function tend!(game)
     w.t < get(Main.GARDEN, :next_tend, 0.0) && return
     Main.GARDEN[:next_tend] = w.t + TEND_EVERY
     # only a free, awake Lumi by day, with no game on and nobody steering it
-    game.minigame === nothing && !me.controlled && me.action !== :sleep && me.goal.kind ∉ NG.BUSY_GOALS &&
+    game.minigame === nothing && !me.controlled && me.action !== :sleep && (me.goal.kind ∉ NG.BUSY_GOALS || me.goal.kind === :feel) &&   # a feeling's stance is no reason to skip the patch (s64, #360)
         me.goal.kind !== :seek_friend &&     # on the way to a friend it misses (feelings.jl): the patch waits (s51 suite)
         NG.night_factor(w) < 0.3f0 || return
     NG.leave_interactions!(w, me)
