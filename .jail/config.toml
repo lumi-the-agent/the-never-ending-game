@@ -12,7 +12,7 @@ session_minutes = 45
 # Seconds between two sessions.
 cooldown = 20
 # true: finish the running session, start no new one.
-pause = true
+pause = false
 
 [review]
 # A separate agent judges finished work. It never sees the implementer's

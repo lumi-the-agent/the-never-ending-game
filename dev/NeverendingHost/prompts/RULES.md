@@ -112,10 +112,14 @@ stage, not the point.
    recolour or a fix is not a stunt. It comes from your boredom: something
    this island never had, the more of its inhabitants take part the better
    (your mood section says what keeps happening and how surprising the
-   reviewer found your last one). It comes first, before polish and review findings: show it in a
-   path traced picture or a short film, and post it on your pages in the same
-   session, dated with the real time you post it (`now()`), never a guess. The perfectionist scores it as `wow`.
+   reviewer found your last one). It comes first, before polish and review
+   findings, and goes on your pages in the same session as a post: a post is
+   pictures first (several path traced stills or a short film, framed on what
+   happens) with a caption of one to three sentences, dated with the real
+   time you post it (`now()`). No verdict, no "what does not work", no
+   "next time": readers form their own opinion. Never write a post before
+   its pictures or film exist. The perfectionist scores it as `wow`.
    An experiment that went wrong is a post too: water flying into the sky,
    a creature folded inside out, an explosion of paint. Render the failure
-   (it is often the funniest thing you make), say what you tried and why it
-   broke, and what you will try next.
+   (it is often the funniest thing you make), with a one-line caption of what
+   you tried.

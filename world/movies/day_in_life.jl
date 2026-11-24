@@ -30,6 +30,13 @@ function day_scene(path; hour = 9.0, rasterize = false, samples = 40, width = 96
                 o += 2f0 * max(0f0, 1.6f0 - hypot(c.pos[1] - e[1], c.pos[2] - e[2]))
                 o += max(0f0, 0.9f0 - NG.segment_distance(e, target, c.pos + Point3f(0, 0, 0.4f0)))
             end
+            # the pond's reeds (drawn by areas.jl, not props) stood across Lumi's legs in the
+            # s61 morning scene: any point of the sight line near the pond rim counts
+            pond, pr = Point2f(-5.5, 10.5), 2.3f0
+            for s in 0f0:0.1f0:0.9f0
+                q = e + s * (target - e)
+                abs(hypot(q[1] - pond[1], q[2] - pond[2]) - pr) < 0.5f0 && (o += 0.5f0)
+            end
             return o
         end
         cost(x) = NG.obstruction(w, view(x)...) + crowd(view(x)[1])

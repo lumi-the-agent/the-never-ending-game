@@ -49,12 +49,16 @@ function happenings(jp::JailPaths, from::DateTime, to::DateTime = Dates.now())
     return seen
 end
 
-"Every kind of happening the island ever had: from the mood, else from the whole event log."
-function happened_ever!(jp::JailPaths, m::AbstractDict)
+"""
+Every kind of happening the island had before `until`: from the mood, else from the event log up
+to `until` (a session's own events are not history yet; Lumi found that in session 62, when the
+list was first built mid-session and its four new happenings counted as old).
+"""
+function happened_ever!(jp::JailPaths, m::AbstractDict, until::DateTime)
     haskey(m, "happened") && return m["happened"]
     files = filter(f -> startswith(f, "events-") && endswith(f, ".jsonl"), readdir(joinpath(jp.world, "log")))
     first_day = isempty(files) ? Dates.today() : Date(minimum(files)[8:17])
-    m["happened"] = sort!(collect(keys(happenings(jp, DateTime(first_day)))))
+    m["happened"] = sort!(collect(keys(happenings(jp, DateTime(first_day), until))))
     return m["happened"]
 end
 
@@ -63,7 +67,7 @@ ease(new::AbstractVector) = min(0.6, sum(h -> 0.15 + 0.05 * min(h["who"], 6), ne
 
 "The happenings since `from` the island never had: kind and how many took part, most first."
 function new_happenings(jp::JailPaths, m::AbstractDict, from::DateTime)
-    ever = Set(happened_ever!(jp, m))
+    ever = Set(happened_ever!(jp, m, from))
     new = [Dict{String,Any}("kind" => k, "who" => length(unique(w))) for (k, w) in happenings(jp, from) if !(k in ever)]
     return sort!(new; by = h -> -h["who"])
 end
@@ -154,7 +158,7 @@ const KINDS = Dict(
     "picture" => (1.0, "path traced pictures of a moment for your pages"),
     "film"    => (6.0, "a film: a VideoEditor project with cameras, path traced (make-movie)"),
     "sound"   => (4.0, "sound: your voice telling a story, music, the island's noises (Kokoro and the other voice models)"),
-    "post"    => (2.0, "a new post on your pages, with your verdict"),
+    "post"    => (2.0, "a new post on your pages: path traced pictures or a film, a caption of one to three sentences"),
     "wish"    => (3.0, "a wish from WISHES.md come true"),
     "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 4)"),
 )
@@ -371,6 +375,7 @@ function mood_session_start!(jp::JailPaths, contact::Bool)
     m["loneliness"] = round(clamp(hours / 12, 0, 1); digits = 2)
     m["start"] = garden_snapshot(jp)
     m["started"] = now_string()
+    happened_ever!(jp, m, DateTime(m["started"]))       # the history, before this session's events
     feel_surprise!(jp, m)
     return save_mood!(jp, m)
 end

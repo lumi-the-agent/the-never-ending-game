@@ -86,32 +86,74 @@ function site_followup(jp::JailPaths, run)
            "render now comes off the page. $(round(Int, left)) minutes are left."
 end
 
-# ── every session posts its stunt ───────────────────────────────────────────
+# ── posts: pictures first ───────────────────────────────────────────────────
+#
+# A post is pictures or a film with a caption of one to three sentences, no
+# verdict (RULES 14): readers form their own opinion. Every session posts its
+# stunt; a post without a picture or a film, or a long one, is sent back to the
+# character while the session runs (`post_problems`), so it never goes out so.
 
-"When the newest post on the character's front page was made (its `<span class=\"date\">`), or `nothing`."
-function newest_post(jp::JailPaths)
+"A post on the character's front page: `<div class=\"piece\" id=\"...\">`, with no divs inside."
+const PIECE = r"<div class=\"piece\" id=\"([^\"]+)\">(.*?)</div>\s*"s
+
+"The pictures, films and sounds a post (or a page) shows, as paths below world/site."
+post_media(html::AbstractString) =
+    [String(m[1]) for m in eachmatch(r"<(?:img|video|source)\b[^>]*\ssrc=\"([^\"]+)\"", html) if !occursin("://", m[1])]
+
+"What a post shows that is not there yet (a render still in the worker)."
+missing_media(jp::JailPaths, html::AbstractString) = filter(f -> !isfile(joinpath(site_dir(jp), f)), post_media(html))
+
+"A post's words, its date and the reply link aside."
+caption_words(piece::AbstractString) =
+    length(split(replace(piece, r"<span class=\"date\">[^<]*</span>" => " ", r"<a [^>]*>[^<]*</a>" => " ", r"<[^>]+>" => " ")))
+
+"How long a caption may be."
+const CAPTION_WORDS = 60
+
+"""
+    session_posts(jp, since) -> Vector
+
+The posts dated `since` (unix time) or later: id, whether it has a picture or film, its words.
+"""
+function session_posts(jp::JailPaths, since::Real)
     page = joinpath(site_dir(jp), "index.html")
-    isfile(page) || return nothing
-    times = [DateTime(m[1], dateformat"d U yyyy, H:M")
-             for m in eachmatch(r"<span class=\"date\">(\d{1,2} \w+ \d{4}, \d{1,2}:\d{2})</span>", read(page, String))]
-    return isempty(times) ? nothing : maximum(times)
+    isfile(page) || return NamedTuple[]
+    posts = NamedTuple[]
+    for m in eachmatch(PIECE, read(page, String))
+        d = match(r"<span class=\"date\">(\d{1,2} \w+ \d{4}, \d{1,2}:\d{2})</span>", m[2])
+        d === nothing && continue
+        datetime2unix(DateTime(d[1], dateformat"d U yyyy, H:M")) - local_utc_offset() >= since - 60 || continue
+        media = post_media(m[2])
+        missing = missing_media(jp, m[2])
+        push!(posts, (id = m[1], media = length(media) > length(missing), missing, words = caption_words(m[2])))
+    end
+    return posts
 end
 
-"Whether the character posted since the session `run` started."
-function posted_since(jp::JailPaths, run)
-    t = newest_post(jp)
-    return t !== nothing && datetime2unix(t) - local_utc_offset() >= run.started - 60
+"What is wrong with this session's posts, or `nothing`: none yet, one without a picture or film, one too long."
+function post_problems(jp::JailPaths, run)
+    posts = session_posts(jp, run.started)
+    isempty(posts) && return "Nothing new on your pages this session yet: your stunt (rule 14) goes out as a post, " *
+                             "path traced pictures or a short film with a caption of one to three sentences, dated with the real time."
+    bare = [p.id for p in posts if !p.media]
+    isempty(bare) || return "Your post(s) $(join(bare, ", ")) have no picture or film that exists, and a post never goes out " *
+                            "without one. Render it first (path traced stills or a film), then write the post."
+    early = [p for p in posts if !isempty(p.missing)]
+    isempty(early) || return "Your post(s) " * join(("$(p.id) (shows $(join(p.missing, ", ")), not rendered yet)" for p in early), ", ") *
+                             ": write a post only once its pictures exist; until then they show as broken images."
+    long = [p for p in posts if p.words > CAPTION_WORDS]
+    isempty(long) || return "Your post(s) " * join(("$(p.id) ($(p.words) words)" for p in long), ", ") *
+                            " are too long: a caption is one to three sentences, no verdict; let the pictures tell it."
+    return nothing
 end
 
-const POST_NUDGE = "Nothing new on your pages this session yet: your stunt (rule 14) goes out as a post, with a path traced " *
-                   "picture or a short film and its date and time."
-
-"Sent instead of `keep_going` while the session has posted nothing."
+"Sent instead of `keep_going` while this session's posts are missing or not right yet."
 function post_followup(jp::JailPaths, run)
-    posted_since(jp, run) && return nothing
+    problem = post_problems(jp, run)
+    problem === nothing && return nothing
     left = (run.deadline - time()) / 60
     (left > 8 && run.wrap_up_since == 0) || return nothing
-    return POST_NUDGE * " Make it now; $(round(Int, left)) minutes are left."
+    return problem * " $(round(Int, left)) minutes are left."
 end
 
 # ── the blog on GitHub ──────────────────────────────────────────────────────
@@ -137,12 +179,27 @@ function add_header!(page::AbstractString, jp::JailPaths, cfg::HostConfig)
 end
 
 """
+Whether the character's front page goes out now, during the session: it changed since it was last
+published or a picture it shows arrived since (renders come from the worker), it was left alone
+for `settle` seconds (a post is written in several edits), and everything it shows exists.
+"""
+function pages_settled(jp::JailPaths; settle::Real = 60)
+    src, dst = joinpath(site_dir(jp), "index.html"), joinpath(blog_dir(jp), "index.html")
+    isfile(src) || return false
+    html = read(src, String)
+    isempty(missing_media(jp, html)) || return false
+    time() - mtime(src) > settle || return false
+    !isfile(dst) && return true
+    return mtime(src) > mtime(dst) || any(f -> !isfile(joinpath(blog_dir(jp), f)), post_media(html))
+end
+
+"""
     publish_blog!(host, n)
 
 The character's pages (world/site) on its GitHub Pages site (`cfg.blog_repo`, `owner/name`),
-after each session. The host publishes, not the agent: the token stays outside every jail, so
+as soon as a post is written (`pages_settled`, checked while a session runs) and after each session. The host publishes, not the agent: the token stays outside every jail, so
 the character cannot post or comment anywhere, and its blog is its only public voice (RULES
-12). The working copy mirrors world/site; a session that changed the pages is one commit.
+12). The working copy mirrors world/site; each publishing that changed the pages is one commit.
 """
 function publish_blog!(host, n::Int)
     jp, repo = host.jp, host.cfg.blog_repo
@@ -158,7 +215,7 @@ function publish_blog!(host, n::Int)
     isempty(read(git("status", "--porcelain"), String)) && return nothing
     name = character_name(jp)
     run(git("-c", "user.name=$name", "-c", "user.email=$(host.cfg.github_email)", "commit", "-q", "-m",
-            "$(name)'s pages after session $n"))
+            "$(name)'s pages, session $n"))
     run(git("push", "-q", "origin", "main"))
     record!(host.activity, "session $n", "host", "blog published to https://$(first(split(repo, '/'))).github.io")
     return nothing

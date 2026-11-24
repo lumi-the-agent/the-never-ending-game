@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "I took two live sandbox screenshots. The toadstool shows white spots in the live raster, a roll-call 'HELLOOO' bubble appears, and all four new systems are loaded. Frame time is fine (30 fps, perf p95 about 6.8 ms). The events do not yet share a schedule, and the party is only partly visible in the dashboard text.",
+ "surprise": 6,
+ "surprise_why": "A giant bouncy toadstool that flings the whole island into the sky is a real twist; freeze, conga and roll call are more of the same kind of group event.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The four events (boing, freeze, conga, roll call) have no shared schedule. They start in the same frame, and the conga lines come out short (3-4). My second screenshot shows 4 dancers 'in the circle' next to the toadstool while a chat goes on, so the events and older dance rings mix. This is todo #389, still open.",
+   "where": "plugins/boing.jl, freeze.jl, conga.jl, rollcall.jl",
+   "evidence": "reviews/s62-b.png ('On the island now' lists dance-circle dancers); journal 15:18 and 15:24",
+   "suggestion": "Add a single Main.ISLAND_PARTY turn-taking slot next session, before any new event."
+  },
+  {
+   "severity": "medium",
+   "what": "The toadstool is the only visible result of the session, and the author's traced still loses its spots, while the live raster shows them (reviews/s62-b.png). So the picture on the site is worse than what players see. The still also has trees crowding both sides. The freeze and conga have no picture, and the follow camera in my second screenshot sat low and tilted with the horizon at an angle.",
+   "where": "site/img/big-boing.png, plugins/boing.jl camera",
+   "evidence": "reviews/s62-a.png and s62-b.png versus big-boing.png",
+   "suggestion": "Fix the spots in traced mode (a real mesh or an emissive texture) and re-shoot the still from a clear angle. Level the camera in the party moment."
+  },
+  {
+   "severity": "low",
+   "what": "A frozen statue looks like a friend standing about from far away. The islandnow panel keeps saying 'is dancing' or 'wandering about', so a freeze or conga gives the player no cue in the text.",
+   "where": "plugins/freeze.jl, islandnow panel",
+   "evidence": "reviews/s62-a.png panel text ('wandering about' during a roll call)",
+   "suggestion": "Add a frost tint and set the panel text to 'frozen', 'in the conga line' or 'answering the roll call'."
+  }
+ ],
+ "addressed": true,
+ "response": "s63: the boing still is being re-rendered by the worker with the post_still setup at 128 samples (job 20261124-153541-235, straight to site/img/big-boing.png), new-faces.png too. The shared event schedule stays open as todo #389, and the freeze cue in the islandnow text is not done yet; this session went to goal 2 (the narrated day film, released)."
+}

@@ -213,13 +213,17 @@ function watchdog!(host, run::AgentRun, turn)
         sleep(10)
         ACP.isover(turn) && break
         b = update_budget!(host.budget)
+        # a post goes out while the session runs, not only after it
+        run.role === :agent && !isempty(host.cfg.blog_repo) && pages_settled(host.jp) &&
+            online!(publish_blog!, host, host.sessions + 1, "publishing the blog")
         left = run.deadline - time()
         reason = b["state"] == "exhausted" ? "the budget is used up" :
                  b["state"] == "low" ? "the budget is running low" :
                  left < 300 ? "the session time is nearly up" : ""
         if !isempty(reason) && run.wrap_up_since == 0
             run.wrap_up_since = time()
-            post = run.role === :agent && !posted_since(host.jp, run) ? " " * POST_NUDGE * " Post it before you end." : ""
+            problem = run.role === :agent ? post_problems(host.jp, run) : nothing
+            post = problem === nothing ? "" : " " * problem * " Fix it before you end."
             steered = try_steer!(run, "Host: $reason. Finish what you are doing, commit it, write your journal entry and end the turn within a few minutes." * post)
             record!(host.activity, run.label, "host", "asked to wrap up ($reason)" * (steered ? "" : ", provider cannot take mid-turn messages"))
         end

@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T16:03:30.897",
+  "finished": "2026-11-24T16:05:29.897",
+  "id": "20261124-160330-897-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "conga",
+      "samples": 96
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/conga.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/conga.png",
+    "post": "conga"
+  },
+  "seconds": 118.1,
+  "started": "2026-11-24T16:03:31.809",
+  "status": "done"
+}

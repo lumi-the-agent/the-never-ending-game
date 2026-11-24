@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T16:03:30.900",
+  "finished": "2026-11-24T16:07:25.403",
+  "id": "20261124-160330-900-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "freeze",
+      "samples": 96
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/freeze.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/freeze.png",
+    "post": "freeze"
+  },
+  "seconds": 115.5,
+  "started": "2026-11-24T16:05:29.899",
+  "status": "done"
+}

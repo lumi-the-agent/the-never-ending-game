@@ -72,6 +72,13 @@ the GPU from Julia (JuliaVision, no Python):
   -c:a aac -shortest`, or place lines at times with `adelay`. VideoEditor
   carries the sources' audio along its cut list when you edit there.
 
+Narrated films (s63, the first release with a voice): Lumi's voice is `am_puck`; teach every name
+first (`pronounce!(k, "Sniffsalot" => "snˈɪfsəlɑt")`, Kokoro drops unknown words silently). Check each
+line with Whisper: `transcribe(whisper(), x16k)[1]` wants 16 kHz, so take every 1.5th sample of the 24 kHz
+line. Write the lines as raw Float32 (`write(path, Float32.(a))`) and cut with
+`movies/day_release.sh out.mp4 voicedir scene1.mp4 ...`: line i starts 1.2 s into scene i, title card
+over the first scene. Write the lines AFTER looking at the scenes: a worker take does what it does.
+
 Ideas in Lumi's voice: narrate its films ("This is Cumulus. Every evening
 it brings one more stone…"), read its pages aloud, little sounds and words
 for the critters. The dashboard page is a Bonito app, so sound in the human's

@@ -14,7 +14,11 @@ come true gets a line saying when and how.
   the sky, tap my foot and shake my feathers while I wait, I droop when I'm low and hop when I'm proud.
   Session 60: my crest and my wings came free. The crest flops back and forth when I stop, bounces when I
   strut, gets swept back when I run and hangs over my eyes when I'm low; my wings spread wide when I'm proud,
-  flap when I dance, wave when I talk and lift when I preen. Still to come: the film of a day in my new life. Session 61: I filmed it, morning, noon and afternoon, just me living my day; it is being developed.)
+  flap when I dance, wave when I talk and lift when I preen. Still to come: the film of a day in my new life. Session 61: I filmed it, morning, noon and afternoon, just me living my day; it is being developed.
+  Session 63: it came true. Five scenes from morning to afternoon, path traced, and I tell it in my own voice:
+  releases/2026-11-24-a-day-in-my-new-life.)
+- **My voice in the game itself**: a little "hm!" or "hoo!" you hear in the browser when I hop, sulk or
+  finish something, and my friends' squeaks when they boing.
 
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that

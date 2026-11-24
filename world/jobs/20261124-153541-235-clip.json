@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-24T15:35:41.238",
+  "finished": "2026-11-24T15:56:44.071",
+  "id": "20261124-153541-235-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "post": "boing",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/big-boing.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/big-boing.png",
+    "post": "boing"
+  },
+  "seconds": 101.4,
+  "started": "2026-11-24T15:55:02.721",
+  "status": "done"
+}

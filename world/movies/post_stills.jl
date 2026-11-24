@@ -17,6 +17,8 @@ function open_meadow(w)
         NG.on_land(w.island, x, y; margin = 1f0) && NG.on_land(w.island, x - 3, y - 5; margin = 0.5f0) || continue
         m = minimum(p -> p.kind in (:tree, :bush, :rock) ? flatd(p.pos, (x, y)) - (p.kind === :tree ? 2.6f0 : 1f0) * p.scale - 3f0 : 99f0, w.props)
         m = min(m, minimum(a -> a isa NG.AssetActor ? flatd(a.pos, (x, y)) - 2f0 * a.scale - 2f0 : 99f0, w.actors; init = 99f0))
+        # the Big Boing toadstool (s62, a plugin plot, not an actor) took the open meadow
+        isdefined(Main, :BOING) && haskey(Main.BOING, :center) && (m = min(m, flatd(Main.BOING[:center], (x, y)) - 8f0))
         m > bd && (bd = m; best = (x, y))
     end
     return best
@@ -33,7 +35,10 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "sunset" => ("Lumi", "Wibbles", "Cumulus"), "presents" => ("Lumi", "Gloop"),
                   "joy" => ("Lumi", "Truffle", "Cumulus"), "crate" => ("Lumi",), "garden" => ("Lumi",), "thought" => ("Lumi",), "bench" => ("Wibbles", "Lumi", "Cumulus"),
                   "kite" => ("Lumi", "Wibbles", "Truffle"), "name" => ("Lumi",),
-                  "feelings" => ("Pickles", "Wibbles", "Truffle", "Lumi"))
+                  "feelings" => ("Pickles", "Wibbles", "Truffle", "Lumi"),
+                  "freeze" => ("Wibbles", "Truffle", "Cumulus", "Pinchy", "Gloop", "Lumi"),
+                  "conga" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Cumulus", "Pinchy"),
+                  "voice" => ("Lumi", "Gloop"), "bump" => ("Lumi",))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -225,6 +230,46 @@ function setup_post!(g, post)
         end
         c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
         return c + Point3f(0f0, -5.6f0, 1.3f0), c + Point3f(0, 0, 0.6f0)
+    elseif post == "freeze"       # s62 FREEZE!: friends stopped dead mid-dance, mid-wave, mid-hop, Lumi shouting in front
+        x, y = open_meadow(w)
+        poses = ((:jump, 0.45f0), (:wave, 0.3f0), (:dance, 0.2f0), (:wave, 0.7f0), (:dance, 0.6f0))
+        for (k, n) in enumerate(("Wibbles", "Truffle", "Cumulus", "Pinchy", "Gloop"))
+            a, ph = poses[k]
+            pose!(w, by_name(w, n), (x - 2.6f0 + 1.3f0 * (k - 1), y + 0.9f0 + 0.5f0 * sin(2k)), -pi / 2 + 0.4f0 * sin(3k), a; phase = ph)
+        end
+        k = by_name(w, "Wibbles"); k.pos += Point3f(0, 0, 0.35f0)        # caught in the air
+        pose!(w, by_name(w, "Lumi"), (x + 3.4f0, y - 0.2f0), pi - 0.3, :talk; phase = 0.3f0)
+        c = Point3f(x + 0.4f0, y, NG.ground(w.island, (x, y))[3])
+        return c + Point3f(0.4f0, -6.0f0, 2.3f0), c + Point3f(0, 0.4f0, 0.5f0)
+    elseif post == "conga"        # s62 conga: Lumi leads a curving line of dancing friends across the meadow
+        x, y = open_meadow(w)
+        names = ("Lumi", "Wibbles", "Truffle", "Gloop", "Cumulus", "Pinchy")
+        pts = [Point2f(x + 2.6f0 - 1.05f0 * k, y + 0.7f0 * sin(0.9f0 * k)) for k in 0:length(names)-1]
+        for (k, n) in enumerate(names)
+            p = pts[k]; q = k == 1 ? p + (p - pts[2]) : pts[k-1]
+            pose!(w, by_name(w, n), p, atan(q[2] - p[2], q[1] - p[1]), :dance; phase = 0.18f0 * k)
+        end
+        c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
+        return c + Point3f(0.2f0, -5.2f0, 2.2f0), c + Point3f(0, 0.3f0, 0.5f0)
+    elseif post == "voice"        # s49 my voice: Lumi talking, wings out, Gloop listening
+        x, y = open_meadow(w)
+        pose!(w, by_name(w, "Lumi"), (x - 0.5f0, y), -pi / 2 + 0.5, :talk; phase = 0.3f0)
+        pose!(w, by_name(w, "Gloop"), (x + 0.7f0, y + 0.2f0), pi - 0.3, :idle)
+        NG.say!(w, by_name(w, "Lumi"), "Hello!"; duration = 10)
+        c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
+        return c + Point3f(0.6f0, -3.4f0, 1.7f0), c + Point3f(0, 0, 0.8f0)
+    elseif post == "bump"         # "Oof! Something's in the way": Lumi walked nose first into a big bush
+        best = nothing; bd = 99f0
+        for p in w.props
+            p.kind === :bush && p.scale > 0.8f0 || continue
+            d = flatd(p.pos, (0, 0))
+            NG.on_land(w.island, p.pos[1], p.pos[2] - 5f0; margin = 0.5f0) && d < bd && (bd = d; best = p)
+        end
+        b = best
+        r = NG.SOLID_FOOTPRINT[:bush] * b.scale + 0.45f0
+        pose!(w, by_name(w, "Lumi"), (b.pos[1] + 0.3f0, b.pos[2] - r), pi / 2 + 0.15f0, :sulk; phase = 0.4f0)
+        c = by_name(w, "Lumi").pos
+        return c + Point3f(-2.4f0, -2.6f0, 1.0f0), c + Point3f(0.3f0, 0.4f0, 0.8f0)
     end
     if post == "boing"            # s62 the Big Boing: the whole island in a ring round the toadstool, three friends high in the air, Lumi highest
         B = Main.BOING

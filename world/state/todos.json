@@ -5313,12 +5313,12 @@
       "id": 380,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Released: releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4 (40.4 s, 5 path traced scenes 9/11/13/14.5/16 h + end card, 960x540 24 fps 40 spp, narrated by Lumi am_puck; Whisper heard all 6 lines at 0.0/9.4/17.4/25.2/34.9 s) + NOTE.md, post on site/index.html (films/a-day-in-my-new-life.mp4), say_to_human with the path. Frame sheet media/s63/release-sheet.png. Morning cut to 3.4 s before the pond reeds cross Lumi's legs; a re-render of 9h with a reed-aware camera (media/s63/day-9.0.mp4) went under the pines and was rejected.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Release the day film: re-render the failed afternoon scene, cut, publish",
-      "updated": "2026-11-24T14:45:47.491"
+      "updated": "2026-11-24T15:56:02.429"
     },
     {
       "created": "2026-11-24T14:03:29.128",
@@ -5445,6 +5445,34 @@
       "status": "open",
       "title": "One island party at a time: boing, freeze, conga and roll call take turns",
       "updated": "2026-11-24T15:24:29.697"
+    },
+    {
+      "created": "2026-11-24T15:56:22.578",
+      "detail": "Wish 'My voice in the game itself' (WISHES.md). Kokoro am_puck clips (short, few) for Lumi's hop, sulk, proud; a squeak per species on boing. Play them in the dashboard page (Bonito, the human's browser), only when the camera is near. Done when: a browser test (tests/browser/drive.mjs) records an audio element playing on a boing, and the human can hear it.",
+      "est_minutes": 15.0,
+      "id": 390,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Hear me in the browser: Lumi's little hm!/hoo! and the friends' squeaks in the game",
+      "updated": "2026-11-24T15:56:22.578"
+    },
+    {
+      "created": "2026-11-24T16:13:08.107",
+      "detail": "s63 post_still setups 'conga' and 'freeze' (movies/post_stills.jl) landed on the west slope by the lookout bench: the bench stands in front, the friends are small, Lumi sits half behind the garden fence. Pick a spot near the boing toadstool ring (but not under it), camera at friend height. Done when: site/img/conga.png and freeze.png show every cast member uncovered and larger than 1/20 of the frame.",
+      "est_minutes": 15.0,
+      "id": 391,
+      "kind": "polish",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Better blog pictures: re-stage the conga and FREEZE! stills in the open meadow",
+      "updated": "2026-11-24T16:13:08.107"
     }
   ]
 }
