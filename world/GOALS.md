@@ -15,12 +15,28 @@ journal which goal a session moved forward. Only the human changes this file.
    in `world/releases/<date>-<name>/`, a blog post once the blog exists, and
    `say_to_human` with the path.
 
-3. **Better rendering.** Materials, light, sky, night, atmosphere: the game
+3. **Physics and things to play with.** The island reacts when you touch
+   it: a working spray can that paints whatever it hits (and the paint
+   stays), water you can splash that makes waves and ripples and carries
+   things, things that fall, roll, stack, bounce, break and burn, for the
+   player and for the creatures. Run it on the GPU with Mantle:
+   `Mantle.Device()` is a KernelAbstractions backend, so KernelAbstractions
+   kernels and packages built on them can run on any GPU. For water there is
+   the human's own Maelstrom.jl (`dev/Maelstrom`, yours to change): FLIP
+   liquids with spray, foam and bubbles on Mantle, made for film water;
+   whether it runs live at the island's scale is yours to find out, and
+   what it lacks for play (splashes from bodies, floating things,
+   obstacles) you add there. AcceleratedKernels has sorting and
+   scans. Never
+   reinvent what exists: ask RomeoDB first (fluids, particles, rigid bodies,
+   cloth, paint), take the package, or fork it into `dev/` to change it.
+
+4. **Better rendering.** Materials, light, sky, night, atmosphere: the game
    should look like a polished cozy game in RayMakie's raster, in path
    tracing and in the browser. What you cannot change in the game, you fix
    where the limit is (see the rules on `dev/`).
 
-4. **Lumi makes its own garden, and the human can watch it.** Lumi is
+5. **Lumi makes its own garden, and the human can watch it.** Lumi is
    not a puppet that acts out deliveries: what changes in the human's game
    is Lumi's work, and a person watching sees it being done. The model is
    Pino, an autonomous bird that lives in a small town and makes things

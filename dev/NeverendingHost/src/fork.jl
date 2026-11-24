@@ -119,7 +119,7 @@ function fork!(root::AbstractString; name = nothing, game = nothing, blog = noth
           in .jail/config.toml. Claude Code uses your login on Linux; elsewhere put a token from
           `claude setup-token` into .jail/secrets/env/CLAUDE_CODE_OAUTH_TOKEN.
         - Your wishes for the game go into world/GOALS.md.
-        - Start it:  julia --project=. -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'
+        - Start it:  julia --project=dev/NeverendingHost/host -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'
           and play at http://localhost:$(cfg.web_port)
         """)
     return jp

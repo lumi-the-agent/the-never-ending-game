@@ -428,6 +428,16 @@
         "prop",
         "tool"
       ]
+    },
+    {
+      "created": "2026-11-24T15:03:39.801",
+      "faces": 5778,
+      "id": "20261124-140100-365-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-140100-365-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-140100-365-asset/mesh.jls",
+      "prompt": "a small cozy garden shovel with a rounded steel blade and a warm honey wooden handle with a red grip, seen from the side, standing upright, stylized toy-like game prop",
+      "seconds": 522.0,
+      "tags": []
     }
   ]
 }

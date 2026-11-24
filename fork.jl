@@ -8,6 +8,7 @@
 # index of the Julia ecosystem (about 2.5 GB), which the agent searches before it
 # writes anything new. See README.md.
 import Pkg
+Pkg.activate(Pkg.instantiate, joinpath(@__DIR__, "dev", "NeverendingHost", "host"))   # the host's own environment
 Pkg.activate(@__DIR__)
 Pkg.instantiate()
 using NeverendingHost, RomeoDB

@@ -31,8 +31,10 @@ change any of it.
    writes anything new.
 4. Log in an agent: Claude Code (`claude`) by default; Codex, OpenCode, Kimi or
    MiMo in `.jail/config.toml`. Write what you hope for into `world/GOALS.md`.
-5. Start it: `julia --project=. -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'`
-   and play at http://localhost:8790.
+5. Start it: `julia --project=dev/NeverendingHost/host -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'`
+   and play at http://localhost:8790. The host runs from its own environment:
+   the agent may change everything else, the game's environment included, but
+   never the code that holds your tokens and starts its jails.
 
 You need a GPU (Mantle, the GPU layer underneath, runs on every platform), and an account for
 your character on GitHub if it should publish: a token of that account lets

@@ -25,7 +25,8 @@ forwards a LAN port to the game's dashboard (browsers draw it with WGLMakie).
 module NeverendingHost
 
 using Dates, Printf, Sockets
-import Downloads, SHA
+import Downloads, SHA, SQLite
+using Random: shuffle!
 using FileWatching: Pidfile
 import JSON, TOML
 import Jail
@@ -42,6 +43,7 @@ include("world_files.jl")
 include("agent.jl")
 include("review.jl")
 include("mood.jl")
+include("curiosity.jl")
 include("github.jl")
 include("site.jl")
 include("snapshot.jl")

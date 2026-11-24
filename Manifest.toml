@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "1d1a1348f3419d37dea323a9bb8cc7d3a383fda8"
+project_hash = "fcb66a2284483a25572b95b34aae650e201d8b8d"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -1415,6 +1415,12 @@ git-tree-sha1 = "1e0228a030642014fe5cfe68c2c0a818f9e3f522"
 uuid = "1914dd2f-81c6-5fcd-8719-6d5c9610ff09"
 version = "0.5.16"
 
+[[deps.Maelstrom]]
+deps = ["AcceleratedKernels", "Adapt", "GeometryBasics", "JSON", "KernelAbstractions", "LinearAlgebra", "Mantle", "Mmap", "Random", "SHA", "Serialization", "Statistics"]
+path = "dev/Maelstrom"
+uuid = "985d88d0-531a-45f2-84d9-51d3ce71157f"
+version = "0.1.0"
+
 [[deps.Makie]]
 deps = ["Animations", "Artifacts", "Base64", "CRC32c", "ColorBrewer", "ColorSchemes", "ColorTypes", "Colors", "ComputePipeline", "Contour", "Dates", "DelaunayTriangulation", "Distributions", "DocStringExtensions", "Downloads", "FFTA", "FastInterpolations", "FileIO", "FixedPointNumbers", "Format", "FreeType", "FreeTypeAbstraction", "GeometryBasics", "GridLayoutBase", "ImageBase", "ImageClipboard", "ImageIO", "InteractiveUtils", "Interpolations", "IntervalSets", "InverseFunctions", "Isoband", "KernelDensity", "LaTeXStrings", "Latexify", "LinearAlgebra", "MacroTools", "Markdown", "MathTeXEngine", "NativeFileDialog_jll", "Observables", "OffsetArrays", "PNGFiles", "Packing", "PlotUtils", "PolygonOps", "PrecompileTools", "Preferences", "Printf", "ProgressMeter", "REPL", "Random", "RelocatableFolders", "Scratch", "ShaderAbstractions", "SignedDistanceFields", "SparseArrays", "Statistics", "StatsBase", "StatsFuns", "StructArrays", "TriplotBase", "UnicodeFun", "Unitful"]
 path = "dev/Makie/Makie"
@@ -1564,7 +1570,7 @@ uuid = "055f6117-d8ad-44ba-8677-a06a09bdf148"
 version = "0.1.0"
 
 [[deps.NeverendingHost]]
-deps = ["AgentClientProtocol", "AgentProviders", "BonitoWorker", "Dates", "Downloads", "FileWatching", "JSON", "Jail", "Printf", "SHA", "Sockets", "TOML"]
+deps = ["AgentClientProtocol", "AgentProviders", "BonitoWorker", "Dates", "Downloads", "FileWatching", "JSON", "Jail", "Printf", "Random", "SHA", "SQLite", "Sockets", "TOML"]
 path = "dev/NeverendingHost"
 uuid = "088cb569-6e3a-412a-a017-6794b7ab73bd"
 version = "0.1.0"

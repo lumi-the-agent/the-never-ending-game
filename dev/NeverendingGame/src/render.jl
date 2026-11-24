@@ -211,7 +211,7 @@ function camera_goal_uncached(rig::CameraRig, w::World)
             for g in values(CAMERA_GROUPS)
                 v = Base.invokelatest(g, w)
                 # a third element is the plugin's own view `(eye, target)` (the sunset bench: from behind, out to sea)
-                v !== nothing && Int32(v[1]) == id && length(v) >= 3 && return v[3]
+                v !== nothing && Int32(v[1]) == id && length(v) >= 3 && v[3] !== nothing && return v[3]
                 v !== nothing && Int32(v[1]) == id && length(v[2]) > 1 && return group_view(w, c, v[2])
             end
         end

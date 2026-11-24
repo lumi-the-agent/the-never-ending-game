@@ -1,0 +1,10 @@
+# The host's own environment: what the privileged host process loads. It lives in the host's
+# read only checkout, so nothing the agent does to the game's environment reaches the host.
+#     julia --project=dev/NeverendingHost/host -e 'using Revise, NeverendingHost; NeverendingHost.serve(".")'
+
+[deps]
+NeverendingHost = "088cb569-6e3a-412a-a017-6794b7ab73bd"
+Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
+
+[sources]
+NeverendingHost = {path = ".."}

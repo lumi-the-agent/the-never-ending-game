@@ -1,7 +1,13 @@
 {
   "created": "2026-11-24T14:00:32.434",
+  "finished": "2026-11-24T14:36:16.800",
   "id": "20261124-140032-434-restart",
   "kind": "restart",
   "params": {},
-  "status": "queued"
+  "result": {
+    "restarted": "2026-11-24T14:36:16.800"
+  },
+  "seconds": 0.0,
+  "started": "2026-11-24T14:36:16.796",
+  "status": "done"
 }

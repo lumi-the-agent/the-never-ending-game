@@ -15,12 +15,20 @@ Write the verdict file as JSON:
 ```json
 {"verdict": "pass" | "needs_work" | "fail",
  "summary": "one or two sentences",
+ "surprise": 0-10,
+ "surprise_why": "one sentence",
  "findings": [{"severity": "high" | "medium" | "low",
                "what": "the problem, concretely",
                "where": "file:line or screen area",
                "evidence": "screenshot path or measurement",
                "suggestion": "what would fix it"}]}
 ```
+
+`surprise`: how surprising what this session made happen is to someone who
+knows the island: 0 more of the same (a prop, a fix, polish), 3 new but
+expected, 6 a nice twist, 8 they would show it to a friend, 10 they cannot
+believe a game agent made it. Judge what happens in the game, not the
+post about it. It moves the author's boredom, so do not be kind.
 
 Be specific and honest. A pass without findings is fine when it is deserved.
 At most three findings, the most important first. `needs_work` only when the

@@ -7,8 +7,8 @@
 #
 #   :game    world writable, code read only, no network
 #   :worker  world writable, code read only, network through the proxy
-#   :agent   world, the environment and the engine checkouts (`WRITABLE_DEV`) writable,
-#            other checkouts read only, network through the proxy
+#   :agent   the whole game folder writable but the host's own code (`HOST_DEV`), the
+#            human's goals and the human's game; network through the proxy
 #   :review  read only except world/reviews, network through the proxy
 #
 # The jail is bubblewrap, so Linux only, and optional (`[jail] mode`): without it
@@ -41,8 +41,12 @@ function prepare_home!(jp::JailPaths, role::Symbol)
     return bin
 end
 
-# the game's engine and its renderer: improving materials, RayMakie and Hikari is the agent's work too
-const WRITABLE_DEV = ("NeverendingGame", "Makie", "Hikari", "Raycore", "Lava")
+"""
+The checkouts the host itself runs, outside every jail: an edit there would run with the human's
+rights (the host revises its code), so they stay read only. Every other checkout in dev/ is the
+agent's to change, and so is any package it forks in.
+"""
+const HOST_DEV = ("NeverendingHost", "BonitoAgents")
 
 "The published plugins the human's game runs (NeverendingGame `GamePaths(root, :live).plugins`)."
 live_dir(jp::JailPaths) = joinpath(jp.world, "live")
@@ -63,9 +67,8 @@ function role_mounts(jp::JailPaths, role::Symbol)
     if role === :agent
         push!(whitelist, jp.root, jp.romeodb)
         for d in readdir(dev)
-            d in WRITABLE_DEV || push!(readonly, joinpath(dev, d))
+            d in HOST_DEV && push!(readonly, joinpath(dev, d))
         end
-        push!(readonly, joinpath(jp.root, "setup"))
         isfile(goals_path(jp)) && push!(readonly, goals_path(jp))     # the human's
         # what the human's game runs: only `publish` (the game itself) changes it
         isdir(live_dir(jp)) && push!(readonly, live_dir(jp))

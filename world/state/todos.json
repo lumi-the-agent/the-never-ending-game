@@ -2569,12 +2569,12 @@
       "id": 184,
       "kind": "review",
       "priority": 2,
-      "result": "s43: take 6 (media/clips/dance-take6.mp4, 1280x720, 96 spp, 20.7 s, 4.6 s/frame in the worker) is not release quality: from the low side angles the dancers do not read as a ring (they look like critters scattered round a lantern), large dark foreground grass in shadow, a yellow out-of-focus blob at the left edge in the first second (a creature close to the lens). Next take: a higher eye (2.5-3 m) looking down at the ring so it reads as a circle, a lensclear check for creatures near the eye, start on the ring already dancing. Frames: /tmp/dfr grid (2, 6, 10, 14, 19 s).\ns43: take 7 queued (job 20261123-164513-813-clip, media/clips/dance-take7.mp4, after a worker restart): the ring shot now has its eye 2.4 m up and 5.2 m out (was 1.1 m and 4.4 m). Next session: look at it; if the ring reads, add the title card (movies/title_card.sh) and release.\nTake 8 (hour 17.3) failed twice with VK_ERROR_DEVICE_LOST after ~4 min: s44 17:56 and s45 18:27, the second while the agent session took live views/set_light! (GPU contention likely). Requeued at the end of s45 (20261123-182935-470-clip) with nothing else on the GPU but the live game. If it fails again in a quiet break, the hour 17.3 itself is the lead (takes without `hour` finished): try hour 18.0 or check the golden-hour scene for a huge emissive count.\ns45: take 8 (golden hour 17.3, 96 samples, script movies/dance_release.jl) lost the GPU device ~4 min in three times (17:56, 18:27, 18:34), the last with no GPU work in the agent session; the same clip without `hour` finished twice. Requeued at 48 samples, same hour (20261123-183520-585-clip). Next: judge media/clips/dance-take8.mp4 with a contact sheet, title card (movies/title_card.sh), release in world/releases/<date>-dance/. If 48 also fails: hour 18.0, or one golden-hour game_still in the session to catch the failing dispatch.\ns45: take 8 (hour 17.3) lost the GPU device ~4 min in FOUR times, at 96 and at 48 samples (17:56, 18:27, 18:34, 18:39): not the sample count, not session contention. Last good takes (no `hour`) finished 16:38 and 17:25. Control queued at the end of s45: the same clip without `hour` (20261123-184000-464-clip -> media/clips/dance-take9-defaulthour.mp4). If it fails too: a regression since 17:25 (s44's last changes, or s45's plugins: camcut, nightshots, clouds, dancecircle; bisect by disabling plugins in a game_clip with rasterize = false for 1 frame in the session). If it finishes: the golden hour breaks the trace; render one golden-hour game_still in the session to catch the failing dispatch.\ns50: the 'clear glass bubbles' in dance take 9 (host) were the Blorbos (Hikari.Glass jelly: meadow through the body, no face). Traced lineup before/after: media/s50/lineup-traced-before-crop.png, -after-crop.png (now a glossy mint gummy, species.jl blorbo); raster after: lineup-raster-after-crop.png; sandbox live swap blorbo-sandbox2.png. Published; the human's herd changes at its next game start. The black first frames are still open: check game_clip's warmup/first samples next.",
+      "result": "s43: take 6 (media/clips/dance-take6.mp4, 1280x720, 96 spp, 20.7 s, 4.6 s/frame in the worker) is not release quality: from the low side angles the dancers do not read as a ring (they look like critters scattered round a lantern), large dark foreground grass in shadow, a yellow out-of-focus blob at the left edge in the first second (a creature close to the lens). Next take: a higher eye (2.5-3 m) looking down at the ring so it reads as a circle, a lensclear check for creatures near the eye, start on the ring already dancing. Frames: /tmp/dfr grid (2, 6, 10, 14, 19 s).\ns43: take 7 queued (job 20261123-164513-813-clip, media/clips/dance-take7.mp4, after a worker restart): the ring shot now has its eye 2.4 m up and 5.2 m out (was 1.1 m and 4.4 m). Next session: look at it; if the ring reads, add the title card (movies/title_card.sh) and release.\nTake 8 (hour 17.3) failed twice with VK_ERROR_DEVICE_LOST after ~4 min: s44 17:56 and s45 18:27, the second while the agent session took live views/set_light! (GPU contention likely). Requeued at the end of s45 (20261123-182935-470-clip) with nothing else on the GPU but the live game. If it fails again in a quiet break, the hour 17.3 itself is the lead (takes without `hour` finished): try hour 18.0 or check the golden-hour scene for a huge emissive count.\ns45: take 8 (golden hour 17.3, 96 samples, script movies/dance_release.jl) lost the GPU device ~4 min in three times (17:56, 18:27, 18:34), the last with no GPU work in the agent session; the same clip without `hour` finished twice. Requeued at 48 samples, same hour (20261123-183520-585-clip). Next: judge media/clips/dance-take8.mp4 with a contact sheet, title card (movies/title_card.sh), release in world/releases/<date>-dance/. If 48 also fails: hour 18.0, or one golden-hour game_still in the session to catch the failing dispatch.\ns45: take 8 (hour 17.3) lost the GPU device ~4 min in FOUR times, at 96 and at 48 samples (17:56, 18:27, 18:34, 18:39): not the sample count, not session contention. Last good takes (no `hour`) finished 16:38 and 17:25. Control queued at the end of s45: the same clip without `hour` (20261123-184000-464-clip -> media/clips/dance-take9-defaulthour.mp4). If it fails too: a regression since 17:25 (s44's last changes, or s45's plugins: camcut, nightshots, clouds, dancecircle; bisect by disabling plugins in a game_clip with rasterize = false for 1 frame in the session). If it finishes: the golden hour breaks the trace; render one golden-hour game_still in the session to catch the failing dispatch.\ns50: the 'clear glass bubbles' in dance take 9 (host) were the Blorbos (Hikari.Glass jelly: meadow through the body, no face). Traced lineup before/after: media/s50/lineup-traced-before-crop.png, -after-crop.png (now a glossy mint gummy, species.jl blorbo); raster after: lineup-raster-after-crop.png; sandbox live swap blorbo-sandbox2.png. Published; the human's herd changes at its next game start. The black first frames are still open: check game_clip's warmup/first samples next.\nperfectionist-0061: superseded by #380: release the day film first, the dance film can come back later",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Release the dance film (readable dancers), then the next",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T10:43:44.842",
@@ -3129,12 +3129,12 @@
       "id": 224,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: crowns no longer show black slits in this review's shots; gloss is covered by #237",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Tree crowns: no black slits, more crown shapes, leaf colour variety",
-      "updated": "2026-11-23T20:21:05.111"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T14:43:43.519",
@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0058 [creatures, high]: Next to the new golden bird, the friends look like placeholders: Snootles are pink pigs, Blorbos teal balls, Fluffkins cotton balls on sticks. In the traced kite picture the hats float as discs above the heads (orange disc over the grey blob, pink disc over the Snootle).\nWhere: engine species.jl / outfits.jl\nSuggestion: Give each friend species the same care as the bird: one strong shape idea each (ears, tails, a shell with legs, long snout), the painted face system, and hats that sit on the head mesh in both raster and trace.\nDone when: A lineup (tools/lineup.jl) shows five species you can tell apart in black silhouette, and a traced still shows every hat touching its head.\nEvidence: world/reviews/p58/m2.png, world/reviews/p58/cam2_follow.png, world/site/img/kite.png",
+      "detail": "perfectionist-0061 [creatures, high]: Next to the new Lumi, the friends look like placeholders: Sir Sniffsalot is a pink sphere on four tube legs with a cone snout; Wibbles and Gloop are cyan balls with googly eyes; the crabs and the sheep are better. A player reads Lumi as the art and the rest as programmer art.\nWhere: engine species.jl (pig, blob species), reviews/perfectionist-0061-shots/raster-after.png, follow2.png\nSuggestion: Do for one friend species per session what was done for Lumi: a generated, rigged mesh cut into parts (bird.jl piece_of), a body shape you recognise from behind, a painted face with brows. Start with the pig (most on screen).\nDone when: A lineup still (tools/lineup.jl, traced) shows at least two friend species with generated bodies, no visible sphere/cylinder parts, faces with brows; a close follow screenshot of the pig shows no tube legs.\nEvidence: raster-after.png: the pig in close-up is primitives; follow2.png: Wibbles is a sphere with a ribbon",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3302,11 +3302,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Friends as lovable as Lumi: a silhouette and face per species",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0058 [lighting, high]: Fifth review in a row: the eye-level shot at noon is evenly lit, saturated green from front to back; nothing tells the time of day or gives depth, while the traced stills of the same place look warm and soft.\nWhere: RayMakie raster (SunSkyLight fill), haze.jl\nSuggestion: Warm key light, cool blue-tinted shadow fill, aerial perspective that fades the far trees towards the sky colour, and slightly lower grass saturation, in the raster where the limit is.\nDone when: Same eye-level camera at 13:00: the far tree line is measurably lighter and bluer than the foreground (mean hue/luminance difference), and cast shadows read as cool, not black-green.\nEvidence: media/progress/session-0058/eye-level.png vs session-0055/eye-level.png (unchanged)",
+      "detail": "perfectionist-0061 [lighting, high]: The eye-level view at noon is unchanged since s52: evenly lit saturated green, shadows grey-blue, no distance haze, the trees look like glossy plastic. The traced frames of the same island are warm and soft: the raster the human watches all day does not look like the films.\nWhere: RayMakie raster (SunSkyLight fill, raster_material.jl), media/progress/session-0061/eye-level.png vs session-0058\nSuggestion: Fix it in RayMakie: warmer sun colour, coloured sky fill in the shadows (blue-violet, not grey), height/distance fog towards the horizon, lower specular on the crowns. Compare against a traced still from the same eye.\nDone when: Side-by-side eye-level raster vs traced at 11:00 from the same camera: shadow hue within 20 degrees of the traced one, far trees visibly hazier than near ones, mean luminance difference < 15%.\nEvidence: progress eye-level s58 vs s61: same light and colour; reviews/perfectionist-0061-shots/orbit2.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3316,7 +3316,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -3334,7 +3334,7 @@
     },
     {
       "created": "2026-11-23T17:36:20.502",
-      "detail": "perfectionist-0058 [camera, medium]: Following Sir Sniffsalot, a tree crown filled the whole left half of the view; most follow shots look down from 4-5 m so creatures are small tops of heads. Mini games use a near top-down view (berry-wad.png, firefly-wad.png) where the bird is a shaggy orange smear.\nWhere: render.jl follow_view / camcut.jl / mini game cameras\nSuggestion: Prefer eye-level side views and cut rather than climb when a crown is in the way; give mini games the low chase view the kite already has.\nDone when: Of 6 follow screenshots 8 s apart, none has foliage over more than 15% of the 3D view, and the subject's face is visible in at least 4.\nEvidence: world/reviews/p58/cam1_follow.png, cam2_follow.png, world/tests/shots/berry-wad.png",
+      "detail": "perfectionist-0061 [camera, medium]: In two minutes of follow view: a fence and bench block the bottom third in front of the pig; Wibbles shot from high above with only sea behind it and a fence along the bottom; the path traced view jumped to a high top-down overview. The chase view of the mini games puts Lumi's back over a quarter of the frame (hide and seek) so the way ahead is hidden.\nWhere: render.jl follow_view/camera_goal, lensclear.jl, greetings.jl chase_camera!\nSuggestion: Count low props (fences, benches, crates) as obstruction; cap the pitch so the horizon stays in frame; in the chase view pull back and lower so Lumi fills ~12% of the frame, a third from the bottom.\nDone when: 20 follow screenshots 5 s apart: none with a prop covering > 15% of the 3D view, the horizon in frame in all of them; a chase screenshot with Lumi under 15% of the view area.\nEvidence: reviews/perfectionist-0061-shots/raster-after.png, follow2.png, traced.png; tests/shots/hideseek-found.png",
       "est_minutes": 15.0,
       "id": 239,
       "kind": "review",
@@ -3343,8 +3343,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow camera: no tree crown or bush across half the frame",
-      "updated": "2026-11-24T10:34:42.479"
+      "title": "Follow camera: no fence or crown across the frame, no shots straight down at the sea",
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T18:22:30.081",
@@ -3507,12 +3507,12 @@
       "id": 251,
       "kind": "review",
       "priority": 2,
-      "result": "s51: the 5 meshes failed twice more (worker loses the GPU in the mesher, patches/worker-mesh-device-lost.md); re-queued with a worker restart between each (20261124-004844-468/471/475/478/481-asset), garden.jl points at them and swaps them in by itself. Fixed: state dir created before saving garden.json (sandbox start! failed). Watering now 16 s and the camera moment starts on the last 6 m: test passes 3/3 (tests/shots/s50-garden-moment.png). Still doing until the real vegetables show.\ns52: not worked on (the bench camera came first); cabbage asset failed with device lost, carrots/fence/can still in the worker queue.\ns52 later: the generated carrots and seedlings are in the patch (media/s52/garden-carrots.png); the cabbage job was requeued as 20261124-014117-487-asset (+ restart) and garden.jl points at it; published. Left: cabbages (stand-ins until the job is done), fence and watering can meshes (jobs 478, 481 in the queue).",
+      "result": "s51: the 5 meshes failed twice more (worker loses the GPU in the mesher, patches/worker-mesh-device-lost.md); re-queued with a worker restart between each (20261124-004844-468/471/475/478/481-asset), garden.jl points at them and swaps them in by itself. Fixed: state dir created before saving garden.json (sandbox start! failed). Watering now 16 s and the camera moment starts on the last 6 m: test passes 3/3 (tests/shots/s50-garden-moment.png). Still doing until the real vegetables show.\ns52: not worked on (the bench camera came first); cabbage asset failed with device lost, carrots/fence/can still in the worker queue.\ns52 later: the generated carrots and seedlings are in the patch (media/s52/garden-carrots.png); the cabbage job was requeued as 20261124-014117-487-asset (+ restart) and garden.jl points at it; published. Left: cabbages (stand-ins until the job is done), fence and watering can meshes (jobs 478, 481 in the queue).\nperfectionist-0061: superseded: the patch is a small corner, the friend species (#236) matter more",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Vegetable patch: real cabbages, carrots in the ground, a tidy fence",
-      "updated": "2026-11-24T07:17:35.065"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T21:01:33.723",
@@ -3530,17 +3530,17 @@
     },
     {
       "created": "2026-11-23T21:39:37.621",
-      "detail": "MethodError: no method matching body_radius(::@world(NeverendingGame.Species, 38726:160298))\nThe function `body_radius` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  body_radius(!Matched::NeverendingGame.Species)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/species.jl:252\n\nStacktrace:\n  [1] lens_block(w::NeverendingGame.World, eye::GeometryBasics.Point{3, Float32}, target::GeometryBasics.Point{3, Float32})\n    @ Main.Plugin_lensclear /sim/Programmieren/SimGame/world/plugins/lensclear.jl:41\n  [2] (::Main.Plugin_lensclear.var\"#6#7\"{Game})(eye::GeometryBasics.Point{3, Float32}, target::GeometryBasics.Point{3, Float32})\n    @ Main.Plugin_lensclear /sim/Programmieren/SimGame/world/plugins/lensclear.jl:79\n  [3] obstruction(w::NeverendingGame.World, eye::GeometryBasics.Point{3, Float32}, target::GeometryBasics.Point{3, Float32})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:435\n  [4] follow_view(w::NeverendingGame.World, c::NeverendingGame.Creature; distance::Float32, height::Float32, zoom::Bool, closer::Bool, front::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:471\n  [5] follow_view\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:449 [inlined]\n  [6] face_view(w::NeverendingGame.World, c::NeverendingGame.Creature)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:167\n  [7] camera_goal(rig::NeverendingGame.CameraRig, w::NeverendingGame.World)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:212\n  [8] step!(::Main.Plugin_camcut.CamCut, game::Game, dt::Float64)\n    @ Main.Plugin_camcut /sim/Programmieren/SimGame/world/plugins/camcut.jl:28\n  [9] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [12] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [13] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [14] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [15] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [16] top-level scope\n    @ none:1\n [17] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [18] exec_options(opts::Base.JLO",
+      "detail": "MethodError: no method matching iterate(::Nothing)\nThe function `iterate` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  iterate(!Matched::LLVM.DomTreeNodeChildSet)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/analysis.jl:490\n  iterate(!Matched::LLVM.DomTreeNodeChildSet, !Matched::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/analysis.jl:490\n  iterate(!Matched::Compiler.UseRefIterator, !Matched::Int64)\n   @ Base ../usr/share/julia/Compiler/src/ssair/ir.jl:659\n  ...\n\nStacktrace:\n  [1] indexed_iterate(I::Nothing, i::Int64)\n    @ Base ./tuple.jl:165\n  [2] step!(::Main.Plugin_camcut.CamCut, game::Game, dt::Float64)\n    @ Main.Plugin_camcut /sim/Programmieren/SimGame/world/plugins/camcut.jl:28\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 253,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T21:51:05.182: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T06:19:08.036.\nClosed at 2026-11-24T06:19:28.207: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T08:31:32.902.\nClosed at 2026-11-24T08:31:53.613: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T10:03:42.132.\nClosed at 2026-11-24T10:04:20.309: plugin camcut loaded cleanly.",
+      "result": "Closed at 2026-11-23T21:51:05.182: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T06:19:08.036.\nClosed at 2026-11-24T06:19:28.207: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T08:31:32.902.\nClosed at 2026-11-24T08:31:53.613: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T10:03:42.132.\nClosed at 2026-11-24T10:04:20.309: plugin camcut loaded cleanly.\nHappened again at 2026-11-24T14:55:25.176.\nClosed at 2026-11-24T14:55:56.719: plugin camcut loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:camcut.CamCut failed in step! and was switched off",
-      "updated": "2026-11-24T10:04:20.309"
+      "updated": "2026-11-24T14:55:56.719"
     },
     {
       "created": "2026-11-23T21:39:37.628",
@@ -3563,12 +3563,12 @@
       "id": 255,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "Superseded by perfectionist-0061.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Evening clock: dusk still runs fast for mini games",
-      "updated": "2026-11-23T22:01:40.946"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T22:09:21.225",
@@ -3703,12 +3703,12 @@
       "id": 265,
       "kind": "review",
       "priority": 2,
-      "result": "\ns50: findable: the Jump in line in 'Things to try' now says 'or run up to friends playing tag to join in' (media/s50/things-to-try2.png, published). Still open: a W/A/D player staying in for 40 s with 4+ tags, the 'it' marker and HUD screenshot.",
+      "result": "\ns50: findable: the Jump in line in 'Things to try' now says 'or run up to friends playing tag to join in' (media/s50/things-to-try2.png, published). Still open: a W/A/D player staying in for 40 s with 4+ tags, the 'it' marker and HUD screenshot.\nperfectionist-0061: findable from Things to try since s50; the rest is minor",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Tag: findable from the menu, and the player stays in the game",
-      "updated": "2026-11-23T23:30:54.959"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T23:30:54.959",
@@ -3717,12 +3717,12 @@
       "id": 266,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: superseded by this review's mini game finding on hide and seek",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Mini game rounds end too soon to build tension",
-      "updated": "2026-11-24T07:17:35.065"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-23T23:30:54.959",
@@ -4529,12 +4529,12 @@
       "id": 324,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: a case of #279 (one shared step-aside for stuck walks)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi stuck by the workshop: walks on the spot at (-1, -5.8) whatever the goal",
-      "updated": "2026-11-24T08:45:53.834"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T08:58:13.592",
@@ -4585,12 +4585,12 @@
       "id": 328,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: superseded by the follow/chase camera finding (#239)",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A low kite view: Lumi and the kite in one picture at any spot",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T09:24:48.709",
@@ -4720,7 +4720,7 @@
     },
     {
       "created": "2026-11-24T10:34:42.479",
-      "detail": "perfectionist-0058 [fun, medium]: In the first-play test, a friend found earlier trailed 13.8 m behind while the other was at 1.7 m: the parade of found friends falls apart, so the round loses its 'gathering your friends' payoff. The test failed in this review's run.\nWhere: plugins/hideseek.jl parade slots\nSuggestion: Let found friends run (faster than Lumi) and route round the cover they were hiding behind; a little cheer when they catch up.\nDone when: The hide and seek first-play test passes 3 of 3 with every found friend within 4 m.\nEvidence: live_tests(\"first play\"): 'check failed: found friends lag: Float32[13.8, 1.7] m'; world/tests/shots/hideseek-found.png",
+      "detail": "perfectionist-0061 [fun, medium]: The first-play test still fails: after finding two friends, the first one trails 13.7 m behind (the second 2.9 m). The promise of the game, a growing parade of found friends, breaks on the first find.\nWhere: plugins/hideseek.jl (parade slots / follow speed)\nSuggestion: Found friends run (with a catch-up speed boost) to their parade slot; if > 8 m behind, they hop along with a little dash cue; at the end card all found friends stand around Lumi.\nDone when: The hide and seek first-play test passes 3 runs in a row with every found friend within 4 m at the check.\nEvidence: live_tests('first play'): 'found friends lag: Float32[13.7, 2.9] m'; tests/shots/hideseek-found.png",
       "est_minutes": 30.0,
       "id": 338,
       "kind": "review",
@@ -4730,7 +4730,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Hide and seek: found friends keep up with the seeker",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T10:36:59.120",
@@ -4781,12 +4781,12 @@
       "id": 342,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: Frames p95 6.9 ms in the human's game (state/perf.json), 6.5 ms in the sandbox",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 207 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:51:06.583"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T10:52:37.130",
@@ -4809,12 +4809,12 @@
       "id": 344,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 212 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:53:00.044"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:03:47.575",
@@ -4823,12 +4823,12 @@
       "id": 345,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: the strut/preen/hop belong in the day film #380; one film at a time",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "My new moves film: the traced strut, preen and hop on my pages",
-      "updated": "2026-11-24T11:03:47.575"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:05:00.647",
@@ -4837,12 +4837,12 @@
       "id": 346,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 75 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:05:00.647"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:08:00.846",
@@ -4851,12 +4851,12 @@
       "id": 347,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 223 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:08:00.846"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:18:05.065",
@@ -4865,12 +4865,12 @@
       "id": 348,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 142 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:18:05.065"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:21:05.299",
@@ -4879,12 +4879,12 @@
       "id": 349,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 216 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:21:05.299"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:39:13.153",
@@ -4893,12 +4893,12 @@
       "id": 350,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 211 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:39:13.153"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:39:28.465",
@@ -4907,12 +4907,12 @@
       "id": 351,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 219 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:39:28.465"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:48:09.612",
@@ -4921,12 +4921,12 @@
       "id": 352,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 53 ms (budget 33 ms)",
-      "updated": "2026-11-24T11:48:09.612"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T11:55:32.941",
@@ -4949,12 +4949,12 @@
       "id": 354,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: duplicate of #380 (the same day film)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A film of a day in my new life: strut, crest flop, wing-spread hop, path traced",
-      "updated": "2026-11-24T11:55:32.979"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:01:08.969",
@@ -4963,12 +4963,12 @@
       "id": 355,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 117 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:01:08.969"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:10:41.387",
@@ -4977,12 +4977,12 @@
       "id": 356,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 69 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:10:41.387"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:13:41.819",
@@ -4991,12 +4991,12 @@
       "id": 357,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 78 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:13:41.819"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:19:42.298",
@@ -5005,12 +5005,12 @@
       "id": 358,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 76 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:19:42.298"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:20:02.627",
@@ -5019,12 +5019,12 @@
       "id": 359,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 222 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:20:02.627"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:20:28.308",
@@ -5061,12 +5061,12 @@
       "id": 362,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0061: duplicate of #374 (barrow placement + pushing in one todo)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "My wheelbarrow: check it stands by the workshop, then carry builds in it",
-      "updated": "2026-11-24T12:22:28.435"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:22:42.788",
@@ -5075,12 +5075,12 @@
       "id": 363,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 118 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:22:42.788"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:24:02.867",
@@ -5089,12 +5089,12 @@
       "id": 364,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 379 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:24:02.867"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:28:48.900",
@@ -5103,12 +5103,12 @@
       "id": 365,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 221 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:28:48.900"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:38:07.123",
@@ -5173,12 +5173,12 @@
       "id": 370,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 65 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:41:16.337"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:47:16.686",
@@ -5187,12 +5187,12 @@
       "id": 371,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 125 ms (budget 33 ms)",
-      "updated": "2026-11-24T12:47:16.686"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:51:53.450",
@@ -5205,8 +5205,8 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi says its new name: record my hello and page voice again as Lumi, and look at the play tests that failed after the rename (patch, bench, ball kick, flower pick)",
-      "updated": "2026-11-24T12:51:53.450"
+      "title": "Play tests that broke at the rename: patch, bench, ball kick, flower pick, publish",
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T12:52:29.709",
@@ -5215,26 +5215,26 @@
       "id": 373,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: start_minigame!(game, JumpIn) in the sandbox gives a JumpIn (the Sprout lookup crash is gone)",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Mini game Jump in (WASD) does not start",
-      "updated": "2026-11-24T12:52:29.709"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:00:18.919",
-      "detail": "wheelbarrow.jl parks it by the workshop (s60). builder.jl still carries a crate. Also move it out from behind the bush beside the tool rack so cameras see it. Done when a publish in the sandbox shows Lumi pushing the barrow to the new thing (screenshot).",
+      "detail": "perfectionist-0061 [props, low]: Goal 4's 'things take time and materials' still shows as a crate on Lumi's head; the barrow stands at the cairn spiral (seen in the traced view) and the shovel asset job (20261124-140100-365) is still queued.\nWhere: plugins/builder.jl, wheelbarrow.jl, shovel.jl\nSuggestion: Lumi pushes the barrow with the new thing visible inside, wheel turning, and tips it out at the place; the shovel goes into the barrow when Lumi plants.\nDone when: A sandbox publish screenshot shows Lumi behind the barrow with the new item in it; a screenshot of the shovel standing upright in the patch.\nEvidence: reviews/perfectionist-0061-shots/traced.png (barrow parked in the stone spiral); jobs/20261124-140100-365-asset.json status queued",
       "est_minutes": 15.0,
       "id": 374,
-      "kind": "feature",
-      "priority": 2,
+      "kind": "review",
+      "priority": 3,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi pushes the wheelbarrow: carry new things to their place in it instead of a crate on the head",
-      "updated": "2026-11-24T13:00:18.919"
+      "title": "Lumi pushes the wheelbarrow: carry new things to their place in it",
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:04:18.308",
@@ -5243,26 +5243,26 @@
       "id": 375,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 220 ms (budget 33 ms)",
-      "updated": "2026-11-24T13:04:18.308"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:07:05.205",
-      "detail": "Review session-0059 (medium) and tester s59: tag_spots places tags nearest-first, so a nearer creature's tag takes Lumi's spot and Lumi's floats ~80 px up. Give the followed/controlled creature first pick. Also: at dusk with the steep follow camera the speech line under a name is drawn over the creature's own body. Done when a jumped-in screenshot with Pickles just behind Lumi shows 'Lumi' right above Lumi.",
+      "detail": "perfectionist-0061 [ui, medium]: The s61 progress eye-level shows 'Pinchy' written across Lumi's chest and 'Lumi' floating a head above it. The s60 fix covers the player's creature only. The thought bubble meanwhile shows 'Asking for a shovel of my…' (cut off, and still there long after the session ended).\nWhere: scenery.jl sync_text!, builder.jl thought!; media/progress/session-0061/eye-level.png\nSuggestion: Move a tag only upwards over its own head, and fade the far one when two tags would overlap, rather than letting tags swap places. Thought text: a full short phrase that fits (no ellipsis), and it clears or changes to a rest thought when no session is working.\nDone when: The progress eye-level shot shows each tag over its own head; the bubble text has no '…' and differs between a working session and the quiet game.\nEvidence: media/progress/session-0061/eye-level.png (Pinchy tag on Lumi); every review screenshot shows the same cut-off bubble",
       "est_minutes": 15.0,
       "id": 376,
-      "kind": "fix",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "s60: scenery.jl sync_text! places the steered/watched creature's tag first (published). Evidence: test 'a friend just behind Lumi does not take Lumi's name tag' passes, tests/shots/birdplay-tag-overlap.png (Pickles just behind Lumi: 'Lumi' sits right on Lumi's head, Pickles' tag above Pickles). Left open only for the dusk speech line drawn over the creature's body (steep follow camera).",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "My own name tag on my head: when two heads overlap, the player's creature keeps its tag and the other one moves",
-      "updated": "2026-11-24T13:07:05.205"
+      "title": "Name tags and thought bubble sit on their own creature",
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:11:18.707",
@@ -5271,12 +5271,12 @@
       "id": 377,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 230 ms (budget 33 ms)",
-      "updated": "2026-11-24T13:11:18.707"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:49:26.572",
@@ -5285,12 +5285,12 @@
       "id": 378,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 81 ms (budget 33 ms)",
-      "updated": "2026-11-24T13:49:26.572"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T13:53:26.705",
@@ -5299,26 +5299,26 @@
       "id": 379,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0061: same: p95 6.9 ms live",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 113 ms (budget 33 ms)",
-      "updated": "2026-11-24T13:53:26.705"
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T14:03:29.123",
-      "detail": "Goal 2 + Lumi's wish. s61 queued three traced scenes in the worker (movies/day_in_life.jl, 960x540, 40 samples, 8 s each): media/s61/day-9.mp4, day-13.mp4, day-16.mp4 (jobs 20261124-1400*-clip). Watch each (contact sheet), re-queue a bad scene, then `movies/day_in_life.sh media/s61 releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4`, write NOTE.md with my verdict, a blog post with the film in site/films/, and say_to_human with the path. Done when the release folder holds the mp4 + NOTE.md and the post is up.",
+      "detail": "perfectionist-0061 [wow, high]: Goal 2 is still not reached after 61 sessions. The day film is the best candidate yet (traced Lumi on the pier and the hill read beautifully), but media/s61/day-16.mp4 is a 48-byte file (the worker scene failed), the two good scenes are only 8 s each, and in day-9 green reed stems stand across Lumi's legs in the foreground.\nWhere: media/s61/day-9.mp4, day-13.mp4, day-16.mp4; worker jobs 20261124-1400*\nSuggestion: Queue a restart before each traced scene; reframe the morning so nothing stands between camera and Lumi; give each scene a beat (Lumi does something with a result: a strut, a crest flop, a friend reacting), 45-60 s total with a title card and music/voice; write Lumi's verdict and the release note.\nDone when: world/releases/<date>-a-day-in-my-life/ holds the mp4 (>= 40 s, 3 scenes, no foreground blocker on Lumi in any extracted frame) and a note, a blog post links it, and say_to_human names the path.\nEvidence: reviews/perfectionist-0061-shots/day-9.png (reeds cut Lumi), day-13.png (good); ls -la media/s61/day-16.mp4 = 48 bytes",
       "est_minutes": 25.0,
       "id": 380,
-      "kind": "build",
+      "kind": "review",
       "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A day in my new life: finish and release the film",
-      "updated": "2026-11-24T14:03:29.123"
+      "title": "Release the day film: re-render the failed afternoon scene, cut, publish",
+      "updated": "2026-11-24T14:45:47.491"
     },
     {
       "created": "2026-11-24T14:03:29.128",
@@ -5333,6 +5333,118 @@
       "status": "open",
       "title": "My shovel by the patch: check it stands right",
       "updated": "2026-11-24T14:03:29.128"
+    },
+    {
+      "created": "2026-11-24T14:45:47.491",
+      "detail": "perfectionist-0061 [fun, medium]: Goal 1 (really cool interactions) got faces this session (yawns, trembling, gasps), but nothing new to DO or watch since the kite. The island's activity list is still 'off to the pier', 'chatting', 'eating berries'. Nothing in four minutes of watching was worth showing someone.\nWhere: plugins (new), the 'On the island now' panel during the review\nSuggestion: Something physical and a little crazy: a seesaw or a mushroom trampoline where one friend launches another (arcing, squash and stretch, a bounce, a crowd cheering), a camera moment for it, and the player can launch a friend with E. Funny if it goes wrong (a friend lands in the pond).\nDone when: Two friends use it on their own within 10 min of sandbox time (event log), a screenshot catches one mid-air with the camera on it, and a play test launches a friend from Lumi with E.\nEvidence: follow*.png, orbit*.png and the activity panel through the whole review",
+      "est_minutes": 30.0,
+      "id": 382,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A new shared moment: something the friends do together that surprises",
+      "updated": "2026-11-24T14:45:47.491"
+    },
+    {
+      "created": "2026-11-24T14:52:56.767",
+      "detail": "boing: no open place for the toadstool\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] init!(s::Main.Plugin_boing.Boing, game::Game)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:433\n  [3] start!(s::Main.Plugin_boing.Boing, game::Game)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:427\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 383,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T14:53:29.082: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:29.320.\nClosed at 2026-11-24T14:53:43.582: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:43.774.\nClosed at 2026-11-24T14:54:00.675: plugin boing loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:boing.Boing failed in start! and was switched off",
+      "updated": "2026-11-24T14:54:00.675"
+    },
+    {
+      "created": "2026-11-24T14:54:09.536",
+      "detail": "MethodError: no method matching atan(::Float32, ::GeometryBasics.Vec{3, Float32})\nThe function `atan` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  atan(!Matched::Hikari.TexNode, ::Union{Real, Tuple{Real, Real, Real}, Hikari.TexNode, ColorTypes.Colorant, AbstractVector{<:Real}})\n   @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/textures/nodes/builders.jl:123\n  atan(::T, !Matched::T) where T<:Union{Float32, Float64}\n   @ Base special/trig.jl:568\n  atan(::T, !Matched::T) where T<:AbstractFloat\n   @ Base math.jl:827\n  ...\n\nStacktrace:\n  [1] party_view(game::Game, R::Float32)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:266\n  [2] start_party!(s::Main.Plugin_boing.Boing, game::Game)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:241\n  [3] step!(s::Main.Plugin_boing.Boing, game::Game, dt::Float64)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:451\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 384,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T14:54:21.527: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:54:35.764.\nClosed at 2026-11-24T14:55:56.413: plugin boing loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:boing.Boing failed in step! and was switched off",
+      "updated": "2026-11-24T14:55:56.413"
+    },
+    {
+      "created": "2026-11-24T14:55:25.250",
+      "detail": "MethodError: no method matching iterate(::Nothing)\nThe function `iterate` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  iterate(!Matched::LLVM.DomTreeNodeChildSet)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/analysis.jl:490\n  iterate(!Matched::LLVM.DomTreeNodeChildSet, !Matched::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/analysis.jl:490\n  iterate(!Matched::Compiler.UseRefIterator, !Matched::Int64)\n   @ Base ../usr/share/julia/Compiler/src/ssair/ir.jl:659\n  ...\n\nStacktrace:\n  [1] indexed_iterate(I::Nothing, i::Int64)\n    @ Base ./tuple.jl:165\n  [2] update_camera!(rig::NeverendingGame.CameraRig, w::NeverendingGame.World, scene::Makie.Scene, dt::Float64; snap::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:240\n  [3] update_camera!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:238 [inlined]\n  [4] (::NeverendingGame.var\"#frame!##6#frame!##7\"{Game, Float64, NeverendingGame.World})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:348\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:345\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 385,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: MethodError: no method matching iterate(::Nothing)\nThe function `iterate` exists, but no method is defined for this comb",
+      "updated": "2026-11-24T14:55:25.250"
+    },
+    {
+      "created": "2026-11-24T15:08:22.043",
+      "detail": "plugins/boing.jl draws the toadstool from spheres; its white spots (meshscatter on a scaled cap) vanish in path tracing (site/img/big-boing.png). Generate a bouncy toadstool asset (make-asset, swap in when the catalog has it, like garden.jl), flips in the air (pose pitch), a boing squeak. Done when: a traced still shows the generated toadstool with friends mid-air, and a live screenshot catches a flyer with the camera on the party.",
+      "est_minutes": 15.0,
+      "id": 386,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A real toadstool for the Big Boing: carved cap, spots, somersaults",
+      "updated": "2026-11-24T15:08:22.043"
+    },
+    {
+      "created": "2026-11-24T15:13:21.337",
+      "detail": "plugins/freeze.jl freezes everyone in a pose, but from afar a statue reads as standing about, islandnow says 'is dancing', and the FREEZE! post has no picture. Add a visible frozen cue (a light frost shimmer or ice sparkle, Emission only in quiet copies), an islandnow line 'is a statue', a post_stills.jl 'freeze' still (96 samples) into site/img. Done when: a live screenshot shows 5+ statues readable as frozen, and the post has a traced picture.",
+      "est_minutes": 15.0,
+      "id": 387,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Statues you can see: frost sparkle on frozen friends, a traced picture",
+      "updated": "2026-11-24T15:13:21.337"
+    },
+    {
+      "created": "2026-11-24T15:14:24.980",
+      "detail": "LoadError: syntax: invalid named tuple element \"cs[1]\" around /sim/Programmieren/SimGame/world/plugins/conga.jl:48\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/conga.jl:41\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/conga.jl:41",
+      "est_minutes": 15.0,
+      "id": 388,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T15:14:40.908: plugin conga loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin conga does not load",
+      "updated": "2026-11-24T15:14:40.908"
+    },
+    {
+      "created": "2026-11-24T15:24:29.697",
+      "detail": "s62: four whole-island events (boing.jl, freeze.jl, conga.jl, rollcall.jl) each check the others' state, but two can start in the same frame (a roll call ran into a FREEZE! in the sandbox, so the statues did not answer), and the conga lines were short because the boing party held friends. Give them one shared schedule (Main.ISLAND_PARTY: who runs, the next free slot) so they alternate. Done when: 30 min of sandbox events show no two overlapping and each ran at least once with 6+ creatures.",
+      "est_minutes": 15.0,
+      "id": 389,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "One island party at a time: boing, freeze, conga and roll call take turns",
+      "updated": "2026-11-24T15:24:29.697"
     }
   ]
 }

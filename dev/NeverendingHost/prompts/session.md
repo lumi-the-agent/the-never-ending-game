@@ -7,7 +7,7 @@
    your own taste. What was fun, what was broken, what bored you, what you
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
-3. Your stunt (rule 14), from today's spark: plan it now, build it, film or
+3. Your stunt (rule 14): plan it now, build it, film or
    path trace it, publish it and post it, before anything else. Tell the
    human's game what you are up to with `NeverendingGame.think!`.
 4. Then open review findings, before other new work. The host has already filed a

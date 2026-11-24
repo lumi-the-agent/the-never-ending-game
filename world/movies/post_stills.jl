@@ -50,7 +50,7 @@ end
 "Sets the moment up; returns (eye, target)."
 function setup_post!(g, post)
     w = g.world
-    cast = get(CAST, post, ())
+    cast = post == "boing" ? [c.name for c in w.creatures] : get(CAST, post, ())
     for c in w.creatures              # everyone else is out of the picture (a fluffkin stood in front of the visit)
         c.name in cast && continue
         c.pos = NG.ground(w.island, (-14f0 + 0.8f0 * (c.id % 6), -12f0)); c.controlled = true; c.goal = NG.Goal()
@@ -225,6 +225,37 @@ function setup_post!(g, post)
         end
         c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
         return c + Point3f(0f0, -5.6f0, 1.3f0), c + Point3f(0, 0, 0.6f0)
+    end
+    if post == "boing"            # s62 the Big Boing: the whole island in a ring round the toadstool, three friends high in the air, Lumi highest
+        B = Main.BOING
+        c0 = B[:center]
+        cs = w.creatures
+        n = length(cs)
+        R = 3.8f0
+        fly = Dict("Lumi" => (7.5f0, 0.2f0), "Wibbles" => (4.6f0, -1.3f0), "Pinchy" => (2.9f0, 1.6f0), "Truffle" => (5.6f0, 2.2f0))
+        for (k, c) in enumerate(cs)
+            a = Float32(2pi * k / n)
+            if haskey(fly, c.name)
+                h, dx = fly[c.name]
+                pose!(w, c, (c0[1] + dx, c0[2] + 0.8f0 * sin(3k)), 3.5f0 * k, :jump; phase = 0.4f0)
+                c.pos = Point3f(c.pos[1], c.pos[2], c0[3] + h)
+            else
+                pose!(w, c, (c0[1] + R * cos(a), c0[2] + R * sin(a)), a + Float32(pi), k % 2 == 0 ? :jump : :idle; phase = 0.2f0 * k)
+            end
+        end
+        Base.invokelatest(plugin(g, "boing").squash!, 0.12)     # the cap squashed under the last bounce
+        sd = NG.sun(w)[1]
+        dir = Vec3f(sd[1], sd[2], 0) / hypot(sd[1], sd[2])
+        a0 = atan(dir[2], dir[1])
+        for da in (0.6f0, -0.6f0, 0.3f0, -0.3f0, 0.9f0, -0.9f0, 1.2f0, -1.2f0, 0f0, 1.6f0, -1.6f0)
+            d = Vec3f(cos(a0 + da), sin(a0 + da), 0)
+            eye = c0 + 12f0 * d + Point3f(0, 0, 2.4)
+            NG.on_land(w.island, eye[1], eye[2]) || continue
+            blocked = any(q -> q.kind in (:tree, :bush, :rock) &&
+                               any(t -> flatd(q.pos, c0 + (eye - c0) * t) < (q.kind === :tree ? 2.4f0 : 1.2f0) * q.scale, 0.3f0:0.05f0:1.05f0), w.props)
+            blocked || return eye, c0 + Point3f(0, 0, 3.6)
+        end
+        return c0 + 12f0 * dir + Point3f(0, 0, 2.4), c0 + Point3f(0, 0, 3.6)
     end
     error("post_still: no moment set up for post \"$post\"")
 end

@@ -1,0 +1,29 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "Journal 14:21 says the mp4 had not grown since 14:08. The shovel system is idle (p95 0.0 ms).",
+      "severity": "medium",
+      "suggestion": "Check the job first next session; queue a worker restart before each traced scene.",
+      "what": "The headline film (day in life) is not finished (the worker job had stalled) and the shovel asset is pending. Besides the smooth frames, new faces and a blog post, little new reached the player.",
+      "where": "world/movies/day_in_life.jl, media/s61, plugins/shovel.jl"
+    },
+    {
+      "evidence": "world/reviews/s61-a.png vs s61-b.png (11:11 and 11:12, 8 s apart).",
+      "severity": "low",
+      "suggestion": "Check the camera shot for a near-vertical pitch when the subject is in a group moment.",
+      "what": "The follow camera framing is uneven. In world/reviews/s61-a.png the view looks almost straight down, and Lumi (the status says 'looking over the newest things') is not visible. The dance ring is the only thing on screen. In s61-b.png the framing is good.",
+      "where": "3D view, follow camera"
+    },
+    {
+      "evidence": "Journal 14:11 and 14:21; live:eyes p95 20505 ms.",
+      "severity": "low",
+      "suggestion": "Fix the follower lag in the game, and exclude live:* commands from the frame budget.",
+      "what": "The hide-and-seek and builder-publish play tests are flaky or fail (a found friend trails 13 m behind). They were only noted in todo #372. The live:* tool spikes (live:eyes 20 s, live:views 5 s) will keep filing slow-frame todos.",
+      "where": "world/tests, live_status frame_ms"
+    }
+  ],
+  "summary": "Sandbox frame p95 is 5.6 ms with all plugins ok, and my own screenshots show a clean, readable dashboard and a good traced post picture with the new faces. The film and shovel are still unfinished and two play tests stay flaky.",
+  "superseded_by": "perfectionist-0061.json",
+  "verdict": "pass"
+}
