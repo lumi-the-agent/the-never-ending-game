@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-24T19:01:15.872",
+  "error": "LavaError during vk_alloc:\n  the Vulkan device is lost or retired\n  Suggestion: Call reset_device!(device) and allocate again on the device it returns, or restart Julia.\nStacktrace:\n  [1] refuselost\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/device.jl:464 [inlined]\n  [2] vk_alloc(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, nbytes::Int64; extra_usage::UInt32, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:208\n  [3] vk_alloc\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:204 [inlined]\n  [4] Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:52\n  [5] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:32 [inlined]\n  [6] #allocate#622\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/ka_backend.jl:57 [inlined]\n  [7] allocate\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/ka_backend.jl:50 [inlined]\n  [8] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:127 [inlined]\n  [9] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:130 [inlined]\n [10] Hikari.Scene(; backend::Mantle.LavaDevice, accel::Nothing, hw_accel::Bool)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/scene.jl:63\n [11] create_scene_state(rscene::Makie.Scene, screen::RayMakie.Screen, root_scene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:597\n [12] new_scene_state(screen::RayMakie.Screen, rscene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:833\n [13] init_scene!(screen::RayMakie.Screen, mscene::Makie.Scene)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:740\n [14] colorbuffer(screen::RayMakie.Screen, format::Makie.ImageStorageFormat; figure::Nothing, clear::Bool, samples::Int64, px_per_unit::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1162\n [15] colorbuffer (repeats 2 times)\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155 [inlined]\n [16] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#24#25\"{Tuple{Float64, Float64}, Dict{Symbol, Any}}, shot::Main.ClipScript.var\"#32#33\"{Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421\n [17] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:376 [inlined]\n [18] choir_clip(path::String; spot::Tuple{Float64, Float64}, rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/choir.jl:148\n [19] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [20] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [21] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [22] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [23] top-level scope\n    @ none:1\n [24] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [25] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [26] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-24T19:02:27.066",
+  "id": "20261124-190115-836-clip",
+  "kind": "clip",
+  "params": {
+    "call": "choir_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        -12.0,
+        -2.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/island-choir.mp4",
+    "script": "movies/choir.jl"
+  },
+  "seconds": 65.3,
+  "started": "2026-11-24T19:01:21.751",
+  "status": "failed"
+}

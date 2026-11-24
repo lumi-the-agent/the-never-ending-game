@@ -17,7 +17,7 @@ const CHOOS = ("AH-CHOOOO!!!", "AAH-CHOOOOO!!!", "HA-CHOOOM!!!")
 const UHOH = ("Uh oh...", "Duck!", "She's gonna blow!", "Hold on to something!", "Not again...")
 const BLESS = ("Bless you!", "Bless you!!", "Gesundheit!", "Whoaaa!", "My ears!")
 const FIND = ("A golden feather!", "Mine! Mine!", "So shiny!", "I'll keep it forever!", "Feather hat!")
-const KEEP = (:follow, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
+const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
               :hide, :found, :freeze)
 
 push!(NG.BUSY_GOALS, :sneezed)

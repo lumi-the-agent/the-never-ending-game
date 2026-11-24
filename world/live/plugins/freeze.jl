@@ -13,7 +13,7 @@ const CRACKS = ("Pffff... HAHAHA!", "I can't... hee hee!", "My nose itches! HAHA
 const LAUGHS = ("Ha ha ha!", "Hee hee!", "You moved!", "Again! Again!", "Ho ho!")
 const POSES = (:dance, :wave, :jump, :dance, :wave)
 const STILL = ("...", "*holds still*", "*doesn't blink*", "mmmf...", "*wobbles*")
-const KEEP = (:follow, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk, :sleep, :hide, :found)
+const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk, :sleep, :hide, :found)
 
 push!(NG.BUSY_GOALS, :freeze)
 

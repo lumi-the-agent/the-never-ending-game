@@ -46,42 +46,210 @@ function BonitoAgents.app_jail(g::NeverendingGame, ::BonitoAgents.ProjectInfo)
 end
 
 """
-    GameView(port)
+    GameView(port; width = 1280, height = 760)
 
 The live game: its own page (WGLMakie, served by the game process on `port` of the machine the
-page came from), so a game that restarts is only a view that reloads.
+page came from), so a game that restarts is only a view that reloads. The game lays its dashboard
+out `width`×`height`; the view keeps that layout, scaled to the largest size the space it gets
+holds.
 """
-struct GameView
+Base.@kwdef struct GameView
     port::Int
+    width::Int = 1280
+    height::Int = 760
 end
+GameView(port::Integer) = GameView(; port = Int(port))
 
 function Bonito.jsrender(session::Bonito.Session, v::GameView)
-    frame = DOM.iframe(; class = "ne-game", allow = "fullscreen")
-    show = js"""$(frame).src = location.protocol + '//' + location.hostname + ':' + $(v.port) + '/'"""
-    return Bonito.jsrender(session, DOM.div(frame, show; class = "ne-game-view"))
+    frame = DOM.iframe(; class = "ne-game", allow = "fullscreen",
+                       style = "width:$(v.width)px;height:$(v.height)px;transform-origin:0 0")
+    card = DOM.div(frame; class = "ne-game-card")
+    area = DOM.div(card; class = "ne-game-area")
+    fit = js"""
+        const frame = $(frame), card = $(card), area = $(area);
+        frame.src = location.protocol + '//' + location.hostname + ':' + $(v.port) + '/';
+        const fit = () => {
+            const s = Math.min(area.clientWidth / $(v.width), area.clientHeight / $(v.height));
+            card.style.width = Math.floor(s * $(v.width)) + 'px';
+            card.style.height = Math.floor(s * $(v.height)) + 'px';
+            frame.style.transform = 'scale(' + s + ')';
+        };
+        new ResizeObserver(fit).observe(area);
+        fit();
+    """
+    return Bonito.jsrender(session, DOM.div(area, fit; class = "ne-game-slot"))
 end
 
+"""
+    IslandPanel(jp)
+
+How the character is and what the host does, as a row of cards under the game: its feeling and
+moods, the last thing that happened on the island for the first time, the reviewer's surprise and
+why, and the host's latest notes. Read again every few seconds while a page shows it.
+"""
+struct IslandPanel
+    jp::JailPaths
+end
+
+"""
+    TopBar(jp)
+
+The page's title, the character's live status (what it is doing, its session, its feeling, its
+thought bubble) and the links to its blog and to the game's repository.
+"""
+struct TopBar
+    jp::JailPaths
+end
+
+"What the panel and the bar show, from the files the host keeps for the game and its mood."
+function island_state(jp::JailPaths)
+    view = read_json(joinpath(jp.run, "mood.json"))
+    m = load_mood(jp)
+    feed = isfile(joinpath(jp.run, "activity.json")) ? read_json(joinpath(jp.run, "activity.json")) : Any[]
+    agent = isfile(joinpath(jp.run, "agent.json")) ? read_json(joinpath(jp.run, "agent.json")) : Dict{String,Any}()
+    thought_file = joinpath(jp.world, "state", "thought.json")
+    thought = isfile(thought_file) ? string(get(read_json(thought_file), "text", "")) : ""
+    cfg = load_config(jp)
+    return (; name = character_name(jp), feeling = string(view["feeling"]),
+            moods = [k => Float64(view[k]) for k in ("joy", "boredom", "loneliness")],
+            new = get(m, "last_new", nothing), surprise = get(m, "last_surprise", nothing),
+            notes = last([a for a in feed if get(a, "kind", "") in ("host", "review")], 4),
+            state = string(get(agent, "state", "off")), current = get(agent, "current", nothing), thought,
+            blog = isempty(cfg.blog_repo) ? "" : pages_url(cfg.blog_repo),
+            repo = isempty(cfg.game_repo) ? "" : "https://github.com/$(cfg.game_repo)")
+end
+
+"A label and a bar from 0 to 1."
+mood_bar(label, v) = DOM.div(DOM.span(label; class = "ne-bar-label"),
+                             DOM.span(DOM.span(; class = "ne-bar-fill", style = "width:$(round(Int, 100v))%");
+                                      class = "ne-bar"); class = "ne-bar-row")
+
+card(title, body...) = DOM.div(DOM.div(title; class = "ne-card-title"), body...; class = "ne-card")
+
+function island_dom(s)
+    new = s.new === nothing ? [DOM.div("nothing yet"; class = "ne-muted")] :
+        [DOM.div((DOM.span(k; class = "ne-chip") for k in first(s.new["kinds"], 6))...; class = "ne-chips"),
+         DOM.div("session $(s.new["session"])"; class = "ne-muted")]
+    surprise = s.surprise === nothing ? [DOM.div("not scored yet"; class = "ne-muted")] :
+        [DOM.div(DOM.span(string(s.surprise["score"]); class = "ne-score"), DOM.span(" / 10 · session $(s.surprise["session"])";
+                 class = "ne-muted")), DOM.div(s.surprise["why"]; class = "ne-quote")]
+    notes = [DOM.div(DOM.span(first(string(get(a, "time", "")), 16)[12:end]; class = "ne-note-time"), " ",
+                     string(get(a, "text", "")); class = "ne-note") for a in reverse(s.notes)]
+    return DOM.div(
+        card("How $(s.name) feels", DOM.div(s.feeling; class = "ne-feeling"), (mood_bar(k, v) for (k, v) in s.moods)...),
+        card("New on the island", new...),
+        card("The reviewer's surprise", surprise...),
+        card("The host", notes...); class = "ne-cards")
+end
+
+function topbar_dom(s)
+    cur = s.current
+    status = cur === nothing ? s.state : "$(s.state) · $(cur["label"]) · $(round(Int, cur["minutes"])) min"
+    links = filter(!isnothing, [isempty(s.blog) ? nothing : DOM.a("Blog"; href = s.blog, target = "_blank"),
+                                isempty(s.repo) ? nothing : DOM.a("GitHub"; href = s.repo, target = "_blank")])
+    return DOM.div(
+        DOM.div(DOM.span("The Never Ending Game"; class = "ne-title"),
+                DOM.span("an experiment in how creative an AI can be"; class = "ne-subtitle"); class = "ne-brand"),
+        DOM.div(DOM.span("●"; class = "ne-dot ne-dot-$(s.state)"), DOM.b(s.name), " · ", status, " · feels ", s.feeling,
+                isempty(s.thought) ? "" : DOM.span(" “$(s.thought)”"; class = "ne-thought"); class = "ne-status"),
+        DOM.div(links...; class = "ne-links"); class = "ne-topbar")
+end
+
+"A part of the page that shows `f(island_state(jp))`, read again every few seconds."
+function live_part(session::Bonito.Session, jp::JailPaths, f)
+    state = Observable(island_state(jp))
+    errormonitor(@async while isopen(session)
+        sleep(5)
+        state[] = island_state(jp)
+    end)
+    return Bonito.jsrender(session, map(f, session, state))
+end
+
+Bonito.jsrender(session::Bonito.Session, p::IslandPanel) = live_part(session, p.jp, island_dom)
+Bonito.jsrender(session::Bonito.Session, b::TopBar) = live_part(session, b.jp, topbar_dom)
+
+"Warm paper around the game's night, the character's gold for what is alive."
 const DASHBOARD_STYLE = Bonito.Styles(
-    Bonito.CSS(".ne-layout", "display" => "flex", "gap" => "12px", "height" => "100%", "min-height" => "0"),
-    Bonito.CSS(".ne-game-view", "flex" => "3 1 0", "min-width" => "0"),
-    Bonito.CSS(".ne-game", "width" => "100%", "height" => "100%", "border" => "0", "border-radius" => "8px"),
-    Bonito.CSS(".ne-chat", "flex" => "2 1 0", "min-width" => "320px", "display" => "flex",
-               "flex-direction" => "column", "min-height" => "0"))
+    Bonito.CSS(".ne-layout", "display" => "flex", "flex-direction" => "column", "height" => "100%", "min-height" => "0",
+               "background" => "#f4f1ea", "color" => "#1f2328", "font-family" => "system-ui, sans-serif"),
+    Bonito.CSS(".ne-topbar", "display" => "flex", "align-items" => "center", "gap" => "28px", "padding" => "12px 22px",
+               "background" => "#fffdf8", "border-bottom" => "1px solid #e6e0d4"),
+    Bonito.CSS(".ne-brand", "display" => "flex", "flex-direction" => "column", "line-height" => "1.2"),
+    Bonito.CSS(".ne-title", "font-weight" => "750", "font-size" => "18px", "letter-spacing" => "-.01em"),
+    Bonito.CSS(".ne-subtitle", "font-size" => "12px", "color" => "#7a746a"),
+    Bonito.CSS(".ne-status", "flex" => "1", "min-width" => "0", "font-size" => "14px", "white-space" => "nowrap",
+               "overflow" => "hidden", "text-overflow" => "ellipsis", "color" => "#4b4f56"),
+    Bonito.CSS(".ne-status b", "color" => "#1f2328"),
+    Bonito.CSS(".ne-thought", "font-style" => "italic", "color" => "#a36b00"),
+    Bonito.CSS(".ne-dot", "margin-right" => "6px", "color" => "#b8b2a6"),
+    Bonito.CSS(".ne-dot-working", "color" => "#22a05a"),
+    Bonito.CSS(".ne-links", "display" => "flex", "gap" => "8px"),
+    Bonito.CSS(".ne-links a", "color" => "#1f2328", "text-decoration" => "none", "background" => "#f4f1ea",
+               "border" => "1px solid #e0d9cb", "padding" => "5px 12px", "border-radius" => "999px", "font-size" => "13px"),
+    Bonito.CSS(".ne-links a:hover", "background" => "#ece6d8"),
+    Bonito.CSS(".ne-main", "flex" => "1", "display" => "flex", "gap" => "18px", "padding" => "18px", "min-height" => "0"),
+    Bonito.CSS(".ne-left", "flex" => "1 1 0", "min-width" => "0", "display" => "flex", "flex-direction" => "column",
+               "gap" => "14px"),
+    Bonito.CSS(".ne-game-slot", "flex" => "1 1 0", "min-height" => "240px", "display" => "flex"),
+    Bonito.CSS(".ne-game-area", "flex" => "1 1 0", "min-width" => "0", "display" => "flex", "justify-content" => "center",
+               "align-items" => "flex-start"),
+    Bonito.CSS(".ne-game-card", "flex" => "0 0 auto", "border-radius" => "14px", "overflow" => "hidden",
+               "background" => "#0b0d10", "box-shadow" => "0 6px 24px rgba(40,30,10,.18)"),
+    Bonito.CSS(".ne-game", "border" => "0", "display" => "block"),
+    Bonito.CSS(".ne-cards", "flex" => "0 0 auto", "display" => "grid",
+               "grid-template-columns" => "repeat(auto-fit, minmax(220px, 1fr))", "gap" => "14px"),
+    Bonito.CSS(".ne-card", "background" => "#fffdf8", "border" => "1px solid #e6e0d4", "border-radius" => "14px",
+               "padding" => "14px 16px", "font-size" => "13px", "line-height" => "1.45"),
+    Bonito.CSS(".ne-card-title", "font-size" => "11px", "font-weight" => "600", "text-transform" => "uppercase",
+               "letter-spacing" => ".07em", "color" => "#8a8377", "margin-bottom" => "10px"),
+    Bonito.CSS(".ne-feeling", "font-size" => "22px", "font-weight" => "650", "margin-bottom" => "10px"),
+    Bonito.CSS(".ne-bar-row", "display" => "flex", "align-items" => "center", "justify-content" => "space-between",
+               "gap" => "10px", "margin" => "5px 0"),
+    Bonito.CSS(".ne-bar-label", "color" => "#4b4f56"),
+    Bonito.CSS(".ne-bar", "display" => "inline-block", "flex" => "0 0 55%", "height" => "8px", "background" => "#ece6d8",
+               "border-radius" => "4px", "overflow" => "hidden"),
+    Bonito.CSS(".ne-bar-fill", "display" => "block", "height" => "100%", "background" => "#e0a526", "border-radius" => "4px"),
+    Bonito.CSS(".ne-chips", "display" => "flex", "flex-wrap" => "wrap", "gap" => "6px", "margin-bottom" => "8px"),
+    Bonito.CSS(".ne-chip", "background" => "#fbefd2", "color" => "#7a5300", "border-radius" => "999px",
+               "padding" => "3px 10px", "font-size" => "12px"),
+    Bonito.CSS(".ne-score", "font-size" => "30px", "font-weight" => "750"),
+    Bonito.CSS(".ne-quote", "color" => "#4b4f56", "font-style" => "italic", "margin-top" => "6px", "display" => "-webkit-box",
+               "-webkit-line-clamp" => "4", "-webkit-box-orient" => "vertical", "overflow" => "hidden"),
+    Bonito.CSS(".ne-muted", "color" => "#8a8377"),
+    Bonito.CSS(".ne-note", "margin" => "4px 0", "color" => "#4b4f56", "display" => "-webkit-box",
+               "-webkit-line-clamp" => "2", "-webkit-box-orient" => "vertical", "overflow" => "hidden"),
+    Bonito.CSS(".ne-note-time", "color" => "#a39c90", "font-variant-numeric" => "tabular-nums"),
+    Bonito.CSS(".ne-chat", "flex" => "0 0 440px", "display" => "flex", "flex-direction" => "column", "min-height" => "0",
+               "background" => "#fffdf8", "border" => "1px solid #e6e0d4", "border-radius" => "14px", "overflow" => "hidden"),
+    Bonito.CSS(".ne-chat-head", "padding" => "14px 18px 12px", "border-bottom" => "1px solid #eee8dc"),
+    Bonito.CSS(".ne-chat-title", "font-weight" => "700", "font-size" => "16px"),
+    Bonito.CSS(".ne-chat-sub", "font-size" => "12px", "color" => "#8a8377", "margin-top" => "2px"))
 
-"The pane: the game, and the character's chat beside it."
-function BonitoAgents.chat_pane(g::NeverendingGame, view)
-    chat = DOM.div(BonitoAgents.ChatHeader(view), BonitoAgents.ChatNotice(view), BonitoAgents.ChatTranscript(view),
-                   BonitoAgents.ChatComposer(view), BonitoAgents.ChatToolbar(); class = "ne-chat")
-    return DOM.div(DASHBOARD_STYLE, GameView(load_config(g.jp).web_port), chat; class = "ne-layout")
+"""
+    dashboard_layout(jp, chat...)
+
+The page: the top bar, the game and the island's cards on the left, the character's chat (`chat`,
+its widgets) on the right, under "Talk to ...".
+"""
+function dashboard_layout(jp::JailPaths, chat...)
+    name = character_name(jp)
+    left = DOM.div(GameView(load_config(jp).web_port), IslandPanel(jp); class = "ne-left")
+    head = DOM.div(DOM.div("Talk to $name"; class = "ne-chat-title"),
+                   DOM.div("$name reads what you write here between its steps."; class = "ne-chat-sub"); class = "ne-chat-head")
+    return DOM.div(DASHBOARD_STYLE, TopBar(jp), DOM.div(left, DOM.div(head, chat...; class = "ne-chat"); class = "ne-main");
+                   class = "ne-layout")
 end
+
+"The pane: the game, and the character's chat beside it (without the session pickers: the host sets those)."
+BonitoAgents.chat_pane(g::NeverendingGame, view) =
+    dashboard_layout(g.jp, BonitoAgents.ChatNotice(view), BonitoAgents.ChatTranscript(view), BonitoAgents.ChatComposer(view))
 
 # ── standalone ──────────────────────────────────────────────────────────────
 
 "The standalone page: what BonitoAgents' own page mounts around a chat (its stylesheets), full height."
 const PAGE_STYLE = Bonito.Styles(
     Bonito.CSS("html, body", "margin" => "0", "height" => "100%"),
-    Bonito.CSS(".ne-page", "height" => "100vh", "display" => "flex", "flex-direction" => "column",
-               "padding" => "8px", "box-sizing" => "border-box"),
+    Bonito.CSS(".ne-page", "height" => "100vh", "display" => "flex", "flex-direction" => "column"),
     Bonito.CSS(".ne-page > .bt-app", "flex" => "1 1 0", "min-height" => "0"))
 
 standalone_page(model) = DOM.div(Bonito.MarkdownCSS, BonitoAgents.ChatStyles, PAGE_STYLE, model; class = "ne-page")
@@ -150,8 +318,16 @@ function dashboard_up!(jp::JailPaths, server, srv, game, page; timeout::Real)
         chat = BonitoAgents.start_chat!(server, server.auth.user, w, jp.world; title = character_name(jp),
                                         app = game, key = CHARACTER_CHAT, jail = true)
     else
-        BonitoAgents.ensure_project_session!(server, chat)       # the chat of an earlier run, brought up again
+        # the chat of an earlier run, brought up again; in its own task: called from the task that
+        # serves this dashboard it never finished, while from another one it takes seconds
+        errormonitor(@async BonitoAgents.ensure_project_session!(server, chat))
     end
+    # as the host's sessions run: its model, no permission prompts (the jail is the limit). The agent
+    # starts at the chat's first turn, which asserts these.
+    model = load_config(jp).agent.model
+    isempty(model) || (chat.desired_config["model"] = model)
+    chat.desired_config["mode"] = "bypassPermissions"
+    @lock server.lock BonitoAgents.save_projects!(server)
     t0 = time()
     while !haskey(server.chat_models, chat.id)
         time() - t0 < timeout || error("the character's chat did not come up in $(timeout) s")

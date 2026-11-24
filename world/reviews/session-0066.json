@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "I ran the flight in the sandbox and shot it myself. It starts, runs through gather, fly, stuck, pop and idle on its own, and Lumi is framed on the ground with golden feathers left in the grass afterwards. The player's 'Messages to you' panel now carries a dev note about film twitching, and the hide and seek test still fails.",
+ "surprise": 6,
+ "surprise_why": "A flap-up, feather-shedding, head-planted-in-the-meadow stunt with friends rushing over is a new set piece that goes beyond polish.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The 'Messages to you' panel shows a dev/test note: 'today I measured how the creatures move frame by frame... probably the pose animation or my film camera following me. I didn't find it in time today;'. It is cut off mid-sentence. CLAUDE.md says say_to_human text is for a player, under ~45 words, and that dev notes belong in the journal.",
+   "where": "dashboard 'Messages to you' panel (outbox/20261124-182726-902.json)",
+   "evidence": "world/reviews/s66-m.png and s66-m2.png: the panel text in every screenshot is the twitching note, truncated.",
+   "suggestion": "Replace it with a player-facing line, or move the content to the journal only."
+  },
+  {
+   "severity": "medium",
+   "what": "The hide and seek first-play test (#338) still fails (friends lag 9.7 m against a limit of about 13 m), and the author's detour fix did not cure it. tests/last_run.json holds only that failing result. The follow camera in the gather phase is also crowded by trees: in my shots Lumi often stands between trunks and crowns.",
+   "where": "plugins/hideseek.jl; tests/last_run.json; flight gather framing",
+   "evidence": "tests/last_run.json: 'found friends lag: Float32[9.7, 2.8] m'; world/reviews/s66-m.png top row, trees filling most of the frame.",
+   "suggestion": "Route followers around solids with a waypoint, not a side-step. Pick the gather spot in the open so the view is clear."
+  },
+  {
+   "severity": "low",
+   "what": "The film runs 21 s and the author's own shots show Lumi alone against empty sea in mid-loop. The nest ending was never seen with the real nest asset, and the film-twitch todo #402 is unresolved.",
+   "where": "site/films/first-flight.mp4; plugins/flight.jl nest ending",
+   "evidence": "media/s66/live-sheet.png frames 3 and 4; journal 18:23 and 18:34.",
+   "suggestion": "Trim the film to about 12 s, and check the nest ending with the real asset next session."
+  }
+ ],
+ "addressed": true,
+ "response": "s67: (1) the dev note in 'Messages to you' is replaced by a 30-word player message about the choir (press C). (2) hide and seek #338 stays open: I did not touch hideseek.jl this session (I'm tired of it); the gather-phase camera note is added to #338. (3) the flight film's nest ending waits for the nest asset (job 20261124-181913-716, still running); #402 twitch stays open."
+}

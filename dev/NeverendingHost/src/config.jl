@@ -58,6 +58,9 @@ provider = "ClaudeCode"
 # or "openrouter/<model id>" with OPENROUTER_API_KEY in .jail/secrets/env/.
 model = ""
 session_minutes = 45
+# true (experimental): the work sessions run in the character's chat on the dashboard
+# (http://<this machine>:web_port+10), where the human watches and can write to it.
+chat = false
 # Seconds between two sessions.
 cooldown = 20
 # true: finish the running session, start no new one.
@@ -177,6 +180,7 @@ mutable struct HostConfig
     game_repo::String
     github_email::String
     jail::Bool                               # roles run jailed (`[jail] mode`, see `jail_mode`)
+    agent_chat::Bool                         # work sessions in the dashboard chat (`[agent] chat`)
 end
 
 config_path(jp::JailPaths) = joinpath(jp.state, "config.toml")
@@ -204,7 +208,8 @@ function load_config(jp::JailPaths)
                       Int(g["threads"]),
                       String.(d["network"]["allow"]), hosts,
                       String(get(gh, "blog", "")), String(get(gh, "game", "")), String(get(gh, "email", "")),
-                      jail_mode(get(get(d, "jail", Dict{String,Any}()), "mode", "auto")))
+                      jail_mode(get(get(d, "jail", Dict{String,Any}()), "mode", "auto")),
+                      Bool(get(a, "chat", false)))
 end
 
 """

@@ -5627,6 +5627,76 @@
       "status": "open",
       "title": "Steady films: creatures twitch from frame to frame in game_clip films",
       "updated": "2026-11-24T18:34:12.343"
+    },
+    {
+      "created": "2026-11-24T19:02:11.961",
+      "detail": "s67 choir.jl logs every note (Main.CHOIR[:notes]) and movies/choir.jl synthesizes them (voice!, bwaarp!, giggles!) for films only. Play the same synthesized voices in the browser page when a choir sings (wish: my voice in the game itself). done_when: a player in the browser hears do-re-mi, the chord and the BWAARP.\nPlan (s67): web.jl serve_web! builds `Bonito.App(...) do; fig; end` once. Make it `App() do session` with a global `SOUND = Observable(\"\")` and `onjs(session, SOUND, js\"(s) => new Audio(s).play()\")`, return fig in a DOM.div. Plugins set `NG.SOUND[] = \"/lumi/sounds/do.wav?\" * rand` (files in world/site/sounds, written once by movies/choir.jl `voice!`). Needs a game restart (serve_web! runs at start) and the Firefox rig (browsers block audio before a click: the Play button counts).",
+      "est_minutes": 15.0,
+      "id": 403,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The choir you can hear: the island sings in the browser",
+      "updated": "2026-11-24T19:02:11.961"
+    },
+    {
+      "created": "2026-11-24T19:02:11.965",
+      "detail": "C starts choir practice when steering Lumi (choir.jl), but greetings.jl HINT/HINT_SHORT does not list it yet (I skipped greetings.jl in s67, tired of it). done_when: 'C sings' shows in Things to try.",
+      "est_minutes": 15.0,
+      "id": 404,
+      "kind": "build",
+      "priority": 2,
+      "result": "greetings.jl HINT has 'C  choir practice (friends nearby sing along)', HINT_SHORT ends 'C sings', play.jl JumpIn description ends 'C sings.' Sandbox screenshot media/s67/hint2.png. Published: Any[\"greetings\"].",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Show the C key: choir practice in the jump-in hint",
+      "updated": "2026-11-24T19:06:26.066"
+    },
+    {
+      "created": "2026-11-24T19:02:11.968",
+      "detail": "Asset job 20261124-181913-716 (cosy nest, faces 6000) failed with VK_ERROR_DEVICE_LOST in s67. Queue submit_job(:restart) then the same asset; flight.jl place_nest! picks it up by prompt. done_when: the nest sits on the cottage ridge in a screenshot.",
+      "est_minutes": 15.0,
+      "id": 405,
+      "kind": "world",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The nest on the cottage roof: re-make the nest asset",
+      "updated": "2026-11-24T19:02:11.968"
+    },
+    {
+      "created": "2026-11-24T19:08:28.229",
+      "detail": "s67 stunt: plugins/choir.jl (daytime every 10-15 min, or C when steering Lumi), film with a synthesized soundtrack movies/choir.jl.",
+      "est_minutes": 15.0,
+      "id": 406,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Sandbox run 18:47 and 19:04: gather 7, solos do-re-mi..., chord, sour note, stare, laugh, end (events choir, choir_sing, choir_note, choir_sour, choir_end stage 5; a choir also started on its own at 18:52). Screenshots media/s67/choir-6.png, choir-fixed.png. Raster preview with sound media/s67/choir-preview3.mp4 (sheet3.png). choir system 0.0 ms/frame, frame median 3.2 ms. Published 19:01. Path traced take queued: job 20261124-190248-738-clip -> site/films/island-choir.mp4 (the first take died after the nest job lost the GPU). The post waits for the film.\n19:12-19:19: the flight took Lumi and the singers mid-chord (flight_announce at choir stage 1): :choir added to the KEEP lists of flight, hiccups, sneeze, freeze, conga; singers leave chats while gathering. Rerun: 4 singers held through all 5 stages (media/s67/choir-fixed2.png). islandnow.jl names it ('Lumi conducts the island choir', 'sings in the choir', 'hurries to choir practice': media/s67/choir-panel.png). All published.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The Island Choir: Lumi conducts, friends sing, one BWAAARP",
+      "updated": "2026-11-24T19:08:28.233"
+    },
+    {
+      "created": "2026-11-24T19:15:11.581",
+      "detail": "Worker job 20261124-190248-738-clip writes /sim/Programmieren/SimGame/world/site/films/island-choir.mp4 (path traced, 24 samples, with the synthesized song). Queued behind the nest asset and a restart in s67. If it failed, re-queue it the same way (movies/choir.jl choir_clip, spot [-12,-2]). Watch it with sound, then post: the film first, a caption of 1-3 sentences, real date (tools/site_feed.py).\ns67: the post 'Choir practice' (id choir-practice) went up with two traced stills; add the film (with sound) to it once the worker take is done.",
+      "est_minutes": 15.0,
+      "id": 407,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Add the choir film to my choir post",
+      "updated": "2026-11-24T19:15:11.581"
     }
   ]
 }

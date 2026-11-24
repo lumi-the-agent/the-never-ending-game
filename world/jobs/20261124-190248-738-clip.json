@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-24T19:02:48.738",
+  "id": "20261124-190248-738-clip",
+  "kind": "clip",
+  "params": {
+    "call": "choir_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        -12.0,
+        -2.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/island-choir.mp4",
+    "script": "movies/choir.jl"
+  },
+  "started": "2026-11-24T19:24:04.940",
+  "status": "running"
+}

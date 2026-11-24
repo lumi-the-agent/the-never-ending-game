@@ -54,6 +54,10 @@ function doing(w, c)
         return ("shows off a present from Lumi", 1)
     end
     g === :tinker && return walking ? ("is off to work", 1) : ("is tinkering", 1)
+    if g === :choir                                                                 # plugins/choir.jl
+        c.name == "Lumi" && return ("conducts the island choir", 0)
+        return walking ? ("hurries to choir practice", 1) : a === :laugh ? ("laughs at the sour note", 1) : ("sings in the choir", 0)
+    end
     a === :dance && return ("is dancing", 2)
     a === :talk && return ("is chatting", 2)
     a === :eat && return ("is eating berries", 3)

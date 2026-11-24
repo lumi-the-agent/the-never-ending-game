@@ -9,6 +9,8 @@ provider = "ClaudeCode"
 # .jail/secrets/env/).
 model = "opus"
 session_minutes = 45
+# true (experimental): the sessions run in Lumi's chat on the dashboard (port web_port+10)
+chat = true
 # Seconds between two sessions.
 cooldown = 20
 # true: finish the running session, start no new one.

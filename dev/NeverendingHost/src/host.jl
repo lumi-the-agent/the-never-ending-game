@@ -7,7 +7,7 @@ mutable struct Host
     budget::Budget
     activity::Activity
     services::Dict{String,Service}
-    current::Union{Nothing,AgentRun}
+    current::Union{Nothing,AgentRun,ChatRun}
     agent_state::String          # off waking working publishing reviewing idle paused waiting_budget waiting_auth no_auth error
     agent_detail::String
     sessions::Int
@@ -17,6 +17,7 @@ mutable struct Host
     running::Bool
     loop::Union{Nothing,Task}
     status_task::Union{Nothing,Task}
+    dashboard::Any                 # `serve_dashboard`'s handles while `[agent] chat` is on, else nothing
 end
 
 sessions_log(jp::JailPaths) = joinpath(jp.state, "sessions.jsonl")
@@ -61,7 +62,7 @@ function start(root::AbstractString = dirname(dirname(dirname(@__DIR__))); agent
     cfg = load_config(jp)
     proxy = HostProxy(joinpath(jp.run, "proxy.sock"); allow = cfg.allow, log = joinpath(jp.logs, "proxy.log"))
     host = Host(jp, cfg, proxy, Budget(jp, cfg), Activity(jp), Dict{String,Service}(), nothing, "off", "",
-                last_session(jp), 0, recent_cycle_tokens(jp), PortForward[], true, nothing, nothing)
+                last_session(jp), 0, recent_cycle_tokens(jp), PortForward[], true, nothing, nothing, nothing)
     if game
         # the reviewers' jails bind the sandbox's sockets: the folder must be there first
         mkpath(game_run(jp, :sandbox))
@@ -72,6 +73,8 @@ function start(root::AbstractString = dirname(dirname(dirname(@__DIR__))); agent
         end
     end
     worker && start_service!(host, "worker", cfg -> "using NeverendingGame; NeverendingGame.run_worker()"; network = true)
+    # the character's chat beside its game, where the sessions run (experimental, `[agent] chat`)
+    agent && cfg.agent_chat && (host.dashboard = serve_dashboard(jp.root; port = cfg.web_port + 10))
     agent && (host.loop = errormonitor(@async work_loop(host, revise)))
     host.status_task = errormonitor(@async while host.running
         write_agent_status(host)
@@ -180,7 +183,7 @@ end
 
 function stop!(host::Host)
     host.running = false
-    host.current === nothing || ACP.cancel!(host.current.client)
+    host.current === nothing || cancel_run!(host.current)
     for (name, s) in host.services
         stop!(s; ask = s -> name == "worker" || ask_game_shutdown(host.jp, name == "game" ? :live : :sandbox))
     end
@@ -486,8 +489,12 @@ function one_session!(host::Host)
     prompt = work_prompt(host, n, msgs, seen)
     atomic_write(joinpath(jp.run, "last_prompt.md"), prompt)
     host.agent_state, host.agent_detail = "working", ""
-    run = run_agent!(host, :agent, "session $n", host.cfg.agent, prompt;
-                     followups = r -> something(human_followup(host), continue_session(host, r), Some(nothing)))
+    followups = r -> something(human_followup(host), continue_session(host, r), Some(nothing))
+    run = if host.cfg.agent_chat && host.dashboard !== nothing
+        run_chat_session!(host, "session $n", host.cfg.agent, prompt; followups)
+    else
+        run_agent!(host, :agent, "session $n", host.cfg.agent, prompt; followups)
+    end
     if run === nothing
         host.agent_state = "no_auth"
         return false

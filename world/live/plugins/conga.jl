@@ -10,7 +10,7 @@ const SPEED = 1.5f0             # m/s along the line
 const STEP = 1.15f0             # m between two dancers
 const TIME = 36.0               # s of dancing
 const BEAT = 3.2                # s per "da-da-da-da-da-da HEY!"
-const KEEP = (:follow, :answer, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk, :freeze, :hide, :found, :sleep)
+const KEEP = (:follow, :choir, :answer, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk, :freeze, :hide, :found, :sleep)
 const PULL = (:fish, :pebble, :feel, :sunset, :tag, :present, :fetch, :interact)
 
 push!(NG.BUSY_GOALS, :conga)
