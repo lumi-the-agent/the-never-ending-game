@@ -86,6 +86,7 @@ include("sidebar.jl")          # project_sidebar + auto-generated icons
 include("github.jl")           # "From GitHub" project template
 include("dev_api.jl")          # inspection API + the "Debug BonitoAgents" chat
 include("chat_messaging.jl")   # opt-in peer coordination, independent of dev tools
+include("chat_jail.jl")        # opt-in: the chat's agent runs jailed on its worker (experimental)
 include("diagnostics.jl")      # timings, browser tabs and their consoles, for the dev tools
 include("apps.jl")             # apps: permanent server parts with a chat, a pane and MCP tools of their own
 include("plugins.jl")          # opt-in app packages discovered from the server environment

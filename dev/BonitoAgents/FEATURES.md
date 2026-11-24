@@ -37,6 +37,11 @@ enumerates.
   live. Off by default, per chat: an admin switches it on with *Remote julia*
   in the chat's ⋯ menu, and the server enforces it. `bt_sync_folder` copies
   code and data across first.
+- **Jailed chats (experimental)**: *Jail (experimental)* in a chat's ⋯ menu runs
+  its agent in the Jail package's agent jail on its worker: the chat's folder to
+  write, its own HOME and Julia depot, the provider's login bound in, the network
+  only through an allowlisting proxy plus the worker's relay. Off by default;
+  full on Linux (bubblewrap, socat), folder rules only on macOS and Windows.
 - **Julia values between machines**: `r = remote_session("MacBook")` inside the
   chat's session, then `r[:x] = x`, `y = r[:y]`, `r(f, x)`. Serialization,
   streamed, any size; the Julia versions must match (checked).

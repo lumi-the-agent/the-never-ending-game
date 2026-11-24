@@ -250,7 +250,8 @@ function finish!(s::Sneeze, game)
     w = game.world
     for id in vcat(s.friends, [s.lumi])
         c = NG.creature(w, id)
-        (c === nothing || c.goal.kind !== :sneezed) && continue
+        # never a controlled one: a mini game that starts takes Lumi over, and a new goal stopped it walking (s64 review)
+        (c === nothing || c.controlled || c.goal.kind !== :sneezed) && continue
         NG.choose_goal!(c, w)
     end
     empty!(s.flights); empty!(s.hunt)

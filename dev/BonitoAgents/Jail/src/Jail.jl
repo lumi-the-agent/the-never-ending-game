@@ -30,10 +30,15 @@ composable `Cmd`:
 `whitelist` folders get read+write host access; `readonly` folders are readable;
 system/runtime paths stay readable so the program and GPU driver stack load;
 everything else is denied.
+
+On top of that, [`agent_jail`](@ref) is the whole policy for a coding agent (its
+folder, its own HOME and Julia depot, a clean environment, the network only
+through a [`HostProxy`](@ref) and [`LoopbackBridge`](@ref)s), as BonitoAgents'
+jailed chats and NeverendingHost use it.
 """
 module Jail
 
-export jail, JailConfig, HostProxy, PortForward
+export jail, JailConfig, HostProxy, PortForward, LoopbackBridge, agent_jail
 
 using Sockets, Dates
 
@@ -42,6 +47,7 @@ using Sockets, Dates
 # be parsed before the backend is included.
 include("implementation.jl")
 include("proxy.jl")
+include("agent.jl")
 
 # Exactly one backend is compiled in. Each defines build_jail_cmd +
 # default_backend, and may add its own exports (e.g. Windows install helpers).

@@ -1,14 +1,14 @@
 {
   "boredom": 0.0,
   "fatigue": {
-    "asset": 0.37,
-    "feature": 1.89,
-    "film": 0.6,
-    "picture": 2.34,
-    "polish": 1.85,
-    "post": 1.79,
-    "self": 0.13,
-    "sound": 0.17
+    "asset": 0.22,
+    "feature": 2.13,
+    "film": 1.36,
+    "picture": 1.4,
+    "polish": 2.11,
+    "post": 2.07,
+    "self": 0.08,
+    "sound": 0.1
   },
   "happened": [
     "Boop",
@@ -88,9 +88,14 @@
     "sneeze_feather",
     "sneeze",
     "sneeze_windup",
-    "sneeze_end"
+    "sneeze_end",
+    "hiccup_caught",
+    "hiccup_boo",
+    "hiccup_end",
+    "hiccups",
+    "hiccup_punchline"
   ],
-  "joy": 0.86,
+  "joy": 0.99,
   "kinds_ever": [
     "post",
     "picture",
@@ -105,59 +110,61 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "sneeze_landed",
-      "sneeze_feather",
-      "sneeze",
-      "sneeze_windup",
-      "sneeze_end"
+      "hiccup_caught",
+      "hiccup_boo",
+      "hiccup_end",
+      "hiccups",
+      "hiccup_punchline"
     ],
-    "session": 64
+    "session": 65
   },
   "last_surprise": {
-    "score": 5,
-    "session": 63,
-    "why": "A narrated, path traced film of a day on the island is a new kind of output, but the game itself did not change."
+    "score": 6,
+    "session": 64,
+    "why": "Friends blown off their feet by Lumi's sneeze is a funny island-wide moment, but it is one more timed event like the Boing."
   },
-  "loneliness": 0.07,
+  "loneliness": 0.14,
   "perceived_until": "2026-11-24T17:07:18",
   "plugin_fatigue": {
-    "ballplay.jl": 0.13,
-    "beds.jl": 0.22,
-    "berry_race.jl": 0.17,
-    "birdbody.jl": 0.26,
-    "boing.jl": 1.36,
-    "builder.jl": 0.37,
-    "bumpcue.jl": 0.13,
-    "butterflies.jl": 0.13,
-    "cairns.jl": 0.13,
-    "conga.jl": 0.36,
-    "dancecircle.jl": 0.13,
-    "feelings.jl": 0.16,
-    "firefly_catch.jl": 0.15,
-    "flora.jl": 0.13,
-    "flowerfield.jl": 0.13,
-    "flowergift.jl": 0.13,
-    "freecam.jl": 0.13,
-    "freeze.jl": 0.36,
-    "garden.jl": 1.13,
-    "greetings.jl": 1.5,
-    "hideseek.jl": 0.35,
-    "islandnow.jl": 0.14,
-    "kite.jl": 0.16,
-    "lensclear.jl": 0.23,
-    "lookout.jl": 0.14,
-    "newname.jl": 0.13,
-    "nightshots.jl": 0.13,
-    "presents.jl": 0.17,
-    "rollcall.jl": 0.36,
-    "separation.jl": 0.14,
-    "shovel.jl": 0.22,
-    "showers.jl": 0.35,
-    "sneeze.jl": 1.0,
-    "tag.jl": 1.16,
-    "watering.jl": 0.15,
-    "wheelbarrow.jl": 0.21,
-    "workshop.jl": 0.15
+    "ballplay.jl": 0.08,
+    "beds.jl": 0.13,
+    "berry_race.jl": 0.1,
+    "birdbody.jl": 0.16,
+    "boing.jl": 0.82,
+    "builder.jl": 0.22,
+    "bumpcue.jl": 0.08,
+    "butterflies.jl": 0.08,
+    "cairns.jl": 0.08,
+    "camcut.jl": 1.0,
+    "conga.jl": 0.22,
+    "dancecircle.jl": 0.08,
+    "feelings.jl": 0.1,
+    "firefly_catch.jl": 0.09,
+    "flora.jl": 0.08,
+    "flowerfield.jl": 0.08,
+    "flowergift.jl": 0.08,
+    "freecam.jl": 0.08,
+    "freeze.jl": 0.22,
+    "garden.jl": 0.68,
+    "greetings.jl": 0.9,
+    "hiccups.jl": 1.0,
+    "hideseek.jl": 1.21,
+    "islandnow.jl": 0.08,
+    "kite.jl": 0.1,
+    "lensclear.jl": 0.14,
+    "lookout.jl": 0.08,
+    "newname.jl": 0.08,
+    "nightshots.jl": 0.08,
+    "presents.jl": 0.1,
+    "rollcall.jl": 0.22,
+    "separation.jl": 1.08,
+    "shovel.jl": 0.13,
+    "showers.jl": 0.21,
+    "sneeze.jl": 1.6,
+    "tag.jl": 0.7,
+    "watering.jl": 0.09,
+    "wheelbarrow.jl": 0.13,
+    "workshop.jl": 0.09
   },
   "sessions": [
     {
@@ -896,6 +903,69 @@
         "post": 0.4
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "hiccup_caught",
+          "who": 6
+        },
+        {
+          "kind": "hiccup_boo",
+          "who": 1
+        },
+        {
+          "kind": "hiccup_end",
+          "who": 1
+        },
+        {
+          "kind": "hiccups",
+          "who": 1
+        },
+        {
+          "kind": "hiccup_punchline",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/hiccups-2.mp4"
+      ],
+      "new_plugins": [
+        "hiccups.jl"
+      ],
+      "points": 3.8,
+      "repeats": [],
+      "session": 65,
+      "touched": [
+        "camcut.jl",
+        "hideseek.jl",
+        "separation.jl",
+        "sneeze.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "film": 2.9,
+        "polish": 0.3,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -945,6 +1015,8 @@
       "site/films/one-more-stone-v2.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
+      "site/img/big-sneeze-after.png",
+      "site/img/big-sneeze.png",
       "site/img/bump.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
@@ -990,7 +1062,7 @@
       "beds.jl": 1.795525442282372e9,
       "berry_race.jl": 1.7955211366498022e9,
       "birdbody.jl": 1.7955211366474676e9,
-      "boing.jl": 1.7955297768149655e9,
+      "boing.jl": 1.7955347464271314e9,
       "browsernight.jl": 1.7954000366191897e9,
       "builder.jl": 1.7955259400171402e9,
       "bumpcue.jl": 1.7955211366524117e9,
@@ -1008,8 +1080,8 @@
       "flowergift.jl": 1.7955211366518018e9,
       "freecam.jl": 1.795521136652105e9,
       "freeze.jl": 1.7955296703042512e9,
-      "garden.jl": 1.7955211366574242e9,
-      "greetings.jl": 1.7955283781585412e9,
+      "garden.jl": 1.7955346992788157e9,
+      "greetings.jl": 1.7955345198151731e9,
       "haze.jl": 1.7954853397788777e9,
       "hideseek.jl": 1.7955258236910377e9,
       "islandnow.jl": 1.795521136649431e9,
@@ -1031,18 +1103,19 @@
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955255505877626e9,
+      "sneeze.jl": 1.7955353744175954e9,
       "stars.jl": 1.7954845797675962e9,
       "sunset.jl": 1.7954781267170784e9,
-      "tag.jl": 1.7955211366534176e9,
+      "tag.jl": 1.7955346992790198e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 19,
+    "posts": 20,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T16:20:38",
+  "started": "2026-11-24T17:11:04",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1050,14 +1123,19 @@
       "BeamletOptics",
       "ConstrainedDynamicsVis",
       "Algoim",
-      "KeplerGL"
+      "KeplerGL",
+      "DPFEHM",
+      "PhyloNetworks",
+      "SatelliteDataSources"
     ],
     "vision": [
       "PPDocLayoutRunner",
       "DepthAnythingRunner",
       "QwenImageEditRunner",
-      "Hunyuan3DRunner"
+      "Hunyuan3DRunner",
+      "Qwen3EmbeddingRunner",
+      "ZImageRunner"
     ]
   },
-  "surprise_seen": 63
+  "surprise_seen": 64
 }

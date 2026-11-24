@@ -9,6 +9,16 @@ pieces fit together.
 
 ### Added
 
+- *Jail (experimental)* in a chat's ⋯ menu, off by default: the worker runs that
+  chat's agent jailed (`Jail.agent_jail`): it writes only the chat's folder, has a
+  HOME and a Julia depot of its own with the provider's login bound in, and
+  reaches only its provider, Julia's package servers, GitHub and the worker's
+  relay (through loopback bridges). Full on Linux with bubblewrap and socat; on
+  macOS and Windows the folder rules only.
+- The Jail package has `agent_jail` (the policy for a coding agent, also used by
+  NeverendingHost) and `LoopbackBridge` (a host loopback port reachable from a
+  jail without network).
+
 - The sidebar has a search box: it finds chats by title (or folder), the open
   ones first, then every other one, the most recently used first: closed chats,
   chats never used, and the sessions the workers' scans found. A result opens

@@ -34,6 +34,11 @@ Linux, bwrap only (an error on any other backend when set):
                    (whatever `network` says) except for that proxy, reachable
                    inside at `127.0.0.1:proxy_port` and set as `HTTPS_PROXY`.
                    Needs `socat` on the host.
+  * `loopback`   — `port => socket` pairs: the host's loopback `port` is
+                   reachable inside at `127.0.0.1:port`, through the unix
+                   socket of a [`LoopbackBridge`](@ref) (a local server the
+                   jailed program talks to, with the network otherwise cut).
+                   Needs `socat` on the host.
   * `setenv`     — variables set inside; with `clearenv = true` the only ones
                    (plus the proxy variables).
   * `chdir`      — working directory inside (default: the first whitelist dir).
@@ -61,6 +66,7 @@ Base.@kwdef struct JailConfig
     masks::Vector{String}                 = String[]
     proxy::String                         = ""
     proxy_port::Int                       = 3128
+    loopback::Vector{Pair{Int,String}}    = Pair{Int,String}[]
     setenv::Dict{String,String}           = Dict{String,String}()
     clearenv::Bool                        = false
     chdir::String                         = ""
@@ -69,7 +75,7 @@ end
 
 "True when `cfg` uses options only the bwrap backend implements."
 uses_bwrap_options(cfg::JailConfig) =
-    !isempty(cfg.binds) || !isempty(cfg.ro_binds) || !isempty(cfg.masks) || !isempty(cfg.proxy) ||
+    !isempty(cfg.binds) || !isempty(cfg.ro_binds) || !isempty(cfg.masks) || !isempty(cfg.proxy) || !isempty(cfg.loopback) ||
     !isempty(cfg.setenv) || cfg.clearenv || !isempty(cfg.chdir) || cfg.isolate
 
 """
@@ -88,7 +94,7 @@ function jail(cmd::Cmd;
               kwargs...)
     cfg = JailConfig(; kwargs...)
     cfg.backend === :bwrap || !uses_bwrap_options(cfg) ||
-        error("Jail: binds/ro_binds/masks/proxy/setenv/clearenv/chdir/isolate need backend = :bwrap (got $(cfg.backend))")
+        error("Jail: binds/ro_binds/masks/proxy/loopback/setenv/clearenv/chdir/isolate need backend = :bwrap (got $(cfg.backend))")
     exe = collect(String, cmd.exec)
     wl  = String[abspath(expanduser(d)) for d in whitelist]
     ro  = String[abspath(expanduser(d)) for d in readonly]

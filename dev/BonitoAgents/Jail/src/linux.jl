@@ -59,6 +59,9 @@ mount_depth(m::MountOp) = (length(splitpath(m.dst)), m.dst)
 "Where the proxy socket appears inside the jail."
 const JAIL_PROXY_SOCKET = "/run/jail-proxy/proxy.sock"
 
+"Where a `LoopbackBridge` socket for host port `port` appears inside the jail."
+jail_loopback_socket(port::Integer) = "/run/jail-loopback/$(port).sock"
+
 function _build_bwrap(exe, whitelist, readonly, cfg::JailConfig)
     bwrap = Sys.which("bwrap")
     bwrap === nothing && error("Jail: `bwrap` not found. Install bubblewrap or pass backend=:landrun.")
@@ -132,25 +135,45 @@ function _build_bwrap(exe, whitelist, readonly, cfg::JailConfig)
         push!(ops, MountOp(dir, ["--tmpfs", dir]))
         push!(ops, MountOp(JAIL_PROXY_SOCKET, ["--ro-bind", cfg.proxy, JAIL_PROXY_SOCKET]))
     end
+    if !isempty(cfg.loopback)
+        dir = dirname(jail_loopback_socket(0))
+        push!(ops, MountOp(dir, ["--tmpfs", dir]))
+        for (port, socket) in cfg.loopback
+            ispath(socket) || error("Jail: loopback socket $(socket) does not exist; start a LoopbackBridge first")
+            push!(ops, MountOp(jail_loopback_socket(port), ["--ro-bind", socket, jail_loopback_socket(port)]))
+        end
+    end
     sort!(ops; by = mount_depth)
     foreach(m -> append!(a, m.args), ops)
 
-    (cfg.network && isempty(cfg.proxy)) || push!(a, "--unshare-net")
+    (cfg.network && isempty(cfg.proxy) && isempty(cfg.loopback)) || push!(a, "--unshare-net")
     chdir = isempty(cfg.chdir) ? (isempty(whitelist) ? "" : first(whitelist)) : cfg.chdir
     isempty(chdir) || append!(a, ["--chdir", chdir])
 
-    if isempty(cfg.proxy)
-        append!(a, exe)
-    else
-        socat = Sys.which("socat")
-        socat === nothing && error("Jail: `proxy` needs `socat` on the host (it bridges the proxy socket to a port inside)")
+    # the jail's own loopback ports, each piped by socat to a host socket bound in above
+    bridges = Pair{Int,String}[]
+    if !isempty(cfg.proxy)
         url = "http://127.0.0.1:$(cfg.proxy_port)"
         for k in ("HTTPS_PROXY", "HTTP_PROXY", "https_proxy", "http_proxy")
             env[k] = url
         end
         env["NO_PROXY"] = env["no_proxy"] = "localhost,127.0.0.1,::1"
-        bridge = "$(socat) TCP-LISTEN:$(cfg.proxy_port),bind=127.0.0.1,fork,reuseaddr UNIX-CONNECT:$(JAIL_PROXY_SOCKET) 2>/dev/null & exec \"\$@\""
-        append!(a, ["/bin/sh", "-c", bridge, "jail"])
+        push!(bridges, cfg.proxy_port => JAIL_PROXY_SOCKET)
+    end
+    foreach(((port, _),) -> push!(bridges, port => jail_loopback_socket(port)), cfg.loopback)
+    if isempty(bridges)
+        append!(a, exe)
+    else
+        socat = Sys.which("socat")
+        socat === nothing && error("Jail: `proxy` and `loopback` need `socat` on the host (it bridges their sockets to ports inside)")
+        # the program starts once every bridge listens (its first connection must not be refused):
+        # a listening socket on 127.0.0.1 is `0100007F:<port in hex> 00000000:0000 0A` in /proc/net/tcp
+        start = join(("$(socat) TCP-LISTEN:$(port),bind=127.0.0.1,fork,reuseaddr UNIX-CONNECT:$(sock) 2>/dev/null &"
+                      for (port, sock) in bridges), " ")
+        ready = join(("grep -q '0100007F:$(uppercase(string(port; base = 16, pad = 4))) 00000000:0000 0A' /proc/net/tcp"
+                      for (port, _) in bridges), " && ")
+        script = start * " i=0; until $ready || [ \$i -ge 250 ]; do sleep 0.02; i=\$((i+1)); done; exec \"\$@\""
+        append!(a, ["/bin/sh", "-c", script, "jail"])
         append!(a, exe)
     end
     return Cmd(Cmd(a); env)

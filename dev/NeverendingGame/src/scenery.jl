@@ -370,10 +370,16 @@ function sync_text!(st::Stage, w::World)
     for (_, i) in cands
         length(targets) >= 3 && break
         c = w.creatures[i]
+        hero = c.controlled || c.id == AUTO_SUBJECT[][1]
         # a heap of sleepers under four tags hid them (perfectionist-0030): one sleeper's name is enough
         (c.action === :sleep || c.goal.kind === :sleep) && (sleepers += 1) > 1 && continue   # also the ones on their way to bed
-        px = on_screen(st.scene, head_point(w, c))
+        hp = head_point(w, c)
+        px = on_screen(st.scene, hp)
         px === nothing && continue
+        # a tag over a tree crown with nobody in view (perfectionist-0064): a creature hidden behind a
+        # trunk, crown or bush gets no tag (the one you steer or the camera watches keeps its own: its head
+        # often shows over a bush that `obstruction` counts in full)
+        hero || obstruction(w, eye, hp) < 0.6f0 || continue
         said = findfirst(s -> s.who == c.id, w.speech)
         push!(targets, px)
         push!(texts, creature_label(c, said === nothing ? nothing : w.speech[said]))
@@ -499,7 +505,9 @@ function follow_view(w::World, c::Creature; distance = 4.6f0, height = 1.5f0, zo
     z = zoom ? clamp(sh / 1.2f0, 0.6f0, 1.2f0) : 1f0     # small creatures get a closer camera, so they fill as much of the view
     distance *= z; height *= z
     heading = c.yaw + species_of(c).heading
-    best = (Inf32, target + Point3f(0, -distance, 4distance))
+    # never steeper than ~34° (tan = 0.68): the 4x-high fallback and the 3x-height step looked straight
+    # down on heads (perfectionist-0064, todo #239)
+    best = (Inf32, target + Point3f(-distance * cos(heading), -distance * sin(heading), 0.6f0 * distance))
     k = 0
     # no eye closer than 0.85 distance: at 0.6 a head filled half the view (perfectionist-0055, todo #239)
     # a step back at about the same height before any high view (high views look down on heads, s56)
@@ -512,7 +520,7 @@ function follow_view(w::World, c::Creature; distance = 4.6f0, height = 1.5f0, zo
                    (distance, 2height), (1.2f0 * distance, 3height)), turn in turns
         !closer && d < distance && continue      # a group view: a closer eye cuts players off the picture
         a = front ? heading + turn : heading + Float32(pi) + turn
-        eye = target + Point3f(d * cos(a), d * sin(a), h + 0.15f0 * d)
+        eye = target + Point3f(d * cos(a), d * sin(a), min(h + 0.15f0 * d, 0.68f0 * d))
         score = obstruction(w, eye, target) + 0.02f0 * k     # a clear view, the earlier (closer, lower) the better
         score < best[1] && (best = (score, eye))
         score <= 0.02f0 * k && break

@@ -601,15 +601,27 @@ function run_agent_session(w::Worker, ch::WorkerLink.LinkChannel, header::Abstra
         relay = lock(() -> w.relay, w.lock)   # the relay of the link `ch` came on
         # Names this session's MCP grants, so they are revoked with it.
         owner = "acp:" * bytes2hex(rand(Random.RandomDevice(), UInt8, 8))
+        # The chat's jail switch (experimental, `jail.jl`): its own proxy and relay bridges,
+        # stopped when the session ends. The jailed agent gets the provider's variables, not
+        # this worker's environment.
+        cage = get(header, "jail", false) === true ? jailed_session(relay, provider) : nothing
+        cmd = if cage === nothing
+            Cmd(`$agent_bin $agent_args`; env, dir = cwd)
+        else
+            agent_vars = merge(Dict{String,String}(provider.env), owner_env(c.worker_id), c.agent_env)
+            isempty(agent.path) || (agent_vars["PATH"] = agent.path)
+            jail_command(cage, `$agent_bin $agent_args`; provider, project_id, cwd, env = agent_vars)
+        end
         proc = try
             # `detach` = `setsid()` in the child: the agent leads its OWN process
             # group, so what it spawns (the MCP servers, its shells) goes down with
             # it in `kill_proc!`. The Julia eval workers under the MCP lead groups
             # of their own (Malt): the server's record of the chat's processes
             # reaches them (processes.jl).
-            open(detach(Cmd(`$agent_bin $agent_args`; env, dir = cwd)), "r+")
+            open(detach(cmd), "r+")
         catch e
             e isa Base.IOError || rethrow()
+            cage === nothing || close(cage)
             # Not `showerror`: Julia's message spells out the command WITH its whole
             # environment, secrets included, and this reason reaches the user.
             return refuse_channel(ch,
@@ -635,6 +647,7 @@ function run_agent_session(w::Worker, ch::WorkerLink.LinkChannel, header::Abstra
             revoke_mcp_grants!(relay, owner)
             lock(() -> delete!(w.sessions, ch), w.lock)
             kill_proc!(proc)
+            cage === nothing || close(cage)
             close(ch)
         end
         @info "BonitoWorker: ACP session ended" project_id cwd

@@ -8301,6 +8301,25 @@ function chat_header(session::Bonito.Session, model::ChatModel)
                 "Restarts the session.")
     devmode_item = dev.item
     devmode_on   = dev.is_on
+
+    jail = capability_item("Jail (experimental)", q -> q.jail,
+        function (want)
+            safe_set!(header_status, want ? "Jailing the agent…" : "Releasing the agent…")
+            set_jail!(state, project_id, want)
+            # The agent process is what gets jailed: the switch takes effect when the
+            # worker spawns it again.
+            user_ended!(model)
+            restart_chat_session!(model)
+            safe_set!(header_status, "")
+        end;
+        hook = "bt-header-jail",
+        confirm_text = "Run this chat's agent in a jail? (experimental)\n\nIt can then write only this " *
+                       "chat's folder, keeps a HOME and Julia depot of its own, and reaches only its " *
+                       "provider, the Julia package servers and GitHub. Full on Linux with bubblewrap; " *
+                       "on macOS and Windows only the folder rules apply.\n\nThis restarts the chat session.",
+        title = "Experimental: run this chat's agent in a jail on its worker (its folder to write, " *
+                "its own HOME and depot, the network only through an allowlist). Restarts the session.")
+    jail_item = jail.item
     # Both reach past this chat (other workers; the whole server): admins only.
     is_admin(viewer) || (remote_item = DOM.div(); devmode_item = DOM.div())
 
@@ -8354,6 +8373,7 @@ function chat_header(session::Bonito.Session, model::ChatModel)
                             "introspection into the server running this window"),
             remote_item,
             messaging_item,
+            jail_item,
             devmode_item,
             delete_item === nothing ? nothing : DOM.div(; class = "bw-menu-sep"),
             delete_item,

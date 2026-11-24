@@ -13,6 +13,7 @@ import Random
 import Sockets
 import WorkerLink
 import FileWatching
+import Jail
 include("mcp_relay.jl")
 include("harnesses.jl")
 include("adapter_patches.jl")
@@ -114,6 +115,7 @@ end
 using Dates: DateTime, datetime2unix, @dateformat_str
 using Scratch: @get_scratch!
 import AgentProviders   # provider descriptors (find_provider) — the SSOT shared with the server
+include("jail.jl")      # jailed chats (experimental, per chat): dispatches on the provider types
 
 # Per-install config directory, managed by Scratch.jl. Resolves to
 # `~/.julia/scratchspaces/<BonitoWorker-uuid>/config/` on every OS, so we get

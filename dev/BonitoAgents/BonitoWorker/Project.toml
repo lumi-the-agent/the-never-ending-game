@@ -9,6 +9,7 @@ AgentProviders = "c3d4e5f6-7a8b-49c0-b1d2-e3f4a5b6c7d8"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 FileWatching = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+Jail = "41ffc0ce-1074-4a77-8f3c-60cc2a47b273"
 JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 MsgPack = "99f44e22-a591-53d1-9472-aa23ef4bd671"
 Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
@@ -19,6 +20,7 @@ WorkerLink = "03840273-e5e6-4e74-9050-e95881fcd827"
 
 [sources]
 AgentProviders = {path = "../AgentProviders"}
+Jail = {path = "../Jail"}
 RemoteSync = {path = "../RemoteSync"}
 WorkerLink = {path = "../WorkerLink"}
 

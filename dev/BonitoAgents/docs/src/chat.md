@@ -171,8 +171,15 @@ pickers, and the agent provider. Everything you *do* to a chat lives in the
 *Compact*, *Restart session* and *Debug BonitoAgents*. Admins also find two
 switches there, both off by default: *Remote julia* (may this chat's agent run
 Julia and copy folders on other workers, see the tools page) and *Dev mode*
-(see the development page). The strip itself stays what you read and set, so a
-verb never sits among the pickers looking like another setting.
+(see the development page). Every chat also has *Jail (experimental)*, off by
+default: its agent then runs in a jail on its worker, writes only the chat's
+folder, keeps a HOME and a Julia depot of its own (your login for the provider
+is bound in, so resuming still works), and reaches only its provider, the Julia
+package servers, GitHub and the worker's relay. Full on Linux with bubblewrap
+(and `socat`); on macOS and Windows only the folder rules apply. claude.ai
+connectors are out of reach in a jailed chat. Switching it restarts the session.
+The strip itself stays what you read and set, so a verb never sits among the
+pickers looking like another setting.
 Long-running actions report in the muted status line left of the controls;
 outcomes arrive as a toast. When the agent session dies, a red **Session
 ended · Reconnect** chip appears next to the title.

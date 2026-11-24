@@ -192,3 +192,57 @@ end
 
 Base.close(f::PortForward) = close(f.server)
 Base.isopen(f::PortForward) = isopen(f.server)
+
+"""
+    LoopbackBridge(port, path) -> LoopbackBridge
+
+The reverse of [`PortForward`](@ref): make the host's loopback port `port` (a
+local server, such as a worker's relay) reachable from a jail without network.
+It serves the unix socket `path`, and pipes every connection to
+`127.0.0.1:port`. Pass `port => path` in `JailConfig.loopback`: inside, the
+jail's own `127.0.0.1:port` leads here. Stop it with `close`.
+"""
+mutable struct LoopbackBridge
+    port::Int
+    path::String
+    server::Sockets.PipeServer
+    task::Task
+end
+
+function LoopbackBridge(port::Integer, path::AbstractString)
+    ispath(path) && rm(path)
+    mkpath(dirname(path))
+    server = Sockets.listen(path)
+    b = LoopbackBridge(Int(port), String(path), server, Task(nothing))
+    b.task = errormonitor(@async while isopen(server)
+        client = try
+            accept(server)
+        catch e
+            isopen(server) || break     # closed by `close(b)`
+            rethrow()
+        end
+        errormonitor(@async Base.invokelatest(bridge_client, b, client))
+    end)
+    return b
+end
+
+function bridge_client(b::LoopbackBridge, client::IO)
+    local_server = try
+        Sockets.connect(Sockets.localhost, b.port)
+    catch e
+        # nothing listens on the port (the server restarts): drop the connection
+        e isa Base.IOError || rethrow()
+        return close(client)
+    end
+    up = @async tunnel(client, local_server)
+    tunnel(local_server, client)
+    wait(up)
+    return nothing
+end
+
+function Base.close(b::LoopbackBridge)
+    close(b.server)
+    ispath(b.path) && rm(b.path)
+    return nothing
+end
+Base.isopen(b::LoopbackBridge) = isopen(b.server)

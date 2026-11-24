@@ -161,12 +161,15 @@ function start!(a::WorkerAgent; on_frame::Union{Function,Nothing} = nothing)
     # runs; a spawn failure comes back as the reason. The transport shares the
     # agent's `ws` Ref, so this is also what `stop!` closes.
     transport = ACP.WorkerTransport(a)
+    # The chat's jail switch, live like `dev_mode` above: the worker jails the agent it spawns.
+    chat = get(a.state.projects[], project_id, nothing)
     a.ws[] = open_worker_channel(a.state, a.worker_id, Dict(
         "kind"       => "acp",
         "project_id" => project_id,
         "cwd"        => a.worker_path,
         "mcpServers" => mcp_list,
-        "provider"   => pname); priority = 1)
+        "provider"   => pname,
+        "jail"       => chat !== nothing && chat.jail); priority = 1)
 
     # Claude-like agents start turns of their own and mark where they end; the
     # connection opens and ends those (`ACP.AgentTurn`).

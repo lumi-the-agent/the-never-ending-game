@@ -111,6 +111,49 @@ using Test, Jail
         end
     end
 
+    # ── the agent jail and loopback bridges (Linux, bubblewrap + socat) ──────
+    @static if Sys.islinux()
+        if Jail.full_agent_jail() && Sys.which("socat") !== nothing
+            @testset "agent_jail: folders, HOME, network, loopback" begin
+                using Sockets
+                # a host-only server the jail may reach through a LoopbackBridge, and nothing else
+                srv = listen(Sockets.localhost, 0)
+                port = Int(getsockname(srv)[2])
+                server = @async while isopen(srv)
+                    c = try accept(srv) catch e; isopen(srv) ? rethrow() : break end
+                    @async (l = readline(c); write(c, "echo: $l\n"); close(c))
+                end
+                t = mktempdir()
+                bridge = LoopbackBridge(port, joinpath(t, "bridge.sock"))
+                proj, home, depot, outside = (mkpath(joinpath(t, d)) for d in ("proj", "home", "depot", "outside"))
+                script = """
+                echo "home=\$HOME"
+                exec 3<>/dev/tcp/127.0.0.1/$port && echo hi >&3 && read -r l <&3 && echo "loopback=\$l"
+                (exec 4<>/dev/tcp/1.1.1.1/443) 2>/dev/null && echo "internet=open" || echo "internet=closed"
+                touch \$PWD/made && echo "project=writable"
+                (touch $outside/x 2>/dev/null && echo "outside=writable") || echo "outside=read only"
+                """
+                out = read(ignorestatus(agent_jail(`bash -c $script`; dir = proj, home, depot,
+                                                   readonly = [outside], loopback = [port => bridge.path])), String)
+                close(bridge); close(srv)
+                @test occursin("home=$(homedir())", out)          # its own home, at the real HOME path
+                @test occursin("loopback=echo: hi", out)          # the bridged port answers at once
+                @test occursin("internet=closed", out)
+                @test occursin("project=writable", out) && isfile(joinpath(proj, "made"))
+                @test occursin("outside=read only", out) && !isfile(joinpath(outside, "x"))
+                @test islink(joinpath(home, ".local", "bin", "julia"))
+            end
+            @testset "agent_jail: a read only working folder, and no sandbox" begin
+                t = mktempdir()
+                proj, home, depot = (mkpath(joinpath(t, d)) for d in ("proj", "home", "depot"))
+                probe = `bash -c "touch made 2>/dev/null && echo writable || echo read-only"`
+                @test strip(read(agent_jail(probe; dir = proj, home, depot, writable_dir = false), String)) == "read-only"
+                plain = read(agent_jail(`bash -c "echo \$HOME"`; dir = proj, home, depot, sandbox = false), String)
+                @test strip(plain) == home                      # unjailed: HOME is its own folder
+            end
+        end
+    end
+
     # ── R2: Windows launcher aborts on integrity-label failure ───────────────
     # The launcher is a standalone script that runs `main()` on load, so we
     # can't include it here. Instead assert its labelling failure path now

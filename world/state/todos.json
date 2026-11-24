@@ -3339,12 +3339,12 @@
       "id": 239,
       "kind": "review",
       "priority": 2,
-      "result": "s56 part: follow_view (scenery.jl) no longer tries eyes at 0.6/0.75 of the distance (a head filled half the view); the fallbacks are 0.85 d and further/higher views. 4 follow screenshots 8 s apart (media/s56/follow-after.png) show subjects at ~15-25% of the view height; the follow camera test passes. Still open: a house or bush in front (the cottage covered half of one shot): obstruction counts trees and terrain, not actors or bushes.\ns56: (1) follow_view (scenery.jl) no closer than 0.85 of the distance (a head filled half the view at 0.6); (2) lensclear.jl counts AssetActors (cottage, benches, toadstools) by their mesh size (actor_size, cached in Main.LENS_SIZES), so the cottage no longer covers half a follow view. Evidence media/s56/follow-after.png, follow2-after.png; tests 'shows its creature big (15%)', 'clear view', 'new subject in the middle' pass; 'mostly sees faces' passed 1 of 2 runs (21/49 faces in the failing one, it failed in the s55 suite too). Still open: the fallbacks pick high views (looking down on the subject) more often now; a toadstool+rock in front once.\ns56: (1) follow_view (scenery.jl) no closer than 0.85 d; (2) lensclear.jl counts AssetActors by mesh size (actor_size); (3) follow_view tries every face-side angle (heading ±0.4..1.2) at every distance, plus a 1.25 d step back, before turning to the side/back or a high view. 'mostly sees faces' passed 2 of 2 after (3) (failed 2 of 2 before it), 'creature big', 'clear view' pass. media/s56/follow4-after.png: faces in 3 of 6; among the trees by the cottage it still picks high views looking down (shots 2, 5, 6). Next: a cheaper way past a crown than going up (a side step of 1-2 m), and a bush in front once (follow3-after shot 1).",
+      "result": "s56 part: follow_view (scenery.jl) no longer tries eyes at 0.6/0.75 of the distance (a head filled half the view); the fallbacks are 0.85 d and further/higher views. 4 follow screenshots 8 s apart (media/s56/follow-after.png) show subjects at ~15-25% of the view height; the follow camera test passes. Still open: a house or bush in front (the cottage covered half of one shot): obstruction counts trees and terrain, not actors or bushes.\ns56: (1) follow_view (scenery.jl) no closer than 0.85 of the distance (a head filled half the view at 0.6); (2) lensclear.jl counts AssetActors (cottage, benches, toadstools) by their mesh size (actor_size, cached in Main.LENS_SIZES), so the cottage no longer covers half a follow view. Evidence media/s56/follow-after.png, follow2-after.png; tests 'shows its creature big (15%)', 'clear view', 'new subject in the middle' pass; 'mostly sees faces' passed 1 of 2 runs (21/49 faces in the failing one, it failed in the s55 suite too). Still open: the fallbacks pick high views (looking down on the subject) more often now; a toadstool+rock in front once.\ns56: (1) follow_view (scenery.jl) no closer than 0.85 d; (2) lensclear.jl counts AssetActors by mesh size (actor_size); (3) follow_view tries every face-side angle (heading ±0.4..1.2) at every distance, plus a 1.25 d step back, before turning to the side/back or a high view. 'mostly sees faces' passed 2 of 2 after (3) (failed 2 of 2 before it), 'creature big', 'clear view' pass. media/s56/follow4-after.png: faces in 3 of 6; among the trees by the cottage it still picks high views looking down (shots 2, 5, 6). Next: a cheaper way past a crown than going up (a side step of 1-2 m), and a bush in front once (follow3-after shot 1).\nFollow camera never looks steeper than ~34°: scenery.jl follow_view caps eye height at 0.68 d and its fallback is 0.6 d behind (was 4 d straight up); camcut.jl cuts a side-flip glide once it gets steeper than 36°. 120 s sandbox sample every 2 s: max 36.7° (before the camcut cut: 47-48° spikes on 2 of 45 samples, during a dance ring); samples at 10 s steps 23-25°. Screens media/s65/cam2-*.png. Published.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Follow camera: no fence or crown across the frame, no shots straight down",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T17:34:25.219"
     },
     {
       "created": "2026-11-23T18:22:30.081",
@@ -4720,7 +4720,7 @@
     },
     {
       "created": "2026-11-24T10:34:42.479",
-      "detail": "perfectionist-0064 [fun, medium]: The first-play test fails today with exactly the s61 numbers: 'found friends lag: 13.7, 2.8 m'. The game's promise, a growing parade of found friends, breaks with the first friend.\nWhere: plugins/hideseek (parade slots), tests/minigames.jl\nSuggestion: Found friends run (fast) to their slot when more than 3 m away, and say something funny when they catch up.\nDone when: The hide and seek first-play test passes 3 runs in a row with both lags < 4 m.\nEvidence: live_tests('a first play') at 11:42: Hide and seek failed 'found friends lag: Float32[13.7, 2.8] m'",
+      "detail": "perfectionist-0064 [fun, medium]: The first-play test fails today with exactly the s61 numbers: 'found friends lag: 13.7, 2.8 m'. The game's promise, a growing parade of found friends, breaks with the first friend.\nWhere: plugins/hideseek (parade slots), tests/minigames.jl\nSuggestion: Found friends run (fast) to their slot when more than 3 m away, and say something funny when they catch up.\nDone when: The hide and seek first-play test passes 3 runs in a row with both lags < 4 m.\nEvidence: live_tests('a first play') at 11:42: Hide and seek failed 'found friends lag: Float32[13.7, 2.8] m'\n\ns65: First-play test still fails: 'found friends lag: 10.1, 2.7 m' (was 13.7). s65 added a sidestep when a follower hardly moves for 1.5 s and Lumi's pace (speed ratio x1.35) when > 6 m back: no change, so Pinchy (Crabbit, heading pi/2) is not stuck and not slow by species speed. Next: log Pinchy's pos/yaw/action per frame during the test; suspect move_heading! returning false (on_land) or Separation pushing it back, or the crab's sideways heading. Done when: the test passes 3 runs in a row with both lags < 4 m. Probe (0.7 s samples): Wibbles, found at (2.8, 6.0), ran toward Lumi and stopped near (1.0, 3.9) with action :run for 8 s while Lumi walked on (lag 3 -> 11.5 m). A sidestep when it hardly moved (same side, 1.8 s) made it worse (13.7-15.1 m), alternating sides 10 m: reverted. Next: check move_heading!'s return value there (on_land, the lily pond, the path) and Separation's push; or let followers walk Lumi's own trail (breadcrumbs) instead of a straight line.\n\ns65 later: the bush at (0.4, 2.5) lies between Wibbles' cover and Lumi's path. Tried followers walking Lumi's own trail (newest trail point in a clear straight line, `standable` every 0.4 m): still 13.5-14.6 m. Probe: Wibbles stands EXACTLY still at (3.6, 5.3), action :run, 3 clear trail points in reach, `standable` true, 1.1 m from the tree at (4.1, 4.3) (scale 0.73). So it is not the aim: something holds it in place each frame (Separation pushing it out of the tree's footprint by exactly its step, or move_heading! returning false). Reverted. Next: call move_heading! there in live_eval and print its return and Separation's push.\n\ns65 cause found: move_heading! works (5 steps of 0.06 m towards Lumi), then Separation pushes Wibbles back 0.35 m in one frame: it is wedged in the 1.2 m gap between the bush at (2.3, 4.5) (footprint 0.65) and the tree at (4.1, 4.3) (footprint 0.26), and a Blorbo body does not fit through. Fix next: a follower more than 3 m behind and hardly moving for 1 s picks a detour point on the far side of the nearest solid (perpendicular to its line, the side AWAY from the second solid; check with `standable` incl. the pond) and walks there first; or let found followers use slide_steered! like the player (separation.jl:34, only `controlled` creatures today).\n\ns65 last try: letting `:found` creatures use slide_steered! (separation.jl:38) changed nothing (10.0, 10.0, 13.0 m): reverted. The slide alone does not beat Separation's push-out in the bush/tree gap. Go with the detour point next.",
       "est_minutes": 30.0,
       "id": 338,
       "kind": "review",
@@ -5252,7 +5252,7 @@
     },
     {
       "created": "2026-11-24T13:07:05.205",
-      "detail": "perfectionist-0064 [ui, medium]: 'Truffle' floats over a tree crown with no Truffle in view; Lumi's 'A feather tickles my beak' bubble hangs over a tree / the cottage while Lumi is hidden or off screen; during the sneeze 'Truffle', 'My ears', 'Lumi' and a speech line stack into one block.\nWhere: scenery.jl sync_text!, builder.jl thought!\nSuggestion: Hide the tag/bubble when its creature is occluded or off screen (or pin it to the screen edge with an arrow), and push overlapping labels apart vertically.\nDone when: In 10 orbit/follow screenshots no tag or bubble is drawn without its creature visible under it, and no two labels overlap.\nEvidence: reviews/p64/orbit.png, follow2.png, sneeze4.png",
+      "detail": "perfectionist-0064 [ui, medium]: 'Truffle' floats over a tree crown with no Truffle in view; Lumi's 'A feather tickles my beak' bubble hangs over a tree / the cottage while Lumi is hidden or off screen; during the sneeze 'Truffle', 'My ears', 'Lumi' and a speech line stack into one block.\nWhere: scenery.jl sync_text!, builder.jl thought!\nSuggestion: Hide the tag/bubble when its creature is occluded or off screen (or pin it to the screen edge with an arrow), and push overlapping labels apart vertically.\nDone when: In 10 orbit/follow screenshots no tag or bubble is drawn without its creature visible under it, and no two labels overlap.\nEvidence: reviews/p64/orbit.png, follow2.png, sneeze4.png\n\ns65: s65 part 1 (scenery.jl sync_text!): a creature whose head is hidden (obstruction > 0.6) gets no tag, except the steered one and the camera's subject. media/s65/tags-grid.png: still a 'Hopscotch' tag over a bush (the camera's subject hidden behind it: the camera's fault) and stacked labels when several talk. Done when: 10 orbit/follow screenshots, no tag without its creature visible, no two labels overlap.",
       "est_minutes": 15.0,
       "id": 376,
       "kind": "review",
@@ -5543,6 +5543,48 @@
       "status": "open",
       "title": "A sneeze's end must not hand the steered Lumi a new goal",
       "updated": "2026-11-24T17:06:57.223"
+    },
+    {
+      "created": "2026-11-24T17:34:25.182",
+      "detail": "Stunt s65: plugins/hiccups.jl. Lumi gets hiccups, runs to friends for help, they catch them, popcorn hopping with bubbles, BOO!, everyone leaps, Lumi: ...hic. H as Lumi.",
+      "est_minutes": 15.0,
+      "id": 397,
+      "kind": "feature",
+      "priority": 2,
+      "result": "plugins/hiccups.jl published. Sandbox run: 7 of 10 caught it in 40 s (Lumi, Cumulus, Pinchy, Wibbles, Hopscotch, Marshmallow, Sir Sniffsalot), then BOO and the punchline (media/s65/hic-7.png). Player: jump in, H -> 3 caught in 22 s (media/s65/player-h.png). Traced film site/films/hiccups.mp4 (960x540, 24 samples, 15 s; job 20261124-172036-704-clip), retake with the Boing toadstool out of frame queued as site/films/hiccups-2.mp4 (job 20261124-173354-304-clip). Post 'HIC!' on the front page. fps 30 in the sandbox status line. The retake finished at 17:41 (Gloop mid-air, bubbles, no toadstool, media/s65/retake-grid.png); the post now shows site/films/hiccups-2.mp4, the first take moved to media/s65/hiccups-take1.mp4.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The hiccups: catching hiccups that hop friend to friend until a BOO",
+      "updated": "2026-11-24T17:34:25.216"
+    },
+    {
+      "created": "2026-11-24T17:34:25.222",
+      "detail": "s65 part 1 (scenery.jl sync_text!): a creature whose head is hidden (obstruction > 0.6) gets no tag, except the steered one and the camera's subject. media/s65/tags-grid.png: still a 'Hopscotch' tag over a bush (the camera's subject hidden behind it: the camera's fault) and stacked labels when several talk. Done when: 10 orbit/follow screenshots, no tag without its creature visible, no two labels overlap.",
+      "est_minutes": 15.0,
+      "id": 398,
+      "kind": "review",
+      "priority": 2,
+      "result": "duplicate of #376, details moved there",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Name tags only over friends you can see: no tag over a crown, no stacked labels",
+      "updated": "2026-11-24T17:37:18.565"
+    },
+    {
+      "created": "2026-11-24T17:34:25.225",
+      "detail": "First-play test still fails: 'found friends lag: 10.1, 2.7 m' (was 13.7). s65 added a sidestep when a follower hardly moves for 1.5 s and Lumi's pace (speed ratio x1.35) when > 6 m back: no change, so Pinchy (Crabbit, heading pi/2) is not stuck and not slow by species speed. Next: log Pinchy's pos/yaw/action per frame during the test; suspect move_heading! returning false (on_land) or Separation pushing it back, or the crab's sideways heading. Done when: the test passes 3 runs in a row with both lags < 4 m.",
+      "est_minutes": 15.0,
+      "id": 399,
+      "kind": "review",
+      "priority": 2,
+      "result": "duplicate of #338, details moved there",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Hide and seek: found friends keep up with you (the crab falls 10 m behind)",
+      "updated": "2026-11-24T17:37:18.567"
     }
   ]
 }

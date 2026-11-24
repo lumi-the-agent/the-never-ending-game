@@ -242,6 +242,12 @@ mutable struct ProjectInfo
     # Independent, explicit opt-in to sending AND receiving peer messages.
     # Dev mode never grants this capability. Checked live, including dispatch.
     chat_messaging::Bool
+    # Experimental, off unless the user turns it on in the chat's ⋯ menu: the
+    # worker runs this chat's agent in a jail (BonitoWorker's `jailed_session`:
+    # its folder to write, its own HOME and Julia depot, the network only
+    # through an allowlist). Persisted and never derived, like `dev_mode`;
+    # switching it restarts the session.
+    jail::Bool
     # The app this chat belongs to (`app_id` of one of `ServerState.apps`), or ""
     # for an ordinary chat. An app chat's pane is what the app renders
     # (`chat_pane`), and its agent gets the app's own tools. Persisted, and never
@@ -273,6 +279,7 @@ ProjectInfo(id, name, worker_id, server_path, worker_path, created) =
                 false,                   # dev_mode
                 false,                   # remote_eval
                 false,                   # chat_messaging
+                false,                   # jail
                 "",                      # app
                 "",                      # app_key
                 ProjectFileIndex())      # file_index
@@ -1641,6 +1648,7 @@ function save_projects!(s::ServerState)
                      "dev_mode"      => p.dev_mode,
                      "remote_eval"   => p.remote_eval,
                      "chat_messaging" => p.chat_messaging,
+                     "jail"          => p.jail,
                      "app"           => p.app,
                      "app_key"       => p.app_key,
                      "desired_config" => p.desired_config)
@@ -1691,6 +1699,8 @@ function load_projects!(s::ServerState)
             # never assumed.
             p.remote_eval = get(d, "remote_eval", false) === true
             p.chat_messaging = get(d, "chat_messaging", false) === true
+            # Absent ⇒ false: the jail is experimental and asked for per chat.
+            p.jail = get(d, "jail", false) === true
             app = get(d, "app", "")
             p.app = app isa AbstractString ? String(app) : ""
             key = get(d, "app_key", "")

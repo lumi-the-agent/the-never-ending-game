@@ -215,7 +215,7 @@ uuid = "4a1c91af-1c90-46a4-8594-a3846516869d"
 version = "0.1.0"
 
 [[deps.BonitoWorker]]
-deps = ["AgentProviders", "Dates", "FileWatching", "HTTP", "JSON", "MsgPack", "Pkg", "Random", "RemoteSync", "Scratch", "Sockets", "WorkerLink"]
+deps = ["AgentProviders", "Dates", "FileWatching", "HTTP", "JSON", "Jail", "MsgPack", "Pkg", "Random", "RemoteSync", "Scratch", "Sockets", "WorkerLink"]
 path = "dev/BonitoAgents/BonitoWorker"
 uuid = "98909ed9-6989-4829-81af-73688ee23085"
 version = "0.1.0"

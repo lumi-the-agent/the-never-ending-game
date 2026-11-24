@@ -48,6 +48,13 @@ function NG.step!(::CamCut, game, dt)
         BLOCK_CUTS[] += 1
         LAST_BLOCK_CUT[] = w.t
     end
+    # a side flip glides through the space above the subject and looks down on heads for a moment
+    # (s65: 48° in a 90 s sample, review 0064): cut to the goal view once the glide gets that steep
+    steep(e, t) = (d = t - e; atand(-d[3], hypot(d[1], d[2])) > 36)
+    if steep(rig.eye, rig.target) && !steep(eye, target)
+        rig.eye = eye; rig.target = target
+        CUTS[] += 1
+    end
     return
 end
 
