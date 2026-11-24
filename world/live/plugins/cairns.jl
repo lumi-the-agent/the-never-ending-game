@@ -308,12 +308,61 @@ function NG.start!(::Cairns, game)
     NG.CAMERA_GROUPS["cairns"] = w -> CAIRN[:site] === nothing ? nothing : group(w)
 end
 
+# ── past a full cairn (111 stones drawn, the count goes on: 2022 by s71) the growth shows as flags: one on top of
+# the stack, and a pennant in the ground round the outer ring for every PER_FLAG stones more, in rainbow colours ──
+const PER_FLAG = 150
+const MAX_FLAGS = 16
+const FLAG_COLOURS = (RGBf(0.93, 0.25, 0.3), RGBf(1.0, 0.55, 0.15), RGBf(1.0, 0.85, 0.15), RGBf(0.3, 0.8, 0.4),
+                      RGBf(0.2, 0.5, 0.95), RGBf(0.6, 0.35, 0.9))
+
+function pennant()
+    pts = [Point3f(0, 0, 0), Point3f(0, 0, -0.2), Point3f(0.32, 0, -0.1)]
+    GeometryBasics.Mesh([pts; pts], [GeometryBasics.GLTriangleFace(1, 2, 3), GeometryBasics.GLTriangleFace(4, 6, 5)];
+                        normal = [fill(Vec3f(0, -1, 0), 3); fill(Vec3f(0, 1, 0), 3)])
+end
+
+function draw_flags!(game)
+    n = CAIRN[:n]
+    get(CAIRN, :flags_shown, -1) == n && return
+    CAIRN[:flags_shown] = n
+    d = plots!(game)
+    s0 = site(game)
+    s0 === nothing && return
+    k = n > MAX_STONES ? 1 + min(MAX_FLAGS, div(n - MAX_STONES, PER_FLAG)) : 0
+    poles = Point3f[]; psz = Vec3f[]; flags = Point3f[]; frot = Quaternionf[]; fcol = RGBf[]
+    if k > 0
+        o, sz = stone(STACK)
+        top = s0 + o + Point3f(0, 0, 0.5f0 * sz)
+        push!(poles, top); push!(psz, Vec3f(0.025, 0.025, 1.3))
+        push!(flags, top + Point3f(0, 0, 1.28f0)); push!(frot, NG.rot_z(0.4f0)); push!(fcol, FLAG_COLOURS[1])
+        for i in 1:(k - 1)
+            a = 2pi * i / (k - 1) + 0.2
+            q = NG.ground(game.world.island, (s0[1] + 2.75f0 * cos(a), s0[2] + 2.75f0 * sin(a)))
+            push!(poles, q); push!(psz, Vec3f(0.015, 0.015, 0.75))
+            push!(flags, q + Point3f(0, 0, 0.74f0)); push!(frot, NG.rot_z(Float32(a) + 1.2f0)); push!(fcol, FLAG_COLOURS[mod1(i, length(FLAG_COLOURS))])
+        end
+    end
+    if isempty(poles)
+        poles = [HIDE]; psz = [Vec3f(0)]; flags = [HIDE]; frot = [Quaternionf(0, 0, 0, 1)]; fcol = [FLAG_COLOURS[1]]
+    end
+    if !haskey(d, :poles) || d[:poles].parent === nothing
+        d[:poles] = meshscatter!(game.stage.scene, poles; marker = NG.shape(:cylinder), markersize = psz,
+                                 color = RGBf(0.55, 0.4, 0.25), name = :cairn_poles)
+        d[:flags] = meshscatter!(game.stage.scene, flags; marker = pennant(), markersize = fill(Vec3f(1), length(flags)),
+                                 rotation = frot, color = fcol, name = :cairn_flags)
+    else
+        Makie.update!(d[:poles]; arg1 = poles, markersize = psz)
+        Makie.update!(d[:flags]; arg1 = flags, markersize = fill(Vec3f(1), length(flags)), rotation = frot, color = fcol)
+    end
+end
+
 function NG.step!(::Cairns, game, dt)
     if get(CAIRN, :dirty, false)
         CAIRN[:dirty] = false
         game.dash === nothing || save_count(game)   # copies (traced clips, stills) never write the live count
     end
     show_stones!(game)
+    draw_flags!(game)
     w = game.world
     show_loose!(game)
     lumi_stone!(game, w)

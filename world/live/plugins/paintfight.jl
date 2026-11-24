@@ -16,7 +16,7 @@ const NSPLAT = 220                # splat pieces on the grass
 const NBLOB = 14                  # paint spots per creature
 const TRIP = 2.2                  # seconds of wobbling before the spill
 const FIGHT = 20.0                # seconds of paint fight
-const STAY = 1500.0               # spots stay on bodies (sim seconds)
+const STAY = 150.0                # spots stay on bodies (sim seconds; 25 min of balls was a balloon seller, perfectionist-0070)
 const COLOURS = (RGBf(0.95, 0.22, 0.32), RGBf(0.18, 0.52, 0.96), RGBf(1.0, 0.84, 0.12),
                  RGBf(0.28, 0.86, 0.52), RGBf(0.66, 0.34, 0.94), RGBf(1.0, 0.5, 0.12))
 const WOBBLE = ("whoa...", "whoa-whoa-", "WHOA-WHOA-WHOAAA!")
@@ -132,7 +132,7 @@ function blob!(w, c, col)
     k == 0 && return
     # the same direction in the part's own frame, onto its surface
     at = normalize(inv(out[k][2][j]) * dir) * 0.86f0
-    push!(list, (k, j, at, 0.09f0 + 0.06f0 * rand(w.rng), col))
+    push!(list, (k, j, at * 0.85f0, 0.055f0 + 0.04f0 * rand(w.rng), col))   # small and sunk in: dabs, not balls
     length(list) > NBLOB && popfirst!(list)
     P[:until][c.id] = w.t + STAY
 end
@@ -174,6 +174,9 @@ function draw_blobs!(w)
         # a giant's spots, scaled with it, hung round it like balloons (Lumi's mesh parts sit at its feet point,
         # so its spots never lay on the surface): none while it is big
         g > 1.05f0 && continue
+        # the creature the player steers shows none: the chase camera looks at its back (a bunch of balls filled
+        # the middle of every mini game after a fight, perfectionist-0070)
+        c.controlled && continue
         for (k, j, at, r, col) in list
             (k > length(out) || j > length(out[k][1])) && continue
             o = out[k]
@@ -487,6 +490,10 @@ function NG.start!(s::PaintFight, game)
     P[:splat] = Any[]
     haskey(P, :spots) || (P[:spots] = Dict{Int32,Vector{Any}}())
     haskey(P, :until) || (P[:until] = Dict{Int32,Float64}())
+    # spots from before s71 had 25 min to go: no longer than STAY from now
+    for (id, t) in P[:until]
+        P[:until][id] = min(t, game.world.t + STAY)
+    end
     # spots from before s68's placement had no part instance: drop them (the draw takes 5 fields)
     filter!(kv -> all(x -> length(x) == 5, kv[2]), P[:spots])
     delete!(P, :eyedir)

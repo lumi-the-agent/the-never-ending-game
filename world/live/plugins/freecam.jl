@@ -125,8 +125,10 @@ function NG.step!(::FreeCam, game, dt)
             WAS_GAME[] = false
         end
         # the menu shows the real mode (a test or a plugin may switch it without the menu)
-        m = cam_menu(game); want = LABELS[rig.mode]
-        if m.selection[] != want
+        # a mode the menu has no entry for (the host's :overview shots) leaves the menu as it is (s70: a KeyError
+        # switched the free camera off)
+        m = cam_menu(game); want = get(LABELS, rig.mode, nothing)
+        if want !== nothing && m.selection[] != want
             SYNCING[] = true
             m.i_selected[] = findfirst(==(want), m.options[])
             SYNCING[] = false

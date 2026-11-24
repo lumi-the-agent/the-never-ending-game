@@ -1522,3 +1522,51 @@ uitest("Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it 
     check(s.state === :idle && h.transformation.scale[][3] < 1.01f0, "Lumi did not shrink back: state $(s.state), scale $(h.transformation.scale[])")
     fly_click(game, "Stop")
 end
+
+uitest("Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second") do game
+    game.dash.play_menu.i_selected[] = 0
+    wait_frames(game, 2)
+    fly_click(game, "Play")
+    check(game.minigame isa NeverendingGame.JumpIn, "Play did not jump in")
+    me = creature(game.world, "Lumi")
+    NeverendingGame.face_open!(game.world, me)
+    s = Main.FLIGHT[:sys]
+    s.state === :idle || Base.invokelatest(game.plugins["flight"].mod.finish!, s, game)
+    interact!(game, [KeyDown(Keyboard.g), Wait(0.2), KeyUp(Keyboard.g)])
+    check(s.state !== :idle, "G did not start a flight: state $(s.state)")
+    seen = Bool[]; hs = Float32[]
+    for i in 1:16
+        wait_seconds(game, 1.0)
+        s.state === :idle && break
+        push!(seen, NeverendingGame.on_screen(game.stage.scene, me.pos + Point3f(0, 0, 0.8f0)) !== nothing)
+        push!(hs, me.pos[3] - NeverendingGame.ground(game.world.island, (me.pos[1], me.pos[2]))[3])
+        i == 5 && screenshot(game, "flight-steered")
+    end
+    up = [seen[i] for i in eachindex(seen) if hs[i] > 1.5f0]
+    check(length(up) >= 3 && all(up), "Lumi out of view while airborne: $(seen) at heights $(round.(hs; digits = 1)) m")
+    fly_click(game, "Stop")
+end
+
+uitest("Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)") do game
+    fly_choose(game, "Firefly catch (WASD)")
+    fly_click(game, "Play")
+    m = game.minigame
+    check(m !== nothing && occursin("Firefly", NeverendingGame.game_title(typeof(m))), "Firefly catch did not start")
+    c = creature(game.world, "Lumi")
+    mod = parentmodule(typeof(m))
+    fly(i) = mod.fly_pos(m.flies[i], game.world.t, i)
+    nearest() = (free = findall(!, m.caught); isempty(free) ? nothing : fly(free[argmin([norm(Vec2f(fly(i)[1] - c.pos[1], fly(i)[2] - c.pos[2])) for i in free])]))
+    clear = Bool[]
+    for k in 1:3
+        t0 = time()
+        while time() - t0 < 15
+            steer_wad(game, nearest, 1.0)
+            push!(clear, NeverendingGame.obstruction(game.world, game.rig.eye, c.pos + Point3f(0, 0, 0.8f0)) < 1)
+            m.state === :playing || break
+        end
+        screenshot(game, "firefly-view-$(15k)s")
+        m.state === :playing || break
+    end
+    check(count(clear) >= 0.85 * length(clear), "Lumi blocked in $(count(!, clear)) of $(length(clear)) one-second samples")
+    fly_click(game, "Stop")
+end

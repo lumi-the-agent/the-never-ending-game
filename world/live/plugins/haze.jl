@@ -3,7 +3,7 @@
 # the near grass"). The work is in the RayMakie raster shader (`aerial_haze`, overlay/mesh.jl, s53);
 # this plugin only sets its density. A game whose renderer predates s53 has no RASTER_HAZE: nothing happens.
 const NG = NeverendingGame
-const DENSITY = 0.025f0     # per metre past the first 6 m; at most 55% sky
+const DENSITY = 0.04f0      # per metre past the first 6 m; at most 55% sky (0.025 until s71: the reviewer saw no haze at eye level)
 
 struct Haze <: System end
 

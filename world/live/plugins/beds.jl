@@ -71,10 +71,43 @@ function NG.step!(s::Beds, game, dt)
                 g.action = :yawn
                 s.yawns[c.id] = w.t + YAWN
                 g.until += YAWN
+                spread_yawn!(w, c, 1)
             end
         end
     end
+    catch_yawns!(w)
     return
+end
+
+# ---------------------------------------------------------------- yawns are catching (s71, a wish)
+
+isdefined(Main, :YAWNS) || Core.eval(Main, :(const YAWNS = Dict{Int32,Tuple{Float64,Int}}()))
+const Y = Main.YAWNS          # creature id => (when it catches the yawn, how many yawns away from the first)
+const YAWN_REACH = 7f0
+
+can_catch(c) = !c.controlled && c.action !== :sleep && c.action !== :yawn && c.goal.kind ∉ NG.BUSY_GOALS
+
+"Awake friends near `c` catch its yawn a moment later."
+function spread_yawn!(w, c, depth)
+    for f in w.creatures
+        (f.id == c.id || haskey(Y, f.id) || !can_catch(f)) && continue
+        hypot(f.pos[1] - c.pos[1], f.pos[2] - c.pos[2]) < YAWN_REACH || continue
+        Y[f.id] = (w.t + 0.6 + rand(w.rng), depth)
+    end
+end
+
+function catch_yawns!(w)
+    isempty(Y) && return
+    for (id, (t, depth)) in collect(Y)
+        w.t < t && continue
+        delete!(Y, id)
+        f = NG.creature(w, id)
+        (f === nothing || !can_catch(f)) && continue
+        NG.feel!(w, f, :yawn; seconds = 2.4) || continue
+        rand(w.rng) < 0.4 && NG.say!(w, f, rand(w.rng, ("*yaaawn*", "mmh... *yawn*", "oh no, now I'm yawning")); duration = 1.6)
+        NG.emit!(w, :yawn_caught; who = f.name, depth = depth)
+        depth < 2 && rand(w.rng) < 0.5 && spread_yawn!(w, f, depth + 1)
+    end
 end
 
 register!(Beds())

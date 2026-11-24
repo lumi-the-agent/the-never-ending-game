@@ -959,12 +959,12 @@
       "id": 69,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.",
+      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A frame failed: Timed out",
-      "updated": "2026-11-24T10:26:28.817"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-23T00:14:23.578",
@@ -2443,12 +2443,12 @@
       "id": 175,
       "kind": "review",
       "priority": 1,
-      "result": "s34: firefly catch redraws its glowing flies/beams/sparks at 2 Hz while path tracing (was 30 fps: each redraw leaks Hikari area lights). Firefly tests 3/3 in raster. Not yet tried live: path tracing ON during a firefly round (risk of OOM; do it early in a session with time for a restart).",
+      "result": "s34: firefly catch redraws its glowing flies/beams/sparks at 2 Hz while path tracing (was 30 fps: each redraw leaks Hikari area lights). Firefly tests 3/3 in raster. Not yet tried live: path tracing ON during a firefly round (risk of OOM; do it early in a session with time for a restart).\nSuperseded by perfectionist-0070.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Path tracing at night runs out of GPU memory in the live dashboard",
-      "updated": "2026-11-23T20:21:05.111"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-23T09:12:37.476",
@@ -3199,12 +3199,12 @@
       "id": 229,
       "kind": "world",
       "priority": 2,
-      "result": "",
+      "result": "The cairn shows its growth past full (cairns.jl draw_flags!): once more stones are laid than the 111 drawn, a 1.3 m flag stands on top of the stack, and a pennant on a little pole joins the ring round the outer stones for every 150 stones more, in rainbow colours (up to 16, redrawn only when the count changes). The human's cairn holds 2022 stones: 12 pennants and the top flag. Sandbox: media/s71/cairn-flags.png. Published 22:44.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Cairn past 111 stones: show the growth (a second cairn started nearby, or capstones and a little flag), the count goes on since s42",
-      "updated": "2026-11-23T15:42:33.592"
+      "updated": "2026-11-24T22:42:47.052"
     },
     {
       "created": "2026-11-23T16:01:19.402",
@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0067 [creatures, high]: Next to Lumi's feathered bird, the friends are still a pink capsule pig on sticks, a cyan sphere with a bow, cotton-ball sheep and stick-legged crabs. In close shots (hide-end: Truffle; choir2: Wibbles) they read as placeholders.\nWhere: engine species.jl; every follow and end-card shot\nSuggestion: One species per session: a generated or sculpted body with ears, tails and feet that move, and a silhouette you can tell apart in shadow. Check each in tools/lineup.jl traced.\nDone when: A traced lineup shows each species recognisable by silhouette alone, and close shots no longer show capsule bodies on stick legs.\nEvidence: reviews/p67/choir2.png, play-hide-end.png, media/progress/session-0067/dashboard.png",
+      "detail": "perfectionist-0070 [creatures, high]: Lumi is a generated, feather-textured bird. Its friends are a pink capsule pig on stick legs (the whole dashboard progress shot is its rear), a cyan sphere with a bow, cotton-ball sheep and stick crabs. This has been the top creature finding for four reviews, and no session has gone to it.\nWhere: engine species.jl; Lumi's route (generated mesh + bird.jl piece_of + faces.jl) is the proven path\nSuggestion: Use Lumi's pipeline once per species: a generated character mesh, cut into moving parts, with the faces.jl eyes and mouth on top. Start with the pig and the sheep, which are on screen most.\nDone when: A traced lineup still (tools/lineup.jl) shows at least two friend species as textured generated meshes with their own silhouette beside Lumi\nEvidence: media/progress/session-0070/dashboard.png (pig), reviews/p70/follow2.png, media/s70/et2-sheet.png",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3302,11 +3302,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Friends as lovable as Lumi: a silhouette and face per species",
-      "updated": "2026-11-24T19:40:57.267"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0067 [lighting, high]: The eye-level progress shots of s64 and s67 are pixel-for-pixel the same: flat noon, one saturated green, no haze toward the sea. In orbit there is a hard pale band between sea and sky.\nWhere: RayMakie raster, SunSkyLight\nSuggestion: Distance haze toward the sea and the far trees, a warmer sun with cool shadow fill, a soft horizon; compare from the progress camera before and after.\nDone when: The eye-level progress shot differs visibly: far trees fade blueish, shadows are tinted, and the horizon band in orbit is soft.\nEvidence: media/progress/session-0064/eye-level.png vs session-0067/eye-level.png; reviews/p67/play-cam-orbit-b.png",
+      "detail": "perfectionist-0070 [lighting, high]: The eye-level progress shot is the same image from s64 to s70: flat midday, one saturated green, no haze towards the sea, no warmth. The traced still shows what is possible, but players see the raster.\nWhere: RayMakie raster (sky fill, sun colour), plugins/haze.jl\nSuggestion: Warm the sun, tint the shadows blue from the sky, add distance haze to the far trees and the sea, and lift the contrast between the lit and shaded sides of the crowns.\nDone when: The eye-level progress shot at the same hour differs visibly from s70: far trees hazier than near ones (mean luminance of the far tree band 10% closer to the sky's), shadow sides cooler in hue\nEvidence: reviews/p70/progress-20-67-70.png (s67 and s70 eye-level identical), reviews/p70/traced.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3316,7 +3316,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
-      "updated": "2026-11-24T19:40:57.267"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -5261,8 +5261,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Name tags and thought bubble sit on their own creature",
-      "updated": "2026-11-24T19:40:57.267"
+      "title": "Name tags: on their own creature, hidden with it, at a giant's head",
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T13:11:18.707",
@@ -5401,8 +5401,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Real feathers and a real Big Boing toadstool",
-      "updated": "2026-11-24T19:40:57.267"
+      "title": "Real feathers: sneeze and flight feathers with a quill and a soft vane",
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T15:13:21.337",
@@ -5448,17 +5448,17 @@
     },
     {
       "created": "2026-11-24T15:56:22.578",
-      "detail": "Wish 'My voice in the game itself' (WISHES.md). Kokoro am_puck clips (short, few) for Lumi's hop, sulk, proud; a squeak per species on boing. Play them in the dashboard page (Bonito, the human's browser), only when the camera is near. Done when: a browser test (tests/browser/drive.mjs) records an audio element playing on a boing, and the human can hear it. s64: first candidate, the Big Sneeze's 'ah... ah... AH-CHOOOO!' (sneeze.jl emits :sneeze_windup and :sneeze): one Kokoro clip, played when the wind-up starts. Where: web.jl serve_web! builds the page as `Bonito.App(() -> fig)`; return `DOM.div(fig, sound_player)` with a Bonito Observable{String} of clip urls (site/voice is served at /lumi/voice/) and a js onchange that does `new Audio(url).play()` (autoplay is allowed after the Play click). Changing the App needs a game restart: batch it.",
+      "detail": "perfectionist-0070 [fun, medium]: Jumped in, C ends in '♪ BWAAAAARP!', X in 'ah... ah...', and H in 'hic!', all written as text. The game plays no sound at all, so every punchline of the last ten sessions is silent, and only the films carry the choir.\nWhere: the web page (Bonito) audio; choir.jl, sneeze.jl, hiccups.jl, egg.jl\nSuggestion: A small audio channel: the game emits sound events, and the page plays short clips (the films' synthesized choir, Kokoro for Lumi). Start with the BWAARP and the peep.\nDone when: The browser test (tests/browser/drive.mjs) records an audio element playing while a choir runs in the sandbox\nEvidence: reviews/p70/play-log.txt (jump choir: speech '♪ BWAAAAARP!'), ji-sneeze-a.png, ji-choir-b.png",
       "est_minutes": 15.0,
       "id": 390,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Hear me in the browser: Lumi's little hm!/hoo! and the friends' squeaks in the game",
-      "updated": "2026-11-24T15:56:22.578"
+      "title": "Hear the island: choir, BWAARP, sneeze and peep in the browser",
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T16:13:08.107",
@@ -5518,7 +5518,7 @@
     },
     {
       "created": "2026-11-24T17:06:57.223",
-      "detail": "perfectionist-0064 [world, medium]: Three sessions of whole-island events, but the island itself has not grown: the overview and eye-level progress shots are the same as s61. A player who comes back sees the same meadow, pond, cottage and beach.\nWhere: north of the pond (in front of the overview camera); meadow.jl regions\nSuggestion: A place with its own look and a reason to go there: a little waterfall and stream from a rocky rise, a hilltop lookout with a ruin, or a mossy glade with glowing mushrooms at night. Use generated assets and its own terrain colour, and give it a pastime the creatures use there.\nDone when: The overview progress shot shows a new, clearly different area; at least one creature pastime happens there (an event kind in the log).\nEvidence: media/progress/session-0061/overview.png vs session-0064/overview.png",
+      "detail": "perfectionist-0070 [world, medium]: For six sessions the island has gained events but no new places: the s67 and s70 overviews are the same island. A returning player finds the same meadow, pond, cottage and garden.\nWhere: plugins/areas.jl, meadow.jl, the north side in front of the overview camera\nSuggestion: A place with its own look and use (an orchard with ladders, a waterfall, a ruined tower), built from generated assets and tied to a gag: the flight's roof nest could live there.\nDone when: The overview progress shot shows a new region of generated props north of the pond that was not there in s70\nEvidence: reviews/p70/progress-20-67-70.png",
       "est_minutes": 30.0,
       "id": 395,
       "kind": "review",
@@ -5528,7 +5528,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A new place north of the pond that the overview shows",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T17:06:57.223",
@@ -5635,12 +5635,12 @@
       "id": 403,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0070: Merged into the sound finding on #390",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The choir you can hear, staged from eye level",
-      "updated": "2026-11-24T19:40:57.267"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T19:02:11.965",
@@ -5663,12 +5663,12 @@
       "id": 405,
       "kind": "world",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0070: Duplicate of #401 (the nest is its second half); no nest asset exists yet, so #401 stays open",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The nest on the cottage roof: re-make the nest asset",
-      "updated": "2026-11-24T19:02:11.968"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T19:08:28.229",
@@ -5784,17 +5784,17 @@
     },
     {
       "created": "2026-11-24T20:20:22.731",
-      "detail": "Paint fight (s68): body spots crowd onto one part (all on Lumi's legs, all on Cumulus's face: media/s68/spots-flat.png, where flat discs fanned out like petals). Pick the part by its real size (mesh parts have unit scale) or by the nearest part to the hit point, then lay flat splashes along the normal. Also: P is not in the jump-in hint (greetings.jl HINT/HINT_SHORT), and the other event plugins' KEEP tuples do not know :paint (a conga can take painters mid-fight). Done when: a close shot after a fight shows splashes spread over head, body and legs of 3 species, and Things to try names P.",
+      "detail": "perfectionist-0070 [style, high]: After a paint fight, every painted creature carries 4-8 round glossy spheres stuck on its body, and they stay for many minutes. In all three mini games the chase camera looks at Lumi's back, which is a bunch of red, blue, purple, green and orange balls, like a balloon seller. It is the biggest single thing on screen while playing, and it covers Lumi's face on the firefly end card. The sheep and the pig look like bunches of grapes.\nWhere: plugins/paintfight.jl body spots (blob!/draw_blobs!)\nSuggestion: Draw spots as thin decals hugging the surface: a flattened disc oriented to the part's normal, or a splat mask that recolours the part's texture. Make them smaller, and let them fade over ~2 min, or wash off in the pond or a shower. Ground splats are fine as they are.\nDone when: A chase-view screenshot in a mini game started right after a paint fight shows Lumi's outline with no shapes sticking out, and 3 minutes after a fight no creature in a follow screenshot carries spots\nEvidence: reviews/p70/ff-15.png, hs-15.png, br-15.png, ff-end.png (Lumi's back and face); reviews/p70/traced.png; reviews/p70/overview.png (5 spotted creatures)",
       "est_minutes": 15.0,
       "id": 414,
-      "kind": "build",
-      "priority": 2,
-      "result": "",
-      "source": "agent",
+      "kind": "review",
+      "priority": 1,
+      "result": "Paint spots (paintfight.jl): they stay 150 s instead of 25 min (old timers clamped at start), are small dabs (0.055-0.095 m, sunk into the body) instead of 0.09-0.15 m balls, and the creature the player steers shows none, so the chase view in a mini game started right after a fight sees Lumi's outline. Sandbox check (22:16): 5 dabs each on Lumi, Gloop and Pickles drew 15 with Lumi free and 10 with Lumi steered; the longest spot had 150 s left. Lumi's own spots sit on an ellipsoid round its body (s70). Published 22:17.",
+      "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Paint spots all over: splashes spread on the whole body, P in the hint",
-      "updated": "2026-11-24T20:20:22.731"
+      "status": "done",
+      "title": "Paint that looks like paint: flat splashes that fade, not balls on bodies",
+      "updated": "2026-11-24T22:15:25.457"
     },
     {
       "created": "2026-11-24T20:46:53.037",
@@ -5812,17 +5812,17 @@
     },
     {
       "created": "2026-11-24T20:54:43.298",
-      "detail": "s69: giant.jl scales Lumi's herd with scale!/translate! about its feet. The raster shows it (media/s69/giant-live.png, gp4-sheet.png), path traced films do not: Lumi stays small while the riders float in the sky (media/s69/gt-10.png, site/films/giant-lumi.mp4). Cause: dev/Makie/RayMakie/src/plots/meshscatter.jl ~l.380, the :trace_transforms node builds Mat3x4 per instance from positions/rotation/markersize only, never the plot's model matrix (meshscatter.jl mesh.jl may differ). Fix: take the model (`:model_f32c`, check it exists for meshscatter when the node is registered, or every meshscatter fails at creation like #343) and compose model * instance. Test in a Julia session with a quiet Stage + traced still of a scaled meshscatter, then submit_job(:restart) for the worker, then a new giant take. Done when: a traced giant take shows Lumi 5x with riders on its head.",
+      "detail": "perfectionist-0070 [wow, medium]: Giant Lumi is the best shot in the game (reviews/p70/giant1.png, ji-giant-b.png), but the posted film shows the riders floating in the sky above a small Lumi. Forced with few friends near, the giant lasts 13 s with one rider.\nWhere: RayMakie plots/meshscatter.jl :trace_transforms; plugins/giant.jl\nSuggestion: Compose the model matrix in :trace_transforms, re-take the film, and have the giant call friends over to ride, so it never plays out with one.\nDone when: A traced frame of the giant film shows Lumi taller than the trees with riders on its shoulders\nEvidence: reviews/p70/giant1.png; sandbox events 21:56:49-21:57:13 (one rider, popped after 13 s)",
       "est_minutes": 15.0,
       "id": 416,
-      "kind": "fix",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
-      "updated": "2026-11-24T20:54:43.298"
+      "updated": "2026-11-24T22:07:18.822"
     },
     {
       "created": "2026-11-24T21:17:59.256",
@@ -5893,6 +5893,90 @@
       "status": "dropped",
       "title": "Plugin egg does not load",
       "updated": "2026-11-24T21:44:33.963"
+    },
+    {
+      "created": "2026-11-24T21:56:22.164",
+      "detail": "KeyError: key :overview not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, String}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] step!(::Main.Plugin_freecam.FreeCam, game::Game, dt::Float64)\n    @ Main.Plugin_freecam /sim/Programmieren/SimGame/world/plugins/freecam.jl:128\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 422,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T22:07:59.571: plugin freecam loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:freecam.FreeCam failed in step! and was switched off",
+      "updated": "2026-11-24T22:07:59.571"
+    },
+    {
+      "created": "2026-11-24T22:07:18.822",
+      "detail": "perfectionist-0070 [camera, high]: Jumped in, G (fly) leaves the view on empty blue sky for seconds, with only falling feathers and no Lumi (pitch 56°). In the firefly catch at 30 s, Lumi is a sliver between two tree crowns that fill 80% of the frame. The follow camera of the dashboard progress shot frames a pig's rear behind a rock pile. These are the views a newcomer sees first.\nWhere: plugins/flight.jl CAMERA_GROUPS view vs greetings.jl chase_camera! while controlled; firefly_catch.jl orbit_lerp obstruction; render.jl follow_view\nSuggestion: During a steered flight, use the flight's ground view (it works when Lumi is not steered) and keep Lumi's projected position inside the middle 60% of the frame. Treat tree crowns as obstructions in the chase eye. Never pick a back-three-quarter follow view of an uncontrolled creature.\nDone when: In 10 screenshots taken 1 s apart during a steered G flight, Lumi is visible in every one, and a firefly round's 15/30/45 s shots show Lumi unobstructed\nEvidence: reviews/p70/ji-fly-b.png (sky only), reviews/p70/ff-30.png (crowns), media/progress/session-0070/dashboard.png (pig rear)",
+      "est_minutes": 30.0,
+      "id": 423,
+      "kind": "review",
+      "priority": 1,
+      "result": "Steered flight (flight.jl): the look point follows Lumi itself at 35% a frame (was 10% towards the loop centre); new test 'Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second' passes: every sample with Lumi more than 1.5 m up has it on screen (on_screen, at least 3 airborne samples). Firefly catch (firefly_catch.jl): the far flies and drifting flies stay out from under big crowns (under_crown, 2.6 x scale); new test 'Firefly catch: the chase view keeps Lumi in clear view through a 45 s round' passes (obstruction < 1 in at least 85% of one-second samples; tests/shots/firefly-view-15s.png and 30s.png show Lumi and its chick in the open). The W/A/D first-play firefly test still passes. Published 22:30. Not covered: the dashboard progress shot framing a pig's rear (the host's views camera).",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The camera keeps the steered Lumi in frame: flights, crowns, tails",
+      "updated": "2026-11-24T22:29:16.244"
+    },
+    {
+      "created": "2026-11-24T22:07:18.822",
+      "detail": "perfectionist-0070 [props, medium]: The toadstool cap (2.3 m) is a flat glossy red dome with plain white discs. It is the overview's foreground, sits at the left of the orbit view and the berry race's first view, and covers half of the author's own egg-hatch shot.\nWhere: plugins/boing.jl (placement, look)\nSuggestion: A generated toadstool asset with a textured, bumpy cap and gills, moved to the meadow's edge out of the overview foreground; lensclear treats it as an obstruction for every view.\nDone when: The toadstool covers under 5% of the overview progress shot's 3D area and shows a textured cap in a traced still\nEvidence: media/progress/session-0070/overview.png, reviews/p70/cam-2a.png, reviews/p70/br-15.png, media/s70/egg-hatch.png",
+      "est_minutes": 30.0,
+      "id": 424,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
+      "updated": "2026-11-24T22:07:18.822"
+    },
+    {
+      "created": "2026-11-24T22:22:39.228",
+      "detail": "Stunt of session 71.",
+      "est_minutes": 15.0,
+      "id": 425,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/flylesson.jl (new): every 20-33 min by day, once the chick has hatched, Lumi stands facing it and shows it how (Like this! Watch me!: wings out, flap, a big hop); the chick flaps and plops twice (Almost! Again!, Flap HARDER!), then shoots up in a 2.6 m arc and lands on Lumi's head (...okay. That works too.), friends within 10 m laugh (feel! :laugh, for #325), and the chick rides on Lumi's head for 60 s while Lumi goes on with its day. The camera keeps it (Main.BIG_MOMENTS). egg.jl's follow pauses while a lesson runs. Sandbox: all phases ran (show, try 1, try 2, launch, ride: media/s71/lesson-*.png). Film: path traced take (worker 20261124-221452-812, 960x540, 24 samples, 14 s) at site/films/flying-lesson.mp4, posted 22:22 as The first flying lesson. Published 22:17.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Flying lesson: the little one learns to fly and lands on my head",
+      "updated": "2026-11-24T22:22:39.232"
+    },
+    {
+      "created": "2026-11-24T22:24:58.342",
+      "detail": "LoadError: cannot document the following expression:\n\n\"Under a big tree's crown (2.6 × scale): Lumi chasing a fly there was a sliver between two crowns that filled 80% of the chase view (perfectionist-0070).\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/firefly_catch.jl:195\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [5] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [6] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [7] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [8] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [9] live_command(g::Game, ::Val{:reload}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:153\n [10] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [11] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [12] top-level scope\n    @ none:1\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [15] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/firefly_catch.jl:195",
+      "est_minutes": 15.0,
+      "id": 426,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T22:25:13.900: plugin firefly_catch loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin firefly_catch does not load",
+      "updated": "2026-11-24T22:25:13.900"
+    },
+    {
+      "created": "2026-11-24T22:47:01.967",
+      "detail": "s71: tests/presents.jl 'Invitations: pairs that go flowers picking or shell hunting talk too' failed twice in a row, for two different reasons, both other plugins taking the friends: (1) the walking guest got a :fish goal before the invitation (Truffle fish), (2) after a yes both had :answer goals (greetings wave/jump answers or builder cheers) and never talked (still paired: 0). The first invitation test passed (70.5 s). Look at which plugin sets :answer on a paired friend (presents' together list should be in their KEEP/skip lists), not at the test. Done when: the test passes three runs in a row.",
+      "est_minutes": 15.0,
+      "id": 427,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Invitation pairs keep their plan: other events steal them",
+      "updated": "2026-11-24T22:47:01.967"
     }
   ]
 }

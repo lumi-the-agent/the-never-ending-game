@@ -131,6 +131,21 @@ function dome(n = 40, m = 14)
     return GeometryBasics.Mesh(pts, fs; normal = Vec3f.(pts))
 end
 
+"""
+Per-vertex colours for the cap (s71, perfectionist-0070: "a flat glossy red dome"): a brighter red on top,
+deeper towards the rim, a soft mottle, and a pale lip at the edge where the cap curls under.
+"""
+function cap_colours(m)
+    map(GeometryBasics.coordinates(m)) do p
+        z = clamp(p[3], 0f0, 1f0)
+        a = atan(p[2], p[1])
+        mottle = 0.06f0 * sin(5f0 * a + 7f0 * z) * sin(3f0 * a - 4f0 * z)
+        r = 0.62f0 + 0.3f0 * z + mottle
+        base = RGBf(r, 0.1f0 + 0.14f0 * z + 0.5f0 * mottle, 0.08f0 + 0.1f0 * z)
+        z < 0.1f0 ? RGBf(0.95f0, 0.86f0, 0.72f0) * (1 - z / 0.1f0) + base * (z / 0.1f0) : base
+    end
+end
+
 function build!(game)
     clear_plots!()
     sc = game.stage.scene
@@ -140,7 +155,7 @@ function build!(game)
     d[:stem] = mesh!(sc, stem; color = CREAM, name = :boing_stem)
     translate!(d[:stem], c)
     # spotted cap: a red dome, a cream underside (the gills), white spots on the dome
-    d[:cap] = mesh!(sc, dome(); color = RED, name = :boing_cap)
+    d[:cap] = mesh!(sc, dome(); color = cap_colours(dome()), name = :boing_cap)
     d[:under] = mesh!(sc, Sphere(Point3f(0), 1f0); color = CREAM, name = :boing_under)
     spots = Point3f[]
     for (el, k) in ((0.35f0, 7), (0.8f0, 5), (1.25f0, 1))

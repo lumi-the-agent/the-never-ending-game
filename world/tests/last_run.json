@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Bump cue: holding W into the sea, Lumi shows a '?' and says to turn with A or D",
-      "passed": true,
-      "seconds": 9.0
+      "error": "check failed: Cumulus and Truffle went flowers together but never talked about it in 45 s (goals answer/answer, still paired: 0)",
+      "file": "presents.jl",
+      "name": "Invitations: pairs that go flowers picking or shell hunting talk too, not only the fishers",
+      "passed": false,
+      "seconds": 47.0
     }
   ],
-  "time": "2026-11-24T21:50:33.603"
+  "time": "2026-11-24T22:46:41.872"
 }

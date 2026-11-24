@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s70-a.png (Pickles and Marshmallow in the frame, no chick); media/s70/chick-follow.png shows it only as a small figure in the background",
+      "severity": "medium",
+      "suggestion": "Give the pair regular camera moments, for example when Lumi idles, and make the peep louder or bigger.",
+      "what": "In my own live screenshot (follow camera, 12:31, a tag game) the chick is not on screen. The camera watched Pickles while Lumi, and so the chick, was elsewhere. The player-facing message 'Look for the little golden bird at my heels' sends you looking for something the camera rarely shows. The chick is small, and its peep is text only.",
+      "where": "plugins/egg.jl chick follow and camera"
+    },
+    {
+      "evidence": "world/reviews/s70-a.png; sandbox/state/fencepaint.json has two sections, no world/state/fencepaint.json",
+      "severity": "low",
+      "suggestion": "Confirm that a real fight in the human's game paints the fence, and clean the spots off creatures and ground after the fight.",
+      "what": "The paint spots left by fights are visible on the ground and on creatures (Marshmallow, Pickles) a long time later. The fence-painting payoff was not visible in the human's game when I looked: state/fencepaint.json exists only in the sandbox (sections 2 and 4), and the live state folder has none.",
+      "where": "plugins/fencepaint.jl; world/state"
+    },
+    {
+      "evidence": "author's todo results",
+      "severity": "low",
+      "suggestion": "Treat #402 as mostly fixed, and add a pier test that forces a :dance goal on the deck.",
+      "what": "The path tracer still ignores a scaled herd (#416). The walking jitter fix (#402) still leaves one 7-frame back-and-forth burst in the author's walk film. #94 was closed on a 1-minute sample in which a dance on the pier deck never occurred.",
+      "where": "separation.jl arrive_at_edge!; areas.jl fishers"
+    }
+  ],
+  "summary": "Egg/chick, the fence that keeps the paint, and the jitter fix hold up: frame time is 5.7 ms median, the chick is saved and hatched, and the game shows no errors. But in my own live screenshot the chick is not visible at all, and the fence painting is not seen outside the sandbox.",
+  "superseded_by": "perfectionist-0070.json",
+  "surprise": 7,
+  "surprise_why": "A golden egg hatches a tiny Lumi that follows you and persists in the saved game, a charming story beat.",
+  "verdict": "pass"
+}

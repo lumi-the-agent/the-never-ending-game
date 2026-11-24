@@ -192,6 +192,9 @@ function open_line(w, a, b, r)
     end
 end
 
+"Under a big tree's crown (2.6 × scale): Lumi chasing a fly there was a sliver between two crowns that filled 80% of the chase view (perfectionist-0070)."
+under_crown(w, q) = any(p -> p.kind === :tree && hypot(p.pos[1] - q[1], p.pos[2] - q[2]) < 2.6f0 * p.scale, w.props)
+
 "Is `q` within `gap` of a solid prop's footprint (trunk, bush, rock)?"
 near_solid(w, q, gap) = any(p -> haskey(NG.SOLID_FOOTPRINT, p.kind) &&
                                  hypot(p.pos[1] - q[1], p.pos[2] - q[2]) < NG.SOLID_FOOTPRINT[p.kind] * p.scale + gap, w.props)
@@ -243,7 +246,8 @@ function reset!(m::FireflyCatch, game)
     end
     while length(m.flies) < N_FLIES
         p = NG.random_land_point(w; rmax = 0.8w.island.radius)
-        norm(Vec2f(p[1] - c.pos[1], p[2] - c.pos[2])) > 4 && !near_solid(w, p, 1.1f0) && push!(m.flies, p + Point3f(0, 0, 0.9f0))
+        norm(Vec2f(p[1] - c.pos[1], p[2] - c.pos[2])) > 4 && !near_solid(w, p, 1.1f0) && !under_crown(w, p) &&
+            push!(m.flies, p + Point3f(0, 0, 0.9f0))
     end
     m.caught = fill(false, N_FLIES)
     m.state = :ready; m.t = 0.0; m.t_state = 0.0; m.score = 0; m.spark_t = 99.0; m.flash = 0.0
@@ -367,7 +371,7 @@ function NG.step!(m::FireflyCatch, game, dt)
                 step = flee_speed(game) * Float32(dt) * d / dist
                 nb = m.flies[i] + Point3f(step[1], step[2], 0)
                 # and never into a nook by a trunk, bush or rock, where Lumi gets wedged chasing it
-                NG.on_land(w.island, nb[1], nb[2]; margin = 0.8f0) && !near_solid(w, nb, 1.1f0) && (m.flies[i] = nb)
+                NG.on_land(w.island, nb[1], nb[2]; margin = 0.8f0) && !near_solid(w, nb, 1.1f0) && !under_crown(w, nb) && (m.flies[i] = nb)
             end
         end
         p = fly_pos(m.flies[i], w.t, i)
@@ -377,9 +381,13 @@ function NG.step!(m::FireflyCatch, game, dt)
             m.spark_at = p; m.spark_t = 0.0; m.flash = 1.2
             NG.say!(w, c, m.score == N_FLIES ? "Got them all!" : rand(w.rng, ("Got one!", "Gotcha!", "Yes!", "Caught you!")); duration = 1.5)
             NG.emit!(w, :firefly_caught; who = c.name, score = m.score)
+            P[:laugh_until] = w.t + 0.9
         end
         pos[i] = m.caught[i] ? PARK : p
     end
+    # a catch shows on Lumi's face: a short laugh (todo #325; the player steers Lumi, so feel! leaves it alone
+    # and the action is set here, after the engine's step)
+    w.t < get(P, :laugh_until, -Inf) && (c.action = :laugh)
     # while path tracing the glowing flies move twice a second: every move re-pushes them as Hikari lights
     # that are never freed (NG.path_traced, patches/raymakie-emissive-meshscatter-leak.md)
     redraw = !NG.path_traced(game) || w.t - get(P, :traced_draw, -1.0) > 0.5

@@ -7,7 +7,12 @@ isdefined(Main, :EGG) || Core.eval(Main, :(const EGG = Dict{Symbol,Any}()))
 const NG = NeverendingGame
 const E = Main.EGG
 
-const K = 0.38f0                  # chick size
+const K = 0.38f0                  # chick size when it hatches
+const GROW = 0.03f0               # a little bigger every island day (s71, a wish)
+const K_MAX = 0.6f0
+
+"How big the chick is now: 0.38 of Lumi at hatching, 0.03 more every island day, at most 0.6."
+size_now(w) = min(K_MAX, K + GROW * Float32(max(0.0, w.t - get(chick(), :born, w.t)) / w.day_length))
 const T_FIND = 3.0
 const T_WOBBLE = 5.0
 const T_HATCH = 4.0
@@ -48,7 +53,8 @@ state_file(game) = joinpath(game.paths.state, "chick.json")
 function save_chick!(game)
     game.dash === nothing && return              # quiet copies (films, stills) never write
     c = chick()
-    NG.write_json(state_file(game), Dict("hatched" => c[:hatched], "x" => c[:pos][1], "y" => c[:pos][2]))
+    NG.write_json(state_file(game), Dict("hatched" => c[:hatched], "x" => c[:pos][1], "y" => c[:pos][2],
+                                         "born" => get(c, :born, game.world.t)))
 end
 
 function load_chick!(game)
@@ -61,6 +67,7 @@ function load_chick!(game)
             w = game.world
             chick()[:hatched] = true
             chick()[:pos] = NG.ground(w.island, (Float32(d["x"]), Float32(d["y"])))
+            chick()[:born] = Float64(get(d, "born", w.t))     # chicks from before s71 start growing now
         end
     end
 end
@@ -97,11 +104,12 @@ function draw_chick!(w)
             Makie.update!(E[:parts][j]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)])
             continue
         end
-        ps = [p + K * (q - p) for q in o[1]]
+        k = size_now(w)
+        ps = [p + k * (q - p) for q in o[1]]
         if NG.paints(part.motion) && !isempty(o[4])
-            Makie.update!(E[:parts][j]; arg1 = ps, rotation = o[2], markersize = [K * s for s in o[3]], uv_transform = o[4])
+            Makie.update!(E[:parts][j]; arg1 = ps, rotation = o[2], markersize = [k * s for s in o[3]], uv_transform = o[4])
         else
-            Makie.update!(E[:parts][j]; arg1 = ps, rotation = o[2], markersize = [K * s for s in o[3]])
+            Makie.update!(E[:parts][j]; arg1 = ps, rotation = o[2], markersize = [k * s for s in o[3]])
         end
     end
 end
@@ -122,6 +130,7 @@ end
 
 "The chick trots after Lumi (behind and to one side), hops to keep up, and sleeps when Lumi sleeps."
 function follow!(w, game, dt)
+    get(E, :lesson, false) && return              # a flying lesson (flylesson.jl) moves the chick itself
     c = chick()
     me = lumi_of(w)
     me === nothing && return
@@ -233,6 +242,7 @@ function hatch!(s::Egg, w, me)
     s.state = :hatch; s.t0 = w.t
     c = chick()
     c[:hatched] = true
+    c[:born] = w.t
     c[:pos] = s.egg + Point3f(0, 0, 0.12f0)
     c[:yaw] = atan(me.pos[2] - s.egg[2], me.pos[1] - s.egg[1]) + Float32(pi)
     c[:action] = :jump

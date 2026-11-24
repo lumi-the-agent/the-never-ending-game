@@ -392,8 +392,10 @@ function flight_group(w)
     ctr = o + Point3f(LOOP_R * s.dir[1], LOOP_R * s.dir[2], 0)
     eye = ctr + Point3f(-14f0 * s.dir[1] + 3f0 * s.dir[2], -14f0 * s.dir[2] - 3f0 * s.dir[1], 0)
     eye = Point3f(eye[1], eye[2], NG.ground(w.island, (eye[1], eye[2]))[3] + 2.6f0)
-    want = Point3f(0.7f0 * me.pos[1] + 0.3f0 * ctr[1], 0.7f0 * me.pos[2] + 0.3f0 * ctr[2], me.pos[3] + 0.8f0)
-    F[:look] = haskey(F, :look) && F[:lookt] > w.t - 1 ? F[:look] + 0.1f0 * (want - F[:look]) : want
+    # look at Lumi itself, and keep up with it: a look point easing 10% a frame towards the loop's middle left a
+    # fast-rising Lumi out of the top of the picture, the view on empty sky (perfectionist-0070, steered G)
+    want = Point3f(0.9f0 * me.pos[1] + 0.1f0 * ctr[1], 0.9f0 * me.pos[2] + 0.1f0 * ctr[2], me.pos[3] + 0.4f0)
+    F[:look] = haskey(F, :look) && F[:lookt] > w.t - 1 ? F[:look] + 0.35f0 * (want - F[:look]) : want
     F[:lookt] = w.t
     return (me.id, pts, (eye, F[:look]))
 end

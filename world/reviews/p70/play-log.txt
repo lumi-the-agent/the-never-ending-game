@@ -1,0 +1,19 @@
+camera Camera: follow: rig.mode follow eye Float32[-13.8, 12.6, 5.6] pitch 25.5
+camera Camera: orbit: rig.mode orbit eye Float32[23.1, 10.1, 10.6] pitch 17.8
+camera Camera: free: rig.mode fixed eye Float32[21.9, 12.4, 10.6] pitch 17.8
+firefly start card: Firefly catch | Catch all 8 glowing fireflies in 60 seconds. | Follow the light beams. Fireflies drift away when you come close! |  | W / S  walk      A / D  turn      Shift  run |  | Press W to start
+firefly: score 7/8 state over t 60.0 played 61.4 s, max pitch 29.2; card: Time's up! You caught 7 of 8. | Tip: Shift runs, fireflies drift away from you | Your 7 fireflies fly to the lantern by the cottage (11 there now). |  | Press R to play again; hud Time's up: 7/8
+firefly after R: state ready card Firefly catch | Catch all 8 glowing fireflies in 60 seconds. | Follow the light beams. Fireflies drift away when you come close! |  | W / S  walk      A / D  turn      Shift  run |  | Press W to start
+hideseek start card: Hide and seek | Your friends hid behind trees and bushes while you counted to ten! | Watch for giggles: a little note pops up over a hiding friend. | Walk up close to find them. Find all 4 in 120 seconds. |  | W / S  walk      A / D  turn      Shift  run |  | Press W to start
+hideseek: found 4/4 state over t 38.8 played 39.6 s, max pitch 29.1; card: You found all 4 in 38.8 s! | A new best time! | Next round: level 2, 100 seconds! |  | Press R to play again; hud Found everyone!
+berry start card: Berry race | Ripe berries hang on the bushes, | and Truffle, Sir Sniffsalot and Pinchy want them too! | Pick more than the critters in 60 seconds: | walk into a bush to shake its berries loose. |  | W / S  walk      A / D  turn      Shift  run |  | Press W to start level 1
+berry: me 10 critters [2, 0, 2] state over t 41.5 played 43.0 s, max pitch 29.1; card: You win, 10 berries to 4! | A new best: 10 berries! | Next round: level 2, the critters hurry sooner! | Your 10 berries go to the basket by the cottage | (17 in it now). |  | Press R to play again; hud You win! 10 to 4
+jump in: NeverendingGame.JumpIn
+jump wave: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.1] pitch 24.6 speech String[]
+jump hop: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.1] pitch 24.6 speech String[]
+jump sneeze: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.1] pitch 14.4 speech ["Mine! Mine!", "Feather hat!"]
+jump hiccups: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.2] pitch 24.6 speech String[]
+jump choir: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.2] pitch 24.6 speech ["♪ BWAAAAARP!"]
+jump paint: Lumi action idle goal idle pos Float32[2.1, -5.0, 2.2] pitch 16.2 speech String[]
+jump fly: Lumi action idle goal idle pos Float32[-4.8, 4.2, 2.3] pitch 56.2 speech String[]
+jump giant: Lumi action idle goal idle pos Float32[-4.8, 4.2, 2.3] pitch 7.9 speech ["Yes! Let's go!"]

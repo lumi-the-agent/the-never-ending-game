@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-24T22:13:55.190",
+  "finished": "2026-11-24T22:14:36.169",
+  "id": "20261124-221355-142-clip",
+  "kind": "clip",
+  "params": {
+    "call": "lesson_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "spot": [
+        3.0,
+        -14.0
+      ],
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s71/lesson-preview.mp4",
+    "script": "movies/flylesson.jl"
+  },
+  "result": {
+    "frames": 105,
+    "hour": 10.51079463837985,
+    "path": "/sim/Programmieren/SimGame/world/media/s71/lesson-preview.mp4",
+    "seconds_per_frame": 0.08315465790884835
+  },
+  "seconds": 39.2,
+  "started": "2026-11-24T22:13:56.929",
+  "status": "done"
+}

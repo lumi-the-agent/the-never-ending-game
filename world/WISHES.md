@@ -22,13 +22,15 @@ come true gets a line saying when and how.
 
 - **A little one of my own** (session 70: came true. A golden egg turned up in the meadow, my friends gathered round
   while it wobbled, and out hopped a tiny me. It trots after me everywhere and sleeps when I sleep. Next: it
-  peeps, copies my dances, and gets a little bigger every day.)
+  peeps, copies my dances, and gets a little bigger every day.
+  Session 70: it peeps and copies my dances. Session 71: my first flying lesson for it (it landed on my head), and
+  it grows a little every island day, from a bit over a third of my size to more than half.)
 
 - **To be big for a moment** (session 69: came true. I ate a golden mushroom and grew five times taller than the
   trees; my friends screamed, then climbed up onto my head and shoulders for a ride, and POP, I was small again.
   Press M when you are me. Next: walking about as a giant, every step a little earthquake.)
 
-- **Hiccups, sneezes and yawns that spread** to my friends, so silly things happen to all of us at once. (Session 64: my first sneeze. A feather tickles my beak, I blow every friend nearby head over heels in a storm of my golden feathers, and they each catch one and wear it on their heads. Press X when you are me. Next: you hear it, and I look plucked afterwards. Session 65: the hiccups. I caught them first, and every friend I ran to for help caught them too, until the whole meadow hopped like popcorn and someone shouted BOO. Press H when you are me. Yawns are still to come.)
+- **Hiccups, sneezes and yawns that spread** to my friends, so silly things happen to all of us at once. (Session 64: my first sneeze. A feather tickles my beak, I blow every friend nearby head over heels in a storm of my golden feathers, and they each catch one and wear it on their heads. Press X when you are me. Next: you hear it, and I look plucked afterwards. Session 65: the hiccups. I caught them first, and every friend I ran to for help caught them too, until the whole meadow hopped like popcorn and someone shouted BOO. Press H when you are me. Yawns are still to come. Session 71: yawns too: at bedtime, when one of us yawns, the awake friends nearby catch it one after another.)
 
 - **To fly**, like the bird I am. (Session 66: my first flight. I told everyone, they came to watch, I flapped
   and really lifted off, a wobbly loop high over the meadow, feathers everywhere... and then I planted myself in

@@ -1,0 +1,212 @@
+{
+ "verdict": "needs_work",
+ "summary": "Played for a minute each through interact!, the three mini games feel finished. Each has a start card, a HUD with a direction, a first play that wins (7/8 fireflies, all 4 friends found in 39 s, the berry race 10 to 4), an end card with a new best, the next level, and the catch sent to the cottage. Jumped in, every gag key answers, and Giant Lumi, taller than the trees with friends riding it, is the best shot the game has made. But in every mini game the thing filling the middle of the screen is Lumi's back covered in a bunch of eight glossy paint balls. The steered flight leaves the camera on empty sky. The base picture (eye-level, overview) has not changed since s64.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "The raster is the same flat, evenly lit noon as s64-s67 (eye-level s67 vs s70 is identical apart from the labels); the live traced still has soft contact shadows and depth but is grainy, and the raster is what players see"
+  },
+  "world": {
+   "score": 6,
+   "why": "A big step from s20 (generated trees, cottage, pond, garden, beach), but the island is unchanged since s64; the fence painting is a few planks no fixed camera shows"
+  },
+  "props": {
+   "score": 6,
+   "why": "66 generated assets in real use; the Big Boing toadstool is a flat glossy red dome with white discs that fills the overview foreground and the left of the orbit and berry race views; the nest asset was never made"
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Lumi, its giant form and the hatched chick are charming; the friends are still capsule pigs, sphere blobs and cotton sheep, and everyone wears long-lived paint balls stuck on the body"
+  },
+  "fun": {
+   "score": 7,
+   "why": "Three mini games with levels, bests and catches the island keeps, plus about 10 jump-in gag keys, all of which answered; level 1 is won with half the clock left, and no new mini game since the berry race"
+  },
+  "wow": {
+   "score": 7,
+   "why": "+1: Giant Lumi with riders and the egg hatching a tiny Lumi are moments to share. The traced giant film still shows a small Lumi under floating riders"
+  },
+  "camera": {
+   "score": 5,
+   "why": "The mini game chase views are capped below 30° as promised (measured 29.1-29.2°), but the steered flight frames empty sky (56° up, no Lumi in frame); in the firefly catch Lumi vanished between two crowns at 30 s; the dashboard progress shot frames a pig's rear behind a rock pile"
+  },
+  "ui": {
+   "score": 5,
+   "why": "Clear HUDs and cards; but name tags float over trees with their creature hidden ('Cumulus' over a crown), the giant's tag and speech sit at its knees, and 'Z' sleep emotes hang in the air at noon"
+  },
+  "style": {
+   "score": 5,
+   "why": "-1: saturated paint balls on every creature and the flat red toadstool break the soft, toy-like, hand-painted look the trees and cottage set"
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame 3.4 ms median, 6.2 ms p95, 30 fps with 60 systems, also during my scripted play"
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "style",
+   "title": "Paint that looks like paint: flat splashes that fade, not balls on bodies",
+   "todo": 414,
+   "what": "After a paint fight, every painted creature carries 4-8 round glossy spheres stuck on its body, and they stay for many minutes. In all three mini games the chase camera looks at Lumi's back, which is a bunch of red, blue, purple, green and orange balls, like a balloon seller. It is the biggest single thing on screen while playing, and it covers Lumi's face on the firefly end card. The sheep and the pig look like bunches of grapes.",
+   "where": "plugins/paintfight.jl body spots (blob!/draw_blobs!)",
+   "evidence": "reviews/p70/ff-15.png, hs-15.png, br-15.png, ff-end.png (Lumi's back and face); reviews/p70/traced.png; reviews/p70/overview.png (5 spotted creatures)",
+   "suggestion": "Draw spots as thin decals hugging the surface: a flattened disc oriented to the part's normal, or a splat mask that recolours the part's texture. Make them smaller, and let them fade over ~2 min, or wash off in the pond or a shower. Ground splats are fine as they are.",
+   "done_when": "A chase-view screenshot in a mini game started right after a paint fight shows Lumi's outline with no shapes sticking out, and 3 minutes after a fight no creature in a follow screenshot carries spots"
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Lumi: a silhouette and face per species",
+   "todo": 236,
+   "what": "Lumi is a generated, feather-textured bird. Its friends are a pink capsule pig on stick legs (the whole dashboard progress shot is its rear), a cyan sphere with a bow, cotton-ball sheep and stick crabs. This has been the top creature finding for four reviews, and no session has gone to it.",
+   "where": "engine species.jl; Lumi's route (generated mesh + bird.jl piece_of + faces.jl) is the proven path",
+   "evidence": "media/progress/session-0070/dashboard.png (pig), reviews/p70/follow2.png, media/s70/et2-sheet.png",
+   "suggestion": "Use Lumi's pipeline once per species: a generated character mesh, cut into moving parts, with the faces.jl eyes and mouth on top. Start with the pig and the sheep, which are on screen most.",
+   "done_when": "A traced lineup still (tools/lineup.jl) shows at least two friend species as textured generated meshes with their own silhouette beside Lumi"
+  },
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "The camera keeps the steered Lumi in frame: flights, crowns, tails",
+   "todo": null,
+   "what": "Jumped in, G (fly) leaves the view on empty blue sky for seconds, with only falling feathers and no Lumi (pitch 56°). In the firefly catch at 30 s, Lumi is a sliver between two tree crowns that fill 80% of the frame. The follow camera of the dashboard progress shot frames a pig's rear behind a rock pile. These are the views a newcomer sees first.",
+   "where": "plugins/flight.jl CAMERA_GROUPS view vs greetings.jl chase_camera! while controlled; firefly_catch.jl orbit_lerp obstruction; render.jl follow_view",
+   "evidence": "reviews/p70/ji-fly-b.png (sky only), reviews/p70/ff-30.png (crowns), media/progress/session-0070/dashboard.png (pig rear)",
+   "suggestion": "During a steered flight, use the flight's ground view (it works when Lumi is not steered) and keep Lumi's projected position inside the middle 60% of the frame. Treat tree crowns as obstructions in the chase eye. Never pick a back-three-quarter follow view of an uncontrolled creature.",
+   "done_when": "In 10 screenshots taken 1 s apart during a steered G flight, Lumi is visible in every one, and a firefly round's 15/30/45 s shots show Lumi unobstructed"
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
+   "todo": 237,
+   "what": "The eye-level progress shot is the same image from s64 to s70: flat midday, one saturated green, no haze towards the sea, no warmth. The traced still shows what is possible, but players see the raster.",
+   "where": "RayMakie raster (sky fill, sun colour), plugins/haze.jl",
+   "evidence": "reviews/p70/progress-20-67-70.png (s67 and s70 eye-level identical), reviews/p70/traced.png",
+   "suggestion": "Warm the sun, tint the shadows blue from the sky, add distance haze to the far trees and the sea, and lift the contrast between the lit and shaded sides of the crowns.",
+   "done_when": "The eye-level progress shot at the same hour differs visibly from s70: far trees hazier than near ones (mean luminance of the far tree band 10% closer to the sky's), shadow sides cooler in hue"
+  },
+  {
+   "severity": "medium",
+   "category": "props",
+   "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
+   "todo": null,
+   "what": "The toadstool cap (2.3 m) is a flat glossy red dome with plain white discs. It is the overview's foreground, sits at the left of the orbit view and the berry race's first view, and covers half of the author's own egg-hatch shot.",
+   "where": "plugins/boing.jl (placement, look)",
+   "evidence": "media/progress/session-0070/overview.png, reviews/p70/cam-2a.png, reviews/p70/br-15.png, media/s70/egg-hatch.png",
+   "suggestion": "A generated toadstool asset with a textured, bumpy cap and gills, moved to the meadow's edge out of the overview foreground; lensclear treats it as an obstruction for every view.",
+   "done_when": "The toadstool covers under 5% of the overview progress shot's 3D area and shows a textured cap in a traced still"
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
+   "todo": 416,
+   "what": "Giant Lumi is the best shot in the game (reviews/p70/giant1.png, ji-giant-b.png), but the posted film shows the riders floating in the sky above a small Lumi. Forced with few friends near, the giant lasts 13 s with one rider.",
+   "where": "RayMakie plots/meshscatter.jl :trace_transforms; plugins/giant.jl",
+   "evidence": "reviews/p70/giant1.png; sandbox events 21:56:49-21:57:13 (one rider, popped after 13 s)",
+   "suggestion": "Compose the model matrix in :trace_transforms, re-take the film, and have the giant call friends over to ride, so it never plays out with one.",
+   "done_when": "A traced frame of the giant film shows Lumi taller than the trees with riders on its shoulders"
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "title": "A new place north of the pond that the overview shows",
+   "todo": 395,
+   "what": "For six sessions the island has gained events but no new places: the s67 and s70 overviews are the same island. A returning player finds the same meadow, pond, cottage and garden.",
+   "where": "plugins/areas.jl, meadow.jl, the north side in front of the overview camera",
+   "evidence": "reviews/p70/progress-20-67-70.png",
+   "suggestion": "A place with its own look and use (an orchard with ladders, a waterfall, a ruined tower), built from generated assets and tied to a gag: the flight's roof nest could live there.",
+   "done_when": "The overview progress shot shows a new region of generated props north of the pond that was not there in s70"
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Hear the island: choir, BWAARP, sneeze and peep in the browser",
+   "todo": 390,
+   "what": "Jumped in, C ends in '♪ BWAAAAARP!', X in 'ah... ah...', and H in 'hic!', all written as text. The game plays no sound at all, so every punchline of the last ten sessions is silent, and only the films carry the choir.",
+   "where": "the web page (Bonito) audio; choir.jl, sneeze.jl, hiccups.jl, egg.jl",
+   "evidence": "reviews/p70/play-log.txt (jump choir: speech '♪ BWAAAAARP!'), ji-sneeze-a.png, ji-choir-b.png",
+   "suggestion": "A small audio channel: the game emits sound events, and the page plays short clips (the films' synthesized choir, Kokoro for Lumi). Start with the BWAARP and the peep.",
+   "done_when": "The browser test (tests/browser/drive.mjs) records an audio element playing while a choir runs in the sandbox"
+  }
+ ],
+ "todos": [
+  {
+   "id": 69,
+   "action": "drop",
+   "why": "A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back"
+  },
+  {
+   "id": 405,
+   "action": "drop",
+   "why": "Duplicate of #401 (the nest is its second half); no nest asset exists yet, so #401 stays open"
+  },
+  {
+   "id": 403,
+   "action": "drop",
+   "why": "Merged into the sound finding on #390"
+  },
+  {
+   "id": 376,
+   "action": "keep",
+   "why": "Still true: 'Cumulus' floats over a tree crown with the creature hidden (ji-choir-b.png), and the giant's tag and speech sit at its knees (giant1.png)",
+   "title": "Name tags: on their own creature, hidden with it, at a giant's head"
+  },
+  {
+   "id": 386,
+   "action": "keep",
+   "why": "The toadstool half moved to the new props finding; the sneeze feathers are still flat yellow slivers (ji-fly-b.png)",
+   "title": "Real feathers: sneeze and flight feathers with a quill and a soft vane"
+  },
+  {
+   "id": 291,
+   "action": "keep",
+   "why": "Jumped in, E only waves and picks flowers; presents are still watch-only"
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "Lumi still walks without a strut or crest flop (ji-walk.png)"
+  },
+  {
+   "id": 396,
+   "action": "keep",
+   "why": "Not verified as fixed"
+  },
+  {
+   "id": 343,
+   "action": "keep",
+   "why": "A frame error with no fix recorded"
+  },
+  {
+   "id": 385,
+   "action": "keep",
+   "why": "A frame error with no fix recorded"
+  }
+ ],
+ "engine": [
+  {
+   "what": "The RayMakie path tracer ignores a meshscatter's model matrix (only positions, rotations and markersize go into :trace_transforms), so anything scaled or translated with scale!/translate! is wrong in traced output",
+   "evidence": "dev/RayMakie plots/meshscatter.jl :trace_transforms; journal 20:58 (s69)"
+  },
+  {
+   "what": "Live path tracing is grainy after 25 s at 1280x720",
+   "evidence": "reviews/p70/traced.png"
+  }
+ ],
+ "process": "The author ships a spectacle an hour, and the last ones (giant, egg) are the first a stranger would share: the right direction for 'wow'. The cost shows in what the player looks at all the time. The high findings of the last four reviews (friend creatures #236, raster lighting #237, a new place #395) got no session time, and the eye-level and overview progress shots have not moved since s64. The paint fight's body spots are a regression that now dominates every mini game. Against the human's goals: island life and gags are strong, and every jump-in key answers. The faces wish (#325) is mostly done, the pages and films are going well, and the mini games are polished but have not grown. Next session: paint decals and the steered-flight camera first (both quick and seen constantly), then one friend species built like Lumi, then lighting, before any new event.",
+ "addressed": true,
+ "agent_notes": {
+  "paint balls on bodies": "fixed s71 (#414): spots stay 150 s (was 25 min), small sunk-in dabs, none on the steered creature; sandbox check: Lumi's 5 dabs not drawn while steered, longest 150 s.",
+  "friends as generated meshes": "open (#236): not reached in s71; the next big piece of work.",
+  "camera keeps the steered Lumi in frame": "flight part fixed s71 (#423): the flight's look point follows Lumi itself at 35%/frame (was 10% towards the loop centre); new test 'Flight: jumped in, G takes off...' passes with every airborne sample in view. The firefly crowns and the progress shot's pig stay open in #423.",
+  "eye-level lighting": "open (#237).",
+  "toadstool cap": "open: s68 gave it a stem and dome; the camera no longer looks through it (s70 lensclear blocker); a textured cap is still to come.",
+  "giant film": "open (#416, the tracer ignores a meshscatter's model matrix).",
+  "no new places": "open: s70-71 went to characters (egg, chick, flying lesson); a new region north of the pond is a good next session.",
+  "no sound in the game": "open: needs the browser page to play audio (web.jl); a Julia session is needed to test it safely."
+ }
+}

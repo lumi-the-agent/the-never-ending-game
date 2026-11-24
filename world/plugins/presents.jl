@@ -285,12 +285,18 @@ function answer_invite!(w)
     NG.say!(w, b, rand(w.rng, yes ? YES : NO); duration = 2.2)
     yes && emote(b.id, :heart)
     k = INVITE_GOAL[p]
-    for c in (yes ? (a, b) : (a,))
-        g = Base.invokelatest(NG.start_goal, Val(k), c, w)
-        g === nothing && (g = NG.start_goal(Val(:wander), c, w))
-        c.goal = g
+    if yes
+        for c in (a, b)
+            g = Base.invokelatest(NG.start_goal, Val(k), c, w)
+            g === nothing && (g = NG.start_goal(Val(:wander), c, w))
+            c.goal = g
+        end
+    else
+        # a refusal shows on both faces (todo #325): the inviter pouts, the one who said no looks sheepish,
+        # then both go on with their day
+        NG.feel!(w, a, :pout; seconds = 2.2) || (a.goal = NG.start_goal(Val(:wander), a, w))
+        NG.feel!(w, b, :shy; seconds = 2.0) || (b.goal = NG.Goal(:idle, b.pos, :idle, 3.0, w.t + 3.0, true, 0, false))
     end
-    yes || (b.goal = NG.Goal(:idle, b.pos, :idle, 3.0, w.t + 3.0, true, 0, false))
     if yes && b.goal.kind === a.goal.kind && b.goal.kind !== :fish   # side by side: the guest heads for a spot beside the inviter's
         t = a.goal.target
         d = Vec2f(t[1] - a.pos[1], t[2] - a.pos[2]); d = d / max(norm(d), 1f-3)
