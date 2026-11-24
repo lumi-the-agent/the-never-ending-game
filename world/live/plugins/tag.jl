@@ -98,7 +98,8 @@ function step_tag!(w, g)
     if sp !== nothing && !get(g, :lumi_asked, false)
         c = w.creatures[sp]
         if !c.controlled && c.action !== :sleep && !(c.id in g[:players]) && (c.goal.kind ∉ NG.BUSY_GOALS || c.goal.kind === :feel) &&
-           c.goal.kind ∉ (:follow, :interact, :build, :tinker, :seek_friend, :keep_company) && flat(c.pos, g[:centre]) < 1.5NEAR
+           c.goal.kind ∉ (:follow, :interact, :build, :tinker, :seek_friend, :keep_company, :kite, :kitewatch) &&   # s73: tag took Lumi off its kite
+           flat(c.pos, g[:centre]) < 1.5NEAR
             g[:lumi_asked] = true
             NG.leave_interactions!(w, c)
             c.goal = NG.Goal(:tag, g[:centre], :idle, 0.5, w.t + 5, false, 0, true)

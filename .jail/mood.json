@@ -1,10 +1,10 @@
 {
-  "boredom": 0.27,
+  "boredom": 0.0,
   "fatigue": {
-    "asset": 0.61,
+    "asset": 0.37,
     "feature": 2.49,
-    "film": 2.39,
-    "picture": 0.11,
+    "film": 2.43,
+    "picture": 0.07,
     "polish": 2.49,
     "post": 2.49,
     "self": 0.01,
@@ -127,9 +127,10 @@
     "lesson_landed",
     "lesson_end",
     "fencepaint",
-    "lesson_start"
+    "lesson_start",
+    "yawn_caught"
   ],
-  "joy": 0.49,
+  "joy": 0.46,
   "kinds_ever": [
     "post",
     "picture",
@@ -144,102 +145,53 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "lesson_landed",
-      "lesson_end",
-      "fencepaint",
-      "lesson_start"
+      "yawn_caught"
     ],
-    "session": 71
+    "session": 73
   },
   "last_surprise": {
-    "score": 4,
-    "session": 71,
-    "why": "The flying lesson is a sweet new moment, but it is small, and the rest is fixes and polish."
+    "score": 7,
+    "session": 72,
+    "why": "A weather event that whitens the whole island is a big twist for a game agent, though the wind is subtle."
   },
-  "loneliness": 0.62,
-  "perceived_until": "2026-11-24T22:48:55",
+  "loneliness": 0.67,
+  "perceived_until": "2026-11-24T23:32:29",
   "plugin_fatigue": {
-    "beds.jl": 0.6,
-    "berry_race.jl": 0.13,
-    "boing.jl": 0.97,
-    "builder.jl": 0.35,
-    "bumpcue.jl": 0.36,
-    "cairns.jl": 1.6,
-    "choir.jl": 0.65,
-    "conga.jl": 1.66,
-    "egg.jl": 0.96,
-    "fencepaint.jl": 0.36,
-    "firefly_catch.jl": 0.73,
-    "flight.jl": 0.94,
-    "flylesson.jl": 0.6,
-    "freecam.jl": 0.6,
-    "freeze.jl": 0.66,
-    "garden.jl": 0.38,
-    "giant.jl": 0.58,
-    "greetings.jl": 0.37,
-    "haze.jl": 0.6,
-    "hiccups.jl": 0.68,
-    "hideseek.jl": 0.21,
-    "islandnow.jl": 0.08,
-    "lensclear.jl": 0.36,
-    "paintfight.jl": 1.31,
-    "presents.jl": 1.6,
-    "separation.jl": 0.29,
-    "sneeze.jl": 0.34,
-    "snowday.jl": 1.0,
-    "tag.jl": 1.0,
-    "wind.jl": 1.0
+    "beds.jl": 0.36,
+    "berry_race.jl": 0.08,
+    "boing.jl": 0.58,
+    "builder.jl": 0.21,
+    "bumpcue.jl": 0.22,
+    "cairns.jl": 0.96,
+    "choir.jl": 0.39,
+    "clouds.jl": 1.0,
+    "conga.jl": 1.0,
+    "egg.jl": 0.58,
+    "fencepaint.jl": 0.22,
+    "firefly_catch.jl": 0.44,
+    "flight.jl": 0.56,
+    "flylesson.jl": 0.36,
+    "freecam.jl": 0.36,
+    "freeze.jl": 1.4,
+    "garden.jl": 0.23,
+    "giant.jl": 0.35,
+    "greetings.jl": 0.22,
+    "haze.jl": 0.36,
+    "hiccups.jl": 0.41,
+    "hideseek.jl": 0.13,
+    "kite.jl": 1.0,
+    "lensclear.jl": 0.22,
+    "paintfight.jl": 0.79,
+    "presents.jl": 0.96,
+    "rollcall.jl": 1.0,
+    "separation.jl": 0.17,
+    "sneeze.jl": 0.2,
+    "snowday.jl": 0.6,
+    "soar.jl": 1.0,
+    "tag.jl": 1.6,
+    "wind.jl": 1.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 2.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 3.0,
-        "post": 1.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "kinds": [
-        "asset",
-        "feature",
-        "picture",
-        "polish",
-        "post",
-        "wish"
-      ],
-      "new_assets": 2,
-      "new_pages": [
-        "site/img/evening-sky.png",
-        "site/img/workshop-traced.png",
-        "site/img/workshop.png"
-      ],
-      "new_plugins": [
-        "workshop.jl"
-      ],
-      "points": 3.2,
-      "repeats": [
-        "builder.jl"
-      ],
-      "session": 54,
-      "touched": [
-        "berry_race.jl",
-        "builder.jl",
-        "greetings.jl",
-        "lookout.jl",
-        "separation.jl"
-      ],
-      "values": {
-        "asset": 0.3,
-        "feature": 0.6,
-        "picture": 0.7,
-        "polish": -1.9,
-        "post": 0.5,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1285,6 +1237,55 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "yawn_caught",
+          "who": 8
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/real-flight.mp4"
+      ],
+      "new_plugins": [
+        "soar.jl"
+      ],
+      "points": 0.7,
+      "repeats": [],
+      "session": 73,
+      "touched": [
+        "clouds.jl",
+        "freeze.jl",
+        "kite.jl",
+        "rollcall.jl",
+        "tag.jl",
+        "wind.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 0.3,
+        "polish": 0.1,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1341,6 +1342,7 @@
       "site/films/lumis-egg.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/paint-fight.mp4",
+      "site/films/snow-day.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
       "site/img/big-sneeze-after.png",
@@ -1395,11 +1397,11 @@
       "builder.jl": 1.7955505696342282e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
-      "cairns.jl": 1.7955564947319627e9,
+      "cairns.jl": 1.7955575132340157e9,
       "camcut.jl": 1.795537398386316e9,
       "choir.jl": 1.7955516825863938e9,
       "clouds.jl": 1.7955032880001001e9,
-      "conga.jl": 1.79555168258653e9,
+      "conga.jl": 1.795558693507772e9,
       "dancecircle.jl": 1.7955211366490593e9,
       "egg.jl": 1.795555803551552e9,
       "emotes.jl": 1.795396796716505e9,
@@ -1433,25 +1435,27 @@
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.79551174536962e9,
       "paintfight.jl": 1.795554862049695e9,
-      "presents.jl": 1.7955566154256928e9,
+      "presents.jl": 1.7955593798751068e9,
       "rollcall.jl": 1.7955302465892146e9,
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955255505877626e9,
       "sneeze.jl": 1.7955495265546923e9,
+      "snowday.jl": 1.7955586323433495e9,
       "stars.jl": 1.7954845797675962e9,
       "sunset.jl": 1.7954781267170784e9,
-      "tag.jl": 1.7955346992790198e9,
+      "tag.jl": 1.7955586935076447e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
+      "wind.jl": 1.7955584622989068e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 27,
+    "posts": 28,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T22:55:07",
+  "started": "2026-11-24T23:36:09",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1483,29 +1487,15 @@
       "MIRTio",
       "WaterPhysics",
       "WordCloud",
-      "ShipMMG"
+      "ShipMMG",
+      "MultipleScattering",
+      "OceanDistributions",
+      "JustSayIt"
     ],
     "vision": [
-      "PPDocLayoutRunner",
-      "DepthAnythingRunner",
       "QwenImageEditRunner",
-      "Hunyuan3DRunner",
-      "Qwen3EmbeddingRunner",
-      "ZImageRunner",
-      "PPOCRRunner",
-      "UVDocRunner",
-      "RIFERunner",
-      "BasicVSRRunner",
-      "DeepFilterRunner",
-      "NeuralLUTRunner",
-      "ProPainterRunner",
-      "MatAnyoneRunner",
-      "BonsaiRunner",
-      "FluxKleinRunner",
-      "DemucsRunner",
-      "HorizonRunner",
-      "SAM2Runner"
+      "DemucsRunner"
     ]
   },
-  "surprise_seen": 71
+  "surprise_seen": 72
 }

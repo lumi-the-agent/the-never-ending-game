@@ -82,8 +82,12 @@ function thaw!(s::Freeze, game)
         NG.choose_goal!(c, w)
         NG.feel!(w, c, :laugh; seconds = 2.0 + rand(w.rng))
     end
+    # Lumi laughs too, but only when it is free or played: feel! replaces the goal, and a Lumi flying its kite
+    # let go of the string every time a statues game ended (s73: kite_land 'let_go' twice in the second of freeze_end)
     me = lumi_of(w)
-    me === nothing || me.controlled || NG.feel!(w, me, :laugh; seconds = 2.5)
+    if me !== nothing && !me.controlled && (me.goal.kind ∉ KEEP && me.goal.kind ∉ NG.BUSY_GOALS || me.goal.kind === :freeze)
+        NG.feel!(w, me, :laugh; seconds = 2.5)
+    end
     empty!(s.frozen)
     s.state = :idle
     s.next_t = w.t + GAP[1] + (GAP[2] - GAP[1]) * rand(w.rng)

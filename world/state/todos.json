@@ -4627,12 +4627,12 @@
       "id": 331,
       "kind": "fix",
       "priority": 2,
-      "result": "s58 part: when the walk to the meadow is boxed in twice, Lumi now goes to the nearest open meadow within 7 m (kite.jl `open_near`: 2 m from trunks, 1.2 m above the sea) before flying. A start on the shore at (0.6, 17.4, z 0.3) ended in a flight at (3.0, 17.3, z 0.6), still near the shore: the real fix is a path round the trees. All 3 kite tests pass; published.\ns59: not worked on (the session went to Lumi's own moves and the name tags); back to open.",
+      "result": "s58 part: when the walk to the meadow is boxed in twice, Lumi now goes to the nearest open meadow within 7 m (kite.jl `open_near`: 2 m from trunks, 1.2 m above the sea) before flying. A start on the shore at (0.6, 17.4, z 0.3) ended in a flight at (3.0, 17.3, z 0.6), still near the shore: the real fix is a path round the trees. All 3 kite tests pass; published.\ns59: not worked on (the session went to Lumi's own moves and the name tags); back to open.\nRe-checked s73: the kite already walks round trees (unstuck! detours, open_near fallback since s58). The real problem was elsewhere: every kite flight in the human's game on 24 Nov ended 'let_go' after 1-35 s, and twice in the very second of freeze_end. freeze.jl's thaw! made Lumi laugh with feel!, which replaces the goal, so a kite-flying Lumi let go of the string. Now the laugh is only for a Lumi that is free or played (goal not in KEEP/BUSY_GOALS, or :freeze). Sandbox: kite up, thaw! run, Lumi still :kite and the flyer 1.5 s later. Published 23:47. One more 1-second flight (16:23:17) had no event to explain it: watch kite_land 'let_go' durations next time.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Kite launch walks round trees to the open meadow",
-      "updated": "2026-11-24T11:03:51.771"
+      "updated": "2026-11-24T23:45:56.636"
     },
     {
       "created": "2026-11-24T09:31:02.277",
@@ -6019,6 +6019,76 @@
       "status": "dropped",
       "title": "system:wind.Wind failed in start! and was switched off",
       "updated": "2026-11-24T23:13:48.535"
+    },
+    {
+      "created": "2026-11-24T23:37:26.103",
+      "detail": "LoadError: UndefVarError: `SoarAny` not defined in `Main.Plugin_soar`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/soar.jl:47\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/soar.jl:47",
+      "est_minutes": 15.0,
+      "id": 431,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T23:37:36.829: plugin soar loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin soar does not load",
+      "updated": "2026-11-24T23:37:36.829"
+    },
+    {
+      "created": "2026-11-24T23:38:10.871",
+      "detail": "DomainError with -8.742278e-8:\nExponentiation yielding a complex result requires a complex argument.\nReplace x^y with (x+0im)^y, Complex(x)^y, or similar.\nStacktrace:\n  [1] throw_exp_domainerror(x::Float32)\n    @ Base.Math ./math.jl:41\n  [2] ^\n    @ ./math.jl:1187 [inlined]\n  [3] loop_pos(s::Main.Plugin_soar.Soar, w::NeverendingGame.World, u::Float64)\n    @ Main.Plugin_soar /sim/Programmieren/SimGame/world/plugins/soar.jl:41\n  [4] step!(s::Main.Plugin_soar.Soar, game::Game, dt::Float64)\n    @ Main.Plugin_soar /sim/Programmieren/SimGame/world/plugins/soar.jl:117\n  [5] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [8] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [9] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [10] (::NeverendingGame.var\"#advance!#377\"{NeverendingGame.CameraRig, Makie.Scene, NeverendingGame.World, Game})(dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:391\n [11] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#7#8\"{Tuple{Float64, Float64}, Dict{Symbol, Any}}, shot::Main.ClipScript.var\"#15#16\"{Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412\n [12] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:376 [inlined]\n [13] soar_clip(path::String; spot::Tuple{Float64, Float64}, rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/soar.jl:60\n [14] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [15] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [16] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [17] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [18] top-level scope\n    @ none:1\n [19] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [20] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [21] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 432,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T23:38:36.679: plugin soar loaded cleanly.\nHappened again at 2026-11-24T23:40:11.244.\nClosed at 2026-11-24T23:40:42.835: plugin soar loaded cleanly.\nHappened again at 2026-11-24T23:47:03.481.\nClosed at 2026-11-24T23:48:26.067: plugin soar loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:soar.Soar failed in step! and was switched off",
+      "updated": "2026-11-24T23:48:26.067"
+    },
+    {
+      "created": "2026-11-24T23:48:44.776",
+      "detail": "Stunt of session 73, the flying wish (properly, on purpose).",
+      "est_minutes": 15.0,
+      "id": 433,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/soar.jl (new): every 40-70 min by day Lumi says 'Today. Today I really fly.', flaps, lifts off and flies one circle (radius 8-14 m, bending in over the island, up to 9 m over the ground) with the little one riding on its back, friends within reach hop and cheer (LUMI'S FLYING!, feel!), and it lands where it started: 'I did it! On purpose!', the chick hopping down beside it. The camera flies alongside (Main.BIG_MOMENTS + CAMERA_GROUPS). The wobbly crash flight (flight.jl) still happens too. A DomainError at the end of the circle (sin^0.6 of -9e-8) was caught in a full sandbox run and fixed before the first flight in the human's game. Sandbox: media/s73/soar-5.0.png, soar-9.5.png (high over the shore, WHEEEEE!), soar-landed.png. 0.0 ms a frame. Film: path traced take (worker 20261124-234058-690, 960x540, 24 samples, 15 s, a 9 s circle) at site/films/real-flight.mp4, posted as 'On purpose'. Published 23:40 (fix 23:41).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "A real flight: Lumi circles the island, the little one on its back",
+      "updated": "2026-11-24T23:56:51.989"
+    },
+    {
+      "created": "2026-11-24T23:59:33.175",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 434,
+      "kind": "build",
+      "priority": 3,
+      "result": "scratch",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "x",
+      "updated": "2026-11-24T23:59:33.187"
+    },
+    {
+      "created": "2026-11-25T00:07:43.865",
+      "detail": "s73: tests/s58_play.jl 'Kite player (s58): Play, Stop, Play again works and the meter comes back' fails: after Stop the kite lands 'let_go' within 5-13 s (sandbox events 00:06:40 -> 00:06:45, 00:07:00 -> 00:07:13), so the second Play finds no kite (flyer 0, meter false). Fixed so far: freeze's end laugh and roll call no longer take a kite-flying Lumi, and tag no longer recruits it (s73). Still something takes Lumi right after Stop: sample Lumi's goal every frame after the Stop click (play.jl stop / freecam restore / feelings.jl?) and keep :kite through it. Also watch kite_land 'let_go' durations in the human's game: before s73 every flight ended within 1-35 s. Done when: the test passes three times in a row and a flight in the human's game lasts its full 7 minutes.",
+      "est_minutes": 15.0,
+      "id": 435,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Kite: Play, Stop, Play again keeps the kite",
+      "updated": "2026-11-25T00:07:43.865"
     }
   ]
 }

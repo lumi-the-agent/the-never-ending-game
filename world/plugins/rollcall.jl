@@ -27,7 +27,9 @@ end
 function call!(s::RollCall, game)
     w = game.world
     me = lumi_of(w)
-    (me === nothing || me.action === :sleep || me.goal.kind in SKIP) && return false
+    # Lumi only calls when it is free: its feel! replaces the goal (s73: the kite, a flight, the giant, the egg)
+    (me === nothing || me.action === :sleep || me.goal.kind in SKIP || me.goal.kind in NG.BUSY_GOALS ||
+     me.goal.kind in (:kite, :kitewatch, :follow)) && return false
     others = [c for c in w.creatures if c.id != me.id && c.goal.kind ∉ SKIP && !c.controlled]
     length(others) < 3 && return false
     sort!(others, by = c -> hypot(c.pos[1] - me.pos[1], c.pos[2] - me.pos[2]))

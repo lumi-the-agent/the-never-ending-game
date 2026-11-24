@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: fewer than two free friends with a favourite (1; goals [(\"Lumi\", :wander, :walk), (\"Gloop\", :sleep, :sleep), (\"Wibbles\", :pebble, :walk), (\"Pinchy\", :fish, :walk), (\"Hopscotch\", :eat, :walk), (\"Cumulus\", :fish, :sit), (\"Marshmallow\", :sleep, :sleep), (\"Truffle\", :fish, :sit), (\"Pickles\", :sleep, :sleep), (\"Sir Sniffsalot\", :fencepaint, :walk)])",
-      "file": "presents.jl",
-      "name": "Invitations: a friend asks a friend nearby to come along to what it loves, and they go together",
-      "passed": false,
-      "seconds": 32.3
+      "error": "",
+      "file": "kite_play.jl",
+      "name": "Jumping in with Play while the kite flies makes the player the holder; standing lets it sink; Stop frees Lumi",
+      "passed": true,
+      "seconds": 27.1
     }
   ],
-  "time": "2026-11-24T23:30:13.763"
+  "time": "2026-11-25T00:10:44.665"
 }

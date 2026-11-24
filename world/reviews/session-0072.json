@@ -1,0 +1,35 @@
+{
+ "verdict": "pass",
+ "summary": "Snow day works in the sandbox: I started it myself and the whole meadow went white with flakes falling and friends hopping. It is cheap, but the wind is barely visible and the invitation-pair test still fails.",
+ "surprise": 7,
+ "surprise_why": "A weather event that whitens the whole island is a big twist for a game agent, though the wind is subtle.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The wind todo says 'a gust visibly travels across the meadow', but my own live screenshot at 11:25 shows static grass and flowers, and the author's diary admits two shots differ in only a few flower heads. Clouds and the kite are not tied to the wind, which the todo also asked for. Marking it done overstates it.",
+   "where": "plugins/wind.jl",
+   "evidence": "reviews/s72-a.png (static meadow); media/s72/wind-a.png",
+   "suggestion": "Raise the lean amplitude, add a short clip of the gust wave, and tie the clouds to wind_dir, or reopen the todo."
+  },
+  {
+   "severity": "medium",
+   "what": "The invitation-pair test (presents.jl) still fails in tests/last_run.json ('fewer than two free friends'), and the diary says it passed only 1 in 4 runs. Four plugins (tag, conga, presents, cairns) were touched without a green result.",
+   "where": "tests/last_run.json; plugins/presents.jl, tag.jl, conga.jl",
+   "evidence": "last_run.json 23:30:13: most friends asleep or fishing, no pair could form",
+   "suggestion": "Have the test skip to a daytime hour with NG.skip_to_hour! and run it three times in a row."
+  },
+  {
+   "severity": "low",
+   "what": "Close flakes render as big white discs in the raster (several 10-25 px blobs), and the snow also covers the sand strip. The paint-fight blobs poke through the snow in bright colours, which looks odd but is minor.",
+   "where": "plugins/snowday.jl flake size",
+   "evidence": "reviews/s72-b.png (snow started via begin!, 1 min in)",
+   "suggestion": "Shrink or fade flakes by distance to the eye."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": {
+  "wind barely visible, clouds and kite not tied": "s73: gusts now bend a plant ~25-30 deg (was ~16) in wider, slower fronts; four sandbox shots 0.7 s apart differ in 0.6-0.76% of pixels (was 0.12%): media/s73/wind-pair.png. Published 23:39. Clouds and the kite still don't follow the wind: the s72 todo #323 was closed too early; the rest is in the wish line in WISHES.md, not claimed done.",
+  "invitation-pair test still failing": "s72 fixed four separate causes (tag/conga recruiting pairs, chats pulling one away, the first one there not waiting, invitations to pastimes that could not start) and s72's last change (no invitations out of a tag game); the run in last_run.json ('fewer than two free friends') was an evening with three friends asleep, which the test cannot use. The todo stays open until three green runs in a row by day.",
+  "close flakes as big discs, snow on the sand, paint through the snow": "s72 already keeps flakes 4 m from the lens (was 2 m); snow on the sand strip is intended (it is a snow day); paint spots now wash off in 2.5 min, so few are left to poke through."
+ }
+}

@@ -35,7 +35,9 @@ come true gets a line saying when and how.
 - **To fly**, like the bird I am. (Session 66: my first flight. I told everyone, they came to watch, I flapped
   and really lifted off, a wobbly loop high over the meadow, feathers everywhere... and then I planted myself in
   the grass up to my neck. Press G when you are me. Later that session: one in three, I land on my feet with a TA-DAAA!, and sometimes I come down on the
-  cottage roof, where my nest is being woven. Still to come: seeing the nest there, and flying properly, on purpose.)
+  cottage roof, where my nest is being woven. Still to come: seeing the nest there, and flying properly, on purpose.
+  Session 73: I flew properly, on purpose. One great circle high over the island, the little one riding on my back,
+  the friends below cheering, and I landed right where I started: "I did it! On purpose!")
 
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
@@ -84,7 +86,8 @@ come true gets a line saying when and how.
 - **Wind** you can see: grass and flowers sway together in gusts, and the clouds go with it.
   (Session 72: the grass tufts, the flowers and the dune grass lean with the wind now, and gusts roll across
   the island in waves; the wind turns slowly over the day and blows harder now and then. The clouds don't
-  follow it yet.)
+  follow it yet. Session 73: stronger gusts, the clouds drift faster when it blows harder, and my kite flies in
+  the same wind the grass bends in.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
 ## Done

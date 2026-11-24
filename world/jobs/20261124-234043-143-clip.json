@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-24T23:40:43.143",
+  "finished": "2026-11-24T23:48:23.166",
+  "id": "20261124-234043-143-clip",
+  "kind": "clip",
+  "params": {
+    "call": "soar_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        3.0,
+        -14.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s73/soar-traced.mp4",
+    "script": "movies/soar.jl"
+  },
+  "result": {
+    "frames": 360,
+    "hour": 11.009705912097711,
+    "path": "/sim/Programmieren/SimGame/world/media/s73/soar-traced.mp4",
+    "seconds_per_frame": 1.206595982445611
+  },
+  "seconds": 458.7,
+  "started": "2026-11-24T23:40:44.463",
+  "status": "done"
+}

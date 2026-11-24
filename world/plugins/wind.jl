@@ -45,15 +45,20 @@ function NG.step!(::Wind, game, dt)
         rot = map(eachindex(e.pos)) do i
             p = e.pos[i]
             # a gust is a wave rolling downwind; between gusts everything leans a little
-            g = 0.5f0 + 0.5f0 * sin(0.45f0 * (p[1] * d[1] + p[2] * d[2]) - 1.6f0 * t + 0.3f0 * sin(0.7f0 * p[1] - 0.5f0 * p[2]))
-            ang = strength * (0.05f0 + 0.22f0 * g * g) + 0.04f0 * sin(5f0 * t + 1.3f0 * i)
+            g = 0.5f0 + 0.5f0 * sin(0.3f0 * (p[1] * d[1] + p[2] * d[2]) - 1.2f0 * t + 0.3f0 * sin(0.7f0 * p[1] - 0.5f0 * p[2]))
+            # s73: a gust bends a plant ~25-30 deg (was ~16): the review's still showed no wind at all
+            ang = strength * (0.06f0 + 0.42f0 * g^3) + 0.06f0 * sin(5f0 * t + 1.3f0 * i)
             Makie.qrotation(axis, ang) * e.base[i]
         end
         Makie.update!(e.plot; rotation = rot)
     end
 end
 
-NG.start!(::Wind, game) = (game.stage === nothing || find_plots!(game); nothing)
+function NG.start!(::Wind, game)
+    W[:now] = wind_now          # other plugins (the kite) ask the same wind: Base.invokelatest(Main.WIND[:now], t)
+    game.stage === nothing || find_plots!(game)
+    nothing
+end
 
 function NG.stop!(::Wind, game)
     for (_, e) in get(W, :plots, Dict())

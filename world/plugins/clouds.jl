@@ -129,7 +129,15 @@ function NG.step!(::Clouds, game, dt)
     CL[:fringe].visible[] == !traced || (CL[:fringe].visible[] = !traced)
     traced && return     # glowing puffs held still while tracing (NG.path_traced)
     puffs = CL[:puffs]
-    pos, sz = puff_layout(puffs, w.t)
+    # the clouds go with the wind (s73, the wind wish): they drift faster when it blows harder; their own
+    # clock runs at 0.5x (calm) .. 2.4x (a gale) of the island's (wind.jl's strength is 0.5 .. 1.3)
+    k = 1f0
+    wp = get(game.plugins, "wind", nothing)
+    if wp !== nothing && isdefined(wp.mod, :wind_now)
+        k = 0.5f0 + 2.4f0 * max(0f0, Base.invokelatest(wp.mod.wind_now, w.t)[2] - 0.5f0) / 0.8f0
+    end
+    CL[:clock] = get(CL, :clock, w.t) + k * Float32(dt)
+    pos, sz = puff_layout(puffs, CL[:clock])
     Makie.update!(CL[:plot]; arg1 = pos, markersize = sz)
     Makie.update!(CL[:fringe]; arg1 = repeat(pos, 3), markersize = vcat((sz .* k for k in FRINGE)...))
     # colours only when the light changed visibly

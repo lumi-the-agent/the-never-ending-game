@@ -28,7 +28,8 @@ free_one(c) = !c.controlled && c.action !== :sleep && c.goal.kind ∉ NG.BUSY_GO
 emote(id, kind) = isdefined(Main, :EMOTES) && haskey(Main.EMOTES, :emote) && Base.invokelatest(Main.EMOTES[:emote], id, kind)
 
 "The wind: from the sea in the south-west, veering slowly over the day."
-wind_dir(t) = (a = 0.6f0 + 0.5f0 * sin(Float32(t) / 900f0); Vec2f(cos(a), sin(a)))
+wind_dir(t) = isdefined(Main, :WIND) && haskey(Main.WIND, :now) ? Base.invokelatest(Main.WIND[:now], t)[1] :
+              (a = 0.6f0 + 0.5f0 * sin(Float32(t) / 900f0); Vec2f(cos(a), sin(a)))   # the grass's wind (wind.jl) since s73
 
 "The open meadow spot with the most room around it (no tree crowns, rocks, actors, not the pond)."
 function kite_spot(game)
