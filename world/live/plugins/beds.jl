@@ -10,8 +10,10 @@ const KEEP_CLEAR = 1.0f0     # metres from bushes, rocks, actors and the other b
 mutable struct Beds <: System
     done::Dict{Int32,Any}    # creature id => the sleep goal already moved (the same object)
     faced::Set{Int32}        # sleepers turned to face out
+    yawns::Dict{Int32,Float64}   # sleepers yawning before they nod off => until (w.t)
 end
-Beds() = Beds(Dict{Int32,Any}(), Set{Int32}())
+Beds() = Beds(Dict{Int32,Any}(), Set{Int32}(), Dict{Int32,Float64}())
+const YAWN = 2.6             # s: a big yawn at the bed before the eyes close (todo #325)
 
 "A bed spot by `tree`, out of every crown and clear of things, near the side facing `from`; or nothing."
 function bed_spot(w, tree, from, taken)
@@ -39,8 +41,13 @@ function NG.step!(s::Beds, game, dt)
     for c in w.creatures
         g = c.goal
         if g.kind !== :sleep || c.controlled
-            delete!(s.done, c.id); delete!(s.faced, c.id)
+            delete!(s.done, c.id); delete!(s.faced, c.id); delete!(s.yawns, c.id)
             continue
+        end
+        # the yawn is over (or a reload forgot it: never yawn all night): now sleep
+        if g.action === :yawn && (!haskey(s.yawns, c.id) || w.t >= s.yawns[c.id])
+            g.action = :sleep
+            delete!(s.yawns, c.id)
         end
         if get(s.done, c.id, nothing) !== g && !g.arrived
             s.done[c.id] = g; delete!(s.faced, c.id)
@@ -59,6 +66,12 @@ function NG.step!(s::Beds, game, dt)
             tree, _ = NG.nearest(p -> p.kind === :tree, w.props, c.pos)
             tree === nothing || (c.yaw = Float32(atan(c.pos[2] - tree.pos[2], c.pos[1] - tree.pos[1])) - NG.species_of(c).heading)
             push!(s.faced, c.id)
+            # a big yawn first (only at night: a nap by day just drops off)
+            if NG.is_night(w)
+                g.action = :yawn
+                s.yawns[c.id] = w.t + YAWN
+                g.until += YAWN
+            end
         end
     end
     return

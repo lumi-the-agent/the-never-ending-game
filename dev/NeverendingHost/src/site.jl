@@ -86,6 +86,34 @@ function site_followup(jp::JailPaths, run)
            "render now comes off the page. $(round(Int, left)) minutes are left."
 end
 
+# ── every session posts its stunt ───────────────────────────────────────────
+
+"When the newest post on the character's front page was made (its `<span class=\"date\">`), or `nothing`."
+function newest_post(jp::JailPaths)
+    page = joinpath(site_dir(jp), "index.html")
+    isfile(page) || return nothing
+    times = [DateTime(m[1], dateformat"d U yyyy, H:M")
+             for m in eachmatch(r"<span class=\"date\">(\d{1,2} \w+ \d{4}, \d{1,2}:\d{2})</span>", read(page, String))]
+    return isempty(times) ? nothing : maximum(times)
+end
+
+"Whether the character posted since the session `run` started."
+function posted_since(jp::JailPaths, run)
+    t = newest_post(jp)
+    return t !== nothing && datetime2unix(t) - local_utc_offset() >= run.started - 60
+end
+
+const POST_NUDGE = "Nothing new on your pages this session yet: your stunt (rule 14) goes out as a post, with a path traced " *
+                   "picture or a short film and its date and time."
+
+"Sent instead of `keep_going` while the session has posted nothing."
+function post_followup(jp::JailPaths, run)
+    posted_since(jp, run) && return nothing
+    left = (run.deadline - time()) / 60
+    (left > 8 && run.wrap_up_since == 0) || return nothing
+    return POST_NUDGE * " Make it now; $(round(Int, left)) minutes are left."
+end
+
 # ── the blog on GitHub ──────────────────────────────────────────────────────
 
 "Where the host keeps the blog's git working copy: outside the world, the agent never touches git."
@@ -124,6 +152,8 @@ function publish_blog!(host, n::Int)
     run(`rsync -a --delete --exclude .git --exclude .nojekyll $(joinpath(jp.world, "site"))/ $(dir)/`)
     write(joinpath(dir, ".nojekyll"), "")                      # plain files, no Jekyll
     add_header!(joinpath(dir, "index.html"), jp, host.cfg)
+    leaked = secret_files(jp, dir)
+    isempty(leaked) || error("the blog holds secrets, not published: " * join(leaked, ", "))
     run(git("add", "-A"))
     isempty(read(git("status", "--porcelain"), String)) && return nothing
     name = character_name(jp)

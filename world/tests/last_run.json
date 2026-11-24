@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "",
-      "file": "birdplay.jl",
-      "name": "Jump in: a friend just behind Lumi does not take Lumi's name tag",
-      "passed": true,
-      "seconds": 9.8
+      "error": "check failed: a friend still stands watching after the build: [\"Truffle\"]",
+      "file": "builder.jl",
+      "name": "After a publish Lumi carries a crate to the new thing, works there, and it appears when Lumi is done",
+      "passed": false,
+      "seconds": 17.3
     }
   ],
-  "time": "2026-11-24T13:09:20.176"
+  "time": "2026-11-24T14:12:12.926"
 }

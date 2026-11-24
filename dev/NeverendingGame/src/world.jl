@@ -152,8 +152,10 @@ emit!(w::World, kind::Symbol; data...) =
 
 new_id!(w::World) = (id = w.next_id; w.next_id += 1; id)
 
-creature(w::World, id::Integer) = w.creatures[findfirst(c -> c.id == id, w.creatures)]
-creature(w::World, name::AbstractString) = w.creatures[findfirst(c -> c.name == name, w.creatures)]
+# `nothing` when there is no such creature: plugins check `me === nothing`, and the old index error
+# switched off ball play and flower gifts in the human's game while Lumi was being renamed (s61)
+creature(w::World, id::Integer) = (i = findfirst(c -> c.id == id, w.creatures); i === nothing ? nothing : w.creatures[i])
+creature(w::World, name::AbstractString) = (i = findfirst(c -> c.name == name, w.creatures); i === nothing ? nothing : w.creatures[i])
 prop(w::World, id::Integer) = w.props[findfirst(p -> p.id == id, w.props)]
 
 "Seconds per in-game day: 18000 s (5 h; ≤ 30 game minutes per 5 real minutes from 7 to 16 h). With 1440 s every mini game round slid into night (perfectionist-0046)."

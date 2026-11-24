@@ -188,6 +188,18 @@ function face_view(w::World, c::Creature)
 end
 
 function camera_goal(rig::CameraRig, w::World)
+    # asked twice a frame (camcut.jl, then update_camera!) and up to 60 obstruction checks each:
+    # one answer per frame (s61: 2 × 100 ms with Lumi in a tree nook, p95 218 ms)
+    key = (objectid(w), w.t, rig.mode, rig.subject, rig.eye, rig.target, rig.angle)
+    c = GOAL_CACHE[]
+    c !== nothing && c[1] == key && return c[2]
+    v = camera_goal_uncached(rig, w)
+    GOAL_CACHE[] = (key, v)
+    return v
+end
+const GOAL_CACHE = Ref{Any}(nothing)
+
+function camera_goal_uncached(rig::CameraRig, w::World)
     if rig.mode === :follow
         if rig.subject == 0
             shot = camera_shot(w)

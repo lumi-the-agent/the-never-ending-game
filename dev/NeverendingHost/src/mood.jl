@@ -360,6 +360,32 @@ function bored_followup(jp::JailPaths, run)
            "make something of a kind it is fresh for (" * join(freshest_kinds(m), ", ") * "), then publish it."
 end
 
+# ── the spark: a wild card each session ─────────────────────────────────────
+#
+# Left alone, the character picks the safe, average idea: another bench, another
+# patch of flowers. Each session the host draws a card from prompts/sparks.md
+# (each once until the deck is through) and puts it near the top of the prompt:
+# the session's stunt (RULES 14) starts from it.
+
+sparks_used_path(jp::JailPaths) = joinpath(jp.state, "sparks_used.txt")
+
+"This session's spark: a card of prompts/sparks.md not drawn since the deck was last through."
+function draw_spark!(jp::JailPaths)
+    deck = [String(strip(l[3:end])) for l in split(prompt_file("sparks.md"), '\n') if startswith(l, "- ")]
+    used = isfile(sparks_used_path(jp)) ? readlines(sparks_used_path(jp)) : String[]
+    left = setdiff(deck, used)
+    isempty(left) && ((left, used) = (deck, String[]))
+    card = rand(left)
+    write(sparks_used_path(jp), join([used; card], '\n'))
+    return card
+end
+
+spark_lines(card::AbstractString) = """
+    ## Today's spark (drawn by chance)
+    **$card**
+    Your stunt this session starts here (rule 14): your own take on it, as big, strange and funny as you
+    dare. If your first idea is small or cozy, throw it away and take the second one."""
+
 # ── perception: what the character noticed in the human's game ──────────────
 
 "The human's game's events with `wall` in [from, to) (the log is the jailed game's: unreadable lines are skipped)."

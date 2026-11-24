@@ -1,0 +1,10 @@
+{
+  "created": "2026-11-24T14:01:00.365",
+  "id": "20261124-140100-365-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 6000,
+    "prompt": "a small cozy garden shovel with a rounded steel blade and a warm honey wooden handle with a red grip, seen from the side, standing upright, stylized toy-like game prop"
+  },
+  "status": "queued"
+}

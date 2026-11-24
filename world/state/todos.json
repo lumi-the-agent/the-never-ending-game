@@ -4543,7 +4543,7 @@
       "id": 325,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "s61 part: bedtime yawn (plugins/beds.jl): at night every critter yawns at its bed for 2.6 s (goal action :yawn), then sleeps. Sandbox at 21:00: Wibbles, Marshmallow, Sir Sniffsalot, Truffle, Pinchy, Lumi, Pickles, Gloop, Hopscotch, Cumulus each showed :yawn then :sleep (live probe every 1.5 s); close raster shot media/s61/yawn-at-bed.png (heavy lids, round mouth). Published. Still open: hide and seek, firefly catch, showers/thunder, plans refused, bumps, builder proud, greetings, and the traced close stills + clip.\ns61 part 2: showers.jl shelterers huddle under their tree with :scared (trembling, wide eyes, sweat drop) instead of :idle: media/s61/scared-in-rain.png (Wibbles, sandbox 10:02 shower; roles Hopscotch nose/sit, Cumulus dance, Wibbles shelter/scared). Both shower tests pass. Published.\ns61 part 3: hideseek.jl a found friend gasps 0.7 s, then laughs until 2 s (FOUND_FACE), then falls in behind Lumi (at once if Lumi walked > 3 m on). Published; NOT yet seen on a face in a shot (tests/shots/hideseek-found.png shows the friend behind Lumi). The hide-and-seek W/A/D test fails 'found friends lag: [13.5, 2.8] m' with AND without this change (FOUND_FACE = (0,0) gave 13.7 m): an older bug, see #372.\ns61 part 4: builder.jl the builder stands proud (:proud, 2.5 s; was a 1.2 s :jump) when its build appears. Published. The publish/crate test fails before and after (old: 'a friend still stands watching: Truffle'; new: 'no crate over the builder's head ... Lumi build eat'): flaky, filed under #372.",
       "source": "human",
       "spent_minutes": 0.0,
       "status": "open",
@@ -4697,12 +4697,12 @@
       "id": 336,
       "kind": "perf",
       "priority": 1,
-      "result": "perfectionist-0058: Same as #335: measured during live:views, not play.\nHappened again at 2026-11-24T10:40:06.238.",
+      "result": "perfectionist-0058: Same as #335: measured during live:views, not play.\nHappened again at 2026-11-24T10:40:06.238.\ns61: the cause was the camera, not the listed live:* commands. NG.face_view took 102 ms (Lumi in a tree nook: all ~60 follow_view candidates checked) and camera_goal ran twice a frame (camcut + update_camera!). Inside, lensclear's per-creature `body_radius` -> `shape_radius` walked every vertex of Lumi's bird mesh pieces on each call (1 ms per lens check). Fixes: shapes.jl caches shape_radius per mesh (SHAPE_RADII), render.jl caches camera_goal per frame (GOAL_CACHE), lensclear.jl skips trig for things under 11°. face_view 102 -> 2.4 ms; human's game after publish: frame p95 217 -> 4.7 ms, sync 108 -> 0.85 ms, camcut 107 -> 1.1 ms (live_status game=:live, 14:01).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 218 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:40:06.238"
+      "updated": "2026-11-24T14:00:50.378"
     },
     {
       "created": "2026-11-24T10:33:58.861",
@@ -4711,12 +4711,12 @@
       "id": 337,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "s61: the cause was the camera, not the listed live:* commands. NG.face_view took 102 ms (Lumi in a tree nook: all ~60 follow_view candidates checked) and camera_goal ran twice a frame (camcut + update_camera!). Inside, lensclear's per-creature `body_radius` -> `shape_radius` walked every vertex of Lumi's bird mesh pieces on each call (1 ms per lens check). Fixes: shapes.jl caches shape_radius per mesh (SHAPE_RADII), render.jl caches camera_goal per frame (GOAL_CACHE), lensclear.jl skips trig for things under 11°. face_view 102 -> 2.4 ms; human's game after publish: frame p95 217 -> 4.7 ms, sync 108 -> 0.85 ms, camcut 107 -> 1.1 ms (live_status game=:live, 14:01).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 93 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:33:58.861"
+      "updated": "2026-11-24T14:00:50.381"
     },
     {
       "created": "2026-11-24T10:34:42.479",
@@ -4739,12 +4739,12 @@
       "id": 339,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "s61: the cause was the camera, not the listed live:* commands. NG.face_view took 102 ms (Lumi in a tree nook: all ~60 follow_view candidates checked) and camera_goal ran twice a frame (camcut + update_camera!). Inside, lensclear's per-creature `body_radius` -> `shape_radius` walked every vertex of Lumi's bird mesh pieces on each call (1 ms per lens check). Fixes: shapes.jl caches shape_radius per mesh (SHAPE_RADII), render.jl caches camera_goal per frame (GOAL_CACHE), lensclear.jl skips trig for things under 11°. face_view 102 -> 2.4 ms; human's game after publish: frame p95 217 -> 4.7 ms, sync 108 -> 0.85 ms, camcut 107 -> 1.1 ms (live_status game=:live, 14:01).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 152 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:36:59.120"
+      "updated": "2026-11-24T14:00:50.384"
     },
     {
       "created": "2026-11-24T10:46:59.429",
@@ -4753,12 +4753,12 @@
       "id": 340,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "s61: the cause was the camera, not the listed live:* commands. NG.face_view took 102 ms (Lumi in a tree nook: all ~60 follow_view candidates checked) and camera_goal ran twice a frame (camcut + update_camera!). Inside, lensclear's per-creature `body_radius` -> `shape_radius` walked every vertex of Lumi's bird mesh pieces on each call (1 ms per lens check). Fixes: shapes.jl caches shape_radius per mesh (SHAPE_RADII), render.jl caches camera_goal per frame (GOAL_CACHE), lensclear.jl skips trig for things under 11°. face_view 102 -> 2.4 ms; human's game after publish: frame p95 217 -> 4.7 ms, sync 108 -> 0.85 ms, camcut 107 -> 1.1 ms (live_status game=:live, 14:01).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 215 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:46:59.429"
+      "updated": "2026-11-24T14:00:50.386"
     },
     {
       "created": "2026-11-24T10:49:59.584",
@@ -4767,12 +4767,12 @@
       "id": 341,
       "kind": "perf",
       "priority": 1,
-      "result": "",
+      "result": "s61: the cause was the camera, not the listed live:* commands. NG.face_view took 102 ms (Lumi in a tree nook: all ~60 follow_view candidates checked) and camera_goal ran twice a frame (camcut + update_camera!). Inside, lensclear's per-creature `body_radius` -> `shape_radius` walked every vertex of Lumi's bird mesh pieces on each call (1 ms per lens check). Fixes: shapes.jl caches shape_radius per mesh (SHAPE_RADII), render.jl caches camera_goal per frame (GOAL_CACHE), lensclear.jl skips trig for things under 11°. face_view 102 -> 2.4 ms; human's game after publish: frame p95 217 -> 4.7 ms, sync 108 -> 0.85 ms, camcut 107 -> 1.1 ms (live_status game=:live, 14:01).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Frames are slow: p95 217 ms (budget 33 ms)",
-      "updated": "2026-11-24T10:49:59.584"
+      "updated": "2026-11-24T14:00:50.389"
     },
     {
       "created": "2026-11-24T10:51:06.583",
@@ -5201,7 +5201,7 @@
       "id": 372,
       "kind": "fix",
       "priority": 1,
-      "result": "s60: new hello as Lumi (KokoroRunner am_puck, 10.4 s, pronounce Lumi => lˈumi) in site/voice/hello.mp3/.ogg (old ones kept as hello-sprout.*); Whisper heard: \"Hello, I'm Lumi the big golden bird with the spiky crest, I used to be Sprout but the human gave me a new name...\". Still open: the four play tests that failed in the sandbox (patch, bench, ball kick, flower pick).",
+      "result": "s60: new hello as Lumi (KokoroRunner am_puck, 10.4 s, pronounce Lumi => lˈumi) in site/voice/hello.mp3/.ogg (old ones kept as hello-sprout.*); Whisper heard: \"Hello, I'm Lumi the big golden bird with the spiky crest, I used to be Sprout but the human gave me a new name...\". Still open: the four play tests that failed in the sandbox (patch, bench, ball kick, flower pick).\ns61: also failing, before and after s61's hideseek edit: 'Hide and seek ... first play with only W/A/D finds 2' -> found friends lag [13.7, 2.1] m 2 s after the second find (the FIRST found friend stays far behind).\ns61: 'After a publish Lumi carries a crate...' failed twice with different checks (friend still watching / no crate, Lumi's goal eat during :work) with and without s61's builder edit.",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
@@ -5277,6 +5277,62 @@
       "status": "open",
       "title": "Frames are slow: p95 230 ms (budget 33 ms)",
       "updated": "2026-11-24T13:11:18.707"
+    },
+    {
+      "created": "2026-11-24T13:49:26.572",
+      "detail": "Median cost per part of the frame:\nlive:save                                46.5 ms\nsystem:camcut.CamCut                     38.8 ms\nsync                                     38.6 ms\npanels                                   2.2 ms\nsystem:outfits.Outfits                   0.4 ms\nsystem:showers.Shower                    0.4 ms",
+      "est_minutes": 15.0,
+      "id": 378,
+      "kind": "perf",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Frames are slow: p95 81 ms (budget 33 ms)",
+      "updated": "2026-11-24T13:49:26.572"
+    },
+    {
+      "created": "2026-11-24T13:53:26.705",
+      "detail": "Median cost per part of the frame:\nlive:status                              110.1 ms\nlive:save                                46.5 ms\nsync                                     7.2 ms\nsystem:camcut.CamCut                     6.9 ms\npanels                                   2.1 ms\nsystem:outfits.Outfits                   0.5 ms",
+      "est_minutes": 15.0,
+      "id": 379,
+      "kind": "perf",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Frames are slow: p95 113 ms (budget 33 ms)",
+      "updated": "2026-11-24T13:53:26.705"
+    },
+    {
+      "created": "2026-11-24T14:03:29.123",
+      "detail": "Goal 2 + Lumi's wish. s61 queued three traced scenes in the worker (movies/day_in_life.jl, 960x540, 40 samples, 8 s each): media/s61/day-9.mp4, day-13.mp4, day-16.mp4 (jobs 20261124-1400*-clip). Watch each (contact sheet), re-queue a bad scene, then `movies/day_in_life.sh media/s61 releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4`, write NOTE.md with my verdict, a blog post with the film in site/films/, and say_to_human with the path. Done when the release folder holds the mp4 + NOTE.md and the post is up.",
+      "est_minutes": 25.0,
+      "id": 380,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A day in my new life: finish and release the film",
+      "updated": "2026-11-24T14:03:29.123"
+    },
+    {
+      "created": "2026-11-24T14:03:29.128",
+      "detail": "s61: asset job 20261124-140100-365-asset (a garden shovel) queued behind the film scenes; plugins/shovel.jl (published) places it at the garden fence's south-east corner (-8.35, 8.4), blade in the soil, leaning, once the mesh is in the catalog (checked every 20 s). Check: blade in the ground, not floating, not in a sleeper's bed spot; screenshot from the patch. Next step for the wish: Lumi digs with it (plants a sapling).",
+      "est_minutes": 10.0,
+      "id": 381,
+      "kind": "look",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "My shovel by the patch: check it stands right",
+      "updated": "2026-11-24T14:03:29.128"
     }
   ]
 }

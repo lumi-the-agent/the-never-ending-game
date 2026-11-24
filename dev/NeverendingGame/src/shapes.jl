@@ -80,7 +80,17 @@ function shape(name::Symbol)
 end
 
 "How far a shape reaches from its z axis (1 for the unit shapes; a mesh part's own footprint)."
-shape_radius(name::Symbol) = maximum(p -> norm(Vec2f(p[1], p[2])), GeometryBasics.coordinates(shape(name)))
+function shape_radius(name::Symbol)
+    # cached per mesh: Lumi's bird pieces have thousands of vertices and `body_radius` runs in every
+    # camera check (s61: 1 ms per lens check, 100 ms per frame)
+    m = shape(name)
+    r = get(SHAPE_RADII, name, nothing)
+    r !== nothing && r[1] === m && return r[2]
+    v = Float32(maximum(p -> norm(Vec2f(p[1], p[2])), GeometryBasics.coordinates(m)))
+    SHAPE_RADII[name] = (m, v)
+    return v
+end
+const SHAPE_RADII = Dict{Symbol,Tuple{Any,Float32}}()
 
 function init_shapes!()
     register_shape!(:sphere, unit_sphere())

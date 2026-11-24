@@ -195,6 +195,7 @@ end
 
 emote(id, kind) = haskey(Main.EMOTES, :emote) && Base.invokelatest(Main.EMOTES[:emote], id, kind)
 
+const FOUND_FACE = (0.7, 2.0)   # s after being found: gasp until the first, laugh until the second
 const FOUND_LINES = ("You found me!", "Aww, found!", "Hee hee, you got me!", "How did you see me?")
 const PEEK = Dict{Int32,Float64}()    # hider id => play time its peek ends
 const GIGGLES = ("hee hee", "hihi", "*giggle*")
@@ -204,6 +205,12 @@ function step_parade!(m, w, me, dt)
         m.found[k] || continue
         c = NG.creature(w, id)
         (c === nothing || c.goal.kind !== :found) && continue
+        # just found: a gasp, then a laugh, before it falls in behind Lumi (todo #325)
+        since = w.t - (c.goal.until - 1e6)      # until = the moment it was found + 1e6
+        if m.state === :playing && since < FOUND_FACE[2] && flat(c.pos, me.pos) < 3f0   # Lumi walked on: run after it
+            c.goal.action = since < FOUND_FACE[1] ? :gasp : :laugh
+            continue
+        end
         # a zig-zag parade, half a step off to alternate sides: straight behind Lumi the friends walked
         # between the chase camera and the player and filled the bottom of the view
         n = count(view(m.found, 1:k))
@@ -262,7 +269,7 @@ function NG.step!(m::HideSeek, game, dt)
             if flat(o.pos, c.pos) < FIND_RADIUS || at_cover(w, o.pos, c.pos)
                 m.found[k] = true
                 m.flash = 1.2
-                o.goal = NG.Goal(:found, o.pos, :jump, 1e6, w.t + 1e6, true, c.id, false)
+                o.goal = NG.Goal(:found, o.pos, :gasp, 1e6, w.t + 1e6, true, c.id, false)
                 o.yaw = atan(c.pos[2] - o.pos[2], c.pos[1] - o.pos[1])
                 NG.say!(w, o, rand(w.rng, FOUND_LINES); duration = 2.0)
                 emote(id, :hey)

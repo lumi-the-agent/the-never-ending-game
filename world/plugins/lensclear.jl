@@ -9,6 +9,7 @@ const NG = NeverendingGame
 const HALF_FOV = 32f0    # degrees, horizontal half view of the 16:9 dashboard camera (vertical ~22°)
 const HALF_VFOV = 22.5f0  # degrees, vertical half view (Makie's fovy 45)
 const FREE_DEG = 11f0    # angular radius a thing may have before it costs
+const SIN_FREE = sind(FREE_DEG)
 
 "Cost of a ball of radius `r` at `m` seen from `eye` looking along `fwd`: 0 when small or out of view."
 function lens_cost(eye, fwd, m, r, far = Inf32)
@@ -16,6 +17,7 @@ function lens_cost(eye, fwd, m, r, far = Inf32)
     d = norm(v)
     d < 1f-3 && return 2f0
     d - r > far && return 0f0
+    r < SIN_FREE * d && return 0f0       # smaller than FREE_DEG: most of the island, no trig (s61: 1 ms a call)
     ar = asind(min(1f0, r / d))
     ar <= FREE_DEG && return 0f0
     # in the picture: within the horizontal AND the vertical half view (a crown overhead, out of the

@@ -169,37 +169,6 @@ function pages_url(repo::AbstractString)
     return name == "$owner.github.io" ? "https://$name" : "https://$owner.github.io/$name"
 end
 
-"""
-Secrets never go public: GitHub tokens, API keys and private keys by their form, and the host's
-own secrets by their value. `(patterns, fixed strings)` for `grep`.
-"""
-function secret_patterns(jp::JailPaths)
-    forms = ["gh[pousr]_[A-Za-z0-9]{30,}", "github_pat_[A-Za-z0-9_]{40,}", "sk-ant-[a-z]{3}[0-9]{2}-[A-Za-z0-9_-]{20,}",
-             "sk-proj-[A-Za-z0-9_-]{20,}", "sk-or-v1-[0-9a-f]{40,}", "-----BEGIN [A-Z ]*PRIVATE KEY-----",
-             "AKIA[0-9A-Z]{16}", "xox[baprs]-[A-Za-z0-9-]{10,}"]
-    values = String[]
-    token = joinpath(github_dir(jp), "github_token")
-    isfile(token) && push!(values, strip(read(token, String)))
-    env = joinpath(jp.secrets, "env")
-    foreach(f -> push!(values, strip(read(joinpath(env, f), String))), readdir(env))
-    return forms, filter(v -> length(v) >= 12, values)
-end
-
-"The files of `dir` (its git history aside) that hold a secret; it must stay empty."
-function secret_files(jp::JailPaths, dir::AbstractString)
-    forms, values = secret_patterns(jp)
-    found = String[]
-    mktemp() do path, io
-        for (flag, pats) in (("-E", forms), ("-F", values))
-            isempty(pats) && continue
-            seekstart(io); truncate(io, 0); write(io, join(pats, '\n')); flush(io)
-            out = read(ignorestatus(`grep -rIl $flag --exclude-dir=.git -f $path $dir`), String)
-            append!(found, split(out, '\n'; keepempty = false))
-        end
-    end
-    return unique!(relpath.(found, dir))
-end
-
 "The Manifest with the checkouts' paths relative to the game, as a fork has them."
 relative_manifest(text::AbstractString, root::AbstractString) = replace(text, "path = \"$(rstrip(root, '/'))/" => "path = \"")
 

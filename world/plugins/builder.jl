@@ -285,7 +285,8 @@ function finish!(game, job, c)
     emote(c.id, :heart)
     job[:last] && NG.say!(w, c, "Ta-da! " * uppercasefirst(job[:label]) * "!"; duration = 3.5)
     NG.remember!(c, w.t, "built " * job[:label])
-    c.goal.kind === :build && (c.goal = NG.Goal(:answer, c.pos, :jump, 1.2, w.t + 1.2, true, 0, false))
+    # proud of it: wings out, chin up (todo #325; was a 1.2 s hop)
+    c.goal.kind === :build && (c.goal = NG.Goal(:answer, c.pos, :proud, 2.5, w.t + 2.5, true, 0, false))
     B[:crate_who] = 0
     d = B[:plots]
     haskey(d, :crate) && Makie.update!(d[:crate]; arg1 = [HIDE], markersize = [Vec3f(0)])

@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-24T14:00:32.438",
+  "id": "20261124-140032-438-clip",
+  "kind": "clip",
+  "params": {
+    "call": "day_scene",
+    "kwargs": {
+      "hour": 16.0,
+      "samples": 40,
+      "seconds": 8.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s61/day-16.mp4",
+    "script": "movies/day_in_life.jl"
+  },
+  "status": "queued"
+}

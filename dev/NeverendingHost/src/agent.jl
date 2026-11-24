@@ -219,7 +219,8 @@ function watchdog!(host, run::AgentRun, turn)
                  left < 300 ? "the session time is nearly up" : ""
         if !isempty(reason) && run.wrap_up_since == 0
             run.wrap_up_since = time()
-            steered = try_steer!(run, "Host: $reason. Finish what you are doing, commit it, write your journal entry and end the turn within a few minutes.")
+            post = run.role === :agent && !posted_since(host.jp, run) ? " " * POST_NUDGE * " Post it before you end." : ""
+            steered = try_steer!(run, "Host: $reason. Finish what you are doing, commit it, write your journal entry and end the turn within a few minutes." * post)
             record!(host.activity, run.label, "host", "asked to wrap up ($reason)" * (steered ? "" : ", provider cannot take mid-turn messages"))
         end
         over = left < 0 || (run.wrap_up_since > 0 && time() - run.wrap_up_since > grace && b["state"] == "exhausted")

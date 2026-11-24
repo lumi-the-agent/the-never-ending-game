@@ -292,6 +292,7 @@ function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
     println(io, named(prompt_file("RULES.md"), jp), "\n")
     goals = goals_text(jp)
     isempty(goals) || println(io, goals, "\n")
+    println(io, spark_lines(draw_spark!(jp)), "\n")
     println(io, wishes_text(jp), "\n")
     println(io, eye_lines(seen["eyes"], seen["name"]), "\n")
     println(io, mood_lines(jp), "\n")
@@ -446,7 +447,7 @@ end
 
 "`keep_going` (or, for a bored character with nothing new yet, `bored_followup`; for screenshots on its pages, `site_followup`), noted in the activity feed."
 function continue_session(host::Host, run)
-    text = something(bored_followup(host.jp, run), site_followup(host.jp, run), Some(keep_going(run)))
+    text = something(post_followup(host.jp, run), bored_followup(host.jp, run), site_followup(host.jp, run), Some(keep_going(run)))
     text === nothing || record!(host.activity, run.label, "host", "the agent ended its turn early; the session goes on")
     return text
 end

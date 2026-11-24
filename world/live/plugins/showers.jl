@@ -79,7 +79,8 @@ function start_shower!(s::Shower, game)
         if role === :shelter
             sp = shelter_spot(w, c)
             sp === nothing && (role = :nose)
-            sp === nothing || (c.goal = rain_goal(sp[1], :idle; arrived = false, run = true))
+            # huddled under the tree, trembling with a scared face (todo #325)
+            sp === nothing || (c.goal = rain_goal(sp[1], :scared; arrived = false, run = true))
         end
         role === :splash && (c.goal = rain_goal(c.pos, :jump))
         role === :dance && (c.goal = rain_goal(c.pos, :dance))

@@ -7,7 +7,10 @@
    your own taste. What was fun, what was broken, what bored you, what you
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
-3. Open review findings come before new work. The host has already filed a
+3. Your stunt (rule 14), from today's spark: plan it now, build it, film or
+   path trace it, publish it and post it, before anything else. Tell the
+   human's game what you are up to with `NeverendingGame.think!`.
+4. Then open review findings, before other new work. The host has already filed a
    perfectionist review's findings as todos (`kind` review, its `done_when`
    in the detail) and closed the todos it found done, stale or duplicated:
    don't file them again. Its `engine` items are yours too
@@ -15,7 +18,7 @@
    the human (a patch in `world/patches/`). Then set `"addressed": true` in the
    review file. A session review's findings: fix them, or explain in the
    review file why not, then set `"addressed": true`.
-4. Otherwise pick the todo that makes the game most visibly better for a
+5. Otherwise pick the todo that makes the game most visibly better for a
    player, favouring the weakest score, or add a better one. One thing done
    well beats three half done; done means its `done_when` holds in your
    sandbox, with a screenshot, and it is published (`publish()`).
@@ -23,7 +26,7 @@
    `NeverendingGame.think!("…")`, in {{NAME}}'s voice and a player's words
    ("planting a vegetable patch behind the cottage"): it is {{NAME}}'s thought
    bubble in the human's game. Never how (no plugin, test or fix talk).
-5. Then take the next todo. Keep building until the host asks you to wrap up
+6. Then take the next todo. Keep building until the host asks you to wrap up
    (it does before the session's time or the budget runs out); every session
    is followed by a review, so a short one wastes budget on it.
    End earlier only when you wait for a worker job (queue it, say so in the

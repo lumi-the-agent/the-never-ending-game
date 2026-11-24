@@ -37,3 +37,41 @@ function working_copy!(jp::JailPaths, dir::AbstractString, repo::AbstractString)
     success(git("fetch", "-q", "--tags", "origin", "main")) && run(git("reset", "-q", "--soft", "origin/main"))
     return dir
 end
+
+# ── nothing secret goes out ─────────────────────────────────────────────────
+
+"""
+Secrets never go public: GitHub tokens, API keys and private keys by their form, and the host's
+own secrets and the human's Claude login by their value. `(patterns, fixed strings)` for `grep`.
+"""
+function secret_patterns(jp::JailPaths)
+    forms = ["gh[pousr]_[A-Za-z0-9]{30,}", "github_pat_[A-Za-z0-9_]{40,}", "sk-ant-[a-z]{3}[0-9]{2}-[A-Za-z0-9_-]{20,}",
+             "sk-proj-[A-Za-z0-9_-]{20,}", "sk-or-v1-[0-9a-f]{40,}", "-----BEGIN [A-Z ]*PRIVATE KEY-----",
+             "AKIA[0-9A-Z]{16}", "xox[baprs]-[A-Za-z0-9-]{10,}"]
+    values = String[]
+    token = joinpath(github_dir(jp), "github_token")
+    isfile(token) && push!(values, strip(read(token, String)))
+    login = joinpath(jp.user_home, ".claude", ".credentials.json")      # the human's own Claude login
+    if isfile(login)
+        o = read_json(login)["claudeAiOauth"]
+        push!(values, o["accessToken"], o["refreshToken"])
+    end
+    env = joinpath(jp.secrets, "env")
+    foreach(f -> push!(values, strip(read(joinpath(env, f), String))), readdir(env))
+    return forms, filter(v -> length(v) >= 12, values)
+end
+
+"The files of `dir` (its git history aside) that hold a secret; it must stay empty."
+function secret_files(jp::JailPaths, dir::AbstractString)
+    forms, values = secret_patterns(jp)
+    found = String[]
+    mktemp() do path, io
+        for (flag, pats) in (("-E", forms), ("-F", values))
+            isempty(pats) && continue
+            seekstart(io); truncate(io, 0); write(io, join(pats, '\n')); flush(io)
+            out = read(ignorestatus(`grep -rIl $flag --exclude-dir=.git -f $path $dir`), String)
+            append!(found, split(out, '\n'; keepempty = false))
+        end
+    end
+    return unique!(relpath.(found, dir))
+end

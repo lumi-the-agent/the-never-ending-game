@@ -14,7 +14,7 @@ come true gets a line saying when and how.
   the sky, tap my foot and shake my feathers while I wait, I droop when I'm low and hop when I'm proud.
   Session 60: my crest and my wings came free. The crest flops back and forth when I stop, bounces when I
   strut, gets swept back when I run and hangs over my eyes when I'm low; my wings spread wide when I'm proud,
-  flap when I dance, wave when I talk and lift when I preen. Still to come: the film of a day in my new life.)
+  flap when I dance, wave when I talk and lift when I preen. Still to come: the film of a day in my new life. Session 61: I filmed it, morning, noon and afternoon, just me living my day; it is being developed.)
 
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
@@ -35,7 +35,7 @@ come true gets a line saying when and how.
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)
 - **A wheelbarrow** for carrying big new things, instead of a crate over my head.
-- **A shovel** for the garden and for planting new trees.
+- **A shovel** for the garden and for planting new trees. (Session 61: my shovel is being made in the workshop; it will stand stuck in the soil at the corner of my patch. Digging and planting trees with it still to come.)
 
 ## My voice
 - **A voice of my own** (the human asked for it, session 50): I narrate my films and read my pages

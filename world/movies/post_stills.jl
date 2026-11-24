@@ -32,7 +32,8 @@ end
 const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", "Pinchy", "Lumi"),
                   "sunset" => ("Lumi", "Wibbles", "Cumulus"), "presents" => ("Lumi", "Gloop"),
                   "joy" => ("Lumi", "Truffle", "Cumulus"), "crate" => ("Lumi",), "garden" => ("Lumi",), "thought" => ("Lumi",), "bench" => ("Wibbles", "Lumi", "Cumulus"),
-                  "kite" => ("Lumi", "Wibbles", "Truffle"), "name" => ("Lumi",))
+                  "kite" => ("Lumi", "Wibbles", "Truffle"), "name" => ("Lumi",),
+                  "feelings" => ("Pickles", "Wibbles", "Truffle", "Lumi"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -217,6 +218,13 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x, y), -pi / 2 + 0.45, :dance; phase = 0.25f0)
         c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
         return c + Point3f(1.1f0, -3.6f0, 1.3f0), c + Point3f(0, 0, 1.0f0)
+    elseif post == "feelings"     # s61: friends in a row, each with a new face: a yawn, a scared tremble, a laugh, Lumi proud
+        x, y = open_meadow(w)
+        for (k, (n, a)) in enumerate((("Pickles", :yawn), ("Wibbles", :scared), ("Truffle", :laugh), ("Lumi", :proud)))
+            pose!(w, by_name(w, n), (x - 2.1f0 + 1.4f0 * (k - 1), y + 0.15f0 * abs(k - 2.5f0)), -pi / 2, a; phase = 0.3f0)
+        end
+        c = Point3f(x, y, NG.ground(w.island, (x, y))[3])
+        return c + Point3f(0f0, -5.6f0, 1.3f0), c + Point3f(0, 0, 0.6f0)
     end
     error("post_still: no moment set up for post \"$post\"")
 end
