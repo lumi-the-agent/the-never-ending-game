@@ -33,3 +33,8 @@ for a, b in zip(cents, cents[1:]):
 print("frames", n, "white px", [c[2] for c in cents[:6]], "...")
 print("shift px per frame: max %.2f mean %.2f" % (max(shifts), sum(shifts) / len(shifts)))
 print("shifts", " ".join("%.2f" % s for s in shifts))
+# signed steps: a walk keeps its direction, a shake flips it (dx sign changes between consecutive frames)
+dxs = [b[0] - a[0] for a, b in zip(cents, cents[1:])]
+flips = sum(1 for a, b in zip(dxs, dxs[1:]) if abs(a) > 0.5 and abs(b) > 0.5 and (a > 0) != (b > 0))
+print("dx", " ".join("%+.1f" % d for d in dxs))
+print("direction flips (|dx| > 0.5 px both frames):", flips, "of", len(dxs) - 1)

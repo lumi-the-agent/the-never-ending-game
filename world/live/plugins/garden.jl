@@ -209,7 +209,17 @@ struct Garden <: System end
 function NG.start!(::Garden, game)
     game.stage === nothing && return
     delete!(Main.GARDEN, :state)
-    NG.CAMERA_MOMENTS["garden"] = garden_moment
+    # "garden" is one of the engine's MOMENTS_FIRST (asked before every other moment), so the island's big
+    # once-in-a-while moments (Main.BIG_MOMENTS: the giant, the egg) ask here first: a dance ring took the
+    # camera from the giant after 6 s (s69 review)
+    isdefined(Main, :BIG_MOMENTS) || Core.eval(Main, :(const BIG_MOMENTS = Dict{String,Any}()))
+    NG.CAMERA_MOMENTS["garden"] = w -> begin
+        for f in values(Main.BIG_MOMENTS)
+            id = Base.invokelatest(f, w)
+            id === nothing || return id
+        end
+        garden_moment(w)
+    end
     replant!(game)
     build_garden!(game)
     Main.GARDEN[:check] = 0.0

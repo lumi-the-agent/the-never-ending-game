@@ -78,8 +78,27 @@ function actor_size(a)
 end
 
 struct LensClear <: System end
-NG.start!(::LensClear, game) = (NG.CAMERA_BLOCKERS["lens"] = (eye, target) -> lens_block(game.world, eye, target); nothing)
+"""
+The Big Boing toadstool (boing.jl, a plugin plot, no prop) along the line of sight: about 1 per blocked sample.
+Since s68 it stands on a 1.3 m stem under a 1 m dome, and the follow camera framed a dance ring through it (s70).
+"""
+function toadstool_block(eye, target)
+    (isdefined(Main, :BOING) && haskey(Main.BOING, :center)) || return 0f0
+    c = Main.BOING[:center]
+    o = 0f0
+    for s in 0.1f0:0.1f0:0.9f0
+        q = eye + s * (target - eye)
+        hypot(q[1] - c[1], q[2] - c[2]) < 2.0f0 && q[3] < c[3] + 2.4f0 && (o += 1f0)
+    end
+    return o
+end
+
+function NG.start!(::LensClear, game)
+    NG.CAMERA_BLOCKERS["lens"] = (eye, target) -> lens_block(game.world, eye, target)
+    NG.CAMERA_BLOCKERS["toadstool"] = toadstool_block
+    nothing
+end
 NG.step!(::LensClear, game, dt) = nothing
-NG.stop!(::LensClear, game) = (delete!(NG.CAMERA_BLOCKERS, "lens"); nothing)
+NG.stop!(::LensClear, game) = (delete!(NG.CAMERA_BLOCKERS, "lens"); delete!(NG.CAMERA_BLOCKERS, "toadstool"); nothing)
 
 register!(LensClear())

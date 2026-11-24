@@ -20,6 +20,10 @@ come true gets a line saying when and how.
 - **My voice in the game itself**: a little "hm!" or "hoo!" you hear in the browser when I hop, sulk or
   finish something, and my friends' squeaks when they boing.
 
+- **A little one of my own** (session 70: came true. A golden egg turned up in the meadow, my friends gathered round
+  while it wobbled, and out hopped a tiny me. It trots after me everywhere and sleeps when I sleep. Next: it
+  peeps, copies my dances, and gets a little bigger every day.)
+
 - **To be big for a moment** (session 69: came true. I ate a golden mushroom and grew five times taller than the
   trees; my friends screamed, then climbed up onto my head and shoulders for a ride, and POP, I was small again.
   Press M when you are me. Next: walking about as a giant, every step a little earthquake.)
@@ -66,6 +70,9 @@ come true gets a line saying when and how.
   meadow threw paint at each other until we were all polka-dotted. Press P when you are me.)
 - **Paint that stays somewhere**: after a fight, my friends and I paint the cottage fence and the workshop in
   rainbow stripes with what is left in the pots, so the island keeps a little of every paint fight.
+  (Session 70: came true for the garden fence. After every paint fight up to three painters take what is left
+  to the fence and each paints the section nearest to it, red, orange, yellow, green, blue, violet in turn; it
+  stays, so the fence grows into a rainbow. The workshop is still bare.)
 
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.

@@ -25,6 +25,9 @@ function NG.step!(::BumpCue, game, dt)
     # W let go (or a wave, a jump) for a moment: start over. A blocked walker flickers to :idle for a frame or
     # two (Separation pushes it back), so short gaps do not count.
     c.action in (:walk, :run) && (BC[:walked] = w.t)
+    # the bump shows on the face too: a short gasp (todo #325; feel! leaves a steered creature alone, so the
+    # action is set here, after the engine's step, for 0.9 s)
+    w.t < get(BC, :gasp_until, -Inf) && (c.action = :gasp)
     if w.t - get(BC, :walked, -Inf) > 0.5
         BC[:from] = nothing
         return
@@ -41,6 +44,7 @@ function NG.step!(::BumpCue, game, dt)
     w.t - BC[:last] < CUE_GAP && return
     BC[:last] = w.t
     BC[:count] += 1
+    BC[:gasp_until] = w.t + 0.9
     isdefined(Main, :EMOTES) && haskey(Main.EMOTES, :emote) && Base.invokelatest(Main.EMOTES[:emote], c.id, :what)
     NG.say!(w, c, LINES[mod1(BC[:count], length(LINES))]; duration = 2.5)
     NG.emit!(w, :bump_cue; who = c.name)

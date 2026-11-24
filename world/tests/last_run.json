@@ -2,67 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "explore45.jl",
-      "name": "Berry race: W lifts the camera from the low start view to the chase view, Stop ends it",
-      "passed": true,
-      "seconds": 8.3
-    },
-    {
-      "error": "",
       "file": "minigames.jl",
-      "name": "Berry race: start card names the rivals, a pick counts, critters race and eat, the basket fills",
+      "name": "Bump cue: holding W into the sea, Lumi shows a '?' and says to turn with A or D",
       "passed": true,
-      "seconds": 12.5
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
-      "passed": true,
-      "seconds": 10.2
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Wild berry race: critters race each other for ripe berries, the winner dances",
-      "passed": true,
-      "seconds": 0.1
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Wild berry race: a racer taken away (a rain shower) is not pulled back to the bush",
-      "passed": true,
-      "seconds": 0.0
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a win steps up a level (start card, saved level), a loss does not; Stop and Play again twice works",
-      "passed": true,
-      "seconds": 10.6
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a whole W/A/D first play is a race: the critters score too, the player still wins",
-      "passed": true,
-      "seconds": 50.4
-    },
-    {
-      "error": "",
-      "file": "s53_play.jl",
-      "name": "Berry race from the menu: start card, a whole W/A/D race ends with every berry taken, rivals score, and the player is not left far behind",
-      "passed": true,
-      "seconds": 48.2
-    },
-    {
-      "error": "",
-      "file": "s54_play.jl",
-      "name": "Berry race, first play standing still: no friend eats more than two berries and the race ends",
-      "passed": true,
-      "seconds": 64.5
+      "seconds": 9.0
     }
   ],
-  "time": "2026-11-24T21:07:59.530"
+  "time": "2026-11-24T21:50:33.603"
 }

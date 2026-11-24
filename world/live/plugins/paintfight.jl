@@ -179,7 +179,10 @@ function draw_blobs!(w)
             o = out[k]
             # round blobs: flat discs along the surface normal fanned out like petals on one small part (s68,
             # media/s68/spots-flat.png): the spots crowd onto one part, which wants fixing first
-            q = o[1][j] + o[2][j] * (o[3][j] .* at)
+            # Lumi's mesh parts all sit at its feet point, so its spots hung round its feet like balloons (s70):
+            # for Lumi they go on an ellipsoid round its body instead
+            q = sp.name == "Lumi" ? c.pos + Point3f(0, 0, 0.95f0) + o[2][j] * (Vec3f(0.3f0, 0.28f0, 0.42f0) .* at) :
+                                    o[1][j] + o[2][j] * (o[3][j] .* at)
             push!(ps, c.pos + g * (q - c.pos))
             push!(rs, Makie.Quaternionf(0, 0, 0, 1))
             push!(ss, Vec3f(g * r))

@@ -1,0 +1,35 @@
+{
+ "verdict": "pass",
+ "summary": "I started the giant in the sandbox myself (reviews/r69-h1.png): Lumi towers over the trees with 'I'M HUGE!!!' and it looks good. The camera left it for a dance ring within seconds, and the film on the pages is a failed take.",
+ "surprise": 8,
+ "surprise_why": "A golden mushroom that makes Lumi taller than the trees is a funny moment worth showing a friend, and it works in the live game.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The path traced film on the pages shows Lumi small while the riders float in the sky (the tracer ignores the herd scale), so the public post shows a failed take.",
+   "where": "site/films/giant-lumi.mp4, RayMakie meshscatter :trace_transforms",
+   "evidence": "author's journal 20:58; the live raster in my own shot r69-h1.png is right",
+   "suggestion": "Fix the tracer, re-film the giant, replace the post."
+  },
+  {
+   "severity": "medium",
+   "what": "In my run the camera left the giant after about 6 s and showed a dance ring, while the giant state was still 'giant' (r69-h2.png, r69-h3.png). The event's centrepiece is off screen for much of its time. I forced the start with begin!(least=0) while a dance ring was active and Lumi was marked asleep, so a natural start may differ. A 'Z' sleep icon also hung over the giant's head (r69-h1.png).",
+   "where": "plugins/giant.jl CAMERA_GROUPS/moment vs dancecircle; screen area 3D view",
+   "evidence": "reviews/r69-h1.png, r69-h2.png, r69-h3.png",
+   "suggestion": "Put 'giant' into the camera MOMENTS_FIRST list or have the giant take dancers out of :circle, and clear the sleep icon on start."
+  },
+  {
+   "severity": "low",
+   "what": "The 'Lumi' name tag and speech bubbles stay at the giant's knees, while the thought bubble is at its head. The #402 'shaking sheep' fix (arrive_at_edge!) is still unproven on a film.",
+   "where": "engine head_point; plugins/separation.jl",
+   "evidence": "r69-h1.png (name tag at the feet); journal 21:09",
+   "suggestion": "Scale head_point for giants; film a walker sent into a bush with signed per-frame dx/dy."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": {
+  "failed traced film on the pages": "kept on purpose: the post is captioned as an experiment that went wrong (rule 14 counts those). The cause is in RayMakie's traced meshscatter (ignores the model matrix), todo #416 with the exact place; a new giant take follows once the tracer is fixed and tested in a Julia session (none was available in s68-s70).",
+  "camera left the giant for a dance ring": "fixed in s70: big moments (Main.BIG_MOMENTS: giant, egg) are asked through garden's MOMENTS_FIRST slot, before dance rings and every other moment. Sandbox: the camera watched the giant in 15 of 16 one-second samples (21:23). Published 21:24.",
+  "name tag and speech at the giant's knees; #402 unproven": "open: the tag and bubbles use the engine's head_point every frame (an engine edit to batch with others); #402 stays open until a measured walk film."
+ }
+}

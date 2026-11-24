@@ -15,7 +15,7 @@ const T_GIANT = 13.0              # stomping about with riders
 const T_POP = 0.7                 # back to small
 const REACH = 12f0
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :egg)
 const SCREAM = ("AAAH!", "Run!!!", "LUMI?!", "It's HUGE!", "Eeeek!")
 const RIDE = ("Giddy up!", "Wheee!", "I can see the sea!", "So high!", "Faster, Lumi!")
 const FEET = ("Look how tall!", "Do the stomp!", "Again! Again!", "Hello up there!")
@@ -364,12 +364,15 @@ function NG.start!(s::Giant, game)
     delete!(G, :eyedir)
     plots!(game)
     NG.CAMERA_MOMENTS["giant"] = w -> s.state === :idle ? nothing : s.lumi
+    isdefined(Main, :BIG_MOMENTS) || Core.eval(Main, :(const BIG_MOMENTS = Dict{String,Any}()))
+    Main.BIG_MOMENTS["giant"] = NG.CAMERA_MOMENTS["giant"]      # before dance rings and the rest (garden.jl)
     NG.CAMERA_GROUPS["giant"] = giant_group
     isdefined(Main, :LUMI_DOING) && (Main.LUMI_DOING[:giant] = "I'M HUGE!!!")
 end
 
 function NG.stop!(s::Giant, game)
     delete!(NG.CAMERA_MOMENTS, "giant")
+    isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "giant")
     delete!(NG.CAMERA_GROUPS, "giant")
     s.state === :idle || finish!(s, game)
     for k in (:cap, :stem, :puff)

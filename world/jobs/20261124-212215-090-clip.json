@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-24T21:22:15.090",
+  "finished": "2026-11-24T21:29:25.561",
+  "id": "20261124-212215-090-clip",
+  "kind": "clip",
+  "params": {
+    "call": "egg_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        3.0,
+        -14.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s70/egg-traced.mp4",
+    "script": "movies/egg.jl"
+  },
+  "result": {
+    "frames": 315,
+    "hour": 10.510794638377412,
+    "path": "/sim/Programmieren/SimGame/world/media/s70/egg-traced.mp4",
+    "seconds_per_frame": 1.2880721387409029
+  },
+  "seconds": 429.4,
+  "started": "2026-11-24T21:22:16.118",
+  "status": "done"
+}

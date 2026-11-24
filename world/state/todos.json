@@ -1309,12 +1309,12 @@
       "id": 94,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "Checked s70: fishing is capped at one creature per spot (areas.jl goal_score is 0 once fishers(w) >= length(FISH_SPOTS) = 4; start_goal takes the first free spot). A minute of sandbox play sampled every second (21:50): 0 creatures on the pier for 30 s, 1 for 30 s (Cumulus fishing), never more than the 4 spots. The s25 jam (3 fishers + a dancer on the deck) did not show; a dance on the deck was not seen in the sample.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Pier jam: three critters and Lumi all on the pier at once",
-      "updated": "2026-11-23T02:47:09.844"
+      "updated": "2026-11-24T21:49:09.523"
     },
     {
       "created": "2026-11-23T03:02:44.084",
@@ -5621,12 +5621,12 @@
       "id": 402,
       "kind": "fix",
       "priority": 1,
-      "result": "s66 still test: game_clip (raster 480x270, 24 fps, 2 s) with a :fixed rig set to the same eye/target every frame and Cumulus idle at (-2,-2): its pos/yaw/phase identical every frame, and the six consecutive frames look identical (media/s66/still-sheet.png, still-sheep.mp4). So the pose, the idle animation and the renderer do NOT twitch. The sheep in first-flight.mp4 was a flight WATCHER: suspects left = (a) the film camera (movies/flight.jl lerps S[:tgt] and S[:back] after Lumi every frame; any jerk in Lumi's position moves the whole picture), (b) the watcher walking into a solid at its ring spot and being pushed back out each frame (Cumulus zigzag measured), (c) flight.jl look_at! snapping yaw each frame while the engine turns it to its walk target. Next: rerun movies/flight.jl with a frozen camera and the same frames, then fix the one that moves.",
+      "result": "s66 still test: game_clip (raster 480x270, 24 fps, 2 s) with a :fixed rig set to the same eye/target every frame and Cumulus idle at (-2,-2): its pos/yaw/phase identical every frame, and the six consecutive frames look identical (media/s66/still-sheet.png, still-sheep.mp4). So the pose, the idle animation and the renderer do NOT twitch. The sheep in first-flight.mp4 was a flight WATCHER: suspects left = (a) the film camera (movies/flight.jl lerps S[:tgt] and S[:back] after Lumi every frame; any jerk in Lumi's position moves the whole picture), (b) the watcher walking into a solid at its ring spot and being pushed back out each frame (Cumulus zigzag measured), (c) flight.jl look_at! snapping yaw each frame while the engine turns it to its walk target. Next: rerun movies/flight.jl with a frozen camera and the same frames, then fix the one that moves.\nMeasured on films (tools/steady_measure.py: centroid of the sheep's bright pixels per frame, signed steps). Standing still, fixed camera, 2.5 s (movies/steady.jl): raster max 0.34 px between frames (mean 0.10), path traced 24 samples + OIDN max 0.82 px (mean 0.12): media/s69/steady-raster.mp4, steady-traced.mp4. The human's sheet (media/human/vibrating-sheep-first-flight.png) shows the stones still and the sheep jumping, so the cause was the creature: a walker whose target lies within a solid's reach stepped in and was pushed out every frame. Fixed where it lives: separation.jl arrive_at_edge! (the walker arrives at the solid's edge), published s69 21:10, all 9 berry race tests pass. Walking after the fix (media/s69/steady-walk.mp4): steady dx +1..+3 px per frame, 3 direction flips in 118 frames (2.5%; s66 measured 10-15% flips); one 7-frame back-and-forth burst remains (frames 89-95), likely a bump with a friend.",
       "source": "user",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Steady films: creatures twitch from frame to frame in game_clip films",
-      "updated": "2026-11-24T18:34:12.343"
+      "updated": "2026-11-24T21:31:22.366"
     },
     {
       "created": "2026-11-24T19:02:11.961",
@@ -5823,6 +5823,76 @@
       "status": "open",
       "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
       "updated": "2026-11-24T20:54:43.298"
+    },
+    {
+      "created": "2026-11-24T21:17:59.256",
+      "detail": "a plot named :chick is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::Vector{GeometryBasics.Point{3, Float32}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] meshscatter!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{marker::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal, :uv), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.Vec{2, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, material::Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, rotation::Vector{Makie.Quaternionf}, color::Matrix{ColorTypes.RGBA{FixedPointNumbers.N0f8}}, name::Symbol})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465\n  [7] chick_plots!(game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:78\n  [8] start!(s::Main.Plugin_egg.Egg, game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:346\n  [9] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Program",
+      "est_minutes": 15.0,
+      "id": 417,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T21:18:16.316: plugin egg loaded cleanly.\nHappened again at 2026-11-24T21:18:16.429.\nClosed at 2026-11-24T21:18:32.135: plugin egg loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:egg.Egg failed in start! and was switched off",
+      "updated": "2026-11-24T21:18:32.135"
+    },
+    {
+      "created": "2026-11-24T21:22:42.719",
+      "detail": "Stunt of session 70: a golden egg in the meadow, friends gather, it wobbles, CRACK, a tiny Lumi (my own parts at 0.38 size) hops out and follows me everywhere, sleeps when I sleep; saved in state/chick.json. Film for the pages.",
+      "est_minutes": 15.0,
+      "id": 418,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Lumi's egg (plugins/egg.jl, new): a golden egg turns up 1.3 m in front of Lumi (An egg?!), up to 6 friends gather flanking Lumi (Is it yours, Lumi?), it wobbles harder and harder (It moved!), CRACK, the top flies off and a tiny Lumi (Lumi's own 8 parts drawn at 0.38 size, with its face) hops out, ...PEEP?, the friends hop and laugh (Awww!), Hello, little one. Afterwards the chick trots behind Lumi everywhere (runs to keep up, sleeps when Lumi sleeps), saved in state/chick.json (only from the live game, never from films). Happened by itself in the human's game at 21:30 (egg_found with 2 friends, egg_hatch, egg_end; the chick stays 1.07 m from Lumi). Sandbox: media/s70/chick-follow.png (the chick trotting behind Lumi on the path), egg-hatch.png. Frame cost 0.15 ms. Camera: big moments now come first (Main.BIG_MOMENTS through garden's MOMENTS_FIRST slot), 15 of 16 samples on the giant. Film: path traced take (worker 20261124-212215-090, 960x540, 24 samples, 13 s) at site/films/lumis-egg.mp4, posted 21:29 as An egg?!; take 2 with the watchers placed (no one crossing the foreground) is rendering.\nLumi's egg (plugins/egg.jl, new): a golden egg turns up 1.3 m in front of Lumi (An egg?!), up to 6 friends gather flanking Lumi (Is it yours, Lumi?), it wobbles harder and harder (It moved!), CRACK, the top flies off and a tiny Lumi (Lumi's own 8 parts drawn at 0.38 size, with its face) hops out, ...PEEP?, the friends hop and laugh (Awww!), Hello, little one. Afterwards the chick trots behind Lumi everywhere (runs to keep up, sleeps when Lumi sleeps), saved in state/chick.json (only from the live game, never from films). Happened by itself in the human's game at 21:30 (egg_found with 2 friends, egg_hatch, egg_end; the chick stays 1.07 m from Lumi). Sandbox: media/s70/chick-follow.png (the chick trotting behind Lumi on the path), egg-hatch.png. Frame cost 0.15 ms. Camera: big moments now come first (Main.BIG_MOMENTS through garden's MOMENTS_FIRST slot), 15 of 16 samples on the giant. Film: path traced take (worker 20261124-212215-090, 960x540, 24 samples, 13 s) at site/films/lumis-egg.mp4, posted 21:29 as An egg?!; take 2 (worker 20261124-212958-983, 24 samples) replaced it at 21:37: the watchers start at their places beside Lumi, nobody crosses the foreground.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Lumi's egg: a tiny Lumi hatches and follows me",
+      "updated": "2026-11-24T21:37:38.189"
+    },
+    {
+      "created": "2026-11-24T21:38:34.673",
+      "detail": "MethodError: no method matching haskey(::Module, ::Symbol)\nThe function `haskey` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  haskey(!Matched::LLVM.GlobalMetadataDict, ::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:705\n  haskey(!Matched::Base.TTY, ::Symbol)\n   @ Base terminfo.jl:392\n  haskey(!Matched::ComputePipeline.NestedSearchTree, ::Symbol)\n   @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/nesting.jl:175\n  ...\n\nStacktrace:\n  [1] step!(::Main.Plugin_fencepaint.FencePaint, game::Game, dt::Float64)\n    @ Main.Plugin_fencepaint /sim/Programmieren/SimGame/world/plugins/fencepaint.jl:82\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 419,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T21:38:48.984: plugin fencepaint loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:fencepaint.FencePaint failed in step! and was switched off",
+      "updated": "2026-11-24T21:38:48.984"
+    },
+    {
+      "created": "2026-11-24T21:43:27.055",
+      "detail": "Wish from WISHES.md (s70).",
+      "est_minutes": 15.0,
+      "id": 420,
+      "kind": "feature",
+      "priority": 2,
+      "result": "plugins/fencepaint.jl (new): when a paint fight ends, up to 3 of its painters walk to the nearest unpainted sections of the garden fence (21 generated sections) and each paints one, in rainbow order by section (bands on both rails, a heart and There!/Rainbow fence!); saved in state/fencepaint.json (live game only), so the fence keeps every fight's paint. A painter another event takes (a Big Boing party right after the fight took two) gets its job back once free (jobs expire after 10 min). Sandbox: a real fight ended, then Pickles walked 4.3 m and painted section 2 orange (media/s70/fence-painted.png). Published 21:44.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Paint that stays: the painters paint the garden fence after a fight",
+      "updated": "2026-11-24T21:43:27.059"
+    },
+    {
+      "created": "2026-11-24T21:44:11.939",
+      "detail": "LoadError: ParseError:\n# Error @ /sim/Programmieren/SimGame/world/plugins/egg.jl:109:5\n\n\"A \"peep!\" over the chick for a moment (the 2D overlay, like Lumi's thought bubble); hidden otherwise.\"\n#   └ ── cannot juxtapose string literal\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/egg.jl:109\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] live_command(g::Game, ::Val{:reload}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:153\n  [9] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/egg.jl:109",
+      "est_minutes": 15.0,
+      "id": 421,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-24T21:44:33.963: plugin egg loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin egg does not load",
+      "updated": "2026-11-24T21:44:33.963"
     }
   ]
 }
