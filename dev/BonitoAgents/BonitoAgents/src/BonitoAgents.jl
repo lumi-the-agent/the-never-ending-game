@@ -115,7 +115,7 @@ public AgentApp, AppContext, AppTool, Param, ToolScope, EveryChat, AppChat, AppK
        AppButton, AppCard, AppModal, AppUIStyles,
        AppCall, AppError,
        app_id, app_title, app_description, app_icon, app_tools, call_tool, chat_pane, app_briefing,
-       app_allowed,
+       app_allowed, app_jail, set_jail!, add_worker_ws_routes!,
        ChatHeader, ChatNotice, ChatTranscript, ChatComposer, ChatToolbar,
        ServerState, ProjectInfo, WorkerInfo, User, ChatFolder,
        caller_user, app_chat, chat_title, chat_folders, find_worker, start_chat!,

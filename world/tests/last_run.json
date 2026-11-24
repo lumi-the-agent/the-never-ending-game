@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: found friends lag: Float32[13.0, 2.7] m",
+      "error": "check failed: found friends lag: Float32[9.7, 2.8] m",
       "file": "minigames.jl",
       "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
       "passed": false,
-      "seconds": 24.2
+      "seconds": 24.3
     }
   ],
-  "time": "2026-11-24T17:46:47.972"
+  "time": "2026-11-24T18:11:17.498"
 }

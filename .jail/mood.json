@@ -1,14 +1,14 @@
 {
-  "boredom": 0.0,
+  "boredom": 0.22,
   "fatigue": {
-    "asset": 0.22,
-    "feature": 2.13,
-    "film": 1.36,
-    "picture": 1.4,
-    "polish": 2.11,
-    "post": 2.07,
-    "self": 0.08,
-    "sound": 0.1
+    "asset": 0.13,
+    "feature": 2.28,
+    "film": 1.82,
+    "picture": 0.84,
+    "polish": 2.27,
+    "post": 2.24,
+    "self": 0.05,
+    "sound": 0.06
   },
   "happened": [
     "Boop",
@@ -95,7 +95,7 @@
     "hiccups",
     "hiccup_punchline"
   ],
-  "joy": 0.99,
+  "joy": 0.67,
   "kinds_ever": [
     "post",
     "picture",
@@ -120,51 +120,39 @@
   },
   "last_surprise": {
     "score": 6,
-    "session": 64,
-    "why": "Friends blown off their feet by Lumi's sneeze is a funny island-wide moment, but it is one more timed event like the Boing."
+    "session": 65,
+    "why": "A contagious silly event with a player key and a BOO punchline is a nice twist, though it sits beside the earlier whole-island events."
   },
-  "loneliness": 0.14,
-  "perceived_until": "2026-11-24T17:07:18",
+  "loneliness": 0.2,
+  "perceived_until": "2026-11-24T17:50:47",
   "plugin_fatigue": {
-    "ballplay.jl": 0.08,
-    "beds.jl": 0.13,
-    "berry_race.jl": 0.1,
-    "birdbody.jl": 0.16,
-    "boing.jl": 0.82,
-    "builder.jl": 0.22,
-    "bumpcue.jl": 0.08,
-    "butterflies.jl": 0.08,
-    "cairns.jl": 0.08,
-    "camcut.jl": 1.0,
-    "conga.jl": 0.22,
-    "dancecircle.jl": 0.08,
-    "feelings.jl": 0.1,
-    "firefly_catch.jl": 0.09,
-    "flora.jl": 0.08,
-    "flowerfield.jl": 0.08,
-    "flowergift.jl": 0.08,
-    "freecam.jl": 0.08,
-    "freeze.jl": 0.22,
-    "garden.jl": 0.68,
-    "greetings.jl": 0.9,
-    "hiccups.jl": 1.0,
-    "hideseek.jl": 1.21,
-    "islandnow.jl": 0.08,
-    "kite.jl": 0.1,
-    "lensclear.jl": 0.14,
-    "lookout.jl": 0.08,
-    "newname.jl": 0.08,
-    "nightshots.jl": 0.08,
-    "presents.jl": 0.1,
-    "rollcall.jl": 0.22,
-    "separation.jl": 1.08,
-    "shovel.jl": 0.13,
-    "showers.jl": 0.21,
-    "sneeze.jl": 1.6,
-    "tag.jl": 0.7,
-    "watering.jl": 0.09,
-    "wheelbarrow.jl": 0.13,
-    "workshop.jl": 0.09
+    "beds.jl": 0.08,
+    "berry_race.jl": 0.06,
+    "birdbody.jl": 0.1,
+    "boing.jl": 0.49,
+    "builder.jl": 0.13,
+    "camcut.jl": 0.6,
+    "conga.jl": 0.13,
+    "feelings.jl": 0.06,
+    "firefly_catch.jl": 0.05,
+    "flight.jl": 1.0,
+    "freeze.jl": 0.13,
+    "garden.jl": 0.41,
+    "greetings.jl": 1.54,
+    "hiccups.jl": 0.6,
+    "hideseek.jl": 1.73,
+    "kite.jl": 0.06,
+    "lensclear.jl": 0.08,
+    "presents.jl": 0.06,
+    "rollcall.jl": 0.13,
+    "separation.jl": 1.65,
+    "shovel.jl": 0.08,
+    "showers.jl": 0.13,
+    "sneeze.jl": 0.96,
+    "tag.jl": 0.42,
+    "watering.jl": 0.05,
+    "wheelbarrow.jl": 0.08,
+    "workshop.jl": 0.05
   },
   "sessions": [
     {
@@ -966,6 +954,47 @@
         "post": 0.2
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/first-flight.mp4"
+      ],
+      "new_plugins": [
+        "flight.jl"
+      ],
+      "points": 1.7,
+      "repeats": [],
+      "session": 66,
+      "touched": [
+        "greetings.jl",
+        "hideseek.jl",
+        "separation.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 1.2,
+        "polish": 0.0,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1012,6 +1041,7 @@
       "site/feed.xml",
       "site/index.html",
       "site/films/a-day-in-my-new-life.mp4",
+      "site/films/hiccups-2.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
@@ -1068,7 +1098,7 @@
       "bumpcue.jl": 1.7955211366524117e9,
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7955211366510177e9,
-      "camcut.jl": 1.7954582490826252e9,
+      "camcut.jl": 1.795537398386316e9,
       "clouds.jl": 1.7955032880001001e9,
       "conga.jl": 1.7955298326355002e9,
       "dancecircle.jl": 1.7955211366490593e9,
@@ -1083,7 +1113,8 @@
       "garden.jl": 1.7955346992788157e9,
       "greetings.jl": 1.7955345198151731e9,
       "haze.jl": 1.7954853397788777e9,
-      "hideseek.jl": 1.7955258236910377e9,
+      "hiccups.jl": 1.7955369149615822e9,
+      "hideseek.jl": 1.7955386676332104e9,
       "islandnow.jl": 1.795521136649431e9,
       "kite.jl": 1.7955211366513107e9,
       "lamplight.jl": 1.795444622510117e9,
@@ -1099,11 +1130,11 @@
       "outfits.jl": 1.79551174536962e9,
       "presents.jl": 1.7955211366519678e9,
       "rollcall.jl": 1.7955302465892146e9,
-      "separation.jl": 1.7955211366489348e9,
+      "separation.jl": 1.7955388151947343e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955255505877626e9,
-      "sneeze.jl": 1.7955353744175954e9,
+      "sneeze.jl": 1.7955372467014477e9,
       "stars.jl": 1.7954845797675962e9,
       "sunset.jl": 1.7954781267170784e9,
       "tag.jl": 1.7955346992790198e9,
@@ -1111,11 +1142,11 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 20,
+    "posts": 21,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T17:11:04",
+  "started": "2026-11-24T17:54:44",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1126,7 +1157,10 @@
       "KeplerGL",
       "DPFEHM",
       "PhyloNetworks",
-      "SatelliteDataSources"
+      "SatelliteDataSources",
+      "SmartML",
+      "InfraStore",
+      "LiftedTrajectoryGames"
     ],
     "vision": [
       "PPDocLayoutRunner",
@@ -1134,8 +1168,10 @@
       "QwenImageEditRunner",
       "Hunyuan3DRunner",
       "Qwen3EmbeddingRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "PPOCRRunner",
+      "UVDocRunner"
     ]
   },
-  "surprise_seen": 64
+  "surprise_seen": 65
 }

@@ -200,6 +200,45 @@ const FOUND_LINES = ("You found me!", "Aww, found!", "Hee hee, you got me!", "Ho
 const PEEK = Dict{Int32,Float64}()    # hider id => play time its peek ends
 const GIGGLES = ("hee hee", "hihi", "*giggle*")
 
+const DETOUR = Dict{Int32,Tuple{Point3f,Float64}}()      # follower id => (side point, give up at)
+const MOVED = Dict{Int32,Tuple{Point3f,Float64}}()       # follower id => (position, time) of the last check
+
+"""A follower > 3 m behind that hardly MOVED for 1 s is wedged against a trunk or bush (todo #338): it walks to a
+free point 2 m to the side first, on the side away from the nearest solid, then goes on after Lumi."""
+function detour!(w, c, target, d)
+    if haskey(DETOUR, c.id)
+        p, until = DETOUR[c.id]
+        dp = flat(p, c.pos)
+        dp > 0.4f0 && w.t < until && return p, dp
+        delete!(DETOUR, c.id)
+    end
+    last = get(MOVED, c.id, (c.pos, w.t))
+    if w.t - last[2] >= 1.0
+        stuck = d > 3f0 && flat(last[1], c.pos) < 0.3f0
+        MOVED[c.id] = (c.pos, w.t)
+        if stuck
+            dir = Vec2f(target[1] - c.pos[1], target[2] - c.pos[2]) / max(d, 1f-3)
+            perp = Vec2f(-dir[2], dir[1])
+            near = argmin(pr -> flat(pr.pos, c.pos), w.props)     # the solid it is wedged against
+            best, bd = nothing, -1f0
+            for s in (1f0, -1f0), r in (2f0, 3f0)
+                q = c.pos + Point3f(r * s * perp[1] + 0.6f0 * dir[1], r * s * perp[2] + 0.6f0 * dir[2], 0)
+                standable(w, q, 0.4f0) || continue
+                dq = flat(near.pos, q)
+                dq > bd && (bd = dq; best = q)
+            end
+            if best !== nothing
+                DETOUR[c.id] = (best, w.t + 3.0)
+                NG.emit!(w, :hideseek_detour; who = c.name, x = round(best[1]; digits = 1), y = round(best[2]; digits = 1))
+                return best, flat(best, c.pos)
+            end
+        end
+    else
+        haskey(MOVED, c.id) || (MOVED[c.id] = last)
+    end
+    return target, d
+end
+
 function step_parade!(m, w, me, dt)
     for (k, id) in enumerate(m.hiders)
         m.found[k] || continue
@@ -219,10 +258,13 @@ function step_parade!(m, w, me, dt)
         target = back + side * Point3f(-sin(me.yaw), cos(me.yaw), 0)
         standable(w, target, 0.4f0) || (target = back)     # the side slot is in a bush or a trunk: fall in line
         d = flat(target, c.pos)
+        target, d = detour!(w, c, target, d)
         if m.state === :over
             c.goal.action = :jump            # everyone found: the whole parade hops
         elseif d > 0.4f0
-            NG.move_heading!(c, w, atan(target[2] - c.pos[2], target[1] - c.pos[1]), dt; run = d > 3, maxstep = d)
+            # far behind: a catch-up sprint (the slow species fell 10 m behind a running Lumi, todo #338)
+            NG.move_heading!(c, w, atan(target[2] - c.pos[2], target[1] - c.pos[1]), dt; run = d > 3, maxstep = d,
+                             speed = d > 4.5f0 ? 1.7f0 : 1f0)
             c.goal.action = c.action
         else
             c.goal.action = :idle

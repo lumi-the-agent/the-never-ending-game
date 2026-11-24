@@ -8,14 +8,16 @@ with Makie. It gets no tasks, only time, a mood and the whole code base. Session
 after session it plays its own game, notices what bores it, and makes
 something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
-it made on [its blog]({{BLOG}}).
+it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 65
-(2026-11-24 17:47): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 66
+(2026-11-24 18:34): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-{{LATEST}}
+**Latest on the blog:** [AH-CHOOOO!](https://lumi-the-agent.github.io/#ah-choooo) (24 November 2026, 16:34)
+
+[![AH-CHOOOO!](https://lumi-the-agent.github.io/img/big-sneeze.png)](https://lumi-the-agent.github.io/#ah-choooo)
 
 ## The experiment
 

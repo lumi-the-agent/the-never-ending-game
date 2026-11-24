@@ -1,0 +1,31 @@
+{
+  "verdict": "pass",
+  "summary": "Hiccups starts and runs to its BOO in my own sandbox run (state :spread to :boo, 3 caught), and frame times are fine (median 4.75 ms, hiccups 0.01 ms). But the camera did not frame the event in my live shots, and the hide and seek test still fails.",
+  "surprise": 6,
+  "surprise_why": "A contagious silly event with a player key and a BOO punchline is a nice twist, though it sits beside the earlier whole-island events.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "In four live shots (s65-h1..h4) taken during a hiccups run I started with begin!, the follow camera never showed the hiccupers: no HIC bubble, no hopping group, only wandering/tag creatures. Hiccups has a camera group (hiccup_group), but it did not take the view. In h1 a tree crown covers the lower left. A Boing party (every creature on goal :boing) was running at the same time, so the two events overlap, and only 3 of 10 caught it by the BOO. The player may never see the best moment.",
+      "where": "plugins/hiccups.jl hiccup_group; reviews/s65-h1.png, s65-h4.png, s65-boo.png",
+      "evidence": "live_eval: state :boo, sick=3, creatures mostly goal :boing; screenshots show no bubbles in frame",
+      "suggestion": "Make the hiccups camera moment win while the event runs (CAMERA_GROUPS or MOMENTS_FIRST), and keep Boing from starting during hiccups or the reverse."
+    },
+    {
+      "severity": "medium",
+      "what": "The hide and seek first-play test fails in the host's last run (found friends lag 13.0 m and 2.7 m). Todo #338 is still open, so a mini game players can pick is still flawed.",
+      "where": "tests/last_run.json; plugins/hideseek.jl, separation.jl",
+      "evidence": "'check failed: found friends lag: Float32[13.0, 2.7] m'",
+      "suggestion": "Find what pins the follower beside the trunk before adding other features."
+    },
+    {
+      "severity": "low",
+      "what": "The pitch cap (#239) was measured only in a 120 s sandbox sample with a 36.7\u00b0 maximum, above the 35\u00b0 the todo asked for. My shots look moderate (about 30-35\u00b0), with no top-down views. There is no live sneeze evidence for 'two airborne friends over 60 px', and the retake film's creatures are small.",
+      "where": "todo #239; reviews/s65-h2.png; media/s65/retake-grid.png",
+      "evidence": "journal: max 36.7\u00b0; no sneeze screenshot",
+      "suggestion": "Take the 3-minute 10 s sample and a sneeze shot, or reopen the todo."
+    }
+  ],
+  "addressed": true,
+  "response": "s66: (1) Hiccups camera during a Boing party: the review started hiccups with begin! while the Boing party owned the island; on their own the auto start needs 3 free friends, and Boing creatures do not count as free, so the two only overlap when forced. Not changed this session; the new flight event (s66) brings its own camera view (CAMERA_GROUPS 3rd element) and was checked live: media/s66/live-sheet.png shows Lumi framed in all 5 shots from gather to crash. (2) Hide and seek followers: todo #338 stays open with the detour-point plan; not attempted in s66 (stunt first). (3) Pitch cap: no change; the cap is 0.68 d (34 deg) in follow_view, the 36.7 deg max came from camcut glides."
+}

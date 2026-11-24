@@ -2,7 +2,7 @@
 
 julia_version = "1.12.7"
 manifest_format = "2.0"
-project_hash = "fcb66a2284483a25572b95b34aae650e201d8b8d"
+project_hash = "72951d7ba3735ed8623390ab34a7a6fd7269dac9"
 
 [[deps.ANSIColoredPrinters]]
 git-tree-sha1 = "574baf8110975760d391c710b6341da1afa48d8c"
@@ -208,11 +208,44 @@ version = "5.3.1"
     Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
     MarkdownAST = "d0879d2d-cac2-40c8-9cee-1863dc0c7391"
 
+[[deps.BonitoAgents]]
+deps = ["AgentClientProtocol", "AgentProviders", "Base64", "Bonito", "BonitoBook", "BonitoMCP", "BonitoWidgets", "BonitoWorker", "Colors", "CommonMark", "Dates", "HTTP", "JSON", "Markdown", "MsgPack", "Pkg", "Random", "RemoteSync", "SHA", "Sockets", "StringDistances", "TOML", "UUIDs", "WorkerLink"]
+path = "dev/BonitoAgents/BonitoAgents"
+uuid = "f4e5b6c7-8901-4a2b-9c3d-4e5f6a7b8c9d"
+version = "0.2.2"
+
+[[deps.BonitoBook]]
+deps = ["ANSIColoredPrinters", "Base64", "Bonito", "CommonMark", "Dates", "FileWatching", "Glob", "InteractiveUtils", "JSON3", "Logging", "Markdown", "Observables", "Pkg", "REPL", "Random", "TOML", "Typst_jll", "UUIDs", "ZipFile", "p7zip_jll"]
+git-tree-sha1 = "db93e6e293a611e85422e2961d8751dba0bc1fca"
+repo-rev = "sd/llm-improvements"
+repo-url = "https://github.com/SimonDanisch/BonitoBook.jl.git"
+uuid = "b416d416-7a6e-4336-8c1a-1f8a8cd59518"
+version = "0.2.0"
+
+    [deps.BonitoBook.extensions]
+    BonitoBookAlgebraOfGraphicsExt = "AlgebraOfGraphics"
+    BonitoBookMakieExt = "Makie"
+    BonitoBookPromptingToolsExt = "PromptingTools"
+    BonitoBookPythonCallExt = ["PythonCall", "CondaPkg"]
+
+    [deps.BonitoBook.weakdeps]
+    AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
+    CondaPkg = "992eb4ea-22a4-4c89-a5bb-47a3300528ab"
+    Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
+    PromptingTools = "670122d1-24a8-4d70-bfce-740807c42192"
+    PythonCall = "6099a3de-0909-46bc-b1f4-468b9a2dfc0d"
+
 [[deps.BonitoMCP]]
 deps = ["Base64", "ColorTypes", "Dates", "FixedPointNumbers", "HTTP", "JSON", "Logging", "Malt", "PNGFiles", "Pkg", "Sockets", "UUIDs"]
 path = "dev/BonitoAgents/BonitoMCP"
 uuid = "4a1c91af-1c90-46a4-8594-a3846516869d"
 version = "0.1.0"
+
+[[deps.BonitoWidgets]]
+deps = ["Bonito", "Observables"]
+git-tree-sha1 = "176900a88a368917f7f05d728488a725c38a9a49"
+uuid = "62a4b9e4-7ee6-4bfa-b661-80bcb0a47665"
+version = "0.1.4"
 
 [[deps.BonitoWorker]]
 deps = ["AgentProviders", "Dates", "FileWatching", "HTTP", "JSON", "Jail", "MsgPack", "Pkg", "Random", "RemoteSync", "Scratch", "Sockets", "WorkerLink"]
@@ -1570,7 +1603,7 @@ uuid = "055f6117-d8ad-44ba-8677-a06a09bdf148"
 version = "0.1.0"
 
 [[deps.NeverendingHost]]
-deps = ["AgentClientProtocol", "AgentProviders", "BonitoWorker", "Dates", "Downloads", "FileWatching", "JSON", "Jail", "Printf", "Random", "SHA", "SQLite", "Sockets", "TOML"]
+deps = ["AgentClientProtocol", "AgentProviders", "Bonito", "BonitoAgents", "BonitoWorker", "Dates", "Downloads", "FileWatching", "JSON", "Jail", "Printf", "Random", "SHA", "SQLite", "Sockets", "TOML"]
 path = "dev/NeverendingHost"
 uuid = "088cb569-6e3a-412a-a017-6794b7ab73bd"
 version = "0.1.0"
@@ -2211,6 +2244,12 @@ weakdeps = ["ChainRulesCore", "InverseFunctions"]
     ChainRulesCoreExt = "ChainRulesCore"
     InverseFunctionsExt = "InverseFunctions"
 
+[[deps.StringDistances]]
+deps = ["Distances", "StatsAPI"]
+git-tree-sha1 = "456f343c7a6c8f52d8b501c0da2a05538ab1b907"
+uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
+version = "1.0.1"
+
 [[deps.StringManipulation]]
 deps = ["PrecompileTools", "StyledStrings"]
 git-tree-sha1 = "9e3a02d73a8f0a9be04e677dbef758aab40f8bea"
@@ -2363,6 +2402,12 @@ version = "0.1.0"
 git-tree-sha1 = "4d4ed7f294cda19382ff7de4c137d24d16adc89b"
 uuid = "981d1d27-644d-49a2-9326-4793e63143c3"
 version = "0.1.0"
+
+[[deps.Typst_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "OpenSSL_jll"]
+git-tree-sha1 = "0fc7d5d3083a3753abe4b4eb10a87c0146fa5f20"
+uuid = "eb4b1da6-20f6-5c66-9826-fdb8ad410d0e"
+version = "0.14.2+0"
 
 [[deps.URIs]]
 deps = ["Serialization"]
@@ -2643,6 +2688,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl"]
 git-tree-sha1 = "a63799ff68005991f9d9491b6e95bd3478d783cb"
 uuid = "c5fb5394-a638-5e4d-96e5-b29de1b5cf10"
 version = "1.6.0+0"
+
+[[deps.ZipFile]]
+deps = ["Libdl", "Printf", "Zlib_jll"]
+git-tree-sha1 = "f492b7fe1698e623024e873244f10d89c95c340a"
+uuid = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
+version = "0.10.1"
 
 [[deps.Zlib_jll]]
 deps = ["Libdl"]

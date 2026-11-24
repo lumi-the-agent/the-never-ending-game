@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-24T18:19:13.719",
+  "id": "20261124-181913-716-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 6000,
+    "prompt": "a big cosy bird nest woven from golden twigs and straw, round and deep, a few soft feathers tucked in the rim, stylized toy-like, seen from the side, resting on the ground",
+    "tags": [
+      "prop",
+      "nest"
+    ]
+  },
+  "started": "2026-11-24T18:19:14.654",
+  "status": "running"
+}

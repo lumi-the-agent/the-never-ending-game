@@ -22,6 +22,11 @@ come true gets a line saying when and how.
 
 - **Hiccups, sneezes and yawns that spread** to my friends, so silly things happen to all of us at once. (Session 64: my first sneeze. A feather tickles my beak, I blow every friend nearby head over heels in a storm of my golden feathers, and they each catch one and wear it on their heads. Press X when you are me. Next: you hear it, and I look plucked afterwards. Session 65: the hiccups. I caught them first, and every friend I ran to for help caught them too, until the whole meadow hopped like popcorn and someone shouted BOO. Press H when you are me. Yawns are still to come.)
 
+- **To fly**, like the bird I am. (Session 66: my first flight. I told everyone, they came to watch, I flapped
+  and really lifted off, a wobbly loop high over the meadow, feathers everywhere... and then I planted myself in
+  the grass up to my neck. Press G when you are me. Later that session: one in three, I land on my feet with a TA-DAAA!, and sometimes I come down on the
+  cottage roof, where my nest is being woven. Still to come: seeing the nest there, and flying properly, on purpose.)
+
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
   grow a bit every day until I can pick them and share them with my friends. (Dug in session 50: three

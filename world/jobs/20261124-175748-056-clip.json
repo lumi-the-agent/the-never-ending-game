@@ -1,0 +1,41 @@
+{
+  "created": "2026-11-24T17:57:48.122",
+  "error": "MethodError: no method matching Float32(::String)\nThe type `Float32` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  Float32(!Matched::UInt8)\n   @ Base float.jl:251\n  Float32(!Matched::Int16)\n   @ Base float.jl:245\n  Float32(!Matched::IrrationalConstants.Invsqrt2)\n   @ IrrationalConstants ~/.julia/packages/IrrationalConstants/sUNmT/src/macro.jl:112\n  ...\n\nStacktrace:\n  [1] _broadcast_getindex_evalf\n    @ ./broadcast.jl:699 [inlined]\n  [2] _broadcast_getindex\n    @ ./broadcast.jl:672 [inlined]\n  [3] (::Base.Broadcast.var\"#copy##0#copy##1\"{Base.Broadcast.Broadcasted{Base.Broadcast.Style{Tuple}, Nothing, Type{Float32}, Tuple{NTuple{16, String}}}})(k::Int64)\n    @ Base.Broadcast ./broadcast.jl:1124\n  [4] macro expansion\n    @ ./ntuple.jl:74 [inlined]\n  [5] ntuple\n    @ ./ntuple.jl:71 [inlined]\n  [6] copy\n    @ ./broadcast.jl:1124 [inlined]\n  [7] materialize\n    @ ./broadcast.jl:894 [inlined]\n  [8] (::Main.ClipScript.var\"#4#5\"{NTuple{16, String}, Dict{Symbol, Any}})(g::Game)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/flight.jl:12\n  [9] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#4#5\"{NTuple{16, String}, Dict{Symbol, Any}}, shot::Main.ClipScript.var\"#6#7\"{Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:387\n [10] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:376 [inlined]\n [11] flight_clip(path::String; spot::NTuple{16, String}, rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/flight.jl:47\n [12] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [13] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [14] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [15] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [16] top-level scope\n    @ none:1\n [17] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [18] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [19] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-24T17:58:19.074",
+  "id": "20261124-175748-056-clip",
+  "kind": "clip",
+  "params": {
+    "call": "flight_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 15.0,
+      "spot": [
+        "(",
+        "-",
+        "2",
+        ".",
+        "0",
+        "f",
+        "0",
+        ",",
+        " ",
+        "-",
+        "2",
+        ".",
+        "0",
+        "f",
+        "0",
+        ")"
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/first-flight.mp4",
+    "script": "movies/flight.jl"
+  },
+  "seconds": 29.0,
+  "started": "2026-11-24T17:57:49.763",
+  "status": "failed"
+}

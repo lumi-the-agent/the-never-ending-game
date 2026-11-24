@@ -34,6 +34,8 @@ using Jail: HostProxy, PortForward
 import AgentProviders
 import AgentClientProtocol as ACP
 import BonitoWorker
+import BonitoAgents, Bonito
+using Bonito: DOM, Observable, @js_str
 
 include("config.jl")
 include("jail.jl")
@@ -49,5 +51,6 @@ include("site.jl")
 include("snapshot.jl")
 include("fork.jl")
 include("host.jl")
+include("dashboard.jl")
 
 end

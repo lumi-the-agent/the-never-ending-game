@@ -10,6 +10,10 @@
 # chat with the tokens this session hands out. The worker's own config (its
 # server credential) is hidden; the ACP adapters in it stay readable.
 #
+# An app can give its chats more (BonitoAgents' `app_jail`): the header then
+# carries a spec instead of `true` (`jail_spec`: its HOME, more folders to
+# write, read or hide, variables, hosts, no provider login).
+#
 # Each session starts its own proxy and bridges, in a short temporary folder
 # (unix socket paths are limited), and `close` stops them when it ends. Full on
 # Linux with bubblewrap; on macOS and Windows the Jail package's folder rules.
@@ -54,29 +58,36 @@ end
 relay_ports(relay::MCPRelay) = [parse(Int, last(split(addr, ':'))) for addr in (WebSockets.server_addr(relay.server), tcp_address(relay))]
 
 """
-    jailed_session(relay, provider) -> JailedSession
+    jailed_session(relay, provider, spec) -> JailedSession
 
-The proxy (its provider's hosts and `JAIL_HOSTS`) and the relay bridges of one jailed session.
+The proxy (its provider's hosts, `JAIL_HOSTS` and the spec's `"hosts"`) and the relay bridges of
+one jailed session. `spec` is the header's `"jail"`: `true` or an app's spec.
 """
-function jailed_session(relay::MCPRelay, provider)
+function jailed_session(relay::MCPRelay, provider, spec)
     dir = mktempdir()
-    proxy = Jail.HostProxy(joinpath(dir, "proxy.sock"); allow = vcat(jail_hosts(provider), JAIL_HOSTS))
+    hosts = vcat(jail_hosts(provider), JAIL_HOSTS, String.(spec_value(spec, "hosts", String[])))
+    proxy = Jail.HostProxy(joinpath(dir, "proxy.sock"); allow = hosts)
     bridges = [Jail.LoopbackBridge(port, joinpath(dir, "relay-$(port).sock")) for port in relay_ports(relay)]
     return JailedSession(dir, proxy, bridges)
 end
 
+"A key of a jail spec (`true` has none)."
+spec_value(spec, key, default) = spec isa AbstractDict ? get(spec, key, default) : default
+
 """
-    jail_command(s, cmd; provider, project_id, cwd, env) -> Cmd
+    jail_command(s, cmd; provider, project_id, cwd, env, spec = true) -> Cmd
 
 `cmd`, the chat's agent, in its jail (see the top of this file), with `env` (the provider's
-variables, without the worker's own environment) on top of the jail's clean one.
+variables, without the worker's own environment) and the spec's `"env"` on top of the jail's
+clean one.
 """
 function jail_command(s::JailedSession, cmd::Cmd; provider, project_id::AbstractString, cwd::AbstractString,
-                      env::AbstractDict)
+                      env::AbstractDict, spec = true)
     root = jail_dir()
-    home = mkpath(joinpath(root, "homes", project_id))
+    home = mkpath(String(spec_value(spec, "home", joinpath(root, "homes", project_id))))
     full = Jail.full_agent_jail()
-    state = filter(ispath, [joinpath(homedir(), p) for p in jail_state(provider)])
+    state = spec_value(spec, "provider_state", true) === true ?
+        filter(ispath, [joinpath(homedir(), p) for p in jail_state(provider)]) : String[]
     # without binds (macOS, Windows) the jail's HOME links to them instead
     full || Sys.iswindows() || for p in state
         link = joinpath(home, relpath(p, homedir()))
@@ -84,11 +95,17 @@ function jail_command(s::JailedSession, cmd::Cmd; provider, project_id::Abstract
     end
     path = haskey(env, "PATH") ? String[split(env["PATH"], Sys.iswindows() ? ';' : ':'; keepempty = false)...] : String[]
     vars = Dict{String,String}(k => v for (k, v) in env if k != "PATH")
-    return Jail.agent_jail(cmd; dir = cwd, home, depot = mkpath(joinpath(root, "depot")),
-                           readonly = full ? [harness_root()] : String[],
-                           masks = full ? [config_dir()] : String[],
+    merge!(vars, Dict{String,String}(String(k) => String(v) for (k, v) in spec_value(spec, "env", Dict())))
+    strs(key) = String[String(x) for x in spec_value(spec, key, String[])]
+    ro_binds = Pair{String,String}[String(b[1]) => String(b[2]) for b in spec_value(spec, "ro_binds", Any[])]
+    depot = mkpath(String(spec_value(spec, "depot", joinpath(root, "depot"))))
+    return Jail.agent_jail(cmd; dir = cwd, home, depot,
+                           readonly = full ? [harness_root(); strs("readonly")] : strs("readonly"),
+                           masks = full ? [config_dir(); strs("masks")] : String[],
                            binds = full ? [p => p for p in state] : Pair{String,String}[],
-                           writable = full ? String[] : state,
+                           ro_binds = full ? ro_binds : Pair{String,String}[],
+                           writable = full ? strs("writable") : [state; strs("writable")],
+                           writable_dir = spec_value(spec, "writable_dir", true) === true,
                            env = vars, path, proxy = s.proxy,
                            loopback = [b.port => b.path for b in s.bridges])
 end

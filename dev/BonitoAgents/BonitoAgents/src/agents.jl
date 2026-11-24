@@ -169,7 +169,7 @@ function start!(a::WorkerAgent; on_frame::Union{Function,Nothing} = nothing)
         "cwd"        => a.worker_path,
         "mcpServers" => mcp_list,
         "provider"   => pname,
-        "jail"       => chat !== nothing && chat.jail); priority = 1)
+        "jail"       => chat !== nothing && chat.jail ? jail_spec(a.state, chat) : false); priority = 1)
 
     # Claude-like agents start turns of their own and mark where they end; the
     # connection opens and ends those (`ACP.AgentTurn`).

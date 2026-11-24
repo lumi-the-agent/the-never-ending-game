@@ -604,13 +604,14 @@ function run_agent_session(w::Worker, ch::WorkerLink.LinkChannel, header::Abstra
         # The chat's jail switch (experimental, `jail.jl`): its own proxy and relay bridges,
         # stopped when the session ends. The jailed agent gets the provider's variables, not
         # this worker's environment.
-        cage = get(header, "jail", false) === true ? jailed_session(relay, provider) : nothing
+        spec = get(header, "jail", false)          # `true`, or an app's spec (BonitoAgents' `app_jail`)
+        cage = spec === true || spec isa AbstractDict ? jailed_session(relay, provider, spec) : nothing
         cmd = if cage === nothing
             Cmd(`$agent_bin $agent_args`; env, dir = cwd)
         else
             agent_vars = merge(Dict{String,String}(provider.env), owner_env(c.worker_id), c.agent_env)
             isempty(agent.path) || (agent_vars["PATH"] = agent.path)
-            jail_command(cage, `$agent_bin $agent_args`; provider, project_id, cwd, env = agent_vars)
+            jail_command(cage, `$agent_bin $agent_args`; provider, project_id, cwd, env = agent_vars, spec)
         end
         proc = try
             # `detach` = `setsid()` in the child: the agent leads its OWN process

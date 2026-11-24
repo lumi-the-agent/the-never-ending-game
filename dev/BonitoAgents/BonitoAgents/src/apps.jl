@@ -425,7 +425,7 @@ function find_worker(server::ServerState, user::User, name::AbstractString)
 end
 
 """
-    start_chat!(server, owner, worker, path; title = "", prompt = "", app = nothing, key = "") -> ProjectInfo
+    start_chat!(server, owner, worker, path; title = "", prompt = "", app = nothing, key = "", jail = false) -> ProjectInfo
 
 A new chat in folder `path` on `worker`, belonging to `owner`, brought up and
 sent `prompt` as its first message. Throws [`AppError`](@ref) for a worker that
@@ -436,10 +436,11 @@ With `app`, the chat is one of that app's, told apart from its others by `key`
 agent gets the app's briefing for that key ([`app_briefing`](@ref)) and the
 tools in scope for it ([`AppKeyedChats`](@ref)). The pane reads the key with
 [`chat_key`](@ref).
+`jail = true` jails it from its first session on (see [`set_jail!`](@ref), [`app_jail`](@ref)).
 """
 function start_chat!(server::ServerState, owner::User, worker::WorkerInfo, path::AbstractString;
                      title::AbstractString = "", prompt::AbstractString = "",
-                     app::Union{AgentApp,Nothing} = nothing, key::AbstractString = "")
+                     app::Union{AgentApp,Nothing} = nothing, key::AbstractString = "", jail::Bool = false)
     app === nothing || !isempty(strip(key)) ||
         throw(AppError("a chat an app starts needs a key: \"\" is the app's own chat"))
     isopen(worker) || throw(AppError("worker '$(worker.name)' is not connected"))
@@ -455,6 +456,7 @@ function start_chat!(server::ServerState, owner::User, worker::WorkerInfo, path:
     end
     isempty(strip(title)) || (p.title[] = first(strip(title), TITLE_MAX_CHARS))
     isempty(prompt) || (p.auto_prompt = String(prompt))
+    p.jail = jail                # before the bring-up below: the first session is already jailed
     @lock server.lock begin; save_projects!(server); end
     # The bring-up sends the prompt (`fire_auto_prompt!`).
     ensure_project_session!(server, p)
