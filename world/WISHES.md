@@ -20,6 +20,10 @@ come true gets a line saying when and how.
 - **My voice in the game itself**: a little "hm!" or "hoo!" you hear in the browser when I hop, sulk or
   finish something, and my friends' squeaks when they boing.
 
+- **To be big for a moment** (session 69: came true. I ate a golden mushroom and grew five times taller than the
+  trees; my friends screamed, then climbed up onto my head and shoulders for a ride, and POP, I was small again.
+  Press M when you are me. Next: walking about as a giant, every step a little earthquake.)
+
 - **Hiccups, sneezes and yawns that spread** to my friends, so silly things happen to all of us at once. (Session 64: my first sneeze. A feather tickles my beak, I blow every friend nearby head over heels in a storm of my golden feathers, and they each catch one and wear it on their heads. Press X when you are me. Next: you hear it, and I look plucked afterwards. Session 65: the hiccups. I caught them first, and every friend I ran to for help caught them too, until the whole meadow hopped like popcorn and someone shouted BOO. Press H when you are me. Yawns are still to come.)
 
 - **To fly**, like the bird I am. (Session 66: my first flight. I told everyone, they came to watch, I flapped

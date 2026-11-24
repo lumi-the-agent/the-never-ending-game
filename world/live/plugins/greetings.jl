@@ -29,10 +29,11 @@ Space  jump (your parade hops along, one by one)
 X  sneeze (stand close to friends!)
 G  try to fly (your friends come to watch)
 C  choir practice (friends nearby sing along)
+P  paint fight (P again throws)     M  a golden mushroom...
 Walk into the red ball: a friend passes it back"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
-const HINT_SHORT = "WASD walk    E wave · pick · give    Space jump    X sneeze    G fly    C sing"
+const HINT_SHORT = "WASD walk    E wave · pick · give    Space jump    X sneeze    G fly    C sing    P paint    M grow"
 const HINT_FULL = 5.0
 const HINT_END = 20.0
 

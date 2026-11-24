@@ -26,7 +26,7 @@ const START = ("You got me!", "PAINT FIGHT!!!", "Take THAT!", "Hee hee!")
 const HIT = ("SPLAT!", "Hey!", "Got you!", "Bullseye!", "Eek!", "Not my face!", "Ha ha!", "Again!")
 const END = ("Look at us!", "I'm a rainbow!", "Best. Day. Ever.", "Again tomorrow?", "So pretty!")
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :giant)
 
 push!(NG.BUSY_GOALS, :paint)
 
@@ -155,6 +155,9 @@ function draw_pots!(s::PaintFight, w, me)
     Makie.update!(P[:pots]; arg1 = ps, rotation = rs, markersize = ms)
 end
 
+"How big the creature is drawn now (giant.jl scales Lumi's herd about its feet)."
+giant_size(c) = isdefined(Main, :GIANT) && haskey(Main.GIANT, :sys) && Main.GIANT[:sys].lumi == c.id ? Main.GIANT[:sys].s : 1f0
+
 function draw_blobs!(w)
     spots = P[:spots]
     for (id, until) in collect(P[:until])
@@ -167,14 +170,19 @@ function draw_blobs!(w)
         sp = NG.species_of(c)
         out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
         NG.pose_parts!(out, sp, c.pos, c.yaw, c.action, c.phase, c.mood, c.extra, c.seed, t)
+        g = giant_size(c)
+        # a giant's spots, scaled with it, hung round it like balloons (Lumi's mesh parts sit at its feet point,
+        # so its spots never lay on the surface): none while it is big
+        g > 1.05f0 && continue
         for (k, j, at, r, col) in list
             (k > length(out) || j > length(out[k][1])) && continue
             o = out[k]
             # round blobs: flat discs along the surface normal fanned out like petals on one small part (s68,
             # media/s68/spots-flat.png): the spots crowd onto one part, which wants fixing first
-            push!(ps, o[1][j] + o[2][j] * (o[3][j] .* at))
+            q = o[1][j] + o[2][j] * (o[3][j] .* at)
+            push!(ps, c.pos + g * (q - c.pos))
             push!(rs, Makie.Quaternionf(0, 0, 0, 1))
-            push!(ss, Vec3f(r))
+            push!(ss, Vec3f(g * r))
             push!(cs, col)
         end
     end

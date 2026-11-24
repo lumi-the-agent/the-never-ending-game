@@ -1,0 +1,28 @@
+{
+  "created": "2026-11-24T20:59:53.358",
+  "finished": "2026-11-24T21:01:54.533",
+  "id": "20261124-205953-358-clip",
+  "kind": "clip",
+  "params": {
+    "call": "steady_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        3.0,
+        -14.0
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s69/steady-traced.mp4",
+    "script": "movies/steady.jl"
+  },
+  "result": {
+    "frames": 60,
+    "hour": 10.502255388633023,
+    "path": "/sim/Programmieren/SimGame/world/media/s69/steady-traced.mp4",
+    "seconds_per_frame": 1.6336061437924703
+  },
+  "seconds": 121.0,
+  "started": "2026-11-24T20:59:53.562",
+  "status": "done"
+}

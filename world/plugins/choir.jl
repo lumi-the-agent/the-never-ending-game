@@ -17,7 +17,7 @@ const BEAT = 0.75                 # seconds between two solo notes
 const SCALE = (60, 62, 64, 65, 67, 69, 71)
 const SYLL = ("♪ do!", "♪ re!", "♪ mi!", "♪ fa!", "♪ so!", "♪ la!", "♪ ti!")
 const KEEP = (:follow, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant)
 
 push!(NG.BUSY_GOALS, :choir)
 

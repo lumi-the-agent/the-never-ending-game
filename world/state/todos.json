@@ -5719,12 +5719,12 @@
       "id": 409,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Firefly catch and hide and seek: CHASE_VIEWS now all look down <= 31° (the 34° and 54° high views are gone; blocked low views turn sideways), and the eye eases around Lumi in angle, distance and height with a 30° cap (orbit_lerp): a straight slide cut a chord over Lumi on sharp turns (44°). Berry race: eye 6.5 m back, 4.6 m up, ~25° (was 8.5 m up, 53°). The three W/A/D first-play tests now measure the steepest pitch after 1.5 s with W held: berry and firefly pass with <= 32°, hide and seek passes the pitch check (fails later on the known lagging found friends). Screenshots: media/s68/cam-wad.png (berry-wad, firefly-wad, hideseek-found: horizon and next target ahead). Published 20:05. Re-checked s69 (20:59): all three W/A/D first-play tests pass with the pitch check <= 32° (berry 14.6 s, firefly 18.7 s, hide and seek 28.3 s).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Mini games seen from behind Lumi, not from a 55° map view",
-      "updated": "2026-11-24T19:40:57.267"
+      "updated": "2026-11-24T20:57:59.898"
     },
     {
       "created": "2026-11-24T19:56:41.031",
@@ -5761,12 +5761,12 @@
       "id": 412,
       "kind": "review",
       "priority": 1,
-      "result": "Firefly catch and hide and seek: CHASE_VIEWS now all look down <= 31° (the 34° and 54° high views are gone; blocked low views turn sideways), and the eye eases around Lumi in angle, distance and height with a 30° cap (orbit_lerp): a straight slide cut a chord over Lumi on sharp turns (44°). Berry race: eye 6.5 m back, 4.6 m up, ~25° (was 8.5 m up, 53°). The three W/A/D first-play tests now measure the steepest pitch after 1.5 s with W held: berry and firefly pass with <= 32°, hide and seek passes the pitch check (fails later on the known lagging found friends). Screenshots: media/s68/cam-wad.png (berry-wad, firefly-wad, hideseek-found: horizon and next target ahead). Published 20:05.",
+      "result": "Firefly catch and hide and seek: CHASE_VIEWS now all look down <= 31° (the 34° and 54° high views are gone; blocked low views turn sideways), and the eye eases around Lumi in angle, distance and height with a 30° cap (orbit_lerp): a straight slide cut a chord over Lumi on sharp turns (44°). Berry race: eye 6.5 m back, 4.6 m up, ~25° (was 8.5 m up, 53°). The three W/A/D first-play tests now measure the steepest pitch after 1.5 s with W held: berry and firefly pass with <= 32°, hide and seek passes the pitch check (fails later on the known lagging found friends). Screenshots: media/s68/cam-wad.png (berry-wad, firefly-wad, hideseek-found: horizon and next target ahead). Published 20:05.\nDuplicate of #409 (the host had filed this finding); the evidence is there.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "dropped",
       "title": "Mini games seen from above: the chase camera looks down 53-56°",
-      "updated": "2026-11-24T20:05:29.759"
+      "updated": "2026-11-24T20:57:59.902"
     },
     {
       "created": "2026-11-24T20:10:34.792",
@@ -5795,6 +5795,34 @@
       "status": "open",
       "title": "Paint spots all over: splashes spread on the whole body, P in the hint",
       "updated": "2026-11-24T20:20:22.731"
+    },
+    {
+      "created": "2026-11-24T20:46:53.037",
+      "detail": "Stunt of session 69: Lumi eats a golden mushroom, grows 5x, friends scatter, three ride on its head and shoulders, the rest hop at every stomp, POP back to small. M when you are Lumi. Film for the pages.",
+      "est_minutes": 15.0,
+      "id": 415,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Giant Lumi (plugins/giant.jl, new): a golden mushroom pushes up in front of Lumi (Ooh, a golden one!), *munch*... uh oh, Lumi wobbles up to 5x (herd scaled about its feet), the friends scream and scatter (AAAH! LUMI?!), then three ride on its head and shoulders (Giddy up! Faster, Lumi!), the rest hop at every stomp, POP with a white puff, riders tumble down, ...that was a big snack. Every 25-40 min by day, or M when you are Lumi (checked: M as the steered Lumi starts it, player=true). Separation now leaves the giant and its riders alone (a 0.2 m push showed 5x on the giant), seats on head and shoulders, live camera from its side. Live screenshot: media/s69/giant-live.png (Cumulus on its head, Faster, Lumi!). Frame cost 0.0 ms idle; human game frame 3.3 ms median. Published 20:45. Film: the path traced take (worker 20261124-204402-729, 24 samples) shows Lumi small while the riders float in the sky (the tracer ignores the herd scale, new todo); posted as an experiment that went wrong, The golden mushroom, 20:54.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Giant Lumi: a golden mushroom makes me taller than the trees",
+      "updated": "2026-11-24T20:54:43.302"
+    },
+    {
+      "created": "2026-11-24T20:54:43.298",
+      "detail": "s69: giant.jl scales Lumi's herd with scale!/translate! about its feet. The raster shows it (media/s69/giant-live.png, gp4-sheet.png), path traced films do not: Lumi stays small while the riders float in the sky (media/s69/gt-10.png, site/films/giant-lumi.mp4). Cause: dev/Makie/RayMakie/src/plots/meshscatter.jl ~l.380, the :trace_transforms node builds Mat3x4 per instance from positions/rotation/markersize only, never the plot's model matrix (meshscatter.jl mesh.jl may differ). Fix: take the model (`:model_f32c`, check it exists for meshscatter when the node is registered, or every meshscatter fails at creation like #343) and compose model * instance. Test in a Julia session with a quiet Stage + traced still of a scaled meshscatter, then submit_job(:restart) for the worker, then a new giant take. Done when: a traced giant take shows Lumi 5x with riders on its head.",
+      "est_minutes": 15.0,
+      "id": 416,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
+      "updated": "2026-11-24T20:54:43.298"
     }
   ]
 }

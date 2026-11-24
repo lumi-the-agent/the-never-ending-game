@@ -18,7 +18,7 @@ const UHOH = ("Uh oh...", "Duck!", "She's gonna blow!", "Hold on to something!",
 const BLESS = ("Bless you!", "Bless you!!", "Gesundheit!", "Whoaaa!", "My ears!")
 const FIND = ("A golden feather!", "Mine! Mine!", "So shiny!", "I'll keep it forever!", "Feather hat!")
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze)
+              :hide, :found, :freeze, :paint, :giant)
 
 push!(NG.BUSY_GOALS, :sneezed)
 
@@ -62,7 +62,8 @@ end
 
 function draw_feathers!(s::Sneeze, w)
     p = S[:plot]
-    ms = [s.fgone[i] ? Vec3f(0) : Vec3f(0.08, 0.28, 0.02) for i in 1:N]
+    # feather sized (s69: 0.56 m long they lay on the meadow like banana slices, perfectionist-0067)
+    ms = [s.fgone[i] ? Vec3f(0) : Vec3f(0.035, 0.15, 0.008) for i in 1:N]
     rot = [Makie.qrotation(Vec3f(0, 0, 1), s.fspin[i] * Float32(s.frest[i] ? 1 : w.t)) *
            Makie.qrotation(Vec3f(1, 0, 0), s.frest[i] ? 0f0 : 0.6f0 * sin(Float32(3w.t) + i)) for i in 1:N]
     Makie.update!(p; arg1 = copy(s.fpos), markersize = ms, rotation = rot)

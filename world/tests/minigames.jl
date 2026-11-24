@@ -1489,3 +1489,36 @@ uitest("Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off th
     screenshot(game, "sneeze-player")
     fly_click(game, "Stop")
 end
+
+uitest("Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back") do game
+    G = Main.GIANT
+    s = G[:sys]
+    s.state === :idle || Base.invokelatest(game.plugins["giant"].mod.finish!, s, game)
+    game.dash.play_menu.i_selected[] = 0
+    wait_frames(game, 2)
+    fly_click(game, "Play")
+    check(game.minigame isa NeverendingGame.JumpIn, "Play did not jump in")
+    me = creature(game.world, "Lumi")
+    NeverendingGame.face_open!(game.world, me)
+    interact!(game, [KeyDown(Keyboard.m), Wait(0.2), KeyUp(Keyboard.m)])
+    check(s.state !== :idle && s.player, "M did not bring the golden mushroom: state $(s.state), Lumi at $(me.pos) facing $(me.yaw)")
+    for _ in 1:200
+        s.state === :giant && break
+        wait_frames(game, 3)
+    end
+    check(s.state === :giant && s.s > 4.9f0, "Lumi did not grow: state $(s.state), size $(s.s)")
+    h = game.stage.herds[NeverendingGame.species_of(me).name]
+    check(h.transformation.scale[][3] > 4.9f0, "the herd is not drawn big: scale $(h.transformation.scale[])")
+    p0 = me.pos
+    interact!(game, [KeyDown(Keyboard.w), Wait(2.0)])
+    screenshot(game, "giant-walk")
+    interact!(game, [KeyUp(Keyboard.w)])
+    moved = hypot(me.pos[1] - p0[1], me.pos[2] - p0[2])
+    check(moved > 0.5, "the giant did not walk on W: $(round(moved; digits = 2)) m from $(p0)")
+    for _ in 1:400
+        s.state === :idle && break
+        wait_frames(game, 3)
+    end
+    check(s.state === :idle && h.transformation.scale[][3] < 1.01f0, "Lumi did not shrink back: state $(s.state), scale $(h.transformation.scale[])")
+    fly_click(game, "Stop")
+end

@@ -10,6 +10,22 @@ const SOLID = Dict(:tree => 0.35f0, :rock => 0.75f0, :bush => 0.65f0)   # footpr
 const SQUEEZE = Dict(:bush => 0.35f0)
 # and slips between two trunks a critter's width apart (0.45 of its radius against solids instead of 0.7)
 body(c) = c.controlled ? 0.45f0 : 0.7f0
+
+"""
+A walker pushed out of a solid whose goal target lies within the solid's reach can never get there: it
+stepped in and was pushed out every frame, and its position and heading flip-flopped for up to 12 s until
+`unstick!` gave up (the human's vibrating sheep in first-flight.mp4, todo #402). It arrives at the edge
+instead and does what it came for there (`until` set as on arrival, or the engine replaces the goal at once).
+"""
+function arrive_at_edge!(c, w, q, need)
+    g = c.goal
+    (c.controlled || g.arrived || g.kind in (:follow, :interact, :user)) && return
+    hypot(g.target[1] - q[1], g.target[2] - q[2]) < need || return
+    g.arrived = true
+    g.until = w.t + g.duration
+    return
+end
+held(c) = c.controlled || c.goal.kind === :giant
 "Every (centre, radius) other plugins made solid (Main.EXTRA_SOLIDS, workshop.jl)."
 extra_solids() = isdefined(Main, :EXTRA_SOLIDS) ? collect(Iterators.flatten(values(Main.EXTRA_SOLIDS))) : Tuple{Point2f,Float32}[]
 footprint(c, kind) = c.controlled ? get(SQUEEZE, kind, get(SOLID, kind, 0.0f0)) : get(SOLID, kind, 0.0f0)
@@ -177,14 +193,16 @@ function NeverendingGame.step!(s::Separation, game, dt)
         d = sqrt(d2)
         ux, uy = d > 1.0f-4 ? (dx / d, dy / d) : (cos(a.seed * 7), sin(a.seed * 7))
         push = need - d
-        fa = a.controlled ? 0.0f0 : b.controlled ? 1.0f0 : 0.5f0
+        # a steered creature, and a giant Lumi with its riders (giant.jl: a 0.2 m push grew 5x on the giant), are not pushed
+        fa = held(a) ? 0.0f0 : held(b) ? 1.0f0 : 0.5f0
+        held(a) && held(b) && continue
         # one at the shore cannot step back: the other takes the whole push (they stayed 0.74 m apart, s36 suite)
         # nor can one with a trunk or bush at its back (s53: Gloop and Wibbles 0.79 m apart by a tree, the
         # solid pushed the one back in every frame): the side with room takes the push
         oka = fa == 0 || (!walled(s, w, a, -ux * push * fa, -uy * push * fa) && nudge!(a, w, -ux * push * fa, -uy * push * fa))
         okb = fa == 1 || (!walled(s, w, b, ux * push * (1 - fa), uy * push * (1 - fa)) && nudge!(b, w, ux * push * (1 - fa), uy * push * (1 - fa)))
-        oka || b.controlled || nudge!(b, w, ux * push * fa, uy * push * fa)
-        okb || a.controlled || nudge!(a, w, -ux * push * (1 - fa), -uy * push * (1 - fa))
+        oka || held(b) || nudge!(b, w, ux * push * fa, uy * push * fa)
+        okb || held(a) || nudge!(a, w, -ux * push * (1 - fa), -uy * push * (1 - fa))
     end
     for c in cs, p in w.props
         r0 = footprint(c, p.kind)
@@ -196,6 +214,7 @@ function NeverendingGame.step!(s::Separation, game, dt)
         d = sqrt(d2)
         ux, uy = d > 1.0f-4 ? (dx / d, dy / d) : (1.0f0, 0.0f0)
         nudge!(c, w, ux * (need - d), uy * (need - d))
+        arrive_at_edge!(c, w, p.pos, need)
     end
     # solid things other plugins put down without a prop (the workbench and crates, workshop.jl): (centre, radius)
     if isdefined(Main, :EXTRA_SOLIDS)

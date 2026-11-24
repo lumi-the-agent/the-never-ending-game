@@ -1,0 +1,35 @@
+{
+ "verdict": "pass",
+ "summary": "The engine compiles again, the new paint fight plays and looks colourful (confetti splats across the meadow, creatures with spots), frame time is fine (median 4.3 ms), and the camera and found-friend fixes are evidenced by passing tests. Confirmed with my own live screenshot (reviews/s68-a.png): spots on creatures and the P hint in the panel.",
+ "surprise": 6,
+ "surprise_why": "A meadow-wide paint fight that starts when Lumi trips over pots is a fun, shareable event, though it builds on earlier party-event patterns.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Other event plugins (conga, flight, choir and so on) don't list :paint in their KEEP tuples, so they can steal painters mid-fight. P is also missing from the on-screen jump-in key strip (greetings.jl HINT). The author admits both are open.",
+   "where": "plugins/paintfight.jl:28, greetings.jl HINT",
+   "evidence": "Journal 20:17 and 20:25 admit both are open. My screenshot reviews/s68-a.png confirms the 'Things to try' panel names P, so only the jump-in key strip is missing.",
+   "suggestion": "Add :paint to every plugin's KEEP (grep '^const KEEP') and P to HINT/HINT_SHORT."
+  },
+  {
+   "severity": "low",
+   "what": "Paint spots are round balls hovering off the feathers and the grass splats are flat discs. They read as paint from a distance but look unfinished up close.",
+   "where": "plugins/paintfight.jl, media/s68/fight-7.5.png",
+   "evidence": "My own screenshot reviews/s68-a.png: Cumulus carries blue, green, orange spots that read as balls stuck on the body; the 'Things to try' panel now names P.",
+   "suggestion": "Flatten the spots onto the body surface, add drips, and vary the splat shape."
+  },
+  {
+   "severity": "low",
+   "what": "Found friends in hide and seek still need a teleport-like leap to keep up, so the parade follows poorly by plain walking. The test passed only on retry after three failures.",
+   "where": "plugins/hideseek.jl leap!",
+   "evidence": "The journal reports 3 failures before the leap fix, and the later runs passed at 26.9 s and 28.0 s.",
+   "suggestion": "Route followers around the fence and pond, or let them take a straight path with obstacle avoidance."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": {
+  "KEEP tuples / P on the key strip": "fixed in s69: :paint and :giant are in the KEEP tuples of sneeze, choir, conga, freeze, boing, flight, hiccups and paintfight; the jump-in card and key strip name P (paint, P again throws) and M (grow). Published 20:45.",
+  "paint spots look": "improved late in s68 (spots land where the paint hits, spread over the body); still round blobs, flat splashes are an open todo.",
+  "hide and seek leap": "kept: the leap is a visible boing, not a teleport, and only for a friend wedged twice or > 9 m behind; plain walking without pathfinding cannot get round the fence and pond."
+ }
+}

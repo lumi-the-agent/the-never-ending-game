@@ -20,7 +20,7 @@ const HELP = ("hic! help! HIC!", "make it stop! hic!", "hold your breath? HIC!",
 const CAUGHT = ("Oh no... HIC!", "Stay away fr- HIC!", "Not m- HIC!", "Achoo? No... HIC!", "Huh? HIC!")
 const BOOS = ("BOO!!!", "BOOOO!!!", "RAAAH!!!")
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed)
+              :hide, :found, :freeze, :sneezed, :paint, :giant)
 
 push!(NG.BUSY_GOALS, :hiccup)
 

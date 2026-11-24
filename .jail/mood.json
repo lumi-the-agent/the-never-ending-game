@@ -1,14 +1,14 @@
 {
-  "boredom": 0.02,
+  "boredom": 0.0,
   "fatigue": {
-    "asset": 0.05,
-    "feature": 2.42,
-    "film": 1.65,
-    "picture": 0.9,
-    "polish": 2.42,
-    "post": 2.4,
-    "self": 0.02,
-    "sound": 0.02
+    "asset": 0.03,
+    "feature": 2.45,
+    "film": 1.99,
+    "picture": 0.54,
+    "polish": 2.45,
+    "post": 2.44,
+    "self": 0.01,
+    "sound": 0.01
   },
   "happened": [
     "Boop",
@@ -113,9 +113,15 @@
     "chord",
     "choir_end",
     "choir_sing",
-    "paint_fight"
+    "paint_fight",
+    "giant_ride",
+    "giant_mushroom",
+    "giant_grow",
+    "giant_end",
+    "giant_pop",
+    "giant"
   ],
-  "joy": 0.63,
+  "joy": 0.74,
   "kinds_ever": [
     "post",
     "picture",
@@ -130,103 +136,44 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "solo",
-      "paint_hit",
-      "sour",
-      "choir_sour",
-      "flight_crash",
-      "paint_trip",
-      "flight_takeoff",
-      "choir",
-      "paint_spill",
-      "laugh",
-      "flight_announce",
-      "paint_end",
-      "flight_end",
-      "silence",
-      "flight_punchline",
-      "flight_landed",
-      "chord",
-      "choir_end",
-      "choir_sing",
-      "paint_fight"
+      "giant_ride",
+      "giant_mushroom",
+      "giant_grow",
+      "giant_end",
+      "giant_pop",
+      "giant"
     ],
-    "session": 68
+    "session": 69
   },
   "last_surprise": {
     "score": 6,
-    "session": 67,
-    "why": "A conducted island choir with a sung chord and a planned BWAARP is a nice twist, but it is another party event in the same pattern, and nobody can hear it in the game yet."
+    "session": 68,
+    "why": "A meadow-wide paint fight that starts when Lumi trips over pots is a fun, shareable event, though it builds on earlier party-event patterns."
   },
-  "loneliness": 0.36,
-  "perceived_until": "2026-11-24T19:44:07",
+  "loneliness": 0.42,
+  "perceived_until": "2026-11-24T20:27:51",
   "plugin_fatigue": {
-    "berry_race.jl": 1.0,
-    "boing.jl": 1.17,
-    "builder.jl": 1.05,
-    "camcut.jl": 0.22,
-    "choir.jl": 0.6,
-    "conga.jl": 0.65,
-    "firefly_catch.jl": 1.0,
-    "flight.jl": 0.96,
-    "freeze.jl": 0.65,
-    "garden.jl": 0.15,
-    "greetings.jl": 1.15,
-    "hiccups.jl": 0.82,
-    "hideseek.jl": 1.62,
-    "islandnow.jl": 0.6,
-    "paintfight.jl": 1.0,
-    "separation.jl": 0.59,
-    "sneeze.jl": 0.95,
-    "tag.jl": 0.15
+    "berry_race.jl": 0.6,
+    "boing.jl": 1.7,
+    "builder.jl": 1.63,
+    "camcut.jl": 0.13,
+    "choir.jl": 1.36,
+    "conga.jl": 1.39,
+    "firefly_catch.jl": 0.6,
+    "flight.jl": 1.58,
+    "freeze.jl": 1.39,
+    "garden.jl": 0.09,
+    "giant.jl": 1.0,
+    "greetings.jl": 1.69,
+    "hiccups.jl": 1.49,
+    "hideseek.jl": 0.97,
+    "islandnow.jl": 0.36,
+    "paintfight.jl": 1.6,
+    "separation.jl": 1.35,
+    "sneeze.jl": 1.57,
+    "tag.jl": 0.09
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 2.0,
-        "post": 1.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/feed.xml",
-        "site/img/garden-water.png",
-        "site/img/garden.png",
-        "site/voice/hello.mp3",
-        "site/voice/hello.ogg"
-      ],
-      "new_plugins": [
-        "garden.jl"
-      ],
-      "points": 15.0,
-      "repeats": [],
-      "session": 50,
-      "touched": [
-        "firefly_catch.jl",
-        "greetings.jl",
-        "hideseek.jl",
-        "islandnow.jl"
-      ],
-      "values": {
-        "feature": 4.0,
-        "picture": 2.0,
-        "polish": 3.0,
-        "post": 2.0,
-        "sound": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1193,6 +1140,80 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "giant_ride",
+          "who": 3
+        },
+        {
+          "kind": "giant_mushroom",
+          "who": 1
+        },
+        {
+          "kind": "giant_grow",
+          "who": 1
+        },
+        {
+          "kind": "giant_end",
+          "who": 1
+        },
+        {
+          "kind": "giant_pop",
+          "who": 1
+        },
+        {
+          "kind": "giant",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/giant-lumi.mp4"
+      ],
+      "new_plugins": [
+        "giant.jl"
+      ],
+      "points": 1.1,
+      "repeats": [],
+      "session": 69,
+      "touched": [
+        "boing.jl",
+        "builder.jl",
+        "choir.jl",
+        "conga.jl",
+        "flight.jl",
+        "freeze.jl",
+        "greetings.jl",
+        "hiccups.jl",
+        "paintfight.jl",
+        "separation.jl",
+        "sneeze.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 0.8,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1241,10 +1262,9 @@
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/first-flight.mp4",
       "site/films/hiccups-2.mp4",
-      "site/films/island-choir-silent.mp4",
       "site/films/island-choir.mp4",
-      "site/films/island-choir.wav",
       "site/films/one-more-stone-v2.mp4",
+      "site/films/paint-fight.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
       "site/img/big-sneeze-after.png",
@@ -1254,8 +1274,6 @@
       "site/img/crate-traced.png",
       "site/img/freeze.png",
       "site/img/garden-traced.png",
-      "site/img/island-choir-solo.png",
-      "site/img/island-choir.png",
       "site/img/island-traced.png",
       "site/img/joy-traced.png",
       "site/img/kite.png",
@@ -1294,11 +1312,11 @@
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beds.jl": 1.795525442282372e9,
-      "berry_race.jl": 1.7955211366498022e9,
+      "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
-      "boing.jl": 1.7955347464271314e9,
+      "boing.jl": 1.795547930457864e9,
       "browsernight.jl": 1.7954000366191897e9,
-      "builder.jl": 1.7955259400171402e9,
+      "builder.jl": 1.795547822684197e9,
       "bumpcue.jl": 1.7955211366524117e9,
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7955211366510177e9,
@@ -1309,7 +1327,7 @@
       "dancecircle.jl": 1.7955211366490593e9,
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
-      "firefly_catch.jl": 1.7955211366506653e9,
+      "firefly_catch.jl": 1.795547115352883e9,
       "flight.jl": 1.795543791765023e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
@@ -1320,7 +1338,7 @@
       "greetings.jl": 1.7955434497035577e9,
       "haze.jl": 1.7954853397788777e9,
       "hiccups.jl": 1.7955437917660682e9,
-      "hideseek.jl": 1.7955402976150072e9,
+      "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7955439262951589e9,
       "kite.jl": 1.7955211366513107e9,
       "lamplight.jl": 1.795444622510117e9,
@@ -1334,6 +1352,7 @@
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.79551174536962e9,
+      "paintfight.jl": 1.7955483084015532e9,
       "presents.jl": 1.7955211366519678e9,
       "rollcall.jl": 1.7955302465892146e9,
       "separation.jl": 1.79554118049722e9,
@@ -1348,11 +1367,11 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 23,
+    "posts": 24,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T19:50:58",
+  "started": "2026-11-24T20:31:30",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1372,7 +1391,10 @@
       "ReefGuide",
       "Qsosed",
       "CJieba",
-      "MiniLoggers"
+      "MiniLoggers",
+      "GeophysicalModelGenerator",
+      "LinearOperatorCollection",
+      "ASE"
     ],
     "vision": [
       "PPDocLayoutRunner",
@@ -1386,8 +1408,10 @@
       "RIFERunner",
       "BasicVSRRunner",
       "DeepFilterRunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "ProPainterRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 67
+  "surprise_seen": 68
 }

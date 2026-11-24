@@ -538,7 +538,9 @@ function thought!(game)
           pastime !== nothing ? pastime : working ? current_thought(game) : nothing
     # busy with a pastime of its own (the kite): the cloud says that, not the work (tester s57: "Making a
     # kite…" hung over Lumi while the kite was already up). Plugins fill `Main.LUMI_DOING[kind]`.
-    px = txt === nothing ? nothing : NG.on_screen(st.scene, NG.head_point(w, me))
+    # a giant Lumi (giant.jl) thinks at its giant head, not at its knees
+    big = me !== nothing && isdefined(Main, :GIANT) && haskey(Main.GIANT, :sys) && Main.GIANT[:sys].lumi == me.id ? Main.GIANT[:sys].s : 1f0
+    px = txt === nothing ? nothing : NG.on_screen(st.scene, me.pos + big * (NG.head_point(w, me) - me.pos))
     if px === nothing
         get(B, :thought_shown, false) || return
         Makie.update!(T[:cloud]; arg1 = [Point2f(-500, -500) for _ in 1:4])
