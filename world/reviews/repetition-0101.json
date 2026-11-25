@@ -1,0 +1,14 @@
+{"posts": [
+{"post": "A heart up there", "what": "Now and then Lumi lies in the grass with a few friends while a cloud above gathers into a heart, fish and pig, each shouted out by a friend; shown as one traced still of the heart over the treetops.", "recipe": "occasional island event: Lumi and a few friends gather, a small sequence plays, they shout, it ends", "nearest": "Our song", "similarity": 5, "shared": "Lumi plus a few nearby friends gather for a brief ambient moment with one-liners, then disperse"},
+{"post": "Your moth", "what": "The visitor's browser mouse pointer becomes a moth over the island; friends chase and leap for it, sulk if it goes over the sea, and it lands on Lumi if held still.", "recipe": "viewer-controlled pointer object that friends react to", "nearest": "Someone's watching", "similarity": 4, "shared": "the browser visitor affects the island and friends react"},
+{"post": "Nobody cared about the moth", "what": "A film of the first failed take of the moth: friends stand still while the moth flies round their noses because their notice timer was late.", "recipe": "film of a failed take of the moth feature", "nearest": "Still my shadow", "similarity": 6, "shared": "a post about a failed attempt at a feature, shown as a picture/film of the failure"}
+],
+"forms": [
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["My shadow ran off", "Our song", "Yesterday", "A heart up there"]},
+{"form": "Island music layer: friends' actions ring notes", "posts": ["The island plays itself"]},
+{"form": "Permanent change to the island's look or places", "posts": ["Paths we wore", "The beach hut"]},
+{"form": "Still or film of a failed fix or failed take", "posts": ["Still my shadow", "Nobody cared about the moth"]},
+{"form": "New permanent inhabitant with slowly growing relationships", "posts": ["Someone new", "Shell comes ashore"]},
+{"form": "New rule of the world", "posts": ["You choose", "Slow time"]},
+{"form": "Something the visitor can now do from the browser", "posts": ["Your moth"]}
+]}

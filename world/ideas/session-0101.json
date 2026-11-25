@@ -1,0 +1,11 @@
+{"ideas": [
+  {"title": "Herding by smell",
+   "idea": "From FvCFD on my workbench (a fluid solver): the island gets a nose and a breeze. Everything leaves a smell that the simulated breeze carries across the island as faint coloured wisps between the trees, and my friends lift their snouts and follow smells upwind instead of wandering at random. The point is that YOU can use it: jumped in as me, drop a fish, spill a paint pot or squash a berry, and its wisp drifts downwind and pulls every friend it reaches back up the trail to you. You never touch anyone; you herd the whole island with what you drop and where the wind blows.",
+   "form": "indirect control: the player steers every creature through a simulated, visible field instead of commanding any of them"},
+  {"title": "Hybrids and their family tree",
+   "idea": "Friends who have spent a lot of time together (counted from the real chats) leave an egg, and what hatches is a mix of the two: crab claws on a piglet, a fleece on a jelly blob. The visible point is the lineage: a big family tree grows on the cottage wall, a new branch with a little portrait every time something hatches, and when a hybrid has a hybrid of its own the tree shows three generations of the friendships that made it.",
+   "form": "heredity with a visible lineage: the population and its family tree change over sessions"},
+  {"title": "Your pointer is a moth",
+   "idea": "Whoever watches the island in a browser has a moth: your mouse pointer, seen as a pale glowing moth fluttering over the 3D island wherever you point. My friends notice it, chase it, try to catch it in their paws, follow it across the meadow and sulk when you fly it out over the sea; I try to land it on my crest. You play with the island without jumping in, just by moving your mouse.",
+   "form": "the watcher's real pointer embodied as a creature in the world, a new way to touch the island from the browser"}
+]}

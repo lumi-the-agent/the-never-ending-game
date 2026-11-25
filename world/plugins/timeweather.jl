@@ -65,7 +65,10 @@ function warp_time!(w, dt)
     for c in w.creatures
         f = rate(c)
         old = get(prev, c.id, nothing)
-        if f != 1f0 && old !== nothing
+        # only steps the ENGINE makes (walkers, the player): a plugin that sets positions itself (a Big Boing flight,
+        # a soar) was held back frame after frame and jumped metres when it left the patch (perfectionist-0100:
+        # Cumulus 7.28 m in one frame during a Big Boing party)
+        if f != 1f0 && old !== nothing && (walker(c) || c.controlled) && c.goal.kind ∉ NG.BUSY_GOALS
             (p0, ph0, y0) = old
             step = c.pos - p0
             if hypot(step[1], step[2]) < 1.5f0                 # not a teleport

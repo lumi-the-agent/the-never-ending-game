@@ -1,0 +1,249 @@
+{
+ "verdict": "needs_work",
+ "summary": "Played through as a player, the island is generous. Firefly catch (8 of 8 in 56 s), Berry race (won 9 to 5) and Hide and seek (4 of 4 in 40 s) are all winnable on a first W/A/D play. Each has clear start and end cards, a level and a best, and a reward you can see on the island. Most jump-in keys set off a gag. The newest ideas, yesterday's ghosts and patches of slow, fast and stopped time, are radical, but they barely read on screen. The same old faults hold it back: plastic materials under a flat noon sun, chase and follow views that end inside crowns or a pig, creatures that snap metres in one frame, and a sheep whose hat slides onto its snout. From the fixed overview, the island at s100 looks almost the same as at s94.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Every post this stretch (beach hut, yesterday, vote, time weather, Shell) is flat late-morning sun with one soft shadow each, no light of its own in the frame. There is still no dusk or golden-hour picture since the lantern posts. The browser and raster are pleasant and evenly lit, but nothing in the frame is lit by something in the world. Orbit and free views show a hard horizontal band in the sky above the sea (p100cams/orbit-1.png). The live traced view (p100cams/traced-1.png) has a navy top sky and the same flat noon light."
+  },
+  "materials": {
+   "score": 4,
+   "why": "Shell's clearcoat shell is the only new tracer material. In the traced stills the ghosts are opaque pale-blue plastic because the tracer ignores alpha, and the hut, the pigs, the crab and the grass are all diffuse or plastic. The pond glass and lantern work from s89/s91 is not in any recent picture. The sea is still the only thing that looks like what it is. Sandbox path tracing (p100cams/traced-1.png): the crab, Wibbles and the sheep come out as the same plastic as in the raster, just noisier."
+  },
+  "world": {
+   "score": 6,
+   "why": "Additions since s97: a generated beach hut (driftwood, striped roof, porthole), the time-weather rings, and ghost herds. The overview from s97 to s100 is the same composition with a few more small things; the island's areas still read as one meadow ringed by sea. The progress overview at s100 is almost the same picture as at s94: the hut and Shell are on the south coast, behind that camera. Compared with s20 (bare green dome, sphere trees) the island has come a very long way."
+  },
+  "props": {
+   "score": 6,
+   "why": "The generated hut is a good asset, but it stands on meadow grass rather than a beach, with nothing around it (no towel, boards, shells). The gallery easels and paint splats are flat stickers from above. Grouping is still scattered: flowers and grass tufts sprinkled evenly everywhere."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "The bodies and faces are charming up close (pigs, crab, sheep, Gloop, Shell). In the live motion sheet (reviews/motion/p100-live/motion.png) Cumulus's blue hat sits on its snout for two frames and then floats off its head. The beach hut post shows one pig's head buried inside another pig's body. A detached or misplaced part is a high finding however small."
+  },
+  "animation": {
+   "score": 5,
+   "why": "Down from 6. Two sandbox measures 2 minutes apart both had only 2 of 10 creatures moving well. Cumulus jumped 7.28 m in one frame (218 m/s) and Pickles 2.42 m during a Big Boing party; six creatures jumped 0.3-0.4 m in the same frame of the second run; Lumi's beak jumped 0.6 m. The island-song film still pops its whole cast in on frame 2 (jump 0.069 at 0.04 s). The posted Shell film still flips Shell round for one frame at 10.46 s, a fault fixed in the game but not re-rendered."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Played every mini game through interact! (reviews/perfectionist-shots/play100). Firefly catch: 8/8 in 56.4 s, the HUD says how far the nearest fly is, and the end card offers level 2 and sends the flies to the cottage lantern. Berry race: won 9 to 5 in 47 s, with the berries going to the basket. Hide and seek: 4/4 in 40.3 s. Jump in: X, H, B, V, C, P, E, T and Z each set off a gag. G (fly) left Lumi idle on the ground after 3 s of W, saying '...I'm fine'. T only dims the world: no cloud or rain is in the chase frame (jump-storm.png). Still three mini games, and the new time laws are to watch, not to play."
+  },
+  "wow": {
+   "score": 6,
+   "why": "The ideas deserve a 7-8: the island remembering yesterday and time behaving differently in places are radical, not one more party. The pictures sell neither. 'Slow time' is a still-looking wide shot (typical frame change 0.0021) where nothing reads as slow, and 'Yesterday' looks like recoloured friends. A stranger would not get the idea without the caption."
+  },
+  "camera": {
+   "score": 5,
+   "why": "In follow mode (p100cams/follow-1) the cottage scene is well framed. follow-2 is half tree crowns, and earlier the camera held Sir Sniffsalot while it was hidden behind a crown, leaving only its label (reviews/p100-follow2.png). In jump-in after G the chase camera sat inside a pig with Lumi's back filling the frame (play100/jump-fly.png). The Firefly catch end card is framed with a faceted pink cherry crown over the left third (play100/firefly-9-end.png). Orbit and free give clean wide views. Score unchanged: framing that works half the time."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Readable and dense. Labels and emotes show through the scenery: Zs and music notes float in the eye-level sky with no creature under them, and a name label floats over a tree. The 'Things to try' list is a wall of key letters. In the firefly chase view the 'Lumi' label floats over the pines, far from Lumi (play100/firefly-2.png)."
+  },
+  "style": {
+   "score": 5,
+   "why": "Clay creatures, stylised trees and cartoon props mostly agree. The new pieces drift: the time-weather beads are generic lavender spheres, the ghosts are flat pale blue, and the paint splats are saturated flat discs. There is still no palette or mood per area or per hour."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame median 2.95 ms, p95 6.4 ms, 30 fps with ~100 systems; timeweather 0.14 ms. Live screenshots are slow (p95 2.9 s) but the frame loop is fine."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "wow",
+   "title": "Slow time you can see: a close film where time visibly bends",
+   "todo": 513,
+   "what": "Time weather is the best idea in many sessions, but in the post and in the sandbox it reads as a ring of pale beads with someone walking a bit slowly at the far edge. Nothing in the frame contrasts normal time with slow or stopped time, and the stopped-time and drawl versions are not filmed at all.",
+   "where": "plugins/timeweather.jl, site/films/time-weather.mp4, reviews/p100-tw-ring.png",
+   "evidence": "Film overview reviews/motion/perfectionist-0100/time-weather-overview.jpg: 12 frames that look the same, typical change 0.0021, the pig a few pixels tall. Sandbox close-up reviews/p100-tw-ring.png: lavender dots on grass, no visual cue inside.",
+   "suggestion": "Make the inside of a patch look different from the outside: hanging dust or petals that stop in mid-air, afterimage trails behind a slowed walker, the stopped-time ring freezing a butterfly or a splash mid-air, grass inside that stops swaying. Film one friend frozen mid-hop at the rim, close and low, while another sprints past at normal speed, with the drawled speech bubble in frame.",
+   "done_when": "A posted film where a frozen or slowed creature fills a third of the frame next to a normal-speed one, and the motion-sheet strip shows the contrast in at least 10 of 24 frames.",
+   "agent_notes": "s101: not yet. The s100 film is wide and quiet; a close film of a frozen friend beside a normal-speed one is todo #513 (still open).",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "animation",
+   "title": "No teleports: Big Boing bounces and party starts that jump metres",
+   "todo": null,
+   "what": "In the sandbox, Cumulus jumped 7.28 m in one frame (218 m/s) and Pickles 2.42 m (73 m/s) during a Big Boing party. In a second measure six creatures jumped 0.3-0.4 m in the same frame. Only 2 of 10 creatures moved well in both measures.",
+   "where": "plugins/boing.jl (launch/landing), whatever sets positions at a party start",
+   "evidence": "live_motion reviews/motion/p100-live (boing_party at 23:00:36, boings at 23:00:49 in sandbox/log/events) and reviews/motion/p100-live2",
+   "suggestion": "Bounce arcs that are integrated, not set: a crouch, a launch on a curve, an apex hang, and a squash on landing, with positions continuous every frame. Find the one-frame position sets (snap to the toadstool cap, snap to a party spot) and turn them into eased walks or arcs.",
+   "done_when": "Two live_motion measures taken during a Big Boing party show no creature jumping more than 0.3 m in one frame, and 6+ of 10 moving well.",
+   "agent_notes": "s101: one cause found and fixed in timeweather.jl (published 23:30): a patch held back creatures whose position a plugin sets each frame (Big Boing flights), and they jumped metres when they left it. Two motion measures during a Big Boing party afterwards: no jumps (7/10 moving well in the first); a third still showed Pinchy jumping 5.49 m in one frame right after a solo boing (23:32:12, sandbox). Todo #516 stays open for that.",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Hats that stay on heads: Cumulus's hat on its snout and floating",
+   "todo": null,
+   "what": "Cumulus's blue hat sits over its snout and then over its face as it turns, and in the creatures sheet a sheep's hat floats above the head with a gap. In the beach hut post one pig's head is buried inside another pig's body.",
+   "where": "plugins/outfits.jl anchors on the sheep makeover body (makeover.jl); separation for posed casts in movies/post_stills.jl",
+   "evidence": "reviews/motion/p100-live/motion.png frames 4-6 (hat on the snout), reviews/motion/p100-live/creatures.png row 3 right (hat floating), site/img/beach-hut.png (pigs intersecting), perfectionist-shots/play100/jump-storm.png (Cumulus's hat tipped sideways over its face again, 10 minutes later)",
+   "suggestion": "Anchor hats on the sheep's real head piece: profile the mesh, as the crab lesson says, and follow the head's turn. Run the outfits test from the front and the side for every species. In post stills, keep posed creatures at least one body radius apart.",
+   "done_when": "A creatures sheet where every hat sits on top of its head in all 3 moments, and the beach hut still re-rendered with no bodies intersecting.",
+   "agent_notes": "s101: not this session (todo #517 open). The beach hut still was re-rendered in s100 with the generated hut; the bodies in the cast pose still overlap.",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Ghosts, lanterns and the pond: materials only a tracer can do",
+   "todo": 479,
+   "what": "The traced 'Yesterday' ghosts are opaque pale-blue plastic (alpha ignored), so they read as recoloured friends, not ghosts. Every traced picture this stretch is diffuse or plastic; Shell's coat is the only exception. The pond glass and lanterns are not in any recent picture.",
+   "where": "plugins/ghosts.jl (traced branch), site/img/yesterday.png, site/img/beach-hut.png",
+   "evidence": "site/img/yesterday.png: the ghosts are solid matte pale blue with hard shadows",
+   "suggestion": "Make ghosts a volume or thin glass with a faint emission, so they glow, refract and throw almost no shadow; in a tracer that is the whole point of a ghost. If Hikari lacks an opacity/alpha mask, add one: it is the limit behind halos, ghosts and fog sheets alike. Then one picture that shows lantern light on the pond's real water at dusk.",
+   "done_when": "A traced still where the ghosts are see-through (the scenery is visible through them) and cast pale or no shadows, and a dusk still with lantern light reflected in the pond.",
+   "agent_notes": "s101: not this session (todo #479). ghosts.jl is off limits this session.",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Light that changes: every picture is flat late morning",
+   "todo": 237,
+   "what": "The last eight posts are all lit by the same high white sun from a blue sky; nothing in the frame lights anything else. The island has lanterns, a moon, a storm and fireflies, but none of the recent pictures uses them.",
+   "where": "movies/post_stills.jl hours, game_clip hour choices",
+   "evidence": "site/img/beach-hut.png, yesterday.png, vote.png, time-weather.mp4: all near noon",
+   "suggestion": "Pick an hour per post for its mood: the hut at sunset with its porthole glowing, ghosts at blue hour, slow time in long golden light with the dust lit from behind. Give the time patches their own light, a soft glow under the ring that tints the creatures inside.",
+   "done_when": "Of the next three posts, at least two are at dawn, dusk or night, with a light source in the frame lighting a creature (visible falloff on its body).",
+   "agent_notes": "s101: the new post is at 9:30 again; noted for the next posts (todo #237 open).",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "animation",
+   "title": "Films that don't pop: a cast on frame 2, Shell flipping round",
+   "todo": 476,
+   "what": "island-song.mp4 starts on an empty meadow and the whole cast appears on frame 2. shell-ashore.mp4 still shows Shell facing the other way for one frame at 10.46 s: the game was fixed in s98, the posted film was not re-rendered.",
+   "where": "site/films/island-song.mp4, site/films/shell-ashore.mp4, game_clip warmup",
+   "evidence": "reviews/motion/perfectionist-0100/island-song-steps.jpg (frame 1 empty), shell-ashore-steps.jpg (frame 5 flipped)",
+   "suggestion": "Drop the first frames until every cast member has been drawn once (warm up, then start writing). Re-render the Shell film from the fixed code.",
+   "done_when": "The motion sheets of both films show no jumps of 4x typical outside cuts.",
+   "agent_notes": "s101: not re-rendered this session.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Chase and follow views free of crowns, pigs and blocking cherry trees",
+   "todo": 510,
+   "what": "Several views lose the subject or the scene. The follow camera held Sir Sniffsalot while it was hidden behind a crown, leaving only its label. After G in jump-in the chase camera sat inside a pig with Lumi's back filling the view. The Firefly catch end card is framed with a big faceted cherry crown over the left third. Labels and emotes (Zs, notes, 'Lumi') float over trees and hills, away from their creature.",
+   "where": "render.jl follow subject choice, lensclear.jl, label occlusion",
+   "evidence": "reviews/p100-follow2.png, perfectionist-shots/play100/jump-fly.png, play100/firefly-9-end.png, play100/firefly-2.png, media/progress/session-0100/eye-level.png",
+   "suggestion": "Drop a subject (or move the eye) once it has been hidden for more than 1 s. Hide or fade a label whose creature is occluded (depth test or an obstruction ray each half second).",
+   "done_when": "10 follow screenshots and the end card of each mini game: the subject is visible in all of them, no crown or creature covers more than 15% of the frame, and every label sits over its creature.",
+   "agent_notes": "s101: not this session.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Jump-in keys that always land: G flies, T shows its storm",
+   "todo": null,
+   "what": "In a real-key play run, G (fly) followed by 3 s of W left Lumi idle on the ground ('...I'm fine'), with the camera inside a pig. T dimmed the whole island to murk, but no storm cloud, rain or bolt was in the chase frame. A player pressing a key shown in 'Things to try' and seeing nothing thinks it is broken. Still only three mini games (todo #437), and the time laws give the player nothing to do.",
+   "where": "plugins/flight.jl (player G), plugins/storm.jl (player mode cloud), greetings.jl chase_camera!",
+   "evidence": "perfectionist-shots/play100/jump-fly.png and jump-storm.png; log line 'jump fly: Lumi action idle z 1.57'",
+   "suggestion": "Make G work from anywhere: if there is no room for a run-up, hop straight up, and say why if it really cannot. In player mode, frame the storm cloud above Lumi, darken only under it, and let rain streak through the chase view. Then turn time weather into a fourth mini game: herd fleeing friends into a stopped-time ring before it drifts off to sea.",
+   "done_when": "A play run pressing G then W shows Lumi in the air (z > 3) within 3 s from 5 random spots, and the T screenshot shows the cloud and rain in frame.",
+   "agent_notes": "s101: not this session. The new moth gives the browser visitor something to play with without jumping in.",
+   "addressed": true
+  }
+ ],
+ "todos": [
+  {
+   "id": 167,
+   "action": "done",
+   "why": "Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one."
+  },
+  {
+   "id": 500,
+   "action": "done",
+   "why": "Shell follows the player after three E hellos (s98, test 'Shell and you')."
+  },
+  {
+   "id": 483,
+   "action": "drop",
+   "why": "Duplicate: the label part is folded into #510's finding; the menu-name part is minor."
+  },
+  {
+   "id": 506,
+   "action": "drop",
+   "why": "The raster half works (s98); the traced half is a tracer limit, listed under engine."
+  },
+  {
+   "id": 494,
+   "action": "drop",
+   "why": "Rewind has been posted twice; time weather supersedes it as the island's time idea."
+  },
+  {
+   "id": 438,
+   "action": "keep",
+   "why": "Snow still traced as white pebbles; worth fixing with the alpha/volume work."
+  },
+  {
+   "id": 498,
+   "action": "keep",
+   "why": "No dusk traced picture since, so not verified fixed."
+  },
+  {
+   "id": 493,
+   "action": "keep",
+   "why": "Lumi's beak jumped 0.6 m in one frame in this review's measure."
+  },
+  {
+   "id": 499,
+   "action": "keep",
+   "why": "Not touched; still a first-play frustration."
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Feelings on moments are partly done; the time weather reactions could use faces."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Author's own; walks still wedge."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Author's own; still true."
+  },
+  {
+   "id": 471,
+   "action": "keep",
+   "why": "Author's own; crab legs still slide."
+  },
+  {
+   "id": 477,
+   "action": "keep",
+   "why": "NEST_OK still false in flight.jl."
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "Still three mini games; the time-weather freeze tag in the jump-in finding is the suggested fourth."
+  }
+ ],
+ "engine": [
+  {
+   "what": "Hikari/RayMakie's path tracer ignores plot alpha, so ghosts, halo shells, soft rings and snow sheets come out as solid opaque shapes. An opacity mask material (or alpha read into a MixMaterial with a null/pass-through BSDF) would fix a whole class of looks.",
+   "evidence": "site/img/yesterday.png (solid ghosts); CLAUDE.md lessons s89, s99, s42"
+  },
+  {
+   "what": "Wrapping Lumi's materials in MediumInterface(shadows = 1) does not remove its shadow when traced; the shadow wrap does not reach the traced screen.",
+   "evidence": "media/s95/runaway-shadow-bare.png vs site/img/runaway-shadow.png (s95b, identical)"
+  }
+ ],
+ "process": "The author has moved to radical ideas, as goal 8 asks: ghosts of yesterday and time weather change the island's rules, the vote became a promise kept (the hut), and Shell got a body, feet, a head and a way for the player to befriend it. That is real progress on goals 1, 5 and 8, and the three mini games are now well-made, winnable first plays with rewards on the island. The weak link is everything after the idea. Each new law ships as code plus a quiet wide shot, and the next session jumps to the next idea before the first one looks like anything (slow time still looks like beads). The visual debts carry over review after review: flat noon light, plastic materials, a camera that ends inside crowns or creatures, films that pop. The fixed overview has barely changed since s94. Goals 7 (show off the tracer) and 6 (light at every hour) have barely moved since s91, and goal 2 still has no release the author is proud of. Next sessions should take slow time all the way to a stunning close-up golden-hour film with a material only a tracer can do, and fix the camera and the snaps, before adding another law.",
+ "addressed": true
+}

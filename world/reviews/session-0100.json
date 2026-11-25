@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "My sandbox screenshot reviews/r100-patch.png (forced slow patch, 11:51, rain): the ring is a sparse arc of small white beads between trees, no creature visible inside; reviews/r100-now.png shows the HUD announcing it but no patch in view. Film overview: reviews/motion/session-0100/time-weather-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Make the patch read from afar (tinted ground disc or dust column, desaturated colour grade of the creatures inside) and film a close contrast shot.",
+      "what": "A player cannot see time weather: the ring is a sparse arc of small beads that disappears among trees and rain, and a slowed creature looks like a normal one.",
+      "where": "site/films/time-weather.mp4"
+    },
+    {
+      "evidence": "journal 22:57: still at full speed inside: dancing, eating, splashes (todo 513)",
+      "severity": "medium",
+      "suggestion": "Make the next post a close-up of a friend frozen mid-hop, and slow the remaining poses or keep patches away from those pastimes.",
+      "what": "Stopped-time and drawled-speech features were published after the post and are not shown anywhere; slow-time effects still do not cover dancing, eating or splashes, so a creature inside can look half-slowed.",
+      "where": "plugins/timeweather.jl; site posts"
+    },
+    {
+      "evidence": "beachhut_sit Pinchy 22:21 in the human's log",
+      "severity": "low",
+      "suggestion": "Check the next sessions' log for several different visitors to confirm the goal kind keeps them there.",
+      "what": "Beach hut visit and picture claims rest on one logged sit event; the post picture's traced status depends on a worker job that followed a restart.",
+      "where": "todo #511/#512"
+    }
+  ],
+  "summary": "Time weather works in the sandbox and the human's log (31 timeweather_ events); my own screenshots show the ring as a thin line of small white/blue beads that is easy to miss, especially in rain, and nothing shows that time is slow. Beach hut body not re-checked by me.",
+  "superseded_by": "perfectionist-0100.json",
+  "surprise": 6,
+  "surprise_why": "Places where time itself runs slow, fast or stops is a mechanic that changes how creatures move, not another scripted gathering, though the visible result is modest.",
+  "verdict": "pass"
+}

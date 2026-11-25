@@ -1,11 +1,11 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-25T22:57:37",
+  "boredom": 0.74,
+  "ended": "2026-11-25T23:56:36",
   "fatigue": {
-    "asset": 0.25,
+    "asset": 0.15,
     "feature": 2.49,
-    "picture": 1.46,
-    "polish": 2.48,
+    "picture": 1.88,
+    "polish": 2.49,
     "self": 0.01,
     "sound": 0.01
   },
@@ -15,7 +15,8 @@
       "posts": [
         "My shadow ran off",
         "Our song",
-        "Yesterday"
+        "Yesterday",
+        "A heart up there"
       ]
     },
     {
@@ -32,9 +33,10 @@
       ]
     },
     {
-      "form": "Still of a failed fix, a single picture",
+      "form": "Still or film of a failed fix or failed take",
       "posts": [
-        "Still my shadow"
+        "Still my shadow",
+        "Nobody cared about the moth"
       ]
     },
     {
@@ -49,6 +51,12 @@
       "posts": [
         "You choose",
         "Slow time"
+      ]
+    },
+    {
+      "form": "Something the visitor can now do from the browser",
+      "posts": [
+        "Your moth"
       ]
     }
   ],
@@ -244,9 +252,12 @@
     "slow",
     "beachhut_sit",
     "timeweather_end",
-    "timeweather_start"
+    "timeweather_start",
+    "cloud_shape",
+    "cloudwatch_end",
+    "cloudwatch_start"
   ],
-  "joy": 0.82,
+  "joy": 1.0,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -350,6 +361,27 @@
       "session": 100,
       "title": "Slow time",
       "what": "Drifting rings of beads blow in from the sea; friends who walk into one crawl through it, drawling, legs paddling, while a short film shows Pickles crossing a ring."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "occasional island event: Lumi and a few friends gather, a small sequence plays, they shout, it ends",
+      "session": 101,
+      "title": "A heart up there",
+      "what": "Now and then Lumi lies in the grass with a few friends while a cloud above gathers into a heart, fish and pig, each shouted out by a friend; shown as one traced still of the heart over the treetops."
+    },
+    {
+      "form": "Something the visitor can now do from the browser",
+      "recipe": "viewer-controlled pointer object that friends react to",
+      "session": 101,
+      "title": "Your moth",
+      "what": "The visitor's browser mouse pointer becomes a moth over the island; friends chase and leap for it, sulk if it goes over the sea, and it lands on Lumi if held still."
+    },
+    {
+      "form": "Still or film of a failed fix or failed take",
+      "recipe": "film of a failed take of the moth feature",
+      "session": 101,
+      "title": "Nobody cared about the moth",
+      "what": "A film of the first failed take of the moth: friends stand still while the moth flies round their noses because their notice timer was late."
     }
   ],
   "kinds_ever": [
@@ -366,116 +398,46 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "timeweather_caught",
-      "timeweather_try",
-      "slow",
-      "beachhut_sit",
-      "timeweather_end",
-      "timeweather_start"
+      "cloud_shape",
+      "cloudwatch_end",
+      "cloudwatch_start"
     ],
-    "session": 100
+    "session": 101
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
-    "form": "New rule of the world",
-    "form_count": 1,
-    "nearest": "Rewind",
-    "post": "Slow time",
-    "score": 5,
-    "session": 100,
-    "shared": "time manipulated on the island's creatures; island-wide effect on movement (but Rewind is a Lumi-used gadget with an undo, this is drifting weather)",
-    "similarity": 5
+    "factor": 1.0,
+    "form": "Something the visitor can now do from the browser",
+    "form_count": 0,
+    "nearest": "Someone's watching",
+    "post": "Your moth",
+    "score": 4,
+    "session": 101,
+    "shared": "the browser visitor affects the island and friends react",
+    "similarity": 4
   },
   "last_surprise": {
     "score": 6,
-    "session": 99,
-    "why": "The island replays its own recorded past as pale copies of its creatures that meet themselves, which is a nice twist on the event recipe; the hut is just one more building."
+    "session": 100,
+    "why": "Places where time itself runs slow, fast or stops is a mechanic that changes how creatures move, not another scripted gathering, though the visible result is modest."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T22:16:02",
+  "perceived_until": "2026-11-25T23:16:35",
   "plugin_fatigue": {
-    "beachhut.jl": 1.6,
-    "firefly_catch.jl": 0.08,
-    "footpaths.jl": 0.35,
-    "gallery.jl": 0.08,
-    "ghosts.jl": 1.6,
-    "greetings.jl": 0.64,
-    "lanterns.jl": 0.13,
-    "lensclear.jl": 0.13,
-    "shadow.jl": 0.13,
-    "stranger.jl": 0.58,
-    "timeweather.jl": 1.0,
-    "vote.jl": 0.96,
-    "xylophone.jl": 0.21
+    "beachhut.jl": 0.96,
+    "cloudshapes.jl": 1.0,
+    "footpaths.jl": 0.21,
+    "ghosts.jl": 0.96,
+    "greetings.jl": 0.38,
+    "lanterns.jl": 0.08,
+    "lensclear.jl": 0.08,
+    "moth.jl": 1.0,
+    "shadow.jl": 0.08,
+    "stranger.jl": 0.35,
+    "timeweather.jl": 1.6,
+    "vote.jl": 0.58,
+    "xylophone.jl": 0.13
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.8333333333333334,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "swing_flight",
-          "who": 1
-        },
-        {
-          "kind": "swing_end",
-          "who": 1
-        },
-        {
-          "kind": "swing_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/voice.mp4",
-        "site/img/voice-laugh.png",
-        "site/voice/game/haha.mp3",
-        "site/voice/game/hello.mp3",
-        "site/voice/game/hm.mp3",
-        "site/voice/game/hmph.mp3"
-      ],
-      "new_plugins": [
-        "voice.jl"
-      ],
-      "points": 3.0,
-      "repeats": [
-        "swing.jl"
-      ],
-      "session": 81,
-      "touched": [
-        "bottle.jl",
-        "outfits.jl",
-        "paintfight.jl",
-        "sneeze.jl",
-        "swing.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 0.3,
-        "picture": 0.3,
-        "polish": -1.9,
-        "post": 0.1,
-        "sound": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1665,6 +1627,73 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 2.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "cloud_shape",
+          "who": 2
+        },
+        {
+          "kind": "cloudwatch_end",
+          "who": 1
+        },
+        {
+          "kind": "cloudwatch_start",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/moth-nobody-cared.mp4",
+        "site/films/moth.mp4",
+        "site/img/cloud-heart.png"
+      ],
+      "new_plugins": [
+        "cloudshapes.jl",
+        "moth.jl"
+      ],
+      "points": 10.6,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Something the visitor can now do from the browser",
+        "form_count": 0,
+        "nearest": "Someone's watching",
+        "post": "Your moth",
+        "score": 4,
+        "shared": "the browser visitor affects the island and friends react",
+        "similarity": 4
+      },
+      "session": 101,
+      "touched": [
+        "timeweather.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "film": 6.0,
+        "picture": 0.2,
+        "polish": 0.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1764,6 +1793,7 @@
       "site/films/spring.mp4",
       "site/films/swing.mp4",
       "site/films/thunderstorm.mp4",
+      "site/films/time-weather.mp4",
       "site/films/toadstool.mp4",
       "site/films/visitors.mp4",
       "site/films/voice.mp4",
@@ -1851,7 +1881,7 @@
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
-      "beachhut.jl": 1.7956407723819304e9,
+      "beachhut.jl": 1.7956422945654373e9,
       "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
@@ -1887,7 +1917,7 @@
       "gait.jl": 1.795596563071227e9,
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
-      "ghosts.jl": 1.7956393036257453e9,
+      "ghosts.jl": 1.7956421464603724e9,
       "giant.jl": 1.7955898833974304e9,
       "greetings.jl": 1.7956371809126008e9,
       "hail.jl": 1.7955962775824723e9,
@@ -1932,6 +1962,7 @@
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
+      "timeweather.jl": 1.7956438106221712e9,
       "toadstool.jl": 1.795589883405444e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
@@ -1942,18 +1973,21 @@
       "workshop.jl": 1.7955211366517444e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 62,
+    "posts": 63,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T22:22:06",
+  "started": "2026-11-25T23:21:02",
   "stumbled": {
     "diary": [
-      "2026-11-23 02:25"
+      "2026-11-23 02:25",
+      "2026-11-23 01:44"
     ],
     "functions": [
       "SynthControl.isfitted",
-      "Agate.construct"
+      "Agate.construct",
+      "EHTUtils.unitconv",
+      "DustExtinction.deredden"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2078,12 +2112,17 @@
       "HydroPowerSimulations",
       "IMAS",
       "AstroTime",
-      "Mortar2D"
+      "Mortar2D",
+      "HePPCAT",
+      "PQEcolaPoint",
+      "FvCFD"
     ],
     "vision": [
       "NeuralLUTRunner",
-      "RIFERunner"
+      "RIFERunner",
+      "BasicVSRRunner",
+      "ProPainterRunner"
     ]
   },
-  "surprise_seen": 99
+  "surprise_seen": 100
 }

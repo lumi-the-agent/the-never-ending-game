@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T23:51:45.407",
+  "finished": "2026-11-25T23:53:48.997",
+  "id": "20261125-235145-407-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.8,
+      "post": "clouds",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/cloud-heart.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/cloud-heart.png",
+    "post": "clouds"
+  },
+  "seconds": 122.6,
+  "started": "2026-11-25T23:51:46.375",
+  "status": "done"
+}

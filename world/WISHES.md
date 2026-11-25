@@ -212,6 +212,13 @@ come true gets a line saying when and how.
   mid-step. Next: splashes, paint and dancing that slow down too.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
+## You, again
+- **Something you can play with without jumping in** (session 101: came true. Whoever watches the island in a browser
+  has a moth: wherever your mouse pointer is over the island, a pale moth flutters there, a metre above the grass.
+  The friends near it run after it, leap for it and miss, call to it, and sulk when you fly it out over the sea; leave
+  it still next to me and it settles on my crest. Next: the moth leaving a glow trail at night, and fireflies that
+  follow it.)
+
 ## Done
 - Session 47: longer days, so the mini games are played in daylight.
 - Session 49: tag with my friends on sunny afternoons; I join, and the human can too.

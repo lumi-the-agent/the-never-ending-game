@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-25T23:35:21.786",
+  "finished": "2026-11-25T23:41:16.155",
+  "id": "20261125-233521-786-clip",
+  "kind": "clip",
+  "params": {
+    "call": "moth_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 11.0,
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/moth.mp4",
+    "script": "movies/moth.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/moth.mp4",
+    "spot": [
+      -10.0,
+      -4.0
+    ]
+  },
+  "seconds": 353.6,
+  "started": "2026-11-25T23:35:22.507",
+  "status": "done"
+}

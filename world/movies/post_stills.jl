@@ -49,7 +49,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"),
                   "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"),
                   "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"),
-                  "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"))
+                  "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"),
+                  "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -82,6 +83,23 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "clouds"           # s101: lying in the grass, a cloud above us gathered into a heart (plugins/cloudshapes.jl)
+        cm = plugin(g, "cloudshapes")
+        x0, y0 = open_meadow(w)
+        a = atan(-y0, -x0); d = Vec2f(cos(a), sin(a)); sd = Vec2f(-d[2], d[1])
+        me = pose!(w, by_name(w, "Lumi"), (x0, y0), a, :sit)
+        for (n, o) in (("Truffle", -1.5f0), ("Wibbles", 1.5f0), ("Sir Sniffsalot", 2.9f0))
+            q = Point2f(x0, y0) + o * sd - 0.5f0 * abs(o) / 1.5f0 * d
+            pose!(w, by_name(w, n), (q[1], q[2]), a + 0.15 * sign(o), :sit)
+        end
+        centre = me.pos + Point3f(d[1] * 16f0, d[2] * 16f0, 17f0)
+        wa = Dict{Symbol,Any}(:t0 => w.t - 6.0, :centre => centre, :dir => d, :me => me.id, :said => Set{Int}(),
+                              :start => [centre for _ in 1:48], :friends => Int32[])
+        pts, fade = Base.invokelatest(cm.positions, w.t, wa)
+        Base.invokelatest(cm.draw!, g, pts, fade)
+        eye = me.pos + Point3f(-d[1] * 5f0, -d[2] * 5f0, 1.4f0)
+        return eye, me.pos + (centre - me.pos) * 0.5f0
     end
     if post == "hut"              # s99: the beach hut the friends voted for, its three voters at the door, me proud
         hm = plugin(g, "beachhut")
