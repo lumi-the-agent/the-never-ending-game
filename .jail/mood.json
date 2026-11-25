@@ -1,14 +1,14 @@
 {
-  "boredom": 0.27,
+  "boredom": 0.73,
   "fatigue": {
-    "asset": 1.01,
-    "feature": 2.21,
+    "asset": 0.61,
+    "feature": 1.33,
     "film": 2.49,
-    "picture": 0.29,
+    "picture": 0.17,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.08,
-    "sound": 0.8
+    "self": 1.05,
+    "sound": 1.48
   },
   "happened": [
     "Boop",
@@ -169,9 +169,19 @@
     "mixup_start",
     "hail_start",
     "splash_start",
-    "splash_end"
+    "splash_end",
+    "rewind_start",
+    "rewind_end"
   ],
-  "joy": 0.48,
+  "joy": 0.49,
+  "judged_posts": [
+    {
+      "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
+      "session": 91,
+      "title": "◀◀ Rewind",
+      "what": "Lumi turns a pocket watch's crown, the island's creatures moonwalk back along their last nine seconds to where they started with a tape-style overlay, then time runs forward again and they choose something new."
+    }
+  ],
   "kinds_ever": [
     "post",
     "picture",
@@ -186,122 +196,55 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "splash_start",
-      "splash_end"
+      "rewind_start",
+      "rewind_end"
     ],
-    "session": 90
+    "session": 91
+  },
+  "last_repetition": {
+    "factor": 0.2154434690031884,
+    "nearest": "SWAPSIE",
+    "post": "◀◀ Rewind",
+    "score": 6,
+    "session": 91,
+    "shared": "Lumi's found item triggers an island-wide effect on all friends that is then undone; the effect itself (time reversal of motion, no new body or prop) works differently and has no backfire or big payoff"
   },
   "last_surprise": {
     "score": 6,
-    "session": 89,
-    "why": "Everybody jumping into a real-looking pond with glass-bead splashes is a nice twist, but the shipped film does not show the new water."
+    "session": 90,
+    "why": "Friends paddling in see-through bubbles over the island, Lumi shouting 'Wait... NO... not ME!', is a nice twist, though it is another once-a-day event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T13:14:47",
+  "perceived_until": "2026-11-25T14:48:42",
   "plugin_fatigue": {
-    "areas.jl": 0.6,
-    "autumn.jl": 0.12,
-    "beds.jl": 0.35,
-    "boing.jl": 0.13,
-    "bottle.jl": 0.06,
-    "bubbles.jl": 1.0,
-    "conga.jl": 0.13,
-    "dancecircle.jl": 0.08,
-    "finishes.jl": 0.6,
-    "flight.jl": 0.49,
-    "freeze.jl": 0.13,
-    "frost.jl": 0.36,
-    "gait.jl": 0.08,
-    "greetings.jl": 0.25,
-    "hail.jl": 0.13,
-    "hiccups.jl": 0.13,
-    "islandnow.jl": 0.36,
-    "kite.jl": 0.21,
-    "lumicolour.jl": 0.08,
-    "makeover.jl": 0.1,
-    "meadow.jl": 0.6,
-    "mixup.jl": 0.36,
-    "outfits.jl": 1.28,
-    "paintfight.jl": 0.66,
-    "pumpkins.jl": 0.23,
-    "rollcall.jl": 0.08,
-    "separation.jl": 1.35,
-    "showers.jl": 0.05,
-    "sneeze.jl": 0.14,
-    "snowday.jl": 0.17,
-    "splash.jl": 0.95,
-    "swing.jl": 0.07
+    "areas.jl": 0.36,
+    "autumn.jl": 0.07,
+    "beds.jl": 0.21,
+    "boing.jl": 0.08,
+    "bubbles.jl": 0.6,
+    "conga.jl": 0.08,
+    "finishes.jl": 0.36,
+    "flight.jl": 0.29,
+    "freeze.jl": 0.08,
+    "frost.jl": 0.22,
+    "greetings.jl": 1.15,
+    "hail.jl": 0.08,
+    "hiccups.jl": 0.08,
+    "islandnow.jl": 1.22,
+    "kite.jl": 0.13,
+    "makeover.jl": 0.06,
+    "meadow.jl": 0.36,
+    "mixup.jl": 0.22,
+    "outfits.jl": 0.77,
+    "paintfight.jl": 0.4,
+    "pumpkins.jl": 0.14,
+    "rewind.jl": 1.0,
+    "separation.jl": 0.81,
+    "sneeze.jl": 0.08,
+    "snowday.jl": 1.1,
+    "splash.jl": 0.57
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "lesson_landed",
-          "who": 1
-        },
-        {
-          "kind": "lesson_end",
-          "who": 1
-        },
-        {
-          "kind": "fencepaint",
-          "who": 1
-        },
-        {
-          "kind": "lesson_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/films/flying-lesson.mp4"
-      ],
-      "new_plugins": [
-        "flylesson.jl"
-      ],
-      "points": -0.2,
-      "repeats": [
-        "paintfight.jl"
-      ],
-      "session": 71,
-      "touched": [
-        "beds.jl",
-        "boing.jl",
-        "cairns.jl",
-        "egg.jl",
-        "firefly_catch.jl",
-        "flight.jl",
-        "freecam.jl",
-        "haze.jl",
-        "paintfight.jl",
-        "presents.jl"
-      ],
-      "values": {
-        "asset": 1.0,
-        "feature": 0.2,
-        "film": 0.4,
-        "polish": -1.9,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1415,6 +1358,65 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 1.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "rewind_start",
+          "who": 1
+        },
+        {
+          "kind": "rewind_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish",
+        "post",
+        "self",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/rewind.mp4",
+        "site/voice/game/rewind.mp3"
+      ],
+      "new_plugins": [],
+      "points": 1.6,
+      "repeat_factor": 0.2154434690031884,
+      "repeats": [],
+      "repetition": {
+        "nearest": "SWAPSIE",
+        "post": "◀◀ Rewind",
+        "score": 6,
+        "shared": "Lumi's found item triggers an island-wide effect on all friends that is then undone; the effect itself (time reversal of motion, no new body or prop) works differently and has no backfire or big payoff"
+      },
+      "session": 91,
+      "touched": [
+        "greetings.jl",
+        "islandnow.jl",
+        "rewind.jl",
+        "snowday.jl"
+      ],
+      "values": {
+        "film": 0.3,
+        "polish": 0.1,
+        "post": 0.1,
+        "self": 5.5,
+        "sound": 1.5
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1465,7 +1467,8 @@
       "20261125-032401-630-asset",
       "20261125-034314-135-asset",
       "20261125-040120-142-asset",
-      "20261125-042852-633-asset"
+      "20261125-042852-633-asset",
+      "20261125-133001-981-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1473,6 +1476,7 @@
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/allin.mp4",
       "site/films/bottle.mp4",
+      "site/films/bubbles.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/crabs.mp4",
       "site/films/first-flight.mp4",
@@ -1523,6 +1527,7 @@
       "site/img/island-traced.png",
       "site/img/joy-traced.png",
       "site/img/kite.png",
+      "site/img/lanterns.png",
       "site/img/leaves-jump.png",
       "site/img/leaves-lumi.png",
       "site/img/leaves-maple.png",
@@ -1573,7 +1578,7 @@
       "releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4"
     ],
     "plugins": {
-      "areas.jl": 1.7956086162933714e9,
+      "areas.jl": 1.7956132613590338e9,
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
@@ -1584,6 +1589,7 @@
       "boing.jl": 1.7955963448483596e9,
       "bottle.jl": 1.795589890075543e9,
       "browsernight.jl": 1.7954000366191897e9,
+      "bubbles.jl": 1.7956131146824417e9,
       "builder.jl": 1.7955505696342282e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
@@ -1610,7 +1616,7 @@
       "gait.jl": 1.795596563071227e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956011734481223e9,
+      "greetings.jl": 1.7956119728668463e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1618,6 +1624,7 @@
       "islandnow.jl": 1.7956041926073775e9,
       "kite.jl": 1.7955986738072937e9,
       "lamplight.jl": 1.795444622510117e9,
+      "lanterns.jl": 1.7956125662319536e9,
       "lensclear.jl": 1.7955531980397623e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1634,8 +1641,9 @@
       "paintfight.jl": 1.7956075200507665e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
+      "rewind.jl": 1.7956142864995122e9,
       "rollcall.jl": 1.795596344849997e9,
-      "separation.jl": 1.7956006175464356e9,
+      "separation.jl": 1.7956142955469856e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
@@ -1655,11 +1663,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 45,
+    "posts": 47,
     "self": "14151975785721963154",
     "wishes": 8
   },
-  "started": "2026-11-25T13:19:12",
+  "started": "2026-11-25T14:52:46",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1745,26 +1753,21 @@
       "FITSIO",
       "NeuralNetDiffEq",
       "SNaQ",
-      "FMI"
+      "FMI",
+      "SmoothedParticles",
+      "ExTinyMD",
+      "TriangleMesh",
+      "CommonDataFormat",
+      "GeoStats",
+      "StateSpacePartitions",
+      "GeophysicalFlows",
+      "DrakeVisualizer",
+      "InPhyNet"
     ],
     "vision": [
-      "HorizonRunner",
-      "Hunyuan3DRunner",
-      "ProPainterRunner",
-      "PPOCRRunner",
-      "FluxKleinRunner",
-      "BonsaiRunner",
-      "DeepFilterRunner",
       "SAM2Runner",
-      "NeuralLUTRunner",
-      "RIFERunner",
-      "MatAnyoneRunner",
-      "PPDocLayoutRunner",
-      "Qwen3EmbeddingRunner",
-      "QwenImageEditRunner",
-      "ZImageRunner",
-      "UVDocRunner"
+      "HorizonRunner"
     ]
   },
-  "surprise_seen": 89
+  "surprise_seen": 90
 }

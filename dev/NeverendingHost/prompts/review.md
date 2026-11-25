@@ -46,7 +46,12 @@ Write the verdict file as JSON:
 knows the island: 0 more of the same (a prop, a fix, polish), 3 new but
 expected, 6 a nice twist, 8 they would show it to a friend, 10 they cannot
 believe a game agent made it. Judge what happens in the game, not the
-post about it. It moves the author's boredom, so do not be kind.
+post about it. Compare it with the island's last posts (above): work
+that follows their recipe (the friends gather for a scripted event,
+something silly happens, everyone laughs) or carries out an example the
+author was handed is at most 4, however well made. Radical is what changes
+what the island is or how it works. It moves the author's boredom more
+than anything else, so do not be kind.
 
 Be specific and honest. A pass without findings is fine when it is deserved.
 At most three findings, the most important first. `needs_work` only when the

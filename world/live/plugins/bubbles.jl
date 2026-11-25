@@ -88,17 +88,23 @@ function loop_mesh()
 end
 
 const WAND = "20261125-133001-981-asset"     # the generated wand: a pink clay loop on a wooden handle, 1 m tall, loop in xz
-const WAND_OK = false                        # true once looked at on the island (until then the hand-made loop)
+const WAND_OK = true                         # true once looked at on the island (until then the hand-made loop)
 
 "Lumi's wand while it gathers the friends and blows: held up beside its beak, the loop facing where it looks."
 function draw_wand!(game, s)
     w = game.world; me = lumi_of(w)
-    show = s.state in (:gather, :blow) && me !== nothing && !any(b -> b.who == me.id, s.bubbles) && !haskey(s.falling, me.id)
+    show = (s.state in (:gather, :blow) || w.t - get(BB, :player_t, -Inf) < 2.5) && me !== nothing && !any(b -> b.who == me.id, s.bubbles) && !haskey(s.falling, me.id)
     if !show
         get(BB, :wand_shown, true) && (BB[:loop].visible[] = false; BB[:stick].visible[] = false;
                                        haskey(BB, :wand) && Makie.update!(BB[:wand]; markersize = [Vec3f(0)]))
         BB[:wand_shown] = false
         return
+    end
+    want = WAND_OK || get(BB, :wand_try, false)     # (made here as well: plots! only runs when the plots are new)
+    if want && !haskey(BB, :wand) && isfile(joinpath(game.paths.world, "assets", WAND, "mesh.jls"))
+        BB[:wand] = NG.asset_instances!(game.stage.scene, NG.lifted_asset(game.paths, WAND), [Point3f(0, 0, -50)];
+                                        markersize = [Vec3f(0)], rotation = [Makie.Quaternionf(0, 0, 0, 1)], name = :bubble_wand)
+        BB[:loop].visible[] = false; BB[:stick].visible[] = false
     end
     f = me.yaw + NG.species_of(me).heading
     base = me.pos + Point3f(0.42f0 * cos(f) - 0.18f0 * sin(f), 0.42f0 * sin(f) + 0.18f0 * cos(f), 0.72f0)
@@ -199,7 +205,7 @@ function blow!(s::Bubbles, w, me, target)
     push!(s.bubbles, Bubble(0, target, beak(me), beak(me), big ? r + 0.25f0 : r, w.t, Inf, Inf,
                             (big ? 4.4f0 : 2.2f0 + 1.4f0 * rand(w.rng, Float32)),
                             Vec2f(0.5f0 * (rand(w.rng, Float32) - 0.5f0), 0.5f0 * (rand(w.rng, Float32) - 0.5f0))))
-    push!(BB[:log], (w.t, big ? :blow_big : :blow))
+    push!(get!(() -> Tuple{Float64,Symbol}[], BB, :log), (w.t, big ? :blow_big : :blow))
 end
 
 function step_bubbles!(s::Bubbles, game, dt)
@@ -214,10 +220,14 @@ function step_bubbles!(s::Bubbles, game, dt)
             goal = x.pos + Point3f(0, 0, 0.55f0 * NG.species_of(x).height)
             b.pos = b.from + (goal - b.from) * ease(u) + Point3f(0, 0, 0.6f0 * sin(Float32(pi) * min(u, 1f0)))
             if u >= 1
+                if !x.controlled && x.goal.kind !== :bubbles       # (a bubble the player blew: the friend was doing something else)
+                    NG.leave_interactions!(w, x)
+                    x.goal = NG.Goal(:bubbles, x.pos, :jump, 60.0, t + 60, true, 0, false)
+                end
                 b.who = x.id; b.caught = t; b.pop = t + (b.target == me.id ? get(BB, :lumi_pop, 7.5) : get(BB, :pop_min, 5.0) + 3.0 * rand(w.rng))
                 b.from = x.pos
                 NG.say!(w, x, b.target == me.id ? "Wait... NO... not ME!" : SHOUTS[mod1(Int(x.id) + s.next, length(SHOUTS))]; duration = 2.2)
-                push!(BB[:log], (t, :caught))
+                push!(get!(() -> Tuple{Float64,Symbol}[], BB, :log), (t, :caught))
             end
         else                                    # floating with its friend inside
             el = Float32(t - b.caught)
@@ -240,7 +250,7 @@ function step_bubbles!(s::Bubbles, game, dt)
             push!(BB[:spray], (b.pos + b.r * Point3f(cos(a) * (1 - e), sin(a) * (1 - e), 2e - 1),
                                Vec3f(2.2f0 * cos(a), 2.2f0 * sin(a), 1.5f0 * e), t))
         end
-        push!(BB[:log], (t, :pop))
+        push!(get!(() -> Tuple{Float64,Symbol}[], BB, :log), (t, :pop))
     end
     filter!(b -> t < b.pop, s.bubbles)
     # falling friends: down with a bump, then a laugh
@@ -256,7 +266,7 @@ function step_bubbles!(s::Bubbles, game, dt)
             x.pos = g
             x.goal = NG.Goal(:bubbles, g, :laugh, 60.0, t + 60, true, 0, false); x.action = :laugh
             NG.say!(w, x, id == me.id ? "...TA-DAA! (ow)" : BUMPS[mod1(Int(id), length(BUMPS))]; duration = 1.8)
-            push!(BB[:log], (t, :bump))
+            push!(get!(() -> Tuple{Float64,Symbol}[], BB, :log), (t, :bump))
         end
     end
 end
@@ -312,12 +322,37 @@ function bubble_group(w)
     return (me.id, pts, bubble_view(w, s))
 end
 
+"Jumped in as Lumi: B blows a giant bubble at the nearest friend (s90 wish: you blowing them as me)."
+function player_blow!(s::Bubbles, game)
+    w = game.world; me = lumi_of(w)
+    bdown = Makie.Keyboard.b in game.keys_down
+    was = get(BB, :bdown, false); BB[:bdown] = bdown
+    (bdown && !was && me !== nothing && me.controlled) || return
+    length(s.bubbles) >= 6 && return
+    taken = Set(b.target for b in s.bubbles)
+    f = me.yaw + NG.species_of(me).heading
+    ok(x) = x !== me && !x.controlled && x.action !== :sleep && !(x.id in taken) && !haskey(s.falling, x.id) &&
+            x.goal.kind ∉ EVENTS && hypot(x.pos[1] - me.pos[1], x.pos[2] - me.pos[2]) < 7f0
+    cs = [x for x in w.creatures if ok(x)]
+    if isempty(cs)
+        NG.say!(w, me, "Nobody to bubble..."; duration = 1.5)
+        return
+    end
+    # the nearest, with the one in front of Lumi first
+    score(x) = hypot(x.pos[1] - me.pos[1], x.pos[2] - me.pos[2]) - 2f0 * cos(atan(x.pos[2] - me.pos[2], x.pos[1] - me.pos[1]) - f)
+    x = cs[argmin(score.(cs))]
+    blow!(s, w, me, x.id)
+    BB[:player_t] = w.t
+end
+
 function NG.step!(s::Bubbles, game, dt)
     game.stage === nothing && return
     plots!(game)
     w = game.world
     me = lumi_of(w)
     el = w.t - s.t0
+    player_blow!(s, game)
+    s.state === :idle && (!isempty(s.bubbles) || !isempty(s.falling)) && step_bubbles!(s, game, dt)
     if s.state === :idle
         film = get(BB, :film, false)
         testing = game.tests !== nothing && NG.running(game.tests)

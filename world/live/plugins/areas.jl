@@ -6,7 +6,7 @@
 isdefined(Main, :AREA_PLOTS) || Core.eval(Main, :(const AREA_PLOTS = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
-const AREA_VERSION = 9          # bump when the look changes: the plots are rebuilt
+const AREA_VERSION = 10          # bump when the look changes: the plots are rebuilt
 const POND = Point2f(-5.5, 10.5)
 const POND_R = 2.3f0
 const PIER_START = Point2f(-1.53, 17.39)       # on the beach where the ground is at deck height
@@ -163,7 +163,10 @@ function make_area_plots!(scene, w)
     # basin (dig_pond!), like the sea; `color` is what the browser draws
     dig_pond!(scene, w, level)
     push!(plots, mesh!(scene, pond_mesh(level, POND_R); color = RGBAf(0.6, 0.87, 0.9, 1.0),
-                       material = NG.Hikari.MediumInterface(NG.Hikari.Glass(color = (0.9, 0.98, 0.95), ior = 1.33, roughness = 0.01);
+                       # the raster tints by the glass colour (s91: (0.9, 0.98, 0.95) read grey live, review s89/s90): blue water
+                       # live, near-clear in traced copies, where the sky and the sandy floor give the colour
+                       material = NG.Hikari.MediumInterface(NG.Hikari.Glass(color = get(Main.AREA_PLOTS, :live, false) ? (0.4, 0.72, 0.95) : (0.9, 0.98, 0.95),
+                                                                            ior = 1.33, roughness = 0.01);
                                                             inside = nothing, shadows = 1.33),   # sun through the surface: a lit floor (s89: plain glass shadowed it navy)
                        name = :area_pond))
     st = Point3f[]; ssz = Vec3f[]
@@ -247,6 +250,7 @@ function NeverendingGame.start!(s::Areas, game)
     if plots === nothing || first(plots).parent !== game.stage.scene || get(Main.AREA_PLOTS, :version, 0) != AREA_VERSION
         # a new look: the old plots go (deleting works in the raster, which the game runs in while plugins reload)
         plots === nothing || foreach(p -> delete!(p.parent, p), plots)
+        Main.AREA_PLOTS[:live] = game.dash !== nothing      # (the pond's glass: blue live, clear in traced copies)
         Main.AREA_PLOTS[:plots] = make_area_plots!(game.stage.scene, w)
         Main.AREA_PLOTS[:version] = AREA_VERSION
     else

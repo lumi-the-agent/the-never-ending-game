@@ -163,7 +163,7 @@ function animate(m::Crest, c::PoseCtx)
     if a === :walk                                # lags the head's pump
         θ = -0.12f0 + 0.14f0 * clamp(1f0 + c.mood, 0.4f0, 1.6f0) * sin(2c.phase - 0.9f0)
     elseif a === :run                             # swept back by the wind
-        θ = -0.45f0 + 0.08f0 * sin(2c.phase)
+        θ = -0.45f0 + 0.08f0 * sin(c.phase)       # once a stride (s92: twice made a running Lumi shiver 10 times a second)
     elseif a === :fly                             # streaming back in the wind of the flight, shaken by each beat
         θ = -0.8f0 + 0.7f0 * c.extra + 0.08f0 * fly_flap(c) * sin(2fly_beat(c))   # at `extra` 1 as up as `:proud`
     elseif a === :idle && c.extra > 0f0           # just stopped: flops forward and back, dying away
@@ -201,7 +201,7 @@ function animate(m::Wing, c::PoseCtx)
     elseif a === :dance || a === :play
         up = 0.6f0 + 0.5f0 * sin(7c.t + (m.side > 0 ? 0f0 : 1.2f0))
     elseif a === :run
-        up = 0.45f0 + 0.1f0 * sin(2c.phase)
+        up = 0.45f0 + 0.1f0 * sin(c.phase)       # once a stride (s92)
     elseif a === :walk
         up = 0.08f0 + 0.06f0 * sin(c.phase + (m.side > 0 ? 0f0 : Float32(pi)))
     elseif a === :wave || a === :talk
@@ -262,7 +262,7 @@ function bird_upper(c::PoseCtx)
         roll = 0.05f0 * g * sin(c.phase)
         lift = 0.03f0 * g * abs(sin(c.phase))
     elseif a === :run                     # leaning into it
-        pitch = 0.16f0 + 0.06f0 * sin(2c.phase)
+        pitch = 0.16f0 + 0.06f0 * sin(c.phase)   # once a stride: at GAIT_MAX twice a stride was 10 reversals a second (s92)
     elseif a === :idle
         f, e = fidget(c)
         if f == 1                         # preening under a wing

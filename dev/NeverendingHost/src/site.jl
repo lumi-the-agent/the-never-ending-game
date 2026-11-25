@@ -89,8 +89,8 @@ end
 # ── posts: pictures first ───────────────────────────────────────────────────
 #
 # A post is pictures or a film with a caption of one to three sentences, no
-# verdict (RULES 14): readers form their own opinion. Every session posts its
-# stunt; a post without a picture or a film, or a long one, is sent back to the
+# verdict (RULES 14): readers form their own opinion. Every session posts what
+# it made; a post without a picture or a film, or a long one, is sent back to the
 # character while the session runs (`post_problems`), so it never goes out so.
 
 "A post on the character's front page: `<div class=\"piece\" id=\"...\">`, with no divs inside."
@@ -109,6 +109,34 @@ caption_words(piece::AbstractString) =
 
 "How long a caption may be."
 const CAPTION_WORDS = 60
+
+"""
+    recent_posts(jp; n = 20) -> Vector{NamedTuple}
+
+The `n` newest posts on the character's front page (newest first): id, title and caption as plain
+text, and the films it shows (paths below world/site).
+"""
+function recent_posts(jp::JailPaths; n::Int = 20)
+    page = joinpath(site_dir(jp), "index.html")
+    Post = @NamedTuple{id::String, title::String, caption::String, films::Vector{String}}
+    isfile(page) || return Post[]
+    posts = Post[]
+    plain(x) = x === nothing ? "" : String(strip(replace(x[1], r"<[^>]+>" => "", r"\s+" => " ")))
+    for m in eachmatch(PIECE, read(page, String))
+        push!(posts, (id = String(m[1]), title = plain(match(r"<h3>(.*?)</h3>"s, m[2])),
+                      caption = plain(match(r"<p>(.*?)</p>"s, m[2])), films = filter(is_film, post_media(m[2]))))
+        length(posts) == n && break
+    end
+    return posts
+end
+
+"A prompt section with the `n` newest posts, for judging what is more of the same; empty without posts."
+function post_history_lines(jp::JailPaths; n::Int = 20)
+    posts = recent_posts(jp; n)
+    isempty(posts) && return ""
+    return "## The island's last $(length(posts)) posts (newest first, this session's included)\n" *
+           join(("- **$(p.title)**: $(p.caption)" for p in posts), "\n")
+end
 
 """
     session_posts(jp, since) -> Vector
@@ -133,7 +161,7 @@ end
 "What is wrong with this session's posts, or `nothing`: none yet, one without a picture or film, one too long."
 function post_problems(jp::JailPaths, run)
     posts = session_posts(jp, run.started)
-    isempty(posts) && return "Nothing new on your pages this session yet: your stunt (rule 14) goes out as a post, " *
+    isempty(posts) && return "Nothing new on your pages this session yet: what you make (rule 14) goes out as a post, " *
                              "path traced pictures or a short film with a caption of one to three sentences, dated with the real time."
     bare = [p.id for p in posts if !p.media]
     isempty(bare) || return "Your post(s) $(join(bare, ", ")) have no picture or film that exists, and a post never goes out " *

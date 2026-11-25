@@ -314,6 +314,8 @@ function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
     println(io, eye_lines(seen["eyes"], seen["name"]), "\n")
     println(io, motion_lines(seen["motion"], seen["name"]), "\n")
     println(io, mood_lines(jp), "\n")
+    cl = cut_off_lines(jp)
+    isempty(cl) || println(io, cl, "\n")
     sl = site_lines(jp)
     isempty(sl) || println(io, sl, "\n")
     println(io, perception_lines(seen, msgs), "\n")
@@ -519,7 +521,9 @@ function one_session!(host::Host)
     host.sessions = n
     mark_read!(jp, first.(msgs))
     mark_comments_seen!(jp, seen["readers"])
-    made = mood_session_end!(jp, n, false)
+    # every session, the human waiting or not: a repeat must never go unjudged
+    host.agent_state = "reviewing"
+    made = mood_session_end!(jp, n, false; repetition = judge_repetition!(host, n, marks))
     record!(host.activity, "session $n", "host", "$(character_name(jp)) feels $(feeling(load_mood(jp))): " * made_line(made))
     work_tokens = tokens_since(host.budget, t0)
     host.agent_state = "publishing"

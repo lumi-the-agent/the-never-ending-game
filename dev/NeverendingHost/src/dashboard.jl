@@ -113,6 +113,7 @@ function island_state(jp::JailPaths)
     return (; name = character_name(jp), feeling = string(view["feeling"]),
             moods = [k => Float64(view[k]) for k in ("joy", "boredom", "loneliness")],
             new = get(m, "last_new", nothing), surprise = get(m, "last_surprise", nothing),
+            repetition = get(m, "last_repetition", nothing),
             notes = last([a for a in feed if get(a, "kind", "") in ("host", "review")], 4),
             state = string(get(agent, "state", "off")), current = get(agent, "current", nothing), thought,
             blog = isempty(cfg.blog_repo) ? "" : pages_url(cfg.blog_repo),
@@ -133,12 +134,19 @@ function island_dom(s)
     surprise = s.surprise === nothing ? [DOM.div("not scored yet"; class = "ne-muted")] :
         [DOM.div(DOM.span(string(s.surprise["score"]); class = "ne-score"), DOM.span(" / 10 · session $(s.surprise["session"])";
                  class = "ne-muted")), DOM.div(s.surprise["why"]; class = "ne-quote")]
+    rp = s.repetition
+    repetition = rp === nothing ? [DOM.div("not judged yet"; class = "ne-muted")] :
+        [DOM.div(DOM.span(string(rp["score"]); class = "ne-score"),
+                 DOM.span(" / 10 · session $(rp["session"])" * (rp["factor"] < 1 ? @sprintf(" · worth ×%.2f", rp["factor"]) : "");
+                          class = "ne-muted")),
+         DOM.div(isempty(rp["post"]) ? "nothing posted" : "“$(rp["post"])” like “$(rp["nearest"])”: $(rp["shared"])"; class = "ne-quote")]
     notes = [DOM.div(DOM.span(first(string(get(a, "time", "")), 16)[12:end]; class = "ne-note-time"), " ",
                      string(get(a, "text", "")); class = "ne-note") for a in reverse(s.notes)]
     return DOM.div(
         card("How $(s.name) feels", DOM.div(s.feeling; class = "ne-feeling"), (mood_bar(k, v) for (k, v) in s.moods)...),
         card("New on the island", new...),
         card("The reviewer's surprise", surprise...),
+        card("Doing the same again", repetition...),
         card("The host", notes...); class = "ne-cards")
 end
 

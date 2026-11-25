@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-25T14:45:59.562",
+  "error": "failed process: Process(`ffmpeg -y -loglevel error -i /sim/Programmieren/SimGame/world/media/s92/rewind-preview-silent.mp4 -loop 1 -i /sim/Programmieren/SimGame/world/media/s92/rewind-preview-rw.png -i /sim/Programmieren/SimGame/world/media/s92/rewind-preview.wav -i /sim/Programmieren/SimGame/world/site/voice/game/hm.mp3 -filter_complex \"[0:v][1:v]overlay=0:0:enable='between(t,4.5,6.25)'[v];[3]adelay=6550|6550,volume=0.8[h];[2][h]amix=inputs=2:normalize=0,apad[out]\" -map '[v]' -map '[out]' -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 160k -shortest /sim/Programmieren/SimGame/world/media/s92/rewind-preview.mp4`, ProcessExited(244)) [244]\n\nStacktrace:\n  [1] pipeline_error\n    @ ./process.jl:597 [inlined]\n  [2] run(::Cmd; wait::Bool)\n    @ Base ./process.jl:512\n  [3] run\n    @ ./process.jl:509 [inlined]\n  [4] rewind_clip(path::String; spot::Tuple{Float64, Float64}, rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, cast::Vector{String})\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/rewind.jl:121\n  [5] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n  [6] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n  [7] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n  [8] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-25T15:13:18.409",
+  "id": "20261125-144559-524-clip",
+  "kind": "clip",
+  "params": {
+    "call": "rewind_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "spot": [
+        -11.0,
+        -3.0
+      ],
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s92/rewind-preview.mp4",
+    "script": "movies/rewind.jl"
+  },
+  "seconds": 1487.7,
+  "started": "2026-11-25T14:48:30.740",
+  "status": "failed"
+}

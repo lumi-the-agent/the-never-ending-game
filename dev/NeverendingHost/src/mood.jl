@@ -26,11 +26,13 @@
 # Boredom once followed the kinds of work (a plugin, a film, a post), and a new
 # vegetable patch counted like a parade: the island grew, but nothing on it
 # surprised anyone. Now each session makes the character more bored
-# (`BOREDOM_RISE`), and only a happening the island never had before eases it:
-# a kind of event new to the human's game's log (`happenings`), the more the more
-# inhabitants take part in it. The session's reviewer judges how surprising the
-# work was (`surprise`, 0-10), which moves boredom again before the next session.
-# Decorations, polish and posts about the same things change nothing.
+# (`BOREDOM_RISE`). What eases it most is the session's reviewer finding the work
+# surprising (`surprise`, 0-10, judged against the last posts), before the next
+# session; a happening the island never had before (a kind of event new to the
+# human's game's log, `happenings`) eases it a little. A new event kind once eased
+# it fully, and the island filled with gather-and-laugh events that each counted
+# as new (sessions 79-90, surprise 5-7). Decorations, polish and posts about the
+# same things change nothing.
 
 "Event kinds that are the game's machinery or talk, not something happening in the world."
 const PLUMBING = Set(["say", "snapshot", "plugin_load", "plugin_removed", "publish", "game_start", "game_stop", "game_crash",
@@ -62,8 +64,8 @@ function happened_ever!(jp::JailPaths, m::AbstractDict, until::DateTime)
     return m["happened"]
 end
 
-"What eases boredom: per new happening 0.15, +0.05 for each inhabitant that took part (up to 6), at most 0.6 together."
-ease(new::AbstractVector) = min(0.6, sum(h -> 0.15 + 0.05 * min(h["who"], 6), new; init = 0.0))
+"What eases boredom: per new happening 0.1, +0.02 for each inhabitant that took part (up to 6), at most 0.3 together."
+ease(new::AbstractVector) = min(0.3, sum(h -> 0.1 + 0.02 * min(h["who"], 6), new; init = 0.0))
 
 "The happenings since `from` the island never had: kind and how many took part, most first."
 function new_happenings(jp::JailPaths, m::AbstractDict, from::DateTime)
@@ -72,7 +74,11 @@ function new_happenings(jp::JailPaths, m::AbstractDict, from::DateTime)
     return sort!(new; by = h -> -h["who"])
 end
 
-"The newest session review's surprise (0-10, the reviewer's), moving boredom and joy once, before the next session."
+"""
+The newest session review's surprise (0-10, the reviewer's), moving boredom and joy once, before the
+next session: a 6 (a nice twist) holds them, every point above eases boredom by 0.08, every point
+below adds as much.
+"""
 function feel_surprise!(jp::JailPaths, m::AbstractDict)
     files = sort!(filter(f -> occursin(r"^session-\d+\.json$", f), readdir(reviews_dir(jp))))
     isempty(files) && return m
@@ -83,8 +89,8 @@ function feel_surprise!(jp::JailPaths, m::AbstractDict)
     s = get(r, "surprise", nothing)
     s isa Real || return m
     m["last_surprise"] = Dict{String,Any}("session" => n, "score" => s, "why" => string(get(r, "surprise_why", "")))
-    m["boredom"] = round(clamp(m["boredom"] - 0.04 * (s - 5), 0, 1); digits = 2)
-    m["joy"] = round(clamp(m["joy"] + 0.03 * (s - 5), 0, 1); digits = 2)
+    m["boredom"] = round(clamp(m["boredom"] - 0.08 * (s - 6), 0, 1); digits = 2)
+    m["joy"] = round(clamp(m["joy"] + 0.04 * (s - 6), 0, 1); digits = 2)
     return m
 end
 
@@ -103,8 +109,10 @@ function happening_lines(jp::JailPaths, m::AbstractDict)
     end
     ls = get(m, "last_surprise", nothing)
     ls === nothing || println(io, "How surprising the reviewer found session $(ls["session"]): $(ls["score"])/10. ", ls["why"])
-    print(io, "Boredom grows every session (+$BOREDOM_RISE) and eases only when something happens that this island ",
-          "never had, more the more inhabitants take part in it, and more the more it surprises. A new prop, polishing, ",
+    posts = recent_posts(jp; n = 12)
+    isempty(posts) || println(io, "Your last posts (newest first): ", join((p.title for p in posts), " · "), ".")
+    print(io, "Boredom grows every session (+$BOREDOM_RISE). What eases it most is work that surprises the reviewer, ",
+          "who compares it with your last posts: a 6 (a nice twist) eases nothing, an 8 a lot, a 4 or less makes it worse. Something the island never had eases it a little. A new prop, polishing, ",
           "or another post about the same things changes nothing.")
     return String(take!(io))
 end
@@ -335,7 +343,8 @@ follows the points, the new happenings and the human's company.
 function feel_session!(m::AbstractDict, r::AbstractDict, contact::Bool)
     p = r["points"]
     new = get(r, "happenings", Any[])
-    m["boredom"] = round(clamp(m["boredom"] + BOREDOM_RISE - 0.02p - ease(new), 0, 1); digits = 2)
+    eased = ease(new) * get(r, "repeat_factor", 1.0)     # a repeat's new event kinds are hardly new
+    m["boredom"] = round(clamp(m["boredom"] + BOREDOM_RISE - 0.02p - eased, 0, 1); digits = 2)
     m["joy"] = round(clamp(0.6m["joy"] + 0.04p + 0.1 * min(length(new), 3) + (contact ? 0.15 : 0.0), 0, 1); digits = 2)
     return m
 end
@@ -352,6 +361,11 @@ function made_parts(r::AbstractDict)
     isempty(r["new_pages"]) || push!(parts, "new pages/films: " * join(r["new_pages"], ", "))
     hs = get(r, "happenings", Any[])
     isempty(hs) || push!(parts, "NEW ON THE ISLAND: " * join(("$(h["kind"]) ($(h["who"]) taking part)" for h in hs), ", "))
+    rp = get(r, "repetition", nothing)
+    if rp !== nothing && rp["score"] >= SIMILAR[1]
+        push!(parts, isempty(rp["post"]) ? @sprintf("NOTHING POSTED (worth ×%.2f)", r["repeat_factor"]) :
+                     @sprintf("A REPEAT: \"%s\" %s/10 like \"%s\" (worth ×%.2f)", rp["post"], rp["score"], rp["nearest"], r["repeat_factor"]))
+    end
     isempty(parts) && push!(parts, "nothing new")
     isempty(r["touched"]) || push!(parts, "edited " * join(r["touched"], ", "))
     isempty(r["repeats"]) || push!(parts, "AGAIN on " * join(r["repeats"], ", ") * " (costs 2 each)")
@@ -373,8 +387,15 @@ function mood_session_start!(jp::JailPaths, contact::Bool)
     contact && (m["last_contact"] = now_string())
     hours = (Dates.now() - DateTime(m["last_contact"])).value / 3.6e6
     m["loneliness"] = round(clamp(hours / 12, 0, 1); digits = 2)
-    m["start"] = garden_snapshot(jp)
-    m["started"] = now_string()
+    if cut_off(m)
+        # nothing it made is dropped: this session goes on from the same start, so the work counts
+        # and gets posted (`cut_off_lines`); twice in a row, the work was dropped (Nov 25)
+        m["cut_off"] = m["started"]
+    else
+        delete!(m, "cut_off")
+        m["start"] = garden_snapshot(jp)
+        m["started"] = now_string()
+    end
     happened_ever!(jp, m, DateTime(m["started"]))       # the history, before this session's events
     feel_surprise!(jp, m)
     return save_mood!(jp, m)
@@ -382,24 +403,51 @@ end
 
 """
 After a session: what it made is scored against the character's fatigue and moves
-it. Boredom: +0.3 - 0.05 a point (6 points hold it, fewer raise it), +0.1 for
-every kind done although tired of it; joy follows the points and the human's
-company. Then the kinds and plugins it did tire. Returns the session's record.
+it (`feel_session!`), after a repeat's penalty (`feel_repetition!`, when `repetition` is the
+judge's verdict). Then the kinds and plugins it did tire. Returns the session's record.
 """
-function mood_session_end!(jp::JailPaths, n::Int, contact::Bool)
+function mood_session_end!(jp::JailPaths, n::Int, contact::Bool; repetition::Union{Nothing,AbstractDict} = nothing)
     m = with_fatigue!(load_mood(jp))
     r = score(m, session_work(jp, m["start"], garden_snapshot(jp)))
     r["session"] = n
     r["happenings"] = new_happenings(jp, m, DateTime(get(m, "started", m["perceived_until"])))
     union!(m["happened"], [h["kind"] for h in r["happenings"]])
     isempty(r["happenings"]) || (m["last_new"] = Dict{String,Any}("session" => n, "kinds" => [h["kind"] for h in r["happenings"]]))
+    repetition === nothing || feel_repetition!(m, r, repetition)
     feel_session!(m, r, contact)
     contact && (m["last_contact"] = now_string(); m["loneliness"] = 0.0)
     tire!(m, r)
     push!(m["sessions"], r)
     length(m["sessions"]) > 20 && popfirst!(m["sessions"])
+    m["ended"] = now_string()
+    delete!(m, "cut_off")
     save_mood!(jp, m)
     return r
+end
+
+"""
+Whether the last session was cut off (the host stopped or restarted while it ran): it started
+and never ended. A mood from before `ended` was kept (Nov 25) has none: its sessions count as ended.
+"""
+cut_off(m::AbstractDict) = haskey(m, "ended") && DateTime(m["ended"]) < DateTime(m["started"])
+
+"The prompt's section on a session that was cut off and what it had made, empty when none was."
+function cut_off_lines(jp::JailPaths)
+    m = load_mood(jp)
+    haskey(m, "cut_off") || return ""
+    w = session_work(jp, m["start"], garden_snapshot(jp))
+    made = String[]
+    isempty(w["new_plugins"]) || push!(made, "new plugins " * join(w["new_plugins"], ", "))
+    isempty(w["touched"]) || push!(made, "edited plugins " * join(w["touched"], ", "))
+    isempty(w["new_pages"]) || push!(made, "new on your pages " * join(w["new_pages"], ", "))
+    tf = joinpath(jp.world, "state", "thought.json")
+    thought = isfile(tf) ? string(get(read_json(tf), "text", "")) : ""
+    return "## Your last session was cut off
+The host stopped while your session from $(m["started"]) ran (not your doing). " *
+           "Nothing you made is dropped: this session goes on from there. What you had made: " *
+           (isempty(made) ? "nothing the host can see (look at your diary)" : join(made, "; ")) * "." *
+           (isempty(thought) ? "" : " Your last thought: \"$thought\".") *
+           " Finish it and post it, or post it as it is, before anything new."
 end
 
 "The three kinds of work the character is least tired of (wishes aside: they come in every kind)."
@@ -418,6 +466,7 @@ function mood_lines(jp::JailPaths)
     @printf(io, "## How %s feels (the host's measure; read only at /run/neverending/mood.json)\n%s feels **%s** (boredom %.2f, joy %.2f, loneliness %.2f).\n",
             name, name, feeling(m), m["boredom"], m["joy"], m["loneliness"])
     println(io, "\n", happening_lines(jp, m), "\n")
+    println(io, repetition_lines(m), "\n")
     println(io, "Like Pino, $name also tires of doing the same kind of work: a kind done last session is worth about a third, ",
             "two sessions in a row a sixth, after that almost nothing; editing a plugin the last two sessions edited costs 2 points. ",
             "Varied work slows the boredom a little.\n")
@@ -435,11 +484,11 @@ function mood_lines(jp::JailPaths)
     if b >= 0.8
         recent = isempty(tired) ? sort!(unique(vcat((r["touched"] for r in last(m["sessions"], 2))...))) : tired
         println(io, "\n$name is fed up with its island. Do not touch ", isempty(recent) ? "the plugins of the last sessions" : join(recent, ", "),
-                " this session. Before anything else, make something happen here that never happened before, big enough that ",
-                "the whole island takes part, and publish it so it happens in the human's game.")
+                " this session. Before anything else, make something the island never had, unlike anything you posted, ",
+                "and publish it so it is in the human's game.")
     elseif b >= 0.5
-        println(io, "\n$name is bored of its island. Before anything else this session, make something happen here that never ",
-                "happened before, the bigger and stranger the better, and publish it so it happens in the human's game.")
+        println(io, "\n$name is bored of its island. Before anything else this session, make something the island never had, ",
+                "and publish it so it is in the human's game.")
     else
         println(io, "\nWhat earns most now: ", join(fresh, ", "), ".")
     end
@@ -459,8 +508,7 @@ function bored_followup(jp::JailPaths, run)
     left = (run.deadline - time()) / 60
     (left > 10 && run.wrap_up_since == 0) || return nothing
     return "Nothing new has happened on the island this session, and $(character_name(jp)) is bored (boredom $(m["boredom"])). " *
-           "$(round(Int, left)) minutes are left: make something happen that the island never had, the more of its " *
-           "inhabitants take part the better, and publish it so it happens in the human's game."
+           "$(round(Int, left)) minutes are left: make something the island never had, and publish it so it is in the human's game."
 end
 
 # ── perception: what the character noticed in the human's game ──────────────

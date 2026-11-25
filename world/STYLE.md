@@ -73,3 +73,9 @@ at a glance. Everything looks like it could be picked up and squeezed.
   path tracing it is an emitter and lights the cloud's belly and the ground. Strikes leave small dark scorch marks.
 - Comedy over danger: what the weather does to us is a cartoon (a puff of small grey soot, a crest on end, a
   gasp face), and the friends' answer to it is a huddle and then laughter.
+
+## Real light and real materials (sessions 89-91, goal 7)
+- Water is clear glass (ior 1.33) over a pale sandy floor that the sun reaches (`MediumInterface(...; shadows = 1.33)`): you see the floor, the stems and the pads' shadows through it. Never an opaque disc.
+- Glowing things are real lights in traced pictures (Hikari `Emission`, warm (1.0, 0.68, 0.32)): a lantern lights the water, the reeds and the faces near it, and is mirrored in the pond (site/img/lanterns.png). Live they are unlit warm globes with a soft pool under them, never a bare ball.
+- Each body has a finish over its clay colours: wool sheen on the sheep, a wet clear coat on the jelly blobs, a lacquered crab shell, a faint fuzz on the piglets (finishes.jl). Soap bubbles are thin films (thin_wall glass with a 450 nm film), see-through, with the friend inside lit.
+- Dusk (about 19:30-20:00) is the hour for light pictures: the sky still blue-gold, the lanterns already doing the lighting.

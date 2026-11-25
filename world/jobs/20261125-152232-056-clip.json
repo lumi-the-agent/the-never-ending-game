@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-25T15:22:32.059",
+  "id": "20261125-152232-056-clip",
+  "kind": "clip",
+  "params": {
+    "call": "snow_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 9.0,
+      "spot": [
+        -11.0,
+        -3.0
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s92/snow-check.mp4",
+    "script": "movies/snowday.jl"
+  },
+  "status": "queued"
+}

@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-25T14:26:13.440",
+  "error": "the worker stopped twice while running it",
+  "id": "20261125-142613-437-clip",
+  "interrupted": 2,
+  "kind": "clip",
+  "params": {
+    "call": "lantern_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 24
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s91/lanterns-film.mp4",
+    "script": "movies/lanterns.jl"
+  },
+  "started": "2026-11-25T14:38:02.630",
+  "status": "failed"
+}

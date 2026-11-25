@@ -217,3 +217,86 @@ uitest("Bubble trouble (s90): Lumi's giant bubbles carry the friends up, pop, an
     check(n(:caught) >= 3 && n(:pop) == n(:caught) && n(:bump) == n(:pop) && high > 2 && s.state === :idle,
           "caught $(n(:caught)), popped $(n(:pop)), landed $(n(:bump)), Lumi rose $(round(high; digits = 1)) m, state $(s.state)")
 end
+
+uitest("Lantern float (s91): everyone sets a glowing lantern on the pond, then they all fly up into the sky") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    L = Main.LANTERNS; s = L[:sys]
+    s.state === :idle || return check(false, "a lantern float was already going ($(s.state))")
+    for c in w.creatures
+        c.controlled = false
+        c.action === :sleep && (c.action = :idle)
+        c.goal = XP.Goal(:idle, c.pos, :idle, 20.0, w.t + 20, true, 0, false)
+    end
+    L[:t_gather] = 5.0; L[:t_float] = 4.0; L[:gap] = 0.4
+    ok = Base.invokelatest(L[:start])
+    check(ok, "the lantern float did not start")
+    A = game.plugins["areas"].mod; m = game.plugins["lanterns"].mod
+    t1 = w.t; on_water = 0; high = 0f0
+    while s.state !== :idle && w.t - t1 < 70
+        wait_seconds(game, 0.5)
+        if s.state === :float
+            ps = [Base.invokelatest(m.lantern_pos, game, l, w.t) for l in s.lanterns]
+            on_water = max(on_water, count(p -> hypot(p[1] - A.POND[1], p[2] - A.POND[2]) < A.POND_R, ps))
+            on_water == length(s.lanterns) && screenshot(game, "s91_lanterns")
+        elseif s.state === :rise && !isempty(s.lanterns)
+            high = max(high, maximum(l -> Base.invokelatest(m.lantern_pos, game, l, w.t)[3], s.lanterns) - Main.AREA_PLOTS[:pond][3])
+        end
+    end
+    for k in (:t_gather, :t_float, :gap); delete!(L, k); end
+    n = count(x -> x[2] === :place, L[:log])
+    check(n >= 4 && on_water >= n - 1 && high > 3 && s.state === :idle,
+          "placed $(n), on the water at once $(on_water), rose $(round(high; digits = 1)) m, state $(s.state)")
+end
+
+uitest("Bubbles (s91): B as Lumi blows a giant bubble at the nearest friend, who floats up and comes down again") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    m = game.plugins["bubbles"].mod
+    sp = Base.invokelatest(m.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2])); me.yaw = 0f0
+    f = me.yaw + XP.species_of(me).heading
+    pal = first(c for c in w.creatures if c !== me && !c.controlled)      # (at night everyone sleeps: wake one, s92)
+    pal.action === :sleep && (pal.action = :idle)
+    pal.pos = XP.ground(w.island, (sp[1] + 2.2f0 * cos(f), sp[2] + 2.2f0 * sin(f)))
+    pal.goal = XP.Goal(:idle, pal.pos, :idle, 30.0, w.t + 30, true, 0, false)
+    log0 = length(get(Main.BUBBLES, :log, []))
+    interact!(game, [KeyPress(Keyboard.b), Wait(2.5)])
+    caught = [x for x in Main.BUBBLES[:log][log0+1:end] if x[2] === :caught]
+    up = 0f0                    # the highest the friend floats (the lift eases in over 3 s, one look was borderline, s92)
+    for _ in 1:16
+        wait_seconds(game, 0.25)
+        up = max(up, pal.pos[3] - XP.ground(w.island, (pal.pos[1], pal.pos[2]))[3])
+    end
+    screenshot(game, "s91_bubble_b")
+    wait_seconds(game, 7.0)
+    bumps = count(x -> x[2] === :bump, Main.BUBBLES[:log][log0+1:end])
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(length(caught) == 1 && up > 1 && bumps == 1, "B: caught $(length(caught)), highest friend $(round(up; digits = 1)) m up, landed $(bumps)")
+end
+
+uitest("Pocket watch (s92): Z as Lumi winds the island back, and Lumi walks backwards to where it started") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    sp = Base.invokelatest(game.plugins["bubbles"].mod.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2])); me.yaw = 0f0
+    R = Main.REWIND; s = R[:sys]
+    empty!(s.hist)                                   # history from here on
+    interact!(game, [Wait(1.0)])
+    start = me.pos
+    interact!(game, [KeyDown(Keyboard.w), Wait(3.0), KeyUp(Keyboard.w), Wait(0.2)])
+    walked = hypot(me.pos[1] - start[1], me.pos[2] - start[2])
+    interact!(game, [KeyPress(Keyboard.z), Wait(0.6)])
+    state = s.state
+    t1 = w.t
+    while s.state !== :rec && w.t - t1 < 10; wait_seconds(game, 0.25); end
+    back = hypot(me.pos[1] - start[1], me.pos[2] - start[2])
+    screenshot(game, "s92_rewind")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(walked > 1.5 && state === :rewind && back < 0.6 && s.state === :rec,
+          "walked $(round(walked; digits = 2)) m, state after Z $(state), $(round(back; digits = 2)) m from the start after the rewind, now $(s.state)")
+end

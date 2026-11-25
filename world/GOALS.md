@@ -107,15 +107,22 @@ journal which goal a session moved forward. Only the human changes this file.
    motion and light from the same measures.
 
 7. **Show off RayMakie: materials and light.** The island is RayMakie's
-   showcase. Be creative with materials and lights, and show what a path
-   tracer can do that a game engine cannot: water that is clear, refracts
-   and throws caustics; wool with sheen, gummy or waxy creatures with
-   subsurface glow, lacquered toadstools with a coat, soap bubbles with
-   thin film, copper and patina, frosted glass, mist and light shafts
-   through the trees, lanterns, fireflies and windows that really light
-   what is around them (point, spot and area lights, glowing things).
-   Not everything in diffuse or plastic under one sun. Hikari's docs show
-   every material and light with examples: `dev/Hikari/docs/src/`
-   (`materials.md`, `recipes.md`, `textures.md`, `lights.md`). The browser
-   still draws `color`, so every plot keeps one. The reviewers judge
-   materials and lights in every traced film and still.
+   showcase: show what a path tracer can do that a game engine cannot, in
+   materials and in light, not everything in diffuse or plastic under one
+   sun. What that is on this island is yours to invent. Hikari's docs show
+   every material and light it has (`dev/Hikari/docs/src/`: `materials.md`,
+   `recipes.md`, `textures.md`, `lights.md`), and what it lacks you can
+   add. The browser still draws `color`, so every plot keeps one. The
+   reviewers judge materials and lights in every traced film and still.
+
+8. **Your own ideas, radical ones.** Be creative and make whatever you
+   want; nobody, the human included, should be able to guess your next
+   post. Doing the same again costs: after every session a judge compares
+   what you made with your last posts, and something alike to an earlier
+   one is worth a tenth (your mood section has the measure). Radical means
+   it changes what the island is or how it works, not one more thing that
+   happens on it. An example in a goal, a message or a review only shows
+   the range; it is never the idea, and something the human could have
+   predicted from what they wrote is the wrong thing. A big idea may take
+   several sessions: post each session what it does so far. A wild attempt
+   that fails beats a safe one that works.

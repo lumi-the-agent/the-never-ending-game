@@ -81,7 +81,7 @@ cleanliness:
    "creatures":    {"score": 0-10, "why": "shapes, faces, behaviour"},
    "animation":    {"score": 0-10, "why": "poses that fit the action, flow between actions, weight, no pops, jitter or sliding"},
    "fun":          {"score": 0-10, "why": "interactions, mini games, reasons to come back"},
-   "wow":          {"score": 0-10, "why": "surprise and spectacle: the last sessions' stunts, would a stranger share them"},
+   "wow":          {"score": 0-10, "why": "surprise and spectacle: the last posts (above), would a stranger share them; one more of the same recipe is low"},
    "camera":       {"score": 0-10, "why": "framing, composition, motion"},
    "ui":           {"score": 0-10, "why": "dashboard, readability"},
    "style":        {"score": 0-10, "why": "one cohesive look"},

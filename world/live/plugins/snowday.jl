@@ -87,8 +87,13 @@ end
 # ---------------------------------------------------------------- flakes
 
 function flakes!(game)
+    # traced copies ignore NoShading: a plain white sphere in its own shadow was a grey pebble (#438). Snow lets
+    # light through: a thin translucent white catches the sun from behind too (s92, films only; live keeps NoShading)
+    look = game.dash === nothing ? (; material = NG.Hikari.DiffuseTransmission(reflectance = (0.97, 0.98, 1.0),
+                                                                              transmittance = (0.9, 0.93, 0.97))) : (;)
     S[:flakes] = meshscatter!(game.stage.scene, fill(Point3f(0, 0, -50), NFLAKES); marker = Sphere(Point3f(0), 1f0),
-                              markersize = fill(Vec3f(0), NFLAKES), color = SNOW, shading = Makie.NoShading, name = :snow_flakes)
+                              markersize = fill(Vec3f(0), NFLAKES), color = SNOW, shading = Makie.NoShading, name = :snow_flakes,
+                              look...)
     S[:fpos] = [Point3f(BOX * (rand() - 0.5f0), BOX * (rand() - 0.5f0), 9f0 * rand()) for _ in 1:NFLAKES]
 end
 

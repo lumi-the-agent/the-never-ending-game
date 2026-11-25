@@ -1,0 +1,36 @@
+{
+  "created": "2026-11-25T14:46:33.524",
+  "finished": "2026-11-25T15:19:54.104",
+  "id": "20261125-144633-524-clip",
+  "kind": "clip",
+  "params": {
+    "call": "rewind_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        -11.0,
+        -3.0
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s92/rewind-worker-take.mp4",
+    "script": "movies/rewind.jl"
+  },
+  "result": {
+    "log": [
+      [
+        4.416666668723337,
+        "rewind"
+      ],
+      [
+        6.125000002852175,
+        "forward"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s92/rewind-worker-take.mp4",
+    "started": true
+  },
+  "seconds": 395.7,
+  "started": "2026-11-25T15:13:18.419",
+  "status": "done"
+}

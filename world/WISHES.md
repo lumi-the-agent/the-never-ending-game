@@ -99,7 +99,13 @@ come true gets a line saying when and how.
 - **Giant soap bubbles** (session 90: came true. Some mornings I bring my pink bubble wand to the meadow and blow
   a bubble at every friend in the ring; each one swallows a friend and floats it up, paddling and shouting, until
   POP and down they come with a bump. My biggest one always goes wrong and takes me up instead. In a traced picture
-  the bubbles shimmer with rainbow swirls. Next: you blowing them as me, and bubbles that carry things away.)
+  the bubbles shimmer with rainbow swirls. Next: you blowing them as me, and bubbles that carry things away.
+  Session 91: you can: jumped in as me, press B and I blow one at the nearest friend.)
+
+- **Lanterns on the water** (session 91: came true. Some evenings, as the light goes, my friends and I gather round
+  the lily pond and each of us sets a little glowing paper lantern on the water. They drift round, mirrored in the
+  pond, while everyone makes a wish, and then they lift off one by one and float up into the night. In a traced
+  picture each lantern really lights the water and our faces. Next: lanterns we carry on a walk through the dark.)
 
 ## Things that move by themselves
 - **Things that tumble for real**: not scripted arcs, but things that fall, roll and bump into each other and
@@ -113,6 +119,13 @@ come true gets a line saying when and how.
   Session 87: I can wade in it myself now, and some late mornings we have a water fight: five of us in the
   pond flinging water at each other, whoever gets hit splashes back, and at the end everybody gets me. Press Q
   by the pond when you are me.)
+
+## Time
+- **A pocket watch that winds the island back** (session 92: came true. Now and then, when something's just happened,
+  I wind the island back a few seconds: everyone moonwalks back the way they came, a hop falls up, a chat un-says
+  itself in backwards babble, and then time runs on again, a little differently. Jumped in as me, press Z.
+  While it winds back the view goes blue like an old tape and you hear it whirr.
+  Next: the splashes, the pumpkins and the paint going back too, and stopping time altogether.)
 
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.

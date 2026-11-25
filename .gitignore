@@ -172,6 +172,15 @@
 /world/reviews/motion/session-0089/allin-overview.jpg
 /world/reviews/motion/session-0089/allin-steps.jpg
 /world/reviews/motion/session-0089/allin-strip.jpg
+/world/reviews/motion/session-0090/allin-overview.jpg
+/world/reviews/motion/session-0090/allin-steps.jpg
+/world/reviews/motion/session-0090/allin-strip.jpg
+/world/reviews/motion/session-0090/bubbles-overview.jpg
+/world/reviews/motion/session-0090/bubbles-steps.jpg
+/world/reviews/motion/session-0090/bubbles-strip.jpg
+/world/reviews/motion/session-0091/rewind-overview.jpg
+/world/reviews/motion/session-0091/rewind-steps.jpg
+/world/reviews/motion/session-0091/rewind-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -897,6 +906,8 @@
 /world/reviews/s88-c.png
 /world/reviews/s89-live1.png
 /world/reviews/s89-pond-a.png
+/world/reviews/s90-b1.png
+/world/reviews/s90-now.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -1068,6 +1079,9 @@
 /world/tests/shots/s88_mixup.png
 /world/tests/shots/s89_everybody_in.png
 /world/tests/shots/s90_bubbles.png
+/world/tests/shots/s91_bubble_b.png
+/world/tests/shots/s91_lanterns.png
+/world/tests/shots/s92_rewind.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1135,6 +1149,7 @@
 /world/site/films/pumpkins.mp4
 /world/site/films/pumpkins.wav
 /world/site/films/real-flight.mp4
+/world/site/films/rewind.mp4
 /world/site/films/snow-day.mp4
 /world/site/films/splash-silent.mp4
 /world/site/films/splash.mp4
@@ -1161,6 +1176,7 @@
 /world/site/img/island-traced.png
 /world/site/img/joy-traced.png
 /world/site/img/kite.png
+/world/site/img/lanterns.png
 /world/site/img/leaves-jump.png
 /world/site/img/leaves-lumi.png
 /world/site/img/leaves-maple.png
@@ -1187,6 +1203,7 @@
 /world/site/voice/game/hoo.mp3
 /world/site/voice/game/oh.mp3
 /world/site/voice/game/ooh.mp3
+/world/site/voice/game/rewind.mp3
 /world/site/voice/game/squeak-hoo.mp3
 /world/site/voice/game/squeak-wheee.mp3
 /world/site/voice/game/squeak-yay.mp3

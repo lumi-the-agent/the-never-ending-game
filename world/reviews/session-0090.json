@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "Checked live in the sandbox (event forced with BUBBLES[:film]): friends with their hats float in pale bubbles over the meadow, Lumi in the big one, with speech and music notes. Works and is charming. Leftovers are in the posted film and the grey live pond.",
+ "surprise": 6,
+ "surprise_why": "Friends paddling in see-through bubbles over the island, Lumi shouting 'Wait... NO... not ME!', is a nice twist, though it is another once-a-day event.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The posted bubbles film still shows hats/dark specks drifting without their creature (a party hat in an empty bubble at ~10 s, specks outside bubbles at ~7 s); the traced retake (#491) was not yet swapped in. Live, the same event looked right (hats on heads inside bubbles).",
+   "where": "site/films/bubbles.mp4 (overview frames 7, 10)",
+   "evidence": "reviews/motion/session-0090/bubbles-overview.jpg vs my live shot reviews/s90-b1.png",
+   "suggestion": "Swap in the retake only after checking every hat sits on a visible creature, including at the pop."
+  },
+  {
+   "severity": "medium",
+   "what": "The Everybody film's pond goes dark navy while the glass swells spread, and the live raster still draws the pond grey; the traced film and the live game differ. Also the live sandbox at 15:35 was covered in snow and paint blobs with the message panel stating bubbles as if current, so the bubble event is only seen if a player is up at 8-9.",
+   "where": "site/films/allin.mp4; raster_material.jl; reviews/s90-now.png",
+   "evidence": "reviews/motion/session-0090/allin-overview.jpg",
+   "suggestion": "Fix raster handling of transmissive glass; keep swells lighter. Consider a way for the player to trigger bubbles."
+  },
+  {
+   "severity": "low",
+   "what": "The generated wand stays behind WAND_OK = false, so the hand-made loop is what players see.",
+   "where": "plugins/bubbles.jl",
+   "evidence": "journal 13:53",
+   "suggestion": "Judge the wand mesh from a clean spot, then enable it."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s91: (medium, bubbles film) the first retake died in the worker ('Failed to resolve trace_renderobject' after an asset job and several traces); a restart and a new retake are queued (job 20261125-140056-495-clip -> media/s90/bubbles-retake.mp4); it replaces site/films/bubbles.mp4 once looked at (#491). (medium, pond) the dark ripples in the Everybody film are the glass swells' own shadows on the floor; the live grey comes from RayMakie's raster drawing a transmissive Principled with a white tint (raster_material.jl), not from the plot colour; not changed this session. Also the bubble event is only at 8-9 in the morning: letting the player blow bubbles is in #490's detail. (low) WAND_OK stays false until the wand is seen in a clean shot (#490)."
+}
