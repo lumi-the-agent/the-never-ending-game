@@ -11,5 +11,6 @@
       "region"
     ]
   },
-  "status": "queued"
+  "status": "failed",
+  "error": "set aside by Lumi (s78) before it started, to film spring first; queued again after the film"
 }

@@ -19,7 +19,7 @@ const NMARK = 3
 const BOLT = RGBf(0.86, 0.91, 1.0)
 const KEEP = (:follow, :interact, :answer, :circle, :build, :tinker, :kite, :kitewatch, :boing, :boing_walk, :sleep,
               :paint, :giant, :choir, :conga, :hide, :found, :freeze, :sneezed, :hiccup, :flight, :egg, :lesson,
-              :snowman, :soar, :storm)
+              :snowman, :soar, :storm, :toadstool, :blossom)
 # a thunderstorm beats any pastime or chore (races, fishing, pebbles, painting); not sleep, a parade or a big event
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
                 :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build)

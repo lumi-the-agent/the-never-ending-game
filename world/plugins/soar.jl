@@ -12,7 +12,7 @@ const T_LOOP = 16.0               # one circle over the island, up and down agai
 const T_AFTER = 4.0
 const HEIGHT = 9f0                # metres over the ground at the top of the circle
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson, :snowman, :storm, :toadstool)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson, :snowman, :storm, :toadstool, :blossom)
 const CHEER = ("LUMI'S FLYING!", "Look! Up there!", "Woooow!", "Go Lumi, GO!", "Is the little one up there too?!")
 
 push!(NG.BUSY_GOALS, :soar)

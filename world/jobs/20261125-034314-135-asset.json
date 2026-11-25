@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-25T03:43:14.135",
+  "finished": "2026-11-25T04:10:43.868",
+  "id": "20261125-034314-135-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 12000,
+    "prompt": "a little wooden swing with a plank seat hanging on two ropes from a simple wooden frame, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground",
+    "tags": [
+      "blossom",
+      "swing",
+      "region"
+    ]
+  },
+  "result": {
+    "created": "2026-11-25T04:10:43.480",
+    "faces": 11571,
+    "id": "20261125-034314-135-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-034314-135-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-034314-135-asset/mesh.jls",
+    "prompt": "a little wooden swing with a plank seat hanging on two ropes from a simple wooden frame, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground",
+    "seconds": 596.0,
+    "tags": [
+      "blossom",
+      "swing",
+      "region"
+    ]
+  },
+  "seconds": 601.0,
+  "started": "2026-11-25T04:00:42.587",
+  "status": "done"
+}

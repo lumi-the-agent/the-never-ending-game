@@ -487,6 +487,34 @@
         "creature",
         "fluffkin"
       ]
+    },
+    {
+      "created": "2026-11-25T03:36:20.765",
+      "faces": 11956,
+      "id": "20261125-032401-562-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261125-032401-562-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-032401-562-asset/mesh.jls",
+      "prompt": "a small cherry blossom tree with a round fluffy crown of pale pink blossoms and a short curved brown trunk, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground",
+      "seconds": 709.0,
+      "tags": [
+        "blossom",
+        "tree",
+        "region"
+      ]
+    },
+    {
+      "created": "2026-11-25T03:51:49.565",
+      "faces": 5592,
+      "id": "20261125-032401-630-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261125-032401-630-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-032401-630-asset/mesh.jls",
+      "prompt": "a low round shrub covered in tiny white and pink flowers, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground, no pot",
+      "seconds": 911.0,
+      "tags": [
+        "blossom",
+        "shrub",
+        "region"
+      ]
     }
   ]
 }

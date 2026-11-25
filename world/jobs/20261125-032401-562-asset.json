@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T03:24:01.562",
+  "finished": "2026-11-25T03:36:21.166",
   "id": "20261125-032401-562-asset",
   "kind": "asset",
   "params": {
@@ -11,6 +12,21 @@
       "region"
     ]
   },
+  "result": {
+    "created": "2026-11-25T03:36:20.765",
+    "faces": 11956,
+    "id": "20261125-032401-562-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-032401-562-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-032401-562-asset/mesh.jls",
+    "prompt": "a small cherry blossom tree with a round fluffy crown of pale pink blossoms and a short curved brown trunk, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground",
+    "seconds": 709.0,
+    "tags": [
+      "blossom",
+      "tree",
+      "region"
+    ]
+  },
+  "seconds": 713.3,
   "started": "2026-11-25T03:24:27.657",
-  "status": "running"
+  "status": "done"
 }

@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T03:24:01.630",
+  "finished": "2026-11-25T03:51:49.955",
   "id": "20261125-032401-630-asset",
   "kind": "asset",
   "params": {
@@ -11,5 +12,21 @@
       "region"
     ]
   },
-  "status": "queued"
+  "result": {
+    "created": "2026-11-25T03:51:49.565",
+    "faces": 5592,
+    "id": "20261125-032401-630-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-032401-630-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-032401-630-asset/mesh.jls",
+    "prompt": "a low round shrub covered in tiny white and pink flowers, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground, no pot",
+    "seconds": 911.0,
+    "tags": [
+      "blossom",
+      "shrub",
+      "region"
+    ]
+  },
+  "seconds": 916.0,
+  "started": "2026-11-25T03:36:33.706",
+  "status": "done"
 }

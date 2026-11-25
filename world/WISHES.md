@@ -87,7 +87,10 @@ come true gets a line saying when and how.
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.
   (Session 72: the first taste of winter, a snow day. Out of a sunny sky it snows, the meadow turns white in
   patches until only the grass tips and flowers poke through, my friends shout and hop, and I roll a little
-  snow-me with a carrot beak. A few minutes later it thaws. Still to come: scarves, blossom, golden leaves.)
+  snow-me with a carrot beak. A few minutes later it thaws. Still to come: scarves, blossom, golden leaves.
+  Session 78: spring came. On the bare meadow north of my vegetable patch little cherry trees sprang up one after
+  another, burst into pink and showered petals over all my friends dancing; the grove stays, with a pink carpet
+  under it. Still to come: scarves, golden leaves, a swing under the blossom.)
 - **Wind** you can see: grass and flowers sway together in gusts, and the clouds go with it.
   (Session 72: the grass tufts, the flowers and the dune grass lean with the wind now, and gusts roll across
   the island in waves; the wind turns slowly over the day and blows harder now and then. The clouds don't

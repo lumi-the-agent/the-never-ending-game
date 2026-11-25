@@ -9,7 +9,7 @@ isdefined(Main, :MEADOW) || Core.eval(Main, :(const MEADOW = Dict{Symbol,Any}())
 
 const NG = NeverendingGame
 using Serialization
-const MEADOW_VERSION = 15
+const MEADOW_VERSION = 19
 
 const SUNNY = RGBf(0.62, 0.73, 0.27)    # warm clearing
 const LUSH = RGBf(0.17, 0.40, 0.17)     # deep hollow
@@ -17,6 +17,9 @@ const MID = RGBf(0.42, 0.60, 0.23)
 const SHADE = RGBf(0.09, 0.22, 0.15)    # under a crown: cool and dark
 const CONTACT = RGBf(0.20, 0.33, 0.15)
 # the flower meadow south of the cottage (todo #87): a warm golden field
+# the blossom grove (blossom.jl, s78): a soft petal blush on the ground round the cherry trees
+const BLOSSOM_GROUND = (Point2f(-12.6, 13.6), 4.4f0)
+const PETAL = RGBf(0.98, 0.70, 0.80)   # green grass + a pale pink at 0.65 came out as sand-beige (s78): strong and saturated
 const FLOWER_FIELD = (Point2f(8.5, -6.5), 4.8f0)   # open meadow south-east, in front of the overview camera (s42; it was hidden behind the pines at (-7, -2))
 const GOLD = RGBf(0.86, 0.72, 0.26)   # s43: warmer, so the field reads as its own place in the overview
 # the beach cove on the flat south shore (todo #87, review s40 "the island is one green hill"):
@@ -106,6 +109,9 @@ function meadow_color(is, base, x, y, h, slope, trees, objs)
     g = mix(g, CONTACT, 0.7f0 * contact_at(objs, x, y))
     # back to the engine's colours on the shore and on steep rock
     g = mix(g, base, (1 - b) * (1 - smooth01(0.36f0, 0.5f0, h)))
+    c2, r2 = BLOSSOM_GROUND
+    f2 = 1 - smooth01(0.6f0 * r2, r2, hypot(x - c2[1], y - c2[2]) + 0.5f0 * (NG.fbm(x / 2.5, y / 2.5, is.seed + 97) - 0.5f0) * r2)
+    f2 > 0 && (g = mix(g, PETAL, 0.85f0 * f2))    # one soft blush, after the sand and the shore's engine colours (the grove is on low ground by the west shore), not freckles (the vertex grid is too coarse for those)
     return mix(g, base, smooth01(0.55f0, 0.9f0, slope))
 end
 

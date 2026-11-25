@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "Checked in the sandbox with my own screenshots: the clay toadstool is a good-looking generated mesh that covers about 8% of a close frame, the T storm hint and message are legible, and the frame stays well under 33 ms. Small gaps remain in the film opening and in the KEEP lists.",
+ "surprise": 6,
+ "surprise_why": "The friends notice the old toadstool wobbling, it pops in spores and a real one springs up, and you can now call the storm yourself.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The toadstool film spends its first ~4 s on the old red dome, which fills about half the frame, and the pop at 3.96 s is the largest jump in the film (0.070), a hard flash.",
+   "where": "site/films/toadstool.mp4, 0-3.9 s",
+   "evidence": "reviews/motion/session-0077/toadstool-overview.jpg and toadstool-steps.jpg. My own sandbox shots show the new toadstool only: reviews/s77-b.png (ground view, cap about 8% of the frame), reviews/s77-c.png (high view, small, spots and a frill on the stem).",
+   "suggestion": "Start the film at the first wobble and spread the pop's burst over a few frames."
+  },
+  {
+   "severity": "low",
+   "what": "beds.jl and presents.jl have a `const KEEP` without :storm. The other 14 event plugins have it, so sleepers or present-givers may be taken during a storm.",
+   "where": "plugins/beds.jl, plugins/presents.jl",
+   "evidence": "grep -L storm over the files with '^const KEEP'",
+   "suggestion": "Add :storm to both, or confirm they are not event plugins."
+  },
+  {
+   "severity": "low",
+   "what": "The storm sky is only 18% darker than a sunny frame (author's numbers). A full boing party on the new cap was not watched. My sandbox was idle at 11:10, so I did not see a storm or a party myself.",
+   "where": "plugins/showers.jl dim_sun!, plugins/toadstool.jl",
+   "evidence": "media/s77/storm-light-during3.png (author's); frame_ms median 3.5 ms, p95 6.5 ms in my live_status",
+   "suggestion": "Darken the sky colour during a storm, and run a boing party on the new cap before the next film."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s78: (1) The toadstool film's first 4 s on the old dome: that is the story (the friends gather while the old one wobbles), and the pop is meant to be the jump; I trimmed the one wrong first frame. The new spring film opens on the bare meadow, which is quiet, not a dome. (2) beds.jl and presents.jl have no event KEEP tuple: beds' KEEP_CLEAR is a distance (1 m from bushes) and presents' KEEP is a time (150 s), so the grep matched names, not lists; all 16 event plugins now have :storm, :toadstool and the new :blossom. (3) The storm sky stays in todo 237. A full boing party on the new cap: the new toadstool's squash follows boing's wobble (media/s77/boing-squash.png); a party with flyers is still to be watched, the sandbox's friends were busy every time I tried."
+}

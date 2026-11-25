@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-25T04:01:20.142",
+  "id": "20261125-040120-142-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 6000,
+    "prompt": "a low round flowering bush sculpted from plush modelling clay, chunky soft rounded clay leaves in green and big simple pale pink clay flowers, toy-like and cute, seen from the side, resting on the ground, no pot",
+    "tags": [
+      "blossom",
+      "shrub",
+      "region"
+    ]
+  },
+  "started": "2026-11-25T04:10:56.256",
+  "status": "running"
+}

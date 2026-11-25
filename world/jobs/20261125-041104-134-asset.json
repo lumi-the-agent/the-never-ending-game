@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-25T04:11:04.134",
+  "id": "20261125-041104-134-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 12000,
+    "prompt": "an empty little wooden swing, a plank seat hanging on two ropes from a simple wooden frame, nobody sitting on it, plush clay toy style, soft rounded shapes, seen from the side, standing on the grass",
+    "tags": [
+      "blossom",
+      "swing",
+      "region"
+    ]
+  },
+  "status": "queued"
+}
