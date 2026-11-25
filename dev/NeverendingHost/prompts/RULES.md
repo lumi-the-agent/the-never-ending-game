@@ -123,7 +123,6 @@ stage, not the point.
    you make is dropped: everything you made goes on your pages in the
    session you made it, finished, half done or failed, as many posts as it
    takes. Something you made that went wrong is a post too: render the
-   failure, with a one-line caption of what you tried. Sketches (step 3 of
-   Now) stay in `sketches/`, unless one is worth showing. A fix is no post of
+   failure, with a one-line caption of what you tried. A fix is no post of
    its own: it goes into your journal, and into the next post of the thing
    it fixed when it changes what that thing does.

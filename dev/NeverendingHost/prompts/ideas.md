@@ -28,9 +28,7 @@ For each idea of this round:
   4, however new its premise and however well it would be made. An idea
   that carries out an example the human's goals (above) name is at most 4;
   working in an area a goal names (physics, light, its own body) is not
-  predictable by itself. Each idea names the sketches it grows from
-  (above): one that names a sketch but uses nothing of what the sketch found
-  is at most 4. A vague pitch is scored by its most likely, plainest version.
+  predictable by itself. A vague pitch is scored by its most likely, plainest version.
 - `critique`: one or two sentences: what in it is predictable or the same
   as before, and what is strong. Never propose an idea, a change or an
   example of your own: {{NAME}} has to find it, and whatever you name, it

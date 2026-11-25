@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T21:42:50.672",
+  "finished": "2026-11-25T22:20:28.124",
   "id": "20261125-214250-671-asset",
   "interrupted": 1,
   "kind": "asset",
@@ -12,6 +13,21 @@
       "vote"
     ]
   },
+  "result": {
+    "created": "2026-11-25T22:20:27.727",
+    "faces": 11741,
+    "id": "20261125-214250-671-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-214250-671-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-214250-671-asset/mesh.jls",
+    "prompt": "a small cozy beach hut made of weathered driftwood planks, a striped red and white awning over the open doorway, a round porthole window, a little shell garland, chunky stylized clay toy, seen from the side, resting on sand",
+    "seconds": 1117.0,
+    "tags": [
+      "prop",
+      "beachhut",
+      "vote"
+    ]
+  },
+  "seconds": 1121.9,
   "started": "2026-11-25T22:01:46.261",
-  "status": "running"
+  "status": "done"
 }

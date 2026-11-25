@@ -14,12 +14,9 @@
 # `IDEA_ROUNDS` rounds the strongest goes. The rounds are kept outside the jail,
 # by session, so a cut-off session goes on where it was.
 #
-# Ideas thought up from the island alone stayed things that happen on it (97: a
-# stranger washes ashore, 98: the friends vote; both passed). So the session
-# tinkers first: `SKETCHES` quick experiments with things never touched (the
-# workbench, curiosity.jl, or whatever it goes looking for), each noted with what
-# came out that it did not expect, and an idea passes only when it grows from
-# one of them.
+# Before choosing, the session has time to look around (the workbench in
+# curiosity.jl, RomeoDB, the checkouts); what it looks at, and whether an idea
+# comes from there, is the character's. Only the ideas are judged.
 
 "The surprise (0-10) the critic must expect for an idea to pass: they would show it to a friend."
 const IDEA_BAR = 8
@@ -27,37 +24,6 @@ const IDEA_BAR = 8
 const IDEA_ROUNDS = 3
 "How often a turn may end without a new round before the session goes on without the critic."
 const IDEA_REMINDERS = 2
-"How many sketches, from as many different things, come before the ideas."
-const SKETCHES = 3
-
-"Where the character keeps session `n`'s sketches and their notes (`notes.json`)."
-sketches_dir(jp::JailPaths, n::Int) = joinpath(jp.world, "sketches", @sprintf("session-%04d", n))
-
-"Whether `out`, as a sketch's notes name it (in the sketch's folder, the world or absolute: `joinpath` keeps that), exists."
-sketch_output_exists(jp::JailPaths, dir::AbstractString, out::AbstractString) = any(isfile, (joinpath(dir, out), joinpath(jp.world, out)))
-
-"""
-    read_sketches(jp, n) -> (sketches, why)
-
-Session `n`'s sketches from their notes: the ones with a `name`, what they came `from`, what was
-`tried`, what came out `unexpected`, and an `output` that exists. `why` says what is missing while
-there are fewer than `SKETCHES` from as many different things (empty when enough).
-"""
-function read_sketches(jp::JailPaths, n::Int)
-    dir = sketches_dir(jp, n)
-    v, why = read_agent_json(joinpath(dir, "notes.json"))
-    v === nothing && return Dict{String,Any}[], "notes.json $why"
-    list = v isa AbstractDict ? get(v, "sketches", nothing) : nothing
-    list isa AbstractVector || return Dict{String,Any}[], "notes.json has no \"sketches\" list"
-    fields = ("name", "from", "tried", "unexpected", "output")
-    ok = [Dict{String,Any}(k => String(strip(s[k])) for k in fields) for s in list
-          if s isa AbstractDict && all(k -> get(s, k, nothing) isa AbstractString && !isempty(strip(s[k])), fields) &&
-             sketch_output_exists(jp, dir, strip(s["output"]))]
-    froms = length(unique(lowercase(s["from"]) for s in ok))
-    froms >= SKETCHES && return ok, ""
-    return ok, "$(length(ok)) sketch(es) with an output that exists, from $froms different thing(s); $SKETCHES are needed"
-end
-
 "Where the character pitches session `n`'s ideas (in its world)."
 ideas_path(jp::JailPaths, n::Int) = joinpath(jp.world, "ideas", @sprintf("session-%04d.json", n))
 
@@ -88,23 +54,17 @@ function read_pitches(jp::JailPaths, n::Int)
     v === nothing && return nothing, why
     ideas = v isa AbstractDict ? get(v, "ideas", nothing) : nothing
     ideas isa AbstractVector || return nothing, "no \"ideas\" list"
-    from(i) = (f = get(i, "from", String[]); f isa AbstractString ? [String(f)] : f isa AbstractVector ? string.(f) : String[])
-    ok = [Dict{String,Any}("title" => String(strip(i["title"])), "idea" => String(strip(i["idea"])), "form" => string(get(i, "form", "")),
-                           "from" => from(i))
+    ok = [Dict{String,Any}("title" => String(strip(i["title"])), "idea" => String(strip(i["idea"])), "form" => string(get(i, "form", "")))
           for i in ideas if i isa AbstractDict && get(i, "title", nothing) isa AbstractString && get(i, "idea", nothing) isa AbstractString]
     isempty(ok) && return nothing, "no idea with a \"title\" and an \"idea\""
     return ok, ""
 end
 
-function critic_prompt(jp::JailPaths, n::Int, round::Int, pitched, sketches, rounds, earlier, out::AbstractString)
+function critic_prompt(jp::JailPaths, n::Int, round::Int, pitched, rounds, earlier, out::AbstractString)
     io = IOBuffer()
     println(io, "# Ideas for session $n, round $round of $IDEA_ROUNDS\n\nWrite your verdict to `$(out)`.\n")
-    println(io, "## This session's sketches (in $(sketches_dir(jp, n)))")
-    foreach(s -> println(io, "- **$(s["name"])**, from $(s["from"]): tried $(s["tried"]); unexpected: $(s["unexpected"]) ",
-                         "(output: $(s["output"]))"), sketches)
-    println(io, "\n## This round's ideas")
-    foreach(i -> println(io, "- **$(i["title"])**", isempty(i["form"]) ? "" : " (form: $(i["form"]))",
-                         isempty(i["from"]) ? "" : " (from: $(join(i["from"], ", ")))", ": ", i["idea"]), pitched)
+    println(io, "## This round's ideas")
+    foreach(i -> println(io, "- **$(i["title"])**", isempty(i["form"]) ? "" : " (form: $(i["form"]))", ": ", i["idea"]), pitched)
     println(io)
     if !isempty(rounds)
         println(io, "## Earlier rounds, and what the critic said")
@@ -121,17 +81,14 @@ function critic_prompt(jp::JailPaths, n::Int, round::Int, pitched, sketches, rou
 end
 
 """
-    score_ideas(v, pitched, sketches, earlier) -> Vector{Dict}
+    score_ideas(v, pitched, earlier) -> Vector{Dict}
 
 The critic's verdict `v` on this round's `pitched` ideas, scored by the host as the session will
 be: an idea's repeat penalty from the higher of its `similarity` and its form (how many of the last
-`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise`, whether it grows from
-one of this session's `sketches` (its `from` names one), and whether it passes.
+`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise`, and whether it passes.
 """
-function score_ideas(v::AbstractDict, pitched, sketches, earlier)
+function score_ideas(v::AbstractDict, pitched, earlier)
     text = Dict(title_key(i["title"]) => i["idea"] for i in pitched)
-    from = Dict(title_key(i["title"]) => i["from"] for i in pitched)
-    names = Set(title_key(s["name"]) for s in sketches)
     last_ten = Set(title_key(p.title) for p in first(earlier, FORM_MEMORY))
     verdicts = filter(i -> i isa AbstractDict && get(i, "similarity", nothing) isa Real && get(i, "surprise", nothing) isa Real,
                       get(v, "ideas", Any[]))
@@ -141,19 +98,16 @@ function score_ideas(v::AbstractDict, pitched, sketches, earlier)
         sim, surprise = clamp(i["similarity"], 0, 10), clamp(i["surprise"], 0, 10)
         s = max(sim, form_score(k))
         title = string(get(i, "title", ""))
-        grounded = any(f -> title_key(f) in names, get(from, title_key(title), String[]))
         Dict{String,Any}("title" => title, "idea" => get(text, title_key(title), ""), "similarity" => sim,
                          "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise,
-                         "worth" => repeat_factor(s), "grounded" => grounded,
-                         "passes" => grounded && repeat_share(s) == 0 && surprise >= IDEA_BAR,
+                         "worth" => repeat_factor(s), "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR,
                          "critique" => string(get(i, "critique", "")))
     end
 end
 
 "An idea as the critic saw it, in a line."
 function idea_line(i::AbstractDict)
-    how = i["passes"] ? "passes" : !i["grounded"] ? "grows from no sketch of this session: cannot pass" :
-          i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) : "too expected"
+    how = i["passes"] ? "passes" : i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) : "too expected"
     form = i["form_count"] == 0 ? "its form in none of your last $FORM_MEMORY posts" : "its form in $(i["form_count"]) of your last $FORM_MEMORY"
     return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10: $how. $(i["critique"])"
 end
@@ -169,10 +123,9 @@ function critique_text(scored, round::Int, rel::AbstractString)
     if !isempty(passed)
         print(io, "\nPassed: ", join(("\"$(i["title"])\"" for i in passed), ", "), ". Take the one of them you want most: ", then)
     elseif round < IDEA_ROUNDS
-        print(io, "\nNone passed yet. The bar: grown from one of your sketches, nothing like your last posts in what it is or ",
-              "in its form, and a surprise of $IDEA_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
-              "strong, drop the rest, and add new ones far from everything so far (another sketch first, if you like); then ",
-              "end your turn.")
+        print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, and a surprise of ",
+              "$IDEA_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
+              "strong, drop the rest, and add new ones far from everything so far; then end your turn.")
     else
         best = argmax(i -> i["worth"] * i["surprise"], scored)
         print(io, "\nNone passed in $IDEA_ROUNDS rounds. The strongest is \"$(best["title"])\"; take it, or one without a ",
@@ -196,10 +149,9 @@ function ideas_followup(host, n::Int, run)
     rel = relpath(ideas_path(jp, n), jp.world)
     label = "ideas for session $n"
     rounds = log["rounds"]
-    sketches, swhy = read_sketches(jp, n)
     pitched, why = read_pitches(jp, n)
     unchanged = pitched !== nothing && !isempty(rounds) && pitched == last(rounds)["pitched"]
-    if !isempty(swhy) || pitched === nothing || unchanged
+    if pitched === nothing || unchanged
         if log["reminded"] >= IDEA_REMINDERS
             log["go"] = true
             save_ideas_log!(jp, log)
@@ -208,20 +160,17 @@ function ideas_followup(host, n::Int, run)
         end
         log["reminded"] += 1
         save_ideas_log!(jp, log)
-        return !isempty(swhy) ? "Your sketches for this session are not all there ($(relpath(sketches_dir(jp, n), jp.world)): " *
-                                "$swhy). Tinker first (step 3 of Now), then pitch your ideas from them (step 4) and end your turn." :
-               unchanged ? "`$rel` has not changed since the critic answered: write round $(length(rounds) + 1) there, then end your turn." :
-               "Your ideas for this session are not in `$rel` yet ($why): write them there (step 4 of Now), then end your turn; " *
+        return unchanged ? "`$rel` has not changed since the critic answered: write round $(length(rounds) + 1) there, then end your turn." :
+               "Your ideas for this session are not in `$rel` yet ($why): write them there (step 3 of Now), then end your turn; " *
                "the critic answers."
     end
     r = length(rounds) + 1
     out = review_path(jp, @sprintf("ideas-%04d-%d", n, r))
     rm(out; force = true)           # a round of a cut-off session's earlier run is not this one
     earlier = recent_posts(jp; n = POST_MEMORY)
-    log["sketches"] = sketches
-    run_agent!(host, :review, "$label, round $r", judge_settings(host.cfg), critic_prompt(jp, n, r, pitched, sketches, rounds, earlier, out))
+    run_agent!(host, :review, "$label, round $r", judge_settings(host.cfg), critic_prompt(jp, n, r, pitched, rounds, earlier, out))
     v, why = read_agent_json(out)
-    scored = v isa AbstractDict ? score_ideas(v, pitched, sketches, earlier) : Any[]
+    scored = v isa AbstractDict ? score_ideas(v, pitched, earlier) : Any[]
     if isempty(scored)
         log["go"] = true
         save_ideas_log!(jp, log)

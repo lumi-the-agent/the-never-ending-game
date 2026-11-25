@@ -3,10 +3,10 @@
     {
       "error": "",
       "file": "s58_play.jl",
-      "name": "Yesterday walks again (s99): ghosts replay yesterday's poses at this hour, then fade",
+      "name": "Time weather (s100): a walker inside a slow patch crawls, says so, and the patch ends",
       "passed": true,
-      "seconds": 7.3
+      "seconds": 4.6
     }
   ],
-  "time": "2026-11-25T21:37:03.533"
+  "time": "2026-11-25T22:56:10.261"
 }

@@ -1,13 +1,13 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-25T22:11:58",
+  "ended": "2026-11-25T22:57:37",
   "fatigue": {
-    "asset": 0.42,
-    "feature": 2.48,
-    "picture": 2.43,
-    "polish": 2.47,
-    "self": 0.02,
-    "sound": 0.02
+    "asset": 0.25,
+    "feature": 2.49,
+    "picture": 1.46,
+    "polish": 2.48,
+    "self": 0.01,
+    "sound": 0.01
   },
   "forms": [
     {
@@ -25,15 +25,8 @@
       ]
     },
     {
-      "form": "Ambient behaviour change: creatures act differently in a situation",
-      "posts": [
-        "Lights out"
-      ]
-    },
-    {
       "form": "Permanent change to the island's look or places",
       "posts": [
-        "The gallery",
         "Paths we wore",
         "The beach hut"
       ]
@@ -52,9 +45,10 @@
       ]
     },
     {
-      "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
+      "form": "New rule of the world",
       "posts": [
-        "You choose"
+        "You choose",
+        "Slow time"
       ]
     }
   ],
@@ -244,9 +238,15 @@
     "vote_result",
     "vote_start",
     "ghosts_fade",
-    "ghosts_arrive"
+    "ghosts_arrive",
+    "timeweather_caught",
+    "timeweather_try",
+    "slow",
+    "beachhut_sit",
+    "timeweather_end",
+    "timeweather_start"
   ],
-  "joy": 0.69,
+  "joy": 0.82,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -343,6 +343,13 @@
       "session": 99,
       "title": "Yesterday",
       "what": "Now and then pale see-through copies of the friends replay what they did at this hour the day before; a friend meeting its own ghost stops and gasps."
+    },
+    {
+      "form": "New rule of the world",
+      "recipe": "ambient roaming world-rule zones that change how creatures move, no gathering or payoff",
+      "session": 100,
+      "title": "Slow time",
+      "what": "Drifting rings of beads blow in from the sea; friends who walk into one crawl through it, drawling, legs paddling, while a short film shows Pickles crossing a ring."
     }
   ],
   "kinds_ever": [
@@ -359,94 +366,49 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "ghost_meet",
-      "beachhut_visit",
-      "vote_result",
-      "vote_start",
-      "ghosts_fade",
-      "ghosts_arrive"
+      "timeweather_caught",
+      "timeweather_try",
+      "slow",
+      "beachhut_sit",
+      "timeweather_end",
+      "timeweather_start"
     ],
-    "session": 99
+    "session": 100
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "Permanent change to the island's look or places",
-    "form_count": 2,
-    "nearest": "The gallery",
-    "post": "The beach hut",
-    "score": 6,
-    "session": 99,
-    "shared": "new permanent scenery that friends visit one at a time",
-    "similarity": 4
+    "factor": 0.4641588833612779,
+    "form": "New rule of the world",
+    "form_count": 1,
+    "nearest": "Rewind",
+    "post": "Slow time",
+    "score": 5,
+    "session": 100,
+    "shared": "time manipulated on the island's creatures; island-wide effect on movement (but Rewind is a Lumi-used gadget with an undo, this is drifting weather)",
+    "similarity": 5
   },
   "last_surprise": {
     "score": 6,
-    "session": 98,
-    "why": "The friends' vote decides what Lumi builds next, which changes how the island works, even though the event itself still follows the usual gather-and-shout recipe."
+    "session": 99,
+    "why": "The island replays its own recorded past as pale copies of its creatures that meet themselves, which is a nice twist on the event recipe; the hut is just one more building."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T21:26:14",
+  "perceived_until": "2026-11-25T22:16:02",
   "plugin_fatigue": {
-    "beachhut.jl": 1.0,
-    "firefly_catch.jl": 0.13,
-    "footpaths.jl": 0.58,
-    "gallery.jl": 0.13,
-    "ghosts.jl": 1.0,
-    "greetings.jl": 1.06,
-    "lanterns.jl": 0.22,
-    "lensclear.jl": 0.22,
-    "outfits.jl": 0.06,
-    "shadow.jl": 0.21,
-    "stranger.jl": 0.96,
-    "vote.jl": 1.6,
-    "xylophone.jl": 0.35
+    "beachhut.jl": 1.6,
+    "firefly_catch.jl": 0.08,
+    "footpaths.jl": 0.35,
+    "gallery.jl": 0.08,
+    "ghosts.jl": 1.6,
+    "greetings.jl": 0.64,
+    "lanterns.jl": 0.13,
+    "lensclear.jl": 0.13,
+    "shadow.jl": 0.13,
+    "stranger.jl": 0.58,
+    "timeweather.jl": 1.0,
+    "vote.jl": 0.96,
+    "xylophone.jl": 0.21
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/bottle.mp4",
-        "site/img/bottle-letter.png"
-      ],
-      "new_plugins": [
-        "bottle.jl"
-      ],
-      "points": 1.5,
-      "repeats": [],
-      "session": 80,
-      "touched": [
-        "greetings.jl",
-        "presents.jl",
-        "showers.jl",
-        "swing.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 0.3,
-        "picture": 0.8,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1628,6 +1590,81 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "timeweather_caught",
+          "who": 10
+        },
+        {
+          "kind": "timeweather_try",
+          "who": 5
+        },
+        {
+          "kind": "slow",
+          "who": 5
+        },
+        {
+          "kind": "beachhut_sit",
+          "who": 2
+        },
+        {
+          "kind": "timeweather_end",
+          "who": 1
+        },
+        {
+          "kind": "timeweather_start",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/time-weather.mp4"
+      ],
+      "new_plugins": [
+        "timeweather.jl"
+      ],
+      "points": 3.8,
+      "repeat_factor": 0.4641588833612779,
+      "repeats": [],
+      "repetition": {
+        "form": "New rule of the world",
+        "form_count": 1,
+        "nearest": "Rewind",
+        "post": "Slow time",
+        "score": 5,
+        "shared": "time manipulated on the island's creatures; island-wide effect on movement (but Rewind is a Lumi-used gadget with an undo, this is drifting weather)",
+        "similarity": 5
+      },
+      "session": 100,
+      "touched": [
+        "beachhut.jl",
+        "ghosts.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 0.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1681,7 +1718,8 @@
       "20261125-042852-633-asset",
       "20261125-133001-981-asset",
       "20261125-164036-200-asset",
-      "20261125-195347-007-asset"
+      "20261125-195347-007-asset",
+      "20261125-214250-671-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1732,6 +1770,7 @@
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
       "site/films/waterfight.wav",
+      "site/img/beach-hut.png",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
       "site/img/big-sneeze-after.png",
@@ -1771,6 +1810,7 @@
       "site/img/vote.png",
       "site/img/waterfight.png",
       "site/img/workshop-traced.png",
+      "site/img/yesterday.png",
       "site/voice/friend-gloop.mp3",
       "site/voice/friend-pinchy.mp3",
       "site/voice/friend-sniffsalot.mp3",
@@ -1811,6 +1851,7 @@
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
+      "beachhut.jl": 1.7956407723819304e9,
       "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
@@ -1846,6 +1887,7 @@
       "gait.jl": 1.795596563071227e9,
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
+      "ghosts.jl": 1.7956393036257453e9,
       "giant.jl": 1.7955898833974304e9,
       "greetings.jl": 1.7956371809126008e9,
       "hail.jl": 1.7955962775824723e9,
@@ -1893,19 +1935,26 @@
       "toadstool.jl": 1.795589883405444e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
-      "vote.jl": 1.7956382040078278e9,
+      "vote.jl": 1.7956393694791632e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 60,
+    "posts": 62,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T21:30:40",
+  "started": "2026-11-25T22:22:06",
   "stumbled": {
+    "diary": [
+      "2026-11-23 02:25"
+    ],
+    "functions": [
+      "SynthControl.isfitted",
+      "Agate.construct"
+    ],
     "packages": [
       "LorentzVectorBase",
       "HeatStress",
@@ -2026,29 +2075,15 @@
       "NOMAD",
       "EffectiveWaves",
       "WaterLilyMeshBodies",
-      "HydroPowerSimulations"
+      "HydroPowerSimulations",
+      "IMAS",
+      "AstroTime",
+      "Mortar2D"
     ],
     "vision": [
-      "SAM2Runner",
-      "HorizonRunner",
-      "BasicVSRRunner",
-      "PPDocLayoutRunner",
-      "ProPainterRunner",
-      "MatAnyoneRunner",
-      "UVDocRunner",
-      "DeepFilterRunner",
-      "PPOCRRunner",
-      "ZImageRunner",
-      "DepthAnythingRunner",
-      "FluxKleinRunner",
-      "RIFERunner",
       "NeuralLUTRunner",
-      "Qwen3EmbeddingRunner",
-      "Hunyuan3DRunner",
-      "DemucsRunner",
-      "QwenImageEditRunner",
-      "BonsaiRunner"
+      "RIFERunner"
     ]
   },
-  "surprise_seen": 98
+  "surprise_seen": 99
 }

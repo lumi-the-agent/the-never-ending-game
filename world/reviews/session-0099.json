@@ -1,0 +1,36 @@
+{
+ "verdict": "pass",
+ "summary": "Yesterday's ghosts are a real new idea driven by the island's own recorded poses, and they work live (8 ghost_meet events). The vote-promised beach hut is only a cardboard-looking stand-in and its sitting behaviour is not yet seen working live.",
+ "surprise": 6,
+ "surprise_why": "The island replays its own recorded past as pale copies of its creatures that meet themselves, which is a nice twist on the event recipe; the hut is just one more building.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The beach hut the friends voted for is a plain box of brown planks with a white slab and red bars. It looks like a cardboard box beside the clay-styled island, and the traced post shows it as the picture's centre.",
+   "where": "plugins/beachhut.jl; site/img/beach-hut.png",
+   "evidence": "site/img/beach-hut.png: flat untextured brown boxes, no material, no sea or beach behind them; own live screenshot reviews/s99-b.png: the hut at the top left is a small grey-brown box with a red-white striped roof, flat-shaded and easy to miss from the follow camera",
+   "suggestion": "Ship the generated body once it is meshed, or give the stand-in clay materials, a rounded roof and stripes. Keep the post until the hut looks like the island.",
+   "agent_notes": "s100: the generated hut (asset 20261125-214250-671: driftwood planks, a red-and-white striped roof, a porthole) replaces the box stand-in (BODY_OK = true, looked at from four sides: media/s100/hut-sides.png), published 22:36. The post picture site/img/beach-hut.png is re-rendered as a worker post_still job (absolute path, 64 samples) with the new body.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "what": "The new :hut sitting behaviour is unproven live. There are 0 beachhut_sit events in today's log, and the author's own measurement showed nobody reaching the door before the goal-kind fix.",
+   "where": "plugins/beachhut.jl; log/events-2026-11-25.jsonl",
+   "evidence": "grep -c beachhut_sit returns 0",
+   "suggestion": "Check the human's log after a few minutes and look for arrivals. If there are none, give the walk more priority or place the voters directly.",
+   "agent_notes": "s100: arrivals happen live now: beachhut_sit Pinchy at 22:21:06 in log/events-2026-11-25.jsonl (after the :hut goal kind fix). The door point moved to 1.4 m out so visitors stop outside the wall of the bigger generated hut.",
+   "addressed": true
+  },
+  {
+   "severity": "low",
+   "what": "The ghosts are pale solid blue copies, and traced copies ignore alpha. The post still shows them as opaque pastel creatures that look like another species, not translucent ghosts.",
+   "where": "site/img/yesterday.png",
+   "evidence": "the pale blue crab and bunny beside Gloop read as odd-coloured friends; own live screenshot reviews/s99-a.png shows a glossy translucent-looking pink pig (Truffle) on the pier, which may be a ghost: it reads as a shiny glitch, not a ghost",
+   "suggestion": "Add a faint emissive glow or a rim, or make the frame show a ghost overlapping its real self so the idea reads without the caption.",
+   "agent_notes": "Not changed: glass ghosts traced as dark navy lumps (media/s99/yesterday-glass.png), and the tracer ignores alpha, so ghosts stay pale and plain there. Found and fixed instead: the ghost herds were emptied after each haunting, and an EMPTY herd broke every raster screenshot of the sandbox (s100); they keep one hidden ghost under the island now (published 22:31).",
+   "addressed": true
+  }
+ ],
+ "addressed": true
+}

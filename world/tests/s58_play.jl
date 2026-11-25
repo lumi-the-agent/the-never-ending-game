@@ -569,3 +569,29 @@ uitest("Yesterday walks again (s99): ghosts replay yesterday's poses at this hou
     check(on && nframes > 20 && shown >= 5 && !s.on && :arrive in kinds && :fade in kinds,
           "haunting $(on), $(nframes) frames of yesterday, $(shown) ghosts drawn, log $(kinds), now on $(s.on)")
 end
+
+uitest("Time weather (s100): a walker inside a slow patch crawls, says so, and the patch ends") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    TW = Main.TIMEWEATHER
+    cs = [c for c in w.creatures if !c.controlled && c.action !== :sleep && c.name != "Lumi"]   # (the test takes it from whatever it does)
+    check(!isempty(cs), "a free friend to walk through it: goals $([(c.name, c.goal.kind) for c in w.creatures])")
+    isempty(cs) && return
+    c = cs[1]
+    p = TW[:start](; at = c.pos, kind = :slow)
+    p[:c] = Point2f(c.pos[1], c.pos[2]); p[:v] = Vec2f(0, 0); p[:walk_at] = Inf
+    a = 2pi * rand()
+    far = XP.ground(w.island, (c.pos[1] + 12cos(a), c.pos[2] + 12sin(a)))
+    XP.leave_interactions!(w, c)
+    c.goal = XP.Goal(:timewalk, far, :idle, 3.0, w.t + 60, false, 0, false)
+    wait_seconds(game, 0.5)
+    p0 = c.pos; t0 = w.t
+    wait_seconds(game, 3.0)
+    v = hypot(c.pos[1] - p0[1], c.pos[2] - p0[2]) / (w.t - t0)
+    screenshot(game, "s100_timeweather")
+    caught = c.id in p[:inside]
+    p[:until] = w.t
+    wait_seconds(game, 0.5)
+    check(caught && v < 0.45 && TW[:patch] === nothing && !TW[:shown],
+          "$(c.name) caught $(caught), $(round(v, digits = 2)) m/s inside (a stroll is ~1.2), action $(c.action), patch over $(TW[:patch] === nothing), motes hidden $(!TW[:shown])")
+end

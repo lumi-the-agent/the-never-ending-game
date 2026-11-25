@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T22:36:06.155",
+  "finished": "2026-11-25T22:47:42.732",
+  "id": "20261125-223606-155-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "hut",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/beach-hut.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/beach-hut.png",
+    "post": "hut"
+  },
+  "seconds": 119.1,
+  "started": "2026-11-25T22:45:43.667",
+  "status": "done"
+}

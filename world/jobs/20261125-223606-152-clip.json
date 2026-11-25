@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-25T22:36:06.152",
+  "finished": "2026-11-25T22:45:43.575",
+  "id": "20261125-223606-152-clip",
+  "kind": "clip",
+  "params": {
+    "call": "timeweather_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 10.0,
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/time-weather.mp4",
+    "script": "movies/timeweather.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/time-weather.mp4",
+    "spot": [
+      -10.0,
+      -4.0
+    ]
+  },
+  "seconds": 535.0,
+  "started": "2026-11-25T22:36:48.292",
+  "status": "done"
+}

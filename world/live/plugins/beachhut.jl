@@ -8,7 +8,7 @@ const NG = NeverendingGame
 const BH = Main.BEACHHUT
 
 const ASSET = "20261125-214250-671-asset"
-const BODY_OK = false
+const BODY_OK = true             # looked at in s100 (media/s100/hut-sides.png): driftwood planks, a striped roof, a porthole
 const VISIT_EVERY = (60.0, 150.0)
 const LINES = ("My hut!", "Best seat on the island.", "I voted for this.", "Listen to the sea...")
 
@@ -81,7 +81,7 @@ function NG.step!(::BeachHut, game, dt)
     BH[:visit_at] = w.t + VISIT_EVERY[1] + (VISIT_EVERY[2] - VISIT_EVERY[1]) * rand(w.rng)
     c = cs[rand(w.rng, 1:length(cs))]
     (p, yaw) = spot(game)
-    door = NG.ground(w.island, (p[1] + 1.0f0 * cos(yaw), p[2] + 1.0f0 * sin(yaw)))
+    door = NG.ground(w.island, (p[1] + 1.4f0 * cos(yaw), p[2] + 1.4f0 * sin(yaw)))     # just outside the generated hut's wall
     NG.leave_interactions!(w, c)
     delete!(get!(() -> Set{Int32}(), BH, :sat), c.id)
     # its own goal kind: as a plain :wander the walk was taken over by every crowd on the way, and in the first

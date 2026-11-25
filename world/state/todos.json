@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##16((trace_marker_mesh, trace_transforms, trace_materials, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:379\n[ComputeEdge] trace_transforms = #draw_atomic##12((positions, rotation, markersize, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:338\n[ComputeEdge] positions = (::MapFunctionWrapper(#_register_argument_conversions!##4))((converted, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/compute-plots.jl:736\n[ComputeEdge] converted = (::MapFunctionWrapper(#_register_argument_conversions!##2))((dim_converted, convert_kwargs, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/compute-plots.jl:720\n[ComputeEdge] dim_converted = compute_identity((args, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1813\n[ComputeEdge] args = (::MapFunctionWrapper(#_register_expand_arguments!##0))((arg1, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/compute-plots.jl:510\n[ComputeEdge] arg1 = compute_identity((part1_pos, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1813\n[ComputeEdge] part1_pos, part1_rot, part1_scale, part2_pos, part2_rot, part2_scale, part3_pos, part3_rot, part3_scale, part4_pos, part4_rot, part4_scale, part5_pos, part5_rot, part5_scale, part6_pos, part6_rot, part6_scale, part7_pos, part7_rot, part7_scale, part8_pos, part8_rot, part8_scale, part9_pos, part9_rot, part9_scale, part10_pos, part10_rot, part10_scale = (::MapFunctionWrapper(#59))((pos, motion, state, time, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/herd.jl:44\n  with edge inputs:\n    pos = GeometryBasics.Point{3, Float32}[[10.935554, 11.036947, 1.8233838], [12.208547, 11.029726, 1.5457932]]\n    motion = GeometryBasics.Vec{3, Float32}[[-2.516088, 804180.4, 0.75142884], [-2.8869998, 807147.94, 0.7197676]]\n    state = GeometryBasics.Vec{3, Float32}[[2.0, 0.0, 0.7305508], [2.0, 0.0, 0.43805802]]\n    time = 186984.5f0\nTriggered by update of:\n  dim_convert_2, dim_convert_3, arg1, dim_convert_1, state, motion or time\nDue to ERROR: MethodError: no method matching animate(::@world(NeverendingGame.Look, 38726:48864), ::NeverendingGame.PoseCtx)\nThe function `animate` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  animate(!Matched::NeverendingGame.Brow, ::NeverendingGame.PoseCtx)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/faces.jl:139\n  animate(!Matched::NeverendingGame.Sweat, ::NeverendingGame.PoseCtx)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/faces.jl:198\n  animate(!Matched::NeverendingGame.Step, ::NeverendingGame.PoseCtx)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/",
+      "detail": "Failed to resolve raster_renderobject:\n[ComputeEdge] raster_renderobject = #register_meshscatter_raster!##0((positions_transformed_f32c, rotation, markersize, f32c_scale, transform_marker, raster_uv_transform, vertex_position, faces, normal, uv, model_f32c, material, raster_path, scaled_color, alpha_colormap, scaled_colorrange, color_mapping_type, lowclip_color, highclip_color, nan_color, interpolate, fetch_pixel, matcap, shading, diffuse, specular, shininess, backlight, depth_shift, world_normalmatrix, view_normalmatrix, uniform_clip_planes, uniform_num_clip_planes, view, projection, eyeposition, resolution, viewport, raster_ambient, raster_light_color, raster_light_direction, raster_N_lights, raster_light_types, raster_light_colors, raster_light_parameters, raster_env_sh, raster_has_env, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:488\nDue to ERROR: ArgumentError: device storage requires an isbits element type, got Any\nStacktrace:\n  [1] checkedbytes\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:5 [inlined]\n  [2] Mantle.LavaArray{Any, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:41\n  [3] Mantle.LavaArray{Any, 1}(data::Vector{Any}; kw::@Kwargs{bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:82\n  [4] Mantle.LavaArray(data::Vector{Any}; kw::@Kwargs{bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:86\n  [5] devicearray(d::Mantle.LavaDevice, data::Vector{Any})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:905\n  [6] (::RayMakie.var\"#mesh_raster!##0#mesh_raster!##1\"{Mantle.LavaDevice})(::Pair{Symbol, Any})\n    @ RayMakie ./none:-1\n  [7] iterate\n    @ ./generator.jl:48 [inlined]\n  [8] Dict{Symbol, GPUArraysCore.AbstractGPUArray}(kv::Base.Generator{Dict{Symbol, Any}, RayMakie.var\"#mesh_raster!##0#mesh_raster!##1\"{Mantle.LavaDevice}})\n    @ Base ./dict.jl:95\n  [9] mesh_raster!(screen::RayMakie.Screen, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}}, args::@NamedTuple{positions_transformed_f32c::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, f32c_scale::GeometryBasics.Vec{3, Float32}, transform_marker::Bool, raster_uv_transform::Vector{Any}, vertex_position::Vector{GeometryBasics.Point{3, Float32}}, faces::Vector{GeometryBasics.NgonFace{3, GeometryBasics",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "dropped",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-24T10:34:42.479"
+      "updated": "2026-11-25T22:28:50.481"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7147,12 +7147,12 @@
       "id": 511,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "Visitors arrive now: beachhut_sit Pinchy at 22:21:06 in the human's log/events-2026-11-25.jsonl after the :hut goal kind (s99 fix). s100 moved the door point to 1.4 m out for the bigger generated hut.",
       "source": "agent",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 5.0,
+      "status": "done",
       "title": "Hut visits: check the friends really sit in the beach hut doorway",
-      "updated": "2026-11-25T22:10:58.562"
+      "updated": "2026-11-25T22:40:44.698"
     },
     {
       "created": "2026-11-25T22:10:58.572",
@@ -7161,12 +7161,54 @@
       "id": 512,
       "kind": "build",
       "priority": 2,
+      "result": "The generated hut (driftwood planks, a red-and-white striped roof, a porthole) is on the beach: BODY_OK = true, looked at from four sides (media/s100/hut-sides.png, media/s100/hut-mesh.png), published 22:36. No diver figure in the mesh. The post picture is re-rendered as worker job 20261125-223606-155-clip (absolute path, 64 samples).",
+      "source": "agent",
+      "spent_minutes": 10.0,
+      "status": "done",
+      "title": "Hut body: put the generated beach hut on the beach",
+      "updated": "2026-11-25T22:40:44.702"
+    },
+    {
+      "created": "2026-11-25T22:46:41.662",
+      "detail": "s100 timeweather.jl scales only walkers' steps, stride phase and turn. Hops (pose time), splash rings, paint blobs, butterflies and speech still run at full speed inside a slow patch, so a standing friend shows nothing. Slow those too (a per-creature pose clock for the herd, or plugin hooks that ask timeweather `rate`), and film one face up close crawling through the ring (the s100 film is wide and quiet).",
+      "est_minutes": 15.0,
+      "id": 513,
+      "kind": "feature",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Hut body: put the generated beach hut on the beach",
-      "updated": "2026-11-25T22:10:58.572"
+      "title": "Slow time you can see: hops that hang, splashes and paint that crawl",
+      "updated": "2026-11-25T22:46:41.662"
+    },
+    {
+      "created": "2026-11-25T22:50:53.660",
+      "detail": "TypeError: in typeassert, expected Dict{Int32, Float64}, got a value of type Dict{Int32, Float32}\nStacktrace:\n  [1] warp_time!(w::NeverendingGame.World, dt::Float64)\n    @ Main.Plugin_timeweather /sim/Programmieren/SimGame/world/plugins/timeweather.jl:82\n  [2] step!(::Main.Plugin_timeweather.TimeWeather, game::Game, dt::Float64)\n    @ Main.Plugin_timeweather /sim/Programmieren/SimGame/world/plugins/timeweather.jl:213\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 514,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T22:51:18.895: plugin timeweather loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:timeweather.TimeWeather failed in step! and was switched off",
+      "updated": "2026-11-25T22:51:18.895"
+    },
+    {
+      "created": "2026-11-25T22:54:57.074",
+      "detail": "s100 time weather (plugins/timeweather.jl): slow (and sometimes fast) patches blow in from the sea and drift about; walkers inside crawl, hops hang, speech drawls; friends walk through on purpose and laugh at each other; the player is slowed too.",
+      "est_minutes": 15.0,
+      "id": 515,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published 22:31-22:54. Live: 6 friends caught in the first patch at 22:39 (timeweather_caught in log/events-2026-11-25.jsonl). Sandbox: media/s100/tw-2.png (ring and drawl), media/s100/tw-group.png (follow camera frames the ring), test 'Time weather (s100)' passes (walker < 0.45 m/s inside), 0.13 ms a frame. Film site/films/time-weather.mp4 (traced, 24 samples), post 'Slow time'.",
+      "source": "agent",
+      "spent_minutes": 45.0,
+      "status": "done",
+      "title": "Patches of slow time drift across the island",
+      "updated": "2026-11-25T22:54:57.079"
     }
   ]
 }

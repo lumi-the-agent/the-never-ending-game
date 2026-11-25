@@ -1,0 +1,20 @@
+{"ideas": [
+{"title": "Time weather",
+ "similarity": 4,
+ "nearest": "Rewind",
+ "same_form": [],
+ "surprise": 8,
+ "critique": "Time speed becoming drifting weather, with patches of slow and fast time moving over the whole island, is a genuine new law of the world. It is no longer the pond-bound version from rounds 1 and 2, so the old-stage objection is gone. It touches Rewind only in that both play with time. It is visible, playable and easy to film, with a hop hanging in the air and friends zipping about. The risk is that it ends up as a ring overlay with a speed multiplier."},
+{"title": "Through their eyes",
+ "similarity": 3,
+ "nearest": "Paths we wore",
+ "same_form": ["Paths we wore"],
+ "surprise": 6,
+ "critique": "A per-creature colour grade that changes with the camera subject is a new rendering idea that fits goals 4 and 7, and it is not an event. It works as a trick, though, and not as an interaction. A traced film or still shows it only if the grade survives the path tracer, and it reads as a filter change at each cut. Nobody plays it, and the effect is subtle outside a side-by-side comparison."},
+{"title": "A friend with a real mind",
+ "similarity": 4,
+ "nearest": "Our song",
+ "same_form": ["Our song", "Lights out"],
+ "surprise": 6,
+ "critique": "This version puts the model's plan into Gloop's actions, not into text, which fixes the label problem of round 2. The oddness is still carried by goal choices the viewer cannot tell apart from the normal random picks. Friends copying Gloop is a small gather-and-react beat. The real language model is a strong angle, but a film shows only a creature doing a sequence of ordinary things."}
+]}

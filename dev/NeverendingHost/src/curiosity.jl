@@ -1,9 +1,10 @@
-# ── curiosity: the workbench, material to tinker with ───────────────────────
+# ── curiosity: the workbench, things never touched ───────────────────────────
 #
 # Boredom (mood.jl) says *that* something new has to happen; this is where new
 # ideas come from. Before each session the host lays out a few things the
-# character has never touched, at random, as material for the session's
-# sketches (step 3 of `prompts/session.md`, `SKETCHES` in ideas.jl), never as suggestions:
+# character has never touched, at random, for the time it has to look around
+# before choosing what to make (step 3 of `prompts/session.md`), never as
+# suggestions:
 #
 # - packages of the Julia ecosystem from RomeoDB's index, in the areas a game can
 #   play with (sound, physics, generative art, simulation, language, ...), used by
@@ -15,7 +16,7 @@
 #
 # Each is shown once until all have been. Shown as "what could happen on the
 # island with it" (until session 99), the finds were passed by or turned into one
-# more thing happening there; sketching with them comes before any idea now.
+# more thing happening there.
 
 "Words in a package's summary that make it something a game could play with."
 const CURIOUS = ("sound", "audio", "music", "synth", "midi", "physic", "simulat", "particle", "fluid", "procedural", "noise",
@@ -210,11 +211,11 @@ function stumble!(jp::JailPaths)
     return finds
 end
 
-"The prompt's workbench: what the character found to tinker with this session, empty when it found nothing."
+"The prompt's workbench: what the host drew for the character this session, empty when it found nothing."
 function stumble_lines(finds::AbstractDict, name::AbstractString)
     all(isempty, values(finds)) && return ""
     io = IOBuffer()
-    println(io, "## $name's workbench (drawn at random from what you never touched: material for your sketches, not suggestions)")
+    println(io, "## $name's workbench (drawn at random from what you never touched; not suggestions)")
     pk, fs, vi, di = finds["packages"], finds["functions"], finds["vision"], finds["diary"]
     if !isempty(pk)
         println(io, "Packages (RomeoDB `package_info` tells more; `Pkg.add` brings one in):")

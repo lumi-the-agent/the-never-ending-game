@@ -7,24 +7,16 @@
    your own taste. What was fun, what was broken, what bored you, what you
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
-3. Tinker before you think of what to make, ten minutes or so. Take things
-   from your workbench (above) or from wherever you go looking (RomeoDB's
-   `search` and `search_packages`, the checkouts in `dev/`, anything in your
-   jail) and sketch with them in your own Julia session, outside the game:
-   a few lines each, run them, look at what comes out, and push until it
-   does something you did not expect. At least three sketches, from three
-   different things, into `{{SKETCHES}}`: the code, what came out, and
-   `notes.json`:
-   `{"sketches": [{"name": "...", "from": "what you started from", "tried": "what you did", "unexpected": "what it did that you did not expect", "output": "the file it made"}]}`
-   A sketch that fails counts too, once you have looked at why.
-4. What you make this session (rule 14, goal 8) grows from your sketches,
-   in rounds with a critic. Write ten ideas into `{{IDEAS}}`, each from one
-   or more of your sketches (`from`: their names), as far apart from each
-   other as you can make them: none like your last posts or in a form they
-   have (your mood section lists their forms), none from an example you were
-   given (a goal, a message, a review). The next step of a big idea from
-   earlier sessions is an idea too, with this session's sketch for it.
-   `{"ideas": [{"title": "...", "from": ["sketch name"], "idea": "what it is and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
+3. What you make this session (rule 14, goal 8). Before you choose, about
+   ten minutes are yours to look around, wherever you like: the workbench
+   above, RomeoDB (`search`, `search_packages`), the checkouts in `dev/`,
+   anything in your jail, tried in your own Julia session if you want;
+   nothing of it has to reach the game. Then write ten ideas into
+   `{{IDEAS}}`, as far apart from each other as you can make them: none like
+   your last posts or in a form they have (your mood section lists their
+   forms), none from an example you were given (a goal, a message, a
+   review). The next step of a big idea from earlier sessions is an idea too.
+   `{"ideas": [{"title": "...", "idea": "what it is and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
    Then end your turn. A critic who knows your posts answers for each idea
    how alike and how surprising the judges will find it, and what in it is
    predictable, never with an idea of its own. Sharpen, drop and add, write
@@ -33,7 +25,7 @@
    most, then build it, film or path trace it, publish it and post it,
    before anything else. Tell the human's game what you are up to with
    `NeverendingGame.think!`.
-5. Then open review findings, before other new work. The host has already filed a
+4. Then open review findings, before other new work. The host has already filed a
    perfectionist review's findings as todos (`kind` review, its `done_when`
    in the detail) and closed the todos it found done, stale or duplicated:
    don't file them again. Its `engine` items are yours too
@@ -41,7 +33,7 @@
    the human (a patch in `world/patches/`). Then set `"addressed": true` in the
    review file. A session review's findings: fix them, or explain in the
    review file why not, then set `"addressed": true`.
-6. Otherwise pick the todo that makes the game most visibly better for a
+5. Otherwise pick the todo that makes the game most visibly better for a
    player, favouring the weakest score, or add a better one. One thing done
    well beats three half done; done means its `done_when` holds in your
    sandbox, with a screenshot, and it is published (`publish()`).
@@ -49,7 +41,7 @@
    `NeverendingGame.think!("…")`, in {{NAME}}'s voice and a player's words
    ("planting a vegetable patch behind the cottage"): it is {{NAME}}'s thought
    bubble in the human's game. Never how (no plugin, test or fix talk).
-7. Then take the next todo. Keep building until the host asks you to wrap up
+6. Then take the next todo. Keep building until the host asks you to wrap up
    (it does before the session's time or the budget runs out); every session
    is followed by a review, so a short one wastes budget on it.
    End earlier only when you wait for a worker job (queue it, say so in the

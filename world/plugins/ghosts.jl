@@ -62,6 +62,11 @@ function begin_haunting!(s::Ghosts, game)
     return true
 end
 
+# An EMPTY herd breaks every raster screenshot ("device storage requires an isbits element type, got Any", s100):
+# a herd with no ghosts keeps one, far under the island.
+const HIDDEN = Point3f(0, 0, -100)
+hide!(h) = Makie.update!(h, [HIDDEN]; motion = [Vec3f(0)], state = [Vec3f(0)])
+
 "The ghost herds (one per species), made the first time a species is needed."
 function herd_of(game, species::String)
     hs = get!(() -> Dict{String,Any}(), GH, :herds)::Dict{String,Any}
@@ -69,7 +74,7 @@ function herd_of(game, species::String)
     (h !== nothing && h.parent !== nothing) && return h
     sp = get(NG.SPECIES, species, nothing)
     sp === nothing && return nothing
-    hs[species] = NG.herd!(game.stage.scene, Point3f[]; species = ghost_species(sp; traced = game.dash === nothing), motion = Vec3f[], state = Vec3f[],
+    hs[species] = NG.herd!(game.stage.scene, [HIDDEN]; species = ghost_species(sp; traced = game.dash === nothing), motion = [Vec3f(0)], state = [Vec3f(0)],
                            name = Symbol("ghost_", lowercase(species)))
 end
 
@@ -77,7 +82,7 @@ function draw!(s::Ghosts, game)
     w = game.world
     hs = get(GH, :herds, Dict{String,Any}())::Dict{String,Any}
     if !s.on
-        get(GH, :shown, true) && foreach(h -> Makie.update!(h, Point3f[]; motion = Vec3f[], state = Vec3f[]), values(hs))
+        get(GH, :shown, true) && foreach(hide!, values(hs))
         GH[:shown] = false
         return
     end
@@ -100,7 +105,7 @@ function draw!(s::Ghosts, game)
                       state = [Vec3f(p.action, p.extra, c.seed) for (p, c) in ps], time = Float32(w.t))
     end
     for (species, h) in hs
-        haskey(groups, species) || Makie.update!(h, Point3f[]; motion = Vec3f[], state = Vec3f[])
+        haskey(groups, species) || hide!(h)
     end
     GH[:shown] = true
     GH[:frame] = f

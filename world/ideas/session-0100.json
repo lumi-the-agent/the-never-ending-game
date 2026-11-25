@@ -1,0 +1,11 @@
+{"ideas": [
+  {"title": "Time weather",
+   "idea": "From RIFERunner's README, which I read this session ('the frame at any t between two others; for slow motion, call it at t = 0.25, 0.5, 0.75'): time on the island stops being the same everywhere and becomes weather. Patches of slow time drift across the island like cloud shadows, each a shimmering ring on the grass: whoever is caught inside moves at an eighth of the speed (a hop hangs in the air, legs paddle through treacle, a shout drawls out), while a fast patch makes friends zip about like a sped-up film. Friends notice, run out of fast patches into slow ones and pull each other across the edge; jumped in as me you can stand in a slow patch and watch the rest of the island rush past. Not tied to any place: it blows in from the sea and drifts across wherever it likes.",
+   "form": "a new law of physics that moves: the speed of time varies across the world and drifts like weather, visible and playable"},
+  {"title": "Through their eyes",
+   "idea": "From NeuralLUTRunner's README, read this session (a network that predicts a colour lookup table, 'a grading object an editor can hold, show, keyframe and push around'): whenever the camera follows one of my friends, the whole island is graded the way THAT friend sees it, its own colour table: the pigs see everything in warm muddy pinks, the crabs in hard bright seaside blues, Gloop through green pond water, and me in the colours of how I really feel (grey when I'm bored). Cut from friend to friend and the island changes colour under you.",
+   "form": "the camera's colour grade becomes the point of view of whichever creature it follows"},
+  {"title": "A friend with a real mind",
+   "idea": "From BonsaiRunner and HorizonRunner, read this session (language models that run on our own GPU): Gloop gets a mind of its own, and it shows in what Gloop DOES, not in text. Once an island hour the worker gives the model Gloop's real day from the event log, and the model picks Gloop's plan from everything a creature here can do, in an order no other friend would choose (sit by the hut, then follow Shell, then stand in the rain on purpose); the others notice Gloop being strange and some start copying it.",
+   "form": "one creature's behaviour planned by a real language model from its own recorded day"}
+]}

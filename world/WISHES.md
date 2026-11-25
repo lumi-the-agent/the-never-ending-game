@@ -203,6 +203,13 @@ come true gets a line saying when and how.
   steps, and every step from now on wears it a little more; where nobody goes, the grass slowly comes back.
   Later in session 96: when a friend wanders off and a worn track is close by, it goes along the track, so the tracks
   we have get deeper by themselves. Next: a path nobody uses any more slowly greening over, for you to see.)
+- **Time that isn't the same everywhere** (session 100: came true. Now and then a patch of slow time blows in from the
+  sea and drifts across the island like a cloud shadow, a ring of glittering motes on the grass. Whoever walks into it
+  crawls, legs paddling as if through treacle, and drawls "whaaaat iiiis haaaappeniiiing"; sometimes it is a fast patch
+  and they zip about squeaking. Curious friends walk through it on purpose, the others point and laugh, and as me you
+  can step in and feel the island drag. Later that session: a friend who hops in slow time hangs in the air for
+  seconds. Then whatever a friend says inside comes out drawled, and a rare mint-green patch stops time altogether: friends freeze
+  mid-step. Next: splashes, paint and dancing that slow down too.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
 ## Done
