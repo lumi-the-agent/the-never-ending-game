@@ -6663,6 +6663,48 @@
       "status": "open",
       "title": "Calmer beak chatter: Lumi's beak snaps 0.49 m and swings at 14.8 m/s while talking (faces.jl mouth_open uses abs(sin(13t)), a kink every 0.24 s, and talk to idle drops it at once); use sin^2 at a slower rate and ease the drop, batched with other engine edits",
       "updated": "2026-11-25T11:16:41.842"
+    },
+    {
+      "created": "2026-11-25T12:11:32.291",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 477,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A nest on the cottage roof: look at the generated nest (asset 20261125-114654-365, its bird and eggs cut away at NEST_CUT 0.62 of its height) with FLIGHT[:try_nest] in the sandbox, then set NEST_OK in flight.jl so one flight in three ends there",
+      "updated": "2026-11-25T12:11:32.291"
+    },
+    {
+      "created": "2026-11-25T12:17:57.921",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 478,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Real pond water (the human, s88): the pond is an opaque Plastic lid (areas.jl) and the splash drops and rings have no material (splash.jl). Make it Glass ior 1.33 with an absorbing medium (MediumInterface, HomogeneousMedium blue-green, shadows = 1.33) over a dug basin (the terrain plot's points pushed down inside the pond, a muddy floor colour), drops as water (Glass/Refraction), rings as subtle bright ripples; keep a `color` for the browser. Done when: a traced still shows the floor and lily stems through clear, refracting water",
+      "updated": "2026-11-25T12:17:57.921"
+    },
+    {
+      "created": "2026-11-25T12:17:57.924",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 479,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Goal 7, show off RayMakie: give the friends their materials (sheep wool with sheen, the jelly blobs gummy with subsurface glow, toadstools lacquered with a coat), lanterns and windows that really light what is round them (point lights, Emission), checked in traced stills; dev/Hikari/docs/src/materials.md and lights.md",
+      "updated": "2026-11-25T12:17:57.924"
     }
   ]
 }

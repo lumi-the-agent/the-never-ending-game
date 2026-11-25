@@ -1,14 +1,14 @@
 {
-  "boredom": 0.67,
+  "boredom": 0.27,
   "fatigue": {
-    "asset": 0.04,
-    "feature": 1.13,
+    "asset": 0.02,
+    "feature": 1.68,
     "film": 2.49,
-    "picture": 1.37,
+    "picture": 0.82,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.35,
-    "sound": 2.07
+    "self": 0.21,
+    "sound": 2.24
   },
   "happened": [
     "Boop",
@@ -157,9 +157,19 @@
     "leaves_start",
     "pumpkin_strike",
     "bottle_end",
-    "bottle_start"
+    "bottle_start",
+    "nap_woken",
+    "waterfight_hit",
+    "hail_ow",
+    "waterfight_start",
+    "hail_end",
+    "waterfight_end",
+    "mixup_end",
+    "mixup_swap",
+    "mixup_start",
+    "hail_start"
   ],
-  "joy": 0.26,
+  "joy": 0.56,
   "kinds_ever": [
     "post",
     "picture",
@@ -174,179 +184,66 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "bottle_end",
-      "bottle_start"
+      "nap_woken",
+      "waterfight_hit",
+      "hail_ow",
+      "waterfight_start",
+      "hail_end",
+      "waterfight_end",
+      "mixup_end",
+      "mixup_swap",
+      "mixup_start",
+      "hail_start"
     ],
-    "session": 84
+    "session": 88
   },
   "last_surprise": {
     "score": 5,
-    "session": 86,
-    "why": "Reactive pond water and a judged cannonball contest are a nice twist, but they show only on their own afternoon and the player cannot take part."
+    "session": 87,
+    "why": "A player can finally walk into the pond and splash, and friends hold a water fight, but it is a small pond toy rather than a new kind of thing."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T10:51:01",
+  "perceived_until": "2026-11-25T11:34:20",
   "plugin_fatigue": {
-    "autumn.jl": 0.57,
-    "beds.jl": 1.6,
-    "blossom.jl": 0.23,
-    "boing.jl": 0.58,
-    "bottle.jl": 0.28,
-    "choir.jl": 0.22,
-    "conga.jl": 0.58,
-    "dancecircle.jl": 0.36,
-    "egg.jl": 0.22,
-    "flight.jl": 0.58,
-    "flylesson.jl": 0.22,
-    "freeze.jl": 0.58,
-    "gait.jl": 0.36,
-    "giant.jl": 0.22,
-    "greetings.jl": 1.13,
-    "hail.jl": 0.58,
-    "hiccups.jl": 0.58,
-    "kite.jl": 0.96,
-    "lumicolour.jl": 0.35,
-    "makeover.jl": 0.44,
-    "outfits.jl": 1.49,
-    "paintfight.jl": 0.27,
-    "pumpkins.jl": 1.09,
-    "rollcall.jl": 0.36,
-    "separation.jl": 1.6,
-    "showers.jl": 0.25,
-    "sneeze.jl": 0.63,
-    "snowday.jl": 0.82,
-    "soar.jl": 0.23,
-    "splash.jl": 1.6,
-    "storm.jl": 0.23,
-    "swing.jl": 0.3,
-    "toadstool.jl": 0.21,
-    "voice.jl": 0.13
+    "autumn.jl": 0.34,
+    "beds.jl": 0.96,
+    "blossom.jl": 0.14,
+    "boing.jl": 0.35,
+    "bottle.jl": 0.17,
+    "choir.jl": 0.13,
+    "conga.jl": 0.35,
+    "dancecircle.jl": 0.22,
+    "egg.jl": 0.13,
+    "flight.jl": 1.35,
+    "flylesson.jl": 0.13,
+    "freeze.jl": 0.35,
+    "frost.jl": 1.0,
+    "gait.jl": 0.22,
+    "giant.jl": 0.13,
+    "greetings.jl": 0.68,
+    "hail.jl": 0.35,
+    "hiccups.jl": 0.35,
+    "islandnow.jl": 1.0,
+    "kite.jl": 0.58,
+    "lumicolour.jl": 0.21,
+    "makeover.jl": 0.26,
+    "mixup.jl": 1.0,
+    "outfits.jl": 1.89,
+    "paintfight.jl": 0.16,
+    "pumpkins.jl": 0.65,
+    "rollcall.jl": 0.22,
+    "separation.jl": 0.96,
+    "showers.jl": 0.15,
+    "sneeze.jl": 0.38,
+    "snowday.jl": 0.49,
+    "soar.jl": 0.14,
+    "splash.jl": 0.96,
+    "storm.jl": 0.14,
+    "swing.jl": 0.18,
+    "toadstool.jl": 0.13,
+    "voice.jl": 0.08
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "solo",
-          "who": 8
-        },
-        {
-          "kind": "paint_hit",
-          "who": 8
-        },
-        {
-          "kind": "sour",
-          "who": 2
-        },
-        {
-          "kind": "choir_sour",
-          "who": 2
-        },
-        {
-          "kind": "flight_crash",
-          "who": 1
-        },
-        {
-          "kind": "paint_trip",
-          "who": 1
-        },
-        {
-          "kind": "flight_takeoff",
-          "who": 1
-        },
-        {
-          "kind": "choir",
-          "who": 1
-        },
-        {
-          "kind": "paint_spill",
-          "who": 1
-        },
-        {
-          "kind": "laugh",
-          "who": 1
-        },
-        {
-          "kind": "flight_announce",
-          "who": 1
-        },
-        {
-          "kind": "paint_end",
-          "who": 1
-        },
-        {
-          "kind": "flight_end",
-          "who": 1
-        },
-        {
-          "kind": "silence",
-          "who": 1
-        },
-        {
-          "kind": "flight_punchline",
-          "who": 1
-        },
-        {
-          "kind": "flight_landed",
-          "who": 1
-        },
-        {
-          "kind": "chord",
-          "who": 1
-        },
-        {
-          "kind": "choir_end",
-          "who": 1
-        },
-        {
-          "kind": "choir_sing",
-          "who": 1
-        },
-        {
-          "kind": "paint_fight",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/paint-fight.mp4"
-      ],
-      "new_plugins": [
-        "paintfight.jl"
-      ],
-      "points": 2.0,
-      "repeats": [],
-      "session": 68,
-      "touched": [
-        "berry_race.jl",
-        "boing.jl",
-        "builder.jl",
-        "firefly_catch.jl",
-        "hideseek.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 1.6,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1488,6 +1385,93 @@
         "sound": 0.5
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.6333333333333333,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "nap_woken",
+          "who": 9
+        },
+        {
+          "kind": "waterfight_hit",
+          "who": 4
+        },
+        {
+          "kind": "hail_ow",
+          "who": 4
+        },
+        {
+          "kind": "waterfight_start",
+          "who": 1
+        },
+        {
+          "kind": "hail_end",
+          "who": 1
+        },
+        {
+          "kind": "waterfight_end",
+          "who": 1
+        },
+        {
+          "kind": "mixup_end",
+          "who": 1
+        },
+        {
+          "kind": "mixup_swap",
+          "who": 1
+        },
+        {
+          "kind": "mixup_start",
+          "who": 1
+        },
+        {
+          "kind": "hail_start",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/mixup-silent.mp4",
+        "site/films/mixup.mp4",
+        "site/films/mixup.wav"
+      ],
+      "new_plugins": [
+        "frost.jl",
+        "mixup.jl"
+      ],
+      "points": 2.5,
+      "repeats": [],
+      "session": 88,
+      "touched": [
+        "flight.jl",
+        "islandnow.jl",
+        "outfits.jl"
+      ],
+      "values": {
+        "feature": 1.7,
+        "film": 0.3,
+        "polish": 0.1,
+        "post": 0.1,
+        "sound": 0.3
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1575,6 +1559,9 @@
       "site/films/thunderstorm.mp4",
       "site/films/toadstool.mp4",
       "site/films/voice.mp4",
+      "site/films/waterfight-silent.mp4",
+      "site/films/waterfight.mp4",
+      "site/films/waterfight.wav",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
       "site/img/big-sneeze-after.png",
@@ -1602,6 +1589,7 @@
       "site/img/visit-traced.png",
       "site/img/voice-laugh.png",
       "site/img/voice.png",
+      "site/img/waterfight.png",
       "site/img/workshop-traced.png",
       "site/voice/friend-gloop.mp3",
       "site/voice/friend-pinchy.mp3",
@@ -1642,7 +1630,7 @@
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
-      "beds.jl": 1.7955994779350414e9,
+      "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955898833905835e9,
@@ -1673,7 +1661,7 @@
       "gait.jl": 1.795596563071227e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.79558813072175e9,
+      "greetings.jl": 1.7956011734481223e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1692,19 +1680,19 @@
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "outfits.jl": 1.7955950292632265e9,
+      "outfits.jl": 1.7956020820494156e9,
       "paintfight.jl": 1.7955898900799649e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rollcall.jl": 1.795596344849997e9,
-      "separation.jl": 1.795600152668723e9,
+      "separation.jl": 1.7956006175464356e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
       "sneeze.jl": 1.795596277582388e9,
       "snowday.jl": 1.795599842974596e9,
       "soar.jl": 1.7955898834039822e9,
-      "splash.jl": 1.7955993502192037e9,
+      "splash.jl": 1.7956011472475996e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
       "sunset.jl": 1.7954781267170784e9,
@@ -1717,11 +1705,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 42,
+    "posts": 43,
     "self": "14151975785721963154",
     "wishes": 8
   },
-  "started": "2026-11-25T10:55:07",
+  "started": "2026-11-25T11:38:25",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1798,7 +1786,10 @@
       "Hestia",
       "EEGToolkit",
       "PinCFlow",
-      "HerbSpecification"
+      "HerbSpecification",
+      "GadgetIO",
+      "CliffordNumbers",
+      "Paramorph"
     ],
     "vision": [
       "HorizonRunner",
@@ -1810,8 +1801,10 @@
       "DeepFilterRunner",
       "SAM2Runner",
       "NeuralLUTRunner",
-      "RIFERunner"
+      "RIFERunner",
+      "MatAnyoneRunner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 86
+  "surprise_seen": 87
 }

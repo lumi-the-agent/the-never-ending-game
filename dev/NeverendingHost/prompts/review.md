@@ -19,6 +19,14 @@ whether what it claims works. Judge:
 7. **Light:** does the light make the picture: a clear key light, shadows
    that ground things, colour and mood that fit the time of day, in the
    browser view as well as in films?
+8. **Materials and lights:** in the traced films and stills, does water look
+   like water (clear, with depth and reflections, like the sea), glass like
+   glass, metal like metal? An opaque or plain-coloured stand-in (a plastic
+   pond, drops without a material) is a `high` finding; check the plot's
+   `material` in the code. Is the new work creative with them, showing off
+   the path tracer (subsurface, sheen, coat, thin film, volumes, real point,
+   spot and area lights, glow that lights its surroundings), or plain diffuse
+   under the sun?
 
 Write the verdict file as JSON:
 

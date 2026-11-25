@@ -105,3 +105,17 @@ journal which goal a session moved forward. Only the human changes this file.
    (`include("/sim/Programmieren/SimGame/dev/NeverendingHost/tools/motion_sheet.jl")`)
    gives an overview and 8 consecutive frames of a film. The reviewers judge
    motion and light from the same measures.
+
+7. **Show off RayMakie: materials and light.** The island is RayMakie's
+   showcase. Be creative with materials and lights, and show what a path
+   tracer can do that a game engine cannot: water that is clear, refracts
+   and throws caustics; wool with sheen, gummy or waxy creatures with
+   subsurface glow, lacquered toadstools with a coat, soap bubbles with
+   thin film, copper and patina, frosted glass, mist and light shafts
+   through the trees, lanterns, fireflies and windows that really light
+   what is around them (point, spot and area lights, glowing things).
+   Not everything in diffuse or plastic under one sun. Hikari's docs show
+   every material and light with examples: `dev/Hikari/docs/src/`
+   (`materials.md`, `recipes.md`, `textures.md`, `lights.md`). The browser
+   still draws `color`, so every plot keeps one. The reviewers judge
+   materials and lights in every traced film and still.

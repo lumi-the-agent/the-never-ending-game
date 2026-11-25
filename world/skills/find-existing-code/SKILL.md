@@ -12,7 +12,7 @@ description: Find existing functions before writing new ones - RomeoDB code sear
 - **The checkouts** in `../dev` (read only), grep them:
   - `Makie/` (Makie, RayMakie in `Makie/RayMakie`, ComputePipeline): plots,
     GUI blocks (`Button`, `Slider`, `Menu`, `Textbox`, `Label`), cameras
-  - `Hikari/`: materials (`Diffuse`, `Plastic`, `Glass`, `Emission`, `CoatedDiffuse`, …), lights, sky
+  - `Hikari/`: materials (`Principled` with subsurface, sheen, coat, thin film and transmission, `Glass`, `Metallic`, `Toon`, `Mix`/`Add`, node textures, volumes), lights (point, spot, area, sun and sky); every one with an example in `Hikari/docs/src/` (`materials.md`, `recipes.md`, `textures.md`, `lights.md`)
   - `JuliaVision/`: models (image generation, image to 3D, segmentation,
     depth, speech, frame interpolation), each in its `*Runner` folder
   - `VideoEditor/`: video projects, scene clips, export, contact sheets

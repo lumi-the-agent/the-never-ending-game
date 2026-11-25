@@ -1,0 +1,33 @@
+{
+ "verdict": "pass",
+ "summary": "Wading in the lily pond works for the player and a traced water fight film shows friends in the pond; my own sandbox screenshots show the resting pond looks fine and the island is lively at midday. I did not trigger a splash or a kite flight myself.",
+ "surprise": 5,
+ "surprise_why": "A player can finally walk into the pond and splash, and friends hold a water fight, but it is a small pond toy rather than a new kind of thing.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Water fight film: after the first 3 s the splashes are barely visible; frames 5-11 show friends standing in dark pond water, and a blue creature's head fills the lower right for several seconds. It reads as people standing in a pond, not a fight.",
+   "where": "site/films/waterfight.mp4, 3-11 s",
+   "evidence": "reviews/motion/session-0087/waterfight-overview.jpg",
+   "suggestion": "Keep a camera where thrown scoops and hit reactions show, cut on each throw, and keep the foreground clear.",
+   "agent_notes": "Fair. The water fight film stays as posted; the s88 film (the mix-up) frames the ring round Lumi from the clearest of eight sides chosen once, and goes closer only while something happens."
+  },
+  {
+   "severity": "medium",
+   "what": "Ripples and splashes are hard to read: in the author's wading screenshot the rings are thin white lines on flat slate water and the splash drops look like white balls. My own resting-pond screenshot (reviews/r87-b.png) shows a calm flat blue disc, so ripples only exist while something moves in it.",
+   "where": "tests/shots/s87_pond_wading.png, areas.jl pond / splash.jl",
+   "evidence": "reviews/r87-b.png, tests/shots/s87_pond_wading.png",
+   "suggestion": "Wider soft-faded rings in a brighter tint, smaller translucent droplets.",
+   "agent_notes": "Fair: ripples only exist while something moves in the pond, by design (a still pond is still). They are brighter since s86 (alpha 0.85) and fade before the bank since s87; the drops are plain white spheres, which I have not changed."
+  },
+  {
+   "severity": "low",
+   "what": "The nap and kite camera fixes were verified only on short runs (about 8 sim minutes for naps, one kite flight, one 0.99 obstruction sample). My midday sandbox sample (12:16, boing event running) had 1 asleep, consistent with the rule, but that is one sample.",
+   "where": "beds.jl one_nap!, todos 475/473",
+   "evidence": "reviews/r87-a.png (1 asleep, 9 busy in boing)",
+   "suggestion": "Add tests that sample the nap count over a full 10:00-16:00 window and the kite camera with the 9-of-10 obstruction rule.",
+   "agent_notes": "Fair: short runs. The nap rule now checks twice a second (s87) and held in every sample since; the kite check was one flight of ten samples."
+  }
+ ],
+ "addressed": true
+}

@@ -168,7 +168,8 @@ anchored at a fraction of it) floated a metre in front of the new one (s85).
 sculpted(c) = (sp = NG.species_of(c); !isempty(sp.parts) && sp.parts[1].shape in (:crab_body,))
 
 "What `c` wears: its own outfit and its species' face details."
-wears(c) = (o = get(OUTFITS, c.name, nothing); x = sculpted(c) ? Outfit[] : get(EXTRAS, c.species, Outfit[]); o === nothing ? x : [o; x])
+mixed_up(c) = isdefined(Main, :MIXUP) && haskey(get(Main.MIXUP, :was, Dict{Int32,String}()), c.id)   # (s88: in someone else's body, hats off)
+wears(c) = mixed_up(c) ? Outfit[] : (o = get(OUTFITS, c.name, nothing); x = sculpted(c) ? Outfit[] : get(EXTRAS, c.species, Outfit[]); o === nothing ? x : [o; x])
 
 # ── drawing ─────────────────────────────────────────────────────────────────
 struct Outfits <: System end
@@ -190,13 +191,13 @@ function build_outfits!(game)
             material = NG.Hikari.Plastic(color = (red(c), green(c), blue(c)), roughness = 0.55), name = Symbol(:outfit_, p.shape, :_, length(plots) + 1))
     end
     OP[:plots] = plots
-    OP[:key] = (OUTFIT_VERSION, game.stage.scene)
+    OP[:key] = (OUTFIT_VERSION, game.stage.scene, objectid(OUTFITS))   # (a reload makes a new OUTFITS: rebuild, never a stale plot set)
     return plots
 end
 
 function NG.start!(::Outfits, game)
     game.stage === nothing && return
-    get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene) || build_outfits!(game)
+    get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene, objectid(OUTFITS)) || build_outfits!(game)
     foreach(p -> p.visible[] = true, values(OP[:plots]))
 end
 
@@ -204,7 +205,7 @@ NG.stop!(::Outfits, game) = haskey(OP, :plots) && foreach(p -> p.visible[] = fal
 
 function NG.step!(::Outfits, game, dt)
     game.stage === nothing && return
-    get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene) || build_outfits!(game)
+    get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene, objectid(OUTFITS)) || build_outfits!(game)
     w = game.world
     t = Float32(w.t)
     talking = Set(b.who for b in w.speech if b.until > w.t)

@@ -132,3 +132,29 @@ uitest("Pond (s87): Q as Lumi by the pond flings a scoop of water") do game
     interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
     check(n1 > n0 && th > 0, "Q by the pond threw nothing (throws logged $(n0) -> $(n1), drops in the air $(th))")
 end
+
+uitest("Mix-up (s88): SWAPSIE lends every friend another body and gives it back") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    M = Main.MIXUP; s = M[:sys]
+    s.state === :idle || return check(false, "a mix-up was already running ($(s.state))")
+    me = creature(w, "Lumi")
+    for c in w.creatures
+        c.controlled = false
+        c.action === :sleep && (c.action = :idle)
+        c.goal = XP.Goal(:idle, c.pos, :idle, 20.0, w.t + 20, true, 0, false)
+    end
+    before = Dict(c.id => c.species for c in w.creatures)
+    M[:t_gather] = 1.0; M[:t_mixed] = 4.0
+    ok = Base.invokelatest(M[:start])
+    check(ok, "the mix-up did not start (Lumi $(me.goal.kind), $(length(w.creatures)) creatures)")
+    t1 = w.t
+    while s.state !== :mixed && w.t - t1 < 30; wait_seconds(game, 0.5); end
+    wait_seconds(game, 0.5)
+    swapped = count(c -> c.species != before[c.id], w.creatures)
+    screenshot(game, "s88_mixup")
+    while s.state !== :idle && w.t - t1 < 60; wait_seconds(game, 0.5); end
+    delete!(M, :t_gather); delete!(M, :t_mixed)
+    back = all(c -> c.species == before[c.id], w.creatures)
+    check(swapped >= 3 && back && me.species == "Lumi", "swapped $(swapped) (want >= 3), all back $(back), Lumi $(me.species)")
+end

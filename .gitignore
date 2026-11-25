@@ -38,6 +38,7 @@
 /world/assets/20261125-025214-640-asset/
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
+/world/assets/20261125-114654-365-asset/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -147,6 +148,12 @@
 /world/reviews/motion/session-0086/splash-silent-strip.jpg
 /world/reviews/motion/session-0086/splash-steps.jpg
 /world/reviews/motion/session-0086/splash-strip.jpg
+/world/reviews/motion/session-0087/waterfight-overview.jpg
+/world/reviews/motion/session-0087/waterfight-silent-overview.jpg
+/world/reviews/motion/session-0087/waterfight-silent-steps.jpg
+/world/reviews/motion/session-0087/waterfight-silent-strip.jpg
+/world/reviews/motion/session-0087/waterfight-steps.jpg
+/world/reviews/motion/session-0087/waterfight-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -718,6 +725,8 @@
 /world/reviews/r69-h5.png
 /world/reviews/r69-now.png
 /world/reviews/r8.png
+/world/reviews/r87-a.png
+/world/reviews/r87-b.png
 /world/reviews/s10_review.png
 /world/reviews/s11.png
 /world/reviews/s11_live.png
@@ -993,6 +1002,7 @@
 /world/tests/shots/s86_pond_wading.png
 /world/tests/shots/s87_pond_q.png
 /world/tests/shots/s87_pond_wading.png
+/world/tests/shots/s88_mixup.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1049,6 +1059,9 @@
 /world/site/films/leaves.wav
 /world/site/films/lumis-egg.mp4
 /world/site/films/makeover.mp4
+/world/site/films/mixup-silent.mp4
+/world/site/films/mixup.mp4
+/world/site/films/mixup.wav
 /world/site/films/one-more-stone-v2.mp4
 /world/site/films/paint-fight.mp4
 /world/site/films/pumpkins-silent.mp4

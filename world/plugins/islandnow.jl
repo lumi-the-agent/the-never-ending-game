@@ -17,6 +17,9 @@ function doing(w, c)
         o === nothing || return ("and $(o.name) are chatting", it.a == c.id ? 1 : 99)     # one line per pair
     end
     g === :circle && return ("is dancing in the circle", 1)
+    g === :freeze && return ("is a statue", 1)                                     # plugins/freeze.jl (s88)
+    g === :mixup && return ("is in somebody else's body!", 1)                     # plugins/mixup.jl (s88)
+    g === :waterfight && return ("is in a water fight", 1)
     if g === :rain                                                                  # plugins/showers.jl
         a in (:walk, :run) && return ("runs for shelter from the rain", 1)
         a === :jump && return ("is splashing in the puddles", 1)

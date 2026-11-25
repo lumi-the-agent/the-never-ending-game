@@ -28,6 +28,15 @@ an average hobby project, 2 means placeholder art.
   doubled or floating part, a leg that misses the ground, an old model's
   parts showing under a new one, is a `high` finding however small it looks
   from afar.
+- Materials and lights in the traced films and stills: they should show
+  off what a path tracer can do and a game engine cannot (Hikari's
+  materials: subsurface, sheen, coat, thin film, transmission, metals,
+  mixes and node textures, volumes; real point, spot and area lights,
+  glowing things that light their surroundings, caustics, fog and light
+  shafts). Water, glass, ice and metal must look like what they are (the
+  sea's water is the measure): an opaque or plain-coloured stand-in (a
+  plastic pond, drops without a material) is a `high` finding. Everything
+  in plain diffuse or plastic under one sun is a low score, however tidy.
 - The world itself: areas and their variety, terrain, water, sky, props and
   how they are grouped, creatures (shapes, faces, behaviour), their
   animation, lighting and atmosphere (in the browser view too), colour
@@ -65,7 +74,8 @@ cleanliness:
 {"verdict": "pass" | "needs_work" | "fail",
  "summary": "two or three sentences: how the game feels to a player now",
  "scores": {
-   "lighting":     {"score": 0-10, "why": "one line"},
+   "lighting":     {"score": 0-10, "why": "key light, real lights (point, spot, area, glowing things), time of day, mood, the browser too"},
+   "materials":    {"score": 0-10, "why": "creative use of what the path tracer can show; water, glass and metal that look real"},
    "world":        {"score": 0-10, "why": "areas, terrain, water, sky, variety"},
    "props":        {"score": 0-10, "why": "assets, detail, grouping"},
    "creatures":    {"score": 0-10, "why": "shapes, faces, behaviour"},

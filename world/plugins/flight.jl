@@ -414,11 +414,14 @@ end
 # ---------------------------------------------------------------- the nest on the cottage roof
 
 const NEST_AT = Point3f(0.12, 0, 0.84)   # in the cottage model's frame: on the ridge beside the chimney
+const NEST_OK = false       # true once the generated nest (s88, asset 20261125-114654-365) has been looked at on the roof
+const NEST_CUT = 0.62f0     # of the nest mesh's height: above it was the bird and eggs of the generated picture
 const NEST_W = 0.95f0                    # metres across
 
 "Draw the generated nest on the cottage ridge once the worker has made it; sets F[:nest] (where Lumi sits)."
 function place_nest!(game)
     haskey(F, :nestplot) && F[:nestplot].parent !== nothing && return
+    (NEST_OK || get(F, :try_nest, false)) || return
     cat = NG.load_catalog(game.paths)
     i = findfirst(e -> occursin("bird nest woven", lowercase(get(e, "prompt", ""))) && isfile(get(e, "mesh", "")), cat)
     i === nothing && return
@@ -430,6 +433,14 @@ function place_nest!(game)
     q = NG.rot_z(a.yaw)
     spot = a.pos + Point3f(q * (a.scale * NEST_AT))
     model = NG.lifted_asset(game.paths, cat[i]["id"])
+    # the generated nest came with a clay bird and eggs sitting in it (s88): keep the nest, below the rim
+    ps = GeometryBasics.coordinates(model.mesh)
+    z0, z1 = extrema(p -> p[3], ps)
+    cut = z0 + NEST_CUT * (z1 - z0)
+    keep = map(GeometryBasics.faces(model.mesh)) do f
+        (ps[GeometryBasics.value(f[1])][3] + ps[GeometryBasics.value(f[2])][3] + ps[GeometryBasics.value(f[3])][3]) / 3 < cut
+    end
+    model = NG.AssetModel(NG.piece_of(model.mesh, keep, p -> p, n -> n), model.color, model.material)
     xs = [p[1] for p in GeometryBasics.coordinates(model.mesh)]
     sc = NEST_W / max(1f-3, maximum(xs) - minimum(xs))
     F[:nestplot] = NG.asset_instances!(game.stage.scene, model, [spot - Point3f(0, 0, 0.12f0)]; rotation = [NG.rot_z(a.yaw)],

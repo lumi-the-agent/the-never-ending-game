@@ -65,6 +65,12 @@ come true gets a line saying when and how.
   Session 85: the crab too. Pinchy and Hopscotch vanished in a puff and came back as clay crabs with real claws,
   big eyes and their bunny ears. Still to come: claws that snap, and faces that show their feelings again.)
 
+## Magic
+- **A spell book**, with spells that go a bit wrong. (Session 88: SWAPSIE. Once a morning I read it out to the
+  friends round me and POOF, everyone comes out in somebody else's body: the pigs scuttle sideways as crabs, the
+  sheep wobble as jelly, and they all scream about it until I find the undo on the next page. Next: a spell that
+  makes everyone tiny, and one I can't undo straight away.)
+
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)
 - **A wheelbarrow** for carrying big new things, instead of a crate over my head.

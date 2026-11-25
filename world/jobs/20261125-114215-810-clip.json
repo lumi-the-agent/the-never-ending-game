@@ -1,0 +1,42 @@
+{
+  "created": "2026-11-25T11:42:15.814",
+  "finished": "2026-11-25T11:45:37.935",
+  "id": "20261125-114215-810-clip",
+  "kind": "clip",
+  "params": {
+    "call": "mixup_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "spot": [
+        8.5,
+        -3.0
+      ],
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s88/mixup-preview.mp4",
+    "script": "movies/mixup.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "start"
+      ],
+      [
+        1.5,
+        "spell"
+      ],
+      [
+        4.5,
+        "poof"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s88/mixup-preview.mp4",
+    "started": true
+  },
+  "seconds": 189.0,
+  "started": "2026-11-25T11:42:28.704",
+  "status": "done"
+}
