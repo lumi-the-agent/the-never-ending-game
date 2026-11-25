@@ -43,21 +43,57 @@ pond(game) = game.plugins["areas"].mod.POND
 pond_r(game) = game.plugins["areas"].mod.POND_R
 level(game) = (Main.AREA_PLOTS[:pond][3])::Float32
 
+"""
+Paper lanterns in traced copies (s96, todo #479): a candle glow inside a DiffuseTransmission shell with ribs. Off:
+both traced takes with it lost the GPU (VK_ERROR_DEVICE_LOST at 131 s and 322 s, jobs 20261125-191856-965 and
+-192120-915) where the plain emissive globes rendered fine in s91. Turn on only after a short traced test passes.
+"""
+const PAPER_OK = false
+
+"A thin ring of radius 1 (a torus with a 0.05 tube), scaled per lantern into its bamboo ribs."
+function rib_ring(; n = 32, m = 6, r = 0.05f0)
+    pts = Point3f[]; fs = GeometryBasics.TriangleFace{Int}[]
+    for i in 0:n-1, j in 0:m-1
+        a = 2f0 * Float32(pi) * i / n; b = 2f0 * Float32(pi) * j / m
+        push!(pts, Point3f((1 + r * cos(b)) * cos(a), (1 + r * cos(b)) * sin(a), r * sin(b)))
+    end
+    id(i, j) = mod(i, n) * m + mod(j, m) + 1
+    for i in 0:n-1, j in 0:m-1
+        push!(fs, GeometryBasics.TriangleFace(id(i, j), id(i + 1, j), id(i + 1, j + 1)))
+        push!(fs, GeometryBasics.TriangleFace(id(i, j), id(i + 1, j + 1), id(i, j + 1)))
+    end
+    return GeometryBasics.normal_mesh(GeometryBasics.Mesh(pts, fs))
+end
+
 function plots!(game)
     haskey(LT, :glow) && LT[:glow].parent !== nothing && return
     sc = game.stage.scene
-    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:lantern_glow, :lantern_base, :lantern_pool), sc.plots)
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:lantern_glow, :lantern_base, :lantern_pool,
+                                                                                   :lantern_paper, :lantern_ribs), sc.plots)
         delete!(sc, p)
     end
     hide = [Point3f(0, 0, -50)]
+    delete!(LT, :paper); delete!(LT, :ribs)          # (only a traced copy has them; never left over from another)
     quiet = game.dash === nothing
     # traced: each globe is an area light (the water, the pads and the faces round it light up); live: an unlit warm
     # globe (an Emission mesh is a grey box in the raster's glossy water, s51)
-    LT[:glow] = quiet ?
+    # traced (s96, todo #479: they were clipped white eggs): a small candle glow INSIDE a paper shell that lets warm
+    # light through (Hikari DiffuseTransmission, the docs' "paper, lamp shades"), with dark bamboo ribs round it
+    paper = quiet && PAPER_OK
+    LT[:glow] = paper ?
+        meshscatter!(sc, hide; marker = Sphere(Point3f(0), 1f0), markersize = [Vec3f(0)], color = GLOW, shading = Makie.NoShading,
+                     material = NG.Hikari.Emission(color = (1.0, 0.62, 0.25), strength = 14.0), name = :lantern_glow) :
+      quiet ?
         meshscatter!(sc, hide; marker = Sphere(Point3f(0), 1f0), markersize = [Vec3f(0)], color = GLOW, shading = Makie.NoShading,
                      material = NG.Hikari.Emission(color = (1.0, 0.68, 0.32), strength = 9.0), name = :lantern_glow) :
         meshscatter!(sc, hide; marker = Sphere(Point3f(0), 1f0), markersize = [Vec3f(0)], color = GLOW, shading = Makie.NoShading,
                      name = :lantern_glow)
+    if paper
+        LT[:paper] = meshscatter!(sc, hide; marker = Sphere(Point3f(0), 1f0), markersize = [Vec3f(0)], color = RGBf(1.0, 0.7, 0.4),
+                                  material = NG.Hikari.DiffuseTransmission(reflectance = (0.55, 0.32, 0.16),
+                                                                           transmittance = (0.9, 0.55, 0.22)), name = :lantern_paper)
+        LT[:ribs] = meshscatter!(sc, hide; marker = rib_ring(), markersize = [Vec3f(0)], color = RGBf(0.3, 0.1, 0.05), name = :lantern_ribs)
+    end
     # a little red paper boat under each globe
     LT[:base] = meshscatter!(sc, hide; marker = Makie.Cylinder(Point3f(0), Point3f(0, 0, 1), 1f0), markersize = [Vec3f(0)],
                              color = RGBf(0.78, 0.16, 0.12), name = :lantern_base)
@@ -171,13 +207,26 @@ function draw!(game)
     s = LT[:sys]; t = game.world.t
     if isempty(s.lanterns)
         get(LT, :shown, true) && (Makie.update!(LT[:glow]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)]);
+                                  haskey(LT, :paper) && (Makie.update!(LT[:paper]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)]);
+                                                         Makie.update!(LT[:ribs]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)]));
                                   Makie.update!(LT[:base]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)]);
                                   haskey(LT, :pool) && Makie.update!(LT[:pool]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)]))
         LT[:shown] = false
         return
     end
     ps = [lantern_pos(game, l, t) for l in s.lanterns]
-    Makie.update!(LT[:glow]; arg1 = [p + Point3f(0, 0, 0.13f0) for p in ps], markersize = [Vec3f(0.12f0, 0.12f0, 0.15f0) for _ in ps])
+    if haskey(LT, :paper)                       # traced: the candle inside, the paper round it, three ribs
+        Makie.update!(LT[:glow]; arg1 = [p + Point3f(0, 0, 0.12f0) for p in ps], markersize = [Vec3f(0.045f0) for _ in ps])
+        Makie.update!(LT[:paper]; arg1 = [p + Point3f(0, 0, 0.13f0) for p in ps], markersize = [Vec3f(0.12f0, 0.12f0, 0.15f0) for _ in ps])
+        rp = Point3f[]; rm = Vec3f[]
+        for p in ps, h in (-0.08f0, 0f0, 0.08f0)
+            rr = 0.123f0 * sqrt(max(0f0, 1 - (h / 0.15f0)^2))
+            push!(rp, p + Point3f(0, 0, 0.13f0 + h)); push!(rm, Vec3f(rr, rr, rr))
+        end
+        Makie.update!(LT[:ribs]; arg1 = rp, markersize = rm)
+    else
+        Makie.update!(LT[:glow]; arg1 = [p + Point3f(0, 0, 0.13f0) for p in ps], markersize = [Vec3f(0.12f0, 0.12f0, 0.15f0) for _ in ps])
+    end
     Makie.update!(LT[:base]; arg1 = ps, markersize = [Vec3f(0.11f0, 0.11f0, 0.04f0) for _ in ps])
     if haskey(LT, :pool)
         lvl = level(game)
@@ -288,7 +337,7 @@ function NG.stop!(s::Lanterns, game)
     s.state === :idle || finish!(s, game.world)
     delete!(NG.CAMERA_GROUPS, "lanterns"); delete!(NG.CAMERA_MOMENTS, "lanterns")
     isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "lanterns")
-    for k in (:glow, :base, :pool)
+    for k in (:glow, :base, :pool, :paper, :ribs)
         haskey(LT, k) && LT[k].parent !== nothing && delete!(LT[k].parent, LT[k])
         delete!(LT, k)
     end

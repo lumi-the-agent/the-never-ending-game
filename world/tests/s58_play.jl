@@ -454,3 +454,25 @@ uitest("Runaway shadow (s95b): while it is loose Lumi throws no shadow of its ow
     check(state === :loose && wrapped == length(game.stage.herds["Lumi"].plots),
           "state $(state), $(wrapped) of $(length(game.stage.herds["Lumi"].plots)) body parts pass shadows")
 end
+
+uitest("Paths we wore (s96): the ground under the busiest tracks is bare earth, and a walk adds steps") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    F = Main.FOOTPATHS; mod = game.plugins["footpaths"].mod
+    G = F[:grid]::Matrix{Float32}
+    F[:repaint_at] = w.t + 60                     # (a repaint lets the grass regrow a little: none while we count)
+    before = sum(G)
+    wait_seconds(game, 3.0)                       # creatures walk
+    after = sum(F[:grid])
+    F[:repaint_at] = -Inf
+    wait_seconds(game, 0.5)
+    sc = game.stage.scene
+    i = findfirst(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :terrain, sc.plots)
+    shown = sc.plots[i].color[]
+    same = Base.invokelatest(mod.same_colours, shown, Main.MEADOW[:painted])
+    # the most worn grass vertex is browner than the meadow painted it
+    o = F[:orig]; mine = Main.MEADOW[:painted]
+    d = maximum(k -> Float32(Makie.green(o[k])) - Float32(Makie.green(mine[k])), eachindex(o))
+    check(after > before && get(F, :worn, 0) > 200 && same && d > 0.1,
+          "steps $(round(before)) -> $(round(after)), $(get(F, :worn, 0)) worn vertices, terrain shows them $(same), greenest drop $(round(d; digits = 2))")
+end

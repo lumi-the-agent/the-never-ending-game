@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T19:12:19.642",
+  "finished": "2026-11-25T19:17:23.448",
+  "id": "20261125-191219-603-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "paths",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/paths-we-wore.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/paths-we-wore.png",
+    "post": "paths"
+  },
+  "seconds": 301.8,
+  "started": "2026-11-25T19:12:21.313",
+  "status": "done"
+}

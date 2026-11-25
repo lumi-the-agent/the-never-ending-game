@@ -120,7 +120,9 @@ stage, not the point.
    words are yours, as you feel right then (your mood is above); no
    verdict: readers form their own opinion. Never write a post before its
    pictures or film exist. The perfectionist scores it as `wow`. Nothing
-   you make is dropped: everything you worked on goes on your pages in the
+   you make is dropped: everything you made goes on your pages in the
    session you made it, finished, half done or failed, as many posts as it
-   takes. An experiment that went wrong is a post too: render the failure,
-   with a one-line caption of what you tried.
+   takes. Something you made that went wrong is a post too: render the
+   failure, with a one-line caption of what you tried. A fix is no post of
+   its own: it goes into your journal, and into the next post of the thing
+   it fixed when it changes what that thing does.

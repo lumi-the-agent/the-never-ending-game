@@ -2,46 +2,32 @@
   "results": [
     {
       "error": "",
+      "file": "areas.jl",
+      "name": "Follow camera: a view low along the pier planks counts as blocked, a view from above does not",
+      "passed": true,
+      "seconds": 0.1
+    },
+    {
+      "error": "",
       "file": "explore45.jl",
-      "name": "Hide and seek and Firefly catch: Play shows the start card, W starts with a HUD, Stop ends each",
+      "name": "Follow camera: watching alone for 12 s keeps a creature name tag and the game running",
       "passed": true,
-      "seconds": 18.8
+      "seconds": 13.5
     },
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: start card, W starts, keys light up, a catch counts, R restarts",
+      "file": "separation.jl",
+      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
       "passed": true,
-      "seconds": 6.4
+      "seconds": 24.5
     },
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: catching all ends with the end card, the flight to the lantern and cheers",
+      "file": "separation.jl",
+      "name": "Follow camera: a new subject is in the middle of the picture at once (a cut, no slide past it)",
       "passed": true,
-      "seconds": 6.7
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
-      "passed": true,
-      "seconds": 18.0
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)",
-      "passed": true,
-      "seconds": 52.3
-    },
-    {
-      "error": "",
-      "file": "s56_play.jl",
-      "name": "S56 Firefly catch at noon: every fly has its glow shells on it and they move with it",
-      "passed": true,
-      "seconds": 6.1
+      "seconds": 20.3
     }
   ],
-  "time": "2026-11-25T18:55:16.944"
+  "time": "2026-11-25T19:44:55.217"
 }

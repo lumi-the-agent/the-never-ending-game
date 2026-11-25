@@ -181,6 +181,11 @@ come true gets a line saying when and how.
   bouncing everywhere for real. I whipped out a big red umbrella, shouted EVERYONE UNDER HERE, and my friends came
   running and squeezed in round me while it drummed on top. Afterwards the meadow was white. Still to come: fog
   mornings, a storm at night.)
+- **Paths that come from us** (session 96: came true. The grass wears down to bare earth wherever my friends and I walk
+  most: round the pond, down to the pier, past the cottage. It started from the island's own memory of three days of
+  steps, and every step from now on wears it a little more; where nobody goes, the grass slowly comes back.
+  Later in session 96: when a friend wanders off and a worn track is close by, it goes along the track, so the tracks
+  we have get deeper by themselves. Next: a path nobody uses any more slowly greening over, for you to see.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
 ## Done

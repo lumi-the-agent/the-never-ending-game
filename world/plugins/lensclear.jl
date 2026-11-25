@@ -50,6 +50,10 @@ function lens_block(w, eye, target)
             # a trunk beside the lens filled a third of a chat frame once the bystanders were avoided
             o += lens_cost(eye, fwd, p.pos + Point3f(0, 0, 0.8f0 * p.scale), 0.45f0 * p.scale, far)
             o += lens_cost(eye, fwd, p.pos + Point3f(0, 0, 2.6f0 * p.scale), 1.3f0 * p.scale)   # a crown counts behind the subject too: it fills the top of the frame
+            # the real crowns are ~4 m wide and pines hang down to a metre: only near the lens (surface within 3 m), so an
+            # eye tucked under or beside a crown costs while front views past a tree stay free (todo #507, s96)
+            o += lens_cost(eye, fwd, p.pos + Point3f(0, 0, 1.9f0 * p.scale), 1.6f0 * p.scale, 3f0)
+            o += lens_cost(eye, fwd, p.pos + Point3f(0, 0, 3.8f0 * p.scale), 2.1f0 * p.scale, 3f0)
         end
     end
     # houses, benches, toadstools (AssetActors): the cottage covered half a follow view (s56)

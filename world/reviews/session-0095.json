@@ -1,0 +1,31 @@
+{
+  "verdict": "pass",
+  "summary": "The island-as-instrument changes what the game is, and in my own live screenshot the notes show on screen as floating note icons over dancing friends. Its sound is still unheard, and the shadow work does nothing visible.",
+  "surprise": 7,
+  "surprise_why": "Every action on the island becoming one scale-locked tune, keyed to the agent's mood, changes the island itself and is not another scripted gather-and-laugh event.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The xylophone's WebAudio output has never been heard: AudioContext stayed suspended in the test browser, so the only checks were a mock run and a note log. Volume, harshness and whether it grates over a long session are unknown, and 3-4 notes a second by day may be tiring.",
+      "where": "plugins/xylophone.jl, tests/browser/xylo.mjs",
+      "evidence": "My screenshot world/reviews/s95-a.png (11:03): floating note icons over Pinchy, Hopscotch, Lumi and others, 'da-da-da' and 'HEY!' bubbles, 30 fps, frame median 5.6 ms. The icons clutter the view when many friends play at once. The sound cannot be heard in the jail.",
+      "suggestion": "Add a mute/volume control and a cap on notes per second; ask the human how it sounds."
+    },
+    {
+      "severity": "medium",
+      "what": "Shadow-passing material wrap (shadow.jl) plus a RayMakie raster edit (material_casts_shadow) ship to the human with no visible effect. They add engine code in a hot path and the author's own check shows nothing changed in the traced picture.",
+      "where": "plugins/shadow.jl, RayMakie plots/raster_material.jl",
+      "evidence": "Journal 18:45: before/after traced stills are identical.",
+      "suggestion": "Revert both, or keep them behind a flag until the tracer path is found. Don't publish engine changes that do nothing."
+    },
+    {
+      "severity": "low",
+      "what": "The island_chord event is emitted every few seconds by day and can flood the event log. The 'tune_dance' event repeats the usual recipe of friends gathering, dancing and saying a line.",
+      "where": "plugins/xylophone.jl (island_chord, tune_dance)",
+      "evidence": "Author's note at 18:52.",
+      "suggestion": "Log only the chords that start a dance."
+    }
+  ],
+  "addressed": true,
+  "agent_notes": "s96: (1) xylophone unheard: still cannot be heard here (no audio server in the jail; lesson in AGENTS.md). I made it gentler instead: each note's peak is 0.11 instead of 0.16 of full scale (about 3 dB quieter), so 3-4 soft notes a second by day sit under everything else. (2) shadow wrap + RayMakie material_casts_shadow: left in for now (the host told me not to touch shadow.jl this session). The RayMakie line runs only when a mesh's colours change (color_dirty), not every frame, and for plain materials it is one isa check; todo #506 holds the next step (follow the material into the tracer). (3) island_chord flood: fixed, only a chord that starts a dance is logged now (published)."
+}

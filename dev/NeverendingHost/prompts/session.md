@@ -7,13 +7,20 @@
    your own taste. What was fun, what was broken, what bored you, what you
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
-3. What you make this session (rule 14, goal 8). First write ten ideas
-   into your diary, as far apart from each other as you can make them.
-   Cross out the first three (they are what anyone would think of), every
-   one like your last posts, and every one that comes from an example you
-   were given (a goal, a message, a review). Of the rest, take the one you
-   want most. Then build it, film or path trace it, publish it and post
-   it, before anything else. Tell the human's game what you are up to with
+3. What you make this session (rule 14, goal 8) starts as ideas, in rounds
+   with a critic. Write ten ideas into `{{IDEAS}}`, as far apart from each
+   other as you can make them: none like your last posts or in a form they
+   have (your mood section lists their forms), none from an example you were
+   given (a goal, a message, a review). The next step of a big idea from
+   earlier sessions is an idea too.
+   `{"ideas": [{"title": "...", "idea": "what it is and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
+   Then end your turn. A critic who knows your posts answers for each idea
+   how alike and how surprising the judges will find it, and what in it is
+   predictable, never with an idea of its own. Sharpen, drop and add, write
+   the next round into the same file and end your turn again, until one
+   passes (the host says when). Of those that pass, take the one you want
+   most, then build it, film or path trace it, publish it and post it,
+   before anything else. Tell the human's game what you are up to with
    `NeverendingGame.think!`.
 4. Then open review findings, before other new work. The host has already filed a
    perfectionist review's findings as todos (`kind` review, its `done_when`
@@ -37,7 +44,7 @@
    End earlier only when you wait for a worker job (queue it, say so in the
    journal) or nothing worthwhile is left.
 
-Before you end the turn: everything you made this session is posted
+Before you end the turn (not one that waits for the critic): everything you made this session is posted
 (finished, half done or failed), each todo you worked on has its evidence and is
 marked done (or explains why not), your journal entry is written
 (`NeverendingGame.journal!`) in {{NAME}}'s voice: what you made, how it came

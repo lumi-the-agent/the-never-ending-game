@@ -1,16 +1,59 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-25T18:55:59",
+  "ended": "2026-11-25T19:46:19",
   "fatigue": {
-    "asset": 0.44,
-    "feature": 2.35,
-    "film": 2.13,
-    "picture": 1.98,
-    "polish": 2.28,
+    "asset": 0.26,
+    "feature": 2.41,
+    "film": 1.28,
+    "picture": 2.19,
+    "polish": 2.37,
     "post": 2.49,
-    "self": 0.14,
-    "sound": 0.19
+    "self": 0.08,
+    "sound": 0.11
   },
+  "forms": [
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "posts": [
+        "My shadow ran off",
+        "◀◀ Rewind",
+        "Our song"
+      ]
+    },
+    {
+      "form": "Island music layer: friends' actions ring notes, friends react to the sound",
+      "posts": [
+        "The island plays itself"
+      ]
+    },
+    {
+      "form": "Ambient behaviour change: creatures act differently in a situation",
+      "posts": [
+        "Lights out",
+        "Someone's watching"
+      ]
+    },
+    {
+      "form": "Evening lantern ritual: a calm, scenic group event at the pond",
+      "posts": [
+        "Lanterns, the whole evening",
+        "Lanterns on the pond"
+      ]
+    },
+    {
+      "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
+      "posts": [
+        "The gallery",
+        "Paths we wore"
+      ]
+    },
+    {
+      "form": "Still of a failed fix, a single picture",
+      "posts": [
+        "Still my shadow"
+      ]
+    }
+  ],
   "happened": [
     "Boop",
     "Chat",
@@ -184,9 +227,10 @@
     "gallery_opening",
     "shadow_dodge",
     "tune_dance",
-    "island_chord"
+    "island_chord",
+    "paths_remembered"
   ],
-  "joy": 0.58,
+  "joy": 0.49,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -241,6 +285,13 @@
       "session": 95,
       "title": "The island plays itself",
       "what": "Everything a friend does (hop, bite, chat, boing) strikes a note on one beat and scale, in minor or major by Lumi's mood, as a film of friends milling about Lumi with the notes laid over it."
+    },
+    {
+      "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
+      "recipe": "slow persistent change of the island's ground from accumulated walking; a still",
+      "session": 96,
+      "title": "Paths we wore",
+      "what": "The island's grass wears to bare earth along the routes friends walk most, seeded from three days of logged positions, shown in a traced still of the pond ring, pier trail and cottage door; nothing happens as an event."
     }
   ],
   "kinds_ever": [
@@ -257,87 +308,46 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "tune_dance",
-      "island_chord"
+      "paths_remembered"
     ],
-    "session": 95
+    "session": 96
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "nearest": "Everybody in!",
-    "post": "Our song",
-    "score": 6,
-    "session": 95,
-    "shared": "friends near Lumi react together to a trigger and dance briefly; small and quick, driven by the music"
+    "factor": 1.0,
+    "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
+    "form_count": 1,
+    "nearest": "The gallery",
+    "post": "Paths we wore",
+    "score": 4,
+    "session": 96,
+    "shared": "permanent change to the meadow that friends then interact with quietly (no gag, no gathering)",
+    "similarity": 3
   },
   "last_surprise": {
-    "score": 5,
-    "session": 94,
-    "why": "A shadow that peels off its owner is a fresh idea about light, but it is still a scripted event where Lumi chases and friends react."
+    "score": 7,
+    "session": 95,
+    "why": "Every action on the island becoming one scale-locked tune, keyed to the agent's mood, changes the island itself and is not another scripted gather-and-laugh event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T18:15:23",
+  "perceived_until": "2026-11-25T19:05:41",
   "plugin_fatigue": {
-    "bubbles.jl": 0.08,
-    "firefly_catch.jl": 1.0,
-    "gallery.jl": 0.96,
-    "greetings.jl": 0.75,
-    "islandnow.jl": 0.16,
-    "outfits.jl": 0.46,
-    "rewind.jl": 0.13,
-    "separation.jl": 0.1,
-    "shadow.jl": 1.6,
-    "sleepers.jl": 0.36,
-    "snowday.jl": 0.14,
-    "splash.jl": 0.07,
-    "visitors.jl": 0.22,
-    "xylophone.jl": 1.0
+    "firefly_catch.jl": 0.6,
+    "footpaths.jl": 1.0,
+    "gallery.jl": 0.58,
+    "greetings.jl": 0.45,
+    "islandnow.jl": 0.1,
+    "lanterns.jl": 1.0,
+    "lensclear.jl": 1.0,
+    "outfits.jl": 0.28,
+    "rewind.jl": 0.08,
+    "separation.jl": 0.06,
+    "shadow.jl": 0.96,
+    "sleepers.jl": 0.22,
+    "snowday.jl": 0.08,
+    "visitors.jl": 0.13,
+    "xylophone.jl": 1.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.2416666666666667,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/thunderstorm.mp4",
-        "site/img/thunderstorm-zap.png"
-      ],
-      "new_plugins": [
-        "gait.jl",
-        "storm.jl"
-      ],
-      "points": 2.3,
-      "repeats": [],
-      "session": 76,
-      "touched": [
-        "islandnow.jl",
-        "makeover.jl"
-      ],
-      "values": {
-        "feature": 0.8,
-        "film": 0.3,
-        "picture": 1.0,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1503,6 +1513,62 @@
         "post": 0.2
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "paths_remembered",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/paths-we-wore.png"
+      ],
+      "new_plugins": [
+        "footpaths.jl"
+      ],
+      "points": 0.5,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
+        "form_count": 1,
+        "nearest": "The gallery",
+        "post": "Paths we wore",
+        "score": 4,
+        "shared": "permanent change to the meadow that friends then interact with quietly (no gag, no gathering)",
+        "similarity": 3
+      },
+      "session": 96,
+      "touched": [
+        "lanterns.jl",
+        "lensclear.jl",
+        "xylophone.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "picture": 0.1,
+        "polish": 0.1,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1574,6 +1640,7 @@
       "site/films/hail.wav",
       "site/films/hiccups-2.mp4",
       "site/films/island-choir.mp4",
+      "site/films/island-song.mp4",
       "site/films/lanterns.mp4",
       "site/films/leaves-silent.mp4",
       "site/films/leaves.mp4",
@@ -1630,9 +1697,11 @@
       "site/img/presents-traced.png",
       "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
+      "site/img/still-my-shadow.png",
       "site/img/tag-traced.png",
       "site/img/thought-traced.png",
       "site/img/thunderstorm-zap.png",
+      "site/img/tune-dance.png",
       "site/img/visit-traced.png",
       "site/img/voice-laugh.png",
       "site/img/voice.png",
@@ -1700,7 +1769,7 @@
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
-      "firefly_catch.jl": 1.795555851606885e9,
+      "firefly_catch.jl": 1.7956292033833153e9,
       "flight.jl": 1.7956050876631138e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
@@ -1741,7 +1810,7 @@
       "rewind.jl": 1.795616824451536e9,
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7956142955469856e9,
-      "shadow.jl": 1.7956248327914984e9,
+      "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
@@ -1761,13 +1830,14 @@
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
-      "workshop.jl": 1.7955211366517444e9
+      "workshop.jl": 1.7955211366517444e9,
+      "xylophone.jl": 1.795628953844326e9
     },
-    "posts": 53,
+    "posts": 56,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T18:19:28",
+  "started": "2026-11-25T19:01:39",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1874,7 +1944,13 @@
       "Gloria",
       "InjectSills",
       "BraketSimulator",
-      "CALCEPH"
+      "CALCEPH",
+      "TransitionMatrices",
+      "RigorousInvariantMeasures",
+      "AstroIC",
+      "MLJParticleSwarmOptimization",
+      "Lorenz96",
+      "StellaratorOptimizationMetrics"
     ],
     "vision": [
       "SAM2Runner",
@@ -1886,8 +1962,12 @@
       "UVDocRunner",
       "DeepFilterRunner",
       "PPOCRRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "DepthAnythingRunner",
+      "FluxKleinRunner",
+      "RIFERunner",
+      "NeuralLUTRunner"
     ]
   },
-  "surprise_seen": 94
+  "surprise_seen": 95
 }

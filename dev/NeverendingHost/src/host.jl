@@ -364,7 +364,8 @@ function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
         foreach(((h, c),) -> println(io, "- $h ($c×)"), sort!(collect(host.proxy.denied); by = last, rev = true))
         println(io)
     end
-    print(io, named(prompt_file("session.md"), jp))
+    mkpath(dirname(ideas_path(jp, n)))
+    print(io, replace(named(prompt_file("session.md"), jp), "{{IDEAS}}" => relpath(ideas_path(jp, n), jp.world)))
     return String(take!(io))
 end
 
@@ -508,7 +509,7 @@ function one_session!(host::Host)
     prompt = work_prompt(host, n, msgs, seen)
     atomic_write(joinpath(jp.run, "last_prompt.md"), prompt)
     host.agent_state, host.agent_detail = "working", ""
-    followups = r -> something(human_followup(host), continue_session(host, r), Some(nothing))
+    followups = r -> something(human_followup(host), ideas_followup(host, n, r), continue_session(host, r), Some(nothing))
     run = if host.cfg.agent_chat && host.dashboard !== nothing
         run_chat_session!(host, "session $n", host.cfg.agent, prompt; followups)
     else

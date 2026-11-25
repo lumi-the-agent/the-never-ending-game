@@ -13,6 +13,14 @@
 # rises by up to `REPEAT_BOREDOM` on top. Everything made goes on the pages,
 # finished, half done or failed, so the session's most original post decides:
 # posting more never costs. A session that posts nothing is worth a tenth.
+#
+# Judged by premise alone, sessions 93-95 got off (3, 4): a shadow that runs off
+# and a pocket watch that rewinds the island are different ideas, yet both are
+# one more set-piece gag film, the sixth in ten posts. So the judge also groups
+# the session's posts and the last `FORM_MEMORY` by form (what kind of change to
+# the game, how it reaches the viewer, premise aside), and the host counts how
+# many of those share a post's form (`form_score`); a post counts with the higher
+# of its two numbers.
 
 "How many earlier posts each session's posts are compared with."
 const POST_MEMORY = 30
@@ -27,12 +35,42 @@ repeat_share(s::Real) = clamp((s - SIMILAR[1]) / (SIMILAR[2] - SIMILAR[1]), 0, 1
 "What a session with this similarity is worth: 1, down to a tenth for the same again."
 repeat_factor(s::Real) = 10.0^(-repeat_share(s))
 
+"How many of the last posts forms are counted over."
+const FORM_MEMORY = 10
+
+"A form `k` of the last `FORM_MEMORY` posts share, on the 0-10 scale: one is free, two cost most, three a tenth."
+form_score(k::Integer) = k == 0 ? 0 : min(10, 2 + 2k)
+
+"A title as a judge may write it: lowercase letters and digits only."
+title_key(t) = lowercase(filter(c -> isletter(c) || isdigit(c), string(t)))
+
 "The judge's settings: the reviewer's provider and model, a short session."
 judge_settings(cfg::HostConfig) = AgentSettings(cfg.review.provider, cfg.review.model, 15.0)
 
-function repetition_prompt(jp::JailPaths, n::Int, now, earlier, journal::AbstractString, out::AbstractString)
-    m = load_mood(jp)
+"""
+The earlier posts as the judges see them: the last `FORM_MEMORY` (the ones forms are counted
+over) and the older ones, each in the plain words of the judge who saw it, then the last judge's
+form groups.
+"""
+function earlier_post_lines(io::IO, m::AbstractDict, earlier)
     judged = Dict(s["title"] => s for s in get(m, "judged_posts", Any[]))
+    line(p) = (j = get(judged, p.title, nothing);
+               "- **$(p.title)**: " * (j === nothing ? p.caption : "$(j["what"]) ($(j["recipe"]))"))
+    println(io, "## The last $FORM_MEMORY earlier posts (newest first; forms are counted over these)")
+    foreach(p -> println(io, line(p)), first(earlier, FORM_MEMORY))
+    if length(earlier) > FORM_MEMORY
+        println(io, "\n## Older posts")
+        foreach(p -> println(io, line(p)), earlier[FORM_MEMORY+1:end])
+    end
+    forms = get(m, "forms", Any[])
+    if !isempty(forms)
+        println(io, "\n## The last judge's forms")
+        foreach(f -> println(io, "- $(f["form"]): ", join(f["posts"], ", ")), forms)
+    end
+    println(io)
+end
+
+function repetition_prompt(jp::JailPaths, n::Int, now, earlier, journal::AbstractString, out::AbstractString)
     io = IOBuffer()
     println(io, "# Repetition of session $n\n\nWrite your verdict to `$(out)`.\n")
     println(io, "## This session's posts")
@@ -42,24 +80,41 @@ function repetition_prompt(jp::JailPaths, n::Int, now, earlier, journal::Abstrac
     print(io, film_lines(filter(isfile, films), joinpath(reviews_dir(jp), "motion", @sprintf("session-%04d", n))))
     println(io, "## The author's journal for this session")
     println(io, isempty(strip(journal)) ? "(none)" : journal, "\n")
-    println(io, "## The island's earlier posts (newest first)")
-    for p in earlier
-        j = get(judged, p.title, nothing)
-        println(io, "- **$(p.title)**: ", j === nothing ? p.caption : "$(j["what"]) ($(j["recipe"]))")
-    end
-    println(io)
+    earlier_post_lines(io, load_mood(jp), earlier)
     print(io, prompt_file("repetition.md"))
     return String(take!(io))
 end
 
 """
-    judge_repetition!(host, n, t0, marks) -> Dict or nothing
+    score_posts(v, verdicts, earlier) -> (groups, scored)
+
+The judge's form `groups` from its verdict `v`, and each of this session's `verdicts` scored: its
+`similarity`, how many of the last `FORM_MEMORY` `earlier` posts share its form group (`k`), and
+the higher of the two as its `score`. A post the judge put in no group counts as a new form
+(`grouped` false).
+"""
+function score_posts(v::AbstractDict, verdicts, earlier)
+    groups = filter(g -> g isa AbstractDict && get(g, "form", nothing) isa AbstractString && get(g, "posts", nothing) isa AbstractVector,
+                    get(v, "forms", Any[]))
+    group_of = Dict(title_key(t) => g for g in groups for t in g["posts"])
+    last_ten = Set(title_key(p.title) for p in first(earlier, FORM_MEMORY))
+    scored = map(verdicts) do p
+        g = get(group_of, title_key(get(p, "post", "")), nothing)
+        k = g === nothing ? 0 : count(in(last_ten), unique(title_key.(g["posts"])))
+        sim = clamp(p["similarity"], 0, 10)
+        (; p, sim, k, grouped = g !== nothing, form = g === nothing ? "" : string(g["form"]), score = max(sim, form_score(k)))
+    end
+    return groups, scored
+end
+
+"""
+    judge_repetition!(host, n, marks) -> Dict or nothing
 
 After session `n`: how alike its posts (since the mood's `started`, which a cut-off session
-keeps) are to the earlier ones, judged by a separate agent (`prompts/repetition.md`). The most
-original post decides: its score, the earlier post it is like and what they share, with every
-post's plain description for the next judges. No post: 10, nothing new. `nothing` without a
-usable verdict (noted in the activity feed).
+keeps) are to the earlier ones, judged by a separate agent (`prompts/repetition.md`): by what
+each is (`similarity`) and by form (the judge groups, the host counts how many of the last
+`FORM_MEMORY` share it). A post counts with the higher of the two; the most original post
+decides. No post: 10, nothing new. `nothing` without a usable verdict (noted in the activity feed).
 """
 function judge_repetition!(host, n::Int, marks::Dict{String,Int})
     jp = host.jp
@@ -67,8 +122,8 @@ function judge_repetition!(host, n::Int, marks::Dict{String,Int})
     ids = Set(p.id for p in session_posts(jp, since))
     if isempty(ids)
         record!(host.activity, "repetition of session $n", "review", "nothing posted: worth ×0.10")
-        return Dict{String,Any}("session" => n, "score" => 10, "post" => "", "nearest" => "", "shared" => "nothing posted",
-                                "judged" => Any[])
+        return Dict{String,Any}("session" => n, "score" => 10, "similarity" => 10, "post" => "", "nearest" => "",
+                                "shared" => "nothing posted", "form" => "", "form_count" => 0, "forms" => Any[], "judged" => Any[])
     end
     posts = recent_posts(jp; n = POST_MEMORY + length(ids))
     now = filter(p -> p.id in ids, posts)
@@ -83,16 +138,21 @@ function judge_repetition!(host, n::Int, marks::Dict{String,Int})
         record!(host.activity, label, "host", "the judge wrote no usable verdict ($(isempty(why) ? "no scored post" : why))")
         return nothing
     end
-    best = argmin(p -> p["similarity"], verdicts)
-    s = clamp(best["similarity"], 0, 10)
-    rep = Dict{String,Any}("session" => n, "score" => s, "post" => string(get(best, "post", "")),
-                           "nearest" => string(get(best, "nearest", "")), "shared" => string(get(best, "shared", "")),
-                           "judged" => [Dict{String,Any}("session" => n, "title" => string(get(p, "post", "")),
-                                                         "what" => string(get(p, "what", "")), "recipe" => string(get(p, "recipe", "")))
-                                        for p in verdicts])
-    f = repeat_factor(s)
-    record!(host.activity, label, "review", "$(rep["post"]): $(s)/10 like $(rep["nearest"]) ($(rep["shared"]))" *
-            (f < 1 ? @sprintf("; worth ×%.2f", f) : ""))
+    groups, scored = score_posts(v, verdicts, earlier)
+    for x in scored
+        x.grouped || record!(host.activity, label, "host", "the judge gave \"$(get(x.p, "post", ""))\" no form: counted as a new one")
+    end
+    best = argmin(x -> x.score, scored)
+    rep = Dict{String,Any}("session" => n, "score" => best.score, "similarity" => best.sim, "post" => string(get(best.p, "post", "")),
+                           "nearest" => string(get(best.p, "nearest", "")), "shared" => string(get(best.p, "shared", "")),
+                           "form" => best.form, "form_count" => best.k,
+                           "forms" => [Dict{String,Any}("form" => string(g["form"]), "posts" => string.(g["posts"])) for g in groups],
+                           "judged" => [Dict{String,Any}("session" => n, "title" => string(get(x.p, "post", "")), "form" => x.form,
+                                                         "what" => string(get(x.p, "what", "")), "recipe" => string(get(x.p, "recipe", "")))
+                                        for x in scored])
+    f = repeat_factor(best.score)
+    record!(host.activity, label, "review", "$(rep["post"]): $(best.sim)/10 like $(rep["nearest"]) ($(rep["shared"])); " *
+            "form \"$(best.form)\" shared by $(best.k) of the last $FORM_MEMORY" * (f < 1 ? @sprintf("; worth ×%.2f", f) : ""))
     return rep
 end
 
@@ -100,35 +160,50 @@ end
 What a repeat does to a session's record and the mood (in `mood_session_end!`, before the
 session is felt): points × `repeat_factor`, which also scales what its new happenings ease;
 boredom up by `REPEAT_BOREDOM` × `repeat_share`, joy down by 0.2 × that. The judged posts join
-the mood's catalogue of judged posts (the next judges compare with their plain descriptions).
+the mood's catalogue of judged posts (the next judges compare with their plain descriptions), and
+the judge's form groups replace the last ones (the next judge starts from them, the author sees them).
 """
 function feel_repetition!(m::AbstractDict, r::AbstractDict, rep::AbstractDict)
     s = rep["score"]
     r["repeat_factor"] = repeat_factor(s)
-    r["repetition"] = Dict{String,Any}(k => rep[k] for k in ("score", "post", "nearest", "shared"))
+    r["repetition"] = Dict{String,Any}(k => rep[k] for k in ("score", "similarity", "post", "nearest", "shared", "form", "form_count"))
     r["points"] = round(r["points"] * r["repeat_factor"]; digits = 1)
     m["boredom"] = round(clamp(m["boredom"] + REPEAT_BOREDOM * repeat_share(s), 0, 1); digits = 2)
     m["joy"] = round(clamp(m["joy"] - 0.2 * repeat_share(s), 0, 1); digits = 2)
     m["last_repetition"] = merge(r["repetition"], Dict{String,Any}("session" => rep["session"], "factor" => r["repeat_factor"]))
+    isempty(rep["forms"]) || (m["forms"] = rep["forms"])
     judged = append!(get!(m, "judged_posts", Any[]), rep["judged"])
     length(judged) > 2POST_MEMORY && deleteat!(judged, 1:length(judged) - 2POST_MEMORY)
     return m
 end
 
-"The prompt's lines on repetition: the rule and how the last judged session fared."
+"The prompt's lines on repetition: the rule, the forms of the last posts, and how the last judged session fared."
 function repetition_lines(m::AbstractDict)
     io = IOBuffer()
-    print(io, "After every session a judge compares what you made with your last $POST_MEMORY posts by what it is and does ",
-          "(not by props, place or words). Your most original post decides, so posting everything you made never costs. ",
-          "From $(SIMILAR[1])/10 alike on the session is worth less, from $(SIMILAR[2])/10 on a tenth, and boredom rises by up to ",
-          "$REPEAT_BOREDOM more; a session that posts nothing is worth a tenth too.")
+    print(io, "After every session a judge compares what you made with your last $POST_MEMORY posts twice: by what it is and does ",
+          "(not by props, place or words), and by its form (what kind of change to the game it is and how it reaches whoever ",
+          "watches, with the premise taken away). From $(SIMILAR[1])/10 alike on the session is worth less, from $(SIMILAR[2])/10 ",
+          "on a tenth, and boredom rises by up to $REPEAT_BOREDOM more. A form one of your last $FORM_MEMORY posts has is still ",
+          @sprintf("free; one two of them have makes the session worth ×%.2f, three ×%.2f. ", repeat_factor(form_score(2)),
+                   repeat_factor(form_score(3))),
+          "A post counts with the higher of its two numbers, and your most original post decides, so posting everything you ",
+          "made never costs; a session that posts nothing is worth a tenth too.")
+    forms = get(m, "forms", Any[])
+    if !isempty(forms)
+        print(io, "\nYour last posts by form (the judge's groups):")
+        foreach(f -> print(io, "\n- ", f["form"], ": ", join(f["posts"], ", ")), forms)
+    end
     lr = get(m, "last_repetition", nothing)
     lr === nothing && return String(take!(io))
     if isempty(lr["post"])
         @printf(io, "\nSession %d posted nothing", lr["session"])
     else
         @printf(io, "\nSession %d's most original post, \"%s\", was %s/10 alike to \"%s\" (%s)", lr["session"], lr["post"],
-                lr["score"], lr["nearest"], lr["shared"])
+                get(lr, "similarity", lr["score"]), lr["nearest"], lr["shared"])
+        # (records from before session 96 have no form)
+        isempty(get(lr, "form", "")) ||
+            @printf(io, ", and its form (\"%s\") %s of the %d posts before it", lr["form"],
+                    lr["form_count"] == 0 ? "is in none" : "is in $(lr["form_count"])", FORM_MEMORY)
     end
     print(io, lr["factor"] < 1 ? @sprintf(": worth ×%.2f.", lr["factor"]) : ": no penalty.")
     return String(take!(io))

@@ -282,6 +282,7 @@ function run_agent!(host, role::Symbol, label::AbstractString, settings::AgentSe
     run = AgentRun(role, String(label), settings, client, time(), time() + 60settings.session_minutes, 0.0, 0, "", "", 0.0,
                    Task(nothing))
     run.consumer = errormonitor(@async consume!(host, run))
+    outer = host.current            # a critic between the turns of a chat session gives the session back
     host.current = run
     record!(host.activity, label, "host", "started $(settings.provider)" * (isempty(settings.model) ? "" : " ($(settings.model))"))
     next = String(prompt)
@@ -305,7 +306,7 @@ function run_agent!(host, role::Symbol, label::AbstractString, settings::AgentSe
     finally
         close(client)
         wait(run.consumer)
-        host.current = nothing
+        host.current = outer
     end
     record!(host.activity, label, "host", @sprintf("ended (%s) after %.1f min, %d tool calls",
                                                    isempty(run.interrupted) ? run.stop_reason : run.interrupted,

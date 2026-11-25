@@ -58,7 +58,7 @@ const FREE_KINDS = (:wander, :idle, :rest, :eat, :social, :fish, :pebble, :beach
 function chord!(game, t)
     w = game.world
     f = get(XY, :feeling, "content")
-    NG.emit!(w, :island_chord; key = f in ("bored", "lonely") ? "minor" : "major")
+    # (only the chords that start a dance are worth a line in the island's log: every chord flooded it, review 0095)
     w.t - get(XY, :danced, -Inf) < DANCE_GAP && return
     me = findfirst(c -> c.name == "Lumi", w.creatures)
     me === nothing && return
@@ -68,6 +68,7 @@ function chord!(game, t)
     isempty(free) && return
     sort!(free; by = c -> hypot(c.pos[1] - lp[1], c.pos[2] - lp[2]))
     XY[:danced] = w.t
+    NG.emit!(w, :island_chord; key = f in ("bored", "lonely") ? "minor" : "major")
     for c in first(free, 3)
         NG.feel!(w, c, :dance; seconds = 2.4)
         NG.emit!(w, :tune_dance; who = c.name)
@@ -148,7 +149,7 @@ function NG.step!(::Xylophone, game, dt)
                         v2.gain.value = 0.18;
                         o.connect(v); o2.connect(v2); v2.connect(v); v.connect(ctx.destination);
                         v.gain.setValueAtTime(0.0001, t);
-                        v.gain.exponentialRampToValueAtTime(0.16 * g, t + 0.006);
+                        v.gain.exponentialRampToValueAtTime(0.11 * g, t + 0.006);
                         v.gain.exponentialRampToValueAtTime(0.0001, t + 1.1);
                         o.start(t); o2.start(t); o.stop(t + 1.2); o2.stop(t + 1.2);
                         X.n += 1;

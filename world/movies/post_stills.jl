@@ -46,7 +46,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "gallery" => ("Lumi", "Gloop", "Truffle", "Cumulus", "Pinchy"),
                   "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"),
                   "shadow" => ("Lumi", "Pinchy", "Gloop"), "shadow_check" => ("Lumi", "Pinchy", "Gloop"),
-                  "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"))
+                  "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"),
+                  "paths" => ("Lumi", "Gloop", "Pickles"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -79,6 +80,16 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "paths"            # s96: the tracks we wore round the pond and down to the pier, seen from above
+        Base.invokelatest(plugin(g, "footpaths").repaint!, g)       # (the meadow has painted by now: wear it in)
+        A = plugin(g, "areas")
+        px, py = A.POND[1], A.POND[2]
+        for (n, dx, dy, a) in (("Lumi", 2.6f0, -4.2f0, 0.9), ("Gloop", 3.4f0, -2.6f0, 1.2), ("Pickles", -3.8f0, -3.6f0, -0.4))
+            pose!(w, by_name(w, n), (px + dx, py + dy), a, :walk; phase = 0.8f0)
+        end
+        z0 = NG.terrain_height(w.island, px, py - 3)
+        return Point3f(px + 0.5f0, py - 13f0, z0 + 15f0), Point3f(px, py - 2.5f0, z0)
     end
     if post == "tune"             # s95b: a full chord rings out and the friends nearest me dance to the island's tune
         x0, y0 = open_meadow(w)

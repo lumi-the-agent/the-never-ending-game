@@ -364,7 +364,9 @@ function made_parts(r::AbstractDict)
     rp = get(r, "repetition", nothing)
     if rp !== nothing && rp["score"] >= SIMILAR[1]
         push!(parts, isempty(rp["post"]) ? @sprintf("NOTHING POSTED (worth ×%.2f)", r["repeat_factor"]) :
-                     @sprintf("A REPEAT: \"%s\" %s/10 like \"%s\" (worth ×%.2f)", rp["post"], rp["score"], rp["nearest"], r["repeat_factor"]))
+                     @sprintf("A REPEAT: \"%s\" %s/10 like \"%s\"%s (worth ×%.2f)", rp["post"], get(rp, "similarity", rp["score"]),
+                              rp["nearest"], get(rp, "form_count", 0) > 0 ? ", its form in $(rp["form_count"]) of the last $FORM_MEMORY" : "",
+                              r["repeat_factor"]))
     end
     isempty(parts) && push!(parts, "nothing new")
     isempty(r["touched"]) || push!(parts, "edited " * join(r["touched"], ", "))

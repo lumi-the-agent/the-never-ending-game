@@ -113,11 +113,24 @@ function island_state(jp::JailPaths)
     return (; name = character_name(jp), feeling = string(view["feeling"]),
             moods = [k => Float64(view[k]) for k in ("joy", "boredom", "loneliness")],
             new = get(m, "last_new", nothing), surprise = get(m, "last_surprise", nothing),
-            repetition = get(m, "last_repetition", nothing),
+            repetition = get(m, "last_repetition", nothing), ideas = last_ideas_log(jp),
             notes = last([a for a in feed if get(a, "kind", "") in ("host", "review")], 4),
             state = string(get(agent, "state", "off")), current = get(agent, "current", nothing), thought,
             blog = isempty(cfg.blog_repo) ? "" : pages_url(cfg.blog_repo),
             repo = isempty(cfg.game_repo) ? "" : "https://github.com/$(cfg.game_repo)", port = cfg.web_port)
+end
+
+"The latest session's rounds of ideas: how many passed the critic, and those (or the strongest)."
+ideas_body(::Nothing) = [DOM.div("no ideas pitched yet"; class = "ne-muted")]
+function ideas_body(log::AbstractDict)
+    isempty(log["rounds"]) && return [DOM.div("session $(log["session"]): no round yet"; class = "ne-muted")]
+    ideas = last(log["rounds"])["ideas"]
+    passed = filter(i -> i["passes"], ideas)
+    shown = isempty(passed) ? [argmax(i -> i["worth"] * i["surprise"], ideas)] : passed
+    return [DOM.div(DOM.span(string(length(passed)); class = "ne-score"),
+                    DOM.span(" of $(length(ideas)) passed · round $(length(log["rounds"])) of $IDEA_ROUNDS · session $(log["session"])";
+                             class = "ne-muted")),
+            (DOM.div("“$(i["title"])”, surprise $(i["surprise"]): $(i["critique"])"; class = "ne-quote") for i in shown)...]
 end
 
 "A label and a bar from 0 to 1."
@@ -139,7 +152,9 @@ function island_dom(s)
         [DOM.div(DOM.span(string(rp["score"]); class = "ne-score"),
                  DOM.span(" / 10 · session $(rp["session"])" * (rp["factor"] < 1 ? @sprintf(" · worth ×%.2f", rp["factor"]) : "");
                           class = "ne-muted")),
-         DOM.div(isempty(rp["post"]) ? "nothing posted" : "“$(rp["post"])” like “$(rp["nearest"])”: $(rp["shared"])"; class = "ne-quote")]
+         DOM.div(isempty(rp["post"]) ? "nothing posted" : "“$(rp["post"])” like “$(rp["nearest"])”: $(rp["shared"])" *
+                 (isempty(get(rp, "form", "")) ? "" : " · its form, “$(rp["form"])”, in $(rp["form_count"]) of the last $FORM_MEMORY");
+                 class = "ne-quote")]
     notes = [DOM.div(DOM.span(first(string(get(a, "time", "")), 16)[12:end]; class = "ne-note-time"), " ",
                      string(get(a, "text", "")); class = "ne-note") for a in reverse(s.notes)]
     return DOM.div(
@@ -147,6 +162,7 @@ function island_dom(s)
         card("New on the island", new...),
         card("The reviewer's surprise", surprise...),
         card("Doing the same again", repetition...),
+        card("Ideas and the critic", ideas_body(s.ideas)...),
         card("The host", notes...); class = "ne-cards")
 end
 
