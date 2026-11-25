@@ -236,6 +236,7 @@ function step_goal!(c::Creature, w::World, dt::Real)
 end
 
 action_extra(::Val, c, w) = 0.0f0
+action_extra(::Val{:fly}, c, w) = c.extra       # how hard it flaps: the flying plugin sets it (species.jl)
 
 """
     feel!(w, c, action; seconds = 3.0) -> Bool

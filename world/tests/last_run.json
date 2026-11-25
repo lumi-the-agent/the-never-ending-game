@@ -5,22 +5,22 @@
       "file": "minigames.jl",
       "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
       "passed": true,
-      "seconds": 14.6
+      "seconds": 21.3
     },
     {
       "error": "",
       "file": "minigames.jl",
       "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
       "passed": true,
-      "seconds": 13.9
+      "seconds": 16.9
     },
     {
       "error": "",
       "file": "minigames.jl",
       "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
       "passed": true,
-      "seconds": 28.9
+      "seconds": 31.6
     }
   ],
-  "time": "2026-11-25T00:15:45.684"
+  "time": "2026-11-25T01:41:39.038"
 }

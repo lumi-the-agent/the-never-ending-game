@@ -6,7 +6,10 @@ isdefined(Main, :CLOUDS) || Core.eval(Main, :(const CLOUDS = Dict{Symbol,Any}())
 import Random
 const NG = NeverendingGame
 const CL = Main.CLOUDS
-const CLOUD_VERSION = 7
+const CLOUD_VERSION = 8
+# s75: lit puffs (the sun shades them: a bright top, a grey belly) and no rim shells, as the cloud ring
+# Lumi leaves (perfectionist-0073: flat glowing ellipses with a hard bright rim). false = the painted, unlit look.
+const SHADED = true
 const FRINGE = (1.07f0, 1.15f0, 1.24f0)   # rim shells per puff (one 1.22 shell at alpha 0.3 drew a ring)
 const FRINGE_ALPHA = 0.11f0
 const DRIFT = 0.004f0          # radians per sim second around the island
@@ -38,10 +41,13 @@ function build_clouds!(game)
     w = game.world
     CL[:puffs] = cloud_puffs(w.island.radius)
     n = length(CL[:puffs])
-    CL[:plot] = meshscatter!(game.stage.scene, fill(Point3f(0, 0, -100), n); marker = NG.shape(:sphere),
-        markersize = [Vec3f(p[5]) for p in CL[:puffs]],
-        color = fill(RGBf(1, 1, 1), n), shading = Makie.NoShading,
-        material = NG.Hikari.Emission(color = (1.0, 1.0, 1.0), strength = 1.0), name = :clouds)
+    CL[:plot] = SHADED ?
+        meshscatter!(game.stage.scene, fill(Point3f(0, 0, -100), n); marker = Sphere(Point3f(0), 1f0),
+            markersize = [Vec3f(p[5]) for p in CL[:puffs]], color = fill(RGBf(1, 1, 1), n), name = :clouds) :
+        meshscatter!(game.stage.scene, fill(Point3f(0, 0, -100), n); marker = NG.shape(:sphere),
+            markersize = [Vec3f(p[5]) for p in CL[:puffs]],
+            color = fill(RGBf(1, 1, 1), n), shading = Makie.NoShading,
+            material = NG.Hikari.Emission(color = (1.0, 1.0, 1.0), strength = 1.0), name = :clouds)
     # a soft rim (perfectionist-0055: "flat beige blobs with hard rims" at 19:25): every puff again, a
     # little bigger and faint, so the edge fades out; raster and browser only (traced alpha shells are discs)
     haskey(CL, :fringe) && delete!(CL[:fringe].parent, CL[:fringe])
@@ -126,7 +132,7 @@ function NG.step!(::Clouds, game, dt)
     get(CL, :key, nothing) == (CLOUD_VERSION, game.stage.scene) || build_clouds!(game)
     w = game.world
     traced = NG.path_traced(game)
-    CL[:fringe].visible[] == !traced || (CL[:fringe].visible[] = !traced)
+    CL[:fringe].visible[] == (!traced && !SHADED) || (CL[:fringe].visible[] = !traced && !SHADED)
     traced && return     # glowing puffs held still while tracing (NG.path_traced)
     puffs = CL[:puffs]
     # the clouds go with the wind (s73, the wind wish): they drift faster when it blows harder; their own
@@ -146,6 +152,8 @@ function NG.step!(::Clouds, game, dt)
     # and every 5 s as the clouds drift round the island (their sun side turns)
     if abs(old[1] - nf) > 0.01f0 || abs(old[2].g - sun.g) + abs(old[2].b - sun.b) > 0.01f0 || w.t > get(CL, :tinted, -Inf) + 5
         cs = puff_colors(puffs, w)
+        # lit by the sun as well, the painted shade would count twice (grey clouds): half way to white
+        SHADED && (cs = [RGBf(0.45f0 + 0.55f0 * c.r, 0.45f0 + 0.55f0 * c.g, 0.45f0 + 0.55f0 * c.b) for c in cs])
         CL[:plot].color[] = cs
         # the rim a touch lighter than its puff: a sunlit edge on the bright side
         CL[:fringe].color[] = repeat([RGBAf(min(1f0, c.r + 0.06f0), min(1f0, c.g + 0.05f0), min(1f0, c.b + 0.03f0), FRINGE_ALPHA) for c in cs], 3)

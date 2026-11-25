@@ -68,8 +68,9 @@ function film_lines(films::Vector{String}, dir::AbstractString)
     isempty(films) && return ""
     io = IOBuffer()
     println(io, "## Films and their motion sheets\n")
-    println(io, "Open both images of every film before you judge its motion: the overview shows what happens, ",
-            "the steps sheet 8 frames 1/fps apart, where pops, snaps, jitter and stiff poses show.\n")
+    println(io, "Open the images of every film before you judge its motion: the overview shows what happens, ",
+            "the steps sheet 8 frames 1/fps apart (pops, snaps, jitter), the strip 2.4 s at 10 frames a second ",
+            "(how it moves).\n")
     for f in films
         try
             println(io, motion_sheet(f; out = dir).text)

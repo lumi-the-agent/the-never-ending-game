@@ -98,8 +98,10 @@ journal which goal a session moved forward. Only the human changes this file.
    other, things have weight, and nothing pops, snaps, jitters or slides.
    The light should make every picture, live in the browser and in films,
    at every time of day, not flat noon. You cannot see motion in a still:
-   look at your films and the live game at full frame rate.
-   `include("/sim/Programmieren/SimGame/dev/NeverendingHost/tools/motion_sheet.jl")`
-   and `motion_sheet(film)` give an overview and 8 consecutive frames around
-   the sharpest jump; the reviewers judge motion and light from the same
-   sheets. Make your own measurements of motion where pictures are not enough.
+   look at your films and the live game at full frame rate. Before every
+   session you get the host's measure of how everything moves (vibrating,
+   juddering, snapping, too fast, frozen); `live_motion()` takes the same
+   measure in your sandbox while you work, and `motion_sheet(film)`
+   (`include("/sim/Programmieren/SimGame/dev/NeverendingHost/tools/motion_sheet.jl")`)
+   gives an overview and 8 consecutive frames of a film. The reviewers judge
+   motion and light from the same measures.

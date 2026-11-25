@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T00:36:11.829",
+  "finished": "2026-11-25T01:13:51.791",
   "id": "20261125-003611-829-asset",
   "kind": "asset",
   "params": {
@@ -9,6 +10,20 @@
       "crabbit"
     ]
   },
+  "result": {
+    "created": "2026-11-25T01:13:51.401",
+    "faces": 39560,
+    "id": "20261125-003611-829-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-003611-829-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-003611-829-asset/mesh.jls",
+    "prompt": "a cute orange crab creature with long bunny ears, big round shiny eyes on its shell, two big claws and six little legs, plush clay toy style, standing, seen from the side, three quarter view, full body",
+    "seconds": 1055.0,
+    "tags": [
+      "creature",
+      "crabbit"
+    ]
+  },
+  "seconds": 1060.1,
   "started": "2026-11-25T00:56:11.484",
-  "status": "running"
+  "status": "done"
 }

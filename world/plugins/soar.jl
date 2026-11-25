@@ -34,15 +34,25 @@ lumi_of(w) = (i = findfirst(c -> c.name == "Lumi", w.creatures); i === nothing ?
 ease(u) = (u = clamp(u, 0, 1); u * u * (3 - 2u))
 has_chick() = isdefined(Main, :EGG) && haskey(Main.EGG, :chick) && Main.EGG[:chick][:hatched]
 
-"Where Lumi is `u` (0..1) round the circle: it starts and ends at `s.start`, highest half way."
+const HOVER = 0.8f0               # how high the takeoff hop ends, where the circle begins
+
+"""
+Where Lumi is `u` (0..1) round the circle: it starts at the takeoff hop over `s.start` and lands there.
+It climbs and comes down with no speed at either end, and flies slower near them (s75, goal 6: the old
+`sin(pi u)^0.6` height dropped the last 1.7 m in a third of a second, a slam instead of a landing).
+"""
 function loop_pos(s::Soar, w, u)
-    a = s.a0 + 2f0 * Float32(pi) * Float32(u)
+    u = Float32(clamp(u, 0, 1))
+    a = s.a0 + 2f0 * Float32(pi) * (u - 0.85f0 * sin(2f0 * Float32(pi) * u) / (2f0 * Float32(pi)))
     x = s.centre[1] + s.radius * cos(a); y = s.centre[2] + s.radius * sin(a)
-    lift = max(0f0, sin(Float32(pi) * Float32(u)))^0.6f0   # sin(pi*u) dips to -9e-8 at the end: a DomainError switched the plugin off
+    h = u <= 0.5f0 ? HOVER + (HEIGHT - HOVER) * Float32(ease(u / 0.3)) : HEIGHT * Float32(ease((1 - u) / 0.3))
     g = NG.ground(w.island, (x, y))[3]
-    z = max(g, s.start[3]) + HEIGHT * lift + 0.3f0 * sin(9f0 * Float32(u))   # a gentle bob
-    return Point3f(x, y, u < 0.02 || u > 0.98 ? max(z, g) : z), a
+    z = max(g, s.start[3]) + h + 0.3f0 * sin(9f0 * u) * sin(Float32(pi) * u)   # a gentle bob, none at the ends
+    return Point3f(x, y, max(z, g)), a
 end
+
+"How hard Lumi flaps (`extra` of the `:fly` pose, engine species.jl): hard at the takeoff and the landing flare."
+effort(u) = u < 0.12 ? 0.6f0 * (1f0 - Float32(ease(u / 0.12))) : u > 0.86 ? Float32(ease((u - 0.86) / 0.12)) : 0f0
 
 function takeoff!(s::Soar, game, me)
     w = game.world
@@ -95,8 +105,9 @@ function NG.step!(s::Soar, game, dt)
                  me.goal.kind ∉ NG.BUSY_GOALS && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.5) && takeoff!(s, game, me)
             ok || (s.next_t = w.t + 120)
         end
-        return
     end
+    puffs!(s, game)
+    s.state === :idle && return
     me = NG.creature(w, s.lumi)
     if me === nothing || me.controlled || game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
         return finish!(s, game)
@@ -106,8 +117,10 @@ function NG.step!(s::Soar, game, dt)
     el = w.t - s.t0
     if s.state === :up
         # wings out, flap, flap, a hop... and it keeps going up
-        me.pos = s.start + Point3f(0, 0, el < 1.2 ? 0f0 : 0.8f0 * Float32(ease((el - 1.2) / 1.0)))
-        me.action = el < 0.6 ? :proud : :dance; me.goal.action = me.action
+        # wings out, then beating hard upright (flapping `:fly`), the hop, and it tips forward into the flight
+        me.pos = s.start + Point3f(0, 0, el < 1.2 ? 0f0 : HOVER * Float32(ease((el - 1.2) / 1.0)))
+        me.action = el < 0.5 ? :proud : :fly; me.goal.action = me.action
+        me.extra = el < 1.2 ? 1f0 : 1f0 - 0.4f0 * Float32(ease((el - 1.2) / 1.0))
         p1, a = loop_pos(s, w, 0.005)
         # turn towards the flying direction over the run-up (it snapped round in one frame, s74, goal 6)
         dyaw = mod(a + Float32(pi / 2) - me.yaw + Float32(pi), 2f0 * Float32(pi)) - Float32(pi)
@@ -120,7 +133,8 @@ function NG.step!(s::Soar, game, dt)
         p, a = loop_pos(s, w, u)
         me.pos = p
         me.yaw = a + Float32(pi / 2)            # along the circle (counter-clockwise)
-        me.action = sin(7 * el) > -0.2 ? :dance : :proud; me.goal.action = me.action
+        me.action = :fly; me.goal.action = :fly
+        me.extra = effort(u)
         if u > 0.25 && s.said == 0
             s.said = 1
             NG.say!(w, me, "WHEEEEE!"; duration = 2.0)
@@ -156,7 +170,14 @@ function NG.step!(s::Soar, game, dt)
             c[:pos] = g + Point3f(0, 0, (1 - u) * 1.5f0 + 0.3f0 * abs(sin(6f0 * Float32(el))))
             c[:action] = :jump
         else
+            # on the back, which tips forward with the flying body (species.jl `:fly`: pitch, lift)
             seat = me.pos + Point3f(-0.12f0 * cos(me.yaw), -0.12f0 * sin(me.yaw), 1.5f0)
+            if me.action === :fly
+                p = 0.95f0 - 0.75f0 * me.extra
+                bx, bz = -0.3f0, 1.3f0
+                fx = bx * cos(p) + bz * sin(p); fz = -bx * sin(p) + bz * cos(p) + 0.3f0 * (1 - me.extra)
+                seat = me.pos + Point3f(fx * cos(me.yaw), fx * sin(me.yaw), fz)
+            end
             # the little one hops up onto the back during the run-up, in an arc (it appeared there in one frame)
             if s.state === :up
                 haskey(S, :hop_from) || (S[:hop_from] = c[:pos])
@@ -170,6 +191,62 @@ function NG.step!(s::Soar, game, dt)
         end
         c[:yaw] = me.yaw
     end
+    return
+end
+
+# ── a ring of cloud (s75): little puffs left behind in the air all the way round, which drift off with the wind ──
+const NPUFF = 90                  # a fixed set of instances, reused round and round (the browser gets every update)
+const PUFF_EVERY = 0.12           # sim s between two puffs
+const PUFF_LIFE = 45.0            # s a puff stays (it grows, drifts, then shrinks away)
+const PUFF_DRAW = 1 / 12          # s between two redraws
+
+function puff_plot!(game)
+    haskey(S, :puff_plot) && S[:puff_plot].parent !== nothing && return S[:puff_plot]
+    S[:puffs] = Tuple{Point3f,Float64,Float32}[]           # (where, born, size)
+    # names are unique per scene: a reload or a failed start can leave the last one behind
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :soar_puffs, game.stage.scene.plots)
+        delete!(game.stage.scene, p)
+    end
+    S[:puff_plot] = meshscatter!(game.stage.scene, fill(Point3f(0, 0, -50), 3NPUFF); marker = Sphere(Point3f(0), 1f0),
+                                 markersize = fill(Vec3f(0), 3NPUFF), color = RGBf(0.97, 0.96, 0.93), name = :soar_puffs)
+end
+
+function puffs!(s::Soar, game)
+    game.stage === nothing && return
+    w = game.world
+    plot = puff_plot!(game)
+    tr = S[:puffs]
+    if s.state === :loop && w.t - get(S, :last_puff, -Inf) > PUFF_EVERY
+        me = NG.creature(w, s.lumi)
+        # only high up: the climb and the descent stacked puffs into white columns by the landing spot (s75 preview)
+        if me !== nothing && me.pos[3] - s.start[3] > 0.55f0 * HEIGHT
+            back = Point3f(-cos(me.yaw), -sin(me.yaw), 0)
+            push!(tr, (me.pos + 0.7f0 * back + Point3f(0, 0, 0.45f0), w.t, 0.45f0 + 0.3f0 * rand(w.rng, Float32)))
+            length(tr) > NPUFF && popfirst!(tr)
+            S[:last_puff] = w.t
+        end
+    end
+    filter!(p -> w.t - p[2] < PUFF_LIFE, tr)
+    isempty(tr) && !get(S, :puffs_shown, false) && return
+    w.t - get(S, :puff_drawn, -Inf) < PUFF_DRAW && return
+    S[:puff_drawn] = w.t
+    wd = isdefined(Main, :WIND) && haskey(Main.WIND, :now) ? Base.invokelatest(Main.WIND[:now], w.t)[1] : Vec2f(1, 0)
+    ps = fill(Point3f(0, 0, -50), 3NPUFF); ms = fill(Vec3f(0), 3NPUFF)
+    for (i, (p, born, r)) in enumerate(tr)
+        age = Float32(w.t - born)
+        # small behind Lumi (it must not hide the flyer), full in 2 s, gone over the last 10
+        k = clamp(age / 2f0, 0.15f0, 1f0) * clamp((Float32(PUFF_LIFE) - age) / 10f0, 0f0, 1f0) * (1f0 + 0.012f0 * age)
+        c = p + Point3f(0.25f0 * age * wd[1], 0.25f0 * age * wd[2], 0.02f0 * age)
+        # a little cluster, not one ball (the first film's ring was a string of pearls): two smaller lumps beside it
+        a = 6.283f0 * mod(Float32(born) * 7.31f0, 1f0)
+        for (j, (d, z, f)) in enumerate(((0f0, 0f0, 1f0), (0.75f0, 0.2f0, 0.7f0), (-0.7f0, -0.12f0, 0.6f0)))
+            o = r * k * Point3f(d * cos(a), d * sin(a), z)
+            ps[3i - 3 + j] = c + o
+            ms[3i - 3 + j] = Vec3f(f * r * k, f * r * k, 0.75f0 * f * r * k)
+        end
+    end
+    S[:puffs_shown] = !isempty(tr)
+    Makie.update!(plot; arg1 = ps, markersize = ms)
     return
 end
 
@@ -190,6 +267,9 @@ end
 
 function NG.start!(s::Soar, game)
     S[:sys] = s
+    delete!(S, :puff_plot); empty!(get(S, :puffs, [])); S[:puffs_shown] = true    # a fresh scene (a reload, a quiet copy)
+    game.stage === nothing || puff_plot!(game)
+    :fly in NG.ACTION_CODES || NG.register_action!(:fly)     # the engine does it since s75
     moment = w -> s.state === :idle ? nothing : s.lumi
     NG.CAMERA_MOMENTS["soar"] = moment
     isdefined(Main, :BIG_MOMENTS) || Core.eval(Main, :(const BIG_MOMENTS = Dict{String,Any}()))
@@ -199,6 +279,9 @@ function NG.start!(s::Soar, game)
 end
 
 function NG.stop!(s::Soar, game)
+    p = get(S, :puff_plot, nothing)
+    p === nothing || p.parent === nothing || delete!(p.parent, p)
+    delete!(S, :puff_plot)
     delete!(NG.CAMERA_MOMENTS, "soar")
     delete!(NG.CAMERA_GROUPS, "soar")
     isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "soar")

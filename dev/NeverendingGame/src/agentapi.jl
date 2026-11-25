@@ -4,7 +4,7 @@
 #   journal!("title", "what I did, what I learned, what is next")
 #   think!("building a lookout bench on the hill")    Lumi's thought bubble
 #   say_to_human("…")
-#   live_status(), live_eval(code), live_screenshot(path), live_reload()   (live.jl: your sandbox game;
+#   live_status(), live_eval(code), live_screenshot(path), live_motion(), live_reload()   (live.jl: your sandbox game;
 #   `game = :live` looks at the human's)
 #   publish(; why)                                                         (publish.jl)
 #   submit_job(:asset; prompt = "…"), job(id), wait_job(id)                (assets.jl)

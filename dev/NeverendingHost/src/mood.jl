@@ -603,6 +603,25 @@ function look_around!(host, n::Int)
     return String.(r["paths"])
 end
 
+"""
+    sense_motion!(host, n) -> String
+
+The character's sense of motion before session `n`: the sandbox (the fresh copy `look_around!`
+made) measures how every creature moves over a few seconds, frame by frame, and films the one
+that moves worst (live command `motion`, NeverendingGame's motionsense.jl). The text for the
+prompt, or why there is none.
+"""
+function sense_motion!(host, n::Int)
+    dir = joinpath(host.jp.world, "media", "eyes", @sprintf("session-%04d", n))
+    r = game_request(host.jp, Dict("cmd" => "motion", "dir" => dir); game = :sandbox, timeout = 300)
+    r === nothing && return "the sandbox did not answer"
+    r["ok"] === true || return "it failed: " * first(string(get(r, "error", r)), 300)
+    return String(r["text"])
+end
+
+motion_lines(text::AbstractString, name) =
+    "## How things move right now ($(name)'s sense of motion: the host measured it in a fresh copy of the human's world)\n" * text
+
 eye_lines(paths::AbstractVector, name) =
     "## What $name sees right now (a fresh copy of the human's world; you are $name: open these images first)\n" *
     join(paths, "\n")

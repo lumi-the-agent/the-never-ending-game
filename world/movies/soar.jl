@@ -48,13 +48,22 @@ function soar_clip(path; spot, rasterize = true, samples = 16, width = 960, heig
         # the plugin's own view: beside Lumi on the way up, then flying alongside, a little behind and outside
         v = sys.state === :idle ? nothing : Base.invokelatest(S[:mod].soar_group, g.world)
         eye, look = v === nothing ? (c + Point3f(0, -6f0, 2f0), c + Point3f(0, 0, 1f0)) : v[3]
+        # landed (s75): a slow pull back beside Lumi and a tilt up to the ring of cloud it left (eased over ~2 s:
+        # a quick turn reads as a whip, the human, s74)
+        slow = sys.state === :idle || sys.state === :after
+        if slow
+            o = Vec3f(sys.centre[1] - c[1], sys.centre[2] - c[2], 0); o = o / max(hypot(o[1], o[2]), 1f-3)
+            eye = c - 5.5f0 * o + Point3f(0, 0, 1.4f0) + 2.5f0 * Vec3f(-o[2], o[1], 0)
+            look = Point3f(sys.centre[1], sys.centre[2], c[3] + 6.5f0)
+        end
         if haskey(S, :eye)
-            S[:eye] += 0.2f0 * (eye - S[:eye]); S[:look] += 0.3f0 * (look - S[:look])
+            a = slow ? 0.025f0 : 0.2f0
+            S[:eye] += a * (eye - S[:eye]); S[:look] += (slow ? 0.025f0 : 0.3f0) * (look - S[:look])
         else
             S[:eye] = eye; S[:look] = look
         end
         rig.eye = S[:eye]; rig.target = S[:look]
-        sys.state === :idle && t > 10 && return t + 0.5
+        sys.state === :idle && t > 10 && return t + 2.5
         return nothing
     end
     NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rig = NG.CameraRig(; mode = :fixed),

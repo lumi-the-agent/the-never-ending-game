@@ -23,6 +23,8 @@ live_eval("length(game.world.creatures)")        # runs between two frames, `gam
 live_eval("game.rig.mode = :orbit")              # change things live
 live_screenshot(joinpath(pwd(), "media", "now.png"))  # the sandbox's dashboard, as png; open it and look
 live_screenshot(path; game = :live)   # what the human sees right now (look, never change the human's game)
+print(live_motion())                  # how everything moves, frame by frame: who vibrates, judders, snaps,
+                                      # races or is frozen, and 8 consecutive frames of the worst (a still never shows it)
 live_reload()                      # load changed plugins now, returns each plugin's state
 live_path_tracing(true)            # the RayMakie screen path traces (progressive); false: raster again
 publish(why = "golden flower field")   # into the human's game: engine edits + every changed plugin that loads

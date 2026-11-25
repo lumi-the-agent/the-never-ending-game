@@ -164,6 +164,8 @@ function animate(m::Crest, c::PoseCtx)
         θ = -0.12f0 + 0.14f0 * clamp(1f0 + c.mood, 0.4f0, 1.6f0) * sin(2c.phase - 0.9f0)
     elseif a === :run                             # swept back by the wind
         θ = -0.45f0 + 0.08f0 * sin(2c.phase)
+    elseif a === :fly                             # streaming back in the wind of the flight, shaken by each beat
+        θ = -0.8f0 + 0.7f0 * c.extra + 0.08f0 * fly_flap(c) * sin(2fly_beat(c))   # at `extra` 1 as up as `:proud`
     elseif a === :idle && c.extra > 0f0           # just stopped: flops forward and back, dying away
         s = 1.2f0 * (1f0 - c.extra)
         θ = 0.55f0 * exp(-2.2f0 * s) * sin(11f0 * s)
@@ -193,6 +195,9 @@ function animate(m::Wing, c::PoseCtx)
         up = 1.25f0 + 0.3f0 * sin(13c.t)
     elseif a === :gasp
         up = 0.7f0
+    elseif a === :fly                             # full beats (above the back to below the belly), held out wide to glide
+        f = fly_flap(c)
+        up = 1.45f0 + f * (0.85f0 * sin(fly_beat(c)) - 0.1f0)
     elseif a === :dance || a === :play
         up = 0.6f0 + 0.5f0 * sin(7c.t + (m.side > 0 ? 0f0 : 1.2f0))
     elseif a === :run
@@ -281,6 +286,8 @@ function bird_upper(c::PoseCtx)
         pitch = -0.12f0
     elseif a === :sigh || a === :cry
         pitch = 0.12f0
+    elseif a === :fly                      # flapping hard (takeoff, landing) the chest stays out as in `:proud`
+        pitch = -0.12f0 * c.extra
     end
     return (euler(Vec3f(roll, pitch, yaw)), lift)
 end
@@ -302,7 +309,7 @@ How far to raise a leg (body frame) posed by `(Δo, Δq)` so its sole stands on 
 from sinking in. Nothing for jumps, hops and swimming: the legs go along.
 """
 function plant(m::Birdy, c::PoseCtx, Δo, Δq, swing::Bool)
-    (c.action in (:jump, :swim, :proud, :sleep, :sit) || !haskey(BIRD_SOLES, m.leg)) && return 0f0
+    (c.action in (:jump, :swim, :proud, :sleep, :sit, :fly) || !haskey(BIRD_SOLES, m.leg)) && return 0f0
     b = body_pose(Val(c.action), c)
     qb = euler(b.lean)
     S = Vec3f(1 + b.squash / 2, 1 + b.squash / 2, 1 - b.squash)
@@ -314,7 +321,13 @@ end
 function animate(m::Birdy, c::PoseCtx)
     Δo, Δq, Δs = animate(m.inner, c)
     q, lift = bird_upper(c)
-    if m.leg != 0
+    if m.leg != 0 && c.action === :fly
+        # in the air the feet fold up under the tail (turned back about the hip and shorter, as a bent knee would);
+        # for a takeoff or a landing (`extra` 1) they reach down at full length
+        r = qrotation(Vec3f(0, 1, 0), 0.9f0 - 0.9f0 * c.extra)          # at `extra` 1 straight, as in `:proud`
+        k = 0.55f0 + 0.45f0 * c.extra
+        return (m.hip + k * (r * (Δo - m.hip)), r * Δq, k * Δs)
+    elseif m.leg != 0
         f, e = fidget(c)
         tap = f == 3 && m.leg < 0                      # tapping the right foot
         if tap

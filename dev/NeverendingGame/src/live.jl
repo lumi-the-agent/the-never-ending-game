@@ -217,6 +217,16 @@ live_eval(code::AbstractString; kw...) = live("eval"; code, kw...)["result"]
 live_screenshot(path::AbstractString; kw...) = live("screenshot"; path = abspath(path), kw...)["path"]
 
 """
+    live_motion(dir = "media/motion") -> String
+
+How the creatures move in the sandbox, measured frame by frame from what is drawn (motionsense.jl):
+who vibrates, judders, snaps, is too fast or frozen, and 8 consecutive frames of the worst one in
+`dir/motion.png`. The same sense the host gives you before every session. Steps the sandbox's
+world 3 s ahead.
+"""
+live_motion(dir::AbstractString = "media/motion"; kw...) = live("motion"; dir = abspath(dir), kw...)["text"]
+
+"""
     live_path_tracing(on)
 
 Switch the game's RayMakie screen between path tracing (`true`, progressive:

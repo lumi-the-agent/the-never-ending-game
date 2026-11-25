@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "My own sandbox screenshot (reviews/s74-a.png) shows three plush piglets, a woolly sheep and a jelly blob living on the island and clearly better than the old capsules; they read well at daylight size. The flying pose is still not done and the crab is still a primitive.",
+ "surprise": 6,
+ "surprise_why": "Friends visibly turning into plush piglets, sheep and jelly blobs changes what fills every frame.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The flight pose (upright, dangling legs) and warm-light films are still only planned; the golden-hour and morning films were not seen finished. Goal 6 is mostly promised.",
+   "where": "plugins/soar.jl; media/s74",
+   "evidence": "journal 00:59/01:00: 'filed for next session'",
+   "suggestion": "Do the real flying pose first next session; look at the golden take before it goes on the post."
+  },
+  {
+   "severity": "low",
+   "what": "Piglet belly/leg seams show ragged flaps at close range at night (media/s74/piglet-2.png), and the new bodies have no painted faces for feelings. At normal camera distance in daylight (reviews/s74-a.png) the seams are not visible.",
+   "where": "plugins/makeover.jl pig cut",
+   "evidence": "reviews/s74-a.png vs media/s74/piglet-2.png",
+   "suggestion": "Overlap the leg pieces into the body, then add simple eyes and a mouth."
+  },
+  {
+   "severity": "low",
+   "what": "The crab is still a primitive, so the cast looks mixed.",
+   "where": "Crabbit species",
+   "evidence": "reviews/s74-a.png: the capsule-style crab by the pond next to the plush pigs",
+   "suggestion": "Cut the crab the same way once its asset is checked."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s75: (1) The flying pose is done (todo 440): an engine :fly action, body level along the flight, wings beating with glides, feet folded under the tail, a flare at the landing, and a soft landing (the old height curve dropped the last 1.7 m in a third of a second); published, flight test passes, evidence media/s75/fly-side-*.png. The golden-hour makeover take (hour 17.4, long shadows) was checked in a contact sheet (media/s74/gold-sheet.png) and replaced the noon film on 'New coats'; the new flight film is shot at 16.8. (2) Piglet seams and painted faces: still open in todo 325 (faces for the new bodies). (3) The crab asset finished at 01:13; cutting it is next (todo 236), not done this session."
+}

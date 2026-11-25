@@ -9,11 +9,13 @@ whether what it claims works. Judge:
 4. **Fast:** frame time still under 33 ms? Which system got slower?
 5. **Code:** does it duplicate something that exists, hide errors, or break
    on the next change?
-6. **Motion:** judged from the films' motion sheets (above) and the live game,
-   never from one still: does each pose fit what the creature does (flying
+6. **Motion:** judged from the films' motion sheets (above) and
+   `live_motion("reviews/motion")` in the sandbox, never from one still: does each pose fit what the creature does (flying
    looks like flying, a jump takes off and lands), do actions flow into each
    other, do things have weight, and is it free of pops, snaps, jitter, feet
-   sliding and a camera that whips?
+   sliding and a camera that whips? Up close (`live_motion`'s creatures
+   sheet): a broken, detached, doubled or floating part, or legs that miss
+   the ground, is a `high` finding however small it looks from afar.
 7. **Light:** does the light make the picture: a clear key light, shadows
    that ground things, colour and mood that fit the time of day, in the
    browser view as well as in films?

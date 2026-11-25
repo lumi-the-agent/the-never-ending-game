@@ -9,6 +9,8 @@
 #                        jump between two frames that is not a cut: smooth motion
 #                        changes a little and evenly from frame to frame, a pop or
 #                        a snap shows as one frame that does not follow;
+#   <name>-strip.jpg     24 frames at 10 a second around the same moment: 2.4 s
+#                        of the film as it plays, the motion itself;
 #   the numbers          how much each frame differs from the one before (ffmpeg's
 #                        scene score, 0 to 1), its cuts and its jumps.
 #
@@ -46,6 +48,9 @@ function motion_sheet(film::AbstractString; out::AbstractString = dirname(abspat
     from = clamp(centre - 3, 1, max(n - 7, 1))
     steps = joinpath(out, "$(name)-steps.jpg")
     run(`ffmpeg -v error -y -ss $((from - 1) / fps) -i $film -vf "scale=480:-2,tile=4x2" -frames:v 1 -update 1 $steps`)
+    strip = joinpath(out, "$(name)-strip.jpg")
+    start = clamp((centre - 1) / fps - 1.2, 0, max(duration - 2.4, 0))
+    run(`ffmpeg -v error -y -ss $start -t 2.4 -i $film -vf "fps=10,scale=320:-2,tile=6x4" -frames:v 1 -update 1 $strip`)
     secs(i) = @sprintf("%.2f s", (i - 1) / fps)
     io = IOBuffer()
     @printf(io, "%s: %.1f s at %g fps (%d frames)\n", basename(film), duration, fps, n)
@@ -55,7 +60,8 @@ function motion_sheet(film::AbstractString; out::AbstractString = dirname(abspat
             isempty(jumps) ? "" : "; the largest at " * join((secs(i) * @sprintf(" (%.3f)", change[i]) for i in first(jumps, 5)), ", "))
     println(io, "overview: $overview (12 frames over the film)")
     println(io, "steps: $steps (8 consecutive frames from ", secs(from), isempty(jumps) ? ", the middle" : ", around the largest jump", ")")
-    return (; text = String(take!(io)), images = [overview, steps])
+    @printf(io, "strip: %s (24 frames at 10 a second from %.1f s: the motion as it plays)\n", strip, start)
+    return (; text = String(take!(io)), images = [overview, steps, strip])
 end
 
 "Frames per second and length in seconds of a film's video."

@@ -101,6 +101,20 @@ body_pose(::Val{:scared}, c::PoseCtx) =         # shrunk back, trembling
 body_pose(::Val{:angry}, c::PoseCtx) =          # leaning in, huffing
     BodyPose(0.0f0, 0.05f0 + 0.04f0 * abs(sin(10c.t)), Vec3f(0, 0.18f0, 0.03f0 * sin(25c.t)))
 
+# Flying (s75, goal 6: Lumi flew upright in its standing pose). Plugins set `:fly` while a creature is in
+# the air and `extra` to how hard it works: 1 a takeoff or a landing flare (upright, wings beating, feet
+# down), 0 cruising (tipped forward along the flight, feet tucked, beats in bursts and glides between).
+register_action!(:fly)
+"The wing beat's phase (3.2 beats a second)."
+fly_beat(c::PoseCtx) = 2f0 * Float32(pi) * 3.2f0 * c.t + 6.28f0 * c.seed
+"How hard the wings beat now (0 a glide … 1): always when it works hard, in bursts when it cruises."
+fly_flap(c::PoseCtx) = max(c.extra, clamp(0.5f0 + 1.6f0 * sin(1.8f0 * c.t + 3c.seed), 0f0, 1f0))
+# the body rises on each downstroke; tipped forward it sinks about the feet, so it is lifted to match.
+# At `extra` 1 it leans back like `:proud` (chest out, -0.2), so a plugin can switch between the two without a snap.
+body_pose(::Val{:fly}, c::PoseCtx) =
+    BodyPose(0.3f0 * (1f0 - c.extra) - 0.06f0 * fly_flap(c) * sin(fly_beat(c)), 0.03f0 * fly_flap(c) * cos(fly_beat(c)),
+             Vec3f(0.05f0 * sin(0.9f0 * c.t + 6c.seed), 0.95f0 - 1.15f0 * c.extra, 0))
+
 # ── how single parts move ───────────────────────────────────────────────────
 
 abstract type Motion end

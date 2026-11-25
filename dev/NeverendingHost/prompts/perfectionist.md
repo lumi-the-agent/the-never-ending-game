@@ -18,8 +18,16 @@ an average hobby project, 2 means placeholder art.
   is there a reason to play twice?
 - A path traced still (the worker's `:trace` job, or `live_path_tracing(true)`
   and a screenshot, then back to `false`).
-- The films' motion sheets (listed above, if any): judge animation from the
-  steps sheets, 8 frames 1/fps apart, not from stills.
+- Motion: `live_motion("reviews/motion")` measures how every creature moves
+  in the sandbox, frame by frame, and gives you three pictures: the worst
+  one in 8 consecutive frames and in a strip at 10 frames a second, and
+  every creature up close. The films' motion sheets (listed above, if any)
+  have the same steps and strip. Judge animation from these, not from
+  stills.
+- Every creature up close (the creatures sheet): a broken, detached,
+  doubled or floating part, a leg that misses the ground, an old model's
+  parts showing under a new one, is a `high` finding however small it looks
+  from afar.
 - The world itself: areas and their variety, terrain, water, sky, props and
   how they are grouped, creatures (shapes, faces, behaviour), their
   animation, lighting and atmosphere (in the browser view too), colour

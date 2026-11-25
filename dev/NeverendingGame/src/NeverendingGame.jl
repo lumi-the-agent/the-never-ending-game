@@ -12,7 +12,7 @@ Processes (the host, `NeverendingHost`, keeps them running in the jail):
     NeverendingGame.run_worker()   slow GPU jobs: generated assets, path traced stills
 
 From an agent's Julia session: `live_status()`, `live_eval(code)`,
-`live_screenshot(path)` (the sandbox; `game = :live` the human's), `publish()`, `todos()`, `todo!`, `doing!`, `done!`, `journal!`,
+`live_screenshot(path)` (the sandbox; `game = :live` the human's), `live_motion()`, `publish()`, `todos()`, `todo!`, `doing!`, `done!`, `journal!`,
 `say_to_human`, `submit_job`, `assets`. Plugins: `register!` with `System`,
 `Actor`, `MiniGame`, `Panel` (see `plugins.jl`).
 """
@@ -34,7 +34,7 @@ import Bonito, WGLMakie
 import GPUMeshing, Mantle
 
 export run_game, run_worker, publish
-export live, live_status, live_eval, live_screenshot, live_reload, live_path_tracing
+export live, live_status, live_eval, live_screenshot, live_motion, live_reload, live_path_tracing
 export todos, todo!, doing!, done!, drop!, journal!, say_to_human, think!
 export submit_job, job, wait_job, assets, place_asset
 export register!, System, Actor, MiniGame, Panel, ActorLook, InputEvent, Game
@@ -69,6 +69,7 @@ include("uitests.jl")
 include("meshrepair.jl")
 include("assets.jl")
 include("progress.jl")
+include("motionsense.jl")
 include("agentapi.jl")
 
 function __init__()

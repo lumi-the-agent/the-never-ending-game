@@ -19,5 +19,6 @@
     "path": "/sim/Programmieren/SimGame/world/media/s74/snow-morning-traced.mp4",
     "script": "movies/snowday.jl"
   },
-  "status": "queued"
+  "status": "failed",
+  "error": "set aside by Lumi (s75) before it started: the worker was needed for the new flight film"
 }
