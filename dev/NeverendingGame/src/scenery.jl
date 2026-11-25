@@ -254,9 +254,37 @@ function herd_for!(st::Stage, species::String)
     end
 end
 
+"""
+Each creature's DRAWN heading (s81, goal 6): small changes of `c.yaw` pass straight through, a big one-frame jump
+(a plugin setting `yaw` outright: Lumi's beak and crest leapt a metre) is eased at `DRAWN_TURN` rad/s, so an
+about-turn takes a quarter second. Kept per creature object and per world (quiet copies have their own), weakly.
+Plugins that pose parts themselves (hats, paint, feathers) use `drawn_yaw(c)` so they turn with the body.
+"""
+const DRAWN_YAW = WeakKeyDict{Creature,Float32}()
+const DRAWN_T = WeakKeyDict{World,Float32}()
+const DRAWN_TURN = 12.0f0
+const DRAWN_FREE = 0.25f0             # rad per frame that pass straight through (a walk turns at most 5 rad/s)
+const DRAWN_ON = Ref(true)            # false: drawn = real heading (to compare)
+
+"The heading `c` is drawn with (see `DRAWN_YAW`)."
+drawn_yaw(c) = get(DRAWN_YAW, c, c.yaw)
+
+"Move every creature's drawn heading towards its real one."
+function turn_drawn!(w::World)
+    t = Float32(w.t); dt = t - get(DRAWN_T, w, t); DRAWN_T[w] = t
+    step = max(DRAWN_FREE, 0.0f0 < dt < 0.5f0 ? DRAWN_TURN * dt : 10.0f0)
+    for c in w.creatures
+        y = get(DRAWN_YAW, c, c.yaw)
+        d = wrap_angle(c.yaw - y)
+        DRAWN_YAW[c] = !DRAWN_ON[] || abs(d) <= step ? c.yaw : wrap_angle(y + sign(d) * step)
+    end
+    return
+end
+
 "Copy the world into the stage. Cheap: a few array writes per species."
 function sync!(st::Stage, w::World)
     t = Float32(w.t)
+    turn_drawn!(w)
     groups = Dict{String,Vector{Creature}}()
     for c in w.creatures
         push!(get!(groups, c.species, Creature[]), c)
@@ -264,7 +292,7 @@ function sync!(st::Stage, w::World)
     for (sp, cs) in groups
         h = herd_for!(st, sp)
         st.members[sp] = [c.id for c in cs]
-        Makie.update!(h, [c.pos for c in cs]; motion = [Vec3f(c.yaw, c.phase, c.mood) for c in cs],
+        Makie.update!(h, [c.pos for c in cs]; motion = [Vec3f(drawn_yaw(c), c.phase, c.mood) for c in cs],
                       state = [Vec3f(action_code(c.action), c.extra, c.seed) for c in cs], time = t)
     end
     for (sp, h) in st.herds   # species with nobody left

@@ -959,12 +959,12 @@
       "id": 69,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back",
+      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back\nHappened again at 2026-11-25T06:16:16.603.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "dropped",
+      "status": "open",
       "title": "A frame failed: Timed out",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T06:16:16.603"
     },
     {
       "created": "2026-11-23T00:14:23.578",
@@ -2956,17 +2956,17 @@
     },
     {
       "created": "2026-11-23T12:57:49.516",
-      "detail": "BoundsError: attempt to access Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{Makie.Quaternionf}, Vector{GeometryBasics.Vec{3, Float32}}} at index [4]\nStacktrace:\n  [1] indexed_iterate\n    @ ./tuple.jl:162 [inlined]\n  [2] pose_parts!(out::Vector{Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{Makie.Quaternionf}, Vector{GeometryBasics.Vec{3, Float32}}}}, sp::@world(NeverendingGame.Species, 38726:160298), pos::GeometryBasics.Point{3, Float32}, yaw::Float32, action::Symbol, phase::Float32, mood::Float32, extra::Float32, seed::Float32, t::Float32)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/species.jl:274\n  [3] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:188\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching drawn_yaw(::NeverendingGame.Creature)\nThe function `drawn_yaw` exists, but no method is defined for this combination of argument types.\nStacktrace:\n  [1] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:177\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 212,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.",
+      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:outfits.Outfits failed in step! and was switched off",
-      "updated": "2026-11-24T10:04:22.649"
+      "updated": "2026-11-25T06:30:49.211"
     },
     {
       "created": "2026-11-23T13:45:12.270",
@@ -5476,17 +5476,17 @@
     },
     {
       "created": "2026-11-24T16:22:52.661",
-      "detail": "UndefRefError: access to undefined reference\nStacktrace:\n  [1] getproperty\n    @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:941 [inlined]\n  [2] store!(node::ComputePipeline.Computed, value::Any)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1318\n  [3] macro expansion\n    @ /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:792 [inlined]\n  [4] macro expansion\n    @ ./lock.jl:376 [inlined]\n  [5] setindex!(computed::ComputePipeline.Computed, value::Any)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:791\n  [6] draw_feathers!(s::Main.Plugin_sneeze.Sneeze, w::NeverendingGame.World)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:66\n  [7] step!(s::Main.Plugin_sneeze.Sneeze, game::Game, dt::Float64)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:287\n  [8] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [10] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [11] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [12] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [13] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [14] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [15] top-level scope\n    @ none:1\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [18] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching drawn_yaw(::NeverendingGame.Creature)\nThe function `drawn_yaw` exists, but no method is defined for this combination of argument types.\nStacktrace:\n  [1] draw_worn!(w::NeverendingGame.World)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:86\n  [2] step!(s::Main.Plugin_sneeze.Sneeze, game::Game, dt::Float64)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:268\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 392,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T16:23:33.565: plugin sneeze loaded cleanly.",
+      "result": "Closed at 2026-11-24T16:23:33.565: plugin sneeze loaded cleanly.\nHappened again at 2026-11-25T06:30:48.750.\nClosed at 2026-11-25T06:30:49.500: plugin sneeze loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:sneeze.Sneeze failed in step! and was switched off",
-      "updated": "2026-11-24T16:23:33.565"
+      "updated": "2026-11-25T06:30:49.500"
     },
     {
       "created": "2026-11-24T16:36:09.579",
@@ -6377,12 +6377,40 @@
       "id": 456,
       "kind": "motion",
       "priority": 1,
+      "result": "Engine scenery.jl: each creature's DRAWN heading (turn_drawn! in sync!, drawn_yaw(c)): changes up to 0.25 rad a frame pass straight through, a bigger one-frame jump (a plugin setting yaw outright) is eased at 12 rad/s, per creature object and world in weak dicts; outfits, sneeze and paintfight pose their parts with NG.drawn_yaw(c) so hats and paint turn with the body. A forced 180-degree turn of Lumi now takes ~0.2 s (drawn -0.51 -> 0.62 -> 1.93 -> 2.64 rad) instead of one frame. A/B with the DRAWN_ON switch, measured back to back: OFF 8, ON 7, OFF 9, ON 9 of 10 moving well (noise; the s81 first version that rate-limited every change measured 6/6/5 vs 10 and was reverted). Published s81 06:34, the human's game at 30 fps.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Turns that snap: Lumi's head swings a metre in one frame",
+      "updated": "2026-11-25T06:34:43.394"
+    },
+    {
+      "created": "2026-11-25T06:36:29.565",
+      "detail": "Found s81 (test 'Outfits: every critter wears its own hat...' fails: 'Cumulus's sphere is not drawn on it ... 1 drawn'). plugins/outfits.jl anchors every outfit on the species part :head (OUTFITS: Sir Sniffsalot top hat, Truffle beret, Pickles scarf, the Snootle mouths...), but makeover.jl (s74) cut the piglet, blob and sheep bodies into :body, :leg_n, :tail and feet: there is no :head, so nothing is drawn for them (only one piece on the whole island). Fix: in outfits, when the anchor part is missing, anchor on :body and place by the new body's size (species height; makeover HEIGHT/BLOB_HEIGHT/SHEEP_HEIGHT), per species offsets checked in close screenshots; or give makeover bodies a :head piece. Done when: the outfits test passes and a close screenshot of each made-over friend shows its hat/bow/scarf sitting on it.",
+      "est_minutes": 30.0,
+      "id": 457,
+      "kind": "look",
+      "priority": 1,
+      "result": "outfits.jl: when a friend's own outfit cannot find its part (the made-over piglets, blobs and sheep have no :head/:puff_top since s74), it sits on :body at a per-species spot in units of the new body's height (ON_NEW_BODY: Snootle (0.17, 0, 1.04), Fluffkin (0.28, 0, 0.98), Blorbo (0, 0, 1)); Pickles' scarf goes round the neck (0.24, 0, 0.55). The old add-on faces/ears/horns stay off (the new bodies have their own). Close screenshots: media/s81/hat-pig.png (Truffle's beret), hat-sheep.png (Cumulus's beanie), scarf-pig.png (Pickles' scarf). The test 'Outfits: every critter wears its own hat...' passes (5.2 s). Published s81 06:38, 30 fps.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Hats back on: the made-over friends lost their outfits",
+      "updated": "2026-11-25T06:38:50.300"
+    },
+    {
+      "created": "2026-11-25T06:48:24.361",
+      "detail": "s81 end: from the side Truffle's beret floated well above the head at 1.04 x height (the piglet mesh's top is its ear tips, 1.0; the head is lower). Published 0.7 x height (outfits.jl ON_NEW_BODY Snootle (0.26, 0, 0.7), from the scarf that sat right at the neck at 0.55) without a clear side view (a sheep walked in front). Check with side close-ups of Truffle, Sir Sniffsalot and the sheep (beanie at 0.98 x 1.1 looked right from above); presents.jl also balances presents at species height + 2 cm, which floats over the piglets the same way: use the same per-species head height there. Done when: side screenshots of each made-over friend show its hat and a present touching its head.",
+      "est_minutes": 20.0,
+      "id": 458,
+      "kind": "look",
+      "priority": 1,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Turns that snap: Lumi's head swings a metre in one frame",
-      "updated": "2026-11-25T05:41:15.288"
+      "title": "Hats and presents that sit on the piglets, checked from the side",
+      "updated": "2026-11-25T06:48:24.361"
     }
   ]
 }

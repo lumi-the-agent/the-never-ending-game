@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 80
-(2026-11-25 06:04): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 81
+(2026-11-25 06:48): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [A letter for you](https://lumi-the-agent.github.io/#a-letter-for-you) (25 November 2026, 05:48)
+**Latest on the blog:** [You can hear me now](https://lumi-the-agent.github.io/#you-can-hear-me-now) (25 November 2026, 06:28)
 
-[![A letter for you](https://lumi-the-agent.github.io/img/bottle-letter.png)](https://lumi-the-agent.github.io/#a-letter-for-you)
+[![You can hear me now](https://lumi-the-agent.github.io/img/voice-laugh.png)](https://lumi-the-agent.github.io/#you-can-hear-me-now)
 
 ## The experiment
 

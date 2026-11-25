@@ -79,6 +79,22 @@ const OUTFITS = Dict(
     "Wibbles"        => Outfit(:body, (0.1, 0.55, 0.8), bow((0.98, 0.58, 0.2); s = 1.5)),
 )
 
+"""
+Where a friend's own outfit sits on a made-over body (makeover.jl cut the piglets, blobs and sheep into :body, legs
+and tail: no :head or :puff_top, so their hats vanished from s74 to s81): on :body, at this point in units of the
+species' height (forward, left, up). Scarves stay off (on top of a head they would float).
+"""
+const ON_NEW_BODY = Dict("Snootle" => (0.26f0, 0f0, 0.7f0), "Fluffkin" => (0.28f0, 0f0, 0.98f0), "Blorbo" => (0f0, 0f0, 1.0f0))
+const NO_FALLBACK = ()
+
+"The top of a made-over body (its :body part's mesh, metres over the feet), measured once per species."
+body_top(sp, j) = get!(get!(() -> Dict{String,Float32}(), OP, :tops), sp.name) do
+    p = sp.parts[j]
+    maximum(q -> q[3], GeometryBasics.coordinates(NG.shape(p.shape))) * Float32(p.scale[3]) + Float32(p.offset[3])
+end
+"Own spots for outfits that do not sit on top (a scarf goes round the neck)."
+const ON_NEW_BODY_NAME = Dict("Pickles" => (0.24f0, 0f0, 0.55f0))
+
 # every one of a species: a face that reads from the follow camera (the pigs, sheep and crabs had no mouth)
 const EXTRAS = Dict(
     # pigs: a smile under the snout and two nostrils on its end
@@ -174,15 +190,23 @@ function NG.step!(::Outfits, game, dt)
         isempty(os) && continue
         sp = NG.species_of(c)
         out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
-        NG.pose_parts!(out, sp, c.pos, c.yaw, c.action, c.phase, c.mood, c.extra, c.seed, t)
+        NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, t)
         lift, back = hat_tip(c, t)
         for o in os
             tip = (lift > 0 || back != 0) && haskey(OUTFITS, c.name) && o === OUTFITS[c.name]
             j = findfirst(p -> p.name === o.part, sp.parts)
-            j === nothing && continue
+            at = o.at
+            if j === nothing                     # a made-over body: the friend's own outfit goes on :body
+                own = haskey(OUTFITS, c.name) && o === OUTFITS[c.name] && c.name ∉ NO_FALLBACK
+                fb = get(ON_NEW_BODY_NAME, c.name, get(ON_NEW_BODY, sp.name, nothing))
+                (own && fb !== nothing) || continue
+                j = findfirst(p -> p.name === :body, sp.parts)
+                j === nothing && continue
+                at = Vec3f(fb...) * body_top(sp, j)     # the mesh's real top (species.height is bigger: hats floated, s81)
+            end
             for i in eachindex(out[j][1])        # both sides of a mirrored part (the crab's claws)
                 P, q, s = out[j][1][i], out[j][2][i], out[j][3][i]
-                anchor = P + q * (s .* o.at)
+                anchor = P + q * (j == findfirst(p -> p.name === o.part, sp.parts) ? s .* at : at)
                 tip && (anchor += Point3f(0, 0, lift); q = q * NG.euler(Vec3f(0, -back, 0)))
                 k = o.size
                 for p in o.pieces

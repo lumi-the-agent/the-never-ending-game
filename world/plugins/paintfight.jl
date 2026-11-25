@@ -119,7 +119,7 @@ function blob!(w, c, col)
     # where the paint lands: a random side of the creature, on the posed part reaching out furthest that way
     # (s68: picking a part by its `scale` put every spot on Lumi's legs or Cumulus's face; mesh parts are unit scale)
     out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
-    NG.pose_parts!(out, sp, c.pos, c.yaw, c.action, c.phase, c.mood, c.extra, c.seed, Float32(w.t))
+    NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, Float32(w.t))
     centre = c.pos + Point3f(0, 0, 0.55f0 * sp.height)
     dir = normalize(Vec3f(randn(w.rng), randn(w.rng), 0.6f0 * randn(w.rng) + 0.25f0))
     best = (-Inf32, 0, 0)
@@ -169,7 +169,7 @@ function draw_blobs!(w)
         c = NG.creature(w, id)
         sp = NG.species_of(c)
         out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
-        NG.pose_parts!(out, sp, c.pos, c.yaw, c.action, c.phase, c.mood, c.extra, c.seed, t)
+        NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, t)
         g = giant_size(c)
         # a giant's spots, scaled with it, hung round it like balloons (Lumi's mesh parts sit at its feet point,
         # so its spots never lay on the surface): none while it is big

@@ -129,10 +129,14 @@ function start_swing!(s::Swing, game; player = nothing)
     end
     s.rider = rider.id
     side = Vec3f(cos(yaw), sin(yaw), 0)
+    # the camera side with less in the way (the first one had a tree crown over the whole swing), chosen first:
+    # the crowd stands on the OTHER side (two sheep between the camera and the swing, review s80)
+    look = g + 2.5f0 * fwd + Point3f(0, 0, 1.6f0)
+    SW[:cam] = argmin(k -> NG.obstruction(w, g + 9.5f0 * k * side + 2.5f0 * fwd + Point3f(0, 0, 2.2f0), look), (1f0, -1f0))
     for (i, id) in enumerate(s.crowd)
         c = NG.creature(w, id)
-        # beside the swing, out of the arc and the flight line, facing it
-        t = g + (isodd(i) ? 1f0 : -1f0) * (2.6f0 + 0.9f0 * (i ÷ 2)) * side + (0.8f0 * (i ÷ 2) - 0.5f0) * fwd
+        # beside the swing, out of the arc and the flight line, facing it, behind the swing as the camera sees it
+        t = g - SW[:cam] * (2.6f0 + 0.8f0 * ((i - 1) % 2)) * side + (1.1f0 * ((i - 1) ÷ 2) - 0.8f0) * fwd
         NG.leave_interactions!(w, c)
         c.goal = NG.Goal(:swing, NG.ground(w.island, (t[1], t[2])), :idle, 60.0, w.t + 60, false, 0, true)
     end
@@ -148,9 +152,6 @@ function start_swing!(s::Swing, game; player = nothing)
         s.state = :hop
     end
     SW[:log] = Tuple{Float64,Symbol}[]
-    # the camera side with less in the way (the first one had a tree crown over the whole swing)
-    look = g + 2.5f0 * fwd + Point3f(0, 0, 1.6f0)
-    SW[:cam] = argmin(k -> NG.obstruction(w, g + 9.5f0 * k * side + 2.5f0 * fwd + Point3f(0, 0, 2.2f0), look), (1f0, -1f0))
     NG.say!(w, rider, "Push me! Higher!"; duration = 2.2)
     NG.emit!(w, :swing_start; who = rider.name)
     return true

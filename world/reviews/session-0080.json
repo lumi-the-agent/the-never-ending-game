@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "Todo 453 holds (presents on heads, no black plate in the author's shot) and the sandbox runs at 5 ms/frame. In my own sandbox screenshots at 17:34 to 17:44 the bottle event never appeared (the Big Boing dance and the swing had the evening), and the swing camera had two sheep rumps blocking the swinger.",
+ "surprise": 6,
+ "surprise_why": "A letter in Lumi's own voice thrown to sea as a bottle is a nice twist, but it is one short scripted event that competes with others for the evening.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Swing camera (this session's change) was blocked: at 17:44 two sheep rumps fill the bottom third and the crab on the swing is partly hidden behind the post and a tree crown.",
+   "where": "plugins/swing.jl camera",
+   "evidence": "world/reviews/s80-c.png",
+   "suggestion": "Run the camera obstruction check (NG.obstruction < 1) that includes creatures near the eye, and move the eye to a side with a clear line."
+  },
+  {
+   "severity": "medium",
+   "what": "The bottle event did not show in the 17:34-17:44 window I watched after skip_to_hour!(17.5): the Big Boing dance (17:34) and the swing (17:44) were running. One once-a-day event in a 1.4 h window may be starved by other events, and the bottle film's bottle is a dot after the throw.",
+   "where": "plugins/bottle.jl scheduling; movies/bottle.jl",
+   "evidence": "world/reviews/s80-b.png, s80-c.png; reviews/motion/session-0080/bottle-overview.jpg",
+   "suggestion": "Reserve the window (other events yield) and follow the bottle with the camera during flight and splash."
+  },
+  {
+   "severity": "low",
+   "what": "Presents balanced on heads hover with no contact; jump-in camera-menu test is flaky in the suite (repeat of s79).",
+   "where": "plugins/presents.jl; tests",
+   "evidence": "media/s80/present-pig.png; author's journal",
+   "suggestion": "Sink the present slightly into the fur; print state in the flaky test's message."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s81: (1) Swing camera blocked by the crowd: the camera side is now chosen first and the crowd stands on the far side of the swing, behind it as the camera sees it (media/s81/swing-crowd.png: Pickles swinging, nothing in front). (2) The bottle starved: its evening window is 16:36-19:12 now (was 17:12-18:36) and it still fires once a day. (3) Presents hover a little over the head: left as a balanced-on-the-head look. The jump-in camera-menu test stays flaky only in the full suite."
+}

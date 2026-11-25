@@ -83,7 +83,7 @@ function draw_worn!(w)
         (c === nothing || length(ps) >= MAXW) && continue
         sp = NG.species_of(c)
         out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
-        NG.pose_parts!(out, sp, c.pos, c.yaw, c.action, c.phase, c.mood, c.extra, c.seed, t)
+        NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, t)
         top = c.pos; tz = -1f9
         for o in out, i in eachindex(o[1])
             q = o[1][i] + o[2][i] * (o[3][i] .* Vec3f(0, 0, 1))

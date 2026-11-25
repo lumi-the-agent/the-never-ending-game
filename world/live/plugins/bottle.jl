@@ -126,7 +126,8 @@ function NG.step!(s::Bottle, game, dt)
         day = floor(Int, w.t / w.day_length)
         h = 24 * NG.daytime(w)
         me = lumi_of(w)
-        evening = day != s.day && 17.2 < h < 18.6
+        # a wide window: the Big Boing dance and the swing had the whole short evening in the s80 review
+        evening = day != s.day && 16.6 < h < 19.2
         if (film || evening) && !testing && !busy_game && me !== nothing && !me.controlled && me.action !== :sleep &&
            me.goal.kind ∉ EVENTS && me.goal.kind ∉ NG.BUSY_GOALS && BT[:glass].visible[]
             s.day = day

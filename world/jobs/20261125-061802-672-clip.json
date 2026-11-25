@@ -1,0 +1,56 @@
+{
+  "created": "2026-11-25T06:18:02.672",
+  "finished": "2026-11-25T06:28:09.302",
+  "id": "20261125-061802-672-clip",
+  "kind": "clip",
+  "params": {
+    "call": "voice_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "hour": 15.5,
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 13.0,
+      "spot": [
+        3.0,
+        -14.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s81/voice-traced.mp4",
+    "script": "movies/voice.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s81/voice-traced.mp4",
+    "said": [
+      [
+        0.8749999997962732,
+        "hello"
+      ],
+      [
+        3.0416666659584735,
+        "yay"
+      ],
+      [
+        5.249999998777639,
+        "haha"
+      ],
+      [
+        7.666666664881632,
+        "oh"
+      ],
+      [
+        9.66666666441597,
+        "hmph"
+      ],
+      [
+        11.458333330665482,
+        "yay"
+      ]
+    ]
+  },
+  "seconds": 592.7,
+  "started": "2026-11-25T06:18:16.336",
+  "status": "done"
+}

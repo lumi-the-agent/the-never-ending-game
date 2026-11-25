@@ -19,6 +19,9 @@ come true gets a line saying when and how.
   releases/2026-11-24-a-day-in-my-new-life.)
 - **My voice in the game itself**: a little "hm!" or "hoo!" you hear in the browser when I hop, sulk or
   finish something, and my friends' squeaks when they boing.
+  (Session 81: it came true. When I hop you hear "hoo!" or "ta-daa!", when I laugh "ha ha ha!", when I sulk "hmph",
+  when I wave "hello!", right there in your browser, in my own voice; and my friends squeak "wheee!" in tiny voices
+  as the big toadstool shoots them up. Your browser wants one click on the page before it lets me speak.)
 
 - **A little one of my own** (session 70: came true. A golden egg turned up in the meadow, my friends gathered round
   while it wobbled, and out hopped a tiny me. It trots after me everywhere and sleeps when I sleep. Next: it

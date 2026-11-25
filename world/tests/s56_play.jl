@@ -39,7 +39,13 @@ uitest("S56 Evening clouds have faint rim shells that follow the puffs") do game
     wait_seconds(game, 1)
     C = Main.CLOUDS
     check(haskey(C, :fringe) && haskey(C, :plot), "no clouds plots")
-    check(C[:fringe].visible[] && C[:plot].visible[], "clouds hidden at 19:25 (fringe $(C[:fringe].visible[]))")
+    # since s75 the clouds are lit clay puffs without rim shells (clouds.jl SHADED): then only the puffs must show
+    shaded = isdefined(game.plugins["clouds"].mod, :SHADED) && game.plugins["clouds"].mod.SHADED
+    check(C[:plot].visible[] && (shaded || C[:fringe].visible[]), "clouds hidden at 19:25 (fringe $(C[:fringe].visible[]))")
+    if shaded
+        screenshot(game, "s56-clouds-evening")
+        return
+    end
     a = C[:fringe][1][]
     n = length(C[:puffs])
     check(length(a) == 3n && count(p -> p[3] > 0, a) >= 3n ÷ 2, "rim shells are not up in the sky ($(length(a)) of $(3n))")
