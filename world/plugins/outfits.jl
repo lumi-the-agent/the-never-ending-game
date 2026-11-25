@@ -261,7 +261,9 @@ function NG.step!(::Outfits, game, dt)
             end
             for i in eachindex(out[j][1])        # both sides of a mirrored part (the crab's claws)
                 P, q, s = out[j][1][i], out[j][2][i], out[j][3][i]
-                anchor = P + q * (j == findfirst(p -> p.name === o.part, sp.parts) ? s .* at : at)
+                # a made-over body's spot is in metres, but it squashes like the body too (a sleeper flattens:
+                # unscaled, the sheep's beanie floated over its head while it slept, s94)
+                anchor = P + q * (j == findfirst(p -> p.name === o.part, sp.parts) ? s .* at : Vec3f(at[1], at[2], s[3] * at[3]))
                 tip && (anchor += Point3f(0, 0, lift); q = q * NG.euler(Vec3f(0, -back, 0)))
                 k = o.size
                 for p in o.pieces

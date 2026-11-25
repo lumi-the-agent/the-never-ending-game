@@ -42,7 +42,9 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "conga" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Cumulus", "Pinchy"),
                   "voice" => ("Lumi", "Gloop"), "bump" => ("Lumi",),
                   "sneeze" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
-                  "sneeze2" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"))
+                  "sneeze2" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
+                  "gallery" => ("Lumi", "Gloop", "Truffle", "Cumulus", "Pinchy"),
+                  "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -63,6 +65,33 @@ function setup_post!(g, post)
     for c in w.creatures              # everyone else is out of the picture (a fluffkin stood in front of the visit)
         c.name in cast && continue
         c.pos = NG.ground(w.island, (-14f0 + 0.8f0 * (c.id % 6), -12f0)); c.controlled = true; c.goal = NG.Goal()
+    end
+    if post == "sleepers"         # s94: three friends lying asleep in the evening grass (plugins/sleepers.jl), Lumi tiptoeing by
+        x0, y0 = open_meadow(w)
+        L = Main.SLEEPERS[:lying]
+        for (i, n) in enumerate(("Truffle", "Cumulus", "Pinchy"))
+            c = pose!(w, by_name(w, n), (x0 + 1.25f0 * (i - 2), y0 + 0.3f0 * (i % 2)), pi / 2 + 0.4 * (i - 2), :sleep)
+            d = g.plugins["sleepers"].mod.SINK[c.species]
+            c.pos = c.pos - Point3f(0, 0, d); L[c.id] = 1f0
+        end
+        pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "gallery"          # s94: friends in front of the pictures on the easels, seen over their shoulders
+        gm = g.plugins["gallery"].mod
+        ez = Base.invokelatest(gm.easels, g)
+        Base.invokelatest(gm.build!, g)
+        for (n, k, side) in (("Gloop", 2, 0.35f0), ("Truffle", 3, -0.3f0), ("Cumulus", 4, 0.3f0), ("Pinchy", 5, -0.25f0), ("Lumi", 4, -0.55f0))
+            p, yaw = ez[k]
+            q = p + Point3f(1.5f0 * cos(yaw) - side * sin(yaw), 1.5f0 * sin(yaw) + side * cos(yaw), 0)
+            pose!(w, by_name(w, n), (q[1], q[2]), yaw + Float32(pi), n == "Lumi" ? :proud : :idle)
+        end
+        c = Base.invokelatest(gm.gallery_spot, g)
+        mid = ez[4][1]
+        dir = Point3f(c[1] - mid[1], c[2] - mid[2], 0); dir = dir / hypot(dir[1], dir[2])
+        z0 = NG.terrain_height(w.island, c[1], c[2])
+        return Point3f(c[1], c[2], z0) + 3.2f0 * dir + Point3f(0, 0, 2.1f0), Point3f(c[1], c[2], z0) - 2.2f0 * dir + Point3f(0, 0, 1.1f0)
     end
     if post == "finish"           # s89: the kinds side by side in their finishes (wool sheen, gummy coat, lacquer, fuzz)
         x0, y0 = open_meadow(w)

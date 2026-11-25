@@ -1,15 +1,15 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-25T16:33:13",
+  "boredom": 0.86,
+  "ended": "2026-11-25T17:15:51",
   "fatigue": {
-    "asset": 0.37,
-    "feature": 1.8,
-    "film": 2.49,
-    "picture": 0.1,
-    "polish": 1.49,
+    "asset": 1.22,
+    "feature": 2.08,
+    "film": 1.49,
+    "picture": 1.06,
+    "polish": 1.89,
     "post": 2.49,
-    "self": 0.63,
-    "sound": 0.89
+    "self": 0.38,
+    "sound": 0.53
   },
   "happened": [
     "Boop",
@@ -174,9 +174,13 @@
     "rewind_start",
     "rewind_end",
     "bubbles_start",
-    "bubbles_end"
+    "bubbles_end",
+    "gallery_visit",
+    "get_up",
+    "lie_down",
+    "gallery_look"
   ],
-  "joy": 0.48,
+  "joy": 0.76,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -195,6 +199,18 @@
       "session": 92,
       "title": "Lanterns, the whole evening",
       "what": "The full evening of the lantern event: friends gather at the pond, lanterns are set on the water one by one, then the first lift off."
+    },
+    {
+      "recipe": "a body-pose refinement of an existing night behaviour; no gathering, no event, no payoff",
+      "session": 93,
+      "title": "Lights out",
+      "what": "Made-over friends lie down to sleep where they drop at night, with eyelids closed and hats staying on, instead of sleeping standing up; Lumi tiptoes past."
+    },
+    {
+      "recipe": "permanent scenery plus quiet individual visits; nothing gathers or unfolds as an event",
+      "session": 93,
+      "title": "The gallery",
+      "what": "Six of Lumi's own traced pictures stand on easels in the meadow; friends wander over one at a time, look at a picture and remark on what they remember."
     }
   ],
   "kinds_ever": [
@@ -211,97 +227,50 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "bubbles_start",
-      "bubbles_end"
+      "gallery_visit",
+      "get_up",
+      "lie_down",
+      "gallery_look"
     ],
-    "session": 92
+    "session": 93
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
-    "nearest": "Choir practice",
-    "post": "Someone's watching",
-    "score": 5,
-    "session": 92,
-    "shared": "Lumi calls nearby friends to react together in a shared gesture; the trigger (a real visitor) and the camera-facing address are new"
+    "factor": 1.0,
+    "nearest": "Real claws",
+    "post": "Lights out",
+    "score": 3,
+    "session": 93,
+    "shared": "a visual upgrade to creature bodies (new poses/looks), as in new coats and real claws"
   },
   "last_surprise": {
     "score": 6,
-    "session": 91,
-    "why": "The whole island moonwalking back in time is a nice twist on the usual gather-and-laugh events, though it only affects creatures."
+    "session": 92,
+    "why": "The island reacting to a real page being opened is a change in what the island is, even though what you see is a run-and-wave."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T15:49:46",
+  "perceived_until": "2026-11-25T16:35:53",
   "plugin_fatigue": {
-    "areas.jl": 0.22,
-    "beds.jl": 0.13,
-    "bubbles.jl": 0.36,
-    "finishes.jl": 0.22,
-    "flight.jl": 0.17,
-    "frost.jl": 0.13,
-    "greetings.jl": 0.69,
-    "islandnow.jl": 0.73,
-    "kite.jl": 0.08,
-    "meadow.jl": 0.22,
-    "mixup.jl": 0.13,
-    "outfits.jl": 0.46,
-    "paintfight.jl": 0.24,
-    "pumpkins.jl": 0.08,
-    "rewind.jl": 0.6,
-    "separation.jl": 0.49,
-    "snowday.jl": 0.66,
-    "splash.jl": 0.34,
-    "visitors.jl": 1.0
+    "areas.jl": 0.13,
+    "beds.jl": 0.08,
+    "bubbles.jl": 0.22,
+    "finishes.jl": 0.13,
+    "flight.jl": 0.1,
+    "frost.jl": 0.08,
+    "gallery.jl": 1.0,
+    "greetings.jl": 0.41,
+    "islandnow.jl": 0.44,
+    "meadow.jl": 0.13,
+    "mixup.jl": 0.08,
+    "outfits.jl": 1.28,
+    "paintfight.jl": 0.14,
+    "rewind.jl": 0.36,
+    "separation.jl": 0.29,
+    "sleepers.jl": 1.0,
+    "snowday.jl": 0.4,
+    "splash.jl": 0.2,
+    "visitors.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "yawn_caught",
-          "who": 8
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/real-flight.mp4"
-      ],
-      "new_plugins": [
-        "soar.jl"
-      ],
-      "points": 0.7,
-      "repeats": [],
-      "session": 73,
-      "touched": [
-        "clouds.jl",
-        "freeze.jl",
-        "kite.jl",
-        "rollcall.jl",
-        "tag.jl",
-        "wind.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 0.3,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1434,6 +1403,74 @@
         "post": 0.2
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 1.7333333333333334,
+        "film": 0.0,
+        "picture": 3.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "gallery_visit",
+          "who": 7
+        },
+        {
+          "kind": "get_up",
+          "who": 5
+        },
+        {
+          "kind": "lie_down",
+          "who": 5
+        },
+        {
+          "kind": "gallery_look",
+          "who": 3
+        }
+      ],
+      "kinds": [
+        "asset",
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 1,
+      "new_pages": [
+        "site/img/gallery-easels.png",
+        "site/img/gallery.png",
+        "site/img/sleepers.png"
+      ],
+      "new_plugins": [
+        "gallery.jl",
+        "sleepers.jl"
+      ],
+      "points": 4.4,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "nearest": "Real claws",
+        "post": "Lights out",
+        "score": 3,
+        "shared": "a visual upgrade to creature bodies (new poses/looks), as in new coats and real claws"
+      },
+      "session": 93,
+      "touched": [
+        "outfits.jl"
+      ],
+      "values": {
+        "asset": 0.6,
+        "feature": 0.8,
+        "picture": 2.7,
+        "polish": 0.1,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1504,6 +1541,7 @@
       "site/films/hail.wav",
       "site/films/hiccups-2.mp4",
       "site/films/island-choir.mp4",
+      "site/films/lanterns.mp4",
       "site/films/leaves-silent.mp4",
       "site/films/leaves.mp4",
       "site/films/leaves.wav",
@@ -1527,6 +1565,7 @@
       "site/films/swing.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/toadstool.mp4",
+      "site/films/visitors.mp4",
       "site/films/voice.mp4",
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
@@ -1676,17 +1715,18 @@
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
       "toadstool.jl": 1.795589883405444e9,
+      "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 48,
+    "posts": 50,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T15:54:17",
+  "started": "2026-11-25T16:39:48",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1784,14 +1824,19 @@
       "InPhyNet",
       "WaveSpectra",
       "SequentialSamplingModels",
-      "VLBIImagePriors"
+      "VLBIImagePriors",
+      "SovovaMulti",
+      "OptimizationCMAEvolutionStrategy",
+      "OceanTransportMatrixBuilder"
     ],
     "vision": [
       "SAM2Runner",
       "HorizonRunner",
       "BasicVSRRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "ProPainterRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 91
+  "surprise_seen": 92
 }

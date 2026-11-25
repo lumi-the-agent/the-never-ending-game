@@ -300,3 +300,38 @@ uitest("Pocket watch (s92): Z as Lumi winds the island back, and Lumi walks back
     check(walked > 1.5 && state === :rewind && back < 0.6 && s.state === :rec,
           "walked $(round(walked; digits = 2)) m, state after Z $(state), $(round(back; digits = 2)) m from the start after the rewind, now $(s.state)")
 end
+
+uitest("Gallery (s94): six of Lumi's pictures stand framed on easels on open ground, and a friend walks over to look") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    gm = game.plugins["gallery"].mod
+    pics = [p for p in game.stage.scene.plots if haskey(p.attributes, :name) && startswith(string(p.attributes[:name][]), "gallery_pic_")]
+    ez = Base.invokelatest(gm.easels, game)
+    on = count(e -> XP.on_land(w.island, e[1][1], e[1][2]; margin = 0.3f0), ez)
+    for c in w.creatures
+        c.controlled = false; c.action === :sleep && (c.action = :idle)
+        c.goal = XP.Goal(:idle, c.pos, :idle, 20.0, w.t + 20, true, 0, false)
+    end
+    Main.GALLERY[:next] = -Inf
+    wait_seconds(game, 0.5)
+    who = [c for c in w.creatures if c.goal.kind === :gallery]
+    check(length(pics) == 6 && on == 6 && length(who) >= 1,
+          "$(length(pics)) pictures, $(on) easels on land, $(length(who)) friends on their way to look")
+end
+
+uitest("Sleepers (s94): a sleeping piglet lies down in the grass and gets up again when it wakes") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    pig = first(c for c in w.creatures if c.species == "Snootle" && !c.controlled)
+    XP.leave_interactions!(w, pig)
+    pig.needs.energy = 0.1                 # (a rested pig in daylight is woken by the next goal choice: it went beachcombing, s94)
+    pig.goal = XP.Goal(:sleep, pig.pos, :sleep, 60.0, w.t + 60, true, 0, false); pig.action = :sleep
+    wait_seconds(game, 2.2)
+    asleep = (pig.action, pig.goal.kind)
+    down = XP.terrain_height(w.island, pig.pos[1], pig.pos[2]) - pig.pos[3]
+    screenshot(game, "s94_sleeper")
+    pig.goal = XP.Goal(:idle, pig.pos, :idle, 10.0, w.t + 10, true, 0, false); pig.action = :idle
+    wait_seconds(game, 1.2)
+    up = XP.terrain_height(w.island, pig.pos[1], pig.pos[2]) - pig.pos[3]
+    check(down > 0.15 && abs(up) < 0.02, "$(pig.name) ($(asleep)) lay $(round(down; digits = 2)) m down asleep and is $(round(up; digits = 2)) m down after waking")
+end

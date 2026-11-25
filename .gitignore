@@ -973,6 +973,9 @@
 /world/reviews/s90-now.png
 /world/reviews/s91-normal.png
 /world/reviews/s91-rewind.png
+/world/reviews/s92/now.png
+/world/reviews/s92/v1.png
+/world/reviews/s92/v2.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -1147,6 +1150,7 @@
 /world/tests/shots/s91_bubble_b.png
 /world/tests/shots/s91_lanterns.png
 /world/tests/shots/s92_rewind.png
+/world/tests/shots/s94_sleeper.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1238,6 +1242,8 @@
 /world/site/img/conga.png
 /world/site/img/crate-traced.png
 /world/site/img/freeze.png
+/world/site/img/gallery-easels.png
+/world/site/img/gallery.png
 /world/site/img/garden-traced.png
 /world/site/img/hail-umbrella.png
 /world/site/img/island-traced.png
@@ -1251,6 +1257,7 @@
 /world/site/img/new-faces.png
 /world/site/img/one-more-stone.png
 /world/site/img/presents-traced.png
+/world/site/img/sleepers.png
 /world/site/img/tag-traced.png
 /world/site/img/thought-traced.png
 /world/site/img/thunderstorm-zap.png

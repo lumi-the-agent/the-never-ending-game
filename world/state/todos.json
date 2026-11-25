@@ -6937,12 +6937,12 @@
       "id": 496,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s94: plugins/sleepers.jl: a sleeping piglet, sheep or crab lies down (body sinks by its leg length, eased 1.5 s, gets up in 0.6 s; media/s94/sleepers.png, traced site/img/sleepers.png), piglets and sheep close their eyes (lids over the painted eyes: media/s94/lids6.png, media/s94/sheep-lids1.png), and hats squash with the sleeping body so the sheep beanie sits on its head (outfits.jl; media/s94/sheep-beanie2.png). Breathing is the engine sleep pose (squash sin(0.9 t)). Tests: Sleepers (s94), Outfits. Published. Blobs keep their own sleep; crab eyes are on stalks and stay open.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Friends sleep like friends: lie down, eyes shut, breathing (pig, crab)",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T17:14:32.677"
     },
     {
       "created": "2026-11-25T15:49:22.798",
@@ -7013,6 +7013,48 @@
       "status": "open",
       "title": "Films: never mux sound inside a worker job or the sandbox",
       "updated": "2026-11-25T16:09:55.000"
+    },
+    {
+      "created": "2026-11-25T16:41:36.379",
+      "detail": "MethodError: no method matching iterate(::GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\nThe function `iterate` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  iterate(!Matched::LLVM.MaterializationResponsibilityRequestedSymbolSet)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/orc.jl:1197\n  iterate(!Matched::LLVM.MaterializationResponsibilityRequestedSymbolSet, !Matched::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/orc.jl:1197\n  iterate(!Matched::LLVM.GlobalMetadataDict)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:655\n  ...\n\nStacktrace:\n  [1] iterate\n    @ ./generator.jl:45 [inlined]\n  [2] collect(itr::Base.Generator{GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, Main.Plugin_gallery.var\"#box_at##2#box_at##3\"{Float32}})\n    @ Base ./array.jl:790\n  [3] box_at(c::GeometryBasics.Point{3, Float32}, s::Tuple{Float32, Float32, Float32}, yaw::Float32)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:83\n  [4] wood_mesh(game::Game)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:96\n  [5] build!(game::Game)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:123\n  [6] step!(::Main.Plugin_gallery.Gallery, game::Game, dt::Float64)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:149\n  [7] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [9] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [10] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 502,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T16:42:06.764: plugin gallery loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:gallery.Gallery failed in step! and was switched off",
+      "updated": "2026-11-25T16:42:06.764"
+    },
+    {
+      "created": "2026-11-25T16:57:05.120",
+      "detail": "s94 plugins/gallery.jl shows six fixed pictures from site/img on generated easels (asset 20261125-164036-200-asset) in an arc at Main.GALLERY[:spot] (12, 8). Next: when I post a new traced picture, Lumi carries it to the gallery and swaps out the oldest (keep 6-8, read the newest site/img files); friends gather the first time a new one hangs. Also the friends' visits get taken by other events quickly (a conga took most in the sandbox): give the :gallery look a short hold.",
+      "est_minutes": 30.0,
+      "id": 503,
+      "kind": "feature",
+      "priority": 2,
+      "result": "s94: gallery.jl hangs the six newest pictures from site/img (not its own gallery pictures) and looks for new ones once a minute; when the newest six change it rebuilds, so a new post goes up on an easel. Pictures without lines of their own get general ones (Ooh, that s us!). Now hanging: sleepers, lanterns, waterfight, hail-umbrella, leaves-maple, leaves-lumi. Test Gallery (s94) passes; published. Not done from the detail: Lumi carrying the new picture there and the friends gathering for it.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Gallery: a new picture goes up when something new happens",
+      "updated": "2026-11-25T17:15:22.633"
+    },
+    {
+      "created": "2026-11-25T17:08:19.647",
+      "detail": "a plot named :sleeper_lids is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::Vector{GeometryBasics.Point{3, Float32}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] #meshscatter!#82\n    @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465 [inlined]\n  [7] meshscatter!\n    @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:463 [inlined]\n  [8] lids!(game::Game, lying::Dict{Int32, Float32})\n    @ Main.Plugin_sleepers /sim/Programmieren/SimGame/world/plugins/sleepers.jl:26\n  [9] step!(::Main.Plugin_sleepers.Sleepers, game::Game, dt::Float64)\n    @ Main.Plugin_sleepers /sim/Programmieren/SimGame/world/plugins/sleepers.jl:75\n [10] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [12] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [13] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [14] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [15] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [16] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [17] top-level scope\n    @ none:1\n [18] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [19] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [20] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 504,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T17:09:52.720: plugin sleepers loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:sleepers.Sleepers failed in step! and was switched off",
+      "updated": "2026-11-25T17:09:52.720"
     }
   ]
 }

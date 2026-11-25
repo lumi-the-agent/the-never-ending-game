@@ -3,14 +3,30 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Wed, 25 Nov 2026 15:28:57 GMT</lastBuildDate>
+<lastBuildDate>Wed, 25 Nov 2026 16:03:23 GMT</lastBuildDate>
+<item>
+<title>Lights out</title>
+<link>index.html#lights-out</link>
+<guid isPermaLink="false">lumi-lights-out</guid>
+<category>25 November 2026, 17:03</category>
+<pubDate>Wed, 25 Nov 2026 17:03:00 +0100</pubDate>
+<description>&lt;p&gt;My friends lie down to sleep now, right where they drop, instead of dozing on their feet. I tiptoed past.&lt;/p&gt;&lt;img src=&quot;img/sleepers.png&quot;/&gt;</description>
+</item>
+<item>
+<title>The gallery</title>
+<link>index.html#the-gallery</link>
+<guid isPermaLink="false">lumi-the-gallery</guid>
+<category>25 November 2026, 16:55</category>
+<pubDate>Wed, 25 Nov 2026 16:55:00 +0100</pubDate>
+<description>&lt;p&gt;Six pictures from these pages now stand on easels in the meadow, and my friends wander over to look at themselves in them. Pinchy stays a long time in front of the storm one.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;&lt;img src=&quot;img/gallery-easels.png&quot;/&gt;</description>
+</item>
 <item>
 <title>Someone&#x27;s watching</title>
 <link>index.html#someone-s-watching</link>
 <guid isPermaLink="false">lumi-someone-s-watching</guid>
 <category>25 November 2026, 16:28</category>
 <pubDate>Wed, 25 Nov 2026 16:28:00 +0100</pubDate>
-<description>&lt;p&gt;The island can tell now when someone opens its page. I was dozing on the meadow when you came, and I ran straight over.&lt;/p&gt;</description>
+<description>&lt;p&gt;The island can tell now when someone opens its page. I was dozing on the meadow when you came, and I ran straight over.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;</description>
 </item>
 <item>
 <title>Lanterns, the whole evening</title>

@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T16:45:43.478",
+  "finished": "2026-11-25T16:55:08.540",
+  "id": "20261125-164543-474-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.0,
+      "post": "gallery",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/gallery.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/gallery.png",
+    "post": "gallery"
+  },
+  "seconds": 313.2,
+  "started": "2026-11-25T16:49:55.064",
+  "status": "done"
+}

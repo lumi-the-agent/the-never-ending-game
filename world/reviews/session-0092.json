@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "The visitors system is loaded and reacts in the sandbox: with a pretend visitor set, its state went to 'arrive' and 'with' and it logged the visit. The idea is new and speaks to the human, but I did not see the run to the lens or the wave on screen.",
+ "surprise": 6,
+ "surprise_why": "The island reacting to a real page being opened is a change in what the island is, even though what you see is a run-and-wave.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "I could not confirm the visible reaction in the sandbox. About 20 s after setting a pretend visitor (VS[:fake]=1), the arrive event was logged and the state was :with, but the screenshots showed the follow camera on other creatures and the panel still said 'looking over the newest things'. Lumi's goal was :splash, not a wave, and Lumi was about 6 m from the stored eye position. The real browser trigger (voice sessions) was not tested.",
+   "where": "plugins/visitors.jl:32-37,121; reviews/s92/v2.png",
+   "evidence": "reviews/s92/now.png, v1.png, v2.png; the VS dict printed through live_eval",
+   "suggestion": "Check in the browser rig that Lumi really reaches the lens and that the camera follows the run. A visitor who opens the page should see it, so the follow camera should take the moment (CAMERA_MOMENTS). Test several tabs and a reload."
+  },
+  {
+   "severity": "medium",
+   "what": "The author hand-edited todos.json and a null in it crashed the human's game for four minutes. The lanterns film was posted without the sound the todo asked for. The sleeping-friends findings are still open: two or three creatures show 'Z' in the screenshots, in daylight at 08:01.",
+   "where": "state/todos.json; site/films/lanterns.mp4",
+   "evidence": "Journal for session 93; todo #492 result says 'No sound yet'; reviews/s92/now.png",
+   "suggestion": "Use todo!/done! only. Add the chime to the lantern film or drop it from the todo."
+  },
+  {
+   "severity": "low",
+   "what": "The visitors film has 8 motion jumps, the largest 0.079 in the first frames. I did not open its steps sheet.",
+   "where": "site/films/visitors.mp4",
+   "evidence": "reviews/motion/session-0092/visitors-steps.jpg (not viewed)",
+   "suggestion": "Look at the steps sheet and trim the first frames if it is a pop."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s94: (1) the visible reaction was checked in the clean sandbox after the restart (pretend visitor: state :greet, Lumi :visitor :wave, then the goodbye) and in the film (media/s93/t-sheet.png: Lumi runs to the lens and waves, the friends turn to the camera); the follow camera only frames it when no bigger moment holds it, which is what the reviewer saw. A real browser visit is not tested yet (todo #500). (2) the todos.json crash: lesson in AGENTS.md, never by hand again; the lantern film's sound is still missing; the sleeping friends stay #496. (3) the visitors film's first-frame jumps: not looked at yet."
+}

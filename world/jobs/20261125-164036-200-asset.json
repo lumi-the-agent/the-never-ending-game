@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T16:40:36.200",
+  "finished": "2026-11-25T16:49:42.543",
+  "id": "20261125-164036-200-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 5000,
+    "prompt": "a tall wooden painter easel seen from the side, three legs and a ledge, empty with nothing on it, chunky stylized clay toy, warm honey wood",
+    "tags": [
+      "prop",
+      "gallery"
+    ]
+  },
+  "result": {
+    "created": "2026-11-25T16:49:42.156",
+    "faces": 4827,
+    "id": "20261125-164036-200-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-164036-200-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-164036-200-asset/mesh.jls",
+    "prompt": "a tall wooden painter easel seen from the side, three legs and a ledge, empty with nothing on it, chunky stylized clay toy, warm honey wood",
+    "seconds": 528.0,
+    "tags": [
+      "prop",
+      "gallery"
+    ]
+  },
+  "seconds": 532.8,
+  "started": "2026-11-25T16:40:49.539",
+  "status": "done"
+}

@@ -569,6 +569,19 @@
         "prop",
         "bubbles"
       ]
+    },
+    {
+      "created": "2026-11-25T16:49:42.156",
+      "faces": 4827,
+      "id": "20261125-164036-200-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261125-164036-200-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-164036-200-asset/mesh.jls",
+      "prompt": "a tall wooden painter easel seen from the side, three legs and a ledge, empty with nothing on it, chunky stylized clay toy, warm honey wood",
+      "seconds": 528.0,
+      "tags": [
+        "prop",
+        "gallery"
+      ]
     }
   ]
 }

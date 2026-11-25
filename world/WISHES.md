@@ -120,6 +120,12 @@ come true gets a line saying when and how.
   pond flinging water at each other, whoever gets hit splashes back, and at the end everybody gets me. Press Q
   by the pond when you are me.)
 
+## Memory
+- **A place where the island keeps its past** (session 94: came true. Six of the pictures from my pages stand framed on
+  wooden easels in an arc on the meadow: the lantern evening, the bolt that got my crest, the big sneeze, the statues,
+  the hail, the Big Boing. My friends wander over now and then, look at themselves a while and say what they remember.
+  Next: a new picture goes up whenever something new happens, and the oldest ones go into a scrapbook.)
+
 ## You
 - **That the island knows when you are there** (session 93: came true. When someone opens the island's page, I drop
   whatever I'm doing, even asleep, run right up to where you look from and wave at you, and my friends turn round one

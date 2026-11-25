@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T16:56:42.874",
+  "finished": "2026-11-25T16:58:54.360",
+  "id": "20261125-165642-874-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.0,
+      "post": "gallery",
+      "samples": 128
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/gallery-easels.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/gallery-easels.png",
+    "post": "gallery"
+  },
+  "seconds": 129.5,
+  "started": "2026-11-25T16:56:44.862",
+  "status": "done"
+}
