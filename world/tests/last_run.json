@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "outfits.jl",
-      "name": "Outfits: every critter wears its own hat, scarf, bow or crown, on its head as it moves",
+      "file": "s58_play.jl",
+      "name": "Bubble trouble (s90): Lumi's giant bubbles carry the friends up, pop, and the last one takes Lumi",
       "passed": true,
-      "seconds": 4.7
+      "seconds": 16.6
     }
   ],
-  "time": "2026-11-25T13:13:00.663"
+  "time": "2026-11-25T13:54:15.730"
 }

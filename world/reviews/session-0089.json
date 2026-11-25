@@ -1,0 +1,31 @@
+{
+ "verdict": "needs_work",
+ "summary": "The sandbox runs cleanly (frame median 4 ms, p95 8 ms, every plugin ok) and the pond is now a dug bowl with sand rim, lily stems and pale water that reads as shallow water live; but the published film still shows the old dark navy pond, and the live water is flat and grey-lilac, not the blue the todo asks for.",
+ "surprise": 6,
+ "surprise_why": "Everybody jumping into a real-looking pond with glass-bead splashes is a nice twist, but the shipped film does not show the new water.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "site/films/allin.mp4 and its post still show the pre-fix dark navy lid pond (rendered before the shadow/floor fix); the clear-water retake was queued but never swapped in. The page contradicts the claimed fix for #478.",
+   "where": "site/films/allin.mp4; reviews/motion/session-0089/allin-overview.jpg",
+   "evidence": "Overview frames: near-black blue water, floor invisible; the clear still media/s89/pond-traced3.png looks right.",
+   "suggestion": "Look at media/s89/allin-clear.mp4 and swap it in, or pull the post until it exists."
+  },
+  {
+   "severity": "medium",
+   "what": "Live view pond (my own screenshot, raster, 12:57) is a flat grey-lilac plate: the dug bowl, sand rim and lily stems read well, but the water has no blue, depth gradient or sky tint, and #478's done-when says the browser still shows a blue pond. Not checked in a real browser.",
+   "where": "plugins/areas.jl pond plot `color` RGBAf(0.6,0.87,0.9); reviews/s89-pond-a.png",
+   "evidence": "reviews/s89-pond-a.png: water is pale grey-lavender, flatter than the sea beside it.",
+   "suggestion": "Tint toward blue-green with a darker centre/lighter rim and fresnel-like sky colour for the raster; check in the browser rig."
+  },
+  {
+   "severity": "low",
+   "what": "Pig mouth sits low on the chin and the sheep mouth (#488) is still unplaced; crab hats were verified numerically and on one crab only.",
+   "where": "plugins/outfits.jl body_mouth / MOUTH_ON_BODY",
+   "evidence": "Journal: media/s89/pig-mouth.png, sheep-mouth*.png",
+   "suggestion": "Finish the sheep mouth and shoot both crabs from front and side while walking."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s90: (high) the clear-pond retake (32 samples, media/s89/allin-clear.mp4, sheet media/s89/clear-sheet.png) now replaces site/films/allin.mp4 in the post. (medium) live pond colour: the raster draws a transmissive Principled with a white tint (RayMakie raster_material.jl: transmission >= 0.5 -> MAT_DIELECTRIC with tint (1,1,1)), so the plot colour barely tints it; a bluer colour (0.42, 0.74, 0.97) still came out grey (media/s90/pond-blue.png). The fix belongs in the raster (tint by base_color), which also changes the sea's live look; not done this session, kept as a lead in todo #479's area. Not checked in a real browser. (low) pig mouth raised to just under the snout in s89; the sheep mouth is todo #488."
+}

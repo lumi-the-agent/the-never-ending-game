@@ -556,6 +556,19 @@
         "shrub",
         "region"
       ]
+    },
+    {
+      "created": "2026-11-25T13:50:35.074",
+      "faces": 5938,
+      "id": "20261125-133001-981-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261125-133001-981-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-133001-981-asset/mesh.jls",
+      "prompt": "a big toy soap bubble wand seen from the side: a short wooden handle and a large round bright pink loop on top, chunky stylized clay toy",
+      "seconds": 539.0,
+      "tags": [
+        "prop",
+        "bubbles"
+      ]
     }
   ]
 }

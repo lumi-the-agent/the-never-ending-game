@@ -6811,12 +6811,12 @@
       "id": 487,
       "kind": "look",
       "priority": 2,
-      "result": "",
+      "result": "s90: the 32-sample retake with the clear pond (media/s89/allin-clear.mp4, contact sheet media/s89/clear-sheet.png: light blue water, floor and pad shadows visible; the glass swells darken it while the rings spread) copied over site/films/allin.mp4, the film in the Everybody in post.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Everybody in film: swap in the clear-pond retake",
-      "updated": "2026-11-25T13:10:40.299"
+      "updated": "2026-11-25T13:27:28.141"
     },
     {
       "created": "2026-11-25T13:13:08.449",
@@ -6831,6 +6831,48 @@
       "status": "open",
       "title": "Sheep mouth: place it on the dark face so it shows while the sheep talks",
       "updated": "2026-11-25T13:13:08.449"
+    },
+    {
+      "created": "2026-11-25T13:42:54.644",
+      "detail": "s90 traced film site/films/bubbles.mp4 at 8.5 s (media/s90/t-full.png, sheet media/s90/t-sheet.png): two bubbles hold only a hat (a beret, Pickles' green beanie) while pigs stand on the grass below; other friends float correctly. In the sandbox the floating creatures have the right height (c.pos 3.4 m up, act :jump, goal :bubbles) and the raster shows pigs floating (media/s90/bubbles-raster.png). Suspects: a stale Snootle herd in the quiet copy (makeover re-registers the species on start, the herd is rebuilt), or the herd's pose blending. Check one traced frame of a floating pig in a game_clip; fix, then retake the film (movies/bubbles.jl bubbles_clip, spot [-11, -3]).",
+      "est_minutes": 25.0,
+      "id": 489,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s90: separation.jl pushes call move_heading!, which snaps a creature to the ground; in quiet copies plugins run in name order (bubbles < outfits < separation), so the herd drew pushed friends on the grass while their hats (drawn by outfits before the push) stayed in the bubble. separation.jl held(c) now leaves friends floating in a bubble (:bubbles goal, :jump/:scared) alone. Check: raster quiet-copy preview media/s90/bubbles-preview2.mp4 (sheet media/s90/q-sheet.png): every bubble holds its friend with its hat, Lumi in the big one. Published. The traced retake is queued (job 20261125-135234-099-clip -> media/s90/bubbles-retake.mp4), #491 swaps it in.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Bubble trouble: friends stay on the ground while their hats float off in the bubble",
+      "updated": "2026-11-25T13:52:44.399"
+    },
+    {
+      "created": "2026-11-25T13:42:54.648",
+      "detail": "Asset job 20261125-133001-981-asset (a toy bubble wand, 6000 faces). Look at it (traced still), then draw it in bubbles.jl draw_wand! in place of loop_mesh + stick behind a WAND_OK flag. Also: let the player blow bubbles as Lumi (a free key: B?).",
+      "est_minutes": 20.0,
+      "id": 490,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Bubble wand: put the generated wand in Lumi's wing instead of the hand-made pink loop",
+      "updated": "2026-11-25T13:42:54.648"
+    },
+    {
+      "created": "2026-11-25T13:52:44.403",
+      "detail": "Job 20261125-135234-099-clip renders bubbles_clip (24 samples) after the s90 separation fix to media/s90/bubbles-retake.mp4. Look at it (contact sheet / motion_sheet); if every bubble holds its friend, copy it over site/films/bubbles.mp4 (the posted take has hats floating in empty bubbles at 8.5 s).",
+      "est_minutes": 5.0,
+      "id": 491,
+      "kind": "look",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Bubble trouble film: swap in the retake where everyone floats with their hats",
+      "updated": "2026-11-25T13:52:44.403"
     }
   ]
 }

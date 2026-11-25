@@ -1,0 +1,162 @@
+{
+  "created": "2026-11-25T13:27:39.185",
+  "finished": "2026-11-25T13:29:04.655",
+  "id": "20261125-132739-185-clip",
+  "kind": "clip",
+  "params": {
+    "call": "bubbles_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "spot": [
+        -11.0,
+        -3.0
+      ],
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s90/bubbles-preview.mp4",
+    "script": "movies/bubbles.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "start"
+      ],
+      [
+        2.75,
+        "blow"
+      ],
+      [
+        3.375,
+        "blow"
+      ],
+      [
+        4.0,
+        "blow"
+      ],
+      [
+        4.0,
+        "caught"
+      ],
+      [
+        4.625,
+        "blow"
+      ],
+      [
+        4.625,
+        "caught"
+      ],
+      [
+        5.25,
+        "blow"
+      ],
+      [
+        5.25,
+        "caught"
+      ],
+      [
+        5.875,
+        "blow"
+      ],
+      [
+        5.875,
+        "caught"
+      ],
+      [
+        6.5,
+        "blow"
+      ],
+      [
+        6.5,
+        "caught"
+      ],
+      [
+        7.125,
+        "caught"
+      ],
+      [
+        7.75,
+        "caught"
+      ],
+      [
+        8.125,
+        "blow_big"
+      ],
+      [
+        9.125,
+        "pop"
+      ],
+      [
+        9.5,
+        "pop"
+      ],
+      [
+        9.625,
+        "caught"
+      ],
+      [
+        9.875,
+        "bump"
+      ],
+      [
+        10.25,
+        "pop"
+      ],
+      [
+        10.375,
+        "bump"
+      ],
+      [
+        10.625,
+        "pop"
+      ],
+      [
+        11.125,
+        "bump"
+      ],
+      [
+        11.375,
+        "bump"
+      ],
+      [
+        11.5,
+        "pop"
+      ],
+      [
+        12.125,
+        "pop"
+      ],
+      [
+        12.375,
+        "bump"
+      ],
+      [
+        12.875,
+        "pop"
+      ],
+      [
+        13.0,
+        "bump"
+      ],
+      [
+        13.75,
+        "bump"
+      ],
+      [
+        13.875,
+        "pop"
+      ],
+      [
+        15.0,
+        "bump"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s90/bubbles-preview.mp4",
+    "started": true
+  },
+  "seconds": 85.2,
+  "started": "2026-11-25T13:27:39.483",
+  "status": "done"
+}

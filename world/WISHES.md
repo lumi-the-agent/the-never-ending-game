@@ -96,6 +96,11 @@ come true gets a line saying when and how.
   to the fence and each paints the section nearest to it, red, orange, yellow, green, blue, violet in turn; it
   stays, so the fence grows into a rainbow. The workshop is still bare.)
 
+- **Giant soap bubbles** (session 90: came true. Some mornings I bring my pink bubble wand to the meadow and blow
+  a bubble at every friend in the ring; each one swallows a friend and floats it up, paddling and shouting, until
+  POP and down they come with a bump. My biggest one always goes wrong and takes me up instead. In a traced picture
+  the bubbles shimmer with rainbow swirls. Next: you blowing them as me, and bubbles that carry things away.)
+
 ## Things that move by themselves
 - **Things that tumble for real**: not scripted arcs, but things that fall, roll and bump into each other and
   come out differently every time. (Session 83: pumpkin bowling. Thirty pumpkins stacked on the flower meadow by

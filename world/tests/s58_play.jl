@@ -188,3 +188,32 @@ uitest("Cannonball contest (s89): Lumi's big one gets a TEN, then everybody jump
     check(k !== nothing && after >= n - 1 && "TEN!!" in said && s.state === :idle,
           "everybody in: $(k === nothing ? "never called" : "$(after) splashes after the call") for $(n) in the contest, TEN said $("TEN!!" in said), state $(s.state)")
 end
+
+uitest("Bubble trouble (s90): Lumi's giant bubbles carry the friends up, pop, and the last one takes Lumi") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    B = Main.BUBBLES; s = B[:sys]
+    s.state === :idle || return check(false, "bubbles were already going ($(s.state))")
+    for c in w.creatures
+        c.controlled = false
+        c.action === :sleep && (c.action = :idle)
+        c.goal = XP.Goal(:idle, c.pos, :idle, 20.0, w.t + 20, true, 0, false)
+    end
+    B[:t_gather] = 2.0; B[:gap] = 0.5; B[:big_gap] = 1.0; B[:lumi_pop] = 3.0; B[:pop_min] = 2.5
+    ok = Base.invokelatest(B[:start])
+    check(ok, "the bubbles did not start")
+    me = creature(w, "Lumi")
+    t1 = w.t; high = 0f0; shot = false
+    while s.state !== :idle && w.t - t1 < 60
+        wait_seconds(game, 0.25)
+        high = max(high, me.pos[3] - XP.ground(w.island, (me.pos[1], me.pos[2]))[3])
+        if !shot && count(b -> b.who != 0, s.bubbles) >= 3
+            screenshot(game, "s90_bubbles"); shot = true
+        end
+    end
+    for k in (:t_gather, :gap, :big_gap, :lumi_pop, :pop_min); delete!(B, k); end
+    log = B[:log]
+    n(k) = count(x -> x[2] === k, log)
+    check(n(:caught) >= 3 && n(:pop) == n(:caught) && n(:bump) == n(:pop) && high > 2 && s.state === :idle,
+          "caught $(n(:caught)), popped $(n(:pop)), landed $(n(:bump)), Lumi rose $(round(high; digits = 1)) m, state $(s.state)")
+end

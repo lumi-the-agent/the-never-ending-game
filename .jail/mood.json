@@ -1,14 +1,14 @@
 {
-  "boredom": 0.5,
+  "boredom": 0.27,
   "fatigue": {
-    "asset": 0.01,
-    "feature": 2.01,
+    "asset": 1.01,
+    "feature": 2.21,
     "film": 2.49,
-    "picture": 0.49,
+    "picture": 0.29,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.13,
-    "sound": 1.34
+    "self": 0.08,
+    "sound": 0.8
   },
   "happened": [
     "Boop",
@@ -167,9 +167,11 @@
     "mixup_end",
     "mixup_swap",
     "mixup_start",
-    "hail_start"
+    "hail_start",
+    "splash_start",
+    "splash_end"
   ],
-  "joy": 0.31,
+  "joy": 0.48,
   "kinds_ever": [
     "post",
     "picture",
@@ -184,135 +186,53 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "nap_woken",
-      "waterfight_hit",
-      "hail_ow",
-      "waterfight_start",
-      "hail_end",
-      "waterfight_end",
-      "mixup_end",
-      "mixup_swap",
-      "mixup_start",
-      "hail_start"
+      "splash_start",
+      "splash_end"
     ],
-    "session": 88
+    "session": 90
   },
   "last_surprise": {
     "score": 6,
-    "session": 88,
-    "why": "Bodies swapping with speech lines is a real twist on the gather-and-laugh events, but it is a species lend drawn in the usual clay."
+    "session": 89,
+    "why": "Everybody jumping into a real-looking pond with glass-bead splashes is a nice twist, but the shipped film does not show the new water."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T12:34:03",
+  "perceived_until": "2026-11-25T13:14:47",
   "plugin_fatigue": {
-    "areas.jl": 1.0,
-    "autumn.jl": 0.2,
-    "beds.jl": 0.58,
-    "blossom.jl": 0.08,
-    "boing.jl": 0.21,
-    "bottle.jl": 0.1,
-    "choir.jl": 0.08,
-    "conga.jl": 0.21,
-    "dancecircle.jl": 0.13,
-    "egg.jl": 0.08,
-    "finishes.jl": 1.0,
-    "flight.jl": 0.81,
-    "flylesson.jl": 0.08,
-    "freeze.jl": 0.21,
-    "frost.jl": 0.6,
-    "gait.jl": 0.13,
-    "giant.jl": 0.08,
-    "greetings.jl": 0.41,
-    "hail.jl": 0.21,
-    "hiccups.jl": 0.21,
-    "islandnow.jl": 0.6,
-    "kite.jl": 0.35,
-    "lumicolour.jl": 0.13,
-    "makeover.jl": 0.16,
-    "meadow.jl": 1.0,
-    "mixup.jl": 0.6,
-    "outfits.jl": 2.13,
-    "paintfight.jl": 1.1,
-    "pumpkins.jl": 0.39,
-    "rollcall.jl": 0.13,
-    "separation.jl": 0.58,
-    "showers.jl": 0.09,
-    "sneeze.jl": 0.23,
-    "snowday.jl": 0.29,
-    "soar.jl": 0.08,
-    "splash.jl": 1.58,
-    "storm.jl": 0.08,
-    "swing.jl": 0.11,
-    "toadstool.jl": 0.08
+    "areas.jl": 0.6,
+    "autumn.jl": 0.12,
+    "beds.jl": 0.35,
+    "boing.jl": 0.13,
+    "bottle.jl": 0.06,
+    "bubbles.jl": 1.0,
+    "conga.jl": 0.13,
+    "dancecircle.jl": 0.08,
+    "finishes.jl": 0.6,
+    "flight.jl": 0.49,
+    "freeze.jl": 0.13,
+    "frost.jl": 0.36,
+    "gait.jl": 0.08,
+    "greetings.jl": 0.25,
+    "hail.jl": 0.13,
+    "hiccups.jl": 0.13,
+    "islandnow.jl": 0.36,
+    "kite.jl": 0.21,
+    "lumicolour.jl": 0.08,
+    "makeover.jl": 0.1,
+    "meadow.jl": 0.6,
+    "mixup.jl": 0.36,
+    "outfits.jl": 1.28,
+    "paintfight.jl": 0.66,
+    "pumpkins.jl": 0.23,
+    "rollcall.jl": 0.08,
+    "separation.jl": 1.35,
+    "showers.jl": 0.05,
+    "sneeze.jl": 0.14,
+    "snowday.jl": 0.17,
+    "splash.jl": 0.95,
+    "swing.jl": 0.07
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 2.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "fencepaint_go",
-          "who": 3
-        },
-        {
-          "kind": "egg_end",
-          "who": 1
-        },
-        {
-          "kind": "egg_hatch",
-          "who": 1
-        },
-        {
-          "kind": "egg_found",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/lumis-egg.mp4"
-      ],
-      "new_plugins": [
-        "egg.jl",
-        "fencepaint.jl"
-      ],
-      "points": -0.8,
-      "repeats": [
-        "paintfight.jl"
-      ],
-      "session": 70,
-      "touched": [
-        "bumpcue.jl",
-        "choir.jl",
-        "conga.jl",
-        "freeze.jl",
-        "garden.jl",
-        "giant.jl",
-        "hiccups.jl",
-        "lensclear.jl",
-        "paintfight.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 0.6,
-        "polish": -1.9,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1445,6 +1365,56 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "splash_start",
+          "who": 1
+        },
+        {
+          "kind": "splash_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "asset",
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 1,
+      "new_pages": [
+        "site/films/bubbles.mp4"
+      ],
+      "new_plugins": [
+        "bubbles.jl"
+      ],
+      "points": 1.8,
+      "repeats": [],
+      "session": 90,
+      "touched": [
+        "separation.jl"
+      ],
+      "values": {
+        "asset": 1.0,
+        "feature": 0.4,
+        "film": 0.3,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1501,6 +1471,7 @@
       "site/feed.xml",
       "site/index.html",
       "site/films/a-day-in-my-new-life.mp4",
+      "site/films/allin.mp4",
       "site/films/bottle.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/crabs.mp4",
@@ -1602,7 +1573,7 @@
       "releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4"
     ],
     "plugins": {
-      "areas.jl": 1.7954423929079912e9,
+      "areas.jl": 1.7956086162933714e9,
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
@@ -1626,6 +1597,7 @@
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
+      "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.795555851606885e9,
       "flight.jl": 1.7956050876631138e9,
       "flora.jl": 1.7955211366486444e9,
@@ -1651,15 +1623,15 @@
       "lookout.jl": 1.795521136652347e9,
       "lumicolour.jl": 1.7955925803555496e9,
       "makeover.jl": 1.7955960056175299e9,
-      "meadow.jl": 1.7955760036326725e9,
+      "meadow.jl": 1.7956072049130402e9,
       "meadowlife.jl": 1.795485965898355e9,
       "mixup.jl": 1.7956035662514546e9,
       "moon.jl": 1.7953993277488246e9,
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "outfits.jl": 1.795603184765639e9,
-      "paintfight.jl": 1.7955898900799649e9,
+      "outfits.jl": 1.7956087646159062e9,
+      "paintfight.jl": 1.7956075200507665e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rollcall.jl": 1.795596344849997e9,
@@ -1670,7 +1642,7 @@
       "sneeze.jl": 1.795596277582388e9,
       "snowday.jl": 1.795599842974596e9,
       "soar.jl": 1.7955898834039822e9,
-      "splash.jl": 1.7956011472475996e9,
+      "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
       "sunset.jl": 1.7954781267170784e9,
@@ -1683,11 +1655,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 44,
+    "posts": 45,
     "self": "14151975785721963154",
     "wishes": 8
   },
-  "started": "2026-11-25T12:38:10",
+  "started": "2026-11-25T13:19:12",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1770,7 +1742,10 @@
       "Paramorph",
       "PhysicalCommunications",
       "XPalm",
-      "FITSIO"
+      "FITSIO",
+      "NeuralNetDiffEq",
+      "SNaQ",
+      "FMI"
     ],
     "vision": [
       "HorizonRunner",
@@ -1786,8 +1761,10 @@
       "MatAnyoneRunner",
       "PPDocLayoutRunner",
       "Qwen3EmbeddingRunner",
-      "QwenImageEditRunner"
+      "QwenImageEditRunner",
+      "ZImageRunner",
+      "UVDocRunner"
     ]
   },
-  "surprise_seen": 88
+  "surprise_seen": 89
 }
