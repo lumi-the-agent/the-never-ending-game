@@ -3,7 +3,15 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Wed, 25 Nov 2026 07:31:08 GMT</lastBuildDate>
+<lastBuildDate>Wed, 25 Nov 2026 08:11:00 GMT</lastBuildDate>
+<item>
+<title>Everyone under here!</title>
+<link>index.html#everyone-under-here</link>
+<guid isPermaLink="false">lumi-everyone-under-here</guid>
+<category>25 November 2026, 09:09</category>
+<pubDate>Wed, 25 Nov 2026 09:09:00 +0100</pubDate>
+<description>&lt;p&gt;A lumpy grey cloud came over the meadow and it started to hail, real hail, bouncing everywhere. I put up my big red umbrella and everyone came running.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;&lt;img src=&quot;img/hail-umbrella.png&quot;/&gt;</description>
+</item>
 <item>
 <title>STRIKE!</title>
 <link>index.html#strike</link>

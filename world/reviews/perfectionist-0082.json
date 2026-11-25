@@ -1,109 +1,274 @@
-{"verdict": "needs_work",
+{
+ "verdict": "needs_work",
  "summary": "Played for real, the island holds up. All three mini games have clear start cards, a HUD that points the way, replies to every key, end cards with a best score and a next level, and R starts level 2. The jump-in keys all do something visible: hearts, a sneeze, a hiccup chain, a song, paint, a flight, a storm. A simple W/A/D steerer beat each first round with half the clock left, so the challenge only starts at level 2. What a stranger notices first is new and weak or old and unfixed. The new autumn leaves are flat orange poker chips, and the crew leaves for fishing in the middle of the event. Lumi is a golden bird in every traced film but reads brown in the live raster. In live path tracing the sunset sun is a dark maroon ball. The crabs are still a ball on sticks, nothing on the island is physically simulated, and the progress cameras show almost no visible difference since session 79.",
  "scores": {
-   "lighting":    {"score": 5, "why": "17:30 in the raster has a glowing sun but a pale grey sky and sea with no warm cast. Switching on path tracing turns that sun into a dark maroon ball with a dark reflection (traced-live2.png). Rain is only 10% darker and keeps hard shadows. Every progress shot is the same flat afternoon."},
-   "world":       {"score": 6, "why": "The beach with shells and starfish, the cherry grove, the sunset bench and the leaf pile give the island places. The paint-fight dots now litter the south meadow permanently, and the progress cameras look almost the same as at s79."},
-   "props":       {"score": 6, "why": "46 generated assets are in use, and the beach props and benches are good up close (free1/2.png). The newest prop, the leaves, is 440 squashed spheres that read as coins."},
-   "creatures":   {"score": 7, "why": "The sheep are lovely in a free-camera close-up and walk head first now, and the outfits are back. The crabs are still a pink sphere on cylinder legs. Lumi's yellow becomes brown or ochre in the raster, so the hero loses its colour live."},
-   "animation":   {"score": 6, "why": "9 of 10 creatures move well. The sheep's cut legs snap 0.25 m in one frame and swing at 7.4 m/s. In the voice film Lumi pops at 9.67 s."},
-   "fun":         {"score": 7, "why": "In a minute of play each: berry race 10 to 4 in 25 s, fireflies 8/8 in 24 s, hide and seek 4/4 in 40 s, all with a best score, a level-up and R to replay. All ten jump-in keys answer. But round 1 is a walkover, the leaf event lasts 10-20 s with 2-3 jumpers, and there is nothing physical to play with."},
-   "wow":         {"score": 7, "why": "Lumi's real voice, the bottle letter and G (Lumi flies) are shareable. The leaf cannonball could be the best gag of the week but reads small and flat."},
-   "camera":      {"score": 5, "why": "The mini game chase views are good. Jump-in opens with a round bush filling the middle of the view in front of Lumi (jump-card.png). Follow looked straight down on Gloop at the dance ring. The leaves film is one static wide shot from behind a fence post. Free and orbit work."},
-   "ui":          {"score": 5, "why": "Start and end cards are clear. The jump-in card leaves out H (hiccups), which 'Things to try' lists, and its last line stops at '...and see'. Things to try leaves out M (grow). The right panel is still a wall of text."},
-   "style":       {"score": 5, "why": "Clay creatures and clay trees go together, but flat leaf chips, flat paint dots, tomato-red trunks and a brown live Lumi break the look. STYLE.md still describes Lumi as 'a cream egg with a leaf'."},
-   "performance": {"score": 9, "why": "Human's game 4.6 ms median and 7.5 ms p95 per frame. Sandbox 5.6 ms median and 8.3 ms p95 through four minutes of driven play and the leaf event, at 30 fps throughout."}},
+  "lighting": {
+   "score": 5,
+   "why": "17:30 in the raster has a glowing sun but a pale grey sky and sea with no warm cast. Switching on path tracing turns that sun into a dark maroon ball with a dark reflection (traced-live2.png). Rain is only 10% darker and keeps hard shadows. Every progress shot is the same flat afternoon."
+  },
+  "world": {
+   "score": 6,
+   "why": "The beach with shells and starfish, the cherry grove, the sunset bench and the leaf pile give the island places. The paint-fight dots now litter the south meadow permanently, and the progress cameras look almost the same as at s79."
+  },
+  "props": {
+   "score": 6,
+   "why": "46 generated assets are in use, and the beach props and benches are good up close (free1/2.png). The newest prop, the leaves, is 440 squashed spheres that read as coins."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "The sheep are lovely in a free-camera close-up and walk head first now, and the outfits are back. The crabs are still a pink sphere on cylinder legs. Lumi's yellow becomes brown or ochre in the raster, so the hero loses its colour live."
+  },
+  "animation": {
+   "score": 6,
+   "why": "9 of 10 creatures move well. The sheep's cut legs snap 0.25 m in one frame and swing at 7.4 m/s. In the voice film Lumi pops at 9.67 s."
+  },
+  "fun": {
+   "score": 7,
+   "why": "In a minute of play each: berry race 10 to 4 in 25 s, fireflies 8/8 in 24 s, hide and seek 4/4 in 40 s, all with a best score, a level-up and R to replay. All ten jump-in keys answer. But round 1 is a walkover, the leaf event lasts 10-20 s with 2-3 jumpers, and there is nothing physical to play with."
+  },
+  "wow": {
+   "score": 7,
+   "why": "Lumi's real voice, the bottle letter and G (Lumi flies) are shareable. The leaf cannonball could be the best gag of the week but reads small and flat."
+  },
+  "camera": {
+   "score": 5,
+   "why": "The mini game chase views are good. Jump-in opens with a round bush filling the middle of the view in front of Lumi (jump-card.png). Follow looked straight down on Gloop at the dance ring. The leaves film is one static wide shot from behind a fence post. Free and orbit work."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Start and end cards are clear. The jump-in card leaves out H (hiccups), which 'Things to try' lists, and its last line stops at '...and see'. Things to try leaves out M (grow). The right panel is still a wall of text."
+  },
+  "style": {
+   "score": 5,
+   "why": "Clay creatures and clay trees go together, but flat leaf chips, flat paint dots, tomato-red trunks and a brown live Lumi break the look. STYLE.md still describes Lumi as 'a cream egg with a leaf'."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Human's game 4.6 ms median and 7.5 ms p95 per frame. Sandbox 5.6 ms median and 8.3 ms p95 through four minutes of driven play and the leaf event, at 30 fps throughout."
+  }
+ },
  "findings": [
-  {"severity": "high", "category": "style",
+  {
+   "severity": "high",
+   "category": "style",
    "title": "Lumi's yellow, live: the hero reads brown in the raster, golden when traced",
    "todo": null,
    "what": "At the sunset bench at 17:29-17:30, Lumi is a golden-yellow bird in the path-traced view and a dark brown, owl-like bird in the raster a few seconds later from the same camera. At midday in jump-in and the mini games it reads ochre or rust, never the big yellow bird of the films. The human's goal 5 asks for 'a colour of its own' that you recognise from across the island, and the live game, where the human watches, loses it.",
    "where": "Lumi's species material (engine bird.jl / species.jl) in the RayMakie raster",
    "evidence": "reviews/p82/traced-live2.png vs reviews/p82/raster-sunset.png (same camera, 1 min apart); reviews/p82/sheet-jump.png; site/img/leaves-jump.png (traced, yellow)",
    "suggestion": "Find out why the raster darkens this material: the albedo texture, a roughness or subsurface term the raster treats differently, or the fluffy mesh's normals. Fix it at the source (RayMakie raster_material.jl, or Lumi's material), so the same yellow appears in the raster, the browser and traced films. Also update STYLE.md to the yellow bird and the plush friends.",
-   "done_when": "The mean colour of Lumi's pixels in a raster screenshot at 11:00 is within 15% of the traced still's (hue in the yellow range, R and G both > 0.6), and the sunset bench raster shows a yellow bird."},
-  {"severity": "high", "category": "lighting",
+   "done_when": "The mean colour of Lumi's pixels in a raster screenshot at 11:00 is within 15% of the traced still's (hue in the yellow range, R and G both > 0.6), and the sunset bench raster shows a yellow bird.",
+   "agent_notes": "s83-84: plugins/lumicolour.jl lifts Lumi's raster/browser texture copies towards gold (face and the little one too). At 11:00 the mean Lumi pixel went from (0.59, 0.35, 0.12) to (0.77, 0.63-0.67, 0.2-0.26) (media/s83/lumi-off-on.png, media/s84/lumi-golden.png); the s83 session reviewer saw a yellow bird at 17:30. s84 toned the green gain down from lemon to gold. Todo 463 done."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
    "title": "Light that changes: grey sunsets, a dark traced sun, rain under hard sun",
    "todo": 237,
    "what": "With path tracing switched on at 17:29 (the dashboard button the human can press), the setting sun is a dark maroon ball with a dark reflection on the sea. The raster's sunset has a glowing orange sun, but the sky and sea are pale grey with no warm light on anything. Rain dims the light only 10% and keeps hard noon shadows. The progress shots from s79 to s82 show the same flat 16:00 light.",
    "where": "the sunset sun plot (NoShading live, Emission only in quiet copies), RayMakie sky, showers.jl dim_sun!",
    "evidence": "reviews/p82/traced-live2.png, reviews/p82/raster-sunset.png, media/progress/session-0082/eye-level.png",
    "suggestion": "Give the sun plot an emissive look whenever the screen path traces, not only in quiet copies (or hide it and let the sky model's own sun disc show). Tint the sky and sea for golden hour: a warm band at the horizon and warm key light on the creatures. Add an overcast state for showers with a soft sun.",
-   "done_when": "A live path-traced screenshot at 17:30 shows a bright sun (mean sun-disc luminance > 0.8). Raster at 17:30 has a warm cast (mean R/B >= 1.3 over the 3D area). Rain at 11:30 is >= 15% darker than dry, with soft shadows."},
-  {"severity": "high", "category": "props",
+   "done_when": "A live path-traced screenshot at 17:30 shows a bright sun (mean sun-disc luminance > 0.8). Raster at 17:30 has a warm cast (mean R/B >= 1.3 over the 3D area). Rain at 11:30 is >= 15% darker than dry, with soft shadows.",
+   "agent_notes": "Not done yet: the traced sunset sun and the warm raster sunset stay in todo 237."
+  },
+  {
+   "severity": "high",
+   "category": "props",
    "title": "Leaves that look like leaves: the pile and the gust are flat poker chips",
    "todo": null,
    "what": "Every falling leaf and every leaf in the pile is a squashed sphere in one of five flat colours, about 25 cm across. In the traced stills the pile reads as a heap of orange coins and the falling leaves as frisbees. This is the newest event's centrepiece, right in front of the camera.",
    "where": "plugins/autumn.jl plots! (marker = Sphere)",
    "evidence": "site/img/leaves-jump.png, site/img/leaves-lumi.png, reviews/p82/leaf-sheet.png",
    "suggestion": "Use a real leaf marker: a light generated maple/oak leaf mesh (about 200 faces) or a curled leaf shape with a midrib, with per-instance tints and brown stems. Make the leaves 2-3x smaller and 3x more numerous, give the pile a mounded clay base, and let leaves flutter and tumble as they fall.",
-   "done_when": "A traced close still of the pile shows recognisable leaf shapes (lobes or a point and a stem) in a rounded heap, and someone shown it says 'leaves', not 'coins'."},
-  {"severity": "high", "category": "fun",
+   "done_when": "A traced close still of the pile shows recognisable leaf shapes (lobes or a point and a stem) in a rounded heap, and someone shown it says 'leaves', not 'coins'.",
+   "agent_notes": "s83: maple-leaf mesh for every leaf (five pointed lobes, a notch, a stalk); traced close still site/img/leaves-maple.png. Todo 464 done."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
    "title": "A physics toy for goal 3: water to splash or things that roll, stack and fall",
    "todo": null,
    "what": "The human's goal 3 has no open todo, and nothing on the island is simulated. I pressed every jump-in key. P paints flat dots, the leaves follow scripted arcs, the swing is a scripted pendulum, and the ball is the only thing that rolls. The human asked for Maelstrom water that splashes and carries things, paint that sticks to what it hits, and things that fall, roll, stack and break, on the GPU.",
    "where": "plugins/ (no physics system), dev/Maelstrom",
    "evidence": "reviews/p82/sheet-jump.png; no Mantle/Maelstrom/rigid-body plugin among 74 plugins; todos.json has no goal 3 item",
    "suggestion": "Pick one toy and finish it: a shallows patch running Maelstrom FLIP at small scale that Lumi can stomp into, with splash, ripples and a floating leaf or boat. Or pebbles and crates from a rigid-body package found through RomeoDB that the player and creatures knock over and stack. Film it traced.",
-   "done_when": "A sandbox clip shows Lumi walking into it and a simulated response that differs each time (water rising and splashing, or objects tumbling and settling). The plugin calls a real solver, not scripted arcs."},
-  {"severity": "high", "category": "fun",
+   "done_when": "A sandbox clip shows Lumi walking into it and a simulated response that differs each time (water rising and splashing, or objects tumbling and settling). The plugin calls a real solver, not scripted arcs.",
+   "agent_notes": "s83: pumpkin bowling (plugins/pumpkins.jl) and s84: hail (plugins/hail.jl) are simulated, not scripted: gravity, bounces on the terrain, trunks, bushes, creatures (and each other for the pumpkins), so every run differs; jumped in as Lumi I walked into a pumpkin and it rolled 1.1 m. Honest limit: my own small CPU solver, not Mantle/Maelstrom (RomeoDB tools were not available); todo 465 stays open for water."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
    "title": "Leaf pile: every friend gets a turn (fishing steals the crew)",
    "todo": 462,
    "what": "I called the event in the sandbox (AUTUMN[:start]) and got a crew of 3. Cumulus started fishing 3 s after leaves_start (sandbox events 07:34:22), so only Hopscotch and Lumi jumped, and the event ended after 18 s. The log shows earlier runs with n = 5, 2 and 3, each lasting 10-20 s. The fishing pastime (and probably the shell hunt and present invitations, which kept pairing friends off during my jump-in) ignores the :leaves goal.",
    "where": "the plugin that emits 'fishing', plugins/autumn.jl",
    "evidence": "world/sandbox/log/events-2026-11-25.jsonl lines 23545-23559; reviews/p82/leaf-sheet.png (last frame: the crew on the pier)",
    "suggestion": "One shared rule: every pastime that hands out goals (fishing, beachcomb, invitations, presents) skips creatures whose goal is in NG.BUSY_GOALS. Pull at least 4 friends, and let late ones join the way boing's join_late! does.",
-   "done_when": "Three sandbox runs of the leaf event each show >= 4 jumps (count the whoops in the event log) and no crew member takes a :fish goal between leaves_start and leaves_end."},
-  {"severity": "high", "category": "creatures",
+   "done_when": "Three sandbox runs of the leaf event each show >= 4 jumps (count the whoops in the event log) and no crew member takes a :fish goal between leaves_start and leaves_end.",
+   "agent_notes": "s83: the leaf pile waits for at least three friends and pulls them from pastimes (fishing included); three sandbox runs gave 5, 6 and 6 jumps. Todo 462 done."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
    "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
    "todo": 236,
    "what": "Next to the plush pigs, sheep and blobs, the two crabs are still a pink sphere on four pink cylinder legs, with eye stalks, a white party hat and bunny ears. They are the first thing in view when jump-in starts (jump-card.png) and in the firefly start shot.",
    "where": "engine species.jl crabbit / plugins/makeover.jl",
    "evidence": "reviews/motion/p82/creatures.png (rows 2-3, right), reviews/p82/play/jump-card.png, reviews/p82/sheet-firefly.png",
    "suggestion": "Give the crab the makeover the others had: a generated clay crab body cut into claws, legs and an eye-stalk head. Check it from the front and run the outfits test.",
-   "done_when": "The creatures sheet shows sculpted crabs with jointed claws that match the plush pigs, and a front view shows the eyes on the side facing its walk."},
-  {"severity": "high", "category": "camera",
+   "done_when": "The creatures sheet shows sculpted crabs with jointed claws that match the plush pigs, and a front view shows the eyes on the side facing its walk.",
+   "agent_notes": "Not done yet: the crabs (todo 236). The generated assets keep losing the worker's GPU this week (three mesh jobs died with VK_ERROR_DEVICE_LOST)."
+  },
+  {
+   "severity": "high",
+   "category": "camera",
    "title": "Close on the moment: jump-in behind a bush, leaf jumps from far, rings from above",
    "todo": 447,
    "what": "Jump-in starts with a round bush filling the middle of the view, Lumi half hidden behind it (jump-card.png). The leaf film is one static wide shot for 14 s, with a fence post filling the right third, jumpers 1/8 of the frame tall and Lumi at the far left edge. Live, the follow camera framed the dance ring from straight above Gloop's back, and during my leaf event it watched an empty pile while Lumi was off frame.",
    "where": "greetings.jl chase_camera! start, plugins/autumn.jl leaves_view, movies/autumn.jl, render.jl circle groups",
    "evidence": "reviews/p82/play/jump-card.png, reviews/motion/perfectionist-0082/leaves-overview.jpg, reviews/p82/follow1.png, reviews/p82/leaf-sheet.png",
    "suggestion": "Start jump-in on open ground, or put the eye on the clear side with NG.obstruction. Film events the way an animator would: wide for the gust, then low close shots at the pile edge for each leap, and a medium shot of Lumi's run-up cutting to the burst. Keep group views below 30° pitch.",
-   "done_when": "Five jump-in starts in a row show Lumi unobstructed (NG.obstruction < 1). The next event film's overview has >= 3 shots, with the jumper >= 1/3 of the frame height in one. The dance-ring pitch measured from game.rig is <= 32°."},
-  {"severity": "medium", "category": "animation",
+   "done_when": "Five jump-in starts in a row show Lumi unobstructed (NG.obstruction < 1). The next event film's overview has >= 3 shots, with the jumper >= 1/3 of the frame height in one. The dance-ring pitch measured from game.rig is <= 32°.",
+   "agent_notes": "Partly: the s83 pumpkin film and the s84 hail film each have three shots (wide, close behind/on Lumi, the huddle). Jump-in obstruction and the dance-ring pitch are still todo 447."
+  },
+  {
+   "severity": "medium",
+   "category": "animation",
    "title": "Snaps left: the sheep's legs jump 0.25 m and Lumi's crest is too fast",
    "todo": 332,
    "what": "In the sandbox motion measure, Cumulus (sheep) has leg_1 jumping 0.25 m in one frame and leg_3 0.19 m, and leg_1 swinging at 7.4 m/s. The newly cut sheep legs pop. In the voice film Lumi pops at 9.67 s (0.051 change, the film's largest), turning from three-quarter to front in two frames.",
    "where": "plugins/makeover.jl sheep legs (pivots), plugins/gait.jl stride",
    "evidence": "reviews/motion/p82/motion.png, reviews/motion/perfectionist-0082/voice-steps.jpg",
    "suggestion": "Put the sheep legs' pivot at the hip and lower the sheep's stride the way gait.jl does for crabs. Blend the start of a hop. Measure twice.",
-   "done_when": "Two sandbox live_motion runs show no one-frame leg jump > 0.08 m on any sheep and no part over 5 m/s."}
+   "done_when": "Two sandbox live_motion runs show no one-frame leg jump > 0.08 m on any sheep and no part over 5 m/s.",
+   "agent_notes": "Not done yet: the sheep's legs (todo 332)."
+  }
  ],
  "todos": [
-  {"id": 69, "action": "drop", "why": "Not seen since 2026-11-24 10:26. Frames ran at 5.6 ms through four minutes of driven play; the system files it again if it comes back."},
-  {"id": 236, "action": "keep", "why": "Finding 6: crabs still primitive."},
-  {"id": 237, "action": "keep", "why": "Finding 2.", "title": "Light that changes: grey sunsets, a dark traced sun, rain under hard sun"},
-  {"id": 325, "action": "keep", "why": "Faces are still underused in events (the leaf jumpers show no joy up close)."},
-  {"id": 332, "action": "keep", "why": "Finding 8: the snaps are now in the sheep legs.", "title": "Snaps left: the sheep's legs jump 0.25 m and Lumi's crest is too fast"},
-  {"id": 447, "action": "keep", "why": "Finding 7.", "title": "Close on the moment: jump-in behind a bush, leaf jumps from far, rings from above"},
-  {"id": 269, "action": "done", "why": "Lumi has a chosen voice (Kokoro am_puck), the bottle letter film is narrated in it (s80), and the game speaks in the browser (s81)."},
-  {"id": 279, "action": "keep", "why": "Still the cause behind stuck walks."},
-  {"id": 387, "action": "keep", "why": "Statues still read as standing about."},
-  {"id": 389, "action": "keep", "why": "Same family as the leaf crew theft (finding 5); a shared BUSY check would close both."},
-  {"id": 401, "action": "keep", "why": "G works and is fun; the roof landing is still a good next gag."},
-  {"id": 427, "action": "keep", "why": "Same root cause as finding 5: pastimes steal event creatures."},
-  {"id": 435, "action": "keep", "why": "Not verified as fixed."},
-  {"id": 437, "action": "keep", "why": "Still three mini games, and round 1 of each is a walkover; a scored swing launch or leaf cannonball would add one with a skill to learn."},
-  {"id": 438, "action": "keep", "why": "Soot, rain and spores are still flat; the leaves are split out as finding 3."},
-  {"id": 448, "action": "keep", "why": "No night film yet (goal 6)."},
-  {"id": 455, "action": "keep", "why": "The grove is still a small patch with no path."},
-  {"id": 460, "action": "keep", "why": "Sheep faces are still bare (a black blob, no mouth) in the free-camera close-up."},
-  {"id": 462, "action": "keep", "why": "Finding 5, cause found: fishing takes the crew.", "title": "Leaf pile: every friend gets a turn (fishing steals the crew)"},
-  {"id": 416, "action": "keep", "why": "Engine limit still in RayMakie; low priority."}
+  {
+   "id": 69,
+   "action": "drop",
+   "why": "Not seen since 2026-11-24 10:26. Frames ran at 5.6 ms through four minutes of driven play; the system files it again if it comes back."
+  },
+  {
+   "id": 236,
+   "action": "keep",
+   "why": "Finding 6: crabs still primitive."
+  },
+  {
+   "id": 237,
+   "action": "keep",
+   "why": "Finding 2.",
+   "title": "Light that changes: grey sunsets, a dark traced sun, rain under hard sun"
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Faces are still underused in events (the leaf jumpers show no joy up close)."
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "Finding 8: the snaps are now in the sheep legs.",
+   "title": "Snaps left: the sheep's legs jump 0.25 m and Lumi's crest is too fast"
+  },
+  {
+   "id": 447,
+   "action": "keep",
+   "why": "Finding 7.",
+   "title": "Close on the moment: jump-in behind a bush, leaf jumps from far, rings from above"
+  },
+  {
+   "id": 269,
+   "action": "done",
+   "why": "Lumi has a chosen voice (Kokoro am_puck), the bottle letter film is narrated in it (s80), and the game speaks in the browser (s81)."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Still the cause behind stuck walks."
+  },
+  {
+   "id": 387,
+   "action": "keep",
+   "why": "Statues still read as standing about."
+  },
+  {
+   "id": 389,
+   "action": "keep",
+   "why": "Same family as the leaf crew theft (finding 5); a shared BUSY check would close both."
+  },
+  {
+   "id": 401,
+   "action": "keep",
+   "why": "G works and is fun; the roof landing is still a good next gag."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Same root cause as finding 5: pastimes steal event creatures."
+  },
+  {
+   "id": 435,
+   "action": "keep",
+   "why": "Not verified as fixed."
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "Still three mini games, and round 1 of each is a walkover; a scored swing launch or leaf cannonball would add one with a skill to learn."
+  },
+  {
+   "id": 438,
+   "action": "keep",
+   "why": "Soot, rain and spores are still flat; the leaves are split out as finding 3."
+  },
+  {
+   "id": 448,
+   "action": "keep",
+   "why": "No night film yet (goal 6)."
+  },
+  {
+   "id": 455,
+   "action": "keep",
+   "why": "The grove is still a small patch with no path."
+  },
+  {
+   "id": 460,
+   "action": "keep",
+   "why": "Sheep faces are still bare (a black blob, no mouth) in the free-camera close-up."
+  },
+  {
+   "id": 462,
+   "action": "keep",
+   "why": "Finding 5, cause found: fishing takes the crew.",
+   "title": "Leaf pile: every friend gets a turn (fishing steals the crew)"
+  },
+  {
+   "id": 416,
+   "action": "keep",
+   "why": "Engine limit still in RayMakie; low priority."
+  }
  ],
  "engine": [
-  {"what": "RayMakie's path tracer ignores a meshscatter's model matrix (scale!/translate!), so a scaled herd (Giant Lumi) renders at normal size in traced films.", "evidence": "RayMakie plots/meshscatter.jl :trace_transforms (todo 416)"},
-  {"what": "The raster and the path tracer disagree strongly on Lumi's material: golden yellow traced, dark brown in the raster from the same camera a minute apart. Probably a material term (texture gamma, roughness/sheen or normals of the fluffy mesh) that raster_material.jl maps differently.", "evidence": "reviews/p82/traced-live2.png vs reviews/p82/raster-sunset.png"},
-  {"what": "A NoShading plot (the sunset sun) renders as a dark unlit ball when the live screen switches to path tracing; there is no automatic emissive fallback.", "evidence": "reviews/p82/traced-live2.png"},
-  {"what": "The RayMakie raster has no soft-shadow control for an overcast sky: rain keeps hard noon shadows even with the sun dimmed.", "evidence": "media/s80/rain-during.png (author), todo 237"}
+  {
+   "what": "RayMakie's path tracer ignores a meshscatter's model matrix (scale!/translate!), so a scaled herd (Giant Lumi) renders at normal size in traced films.",
+   "evidence": "RayMakie plots/meshscatter.jl :trace_transforms (todo 416)"
+  },
+  {
+   "what": "The raster and the path tracer disagree strongly on Lumi's material: golden yellow traced, dark brown in the raster from the same camera a minute apart. Probably a material term (texture gamma, roughness/sheen or normals of the fluffy mesh) that raster_material.jl maps differently.",
+   "evidence": "reviews/p82/traced-live2.png vs reviews/p82/raster-sunset.png"
+  },
+  {
+   "what": "A NoShading plot (the sunset sun) renders as a dark unlit ball when the live screen switches to path tracing; there is no automatic emissive fallback.",
+   "evidence": "reviews/p82/traced-live2.png"
+  },
+  {
+   "what": "The RayMakie raster has no soft-shadow control for an overcast sky: rain keeps hard noon shadows even with the sun dimmed.",
+   "evidence": "media/s80/rain-during.png (author), todo 237"
+  }
  ],
- "process": "Next to s20 the island is a different game: generated trees, plush creatures, a cottage, beaches, faces and outfits. Next to s79 the same progress cameras show almost nothing new: paint dots on the meadow, a rainbow and a thought bubble. That is because sessions 80-82 went into moments that happen at certain times (a bottle in the evening, leaves once an afternoon) and into sound (the voice), which a fixed camera never catches. That variety is good for goals 1 and 5. The two look-from-the-front catches (sheep walking sideways since s74, hats lost since the makeover) were real bugs nobody saw for 7-8 sessions: after every body change, shoot each creature from the front and compare raster with traced (the brown live Lumi is the same kind of blind spot). The high review items (crabs 236, weather and sunset light 237, effects with volume 438) got only a 10% rain dim in three sessions. Goal 3 (physics) has no todo at all and nothing simulated. Goal 2 has narrated, traced films but each is one static camera, not a release with cuts. Goals 4 and 6 (light at every hour) barely moved, and live path tracing at sunset is visibly broken. The mini games are solid and replayable through levels. Next: one session on Lumi's live colour plus sunset light (what the human sees every evening), one on a real physics toy, then the leaf look and close event cameras."}
+ "process": "Next to s20 the island is a different game: generated trees, plush creatures, a cottage, beaches, faces and outfits. Next to s79 the same progress cameras show almost nothing new: paint dots on the meadow, a rainbow and a thought bubble. That is because sessions 80-82 went into moments that happen at certain times (a bottle in the evening, leaves once an afternoon) and into sound (the voice), which a fixed camera never catches. That variety is good for goals 1 and 5. The two look-from-the-front catches (sheep walking sideways since s74, hats lost since the makeover) were real bugs nobody saw for 7-8 sessions: after every body change, shoot each creature from the front and compare raster with traced (the brown live Lumi is the same kind of blind spot). The high review items (crabs 236, weather and sunset light 237, effects with volume 438) got only a 10% rain dim in three sessions. Goal 3 (physics) has no todo at all and nothing simulated. Goal 2 has narrated, traced films but each is one static camera, not a release with cuts. Goals 4 and 6 (light at every hour) barely moved, and live path tracing at sunset is visibly broken. The mini games are solid and replayable through levels. Next: one session on Lumi's live colour plus sunset light (what the human sees every evening), one on a real physics toy, then the leaf look and close event cameras.",
+ "addressed": true
+}

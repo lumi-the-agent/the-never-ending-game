@@ -7,7 +7,7 @@ isdefined(Main, :LUMI_COLOUR) || Core.eval(Main, :(const LUMI_COLOUR = Dict{Symb
 const NG = NeverendingGame
 const LC = Main.LUMI_COLOUR
 
-const GAIN = (1.22f0, 1.52f0, 1.25f0)      # red, green, blue: the mean texel (0.76, 0.57, 0.10) becomes (0.93, 0.87, 0.13)
+const GAIN = (1.2f0, 1.4f0, 1.3f0)      # red, green, blue: the mean texel (0.76, 0.57, 0.10) becomes (0.91, 0.80, 0.13), golden (s84: 1.52 green read lemon)
 
 struct LumiColour <: System end
 

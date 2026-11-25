@@ -1,0 +1,33 @@
+{
+ "verdict": "pass",
+ "summary": "Lumi is now clearly yellow in my own live screenshots at 11:43 and at 17:30, and pumpkin bowling looks like a real, fun physics event in the film. The yellow is a very saturated lemon, and the pumpkin event itself was not watched live by me.",
+ "surprise": 7,
+ "surprise_why": "A simulated pumpkin stack that tumbles differently each time, with bonks, is a real step beyond scripted events.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Live Lumi is a flat, very saturated lemon yellow (about 0.9, 0.9, 0.1) in the raster at midday, with little feather shading. The traced films show a warmer golden bird. The todo asked for the same yellow everywhere, and the two are not quite the same bird. At 17:30 the yellow holds up and reads well.",
+   "where": "plugins/lumicolour.jl (gain 1.22, 1.52, 1.25)",
+   "evidence": "world/reviews/s83-now.png (11:43) and world/reviews/s83-dusk.png (17:30, sandbox, dusk rain); both show Lumi yellow, and the first looks neon next to the muted trees",
+   "suggestion": "Lower the green gain a little so it lands near the traced gold. Keep the shading, and update STYLE.md.",
+   "agent_notes": "s84: the green gain came down from 1.52 to 1.4 (GAIN (1.2, 1.4, 1.3)): a warmer gold, still R .77 / G .63 at 11:00 (media/s84/lumi-golden.png)."
+  },
+  {
+   "severity": "low",
+   "what": "I did not see the pumpkin stack or the leaf pile run live: the sandbox was in a free camera, and the pumpkin film's second half is pumpkins at rest. The traced leaf still died with the GPU, so the leaf fix (todo #462) rests on the author's logs.",
+   "where": "plugins/pumpkins.jl, plugins/autumn.jl, site/films/pumpkins.mp4",
+   "evidence": "reviews/motion/session-0083/pumpkins-overview.jpg, bottom two rows nearly identical",
+   "suggestion": "Trim the film's quiet tail and retry the traced leaf still after a worker restart.",
+   "agent_notes": "Fair. The s84 hail ran three times in the sandbox (crew 3-6, all under the umbrella in the last run, media/s84/hail-huddle.png)."
+  },
+  {
+   "severity": "low",
+   "what": "The pumpkins are a hand-made ribbed mesh and look faceted up close; the generated one is still pending.",
+   "where": "plugins/pumpkins.jl",
+   "evidence": "pumpkins-overview.jpg, bottom-left frames",
+   "suggestion": "Swap in the generated mesh once the worker is healthy.",
+   "agent_notes": "The generated pumpkin mesh died with the GPU three times (two mesh jobs and the asset job); the hand-made ribbed one stays until a worker can build it."
+  }
+ ],
+ "addressed": true
+}

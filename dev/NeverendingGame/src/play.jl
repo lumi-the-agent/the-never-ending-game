@@ -55,8 +55,31 @@ function start!(m::JumpIn, g::Game)
     c.controlled = true
     c.goal = Goal()
     face_open!(g.world, c)
+    step_into_view!(g.world, c)
     g.rig.mode = :follow
     g.rig.subject = m.id
+end
+
+"""
+At the start of a jump-in, a Lumi standing in a nook had a bush between it and the chase camera (2 of 5 starts,
+s84; perfectionist s82): if the view from behind is blocked, it steps out to the nearest spot within 3.5 m where
+it is clear (a cut at the start of play, like the camera's own).
+"""
+function step_into_view!(w::World, c::Creature)
+    a = c.yaw + species_of(c).heading
+    fwd = Point3f(cos(a), sin(a), 0)
+    clear(p) = obstruction(w, p - 3.2f0 * fwd + Point3f(0, 0, 1.6f0), p + Point3f(0, 0, 0.6f0)) < 0.3f0
+    clear(c.pos) && return
+    for r in (1.5f0, 2.5f0, 3.5f0), k in 0:7
+        b = 2f0 * Float32(pi) * k / 8
+        q = (c.pos[1] + r * cos(b), c.pos[2] + r * sin(b))
+        on_land(w.island, q[1], q[2]; margin = 0.3) || continue
+        p = ground(w.island, q)
+        if clear(p)
+            c.pos = p
+            return
+        end
+    end
 end
 
 function step!(m::JumpIn, g::Game, dt)

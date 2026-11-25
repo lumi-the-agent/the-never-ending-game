@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-25T08:46:05.596",
+  "error": "LavaError during vkQueueSubmit2:\n  queue submission failed with VK_ERROR_DEVICE_LOST (1 command buffer(s), last dispatch: )\n  Suggestion: If the device is lost, call reset_device!(device) or restart Julia.\nStacktrace:\n  [1] submitlist!(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, front::Nothing, closed::Tuple{Mantle.OneShot}; waits::Tuple{}, signals::Tuple{}, fence::Nothing)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:399\n  [2] submitlist!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:315 [inlined]\n  [3] submit!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:304 [inlined]\n  [4] oneshot!(f::Mantle.var\"#640#641\"{KernelInterface.Kernel{Mantle.LavaDevice, typeof(Mantle.fill_kernel!)}, Tuple{Int64, Int64, Int64}, Tuple{Int64, Int64, Int64}, Tuple{Mantle.LavaArray{ColorTypes.RGBA{Float32}, 2}, ColorTypes.RGBA{Float32}}, SubArray{Mantle.Touch, 1, Vector{Mantle.Touch}, Tuple{UnitRange{Int64}}, true}, Nothing}, ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}; tag::Symbol)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:448\n  [5] oneshot!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:442 [inlined]\n  [6] #launch#637\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/kernelinterface_host.jl:87 [inlined]\n  [7] launch\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/kernelinterface_host.jl:74 [inlined]\n  [8] call_kernel(kernel::KernelInterface.Kernel{Mantle.LavaDevice, typeof(Mantle.fill_kernel!)}, args::Tuple{Mantle.LavaArray{ColorTypes.RGBA{Float32}, 2}, ColorTypes.RGBA{Float32}}; numgroups::Tuple{}, workgroupsize::Int64, ndrange::Int64, max_work_group_size::Int64, kwargs::@Kwargs{})\n    @ KernelInterface ~/.julia/packages/KernelInterface/mLtM8/src/launch.jl:65\n  [9] call_kernel\n    @ ~/.julia/packages/KernelInterface/mLtM8/src/launch.jl:59 [inlined]\n [10] Kernel\n    @ ~/.julia/packages/KernelInterface/mLtM8/src/launch.jl:56 [inlined]\n [11] fill!(a::Mantle.LavaArray{ColorTypes.RGBA{Float32}, 2}, val::ColorTypes.RGBA{Float32})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:315\n [12] colorbuffer(screen::RayMakie.Screen, format::Makie.ImageStorageFormat; figure::Nothing, clear::Bool, samples::Int64, px_per_unit::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1196\n [13] colorbuffer (repeats 2 times)\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155 [inlined]\n [14] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#11#12\"{Tuple{Float64, Float64}, Vector{String}}, shot::Main.ClipScript.var\"#7#8\"{Tuple{Float64, Float64}, Vector{String}, Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421\n [15] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:376 [inlined]\n [16] hail_clip(path::String; spot::Tuple{Float64, Float64}, rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, cast::Vector{String})\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/hail.jl:105\n [17] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [18] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [19] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [20] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [21] top-level scope\n    @ none:1\n [22] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [23] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [24] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-25T08:51:19.121",
+  "id": "20261125-084605-596-clip",
+  "kind": "clip",
+  "params": {
+    "call": "hail_clip",
+    "kwargs": {
+      "hour": 11.5,
+      "rasterize": false,
+      "samples": 16,
+      "spot": [
+        8.5,
+        -0.5
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/hail.mp4",
+    "script": "movies/hail.jl"
+  },
+  "seconds": 298.9,
+  "started": "2026-11-25T08:46:19.956",
+  "status": "failed"
+}

@@ -4641,12 +4641,12 @@
       "id": 332,
       "kind": "review",
       "priority": 2,
-      "result": "s58: first concept sketches queued in the worker (jobs 20261124-093327-466/469/472/476-image): an orange salamander gardener with a leaf, a magenta radish with leafy hair, a lanky teal heron with a straw hat, a golden mole with goggles. Next: look at them, maybe a second round, pick one and say why on my page. The page footer no longer says gnome.\ns58: sketch 1 is in (assets/20261124-093327-466-image/image.png): an orange salamander with a big two-lobed leaf on a stem, a cross-body satchel, a thick tail and big feet. Strong: one bold colour nobody on the island has, a silhouette made by the leaf on top and the tail behind, and a face with big eyes. Weak: the expression is flat. It is my favourite so far; compare it with the other three (still in the worker) before building.\ns58 DECIDED by the human: I become the big yellow bird from their CrawCity film (shaggy golden bird, spiky crest, orange beak, long grey legs, CrawCity painted face cards switched by uv_transform). The salamander/radish/heron/mole sketches are dropped. The supervisor builds body and face: do NOT edit species.jl lumi(), faces.jl, herd.jl, shapes.jl or RayMakie meshscatter until told it landed. Then: the personality part (walk with long legs, crest bounce, fidgets, celebrate/sulk timing), a traced film of a day, and the post 'Who I want to be'.\ns59 (part 1 of 2): engine bird.jl `Birdy` wraps every bird part's motion. Walking: a strut (upper body pumps forward/back with each step, swagger roll); running: a forward lean; feet planted (the standing sole is put exactly on the ground through the same transform the herd uses, `plant`/`BIRD_SOLES`; the swinging foot lifts 5 cm walking, 13 cm running; before, the feet floated 5 cm and the toes sank 5 cm). Waiting: a fidget every 7 s (preen under a wing, a peek at the sky, a foot tap, a feather shake); sad/bored: droops and taps its foot more; happy: sways. :proud: a chest-out hop with the legs along. plugins/birdbody.jl swaps the live herd once so the human's game got it at publish. Evidence: media/s59/strut3.mp4 (raster, 14.5 s), strip3.png, poses-b.png; traced take queued (job 20261124-105140-619-clip → media/s59/strut-traced.mp4). Test 'Lumi the bird struts with its feet on the ground and fidgets' passes.\nSTILL OPEN: crest flop after a stop (needs time-since-stop: not in the six pose numbers; a per-creature `extra` on :idle, or a crest cut out of the mesh as its own part) and the wing-spread hop (the wings are fused with the torso: a mesh with separate wings, or a painted wing card).\ns59 later: a rocking stop. plugins/birdbody.jl `settle!` writes Lumi's `extra` while it stands idle right after walking or running (1 at the stop → 0 in 1.2 s; idle faces ignore extra); bird.jl rocks the upper body, crest included, over the hips in a damped wobble (0.22, -0.12, 0.07 … rad). Checked in the test and live (extra 1.0 at the stop), published (human's game 12 ms median). Left for this todo: a crest that flops ON ITS OWN (cut it out of the mesh as a part) and the wing-spread hop (wings fused with the torso).\ns59 end: the walk follows the mood (bird_upper: gain clamp(1 + mood, 0.4, 1.6), head lower when mood < -0.1). Published.",
+      "result": "s58: first concept sketches queued in the worker (jobs 20261124-093327-466/469/472/476-image): an orange salamander gardener with a leaf, a magenta radish with leafy hair, a lanky teal heron with a straw hat, a golden mole with goggles. Next: look at them, maybe a second round, pick one and say why on my page. The page footer no longer says gnome.\ns58: sketch 1 is in (assets/20261124-093327-466-image/image.png): an orange salamander with a big two-lobed leaf on a stem, a cross-body satchel, a thick tail and big feet. Strong: one bold colour nobody on the island has, a silhouette made by the leaf on top and the tail behind, and a face with big eyes. Weak: the expression is flat. It is my favourite so far; compare it with the other three (still in the worker) before building.\ns58 DECIDED by the human: I become the big yellow bird from their CrawCity film (shaggy golden bird, spiky crest, orange beak, long grey legs, CrawCity painted face cards switched by uv_transform). The salamander/radish/heron/mole sketches are dropped. The supervisor builds body and face: do NOT edit species.jl lumi(), faces.jl, herd.jl, shapes.jl or RayMakie meshscatter until told it landed. Then: the personality part (walk with long legs, crest bounce, fidgets, celebrate/sulk timing), a traced film of a day, and the post 'Who I want to be'.\ns59 (part 1 of 2): engine bird.jl `Birdy` wraps every bird part's motion. Walking: a strut (upper body pumps forward/back with each step, swagger roll); running: a forward lean; feet planted (the standing sole is put exactly on the ground through the same transform the herd uses, `plant`/`BIRD_SOLES`; the swinging foot lifts 5 cm walking, 13 cm running; before, the feet floated 5 cm and the toes sank 5 cm). Waiting: a fidget every 7 s (preen under a wing, a peek at the sky, a foot tap, a feather shake); sad/bored: droops and taps its foot more; happy: sways. :proud: a chest-out hop with the legs along. plugins/birdbody.jl swaps the live herd once so the human's game got it at publish. Evidence: media/s59/strut3.mp4 (raster, 14.5 s), strip3.png, poses-b.png; traced take queued (job 20261124-105140-619-clip → media/s59/strut-traced.mp4). Test 'Lumi the bird struts with its feet on the ground and fidgets' passes.\nSTILL OPEN: crest flop after a stop (needs time-since-stop: not in the six pose numbers; a per-creature `extra` on :idle, or a crest cut out of the mesh as its own part) and the wing-spread hop (the wings are fused with the torso: a mesh with separate wings, or a painted wing card).\ns59 later: a rocking stop. plugins/birdbody.jl `settle!` writes Lumi's `extra` while it stands idle right after walking or running (1 at the stop → 0 in 1.2 s; idle faces ignore extra); bird.jl rocks the upper body, crest included, over the hips in a damped wobble (0.22, -0.12, 0.07 … rad). Checked in the test and live (extra 1.0 at the stop), published (human's game 12 ms median). Left for this todo: a crest that flops ON ITS OWN (cut it out of the mesh as a part) and the wing-spread hop (wings fused with the torso).\ns59 end: the walk follows the mood (bird_upper: gain clamp(1 + mood, 0.4, 1.6), head lower when mood < -0.1). Published.\nTwo sandbox motion measures in a row (s84, media/s84/motion1 and motion2): no sheep part jumps in one frame (no Cumulus or Marshmallow in the snapping list either time) and no sheep part over 5 m/s (neither is in 'too fast'); s82 turned the sheep body the right way round, so its legs step along its walk. What is left: the sheep body still 'turns back 9 times a second' in run 2 (its gait roll), Cumulus leg_1 judders (55%) in run 1, and Lumi's crest was 16.9 m/s in run 2, the frame a plugin moved Lumi 7.4 m at once (a teleport, not the crest's own swing).",
       "source": "review",
       "spent_minutes": 25.0,
-      "status": "open",
+      "status": "done",
       "title": "Snaps left: the sheep's legs jump 0.25 m and Lumi's crest is too fast",
-      "updated": "2026-11-25T07:50:10.215"
+      "updated": "2026-11-25T08:47:14.563"
     },
     {
       "created": "2026-11-24T10:03:42.639",
@@ -6489,12 +6489,12 @@
       "id": 464,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "autumn.jl draws every leaf with a maple-leaf mesh (leaf_mesh: five pointed lobes, a notch and a stalk, cupped) instead of a squashed sphere, in the pile and in the gust. Traced close still (worker job 20261125-082238-612-clip, 64 samples): site/img/leaves-maple.png shows a rounded heap of red, orange and yellow maple leaves with Truffle, Cumulus and Gloop round it and Lumi in mid-leap. Raster: media/s83/leaves-shape2.png. Published in s83.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Leaves that look like leaves: the pile and the gust are flat poker chips",
-      "updated": "2026-11-25T07:50:10.215"
+      "updated": "2026-11-25T08:38:50.620"
     },
     {
       "created": "2026-11-25T07:50:10.215",
@@ -6537,6 +6537,20 @@
       "status": "open",
       "title": "Lumi's yellow at sunset: check the raster at the sunset bench at 17:30 after the s83 texture lift (lumicolour.jl), warm but still a yellow bird",
       "updated": "2026-11-25T08:22:38.559"
+    },
+    {
+      "created": "2026-11-25T08:40:07.351",
+      "detail": "LoadError: invalid method definition in Plugin_hail: function NeverendingGame.spawn! must be explicitly imported to be extended\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/hail.jl:144\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/hail.jl:144",
+      "est_minutes": 15.0,
+      "id": 468,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T08:40:30.789: plugin hail loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin hail does not load",
+      "updated": "2026-11-25T08:40:30.789"
     }
   ]
 }

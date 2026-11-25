@@ -117,7 +117,11 @@ come true gets a line saying when and how.
 - **Real weather**: not only sunny days and showers, but storms you remember. (Session 76: the first thunderstorm.
   A black cloud rolled in over the meadow, lightning cracked down, every friend ran screaming to huddle under the
   Big Boing toadstool, and I stayed out in it, wings up, "It's only a bit of weather!", until the last bolt hit my
-  crest. A puff of soot. "...I'm fine." They laughed for ages. Still to come: fog mornings, hail, a storm at night.)
+  crest. A puff of soot. "...I'm fine." They laughed for ages. Still to come: fog mornings, hail, a storm at night.
+  Session 84: hail! Late one morning a lumpy grey cloud slid over me and down came hail the size of golf balls,
+  bouncing everywhere for real. I whipped out a big red umbrella, shouted EVERYONE UNDER HERE, and my friends came
+  running and squeezed in round me while it drummed on top. Afterwards the meadow was white. Still to come: fog
+  mornings, a storm at night.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
 ## Done

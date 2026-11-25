@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-25T08:57:38.922",
+  "finished": "2026-11-25T09:08:42.845",
+  "id": "20261125-085738-922-clip",
+  "kind": "clip",
+  "params": {
+    "call": "hail_clip",
+    "kwargs": {
+      "hour": 11.5,
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 9.5,
+      "spot": [
+        8.5,
+        -0.5
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/hail.mp4",
+    "script": "movies/hail.jl"
+  },
+  "result": {
+    "drums": 6,
+    "hail": 2.2083333333333335,
+    "path": "/sim/Programmieren/SimGame/world/site/films/hail.mp4",
+    "started": true,
+    "ticks": 244
+  },
+  "seconds": 644.4,
+  "started": "2026-11-25T08:57:58.173",
+  "status": "done"
+}
