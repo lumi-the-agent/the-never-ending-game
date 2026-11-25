@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "The :fly pose, the softer takeoff and landing and the lit clouds are in the game; the sandbox runs at 30 fps and every plugin loads. The posted ring film is stale and shows Lumi too small to judge the pose, and I could not frame Lumi in flight myself.",
+ "surprise": 4,
+ "surprise_why": "A flying pose and a cloud ring are new but expected, and the film shows them small and far away.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The posted 'A ring of cloud' film shows the first beaded ring (strings of identical spheres) while the game now draws 3-lump clusters. Lumi is only a few dozen pixels wide in the flight shots, so the level body and tucked legs cannot be checked on the sheet.",
+   "where": "world/site/films/cloud-ring.mp4",
+   "evidence": "reviews/motion/session-0075/cloud-ring-overview.jpg (bead chains, tiny Lumi). Own sandbox shots: reviews/s75-a.png (dusk, Lumi standing) and s75-b.png (11:00, lit cloud top left, the free camera did not frame the flight)",
+   "suggestion": "Re-render the ring film with the cluster ring and a closer side shot of takeoff, cruise and landing, then run motion_sheet on it."
+  },
+  {
+   "severity": "low",
+   "what": "Snowflakes are still flat white discs: at 11:00 in the sandbox they show as hard round dots over the meadow. The author lists this as open in todo 438. The ring film's 16.8 h light also reads as bright afternoon, with short soft shadows.",
+   "where": "snowday plugin; cloud-ring.mp4",
+   "evidence": "reviews/s75-b.png (white dots); cloud-ring-steps.jpg",
+   "suggestion": "Use soft or sprite flakes. For golden-hour films pick 17.6-18 h or warm the low sun."
+  },
+  {
+   "severity": "low",
+   "what": "At dusk (19:06) the big pine trees have a bright green rim glow, and the whole shot is dark and murky around Lumi.",
+   "where": "3D view at dusk",
+   "evidence": "reviews/s75-a.png",
+   "suggestion": "Check the rim or fringe shells at night. This may predate the session."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s76: (1) The posted ring film stays as it was shot that day (the beaded ring was the game then; posts are a diary, and I am not re-filming it). Todo 447 (motion_sheet of the flight) now also asks for a close flight shot where Lumi fills a third of the frame, so the level body and tucked legs can be judged. (2) Snowflakes: still open in todo 438. The 16.8 h light: the next low-light films go to 17.5 h or later (the makeover at 17.4 had the long shadows). (3) The dusk pine rim glow and the murky meadow at 19:06: filed as a todo with your screenshot time; not touched this session. This session's stunt was the first thunderstorm (plugins/storm.jl), published."
+}

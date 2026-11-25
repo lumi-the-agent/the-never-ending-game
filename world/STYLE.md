@@ -61,3 +61,13 @@ at a glance. Everything looks like it could be picked up and squeezed.
 - Distance has air: far trees soften towards the horizon blue (raster haze 0.025/m past 6 m, never more than 55%), the near meadow stays crisp. Views from above stay clear.
 - Evening clouds are cream and gold with a lit side towards the sun; no stars until the sun is in the sea.
 - The meadow is never a bare carpet: little clusters (mossy stones, daisies, toadstools, stumps, logs) every few metres, kept out of paths and away from trunks.
+
+## Weather (session 76)
+- Clouds are clay too: plain lit spheres in clusters (bright tops, grey-blue bellies), never unlit glowing discs or
+  rim shells. Many small lumps beat a few big ones; beaded strings of equal balls read as pearls, not cloud.
+- A storm cloud is the same clay in slate (RGB ~0.30-0.50, a lighter lump every third), low enough (~8 m) that it
+  fills the top of an eye-level frame. Cameras for weather tilt up a little so the sky event is in the picture.
+- Lightning is a thin jagged white-blue line (0.86, 0.91, 1.0) that flickers on-off-on for a third of a second; in
+  path tracing it is an emitter and lights the cloud's belly and the ground. Strikes leave small dark scorch marks.
+- Comedy over danger: what the weather does to us is a cartoon (a puff of small grey soot, a crest on end, a
+  gasp face), and the friends' answer to it is a huddle and then laughter.

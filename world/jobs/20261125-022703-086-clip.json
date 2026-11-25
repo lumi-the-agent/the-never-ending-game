@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-25T02:27:03.086",
+  "id": "20261125-022703-086-clip",
+  "kind": "clip",
+  "params": {
+    "call": "storm_clip",
+    "kwargs": {
+      "centre": [
+        11.26,
+        -5.33
+      ],
+      "fps": 24,
+      "height": 540,
+      "hour": 21.5,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 17.0,
+      "spot": [
+        16.26,
+        -5.33
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s76/storm-night-traced.mp4",
+    "script": "movies/storm.jl"
+  },
+  "started": "2026-11-25T02:27:33.690",
+  "status": "running"
+}

@@ -190,6 +190,9 @@ function walk_toward!(c::Creature, w::World, target, dt::Real; run::Bool = false
     return false
 end
 
+"The fastest a gait cycle runs (radians per second)."
+const GAIT_MAX = 16.0f0
+
 function move_heading!(c::Creature, w::World, heading::Real, dt::Real; run::Bool = false, maxstep = Inf32, speed = 1.0f0)
     sp = species_of(c)
     diff = wrap_angle(Float32(heading) - c.yaw)
@@ -200,7 +203,9 @@ function move_heading!(c::Creature, w::World, heading::Real, dt::Real; run::Bool
     hw = walkway_height(nx, ny)
     hw === nothing && !on_land(w.island, nx, ny; margin = 0.1f0) && return false
     c.pos = hw === nothing ? ground(w.island, (nx, ny)) : Point3f(nx, ny, max(hw, terrain_height(w.island, nx, ny)))
-    c.phase += sp.stride * max(step, 0.15f0 * dt)
+    # at most ~2.5 strides a second: a faster runner takes longer strides instead of shivering (s76, goal 6:
+    # piglets chasing in tag rocked 12-14 times a second)
+    c.phase += min(sp.stride * max(step, 0.15f0 * dt), GAIT_MAX * Float32(dt))
     c.action = run ? :run : :walk
     c.extra = 0.0f0                     # walking has none; a plugin may set glee on a runner (faces.jl)
     return true
@@ -271,14 +276,23 @@ function face_each_other!(a::Creature, b::Creature)
     return nothing
 end
 
+"Turn two creatures towards each other by at most 6 rad/s (s76, goal 6: at a chat's start they snapped round in one frame)."
+function face_each_other!(a::Creature, b::Creature, dt::Real)
+    for (c, o) in ((a, b), (b, a))
+        want = atan(o.pos[2] - c.pos[2], o.pos[1] - c.pos[1]) - species_of(c).heading
+        d = wrap_angle(Float32(want) - c.yaw)
+        c.yaw = wrap_angle(c.yaw + clamp(d, -6.0f0 * Float32(dt), 6.0f0 * Float32(dt)))
+    end
+    return nothing
+end
+
 function start_interaction!(w::World, T::Type{<:Interaction}, a::Creature, b::Creature)
     it = T(w, a, b)
     for c in (a, b)
         c.goal = Goal(:interact, c.pos, :idle, 0.0, Inf, true, (c === a ? b : a).id, false)
         c.action = :idle
     end
-    face_each_other!(a, b)
-    push!(w.interactions, it)
+    push!(w.interactions, it)            # they turn to face each other over the first frames (step! below)
     emit!(w, :interaction; kind = string(nameof(T)), a = a.name, b = b.name)
     return it
 end
@@ -482,6 +496,7 @@ function step!(w::World, dt::Real)
         # the chat went on setting its action, and its end overwrote the new goal (s30 flaky dance/ball tests)
         taken = any(id -> (c = creature(w, id); c.controlled || c.goal.kind !== :interact), (it.a, it.b))
         alive = !taken && step!(it, w, dt)
+        alive && face_each_other!(creature(w, it.a), creature(w, it.b), dt)
         alive || end_interaction!(w, it)
         alive
     end

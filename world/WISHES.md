@@ -93,6 +93,10 @@ come true gets a line saying when and how.
   the island in waves; the wind turns slowly over the day and blows harder now and then. The clouds don't
   follow it yet. Session 73: stronger gusts, the clouds drift faster when it blows harder, and my kite flies in
   the same wind the grass bends in.)
+- **Real weather**: not only sunny days and showers, but storms you remember. (Session 76: the first thunderstorm.
+  A black cloud rolled in over the meadow, lightning cracked down, every friend ran screaming to huddle under the
+  Big Boing toadstool, and I stayed out in it, wings up, "It's only a bit of weather!", until the last bolt hit my
+  crest. A puff of soot. "...I'm fine." They laughed for ages. Still to come: fog mornings, hail, a storm at night.)
 - **Days long enough to play in** (came true in session 47: a day now lasts five hours, nights a third).
 
 ## Done

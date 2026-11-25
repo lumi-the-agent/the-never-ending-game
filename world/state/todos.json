@@ -6271,6 +6271,48 @@
       "status": "open",
       "title": "A night film by lantern light: friends under the lamps and stars",
       "updated": "2026-11-25T01:46:56.141"
+    },
+    {
+      "created": "2026-11-25T02:02:43.795",
+      "detail": "review session-0075 [low]: at dusk (19:06) the big pine trees have a bright green rim glow, and the whole shot is dark and murky around Lumi. Look at the pine material in the raster at 19:00 (rim from the sky light? a specular/fresnel term?) and the ambient fill: compare luminance of eye-level.png at 19:00 before/after (AGENTS.md luminance check, same hour). Done when: a 19:00 screenshot shows the pines without a light rim and Lumi readable, raster and browser.",
+      "est_minutes": 25.0,
+      "id": 449,
+      "kind": "look",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Dusk that glows: pines without a bright rim, a meadow you can still see at 19:00",
+      "updated": "2026-11-25T02:02:43.795"
+    },
+    {
+      "created": "2026-11-25T02:03:28.988",
+      "detail": "Host motion measure s76: Hopscotch (Crabbit) body and brows turn back 9x/s, Truffle (piglet) body and tail 8x/s (media/eyes/session-0076/motion.png: the crab's body rolls left/right every frame or two). Cause: species.jl body_pose(:walk/:run) rolls the body with sin(c.phase), and Crabbit's stride is 16 rad/m (speed 1.0, faster running), so the roll is 4-5 Hz. The pose does not know the species' gait rate. Ideas: pass a per-species body sway factor (Species field or a Dict by name) into pose_parts! and scale the roll by min(1, 6 / step rate); or roll with sin(c.phase / 2) for many-legged species. Also Cumulus (sheep, makeover.jl) leg_3/leg_4 jump 0.15-0.2 m in one frame at 1.3 s and leg_4 swings at 6.1 m/s: check the sheep's leg Step stride and pivot. Done when: live_motion() in the sandbox lists none of the three as vibrating or snapping.",
+      "est_minutes": 30.0,
+      "id": 450,
+      "kind": "motion",
+      "priority": 1,
+      "result": "Nobody shivers any more. Causes and fixes: (1) gait rates: plugins/gait.jl gives Crabbit 8 (was 16), Fluffkin 7 (12), Snootle 7 (10), Blorbo 9 (14) rad/m, with longer Steps for the sheep, piglet and blob legs (makeover.jl); (2) engine behavior.jl GAIT_MAX = 16 rad/s caps the gait cycle, so a tag chaser takes longer strides instead of rocking 12-14 times a second; (3) the piglet tail wag 0.35 rad at 1.8 (was 0.7 at 6, 11.6 m/s); (4) engine herd.jl pose blending: 0.22 s from the old action's pose to the new (Lumi's wing jumped 0.8-1.5 m in one frame at an action switch, now 0.2-0.27); (5) chats turn the pair to each other at 6 rad/s instead of a one-frame snap (behavior.jl face_each_other!). Evidence: live('motion') in the sandbox: before media/s76/motion-before (4 of 10 moving badly, vibrating 9-12/s), after media/s76/motion-cap3 (no vibrating; the only snaps are every creature jumping 0.15 m at the same instant 2.4 s, a sandbox frame hitch, not their motion). The first-play W/A/D tests, the flight test and the chat test pass. All published s76 (02:06-02:15), the human's game at 30 fps.",
+      "source": "agent",
+      "spent_minutes": 25.0,
+      "status": "done",
+      "title": "Running friends that shiver: the crab and the piglet rock 9 times a second",
+      "updated": "2026-11-25T02:16:51.858"
+    },
+    {
+      "created": "2026-11-25T02:28:09.428",
+      "detail": "Goal 1 (the player with the world): jumped in as Lumi, T (free key; add it to greetings.jl HINT/HINT_SHORT and the one-sentence game_description) calls the storm (plugins/storm.jl). Needs: a `player` flag on the Storm so step! does not finish when Lumi is controlled; strikes 1-3 land 3-5 m from the steered Lumi, the last one on it wherever it runs (or under the toadstool: then a friend outside gets it instead, funnier); the zap must not fight the player's input (set a short :gasp feel the steering ignores, or freeze input 1.5 s). Camera: the jump-in chase view from greetings.jl chase_camera! tilted up while the cloud is overhead (CAMERA_GROUPS 3rd element for the controlled creature). A play test in tests/minigames.jl: jump in, T, the cloud comes, friends huddle (>= 3 :storm goals), the 4th strike hits, everyone laughs, the storm ends (storm_end event).",
+      "est_minutes": 30.0,
+      "id": 451,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Call a thunderstorm yourself: T when you are Lumi",
+      "updated": "2026-11-25T02:28:09.428"
     }
   ]
 }

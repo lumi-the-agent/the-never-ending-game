@@ -24,6 +24,16 @@ function doing(w, c)
         a === :idle && return ("hides from the rain under a tree", 1)
         return ("sits in the rain, nose up", 1)
     end
+    if g === :storm                                                                 # plugins/storm.jl
+        if c.name == "Lumi"
+            a in (:gasp, :sigh) && return ("got hit by lightning (it's fine)", 0)
+            a === :laugh && return ("laughs off the lightning", 0)
+            return ("stands out in the thunderstorm", 0)
+        end
+        a in (:walk, :run) && return ("runs from the lightning", 1)
+        a === :laugh && return ("laughs at Lumi's crest", 1)
+        return ("huddles under the toadstool", 1)
+    end
     g in (:fetch, :rally_wait) && return ("is playing ball", 1)
     if g === :tag                                                                   # plugins/tag.jl
         tg = isdefined(Main, :TAG_STATE) ? Main.TAG_STATE[:game] : nothing

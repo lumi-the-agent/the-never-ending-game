@@ -29,12 +29,59 @@ part_outputs(j::Int, part::Part) = paints(part.motion) ?
     (Symbol(:part, j, :_pos), Symbol(:part, j, :_rot), Symbol(:part, j, :_scale), Symbol(:part, j, :_uv)) :
     (Symbol(:part, j, :_pos), Symbol(:part, j, :_rot), Symbol(:part, j, :_scale))
 
+"How long (s) a creature's pose blends from its last action into a new one (s76, goal 6: switching from a
+wings-out `:proud` to `:idle` snapped a wing 1.5 m in one frame)."
+const POSE_BLEND = 0.22f0
+
+"Per species: each creature's action code and extra last frame, the code and extra it came from, and when it switched."
+const POSE_MEMORY = Dict{String,Any}()
+
+"Normalised lerp of two rotations (the short way round)."
+function nlerp(a::Quaternionf, b::Quaternionf, w::Float32)
+    da, db = a.data, b.data
+    s = sum(da .* db) < 0 ? -1.0f0 : 1.0f0
+    d = ntuple(k -> da[k] * (1 - w) + s * db[k] * w, 4)
+    n = sqrt(sum(abs2, d))
+    return Quaternionf(d[1] / n, d[2] / n, d[3] / n, d[4] / n)
+end
+
 function pose_herd(sp::Species, pos, motion, state, t)
     out = [(Point3f[], Quaternionf[], Vec3f[], Mat{2,3,Float32}[]) for _ in sp.parts]
-    for i in eachindex(pos)
+    n = length(pos); tf = Float32(t)
+    mem = get(POSE_MEMORY, sp.name, nothing)
+    if mem === nothing || length(mem.code) != n      # a creature came or went: start afresh
+        mem = (code = Float32[s[1] for s in state], extra = Float32[s[2] for s in state],
+               from = Float32[s[1] for s in state], fextra = Float32[s[2] for s in state], since = fill(-1.0f6, n))
+        POSE_MEMORY[sp.name] = mem
+    end
+    a = [(Point3f[], Quaternionf[], Vec3f[], Mat{2,3,Float32}[]) for _ in sp.parts]
+    b = [(Point3f[], Quaternionf[], Vec3f[], Mat{2,3,Float32}[]) for _ in sp.parts]
+    for i in 1:n
         yaw, phase, mood = motion[i]
         code, extra, seed = state[i]
-        pose_parts!(out, sp, Point3f(pos[i]), yaw, action_name(round(Int, code)), phase, mood, extra, seed, Float32(t))
+        if code != mem.code[i]
+            mem.from[i] = mem.code[i]; mem.fextra[i] = mem.extra[i]; mem.since[i] = tf; mem.code[i] = code
+        end
+        mem.extra[i] = extra
+        u = (tf - mem.since[i]) / POSE_BLEND
+        p = Point3f(pos[i])
+        if 0 <= u < 1
+            foreach(o -> foreach(empty!, o), a); foreach(o -> foreach(empty!, o), b)
+            pose_parts!(a, sp, p, yaw, action_name(round(Int, mem.from[i])), phase, mood, mem.fextra[i], seed, tf)
+            pose_parts!(b, sp, p, yaw, action_name(round(Int, code)), phase, mood, extra, seed, tf)
+            w = Float32(u * u * (3 - 2u))
+            for j in eachindex(sp.parts)
+                A, B, O = a[j], b[j], out[j]
+                for k in eachindex(B[1])
+                    push!(O[1], A[1][k] + (B[1][k] - A[1][k]) * w)
+                    push!(O[2], nlerp(A[2][k], B[2][k], w))
+                    push!(O[3], A[3][k] + (B[3][k] - A[3][k]) * w)
+                end
+                append!(O[4], B[4])
+            end
+        else
+            pose_parts!(out, sp, p, yaw, action_name(round(Int, code)), phase, mood, extra, seed, tf)
+        end
     end
     return out
 end

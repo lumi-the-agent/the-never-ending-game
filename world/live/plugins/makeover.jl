@@ -66,13 +66,13 @@ function piglet(game)
         back = q[2] > 0                                                 # +y is the back of the mesh
         diag = (q[1] > 0) == back                                       # diagonal pairs step together
         push!(parts, NG.part(Symbol(:leg_, k), name, Tuple(frame(hip)), (1, 1, 1); material = mat, attributes = skin,
-                             motion = NG.Step(0.06, 0.09; offset = diag ? 0 : pi)))   # on the body: a jump took the body up and left the legs behind (s74)
+                             motion = NG.Step(0.07, 0.13; offset = diag ? 0 : pi)))   # longer steps, fewer (gait.jl, s76); on the body: a jump took the body up and left the legs behind (s74)
     end
     tc = [c[i] for i in eachindex(c) if tail[i]]
     root = isempty(tc) ? Point3f(0, 0.45f0, 0.45f0) : tc[argmin([p[2] for p in tc])]
     NG.register_shape!(:piglet_tail, NG.piece_of(mesh, tail, p -> frame(p - root), turn))
     push!(parts, NG.part(:tail, :piglet_tail, Tuple(frame(root)), (1, 1, 1); material = mat, attributes = skin,
-                         motion = NG.Swing((0, 0, 1), 0.7, 6.0)))
+                         motion = NG.Swing((0, 0, 1), 0.35, 1.8)))   # a wag (0.7 at 6 swung at 11.6 m/s, s76)
     old = NG.snootle()
     return NG.Species(old.name, old.blurb, parts, HEIGHT, old.speed, old.stride, old.heading, old.sounds),
            (body = count(body), legs = [count(legs[q]) for q in keys(legs)], tail = count(tail), plate = count(plate))
@@ -105,7 +105,7 @@ function jellyblob(game)
         name = Symbol(:jelly_foot_, k)
         NG.register_shape!(name, NG.piece_of(mesh, sel, p -> frame(p - hip), turn))
         push!(parts, NG.part(Symbol(:foot_, k), name, Tuple(frame(hip)), (1, 1, 1); material = mat, attributes = skin,
-                             motion = NG.Step(0.05, 0.06; offset = k == 1 ? 0 : pi)))
+                             motion = NG.Step(0.06, 0.09; offset = k == 1 ? 0 : pi)))   # longer steps, fewer (gait.jl, s76)
     end
     old = NG.blorbo()
     return NG.Species(old.name, old.blurb, parts, BLOB_HEIGHT, old.speed, old.stride, old.heading, old.sounds),
@@ -143,7 +143,7 @@ function woolly(game)
         NG.register_shape!(name, NG.piece_of(mesh, leg, p -> frame(p - hip), turn))
         diag = (q[1] > 0) == (q[2] > 0)
         push!(parts, NG.part(Symbol(:leg_, k), name, Tuple(frame(hip)), (1, 1, 1); material = model.material,
-                             attributes = (; color = model.color), motion = NG.Step(0.06, 0.07; offset = diag ? 0 : pi)))
+                             attributes = (; color = model.color), motion = NG.Step(0.07, 0.11; offset = diag ? 0 : pi)))   # longer steps (gait.jl: fewer per metre)
     end
     NG.register_shape!(:sheep_body, NG.piece_of(mesh, .!(legsel .| plate), frame, turn))
     pushfirst!(parts, NG.part(:body, :sheep_body, (0, 0, 0), (1, 1, 1); material = model.material,
