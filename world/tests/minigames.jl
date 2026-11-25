@@ -1567,6 +1567,34 @@ uitest("Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strik
     fly_click(game, "Stop")
 end
 
+uitest("Swing: jumped in as Lumi, walking onto the swing starts the ride, it loops over the top and Lumi flies and lands, still yours") do game
+    game.dash.play_menu.i_selected[] = 0
+    wait_frames(game, 2)
+    fly_click(game, "Play")
+    check(game.minigame isa NeverendingGame.JumpIn, "Play did not jump in")
+    SW = Main.SWING; s = SW[:sys]; m = game.plugins["swing"].mod
+    s.state === :idle || Base.invokelatest(m.finish!, s, game)
+    SW[:cool] = -Inf
+    me = creature(game.world, "Lumi")
+    g, yaw, fwd, pivot = Base.invokelatest(m.geometry, game.world)
+    # set down a step in front of the seat, then walk onto it with W
+    me.pos = NeverendingGame.ground(game.world.island, (g[1] - 1.4f0 * fwd[1], g[2] - 1.4f0 * fwd[2]))
+    me.yaw = atan(fwd[2], fwd[1])
+    interact!(game, [KeyDown(Keyboard.w), Wait(1.2), KeyUp(Keyboard.w)])
+    wait_seconds(game, 0.5)
+    check(s.state !== :idle, "walking onto the swing did not start a ride: state $(s.state), $(round(hypot(me.pos[1] - g[1], me.pos[2] - g[2]), digits = 2)) m from it")
+    seen = Symbol[]
+    for i in 1:30
+        wait_seconds(game, 1.0)
+        push!(seen, s.state)
+        s.state in (:after, :idle) && break
+    end
+    check(:fly in seen || :after in seen, "no flight off the swing in 30 s: states $(unique(seen))")
+    check(me.controlled, "the swing took Lumi from the player")
+    screenshot(game, "swing-player")
+    fly_click(game, "Stop")
+end
+
 uitest("Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)") do game
     fly_choose(game, "Firefly catch (WASD)")
     fly_click(game, "Play")

@@ -1,0 +1,31 @@
+{
+ "verdict": "needs_work",
+ "summary": "The cherry grove is in the game and reads clearly as spring: pink crowns, a petal-strewn floor and a lasting new corner. But the crown mesh is see-through and glossy in the live view, and speckled with dark holes in the traced film that was posted publicly.",
+ "surprise": 6,
+ "surprise_why": "A wish that turns into a flowering grove with petals and a pink floor is a nice twist, but it is one event and one asset.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The cherry crown mesh has holes and a glassy sheen. In the live view from the sea side (looking toward the shore) the front crown is a see-through lattice with the sea showing through. From the garden side the crowns look lumpy and wet rather than like clay blossom. In the traced film the same holes render as dark brown speckles on every crown, and that film is on the public page.",
+   "where": "asset 20261125-032401-562 (mesh.jls); site/films/spring.mp4",
+   "evidence": "my screenshots reviews/s78-b.png (holes in the nearest crown) and reviews/s78-c.png (glossy, faceted crowns); reviews/motion/session-0078/spring-overview.jpg (dark holes, rows 2-3)",
+   "suggestion": "Fix the crown mesh (flipped or missing faces: fill it, render double-sided, or regenerate as a solid crown) and re-render the film. Until then keep the film off the page."
+  },
+  {
+   "severity": "medium",
+   "what": "The film does not show the event's core. There is no ring of friends round the sprout and no visible petal shower, just three fairly static trees. Its first frame also had the grove already grown and was trimmed by hand.",
+   "where": "movies/blossom.jl shot and setup",
+   "evidence": "spring-overview.jpg: no crowd and no petals in 12 frames. In the live view the petal carpet does show (s78-b.png)",
+   "suggestion": "Reset the bare meadow in the film's setup and frame the friends and the falling petals."
+  },
+  {
+   "severity": "low",
+   "what": "The grove stands on the low shore and is just four trees. The swing and the clay shrub are unfinished, and four versions of meadow.jl went into a colour bug.",
+   "where": "plugins/meadow.jl MEADOW_VERSION 16-19; todo 452",
+   "evidence": "s78-b.png: pink petals on the ground look fine; journal 04:07",
+   "suggestion": "Finish the swing and the shrub next session, only after the crowns are fixed."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s79: (1) Cherry crowns (holes, glassy sheen, dark speckles when traced): not fixed yet. A matte material would not do it: the tracer takes a material's own colour, not the texture, so a flat pink material would turn the trunks pink too. It needs a repaired mesh (meshrepair.jl fills crowns) or a regenerated tree with a closed crown; kept in todo 452. (2) The spring film's core (the ring of friends, the petal shower) was not in frame: agreed. This session's swing film frames the whole action from the side with the clearer view picked by obstruction, and its pumping is shortened so the gag lands inside 17 s. (3) The grove is small and on the shore: the swing went to the open meadow at (6, -15) instead (the grove had no room for an arc and a flight line); the clay shrub is still in the worker."
+}

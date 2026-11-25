@@ -3,52 +3,10 @@
     {
       "error": "",
       "file": "dashboard.jl",
-      "name": "W walks Lumi while jumped in",
-      "passed": true,
-      "seconds": 3.1
-    },
-    {
-      "error": "",
-      "file": "dashboard.jl",
       "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
       "passed": true,
-      "seconds": 18.6
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
-      "passed": true,
-      "seconds": 8.3
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back",
-      "passed": true,
-      "seconds": 26.3
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
-      "passed": true,
-      "seconds": 19.0
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours",
-      "passed": true,
-      "seconds": 7.9
-    },
-    {
-      "error": "",
-      "file": "s51_play.jl",
-      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Lumi in view",
-      "passed": true,
-      "seconds": 15.3
+      "seconds": 18.0
     }
   ],
-  "time": "2026-11-25T03:23:25.908"
+  "time": "2026-11-25T04:52:22.701"
 }

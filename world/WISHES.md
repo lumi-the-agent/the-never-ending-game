@@ -90,7 +90,10 @@ come true gets a line saying when and how.
   snow-me with a carrot beak. A few minutes later it thaws. Still to come: scarves, blossom, golden leaves.
   Session 78: spring came. On the bare meadow north of my vegetable patch little cherry trees sprang up one after
   another, burst into pink and showered petals over all my friends dancing; the grove stays, with a pink carpet
-  under it. Still to come: scarves, golden leaves, a swing under the blossom.)
+  under it. Still to come: scarves, golden leaves, a swing under the blossom.
+  Session 79: a swing came, on the open meadow (the grove had no room to swing). Every so often a friend hops on,
+  the others shout HIGHER, and it goes higher and higher until it loops right over the top bar and the rider flies
+  off across the meadow, lands with a bounce and shouts AGAIN!)
 - **Wind** you can see: grass and flowers sway together in gusts, and the clouds go with it.
   (Session 72: the grass tufts, the flowers and the dune grass lean with the wind now, and gusts roll across
   the island in waves; the wind turns slowly over the day and blows harder now and then. The clouds don't

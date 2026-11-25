@@ -24,6 +24,22 @@ function doing(w, c)
         a === :idle && return ("hides from the rain under a tree", 1)
         return ("sits in the rain, nose up", 1)
     end
+    if g === :swing                                                                 # plugins/swing.jl
+        s = isdefined(Main, :SWING) ? get(Main.SWING, :sys, nothing) : nothing
+        if s !== nothing && s.rider == c.id
+            s.state === :fly && return ("is FLYING off the swing!", 0)
+            s.state === :loop && return ("loops right over the swing!", 0)
+            s.state === :after && return ("landed. Wants to go again", 0)
+            return a in (:walk, :run) ? ("runs to the swing", 1) : ("swings higher and higher", 0)
+        end
+        a === :laugh && return ("laughs at the flying friend", 1)
+        return a in (:walk, :run) ? ("hurries over to the swing", 1) : ("shouts HIGHER! at the swing", 1)
+    end
+    if g === :blossom                                                               # plugins/blossom.jl
+        a in (:walk, :run) && return ("runs to see what's coming up", 1)
+        a in (:dance, :jump, :proud) && return ("dances in the falling petals", 0)
+        return ("watches something poke out of the meadow", 0)
+    end
     if g === :storm                                                                 # plugins/storm.jl
         if c.name == "Lumi"
             a in (:gasp, :sigh) && return ("got hit by lightning (it's fine)", 0)

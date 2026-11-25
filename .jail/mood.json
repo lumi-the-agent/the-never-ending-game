@@ -1,13 +1,13 @@
 {
-  "boredom": 0.0,
+  "boredom": 0.23,
   "fatigue": {
-    "asset": 1.97,
-    "feature": 2.28,
+    "asset": 2.18,
+    "feature": 2.37,
     "film": 2.49,
-    "picture": 0.37,
+    "picture": 0.22,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.82,
+    "self": 0.49,
     "sound": 0.01
   },
   "happened": [
@@ -148,7 +148,7 @@
     "blossom_grow",
     "blossom_start"
   ],
-  "joy": 0.69,
+  "joy": 0.47,
   "kinds_ever": [
     "post",
     "picture",
@@ -171,75 +171,40 @@
   },
   "last_surprise": {
     "score": 6,
-    "session": 77,
-    "why": "The friends notice the old toadstool wobbling, it pops in spores and a real one springs up, and you can now call the storm yourself."
+    "session": 78,
+    "why": "A wish that turns into a flowering grove with petals and a pink floor is a nice twist, but it is one event and one asset."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T03:30:38",
+  "perceived_until": "2026-11-25T04:13:03",
   "plugin_fatigue": {
-    "blossom.jl": 1.0,
-    "boing.jl": 1.65,
-    "cairns.jl": 0.08,
-    "choir.jl": 1.63,
-    "clouds.jl": 0.29,
-    "conga.jl": 1.68,
-    "egg.jl": 1.65,
-    "flight.jl": 1.86,
-    "flylesson.jl": 1.63,
-    "freeze.jl": 1.71,
-    "gait.jl": 0.36,
-    "giant.jl": 1.63,
-    "greetings.jl": 0.6,
-    "hiccups.jl": 1.63,
-    "islandnow.jl": 0.96,
-    "kite.jl": 0.08,
-    "makeover.jl": 0.49,
-    "meadow.jl": 1.0,
-    "paintfight.jl": 1.66,
-    "presents.jl": 0.08,
-    "rollcall.jl": 0.08,
-    "showers.jl": 0.6,
-    "sneeze.jl": 1.6,
-    "snowday.jl": 1.65,
-    "soar.jl": 2.03,
-    "storm.jl": 1.96,
-    "tag.jl": 0.13,
-    "toadstool.jl": 0.6,
-    "wind.jl": 0.13
+    "blossom.jl": 1.6,
+    "boing.jl": 0.99,
+    "choir.jl": 0.98,
+    "clouds.jl": 0.17,
+    "conga.jl": 1.01,
+    "egg.jl": 0.99,
+    "flight.jl": 1.12,
+    "flylesson.jl": 0.98,
+    "freeze.jl": 1.03,
+    "gait.jl": 0.22,
+    "giant.jl": 0.98,
+    "greetings.jl": 1.36,
+    "hiccups.jl": 0.98,
+    "islandnow.jl": 1.58,
+    "makeover.jl": 0.29,
+    "meadow.jl": 0.6,
+    "paintfight.jl": 1.0,
+    "showers.jl": 0.36,
+    "sneeze.jl": 0.96,
+    "snowday.jl": 0.99,
+    "soar.jl": 1.22,
+    "storm.jl": 1.18,
+    "swing.jl": 1.0,
+    "tag.jl": 0.08,
+    "toadstool.jl": 0.36,
+    "wind.jl": 0.08
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.5083333333333333,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "kinds": [
-        "feature",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [
-        "wheelbarrow.jl"
-      ],
-      "points": 0.1,
-      "repeats": [],
-      "session": 60,
-      "touched": [
-        "birdbody.jl"
-      ],
-      "values": {
-        "feature": 0.1,
-        "polish": 0.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1447,6 +1412,49 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 2.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "asset",
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 2,
+      "new_pages": [
+        "site/films/swing.mp4"
+      ],
+      "new_plugins": [
+        "swing.jl"
+      ],
+      "points": 0.9,
+      "repeats": [],
+      "session": 79,
+      "touched": [
+        "blossom.jl",
+        "greetings.jl",
+        "islandnow.jl"
+      ],
+      "values": {
+        "asset": 0.2,
+        "feature": 0.3,
+        "film": 0.3,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1493,7 +1501,9 @@
       "20261125-003611-754-asset",
       "20261125-003611-829-asset",
       "20261125-025214-640-asset",
-      "20261125-032401-562-asset"
+      "20261125-032401-562-asset",
+      "20261125-032401-630-asset",
+      "20261125-034314-135-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1511,6 +1521,7 @@
       "site/films/paint-fight.mp4",
       "site/films/real-flight.mp4",
       "site/films/snow-day.mp4",
+      "site/films/spring.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/toadstool.mp4",
       "site/img/bench-traced.png",
@@ -1563,35 +1574,36 @@
       "beds.jl": 1.7955562532942293e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
-      "boing.jl": 1.7955719505273492e9,
+      "blossom.jl": 1.79557450148197e9,
+      "boing.jl": 1.7955746166281586e9,
       "browsernight.jl": 1.7954000366191897e9,
       "builder.jl": 1.7955505696342282e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7955575132340157e9,
       "camcut.jl": 1.795537398386316e9,
-      "choir.jl": 1.7955719505276496e9,
+      "choir.jl": 1.795574616628361e9,
       "clouds.jl": 1.7955674185574198e9,
-      "conga.jl": 1.7955719505277445e9,
+      "conga.jl": 1.7955746166284275e9,
       "dancecircle.jl": 1.7955211366490593e9,
-      "egg.jl": 1.7955719505278237e9,
+      "egg.jl": 1.795574616628487e9,
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
       "firefly_catch.jl": 1.795555851606885e9,
-      "flight.jl": 1.7955719505279865e9,
+      "flight.jl": 1.7955746166286004e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
-      "flylesson.jl": 1.7955719505281081e9,
+      "flylesson.jl": 1.7955746166286871e9,
       "freecam.jl": 1.7955547184746377e9,
-      "freeze.jl": 1.7955719505281954e9,
+      "freeze.jl": 1.79557461662874e9,
       "gait.jl": 1.7955689153317683e9,
       "garden.jl": 1.7955517980775137e9,
-      "giant.jl": 1.795571950528302e9,
+      "giant.jl": 1.7955746166288064e9,
       "greetings.jl": 1.7955732327417834e9,
       "haze.jl": 1.7955554368784842e9,
-      "hiccups.jl": 1.795571950528411e9,
+      "hiccups.jl": 1.7955746166288784e9,
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7955720063421042e9,
       "kite.jl": 1.7955618161378012e9,
@@ -1600,25 +1612,25 @@
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
       "makeover.jl": 1.7955689153316994e9,
-      "meadow.jl": 1.7954475547478735e9,
+      "meadow.jl": 1.7955760036326725e9,
       "meadowlife.jl": 1.795485965898355e9,
       "moon.jl": 1.7953993277488246e9,
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.79551174536962e9,
-      "paintfight.jl": 1.7955719505287676e9,
+      "paintfight.jl": 1.7955746166300454e9,
       "presents.jl": 1.7955593798751068e9,
       "rollcall.jl": 1.7955603892893424e9,
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.795572919245629e9,
-      "sneeze.jl": 1.7955719505289733e9,
-      "snowday.jl": 1.7955730195409405e9,
-      "soar.jl": 1.7955719505291913e9,
+      "sneeze.jl": 1.795574616630433e9,
+      "snowday.jl": 1.795574616630546e9,
+      "soar.jl": 1.7955746166306448e9,
       "stars.jl": 1.7954845797675962e9,
-      "storm.jl": 1.7955732213818269e9,
+      "storm.jl": 1.7955746166307683e9,
       "sunset.jl": 1.7954781267170784e9,
       "tag.jl": 1.7955616074062378e9,
       "toadstool.jl": 1.795573064701041e9,
@@ -1627,11 +1639,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 33,
+    "posts": 34,
     "self": "15398359690889698509",
     "wishes": 8
   },
-  "started": "2026-11-25T03:36:21",
+  "started": "2026-11-25T04:22:47",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1681,7 +1693,10 @@
       "Colocalization",
       "DiplodocusTransport",
       "Overseer",
-      "OpenQuantumSystems"
+      "OpenQuantumSystems",
+      "WaveletsExt",
+      "Muninn",
+      "SeisNoise"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -1695,8 +1710,10 @@
       "SAM2Runner",
       "NeuralLUTRunner",
       "PPOCRRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "Qwen3EmbeddingRunner",
+      "ProPainterRunner"
     ]
   },
-  "surprise_seen": 77
+  "surprise_seen": 78
 }

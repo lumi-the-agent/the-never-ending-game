@@ -31,6 +31,7 @@ G  try to fly (your friends come to watch)
 C  choir practice (friends nearby sing along)
 P  paint fight (P again throws)     M  a golden mushroom...
 T  call a thunderstorm (on yourself!)
+Walk onto the swing on the meadow: everyone shouts HIGHER
 Walk into the red ball: a friend passes it back"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)

@@ -37,8 +37,7 @@
 /world/assets/20261124-190216-595-asset/
 /world/assets/20261125-003611-829-asset/
 /world/assets/20261125-025214-640-asset/
-/world/assets/20261125-034314-135-asset/
-/world/assets/20261125-040120-142-asset/
+/world/assets/20261125-042852-633-asset/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -79,6 +78,9 @@
 /world/reviews/motion/session-0077/toadstool-overview.jpg
 /world/reviews/motion/session-0077/toadstool-steps.jpg
 /world/reviews/motion/session-0077/toadstool-strip.jpg
+/world/reviews/motion/session-0078/spring-overview.jpg
+/world/reviews/motion/session-0078/spring-steps.jpg
+/world/reviews/motion/session-0078/spring-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -573,6 +575,9 @@
 /world/reviews/s77-a.png
 /world/reviews/s77-b.png
 /world/reviews/s77-c.png
+/world/reviews/s78-a.png
+/world/reviews/s78-b.png
+/world/reviews/s78-c.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -747,6 +752,7 @@
 /world/tests/shots/startcard-firefly_catch.png
 /world/tests/shots/startcard-hideseek.png
 /world/tests/shots/storm-player.png
+/world/tests/shots/swing-player.png
 /world/tests/shots/tag.png
 /world/tests/shots/tags-overview.png
 /world/tests/shots/wave-breaks-chat.png
@@ -790,6 +796,7 @@
 /world/site/films/real-flight.mp4
 /world/site/films/snow-day.mp4
 /world/site/films/spring.mp4
+/world/site/films/swing.mp4
 /world/site/films/thunderstorm.mp4
 /world/site/films/toadstool.mp4
 /world/site/img/bench-traced.png

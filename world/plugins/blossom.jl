@@ -8,12 +8,17 @@ const NG = NeverendingGame
 const BL = Main.BLOSSOM
 
 const ASSET = "20261125-032401-562-asset"     # a small cherry blossom tree, pale pink crown (s77)
+# (its crown refilled in s79 with walls 9 voxels thick, meshrepair.jl `solidified(raw; close = 9)`: the first fill left holes
+# the sea showed through; the close-5 mesh is kept in media/s79/cherry-mesh-close5.jls)
 const CENTRE = Point2f(-13.5, 13.5)           # north of Lumi's vegetable patch, west of the pond, in the overview
 const BENCH = Point2f(-16, 9)                 # lookout.jl's sunset bench: no tree on it or in its view
 # (the west half of the first ring was over the shore: the grove leans east, s78)
 const SPOTS = ((-1, -1), (0.5, 0.5), (2, 2), (3.5, -1), (2, 3.5), (5, -2.5), (5, -1), (-1, 2.2))
 const NTREE = 5
 const HEIGHTS = (3.1f0, 2.6f0, 2.8f0, 2.4f0, 2.9f0)
+const SHRUB = "20261125-040120-142-asset"     # a clay shrub with big pink flowers (s78 break, the second try)
+const SHRUB_SPOTS = ((-2.4, -0.4), (-0.6, -2.2), (0.6, 1.6), (2.0, 0.6), (-2.0, 1.6), (1.2, 3.0), (3.2, 0.9), (2.8, 2.9))
+const SHRUB_H = 0.75f0
 const NPETAL = 180
 const NCARPET = 140
 const T_LOOK = 3.0             # friends notice something coming up
@@ -61,17 +66,42 @@ end
 function plots!(game)
     haskey(BL, :trees) && BL[:trees].parent !== nothing && return
     sc = game.stage.scene
-    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:blossom_trees, :blossom_petals), sc.plots)
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:blossom_trees, :blossom_petals, :blossom_shrubs), sc.plots)
         delete!(sc, p)
     end
     w = game.world
     model = NG.lifted_asset(game.paths, ASSET)
+    # the image's soil disc under the trunk read as a dark ring on the pink floor: its faces (all corners in the
+    # bottom 4%) go; the trunk sinks 5% into the grass anyway (s79)
+    let m = model.mesh, ps = GeometryBasics.coordinates(m), zt = 0.04f0 * maximum(p -> p[3], ps)
+        keep = filter(f -> any(k -> ps[GeometryBasics.value(f[k])][3] > zt, 1:3), collect(GeometryBasics.faces(m)))
+        model = NG.AssetModel(GeometryBasics.Mesh(ps, keep; normal = m.normal, uv = m.uv), model.color, model.material)
+    end
     BL[:k] = 1f0 / maximum(p -> p[3], GeometryBasics.coordinates(model.mesh))
     BL[:spots] = tree_spots(w)
     n = length(BL[:spots])
     BL[:rot] = [NG.rot_z(Float32(2pi) * hash01(i, 1)) for i in 1:n]
     BL[:trees] = NG.asset_instances!(sc, model, BL[:spots]; rotation = BL[:rot], markersize = fill(Vec3f(0), n),
                                      name = :blossom_trees)
+    # clay shrubs with big pink flowers between the trees (s79), once the worker has made them
+    if any(e -> e["id"] == SHRUB && isfile(get(e, "mesh", "")), NG.load_catalog(game.paths))
+        sm = NG.lifted_asset(game.paths, SHRUB)
+        BL[:sk] = SHRUB_H / maximum(p -> p[3], GeometryBasics.coordinates(sm.mesh))
+        sp = Point3f[]
+        for (dx, dy) in SHRUB_SPOTS
+            x, y = CENTRE[1] + Float32(dx), CENTRE[2] + Float32(dy)
+            NG.on_land(w.island, x, y; margin = 0.3f0) || continue
+            minimum(p -> hypot(p.pos[1] - x, p.pos[2] - y), w.props; init = 99f0) > 0.6f0 || continue
+            any(q -> hypot(q[1] - x, q[2] - y) < 1.0f0, vcat(BL[:spots], sp)) && continue
+            hypot(x - BENCH[1], y - BENCH[2]) > 3.0f0 || continue
+            abs(x + 10.5f0) < 2.9f0 && abs(y - 10f0) < 2.4f0 && continue
+            push!(sp, NG.ground(w.island, (x, y)))
+        end
+        BL[:shrub_spots] = sp
+        BL[:shrubs] = isempty(sp) ? nothing :
+            NG.asset_instances!(sc, sm, sp; rotation = [NG.rot_z(6.283f0 * hash01(i, 21)) for i in eachindex(sp)],
+                                markersize = fill(Vec3f(0), length(sp)), name = :blossom_shrubs)
+    end
     BL[:petals] = meshscatter!(sc, fill(Point3f(0, 0, -50), NPETAL + NCARPET); marker = Sphere(Point3f(0), 1f0),
                                markersize = fill(Vec3f(0), NPETAL + NCARPET),
                                rotation = fill(Makie.Quaternionf(0, 0, 0, 1), NPETAL + NCARPET),
@@ -90,6 +120,12 @@ function draw_trees!(g::Vector{Float32})
     # the soil disc under the tree's model sinks into the grass
     ps = [p - Point3f(0, 0, 0.05f0 * HEIGHTS[mod1(i, length(HEIGHTS))]) for (i, p) in enumerate(BL[:spots])]
     Makie.update!(BL[:trees]; arg1 = ps, markersize = sz)
+    # the shrubs come up with the trees (their growth: the trees' mean)
+    sh = get(BL, :shrubs, nothing)
+    if sh !== nothing
+        gm = isempty(g) ? 0f0 : sum(x -> max(x, 0f0), g) / length(g)
+        Makie.update!(sh; markersize = fill(Vec3f(BL[:sk] * gm), length(BL[:shrub_spots])))
+    end
 end
 
 "Petals: falling ones (`shower` 0..1 how many fall), and the carpet under the trees (`carpet` 0..1 how much lies there)."
@@ -255,6 +291,7 @@ function NG.start!(s::Blossom, game)
     grown = game.dash !== nothing && isfile(state_file(game)) && get(NG.read_json(state_file(game)), "grown", false)
     s.state = grown ? :new : :old
     BL[:shown] = true
+    BL[:still] = false        # new plots after a reload: the steady grove must be drawn again (s79)
     moment = w -> s.state in (:look, :grow, :bloom) ? (m = lumi_of(w); m === nothing ? nothing : m.id) : nothing
     NG.CAMERA_MOMENTS["blossom"] = moment
     isdefined(Main, :BIG_MOMENTS) || Core.eval(Main, :(const BIG_MOMENTS = Dict{String,Any}()))
@@ -267,10 +304,10 @@ function NG.stop!(s::Blossom, game)
     delete!(NG.CAMERA_MOMENTS, "blossom")
     delete!(NG.CAMERA_GROUPS, "blossom")
     isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "blossom")
-    for k in (:trees, :petals)
-        haskey(BL, k) && BL[k].parent !== nothing && delete!(BL[k].parent, BL[k])
+    for k in (:trees, :petals, :shrubs)
+        haskey(BL, k) && BL[k] !== nothing && BL[k].parent !== nothing && delete!(BL[k].parent, BL[k])
     end
-    delete!(BL, :trees); delete!(BL, :petals)
+    delete!(BL, :trees); delete!(BL, :petals); delete!(BL, :shrubs)
 end
 
 register!(Blossom())

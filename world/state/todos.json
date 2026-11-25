@@ -6321,12 +6321,12 @@
       "id": 452,
       "kind": "world",
       "priority": 1,
-      "result": "",
+      "result": "A new corner of the island in pink, north of the vegetable patch in front of the overview camera: four generated cherry trees (asset 20261125-032401-562, crowns refilled solid in s79 with meshrepair close 9, no more sea showing through: media/s79/cherry-seaside.png), four generated clay shrubs with big pink flowers between them (20261125-040120-142), a petal-pink ground painted by meadow.jl (BLOSSOM_GROUND, PETAL at 0.85: media/s78/grove-top4.png) and a carpet of fallen petals; it arrived as the spring show (s78, film 'Spring'). The overview shows the pink crowns behind the cottage (media/s78/views2/overview.png). The swing (plugins/swing.jl, s79) went to the open meadow instead: the grove has no room for its arc and flight line.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A blossom hill: a new corner of the island in pink",
-      "updated": "2026-11-25T03:24:12.332"
+      "updated": "2026-11-25T04:50:42.321"
     }
   ]
 }

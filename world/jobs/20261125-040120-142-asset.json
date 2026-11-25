@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T04:01:20.142",
+  "finished": "2026-11-25T04:32:41.092",
   "id": "20261125-040120-142-asset",
   "kind": "asset",
   "params": {
@@ -11,6 +12,21 @@
       "region"
     ]
   },
+  "result": {
+    "created": "2026-11-25T04:32:40.706",
+    "faces": 5746,
+    "id": "20261125-040120-142-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-040120-142-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-040120-142-asset/mesh.jls",
+    "prompt": "a low round flowering bush sculpted from plush modelling clay, chunky soft rounded clay leaves in green and big simple pale pink clay flowers, toy-like and cute, seen from the side, resting on the ground, no pot",
+    "seconds": 1300.0,
+    "tags": [
+      "blossom",
+      "shrub",
+      "region"
+    ]
+  },
+  "seconds": 1304.6,
   "started": "2026-11-25T04:10:56.256",
-  "status": "running"
+  "status": "done"
 }
