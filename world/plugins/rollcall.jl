@@ -4,6 +4,12 @@
 # the whole island answers in one wave of voices, nearest first.
 const NG = NeverendingGame
 
+# One island moment at a time (s85, todo 389): a shared claim in Main.LUMI_PARTY, the same one the flight, the
+# hiccups, the sneeze and the hail use; a party only starts on its own when nobody holds it.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
+
 const GAP = (360.0, 600.0)
 const STAGGER = 0.7                 # s between two answers
 const ANSWERS = ("HELLOOO!", "Hi Lumi!", "Here!", "Yoo-hoo!", "Hello hello!", "Present!", "Ahoy!", "Over here!")
@@ -76,7 +82,7 @@ function NG.step!(s::RollCall, game, dt)
     testing = game.tests !== nothing && NG.running(game.tests)
     busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
     if w.t >= s.next_t && !testing && !busy_game && !busy_party() && 7.5 < 24 * NG.daytime(w) < 21
-        call!(s, game) || (s.next_t = w.t + 60)
+        (party_free(w) && call!(s, game)) ? claim_party!(w, 30) : (s.next_t = w.t + 60)
         isempty(s.queue) || (s.next_t = w.t + GAP[1] + (GAP[2] - GAP[1]) * rand(w.rng))
     end
     return

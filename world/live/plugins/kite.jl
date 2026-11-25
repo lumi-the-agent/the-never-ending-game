@@ -106,7 +106,15 @@ function flyer(w)
     id = get(K, :flyer, Int32(0))
     id == 0 && return nothing
     c = NG.creature(w, id)
-    (c === nothing || !(c.controlled || c.goal.kind === :kite)) && return nothing
+    c === nothing && return nothing
+    # the player let go of Lumi (Stop) with the kite still up: Lumi keeps flying it on its own (s85, todo 435:
+    # jump-in leaves an empty goal behind, and the kite was let go the very next frame)
+    if !c.controlled && c.goal.kind !== :kite && get(K, :steered, false)
+        gone = w.t - get(K, :since, w.t)
+        c.goal = NG.Goal(:kite, c.pos, :idle, FLIGHT, w.t + max(20.0, FLIGHT - gone), true, 0, false)
+    end
+    K[:steered] = c.controlled
+    c.controlled || c.goal.kind === :kite || return nothing
     return c
 end
 

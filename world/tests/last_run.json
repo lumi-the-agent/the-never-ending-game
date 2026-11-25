@@ -1,26 +1,12 @@
 {
   "results": [
     {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
-      "passed": true,
-      "seconds": 14.2
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
-      "passed": true,
-      "seconds": 14.0
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
-      "passed": true,
-      "seconds": 28.0
+      "error": "check failed: no meter on the first play",
+      "file": "s58_play.jl",
+      "name": "Kite player (s58): Play, Stop, Play again works and the meter comes back",
+      "passed": false,
+      "seconds": 1.8
     }
   ],
-  "time": "2026-11-25T07:32:54.496"
+  "time": "2026-11-25T09:58:00.239"
 }

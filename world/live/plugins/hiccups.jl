@@ -6,6 +6,12 @@
 # Jumped in as Lumi: H gives you the hiccups.
 isdefined(Main, :HICCUPS) || Core.eval(Main, :(const HICCUPS = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One of Lumi's island moments at a time (s85, todo 389): when one ends, the flight, the hiccups and a sneeze all
+# grabbed Lumi in the same frame. Each claims Lumi for a while in a shared Main dict; the others wait.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const H = Main.HICCUPS
 
 const GAP = (420.0, 720.0)        # sim seconds between two epidemics
@@ -241,8 +247,8 @@ function NG.step!(s::Hiccups, game, dt)
         if w.t >= s.next_t && !testing && !busy_game && 8 < 24 * NG.daytime(w) < 19.5
             me = lumi_of(w)
             near = me === nothing ? 0 : count(c -> c !== me && healthy(s, c) && flat(c.pos, me.pos) < SEEK, w.creatures)
-            if me !== nothing && healthy(s, me) && near >= 3 && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6)
-                begin!(s, game, me)
+            if me !== nothing && healthy(s, me) && near >= 3 && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6) && party_free(w)
+                begin!(s, game, me); claim_party!(w, 25)
             else
                 s.next_t = w.t + 45
             end

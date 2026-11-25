@@ -1,14 +1,14 @@
 {
-  "boredom": 0.0,
+  "boredom": 0.24,
   "fatigue": {
-    "asset": 0.17,
-    "feature": 2.49,
+    "asset": 0.1,
+    "feature": 1.49,
     "film": 2.49,
-    "picture": 1.73,
+    "picture": 1.04,
     "polish": 2.49,
     "post": 2.49,
-    "self": 1.64,
-    "sound": 2.18
+    "self": 0.98,
+    "sound": 1.31
   },
   "happened": [
     "Boop",
@@ -159,7 +159,7 @@
     "bottle_end",
     "bottle_start"
   ],
-  "joy": 0.63,
+  "joy": 0.41,
   "kinds_ever": [
     "post",
     "picture",
@@ -180,107 +180,48 @@
     "session": 84
   },
   "last_surprise": {
-    "score": 7,
-    "session": 83,
-    "why": "A simulated pumpkin stack that tumbles differently each time, with bonks, is a real step beyond scripted events."
+    "score": 6,
+    "session": 84,
+    "why": "A real simulated hail shower with a rescue huddle under an umbrella is a nice twist on the island, though it is one more event in a long list."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T08:33:14",
+  "perceived_until": "2026-11-25T09:16:00",
   "plugin_fatigue": {
-    "autumn.jl": 0.96,
-    "blossom.jl": 1.09,
-    "boing.jl": 1.04,
-    "bottle.jl": 1.31,
-    "choir.jl": 1.04,
-    "conga.jl": 1.04,
-    "egg.jl": 1.04,
-    "flight.jl": 1.04,
-    "flylesson.jl": 1.04,
-    "freeze.jl": 1.04,
-    "giant.jl": 1.04,
-    "greetings.jl": 0.59,
-    "hail.jl": 1.0,
-    "hiccups.jl": 1.04,
-    "islandnow.jl": 0.12,
-    "lumicolour.jl": 1.6,
-    "makeover.jl": 0.38,
-    "outfits.jl": 0.58,
-    "paintfight.jl": 1.25,
-    "presents.jl": 0.13,
-    "pumpkins.jl": 0.6,
-    "showers.jl": 1.16,
-    "sneeze.jl": 1.25,
-    "snowday.jl": 1.04,
-    "soar.jl": 1.06,
-    "storm.jl": 1.06,
-    "swing.jl": 1.39,
-    "toadstool.jl": 0.99,
-    "voice.jl": 0.58
+    "autumn.jl": 1.58,
+    "blossom.jl": 0.65,
+    "boing.jl": 1.62,
+    "bottle.jl": 0.79,
+    "choir.jl": 0.62,
+    "conga.jl": 1.62,
+    "dancecircle.jl": 1.0,
+    "egg.jl": 0.62,
+    "flight.jl": 1.62,
+    "flylesson.jl": 0.62,
+    "freeze.jl": 1.62,
+    "gait.jl": 1.0,
+    "giant.jl": 0.62,
+    "greetings.jl": 0.35,
+    "hail.jl": 1.6,
+    "hiccups.jl": 1.62,
+    "islandnow.jl": 0.07,
+    "kite.jl": 1.0,
+    "lumicolour.jl": 0.96,
+    "makeover.jl": 1.23,
+    "outfits.jl": 1.35,
+    "paintfight.jl": 0.75,
+    "presents.jl": 0.08,
+    "pumpkins.jl": 1.36,
+    "rollcall.jl": 1.0,
+    "showers.jl": 0.7,
+    "sneeze.jl": 1.75,
+    "snowday.jl": 0.62,
+    "soar.jl": 0.64,
+    "storm.jl": 0.64,
+    "swing.jl": 0.83,
+    "toadstool.jl": 0.59,
+    "voice.jl": 0.35
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "hiccup_caught",
-          "who": 6
-        },
-        {
-          "kind": "hiccup_boo",
-          "who": 1
-        },
-        {
-          "kind": "hiccup_end",
-          "who": 1
-        },
-        {
-          "kind": "hiccups",
-          "who": 1
-        },
-        {
-          "kind": "hiccup_punchline",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/hiccups-2.mp4"
-      ],
-      "new_plugins": [
-        "hiccups.jl"
-      ],
-      "points": 3.8,
-      "repeats": [],
-      "session": 65,
-      "touched": [
-        "camcut.jl",
-        "hideseek.jl",
-        "separation.jl",
-        "sneeze.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 2.9,
-        "polish": 0.3,
-        "post": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1493,6 +1434,55 @@
         "sound": 0.4
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/crabs.mp4"
+      ],
+      "new_plugins": [],
+      "points": 0.4,
+      "repeats": [],
+      "session": 85,
+      "touched": [
+        "autumn.jl",
+        "boing.jl",
+        "conga.jl",
+        "dancecircle.jl",
+        "flight.jl",
+        "freeze.jl",
+        "gait.jl",
+        "hail.jl",
+        "hiccups.jl",
+        "kite.jl",
+        "makeover.jl",
+        "outfits.jl",
+        "pumpkins.jl",
+        "rollcall.jl",
+        "sneeze.jl"
+      ],
+      "values": {
+        "film": 0.3,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1554,6 +1544,9 @@
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/giant-lumi.mp4",
+      "site/films/hail-silent.mp4",
+      "site/films/hail.mp4",
+      "site/films/hail.wav",
       "site/films/hiccups-2.mp4",
       "site/films/island-choir.mp4",
       "site/films/leaves-silent.mp4",
@@ -1583,6 +1576,7 @@
       "site/img/crate-traced.png",
       "site/img/freeze.png",
       "site/img/garden-traced.png",
+      "site/img/hail-umbrella.png",
       "site/img/island-traced.png",
       "site/img/joy-traced.png",
       "site/img/kite.png",
@@ -1671,6 +1665,7 @@
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
       "greetings.jl": 1.79558813072175e9,
+      "hail.jl": 1.7955934576287715e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795589883398208e9,
       "hideseek.jl": 1.7955473519066024e9,
@@ -1680,7 +1675,7 @@
       "lensclear.jl": 1.7955531980397623e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
-      "lumicolour.jl": 1.79559105195804e9,
+      "lumicolour.jl": 1.7955925803555496e9,
       "makeover.jl": 1.795586995917477e9,
       "meadow.jl": 1.7955760036326725e9,
       "meadowlife.jl": 1.795485965898355e9,
@@ -1696,7 +1691,7 @@
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
-      "showers.jl": 1.795582167240766e9,
+      "showers.jl": 1.7955924208595362e9,
       "sneeze.jl": 1.7955898900843642e9,
       "snowday.jl": 1.7955898834036303e9,
       "soar.jl": 1.7955898834039822e9,
@@ -1712,11 +1707,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 39,
-    "self": "2670667691703234237",
+    "posts": 40,
+    "self": "14151975785721963154",
     "wishes": 8
   },
-  "started": "2026-11-25T08:37:51",
+  "started": "2026-11-25T09:20:18",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1784,14 +1779,19 @@
       "Catalyst",
       "Quiqbox",
       "OptimizationEvolutionary",
-      "ImageView"
+      "ImageView",
+      "PlasmaEquilibriumToolkit",
+      "HistoryTrees",
+      "HiQGA"
     ],
     "vision": [
       "HorizonRunner",
       "Hunyuan3DRunner",
       "ProPainterRunner",
-      "PPOCRRunner"
+      "PPOCRRunner",
+      "FluxKleinRunner",
+      "BonsaiRunner"
     ]
   },
-  "surprise_seen": 83
+  "surprise_seen": 84
 }

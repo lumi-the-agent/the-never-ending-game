@@ -3297,12 +3297,12 @@
       "id": 236,
       "kind": "review",
       "priority": 1,
-      "result": "s45 step: eyes 25-50% bigger with bigger pupils on all five species (live, no restart): media/s45/lineup-before.png vs lineup-after.png (Fluffkin's eyes now read on its dark face). Still to do: distinct silhouettes for ten creatures (per-creature variation), blink clip evidence, pupils following Lumi, squash on landing. Lineup tool: world/tools/lineup.jl.\ns56 part: hats lifted off faces (outfits.jl v14): Sir Sniffsalot's top hat moved back and up (head (-0.2,0,1.0)), Pinchy's party hat up (body z 1.0), Gloop's crown smaller (r 0.15) and on top (body (-0.08,0,0.97)); front/side closeups media/s56/hats-before.png vs hats-after.png show no hat over an eye or snout. Still open: distinct silhouettes (black lineup) and a lineup of every wearer.\ns56 check of the other wearers (media/s56/hats3.png): Truffle's beret and Cumulus's beanie sit on top, no eye covered; Hopscotch's cap was hidden behind other creatures in both shots (check again). Still open: distinct silhouettes.",
+      "result": "s45 step: eyes 25-50% bigger with bigger pupils on all five species (live, no restart): media/s45/lineup-before.png vs lineup-after.png (Fluffkin's eyes now read on its dark face). Still to do: distinct silhouettes for ten creatures (per-creature variation), blink clip evidence, pupils following Lumi, squash on landing. Lineup tool: world/tools/lineup.jl.\ns56 part: hats lifted off faces (outfits.jl v14): Sir Sniffsalot's top hat moved back and up (head (-0.2,0,1.0)), Pinchy's party hat up (body z 1.0), Gloop's crown smaller (r 0.15) and on top (body (-0.08,0,0.97)); front/side closeups media/s56/hats-before.png vs hats-after.png show no hat over an eye or snout. Still open: distinct silhouettes (black lineup) and a lineup of every wearer.\ns56 check of the other wearers (media/s56/hats3.png): Truffle's beret and Cumulus's beanie sit on top, no eye covered; Hopscotch's cap was hidden behind other creatures in both shots (check again). Still open: distinct silhouettes.\nMakeover day for the crabs (s85, makeover.jl crabby): Pinchy and Hopscotch get the generated clay crab with bunny ears (assets/20261125-003611-829-asset) as one sculpted body with its claws and legs, jiggling as it scuttles, eyes on the side it walks (one quarter turn of the mesh, checked from the front: media/s85/crab-1.png). In the human's game it happened on publish, with the puff and the lines ('CLAWS! Real CLAWS!'). The old painted grin and spots (made for the sphere body) are off the sculpted body (outfits.jl sculpted). Traced film: site/films/crabs.mp4. Not done: the claws and legs do not move on their own yet (one rigid sculpt); cutting them into parts like the pig's legs is next.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
-      "updated": "2026-11-25T07:50:10.215"
+      "updated": "2026-11-25T09:32:04.421"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -5439,12 +5439,12 @@
       "id": 389,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "One shared claim (Main.LUMI_PARTY[:until], s85): boing, statues (freeze), conga, roll call, the flight, the hiccups, the sneeze, the hail, the leaf pile and pumpkin bowling only start on their own when nobody holds it, and then hold it 20-45 s. Sandbox test with flight, hiccups and sneeze all due in the same frame: only the hiccups started, the other two waited with 19 s of the claim left (this was what made Lumi jump 7 m after the hail). The four parties load and run but I could not show them all due at once (a Big Boing party was already on). Not in it yet: the swing, the bottle, the storm, the choir, the paint fight (player keys still start their own moments on purpose).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "One island party at a time: boing, freeze, conga and roll call take turns",
-      "updated": "2026-11-24T15:24:29.697"
+      "updated": "2026-11-25T09:46:39.443"
     },
     {
       "created": "2026-11-24T15:56:22.578",
@@ -6251,12 +6251,12 @@
       "id": 447,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "All three parts of the done-when, s83-s85: (1) jump-in: Lumi steps out of a nook at the start (engine play.jl step_into_view!); five starts after: four at obstruction 0.0, the fifth 1.59 with Lumi in plain view (media/s84/jumpin-after-0.png). (2) event films with three shots: pumpkins (wide, close behind Lumi's run-up and crash with Lumi filling the frame, wide tumble: site/films/pumpkins.mp4) and hail (wide, the bouncing meadow, close on the huddle: site/films/hail.mp4). (3) dance ring: measured from game.rig while the follow camera watched a dancer in a running ring: 4.1 degrees down, target 1.2 m from the ring's centre (media/s85/ring-live.png); the ring also has its own low view from its clearest side (dancecircle.jl ring_view, about 16 degrees, media/s85/ring-view-forced.png).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Close on the moment: jump-in behind a bush, leaf jumps from far, rings from above",
-      "updated": "2026-11-25T07:50:10.215"
+      "updated": "2026-11-25T09:51:07.154"
     },
     {
       "created": "2026-11-25T01:46:56.141",
@@ -6433,12 +6433,12 @@
       "id": 460,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "Dropped: the made-over sheep's sculpted face already has its eyes and dark muzzle (media/s82/sheep-front-*.png); the old painted nose and mouth were made for the sphere body. Since s85 outfits.jl leaves species extras off sculpted bodies (`sculpted`), the crab first; the sheep's extras never showed (no :face part), so nothing floats.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Sheep faces: a nose and mouth on the made-over sheep's real face (outfits EXTRAS anchor on :face, which the new body has no more)",
-      "updated": "2026-11-25T07:11:35.786"
+      "updated": "2026-11-25T09:51:57.989"
     },
     {
       "created": "2026-11-25T07:11:35.791",
@@ -6531,12 +6531,12 @@
       "id": 467,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "Checked at 17:30 beside the sunset bench (-16, 7.6) in the raster with the s84 golden gain (1.2, 1.4, 1.3): a yellow bird, mean of its warm pixels (0.68, 0.62, 0.22), the little one beside it yellow too (media/s85/lumi-1730.png). A shower was passing, so the light was grey rather than a sunset glow; the warm sunset light itself stays in todo 237.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Lumi's yellow at sunset: check the raster at the sunset bench at 17:30 after the s83 texture lift (lumicolour.jl), warm but still a yellow bird",
-      "updated": "2026-11-25T08:22:38.559"
+      "updated": "2026-11-25T09:51:43.890"
     },
     {
       "created": "2026-11-25T08:40:07.351",
@@ -6551,6 +6551,62 @@
       "status": "dropped",
       "title": "Plugin hail does not load",
       "updated": "2026-11-25T08:40:30.789"
+    },
+    {
+      "created": "2026-11-25T09:23:31.656",
+      "detail": "LoadError: cannot document the following expression:\n\n\"The made-over bodies carry their faces in the sculpt: the crab's painted grin and spots (made for the old sphere\\nbody, anchored at a fraction of it) floated a metre in front of the new one (s85).\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/outfits.jl:164\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [5] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [6] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [7] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [8] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [9] live_command(g::Game, ::Val{:reload}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:153\n [10] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [11] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [12] top-level scope\n    @ none:1\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [15] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/outfits.jl:164",
+      "est_minutes": 15.0,
+      "id": 469,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T09:23:49.665: plugin outfits loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin outfits does not load",
+      "updated": "2026-11-25T09:23:49.665"
+    },
+    {
+      "created": "2026-11-25T09:38:47.960",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 470,
+      "kind": "build",
+      "priority": 2,
+      "result": "The crab's two big claws are cut loose (makeover.jl crabby: faces forward of 0.28 m, 0.12-0.48 m up, out to each side) and wave up and down at their roots (Swing about the side axis, 0.22 rad at 1.5 Hz, the two out of step) while the shell jiggles. Two sandbox shots 0.3 s apart show them moving with no seam gaps (media/s85/claws-0.png, claws-1.png); the motion measure lists no claw as snapping or too fast. Published; the human's game has Crabbit parts body, claw_l, claw_r. Not yet: a snap that answers a feeling (happy, cross) and legs that step.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Crabs that snap: cut the sculpted crab's claws (and legs) into moving parts, claws that open and snap when it is happy or cross (makeover.jl crabby, like the pig's legs)",
+      "updated": "2026-11-25T09:40:22.521"
+    },
+    {
+      "created": "2026-11-25T09:40:28.953",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 471,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Crab feelings: claws that snap when a crab is happy or cross, and legs that step as it scuttles (makeover.jl crabby, claws cut in s85)",
+      "updated": "2026-11-25T09:40:28.953"
+    },
+    {
+      "created": "2026-11-25T09:50:01.857",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 472,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Calm sprints: the friends body roll shrinks as they run faster (engine body_pose :run rolls with sin(phase); crabs and Truffle still turn back 9-10 times a second at a sprint, s85 motion-gait1)",
+      "updated": "2026-11-25T09:50:01.857"
     }
   ]
 }

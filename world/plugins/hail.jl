@@ -6,11 +6,17 @@
 # cloud moves on and the meadow is white with hail, which melts away.
 isdefined(Main, :HAIL) || Core.eval(Main, :(const HAIL = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One of Lumi's island moments at a time (s85, todo 389): when one ends, the flight, the hiccups and a sneeze all
+# grabbed Lumi in the same frame. Each claims Lumi for a while in a shared Main dict; the others wait.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const HA = Main.HAIL
 
 const T_CLOUD = 3.0; const T_HAIL = 11.0; const T_AFTER = 4.0; const T_MELT = 40.0
 const RATE = 42.0                       # stones a second
-const MAXN = 420
+const MAXN = 700
 const AREA = 6.5f0                      # m: radius of the shower round Lumi
 const CLOUD_H = 10f0
 const G = 9.8f0
@@ -84,7 +90,7 @@ function plots!(game)
     HA[:cloud] = meshscatter!(sc, fill(Point3f(0, 0, -50), 14); marker = Sphere(Point3f(0), 1f0), markersize = fill(Vec3f(0), 14),
                               color = [RGBf(0.42, 0.44, 0.5) * (0.85f0 + 0.3f0 * hash01(i, 3)) for i in 1:14], name = :hail_cloud)
     HA[:umbrella] = meshscatter!(sc, hide; marker = canopy_mesh(), markersize = [Vec3f(0)], rotation = [Makie.Quaternionf(0, 0, 0, 1)],
-                                 color = RGBf(0.86, 0.12, 0.12), name = :hail_umbrella)
+                                 color = RGBf(1.0, 0.22, 0.16), name = :hail_umbrella)   # (0.86 read dark maroon live, s84 review)
     HA[:handle] = meshscatter!(sc, hide; marker = Makie.Cylinder(Point3f(0), Point3f(0, 0, 1), 1f0), markersize = [Vec3f(0)],
                                color = RGBf(0.35, 0.22, 0.12), name = :hail_handle)
 end
@@ -97,7 +103,9 @@ function draw!(s::Hail, w)
         Makie.update!(HA[:stones]; arg1 = hide, markersize = [Vec3f(0)])
     else
         melt = s.state === :melt ? Float32(1 - ease((w.t - s.t0) / T_MELT)) : 1f0
-        Makie.update!(HA[:stones]; arg1 = [st.p for st in s.stones], markersize = [Vec3f(st.r * melt) for st in s.stones])
+        eye = get(HA, :eye, Point3f(0, 0, -1000))
+        Makie.update!(HA[:stones]; arg1 = [st.p for st in s.stones],
+                      markersize = [Vec3f(norm(st.p - eye) < 1.4f0 ? 0f0 : st.r * melt) for st in s.stones])   # none right at the lens
     end
     # the cloud slides in over the spot and out again
     k = s.state === :cloud ? ease((w.t - s.t0) / T_CLOUD) : s.state in (:hail,) ? 1f0 :
@@ -154,7 +162,8 @@ function drop_stones!(s::Hail, w, dt)
         if length(s.stones) < maxn
             push!(s.stones, st)
         else
-            j = argmin([x.born for x in s.stones]); s.stones[j] = st
+            # the oldest stone still in the air makes room; the ones lying on the grass stay (the meadow turns white)
+            j = findfirst(x -> !x.rest, s.stones); j === nothing || (s.stones[j] = st)
         end
     end
 end
@@ -273,7 +282,8 @@ function start_hail!(s::Hail, game)
 end
 
 "Huddle spots under the umbrella's rim, round Lumi."
-huddle(s::Hail, me, i, n) = (a = 2f0 * Float32(pi) * (i - 0.5f0) / n + 0.3f0; me.pos + Point3f(0.95f0 * cos(a), 0.95f0 * sin(a), 0))
+# (on the sides and behind Lumi as the hail camera sees it, from the south: in front they hid it, s84 review)
+huddle(s::Hail, me, i, n) = (a = Float32(pi) * (-0.12f0 + 1.24f0 * (i - 0.5f0) / n); me.pos + Point3f(0.95f0 * cos(a), 0.95f0 * sin(a), 0))
 
 function finish!(s::Hail, w)
     for id in s.crew
@@ -291,6 +301,7 @@ dim!(game, k) = (HA[:dim] = game.dash === nothing ? 0f0 : Float32(clamp(k, 0, 1)
 
 function NG.step!(s::Hail, game, dt)
     game.stage === nothing && return
+    HA[:eye] = Point3f(game.rig.eye)
     plots!(game)
     w = game.world
     el = w.t - s.t0
@@ -303,8 +314,8 @@ function NG.step!(s::Hail, game, dt)
         day = floor(Int, w.t / w.day_length)
         if (film || day != s.day && 10.5 < 24 * NG.daytime(w) < 12.5) && !testing && !busy_game && w.t >= get(HA, :try_at, -Inf)
             HA[:try_at] = w.t + 5
-            if start_hail!(s, game)
-                s.day = day; HA[:film] = false
+            if (party_free(w) || film) && start_hail!(s, game)
+                s.day = day; HA[:film] = false; claim_party!(w, 30)
             end
         end
         foreach(c -> s.last[c.id] = c.pos, w.creatures)
@@ -335,8 +346,9 @@ function NG.step!(s::Hail, game, dt)
                 me.goal = NG.Goal(:hail, me.pos, s.state === :hail ? :proud : :idle, 120.0, w.t + 120, true, 0, false)
             end
         end
-        filter!(id -> (x = NG.creature(w, id); x !== nothing && x.goal.kind === :hail), s.crew)
-        foreach(id -> (NG.creature(w, id).goal.until = w.t + 60), s.crew)
+        # (no filter: a friend another event took is called back above; filtering here lost them for good, s85)
+        filter!(id -> NG.creature(w, id) !== nothing, s.crew)
+        foreach(id -> (x = NG.creature(w, id); x.goal.kind === :hail && (x.goal.until = w.t + 60)), s.crew)
         me !== nothing && me.goal.kind === :hail && (me.goal.until = w.t + 60)
     end
     if s.state === :cloud
@@ -360,7 +372,7 @@ function NG.step!(s::Hail, game, dt)
         if me !== nothing
             for id in s.crew        # under the umbrella they face out and watch it come down
                 x = NG.creature(w, id)
-                if x.goal.arrived && !haskey(get(HA, :hop, Dict{Int32,Float64}()), id)
+                if x.goal.kind === :hail && x.goal.arrived && !haskey(get(HA, :hop, Dict{Int32,Float64}()), id)
                     x.goal.action = rand(w.rng) < 0.01 ? :laugh : x.goal.action === :laugh ? :laugh : :idle
                     x.yaw = atan(x.pos[2] - me.pos[2], x.pos[1] - me.pos[1]) - NG.species_of(x).heading
                 end
@@ -369,9 +381,10 @@ function NG.step!(s::Hail, game, dt)
         if el >= get(HA, :t_hail, T_HAIL)
             s.state = :after; s.t0 = w.t
             push!(HA[:log], (w.t, :stop))
-            me === nothing || me.goal.kind !== :hail || NG.say!(w, me, "...Is it over? Look! The meadow's all WHITE!"; duration = 3.0)
+            me === nothing || me.goal.kind !== :hail || NG.say!(w, me, "...Is it over? Look at all the HAIL!"; duration = 3.0)
             for id in s.crew
                 x = NG.creature(w, id)
+                (x.controlled || x.goal.kind !== :hail) && continue
                 x.goal = NG.Goal(:hail, x.pos, :laugh, 60.0, w.t + 60, true, 0, false)
             end
         end

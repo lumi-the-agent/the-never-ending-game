@@ -5,6 +5,11 @@
 # and anyone, a friend or a player as Lumi, can kick them about before they are gathered up again.
 isdefined(Main, :PUMPKINS) || Core.eval(Main, :(const PUMPKINS = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One island moment at a time (s85, todo 389): the shared claim in Main.LUMI_PARTY (flight, hiccups, boing, ...).
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const PK = Main.PUMPKINS
 
 const SPOT = Point2f(8.5, -0.5)         # the flower meadow west of the Big Boing toadstool (the most open ground there)
@@ -382,8 +387,8 @@ function NG.step!(s::Pumpkins, game, dt)
         day = floor(Int, w.t / w.day_length)
         if (film || day != s.day && 13.5 < 24 * NG.daytime(w) < 17) && !testing && !busy_game && w.t >= get(PK, :try_at, -Inf)
             PK[:try_at] = w.t + 5
-            if start_bowling!(s, game)
-                s.day = day; PK[:film] = false
+            if (film || party_free(w)) && start_bowling!(s, game)
+                s.day = day; PK[:film] = false; claim_party!(w, 30)
             end
         end
         foreach(c -> s.last[c.id] = c.pos, w.creatures)

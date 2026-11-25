@@ -155,13 +155,60 @@ function woolly(game)
            (body = count(.!(legsel .| plate)), legs = count(legsel), plate = count(plate))
 end
 
+const CRAB = "20261125-003611-829-asset"
+const CRAB_HEIGHT = 0.95f0
+const CRAB_TURN = Ref(1)            # quarter turns of the mesh about z: its eyes look the way it walks (s85, media/s85/crab-1.png)
+const CRAB_OK = true                # looked at from the front and the side in the sandbox (s85)
+const CLAWS_OK = true               # seen waving in the sandbox, no claw in the motion measure's snap or too-fast lists (s85, media/s85/claws-*.png)
+
+"""
+The Crabbit from the generated clay crab with bunny ears (s85, perfectionist s82: "the crabs are still a pink sphere on
+four pink cylinder legs"): one sculpted body, legs and claws included, that jiggles and bobs as it scuttles. The
+species keeps its sideways walk (heading pi/2: half crab, half bunny, fully confused about which way is forward).
+"""
+function crabby(game)
+    model = NG.load_asset(game.paths, CRAB; size = 512)
+    mesh = model.mesh
+    ps = GB.coordinates(mesh)
+    zmin, zmax = extrema(p -> p[3], ps)
+    s = CRAB_HEIGHT / (zmax - zmin)
+    k = mod(get(MK, :crab_turn, CRAB_TURN[]), 4)
+    rq(x, y) = k == 0 ? (x, y) : k == 1 ? (-y, x) : k == 2 ? (-x, -y) : (y, -x)
+    frame(p) = (q = rq(p[1], p[2]); Point3f(q[1], q[2], p[3] - zmin) * s)
+    turn(n) = (q = rq(n[1], n[2]); Vec3f(q[1], q[2], n[3]))
+    plate = plate_mask(mesh)
+    # the two big mitts in front (s85 profile: forward of 0.28 m, between 0.12 and 0.48 m up, out to the sides)
+    # come off as claws that wave up and down at their roots, while the shell jiggles (behind CLAWS_OK)
+    claws = falses(length(plate))
+    parts = NG.Part[]
+    if CLAWS_OK || get(MK, :try_claws, false)
+        cs = map(frame, centroids(mesh))
+        for (side, nm) in ((1, :crab_claw_l), (-1, :crab_claw_r))
+            sel = [c[1] > 0.28f0 && 0.12f0 < c[3] < 0.48f0 && 0.12f0 < side * c[2] < 0.45f0 for c in cs] .& .!plate
+            claws .|= sel
+            pivot = Point3f(0.24f0, side * 0.24f0, 0.3f0)
+            NG.register_shape!(nm, NG.piece_of(mesh, sel, p -> frame(p) - pivot, turn))
+            push!(parts, NG.part(side == 1 ? :claw_l : :claw_r, nm, Tuple(pivot), (1, 1, 1); material = model.material,
+                                 attributes = (; color = model.color),
+                                 motion = NG.Swing((0, 1, 0), 0.22, 1.5; offset = side == 1 ? 0 : 1.6)))
+        end
+    end
+    NG.register_shape!(:crab_body, NG.piece_of(mesh, .!(plate .| claws), frame, turn))
+    pushfirst!(parts, NG.part(:body, :crab_body, (0, 0, 0), (1, 1, 1); material = model.material,
+                              attributes = (; color = model.color), motion = NG.Jiggle(0.03, 2.4)))
+    old = NG.crabbit()
+    return NG.Species(old.name, old.blurb, parts, CRAB_HEIGHT, old.speed, old.stride, old.heading, old.sounds),
+           (body = count(.!plate), plate = count(plate))
+end
+
 "Is a generated asset finished (in the catalog with its mesh)? The sheep and crab come from the worker during play."
 asset_ready(game, id) = isfile(joinpath(game.paths.world, "assets", id, "mesh.jls")) &&
                         any(e -> e["id"] == id, NG.load_catalog(game.paths))
 
 const LINES = Dict("Snootle" => ("I'm... a REAL piggy?!", "Look at my EARS!", "So soft!", "Oink! A proper oink!"),
                    "Blorbo" => ("I have a BOW!", "Look how squishy I am!", "*wobble* ...ooh!", "Big shiny eyes!"),
-                   "Fluffkin" => ("I'm so FLUFFY!", "Baa! Look at my wool!", "*fluffs up* ...wow.", "Softest sheep ever!"))
+                   "Fluffkin" => ("I'm so FLUFFY!", "Baa! Look at my wool!", "*fluffs up* ...wow.", "Softest sheep ever!"),
+                   "Crabbit" => ("CLAWS! Real CLAWS!", "*snip snip* ...ooh!", "My ears are still here!", "I'm a proper crab now!"))
 
 "Swap the species and rebuild its herd (the next sync builds a fresh one from SPECIES)."
 function dress!(game, sp)
@@ -213,11 +260,19 @@ function NG.start!(::Makeover, game)
     blob, bc = jellyblob(game)
     MK[:counts] = (pig = pc, blob = bc)
     MK[:species] = Dict("Snootle" => pig, "Blorbo" => blob)
+    names = ["Snootle", "Blorbo"]
+    if CRAB_OK || get(MK, :try_crab, false)
+        crab, cc = crabby(game)
+        MK[:species]["Crabbit"] = crab
+        MK[:crab_counts] = cc
+        push!(names, "Crabbit")
+    end
     done = game.dash !== nothing && isfile(state_file(game)) ? collect(keys(NG.read_json(state_file(game)))) : String[]
     MK[:done] = done
     MK[:todo] = String[]
-    for name in ("Snootle", "Blorbo")
-        if game.dash === nothing || name in done
+    for name in names
+        # (a film of the crabs' makeover asks for their puff in its quiet copy too: MAKEOVER[:film_puff])
+        if (game.dash === nothing && !(name == "Crabbit" && get(MK, :film_puff, false))) || name in done
             dress!(game, MK[:species][name])     # already made over (or a film copy): new bodies from the start
         else
             push!(MK[:todo], name)               # the first time: the puff, then the new body

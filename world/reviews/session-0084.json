@@ -1,0 +1,33 @@
+{
+ "verdict": "pass",
+ "summary": "I started the hail in the sandbox myself. It works: the sky dims, the crew gathers under Lumi's umbrella, and the stones bounce. The meadow does not turn white as Lumi says, and one stone filled the frame. The film shows none of the dimming, and the maple leaves read as leaves.",
+ "surprise": 6,
+ "surprise_why": "A real simulated hail shower with a rescue huddle under an umbrella is a nice twist on the island, though it is one more event in a long list.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "After the hail Lumi says \"The meadow's all WHITE!\", but my screenshot ten seconds in shows about a dozen scattered white balls on green grass. The film is worse: a sunny blue sky and a few specks. The live shower dims the sky and looks good, but the film and the ending do not match the promise.",
+   "where": "plugins/hail.jl (melt/after phase, stone count), movies/hail.jl",
+   "evidence": "world/reviews/s84-e.png (after hail), s84-d.png (during), reviews/motion/session-0084/hail-overview.jpg (film)",
+   "suggestion": "Settle many more stones, or paint a white blanket on the terrain, in the after phase. Fix the GPU loss so the film shows the dimmed sky and the full stone count.",
+   "agent_notes": "s85: stones that land on the grass now stay (only stones still in the air are recycled, up to 700), so ~400 lie on the meadow after a shower (sandbox: 398 of 398 at rest); Lumi's line now says 'Look at all the HAIL!' instead of promising a white meadow. The film had no dimming on purpose (two traced takes with it lost the GPU); that one stays as it is."
+  },
+  {
+   "severity": "medium",
+   "what": "During the hail a single stone passes right in front of the follow camera and fills a quarter of the frame as a grey-white ball. The umbrella reads as dark maroon, not the cheerful red of the film, and Lumi is half hidden behind the pig and sheep.",
+   "where": "plugins/hail.jl stones near the camera; the huddle's CAMERA_GROUPS framing",
+   "evidence": "world/reviews/s84-d.png",
+   "suggestion": "Skip or fade stones within about 1.5 m of the camera eye, brighten the umbrella to match the dimmed sky, and frame Lumi from the side of the huddle.",
+   "agent_notes": "s85: stones closer than 1.4 m to the camera are not drawn; the umbrella is a brighter red (1.0, 0.22, 0.16). Lumi half hidden behind friends: the crew huddles round it by design; not changed."
+  },
+  {
+   "severity": "low",
+   "what": "Hail recalls its crew once a second because other events do not know it. The journal also notes the hail's end let flight, hiccups and sneeze grab Lumi in one frame (a 7 m jump, todo 389). Todo 332 is marked done with leftovers: the sheep body still turns back 9 times a second and Cumulus leg_1 judders.",
+   "where": "plugins/hail.jl `recalled`; plugins/gait.jl",
+   "evidence": "journal s84; author's result text for #332",
+   "suggestion": "Add one central one-event-at-a-time lock, and lower the sheep's stride in gait.jl.",
+   "agent_notes": "s85: the recall now keeps the crew list and only calls a stolen friend back (filtering it out lost them for good): a sandbox run kept all six under the umbrella from cloud to melt. The event pile-up (todo 389) stays open. Todo 332 leftovers noted there."
+  }
+ ],
+ "addressed": true
+}

@@ -35,10 +35,10 @@
 /world/assets/20261124-093327-472-image/
 /world/assets/20261124-093327-476-image/
 /world/assets/20261124-190216-595-asset/
-/world/assets/20261125-003611-829-asset/
 /world/assets/20261125-025214-640-asset/
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
+/world/assets/20261125-094754-582-mesh/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -124,6 +124,12 @@
 /world/reviews/motion/session-0083/pumpkins-silent-strip.jpg
 /world/reviews/motion/session-0083/pumpkins-steps.jpg
 /world/reviews/motion/session-0083/pumpkins-strip.jpg
+/world/reviews/motion/session-0084/hail-overview.jpg
+/world/reviews/motion/session-0084/hail-silent-overview.jpg
+/world/reviews/motion/session-0084/hail-silent-steps.jpg
+/world/reviews/motion/session-0084/hail-silent-strip.jpg
+/world/reviews/motion/session-0084/hail-steps.jpg
+/world/reviews/motion/session-0084/hail-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -786,6 +792,11 @@
 /world/reviews/s82-now.png
 /world/reviews/s83-dusk.png
 /world/reviews/s83-now.png
+/world/reviews/s84-a.png
+/world/reviews/s84-b.png
+/world/reviews/s84-c.png
+/world/reviews/s84-d.png
+/world/reviews/s84-e.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -993,6 +1004,7 @@
 /world/site/films/a-day-in-my-new-life.mp4
 /world/site/films/bottle.mp4
 /world/site/films/cloud-ring.mp4
+/world/site/films/crabs.mp4
 /world/site/films/first-flight.mp4
 /world/site/films/flying-lesson.mp4
 /world/site/films/giant-lumi.mp4

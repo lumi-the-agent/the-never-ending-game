@@ -5,6 +5,12 @@
 # own, and a player who jumped in as Lumi launches the nearest friend with E.
 isdefined(Main, :BOING) || Core.eval(Main, :(const BOING = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One island moment at a time (s85, todo 389): a shared claim in Main.LUMI_PARTY, the same one the flight, the
+# hiccups, the sneeze and the hail use; a party only starts on its own when nobody holds it.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const B = Main.BOING
 
 const STEM_H = 1.3f0           # m of stem under the cap (s68: 0.75 under a whole ellipsoid hid it: a red lens on the grass)
@@ -515,7 +521,7 @@ function NG.step!(s::Boing, game, dt)
     busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
     if s.state === :idle
         if w.t >= s.next_t && !testing && !busy_game && 7.5 < hour(w) < 19.5
-            start_party!(s, game) || (s.next_t = w.t + 40)
+            (party_free(w) && start_party!(s, game)) ? claim_party!(w, 45) : (s.next_t = w.t + 40)
         end
         testing || busy_game || step_solo!(s, game)
     else

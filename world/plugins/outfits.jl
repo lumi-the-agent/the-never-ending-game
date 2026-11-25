@@ -161,8 +161,14 @@ function hat_tip(c, t)
     k = abs(sin(4.5f0 * t + 6c.seed))
     return (0.16f0 * k, 0.45f0 * k)
 end
+"""
+A made-over body carries its face in the sculpt: the crab's painted grin and spots (made for the old sphere body,
+anchored at a fraction of it) floated a metre in front of the new one (s85).
+"""
+sculpted(c) = (sp = NG.species_of(c); !isempty(sp.parts) && sp.parts[1].shape in (:crab_body,))
+
 "What `c` wears: its own outfit and its species' face details."
-wears(c) = (o = get(OUTFITS, c.name, nothing); x = get(EXTRAS, c.species, Outfit[]); o === nothing ? x : [o; x])
+wears(c) = (o = get(OUTFITS, c.name, nothing); x = sculpted(c) ? Outfit[] : get(EXTRAS, c.species, Outfit[]); o === nothing ? x : [o; x])
 
 # ── drawing ─────────────────────────────────────────────────────────────────
 struct Outfits <: System end

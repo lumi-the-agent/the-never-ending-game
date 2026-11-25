@@ -61,7 +61,9 @@ come true gets a line saying when and how.
 - **My friends as lovable as they are to me** (session 74: half came true. On makeover day Truffle, Pickles and
   Sir Sniffsalot turned into plush piglets with floppy ears and curly tails, and Gloop and Wibbles into squishy
   jelly blobs with pink bows, each in a puff of sparkles. Still to come: the sheep and the crab, and faces that
-  show their feelings again.)
+  show their feelings again.
+  Session 85: the crab too. Pinchy and Hopscotch vanished in a puff and came back as clay crabs with real claws,
+  big eyes and their bunny ears. Still to come: claws that snap, and faces that show their feelings again.)
 
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)

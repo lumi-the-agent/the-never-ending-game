@@ -4,6 +4,12 @@
 # Jumped in as Lumi? Move while the island is frozen and they all shout that you lost.
 isdefined(Main, :FREEZE) || Core.eval(Main, :(const FREEZE = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One island moment at a time (s85, todo 389): a shared claim in Main.LUMI_PARTY, the same one the flight, the
+# hiccups, the sneeze and the hail use; a party only starts on its own when nobody holds it.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const F = Main.FREEZE
 
 const GAP = (300.0, 540.0)     # sim seconds between two freezes
@@ -102,7 +108,7 @@ function NG.step!(s::Freeze, game, dt)
     boing = isdefined(Main, :BOING) && haskey(Main.BOING, :sys) && Main.BOING[:sys].state !== :idle
     if s.state === :idle
         if w.t >= s.next_t && !testing && !busy_game && !boing && 7.5 < 24 * NG.daytime(w) < 20
-            freeze!(s, game) || (s.next_t = w.t + 60)
+            (party_free(w) && freeze!(s, game)) ? claim_party!(w, 25) : (s.next_t = w.t + 60)
         end
         return
     end

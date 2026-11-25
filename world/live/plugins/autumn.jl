@@ -4,6 +4,11 @@
 # biggest run-up of all. Then the leaves settle and the pile slowly blows away.
 isdefined(Main, :AUTUMN) || Core.eval(Main, :(const AUTUMN = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One island moment at a time (s85, todo 389): the shared claim in Main.LUMI_PARTY (flight, hiccups, boing, ...).
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const AU = Main.AUTUMN
 
 const SPOT = Point2f(3, -14)                  # open meadow south of the island's middle, trees round it
@@ -213,9 +218,10 @@ function NG.step!(s::Autumn, game, dt)
         # once an afternoon; while the friends are all busy elsewhere (a boing time, a conga) it waits for them
         if (film || day != s.day && 13 < 24 * NG.daytime(w) < 16.5) && !testing && !busy_game && w.t >= get(AU, :try_at, -Inf)
             AU[:try_at] = w.t + 5
-            if start_leaves!(s, game)
+            if (film || party_free(w)) && start_leaves!(s, game)
                 s.day = day
                 AU[:film] = false
+                claim_party!(w, 30)
             end
         end
         return

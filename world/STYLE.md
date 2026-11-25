@@ -6,11 +6,13 @@ at a glance. Everything looks like it could be picked up and squeezed.
 ## Shapes
 - Chunky and rounded: domes, blobs, thick stems, soft bevels. No thin spikes, no hard
   corners, no realistic detail (generated assets: say "chunky, stylized, soft rounded shapes").
-- Creatures are simple round bodies with big eyes and stubby limbs; read the species
-  from the silhouette (Lumi: cream egg with a leaf lumi).
+- Creatures are sculpted clay toys (since s74-85 every friend is a generated, cut body: plush piglets, jelly
+  blobs, cotton sheep, clay crabs with bunny ears; Lumi a big shaggy golden bird), big eyes and soft rounded
+  limbs; read the species from the silhouette. No body is built from primitive spheres and sticks any more,
+  and a new creature starts from a generated mesh, cut into moving parts, its face checked from the front.
 - Every species needs one shape that sticks OUT of its round body and reads from behind and from the
-  side at 8 m: pig pointy ear tips, sheep curled ram horns (outside the wool), crab claws raised in a V,
-  Lumi's leaf and tan satchel. Back pieces stay flat and light: a dark round bag read as a face.
+  side at 8 m: pig floppy ears and curly tail, sheep's dark face out of the wool, crab bunny ears and two big
+  waving claws, Lumi's spiky crest and long grey legs. Back pieces stay flat and light: a dark round bag read as a face.
 - Props sit on the ground, seen from the side (never a flat disc on a pedestal).
 - Small things come in groups (flowers, stones, mushrooms), big things alone (trees).
 

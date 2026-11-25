@@ -3,6 +3,12 @@
 # HEY!", everyone kicking up on the HEY together. A player who walks into the line with Lumi gets cheered.
 isdefined(Main, :CONGA) || Core.eval(Main, :(const CONGA = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One island moment at a time (s85, todo 389): a shared claim in Main.LUMI_PARTY, the same one the flight, the
+# hiccups, the sneeze and the hail use; a party only starts on its own when nobody holds it.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const C = Main.CONGA
 
 const GAP = (420.0, 660.0)      # sim seconds between congas
@@ -88,7 +94,7 @@ function NG.step!(s::Conga, game, dt)
             (isdefined(Main, :FREEZE) && haskey(Main.FREEZE, :sys) && Main.FREEZE[:sys].state !== :idle)
     if s.state === :idle
         if w.t >= s.next_t && !testing && !busy_game && !other && 7.5 < 24 * NG.daytime(w) < 20
-            start_conga!(s, game) || (s.next_t = w.t + 60)
+            (party_free(w) && start_conga!(s, game)) ? claim_party!(w, 35) : (s.next_t = w.t + 60)
         end
         return
     end

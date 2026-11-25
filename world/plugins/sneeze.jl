@@ -5,6 +5,12 @@
 # and embarrassed.
 isdefined(Main, :SNEEZE) || Core.eval(Main, :(const SNEEZE = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One of Lumi's island moments at a time (s85, todo 389): when one ends, the flight, the hiccups and a sneeze all
+# grabbed Lumi in the same frame. Each claims Lumi for a while in a shared Main dict; the others wait.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const S = Main.SNEEZE
 
 const GAP = (360.0, 600.0)        # sim seconds between two sneezes
@@ -287,7 +293,8 @@ function NG.step!(s::Sneeze, game, dt)
             me = lumi_of(w)
             # on open land only: on the pier the friends flew into the sea and the feathers sank (s64)
             ok = me !== nothing && free(me) && me.action !== :sleep && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6) &&
-                 wind_up!(s, game, me)
+                 party_free(w) && wind_up!(s, game, me)
+            ok && claim_party!(w, 20)
             ok || (s.next_t = w.t + 45)
         end
         return

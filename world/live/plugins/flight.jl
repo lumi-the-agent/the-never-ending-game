@@ -6,6 +6,12 @@
 # Jumped in as Lumi: G (for "go!") tries it.
 isdefined(Main, :FLIGHT) || Core.eval(Main, :(const FLIGHT = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# One of Lumi's island moments at a time (s85, todo 389): when one ends, the flight, the hiccups and a sneeze all
+# grabbed Lumi in the same frame. Each claims Lumi for a while in a shared Main dict; the others wait.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const F = Main.FLIGHT
 
 const GAP = (600.0, 1000.0)       # sim seconds between two attempts
@@ -133,7 +139,7 @@ function begin!(s::Flight, game, me)
     s.lumi = me.id
     s.start = open_spot(w, me.pos)
     s.dir = Vec2f(cos(me.yaw), sin(me.yaw))
-    me.controlled || (me.pos = s.start)
+    # (it walks to its take-off spot while the friends gather: setting pos there jumped it up to 7 m in one frame, s85)
     # it comes down a few metres to the side of where it took off, so the watchers have to run
     s.land = open_spot(w, s.start + Point3f(-3f0 * s.dir[2] + 2f0 * s.dir[1], 3f0 * s.dir[1] + 2f0 * s.dir[2], 0))
     nest = get(F, :nest, nothing)
@@ -152,7 +158,8 @@ function begin!(s::Flight, game, me)
         c.goal = NG.Goal(:flight, spot, :wave, 60.0, w.t + 60, false, 0, true)
         push!(s.watchers, c.id)
     end
-    me.controlled || hold!(me, w, :proud)
+    me.controlled || (flat(me.pos, s.start) > 0.3f0 ? (me.goal = NG.Goal(:flight, s.start, :walk, 60.0, w.t + 60, false, 0, false)) :
+                                                       hold!(me, w, :proud))
     NG.say!(w, me, "Today... I FLY!", duration = 2.6)
     NG.emit!(w, :flight_announce; who = me.name, n = length(s.watchers))
 end
@@ -201,8 +208,8 @@ function NG.step!(s::Flight, game, dt)
         if w.t >= s.next_t && !testing && !busy_game && 8.5 < 24 * NG.daytime(w) < 19
             me = lumi_of(w)
             near = me === nothing ? 0 : count(c -> c !== me && free(c) && flat(c.pos, me.pos) < CALL, w.creatures)
-            if me !== nothing && free(me) && near >= 3 && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6)
-                begin!(s, game, me)
+            if me !== nothing && free(me) && near >= 3 && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6) && party_free(w)
+                begin!(s, game, me); claim_party!(w, 25)
             else
                 s.next_t = w.t + 45
             end
@@ -214,14 +221,16 @@ function NG.step!(s::Flight, game, dt)
     el = w.t - s.t0
     ws = watchers(s, w)
     if s.state === :gather
-        me.controlled || (me.yaw = atan(s.dir[2], s.dir[1]); me.action = el < 2.6 ? :proud : :idle)
+        walking = !me.controlled && flat(me.pos, s.start) > 0.3f0 && !me.goal.arrived
+        me.controlled || walking || (me.yaw = atan(s.dir[2], s.dir[1]); me.action = el < 2.6 ? :proud : :idle)
         for c in ws
             c.goal.arrived && look_at!(c, me.pos)
         end
         if el > GATHER_T
             s.state = :run; s.t0 = w.t
             NG.say!(w, me, "Three... two... ONE!", duration = 1.6)
-            me.controlled || (me.pos = s.start)
+            # (not there yet: it takes off from where it is, no jump)
+            me.controlled || (flat(me.pos, s.start) > 0.5f0 ? (s.start = NG.ground(w.island, (me.pos[1], me.pos[2]))) : (me.pos = s.start))
             for c in ws
                 rand(w.rng) < 0.5 && NG.say!(w, c, rand(w.rng, WATCH_SAY); duration = 1.5)
             end

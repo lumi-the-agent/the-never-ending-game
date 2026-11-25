@@ -214,7 +214,33 @@ function ring_group(w)
     id = watch_ring(w)
     id === nothing && return nothing
     ps = [c.pos for c in (NG.creature(w, m) for m in CURRENT[].members) if c !== nothing]
-    return id, ps
+    isempty(ps) && return nothing
+    return id, ps, ring_view(w, CURRENT[], ps)
+end
+
+"""
+One low view of the whole ring, chosen once per dance from eight sides (the clearest), held for the whole dance:
+the follow camera framed it from straight above Gloop's back (perfectionist s82, pitch over 32 degrees). About 11
+degrees down, 6.5 m out.
+"""
+const RING_VIEW = Dict{Float64,Tuple{Point3f,Point3f}}()
+function ring_view(w, s, ps)
+    get!(RING_VIEW, s.t0) do
+        length(RING_VIEW) > 20 && empty!(RING_VIEW)
+        c = sum(ps) / length(ps)
+        target = Point3f(c[1], c[2], c[3] + 0.7f0)
+        best = (Inf32, Point3f(0))
+        for k in 0:7
+            a = 2f0 * Float32(pi) * k / 8
+            q = (c[1] + 6.5f0 * cos(a), c[2] + 6.5f0 * sin(a))
+            eye = Point3f(q[1], q[2], NG.terrain_height(w.island, q[1], q[2]) + 2.0f0)
+            eye[3] < target[3] && continue
+            o = NG.obstruction(w, eye, target)
+            o < best[1] && (best = (o, eye))
+        end
+        best[1] == Inf32 && (best = (0f0, Point3f(c[1], c[2] - 6.5f0, c[3] + 2.4f0)))   # (every side lower than the ring)
+        (best[2], target)
+    end
 end
 
 function NG.start!(s::DanceCircle, game)
