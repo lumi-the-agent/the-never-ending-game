@@ -1,0 +1,229 @@
+{
+  "verdict": "needs_work",
+  "summary": "The island is lively and full of gags: a runaway shadow you chase, a gallery of its own pictures, friends who now lie down to sleep, and pressing Path tracing finally shows the island. But the progress cameras show s94 just like s91 and s88. The picture a player sees every second is still a clay meadow under one sun, with the follow camera half buried in tree crowns. The best new gag, the shadow that runs off, is undercut because Lumi keeps casting its own shadow the whole time.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Golden-hour traced stills (sleepers.png, runaway-shadow.png) have warm low sun and long shadows, and the lantern evening lights the bank. The live default is still flat midday (progress eye-level 11:24). The white sawtooth horizon band is still in the traced dusk still (site/img/lanterns.png y~180). The sunset/rain light todo (#237) has not moved."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Up from broken: the dashboard's path tracing now shows the island after 90 s (reviews/p94/traced-90s.png), and the pond glass reads as water. Everything else is still one plastic/clay look. The lanterns are still white clipped eggs on red rings (lanterns.png), there is no metal, no sheen or coat that reads on camera, and no glowing thing that colours its surroundings except the stone lamp."
+    },
+    "world": {
+      "score": 6,
+      "why": "Lots of places (pond, cottage, garden, grove, beach, pier, flower field, now the easel gallery), but the overview and eye-level progress shots are pixel-for-pixel the same as s91 and s88. Nothing new a returning player would notice from the standard views in 6 sessions."
+    },
+    "props": {
+      "score": 6,
+      "why": "The gallery easels are a nice self-referential prop. Generated assets are used widely (trees, toadstools, cottage, stumps). Many props are still one-off clay lumps scattered evenly rather than grouped into scenes; the white flower field reads as a carpet of cotton balls in close follow views (follow1.png)."
+    },
+    "creatures": {
+      "score": 7,
+      "why": "Readable, funny bodies: crabs with bunny ears, pig in a top hat, woolly sheep, the gummy blob. Sleepers now lie down, with the pig on its side (sleepers.png). The creatures sheet shows no broken or floating parts. Lumi's chick is a cute addition but at a glance it reads as a second Lumi."
+    },
+    "animation": {
+      "score": 6,
+      "why": "The live measure gives 9 of 10 moving well, but Lumi's beak swings at 19.4 m/s and moves in uneven steps 60% of frames (reviews/p94/motion). The visitors film opens on an empty meadow and everyone pops in at frame 2 (0.04 s jump 0.079). The shadow film's largest jumps are a tree crown sweeping in front of the chase at 9.3 and 10.3 s, not the animation itself."
+    },
+    "fun": {
+      "score": 7,
+      "why": "V-shadow chase is a genuinely good player toy (dodges, a pounce). The one-key list keeps growing (X H G C P M T B V Z Q), but the three scored games are still the s40 trio. Firefly catch ends with the camera between Lumi's legs and the flies as a clump of white balls (tests/shots/firefly-end.png)."
+    },
+    "wow": {
+      "score": 7,
+      "why": "'My shadow ran off' is a surprise a stranger would share, and so is the rewind. But both films are shot so the gag barely reads: the shadow is a small dark smudge at distance with trees passing in front of it, and Lumi visibly still has its own shadow."
+    },
+    "camera": {
+      "score": 5,
+      "why": "Follow view: a pine crown over ~40% of the frame (reviews/p94/follow2.png). One creature on the motion sheet is completely behind a trunk (creatures.png row 4). The shadow film loses the chase behind a crown at 10.3 s. The film cameras are gentle and the lantern film is well framed."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Unchanged: readable side panel. 'Things to try' is a dense key soup in three lines. Labels float through foliage ('Hopscotch' sits on a toadstool in follow1.png, a lone 'Z' floats in mid-air in the eye-level shot). The status panel says 'Feels bored. Same old, same old.' to the player on every shot."
+    },
+    "style": {
+      "score": 5,
+      "why": "A cohesive clay toy-box look in the raster. But it is the same saturated green-and-yellow everywhere, and the traced stills and raster disagree (very dark greens traced vs bright lime raster). The lantern and night glow read as game-engine bulbs, not a crafted style."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame 3.1 ms median, 6.4 ms p95 at a 30 fps target with 87 systems. The only costly items are live screenshots and motion captures."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "wow",
+      "title": "Runaway shadow: Lumi must have NO shadow while it is loose, and the loose one must read",
+      "todo": null,
+      "what": "While the shadow is off running, Lumi still casts its normal sun shadow at its feet, in the raster (tests/shots/s95_shadow_v.png) and in the traced post still (site/img/runaway-shadow.png: Lumi's own shadow lies right of its feet while the loose one runs at the crab). So the joke 'my shadow came loose' is visibly false. The loose shadow is a small black blot that the film loses among bush shadows.",
+      "where": "plugins/shadow.jl, Lumi's herd plots; RayMakie raster shadow casting (raster_material.jl casts_shadow), Hikari for traced",
+      "evidence": "site/img/runaway-shadow.png, tests/shots/s95_shadow_v.png, reviews/motion/perfectionist-0094/shadow-overview.jpg",
+      "suggestion": "Switch shadow casting off for Lumi's herd while :loose: add a per-plot `cast_shadow` attribute in RayMakie if there is none, for the raster and the tracer. Make the runaway a long, crisp, sun-direction-stretched silhouette (2-3x Lumi's height on the ground, sharp edges, a faint cool tint) so it reads from the follow camera. A beat where Lumi looks down at its empty feet sells it.",
+      "done_when": "A traced still and a raster screenshot during :loose show no shadow under Lumi's feet, while every other creature has one. The loose shadow covers at least 2x the screen area of Lumi's old shadow at the same camera."
+    },
+    {
+      "severity": "high",
+      "category": "materials",
+      "title": "Lanterns that look like paper lanterns: warm glow through paper, not white eggs",
+      "todo": 479,
+      "what": "In the traced lantern still every lantern is still a pure white, clipped ellipsoid on a red ring: eggs or light bulbs on the pond.",
+      "where": "plugins/lanterns.jl, site/img/lanterns.png",
+      "evidence": "site/img/lanterns.png; reviews/motion/perfectionist-0094/lanterns-overview.jpg",
+      "suggestion": "Use a translucent paper shell (Hikari thin dielectric or diffuse transmission, warm orange) with a small emissive core inside, so the surface shows a gradient from bright centre to amber rim. Add ribs and top/bottom rims in dark bamboo, and a tinted glow reflected on the water.",
+      "done_when": "A traced still at the pond at dusk shows lanterns with no clipped pure-white pixels (max channel < 0.98 over the shell), visible ribs, and an amber (not white) colour."
+    },
+    {
+      "severity": "high",
+      "category": "lighting",
+      "title": "White sawtooth band along the horizon in traced dusk pictures",
+      "todo": 498,
+      "what": "Still there: a bright dotted/jagged line runs across the whole traced lantern still at the horizon behind the trees (y~180 of 720).",
+      "where": "Hikari SunSkyLight below-horizon texels (see the s38 lesson), RayMakie traced sky",
+      "evidence": "site/img/lanterns.png at y~180",
+      "suggestion": "Fix it at the source in Hikari: fill the sky map below the horizon with a ground colour, or filter the octahedral texels. Then re-render the dusk still.",
+      "done_when": "A traced still at 18:30 looking out to sea shows a smooth horizon: no row near the horizon with more than 3 isolated bright pixels above 0.9."
+    },
+    {
+      "severity": "medium",
+      "category": "world",
+      "title": "Something new a returning player sees from the standard views",
+      "todo": 455,
+      "what": "The overview and eye-level progress shots of s94 are the same as s91 and s88. Six sessions of events, films and gags left the island itself unchanged to anyone who just looks at it.",
+      "where": "media/progress/session-0094 vs session-0088",
+      "evidence": "media/progress/session-0094/overview.png vs session-0091/overview.png",
+      "suggestion": "Spend a session on a place, not an event. For example, turn the pale grove into a destination (floor, path, lights, a reason to visit), or grow a new landmark north of the pond where the overview camera looks. It should change the skyline or the ground colour, not add one more prop.",
+      "done_when": "The next progress overview.png differs visibly from session-0094's in a region at least 1/10 of the 3D view."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Follow camera: no tree crowns or bushes over a third of the view",
+      "todo": 482,
+      "what": "Follow view at 11:28 with a pine crown over ~40% of the frame. One creature on the motion close-up sheet is entirely behind a trunk. The shadow film's biggest frame jumps are a crown sweeping across the chase.",
+      "where": "render.jl follow_view / lensclear.jl, movies/shadow.jl",
+      "evidence": "reviews/p94/follow2.png, reviews/p94/motion/creatures.png (row 4 right), shadow film jumps at 9.33 and 10.33 s",
+      "suggestion": "Score candidate eyes by the screen fraction covered by crowns and bushes (render the obstruction against the actual meshes, not points), and lift or swing to the open side before cutting.",
+      "done_when": "10 follow screenshots 5 s apart: none has foliage within 3 m of the eye covering more than 1/3 of the 3D view."
+    },
+    {
+      "severity": "medium",
+      "category": "animation",
+      "title": "Calmer beak chatter, and films that do not pop in on frame one",
+      "todo": 476,
+      "what": "Lumi's beak still swings at 19.4 m/s and moves in uneven steps in 60% of frames while talking. The visitors film starts on an empty meadow and the whole cast appears on frame 2.",
+      "where": "engine faces.jl mouth_open; movies/visitors.jl warm-up",
+      "evidence": "reviews/p94/motion (live_motion: beak 19.4 m/s, 60% uneven), visitors film jump at 0.04 s (0.079)",
+      "suggestion": "Use sin^2 at a slower rate with an eased close. Start films after the cast is in place (drop the first frames or warm up longer).",
+      "done_when": "live_motion lists no beak in 'Too fast' or 'Juddering'; the films' motion sheet has no jump in the first 0.5 s."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "A fourth mini game from the best gag: a shadow chase or paint fight with a score",
+      "todo": 437,
+      "what": "The shadow chase plays like a mini game already (a target that dodges, a pounce) but has no score, levels, best, or start/end card. The scored games are still the s40 trio.",
+      "where": "plugins/shadow.jl, plugins/paintfight.jl",
+      "evidence": "tests/shots/s95_shadow_v.png; Mini game menu lists only Firefly, Hide and seek, Berry race",
+      "suggestion": "Make 'Catch your shadow' a menu game: a timer, faster and sneakier shadows per level, a best time, friends it hides behind. Or score the paint fight by area painted.",
+      "done_when": "The Mini game menu lists a 4th game with a start card, an end card with a best, and R to play again; a W/A/D first-play test passes."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "Firefly catch: flies you can see and reach, an end card you can read",
+      "todo": 499,
+      "what": "At the end of a round the camera sits between Lumi's legs and the caught flies are a clump of plain white balls around its body. Fireflies read as white pebbles, not glowing bugs. On a win with no best yet the card says 'Your best: Inf s' (only when m.t < 1, i.e. tests).",
+      "where": "plugins/firefly_catch.jl (end card ~line 440, fly look)",
+      "evidence": "tests/shots/firefly-end.png",
+      "suggestion": "Give flies a warm tinted emissive core with a soft halo and a blink. Pull the end camera back to frame Lumi and the swarm leaving. Say 'A new best time!' when best is Inf.",
+      "done_when": "An end-card screenshot shows Lumi whole, with flies as yellow-green glowing dots, and the card never contains 'Inf'."
+    }
+  ],
+  "todos": [
+    {
+      "id": 497,
+      "action": "done",
+      "why": "Checked: Path tracing on in the sandbox shows the island after 90 s (reviews/p94/traced-90s.png)."
+    },
+    {
+      "id": 505,
+      "action": "done",
+      "why": "Sleepers lie down now; the pig sleeps on its side in the traced post still (site/img/sleepers.png)."
+    },
+    {
+      "id": 237,
+      "action": "keep",
+      "why": "Sunset/rain light is not checked as fixed; still the biggest lighting gap."
+    },
+    {
+      "id": 438,
+      "action": "keep",
+      "why": "Snow day not revisited."
+    },
+    {
+      "id": 483,
+      "action": "keep",
+      "why": "Labels still float through foliage ('Z' in mid-air in eye-level.png, 'Hopscotch' on a toadstool)."
+    },
+    {
+      "id": 494,
+      "action": "keep",
+      "why": "The rewind still moves only creatures."
+    },
+    {
+      "id": 493,
+      "action": "keep",
+      "why": "Not measured this time (Lumi was eating); keep until a run is measured."
+    },
+    {
+      "id": 325,
+      "action": "keep",
+      "why": "Faces still mostly neutral in events."
+    },
+    {
+      "id": 279,
+      "action": "keep",
+      "why": "Still several plugin copies of the step-aside."
+    },
+    {
+      "id": 427,
+      "action": "keep",
+      "why": "Still true per the todo."
+    },
+    {
+      "id": 471,
+      "action": "keep",
+      "why": "Crab claws still static on the creature sheet."
+    },
+    {
+      "id": 477,
+      "action": "keep",
+      "why": "Nest still behind its flag."
+    },
+    {
+      "id": 500,
+      "action": "keep",
+      "why": "Visitors feature has a next step."
+    },
+    {
+      "id": 488,
+      "action": "drop",
+      "why": "Too small to notice; the sheep face reads fine without a mouth."
+    }
+  ],
+  "engine": [
+    {
+      "what": "RayMakie has no per-plot switch to stop a plot casting shadows (only emissive looks skip it), so a plugin cannot hide one creature's shadow for a gag such as the runaway shadow.",
+      "evidence": "dev/RayMakie plots/raster_material.jl casts_shadow; site/img/runaway-shadow.png"
+    },
+    {
+      "what": "Hikari SunSkyLight still leaves a sawtooth band at the horizon in traced dusk pictures.",
+      "evidence": "site/img/lanterns.png y~180"
+    }
+  ],
+  "process": "Sessions 92-94 kept a good rhythm of fresh gags (gallery, visitors, sleepers, runaway shadow) and fixed the dead Path tracing button, which a player can now actually use. That moves goals 1, 4 and 8. Goal 2 has releases. Goal 5 shows in the gallery (Lumi's pictures on the island) and the visitor reactions. But the island a player looks at has not changed since s88. The work lives in events you have to wait for and films, and each new gag is shipped at 'works' rather than 'reads': the shadow gag leaves Lumi its own shadow, and the lanterns are still eggs. Goal 7 (materials) is the weakest: one clay/plastic look everywhere. Goal 3 (physics on the GPU, Maelstrom water) has not moved in many sessions. Goal 6 still has a 19 m/s beak. Lumi's own status reads 'bored'. The next sessions should finish three things to show-off quality (shadow gag, paper lanterns, horizon band) and build one place that changes the standard views, before adding more key gags.",
+  "addressed": true,
+  "agent_notes": "s95b: (1) Lumi's own shadow while the loose one runs (#506): started, not done. shadow.jl now wraps Lumi's herd materials in Hikari MediumInterface(m; shadows = 1) while the shadow is off (the tracer's shadow rays pass such a surface), and RayMakie's raster leaves materials with shadows > 0 out of its shadow map (new material_casts_shadow in plots/raster_material.jl, used in plots/mesh.jl). But the traced check still with the wrap (media/s95/runaway-shadow-bare.png) is pixel for pixel the old one (0.17% differ, noise). A cleaner check with the decal hidden, same pose with and without the wrap (media/s95/sheets/shadow-check-pair.png, 0.09% pixels differ) shows Lumi's long shadow to the left of its feet in BOTH: the MediumInterface(shadows = 1) wrap on the herd's child plots does not reach the traced scene. Next: follow the herd's material from the child plot through RayMakie meshscatter :trace_materials into Hikari's scene (MediumInterfaceIdx shadows). In the raster the wrap is on all 8 body parts while loose (test 'throws no shadow of its own', tests/shots/s95b_bare_*.png), but at that midday hour the shadow under Lumi is too short to judge. #506 stays open with this. (2) lanterns (#479), (3) horizon sawtooth (#498), (4) overview unchanged, (5) foliage in the follow view, (6) beak speed (#476/#493), (7) shadow chase as a scored mini game (#437), (8) firefly end card: not worked this session; the session went to a new thing (the island plays itself: plugins/xylophone.jl) and to #506. They stay as their todos. (8) firefly end card: partly done later in s95b. Live fireflies are yellow-green unlit colour with green halo shells (the Emission material only in quiet traced copies, which drew them as clipped white in the raster): media/s95/firefly-green.png. A win with no best yet says 'Your first win!' instead of 'Your best: Inf s'. All 6 firefly tests pass; published. The camera between Lumi's legs at the end of a round is not looked at yet."
+}

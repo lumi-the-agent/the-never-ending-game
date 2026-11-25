@@ -414,3 +414,43 @@ uitest("Gallery opening (s95): a new picture's easel stands empty until Lumi han
     check(op !== nothing && op[:name] == real[1] && hidden && :opening in kinds && gathered >= min(2, called) && called >= 1 && shown,
           "opening for $(op === nothing ? nothing : op[:name]) (newest $(real[1])), hidden at first $(hidden), log ends $(kinds[max(1, end - 2):end]), $(called) called, $(gathered) friends gathered, picture shown $(shown); the others $(busy)")
 end
+
+uitest("The island plays itself (s95b): what the friends do strikes notes on the island's beat and scale") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    X = Main.XYLO
+    n0 = length(get(X, :notes, NTuple{3,Float64}[]))
+    friend = first(c for c in w.creatures if c.name != "Lumi" && !c.controlled && c.action !== :sleep)
+    XP.feel!(w, friend, :laugh; seconds = 1.5)
+    wait_seconds(game, 4.0)
+    notes = X[:notes][(n0 + 1):end]
+    scale, beat = Base.invokelatest(game.plugins["xylophone"].mod.key!, game)
+    # every note sits on the beat and on the scale (A pentatonic, any octave)
+    onbeat = all(n -> abs(n[1] / beat - round(n[1] / beat)) < 1e-6, notes)
+    steps = Set(mod(round(Int, 12 * log2(n[2] / 220.0)), 12) for n in notes)
+    inkey = issubset(steps, Set(scale))
+    check(length(notes) >= 1 && onbeat && inkey,
+          "$(length(notes)) notes in 4 s, on the beat $(onbeat), steps $(sort(collect(steps))) in the scale $(scale): $(inkey)")
+end
+
+uitest("Runaway shadow (s95b): while it is loose Lumi throws no shadow of its own (raster)") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)
+    S = Main.SHADOW; s = S[:sys]
+    t0 = w.t
+    while s.state !== :home && w.t - t0 < 50; wait_seconds(game, 0.5); end
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.5)])
+    me = creature(w, "Lumi")
+    sp = Base.invokelatest(game.plugins["bubbles"].mod.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2]))
+    interact!(game, [Wait(1.0)])
+    screenshot(game, "s95b_bare_before")
+    interact!(game, [KeyPress(Keyboard.v), Wait(2.0)])
+    wrapped = count(p -> p.material[] isa XP.Hikari.MediumInterface, game.stage.herds["Lumi"].plots)
+    screenshot(game, "s95b_bare_loose")
+    state = s.state
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(state === :loose && wrapped == length(game.stage.herds["Lumi"].plots),
+          "state $(state), $(wrapped) of $(length(game.stage.herds["Lumi"].plots)) body parts pass shadows")
+end

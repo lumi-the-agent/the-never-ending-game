@@ -45,7 +45,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "sneeze2" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
                   "gallery" => ("Lumi", "Gloop", "Truffle", "Cumulus", "Pinchy"),
                   "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"),
-                  "shadow" => ("Lumi", "Pinchy", "Gloop"))
+                  "shadow" => ("Lumi", "Pinchy", "Gloop"), "shadow_check" => ("Lumi", "Pinchy", "Gloop"),
+                  "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -78,6 +79,20 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "tune"             # s95b: a full chord rings out and the friends nearest me dance to the island's tune
+        x0, y0 = open_meadow(w)
+        for (i, (n, a)) in enumerate((("Gloop", -0.4), ("Pickles", 0.5), ("Pinchy", 1.3)))
+            pose!(w, by_name(w, n), (x0 + 1.4f0 * (i - 2), y0 + 0.5f0 * (i % 2)), -pi / 2 + a, :dance; phase = 1.3f0 * i)
+        end
+        pose!(w, by_name(w, "Lumi"), (x0 + 0.2f0, y0 + 1.6f0), -pi / 2, :proud)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        return Point3f(x0 + 0.5f0, y0 - 4.6f0, z0 + 1.5f0), Point3f(x0, y0 + 0.4f0, z0 + 0.5f0)
+    end
+    if post in ("shadow_check", "shadow_plain")   # s95b check (#506): the same pose with the runaway decal hidden
+        eye, target = setup_post!(g, "shadow")
+        Main.SHADOW[:plot].visible[] = false
+        return eye, target
     end
     if post == "shadow"           # s95: my shadow has come loose and runs off ahead of me over the grass; a crab jumps
         x0, y0 = open_meadow(w)
@@ -405,6 +420,8 @@ function post_still(path; post = "visit", size = (1280, 720), samples = 256, hou
     end
     eye, target = Base.invokelatest(setup_post!, g, post)
     NG.sync!(g.stage, w); NG.sync_actors!(g)
+    # s95b: my shadow is off running, so I throw none myself (shadow.jl, on the herd sync! just built)
+    post in ("shadow", "shadow_check") && Base.invokelatest(plugin(g, "shadow").shadowless!, g, true)
     foreach(p -> (p.visible[] = false), g.stage.overlay.plots)
     NG.sync_sun!(g.stage, w)
     if haskey(g.plugins, "finishes")            # the finishes go on the herds sync! just built (s89)

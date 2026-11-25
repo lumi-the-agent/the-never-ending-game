@@ -2,18 +2,46 @@
   "results": [
     {
       "error": "",
-      "file": "s58_play.jl",
-      "name": "Runaway shadow (s95): on a sunny day Lumi's shadow runs off, dodges, and Lumi chases it down and catches it",
+      "file": "explore45.jl",
+      "name": "Hide and seek and Firefly catch: Play shows the start card, W starts with a HUD, Stop ends each",
       "passed": true,
-      "seconds": 37.5
+      "seconds": 18.8
     },
     {
       "error": "",
-      "file": "s58_play.jl",
-      "name": "Runaway shadow (s95): V as Lumi lets the shadow loose and it runs off for the player to chase",
+      "file": "minigames.jl",
+      "name": "Firefly catch: start card, W starts, keys light up, a catch counts, R restarts",
       "passed": true,
-      "seconds": 9.6
+      "seconds": 6.4
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: catching all ends with the end card, the flight to the lantern and cheers",
+      "passed": true,
+      "seconds": 6.7
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
+      "passed": true,
+      "seconds": 18.0
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)",
+      "passed": true,
+      "seconds": 52.3
+    },
+    {
+      "error": "",
+      "file": "s56_play.jl",
+      "name": "S56 Firefly catch at noon: every fly has its glow shells on it and they move with it",
+      "passed": true,
+      "seconds": 6.1
     }
   ],
-  "time": "2026-11-25T17:41:40.471"
+  "time": "2026-11-25T18:55:16.944"
 }

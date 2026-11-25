@@ -108,6 +108,33 @@ function new_aim!(s::Shadow, w, me)
     s.aim = Point2f(me === nothing ? s.pos : (me.pos[1], me.pos[2]))
 end
 
+"""
+While my shadow is off, I throw none myself (perfectionist 0094: with my own shadow still at my feet, "my shadow
+came loose" was visibly false). My body parts get a material the tracer's shadow rays pass, which the raster also
+leaves out of its shadow map (RayMakie `material_casts_shadow`); the old ones come back when it is home.
+"""
+function shadowless!(game, on::Bool)
+    game.stage === nothing && return
+    h = get(game.stage.herds, "Lumi", nothing)
+    h === nothing && return
+    orig = get!(() -> Dict{UInt,Any}(), SH, :orig_mat)::Dict{UInt,Any}
+    for p in h.plots
+        haskey(p.attributes, :material) || continue
+        m = p.material[]
+        if on
+            m isa NG.Hikari.Material || continue
+            m isa NG.Hikari.MediumInterface && m.shadows > 0 && continue
+            orig[objectid(p)] = m
+            p.material = NG.Hikari.MediumInterface(m; shadows = 1f0)
+            p.color = p.color[]                 # (the raster reads the shadow flag along with the colours)
+        elseif haskey(orig, objectid(p))
+            p.material = pop!(orig, objectid(p))
+            p.color = p.color[]
+        end
+    end
+    on || empty!(orig)
+end
+
 function come_loose!(s::Shadow, game; player = false)
     w = game.world; me = lumi_of(w)
     me === nothing && return false
@@ -213,6 +240,13 @@ function NG.step!(s::Shadow, game, dt)
             end
         end
     end
+    # no shadow of my own while it is off (checked twice a second: herds get rebuilt)
+    if s.state !== :home && w.t >= get(SH, :bare_at, -Inf)
+        SH[:bare_at] = w.t + 0.5
+        shadowless!(game, true)
+    elseif s.state === :home && !isempty(get(SH, :orig_mat, Dict{UInt,Any}()))
+        shadowless!(game, false)
+    end
     draw!(s, game)
 end
 
@@ -238,6 +272,7 @@ function NG.start!(s::Shadow, game)
 end
 
 function NG.stop!(s::Shadow, game)
+    shadowless!(game, false)
     me = lumi_of(game.world)
     me === nothing || me.controlled || me.goal.kind !== :shadow || NG.choose_goal!(me, game.world)
     s.state = :home

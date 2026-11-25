@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "s94-c.png (bubble 'chasing my own shadow' shows, but no shadow in frame), s94-b.png (a sheep in the shot, no shadow), runaway-shadow.png.",
+      "severity": "medium",
+      "suggestion": "Make the shadow darker and larger, with a soft rim or a trail. Have the event camera (CAMERA_GROUPS) frame the shadow as well as Lumi, and check the live raster view as well as the traced one.",
+      "what": "The runaway shadow is hard to see. In the traced still it blends with the other cast shadows (crab, trees, fence). In the film it is a few dark pixels, often behind bushes. In my two sandbox screenshots, 5 s and 10 s after I triggered `come_loose!`, I could not find it: the camera showed Lumi mid-chase over the pond and a bird at the workbench, with no dark bird on the grass. I cannot say whether it was drawn out of frame or missing.",
+      "where": "world/reviews/s94-c.png; site/img/runaway-shadow.png; reviews/motion/session-0094/shadow-overview.jpg"
+    },
+    {
+      "evidence": "Motion sheet: 23 jumps; overview frames 3, 4, 7 and 9 are blocked by foliage.",
+      "severity": "medium",
+      "suggestion": "Use a closer glide camera and ease the framing changes over more than 1 s.",
+      "what": "The film camera sits far from the action and changes framing between shots, with trees and bushes in front in about half the frames. The largest frame jumps (0.10 at 9.3 s and 10.3 s) fall at the camera changes.",
+      "where": "movies/shadow.jl; shadow.mp4 at 9-10.5 s"
+    },
+    {
+      "evidence": "Todo #501 result.",
+      "severity": "low",
+      "suggestion": "Keep sound muxing in the shell, as shadow_mix.sh does, and take `apad` and `-loop` out of the in-Julia calls.",
+      "what": "The `timeout 300` on the ffmpeg calls in the film scripts only makes a hung mux fail after 5 minutes; the worker is still blocked for that time and the cause (`apad` with a looped picture) is not removed. The todo text also gives two different counts (24 and 27).",
+      "where": "movies/*.jl"
+    }
+  ],
+  "summary": "The runaway shadow starts and runs in the sandbox (Lumi gets the thought bubble 'chasing my own shadow'), and the gallery and Things to try read well. But in my live screenshots the shadow itself never showed, and in the film and still it is too faint to read.",
+  "superseded_by": "perfectionist-0094.json",
+  "surprise": 5,
+  "surprise_why": "A shadow that peels off its owner is a fresh idea about light, but it is still a scripted event where Lumi chases and friends react.",
+  "verdict": "pass"
+}

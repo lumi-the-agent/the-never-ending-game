@@ -115,6 +115,15 @@
 /world/reviews/motion/perfectionist-0091/rewind-overview.jpg
 /world/reviews/motion/perfectionist-0091/rewind-steps.jpg
 /world/reviews/motion/perfectionist-0091/rewind-strip.jpg
+/world/reviews/motion/perfectionist-0094/lanterns-overview.jpg
+/world/reviews/motion/perfectionist-0094/lanterns-steps.jpg
+/world/reviews/motion/perfectionist-0094/lanterns-strip.jpg
+/world/reviews/motion/perfectionist-0094/shadow-overview.jpg
+/world/reviews/motion/perfectionist-0094/shadow-steps.jpg
+/world/reviews/motion/perfectionist-0094/shadow-strip.jpg
+/world/reviews/motion/perfectionist-0094/visitors-overview.jpg
+/world/reviews/motion/perfectionist-0094/visitors-steps.jpg
+/world/reviews/motion/perfectionist-0094/visitors-strip.jpg
 /world/reviews/motion/session-0075/cloud-ring-overview.jpg
 /world/reviews/motion/session-0075/cloud-ring-steps.jpg
 /world/reviews/motion/session-0075/makeover-overview.jpg
@@ -199,6 +208,9 @@
 /world/reviews/motion/session-0094/shadow-overview.jpg
 /world/reviews/motion/session-0094/shadow-steps.jpg
 /world/reviews/motion/session-0094/shadow-strip.jpg
+/world/reviews/motion/session-0095/island-song-overview.jpg
+/world/reviews/motion/session-0095/island-song-steps.jpg
+/world/reviews/motion/session-0095/island-song-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -653,6 +665,12 @@
 /world/reviews/p91/pt-traced.png
 /world/reviews/p91/rewind-live.png
 /world/reviews/p91/rewind-live2.png
+/world/reviews/p94/follow1.png
+/world/reviews/p94/follow2.png
+/world/reviews/p94/motion/creatures.png
+/world/reviews/p94/motion/motion-strip.png
+/world/reviews/p94/motion/motion.png
+/world/reviews/p94/traced-90s.png
 /world/reviews/perf76/berry-sheet.png
 /world/reviews/perf76/berry-wad.png
 /world/reviews/perf76/browser/load-1s.png
@@ -980,6 +998,9 @@
 /world/reviews/s92/v1.png
 /world/reviews/s92/v2.png
 /world/reviews/s93-now.png
+/world/reviews/s94-a.png
+/world/reviews/s94-b.png
+/world/reviews/s94-c.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -1158,6 +1179,8 @@
 /world/tests/shots/s95_gallery_opening.png
 /world/tests/shots/s95_shadow.png
 /world/tests/shots/s95_shadow_v.png
+/world/tests/shots/s95b_bare_before.png
+/world/tests/shots/s95b_bare_loose.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1211,6 +1234,7 @@
 /world/site/films/hail.wav
 /world/site/films/hiccups-2.mp4
 /world/site/films/island-choir.mp4
+/world/site/films/island-song.mp4
 /world/site/films/lanterns.mp4
 /world/site/films/leaves-silent.mp4
 /world/site/films/leaves.mp4
@@ -1267,9 +1291,11 @@
 /world/site/img/presents-traced.png
 /world/site/img/runaway-shadow.png
 /world/site/img/sleepers.png
+/world/site/img/still-my-shadow.png
 /world/site/img/tag-traced.png
 /world/site/img/thought-traced.png
 /world/site/img/thunderstorm-zap.png
+/world/site/img/tune-dance.png
 /world/site/img/visit-traced.png
 /world/site/img/voice-laugh.png
 /world/site/img/voice.png

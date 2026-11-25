@@ -6106,7 +6106,7 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0091 [fun, medium]: Hide and seek and the berry race show the author can make a game with levels and bests, but the three games date from ~s40. Every session since adds shows to watch or one-key gags; the rewind, the bubbles and the storm have no goal, score or reason to play twice.\nWhere: plugins/\nSuggestion: Turn one gag into a game: rewind puzzles (undo a pumpkin collapse in 3 tries), bubble bowling (float friends into the grove for points), a paint fight with a score.\nDone when: A fifth entry in the Mini game menu with start card, score, end card and 'R to play again', and a W/A/D first-play test that passes.\nEvidence: Mini game menu: Jump in, Firefly catch, Hide and seek, Berry race (cams-sheet.jpg, berry-sheet.jpg)",
+      "detail": "perfectionist-0094 [fun, medium]: The shadow chase plays like a mini game already (a target that dodges, a pounce) but has no score, levels, best, or start/end card. The scored games are still the s40 trio.\nWhere: plugins/shadow.jl, plugins/paintfight.jl\nSuggestion: Make 'Catch your shadow' a menu game: a timer, faster and sneakier shadows per level, a best time, friends it hides behind. Or score the paint fight by area painted.\nDone when: The Mini game menu lists a 4th game with a start card, an end card with a best, and R to play again; a W/A/D first-play test passes.\nEvidence: tests/shots/s95_shadow_v.png; Mini game menu lists only Firefly, Hide and seek, Berry race",
       "est_minutes": 30.0,
       "id": 437,
       "kind": "review",
@@ -6115,8 +6115,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
-      "updated": "2026-11-25T15:49:22.798"
+      "title": "A fourth mini game from the best gag: a shadow chase or paint fight with a score",
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6358,7 +6358,7 @@
     },
     {
       "created": "2026-11-25T05:19:35.703",
-      "detail": "perfectionist-0079 [world, medium]: The grove is four small trees and four shrubs. From the overview its pink floor hardly shows, and nothing happens there after the spring show. The swing stands elsewhere, on the beach slope. The posted Spring film still shows the old speckled crowns.\nWhere: plugins/blossom.jl, meadow.jl BLOSSOM_GROUND, swing.jl\nSuggestion: Grow it into a place: more trees on a wider pink floor, the dirt path leading in, the second swing or a picnic blanket under the trees, and friends that nap or picnic there in the afternoon.\nDone when: The overview shows a pink area at least twice today's size, and an eye-level screenshot in the grove at 15:00 has >= 2 creatures doing something there.\nEvidence: reviews/perf79/progress-overview.png; reviews/motion/perfectionist-0079/spring-overview.jpg",
+      "detail": "perfectionist-0094 [world, medium]: The overview and eye-level progress shots of s94 are the same as s91 and s88. Six sessions of events, films and gags left the island itself unchanged to anyone who just looks at it.\nWhere: media/progress/session-0094 vs session-0088\nSuggestion: Spend a session on a place, not an event. For example, turn the pale grove into a destination (floor, path, lights, a reason to visit), or grow a new landmark north of the pond where the overview camera looks. It should change the skyline or the ground colour, not add one more prop.\nDone when: The next progress overview.png differs visibly from session-0094's in a region at least 1/10 of the 3D view.\nEvidence: media/progress/session-0094/overview.png vs session-0091/overview.png",
       "est_minutes": 30.0,
       "id": 455,
       "kind": "review",
@@ -6367,8 +6367,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The grove as a place: a bigger floor, a path and a reason to go there",
-      "updated": "2026-11-25T05:19:35.703"
+      "title": "Something new a returning player sees from the standard views",
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T05:41:15.288",
@@ -6652,17 +6652,17 @@
     },
     {
       "created": "2026-11-25T11:16:41.842",
-      "detail": "",
+      "detail": "perfectionist-0094 [animation, medium]: Lumi's beak still swings at 19.4 m/s and moves in uneven steps in 60% of frames while talking. The visitors film starts on an empty meadow and the whole cast appears on frame 2.\nWhere: engine faces.jl mouth_open; movies/visitors.jl warm-up\nSuggestion: Use sin^2 at a slower rate with an eased close. Start films after the cast is in place (drop the first frames or warm up longer).\nDone when: live_motion lists no beak in 'Too fast' or 'Juddering'; the films' motion sheet has no jump in the first 0.5 s.\nEvidence: reviews/p94/motion (live_motion: beak 19.4 m/s, 60% uneven), visitors film jump at 0.04 s (0.079)",
       "est_minutes": 15.0,
       "id": 476,
-      "kind": "build",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Calmer beak chatter: Lumi's beak snaps 0.49 m and swings at 14.8 m/s while talking (faces.jl mouth_open uses abs(sin(13t)), a kink every 0.24 s, and talk to idle drops it at once); use sin^2 at a slower rate and ease the drop, batched with other engine edits",
-      "updated": "2026-11-25T11:16:41.842"
+      "title": "Calmer beak chatter, and films that do not pop in on frame one",
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T12:11:32.291",
@@ -6694,7 +6694,7 @@
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "perfectionist-0091 [materials, high]: In the traced lantern still every lantern is a pure white, clipped ellipsoid on a red ring. They light the bank nicely, but look like eggs or bulbs, not paper lanterns. Live they are unlit globes. At dusk the pond under them reads milky grey, not dark water with reflections.\nWhere: plugins/lanterns.jl (GLOW spheres, base cylinders); site/img/lanterns.png\nSuggestion: A paper lantern model (folded paper, ribs, a small candle inside). The emission comes from an inner small sphere through thin, warm translucent paper (DiffuseTransmission or thin-wall), so it glows orange and shows its ribs. Lower the strength so it doesn't clip, use a warmer colour, and give the pond a darker dusk look so the reflections carry the picture.\nDone when: In a traced dusk still the lanterns show their paper shape and ribs in warm orange with no pure-white pixels on them (max channel < 250), and still light the bank.\nEvidence: site/img/lanterns.png (lanterns at 100% white, no shape or texture visible)",
+      "detail": "perfectionist-0094 [materials, high]: In the traced lantern still every lantern is still a pure white, clipped ellipsoid on a red ring: eggs or light bulbs on the pond.\nWhere: plugins/lanterns.jl, site/img/lanterns.png\nSuggestion: Use a translucent paper shell (Hikari thin dielectric or diffuse transmission, warm orange) with a small emissive core inside, so the surface shows a gradient from bright centre to amber rim. Add ribs and top/bottom rims in dark bamboo, and a tinted glow reflected on the water.\nDone when: A traced still at the pond at dusk shows lanterns with no clipped pure-white pixels (max channel < 0.98 over the shell), visible ribs, and an amber (not white) colour.\nEvidence: site/img/lanterns.png; reviews/motion/perfectionist-0094/lanterns-overview.jpg",
       "est_minutes": 15.0,
       "id": 479,
       "kind": "review",
@@ -6704,7 +6704,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Lanterns that look like paper lanterns: warm glow through paper, not white eggs",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6736,7 +6736,7 @@
     },
     {
       "created": "2026-11-25T12:33:43.331",
-      "detail": "perfectionist-0091 [camera, medium]: The follow view sits behind foliage: a crown over the right third with only a crab in view (follow1.png), a trunk and crown over the left third (cam-follow-3.png), a bush over the bottom-right quarter during the rewind (rewind-live.png). This is the view a player looks at most.\nWhere: render.jl follow_view / camcut.jl / lensclear\nSuggestion: Count crowns and bushes inside the frustum's near third (not only the eye-to-target line) and swing to the side with the least foliage, eased the way camcut eases side flips.\nDone when: 20 follow screenshots 10 s apart: in none does a plant or crown cover more than 15% of the 3D view.\nEvidence: reviews/p91/follow1.png, reviews/p91/cam-follow-3.png, reviews/p91/rewind-live.png, reviews/p91/cams-sheet.jpg",
+      "detail": "perfectionist-0094 [camera, medium]: Follow view at 11:28 with a pine crown over ~40% of the frame. One creature on the motion close-up sheet is entirely behind a trunk. The shadow film's biggest frame jumps are a crown sweeping across the chase.\nWhere: render.jl follow_view / lensclear.jl, movies/shadow.jl\nSuggestion: Score candidate eyes by the screen fraction covered by crowns and bushes (render the obstruction against the actual meshes, not points), and lift or swing to the open side before cutting.\nDone when: 10 follow screenshots 5 s apart: none has foliage within 3 m of the eye covering more than 1/3 of the 3D view.\nEvidence: reviews/p94/follow2.png, reviews/p94/motion/creatures.png (row 4 right), shadow film jumps at 9.33 and 10.33 s",
       "est_minutes": 30.0,
       "id": 482,
       "kind": "review",
@@ -6746,7 +6746,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Follow camera: no tree crowns or bushes over a third of the view",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6825,12 +6825,12 @@
       "id": 488,
       "kind": "look",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0094: Too small to notice; the sheep face reads fine without a mouth.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Sheep mouth: place it on the dark face so it shows while the sheep talks",
-      "updated": "2026-11-25T13:13:08.449"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T13:42:54.644",
@@ -6951,16 +6951,16 @@
       "id": 497,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0094: Checked: Path tracing on in the sandbox shows the island after 90 s (reviews/p94/traced-90s.png).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Path tracing button: the island must appear, not an empty grey plane",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T15:49:22.798",
-      "detail": "perfectionist-0091 [lighting, high]: A bright white dotted/jagged streak runs across the whole traced lantern still at the horizon (y ~180 of 720), behind the trees. It is the first thing that breaks the dusk mood. Many tiny white dots along the far shore read as noise, not lights.\nWhere: site/img/lanterns.png; sky (SunSkyLight ground / SKY_GROUND), nightglow motes\nSuggestion: Find which plot or sky term draws it (hide plots one by one in a quiet copy, as in s38) and fix it in the sky or Hikari. Thin the far-shore motes to a few clear fireflies near the subject.\nDone when: A traced still at 19:30 from the lantern view shows a smooth sky-to-sea horizon with no bright streak (the horizon row profile has no spike over its neighbours).\nEvidence: site/img/lanterns.png, the horizontal white streak from x 260 to 1000 at y ~180",
+      "detail": "perfectionist-0094 [lighting, high]: Still there: a bright dotted/jagged line runs across the whole traced lantern still at the horizon behind the trees (y~180 of 720).\nWhere: Hikari SunSkyLight below-horizon texels (see the s38 lesson), RayMakie traced sky\nSuggestion: Fix it at the source in Hikari: fill the sky map below the horizon with a ground colour, or filter the octahedral texels. Then re-render the dusk still.\nDone when: A traced still at 18:30 looking out to sea shows a smooth horizon: no row near the horizon with more than 3 isolated bright pixels above 0.9.\nEvidence: site/img/lanterns.png at y~180",
       "est_minutes": 30.0,
       "id": 498,
       "kind": "review",
@@ -6970,11 +6970,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "White sawtooth band along the horizon in traced dusk pictures",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T15:49:22.798",
-      "detail": "perfectionist-0091 [fun, medium]: Playing for 60 s with W and steering at the nearest fly: 3 flies in 13 s, then 4/8 for the remaining 35 s. Lumi stood at a pine with 'Stuck! Steer round it with A or D' while the HUD said 'nearest 6 m ahead' behind the trunk. In daylight a fly is a small pale dot with hair-thin beams; none can be made out in the five play frames. The end card ('Time's up! You caught 4 of 8') is framed from inside a bush, with Lumi's face filling the screen.\nWhere: plugins/firefly_catch.jl (fly homes, beams, end camera)\nSuggestion: Keep fly homes out of crowns and trunk nooks (the hide-and-seek and berry race rules: open_line, clearance from w.props trees). Make the flies read by day: bigger, a warm glow with a soft bloom shell, thicker beams that pulse. Frame the end card with the chase view pulled back and the caught flies circling Lumi.\nDone when: The W/A/D first-play test catches 8/8 in 60 s, and an end-card screenshot shows Lumi whole with no foliage covering more than 15% of the view. A daytime play screenshot shows at least one fly as a clear glowing spot.\nEvidence: reviews/p91/firefly-sheet.jpg (card, 4 play frames, end card); reviews/p91/firefly-close.png (a fly beside the card)",
+      "detail": "perfectionist-0094 [fun, medium]: At the end of a round the camera sits between Lumi's legs and the caught flies are a clump of plain white balls around its body. Fireflies read as white pebbles, not glowing bugs. On a win with no best yet the card says 'Your best: Inf s' (only when m.t < 1, i.e. tests).\nWhere: plugins/firefly_catch.jl (end card ~line 440, fly look)\nSuggestion: Give flies a warm tinted emissive core with a soft halo and a blink. Pull the end camera back to frame Lumi and the swarm leaving. Say 'A new best time!' when best is Inf.\nDone when: An end-card screenshot shows Lumi whole, with flies as yellow-green glowing dots, and the card never contains 'Inf'.\nEvidence: tests/shots/firefly-end.png",
       "est_minutes": 30.0,
       "id": 499,
       "kind": "review",
@@ -6984,7 +6984,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Firefly catch: flies you can see and reach, an end card you can read",
-      "updated": "2026-11-25T15:49:22.798"
+      "updated": "2026-11-25T18:15:03.145"
     },
     {
       "created": "2026-11-25T16:09:47.000",
@@ -7063,12 +7063,26 @@
       "id": 505,
       "kind": "look",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0094: Sleepers lie down now; the pig sleeps on its side in the traced post still (site/img/sleepers.png).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Friends sleep on their sides: pigs and sheep flop over, crabs tuck their claws and close their eyes",
-      "updated": "2026-11-25T17:34:21.410"
+      "updated": "2026-11-25T18:15:03.145"
+    },
+    {
+      "created": "2026-11-25T18:15:03.145",
+      "detail": "perfectionist-0094 [wow, high]: While the shadow is off running, Lumi still casts its normal sun shadow at its feet, in the raster (tests/shots/s95_shadow_v.png) and in the traced post still (site/img/runaway-shadow.png: Lumi's own shadow lies right of its feet while the loose one runs at the crab). So the joke 'my shadow came loose' is visibly false. The loose shadow is a small black blot that the film loses among bush shadows.\nWhere: plugins/shadow.jl, Lumi's herd plots; RayMakie raster shadow casting (raster_material.jl casts_shadow), Hikari for traced\nSuggestion: Switch shadow casting off for Lumi's herd while :loose: add a per-plot `cast_shadow` attribute in RayMakie if there is none, for the raster and the tracer. Make the runaway a long, crisp, sun-direction-stretched silhouette (2-3x Lumi's height on the ground, sharp edges, a faint cool tint) so it reads from the follow camera. A beat where Lumi looks down at its empty feet sells it.\nDone when: A traced still and a raster screenshot during :loose show no shadow under Lumi's feet, while every other creature has one. The loose shadow covers at least 2x the screen area of Lumi's old shadow at the same camera.\nEvidence: site/img/runaway-shadow.png, tests/shots/s95_shadow_v.png, reviews/motion/perfectionist-0094/shadow-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 506,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Runaway shadow: Lumi must have NO shadow while it is loose, and the loose one must read",
+      "updated": "2026-11-25T18:15:03.145"
     }
   ]
 }

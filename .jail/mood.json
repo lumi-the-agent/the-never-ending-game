@@ -1,15 +1,15 @@
 {
-  "boredom": 0.91,
-  "ended": "2026-11-25T18:03:38",
+  "boredom": 1.0,
+  "ended": "2026-11-25T18:55:59",
   "fatigue": {
-    "asset": 0.73,
-    "feature": 2.25,
-    "film": 1.89,
-    "picture": 1.64,
-    "polish": 2.13,
+    "asset": 0.44,
+    "feature": 2.35,
+    "film": 2.13,
+    "picture": 1.98,
+    "polish": 2.28,
     "post": 2.49,
-    "self": 0.23,
-    "sound": 0.32
+    "self": 0.14,
+    "sound": 0.19
   },
   "happened": [
     "Boop",
@@ -182,9 +182,11 @@
     "shadow_caught",
     "shadow_loose",
     "gallery_opening",
-    "shadow_dodge"
+    "shadow_dodge",
+    "tune_dance",
+    "island_chord"
   ],
-  "joy": 0.78,
+  "joy": 0.58,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -221,6 +223,24 @@
       "session": 94,
       "title": "My shadow ran off",
       "what": "Lumi's shadow detaches as a flat dark bird, runs across the meadow, dodges Lumi three times while Lumi chases and shouts, then Lumi pounces and it slides back under its feet."
+    },
+    {
+      "recipe": "trigger fires, nearby friends gather round Lumi and dance a moment, then go back to what they did",
+      "session": 95,
+      "title": "Our song",
+      "what": "When the island's music rings a three-note chord, the free friends nearest Lumi briefly dance and one says 'That's our song!'."
+    },
+    {
+      "recipe": "a still of a failed technical fix to the shadow event",
+      "session": 95,
+      "title": "Still my shadow",
+      "what": "A traced still shows that Lumi's attempt to make its body cast no shadow while the runaway one is out failed: the long shadow is still on the grass."
+    },
+    {
+      "recipe": "a permanent background layer that turns existing actions into sound, no event",
+      "session": 95,
+      "title": "The island plays itself",
+      "what": "Everything a friend does (hop, bite, chat, boing) strikes a note on one beat and scale, in minor or major by Lumi's mood, as a film of friends milling about Lumi with the notes laid over it."
     }
   ],
   "kinds_ever": [
@@ -237,116 +257,43 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "shadow_caught",
-      "shadow_loose",
-      "gallery_opening",
-      "shadow_dodge"
+      "tune_dance",
+      "island_chord"
     ],
-    "session": 94
+    "session": 95
   },
   "last_repetition": {
-    "factor": 1.0,
-    "nearest": "On purpose",
-    "post": "My shadow ran off",
-    "score": 4,
-    "session": 94,
-    "shared": "Lumi-centred solo event with a comic setback and payoff; resembles the paint fight/bubble chase only loosely (a runaway thing Lumi must catch); no gathering or crowd"
+    "factor": 0.2154434690031884,
+    "nearest": "Everybody in!",
+    "post": "Our song",
+    "score": 6,
+    "session": 95,
+    "shared": "friends near Lumi react together to a trigger and dance briefly; small and quick, driven by the music"
   },
   "last_surprise": {
-    "score": 4,
-    "session": 93,
-    "why": "A place that keeps the island's own pictures is a nice idea, but visits are a friend wandering over and saying a line, which is the usual recipe."
+    "score": 5,
+    "session": 94,
+    "why": "A shadow that peels off its owner is a fresh idea about light, but it is still a scripted event where Lumi chases and friends react."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T17:17:31",
+  "perceived_until": "2026-11-25T18:15:23",
   "plugin_fatigue": {
-    "areas.jl": 0.08,
-    "bubbles.jl": 0.13,
-    "finishes.jl": 0.08,
-    "flight.jl": 0.06,
-    "gallery.jl": 1.6,
-    "greetings.jl": 1.25,
-    "islandnow.jl": 0.26,
-    "meadow.jl": 0.08,
-    "outfits.jl": 0.77,
-    "paintfight.jl": 0.08,
-    "rewind.jl": 0.22,
-    "separation.jl": 0.17,
-    "shadow.jl": 1.0,
-    "sleepers.jl": 0.6,
-    "snowday.jl": 0.24,
-    "splash.jl": 0.12,
-    "visitors.jl": 0.36
+    "bubbles.jl": 0.08,
+    "firefly_catch.jl": 1.0,
+    "gallery.jl": 0.96,
+    "greetings.jl": 0.75,
+    "islandnow.jl": 0.16,
+    "outfits.jl": 0.46,
+    "rewind.jl": 0.13,
+    "separation.jl": 0.1,
+    "shadow.jl": 1.6,
+    "sleepers.jl": 0.36,
+    "snowday.jl": 0.14,
+    "splash.jl": 0.07,
+    "visitors.jl": 0.22,
+    "xylophone.jl": 1.0
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "soar_start",
-          "who": 1
-        },
-        {
-          "kind": "soar_landed",
-          "who": 1
-        },
-        {
-          "kind": "snowman",
-          "who": 1
-        },
-        {
-          "kind": "snow_start",
-          "who": 1
-        },
-        {
-          "kind": "snow_end",
-          "who": 1
-        },
-        {
-          "kind": "soar_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "film",
-        "polish",
-        "post",
-        "self"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/films/cloud-ring.mp4"
-      ],
-      "new_plugins": [],
-      "points": 4.6,
-      "repeats": [
-        "soar.jl"
-      ],
-      "session": 75,
-      "touched": [
-        "clouds.jl",
-        "flight.jl",
-        "soar.jl"
-      ],
-      "values": {
-        "asset": 0.2,
-        "film": 0.3,
-        "polish": -1.9,
-        "post": 0.1,
-        "self": 5.9
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1496,6 +1443,66 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 2.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "tune_dance",
+          "who": 9
+        },
+        {
+          "kind": "island_chord",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/island-song.mp4",
+        "site/img/still-my-shadow.png",
+        "site/img/tune-dance.png"
+      ],
+      "new_plugins": [
+        "xylophone.jl"
+      ],
+      "points": 0.3,
+      "repeat_factor": 0.2154434690031884,
+      "repeats": [],
+      "repetition": {
+        "nearest": "Everybody in!",
+        "post": "Our song",
+        "score": 6,
+        "shared": "friends near Lumi react together to a trigger and dance briefly; small and quick, driven by the music"
+      },
+      "session": 95,
+      "touched": [
+        "firefly_catch.jl",
+        "shadow.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 0.6,
+        "picture": 0.3,
+        "polish": 0.1,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1583,6 +1590,7 @@
       "site/films/pumpkins.wav",
       "site/films/real-flight.mp4",
       "site/films/rewind.mp4",
+      "site/films/shadow.mp4",
       "site/films/snow-day.mp4",
       "site/films/splash-silent.mp4",
       "site/films/splash.mp4",
@@ -1620,6 +1628,7 @@
       "site/img/new-faces.png",
       "site/img/one-more-stone.png",
       "site/img/presents-traced.png",
+      "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
       "site/img/tag-traced.png",
       "site/img/thought-traced.png",
@@ -1701,10 +1710,10 @@
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
       "gait.jl": 1.795596563071227e9,
-      "gallery.jl": 1.79562330545493e9,
+      "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956149587797203e9,
+      "greetings.jl": 1.7956241345005531e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1732,6 +1741,7 @@
       "rewind.jl": 1.795616824451536e9,
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7956142955469856e9,
+      "shadow.jl": 1.7956248327914984e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
@@ -1753,11 +1763,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 52,
+    "posts": 53,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T17:21:28",
+  "started": "2026-11-25T18:19:28",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1861,7 +1871,10 @@
       "OceanTransportMatrixBuilder",
       "CloudMicrophysics",
       "MPSKit",
-      "Gloria"
+      "Gloria",
+      "InjectSills",
+      "BraketSimulator",
+      "CALCEPH"
     ],
     "vision": [
       "SAM2Runner",
@@ -1871,8 +1884,10 @@
       "ProPainterRunner",
       "MatAnyoneRunner",
       "UVDocRunner",
-      "DeepFilterRunner"
+      "DeepFilterRunner",
+      "PPOCRRunner",
+      "ZImageRunner"
     ]
   },
-  "surprise_seen": 93
+  "surprise_seen": 94
 }

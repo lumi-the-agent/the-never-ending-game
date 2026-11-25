@@ -35,7 +35,7 @@ const KEY_ON = RGBAf(0.95, 0.75, 0.25, 0.95)
 
 # Plots cannot be deleted from the traced scene: they are created once per process and reused,
 # kept in Main so a plugin hot reload finds them again. Bump the version to rebuild them.
-const PLOTS_VERSION = 4
+const PLOTS_VERSION = 5
 isdefined(Main, :FIREFLY_PLOTS) || Core.eval(Main, :(const FIREFLY_PLOTS = Dict{Symbol,Any}()))
 const P = Main.FIREFLY_PLOTS
 
@@ -70,13 +70,16 @@ function ensure_plots!(game)
         k === :version || k === :best || delete!(P, k)   # old plots stay parked and hidden in the scene
     end
     scene = game.stage.scene
-    glow = NG.Hikari.Emission(color = (1.0, 0.92, 0.4), strength = 6.0)
+    # yellow-green firefly light (perfectionist-0094: they read as white pebbles). Live they are unlit colour, the
+    # Emission only in quiet traced copies: in the raster an Emission mesh draws as a clipped white area light (s51)
+    glow = NG.Hikari.Emission(color = (0.8, 1.0, 0.3), strength = 6.0)
+    traced = (game.dash === nothing ? (; material = glow) : (;))
     P[:flies] = meshscatter!(scene, fill(PARK, N_FLIES); marker = Sphere(Point3f(0), 1f0), markersize = 0.24f0,
-        color = RGBf(1, 0.92, 0.4), material = glow, shading = NoShading, visible = false)
+        color = RGBf(0.78, 1, 0.28), traced..., shading = NoShading, visible = false)
     # a soft glow round each fly, so it reads as a light at noon too (perfectionist-0055: "plain white
     # puffs"): three thin shells per fly, fading out (one big shell shows a hard ring)
     P[:halo] = meshscatter!(scene, fill(PARK, 3N_FLIES); marker = Sphere(Point3f(0), 1f0, ), markersize = halo_sizes(1f0),
-        color = repeat([RGBAf(1, 0.85, 0.3, 0.22), RGBAf(1, 0.8, 0.25, 0.11), RGBAf(1, 0.75, 0.2, 0.05)], N_FLIES),
+        color = repeat([RGBAf(0.75, 1, 0.3, 0.22), RGBAf(0.7, 0.95, 0.25, 0.11), RGBAf(0.65, 0.9, 0.2, 0.05)], N_FLIES),
         shading = NoShading, transparency = true, visible = false)
     # a thin beam of light from the ground up to each fly: you can see where they are from across the island
     P[:beams] = meshscatter!(scene, fill(PARK, N_FLIES); marker = Cylinder(Point3f(0), Point3f(0, 0, 1), 1f0),
@@ -437,7 +440,7 @@ function NG.step!(m::FireflyCatch, game, dt)
         home *= m.score == 0 ? "" : "\n$(m.score == 1 ? "Your firefly flies" : "Your $(m.score) fireflies fly") to the lantern by the cottage ($total there now)."
         Makie.update!(P[:card]; text = won ?
             @sprintf("All %d caught in %.1f s!\n%s%s\n\nPress R to play again", N_FLIES, m.t,
-                     newbest ? "A new best time!" : @sprintf("Your best: %.1f s", best), home) :
+                     newbest ? "A new best time!" : isfinite(best) ? @sprintf("Your best: %.1f s", best) : "Your first win!", home) :
             @sprintf("Time's up! You caught %d of %d.\n%s%s\n\nPress R to play again", m.score, N_FLIES,
                      isfinite(best) ? @sprintf("Your best: all in %.1f s", best) : "Tip: Shift runs, fireflies drift away from you", home))
         P[:card].visible[] = true

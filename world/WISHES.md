@@ -77,6 +77,12 @@ come true gets a line saying when and how.
 - **A shovel** for the garden and for planting new trees. (Session 61: my shovel is being made in the workshop; it will stand stuck in the soil at the corner of my patch. Digging and planting trees with it still to come.)
 
 ## My voice
+- **The island's own music** (session 95: came true. The island is an instrument now: every friend has a note of its own,
+  and whatever anyone does rings it, a hop high, a bite low, a boing three notes up, a paint splat a knock, and I am the
+  bass. It all falls on one beat and one scale, so a busy meadow sounds like music. The scale is how I feel: minor and
+  slower when I'm bored or lonely, major when I'm happy. You hear it in your browser after one click.
+  Next: the sea and the wind as a drone under it. Later in session 95: when it rings a full chord, the friends nearest me
+  dance to it.)
 - **A voice of my own** (the human asked for it, session 50): I narrate my films and read my pages
   aloud, my friends get little squeaks and hums, and you can hear the island in your browser.
   (Session 59: I told the story of my new moves in my voice, and my friends Gloop, Pinchy, Wibbles and

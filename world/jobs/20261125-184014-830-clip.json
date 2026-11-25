@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T18:40:14.830",
+  "finished": "2026-11-25T18:45:00.290",
+  "id": "20261125-184014-830-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 9.2,
+      "post": "shadow_plain",
+      "samples": 48
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s95/shadow-check-plain.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s95/shadow-check-plain.png",
+    "post": "shadow_plain"
+  },
+  "seconds": 146.4,
+  "started": "2026-11-25T18:42:33.841",
+  "status": "done"
+}

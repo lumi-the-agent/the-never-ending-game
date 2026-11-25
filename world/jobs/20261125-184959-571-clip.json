@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T18:49:59.571",
+  "finished": "2026-11-25T18:52:33.330",
+  "id": "20261125-184959-571-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "tune",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/tune-dance.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/tune-dance.png",
+    "post": "tune"
+  },
+  "seconds": 153.3,
+  "started": "2026-11-25T18:49:59.995",
+  "status": "done"
+}

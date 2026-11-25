@@ -852,7 +852,7 @@ function mesh_raster!(screen, plot, args, changed, last_robj)
             emission = look === nothing ? NO_EMISSION : look.emission,
             # What the shadow map is drawn from, and when the mesh is drawn
             # (see-through after opaque); not stage arguments.
-            casts_shadow = casts_shadow(look),
+            casts_shadow = casts_shadow(look) && material_casts_shadow(overlay_material(plot)),
             see_through = see_through,
         ))
         vertex_count = 3 * length(geometry.faces)
