@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T00:13:58.182",
+  "finished": "2026-11-26T00:14:58.615",
+  "id": "20261126-001358-178-clip",
+  "kind": "clip",
+  "params": {
+    "call": "workshop_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s102/workshop-preview.mp4",
+    "script": "movies/workshop.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s102/workshop-preview.mp4"
+  },
+  "seconds": 60.0,
+  "started": "2026-11-26T00:13:58.592",
+  "status": "done"
+}

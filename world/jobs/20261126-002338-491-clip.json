@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-26T00:23:38.491",
+  "finished": "2026-11-26T00:29:38.886",
+  "id": "20261126-002338-491-clip",
+  "kind": "clip",
+  "params": {
+    "call": "clouds_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 10.0,
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/cloud-watching.mp4",
+    "script": "movies/clouds.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/cloud-watching.mp4"
+  },
+  "seconds": 359.0,
+  "started": "2026-11-26T00:23:39.894",
+  "status": "done"
+}

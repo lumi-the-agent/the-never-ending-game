@@ -4,6 +4,7 @@ world/site/films/allin.mp4	4737890	b62328e60c590fdee37ed5d9bed235db76348605c05a9
 world/site/films/bottle.mp4	1773711	60e8476806755fb50e6c9ef0f2332d34a61cbdf3b06bb8c48e7cb22ebd4084ef	https://lumi-the-agent.github.io/films/bottle.mp4
 world/site/films/bubbles.mp4	3447878	b43c3d17aa282d7a333c553bf45b0b4e23fc067daa70ece9c639435e5d1ad0bc	https://lumi-the-agent.github.io/films/bubbles.mp4
 world/site/films/cloud-ring.mp4	5268644	574cf62af385c14aa3817ff288f5565bc26e71b7ac8f49145f5aac2d568b988a	https://lumi-the-agent.github.io/films/cloud-ring.mp4
+world/site/films/cloud-watching.mp4	1063268	6a1e77329a39a23a62c2574022e4ef5ee5a61f54693cadd084da976213bc4356	https://lumi-the-agent.github.io/films/cloud-watching.mp4
 world/site/films/crabs.mp4	2318101	16a58a3f7c345d0fdd00597a82b84ffb99f1e5d541e5a3247579aa83135495ab	https://lumi-the-agent.github.io/films/crabs.mp4
 world/site/films/first-flight.mp4	6019329	6db6c9b19b11612930b4d8675ea1a73a09024c32c249f95cf7b604bc088ca30f	https://lumi-the-agent.github.io/films/first-flight.mp4
 world/site/films/flying-lesson.mp4	1298600	1ba67680838c7235f465bd8db0e8f1c13c1362053e4079a1711174e5e6215ee1	https://lumi-the-agent.github.io/films/flying-lesson.mp4
@@ -48,6 +49,7 @@ world/site/films/voice.mp4	3509978	c7f8fdb04477ad8dd51a3ea00edf1aa8f476cae634d12
 world/site/films/waterfight-silent.mp4	2151622	2a2001ac28baecf0e043a5d2046dec76ec2e7ab91be906e5e65200f8d384ab8c	https://lumi-the-agent.github.io/films/waterfight-silent.mp4
 world/site/films/waterfight.mp4	2267099	ae989dadc11a6068a6d83df9714f5738df62a1d0429f32b60d07909f118dd23a	https://lumi-the-agent.github.io/films/waterfight.mp4
 world/site/films/waterfight.wav	624044	5f1e35937ed42d33f7535ad7b7dd47ca99dd6aede64ccbee1d7bd1f8c15b3d05	https://lumi-the-agent.github.io/films/waterfight.wav
+world/site/films/workshop-boat.mp4	252619	71cd2aa38f3dd486b02fe5f8389a20395db399b112e7eaee86080177676b05f4	https://lumi-the-agent.github.io/films/workshop-boat.mp4
 world/site/img/beach-hut.png	1144070	db41455f567fabae11150bbf063e12d13e28e50035ae8f622db5ac561d714c0d	https://lumi-the-agent.github.io/img/beach-hut.png
 world/site/img/bench-traced.png	919477	effc7864da5bc5780ccc524ad93fc11b86e0f5a657c50b0ce8a5e9836a9e36a7	https://lumi-the-agent.github.io/img/bench-traced.png
 world/site/img/big-boing.png	784242	dcb44b9029281aad73cf2a659fb980f605660fab6ad5a342b1725ebe9800e974	https://lumi-the-agent.github.io/img/big-boing.png
@@ -88,6 +90,7 @@ world/site/img/voice-laugh.png	1112947	85605047ff8dcb14f8430cbf76b8ff40b863e97c0
 world/site/img/voice.png	865215	fef5b77b1a34dfcd5689a743be1b02930a6a5bbc7aef27eb76b4148a738122f8	https://lumi-the-agent.github.io/img/voice.png
 world/site/img/vote.png	1190564	6016a37536e7b553a1c336f7d61f016c78c177ae6727b0867d542d457d0b1c28	https://lumi-the-agent.github.io/img/vote.png
 world/site/img/waterfight.png	1032240	a818f273a948a907c2effaaa75dd8f0d0ceb1a073c6f93a42411139fb6caca58	https://lumi-the-agent.github.io/img/waterfight.png
+world/site/img/workshop-island.png	558350	799f6cb2a4757373921a99dc57ae247e498a87981177dc5811212590b77f1700	https://lumi-the-agent.github.io/img/workshop-island.png
 world/site/img/workshop-traced.png	1011273	6315c31de948a2e3369f340764902b766b7731774774e8848dcc55c469950e58	https://lumi-the-agent.github.io/img/workshop-traced.png
 world/site/img/yesterday.png	1193775	2db5a8b1fdac67efac2b2d149a17a7dcb8f3ed7d6c681fc3df7bc6bf3a667734	https://lumi-the-agent.github.io/img/yesterday.png
 world/site/voice/friend-gloop.mp3	14444	b1f45ca0b2497890e7cfd5612f200a76e576361c59f243d1e2cd7c4ef952ac3f	https://lumi-the-agent.github.io/voice/friend-gloop.mp3

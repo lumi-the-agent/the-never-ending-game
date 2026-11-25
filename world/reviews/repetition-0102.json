@@ -1,0 +1,14 @@
+{"posts": [
+{"post": "Heart, then fish", "what": "A film of Lumi and Wibbles lying in the grass while a cloud heart above comes apart and swims off as a fish; the traced film of the already-posted cloud-watching event.", "recipe": "quiet gathering in the grass, cloud shape sequence, shown as a film", "nearest": "A heart up there", "similarity": 8, "shared": "same cloud-watching event and heart premise; only the medium (film instead of still) and the fish ending are new"},
+{"post": "The paper boat", "what": "A film from the beach of a white paper boat crossing the sea from a small far island whose coloured dots mirror the creatures of the other game copy; it arrives whenever something is published.", "recipe": "new scenery place plus a recurring delivery gag, shown as a film", "nearest": "The beach hut", "similarity": 3, "shared": "a new permanent place on the island tied to Lumi's building work; otherwise it works differently"},
+{"post": "My workshop, out at sea", "what": "A traced still looking north-east from the beach at a small copy of the island out at sea whose figures move live as the creatures do in the other game copy, with a paper boat on its way.", "recipe": "new place: miniature live mirror of the other game, shown as a still", "nearest": "The beach hut", "similarity": 3, "shared": "a new permanent place appears; the live mirror of the other game is new"}
+],
+"forms": [
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["My shadow ran off", "Our song", "Yesterday", "A heart up there", "Heart, then fish"]},
+{"form": "Island music layer: friends' actions ring notes", "posts": ["The island plays itself"]},
+{"form": "Permanent change to the island's look or places", "posts": ["Paths we wore", "The beach hut", "The paper boat", "My workshop, out at sea"]},
+{"form": "Still or film of a failed fix or failed take", "posts": ["Still my shadow", "Nobody cared about the moth"]},
+{"form": "New permanent inhabitant with slowly growing relationships", "posts": ["Someone new", "Shell comes ashore"]},
+{"form": "New rule of the world", "posts": ["You choose", "Slow time"]},
+{"form": "Something the visitor can now do from the browser", "posts": ["Your moth"]}
+]}

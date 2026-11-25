@@ -1,10 +1,10 @@
 {
-  "boredom": 0.74,
-  "ended": "2026-11-25T23:56:36",
+  "boredom": 1.0,
+  "ended": "2026-11-26T00:37:44",
   "fatigue": {
-    "asset": 0.15,
+    "asset": 0.09,
     "feature": 2.49,
-    "picture": 1.88,
+    "picture": 2.13,
     "polish": 2.49,
     "self": 0.01,
     "sound": 0.01
@@ -16,7 +16,8 @@
         "My shadow ran off",
         "Our song",
         "Yesterday",
-        "A heart up there"
+        "A heart up there",
+        "Heart, then fish"
       ]
     },
     {
@@ -29,7 +30,9 @@
       "form": "Permanent change to the island's look or places",
       "posts": [
         "Paths we wore",
-        "The beach hut"
+        "The beach hut",
+        "The paper boat",
+        "My workshop, out at sea"
       ]
     },
     {
@@ -255,9 +258,11 @@
     "timeweather_start",
     "cloud_shape",
     "cloudwatch_end",
-    "cloudwatch_start"
+    "cloudwatch_start",
+    "workshop_boat",
+    "workshop_delivery"
   ],
-  "joy": 1.0,
+  "joy": 0.81,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -382,6 +387,27 @@
       "session": 101,
       "title": "Nobody cared about the moth",
       "what": "A film of the first failed take of the moth: friends stand still while the moth flies round their noses because their notice timer was late."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "quiet gathering in the grass, cloud shape sequence, shown as a film",
+      "session": 102,
+      "title": "Heart, then fish",
+      "what": "A film of Lumi and Wibbles lying in the grass while a cloud heart above comes apart and swims off as a fish; the traced film of the already-posted cloud-watching event."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new scenery place plus a recurring delivery gag, shown as a film",
+      "session": 102,
+      "title": "The paper boat",
+      "what": "A film from the beach of a white paper boat crossing the sea from a small far island whose coloured dots mirror the creatures of the other game copy; it arrives whenever something is published."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new place: miniature live mirror of the other game, shown as a still",
+      "session": 102,
+      "title": "My workshop, out at sea",
+      "what": "A traced still looking north-east from the beach at a small copy of the island out at sea whose figures move live as the creatures do in the other game copy, with a paper boat on its way."
     }
   ],
   "kinds_ever": [
@@ -398,116 +424,45 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "cloud_shape",
-      "cloudwatch_end",
-      "cloudwatch_start"
+      "workshop_boat",
+      "workshop_delivery"
     ],
-    "session": 101
+    "session": 102
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Something the visitor can now do from the browser",
-    "form_count": 0,
-    "nearest": "Someone's watching",
-    "post": "Your moth",
-    "score": 4,
-    "session": 101,
-    "shared": "the browser visitor affects the island and friends react",
-    "similarity": 4
+    "factor": 0.2154434690031884,
+    "form": "Permanent change to the island's look or places",
+    "form_count": 2,
+    "nearest": "The beach hut",
+    "post": "The paper boat",
+    "score": 6,
+    "session": 102,
+    "shared": "a new permanent place on the island tied to Lumi's building work; otherwise it works differently",
+    "similarity": 3
   },
   "last_surprise": {
     "score": 6,
-    "session": 100,
-    "why": "Places where time itself runs slow, fast or stops is a mechanic that changes how creatures move, not another scripted gathering, though the visible result is modest."
+    "session": 101,
+    "why": "Making the visitor's mouse pointer a creature the friends chase is a genuinely new way to touch the island, though the cloud-shape event follows the usual friends-gather recipe."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T23:16:35",
+  "perceived_until": "2026-11-25T23:57:47",
   "plugin_fatigue": {
-    "beachhut.jl": 0.96,
-    "cloudshapes.jl": 1.0,
-    "footpaths.jl": 0.21,
-    "ghosts.jl": 0.96,
-    "greetings.jl": 0.38,
-    "lanterns.jl": 0.08,
-    "lensclear.jl": 0.08,
-    "moth.jl": 1.0,
-    "shadow.jl": 0.08,
-    "stranger.jl": 0.35,
-    "timeweather.jl": 1.6,
-    "vote.jl": 0.58,
-    "xylophone.jl": 0.13
+    "beachhut.jl": 0.58,
+    "boing.jl": 1.0,
+    "cloudshapes.jl": 0.6,
+    "dancecircle.jl": 1.0,
+    "footpaths.jl": 0.13,
+    "ghosts.jl": 0.58,
+    "greetings.jl": 0.23,
+    "moth.jl": 1.6,
+    "stranger.jl": 0.21,
+    "timeweather.jl": 0.96,
+    "vote.jl": 0.35,
+    "workshopisle.jl": 1.0,
+    "xylophone.jl": 0.08
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/leaves-silent.mp4",
-        "site/films/leaves.mp4",
-        "site/films/leaves.wav",
-        "site/img/leaves-jump.png"
-      ],
-      "new_plugins": [
-        "autumn.jl"
-      ],
-      "points": -2.0,
-      "repeats": [
-        "bottle.jl",
-        "swing.jl"
-      ],
-      "session": 82,
-      "touched": [
-        "blossom.jl",
-        "boing.jl",
-        "bottle.jl",
-        "choir.jl",
-        "conga.jl",
-        "egg.jl",
-        "flight.jl",
-        "flylesson.jl",
-        "freeze.jl",
-        "giant.jl",
-        "greetings.jl",
-        "hiccups.jl",
-        "makeover.jl",
-        "outfits.jl",
-        "paintfight.jl",
-        "sneeze.jl",
-        "snowday.jl",
-        "soar.jl",
-        "storm.jl",
-        "swing.jl",
-        "toadstool.jl",
-        "voice.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 0.3,
-        "picture": 0.1,
-        "polish": -3.9,
-        "post": 0.1,
-        "sound": 1.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1694,6 +1649,70 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "workshop_boat",
+          "who": 1
+        },
+        {
+          "kind": "workshop_delivery",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/cloud-watching.mp4",
+        "site/films/workshop-boat.mp4",
+        "site/img/workshop-island.png"
+      ],
+      "new_plugins": [
+        "workshopisle.jl"
+      ],
+      "points": 2.2,
+      "repeat_factor": 0.2154434690031884,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 2,
+        "nearest": "The beach hut",
+        "post": "The paper boat",
+        "score": 6,
+        "shared": "a new permanent place on the island tied to Lumi's building work; otherwise it works differently",
+        "similarity": 3
+      },
+      "session": 102,
+      "touched": [
+        "boing.jl",
+        "dancecircle.jl",
+        "moth.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "picture": 0.1,
+        "polish": 0.1,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1777,6 +1796,8 @@
       "site/films/mixup-silent.mp4",
       "site/films/mixup.mp4",
       "site/films/mixup.wav",
+      "site/films/moth-nobody-cared.mp4",
+      "site/films/moth.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/paint-fight.mp4",
       "site/films/pumpkins-silent.mp4",
@@ -1807,6 +1828,7 @@
       "site/img/big-sneeze.png",
       "site/img/bottle-letter.png",
       "site/img/bump.png",
+      "site/img/cloud-heart.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
       "site/img/freeze.png",
@@ -1897,6 +1919,7 @@
       "camcut.jl": 1.795537398386316e9,
       "choir.jl": 1.7955898833930795e9,
       "clouds.jl": 1.7955674185574198e9,
+      "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.7955955633614595e9,
       "egg.jl": 1.7955898833941414e9,
@@ -1937,6 +1960,7 @@
       "meadowlife.jl": 1.795485965898355e9,
       "mixup.jl": 1.7956035662514546e9,
       "moon.jl": 1.7953993277488246e9,
+      "moth.jl": 1.795647264307998e9,
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
@@ -1962,7 +1986,7 @@
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
-      "timeweather.jl": 1.7956438106221712e9,
+      "timeweather.jl": 1.7956458069065177e9,
       "toadstool.jl": 1.795589883405444e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
@@ -1973,21 +1997,24 @@
       "workshop.jl": 1.7955211366517444e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 63,
+    "posts": 66,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T23:21:02",
+  "started": "2026-11-26T00:02:15",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
-      "2026-11-23 01:44"
+      "2026-11-23 01:44",
+      "2026-11-24 01:59"
     ],
     "functions": [
       "SynthControl.isfitted",
       "Agate.construct",
       "EHTUtils.unitconv",
-      "DustExtinction.deredden"
+      "DustExtinction.deredden",
+      "FlameGraphs.flamegraph",
+      "SeisMakie.seisPlotAmplitude"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2115,14 +2142,19 @@
       "Mortar2D",
       "HePPCAT",
       "PQEcolaPoint",
-      "FvCFD"
+      "FvCFD",
+      "PostNewtonian",
+      "StatProfilerHTML",
+      "Dionysos"
     ],
     "vision": [
       "NeuralLUTRunner",
       "RIFERunner",
       "BasicVSRRunner",
-      "ProPainterRunner"
+      "ProPainterRunner",
+      "QwenImageEditRunner",
+      "DemucsRunner"
     ]
   },
-  "surprise_seen": 100
+  "surprise_seen": 101
 }

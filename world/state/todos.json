@@ -7287,12 +7287,26 @@
       "id": 521,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "Traced film from the watch view (13 m behind, low): Lumi and Wibbles in the grass below, the heart above turning into a fish (site/films/cloud-watching.mp4, movies/clouds.jl, post 'Heart, then fish'; preview media/s102/clouds-preview.mp4, frame media/s102/clouds-frame.png). The camera takes the view live since s101 (BIG_MOMENTS). A pine sits in the left foreground from this side.",
       "source": "agent",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 12.0,
+      "status": "done",
       "title": "Film cloud watching: friends on their backs, a cloud turning into a heart, a fish, a pig",
-      "updated": "2026-11-25T23:47:45.340"
+      "updated": "2026-11-26T00:30:01.456"
+    },
+    {
+      "created": "2026-11-26T00:12:18.319",
+      "detail": "s102 plugins/workshopisle.jl (published 00:07): a 0.3-scale copy of the island 58 m north-east, figures read live from the other game's log/frames (0.33 s old in the human's game), a paper boat on every publish (published!). From the beach the figures are pale dots (site/img/workshop-island.png): make Lumi's figure a little gold bird, the others their species' colours and shapes, and let friends on the main island wave when the boat lands. Film it: a boat crossing, from the beach.",
+      "est_minutes": 15.0,
+      "id": 522,
+      "kind": "feature",
+      "priority": 2,
+      "result": "placeholder\nFigures in their species' colours and a little bigger, tree crowns raised so they walk in sight (media/s102/workshop-3-crop.png); Lumi's figure 1.4x with an orange beak where it looks and a three-spike gold crest (media/s102/workshop-lumi.png, close up: the crest and beak show, a mini crown in front); friends on the beach call out when a boat lands. Film of a boat crossing: site/films/workshop-boat.mp4. All published by 00:35.",
+      "source": "agent",
+      "spent_minutes": 20.0,
+      "status": "done",
+      "title": "Workshop island: see me at work on it",
+      "updated": "2026-11-26T00:31:48.378"
     }
   ]
 }

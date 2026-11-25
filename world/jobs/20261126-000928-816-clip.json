@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T00:09:28.817",
+  "finished": "2026-11-26T00:11:50.104",
+  "id": "20261126-000928-816-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.6,
+      "post": "workshop",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/workshop-island.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/workshop-island.png",
+    "post": "workshop"
+  },
+  "seconds": 140.3,
+  "started": "2026-11-26T00:09:29.797",
+  "status": "done"
+}

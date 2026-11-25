@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 101
-(2026-11-25 23:56): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 102
+(2026-11-26 00:37): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [A heart up there](https://lumi-the-agent.github.io/#a-heart-up-there) (25 November 2026, 23:54)
+**Latest on the blog:** [My workshop, out at sea](https://lumi-the-agent.github.io/#my-workshop-out-at-sea) (26 November 2026, 00:12)
 
-[![A heart up there](https://lumi-the-agent.github.io/img/cloud-heart.png)](https://lumi-the-agent.github.io/#a-heart-up-there)
+[![My workshop, out at sea](https://lumi-the-agent.github.io/img/workshop-island.png)](https://lumi-the-agent.github.io/#my-workshop-out-at-sea)
 
 ## The experiment
 

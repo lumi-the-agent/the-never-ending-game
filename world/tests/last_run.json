@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "s58_play.jl",
-      "name": "Time weather (s100): a walker inside a slow patch crawls, says so, and the patch ends",
+      "file": "minigames.jl",
+      "name": "Parade party: a parade of three led to a lantern turns into a dance ring with Lumi in the middle",
       "passed": true,
-      "seconds": 4.1
+      "seconds": 23.5
     }
   ],
-  "time": "2026-11-25T23:30:50.848"
+  "time": "2026-11-26T00:37:05.488"
 }

@@ -62,7 +62,7 @@ function draw!(game, pos, yaw, flap, shown)
                                  shading = Makie.NoShading, name = :moth)
         # a soft glow round it, so it reads among white flowers in the browser (s101 browser test lost it)
         MO[:halo] = meshscatter!(sc, [Point3f(0, 0, -50)]; marker = Sphere(Point3f(0), 1f0), markersize = 0f0,
-                                 color = RGBAf(1.0, 0.85, 0.45, 0.28), transparency = true, shading = Makie.NoShading, name = :moth_halo)
+                                 color = RGBAf(1.0, 0.88, 0.55, 0.16), transparency = true, shading = Makie.NoShading, name = :moth_halo)
     end
     if !shown
         get(MO, :drawn, true) && (Makie.update!(MO[:plot], fill(Point3f(0, 0, -50), 3); markersize = fill(Vec3f(0), 3));
@@ -79,7 +79,7 @@ function draw!(game, pos, yaw, flap, shown)
     rs = [q, up * q, dn * q]
     ms = [Vec3f(0.2, 0.09, 0.09), Vec3f(0.22, 0.34, 0.02), Vec3f(0.22, 0.34, 0.02)]
     Makie.update!(MO[:plot], ps; markersize = ms, rotation = rs)
-    Makie.update!(MO[:halo], [pos]; markersize = 0.42f0 + 0.05f0 * sin(6f0 * flap))
+    Makie.update!(MO[:halo], [pos]; markersize = 0.26f0 + 0.03f0 * sin(6f0 * flap))
     MO[:drawn] = true
 end
 
@@ -142,9 +142,28 @@ function let_go!(w)
     empty!(chasers)
 end
 
+"Someone opened the page a little while ago and has not touched the pointer: I tell them once (review s101: nobody
+would find the moth)."
+function hint!(game)
+    isdefined(Main, :VISITORS) || return
+    log = get(Main.VISITORS, :log, nothing)
+    log === nothing && return
+    i = findlast(e -> e[2] === :arrive, log)
+    i === nothing && return
+    ta = log[i][1]
+    w = game.world
+    (w.t - ta > 8 && w.t - ta < 60 && get(MO, :hinted, -1.0) != ta) || return
+    MO[:hinted] = ta
+    time() - get(MO, :moved, 0.0) < w.t - ta && return               # they already found it
+    me = findfirst(c -> c.name == "Lumi", w.creatures)
+    me === nothing || w.creatures[me].controlled || NG.say!(w, w.creatures[me], "Psst... move your mouse over the island!"; duration = 4.0)
+    NG.emit!(w, :moth_hint)
+end
+
 function NG.step!(::Moth, game, dt)
     game.stage === nothing && return
     w = game.world
+    game.dash === nothing || hint!(game)
     a = aim(game)
     if a === nothing
         get(MO, :active, false) && (let_go!(w); NG.emit!(w, :moth_rest))

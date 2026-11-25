@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-26T00:05:58.024",
+  "error": "a plot named :workshop_ground is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] mesh!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{color::Vector{ColorTypes.RGBA{Float32}}, name::Symbol})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465\n  [7] build!(game::Game)\n    @ Main.Plugin_workshopisle /sim/Programmieren/SimGame/world/plugins/workshopisle.jl:72\n  [8] setup_post!(g::Game, post::String)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:100\n  [9] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:552\n [10] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [11] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [12] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [13] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-26T00:06:47.261",
+  "id": "20261126-000557-981-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.6,
+      "post": "workshop",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/workshop-island.png",
+    "script": "movies/post_stills.jl"
+  },
+  "seconds": 47.8,
+  "started": "2026-11-26T00:05:59.487",
+  "status": "failed"
+}

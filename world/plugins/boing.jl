@@ -209,8 +209,14 @@ function step_flights!(s::Boing, game, dt)
     w = game.world
     for (id, f) in collect(s.flights)
         c = NG.creature(w, id)
-        if c === nothing || c.controlled || c.goal.kind !== :boing
-            delete!(s.flights, id); continue
+        c === nothing && (delete!(s.flights, id); continue)
+        if c.controlled || c.goal.kind !== :boing
+            # another plugin took it in mid-air: let go only on the ground, or the next step snaps it down metres in
+            # one frame (perfectionist-0100 #516: Pinchy 5.49 m after a solo boing). Up there the flight finishes.
+            if c.controlled || c.pos[3] - NG.ground(w.island, (c.pos[1], c.pos[2]))[3] < 0.3f0
+                delete!(s.flights, id); continue
+            end
+            c.goal = NG.Goal(:boing, f.home, :jump, 600.0, w.t + 600, true, 0, false)
         end
         u = min(1.0, (w.t - f.t0) / f.T)
         p = f.from + (f.to - f.from) * Float32(u)
@@ -238,7 +244,7 @@ function step_flights!(s::Boing, game, dt)
         if f.stage === :hop
             # on the cap: it squashes, and up we go
             s.squash_t = w.t
-            T = 1.1 + 0.32 * sqrt(f.big)
+            T = 1.6 + 0.42 * sqrt(f.big)            # (slower, so the eye can follow it: 15-17 m/s at take-off was "too fast", s102)
             s.flights[id] = (stage = :fly, t0 = w.t, T = T, from = cap_top(), to = f.home, h = f.big,
                              home = f.home, big = f.big, solo = f.solo, spin = f.spin)
             f.solo || NG.say!(w, c, rand(w.rng, WHEES); duration = 1.6)

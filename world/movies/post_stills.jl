@@ -50,7 +50,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"),
                   "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"),
                   "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"),
-                  "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"))
+                  "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"),
+                  "workshop" => ("Lumi", "Gloop"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -83,6 +84,29 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "workshop"         # s102: my workshop out at sea, the other game's friends moving on it, a paper boat on its way
+        wm = plugin(g, "workshopisle")
+        C = Base.invokelatest(getfield, wm, :CENTRE)
+        d = Point2f(C[1], C[2]) / hypot(C[1], C[2])
+        r = 40f0
+        while r > 0 && !NG.on_land(w.island, r * d[1], r * d[2]; margin = 0.3f0); r -= 1f0; end
+        shore = Point2f(r * d[1], r * d[2]) - 1.5f0 * d
+        a = atan(d[2], d[1])
+        pose!(w, by_name(w, "Lumi"), (shore[1], shore[2]), a, :idle)
+        side = Point2f(-d[2], d[1])
+        gq = shore + 1.4f0 * side - 0.4f0 * d
+        pose!(w, by_name(w, "Gloop"), (gq[1], gq[2]), a + 0.3, :idle)
+        for _ in 1:3; Base.invokelatest(wm.poll!, g); sleep(0.25); end
+        Base.invokelatest(wm.draw_figures!, g)
+        Base.invokelatest(wm.send_boat!, g, "a new thing")
+        WS = Main.WORKSHOPISLE
+        WS[:sail] = merge(WS[:sail], (t0 = w.t - 0.45 * Base.invokelatest(getfield, wm, :BOAT_T),))
+        Base.invokelatest(wm.draw_boat!, g)
+        # from the water's edge, low, looking out at it (the first try stood inland behind a tree crown)
+        e = Point2f(r * d[1], r * d[2]) + 1.0f0 * d - 2f0 * side
+        eye = Point3f(e[1], e[2], max(0f0, NG.terrain_height(w.island, e[1], e[2])) + 1.8f0)
+        return eye, Point3f(C[1] * 0.97f0, C[2] * 0.97f0, 1.4f0)
     end
     if post == "clouds"           # s101: lying in the grass, a cloud above us gathered into a heart (plugins/cloudshapes.jl)
         cm = plugin(g, "cloudshapes")

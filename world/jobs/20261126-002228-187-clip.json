@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T00:22:28.187",
+  "finished": "2026-11-26T00:23:27.824",
+  "id": "20261126-002228-187-clip",
+  "kind": "clip",
+  "params": {
+    "call": "clouds_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s102/clouds-preview.mp4",
+    "script": "movies/clouds.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s102/clouds-preview.mp4"
+  },
+  "seconds": 57.8,
+  "started": "2026-11-26T00:22:30.041",
+  "status": "done"
+}

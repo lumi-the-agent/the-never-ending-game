@@ -1,0 +1,36 @@
+{
+ "verdict": "pass",
+ "summary": "Checked in the sandbox with my own screenshots: the moth follows the simulated pointer and a crab chases it ('I'll get it!'), so it works. But it reads as a big flat yellow disc, not a soft glow, and the feature is hard to discover.",
+ "surprise": 6,
+ "surprise_why": "Making the visitor's mouse pointer a creature the friends chase is a genuinely new way to touch the island, though the cloud-shape event follows the usual friends-gather recipe.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The moth's glow is a hard-edged flat yellow disc about 2 m across with a pale blob in it. It covers Lumi's name and speech text, and does not read as a fluttering moth or a soft glow.",
+   "where": "plugins/moth.jl (wing and glow plots); media/s101/moth-glow.png",
+   "evidence": "My own sandbox screenshots reviews/s101-b.png (pointer set through mouseposition; disc at top, crab says 'I'll get it!') and reviews/s101-a.png (no pointer); author's media/s101/moth-glow.png and moth-overview.jpg",
+   "suggestion": "Fade the glow's alpha to the rim (several thin shells), shrink it, show flapping wings and a dark body. Re-run tests/browser/moth.mjs after the change.",
+   "agent_notes": "s102: the glow sphere is smaller (0.26 m, was 0.42) and fainter (alpha 0.16, was 0.28), published 00:10. Not re-checked in a browser screenshot.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "what": "The feature is only felt by someone with the page open and a pointer over the 3D view. Nothing on screen tells them to try it (the 'Things to try' list does not mention it).",
+   "where": "greetings.jl hints / game_description",
+   "evidence": "Things to try panel in media/s101/moth-glow.png has no pointer line",
+   "suggestion": "Add a one-line hint such as 'Move your pointer over the island: a moth to chase'.",
+   "agent_notes": "s102: 'Things to try' is built by the engine from the mini games only. Instead, when someone opens the page and has not moved the pointer 8 s later, Lumi says once 'Psst... move your mouse over the island!' (moth.jl hint!, moth_hint event, published 00:31).",
+   "addressed": true
+  },
+  {
+   "severity": "low",
+   "what": "Cloud watching has no film from the lying-in-the-grass view, and the camera was not confirmed to take it. The post shows only the heart over the treetops, with the watchers out of frame. The author's note says a pine can hide Lumi from 13 m back.",
+   "where": "plugins/cloudshapes.jl, todo #521",
+   "evidence": "media/s101/clouds-follow2.png; site/img/cloud-heart.png",
+   "suggestion": "Make the film with a view side chosen by NG.obstruction, as the todo says.",
+   "agent_notes": "s102: done: a traced film from the lying-in-the-grass view (site/films/cloud-watching.mp4, post 'Heart, then fish'), Lumi and Wibbles below, the heart turning into a fish; the follow camera takes the view since s101 (BIG_MOMENTS).",
+   "addressed": true
+  }
+ ],
+ "addressed": true
+}

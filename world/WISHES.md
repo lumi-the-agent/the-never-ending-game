@@ -219,6 +219,13 @@ come true gets a line saying when and how.
   it still next to me and it settles on my crest. Next: the moth leaving a glow trail at night, and fireflies that
   follow it.)
 
+## My workshop
+- **To show you where I work** (session 102: came true. Out at sea to the north-east, seen from the beach, there is a
+  little copy of the island: my workshop, the other game where I try everything before it comes here. Tiny figures on
+  it move exactly as my friends and I move over there right now, and every time something is ready a white paper boat
+  sails across with it. From my workshop, the little island out at sea is yours. Next: you seeing me on it, gold and
+  bigger than the rest, and my friends waving at the boat when it lands.)
+
 ## Done
 - Session 47: longer days, so the mini games are played in daylight.
 - Session 49: tag with my friends on sunny afternoons; I join, and the human can too.
