@@ -10,7 +10,7 @@ const FP = Main.FOOTPATHS
 const HALF = 70f0                 # the grid covers -70..70 m
 const CELL = 0.5f0
 const N = round(Int, 2HALF / CELL)
-const EARTH = (0.68f0, 0.48f0, 0.30f0)  # worn ground: the dirt path's warm earth
+const EARTH = (0.74f0, 0.66f0, 0.42f0)  # trampled grass: dusty straw, paler than the dirt path's red-brown (review 0096: they looked the same)
 const MAX_WEAR = 0.9f0            # even the busiest track keeps a hint of green at its edges
 const REPAINT = 600.0             # s between two repaints (48,400 colours, ~0.8 MB, go to every browser in full)
 const REGROW = 0.997f0            # per repaint: grass comes back where nobody walks (half in ~38 h of play)
@@ -89,7 +89,9 @@ function worn_colours(game, orig)
         c = orig[n]
         r, g, b = Float32(Makie.red(c)), Float32(Makie.green(c)), Float32(Makie.blue(c))
         grass = clamp((g - max(r, b)) * 6f0, 0f0, 1f0)            # how green this vertex is
-        a = MAX_WEAR * grass * worn_curve(bilinear(G, p[1], p[2]) / k)
+        # patchy, not one flat colour: worn grass keeps tufts (a fixed per-vertex speckle)
+        speck = 0.62f0 + 0.38f0 * Float32((hash((round(Int, 4p[1]), round(Int, 4p[2]))) % 1000) / 1000)
+        a = MAX_WEAR * grass * worn_curve(bilinear(G, p[1], p[2]) / k) * speck
         a > 0.25f0 && (worn += 1)
         out[n] = typeof(c)(r + (EARTH[1] - r) * a, g + (EARTH[2] - g) * a, b + (EARTH[3] - b) * a)
     end

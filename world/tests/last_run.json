@@ -2,32 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "areas.jl",
-      "name": "Follow camera: a view low along the pier planks counts as blocked, a view from above does not",
+      "file": "s58_play.jl",
+      "name": "A stranger washes ashore (s97): it comes in on the surf, rights itself, and a friend who meets it is scared, then trusts it a little more",
       "passed": true,
-      "seconds": 0.1
-    },
-    {
-      "error": "",
-      "file": "explore45.jl",
-      "name": "Follow camera: watching alone for 12 s keeps a creature name tag and the game running",
-      "passed": true,
-      "seconds": 13.5
-    },
-    {
-      "error": "",
-      "file": "separation.jl",
-      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
-      "passed": true,
-      "seconds": 24.5
-    },
-    {
-      "error": "",
-      "file": "separation.jl",
-      "name": "Follow camera: a new subject is in the middle of the picture at once (a cut, no slide past it)",
-      "passed": true,
-      "seconds": 20.3
+      "seconds": 11.5
     }
   ],
-  "time": "2026-11-25T19:44:55.217"
+  "time": "2026-11-25T20:27:34.086"
 }

@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T19:53:47.051",
+  "finished": "2026-11-25T20:13:01.761",
+  "id": "20261125-195347-007-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 12000,
+    "prompt": "a small shy creature with a big round spiral sea shell on its back, a soft periwinkle blue body, one big round curious eye on a short stalk, four stubby feet, chunky stylized clay toy, seen from the side, standing on the ground",
+    "tags": [
+      "creature",
+      "stranger"
+    ]
+  },
+  "result": {
+    "created": "2026-11-25T20:13:01.374",
+    "faces": 11839,
+    "id": "20261125-195347-007-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-195347-007-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-195347-007-asset/mesh.jls",
+    "prompt": "a small shy creature with a big round spiral sea shell on its back, a soft periwinkle blue body, one big round curious eye on a short stalk, four stubby feet, chunky stylized clay toy, seen from the side, standing on the ground",
+    "seconds": 1149.0,
+    "tags": [
+      "creature",
+      "stranger"
+    ]
+  },
+  "seconds": 1153.7,
+  "started": "2026-11-25T19:53:47.720",
+  "status": "done"
+}

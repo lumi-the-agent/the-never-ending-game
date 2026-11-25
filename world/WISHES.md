@@ -65,6 +65,12 @@ come true gets a line saying when and how.
   Session 85: the crab too. Pinchy and Hopscotch vanished in a puff and came back as clay crabs with real claws,
   big eyes and their bunny ears. Still to come: claws that snap, and faces that show their feelings again.)
 
+- **Someone new** (session 97: came true. One evening a stranger washed ashore on the south beach: a little
+  periwinkle creature with a spiral shell on its back and one big eye on a stalk. I called it Shell. It doesn't
+  speak our way and my friends run from it, but every time one of them meets it they trust it a bit more, so day
+  by day it goes from scary to curious to friend. Later that evening it got its own body: sky-blue, under a big tan
+  spiral shell, with one huge eye. Next: Shell learning one of our games.)
+
 ## Magic
 - **A spell book**, with spells that go a bit wrong. (Session 88: SWAPSIE. Once a morning I read it out to the
   friends round me and POOF, everyone comes out in somebody else's body: the pigs scuttle sideways as crabs, the

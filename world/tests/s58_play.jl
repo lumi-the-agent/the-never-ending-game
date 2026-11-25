@@ -472,7 +472,43 @@ uitest("Paths we wore (s96): the ground under the busiest tracks is bare earth, 
     same = Base.invokelatest(mod.same_colours, shown, Main.MEADOW[:painted])
     # the most worn grass vertex is browner than the meadow painted it
     o = F[:orig]; mine = Main.MEADOW[:painted]
-    d = maximum(k -> Float32(Makie.green(o[k])) - Float32(Makie.green(mine[k])), eachindex(o))
+    d = maximum(k -> abs(Float32(Makie.red(o[k])) - Float32(Makie.red(mine[k]))) + abs(Float32(Makie.green(o[k])) - Float32(Makie.green(mine[k]))) +
+                     abs(Float32(Makie.blue(o[k])) - Float32(Makie.blue(mine[k]))), eachindex(o))   # (s97: dusty straw, not green drop)
     check(after > before && get(F, :worn, 0) > 200 && same && d > 0.1,
-          "steps $(round(before)) -> $(round(after)), $(get(F, :worn, 0)) worn vertices, terrain shows them $(same), greenest drop $(round(d; digits = 2))")
+          "steps $(round(before)) -> $(round(after)), $(get(F, :worn, 0)) worn vertices, terrain shows them $(same), biggest colour change $(round(d; digits = 2))")
+end
+
+uitest("A stranger washes ashore (s97): it comes in on the surf, rights itself, and a friend who meets it is scared, then trusts it a little more") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)                                # (by day: at night everyone sleeps or dances in the ring)
+    X = Main.STRANGER; s = X[:sys]
+    X[:log] = Tuple{Float64,Symbol}[]; delete!(X, :pause_until)
+    s.state = :away; X[:film] = true
+    t1 = w.t
+    while s.state !== :roam && w.t - t1 < 20; wait_seconds(game, 0.5); end
+    landed = s.state === :roam && XP.on_land(w.island, s.pos[1], s.pos[2]; margin = 0f0)
+    free = [c for c in w.creatures if !c.controlled && c.action !== :sleep && c.goal.kind ∉ XP.BUSY_GOALS && c.name != "Lumi"]
+    isempty(free) && return check(false, "nobody free to meet it: $([(c.name, c.goal.kind) for c in w.creatures])")
+    c = first(free)
+    before = get(X[:trust], c.name, 0.0)
+    delete!(get!(() -> Dict{Int32,Float64}(), X, :met), c.id)
+    s.pos = XP.ground(w.island, (c.pos[1] + 2f0, c.pos[2])); s.aim = Point2f(s.pos[1], s.pos[2])   # it wanders up to someone
+    wait_seconds(game, 1.0)
+    after = get(X[:trust], c.name, 0.0)
+    kinds = [k for (_, k) in X[:log]]
+    check(landed && :ashore in kinds && :waking in kinds && after > before && any(in((:scared, :curious, :friendly)), kinds),
+          "landed $(landed) ($(s.state)), log $(kinds), $(c.name)'s trust $(before) -> $(after)")
+end
+
+uitest("Jump in (s97): after the first seconds the key strip sits small at the bottom edge, out of Lumi's way") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    interact!(game, [KeyDown(Keyboard.w), Wait(5.5), KeyUp(Keyboard.w), Wait(0.3)])
+    h = Main.GREETING_PLOTS[:hint]
+    pos = only(Makie.to_value(h[1])); vis = h.visible[]; fs = h.fontsize[]
+    screenshot(game, "s97_keystrip")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(vis && pos[2] < 0.12 && fs <= 14, "strip at $(pos), font $(fs), visible $(vis)")
 end

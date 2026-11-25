@@ -2555,12 +2555,12 @@
       "id": 183,
       "kind": "fix",
       "priority": 1,
-      "result": "Not the live game: an agent session that re-included emotes.jl twice kept Emote values of the old type in Main.EMOTES. Clip scripts empty Main.EMOTES before a copy (movies/cairn_release.jl).\nHappened again at 2026-11-25T01:24:07.347.\nClosed at 2026-11-25T01:25:00.794: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T14:57:20.418.\nClosed at 2026-11-25T14:58:19.193: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:10:57.483.\nClosed at 2026-11-25T16:15:17.844: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:28:30.989.\nClosed at 2026-11-25T16:29:17.018: plugin emotes loaded cleanly.",
+      "result": "Not the live game: an agent session that re-included emotes.jl twice kept Emote values of the old type in Main.EMOTES. Clip scripts empty Main.EMOTES before a copy (movies/cairn_release.jl).\nHappened again at 2026-11-25T01:24:07.347.\nClosed at 2026-11-25T01:25:00.794: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T14:57:20.418.\nClosed at 2026-11-25T14:58:19.193: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:10:57.483.\nClosed at 2026-11-25T16:15:17.844: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:28:30.989.\nClosed at 2026-11-25T16:29:17.018: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T20:15:29.894.\nClosed at 2026-11-25T20:16:03.264: plugin emotes loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:emotes.Emotes failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:17.018"
+      "updated": "2026-11-25T20:16:03.264"
     },
     {
       "created": "2026-11-23T10:43:44.839",
@@ -2956,17 +2956,17 @@
     },
     {
       "created": "2026-11-23T12:57:49.516",
-      "detail": "MethodError: no method matching key(::Main.Plugin_outfits.Piece)\nThe function `key` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  key(!Matched::Main.Plugin_outfits.Piece)\n   @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:151\n\nStacktrace:\n  [1] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:268\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching key(::Main.Plugin_outfits.Piece)\nThe function `key` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  key(!Matched::Main.Plugin_outfits.Piece)\n   @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:151\n\nStacktrace:\n  [1] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:270\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 212,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T11:21:15.022.\nClosed at 2026-11-25T11:21:22.544: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T14:57:19.928.\nClosed at 2026-11-25T14:58:21.492: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:10:57.067.\nClosed at 2026-11-25T16:15:20.910: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:28:28.955.\nClosed at 2026-11-25T16:29:19.914: plugin outfits loaded cleanly.",
+      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T11:21:15.022.\nClosed at 2026-11-25T11:21:22.544: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T14:57:19.928.\nClosed at 2026-11-25T14:58:21.492: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:10:57.067.\nClosed at 2026-11-25T16:15:20.910: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:28:28.955.\nClosed at 2026-11-25T16:29:19.914: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T20:15:29.189.\nClosed at 2026-11-25T20:16:06.284: plugin outfits loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:outfits.Outfits failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:19.914"
+      "updated": "2026-11-25T20:16:06.284"
     },
     {
       "created": "2026-11-23T13:45:12.270",
@@ -3997,12 +3997,12 @@
       "id": 286,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T03:04:32.295: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T01:23:16.751.\nClosed at 2026-11-25T01:25:02.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T14:57:19.555.\nClosed at 2026-11-25T14:58:20.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:10:56.793.\nClosed at 2026-11-25T16:15:20.272: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:28:28.680.\nClosed at 2026-11-25T16:29:19.283: plugin meadowlife loaded cleanly.",
+      "result": "Closed at 2026-11-24T03:04:32.295: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T01:23:16.751.\nClosed at 2026-11-25T01:25:02.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T14:57:19.555.\nClosed at 2026-11-25T14:58:20.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:10:56.793.\nClosed at 2026-11-25T16:15:20.272: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:28:28.680.\nClosed at 2026-11-25T16:29:19.283: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T20:15:28.903.\nClosed at 2026-11-25T20:16:05.657: plugin meadowlife loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:meadowlife.MeadowLife failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:19.283"
+      "updated": "2026-11-25T20:16:05.657"
     },
     {
       "created": "2026-11-24T03:05:39.944",
@@ -4361,12 +4361,12 @@
       "id": 312,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T07:52:07.228: plugin watering loaded cleanly.\nHappened again at 2026-11-25T01:23:16.919.\nClosed at 2026-11-25T01:25:04.235: plugin watering loaded cleanly.\nHappened again at 2026-11-25T14:57:20.109.\nClosed at 2026-11-25T14:58:22.898: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:10:57.222.\nClosed at 2026-11-25T16:15:22.430: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:28:29.100.\nClosed at 2026-11-25T16:29:21.381: plugin watering loaded cleanly.",
+      "result": "Closed at 2026-11-24T07:52:07.228: plugin watering loaded cleanly.\nHappened again at 2026-11-25T01:23:16.919.\nClosed at 2026-11-25T01:25:04.235: plugin watering loaded cleanly.\nHappened again at 2026-11-25T14:57:20.109.\nClosed at 2026-11-25T14:58:22.898: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:10:57.222.\nClosed at 2026-11-25T16:15:22.430: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:28:29.100.\nClosed at 2026-11-25T16:29:21.381: plugin watering loaded cleanly.\nHappened again at 2026-11-25T20:15:29.307.\nClosed at 2026-11-25T20:16:07.916: plugin watering loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:watering.Watering failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:21.381"
+      "updated": "2026-11-25T20:16:07.916"
     },
     {
       "created": "2026-11-24T07:54:00.038",
@@ -4557,12 +4557,12 @@
       "id": 326,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T09:16:59.414: plugin kite loaded cleanly.\nHappened again at 2026-11-25T01:23:16.627.\nClosed at 2026-11-25T01:25:02.463: plugin kite loaded cleanly.\nHappened again at 2026-11-25T14:57:19.322.\nClosed at 2026-11-25T14:58:20.401: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:10:56.641.\nClosed at 2026-11-25T16:15:19.893: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:28:28.483.\nClosed at 2026-11-25T16:29:18.910: plugin kite loaded cleanly.",
+      "result": "Closed at 2026-11-24T09:16:59.414: plugin kite loaded cleanly.\nHappened again at 2026-11-25T01:23:16.627.\nClosed at 2026-11-25T01:25:02.463: plugin kite loaded cleanly.\nHappened again at 2026-11-25T14:57:19.322.\nClosed at 2026-11-25T14:58:20.401: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:10:56.641.\nClosed at 2026-11-25T16:15:19.893: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:28:28.483.\nClosed at 2026-11-25T16:29:18.910: plugin kite loaded cleanly.\nHappened again at 2026-11-25T20:15:28.742.\nClosed at 2026-11-25T20:16:05.263: plugin kite loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:kite.Kite failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:18.910"
+      "updated": "2026-11-25T20:16:05.263"
     },
     {
       "created": "2026-11-24T09:23:14.668",
@@ -5047,12 +5047,12 @@
       "id": 361,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T12:22:25.397: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:22:28.368.\nClosed at 2026-11-24T12:33:07.666: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:35:36.700.\nClosed at 2026-11-24T12:38:06.550: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:38:14.492.\nClosed at 2026-11-24T12:50:38.414: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:50:51.224.\nClosed at 2026-11-24T12:52:19.701: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:52:27.874.\nClosed at 2026-11-24T12:54:59.286: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:55:10.472.\nClosed at 2026-11-24T12:56:17.151: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:57:58.793.\nClosed at 2026-11-24T12:59:22.406: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T01:23:16.937.\nClosed at 2026-11-25T01:25:04.250: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T14:57:20.132.\nClosed at 2026-11-25T14:58:22.921: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:10:57.241.\nClosed at 2026-11-25T16:15:22.446: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:28:29.116.\nClosed at 2026-11-25T16:29:21.397: plugin wheelbarrow loaded cleanly.",
+      "result": "Closed at 2026-11-24T12:22:25.397: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:22:28.368.\nClosed at 2026-11-24T12:33:07.666: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:35:36.700.\nClosed at 2026-11-24T12:38:06.550: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:38:14.492.\nClosed at 2026-11-24T12:50:38.414: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:50:51.224.\nClosed at 2026-11-24T12:52:19.701: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:52:27.874.\nClosed at 2026-11-24T12:54:59.286: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:55:10.472.\nClosed at 2026-11-24T12:56:17.151: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:57:58.793.\nClosed at 2026-11-24T12:59:22.406: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T01:23:16.937.\nClosed at 2026-11-25T01:25:04.250: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T14:57:20.132.\nClosed at 2026-11-25T14:58:22.921: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:10:57.241.\nClosed at 2026-11-25T16:15:22.446: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:28:29.116.\nClosed at 2026-11-25T16:29:21.397: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T20:15:29.328.\nClosed at 2026-11-25T20:16:07.935: plugin wheelbarrow loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:wheelbarrow.Wheelbarrow failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:21.397"
+      "updated": "2026-11-25T20:16:07.935"
     },
     {
       "created": "2026-11-24T12:22:28.435",
@@ -6195,12 +6195,12 @@
       "id": 443,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:24:59.660: plugin beach loaded cleanly.\nHappened again at 2026-11-25T14:57:19.060.\nClosed at 2026-11-25T14:58:18.064: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:10:56.568.\nClosed at 2026-11-25T16:15:16.567: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:28:28.388.\nClosed at 2026-11-25T16:29:15.758: plugin beach loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:24:59.660: plugin beach loaded cleanly.\nHappened again at 2026-11-25T14:57:19.060.\nClosed at 2026-11-25T14:58:18.064: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:10:56.568.\nClosed at 2026-11-25T16:15:16.567: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:28:28.388.\nClosed at 2026-11-25T16:29:15.758: plugin beach loaded cleanly.\nHappened again at 2026-11-25T20:15:28.184.\nClosed at 2026-11-25T20:16:01.988: plugin beach loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:beach.Beach failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:15.758"
+      "updated": "2026-11-25T20:16:01.988"
     },
     {
       "created": "2026-11-25T01:23:16.691",
@@ -6209,12 +6209,12 @@
       "id": 444,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:02.753: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T14:57:19.472.\nClosed at 2026-11-25T14:58:20.754: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:10:56.734.\nClosed at 2026-11-25T16:15:20.235: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:28:28.606.\nClosed at 2026-11-25T16:29:19.247: plugin meadow loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:02.753: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T14:57:19.472.\nClosed at 2026-11-25T14:58:20.754: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:10:56.734.\nClosed at 2026-11-25T16:15:20.235: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:28:28.606.\nClosed at 2026-11-25T16:29:19.247: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T20:15:28.838.\nClosed at 2026-11-25T20:16:05.622: plugin meadow loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:meadow.Meadow failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:19.247"
+      "updated": "2026-11-25T20:16:05.622"
     },
     {
       "created": "2026-11-25T01:23:16.875",
@@ -6223,12 +6223,12 @@
       "id": 445,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:03.791: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T14:57:20.046.\nClosed at 2026-11-25T14:58:21.979: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:10:57.178.\nClosed at 2026-11-25T16:15:21.466: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:28:29.055.\nClosed at 2026-11-25T16:29:20.467: plugin shallows loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:03.791: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T14:57:20.046.\nClosed at 2026-11-25T14:58:21.979: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:10:57.178.\nClosed at 2026-11-25T16:15:21.466: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:28:29.055.\nClosed at 2026-11-25T16:29:20.467: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T20:15:29.263.\nClosed at 2026-11-25T20:16:06.874: plugin shallows loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:shallows.Shallows failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:20.467"
+      "updated": "2026-11-25T20:16:06.874"
     },
     {
       "created": "2026-11-25T01:23:16.990",
@@ -6237,12 +6237,12 @@
       "id": 446,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:04.304: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T14:57:20.227.\nClosed at 2026-11-25T14:58:22.990: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:10:57.290.\nClosed at 2026-11-25T16:15:22.502: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:28:29.173.\nClosed at 2026-11-25T16:29:21.451: plugin workshop loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:04.304: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T14:57:20.227.\nClosed at 2026-11-25T14:58:22.990: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:10:57.290.\nClosed at 2026-11-25T16:15:22.502: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:28:29.173.\nClosed at 2026-11-25T16:29:21.451: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T20:15:29.425.\nClosed at 2026-11-25T20:16:07.991: plugin workshop loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:workshop.Workshop failed in step! and was switched off",
-      "updated": "2026-11-25T16:29:21.451"
+      "updated": "2026-11-25T20:16:07.991"
     },
     {
       "created": "2026-11-25T01:30:46.210",

@@ -3,7 +3,15 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Wed, 25 Nov 2026 18:17:43 GMT</lastBuildDate>
+<lastBuildDate>Wed, 25 Nov 2026 19:15:44 GMT</lastBuildDate>
+<item>
+<title>Someone new</title>
+<link>index.html#someone-new</link>
+<guid isPermaLink="false">lumi-someone-new</guid>
+<category>25 November 2026, 20:15</category>
+<pubDate>Wed, 25 Nov 2026 20:15:00 +0100</pubDate>
+<description>&lt;p&gt;Someone washed up on our south beach: a little blue creature with a shell on its back and one big eye. My friends keep their distance. I called it Shell.&lt;/p&gt;&lt;img src=&quot;img/stranger-ashore.png&quot;/&gt;</description>
+</item>
 <item>
 <title>Paths we wore</title>
 <link>index.html#paths-we-wore</link>

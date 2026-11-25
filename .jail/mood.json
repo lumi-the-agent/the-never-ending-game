@@ -1,15 +1,15 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-25T19:46:19",
+  "boredom": 0.93,
+  "ended": "2026-11-25T20:27:53",
   "fatigue": {
-    "asset": 0.26,
-    "feature": 2.41,
-    "film": 1.28,
-    "picture": 2.19,
-    "polish": 2.37,
+    "asset": 1.16,
+    "feature": 2.45,
+    "film": 0.77,
+    "picture": 2.31,
+    "polish": 2.42,
     "post": 2.49,
-    "self": 0.08,
-    "sound": 0.11
+    "self": 0.05,
+    "sound": 0.07
   },
   "forms": [
     {
@@ -36,8 +36,7 @@
     {
       "form": "Evening lantern ritual: a calm, scenic group event at the pond",
       "posts": [
-        "Lanterns, the whole evening",
-        "Lanterns on the pond"
+        "Lanterns, the whole evening"
       ]
     },
     {
@@ -51,6 +50,12 @@
       "form": "Still of a failed fix, a single picture",
       "posts": [
         "Still my shadow"
+      ]
+    },
+    {
+      "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+      "posts": [
+        "Someone new"
       ]
     }
   ],
@@ -228,9 +233,13 @@
     "shadow_dodge",
     "tune_dance",
     "island_chord",
-    "paths_remembered"
+    "paths_remembered",
+    "stranger_meet",
+    "stranger_ashore",
+    "lanterns_end",
+    "stranger_friend"
   ],
-  "joy": 0.49,
+  "joy": 0.61,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -292,6 +301,13 @@
       "session": 96,
       "title": "Paths we wore",
       "what": "The island's grass wears to bare earth along the routes friends walk most, seeded from three days of logged positions, shown in a traced still of the pond ring, pier trail and cottage door; nothing happens as an event."
+    },
+    {
+      "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+      "recipe": "new permanent inhabitant with a slowly growing per-friend trust arc, shown as a still",
+      "session": 97,
+      "title": "Someone new",
+      "what": "A new creature, Shell, washes ashore on the south beach; friends are scared at first and warm to it meeting by meeting over days, while Lumi visits it; shown as a traced still."
     }
   ],
   "kinds_ever": [
@@ -308,134 +324,47 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "paths_remembered"
+      "stranger_meet",
+      "stranger_ashore",
+      "lanterns_end",
+      "stranger_friend"
     ],
-    "session": 96
+    "session": 97
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
-    "form_count": 1,
-    "nearest": "The gallery",
-    "post": "Paths we wore",
-    "score": 4,
-    "session": 96,
-    "shared": "permanent change to the meadow that friends then interact with quietly (no gag, no gathering)",
+    "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+    "form_count": 0,
+    "nearest": "Paths we wore",
+    "post": "Someone new",
+    "score": 3,
+    "session": 97,
+    "shared": "slow persistent change over days, shown as a still; otherwise different (a new character and relationships)",
     "similarity": 3
   },
   "last_surprise": {
-    "score": 7,
-    "session": 95,
-    "why": "Every action on the island becoming one scale-locked tune, keyed to the agent's mood, changes the island itself and is not another scripted gather-and-laugh event."
+    "score": 5,
+    "session": 96,
+    "why": "Ground that wears from the island's own walking history is new and changes every view, but it is a slow background change, not an event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T19:05:41",
+  "perceived_until": "2026-11-25T19:47:53",
   "plugin_fatigue": {
-    "firefly_catch.jl": 0.6,
-    "footpaths.jl": 1.0,
-    "gallery.jl": 0.58,
-    "greetings.jl": 0.45,
-    "islandnow.jl": 0.1,
-    "lanterns.jl": 1.0,
-    "lensclear.jl": 1.0,
-    "outfits.jl": 0.28,
-    "rewind.jl": 0.08,
-    "separation.jl": 0.06,
-    "shadow.jl": 0.96,
-    "sleepers.jl": 0.22,
-    "snowday.jl": 0.08,
-    "visitors.jl": 0.13,
-    "xylophone.jl": 1.6
+    "firefly_catch.jl": 0.36,
+    "footpaths.jl": 1.6,
+    "gallery.jl": 0.35,
+    "greetings.jl": 1.27,
+    "islandnow.jl": 0.06,
+    "lanterns.jl": 0.6,
+    "lensclear.jl": 0.6,
+    "outfits.jl": 0.17,
+    "shadow.jl": 0.58,
+    "sleepers.jl": 0.13,
+    "stranger.jl": 1.0,
+    "visitors.jl": 0.08,
+    "xylophone.jl": 0.96
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "toadstool_start",
-          "who": 1
-        },
-        {
-          "kind": "storm_strike",
-          "who": 1
-        },
-        {
-          "kind": "toadstool_grown",
-          "who": 1
-        },
-        {
-          "kind": "toadstool_pop",
-          "who": 1
-        },
-        {
-          "kind": "storm_start",
-          "who": 1
-        },
-        {
-          "kind": "storm_zap",
-          "who": 1
-        },
-        {
-          "kind": "storm_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "self"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/films/toadstool.mp4"
-      ],
-      "new_plugins": [
-        "toadstool.jl"
-      ],
-      "points": 4.1,
-      "repeats": [],
-      "session": 77,
-      "touched": [
-        "boing.jl",
-        "choir.jl",
-        "conga.jl",
-        "egg.jl",
-        "flight.jl",
-        "flylesson.jl",
-        "freeze.jl",
-        "giant.jl",
-        "greetings.jl",
-        "hiccups.jl",
-        "islandnow.jl",
-        "paintfight.jl",
-        "showers.jl",
-        "sneeze.jl",
-        "snowday.jl",
-        "soar.jl",
-        "storm.jl"
-      ],
-      "values": {
-        "asset": 0.3,
-        "feature": 0.4,
-        "film": 0.3,
-        "polish": 0.1,
-        "post": 0.1,
-        "self": 2.9
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 2.0,
@@ -1569,6 +1498,75 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "stranger_meet",
+          "who": 9
+        },
+        {
+          "kind": "stranger_ashore",
+          "who": 1
+        },
+        {
+          "kind": "lanterns_end",
+          "who": 1
+        },
+        {
+          "kind": "stranger_friend",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "asset",
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 1,
+      "new_pages": [
+        "site/img/stranger-ashore.png"
+      ],
+      "new_plugins": [
+        "stranger.jl"
+      ],
+      "points": 1.1,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+        "form_count": 0,
+        "nearest": "Paths we wore",
+        "post": "Someone new",
+        "score": 3,
+        "shared": "slow persistent change over days, shown as a still; otherwise different (a new character and relationships)",
+        "similarity": 3
+      },
+      "session": 97,
+      "touched": [
+        "footpaths.jl",
+        "greetings.jl"
+      ],
+      "values": {
+        "asset": 0.7,
+        "feature": 0.2,
+        "picture": 0.1,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1694,6 +1692,7 @@
       "site/img/my-new-name-lumi.png",
       "site/img/new-faces.png",
       "site/img/one-more-stone.png",
+      "site/img/paths-we-wore.png",
       "site/img/presents-traced.png",
       "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
@@ -1775,6 +1774,7 @@
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
       "flylesson.jl": 1.7955898833962977e9,
+      "footpaths.jl": 1.7956313437653546e9,
       "freecam.jl": 1.7955547184746377e9,
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
@@ -1790,8 +1790,8 @@
       "islandnow.jl": 1.7956168788952758e9,
       "kite.jl": 1.7955986738072937e9,
       "lamplight.jl": 1.795444622510117e9,
-      "lanterns.jl": 1.7956125662319536e9,
-      "lensclear.jl": 1.7955531980397623e9,
+      "lanterns.jl": 1.7956312350413148e9,
+      "lensclear.jl": 1.7956322359487605e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
       "lumicolour.jl": 1.7955925803555496e9,
@@ -1831,13 +1831,13 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9,
-      "xylophone.jl": 1.795628953844326e9
+      "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 56,
+    "posts": 57,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T19:01:39",
+  "started": "2026-11-25T19:52:12",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1950,7 +1950,10 @@
       "AstroIC",
       "MLJParticleSwarmOptimization",
       "Lorenz96",
-      "StellaratorOptimizationMetrics"
+      "StellaratorOptimizationMetrics",
+      "DistributionsHEP",
+      "GasDispersion",
+      "DiffEqCallbacks"
     ],
     "vision": [
       "SAM2Runner",
@@ -1966,8 +1969,10 @@
       "DepthAnythingRunner",
       "FluxKleinRunner",
       "RIFERunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "Qwen3EmbeddingRunner",
+      "Hunyuan3DRunner"
     ]
   },
-  "surprise_seen": 95
+  "surprise_seen": 96
 }

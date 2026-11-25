@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T19:57:38.692",
+  "finished": "2026-11-25T20:18:32.881",
+  "id": "20261125-195738-685-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 9.5,
+      "post": "stranger",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/stranger-ashore.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/stranger-ashore.png",
+    "post": "stranger"
+  },
+  "seconds": 317.7,
+  "started": "2026-11-25T20:13:14.852",
+  "status": "done"
+}

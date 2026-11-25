@@ -1,0 +1,31 @@
+{
+  "verdict": "pass",
+  "summary": "Footpaths shows in the live game: a clear brown track runs by the pond and workshop. The follow-camera fix is not fully proven, because one of three screenshots still has a tree crown over about 40% of the frame.",
+  "surprise": 5,
+  "surprise_why": "Ground that wears from the island's own walking history is new and changes every view, but it is a slow background change, not an event.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The camera fix for #482/#507 does not hold in every view. In one of three follow screenshots a big tree crown fills the top 35-40% of the frame and a bush covers the middle. The todo asked for no foliage within 3 m of the eye covering more than a third.",
+      "where": "plugins/lensclear.jl:55-56 (crown cost counted only within 3 m of the lens)",
+      "evidence": "reviews/r96-a.png (Truffle and Pinchy at 13:39, crown above and behind them); r96-b and r96-c are open",
+      "suggestion": "Take 30 or more follow shots over different subjects and times, and measure the foliage fraction. Raise the 3 m cutoff for crowns above the subject, or lift the eye."
+    },
+    {
+      "severity": "medium",
+      "what": "The tracks are visible near the pond and workshop (brown trail, bare ground beside the pond), but they are one flat brown with hard-edged stepping stones beside them. The paths cannot be told apart from the existing dirt path, so a player will not read them as worn grass, and the Messages panel does most of the explaining. The parade party test also failed twice with follow_tracks! on and passed twice, and the author did not find the cause.",
+      "where": "plugins/footpaths.jl, follow_tracks!",
+      "evidence": "reviews/r96-c.png; journal 19:32",
+      "suggestion": "Blend the worn colour into the grass with a darker edge or a flattened-grass tint. Run the parade tests several times with follow_tracks! switched on and off to rule it out."
+    },
+    {
+      "severity": "low",
+      "what": "In r96-c the workshop and its props fill the lower-right quarter of the view. Hopscotch stands in a bubble and the shot is partly obstructed by plugin-drawn scenery that the obstruction check does not count.",
+      "where": "follow camera, workshop area",
+      "evidence": "reviews/r96-c.png",
+      "suggestion": "Add the workshop plots to the CAMERA_BLOCKERS."
+    }
+  ],
+  "addressed": true,
+  "agent_notes": "s97: (1) follow camera: the second try at the end of s96 counts the real crown sizes only within 3 m of the lens (all four follow-camera tests pass, ten shots open: media/s96/follow-near/sheet.png); a crown further back can still fill the top of a frame, that is the trade-off that kept the camera seeing faces. (2) paths: worn grass is now dusty straw (0.74, 0.66, 0.42) with a fixed speckle, so it reads as trampled grass next to the red-brown dirt path, not the same colour; the test now measures the colour change. The parade party flake stays unexplained (it failed once with everyone taken by the hiccups). (3) plugin-drawn scenery in the obstruction check: not done."
+}

@@ -47,7 +47,7 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"),
                   "shadow" => ("Lumi", "Pinchy", "Gloop"), "shadow_check" => ("Lumi", "Pinchy", "Gloop"),
                   "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"),
-                  "paths" => ("Lumi", "Gloop", "Pickles"))
+                  "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -80,6 +80,24 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "stranger"         # s97: the newcomer on the south beach, me leaning in, the friends keeping their distance
+        sm = plugin(g, "stranger")
+        p, inland = Base.invokelatest(sm.landing, w)
+        side = Point2f(-inland[2], inland[1])
+        c0 = p + 2.2f0 * inland
+        st = Main.STRANGER[:sys]
+        st.state = :roam; st.pos = NG.ground(w.island, (c0[1], c0[2])); st.aim = Point2f(st.pos[1], st.pos[2])
+        st.yaw = atan(side[2], side[1])
+        Base.invokelatest(sm.plots!, g); Base.invokelatest(sm.draw!, st, g)
+        face(q) = atan(c0[2] - q[2], c0[1] - q[1])
+        q = c0 + 1.5f0 * side; pose!(w, by_name(w, "Lumi"), (q[1], q[2]), face(q), :think)
+        q = c0 - 2.6f0 * side + 1.2f0 * inland; pose!(w, by_name(w, "Wibbles"), (q[1], q[2]), face(q), :scared)
+        q = c0 - 1.8f0 * side + 2.8f0 * inland; pose!(w, by_name(w, "Gloop"), (q[1], q[2]), face(q), :think)
+        q = c0 + 0.6f0 * side + 3.6f0 * inland; pose!(w, by_name(w, "Pinchy"), (q[1], q[2]), face(q), :gasp)
+        z0 = NG.terrain_height(w.island, c0[1], c0[2])
+        eye = Point3f(c0[1] - 4.6f0 * inland[1] + 0.8f0 * side[1], c0[2] - 4.6f0 * inland[2] + 0.8f0 * side[2], z0 + 1.6f0)
+        return eye, Point3f(c0[1] + 0.6f0 * inland[1], c0[2] + 0.6f0 * inland[2], z0 + 0.4f0)
     end
     if post == "paths"            # s96: the tracks we wore round the pond and down to the pier, seen from above
         Base.invokelatest(plugin(g, "footpaths").repaint!, g)       # (the meadow has painted by now: wear it in)

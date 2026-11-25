@@ -393,8 +393,12 @@ function NG.step!(s::Greetings, game, dt)
         jumped_in && 1.5 < s.hint_t < HINT_FULL && me.action in (:walk, :run) && (s.hint_t = HINT_FULL)
         show =jumped_in && s.hint_t < HINT_END
         GP[:hint].visible[] == show || (GP[:hint].visible[] = show)
-        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 17)
-        show && GP[:hint].text[] != txt && (GP[:hint].text[] = txt; GP[:hint].fontsize[] = fs)
+        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 12)
+        if show && GP[:hint].text[] != txt
+            # the one-line strip drops to the bottom edge, small, out of the way of Lumi (review: across the middle of the view)
+            GP[:hint].text[] = txt; GP[:hint].fontsize[] = fs
+            Makie.update!(GP[:hint]; arg1 = txt === HINT ? Point2f(0.5, 0.2) : Point2f(0.5, 0.105))
+        end
     end
     # Jump in's follow camera; orbit and free round Lumi are freecam.jl's (the chase used to take
     # every pick, so all three menu modes looked the same while playing, the human 2026-11-23)
