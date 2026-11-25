@@ -15,7 +15,7 @@ const T_AFTER = 4.0
 const NSPORE = 44
 const OLD = (:stem, :cap, :under, :spots)
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
-                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :toadstool, :swing, :bottle, :leaves)
+                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :toadstool, :swing, :bottle, :leaves, :pumpkin)
 const GASPS = ("It's... shaking?", "Uh oh.", "Is it going to...", "Stand BACK!", "Ooooh...")
 const CHEERS = ("A REAL ONE!", "It's so BOUNCY!", "Me first!", "It grew! It GREW!", "Wooow!")
 

@@ -959,12 +959,12 @@
       "id": 69,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back\nHappened again at 2026-11-25T06:16:16.603.",
+      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back\nHappened again at 2026-11-25T06:16:16.603.\nperfectionist-0082: Not seen since 2026-11-24 10:26. Frames ran at 5.6 ms through four minutes of driven play; the system files it again if it comes back.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A frame failed: Timed out",
-      "updated": "2026-11-25T06:16:16.603"
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-23T00:14:23.578",
@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0079 [creatures, high]: Next to the plush pigs, sheep and blobs, the two crabs are still a pink sphere on stick legs with a party hat and bunny ears (seen up close in hide and seek, ff-hs-sheet.png). The new bodies show no expression in a laugh, a gasp or a sulk.\nWhere: plugins/makeover.jl, outfits.jl, engine faces.jl\nSuggestion: A generated clay crab body cut into claws and legs (as makeover.jl did for the pig and the sheep). Mouths and brows on the plush bodies, driven by NG.feel!.\nDone when: The creatures sheet shows a crab with a generated body, and a lineup of :laugh / :gasp / :pout shows three different faces on the pig.\nEvidence: reviews/perf79/motion/creatures.png (row 2 right, row 3 left); reviews/perf79/ff-hs-sheet.png",
+      "detail": "perfectionist-0082 [creatures, high]: Next to the plush pigs, sheep and blobs, the two crabs are still a pink sphere on four pink cylinder legs, with eye stalks, a white party hat and bunny ears. They are the first thing in view when jump-in starts (jump-card.png) and in the firefly start shot.\nWhere: engine species.jl crabbit / plugins/makeover.jl\nSuggestion: Give the crab the makeover the others had: a generated clay crab body cut into claws, legs and an eye-stalk head. Check it from the front and run the outfits test.\nDone when: The creatures sheet shows sculpted crabs with jointed claws that match the plush pigs, and a front view shows the eyes on the side facing its walk.\nEvidence: reviews/motion/p82/creatures.png (rows 2-3, right), reviews/p82/play/jump-card.png, reviews/p82/sheet-firefly.png",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3302,11 +3302,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
-      "updated": "2026-11-25T05:19:35.703"
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0079 [lighting, high]: A called storm now darkens the ground well. But rain at 11:29 falls over hard sunny shadows and a bright blue sky, and during the storm the horizon band stays bright. Golden hour and dusk in the raster are unchanged.\nWhere: plugins/showers.jl dim_sun!, storm.jl, clouds.jl\nSuggestion: In rain, grey the sky and the cloud bellies, soften the shadows (sun down, more sky fill) and add a light haze. Under the storm, darken the horizon too and flash on each bolt.\nDone when: Mean luminance of the 3D area drops >= 15% in rain against the same hour without weather, with visibly soft shadow edges, and the top 20% of the frame drops >= 30% under a storm.\nEvidence: media/progress/session-0079/eye-level.png; reviews/perf79/play/jump-G-end.png",
+      "detail": "perfectionist-0082 [lighting, high]: With path tracing switched on at 17:29 (the dashboard button the human can press), the setting sun is a dark maroon ball with a dark reflection on the sea. The raster's sunset has a glowing orange sun, but the sky and sea are pale grey with no warm light on anything. Rain dims the light only 10% and keeps hard noon shadows. The progress shots from s79 to s82 show the same flat 16:00 light.\nWhere: the sunset sun plot (NoShading live, Emission only in quiet copies), RayMakie sky, showers.jl dim_sun!\nSuggestion: Give the sun plot an emissive look whenever the screen path traces, not only in quiet copies (or hide it and let the sky model's own sun disc show). Tint the sky and sea for golden hour: a warm band at the horizon and warm key light on the creatures. Add an overcast state for showers with a soft sun.\nDone when: A live path-traced screenshot at 17:30 shows a bright sun (mean sun-disc luminance > 0.8). Raster at 17:30 has a warm cast (mean R/B >= 1.3 over the 3D area). Rain at 11:30 is >= 15% darker than dry, with soft shadows.\nEvidence: reviews/p82/traced-live2.png, reviews/p82/raster-sunset.png, media/progress/session-0082/eye-level.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3315,8 +3315,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Weather that changes the light: rain under hard sun, storm horizon",
-      "updated": "2026-11-25T05:19:35.703"
+      "title": "Light that changes: grey sunsets, a dark traced sun, rain under hard sun",
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -3759,12 +3759,12 @@
       "id": 269,
       "kind": "world",
       "priority": 2,
-      "result": "s50: voice chosen: Kokoro am_puck, speed 1.08, pitched up 18% with ffmpeg asetrate (small gnome). 4 candidates in media/s50/voice/, all transcribed back word for word by WhisperRunner (whisper()). Greeting on the page: site/voice/hello.ogg + .mp3 with an <audio> player (served 200 audio/ogg). Still to do: narrate a film, critter sounds, sound in the dashboard.\ns59: a second narration: site/voice/my-new-moves.mp3/.ogg (26 s, am_puck, Whisper heard every word), on my page as the 'My new moves' piece and in the feed; the page intro now says I am a golden bird. Still to do: narrate a film (mux it onto the traced strut take, todo #345), squeaks for friends.",
+      "result": "s50: voice chosen: Kokoro am_puck, speed 1.08, pitched up 18% with ffmpeg asetrate (small gnome). 4 candidates in media/s50/voice/, all transcribed back word for word by WhisperRunner (whisper()). Greeting on the page: site/voice/hello.ogg + .mp3 with an <audio> player (served 200 audio/ogg). Still to do: narrate a film, critter sounds, sound in the dashboard.\ns59: a second narration: site/voice/my-new-moves.mp3/.ogg (26 s, am_puck, Whisper heard every word), on my page as the 'My new moves' piece and in the feed; the page intro now says I am a golden bird. Still to do: narrate a film (mux it onto the traced strut take, todo #345), squeaks for friends.\nperfectionist-0082: Lumi has a chosen voice (Kokoro am_puck), the bottle letter film is narrated in it (s80), and the game speaks in the browser (s81).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Lumi's own voice: narrate a film and read my page aloud",
-      "updated": "2026-11-24T11:07:12.443"
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-24T00:42:44.720",
@@ -4636,17 +4636,17 @@
     },
     {
       "created": "2026-11-24T09:31:02.277",
-      "detail": "perfectionist-0076 [animation, high]: Sir Sniffsalot jumped 5.20 m in one frame (156 m/s), and its body judders. Lumi's crest snaps 0.25-0.43 m in one frame, its beak 0.36 m, and the crest swings at 7-13 m/s. In one of the two runs the crab's ears and tail, the sheep's body and Lumi's wing move in uneven steps.\nWhere: engine bird.jl / herd.jl pose blending (POSE_BLEND only on action changes)\nSuggestion: Find what moves a creature 5 m at once (a dance ring or conga placing its members, an unstick, a parade slot) and walk it there instead. Blend pose changes inside an action, not only between actions. Spring-damp the crest so it flops with overshoot.\nDone when: Two live_motion runs report no snap and no 'moves at' over 10 m/s for any creature, and Lumi is under 'Moving well'.\nEvidence: live_motion twice in the sandbox: reviews/perf76/motion/motion.png (Lumi), reviews/perf76/motion2/motion.png (Sir Sniffsalot: 'jumps 5.20 m in one frame at 1.6 s')",
+      "detail": "perfectionist-0082 [animation, medium]: In the sandbox motion measure, Cumulus (sheep) has leg_1 jumping 0.25 m in one frame and leg_3 0.19 m, and leg_1 swinging at 7.4 m/s. The newly cut sheep legs pop. In the voice film Lumi pops at 9.67 s (0.051 change, the film's largest), turning from three-quarter to front in two frames.\nWhere: plugins/makeover.jl sheep legs (pivots), plugins/gait.jl stride\nSuggestion: Put the sheep legs' pivot at the hip and lower the sheep's stride the way gait.jl does for crabs. Blend the start of a hop. Measure twice.\nDone when: Two sandbox live_motion runs show no one-frame leg jump > 0.08 m on any sheep and no part over 5 m/s.\nEvidence: reviews/motion/p82/motion.png, reviews/motion/perfectionist-0082/voice-steps.jpg",
       "est_minutes": 240.0,
       "id": 332,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "s58: first concept sketches queued in the worker (jobs 20261124-093327-466/469/472/476-image): an orange salamander gardener with a leaf, a magenta radish with leafy hair, a lanky teal heron with a straw hat, a golden mole with goggles. Next: look at them, maybe a second round, pick one and say why on my page. The page footer no longer says gnome.\ns58: sketch 1 is in (assets/20261124-093327-466-image/image.png): an orange salamander with a big two-lobed leaf on a stem, a cross-body satchel, a thick tail and big feet. Strong: one bold colour nobody on the island has, a silhouette made by the leaf on top and the tail behind, and a face with big eyes. Weak: the expression is flat. It is my favourite so far; compare it with the other three (still in the worker) before building.\ns58 DECIDED by the human: I become the big yellow bird from their CrawCity film (shaggy golden bird, spiky crest, orange beak, long grey legs, CrawCity painted face cards switched by uv_transform). The salamander/radish/heron/mole sketches are dropped. The supervisor builds body and face: do NOT edit species.jl lumi(), faces.jl, herd.jl, shapes.jl or RayMakie meshscatter until told it landed. Then: the personality part (walk with long legs, crest bounce, fidgets, celebrate/sulk timing), a traced film of a day, and the post 'Who I want to be'.\ns59 (part 1 of 2): engine bird.jl `Birdy` wraps every bird part's motion. Walking: a strut (upper body pumps forward/back with each step, swagger roll); running: a forward lean; feet planted (the standing sole is put exactly on the ground through the same transform the herd uses, `plant`/`BIRD_SOLES`; the swinging foot lifts 5 cm walking, 13 cm running; before, the feet floated 5 cm and the toes sank 5 cm). Waiting: a fidget every 7 s (preen under a wing, a peek at the sky, a foot tap, a feather shake); sad/bored: droops and taps its foot more; happy: sways. :proud: a chest-out hop with the legs along. plugins/birdbody.jl swaps the live herd once so the human's game got it at publish. Evidence: media/s59/strut3.mp4 (raster, 14.5 s), strip3.png, poses-b.png; traced take queued (job 20261124-105140-619-clip → media/s59/strut-traced.mp4). Test 'Lumi the bird struts with its feet on the ground and fidgets' passes.\nSTILL OPEN: crest flop after a stop (needs time-since-stop: not in the six pose numbers; a per-creature `extra` on :idle, or a crest cut out of the mesh as its own part) and the wing-spread hop (the wings are fused with the torso: a mesh with separate wings, or a painted wing card).\ns59 later: a rocking stop. plugins/birdbody.jl `settle!` writes Lumi's `extra` while it stands idle right after walking or running (1 at the stop → 0 in 1.2 s; idle faces ignore extra); bird.jl rocks the upper body, crest included, over the hips in a damped wobble (0.22, -0.12, 0.07 … rad). Checked in the test and live (extra 1.0 at the stop), published (human's game 12 ms median). Left for this todo: a crest that flops ON ITS OWN (cut it out of the mesh as a part) and the wing-spread hop (wings fused with the torso).\ns59 end: the walk follows the mood (bird_upper: gain clamp(1 + mood, 0.4, 1.6), head lower when mood < -0.1). Published.",
       "source": "review",
       "spent_minutes": 25.0,
       "status": "open",
-      "title": "Lumi's crest swings at 6.8 m/s: the last part too fast to follow",
-      "updated": "2026-11-25T05:19:35.703"
+      "title": "Snaps left: the sheep's legs jump 0.25 m and Lumi's crest is too fast",
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-24T10:03:42.639",
@@ -6246,7 +6246,7 @@
     },
     {
       "created": "2026-11-25T01:30:46.210",
-      "detail": "perfectionist-0079 [camera, high]: The best gags are watched badly. The swing event camera sits ~15 m off, with the swing a thin post at the right edge and a rock in the foreground. The swing, spring and toadstool films are one static wide shot each; in the swing film the flying pig is a dot. When the storm zapped me as the player, Lumi stood behind the workbench and the soot was barely visible. When I was flying under the storm, Lumi sat cut off at the top edge with a bush over half the view.\nWhere: plugins/swing.jl swing_group, storm.jl player mode, greetings.jl chase_camera!, movies/swing.jl, spring.jl, toadstool.jl\nSuggestion: Give each event a shot plan: a medium shot at seat height while pumping, a pan that follows the flier, then the landing with the laughing friends. In the films use 2-3 real cuts on state changes. The chase view should check obstruction and lift or swing round when a prop hides the player.\nDone when: In a live screenshot during pumping the swing and rider fill >= 30% of the frame height. The swing film keeps the flier in frame and has >= 2 cuts. At a player zap, NG.obstruction to Lumi is < 1 and the soot is visible.\nEvidence: reviews/perf79/swing-live-row.png, play/jump-G-end.png, play/jump-T-later.png; reviews/motion/perfectionist-0079/swing-overview.jpg",
+      "detail": "perfectionist-0082 [camera, high]: Jump-in starts with a round bush filling the middle of the view, Lumi half hidden behind it (jump-card.png). The leaf film is one static wide shot for 14 s, with a fence post filling the right third, jumpers 1/8 of the frame tall and Lumi at the far left edge. Live, the follow camera framed the dance ring from straight above Gloop's back, and during my leaf event it watched an empty pile while Lumi was off frame.\nWhere: greetings.jl chase_camera! start, plugins/autumn.jl leaves_view, movies/autumn.jl, render.jl circle groups\nSuggestion: Start jump-in on open ground, or put the eye on the clear side with NG.obstruction. Film events the way an animator would: wide for the gust, then low close shots at the pile edge for each leap, and a medium shot of Lumi's run-up cutting to the burst. Keep group views below 30° pitch.\nDone when: Five jump-in starts in a row show Lumi unobstructed (NG.obstruction < 1). The next event film's overview has >= 3 shots, with the jumper >= 1/3 of the frame height in one. The dance-ring pitch measured from game.rig is <= 32°.\nEvidence: reviews/p82/play/jump-card.png, reviews/motion/perfectionist-0082/leaves-overview.jpg, reviews/p82/follow1.png, reviews/p82/leaf-sheet.png",
       "est_minutes": 20.0,
       "id": 447,
       "kind": "review",
@@ -6255,8 +6255,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Close on the moment: swing, zap and films seen from far or behind props",
-      "updated": "2026-11-25T05:19:35.703"
+      "title": "Close on the moment: jump-in behind a bush, leaf jumps from far, rings from above",
+      "updated": "2026-11-25T07:50:10.215"
     },
     {
       "created": "2026-11-25T01:46:56.141",
@@ -6456,17 +6456,87 @@
     },
     {
       "created": "2026-11-25T07:17:11.868",
-      "detail": "",
+      "detail": "perfectionist-0082 [fun, high]: I called the event in the sandbox (AUTUMN[:start]) and got a crew of 3. Cumulus started fishing 3 s after leaves_start (sandbox events 07:34:22), so only Hopscotch and Lumi jumped, and the event ended after 18 s. The log shows earlier runs with n = 5, 2 and 3, each lasting 10-20 s. The fishing pastime (and probably the shell hunt and present invitations, which kept pairing friends off during my jump-in) ignores the :leaves goal.\nWhere: the plugin that emits 'fishing', plugins/autumn.jl\nSuggestion: One shared rule: every pastime that hands out goals (fishing, beachcomb, invitations, presents) skips creatures whose goal is in NG.BUSY_GOALS. Pull at least 4 friends, and let late ones join the way boing's join_late! does.\nDone when: Three sandbox runs of the leaf event each show >= 4 jumps (count the whoops in the event log) and no crew member takes a :fish goal between leaves_start and leaves_end.\nEvidence: world/sandbox/log/events-2026-11-25.jsonl lines 23545-23559; reviews/p82/leaf-sheet.png (last frame: the crew on the pier)",
       "est_minutes": 15.0,
       "id": 462,
+      "kind": "review",
+      "priority": 1,
+      "result": "autumn.jl now waits until at least three friends can come (it tries again every 5 s) and calls friends away from pastimes (fishing, pebbles, tag, presents, beachcombing...: a PULL list like boing.jl's) instead of only the idle ones. Three sandbox runs in a row: 5, 6 and 6 jumps, every jumper landed (one crunch each), Lumi last each time (AUTUMN[:log]). The s82 KEEP pass already kept the island's other events off the crew. Published.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Leaf pile: every friend gets a turn (fishing steals the crew)",
+      "updated": "2026-11-25T08:07:35.213"
+    },
+    {
+      "created": "2026-11-25T07:50:10.215",
+      "detail": "perfectionist-0082 [style, high]: At the sunset bench at 17:29-17:30, Lumi is a golden-yellow bird in the path-traced view and a dark brown, owl-like bird in the raster a few seconds later from the same camera. At midday in jump-in and the mini games it reads ochre or rust, never the big yellow bird of the films. The human's goal 5 asks for 'a colour of its own' that you recognise from across the island, and the live game, where the human watches, loses it.\nWhere: Lumi's species material (engine bird.jl / species.jl) in the RayMakie raster\nSuggestion: Find out why the raster darkens this material: the albedo texture, a roughness or subsurface term the raster treats differently, or the fluffy mesh's normals. Fix it at the source (RayMakie raster_material.jl, or Lumi's material), so the same yellow appears in the raster, the browser and traced films. Also update STYLE.md to the yellow bird and the plush friends.\nDone when: The mean colour of Lumi's pixels in a raster screenshot at 11:00 is within 15% of the traced still's (hue in the yellow range, R and G both > 0.6), and the sunset bench raster shows a yellow bird.\nEvidence: reviews/p82/traced-live2.png vs reviews/p82/raster-sunset.png (same camera, 1 min apart); reviews/p82/sheet-jump.png; site/img/leaves-jump.png (traced, yellow)",
+      "est_minutes": 30.0,
+      "id": 463,
+      "kind": "review",
+      "priority": 1,
+      "result": "plugins/lumicolour.jl lifts the copies of Lumi's feather texture the raster and browsers draw (bird.jl skin/plain) towards yellow, gain (1.22, 1.52, 1.25), green most so orange-gold turns yellow; the painted face and the path traced material are untouched, and it follows the herd when it is rebuilt. Measured in the sandbox at 11:00, Lumi standing still, same camera, mean of its warm pixels: off (0.59, 0.35, 0.12) brownish orange, on (0.77, 0.67, 0.20): R and G > 0.6, yellow. Side by side: media/s83/lumi-off-on.png. Published. Not checked yet: the sunset bench at 17:30 in the raster.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Lumi's yellow, live: the hero reads brown in the raster, golden when traced",
+      "updated": "2026-11-25T08:16:37.333"
+    },
+    {
+      "created": "2026-11-25T07:50:10.215",
+      "detail": "perfectionist-0082 [props, high]: Every falling leaf and every leaf in the pile is a squashed sphere in one of five flat colours, about 25 cm across. In the traced stills the pile reads as a heap of orange coins and the falling leaves as frisbees. This is the newest event's centrepiece, right in front of the camera.\nWhere: plugins/autumn.jl plots! (marker = Sphere)\nSuggestion: Use a real leaf marker: a light generated maple/oak leaf mesh (about 200 faces) or a curled leaf shape with a midrib, with per-instance tints and brown stems. Make the leaves 2-3x smaller and 3x more numerous, give the pile a mounded clay base, and let leaves flutter and tumble as they fall.\nDone when: A traced close still of the pile shows recognisable leaf shapes (lobes or a point and a stem) in a rounded heap, and someone shown it says 'leaves', not 'coins'.\nEvidence: site/img/leaves-jump.png, site/img/leaves-lumi.png, reviews/p82/leaf-sheet.png",
+      "est_minutes": 30.0,
+      "id": 464,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Leaves that look like leaves: the pile and the gust are flat poker chips",
+      "updated": "2026-11-25T07:50:10.215"
+    },
+    {
+      "created": "2026-11-25T07:50:10.215",
+      "detail": "perfectionist-0082 [fun, high]: The human's goal 3 has no open todo, and nothing on the island is simulated. I pressed every jump-in key. P paints flat dots, the leaves follow scripted arcs, the swing is a scripted pendulum, and the ball is the only thing that rolls. The human asked for Maelstrom water that splashes and carries things, paint that sticks to what it hits, and things that fall, roll, stack and break, on the GPU.\nWhere: plugins/ (no physics system), dev/Maelstrom\nSuggestion: Pick one toy and finish it: a shallows patch running Maelstrom FLIP at small scale that Lumi can stomp into, with splash, ripples and a floating leaf or boat. Or pebbles and crates from a rigid-body package found through RomeoDB that the player and creatures knock over and stack. Film it traced.\nDone when: A sandbox clip shows Lumi walking into it and a simulated response that differs each time (water rising and splashing, or objects tumbling and settling). The plugin calls a real solver, not scripted arcs.\nEvidence: reviews/p82/sheet-jump.png; no Mantle/Maelstrom/rigid-body plugin among 74 plugins; todos.json has no goal 3 item",
+      "est_minutes": 30.0,
+      "id": 465,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A physics toy for goal 3: water to splash or things that roll, stack and fall",
+      "updated": "2026-11-25T07:50:10.215"
+    },
+    {
+      "created": "2026-11-25T08:22:38.555",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 466,
       "kind": "build",
       "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Leaf pile: every friend in the ring gets a turn (in the s82 film take Cumulus stood and watched: its goal was taken mid-event, find by whom)",
-      "updated": "2026-11-25T07:17:11.868"
+      "title": "Real pumpkins: the generated pumpkin mesh for the bowling stack (Trellis lost the GPU twice on assets/20261125-075522-616-asset/image.png; retry with a fresh worker, then set PUMPKIN/PUMPKIN_OK in pumpkins.jl)",
+      "updated": "2026-11-25T08:22:38.555"
+    },
+    {
+      "created": "2026-11-25T08:22:38.559",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 467,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi's yellow at sunset: check the raster at the sunset bench at 17:30 after the s83 texture lift (lumicolour.jl), warm but still a yellow bird",
+      "updated": "2026-11-25T08:22:38.559"
     }
   ]
 }

@@ -14,7 +14,7 @@ const NFLAKES = 600
 const BOX = 16f0                  # flakes fall in a box this wide round what the camera looks at
 const SNOW = RGBf(0.95, 0.97, 1.0)
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson, :storm, :toadstool, :blossom, :swing, :bottle, :leaves)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson, :storm, :toadstool, :blossom, :swing, :bottle, :leaves, :pumpkin)
 const SHOUT = ("SNOW!!!", "It's SNOWING!", "Snow! Real snow!", "Catch a flake!", "Brrr! Wheee!")
 
 push!(NG.BUSY_GOALS, :snowman)

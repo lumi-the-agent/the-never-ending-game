@@ -14,7 +14,8 @@ const RING_R = 3.6f0                          # where the jumpers wait for their
 const COLOURS = (RGBf(0.95, 0.62, 0.12), RGBf(0.86, 0.36, 0.1), RGBf(0.98, 0.8, 0.2), RGBf(0.72, 0.2, 0.08), RGBf(0.9, 0.5, 0.15))
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
                 :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom,
-                :swing, :bottle, :leaves)
+                :swing, :bottle, :leaves, :pumpkin)
+const PULL = (:fish, :pebble, :feel, :sunset, :tag, :present, :fetch, :beachcomb, :sunbathe, :flowers)
 const WHOOPS = ("CANNONBALL!", "Here I come!", "Leaf attack!", "Woo-hoo!", "Make room!", "Watch THIS!")
 
 push!(NG.BUSY_GOALS, :leaves)
@@ -35,13 +36,42 @@ ease(u) = (u = clamp(u, 0, 1); u * u * (3 - 2u))
 centre(w) = NG.ground(w.island, (SPOT[1], SPOT[2]))
 lumi_of(w) = (i = findfirst(c -> c.name == "Lumi", w.creatures); i === nothing ? nothing : w.creatures[i])
 
+"""
+A leaf (session 83, perfectionist s82: "a heap of orange coins"): a five-lobed maple outline with pointed tips and
+a notch where the stalk joins, cupped a little, with a short stalk, 1 unit across. Both sides draw.
+"""
+function leaf_mesh()
+    n = 60
+    pts = Point3f[Point3f(0, 0, 0)]
+    for i in 0:n-1
+        a = 2f0 * Float32(pi) * i / n
+        u = mod(2.5f0 * a / Float32(pi) + 0.5f0, 1f0)                     # five lobes with pointed tips, the middle one ahead
+        r = 0.4f0 + 0.6f0 * (1 - 2abs(u - 0.5f0))^0.8f0
+        r *= 1 - 0.5f0 * exp(-(a - Float32(pi))^2 / 0.05f0)              # the notch at the stalk
+        push!(pts, Point3f(r * cos(a), r * sin(a), 0.14f0 * r^2))
+    end
+    fs = [GeometryBasics.GLTriangleFace(1, 1 + i, 1 + mod1(i + 1, n)) for i in 1:n]
+    # the stalk: a thin sliver from the notch backwards
+    k = length(pts)
+    append!(pts, [Point3f(-0.5f0, 0.03f0, 0.01f0), Point3f(-0.5f0, -0.03f0, 0.01f0), Point3f(-0.95f0, 0f0, 0.06f0)])
+    push!(fs, GeometryBasics.GLTriangleFace(k + 1, k + 2, k + 3))
+    ns = fill(Vec3f(0), length(pts))
+    for f in fs
+        i, j, l = Int.(GeometryBasics.value.(Tuple(f)))
+        nf = cross(pts[j] - pts[i], pts[l] - pts[i])
+        ns[i] += nf; ns[j] += nf; ns[l] += nf
+    end
+    ns = [norm(v) > 0 ? v / norm(v) : Vec3f(0, 0, 1) for v in ns]
+    return GeometryBasics.Mesh(pts, fs; normal = ns)
+end
+
 function plots!(game)
     haskey(AU, :fall) && AU[:fall].parent !== nothing && return
     sc = game.stage.scene
     for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:autumn_fall, :autumn_pile), sc.plots)
         delete!(sc, p)
     end
-    leaf = Sphere(Point3f(0), 1f0)
+    leaf = leaf_mesh()
     q0 = Makie.Quaternionf(0, 0, 0, 1)
     AU[:fall] = meshscatter!(sc, fill(Point3f(0, 0, -50), NFALL); marker = leaf, markersize = fill(Vec3f(0), NFALL),
                              rotation = fill(q0, NFALL), color = [COLOURS[mod1(i, 5)] for i in 1:NFALL], name = :autumn_fall)
@@ -73,7 +103,7 @@ function draw_fall!(s::Autumn, w, amount)
                 g = 9.8f0 * 0.35f0                  # leaves flutter: much less than full gravity
                 p = p0 + v * age + Point3f(0, 0, -0.5f0 * g * age^2) + Point3f(0.3f0 * sin(4f0 * age + i), 0.3f0 * cos(3f0 * age + i), 0)
                 if p[3] > c[3] + 0.05f0
-                    ps[i] = p; ms[i] = Vec3f(0.09f0, 0.06f0, 0.012f0); rs[i] = q
+                    ps[i] = p; ms[i] = Vec3f(0.085f0); rs[i] = q
                 end
                 continue
             end
@@ -86,7 +116,7 @@ function draw_fall!(s::Autumn, w, amount)
         a = 6.283f0 * hash01(i, 10); r = PILE_R * sqrt(hash01(i, 11))
         e = c + Point3f(r * cos(a), r * sin(a), 0.3f0)
         p = s0 + (e - s0) * u + Point3f(0.5f0 * sin(6f0 * u + 9f0 * hash01(i, 12)), 0.5f0 * cos(5f0 * u + 7f0 * hash01(i, 13)), 0)
-        ps[i] = p; ms[i] = Vec3f(0.09f0, 0.06f0, 0.012f0); rs[i] = q
+        ps[i] = p; ms[i] = Vec3f(0.085f0); rs[i] = q
     end
     Makie.update!(AU[:fall]; arg1 = ps, markersize = ms, rotation = rs)
 end
@@ -101,7 +131,7 @@ function draw_pile!(s::Autumn, w, size)
             h = PILE_H * size * (1 - (r / PILE_R)^2) * (0.6f0 + 0.4f0 * hash01(i, 22))
             ps[i] = c + Point3f(r * cos(a), r * sin(a), 0.04f0 + h)
             k = 0.16f0 + 0.08f0 * hash01(i, 23)
-            ms[i] = Vec3f(k, 0.7f0 * k, 0.03f0)
+            ms[i] = Vec3f(0.95f0 * k)
             rs[i] = Makie.qrotation(Vec3f(cos(a), sin(a), 0), 0.5f0 * hash01(i, 24)) * NG.rot_z(a)
         end
     end
@@ -131,11 +161,12 @@ function start_leaves!(s::Autumn, game)
     w = game.world
     c = centre(w)
     me = lumi_of(w)
+    # free friends, and those at a pastime (fishing, pebbles, tag...: a big moment beats them, like boing.jl's PULL)
     cs = [x for x in w.creatures if !x.controlled && x.action !== :sleep && x.goal.kind ∉ EVENTS &&
-          x.goal.kind ∉ NG.BUSY_GOALS && x !== me && hypot(x.pos[1] - c[1], x.pos[2] - c[2]) < 50]
+          (x.goal.kind ∉ NG.BUSY_GOALS || x.goal.kind in PULL) && x !== me && hypot(x.pos[1] - c[1], x.pos[2] - c[2]) < 50]
     sort!(cs; by = x -> hypot(x.pos[1] - c[1], x.pos[2] - c[2]))
     cs = cs[1:min(end, 5)]
-    length(cs) < 2 && return false
+    length(cs) < 3 && return false          # (s83 review: a crew of two made a thin show; it tries again in 5 s)
     s.crew = Int32[x.id for x in cs]
     me !== nothing && !me.controlled && me.goal.kind ∉ EVENTS && push!(s.crew, me.id)
     n = length(s.crew)

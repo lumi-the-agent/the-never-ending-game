@@ -15,7 +15,7 @@ const T_GIANT = 13.0              # stomping about with riders
 const T_POP = 0.7                 # back to small
 const REACH = 12f0
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :egg, :storm, :toadstool, :blossom, :swing, :bottle, :leaves)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :egg, :storm, :toadstool, :blossom, :swing, :bottle, :leaves, :pumpkin)
 const SCREAM = ("AAAH!", "Run!!!", "LUMI?!", "It's HUGE!", "Eeeek!")
 const RIDE = ("Giddy up!", "Wheee!", "I can see the sea!", "So high!", "Faster, Lumi!")
 const FEET = ("Look how tall!", "Do the stomp!", "Again! Again!", "Hello up there!")

@@ -19,10 +19,10 @@ const NMARK = 3
 const BOLT = RGBf(0.86, 0.91, 1.0)
 const KEEP = (:follow, :interact, :answer, :circle, :build, :tinker, :kite, :kitewatch, :boing, :boing_walk, :sleep,
               :paint, :giant, :choir, :conga, :hide, :found, :freeze, :sneezed, :hiccup, :flight, :egg, :lesson,
-              :snowman, :soar, :storm, :toadstool, :blossom, :swing, :bottle, :leaves)
+              :snowman, :soar, :storm, :toadstool, :blossom, :swing, :bottle, :leaves, :pumpkin)
 # a thunderstorm beats any pastime or chore (races, fishing, pebbles, painting); not sleep, a parade or a big event
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
-                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :swing, :bottle, :leaves)
+                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :swing, :bottle, :leaves, :pumpkin)
 const LUMI_LINES = ("WOOO! Did you SEE that?!", "It's only a bit of weather!", "Come on out, it's FUN!")
 const SCREAMS = ("EEEEEK!", "Make room!", "Lumi, get in here!", "I'm not scared, YOU'RE scared!", "Squeeze up!", "Mummy!")
 const LAUGHS = ("HA HA HA!", "Your CREST!", "Fine, says Lumi!", "Pffffff!", "Do it again!", "Ha ha... are you OK?")

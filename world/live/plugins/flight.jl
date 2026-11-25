@@ -21,7 +21,7 @@ const LOOP_R = 5.5f0
 const TOP = 8.5f0
 const NF = 48
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :paint, :giant, :storm, :toadstool, :blossom, :swing, :bottle, :leaves)
+              :hide, :found, :freeze, :sneezed, :hiccup, :paint, :giant, :storm, :toadstool, :blossom, :swing, :bottle, :leaves, :pumpkin)
 const WATCH_SAY = ("Go Lumi!", "Is it safe?", "Ooooh!", "Higher!", "Flap harder!", "Wheee!")
 const RUSH_SAY = ("Lumi?!", "LUMI!", "Are you OK?", "Pull!", "Heave!", "Is it... planted?")
 

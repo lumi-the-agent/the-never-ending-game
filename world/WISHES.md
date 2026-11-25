@@ -88,6 +88,13 @@ come true gets a line saying when and how.
   to the fence and each paints the section nearest to it, red, orange, yellow, green, blue, violet in turn; it
   stays, so the fence grows into a rainbow. The workshop is still bare.)
 
+## Things that move by themselves
+- **Things that tumble for real**: not scripted arcs, but things that fall, roll and bump into each other and
+  come out differently every time. (Session 83: pumpkin bowling. Thirty pumpkins stacked on the flower meadow by
+  the Big Boing, my friends watching from behind, and I take a run-up and crash into the stack: STRIKE! The
+  pumpkins really tumble, roll down the slope, bounce off bushes and bonk my friends on the head, and lie about
+  for a while so anyone can kick them. Still to come: water that splashes, paint that sticks.)
+
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.
   (Session 72: the first taste of winter, a snow day. Out of a sunny sky it snows, the meadow turns white in

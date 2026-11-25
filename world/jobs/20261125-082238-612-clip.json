@@ -1,0 +1,17 @@
+{
+  "created": "2026-11-25T08:22:38.612",
+  "id": "20261125-082238-612-clip",
+  "kind": "clip",
+  "params": {
+    "call": "autumn_still",
+    "kwargs": {
+      "after": 1.5,
+      "samples": 64,
+      "take": "/sim/Programmieren/SimGame/world/media/s83/leaves-maple-take.mp4"
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/leaves-maple.png",
+    "script": "movies/autumn.jl"
+  },
+  "started": "2026-11-25T08:30:37.491",
+  "status": "running"
+}

@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "reviews/motion/session-0082/leaves-overview.jpg: last frames show friends at the pile, no Lumi in the air",
+      "severity": "medium",
+      "suggestion": "Extend the take past Lumi's jump and fix the goal theft, then re-render.",
+      "what": "The film's climax, Lumi's big leap, is missing (the take ends before it) and a friend stood watching in one take because another plugin took its goal. The blog piece lacks the thing it announces.",
+      "where": "movies/autumn.jl, site/films/leaves.mp4"
+    },
+    {
+      "evidence": "reviews/s82-now.png, media/s82/sheep-front-Cumulus.png, leaves-overview.jpg",
+      "severity": "low",
+      "suggestion": "Leaf-shaped tilted pieces for the pile; lower the sheep beanie a little.",
+      "what": "The leaf pile reads as stacked flat orange discs. Also my own live screenshot at 16:06 shows Truffle's beret floating slightly on the pig's ear tips and the sheep's hat sits high; acceptable but still not tight. Cumulus close-up (media/s82/sheep-front-Cumulus.png) shows a big blue beanie perched above the black face.",
+      "where": "plugins/autumn.jl pile; plugins/outfits.jl hat_spot"
+    },
+    {
+      "evidence": "journal 'Open' list",
+      "severity": "low",
+      "suggestion": "Give the sheep a face part or drop the extras; add the dive key.",
+      "what": "The sheep's nose and mouth extras still hang on a :face part the new body lacks; the player-side leaf kick has no dive key.",
+      "where": "plugins/makeover.jl"
+    }
+  ],
+  "summary": "Verified in the sandbox: the made-over sheep and pigs now wear their hats on their heads and face where they walk, and the autumn event is announced and visible. The film shows friends leaping but not Lumi's own jump.",
+  "superseded_by": "perfectionist-0082.json",
+  "surprise": 6,
+  "surprise_why": "Friends queueing to leap into a golden leaf pile is a nice twist, though built from the event template of earlier sessions.",
+  "verdict": "pass"
+}

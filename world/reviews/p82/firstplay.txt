@@ -1,0 +1,7 @@
+tests: ['Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line', 'Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier', 'Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card']
+True 14.2 Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line 
+    
+True 14.0 Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier 
+    
+True 28.0 Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card 
+    
