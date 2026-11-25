@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0073 [creatures, high]: Truffle and Sir Sniffsalot are pink capsules on four sticks with stuck-on googly eyes, and Wibbles and Gloop are plain teal spheres. Next to the feathered Lumi they look like placeholders. The generated Snootle (piglet) and Blorbo (jelly blob with a bow) meshes have been done since s71 (assets/20261124-222311-224-asset, -227-asset), but three sessions went to snow, wind, the soar flight and the kite instead.\nWhere: engine species.jl (snootle, blorbo), birdbody.jl pattern (piece_of)\nSuggestion: Cut both meshes into body, legs, ears and tail like Lumi (s60), keep the face system on top, and give each species one signature motion (the piglet's snout wiggle, the blob's jiggle squash on landing). Then do the remaining species the same way.\nDone when: A sandbox screenshot shows Truffle as the plush piglet and Gloop as the bowed jelly blob, walking with moving legs, and a traced lineup (tools/lineup.jl) shows every species next to Lumi without a capsule or plain sphere.\nEvidence: world/reviews/p73/raster_same.png (Truffle and Sir Sniffsalot capsules, Wibbles sphere), tests/shots/berry-wad.png, assets/20261124-222311-227-asset/image.png",
+      "detail": "perfectionist-0076 [creatures, high]: The two crabs are still sphere-and-stick primitives with party hats and bunny ears next to the new plush pigs, sheep and blobs. The new bodies have no mouths or brows: the pig is a blank face, and a gasp, laugh or sulk reads the same.\nWhere: plugins/makeover.jl, outfits.jl, feelings\nSuggestion: Cut the finished crab asset like the others (shell, legs, claws in a V). Add decal eyes, brows and mouths per body that `NG.feel!` swaps: happy, scared, laughing, sulking.\nDone when: A traced lineup of all five species shows generated bodies only, and two stills of one pig show visibly different mouths for :happy and :scared.\nEvidence: reviews/perf76/motion/creatures.png (rows 2-3 crabs, rows 4-5 pigs without a mouth), media/s76/dusk-1906.png",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3301,12 +3301,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Friends as lovable as Lumi: the Snootle and Blorbo bodies in the game",
-      "updated": "2026-11-25T00:43:10.059"
+      "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0073 [lighting, high]: At 18:50 the path tracer gives warm gold grass, long soft shadows and a glowing sky. The raster, which is what the player watches, shows the same minute as dark olive-green with grey shadows and no warmth. Noon is readable but bland; dusk is murky.\nWhere: RayMakie raster (SunSkyLight fill, raster_material.jl), haze.jl\nSuggestion: Bring the raster's sun colour and intensity from the sky model (warm at low elevation), tint shadow fill with sky blue, and add a distance haze matching the sky colour. Aim to match the traced still's palette at 3 hours (10:00, 15:00, 18:30).\nDone when: Eye-level raster screenshots at 10:00, 15:00 and 18:30 next to traced stills from the same camera: the 18:30 raster has mean hue in the yellow-orange range on lit grass (R > G*0.85 at sunlit pixels) and shadows lighter than 0.15 luminance.\nEvidence: world/reviews/p73/traced.png vs world/reviews/p73/raster_same.png (both 18:50)",
+      "detail": "perfectionist-0076 [lighting, high]: Under the black storm cloud the island stays in full noon sun with a blue sky and white puffy clouds, so the storm is not scary. The raster's golden hour is still flat dark green, and the stones get bright white rims at 19:06.\nWhere: plugins/storm.jl, showers.jl dim_sun!, RayMakie raster_material.jl coat Fresnel\nSuggestion: While the storm is overhead, dim the sun to ~30%, grey and darken the sky, hide the white cumulus, and make each bolt flash the whole scene for 2 frames. Use the same lever for a warm low key light in the raster at 17-19 h.\nDone when: The mean luminance of the 3D area in a storm screenshot is at least 35% below the same camera without a storm, the sky has no blue above the cloud, and a raster screenshot at 18:30 shows warm (R>G) lit grass.\nEvidence: reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, media/s76/dusk-1906.png",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3315,8 +3315,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Raster golden hour: the warm light the path tracer already shows",
-      "updated": "2026-11-25T00:22:39.077"
+      "title": "Weather that changes the light: storm dusk, snow glare, golden raster",
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -4067,12 +4067,12 @@
       "id": 291,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0076: Superseded: the presents plugin exists (Sir Sniffsalot shows off a present from Lumi); the player version is a lower priority than the findings",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Play presents yourself: pick a friend's favourite and hand it over",
-      "updated": "2026-11-24T07:17:35.065"
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-24T04:07:30.566",
@@ -4403,12 +4403,12 @@
       "id": 315,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0076: Duplicate of 237/449 (warm low light), and the traced films already show a golden low sun",
       "source": "human",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A real sunset in path traced pictures (my sun sits on the water and the sky stays grey)",
-      "updated": "2026-11-24T08:09:43.073"
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-24T08:26:52.076",
@@ -4636,17 +4636,17 @@
     },
     {
       "created": "2026-11-24T09:31:02.277",
-      "detail": "perfectionist-0058 [creatures, medium]: The bird body arrived but it plays the old blob's poses: it stands rigid with arms down, and walks without a bob; the wishes in WISHES.md ('Me') are not built yet. #325 (moments use NG.feel! faces) belongs to the same work.\nWhere: engine bird.jl / pose code, feelings.jl\nSuggestion: A bouncy strut with head bob, crest secondary motion after stops, an idle preen or foot tap, a wing-spread hop when a build appears, a droopy crest when lonely, and the painted face changing with each.\nDone when: A 10 s raster clip of Lumi walking, stopping and celebrating shows the head bob, the crest swinging after the stop and a wing-spread hop.\nEvidence: world/tests/shots/s58_kite_running_view.png, world/reviews/p58/m3.png",
+      "detail": "perfectionist-0076 [animation, high]: Sir Sniffsalot jumped 5.20 m in one frame (156 m/s), and its body judders. Lumi's crest snaps 0.25-0.43 m in one frame, its beak 0.36 m, and the crest swings at 7-13 m/s. In one of the two runs the crab's ears and tail, the sheep's body and Lumi's wing move in uneven steps.\nWhere: engine bird.jl / herd.jl pose blending (POSE_BLEND only on action changes)\nSuggestion: Find what moves a creature 5 m at once (a dance ring or conga placing its members, an unstick, a parade slot) and walk it there instead. Blend pose changes inside an action, not only between actions. Spring-damp the crest so it flops with overshoot.\nDone when: Two live_motion runs report no snap and no 'moves at' over 10 m/s for any creature, and Lumi is under 'Moving well'.\nEvidence: live_motion twice in the sandbox: reviews/perf76/motion/motion.png (Lumi), reviews/perf76/motion2/motion.png (Sir Sniffsalot: 'jumps 5.20 m in one frame at 1.6 s')",
       "est_minutes": 240.0,
       "id": 332,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "s58: first concept sketches queued in the worker (jobs 20261124-093327-466/469/472/476-image): an orange salamander gardener with a leaf, a magenta radish with leafy hair, a lanky teal heron with a straw hat, a golden mole with goggles. Next: look at them, maybe a second round, pick one and say why on my page. The page footer no longer says gnome.\ns58: sketch 1 is in (assets/20261124-093327-466-image/image.png): an orange salamander with a big two-lobed leaf on a stem, a cross-body satchel, a thick tail and big feet. Strong: one bold colour nobody on the island has, a silhouette made by the leaf on top and the tail behind, and a face with big eyes. Weak: the expression is flat. It is my favourite so far; compare it with the other three (still in the worker) before building.\ns58 DECIDED by the human: I become the big yellow bird from their CrawCity film (shaggy golden bird, spiky crest, orange beak, long grey legs, CrawCity painted face cards switched by uv_transform). The salamander/radish/heron/mole sketches are dropped. The supervisor builds body and face: do NOT edit species.jl lumi(), faces.jl, herd.jl, shapes.jl or RayMakie meshscatter until told it landed. Then: the personality part (walk with long legs, crest bounce, fidgets, celebrate/sulk timing), a traced film of a day, and the post 'Who I want to be'.\ns59 (part 1 of 2): engine bird.jl `Birdy` wraps every bird part's motion. Walking: a strut (upper body pumps forward/back with each step, swagger roll); running: a forward lean; feet planted (the standing sole is put exactly on the ground through the same transform the herd uses, `plant`/`BIRD_SOLES`; the swinging foot lifts 5 cm walking, 13 cm running; before, the feet floated 5 cm and the toes sank 5 cm). Waiting: a fidget every 7 s (preen under a wing, a peek at the sky, a foot tap, a feather shake); sad/bored: droops and taps its foot more; happy: sways. :proud: a chest-out hop with the legs along. plugins/birdbody.jl swaps the live herd once so the human's game got it at publish. Evidence: media/s59/strut3.mp4 (raster, 14.5 s), strip3.png, poses-b.png; traced take queued (job 20261124-105140-619-clip → media/s59/strut-traced.mp4). Test 'Lumi the bird struts with its feet on the ground and fidgets' passes.\nSTILL OPEN: crest flop after a stop (needs time-since-stop: not in the six pose numbers; a per-creature `extra` on :idle, or a crest cut out of the mesh as its own part) and the wing-spread hop (the wings are fused with the torso: a mesh with separate wings, or a painted wing card).\ns59 later: a rocking stop. plugins/birdbody.jl `settle!` writes Lumi's `extra` while it stands idle right after walking or running (1 at the stop → 0 in 1.2 s; idle faces ignore extra); bird.jl rocks the upper body, crest included, over the hips in a damped wobble (0.22, -0.12, 0.07 … rad). Checked in the test and live (extra 1.0 at the stop), published (human's game 12 ms median). Left for this todo: a crest that flops ON ITS OWN (cut it out of the mesh as a part) and the wing-spread hop (wings fused with the torso).\ns59 end: the walk follows the mood (bird_upper: gain clamp(1 + mood, 0.4, 1.6), head lower when mood < -0.1). Published.",
       "source": "review",
       "spent_minutes": 25.0,
       "status": "open",
-      "title": "Lumi moves like a bird: strut, crest flop, fidgets, celebrations",
-      "updated": "2026-11-24T11:13:37.335"
+      "title": "Snaps and teleports: a pig jumps 5 m, Lumi's crest a third of a metre",
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-24T10:03:42.639",
@@ -5453,12 +5453,12 @@
       "id": 390,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "Superseded by perfectionist-0076.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Hear the island: choir, BWAARP, sneeze and peep in the browser",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-24T16:13:08.107",
@@ -5518,7 +5518,7 @@
     },
     {
       "created": "2026-11-24T17:06:57.223",
-      "detail": "perfectionist-0073 [world, medium]: The overview camera (looking north) has shown the same layout since s64: cottage, pond, path, dance spot. Snow day changes the colours for a while, but there is still no new area to discover.\nWhere: north of the pond (meadow.jl regions, new plugin)\nSuggestion: Build a place with its own look and its own activity: a little orchard with a swing, a waterfall rock garden, or a windmill hill. Give it its own ground colour, 3+ generated props, and a pastime friends go there for.\nDone when: The progress overview shows a new, distinct area north of the pond, and the 'On the island now' panel lists a friend doing something there.\nEvidence: world/media/progress/session-0073/overview.png vs session-0064",
+      "detail": "perfectionist-0076 [world, medium]: Thirteen sessions without a new area. The overview from session 64 to 76 differs only by weather and the toadstool.\nWhere: north of the pond (overview camera)\nSuggestion: Build a place with its own ground colour, props and an activity, such as an orchard, a hot spring or a windmill hill, where creatures do something they do nowhere else.\nDone when: The progress overview shows a new region with its own ground colour and at least three generated props that are not in session-0076's overview.\nEvidence: media/progress/session-0076/overview.png vs session-0064",
       "est_minutes": 30.0,
       "id": 395,
       "kind": "review",
@@ -5528,7 +5528,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A new place north of the pond that the overview shows",
-      "updated": "2026-11-25T00:22:39.077"
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-24T17:06:57.223",
@@ -5924,17 +5924,17 @@
     },
     {
       "created": "2026-11-24T22:07:18.822",
-      "detail": "perfectionist-0073 [props, high]: The flat red primitive cap with grey dots fills the foreground in three of my seven views: the follow view at 18:33 (bottom third), the overview progress shot (bottom right), and the traced still (top left, over Gloop). It is the single most-seen prop and the least finished.\nWhere: plugins/boing.jl, camera clutter lists (nightshots, lensclear CAMERA_BLOCKERS)\nSuggestion: Generate a real glossy toadstool asset (stem with gills, uneven cap, soft spots) and move it to the meadow edge, away from the overview's foreground. Make the follow camera treat it as an obstruction to avoid.\nDone when: The overview and 5 follow screenshots 20 s apart show no toadstool cap covering more than 10% of the 3D view, and a close screenshot shows the generated asset.\nEvidence: world/reviews/p73/follow1.png, world/media/progress/session-0073/overview.png, world/reviews/p73/traced.png",
+      "detail": "perfectionist-0076 [props, high]: Fourth review in a row: the primitive red cap with white discs is the largest object in the follow view, the overview and both storm films. The storm, the boing parties and the zap all happen under it, so it is in every hero shot.\nWhere: plugins/boing.jl (toadstool plot), camera clutter lists\nSuggestion: Generate a chunky clay toadstool with a bumpy cap, a gill underside and a squat stem, in a matching size. Add it to CAMERA_BLOCKERS / lensclear so the follow camera never parks behind it. Give it a squash-and-stretch wobble when someone bounces.\nDone when: A follow-view screenshot near the toadstool shows a generated mesh covering less than 20% of the frame, and the overview shows the new asset.\nEvidence: reviews/perf76/follow1.png (cap over the right half), progress/session-0076/overview.png (bottom right), reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, reviews/perf76/cam-follow-row.png (three conga shots in 12 s, all with the cap in the middle), perf76/cams.png (free camera start)",
       "est_minutes": 30.0,
       "id": 424,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "The Big Boing toadstool is a generated clay mesh now (asset 20261124-150825-248: raised spots, a frilly ring on the stem), drawn by plugins/toadstool.jl at the boing centre with boing's own squash on every bounce; boing.jl's primitive dome, spots and stem stay hidden. Its cap is about 1 m in radius (the dome was 1.9), so it no longer fills the follow view. It arrived as a show: friends gather, the old one POPs in spores, the new one springs up (played in the human's game at 02:59 with 9 watching; film site/films/toadstool.mp4, post 'POP'). Evidence: media/s77/toad-look2.png, toad-grow2.png, toad-after.png (sandbox), media/s77/toad-sheet.png (traced film), media/s77/storm-light-during3.png (the new toadstool in a storm). The progress overview after this session will show it.",
       "source": "review",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 30.0,
+      "status": "done",
       "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
-      "updated": "2026-11-25T00:22:39.077"
+      "updated": "2026-11-25T03:16:08.596"
     },
     {
       "created": "2026-11-24T22:22:39.228",
@@ -6097,12 +6097,12 @@
       "id": 436,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0076: Folded into finding 6 (firefly halo and cottage in the mini game view)",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Mini game views: no tree crown or trunk over a third of the frame",
-      "updated": "2026-11-25T00:22:39.077"
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6120,17 +6120,17 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0073 [style, medium]: Clouds are flat glowing ellipses with a hard bright rim (orbit.png, two blobs at the top). Close-up snowflakes are big flat white discs the size of a creature's head (snow-7.png). Both look like 2D stickers over the clay world.\nWhere: plugins/clouds.jl, snowday.jl\nSuggestion: Make clouds from clusters of soft clay puffs shaded by the sun (lit top, blue-grey belly), and make flakes small 6-armed or soft sprites that fade near the camera.\nDone when: An orbit screenshot at 15:00 shows clouds with a lit top and a darker underside, and a snow screenshot has no flake wider than 1% of the view width.\nEvidence: world/reviews/p73/orbit.png, world/media/s72/snow-7.png",
+      "detail": "perfectionist-0076 [style, high]: Every new effect is a primitive: the zap's soot is opaque black flat circles, the flight's cloud ring is a string of equal pearls, the snow is a flat white sheet under green trees that melts into white paper scraps, the flakes are flat discs as big as a head in front of the camera, and paint spots are raised balls glued on the bodies.\nWhere: plugins/storm.jl soot, soar.jl ring, snowday.jl, paintfight.jl body spots\nSuggestion: Soot: grey, semi-transparent puffs of varying size that grow and fade, plus a sooty tint on Lumi for a minute. Ring: clumps of uneven size that spread and thin out. Snow: caps on tree crowns and rocks, grass tufts hidden under the blanket, a soft melting edge, and flakes culled near the camera. Paint: flattened decals on the body, not spheres.\nDone when: A still of the zap shows grey translucent soot, the ring shows uneven puffs, a snow screenshot shows white on the tree crowns and no flake bigger than 2% of the frame width, and Lumi's paint spots sit flush with its body in a close-up.\nEvidence: site/img/thunderstorm-zap.png, reviews/motion/perfectionist-0076/cloud-ring-overview.jpg (bottom row), reviews/perf76/orbit2.png (white scraps), reviews/perf76/follow2.png (flakes), reviews/perf76/motion/motion.png (balls on Lumi's chest)",
       "est_minutes": 30.0,
       "id": 438,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Sky and weather with volume: clouds and snowflakes that are not flat discs",
-      "updated": "2026-11-25T00:22:39.077"
+      "title": "Effects with volume: soot, cloud ring, snow, paint that read as matter",
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-25T00:28:44.048",
@@ -6246,17 +6246,17 @@
     },
     {
       "created": "2026-11-25T01:30:46.210",
-      "detail": "s75: the :fly pose is in (todo 440). Run include(\"/sim/Programmieren/SimGame/dev/NeverendingHost/tools/motion_sheet.jl\"); motion_sheet(\"media/s75/soar-ring-traced.mp4\") and look for pops: the takeoff (proud -> fly), the cruise wing beat (3.2 beats/s at 24 fps is 7.5 frames a beat: smooth?), the flare and the landing (fly -> proud at :after snaps the body from pitched to upright in one frame?). Ease the body pitch at the landing if it snaps. The cloud ring puffs: still a string of pearls up close; vary sizes and cluster 2-3 per puff.",
+      "detail": "perfectionist-0076 [camera, medium]: The storm film is one static wide shot, with a dark cloud ceiling over the top third and Lumi tiny on the right edge at the zap. The cloud-ring film starts with a 0.137 camera jump in its first frame. In the firefly game a firefly's halo sat on the lens as a yellow disc over a quarter of the frame.\nWhere: movies/storm.jl, movies/flight.jl (soar), firefly_catch.jl near-camera halos\nSuggestion: Storm: a wide establishing shot, then a cut to a medium shot of Lumi with its wings up, the friends huddled behind, and the bolt in frame. Start every film after the camera has settled. Hide fireflies within 1.5 m of the eye.\nDone when: The storm film's motion sheet shows Lumi over 15% of the frame height at the zap, no film jump in its first 0.2 s, and no firefly disc in 10 firefly-game screenshots.\nEvidence: reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, cloud-ring-steps.jpg (0.00 s), reviews/perf76/firefly-wad.png",
       "est_minutes": 20.0,
       "id": 447,
-      "kind": "motion",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi's flight needs a motion check: motion_sheet of the new flying film",
-      "updated": "2026-11-25T01:30:46.210"
+      "title": "Storm and flight films: closer on Lumi, no opening snap",
+      "updated": "2026-11-25T02:47:24.774"
     },
     {
       "created": "2026-11-25T01:46:56.141",
@@ -6302,17 +6302,31 @@
     },
     {
       "created": "2026-11-25T02:28:09.428",
-      "detail": "Goal 1 (the player with the world): jumped in as Lumi, T (free key; add it to greetings.jl HINT/HINT_SHORT and the one-sentence game_description) calls the storm (plugins/storm.jl). Needs: a `player` flag on the Storm so step! does not finish when Lumi is controlled; strikes 1-3 land 3-5 m from the steered Lumi, the last one on it wherever it runs (or under the toadstool: then a friend outside gets it instead, funnier); the zap must not fight the player's input (set a short :gasp feel the steering ignores, or freeze input 1.5 s). Camera: the jump-in chase view from greetings.jl chase_camera! tilted up while the cloud is overhead (CAMERA_GROUPS 3rd element for the controlled creature). A play test in tests/minigames.jl: jump in, T, the cloud comes, friends huddle (>= 3 :storm goals), the 4th strike hits, everyone laughs, the storm ends (storm_end event).",
+      "detail": "perfectionist-0076 [fun, medium]: The best new gag only comes by itself once every few island hours: a player cannot trigger or play it. Also, the storm's :storm goal is in BUSY_GOALS but in no other event's KEEP tuple. The notes say BUSY_GOALS alone did not stop the flight from stealing the choir, so a choir, conga or flight can take the huddling friends.\nWhere: plugins/storm.jl, KEEP in choir/conga/freeze/flight/giant/egg/flylesson/boing\nSuggestion: Make T call the storm while you are Lumi: you steer away from the bolts, the friends cheer each near miss, and the fourth bolt still finds you. Add :storm to every KEEP (todo 389).\nDone when: A play test presses T as Lumi and sees the storm start and a strike within 20 s, and grep shows :storm in every event plugin's KEEP.\nEvidence: grep '^const KEEP' plugins/*.jl: no :storm outside storm.jl",
       "est_minutes": 30.0,
       "id": 451,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
+      "result": "Jumped in as Lumi, T calls the thunderstorm on yourself (plugins/storm.jl player mode: the storm starts where you stand, the cloud follows you, the bolts land around you and the last on you, your steering and chase camera stay yours, friends still run for the toadstool and laugh). Key in greetings.jl HINT/HINT_SHORT ('T storm') and 'Things to try' ('...P paints, T storms.', play.jl). New play test in tests/minigames.jl 'Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours' passes (10.6 s); screenshot tests/shots/storm-player.png. Published s77 03:21, human's game at 30 fps.",
+      "source": "review",
+      "spent_minutes": 12.0,
+      "status": "done",
+      "title": "Call a thunderstorm yourself, and one island event at a time",
+      "updated": "2026-11-25T03:21:31.556"
+    },
+    {
+      "created": "2026-11-25T03:24:12.332",
+      "detail": "perfectionist-0076 [medium]: thirteen sessions without a new area; done when the progress overview shows a new region with its own ground colour and at least three generated props not in session-0076's overview. Lumi's wish: blossom in spring. Assets queued s77 (check each image first, then gate behind a flag until seen in the sandbox): 20261125-032401-562-asset (small cherry blossom tree), 20261125-032401-630-asset (round flowering shrub, light mesh), 20261125-032401-695-asset (wooden swing on a frame). Where: NORTH, in front of the overview camera (AGENTS.md: the overview looks north); avoid the pond, the path and the toadstool (areas.jl POND, PATH_POINTS). Ground: a soft pink-cream petal tint painted in meadow.jl (the only plugin that writes terrain colour), a few drifting petals. Something happens there: friends swing on the swing, petals fall when the wind gusts (wind.jl WIND[:now]). Instanced plots only (one plot per kind).",
+      "est_minutes": 40.0,
+      "id": 452,
+      "kind": "world",
+      "priority": 1,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Call a thunderstorm yourself: T when you are Lumi",
-      "updated": "2026-11-25T02:28:09.428"
+      "title": "A blossom hill: a new corner of the island in pink",
+      "updated": "2026-11-25T03:24:12.332"
     }
   ]
 }

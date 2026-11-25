@@ -216,6 +216,14 @@ end
 function dim_sun!(s::Shower, w)
     fade = s.active ? clamp(min(w.t - s.started, s.until - w.t) / 5, 0, 1) : 0.0
     d = 1f0 - 0.1f0 * round(3 * fade)          # 1.0 … 0.7 (0.6 with the wet ground was gloomy)
+    # a thunderstorm (storm.jl) greys the day further while its cloud is overhead, in the same 0.1 steps (s77,
+    # perfectionist-0076: "under the black cloud the island stays in full noon sun"); the storm lasts 21 s
+    st = isdefined(Main, :STORM) ? get(Main.STORM, :sys, nothing) : nothing
+    if st !== nothing && st.state === :on
+        el = w.t - st.t0
+        f = clamp(min(el / 3, (21.0 - el) / 3), 0, 1)
+        d = min(d, 1f0 - 0.1f0 * round(7 * f))     # down to 0.3
+    end
     NG.SUN_DIM[] == d || (NG.SUN_DIM[] = d)
 end
 

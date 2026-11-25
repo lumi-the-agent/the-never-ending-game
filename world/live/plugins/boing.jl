@@ -45,7 +45,7 @@ emote(id, kind) = isdefined(Main, :EMOTES) && haskey(Main.EMOTES, :emote) && Bas
 flat(a, b) = hypot(a[1] - b[1], a[2] - b[2])
 free_one(c) = !c.controlled && c.action !== :sleep && c.goal.kind ∉ NG.BUSY_GOALS && c.goal.kind ∉ (:follow, :interact, :answer)
 # the party calls everyone from their pastimes (fishing, pebbles, sunbathing), but not from another event
-const KEEP = (:follow, :interact, :answer, :circle, :rain, :build, :tinker, :kite, :kitewatch, :boing, :boing_walk, :sleep, :paint, :giant)
+const KEEP = (:follow, :interact, :answer, :circle, :rain, :build, :tinker, :kite, :kitewatch, :boing, :boing_walk, :sleep, :paint, :giant, :storm, :toadstool)
 const PULL = (:fish, :pebble, :feel, :sunset, :tag, :present, :fetch)   # pastimes a BOING TIME! call beats
 party_one(c) = !c.controlled && c.action !== :sleep && c.goal.kind ∉ KEEP && (c.goal.kind ∉ NG.BUSY_GOALS || c.goal.kind in PULL)
 

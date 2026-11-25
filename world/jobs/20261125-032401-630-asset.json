@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-25T03:24:01.630",
+  "id": "20261125-032401-630-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 6000,
+    "prompt": "a low round shrub covered in tiny white and pink flowers, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground, no pot",
+    "tags": [
+      "blossom",
+      "shrub",
+      "region"
+    ]
+  },
+  "status": "queued"
+}

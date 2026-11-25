@@ -60,7 +60,7 @@ function spot_from(w, c, d, r)
     return nothing
 end
 
-function start_storm!(s::Storm, game)
+function start_storm!(s::Storm, game; player = false)
     w = game.world
     (isdefined(Main, :BOING) && haskey(Main.BOING, :center)) || return false
     me = lumi_of(w)
@@ -70,7 +70,7 @@ function start_storm!(s::Storm, game)
     d = Vec2f(me.pos[1] - b[1], me.pos[2] - b[2]); n = hypot(d[1], d[2])
     d = n < 0.5f0 ? Vec2f(1, 0) : d / n
     # already out in the meadow near the toadstool: it stays where it is (a walk can wedge between trunks)
-    sp = 3f0 < n < 14f0 ? me.pos : spot_from(w, s.centre, d, 5f0)
+    sp = player || 3f0 < n < 14f0 ? me.pos : spot_from(w, s.centre, d, 5f0)
     sp === nothing && return false
     set_spot!(s, sp)
     s.lumi = me.id; s.state = :on; s.t0 = w.t; s.struck = 0; s.said = 0
@@ -78,9 +78,13 @@ function start_storm!(s::Storm, game)
     ST[:strikes] = Tuple{Float64,Symbol}[]
     ST[:marks] = Point3f[]
     delete!(ST, :bolt); delete!(ST, :soot)
-    NG.leave_interactions!(w, me)
-    me.goal = NG.Goal(:storm, s.spot, :proud, 60.0, w.t + 60, false, 0, true)
-    NG.say!(w, me, "Ooh, look at that cloud!"; duration = 2.5)
+    # called by the player (T as Lumi, s77): the storm comes to them and leaves the steering alone
+    ST[:player] = player
+    if !player
+        NG.leave_interactions!(w, me)
+        me.goal = NG.Goal(:storm, s.spot, :proud, 60.0, w.t + 60, false, 0, true)
+    end
+    NG.say!(w, me, player ? "Uh oh. Was that... my cloud?" : "Ooh, look at that cloud!"; duration = 2.5)
     ST[:waited] = 0.0; ST[:check] = (me.pos, w.t)
     NG.emit!(w, :storm_start; who = me.name)
     return true
@@ -135,7 +139,7 @@ function strike!(s::Storm, w, me, k)
         # the last one: Lumi's crest
         target = me.pos + Point3f(0, 0, 1.55f0)
         ST[:soot] = (target, w.t)
-        me.goal = NG.Goal(:storm, me.pos, :gasp, 60.0, w.t + 60, true, 0, false)
+        me.controlled || (me.goal = NG.Goal(:storm, me.pos, :gasp, 60.0, w.t + 60, true, 0, false))
         me.action = :gasp
         NG.say!(w, me, "!!!"; duration = 1.6)
         NG.emit!(w, :storm_zap; who = me.name)
@@ -161,6 +165,7 @@ function finish!(s::Storm, game)
     me = NG.creature(w, s.lumi)
     me !== nothing && !me.controlled && me.goal.kind === :storm && NG.choose_goal!(me, w)
     empty!(s.huddle)
+    ST[:player] = false
     s.state = :idle
     s.next_t = w.t + GAP[1] + (GAP[2] - GAP[1]) * rand(w.rng)
     NG.emit!(w, :storm_end)
@@ -170,6 +175,13 @@ function NG.step!(s::Storm, game, dt)
     w = game.world
     s.next_t < 0 && (s.next_t = w.t + 2400.0)
     draw!(s, game)
+    # T while the player is Lumi calls the storm (perfectionist-0076: the best gag could not be played)
+    tdown = Makie.Keyboard.t in game.keys_down
+    if tdown && !get(ST, :tdown, false) && s.state === :idle
+        me = lumi_of(w)
+        me !== nothing && me.controlled && start_storm!(s, game; player = true)
+    end
+    ST[:tdown] = tdown
     if s.state === :idle
         testing = game.tests !== nothing && NG.running(game.tests)
         busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
@@ -182,22 +194,25 @@ function NG.step!(s::Storm, game, dt)
         return
     end
     me = NG.creature(w, s.lumi)
-    if me === nothing || me.controlled || game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
+    pl = get(ST, :player, false)
+    if me === nothing || me.controlled && !pl || game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
         return finish!(s, game)
     end
     el = w.t - s.t0
-    me.goal.kind === :storm || (me.goal = NG.Goal(:storm, s.spot, :proud, 60.0, w.t + 60, false, 0, true))
-    me.goal.until = w.t + 60
+    if !me.controlled
+        me.goal.kind === :storm || (me.goal = NG.Goal(:storm, s.spot, :proud, 60.0, w.t + 60, false, 0, true))
+        me.goal.until = w.t + 60
+    end
     # the first bolt waits until Lumi is out in the open, in the storm's view (at most 20 s: it may be stuck)
     # no progress in 3 s: the storm comes to where Lumi is
-    if s.struck == 0 && !me.goal.arrived && w.t - ST[:check][2] > 3
+    if !pl && s.struck == 0 && !me.goal.arrived && w.t - ST[:check][2] > 3
         if hypot(me.pos[1] - ST[:check][1][1], me.pos[2] - ST[:check][1][2]) < 0.4f0
             set_spot!(s, me.pos)
             me.goal = NG.Goal(:storm, me.pos, :proud, 60.0, w.t + 60, true, 0, false)
         end
         ST[:check] = (me.pos, w.t)
     end
-    if s.struck == 0 && !me.goal.arrived && el > T_GATHER && get(ST, :waited, 0.0) < 20
+    if !pl && s.struck == 0 && !me.goal.arrived && el > T_GATHER && get(ST, :waited, 0.0) < 20
         ST[:waited] = get(ST, :waited, 0.0) + (el - T_GATHER)
         s.t0 = w.t - T_GATHER
         el = T_GATHER
@@ -211,7 +226,7 @@ function NG.step!(s::Storm, game, dt)
     if s.struck == length(STRIKES)
         h = el - STRIKES[end]
         act = h < 1.8 ? :gasp : h < 4.2 ? :sigh : :laugh
-        me.action = act; me.goal.action = act
+        me.controlled || (me.action = act; me.goal.action = act)
         if h >= 1.8 && s.said == 0
             s.said = 1
             NG.say!(w, me, "...I'm fine."; duration = 2.6)
@@ -224,7 +239,7 @@ function NG.step!(s::Storm, game, dt)
                 i <= 3 && NG.say!(w, c, LAUGHS[mod1(i, length(LAUGHS))]; duration = 2.4)
             end
         end
-    elseif me.goal.arrived
+    elseif !me.controlled && me.goal.arrived
         # out in the open, wings out at the sky
         me.action = :proud; me.goal.action = :proud
         turn_to!(me, atan(s.from[2], s.from[1]), dt)
@@ -280,7 +295,8 @@ function draw!(s::Storm, game)
     # the cloud: rolls in from the side, stays over the toadstool and Lumi, rolls on
     ps = fill(Point3f(0, 0, -60), NPUFF); ms = fill(Vec3f(0), NPUFF)
     if on
-        mid = (s.centre + s.spot) / 2
+        me_ = NG.creature(w, s.lumi)
+        mid = get(ST, :player, false) && me_ !== nothing ? me_.pos : (s.centre + s.spot) / 2   # it follows the player
         k = 45f0 * (1f0 - Float32(ease(el / T_GATHER))) - 45f0 * Float32(ease((el - (T_END - 4)) / 4))
         c = mid + Point3f(k * s.from[1], k * s.from[2], CLOUD_Z) + Point3f(0.4f0 * sin(0.3f0 * el), 0, 0)
         for i in 1:NPUFF
@@ -338,7 +354,7 @@ function storm_group(w)
     s = ST[:sys]
     s.state === :idle && return nothing
     me = NG.creature(w, s.lumi)
-    me === nothing && return nothing
+    (me === nothing || me.controlled) && return nothing     # the player's chase camera stays theirs
     return (me.id, Point3f[me.pos, s.centre], s.view)
 end
 

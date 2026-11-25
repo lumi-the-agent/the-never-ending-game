@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T02:52:14.640",
+  "finished": "2026-11-25T03:04:42.264",
+  "id": "20261125-025214-640-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 20000,
+    "prompt": "a big cute red toadstool mushroom with round white spots on a wide domed cap and a thick short cream stem, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground, full object",
+    "tags": [
+      "toadstool",
+      "boing"
+    ]
+  },
+  "result": {
+    "created": "2026-11-25T03:04:41.879",
+    "faces": 19680,
+    "id": "20261125-025214-640-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-025214-640-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-025214-640-asset/mesh.jls",
+    "prompt": "a big cute red toadstool mushroom with round white spots on a wide domed cap and a thick short cream stem, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground, full object",
+    "seconds": 738.0,
+    "tags": [
+      "toadstool",
+      "boing"
+    ]
+  },
+  "seconds": 743.1,
+  "started": "2026-11-25T02:52:18.959",
+  "status": "done"
+}

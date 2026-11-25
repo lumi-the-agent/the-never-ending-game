@@ -170,7 +170,7 @@ function animate(m::Crest, c::PoseCtx)
         s = 1.2f0 * (1f0 - c.extra)
         θ = 0.55f0 * exp(-2.2f0 * s) * sin(11f0 * s)
     elseif a === :proud || a === :gasp            # up and quivering
-        θ = -0.1f0 + 0.12f0 * sin(23c.t)
+        θ = -0.1f0 + 0.08f0 * sin(12c.t)          # a quiver, not a buzz (was 0.12 at 23 rad/s)
     elseif a === :dance
         θ = 0.3f0 * sin(6c.t)
     elseif a === :sleep
@@ -192,7 +192,7 @@ function animate(m::Wing, c::PoseCtx)
     a = c.action
     up = 0f0                                      # how far it swings out from the side (rad)
     if a === :proud                               # the big wing-spread hop
-        up = 1.25f0 + 0.3f0 * sin(13c.t)
+        up = 1.25f0 + 0.18f0 * sin(8c.t)          # a shimmer (0.3 at 13 rad/s swung the tips at 10 m/s, s77)
     elseif a === :gasp
         up = 0.7f0
     elseif a === :fly                             # full beats (above the back to below the belly), held out wide to glide

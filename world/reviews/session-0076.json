@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "All 12 overview frames share the same sunny key light and hard shadows.",
+      "severity": "medium",
+      "suggestion": "Dim the sun and grey the sky while the storm runs (like showers.jl dim_sun!), flash ambient on strikes.",
+      "what": "The storm does not change the light: sky, sun and shadows stay bright blue and sunny under a black cloud, so it reads as a cloud on a nice day. Only the bolt flash lights the cloud.",
+      "where": "plugins/storm.jl; reviews/motion/session-0076/thunderstorm-overview.jpg"
+    },
+    {
+      "evidence": "Steps sheet: Lumi tiny at the right of the frame.",
+      "severity": "medium",
+      "suggestion": "Push in on Lumi for the strikes; use softer grey puffs.",
+      "what": "Lumi, the subject of the gag, is about 40 px tall at the zap; the hit and the hard black soot balls are hard to read.",
+      "where": "movies/storm.jl framing; thunderstorm-steps.jpg"
+    },
+    {
+      "evidence": "reviews/s76-now.png; live_status frame stats.",
+      "severity": "low",
+      "suggestion": "Re-run live motion twice on a quiet sandbox and view a close creatures sheet of a running piglet and blob.",
+      "what": "My own sandbox screenshot (reviews/s76-now.png, 11:06, snow day with paint spots) shows Pickles/Sniffsalot and Lumi standing and chatting with sane poses, but no run was happening, so the gait fix for running crabs, piglets and blobs is verified only by the author's motion measure, which dismisses a sandbox hitch and admitted at one point that piglets and blobs still rocked.",
+      "where": "plugins/gait.jl, media/s76/motion-cap3"
+    }
+  ],
+  "summary": "A new island event (thunderstorm with huddling friends and Lumi getting zapped) plus gait and pose-blend fixes; the sandbox runs healthy (frame median 3.7 ms, p95 6.8 ms, storm system 0.01 ms, no failed systems) and creatures look intact up close. The storm film reads but the sky stays sunny and Lumi is tiny; I did not see a storm run live.",
+  "superseded_by": "perfectionist-0076.json",
+  "surprise": 6,
+  "surprise_why": "A scripted storm where friends flee and Lumi gets hit by lightning is a funny twist, though built from existing event machinery.",
+  "verdict": "pass"
+}

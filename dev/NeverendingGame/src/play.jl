@@ -6,7 +6,7 @@ mutable struct JumpIn <: MiniGame
 end
 JumpIn(g::Game) = JumpIn(creature(g.world, "Lumi").id)
 game_title(::Type{JumpIn}) = "Jump in (WASD)"
-game_description(::Type{JumpIn}) = "Walk as Lumi with WASD: E twice waves a friend into your parade, X sneezes, H hiccups, G flies, C sings, P paint fight."
+game_description(::Type{JumpIn}) = "Walk as Lumi with WASD: E twice waves a friend into your parade, X sneezes, H hiccups, G flies, C sings, P paints, T storms."
 
 "Footprint radius (at scale 1) of the props creatures cannot walk through; the Separation plugin fills it."
 const SOLID_FOOTPRINT = Dict{Symbol,Float32}()

@@ -34,6 +34,12 @@ function doing(w, c)
         a === :laugh && return ("laughs at Lumi's crest", 1)
         return ("huddles under the toadstool", 1)
     end
+    if g === :toadstool                                                             # plugins/toadstool.jl
+        a in (:walk, :run) && return ("hurries over to the big toadstool", 1)
+        a === :scared && return ("ducks: the toadstool went POP!", 0)
+        a in (:jump, :dance, :proud) && return ("cheers for the new toadstool", 0)
+        return ("watches the big toadstool wobble", 0)
+    end
     g in (:fetch, :rally_wait) && return ("is playing ball", 1)
     if g === :tag                                                                   # plugins/tag.jl
         tg = isdefined(Main, :TAG_STATE) ? Main.TAG_STATE[:game] : nothing

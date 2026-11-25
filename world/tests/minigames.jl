@@ -1547,6 +1547,26 @@ uitest("Flight: jumped in, G takes off and the camera keeps the flying Lumi in v
     fly_click(game, "Stop")
 end
 
+uitest("Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours") do game
+    game.dash.play_menu.i_selected[] = 0
+    wait_frames(game, 2)
+    fly_click(game, "Play")
+    check(game.minigame isa NeverendingGame.JumpIn, "Play did not jump in")
+    s = Main.STORM[:sys]
+    s.state === :idle || Base.invokelatest(game.plugins["storm"].mod.finish!, s, game)
+    interact!(game, [KeyDown(Keyboard.t), Wait(0.2), KeyUp(Keyboard.t)])
+    check(s.state === :on, "T did not start a storm: state $(s.state)")
+    for i in 1:20
+        wait_seconds(game, 1.0)
+        s.struck >= 1 && break
+    end
+    me = creature(game.world, "Lumi")
+    check(s.struck >= 1, "no strike within 20 s: struck $(s.struck), state $(s.state)")
+    check(me.controlled, "the storm took Lumi from the player")
+    screenshot(game, "storm-player")
+    fly_click(game, "Stop")
+end
+
 uitest("Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)") do game
     fly_choose(game, "Firefly catch (WASD)")
     fly_click(game, "Play")

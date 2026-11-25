@@ -26,7 +26,7 @@ const START = ("You got me!", "PAINT FIGHT!!!", "Take THAT!", "Hee hee!")
 const HIT = ("SPLAT!", "Hey!", "Got you!", "Bullseye!", "Eek!", "Not my face!", "Ha ha!", "Again!")
 const END = ("Look at us!", "I'm a rainbow!", "Best. Day. Ever.", "Again tomorrow?", "So pretty!")
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :giant)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :giant, :storm, :toadstool)
 
 push!(NG.BUSY_GOALS, :paint)
 

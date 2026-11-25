@@ -14,7 +14,7 @@ const NFLAKES = 600
 const BOX = 16f0                  # flakes fall in a box this wide round what the camera looks at
 const SNOW = RGBf(0.95, 0.97, 1.0)
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :lesson, :storm, :toadstool)
 const SHOUT = ("SNOW!!!", "It's SNOWING!", "Snow! Real snow!", "Catch a flake!", "Brrr! Wheee!")
 
 push!(NG.BUSY_GOALS, :snowman)
@@ -98,8 +98,13 @@ function draw_flakes!(game, dt, density)
     n = round(Int, density * NFLAKES)
     eye = game.rig.eye
     ps = [i <= n ? Point3f(ctr[1] + fp[i][1], ctr[2] + fp[i][2], ctr[3] - 1f0 + fp[i][3]) : Point3f(0, 0, -50) for i in 1:NFLAKES]
-    # flakes right at the lens looked like snowballs: none within 4 m of the eye
-    ms = [i <= n && norm(ps[i] - eye) > 4f0 ? Vec3f(0.035f0 + 0.015f0 * (i % 3)) : Vec3f(0) for i in 1:NFLAKES]
+    # flakes right at the lens looked like snowballs: none within 2.5 m of the eye, and a near flake is never more
+    # than 0.6% of its distance across (~1% of the frame width; perfectionist-0076: "flat discs as big as a head")
+    ms = map(1:NFLAKES) do i
+        i <= n || return Vec3f(0)
+        d = norm(ps[i] - eye)
+        d > 2.5f0 ? Vec3f(min(0.035f0 + 0.015f0 * (i % 3), 0.006f0 * d)) : Vec3f(0)
+    end
     Makie.update!(S[:flakes]; arg1 = ps, markersize = ms)
 end
 

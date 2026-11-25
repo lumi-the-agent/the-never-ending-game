@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-25T03:24:01.562",
+  "id": "20261125-032401-562-asset",
+  "kind": "asset",
+  "params": {
+    "faces": 12000,
+    "prompt": "a small cherry blossom tree with a round fluffy crown of pale pink blossoms and a short curved brown trunk, plush clay toy style, soft rounded shapes, seen from the side, resting on the ground",
+    "tags": [
+      "blossom",
+      "tree",
+      "region"
+    ]
+  },
+  "started": "2026-11-25T03:24:27.657",
+  "status": "running"
+}

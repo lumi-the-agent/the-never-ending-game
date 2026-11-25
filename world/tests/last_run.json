@@ -2,25 +2,53 @@
   "results": [
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "file": "dashboard.jl",
+      "name": "W walks Lumi while jumped in",
       "passed": true,
-      "seconds": 13.5
+      "seconds": 3.1
+    },
+    {
+      "error": "",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
+      "passed": true,
+      "seconds": 18.6
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
+      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
       "passed": true,
-      "seconds": 13.5
+      "seconds": 8.3
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
+      "name": "Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back",
       "passed": true,
-      "seconds": 27.5
+      "seconds": 26.3
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
+      "passed": true,
+      "seconds": 19.0
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours",
+      "passed": true,
+      "seconds": 7.9
+    },
+    {
+      "error": "",
+      "file": "s51_play.jl",
+      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Lumi in view",
+      "passed": true,
+      "seconds": 15.3
     }
   ],
-  "time": "2026-11-25T02:16:40.598"
+  "time": "2026-11-25T03:23:25.908"
 }

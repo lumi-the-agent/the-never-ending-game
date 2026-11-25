@@ -18,7 +18,7 @@ const T_WOBBLE = 5.0
 const T_HATCH = 4.0
 const REACH = 14f0
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :storm, :toadstool)
 const SHELL = RGBf(1.0, 0.9, 0.62)
 const COME = ("An egg!", "Whose egg is that?", "Is it yours, Lumi?", "Ooooh!")
 const WOBBLE = ("Did it move?!", "It moved!", "Shhh!", "Something's in there!")

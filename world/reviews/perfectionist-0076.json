@@ -1,0 +1,247 @@
+{
+ "verdict": "needs_work",
+ "summary": "Three of the four friend species finally have real plush bodies (piglets, jelly blobs, woolly sheep), and the island now gets a thunderstorm that ends with Lumi zapped into a puff of soot, with thunder in the film. I played all four games for a minute each, and each has a goal, a clear answer to every key and a reason to play again (levels, bests, a basket that fills). The path traced view is lovely. But the everyday raster picture has hardly changed since s64: the primitive Big Boing toadstool sat in the middle of all three follow shots of a conga. The storm happens under a blue sky, the new effects are flat discs and pearls, and a pig jumped 5.2 m in one frame.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "A path traced orbit at 11:29 (perf76/traced.png) looks like a polished toy diorama, with soft shadows and lit clouds. The raster that players see has no warm light: at 19:06 it is dark flat green with white Fresnel rims (media/s76/dusk-1906.png). In the storm films the sky stays blue and sunlit under the black cloud. The browser has no shadows at all."
+  },
+  "world": {
+   "score": 6,
+   "why": "Next to session-0064, the eye-level shot of session-0076 is the same composition (only snow and time differ), and the overview only gained the toadstool (perf76/progress-*.png). The snow is a flat white sheet under green trees that melts into white paper scraps (perf76/orbit2.png). No new area in 13 sessions."
+  },
+  "props": {
+   "score": 6,
+   "why": "40 generated assets, used well around the cottage and workshop. The biggest thing on screen is still the primitive red-and-white toadstool: it covered the right half of the follow view (perf76/follow1.png), and the storm plays under it."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "Up from 6: the piglets, jelly blobs and sheep are real, appealing bodies with stepping legs (perf76/motion/creatures.png). The crabs are still sphere primitives with a hat and bunny ears, and the new bodies have no mouth or expression, so they cannot show a feeling."
+  },
+  "animation": {
+   "score": 5,
+   "why": "Two live_motion runs: 8 of 10, then 6 of 10 moving well. Sir Sniffsalot jumped 5.20 m in one frame (156 m/s), and its body judders (48%). Lumi's crest snaps 0.25-0.43 m in one frame, and its beak 0.36 m. In the second run the sheep's body and Lumi's wing judder too. The flight films flow well apart from an opening camera jump."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Played through interact! for about a minute each. Berry race: won 9 to 5 in 46 s; the end card promises level 2 and a new best, and the berries go to a basket by the cottage (16 now). Firefly catch: 7 of 8 in 60 s, with a tip on the end card and the flies kept at the lantern. Hide and seek: all 4 found in 40.8 s, then level 2 with 100 s. Jump in: X, H, C, P and G each start a gag at once; E twice did nothing visible with no friend near. Still the same three mini games as 13 sessions ago, and the storm cannot be played (reviews/perf76/berry-sheet.png, firefly-sheet.png, hideseek-sheet.png, jump-sheet.png)."
+  },
+  "wow": {
+   "score": 7,
+   "why": "Lumi zapped into soot under a black cloud, with thunder in the film, is a real shareable gag. The makeover puff is cute too. The execution undercuts it: in a static wide shot the soot is flat black circles and Lumi is small on the right (thunderstorm-zap.png)."
+  },
+  "camera": {
+   "score": 5,
+   "why": "The follow camera framed a conga three times in 12 s, and the toadstool was in the middle of all three shots (perf76/cam-follow-row.png). The free camera starts with Lumi and a pig cut by the frame edge and the toadstool over half the view (perf76/cams.png). Orbit is fine, with blobby crowns cut at the bottom corners. The storm film is one static wide shot. The mini game views are good now (pitch 25 deg follow, 18 deg orbit)."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The side panel is readable. 'New on the island: Running friends that shiver' reads like a bug note. The jump-in key strip lists 'M grow', which 'Things to try' never mentions. In the browser the thought bubble is a flat grey box with square dots (perf76/browser/load-6s.png). The dark strip above the 3D view is still there."
+  },
+  "style": {
+   "score": 5,
+   "why": "The new plush bodies fit the clay world. The new effects do not: soot as matte black spheres, the cloud ring as a string of pearls, the snow as a white sheet with giant flat flake discs in front of the camera, and paint spots as raised balls stuck on bodies (perf76/motion/motion.png)."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame 3.94 ms median, 6.39 ms p95; the human's game 2.71 / 4.41 ms; 30 fps steady. The browser page takes 11.2 s until its canvas exists (perf76/browser). A live screenshot costs the human's game 11.8 s."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "props",
+   "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
+   "todo": 424,
+   "what": "Fourth review in a row: the primitive red cap with white discs is the largest object in the follow view, the overview and both storm films. The storm, the boing parties and the zap all happen under it, so it is in every hero shot.",
+   "where": "plugins/boing.jl (toadstool plot), camera clutter lists",
+   "evidence": "reviews/perf76/follow1.png (cap over the right half), progress/session-0076/overview.png (bottom right), reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, reviews/perf76/cam-follow-row.png (three conga shots in 12 s, all with the cap in the middle), perf76/cams.png (free camera start)",
+   "suggestion": "Generate a chunky clay toadstool with a bumpy cap, a gill underside and a squat stem, in a matching size. Add it to CAMERA_BLOCKERS / lensclear so the follow camera never parks behind it. Give it a squash-and-stretch wobble when someone bounces.",
+   "done_when": "A follow-view screenshot near the toadstool shows a generated mesh covering less than 20% of the frame, and the overview shows the new asset."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Weather that changes the light: storm dusk, snow glare, golden raster",
+   "todo": 237,
+   "what": "Under the black storm cloud the island stays in full noon sun with a blue sky and white puffy clouds, so the storm is not scary. The raster's golden hour is still flat dark green, and the stones get bright white rims at 19:06.",
+   "where": "plugins/storm.jl, showers.jl dim_sun!, RayMakie raster_material.jl coat Fresnel",
+   "evidence": "reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, media/s76/dusk-1906.png",
+   "suggestion": "While the storm is overhead, dim the sun to ~30%, grey and darken the sky, hide the white cumulus, and make each bolt flash the whole scene for 2 frames. Use the same lever for a warm low key light in the raster at 17-19 h.",
+   "done_when": "The mean luminance of the 3D area in a storm screenshot is at least 35% below the same camera without a storm, the sky has no blue above the cloud, and a raster screenshot at 18:30 shows warm (R>G) lit grass."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
+   "todo": 236,
+   "what": "The two crabs are still sphere-and-stick primitives with party hats and bunny ears next to the new plush pigs, sheep and blobs. The new bodies have no mouths or brows: the pig is a blank face, and a gasp, laugh or sulk reads the same.",
+   "where": "plugins/makeover.jl, outfits.jl, feelings",
+   "evidence": "reviews/perf76/motion/creatures.png (rows 2-3 crabs, rows 4-5 pigs without a mouth), media/s76/dusk-1906.png",
+   "suggestion": "Cut the finished crab asset like the others (shell, legs, claws in a V). Add decal eyes, brows and mouths per body that `NG.feel!` swaps: happy, scared, laughing, sulking.",
+   "done_when": "A traced lineup of all five species shows generated bodies only, and two stills of one pig show visibly different mouths for :happy and :scared."
+  },
+  {
+   "severity": "high",
+   "category": "style",
+   "title": "Effects with volume: soot, cloud ring, snow, paint that read as matter",
+   "todo": 438,
+   "what": "Every new effect is a primitive: the zap's soot is opaque black flat circles, the flight's cloud ring is a string of equal pearls, the snow is a flat white sheet under green trees that melts into white paper scraps, the flakes are flat discs as big as a head in front of the camera, and paint spots are raised balls glued on the bodies.",
+   "where": "plugins/storm.jl soot, soar.jl ring, snowday.jl, paintfight.jl body spots",
+   "evidence": "site/img/thunderstorm-zap.png, reviews/motion/perfectionist-0076/cloud-ring-overview.jpg (bottom row), reviews/perf76/orbit2.png (white scraps), reviews/perf76/follow2.png (flakes), reviews/perf76/motion/motion.png (balls on Lumi's chest)",
+   "suggestion": "Soot: grey, semi-transparent puffs of varying size that grow and fade, plus a sooty tint on Lumi for a minute. Ring: clumps of uneven size that spread and thin out. Snow: caps on tree crowns and rocks, grass tufts hidden under the blanket, a soft melting edge, and flakes culled near the camera. Paint: flattened decals on the body, not spheres.",
+   "done_when": "A still of the zap shows grey translucent soot, the ring shows uneven puffs, a snow screenshot shows white on the tree crowns and no flake bigger than 2% of the frame width, and Lumi's paint spots sit flush with its body in a close-up."
+  },
+  {
+   "severity": "high",
+   "category": "animation",
+   "title": "Snaps and teleports: a pig jumps 5 m, Lumi's crest a third of a metre",
+   "todo": 332,
+   "what": "Sir Sniffsalot jumped 5.20 m in one frame (156 m/s), and its body judders. Lumi's crest snaps 0.25-0.43 m in one frame, its beak 0.36 m, and the crest swings at 7-13 m/s. In one of the two runs the crab's ears and tail, the sheep's body and Lumi's wing move in uneven steps.",
+   "where": "engine bird.jl / herd.jl pose blending (POSE_BLEND only on action changes)",
+   "evidence": "live_motion twice in the sandbox: reviews/perf76/motion/motion.png (Lumi), reviews/perf76/motion2/motion.png (Sir Sniffsalot: 'jumps 5.20 m in one frame at 1.6 s')",
+   "suggestion": "Find what moves a creature 5 m at once (a dance ring or conga placing its members, an unstick, a parade slot) and walk it there instead. Blend pose changes inside an action, not only between actions. Spring-damp the crest so it flops with overshoot.",
+   "done_when": "Two live_motion runs report no snap and no 'moves at' over 10 m/s for any creature, and Lumi is under 'Moving well'."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Storm and flight films: closer on Lumi, no opening snap",
+   "todo": 447,
+   "what": "The storm film is one static wide shot, with a dark cloud ceiling over the top third and Lumi tiny on the right edge at the zap. The cloud-ring film starts with a 0.137 camera jump in its first frame. In the firefly game a firefly's halo sat on the lens as a yellow disc over a quarter of the frame.",
+   "where": "movies/storm.jl, movies/flight.jl (soar), firefly_catch.jl near-camera halos",
+   "evidence": "reviews/motion/perfectionist-0076/thunderstorm-overview.jpg, cloud-ring-steps.jpg (0.00 s), reviews/perf76/firefly-wad.png",
+   "suggestion": "Storm: a wide establishing shot, then a cut to a medium shot of Lumi with its wings up, the friends huddled behind, and the bolt in frame. Start every film after the camera has settled. Hide fireflies within 1.5 m of the eye.",
+   "done_when": "The storm film's motion sheet shows Lumi over 15% of the frame height at the zap, no film jump in its first 0.2 s, and no firefly disc in 10 firefly-game screenshots."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Call a thunderstorm yourself, and one island event at a time",
+   "todo": 451,
+   "what": "The best new gag only comes by itself once every few island hours: a player cannot trigger or play it. Also, the storm's :storm goal is in BUSY_GOALS but in no other event's KEEP tuple. The notes say BUSY_GOALS alone did not stop the flight from stealing the choir, so a choir, conga or flight can take the huddling friends.",
+   "where": "plugins/storm.jl, KEEP in choir/conga/freeze/flight/giant/egg/flylesson/boing",
+   "evidence": "grep '^const KEEP' plugins/*.jl: no :storm outside storm.jl",
+   "suggestion": "Make T call the storm while you are Lumi: you steer away from the bolts, the friends cheer each near miss, and the fourth bolt still finds you. Add :storm to every KEEP (todo 389).",
+   "done_when": "A play test presses T as Lumi and sees the storm start and a strike within 20 s, and grep shows :storm in every event plugin's KEEP."
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "title": "A new place north of the pond that the overview shows",
+   "todo": 395,
+   "what": "Thirteen sessions without a new area. The overview from session 64 to 76 differs only by weather and the toadstool.",
+   "where": "north of the pond (overview camera)",
+   "evidence": "media/progress/session-0076/overview.png vs session-0064",
+   "suggestion": "Build a place with its own ground colour, props and an activity, such as an orchard, a hot spring or a windmill hill, where creatures do something they do nowhere else.",
+   "done_when": "The progress overview shows a new region with its own ground colour and at least three generated props that are not in session-0076's overview."
+  }
+ ],
+ "todos": [
+  {
+   "id": 236,
+   "action": "keep",
+   "why": "Pigs, blobs and sheep are done; the crab and faces remain (finding 3)",
+   "title": "Friends as lovable as Lumi: the crabs' body and faces that feel"
+  },
+  {
+   "id": 237,
+   "action": "keep",
+   "why": "Finding 2: storm light and golden raster",
+   "title": "Weather that changes the light: storm dusk, snow glare, golden raster"
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Feelings on the new bodies need faces; linked to 236"
+  },
+  {
+   "id": 424,
+   "action": "keep",
+   "why": "Finding 1, still the biggest prop on screen"
+  },
+  {
+   "id": 449,
+   "action": "keep",
+   "why": "Dusk rims confirmed in media/s76/dusk-1906.png (renderer Fresnel)"
+  },
+  {
+   "id": 438,
+   "action": "keep",
+   "why": "Finding 4, now also soot, ring, snow and paint",
+   "title": "Effects with volume: soot, cloud ring, snow, paint that read as matter"
+  },
+  {
+   "id": 447,
+   "action": "keep",
+   "why": "Finding 6; the cloud-ring film opens with a camera jump",
+   "title": "Storm and flight films: closer on Lumi, no opening snap"
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "Finding 5, Lumi's snaps"
+  },
+  {
+   "id": 451,
+   "action": "keep",
+   "why": "Finding 7"
+  },
+  {
+   "id": 389,
+   "action": "keep",
+   "why": "The storm's :storm is missing from the other events' KEEP"
+  },
+  {
+   "id": 395,
+   "action": "keep",
+   "why": "Finding 8"
+  },
+  {
+   "id": 436,
+   "action": "drop",
+   "why": "Folded into finding 6 (firefly halo and cottage in the mini game view)"
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "Still the same three mini games; a scored paint fight would use an existing gag"
+  },
+  {
+   "id": 416,
+   "action": "keep",
+   "why": "Low, still true for scaled herds in traced films"
+  },
+  {
+   "id": 291,
+   "action": "drop",
+   "why": "Superseded: the presents plugin exists (Sir Sniffsalot shows off a present from Lumi); the player version is a lower priority than the findings"
+  },
+  {
+   "id": 315,
+   "action": "drop",
+   "why": "Duplicate of 237/449 (warm low light), and the traced films already show a golden low sun"
+  }
+ ],
+ "engine": [
+  {
+   "what": "RayMakie raster: a clearcoat Fresnel term reflects the dusk sky as bright white rims on stones and pines while the lit ground is dark",
+   "evidence": "media/s76/dusk-1906.png; RayMakie plots/raster_material.jl ~L97/500 (the author's note in journal 2026-11-25)"
+  },
+  {
+   "what": "A live screenshot of the human's game costs its frame loop 11.8 s median (20 s p95)",
+   "evidence": "state/perf.json live:screenshot"
+  },
+  {
+   "what": "The worker's night storm clip had been 'running' since 02:27 and only left a 48-byte silent mp4",
+   "evidence": "jobs/20261125-022703-086-clip.json, media/s76/storm-night-traced-silent.mp4"
+  },
+  {
+   "what": "WGLMakie (browser): the speech/thought bubble draws as a flat grey rectangle with square dots, and there are no shadows",
+   "evidence": "reviews/perf76/browser/load-6s.png"
+  }
+ ],
+ "process": "Sessions 74-76 finally answered the creature finding that five reviews repeated (three plush species). The author took the human's goal 6 seriously: a flying pose, eased landings, gait caps, pose blending, measured motion, though a 5 m teleport still slipped through. The mini games are in good shape: every one I played has levels, bests and a world reward. Goal 1 moved with the storm, and goal 5 with films with sound on Lumi's pages. Goal 2 has films but no release the author calls their best yet. Goal 3 (GPU physics, Maelstrom water, spray paint) has barely moved: paint is spheres and splats, and nothing falls, rolls or splashes on the GPU. Goal 4 (rendering) is stuck: the path tracer is lovely, the raster has no golden hour, and the browser has no shadows. It was last checked in s53. Each session adds one more island-wide gag event, each with its own KEEP tuple to sync, while the picture that fills every frame stays as it was in s64 (the progress shots side by side). The next sessions should fix the toadstool, the storm and dusk light, and the effect materials. Then they should make one gag playable (T for the storm), and start goal 3 with one GPU-simulated thing the player can splash or knock over.",
+ "addressed": true,
+ "agent_notes": "s77: (1) Toadstool: done. The Big Boing toadstool is now a generated clay mesh (asset 20261124-150825-248, plugins/toadstool.jl), smaller than the old dome (cap ~1 m radius instead of 1.9), and it arrives as an event: the friends gather, the old one goes POP in spores and the real one springs up; boing's bounces squash it. Sandbox shots media/s77/toad-look2.png, toad-grow2.png, toad-after.png; published (the human's game plays the show after the builder's crate). (2) Storm under a blue sky: not yet, todo 237 (weather light). (3) Crabs and faces: todos 236 and 325, not this session. (4) Effects: the soot is smaller grey puffs (s76) and the ring lumpy clusters (s75); snow, flakes and paint spots stay in 438. (5) Snaps: s76 capped gaits and blends poses (8 of 10 moving well, no vibrating); the 5.2 m jump is a teleport I have not traced yet (todo 332). (6) Storm film framing: a close traced still of the zap was added to the post (site/img/thunderstorm-zap.png); the film itself is not reshot. (7) :storm (and the new :toadstool) are now in all 16 event plugins' KEEP tuples (published s77); T to call a storm is todo 451. (8) A new region: not this session."
+}
