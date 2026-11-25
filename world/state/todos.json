@@ -5817,12 +5817,12 @@
       "id": 416,
       "kind": "review",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0085: A niche film shot; the limit stays listed under engine for when RayMakie is touched.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
-      "updated": "2026-11-25T00:22:39.077"
+      "updated": "2026-11-25T10:09:23.907"
     },
     {
       "created": "2026-11-24T21:17:59.256",
@@ -6078,17 +6078,17 @@
     },
     {
       "created": "2026-11-25T00:07:43.865",
-      "detail": "s73: tests/s58_play.jl 'Kite player (s58): Play, Stop, Play again works and the meter comes back' fails: after Stop the kite lands 'let_go' within 5-13 s (sandbox events 00:06:40 -> 00:06:45, 00:07:00 -> 00:07:13), so the second Play finds no kite (flyer 0, meter false). Fixed so far: freeze's end laugh and roll call no longer take a kite-flying Lumi, and tag no longer recruits it (s73). Still something takes Lumi right after Stop: sample Lumi's goal every frame after the Stop click (play.jl stop / freecam restore / feelings.jl?) and keep :kite through it. Also watch kite_land 'let_go' durations in the human's game: before s73 every flight ended within 1-35 s. Done when: the test passes three times in a row and a flight in the human's game lasts its full 7 minutes.",
+      "detail": "perfectionist-0085 [ui, high]: Since the s85 kite change (Lumi keeps flying when the player lets go), starting Firefly catch or Hide and seek while the kite is up shows the kite meter ('Kite ▮▮▮▮▮▮▯▯ run to lift it, stop and it sinks') right on top of the game's HUD ('Fireflies 3/8 49 s left'). The texts overlap, and the kite string crosses the screen.\nWhere: plugins/kite.jl meter! (line ~317: shows whenever the flyer is controlled, also when game.minigame !== nothing)\nSuggestion: A mini game start reels the kite in (Lumi lets it land with a small 'aww' or hands the string to a friend), and the meter only shows in jump-in. Keep the Play/Stop/Play test from #435.\nDone when: Screenshots during Firefly catch, Hide and seek and Berry race started while the kite flies show only the game's HUD and no kite string. The kite Play/Stop/Play test passes 3 runs in a row.\nEvidence: world/tests/shots/firefly-wad.png, hideseek-found.png (from my live_tests('first play') run)",
       "est_minutes": 15.0,
       "id": 435,
-      "kind": "fix",
-      "priority": 2,
-      "result": "",
-      "source": "agent",
+      "kind": "review",
+      "priority": 1,
+      "result": "Both parts, s85-s86: (1) the kite comes down the moment a mini game other than jump-in starts (kite.jl step!: land! why minigame, meter hidden): Firefly catch started with the kite up shows only its start card (media/s86/firefly-kite.png, sandbox event kite_land why=minigame). (2) The Play, Stop, Play again test passed three runs in a row (58 s, 61 s, 19 s). Its one flaky start was the test's own: a kite left up by the run before (Lumi keeps flying after Stop since s85) ended as 'done' when the helper skipped to 13:30, right after it had seen the kite up; kp_fly! now lands a leftover kite first (tests/s58_play.jl).",
+      "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Kite: Play, Stop, Play again keeps the kite",
-      "updated": "2026-11-25T00:07:43.865"
+      "status": "done",
+      "title": "Kite meter over mini games: one HUD at a time",
+      "updated": "2026-11-25T10:31:03.515"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6120,17 +6120,17 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0079 [style, medium]: At my own zap the soot was a cluster of opaque flat black discs over Lumi's head. The rain is long white sticks, some as tall as a tree. The toadstool spores are red-and-white billiard balls. The cloud ring, snow and paint are unchanged since s76.\nWhere: plugins/storm.jl, showers.jl, toadstool.jl, snowday.jl, paintfight.jl\nSuggestion: Soot as soft grey puffs with alpha that rise and thin out, and a sooty tint on Lumi's own feathers. Rain as thin translucent streaks with splashes. Spores as small soft puffs that fade.\nDone when: A zap screenshot shows translucent grey puffs (no opaque flat disc) and a darkened Lumi. No rain streak is wider than 3 px at 1280x720.\nEvidence: reviews/perf79/play/jump-G-end.png; media/progress/session-0079/eye-level.png; reviews/motion/perfectionist-0079/toadstool-steps.jpg",
+      "detail": "perfectionist-0085 [style, high]: At 13:19-13:29 the whole island is a flat paper-white sheet with no shading, sparkle or depth. Bright green grass tufts, green bushes and flowers stand on it as if pasted on, and snow lies under the orange autumn leaf pile next to spring blossom. The flakes are big round white dots (raster) and grey pebbles (traced), the same 'not matter' problem #438 names for soot and rain.\nWhere: plugins/snowday.jl (blanket colour SNOW, NFLAKES spheres), meadow/flora while snowy\nSuggestion: Give the blanket a slightly blue-grey base with lit highlights (vertex colours from the sun angle and the noise, cool in the shade), frost the grass tufts and bush tops white while snowy, and hide the leaf pile and fallen petals under snow. Draw flakes as small soft flat sprites, many smaller and fewer near the camera. One season at a time looks deliberate.\nDone when: An eye-level screenshot on a snow day shows visible light/shade variation in the snow (luminance std over the ground > 0.05, not clipped at 1.0) and frosted grass. No autumn leaf pile is visible under snow, and a traced still shows flakes as soft white, not grey balls.\nEvidence: media/progress/session-0085/overview.png, eye-level.png, dashboard.png; world/reviews/p85/orbit2.png, traced.png",
       "est_minutes": 30.0,
       "id": 438,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Effects with volume: soot, rain, spores, snow that read as matter",
-      "updated": "2026-11-25T05:19:35.703"
+      "title": "A snow day that looks like snow: shaded drifts, flakes, no autumn under it",
+      "updated": "2026-11-25T10:09:23.907"
     },
     {
       "created": "2026-11-25T00:28:44.048",
@@ -6498,7 +6498,7 @@
     },
     {
       "created": "2026-11-25T07:50:10.215",
-      "detail": "perfectionist-0082 [fun, high]: The human's goal 3 has no open todo, and nothing on the island is simulated. I pressed every jump-in key. P paints flat dots, the leaves follow scripted arcs, the swing is a scripted pendulum, and the ball is the only thing that rolls. The human asked for Maelstrom water that splashes and carries things, paint that sticks to what it hits, and things that fall, roll, stack and break, on the GPU.\nWhere: plugins/ (no physics system), dev/Maelstrom\nSuggestion: Pick one toy and finish it: a shallows patch running Maelstrom FLIP at small scale that Lumi can stomp into, with splash, ripples and a floating leaf or boat. Or pebbles and crates from a rigid-body package found through RomeoDB that the player and creatures knock over and stack. Film it traced.\nDone when: A sandbox clip shows Lumi walking into it and a simulated response that differs each time (water rising and splashing, or objects tumbling and settling). The plugin calls a real solver, not scripted arcs.\nEvidence: reviews/p82/sheet-jump.png; no Mantle/Maelstrom/rigid-body plugin among 74 plugins; todos.json has no goal 3 item",
+      "detail": "perfectionist-0085 [fun, high]: Pumpkin bowling and hail are real simulated bodies (good), but both are once-a-day shows the player only watches. Jumped in as Lumi I have no key that throws, kicks or splashes anything at will. Water (goal 3, Maelstrom) is untouched: the pond and the sea do not react to anyone.\nWhere: plugins/pumpkins.jl, hail.jl (CPU solvers); pond (areas.jl POND); dev/Maelstrom\nSuggestion: Make the pumpkin solver a toy that always lies about, kickable by walking into it and by friends at play, with a stack to rebuild. Then a splashable pond: walking in sends ripples (a height field on Mantle is enough), and floating things bob and drift.\nDone when: At any hour in jump-in, walking into a toy sends it rolling ≥ 1 m and it knocks others (event log shows contacts). Walking into the pond shows ripple rings in a screenshot.\nEvidence: Things-to-try panel lists E X H G C P T, none physical; journal s83-85",
       "est_minutes": 30.0,
       "id": 465,
       "kind": "review",
@@ -6507,8 +6507,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A physics toy for goal 3: water to splash or things that roll, stack and fall",
-      "updated": "2026-11-25T07:50:10.215"
+      "title": "A physics toy the player always has: splash the pond or kick a stack",
+      "updated": "2026-11-25T10:09:23.907"
     },
     {
       "created": "2026-11-25T08:22:38.555",
@@ -6517,12 +6517,12 @@
       "id": 466,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0085: Trellis lost the GPU a 4th time (jobs/20261125-094754-582-mesh.json) and the ribbed stand-in reads as a pumpkin. The GPU loss is listed under engine.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Real pumpkins: the generated pumpkin mesh for the bowling stack (Trellis lost the GPU twice on assets/20261125-075522-616-asset/image.png; retry with a fresh worker, then set PUMPKIN/PUMPKIN_OK in pumpkins.jl)",
-      "updated": "2026-11-25T08:22:38.555"
+      "updated": "2026-11-25T10:09:23.907"
     },
     {
       "created": "2026-11-25T08:22:38.559",
@@ -6596,17 +6596,59 @@
     },
     {
       "created": "2026-11-25T09:50:01.857",
-      "detail": "",
+      "detail": "perfectionist-0085 [animation, medium]: live_motion: Sir Sniffsalot's tail jumps 0.39 m in one frame and swings at 11.6 m/s. Pickles turns 56° in one frame, its leg_4 jumps 0.15 m and its tail 0.21 m at the same instant. Pickles' green leaf hat sits half inside its head (a flat green slab cuts the skull).\nWhere: makeover.jl pig tail part (Swing amplitude/rate), engine yaw changes, outfits.jl hat anchor for the pig body\nSuggestion: Drive the tail with a spring (lagging the body), cap the tail tip speed, and route big yaw changes through turn_drawn!. Seat the leaf hat on the head surface.\nDone when: Two live_motion runs list no tail in the snapping or too-fast lists and no turn > 25° in one frame, and a close-up of Pickles shows the hat on top of the head.\nEvidence: world/reviews/p85/motion/motion.png, creatures.png (row 5 left), live_motion text",
       "est_minutes": 15.0,
       "id": 472,
-      "kind": "build",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Calm sprints: the friends body roll shrinks as they run faster (engine body_pose :run rolls with sin(phase); crabs and Truffle still turn back 9-10 times a second at a sprint, s85 motion-gait1)",
-      "updated": "2026-11-25T09:50:01.857"
+      "title": "Pig tails and turns snap: tails jump 0.4 m in one frame",
+      "updated": "2026-11-25T10:09:23.907"
+    },
+    {
+      "created": "2026-11-25T10:09:23.907",
+      "detail": "perfectionist-0085 [camera, high]: While Lumi flies its kite, the follow camera framed a big bush crown with Lumi's name tag and thought bubble over it. The bird was completely hidden for 3+ minutes (13:23, 13:23+4 s, 13:26 traced). The kite string runs straight through the crown. A player opening the dashboard sees a green blob and a sky full of snow.\nWhere: render.jl follow view / camcut.jl / lensclear.jl while the subject has a :kite goal (kite.jl CAMERA entry)\nSuggestion: Run lensclear's obstruction check on every held subject and orbit the eye to the clearest of 8 sides when blocked for > 1 s. A kite is a sky moment: frame Lumi low in the frame with the kite above, from the side opposite the wind.\nDone when: Over 10 follow-camera screenshots 10 s apart during a kite flight, NG.obstruction(eye, Lumi) < 1 in at least 9, and Lumi's body is visible in each.\nEvidence: world/reviews/p85/follow1.png, follow2.png, traced.png (same view 3 min apart)",
+      "est_minutes": 30.0,
+      "id": 473,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "See Lumi: the follow camera must not hold a tree crown for minutes",
+      "updated": "2026-11-25T10:09:23.907"
+    },
+    {
+      "created": "2026-11-25T10:09:23.907",
+      "detail": "perfectionist-0085 [wow, medium]: The posted hail film opens on a shot where a giant red toadstool fills the right third and a tree the left, with Lumi tiny in the middle. In the second shot a tree trunk covers a third of the frame. The hailstones are tiny dots, and the red umbrella appears at full size between two frames (largest jump 2.21 s). The crab film's makeover puff is a cluster of cream spheres with brown dots that reads oddly.\nWhere: site/films/hail.mp4 (movies/hail.jl camera and umbrella open), plugins/hail.jl umbrella\nSuggestion: The umbrella springs open over 0.4 s with an overshoot. The film starts low beside Lumi as it looks up at the cloud, cuts to the stones bouncing close on the grass, and ends on the six faces squeezed under the red canopy. The puff becomes sparkles, not cream balls.\nDone when: The motion sheet of a new hail film shows the umbrella opening over ≥ 8 frames. No shot has a single prop covering > 25% of the frame, and the huddle faces fill ≥ 30% of the last shot.\nEvidence: reviews/motion/perfectionist-0085/hail-overview.jpg, hail-steps.jpg; crabs-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 474,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The hail film again: close on the huddle, an umbrella that opens",
+      "updated": "2026-11-25T10:09:23.907"
+    },
+    {
+      "created": "2026-11-25T10:09:23.907",
+      "detail": "perfectionist-0085 [creatures, medium]: At 13:25 five of ten friends were asleep (Gloop, Wibbles, Pinchy, Pickles, Sir Sniffsalot: energy need 0-0.05), Gloop was 'off to bed', and the orbit view showed Z's over half the island. The island looks dead at the hour a visitor most likely comes. Big parties (boing, dance ring) seem to drain everyone at once.\nWhere: engine needs (energy decay during events), beds.jl, boing/dancecircle energy cost\nSuggestion: Daytime tiredness should be a short nap in the shade (a yawn, 30-60 s, one friend at a time), never a whole crowd at once. Events can cost less energy, and sleeping is for the night beds.\nDone when: Sampling every 60 s over 15 sim minutes between 10:00 and 16:00, no more than 1 friend has goal :sleep at once.\nEvidence: world/reviews/p85/orbit2.png; live_eval needs at daytime 0.56",
+      "est_minutes": 30.0,
+      "id": 475,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A lively midday: friends not asleep at 13:00",
+      "updated": "2026-11-25T10:09:23.907"
     }
   ]
 }

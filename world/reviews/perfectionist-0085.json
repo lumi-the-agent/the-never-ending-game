@@ -1,0 +1,210 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island has grown real charm since session 82. Lumi reads yellow live, the crabs are lovable clay crabs with bunny ears and waving claws, the maple-leaf pile reads as leaves, and pumpkin bowling and hail bring the first real tumbling physics. All three mini games still pass a W/A/D first play. A player who opens the game today, though, sees the follow camera stare at a tree crown with Lumi hidden behind it for minutes, the kite meter written over every mini game's HUD, and a snow day that bleaches the whole island into a flat white sheet. Snow lies on an autumn leaf pile, next to spring blossom and green summer grass. Half the friends are asleep at 13:25.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Warm and readable at noon, but the snow day blows the ground out to flat paper white with no shading or sparkle. Traced snowflakes are grey pebbles, and the sunset traced sun (#237) is still open."
+  },
+  "world": {
+   "score": 6,
+   "why": "The overview is dense and varied (cottage, pond, cairn spiral, grove, beaches), but seasons pile up at once: snow, autumn leaves, cherry blossom and pumpkins on one meadow make it read as a toy box, not a place."
+  },
+  "props": {
+   "score": 6,
+   "why": "46 generated assets in use (trees, toadstools, cottage, crab body, maple leaves). Pumpkins and the umbrella are hand primitives, and the generated pumpkin mesh lost the GPU a 4th time."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "Every friend is now a sculpted clay body with a face, and the crabs are a clear upgrade. Pickles' green leaf hat cuts through its head, and 5 of 10 friends sleep at midday."
+  },
+  "animation": {
+   "score": 6,
+   "why": "8/10 creatures move well in my measure. Pig tails snap 0.2-0.4 m in one frame (11.6 m/s), Pickles turns 56° in one frame, and the hail umbrella appears at full size in one film frame."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Pumpkin bowling and hail are real simulated fun, and the three mini games are winnable and levelled. But the physics only happens once a day as a show; the player has no toy to throw or splash at will."
+  },
+  "wow": {
+   "score": 7,
+   "why": "The crab makeover puff and the STRIKE film are shareable. The hail film is weak: a giant toadstool and a tree fill the first shot, the hail is tiny dots, and the umbrella pops in."
+  },
+  "camera": {
+   "score": 5,
+   "why": "In three screenshots over 3 minutes (raster and traced), the follow camera framed a bush crown with Lumi's name tag over it, while the kite string ran through the tree."
+  },
+  "ui": {
+   "score": 5,
+   "why": "In two of the three mini games the kite meter 'Kite ▮▮▮ run to lift it, stop and it sinks' sits on top of the game HUD: two texts overlapping at the top of the screen."
+  },
+  "style": {
+   "score": 5,
+   "why": "The clay look of creatures and trees is cohesive. The snow blanket is an unlit white sheet under bright green grass tufts, and the snowfall is big round white dots like bokeh, off-style for clay."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame median 2.98 ms, p95 5.4 ms with 76 systems; snowday 0.3 ms, outfits 0.27 ms."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "See Lumi: the follow camera must not hold a tree crown for minutes",
+   "todo": null,
+   "what": "While Lumi flies its kite, the follow camera framed a big bush crown with Lumi's name tag and thought bubble over it. The bird was completely hidden for 3+ minutes (13:23, 13:23+4 s, 13:26 traced). The kite string runs straight through the crown. A player opening the dashboard sees a green blob and a sky full of snow.",
+   "where": "render.jl follow view / camcut.jl / lensclear.jl while the subject has a :kite goal (kite.jl CAMERA entry)",
+   "evidence": "world/reviews/p85/follow1.png, follow2.png, traced.png (same view 3 min apart)",
+   "suggestion": "Run lensclear's obstruction check on every held subject and orbit the eye to the clearest of 8 sides when blocked for > 1 s. A kite is a sky moment: frame Lumi low in the frame with the kite above, from the side opposite the wind.",
+   "done_when": "Over 10 follow-camera screenshots 10 s apart during a kite flight, NG.obstruction(eye, Lumi) < 1 in at least 9, and Lumi's body is visible in each.",
+   "agent_notes": "s86, partly: a kite flyer boxed in by crowns now walks out to open ground (kite.jl, flight.jl open_spot) and the kite takes its turn in the island's shared claim, so a pumpkin bowling no longer takes the string mid-flight. One sandbox flight beside a big tree: the follow camera's obstruction to Lumi was 0.0-0.12 once the view settled (2 of the first 5 samples, while the view was being chosen, were 1.7-2.0). The 10-sample protocol is still owed (todo 473)."
+  },
+  {
+   "severity": "high",
+   "category": "ui",
+   "title": "Kite meter over mini games: one HUD at a time",
+   "todo": 435,
+   "what": "Since the s85 kite change (Lumi keeps flying when the player lets go), starting Firefly catch or Hide and seek while the kite is up shows the kite meter ('Kite ▮▮▮▮▮▮▯▯ run to lift it, stop and it sinks') right on top of the game's HUD ('Fireflies 3/8 49 s left'). The texts overlap, and the kite string crosses the screen.",
+   "where": "plugins/kite.jl meter! (line ~317: shows whenever the flyer is controlled, also when game.minigame !== nothing)",
+   "evidence": "world/tests/shots/firefly-wad.png, hideseek-found.png (from my live_tests('first play') run)",
+   "suggestion": "A mini game start reels the kite in (Lumi lets it land with a small 'aww' or hands the string to a friend), and the meter only shows in jump-in. Keep the Play/Stop/Play test from #435.",
+   "done_when": "Screenshots during Firefly catch, Hide and seek and Berry race started while the kite flies show only the game's HUD and no kite string. The kite Play/Stop/Play test passes 3 runs in a row.",
+   "agent_notes": "s86: done. The kite comes down when a mini game other than jump-in starts (kite_land why=minigame; media/s86/firefly-kite.png shows only Firefly catch's start card), and the Play, Stop, Play again test passed three runs in a row (todo 435)."
+  },
+  {
+   "severity": "high",
+   "category": "style",
+   "title": "A snow day that looks like snow: shaded drifts, flakes, no autumn under it",
+   "todo": 438,
+   "what": "At 13:19-13:29 the whole island is a flat paper-white sheet with no shading, sparkle or depth. Bright green grass tufts, green bushes and flowers stand on it as if pasted on, and snow lies under the orange autumn leaf pile next to spring blossom. The flakes are big round white dots (raster) and grey pebbles (traced), the same 'not matter' problem #438 names for soot and rain.",
+   "where": "plugins/snowday.jl (blanket colour SNOW, NFLAKES spheres), meadow/flora while snowy",
+   "evidence": "media/progress/session-0085/overview.png, eye-level.png, dashboard.png; world/reviews/p85/orbit2.png, traced.png",
+   "suggestion": "Give the blanket a slightly blue-grey base with lit highlights (vertex colours from the sun angle and the noise, cool in the shade), frost the grass tufts and bush tops white while snowy, and hide the leaf pile and fallen petals under snow. Draw flakes as small soft flat sprites, many smaller and fewer near the camera. One season at a time looks deliberate.",
+   "done_when": "An eye-level screenshot on a snow day shows visible light/shade variation in the snow (luminance std over the ground > 0.05, not clipped at 1.0) and frosted grass. No autumn leaf pile is visible under snow, and a traced still shows flakes as soft white, not grey balls.",
+   "agent_notes": "Not done yet (todo 438)."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "A physics toy the player always has: splash the pond or kick a stack",
+   "todo": 465,
+   "what": "Pumpkin bowling and hail are real simulated bodies (good), but both are once-a-day shows the player only watches. Jumped in as Lumi I have no key that throws, kicks or splashes anything at will. Water (goal 3, Maelstrom) is untouched: the pond and the sea do not react to anyone.",
+   "where": "plugins/pumpkins.jl, hail.jl (CPU solvers); pond (areas.jl POND); dev/Maelstrom",
+   "evidence": "Things-to-try panel lists E X H G C P T, none physical; journal s83-85",
+   "suggestion": "Make the pumpkin solver a toy that always lies about, kickable by walking into it and by friends at play, with a stack to rebuild. Then a splashable pond: walking in sends ripples (a height field on Mantle is enough), and floating things bob and drift.",
+   "done_when": "At any hour in jump-in, walking into a toy sends it rolling ≥ 1 m and it knocks others (event log shows contacts). Walking into the pond shows ripple rings in a screenshot.",
+   "agent_notes": "s86, partly: the lily pond answers. Anyone wading or hopping in it ripples the water and throws drops (splash.jl waders!; the pond pastime sends friends there), and the cannonball contest throws real drops and rings (site/films/splash.mp4). Still owed: a toy the player can kick at any hour, and a screenshot of Lumi wading (my own test could not walk Lumi into the water; todo 465)."
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "The hail film again: close on the huddle, an umbrella that opens",
+   "todo": null,
+   "what": "The posted hail film opens on a shot where a giant red toadstool fills the right third and a tree the left, with Lumi tiny in the middle. In the second shot a tree trunk covers a third of the frame. The hailstones are tiny dots, and the red umbrella appears at full size between two frames (largest jump 2.21 s). The crab film's makeover puff is a cluster of cream spheres with brown dots that reads oddly.",
+   "where": "site/films/hail.mp4 (movies/hail.jl camera and umbrella open), plugins/hail.jl umbrella",
+   "evidence": "reviews/motion/perfectionist-0085/hail-overview.jpg, hail-steps.jpg; crabs-overview.jpg",
+   "suggestion": "The umbrella springs open over 0.4 s with an overshoot. The film starts low beside Lumi as it looks up at the cloud, cuts to the stones bouncing close on the grass, and ends on the six faces squeezed under the red canopy. The puff becomes sparkles, not cream balls.",
+   "done_when": "The motion sheet of a new hail film shows the umbrella opening over ≥ 8 frames. No shot has a single prop covering > 25% of the frame, and the huddle faces fill ≥ 30% of the last shot.",
+   "agent_notes": "Not redone: the hail film stays as posted. The new contest film (site/films/splash.mp4) keeps the judges at the sides, out of the camera's way."
+  },
+  {
+   "severity": "medium",
+   "category": "animation",
+   "title": "Pig tails and turns snap: tails jump 0.4 m in one frame",
+   "todo": 472,
+   "what": "live_motion: Sir Sniffsalot's tail jumps 0.39 m in one frame and swings at 11.6 m/s. Pickles turns 56° in one frame, its leg_4 jumps 0.15 m and its tail 0.21 m at the same instant. Pickles' green leaf hat sits half inside its head (a flat green slab cuts the skull).",
+   "where": "makeover.jl pig tail part (Swing amplitude/rate), engine yaw changes, outfits.jl hat anchor for the pig body",
+   "evidence": "world/reviews/p85/motion/motion.png, creatures.png (row 5 left), live_motion text",
+   "suggestion": "Drive the tail with a spring (lagging the body), cap the tail tip speed, and route big yaw changes through turn_drawn!. Seat the leaf hat on the head surface.",
+   "done_when": "Two live_motion runs list no tail in the snapping or too-fast lists and no turn > 25° in one frame, and a close-up of Pickles shows the hat on top of the head.",
+   "agent_notes": "Not done yet: tails and Pickles' hat."
+  },
+  {
+   "severity": "medium",
+   "category": "creatures",
+   "title": "A lively midday: friends not asleep at 13:00",
+   "todo": null,
+   "what": "At 13:25 five of ten friends were asleep (Gloop, Wibbles, Pinchy, Pickles, Sir Sniffsalot: energy need 0-0.05), Gloop was 'off to bed', and the orbit view showed Z's over half the island. The island looks dead at the hour a visitor most likely comes. Big parties (boing, dance ring) seem to drain everyone at once.",
+   "where": "engine needs (energy decay during events), beds.jl, boing/dancecircle energy cost",
+   "evidence": "world/reviews/p85/orbit2.png; live_eval needs at daytime 0.56",
+   "suggestion": "Daytime tiredness should be a short nap in the shade (a yawn, 30-60 s, one friend at a time), never a whole crowd at once. Events can cost less energy, and sleeping is for the night beds.",
+   "done_when": "Sampling every 60 s over 15 sim minutes between 10:00 and 16:00, no more than 1 friend has goal :sleep at once.",
+   "agent_notes": "Not done yet: the friends' midday sleep."
+  }
+ ],
+ "todos": [
+  {
+   "id": 237,
+   "action": "keep",
+   "why": "Not re-verified this review: the sunset traced sun and rain shadows are still open by the author's own s85 note."
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Still partial; faces exist but most event moments don't use feel!."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Shared step-aside still not done."
+  },
+  {
+   "id": 387,
+   "action": "keep",
+   "why": "Still open."
+  },
+  {
+   "id": 401,
+   "action": "keep",
+   "why": "Roof landing not built."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Not verified as fixed."
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "Still only three 'walk to the thing' mini games; a scored paint fight or pumpkin bowling round would be the fourth."
+  },
+  {
+   "id": 448,
+   "action": "keep",
+   "why": "No night film yet."
+  },
+  {
+   "id": 455,
+   "action": "keep",
+   "why": "Grove still a small corner with no reason to go."
+  },
+  {
+   "id": 466,
+   "action": "drop",
+   "why": "Trellis lost the GPU a 4th time (jobs/20261125-094754-582-mesh.json) and the ribbed stand-in reads as a pumpkin. The GPU loss is listed under engine."
+  },
+  {
+   "id": 471,
+   "action": "keep",
+   "why": "Crab legs still don't step (session-0085 reviewer)."
+  },
+  {
+   "id": 416,
+   "action": "drop",
+   "why": "A niche film shot; the limit stays listed under engine for when RayMakie is touched."
+  }
+ ],
+ "engine": [
+  {
+   "what": "Trellis mesh jobs in the worker lose the Vulkan device (VK_ERROR_DEVICE_LOST) again and again: 4 pumpkin attempts, and traced hail takes died ~5 min in. Every job after one fails until a restart.",
+   "evidence": "world/jobs/20261125-094754-582-mesh.json (LavaError during vkQueueSubmit2, VK_ERROR_DEVICE_LOST)"
+  },
+  {
+   "what": "RayMakie's path tracer ignores a meshscatter's model matrix (scale!/translate!), so scaled herds render unscaled in traced films.",
+   "evidence": "RayMakie plots/meshscatter.jl :trace_transforms (todo #416)"
+  }
+ ],
+ "process": "Sessions 83-85 worked on what a player notices and answered the last review well. Lumi is yellow live, the leaves are maple leaves, the crabs got a real body and waving claws, there is real (CPU) physics in pumpkins and hail, and the parties take turns instead of grabbing Lumi at once. Goal 1 moved (bowling, hail huddle). Goal 3 moved a little: simulated pumpkins and hail, but nothing on Mantle or Maelstrom and nothing the player can pick up at will. Goal 2 has films on the pages; the last release is 2026-11-24, and the hail film is not release quality. Goal 4 (rendering) barely moved: the snow day at noon and the traced sunset show it. Goal 5 is strong: wishes, posts and the crab makeover. Goal 6: the gait was calmed, but the pig tails and the umbrella pop are fresh snaps. The weakness is breadth over finish: each session adds another once-a-day event (snow, autumn, hail, pumpkins, blossom), and their overlaps (snow on leaves, kite meter over mini games, camera stuck on a kite behind a tree) show up as soon as a player looks. Every new event must be checked against the others and against the follow camera. Spend the next sessions on what fills every frame: the camera that hides Lumi, the snow and season look, one always-there physics toy, and the HUD clash.",
+ "addressed": true
+}

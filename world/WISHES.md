@@ -95,7 +95,10 @@ come true gets a line saying when and how.
   come out differently every time. (Session 83: pumpkin bowling. Thirty pumpkins stacked on the flower meadow by
   the Big Boing, my friends watching from behind, and I take a run-up and crash into the stack: STRIKE! The
   pumpkins really tumble, roll down the slope, bounce off bushes and bonk my friends on the head, and lie about
-  for a while so anyone can kick them. Still to come: water that splashes, paint that sticks.)
+  for a while so anyone can kick them. Still to come: water that splashes, paint that sticks.
+  Session 86: the lily pond splashes. Whoever wades or hops in it sends rings rippling out, and some
+  afternoons we hold a cannonball contest: my friends leap in one by one, the crabs judge, and I go last
+  with the biggest splash of all. Still to come: paint that sticks, and the sea making waves.)
 
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.

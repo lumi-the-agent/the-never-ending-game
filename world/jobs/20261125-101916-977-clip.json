@@ -1,0 +1,74 @@
+{
+  "created": "2026-11-25T10:19:16.981",
+  "finished": "2026-11-25T10:22:40.267",
+  "id": "20261125-101916-977-clip",
+  "kind": "clip",
+  "params": {
+    "call": "splash_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s86/splash-preview.mp4",
+    "script": "movies/splash.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "start"
+      ],
+      [
+        2.75,
+        "jump"
+      ],
+      [
+        3.75,
+        "splash"
+      ],
+      [
+        4.5,
+        "score"
+      ],
+      [
+        5.25,
+        "jump"
+      ],
+      [
+        6.25,
+        "splash"
+      ],
+      [
+        7.0,
+        "score"
+      ],
+      [
+        7.75,
+        "jump"
+      ],
+      [
+        8.75,
+        "splash"
+      ],
+      [
+        9.5,
+        "score"
+      ],
+      [
+        10.75,
+        "lumi"
+      ],
+      [
+        12.125,
+        "big"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s86/splash-preview.mp4",
+    "started": true
+  },
+  "seconds": 189.0,
+  "started": "2026-11-25T10:19:30.968",
+  "status": "done"
+}

@@ -36,8 +36,30 @@ function bed_spot(w, tree, from, taken)
     return nothing
 end
 
+"""
+Daytime naps one at a time (perfectionist s85: at 13:25 five of ten friends were asleep and the island looked dead
+when a visitor is most likely to come). Between 10:00 and 16:00 only the most tired sleeper keeps napping; the
+others wake up a little rested (energy to 0.65) and go back to their day. Night sleep is untouched.
+"""
+function one_nap!(w)
+    h = 24 * NG.daytime(w)
+    10 <= h < 16 || return
+    w.t - get(NAP, :at, -Inf) < 3 && return
+    NAP[:at] = w.t
+    sleepers = [c for c in w.creatures if c.goal.kind === :sleep && !c.controlled && c.name != "Lumi"]
+    length(sleepers) <= 1 && return
+    sort!(sleepers; by = c -> c.needs.energy)
+    for c in sleepers[2:end]
+        c.needs.energy = max(c.needs.energy, 0.65f0)
+        NG.choose_goal!(c, w)
+        NG.emit!(w, :nap_woken; who = c.name)
+    end
+end
+const NAP = Dict{Symbol,Float64}()
+
 function NG.step!(s::Beds, game, dt)
     w = game.world
+    one_nap!(w)
     for c in w.creatures
         g = c.goal
         if g.kind !== :sleep || c.controlled

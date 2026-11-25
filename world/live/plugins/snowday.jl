@@ -53,8 +53,16 @@ function blanket!(game)
     S[:land] = onland[used]
     S[:noise] = [0.5f0 + 0.25f0 * sin(1.7f0 * p[1]) * cos(1.3f0 * p[2]) + 0.25f0 * sin(0.6f0 * p[1] + 0.9f0 * p[2]) for p in pts]
     S[:normals] = alln[used]
+    # drifts with light and shade (perfectionist s85: "a flat paper-white sheet"): a little below pure white so the
+    # sun does not clip it, cool blue-grey in hollows and on slopes facing away, from the same noise as the depth
+    shade = RGBf(0.70, 0.78, 0.92)
+    cols = map(eachindex(pts)) do i
+        n = S[:normals][i]
+        f = clamp(0.55f0 * (1 - S[:noise][i]) + 0.9f0 * (1 - abs(n[3])), 0f0, 1f0)
+        RGBf(0.93f0 * (1 - f) + shade.r * f, 0.95f0 * (1 - f) + shade.g * f, 0.99f0 * (1 - f) + shade.b * f)
+    end
     S[:blanket] = mesh!(game.stage.scene, GeometryBasics.Mesh(lift_points(0f0), S[:faces]; normal = S[:normals]);
-                        color = SNOW, name = :snow_blanket)
+                        color = cols, name = :snow_blanket)
     S[:shown] = 0f0
 end
 
@@ -148,6 +156,11 @@ end
 function begin!(s::SnowDay, game)
     w = game.world
     s.state = :fall; s.t0 = w.t; s.level = 0f0; s.built = -1.0
+    # snow buries the autumn leaf pile still lying about (perfectionist s85: snow round an orange pile): it is swept up
+    au = isdefined(Main, :AUTUMN) ? get(Main.AUTUMN, :sys, nothing) : nothing
+    if au !== nothing && au.state === :fade
+        au.state = :idle; Main.AUTUMN[:shown] = true
+    end
     n = 0
     for c in w.creatures
         (c.controlled || c.action === :sleep || c.goal.kind in KEEP || c.goal.kind in NG.BUSY_GOALS) && continue
@@ -186,8 +199,32 @@ function finish!(s::SnowDay, game)
     NG.emit!(game.world, :snow_end)
 end
 
+"""
+Frosted grass (perfectionist s85: bright green tufts stood on the snow as if pasted on): the grass and dune grass
+textures turn frosty blue-white with the snow, in three steps so each browser gets only a few texture updates,
+and back when it thaws. The originals are kept by plot, so a rebuilt plot is never frosted twice.
+"""
+function frost!(game, level)
+    game.stage === nothing && return
+    k = Float32(round(clamp(level, 0, 1) * 3) / 3)
+    get(S, :frost_k, -1f0) == k && return
+    S[:frost_k] = k
+    orig = get!(() -> Dict{UInt,Any}(), S, :frost_orig)
+    a = 0.55f0 * k
+    for p in game.stage.scene.plots
+        haskey(p.attributes, :name) || continue
+        p.attributes[:name][] in (:grass_tufts, :beach_dunegrass) || continue
+        c = p.color[]
+        c isa AbstractMatrix || continue
+        base = get!(orig, objectid(p), c)
+        p.color = a == 0 ? base : map(x -> Makie.RGBA{Float32}(Makie.red(x) + (0.9f0 - Makie.red(x)) * a, Makie.green(x) + (0.94f0 - Makie.green(x)) * a,
+                                                              Makie.blue(x) + (1.0f0 - Makie.blue(x)) * a, Makie.alpha(x)), base)
+    end
+end
+
 function NG.step!(s::SnowDay, game, dt)
     w = game.world
+    frost!(game, s.state === :idle ? 0f0 : s.level)
     s.next_t < 0 && (s.next_t = w.t + 1800.0)
     if s.state === :idle
         testing = game.tests !== nothing && NG.running(game.tests)

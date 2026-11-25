@@ -6,6 +6,12 @@ function kp_fly!(game)
     game.minigame === nothing || XP.stop_minigame!(game)
     me = creature(w, "Lumi")
     XP.leave_interactions!(w, me); me.controlled = false
+    # a kite still up from the test before (since s85 Lumi keeps flying it after Stop) comes down first: a
+    # skip_to_hour! a moment later ended it as "done" right after this helper saw it up (s86, flaky first Play)
+    if K[:flyer] != 0
+        km = game.plugins["kite"].mod
+        Base.invokelatest(km.land!, w, :test); Base.invokelatest(km.show_kite!, false)
+    end
     h = 24 * XP.daytime(w); (h < 13.2 || h > 15.5) && XP.skip_to_hour!(w, 13.5)
     me.action === :sleep && (me.action = :idle); me.needs.energy = 0.9
     me.goal = XP.Goal(:idle, me.pos, :idle, 20.0, w.t + 20, true, 0, false)

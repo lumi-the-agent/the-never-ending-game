@@ -1,0 +1,73 @@
+{
+  "created": "2026-11-25T10:23:00.902",
+  "finished": "2026-11-25T10:34:19.833",
+  "id": "20261125-102300-899-clip",
+  "kind": "clip",
+  "params": {
+    "call": "splash_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 15.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/splash.mp4",
+    "script": "movies/splash.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "start"
+      ],
+      [
+        2.66666666790843,
+        "jump"
+      ],
+      [
+        3.583333335001953,
+        "splash"
+      ],
+      [
+        4.29166666866513,
+        "score"
+      ],
+      [
+        5.083333335700445,
+        "jump"
+      ],
+      [
+        6.000000002793968,
+        "splash"
+      ],
+      [
+        6.7083333364571445,
+        "score"
+      ],
+      [
+        7.50000000349246,
+        "jump"
+      ],
+      [
+        8.416666670585983,
+        "splash"
+      ],
+      [
+        9.12500000424916,
+        "score"
+      ],
+      [
+        10.500000004889444,
+        "lumi"
+      ],
+      [
+        11.833333338843659,
+        "big"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/films/splash.mp4",
+    "started": true
+  },
+  "seconds": 677.4,
+  "started": "2026-11-25T10:23:02.435",
+  "status": "done"
+}

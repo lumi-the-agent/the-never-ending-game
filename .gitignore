@@ -38,7 +38,6 @@
 /world/assets/20261125-025214-640-asset/
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
-/world/assets/20261125-094754-582-mesh/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -88,6 +87,15 @@
 /world/reviews/motion/perfectionist-0082/voice-overview.jpg
 /world/reviews/motion/perfectionist-0082/voice-steps.jpg
 /world/reviews/motion/perfectionist-0082/voice-strip.jpg
+/world/reviews/motion/perfectionist-0085/crabs-overview.jpg
+/world/reviews/motion/perfectionist-0085/crabs-steps.jpg
+/world/reviews/motion/perfectionist-0085/crabs-strip.jpg
+/world/reviews/motion/perfectionist-0085/hail-overview.jpg
+/world/reviews/motion/perfectionist-0085/hail-silent-overview.jpg
+/world/reviews/motion/perfectionist-0085/hail-silent-steps.jpg
+/world/reviews/motion/perfectionist-0085/hail-silent-strip.jpg
+/world/reviews/motion/perfectionist-0085/hail-steps.jpg
+/world/reviews/motion/perfectionist-0085/hail-strip.jpg
 /world/reviews/motion/session-0075/cloud-ring-overview.jpg
 /world/reviews/motion/session-0075/cloud-ring-steps.jpg
 /world/reviews/motion/session-0075/makeover-overview.jpg
@@ -130,6 +138,9 @@
 /world/reviews/motion/session-0084/hail-silent-strip.jpg
 /world/reviews/motion/session-0084/hail-steps.jpg
 /world/reviews/motion/session-0084/hail-strip.jpg
+/world/reviews/motion/session-0085/crabs-overview.jpg
+/world/reviews/motion/session-0085/crabs-steps.jpg
+/world/reviews/motion/session-0085/crabs-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -488,6 +499,14 @@
 /world/reviews/p82/sheet-jump.png
 /world/reviews/p82/traced-live.png
 /world/reviews/p82/traced-live2.png
+/world/reviews/p85/follow1.png
+/world/reviews/p85/follow2.png
+/world/reviews/p85/motion/creatures.png
+/world/reviews/p85/motion/motion-strip.png
+/world/reviews/p85/motion/motion.png
+/world/reviews/p85/orbit1.png
+/world/reviews/p85/orbit2.png
+/world/reviews/p85/traced.png
 /world/reviews/perf76/berry-sheet.png
 /world/reviews/perf76/berry-wad.png
 /world/reviews/perf76/browser/load-1s.png
@@ -797,6 +816,7 @@
 /world/reviews/s84-c.png
 /world/reviews/s84-d.png
 /world/reviews/s84-e.png
+/world/reviews/s85-r1.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -962,6 +982,7 @@
 /world/tests/shots/s57-kite.png
 /world/tests/shots/s58_kite_jumpin_view.png
 /world/tests/shots/s58_kite_running_view.png
+/world/tests/shots/s86_pond_wading.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1025,6 +1046,9 @@
 /world/site/films/pumpkins.wav
 /world/site/films/real-flight.mp4
 /world/site/films/snow-day.mp4
+/world/site/films/splash-silent.mp4
+/world/site/films/splash.mp4
+/world/site/films/splash.wav
 /world/site/films/spring.mp4
 /world/site/films/swing.mp4
 /world/site/films/thunderstorm.mp4

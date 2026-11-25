@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: no meter on the first play",
+      "error": "check failed: Lumi did not wade in or no ripples: 2.75 m from the middle (pond radius 2.3), rings 0 -> 0",
       "file": "s58_play.jl",
-      "name": "Kite player (s58): Play, Stop, Play again works and the meter comes back",
+      "name": "Pond (s86): jumped in as Lumi, walking into the lily pond sends ripples out",
       "passed": false,
-      "seconds": 1.8
+      "seconds": 5.7
     }
   ],
-  "time": "2026-11-25T09:58:00.239"
+  "time": "2026-11-25T10:48:58.274"
 }

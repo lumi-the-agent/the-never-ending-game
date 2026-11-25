@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "journal 09:46 ('could not show four starting at once'); my screenshot world/reviews/s85-r1.png shows only a quiet moment",
+      "severity": "medium",
+      "suggestion": "Log event starts for 30 min in the sandbox, check for overlaps, and add the missing event kinds to the claim.",
+      "what": "Todo 389 (one party at a time) was closed although the claim leaves out swing, bottle, storm, choir, paint fight, pumpkins and leaf pile, and the author could not show the four parties due at once; the 30 min no-overlap check was not run.",
+      "where": "plugins/boing.jl, freeze.jl, conga.jl, rollcall.jl (LUMI_PARTY)"
+    },
+    {
+      "evidence": "world/reviews/s85-r1.png (13:20, Hopscotch lower left)",
+      "severity": "low",
+      "suggestion": "Cut the legs into stepping parts, tie claw snaps to feelings, and keep the follow camera off foreground props.",
+      "what": "Crab claws wave in a fixed loop and the legs don't step. In my shot the crab's hat sits on its shell at an odd tilt, and a workbench fills the bottom third of the follow view.",
+      "where": "plugins/makeover.jl crabby; follow camera"
+    },
+    {
+      "evidence": "journal 09:48 and 09:58",
+      "severity": "low",
+      "suggestion": "Check the ring view live with 3+ free dancers and run the kite test three times in a row.",
+      "what": "Todo 447's dance-ring view was only checked with a forced fixed camera, and the kite test failed once after passing.",
+      "where": "plugins/dancecircle.jl ring_view, plugins/kite.jl"
+    }
+  ],
+  "summary": "My own sandbox screenshot confirms the sculpted clay crab (Hopscotch, orange, big eyes, claws, hat) beside the plush pig and sheep, and frame time is about 3 ms. The party claim is only partly shown and the crab's legs still don't step.",
+  "superseded_by": "perfectionist-0085.json",
+  "surprise": 5,
+  "surprise_why": "A visible redesign of two of the most-seen creatures with a puff transformation, but it follows the same makeover recipe as the pigs and sheep.",
+  "verdict": "pass"
+}

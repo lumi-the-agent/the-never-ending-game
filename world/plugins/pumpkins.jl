@@ -143,26 +143,51 @@ function draw!(s::Pumpkins, game; shrink = 1f0)
     pl = plot!(game)
     m, mid, ext = PK[:model]
     st = PK[:stalks]
-    if isempty(s.balls) || shrink <= 0
+    shrink = max(shrink, 0f0)
+    ks = get(PK, :keepset, nothing)
+    sh(b) = ks !== nothing && objectid(b) in ks ? 1f0 : shrink     # the toys that stay never shrink
+    if isempty(s.balls)
         Makie.update!(pl; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)], rotation = [Makie.Quaternionf(0, 0, 0, 1)])
         Makie.update!(st; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)], rotation = [Makie.Quaternionf(0, 0, 0, 1)])
         return
     end
     if m === nothing
-        Makie.update!(st; arg1 = [b.p + b.q * Vec3f(0, 0, 0.5f0 * b.r * shrink) for b in s.balls],
-                      markersize = [Vec3f(0.05f0, 0.05f0, 0.22f0) * b.r * shrink / R for b in s.balls],
+        Makie.update!(st; arg1 = [b.p + b.q * Vec3f(0, 0, 0.5f0 * b.r * sh(b)) for b in s.balls],
+                      markersize = [Vec3f(0.05f0, 0.05f0, 0.22f0) * b.r * sh(b) / R for b in s.balls],
                       rotation = [b.q * Makie.qrotation(Vec3f(1, 0, 0), 0.25f0) for b in s.balls])
     else
         Makie.update!(st; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)], rotation = [Makie.Quaternionf(0, 0, 0, 1)])
     end
     ps = Point3f[]; ms = Vec3f[]; rs = Makie.Quaternionf[]
     for b in s.balls
-        k = 2.15f0 * b.r / ext * shrink          # the mesh's widest side a little over the ball (ribs and stem)
+        k = 2.15f0 * b.r / ext * sh(b)          # the mesh's widest side a little over the ball (ribs and stem)
         push!(ps, m === nothing ? b.p : b.p - b.q * (k * Vec3f(mid)))
-        push!(ms, m === nothing ? Vec3f(b.r * 1.05f0) * shrink : Vec3f(k))
+        push!(ms, m === nothing ? Vec3f(b.r * 1.05f0) * sh(b) : Vec3f(k))
         push!(rs, b.q)
     end
     Makie.update!(pl; arg1 = ps, markersize = ms, rotation = rs)
+end
+
+
+const NTOYS = 6          # pumpkins that stay lying about after a bowling: something to kick at any hour (s86)
+
+"After the bowling: the few pumpkins nearest the stack's spot stay, the rest are gathered up."
+function keep_toys!(s::Pumpkins, w)
+    ks = get(PK, :keepset, nothing)
+    s.balls = ks === nothing ? Ball[] : [b for b in s.balls if objectid(b) in ks]
+    foreach(b -> (b.awake = false; b.v = Vec3f(0)), s.balls)
+    delete!(PK, :keepset)
+end
+
+"A game that never bowled yet still has a few pumpkins lying by the stack's spot to kick about."
+function set_out_toys!(s::Pumpkins, w)
+    isempty(s.balls) || return
+    c = centre(w)
+    for i in 1:NTOYS
+        a = 2f0 * Float32(pi) * i / NTOYS + 0.4f0; r = 1.2f0 + 0.5f0 * mod(i * 0.618f0, 1f0)
+        x, y = c[1] + r * cos(a), c[2] + r * sin(a)
+        push!(s.balls, Ball(Point3f(x, y, NG.terrain_height(w.island, x, y) + R), Vec3f(0), NG.rot_z(a), R * (0.9f0 + 0.1f0 * mod(i * 0.37f0, 1f0)), false, 0f0, true))
+    end
 end
 
 "Thirty pumpkins stacked four layers high, asleep (they hold still until something knocks them)."
@@ -391,6 +416,11 @@ function NG.step!(s::Pumpkins, game, dt)
                 s.day = day; PK[:film] = false; claim_party!(w, 30)
             end
         end
+        # the few pumpkins left lying about after a bowling (or set out at the start) stay kickable at any hour
+        if !isempty(s.balls)
+            wake_touched!(s, w)
+            physics!(s, game, dt) && (draw!(s, game); PK[:drawn] = w.t)
+        end
         foreach(c -> s.last[c.id] = c.pos, w.creatures)
         return
     end
@@ -457,10 +487,15 @@ function NG.step!(s::Pumpkins, game, dt)
             NG.emit!(w, :pumpkin_end)
         end
     elseif s.state === :stay
-        el >= T_STAY && (s.state = :fade; s.t0 = w.t)
+        if el >= T_STAY
+            s.state = :fade; s.t0 = w.t
+            c = centre(w)
+            PK[:keepset] = Set(objectid(b) for b in sort(s.balls; by = b -> hypot(b.p[1] - c[1], b.p[2] - c[2]))[1:min(end, NTOYS)])
+        end
     elseif s.state === :fade
         if el >= T_FADE
-            empty!(s.balls); s.state = :idle; PK[:shown] = true
+            keep_toys!(s, w)
+            s.state = :idle; PK[:shown] = true
             draw!(s, game)
             return
         end
@@ -500,6 +535,8 @@ end
 
 function NG.start!(s::Pumpkins, game)
     PK[:sys] = s
+    game.stage === nothing || set_out_toys!(s, game.world)
+    PK[:drawn] = -1.0
     delete!(PK, :plot); delete!(PK, :model); delete!(PK, :obstacles)
     PK[:shown] = true
     PK[:start] = () -> start_bowling!(s, game)

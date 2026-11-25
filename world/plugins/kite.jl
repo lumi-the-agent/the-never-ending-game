@@ -9,6 +9,12 @@
 isdefined(Main, :KITE) || Core.eval(Main, :(const KITE = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
+
+# One island moment at a time (s86): the kite takes its turn in the shared claim (Main.LUMI_PARTY) like the
+# flight, the parties and the pumpkins; a pumpkin bowling took the string from Lumi's wing mid-flight.
+isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol,Float64}()))
+party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
+claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 const K = Main.KITE
 const AFTERNOON = (13.0, 16.5)          # hours the kite may go up (once a day)
 const FLIGHT = 420.0                    # sim seconds of one flight (~half an hour of island time)
@@ -315,6 +321,21 @@ function step_flight!(game, dt)
         end
     end
     meter!(game, c.controlled ? K[:elev] : nothing)
+    # boxed in by crowns, no camera side sees Lumi (perfectionist s85: a bush crown with Lumi's name over it for
+    # minutes): it walks out to open ground with the string, and the camera finds its side again
+    v = get(K, :view, nothing)
+    if !c.controlled && c.goal.kind === :kite && v !== nothing && v[1] == c.id && v[4] > 0.6f0 && w.t - get(K, :moved_at, -Inf) > 8
+        K[:moved_at] = w.t
+        fl = get(game.plugins, "flight", nothing)
+        if fl !== nothing
+            q = Base.invokelatest(fl.mod.open_spot, w, Point3f(c.pos))
+            if flat(q, c.pos) > 0.5f0
+                c.goal = fly_goal(w, q)
+                delete!(K, :view)
+                NG.emit!(w, :kite_step_out; who = c.name)
+            end
+        end
+    end
     gone > FLIGHT && !c.controlled && (land!(w, :done); show_kite!(false))
     hour(w) > AFTERNOON[2] + 1.5 && !c.controlled && (land!(w, :evening); show_kite!(false))
 end
@@ -429,6 +450,13 @@ function NG.step!(::Kite, game, dt)
     objectid(game.stage.scene) == get(K, :scene, nothing) || build!(game)
     w = game.world
     if get(K, :flyer, Int32(0)) != 0
+        # a mini game owns the screen and Lumi: the kite comes down (its meter and string were drawn over the
+        # mini game's HUD since the s85 change that keeps the kite up after jump-in; perfectionist s85)
+        if game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
+            land!(w, :minigame); show_kite!(false)
+            haskey(K, :meter) && (K[:meter].visible[] = false)
+            return
+        end
         step_flight!(game, dt)
         return
     end
@@ -437,7 +465,7 @@ function NG.step!(::Kite, game, dt)
     day = floor(Int, w.t / w.day_length)
     h = hour(w)
     if AFTERNOON[1] <= h < AFTERNOON[2] && get(K, :day, -1) != day && game.minigame === nothing
-        w.t >= get(K, :retry, -Inf) && launch!(game) && (K[:retry] = w.t + 60.0)
+        w.t >= get(K, :retry, -Inf) && party_free(w) && launch!(game) && (K[:retry] = w.t + 60.0; claim_party!(w, 60))
     end
     return
 end
