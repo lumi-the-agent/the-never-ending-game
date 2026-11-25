@@ -124,8 +124,10 @@ function woolly(game)
     ps = GB.coordinates(mesh)
     zmax = maximum(p -> p[3], ps)
     s = SHEEP_HEIGHT / zmax
-    frame(p) = Point3f(-p[2], p[1], p[3]) * s
-    turn(n) = Vec3f(-n[2], n[1], n[3])
+    # the generated sheep looks along the mesh's +x (the pig along -y): with the pig's turn the sheep walked
+    # sideways, its face to one side, from s74 to s82 (found when its beanie sat on its flank)
+    frame(p) = Point3f(p[1], p[2], p[3]) * s
+    turn(n) = Vec3f(n[1], n[2], n[3])
     plate = plate_mask(mesh)
     ext = max(maximum(p -> abs(p[1]), ps), maximum(p -> abs(p[2]), ps))
     legtop = 0.19f0 * zmax; footr = 0.085f0 * ext       # the dark legs reach ~a fifth of its height (image.png)

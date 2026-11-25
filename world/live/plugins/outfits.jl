@@ -84,7 +84,7 @@ Where a friend's own outfit sits on a made-over body (makeover.jl cut the piglet
 and tail: no :head or :puff_top, so their hats vanished from s74 to s81): on :body, at this point in units of the
 species' height (forward, left, up). Scarves stay off (on top of a head they would float).
 """
-const ON_NEW_BODY = Dict("Snootle" => (0.26f0, 0f0, 0.7f0), "Fluffkin" => (0.28f0, 0f0, 0.98f0), "Blorbo" => (0f0, 0f0, 1.0f0))
+const ON_NEW_BODY = Dict("Snootle" => (0.26f0, 0f0, 0.7f0), "Fluffkin" => (0.3f0, 0f0, 0.98f0), "Blorbo" => (0f0, 0f0, 1.0f0))   # on the head top (s82, profiled along the body)
 const NO_FALLBACK = ()
 
 "The top of a made-over body (its :body part's mesh, metres over the feet), measured once per species."
@@ -92,6 +92,24 @@ body_top(sp, j) = get!(get!(() -> Dict{String,Float32}(), OP, :tops), sp.name) d
     p = sp.parts[j]
     maximum(q -> q[3], GeometryBasics.coordinates(NG.shape(p.shape))) * Float32(p.scale[3]) + Float32(p.offset[3])
 end
+"""
+Where a hat sits on a made-over body: forward/left as in `fb` (units of the body's top), and down on the mesh's real
+surface right under that point (s82: one height fraction for the whole species floated the sheep's beanie 0.18 m
+over its head and sank the pig's beret into its back).
+"""
+hat_spot(sp, j, fb) = get!(get!(() -> Dict{Any,Vec3f}(), OP, :spots), (sp.name, j, fb, 2)) do
+    top = body_top(sp, j)
+    p = sp.parts[j]
+    x, y = fb[1] * top, fb[2] * top
+    sc = Vec3f(p.scale...)
+    zs = Float32[]
+    for v in GeometryBasics.coordinates(NG.shape(p.shape))
+        q = sc .* Vec3f(v...)
+        hypot(q[1] - x, q[2] - y) < 0.08f0 && push!(zs, q[3])
+    end
+    Vec3f(x, y, isempty(zs) ? fb[3] * top : maximum(zs) - 0.02f0)
+end
+
 "Own spots for outfits that do not sit on top (a scarf goes round the neck)."
 const ON_NEW_BODY_NAME = Dict("Pickles" => (0.24f0, 0f0, 0.55f0))
 
@@ -202,7 +220,7 @@ function NG.step!(::Outfits, game, dt)
                 (own && fb !== nothing) || continue
                 j = findfirst(p -> p.name === :body, sp.parts)
                 j === nothing && continue
-                at = Vec3f(fb...) * body_top(sp, j)     # the mesh's real top (species.height is bigger: hats floated, s81)
+                at = c.name in keys(ON_NEW_BODY_NAME) ? Vec3f(fb...) * body_top(sp, j) : hat_spot(sp, j, fb)
             end
             for i in eachindex(out[j][1])        # both sides of a mirrored part (the crab's claws)
                 P, q, s = out[j][1][i], out[j][2][i], out[j][3][i]

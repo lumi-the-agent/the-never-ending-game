@@ -1,14 +1,14 @@
 {
-  "boredom": 0.0,
+  "boredom": 0.29,
   "fatigue": {
-    "asset": 0.79,
-    "feature": 2.45,
+    "asset": 0.47,
+    "feature": 2.47,
     "film": 2.49,
-    "picture": 1.68,
+    "picture": 2.01,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.17,
-    "sound": 1.01
+    "self": 0.1,
+    "sound": 1.61
   },
   "happened": [
     "Boop",
@@ -151,7 +151,7 @@
     "swing_end",
     "swing_start"
   ],
-  "joy": 0.65,
+  "joy": 0.33,
   "kinds_ever": [
     "post",
     "picture",
@@ -174,131 +174,41 @@
   },
   "last_surprise": {
     "score": 6,
-    "session": 80,
-    "why": "A letter in Lumi's own voice thrown to sea as a bottle is a nice twist, but it is one short scripted event that competes with others for the evening."
+    "session": 81,
+    "why": "An agent giving the island its own voice in every browser without an engine change is a nice twist, though sound plays only after a click."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T06:08:10",
+  "perceived_until": "2026-11-25T06:49:52",
   "plugin_fatigue": {
-    "blossom.jl": 0.58,
-    "boing.jl": 0.35,
-    "bottle.jl": 1.6,
-    "choir.jl": 0.35,
-    "clouds.jl": 0.06,
-    "conga.jl": 0.37,
-    "egg.jl": 0.35,
-    "flight.jl": 0.4,
-    "flylesson.jl": 0.35,
-    "freeze.jl": 0.37,
-    "gait.jl": 0.08,
-    "giant.jl": 0.35,
-    "greetings.jl": 1.09,
-    "hiccups.jl": 0.35,
-    "islandnow.jl": 0.57,
-    "makeover.jl": 0.1,
-    "meadow.jl": 0.22,
-    "outfits.jl": 1.0,
-    "paintfight.jl": 1.36,
-    "presents.jl": 0.6,
-    "showers.jl": 0.73,
-    "sneeze.jl": 1.35,
-    "snowday.jl": 0.35,
-    "soar.jl": 0.44,
-    "storm.jl": 0.43,
-    "swing.jl": 1.96,
-    "toadstool.jl": 0.13,
-    "voice.jl": 1.0
+    "autumn.jl": 1.0,
+    "blossom.jl": 1.35,
+    "boing.jl": 1.21,
+    "bottle.jl": 1.96,
+    "choir.jl": 1.21,
+    "conga.jl": 1.22,
+    "egg.jl": 1.21,
+    "flight.jl": 1.24,
+    "flylesson.jl": 1.21,
+    "freeze.jl": 1.22,
+    "giant.jl": 1.21,
+    "greetings.jl": 1.65,
+    "hiccups.jl": 1.21,
+    "islandnow.jl": 0.34,
+    "makeover.jl": 1.06,
+    "meadow.jl": 0.13,
+    "outfits.jl": 1.6,
+    "paintfight.jl": 1.82,
+    "presents.jl": 0.36,
+    "showers.jl": 0.44,
+    "sneeze.jl": 1.81,
+    "snowday.jl": 1.21,
+    "soar.jl": 1.26,
+    "storm.jl": 1.26,
+    "swing.jl": 2.18,
+    "toadstool.jl": 1.08,
+    "voice.jl": 1.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 2.0,
-        "feature": 2.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "boing",
-          "who": 10
-        },
-        {
-          "kind": "boing_walk",
-          "who": 7
-        },
-        {
-          "kind": "boing_party",
-          "who": 3
-        },
-        {
-          "kind": "freeze_crack",
-          "who": 2
-        },
-        {
-          "kind": "freeze",
-          "who": 2
-        },
-        {
-          "kind": "roll_call",
-          "who": 2
-        },
-        {
-          "kind": "conga_end",
-          "who": 1
-        },
-        {
-          "kind": "conga",
-          "who": 1
-        },
-        {
-          "kind": "freeze_end",
-          "who": 1
-        },
-        {
-          "kind": "boing_party_end",
-          "who": 1
-        },
-        {
-          "kind": "roll_call_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 2,
-      "new_pages": [
-        "site/img/big-boing.png"
-      ],
-      "new_plugins": [
-        "boing.jl",
-        "conga.jl",
-        "freeze.jl",
-        "rollcall.jl"
-      ],
-      "points": 2.8,
-      "repeats": [],
-      "session": 62,
-      "touched": [
-        "greetings.jl"
-      ],
-      "values": {
-        "asset": 1.9,
-        "feature": 0.4,
-        "picture": 0.1,
-        "polish": 0.0,
-        "post": 0.4
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1457,6 +1367,76 @@
         "sound": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/leaves-silent.mp4",
+        "site/films/leaves.mp4",
+        "site/films/leaves.wav",
+        "site/img/leaves-jump.png"
+      ],
+      "new_plugins": [
+        "autumn.jl"
+      ],
+      "points": -2.0,
+      "repeats": [
+        "bottle.jl",
+        "swing.jl"
+      ],
+      "session": 82,
+      "touched": [
+        "blossom.jl",
+        "boing.jl",
+        "bottle.jl",
+        "choir.jl",
+        "conga.jl",
+        "egg.jl",
+        "flight.jl",
+        "flylesson.jl",
+        "freeze.jl",
+        "giant.jl",
+        "greetings.jl",
+        "hiccups.jl",
+        "makeover.jl",
+        "outfits.jl",
+        "paintfight.jl",
+        "sneeze.jl",
+        "snowday.jl",
+        "soar.jl",
+        "storm.jl",
+        "swing.jl",
+        "toadstool.jl",
+        "voice.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 0.3,
+        "picture": 0.1,
+        "polish": -3.9,
+        "post": 0.1,
+        "sound": 1.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1530,6 +1510,7 @@
       "site/films/swing.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/toadstool.mp4",
+      "site/films/voice.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
       "site/img/big-sneeze-after.png",
@@ -1551,6 +1532,7 @@
       "site/img/thought-traced.png",
       "site/img/thunderstorm-zap.png",
       "site/img/visit-traced.png",
+      "site/img/voice-laugh.png",
       "site/img/voice.png",
       "site/img/workshop-traced.png",
       "site/voice/friend-gloop.mp3",
@@ -1563,6 +1545,19 @@
       "site/voice/hello.ogg",
       "site/voice/my-new-moves.mp3",
       "site/voice/my-new-moves.ogg",
+      "site/voice/game/haha.mp3",
+      "site/voice/game/hello.mp3",
+      "site/voice/game/hm.mp3",
+      "site/voice/game/hmph.mp3",
+      "site/voice/game/hoo.mp3",
+      "site/voice/game/oh.mp3",
+      "site/voice/game/ooh.mp3",
+      "site/voice/game/squeak-hoo.mp3",
+      "site/voice/game/squeak-wheee.mp3",
+      "site/voice/game/squeak-yay.mp3",
+      "site/voice/game/tadaa.mp3",
+      "site/voice/game/wheee.mp3",
+      "site/voice/game/yay.mp3",
       "releases/2026-11-23-one-more-stone/NOTE.md",
       "releases/2026-11-23-one-more-stone/cairn_release.jl",
       "releases/2026-11-23-one-more-stone/one-more-stone.mp4",
@@ -1583,7 +1578,7 @@
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955786673656256e9,
       "boing.jl": 1.7955746166281586e9,
-      "bottle.jl": 1.795581538287298e9,
+      "bottle.jl": 1.7955839126682389e9,
       "browsernight.jl": 1.7954000366191897e9,
       "builder.jl": 1.7955505696342282e9,
       "bumpcue.jl": 1.7955534233863404e9,
@@ -1626,33 +1621,34 @@
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "outfits.jl": 1.79551174536962e9,
-      "paintfight.jl": 1.7955746166300454e9,
+      "outfits.jl": 1.7955856818850791e9,
+      "paintfight.jl": 1.7955847829716349e9,
       "presents.jl": 1.7955812359792938e9,
       "rollcall.jl": 1.7955603892893424e9,
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.795582167240766e9,
-      "sneeze.jl": 1.795574616630433e9,
+      "sneeze.jl": 1.7955847829715362e9,
       "snowday.jl": 1.795574616630546e9,
       "soar.jl": 1.7955746166306448e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955746166307683e9,
       "sunset.jl": 1.7954781267170784e9,
-      "swing.jl": 1.7955813069072058e9,
+      "swing.jl": 1.7955839126681192e9,
       "tag.jl": 1.7955616074062378e9,
       "toadstool.jl": 1.795573064701041e9,
+      "voice.jl": 1.7955855646923256e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 36,
+    "posts": 37,
     "self": "15398359690889698509",
     "wishes": 8
   },
-  "started": "2026-11-25T06:12:12",
+  "started": "2026-11-25T06:53:54",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1711,7 +1707,10 @@
       "Crispulator",
       "MathPhysicalConstants",
       "Snowflurry",
-      "FinEtoolsAcoustics"
+      "FinEtoolsAcoustics",
+      "TrixiAtmo",
+      "RadiiPolynomial",
+      "SDWBA"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -1731,8 +1730,9 @@
       "FluxKleinRunner",
       "Hunyuan3DRunner",
       "HorizonRunner",
-      "BasicVSRRunner"
+      "BasicVSRRunner",
+      "DeepFilterRunner"
     ]
   },
-  "surprise_seen": 80
+  "surprise_seen": 81
 }

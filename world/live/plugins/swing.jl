@@ -13,7 +13,7 @@ const HEIGHT = 2.3f0                         # frame height (m)
 const T_HOP = 1.5; const T_SWING = 10.0; const T_LOOP = 1.6; const T_FLY = 1.6; const T_AFTER = 4.0
 const GAP = (1500.0, 2700.0)                 # sim seconds between two big swings
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
-                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom, :swing)
+                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom, :swing, :bottle, :leaves)
 const CHEERS = ("Higher!", "HIGHER!", "Go go go!", "Woooo!", "Even higher!", "Touch the sky!")
 const LAUGH = ("HA HA HA!", "You flew!", "That was AMAZING!", "My turn! My turn!", "Are you OK?!")
 const WOOD = RGBf(0.74, 0.52, 0.32); const ROPE = RGBf(0.86, 0.76, 0.56)

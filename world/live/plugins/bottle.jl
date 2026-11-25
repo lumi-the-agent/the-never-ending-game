@@ -11,7 +11,7 @@ const T_HOLD = 2.6; const T_THROW = 1.3; const T_DRIFT = 16.0
 const THROW = 5.5f0                          # metres out to sea (8: a dot in every frame)
 const SIZE = 2.1f0                           # a big friendly bottle (at 1 it was a dot out at sea)
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
-                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom, :swing, :bottle)
+                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom, :swing, :bottle, :leaves)
 const BYE = ("Bye, bottle!", "Safe travels!", "Who's it for?", "Swim, little bottle!", "Write back!")
 const GLASS = RGBf(0.45, 0.78, 0.66); const CORK = RGBf(0.66, 0.48, 0.3)
 

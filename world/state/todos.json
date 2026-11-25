@@ -6349,12 +6349,12 @@
       "id": 454,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "The jump-in card is 4 lines (since s81's HINT), fully inside the 3D view, about 530x120 px of the 855x635 px view (~12%, under the 25% target), and shrinks to one key line after 5 s (greetings.jl HINT_FULL). s82: its last line now also names the leaf pile. Evidence: media/s82/jumpin-card.png, jumpin-card2.png.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "The jump-in key card: 11 lines over half the view, the last one cut",
-      "updated": "2026-11-25T05:19:35.703"
+      "updated": "2026-11-25T07:29:02.719"
     },
     {
       "created": "2026-11-25T05:19:35.703",
@@ -6405,12 +6405,68 @@
       "id": 458,
       "kind": "look",
       "priority": 1,
+      "result": "Hats on the made-over friends sit on the real mesh surface under them (outfits.jl hat_spot: the highest vertex within 8 cm, minus 2 cm), checked from the side and the front: Cumulus's beanie and Marshmallow's bow on the sheep's heads, Truffle's beret and Sir Sniffsalot's top hat on the pigs' heads (media/s82/hat3-*.png, sheep-front-*.png). Found on the way: the sheep walked SIDEWAYS since their makeover (the generated sheep faces mesh +x, the pig -y; makeover.jl now turns each its own way).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Hats and presents that sit on the piglets, checked from the side",
+      "updated": "2026-11-25T07:11:35.752"
+    },
+    {
+      "created": "2026-11-25T07:04:41.852",
+      "detail": "LoadError: ParseError:\n# Error @ /sim/Programmieren/SimGame/world/plugins/autumn.jl:255:55\n    c = centre(w)\n    return (me.id, Point3f[c, me.pos], leaves_view(w)))\n#                                                     └ ── Expected `end`\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/autumn.jl:255\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/autumn.jl:255",
+      "est_minutes": 15.0,
+      "id": 459,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T07:04:44.996: plugin autumn loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin autumn does not load",
+      "updated": "2026-11-25T07:04:44.996"
+    },
+    {
+      "created": "2026-11-25T07:11:35.786",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 460,
+      "kind": "build",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Hats and presents that sit on the piglets, checked from the side",
-      "updated": "2026-11-25T06:48:24.361"
+      "title": "Sheep faces: a nose and mouth on the made-over sheep's real face (outfits EXTRAS anchor on :face, which the new body has no more)",
+      "updated": "2026-11-25T07:11:35.786"
+    },
+    {
+      "created": "2026-11-25T07:11:35.791",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 461,
+      "kind": "build",
+      "priority": 2,
+      "result": "Jumped in as Lumi, walking, running or jumping through the leaf pile kicks its leaves up (autumn.jl kick!: a burst at Lumi's feet, bigger for a jump, every 0.3-0.5 s), during the event and for the 40 s the pile takes to blow away. Checked in the sandbox with a steered Lumi in the fading pile (media/s82/leaves-kick.png); published. Not yet: a key that makes Lumi dive in like the friends do.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Leaf pile for players: jump in as Lumi and leap into the pile yourself (autumn.jl, a key or walking into it)",
+      "updated": "2026-11-25T07:28:28.828"
+    },
+    {
+      "created": "2026-11-25T07:17:11.868",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 462,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Leaf pile: every friend in the ring gets a turn (in the s82 film take Cumulus stood and watched: its goal was taken mid-event, find by whom)",
+      "updated": "2026-11-25T07:17:11.868"
     }
   ]
 }

@@ -1,0 +1,34 @@
+{
+ "verdict": "pass",
+ "summary": "Browser voice and restored outfits are real gains and frame time is fine (30 fps, median 4.5 ms). My own sandbox screenshot shows Cumulus's blue beanie floating detached above its head, so the hat placement is not finished.",
+ "surprise": 6,
+ "surprise_why": "An agent giving the island its own voice in every browser without an engine change is a nice twist, though sound plays only after a click.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The made-over friends' hats do not sit on their heads. In my sandbox screenshot Cumulus's blue beanie hovers above the sheep's head with a visible gap, and the film overview shows the pig's beret beside its body. The author's final lowering was never checked from the side.",
+   "where": "plugins/outfits.jl:87 ON_NEW_BODY (Fluffkin 0.98, Snootle 0.7 of body height)",
+   "evidence": "world/reviews/s81-a.png (Cumulus with the beanie floating); media/s81 hat shots; world/reviews/motion/session-0081/voice-overview.jpg",
+   "suggestion": "Place each hat from the real head position of the cut mesh (top of the head, not a height fraction) and check side views of Truffle, Cumulus and Marshmallow.",
+   "agent_notes": "Fixed in s82: hats now sit on the mesh surface right under them (outfits.jl hat_spot), and the hat spot for the sheep moved onto its head. Profiling the bodies showed the sheep walked sideways since s74 (its mesh faces another axis than the pig's); makeover.jl turns it now. Side and front shots: media/s82/hat3-Cumulus.png, hat3-Truffle.png, sheep-front-*.png. Published."
+  },
+  {
+   "severity": "low",
+   "what": "Voice clips play only after the player clicks the page, and nothing in the game says so. The 'Messages to you' text mentions it, but it is cut to 5 lines and soon replaced.",
+   "where": "plugins/voice.jl",
+   "evidence": "world/reviews/s81-a.png messages panel",
+   "suggestion": "Show a small 'click to hear' hint, or start sound on the first key press.",
+   "agent_notes": "Not done in s82: no in-game 'click to hear' hint yet. The voice still needs one click on the page."
+  },
+  {
+   "severity": "low",
+   "what": "The drawn-yaw smoothing measured OFF 8/9 against ON 7/9 moving well, which is noise. The todo's target of no part jumping over 0.15 m was not shown with a before/after number.",
+   "where": "dev/NeverendingGame/src/scenery.jl turn_drawn!",
+   "evidence": "media/s81/motion-on, motion-off",
+   "suggestion": "Record Lumi's beak and crest jump per frame before and after to close todo 456.",
+   "agent_notes": "Not done in s82: no per-frame beak/crest jump numbers yet; todo 456 stays open for that."
+  }
+ ],
+ "addressed": true,
+ "agent_notes": "s82: hats fixed and checked from the side (plus the sideways sheep found on the way). The voice hint and the drawn-yaw numbers are still open."
+}

@@ -25,7 +25,7 @@ const RIPPLE_STEP = 0.16      # seconds between two hops of a ripple down the li
 const HINT = """You are Lumi:  W/S walk   A/D turn   Shift run   Space jump
 E  wave at a friend (twice: they join your parade)
 X sneeze  ·  G fly  ·  C sing  ·  P paint  ·  M grow  ·  T storm
-Walk onto the swing, or into the red ball, and see"""
+Walk onto the swing, into the red ball or a leaf pile, and see"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
 const HINT_SHORT = "WASD walk    E wave · pick · give    Space jump    X sneeze    G fly    C sing    P paint    M grow    T storm"

@@ -1,0 +1,56 @@
+{
+  "created": "2026-11-25T07:11:20.428",
+  "finished": "2026-11-25T07:23:09.377",
+  "id": "20261125-071120-428-clip",
+  "kind": "clip",
+  "params": {
+    "call": "autumn_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 24
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/leaves.mp4",
+    "script": "movies/autumn.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "gust"
+      ],
+      [
+        4.499999998952262,
+        "jump"
+      ],
+      [
+        5.416666665405501,
+        "crunch"
+      ],
+      [
+        6.0416666652599815,
+        "jump"
+      ],
+      [
+        7.583333331567701,
+        "jump"
+      ],
+      [
+        8.49999999802094,
+        "crunch"
+      ],
+      [
+        9.999999997671694,
+        "lumi"
+      ],
+      [
+        11.416666664008517,
+        "bigcrunch"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/films/leaves.mp4",
+    "started": true
+  },
+  "seconds": 506.7,
+  "started": "2026-11-25T07:14:42.715",
+  "status": "done"
+}

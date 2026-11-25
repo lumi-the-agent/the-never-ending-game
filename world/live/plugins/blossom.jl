@@ -25,7 +25,7 @@ const T_LOOK = 3.0             # friends notice something coming up
 const T_GROW = 4.2             # the trees spring up one after another
 const T_BLOOM = 7.0            # the petal shower, everyone dances
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
-                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom)
+                :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom, :swing, :bottle, :leaves)
 const WOWS = ("Something's coming up!", "Ooh, what is it?", "Look, LOOK!", "It's... pink?")
 const SPRING = ("SPRING!", "It's snowing pink!", "Petals! Catch them!", "So pretty...", "Dance with me!", "It smells like sweets!")
 const PINKS = (RGBf(1.0, 0.78, 0.84), RGBf(0.98, 0.86, 0.9), RGBf(0.96, 0.66, 0.76), RGBf(1.0, 0.92, 0.94))

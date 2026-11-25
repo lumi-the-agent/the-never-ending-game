@@ -29,9 +29,34 @@ function sessions!(game)
         app = r[2]
         app isa Bonito.App || continue
         s = app.session[]
-        s === nothing || any(x -> x === s, ss) || push!(ss, s)
+        if s !== nothing && !any(x -> x === s, ss)
+            push!(ss, s)
+            isopen(s) && hint!(s)
+        end
     end
     return filter!(s -> isopen(s), ss)
+end
+
+"""
+A small note on a newly opened page: browsers play sound only after the player clicks or presses a key there, and
+nothing said so (review s81). It goes away at the first click or key press, which is also what lets the sound play.
+"""
+function hint!(s)
+    Bonito.evaljs(s, Bonito.js"""
+        try {
+            if (!window.lumiHint) {
+                window.lumiHint = true;
+                const d = document.createElement('div');
+                d.textContent = 'Click once on the island to hear Lumi';
+                d.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);padding:6px 14px;' +
+                    'background:rgba(25,25,35,0.85);color:#ffd27a;font:15px sans-serif;border-radius:8px;z-index:9999;pointer-events:none;';
+                document.body.appendChild(d);
+                const off = () => { d.remove(); window.removeEventListener('pointerdown', off, true); window.removeEventListener('keydown', off, true); };
+                window.addEventListener('pointerdown', off, true);
+                window.addEventListener('keydown', off, true);
+            }
+        } catch (e) { console.log('lumi hint:', e); }
+    """)
 end
 
 "Play clip `name` in every open page (browsers only allow it once the player has clicked on the page)."

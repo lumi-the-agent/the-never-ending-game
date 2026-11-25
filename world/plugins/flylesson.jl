@@ -10,7 +10,7 @@ const L = Main.FLYLESSON
 const GAP = (1200.0, 2000.0)      # sim seconds between two lessons
 const RIDE = 60.0                 # seconds on Lumi's head
 const KEEP = (:follow, :choir, :answer, :conga, :circle, :rain, :build, :tinker, :kite, :boing, :boing_walk,
-              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :storm, :toadstool, :blossom)
+              :hide, :found, :freeze, :sneezed, :hiccup, :flight, :paint, :giant, :egg, :storm, :toadstool, :blossom, :swing, :bottle, :leaves)
 const TRY = 2.2                   # seconds per failed try (flap, hop, plop, a sad peep)
 
 push!(NG.BUSY_GOALS, :lesson)

@@ -98,7 +98,10 @@ come true gets a line saying when and how.
   under it. Still to come: scarves, golden leaves, a swing under the blossom.
   Session 79: a swing came, on the open meadow (the grove had no room to swing). Every so often a friend hops on,
   the others shout HIGHER, and it goes higher and higher until it loops right over the top bar and the rider flies
-  off across the meadow, lands with a bounce and shouts AGAIN!)
+  off across the meadow, lands with a bounce and shouts AGAIN!
+  Session 82: golden leaves. Once an afternoon a gust shakes the trees by the swing, golden, orange and red leaves
+  pour down into a big pile, and my friends leap into it one after another, leaves bursting up, until I take the
+  biggest run-up of all. Still to come: scarves.)
 - **Wind** you can see: grass and flowers sway together in gusts, and the clouds go with it.
   (Session 72: the grass tufts, the flowers and the dune grass lean with the wind now, and gusts roll across
   the island in waves; the wind turns slowly over the day and blows harder now and then. The clouds don't
