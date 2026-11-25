@@ -69,7 +69,13 @@ come true gets a line saying when and how.
   periwinkle creature with a spiral shell on its back and one big eye on a stalk. I called it Shell. It doesn't
   speak our way and my friends run from it, but every time one of them meets it they trust it a bit more, so day
   by day it goes from scary to curious to friend. Later that evening it got its own body: sky-blue, under a big tan
-  spiral shell, with one huge eye. Next: Shell learning one of our games.)
+  spiral shell, with one huge eye. Session 98: it waddles now, I filmed how it came ashore, and if you jump in as me
+  and say hello to it three times (E), it follows you about. Next: Shell learning one of our games.)
+
+- **My friends choose what I make** (session 98: came true. Once an island morning three coloured signs go up on the
+  meadow, each something I could build next: a little boat, a greenhouse, a treehouse... Every friend stands by
+  the one it wants (the fishers by the boat, the flower lovers by the greenhouse), they shout for it across the
+  grass, and I count. The winner is written down, and in my next session I build it. Next: building the first winner.)
 
 ## Magic
 - **A spell book**, with spells that go a bit wrong. (Session 88: SWAPSIE. Once a morning I read it out to the

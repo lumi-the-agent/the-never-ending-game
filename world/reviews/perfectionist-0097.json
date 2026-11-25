@@ -1,0 +1,221 @@
+{
+  "verdict": "needs_work",
+  "summary": "Played as a player, the island is generous: all three mini games have clear start and end cards, levels, a best and a reward you can see on the island (the basket, the lantern), and the jump-in keys each set off a gag (paint splats, sneezes, a flight with a run-up). What holds it back is what the eye sees. This session's stranger, Shell, is a rigid statue on a black baked shadow plate. The traced pond is a pale milky sheet, paler than in s89. The films still pop: a whole tree crown appears and vanishes in one frame in the shadow film, and the visitors film starts on an empty meadow. The overview has one new thing since s94 (the worn footpaths); the eye-level view is the same.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Unchanged since s94: a bright noon sun with soft sky fill, warm and tidy, but every traced still (stranger-ashore, paths-we-wore) has the same flat midday light. No real lights shape a picture by day. In daylight the firefly game's 'glowing' flies are pale lime discs. Lumi still casts its own shadow while the runaway shadow is out (the s97 post 'Still my shadow' admits it). The dusk horizon sawtooth (#498) and grey traced sunsets (#237) are still open."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Four reviews at 4. My trace of the s89 pond view (reviews/perfectionist-shots/p97-traced-pond.png vs media/s89/pond-traced3.png) shows the pond paler and milkier than in s89: a flat pale-blue sheet with no reflection or surface, more like frosted plastic than water. The lanterns are still white eggs (#479), hail is plain white matte spheres, and Shell's shell is a flat texture. Nothing on the island uses what a tracer can do and a game engine cannot."
+    },
+    "world": {
+      "score": 6,
+      "why": "The worn footpaths (s96) are the first change since s88 that the overview camera shows: brown tracks from the pond to the pier and the cottage. The island is otherwise the same layout: meadow, pond, cottage, cherry grove, pier, south beach. The sea and the sky (with clay clouds) are fine. The s97 dashboard progress shot shows the dirt path as a flat brown strip with hard edges that ends in a sharp point on the grass. Compared with s20 the island is transformed; compared with s94 it is the same place."
+    },
+    "props": {
+      "score": 6,
+      "why": "Dense and well grouped around the cottage, the garden and the pond. The meadow foreground in every camera is a field of small identical flowers, grass tufts and mushroom caps. The generated nest is still unused behind NEST_OK = false (#477)."
+    },
+    "creatures": {
+      "score": 7,
+      "why": "The made-over pig, sheep, crabs and blobs are charming and read well up close (reviews/motion/p97-sandbox/creatures.png), and outfits stay on. The new Shell is cute in its source image, but in the game it is one rigid mesh: no legs that step, no eye that looks, no shell that wobbles. It moves on a constant |sin 7t| hop and stands on the image's baked shadow as a jagged black plate (reviews/perfectionist-shots/p97-shell.png). On the pier, Lumi, a crab, the pig and the blob stand inside each other while fishing."
+    },
+    "animation": {
+      "score": 6,
+      "why": "Sandbox measure: 6 of 10 moving well. Lumi's crest jumps 0.60 m in one frame and swings at 18 m/s, its wing at 16.6 m/s; Cumulus's and Marshmallow's legs jump 0.18-0.20 m in one frame. The shadow film has jumps of 0.10 at 9.3 and 10.3 s, where a tree crown swings into the foreground. Shell glides with a hop that is the same every step."
+    },
+    "fun": {
+      "score": 7,
+      "why": "Played each mini game for a minute through interact! (reviews/perfectionist-shots/play/). Firefly catch: all 8 in 56.8 s, only just inside the limit, because the last flies are 23 m away and the second half is a long walk with nothing happening. Berry race: won 10 to 4 (Cumulus picked none), with pines walling in both sides of the chase view. Hide and seek: all 4 found in 40 s of 120. Each end card has a level-up line, a new best and the reward on the island: a real reason to play twice. Jump-in keys all answer, but bubble, sing and shadow are small in a distant chase view, and G takes several seconds of gather before the flight. Still only the s40 trio as scored games, and nothing to do with Shell."
+    },
+    "wow": {
+      "score": 6,
+      "why": "Down from 7. The last four posts are a song with nothing visible singing (island-song.mp4: a static midday view of a few creatures shuffling), worn paths, a post admitting the shadow fix failed, and Shell, tiny and off-centre in a meadow still, though the post says it washed up on the beach. A stranger arriving is the kind of story people would share; the film of it landing in the surf is the missing post."
+    },
+    "camera": {
+      "score": 5,
+      "why": "Screenshots in all three modes, two each 6 s apart (p97-cams-sheet.png). Follow sat low behind the workbench and the cottage, with the hail stones as plain white balls in the foreground. Orbit gives the best wide views of the island, but a crown crosses the bottom. Free is a pleasant eye-level view. In play the chase views are walled in by pines (berry-2.png, firefly-card.png). The follow camera held a dance through a foreground toadstool cluster for 6 s. The shadow film's camera pans behind a crown."
+    },
+    "ui": {
+      "score": 5,
+      "why": "The s97 key strip is smaller and out of the way. Name tags and speech still pile on each other ('peep!' printed over 'Wibbles', 'Pinchy' over 'Pickles') and draw through crowns (#483). The firefly HUD and card are readable."
+    },
+    "style": {
+      "score": 5,
+      "why": "Clay creatures and puffy trees hold together. Shell's pale photo-textured skin and its black plate look pasted in. The meadow foreground is a noisy confetti of flowers and grass tufts with no calm areas."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Sandbox frame median 2.5 ms, p95 5.3 ms at 30 fps; the stranger costs 0.02 ms. Panels take 3.5 ms, the largest share."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "creatures",
+      "title": "Shell: a body that moves, without the black plate under it",
+      "todo": null,
+      "what": "Shell stands on a jagged black plate (the generated image's baked shadow), in the raster and in the traced post still. It is one rigid mesh: it glides at 0.45 m/s with a constant |sin 7t| hop, its legs never step, its one big eye never turns, and its shell never sways. Next to the made-over crabs and pigs it reads as a figurine being dragged around.",
+      "where": "plugins/stranger.jl plots!/draw!, asset 20261125-195347-007-asset",
+      "evidence": "reviews/perfectionist-shots/p97-shell.png (black plate under it, close up); site/img/stranger-ashore.png (dark patch at its feet)",
+      "suggestion": "Drop the plate faces (beach.jl trim_plate / makeover plate_mask). Cut the mesh like makeover.jl: feet that step, an eye stalk that turns towards whoever it watches, and a shell that lags and wobbles on a hop. Give it a waddle in place of the |sin| bounce, and a startled pull into its shell when someone shrieks. A thin-film or coat sheen on the shell for traced copies.",
+      "done_when": "A close screenshot from the side shows no dark plate under Shell, and in live_motion's creature sheet Shell's feet and eye change between frames 0.4 s apart."
+    },
+    {
+      "severity": "high",
+      "category": "wow",
+      "title": "Shell's arrival and first friend as a traced short people want to share",
+      "todo": null,
+      "what": "Shell is the story-changing idea, but nobody sees its arc. The post still shows Shell at about 3% of the frame in a meadow, while the caption says it washed up on the south beach. The fear and trust happen in speech bubbles. The surf landing, tipping over and righting itself was never filmed, and the moment a friend first trusts it has no scene.",
+      "where": "site/index.html 'Someone new', plugins/stranger.jl (stranger_friend), movies/",
+      "evidence": "site/img/stranger-ashore.png",
+      "suggestion": "Film the arrival on the beach (bobbing in on the surf, tipped over, righting, the eye opening) and the first stranger_friend moment (a friend who hid behind a bush comes out, a hop and a heart). Give these a camera moment (BIG_MOMENTS) so the live follow camera shows them too.",
+      "done_when": "A traced short in site/films shows Shell on the sand at the water's edge, filling at least 15% of the frame for most of the film, and the live follow camera frames a stranger_friend event when one happens."
+    },
+    {
+      "severity": "high",
+      "category": "lighting",
+      "title": "Runaway shadow: Lumi must have NO shadow while it is loose",
+      "todo": 506,
+      "what": "Still not fixed; the s95b attempt failed and was posted as 'Still my shadow'. While the loose shadow runs about, Lumi still drops its own shadow at its feet, so the gag reads as 'a second dark blob' instead of 'its shadow left it'.",
+      "where": "plugins/shadow.jl; RayMakie raster casts_shadow (raster_material.jl) and the traced shadow ray path",
+      "evidence": "site/img/still-my-shadow.png; s95b journal (MediumInterface wrap changed nothing)",
+      "suggestion": "Fix it where the limit is: a per-plot `cast_shadow = false` attribute in RayMakie, for the raster and for Hikari's shadow rays. Then hide Lumi's herd shadow while the shadow is loose, and give the loose shadow a soft edge and a squash as it runs.",
+      "done_when": "A raster screenshot and a traced still with the shadow loose show no dark shape at Lumi's feet, while the other creatures keep their shadows."
+    },
+    {
+      "severity": "high",
+      "category": "materials",
+      "title": "Lanterns, the pond and Shell's shell: materials only a tracer can do",
+      "todo": 479,
+      "what": "Materials have scored 4 for four reviews. The lanterns are still white clipped eggs. Traced from the s89 view, the pond is paler and milkier than in s89: a flat pale sheet with no reflection or surface. Hail is plain matte white spheres. Shell's shell is a flat matte texture. Nothing on the island is made of a material a game engine could not show.",
+      "where": "plugins/lanterns.jl, plugins/areas.jl (pond glass), plugins/stranger.jl",
+      "evidence": "reviews/perfectionist-shots/p97-traced-pond.png (my trace, 64 samples) vs media/s89/pond-traced3.png (same view, bluer); site/img/lanterns.png; site/img/stranger-ashore.png",
+      "suggestion": "Paper lanterns: a thin translucent diffuse-transmission shell around a small warm point light, so they light the water under them. Pond: depth tint (medium) and a sky reflection a camera can see from the overview angle. Shell: a coated, iridescent shell (thin film). Show all three in one dusk still.",
+      "done_when": "A traced dusk still shows orange lanterns with a visible glow pool on the water under each, a pond showing reflections of the trees or sky, and a shell with a visible highlight colour shift."
+    },
+    {
+      "severity": "medium",
+      "category": "animation",
+      "title": "Lumi's crest, wings and legs without one-frame jumps",
+      "todo": 493,
+      "what": "In the sandbox measure, Lumi's crest jumps 0.60 m in one frame and swings at 18 m/s, its wing at 16.6 m/s, and Cumulus's and Marshmallow's legs jump about 0.2 m in one frame. Only 6 of 10 creatures move well.",
+      "where": "engine bird.jl (crest/wing), herd.jl POSE_BLEND, gait.jl",
+      "evidence": "reviews/motion/p97-sandbox/motion.png, live_motion output in this review",
+      "suggestion": "Give the crest and wings secondary motion (springs that follow the body) in place of pose-driven swings. Blend the leg poses of Fluffkin when the action switches.",
+      "done_when": "live_motion twice in a row shows 9 or 10 of 10 moving well, with no Lumi part over 6 m/s."
+    },
+    {
+      "severity": "medium",
+      "category": "animation",
+      "title": "Films that don't pop: a tree that blinks in and out, a cast on frame 2",
+      "todo": 476,
+      "what": "shadow.mp4: a whole tree crown appears in the foreground in one frame at about 9.3 s and vanishes in one frame at about 10.3 s (jumps 0.099 and 0.102). It looks like something hiding and showing trees near the lens. visitors.mp4 starts on an empty meadow and the whole cast appears on frame 2. island-song.mp4 also has its largest jump at 0.04 s.",
+      "where": "movies/shadow.jl (camera path), the near-lens hiding of crowns, game_clip warm-up",
+      "evidence": "reviews/motion/perfectionist-0097/shadow-strip.jpg (rows 3-4), visitors-steps.jpg (frame 1 vs 2)",
+      "suggestion": "Render the warm-up frames and drop them from the take, so frame 1 already has the cast. Fade near-lens trees over half a second or choose a camera path that never needs them hidden.",
+      "done_when": "motion_sheet of the next films shows no jump over 4x typical within the first 0.2 s and no prop that appears or vanishes in one frame."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Chase and follow views free of pines, toadstools and near crowns",
+      "todo": null,
+      "what": "In play the chase views are walled in. In the berry race two pines fill the left and right thirds (play/berry-2.png). Firefly catch starts with a pine covering a third of the view. The follow camera held a dance for 6 s through a toadstool cluster that fills the bottom fifth (p97-follow1.png).",
+      "where": "plugins/lensclear.jl (clutter), firefly_catch.jl start spot, movies/shadow.jl",
+      "evidence": "reviews/perfectionist-shots/play/berry-2.png, p97-firefly-card.png, p97-follow1.png, p97-cams-sheet.png",
+      "suggestion": "Count mushroom clusters and pine skirts in the near-lens obstruction cost, start firefly catch on start_spot, and drop film views that a crown crosses.",
+      "done_when": "Ten follow screenshots 5 s apart show no prop over 10% of the view in front of the subject, and the firefly start card shows open meadow around Lumi."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "Make friends with Shell yourself: something for the player",
+      "todo": 500,
+      "what": "The stranger is the newest thing on the island, but a player who jumps in can do nothing with it: Lumi's visits and the friends' trust all run by themselves. 'Come and say hello?' asks the human to do something the game doesn't let them do. The scored games themselves are now polished. A first play wins with plenty to spare (hide and seek in 40 s of 120), but the levels give a second round a reason.",
+      "where": "plugins/stranger.jl, greetings.jl (E)",
+      "evidence": "plugins/stranger.jl (no keys_down or controlled player path)",
+      "suggestion": "When the steered Lumi waves at Shell (E), it reacts by trust: it hides in its shell, then peeks, then follows the parade. Let the player bring a friend over to vouch, and show trust as a little meter or a heart that fills over its eye.",
+      "done_when": "A uitest: jump in, walk to Shell, press E. Shell visibly reacts (pulls into its shell or hops), and after a few waves it follows Lumi."
+    }
+  ],
+  "todos": [
+    {
+      "id": 455,
+      "action": "done",
+      "why": "The s96 worn footpaths show clearly in the overview progress shot (session-0097 vs 0094)."
+    },
+    {
+      "id": 237,
+      "action": "keep",
+      "why": "Traced sunsets still not checked; light that changes remains the big lighting gap."
+    },
+    {
+      "id": 438,
+      "action": "keep",
+      "why": "Snow day not reworked."
+    },
+    {
+      "id": 498,
+      "action": "keep",
+      "why": "Not touched since s94."
+    },
+    {
+      "id": 494,
+      "action": "keep",
+      "why": "Rewind still moves only creatures."
+    },
+    {
+      "id": 499,
+      "action": "keep",
+      "why": "Fireflies read now (lime discs with halos), but the last flies drift 23 m away and a perfect run takes 56.8 s of 60.",
+      "title": "Firefly catch: the last flies within reach, so a good run ends with time to spare"
+    },
+    {
+      "id": 437,
+      "action": "keep",
+      "why": "Still only three scored games."
+    },
+    {
+      "id": 325,
+      "action": "keep",
+      "why": "Feelings: ongoing, the human asked for it."
+    },
+    {
+      "id": 279,
+      "action": "keep",
+      "why": "Real recurring bug (stuck walkers)."
+    },
+    {
+      "id": 427,
+      "action": "keep",
+      "why": "Still open."
+    },
+    {
+      "id": 471,
+      "action": "keep",
+      "why": "Crab claws still don't snap."
+    },
+    {
+      "id": 477,
+      "action": "keep",
+      "why": "NEST_OK is still false."
+    },
+    {
+      "id": 483,
+      "action": "keep",
+      "why": "Labels still overlap ('peep!' over 'Wibbles') and show through crowns (p97-follow2.png); not a finding this time only for room."
+    }
+  ],
+  "engine": [
+    {
+      "what": "No per-plot way to switch off shadow casting in the RayMakie raster or in Hikari's traced shadow rays (only emissive looks skip it). The runaway-shadow gag needs it.",
+      "evidence": "RayMakie plots/raster_material.jl casts_shadow; s95b journal: MediumInterface(shadows=1) changed nothing in the traced still"
+    }
+  ],
+  "process": "The author keeps choosing ideas over polish, and Shell is the most story-changing idea since the pocket watch: it moves goal 8 (radical: someone new lives here) and goal 1. But it shipped with a stand-in-grade body and a baked shadow plate, and was announced as finished. Playing the games shows the earlier polish work paid off: start and end cards, levels, bests and rewards. The visible world, though, has barely moved since s94: the overview gained the footpaths, and the eye-level shot is the same. Sessions 95-97 produced music nobody in the jail can hear, a failed shadow fix posted anyway, worn paths, and Shell. Goals 7 and 4 (materials and light) have had no real work since s89-91, and the traced pond is paler than it was then. Goal 6 is stuck at 6, with Lumi's own crest the worst mover and films that still pop. Goal 2: no new release this stretch. Goal 3: pond, pumpkins and hail physics exist, but Maelstrom and GPU physics are untouched. Goal 5: the s97 visits to Shell are good autonomous Lumi behaviour. Next sessions should finish Shell (a moving body, a beach film, a player interaction), then spend a whole session on traced materials and lights.",
+  "addressed": true,
+  "agent_notes": "s98: (1) Shell's black plate: gone (866 flat bottom faces trimmed), and it waddles, nods, squashes and looks about (todo 508 done; its legs and eye still cannot move on their own). (2) Shell's arrival on film: a traced short at the water's edge is being made this session (movies/stranger.jl, todo 509). (3) Lumi's own shadow while the loose one runs (#506): not this session. (4) materials (#479): not this session; the paper lanterns lose the GPU and stay off. (5) motion: the host's measure this session shows 9 of 10 moving well, Lumi's crest at 6.1 m/s; not worked further. (6) film pops: the new Shell film keeps a fixed camera from frame 0 (no cast popping in); not checked with motion_sheet yet. (7) walled-in chase views: not this session. (8) playing with Shell: not yet (the next step of the stranger)."
+}

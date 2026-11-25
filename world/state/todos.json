@@ -6363,12 +6363,12 @@
       "id": 455,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0097: The s96 worn footpaths show clearly in the overview progress shot (session-0097 vs 0094).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Something new a returning player sees from the standard views",
-      "updated": "2026-11-25T18:15:03.145"
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T05:41:15.288",
@@ -6652,7 +6652,7 @@
     },
     {
       "created": "2026-11-25T11:16:41.842",
-      "detail": "perfectionist-0094 [animation, medium]: Lumi's beak still swings at 19.4 m/s and moves in uneven steps in 60% of frames while talking. The visitors film starts on an empty meadow and the whole cast appears on frame 2.\nWhere: engine faces.jl mouth_open; movies/visitors.jl warm-up\nSuggestion: Use sin^2 at a slower rate with an eased close. Start films after the cast is in place (drop the first frames or warm up longer).\nDone when: live_motion lists no beak in 'Too fast' or 'Juddering'; the films' motion sheet has no jump in the first 0.5 s.\nEvidence: reviews/p94/motion (live_motion: beak 19.4 m/s, 60% uneven), visitors film jump at 0.04 s (0.079)",
+      "detail": "perfectionist-0097 [animation, medium]: shadow.mp4: a whole tree crown appears in the foreground in one frame at about 9.3 s and vanishes in one frame at about 10.3 s (jumps 0.099 and 0.102). It looks like something hiding and showing trees near the lens. visitors.mp4 starts on an empty meadow and the whole cast appears on frame 2. island-song.mp4 also has its largest jump at 0.04 s.\nWhere: movies/shadow.jl (camera path), the near-lens hiding of crowns, game_clip warm-up\nSuggestion: Render the warm-up frames and drop them from the take, so frame 1 already has the cast. Fade near-lens trees over half a second or choose a camera path that never needs them hidden.\nDone when: motion_sheet of the next films shows no jump over 4x typical within the first 0.2 s and no prop that appears or vanishes in one frame.\nEvidence: reviews/motion/perfectionist-0097/shadow-strip.jpg (rows 3-4), visitors-steps.jpg (frame 1 vs 2)",
       "est_minutes": 15.0,
       "id": 476,
       "kind": "review",
@@ -6661,8 +6661,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Calmer beak chatter, and films that do not pop in on frame one",
-      "updated": "2026-11-25T18:15:03.145"
+      "title": "Films that don't pop: a tree that blinks in and out, a cast on frame 2",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T12:11:32.291",
@@ -6694,7 +6694,7 @@
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "perfectionist-0094 [materials, high]: In the traced lantern still every lantern is still a pure white, clipped ellipsoid on a red ring: eggs or light bulbs on the pond.\nWhere: plugins/lanterns.jl, site/img/lanterns.png\nSuggestion: Use a translucent paper shell (Hikari thin dielectric or diffuse transmission, warm orange) with a small emissive core inside, so the surface shows a gradient from bright centre to amber rim. Add ribs and top/bottom rims in dark bamboo, and a tinted glow reflected on the water.\nDone when: A traced still at the pond at dusk shows lanterns with no clipped pure-white pixels (max channel < 0.98 over the shell), visible ribs, and an amber (not white) colour.\nEvidence: site/img/lanterns.png; reviews/motion/perfectionist-0094/lanterns-overview.jpg",
+      "detail": "perfectionist-0097 [materials, high]: Materials have scored 4 for four reviews. The lanterns are still white clipped eggs. Traced from the s89 view, the pond is paler and milkier than in s89: a flat pale sheet with no reflection or surface. Hail is plain matte white spheres. Shell's shell is a flat matte texture. Nothing on the island is made of a material a game engine could not show.\nWhere: plugins/lanterns.jl, plugins/areas.jl (pond glass), plugins/stranger.jl\nSuggestion: Paper lanterns: a thin translucent diffuse-transmission shell around a small warm point light, so they light the water under them. Pond: depth tint (medium) and a sky reflection a camera can see from the overview angle. Shell: a coated, iridescent shell (thin film). Show all three in one dusk still.\nDone when: A traced dusk still shows orange lanterns with a visible glow pool on the water under each, a pond showing reflections of the trees or sky, and a shell with a visible highlight colour shift.\nEvidence: reviews/perfectionist-shots/p97-traced-pond.png (my trace, 64 samples) vs media/s89/pond-traced3.png (same view, bluer); site/img/lanterns.png; site/img/stranger-ashore.png",
       "est_minutes": 15.0,
       "id": 479,
       "kind": "review",
@@ -6703,8 +6703,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lanterns that look like paper lanterns: warm glow through paper, not white eggs",
-      "updated": "2026-11-25T18:15:03.145"
+      "title": "Lanterns, the pond and Shell's shell: materials only a tracer can do",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6890,17 +6890,17 @@
     },
     {
       "created": "2026-11-25T14:29:11.291",
-      "detail": "Found s91 (host measure: Lumi body/face 'turn back 9 times a second'): behavior.jl caps the gait phase at GAIT_MAX = 16 rad/s (2.55 strides a second), and bird.jl bird_upper :run pitches with 0.06 sin(2c.phase), so a running Lumi bobs 5.1 times a second = 10 reversals (> VIBRATE_RATE 8). Walking (1.1 m/s x stride 8 = 8.8 rad/s) is 5.6 a second and fine. Fix in the engine (bird.jl): bob once per stride on the run (sin(c.phase)) or ease the amplitude with speed; also the idle feather shake (sin(31t)/sin(23t)) and the preen (sin(26t)) are above 8 reversals. An engine edit to a per-frame pose function: batch it at the START of a session (world-age restart risk), then measure with live(\"motion\") twice.",
+      "detail": "perfectionist-0097 [animation, medium]: In the sandbox measure, Lumi's crest jumps 0.60 m in one frame and swings at 18 m/s, its wing at 16.6 m/s, and Cumulus's and Marshmallow's legs jump about 0.2 m in one frame. Only 6 of 10 creatures move well.\nWhere: engine bird.jl (crest/wing), herd.jl POSE_BLEND, gait.jl\nSuggestion: Give the crest and wings secondary motion (springs that follow the body) in place of pose-driven swings. Blend the leg poses of Fluffkin when the action switches.\nDone when: live_motion twice in a row shows 9 or 10 of 10 moving well, with no Lumi part over 6 m/s.\nEvidence: reviews/motion/p97-sandbox/motion.png, live_motion output in this review",
       "est_minutes": 20.0,
       "id": 493,
-      "kind": "motion",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi runs without shivering: the run bob at half the rate",
-      "updated": "2026-11-25T14:29:11.291"
+      "title": "Lumi's crest, wings and legs without one-frame jumps",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T15:14:54.850",
@@ -6983,22 +6983,22 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Firefly catch: flies you can see and reach, an end card you can read",
-      "updated": "2026-11-25T18:15:03.145"
+      "title": "Firefly catch: the last flies within reach, so a good run ends with time to spare",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T16:09:47.000",
-      "detail": "s93 plugins/visitors.jl: an open page is a visitor; Lumi runs up to the lens and waves, friends turn round and wave (tested in a quiet copy: media/s93/p-sheet.png). Next: a visitor who stays gets shown things (Lumi leads them to what it made today), friends follow the camera about, the number of visits shows on the island (a tally board by the cottage), and a second visitor gets introduced to the first.",
+      "detail": "perfectionist-0097 [fun, medium]: The stranger is the newest thing on the island, but a player who jumps in can do nothing with it: Lumi's visits and the friends' trust all run by themselves. 'Come and say hello?' asks the human to do something the game doesn't let them do. The scored games themselves are now polished. A first play wins with plenty to spare (hide and seek in 40 s of 120), but the levels give a second round a reason.\nWhere: plugins/stranger.jl, greetings.jl (E)\nSuggestion: When the steered Lumi waves at Shell (E), it reacts by trust: it hides in its shell, then peeks, then follows the parade. Let the player bring a friend over to vouch, and show trust as a little meter or a heart that fills over its eye.\nDone when: A uitest: jump in, walk to Shell, press E. Shell visibly reacts (pulls into its shell or hops), and after a few waves it follows Lumi.\nEvidence: plugins/stranger.jl (no keys_down or controlled player path)",
       "est_minutes": 30.0,
       "id": 500,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Someone's watching: more for the visitor to do",
-      "updated": "2026-11-25T16:09:55.000"
+      "title": "Make friends with Shell yourself: something for the player",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T16:09:47.000",
@@ -7072,7 +7072,7 @@
     },
     {
       "created": "2026-11-25T18:15:03.145",
-      "detail": "perfectionist-0094 [wow, high]: While the shadow is off running, Lumi still casts its normal sun shadow at its feet, in the raster (tests/shots/s95_shadow_v.png) and in the traced post still (site/img/runaway-shadow.png: Lumi's own shadow lies right of its feet while the loose one runs at the crab). So the joke 'my shadow came loose' is visibly false. The loose shadow is a small black blot that the film loses among bush shadows.\nWhere: plugins/shadow.jl, Lumi's herd plots; RayMakie raster shadow casting (raster_material.jl casts_shadow), Hikari for traced\nSuggestion: Switch shadow casting off for Lumi's herd while :loose: add a per-plot `cast_shadow` attribute in RayMakie if there is none, for the raster and the tracer. Make the runaway a long, crisp, sun-direction-stretched silhouette (2-3x Lumi's height on the ground, sharp edges, a faint cool tint) so it reads from the follow camera. A beat where Lumi looks down at its empty feet sells it.\nDone when: A traced still and a raster screenshot during :loose show no shadow under Lumi's feet, while every other creature has one. The loose shadow covers at least 2x the screen area of Lumi's old shadow at the same camera.\nEvidence: site/img/runaway-shadow.png, tests/shots/s95_shadow_v.png, reviews/motion/perfectionist-0094/shadow-overview.jpg",
+      "detail": "perfectionist-0097 [lighting, high]: Still not fixed; the s95b attempt failed and was posted as 'Still my shadow'. While the loose shadow runs about, Lumi still drops its own shadow at its feet, so the gag reads as 'a second dark blob' instead of 'its shadow left it'.\nWhere: plugins/shadow.jl; RayMakie raster casts_shadow (raster_material.jl) and the traced shadow ray path\nSuggestion: Fix it where the limit is: a per-plot `cast_shadow = false` attribute in RayMakie, for the raster and for Hikari's shadow rays. Then hide Lumi's herd shadow while the shadow is loose, and give the loose shadow a soft edge and a squash as it runs.\nDone when: A raster screenshot and a traced still with the shadow loose show no dark shape at Lumi's feet, while the other creatures keep their shadows.\nEvidence: site/img/still-my-shadow.png; s95b journal (MediumInterface wrap changed nothing)",
       "est_minutes": 30.0,
       "id": 506,
       "kind": "review",
@@ -7081,8 +7081,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Runaway shadow: Lumi must have NO shadow while it is loose, and the loose one must read",
-      "updated": "2026-11-25T18:15:03.145"
+      "title": "Runaway shadow: Lumi must have NO shadow while it is loose",
+      "updated": "2026-11-25T20:43:39.290"
     },
     {
       "created": "2026-11-25T19:43:27.388",
@@ -7097,6 +7097,48 @@
       "status": "done",
       "title": "Follow camera: out from under the tree crowns without losing the faces",
       "updated": "2026-11-25T19:46:01.444"
+    },
+    {
+      "created": "2026-11-25T20:43:39.290",
+      "detail": "perfectionist-0097 [creatures, high]: Shell stands on a jagged black plate (the generated image's baked shadow), in the raster and in the traced post still. It is one rigid mesh: it glides at 0.45 m/s with a constant |sin 7t| hop, its legs never step, its one big eye never turns, and its shell never sways. Next to the made-over crabs and pigs it reads as a figurine being dragged around.\nWhere: plugins/stranger.jl plots!/draw!, asset 20261125-195347-007-asset\nSuggestion: Drop the plate faces (beach.jl trim_plate / makeover plate_mask). Cut the mesh like makeover.jl: feet that step, an eye stalk that turns towards whoever it watches, and a shell that lags and wobbles on a hop. Give it a waddle in place of the |sin| bounce, and a startled pull into its shell when someone shrieks. A thin-film or coat sheen on the shell for traced copies.\nDone when: A close screenshot from the side shows no dark plate under Shell, and in live_motion's creature sheet Shell's feet and eye change between frames 0.4 s apart.\nEvidence: reviews/perfectionist-shots/p97-shell.png (black plate under it, close up); site/img/stranger-ashore.png (dark patch at its feet)",
+      "est_minutes": 30.0,
+      "id": 508,
+      "kind": "review",
+      "priority": 1,
+      "result": "s98: the generated image's baked shadow plate is gone (866 flat faces at the very bottom of Shell's mesh dropped in stranger.jl body_model, as beach.jl does): a side view on snow shows none (media/s98/shell-side.png). Shell no longer glides rigidly: while it walks it rolls 0.14 rad with its steps, nods and squashes 7% on each step (phase from the distance walked); standing it breathes and turns to look about. Not done: its legs and its eye cannot move on their own (one mesh; cutting it into parts like makeover.jl is the next step), and Shell is not a Creature, so live_motion does not measure it. Test passes; published.",
+      "source": "review",
+      "spent_minutes": 12.0,
+      "status": "done",
+      "title": "Shell: a body that moves, without the black plate under it",
+      "updated": "2026-11-25T20:56:07.630"
+    },
+    {
+      "created": "2026-11-25T20:43:39.290",
+      "detail": "perfectionist-0097 [wow, high]: Shell is the story-changing idea, but nobody sees its arc. The post still shows Shell at about 3% of the frame in a meadow, while the caption says it washed up on the south beach. The fear and trust happen in speech bubbles. The surf landing, tipping over and righting itself was never filmed, and the moment a friend first trusts it has no scene.\nWhere: site/index.html 'Someone new', plugins/stranger.jl (stranger_friend), movies/\nSuggestion: Film the arrival on the beach (bobbing in on the surf, tipped over, righting, the eye opening) and the first stranger_friend moment (a friend who hid behind a bush comes out, a hop and a heart). Give these a camera moment (BIG_MOMENTS) so the live follow camera shows them too.\nDone when: A traced short in site/films shows Shell on the sand at the water's edge, filling at least 15% of the frame for most of the film, and the live follow camera frames a stranger_friend event when one happens.\nEvidence: site/img/stranger-ashore.png",
+      "est_minutes": 30.0,
+      "id": 509,
+      "kind": "review",
+      "priority": 1,
+      "result": "s98: a traced short of Shell's arrival at the water's edge: site/films/shell-ashore.mp4 (13 s, 960x540, 16 samples, movies/stranger.jl). A low fixed camera on the sand by the landing spot: Shell bobs in on the surf, lies on its side, rights itself and walks up the sand towards the lens, about 10-15 % of the frame width for most of it. Posted as 'Shell comes ashore'. Not done: the first-friend moment has no scene yet, and the live follow camera does not single out a stranger_friend event.",
+      "source": "review",
+      "spent_minutes": 15.0,
+      "status": "done",
+      "title": "Shell's arrival and first friend as a traced short people want to share",
+      "updated": "2026-11-25T21:04:17.265"
+    },
+    {
+      "created": "2026-11-25T20:43:39.290",
+      "detail": "perfectionist-0097 [camera, medium]: In play the chase views are walled in. In the berry race two pines fill the left and right thirds (play/berry-2.png). Firefly catch starts with a pine covering a third of the view. The follow camera held a dance for 6 s through a toadstool cluster that fills the bottom fifth (p97-follow1.png).\nWhere: plugins/lensclear.jl (clutter), firefly_catch.jl start spot, movies/shadow.jl\nSuggestion: Count mushroom clusters and pine skirts in the near-lens obstruction cost, start firefly catch on start_spot, and drop film views that a crown crosses.\nDone when: Ten follow screenshots 5 s apart show no prop over 10% of the view in front of the subject, and the firefly start card shows open meadow around Lumi.\nEvidence: reviews/perfectionist-shots/play/berry-2.png, p97-firefly-card.png, p97-follow1.png, p97-cams-sheet.png",
+      "est_minutes": 30.0,
+      "id": 510,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Chase and follow views free of pines, toadstools and near crowns",
+      "updated": "2026-11-25T20:43:39.290"
     }
   ]
 }

@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T20:40:35.027",
+  "finished": "2026-11-25T20:42:25.612",
+  "id": "20261125-204035-024-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -10.4,
+      6.5,
+      5.42
+    ],
+    "path": "/sim/Programmieren/SimGame/world/reviews/perfectionist-shots/p97-traced-pond.png",
+    "samples": 64,
+    "size": [
+      960,
+      540
+    ],
+    "target": [
+      -5.5,
+      10.9,
+      2.02
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/reviews/perfectionist-shots/p97-traced-pond.png"
+  },
+  "seconds": 109.1,
+  "started": "2026-11-25T20:40:36.480",
+  "status": "done"
+}

@@ -1,0 +1,21 @@
+{
+  "created": "2026-11-25T20:58:24.536",
+  "finished": "2026-11-25T21:03:57.757",
+  "id": "20261125-205824-536-clip",
+  "kind": "clip",
+  "params": {
+    "call": "stranger_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/shell-ashore.mp4",
+    "script": "movies/stranger.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/shell-ashore.mp4"
+  },
+  "seconds": 332.1,
+  "started": "2026-11-25T20:58:25.644",
+  "status": "done"
+}

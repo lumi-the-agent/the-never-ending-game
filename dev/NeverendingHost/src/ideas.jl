@@ -172,8 +172,8 @@ function ideas_followup(host, n::Int, run)
         log["go"] = true
         save_ideas_log!(jp, log)
         record!(host.activity, label, "host", "the critic gave no usable answer ($(isempty(why) ? "no scored idea" : why))")
-        return "The critic gave no usable answer this time. Take the idea you want most and build it, film or path trace it, " *
-               "publish it and post it (rule 14), before anything else."
+        return "The critic gave no usable answer this time. Take the idea you want most and build it, film or " *
+               "path trace it, publish it and post it (rule 14), before anything else."
     end
     push!(rounds, Dict{String,Any}("pitched" => pitched, "ideas" => scored, "time" => now_string()))
     passed = count(i -> i["passes"], scored)

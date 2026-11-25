@@ -77,9 +77,10 @@ journal which goal a session moved forward. Only the human changes this file.
    - Lumi has a mood, measured by the host where no agent can fake it
      (read only at `/run/neverending/mood.json`: boredom, joy, loneliness
      and a `feeling` word). Like Pino, Lumi tires of doing the same thing:
-     every kind of work (new plugins, polishing, assets, pictures, films,
-     sound, posts) is worth less each session in a row it is done, down to
-     almost nothing, and editing the same plugins again costs. Sessions
+     every kind of work (new plugins, polishing, assets, pictures, sound) is
+     worth less each session in a row it is done, down to almost nothing,
+     and editing the same plugins again costs; a film and the post every
+     session are not kinds of work and never tire. Sessions
      without real variety make it bored, and a bored Lumi must first make
      something of a kind it is fresh for;
      new things and the human's company make it happy, no company makes it

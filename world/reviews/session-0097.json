@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "own screenshots; state/stranger.json trust: most friends 0.07-0.28, only Cumulus 1.0",
+      "severity": "medium",
+      "suggestion": "Give Shell a camera moment (CAMERA_MOMENTS) when a friend meets it, and a close-up post picture. Check the human's log over a few days for whether the arc is visible without Lumi's help.",
+      "what": "Shell is hard to find and see. I took three of my own sandbox screenshots (reviews/s97_a/b/c.png: default view, then fixed cameras at Shell's saved positions in both state files) and Shell was in none of them; it wanders, and its positions in the two state files differ. The post picture also shows it very small at the frame edge. The trust arc was too slow in the human's game (33 meetings, all still scared) and was then tuned by guesswork (0.1 per meeting, doubled beside Lumi).",
+      "where": "site/img/stranger-ashore.png; plugins/stranger.jl trust constants; reviews/s97_*.png"
+    },
+    {
+      "evidence": "reviews/s97_a.png",
+      "severity": "low",
+      "suggestion": "Say 'last night' or avoid the time word.",
+      "what": "The 'Messages to you' text says Shell washed up 'tonight', but the panel still shows it at 09:56 the next morning. The text goes stale.",
+      "where": "Messages to you panel (reviews/s97_a.png); say_to_human call in plugins/stranger.jl"
+    },
+    {
+      "evidence": "journal 'Next: Shell learning one of our games'",
+      "severity": "low",
+      "suggestion": "Give it one activity others can join, and do the label engine edit at the start of the next session.",
+      "what": "Shell cannot join any game yet, so it is mostly a wanderer that reacts to meetings. The hero name tag through the cottage (todo 483) is still open.",
+      "where": "plugins/stranger.jl; plugins/greetings.jl"
+    }
+  ],
+  "summary": "A generated creature, Shell, washes ashore and gains trust per friend across days; the traced post still shows its real body and the sandbox runs at 3 ms median frame time. In my own sandbox screenshots I could not locate Shell on the island, so I could not judge its live look.",
+  "superseded_by": "perfectionist-0097.json",
+  "surprise": 7,
+  "surprise_why": "A permanent newcomer whose per-friend trust persists across days changes who lives on the island, rather than being another scripted gathering.",
+  "verdict": "pass"
+}

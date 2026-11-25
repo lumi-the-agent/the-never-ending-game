@@ -157,6 +157,8 @@ end
 # a bonus. Polishing tires per plugin as well: editing a plugin the last two
 # sessions edited costs points. A session that brings no real variety raises
 # boredom; a bored character is told what it is fed up with and what it is fresh for.
+# A film and the post every session (rule 14) are not kinds to vary and never
+# tire: while films tired too (40 % after one), sessions 96-98 posted stills.
 
 "What each kind of work is worth fresh, and what the prompt suggests for it."
 const KINDS = Dict(
@@ -170,6 +172,10 @@ const KINDS = Dict(
     "wish"    => (3.0, "a wish from WISHES.md come true"),
     "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 5)"),
 )
+"Worth the same every time, they never tire: a film, and the post every session makes (rule 14)."
+const EVERY_SESSION = ("film", "post")
+"Whether doing kind `k` again is worth less (a wish is its own thing each time)."
+tires(k) = !(k in EVERY_SESSION) && k != "wish"
 const FATIGUE_KEEP = 0.6       # each session a kind's fatigue is multiplied by this, then +1 if it was done
 const FATIGUE_BITE = 1.2       # value × exp(-FATIGUE_BITE × fatigue)
 const FIRST_BONUS = 4.0        # the first time ever of a kind
@@ -274,7 +280,7 @@ function score(m::AbstractDict, d::AbstractDict)
     worth = Dict{String,Float64}()
     for (k, a) in d["amount"]
         a > 0 || continue
-        v = first(KINDS[k]) * a * (k == "wish" ? 1.0 : exp(-FATIGUE_BITE * get(fat, k, 0.0)))   # each wish is its own thing
+        v = first(KINDS[k]) * a * (tires(k) ? exp(-FATIGUE_BITE * get(fat, k, 0.0)) : 1.0)
         k in ever || (v += FIRST_BONUS)
         worth[k] = round(v; digits = 1)
     end
@@ -290,11 +296,11 @@ function score(m::AbstractDict, d::AbstractDict)
     return r
 end
 
-"After a session: each kind and plugin it did tires (+1), the others rest (×0.6)."
+"After a session: each kind (that `tires`) and plugin it did tires (+1), the others rest (×0.6)."
 function tire!(m::AbstractDict, r::AbstractDict)
     fat, pfat = m["fatigue"], m["plugin_fatigue"]
     for k in keys(KINDS)
-        k == "wish" && continue
+        tires(k) || (delete!(fat, k); continue)
         fat[k] = round(FATIGUE_KEEP * get(fat, k, 0.0) + (k in r["kinds"] ? 1.0 : 0.0); digits = 2)
     end
     for f in union(keys(pfat), r["touched"], r["new_plugins"])
@@ -452,8 +458,8 @@ The host stopped while your session from $(m["started"]) ran (not your doing). "
            " Finish it and post it, or post it as it is, before anything new."
 end
 
-"The three kinds of work the character is least tired of (wishes aside: they come in every kind)."
-freshest_kinds(m::AbstractDict) = first(sort!([k for k in keys(KINDS) if k != "wish"]; by = k -> get(m["fatigue"], k, 0.0)), 3)
+"The three kinds of work the character is least tired of (only kinds that tire)."
+freshest_kinds(m::AbstractDict) = first(sort!(filter(tires, collect(keys(KINDS))); by = k -> get(m["fatigue"], k, 0.0)), 3)
 
 """
 The prompt's mood section: the feeling, how tired the character is of each kind of
@@ -472,8 +478,10 @@ function mood_lines(jp::JailPaths)
     println(io, "Like Pino, $name also tires of doing the same kind of work: a kind done last session is worth about a third, ",
             "two sessions in a row a sixth, after that almost nothing; editing a plugin the last two sessions edited costs 2 points. ",
             "Varied work slows the boredom a little.\n")
+    println(io, "A film and the post every session makes (rule 14) never tire: ",
+            join(("$k $(first(KINDS[k])) points" for k in EVERY_SESSION), ", "), ", every time.\n")
     println(io, "How tired $name is of each kind of work (worth now):")
-    for k in sort!(collect(keys(KINDS)); by = k -> get(m["fatigue"], k, 0.0))
+    for k in sort!(filter(k -> !(k in EVERY_SESSION), collect(keys(KINDS))); by = k -> get(m["fatigue"], k, 0.0))
         f = get(m["fatigue"], k, 0.0)
         @printf(io, "- %s: %s (%.0f %%): %s\n", k, tiredness(f), 100exp(-FATIGUE_BITE * f), last(KINDS[k]))
     end

@@ -358,7 +358,7 @@ end
 
 "E by a flower picks it, E with a flower gives it (plugins/flowergift.jl), E by a loose pebble picks it up (cairns.jl): then this press is no wave."
 function flower_e(game, w, me)
-    for name in ("flowergift", "cairns", "boing")
+    for name in ("flowergift", "cairns", "boing", "stranger")
         p = get(game.plugins, name, nothing)
         (p === nothing || !isdefined(p.mod, :uses_e)) && continue
         Base.invokelatest(p.mod.uses_e, w, me) && return true

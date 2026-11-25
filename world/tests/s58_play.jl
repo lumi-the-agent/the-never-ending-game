@@ -491,6 +491,7 @@ uitest("A stranger washes ashore (s97): it comes in on the surf, rights itself, 
     free = [c for c in w.creatures if !c.controlled && c.action !== :sleep && c.goal.kind ∉ XP.BUSY_GOALS && c.name != "Lumi"]
     isempty(free) && return check(false, "nobody free to meet it: $([(c.name, c.goal.kind) for c in w.creatures])")
     c = first(free)
+    X[:trust][c.name] = 0.0                     # (a sandbox friend can already trust it fully from earlier runs)
     before = get(X[:trust], c.name, 0.0)
     delete!(get!(() -> Dict{Int32,Float64}(), X, :met), c.id)
     s.pos = XP.ground(w.island, (c.pos[1] + 2f0, c.pos[2])); s.aim = Point2f(s.pos[1], s.pos[2])   # it wanders up to someone
@@ -511,4 +512,42 @@ uitest("Jump in (s97): after the first seconds the key strip sits small at the b
     screenshot(game, "s97_keystrip")
     interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
     check(vis && pos[2] < 0.12 && fs <= 14, "strip at $(pos), font $(fs), visible $(vis)")
+end
+
+uitest("The vote (s98): the friends stand by the sign they want, argue, and the winner is written down for Lumi to build") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)
+    V = Main.VOTE; s = V[:sys]
+    s.state === :idle || Base.invokelatest(game.plugins["vote"].mod.finish!, s, game)
+    V[:log] = Tuple{Float64,Symbol}[]; delete!(V, :last)
+    V[:film] = true
+    t1 = w.t
+    while s.state === :idle && w.t - t1 < 5; wait_seconds(game, 0.5); end
+    nvoters = length(s.voters)
+    while s.state !== :idle && w.t - t1 < 50; wait_seconds(game, 0.5); end
+    last = get(V, :last, nothing)
+    kinds = [k for (_, k) in V[:log]]
+    check(nvoters >= 2 && kinds == [:gather, :argue, :result] && last !== nothing && sum(values(last["votes"])) >= 1,
+          "$(nvoters) voters, log $(kinds), result $(last === nothing ? nothing : (last["winner"], last["votes"]))")
+end
+
+uitest("Shell and you (s98): jumped in as Lumi, E by Shell three times and it follows you") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)
+    X = Main.STRANGER; s = X[:sys]
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    sp = Base.invokelatest(game.plugins["bubbles"].mod.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2])); me.yaw = 0f0
+    X[:hellos] = 0; X[:log] = Tuple{Float64,Symbol}[]
+    s.state = :roam; s.pos = XP.ground(w.island, (me.pos[1] + 1.3f0, me.pos[2])); s.aim = Point2f(s.pos[1], s.pos[2]); X[:pause_until] = w.t + 30
+    interact!(game, [Wait(0.3), KeyPress(Keyboard.e), Wait(0.6), KeyPress(Keyboard.e), Wait(0.6), KeyPress(Keyboard.e), Wait(0.6)])
+    state = s.state; hellos = get(X, :hellos, 0)
+    interact!(game, [KeyDown(Keyboard.w), Wait(3.0), KeyUp(Keyboard.w), Wait(2.0)])
+    gap = hypot(me.pos[1] - s.pos[1], me.pos[2] - s.pos[2])
+    screenshot(game, "s98_shell_follows")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(hellos >= 3 && state === :follow && gap < 3.5, "$(hellos) hellos, Shell $(state), $(round(gap; digits = 1)) m behind after a walk")
 end

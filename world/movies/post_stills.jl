@@ -47,7 +47,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"),
                   "shadow" => ("Lumi", "Pinchy", "Gloop"), "shadow_check" => ("Lumi", "Pinchy", "Gloop"),
                   "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"),
-                  "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"))
+                  "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"),
+                  "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -80,6 +81,29 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "vote"             # s98: the friends at the three signs, arguing for what I should build next
+        vm = plugin(g, "vote")
+        v = Main.VOTE[:sys]
+        x0, y0 = open_meadow(w)
+        v.spot = NG.ground(w.island, (x0, y0)); v.facing = -Float32(pi) / 2
+        v.choices = [:boat, :greenhouse, :treehouse]; v.state = :argue; empty!(v.voters)
+        lumi = by_name(w, "Lumi")
+        f = Base.invokelatest(vm.fwd, v)
+        lp = Point2f(x0, y0) + 4.2f0 * f
+        pose!(w, lumi, (lp[1], lp[2]), atan(-f[2], -f[1]), :wave)
+        seat = Dict(1 => 0, 2 => 0, 3 => 0)
+        for (n, k, act) in (("Gloop", 1, :jump), ("Pinchy", 1, :wave), ("Wibbles", 1, :idle), ("Cumulus", 2, :jump),
+                            ("Marshmallow", 2, :think), ("Sir Sniffsalot", 3, :wave))
+            c = by_name(w, n); c === nothing && continue
+            q = Base.invokelatest(vm.stand_at, w, v, k, seat[k]); seat[k] += 1
+            pose!(w, c, (q[1], q[2]), atan(lp[2] - q[2], lp[1] - q[1]), act)
+            v.voters[c.id] = k
+        end
+        Base.invokelatest(vm.plots!, g); Base.invokelatest(vm.draw!, v, g)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        c0 = Point3f(x0, y0, z0)
+        return c0 + Point3f(7.2f0 * f[1] + 1.2f0, 7.2f0 * f[2], 2.6f0), c0 + Point3f(0, 0, 0.7f0)
     end
     if post == "stranger"         # s97: the newcomer on the south beach, me leaning in, the friends keeping their distance
         sm = plugin(g, "stranger")

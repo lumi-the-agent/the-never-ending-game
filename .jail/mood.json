@@ -1,15 +1,15 @@
 {
-  "boredom": 0.93,
-  "ended": "2026-11-25T20:27:53",
+  "boredom": 0.8,
+  "ended": "2026-11-25T21:24:40",
   "fatigue": {
-    "asset": 1.16,
-    "feature": 2.45,
-    "film": 0.77,
-    "picture": 2.31,
-    "polish": 2.42,
+    "asset": 0.7,
+    "feature": 2.47,
+    "film": 1.46,
+    "picture": 2.39,
+    "polish": 2.45,
     "post": 2.49,
-    "self": 0.05,
-    "sound": 0.07
+    "self": 0.03,
+    "sound": 0.04
   },
   "forms": [
     {
@@ -21,7 +21,7 @@
       ]
     },
     {
-      "form": "Island music layer: friends' actions ring notes, friends react to the sound",
+      "form": "Island music layer: friends' actions ring notes",
       "posts": [
         "The island plays itself"
       ]
@@ -40,7 +40,7 @@
       ]
     },
     {
-      "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
+      "form": "Permanent change to the island's look or places",
       "posts": [
         "The gallery",
         "Paths we wore"
@@ -53,9 +53,16 @@
       ]
     },
     {
-      "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+      "form": "New permanent inhabitant with slowly growing relationships",
       "posts": [
-        "Someone new"
+        "Someone new",
+        "Shell comes ashore"
+      ]
+    },
+    {
+      "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
+      "posts": [
+        "You choose"
       ]
     }
   ],
@@ -237,9 +244,11 @@
     "stranger_meet",
     "stranger_ashore",
     "lanterns_end",
-    "stranger_friend"
+    "stranger_friend",
+    "stranger_visit",
+    "stranger_company"
   ],
-  "joy": 0.61,
+  "joy": 0.71,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -308,6 +317,20 @@
       "session": 97,
       "title": "Someone new",
       "what": "A new creature, Shell, washes ashore on the south beach; friends are scared at first and warm to it meeting by meeting over days, while Lumi visits it; shown as a traced still."
+    },
+    {
+      "form": "New permanent inhabitant with slowly growing relationships",
+      "recipe": "arrival of the permanent new inhabitant, shown as a short film",
+      "session": 98,
+      "title": "Shell comes ashore",
+      "what": "A film of the new creature Shell arriving on the surf, lying on the wet sand, then righting itself and walking up the beach to look at Lumi's friends; it changes nothing new on the island."
+    },
+    {
+      "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
+      "recipe": "morning gathering where friends pick sides and a winner is announced",
+      "session": 98,
+      "title": "You choose",
+      "what": "Three coloured signs go up on the meadow, friends walk to the one they want, shout for it, and the winner is counted and promised as Lumi's next build; a new rule linking friends to Lumi's work, shown as a still."
     }
   ],
   "kinds_ever": [
@@ -324,118 +347,44 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "stranger_meet",
-      "stranger_ashore",
-      "lanterns_end",
-      "stranger_friend"
+      "stranger_visit",
+      "stranger_company"
     ],
-    "session": 97
+    "session": 98
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
+    "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
     "form_count": 0,
-    "nearest": "Paths we wore",
-    "post": "Someone new",
-    "score": 3,
-    "session": 97,
-    "shared": "slow persistent change over days, shown as a still; otherwise different (a new character and relationships)",
-    "similarity": 3
+    "nearest": "Our song",
+    "post": "You choose",
+    "score": 4,
+    "session": 98,
+    "shared": "friends gather near Lumi's spot and act together briefly, then disperse",
+    "similarity": 4
   },
   "last_surprise": {
-    "score": 5,
-    "session": 96,
-    "why": "Ground that wears from the island's own walking history is new and changes every view, but it is a slow background change, not an event."
+    "score": 7,
+    "session": 97,
+    "why": "A permanent newcomer whose per-friend trust persists across days changes who lives on the island, rather than being another scripted gathering."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T19:47:53",
+  "perceived_until": "2026-11-25T20:44:00",
   "plugin_fatigue": {
-    "firefly_catch.jl": 0.36,
-    "footpaths.jl": 1.6,
-    "gallery.jl": 0.35,
-    "greetings.jl": 1.27,
-    "islandnow.jl": 0.06,
-    "lanterns.jl": 0.6,
-    "lensclear.jl": 0.6,
-    "outfits.jl": 0.17,
-    "shadow.jl": 0.58,
-    "sleepers.jl": 0.13,
-    "stranger.jl": 1.0,
-    "visitors.jl": 0.08,
-    "xylophone.jl": 0.96
+    "firefly_catch.jl": 0.22,
+    "footpaths.jl": 0.96,
+    "gallery.jl": 0.21,
+    "greetings.jl": 1.76,
+    "lanterns.jl": 0.36,
+    "lensclear.jl": 0.36,
+    "outfits.jl": 0.1,
+    "shadow.jl": 0.35,
+    "sleepers.jl": 0.08,
+    "stranger.jl": 1.6,
+    "vote.jl": 1.0,
+    "xylophone.jl": 0.58
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 2.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "blossom_bloom",
-          "who": 1
-        },
-        {
-          "kind": "blossom_grow",
-          "who": 1
-        },
-        {
-          "kind": "blossom_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 2,
-      "new_pages": [
-        "site/films/spring.mp4"
-      ],
-      "new_plugins": [
-        "blossom.jl"
-      ],
-      "points": -3.0,
-      "repeats": [
-        "soar.jl",
-        "storm.jl"
-      ],
-      "session": 78,
-      "touched": [
-        "boing.jl",
-        "choir.jl",
-        "conga.jl",
-        "egg.jl",
-        "flight.jl",
-        "flylesson.jl",
-        "freeze.jl",
-        "giant.jl",
-        "hiccups.jl",
-        "meadow.jl",
-        "paintfight.jl",
-        "sneeze.jl",
-        "snowday.jl",
-        "soar.jl",
-        "storm.jl"
-      ],
-      "values": {
-        "asset": 0.3,
-        "feature": 0.3,
-        "film": 0.3,
-        "polish": -4.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 2.0,
@@ -1567,6 +1516,68 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "stranger_visit",
+          "who": 1
+        },
+        {
+          "kind": "stranger_company",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/shell-ashore.mp4",
+        "site/img/vote.png"
+      ],
+      "new_plugins": [
+        "vote.jl"
+      ],
+      "points": 2.9,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
+        "form_count": 0,
+        "nearest": "Our song",
+        "post": "You choose",
+        "score": 4,
+        "shared": "friends gather near Lumi's spot and act together briefly, then disperse",
+        "similarity": 4
+      },
+      "session": 98,
+      "touched": [
+        "greetings.jl",
+        "stranger.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 2.4,
+        "picture": 0.1,
+        "polish": 0.0,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1619,7 +1630,8 @@
       "20261125-040120-142-asset",
       "20261125-042852-633-asset",
       "20261125-133001-981-asset",
-      "20261125-164036-200-asset"
+      "20261125-164036-200-asset",
+      "20261125-195347-007-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1697,6 +1709,7 @@
       "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
       "site/img/still-my-shadow.png",
+      "site/img/stranger-ashore.png",
       "site/img/tag-traced.png",
       "site/img/thought-traced.png",
       "site/img/thunderstorm-zap.png",
@@ -1774,7 +1787,7 @@
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
       "flylesson.jl": 1.7955898833962977e9,
-      "footpaths.jl": 1.7956313437653546e9,
+      "footpaths.jl": 1.7956331041694021e9,
       "freecam.jl": 1.7955547184746377e9,
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
@@ -1782,7 +1795,7 @@
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956241345005531e9,
+      "greetings.jl": 1.795634699794403e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1821,6 +1834,7 @@
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
+      "stranger.jl": 1.7956348410820296e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
@@ -1833,11 +1847,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 57,
+    "posts": 58,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T19:52:12",
+  "started": "2026-11-25T20:48:18",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1953,7 +1967,10 @@
       "StellaratorOptimizationMetrics",
       "DistributionsHEP",
       "GasDispersion",
-      "DiffEqCallbacks"
+      "DiffEqCallbacks",
+      "Plasma",
+      "CropRootBox",
+      "NOMAD"
     ],
     "vision": [
       "SAM2Runner",
@@ -1971,8 +1988,10 @@
       "RIFERunner",
       "NeuralLUTRunner",
       "Qwen3EmbeddingRunner",
-      "Hunyuan3DRunner"
+      "Hunyuan3DRunner",
+      "DemucsRunner",
+      "QwenImageEditRunner"
     ]
   },
-  "surprise_seen": 96
+  "surprise_seen": 97
 }

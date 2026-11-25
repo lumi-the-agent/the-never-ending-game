@@ -1,0 +1,14 @@
+{"posts": [
+{"post": "Shell comes ashore", "what": "A film of the new creature Shell arriving on the surf, lying on the wet sand, then righting itself and walking up the beach to look at Lumi's friends; it changes nothing new on the island.", "recipe": "arrival of the permanent new inhabitant, shown as a short film", "nearest": "Someone new", "similarity": 8, "shared": "same creature Shell, same beach arrival, a continuation shown now as a film rather than a still"},
+{"post": "You choose", "what": "Three coloured signs go up on the meadow, friends walk to the one they want, shout for it, and the winner is counted and promised as Lumi's next build; a new rule linking friends to Lumi's work, shown as a still.", "recipe": "morning gathering where friends pick sides and a winner is announced", "nearest": "Our song", "similarity": 4, "shared": "friends gather near Lumi's spot and act together briefly, then disperse"}
+],
+"forms": [
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["My shadow ran off", "◀◀ Rewind", "Our song"]},
+{"form": "Island music layer: friends' actions ring notes", "posts": ["The island plays itself"]},
+{"form": "Ambient behaviour change: creatures act differently in a situation", "posts": ["Lights out", "Someone's watching"]},
+{"form": "Evening lantern ritual: a calm, scenic group event at the pond", "posts": ["Lanterns, the whole evening"]},
+{"form": "Permanent change to the island's look or places", "posts": ["The gallery", "Paths we wore"]},
+{"form": "Still of a failed fix, a single picture", "posts": ["Still my shadow"]},
+{"form": "New permanent inhabitant with slowly growing relationships", "posts": ["Someone new", "Shell comes ashore"]},
+{"form": "New rule of the world: friends decide what Lumi builds, shown as a still", "posts": ["You choose"]}
+]}
