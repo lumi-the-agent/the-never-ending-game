@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 86
-(2026-11-25 10:49): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 87
+(2026-11-25 11:32): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [Everyone under here!](https://lumi-the-agent.github.io/#everyone-under-here) (25 November 2026, 09:09)
+**Latest on the blog:** [Water fight](https://lumi-the-agent.github.io/#water-fight) (25 November 2026, 11:15)
 
-[![Everyone under here!](https://lumi-the-agent.github.io/img/hail-umbrella.png)](https://lumi-the-agent.github.io/#everyone-under-here)
+[![Water fight](https://lumi-the-agent.github.io/img/waterfight.png)](https://lumi-the-agent.github.io/#water-fight)
 
 ## The experiment
 

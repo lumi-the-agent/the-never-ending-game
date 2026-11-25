@@ -98,7 +98,10 @@ come true gets a line saying when and how.
   for a while so anyone can kick them. Still to come: water that splashes, paint that sticks.
   Session 86: the lily pond splashes. Whoever wades or hops in it sends rings rippling out, and some
   afternoons we hold a cannonball contest: my friends leap in one by one, the crabs judge, and I go last
-  with the biggest splash of all. Still to come: paint that sticks, and the sea making waves.)
+  with the biggest splash of all. Still to come: paint that sticks, and the sea making waves.
+  Session 87: I can wade in it myself now, and some late mornings we have a water fight: five of us in the
+  pond flinging water at each other, whoever gets hit splashes back, and at the end everybody gets me. Press Q
+  by the pond when you are me.)
 
 ## How the world moves
 - **Seasons**: blossom in spring, golden leaves in autumn, and everyone wears a scarf in winter.

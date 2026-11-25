@@ -44,7 +44,7 @@ others wake up a little rested (energy to 0.65) and go back to their day. Night 
 function one_nap!(w)
     h = 24 * NG.daytime(w)
     10 <= h < 16 || return
-    w.t - get(NAP, :at, -Inf) < 3 && return
+    w.t - get(NAP, :at, -Inf) < 0.5 && return   # (every 3 s let three nap for a moment, s87)
     NAP[:at] = w.t
     sleepers = [c for c in w.creatures if c.goal.kind === :sleep && !c.controlled && c.name != "Lumi"]
     length(sleepers) <= 1 && return

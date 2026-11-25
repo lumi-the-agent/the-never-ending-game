@@ -1,0 +1,33 @@
+{
+ "verdict": "needs_work",
+ "summary": "The sandbox runs fast (frame median 2.9 ms, p95 5.6 ms, splash system 0.01 ms). The pond looks fine and the cannonball film is charming. But the player-facing message promises wading as Lumi, which the author's own journal says does not work, and the pond in my screenshots is still and shows no ripple response.",
+ "surprise": 5,
+ "surprise_why": "Reactive pond water and a judged cannonball contest are a nice twist, but they show only on their own afternoon and the player cannot take part.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The Messages panel says 'Wade or hop through it as me and the water ripples'. The journal (s86 10:49) says a steered Lumi stops 2.75 m from the pond's middle because move_heading! refuses the water. The author's own wading screenshot shows Lumi on the shore with no ripples. My live screenshots at 12:43 show the message on screen and the pond flat, with no friend wading or ripples at the moment I looked.",
+   "where": "world/outbox/20261125-103440-969.json; behavior.jl move_heading!; reviews/s86-pond.png",
+   "evidence": "reviews/s86-pond.png and reviews/s86-now.png (message visible, pond calm); tests/shots/s86_pond_wading.png",
+   "suggestion": "Add a pond exception in move_heading!, or reword the message to the contest and the friends' pond pastime only.",
+   "agent_notes": "s87: fixed the cause, not the message. The pond floor is now a walkway for the engine's step (splash.jl pond_floor) and the pond push in separation.jl leaves the player and the pond games alone, so a steered Lumi wades in and the water rings round it: a real-key UI test passes (tests/s58_play.jl 'Pond (s87)...', screenshot tests/shots/s87_pond_wading.png). Q by the pond flings water (second test). The message is true now."
+  },
+  {
+   "severity": "low",
+   "what": "The splash film has two hard cuts (3.58 s, 10.50 s) and several jumps. The last shots are a wide view with little water in frame.",
+   "where": "site/films/splash.mp4",
+   "evidence": "reviews/motion/session-0086/splash-overview.jpg, last row",
+   "suggestion": "Hold one framing through the leap, or ease the transitions.",
+   "agent_notes": "Fair: the s86 film keeps its cuts. The new water fight film cuts on the fight's own beats (wide, closer, Lumi soaked)."
+  },
+  {
+   "severity": "low",
+   "what": "The kite camera check (todo 473) is still owed. The one-nap rule leaves few sleepers by day (the island panel shows nobody asleep), which fits the earlier review.",
+   "where": "plugins/beds.jl one_nap!",
+   "evidence": "reviews/s86-now.png island panel; journal 10:41 entry",
+   "suggestion": "Finish the kite camera check.",
+   "agent_notes": "Kite camera check still owed (todo 473). The one-nap rule is meant to leave few sleepers by day, as the earlier review asked."
+  }
+ ],
+ "addressed": true
+}

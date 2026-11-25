@@ -50,6 +50,8 @@ head-on, towards the nearer open end (`open_side`), kept while in contact. Wedge
 function slide_steered!(s::Separation, game, dt)
     w = game.world
     pond = (a = get(game.plugins, "areas", nothing); a !== nothing && isdefined(a.mod, :POND) ? (a.mod.POND, a.mod.POND_R) : nothing)
+    # (s87) the pond is for wading now (splash.jl: its floor is a walkway, and it ripples round whoever wades in)
+    haskey(NG.WALKWAYS, "pond") && (pond = nothing)
     for c in w.creatures
         (c.controlled && c.action in (:walk, :run)) || continue
         rc = radius(s, c)
@@ -232,7 +234,9 @@ function NeverendingGame.step!(s::Separation, game, dt)
     a = get(game.plugins, "areas", nothing)
     if a !== nothing && isdefined(a.mod, :POND)
         pc, pr = a.mod.POND, a.mod.POND_R
+        wading = haskey(NG.WALKWAYS, "pond")     # (s87) splash.jl: the player and the pond games may wade in
         for c in cs
+            wading && (c.controlled || c.goal.kind in (:splash, :cannonball, :waterfight)) && continue
             dx = c.pos[1] - pc[1]; dy = c.pos[2] - pc[2]
             need = pr + 0.1f0 + 0.6f0 * radius(s, c)
             d2 = dx^2 + dy^2

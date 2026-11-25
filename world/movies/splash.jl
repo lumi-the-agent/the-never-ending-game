@@ -122,3 +122,117 @@ function splash_clip(path; rasterize = true, samples = 16, width = 960, height =
     run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return (path = path, started = S[:ok], log = log)
 end
+
+
+"The water fight's cast in the pond (Lumi among them), everyone else parked far off on land."
+function fight_setup(g, cast)
+    w = g.world
+    m = g.plugins["splash"].mod
+    A = g.plugins["areas"].mod
+    P = A.POND
+    k = 0
+    crew = vcat(cast, ["Lumi"])
+    for x in w.creatures
+        i = findfirst(==(x.name), crew)
+        x.controlled = false
+        if i === nothing
+            k += 1
+            for r in 20f0:2f0:40f0
+                q = (P[1] - 6f0 + 1.4f0 * k, P[2] - r)
+                if NG.on_land(w.island, q[1], q[2]; margin = 0.3)
+                    x.pos = NG.ground(w.island, q); break
+                end
+            end
+            x.controlled = true; x.goal = NG.Goal()
+            continue
+        end
+        x.pos = Base.invokelatest(m.fight_spot, g, i, length(crew))
+        x.yaw = atan(P[2] - x.pos[2], P[1] - x.pos[1]) - NG.species_of(x).heading
+        x.goal = NG.Goal(:idle, x.pos, :idle, 600.0, w.t + 600, true, 0, false)
+    end
+end
+
+function fight_clip(path; rasterize = true, samples = 16, width = 960, height = 540, fps = 24, seconds = 12.0, hour = 12.3,
+                    cast = ["Wibbles", "Truffle", "Cumulus", "Pinchy"])
+    S = Dict{Symbol,Any}()
+    shot = function (g, rig, t)
+        SPd = Main.SPLASH
+        w = g.world
+        if !haskey(S, :off)
+            S[:off] = w.t - t
+            SPd[:fight_t] = 11.0
+            fight_setup(g, cast)
+            m = g.plugins["splash"].mod
+            S[:ok] = Base.invokelatest(m.start_fight!, SPd[:sys], g)
+        end
+        v = get(SPd, :view, nothing)
+        v === nothing && return nothing
+        e, tg = v
+        me = w.creatures[findfirst(x -> x.name == "Lumi", w.creatures)]
+        rig.mode = :fixed
+        if t < 3.0
+            rig.eye = e; rig.target = tg                                   # the pond and the fighters wading in
+        elseif t < 7.2
+            rig.eye = e + 0.4f0 * (tg - e); rig.target = tg               # closer: water flying both ways
+        else
+            # Lumi gets it from everyone: close on Lumi from the camera's side
+            d = tg - e; d = Vec3f(d[1], d[2], 0) / hypot(d[1], d[2])
+            rig.eye = me.pos - 3.0f0 * d + Point3f(0, 0, 1.3f0); rig.target = me.pos + Point3f(0, 0, 0.7f0)
+        end
+        return nothing
+    end
+    silent = replace(path, ".mp4" => "-silent.mp4")
+    NG.game_clip(silent; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rig = NG.CameraRig(; mode = :fixed),
+                 rasterize, setup = g -> fight_setup(g, cast), shot)
+    SPd = Main.SPLASH
+    delete!(SPd, :fight_t)
+    log = [(t - S[:off], k === :hit ? :splash : k === :finale ? :big : k) for (t, k) in get(SPd, :log, Tuple{Float64,Symbol}[]) if t - S[:off] >= 0]
+    wav = splash_wav(replace(path, ".mp4" => ".wav"), log, seconds + 1)
+    voices = Tuple{Float64,String}[]
+    for (t, k) in log
+        k === :big && push!(voices, (t + 0.9, "hmph"), (t + 2.2, "haha"))
+    end
+    clips = joinpath(dirname(@__DIR__), "site", "voice", "game")
+    ins = ["-i", wav]; parts = String[]
+    for (i, (t, n)) in enumerate(voices)
+        append!(ins, ["-i", joinpath(clips, n * ".mp3")])
+        push!(parts, "[$(i + 1)]adelay=$(round(Int, 1000t))|$(round(Int, 1000t)),volume=0.8[a$(i)]")
+    end
+    mix = isempty(parts) ? "[1]apad[out]" :
+          join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
+    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    return (path = path, started = S[:ok], log = log)
+end
+
+"""
+A traced still of the water fight's finale (s87): a 2 fps take of `fight_clip`'s scene that ends just after everybody
+turns on Lumi; its last frame is written to `path` (png).
+"""
+function fight_still(path; take, samples = 64, width = 1280, height = 720, hour = 12.8, cast = ["Wibbles", "Truffle", "Cumulus", "Pinchy"])
+    S = Dict{Symbol,Any}()
+    shot = function (g, rig, t)
+        SPd = Main.SPLASH
+        w = g.world
+        if !haskey(S, :on)
+            S[:on] = true
+            SPd[:fight_t] = 9.0
+            fight_setup(g, cast)
+            Base.invokelatest(g.plugins["splash"].mod.start_fight!, SPd[:sys], g)
+        end
+        v = get(SPd, :view, nothing)
+        v === nothing && return nothing
+        e, tg = v
+        me = w.creatures[findfirst(x -> x.name == "Lumi", w.creatures)]
+        d = tg - e; d = Vec3f(d[1], d[2], 0) / hypot(d[1], d[2])
+        rig.mode = :fixed
+        rig.eye = me.pos - 3.2f0 * d + Point3f(0, 0, 1.3f0); rig.target = me.pos + Point3f(0, 0, 0.7f0)
+        F = get(SPd, :fight, nothing)
+        F !== nothing && F[:finale] && !haskey(S, :fin) && (S[:fin] = t)
+        return haskey(S, :fin) ? S[:fin] + 0.5 : nothing
+    end
+    NG.game_clip(take; size = (width, height), seconds = 9.0, fps = 2, samples, hour, warmup = 0.3,
+                 rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup = g -> fight_setup(g, cast), shot)
+    delete!(Main.SPLASH, :fight_t)
+    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    return path
+end

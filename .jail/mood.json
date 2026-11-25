@@ -1,14 +1,14 @@
 {
-  "boredom": 0.45,
+  "boredom": 0.67,
   "fatigue": {
-    "asset": 0.06,
-    "feature": 1.89,
+    "asset": 0.04,
+    "feature": 1.13,
     "film": 2.49,
-    "picture": 0.62,
+    "picture": 1.37,
     "polish": 2.49,
     "post": 2.49,
-    "self": 0.59,
-    "sound": 1.79
+    "self": 0.35,
+    "sound": 2.07
   },
   "happened": [
     "Boop",
@@ -159,7 +159,7 @@
     "bottle_end",
     "bottle_start"
   ],
-  "joy": 0.33,
+  "joy": 0.26,
   "kinds_ever": [
     "post",
     "picture",
@@ -181,96 +181,48 @@
   },
   "last_surprise": {
     "score": 5,
-    "session": 85,
-    "why": "A visible redesign of two of the most-seen creatures with a puff transformation, but it follows the same makeover recipe as the pigs and sheep."
+    "session": 86,
+    "why": "Reactive pond water and a judged cannonball contest are a nice twist, but they show only on their own afternoon and the player cannot take part."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T10:09:44",
+  "perceived_until": "2026-11-25T10:51:01",
   "plugin_fatigue": {
-    "autumn.jl": 0.95,
-    "beds.jl": 1.0,
-    "blossom.jl": 0.39,
-    "boing.jl": 0.97,
-    "bottle.jl": 0.47,
-    "choir.jl": 0.37,
-    "conga.jl": 0.97,
-    "dancecircle.jl": 0.6,
-    "egg.jl": 0.37,
-    "flight.jl": 0.97,
-    "flylesson.jl": 0.37,
-    "freeze.jl": 0.97,
-    "gait.jl": 0.6,
-    "giant.jl": 0.37,
-    "greetings.jl": 0.21,
-    "hail.jl": 0.96,
-    "hiccups.jl": 0.97,
-    "kite.jl": 1.6,
-    "lumicolour.jl": 0.58,
-    "makeover.jl": 0.74,
-    "outfits.jl": 0.81,
-    "paintfight.jl": 0.45,
-    "pumpkins.jl": 1.82,
-    "rollcall.jl": 0.6,
-    "separation.jl": 1.0,
-    "showers.jl": 0.42,
-    "sneeze.jl": 1.05,
-    "snowday.jl": 1.37,
-    "soar.jl": 0.38,
-    "splash.jl": 1.0,
-    "storm.jl": 0.38,
-    "swing.jl": 0.5,
-    "toadstool.jl": 0.35,
-    "voice.jl": 0.21
+    "autumn.jl": 0.57,
+    "beds.jl": 1.6,
+    "blossom.jl": 0.23,
+    "boing.jl": 0.58,
+    "bottle.jl": 0.28,
+    "choir.jl": 0.22,
+    "conga.jl": 0.58,
+    "dancecircle.jl": 0.36,
+    "egg.jl": 0.22,
+    "flight.jl": 0.58,
+    "flylesson.jl": 0.22,
+    "freeze.jl": 0.58,
+    "gait.jl": 0.36,
+    "giant.jl": 0.22,
+    "greetings.jl": 1.13,
+    "hail.jl": 0.58,
+    "hiccups.jl": 0.58,
+    "kite.jl": 0.96,
+    "lumicolour.jl": 0.35,
+    "makeover.jl": 0.44,
+    "outfits.jl": 1.49,
+    "paintfight.jl": 0.27,
+    "pumpkins.jl": 1.09,
+    "rollcall.jl": 0.36,
+    "separation.jl": 1.6,
+    "showers.jl": 0.25,
+    "sneeze.jl": 0.63,
+    "snowday.jl": 0.82,
+    "soar.jl": 0.23,
+    "splash.jl": 1.6,
+    "storm.jl": 0.23,
+    "swing.jl": 0.3,
+    "toadstool.jl": 0.21,
+    "voice.jl": 0.13
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 2.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/island-choir-solo.png",
-        "site/img/island-choir.png"
-      ],
-      "new_plugins": [
-        "choir.jl"
-      ],
-      "points": -0.8,
-      "repeats": [
-        "greetings.jl"
-      ],
-      "session": 67,
-      "touched": [
-        "conga.jl",
-        "flight.jl",
-        "freeze.jl",
-        "greetings.jl",
-        "hiccups.jl",
-        "islandnow.jl",
-        "sneeze.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "picture": 0.7,
-        "polish": -1.9,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1490,6 +1442,52 @@
         "sound": 0.8
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "picture",
+        "polish",
+        "post",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/waterfight-silent.mp4",
+        "site/films/waterfight.mp4",
+        "site/films/waterfight.wav",
+        "site/img/waterfight.png"
+      ],
+      "new_plugins": [],
+      "points": 1.5,
+      "repeats": [],
+      "session": 87,
+      "touched": [
+        "beds.jl",
+        "greetings.jl",
+        "outfits.jl",
+        "separation.jl",
+        "splash.jl"
+      ],
+      "values": {
+        "film": 0.3,
+        "picture": 0.5,
+        "polish": 0.1,
+        "post": 0.1,
+        "sound": 0.5
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1569,6 +1567,9 @@
       "site/films/pumpkins.wav",
       "site/films/real-flight.mp4",
       "site/films/snow-day.mp4",
+      "site/films/splash-silent.mp4",
+      "site/films/splash.mp4",
+      "site/films/splash.wav",
       "site/films/spring.mp4",
       "site/films/swing.mp4",
       "site/films/thunderstorm.mp4",
@@ -1641,7 +1642,7 @@
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
-      "beds.jl": 1.7955562532942293e9,
+      "beds.jl": 1.7955994779350414e9,
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955898833905835e9,
@@ -1678,7 +1679,7 @@
       "hiccups.jl": 1.7955962775823095e9,
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7955777084874604e9,
-      "kite.jl": 1.7955970206517756e9,
+      "kite.jl": 1.7955986738072937e9,
       "lamplight.jl": 1.795444622510117e9,
       "lensclear.jl": 1.7955531980397623e9,
       "longday.jl": 1.7954618152986712e9,
@@ -1694,15 +1695,16 @@
       "outfits.jl": 1.7955950292632265e9,
       "paintfight.jl": 1.7955898900799649e9,
       "presents.jl": 1.7955812359792938e9,
-      "pumpkins.jl": 1.795596383912472e9,
+      "pumpkins.jl": 1.7955999642793732e9,
       "rollcall.jl": 1.795596344849997e9,
-      "separation.jl": 1.7955506659591494e9,
+      "separation.jl": 1.795600152668723e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
       "sneeze.jl": 1.795596277582388e9,
-      "snowday.jl": 1.7955898834036303e9,
+      "snowday.jl": 1.795599842974596e9,
       "soar.jl": 1.7955898834039822e9,
+      "splash.jl": 1.7955993502192037e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
       "sunset.jl": 1.7954781267170784e9,
@@ -1715,11 +1717,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 41,
+    "posts": 42,
     "self": "14151975785721963154",
     "wishes": 8
   },
-  "started": "2026-11-25T10:13:46",
+  "started": "2026-11-25T10:55:07",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1793,7 +1795,10 @@
       "HiQGA",
       "SphereUDE",
       "OMETIFF",
-      "Hestia"
+      "Hestia",
+      "EEGToolkit",
+      "PinCFlow",
+      "HerbSpecification"
     ],
     "vision": [
       "HorizonRunner",
@@ -1803,8 +1808,10 @@
       "FluxKleinRunner",
       "BonsaiRunner",
       "DeepFilterRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "NeuralLUTRunner",
+      "RIFERunner"
     ]
   },
-  "surprise_seen": 85
+  "surprise_seen": 86
 }

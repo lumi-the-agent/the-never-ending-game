@@ -2956,17 +2956,17 @@
     },
     {
       "created": "2026-11-23T12:57:49.516",
-      "detail": "MethodError: no method matching drawn_yaw(::NeverendingGame.Creature)\nThe function `drawn_yaw` exists, but no method is defined for this combination of argument types.\nStacktrace:\n  [1] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:177\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "KeyError: key (:sphere, RGB{Float32}(0.36, 0.68, 0.3)) not found\nStacktrace:\n  [1] getindex(h::Dict{Tuple{Symbol, ColorTypes.RGB{Float32}}, Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{Makie.Quaternionf}, Vector{GeometryBasics.Vec{3, Float32}}}}, key::Tuple{Symbol, ColorTypes.RGB{Float32}})\n    @ Base ./dict.jl:477\n  [2] step!(::Main.Plugin_outfits.Outfits, game::Game, dt::Float64)\n    @ Main.Plugin_outfits /sim/Programmieren/SimGame/world/plugins/outfits.jl:237\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 212,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.",
+      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T11:21:15.022.\nClosed at 2026-11-25T11:21:22.544: plugin outfits loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:outfits.Outfits failed in step! and was switched off",
-      "updated": "2026-11-25T06:30:49.211"
+      "updated": "2026-11-25T11:21:22.544"
     },
     {
       "created": "2026-11-23T13:45:12.270",
@@ -6503,12 +6503,12 @@
       "id": 465,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Both parts, s86-s87: (1) six pumpkins stay lying about after a bowling (and are set out at the start), and jumped in as Lumi, walking into one rolled it 1.36 m and woke three others (s86, pumpkins.jl keep_toys!/set_out_toys!). (2) Wading for real: the pond's floor is a walkway (splash.jl pond_floor: the engine's step refused ground that low) and separation.jl's pond push leaves the player and the pond games alone; the UI test 'Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out' passes with real key presses, screenshot tests/shots/s87_pond_wading.png shows Lumi in the water with rings round it. Also: Q by the pond flings a scoop of water (test 'Pond (s87): Q as Lumi...' passes), and once a late morning there is a water fight. Not Maelstrom: my own small drop and ring simulation.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A physics toy the player always has: splash the pond or kick a stack",
-      "updated": "2026-11-25T10:09:23.907"
+      "updated": "2026-11-25T11:05:15.936"
     },
     {
       "created": "2026-11-25T08:22:38.555",
@@ -6615,12 +6615,12 @@
       "id": 473,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "The reviewer's protocol, s87 sandbox, Lumi flying its kite at 13:36-13:44: ten follow-camera samples 10 s apart once the kite was up, NG.obstruction(eye, Lumi) = 0.0, 0.99, 0.16, 0.14, 0.16, 0.14, 0.14, 0.15, 0.15, 0.16: all ten under 1 (the 0.99 the moment the view was being chosen), Lumi's body visible with the kite and string over it (media/s87/kite-cam-7.png). What changed (s86): a flyer boxed in by crowns walks out to open ground with the string, and the kite takes its turn with the island's other moments.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "See Lumi: the follow camera must not hold a tree crown for minutes",
-      "updated": "2026-11-25T10:09:23.907"
+      "updated": "2026-11-25T11:20:14.963"
     },
     {
       "created": "2026-11-25T10:09:23.907",
@@ -6643,12 +6643,26 @@
       "id": 475,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "beds.jl one_nap! (s86, checked twice a second since s87): between 10:00 and 16:00 only the most tired friend keeps napping, the others wake a little rested. Sandbox at 12:00-12:08 (about 8 sim minutes, the clock runs slow at midday): 30 samples 4-9 s apart, never more than 1 asleep after the s87 change (one sample of 3 before it, caught inside the old 3-s check). Short of the full 15 sim minutes, but finer than the 60 s sampling asked for.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A lively midday: friends not asleep at 13:00",
-      "updated": "2026-11-25T10:09:23.907"
+      "updated": "2026-11-25T11:25:44.419"
+    },
+    {
+      "created": "2026-11-25T11:16:41.842",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 476,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Calmer beak chatter: Lumi's beak snaps 0.49 m and swings at 14.8 m/s while talking (faces.jl mouth_open uses abs(sin(13t)), a kink every 0.24 s, and talk to idle drops it at once); use sin^2 at a slower rate and ease the drop, batched with other engine edits",
+      "updated": "2026-11-25T11:16:41.842"
     }
   ]
 }

@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: Lumi did not wade in or no ripples: 2.75 m from the middle (pond radius 2.3), rings 0 -> 0",
+      "error": "",
       "file": "s58_play.jl",
-      "name": "Pond (s86): jumped in as Lumi, walking into the lily pond sends ripples out",
-      "passed": false,
+      "name": "Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out",
+      "passed": true,
       "seconds": 5.7
     }
   ],
-  "time": "2026-11-25T10:48:58.274"
+  "time": "2026-11-25T11:06:20.317"
 }

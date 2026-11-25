@@ -7,7 +7,7 @@ const NG = NeverendingGame
 
 isdefined(Main, :OUTFIT_PLOTS) || Core.eval(Main, :(const OUTFIT_PLOTS = Dict{Symbol,Any}()))
 const OP = Main.OUTFIT_PLOTS
-const OUTFIT_VERSION = 16
+const OUTFIT_VERSION = 17
 
 "A piece of an outfit: `shape` at `off` (metres, in the anchor part's frame), size `scale`, turned by `tilt`."
 struct Piece
@@ -70,7 +70,7 @@ end
 const OUTFITS = Dict(
     "Sir Sniffsalot" => Outfit(:head, (-0.2, 0, 1.0), top_hat((0.16, 0.13, 0.16), (0.85, 0.2, 0.25))),
     "Truffle"        => Outfit(:head, (-0.1, 0, 0.95), beret((0.5, 0.3, 0.62))),
-    "Pickles"        => Outfit(:head, (-0.7, 0, -0.2), scarf((0.36, 0.68, 0.3), 0.32); size = 1.0),
+    "Pickles"        => Outfit(:head, (-0.1, 0, 0.95), beanie((0.36, 0.68, 0.3), (0.98, 0.97, 0.95))),   # (s87: the scarf cut through the plush pig's head)
     "Cumulus"        => Outfit(:puff_top, (0.3, 0, 0.9), beanie((0.3, 0.52, 0.92), (0.98, 0.97, 0.95))),
     "Marshmallow"    => Outfit(:puff_top, (0.35, 0, 0.9), bow((0.98, 0.45, 0.62); s = 1.5)),
     "Pinchy"         => Outfit(:body, (-0.35, 0, 1.0), party_hat((0.25, 0.7, 0.85), (1.0, 0.85, 0.3))),
@@ -111,7 +111,7 @@ hat_spot(sp, j, fb) = get!(get!(() -> Dict{Any,Vec3f}(), OP, :spots), (sp.name, 
 end
 
 "Own spots for outfits that do not sit on top (a scarf goes round the neck)."
-const ON_NEW_BODY_NAME = Dict("Pickles" => (0.24f0, 0f0, 0.55f0))
+const ON_NEW_BODY_NAME = Dict{String,NTuple{3,Float32}}()   # (Pickles' scarf was here; since s87 it wears a beanie on the head top)
 
 # every one of a species: a face that reads from the follow camera (the pigs, sheep and crabs had no mouth)
 const EXTRAS = Dict(
@@ -153,7 +153,7 @@ key(p::Piece) = (p.shape, p.color)
 const TIPS = Set(["Sir Sniffsalot", "Truffle", "Cumulus", "Pinchy", "Hopscotch", "Gloop"])
 "How far `c` lifts its hat now (metres) and how much it tilts it back (radians)."
 function hat_tip(c, t)
-    if c.action === :dance && c.name != "Pickles"     # dancing: hats and bows hop and sway to the beat (not the scarf)
+    if c.action === :dance     # dancing: hats and bows hop and sway to the beat (not the scarf)
         k = sin(7f0 * t + 6c.seed)
         return (0.06f0 * abs(k), 0.25f0 * k)
     end

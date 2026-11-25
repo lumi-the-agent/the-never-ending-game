@@ -14,12 +14,12 @@ const NRINGS = 40; const NDROPS = 320
 const RING_T = 2.4                  # s a ring takes to fade
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
                 :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom,
-                :swing, :bottle, :leaves, :pumpkin, :hail, :cannonball)
+                :swing, :bottle, :leaves, :pumpkin, :hail, :cannonball, :waterfight)
 const PULL = (:fish, :pebble, :feel, :sunset, :tag, :present, :fetch, :beachcomb, :sunbathe, :flowers)
 const SCORES = ("6!", "7!", "8!", "9!", "7 and a half!", "8!!", "NINE!")
 const CHEERS = ("CANNONBALL!", "Here goes!", "Bombs away!", "Watch this one!", "SPLOOSH time!")
 
-push!(NG.BUSY_GOALS, :cannonball)   # (areas.jl has its own :splash pastime: wading in the pond)
+push!(NG.BUSY_GOALS, :cannonball); push!(NG.BUSY_GOALS, :waterfight)   # (areas.jl has its own :splash pastime: wading in the pond)
 delete!(NG.BUSY_GOALS, :splash)     # (the first s86 version put the pastime's kind there by mistake)
 
 mutable struct Splash <: System
@@ -105,7 +105,9 @@ function draw!(s::Splash, game)
     for (c, born, k) in s.rings
         age = Float32(w.t - born); age < 0 && continue
         r = 0.15f0 + (0.9f0 + 0.5f0 * k) * age
-        a = 0.85f0 * min(1f0, k + 0.3f0) * (1 - age / Float32(RING_T)) * clamp((R + 0.2f0 - r) / 0.6f0, 0f0, 1f0)
+        # a ring fades out before its far side would reach the bank (rings on the grass, s87)
+        dc = hypot(c[1] - pond(game)[1], c[2] - pond(game)[2])
+        a = 0.85f0 * min(1f0, k + 0.3f0) * (1 - age / Float32(RING_T)) * clamp((R + 0.05f0 - (dc + r)) / 0.5f0 + 0.3f0, 0f0, 1f0)
         a <= 0.01f0 && continue
         push!(ps, Point3f(c[1], c[2], lvl + 0.015f0)); push!(ms, Vec3f(r, r, 1)); push!(cs, RGBAf(0.9, 0.97, 1.0, a))
     end
@@ -115,11 +117,13 @@ function draw!(s::Splash, game)
     else
         Makie.update!(SP[:rings]; arg1 = ps, markersize = ms, color = cs); SP[:rings_shown] = true
     end
-    if isempty(s.drops)
+    th = get(SP, :throws, nothing)
+    alld = th === nothing || isempty(th) ? s.drops : vcat(s.drops, [(t[1], t[2]) for t in th])
+    if isempty(alld)
         get(SP, :drops_shown, true) && Makie.update!(SP[:drops]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)])
         SP[:drops_shown] = false
     else
-        Makie.update!(SP[:drops]; arg1 = [d[1] for d in s.drops], markersize = [Vec3f(0.07f0) for _ in s.drops]); SP[:drops_shown] = true
+        Makie.update!(SP[:drops]; arg1 = [d[1] for d in alld], markersize = [Vec3f(0.07f0) for _ in alld]); SP[:drops_shown] = true
     end
 end
 
@@ -222,6 +226,164 @@ function finish!(s::Splash, w)
     NG.emit!(w, :splash_end)
 end
 
+
+# ------------------------------------------------------------------ the water fight (s87)
+
+const FIGHT_T = 18.0
+const EEKS = ("EEK!", "Hey!!", "COLD!", "You'll pay for that!", "Bleh, pond water!", "Got you back!")
+
+"A scoop of water flung from `from` towards `to`: a fan of drops on arcs that land about there in 0.6 s."
+function throw!(w, from::Point3f, to::Point3f, who::Int32; n = 16)
+    th = get!(() -> Tuple{Point3f,Vec3f,Int32}[], SP, :throws)
+    T = 0.6f0
+    for i in 1:n
+        jit = Vec3f(0.6f0 * (rand(w.rng, Float32) - 0.5f0), 0.6f0 * (rand(w.rng, Float32) - 0.5f0), 0.3f0 * rand(w.rng, Float32))
+        d = (to + jit) - from
+        v = Vec3f(d[1] / T, d[2] / T, (d[3] + 0.5f0 * 9.8f0 * T^2) / T) * (0.9f0 + 0.2f0 * rand(w.rng, Float32))
+        push!(th, (from, v, who))
+    end
+    length(th) > 400 && deleteat!(th, 1:length(th) - 400)
+    push!(get!(() -> Tuple{Float64,Symbol}[], SP, :log), (w.t, :throw))
+end
+
+"The flung water flies; a drop that hits someone (not the one who threw it) soaks them, and they answer."
+function throws!(s::Splash, game, dt)
+    th = get(SP, :throws, nothing)
+    (th === nothing || isempty(th)) && return
+    w = game.world; lvl = level!(game)
+    dt = Float32(clamp(dt, 0, 0.05))
+    keep = Tuple{Point3f,Vec3f,Int32}[]
+    F = get(SP, :fight, nothing)
+    for (p, v, who) in th
+        v = v + Vec3f(0, 0, -9.8f0 * dt); p = p + v * dt
+        hit = false
+        for c in w.creatures
+            c.id == who && continue
+            norm(p - (c.pos + Point3f(0, 0, 0.55f0))) < 0.45f0 || continue
+            hit = true
+            if w.t - get(get!(() -> Dict{Int32,Float64}(), SP, :soaked), c.id, -Inf) > 1.2
+                SP[:soaked][c.id] = w.t
+                NG.say!(w, c, c.name == "Lumi" ? "WAH! Right in the beak!" : EEKS[mod1(Int(c.id) + length(SP[:soaked]), length(EEKS))]; duration = 1.4)
+                push!(SP[:log], (w.t, :hit))
+                NG.emit!(w, :waterfight_hit; who = c.name)
+                if !c.controlled
+                    c.action = :jump
+                    F === nothing || (F[:answer][c.id] = (w.t + 0.7, who))      # and splashes back
+                end
+            end
+            break
+        end
+        hit && continue
+        if p[3] < lvl && v[3] < 0
+            rand(w.rng) < 0.15 && push!(s.rings, (Point2f(p[1], p[2]), w.t, 0.3f0))
+            continue
+        end
+        p[3] < NG.terrain_height(w.island, p[1], p[2]) - 0.1f0 && continue
+        push!(keep, (p, v, who))
+    end
+    SP[:throws] = keep
+end
+
+"Pond spots for the fighters: a loose ring inside the water."
+fight_spot(game, i, n) = (P = pond(game); a = 2f0 * Float32(pi) * (i - 1) / n + 0.5f0;
+                          NG.ground(game.world.island, (P[1] + 1.35f0 * cos(a), P[2] + 1.35f0 * sin(a))))
+
+function start_fight!(s::Splash, game)
+    w = game.world
+    me = lumi_of(w)
+    (me === nothing || me.controlled || me.goal.kind in EVENTS || me.action === :sleep) && return false
+    P = pond(game)
+    free(x) = !x.controlled && x.action !== :sleep && x.goal.kind ∉ EVENTS && (x.goal.kind ∉ NG.BUSY_GOALS || x.goal.kind in PULL) && x !== me
+    cs = sort([x for x in w.creatures if free(x) && hypot(x.pos[1] - P[1], x.pos[2] - P[2]) < 60]; by = x -> hypot(x.pos[1] - P[1], x.pos[2] - P[2]))
+    cs = cs[1:min(end, 4)]
+    length(cs) < 3 && return false
+    crew = Int32[[x.id for x in cs]; me.id]
+    for (i, id) in enumerate(crew)
+        x = NG.creature(w, id)
+        NG.leave_interactions!(w, x)
+        x.goal = NG.Goal(:waterfight, fight_spot(game, i, length(crew)), :idle, 120.0, w.t + 120, false, 0, true)
+    end
+    SP[:fight] = Dict{Symbol,Any}(:crew => crew, :t0 => w.t, :next => Dict{Int32,Float64}(id => w.t + 3.0 + 0.6i for (i, id) in enumerate(crew)),
+                                  :answer => Dict{Int32,Tuple{Float64,Int32}}(), :finale => false)
+    SP[:log] = Tuple{Float64,Symbol}[(w.t, :fight)]
+    delete!(SP, :view); contest_view(game)
+    NG.say!(w, me, "Last one in the pond is a soggy cabbage!"; duration = 2.8)
+    NG.emit!(w, :waterfight_start; n = length(crew))
+    return true
+end
+
+function step_fight!(s::Splash, game, dt)
+    F = get(SP, :fight, nothing)
+    F === nothing && return
+    w = game.world; P = pond(game)
+    el = w.t - F[:t0]
+    crew = F[:crew]
+    FT = get(SP, :fight_t, FIGHT_T)::Float64
+    me = lumi_of(w)
+    for (i, id) in enumerate(crew)        # called back if another event took them; facing whoever is next
+        x = NG.creature(w, id)
+        (x === nothing || x.controlled) && continue
+        x.goal.kind === :waterfight || (NG.leave_interactions!(w, x);
+            x.goal = NG.Goal(:waterfight, fight_spot(game, i, length(crew)), :idle, 120.0, w.t + 120, false, 0, true))
+        x.goal.until = w.t + 60
+    end
+    pos(id) = (x = NG.creature(w, id); x === nothing ? nothing : x.pos)
+    if el < FT - 4
+        for id in crew
+            x = NG.creature(w, id)
+            (x === nothing || x.controlled || !x.goal.arrived) && continue
+            ans = get(F[:answer], id, nothing)
+            target = nothing
+            if ans !== nothing && w.t >= ans[1]
+                target = ans[2]; delete!(F[:answer], id)
+            elseif w.t >= get(F[:next], id, Inf)
+                others = [o for o in crew if o != id]
+                target = others[rand(w.rng, 1:length(others))]
+            end
+            target === nothing && continue
+            tp = pos(target); tp === nothing && continue
+            F[:next][id] = w.t + 1.6 + 1.6rand(w.rng)
+            x.yaw = atan(tp[2] - x.pos[2], tp[1] - x.pos[1]) - NG.species_of(x).heading
+            x.action = :wave; x.goal.action = :wave
+            throw!(w, x.pos + Point3f(0, 0, 0.6f0), tp + Point3f(0, 0, 0.55f0), id)
+        end
+    elseif !F[:finale] && me !== nothing
+        # the finale: everyone turns on Lumi at once
+        F[:finale] = true
+        for id in crew
+            id == me.id && continue
+            x = NG.creature(w, id); x === nothing && continue
+            x.yaw = atan(me.pos[2] - x.pos[2], me.pos[1] - x.pos[1]) - NG.species_of(x).heading
+            x.action = :wave
+            throw!(w, x.pos + Point3f(0, 0, 0.6f0), me.pos + Point3f(0, 0, 0.6f0), id; n = 24)
+        end
+        NG.say!(w, NG.creature(w, crew[1]), "EVERYBODY GET LUMI!"; duration = 2.0)
+        push!(SP[:log], (w.t, :finale))
+    elseif el >= FT
+        for id in crew
+            x = NG.creature(w, id)
+            x === nothing || x.controlled || x.goal.kind !== :waterfight || NG.choose_goal!(x, w)
+        end
+        me === nothing || NG.say!(w, me, "...I give up. I am one hundred percent pond."; duration = 3.0)
+        delete!(SP, :fight)
+        NG.emit!(w, :waterfight_end)
+    end
+end
+
+"Q as Lumi near the pond flings a scoop of water the way you face (the friends answer when they are hit)."
+function player_throw!(s::Splash, game)
+    w = game.world; me = lumi_of(w)
+    (me === nothing || !me.controlled) && return
+    q = NG.Makie.Keyboard.q in game.keys_down
+    was = get(SP, :q_down, false); SP[:q_down] = q
+    (q && !was) || return
+    P = pond(game)
+    hypot(me.pos[1] - P[1], me.pos[2] - P[2]) < pond_r(game) + 1.5f0 || return
+    a = me.yaw
+    throw!(w, me.pos + Point3f(0, 0, 0.6f0), me.pos + Point3f(3f0 * cos(a), 3f0 * sin(a), 0.4f0), me.id; n = 20)
+    splash!(s, w, Point3f(me.pos[1], me.pos[2], level!(game)), 0.5f0)
+end
+
 function NG.step!(s::Splash, game, dt)
     game.stage === nothing && return
     plots!(game)
@@ -229,6 +391,9 @@ function NG.step!(s::Splash, game, dt)
     P = pond(game); lvl = level!(game)
     waders!(s, game)
     drops!(s, game, dt)
+    throws!(s, game, dt)
+    step_fight!(s, game, dt)
+    player_throw!(s, game)
     el = w.t - s.t0
     if s.state === :idle
         film = get(SP, :film, false)
@@ -239,6 +404,15 @@ function NG.step!(s::Splash, game, dt)
             SP[:try_at] = w.t + 5
             if (film || party_free(w)) && start_contest!(s, game)
                 s.day = day; SP[:film] = false; claim_party!(w, 40)
+            end
+        end
+        # the water fight: once a late morning, or for a film
+        ff = get(SP, :film_fight, false)
+        if !haskey(SP, :fight) && (ff || day != get(SP, :fight_day, -1) && 11.5 < 24 * NG.daytime(w) < 13.5) && !testing && !busy_game &&
+           w.t >= get(SP, :fight_try, -Inf)
+            SP[:fight_try] = w.t + 5
+            if (ff || party_free(w)) && start_fight!(s, game)
+                SP[:fight_day] = day; SP[:film_fight] = false; claim_party!(w, 25)
             end
         end
     else
@@ -313,7 +487,7 @@ end
 
 function splash_group(w)
     s = SP[:sys]
-    s.state in (:gather, :dive, :after) || return nothing
+    (s.state in (:gather, :dive, :after) || haskey(SP, :fight)) || return nothing
     me = lumi_of(w)
     (me === nothing || me.controlled) && return nothing
     v = get(SP, :view, nothing)
@@ -321,14 +495,21 @@ function splash_group(w)
     return (me.id, Point3f[v[2], me.pos], v)
 end
 
+"The pond's floor to wade on (the engine's step refuses ground this close to the sea without it, s86-87)."
+function pond_floor(game)
+    A = game.plugins["areas"].mod; P = A.POND; R = A.POND_R; isl = game.world.island
+    (x, y) -> hypot(x - P[1], y - P[2]) < R + 0.9f0 ? NG.terrain_height(isl, x, y) : nothing   # the low sandy bank too
+end
+
 function NG.start!(s::Splash, game)
     SP[:sys] = s
+    NG.WALKWAYS["pond"] = pond_floor(game)
     for k in (:rings, :drops, :level, :view)
         delete!(SP, k)
     end
     SP[:rings_shown] = true; SP[:drops_shown] = true
     SP[:start] = () -> start_contest!(s, game)
-    moment = w -> s.state in (:gather, :dive, :after) ? (m = lumi_of(w); m === nothing ? nothing : m.id) : nothing
+    moment = w -> (s.state in (:gather, :dive, :after) || haskey(SP, :fight)) ? (m = lumi_of(w); m === nothing ? nothing : m.id) : nothing
     NG.CAMERA_MOMENTS["splash"] = moment
     isdefined(Main, :BIG_MOMENTS) || Core.eval(Main, :(const BIG_MOMENTS = Dict{String,Any}()))
     Main.BIG_MOMENTS["splash"] = moment
@@ -336,6 +517,7 @@ function NG.start!(s::Splash, game)
 end
 
 function NG.stop!(s::Splash, game)
+    delete!(NG.WALKWAYS, "pond")
     delete!(NG.CAMERA_MOMENTS, "splash")
     delete!(NG.CAMERA_GROUPS, "splash")
     isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "splash")

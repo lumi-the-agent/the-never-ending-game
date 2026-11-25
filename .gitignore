@@ -141,6 +141,12 @@
 /world/reviews/motion/session-0085/crabs-overview.jpg
 /world/reviews/motion/session-0085/crabs-steps.jpg
 /world/reviews/motion/session-0085/crabs-strip.jpg
+/world/reviews/motion/session-0086/splash-overview.jpg
+/world/reviews/motion/session-0086/splash-silent-overview.jpg
+/world/reviews/motion/session-0086/splash-silent-steps.jpg
+/world/reviews/motion/session-0086/splash-silent-strip.jpg
+/world/reviews/motion/session-0086/splash-steps.jpg
+/world/reviews/motion/session-0086/splash-strip.jpg
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -817,6 +823,8 @@
 /world/reviews/s84-d.png
 /world/reviews/s84-e.png
 /world/reviews/s85-r1.png
+/world/reviews/s86-now.png
+/world/reviews/s86-pond.png
 /world/reviews/v43/dashboard.png
 /world/reviews/v43/eye-level.png
 /world/reviews/v43/overview.png
@@ -983,6 +991,8 @@
 /world/tests/shots/s58_kite_jumpin_view.png
 /world/tests/shots/s58_kite_running_view.png
 /world/tests/shots/s86_pond_wading.png
+/world/tests/shots/s87_pond_q.png
+/world/tests/shots/s87_pond_wading.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1054,6 +1064,9 @@
 /world/site/films/thunderstorm.mp4
 /world/site/films/toadstool.mp4
 /world/site/films/voice.mp4
+/world/site/films/waterfight-silent.mp4
+/world/site/films/waterfight.mp4
+/world/site/films/waterfight.wav
 /world/site/img/bench-traced.png
 /world/site/img/big-boing.png
 /world/site/img/big-sneeze-after.png
@@ -1081,6 +1094,7 @@
 /world/site/img/visit-traced.png
 /world/site/img/voice-laugh.png
 /world/site/img/voice.png
+/world/site/img/waterfight.png
 /world/site/img/workshop-traced.png
 /world/site/voice/friend-gloop.mp3
 /world/site/voice/friend-pinchy.mp3

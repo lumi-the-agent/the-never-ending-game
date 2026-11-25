@@ -98,3 +98,37 @@ uitest("Kite player (s58): Lumi is in view right after jumping in, not hidden be
     check(ons !== nothing, "Lumi is off screen right after Play (eye $(game.rig.eye), Lumi $(me.pos))")
     check(b === nothing, "right after Play the camera line to Lumi is blocked by $(b)")
 end
+
+uitest("Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    A = game.plugins["areas"].mod; S = Main.SPLASH[:sys]
+    P = A.POND
+    me.pos = XP.ground(w.island, (P[1], P[2] - A.POND_R - 0.8f0)); me.yaw = Float32(pi / 2)   # (yaw is the walking direction)
+    n0 = length(S.rings)
+    interact!(game, [KeyDown(Keyboard.w), Wait(2.0), KeyUp(Keyboard.w), Wait(0.1)])
+    d = hypot(me.pos[1] - P[1], me.pos[2] - P[2])
+    rings = length(S.rings)
+    screenshot(game, "s87_pond_wading")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(d < A.POND_R && rings > n0, "Lumi did not wade in or no ripples: $(round(d, digits = 2)) m from the middle (pond radius $(A.POND_R)), rings $(n0) -> $(rings)")
+end
+
+uitest("Pond (s87): Q as Lumi by the pond flings a scoop of water") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    A = game.plugins["areas"].mod
+    P = A.POND
+    me.pos = XP.ground(w.island, (P[1], P[2] - A.POND_R + 0.5f0)); me.yaw = Float32(pi / 2)
+    n0 = count(x -> x[2] === :throw, get(Main.SPLASH, :log, Tuple{Float64,Symbol}[]))
+    interact!(game, [KeyPress(Keyboard.q), Wait(0.3)])
+    th = length(get(Main.SPLASH, :throws, []))
+    n1 = count(x -> x[2] === :throw, get(Main.SPLASH, :log, Tuple{Float64,Symbol}[]))
+    screenshot(game, "s87_pond_q")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(n1 > n0 && th > 0, "Q by the pond threw nothing (throws logged $(n0) -> $(n1), drops in the air $(th))")
+end
