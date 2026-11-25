@@ -1,5 +1,6 @@
 {
   "created": "2026-11-25T15:19:47.223",
+  "finished": "2026-11-25T16:06:04.416",
   "id": "20261125-151947-220-clip",
   "kind": "clip",
   "params": {
@@ -11,6 +12,11 @@
     "path": "/sim/Programmieren/SimGame/world/media/s91/lanterns-film.mp4",
     "script": "movies/lanterns.jl"
   },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s91/lanterns-film.mp4",
+    "started": true
+  },
+  "seconds": 2744.4,
   "started": "2026-11-25T15:20:19.765",
-  "status": "running"
+  "status": "done"
 }

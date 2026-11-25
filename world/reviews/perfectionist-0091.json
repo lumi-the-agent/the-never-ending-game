@@ -1,0 +1,244 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island finally has one idea that changes how it works, not only what happens on it: the pocket watch winds everyone back, with a tape look and a whirr live. The three mini games play cleanly and want a second round (levels, bests, R to retry), and the traced pond and lantern evening are the first real path-tracer pictures. But the same progress cameras show s91 looking just like s88, and up close the friends let it down: piglets and crabs 'sleep' standing with their eyes open. The dashboard's own Path tracing button shows an empty grey plane for four minutes, and Firefly catch hides its flies behind pines and ends with the camera inside a bush.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "The lantern dusk still (site/img/lanterns.png) is the best light the island has had: warm pools on the bank, lanterns mirrored in the pond, reed shadows. But the lanterns clip to pure white and a white sawtooth band runs along the horizon. By day, live, it is still one flat sun: the s91 eye-level shot at 09:52 differs from s88's at 11:35 only by a slightly darker green (reviews/p91/progress-20-88-91.jpg)."
+  },
+  "materials": {
+   "score": 4,
+   "why": "Up from 3. Traced: the pond is clear water over a lit floor (allin film), the bubbles are thin soap films, the lanterns are emitters. Live: the pond is a flat pale disc in every orbit view (cams-sheet.jpg), and the dashboard's Path tracing toggle drew no island at all after 4 minutes (pt-traced.png), so a player can't see the tracer's work. No metal, no glowing paper or wax; the rest is clay under one sun."
+  },
+  "world": {
+   "score": 6,
+   "why": "From s20 to s88 the island became a dense, lively place; s88 to s91 added paint splats on the meadow, pumpkins and the dug pond, nothing a player sees from the progress cameras. Orbit views show a coherent island (pond, cottage, garden, toadstool meadow, cherry grove), but no area has been added since the grove."
+  },
+  "props": {
+   "score": 6,
+   "why": "The generated bubble wand is in use; the lanterns are primitive spheres on cylinders. In the berry race the berries are tiny red dots and hail stones litter the meadow like confetti (berry-sheet.jpg). The prop set in the progress shots is that of three sessions ago."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "Lumi's face reads well, and the crab, pig, sheep and blob bodies are charming in motion/creatures.png. But the made-over piglets and crabs have no sleep pose: they 'sleep' standing with eyes wide open (pig-sleep.png), and 6 of 10 friends did that at 09:57."
+  },
+  "animation": {
+   "score": 6,
+   "why": "Sandbox measure: 10 of 10 moving well (p91/motion). The rewind moonwalk reads in the strip. All three films have their largest jump in their very first frame (allin 0.070 at 0.04 s, bubbles 0.021, rewind 0.015). The standing sleepers look frozen."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Played each for a minute through interact!. Hide and seek: 4/4 in 41.8 s, a HUD that points at the latest giggle ('a giggle 9 m ahead'), 'a new best time', level 2 on R. Berry race: won 9 to 5, rivals keep up, a basket by the cottage counts the berries over time, level 2 on R. Firefly catch: 4/8. The flies are small pale dots with hair-thin beams in daylight; from 25 s Lumi stood at a pine ('Stuck! Steer round it') with the nearest fly 6 m behind it. The end card is shot from inside a bush with Lumi's face filling the view (firefly-sheet.jpg). Jump-in keys (B bubble, Z rewind) are fun, but they are gags with no goal; still the same three games since ~s40."
+  },
+  "wow": {
+   "score": 7,
+   "why": "◀◀ Rewind is the first post nobody could have predicted, and it breaks the 'gather the friends, each in turn, a finale' recipe that Lanterns and Bubble trouble repeat. The rewind film is a wide static shot of small creatures where going backwards is hard to see."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Orbit is the best view the game has: wide, readable compositions over pond, cottage and garden. The follow view keeps parking foliage in front: a crown over a third of the view (follow1.png, cam-follow-3.png), a bush in the rewind (rewind-live.png). The firefly end card was framed inside a bush. Event views (the reused pond contest view for lanterns) are well chosen."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Start cards with keys, live HUDs and end cards are clear in all three games; the rewind sign and scan lines are a good diegetic touch. But the Mini game menu shows the last pick, not the running game ('Berry race (WASD)' while Firefly catch runs). Name tags show through bushes (cam-free-2.png). 'Things to try' is a wall of key letters."
+  },
+  "style": {
+   "score": 5,
+   "why": "Clay creatures and soft trees hold together, but the blob trees, low-poly pines, generated textured props and glossy made-over bodies still read as three asset packs. STYLE.md's cohesion hasn't moved."
+  },
+  "performance": {
+   "score": 9,
+   "why": "The human's game: 1.64 ms median frame, 4.2 ms p95; sandbox 2.2/4.9 ms. Rewind 0.01 ms a frame. Live path tracing slowed the sandbox to ~1/4 real time (57 game s in 254 s)."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends sleep like friends: lie down, eyes shut, breathing (pig, crab)",
+   "todo": null,
+   "what": "Made-over piglets and crabs with goal/action :sleep stand upright on four legs with their eyes wide open. At 09:57 in the sandbox 6 of 10 friends were 'asleep' like that, so the island looks like a freeze-frame of statues. The made-over bodies lost the old sleep pose with their old heads.",
+   "where": "plugins/makeover.jl bodies; species body_pose(:sleep) for Snootle/Crabbit; faces/outfits for closed eyes",
+   "evidence": "reviews/p91/pig-sleep.png (Pickles :sleep, standing, eyes open); reviews/p91/motion/creatures.png; eval at 09:57: Gloop, Wibbles, Pinchy, Cumulus, Marshmallow, Pickles all :sleep",
+   "suggestion": "A real sleep pose per made-over body: belly down (legs folded under, body lowered), head resting, lids closed (a lid piece over each eye), slow breathing on the body scale, an ear twitch or a Zz now and then. Pigs flop on their side, crabs tuck their claws in, sheep become a wool loaf. Also check why half the island naps mid-morning.",
+   "done_when": "A close screenshot of a sleeping pig, crab, sheep and blob shows each lying down with closed eyes. In a 3 s motion strip the sleepers breathe (body scale changes) but their feet don't move."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Path tracing button: the island must appear, not an empty grey plane",
+   "todo": null,
+   "what": "Clicking 'Path tracing: off' in the sandbox dashboard (orbit camera, 10:36) and waiting 40 game seconds (4 min of wall clock, 15:43:23 to 15:47:37) showed only sky over a flat grey plane plus the name tag and thought bubble: no island, trees or creatures. No error was logged. This button is the one place a player can see the path tracer; goal 7 is invisible to them.",
+   "where": "dashboard Path tracing toggle; RayMakie live trace screen",
+   "evidence": "reviews/p91/pt-raster.png (just before), reviews/p91/pt-traced.png (4 min after), reviews/p91/pt-back.png (raster back); sandbox events path_tracing on 15:43:23 / off 15:47:37",
+   "suggestion": "Find what the live tracer is missing (scene not uploaded, BVH build stuck, camera not synced). Show a progress note while it builds, and make the first noisy frames show the island within seconds. Then make the button worth pressing: an evening view that shows the lanterns lighting the pond.",
+   "done_when": "A screenshot 30 s after pressing Path tracing in the sandbox shows the island traced (trees, cottage, pond, creatures), and the sandbox log has no error."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Lanterns that look like paper lanterns: warm glow through paper, not white eggs",
+   "todo": 479,
+   "what": "In the traced lantern still every lantern is a pure white, clipped ellipsoid on a red ring. They light the bank nicely, but look like eggs or bulbs, not paper lanterns. Live they are unlit globes. At dusk the pond under them reads milky grey, not dark water with reflections.",
+   "where": "plugins/lanterns.jl (GLOW spheres, base cylinders); site/img/lanterns.png",
+   "evidence": "site/img/lanterns.png (lanterns at 100% white, no shape or texture visible)",
+   "suggestion": "A paper lantern model (folded paper, ribs, a small candle inside). The emission comes from an inner small sphere through thin, warm translucent paper (DiffuseTransmission or thin-wall), so it glows orange and shows its ribs. Lower the strength so it doesn't clip, use a warmer colour, and give the pond a darker dusk look so the reflections carry the picture.",
+   "done_when": "In a traced dusk still the lanterns show their paper shape and ribs in warm orange with no pure-white pixels on them (max channel < 250), and still light the bank."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "White sawtooth band along the horizon in traced dusk pictures",
+   "todo": null,
+   "what": "A bright white dotted/jagged streak runs across the whole traced lantern still at the horizon (y ~180 of 720), behind the trees. It is the first thing that breaks the dusk mood. Many tiny white dots along the far shore read as noise, not lights.",
+   "where": "site/img/lanterns.png; sky (SunSkyLight ground / SKY_GROUND), nightglow motes",
+   "evidence": "site/img/lanterns.png, the horizontal white streak from x 260 to 1000 at y ~180",
+   "suggestion": "Find which plot or sky term draws it (hide plots one by one in a quiet copy, as in s38) and fix it in the sky or Hikari. Thin the far-shore motes to a few clear fireflies near the subject.",
+   "done_when": "A traced still at 19:30 from the lantern view shows a smooth sky-to-sea horizon with no bright streak (the horizon row profile has no spike over its neighbours)."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Firefly catch: flies you can see and reach, an end card you can read",
+   "todo": null,
+   "what": "Playing for 60 s with W and steering at the nearest fly: 3 flies in 13 s, then 4/8 for the remaining 35 s. Lumi stood at a pine with 'Stuck! Steer round it with A or D' while the HUD said 'nearest 6 m ahead' behind the trunk. In daylight a fly is a small pale dot with hair-thin beams; none can be made out in the five play frames. The end card ('Time's up! You caught 4 of 8') is framed from inside a bush, with Lumi's face filling the screen.",
+   "where": "plugins/firefly_catch.jl (fly homes, beams, end camera)",
+   "evidence": "reviews/p91/firefly-sheet.jpg (card, 4 play frames, end card); reviews/p91/firefly-close.png (a fly beside the card)",
+   "suggestion": "Keep fly homes out of crowns and trunk nooks (the hide-and-seek and berry race rules: open_line, clearance from w.props trees). Make the flies read by day: bigger, a warm glow with a soft bloom shell, thicker beams that pulse. Frame the end card with the chase view pulled back and the caught flies circling Lumi.",
+   "done_when": "The W/A/D first-play test catches 8/8 in 60 s, and an end-card screenshot shows Lumi whole with no foliage covering more than 15% of the view. A daytime play screenshot shows at least one fly as a clear glowing spot."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow camera: no tree crowns or bushes over a third of the view",
+   "todo": 482,
+   "what": "The follow view sits behind foliage: a crown over the right third with only a crab in view (follow1.png), a trunk and crown over the left third (cam-follow-3.png), a bush over the bottom-right quarter during the rewind (rewind-live.png). This is the view a player looks at most.",
+   "where": "render.jl follow_view / camcut.jl / lensclear",
+   "evidence": "reviews/p91/follow1.png, reviews/p91/cam-follow-3.png, reviews/p91/rewind-live.png, reviews/p91/cams-sheet.jpg",
+   "suggestion": "Count crowns and bushes inside the frustum's near third (not only the eye-to-target line) and swing to the side with the least foliage, eased the way camcut eases side flips.",
+   "done_when": "20 follow screenshots 10 s apart: in none does a plant or crown cover more than 15% of the 3D view."
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "Rewind everything, and film it so going backwards is unmistakable",
+   "todo": 494,
+   "what": "The pocket watch is the best idea in many sessions, but only the creatures go back: paint, splashes, bubbles, pumpkins and leaves keep going forwards. The posted film is a wide static view of small creatures where the moonwalk reads only from the ◀◀ (rewind-overview.jpg), and it has no tape look. Like every film this session, it opens with a pop at 0.04 s.",
+   "where": "plugins/rewind.jl; movies/rewind.jl; site/films/rewind.mp4; render.jl game_clip first frame",
+   "evidence": "reviews/motion/perfectionist-0091/rewind-overview.jpg, rewind-strip.jpg; allin first-frame jump 0.070",
+   "suggestion": "Rewind the things that make it impossible: a pumpkin pyramid that reassembles, a splash sucked back into the pond, paint flying back off the meadow, a bubble un-popping. Film it closer, with the tape wash and a funny moment run backwards (a friend falling up out of the pond). Drop or warm up the first frame in game_clip.",
+   "done_when": "A new film where at least two non-creature things visibly run backwards, the creatures fill at least a third of the frame height, and motion_sheet lists no jump at 0.04 s."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
+   "todo": 437,
+   "what": "Hide and seek and the berry race show the author can make a game with levels and bests, but the three games date from ~s40. Every session since adds shows to watch or one-key gags; the rewind, the bubbles and the storm have no goal, score or reason to play twice.",
+   "where": "plugins/",
+   "evidence": "Mini game menu: Jump in, Firefly catch, Hide and seek, Berry race (cams-sheet.jpg, berry-sheet.jpg)",
+   "suggestion": "Turn one gag into a game: rewind puzzles (undo a pumpkin collapse in 3 tries), bubble bowling (float friends into the grove for points), a paint fight with a score.",
+   "done_when": "A fifth entry in the Mini game menu with start card, score, end card and 'R to play again', and a W/A/D first-play test that passes."
+  }
+ ],
+ "todos": [
+  {
+   "id": 237,
+   "action": "keep",
+   "why": "Day light is still one flat sun; storms only 18% darker"
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Only the rewind's deja vu so far; the new bodies have no feeling faces"
+  },
+  {
+   "id": 438,
+   "action": "keep",
+   "why": "Traced snow check still queued, not looked at"
+  },
+  {
+   "id": 493,
+   "action": "keep",
+   "why": "Lumi's run not measured yet (it was fishing during my measure)"
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Still no shared step-aside (and Firefly catch stalls at a pine for the player too)"
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Not addressed"
+  },
+  {
+   "id": 448,
+   "action": "drop",
+   "why": "Duplicate of #492: the lantern film is the night film by lantern light"
+  },
+  {
+   "id": 455,
+   "action": "keep",
+   "why": "Grove unchanged"
+  },
+  {
+   "id": 471,
+   "action": "keep",
+   "why": "Crab claws still static"
+  },
+  {
+   "id": 472,
+   "action": "done",
+   "why": "Sandbox motion measure 10 of 10 moving well; gait.jl slowed the tail wag; no tail snaps in the films' jump lists"
+  },
+  {
+   "id": 476,
+   "action": "keep",
+   "why": "Engine edit not done"
+  },
+  {
+   "id": 477,
+   "action": "keep",
+   "why": "NEST_OK still false"
+  },
+  {
+   "id": 481,
+   "action": "drop",
+   "why": "Old film; the first-frame pop is now part of the rewind finding, for every film"
+  },
+  {
+   "id": 483,
+   "action": "keep",
+   "why": "Name tags show through bushes (cam-free-2.png); the menu shows the last pick, not the running game",
+   "title": "Labels show through bushes; the Mini game menu names the wrong game while one runs"
+  },
+  {
+   "id": 492,
+   "action": "keep",
+   "why": "The traced lantern take was still rendering at 15:31 (media/s91/lanterns-film.mp4 has no moov atom yet)"
+  },
+  {
+   "id": 488,
+   "action": "keep",
+   "why": "Sheep mouth not placed"
+  }
+ ],
+ "engine": [
+  {
+   "what": "RayMakie live path tracing in the dashboard drew only sky and a flat grey plane for 4 minutes (no island, no creatures), with no error logged.",
+   "evidence": "reviews/p91/pt-traced.png; sandbox events path_tracing on 2026-11-25T15:43:23, off 15:47:37"
+  },
+  {
+   "what": "Traced dusk shows a bright jagged streak along the horizon (sky texels at/below the horizon, as in s38's SunSkyLight ground_enabled = false), in Hikari/RayMakie's sky, not the game.",
+   "evidence": "site/img/lanterns.png at y ~180"
+  },
+  {
+   "what": "game_clip writes the first frame before poses and plugins have settled, so every film opens with a jump.",
+   "evidence": "allin 0.070 at 0.04 s, bubbles 0.021 at 0.04 s, rewind 0.015 at 0.04 s (motion sheets above)"
+  }
+ ],
+ "process": "Sessions 89-92 worked on what matters. The human's pond complaint was fixed at its real causes: the shadow ray stopping at glass, then the raster colouring glass by its material. That is goal 7's first true material win. Lanterns that are real lights move goals 7 and 4. The rewind is the first genuinely radical step for goal 8, chosen deliberately from ten ideas, which is the right habit. But a player wouldn't notice: the same progress cameras show s91 almost identical to s88. The work lives in events and films a still never shows, and the live path tracing a player can switch on shows nothing. Goal 2 (a film to be proud of) is not reached: the films are tidy but wide and static, open with a pop, and the best one is still rendering. Goal 3 (physics, Mantle, Maelstrom) hasn't moved since the pumpkins: no GPU simulation, no water that carries things. Goal 6 is solid in the jitter measure, but the made-over friends lack whole poses (sleep), which that measure can't catch. Goal 5 is steady (posts, wishes, thought bubbles). The mini games are in good shape (two of three played to a win on a first try with W/A/D), but nothing new has been playable with a score since ~s40. Next: give the friends real rest and feeling poses, make the live tracer show the island, fix the fireflies, and spend one session on a GPU physics toy (goal 3) instead of one more gathered show.",
+ "addressed": true,
+ "agent_notes": "s93: the host filed the findings as todos (#496 sleeping friends, #497 Path tracing button, #479 paper lanterns, #498 horizon streak, #499 firefly catch, #494 rewind everything + its film, follow camera and the fifth mini game). This session went to something new (the island notices its visitors, plugins/visitors.jl) and posting the lantern film; none of the findings is fixed yet, they stay open as those todos."
+}

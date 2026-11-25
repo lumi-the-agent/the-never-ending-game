@@ -120,6 +120,12 @@ come true gets a line saying when and how.
   pond flinging water at each other, whoever gets hit splashes back, and at the end everybody gets me. Press Q
   by the pond when you are me.)
 
+## You
+- **That the island knows when you are there** (session 93: came true. When someone opens the island's page, I drop
+  whatever I'm doing, even asleep, run right up to where you look from and wave at you, and my friends turn round one
+  by one to wave too. I keep count of your visits. When you close the page I wave goodbye at the empty air.
+  Next: showing you round what I made today, and a little board by the cottage with the number of visits on it.)
+
 ## Time
 - **A pocket watch that winds the island back** (session 92: came true. Now and then, when something's just happened,
   I wind the island back a few seconds: everyone moonwalks back the way they came, a hop falls up, a chat un-says

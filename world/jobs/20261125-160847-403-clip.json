@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-25T16:08:47.403",
+  "finished": "2026-11-25T16:28:35.847",
+  "id": "20261125-160847-403-clip",
+  "kind": "clip",
+  "params": {
+    "call": "visitor_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 24,
+      "spot": [
+        -11.0,
+        -3.0
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s93/visitors-traced.mp4",
+    "script": "movies/visitors.jl"
+  },
+  "result": {
+    "log": [
+      [
+        2.7083333345944993,
+        "arrive"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s93/visitors-traced.mp4"
+  },
+  "seconds": 518.7,
+  "started": "2026-11-25T16:19:57.171",
+  "status": "done"
+}

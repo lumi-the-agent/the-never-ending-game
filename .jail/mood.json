@@ -1,14 +1,15 @@
 {
-  "boredom": 0.73,
+  "boredom": 1.0,
+  "ended": "2026-11-25T16:33:13",
   "fatigue": {
-    "asset": 0.61,
-    "feature": 1.33,
+    "asset": 0.37,
+    "feature": 1.8,
     "film": 2.49,
-    "picture": 0.17,
-    "polish": 2.49,
+    "picture": 0.1,
+    "polish": 1.49,
     "post": 2.49,
-    "self": 1.05,
-    "sound": 1.48
+    "self": 0.63,
+    "sound": 0.89
   },
   "happened": [
     "Boop",
@@ -171,15 +172,29 @@
     "splash_start",
     "splash_end",
     "rewind_start",
-    "rewind_end"
+    "rewind_end",
+    "bubbles_start",
+    "bubbles_end"
   ],
-  "joy": 0.49,
+  "joy": 0.48,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
       "session": 91,
       "title": "◀◀ Rewind",
       "what": "Lumi turns a pocket watch's crown, the island's creatures moonwalk back along their last nine seconds to where they started with a tape-style overlay, then time runs forward again and they choose something new."
+    },
+    {
+      "recipe": "trigger from outside the island; Lumi runs to the viewer; friends gather and wave",
+      "session": 92,
+      "title": "Someone's watching",
+      "what": "When a browser page opens, Lumi drops what it is doing, runs to the camera, waves at the lens, and nearby friends turn round and wave too."
+    },
+    {
+      "recipe": "evening gathering at the pond, lanterns placed and released",
+      "session": 92,
+      "title": "Lanterns, the whole evening",
+      "what": "The full evening of the lantern event: friends gather at the pond, lanterns are set on the water one by one, then the first lift off."
     }
   ],
   "kinds_ever": [
@@ -196,98 +211,48 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "rewind_start",
-      "rewind_end"
+      "bubbles_start",
+      "bubbles_end"
     ],
-    "session": 91
+    "session": 92
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "nearest": "SWAPSIE",
-    "post": "◀◀ Rewind",
-    "score": 6,
-    "session": 91,
-    "shared": "Lumi's found item triggers an island-wide effect on all friends that is then undone; the effect itself (time reversal of motion, no new body or prop) works differently and has no backfire or big payoff"
+    "factor": 0.4641588833612779,
+    "nearest": "Choir practice",
+    "post": "Someone's watching",
+    "score": 5,
+    "session": 92,
+    "shared": "Lumi calls nearby friends to react together in a shared gesture; the trigger (a real visitor) and the camera-facing address are new"
   },
   "last_surprise": {
     "score": 6,
-    "session": 90,
-    "why": "Friends paddling in see-through bubbles over the island, Lumi shouting 'Wait... NO... not ME!', is a nice twist, though it is another once-a-day event."
+    "session": 91,
+    "why": "The whole island moonwalking back in time is a nice twist on the usual gather-and-laugh events, though it only affects creatures."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T14:48:42",
+  "perceived_until": "2026-11-25T15:49:46",
   "plugin_fatigue": {
-    "areas.jl": 0.36,
-    "autumn.jl": 0.07,
-    "beds.jl": 0.21,
-    "boing.jl": 0.08,
-    "bubbles.jl": 0.6,
-    "conga.jl": 0.08,
-    "finishes.jl": 0.36,
-    "flight.jl": 0.29,
-    "freeze.jl": 0.08,
-    "frost.jl": 0.22,
-    "greetings.jl": 1.15,
-    "hail.jl": 0.08,
-    "hiccups.jl": 0.08,
-    "islandnow.jl": 1.22,
-    "kite.jl": 0.13,
-    "makeover.jl": 0.06,
-    "meadow.jl": 0.36,
-    "mixup.jl": 0.22,
-    "outfits.jl": 0.77,
-    "paintfight.jl": 0.4,
-    "pumpkins.jl": 0.14,
-    "rewind.jl": 1.0,
-    "separation.jl": 0.81,
-    "sneeze.jl": 0.08,
-    "snowday.jl": 1.1,
-    "splash.jl": 0.57
+    "areas.jl": 0.22,
+    "beds.jl": 0.13,
+    "bubbles.jl": 0.36,
+    "finishes.jl": 0.22,
+    "flight.jl": 0.17,
+    "frost.jl": 0.13,
+    "greetings.jl": 0.69,
+    "islandnow.jl": 0.73,
+    "kite.jl": 0.08,
+    "meadow.jl": 0.22,
+    "mixup.jl": 0.13,
+    "outfits.jl": 0.46,
+    "paintfight.jl": 0.24,
+    "pumpkins.jl": 0.08,
+    "rewind.jl": 0.6,
+    "separation.jl": 0.49,
+    "snowday.jl": 0.66,
+    "splash.jl": 0.34,
+    "visitors.jl": 1.0
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.5333333333333332,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/snow-day.mp4"
-      ],
-      "new_plugins": [
-        "snowday.jl",
-        "wind.jl"
-      ],
-      "points": 0.8,
-      "repeats": [],
-      "session": 72,
-      "touched": [
-        "cairns.jl",
-        "conga.jl",
-        "presents.jl",
-        "tag.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 0.4,
-        "polish": 0.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1417,6 +1382,58 @@
         "sound": 1.5
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "bubbles_start",
+          "who": 1
+        },
+        {
+          "kind": "bubbles_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/lanterns.mp4",
+        "site/films/visitors.mp4"
+      ],
+      "new_plugins": [
+        "visitors.jl"
+      ],
+      "points": 0.6,
+      "repeat_factor": 0.4641588833612779,
+      "repeats": [],
+      "repetition": {
+        "nearest": "Choir practice",
+        "post": "Someone's watching",
+        "score": 5,
+        "shared": "Lumi calls nearby friends to react together in a shared gesture; the trigger (a real visitor) and the camera-facing address are new"
+      },
+      "session": 92,
+      "touched": [],
+      "values": {
+        "feature": 0.8,
+        "film": 0.3,
+        "post": 0.2
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1501,6 +1518,7 @@
       "site/films/pumpkins.mp4",
       "site/films/pumpkins.wav",
       "site/films/real-flight.mp4",
+      "site/films/rewind.mp4",
       "site/films/snow-day.mp4",
       "site/films/splash-silent.mp4",
       "site/films/splash.mp4",
@@ -1560,6 +1578,7 @@
       "site/voice/game/hoo.mp3",
       "site/voice/game/oh.mp3",
       "site/voice/game/ooh.mp3",
+      "site/voice/game/rewind.mp3",
       "site/voice/game/squeak-hoo.mp3",
       "site/voice/game/squeak-wheee.mp3",
       "site/voice/game/squeak-yay.mp3",
@@ -1616,12 +1635,12 @@
       "gait.jl": 1.795596563071227e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956119728668463e9,
+      "greetings.jl": 1.7956149587797203e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "islandnow.jl": 1.7956041926073775e9,
+      "islandnow.jl": 1.7956168788952758e9,
       "kite.jl": 1.7955986738072937e9,
       "lamplight.jl": 1.795444622510117e9,
       "lanterns.jl": 1.7956125662319536e9,
@@ -1641,14 +1660,14 @@
       "paintfight.jl": 1.7956075200507665e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
-      "rewind.jl": 1.7956142864995122e9,
+      "rewind.jl": 1.795616824451536e9,
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7956142955469856e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
       "sneeze.jl": 1.795596277582388e9,
-      "snowday.jl": 1.795599842974596e9,
+      "snowday.jl": 1.7956165390390103e9,
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
@@ -1663,11 +1682,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 47,
-    "self": "14151975785721963154",
+    "posts": 48,
+    "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T14:52:46",
+  "started": "2026-11-25T15:54:17",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1762,12 +1781,17 @@
       "StateSpacePartitions",
       "GeophysicalFlows",
       "DrakeVisualizer",
-      "InPhyNet"
+      "InPhyNet",
+      "WaveSpectra",
+      "SequentialSamplingModels",
+      "VLBIImagePriors"
     ],
     "vision": [
       "SAM2Runner",
-      "HorizonRunner"
+      "HorizonRunner",
+      "BasicVSRRunner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 90
+  "surprise_seen": 91
 }

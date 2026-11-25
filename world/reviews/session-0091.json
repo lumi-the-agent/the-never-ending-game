@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "My sandbox screenshot world/reviews/s91-rewind.png against world/reviews/s91-normal.png; the rewind film's ◀◀ icon shows in only 2 of 12 overview frames.",
+      "severity": "medium",
+      "suggestion": "Rewind the circle dancers too, or hold the rewind back while another event is running. In the film, use the tape look and a closer camera on one moonwalker.",
+      "what": "Creatures in other events are left out of the rewind. During my test, Hopscotch and Pinchy stayed 'dancing in the circle' while Gloop, Pickles and Truffle went backwards. Splashes, pumpkins, paint, bubbles and lanterns also keep going forwards (#494), so the 'whole island' claim is only partly true.",
+      "where": "world/plugins/rewind.jl (EVENTS list); world/reviews/s91-rewind.png, 'On the island now' panel"
+    },
+    {
+      "evidence": "world/reviews/s91-rewind.png",
+      "severity": "low",
+      "suggestion": "Use more, thinner lines and a stronger tint, and add a faint colour fringe.",
+      "what": "The live tape look is weak. The blue wash barely shows, and the scan lines read as a few thick horizontal bars across the view, not fine tape lines. The '<< REWIND' sign is clear and legible.",
+      "where": "rewind.jl overlay plots"
+    },
+    {
+      "evidence": "Journal entries 15:22 and 15:23.",
+      "severity": "low",
+      "suggestion": "Measure the run at a quiet hour and look at the queued snow check before building on either.",
+      "what": "The run-bob fix (#493) and the traced snowflakes (#438) were shipped without being measured or looked at. The author left both todos open.",
+      "where": "dev/NeverendingGame/src/bird.jl, plugins/snowday.jl"
+    }
+  ],
+  "summary": "I triggered a rewind in the sandbox and it works live: a '<< REWIND' sign, a cool tint with scan lines, backwards babble ('!yeH'), and the island panel says 'going backwards in time'. It is a new mechanic, but it only rewinds creatures and some of them are left out.",
+  "superseded_by": "perfectionist-0091.json",
+  "surprise": 6,
+  "surprise_why": "The whole island moonwalking back in time is a nice twist on the usual gather-and-laugh events, though it only affects creatures.",
+  "verdict": "pass"
+}

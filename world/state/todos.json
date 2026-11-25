@@ -2555,12 +2555,12 @@
       "id": 183,
       "kind": "fix",
       "priority": 1,
-      "result": "Not the live game: an agent session that re-included emotes.jl twice kept Emote values of the old type in Main.EMOTES. Clip scripts empty Main.EMOTES before a copy (movies/cairn_release.jl).\nHappened again at 2026-11-25T01:24:07.347.\nClosed at 2026-11-25T01:25:00.794: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T14:57:20.418.\nClosed at 2026-11-25T14:58:19.193: plugin emotes loaded cleanly.",
+      "result": "Not the live game: an agent session that re-included emotes.jl twice kept Emote values of the old type in Main.EMOTES. Clip scripts empty Main.EMOTES before a copy (movies/cairn_release.jl).\nHappened again at 2026-11-25T01:24:07.347.\nClosed at 2026-11-25T01:25:00.794: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T14:57:20.418.\nClosed at 2026-11-25T14:58:19.193: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:10:57.483.\nClosed at 2026-11-25T16:15:17.844: plugin emotes loaded cleanly.\nHappened again at 2026-11-25T16:28:30.989.\nClosed at 2026-11-25T16:29:17.018: plugin emotes loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:emotes.Emotes failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:19.193"
+      "updated": "2026-11-25T16:29:17.018"
     },
     {
       "created": "2026-11-23T10:43:44.839",
@@ -2961,12 +2961,12 @@
       "id": 212,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T11:21:15.022.\nClosed at 2026-11-25T11:21:22.544: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T14:57:19.928.\nClosed at 2026-11-25T14:58:21.492: plugin outfits loaded cleanly.",
+      "result": "Closed at 2026-11-23T12:57:53.231: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:36:08.455.\nClosed at 2026-11-24T08:36:50.285: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:46:00.970.\nClosed at 2026-11-24T08:47:07.213: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T08:47:56.033.\nClosed at 2026-11-24T08:48:42.219: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T09:27:58.499.\nClosed at 2026-11-24T09:28:41.893: plugin outfits loaded cleanly.\nHappened again at 2026-11-24T10:03:42.875.\nClosed at 2026-11-24T10:04:22.649: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T06:30:48.474.\nClosed at 2026-11-25T06:30:49.211: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T11:21:15.022.\nClosed at 2026-11-25T11:21:22.544: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T14:57:19.928.\nClosed at 2026-11-25T14:58:21.492: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:10:57.067.\nClosed at 2026-11-25T16:15:20.910: plugin outfits loaded cleanly.\nHappened again at 2026-11-25T16:28:28.955.\nClosed at 2026-11-25T16:29:19.914: plugin outfits loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:outfits.Outfits failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:21.492"
+      "updated": "2026-11-25T16:29:19.914"
     },
     {
       "created": "2026-11-23T13:45:12.270",
@@ -3997,12 +3997,12 @@
       "id": 286,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T03:04:32.295: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T01:23:16.751.\nClosed at 2026-11-25T01:25:02.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T14:57:19.555.\nClosed at 2026-11-25T14:58:20.795: plugin meadowlife loaded cleanly.",
+      "result": "Closed at 2026-11-24T03:04:32.295: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T01:23:16.751.\nClosed at 2026-11-25T01:25:02.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T14:57:19.555.\nClosed at 2026-11-25T14:58:20.795: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:10:56.793.\nClosed at 2026-11-25T16:15:20.272: plugin meadowlife loaded cleanly.\nHappened again at 2026-11-25T16:28:28.680.\nClosed at 2026-11-25T16:29:19.283: plugin meadowlife loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:meadowlife.MeadowLife failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:20.795"
+      "updated": "2026-11-25T16:29:19.283"
     },
     {
       "created": "2026-11-24T03:05:39.944",
@@ -4361,12 +4361,12 @@
       "id": 312,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T07:52:07.228: plugin watering loaded cleanly.\nHappened again at 2026-11-25T01:23:16.919.\nClosed at 2026-11-25T01:25:04.235: plugin watering loaded cleanly.\nHappened again at 2026-11-25T14:57:20.109.\nClosed at 2026-11-25T14:58:22.898: plugin watering loaded cleanly.",
+      "result": "Closed at 2026-11-24T07:52:07.228: plugin watering loaded cleanly.\nHappened again at 2026-11-25T01:23:16.919.\nClosed at 2026-11-25T01:25:04.235: plugin watering loaded cleanly.\nHappened again at 2026-11-25T14:57:20.109.\nClosed at 2026-11-25T14:58:22.898: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:10:57.222.\nClosed at 2026-11-25T16:15:22.430: plugin watering loaded cleanly.\nHappened again at 2026-11-25T16:28:29.100.\nClosed at 2026-11-25T16:29:21.381: plugin watering loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:watering.Watering failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:22.898"
+      "updated": "2026-11-25T16:29:21.381"
     },
     {
       "created": "2026-11-24T07:54:00.038",
@@ -4557,12 +4557,12 @@
       "id": 326,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T09:16:59.414: plugin kite loaded cleanly.\nHappened again at 2026-11-25T01:23:16.627.\nClosed at 2026-11-25T01:25:02.463: plugin kite loaded cleanly.\nHappened again at 2026-11-25T14:57:19.322.\nClosed at 2026-11-25T14:58:20.401: plugin kite loaded cleanly.",
+      "result": "Closed at 2026-11-24T09:16:59.414: plugin kite loaded cleanly.\nHappened again at 2026-11-25T01:23:16.627.\nClosed at 2026-11-25T01:25:02.463: plugin kite loaded cleanly.\nHappened again at 2026-11-25T14:57:19.322.\nClosed at 2026-11-25T14:58:20.401: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:10:56.641.\nClosed at 2026-11-25T16:15:19.893: plugin kite loaded cleanly.\nHappened again at 2026-11-25T16:28:28.483.\nClosed at 2026-11-25T16:29:18.910: plugin kite loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:kite.Kite failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:20.401"
+      "updated": "2026-11-25T16:29:18.910"
     },
     {
       "created": "2026-11-24T09:23:14.668",
@@ -5047,12 +5047,12 @@
       "id": 361,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T12:22:25.397: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:22:28.368.\nClosed at 2026-11-24T12:33:07.666: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:35:36.700.\nClosed at 2026-11-24T12:38:06.550: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:38:14.492.\nClosed at 2026-11-24T12:50:38.414: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:50:51.224.\nClosed at 2026-11-24T12:52:19.701: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:52:27.874.\nClosed at 2026-11-24T12:54:59.286: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:55:10.472.\nClosed at 2026-11-24T12:56:17.151: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:57:58.793.\nClosed at 2026-11-24T12:59:22.406: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T01:23:16.937.\nClosed at 2026-11-25T01:25:04.250: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T14:57:20.132.\nClosed at 2026-11-25T14:58:22.921: plugin wheelbarrow loaded cleanly.",
+      "result": "Closed at 2026-11-24T12:22:25.397: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:22:28.368.\nClosed at 2026-11-24T12:33:07.666: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:35:36.700.\nClosed at 2026-11-24T12:38:06.550: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:38:14.492.\nClosed at 2026-11-24T12:50:38.414: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:50:51.224.\nClosed at 2026-11-24T12:52:19.701: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:52:27.874.\nClosed at 2026-11-24T12:54:59.286: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:55:10.472.\nClosed at 2026-11-24T12:56:17.151: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-24T12:57:58.793.\nClosed at 2026-11-24T12:59:22.406: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T01:23:16.937.\nClosed at 2026-11-25T01:25:04.250: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T14:57:20.132.\nClosed at 2026-11-25T14:58:22.921: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:10:57.241.\nClosed at 2026-11-25T16:15:22.446: plugin wheelbarrow loaded cleanly.\nHappened again at 2026-11-25T16:28:29.116.\nClosed at 2026-11-25T16:29:21.397: plugin wheelbarrow loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:wheelbarrow.Wheelbarrow failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:22.921"
+      "updated": "2026-11-25T16:29:21.397"
     },
     {
       "created": "2026-11-24T12:22:28.435",
@@ -6106,7 +6106,7 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0088 [fun, medium]: Played for a minute each: hide and seek found all 4 in 40 s of 120, and the berry race was won 9 to 5 in 29 s, both on a first play with W/A/D only. Firefly catch got 6 of 8. The best toys (pumpkins, water fight, paint, SWAPSIE) have no goal or score, and the three games are the same walk-to-the-thing loop as 40 sessions ago.\nWhere: mini games menu\nSuggestion: Make the water fight playable: 60 s, splash the friends, they splash back, a soak meter and a best score. Once the pond is real water, it is the showcase game.\nDone when: A fourth entry in the mini game menu with a start card, a score and an end card, and a W/A/D first-play test passing.\nEvidence: reviews/p88/play/log.txt, hide-5-end.png, berry-5-end.png",
+      "detail": "perfectionist-0091 [fun, medium]: Hide and seek and the berry race show the author can make a game with levels and bests, but the three games date from ~s40. Every session since adds shows to watch or one-key gags; the rewind, the bubbles and the storm have no goal, score or reason to play twice.\nWhere: plugins/\nSuggestion: Turn one gag into a game: rewind puzzles (undo a pumpkin collapse in 3 tries), bubble bowling (float friends into the grove for points), a paint fight with a score.\nDone when: A fifth entry in the Mini game menu with start card, score, end card and 'R to play again', and a W/A/D first-play test that passes.\nEvidence: Mini game menu: Jump in, Firefly catch, Hide and seek, Berry race (cams-sheet.jpg, berry-sheet.jpg)",
       "est_minutes": 30.0,
       "id": 437,
       "kind": "review",
@@ -6116,7 +6116,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
-      "updated": "2026-11-25T12:33:43.331"
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6195,12 +6195,12 @@
       "id": 443,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:24:59.660: plugin beach loaded cleanly.\nHappened again at 2026-11-25T14:57:19.060.\nClosed at 2026-11-25T14:58:18.064: plugin beach loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:24:59.660: plugin beach loaded cleanly.\nHappened again at 2026-11-25T14:57:19.060.\nClosed at 2026-11-25T14:58:18.064: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:10:56.568.\nClosed at 2026-11-25T16:15:16.567: plugin beach loaded cleanly.\nHappened again at 2026-11-25T16:28:28.388.\nClosed at 2026-11-25T16:29:15.758: plugin beach loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:beach.Beach failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:18.064"
+      "updated": "2026-11-25T16:29:15.758"
     },
     {
       "created": "2026-11-25T01:23:16.691",
@@ -6209,12 +6209,12 @@
       "id": 444,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:02.753: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T14:57:19.472.\nClosed at 2026-11-25T14:58:20.754: plugin meadow loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:02.753: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T14:57:19.472.\nClosed at 2026-11-25T14:58:20.754: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:10:56.734.\nClosed at 2026-11-25T16:15:20.235: plugin meadow loaded cleanly.\nHappened again at 2026-11-25T16:28:28.606.\nClosed at 2026-11-25T16:29:19.247: plugin meadow loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:meadow.Meadow failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:20.754"
+      "updated": "2026-11-25T16:29:19.247"
     },
     {
       "created": "2026-11-25T01:23:16.875",
@@ -6223,12 +6223,12 @@
       "id": 445,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:03.791: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T14:57:20.046.\nClosed at 2026-11-25T14:58:21.979: plugin shallows loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:03.791: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T14:57:20.046.\nClosed at 2026-11-25T14:58:21.979: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:10:57.178.\nClosed at 2026-11-25T16:15:21.466: plugin shallows loaded cleanly.\nHappened again at 2026-11-25T16:28:29.055.\nClosed at 2026-11-25T16:29:20.467: plugin shallows loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:shallows.Shallows failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:21.979"
+      "updated": "2026-11-25T16:29:20.467"
     },
     {
       "created": "2026-11-25T01:23:16.990",
@@ -6237,12 +6237,12 @@
       "id": 446,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T01:25:04.304: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T14:57:20.227.\nClosed at 2026-11-25T14:58:22.990: plugin workshop loaded cleanly.",
+      "result": "Closed at 2026-11-25T01:25:04.304: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T14:57:20.227.\nClosed at 2026-11-25T14:58:22.990: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:10:57.290.\nClosed at 2026-11-25T16:15:22.502: plugin workshop loaded cleanly.\nHappened again at 2026-11-25T16:28:29.173.\nClosed at 2026-11-25T16:29:21.451: plugin workshop loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:workshop.Workshop failed in step! and was switched off",
-      "updated": "2026-11-25T14:58:22.990"
+      "updated": "2026-11-25T16:29:21.451"
     },
     {
       "created": "2026-11-25T01:30:46.210",
@@ -6265,12 +6265,12 @@
       "id": 448,
       "kind": "look",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0091: Duplicate of #492: the lantern film is the night film by lantern light",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A night film by lantern light: friends under the lamps and stars",
-      "updated": "2026-11-25T01:46:56.141"
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T02:02:43.795",
@@ -6601,12 +6601,12 @@
       "id": 472,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0091: Sandbox motion measure 10 of 10 moving well; gait.jl slowed the tail wag; no tail snaps in the films' jump lists",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Pig tails and turns snap: tails jump 0.4 m in one frame",
-      "updated": "2026-11-25T12:33:43.331"
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T10:09:23.907",
@@ -6694,7 +6694,7 @@
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "perfectionist-0088 [materials, high]: Every friend is the same matte or plastic clay in the films: the sheep has no wool sheen, the jelly blobs are opaque, and the SWAPSIE puffs are lilac plastic balls. No lantern or window lights the grass around it in a traced picture. The traced still at 11:41 is grey, flat and grainy under a shower (reviews/p88/pond-traced.png); sunset and night (#237, #448) have no traced picture where light is the subject.\nWhere: plugins/makeover.jl, species materials, lamplight.jl, mixup.jl puffs\nSuggestion: Use dev/Hikari/docs/src/materials.md: sheen on the sheep, subsurface plus coat on the blobs, a lacquer coat on the toadstool caps, PointLights in the lanterns and cottage windows (traced copies only), and translucent sparkle puffs. Show it in one dusk traced still of the friends under a lantern.\nDone when: A traced dusk still shows a lantern's warm pool on the grass and friends with visible sheen, glow and coat. Next to an s88 film frame, the difference is obvious.\nEvidence: reviews/motion/perfectionist-0088/mixup-overview.jpg",
+      "detail": "perfectionist-0091 [materials, high]: In the traced lantern still every lantern is a pure white, clipped ellipsoid on a red ring. They light the bank nicely, but look like eggs or bulbs, not paper lanterns. Live they are unlit globes. At dusk the pond under them reads milky grey, not dark water with reflections.\nWhere: plugins/lanterns.jl (GLOW spheres, base cylinders); site/img/lanterns.png\nSuggestion: A paper lantern model (folded paper, ribs, a small candle inside). The emission comes from an inner small sphere through thin, warm translucent paper (DiffuseTransmission or thin-wall), so it glows orange and shows its ribs. Lower the strength so it doesn't clip, use a warmer colour, and give the pond a darker dusk look so the reflections carry the picture.\nDone when: In a traced dusk still the lanterns show their paper shape and ribs in warm orange with no pure-white pixels on them (max channel < 250), and still light the bank.\nEvidence: site/img/lanterns.png (lanterns at 100% white, no shape or texture visible)",
       "est_minutes": 15.0,
       "id": 479,
       "kind": "review",
@@ -6703,8 +6703,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Friends and lanterns with real materials and lights (goal 7)",
-      "updated": "2026-11-25T12:33:43.331"
+      "title": "Lanterns that look like paper lanterns: warm glow through paper, not white eggs",
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6727,16 +6727,16 @@
       "id": 481,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0091: Old film; the first-frame pop is now part of the rewind finding, for every film",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "SWAPSIE film: the poof back pops and fills the lens",
-      "updated": "2026-11-25T12:33:43.331"
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T12:33:43.331",
-      "detail": "perfectionist-0088 [camera, medium]: At 11:51 the follow camera's subject was Lumi walking to bed. The shot was cherry crowns, a fence and a red bush filling the right edge; Lumi was hidden under the trees, with only its tag and two z's visible. Earlier, follow1.png was 60% sky with the subjects small at the bottom.\nWhere: render.jl follow_view / camcut.jl, lensclear\nSuggestion: When obstruction of the subject stays above 0.5 for 1 s, cut to the clearest of 8 sides (as the dance ring does), and frame the horizon in the upper third.\nDone when: Over 20 follow screenshots 10 s apart, the subject's body is visible in at least 18, and the sky never fills more than half the frame.\nEvidence: reviews/p88/play/cam-3b.png, reviews/p88/follow1.png",
+      "detail": "perfectionist-0091 [camera, medium]: The follow view sits behind foliage: a crown over the right third with only a crab in view (follow1.png), a trunk and crown over the left third (cam-follow-3.png), a bush over the bottom-right quarter during the rewind (rewind-live.png). This is the view a player looks at most.\nWhere: render.jl follow_view / camcut.jl / lensclear\nSuggestion: Count crowns and bushes inside the frustum's near third (not only the eye-to-target line) and swing to the side with the least foliage, eased the way camcut eases side flips.\nDone when: 20 follow screenshots 10 s apart: in none does a plant or crown cover more than 15% of the 3D view.\nEvidence: reviews/p91/follow1.png, reviews/p91/cam-follow-3.png, reviews/p91/rewind-live.png, reviews/p91/cams-sheet.jpg",
       "est_minutes": 30.0,
       "id": 482,
       "kind": "review",
@@ -6745,8 +6745,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow camera loses Lumi behind cherry crowns and roofs",
-      "updated": "2026-11-25T12:33:43.331"
+      "title": "Follow camera: no tree crowns or bushes over a third of the view",
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6759,8 +6759,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Labels show through walls; the jump-in key strip covers the view",
-      "updated": "2026-11-25T12:33:43.331"
+      "title": "Labels show through bushes; the Mini game menu names the wrong game while one runs",
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T12:49:51.957",
@@ -6881,12 +6881,12 @@
       "id": 492,
       "kind": "look",
       "priority": 2,
-      "result": "",
+      "result": "s93: the lantern film rendered in the worker (job 20261125-151947-220-clip, 24 samples, 18 s, media/s91/lanterns-film.mp4; sheet media/s91/l-sheet.png: friends come down to the pond, lanterns set one by one, glowing and mirrored, the first ones lift off). Posted as 'Lanterns, the whole evening' (site/films/lanterns.mp4). No sound yet.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Lantern film: look at the traced take and post it",
-      "updated": "2026-11-25T14:26:27.727"
+      "updated": "2026-11-25T16:09:55.000"
     },
     {
       "created": "2026-11-25T14:29:11.291",
@@ -6904,17 +6904,17 @@
     },
     {
       "created": "2026-11-25T15:14:54.850",
-      "detail": "s92 pocket watch (plugins/rewind.jl) records and plays back only the creatures (pos, yaw, action, phase, extra). The pond rings, tumbling pumpkins, paint blobs, bubbles and lanterns keep running forwards, so a rewind in the middle of an event looks half done. Give rewind a hook (Main.REWIND[:tracks][name] = (record, apply)) the event plugins can fill, start with pumpkins (physics state) and splash rings. Then: stop time altogether for a moment (everyone frozen mid-hop, Lumi walks among them).",
+      "detail": "perfectionist-0091 [wow, medium]: The pocket watch is the best idea in many sessions, but only the creatures go back: paint, splashes, bubbles, pumpkins and leaves keep going forwards. The posted film is a wide static view of small creatures where the moonwalk reads only from the ◀◀ (rewind-overview.jpg), and it has no tape look. Like every film this session, it opens with a pop at 0.04 s.\nWhere: plugins/rewind.jl; movies/rewind.jl; site/films/rewind.mp4; render.jl game_clip first frame\nSuggestion: Rewind the things that make it impossible: a pumpkin pyramid that reassembles, a splash sucked back into the pond, paint flying back off the meadow, a bubble un-popping. Film it closer, with the tape wash and a funny moment run backwards (a friend falling up out of the pond). Drop or warm up the first frame in game_clip.\nDone when: A new film where at least two non-creature things visibly run backwards, the creatures fill at least a third of the frame height, and motion_sheet lists no jump at 0.04 s.\nEvidence: reviews/motion/perfectionist-0091/rewind-overview.jpg, rewind-strip.jpg; allin first-frame jump 0.070",
       "est_minutes": 40.0,
       "id": 494,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Rewind everything: splashes, pumpkins, paint and bubbles go back too",
-      "updated": "2026-11-25T15:14:54.850"
+      "title": "Rewind everything, and film it so going backwards is unmistakable",
+      "updated": "2026-11-25T15:49:22.798"
     },
     {
       "created": "2026-11-25T15:14:54.853",
@@ -6929,6 +6929,90 @@
       "status": "done",
       "title": "Worker: free it from the endless encode and delete the 1 GB take",
       "updated": "2026-11-25T15:20:02.863"
+    },
+    {
+      "created": "2026-11-25T15:49:22.798",
+      "detail": "perfectionist-0091 [creatures, high]: Made-over piglets and crabs with goal/action :sleep stand upright on four legs with their eyes wide open. At 09:57 in the sandbox 6 of 10 friends were 'asleep' like that, so the island looks like a freeze-frame of statues. The made-over bodies lost the old sleep pose with their old heads.\nWhere: plugins/makeover.jl bodies; species body_pose(:sleep) for Snootle/Crabbit; faces/outfits for closed eyes\nSuggestion: A real sleep pose per made-over body: belly down (legs folded under, body lowered), head resting, lids closed (a lid piece over each eye), slow breathing on the body scale, an ear twitch or a Zz now and then. Pigs flop on their side, crabs tuck their claws in, sheep become a wool loaf. Also check why half the island naps mid-morning.\nDone when: A close screenshot of a sleeping pig, crab, sheep and blob shows each lying down with closed eyes. In a 3 s motion strip the sleepers breathe (body scale changes) but their feet don't move.\nEvidence: reviews/p91/pig-sleep.png (Pickles :sleep, standing, eyes open); reviews/p91/motion/creatures.png; eval at 09:57: Gloop, Wibbles, Pinchy, Cumulus, Marshmallow, Pickles all :sleep",
+      "est_minutes": 30.0,
+      "id": 496,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Friends sleep like friends: lie down, eyes shut, breathing (pig, crab)",
+      "updated": "2026-11-25T15:49:22.798"
+    },
+    {
+      "created": "2026-11-25T15:49:22.798",
+      "detail": "perfectionist-0091 [materials, high]: Clicking 'Path tracing: off' in the sandbox dashboard (orbit camera, 10:36) and waiting 40 game seconds (4 min of wall clock, 15:43:23 to 15:47:37) showed only sky over a flat grey plane plus the name tag and thought bubble: no island, trees or creatures. No error was logged. This button is the one place a player can see the path tracer; goal 7 is invisible to them.\nWhere: dashboard Path tracing toggle; RayMakie live trace screen\nSuggestion: Find what the live tracer is missing (scene not uploaded, BVH build stuck, camera not synced). Show a progress note while it builds, and make the first noisy frames show the island within seconds. Then make the button worth pressing: an evening view that shows the lanterns lighting the pond.\nDone when: A screenshot 30 s after pressing Path tracing in the sandbox shows the island traced (trees, cottage, pond, creatures), and the sandbox log has no error.\nEvidence: reviews/p91/pt-raster.png (just before), reviews/p91/pt-traced.png (4 min after), reviews/p91/pt-back.png (raster back); sandbox events path_tracing on 15:43:23 / off 15:47:37",
+      "est_minutes": 30.0,
+      "id": 497,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Path tracing button: the island must appear, not an empty grey plane",
+      "updated": "2026-11-25T15:49:22.798"
+    },
+    {
+      "created": "2026-11-25T15:49:22.798",
+      "detail": "perfectionist-0091 [lighting, high]: A bright white dotted/jagged streak runs across the whole traced lantern still at the horizon (y ~180 of 720), behind the trees. It is the first thing that breaks the dusk mood. Many tiny white dots along the far shore read as noise, not lights.\nWhere: site/img/lanterns.png; sky (SunSkyLight ground / SKY_GROUND), nightglow motes\nSuggestion: Find which plot or sky term draws it (hide plots one by one in a quiet copy, as in s38) and fix it in the sky or Hikari. Thin the far-shore motes to a few clear fireflies near the subject.\nDone when: A traced still at 19:30 from the lantern view shows a smooth sky-to-sea horizon with no bright streak (the horizon row profile has no spike over its neighbours).\nEvidence: site/img/lanterns.png, the horizontal white streak from x 260 to 1000 at y ~180",
+      "est_minutes": 30.0,
+      "id": 498,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "White sawtooth band along the horizon in traced dusk pictures",
+      "updated": "2026-11-25T15:49:22.798"
+    },
+    {
+      "created": "2026-11-25T15:49:22.798",
+      "detail": "perfectionist-0091 [fun, medium]: Playing for 60 s with W and steering at the nearest fly: 3 flies in 13 s, then 4/8 for the remaining 35 s. Lumi stood at a pine with 'Stuck! Steer round it with A or D' while the HUD said 'nearest 6 m ahead' behind the trunk. In daylight a fly is a small pale dot with hair-thin beams; none can be made out in the five play frames. The end card ('Time's up! You caught 4 of 8') is framed from inside a bush, with Lumi's face filling the screen.\nWhere: plugins/firefly_catch.jl (fly homes, beams, end camera)\nSuggestion: Keep fly homes out of crowns and trunk nooks (the hide-and-seek and berry race rules: open_line, clearance from w.props trees). Make the flies read by day: bigger, a warm glow with a soft bloom shell, thicker beams that pulse. Frame the end card with the chase view pulled back and the caught flies circling Lumi.\nDone when: The W/A/D first-play test catches 8/8 in 60 s, and an end-card screenshot shows Lumi whole with no foliage covering more than 15% of the view. A daytime play screenshot shows at least one fly as a clear glowing spot.\nEvidence: reviews/p91/firefly-sheet.jpg (card, 4 play frames, end card); reviews/p91/firefly-close.png (a fly beside the card)",
+      "est_minutes": 30.0,
+      "id": 499,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Firefly catch: flies you can see and reach, an end card you can read",
+      "updated": "2026-11-25T15:49:22.798"
+    },
+    {
+      "created": "2026-11-25T16:09:47.000",
+      "detail": "s93 plugins/visitors.jl: an open page is a visitor; Lumi runs up to the lens and waves, friends turn round and wave (tested in a quiet copy: media/s93/p-sheet.png). Next: a visitor who stays gets shown things (Lumi leads them to what it made today), friends follow the camera about, the number of visits shows on the island (a tally board by the cottage), and a second visitor gets introduced to the first.",
+      "est_minutes": 30.0,
+      "id": 500,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Someone's watching: more for the visitor to do",
+      "updated": "2026-11-25T16:09:55.000"
+    },
+    {
+      "created": "2026-11-25T16:09:47.000",
+      "detail": "s92 and s93: two ffmpeg muxes inside Julia never ended (a looped picture + apad; then -c:v copy + amix + apad + -t), the first blocked the worker for half an hour, the second froze the sandbox for the rest of session 93 (a 100+ MB file growing, the sandbox cannot be shut down while the eval waits). Film scripts now write the silent film only (movies/visitors.jl); mix the sound in the agent's own shell with a timeout. Check movies/*.jl for other in-Julia ffmpeg muxes with apad and change them.",
+      "est_minutes": 30.0,
+      "id": 501,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Films: never mux sound inside a worker job or the sandbox",
+      "updated": "2026-11-25T16:09:55.000"
     }
   ]
 }
