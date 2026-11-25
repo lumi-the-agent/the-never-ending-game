@@ -215,7 +215,8 @@ end
 "The sun and sky grey down while it rains, in 0.1 steps (each step re-bakes the sky once)."
 function dim_sun!(s::Shower, w)
     fade = s.active ? clamp(min(w.t - s.started, s.until - w.t) / 5, 0, 1) : 0.0
-    d = 1f0 - 0.1f0 * round(3 * fade)          # 1.0 … 0.7 (0.6 with the wet ground was gloomy)
+    # 1.0 … 0.55 (perfectionist-0079: rain fell under hard noon sun at 0.7; 0.6 once looked gloomy with the wet ground)
+    d = 1f0 - 0.09f0 * round(5 * fade)
     # a thunderstorm (storm.jl) greys the day further while its cloud is overhead, in the same 0.1 steps (s77,
     # perfectionist-0076: "under the black cloud the island stays in full noon sun"); the storm lasts 21 s
     st = isdefined(Main, :STORM) ? get(Main.STORM, :sys, nothing) : nothing

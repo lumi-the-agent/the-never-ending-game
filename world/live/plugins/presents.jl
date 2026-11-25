@@ -8,7 +8,7 @@ isdefined(Main, :PRESENTS) || Core.eval(Main, :(const PRESENTS = Dict{Symbol,Any
 using Serialization
 const NG = NeverendingGame
 const PR = Main.PRESENTS
-const PRESENTS_VERSION = 1
+const PRESENTS_VERSION = 2
 
 # pastime => (present asset, present name, what Lumi says it loves, height of the present in m)
 const GIFTS = Dict(
@@ -224,6 +224,13 @@ function present_plots!(game)
         mm = Serialization.deserialize(joinpath(game.paths.world, "assets", id, "mesh.jls"))
         mat = copy(only(values(mm[:materials]))); mat["metallic"] = 0f0
         model = NG.AssetModel(mm; material = mat)
+        # the image's baked shadow plate under the object (a black shard beside a keeper's neck, perfectionist-0079):
+        # faces with all three corners in the bottom 5% go
+        let m = model.mesh, ps = GeometryBasics.coordinates(m)
+            z0 = minimum(p -> p[3], ps); zt = z0 + 0.05f0 * (maximum(p -> p[3], ps) - z0)
+            keep = filter(f -> any(k -> ps[GeometryBasics.value(f[k])][3] > zt, 1:3), collect(GeometryBasics.faces(m)))
+            model = NG.AssetModel(GeometryBasics.Mesh(ps, keep; normal = m.normal, uv = m.uv), model.color, model.material)
+        end
         zs = [q[3] for q in GeometryBasics.coordinates(model.mesh)]
         plot = NG.asset_instances!(game.stage.scene, model, [Point3f(0, 0, -50)]; markersize = [Vec3f(0)], name = Symbol(:present_, k))
         PR[:plots][k] = (plot, h / (maximum(zs) - minimum(zs)))
@@ -448,12 +455,11 @@ function draw_present!(game, w, me)
         end
         push!(get!(want, job[:gift], Tuple{Point3f,Float32}[]), (pos, a + 0.4f0))
     end
-    for (id, (g, _, _)) in kept()             # a keeper holds it up at its side, like a flower gift
-        c = NG.creature(w, id)
+    for (id, (g, _, _)) in kept()             # a keeper balances it on its head, proudly (s80: held at its side it
+        c = NG.creature(w, id)                # sat halfway inside the long piglet bodies, perfectionist-0079)
         a = c.yaw + NG.species_of(c).heading
-        r = NG.body_radius(NG.species_of(c))
-        b = a + 0.9f0
-        push!(get!(want, g, Tuple{Point3f,Float32}[]), (c.pos + Point3f(0.9f0r * cos(b), 0.9f0r * sin(b), 0.95f0r), a))
+        h = NG.species_of(c).height
+        push!(get!(want, g, Tuple{Point3f,Float32}[]), (c.pos + Point3f(0, 0, h + 0.02f0 + 0.03f0 * sin(5f0 * Float32(w.t) + id)), a))
     end
     shown = get(PR, :shown_n, Dict{Symbol,Int}())
     for (k, (plot, s)) in plots

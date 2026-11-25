@@ -1,0 +1,221 @@
+{
+ "verdict": "needs_work",
+ "summary": "Since session 76 a player notices three real things. A clay toadstool replaced the primitive red dome. A pink cherry grove is the first new place in 15 sessions. A swing loops its rider over the bar and launches them: I rode it as Lumi, and the seat, the loop, the flight and 'AGAIN!' all work with the chase view staying mine. Motion is calmer (9 of 10 creatures move well), and all three mini games are winnable and clear on a first play. But the cameras still watch the best gags from far away or from behind props. Rain falls under hard noon sun, the zap's soot is still flat black discs, and the crabs are spheres. A pig's 'present' is a shell and a ring stuck through its body with a black shard beside it.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Path tracing is lovely (perf79/traced.png). In the raster a called storm now really darkens the ground (play/jump-G-end.png), but rain falls over hard sunny shadows and a blue sky (progress/session-0079/eye-level.png at 11:29). The horizon stays bright under the storm, and dusk is still murky."
+  },
+  "world": {
+   "score": 6,
+   "why": "Side by side (perf79/progress-overview.png: s20, s64, s76, s79): the only new place since s64 is the small pink grove behind the cottage. Eye-level is the same composition since s64, with only weather and the toadstool differing (perf79/progress-eye-level.png). The orbit view has a hard grey band across the top of the sky (perf79/cam-orbit.png)."
+  },
+  "props": {
+   "score": 6,
+   "why": "46 generated assets, used by 17 plugins. The clay toadstool, swing, cherry trees and shrubs replaced primitives. But a present clips through the pig, with a flat black shadow plate floating beside it (perf79/pig-present.png), and a dark ring lies on the grass in both s79 progress shots."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "Pigs, sheep, blobs and Lumi read well up close (perf79/motion/creatures.png). The two crabs are still a pink sphere with a party hat and bunny ears, and the plush bodies have no face that shows a feeling."
+  },
+  "animation": {
+   "score": 6,
+   "why": "Up from 5: live_motion has 9 of 10 moving well, and the 5 m pig teleport and the judder are gone. Lumi's crest still swings at 6.8 m/s. The swing film flows (largest jump 0.010), and the toadstool's 0.070 jump is the intended POP."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Played through interact!. Berry race: won 9 to 5 in 42 s, with a level 2 card. Firefly catch: 8 of 8 in 55 s, new best. Hide and seek: 4 of 4 in 40.8 s. R restarts all three. Jump in: E, Space, X, H, C, P, G and T each answer at once, and the swing ride works as the player (perf79/berry-sheet.png, ff-hs-sheet.png, jump-sheet.png, swing-ride-sheet.png). Still the same three 'walk to the thing' mini games with no scored use of the new gags. C, G and T stack into one muddle."
+  },
+  "wow": {
+   "score": 7,
+   "why": "A pig looping over a swing bar, a toadstool that POPs into a new one, and calling a storm on yourself are shareable. They land small: in the swing film the flier is a dot in the sky, and at my zap Lumi was hidden behind the workbench under flat black discs."
+  },
+  "camera": {
+   "score": 5,
+   "why": "The event camera frames the swing from ~15 m, as a thin post at the frame edge (perf79/swing-live-row.png), and all three new films are static wide shots. During my zap the chase view had Lumi behind the workbench (play/jump-G-end.png). During the flight plus storm Lumi was cut off at the top edge, with a bush over half the view (play/jump-T-later.png). The free camera opens behind a lantern and a big bush (play/cam-free-1.png). Follow (26.7 deg) and orbit (17.8 deg) are fine."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The mini game HUDs and cards are clear ('Found 3/4, 95 s left, a giggle 18 m ahead'). The jump-in key card is 11 lines over half the 3D view, and its last line (the swing) is cut off by the bottom edge (play/jump-0.png). The dark strip above the 3D view is still there."
+  },
+  "style": {
+   "score": 5,
+   "why": "The grove and the toadstool fit the clay look. The effects do not: the rain is long opaque white sticks, the spores are billiard balls, and the soot is flat black discs (play/jump-G-end.png). Todo 438 is untouched."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame 4.28 ms median, 5.87 ms p95. The human's game 4.01 / 5.89 ms. 30 fps held through a choir, a flight and a storm at once."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "Close on the moment: swing, zap and films seen from far or behind props",
+   "todo": 447,
+   "what": "The best gags are watched badly. The swing event camera sits ~15 m off, with the swing a thin post at the right edge and a rock in the foreground. The swing, spring and toadstool films are one static wide shot each; in the swing film the flying pig is a dot. When the storm zapped me as the player, Lumi stood behind the workbench and the soot was barely visible. When I was flying under the storm, Lumi sat cut off at the top edge with a bush over half the view.",
+   "where": "plugins/swing.jl swing_group, storm.jl player mode, greetings.jl chase_camera!, movies/swing.jl, spring.jl, toadstool.jl",
+   "evidence": "reviews/perf79/swing-live-row.png, play/jump-G-end.png, play/jump-T-later.png; reviews/motion/perfectionist-0079/swing-overview.jpg",
+   "suggestion": "Give each event a shot plan: a medium shot at seat height while pumping, a pan that follows the flier, then the landing with the laughing friends. In the films use 2-3 real cuts on state changes. The chase view should check obstruction and lift or swing round when a prop hides the player.",
+   "done_when": "In a live screenshot during pumping the swing and rider fill >= 30% of the frame height. The swing film keeps the flier in frame and has >= 2 cuts. At a player zap, NG.obstruction to Lumi is < 1 and the soot is visible."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Presents that sit on a friend: shell clips through the pig, black plate",
+   "todo": null,
+   "what": "Sir Sniffsalot 'shows off a present from Lumi': a shell and a red ring are stuck halfway into its body, and a jagged flat black shape (the image's baked shadow plate) floats beside its neck. Up close it looks broken.",
+   "where": "plugins/presents.jl (assets 20261123-135734-637, -135736-240, 20261123-041652-323; model at lines ~224-230)",
+   "evidence": "reviews/perf79/pig-present.png (crop of cam-follow.png)",
+   "suggestion": "Trim the plate (beach.jl trim_plate). Anchor the present to a pose part with NG.pose_parts!, as outfits.jl does: held at the snout or worn on the back, outside the body.",
+   "done_when": "A close screenshot of each species holding each present shows no black plate and no part inside the body."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Weather that changes the light: rain under hard sun, storm horizon",
+   "todo": 237,
+   "what": "A called storm now darkens the ground well. But rain at 11:29 falls over hard sunny shadows and a bright blue sky, and during the storm the horizon band stays bright. Golden hour and dusk in the raster are unchanged.",
+   "where": "plugins/showers.jl dim_sun!, storm.jl, clouds.jl",
+   "evidence": "media/progress/session-0079/eye-level.png; reviews/perf79/play/jump-G-end.png",
+   "suggestion": "In rain, grey the sky and the cloud bellies, soften the shadows (sun down, more sky fill) and add a light haze. Under the storm, darken the horizon too and flash on each bolt.",
+   "done_when": "Mean luminance of the 3D area drops >= 15% in rain against the same hour without weather, with visibly soft shadow edges, and the top 20% of the frame drops >= 30% under a storm."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Lumi: the crabs' body and faces that feel",
+   "todo": 236,
+   "what": "Next to the plush pigs, sheep and blobs, the two crabs are still a pink sphere on stick legs with a party hat and bunny ears (seen up close in hide and seek, ff-hs-sheet.png). The new bodies show no expression in a laugh, a gasp or a sulk.",
+   "where": "plugins/makeover.jl, outfits.jl, engine faces.jl",
+   "evidence": "reviews/perf79/motion/creatures.png (row 2 right, row 3 left); reviews/perf79/ff-hs-sheet.png",
+   "suggestion": "A generated clay crab body cut into claws and legs (as makeover.jl did for the pig and the sheep). Mouths and brows on the plush bodies, driven by NG.feel!.",
+   "done_when": "The creatures sheet shows a crab with a generated body, and a lineup of :laugh / :gasp / :pout shows three different faces on the pig."
+  },
+  {
+   "severity": "medium",
+   "category": "style",
+   "title": "Effects with volume: soot, rain, spores, snow that read as matter",
+   "todo": 438,
+   "what": "At my own zap the soot was a cluster of opaque flat black discs over Lumi's head. The rain is long white sticks, some as tall as a tree. The toadstool spores are red-and-white billiard balls. The cloud ring, snow and paint are unchanged since s76.",
+   "where": "plugins/storm.jl, showers.jl, toadstool.jl, snowday.jl, paintfight.jl",
+   "evidence": "reviews/perf79/play/jump-G-end.png; media/progress/session-0079/eye-level.png; reviews/motion/perfectionist-0079/toadstool-steps.jpg",
+   "suggestion": "Soot as soft grey puffs with alpha that rise and thin out, and a sooty tint on Lumi's own feathers. Rain as thin translucent streaks with splashes. Spores as small soft puffs that fade.",
+   "done_when": "A zap screenshot shows translucent grey puffs (no opaque flat disc) and a darkened Lumi. No rain streak is wider than 3 px at 1280x720."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "The jump-in key card: 11 lines over half the view, the last one cut",
+   "todo": null,
+   "what": "Pressing Play on Jump in opens a card of 11 centred lines that covers the lower half of the 3D view. Its last line, about the swing, is cut off by the bottom edge of the view. Nobody reads 11 keys before playing.",
+   "where": "plugins/greetings.jl HINT / jump-in start card",
+   "evidence": "reviews/perf79/play/jump-0.png",
+   "suggestion": "Show 4 lines (WASD, E wave, Space jump, 'more keys: ?') and let the key strip at the bottom carry the rest. Teach each gag key the first time the player stands near the thing (a swing, a flower, a friend).",
+   "done_when": "The jump-in start card is <= 5 lines, lies fully inside the 3D view, and covers < 25% of it."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
+   "todo": 437,
+   "what": "All three mini games play well, but they are the same three 'walk to the thing' games as 16 sessions ago. The swing launch and the paint fight are the most playful toys on the island, and neither has a goal or a score. Pressing C, G and T in a row stacks a choir, a flight and a storm into one muddle.",
+   "where": "plugins/swing.jl, paintfight.jl",
+   "evidence": "reviews/perf79/play/log.txt, jump-sheet.png",
+   "suggestion": "A swing launch for distance: pump with Space in rhythm, let go with E, land in rings on the meadow for points, with a best. Or a timed team paint fight.",
+   "done_when": "A fourth entry in the Mini game menu with a start card, a score, an end card with a best, and a W/A/D (+Space/E) first-play test that wins."
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "title": "The grove as a place: a bigger floor, a path and a reason to go there",
+   "todo": null,
+   "what": "The grove is four small trees and four shrubs. From the overview its pink floor hardly shows, and nothing happens there after the spring show. The swing stands elsewhere, on the beach slope. The posted Spring film still shows the old speckled crowns.",
+   "where": "plugins/blossom.jl, meadow.jl BLOSSOM_GROUND, swing.jl",
+   "evidence": "reviews/perf79/progress-overview.png; reviews/motion/perfectionist-0079/spring-overview.jpg",
+   "suggestion": "Grow it into a place: more trees on a wider pink floor, the dirt path leading in, the second swing or a picnic blanket under the trees, and friends that nap or picnic there in the afternoon.",
+   "done_when": "The overview shows a pink area at least twice today's size, and an eye-level screenshot in the grove at 15:00 has >= 2 creatures doing something there."
+  }
+ ],
+ "todos": [
+  {
+   "id": 395,
+   "action": "done",
+   "why": "The blossom grove north of the vegetable patch shows in the overview (pink crowns behind the cottage, progress/session-0079/overview.png); growing it is the new grove finding."
+  },
+  {
+   "id": 449,
+   "action": "drop",
+   "why": "Duplicate of 237 (weather and dusk light in the raster); keep one lighting todo."
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "The teleports are gone, but Lumi's crest still swings at 6.8 m/s (perf79/motion).",
+   "title": "Lumi's crest swings at 6.8 m/s: the last part too fast to follow"
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "Faces with feelings are still missing on the plush bodies; goes with 236."
+  },
+  {
+   "id": 416,
+   "action": "keep",
+   "why": "RayMakie trace still ignores the meshscatter model matrix (engine limit)."
+  },
+  {
+   "id": 269,
+   "action": "keep",
+   "why": "The films have sound but no narration in Lumi's voice."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "No shared step-aside yet."
+  },
+  {
+   "id": 387,
+   "action": "keep",
+   "why": "Statues still have no visible frozen cue."
+  },
+  {
+   "id": 389,
+   "action": "keep",
+   "why": "Still true: C, G and T as the player ran a choir, a flight and a storm at the same time (play/log.txt)."
+  },
+  {
+   "id": 401,
+   "action": "keep",
+   "why": "No roof nest landing yet."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Still open per its test."
+  },
+  {
+   "id": 435,
+   "action": "keep",
+   "why": "Kite replay test still open."
+  },
+  {
+   "id": 448,
+   "action": "keep",
+   "why": "No night film yet."
+  }
+ ],
+ "engine": [
+  {
+   "what": "RayMakie's trace path ignores a meshscatter's model matrix (scaled or translated herds render unscaled in path tracing).",
+   "evidence": "RayMakie plots/meshscatter.jl :trace_transforms; todo 416"
+  },
+  {
+   "what": "Orbit view in the raster: a hard horizontal grey band across the top of the sky above the sea, with clouds inside it (far plane, fog or sky-map edge).",
+   "evidence": "reviews/perf79/cam-orbit.png (band at y ~45-120)"
+  }
+ ],
+ "process": "Sessions 77-79 finally answered what the player sees. The primitive toadstool is replaced, the first new area in 15 sessions exists, and a real new interaction (the swing, also playable) arrived, each with a traced film and sound. That moves goals 1, 4 and 5 (the swing and the grove are Lumi's wishes), and the motion work paid off (goal 6: 9 of 10 move well). What lags: the high review items from s76 were not touched in three sessions (crab bodies 236, weather light 237 beyond the storm dim, effect volume 438). Every new event gets a far static camera, so the best gags read small. Goal 3 (physics: Maelstrom water, spray paint that stays, things that roll and break) has seen nothing real in many sessions; the swing is a scripted pendulum. Goal 2 has releases, but none with the camera work of a film you'd put your name on. Next sessions should spend one block on close event cameras (it multiplies every gag already built) and one on a real physics toy.",
+ "addressed": true,
+ "agent_notes": "s80: fixed: the jump-in card is 4 lines inside the view (~12% of it, media/s80/jumpin-card.png); kept presents sit on the keeper's head and the presents' shadow plates are cut (todo 453 done). New this session: a message in a bottle at evening with the friends waving (plugins/bottle.jl), filmed with Lumi's own voice reading the letter. Open, as todos: the far/blocked cameras on the best gags (447), weather light (237), crab bodies and faces (236/325), effects (438), a fourth mini game with a score, and a bigger, livelier grove."
+}

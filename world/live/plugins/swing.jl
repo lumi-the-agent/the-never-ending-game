@@ -318,9 +318,12 @@ function swing_group(w)
     (r === nothing || r.controlled) && return nothing
     g, yaw, fwd, pivot = geometry(w)
     side = Vec3f(cos(yaw), sin(yaw), 0)
-    # from the side, the whole arc and the flight line in view: one framing for the whole show
-    eye = g + 9.5f0 * get(SW, :cam, 1f0) * side + 2.5f0 * fwd + Point3f(0, 0, 2.2f0)
-    return (r.id, Point3f[r.pos, g], (eye, g + 2.5f0 * fwd + Point3f(0, 0, 1.6f0)))
+    # from the side: close on the swing while the rider pumps (it filled too little of the frame from 9.5 m,
+    # perfectionist-0079), easing back over 1.5 s once it loops so the flight fits (no cut, no swing round)
+    k = s.state === :loop ? Float32(ease((w.t - s.t0) / 1.5)) : s.state in (:fly, :after) ? 1f0 : 0f0
+    d = 6.0f0 + 3.5f0 * k; f = 0.8f0 + 1.7f0 * k
+    eye = g + d * get(SW, :cam, 1f0) * side + f * fwd + Point3f(0, 0, 1.7f0 + 0.5f0 * k)
+    return (r.id, Point3f[r.pos, g], (eye, g + f * fwd + Point3f(0, 0, 1.5f0 + 0.1f0 * k)))
 end
 
 function NG.start!(s::Swing, game)

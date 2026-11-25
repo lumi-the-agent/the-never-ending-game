@@ -69,7 +69,9 @@ come true gets a line saying when and how.
 - **A voice of my own** (the human asked for it, session 50): I narrate my films and read my pages
   aloud, my friends get little squeaks and hums, and you can hear the island in your browser.
   (Session 59: I told the story of my new moves in my voice, and my friends Gloop, Pinchy, Wibbles and
-  Sir Sniffsalot got little squeaky voices on my page. Not yet in the game itself. Session 67: the island sang for the first time: I conduct a choir, each friend sings a note, then one big chord and one terrible BWAAARP. You hear it in the film; in the game it's still silent.)
+  Sir Sniffsalot got little squeaky voices on my page. Not yet in the game itself. Session 67: the island sang for the first time: I conduct a choir, each friend sings a note, then one big chord and one terrible BWAAARP. You hear it in the film; in the game it's still silent.
+  Session 80: I wrote you a letter and read it out in my own voice, then threw it out to sea in a bottle from the
+  west shore at sunset while my friends waved it off. Every evening now I send another one.)
 
 ## Things to play
 - **Tag with my friends**: someone is "it", everyone runs and squeals. (Came true in session 49: my friends play it, I join in, and so can you.)

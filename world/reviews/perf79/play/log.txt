@@ -1,0 +1,48 @@
+cam-follow rig follow pitch 26.7
+cam-orbit rig orbit pitch 17.8
+cam-free rig fixed pitch 8.1
+berry: started Main.Plugin_berry_race.BerryRace
+berry t=12.9 score=5 state=playing t=11.899999999999968
+berry t=25.8 score=6 state=playing t=24.00000000000035
+berry t=38.6 score=6 state=playing t=36.3000000000005
+berry t=45.6 score=9 state=over t=42.26666666666683
+berry end: score=9 state=over t=42.26666666666683
+berry after R: score=0 state=ready t=0.0
+firefly: started Main.Plugin_firefly_catch.FireflyCatch
+firefly t=12.8 score=4 state=playing t=12.3333333333333 caught=Bool[1, 1, 1, 0, 0, 0, 0, 1]
+firefly t=25.6 score=6 state=playing t=24.633333333333717 caught=Bool[1, 1, 1, 1, 0, 0, 1, 1]
+firefly t=38.4 score=6 state=playing t=36.53333333333382 caught=Bool[1, 1, 1, 1, 0, 0, 1, 1]
+firefly t=51.2 score=7 state=playing t=48.866666666666454 caught=Bool[1, 1, 1, 1, 0, 1, 1, 1]
+firefly t=58.7 score=8 state=over t=55.366666666666084 caught=Bool[1, 1, 1, 1, 1, 1, 1, 1]
+firefly end: score=8 state=over t=55.366666666666084 caught=Bool[1, 1, 1, 1, 1, 1, 1, 1]
+firefly after R: score=0 state=ready t=0.0 caught=Bool[0, 0, 0, 0, 0, 0, 0, 0]
+hideseek: started Main.Plugin_hideseek.HideSeek
+hideseek t=12.8 state=playing t=12.3333333333333 found=Bool[1, 0, 0, 0]
+hideseek t=25.6 state=playing t=24.633333333333717 found=Bool[1, 1, 1, 0]
+hideseek t=38.4 state=playing t=36.633333333333816 found=Bool[1, 1, 1, 0]
+hideseek t=43.5 state=over t=40.766666666666914 found=Bool[1, 1, 1, 1]
+hideseek end: state=over t=40.766666666666914 found=Bool[1, 1, 1, 1]
+hideseek after R: state=ready t=0.0 found=Bool[0, 0, 0, 0]
+jump E: Lumi idle goal idle speech For a friend!
+jump E2: Lumi idle goal idle speech Got me!
+jump space: Lumi idle goal idle speech 
+jump X: Lumi idle goal idle speech ah... ah...
+jump H: Lumi idle goal idle speech ...oops. Excuse me.
+jump C: Lumi idle goal idle speech Choir practice! Gather round!
+jump P: Lumi idle goal idle speech whoa-whoa-
+jump G: Lumi idle goal idle speech Today... I FLY!
+jump T: Lumi idle goal idle speech And a one... and a two...
+swing 1 state swing pitch 14.6
+swing 2 state swing pitch 24.6
+swing 3 state swing pitch 24.6
+swing 4 state swing pitch 24.6
+swing 5 state swing pitch 24.6
+swing 6 state swing pitch 24.6
+swing 7 state loop pitch 24.6
+swing 8 state fly pitch 24.3
+swing 9 state after pitch 34.0
+swing 10 state after pitch 31.8
+swing 11 state after pitch 19.0
+swing 12 state idle pitch 21.8
+
+ERROR: 

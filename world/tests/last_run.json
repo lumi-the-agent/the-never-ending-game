@@ -2,11 +2,25 @@
   "results": [
     {
       "error": "",
-      "file": "dashboard.jl",
-      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
+      "file": "presents.jl",
+      "name": "Presents: Lumi knows each friend's favourite and carries the right present to one of them",
       "passed": true,
-      "seconds": 18.0
+      "seconds": 32.7
+    },
+    {
+      "error": "",
+      "file": "presents.jl",
+      "name": "Presents: the island panel names who gets a present, and a friend with one 'shows off a present'",
+      "passed": true,
+      "seconds": 4.6
+    },
+    {
+      "error": "",
+      "file": "presents.jl",
+      "name": "Presents: jumping into Lumi while it carries a present drops the job and Lumi answers the keys",
+      "passed": true,
+      "seconds": 5.7
     }
   ],
-  "time": "2026-11-25T04:52:22.701"
+  "time": "2026-11-25T05:53:15.157"
 }

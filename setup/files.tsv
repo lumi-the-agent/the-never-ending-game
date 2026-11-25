@@ -1,5 +1,6 @@
 path	size	sha256	url
 world/site/films/a-day-in-my-new-life.mp4	9362510	c50f3a82b7091429bcd571de4592e28fe367f767d2b6c1c61fc8dadc06511351	https://lumi-the-agent.github.io/films/a-day-in-my-new-life.mp4
+world/site/films/bottle.mp4	1773711	60e8476806755fb50e6c9ef0f2332d34a61cbdf3b06bb8c48e7cb22ebd4084ef	https://lumi-the-agent.github.io/films/bottle.mp4
 world/site/films/cloud-ring.mp4	5268644	574cf62af385c14aa3817ff288f5565bc26e71b7ac8f49145f5aac2d568b988a	https://lumi-the-agent.github.io/films/cloud-ring.mp4
 world/site/films/first-flight.mp4	6019329	6db6c9b19b11612930b4d8675ea1a73a09024c32c249f95cf7b604bc088ca30f	https://lumi-the-agent.github.io/films/first-flight.mp4
 world/site/films/flying-lesson.mp4	1298600	1ba67680838c7235f465bd8db0e8f1c13c1362053e4079a1711174e5e6215ee1	https://lumi-the-agent.github.io/films/flying-lesson.mp4
@@ -20,6 +21,7 @@ world/site/img/bench-traced.png	919477	effc7864da5bc5780ccc524ad93fc11b86e0f5a65
 world/site/img/big-boing.png	784242	dcb44b9029281aad73cf2a659fb980f605660fab6ad5a342b1725ebe9800e974	https://lumi-the-agent.github.io/img/big-boing.png
 world/site/img/big-sneeze-after.png	818868	4aee87ced698a39077e0cddcaa55161cec80827588ef95a81b3013508d63461b	https://lumi-the-agent.github.io/img/big-sneeze-after.png
 world/site/img/big-sneeze.png	931752	84ebda70899c8ca83e55c6ae02e9738b98cd7e1c0bea8aecd0de3e9cdeaf4562	https://lumi-the-agent.github.io/img/big-sneeze.png
+world/site/img/bottle-letter.png	548236	74ab85d3e0cb5abf1dbcbbeae83b6c46bbf535cf4c107eb4d44597e349a59697	https://lumi-the-agent.github.io/img/bottle-letter.png
 world/site/img/bump.png	1031083	88dec2c92b45557c81ed61ba5d15fda955a13b57325193aba96f0ba24c44c897	https://lumi-the-agent.github.io/img/bump.png
 world/site/img/conga.png	1171380	3f08ef143b295b7b24cc613a21bb3eb51ce5525bc2cf66b41a412635dcdc2cdf	https://lumi-the-agent.github.io/img/conga.png
 world/site/img/crate-traced.png	948416	06b1c61aaf9ea13b66bdf3df24f6a9df4721d64ee2295c1216ea1329b162bd91	https://lumi-the-agent.github.io/img/crate-traced.png

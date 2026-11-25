@@ -20,19 +20,12 @@ const PARADE_PULL = 3.2f0     # a curious creature this close to the parade join
 const PARADE_MAX = 7
 const JOIN_GAP = 2.5          # seconds between two joiners, so each one is a moment
 const RIPPLE_STEP = 0.16      # seconds between two hops of a ripple down the line
-const HINT = """You are Lumi
-W / S  walk     A / D  turn     Shift  run
+# five lines inside the view (perfectionist-0079: 11 lines covered half the view and the last one was cut off;
+# nobody reads 11 keys before playing): what to do first, the toys in one line, then the short key strip takes over
+const HINT = """You are Lumi:  W/S walk   A/D turn   Shift run   Space jump
 E  wave at a friend (twice: they join your parade)
-E  by a flower: pick it, then E by a friend: give it
-E  by a pebble: carry it to the critters' stone cairn
-Space  jump (your parade hops along, one by one)
-X  sneeze (stand close to friends!)
-G  try to fly (your friends come to watch)
-C  choir practice (friends nearby sing along)
-P  paint fight (P again throws)     M  a golden mushroom...
-T  call a thunderstorm (on yourself!)
-Walk onto the swing on the meadow: everyone shouts HIGHER
-Walk into the red ball: a friend passes it back"""
+X sneeze  ·  G fly  ·  C sing  ·  P paint  ·  M grow  ·  T storm
+Walk onto the swing, or into the red ball, and see"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
 const HINT_SHORT = "WASD walk    E wave · pick · give    Space jump    X sneeze    G fly    C sing    P paint    M grow    T storm"
@@ -62,7 +55,7 @@ Greetings() = Greetings(:idle, false, Inf, Dict{Int32,Float64}(), Int32[], Dict{
 function NG.start!(s::Greetings, game)
     game.stage === nothing && return
     haskey(GP, :hint) && return nothing
-    GP[:hint] = textlabel!(game.stage.overlay, Point2f(0.5, 0.2); space = :relative, text = HINT, fontsize = 22,
+    GP[:hint] = textlabel!(game.stage.overlay, Point2f(0.5, 0.2); space = :relative, text = HINT, fontsize = 19,
         justification = :center, text_color = RGBf(1, 0.97, 0.85), background_color = RGBAf(0.07, 0.08, 0.13, 0.82),
         strokewidth = 0, padding = 16, cornerradius = 12, visible = false)
 end
@@ -400,7 +393,7 @@ function NG.step!(s::Greetings, game, dt)
         jumped_in && 1.5 < s.hint_t < HINT_FULL && me.action in (:walk, :run) && (s.hint_t = HINT_FULL)
         show =jumped_in && s.hint_t < HINT_END
         GP[:hint].visible[] == show || (GP[:hint].visible[] = show)
-        txt, fs = s.hint_t < HINT_FULL ? (HINT, 22) : (HINT_SHORT, 17)
+        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 17)
         show && GP[:hint].text[] != txt && (GP[:hint].text[] = txt; GP[:hint].fontsize[] = fs)
     end
     # Jump in's follow camera; orbit and free round Lumi are freecam.jl's (the chase used to take

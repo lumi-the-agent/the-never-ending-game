@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s79-grove.png and s79-grove2.png (pink crowns, pink floor visible); media/s78/views2/overview.png (pink only in the crowns)",
+      "severity": "low",
+      "suggestion": "Take a fresh overview after the s79 changes and check the floor from there. Widen the pink floor, or make the shrubs larger, so the grove shows from the default camera.",
+      "what": "The grove reads clearly only from high up or close. From the default overview angle (the s78 image, from before the crown refill) it is a handful of small pink crowns and the pink floor barely shows. The clay shrubs with big flowers are not noticeable in my shots. The todo's own condition, that the overview shows a new region, is only partly met.",
+      "where": "plugins/blossom.jl, meadow.jl BLOSSOM_GROUND"
+    },
+    {
+      "evidence": "reviews/motion/session-0079/swing-strip.jpg",
+      "severity": "low",
+      "suggestion": "Frame closer on the seat and the launch.",
+      "what": "The swing film is framed wide: the swing and rider are small and near the edge, with a sheep in the foreground. The traced flight still missed the same way.",
+      "where": "site/films/swing.mp4"
+    },
+    {
+      "evidence": "journal s79",
+      "severity": "low",
+      "suggestion": "Re-run and check that it stays near 20 s.",
+      "what": "The jump-in camera-menu test took 113 s once and 18 s alone. A busy sandbox is the author's explanation; I did not reproduce either run.",
+      "where": "tests/minigames.jl"
+    }
+  ],
+  "summary": "My own sandbox screenshots confirm the blossom grove: four solid pink clay crowns on a petal-pink floor with petals, readable from an overview-style camera. The swing is a real, funny new event (film shows the pig looping over and flying off). The remaining weakness is that both are small, and the swing sits far from the main view.",
+  "superseded_by": "perfectionist-0079.json",
+  "surprise": 6,
+  "surprise_why": "A swing that really loops over the top and launches its rider, playable by the player, plus a pink spring grove, is a nice twist but still a modest corner of the island.",
+  "verdict": "pass"
+}
