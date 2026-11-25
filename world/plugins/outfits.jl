@@ -7,7 +7,7 @@ const NG = NeverendingGame
 
 isdefined(Main, :OUTFIT_PLOTS) || Core.eval(Main, :(const OUTFIT_PLOTS = Dict{Symbol,Any}()))
 const OP = Main.OUTFIT_PLOTS
-const OUTFIT_VERSION = 17
+const OUTFIT_VERSION = 18
 
 "A piece of an outfit: `shape` at `off` (metres, in the anchor part's frame), size `scale`, turned by `tilt`."
 struct Piece
@@ -73,8 +73,9 @@ const OUTFITS = Dict(
     "Pickles"        => Outfit(:head, (-0.1, 0, 0.95), beanie((0.36, 0.68, 0.3), (0.98, 0.97, 0.95))),   # (s87: the scarf cut through the plush pig's head)
     "Cumulus"        => Outfit(:puff_top, (0.3, 0, 0.9), beanie((0.3, 0.52, 0.92), (0.98, 0.97, 0.95))),
     "Marshmallow"    => Outfit(:puff_top, (0.35, 0, 0.9), bow((0.98, 0.45, 0.62); s = 1.5)),
-    "Pinchy"         => Outfit(:body, (-0.35, 0, 1.0), party_hat((0.25, 0.7, 0.85), (1.0, 0.85, 0.3))),
-    "Hopscotch"      => Outfit(:body, (-0.2, 0, 0.95), cap((1.0, 0.82, 0.3), (0.3, 0.5, 0.9))),
+    # the crabs' cut body (s85) is in metres: the shell top is 0.65 m up behind the eye stalks (profiled s89; at 1.0 the hats floated)
+    "Pinchy"         => Outfit(:body, (-0.1, 0, 0.63), party_hat((0.25, 0.7, 0.85), (1.0, 0.85, 0.3))),
+    "Hopscotch"      => Outfit(:body, (-0.12, 0, 0.62), cap((1.0, 0.82, 0.3), (0.3, 0.5, 0.9))),
     "Gloop"          => Outfit(:body, (-0.08, 0, 0.97), flower_crown(0.15)),
     "Wibbles"        => Outfit(:body, (0.1, 0.55, 0.8), bow((0.98, 0.58, 0.2); s = 1.5)),
 )
@@ -169,7 +170,35 @@ sculpted(c) = (sp = NG.species_of(c); !isempty(sp.parts) && sp.parts[1].shape in
 
 "What `c` wears: its own outfit and its species' face details."
 mixed_up(c) = isdefined(Main, :MIXUP) && haskey(get(Main.MIXUP, :was, Dict{Int32,String}()), c.id)   # (s88: in someone else's body, hats off)
-wears(c) = mixed_up(c) ? Outfit[] : (o = get(OUTFITS, c.name, nothing); x = sculpted(c) ? Outfit[] : get(EXTRAS, c.species, Outfit[]); o === nothing ? x : [o; x])
+"""
+The talking mouth of a made-over body (s89, #484): the pig's and sheep's mouths hung on :head/:face, which the new
+bodies lack, so no pig or sheep opened its mouth from s74 on. It goes on the front of :body at `MOUTH_ON_BODY` of
+the body's top (profiled: the pig's chin under the snout, the sheep's under its nose), one per species, kept.
+"""
+const MOUTH_ON_BODY = Dict("Snootle" => 0.37f0, "Fluffkin" => 0.6f0)   # (pig: the snout starts at 0.40; sheep: the dark face 0.6-0.8)
+function body_mouth(c)
+    sp = NG.species_of(c)
+    zf = get(MOUTH_ON_BODY, sp.name, nothing)
+    zf === nothing && return nothing
+    get!(get!(() -> Dict{String,Any}(), OP, :mouths), sp.name) do
+        any(p -> p.name in (:head, :face), sp.parts) && return nothing
+        j = findfirst(p -> p.name === :body, sp.parts); j === nothing && return nothing
+        pt = sp.parts[j]; sc = Vec3f(pt.scale...)
+        cs = [sc .* Vec3f(v...) for v in GeometryBasics.coordinates(NG.shape(pt.shape))]
+        z0 = zf * maximum(q -> q[3], cs)
+        front = maximum((q[1] for q in cs if abs(q[2]) < 0.04f0 && abs(q[3] - z0) < 0.015f0); init = 0f0)
+        m = first(p for o in EXTRAS[sp.name] for p in o.pieces if p.show === :talk)
+        Outfit(:body, (front - 0.01f0, 0f0, z0), [m]; size = 1.0)
+    end
+end
+function wears(c)
+    mixed_up(c) && return Outfit[]
+    o = get(OUTFITS, c.name, nothing)
+    x = sculpted(c) ? Outfit[] : get(EXTRAS, c.species, Outfit[])
+    m = body_mouth(c)
+    m === nothing || (x = [x; m])
+    return o === nothing ? x : [o; x]
+end
 
 # ── drawing ─────────────────────────────────────────────────────────────────
 struct Outfits <: System end
@@ -196,6 +225,7 @@ function build_outfits!(game)
 end
 
 function NG.start!(::Outfits, game)
+    delete!(OP, :mouths)                 # (made from the EXTRAS of the last load)
     game.stage === nothing && return
     get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene, objectid(OUTFITS)) || build_outfits!(game)
     foreach(p -> p.visible[] = true, values(OP[:plots]))

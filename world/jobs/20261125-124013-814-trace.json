@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T12:40:13.817",
+  "finished": "2026-11-25T12:45:07.079",
+  "id": "20261125-124013-814-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      -4.9,
+      6.5,
+      4.0665827
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s89/pond-traced.png",
+    "samples": 64,
+    "size": [
+      960,
+      540
+    ],
+    "target": [
+      -5.5,
+      10.9,
+      1.8665826
+    ]
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s89/pond-traced.png"
+  },
+  "seconds": 279.5,
+  "started": "2026-11-25T12:40:27.311",
+  "status": "done"
+}

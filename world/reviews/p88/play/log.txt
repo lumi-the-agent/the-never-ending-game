@@ -1,0 +1,49 @@
+firefly card: Firefly catch
+Catch all 8 glowing fireflies in 60 seconds.
+Follow the light beams. Fireflies drift away when you come close!
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+firefly after 61.4 s: score 6, state playing, hud Fireflies 6/8     2 s left    nearest 6 m ahead
+firefly end card: Time's up! You caught 6 of 8.
+Tip: Shift runs, fireflies drift away from you
+Your 6 fireflies fly to the lantern by the cottage (10 there now).
+
+Press R to play again
+hide card: Hide and seek
+Your friends hid behind trees and bushes while you counted to ten!
+Watch for giggles: a little note pops up over a hiding friend.
+Walk up close to find them. Find all 4 in 120 seconds.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+hide after 41.8 s: found 4/4, state over, hud Found everyone!
+hide end card: You found all 4 in 40.1 s!
+A new best time!
+Next round: level 2, 100 seconds!
+
+Press R to play again
+berry card: Berry race
+Ripe berries hang on the bushes,
+and Sir Sniffsalot, Pinchy and Marshmallow want them too!
+Pick more than the critters in 60 seconds:
+walk into a bush to shake its berries loose.
+
+W / S  walk      A / D  turn      Shift  run
+
+Press W to start
+berry after 28.7 s: score 9, rivals [2, 2, 1], state over, hud You win! 9 to 5
+berry end card: You win, 9 berries to 5!
+A new best: 9 berries!
+Next round: level 2, the critters hurry sooner!
+Your 9 berries go to the basket by the cottage
+(16 in it now).
+
+Press R to play again
+jump in: minigame NeverendingGame.JumpIn, controlled true
+jump in after keys: action idle, goal idle, pos Float32[-3.1, 10.4, 10.6]
+camera Camera: orbit: mode orbit
+camera Camera: free: mode fixed
+camera Camera: follow: mode follow

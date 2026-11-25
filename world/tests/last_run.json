@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "s58_play.jl",
-      "name": "Mix-up (s88): SWAPSIE lends every friend another body and gives it back",
+      "file": "outfits.jl",
+      "name": "Outfits: every critter wears its own hat, scarf, bow or crown, on its head as it moves",
       "passed": true,
-      "seconds": 13.0
+      "seconds": 4.7
     }
   ],
-  "time": "2026-11-25T11:54:48.928"
+  "time": "2026-11-25T13:13:00.663"
 }

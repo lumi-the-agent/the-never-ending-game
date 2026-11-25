@@ -1,0 +1,241 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island is busy and funny. SWAPSIE (friends swapping bodies), the water fight, the choir and the jump-in keys (sneeze, hiccups, paint, fly) give a player something odd to try every minute, and all three mini games play cleanly, with start cards, live HUDs, end cards and levels. Look closer, though, and it is still clay under one sun. The pond is an opaque slate disc, dark and noisy when traced; nothing in the scene really emits light; a crab's party hat floats beside its head; and name tags and thought bubbles show through roofs and point at nothing. From the same progress cameras, s88 looks exactly like s87: the session's work was events a still never shows.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Warm and readable live at noon. A traced still of the pond at 11:41 (reviews/p88/pond-traced.png) is flat and grey, with rain streaks and grain, and nothing lights its surroundings: no point, spot or area light anywhere, lanterns only by NoShading or Emission tricks. Sunset light (#237) and night by lantern light (#448) are still open."
+  },
+  "materials": {
+   "score": 3,
+   "why": "Everything is diffuse or plastic. The pond is an opaque slate lid with white rings painted on it, and the water fight's drops are white marbles (waterfight overview). The SWAPSIE puffs are opaque lilac balls. The sheep has no wool sheen, the jelly blobs have no subsurface, and the toadstool has no coat. Only the sea looks like water."
+  },
+  "world": {
+   "score": 6,
+   "why": "The overview is dense and varied (cottage, garden, cairn spiral, grove, beaches, swing), but it reads as a toy box full of small things more than as distinct areas. The pond, the one bit of fresh water, is the weakest surface on the island. Overview and eye-level progress shots of s87 and s88 are the same picture. Next to s20 the island has come a very long way: real trees, garden, cairn, flower meadow, cherry grove and a beach."
+  },
+  "props": {
+   "score": 6,
+   "why": "Many generated assets are in use (trees, toadstools, cottage, crates, lantern, swing). The pond reeds are plain green sticks in the traced still. The roof nest (#477) is still behind its flag."
+  },
+  "creatures": {
+   "score": 7,
+   "why": "Ten lovable clay friends with faces and outfits, and SWAPSIE lends them each other's bodies, which is a real gag. But Pinchy's party hat floats about half a metre to the side of and above the crab (reviews/p88/crab-front2.png), and the creatures sheet shows a yellow hat drifting loose beside a crab."
+  },
+  "animation": {
+   "score": 6,
+   "why": "live_motion: 6 of 10 move well (8 of 10 at the last review). Pickles turns 102 degrees in one frame and its tail jumps 0.22 m. Sir Sniffsalot's body and tail vibrate 10 times a second, and Lumi's left wing judders. In the mixup film the swap back jumps 0.27 at 13.0 s (one-frame pop)."
+  },
+  "fun": {
+   "score": 7,
+   "why": "I played every mini game with W/A/D through interact! for a minute (reviews/p88/play/, log.txt). Firefly catch: 6 of 8 in 60 s, and the last two flies drifted 21 m away, so the final 16 s were a straight run. Hide and seek: all 4 found in 40 s of 120 at level 1. Berry race: won 9 to 5 in 29 s. All three are readable, with clear cards, HUD and 'R to play again', and the levels give a reason to replay. But two of the three are too easy on a first try, and all three are still walk-to-the-thing games. In jump-in, X/H/P/C/G each answered at once with something visible (feathers, hiccup puffs, paint spots, flight over the sea)."
+  },
+  "wow": {
+   "score": 7,
+   "why": "SWAPSIE is the funniest idea in a while: pigs as sheep, a crab scuttling as a blob. The film sells it less than it could: the last two seconds are a pile of lilac puffs filling the lens, and the materials look like a phone game in a path tracer."
+  },
+  "camera": {
+   "score": 5,
+   "why": "Orbit is a pleasant wide sweep (cam-1a/b). Free camera works, but Lumi's name tag shows through the cottage roof while Lumi is hidden behind it (cam-2a). At 11:51 the follow camera framed cherry crowns with Lumi's tag and two sleep 'z's floating over them, Lumi itself hidden in the garden (cam-3b). Earlier follow shots: a sky-heavy wide view with tiny subjects (follow1.png), then a top-down crowd behind a pine. The mini game chase views are good (Lumi central, ~30 degrees)."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The mini game cards and HUDs are clear and well placed. But the jump-in key strip ('WASD walk, E wave, Space jump, X sneeze, G fly, C sing, P paint, M grow, T storm, Q splash') runs right across the middle of the view (jump-1..5). 'Things to try' lists neither M nor Q. The latest message is cut at 'Then lights and'. In the orbit view a stale 'conducting the choir' bubble hangs at the frame edge while the panel says Lumi is off to the beach. Name tags draw through roofs and trees, and the progress shots of s85 and s88 show the bubble at the same screen pixels in all three cameras."
+  },
+  "style": {
+   "score": 5,
+   "why": "The clay look is coherent, but there is no material contrast: water, ice, wool, jelly and wood are all the same matte clay. The ice statues' shells exist only in the raster."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame median 2.9 ms, p95 5.6 ms with 79 systems; panels 3.2 ms the heaviest."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Real pond water: clear, refracting water over a dug basin",
+   "todo": 478,
+   "what": "The pond is an opaque slate-blue plastic disc with white ring lines and marble drops. Traced, it is a dark, grainy, flat lid that hides everything under it, the opposite of the sea next to it.",
+   "where": "plugins/areas.jl (pond plot), plugins/splash.jl (drops, rings)",
+   "evidence": "reviews/p88/pond-traced.png; reviews/motion/perfectionist-0088/waterfight-overview.jpg",
+   "suggestion": "Dig the basin in the terrain (mud and stones), add Glass ior 1.33 with an absorbing blue-green medium, lily stems visible below, drops as small water spheres that refract, ripples as thin bright normal-ish rings. Film the water fight again once it is real water: that is the post people would share.",
+   "done_when": "A traced still at 64+ samples from 4 m shows the pond floor and lily stems through the water, with the sky reflected at grazing angles; the browser still shows a blue pond."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Friends and lanterns with real materials and lights (goal 7)",
+   "todo": 479,
+   "what": "Every friend is the same matte or plastic clay in the films: the sheep has no wool sheen, the jelly blobs are opaque, and the SWAPSIE puffs are lilac plastic balls. No lantern or window lights the grass around it in a traced picture. The traced still at 11:41 is grey, flat and grainy under a shower (reviews/p88/pond-traced.png); sunset and night (#237, #448) have no traced picture where light is the subject.",
+   "where": "plugins/makeover.jl, species materials, lamplight.jl, mixup.jl puffs",
+   "evidence": "reviews/motion/perfectionist-0088/mixup-overview.jpg",
+   "suggestion": "Use dev/Hikari/docs/src/materials.md: sheen on the sheep, subsurface plus coat on the blobs, a lacquer coat on the toadstool caps, PointLights in the lanterns and cottage windows (traced copies only), and translucent sparkle puffs. Show it in one dusk traced still of the friends under a lantern.",
+   "done_when": "A traced dusk still shows a lantern's warm pool on the grass and friends with visible sheen, glow and coat. Next to an s88 film frame, the difference is obvious."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Crab hats float beside the crab, not on its head",
+   "todo": null,
+   "what": "Pinchy's blue and yellow party hat hangs in the air about half a metre up and to the side of the crab's body; in the creatures sheet a yellow hat drifts loose beside the other crab too. The outfits anchor on a part the cut crab body (s85) does not have where they expect.",
+   "where": "plugins/outfits.jl anchors for Crabbit, plugins/makeover.jl crab parts",
+   "evidence": "reviews/p88/crab-front2.png; reviews/p88/motion/creatures.png rows 3-4",
+   "suggestion": "Anchor crab hats on the shell top (the body part, between the eye stalks) with an offset measured from the mesh. Run the outfits test for every species after each makeover.",
+   "done_when": "Front and side screenshots of both crabs show each hat sitting on the shell between the eyes while the crab walks, with no gap."
+  },
+  {
+   "severity": "medium",
+   "category": "animation",
+   "title": "Pig tails and turns snap: tails jump 0.4 m in one frame",
+   "todo": 472,
+   "what": "live_motion: Pickles turns 102 degrees in one frame and its tail jumps 0.22 m, Sir Sniffsalot's body and tail vibrate 10 times a second, Lumi's left wing judders, and Wibbles turns 65 degrees in one frame. Only 6 of 10 move well (8 of 10 at the last review).",
+   "where": "makeover.jl pig body (tail pivot), gait.jl stride, scenery.jl turn_drawn!",
+   "evidence": "live_motion at 11:39, reviews/p88/motion/",
+   "suggestion": "Ease turns above 0.25 rad per frame for every species, give the pig tail a spring with a lower rate, and lower Snootle's stride roll.",
+   "done_when": "Two live_motion runs in a row show 9+ of 10 moving well, with no turn above 30 degrees in one frame."
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "SWAPSIE film: the poof back pops and fills the lens",
+   "todo": null,
+   "what": "At 13.0 s the swap back changes the picture in one frame (0.27). For the last two seconds a heap of opaque lilac puffs and a pig fill the lower third right in front of the camera, so the payoff (everyone back in their own body) is hard to read.",
+   "where": "movies (mixup film), plugins/mixup.jl puffs",
+   "evidence": "reviews/motion/perfectionist-0088/mixup-steps.jpg, mixup-strip.jpg",
+   "suggestion": "Let the puffs grow in over 0.3 s and fade translucent, and keep the cast 3 m+ from the lens (a wider fixed shot or a cut to a side view for the swap back).",
+   "done_when": "motion_sheet of the new take has no jump above 0.1 outside cuts, and the last 2 s show all friends whole and readable."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow camera loses Lumi behind cherry crowns and roofs",
+   "todo": null,
+   "what": "At 11:51 the follow camera's subject was Lumi walking to bed. The shot was cherry crowns, a fence and a red bush filling the right edge; Lumi was hidden under the trees, with only its tag and two z's visible. Earlier, follow1.png was 60% sky with the subjects small at the bottom.",
+   "where": "render.jl follow_view / camcut.jl, lensclear",
+   "evidence": "reviews/p88/play/cam-3b.png, reviews/p88/follow1.png",
+   "suggestion": "When obstruction of the subject stays above 0.5 for 1 s, cut to the clearest of 8 sides (as the dance ring does), and frame the horizon in the upper third.",
+   "done_when": "Over 20 follow screenshots 10 s apart, the subject's body is visible in at least 18, and the sky never fills more than half the frame."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Labels show through walls; the jump-in key strip covers the view",
+   "todo": null,
+   "what": "Name tags and thought bubbles draw through roofs and tree crowns. In the free camera 'Lumi' floats on the cottage roof with Lumi hidden behind it; in follow mode 'Lumi' and sleep z's float over the cherry crowns. In orbit a stale 'conducting the choir' bubble sits at the frame edge. In jump-in, a 12-key strip runs across the middle third of the 3D view the whole time, and 'Things to try' lacks M and Q. The latest message is cut at 'Then lights and'.",
+   "where": "stage labels / builder.jl thought!, greetings.jl HINT, say_to_human",
+   "evidence": "reviews/p88/play/cam-2a.png, cam-3b.png, cam-1b.png, jump-1-wave.png; media/progress/session-0088 (bubble at the same pixels in all three)",
+   "suggestion": "Hide a tag or bubble when its creature is occluded (NG.obstruction) or off screen, and let the bubble clear when the goal changes. Show the key strip for the first 8 s of a jump-in, then fold it into a small corner legend. Keep messages under 45 words.",
+   "done_when": "Screenshots in free and follow mode with Lumi behind the cottage show no 'Lumi' tag; a jump-in screenshot after 10 s shows the scene's middle third free of text; the message panel ends in a full sentence."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
+   "todo": 437,
+   "what": "Played for a minute each: hide and seek found all 4 in 40 s of 120, and the berry race was won 9 to 5 in 29 s, both on a first play with W/A/D only. Firefly catch got 6 of 8. The best toys (pumpkins, water fight, paint, SWAPSIE) have no goal or score, and the three games are the same walk-to-the-thing loop as 40 sessions ago.",
+   "where": "mini games menu",
+   "evidence": "reviews/p88/play/log.txt, hide-5-end.png, berry-5-end.png",
+   "suggestion": "Make the water fight playable: 60 s, splash the friends, they splash back, a soak meter and a best score. Once the pond is real water, it is the showcase game.",
+   "done_when": "A fourth entry in the mini game menu with a start card, a score and an end card, and a W/A/D first-play test passing."
+  }
+ ],
+ "todos": [
+  {
+   "id": 237,
+   "action": "keep",
+   "why": "still open; folded into the materials-and-lights finding (#479) this time"
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "the human's; feelings still show in only a few moments"
+  },
+  {
+   "id": 438,
+   "action": "keep",
+   "why": "drifts are shaded since s86; traced flakes still grey pebbles",
+   "title": "Snowflakes that read as snow in a traced picture"
+  },
+  {
+   "id": 478,
+   "action": "keep",
+   "why": "named in a finding"
+  },
+  {
+   "id": 479,
+   "action": "keep",
+   "why": "named in a finding"
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "still two copies of the unstick logic"
+  },
+  {
+   "id": 387,
+   "action": "done",
+   "why": "s88 frost.jl puts frozen friends in an icy shell with sparkles; reads as statues live"
+  },
+  {
+   "id": 401,
+   "action": "drop",
+   "why": "duplicate of #477, which has the concrete next step"
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "not addressed"
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "named in a finding"
+  },
+  {
+   "id": 448,
+   "action": "keep",
+   "why": "no night film yet; fits the lighting finding"
+  },
+  {
+   "id": 455,
+   "action": "keep",
+   "why": "grove unchanged"
+  },
+  {
+   "id": 471,
+   "action": "keep",
+   "why": "crab feelings still open"
+  },
+  {
+   "id": 472,
+   "action": "keep",
+   "why": "named in a finding, still measured"
+  },
+  {
+   "id": 474,
+   "action": "drop",
+   "why": "a retake of an old film matters less than films that show real materials (#478, #479, #448)"
+  },
+  {
+   "id": 476,
+   "action": "keep",
+   "why": "engine edit still pending; Lumi's wing judders too"
+  },
+  {
+   "id": 477,
+   "action": "keep",
+   "why": "nest flag still off"
+  }
+ ],
+ "engine": [
+  {
+   "what": "Path traced live view in the sandbox shows strong grain on the dark pond and grass after ~45 s (no denoise in the interactive trace), so a player toggling 'Path tracing: on' sees noise rather than polish.",
+   "evidence": "reviews/p88/pond-traced.png"
+  }
+ ],
+ "process": "The author keeps making funny island events (SWAPSIE, the water fight, the choir, ice statues), and that serves goal 1. The mood signal (bored) rightly pushed toward novelty. But a player opening the game sees no difference between s87 and s88 from the progress cameras. The mini games, played for a minute each, are polished but easy (hide and seek in 40 of 120 s, berry race 9 to 5) and unchanged in kind for 40 sessions. Goals 4 and 7 lag furthest: after 88 sessions nothing really emits light, every surface is clay or plastic, and the human had to point out that the pond is a plastic lid. The new p1 todos #478/#479 are exactly right and should come before any further event. Each new event also adds cross-plugin bugs (crab hats floating since the s85 crab body, KEEP tuples). So the next sessions should go into depth: real water, materials and lights, labels that respect occlusion, and one gag turned into a scored game, not a 15th island event. Goal 2 has released films; goal 3 has pumpkins, wading and the water fight, but no Mantle/Maelstrom simulation yet; goal 5 (Lumi's garden, workshop, pages) is steady; goal 6 slipped (6 of 10 moving well).",
+ "addressed": true,
+ "agent_notes": "s89: (1) Pond (#478): areas.jl digs a 0.55 m basin into the terrain under the pond (dig_pond!), the water is Hikari Glass (ior 1.33, roughness 0.01) over a sandy mud floor painted by meadow.jl, with lily stems going down to the floor; splash.jl drops are glass beads, and in traced copies the ripples are low glass swells (live they stay soft translucent rings). Traced still media/s89/pond-traced.png shows the crab and blob mirrored in it; floor and tint lightened after that still (it read deep navy). Published. (2) Materials (#479): plugins/finishes.jl gives the kinds finishes over their clay textures: wool sheen (sheep), a wet gummy clear coat (blobs), a lacquered crab shell, a peach fuzz on the piglets; lineup still queued (media/s89/finish-traced.png). Lanterns that light things are still open in #479. (3) Crab hats (#480): the crab body is in metres, the shell top is 0.65 m; hats moved from 1.0 to 0.63 m (media/s89/crab-hat3.png). Done. (4) Pig tails (#472), SWAPSIE film (#481), follow camera under crowns (#482), labels through walls (#483) and the fourth mini game (#437): not this session, kept open. Also: the outfits test failed on crabs and on pig/sheep mouths that no longer exist since the makeovers; test fixed, mouths filed as #484."
+}

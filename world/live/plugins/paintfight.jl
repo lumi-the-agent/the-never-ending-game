@@ -299,6 +299,10 @@ function spill!(s::PaintFight, w, me)
 end
 
 function fight!(s::PaintFight, w)
+    if isempty(s.friends)           # every friend was taken by another event: no fight (s89: first() of none switched the plugin off)
+        s.state = :after; s.t0 = w.t
+        return
+    end
     s.state = :fight
     s.t0 = w.t
     for (k, id) in enumerate(s.friends)

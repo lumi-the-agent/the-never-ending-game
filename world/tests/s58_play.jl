@@ -158,3 +158,33 @@ uitest("Mix-up (s88): SWAPSIE lends every friend another body and gives it back"
     back = all(c -> c.species == before[c.id], w.creatures)
     check(swapped >= 3 && back && me.species == "Lumi", "swapped $(swapped) (want >= 3), all back $(back), Lumi $(me.species)")
 end
+
+uitest("Cannonball contest (s89): Lumi's big one gets a TEN, then everybody jumps into the pond at once") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    SPd = Main.SPLASH; s = SPd[:sys]
+    s.state === :idle || return check(false, "a contest was already running ($(s.state))")
+    for c in w.creatures
+        c.controlled = false
+        c.action === :sleep && (c.action = :idle)
+        c.goal = XP.Goal(:idle, c.pos, :idle, 20.0, w.t + 20, true, 0, false)
+    end
+    SPd[:t_gather] = 1.5
+    ok = Base.invokelatest(SPd[:start])
+    check(ok, "the contest did not start")
+    n = length(s.crew) + length(s.judges)
+    t1 = w.t; said = Set{String}(); shot = false
+    while s.state !== :idle && w.t - t1 < 60
+        wait_seconds(game, 0.25)
+        foreach(b -> push!(said, string(b.text)), w.speech)
+        if !shot && any(x -> x[2] === :allin, SPd[:log]) && length(get(SPd, :allin_landed, Set())) > 0
+            screenshot(game, "s89_everybody_in"); shot = true
+        end
+    end
+    delete!(SPd, :t_gather)
+    log = SPd[:log]
+    k = findfirst(x -> x[2] === :allin, log)
+    after = k === nothing ? 0 : count(x -> x[2] === :splash, log[k:end])
+    check(k !== nothing && after >= n - 1 && "TEN!!" in said && s.state === :idle,
+          "everybody in: $(k === nothing ? "never called" : "$(after) splashes after the call") for $(n) in the contest, TEN said $("TEN!!" in said), state $(s.state)")
+end

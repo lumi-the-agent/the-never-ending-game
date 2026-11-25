@@ -64,6 +64,14 @@ function setup_post!(g, post)
         c.name in cast && continue
         c.pos = NG.ground(w.island, (-14f0 + 0.8f0 * (c.id % 6), -12f0)); c.controlled = true; c.goal = NG.Goal()
     end
+    if post == "finish"           # s89: the kinds side by side in their finishes (wool sheen, gummy coat, lacquer, fuzz)
+        x0, y0 = open_meadow(w)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        for (i, n) in enumerate(("Cumulus", "Gloop", "Lumi", "Pinchy", "Truffle"))
+            pose!(w, by_name(w, n), (x0 + 1.3f0 * (i - 3), y0 + (i == 3 ? 0.4f0 : 0f0)), -pi / 2, :idle; phase = 0.2f0 * i)
+        end
+        return Point3f(x0 + 0.6f0, y0 - 5.4f0, z0 + 1.8f0), Point3f(x0, y0, z0 + 0.5f0)
+    end
     if post == "visit"            # Lumi and Gloop sit side by side at the end of the pier, looking at the sea
         ar = g.plugins["areas"].mod
         s0 = ar.PIER_START + ar.PIER_DIR * (ar.PIER_LEN - 1.2f0)
@@ -352,6 +360,10 @@ function post_still(path; post = "visit", size = (1280, 720), samples = 256, hou
     NG.sync!(g.stage, w); NG.sync_actors!(g)
     foreach(p -> (p.visible[] = false), g.stage.overlay.plots)
     NG.sync_sun!(g.stage, w)
+    if haskey(g.plugins, "finishes")            # the finishes go on the herds sync! just built (s89)
+        Main.FINISHES[:next] = -Inf
+        Base.invokelatest(NG.step!, only(g.plugins["finishes"].systems), g, 0.0)
+    end
     rig = NG.CameraRig(; mode = :fixed); rig.eye = eye; rig.target = target
     NG.update_camera!(rig, w, scene, 0.0; snap = true)
     post == "thought" && Base.invokelatest(think_aloud!, g)   # the plugins are newer than this call

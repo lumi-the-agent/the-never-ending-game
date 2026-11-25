@@ -6,7 +6,7 @@
 isdefined(Main, :AREA_PLOTS) || Core.eval(Main, :(const AREA_PLOTS = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
-const AREA_VERSION = 4          # bump when the look changes: the plots are rebuilt
+const AREA_VERSION = 9          # bump when the look changes: the plots are rebuilt
 const POND = Point2f(-5.5, 10.5)
 const POND_R = 2.3f0
 const PIER_START = Point2f(-1.53, 17.39)       # on the beach where the ground is at deck height
@@ -88,6 +88,38 @@ function pond_mesh(level, r; n = 48)
     return GeometryBasics.Mesh(pts, fs; normal = fill(Vec3f(0, 0, 1), length(pts)))
 end
 
+
+const POND_DEPTH = 0.55f0     # m: how deep the dug pond is in the middle (s89)
+
+"""
+Dig the pond's basin into the drawn terrain (s89): inside the pond the terrain plot's points sink to a bowl
+POND_DEPTH deep, so clear water has a floor to show. Only the picture: creatures still wade on the old ground
+(splash.jl's walkway), up to their middles. meadow.jl paints the floor (Main.AREA_PLOTS[:pond]).
+"""
+function dig_pond!(scene, w, level)
+    i = findfirst(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :terrain, scene.plots)
+    i === nothing && return
+    m, _ = NG.terrain_mesh(w.island)
+    pts = collect(GeometryBasics.coordinates(m)); fs = GeometryBasics.faces(m)
+    for (k, q) in enumerate(pts)
+        dx = q[1] - POND[1]; dy = q[2] - POND[2]
+        rr = POND_R * pond_shape(atan(dy, dx))
+        u = hypot(dx, dy) / rr
+        u < 1.08f0 || continue
+        bowl = level - 0.06f0 - POND_DEPTH * max(0f0, 1 - u^2)^0.6f0
+        pts[k] = Point3f(q[1], q[2], min(q[3], bowl))
+    end
+    ns = fill(Vec3f(0), length(pts))
+    for f in fs
+        a, b, c = GeometryBasics.value(f[1]), GeometryBasics.value(f[2]), GeometryBasics.value(f[3])
+        n = cross(pts[b] - pts[a], pts[c] - pts[a])
+        ns[a] += n; ns[b] += n; ns[c] += n
+    end
+    ns = [norm(v) > 0 ? (v[3] < 0 ? -v : v) / norm(v) : Vec3f(0, 0, 1) for v in ns]
+    Makie.update!(scene.plots[i]; arg1 = GeometryBasics.Mesh(pts, fs; normal = ns))
+    Main.AREA_PLOTS[:pond] = (POND, POND_R, level)
+end
+
 "A sandy bank: a ring from just under the water's edge out to the ground around it."
 function bank_mesh(w, level; n = 48, width = 0.8f0)
     pts = Point3f[]
@@ -127,8 +159,13 @@ function make_area_plots!(scene, w)
     level = Float32(maximum(inside) + 0.03)
     push!(plots, mesh!(scene, bank_mesh(w, level); color = RGBf(0.8, 0.72, 0.52), material = NG.Hikari.Diffuse(color = (0.8, 0.72, 0.52)),
                        name = :area_pond_bank))
-    push!(plots, mesh!(scene, pond_mesh(level, POND_R); color = RGBf(0.28, 0.55, 0.62),
-                       material = NG.Hikari.Plastic(color = (0.2, 0.45, 0.55), roughness = 0.03), name = :area_pond))
+    # real water (s89, the human: "why on earth is the pond not water?"): clear glass at water's index over a dug
+    # basin (dig_pond!), like the sea; `color` is what the browser draws
+    dig_pond!(scene, w, level)
+    push!(plots, mesh!(scene, pond_mesh(level, POND_R); color = RGBAf(0.6, 0.87, 0.9, 1.0),
+                       material = NG.Hikari.MediumInterface(NG.Hikari.Glass(color = (0.9, 0.98, 0.95), ior = 1.33, roughness = 0.01);
+                                                            inside = nothing, shadows = 1.33),   # sun through the surface: a lit floor (s89: plain glass shadowed it navy)
+                       name = :area_pond))
     st = Point3f[]; ssz = Vec3f[]
     for k in 1:22
         a = 2pi * k / 22 + 0.1f0 * randn(rng, Float32)
@@ -142,6 +179,10 @@ function make_area_plots!(scene, w)
             for (r, a) in ((0.9, 0.4), (1.4, 1.1), (0.6, 2.6), (1.5, 3.4), (1.1, 4.6), (1.6, 5.5), (0.4, 5.9))]
     push!(plots, meshscatter!(scene, lily; marker = NG.shape(:cylinder), markersize = Vec3f(0.28, 0.28, 0.015),
                               color = RGBf(0.3, 0.6, 0.22), material = NG.Hikari.Diffuse(color = (0.3, 0.6, 0.22)), name = :area_lilies))
+    # their stems, down to the dug floor: what you see through clear water
+    stems = [Point3f(p[1] + 0.03f0, p[2], level - POND_DEPTH * 0.95f0) for p in lily]
+    push!(plots, meshscatter!(scene, stems; marker = NG.shape(:cylinder), markersize = Vec3f(0.018, 0.018, POND_DEPTH * 0.95f0),
+                              color = RGBf(0.28, 0.5, 0.2), material = NG.Hikari.Diffuse(color = (0.28, 0.5, 0.2)), name = :area_lily_stems))
     push!(plots, meshscatter!(scene, [p + Point3f(0.08, 0.05, 0.02) for p in lily[1:2:end]]; marker = NG.shape(:sphere),
                               markersize = Vec3f(0.09, 0.09, 0.06), color = RGBf(0.98, 0.72, 0.85),
                               material = NG.Hikari.Plastic(color = (0.98, 0.72, 0.85), roughness = 0.4), name = :area_lily_flowers))

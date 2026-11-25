@@ -1,0 +1,74 @@
+{
+  "created": "2026-11-25T12:45:08.641",
+  "finished": "2026-11-25T12:46:37",
+  "id": "20261125-124508-638-clip",
+  "kind": "clip",
+  "params": {
+    "call": "allin_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s89/allin-preview.mp4",
+    "script": "movies/splash.jl"
+  },
+  "result": {
+    "log": [
+      [
+        0.0,
+        "start"
+      ],
+      [
+        2.625,
+        "lumi"
+      ],
+      [
+        4.0,
+        "big"
+      ],
+      [
+        4.75,
+        "score"
+      ],
+      [
+        6.875,
+        "allin"
+      ],
+      [
+        8.0,
+        "splash"
+      ],
+      [
+        8.0,
+        "splash"
+      ],
+      [
+        8.125,
+        "splash"
+      ],
+      [
+        8.125,
+        "splash"
+      ],
+      [
+        8.125,
+        "splash"
+      ],
+      [
+        8.125,
+        "splash"
+      ],
+      [
+        8.25,
+        "splash"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s89/allin-preview.mp4",
+    "started": true
+  },
+  "seconds": 87.9,
+  "started": "2026-11-25T12:45:09.088",
+  "status": "done"
+}

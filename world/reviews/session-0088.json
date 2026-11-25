@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s88-b.png, s88-c.png (11:37 view of the meadow, panel text; only Pinchy-as-crab walks in at the end, its party hat floats above it)",
+      "severity": "medium",
+      "suggestion": "Leave Lumi out of the 'in somebody else's body' list. Register a CAMERA_GROUPS or moment entry that frames the swapped group. Check the hat anchor on the crab body.",
+      "what": "The island panel says 'Lumi is in somebody else's body!' while Lumi's species is still Lumi (checked: Lumi:Lumi, the others swapped). The panel is wrong for the one creature the author says keeps its body. Also, started in the live game, the follow camera kept watching an empty meadow with a sign and mushrooms for 18 s while ten creatures were swapped, so a player may miss the event.",
+      "where": "plugins/islandnow.jl (mixup line), plugins/mixup.jl camera moment"
+    },
+    {
+      "evidence": "reviews/motion/session-0088/mixup-steps.jpg, mixup-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Make the puff a small, bright, translucent burst with Emission and sparkles that fades in and out. Do the pond basin and glass water next.",
+      "what": "The film's swap puffs are opaque pale lavender lumps that fill the lower foreground at 13.00 s (jump 0.271, the largest in the film). There is no glow or translucency. Nothing new in materials or light this session: the ice shell is an alpha shell drawn live only, and the human's plastic-pond complaint is queued, not fixed.",
+      "where": "movies/mixup.jl, plugins/mixup.jl puff, plugins/frost.jl"
+    },
+    {
+      "evidence": "journal 12:11",
+      "severity": "low",
+      "suggestion": "Look at the nest in the sandbox before setting the flag.",
+      "what": "Generated nest and the five-statue traced picture are still open, behind NEST_OK.",
+      "where": "plugins/flight.jl, todo 387"
+    }
+  ],
+  "summary": "SWAPSIE runs in the sandbox: I started it and the friends swapped bodies (Pinchy came out as a crab and was seen walking); frame time is fine (median 2.7 ms, mixup/frost under 0.01 ms). The look is still plain diffuse clay, the puffs in the film are opaque, and in the live game the camera and the panel do not show the event well.",
+  "superseded_by": "perfectionist-0088.json",
+  "surprise": 6,
+  "surprise_why": "Bodies swapping with speech lines is a real twist on the gather-and-laugh events, but it is a species lend drawn in the usual clay.",
+  "verdict": "pass"
+}

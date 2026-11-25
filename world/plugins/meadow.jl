@@ -9,7 +9,7 @@ isdefined(Main, :MEADOW) || Core.eval(Main, :(const MEADOW = Dict{Symbol,Any}())
 
 const NG = NeverendingGame
 using Serialization
-const MEADOW_VERSION = 19
+const MEADOW_VERSION = 21
 
 const SUNNY = RGBf(0.62, 0.73, 0.27)    # warm clearing
 const LUSH = RGBf(0.17, 0.40, 0.17)     # deep hollow
@@ -89,7 +89,14 @@ function contact_at(objs, x, y)
     return s
 end
 
+const POND_MUD = (RGBf(0.62, 0.54, 0.38), RGBf(0.4, 0.36, 0.25))   # the pond's floor: pale sand at the edge, olive mud in the middle (s89: darker read as a navy lid when traced)
+
 function meadow_color(is, base, x, y, h, slope, trees, objs)
+    pd = isdefined(Main, :AREA_PLOTS) ? get(Main.AREA_PLOTS, :pond, nothing) : nothing
+    if pd !== nothing
+        u = hypot(x - pd[1][1], y - pd[1][2]) / (pd[2] * 1.12f0)
+        u < 1 && return mix(mix(POND_MUD[2], POND_MUD[1], smooth01(0.3f0, 1f0, u)), base, smooth01(0.85f0, 1f0, u))
+    end
     b, d = beach_weight(is, x, y)
     if h < 0.36f0                                # sand and seabed stay the engine's, but for the cove
         b > 0 || return base

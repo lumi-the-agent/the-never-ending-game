@@ -5411,12 +5411,12 @@
       "id": 387,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0088: s88 frost.jl puts frozen friends in an icy shell with sparkles; reads as statues live",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Statues you can see: frost sparkle on frozen friends, a traced picture",
-      "updated": "2026-11-24T15:13:21.337"
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-24T15:14:24.980",
@@ -5607,12 +5607,12 @@
       "id": 401,
       "kind": "feature",
       "priority": 2,
-      "result": "s66 part 1: one flight in three now ends in a proper landing (flight.jl, `flight_landed`): 'TA-DAAA!', wings spread, friends dance with hearts; on the ground the camera hands back to the group view (media/s66/landedB8.png, sandbox, forced with FLIGHT[:ending] = :landed). Published. Still open: the nest on the cottage roof, MOMENTS_FIRST, a shorter film.\ns66 part 2: the nest ending (flight.jl `:nest` state, 30% when the nest exists and the start is < 30 m from it): the dive aims at the cottage ridge (model point NEST_AT (0.12, 0, 0.84), ridge height read from the mesh), Lumi sits 6 s ('...oh! Cosy.', 'I live up here now.'), friends laugh ('On the ROOF?!'), then it hops down in front of the door. Sandbox with a hand-set nest spot: media/s66/nestB.png, camera subject stayed Lumi (id 1) through the whole flight. The nest itself (asset job 20261124-181913-716-asset, prompt 'a big cosy bird nest woven from golden twigs...') was still being made at the end of s66: place_nest! checks the catalog every 20 s and draws it on the ridge, and only then does the nest ending happen. Still to check: the nest mesh on the roof (size NEST_W 0.95 m, sunk 0.12 m), MOMENTS_FIRST, a shorter film.",
+      "result": "s66 part 1: one flight in three now ends in a proper landing (flight.jl, `flight_landed`): 'TA-DAAA!', wings spread, friends dance with hearts; on the ground the camera hands back to the group view (media/s66/landedB8.png, sandbox, forced with FLIGHT[:ending] = :landed). Published. Still open: the nest on the cottage roof, MOMENTS_FIRST, a shorter film.\ns66 part 2: the nest ending (flight.jl `:nest` state, 30% when the nest exists and the start is < 30 m from it): the dive aims at the cottage ridge (model point NEST_AT (0.12, 0, 0.84), ridge height read from the mesh), Lumi sits 6 s ('...oh! Cosy.', 'I live up here now.'), friends laugh ('On the ROOF?!'), then it hops down in front of the door. Sandbox with a hand-set nest spot: media/s66/nestB.png, camera subject stayed Lumi (id 1) through the whole flight. The nest itself (asset job 20261124-181913-716-asset, prompt 'a big cosy bird nest woven from golden twigs...') was still being made at the end of s66: place_nest! checks the catalog every 20 s and draws it on the ridge, and only then does the nest ending happen. Still to check: the nest mesh on the roof (size NEST_W 0.95 m, sunk 0.12 m), MOMENTS_FIRST, a shorter film.\nperfectionist-0088: duplicate of #477, which has the concrete next step",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi lands on the cottage roof: the third flight ending, a nest there",
-      "updated": "2026-11-25T00:22:39.077"
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-24T18:27:26.899",
@@ -5728,17 +5728,17 @@
     },
     {
       "created": "2026-11-24T19:56:41.031",
-      "detail": "BoundsError: attempt to access Tuple{Int64, GeometryBasics.Vec{3, Float32}, Float64, ColorTypes.RGB{Float32}} at index [5]\nStacktrace:\n  [1] indexed_iterate(t::Tuple{Int64, GeometryBasics.Vec{3, Float32}, Float64, ColorTypes.RGB{Float32}}, i::Int64, state::Int64)\n    @ Base ./tuple.jl:162\n  [2] draw_blobs!(w::NeverendingGame.World)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:170\n  [3] step!(s::Main.Plugin_paintfight.PaintFight, game::Game, dt::Float64)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:349\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "BoundsError: attempt to access 0-element Vector{Int32} at index [1]\nStacktrace:\n  [1] throw_boundserror(A::Vector{Int32}, I::Tuple{Int64})\n    @ Base ./essentials.jl:15\n  [2] getindex\n    @ ./essentials.jl:919 [inlined]\n  [3] first\n    @ ./abstractarray.jl:452 [inlined]\n  [4] fight!(s::Main.Plugin_paintfight.PaintFight, w::NeverendingGame.World)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:308\n  [5] step!(s::Main.Plugin_paintfight.PaintFight, game::Game, dt::Float64)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:431\n  [6] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [8] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [9] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [10] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [12] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [13] top-level scope\n    @ none:1\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [16] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 410,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T19:57:48.193: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T19:58:22.549.\nClosed at 2026-11-24T19:59:34.246: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T20:24:57.181.\nClosed at 2026-11-24T20:25:08.530: plugin paintfight loaded cleanly.",
+      "result": "Closed at 2026-11-24T19:57:48.193: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T19:58:22.549.\nClosed at 2026-11-24T19:59:34.246: plugin paintfight loaded cleanly.\nHappened again at 2026-11-24T20:24:57.181.\nClosed at 2026-11-24T20:25:08.530: plugin paintfight loaded cleanly.\nHappened again at 2026-11-25T12:31:20.917.\nClosed at 2026-11-25T12:34:24.410: plugin paintfight loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:paintfight.PaintFight failed in step! and was switched off",
-      "updated": "2026-11-24T20:25:08.530"
+      "updated": "2026-11-25T12:34:24.410"
     },
     {
       "created": "2026-11-24T20:01:40.077",
@@ -6106,7 +6106,7 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0079 [fun, medium]: All three mini games play well, but they are the same three 'walk to the thing' games as 16 sessions ago. The swing launch and the paint fight are the most playful toys on the island, and neither has a goal or a score. Pressing C, G and T in a row stacks a choir, a flight and a storm into one muddle.\nWhere: plugins/swing.jl, paintfight.jl\nSuggestion: A swing launch for distance: pump with Space in rhythm, let go with E, land in rings on the meadow for points, with a best. Or a timed team paint fight.\nDone when: A fourth entry in the Mini game menu with a start card, a score, an end card with a best, and a W/A/D (+Space/E) first-play test that wins.\nEvidence: reviews/perf79/play/log.txt, jump-sheet.png",
+      "detail": "perfectionist-0088 [fun, medium]: Played for a minute each: hide and seek found all 4 in 40 s of 120, and the berry race was won 9 to 5 in 29 s, both on a first play with W/A/D only. Firefly catch got 6 of 8. The best toys (pumpkins, water fight, paint, SWAPSIE) have no goal or score, and the three games are the same walk-to-the-thing loop as 40 sessions ago.\nWhere: mini games menu\nSuggestion: Make the water fight playable: 60 s, splash the friends, they splash back, a soak meter and a best score. Once the pond is real water, it is the showcase game.\nDone when: A fourth entry in the mini game menu with a start card, a score and an end card, and a W/A/D first-play test passing.\nEvidence: reviews/p88/play/log.txt, hide-5-end.png, berry-5-end.png",
       "est_minutes": 30.0,
       "id": 437,
       "kind": "review",
@@ -6116,7 +6116,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A fourth mini game from the best gag: a scored swing launch or paint fight",
-      "updated": "2026-11-25T05:19:35.703"
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6129,8 +6129,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A snow day that looks like snow: shaded drifts, flakes, no autumn under it",
-      "updated": "2026-11-25T10:09:23.907"
+      "title": "Snowflakes that read as snow in a traced picture",
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-25T00:28:44.048",
@@ -6596,7 +6596,7 @@
     },
     {
       "created": "2026-11-25T09:50:01.857",
-      "detail": "perfectionist-0085 [animation, medium]: live_motion: Sir Sniffsalot's tail jumps 0.39 m in one frame and swings at 11.6 m/s. Pickles turns 56° in one frame, its leg_4 jumps 0.15 m and its tail 0.21 m at the same instant. Pickles' green leaf hat sits half inside its head (a flat green slab cuts the skull).\nWhere: makeover.jl pig tail part (Swing amplitude/rate), engine yaw changes, outfits.jl hat anchor for the pig body\nSuggestion: Drive the tail with a spring (lagging the body), cap the tail tip speed, and route big yaw changes through turn_drawn!. Seat the leaf hat on the head surface.\nDone when: Two live_motion runs list no tail in the snapping or too-fast lists and no turn > 25° in one frame, and a close-up of Pickles shows the hat on top of the head.\nEvidence: world/reviews/p85/motion/motion.png, creatures.png (row 5 left), live_motion text",
+      "detail": "perfectionist-0088 [animation, medium]: live_motion: Pickles turns 102 degrees in one frame and its tail jumps 0.22 m, Sir Sniffsalot's body and tail vibrate 10 times a second, Lumi's left wing judders, and Wibbles turns 65 degrees in one frame. Only 6 of 10 move well (8 of 10 at the last review).\nWhere: makeover.jl pig body (tail pivot), gait.jl stride, scenery.jl turn_drawn!\nSuggestion: Ease turns above 0.25 rad per frame for every species, give the pig tail a spring with a lower rate, and lower Snootle's stride roll.\nDone when: Two live_motion runs in a row show 9+ of 10 moving well, with no turn above 30 degrees in one frame.\nEvidence: live_motion at 11:39, reviews/p88/motion/",
       "est_minutes": 15.0,
       "id": 472,
       "kind": "review",
@@ -6606,7 +6606,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Pig tails and turns snap: tails jump 0.4 m in one frame",
-      "updated": "2026-11-25T10:09:23.907"
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-25T10:09:23.907",
@@ -6629,12 +6629,12 @@
       "id": 474,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0088: a retake of an old film matters less than films that show real materials (#478, #479, #448)",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The hail film again: close on the huddle, an umbrella that opens",
-      "updated": "2026-11-25T10:09:23.907"
+      "updated": "2026-11-25T12:33:43.331"
     },
     {
       "created": "2026-11-25T10:09:23.907",
@@ -6680,31 +6680,157 @@
     },
     {
       "created": "2026-11-25T12:17:57.921",
-      "detail": "",
+      "detail": "perfectionist-0088 [materials, high]: The pond is an opaque slate-blue plastic disc with white ring lines and marble drops. Traced, it is a dark, grainy, flat lid that hides everything under it, the opposite of the sea next to it.\nWhere: plugins/areas.jl (pond plot), plugins/splash.jl (drops, rings)\nSuggestion: Dig the basin in the terrain (mud and stones), add Glass ior 1.33 with an absorbing blue-green medium, lily stems visible below, drops as small water spheres that refract, ripples as thin bright normal-ish rings. Film the water fight again once it is real water: that is the post people would share.\nDone when: A traced still at 64+ samples from 4 m shows the pond floor and lily stems through the water, with the sky reflected at grazing angles; the browser still shows a blue pond.\nEvidence: reviews/p88/pond-traced.png; reviews/motion/perfectionist-0088/waterfight-overview.jpg",
       "est_minutes": 15.0,
       "id": 478,
-      "kind": "build",
+      "kind": "review",
       "priority": 1,
-      "result": "",
-      "source": "agent",
+      "result": "s89: areas.jl digs a 0.55 m bowl into the terrain mesh under the pond (dig_pond!), the water is a Hikari Glass disc (ior 1.33) inside a MediumInterface with shadows = 1.33 so the sun lights the floor through it; meadow.jl paints the floor pale sand to olive mud; lily stems go down to the floor. splash.jl: drops are glass beads, ripples are glass swells in traced copies (soft alpha rings live). Evidence: media/s89/pond-traced.png (plain glass: navy, floor in shadow), media/s89/pond-traced3.png (clear water, pads shadow the floor), site/films/allin.mp4 (traced, glass drops and swells; rendered before the floor fix). Raster (live) view is still a darker basin: media/s89/pond-raster3.png. Published.",
+      "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Real pond water (the human, s88): the pond is an opaque Plastic lid (areas.jl) and the splash drops and rings have no material (splash.jl). Make it Glass ior 1.33 with an absorbing medium (MediumInterface, HomogeneousMedium blue-green, shadows = 1.33) over a dug basin (the terrain plot's points pushed down inside the pond, a muddy floor colour), drops as water (Glass/Refraction), rings as subtle bright ripples; keep a `color` for the browser. Done when: a traced still shows the floor and lily stems through clear, refracting water",
-      "updated": "2026-11-25T12:17:57.921"
+      "status": "done",
+      "title": "Real pond water: clear, refracting water over a dug basin",
+      "updated": "2026-11-25T13:09:27.716"
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "",
+      "detail": "perfectionist-0088 [materials, high]: Every friend is the same matte or plastic clay in the films: the sheep has no wool sheen, the jelly blobs are opaque, and the SWAPSIE puffs are lilac plastic balls. No lantern or window lights the grass around it in a traced picture. The traced still at 11:41 is grey, flat and grainy under a shower (reviews/p88/pond-traced.png); sunset and night (#237, #448) have no traced picture where light is the subject.\nWhere: plugins/makeover.jl, species materials, lamplight.jl, mixup.jl puffs\nSuggestion: Use dev/Hikari/docs/src/materials.md: sheen on the sheep, subsurface plus coat on the blobs, a lacquer coat on the toadstool caps, PointLights in the lanterns and cottage windows (traced copies only), and translucent sparkle puffs. Show it in one dusk traced still of the friends under a lantern.\nDone when: A traced dusk still shows a lantern's warm pool on the grass and friends with visible sheen, glow and coat. Next to an s88 film frame, the difference is obvious.\nEvidence: reviews/motion/perfectionist-0088/mixup-overview.jpg",
       "est_minutes": 15.0,
       "id": 479,
-      "kind": "build",
+      "kind": "review",
       "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Friends and lanterns with real materials and lights (goal 7)",
+      "updated": "2026-11-25T12:33:43.331"
+    },
+    {
+      "created": "2026-11-25T12:33:43.331",
+      "detail": "perfectionist-0088 [creatures, high]: Pinchy's blue and yellow party hat hangs in the air about half a metre up and to the side of the crab's body; in the creatures sheet a yellow hat drifts loose beside the other crab too. The outfits anchor on a part the cut crab body (s85) does not have where they expect.\nWhere: plugins/outfits.jl anchors for Crabbit, plugins/makeover.jl crab parts\nSuggestion: Anchor crab hats on the shell top (the body part, between the eye stalks) with an offset measured from the mesh. Run the outfits test for every species after each makeover.\nDone when: Front and side screenshots of both crabs show each hat sitting on the shell between the eyes while the crab walks, with no gap.\nEvidence: reviews/p88/crab-front2.png; reviews/p88/motion/creatures.png rows 3-4",
+      "est_minutes": 30.0,
+      "id": 480,
+      "kind": "review",
+      "priority": 1,
+      "result": "s89: the crab body (s85 cut, in metres) has its shell top 0.65 m up behind the eye stalks (profiled the mesh: max z per x/y); Pinchy's party hat now at (-0.1, 0, 0.63) and Hopscotch's cap at (-0.12, 0, 0.62) on :body (were 1.0 and 0.95: floated 0.35-0.45 m over the shell). Numerically the hat anchor is 0.87 m over Pinchy's feet with the shell top at 0.89; media/s89/crab-hat3.png shows Hopscotch's cap on its shell. Outfits test passes (fixed it to skip sculpted crabs and bodies with no mouth part). Published.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Crab hats float beside the crab, not on its head",
+      "updated": "2026-11-25T12:49:51.924"
+    },
+    {
+      "created": "2026-11-25T12:33:43.331",
+      "detail": "perfectionist-0088 [wow, medium]: At 13.0 s the swap back changes the picture in one frame (0.27). For the last two seconds a heap of opaque lilac puffs and a pig fill the lower third right in front of the camera, so the payoff (everyone back in their own body) is hard to read.\nWhere: movies (mixup film), plugins/mixup.jl puffs\nSuggestion: Let the puffs grow in over 0.3 s and fade translucent, and keep the cast 3 m+ from the lens (a wider fixed shot or a cut to a side view for the swap back).\nDone when: motion_sheet of the new take has no jump above 0.1 outside cuts, and the last 2 s show all friends whole and readable.\nEvidence: reviews/motion/perfectionist-0088/mixup-steps.jpg, mixup-strip.jpg",
+      "est_minutes": 30.0,
+      "id": 481,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "SWAPSIE film: the poof back pops and fills the lens",
+      "updated": "2026-11-25T12:33:43.331"
+    },
+    {
+      "created": "2026-11-25T12:33:43.331",
+      "detail": "perfectionist-0088 [camera, medium]: At 11:51 the follow camera's subject was Lumi walking to bed. The shot was cherry crowns, a fence and a red bush filling the right edge; Lumi was hidden under the trees, with only its tag and two z's visible. Earlier, follow1.png was 60% sky with the subjects small at the bottom.\nWhere: render.jl follow_view / camcut.jl, lensclear\nSuggestion: When obstruction of the subject stays above 0.5 for 1 s, cut to the clearest of 8 sides (as the dance ring does), and frame the horizon in the upper third.\nDone when: Over 20 follow screenshots 10 s apart, the subject's body is visible in at least 18, and the sky never fills more than half the frame.\nEvidence: reviews/p88/play/cam-3b.png, reviews/p88/follow1.png",
+      "est_minutes": 30.0,
+      "id": 482,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Follow camera loses Lumi behind cherry crowns and roofs",
+      "updated": "2026-11-25T12:33:43.331"
+    },
+    {
+      "created": "2026-11-25T12:33:43.331",
+      "detail": "perfectionist-0088 [ui, medium]: Name tags and thought bubbles draw through roofs and tree crowns. In the free camera 'Lumi' floats on the cottage roof with Lumi hidden behind it; in follow mode 'Lumi' and sleep z's float over the cherry crowns. In orbit a stale 'conducting the choir' bubble sits at the frame edge. In jump-in, a 12-key strip runs across the middle third of the 3D view the whole time, and 'Things to try' lacks M and Q. The latest message is cut at 'Then lights and'.\nWhere: stage labels / builder.jl thought!, greetings.jl HINT, say_to_human\nSuggestion: Hide a tag or bubble when its creature is occluded (NG.obstruction) or off screen, and let the bubble clear when the goal changes. Show the key strip for the first 8 s of a jump-in, then fold it into a small corner legend. Keep messages under 45 words.\nDone when: Screenshots in free and follow mode with Lumi behind the cottage show no 'Lumi' tag; a jump-in screenshot after 10 s shows the scene's middle third free of text; the message panel ends in a full sentence.\nEvidence: reviews/p88/play/cam-2a.png, cam-3b.png, cam-1b.png, jump-1-wave.png; media/progress/session-0088 (bubble at the same pixels in all three)",
+      "est_minutes": 30.0,
+      "id": 483,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Labels show through walls; the jump-in key strip covers the view",
+      "updated": "2026-11-25T12:33:43.331"
+    },
+    {
+      "created": "2026-11-25T12:49:51.957",
+      "detail": "outfits.jl EXTRAS hang the pig's mouth on :head and the sheep's on :face, but the made-over bodies (makeover.jl, s74/s82) have only :body, legs and tail, so wears() finds no anchor and no pig or sheep opens its mouth when it talks (s89: the outfits test only passed once it skipped them). Profile each body (hat_spot-like surface lookup at the front of :body) and anchor the mouth, nostrils and smile there; check from the front along the yaw.",
+      "est_minutes": 25.0,
+      "id": 484,
+      "kind": "fix",
+      "priority": 2,
+      "result": "s89: outfits.jl body_mouth puts the species talking-mouth piece on the front of the made-over :body (profiled per species: the front of the mesh on the middle line at MOUTH_ON_BODY of the top: pig 0.33 (under the snout), sheep 0.5 (under the nose)), cached per species, reset in start!. media/s89/pig-mouth.png: Pickles talking, an open dark mouth under its snout (sits a little low, on the chin). Outfits test now checks a body with a mouth via wears(c) and passes (the mouth grows while talking). Published.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Mouths for the made-over pigs and sheep: their talking mouths vanished with the new bodies",
+      "updated": "2026-11-25T13:12:09.566"
+    },
+    {
+      "created": "2026-11-25T12:50:47.705",
+      "detail": "LoadError: invalid method definition in Plugin_finishes: function NeverendingGame.finished must be explicitly imported to be extended\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/finishes.jl:17\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/finishes.jl:17",
+      "est_minutes": 15.0,
+      "id": 485,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T12:50:56.139: plugin finishes loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin finishes does not load",
+      "updated": "2026-11-25T12:50:56.139"
+    },
+    {
+      "created": "2026-11-25T13:09:27.719",
+      "detail": "s89 made the pond clear water when traced (media/s89/pond-traced3.png), but the RayMakie raster the player sees live shows a dark slate basin with stems under it (media/s89/pond-raster3.png). Look at raster_material.jl's Dielectric/MediumInterface look (alpha, fresnel) or give the live plot a lighter transparent colour while path tracing is off; check in the browser too (it uses `color`).",
+      "est_minutes": 25.0,
+      "id": 486,
+      "kind": "look",
+      "priority": 1,
+      "result": "s89: the raster (and the browser) draw the pond from the plot's `color`, not the glass: RGBAf(0.22, 0.46, 0.5) was the dark basin; (0.36, 0.72, 0.78) still dark (media/s89/pond-raster5.png); (0.6, 0.87, 0.9) reads as pale clear water mirroring the sky with the stems under it (media/s89/pond-raster6.png, same camera as pond-raster3.png). Published. Not checked in a real browser yet.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Pond in the live view: the raster draws the clear water as a dark grey basin",
+      "updated": "2026-11-25T13:10:35.365"
+    },
+    {
+      "created": "2026-11-25T13:10:40.299",
+      "detail": "Worker job 20261125-130934-481-clip renders allin_clip (32 samples) with the s89 clear pond (sun through the water) to media/s89/allin-clear.mp4. Look at it frame by frame (motion_sheet); if it is good, copy it over site/films/allin.mp4 (the posted film was rendered before the floor fix and shows a navy pond).",
+      "est_minutes": 10.0,
+      "id": 487,
+      "kind": "look",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Goal 7, show off RayMakie: give the friends their materials (sheep wool with sheen, the jelly blobs gummy with subsurface glow, toadstools lacquered with a coat), lanterns and windows that really light what is round them (point lights, Emission), checked in traced stills; dev/Hikari/docs/src/materials.md and lights.md",
-      "updated": "2026-11-25T12:17:57.924"
+      "title": "Everybody in film: swap in the clear-pond retake",
+      "updated": "2026-11-25T13:10:40.299"
+    },
+    {
+      "created": "2026-11-25T13:13:08.449",
+      "detail": "s89 body_mouth (outfits.jl MOUTH_ON_BODY): at 0.5 of the sheep top the pale mouth sat on the wool chest under the face (media/s89/sheep-mouth.png); at 0.6 it is hidden inside the face (media/s89/sheep-mouth2.png). Profile the face front (it leans forward with height), put the mouth a few cm in front of the surface at the face bottom (~0.62 of the top), maybe a dark pink so it reads on black.",
+      "est_minutes": 10.0,
+      "id": 488,
+      "kind": "look",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sheep mouth: place it on the dark face so it shows while the sheep talks",
+      "updated": "2026-11-25T13:13:08.449"
     }
   ]
 }

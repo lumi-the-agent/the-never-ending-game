@@ -124,6 +124,71 @@ function splash_clip(path; rasterize = true, samples = 16, width = 960, height =
 end
 
 
+"""
+Everybody in (s89): Lumi's big cannonball, the judges' TEN!!, and then the judges and every diver jump into the
+real water at once. Three shots: the whole pond, low at the edge for Lumi, the whole pond again for everybody.
+  submit_job(:clip; path, script = "movies/splash.jl", call = "allin_clip", kwargs = Dict("samples" => 24, "rasterize" => false))
+"""
+function allin_clip(path; rasterize = true, samples = 16, width = 960, height = 540, fps = 24, seconds = 13.0, hour = 8.8,
+                    divers = ["Wibbles", "Truffle", "Cumulus", "Gloop"], judges = ["Pinchy", "Hopscotch"])
+    S = Dict{Symbol,Any}()
+    shot = function (g, rig, t)
+        SPd = Main.SPLASH
+        w = g.world
+        m = g.plugins["splash"].mod
+        if !haskey(S, :off)
+            S[:off] = w.t - t
+            SPd[:t_gather] = 2.4
+            splash_setup(g, divers, judges)
+            Base.invokelatest(m.claim_party!, w, 60)
+            S[:ok] = Base.invokelatest(SPd[:start])
+            s = SPd[:sys]
+            s.next = length(s.crew)            # only Lumi dives alone; the others wait for the finale
+        end
+        s = SPd[:sys]
+        v = get(SPd, :view, nothing)
+        v === nothing && return nothing
+        e, tg = v
+        log = get(SPd, :log, Tuple{Float64,Symbol}[])
+        lumi_at = findfirst(x -> x[2] === :lumi, log)
+        allin = any(x -> x[2] === :allin, log)
+        rig.mode = :fixed
+        if lumi_at === nothing || allin
+            rig.eye = e + 0.15f0 * (tg - e); rig.target = tg            # the pond, everybody round it
+        else
+            d = tg - e; d = Vec3f(d[1], d[2], 0) / hypot(d[1], d[2])
+            rig.eye = tg - 3.6f0 * d + Point3f(0, 0, -0.3f0); rig.target = tg + Point3f(0, 0, 0.4f0)
+        end
+        s.state === :idle && haskey(S, :ok) && !haskey(S, :end) && t > 3 && (S[:end] = t)
+        return haskey(S, :end) ? S[:end] + 0.5 : nothing
+    end
+    silent = replace(path, ".mp4" => "-silent.mp4")
+    NG.game_clip(silent; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rig = NG.CameraRig(; mode = :fixed),
+                 rasterize, setup = g -> splash_setup(g, divers, judges), shot)
+    SPd = Main.SPLASH
+    delete!(SPd, :t_gather)
+    log = [(t - S[:off], k) for (t, k) in get(SPd, :log, Tuple{Float64,Symbol}[]) if t - S[:off] >= 0]
+    wav = splash_wav(replace(path, ".mp4" => ".wav"), log, seconds + 1)
+    voices = Tuple{Float64,String}[]
+    for (t, k) in log
+        k === :lumi && push!(voices, (t + 0.1, "wheee"))
+        k === :big && push!(voices, (t + 1.2, "haha"))
+        k === :allin && push!(voices, (t + 0.05, "squeak-wheee"))
+        k === :allin && push!(voices, (t + 2.6, "yay"))
+    end
+    clips = joinpath(dirname(@__DIR__), "site", "voice", "game")
+    ins = ["-i", wav]; parts = String[]
+    for (i, (t, n)) in enumerate(voices)
+        append!(ins, ["-i", joinpath(clips, n * ".mp3")])
+        push!(parts, "[$(i + 1)]adelay=$(round(Int, 1000t))|$(round(Int, 1000t)),volume=0.8[a$(i)]")
+    end
+    mix = isempty(parts) ? "[1]apad[out]" :
+          join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
+    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    return (path = path, started = S[:ok], log = log)
+end
+
+
 "The water fight's cast in the pond (Lumi among them), everyone else parked far off on land."
 function fight_setup(g, cast)
     w = g.world

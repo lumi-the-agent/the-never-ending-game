@@ -31,7 +31,10 @@ uitest("Outfits: every critter wears its own hat, scarf, bow or crown, on its he
     ps = P[k][1][]
     check(any(p -> norm(p - c.pos) < 1.2f0, ps), "$(c.name)'s outfit stayed behind (moved $(norm(c.pos - before)) m)")
     # a pig, sheep or crab that speaks opens and shuts its mouth (an awake one: sleepers do not talk)
-    i = findfirst(c -> haskey(m.EXTRAS, c.species) && c.action !== :sleep && !c.controlled, w.creatures)
+    # (not a sculpted crab: its own body has the face since s85, no painted mouth; the test picked Pinchy and failed in s89)
+    # (and only a body that still has the part the mouth hangs on: the made-over pig and sheep bodies have no :head/:face)
+    talks(c) = any(o -> any(p -> p.show === :talk, o.pieces) && any(q -> q.name === o.part, OUTFITS_NG.species_of(c).parts), m.wears(c))   # (s89: made-over bodies talk with m.body_mouth)
+    i = findfirst(c -> haskey(m.EXTRAS, c.species) && !m.sculpted(c) && !m.mixed_up(c) && talks(c) && c.action !== :sleep && !c.controlled, w.creatures)
     if i !== nothing
         c = w.creatures[i]
         mouth = only(p for o in m.EXTRAS[c.species] for p in o.pieces if p.show === :talk)

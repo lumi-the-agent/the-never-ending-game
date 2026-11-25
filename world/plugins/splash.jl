@@ -10,7 +10,7 @@ isdefined(Main, :LUMI_PARTY) || Core.eval(Main, :(const LUMI_PARTY = Dict{Symbol
 party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
 claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 
-const NRINGS = 40; const NDROPS = 320
+const NRINGS = 40; const NDROPS = 520
 const RING_T = 2.4                  # s a ring takes to fade
 const EVENTS = (:follow, :sleep, :circle, :boing, :boing_walk, :choir, :conga, :hide, :found, :freeze, :flight,
                 :paint, :giant, :egg, :lesson, :soar, :snowman, :storm, :build, :tinker, :toadstool, :blossom,
@@ -67,6 +67,30 @@ function ring_mesh()
     return GeometryBasics.Mesh(pts, fs; normal = fill(Vec3f(0, 0, 1), length(pts)))
 end
 
+"A ripple for traced pictures: a low round swell across a ring of radius 1 (height 1, scaled down per ring)."
+function swell_mesh()
+    n = 64; m = 6
+    pts = Point3f[]
+    for i in 0:n-1, j in 0:m
+        a = 2f0 * Float32(pi) * i / n; rho = 0.82f0 + 0.18f0 * j / m
+        z = sin(Float32(pi) * j / m)
+        push!(pts, Point3f(rho * cos(a), rho * sin(a), z))
+    end
+    idx(i, j) = mod(i, n) * (m + 1) + j + 1
+    fs = GeometryBasics.GLTriangleFace[]
+    for i in 0:n-1, j in 0:m-1
+        push!(fs, GeometryBasics.GLTriangleFace(idx(i, j), idx(i + 1, j), idx(i + 1, j + 1)))
+        push!(fs, GeometryBasics.GLTriangleFace(idx(i, j), idx(i + 1, j + 1), idx(i, j + 1)))
+    end
+    ns = fill(Vec3f(0), length(pts))
+    for f in fs
+        a, b, c = GeometryBasics.value(f[1]), GeometryBasics.value(f[2]), GeometryBasics.value(f[3])
+        v = cross(pts[b] - pts[a], pts[c] - pts[a]); ns[a] += v; ns[b] += v; ns[c] += v
+    end
+    ns = [norm(v) > 0 ? (v[3] < 0 ? -v : v) / norm(v) : Vec3f(0, 0, 1) for v in ns]
+    return GeometryBasics.Mesh(pts, fs; normal = ns)
+end
+
 function plots!(game)
     haskey(SP, :rings) && SP[:rings].parent !== nothing && return
     sc = game.stage.scene
@@ -74,10 +98,19 @@ function plots!(game)
         delete!(sc, p)
     end
     hide = [Point3f(0, 0, -50)]
-    SP[:rings] = meshscatter!(sc, hide; marker = ring_mesh(), markersize = [Vec3f(0)], color = [RGBAf(0.9, 0.97, 1.0, 0.0)],
-                              transparency = true, shading = Makie.NoShading, name = :splash_rings)
+    # water, not paint (s89, the human: "a flat slate-grey lid with white rings painted on it, and the splash is pale
+    # plastic marbles"): in traced pictures a ripple is a low glass swell on the water that bends and mirrors the
+    # light, and a drop is a glass bead; live, the rings stay soft translucent highlights (alpha, which tracing ignores)
+    traced = game.dash === nothing
+    SP[:traced] = traced
+    SP[:rings] = traced ?
+        meshscatter!(sc, hide; marker = swell_mesh(), markersize = [Vec3f(0)], color = RGBAf(0.75, 0.9, 0.95, 1.0),
+                     material = NG.Hikari.Glass(color = (0.95, 0.99, 1.0), ior = 1.33, roughness = 0.0), name = :splash_rings) :
+        meshscatter!(sc, hide; marker = ring_mesh(), markersize = [Vec3f(0)], color = [RGBAf(0.9, 0.97, 1.0, 0.0)],
+                     transparency = true, shading = Makie.NoShading, name = :splash_rings)
     SP[:drops] = meshscatter!(sc, hide; marker = Sphere(Point3f(0), 1f0), markersize = [Vec3f(0)],
-                              color = RGBf(0.82, 0.93, 1.0), name = :splash_drops)
+                              color = RGBf(0.82, 0.93, 1.0), material = NG.Hikari.Glass(color = (0.97, 1.0, 1.0), ior = 1.33, roughness = 0.0),
+                              name = :splash_drops)
     SP[:shown] = true
 end
 
@@ -111,8 +144,11 @@ function draw!(s::Splash, game)
         a <= 0.01f0 && continue
         push!(ps, Point3f(c[1], c[2], lvl + 0.015f0)); push!(ms, Vec3f(r, r, 1)); push!(cs, RGBAf(0.9, 0.97, 1.0, a))
     end
-    if isempty(ps)
-        get(SP, :rings_shown, true) && Makie.update!(SP[:rings]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)], color = [RGBAf(1, 1, 1, 0)])
+    if get(SP, :traced, false) && !isempty(ps)
+        Makie.update!(SP[:rings]; arg1 = ps, markersize = [Vec3f(m[1], m[2], 0.035f0 * c.alpha) for (m, c) in zip(ms, cs)]); SP[:rings_shown] = true
+    elseif isempty(ps)
+        get(SP, :rings_shown, true) && Makie.update!(SP[:rings]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)],
+                                                     color = get(SP, :traced, false) ? RGBAf(0.75, 0.9, 0.95, 1.0) : [RGBAf(1, 1, 1, 0)])
         SP[:rings_shown] = false
     else
         Makie.update!(SP[:rings]; arg1 = ps, markersize = ms, color = cs); SP[:rings_shown] = true
@@ -216,12 +252,68 @@ function start_contest!(s::Splash, game)
     return true
 end
 
+"The judges' scores, 0.7 s after a splash."
+function scores!(s::Splash, w)
+    (haskey(SP, :score_at) && w.t >= SP[:score_at][1]) || return
+    big = SP[:score_at][2]; delete!(SP, :score_at)
+    for (j, id) in enumerate(s.judges)
+        x = NG.creature(w, id); x === nothing && continue
+        NG.say!(w, x, big ? (j == 1 ? "TEN!!" : "ELEVEN!!!") : SCORES[mod1(s.next + 3j, length(SCORES))]; duration = 1.6)
+        x.action = :jump; x.goal.action = :jump
+    end
+    push!(SP[:log], (w.t, :score))
+end
+
+const ALLIN = ("Wheee!", "Me too!", "Wait for me!", "Coming in!", "Clackety SPLASH!", "Geronimooo!")
+
+"""
+Everybody in (s89): after Lumi's big one the judges and all the divers jump in at once from round the pond,
+each to its own spot in the water, a dozen rings crossing on the real water, and they come up laughing.
+"""
+function all_in!(s::Splash, game, el)
+    A = get(SP, :allin, nothing); A === nothing && return
+    w = game.world; P = pond(game); R = pond_r(game); lvl = level!(game)
+    if el >= 2.2 && !SP[:allin_go]
+        SP[:allin_go] = true
+        ids = vcat(s.judges, s.crew)
+        for (i, id) in enumerate(ids)
+            x = NG.creature(w, id); (x === nothing || x.controlled) && continue
+            a = atan(x.pos[2] - P[2], x.pos[1] - P[1]) + 0.4f0 * (rand(w.rng, Float32) - 0.5f0)
+            r = R * (0.2f0 + 0.4f0 * rand(w.rng, Float32))
+            A[id] = (x.pos, Point3f(P[1] + r * cos(a), P[2] + r * sin(a), lvl), w.t + 0.35 * rand(w.rng))
+            NG.say!(w, x, x.name == "Lumi" ? "JUDGES TOO! EVERYBODY IN!" : ALLIN[mod1(i, length(ALLIN))]; duration = 1.5)
+        end
+        push!(SP[:log], (w.t, :allin))
+    end
+    L = SP[:allin_landed]::Set{Int32}
+    for (id, (from, land, since)) in collect(A)
+        x = NG.creature(w, id); x === nothing && (delete!(A, id); continue)
+        u = Float32((w.t - since) / 0.95)
+        u < 0 && continue
+        if u < 1
+            x.pos = from + (land - from) * u + Point3f(0, 0, 2.0f0 * 4u * (1 - u))
+            x.action = :jump; x.goal.action = :jump
+            x.yaw = atan(land[2] - from[2], land[1] - from[1]) - NG.species_of(x).heading
+        elseif u < 1.8f0
+            id in L || (push!(L, id); splash!(s, w, land, 1.15f0; log = true))
+            x.pos = land - Point3f(0, 0, 0.4f0)           # under for a moment
+        else
+            delete!(A, id)
+            back = NG.ground(w.island, (from[1], from[2]))
+            c = Point3f(P[1], P[2], lvl)
+            x.pos = c + 0.9f0 * (back - c)                # up at the edge, dripping
+            x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
+        end
+    end
+end
+
 function finish!(s::Splash, w)
     for id in vcat(s.crew, s.judges)
         x = NG.creature(w, id)
         x === nothing || x.controlled || x.goal.kind !== :cannonball || NG.choose_goal!(x, w)
     end
     empty!(s.crew); empty!(s.judges); empty!(s.flights)
+    delete!(SP, :allin); delete!(SP, :allin_go); delete!(SP, :allin_landed); delete!(SP, :score_at)
     s.state = :idle
     NG.emit!(w, :splash_end)
 end
@@ -464,22 +556,17 @@ function NG.step!(s::Splash, game, dt)
                     x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
                 end
             end
-            if haskey(SP, :score_at) && w.t >= SP[:score_at][1]
-                big = SP[:score_at][2]; delete!(SP, :score_at)
-                for (j, id) in enumerate(s.judges)
-                    x = NG.creature(w, id); x === nothing && continue
-                    NG.say!(w, x, big ? (j == 1 ? "TEN!!" : "ELEVEN!!!") : SCORES[mod1(s.next + 3j, length(SCORES))]; duration = 1.6)
-                    x.action = :jump; x.goal.action = :jump
-                end
-                push!(SP[:log], (w.t, :score))
-            end
+            scores!(s, w)
             if s.next > length(s.crew) && isempty(s.flights) && w.t >= SP[:next_at] - 1.0
                 s.state = :after; s.t0 = w.t
                 me = lumi_of(w)
-                me === nothing || NG.say!(w, me, "...Did I win? I'm soaked!"; duration = 2.6)
+                me === nothing || NG.say!(w, me, "...Did I win? I'm soaked!"; duration = 1.6)
+                SP[:allin] = Dict{Int32,Tuple{Point3f,Point3f,Float64}}(); SP[:allin_go] = false; SP[:allin_landed] = Set{Int32}()
             end
         elseif s.state === :after
-            w.t - s.t0 >= 4.0 && finish!(s, w)
+            scores!(s, w)
+            all_in!(s, game, el)
+            w.t - s.t0 >= (haskey(SP, :allin) ? 8.0 : 4.0) && finish!(s, w)
         end
     end
     draw!(s, game)
