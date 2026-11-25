@@ -3292,7 +3292,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0070 [creatures, high]: Lumi is a generated, feather-textured bird. Its friends are a pink capsule pig on stick legs (the whole dashboard progress shot is its rear), a cyan sphere with a bow, cotton-ball sheep and stick crabs. This has been the top creature finding for four reviews, and no session has gone to it.\nWhere: engine species.jl; Lumi's route (generated mesh + bird.jl piece_of + faces.jl) is the proven path\nSuggestion: Use Lumi's pipeline once per species: a generated character mesh, cut into moving parts, with the faces.jl eyes and mouth on top. Start with the pig and the sheep, which are on screen most.\nDone when: A traced lineup still (tools/lineup.jl) shows at least two friend species as textured generated meshes with their own silhouette beside Lumi\nEvidence: media/progress/session-0070/dashboard.png (pig), reviews/p70/follow2.png, media/s70/et2-sheet.png",
+      "detail": "perfectionist-0073 [creatures, high]: Truffle and Sir Sniffsalot are pink capsules on four sticks with stuck-on googly eyes, and Wibbles and Gloop are plain teal spheres. Next to the feathered Lumi they look like placeholders. The generated Snootle (piglet) and Blorbo (jelly blob with a bow) meshes have been done since s71 (assets/20261124-222311-224-asset, -227-asset), but three sessions went to snow, wind, the soar flight and the kite instead.\nWhere: engine species.jl (snootle, blorbo), birdbody.jl pattern (piece_of)\nSuggestion: Cut both meshes into body, legs, ears and tail like Lumi (s60), keep the face system on top, and give each species one signature motion (the piglet's snout wiggle, the blob's jiggle squash on landing). Then do the remaining species the same way.\nDone when: A sandbox screenshot shows Truffle as the plush piglet and Gloop as the bowed jelly blob, walking with moving legs, and a traced lineup (tools/lineup.jl) shows every species next to Lumi without a capsule or plain sphere.\nEvidence: world/reviews/p73/raster_same.png (Truffle and Sir Sniffsalot capsules, Wibbles sphere), tests/shots/berry-wad.png, assets/20261124-222311-227-asset/image.png",
       "est_minutes": 30.0,
       "id": 236,
       "kind": "review",
@@ -3301,12 +3301,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Friends as lovable as Lumi: a silhouette and face per species",
-      "updated": "2026-11-24T22:07:18.822"
+      "title": "Friends as lovable as Lumi: the Snootle and Blorbo bodies in the game",
+      "updated": "2026-11-25T00:43:10.059"
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0070 [lighting, high]: The eye-level progress shot is the same image from s64 to s70: flat midday, one saturated green, no haze towards the sea, no warmth. The traced still shows what is possible, but players see the raster.\nWhere: RayMakie raster (sky fill, sun colour), plugins/haze.jl\nSuggestion: Warm the sun, tint the shadows blue from the sky, add distance haze to the far trees and the sea, and lift the contrast between the lit and shaded sides of the crowns.\nDone when: The eye-level progress shot at the same hour differs visibly from s70: far trees hazier than near ones (mean luminance of the far tree band 10% closer to the sky's), shadow sides cooler in hue\nEvidence: reviews/p70/progress-20-67-70.png (s67 and s70 eye-level identical), reviews/p70/traced.png",
+      "detail": "perfectionist-0073 [lighting, high]: At 18:50 the path tracer gives warm gold grass, long soft shadows and a glowing sky. The raster, which is what the player watches, shows the same minute as dark olive-green with grey shadows and no warmth. Noon is readable but bland; dusk is murky.\nWhere: RayMakie raster (SunSkyLight fill, raster_material.jl), haze.jl\nSuggestion: Bring the raster's sun colour and intensity from the sky model (warm at low elevation), tint shadow fill with sky blue, and add a distance haze matching the sky colour. Aim to match the traced still's palette at 3 hours (10:00, 15:00, 18:30).\nDone when: Eye-level raster screenshots at 10:00, 15:00 and 18:30 next to traced stills from the same camera: the 18:30 raster has mean hue in the yellow-orange range on lit grass (R > G*0.85 at sunlit pixels) and shadows lighter than 0.15 luminance.\nEvidence: world/reviews/p73/traced.png vs world/reviews/p73/raster_same.png (both 18:50)",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3315,8 +3315,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Raster lighting: warm sun, soft coloured shadows, haze, readable noon",
-      "updated": "2026-11-24T22:07:18.822"
+      "title": "Raster golden hour: the warm light the path tracer already shows",
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -4795,12 +4795,12 @@
       "id": 343,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0073: The 'arg2 not found' frame failure happened once, on 24 Nov 10:52 in the sandbox; it has not recurred in either game since (events logs 24-25 Nov). The system files it again if it does.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A frame failed: Attribute arg2 not found in ComputeGraph",
-      "updated": "2026-11-24T10:52:37.130"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T10:53:00.044",
@@ -5257,12 +5257,12 @@
       "id": 376,
       "kind": "review",
       "priority": 2,
-      "result": "s60: scenery.jl sync_text! places the steered/watched creature's tag first (published). Evidence: test 'a friend just behind Lumi does not take Lumi's name tag' passes, tests/shots/birdplay-tag-overlap.png (Pickles just behind Lumi: 'Lumi' sits right on Lumi's head, Pickles' tag above Pickles). Left open only for the dusk speech line drawn over the creature's body (steep follow camera).",
+      "result": "s60: scenery.jl sync_text! places the steered/watched creature's tag first (published). Evidence: test 'a friend just behind Lumi does not take Lumi's name tag' passes, tests/shots/birdplay-tag-overlap.png (Pickles just behind Lumi: 'Lumi' sits right on Lumi's head, Pickles' tag above Pickles). Left open only for the dusk speech line drawn over the creature's body (steep follow camera).\nperfectionist-0073: In all my screenshots the name tags sit on their creatures and read cleanly; the giant corner case is not worth a todo.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Name tags: on their own creature, hidden with it, at a giant's head",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T13:11:18.707",
@@ -5327,12 +5327,12 @@
       "id": 381,
       "kind": "look",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0073: The shovel is placed leaning at the garden fence (reviews/p73/shovel.png); a look check nobody needs any more.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "My shovel by the patch: check it stands right",
-      "updated": "2026-11-24T14:03:29.128"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T14:45:47.491",
@@ -5383,12 +5383,12 @@
       "id": 385,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0073: iterate(::Nothing) came from a CAMERA_GROUPS view of `nothing` (s62); the engine skips it now, and there is no failure since 24 Nov 14:55 in either game's events.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: MethodError: no method matching iterate(::Nothing)\nThe function `iterate` exists, but no method is defined for this comb",
-      "updated": "2026-11-24T14:55:25.250"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T15:08:22.043",
@@ -5397,12 +5397,12 @@
       "id": 386,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0073: Superseded: feather detail on a 2 s sneeze is invisible next to the friends' bodies (#236), which matter more.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Real feathers: sneeze and flight feathers with a quill and a soft vane",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T15:13:21.337",
@@ -5509,16 +5509,16 @@
       "id": 394,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0073: Another layer on the sneeze gag; the gag pile is big enough, so the session time should go to friends and places.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Bless you, plucked Lumi: after a sneeze I look bald for a while",
-      "updated": "2026-11-24T16:40:06.835"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T17:06:57.223",
-      "detail": "perfectionist-0070 [world, medium]: For six sessions the island has gained events but no new places: the s67 and s70 overviews are the same island. A returning player finds the same meadow, pond, cottage and garden.\nWhere: plugins/areas.jl, meadow.jl, the north side in front of the overview camera\nSuggestion: A place with its own look and use (an orchard with ladders, a waterfall, a ruined tower), built from generated assets and tied to a gag: the flight's roof nest could live there.\nDone when: The overview progress shot shows a new region of generated props north of the pond that was not there in s70\nEvidence: reviews/p70/progress-20-67-70.png",
+      "detail": "perfectionist-0073 [world, medium]: The overview camera (looking north) has shown the same layout since s64: cottage, pond, path, dance spot. Snow day changes the colours for a while, but there is still no new area to discover.\nWhere: north of the pond (meadow.jl regions, new plugin)\nSuggestion: Build a place with its own look and its own activity: a little orchard with a swing, a waterfall rock garden, or a windmill hill. Give it its own ground colour, 3+ generated props, and a pastime friends go there for.\nDone when: The progress overview shows a new, distinct area north of the pond, and the 'On the island now' panel lists a friend doing something there.\nEvidence: world/media/progress/session-0073/overview.png vs session-0064",
       "est_minutes": 30.0,
       "id": 395,
       "kind": "review",
@@ -5528,7 +5528,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A new place north of the pond that the overview shows",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T17:06:57.223",
@@ -5537,12 +5537,12 @@
       "id": 396,
       "kind": "review",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0073: All three W/A/D first-play tests pass now (my run: 14.6, 13.9, 28.9 s); there has been no failure since s64.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A sneeze's end must not hand the steered Lumi a new goal",
-      "updated": "2026-11-24T17:06:57.223"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T17:34:25.182",
@@ -5611,8 +5611,8 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi lands on its feet: a flight that sometimes works, and a nest on the cottage roof",
-      "updated": "2026-11-24T18:23:39.693"
+      "title": "Lumi lands on the cottage roof: the third flight ending, a nest there",
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T18:27:26.899",
@@ -5812,17 +5812,17 @@
     },
     {
       "created": "2026-11-24T20:54:43.298",
-      "detail": "perfectionist-0070 [wow, medium]: Giant Lumi is the best shot in the game (reviews/p70/giant1.png, ji-giant-b.png), but the posted film shows the riders floating in the sky above a small Lumi. Forced with few friends near, the giant lasts 13 s with one rider.\nWhere: RayMakie plots/meshscatter.jl :trace_transforms; plugins/giant.jl\nSuggestion: Compose the model matrix in :trace_transforms, re-take the film, and have the giant call friends over to ride, so it never plays out with one.\nDone when: A traced frame of the giant film shows Lumi taller than the trees with riders on its shoulders\nEvidence: reviews/p70/giant1.png; sandbox events 21:56:49-21:57:13 (one rider, popped after 13 s)",
+      "detail": "perfectionist-0073 [wow, low]: The best shot the game has made (Giant Lumi with riders) cannot go into a traced film, because RayMakie's trace path ignores the meshscatter's model matrix.\nWhere: RayMakie plots/meshscatter.jl :trace_transforms\nSuggestion: Apply the plot's model matrix in trace_transforms (positions and markersize), then render a 10 s traced giant walk for the pages.\nDone when: One traced frame of Giant Lumi shows it taller than the trees, the same as the raster preview.\nEvidence: lesson in CLAUDE.md s69; no traced giant clip in media/",
       "est_minutes": 15.0,
       "id": 416,
       "kind": "review",
-      "priority": 2,
+      "priority": 3,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T21:17:59.256",
@@ -5924,17 +5924,17 @@
     },
     {
       "created": "2026-11-24T22:07:18.822",
-      "detail": "perfectionist-0070 [props, medium]: The toadstool cap (2.3 m) is a flat glossy red dome with plain white discs. It is the overview's foreground, sits at the left of the orbit view and the berry race's first view, and covers half of the author's own egg-hatch shot.\nWhere: plugins/boing.jl (placement, look)\nSuggestion: A generated toadstool asset with a textured, bumpy cap and gills, moved to the meadow's edge out of the overview foreground; lensclear treats it as an obstruction for every view.\nDone when: The toadstool covers under 5% of the overview progress shot's 3D area and shows a textured cap in a traced still\nEvidence: media/progress/session-0070/overview.png, reviews/p70/cam-2a.png, reviews/p70/br-15.png, media/s70/egg-hatch.png",
+      "detail": "perfectionist-0073 [props, high]: The flat red primitive cap with grey dots fills the foreground in three of my seven views: the follow view at 18:33 (bottom third), the overview progress shot (bottom right), and the traced still (top left, over Gloop). It is the single most-seen prop and the least finished.\nWhere: plugins/boing.jl, camera clutter lists (nightshots, lensclear CAMERA_BLOCKERS)\nSuggestion: Generate a real glossy toadstool asset (stem with gills, uneven cap, soft spots) and move it to the meadow edge, away from the overview's foreground. Make the follow camera treat it as an obstruction to avoid.\nDone when: The overview and 5 follow screenshots 20 s apart show no toadstool cap covering more than 10% of the 3D view, and a close screenshot shows the generated asset.\nEvidence: world/reviews/p73/follow1.png, world/media/progress/session-0073/overview.png, world/reviews/p73/traced.png",
       "est_minutes": 30.0,
       "id": 424,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
-      "updated": "2026-11-24T22:07:18.822"
+      "updated": "2026-11-25T00:22:39.077"
     },
     {
       "created": "2026-11-24T22:22:39.228",
@@ -6089,6 +6089,90 @@
       "status": "open",
       "title": "Kite: Play, Stop, Play again keeps the kite",
       "updated": "2026-11-25T00:07:43.865"
+    },
+    {
+      "created": "2026-11-25T00:22:39.077",
+      "detail": "perfectionist-0073 [camera, medium]: In the chase views a pine fills the right third (Firefly catch, firefly-wad.png). Hide and seek has a branch or trunk rising from the bottom and a creature cut in half at the left edge (hideseek-found.png). In the berry race, bushes cover Lumi's legs (berry-wad.png). Where the target is, is told only by the HUD text.\nWhere: greetings.jl chase_camera!, firefly_catch.jl orbit_lerp, NG.obstruction\nSuggestion: Test what lies between the eye and Lumi AND in the lower third of the view; swing the orbit angle (not only the height) away from big crowns, and show the nearest target as a small glowing marker in the world, not only as text.\nDone when: During each first-play test, screenshots every 5 s show no single prop covering more than 20% of the 3D view in more than 1 of 6 shots.\nEvidence: world/tests/shots/firefly-wad.png, hideseek-found.png, berry-wad.png (from my run of the three first-play tests)",
+      "est_minutes": 30.0,
+      "id": 436,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Mini game views: no tree crown or trunk over a third of the frame",
+      "updated": "2026-11-25T00:22:39.077"
+    },
+    {
+      "created": "2026-11-25T00:22:39.077",
+      "detail": "perfectionist-0073 [fun, medium]: The three mini games are polished, but they are the same three as ten sessions ago, and all three are 'walk to the thing'. The paint fight (P) and snow day are the most playful systems on the island, yet there is no goal or score in them.\nWhere: plugins/paintfight.jl, snowday.jl\nSuggestion: A team paint (or snowball, when it snows) fight: aim with A/D, throw with Space, friends dodge and throw back, splashes stay on the ground as the team's colour, and after 60 s the side with the most colour on the meadow wins. Add a start card, an end card and levels like the others.\nDone when: The mini game menu has a 4th entry, and a first W/A/D/Space test wins a round with an end card and a colour count.\nEvidence: Mini game menu: Firefly catch, Hide and seek, Berry race only (live_status minigames)",
+      "est_minutes": 30.0,
+      "id": 437,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A fourth mini game from the best gag: a scored paint or snowball fight",
+      "updated": "2026-11-25T00:22:39.077"
+    },
+    {
+      "created": "2026-11-25T00:22:39.077",
+      "detail": "perfectionist-0073 [style, medium]: Clouds are flat glowing ellipses with a hard bright rim (orbit.png, two blobs at the top). Close-up snowflakes are big flat white discs the size of a creature's head (snow-7.png). Both look like 2D stickers over the clay world.\nWhere: plugins/clouds.jl, snowday.jl\nSuggestion: Make clouds from clusters of soft clay puffs shaded by the sun (lit top, blue-grey belly), and make flakes small 6-armed or soft sprites that fade near the camera.\nDone when: An orbit screenshot at 15:00 shows clouds with a lit top and a darker underside, and a snow screenshot has no flake wider than 1% of the view width.\nEvidence: world/reviews/p73/orbit.png, world/media/s72/snow-7.png",
+      "est_minutes": 30.0,
+      "id": 438,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sky and weather with volume: clouds and snowflakes that are not flat discs",
+      "updated": "2026-11-25T00:22:39.077"
+    },
+    {
+      "created": "2026-11-25T00:28:44.048",
+      "detail": "UndefVarError: `Dates` not defined in `Main.Plugin_makeover`\nSuggestion: check for spelling errors or missing imports.\nHint: Dates is loaded but not imported in the active module Main.\nStacktrace:\n  [1] step!(::Main.Plugin_makeover.Makeover, game::Game, dt::Float64)\n    @ Main.Plugin_makeover /sim/Programmieren/SimGame/world/plugins/makeover.jl:141\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 439,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-25T00:28:45.670: plugin makeover loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:makeover.Makeover failed in step! and was switched off",
+      "updated": "2026-11-25T00:28:45.670"
+    },
+    {
+      "created": "2026-11-25T00:59:25.447",
+      "detail": "The human (s74, goal 6): in 'On purpose' Lumi flies upright in its standing pose with legs hanging (world/media/human/flight-pose.png). Needs a :fly action in the engine (species.jl body_pose: pitch the body forward ~70 deg, bird.jl: legs folded back under the body, wings in a full beat cycle, crest swept back), set by soar.jl and flight.jl while airborne, with a takeoff crouch and a landing flare. An engine edit to every-frame code: do it in a session with a Julia tool, test in a quiet Stage first. Done when: a motion_sheet of a new flight film shows a level body and tucked legs in every airborne frame, and the takeoff and landing frames show a crouch and a flare.",
+      "est_minutes": 15.0,
+      "id": 440,
+      "kind": "motion",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi flies like a bird: body level, legs tucked, wings beating",
+      "updated": "2026-11-25T00:59:25.447"
+    },
+    {
+      "created": "2026-11-25T00:59:25.456",
+      "detail": "The human (s74, goal 6): every film is lit like flat noon (all game_clip calls use hour 10.5-11). Shoot the next films at the hour that suits them (sunset bench at 17.5-18.5, the snow day in the low morning sun, the makeover at golden hour), and check each take's light in the contact sheet before posting. Note AGENTS.md: golden-hour traced clips have lost the GPU device before (todo #184); try 24 samples at 960x540 and a worker restart first. Done when: three films on the pages are lit by a low warm or a night light, and their contact sheets show long shadows or lamplight.",
+      "est_minutes": 15.0,
+      "id": 441,
+      "kind": "look",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Films in real light: golden hour, morning haze, night lanterns",
+      "updated": "2026-11-25T00:59:25.456"
     }
   ]
 }

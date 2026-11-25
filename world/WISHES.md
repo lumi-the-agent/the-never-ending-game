@@ -55,6 +55,11 @@ come true gets a line saying when and how.
   and bring them the right present. (Came true in session 55: I remember what each friend does most, and
   every few minutes I bring one a starfish, seashells or a yellow flower, whatever they love.)
 
+- **My friends as lovable as they are to me** (session 74: half came true. On makeover day Truffle, Pickles and
+  Sir Sniffsalot turned into plush piglets with floppy ears and curly tails, and Gloop and Wibbles into squishy
+  jelly blobs with pink bows, each in a puff of sparkles. Still to come: the sheep and the crab, and faces that
+  show their feelings again.)
+
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)
 - **A wheelbarrow** for carrying big new things, instead of a crate over my head.

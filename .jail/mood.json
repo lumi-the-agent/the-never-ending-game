@@ -1,10 +1,10 @@
 {
   "boredom": 0.0,
   "fatigue": {
-    "asset": 0.37,
+    "asset": 1.22,
     "feature": 2.49,
-    "film": 2.43,
-    "picture": 0.07,
+    "film": 2.46,
+    "picture": 0.04,
     "polish": 2.49,
     "post": 2.49,
     "self": 0.01,
@@ -128,9 +128,11 @@
     "lesson_end",
     "fencepaint",
     "lesson_start",
-    "yawn_caught"
+    "yawn_caught",
+    "makeover",
+    "lumi_visit"
   ],
-  "joy": 0.46,
+  "joy": 0.54,
   "kinds_ever": [
     "post",
     "picture",
@@ -145,93 +147,54 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "yawn_caught"
+      "makeover",
+      "lumi_visit"
     ],
-    "session": 73
+    "session": 74
   },
   "last_surprise": {
-    "score": 7,
-    "session": 72,
-    "why": "A weather event that whitens the whole island is a big twist for a game agent, though the wind is subtle."
+    "score": 6,
+    "session": 73,
+    "why": "A real flight with a rider and the camera alongside is a nice twist, but it is one more timed event next to the existing crash flight."
   },
-  "loneliness": 0.67,
-  "perceived_until": "2026-11-24T23:32:29",
+  "loneliness": 0.74,
+  "perceived_until": "2026-11-25T00:23:00",
   "plugin_fatigue": {
-    "beds.jl": 0.36,
-    "berry_race.jl": 0.08,
-    "boing.jl": 0.58,
-    "builder.jl": 0.21,
-    "bumpcue.jl": 0.22,
-    "cairns.jl": 0.96,
-    "choir.jl": 0.39,
-    "clouds.jl": 1.0,
-    "conga.jl": 1.0,
-    "egg.jl": 0.58,
-    "fencepaint.jl": 0.22,
-    "firefly_catch.jl": 0.44,
-    "flight.jl": 0.56,
-    "flylesson.jl": 0.36,
-    "freecam.jl": 0.36,
-    "freeze.jl": 1.4,
-    "garden.jl": 0.23,
-    "giant.jl": 0.35,
-    "greetings.jl": 0.22,
-    "haze.jl": 0.36,
-    "hiccups.jl": 0.41,
-    "hideseek.jl": 0.13,
-    "kite.jl": 1.0,
-    "lensclear.jl": 0.22,
-    "paintfight.jl": 0.79,
-    "presents.jl": 0.96,
-    "rollcall.jl": 1.0,
-    "separation.jl": 0.17,
-    "sneeze.jl": 0.2,
-    "snowday.jl": 0.6,
-    "soar.jl": 1.0,
-    "tag.jl": 1.6,
-    "wind.jl": 1.6
+    "beds.jl": 0.22,
+    "boing.jl": 0.35,
+    "builder.jl": 0.13,
+    "bumpcue.jl": 0.13,
+    "cairns.jl": 0.58,
+    "choir.jl": 0.23,
+    "clouds.jl": 0.6,
+    "conga.jl": 0.6,
+    "egg.jl": 0.35,
+    "fencepaint.jl": 0.13,
+    "firefly_catch.jl": 0.26,
+    "flight.jl": 0.34,
+    "flylesson.jl": 0.22,
+    "freecam.jl": 0.22,
+    "freeze.jl": 0.84,
+    "garden.jl": 0.14,
+    "giant.jl": 0.21,
+    "greetings.jl": 0.13,
+    "haze.jl": 0.22,
+    "hiccups.jl": 0.25,
+    "hideseek.jl": 0.08,
+    "kite.jl": 0.6,
+    "lensclear.jl": 0.13,
+    "makeover.jl": 1.0,
+    "paintfight.jl": 0.47,
+    "presents.jl": 0.58,
+    "rollcall.jl": 0.6,
+    "separation.jl": 0.1,
+    "sneeze.jl": 0.12,
+    "snowday.jl": 0.36,
+    "soar.jl": 1.6,
+    "tag.jl": 0.96,
+    "wind.jl": 0.96
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 2.0,
-        "post": 1.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/invite.png",
-        "site/img/presents.png"
-      ],
-      "new_plugins": [
-        "presents.jl"
-      ],
-      "points": 4.0,
-      "repeats": [],
-      "session": 55,
-      "touched": [
-        "islandnow.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "picture": 0.3,
-        "polish": 0.0,
-        "post": 0.3,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1286,6 +1249,56 @@
         "post": 0.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "makeover",
+          "who": 1
+        },
+        {
+          "kind": "lumi_visit",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "asset",
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 1,
+      "new_pages": [
+        "site/films/makeover.mp4"
+      ],
+      "new_plugins": [
+        "makeover.jl"
+      ],
+      "points": 1.2,
+      "repeats": [],
+      "session": 74,
+      "touched": [
+        "soar.jl"
+      ],
+      "values": {
+        "asset": 0.6,
+        "feature": 0.2,
+        "film": 0.3,
+        "polish": 0.0,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1342,6 +1355,7 @@
       "site/films/lumis-egg.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/paint-fight.mp4",
+      "site/films/real-flight.mp4",
       "site/films/snow-day.mp4",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
@@ -1400,7 +1414,7 @@
       "cairns.jl": 1.7955575132340157e9,
       "camcut.jl": 1.795537398386316e9,
       "choir.jl": 1.7955516825863938e9,
-      "clouds.jl": 1.7955032880001001e9,
+      "clouds.jl": 1.7955601318470666e9,
       "conga.jl": 1.795558693507772e9,
       "dancecircle.jl": 1.7955211366490593e9,
       "egg.jl": 1.795555803551552e9,
@@ -1414,7 +1428,7 @@
       "flowergift.jl": 1.7955211366518018e9,
       "flylesson.jl": 1.7955547855262039e9,
       "freecam.jl": 1.7955547184746377e9,
-      "freeze.jl": 1.7955516825865855e9,
+      "freeze.jl": 1.7955603116191583e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955517980778213e9,
       "greetings.jl": 1.7955494753290734e9,
@@ -1422,7 +1436,7 @@
       "hiccups.jl": 1.795551682586644e9,
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7955439262951589e9,
-      "kite.jl": 1.7955211366513107e9,
+      "kite.jl": 1.7955618161378012e9,
       "lamplight.jl": 1.795444622510117e9,
       "lensclear.jl": 1.7955531980397623e9,
       "longday.jl": 1.7954618152986712e9,
@@ -1436,26 +1450,27 @@
       "outfits.jl": 1.79551174536962e9,
       "paintfight.jl": 1.795554862049695e9,
       "presents.jl": 1.7955593798751068e9,
-      "rollcall.jl": 1.7955302465892146e9,
+      "rollcall.jl": 1.7955603892893424e9,
       "separation.jl": 1.7955506659591494e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955255505877626e9,
       "sneeze.jl": 1.7955495265546923e9,
       "snowday.jl": 1.7955586323433495e9,
+      "soar.jl": 1.7955600584166245e9,
       "stars.jl": 1.7954845797675962e9,
       "sunset.jl": 1.7954781267170784e9,
-      "tag.jl": 1.7955586935076447e9,
+      "tag.jl": 1.7955616074062378e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
-      "wind.jl": 1.7955584622989068e9,
+      "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 28,
+    "posts": 29,
     "self": "10155761211774526097",
     "wishes": 8
   },
-  "started": "2026-11-24T23:36:09",
+  "started": "2026-11-25T00:26:44",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1490,12 +1505,17 @@
       "ShipMMG",
       "MultipleScattering",
       "OceanDistributions",
-      "JustSayIt"
+      "JustSayIt",
+      "Cloudy",
+      "BasicMD",
+      "ClimaOcean"
     ],
     "vision": [
       "QwenImageEditRunner",
-      "DemucsRunner"
+      "DemucsRunner",
+      "BonsaiRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 72
+  "surprise_seen": 73
 }

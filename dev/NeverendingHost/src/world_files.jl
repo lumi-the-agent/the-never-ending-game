@@ -168,11 +168,11 @@ character_name(jp::JailPaths) = isfile(name_path(jp)) ? String(strip(read(name_p
 "`text` with `{{NAME}}` put in for the character's name (the prompts are written that way)."
 named(text::AbstractString, jp::JailPaths) = replace(text, "{{NAME}}" => character_name(jp))
 
-"The character's own wishes (world/WISHES.md, the agent's to change; the human's goal 4), for the session prompt."
+"The character's own wishes (world/WISHES.md, the agent's to change; the human's goal 5), for the session prompt."
 function wishes_text(jp::JailPaths)
     isfile(wishes_path(jp)) && return strip(read(wishes_path(jp), String))
     name = character_name(jp)
-    return "## $(name)'s wishes\n\nThere is no `world/WISHES.md` yet: write it this session, in $(name)'s voice (goal 4)."
+    return "## $(name)'s wishes\n\nThere is no `world/WISHES.md` yet: write it this session, in $(name)'s voice (goal 5)."
 end
 
 reviews_dir(jp::JailPaths) = joinpath(jp.world, "reviews")

@@ -40,6 +40,22 @@ turns it off). 16 samples come out clean where they used to be grainy, so: short
 frames 16-32 samples, stills 64. It is spatial, frame by frame: check a film for flicker in
 slow pans.
 
+## Checking motion
+
+A still shows a pose, never a pop, a snap, jitter or a stiff move. Before a
+film goes out, look at its motion:
+
+```julia
+include("/sim/Programmieren/SimGame/dev/NeverendingHost/tools/motion_sheet.jl")
+print(motion_sheet("site/films/my-film.mp4"; out = "media/motion").text)
+```
+
+It writes `<name>-overview.jpg` (12 frames over the film) and
+`<name>-steps.jpg` (8 consecutive frames around the sharpest jump that is not
+a cut) and prints how much each frame changes. Open both. Smooth motion
+changes a little and evenly from frame to frame. The reviewers get the same
+sheets for every film of a session.
+
 ## Shorts for your posts
 
 A post is a path traced short first: 5-15 s of what happens, small for phones,

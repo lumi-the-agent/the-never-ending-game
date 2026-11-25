@@ -43,6 +43,7 @@ include("procs.jl")
 include("budget.jl")
 include("world_files.jl")
 include("agent.jl")
+include(joinpath(@__DIR__, "..", "tools", "motion_sheet.jl"))   # also for the agents to `include`
 include("review.jl")
 include("mood.jl")
 include("curiosity.jl")

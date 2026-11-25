@@ -59,9 +59,10 @@ function role_mounts(jp::JailPaths, role::Symbol)
     elseif role === :review
         push!(readonly, jp.root)
         push!(whitelist, joinpath(jp.world, "reviews"), joinpath(jp.world, "run"), game_run(jp, :sandbox), jp.romeodb)
-    else   # :game, :worker
+    else   # :game, :worker (they run the agent's plugins)
         push!(readonly, jp.root)
         push!(whitelist, jp.world)
+        isfile(goals_path(jp)) && push!(readonly, goals_path(jp))
     end
     return (; whitelist, readonly, masks)
 end

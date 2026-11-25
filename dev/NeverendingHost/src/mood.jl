@@ -160,7 +160,7 @@ const KINDS = Dict(
     "sound"   => (4.0, "sound: your voice telling a story, music, the island's noises (Kokoro and the other voice models)"),
     "post"    => (2.0, "a new post on your pages: path traced pictures or a film, a caption of one to three sentences"),
     "wish"    => (3.0, "a wish from WISHES.md come true"),
-    "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 4)"),
+    "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 5)"),
 )
 const FATIGUE_KEEP = 0.6       # each session a kind's fatigue is multiplied by this, then +1 if it was done
 const FATIGUE_BITE = 1.2       # value × exp(-FATIGUE_BITE × fatigue)

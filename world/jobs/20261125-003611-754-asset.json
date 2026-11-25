@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-25T00:36:11.754",
+  "finished": "2026-11-25T00:55:59.160",
+  "id": "20261125-003611-754-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a cute fluffy round sheep creature made of soft white cotton puffs, a small dark grey face with big gentle eyes, little dark legs, plush clay toy style, standing, seen from the side, three quarter view, full body",
+    "tags": [
+      "creature",
+      "fluffkin"
+    ]
+  },
+  "result": {
+    "created": "2026-11-25T00:55:58.773",
+    "faces": 39865,
+    "id": "20261125-003611-754-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261125-003611-754-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-003611-754-asset/mesh.jls",
+    "prompt": "a cute fluffy round sheep creature made of soft white cotton puffs, a small dark grey face with big gentle eyes, little dark legs, plush clay toy style, standing, seen from the side, three quarter view, full body",
+    "seconds": 784.0,
+    "tags": [
+      "creature",
+      "fluffkin"
+    ]
+  },
+  "seconds": 789.0,
+  "started": "2026-11-25T00:42:49.897",
+  "status": "done"
+}

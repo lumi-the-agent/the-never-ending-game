@@ -55,6 +55,7 @@ function takeoff!(s::Soar, game, me)
     s.a0 = atan(p[2] - s.centre[2], p[1] - s.centre[1])
     s.start = p
     s.lumi = me.id; s.state = :up; s.t0 = w.t; s.said = 0
+    delete!(S, :hop_from)
     NG.leave_interactions!(w, me)
     me.goal = NG.Goal(:soar, p, :proud, 60.0, w.t + 60, true, 0, false)
     if has_chick()
@@ -108,7 +109,9 @@ function NG.step!(s::Soar, game, dt)
         me.pos = s.start + Point3f(0, 0, el < 1.2 ? 0f0 : 0.8f0 * Float32(ease((el - 1.2) / 1.0)))
         me.action = el < 0.6 ? :proud : :dance; me.goal.action = me.action
         p1, a = loop_pos(s, w, 0.005)
-        me.yaw = a + Float32(pi / 2)
+        # turn towards the flying direction over the run-up (it snapped round in one frame, s74, goal 6)
+        dyaw = mod(a + Float32(pi / 2) - me.yaw + Float32(pi), 2f0 * Float32(pi)) - Float32(pi)
+        me.yaw += dyaw * min(1f0, 3f0 * Float32(dt))
         if el >= T_UP
             s.state = :loop; s.t0 = w.t
         end
@@ -153,7 +156,16 @@ function NG.step!(s::Soar, game, dt)
             c[:pos] = g + Point3f(0, 0, (1 - u) * 1.5f0 + 0.3f0 * abs(sin(6f0 * Float32(el))))
             c[:action] = :jump
         else
-            c[:pos] = me.pos + Point3f(-0.12f0 * cos(me.yaw), -0.12f0 * sin(me.yaw), 1.5f0)
+            seat = me.pos + Point3f(-0.12f0 * cos(me.yaw), -0.12f0 * sin(me.yaw), 1.5f0)
+            # the little one hops up onto the back during the run-up, in an arc (it appeared there in one frame)
+            if s.state === :up
+                haskey(S, :hop_from) || (S[:hop_from] = c[:pos])
+                u = Float32(clamp(el / 0.9, 0, 1))
+                p = S[:hop_from] + (seat - S[:hop_from]) * u
+                c[:pos] = p + Point3f(0, 0, 0.6f0 * 4u * (1 - u))
+            else
+                c[:pos] = seat
+            end
             c[:action] = s.state === :loop ? :dance : :proud
         end
         c[:yaw] = me.yaw
@@ -170,12 +182,10 @@ function soar_group(w)
     t = Vec3f(cos(me.yaw), sin(me.yaw), 0)
     out = Vec3f(me.pos[1] - s.centre[1], me.pos[2] - s.centre[2], 0)
     out = out / max(norm(out), 1f-3)
-    if s.state === :loop
-        eye = me.pos - 6.5f0 * t + 3.2f0 * out + Point3f(0, 0, 2.2f0)
-        return (me.id, Point3f[me.pos], (eye, me.pos + 1.5f0 * t + Point3f(0, 0, 0.6f0)))
-    end
-    eye = me.pos + 4.5f0 * out + Point3f(0, 0, 1.6f0)
-    return (me.id, Point3f[me.pos], (eye, me.pos + Point3f(0, 0, 1.0f0)))
+    # one framing from takeoff to landing: switching to a side view at the landing swung the camera ~45 deg in
+    # a third of a second (the human, landing-steps.jpg, s74)
+    eye = me.pos - 6.5f0 * t + 3.2f0 * out + Point3f(0, 0, 2.2f0)
+    return (me.id, Point3f[me.pos], (eye, me.pos + 1.5f0 * t + Point3f(0, 0, 0.6f0)))
 end
 
 function NG.start!(s::Soar, game)

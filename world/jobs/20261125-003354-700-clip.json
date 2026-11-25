@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-25T00:33:54.700",
+  "finished": "2026-11-25T00:34:30.810",
+  "id": "20261125-003354-700-clip",
+  "kind": "clip",
+  "params": {
+    "call": "makeover_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "spot": [
+        3.0,
+        -14.0
+      ],
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s74/makeover-preview3.mp4",
+    "script": "movies/makeover.jl"
+  },
+  "result": {
+    "frames": 108,
+    "hour": 10.511095470637043,
+    "path": "/sim/Programmieren/SimGame/world/media/s74/makeover-preview3.mp4",
+    "seconds_per_frame": 0.09519022040896946
+  },
+  "seconds": 35.8,
+  "started": "2026-11-25T00:33:55.042",
+  "status": "done"
+}

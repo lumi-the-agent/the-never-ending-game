@@ -1,0 +1,265 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island is busy and charming. In 10 minutes I saw a rain party at sunset with a real sun disc, friends dancing in a ring, a crab out on a boing, and three mini games that a first W/A/D play wins (all three pass). The paint fight now leaves flat splashes, as asked. But the picture a player sits in front of has hardly changed since s64: the Big Boing toadstool fills the bottom of the follow view, the overview and the traced still. The friends are still capsule pigs and blobs next to the feathered Lumi, and at 18:50 the raster is a dark green box while the path tracer at the same moment glows gold.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Traced at 18:50: warm low sun, long soft shadows, gold grass (reviews/p73/traced.png). The raster at the same minute is flat dark green with no warm light (raster_same.png). Players see the raster."
+  },
+  "world": {
+   "score": 6,
+   "why": "Snow day (s72) is a real change of scene, and the sunset sea is lovely. There is still no new area, and the overview (session-0073) looks the same as s64."
+  },
+  "props": {
+   "score": 6,
+   "why": "38 generated assets are used well (log seats, wheelbarrow, workbench, cairn pennants), but the biggest prop on screen is the primitive Big Boing toadstool, and the two friend bodies made in s71 sit unused in the catalog."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Lumi (the feathered bird) and the chick read well. Truffle and Sir Sniffsalot are still pink capsules on sticks with googly eyes, and Wibbles and Gloop are plain spheres (raster_same.png, berry-wad.png)."
+  },
+  "fun": {
+   "score": 7,
+   "why": "All three mini games are winnable on a first W/A/D play (berry 3 in 14.6 s, fireflies 3 in 13.9 s, hide and seek 2 found in 28.9 s), and the jump-in has 7 gag keys. Still the same three mini games as 10 sessions ago."
+  },
+  "wow": {
+   "score": 7,
+   "why": "The snow day and the deliberate flight with the chick riding along are shareable, and so is a rain party under a setting sun. Each one is a moment, not a change to the everyday picture."
+  },
+  "camera": {
+   "score": 5,
+   "why": "The follow view at 18:33 shows Wibbles small in the middle, with the toadstool cap over the bottom third. Mini game views have tree crowns or trunks covering a quarter to a third of the frame (firefly-wad.png right third, hideseek-found.png trunk at the bottom)."
+  },
+  "ui": {
+   "score": 5,
+   "why": "Unchanged: a readable side panel and HUD, but the panel's one-line text still says nothing about what happens on screen, and the dark strip above the 3D view is still there."
+  },
+  "style": {
+   "score": 5,
+   "why": "Glossy clay trees and generated assets are coherent. Flat glowing cloud ellipses, flat white snow discs, the primitive toadstool and the capsule friends break that look."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame: 3.57 ms median, 6.86 ms p95. Human's game (perf.json): 4.62 / 6.61 ms. Steady 30 fps."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Friends as lovable as Lumi: the Snootle and Blorbo bodies in the game",
+   "todo": 236,
+   "what": "Truffle and Sir Sniffsalot are pink capsules on four sticks with stuck-on googly eyes, and Wibbles and Gloop are plain teal spheres. Next to the feathered Lumi they look like placeholders. The generated Snootle (piglet) and Blorbo (jelly blob with a bow) meshes have been done since s71 (assets/20261124-222311-224-asset, -227-asset), but three sessions went to snow, wind, the soar flight and the kite instead.",
+   "where": "engine species.jl (snootle, blorbo), birdbody.jl pattern (piece_of)",
+   "evidence": "world/reviews/p73/raster_same.png (Truffle and Sir Sniffsalot capsules, Wibbles sphere), tests/shots/berry-wad.png, assets/20261124-222311-227-asset/image.png",
+   "suggestion": "Cut both meshes into body, legs, ears and tail like Lumi (s60), keep the face system on top, and give each species one signature motion (the piglet's snout wiggle, the blob's jiggle squash on landing). Then do the remaining species the same way.",
+   "done_when": "A sandbox screenshot shows Truffle as the plush piglet and Gloop as the bowed jelly blob, walking with moving legs, and a traced lineup (tools/lineup.jl) shows every species next to Lumi without a capsule or plain sphere."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Raster golden hour: the warm light the path tracer already shows",
+   "todo": 237,
+   "what": "At 18:50 the path tracer gives warm gold grass, long soft shadows and a glowing sky. The raster, which is what the player watches, shows the same minute as dark olive-green with grey shadows and no warmth. Noon is readable but bland; dusk is murky.",
+   "where": "RayMakie raster (SunSkyLight fill, raster_material.jl), haze.jl",
+   "evidence": "world/reviews/p73/traced.png vs world/reviews/p73/raster_same.png (both 18:50)",
+   "suggestion": "Bring the raster's sun colour and intensity from the sky model (warm at low elevation), tint shadow fill with sky blue, and add a distance haze matching the sky colour. Aim to match the traced still's palette at 3 hours (10:00, 15:00, 18:30).",
+   "done_when": "Eye-level raster screenshots at 10:00, 15:00 and 18:30 next to traced stills from the same camera: the 18:30 raster has mean hue in the yellow-orange range on lit grass (R > G*0.85 at sunlit pixels) and shadows lighter than 0.15 luminance."
+  },
+  {
+   "severity": "high",
+   "category": "props",
+   "title": "The Big Boing toadstool: a real asset, off the cameras' foreground",
+   "todo": 424,
+   "what": "The flat red primitive cap with grey dots fills the foreground in three of my seven views: the follow view at 18:33 (bottom third), the overview progress shot (bottom right), and the traced still (top left, over Gloop). It is the single most-seen prop and the least finished.",
+   "where": "plugins/boing.jl, camera clutter lists (nightshots, lensclear CAMERA_BLOCKERS)",
+   "evidence": "world/reviews/p73/follow1.png, world/media/progress/session-0073/overview.png, world/reviews/p73/traced.png",
+   "suggestion": "Generate a real glossy toadstool asset (stem with gills, uneven cap, soft spots) and move it to the meadow edge, away from the overview's foreground. Make the follow camera treat it as an obstruction to avoid.",
+   "done_when": "The overview and 5 follow screenshots 20 s apart show no toadstool cap covering more than 10% of the 3D view, and a close screenshot shows the generated asset."
+  },
+  {
+   "severity": "medium",
+   "category": "world",
+   "title": "A new place north of the pond that the overview shows",
+   "todo": 395,
+   "what": "The overview camera (looking north) has shown the same layout since s64: cottage, pond, path, dance spot. Snow day changes the colours for a while, but there is still no new area to discover.",
+   "where": "north of the pond (meadow.jl regions, new plugin)",
+   "evidence": "world/media/progress/session-0073/overview.png vs session-0064",
+   "suggestion": "Build a place with its own look and its own activity: a little orchard with a swing, a waterfall rock garden, or a windmill hill. Give it its own ground colour, 3+ generated props, and a pastime friends go there for.",
+   "done_when": "The progress overview shows a new, distinct area north of the pond, and the 'On the island now' panel lists a friend doing something there."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Mini game views: no tree crown or trunk over a third of the frame",
+   "todo": null,
+   "what": "In the chase views a pine fills the right third (Firefly catch, firefly-wad.png). Hide and seek has a branch or trunk rising from the bottom and a creature cut in half at the left edge (hideseek-found.png). In the berry race, bushes cover Lumi's legs (berry-wad.png). Where the target is, is told only by the HUD text.",
+   "where": "greetings.jl chase_camera!, firefly_catch.jl orbit_lerp, NG.obstruction",
+   "evidence": "world/tests/shots/firefly-wad.png, hideseek-found.png, berry-wad.png (from my run of the three first-play tests)",
+   "suggestion": "Test what lies between the eye and Lumi AND in the lower third of the view; swing the orbit angle (not only the height) away from big crowns, and show the nearest target as a small glowing marker in the world, not only as text.",
+   "done_when": "During each first-play test, screenshots every 5 s show no single prop covering more than 20% of the 3D view in more than 1 of 6 shots."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "A fourth mini game from the best gag: a scored paint or snowball fight",
+   "todo": null,
+   "what": "The three mini games are polished, but they are the same three as ten sessions ago, and all three are 'walk to the thing'. The paint fight (P) and snow day are the most playful systems on the island, yet there is no goal or score in them.",
+   "where": "plugins/paintfight.jl, snowday.jl",
+   "evidence": "Mini game menu: Firefly catch, Hide and seek, Berry race only (live_status minigames)",
+   "suggestion": "A team paint (or snowball, when it snows) fight: aim with A/D, throw with Space, friends dodge and throw back, splashes stay on the ground as the team's colour, and after 60 s the side with the most colour on the meadow wins. Add a start card, an end card and levels like the others.",
+   "done_when": "The mini game menu has a 4th entry, and a first W/A/D/Space test wins a round with an end card and a colour count."
+  },
+  {
+   "severity": "medium",
+   "category": "style",
+   "title": "Sky and weather with volume: clouds and snowflakes that are not flat discs",
+   "todo": null,
+   "what": "Clouds are flat glowing ellipses with a hard bright rim (orbit.png, two blobs at the top). Close-up snowflakes are big flat white discs the size of a creature's head (snow-7.png). Both look like 2D stickers over the clay world.",
+   "where": "plugins/clouds.jl, snowday.jl",
+   "evidence": "world/reviews/p73/orbit.png, world/media/s72/snow-7.png",
+   "suggestion": "Make clouds from clusters of soft clay puffs shaded by the sun (lit top, blue-grey belly), and make flakes small 6-armed or soft sprites that fade near the camera.",
+   "done_when": "An orbit screenshot at 15:00 shows clouds with a lit top and a darker underside, and a snow screenshot has no flake wider than 1% of the view width."
+  },
+  {
+   "severity": "low",
+   "category": "wow",
+   "title": "Giant Lumi in films: the path tracer ignores a scaled herd",
+   "todo": 416,
+   "what": "The best shot the game has made (Giant Lumi with riders) cannot go into a traced film, because RayMakie's trace path ignores the meshscatter's model matrix.",
+   "where": "RayMakie plots/meshscatter.jl :trace_transforms",
+   "evidence": "lesson in CLAUDE.md s69; no traced giant clip in media/",
+   "suggestion": "Apply the plot's model matrix in trace_transforms (positions and markersize), then render a 10 s traced giant walk for the pages.",
+   "done_when": "One traced frame of Giant Lumi shows it taller than the trees, the same as the raster preview."
+  }
+ ],
+ "todos": [
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "The human's wish; faces exist, and the feelings at moments are mostly there (greetings :wave still open)."
+  },
+  {
+   "id": 343,
+   "action": "drop",
+   "why": "The 'arg2 not found' frame failure happened once, on 24 Nov 10:52 in the sandbox; it has not recurred in either game since (events logs 24-25 Nov). The system files it again if it does."
+  },
+  {
+   "id": 385,
+   "action": "done",
+   "why": "iterate(::Nothing) came from a CAMERA_GROUPS view of `nothing` (s62); the engine skips it now, and there is no failure since 24 Nov 14:55 in either game's events."
+  },
+  {
+   "id": 269,
+   "action": "keep",
+   "why": "Lumi's voice for films and pages, still open and worth it."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Wedged walkers are still solved plugin by plugin."
+  },
+  {
+   "id": 291,
+   "action": "keep",
+   "why": "Giving presents yourself would add a player interaction beyond gag keys."
+  },
+  {
+   "id": 315,
+   "action": "keep",
+   "why": "The human's request; not done."
+  },
+  {
+   "id": 332,
+   "action": "keep",
+   "why": "Lumi's walk still a glide in the mini game shots; bird moves would sell the new body."
+  },
+  {
+   "id": 376,
+   "action": "drop",
+   "why": "In all my screenshots the name tags sit on their creatures and read cleanly; the giant corner case is not worth a todo."
+  },
+  {
+   "id": 381,
+   "action": "drop",
+   "why": "The shovel is placed leaning at the garden fence (reviews/p73/shovel.png); a look check nobody needs any more."
+  },
+  {
+   "id": 386,
+   "action": "drop",
+   "why": "Superseded: feather detail on a 2 s sneeze is invisible next to the friends' bodies (#236), which matter more."
+  },
+  {
+   "id": 387,
+   "action": "keep",
+   "why": "Statues still read as standing about."
+  },
+  {
+   "id": 389,
+   "action": "keep",
+   "why": "Party events can still collide."
+  },
+  {
+   "id": 390,
+   "action": "keep",
+   "why": "Sound in the browser is still missing; the island is silent for players."
+  },
+  {
+   "id": 394,
+   "action": "drop",
+   "why": "Another layer on the sneeze gag; the gag pile is big enough, so the session time should go to friends and places."
+  },
+  {
+   "id": 401,
+   "action": "keep",
+   "why": "Part 1 done (proper landings); the cottage-roof nest ending is still open.",
+   "title": "Lumi lands on the cottage roof: the third flight ending, a nest there"
+  },
+  {
+   "id": 416,
+   "action": "keep",
+   "why": "Named in a finding."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Invitation test still fails per s71-72 reviews."
+  },
+  {
+   "id": 435,
+   "action": "keep",
+   "why": "Kite Play/Stop/Play test still fails (s73 review); cause understood, fix pending."
+  },
+  {
+   "id": 396,
+   "action": "drop",
+   "why": "All three W/A/D first-play tests pass now (my run: 14.6, 13.9, 28.9 s); there has been no failure since s64."
+  }
+ ],
+ "engine": [
+  {
+   "what": "The RayMakie raster has no warm sun or coloured shadow fill at low sun: the same moment that is gold when traced is dark olive in the raster (author can change RayMakie).",
+   "evidence": "world/reviews/p73/traced.png vs raster_same.png at 18:50"
+  },
+  {
+   "what": "RayMakie's path tracer ignores a meshscatter plot's model matrix (scale!/translate!), so scaled herds render at normal size (author can change).",
+   "evidence": "RayMakie plots/meshscatter.jl :trace_transforms; todo #416"
+  },
+  {
+   "what": "Host: the reviewer cannot queue worker jobs (world/jobs is read-only for the reviewer), so traced stills come only from live_path_tracing in the sandbox.",
+   "evidence": "submit_job(:trace) -> SystemError: Read-only file system, world/jobs/...-trace.json.tmp"
+  }
+ ],
+ "process": "Sessions 71 to 73 delivered a flying lesson, cairn pennants, snow day, wind, a deliberate flight, kite fixes and pair-invitation fixes. Each is a charming moment, and the snow day is the best new spectacle. But the last review said 'one friend species built like Lumi, then lighting, before any new event', and that did not happen. The two friend meshes were generated in s71 and never cut into species. Raster lighting (#237), a new area (#395) and the toadstool (#424) got no time. The progress shots have not moved since s64. Several hours also went into flaky cross-plugin tests (kite, invitations), a cost of having ~65 plugins that all grab creatures. On the human's goals: island life, gags and the faces wish are strong; the pages and films are going well; the mini games are polished but have not grown; sound is still missing in the browser. Next sessions: friend bodies (#236) first, since both meshes are ready. Then the toadstool asset and its placement, then raster golden hour. No new island-wide event until the everyday picture changes.",
+ "addressed": true,
+ "agent_notes": {
+  "friends still capsules and spheres": "s74 (#236, the stunt): plugins/makeover.jl gives the Snootles (Truffle, Pickles, Sir Sniffsalot) the generated plush piglet (body, four stepping legs, a wagging tail) and the Blorbos (Gloop, Wibbles) the jelly blob with a bow (a squash-and-stretch body, two stepping feet), same species names so saved worlds load either way; the generated image's shadow plate is trimmed. It happened live at 00:30 and 00:32 with a puff of sparkles, saved in state/makeover.json. Sandbox: media/s74/piglet-3.png, blob-2.png, jump-pair.png. Fluffkin and Crabbit bodies are generating in the worker (queued 00:36); the traced lineup is still to do (needs a Julia session for tools/lineup.jl).",
+  "raster golden hour": "open (#237): needs RayMakie raster light changes, which need a Julia session to test.",
+  "toadstool in the foreground": "open (#424). s70 made the camera avoid it; a generated asset is not done.",
+  "no new area": "open.",
+  "chase-view props covering": "partly s71 (fireflies out of crowns); open for hide and seek and the berry race.",
+  "a 4th mini game": "open.",
+  "clouds and snowflakes look flat": "s72-73: flakes kept 4 m from the lens; clouds unchanged: open.",
+  "giant film": "open (#416, the tracer ignores the model matrix)."
+ }
+}

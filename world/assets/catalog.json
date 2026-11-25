@@ -438,6 +438,45 @@
       "prompt": "a small cozy garden shovel with a rounded steel blade and a warm honey wooden handle with a red grip, seen from the side, standing upright, stylized toy-like game prop",
       "seconds": 522.0,
       "tags": []
+    },
+    {
+      "created": "2026-11-24T22:35:29.745",
+      "faces": 39355,
+      "id": "20261124-222311-224-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-222311-224-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-222311-224-asset/mesh.jls",
+      "prompt": "a cute round pink piglet creature with a big soft snout, floppy ears, short stubby legs and a curly tail, plush clay toy style, standing on all four legs, seen from the side, three quarter view, full body",
+      "seconds": 735.0,
+      "tags": [
+        "creature",
+        "snootle"
+      ]
+    },
+    {
+      "created": "2026-11-24T22:54:38.148",
+      "faces": 38604,
+      "id": "20261124-222311-227-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261124-222311-227-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261124-222311-227-asset/mesh.jls",
+      "prompt": "a cute squishy turquoise jelly blob creature with big shiny eyes, a little pink bow on top and two tiny stubby feet, soft gummy clay toy style, standing, seen from the side, three quarter view, full body",
+      "seconds": 1126.0,
+      "tags": [
+        "creature",
+        "blorbo"
+      ]
+    },
+    {
+      "created": "2026-11-25T00:55:58.773",
+      "faces": 39865,
+      "id": "20261125-003611-754-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261125-003611-754-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261125-003611-754-asset/mesh.jls",
+      "prompt": "a cute fluffy round sheep creature made of soft white cotton puffs, a small dark grey face with big gentle eyes, little dark legs, plush clay toy style, standing, seen from the side, three quarter view, full body",
+      "seconds": 784.0,
+      "tags": [
+        "creature",
+        "fluffkin"
+      ]
     }
   ]
 }

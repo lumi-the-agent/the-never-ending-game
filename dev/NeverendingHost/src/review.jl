@@ -52,8 +52,40 @@ function work_review_prompt(host, n::Int, done::Vector, journal::AbstractString,
     length(changed) > 80 && println(io, "- … and $(length(changed) - 80) more")
     isempty(removed) || (println(io, "\nRemoved:"); foreach(p -> println(io, "- ", short_path(jp, p)), removed))
     println(io)
+    films = first(sort!(filter(p -> endswith(p, ".mp4") && isfile(p), changed); by = p -> !occursin("/site/", p)), 4)
+    print(io, film_lines(films, joinpath(reviews_dir(jp), "motion", @sprintf("session-%04d", n))))
     print(io, prompt_file("reviewer.md"), "\n", prompt_file("review.md"))
     return String(take!(io))
+end
+
+"""
+    film_lines(films, dir) -> String
+
+A prompt section with the motion sheets of `films` (tools/motion_sheet.jl), made in `dir`:
+reviewers see motion through them, not through stills. Empty without films.
+"""
+function film_lines(films::Vector{String}, dir::AbstractString)
+    isempty(films) && return ""
+    io = IOBuffer()
+    println(io, "## Films and their motion sheets\n")
+    println(io, "Open both images of every film before you judge its motion: the overview shows what happens, ",
+            "the steps sheet 8 frames 1/fps apart, where pops, snaps, jitter and stiff poses show.\n")
+    for f in films
+        try
+            println(io, motion_sheet(f; out = dir).text)
+        catch e
+            e isa ProcessFailedException || rethrow()
+            println(io, basename(f), ": ffmpeg cannot read it (a broken film is a finding)\n")
+        end
+    end
+    return String(take!(io))
+end
+
+"The `n` newest films on the character's pages (world/site/films)."
+function newest_films(jp::JailPaths, n::Int)
+    dir = joinpath(jp.world, "site", "films")
+    isdir(dir) || return String[]
+    return first(sort!(filter(endswith(".mp4"), readdir(dir; join = true)); by = mtime, rev = true), n)
 end
 
 function perfectionist_prompt(jp::JailPaths, n::Int, out::AbstractString)
@@ -68,6 +100,7 @@ function perfectionist_prompt(jp::JailPaths, n::Int, out::AbstractString)
     println(io, "## The author's open todos (world/state/todos.json)")
     foreach(t -> println(io, t), open_todo_lines(jp; n = typemax(Int)))
     println(io)
+    print(io, film_lines(newest_films(jp, 3), joinpath(reviews_dir(jp), "motion", @sprintf("perfectionist-%04d", n))))
     print(io, prompt_file("reviewer.md"), "\n", prompt_file("perfectionist.md"))
     return String(take!(io))
 end

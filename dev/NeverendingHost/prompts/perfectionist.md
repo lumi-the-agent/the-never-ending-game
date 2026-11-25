@@ -18,9 +18,12 @@ an average hobby project, 2 means placeholder art.
   is there a reason to play twice?
 - A path traced still (the worker's `:trace` job, or `live_path_tracing(true)`
   and a screenshot, then back to `false`).
+- The films' motion sheets (listed above, if any): judge animation from the
+  steps sheets, 8 frames 1/fps apart, not from stills.
 - The world itself: areas and their variety, terrain, water, sky, props and
-  how they are grouped, creatures (shapes, faces, animation, behaviour),
-  lighting and atmosphere, colour palette, how cohesive the style is.
+  how they are grouped, creatures (shapes, faces, behaviour), their
+  animation, lighting and atmosphere (in the browser view too), colour
+  palette, how cohesive the style is.
 - `world/assets/catalog.json`: are generated assets made and used, or is
   everything built from primitives?
 - `world/STYLE.md`, if the author keeps one: does the game follow it, and is
@@ -57,7 +60,8 @@ cleanliness:
    "lighting":     {"score": 0-10, "why": "one line"},
    "world":        {"score": 0-10, "why": "areas, terrain, water, sky, variety"},
    "props":        {"score": 0-10, "why": "assets, detail, grouping"},
-   "creatures":    {"score": 0-10, "why": "shapes, faces, animation, behaviour"},
+   "creatures":    {"score": 0-10, "why": "shapes, faces, behaviour"},
+   "animation":    {"score": 0-10, "why": "poses that fit the action, flow between actions, weight, no pops, jitter or sliding"},
    "fun":          {"score": 0-10, "why": "interactions, mini games, reasons to come back"},
    "wow":          {"score": 0-10, "why": "surprise and spectacle: the last sessions' stunts, would a stranger share them"},
    "camera":       {"score": 0-10, "why": "framing, composition, motion"},

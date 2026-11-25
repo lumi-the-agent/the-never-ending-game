@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "journal 00:07-00:11; I did not re-run the kite tests",
+      "severity": "medium",
+      "suggestion": "Reopen the kite todo. Set :kite on the controlled to uncontrolled edge, or add a hook in stop!(JumpIn).",
+      "what": "Todo #331 is marked done, but the journal says the kite still drops after the player presses Stop (Lumi's goal becomes :eat, so flyer() finds nobody). The 'Play, Stop, Play again' test fails; the fix was reverted.",
+      "where": "plugins/kite.jl flyer()"
+    },
+    {
+      "evidence": "reviews/s73-flight.png (forced at 18:25)",
+      "severity": "low",
+      "suggestion": "Show the doing text in the panel too. Offset the name tag while Lumi carries the chick.",
+      "what": "During the flight the Lumi panel still says 'looking over the newest things'. The 'Lumi' name tag sits on top of the chick and the music-note emote, which makes it a little cluttered. The flight only starts between 09:00 and 18:00, every 40-70 min.",
+      "where": "side panel; plugins/soar.jl:91"
+    },
+    {
+      "evidence": "journal 23:57",
+      "severity": "low",
+      "suggestion": "Low priority.",
+      "what": "The wind and cloud changes are subtle. The clouds still circle the island instead of drifting along the wind.",
+      "where": "plugins/clouds.jl, plugins/wind.jl"
+    }
+  ],
+  "summary": "I forced a flight in the sandbox and checked it: Lumi flies high over the island at sunset with the chick on its back and a 'Flying! Really flying!' bubble, and the camera frames it well. Frame time is about 4.4 ms median. The kite 'Play, Stop, Play again' failure is still open although #331 is marked done.",
+  "superseded_by": "perfectionist-0073.json",
+  "surprise": 6,
+  "surprise_why": "A real flight with a rider and the camera alongside is a nice twist, but it is one more timed event next to the existing crash flight.",
+  "verdict": "pass"
+}
