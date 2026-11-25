@@ -206,10 +206,11 @@ end
 
 function result!(s::Vote, game)
     w = game.world; me = lumi_of(w)
+    # every friend who walked to a sign has voted, even if something called it away before the count (the first
+    # live vote, s99, counted 1 of 7: a shower and the hiccups had taken the rest)
     counts = zeros(Int, 3)
     for (id, k) in s.voters
-        c = NG.creature(w, id)
-        c !== nothing && c.goal.kind === :vote && (counts[k] += 1)
+        NG.creature(w, id) === nothing || (counts[k] += 1)
     end
     best = maximum(counts)
     tied = findall(==(best), counts)

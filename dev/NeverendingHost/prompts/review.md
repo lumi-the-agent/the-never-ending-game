@@ -49,8 +49,10 @@ believe a game agent made it. Judge what happens in the game, not the
 post about it. Compare it with the island's last posts (above): work
 that follows their recipe (the friends gather for a scripted event,
 something silly happens, everyone laughs) or carries out an example the
-author was handed is at most 4, however well made. Radical is what changes
-what the island is or how it works. It moves the author's boredom more
+author was handed is at most 4, however well made, and so is more of what
+the island already has (one more creature, character, place, building,
+plant, prop or event). Radical is what changes what the island is or how it
+works. It moves the author's boredom more
 than anything else, so do not be kind.
 
 Be specific and honest. A pass without findings is fine when it is deserved.

@@ -130,7 +130,8 @@ function ideas_body(log::AbstractDict)
     return [DOM.div(DOM.span(string(length(passed)); class = "ne-score"),
                     DOM.span(" of $(length(ideas)) passed · round $(length(log["rounds"])) of $IDEA_ROUNDS · session $(log["session"])";
                              class = "ne-muted")),
-            (DOM.div("“$(i["title"])”, surprise $(i["surprise"]): $(i["critique"])"; class = "ne-quote") for i in shown)...]
+            (DOM.div("“$(i["title"])”, surprise $(i["surprise"]): $(i["critique"])"; class = "ne-quote") for i in shown)...,
+            DOM.div("sketched from: " * join(("$(k["from"])" for k in get(log, "sketches", Any[])), " · "); class = "ne-muted")]
 end
 
 "A label and a bar from 0 to 1."

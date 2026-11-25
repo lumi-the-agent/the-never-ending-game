@@ -1,0 +1,13 @@
+{"posts": [
+{"post": "The beach hut", "what": "A new little plank hut with a striped roof is built on the south beach (Lumi carries a crate) after the friends' vote chose it; Pinchy claims the doorway.", "recipe": "promised permanent building appears at a place; friends occasionally sit there", "nearest": "The gallery", "similarity": 4, "shared": "new permanent scenery that friends visit one at a time"},
+{"post": "Yesterday", "what": "Now and then pale see-through copies of the friends replay what they did at this hour the day before; a friend meeting its own ghost stops and gasps.", "recipe": "recurring island-wide replay event with a small reaction gag", "nearest": "◀◀ Rewind", "similarity": 6, "shared": "time replay of the island's creatures moving back through their past, a short effect then normal day"}
+],
+"forms": [
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["My shadow ran off", "Our song", "Yesterday"]},
+{"form": "Island music layer: friends' actions ring notes", "posts": ["The island plays itself"]},
+{"form": "Ambient behaviour change: creatures act differently in a situation", "posts": ["Lights out"]},
+{"form": "Permanent change to the island's look or places", "posts": ["The gallery", "Paths we wore", "The beach hut"]},
+{"form": "Still of a failed fix, a single picture", "posts": ["Still my shadow"]},
+{"form": "New permanent inhabitant with slowly growing relationships", "posts": ["Someone new", "Shell comes ashore"]},
+{"form": "New rule of the world: friends decide what Lumi builds, shown as a still", "posts": ["You choose"]}
+]}

@@ -22,10 +22,15 @@ For each idea of this round:
   island, made as pitched: 0 more of the same, 3 new but expected, 6 a nice
   twist, 8 they would show it to a friend, 10 they cannot believe a game
   agent made it. Radical, changing what the island is or how it works,
-  scores high; one more thing that happens on the island does not. An idea
-  the human could have predicted from their goals (above), or one an example
-  there hands over, is at most 4. A vague pitch is scored by its most
-  likely, plainest version.
+  scores high; one more thing that happens on the island does not. More of
+  what the island already has (one more creature, character, place,
+  building, plant, prop, event, ritual or game of a kind it has) is at most
+  4, however new its premise and however well it would be made. An idea
+  that carries out an example the human's goals (above) name is at most 4;
+  working in an area a goal names (physics, light, its own body) is not
+  predictable by itself. Each idea names the sketches it grows from
+  (above): one that names a sketch but uses nothing of what the sketch found
+  is at most 4. A vague pitch is scored by its most likely, plainest version.
 - `critique`: one or two sentences: what in it is predictable or the same
   as before, and what is strong. Never propose an idea, a change or an
   example of your own: {{NAME}} has to find it, and whatever you name, it

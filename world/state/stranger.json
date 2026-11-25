@@ -1,20 +1,20 @@
 {
   "arrived": true,
   "pos": [
-    2.1173153,
-    14.275814
+    -3.4175043,
+    13.103669
   ],
   "state": "roam",
   "trust": {
     "Cumulus": 1.0,
     "Gloop": 1.0,
-    "Hopscotch": 0.6700000092387199,
-    "Marshmallow": 0.7700000107288361,
-    "Pickles": 0.5700000077486038,
-    "Pinchy": 0.9800000116229057,
-    "Sir Sniffsalot": 0.6700000092387199,
+    "Hopscotch": 1.0,
+    "Marshmallow": 1.0,
+    "Pickles": 1.0,
+    "Pinchy": 1.0,
+    "Sir Sniffsalot": 1.0,
     "Truffle": 1.0,
-    "Wibbles": 0.8400000110268593
+    "Wibbles": 1.0
   },
-  "visits": 3
+  "visits": 6
 }

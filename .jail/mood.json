@@ -1,23 +1,21 @@
 {
-  "boredom": 0.8,
-  "ended": "2026-11-25T21:24:40",
+  "boredom": 1.0,
+  "ended": "2026-11-25T22:11:58",
   "fatigue": {
-    "asset": 0.7,
-    "feature": 2.47,
-    "film": 1.46,
-    "picture": 2.39,
-    "polish": 2.45,
-    "post": 2.49,
-    "self": 0.03,
-    "sound": 0.04
+    "asset": 0.42,
+    "feature": 2.48,
+    "picture": 2.43,
+    "polish": 2.47,
+    "self": 0.02,
+    "sound": 0.02
   },
   "forms": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "posts": [
         "My shadow ran off",
-        "◀◀ Rewind",
-        "Our song"
+        "Our song",
+        "Yesterday"
       ]
     },
     {
@@ -29,21 +27,15 @@
     {
       "form": "Ambient behaviour change: creatures act differently in a situation",
       "posts": [
-        "Lights out",
-        "Someone's watching"
-      ]
-    },
-    {
-      "form": "Evening lantern ritual: a calm, scenic group event at the pond",
-      "posts": [
-        "Lanterns, the whole evening"
+        "Lights out"
       ]
     },
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
         "The gallery",
-        "Paths we wore"
+        "Paths we wore",
+        "The beach hut"
       ]
     },
     {
@@ -246,9 +238,15 @@
     "lanterns_end",
     "stranger_friend",
     "stranger_visit",
-    "stranger_company"
+    "stranger_company",
+    "ghost_meet",
+    "beachhut_visit",
+    "vote_result",
+    "vote_start",
+    "ghosts_fade",
+    "ghosts_arrive"
   ],
-  "joy": 0.71,
+  "joy": 0.69,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -331,6 +329,20 @@
       "session": 98,
       "title": "You choose",
       "what": "Three coloured signs go up on the meadow, friends walk to the one they want, shout for it, and the winner is counted and promised as Lumi's next build; a new rule linking friends to Lumi's work, shown as a still."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "promised permanent building appears at a place; friends occasionally sit there",
+      "session": 99,
+      "title": "The beach hut",
+      "what": "A new little plank hut with a striped roof is built on the south beach (Lumi carries a crate) after the friends' vote chose it; Pinchy claims the doorway."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "recurring island-wide replay event with a small reaction gag",
+      "session": 99,
+      "title": "Yesterday",
+      "what": "Now and then pale see-through copies of the friends replay what they did at this hour the day before; a friend meeting its own ghost stops and gasps."
     }
   ],
   "kinds_ever": [
@@ -347,87 +359,49 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "stranger_visit",
-      "stranger_company"
+      "ghost_meet",
+      "beachhut_visit",
+      "vote_result",
+      "vote_start",
+      "ghosts_fade",
+      "ghosts_arrive"
     ],
-    "session": 98
+    "session": 99
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
-    "form_count": 0,
-    "nearest": "Our song",
-    "post": "You choose",
-    "score": 4,
-    "session": 98,
-    "shared": "friends gather near Lumi's spot and act together briefly, then disperse",
+    "factor": 0.2154434690031884,
+    "form": "Permanent change to the island's look or places",
+    "form_count": 2,
+    "nearest": "The gallery",
+    "post": "The beach hut",
+    "score": 6,
+    "session": 99,
+    "shared": "new permanent scenery that friends visit one at a time",
     "similarity": 4
   },
   "last_surprise": {
-    "score": 7,
-    "session": 97,
-    "why": "A permanent newcomer whose per-friend trust persists across days changes who lives on the island, rather than being another scripted gathering."
+    "score": 6,
+    "session": 98,
+    "why": "The friends' vote decides what Lumi builds next, which changes how the island works, even though the event itself still follows the usual gather-and-shout recipe."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T20:44:00",
+  "perceived_until": "2026-11-25T21:26:14",
   "plugin_fatigue": {
-    "firefly_catch.jl": 0.22,
-    "footpaths.jl": 0.96,
-    "gallery.jl": 0.21,
-    "greetings.jl": 1.76,
-    "lanterns.jl": 0.36,
-    "lensclear.jl": 0.36,
-    "outfits.jl": 0.1,
-    "shadow.jl": 0.35,
-    "sleepers.jl": 0.08,
-    "stranger.jl": 1.6,
-    "vote.jl": 1.0,
-    "xylophone.jl": 0.58
+    "beachhut.jl": 1.0,
+    "firefly_catch.jl": 0.13,
+    "footpaths.jl": 0.58,
+    "gallery.jl": 0.13,
+    "ghosts.jl": 1.0,
+    "greetings.jl": 1.06,
+    "lanterns.jl": 0.22,
+    "lensclear.jl": 0.22,
+    "outfits.jl": 0.06,
+    "shadow.jl": 0.21,
+    "stranger.jl": 0.96,
+    "vote.jl": 1.6,
+    "xylophone.jl": 0.35
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 2.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "asset",
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 2,
-      "new_pages": [
-        "site/films/swing.mp4"
-      ],
-      "new_plugins": [
-        "swing.jl"
-      ],
-      "points": 0.9,
-      "repeats": [],
-      "session": 79,
-      "touched": [
-        "blossom.jl",
-        "greetings.jl",
-        "islandnow.jl"
-      ],
-      "values": {
-        "asset": 0.2,
-        "feature": 0.3,
-        "film": 0.3,
-        "polish": 0.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1578,6 +1552,82 @@
         "post": 0.2
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.8416666666666668,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "ghost_meet",
+          "who": 7
+        },
+        {
+          "kind": "beachhut_visit",
+          "who": 3
+        },
+        {
+          "kind": "vote_result",
+          "who": 1
+        },
+        {
+          "kind": "vote_start",
+          "who": 1
+        },
+        {
+          "kind": "ghosts_fade",
+          "who": 1
+        },
+        {
+          "kind": "ghosts_arrive",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/beach-hut.png",
+        "site/img/yesterday.png"
+      ],
+      "new_plugins": [
+        "beachhut.jl",
+        "ghosts.jl"
+      ],
+      "points": 1.0,
+      "repeat_factor": 0.2154434690031884,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 2,
+        "nearest": "The gallery",
+        "post": "The beach hut",
+        "score": 6,
+        "shared": "new permanent scenery that friends visit one at a time",
+        "similarity": 4
+      },
+      "session": 99,
+      "touched": [
+        "vote.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "picture": 0.1,
+        "polish": 0.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1668,6 +1718,7 @@
       "site/films/real-flight.mp4",
       "site/films/rewind.mp4",
       "site/films/shadow.mp4",
+      "site/films/shell-ashore.mp4",
       "site/films/snow-day.mp4",
       "site/films/splash-silent.mp4",
       "site/films/splash.mp4",
@@ -1717,6 +1768,7 @@
       "site/img/visit-traced.png",
       "site/img/voice-laugh.png",
       "site/img/voice.png",
+      "site/img/vote.png",
       "site/img/waterfight.png",
       "site/img/workshop-traced.png",
       "site/voice/friend-gloop.mp3",
@@ -1795,7 +1847,7 @@
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.795634699794403e9,
+      "greetings.jl": 1.7956371809126008e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1834,24 +1886,25 @@
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
-      "stranger.jl": 1.7956348410820296e9,
+      "stranger.jl": 1.79563814641218e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
       "toadstool.jl": 1.795589883405444e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
+      "vote.jl": 1.7956382040078278e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 58,
+    "posts": 60,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T20:48:18",
+  "started": "2026-11-25T21:30:40",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1970,7 +2023,10 @@
       "DiffEqCallbacks",
       "Plasma",
       "CropRootBox",
-      "NOMAD"
+      "NOMAD",
+      "EffectiveWaves",
+      "WaterLilyMeshBodies",
+      "HydroPowerSimulations"
     ],
     "vision": [
       "SAM2Runner",
@@ -1990,8 +2046,9 @@
       "Qwen3EmbeddingRunner",
       "Hunyuan3DRunner",
       "DemucsRunner",
-      "QwenImageEditRunner"
+      "QwenImageEditRunner",
+      "BonsaiRunner"
     ]
   },
-  "surprise_seen": 97
+  "surprise_seen": 98
 }

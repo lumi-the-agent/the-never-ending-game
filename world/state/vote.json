@@ -1,0 +1,66 @@
+{
+  "history": [
+    {
+      "island_t": 287075.0999864384,
+      "key": "beachhut",
+      "time": "2026-11-25T21:42:30",
+      "voters": {
+        "Cumulus": "a greenhouse",
+        "Hopscotch": "a little boat",
+        "Pickles": "a little boat",
+        "Pinchy": "a beach hut",
+        "Sir Sniffsalot": "a beach hut",
+        "Truffle": "a greenhouse",
+        "Wibbles": "a beach hut"
+      },
+      "votes": {
+        "a beach hut": 1,
+        "a greenhouse": 0,
+        "a little boat": 0
+      },
+      "winner": "a beach hut"
+    },
+    {
+      "island_t": 288070.23331954004,
+      "key": "greenhouse",
+      "time": "2026-11-25T21:59:08",
+      "voters": {
+        "Cumulus": "a greenhouse",
+        "Marshmallow": "a greenhouse",
+        "Pickles": "a hot spring",
+        "Pinchy": "a hot spring",
+        "Truffle": "a greenhouse",
+        "Wibbles": "a greenhouse"
+      },
+      "votes": {
+        "a greenhouse": 4,
+        "a hot spring": 2,
+        "a little boat": 0
+      },
+      "winner": "a greenhouse"
+    }
+  ],
+  "latest": {
+    "island_t": 288070.23331954004,
+    "key": "greenhouse",
+    "time": "2026-11-25T21:59:08",
+    "voters": {
+      "Cumulus": "a greenhouse",
+      "Marshmallow": "a greenhouse",
+      "Pickles": "a hot spring",
+      "Pinchy": "a hot spring",
+      "Truffle": "a greenhouse",
+      "Wibbles": "a greenhouse"
+    },
+    "votes": {
+      "a greenhouse": 4,
+      "a hot spring": 2,
+      "a little boat": 0
+    },
+    "winner": "a greenhouse"
+  },
+  "won": [
+    "beachhut",
+    "greenhouse"
+  ]
+}

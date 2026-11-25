@@ -48,7 +48,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "shadow" => ("Lumi", "Pinchy", "Gloop"), "shadow_check" => ("Lumi", "Pinchy", "Gloop"),
                   "shadow_plain" => ("Lumi", "Pinchy", "Gloop"), "tune" => ("Lumi", "Gloop", "Pickles", "Pinchy"),
                   "paths" => ("Lumi", "Gloop", "Pickles"), "stranger" => ("Lumi", "Wibbles", "Gloop", "Pinchy"),
-                  "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"))
+                  "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"),
+                  "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -81,6 +82,42 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "hut"              # s99: the beach hut the friends voted for, its three voters at the door, me proud
+        hm = plugin(g, "beachhut")
+        p, yaw = Base.invokelatest(hm.spot, g)
+        Base.invokelatest(hm.plots!, g)
+        f = Point2f(cos(yaw), sin(yaw)); sd = Point2f(-f[2], f[1])
+        door = Point2f(p[1], p[2]) + 1.3f0 * f
+        for (n, o, act) in (("Pinchy", 0f0, :sit), ("Wibbles", 0.9f0, :wave), ("Sir Sniffsalot", -0.9f0, :laugh))
+            q = door + o * sd + abs(o) * 0.4f0 * f
+            pose!(w, by_name(w, n), (q[1], q[2]), yaw + (o == 0 ? 0 : pi / 2 * sign(-o)) * 0.3, act)
+        end
+        lp = door + 1.4f0 * f - 1.6f0 * sd
+        pose!(w, by_name(w, "Lumi"), (lp[1], lp[2]), atan(p[2] - lp[2], p[1] - lp[1]), :proud)
+        z0 = p[3]
+        return Point3f(p[1] + 5.2f0 * f[1] + 1.8f0 * sd[1], p[2] + 5.2f0 * f[2] + 1.8f0 * sd[2], z0 + 1.7f0), Point3f(p[1] + 0.8f0 * f[1], p[2] + 0.8f0 * f[2], z0 + 0.8f0)
+    end
+    if post == "ghosts"           # s99: friends meeting yesterday's ghosts of themselves on the meadow
+        gm = plugin(g, "ghosts")
+        x0, y0 = open_meadow(w)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        pairs = (("Gloop", (-1.2f0, 0.3f0), -0.3, :gasp, :walk), ("Pinchy", (1.4f0, 0.6f0), pi + 0.4, :laugh, :idle),
+                 ("Lumi", (0.1f0, 1.9f0), -pi / 2, :proud, :walk))
+        ghost = Dict{String,Vector{Any}}()
+        for (n, (dx, dy), a, act, gact) in pairs
+            c = by_name(w, n); c === nothing && continue
+            gpos = (x0 + dx, y0 + dy)
+            me = (x0 + dx + 1.0f0 * cos(Float32(a)), y0 + dy + 1.0f0 * sin(Float32(a)))
+            pose!(w, c, me, atan(gpos[2] - me[2], gpos[1] - me[1]), act)      # facing its ghost
+            push!(get!(() -> Any[], ghost, c.species), (NG.ground(w.island, gpos), Float32(a) - NG.species_of(c).heading, gact, c.seed))
+        end
+        for (species, gs) in ghost
+            h = Base.invokelatest(gm.herd_of, g, species)
+            Makie.update!(h, [q[1] for q in gs]; motion = [Vec3f(q[2], 0.8f0, 0.3f0) for q in gs],
+                          state = [Vec3f(NG.action_code(q[3]), 0f0, q[4]) for q in gs], time = Float32(w.t))
+        end
+        return Point3f(x0 + 0.4f0, y0 - 4.6f0, z0 + 1.6f0), Point3f(x0, y0 + 0.6f0, z0 + 0.5f0)
     end
     if post == "vote"             # s98: the friends at the three signs, arguing for what I should build next
         vm = plugin(g, "vote")

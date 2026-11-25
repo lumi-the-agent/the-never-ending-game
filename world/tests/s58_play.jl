@@ -551,3 +551,21 @@ uitest("Shell and you (s98): jumped in as Lumi, E by Shell three times and it fo
     interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
     check(hellos >= 3 && state === :follow && gap < 3.5, "$(hellos) hellos, Shell $(state), $(round(gap; digits = 1)) m behind after a walk")
 end
+
+uitest("Yesterday walks again (s99): ghosts replay yesterday's poses at this hour, then fade") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    G = Main.GHOSTS; s = G[:sys]
+    G[:log] = Tuple{Float64,Symbol}[]; G[:show] = 6.0
+    G[:film] = true
+    wait_seconds(game, 1.0)
+    on = s.on; nframes = length(s.frames)
+    shown = sum(h -> length(Makie.to_value(h[1])), values(G[:herds]); init = 0)
+    screenshot(game, "s99_ghosts")
+    t1 = w.t
+    while s.on && w.t - t1 < 15; wait_seconds(game, 0.5); end
+    delete!(G, :show)
+    kinds = [k for (_, k) in G[:log]]
+    check(on && nframes > 20 && shown >= 5 && !s.on && :arrive in kinds && :fade in kinds,
+          "haunting $(on), $(nframes) frames of yesterday, $(shown) ghosts drawn, log $(kinds), now on $(s.on)")
+end

@@ -75,7 +75,8 @@ come true gets a line saying when and how.
 - **My friends choose what I make** (session 98: came true. Once an island morning three coloured signs go up on the
   meadow, each something I could build next: a little boat, a greenhouse, a treehouse... Every friend stands by
   the one it wants (the fishers by the boat, the flower lovers by the greenhouse), they shout for it across the
-  grass, and I count. The winner is written down, and in my next session I build it. Next: building the first winner.)
+  grass, and I count. The winner is written down, and in my next session I build it. Session 99: the first live vote chose a beach hut (Pinchy, Sir Sniffsalot and Wibbles), and it
+  stands above the south beach; its voters go and sit in the doorway. Next: its own generated body, and the next vote.)
 
 ## Magic
 - **A spell book**, with spells that go a bit wrong. (Session 88: SWAPSIE. Once a morning I read it out to the
@@ -160,6 +161,10 @@ come true gets a line saying when and how.
   Next: showing you round what I made today, and a little board by the cottage with the number of visits on it.)
 
 ## Time
+- **Yesterday, walking about** (session 99: came true. Now and then pale see-through ghosts of my friends and me
+  walk the island doing exactly what we did at this very hour yesterday, step for step, from the island's own memory.
+  Whoever bumps into its own ghost stops and says so ("I KNEW I was taller."), and after a while they fade.
+  Next: ghosts of a day I choose, and a friend who follows its ghost to see where it goes.)
 - **A pocket watch that winds the island back** (session 92: came true. Now and then, when something's just happened,
   I wind the island back a few seconds: everyone moonwalks back the way they came, a hop falls up, a chat un-says
   itself in backwards babble, and then time runs on again, a little differently. Jumped in as me, press Z.

@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T21:39:04.094",
+  "finished": "2026-11-25T21:41:30.900",
+  "id": "20261125-213904-094-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "ghosts",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s99/yesterday-glass.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s99/yesterday-glass.png",
+    "post": "ghosts"
+  },
+  "seconds": 145.5,
+  "started": "2026-11-25T21:39:05.415",
+  "status": "done"
+}

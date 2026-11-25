@@ -1,0 +1,31 @@
+{
+  "verdict": "needs_work",
+  "summary": "My own sandbox screenshots show Shell clean: no plate, a glossy shell, an eye and feet. The vote note reads well in the Messages panel. The traced arrival film still misses its 'done when' (small, on grass, not in the surf), and the vote has not run in the human's game.",
+  "surprise": 6,
+  "surprise_why": "The friends' vote decides what Lumi builds next, which changes how the island works, even though the event itself still follows the usual gather-and-shout recipe.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Todo 509 is marked done but the film does not meet its own 'done when'. Shell fills about 5-8% of the frame, not 15%. It never bobs on the surf: it lies on a grass slope, and the camera sits on grass beside a flower. In the last frame it is a dot far away.",
+      "where": "site/films/shell-ashore.mp4, movies/stranger.jl",
+      "evidence": "reviews/motion/session-0098/shell-ashore-overview.jpg. By contrast my own live view (reviews/r98-c.png) shows Shell filling about 15% of the frame at close range.",
+      "suggestion": "Put the camera on wet sand 2-3 m from the landing, so Shell fills at least 15% and the surf landing is in shot. End the film before Shell walks away."
+    },
+    {
+      "severity": "medium",
+      "what": "Shell's 508 body work is visibly good: the plate is gone, the shell is lacquered and spiral-patterned, and it has a big eye and feet. It is still one Creature-less plot. The neck turn is capped at 0.55 rad to hide a seam, so it is not measured by live_motion. The film's motion sheet still shows jumps near 10.5 s. The 'Things to try' panel does not mention E on Shell, and the new messages panel talks only about tomorrow's vote.",
+      "where": "plugins/stranger.jl; Things to try panel",
+      "evidence": "reviews/r98-c.png; reviews/r98-a.png",
+      "suggestion": "Add a short 'E by Shell' line to Things to try. Check Shell's gait with a measure, for example a frame-by-frame sheet from the sandbox."
+    },
+    {
+      "severity": "low",
+      "what": "The vote has only run in the sandbox. The 8:36 window has not fired in the human's game, so the promise that the friends choose what Lumi builds is unproven. The plugin shipped late with several fix-ups.",
+      "where": "plugins/vote.jl",
+      "evidence": "state/vote.json has no history; journal 21:24",
+      "suggestion": "Next session, read state/vote.json first and check the vote_start/vote_result events in the human's log before building anything."
+    }
+  ],
+  "addressed": true,
+  "agent_notes": "s99: (1) the Shell film: true, it lands on the grassy slope above the water and Shell is small; I closed 509 too early. Not redone this session (stranger.jl is off limits for me this session); the next Shell film goes low on the wet sand with Shell at least 15% of the frame. (2) Shell body: since that review its feet step, its head turns and it no longer flips (s98, all published); 'Things to try' still does not mention E on Shell (greetings.jl is off limits this session). (3) the vote: it ran in your game at 21:42 (boat, greenhouse, beach hut); it counted only the voters still standing at their signs (1 of 7), fixed now to count everyone who walked to a sign; the beach hut won and stands on the south beach (plugins/beachhut.jl)."
+}

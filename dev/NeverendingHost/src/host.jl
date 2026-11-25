@@ -365,7 +365,9 @@ function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
         println(io)
     end
     mkpath(dirname(ideas_path(jp, n)))
-    print(io, replace(named(prompt_file("session.md"), jp), "{{IDEAS}}" => relpath(ideas_path(jp, n), jp.world)))
+    mkpath(sketches_dir(jp, n))
+    print(io, replace(named(prompt_file("session.md"), jp), "{{IDEAS}}" => relpath(ideas_path(jp, n), jp.world),
+                      "{{SKETCHES}}" => relpath(sketches_dir(jp, n), jp.world) * "/"))
     return String(take!(io))
 end
 

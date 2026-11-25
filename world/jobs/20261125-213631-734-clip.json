@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-25T21:36:31.782",
+  "finished": "2026-11-25T21:38:53.348",
+  "id": "20261125-213631-734-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "ghosts",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/yesterday.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/yesterday.png",
+    "post": "ghosts"
+  },
+  "seconds": 141.3,
+  "started": "2026-11-25T21:36:31.998",
+  "status": "done"
+}

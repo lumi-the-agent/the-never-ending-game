@@ -941,6 +941,9 @@
 /world/reviews/r96-a.png
 /world/reviews/r96-b.png
 /world/reviews/r96-c.png
+/world/reviews/r98-a.png
+/world/reviews/r98-b.png
+/world/reviews/r98-c.png
 /world/reviews/s10_review.png
 /world/reviews/s11.png
 /world/reviews/s11_live.png
@@ -1251,6 +1254,7 @@
 /world/tests/shots/s95b_bare_loose.png
 /world/tests/shots/s97_keystrip.png
 /world/tests/shots/s98_shell_follows.png
+/world/tests/shots/s99_ghosts.png
 /world/tests/shots/shallows.png
 /world/tests/shots/shower-party.png
 /world/tests/shots/shower-reactions.png
@@ -1336,6 +1340,7 @@
 /world/site/films/waterfight-silent.mp4
 /world/site/films/waterfight.mp4
 /world/site/films/waterfight.wav
+/world/site/img/beach-hut.png
 /world/site/img/bench-traced.png
 /world/site/img/big-boing.png
 /world/site/img/big-sneeze-after.png
@@ -1375,6 +1380,7 @@
 /world/site/img/vote.png
 /world/site/img/waterfight.png
 /world/site/img/workshop-traced.png
+/world/site/img/yesterday.png
 /world/site/voice/friend-gloop.mp3
 /world/site/voice/friend-pinchy.mp3
 /world/site/voice/friend-sniffsalot.mp3
