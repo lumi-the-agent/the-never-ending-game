@@ -1,0 +1,48 @@
+{
+  "created": "2026-11-25T17:37:02.955",
+  "finished": "2026-11-25T17:59:09.696",
+  "id": "20261125-173702-955-clip",
+  "kind": "clip",
+  "params": {
+    "call": "shadow_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 32,
+      "spot": [
+        -11.5,
+        -4.0
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s95/shadow-take2.mp4",
+    "script": "movies/shadow.jl"
+  },
+  "result": {
+    "log": [
+      [
+        2.0,
+        "loose"
+      ],
+      [
+        10.25,
+        "dodge"
+      ],
+      [
+        13.71,
+        "dodge"
+      ],
+      [
+        14.63,
+        "dodge"
+      ],
+      [
+        15.54,
+        "caught"
+      ]
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s95/shadow-take2.mp4",
+    "started": true
+  },
+  "seconds": 587.8,
+  "started": "2026-11-25T17:49:21.860",
+  "status": "done"
+}

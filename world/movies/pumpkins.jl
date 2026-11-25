@@ -131,6 +131,6 @@ function pumpkins_clip(path; rasterize = true, samples = 24, width = 960, height
     end
     mix = isempty(parts) ? "[1]apad[out]" :
           join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
-    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return (path = path, started = S[:ok], log = log, run = get(S, :run, nothing), hit = get(S, :hit, nothing))
 end

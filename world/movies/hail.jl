@@ -111,7 +111,7 @@ function hail_clip(path; spot, rasterize = true, samples = 16, width = 960, heig
     wav = hail_wav(replace(path, ".mp4" => ".wav"), sp(get(H, :tick_t, Float64[]))[1:min(end, 1500)], sp(get(H, :drum_t, Float64[])), seconds + 1)
     voice = joinpath(dirname(@__DIR__), "site", "voice", "game", "ooh.mp3")
     t1 = round(Int, 1000 * (get(S, :hail, 2.5) + 0.2))
-    run(`ffmpeg -y -loglevel error -i $silent -i $wav -i $voice -filter_complex "[2]adelay=$(t1)|$(t1)[v];[1][v]amix=inputs=2:normalize=0,apad[out]" -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -i $wav -i $voice -filter_complex "[2]adelay=$(t1)|$(t1)[v];[1][v]amix=inputs=2:normalize=0,apad[out]" -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     delete!(H, :tick_t); delete!(H, :drum_t)
     return (path = path, started = S[:ok], hail = get(S, :hail, nothing), ticks = get(S, :nt, 0), drums = get(S, :nd, 0))
 end
@@ -143,6 +143,6 @@ function hail_still(path; take, spot, samples = 64, width = 1280, height = 720, 
     NG.game_clip(take; size = (width, height), seconds = 9.0, fps = 2, samples, hour, warmup = 0.3,
                  rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup = g -> hail_setup(g, spot, cast), shot)
     delete!(Main.HAIL, :t_cloud); delete!(Main.HAIL, :t_hail); delete!(Main.HAIL, :maxn)
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)
     return path
 end

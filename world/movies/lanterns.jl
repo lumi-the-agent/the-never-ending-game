@@ -56,7 +56,7 @@ function lantern_still(path; take, samples = 96, width = 1280, height = 720, hou
     for k in (:t_gather, :gap, :t_float, :try_at)
         delete!(L, k)
     end
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)
     return (path = path, started = S[:ok])
 end
 

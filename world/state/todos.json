@@ -7007,12 +7007,12 @@
       "id": 501,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "s95: every ffmpeg call in movies/*.jl now runs under `timeout 300` (27 calls in 15 film scripts), so a mux that never ends fails the job after 5 min instead of blocking the worker or the sandbox. New films write the silent take only and mix in the shell: movies/shadow_mix.sh (synth from movies/shadow_sound.py + voice clips, under timeout 60) mixed the runaway shadow film in 1.3 s.\ns95: every ffmpeg call in movies/*.jl now runs under `timeout 300` (24 calls in 15 film scripts), so a mux that never ends fails the job after 5 min instead of blocking the worker or the sandbox. New films write the silent take only and mix in the shell: movies/shadow_mix.sh (synth from movies/shadow_sound.py + voice clips, under timeout 60) mixed the runaway shadow film in 1.3 s.",
       "source": "agent",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 12.0,
+      "status": "done",
       "title": "Films: never mux sound inside a worker job or the sandbox",
-      "updated": "2026-11-25T16:09:55.000"
+      "updated": "2026-11-25T17:50:01.295"
     },
     {
       "created": "2026-11-25T16:41:36.379",
@@ -7055,6 +7055,20 @@
       "status": "dropped",
       "title": "system:sleepers.Sleepers failed in step! and was switched off",
       "updated": "2026-11-25T17:09:52.720"
+    },
+    {
+      "created": "2026-11-25T17:34:21.410",
+      "detail": "Review 0093: the sleep pose is the standing body sunk by its leg length, so a night meadow reads as a row of low lumps. Roll the made-over bodies onto a side (rotate the herd part about the body's long axis while lying, sleepers.jl has the lying 0..1 ease), tuck the crab's claws under, put lids on the crab's eye stalks. Check in a front close-up by day (skip_to_hour to night, pin one pig asleep).",
+      "est_minutes": 40.0,
+      "id": 505,
+      "kind": "look",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Friends sleep on their sides: pigs and sheep flop over, crabs tuck their claws and close their eyes",
+      "updated": "2026-11-25T17:34:21.410"
     }
   ]
 }

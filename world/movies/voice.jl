@@ -61,7 +61,7 @@ function voice_clip(path; spot, rasterize = true, samples = 16, width = 960, hei
         cp(silent, path; force = true)
     else
         mix = join(parts, ";") * ";" * join(["[a$(i)]" for i in eachindex(log)]) * "amix=inputs=$(length(log)):normalize=0,apad[out]"
-        run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+        run(`timeout 300 ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     end
     return (path = path, said = log)
 end
@@ -101,6 +101,6 @@ function voice_still(path; take, spot, samples = 64, width = 1280, height = 720,
     end
     NG.game_clip(take; size = (width, height), seconds = 4.0, fps = 2, samples, hour, warmup = 0.3,
                  rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup, shot)
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)
     return path
 end

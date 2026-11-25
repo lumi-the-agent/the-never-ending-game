@@ -335,3 +335,82 @@ uitest("Sleepers (s94): a sleeping piglet lies down in the grass and gets up aga
     up = XP.terrain_height(w.island, pig.pos[1], pig.pos[2]) - pig.pos[3]
     check(down > 0.15 && abs(up) < 0.02, "$(pig.name) ($(asleep)) lay $(round(down; digits = 2)) m down asleep and is $(round(up; digits = 2)) m down after waking")
 end
+
+"A sunny hour for shadow tests (forward only, lesson s33)."
+function shadow_sun!(w)
+    h = 24 * XP.daytime(w)
+    8.5 < h < 15.5 || XP.skip_to_hour!(w, 9.5)
+end
+
+uitest("Runaway shadow (s95): on a sunny day Lumi's shadow runs off, dodges, and Lumi chases it down and catches it") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)
+    me = creature(w, "Lumi")
+    sp = Base.invokelatest(game.plugins["bubbles"].mod.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2]))
+    XP.leave_interactions!(w, me); me.action = :idle
+    me.goal = XP.Goal(:idle, me.pos, :idle, 5.0, w.t + 5, true, 0, false)
+    Main.LUMI_PARTY[:until] = -Inf
+    S = Main.SHADOW; s = S[:sys]; S[:log] = Tuple{Float64,Symbol}[]
+    start = me.pos
+    ok = S[:start]()
+    t1 = w.t; far = 0f0; seen = false
+    while s.state !== :home && w.t - t1 < 50
+        wait_seconds(game, 0.25)
+        far = max(far, hypot(me.pos[1] - start[1], me.pos[2] - start[2]))
+        !seen && w.t - t1 > 4 && (screenshot(game, "s95_shadow"); seen = true)
+    end
+    kinds = [k for (_, k) in S[:log]]
+    took = get(S, :took, 0.0)
+    check(ok && :dodge in kinds && :caught in kinds && took > 3 && far > 3 && s.state === :home,
+          "came loose $(ok), log $(kinds), caught after $(round(took; digits = 1)) s, Lumi ran up to $(round(far; digits = 1)) m, now $(s.state)")
+end
+
+uitest("Runaway shadow (s95): V as Lumi lets the shadow loose and it runs off for the player to chase") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    shadow_sun!(w)
+    S = Main.SHADOW; s = S[:sys]
+    t0 = w.t
+    while s.state !== :home && w.t - t0 < 50; wait_seconds(game, 0.5); end      # (one left over from the test before)
+    interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(1.0)])
+    me = creature(w, "Lumi")
+    sp = Base.invokelatest(game.plugins["bubbles"].mod.open_spot, game)
+    me.pos = XP.ground(w.island, (sp[1], sp[2]))
+    interact!(game, [KeyPress(Keyboard.v), Wait(2.0)])
+    state = s.state
+    gap = hypot(me.pos[1] - s.pos[1], me.pos[2] - s.pos[2])
+    screenshot(game, "s95_shadow_v")
+    interact!(game, [MouseTo(ui_pos(game, "Stop")), LeftClick(), Wait(0.5)])
+    check(me.controlled == false && state === :loose && gap > 1.5,
+          "after V the shadow is $(state), $(round(gap; digits = 1)) m from Lumi")
+end
+
+uitest("Gallery opening (s95): a new picture's easel stands empty until Lumi hangs it, then friends gather in front") do game
+    w = game.world
+    game.minigame === nothing || XP.stop_minigame!(game)
+    GA = Main.GALLERY
+    real = copy(Base.invokelatest(game.plugins["gallery"].mod.hanging, game))
+    GA[:pics] = [real[2:end]; "an-older-one"]                 # as if real[1] had just been posted
+    GA[:looked] = 0.0
+    me = creature(w, "Lumi")
+    XP.leave_interactions!(w, me); me.action === :sleep && (me.action = :idle)
+    me.goal = XP.Goal(:idle, me.pos, :idle, 5.0, w.t + 5, true, 0, false)
+    wait_seconds(game, 0.5)
+    op = get(GA, :opening, nothing)
+    pic = findfirst(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :gallery_pic_1, game.stage.scene.plots)
+    hidden = pic !== nothing && !game.stage.scene.plots[pic].visible[]
+    t1 = w.t
+    while haskey(GA, :opening) && GA[:opening][:state] === :carry && w.t - t1 < 60; wait_seconds(game, 0.5); end
+    called = get(get(GA, :opening, Dict{Symbol,Any}()), :friends, -1)
+    busy = [(c.name, c.goal.kind, c.action) for c in w.creatures if c !== me && c.goal.kind !== :gallery]
+    wait_seconds(game, 4.0)
+    gathered = count(c -> c.goal.kind === :gallery && c !== me, w.creatures)
+    screenshot(game, "s95_gallery_opening")
+    pic = findfirst(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :gallery_pic_1, game.stage.scene.plots)
+    shown = pic !== nothing && game.stage.scene.plots[pic].visible[]
+    kinds = [k for (_, k) in get(GA, :log, Tuple{Float64,Symbol}[])]
+    check(op !== nothing && op[:name] == real[1] && hidden && :opening in kinds && gathered >= min(2, called) && called >= 1 && shown,
+          "opening for $(op === nothing ? nothing : op[:name]) (newest $(real[1])), hidden at first $(hidden), log ends $(kinds[max(1, end - 2):end]), $(called) called, $(gathered) friends gathered, picture shown $(shown); the others $(busy)")
+end

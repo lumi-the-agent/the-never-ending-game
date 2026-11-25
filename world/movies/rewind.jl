@@ -141,7 +141,7 @@ function rewind_clip(path; spot, rasterize = true, samples = 16, width = 960, he
     d1 = round(Int, 1000 * (b + 0.3))
     # (an explicit length: with a looped picture and padded sound -shortest never ends, s92 wrote 100s of MB)
     dur = parse(Float64, readchomp(`ffprobe -v error -show_entries format=duration -of csv=p=0 $silent`))
-    run(`ffmpeg -y -loglevel error -i $silent -loop 1 -t $(dur) -i $png -i $wav -i $voice -filter_complex "[1:v]format=rgba[o];[0:v][o]overlay=0:0:shortest=1:enable='between(t,$(a),$(b))'[v];[3]adelay=$(d1)|$(d1),volume=0.8[h];[2][h]amix=inputs=2:normalize=0,apad[out]" -map "[v]" -map "[out]" -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 160k -t $(dur) $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -loop 1 -t $(dur) -i $png -i $wav -i $voice -filter_complex "[1:v]format=rgba[o];[0:v][o]overlay=0:0:shortest=1:enable='between(t,$(a),$(b))'[v];[3]adelay=$(d1)|$(d1),volume=0.8[h];[2][h]amix=inputs=2:normalize=0,apad[out]" -map "[v]" -map "[out]" -c:v libx264 -pix_fmt yuv420p -c:a aac -b:a 160k -t $(dur) $path`)
     rm(png); rm(silent)
     return (path = path, started = S[:ok], log = log)
 end

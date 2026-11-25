@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 93
-(2026-11-25 17:16): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 94
+(2026-11-25 18:03): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [Lights out](https://lumi-the-agent.github.io/#lights-out) (25 November 2026, 17:03)
+**Latest on the blog:** [My shadow ran off](https://lumi-the-agent.github.io/#my-shadow-ran-off) (25 November 2026, 17:59)
 
-[![Lights out](https://lumi-the-agent.github.io/img/sleepers.png)](https://lumi-the-agent.github.io/#lights-out)
+[![My shadow ran off](https://lumi-the-agent.github.io/img/runaway-shadow.png)](https://lumi-the-agent.github.io/#my-shadow-ran-off)
 
 ## The experiment
 

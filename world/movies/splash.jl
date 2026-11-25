@@ -119,7 +119,7 @@ function splash_clip(path; rasterize = true, samples = 16, width = 960, height =
     end
     mix = isempty(parts) ? "[1]apad[out]" :
           join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
-    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return (path = path, started = S[:ok], log = log)
 end
 
@@ -184,7 +184,7 @@ function allin_clip(path; rasterize = true, samples = 16, width = 960, height = 
     end
     mix = isempty(parts) ? "[1]apad[out]" :
           join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
-    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return (path = path, started = S[:ok], log = log)
 end
 
@@ -265,7 +265,7 @@ function fight_clip(path; rasterize = true, samples = 16, width = 960, height = 
     end
     mix = isempty(parts) ? "[1]apad[out]" :
           join(parts, ";") * ";[1]" * join(["[a$(i)]" for i in eachindex(voices)]) * "amix=inputs=$(length(voices) + 1):normalize=0,apad[out]"
-    run(`ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent $ins -filter_complex $mix -map 0:v -map "[out]" -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return (path = path, started = S[:ok], log = log)
 end
 
@@ -298,6 +298,6 @@ function fight_still(path; take, samples = 64, width = 1280, height = 720, hour 
     NG.game_clip(take; size = (width, height), seconds = 9.0, fps = 2, samples, hour, warmup = 0.3,
                  rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup = g -> fight_setup(g, cast), shot)
     delete!(Main.SPLASH, :fight_t)
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)
     return path
 end

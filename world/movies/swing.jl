@@ -99,7 +99,7 @@ function swing_clip(path; rasterize = true, samples = 16, width = 960, height = 
                  rasterize, setup, shot)
     log = [(t - S[:off], k) for (t, k) in get(Main.SWING, :log, Tuple{Float64,Symbol}[]) if t - S[:off] >= 0]
     wav = swing_wav(replace(path, ".mp4" => ".wav"), log, seconds + 1)
-    run(`ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return path
 end
 
@@ -149,6 +149,6 @@ function swing_still(path; take, samples = 64, width = 1280, height = 720, hour 
     end
     NG.game_clip(take; size = (width, height), seconds = 30.0, fps = 2, samples, hour, warmup = 0.3,
                  rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup, shot)
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)
     return path
 end

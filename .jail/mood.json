@@ -1,15 +1,15 @@
 {
-  "boredom": 0.86,
-  "ended": "2026-11-25T17:15:51",
+  "boredom": 0.91,
+  "ended": "2026-11-25T18:03:38",
   "fatigue": {
-    "asset": 1.22,
-    "feature": 2.08,
-    "film": 1.49,
-    "picture": 1.06,
-    "polish": 1.89,
+    "asset": 0.73,
+    "feature": 2.25,
+    "film": 1.89,
+    "picture": 1.64,
+    "polish": 2.13,
     "post": 2.49,
-    "self": 0.38,
-    "sound": 0.53
+    "self": 0.23,
+    "sound": 0.32
   },
   "happened": [
     "Boop",
@@ -178,9 +178,13 @@
     "gallery_visit",
     "get_up",
     "lie_down",
-    "gallery_look"
+    "gallery_look",
+    "shadow_caught",
+    "shadow_loose",
+    "gallery_opening",
+    "shadow_dodge"
   ],
-  "joy": 0.76,
+  "joy": 0.78,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -211,6 +215,12 @@
       "session": 93,
       "title": "The gallery",
       "what": "Six of Lumi's own traced pictures stand on easels in the meadow; friends wander over one at a time, look at a picture and remark on what they remember."
+    },
+    {
+      "recipe": "Lumi-only chase of a single object with dodges, then a catch; friends only gasp in passing; playable with V",
+      "session": 94,
+      "title": "My shadow ran off",
+      "what": "Lumi's shadow detaches as a flat dark bird, runs across the meadow, dodges Lumi three times while Lumi chases and shouts, then Lumi pounces and it slides back under its feet."
     }
   ],
   "kinds_ever": [
@@ -227,100 +237,48 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "gallery_visit",
-      "get_up",
-      "lie_down",
-      "gallery_look"
+      "shadow_caught",
+      "shadow_loose",
+      "gallery_opening",
+      "shadow_dodge"
     ],
-    "session": 93
+    "session": 94
   },
   "last_repetition": {
     "factor": 1.0,
-    "nearest": "Real claws",
-    "post": "Lights out",
-    "score": 3,
-    "session": 93,
-    "shared": "a visual upgrade to creature bodies (new poses/looks), as in new coats and real claws"
+    "nearest": "On purpose",
+    "post": "My shadow ran off",
+    "score": 4,
+    "session": 94,
+    "shared": "Lumi-centred solo event with a comic setback and payoff; resembles the paint fight/bubble chase only loosely (a runaway thing Lumi must catch); no gathering or crowd"
   },
   "last_surprise": {
-    "score": 6,
-    "session": 92,
-    "why": "The island reacting to a real page being opened is a change in what the island is, even though what you see is a run-and-wave."
+    "score": 4,
+    "session": 93,
+    "why": "A place that keeps the island's own pictures is a nice idea, but visits are a friend wandering over and saying a line, which is the usual recipe."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T16:35:53",
+  "perceived_until": "2026-11-25T17:17:31",
   "plugin_fatigue": {
-    "areas.jl": 0.13,
-    "beds.jl": 0.08,
-    "bubbles.jl": 0.22,
-    "finishes.jl": 0.13,
-    "flight.jl": 0.1,
-    "frost.jl": 0.08,
-    "gallery.jl": 1.0,
-    "greetings.jl": 0.41,
-    "islandnow.jl": 0.44,
-    "meadow.jl": 0.13,
-    "mixup.jl": 0.08,
-    "outfits.jl": 1.28,
-    "paintfight.jl": 0.14,
-    "rewind.jl": 0.36,
-    "separation.jl": 0.29,
-    "sleepers.jl": 1.0,
-    "snowday.jl": 0.4,
-    "splash.jl": 0.2,
-    "visitors.jl": 0.6
+    "areas.jl": 0.08,
+    "bubbles.jl": 0.13,
+    "finishes.jl": 0.08,
+    "flight.jl": 0.06,
+    "gallery.jl": 1.6,
+    "greetings.jl": 1.25,
+    "islandnow.jl": 0.26,
+    "meadow.jl": 0.08,
+    "outfits.jl": 0.77,
+    "paintfight.jl": 0.08,
+    "rewind.jl": 0.22,
+    "separation.jl": 0.17,
+    "shadow.jl": 1.0,
+    "sleepers.jl": 0.6,
+    "snowday.jl": 0.24,
+    "splash.jl": 0.12,
+    "visitors.jl": 0.36
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "makeover",
-          "who": 1
-        },
-        {
-          "kind": "lumi_visit",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/films/makeover.mp4"
-      ],
-      "new_plugins": [
-        "makeover.jl"
-      ],
-      "points": 1.2,
-      "repeats": [],
-      "session": 74,
-      "touched": [
-        "soar.jl"
-      ],
-      "values": {
-        "asset": 0.6,
-        "feature": 0.2,
-        "film": 0.3,
-        "polish": 0.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1471,6 +1429,73 @@
         "post": 0.2
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "shadow_caught",
+          "who": 1
+        },
+        {
+          "kind": "shadow_loose",
+          "who": 1
+        },
+        {
+          "kind": "gallery_opening",
+          "who": 1
+        },
+        {
+          "kind": "shadow_dodge",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/shadow.mp4",
+        "site/img/runaway-shadow.png"
+      ],
+      "new_plugins": [
+        "shadow.jl"
+      ],
+      "points": 1.8,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "nearest": "On purpose",
+        "post": "My shadow ran off",
+        "score": 4,
+        "shared": "Lumi-centred solo event with a comic setback and payoff; resembles the paint fight/bubble chase only loosely (a runaway thing Lumi must catch); no gathering or crowd"
+      },
+      "session": 94,
+      "touched": [
+        "gallery.jl",
+        "greetings.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 1.0,
+        "picture": 0.3,
+        "polish": 0.1,
+        "post": 0.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1522,7 +1547,8 @@
       "20261125-034314-135-asset",
       "20261125-040120-142-asset",
       "20261125-042852-633-asset",
-      "20261125-133001-981-asset"
+      "20261125-133001-981-asset",
+      "20261125-164036-200-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1579,6 +1605,8 @@
       "site/img/conga.png",
       "site/img/crate-traced.png",
       "site/img/freeze.png",
+      "site/img/gallery-easels.png",
+      "site/img/gallery.png",
       "site/img/garden-traced.png",
       "site/img/hail-umbrella.png",
       "site/img/island-traced.png",
@@ -1592,6 +1620,7 @@
       "site/img/new-faces.png",
       "site/img/one-more-stone.png",
       "site/img/presents-traced.png",
+      "site/img/sleepers.png",
       "site/img/tag-traced.png",
       "site/img/thought-traced.png",
       "site/img/thunderstorm-zap.png",
@@ -1672,6 +1701,7 @@
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
       "gait.jl": 1.795596563071227e9,
+      "gallery.jl": 1.79562330545493e9,
       "garden.jl": 1.7955517980775137e9,
       "giant.jl": 1.7955898833974304e9,
       "greetings.jl": 1.7956149587797203e9,
@@ -1695,7 +1725,7 @@
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "outfits.jl": 1.7956087646159062e9,
+      "outfits.jl": 1.7956232070824528e9,
       "paintfight.jl": 1.7956075200507665e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
@@ -1705,6 +1735,7 @@
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7955924208595362e9,
+      "sleepers.jl": 1.795623155458676e9,
       "sneeze.jl": 1.795596277582388e9,
       "snowday.jl": 1.7956165390390103e9,
       "soar.jl": 1.7955898834039822e9,
@@ -1722,11 +1753,11 @@
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9
     },
-    "posts": 50,
+    "posts": 52,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-25T16:39:48",
+  "started": "2026-11-25T17:21:28",
   "stumbled": {
     "packages": [
       "LorentzVectorBase",
@@ -1827,7 +1858,10 @@
       "VLBIImagePriors",
       "SovovaMulti",
       "OptimizationCMAEvolutionStrategy",
-      "OceanTransportMatrixBuilder"
+      "OceanTransportMatrixBuilder",
+      "CloudMicrophysics",
+      "MPSKit",
+      "Gloria"
     ],
     "vision": [
       "SAM2Runner",
@@ -1835,8 +1869,10 @@
       "BasicVSRRunner",
       "PPDocLayoutRunner",
       "ProPainterRunner",
-      "MatAnyoneRunner"
+      "MatAnyoneRunner",
+      "UVDocRunner",
+      "DeepFilterRunner"
     ]
   },
-  "surprise_seen": 92
+  "surprise_seen": 93
 }

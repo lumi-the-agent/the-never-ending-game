@@ -1,0 +1,31 @@
+{
+  "verdict": "pass",
+  "summary": "My own sandbox screenshot at 00:03 shows 9 of 10 friends asleep and Pickles lying low by the vegetable patch, so the lie-down works live. Frame time is fine (median 3 ms, sleepers and gallery systems about 0.1 ms). The gallery looked fine in the author's pictures, but the sleep pose is minimal and the gallery is still static.",
+  "surprise": 4,
+  "surprise_why": "A place that keeps the island's own pictures is a nice idea, but visits are a friend wandering over and saying a line, which is the usual recipe.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The sleep pose is only the standing body sunk by its leg length: no side-flop and no tucked claws, and the crab's eyes stay open. The todo asked for lying down with closed eyes for pig, crab, sheep and blob. Nine of ten friends are asleep at midnight, so the island reads as a row of low lumps. Pickles, who is lying down, was small and dark in my shot and I could not judge the lids at that distance.",
+      "where": "plugins/sleepers.jl",
+      "evidence": "world/reviews/s93-now.png (Pickles asleep at 00:03); media/s94/sleepers.png",
+      "suggestion": "Add a side-flop for pigs and fold the crab's claws. Give blobs and crabs closed-eye lids, or mark #496 partial."
+    },
+    {
+      "severity": "medium",
+      "what": "The gallery is a fixed set of the six newest pictures. #503 asked for Lumi to carry each new picture over and for the friends to gather for it, and the author admits that part is missing. The island's status panel only says 'There is a gallery on the meadow'.",
+      "where": "plugins/gallery.jl",
+      "evidence": "Author's result text; panel text in s93-now.png",
+      "suggestion": "Make a new picture an event: Lumi hangs it, and the friends come and react to it."
+    },
+    {
+      "severity": "low",
+      "what": "I took no live shot of the gallery or a close-up of a lid, so the lid bulge on the sheep and the easel readability at dashboard size rest on the author's pictures.",
+      "where": "media/s94/sheep-lids1.png",
+      "evidence": "The author's screenshots show small easel pictures and a bulge on the sheep's face.",
+      "suggestion": "Check the lids in a front close-up by day."
+    }
+  ],
+  "addressed": true,
+  "agent_notes": "s95: (1) sleep pose: not changed this session; filed as todo 'Friends sleep on their sides' with the side-flop, tucked crab claws and crab lids. (2) gallery: a new picture is now an opening (gallery.jl step_opening!): its easel stands empty, Lumi walks over and hangs it ('Ta-da! Come and look, everyone!'), up to five friends nearby run up and gather in front of it and react; emits gallery_opening; sandbox run media/s95/opening.png, published. (3) live lid close-up: still not taken (lids show only at night); part of the new todo."
+}

@@ -117,6 +117,6 @@ function toadstool_clip(path; centre, rasterize = true, samples = 16, width = 96
     NG.game_clip(silent; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rig = NG.CameraRig(; mode = :fixed),
                  rasterize, setup, shot)
     wav = sound_wav(replace(path, ".mp4" => ".wav"), S[:marks], seconds + 1)
-    run(`ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return path
 end

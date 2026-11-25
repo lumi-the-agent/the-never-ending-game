@@ -44,7 +44,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "sneeze" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
                   "sneeze2" => ("Lumi", "Wibbles", "Truffle", "Gloop", "Pinchy", "Cumulus"),
                   "gallery" => ("Lumi", "Gloop", "Truffle", "Cumulus", "Pinchy"),
-                  "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"))
+                  "sleepers" => ("Lumi", "Truffle", "Cumulus", "Pinchy"),
+                  "shadow" => ("Lumi", "Pinchy", "Gloop"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -77,6 +78,23 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "shadow"           # s95: my shadow has come loose and runs off ahead of me over the grass; a crab jumps
+        x0, y0 = open_meadow(w)
+        sd = NG.sun(w)[1]; L = Point2f(-sd[1], -sd[2]); L = L / hypot(L[1], L[2])     # away from the sun, where shadows fall
+        P = Point2f(-L[2], L[1])                                                      # across it
+        a = atan(L[2], L[1])
+        pose!(w, by_name(w, "Lumi"), (x0 - 1.6f0 * L[1], y0 - 1.6f0 * L[2]), a, :run; phase = 1.1f0)
+        pose!(w, by_name(w, "Pinchy"), (x0 + 2.4f0 * L[1] + 1.3f0 * P[1], y0 + 2.4f0 * L[2] + 1.3f0 * P[2]), a + pi + 0.5, :gasp)
+        pose!(w, by_name(w, "Gloop"), (x0 + 3.6f0 * L[1] - 1.6f0 * P[1], y0 + 3.6f0 * L[2] - 1.6f0 * P[2]), a + pi - 0.6, :laugh)
+        sm = plugin(g, "shadow")
+        s = Main.SHADOW[:sys]
+        s.state = :loose; s.t0 = w.t; s.pos = Point2f(x0 + 0.9f0 * L[1], y0 + 0.9f0 * L[2]); s.phase = 2.2f0
+        s.vel = Vec2f(2.4f0 * L[1] + 0.4f0 * P[1], 2.4f0 * L[2] + 0.4f0 * P[2])
+        Base.invokelatest(sm.plots!, g); Base.invokelatest(sm.draw!, s, g)
+        z0 = NG.terrain_height(w.island, x0, y0)
+        c = Point3f(x0 + 0.6f0 * L[1], y0 + 0.6f0 * L[2], z0)
+        return c + Point3f(5.0f0 * P[1] - 1.2f0 * L[1], 5.0f0 * P[2] - 1.2f0 * L[2], 2.3f0), c + Point3f(0, 0, 0.35f0)
     end
     if post == "gallery"          # s94: friends in front of the pictures on the easels, seen over their shoulders
         gm = g.plugins["gallery"].mod

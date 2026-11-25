@@ -149,6 +149,6 @@ function choir_clip(path; spot = nothing, rasterize = true, samples = 16, width 
                  rasterize, setup, shot)
     notes = [(t - S[:off], k, m) for (t, k, m, _) in Main.CHOIR[:notes] if t - S[:off] >= 0]
     wav = choir_wav(replace(path, ".mp4" => ".wav"), notes, seconds + 1)
-    run(`ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return path
 end

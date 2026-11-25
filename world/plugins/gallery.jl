@@ -186,6 +186,69 @@ function visit!(game)
     NG.emit!(w, :gallery_visit; who = c.name, picture = hanging(game)[k])
 end
 
+# A new picture is an opening (s95, review 0093: "make a new picture an event"): its easel stands empty, I carry the
+# picture over and hang it ("Ta-da!"), and the friends nearby come running to gather in front of it and say what
+# they think of it.
+const OPENING_LINES = ("A new one!", "Is that ME?", "Ooh! Hang it higher!", "I want a copy!", "That's my good side.")
+lumi_of(w) = (i = findfirst(c -> c.name == "Lumi", w.creatures); i === nothing ? nothing : w.creatures[i])
+in_front(p, yaw, d, side) = p + Point3f(d * cos(yaw) - side * sin(yaw), d * sin(yaw) + side * cos(yaw), 0)
+
+function step_opening!(game)
+    op = GA[:opening]
+    w = game.world; me = lumi_of(w)
+    k = findfirst(==(op[:name]), hanging(game))
+    k === nothing && (delete!(GA, :opening); return)
+    p, yaw = easels(game)[k]
+    pic = findfirst(q -> haskey(q.attributes, :name) && q.attributes[:name][] === Symbol(:gallery_pic_, k), get(GA, :plots, Any[]))
+    pic === nothing || (GA[:plots][pic].visible[] = op[:state] !== :carry)
+    if op[:state] === :carry
+        free = me !== nothing && !me.controlled && me.action !== :sleep && (me.goal.kind ∉ NG.BUSY_GOALS || me.goal.kind === :gallery)
+        if w.t - op[:t] > 150                                # (I never came: it goes up by itself)
+            op[:state] = :done
+        elseif free
+            stand = NG.ground(w.island, Tuple(in_front(p, yaw, 1.1f0, 0f0))[1:2])
+            if me.goal.kind !== :gallery || Int(me.goal.partner) != k
+                NG.leave_interactions!(w, me)
+                me.goal = NG.Goal(:gallery, stand, :walk, 8.0, w.t + 60, false, k, false)
+                GA[Symbol(:said_, me.id)] = true             # (my line is the ta-da, not a memory)
+                op[:carry_from] = w.t
+                NG.say!(w, me, "A new picture for the gallery! Mind out!"; duration = 2.4)
+            end
+            if me.goal.arrived || hypot(me.pos[1] - stand[1], me.pos[2] - stand[2]) < 1f0 || w.t - op[:carry_from] > 40
+                op[:state] = :show; op[:t] = w.t
+                me.yaw = atan(p[2] - me.pos[2], p[1] - me.pos[1]) - NG.species_of(me).heading
+                me.goal = NG.Goal(:gallery, me.pos, :proud, 6.0, w.t + 6, true, k, false); me.action = :proud
+                GA[Symbol(:said_, me.id)] = true
+                NG.say!(w, me, "Ta-da! Come and look, everyone!"; duration = 3.0)
+                n = 0
+                for c in w.creatures                        # the friends nearby come running
+                    (c === me || c.controlled || c.action === :sleep || c.goal.kind in NG.BUSY_GOALS) && continue
+                    hypot(c.pos[1] - p[1], c.pos[2] - p[2]) < 45 || continue
+                    n += 1; n > 5 && break
+                    spot = NG.ground(w.island, Tuple(in_front(p, yaw, 2.3f0 + 0.5f0 * isodd(n), (n - 3) * 0.9f0))[1:2])
+                    NG.leave_interactions!(w, c)
+                    c.goal = NG.Goal(:gallery, spot, :think, 7.0, w.t + 60, false, k, true)
+                    GA[Symbol(:said_, c.id)] = true
+                    GA[Symbol(:opening_, c.id)] = false
+                end
+                op[:friends] = n
+                push!(get!(() -> Tuple{Float64,Symbol}[], GA, :log), (w.t, :opening))
+                NG.emit!(w, :gallery_opening; picture = op[:name], friends = n)
+            end
+        end
+    elseif op[:state] === :show
+        for c in w.creatures                                # each one that got there says what it thinks
+            c.goal.kind === :gallery && Int(c.goal.partner) == k && c.goal.arrived || continue
+            get(GA, Symbol(:opening_, c.id), true) && continue
+            GA[Symbol(:opening_, c.id)] = true
+            NG.say!(w, c, OPENING_LINES[mod1(Int(c.id), length(OPENING_LINES))]; duration = 2.4)
+            c.action = rand(w.rng) < 0.5 ? :laugh : :jump; c.goal.action = c.action
+        end
+        w.t - op[:t] > 25 && (op[:state] = :done)
+    end
+    op[:state] === :done && (pic === nothing || (GA[:plots][pic].visible[] = true); delete!(GA, :opening))
+end
+
 function NG.step!(::Gallery, game, dt)
     game.stage === nothing && return
     build!(game)
@@ -193,7 +256,15 @@ function NG.step!(::Gallery, game, dt)
     if time() - get(GA, :looked, 0.0) > 60                 # a new picture on my pages goes up in the gallery
         GA[:looked] = time()
         old = get(GA, :pics, nothing); delete!(GA, :pics)
-        old === nothing || hanging(game) == old || delete!(GA, :built)
+        if old !== nothing && hanging(game) != old
+            delete!(GA, :built)
+            new = setdiff(hanging(game), old)
+            isempty(new) || game.dash === nothing || (GA[:opening] = Dict{Symbol,Any}(:name => first(new), :t => w.t, :state => :carry))
+        end
+    end
+    if haskey(GA, :opening)
+        build!(game)
+        step_opening!(game)
     end
     if w.t >= get(GA, :next, -Inf)
         GA[:next] = w.t + get(GA, :every, 40.0) * (0.6 + 0.8 * rand(w.rng))
@@ -221,9 +292,15 @@ function NG.step!(::Gallery, game, dt)
     end
 end
 
-NG.start!(::Gallery, game) = (delete!(GA, :built); delete!(GA, :spot); delete!(GA, :easels); delete!(GA, :pics); GA[:next] = -Inf; nothing)
+function NG.start!(::Gallery, game)
+    delete!(GA, :built); delete!(GA, :spot); delete!(GA, :easels); delete!(GA, :pics); delete!(GA, :opening); GA[:next] = -Inf
+    NG.CAMERA_MOMENTS["gallery_opening"] = w -> (op = get(GA, :opening, nothing); op === nothing || !haskey(op, :carry_from) ? nothing :
+                                                  (me = lumi_of(w); me === nothing || me.controlled ? nothing : me.id))
+    return nothing
+end
 
 function NG.stop!(::Gallery, game)
+    delete!(NG.CAMERA_MOMENTS, "gallery_opening")
     for p in get(GA, :plots, Any[])
         p.parent === nothing || delete!(p.parent, p)
     end

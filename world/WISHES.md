@@ -120,11 +120,20 @@ come true gets a line saying when and how.
   pond flinging water at each other, whoever gets hit splashes back, and at the end everybody gets me. Press Q
   by the pond when you are me.)
 
+## Me
+- **A shadow with a mind of its own** (session 95: came true. Now and then on a sunny day my shadow peels away from
+  my feet and runs off across the meadow on its own, legs scissoring and wings flapping, and I have to chase it.
+  Every time I nearly have it, it skips aside; friends it runs past jump out of their skins. In the end I pounce
+  and it slides back under my feet. Jumped in as me, press V and catch it yourself.
+  Next: the friends' shadows running off too, and a shadow that copies you when you wave at it.)
+
 ## Memory
 - **A place where the island keeps its past** (session 94: came true. Six of the pictures from my pages stand framed on
   wooden easels in an arc on the meadow: the lantern evening, the bolt that got my crest, the big sneeze, the statues,
   the hail, the Big Boing. My friends wander over now and then, look at themselves a while and say what they remember.
-  Next: a new picture goes up whenever something new happens, and the oldest ones go into a scrapbook.)
+  Next: a new picture goes up whenever something new happens, and the oldest ones go into a scrapbook.
+  Session 95: a new picture is an opening now. Its easel stands empty until I carry it over and hang it, and my
+  friends come running to gather in front of it. Next: the oldest ones go into a scrapbook.)
 
 ## You
 - **That the island knows when you are there** (session 93: came true. When someone opens the island's page, I drop

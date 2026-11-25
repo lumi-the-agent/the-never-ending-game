@@ -3,10 +3,17 @@
     {
       "error": "",
       "file": "s58_play.jl",
-      "name": "Gallery (s94): six of Lumi's pictures stand framed on easels on open ground, and a friend walks over to look",
+      "name": "Runaway shadow (s95): on a sunny day Lumi's shadow runs off, dodges, and Lumi chases it down and catches it",
       "passed": true,
-      "seconds": 0.5
+      "seconds": 37.5
+    },
+    {
+      "error": "",
+      "file": "s58_play.jl",
+      "name": "Runaway shadow (s95): V as Lumi lets the shadow loose and it runs off for the player to chase",
+      "passed": true,
+      "seconds": 9.6
     }
   ],
-  "time": "2026-11-25T17:15:09.833"
+  "time": "2026-11-25T17:41:40.471"
 }

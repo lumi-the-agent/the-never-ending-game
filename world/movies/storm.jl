@@ -131,7 +131,7 @@ function storm_clip(path; centre, spot, rasterize = true, samples = 16, width = 
                  rasterize, setup, shot)
     strikes = [(t - S[:off], k) for (t, k) in Main.STORM[:strikes] if t - S[:off] >= 0]
     wav = storm_wav(replace(path, ".mp4" => ".wav"), strikes, seconds + 1)
-    run(`ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
+    run(`timeout 300 ffmpeg -y -loglevel error -i $silent -i $wav -c:v copy -c:a aac -b:a 160k -shortest $path`)
     return path
 end
 
@@ -185,6 +185,6 @@ function storm_still(path; centre, spot, samples = 64, width = 1280, height = 72
     end
     NG.game_clip(take; size = (width, height), seconds = 13.8, fps = 2, samples, hour, warmup = 0.3,
                  rig = NG.CameraRig(; mode = :fixed), rasterize = false, setup = clip_setup, shot)
-    run(`ffmpeg -y -loglevel error -i $take -update 1 $path`)     # every frame over the same image: the last one stays
+    run(`timeout 300 ffmpeg -y -loglevel error -i $take -update 1 $path`)     # every frame over the same image: the last one stays
     return path
 end
