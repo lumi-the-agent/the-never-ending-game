@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T08:41:58.058",
+  "finished": "2026-11-26T08:45:47.572",
   "id": "20261126-084158-058-clip",
   "kind": "clip",
   "params": {
@@ -7,5 +8,11 @@
     "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795678918.png",
     "script": "movies/ocr.jl"
   },
-  "status": "queued"
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795678918.png",
+    "text": "99"
+  },
+  "seconds": 34.1,
+  "started": "2026-11-26T08:45:13.271",
+  "status": "done"
 }

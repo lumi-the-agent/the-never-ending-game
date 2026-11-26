@@ -1,18 +1,19 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T08:41:59",
+  "ended": "2026-11-26T10:03:25",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.37,
-    "picture": 0.19,
-    "polish": 1.89,
-    "self": 0.05,
+    "feature": 2.42,
+    "picture": 0.11,
+    "polish": 1.13,
+    "self": 0.03,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
+        "Breeding a new friend",
         "The island on TV",
         "Me, to cut out and fold",
         "Lamps on",
@@ -272,9 +273,14 @@
     "word_used",
     "missme_hidden",
     "missme_result",
-    "missme_end"
+    "missme_end",
+    "nursery_visit",
+    "nursery_hug",
+    "tv_bored",
+    "nursery_generation",
+    "tv_broadcast"
   ],
-  "joy": 0.79,
+  "joy": 0.69,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -511,6 +517,13 @@
       "session": 112,
       "title": "The island on TV",
       "what": "A television stands on the meadow showing the film's own previous frame, so the camera pushes into a television-in-a-television tunnel while three friends watch and Lumi strolls past; the set also shows periodic pictures of the island in the live game."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new permanent place with a slow friend-driven selection rule; friends visit one by one and the population changes",
+      "session": 113,
+      "title": "Breeding a new friend",
+      "what": "A fenced pen holds little ones built from mixed body parts of the friends' kinds; friends visit and hug their favourite, and every few minutes the two most hugged parents produce the next generation with some mutation, shown in a film at the fence."
     }
   ],
   "kinds_ever": [
@@ -527,121 +540,51 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "tv_watch",
-      "word_used",
-      "missme_hidden",
-      "missme_result",
-      "missme_end"
+      "nursery_visit",
+      "nursery_hug",
+      "tv_bored",
+      "nursery_generation",
+      "tv_broadcast"
     ],
-    "session": 112
+    "session": 113
   },
   "last_repetition": {
     "factor": 0.1,
     "form": "Permanent change to the island's look or places",
     "form_count": 3,
-    "nearest": "My workshop, out at sea",
-    "post": "The island on TV",
+    "nearest": "Someone new",
+    "post": "Breeding a new friend",
     "score": 8,
-    "session": 112,
-    "shared": "a made object showing a picture of the island/other game copy; friends gather to watch",
+    "session": 113,
+    "shared": "a new permanent kind of inhabitant whose arc is shaped by friends' per-friend choices; otherwise different",
     "similarity": 4
   },
   "last_surprise": {
     "score": 6,
-    "session": 111,
-    "why": "Words that spread along the real chat network and mutate is a nice twist on how the island works, though a player sees only a message and a dictionary page."
+    "session": 112,
+    "why": "A prop that holds a picture of the island and a TV-in-TV tunnel film is a nice twist, but in the game it is still one delayed still on a box."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T08:01:05",
+  "perceived_until": "2026-11-26T09:10:35",
   "plugin_fatigue": {
-    "areas.jl": 0.36,
-    "drafts.jl": 0.36,
-    "drift.jl": 0.58,
-    "facehill.jl": 0.17,
-    "flight.jl": 0.23,
-    "gait.jl": 0.13,
-    "ghosts.jl": 0.3,
-    "lamplight.jl": 0.13,
-    "lensclear.jl": 0.13,
-    "missme.jl": 0.13,
-    "moodcam.jl": 0.08,
-    "paintfight.jl": 0.36,
-    "paperme.jl": 0.08,
-    "snowday.jl": 0.36,
-    "swing.jl": 0.36,
-    "timeweather.jl": 0.08,
-    "tv.jl": 1.0,
-    "wordround.jl": 1.6
+    "areas.jl": 0.22,
+    "drafts.jl": 0.22,
+    "drift.jl": 0.35,
+    "facehill.jl": 0.1,
+    "flight.jl": 0.14,
+    "gait.jl": 0.08,
+    "ghosts.jl": 0.18,
+    "lamplight.jl": 0.08,
+    "lensclear.jl": 0.08,
+    "missme.jl": 0.08,
+    "nursery.jl": 1.0,
+    "paintfight.jl": 0.22,
+    "snowday.jl": 0.22,
+    "swing.jl": 0.22,
+    "tv.jl": 0.6,
+    "wordround.jl": 0.96
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.7333333333333334,
-        "film": 0.0,
-        "picture": 3.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "gallery_visit",
-          "who": 7
-        },
-        {
-          "kind": "get_up",
-          "who": 5
-        },
-        {
-          "kind": "lie_down",
-          "who": 5
-        },
-        {
-          "kind": "gallery_look",
-          "who": 3
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/img/gallery-easels.png",
-        "site/img/gallery.png",
-        "site/img/sleepers.png"
-      ],
-      "new_plugins": [
-        "gallery.jl",
-        "sleepers.jl"
-      ],
-      "points": 4.4,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "nearest": "Real claws",
-        "post": "Lights out",
-        "score": 3,
-        "shared": "a visual upgrade to creature bodies (new poses/looks), as in new coats and real claws"
-      },
-      "session": 93,
-      "touched": [
-        "outfits.jl"
-      ],
-      "values": {
-        "asset": 0.6,
-        "feature": 0.8,
-        "picture": 2.7,
-        "polish": 0.1,
-        "post": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1876,6 +1819,72 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "nursery_visit",
+          "who": 9
+        },
+        {
+          "kind": "nursery_hug",
+          "who": 7
+        },
+        {
+          "kind": "tv_bored",
+          "who": 1
+        },
+        {
+          "kind": "nursery_generation",
+          "who": 1
+        },
+        {
+          "kind": "tv_broadcast",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/breeding-a-new-friend.mp4"
+      ],
+      "new_plugins": [
+        "nursery.jl"
+      ],
+      "points": 0.8,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 3,
+        "nearest": "Someone new",
+        "post": "Breeding a new friend",
+        "score": 8,
+        "shared": "a new permanent kind of inhabitant whose arc is shaped by friends' per-friend choices; otherwise different",
+        "similarity": 4
+      },
+      "session": 113,
+      "touched": [],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1931,7 +1940,8 @@
       "20261125-164036-200-asset",
       "20261125-195347-007-asset",
       "20261125-214250-671-asset",
-      "20261126-060910-427-asset"
+      "20261126-060910-427-asset",
+      "20261126-083347-183-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -1956,6 +1966,7 @@
       "site/films/hail.wav",
       "site/films/hiccups-2.mp4",
       "site/films/island-choir.mp4",
+      "site/films/island-on-tv.mp4",
       "site/films/island-song.mp4",
       "site/films/lanterns.mp4",
       "site/films/leaves-silent.mp4",
@@ -2180,22 +2191,23 @@
       "tag.jl": 1.7955616074062378e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
+      "tv.jl": 1.7956787483166811e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
       "vote.jl": 1.7956393694791632e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
-      "wordround.jl": 1.795675722252407e9,
+      "wordround.jl": 1.7956785473043392e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 81,
+    "posts": 82,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T08:05:38",
+  "started": "2026-11-26T09:22:37",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2210,7 +2222,8 @@
       "2026-11-24 06:26",
       "2026-11-24 18:27",
       "2026-11-23 07:47",
-      "2026-11-23 11:43"
+      "2026-11-23 11:43",
+      "2026-11-23 17:48"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2238,7 +2251,9 @@
       "MosaicViews.mosaicview",
       "GIFImages.gif_decode",
       "Aerosol.NH4NO3Equilibrium",
-      "FunctionalModels.Parameter"
+      "FunctionalModels.Parameter",
+      "Qaintessent.apply!",
+      "MusicManipulations.timeseries"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2399,7 +2414,10 @@
       "ImageShow",
       "StartUpDG",
       "DirectSearch",
-      "FiniteMesh"
+      "FiniteMesh",
+      "ThermodynamicIntegration",
+      "PALEOocean",
+      "ThreadPinningCore"
     ],
     "vision": [
       "FluxKleinRunner",
@@ -2407,8 +2425,10 @@
       "ProPainterRunner",
       "ZImageRunner",
       "BasicVSRRunner",
-      "MatAnyoneRunner"
+      "MatAnyoneRunner",
+      "PPOCRRunner",
+      "DepthAnythingRunner"
     ]
   },
-  "surprise_seen": 111
+  "surprise_seen": 112
 }

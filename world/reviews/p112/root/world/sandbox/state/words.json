@@ -1,0 +1,607 @@
+[
+ {
+  "counts": {
+   "foffly": 7,
+   "whoffly": 1
+  },
+  "day": 18,
+  "first": {
+   "croffly": "Truffle",
+   "foffly": "Marshmallow",
+   "fooffly": "Sir Sniffsalot",
+   "fovly": "Gloop",
+   "fuffly": "Truffle",
+   "voffly": "Pickles",
+   "whoffle": "Pinchy",
+   "whoffly": "Lumi",
+   "whoffy": "Truffle",
+   "whuffy": "Wibbles",
+   "woffly": "Pickles",
+   "woffy": "Hopscotch",
+   "wophly": "Sir Sniffsalot"
+  },
+  "hour": 9.258697208970366,
+  "meaning": "you, who watch us from far away",
+  "minutes": 6.4,
+  "parent": {
+   "croffly": "foffly",
+   "foffly": "whoffly",
+   "fooffly": "foffly",
+   "fovly": "foffly",
+   "fuffly": "foffly",
+   "voffly": "woffly",
+   "whoffle": "whoffly",
+   "whoffy": "whoffly",
+   "whuffy": "whoffy",
+   "woffly": "whoffly",
+   "woffy": "woffly",
+   "wophly": "woffly"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 131.19999996945262,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "woffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 145.83333329937886,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 145.83333329937886,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Pickles",
+    "heard": "woffy",
+    "said": "woffly",
+    "switched": false,
+    "t": 151.63333329802845,
+    "to": "Hopscotch",
+    "was": "whoffly"
+   },
+   {
+    "from": "Truffle",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 159.46666662953794,
+    "to": "Pickles",
+    "was": "whoffly"
+   },
+   {
+    "from": "Pickles",
+    "heard": "woffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 183.79999995720573,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "wophly",
+    "said": "woffly",
+    "switched": false,
+    "t": 189.93333328911103,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Pickles",
+    "heard": "foffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 196.89999995415565,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 218.83333328238223,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 218.8666666157078,
+    "to": "Pinchy",
+    "was": "whoffly"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whoffy",
+    "said": "whoffly",
+    "switched": true,
+    "t": 241.16666661051568,
+    "to": "Truffle",
+    "was": "whoffly"
+   },
+   {
+    "from": "Lumi",
+    "heard": "whoffle",
+    "said": "whoffly",
+    "switched": false,
+    "t": 241.16666661051568,
+    "to": "Pinchy",
+    "was": "whoffly"
+   },
+   {
+    "from": "Truffle",
+    "heard": "whuffy",
+    "said": "whoffy",
+    "switched": false,
+    "t": 254.09999994083773,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Wibbles",
+    "heard": "whuffy",
+    "said": "whuffy",
+    "switched": false,
+    "t": 259.8999999394873,
+    "to": "Truffle",
+    "was": "whoffy"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 260.69999993930105,
+    "to": "Wibbles",
+    "was": "whuffy"
+   },
+   {
+    "from": "Truffle",
+    "heard": "whoffy",
+    "said": "whoffy",
+    "switched": false,
+    "t": 264.66666660504416,
+    "to": "Marshmallow",
+    "was": "foffly"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 276.7666666022269,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 282.5666666008765,
+    "to": "Marshmallow",
+    "was": "foffly"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "whuffy",
+    "said": "whuffy",
+    "switched": false,
+    "t": 282.9999999341089,
+    "to": "Gloop",
+    "was": "foffly"
+   },
+   {
+    "from": "Truffle",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 284.39999993378296,
+    "to": "Gloop",
+    "was": "foffly"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "fovly",
+    "said": "foffly",
+    "switched": false,
+    "t": 294.29999993147794,
+    "to": "Gloop",
+    "was": "foffly"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "croffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 295.73333326447755,
+    "to": "Truffle",
+    "was": "foffly"
+   },
+   {
+    "from": "Gloop",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 298.36666659719776,
+    "to": "Marshmallow",
+    "was": "foffly"
+   },
+   {
+    "from": "Truffle",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 300.76666659663897,
+    "to": "Wibbles",
+    "was": "foffly"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 304.8333332623588,
+    "to": "Truffle",
+    "was": "foffly"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 326.2333332573762,
+    "to": "Marshmallow",
+    "was": "foffly"
+   },
+   {
+    "from": "Truffle",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": true,
+    "t": 352.7666665845318,
+    "to": "Sir Sniffsalot",
+    "was": "wophly"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whoffly",
+    "said": "whoffly",
+    "switched": false,
+    "t": 372.43333324661944,
+    "to": "Cumulus",
+    "was": "woffly"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "fooffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 375.9666665791301,
+    "to": "Sir Sniffsalot",
+    "was": "foffly"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "fuffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 375.9666665791301,
+    "to": "Truffle",
+    "was": "foffly"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "voffly",
+    "said": "woffly",
+    "switched": false,
+    "t": 376.49999991233926,
+    "to": "Pickles",
+    "was": "whoffly"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "foffly",
+    "said": "foffly",
+    "switched": false,
+    "t": 377.2666665788274,
+    "to": "Truffle",
+    "was": "foffly"
+   },
+   {
+    "from": "Pickles",
+    "heard": "foffly",
+    "said": "whoffly",
+    "switched": true,
+    "t": 382.2333332443377,
+    "to": "Cumulus",
+    "was": "woffly"
+   }
+  ],
+  "wall": "26 November 2026, 07:58",
+  "winner": "foffly",
+  "word": "whoffly"
+ },
+ {
+  "counts": {
+   "glainko": 9,
+   "glanko": 1
+  },
+  "day": 19,
+  "first": {
+   "blainko": "Pickles",
+   "clainko": "Marshmallow",
+   "glaingo": "Pickles",
+   "glainko": "Lumi",
+   "glainkoo": "Cumulus",
+   "glanko": "Hopscotch"
+  },
+  "hour": 9.972841401391923,
+  "meaning": "a crab in a hurry",
+  "minutes": 3.0,
+  "parent": {
+   "blainko": "glainko",
+   "clainko": "glainko",
+   "glaingo": "glainko",
+   "glainkoo": "glainko",
+   "glanko": "glainko"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "blainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 27.466666660271585,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Pickles",
+    "heard": "blainko",
+    "said": "blainko",
+    "switched": false,
+    "t": 33.26666665892117,
+    "to": "Lumi",
+    "was": "glainko"
+   },
+   {
+    "from": "Truffle",
+    "heard": "glainkoo",
+    "said": "glainko",
+    "switched": false,
+    "t": 44.59999998961575,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "clainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 44.766666656243615,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Pickles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": true,
+    "t": 45.633333322708495,
+    "to": "Cumulus",
+    "was": "glainkoo"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": true,
+    "t": 45.83333332266193,
+    "to": "Marshmallow",
+    "was": "clainko"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 46.16666665591765,
+    "to": "Marshmallow",
+    "was": "glainko"
+   },
+   {
+    "from": "Pickles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 54.699999987264164,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 60.39999998593703,
+    "to": "Sir Sniffsalot",
+    "was": "glainko"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 70.4333333169343,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 73.66666664951481,
+    "to": "Gloop",
+    "was": "glainko"
+   },
+   {
+    "from": "Gloop",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 77.19999998202547,
+    "to": "Truffle",
+    "was": "glainko"
+   },
+   {
+    "from": "Truffle",
+    "heard": "glainkoo",
+    "said": "glainko",
+    "switched": false,
+    "t": 86.93333331309259,
+    "to": "Gloop",
+    "was": "glainko"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "glaingo",
+    "said": "glainko",
+    "switched": false,
+    "t": 91.99999997857958,
+    "to": "Pickles",
+    "was": "glainko"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 92.06666664523073,
+    "to": "Pickles",
+    "was": "glainko"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 92.9333333116956,
+    "to": "Truffle",
+    "was": "glainko"
+   },
+   {
+    "from": "Truffle",
+    "heard": "glanko",
+    "said": "glainko",
+    "switched": false,
+    "t": 96.799999977462,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 99.16666664357763,
+    "to": "Wibbles",
+    "was": "glainko"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 100.09999997669365,
+    "to": "Wibbles",
+    "was": "glainko"
+   },
+   {
+    "from": "Pickles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 100.13333331001922,
+    "to": "Sir Sniffsalot",
+    "was": "glainko"
+   },
+   {
+    "from": "Lumi",
+    "heard": "glanko",
+    "said": "glainko",
+    "switched": false,
+    "t": 147.19999996572733,
+    "to": "Cumulus",
+    "was": "glainko"
+   },
+   {
+    "from": "Pickles",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 158.13333329651505,
+    "to": "Sir Sniffsalot",
+    "was": "glainko"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "glainko",
+    "said": "glainko",
+    "switched": false,
+    "t": 160.9666666291887,
+    "to": "Lumi",
+    "was": "glainko"
+   }
+  ],
+  "wall": "26 November 2026, 08:10",
+  "winner": "glainko",
+  "word": "glainko"
+ }
+]

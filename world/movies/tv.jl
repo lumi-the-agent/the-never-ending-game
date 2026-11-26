@@ -17,7 +17,10 @@ function tv_clip(path; rasterize = true, samples = 24, width = 960, height = 540
             for c in w.creatures
                 k = findfirst(==(c.name), cast)
                 if k !== nothing
-                    p = Base.invokelatest(m.seat, w, k - 1)
+                    # s113 (review #546): off to the sides, so the camera's push-in passes between them, not through a head
+                    off = ((-1.9f0, -3.2f0), (1.4f0, -3.3f0), (2.3f0, -2.5f0))[k]
+                    tb = Base.invokelatest(m.base, w)
+                    p = NG.ground(w.island, (tb[1] + off[1], tb[2] + off[2]))
                     c.pos = p; c.action = :sit
                     c.goal = NG.Goal(:tvwatch, p, :sit, 60.0, w.t + 60, true, 0, false)
                 elseif c.species != "Lumi"        # everyone else far off
@@ -33,10 +36,10 @@ function tv_clip(path; rasterize = true, samples = 24, width = 960, height = 540
                 c.action = :sit
                 want = Float32(atan(tvp[2] - c.pos[2], tvp[1] - c.pos[1])) - NG.species_of(c).heading
                 c.yaw = want
-            elseif c.species == "Lumi"        # I stroll past between the camera and the friends
-                u = Float32(clamp((t - 1.5) / 7.0, 0, 1))
-                x = 14.5f0 + 7.5f0 * u
-                c.pos = NG.ground(w.island, (x, Float32(tvp[2] - 4.6)))
+            elseif c.species == "Lumi"        # I stroll past between the friends and the television, early on
+                u = Float32(clamp((t - 0.3) / 4.5, 0, 1))
+                x = 15.2f0 + 6.0f0 * u
+                c.pos = NG.ground(w.island, (x, Float32(tvp[2] - 2.1)))
                 c.action = 0 < u < 1 ? :walk : :idle
                 c.yaw = 0f0 - NG.species_of(c).heading
                 c.goal = NG.Goal(:idle, c.pos, :idle, 60.0, w.t + 60, true, 0, false)
@@ -45,14 +48,16 @@ function tv_clip(path; rasterize = true, samples = 24, width = 960, height = 540
         # the camera pushes in towards the screen, slowly, all the way
         s = Float32(clamp(t / seconds, 0, 1)); s = s * s * (3 - 2s)
         scr = tvp + Point3f(-0.3, -0.43, 1.02)
-        d = 7.0f0 - 4.6f0 * s
+        d = 7.0f0 - 4.8f0 * s
         eye = scr + Point3f(0.35f0 * (1 - s), -d, 0.55f0 * (1 - s) + 0.05f0)
         rig.mode = :fixed; rig.eye = eye; rig.target = scr
         g.rig.mode = :fixed; g.rig.eye = eye; g.rig.target = scr
         return seconds - 0.1
     end
+    # no soap bubbles drifting over the screen (the s112 take had them): their plugin starts on its own in a copy
+    nobubbles = g -> (isdefined(Main, :BUBBLES) && (Main.BUBBLES[:film] = false; Main.BUBBLES[:try_at] = Inf); nothing)
     NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 1.0, rig = NG.CameraRig(; mode = :fixed),
-                 rasterize, setup = g -> nothing, shot)
+                 rasterize, setup = nobubbles, shot)
     f = NG.LAST_FRAME[]
     if f !== nothing && !rasterize
         root = NG.game_root()

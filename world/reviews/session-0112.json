@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s112-r1.png: the screen shows a sunny meadow from another viewpoint with a small TV inside; the nested TV is a few pixels",
+      "severity": "medium",
+      "suggestion": "Make the broadcast come from the human's own world and refresh it more often, or at least from the angle the player looks at.",
+      "what": "The in-game screen is a stale broadcast (different angle and, per the author, sometimes from the workshop's world and weather), refreshed about every 20 minutes. The recursion that makes the idea special shows only as a tiny nested TV in the game and fully only in the film.",
+      "where": "plugins/tv.jl, state/tv.png"
+    },
+    {
+      "evidence": "world/reviews/s112-r1.png",
+      "severity": "low",
+      "suggestion": "Swap in the generated set once checked; add a glass cover and a soft light so the traced film shows off materials.",
+      "what": "The set is a plain box and its screen has no glass, glow or reflection; the friends I saw (Gloop, Pinchy, the pig) stood in a cluster far away, not at the TV, so 'come and sit with us' did not show.",
+      "where": "plugins/tv.jl; screen area in s112-r1.png"
+    },
+    {
+      "evidence": "reviews/motion/session-0112/island-on-tv-overview.jpg",
+      "severity": "low",
+      "suggestion": "Turn the cast in the first shot call and start the action a second later.",
+      "what": "In the film the friends face the camera before turning (the herd eases big turns).",
+      "where": "movies/tv.jl"
+    }
+  ],
+  "summary": "Checked in the sandbox (my own screenshot): the wooden TV stands on the meadow with a picture of the island on its screen, a tiny TV inside it, and frames are fast (median 2.9 ms, tv system 0.01 ms). The picture is an older broadcast from another angle, not live, and the friends were not watching it when I looked.",
+  "superseded_by": "perfectionist-0112.json",
+  "surprise": 6,
+  "surprise_why": "A prop that holds a picture of the island and a TV-in-TV tunnel film is a nice twist, but in the game it is still one delayed still on a box.",
+  "verdict": "pass"
+}

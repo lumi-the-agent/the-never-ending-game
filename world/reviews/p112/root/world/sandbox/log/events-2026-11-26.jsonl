@@ -1,0 +1,1250 @@
+{"actors":0,"creatures":10,"kind":"game_start","t":326232.2666439881,"wall":"2026-11-26T08:50:28.078"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":269.8,"panels":0,"plugin":"areas","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.532"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":49.3,"panels":0,"plugin":"autumn","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.586"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":47.6,"panels":0,"plugin":"ballplay","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.638"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":48.5,"panels":0,"plugin":"beach","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.691"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":18.7,"panels":0,"plugin":"beachhut","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.713"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":33.9,"panels":0,"plugin":"beds","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.752"}
+{"actors":0,"kind":"plugin_load","minigames":1,"ms":184.0,"panels":0,"plugin":"berry_race","systems":2,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.942"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":19.6,"panels":0,"plugin":"birdbody","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:28.966"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":48.4,"panels":0,"plugin":"blossom","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.018"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":66.8,"panels":0,"plugin":"boing","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.157"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":33.3,"panels":0,"plugin":"bottle","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.193"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":12.7,"panels":0,"plugin":"browsernight","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.210"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":61.7,"panels":0,"plugin":"bubbles","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.275"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":99.7,"panels":0,"plugin":"builder","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.379"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":18.5,"panels":0,"plugin":"bumpcue","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.401"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":35.8,"panels":0,"plugin":"butterflies","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.441"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":95.7,"panels":0,"plugin":"cairns","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.541"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":11.4,"panels":0,"plugin":"camcut","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.556"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":36.2,"panels":0,"plugin":"choir","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.596"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":24.3,"panels":0,"plugin":"clouds","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.625"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":77.6,"panels":0,"plugin":"cloudshapes","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.706"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":31.2,"panels":0,"plugin":"conga","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.742"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":47.1,"panels":0,"plugin":"dancecircle","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.793"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":69.2,"panels":0,"plugin":"drafts","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.867"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":39.9,"panels":0,"plugin":"drift","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.911"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":44.3,"panels":0,"plugin":"egg","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:29.959"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":253.5,"panels":0,"plugin":"emotes","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.219"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":23.7,"panels":0,"plugin":"facehill","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.259"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":326.4,"panels":0,"plugin":"feelings","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.589"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":18.7,"panels":0,"plugin":"fencepaint","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.612"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":158.8,"panels":0,"plugin":"finishes","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.774"}
+{"actors":0,"kind":"plugin_load","minigames":1,"ms":85.6,"panels":0,"plugin":"firefly_catch","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.865"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":83.0,"panels":0,"plugin":"flight","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:30.952"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":343.9,"panels":0,"plugin":"flora","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.300"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":25.1,"panels":0,"plugin":"flowerfield","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.329"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":46.0,"panels":0,"plugin":"flowergift","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.379"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":24.7,"panels":0,"plugin":"flylesson","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.407"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":42.9,"panels":0,"plugin":"footpaths","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.454"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":56.3,"panels":0,"plugin":"freecam","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.514"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":26.0,"panels":0,"plugin":"freeze","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.544"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":13.0,"panels":0,"plugin":"frost","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.560"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":10.1,"panels":0,"plugin":"gait","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.574"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":64.9,"panels":0,"plugin":"gallery","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.643"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":102.3,"panels":0,"plugin":"garden","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.750"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":30.3,"panels":0,"plugin":"ghosts","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.784"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":49.9,"panels":0,"plugin":"giant","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.839"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":55.2,"panels":0,"plugin":"greetings","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.898"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":61.0,"panels":0,"plugin":"hail","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.964"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":9.3,"panels":0,"plugin":"haze","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:31.977"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":59.8,"panels":0,"plugin":"hiccups","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.053"}
+{"actors":0,"kind":"plugin_load","minigames":1,"ms":66.5,"panels":0,"plugin":"hideseek","systems":0,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.125"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":29.1,"panels":1,"plugin":"islandnow","systems":0,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.162"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":52.8,"panels":0,"plugin":"kite","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.218"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":21.2,"panels":0,"plugin":"lamplight","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.243"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":48.7,"panels":0,"plugin":"lanterns","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.295"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":22.1,"panels":0,"plugin":"lensclear","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.321"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":8.4,"panels":0,"plugin":"longday","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.333"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":46.5,"panels":0,"plugin":"lookout","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.383"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":12.3,"panels":0,"plugin":"lumicolour","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.399"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":122.5,"panels":0,"plugin":"makeover","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.525"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":42.0,"panels":0,"plugin":"meadow","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.582"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":35.5,"panels":0,"plugin":"meadowlife","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.621"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":48.5,"panels":0,"plugin":"missme","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.674"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":94.6,"panels":0,"plugin":"mixup","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.772"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":19.2,"panels":0,"plugin":"moodcam","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.795"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":96.9,"panels":0,"plugin":"moon","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.896"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":29.8,"panels":0,"plugin":"moth","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.929"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":10.8,"panels":0,"plugin":"newname","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.944"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":19.4,"panels":0,"plugin":"nightglow","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:32.967"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":46.5,"panels":0,"plugin":"nightshots","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.017"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":352.1,"panels":0,"plugin":"outfits","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.373"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":69.7,"panels":0,"plugin":"paintfight","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.446"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":29.2,"panels":0,"plugin":"paperme","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.479"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":88.7,"panels":0,"plugin":"pebblewords","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.572"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":193.3,"panels":0,"plugin":"presents","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.769"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":76.8,"panels":0,"plugin":"pumpkins","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.849"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":33.4,"panels":0,"plugin":"rewind","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.886"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":21.1,"panels":0,"plugin":"rollcall","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.911"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":48.8,"panels":0,"plugin":"separation","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:33.964"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":37.9,"panels":0,"plugin":"shadow","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.016"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":22.4,"panels":0,"plugin":"shallows","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.042"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":11.5,"panels":0,"plugin":"shovel","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.057"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":106.6,"panels":0,"plugin":"showers","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.167"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":77.9,"panels":0,"plugin":"sleepers","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.249"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":94.7,"panels":0,"plugin":"sneeze","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.347"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":43.1,"panels":0,"plugin":"snowday","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.394"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":32.9,"panels":0,"plugin":"soar","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.431"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":84.3,"panels":0,"plugin":"splash","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.519"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":11.2,"panels":0,"plugin":"stars","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.546"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":47.2,"panels":0,"plugin":"storm","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.597"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":66.5,"panels":0,"plugin":"stranger","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.667"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":50.5,"panels":0,"plugin":"sunset","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.722"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":47.7,"panels":0,"plugin":"swing","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.773"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":36.6,"panels":0,"plugin":"tag","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.813"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":39.7,"panels":0,"plugin":"timeweather","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.857"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":31.7,"panels":0,"plugin":"toadstool","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.892"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":34.3,"panels":0,"plugin":"tv","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.930"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":26.8,"panels":0,"plugin":"visitors","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:34.961"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":212.6,"panels":0,"plugin":"voice","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.191"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":95.0,"panels":0,"plugin":"vote","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.291"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":21.2,"panels":0,"plugin":"watering","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.316"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":12.3,"panels":0,"plugin":"wheelbarrow","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.331"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":14.4,"panels":0,"plugin":"wind","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.349"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":65.7,"panels":0,"plugin":"wordround","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.419"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":34.3,"panels":0,"plugin":"workshop","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.457"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":58.1,"panels":0,"plugin":"workshopisle","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.519"}
+{"actors":0,"kind":"plugin_load","minigames":0,"ms":139.1,"panels":0,"plugin":"xylophone","systems":1,"t":326232.2666439881,"wall":"2026-11-26T08:50:35.662"}
+{"kind":"gallery_visit","picture":"face-hill","t":326232.2999773214,"wall":"2026-11-26T08:53:59.106","who":"Gloop"}
+{"kind":"say","t":326232.2999773214,"text":"Uh oh. That cloud looks... lumpy.","wall":"2026-11-26T08:53:59.125","who":"Lumi"}
+{"kind":"hail_start","n":6,"t":326232.2999773214,"wall":"2026-11-26T08:53:59.140"}
+{"from":"Lumi","kind":"moodcam_drift","t":326232.33331065474,"to":"flower","wall":"2026-11-26T08:54:01.120"}
+{"key":"minor","kind":"island_chord","t":326232.36664398806,"wall":"2026-11-26T08:54:01.176"}
+{"kind":"tune_dance","t":326232.36664398806,"wall":"2026-11-26T08:54:01.192","who":"Sir Sniffsalot"}
+{"kind":"say","t":326232.36664398806,"text":"That's our song!","wall":"2026-11-26T08:54:01.192","who":"Sir Sniffsalot"}
+{"kind":"say","t":326235.33331065404,"text":"HAIL!! Everyone under here, QUICK!","wall":"2026-11-26T08:54:05.837","who":"Lumi"}
+{"kind":"say","t":326236.39997732046,"text":"Ow ow ow!","wall":"2026-11-26T08:54:06.875","who":"Wibbles"}
+{"kind":"hail_ow","t":326236.39997732046,"wall":"2026-11-26T08:54:06.875","who":"Wibbles"}
+{"kind":"moodcam_back","t":326239.79997731966,"to":"Lumi","wall":"2026-11-26T08:54:10.302"}
+{"kind":"say","t":326240.3999773195,"text":"Ice!!","wall":"2026-11-26T08:54:10.963","who":"Pinchy"}
+{"kind":"hail_ow","t":326240.3999773195,"wall":"2026-11-26T08:54:10.963","who":"Pinchy"}
+{"kind":"say","t":326240.4999773195,"text":"Eep!","wall":"2026-11-26T08:54:11.031","who":"Hopscotch"}
+{"kind":"hail_ow","t":326240.4999773195,"wall":"2026-11-26T08:54:11.032","who":"Hopscotch"}
+{"kind":"say","t":326242.49997731904,"text":"My head!","wall":"2026-11-26T08:54:13.032","who":"Cumulus"}
+{"kind":"hail_ow","t":326242.49997731904,"wall":"2026-11-26T08:54:13.032","who":"Cumulus"}
+{"kind":"say","t":326244.99997731845,"text":"Ow!","wall":"2026-11-26T08:54:15.772","who":"Marshmallow"}
+{"kind":"hail_ow","t":326244.99997731845,"wall":"2026-11-26T08:54:15.772","who":"Marshmallow"}
+{"kind":"say","t":326246.3666439848,"text":"...Is it over? Look at all the HAIL!","wall":"2026-11-26T08:54:17.138","who":"Lumi"}
+{"kind":"say","t":326247.96664398443,"text":"Want to come fishing?","wall":"2026-11-26T08:54:18.742","who":"Marshmallow"}
+{"how":"friendly","kind":"stranger_meet","t":326247.96664398443,"wall":"2026-11-26T08:54:18.770","who":"Marshmallow"}
+{"kind":"hail_end","stones":398,"t":326250.3999773172,"wall":"2026-11-26T08:54:21.318"}
+{"kind":"say","t":326250.3999773172,"text":"Hi, Shell!","wall":"2026-11-26T08:54:21.318","who":"Truffle"}
+{"how":"friendly","kind":"stranger_meet","t":326250.3999773172,"wall":"2026-11-26T08:54:21.318","who":"Truffle"}
+{"a":"Cumulus","b":"Wibbles","kind":"Chat","t":326251.199977317,"wall":"2026-11-26T08:54:37.835"}
+{"kind":"say","t":326251.199977317,"text":"Hi Wibbles!","wall":"2026-11-26T08:54:37.835","who":"Cumulus"}
+{"kind":"say","t":326252.3333106501,"text":"Boing time for me!","wall":"2026-11-26T08:54:46.273","who":"Hopscotch"}
+{"kind":"boing_walk","t":326252.3333106501,"wall":"2026-11-26T08:54:46.273","who":"Hopscotch"}
+{"kind":"say","t":326252.3333106501,"text":"Dance in the golden flowers!","wall":"2026-11-26T08:54:46.273","who":"Hopscotch"}
+{"kind":"dance_circle","t":326252.3333106501,"wall":"2026-11-26T08:54:46.273","who":"Hopscotch, Pinchy, Marshmallow"}
+{"kind":"say","t":326252.3333106501,"text":"Glainko!","wall":"2026-11-26T08:54:46.273","who":"Pickles"}
+{"kind":"word_used","t":326252.3333106501,"wall":"2026-11-26T08:54:46.291","who":"Pickles","word":"glainko"}
+{"key":"minor","kind":"island_chord","t":326252.53331065003,"wall":"2026-11-26T08:54:48.184"}
+{"kind":"tune_dance","t":326252.53331065003,"wall":"2026-11-26T08:54:48.184","who":"Truffle"}
+{"kind":"say","t":326252.53331065003,"text":"La la LAA!","wall":"2026-11-26T08:54:48.184","who":"Truffle"}
+{"kind":"say","t":326253.83331064973,"text":"Hey Cumulus.","wall":"2026-11-26T08:54:49.484","who":"Wibbles"}
+{"kind":"say","t":326256.46664398245,"text":"Guess what: I rode on a giant Lumi after it ate a golden mushroom.","wall":"2026-11-26T08:54:52.627","who":"Cumulus"}
+{"kind":"say","t":326259.09997731517,"text":"No way!","wall":"2026-11-26T08:54:55.214","who":"Wibbles"}
+{"kind":"say","t":326261.7333106479,"text":"See you!","wall":"2026-11-26T08:54:58.362","who":"Cumulus"}
+{"kind":"facehill_climb","spot":"on my wing","t":326262.33331064775,"wall":"2026-11-26T08:54:59.180","who":"Truffle"}
+{"kind":"tv_watch","t":326262.33331064775,"wall":"2026-11-26T08:54:59.180","who":"Sir Sniffsalot, Gloop, Truffle"}
+{"kind":"say","t":326264.43331064726,"text":"Tra-la-la!","wall":"2026-11-26T08:55:01.225","who":"Marshmallow"}
+{"kind":"gallery_visit","picture":"dusk-lantern","t":326265.99997731356,"wall":"2026-11-26T08:55:03.323","who":"Pickles"}
+{"kind":"say","t":326268.06664397975,"text":"Hop, hop, turn!","wall":"2026-11-26T08:55:05.389","who":"Pinchy"}
+{"kind":"ate","t":326270.43331064587,"wall":"2026-11-26T08:55:08.132","who":"Wibbles"}
+{"kind":"say","t":326271.9333106455,"text":"Hop, hop, turn!","wall":"2026-11-26T08:55:09.611","who":"Hopscotch"}
+{"kind":"say","t":326272.3333106454,"text":"Mine, mine!","wall":"2026-11-26T08:55:10.049","who":"Wibbles"}
+{"kind":"say","t":326272.3333106454,"text":"Mine, mine!","wall":"2026-11-26T08:55:10.049","who":"Cumulus"}
+{"kind":"berry_race_wild","t":326272.3333106454,"wall":"2026-11-26T08:55:10.049","who":"Wibbles, Cumulus"}
+{"kind":"say","t":326272.3333106454,"text":"*holds still*","wall":"2026-11-26T08:55:10.049","who":"Wibbles"}
+{"kind":"say","t":326272.3333106454,"text":"*doesn't blink*","wall":"2026-11-26T08:55:10.049","who":"Pickles"}
+{"kind":"say","t":326272.3333106454,"text":"mmmf...","wall":"2026-11-26T08:55:10.049","who":"Sir Sniffsalot"}
+{"kind":"say","t":326272.3333106454,"text":"FREEZE!","wall":"2026-11-26T08:55:10.049","who":"Gloop"}
+{"kind":"freeze","n":5,"t":326272.3333106454,"wall":"2026-11-26T08:55:10.075","who":"Cumulus, Sir Sniffsalot, Pickles, Truffle, Wibbles"}
+{"kind":"say","t":326276.4666439778,"text":"Hop, hop, turn!","wall":"2026-11-26T08:55:14.931","who":"Hopscotch"}
+{"kind":"say","t":326280.16664397693,"text":"Round and round!","wall":"2026-11-26T08:55:19.152","who":"Hopscotch"}
+{"kind":"say","t":326280.96664397675,"text":"I can't... hee hee!","wall":"2026-11-26T08:55:19.953","who":"Truffle"}
+{"kind":"freeze_crack","t":326280.96664397675,"wall":"2026-11-26T08:55:19.953","who":"Truffle"}
+{"key":"minor","kind":"island_chord","t":326281.3333106433,"wall":"2026-11-26T08:55:20.319"}
+{"kind":"tune_dance","t":326281.3333106433,"wall":"2026-11-26T08:55:20.319","who":"Gloop"}
+{"kind":"say","t":326281.3333106433,"text":"La la LAA!","wall":"2026-11-26T08:55:20.319","who":"Gloop"}
+{"kind":"say","t":326282.39997730975,"text":"Ho ho!","wall":"2026-11-26T08:55:21.405","who":"Cumulus"}
+{"kind":"say","t":326282.39997730975,"text":"Hee hee!","wall":"2026-11-26T08:55:21.405","who":"Sir Sniffsalot"}
+{"kind":"freeze_end","t":326282.39997730975,"wall":"2026-11-26T08:55:21.405"}
+{"kind":"say","t":326282.53331064305,"text":"Glainko!","wall":"2026-11-26T08:55:21.519","who":"Marshmallow"}
+{"kind":"word_used","t":326282.53331064305,"wall":"2026-11-26T08:55:21.519","who":"Marshmallow","word":"glainko"}
+{"kind":"say","t":326284.63331064256,"text":"Dance with us!","wall":"2026-11-26T08:55:23.619","who":"Marshmallow"}
+{"kind":"dance_circle_end","t":326286.43331064214,"wall":"2026-11-26T08:55:26.045","who":"Hopscotch, Pinchy, Marshmallow","why":"done"}
+{"kind":"say","t":326286.43331064214,"text":"That was lovely!","wall":"2026-11-26T08:55:26.045","who":"Marshmallow"}
+{"kind":"say","t":326287.36664397526,"text":"Shell! I brought you nothing, but here I am.","wall":"2026-11-26T08:55:26.917","who":"Truffle"}
+{"kind":"stranger_company","t":326287.36664397526,"wall":"2026-11-26T08:55:26.917","who":"Truffle"}
+{"heading":182,"kind":"drafts_start","t":326292.33331064077,"wall":"2026-11-26T08:55:32.127"}
+{"kind":"say","t":326292.33331064077,"text":"Let's play tag! I'm it!","wall":"2026-11-26T08:55:32.127","who":"Wibbles"}
+{"kind":"tag_start","players":["Wibbles","Marshmallow","Truffle"],"t":326292.33331064077,"wall":"2026-11-26T08:55:32.149"}
+{"kind":"say","t":326292.43331064074,"text":"My hut!","wall":"2026-11-26T08:55:32.630","who":"Pinchy"}
+{"kind":"beachhut_visit","t":326292.43331064074,"wall":"2026-11-26T08:55:32.630","who":"Pinchy"}
+{"kind":"gallery_visit","picture":"face-hill","t":326293.8333106404,"wall":"2026-11-26T08:55:34.021","who":"Sir Sniffsalot"}
+{"kind":"say","t":326293.86664397374,"text":"Shell! Over here!","wall":"2026-11-26T08:55:34.052","who":"Pickles"}
+{"how":"friendly","kind":"stranger_meet","t":326293.86664397374,"wall":"2026-11-26T08:55:34.052","who":"Pickles"}
+{"kind":"say","t":326294.53331064025,"text":"ooh, a nice flat one","wall":"2026-11-26T08:55:34.733","who":"Cumulus"}
+{"kind":"say","t":326297.3666439729,"text":"I'm sooo bored... EVERYBODY! BOING TIME!","wall":"2026-11-26T08:55:37.959","who":"Gloop"}
+{"kind":"boing_party","n":8,"t":326297.3666439729,"wall":"2026-11-26T08:55:37.960","who":"Gloop, Hopscotch, Marshmallow, Wibbles, Pickles, Cumulus, Truffle, Pinchy"}
+{"goal":"boing","kind":"tag_left","t":326297.3666439729,"wall":"2026-11-26T08:55:37.984","who":"Wibbles"}
+{"goal":"boing","kind":"tag_left","t":326297.3666439729,"wall":"2026-11-26T08:55:37.984","who":"Marshmallow"}
+{"goal":"boing","kind":"tag_left","t":326297.3666439729,"wall":"2026-11-26T08:55:37.984","who":"Truffle"}
+{"kind":"tag_end","t":326297.3666439729,"tags":0,"wall":"2026-11-26T08:55:38.006"}
+{"kind":"say","t":326303.49997730483,"text":"Ow, my head!","wall":"2026-11-26T08:55:44.082","who":"Truffle"}
+{"kind":"pumpkin_bonk","t":326303.49997730483,"wall":"2026-11-26T08:55:44.082","who":"Truffle"}
+{"kind":"say","t":326304.6666439712,"text":"Ooh, that's us!","wall":"2026-11-26T08:55:45.249","who":"Sir Sniffsalot"}
+{"kind":"gallery_look","picture":"face-hill","t":326304.6666439712,"wall":"2026-11-26T08:55:45.249","who":"Sir Sniffsalot"}
+{"kind":"say","t":326304.7666439712,"text":"Everything's gone grey!","wall":"2026-11-26T08:55:45.360","who":"Truffle"}
+{"kind":"drafts_blob","t":326304.7666439712,"wall":"2026-11-26T08:55:45.361","who":"Truffle"}
+{"kind":"say","t":326305.46664397104,"text":"Everything's gone grey!","wall":"2026-11-26T08:55:46.049","who":"Pinchy"}
+{"kind":"drafts_blob","t":326305.46664397104,"wall":"2026-11-26T08:55:46.050","who":"Pinchy"}
+{"kind":"say","t":326306.1666439709,"text":"Where did my ears go?","wall":"2026-11-26T08:55:46.749","who":"Cumulus"}
+{"kind":"drafts_blob","t":326306.1666439709,"wall":"2026-11-26T08:55:46.749","who":"Cumulus"}
+{"kind":"say","t":326309.5999773034,"text":"Wait for me!","wall":"2026-11-26T08:55:50.183","who":"Sir Sniffsalot"}
+{"kind":"say","t":326310.4666439699,"text":"Why am I a BALL?","wall":"2026-11-26T08:55:51.050","who":"Sir Sniffsalot"}
+{"kind":"drafts_blob","t":326310.4666439699,"wall":"2026-11-26T08:55:51.050","who":"Sir Sniffsalot"}
+{"kind":"say","t":326310.96664396976,"text":"I feel... unfinished.","wall":"2026-11-26T08:55:51.823","who":"Gloop"}
+{"kind":"drafts_blob","t":326310.96664396976,"wall":"2026-11-26T08:55:51.823","who":"Gloop"}
+{"kind":"say","t":326311.6333106363,"text":"Wait for me!","wall":"2026-11-26T08:55:52.456","who":"Wibbles"}
+{"kind":"say","t":326312.79997730267,"text":"Oof! A pumpkin!","wall":"2026-11-26T08:55:53.623","who":"Sir Sniffsalot"}
+{"kind":"pumpkin_bonk","t":326312.79997730267,"wall":"2026-11-26T08:55:53.623","who":"Sir Sniffsalot"}
+{"kind":"drafts_blob","t":326315.89997730195,"wall":"2026-11-26T08:55:56.724","who":"Lumi"}
+{"kind":"say","t":326323.83331063343,"text":"Wait for me!","wall":"2026-11-26T08:56:05.114","who":"Wibbles"}
+{"kind":"say","t":326324.7333106332,"text":"Where did my ears go?","wall":"2026-11-26T08:56:06.584","who":"Wibbles"}
+{"kind":"drafts_blob","t":326324.7333106332,"wall":"2026-11-26T08:56:06.584","who":"Wibbles"}
+{"kind":"moth_appear","t":326324.9666439665,"wall":"2026-11-26T08:56:07.208"}
+{"kind":"say","t":326325.3666439664,"text":"BOING!","wall":"2026-11-26T08:56:07.566","who":"Gloop"}
+{"height":6.2,"kind":"boing","t":326325.3666439664,"wall":"2026-11-26T08:56:07.587","who":"Gloop"}
+{"kind":"say","t":326326.5333106328,"text":"Yippee!","wall":"2026-11-26T08:56:08.712","who":"Hopscotch"}
+{"height":6.8,"kind":"boing","t":326326.5333106328,"wall":"2026-11-26T08:56:08.713","who":"Hopscotch"}
+{"kind":"say","t":326326.5666439661,"text":"So high!","wall":"2026-11-26T08:56:08.765","who":"Pinchy"}
+{"game":"Firefly catch (WASD)","kind":"play_start","t":326327.0333106327,"wall":"2026-11-26T08:56:09.883"}
+{"kind":"boing_party_end","t":326327.066643966,"wall":"2026-11-26T08:56:10.655","why":"mini game"}
+{"a":"Sir Sniffsalot","b":"Pinchy","kind":"Chat","t":326327.09997729934,"wall":"2026-11-26T08:56:10.668"}
+{"kind":"say","t":326327.09997729934,"text":"Hi Pinchy!","wall":"2026-11-26T08:56:10.668","who":"Sir Sniffsalot"}
+{"key":"minor","kind":"island_chord","t":326327.4333106326,"wall":"2026-11-26T08:56:10.965"}
+{"kind":"tune_dance","t":326327.4333106326,"wall":"2026-11-26T08:56:10.965","who":"Truffle"}
+{"kind":"tune_dance","t":326327.4333106326,"wall":"2026-11-26T08:56:10.965","who":"Marshmallow"}
+{"kind":"tune_dance","t":326327.4333106326,"wall":"2026-11-26T08:56:10.965","who":"Cumulus"}
+{"kind":"say","t":326327.4333106326,"text":"Ooh, I know this one!","wall":"2026-11-26T08:56:10.965","who":"Truffle"}
+{"kind":"say","t":326327.63331063255,"text":"Feeling a bit GLAINKO today.","wall":"2026-11-26T08:56:11.168","who":"Gloop"}
+{"kind":"word_used","t":326327.63331063255,"wall":"2026-11-26T08:56:11.168","who":"Gloop","word":"glainko"}
+{"kind":"moth_rest","t":326329.5333106321,"wall":"2026-11-26T08:56:14.648"}
+{"kind":"say","t":326329.73331063206,"text":"snip!","wall":"2026-11-26T08:56:14.847","who":"Pinchy"}
+{"kind":"nap_woken","t":326329.8999772987,"wall":"2026-11-26T08:56:15.014","who":"Hopscotch"}
+{"kind":"nap_woken","t":326329.8999772987,"wall":"2026-11-26T08:56:15.014","who":"Truffle"}
+{"a":"Hopscotch","b":"Gloop","kind":"Chat","t":326331.6333106316,"wall":"2026-11-26T08:56:16.747"}
+{"kind":"say","t":326331.6333106316,"text":"Hi Gloop!","wall":"2026-11-26T08:56:16.747","who":"Hopscotch"}
+{"kind":"say","t":326332.3666439648,"text":"I smelled something amazing over there.","wall":"2026-11-26T08:56:17.481","who":"Sir Sniffsalot"}
+{"kind":"say","t":326332.43331063143,"text":"Truffle, the flowers smell so good today. Come sniff!","wall":"2026-11-26T08:56:17.716","who":"Cumulus"}
+{"kind":"invite","t":326332.43331063143,"to":"Truffle","to_do":"flowers","wall":"2026-11-26T08:56:17.741","who":"Cumulus","yes":true}
+{"kind":"facehill_climb","spot":"on my belly","t":326332.69997729803,"wall":"2026-11-26T08:56:17.949","who":"Pickles"}
+{"kind":"say","t":326334.26664396434,"text":"Hey Hopscotch.","wall":"2026-11-26T08:56:19.516","who":"Gloop"}
+{"kind":"say","t":326334.9999772975,"text":"It was probably you.","wall":"2026-11-26T08:56:20.249","who":"Pinchy"}
+{"kind":"say","t":326335.46664396406,"text":"Yes! Let's go!","wall":"2026-11-26T08:56:20.824","who":"Truffle"}
+{"kind":"say","t":326336.89997729706,"text":"Do you think the ocean ends somewhere?","wall":"2026-11-26T08:56:22.195","who":"Hopscotch"}
+{"kind":"say","t":326337.6333106302,"text":"hrmf","wall":"2026-11-26T08:56:22.928","who":"Sir Sniffsalot"}
+{"kind":"gallery_visit","picture":"workshop-island","t":326338.1666439634,"wall":"2026-11-26T08:56:23.526","who":"Truffle"}
+{"kind":"say","t":326339.5333106298,"text":"Probably at another ocean.","wall":"2026-11-26T08:56:24.832","who":"Gloop"}
+{"a":"Sir Sniffsalot","b":"Pickles","kind":"DanceOff","t":326340.29997729626,"wall":"2026-11-26T08:56:25.679"}
+{"kind":"say","t":326340.29997729626,"text":"Dance-off! ♪","wall":"2026-11-26T08:56:25.680","who":"Sir Sniffsalot"}
+{"kind":"say","t":326340.3333106296,"text":"Dance-off! ♪","wall":"2026-11-26T08:56:25.688","who":"Sir Sniffsalot"}
+{"kind":"say","t":326342.1666439625,"text":"See you!","wall":"2026-11-26T08:56:28.245","who":"Hopscotch"}
+{"kind":"paperme_friend","t":326342.36664396245,"wall":"2026-11-26T08:56:28.562","who":"Wibbles"}
+{"a":"Gloop","b":"Pinchy","kind":"Chat","t":326344.83331062854,"wall":"2026-11-26T08:56:30.967"}
+{"kind":"say","t":326344.83331062854,"text":"Oh, Pinchy!","wall":"2026-11-26T08:56:30.967","who":"Gloop"}
+{"kind":"say","t":326347.46664396126,"text":"Hey Gloop.","wall":"2026-11-26T08:56:34.134","who":"Pinchy"}
+{"kind":"say","t":326347.9333106278,"text":"Where's Lumi?","wall":"2026-11-26T08:56:34.712","who":"Cumulus"}
+{"key":"minor","kind":"island_chord","t":326348.2999772944,"wall":"2026-11-26T08:56:35.066"}
+{"kind":"tune_dance","t":326348.2999772944,"wall":"2026-11-26T08:56:35.066","who":"Hopscotch"}
+{"kind":"say","t":326348.2999772944,"text":"La la LAA!","wall":"2026-11-26T08:56:35.066","who":"Hopscotch"}
+{"kind":"say","t":326348.3333106277,"text":"I win!","wall":"2026-11-26T08:56:35.099","who":"Sir Sniffsalot"}
+{"kind":"danceoff","loser":"Pickles","t":326348.3333106277,"wall":"2026-11-26T08:56:35.120","winner":"Sir Sniffsalot"}
+{"kind":"say","t":326350.099977294,"text":"Do you think the ocean ends somewhere?","wall":"2026-11-26T08:56:36.867","who":"Gloop"}
+{"kind":"lie_down","t":326350.29997729394,"wall":"2026-11-26T08:56:37.067","who":"Marshmallow"}
+{"kind":"say","t":326352.1999772935,"text":"Got one!","wall":"2026-11-26T08:56:38.989","who":"Lumi"}
+{"kind":"firefly_caught","score":1,"t":326352.1999772935,"wall":"2026-11-26T08:56:39.009","who":"Lumi"}
+{"kind":"say","t":326352.26664396015,"text":"When was that?","wall":"2026-11-26T08:56:39.033","who":"Truffle"}
+{"kind":"gallery_look","picture":"workshop-island","t":326352.26664396015,"wall":"2026-11-26T08:56:39.033","who":"Truffle"}
+{"kind":"say","t":326352.7333106267,"text":"Probably at another ocean.","wall":"2026-11-26T08:56:39.500","who":"Pinchy"}
+{"kind":"say","t":326355.3666439594,"text":"Bye bye!","wall":"2026-11-26T08:56:42.132","who":"Gloop"}
+{"kind":"say","t":326355.4666439594,"text":"Caught you!","wall":"2026-11-26T08:56:42.234","who":"Lumi"}
+{"kind":"firefly_caught","score":2,"t":326355.4666439594,"wall":"2026-11-26T08:56:42.234","who":"Lumi"}
+{"kind":"say","t":326357.46664395893,"text":"Sir Sniffsalot, want to come fishing with me?","wall":"2026-11-26T08:56:44.233","who":"Pickles"}
+{"kind":"invite","t":326357.46664395893,"to":"Sir Sniffsalot","to_do":"fish","wall":"2026-11-26T08:56:44.233","who":"Pickles","yes":false}
+{"kind":"say","t":326357.59997729224,"text":"Gotcha!","wall":"2026-11-26T08:56:44.366","who":"Lumi"}
+{"kind":"firefly_caught","score":3,"t":326357.59997729224,"wall":"2026-11-26T08:56:44.366","who":"Lumi"}
+{"kind":"say","t":326360.49997729156,"text":"I'm happy here.","wall":"2026-11-26T08:56:47.266","who":"Sir Sniffsalot"}
+{"kind":"say","t":326364.0333106241,"text":"Psst, the foffly is watching!","wall":"2026-11-26T08:56:51.226","who":"Gloop"}
+{"kind":"word_used","t":326364.0333106241,"wall":"2026-11-26T08:56:51.226","who":"Gloop","word":"foffly"}
+{"kind":"ate","t":326364.0666439574,"wall":"2026-11-26T08:56:51.260","who":"Truffle"}
+{"kind":"say","t":326364.3666439573,"text":"Caught you!","wall":"2026-11-26T08:56:51.558","who":"Lumi"}
+{"kind":"firefly_caught","score":4,"t":326364.3666439573,"wall":"2026-11-26T08:56:51.558","who":"Lumi"}
+{"a":"Sir Sniffsalot","b":"Gloop","kind":"Chat","t":326364.6999772906,"wall":"2026-11-26T08:56:51.892"}
+{"kind":"say","t":326364.6999772906,"text":"snrk hello!","wall":"2026-11-26T08:56:51.892","who":"Sir Sniffsalot"}
+{"kind":"say","t":326366.1333106236,"text":"It doesn't answer...","wall":"2026-11-26T08:56:53.325","who":"Wibbles"}
+{"kind":"paperme_look","t":326366.1333106236,"wall":"2026-11-26T08:56:53.325","who":"Wibbles"}
+{"kind":"say","t":326367.3333106233,"text":"Hey Sir Sniffsalot.","wall":"2026-11-26T08:56:54.526","who":"Gloop"}
+{"kind":"say","t":326367.49997728993,"text":"A flower for Lumi!","wall":"2026-11-26T08:56:54.705","who":"Cumulus"}
+{"kind":"flower_gift","t":326367.49997728993,"to":"Lumi","wall":"2026-11-26T08:56:54.725","who":"Cumulus"}
+{"kind":"say","t":326369.966643956,"text":"Guess what: I had a dance-off with Pickles.","wall":"2026-11-26T08:56:57.159","who":"Sir Sniffsalot"}
+{"key":"minor","kind":"island_chord","t":326370.26664395595,"wall":"2026-11-26T08:56:57.459"}
+{"kind":"tune_dance","t":326370.26664395595,"wall":"2026-11-26T08:56:57.459","who":"Truffle"}
+{"kind":"tune_dance","t":326370.26664395595,"wall":"2026-11-26T08:56:57.459","who":"Hopscotch"}
+{"kind":"say","t":326370.26664395595,"text":"La la LAA!","wall":"2026-11-26T08:56:57.459","who":"Truffle"}
+{"blobs":7,"kind":"drafts_end","t":326372.36664395547,"wall":"2026-11-26T08:56:59.592"}
+{"kind":"say","t":326372.59997728874,"text":"No way!","wall":"2026-11-26T08:56:59.791","who":"Gloop"}
+{"kind":"say","t":326375.23331062146,"text":"*boop*","wall":"2026-11-26T08:57:02.870","who":"Sir Sniffsalot"}
+{"kind":"say","t":326377.56664395425,"text":"Yes!","wall":"2026-11-26T08:57:05.205","who":"Lumi"}
+{"kind":"firefly_caught","score":5,"t":326377.56664395425,"wall":"2026-11-26T08:57:05.205","who":"Lumi"}
+{"kind":"nap_woken","t":326379.49997728714,"wall":"2026-11-26T08:57:07.137","who":"Marshmallow"}
+{"kind":"get_up","t":326379.53331062046,"wall":"2026-11-26T08:57:07.171","who":"Marshmallow"}
+{"kind":"cairn_stone","stones":3370,"t":326380.5999772869,"wall":"2026-11-26T08:57:08.451","who":"Cumulus"}
+{"kind":"say","t":326380.5999772869,"text":"Caught you!","wall":"2026-11-26T08:57:08.451","who":"Lumi"}
+{"kind":"firefly_caught","score":6,"t":326380.5999772869,"wall":"2026-11-26T08:57:08.451","who":"Lumi"}
+{"kind":"say","t":326382.49997728644,"text":"Pickles, want to come fishing with me?","wall":"2026-11-26T08:57:10.292","who":"Gloop"}
+{"kind":"invite","t":326382.49997728644,"to":"Pickles","to_do":"fish","wall":"2026-11-26T08:57:10.292","who":"Gloop","yes":true}
+{"frames":215,"kind":"ghosts_arrive","t":326382.63331061974,"wall":"2026-11-26T08:57:11.171"}
+{"kind":"say","t":326385.53331061907,"text":"Yes! Let's go!","wall":"2026-11-26T08:57:14.013","who":"Pickles"}
+{"kind":"say","t":326389.2333106182,"text":"Ooh, I remember that!","wall":"2026-11-26T08:57:19.813","who":"Pinchy"}
+{"kind":"ghost_meet","t":326389.2333106182,"wall":"2026-11-26T08:57:19.813","who":"Pinchy"}
+{"kind":"say","t":326390.19997728465,"text":"ahh, sunshine","wall":"2026-11-26T08:57:20.798","who":"Sir Sniffsalot"}
+{"kind":"sunbathe","t":326390.19997728465,"wall":"2026-11-26T08:57:20.798","who":"Sir Sniffsalot"}
+{"kind":"gallery_visit","picture":"workshop-island","t":326392.53331061744,"wall":"2026-11-26T08:57:23.119","who":"Truffle"}
+{"kind":"ate","t":326392.999977284,"wall":"2026-11-26T08:57:23.586","who":"Marshmallow"}
+{"kind":"say","t":326397.199977283,"text":"Hi, Shell! Room for one more?","wall":"2026-11-26T08:57:27.786","who":"Sir Sniffsalot"}
+{"kind":"stranger_company","t":326397.199977283,"wall":"2026-11-26T08:57:27.786","who":"Sir Sniffsalot"}
+{"kind":"say","t":326397.5999772829,"text":"That was fun!","wall":"2026-11-26T08:57:28.186","who":"Pickles"}
+{"doing":"fish","kind":"together_home","t":326397.5999772829,"wall":"2026-11-26T08:57:28.210","who":"Pickles","with":"Gloop"}
+{"kind":"say","t":326399.43331061583,"text":"The best!","wall":"2026-11-26T08:57:30.537","who":"Gloop"}
+{"kind":"say","t":326401.26664394874,"text":"Butterflies!","wall":"2026-11-26T08:57:32.346","who":"Pickles"}
+{"kind":"say","t":326401.499977282,"text":"My hut!","wall":"2026-11-26T08:57:32.580","who":"Sir Sniffsalot"}
+{"kind":"beachhut_visit","t":326401.499977282,"wall":"2026-11-26T08:57:32.580","who":"Sir Sniffsalot"}
+{"key":"minor","kind":"island_chord","t":326401.56664394867,"wall":"2026-11-26T08:57:32.645"}
+{"kind":"tune_dance","t":326401.56664394867,"wall":"2026-11-26T08:57:32.645","who":"Gloop"}
+{"kind":"tune_dance","t":326401.56664394867,"wall":"2026-11-26T08:57:32.645","who":"Wibbles"}
+{"kind":"say","t":326401.56664394867,"text":"That's our song!","wall":"2026-11-26T08:57:32.645","who":"Gloop"}
+{"kind":"say","t":326402.29997728183,"text":"found one!","wall":"2026-11-26T08:57:33.379","who":"Marshmallow"}
+{"kind":"say","t":326403.5999772815,"text":"Yes!","wall":"2026-11-26T08:57:34.679","who":"Lumi"}
+{"kind":"firefly_caught","score":7,"t":326403.5999772815,"wall":"2026-11-26T08:57:34.679","who":"Lumi"}
+{"kind":"ate","t":326405.9333106143,"wall":"2026-11-26T08:57:37.012","who":"Hopscotch"}
+{"kind":"cairn_stone","stones":3371,"t":326406.9666439474,"wall":"2026-11-26T08:57:38.046","who":"Marshmallow"}
+{"kind":"say","t":326408.59997728036,"text":"Want to come fishing?","wall":"2026-11-26T08:57:39.679","who":"Marshmallow"}
+{"how":"friendly","kind":"stranger_meet","t":326408.59997728036,"wall":"2026-11-26T08:57:39.679","who":"Marshmallow"}
+{"kind":"say","t":326408.99997728027,"text":"a quiet spot...","wall":"2026-11-26T08:57:40.079","who":"Cumulus"}
+{"kind":"fishing","t":326408.99997728027,"wall":"2026-11-26T08:57:40.079","who":"Cumulus"}
+{"kind":"fishing","t":326409.5666439468,"wall":"2026-11-26T08:57:41.446","who":"Pinchy"}
+{"kind":"ate","t":326410.5999772799,"wall":"2026-11-26T08:57:42.418","who":"Gloop"}
+{"kind":"say","t":326410.6333106132,"text":"Where's Sir Sniffsalot?","wall":"2026-11-26T08:57:42.452","who":"Hopscotch"}
+{"kind":"facehill_climb","spot":"on my beak","t":326412.7999772794,"wall":"2026-11-26T08:57:44.618","who":"Sir Sniffsalot"}
+{"kind":"say","t":326413.0999772793,"text":"So pretty...","wall":"2026-11-26T08:57:44.918","who":"Pickles"}
+{"kind":"say","t":326414.2666439457,"text":"GLAINKO!","wall":"2026-11-26T08:57:46.085","who":"Truffle"}
+{"kind":"word_used","t":326414.2666439457,"wall":"2026-11-26T08:57:46.085","who":"Truffle","word":"glainko"}
+{"kind":"gallery_visit","picture":"missme-board","t":326417.19997727836,"wall":"2026-11-26T08:57:49.018","who":"Pickles"}
+{"kind":"say","t":326419.13331061124,"text":"When was that?","wall":"2026-11-26T08:57:50.952","who":"Truffle"}
+{"kind":"gallery_look","picture":"workshop-island","t":326419.13331061124,"wall":"2026-11-26T08:57:50.952","who":"Truffle"}
+{"game":"Firefly catch (WASD)","kind":"play_stop","t":326419.2333106112,"wall":"2026-11-26T08:57:51.131"}
+{"kind":"say","t":326419.26664394455,"text":"Boing time for me!","wall":"2026-11-26T08:57:51.205","who":"Hopscotch"}
+{"kind":"boing_walk","t":326419.26664394455,"wall":"2026-11-26T08:57:51.205","who":"Hopscotch"}
+{"from":"Cumulus","kind":"moodcam_drift","t":326419.26664394455,"to":"flower","wall":"2026-11-26T08:57:51.205"}
+{"kind":"say","t":326419.26664394455,"text":"Conga line! Everybody grab on!","wall":"2026-11-26T08:57:51.205","who":"Lumi"}
+{"kind":"conga","n":6,"t":326419.26664394455,"wall":"2026-11-26T08:57:51.205","who":"Lumi, Gloop, Marshmallow, Sir Sniffsalot, Cumulus, Pinchy"}
+{"kind":"moth_appear","t":326425.866643943,"wall":"2026-11-26T08:57:57.744"}
+{"kind":"say","t":326425.866643943,"text":"Come here, little moth!","wall":"2026-11-26T08:57:57.744","who":"Truffle"}
+{"kind":"moth_chase","t":326425.866643943,"wall":"2026-11-26T08:57:57.744","who":"Truffle"}
+{"height":5.2,"kind":"boing","t":326427.33331060933,"wall":"2026-11-26T08:57:59.209","who":"Hopscotch"}
+{"kind":"ghosts_fade","met":1,"t":326427.6666439426,"wall":"2026-11-26T08:57:59.580"}
+{"game":"Hide and seek (WASD)","kind":"play_start","t":326427.8333106092,"wall":"2026-11-26T08:58:00.458"}
+{"kind":"conga_end","t":326427.86664394254,"wall":"2026-11-26T08:58:00.958","why":"mini game"}
+{"key":"minor","kind":"island_chord","t":326428.2333106091,"wall":"2026-11-26T08:58:01.267"}
+{"kind":"tune_dance","t":326428.2333106091,"wall":"2026-11-26T08:58:01.267","who":"Pinchy"}
+{"kind":"tune_dance","t":326428.2333106091,"wall":"2026-11-26T08:58:01.267","who":"Cumulus"}
+{"kind":"say","t":326428.2333106091,"text":"Ooh, I know this one!","wall":"2026-11-26T08:58:01.267","who":"Pinchy"}
+{"kind":"moth_rest","t":326431.3333106084,"wall":"2026-11-26T08:58:05.078"}
+{"kind":"say","t":326431.66664394166,"text":"I look good in this one.","wall":"2026-11-26T08:58:05.410","who":"Pickles"}
+{"kind":"gallery_look","picture":"missme-board","t":326431.66664394166,"wall":"2026-11-26T08:58:05.410","who":"Pickles"}
+{"kind":"timeweather_start","t":326431.8333106083,"time":"slow","wall":"2026-11-26T08:58:05.612"}
+{"kind":"say","t":326432.56664394145,"text":"The fish are biting today, Cumulus! Coming?","wall":"2026-11-26T08:58:06.404","who":"Pinchy"}
+{"kind":"invite","t":326432.56664394145,"to":"Cumulus","to_do":"fish","wall":"2026-11-26T08:58:06.404","who":"Pinchy","yes":false}
+{"kind":"say","t":326435.5999772741,"text":"Hmm, not now.","wall":"2026-11-26T08:58:09.525","who":"Cumulus"}
+{"kind":"say","t":326438.2333106068,"text":"Whaaaat iiiis haaaappeniiiing...","wall":"2026-11-26T08:58:12.211","who":"Cumulus"}
+{"kind":"timeweather_caught","t":326438.2333106068,"time":"slow","wall":"2026-11-26T08:58:12.229","who":"Cumulus"}
+{"kind":"say","t":326444.4666439387,"text":"*giggle*","wall":"2026-11-26T08:58:18.782","who":"Sir Sniffsalot"}
+{"kind":"say","t":326446.1666439383,"text":"How did you see me?","wall":"2026-11-26T08:58:20.448","who":"Sir Sniffsalot"}
+{"kind":"say","t":326446.1666439383,"text":"Found you, Sir Sniffsalot!","wall":"2026-11-26T08:58:20.449","who":"Lumi"}
+{"by":"Lumi","kind":"hideseek_found","n":1,"t":326446.1666439383,"wall":"2026-11-26T08:58:20.471","who":"Sir Sniffsalot"}
+{"kind":"say","t":326446.3333106049,"text":"Myyyy leeeegs...","wall":"2026-11-26T08:58:20.614","who":"Pickles"}
+{"kind":"timeweather_caught","t":326446.3333106049,"time":"slow","wall":"2026-11-26T08:58:20.614","who":"Pickles"}
+{"kind":"say","t":326446.6999772715,"text":"gone fishing","wall":"2026-11-26T08:58:20.981","who":"Pinchy"}
+{"kind":"fishing","t":326446.6999772715,"wall":"2026-11-26T08:58:20.982","who":"Pinchy"}
+{"kind":"fishing","t":326446.8333106048,"wall":"2026-11-26T08:58:21.114","who":"Truffle"}
+{"kind":"say","t":326446.9666439381,"text":"hee hee","wall":"2026-11-26T08:58:21.247","who":"Marshmallow"}
+{"kind":"say","t":326449.4666439375,"text":"hee hee","wall":"2026-11-26T08:58:23.747","who":"Hopscotch"}
+{"kind":"say","t":326451.96664393693,"text":"*giggle*","wall":"2026-11-26T08:58:26.248","who":"Gloop"}
+{"kind":"say","t":326453.7333106032,"text":"You found me!","wall":"2026-11-26T08:58:28.014","who":"Gloop"}
+{"kind":"say","t":326453.7333106032,"text":"Found you, Gloop!","wall":"2026-11-26T08:58:28.015","who":"Lumi"}
+{"by":"Lumi","kind":"hideseek_found","n":2,"t":326453.7333106032,"wall":"2026-11-26T08:58:28.015","who":"Gloop"}
+{"kind":"gallery_visit","picture":"face-hill","t":326454.09997726977,"wall":"2026-11-26T08:58:28.381","who":"Cumulus"}
+{"kind":"say","t":326454.6999772696,"text":"*giggle*","wall":"2026-11-26T08:58:28.981","who":"Marshmallow"}
+{"kind":"say","t":326458.1666439355,"text":"hee hee","wall":"2026-11-26T08:58:32.846","who":"Hopscotch"}
+{"kind":"hideseek_detour","t":326458.53331060207,"wall":"2026-11-26T08:58:33.235","who":"Sir Sniffsalot","x":11.5,"y":3.8}
+{"kind":"say","t":326458.833310602,"text":"*giggle*","wall":"2026-11-26T08:58:33.511","who":"Marshmallow"}
+{"kind":"nap_woken","t":326458.9666439353,"wall":"2026-11-26T08:58:33.646","who":"Wibbles"}
+{"key":"minor","kind":"island_chord","t":326459.16664393526,"wall":"2026-11-26T08:58:33.845"}
+{"kind":"tune_dance","t":326459.16664393526,"wall":"2026-11-26T08:58:33.845","who":"Wibbles"}
+{"kind":"say","t":326459.16664393526,"text":"La la LAA!","wall":"2026-11-26T08:58:33.845","who":"Wibbles"}
+{"kind":"say","t":326462.56664393446,"text":"*giggle*","wall":"2026-11-26T08:58:37.246","who":"Hopscotch"}
+{"kind":"say","t":326466.46664393356,"text":"hee hee","wall":"2026-11-26T08:58:41.146","who":"Hopscotch"}
+{"kind":"say","t":326467.6666439333,"text":"hihi","wall":"2026-11-26T08:58:42.345","who":"Marshmallow"}
+{"kind":"say","t":326468.69997726637,"text":"got one!","wall":"2026-11-26T08:58:43.436","who":"Truffle"}
+{"kind":"caught_fish","t":326468.69997726637,"wall":"2026-11-26T08:58:43.436","who":"Truffle"}
+{"kind":"say","t":326469.86664393276,"text":"Very GLAINKO, very GLAINKO.","wall":"2026-11-26T08:58:44.546","who":"Cumulus"}
+{"kind":"word_used","t":326469.86664393276,"wall":"2026-11-26T08:58:44.546","who":"Cumulus","word":"glainko"}
+{"kind":"say","t":326469.8999772661,"text":"hihi","wall":"2026-11-26T08:58:44.579","who":"Hopscotch"}
+{"kind":"facehill_climb","spot":"on my crest","t":326471.7666439323,"wall":"2026-11-26T08:58:46.961","who":"Truffle"}
+{"kind":"say","t":326471.9999772656,"text":"How did you see me?","wall":"2026-11-26T08:58:47.138","who":"Hopscotch"}
+{"kind":"say","t":326471.9999772656,"text":"Found you, Hopscotch!","wall":"2026-11-26T08:58:47.138","who":"Lumi"}
+{"by":"Lumi","kind":"hideseek_found","n":3,"t":326471.9999772656,"wall":"2026-11-26T08:58:47.138","who":"Hopscotch"}
+{"kind":"say","t":326472.2333105989,"text":"look how shiny!","wall":"2026-11-26T08:58:47.372","who":"Pinchy"}
+{"kind":"caught_fish","t":326472.2333105989,"wall":"2026-11-26T08:58:47.372","who":"Pinchy"}
+{"kind":"say","t":326475.06664393155,"text":"Budge up, Shell.","wall":"2026-11-26T08:58:50.205","who":"Wibbles"}
+{"kind":"stranger_company","t":326475.06664393155,"wall":"2026-11-26T08:58:50.205","who":"Wibbles"}
+{"kind":"say","t":326476.63331059786,"text":"Aww, found!","wall":"2026-11-26T08:58:51.780","who":"Marshmallow"}
+{"kind":"say","t":326476.63331059786,"text":"Found everyone!","wall":"2026-11-26T08:58:51.780","who":"Lumi"}
+{"by":"Lumi","kind":"hideseek_found","n":4,"t":326476.63331059786,"wall":"2026-11-26T08:58:51.780","who":"Marshmallow"}
+{"kind":"say","t":326476.63331059786,"text":"Again! Again!","wall":"2026-11-26T08:58:51.780","who":"Sir Sniffsalot"}
+{"kind":"say","t":326476.63331059786,"text":"Yay, Lumi!","wall":"2026-11-26T08:58:51.780","who":"Marshmallow"}
+{"kind":"say","t":326476.63331059786,"text":"You're good at this!","wall":"2026-11-26T08:58:51.780","who":"Hopscotch"}
+{"kind":"say","t":326476.63331059786,"text":"Yay, Lumi!","wall":"2026-11-26T08:58:51.780","who":"Gloop"}
+{"a":"Truffle","b":"Pinchy","kind":"Boop","t":326478.0999772642,"wall":"2026-11-26T08:58:53.328"}
+{"kind":"say","t":326479.3333105972,"text":"boop!","wall":"2026-11-26T08:58:54.989","who":"Truffle"}
+{"a":"Truffle","b":"Pinchy","kind":"boop","t":326479.3333105972,"wall":"2026-11-26T08:58:55.010"}
+{"key":"minor","kind":"island_chord","t":326479.6999772638,"wall":"2026-11-26T08:58:55.356"}
+{"kind":"tune_dance","t":326479.6999772638,"wall":"2026-11-26T08:58:55.356","who":"Wibbles"}
+{"kind":"say","t":326479.6999772638,"text":"La la LAA!","wall":"2026-11-26T08:58:55.356","who":"Wibbles"}
+{"kind":"say","t":326479.73331059713,"text":"*giggles*","wall":"2026-11-26T08:58:55.390","who":"Pinchy"}
+{"kind":"say","t":326479.9666439304,"text":"I look good in this one.","wall":"2026-11-26T08:58:55.623","who":"Cumulus"}
+{"kind":"gallery_look","picture":"face-hill","t":326479.9666439304,"wall":"2026-11-26T08:58:55.623","who":"Cumulus"}
+{"kind":"nap_woken","t":326481.3666439301,"wall":"2026-11-26T08:58:57.022","who":"Pinchy"}
+{"kind":"lie_down","t":326489.16664392827,"wall":"2026-11-26T08:59:04.822","who":"Pickles"}
+{"game":"Hide and seek (WASD)","kind":"play_stop","t":326493.7333105939,"wall":"2026-11-26T08:59:09.449"}
+{"kind":"say","t":326493.7666439272,"text":"Boing time for me!","wall":"2026-11-26T08:59:09.456","who":"Hopscotch"}
+{"kind":"boing_walk","t":326493.7666439272,"wall":"2026-11-26T08:59:09.456","who":"Hopscotch"}
+{"kind":"moodcam_back","t":326493.7666439272,"to":"Hopscotch","wall":"2026-11-26T08:59:09.456"}
+{"kind":"say","t":326493.7666439272,"text":"Choir practice! Gather round!","wall":"2026-11-26T08:59:09.457","who":"Lumi"}
+{"kind":"say","t":326493.7666439272,"text":"Me me me!","wall":"2026-11-26T08:59:09.457","who":"Sir Sniffsalot"}
+{"kind":"say","t":326493.7666439272,"text":"Ooh, singing!","wall":"2026-11-26T08:59:09.457","who":"Truffle"}
+{"kind":"choir","n":6,"t":326493.7666439272,"wall":"2026-11-26T08:59:09.457","who":"Lumi"}
+{"kind":"say","t":326494.7999772603,"text":"Shell! Over here!","wall":"2026-11-26T08:59:10.457","who":"Hopscotch"}
+{"how":"friendly","kind":"stranger_meet","t":326494.7999772603,"wall":"2026-11-26T08:59:10.457","who":"Hopscotch"}
+{"kind":"say","t":326495.6999772601,"text":"Feeling a bit glainko today.","wall":"2026-11-26T08:59:11.355","who":"Gloop"}
+{"kind":"word_used","t":326495.6999772601,"wall":"2026-11-26T08:59:11.355","who":"Gloop","word":"glainko"}
+{"kind":"moth_appear","t":326496.4999772599,"wall":"2026-11-26T08:59:12.156"}
+{"game":"Berry race (WASD)","kind":"play_start","t":326498.3666439261,"wall":"2026-11-26T08:59:14.997"}
+{"kind":"say","t":326498.39997725945,"text":"*yawn* ...berries?","wall":"2026-11-26T08:59:15.405","who":"Wibbles"}
+{"kind":"say","t":326498.39997725945,"text":"*yawn* ...berries?","wall":"2026-11-26T08:59:15.406","who":"Marshmallow"}
+{"kind":"choir_end","stage":0,"t":326498.39997725945,"wall":"2026-11-26T08:59:15.423"}
+{"kind":"say","t":326499.16664392594,"text":"Morning, Shell!","wall":"2026-11-26T08:59:16.130","who":"Gloop"}
+{"how":"friendly","kind":"stranger_meet","t":326499.16664392594,"wall":"2026-11-26T08:59:16.130","who":"Gloop"}
+{"a":"Cumulus","b":"Wibbles","kind":"Boop","t":326501.5666439254,"wall":"2026-11-26T08:59:19.066"}
+{"kind":"moth_rest","t":326501.79997725866,"wall":"2026-11-26T08:59:19.298"}
+{"kind":"say","t":326502.79997725843,"text":"boop!","wall":"2026-11-26T08:59:20.299","who":"Cumulus"}
+{"a":"Cumulus","b":"Wibbles","kind":"boop","t":326502.79997725843,"wall":"2026-11-26T08:59:20.300"}
+{"key":"minor","kind":"island_chord","t":326503.09997725836,"wall":"2026-11-26T08:59:20.599"}
+{"kind":"tune_dance","t":326503.09997725836,"wall":"2026-11-26T08:59:20.599","who":"Truffle"}
+{"kind":"tune_dance","t":326503.09997725836,"wall":"2026-11-26T08:59:20.599","who":"Sir Sniffsalot"}
+{"kind":"say","t":326503.09997725836,"text":"That's our song!","wall":"2026-11-26T08:59:20.599","who":"Truffle"}
+{"kind":"say","t":326503.19997725834,"text":"*giggles*","wall":"2026-11-26T08:59:20.699","who":"Wibbles"}
+{"a":"Cumulus","b":"Marshmallow","kind":"Boop","t":326505.7333105911,"wall":"2026-11-26T08:59:23.284"}
+{"kind":"nap_woken","t":326505.8999772577,"wall":"2026-11-26T08:59:23.451","who":"Pickles"}
+{"kind":"get_up","t":326505.93331059103,"wall":"2026-11-26T08:59:23.484","who":"Pickles"}
+{"caught":2,"kind":"timeweather_end","t":326506.86664392415,"time":"slow","wall":"2026-11-26T08:59:24.471"}
+{"kind":"say","t":326506.9666439241,"text":"boop!","wall":"2026-11-26T08:59:24.517","who":"Cumulus"}
+{"a":"Cumulus","b":"Marshmallow","kind":"boop","t":326506.9666439241,"wall":"2026-11-26T08:59:24.517"}
+{"kind":"say","t":326507.36664392403,"text":"*giggles*","wall":"2026-11-26T08:59:24.917","who":"Marshmallow"}
+{"kind":"lie_down","t":326507.39997725736,"wall":"2026-11-26T08:59:24.951","who":"Sir Sniffsalot"}
+{"kind":"say","t":326507.66664392396,"text":"My hut!","wall":"2026-11-26T08:59:25.229","who":"Wibbles"}
+{"kind":"beachhut_visit","t":326507.66664392396,"wall":"2026-11-26T08:59:25.229","who":"Wibbles"}
+{"kind":"say","t":326507.66664392396,"text":"Hopscotch, let's hunt for shells on the beach!","wall":"2026-11-26T08:59:25.229","who":"Wibbles"}
+{"kind":"invite","t":326507.66664392396,"to":"Hopscotch","to_do":"beachcomb","wall":"2026-11-26T08:59:25.229","who":"Wibbles","yes":true}
+{"kind":"say","t":326508.7666439237,"text":"Want to come fishing?","wall":"2026-11-26T08:59:26.318","who":"Marshmallow"}
+{"how":"friendly","kind":"stranger_meet","t":326508.7666439237,"wall":"2026-11-26T08:59:26.318","who":"Marshmallow"}
+{"kind":"say","t":326510.0333105901,"text":"Morning, Shell!","wall":"2026-11-26T08:59:27.586","who":"Cumulus"}
+{"how":"friendly","kind":"stranger_meet","t":326510.0333105901,"wall":"2026-11-26T08:59:27.586","who":"Cumulus"}
+{"kind":"say","t":326510.6999772566,"text":"Race you there!","wall":"2026-11-26T08:59:28.254","who":"Hopscotch"}
+{"kind":"say","t":326512.06664392294,"text":"Want to come fishing?","wall":"2026-11-26T08:59:29.620","who":"Wibbles"}
+{"how":"friendly","kind":"stranger_meet","t":326512.06664392294,"wall":"2026-11-26T08:59:29.620","who":"Wibbles"}
+{"kind":"say","t":326513.66664392257,"text":"Race you!","wall":"2026-11-26T08:59:31.300","who":"Hopscotch"}
+{"kind":"say","t":326513.66664392257,"text":"Race you!","wall":"2026-11-26T08:59:31.300","who":"Wibbles"}
+{"kind":"say","t":326513.66664392257,"text":"Berries!","wall":"2026-11-26T08:59:31.300","who":"Marshmallow"}
+{"kind":"say","t":326514.0666439225,"text":"ooh, a nice flat one","wall":"2026-11-26T08:59:31.644","who":"Pinchy"}
+{"kind":"paperme_friend","t":326514.93331058894,"wall":"2026-11-26T08:59:32.523","who":"Cumulus"}
+{"kind":"say","t":326518.5666439214,"text":"3372 stones!","wall":"2026-11-26T08:59:36.160","who":"Pinchy"}
+{"kind":"cairn_stone","stones":3372,"t":326518.5666439214,"wall":"2026-11-26T08:59:36.161","who":"Pinchy"}
+{"kind":"say","t":326518.83331058803,"text":"Yum!","wall":"2026-11-26T08:59:36.424","who":"Lumi"}
+{"kind":"berry_picked","score":1,"t":326518.83331058803,"wall":"2026-11-26T08:59:36.424","who":"Lumi"}
+{"kind":"say","t":326519.3333105879,"text":"shh, the fish are listening","wall":"2026-11-26T08:59:36.923","who":"Pickles"}
+{"kind":"fishing","t":326519.3333105879,"wall":"2026-11-26T08:59:36.923","who":"Pickles"}
+{"kind":"say","t":326519.6999772545,"text":"Mine!","wall":"2026-11-26T08:59:37.289","who":"Lumi"}
+{"kind":"berry_picked","score":2,"t":326519.6999772545,"wall":"2026-11-26T08:59:37.289","who":"Lumi"}
+{"kind":"say","t":326519.6999772545,"text":"Yum!","wall":"2026-11-26T08:59:37.289","who":"Lumi"}
+{"kind":"berry_picked","score":3,"t":326519.6999772545,"wall":"2026-11-26T08:59:37.289","who":"Lumi"}
+{"kind":"say","t":326519.6999772545,"text":"Yummy!","wall":"2026-11-26T08:59:37.289","who":"Marshmallow"}
+{"kind":"berry_eaten","t":326519.6999772545,"wall":"2026-11-26T08:59:37.289","who":"Marshmallow"}
+{"kind":"say","t":326520.79997725424,"text":"Mine!","wall":"2026-11-26T08:59:38.389","who":"Hopscotch"}
+{"kind":"berry_eaten","t":326520.79997725424,"wall":"2026-11-26T08:59:38.389","who":"Hopscotch"}
+{"kind":"say","t":326523.16664392035,"text":"Yummy!","wall":"2026-11-26T08:59:40.753","who":"Wibbles"}
+{"kind":"berry_eaten","t":326523.16664392035,"wall":"2026-11-26T08:59:40.753","who":"Wibbles"}
+{"kind":"say","t":326526.0666439197,"text":"Yum!","wall":"2026-11-26T08:59:43.653","who":"Lumi"}
+{"kind":"berry_picked","score":4,"t":326526.0666439197,"wall":"2026-11-26T08:59:43.654","who":"Lumi"}
+{"kind":"say","t":326527.1333105861,"text":"Psst, the foffly is watching!","wall":"2026-11-26T08:59:44.720","who":"Cumulus"}
+{"kind":"word_used","t":326527.1333105861,"wall":"2026-11-26T08:59:44.721","who":"Cumulus","word":"foffly"}
+{"a":"Truffle","b":"Pinchy","kind":"Chat","t":326531.1999772518,"wall":"2026-11-26T08:59:48.787"}
+{"kind":"say","t":326531.1999772518,"text":"hrmf hello!","wall":"2026-11-26T08:59:48.788","who":"Truffle"}
+{"kind":"say","t":326531.23331058514,"text":"Nom!","wall":"2026-11-26T08:59:48.821","who":"Wibbles"}
+{"kind":"berry_eaten","t":326531.23331058514,"wall":"2026-11-26T08:59:48.821","who":"Wibbles"}
+{"kind":"say","t":326533.0999772514,"text":"Got one!","wall":"2026-11-26T08:59:51.203","who":"Hopscotch"}
+{"kind":"berry_eaten","t":326533.0999772514,"wall":"2026-11-26T08:59:51.203","who":"Hopscotch"}
+{"kind":"say","t":326533.83331058454,"text":"Hey Truffle.","wall":"2026-11-26T08:59:51.940","who":"Pinchy"}
+{"kind":"say","t":326534.0333105845,"text":"Got one!","wall":"2026-11-26T08:59:52.142","who":"Lumi"}
+{"kind":"berry_picked","score":5,"t":326534.0333105845,"wall":"2026-11-26T08:59:52.142","who":"Lumi"}
+{"kind":"say","t":326535.0666439176,"text":"No more for me!","wall":"2026-11-26T08:59:53.170","who":"Wibbles"}
+{"kind":"say","t":326535.5999772508,"text":"wriggly!","wall":"2026-11-26T08:59:53.704","who":"Pickles"}
+{"kind":"caught_fish","t":326535.5999772508,"wall":"2026-11-26T08:59:53.704","who":"Pickles"}
+{"kind":"gallery_visit","picture":"paperme-pier","t":326536.233310584,"wall":"2026-11-26T08:59:54.338","who":"Marshmallow"}
+{"kind":"say","t":326536.46664391726,"text":"I had a dream I was a Lumi.","wall":"2026-11-26T08:59:54.571","who":"Truffle"}
+{"kind":"say","t":326536.9333105838,"text":"So full... *burp*","wall":"2026-11-26T08:59:55.036","who":"Hopscotch"}
+{"kind":"say","t":326539.09997725,"text":"Was it nice?","wall":"2026-11-26T08:59:57.203","who":"Pinchy"}
+{"kind":"say","t":326541.7333105827,"text":"Bye bye!","wall":"2026-11-26T08:59:59.838","who":"Truffle"}
+{"kind":"fishing","t":326543.89997724886,"wall":"2026-11-26T09:00:02.003","who":"Gloop"}
+{"kind":"say","t":326547.0999772481,"text":"Hello, paper Lumi!","wall":"2026-11-26T09:00:05.784","who":"Cumulus"}
+{"kind":"paperme_look","t":326547.0999772481,"wall":"2026-11-26T09:00:05.784","who":"Cumulus"}
+{"kind":"fishing","t":326549.73331058084,"wall":"2026-11-26T09:00:08.385","who":"Pickles"}
+{"kind":"ate","t":326550.53331058065,"wall":"2026-11-26T09:00:09.185","who":"Pinchy"}
+{"kind":"say","t":326550.9666439139,"text":"Budge up, Shell.","wall":"2026-11-26T09:00:09.618","who":"Wibbles"}
+{"kind":"stranger_company","t":326550.9666439139,"wall":"2026-11-26T09:00:09.618","who":"Wibbles"}
+{"kind":"say","t":326550.9666439139,"text":"I'm full!","wall":"2026-11-26T09:00:09.618","who":"Wibbles"}
+{"kind":"facehill_climb","spot":"on my wing","t":326553.23331058,"wall":"2026-11-26T09:00:11.885","who":"Hopscotch"}
+{"kind":"say","t":326553.23331058,"text":"No more for me!","wall":"2026-11-26T09:00:11.886","who":"Hopscotch"}
+{"kind":"say","t":326553.6333105799,"text":"this one's for the pile!","wall":"2026-11-26T09:00:12.284","who":"Truffle"}
+{"kind":"say","t":326556.39997724595,"text":"one more!","wall":"2026-11-26T09:00:15.052","who":"Truffle"}
+{"kind":"cairn_stone","stones":3373,"t":326556.39997724595,"wall":"2026-11-26T09:00:15.052","who":"Truffle"}
+{"kind":"say","t":326558.0333105789,"text":"Mine!","wall":"2026-11-26T09:00:16.684","who":"Lumi"}
+{"kind":"berry_picked","score":6,"t":326558.0333105789,"wall":"2026-11-26T09:00:16.684","who":"Lumi"}
+{"kind":"say","t":326558.0333105789,"text":"Too slow...","wall":"2026-11-26T09:00:16.684","who":"Marshmallow"}
+{"kind":"say","t":326558.8333105787,"text":"Got one!","wall":"2026-11-26T09:00:17.484","who":"Lumi"}
+{"kind":"berry_picked","score":7,"t":326558.8333105787,"wall":"2026-11-26T09:00:17.484","who":"Lumi"}
+{"kind":"say","t":326558.8333105787,"text":"Yum!","wall":"2026-11-26T09:00:17.484","who":"Lumi"}
+{"kind":"berry_picked","score":8,"t":326558.8333105787,"wall":"2026-11-26T09:00:17.484","who":"Lumi"}
+{"kind":"say","t":326558.8333105787,"text":"No fair!","wall":"2026-11-26T09:00:17.484","who":"Marshmallow"}
+{"kind":"nap_woken","t":326559.2333105786,"wall":"2026-11-26T09:00:17.884","who":"Sir Sniffsalot"}
+{"kind":"get_up","t":326559.26664391195,"wall":"2026-11-26T09:00:17.917","who":"Sir Sniffsalot"}
+{"a":"Sir Sniffsalot","b":"Hopscotch","kind":"Chat","t":326559.3666439119,"wall":"2026-11-26T09:00:18.017"}
+{"kind":"say","t":326559.3666439119,"text":"Hi Hopscotch!","wall":"2026-11-26T09:00:18.017","who":"Sir Sniffsalot"}
+{"kind":"say","t":326559.3666439119,"text":"So full... *burp*","wall":"2026-11-26T09:00:18.017","who":"Hopscotch"}
+{"a":"Sir Sniffsalot","b":"Hopscotch","kind":"DanceOff","t":326559.4333105786,"wall":"2026-11-26T09:00:18.085"}
+{"kind":"say","t":326559.4333105786,"text":"Dance-off! ♪","wall":"2026-11-26T09:00:18.085","who":"Sir Sniffsalot"}
+{"kind":"say","t":326559.4333105786,"text":"So full... *burp*","wall":"2026-11-26T09:00:18.086","who":"Hopscotch"}
+{"key":"minor","kind":"island_chord","t":326559.63331057853,"wall":"2026-11-26T09:00:18.285"}
+{"kind":"tune_dance","t":326559.63331057853,"wall":"2026-11-26T09:00:18.285","who":"Pinchy"}
+{"kind":"tune_dance","t":326559.63331057853,"wall":"2026-11-26T09:00:18.285","who":"Sir Sniffsalot"}
+{"kind":"say","t":326559.63331057853,"text":"That's our song!","wall":"2026-11-26T09:00:18.285","who":"Pinchy"}
+{"kind":"say","t":326562.79997724446,"text":"Yum!","wall":"2026-11-26T09:00:22.022","who":"Lumi"}
+{"kind":"berry_picked","score":9,"t":326562.79997724446,"wall":"2026-11-26T09:00:22.022","who":"Lumi"}
+{"kind":"say","t":326562.79997724446,"text":"Aww!","wall":"2026-11-26T09:00:22.022","who":"Marshmallow"}
+{"kind":"say","t":326562.79997724446,"text":"So fast!","wall":"2026-11-26T09:00:22.022","who":"Hopscotch"}
+{"kind":"say","t":326562.79997724446,"text":"So fast!","wall":"2026-11-26T09:00:22.022","who":"Wibbles"}
+{"kind":"say","t":326562.79997724446,"text":"Well played!","wall":"2026-11-26T09:00:22.022","who":"Marshmallow"}
+{"kind":"say","t":326564.23331057746,"text":"Hi, Shell!","wall":"2026-11-26T09:00:23.445","who":"Truffle"}
+{"how":"friendly","kind":"stranger_meet","t":326564.23331057746,"wall":"2026-11-26T09:00:23.446","who":"Truffle"}
+{"a":"Wibbles","b":"Hopscotch","kind":"Chat","t":326565.8666439104,"wall":"2026-11-26T09:00:25.622"}
+{"kind":"say","t":326565.8666439104,"text":"bloop! hello!","wall":"2026-11-26T09:00:25.622","who":"Wibbles"}
+{"kind":"say","t":326566.4999772436,"text":"not even a nibble","wall":"2026-11-26T09:00:26.254","who":"Pickles"}
+{"kind":"no_fish","t":326566.4999772436,"wall":"2026-11-26T09:00:26.254","who":"Pickles"}
+{"kind":"say","t":326568.49997724313,"text":"Hey Wibbles.","wall":"2026-11-26T09:00:28.313","who":"Hopscotch"}
+{"kind":"say","t":326570.1333105761,"text":"found one!","wall":"2026-11-26T09:00:29.948","who":"Pinchy"}
+{"kind":"say","t":326571.13331057585,"text":"Have you seen what Lumi is building?","wall":"2026-11-26T09:00:30.948","who":"Wibbles"}
+{"kind":"say","t":326571.39997724246,"text":"not even a nibble","wall":"2026-11-26T09:00:31.216","who":"Gloop"}
+{"kind":"no_fish","t":326571.39997724246,"wall":"2026-11-26T09:00:31.216","who":"Gloop"}
+{"kind":"cairn_stone","stones":3374,"t":326572.8666439088,"wall":"2026-11-26T09:00:32.680","who":"Pinchy"}
+{"kind":"say","t":326573.7666439086,"text":"Lumi is always up to something.","wall":"2026-11-26T09:00:33.580","who":"Hopscotch"}
+{"kind":"gallery_visit","picture":"pebble-pie","t":326574.49997724174,"wall":"2026-11-26T09:00:34.315","who":"Sir Sniffsalot"}
+{"kind":"lie_down","t":326574.89997724164,"wall":"2026-11-26T09:00:34.716","who":"Cumulus"}
+{"kind":"say","t":326575.1999772416,"text":"this one's for the pile!","wall":"2026-11-26T09:00:35.015","who":"Truffle"}
+{"kind":"say","t":326576.3999772413,"text":"*boop*","wall":"2026-11-26T09:00:36.215","who":"Wibbles"}
+{"kind":"say","t":326577.49997724104,"text":"3375 stones!","wall":"2026-11-26T09:00:37.316","who":"Truffle"}
+{"kind":"cairn_stone","stones":3375,"t":326577.49997724104,"wall":"2026-11-26T09:00:37.316","who":"Truffle"}
+{"game":"Berry race (WASD)","kind":"play_stop","t":326578.2333105742,"wall":"2026-11-26T09:00:38.143"}
+{"kind":"say","t":326578.2666439075,"text":"Mine, mine!","wall":"2026-11-26T09:00:38.162","who":"Marshmallow"}
+{"kind":"say","t":326578.2666439075,"text":"Race you!","wall":"2026-11-26T09:00:38.162","who":"Pinchy"}
+{"kind":"berry_race_wild","t":326578.2666439075,"wall":"2026-11-26T09:00:38.162","who":"Marshmallow, Pinchy"}
+{"kind":"say","t":326578.2666439075,"text":"Boing time for me!","wall":"2026-11-26T09:00:38.162","who":"Pinchy"}
+{"kind":"boing_walk","t":326578.2666439075,"wall":"2026-11-26T09:00:38.162","who":"Pinchy"}
+{"from":"Hopscotch","kind":"moodcam_drift","t":326578.2666439075,"to":"flower","wall":"2026-11-26T09:00:38.162"}
+{"kind":"say","t":326578.2666439075,"text":"Dance circle by the lantern!","wall":"2026-11-26T09:00:38.162","who":"Marshmallow"}
+{"kind":"dance_circle","t":326578.2666439075,"wall":"2026-11-26T09:00:38.162","who":"Marshmallow, Pickles, Pinchy"}
+{"kind":"say","t":326578.2666439075,"text":"I wish I had a new thing to build.","wall":"2026-11-26T09:00:38.162","who":"Lumi"}
+{"feeling":"bored","kind":"lumi_feeling","t":326578.2666439075,"wall":"2026-11-26T09:00:38.185"}
+{"kind":"say","t":326578.2666439075,"text":"Today... I FLY!","wall":"2026-11-26T09:00:38.185","who":"Lumi"}
+{"kind":"flight_announce","n":4,"t":326578.2666439075,"wall":"2026-11-26T09:00:38.185","who":"Lumi"}
+{"kind":"tv_watch","t":326578.2666439075,"wall":"2026-11-26T09:00:38.185","who":"Gloop"}
+{"kind":"dance_circle_end","t":326578.29997724085,"wall":"2026-11-26T09:00:38.242","who":"Marshmallow, Pinchy","why":"lost [\"Pickles sunbathe\"], minigame Nothing"}
+{"kind":"say","t":326578.29997724085,"text":"Whee, dizzy!","wall":"2026-11-26T09:00:38.242","who":"Pinchy"}
+{"kind":"say","t":326580.7333105736,"text":"Total glainko!","wall":"2026-11-26T09:00:40.616","who":"Hopscotch"}
+{"kind":"word_used","t":326580.7333105736,"wall":"2026-11-26T09:00:40.616","who":"Hopscotch","word":"glainko"}
+{"kind":"moth_appear","t":326580.9333105736,"wall":"2026-11-26T09:00:40.815"}
+{"kind":"say","t":326582.2999772399,"text":"Three... two... ONE!","wall":"2026-11-26T09:00:42.182","who":"Lumi"}
+{"kind":"say","t":326582.2999772399,"text":"Go Lumi!","wall":"2026-11-26T09:00:42.182","who":"Hopscotch"}
+{"kind":"say","t":326582.2999772399,"text":"Wheee!","wall":"2026-11-26T09:00:42.182","who":"Sir Sniffsalot"}
+{"game":"Jump in (WASD)","kind":"play_start","t":326582.99997723976,"wall":"2026-11-26T09:00:42.946"}
+{"kind":"say","t":326583.09997723973,"text":"found one!","wall":"2026-11-26T09:00:43.001","who":"Pinchy"}
+{"kind":"say","t":326583.9333105729,"text":"FLAP FLAP FLAP!","wall":"2026-11-26T09:00:43.837","who":"Lumi"}
+{"kind":"flight_takeoff","n":4,"t":326583.9333105729,"wall":"2026-11-26T09:00:43.837","who":"Lumi"}
+{"kind":"say","t":326583.9999772395,"text":"Come here, little moth!","wall":"2026-11-26T09:00:43.894","who":"Marshmallow"}
+{"kind":"moth_chase","t":326583.9999772395,"wall":"2026-11-26T09:00:43.894","who":"Marshmallow"}
+{"kind":"cairn_stone","stones":3376,"t":326586.76664390555,"wall":"2026-11-26T09:00:47.336","who":"Pinchy"}
+{"kind":"say","t":326587.26664390543,"text":"Wheee!","wall":"2026-11-26T09:00:47.837","who":"Sir Sniffsalot"}
+{"kind":"say","t":326587.4666439054,"text":"Ooooh!","wall":"2026-11-26T09:00:48.038","who":"Hopscotch"}
+{"kind":"say","t":326587.53331057203,"text":"Ooooh!","wall":"2026-11-26T09:00:48.101","who":"Sir Sniffsalot"}
+{"kind":"moth_rest","t":326587.7666439053,"wall":"2026-11-26T09:00:48.335"}
+{"kind":"say","t":326588.4999772385,"text":"Higher!","wall":"2026-11-26T09:00:49.516","who":"Wibbles"}
+{"kind":"say","t":326589.23331057164,"text":"Higher!","wall":"2026-11-26T09:00:50.248","who":"Sir Sniffsalot"}
+{"kind":"say","t":326589.36664390494,"text":"...uh oh.","wall":"2026-11-26T09:00:50.382","who":"Lumi"}
+{"key":"minor","kind":"island_chord","t":326589.49997723824,"wall":"2026-11-26T09:00:50.517"}
+{"kind":"tune_dance","t":326589.49997723824,"wall":"2026-11-26T09:00:50.517","who":"Pinchy"}
+{"kind":"tune_dance","t":326589.49997723824,"wall":"2026-11-26T09:00:50.517","who":"Pickles"}
+{"kind":"say","t":326589.49997723824,"text":"La la LAA!","wall":"2026-11-26T09:00:50.517","who":"Pinchy"}
+{"kind":"say","t":326589.53331057157,"text":"Higher!","wall":"2026-11-26T09:00:50.549","who":"Truffle"}
+{"kind":"say","t":326590.8666439046,"text":"Hi, Shell!","wall":"2026-11-26T09:00:52.374","who":"Truffle"}
+{"how":"friendly","kind":"stranger_meet","t":326590.8666439046,"wall":"2026-11-26T09:00:52.374","who":"Truffle"}
+{"kind":"say","t":326591.46664390445,"text":"TA-DAAA!","wall":"2026-11-26T09:00:52.974","who":"Lumi"}
+{"kind":"flight_landed","n":3,"t":326591.46664390445,"wall":"2026-11-26T09:00:52.974","who":"Lumi"}
+{"kind":"fishing","t":326591.7666439044,"wall":"2026-11-26T09:00:53.276","who":"Gloop"}
+{"kind":"say","t":326591.86664390436,"text":"ah...","wall":"2026-11-26T09:00:53.375","who":"Lumi"}
+{"kind":"say","t":326591.86664390436,"text":"Uh oh...","wall":"2026-11-26T09:00:53.375","who":"Wibbles"}
+{"kind":"sneeze_windup","n":7,"t":326591.86664390436,"wall":"2026-11-26T09:00:53.375","who":"Wibbles, Pinchy, Hopscotch, Marshmallow, Truffle, Pickles, Sir Sniffsalot"}
+{"kind":"say","t":326591.86664390436,"text":"ah...","wall":"2026-11-26T09:00:53.375","who":"Lumi"}
+{"kind":"say","t":326593.03331057075,"text":"ah... ah...","wall":"2026-11-26T09:00:54.542","who":"Lumi"}
+{"kind":"say","t":326594.1666439038,"text":"AH... AAAH...","wall":"2026-11-26T09:00:55.673","who":"Lumi"}
+{"kind":"say","t":326595.2999772369,"text":"AH-CHOOOO!!!","wall":"2026-11-26T09:00:57.301","who":"Lumi"}
+{"kind":"sneeze","n":7,"t":326595.2999772369,"wall":"2026-11-26T09:00:57.301","who":"Hopscotch, Pinchy, Marshmallow, Sir Sniffsalot, Pickles, Truffle, Wibbles"}
+{"kind":"flight_end","t":326595.4666439035,"wall":"2026-11-26T09:00:57.469"}
+{"kind":"say","t":326595.99997723673,"text":"Today... I FLY!","wall":"2026-11-26T09:00:58.000","who":"Lumi"}
+{"kind":"flight_announce","n":0,"t":326595.99997723673,"wall":"2026-11-26T09:00:58.001","who":"Lumi"}
+{"kind":"sneeze_landed","t":326596.39997723664,"wall":"2026-11-26T09:00:58.403","who":"Marshmallow"}
+{"kind":"sneeze_landed","t":326596.39997723664,"wall":"2026-11-26T09:00:58.403","who":"Pickles"}
+{"kind":"sneeze_landed","t":326596.43331056996,"wall":"2026-11-26T09:00:58.434","who":"Wibbles"}
+{"kind":"sneeze_landed","t":326596.4999772366,"wall":"2026-11-26T09:00:58.500","who":"Hopscotch"}
+{"kind":"sneeze_landed","t":326596.4999772366,"wall":"2026-11-26T09:00:58.500","who":"Sir Sniffsalot"}
+{"kind":"sneeze_landed","t":326596.4999772366,"wall":"2026-11-26T09:00:58.500","who":"Truffle"}
+{"kind":"sneeze_landed","t":326596.5999772366,"wall":"2026-11-26T09:00:58.600","who":"Pinchy"}
+{"kind":"say","t":326596.5999772366,"text":"...oops. Excuse me.","wall":"2026-11-26T09:00:58.600","who":"Lumi"}
+{"kind":"say","t":326597.9333105696,"text":"My ears!","wall":"2026-11-26T09:00:59.934","who":"Hopscotch"}
+{"kind":"say","t":326598.13331056957,"text":"Whoaaa!","wall":"2026-11-26T09:01:00.136","who":"Pickles"}
+{"kind":"say","t":326598.5666439028,"text":"Gesundheit!","wall":"2026-11-26T09:01:00.569","who":"Pinchy"}
+{"kind":"say","t":326598.7333105694,"text":"Bless you!","wall":"2026-11-26T09:01:00.735","who":"Sir Sniffsalot"}
+{"kind":"say","t":326600.0333105691,"text":"Three... two... ONE!","wall":"2026-11-26T09:01:02.036","who":"Lumi"}
+{"kind":"say","t":326600.533310569,"text":"So shiny!","wall":"2026-11-26T09:01:03.154","who":"Pickles"}
+{"kind":"sneeze_feather","t":326600.533310569,"wall":"2026-11-26T09:01:03.154","who":"Pickles"}
+{"kind":"say","t":326600.73331056896,"text":"Mine! Mine!","wall":"2026-11-26T09:01:03.297","who":"Pinchy"}
+{"kind":"sneeze_feather","t":326600.73331056896,"wall":"2026-11-26T09:01:03.297","who":"Pinchy"}
+{"kind":"say","t":326601.23331056884,"text":"So shiny!","wall":"2026-11-26T09:01:03.797","who":"Hopscotch"}
+{"kind":"sneeze_feather","t":326601.23331056884,"wall":"2026-11-26T09:01:03.797","who":"Hopscotch"}
+{"kind":"say","t":326601.3333105688,"text":"So shiny!","wall":"2026-11-26T09:01:03.895","who":"Sir Sniffsalot"}
+{"kind":"sneeze_feather","t":326601.3333105688,"wall":"2026-11-26T09:01:03.895","who":"Sir Sniffsalot"}
+{"kind":"say","t":326601.49997723545,"text":"I'll keep it forever!","wall":"2026-11-26T09:01:04.063","who":"Marshmallow"}
+{"kind":"sneeze_feather","t":326601.49997723545,"wall":"2026-11-26T09:01:04.064","who":"Marshmallow"}
+{"kind":"say","t":326601.6666439021,"text":"FLAP FLAP FLAP!","wall":"2026-11-26T09:01:04.229","who":"Lumi"}
+{"kind":"flight_takeoff","n":0,"t":326601.6666439021,"wall":"2026-11-26T09:01:04.229","who":"Lumi"}
+{"kind":"say","t":326601.76664390205,"text":"Nobody here to sing with...","wall":"2026-11-26T09:01:04.330","who":"Lumi"}
+{"kind":"say","t":326603.2666439017,"text":"Hi, Shell!","wall":"2026-11-26T09:01:05.830","who":"Pinchy"}
+{"how":"friendly","kind":"stranger_meet","t":326603.2666439017,"wall":"2026-11-26T09:01:05.830","who":"Pinchy"}
+{"kind":"say","t":326603.73331056826,"text":"Mine! Mine!","wall":"2026-11-26T09:01:06.296","who":"Wibbles"}
+{"kind":"sneeze_feather","t":326603.73331056826,"wall":"2026-11-26T09:01:06.296","who":"Wibbles"}
+{"kind":"say","t":326603.7666439016,"text":"Shell! Over here!","wall":"2026-11-26T09:01:06.329","who":"Hopscotch"}
+{"how":"friendly","kind":"stranger_meet","t":326603.7666439016,"wall":"2026-11-26T09:01:06.329","who":"Hopscotch"}
+{"kind":"say","t":326603.86664390157,"text":"Morning, Shell!","wall":"2026-11-26T09:01:06.429","who":"Sir Sniffsalot"}
+{"how":"friendly","kind":"stranger_meet","t":326603.86664390157,"wall":"2026-11-26T09:01:06.429","who":"Sir Sniffsalot"}
+{"a":"Sir Sniffsalot","b":"Hopscotch","kind":"Chat","t":326605.93331056775,"wall":"2026-11-26T09:01:08.984"}
+{"kind":"say","t":326605.93331056775,"text":"Oh, Hopscotch!","wall":"2026-11-26T09:01:08.984","who":"Sir Sniffsalot"}
+{"kind":"say","t":326606.266643901,"text":"Want to come fishing?","wall":"2026-11-26T09:01:09.318","who":"Wibbles"}
+{"how":"friendly","kind":"stranger_meet","t":326606.266643901,"wall":"2026-11-26T09:01:09.318","who":"Wibbles"}
+{"kind":"paint_trip","n":6,"t":326606.3999772343,"wall":"2026-11-26T09:01:09.449"}
+{"kind":"say","t":326606.3999772343,"text":"whoa...","wall":"2026-11-26T09:01:09.450","who":"Lumi"}
+{"kind":"say","t":326607.09997723415,"text":"...uh oh.","wall":"2026-11-26T09:01:10.150","who":"Lumi"}
+{"kind":"say","t":326607.1666439008,"text":"whoa-whoa-","wall":"2026-11-26T09:01:10.214","who":"Lumi"}
+{"kind":"say","t":326607.4666439007,"text":"Hello, foffly!","wall":"2026-11-26T09:01:10.515","who":"Hopscotch"}
+{"kind":"word_used","t":326607.4666439007,"wall":"2026-11-26T09:01:10.515","who":"Hopscotch","word":"foffly"}
+{"kind":"say","t":326607.89997723396,"text":"WHOA-WHOA-WHOAAA!","wall":"2026-11-26T09:01:10.947","who":"Lumi"}
+{"kind":"say","t":326608.6333105671,"text":"SPLATTT!!!","wall":"2026-11-26T09:01:11.738","who":"Lumi"}
+{"kind":"paint_spill","t":326608.6333105671,"wall":"2026-11-26T09:01:11.739","who":"Lumi"}
+{"kind":"say","t":326609.19997723366,"text":"mmf!","wall":"2026-11-26T09:01:12.444","who":"Lumi"}
+{"kind":"flight_crash","n":0,"t":326609.19997723366,"wall":"2026-11-26T09:01:12.444","who":"Lumi"}
+{"kind":"say","t":326610.09997723345,"text":"they're shy today","wall":"2026-11-26T09:01:13.926","who":"Gloop"}
+{"kind":"no_fish","t":326610.09997723345,"wall":"2026-11-26T09:01:13.926","who":"Gloop"}
+{"kind":"say","t":326610.3333105667,"text":"Is this... paint?","wall":"2026-11-26T09:01:14.147","who":"Pinchy"}
+{"kind":"say","t":326610.3333105667,"text":"...","wall":"2026-11-26T09:01:14.147","who":"Sir Sniffsalot"}
+{"kind":"say","t":326610.3999772334,"text":"I'm BLUE!","wall":"2026-11-26T09:01:14.273","who":"Sir Sniffsalot"}
+{"kind":"say","t":326610.86664389994,"text":"...","wall":"2026-11-26T09:01:14.706","who":"Pinchy"}
+{"kind":"say","t":326611.03331056656,"text":"...","wall":"2026-11-26T09:01:14.872","who":"Pinchy"}
+{"kind":"say","t":326611.0666438999,"text":"I'm BLUE!","wall":"2026-11-26T09:01:14.905","who":"Sir Sniffsalot"}
+{"kind":"say","t":326611.13331056654,"text":"Lumi!!!","wall":"2026-11-26T09:01:14.972","who":"Wibbles"}
+{"kind":"say","t":326611.39997723314,"text":"Oof! Something's in the way. Turn with A or D!","wall":"2026-11-26T09:01:15.240","who":"Lumi"}
+{"kind":"bump_cue","t":326611.39997723314,"wall":"2026-11-26T09:01:15.240","who":"Lumi"}
+{"kind":"say","t":326611.39997723314,"text":"Uh oh. Was that... my cloud?","wall":"2026-11-26T09:01:15.240","who":"Lumi"}
+{"kind":"storm_start","t":326611.39997723314,"wall":"2026-11-26T09:01:15.240","who":"Lumi"}
+{"kind":"say","t":326611.8666438997,"text":"Hee hee!","wall":"2026-11-26T09:01:15.708","who":"Marshmallow"}
+{"kind":"paint_fight","n":7,"t":326611.8666438997,"wall":"2026-11-26T09:01:15.708"}
+{"kind":"sneeze_end","t":326612.2666438996,"wall":"2026-11-26T09:01:16.109"}
+{"kind":"nap_woken","t":326612.56664389954,"wall":"2026-11-26T09:01:16.406","who":"Cumulus"}
+{"kind":"get_up","t":326612.59997723287,"wall":"2026-11-26T09:01:16.440","who":"Cumulus"}
+{"key":"minor","kind":"island_chord","t":326612.8999772328,"wall":"2026-11-26T09:01:16.740"}
+{"kind":"tune_dance","t":326612.8999772328,"wall":"2026-11-26T09:01:16.740","who":"Cumulus"}
+{"kind":"say","t":326612.8999772328,"text":"Ooh, I know this one!","wall":"2026-11-26T09:01:16.740","who":"Cumulus"}
+{"kind":"paint_hit","t":326612.96664389945,"wall":"2026-11-26T09:01:16.809","who":"Sir Sniffsalot"}
+{"kind":"say","t":326613.23331056605,"text":"POP!","wall":"2026-11-26T09:01:17.073","who":"Lumi"}
+{"kind":"say","t":326613.23331056605,"text":"Hey!","wall":"2026-11-26T09:01:17.073","who":"Pinchy"}
+{"kind":"paint_hit","t":326613.23331056605,"wall":"2026-11-26T09:01:17.073","who":"Pinchy"}
+{"kind":"paint_hit","t":326613.76664389926,"wall":"2026-11-26T09:01:17.607","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326613.89997723256,"wall":"2026-11-26T09:01:17.740","who":"Wibbles"}
+{"kind":"say","t":326613.99997723254,"text":"Eek!","wall":"2026-11-26T09:01:17.841","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326613.99997723254,"wall":"2026-11-26T09:01:17.841","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326614.13331056584,"wall":"2026-11-26T09:01:17.974","who":"Hopscotch"}
+{"kind":"say","t":326614.16664389917,"text":"...I meant to do that.","wall":"2026-11-26T09:01:18.006","who":"Lumi"}
+{"kind":"flight_punchline","t":326614.16664389917,"wall":"2026-11-26T09:01:18.007","who":"Lumi"}
+{"kind":"say","t":326614.4666438991,"text":"Eek!","wall":"2026-11-26T09:01:18.309","who":"Wibbles"}
+{"kind":"paint_hit","t":326614.4666438991,"wall":"2026-11-26T09:01:18.309","who":"Wibbles"}
+{"kind":"say","t":326614.5666438991,"text":"Ha ha!","wall":"2026-11-26T09:01:18.408","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326614.5666438991,"wall":"2026-11-26T09:01:18.408","who":"Sir Sniffsalot"}
+{"kind":"say","t":326615.43331056554,"text":"Again!","wall":"2026-11-26T09:01:19.272","who":"Hopscotch"}
+{"kind":"paint_hit","t":326615.43331056554,"wall":"2026-11-26T09:01:19.272","who":"Hopscotch"}
+{"kind":"say","t":326615.46664389886,"text":"Bullseye!","wall":"2026-11-26T09:01:19.307","who":"Wibbles"}
+{"kind":"paint_hit","t":326615.46664389886,"wall":"2026-11-26T09:01:19.308","who":"Wibbles"}
+{"kind":"paint_hit","t":326615.59997723217,"wall":"2026-11-26T09:01:19.440","who":"Pinchy"}
+{"kind":"paint_hit","t":326615.8999772321,"wall":"2026-11-26T09:01:19.739","who":"Lumi"}
+{"kind":"paint_hit","t":326615.96664389875,"wall":"2026-11-26T09:01:19.877","who":"Hopscotch"}
+{"kind":"paint_hit","t":326615.9999772321,"wall":"2026-11-26T09:01:19.883","who":"Lumi"}
+{"kind":"say","t":326616.4333105653,"text":"WOOO! Did you SEE that?!","wall":"2026-11-26T09:01:20.750","who":"Lumi"}
+{"kind":"say","t":326616.4333105653,"text":"Make room!","wall":"2026-11-26T09:01:20.750","who":"Gloop"}
+{"kind":"say","t":326616.4333105653,"text":"Lumi, get in here!","wall":"2026-11-26T09:01:20.750","who":"Cumulus"}
+{"k":1,"kind":"storm_strike","t":326616.4333105653,"wall":"2026-11-26T09:01:20.770"}
+{"kind":"lie_down","t":326617.03331056517,"wall":"2026-11-26T09:01:21.348","who":"Truffle"}
+{"kind":"paint_hit","t":326617.1999772318,"wall":"2026-11-26T09:01:21.516","who":"Wibbles"}
+{"kind":"say","t":326617.2333105651,"text":"SPLAT!","wall":"2026-11-26T09:01:21.550","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326617.2333105651,"wall":"2026-11-26T09:01:21.550","who":"Sir Sniffsalot"}
+{"kind":"say","t":326617.29997723177,"text":"...Huh? HEY! Where are YOU going?","wall":"2026-11-26T09:01:21.756","who":"Lumi"}
+{"kind":"shadow_loose","t":326617.29997723177,"wall":"2026-11-26T09:01:21.756"}
+{"kind":"say","t":326617.29997723177,"text":"EEK! A shadow with nobody on it!","wall":"2026-11-26T09:01:21.756","who":"Pinchy"}
+{"kind":"say","t":326617.4333105651,"text":"Bonk! Let's go round: A or D.","wall":"2026-11-26T09:01:21.830","who":"Lumi"}
+{"kind":"bump_cue","t":326617.4333105651,"wall":"2026-11-26T09:01:21.831","who":"Lumi"}
+{"kind":"paint_hit","t":326617.4333105651,"wall":"2026-11-26T09:01:21.831","who":"Lumi"}
+{"kind":"paint_hit","t":326617.733310565,"wall":"2026-11-26T09:01:22.131","who":"Pinchy"}
+{"kind":"paint_hit","t":326618.03331056493,"wall":"2026-11-26T09:01:22.429","who":"Lumi"}
+{"kind":"flight_end","t":326618.16664389824,"wall":"2026-11-26T09:01:22.562"}
+{"kind":"paint_hit","t":326618.19997723156,"wall":"2026-11-26T09:01:22.597","who":"Lumi"}
+{"kind":"paint_hit","t":326618.69997723144,"wall":"2026-11-26T09:01:23.096","who":"Pinchy"}
+{"kind":"say","t":326618.83331056475,"text":"It's only a bit of weather!","wall":"2026-11-26T09:01:23.231","who":"Lumi"}
+{"k":2,"kind":"storm_strike","t":326618.83331056475,"wall":"2026-11-26T09:01:23.231"}
+{"kind":"say","t":326619.266643898,"text":"Again!","wall":"2026-11-26T09:01:23.663","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326619.266643898,"wall":"2026-11-26T09:01:23.663","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326619.33331056463,"wall":"2026-11-26T09:01:23.729","who":"Hopscotch"}
+{"kind":"paint_hit","t":326619.6999772312,"wall":"2026-11-26T09:01:24.094","who":"Pinchy"}
+{"kind":"paint_hit","t":326619.89997723117,"wall":"2026-11-26T09:01:24.295","who":"Wibbles"}
+{"kind":"say","t":326619.9333105645,"text":"HEY! Come back!","wall":"2026-11-26T09:01:24.330","who":"Lumi"}
+{"kind":"shadow_dodge","t":326619.9333105645,"wall":"2026-11-26T09:01:24.331"}
+{"kind":"say","t":326619.9333105645,"text":"Did that shadow just wink at me?","wall":"2026-11-26T09:01:24.331","who":"Sir Sniffsalot"}
+{"kind":"say","t":326620.03331056447,"text":"Got you!","wall":"2026-11-26T09:01:24.430","who":"Hopscotch"}
+{"kind":"paint_hit","t":326620.03331056447,"wall":"2026-11-26T09:01:24.431","who":"Hopscotch"}
+{"kind":"paint_hit","t":326620.53331056435,"wall":"2026-11-26T09:01:24.928","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326620.6333105643,"wall":"2026-11-26T09:01:25.030","who":"Hopscotch"}
+{"kind":"say","t":326620.9999772309,"text":"That's MINE!","wall":"2026-11-26T09:01:26.546","who":"Lumi"}
+{"kind":"shadow_dodge","t":326620.9999772309,"wall":"2026-11-26T09:01:26.546"}
+{"kind":"say","t":326621.03331056423,"text":"Come on out, it's FUN!","wall":"2026-11-26T09:01:26.580","who":"Lumi"}
+{"k":3,"kind":"storm_strike","t":326621.03331056423,"wall":"2026-11-26T09:01:26.580"}
+{"kind":"paint_hit","t":326621.06664389756,"wall":"2026-11-26T09:01:26.612","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326621.2666438975,"wall":"2026-11-26T09:01:26.811","who":"Sir Sniffsalot"}
+{"kind":"say","t":326621.3999772308,"text":"Again!","wall":"2026-11-26T09:01:26.946","who":"Wibbles"}
+{"kind":"paint_hit","t":326621.3999772308,"wall":"2026-11-26T09:01:26.946","who":"Wibbles"}
+{"kind":"paint_hit","t":326621.59997723077,"wall":"2026-11-26T09:01:27.145","who":"Lumi"}
+{"kind":"say","t":326621.96664389735,"text":"SPLAT!","wall":"2026-11-26T09:01:27.512","who":"Hopscotch"}
+{"kind":"paint_hit","t":326621.96664389735,"wall":"2026-11-26T09:01:27.512","who":"Hopscotch"}
+{"kind":"paint_hit","t":326621.96664389735,"wall":"2026-11-26T09:01:27.512","who":"Lumi"}
+{"kind":"paint_hit","t":326622.2999772306,"wall":"2026-11-26T09:01:27.900","who":"Lumi"}
+{"kind":"say","t":326622.59997723054,"text":"Did that shadow just wink at me?","wall":"2026-11-26T09:01:28.198","who":"Pickles"}
+{"kind":"paint_hit","t":326622.73331056384,"wall":"2026-11-26T09:01:28.334","who":"Lumi"}
+{"kind":"say","t":326623.26664389705,"text":"I'm a balloon!","wall":"2026-11-26T09:01:28.875","who":"Sir Sniffsalot"}
+{"kind":"paint_hit","t":326623.4999772303,"wall":"2026-11-26T09:01:29.098","who":"Wibbles"}
+{"kind":"paint_hit","t":326623.79997723026,"wall":"2026-11-26T09:01:29.399","who":"Hopscotch"}
+{"kind":"say","t":326623.8333105636,"text":"!!!","wall":"2026-11-26T09:01:29.434","who":"Lumi"}
+{"kind":"storm_zap","t":326623.8333105636,"wall":"2026-11-26T09:01:29.434","who":"Lumi"}
+{"k":4,"kind":"storm_strike","t":326623.8333105636,"wall":"2026-11-26T09:01:29.434"}
+{"kind":"paint_hit","t":326623.89997723023,"wall":"2026-11-26T09:01:29.498","who":"Lumi"}
+{"kind":"paint_hit","t":326624.2666438968,"wall":"2026-11-26T09:01:29.864","who":"Wibbles"}
+{"kind":"say","t":326624.69997723005,"text":"Got you!","wall":"2026-11-26T09:01:30.299","who":"Pinchy"}
+{"kind":"paint_hit","t":326624.69997723005,"wall":"2026-11-26T09:01:30.299","who":"Pinchy"}
+{"kind":"paint_hit","t":326625.19997722993,"wall":"2026-11-26T09:01:30.797","who":"Hopscotch"}
+{"kind":"paint_hit","t":326625.2999772299,"wall":"2026-11-26T09:01:30.897","who":"Lumi"}
+{"kind":"say","t":326625.63331056316,"text":"...I'm fine.","wall":"2026-11-26T09:01:31.769","who":"Lumi"}
+{"kind":"paint_hit","t":326625.89997722977,"wall":"2026-11-26T09:01:32.004","who":"Pinchy"}
+{"kind":"say","t":326626.63331056293,"text":"Bullseye!","wall":"2026-11-26T09:01:32.741","who":"Wibbles"}
+{"kind":"paint_hit","t":326626.63331056293,"wall":"2026-11-26T09:01:32.741","who":"Wibbles"}
+{"kind":"say","t":326626.63331056293,"text":"Again!","wall":"2026-11-26T09:01:32.741","who":"Pinchy"}
+{"kind":"paint_hit","t":326626.63331056293,"wall":"2026-11-26T09:01:32.741","who":"Pinchy"}
+{"kind":"say","t":326626.79997722956,"text":"Stop! Shadow! Heel!","wall":"2026-11-26T09:01:32.905","who":"Lumi"}
+{"kind":"shadow_dodge","t":326626.79997722956,"wall":"2026-11-26T09:01:32.906"}
+{"kind":"say","t":326626.79997722956,"text":"Did that shadow just wink at me?","wall":"2026-11-26T09:01:32.906","who":"Hopscotch"}
+{"kind":"say","t":326626.8333105629,"text":"!ti er'uoY","wall":"2026-11-26T09:01:32.939","who":"Wibbles"}
+{"kind":"say","t":326626.8333105629,"text":"!yeH","wall":"2026-11-26T09:01:32.939","who":"Pickles"}
+{"kind":"say","t":326626.8333105629,"text":"◀◀ Wait. Let me try that again.","wall":"2026-11-26T09:01:32.939","who":"Lumi"}
+{"back":6.0,"kind":"rewind_start","t":326626.8333105629,"wall":"2026-11-26T09:01:32.967"}
+{"kind":"say","t":326626.8333105629,"text":"HA HA HA!","wall":"2026-11-26T09:01:32.967","who":"Gloop"}
+{"kind":"say","t":326626.8333105629,"text":"Your CREST!","wall":"2026-11-26T09:01:32.967","who":"Cumulus"}
+{"kind":"paint_hit","t":326627.06664389616,"wall":"2026-11-26T09:01:33.172","who":"Pickles"}
+{"kind":"paint_hit","t":326627.6333105627,"wall":"2026-11-26T09:01:33.740","who":"Pinchy"}
+{"kind":"say","t":326629.5999772289,"text":"...déjà vu?","wall":"2026-11-26T09:01:35.706","who":"Hopscotch"}
+{"kind":"say","t":326629.5999772289,"text":"...déjà vu?","wall":"2026-11-26T09:01:35.706","who":"Pickles"}
+{"kind":"rewind_end","t":326629.5999772289,"wall":"2026-11-26T09:01:35.706"}
+{"kind":"nap_woken","t":326631.23331056186,"wall":"2026-11-26T09:01:37.339","who":"Truffle"}
+{"kind":"get_up","t":326631.2666438952,"wall":"2026-11-26T09:01:37.372","who":"Truffle"}
+{"kind":"nap_woken","t":326631.76664389507,"wall":"2026-11-26T09:01:38.712","who":"Marshmallow"}
+{"kind":"paint_end","t":326631.8999772284,"wall":"2026-11-26T09:01:38.845"}
+{"kind":"say","t":326631.9333105617,"text":"My ears are wet","wall":"2026-11-26T09:01:38.968","who":"Sir Sniffsalot"}
+{"kind":"storm_end","t":326632.4333105616,"wall":"2026-11-26T09:01:39.409"}
+{"kind":"say","t":326632.8333105615,"text":"The fish are biting today, Cumulus! Coming?","wall":"2026-11-26T09:01:39.903","who":"Gloop"}
+{"kind":"invite","t":326632.8333105615,"to":"Cumulus","to_do":"fish","wall":"2026-11-26T09:01:39.903","who":"Gloop","yes":true}
+{"key":"minor","kind":"island_chord","t":326633.06664389477,"wall":"2026-11-26T09:01:40.134"}
+{"kind":"tune_dance","t":326633.06664389477,"wall":"2026-11-26T09:01:40.134","who":"Pinchy"}
+{"kind":"tune_dance","t":326633.06664389477,"wall":"2026-11-26T09:01:40.134","who":"Pickles"}
+{"kind":"tune_dance","t":326633.06664389477,"wall":"2026-11-26T09:01:40.134","who":"Truffle"}
+{"kind":"say","t":326633.06664389477,"text":"That's our song!","wall":"2026-11-26T09:01:40.134","who":"Pinchy"}
+{"kind":"say","t":326633.3333105614,"text":"Want to come fishing?","wall":"2026-11-26T09:01:40.402","who":"Wibbles"}
+{"how":"friendly","kind":"stranger_meet","t":326633.3333105614,"wall":"2026-11-26T09:01:40.402","who":"Wibbles"}
+{"kind":"say","t":326633.9999772279,"text":"GOT you! 16.7 seconds. Now stay put.","wall":"2026-11-26T09:01:41.067","who":"Lumi"}
+{"dodges":3,"kind":"shadow_caught","t":326633.9999772279,"wall":"2026-11-26T09:01:41.094"}
+{"kind":"gallery_visit","picture":"pebble-pie","t":326635.66664389416,"wall":"2026-11-26T09:01:42.802","who":"Wibbles"}
+{"kind":"say","t":326635.8666438941,"text":"Race you there!","wall":"2026-11-26T09:01:43.000","who":"Cumulus"}
+{"kind":"say","t":326637.0333105605,"text":"Hi, Shell! Room for one more?","wall":"2026-11-26T09:01:44.166","who":"Pinchy"}
+{"kind":"stranger_company","t":326637.0333105605,"wall":"2026-11-26T09:01:44.166","who":"Pinchy"}
+{"kind":"lie_down","t":326637.46664389374,"wall":"2026-11-26T09:01:44.601","who":"Hopscotch"}
+{"kind":"say","t":326638.2999772269,"text":"HELLOOO, ISLAND!","wall":"2026-11-26T09:01:45.434","who":"Lumi"}
+{"kind":"roll_call","n":9,"t":326638.2999772269,"wall":"2026-11-26T09:01:45.434","who":"Pinchy, Wibbles, Marshmallow, Sir Sniffsalot, Pickles, Hopscotch, Truffle, Cumulus, Gloop"}
+{"kind":"say","t":326639.93331055983,"text":"Hi Lumi!","wall":"2026-11-26T09:01:47.068","who":"Pinchy"}
+{"kind":"say","t":326640.6333105597,"text":"Here!","wall":"2026-11-26T09:01:47.769","who":"Wibbles"}
+{"kind":"say","t":326641.3333105595,"text":"Ahoy!","wall":"2026-11-26T09:01:48.469","who":"Marshmallow"}
+{"kind":"say","t":326642.03331055935,"text":"HELLOOO!","wall":"2026-11-26T09:01:49.167","who":"Sir Sniffsalot"}
+{"kind":"say","t":326642.43331055925,"text":"Psst, the foffly is watching!","wall":"2026-11-26T09:01:49.569","who":"Truffle"}
+{"kind":"word_used","t":326642.43331055925,"wall":"2026-11-26T09:01:49.569","who":"Truffle","word":"foffly"}
+{"kind":"say","t":326642.7333105592,"text":"Yoo-hoo!","wall":"2026-11-26T09:01:49.869","who":"Pickles"}
+{"kind":"say","t":326643.433310559,"text":"mmh... here... zzz","wall":"2026-11-26T09:01:50.569","who":"Hopscotch"}
+{"kind":"say","t":326643.8999772256,"text":"My hut!","wall":"2026-11-26T09:01:51.036","who":"Pinchy"}
+{"kind":"beachhut_visit","t":326643.8999772256,"wall":"2026-11-26T09:01:51.037","who":"Pinchy"}
+{"kind":"say","t":326644.13331055886,"text":"Yoo-hoo!","wall":"2026-11-26T09:01:51.266","who":"Truffle"}
+{"kind":"say","t":326644.8333105587,"text":"Hello hello!","wall":"2026-11-26T09:01:51.967","who":"Cumulus"}
+{"kind":"say","t":326645.53331055853,"text":"Yoo-hoo!","wall":"2026-11-26T09:01:52.669","who":"Gloop"}
+{"kind":"say","t":326645.53331055853,"text":"Everyone's here! I love this island.","wall":"2026-11-26T09:01:52.669","who":"Lumi"}
+{"kind":"roll_call_end","t":326645.53331055853,"wall":"2026-11-26T09:01:52.669"}
+{"kind":"facehill_climb","spot":"on my crest","t":326646.399977225,"wall":"2026-11-26T09:01:53.535","who":"Pinchy"}
+{"kind":"say","t":326649.73331055755,"text":"ah...","wall":"2026-11-26T09:01:57.368","who":"Lumi"}
+{"kind":"say","t":326649.73331055755,"text":"She's gonna blow!","wall":"2026-11-26T09:01:57.368","who":"Wibbles"}
+{"kind":"sneeze_windup","n":5,"t":326649.73331055755,"wall":"2026-11-26T09:01:57.368","who":"Wibbles, Pinchy, Hopscotch, Marshmallow, Sir Sniffsalot"}
+{"kind":"say","t":326649.73331055755,"text":"ah...","wall":"2026-11-26T09:01:57.368","who":"Lumi"}
+{"kind":"get_up","t":326649.7666438909,"wall":"2026-11-26T09:01:57.403","who":"Hopscotch"}
+{"kind":"say","t":326650.89997722395,"text":"ah... ah...","wall":"2026-11-26T09:01:58.535","who":"Lumi"}
+{"kind":"say","t":326651.16664389055,"text":"gone fishing","wall":"2026-11-26T09:01:58.802","who":"Pickles"}
+{"kind":"fishing","t":326651.16664389055,"wall":"2026-11-26T09:01:58.802","who":"Pickles"}
+{"kind":"say","t":326652.033310557,"text":"AH... AAAH...","wall":"2026-11-26T09:02:00.172","who":"Lumi"}
+{"kind":"say","t":326652.99997722346,"text":"Today... I FLY!","wall":"2026-11-26T09:02:01.416","who":"Lumi"}
+{"kind":"flight_announce","n":3,"t":326652.99997722346,"wall":"2026-11-26T09:02:01.416","who":"Lumi"}
+{"kind":"say","t":326653.1666438901,"text":"HA-CHOOOM!!!","wall":"2026-11-26T09:02:01.582","who":"Lumi"}
+{"kind":"sneeze","n":5,"t":326653.1666438901,"wall":"2026-11-26T09:02:01.582","who":"Hopscotch, Pinchy, Marshmallow, Sir Sniffsalot, Wibbles"}
+{"kind":"sneeze_landed","t":326654.29997722316,"wall":"2026-11-26T09:02:02.715","who":"Pinchy"}
+{"kind":"sneeze_landed","t":326654.29997722316,"wall":"2026-11-26T09:02:02.715","who":"Marshmallow"}
+{"kind":"sneeze_landed","t":326654.29997722316,"wall":"2026-11-26T09:02:02.715","who":"Wibbles"}
+{"kind":"sneeze_landed","t":326654.3666438898,"wall":"2026-11-26T09:02:02.784","who":"Sir Sniffsalot"}
+{"kind":"sneeze_landed","t":326654.4666438898,"wall":"2026-11-26T09:02:02.884","who":"Hopscotch"}
+{"kind":"say","t":326654.4666438898,"text":"...oops. Excuse me.","wall":"2026-11-26T09:02:02.884","who":"Lumi"}
+{"kind":"say","t":326655.73331055616,"text":"Whoaaa!","wall":"2026-11-26T09:02:04.147","who":"Marshmallow"}
+{"kind":"say","t":326655.8999772228,"text":"Whoaaa!","wall":"2026-11-26T09:02:04.314","who":"Pinchy"}
+{"kind":"say","t":326656.13331055606,"text":"Bless you!","wall":"2026-11-26T09:02:04.549","who":"Wibbles"}
+{"kind":"say","t":326656.4666438893,"text":"Whoaaa!","wall":"2026-11-26T09:02:05.439","who":"Sir Sniffsalot"}
+{"kind":"say","t":326657.03331055585,"text":"Three... two... ONE!","wall":"2026-11-26T09:02:05.976","who":"Lumi"}
+{"kind":"say","t":326657.69997722236,"text":"I'll keep it forever!","wall":"2026-11-26T09:02:06.643","who":"Hopscotch"}
+{"kind":"sneeze_feather","t":326657.69997722236,"wall":"2026-11-26T09:02:06.644","who":"Hopscotch"}
+{"kind":"paint_trip","n":0,"t":326658.1666438889,"wall":"2026-11-26T09:02:07.111"}
+{"kind":"say","t":326658.1666438889,"text":"whoa...","wall":"2026-11-26T09:02:07.111","who":"Lumi"}
+{"kind":"say","t":326658.6666438888,"text":"FLAP FLAP FLAP!","wall":"2026-11-26T09:02:07.610","who":"Lumi"}
+{"kind":"flight_takeoff","n":2,"t":326658.6666438888,"wall":"2026-11-26T09:02:07.610","who":"Lumi"}
+{"kind":"say","t":326658.73331055546,"text":"Feather hat!","wall":"2026-11-26T09:02:07.677","who":"Sir Sniffsalot"}
+{"kind":"sneeze_feather","t":326658.73331055546,"wall":"2026-11-26T09:02:07.677","who":"Sir Sniffsalot"}
+{"kind":"say","t":326658.9333105554,"text":"whoa-whoa-","wall":"2026-11-26T09:02:07.875","who":"Lumi"}
+{"kind":"say","t":326658.99997722206,"text":"Ooooh!","wall":"2026-11-26T09:02:07.941","who":"Gloop"}
+{"kind":"say","t":326659.4333105553,"text":"Higher!","wall":"2026-11-26T09:02:08.375","who":"Cumulus"}
+{"kind":"say","t":326659.6666438886,"text":"WHOA-WHOA-WHOAAA!","wall":"2026-11-26T09:02:08.608","who":"Lumi"}
+{"kind":"say","t":326660.0666438885,"text":"So shiny!","wall":"2026-11-26T09:02:09.008","who":"Pinchy"}
+{"kind":"sneeze_feather","t":326660.0666438885,"wall":"2026-11-26T09:02:09.008","who":"Pinchy"}
+{"kind":"say","t":326660.39997722174,"text":"SPLOOOSH!!!","wall":"2026-11-26T09:02:09.343","who":"Lumi"}
+{"kind":"paint_spill","t":326660.39997722174,"wall":"2026-11-26T09:02:09.343","who":"Lumi"}
+{"kind":"say","t":326661.4333105548,"text":"Mine! Mine!","wall":"2026-11-26T09:02:10.849","who":"Wibbles"}
+{"kind":"sneeze_feather","t":326661.4333105548,"wall":"2026-11-26T09:02:10.849","who":"Wibbles"}
+{"key":"minor","kind":"island_chord","t":326661.4999772215,"wall":"2026-11-26T09:02:10.913"}
+{"kind":"tune_dance","t":326661.4999772215,"wall":"2026-11-26T09:02:10.913","who":"Sir Sniffsalot"}
+{"kind":"say","t":326661.4999772215,"text":"That's our song!","wall":"2026-11-26T09:02:10.913","who":"Sir Sniffsalot"}
+{"kind":"say","t":326661.6333105548,"text":"Higher!","wall":"2026-11-26T09:02:11.049","who":"Cumulus"}
+{"kind":"say","t":326662.23331055464,"text":"Nobody to bubble...","wall":"2026-11-26T09:02:11.648","who":"Lumi"}
+{"kind":"say","t":326662.8333105545,"text":"Flap harder!","wall":"2026-11-26T09:02:12.247","who":"Gloop"}
+{"kind":"say","t":326663.39997722104,"text":"Is it safe?","wall":"2026-11-26T09:02:12.815","who":"Gloop"}
+{"kind":"say","t":326663.79997722094,"text":"Flap harder!","wall":"2026-11-26T09:02:13.213","who":"Cumulus"}
+{"kind":"say","t":326663.8666438876,"text":"Wheee!","wall":"2026-11-26T09:02:13.281","who":"Cumulus"}
+{"kind":"say","t":326664.0999772209,"text":"...uh oh.","wall":"2026-11-26T09:02:13.513","who":"Lumi"}
+{"kind":"say","t":326666.0666438871,"text":"Go Lumi!","wall":"2026-11-26T09:02:16.005","who":"Cumulus"}
+{"kind":"say","t":326666.0999772204,"text":"Hi, Shell!","wall":"2026-11-26T09:02:16.038","who":"Pinchy"}
+{"how":"friendly","kind":"stranger_meet","t":326666.0999772204,"wall":"2026-11-26T09:02:16.039","who":"Pinchy"}
+{"kind":"say","t":326666.1999772204,"text":"TA-DAAA!","wall":"2026-11-26T09:02:16.139","who":"Lumi"}
+{"kind":"flight_landed","n":2,"t":326666.1999772204,"wall":"2026-11-26T09:02:16.139","who":"Lumi"}
+{"kind":"say","t":326666.1999772204,"text":"WOW!","wall":"2026-11-26T09:02:16.139","who":"Cumulus"}
+{"kind":"say","t":326666.3333105537,"text":"...Huh? HEY! Where are YOU going?","wall":"2026-11-26T09:02:16.272","who":"Lumi"}
+{"kind":"shadow_loose","t":326666.3333105537,"wall":"2026-11-26T09:02:16.273"}
+{"kind":"say","t":326666.3333105537,"text":"EEK! A shadow with nobody on it!","wall":"2026-11-26T09:02:16.273","who":"Cumulus"}
+{"kind":"say","t":326666.53331055364,"text":"Did that shadow just wink at me?","wall":"2026-11-26T09:02:16.472","who":"Gloop"}
+{"kind":"paint_end","t":326668.6666438865,"wall":"2026-11-26T09:02:18.750"}
+{"kind":"say","t":326668.9666438864,"text":"HEY! Come back!","wall":"2026-11-26T09:02:19.347","who":"Lumi"}
+{"kind":"shadow_dodge","t":326668.9666438864,"wall":"2026-11-26T09:02:19.347"}
+{"kind":"sneeze_end","t":326669.8999772195,"wall":"2026-11-26T09:02:20.280"}
+{"kind":"say","t":326670.06664388615,"text":"Stuck! Steer round it with A or D.","wall":"2026-11-26T09:02:20.447","who":"Lumi"}
+{"kind":"bump_cue","t":326670.06664388615,"wall":"2026-11-26T09:02:20.447","who":"Lumi"}
+{"kind":"say","t":326670.1666438861,"text":"That's MINE!","wall":"2026-11-26T09:02:20.545","who":"Lumi"}
+{"kind":"shadow_dodge","t":326670.1666438861,"wall":"2026-11-26T09:02:20.545"}
+{"kind":"flight_end","t":326670.19997721945,"wall":"2026-11-26T09:02:20.580"}
+{"kind":"hiccups","n":1,"t":326670.3999772194,"wall":"2026-11-26T09:02:20.780","who":"Lumi"}
+{"kind":"say","t":326670.3999772194,"text":"HIC! ...oh no.","wall":"2026-11-26T09:02:20.780","who":"Lumi"}
+{"kind":"say","t":326670.3999772194,"text":"Stay away fr- HIC!","wall":"2026-11-26T09:02:20.780","who":"Cumulus"}
+{"kind":"hiccup_caught","n":2,"t":326670.3999772194,"wall":"2026-11-26T09:02:20.780","who":"Cumulus"}
+{"kind":"say","t":326670.43331055273,"text":"Huh? HIC!","wall":"2026-11-26T09:02:20.815","who":"Gloop"}
+{"kind":"hiccup_caught","n":3,"t":326670.43331055273,"wall":"2026-11-26T09:02:20.815","who":"Gloop"}
+{"kind":"say","t":326673.0999772188,"text":"water! HIC!","wall":"2026-11-26T09:02:24.112","who":"Gloop"}
+{"kind":"say","t":326673.33331055206,"text":"*hic*","wall":"2026-11-26T09:02:24.345","who":"Lumi"}
+{"kind":"say","t":326673.3666438854,"text":"Stop! Shadow! Heel!","wall":"2026-11-26T09:02:24.378","who":"Lumi"}
+{"kind":"shadow_dodge","t":326673.3666438854,"wall":"2026-11-26T09:02:24.378"}
+{"kind":"ate","t":326674.6666438851,"wall":"2026-11-26T09:02:25.678","who":"Sir Sniffsalot"}
+{"kind":"say","t":326675.43331055157,"text":"GOT you! 9.1 seconds. Now stay put.","wall":"2026-11-26T09:02:26.443","who":"Lumi"}
+{"dodges":3,"kind":"shadow_caught","t":326675.43331055157,"wall":"2026-11-26T09:02:26.443"}
+{"kind":"say","t":326675.4999772182,"text":"Achoo? No... HIC!","wall":"2026-11-26T09:02:26.511","who":"Truffle"}
+{"kind":"hiccup_caught","n":4,"t":326675.4999772182,"wall":"2026-11-26T09:02:26.511","who":"Truffle"}
+{"kind":"say","t":326676.2666438847,"text":"scare me! hic!","wall":"2026-11-26T09:02:27.277","who":"Lumi"}
+{"kind":"say","t":326677.3333105511,"text":"Not m- HIC!","wall":"2026-11-26T09:02:28.343","who":"Sir Sniffsalot"}
+{"kind":"hiccup_caught","n":5,"t":326677.3333105511,"wall":"2026-11-26T09:02:28.343","who":"Sir Sniffsalot"}
+{"kind":"say","t":326678.0999772176,"text":"*hic*","wall":"2026-11-26T09:02:29.110","who":"Gloop"}
+{"kind":"say","t":326678.4999772175,"text":"HIC!","wall":"2026-11-26T09:02:29.510","who":"Cumulus"}
+{"kind":"lie_down","t":326678.6999772175,"wall":"2026-11-26T09:02:29.708","who":"Pinchy"}
+{"kind":"say","t":326678.79997721745,"text":"*hic*","wall":"2026-11-26T09:02:29.812","who":"Sir Sniffsalot"}
+{"kind":"say","t":326678.9666438841,"text":"hold your breath? HIC!","wall":"2026-11-26T09:02:29.978","who":"Lumi"}
+{"kind":"say","t":326679.73331055057,"text":"hic!","wall":"2026-11-26T09:02:30.744","who":"Gloop"}
+{"kind":"say","t":326679.8999772172,"text":"they're shy today","wall":"2026-11-26T09:02:30.911","who":"Pickles"}
+{"kind":"no_fish","t":326679.8999772172,"wall":"2026-11-26T09:02:30.911","who":"Pickles"}
+{"kind":"say","t":326680.1999772171,"text":"Not m- HIC!","wall":"2026-11-26T09:02:31.210","who":"Marshmallow"}
+{"kind":"hiccup_caught","n":6,"t":326680.1999772171,"wall":"2026-11-26T09:02:31.210","who":"Marshmallow"}
+{"key":"minor","kind":"island_chord","t":326681.66664388345,"wall":"2026-11-26T09:02:32.678"}
+{"kind":"tune_dance","t":326681.66664388345,"wall":"2026-11-26T09:02:32.678","who":"Pickles"}
+{"kind":"tune_dance","t":326681.66664388345,"wall":"2026-11-26T09:02:32.678","who":"Wibbles"}
+{"kind":"say","t":326681.66664388345,"text":"La la LAA!","wall":"2026-11-26T09:02:32.678","who":"Pickles"}
+{"kind":"say","t":326681.79997721675,"text":"a quiet spot...","wall":"2026-11-26T09:02:32.812","who":"Hopscotch"}
+{"kind":"fishing","t":326681.79997721675,"wall":"2026-11-26T09:02:32.812","who":"Hopscotch"}
+{"kind":"say","t":326682.4999772166,"text":"HIC!!","wall":"2026-11-26T09:02:33.511","who":"Marshmallow"}
+{"kind":"say","t":326682.56664388324,"text":"Feeling a bit GLAINKO today.","wall":"2026-11-26T09:02:33.577","who":"Gloop"}
+{"kind":"word_used","t":326682.56664388324,"wall":"2026-11-26T09:02:33.577","who":"Gloop","word":"glainko"}
+{"kind":"say","t":326682.83331054985,"text":"Stay away fr- HIC!","wall":"2026-11-26T09:02:33.844","who":"Wibbles"}
+{"kind":"hiccup_caught","n":7,"t":326682.83331054985,"wall":"2026-11-26T09:02:33.845","who":"Wibbles"}
+{"kind":"say","t":326683.09997721645,"text":"hic!","wall":"2026-11-26T09:02:34.111","who":"Cumulus"}
+{"kind":"say","t":326683.566643883,"text":"hic... HIC!","wall":"2026-11-26T09:02:34.577","who":"Wibbles"}
+{"kind":"say","t":326683.8333105496,"text":"hic! help! HIC!","wall":"2026-11-26T09:02:34.844","who":"Gloop"}
+{"kind":"say","t":326684.1999772162,"text":"scare me! hic!","wall":"2026-11-26T09:02:35.210","who":"Truffle"}
+{"kind":"say","t":326685.33331054926,"text":"*hic*","wall":"2026-11-26T09:02:36.344","who":"Wibbles"}
+{"kind":"say","t":326685.69997721585,"text":"*hic*","wall":"2026-11-26T09:02:36.711","who":"Marshmallow"}
+{"kind":"say","t":326686.1666438824,"text":"hold your breath? HIC!","wall":"2026-11-26T09:02:37.177","who":"Truffle"}
+{"game":"Jump in (WASD)","kind":"play_stop","t":326686.533310549,"wall":"2026-11-26T09:02:37.586"}
+{"kind":"say","t":326686.5666438823,"text":"I wish I had a new thing to build.","wall":"2026-11-26T09:02:37.590","who":"Lumi"}
+{"feeling":"bored","kind":"lumi_feeling","t":326686.5666438823,"wall":"2026-11-26T09:02:37.590"}
+{"kind":"say","t":326686.5666438823,"text":"hic! help! HIC!","wall":"2026-11-26T09:02:37.590","who":"Lumi"}
+{"kind":"say","t":326686.5666438823,"text":"?tahw ,hO","wall":"2026-11-26T09:02:37.590","who":"Wibbles"}
+{"kind":"say","t":326686.5666438823,"text":"!seirreB","wall":"2026-11-26T09:02:37.590","who":"Cumulus"}
+{"kind":"say","t":326686.5666438823,"text":"?neppah tahw tiaW","wall":"2026-11-26T09:02:37.590","who":"Pickles"}
+{"kind":"say","t":326686.5666438823,"text":"◀◀ Wait. Let me try that again.","wall":"2026-11-26T09:02:37.590","who":"Lumi"}
+{"back":6.0,"kind":"rewind_start","t":326686.5666438823,"wall":"2026-11-26T09:02:37.590"}
+{"kind":"say","t":326688.9999772151,"text":"There. Much better.","wall":"2026-11-26T09:02:40.009","who":"Lumi"}
+{"kind":"moth_appear","t":326689.1666438817,"wall":"2026-11-26T09:02:40.178"}
+{"kind":"say","t":326689.399977215,"text":"water! HIC!","wall":"2026-11-26T09:02:40.412","who":"Truffle"}
+{"kind":"say","t":326689.46664388163,"text":"...déjà vu?","wall":"2026-11-26T09:02:40.478","who":"Hopscotch"}
+{"kind":"say","t":326689.46664388163,"text":"...déjà vu?","wall":"2026-11-26T09:02:40.478","who":"Pickles"}
+{"kind":"rewind_end","t":326689.46664388163,"wall":"2026-11-26T09:02:40.478"}
+{"kind":"moodcam_back","t":326689.9666438815,"to":"Marshmallow","wall":"2026-11-26T09:02:41.006"}
+{"kind":"say","t":326690.1666438815,"text":"HIC!","wall":"2026-11-26T09:02:41.179","who":"Sir Sniffsalot"}
+{"kind":"say","t":326690.4666438814,"text":"hic... HIC!","wall":"2026-11-26T09:02:41.478","who":"Truffle"}
+{"kind":"say","t":326690.6999772147,"text":"hic! help! HIC!","wall":"2026-11-26T09:02:41.711","who":"Gloop"}
+{"a":"Hopscotch","b":"Pickles","kind":"Boop","t":326691.5333105478,"wall":"2026-11-26T09:02:42.544"}
+{"kind":"say","t":326691.5333105478,"text":"hic... HIC!","wall":"2026-11-26T09:02:42.544","who":"Truffle"}
+{"kind":"say","t":326691.7999772144,"text":"hic! help! HIC!","wall":"2026-11-26T09:02:42.812","who":"Cumulus"}
+{"kind":"say","t":326691.83331054775,"text":"water! HIC!","wall":"2026-11-26T09:02:42.843","who":"Marshmallow"}
+{"kind":"say","t":326692.76664388087,"text":"boop!","wall":"2026-11-26T09:02:43.778","who":"Hopscotch"}
+{"a":"Hopscotch","b":"Pickles","kind":"boop","t":326692.76664388087,"wall":"2026-11-26T09:02:43.778"}
+{"kind":"say","t":326692.86664388084,"text":"HIC!!","wall":"2026-11-26T09:02:43.878","who":"Wibbles"}
+{"game":"Jump in (WASD)","kind":"play_start","t":326693.0333105475,"wall":"2026-11-26T09:02:44.076"}
+{"kind":"say","t":326693.1666438808,"text":"boop back!","wall":"2026-11-26T09:02:44.177","who":"Pickles"}
+{"kind":"say","t":326693.3333105474,"text":"hic! help! HIC!","wall":"2026-11-26T09:02:44.344","who":"Gloop"}
+{"kind":"say","t":326693.599977214,"text":"HIC!!","wall":"2026-11-26T09:02:44.611","who":"Marshmallow"}
+{"kind":"say","t":326693.66664388066,"text":"hic!","wall":"2026-11-26T09:02:44.677","who":"Truffle"}
+{"kind":"say","t":326693.79997721396,"text":"*hic*","wall":"2026-11-26T09:02:44.810","who":"Cumulus"}
+{"kind":"say","t":326695.06664388033,"text":"Not m- HIC!","wall":"2026-11-26T09:02:46.078","who":"Hopscotch"}
+{"kind":"hiccup_caught","n":8,"t":326695.06664388033,"wall":"2026-11-26T09:02:46.078","who":"Hopscotch"}
+{"kind":"say","t":326695.09997721366,"text":"Not m- HIC!","wall":"2026-11-26T09:02:46.111","who":"Pickles"}
+{"kind":"hiccup_caught","n":9,"t":326695.09997721366,"wall":"2026-11-26T09:02:46.111","who":"Pickles"}
+{"kind":"say","t":326695.09997721366,"text":"BOOOO!!!","wall":"2026-11-26T09:02:46.111","who":"Pickles"}
+{"kind":"say","t":326695.09997721366,"text":"YIPE!","wall":"2026-11-26T09:02:46.111","who":"Hopscotch"}
+{"kind":"say","t":326695.09997721366,"text":"AAAAH!","wall":"2026-11-26T09:02:46.111","who":"Wibbles"}
+{"all":"Lumi, Cumulus, Gloop, Truffle, Sir Sniffsalot, Marshmallow, Wibbles, Hopscotch, Pickles","kind":"hiccup_boo","n":7,"t":326695.09997721366,"wall":"2026-11-26T09:02:46.144","who":"Pickles"}
+{"kind":"say","t":326696.7333105466,"text":"...gone?","wall":"2026-11-26T09:02:48.320","who":"Hopscotch"}
+{"kind":"say","t":326697.5999772131,"text":"ah...","wall":"2026-11-26T09:02:49.187","who":"Lumi"}
+{"kind":"say","t":326697.5999772131,"text":"Not again...","wall":"2026-11-26T09:02:49.188","who":"Gloop"}
+{"kind":"sneeze_windup","n":5,"t":326697.5999772131,"wall":"2026-11-26T09:02:49.188","who":"Gloop, Hopscotch, Cumulus, Marshmallow, Pickles"}
+{"kind":"say","t":326697.5999772131,"text":"ah...","wall":"2026-11-26T09:02:49.188","who":"Lumi"}
+{"kind":"moth_rest","t":326697.8666438797,"wall":"2026-11-26T09:02:49.454"}
+{"kind":"say","t":326698.76664387947,"text":"ah... ah...","wall":"2026-11-26T09:02:50.354","who":"Lumi"}
+{"kind":"say","t":326699.36664387933,"text":"...hic.","wall":"2026-11-26T09:02:50.955","who":"Lumi"}
+{"kind":"hiccup_punchline","t":326699.36664387933,"wall":"2026-11-26T09:02:50.955","who":"Lumi"}
+{"kind":"say","t":326699.89997721254,"text":"AH... AAAH...","wall":"2026-11-26T09:02:51.979","who":"Lumi"}
+{"kind":"say","t":326700.69997721235,"text":"Nobody here to sing with...","wall":"2026-11-26T09:02:52.777","who":"Lumi"}
+{"kind":"say","t":326701.0333105456,"text":"AH-CHOOOO!!!","wall":"2026-11-26T09:02:53.111","who":"Lumi"}
+{"kind":"sneeze","n":5,"t":326701.0333105456,"wall":"2026-11-26T09:02:53.111","who":"Hopscotch, Cumulus, Marshmallow, Gloop, Pickles"}
+{"kind":"sneeze_landed","t":326702.199977212,"wall":"2026-11-26T09:02:54.277","who":"Pickles"}
+{"kind":"sneeze_landed","t":326702.2333105453,"wall":"2026-11-26T09:02:54.313","who":"Hopscotch"}
+{"kind":"sneeze_landed","t":326702.2333105453,"wall":"2026-11-26T09:02:54.313","who":"Marshmallow"}
+{"kind":"sneeze_landed","t":326702.26664387865,"wall":"2026-11-26T09:02:54.345","who":"Gloop"}
+{"kind":"sneeze_landed","t":326702.3333105453,"wall":"2026-11-26T09:02:54.412","who":"Cumulus"}
+{"kind":"say","t":326702.3333105453,"text":"...oops. Excuse me.","wall":"2026-11-26T09:02:54.412","who":"Lumi"}
+{"kind":"say","t":326703.69997721165,"text":"Bless you!!","wall":"2026-11-26T09:02:56.311","who":"Hopscotch"}
+{"kind":"hiccup_end","t":326703.7666438783,"wall":"2026-11-26T09:02:56.378"}
+{"kind":"say","t":326703.8666438783,"text":"Gesundheit!","wall":"2026-11-26T09:02:56.480","who":"Pickles"}
+{"key":"minor","kind":"island_chord","t":326703.96664387826,"wall":"2026-11-26T09:02:56.579"}
+{"kind":"tune_dance","t":326703.96664387826,"wall":"2026-11-26T09:02:56.579","who":"Sir Sniffsalot"}
+{"kind":"say","t":326703.96664387826,"text":"La la LAA!","wall":"2026-11-26T09:02:56.579","who":"Sir Sniffsalot"}
+{"kind":"say","t":326703.9999772116,"text":"Gesundheit!","wall":"2026-11-26T09:02:56.612","who":"Marshmallow"}
+{"kind":"say","t":326704.1666438782,"text":"Bless you!","wall":"2026-11-26T09:02:56.780","who":"Cumulus"}
+{"kind":"say","t":326704.9333105447,"text":"I can see my house!","wall":"2026-11-26T09:02:57.544","who":"Cumulus"}
+{"kind":"say","t":326705.4666438779,"text":"A golden feather!","wall":"2026-11-26T09:02:58.080","who":"Hopscotch"}
+{"kind":"sneeze_feather","t":326705.4666438779,"wall":"2026-11-26T09:02:58.080","who":"Hopscotch"}
+{"kind":"say","t":326707.09997721086,"text":"A golden feather!","wall":"2026-11-26T09:03:00.342","who":"Gloop"}
+{"kind":"sneeze_feather","t":326707.09997721086,"wall":"2026-11-26T09:03:00.342","who":"Gloop"}
+{"kind":"sneeze_end","t":326709.6333105436,"wall":"2026-11-26T09:03:02.873"}
+{"kind":"facehill_climb","spot":"on my wing","t":326709.9999772102,"wall":"2026-11-26T09:03:03.242","who":"Pickles"}
+{"kind":"say","t":326709.9999772102,"text":"Total GLAINKO!","wall":"2026-11-26T09:03:03.242","who":"Cumulus"}
+{"kind":"word_used","t":326709.9999772102,"wall":"2026-11-26T09:03:03.242","who":"Cumulus","word":"glainko"}
+{"kind":"ate","t":326712.69997720956,"wall":"2026-11-26T09:03:05.943","who":"Truffle"}
+{"kind":"say","t":326713.1333105428,"text":"Oof!","wall":"2026-11-26T09:03:06.375","who":"Cumulus"}
+{"kind":"cairn_stone","stones":3377,"t":326713.5333105427,"wall":"2026-11-26T09:03:06.775","who":"Wibbles"}
+{"a":"Truffle","b":"Sir Sniffsalot","kind":"Chat","t":326715.0666438757,"wall":"2026-11-26T09:03:08.306"}
+{"kind":"say","t":326715.0666438757,"text":"Hi Sir Sniffsalot!","wall":"2026-11-26T09:03:08.306","who":"Truffle"}
+{"kind":"say","t":326715.16664387565,"text":"Want to come fishing?","wall":"2026-11-26T09:03:08.407","who":"Wibbles"}
+{"how":"friendly","kind":"stranger_meet","t":326715.16664387565,"wall":"2026-11-26T09:03:08.407","who":"Wibbles"}
+{"kind":"say","t":326717.6999772084,"text":"Hey Truffle.","wall":"2026-11-26T09:03:10.942","who":"Sir Sniffsalot"}
+{"kind":"say","t":326720.3333105411,"text":"I smelled something amazing over there.","wall":"2026-11-26T09:03:13.576","who":"Truffle"}
+{"kind":"say","t":326722.96664387383,"text":"It was probably you.","wall":"2026-11-26T09:03:16.209","who":"Sir Sniffsalot"}
+{"kind":"gallery_visit","picture":"dusk-lantern","t":326723.13331054046,"wall":"2026-11-26T09:03:16.374","who":"Hopscotch"}
+{"a":"Wibbles","b":"Pickles","kind":"Boop","t":326723.599977207,"wall":"2026-11-26T09:03:16.840"}
+{"kind":"say","t":326724.43331054016,"text":"Shell! I brought you nothing, but here I am.","wall":"2026-11-26T09:03:17.676","who":"Gloop"}
+{"kind":"stranger_company","t":326724.43331054016,"wall":"2026-11-26T09:03:17.676","who":"Gloop"}
+{"kind":"say","t":326724.83331054007,"text":"boop!","wall":"2026-11-26T09:03:18.075","who":"Wibbles"}
+{"a":"Wibbles","b":"Pickles","kind":"boop","t":326724.83331054007,"wall":"2026-11-26T09:03:18.075"}
+{"key":"minor","kind":"island_chord","t":326724.8666438734,"wall":"2026-11-26T09:03:18.109"}
+{"kind":"tune_dance","t":326724.8666438734,"wall":"2026-11-26T09:03:18.109","who":"Gloop"}
+{"kind":"say","t":326724.8666438734,"text":"La la LAA!","wall":"2026-11-26T09:03:18.109","who":"Gloop"}
+{"kind":"say","t":326725.23331054,"text":"*giggles*","wall":"2026-11-26T09:03:18.472","who":"Pickles"}
+{"kind":"say","t":326725.59997720656,"text":"*boop*","wall":"2026-11-26T09:03:18.842","who":"Truffle"}
+{"game":"Jump in (WASD)","kind":"play_stop","t":326726.13331053976,"wall":"2026-11-26T09:03:19.404"}
+{"kind":"say","t":326726.1666438731,"text":"Let's see if anyone misses me... shh.","wall":"2026-11-26T09:03:19.432","who":"Lumi"}
+{"kind":"missme_hide","t":326726.1666438731,"wall":"2026-11-26T09:03:19.432","who":"Lumi"}
+{"from":"Wibbles","kind":"moodcam_drift","t":326726.1999772064,"to":"flower","wall":"2026-11-26T09:03:19.443"}
+{"kind":"say","t":326726.666643873,"text":"ooh, a nice flat one","wall":"2026-11-26T09:03:19.909","who":"Marshmallow"}
+{"kind":"nap_woken","t":326727.7666438727,"wall":"2026-11-26T09:03:21.136","who":"Pinchy"}
+{"kind":"get_up","t":326727.79997720604,"wall":"2026-11-26T09:03:21.169","who":"Pinchy"}
+{"kind":"cairn_stone","stones":3378,"t":326728.33331053925,"wall":"2026-11-26T09:03:21.701","who":"Marshmallow"}
+{"kind":"ate","t":326732.6999772049,"wall":"2026-11-26T09:03:26.070","who":"Pickles"}
+{"kind":"say","t":326732.9666438715,"text":"Want to pick flowers with me, Pickles?","wall":"2026-11-26T09:03:26.337","who":"Marshmallow"}
+{"kind":"invite","t":326732.9666438715,"to":"Pickles","to_do":"flowers","wall":"2026-11-26T09:03:26.337","who":"Marshmallow","yes":false}
+{"kind":"path_tracing","on":true,"t":326733.53331053804,"wall":"2026-11-26T09:03:28.547"}
+{"kind":"missme_hidden","t":326735.066643871,"wall":"2026-11-26T09:03:29.992","who":"Lumi"}
+{"kind":"say","t":326735.99997720413,"text":"I'm happy here.","wall":"2026-11-26T09:03:30.926","who":"Pickles"}
+{"kind":"say","t":326736.499977204,"text":"ooh, a nice flat one","wall":"2026-11-26T09:03:31.426","who":"Sir Sniffsalot"}
+{"kind":"say","t":326737.83331053704,"text":"Boing time for me!","wall":"2026-11-26T09:03:32.759","who":"Pinchy"}
+{"kind":"boing_walk","t":326737.83331053704,"wall":"2026-11-26T09:03:32.759","who":"Pinchy"}
+{"kind":"say","t":326738.49997720355,"text":"it's getting tall!","wall":"2026-11-26T09:03:33.427","who":"Sir Sniffsalot"}
+{"kind":"cairn_stone","stones":3379,"t":326738.49997720355,"wall":"2026-11-26T09:03:33.427","who":"Sir Sniffsalot"}
+{"kind":"nap_woken","t":326740.56664386974,"wall":"2026-11-26T09:03:35.493","who":"Gloop"}
+{"kind":"paperme_friend","t":326745.4999772019,"wall":"2026-11-26T09:03:40.428","who":"Gloop"}
+{"kind":"say","t":326748.066643868,"text":"Very GLAINKO, very GLAINKO.","wall":"2026-11-26T09:03:42.992","who":"Sir Sniffsalot"}
+{"kind":"word_used","t":326748.066643868,"wall":"2026-11-26T09:03:42.992","who":"Sir Sniffsalot","word":"glainko"}
+{"height":5.7,"kind":"boing","t":326750.86664386734,"wall":"2026-11-26T09:03:45.792","who":"Pinchy"}
+{"kind":"say","t":326752.06664386706,"text":"Higher!","wall":"2026-11-26T09:03:46.992","who":"Pinchy"}
+{"kind":"say","t":326754.39997719985,"text":"Where's Pinchy?","wall":"2026-11-26T09:03:49.327","who":"Marshmallow"}
+{"kind":"say","t":326754.4333105332,"text":"I picked this for you, Pinchy!","wall":"2026-11-26T09:03:49.360","who":"Marshmallow"}
+{"kind":"flower_gift","t":326754.4333105332,"to":"Pinchy","wall":"2026-11-26T09:03:49.360","who":"Marshmallow"}
+{"kind":"say","t":326754.4333105332,"text":"Dance in the golden flowers!","wall":"2026-11-26T09:03:49.360","who":"Marshmallow"}
+{"kind":"dance_circle","t":326754.4333105332,"wall":"2026-11-26T09:03:49.360","who":"Marshmallow, Hopscotch, Wibbles, Truffle"}
+{"kind":"say","t":326755.6666438662,"text":"I'll keep it forever!","wall":"2026-11-26T09:03:50.592","who":"Pinchy"}
+{"kind":"say","t":326758.33331053227,"text":"Ooh, a golden one!","wall":"2026-11-26T09:03:53.260","who":"Lumi"}
+{"kind":"giant_mushroom","n":3,"t":326758.33331053227,"wall":"2026-11-26T09:03:53.260"}
+{"kind":"say","t":326761.56664386485,"text":"*munch*... uh oh.","wall":"2026-11-26T09:06:24.755","who":"Lumi"}
+{"kind":"giant_grow","t":326761.56664386485,"wall":"2026-11-26T09:06:24.757","who":"Lumi"}
+{"kind":"say","t":326762.399977198,"text":"Eeeek!","wall":"2026-11-26T09:06:30.086","who":"Pickles"}
+{"kind":"say","t":326764.5999771975,"text":"I'M HUGE!!!","wall":"2026-11-26T09:06:33.954","who":"Lumi"}
+{"kind":"giant","n":3,"t":326764.5999771975,"wall":"2026-11-26T09:06:33.954","who":"Lumi"}
+{"kind":"say","t":326765.7999771972,"text":"Do the stomp!","wall":"2026-11-26T09:06:35.240","who":"Pickles"}
+{"kind":"say","t":326766.4666438637,"text":"Do the stomp!","wall":"2026-11-26T09:06:35.959","who":"Pickles"}
+{"kind":"say","t":326767.1333105302,"text":"So high!","wall":"2026-11-26T09:06:36.629","who":"Pickles"}
+{"kind":"giant_ride","t":326767.1333105302,"wall":"2026-11-26T09:06:36.629","who":"Pickles"}
+{"kind":"say","t":326767.1333105302,"text":"I can see the sea!","wall":"2026-11-26T09:06:36.629","who":"Sir Sniffsalot"}
+{"kind":"giant_ride","t":326767.1333105302,"wall":"2026-11-26T09:06:36.629","who":"Sir Sniffsalot"}
+{"kind":"say","t":326767.1333105302,"text":"So high!","wall":"2026-11-26T09:06:36.629","who":"Gloop"}
+{"kind":"giant_ride","t":326767.1333105302,"wall":"2026-11-26T09:06:36.629","who":"Gloop"}
+{"kind":"say","t":326769.466643863,"text":"Go on without me!","wall":"2026-11-26T09:06:38.959","who":"Wibbles"}
+{"kind":"say","t":326769.49997719633,"text":"What a night!","wall":"2026-11-26T09:06:38.992","who":"Hopscotch"}
+{"key":"minor","kind":"island_chord","t":326769.8666438629,"wall":"2026-11-26T09:06:39.360"}
+{"kind":"tune_dance","t":326769.8666438629,"wall":"2026-11-26T09:06:39.360","who":"Wibbles"}
+{"kind":"say","t":326769.8666438629,"text":"Ooh, I know this one!","wall":"2026-11-26T09:06:39.360","who":"Wibbles"}
+{"kind":"gallery_visit","picture":"paperme-pier","t":326773.5999771954,"wall":"2026-11-26T09:07:08.195","who":"Cumulus"}
+{"kind":"say","t":326773.5999771954,"text":"Faster, Lumi!","wall":"2026-11-26T09:07:08.195","who":"Sir Sniffsalot"}
+{"kind":"say","t":326773.69997719536,"text":"Round and round!","wall":"2026-11-26T09:07:08.272","who":"Truffle"}
+{"kind":"say","t":326774.23331052857,"text":"Total GLAINKO!","wall":"2026-11-26T09:07:11.620","who":"Wibbles"}
+{"kind":"word_used","t":326774.23331052857,"wall":"2026-11-26T09:07:11.621","who":"Wibbles","word":"glainko"}
+{"kind":"path_tracing","on":false,"t":326775.5666438616,"wall":"2026-11-26T09:07:48.363"}
+{"kind":"say","t":326775.89997719484,"text":"Faster, Lumi!","wall":"2026-11-26T09:07:48.608","who":"Sir Sniffsalot"}
+{"kind":"say","t":326776.29997719475,"text":"I can see the sea!","wall":"2026-11-26T09:07:49.010","who":"Pickles"}
+{"kind":"say","t":326776.43331052805,"text":"So high!","wall":"2026-11-26T09:07:49.142","who":"Pickles"}
+{"kind":"say","t":326777.6333105278,"text":"POP!","wall":"2026-11-26T09:07:50.342","who":"Lumi"}
+{"kind":"giant_pop","t":326777.6333105278,"wall":"2026-11-26T09:07:50.342","who":"Lumi"}
+{"kind":"say","t":326778.49997719424,"text":"Hop, hop, turn!","wall":"2026-11-26T09:07:51.208","who":"Marshmallow"}
+{"kind":"say","t":326778.53331052756,"text":"Whoa!","wall":"2026-11-26T09:07:51.244","who":"Gloop"}
+{"kind":"say","t":326778.53331052756,"text":"Whoa!","wall":"2026-11-26T09:07:51.244","who":"Sir Sniffsalot"}
+{"kind":"say","t":326778.53331052756,"text":"My tail!","wall":"2026-11-26T09:07:51.244","who":"Pickles"}
+{"kind":"say","t":326778.8666438608,"text":"...that was a big snack.","wall":"2026-11-26T09:07:51.575","who":"Lumi"}
+{"kind":"giant_end","t":326781.89997719345,"wall":"2026-11-26T09:07:54.608"}
+{"kind":"say","t":326782.8999771932,"text":"What a night!","wall":"2026-11-26T09:07:55.609","who":"Truffle"}
+{"kind":"say","t":326784.23331052624,"text":"a quiet spot...","wall":"2026-11-26T09:07:56.942","who":"Pinchy"}
+{"kind":"fishing","t":326784.23331052624,"wall":"2026-11-26T09:07:56.942","who":"Pinchy"}
+{"kind":"say","t":326786.96664385893,"text":"What a night!","wall":"2026-11-26T09:07:59.677","who":"Marshmallow"}
+{"kind":"say","t":326790.49997719144,"text":"What a night!","wall":"2026-11-26T09:08:03.210","who":"Hopscotch"}
+{"kind":"dance_circle_end","t":326791.4999771912,"wall":"2026-11-26T09:08:04.210","who":"Marshmallow, Hopscotch, Truffle","why":"done"}
+{"kind":"say","t":326791.4999771912,"text":"Same time tomorrow?","wall":"2026-11-26T09:08:04.210","who":"Truffle"}
+{"key":"minor","kind":"island_chord","t":326791.83331052447,"wall":"2026-11-26T09:08:04.542"}
+{"kind":"tune_dance","t":326791.83331052447,"wall":"2026-11-26T09:08:04.542","who":"Marshmallow"}
+{"kind":"tune_dance","t":326791.83331052447,"wall":"2026-11-26T09:08:04.542","who":"Hopscotch"}
+{"kind":"tune_dance","t":326791.83331052447,"wall":"2026-11-26T09:08:04.542","who":"Truffle"}
+{"kind":"say","t":326791.83331052447,"text":"That's our song!","wall":"2026-11-26T09:08:04.542","who":"Marshmallow"}
+{"kind":"moodcam_back","t":326793.733310524,"to":"Truffle","wall":"2026-11-26T09:08:08.009"}
+{"kind":"say","t":326795.6666438569,"text":"I look good in this one.","wall":"2026-11-26T09:08:08.185","who":"Cumulus"}
+{"kind":"gallery_look","picture":"paperme-pier","t":326795.6666438569,"wall":"2026-11-26T09:08:08.185","who":"Cumulus"}
+{"kind":"say","t":326797.26664385654,"text":"found one!","wall":"2026-11-26T09:08:11.255","who":"Wibbles"}
+{"kind":"say","t":326798.2999771896,"text":"Race you!","wall":"2026-11-26T09:08:13.799","who":"Pickles"}
+{"kind":"say","t":326798.2999771896,"text":"Ooh, ripe ones!","wall":"2026-11-26T09:08:13.799","who":"Hopscotch"}
+{"kind":"berry_race_wild","t":326798.2999771896,"wall":"2026-11-26T09:08:13.799","who":"Pickles, Hopscotch"}
+{"kind":"paperme_friend","t":326798.3999771896,"wall":"2026-11-26T09:08:14.094","who":"Pickles"}
+{"kind":"cairn_stone","stones":3380,"t":326800.13331052253,"wall":"2026-11-26T09:08:17.131","who":"Wibbles"}
+{"kind":"say","t":330944.4351500333,"text":"not even a nibble","wall":"2026-11-26T09:08:25.645","who":"Pinchy"}
+{"kind":"no_fish","t":330944.4351500333,"wall":"2026-11-26T09:08:25.645","who":"Pinchy"}
+{"kind":"say","t":330944.4351500333,"text":"Ooh, here comes the wind!","wall":"2026-11-26T09:08:25.645","who":"Lumi"}
+{"kind":"leaves_start","n":6,"t":330944.4351500333,"wall":"2026-11-26T09:08:25.645"}
+{"kind":"say","t":330944.4351500333,"text":"Listen to the sea...","wall":"2026-11-26T09:08:25.645","who":"Pinchy"}
+{"kind":"beachhut_visit","t":330944.4351500333,"wall":"2026-11-26T09:08:25.645","who":"Pinchy"}
+{"kind":"say","t":330944.4351500333,"text":"Boing time for me!","wall":"2026-11-26T09:08:25.646","who":"Truffle"}
+{"kind":"boing_walk","t":330944.4351500333,"wall":"2026-11-26T09:08:25.646","who":"Truffle"}
+{"heading":180,"kind":"drafts_start","t":330944.4351500333,"wall":"2026-11-26T09:08:25.646"}
+{"kind":"facehill_climb","spot":"on my beak","t":330944.4351500333,"wall":"2026-11-26T09:08:25.646","who":"Pinchy"}
+{"kind":"paths_remembered","t":330944.4351500333,"wall":"2026-11-26T09:08:25.672","worn":1065}
+{"kind":"path_worn","more":1065,"t":330944.4351500333,"wall":"2026-11-26T09:08:25.695"}
+{"kind":"gallery_visit","picture":"pebble-pie","t":330944.4351500333,"wall":"2026-11-26T09:08:25.695","who":"Truffle"}
+{"kind":"say","t":330944.4351500333,"text":"That's us. Yesterday, at this very hour.","wall":"2026-11-26T09:08:25.695","who":"Lumi"}
+{"frames":214,"kind":"ghosts_arrive","t":330944.4351500333,"wall":"2026-11-26T09:08:25.695"}
+{"kind":"snow_start","n":2,"t":330944.4351500333,"wall":"2026-11-26T09:08:25.695"}
+{"kind":"timeweather_start","t":330944.4351500333,"time":"still","wall":"2026-11-26T09:08:25.695"}
+{"kind":"say","t":330944.4351500333,"text":"Everyone... stop. Listen. Nothing's ticking.","wall":"2026-11-26T09:08:25.695","who":"Lumi"}
+{"kind":"tv_watch","t":330944.4351500333,"wall":"2026-11-26T09:08:25.695","who":"Truffle, Pickles, Gloop"}
+{"kind":"say","t":330944.4351500333,"text":"Feeling a bit GLAINKO today.","wall":"2026-11-26T09:08:25.695","who":"Hopscotch"}
+{"kind":"word_used","t":330944.4351500333,"wall":"2026-11-26T09:08:25.695","who":"Hopscotch","word":"glainko"}
+{"kind":"timeweather_caught","t":330946.03515003296,"time":"still","wall":"2026-11-26T09:08:25.900","who":"Truffle"}
+{"kind":"timeweather_caught","t":330948.90181669896,"time":"still","wall":"2026-11-26T09:08:26.043","who":"Pickles"}
+{"kind":"say","t":330951.7351500316,"text":"Where did my ears go?","wall":"2026-11-26T09:08:26.149","who":"Truffle"}
+{"kind":"drafts_blob","t":330951.7351500316,"wall":"2026-11-26T09:08:26.149","who":"Truffle"}
+{"kind":"timeweather_caught","t":330952.0684833649,"time":"still","wall":"2026-11-26T09:08:26.160","who":"Cumulus"}
+{"kind":"say","t":330953.5351500312,"text":"CANNONBALL!","wall":"2026-11-26T09:08:26.242","who":"Hopscotch"}
+{"kind":"say","t":330953.6351500312,"text":"Where did my ears go?","wall":"2026-11-26T09:08:26.246","who":"Pickles"}
+{"kind":"drafts_blob","t":330953.6351500312,"wall":"2026-11-26T09:08:26.246","who":"Pickles"}
+{"kind":"say","t":330955.0684833642,"text":"Here I come!","wall":"2026-11-26T09:08:26.300","who":"Marshmallow"}
+{"kind":"say","t":330956.60181669716,"text":"Leaf attack!","wall":"2026-11-26T09:08:26.359","who":"Wibbles"}
+{"kind":"say","t":330958.13515003014,"text":"Woo-hoo!","wall":"2026-11-26T09:08:26.418","who":"Cumulus"}
+{"kind":"say","t":330958.30181669677,"text":"a quiet spot...","wall":"2026-11-26T09:08:26.425","who":"Pinchy"}
+{"kind":"fishing","t":330958.30181669677,"wall":"2026-11-26T09:08:26.425","who":"Pinchy"}
+{"kind":"say","t":330959.6684833631,"text":"Make room!","wall":"2026-11-26T09:08:26.479","who":"Sir Sniffsalot"}
+{"kind":"say","t":330962.1018166959,"text":"MY TURN! Biggest jump EVER!","wall":"2026-11-26T09:08:26.569","who":"Lumi"}
+{"kind":"say","t":330962.16848336253,"text":"Move, I can't see me!","wall":"2026-11-26T09:08:26.571","who":"Pickles"}
+{"kind":"say","t":330964.03515002877,"text":"Again! Somebody pile them up again!","wall":"2026-11-26T09:08:26.640","who":"Lumi"}
+{"kind":"say","t":330966.46848336153,"text":"Everything's gone grey!","wall":"2026-11-26T09:08:26.725","who":"Gloop"}
+{"kind":"drafts_blob","t":330966.46848336153,"wall":"2026-11-26T09:08:26.725","who":"Gloop"}
+{"kind":"say","t":330966.76848336146,"text":"Wave! WAVE!","wall":"2026-11-26T09:08:26.736","who":"Pickles"}
+{"kind":"leaves_end","t":330969.0684833609,"wall":"2026-11-26T09:08:27.125"}
+{"from":"Lumi","kind":"moodcam_drift","t":330969.0684833609,"to":"flower","wall":"2026-11-26T09:08:27.125"}
+{"kind":"say","t":330969.0684833609,"text":"*sigh* I need something new to make.","wall":"2026-11-26T09:08:27.125","who":"Lumi"}
+{"feeling":"bored","kind":"lumi_feeling","t":330969.0684833609,"wall":"2026-11-26T09:08:27.125"}
+{"kind":"say","t":330969.0684833609,"text":"Time's up. Let's count.","wall":"2026-11-26T09:08:27.125","who":"Lumi"}
+{"kind":"say","t":330969.0684833609,"text":"A snowman! No... a snow-ME!","wall":"2026-11-26T09:08:27.125","who":"Lumi"}
+{"kind":"snowman","t":330969.0684833609,"wall":"2026-11-26T09:08:27.125","who":"Lumi"}
+{"kind":"say","t":330969.2684833609,"text":"Hm. I can't tell: the island was not running the whole time.","wall":"2026-11-26T09:08:27.440","who":"Lumi"}
+{"kind":"missme_result","ok":false,"t":330969.2684833609,"wall":"2026-11-26T09:08:27.461","why":"the island was not running the whole time"}
+{"kind":"missme_end","t":330969.2684833609,"wall":"2026-11-26T09:08:27.461","why":"no_answer"}
+{"key":"minor","kind":"island_chord","t":330969.2684833609,"wall":"2026-11-26T09:08:27.461"}
+{"kind":"tune_dance","t":330969.2684833609,"wall":"2026-11-26T09:08:27.461","who":"Sir Sniffsalot"}
+{"kind":"tune_dance","t":330969.2684833609,"wall":"2026-11-26T09:08:27.461","who":"Wibbles"}
+{"kind":"say","t":330969.2684833609,"text":"Ooh, I know this one!","wall":"2026-11-26T09:08:27.461","who":"Sir Sniffsalot"}
+{"kind":"say","t":330969.4351500275,"text":"Wave! WAVE!","wall":"2026-11-26T09:08:27.468","who":"Truffle"}
+{"kind":"nap_woken","t":330969.50181669416,"wall":"2026-11-26T09:08:27.471","who":"Marshmallow"}
+{"kind":"gallery_visit","picture":"missme-board","t":330971.70181669365,"wall":"2026-11-26T09:08:27.540","who":"Marshmallow"}
+{"kind":"timeweather_caught","t":330974.1018166931,"time":"still","wall":"2026-11-26T09:08:27.615","who":"Marshmallow"}
+{"kind":"say","t":330974.1018166931,"text":"Look at them go!","wall":"2026-11-26T09:08:27.615","who":"Wibbles"}
+{"kind":"say","t":330974.5351500263,"text":"Hi, Shell! Room for one more?","wall":"2026-11-26T09:08:27.629","who":"Sir Sniffsalot"}
+{"kind":"stranger_company","t":330974.5351500263,"wall":"2026-11-26T09:08:27.629","who":"Sir Sniffsalot"}
+{"kind":"timeweather_caught","t":330974.6684833596,"time":"still","wall":"2026-11-26T09:08:27.633","who":"Lumi"}
+{"kind":"timeweather_caught","t":330975.50181669276,"time":"still","wall":"2026-11-26T09:08:27.661","who":"Hopscotch"}
+{"kind":"say","t":330976.3684833592,"text":"Why is there a telly in the telly?","wall":"2026-11-26T09:08:27.687","who":"Truffle"}
+{"kind":"say","t":330976.6018166925,"text":"Ta-da! A little snow-me!","wall":"2026-11-26T09:08:27.694","who":"Lumi"}
+{"kind":"say","t":330977.1018166924,"text":"Wave at the foffly!","wall":"2026-11-26T09:08:27.709","who":"Pickles"}
+{"kind":"word_used","t":330977.1018166924,"wall":"2026-11-26T09:08:27.709","who":"Pickles","word":"foffly"}
+{"kind":"timeweather_caught","t":330977.20181669237,"time":"still","wall":"2026-11-26T09:08:27.712","who":"Wibbles"}
+{"kind":"moodcam_back","t":330977.9351500255,"to":"Lumi","wall":"2026-11-26T09:08:27.734"}
+{"kind":"say","t":330981.10181669146,"text":"Sir Sniffsalot loves the beach... I know just the thing!","wall":"2026-11-26T09:08:27.840","who":"Lumi"}
+{"gift":"seashells","kind":"present_plan","t":330981.10181669146,"to":"Sir Sniffsalot","wall":"2026-11-26T09:08:27.862","who":"Lumi"}
+{"kind":"say","t":330981.1351500248,"text":"They've gone all slow!","wall":"2026-11-26T09:08:27.885","who":"Sir Sniffsalot"}
+{"kind":"paperme_friend","t":330984.50181669067,"wall":"2026-11-26T09:08:28.046","who":"Cumulus"}
+{"kind":"say","t":330985.40181669046,"text":"got one!","wall":"2026-11-26T09:08:28.089","who":"Pinchy"}
+{"kind":"caught_fish","t":330985.40181669046,"wall":"2026-11-26T09:08:28.089","who":"Pinchy"}
+{"kind":"timeweather_caught","t":330987.86848335655,"time":"still","wall":"2026-11-26T09:08:30.359","who":"Sir Sniffsalot"}
+{"kind":"say","t":330988.7018166897,"text":"Oh! This is what the island looked like on my first days.","wall":"2026-11-26T09:08:31.935","who":"Lumi"}
+{"kind":"drafts_blob","t":330988.7018166897,"wall":"2026-11-26T09:08:31.935","who":"Lumi"}
+{"kind":"say","t":330989.4684833562,"text":"Choir practice! Gather round!","wall":"2026-11-26T09:08:33.145","who":"Lumi"}
+{"kind":"say","t":330989.4684833562,"text":"Me me me!","wall":"2026-11-26T09:08:33.145","who":"Wibbles"}
+{"kind":"say","t":330989.4684833562,"text":"La la?","wall":"2026-11-26T09:08:33.145","who":"Pickles"}
+{"kind":"say","t":330989.4684833562,"text":"La la?","wall":"2026-11-26T09:08:33.145","who":"Truffle"}
+{"kind":"choir","n":7,"t":330989.4684833562,"wall":"2026-11-26T09:08:33.145","who":"Lumi"}
+{"kind":"ghosts_fade","met":0,"t":330989.4684833562,"wall":"2026-11-26T09:08:33.146"}
+{"kind":"present_end","t":330989.4684833562,"wall":"2026-11-26T09:08:33.146","why":"called away (choir)"}
+{"key":"minor","kind":"island_chord","t":330989.7684833561,"wall":"2026-11-26T09:08:33.669"}
+{"kind":"tune_dance","t":330989.7684833561,"wall":"2026-11-26T09:08:33.669","who":"Pinchy"}
+{"kind":"say","t":330989.7684833561,"text":"La la LAA!","wall":"2026-11-26T09:08:33.669","who":"Pinchy"}
+{"kind":"say","t":330995.2684833548,"text":"Boing time for me!","wall":"2026-11-26T09:08:38.094","who":"Hopscotch"}
+{"kind":"boing_walk","t":330995.2684833548,"wall":"2026-11-26T09:08:38.094","who":"Hopscotch"}
+{"height":6.3,"kind":"boing","t":330999.6684833538,"wall":"2026-11-26T09:08:38.297","who":"Hopscotch"}
+{"kind":"say","t":331000.8684833535,"text":"Higher!","wall":"2026-11-26T09:08:38.343","who":"Hopscotch"}
+{"kind":"say","t":331003.6018166862,"text":"shh, the fish are listening","wall":"2026-11-26T09:08:38.497","who":"Pinchy"}
+{"kind":"fishing","t":331003.6018166862,"wall":"2026-11-26T09:08:38.497","who":"Pinchy"}
+{"from":"Lumi","kind":"moodcam_drift","t":331004.66848335264,"to":"sea","wall":"2026-11-26T09:08:40.344"}
+{"kind":"say","t":331007.5018166853,"text":"And a one... and a two...","wall":"2026-11-26T09:08:46.054","who":"Lumi"}
+{"kind":"choir_sing","n":2,"t":331007.5018166853,"wall":"2026-11-26T09:08:46.054"}

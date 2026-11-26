@@ -47,6 +47,7 @@ include(joinpath(@__DIR__, "..", "tools", "motion_sheet.jl"))   # also for the a
 include("review.jl")
 include("mood.jl")
 include("curiosity.jl")
+include("outside.jl")
 include("github.jl")
 include("site.jl")
 include("repetition.jl")

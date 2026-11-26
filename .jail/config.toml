@@ -14,7 +14,7 @@ chat = true
 # Seconds between two sessions.
 cooldown = 20
 # true: finish the running session, start no new one.
-pause = false
+pause = true
 
 [review]
 # A separate agent judges finished work. It never sees the implementer's

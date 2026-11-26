@@ -12,7 +12,9 @@
 # - functions from such packages with an example in their docs: something that
 #   runs in a few lines;
 # - JuliaVision's models (dev/JuliaVision, on the GPU) the game has never used;
-# - a page from the character's own diary, days old.
+# - a page from the character's own diary, days old;
+# - the world outside: Wikipedia, a museum's artwork, an arXiv paper, the news
+#   (outside.jl).
 #
 # Each is shown once until all have been. Shown as "what could happen on the
 # island with it" (until session 99), the finds were passed by or turned into one
@@ -207,6 +209,7 @@ function stumble!(jp::JailPaths)
         append!(seen[key], [g["name"] for g in got])
         finds[key] = got
     end
+    merge!(finds, outside_finds!(jp, seen))
     save_mood!(jp, m)
     return finds
 end
@@ -215,7 +218,7 @@ end
 function stumble_lines(finds::AbstractDict, name::AbstractString)
     all(isempty, values(finds)) && return ""
     io = IOBuffer()
-    println(io, "## $name's workbench (drawn at random from what you never touched; not suggestions)")
+    println(io, "## $name's workbench (drawn at random; not suggestions)")
     pk, fs, vi, di = finds["packages"], finds["functions"], finds["vision"], finds["diary"]
     if !isempty(pk)
         println(io, "Packages (RomeoDB `package_info` tells more; `Pkg.add` brings one in):")
@@ -234,5 +237,6 @@ function stumble_lines(finds::AbstractDict, name::AbstractString)
         println(io, "From your own diary:")
         foreach(d -> println(io, "- $(d["name"]), \"$(d["title"])\": $(d["text"])"), di)
     end
+    outside_lines(io, finds)
     return String(take!(io))
 end

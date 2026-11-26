@@ -1,0 +1,20 @@
+{
+  "arrived": true,
+  "pos": [
+    9.398882,
+    2.8672228
+  ],
+  "state": "roam",
+  "trust": {
+    "Cumulus": 1.0,
+    "Gloop": 1.0,
+    "Hopscotch": 1.0,
+    "Marshmallow": 1.0,
+    "Pickles": 1.0,
+    "Pinchy": 1.0,
+    "Sir Sniffsalot": 1.0,
+    "Truffle": 1.0,
+    "Wibbles": 1.0
+  },
+  "visits": 46
+}

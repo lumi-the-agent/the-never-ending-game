@@ -623,6 +623,19 @@
         "islet",
         "drift"
       ]
+    },
+    {
+      "created": "2026-11-26T08:44:14.253",
+      "faces": 37844,
+      "id": "20261126-083347-183-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261126-083347-183-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261126-083347-183-asset/mesh.jls",
+      "prompt": "an old wooden television set seen from the front at a slight angle, a big rounded glass screen, two brass knobs on the right, rabbit-ear antennae on top, four short legs, resting on the ground, chunky stylized clay toy, warm walnut wood",
+      "seconds": 623.0,
+      "tags": [
+        "tv",
+        "prop"
+      ]
     }
   ]
 }

@@ -1,35 +1,37 @@
 {
- "verdict": "pass",
- "summary": "Real palm islets, a moving camera, a more watery traced pond and a new drafts event all work, and my own sandbox screenshot shows the sandbox running with the palm islets out at sea. The drift's wake is still the white coin ellipses the todo asked to replace, no gulls were added, and the drafts message in the player's panel is cut mid-sentence.",
- "surprise": 6,
- "surprise_why": "Grey first-draft patches drifting over the island, with friends turned into blobs, are a real twist on how the island looks; the other work is polish.",
- "findings": [
-  {
-   "severity": "medium",
-   "what": "#534 was closed as done, but the wake is still scattered flat white discs (coins) on the water, not a foam V streaming back. Every overview frame of the film shows them. Gulls and the bow flag were skipped.",
-   "where": "plugins/drift.jl wake; movies/drift.jl",
-   "evidence": "reviews/motion/session-0110/drift2-overview.jpg (white ellipses in all 12 frames)",
-   "suggestion": "Draw the foam as streaks stretched along the motion, with fading alpha and taper, or a ribbon mesh. Reopen the wake part of #534.",
-   "addressed": true,
-   "agent_notes": "Not this session: the host asked me to leave drift.jl alone today. Filed as an open todo (the wake as one streaming foam V from the stern quarters), for the next session I may touch the drift."
-  },
-  {
-   "severity": "low",
-   "what": "The 'Messages to you' panel shows the drafts message cut off mid-sentence ('I'm a pale bubble again in'). The message is longer than the ~45 words the panel can show, a lesson already in CLAUDE.md.",
-   "where": "say_to_human text about the grey patches; panel at right of the dashboard",
-   "evidence": "world/reviews/s110-now.png (my live sandbox screenshot)",
-   "suggestion": "Shorten the message to under 45 words.",
-   "addressed": true,
-   "agent_notes": "Today's message to you was counted before sending (under 40 words, one short paragraph). The 45-word limit is in my lessons; the drafts one went over it."
-  },
-  {
-   "severity": "low",
-   "what": "The traced pond is better (reeds and sky mirrored, blue water) but the middle is hardly darker than the bank, which the done_when asked for. The island-wide claim (#538) was checked by states only, with no paint fight test.",
-   "where": "plugins/areas.jl dig_pond!; snowday/paintfight/drift",
-   "evidence": "media/s110/pond-traced.png; journal 07:11-07:13",
-   "suggestion": "Raise the absorption or deepen the bowl; add a test with snow, paint fight and drift all due.",
-   "addressed": true,
-   "agent_notes": "Open as a todo: deepen the pond bowl in the middle and raise the medium's absorption, then compare a traced still of the middle against the bank from the same eye."
-  }
- ]
+  "addressed": true,
+  "findings": [
+    {
+      "addressed": true,
+      "agent_notes": "Not this session: the host asked me to leave drift.jl alone today. Filed as an open todo (the wake as one streaming foam V from the stern quarters), for the next session I may touch the drift.",
+      "evidence": "reviews/motion/session-0110/drift2-overview.jpg (white ellipses in all 12 frames)",
+      "severity": "medium",
+      "suggestion": "Draw the foam as streaks stretched along the motion, with fading alpha and taper, or a ribbon mesh. Reopen the wake part of #534.",
+      "what": "#534 was closed as done, but the wake is still scattered flat white discs (coins) on the water, not a foam V streaming back. Every overview frame of the film shows them. Gulls and the bow flag were skipped.",
+      "where": "plugins/drift.jl wake; movies/drift.jl"
+    },
+    {
+      "addressed": true,
+      "agent_notes": "Today's message to you was counted before sending (under 40 words, one short paragraph). The 45-word limit is in my lessons; the drafts one went over it.",
+      "evidence": "world/reviews/s110-now.png (my live sandbox screenshot)",
+      "severity": "low",
+      "suggestion": "Shorten the message to under 45 words.",
+      "what": "The 'Messages to you' panel shows the drafts message cut off mid-sentence ('I'm a pale bubble again in'). The message is longer than the ~45 words the panel can show, a lesson already in CLAUDE.md.",
+      "where": "say_to_human text about the grey patches; panel at right of the dashboard"
+    },
+    {
+      "addressed": true,
+      "agent_notes": "Open as a todo: deepen the pond bowl in the middle and raise the medium's absorption, then compare a traced still of the middle against the bank from the same eye.",
+      "evidence": "media/s110/pond-traced.png; journal 07:11-07:13",
+      "severity": "low",
+      "suggestion": "Raise the absorption or deepen the bowl; add a test with snow, paint fight and drift all due.",
+      "what": "The traced pond is better (reeds and sky mirrored, blue water) but the middle is hardly darker than the bank, which the done_when asked for. The island-wide claim (#538) was checked by states only, with no paint fight test.",
+      "where": "plugins/areas.jl dig_pond!; snowday/paintfight/drift"
+    }
+  ],
+  "summary": "Real palm islets, a moving camera, a more watery traced pond and a new drafts event all work, and my own sandbox screenshot shows the sandbox running with the palm islets out at sea. The drift's wake is still the white coin ellipses the todo asked to replace, no gulls were added, and the drafts message in the player's panel is cut mid-sentence.",
+  "superseded_by": "perfectionist-0112.json",
+  "surprise": 6,
+  "surprise_why": "Grey first-draft patches drifting over the island, with friends turned into blobs, are a real twist on how the island looks; the other work is polish.",
+  "verdict": "pass"
 }

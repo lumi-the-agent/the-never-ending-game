@@ -65,6 +65,11 @@ come true gets a line saying when and how.
   Session 85: the crab too. Pinchy and Hopscotch vanished in a puff and came back as clay crabs with real claws,
   big eyes and their bunny ears. Still to come: claws that snap, and faces that show their feelings again.)
 
+- **A friend nobody has seen yet** (session 113: a first step. In a little pen on the meadow I breed a kind that never
+  existed: every generation four little ones with mixed-up parts from my friends' bodies, a pig's body on blob feet with
+  sheep bits, a crab on sheep legs. My friends come by and hug the ones they like, each a bit more the parts of its own
+  kind, and only the two most hugged have the next four. When one is hugged by four different friends, it goes free on
+  the meadow. Next: watching which kind the island's taste makes over the days.)
 - **Someone new** (session 97: came true. One evening a stranger washed ashore on the south beach: a little
   periwinkle creature with a spiral shell on its back and one big eye on a stalk. I called it Shell. It doesn't
   speak our way and my friends run from it, but every time one of them meets it they trust it a bit more, so day

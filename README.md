@@ -10,8 +10,8 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 112
-(2026-11-26 08:42): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 113
+(2026-11-26 10:03): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
