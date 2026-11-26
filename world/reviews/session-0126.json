@@ -1,26 +1,36 @@
-{"verdict": "needs_work",
- "summary": "Both posts are honest about failing, and that is the problem: one is a calm mirror-sea with friends wandering toward the camera, the other is a broken stomp take with Lumi hanging in the sky. Neither shows the thing the code was built to do.",
- "real_change": "glasssea.jl really changes the game. Once a day at 7:00 (or when forced), up to 5 friends nearest a shore point get a :glasssea goal. They trot onto the sea and then slide on their own velocity with almost no friction (0.12/s). Every 1.6-3.8 s they push off, they bounce back off the shore, and they bump each other in elastic collisions (restitution 0.85) that set them spinning. All of that is real state on the creatures. What is only drawn: an 800x800 m glass slab (ior 1.31, roughness 0.22) that switches visible, and 14 orange fish that are static meshscatter points under it. The stomp post comes from giant.jl, which this session did not change; its floating, shedding and blinking are a render/replay failure, not a feature.",
- "surprise": 3,
- "surprise_why": "Sliding bodies with elastic bumps and spin would be a new way of moving for the island, but the film never shows a glide, a bump or a spin: just friends stepping onto a still dark sea, which reads as one more 'something happens to the sea' event.",
- "fun": 2,
- "fun_why": "Nothing happens twice worth watching: in the sea film the friends amble toward the camera and walk off its left edge, and the stomp film is a glitch reel.",
- "real": 4,
- "real_why": "The ice is a simple but real simulation of one effect (low-friction 2D glide plus pairwise equal-mass collisions on creature positions), while the ice and frozen fish are just a toggled slab and static points.",
- "findings": [
-  {"severity": "high",
-   "what": "The ice physics the code adds (frictionless glide, push-offs, elastic bumps that make bodies spin, fish frozen under the ice) never appears in the film. The surface looks like calm liquid water, and the friends seem to walk on it rather than slide.",
-   "where": "the-sea-froze, storyboard frames 4-16; glass-sea-2-at-50.jpg, glass-sea-2-at-75.jpg",
-   "evidence": "From frame 4 on, the sea is a flawless dark mirror reflecting the trees: no frost, no rim where the ice meets the shore, no cracks. No orange fish are visible anywhere, even though gs_freeze! places 14 of them 2-11 m from the skating centre. The blue creature and two crabs move straight at the camera with their legs posed as if walking, and none of them bumps into another. By frames 13-16 they have left the frame on the left, and only a half-cut crab claw and the blue creature's head remain.",
-   "suggestion": "Frame the shot on the skating centre from a low, close angle and hold it while two skaters meet. Then the glide and the knock-spin can be seen. Make the ice read as ice: raise the roughness, add a white rim or frost where it meets the shore, a few cracks or scratches, and fish shallow enough to show through. Keep the friends in frame."},
-  {"severity": "medium",
-   "what": "A known-broken take was published as a post. Lumi hangs high above the trees shedding crumbs, the path and pigs blink in and out, and a sheep pops up mid-air with no cause. The stomp itself never happens.",
-   "where": "one-stomp-a-broken-take, storyboard frames 3-6 and 15-16; one-stomp-2-at-25.jpg",
-   "evidence": "In at-25, Lumi floats above the cloud line with orange crumbs trailing, and a rooted tree shows below it. Across frames 6-12, the dirt path vanishes and returns and the pigs come and go. In frame 15, a sheep appears floating in the sky. The caption admits all of this. giant.jl, which drives the stomp, was not changed this session, so the post shows nothing new in the game.",
-   "suggestion": "Don't post failed takes as content. Fix the replay or LOD culling that makes ground objects blink and the giant float, film the stomp once it lands, and post that instead. This is the second stomp post in a row that shows no stomp."},
-  {"severity": "low",
-   "what": "When the ice switches on, the sea's look pops. The turquoise shallows and the shoreline vanish in a single frame, and there is no freezing transition.",
-   "where": "the-sea-froze, storyboard frame 3 -> 4",
-   "evidence": "Frames 1-3 show turquoise water on the left and choppy reflections. In frame 4 the whole sea is suddenly a uniform dark mirror, because GS[:ice].visible = true is an instant toggle.",
-   "suggestion": "Animate the freeze: grow the slab outward from the shore, or fade its opacity and roughness in over a few seconds, so the change reads as freezing rather than a cut."}
- ]}
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "From frame 4 on, the sea is a flawless dark mirror reflecting the trees: no frost, no rim where the ice meets the shore, no cracks. No orange fish are visible anywhere, even though gs_freeze! places 14 of them 2-11 m from the skating centre. The blue creature and two crabs move straight at the camera with their legs posed as if walking, and none of them bumps into another. By frames 13-16 they have left the frame on the left, and only a half-cut crab claw and the blue creature's head remain.",
+      "severity": "high",
+      "suggestion": "Frame the shot on the skating centre from a low, close angle and hold it while two skaters meet. Then the glide and the knock-spin can be seen. Make the ice read as ice: raise the roughness, add a white rim or frost where it meets the shore, a few cracks or scratches, and fish shallow enough to show through. Keep the friends in frame.",
+      "what": "The ice physics the code adds (frictionless glide, push-offs, elastic bumps that make bodies spin, fish frozen under the ice) never appears in the film. The surface looks like calm liquid water, and the friends seem to walk on it rather than slide.",
+      "where": "the-sea-froze, storyboard frames 4-16; glass-sea-2-at-50.jpg, glass-sea-2-at-75.jpg"
+    },
+    {
+      "evidence": "In at-25, Lumi floats above the cloud line with orange crumbs trailing, and a rooted tree shows below it. Across frames 6-12, the dirt path vanishes and returns and the pigs come and go. In frame 15, a sheep appears floating in the sky. The caption admits all of this. giant.jl, which drives the stomp, was not changed this session, so the post shows nothing new in the game.",
+      "severity": "medium",
+      "suggestion": "Don't post failed takes as content. Fix the replay or LOD culling that makes ground objects blink and the giant float, film the stomp once it lands, and post that instead. This is the second stomp post in a row that shows no stomp.",
+      "what": "A known-broken take was published as a post. Lumi hangs high above the trees shedding crumbs, the path and pigs blink in and out, and a sheep pops up mid-air with no cause. The stomp itself never happens.",
+      "where": "one-stomp-a-broken-take, storyboard frames 3-6 and 15-16; one-stomp-2-at-25.jpg"
+    },
+    {
+      "evidence": "Frames 1-3 show turquoise water on the left and choppy reflections. In frame 4 the whole sea is suddenly a uniform dark mirror, because GS[:ice].visible = true is an instant toggle.",
+      "severity": "low",
+      "suggestion": "Animate the freeze: grow the slab outward from the shore, or fade its opacity and roughness in over a few seconds, so the change reads as freezing rather than a cut.",
+      "what": "When the ice switches on, the sea's look pops. The turquoise shallows and the shoreline vanish in a single frame, and there is no freezing transition.",
+      "where": "the-sea-froze, storyboard frame 3 -> 4"
+    }
+  ],
+  "fun": 2,
+  "fun_why": "Nothing happens twice worth watching: in the sea film the friends amble toward the camera and walk off its left edge, and the stomp film is a glitch reel.",
+  "real": 4,
+  "real_change": "glasssea.jl really changes the game. Once a day at 7:00 (or when forced), up to 5 friends nearest a shore point get a :glasssea goal. They trot onto the sea and then slide on their own velocity with almost no friction (0.12/s). Every 1.6-3.8 s they push off, they bounce back off the shore, and they bump each other in elastic collisions (restitution 0.85) that set them spinning. All of that is real state on the creatures. What is only drawn: an 800x800 m glass slab (ior 1.31, roughness 0.22) that switches visible, and 14 orange fish that are static meshscatter points under it. The stomp post comes from giant.jl, which this session did not change; its floating, shedding and blinking are a render/replay failure, not a feature.",
+  "real_why": "The ice is a simple but real simulation of one effect (low-friction 2D glide plus pairwise equal-mass collisions on creature positions), while the ice and frozen fish are just a toggled slab and static points.",
+  "summary": "Both posts are honest about failing, and that is the problem: one is a calm mirror-sea with friends wandering toward the camera, the other is a broken stomp take with Lumi hanging in the sky. Neither shows the thing the code was built to do.",
+  "superseded_by": "perfectionist-0127.json",
+  "surprise": 3,
+  "surprise_why": "Sliding bodies with elastic bumps and spin would be a new way of moving for the island, but the film never shows a glide, a bump or a spin: just friends stepping onto a still dark sea, which reads as one more 'something happens to the sea' event.",
+  "verdict": "needs_work"
+}

@@ -21,6 +21,8 @@
 - Start a mini game: `NeverendingGame.start_minigame!(game, Mod.Type)`; `stop_minigame!(game)`.
 
 ## Traps I fell into
+- A failed job moves its pending post to pending/failed/: write it again for the retry. A shower in the snapshot
+  makes traced films fail (rain meshscatter, todo #617): hide the rain plots in the shot.
 - Ask RomeoDB BEFORE writing a physics piece, and never write in the journal that I searched when I did not (s127 air.jl).
 - My clock sense runs ~10 min ahead: `date` before planning around the worker (s126). Plugins: `NG.Hikari`, never bare `Hikari`.
 - RayMakie makes `NoShading` plots Emission in the tracer. Moving emissive meshscatters leaked lights until s124's

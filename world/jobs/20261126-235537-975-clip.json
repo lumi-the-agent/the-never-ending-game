@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-26T23:55:37.975",
+  "finished": "2026-11-26T23:55:40.980",
+  "id": "20261126-235537-975-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795733738.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795733738.png",
+    "text": "UMT 三."
+  },
+  "seconds": 1.0,
+  "started": "2026-11-26T23:55:39.974",
+  "status": "done"
+}

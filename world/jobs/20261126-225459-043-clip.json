@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T22:54:59.043",
+  "finished": "2026-11-26T23:07:16.655",
   "id": "20261126-225459-043-clip",
   "kind": "clip",
   "params": {
@@ -20,6 +21,11 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/paper-letter-1.mp4",
     "script": "movies/paperfall.jl"
   },
+  "result": {
+    "frames": 28,
+    "path": "/sim/Programmieren/SimGame/world/site/films/paper-letter-1.mp4"
+  },
+  "seconds": 579.8,
   "started": "2026-11-26T22:57:36.863",
-  "status": "running"
+  "status": "done"
 }

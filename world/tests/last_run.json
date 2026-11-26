@@ -2,11 +2,74 @@
   "results": [
     {
       "error": "",
+      "file": "explore45.jl",
+      "name": "Berry race: W lifts the camera from the low start view to the chase view, Stop ends it",
+      "passed": true,
+      "seconds": 15.1
+    },
+    {
+      "error": "check failed: the critters did not give Lumi a head start: [:invite, :wait, :invite] at 0.49999999999999994 s",
+      "file": "minigames.jl",
+      "name": "Berry race: start card names the rivals, a pick counts, critters race and eat, the basket fills",
+      "passed": false,
+      "seconds": 5.9
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "passed": true,
+      "seconds": 12.1
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Wild berry race: critters race each other for ripe berries, the winner dances",
+      "passed": true,
+      "seconds": 0.5
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Wild berry race: a racer taken away (a rain shower) is not pulled back to the bush",
+      "passed": true,
+      "seconds": 2.1
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Berry race: a win steps up a level (start card, saved level), a loss does not; Stop and Play again twice works",
+      "passed": true,
+      "seconds": 11.3
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Berry race: a whole W/A/D first play is a race: the critters score too, the player still wins",
+      "passed": true,
+      "seconds": 53.0
+    },
+    {
+      "error": "",
+      "file": "playtwice.jl",
+      "name": "Play and Stop twice in a row: W moves Lumi each time, wild race camera hook stays set",
+      "passed": true,
+      "seconds": 7.8
+    },
+    {
+      "error": "",
       "file": "s53_play.jl",
       "name": "Berry race from the menu: start card, a whole W/A/D race ends with every berry taken, rivals score, and the player is not left far behind",
       "passed": true,
-      "seconds": 62.1
+      "seconds": 56.1
+    },
+    {
+      "error": "",
+      "file": "s54_play.jl",
+      "name": "Berry race, first play standing still: no friend eats more than two berries and the race ends",
+      "passed": true,
+      "seconds": 65.0
     }
   ],
-  "time": "2026-11-26T20:47:20.414"
+  "time": "2026-11-26T23:13:22.361"
 }

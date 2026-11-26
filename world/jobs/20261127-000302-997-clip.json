@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-27T00:03:02.997",
+  "finished": "2026-11-27T00:03:05.685",
+  "id": "20261127-000302-997-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795734183.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795734183.png",
+    "text": "SL UN ●●••"
+  },
+  "seconds": 0.7,
+  "started": "2026-11-27T00:03:04.982",
+  "status": "done"
+}

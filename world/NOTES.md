@@ -535,3 +535,26 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - Uniform per-vertex normal drag on a flat sheet makes no pitching moment: a tilted sheet glides like a wing at a fixed
   attitude (2 m sideways over a 2.6 m fall), it does not flutter. Paper flutter needs the centre of pressure toward the
   leading edge (Andersen, Pesavento & Wang 2005).
+
+## Falling card model (s128, free time)
+- RomeoDB has no falling-plate/flutter model (only kite polars: SymbolicAWEModels AeroPlate, RobotZoo Cl_plate).
+- physics/fallingcard.jl: Andersen-Pesavento-Wang 2D plate (added mass, Munk moment, circulation lift, RK4).
+  Coefficients from my memory of the paper, unchecked. dt 1/120 matches dt 1e-4; ~0.5 us a step.
+- It gives both modes by itself (media/s128-falling-card-modes.png): a 2 cm paper letter (I* 3.3) tumbles ~2.4 turns/s
+  and drifts off at a slant; 10-20 cm sheets (I* 0.3-0.7) glide in long swoops that curl up at the end.
+- An A4 page (I* ~0.3) in this model never turns over: swings ~120 deg, mean |w| 2-3 rad/s, sinks ~0.3 m/s (2D: no
+  finite-span loss, so likely too slow). plugins/paperpage.jl (s127) tumbles at 5-24 rad/s and falls 1.3 m/s: it has no
+  added mass, while the air across an A4 page weighs ~2.5x the page (rotational added inertia ~1x). Lead, not proven.
+
+## Camera obscura (s128)
+- Light through a hole in the tracer: a diffuse wall finds a lens of radius a at distance d in ~(a/d)^2 of its
+  samples (0.25 m at 1.8 m: 2%; 0.4 m: 5%). The image is ~50x dimmer: give the screen its own exposure
+  (`RayMakie.Screen(...; exposure = 60)`; films use NG.FILM_EXPOSURE = 1.5). A thin biconvex lens of glass n 1.5 with
+  both radii R has f = R. A bare pinhole would be ~100x noisier still.
+- A test 480x270 at 256 spp took 314 s right after a worker restart (most of it compile); queue a small test first.
+- A traced still/film FAILS when the snapshot has a shower on: plugins/showers.jl's glowing rain meshscatter throws in
+  RayMakie (meshscatter.jl:467, todo #617). Hide :rain/:rainrings/:raincloud in the shot until that is fixed.
+- When a job fails, the host moves its pending post to pending/failed/: write the pending file again for the retry.
+- Plot names are unique per scene: number them (Symbol(:obscura_hut_, k)) and clean up by prefix.
+- A bt_wait `until` grep for '"status": *"(done|failed)"' on a job file did not fire although the job was done
+  (reason unknown; the file does say "status": "done"): wait in shorter steps and read the job file myself.

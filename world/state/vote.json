@@ -141,21 +141,66 @@
         "a little boat": 2
       },
       "winner": "a little boat"
+    },
+    {
+      "island_t": 377075.09996548365,
+      "key": "beachhut",
+      "time": "2026-11-26T23:16:47",
+      "voters": {
+        "Gloop": "a beach hut",
+        "Hopscotch": "a greenhouse",
+        "Marshmallow": "a beach hut",
+        "Pickles": "a beach hut",
+        "Sir Sniffsalot": "a beach hut",
+        "Truffle": "a little boat"
+      },
+      "votes": {
+        "a beach hut": 4,
+        "a greenhouse": 1,
+        "a little boat": 1
+      },
+      "winner": "a beach hut"
+    },
+    {
+      "island_t": 378030.0999652613,
+      "key": "boat",
+      "time": "2026-11-26T23:32:44",
+      "voters": {
+        "Cumulus": "a greenhouse",
+        "Gloop": "a little boat",
+        "Marshmallow": "a little boat",
+        "Pickles": "a hot spring",
+        "Pinchy": "a greenhouse",
+        "Sir Sniffsalot": "a greenhouse",
+        "Truffle": "a little boat",
+        "Wibbles": "a little boat"
+      },
+      "votes": {
+        "a greenhouse": 3,
+        "a hot spring": 1,
+        "a little boat": 4
+      },
+      "winner": "a little boat"
     }
   ],
   "latest": {
-    "island_t": 360030.09996945225,
+    "island_t": 378030.0999652613,
     "key": "boat",
-    "time": "2026-11-26T18:23:24",
+    "time": "2026-11-26T23:32:44",
     "voters": {
       "Cumulus": "a greenhouse",
-      "Pickles": "a little boat",
-      "Pinchy": "a little boat"
+      "Gloop": "a little boat",
+      "Marshmallow": "a little boat",
+      "Pickles": "a hot spring",
+      "Pinchy": "a greenhouse",
+      "Sir Sniffsalot": "a greenhouse",
+      "Truffle": "a little boat",
+      "Wibbles": "a little boat"
     },
     "votes": {
-      "a beach hut": 0,
-      "a greenhouse": 1,
-      "a little boat": 2
+      "a greenhouse": 3,
+      "a hot spring": 1,
+      "a little boat": 4
     },
     "winner": "a little boat"
   },
@@ -167,6 +212,8 @@
     "lighthouse",
     "slide",
     "boat",
+    "boat",
+    "beachhut",
     "boat"
   ]
 }

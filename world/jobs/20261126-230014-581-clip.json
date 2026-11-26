@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T23:00:14.584",
+  "finished": "2026-11-26T23:20:07.958",
   "id": "20261126-230014-581-clip",
   "kind": "clip",
   "params": {
@@ -12,5 +13,10 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/notebook-page.mp4",
     "script": "movies/paperpage.jl"
   },
-  "status": "queued"
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/notebook-page.mp4"
+  },
+  "seconds": 771.3,
+  "started": "2026-11-26T23:07:16.660",
+  "status": "done"
 }

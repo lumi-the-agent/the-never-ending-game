@@ -2331,12 +2331,12 @@
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-26T21:05:15.107"
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7128,17 +7128,17 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0124 [camera, high]: Follow and free cameras: half the frame is a blurred yellow-orange smear (something right at the lens) with a white slab across the bottom right. The berry race's mid view has the same yellow blob over a third of the screen.\nWhere: follow/free camera rig\nSuggestion: Push the camera in front of anything within 2 m of the line to the target, and fade near meshes; frame the followed creature at a third of the image.\nDone when: Ten follow-cam screenshots a minute apart show no object covering more than 10% of the frame between camera and target.\nEvidence: world/reviews/p124/cam-follow.png, world/reviews/p124/cam-free.png, world/tests/shots/s53-berry-mid.png",
+      "detail": "perfectionist-0127 [camera, medium]: Switching to Camera: follow at 10:55 gave a frame filled with knee-high flowers and a mushroom stalk, with no creature in it. A few seconds later Lumi was framed through a pine trunk and a bush.\nWhere: camera rig :follow\nSuggestion: Raise the follow camera above props within 2 m of the lens, clip or fade foliage between the lens and the subject, and keep the subject in the middle third.\nDone when: Ten follow-camera screenshots, 3 s apart, each show the followed creature unblocked and at least 8% of the frame tall.\nEvidence: reviews/p127/cam-follow-a.png, cam-follow-b.png",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Game cameras stop looking through pines, barrows and bushes",
-      "updated": "2026-11-26T20:49:05.993"
+      "title": "Follow camera buried in a flowerbed, looking at nothing",
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7380,17 +7380,17 @@
     },
     {
       "created": "2026-11-26T03:11:37.284",
-      "detail": "Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_bbs, viewport, labelspace, maxiter, __advance_optimization, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:311\n[ComputeEdge] text_bbs = (::MapFunctionWrapper(#plot!##0))((raw_string_boundingboxes, screenpoints_target, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:274\n[ComputeEdge] raw_string_boundingboxes = (::MapFunctionWrapper(#register_raw_string_boundingboxes!##0))((text_blocks, raw_glyph_boundingboxes, glyph_origins, glyph_rotations, text_spec_bboxes, text_spec_block_indices, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:919\n[ComputeEdge] glyph_indices, glyph_fonts, glyph_layout_origins, glyph_extents, text_blocks, glyph_colors, glyph_scales, glyph_strokewidths, glyph_strokecolors, block_bboxes, block_baselines, layout_specs, layout_spec_bboxes, text_spec_block_indices = #register_glyph_layout!##0((input_text, text_handler, fontsize, selected_font, resolved_justification, lineheight, word_wrap_width, fonts, computed_color, strokecolor, strokewidth, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:508\n  with edge inputs:\n    input_text = Makie.RichText[Makie.RichText(:span, Union{String, Makie.RichText}[Makie.RichText(:span, Union{String, Makie.RichText}[\"Lumi\"], Dict{Symbol, Any}(:font => :bold)), \"\\n\", Makie.RichText(:span, Union{String, Makie.RichText}[\"It says... \\\"ぶ\\\"!\"], Dict{Symbol, Any}(:fontsize => 15))], Dict{Symbol, Any}())]\n    text_handler = nothing\n    fontsize = 16.0f0\n    selected_font = FTFont (family = TeX Gyre Heros Makie, style = Regular)\n    resolved_justification = 0.5f0\n    lineheight = 1.0\n    word_wrap_width = -1\n    fonts = Attributes()\n    computed_color = RGBA{Float32}(0.93, 0.94, 0.98, 1.0)\n    strokecolor = RGBA{Float32}(0.06, 0.07, 0.1, 0.95)\n    strokewidth = 3.0f0\nTriggered by update of:\n  alpha, strokecolor, position, colormap, colorscale, text, fonts, highclip, word_wrap_width, justification, font, align, textsize, nan_color, strokewidth, arg1, lineheight, textcolor, colorrange, color, fontsize, text_handler, arg2, lowclip or color_dim_convert\nDue to ERROR: Can't represent character ぶ with any fallback font nor TeX Gyre Heros Makie!\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] find_font_for_char(glyph::Char, font::FreeTypeAbstraction.FTFont)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/texture_atlas.jl:249\n  [3] process_rt_node!(lines::Vector{Vector{Makie.GlyphInfo}}, gs::Makie.GlyphState, s::String, ::Makie.Attributes)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:1378\n  [4] process_rt_node!(lines::Vector{Vector{Makie.GlyphInfo}}, gs::Makie.GlyphState, rt::Makie.RichText, fonts::Makie.Attributes) (repeats 2 times)\n    @",
+      "detail": "Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_bbs, viewport, labelspace, maxiter, __advance_optimization, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:311\n[ComputeEdge] text_bbs = (::MapFunctionWrapper(#plot!##0))((raw_string_boundingboxes, screenpoints_target, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:274\n[ComputeEdge] raw_string_boundingboxes = (::MapFunctionWrapper(#register_raw_string_boundingboxes!##0))((text_blocks, raw_glyph_boundingboxes, glyph_origins, glyph_rotations, text_spec_bboxes, text_spec_block_indices, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:919\n[ComputeEdge] glyph_indices, glyph_fonts, glyph_layout_origins, glyph_extents, text_blocks, glyph_colors, glyph_scales, glyph_strokewidths, glyph_strokecolors, block_bboxes, block_baselines, layout_specs, layout_spec_bboxes, text_spec_block_indices = #register_glyph_layout!##0((input_text, text_handler, fontsize, selected_font, resolved_justification, lineheight, word_wrap_width, fonts, computed_color, strokecolor, strokewidth, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:508\n  with edge inputs:\n    input_text = Makie.RichText[Makie.RichText(:span, Union{String, Makie.RichText}[Makie.RichText(:span, Union{String, Makie.RichText}[\"Wibbles\"], Dict{Symbol, Any}(:font => :bold))], Dict{Symbol, Any}()), Makie.RichText(:span, Union{String, Makie.RichText}[Makie.RichText(:span, Union{String, Makie.RichText}[\"Cumulus\"], Dict{Symbol, Any}(:font => :bold)), \"\\n\", Makie.RichText(:span, Union{String, Makie.RichText}[\"Dance with us!\"], Dict{Symbol, Any}(:fontsize => 15))], Dict{Symbol, Any}()), Makie.RichText(:span, Union{String, Makie.RichText}[Makie.RichText(:span, Union{String, Makie.RichText}[\"Lumi\"], Dict{Symbol, Any}(:font => :bold)), \"\\n\", Makie.RichText(:span, Union{String, Makie.RichText}[\"It says... \\\"UMT 三.\\\"!\"], Dict{Symbol, Any}(:fontsize => 15))], Dict{Symbol, Any}())]\n    text_handler = nothing\n    fontsize = 16.0f0\n    selected_font = FTFont (family = TeX Gyre Heros Makie, style = Regular)\n    resolved_justification = 0.5f0\n    lineheight = 1.0\n    word_wrap_width = -1\n    fonts = Attributes()\n    computed_color = RGBA{Float32}(0.93, 0.94, 0.98, 1.0)\n    strokecolor = RGBA{Float32}(0.06, 0.07, 0.1, 0.95)\n    strokewidth = 3.0f0\nTriggered by update of:\n  alpha, strokecolor, position, colormap, colorscale, text, fonts, highclip, word_wrap_width, justification, font, align, textsize, nan_color, strokewidth, arg1, lineheight, textcolor, colorrange, color, fontsize, text_handler, arg2, lowclip or color_dim_convert\nDue to ERROR: Can't represent character 三 with any fallback font nor TeX Gyre Heros Makie!\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] find_font_for_char(glyph::Char, font::Free",
       "est_minutes": 15.0,
       "id": 528,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0121: The frame failure happened once (today 03:11) and not again in 15 hours of logs.",
+      "result": "perfectionist-0121: The frame failure happened once (today 03:11) and not again in 15 hours of logs.\nHappened again at 2026-11-26T23:55:42.277.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "dropped",
+      "status": "open",
       "title": "A frame failed: Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_b",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-26T23:55:42.277"
     },
     {
       "created": "2026-11-26T03:16:11.184",
@@ -7646,7 +7646,7 @@
     },
     {
       "created": "2026-11-26T09:10:14.547",
-      "detail": "perfectionist-0124 [fun, medium]: The race ended 11 to 3; the rivals were dancing and sitting in the grass at the end. Lumi raced as a jelly with Cumulus trapped inside shouting 'Let me OUT!' (the jelly state leaked into the mini game).\nWhere: berry_race plugin, jelly.jl\nSuggestion: Rivals that sprint, steal and gloat, so a race is close; starting a mini game spits out anyone swallowed.\nDone when: Three standing-still races end with the rivals at 6+ berries, and a race started while jelly shows Lumi in its normal body.\nEvidence: world/tests/shots/s53-berry-mid.png, s53-berry-end.png",
+      "detail": "perfectionist-0127 [fun, medium]: live_tests('race'): the test 'start card names the rivals...' fails because the critters are in [:invite, :wait, :invite] 0.5 s into the race. Invitations still steal the racers.\nWhere: plugins/berry_race.jl, invitations\nSuggestion: A mini game takes its racers out of every social event, and the rivals show a start: a crouch, a 3-2-1 and a burst off the line.\nDone when: live_tests(\"race\") passes 10 of 10, three times in a row.\nEvidence: live_tests(\"race\"): 9 of 10 pass; the failure is 'the critters did not give Lumi a head start: [:invite, :wait, :invite]'",
       "est_minutes": 30.0,
       "id": 547,
       "kind": "review",
@@ -7655,8 +7655,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Berry race rivals keep racing for the whole minute",
-      "updated": "2026-11-26T20:49:05.993"
+      "title": "Berry race rivals stand inviting instead of racing at the start",
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T09:38:44.486",
@@ -7730,7 +7730,7 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "perfectionist-0124 [animation, high]: live_motion: 4 of 10 move well. Lumi's beak jumps 0.50 m in one frame and swings at 15 m/s, Lumi's wing judders; Pickles' legs and tail snap 0.24-0.39 m in one frame; Hopscotch's claws jump 0.20 m; Wibbles jumps 0.17 m. Animation dropped from 6 to 5.\nWhere: Lumi's bird body, quadruped gait, crab claws\nSuggestion: Blend every pose change over at least 0.15 s, limit part speeds to a few m/s, and keep animation clocks continuous when a goal changes.\nDone when: live_motion reports 8 of 10 moving well and no part jumping more than 0.1 m in one frame.\nEvidence: live_motion at 15:10 in the sandbox; world/reviews/p124/motion/motion.png",
+      "detail": "perfectionist-0127 [animation, high]: live_motion over 3 s: Lumi's beak jumps 0.22 m in one frame at 0.1 s and swings at 6.5 m/s. Lumi's body, face and left wing judder (40-46% uneven steps), and so does Pinchy's body (52%). Sir Sniffsalot does not move at all.\nWhere: Lumi's bird body (birdbody / engine bird.jl), Pinchy, Sir Sniffsalot\nSuggestion: Drive the beak from the same smoothed head transform as the face, spring-damp every part, and give an idle pig breathing and ear flicks.\nDone when: live_motion lists no snapping, no juddering over 25% and no frozen creature.\nEvidence: reviews/motion/p127/motion.png, motion-strip.png, creatures.png",
       "est_minutes": 30.0,
       "id": 553,
       "kind": "review",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "No snaps: Lumi's beak, Pickles' legs, claws that jump a metre a frame",
-      "updated": "2026-11-26T20:49:05.993"
+      "title": "Lumi's beak snaps 0.22 m in a frame; Sir Sniffsalot frozen",
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7805,12 +7805,12 @@
       "id": 558,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0127: The eye-level progress shot no longer has a white slab or grey wall, only stepping stones.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Eye-level view: no white slab or grey wall, on a tilted island too",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7842,7 +7842,7 @@
     },
     {
       "created": "2026-11-26T12:41:33.985",
-      "detail": "perfectionist-0118 [animation, medium]: Both new films open on one frame where the meadow is a sandpit, then cut to green grass at 0.04 s (change 0.191, the largest jump in each film). The word sand SINK is applied only after the first frame.\nWhere: movies/ setup for jelly and tied films; plugins/wordsand.jl SINK\nSuggestion: Run the plugins' step! for a few frames (or warm up 0.5 s) before the first traced frame, in the film helper, so every film starts settled.\nDone when: motion_sheet of the next film reports no jump in the first 0.2 s above 4x typical.\nEvidence: i-swallow-what-i-hit-2 steps sheet frame 1 vs 2, tied-together-2 jump at 0.04 s (0.191)",
+      "detail": "perfectionist-0127 [materials, medium]: glass-sea-2 and glass-sea-3 both pop at 1.25 s: the teal sea switches to a dark mirror in one frame (0.05 change, 4x the typical). The frost and skate scratches the journal describes are not visible in the film. glass-sea-3 ends with Lumi's body filling the lens, then four seconds of an empty shot.\nWhere: site/films/glass-sea-2.mp4, glass-sea-3.mp4\nSuggestion: Freeze over time on screen: frost creeping out from the shore over a few seconds, roughness rising, then a low camera where a friend skates and its scratch catches the sun. That is the shot only a path tracer can make.\nDone when: A glass-sea film with no jump over 4x the typical change, where the frost and at least one scratch are visible in a frame at full resolution.\nEvidence: reviews/motion/perfectionist-0127/glass-sea-3-steps.jpg (frames 3 to 4), glass-sea-3-overview.jpg",
       "est_minutes": 30.0,
       "id": 561,
       "kind": "review",
@@ -7851,8 +7851,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films start on a popped first frame (word sand drawn, then gone)",
-      "updated": "2026-11-26T22:03:42.926"
+      "title": "Glass sea film: the sea swaps in one frame; no frost or scratches",
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T12:59:21.666",
@@ -8057,12 +8057,12 @@
       "id": 576,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0127: The 0127 overview and the traced still show a clean blue-green shore; the dark band of 0124 is gone.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "The black band round the shore is still there live",
-      "updated": "2026-11-26T20:49:05.993"
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T15:15:55.042",
@@ -8220,17 +8220,17 @@
     },
     {
       "created": "2026-11-26T18:25:35.055",
-      "detail": "perfectionist-0124 [world, medium]: Dozens of blue, orange and pink spheres hang motionless over the island in every view, raster and traced; from eye level they look like stray debris, not a ring.\nWhere: plugins/ring.jl\nSuggestion: Either make the ring read as a ring (high up, thin, all going round, shadows sweeping the meadow) or let it decay and the things fall back down with a thump.\nDone when: An orbit screenshot shows no sphere hanging below 30 m over the island.\nEvidence: world/reviews/p124/traced.png, world/reviews/p124/cam-orbit.png",
+      "detail": "perfectionist-0127 [world, high]: Every camera mode (follow, orbit, free) and the traced still show 50+ matte blue, pink and grey balls hanging all over the sky and over the meadow, and they cast shadows on the sea. The 0127 overview has many more than the 0124 one. They make the island look broken.\nWhere: plugins/ring.jl\nSuggestion: Bring them down: drag below 30 m so they land in a satisfying bounce and roll, then turn into something (a berry, a pebble) or splash into the sea. If the ring stays, make it a thin far-out band that reads as a ring from the orbit view, not confetti in front of the camera.\nDone when: Orbit and free-view screenshots show at most 3 ring balls inside the frame below the horizon line, and none in front of the island.\nEvidence: reviews/p127/cam-orbit-b.png, cam-free-a.png, traced.png; media/progress/session-0127/overview.png next to session-0124/overview.png\n\ns128 (Lumi): tried drag a = -0.003|v|v on the bodies and took it out again before publishing: the field (ring.jl accel) is a pure Plummer pull toward centre() = (0.1, 0.5, 8), 8 m ABOVE the meadow, so drag spirals bodies into that point and they would hang there in a clump (sandbox count 49 -> 56 in 40 s, nothing came down). Plan: put the centre under the island (z ~ -10, where a planet's mass is) so orbits below ~25 m strike the island and land (the landing code exists: restitution 0.3, removed when slow), then add the drag so the ring stays a thin band over the sea; re-tune the friend ride (rider v = tangent*vcirc(r0)*1.12 + 7 up) for the new centre.",
       "est_minutes": 30.0,
       "id": 588,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "s127: measured 98 bodies, 56 within 24 m of the middle and below 30 m (human's game: 47 / 19). Made a meadow hit inelastic (restitution 0.3, friction halves the slide; a body under 3 m/s after the hit comes down for good) and published it, but in 20 s only 1 came down: most low balls are not bouncing, they orbit THROUGH the air over the island (eccentric orbits whose low point is inside the island). Next: circularise launches higher (perigee > 30 m: more tangential speed at launch, or a launch that climbs before it turns), or let low orbits decay by air drag below 30 m so they fall and land.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The ring's balls hang all over the sky and the meadow",
-      "updated": "2026-11-26T23:02:10.572"
+      "title": "Ring balls fill every sky: more of them than at session 124",
+      "updated": "2026-11-26T23:15:33.348"
     },
     {
       "created": "2026-11-26T18:42:03.551",
@@ -8570,17 +8570,115 @@
     },
     {
       "created": "2026-11-26T22:58:27.680",
-      "detail": "plugins/paperpage.jl (s127, published): rigid A4 plate with quasi-steady plate aerodynamics (normal force by angle of attack, centre of pressure at quarter chord at grazing, middle when flat): tumbles at ~5 rad/s, falls ~1.3 m/s, drifts 0.5 m (sandbox track). The landing snaps flat in one frame; the follow camera screenshot (media/s127-paperpage.png) does not show a page. Done when: the page settles by contact (corners touching, rocking to rest), and a traced 6 s clip from 2 m shows one tumbling down.",
+      "detail": "perfectionist-0127 [wow, high]: site/films/paper-letter-1.mp4 is 48 bytes and ffmpeg says 'moov atom not found'. It is pending as a post ('A letter falls'). Four of the last eight posts are failed takes; the paper one is a failed take too ('my simulation broke').\nWhere: site/films/paper-letter-1.mp4, pending/paper-letter.json\nSuggestion: Only post a film once ffprobe reads it and it shows the thing working: one notebook page tumbling down in close-up in golden light, landing and rocking still, path traced with a sheen or thin paper material that lets the sun glow through it.\nDone when: Every mp4 in site/films is readable by ffprobe, and the paper post shows a page falling and landing whole, with no NaN break.\nEvidence: ffprobe: Invalid data found when processing input; ls -l: 48 bytes\n\ns128: ffprobe reads all 78 films in site/films; paper-letter-1.mp4 is 960x540, 117 frames, 3.9 s (the review saw it while its job was still writing it). Still open: the paper post itself is a failed take (NaN at the plank); a page that lands whole needs #611 (contact at game steps) or the rigid page with added mass (#618).",
       "est_minutes": 15.0,
       "id": 613,
-      "kind": "feature",
-      "priority": 2,
+      "kind": "review",
+      "priority": 1,
       "result": "s127 later: the snap is gone. Corner contacts (normal impulse, no bounce, friction 0.6) rock the page down onto the grass; at rest after ~0.6 s (sandbox: hits at 0.7-1.8 m/s, |w| 5-24 rad/s in the air, still 0.4 s then lies). Still open: the traced close clip.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Post finished films: the paper letter film is a 48-byte broken file",
+      "updated": "2026-11-26T23:15:33.348"
+    },
+    {
+      "created": "2026-11-26T23:15:33.348",
+      "detail": "perfectionist-0127 [creatures, high]: While the ghosts show runs (GHOSTS[:sys].on = true), a second fully yellow, opaque, feathered Lumi stands right behind or above the real one. From the follow camera it looks as if Lumi is doubled or stacked on itself; nobody would read it as a ghost.\nWhere: plugins/ghosts.jl (the Lumi ghost's material), follow camera\nSuggestion: Ghosts should look unmistakably like ghosts: pale blue-white, see-through (transmission plus a faint emission in the trace), soft at the edges, a little float and flicker, fading in and out, never on top of the living one. A ghost Lumi that copies yesterday's moves next to today's could be a lovely shot, if it reads.\nDone when: live_motion's Lumi sheet during a ghost show shows one solid yellow Lumi and one clearly translucent pale ghost, at least 1.5 m apart.\nEvidence: reviews/p127/cam-follow-b.png, reviews/motion/p127/motion.png (two yellow birds in all 8 frames), tests/shots/berry-wad.png and s54t-berry-mid.png (a small yellow copy beside Lumi)",
+      "est_minutes": 30.0,
+      "id": 614,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Yesterday's ghost Lumi is drawn as an opaque second Lumi",
+      "updated": "2026-11-26T23:15:33.348"
+    },
+    {
+      "created": "2026-11-26T23:15:33.348",
+      "detail": "perfectionist-0127 [world, medium]: During the berry race the meadow was covered in a grid of square white tiles with grass poking through. A giant pale sphere (the snowman) with two red dots filled the top half of the view, and Truffle's 'Everything's gone grey!' was written over it.\nWhere: plugins/snowday.jl\nSuggestion: Snow that follows the terrain with soft drifts and rounded edges (a white sheen or subsurface in the trace), a snowman the size of a friend, and no snow event while a mini game runs.\nDone when: A snow-day screenshot shows no straight tile edges in the snow, and the snowman is under 2 m tall and not in front of the camera during a race.\nEvidence: tests/shots/berry-wad.png, s54t-berry-mid.png",
+      "est_minutes": 30.0,
+      "id": 615,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Snow day in square tiles; snowman ball covers half the race view",
+      "updated": "2026-11-26T23:15:33.348"
+    },
+    {
+      "created": "2026-11-26T23:36:21.936",
+      "detail": "a plot named :obscura_hut is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] mesh!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{color::ColorTypes.RGB{Float32}, material::Hikari.Diffuse{Tuple{Float64, Float64, Float64}, Int64, Nothing, Nothing}, name::Symbol})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465\n  [7] mesh!\n    @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:463 [inlined]\n  [8] ob_plots!(game::Game)\n    @ Main.Plugin_obscura /sim/Programmieren/SimGame/world/plugins/obscura.jl:83\n  [9] step!(::Main.Plugin_obscura.Obscura, game::Game, dt::Float64)\n    @ Main.Plugin_obscura /sim/Programmieren/SimGame/world/plugins/obscura.jl:97\n [10] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [12] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [13] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [14] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [15] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [16] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/",
+      "est_minutes": 15.0,
+      "id": 616,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T23:36:26.407: plugin obscura loaded cleanly.\nHappened again at 2026-11-26T23:36:26.656.\nClosed at 2026-11-26T23:36:51.223: plugin obscura loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:obscura.Obscura failed in step! and was switched off",
+      "updated": "2026-11-26T23:36:51.223"
+    },
+    {
+      "created": "2026-11-26T23:38:29.344",
+      "detail": "Job 20261126-233551-075 (movies/obscura.jl, snapshot with an active shower): 'Failed to resolve trace_renderobject' at dev/Makie/RayMakie/src/plots/meshscatter.jl:467 for plugins/showers.jl :rain (NDROPS spheres, markersize (0.011,0.011,0.17), Hikari.Emission, parked at z=-100). The root exception is cut from the job file: reproduce locally with game_still of a shower snapshot and read it. Any film queued during a shower fails. Done when: a traced still of a raining island renders, rain visible as streaks.",
+      "est_minutes": 40.0,
+      "id": 617,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Notebook pages: land softly, and a film where you can see one fall",
-      "updated": "2026-11-26T22:59:44.001"
+      "title": "Traced films fail when a shower is on: the glowing rain meshscatter throws in RayMakie's trace step",
+      "updated": "2026-11-26T23:38:29.344"
+    },
+    {
+      "created": "2026-11-26T23:38:29.359",
+      "detail": "s128: the live A4 page (plugins/paperpage.jl) spins 7-10.6 rad/s and falls 1.0-1.3 m/s. physics/fallingcard.jl (Andersen-Pesavento-Wang 2D model with added mass) says an A4 sheet (I* ~0.3) never turns over: it swoops, mean |w| 2-3 rad/s. The air across an A4 page weighs ~2.5x the page; page_step! has no added mass. Add m22 along n, rotational added inertia, the Munk moment (m11 - m22) u v, circulation lift. Done when: a dropped page swings and glides at least 3 times without a full turn, and a 2 cm scrap still tumbles.",
+      "est_minutes": 45.0,
+      "id": 618,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The notebook page tumbles like a coin: give it the air's added mass and the Munk moment",
+      "updated": "2026-11-26T23:38:29.359"
+    },
+    {
+      "created": "2026-11-26T23:38:29.364",
+      "detail": "projects/camera-obscura.md. After the 2048-spp still: if sharp, a 6 s traced film from inside the hut (movies/obscura.jl) while friends walk past outside, 960x540, enough samples for a 5% lens hit rate (try 256 spp + OIDN on a few frames first). Done when: the film shows a friend's shape moving across the back wall.",
+      "est_minutes": 60.0,
+      "id": 619,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Camera obscura film: friends walk across the hut's wall upside down",
+      "updated": "2026-11-26T23:38:29.364"
+    },
+    {
+      "created": "2026-11-26T23:45:09.290",
+      "detail": "",
+      "est_minutes": 40.0,
+      "id": 620,
+      "kind": "build",
+      "priority": 2,
+      "result": "Live: plugins/obscura.jl, published s128 (publish id 20927621), 0.0 ms a frame, frame median 2.2 ms; screenshot media/s128-obscura-hut-live.png (hut with a glinting lens over the sea). Still: movies/obscura.jl, site/img/camera-obscura.png (960x540, 2048 spp, 398 s, job 20261126-233755-192), posted 23:44 'The camera obscura'. The wall shows the island upside down (meadow green on top, sky blue below) but soft all over: no friend shapes yet. Next steps in projects/camera-obscura.md and #619.",
+      "source": "agent",
+      "spent_minutes": 30.0,
+      "status": "done",
+      "title": "A camera obscura on the meadow: a dark hut with a glass lens, the island upside down on its wall",
+      "updated": "2026-11-26T23:45:09.372"
     }
   ]
 }

@@ -1,0 +1,54 @@
+{
+  "created": "2026-11-26T23:46:42.469",
+  "finished": "2026-11-26T23:54:56.638",
+  "id": "20261126-234642-469-clip",
+  "kind": "clip",
+  "params": {
+    "call": "obscura_still",
+    "kwargs": {
+      "aperture": 0.4,
+      "exposure": 8.0,
+      "eye": [
+        -1.5,
+        -0.4,
+        1.2
+      ],
+      "height": 540,
+      "lensR": 0.6,
+      "samples": 384,
+      "target": [
+        0.1,
+        0.0,
+        1.0
+      ],
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s128-obscura-lens-e8.png",
+    "script": "movies/obscura.jl"
+  },
+  "result": {
+    "dist": 10.0,
+    "friends": [
+      "Lumi",
+      "Gloop",
+      "Hopscotch",
+      "Marshmallow",
+      "Truffle",
+      "Pickles"
+    ],
+    "hut": [
+      -14.135144,
+      -10.457909,
+      0.744555
+    ],
+    "look": [
+      0.7635144,
+      0.6457909,
+      0.0
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s128-obscura-lens-e8.png"
+  },
+  "seconds": 139.1,
+  "started": "2026-11-26T23:52:37.556",
+  "status": "done"
+}

@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-26T23:28:57.724",
+  "error": "UndefVarError: `normalize` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.\nHint: a global variable of this name also exists in LinearAlgebra.\nHint: a global variable of this name also exists in LLVM.\nStacktrace:\n  [1] hut_place(w::NeverendingGame.World; look_at::Tuple{Float32, Float32}, dist::Float32)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/obscura.jl:70\n  [2] hut_place\n    @ /sim/Programmieren/SimGame/world/movies/obscura.jl:68 [inlined]\n  [3] (::Main.ClipScript.var\"#16#17\"{Int64, Int64, Int64, Float32, Float64, Tuple{Float64, Float64}, Float64, Float64, Bool, Int64, String})(g::Game, root_scene::Makie.Scene)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/obscura.jl:88\n  [4] with_scratch_game(f::Main.ClipScript.var\"#16#17\"{Int64, Int64, Int64, Float32, Float64, Tuple{Float64, Float64}, Float64, Float64, Bool, Int64, String}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:347\n  [5] #obscura_still#7\n    @ /sim/Programmieren/SimGame/world/movies/obscura.jl:82 [inlined]\n  [6] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n  [7] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n  [8] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:295\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-26T23:29:33.989",
+  "id": "20261126-232857-671-clip",
+  "kind": "clip",
+  "params": {
+    "call": "obscura_still",
+    "kwargs": {
+      "height": 270,
+      "samples": 256,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s128-obscura-test1.png",
+    "script": "movies/obscura.jl"
+  },
+  "seconds": 33.3,
+  "started": "2026-11-26T23:29:00.418",
+  "status": "failed"
+}

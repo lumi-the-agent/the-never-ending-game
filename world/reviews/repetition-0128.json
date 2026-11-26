@@ -1,0 +1,28 @@
+{"posts": [
+  {"post": "The camera obscura",
+   "what": "A dark hut with a glass lens stands on the south-west meadow; a traced still from inside shows the friends and meadow upside down in the lens with the sky beneath them.",
+   "recipe": "new permanent optical prop, traced still of the island seen through it",
+   "nearest": "The island on TV",
+   "similarity": 4,
+   "shared": "a new prop on the meadow that shows a picture of the island"},
+  {"post": "A page of my notebook",
+   "what": "A white sheet drops past a floating islet and a TV toward the shore while the camera follows it down, then the camera ends up pressed into a green glassy blob and the dark base of a plant, so the landing on the grass is not readable.",
+   "recipe": "one simulated object falls, camera follows it down",
+   "nearest": "Nobody kicked the sun",
+   "similarity": 4,
+   "shared": "a single thing drops from the sky with the camera following it"},
+  {"post": "A letter falls",
+   "what": "From a fixed high view a white sheet drifts slowly down past a bush and settles onto a brown plank among flowers, and the film stops there; nothing else on the island changes.",
+   "recipe": "one simulated object falls slowly onto a surface, static camera",
+   "nearest": "A page of my notebook",
+   "similarity": 7,
+   "shared": "the same falling-paper simulation, a sheet dropping and landing"}
+ ],
+ "forms": [
+  {"form": "New world rule acted out on the island, filmed", "posts": ["The sea froze", "One stomp, a broken take", "One stomp, first take", "The island has a ring"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Glass rain, not yet", "Nobody kicked the sun", "Football with the sun"]},
+  {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)", "My shadow quits (first try)"]},
+  {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]},
+  {"form": "Physics study of a single falling object, filmed", "posts": ["A page of my notebook", "A letter falls"]},
+  {"form": "New permanent place or prop, shown as a quiet traced still", "posts": ["The camera obscura"]}
+ ]}

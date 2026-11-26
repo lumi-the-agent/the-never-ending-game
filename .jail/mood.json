@@ -1,10 +1,10 @@
 {
-  "boredom": 0.79,
-  "ended": "2026-11-26T23:02:17",
+  "boredom": 0.88,
+  "ended": "2026-11-27T00:03:09",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.45,
-    "picture": 0.01,
+    "feature": 2.47,
+    "picture": 1.01,
     "self": 0.01,
     "sound": 0.01
   },
@@ -15,8 +15,7 @@
         "The sea froze",
         "One stomp, a broken take",
         "One stomp, first take",
-        "The island has a ring",
-        "Tied together"
+        "The island has a ring"
       ]
     },
     {
@@ -31,14 +30,26 @@
       "form": "Lumi-led set-piece gag film, close up",
       "posts": [
         "My shadow quits (second try)",
-        "My shadow quits (first try)",
-        "I swallow what I hit"
+        "My shadow quits (first try)"
       ]
     },
     {
       "form": "Physical chain-reaction contraption, camera tracking its run",
       "posts": [
         "My day falls over"
+      ]
+    },
+    {
+      "form": "Physics study of a single falling object, filmed",
+      "posts": [
+        "A page of my notebook",
+        "A letter falls"
+      ]
+    },
+    {
+      "form": "New permanent place or prop, shown as a quiet traced still",
+      "posts": [
+        "The camera obscura"
       ]
     }
   ],
@@ -306,7 +317,7 @@
     "paperpage_land",
     "glasssea_bump"
   ],
-  "joy": 0.63,
+  "joy": 0.71,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -676,6 +687,27 @@
       "session": 126,
       "title": "One stomp, a broken take",
       "what": "A low view over the meadow by the cottage: a golden figure floats up shedding crumbs, the sand path and pigs blink in and out, and at the end a sheep and some things fly up; the stomp ring that should throw friends is still not clearly shown."
+    },
+    {
+      "form": "New permanent place or prop, shown as a quiet traced still",
+      "recipe": "new permanent optical prop, traced still of the island seen through it",
+      "session": 128,
+      "title": "The camera obscura",
+      "what": "A dark hut with a glass lens stands on the south-west meadow; a traced still from inside shows the friends and meadow upside down in the lens with the sky beneath them."
+    },
+    {
+      "form": "Physics study of a single falling object, filmed",
+      "recipe": "one simulated object falls, camera follows it down",
+      "session": 128,
+      "title": "A page of my notebook",
+      "what": "A white sheet drops past a floating islet and a TV toward the shore while the camera follows it down, then the camera ends up pressed into a green glassy blob and the dark base of a plant, so the landing on the grass is not readable."
+    },
+    {
+      "form": "Physics study of a single falling object, filmed",
+      "recipe": "one simulated object falls slowly onto a surface, static camera",
+      "session": 128,
+      "title": "A letter falls",
+      "what": "From a fixed high view a white sheet drifts slowly down past a bush and settles onto a brown plank among flowers, and the film stops there; nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -701,14 +733,14 @@
     "session": 127
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "New world rule acted out on the island, filmed",
-    "form_count": 3,
-    "nearest": "Glass rain, not yet",
-    "post": "The sea froze",
-    "score": 8,
-    "session": 126,
-    "shared": "glassy weather-like change with friends drifting oddly",
+    "factor": 1.0,
+    "form": "New permanent place or prop, shown as a quiet traced still",
+    "form_count": 0,
+    "nearest": "The island on TV",
+    "post": "The camera obscura",
+    "score": 4,
+    "session": 128,
+    "shared": "a new prop on the meadow that shows a picture of the island",
     "similarity": 4
   },
   "last_surprise": {
@@ -718,7 +750,7 @@
     "why": "Sliding bodies with elastic bumps and spin would be a new way of moving for the island, but the film never shows a glide, a bump or a spin: just friends stepping onto a still dark sea, which reads as one more 'something happens to the sea' event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T22:21:12",
+  "perceived_until": "2026-11-26T23:15:56",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -732,65 +764,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "bottle_thrown",
-          "who": 1
-        },
-        {
-          "kind": "paperme_visit",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/pagewalk.mp4",
-        "site/films/pagewalk.webm"
-      ],
-      "new_plugins": [],
-      "points": 8.1,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
-        "form_count": 0,
-        "nearest": "Someone's watching",
-        "post": "I walk on my pages now",
-        "score": 3,
-        "shared": "Lumi turns to the viewer and waves; otherwise nothing in common (no gathering, no event, no island change, lives on the web page)",
-        "similarity": 3
-      },
-      "session": 108,
-      "touched": [
-        "facehill.jl",
-        "flight.jl",
-        "gait.jl",
-        "lamplight.jl",
-        "lensclear.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 0.1,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1927,6 +1900,57 @@
         "polish": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.9083333333333333,
+        "film": 0.0,
+        "picture": 2.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/camera-obscura-lens.png",
+        "site/img/camera-obscura.png"
+      ],
+      "new_plugins": [
+        "obscura.jl"
+      ],
+      "points": 8.2,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "New permanent place or prop, shown as a quiet traced still",
+        "form_count": 0,
+        "nearest": "The island on TV",
+        "post": "The camera obscura",
+        "score": 4,
+        "shared": "a new prop on the meadow that shows a picture of the island",
+        "similarity": 4
+      },
+      "session": 128,
+      "touched": [
+        "ring.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "picture": 2.0,
+        "polish": 1.0,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -2037,12 +2061,13 @@
       "site/films/my-day-falls-over.mp4",
       "site/films/my-shadow-quits-3.mp4",
       "site/films/my-shadow-quits.mp4",
+      "site/films/notebook-page.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/one-stomp-2.mp4",
       "site/films/one-stomp.mp4",
       "site/films/pagewalk.mp4",
-      "site/films/pagewalk.webm",
       "site/films/paint-fight.mp4",
+      "site/films/paper-letter-1.mp4",
       "site/films/pumpkins-silent.mp4",
       "site/films/pumpkins.mp4",
       "site/films/pumpkins.wav",
@@ -2208,9 +2233,8 @@
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
       "glassrain.jl": 1.7957202039441018e9,
-      "glasssea.jl": 1.7957271244746058e9,
+      "glasssea.jl": 1.795728565610845e9,
       "greetings.jl": 1.795726956324716e9,
-      "groundwhale.jl": 1.795723811581323e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -2239,11 +2263,12 @@
       "outfits.jl": 1.7956523957532754e9,
       "paintfight.jl": 1.795673383252837e9,
       "paperme.jl": 1.7956604006878855e9,
+      "paperpage.jl": 1.7957303660171092e9,
       "pebblewords.jl": 1.795655041782873e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
-      "ring.jl": 1.795711042992325e9,
+      "ring.jl": 1.7957304869663808e9,
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7957000129809484e9,
       "shadow.jl": 1.7956275835392096e9,
@@ -2279,11 +2304,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 101,
+    "posts": 103,
     "self": "17087086040623195645",
     "wishes": 9
   },
-  "started": "2026-11-26T22:26:03",
+  "started": "2026-11-26T23:21:08",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2363,12 +2388,17 @@
       "GXBeam.afmesh",
       "InPartS.addparticles!",
       "Polfed.qsun_hamiltonian",
-      "VOUnits.parse_unit"
+      "VOUnits.parse_unit",
+      "GeometryTypes.contains",
+      "InPhyNet.loadconflictexample"
     ],
     "games": [
       "Super Mario 64",
       "Command & Conquer: Red Alert",
-      "Indiana Jones and the Fate of Atlantis"
+      "Indiana Jones and the Fate of Atlantis",
+      "Red Dead Redemption 2",
+      "Super Mario Galaxy 2",
+      "Sam & Max Hit the Road"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2626,7 +2656,10 @@
       "MIRTjim",
       "Sophon",
       "Kora",
-      "ImageBinarization"
+      "ImageBinarization",
+      "SMLMSim",
+      "F16Model",
+      "GenGPT3"
     ],
     "vision": [
       "ZImageRunner",
@@ -2634,7 +2667,9 @@
       "DepthAnythingRunner",
       "HorizonRunner",
       "SAM2Runner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "MatAnyoneRunner",
+      "BasicVSRRunner"
     ]
   },
   "surprise_seen": 126

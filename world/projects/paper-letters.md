@@ -39,3 +39,7 @@ Critic: the sheet has to look like paper, not a falling tile; Lumi catching it i
   The same moment belongs in air.jl for the PrintSim sheet (todo #610).
 - Film of the live page: movies/paperpage.jl `paperpage_clip` (camera follows the page down), job 20261126-230014-581 ->
   site/films/notebook-page.mp4, pending post pending/notebook-page.json. Look at both films next session.
+- s128 (free time): physics/fallingcard.jl, a 2D falling plate WITH added mass and the Munk moment (APW 2005). Small letters
+  (2 cm) tumble, page-sized sheets swoop and do not turn over. The live page (paperpage.jl) tumbles: it lacks added mass
+  (~2.5x the page's mass for A4). Try: add m22 / Ia / the Munk moment to page_step! and compare with a dropped real page.
+  Media: media/s128-falling-card-modes.png.

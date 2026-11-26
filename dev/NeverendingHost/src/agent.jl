@@ -213,9 +213,6 @@ function watchdog!(host, run::AgentRun, turn)
         sleep(10)
         ACP.isover(turn) && break
         b = update_budget!(host.budget)
-        # a post goes out while the session runs, not only after it
-        run.role === :agent && !isempty(host.cfg.blog_repo) && pages_settled(host.jp) &&
-            online!(publish_blog!, host, host.sessions + 1, "publishing the blog")
         left = run.deadline - time()
         reason = b["state"] == "exhausted" ? "the budget is used up" :
                  b["state"] == "low" ? "the budget is running low" :

@@ -1,0 +1,11 @@
+{"posts": [{"post": "the-camera-obscura",
+  "verdict": "redo",
+  "problems": [
+    "The picture is about 85% black: the lit image is a small square in the middle (roughly 15% of the frame width), so what matters is tiny.",
+    "There is no hut, no wall and no glass lens to see. It is just a green square on black, so 'a dark hut with a glass lens in its wall' from the caption is not shown.",
+    "'A tree growing down' is not readable: at the bottom left of the square there is only a stub of brown trunk that widens upward, with no crown hanging down. Nothing in the square clearly reads as an upside-down tree.",
+    "'Grass above' is only a flat green area filling the top three quarters of the square. Without a sky or horizon on the other side, nobody can tell the image is flipped and not just a close-up of a lawn.",
+    "The bottom strip of the square is a crushed band of small colourful blobs. It is too small and too jumbled to make out, and the edges of the square look clipped rather than like the round or soft edge of a lens image."
+  ],
+  "critique": "Someone scrolling sees a small green square on a black screen. The hut, the lens and the inverted meadow with its upside-down tree are claimed in the caption but can't be made out in the picture. The caption promises much more than the image shows."
+}]}

@@ -66,8 +66,18 @@ function put_on_pages!(host, piece::AbstractString)
     return nothing
 end
 
-"Every pending post whose jobs are done goes up; one that cannot is moved aside, and the character told why."
+"""
+Every `PENDING_EVERY` seconds: the pending posts that are ready onto the pages (`put_up_pending_posts!`),
+then the pages onto the blog once they settled (`publish_settled_pages!`).
+"""
 function publish_pending_posts!(host)
+    put_up_pending_posts!(host)
+    publish_settled_pages!(host)
+    return nothing
+end
+
+"Every pending post whose jobs are done goes up; one that cannot is moved aside, and the character told why."
+function put_up_pending_posts!(host)
     jp = host.jp
     dir = pending_dir(jp)
     isdir(dir) || return nothing
@@ -91,7 +101,16 @@ function publish_pending_posts!(host)
     return nothing
 end
 
-"Look at the pending posts every `PENDING_EVERY` seconds while the host runs (the latest code each time)."
+"""
+The pages on the blog once they settled (`pages_settled`): a post goes public when it is on the pages,
+not when the session ends. Until session 128 this ran only in the host's own agent sessions, so with
+the sessions in the dashboard chat (since 68) every post waited for the end of its session, and a
+pending post finished after one for the end of the next.
+"""
+publish_settled_pages!(host) =
+    !isempty(host.cfg.blog_repo) && pages_settled(host.jp) && online!(publish_blog!, host, host.sessions + 1, "publishing the blog")
+
+"`publish_pending_posts!` every `PENDING_EVERY` seconds while the host runs (the latest code each time)."
 function pending_posts_loop(host)
     while host.running
         Base.invokelatest(publish_pending_posts!, host)

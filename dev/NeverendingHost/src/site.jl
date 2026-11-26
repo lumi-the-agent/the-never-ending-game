@@ -230,13 +230,20 @@ end
     publish_blog!(host, n)
 
 The character's pages (world/site) on its GitHub Pages site (`cfg.blog_repo`, `owner/name`),
-as soon as a post is written (`pages_settled`, checked while a session runs) and after each session. The host publishes, not the agent: the token stays outside every jail, so
-the character cannot post or comment anywhere, and its blog is its only public voice (RULES
-12). The working copy mirrors world/site; each publishing that changed the pages is one commit.
+as soon as a post is on them (`publish_settled_pages!`, every `PENDING_EVERY` seconds, in a session
+or between two) and after each session. The host publishes, not the agent: the token stays outside
+every jail, so the character cannot post or comment anywhere, and its blog is its only public voice
+(RULES 12). The working copy mirrors world/site; each publishing that changed the pages is one
+commit, one at a time (a lock: the loop and a session's end may push together).
 """
 function publish_blog!(host, n::Int)
     jp, repo = host.jp, host.cfg.blog_repo
     isempty(repo) && return nothing
+    return Pidfile.mkpidlock(() -> push_pages!(host, n), joinpath(jp.state, "blog.lock"); stale_age = 300)
+end
+
+function push_pages!(host, n::Int)
+    jp, repo = host.jp, host.cfg.blog_repo
     dir = working_copy!(jp, blog_dir(jp), repo)
     git(args...) = host_git(jp, dir, args...)
     run(`rsync -a --delete --exclude .git --exclude .nojekyll $(joinpath(jp.world, "site"))/ $(dir)/`)

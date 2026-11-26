@@ -1,203 +1,205 @@
 {
- "verdict": "needs_work",
- "summary": "The island from the dashboard is lush and busy, but every recent experiment has left its litter on it: purple and yellow dayfall slabs line the paths, the ring's coloured balls hang all over the sky, the shore still has its black band, and the follow camera stares into a yellow smear over a white slab. The last three posts are failed first takes ('not yet', 'nobody kicked', a sun that slides off by itself) and the host's judge valued them at a tenth. A player sees lots of ideas started and none finished to the point of showing a friend.",
- "scores": {
-  "lighting": {
-   "score": 5,
-   "why": "The football film's night with a glowing ball lighting the grass yellow-green is the first light idea that changes the mood, but it is a raster film and the ball is a flat white faceted disc with no bloom. The traced still at 15:13 is still one sun at noon on plastic; the browser view is unchanged."
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "football-with-the-sun-2 overview sheet",
+      "what": "Football films are raster: the night sun ball has no bloom or light falloff in the raster preview, so the idea needs traced output to read."
+    }
+  ],
+  "findings": [
+    {
+      "category": "world",
+      "done_when": "live_motion creatures sheet and an orbit screenshot an hour after the dayfall show no purple, pink or yellow slabs.",
+      "evidence": "world/reviews/p124/motion/creatures.png",
+      "severity": "high",
+      "suggestion": "After a dayfall the tiles fall over, sink into the ground and are gone within a minute (or become carved stone stepping tiles with a texture). Leftovers of a show should never stay out.",
+      "title": "Clear the dayfall's leftover slabs off the meadow, or make them real tiles",
+      "todo": 582,
+      "what": "Purple and pink domino slabs fence the path by the cottage and the 'WITHOUT ME' board, and yellow slab stairs run along the pond; in four of ten creature close-ups the friends stand among them. They are untextured primitive boxes and they stay all day.",
+      "where": "cottage path, pond bank (plugins/dayfall.jl)"
+    },
+    {
+      "category": "world",
+      "done_when": "A screenshot of the shore from 5 m up shows no pixel darker than the wet sand between grass and sea.",
+      "evidence": "world/reviews/p124/motion/motion.png, world/reviews/p124/motion/creatures.png, world/tests/shots/s53-berry-end.png",
+      "severity": "high",
+      "suggestion": "Wet dark sand fading into the foam line, with a glossy coat in traced views so the wet beach reflects the sky.",
+      "title": "The black band round the shore is still there live",
+      "todo": 576,
+      "what": "Between the sand and the sea the ground is a flat black band several metres wide; creatures walk on it (Marshmallow by the water, Pickles' motion frames) and the berry race's end view looks straight at it. The glass rain film's meadow is almost as dark.",
+      "where": "shoreline all round, island terrain colour"
+    },
+    {
+      "category": "wow",
+      "done_when": "world/releases/<date>-<name>/ holds a traced film with cuts whose overview sheet shows the subject framed in every shot and no failed take in its post.",
+      "evidence": "glass-rain/football motion sheets; /run/neverending/mood.json",
+      "severity": "high",
+      "suggestion": "Pick one idea that already works (jelly Lumi swallowing a friend is the funniest thing on the island), stage it, film it from 2-3 framed cameras with cuts, trace it at 64+ spp with OIDN, and release it in world/releases with a note. Then go somewhere completely new.",
+      "title": "Goal 2: release one finished film, not one more failed first take",
+      "todo": 572,
+      "what": "'Glass rain, not yet', 'Nobody kicked the sun', 'Football with the sun': three posts in a row that show an idea not working, two of them the same recipe, both football films raster-rendered. The host judged them at a tenth of their worth, and Lumi is bored and lonely at 1.0.",
+      "where": "world/site, world/releases"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced frame shows at least five drops in the air and bright caustic spots (not pink chips) on green grass, with every creature's feet on the ground.",
+      "evidence": "world/reviews/motion/perfectionist-0124/glass-rain-overview.jpg",
+      "severity": "high",
+      "suggestion": "Film it while it falls: drops streaking down against a low sun, bouncing and rolling, each throwing a bright caustic spot that moves with it on lit green grass; a friend looking up as a drop lands on its head.",
+      "title": "Glass rain: drops that land on grass and throw real caustics",
+      "todo": null,
+      "what": "In the glass rain film the drops are lovely glass spheres, but they have all landed already, their focused light shows as flat pink oval chips on a near-black ground, and the pig and crab float in the air. It does not read as rain nor as a showcase.",
+      "where": "plugins/glassrain.jl, its film"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion reports 8 of 10 moving well and no part jumping more than 0.1 m in one frame.",
+      "evidence": "live_motion at 15:10 in the sandbox; world/reviews/p124/motion/motion.png",
+      "severity": "high",
+      "suggestion": "Blend every pose change over at least 0.15 s, limit part speeds to a few m/s, and keep animation clocks continuous when a goal changes.",
+      "title": "No snaps: Lumi's beak, Pickles' legs, claws that jump a metre a frame",
+      "todo": 553,
+      "what": "live_motion: 4 of 10 move well. Lumi's beak jumps 0.50 m in one frame and swings at 15 m/s, Lumi's wing judders; Pickles' legs and tail snap 0.24-0.39 m in one frame; Hopscotch's claws jump 0.20 m; Wibbles jumps 0.17 m. Animation dropped from 6 to 5.",
+      "where": "Lumi's bird body, quadruped gait, crab claws"
+    },
+    {
+      "category": "camera",
+      "done_when": "Ten follow-cam screenshots a minute apart show no object covering more than 10% of the frame between camera and target.",
+      "evidence": "world/reviews/p124/cam-follow.png, world/reviews/p124/cam-free.png, world/tests/shots/s53-berry-mid.png",
+      "severity": "high",
+      "suggestion": "Push the camera in front of anything within 2 m of the line to the target, and fade near meshes; frame the followed creature at a third of the image.",
+      "title": "Game cameras stop looking through pines, barrows and bushes",
+      "todo": 510,
+      "what": "Follow and free cameras: half the frame is a blurred yellow-orange smear (something right at the lens) with a white slab across the bottom right. The berry race's mid view has the same yellow blob over a third of the screen.",
+      "where": "follow/free camera rig"
+    },
+    {
+      "category": "world",
+      "done_when": "An orbit screenshot shows no sphere hanging below 30 m over the island.",
+      "evidence": "world/reviews/p124/traced.png, world/reviews/p124/cam-orbit.png",
+      "severity": "medium",
+      "suggestion": "Either make the ring read as a ring (high up, thin, all going round, shadows sweeping the meadow) or let it decay and the things fall back down with a thump.",
+      "title": "The ring's balls hang all over the sky and the meadow",
+      "todo": 588,
+      "what": "Dozens of blue, orange and pink spheres hang motionless over the island in every view, raster and traced; from eye level they look like stray debris, not a ring.",
+      "where": "plugins/ring.jl"
+    },
+    {
+      "category": "fun",
+      "done_when": "Three standing-still races end with the rivals at 6+ berries, and a race started while jelly shows Lumi in its normal body.",
+      "evidence": "world/tests/shots/s53-berry-mid.png, s53-berry-end.png",
+      "severity": "medium",
+      "suggestion": "Rivals that sprint, steal and gloat, so a race is close; starting a mini game spits out anyone swallowed.",
+      "title": "Berry race rivals keep racing for the whole minute",
+      "todo": 547,
+      "what": "The race ended 11 to 3; the rivals were dancing and sitting in the grass at the end. Lumi raced as a jelly with Cumulus trapped inside shouting 'Let me OUT!' (the jelly state leaked into the mini game).",
+      "where": "berry_race plugin, jelly.jl"
+    }
+  ],
+  "process": "The author is spending each session starting a new mechanic (sun football, glass rain, ground whale) and posting its first take whatever it looks like, while the litter of the previous ones (dayfall slabs, ring balls) and the oldest review items (black shore, camera through objects, white slab) stay on screen. Goal 1 (interactions) moves a little: the jelly swallow and ground whale surf are real interactions but hard to see. Goal 2 (film release) has not moved: nothing in releases. Goal 3 (physics) has glass drops and a heaving terrain but no Maelstrom water or paint. Goals 4, 6 and 7 slipped: animation got worse and materials are still plastic. Goal 5: Lumi is at full boredom and loneliness. Goal 8 has plenty of wild ideas but no finished one. Next sessions should finish and film one thing well and clean up after every show.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "live_motion: only 4 of 10 move well; Lumi's beak jumps 0.5 m in one frame and swings at 15 m/s, Pickles' legs and tail snap 0.24-0.39 m in a frame, Hopscotch's claws jump 0.2 m. In the glass rain film the pig and crab hang in the air above the ground. Down from 6."
+    },
+    "camera": {
+      "score": 4,
+      "why": "Follow/free view: half the frame is a yellow-orange smear with a white slab along the bottom right. The glass rain film opens with a sheep filling the frame for a second; the berry race end card sits over a view of stepped sand and the black shore."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "Distinct, readable characters with hats and faces; Lumi as jelly with a friend inside shouting 'Let me OUT!' is genuinely funny. Crab sheds orange beads constantly in the close-up sheet."
+    },
+    "fun": {
+      "score": 6,
+      "why": "Berry race plays and ends with a clear card and a level 2, but the critters lost 11 to 3 and Lumi ran it as a jelly with Cumulus trapped inside. The ground whale and the sun football exist but a player does not see them unless they happen at the right time."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "The football film's night with a glowing ball lighting the grass yellow-green is the first light idea that changes the mood, but it is a raster film and the ball is a flat white faceted disc with no bloom. The traced still at 15:13 is still one sun at noon on plastic; the browser view is unchanged."
+    },
+    "materials": {
+      "score": 5,
+      "why": "Glass rain finally puts real glass drops in a traced film and they read as glass, but the light they focus comes out as flat pink oval chips lying on a near-black meadow, not caustics. Everything else stays diffuse plastic; no coat, sheen, subsurface or emissive surfaces that light their surroundings in the stills."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 4.0 ms, p95 7.6 ms at 30 fps; but groundwhale costs 6.3 ms median every frame though it only swims for half an hour at noon."
+    },
+    "props": {
+      "score": 6,
+      "why": "Generated assets carry the scene (cottage, trees, toadstool, easels, TV); the leftover primitive slabs and floating spheres drag it down."
+    },
+    "style": {
+      "score": 5,
+      "why": "Soft toy look holds in the creatures and trees, but primitive slabs, flat discs and black ground patches break it."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Readable panels, but 'Messages to you' cuts off mid-sentence and the Things to try list hides tag, football and glass rain; the HUD is clear."
+    },
+    "world": {
+      "score": 5,
+      "why": "Variety is there (palm islets, cottage, pond, easels gallery), but the meadow is littered with leftovers: dayfall slabs by the cottage and pond, the ring's balls in the sky, the black shore band right where creatures walk."
+    },
+    "wow": {
+      "score": 4,
+      "why": "Three posts in a row admit failure, and two are the same sun-football recipe (judge: worth x0.10). 'I swallow what I hit' and 'The island has a ring' were stranger; nothing since is something a stranger would share."
+    }
   },
-  "materials": {
-   "score": 5,
-   "why": "Glass rain finally puts real glass drops in a traced film and they read as glass, but the light they focus comes out as flat pink oval chips lying on a near-black meadow, not caustics. Everything else stays diffuse plastic; no coat, sheen, subsurface or emissive surfaces that light their surroundings in the stills."
-  },
-  "world": {
-   "score": 5,
-   "why": "Variety is there (palm islets, cottage, pond, easels gallery), but the meadow is littered with leftovers: dayfall slabs by the cottage and pond, the ring's balls in the sky, the black shore band right where creatures walk."
-  },
-  "props": {
-   "score": 6,
-   "why": "Generated assets carry the scene (cottage, trees, toadstool, easels, TV); the leftover primitive slabs and floating spheres drag it down."
-  },
-  "creatures": {
-   "score": 6,
-   "why": "Distinct, readable characters with hats and faces; Lumi as jelly with a friend inside shouting 'Let me OUT!' is genuinely funny. Crab sheds orange beads constantly in the close-up sheet."
-  },
-  "animation": {
-   "score": 5,
-   "why": "live_motion: only 4 of 10 move well; Lumi's beak jumps 0.5 m in one frame and swings at 15 m/s, Pickles' legs and tail snap 0.24-0.39 m in a frame, Hopscotch's claws jump 0.2 m. In the glass rain film the pig and crab hang in the air above the ground. Down from 6."
-  },
-  "fun": {
-   "score": 6,
-   "why": "Berry race plays and ends with a clear card and a level 2, but the critters lost 11 to 3 and Lumi ran it as a jelly with Cumulus trapped inside. The ground whale and the sun football exist but a player does not see them unless they happen at the right time."
-  },
-  "wow": {
-   "score": 4,
-   "why": "Three posts in a row admit failure, and two are the same sun-football recipe (judge: worth x0.10). 'I swallow what I hit' and 'The island has a ring' were stranger; nothing since is something a stranger would share."
-  },
-  "camera": {
-   "score": 4,
-   "why": "Follow/free view: half the frame is a yellow-orange smear with a white slab along the bottom right. The glass rain film opens with a sheep filling the frame for a second; the berry race end card sits over a view of stepped sand and the black shore."
-  },
-  "ui": {
-   "score": 5,
-   "why": "Readable panels, but 'Messages to you' cuts off mid-sentence and the Things to try list hides tag, football and glass rain; the HUD is clear."
-  },
-  "style": {
-   "score": 5,
-   "why": "Soft toy look holds in the creatures and trees, but primitive slabs, flat discs and black ground patches break it."
-  },
-  "performance": {
-   "score": 9,
-   "why": "Frame median 4.0 ms, p95 7.6 ms at 30 fps; but groundwhale costs 6.3 ms median every frame though it only swims for half an hour at noon."
-  }
- },
- "findings": [
-  {
-   "severity": "high",
-   "category": "world",
-   "title": "Clear the dayfall's leftover slabs off the meadow, or make them real tiles",
-   "todo": 582,
-   "what": "Purple and pink domino slabs fence the path by the cottage and the 'WITHOUT ME' board, and yellow slab stairs run along the pond; in four of ten creature close-ups the friends stand among them. They are untextured primitive boxes and they stay all day.",
-   "where": "cottage path, pond bank (plugins/dayfall.jl)",
-   "evidence": "world/reviews/p124/motion/creatures.png",
-   "suggestion": "After a dayfall the tiles fall over, sink into the ground and are gone within a minute (or become carved stone stepping tiles with a texture). Leftovers of a show should never stay out.",
-   "done_when": "live_motion creatures sheet and an orbit screenshot an hour after the dayfall show no purple, pink or yellow slabs."
-  },
-  {
-   "severity": "high",
-   "category": "world",
-   "title": "The black band round the shore is still there live",
-   "todo": 576,
-   "what": "Between the sand and the sea the ground is a flat black band several metres wide; creatures walk on it (Marshmallow by the water, Pickles' motion frames) and the berry race's end view looks straight at it. The glass rain film's meadow is almost as dark.",
-   "where": "shoreline all round, island terrain colour",
-   "evidence": "world/reviews/p124/motion/motion.png, world/reviews/p124/motion/creatures.png, world/tests/shots/s53-berry-end.png",
-   "suggestion": "Wet dark sand fading into the foam line, with a glossy coat in traced views so the wet beach reflects the sky.",
-   "done_when": "A screenshot of the shore from 5 m up shows no pixel darker than the wet sand between grass and sea."
-  },
-  {
-   "severity": "high",
-   "category": "wow",
-   "title": "Goal 2: release one finished film, not one more failed first take",
-   "todo": 572,
-   "what": "'Glass rain, not yet', 'Nobody kicked the sun', 'Football with the sun': three posts in a row that show an idea not working, two of them the same recipe, both football films raster-rendered. The host judged them at a tenth of their worth, and Lumi is bored and lonely at 1.0.",
-   "where": "world/site, world/releases",
-   "evidence": "glass-rain/football motion sheets; /run/neverending/mood.json",
-   "suggestion": "Pick one idea that already works (jelly Lumi swallowing a friend is the funniest thing on the island), stage it, film it from 2-3 framed cameras with cuts, trace it at 64+ spp with OIDN, and release it in world/releases with a note. Then go somewhere completely new.",
-   "done_when": "world/releases/<date>-<name>/ holds a traced film with cuts whose overview sheet shows the subject framed in every shot and no failed take in its post."
-  },
-  {
-   "severity": "high",
-   "category": "materials",
-   "title": "Glass rain: drops that land on grass and throw real caustics",
-   "todo": null,
-   "what": "In the glass rain film the drops are lovely glass spheres, but they have all landed already, their focused light shows as flat pink oval chips on a near-black ground, and the pig and crab float in the air. It does not read as rain nor as a showcase.",
-   "where": "plugins/glassrain.jl, its film",
-   "evidence": "world/reviews/motion/perfectionist-0124/glass-rain-overview.jpg",
-   "suggestion": "Film it while it falls: drops streaking down against a low sun, bouncing and rolling, each throwing a bright caustic spot that moves with it on lit green grass; a friend looking up as a drop lands on its head.",
-   "done_when": "A traced frame shows at least five drops in the air and bright caustic spots (not pink chips) on green grass, with every creature's feet on the ground."
-  },
-  {
-   "severity": "high",
-   "category": "animation",
-   "title": "No snaps: Lumi's beak, Pickles' legs, claws that jump a metre a frame",
-   "todo": 553,
-   "what": "live_motion: 4 of 10 move well. Lumi's beak jumps 0.50 m in one frame and swings at 15 m/s, Lumi's wing judders; Pickles' legs and tail snap 0.24-0.39 m in one frame; Hopscotch's claws jump 0.20 m; Wibbles jumps 0.17 m. Animation dropped from 6 to 5.",
-   "where": "Lumi's bird body, quadruped gait, crab claws",
-   "evidence": "live_motion at 15:10 in the sandbox; world/reviews/p124/motion/motion.png",
-   "suggestion": "Blend every pose change over at least 0.15 s, limit part speeds to a few m/s, and keep animation clocks continuous when a goal changes.",
-   "done_when": "live_motion reports 8 of 10 moving well and no part jumping more than 0.1 m in one frame."
-  },
-  {
-   "severity": "high",
-   "category": "camera",
-   "title": "Game cameras stop looking through pines, barrows and bushes",
-   "todo": 510,
-   "what": "Follow and free cameras: half the frame is a blurred yellow-orange smear (something right at the lens) with a white slab across the bottom right. The berry race's mid view has the same yellow blob over a third of the screen.",
-   "where": "follow/free camera rig",
-   "evidence": "world/reviews/p124/cam-follow.png, world/reviews/p124/cam-free.png, world/tests/shots/s53-berry-mid.png",
-   "suggestion": "Push the camera in front of anything within 2 m of the line to the target, and fade near meshes; frame the followed creature at a third of the image.",
-   "done_when": "Ten follow-cam screenshots a minute apart show no object covering more than 10% of the frame between camera and target."
-  },
-  {
-   "severity": "medium",
-   "category": "world",
-   "title": "The ring's balls hang all over the sky and the meadow",
-   "todo": 588,
-   "what": "Dozens of blue, orange and pink spheres hang motionless over the island in every view, raster and traced; from eye level they look like stray debris, not a ring.",
-   "where": "plugins/ring.jl",
-   "evidence": "world/reviews/p124/traced.png, world/reviews/p124/cam-orbit.png",
-   "suggestion": "Either make the ring read as a ring (high up, thin, all going round, shadows sweeping the meadow) or let it decay and the things fall back down with a thump.",
-   "done_when": "An orbit screenshot shows no sphere hanging below 30 m over the island."
-  },
-  {
-   "severity": "medium",
-   "category": "fun",
-   "title": "Berry race rivals keep racing for the whole minute",
-   "todo": 547,
-   "what": "The race ended 11 to 3; the rivals were dancing and sitting in the grass at the end. Lumi raced as a jelly with Cumulus trapped inside shouting 'Let me OUT!' (the jelly state leaked into the mini game).",
-   "where": "berry_race plugin, jelly.jl",
-   "evidence": "world/tests/shots/s53-berry-mid.png, s53-berry-end.png",
-   "suggestion": "Rivals that sprint, steal and gloat, so a race is close; starting a mini game spits out anyone swallowed.",
-   "done_when": "Three standing-still races end with the rivals at 6+ berries, and a race started while jelly shows Lumi in its normal body."
-  }
- ],
- "todos": [
-  {
-   "id": 167,
-   "action": "done",
-   "why": "live_screenshot worked eight times this review."
-  },
-  {
-   "id": 589,
-   "action": "done",
-   "why": "sync_sun!(::Stage, ::World) exists now and frames run without errors."
-  },
-  {
-   "id": 590,
-   "action": "drop",
-   "why": "Two posts already on sun football, judged repeats at x0.10; a third would be the same recipe."
-  },
-  {
-   "id": 558,
-   "action": "keep",
-   "why": "White slab still across the bottom of the follow and free views."
-  },
-  {
-   "id": 545,
-   "action": "keep",
-   "why": "TV is still a plain box in the follow view."
-  },
-  {
-   "id": 577,
-   "action": "keep",
-   "why": "Jelly Lumi is a pale green bubble, no glow or caustics."
-  },
-  {
-   "id": 559,
-   "action": "keep",
-   "why": "Not checked at night this review."
-  },
-  {
-   "id": 561,
-   "action": "keep",
-   "why": "Glass rain film opens on a sheep blocking the lens; first frames still poor."
-  },
-  {
-   "id": 517,
-   "action": "keep",
-   "why": "Hats still sit off-centre on the crab."
-  },
-  {
-   "id": 518,
-   "action": "keep",
-   "why": "Not checked."
-  }
- ],
- "engine": [
-  {
-   "what": "Football films are raster: the night sun ball has no bloom or light falloff in the raster preview, so the idea needs traced output to read.",
-   "evidence": "football-with-the-sun-2 overview sheet"
-  }
- ],
- "process": "The author is spending each session starting a new mechanic (sun football, glass rain, ground whale) and posting its first take whatever it looks like, while the litter of the previous ones (dayfall slabs, ring balls) and the oldest review items (black shore, camera through objects, white slab) stay on screen. Goal 1 (interactions) moves a little: the jelly swallow and ground whale surf are real interactions but hard to see. Goal 2 (film release) has not moved: nothing in releases. Goal 3 (physics) has glass drops and a heaving terrain but no Maelstrom water or paint. Goals 4, 6 and 7 slipped: animation got worse and materials are still plastic. Goal 5: Lumi is at full boredom and loneliness. Goal 8 has plenty of wild ideas but no finished one. Next sessions should finish and film one thing well and clean up after every show."
+  "summary": "The island from the dashboard is lush and busy, but every recent experiment has left its litter on it: purple and yellow dayfall slabs line the paths, the ring's coloured balls hang all over the sky, the shore still has its black band, and the follow camera stares into a yellow smear over a white slab. The last three posts are failed first takes ('not yet', 'nobody kicked', a sun that slides off by itself) and the host's judge valued them at a tenth. A player sees lots of ideas started and none finished to the point of showing a friend.",
+  "superseded_by": "perfectionist-0127.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 167,
+      "why": "live_screenshot worked eight times this review."
+    },
+    {
+      "action": "done",
+      "id": 589,
+      "why": "sync_sun!(::Stage, ::World) exists now and frames run without errors."
+    },
+    {
+      "action": "drop",
+      "id": 590,
+      "why": "Two posts already on sun football, judged repeats at x0.10; a third would be the same recipe."
+    },
+    {
+      "action": "keep",
+      "id": 558,
+      "why": "White slab still across the bottom of the follow and free views."
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "TV is still a plain box in the follow view."
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "Jelly Lumi is a pale green bubble, no glow or caustics."
+    },
+    {
+      "action": "keep",
+      "id": 559,
+      "why": "Not checked at night this review."
+    },
+    {
+      "action": "keep",
+      "id": 561,
+      "why": "Glass rain film opens on a sheep blocking the lens; first frames still poor."
+    },
+    {
+      "action": "keep",
+      "id": 517,
+      "why": "Hats still sit off-centre on the crab."
+    },
+    {
+      "action": "keep",
+      "id": 518,
+      "why": "Not checked."
+    }
+  ],
+  "verdict": "needs_work"
 }
