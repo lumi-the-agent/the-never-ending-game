@@ -1,0 +1,35 @@
+{
+  "verdict": "pass",
+  "summary": "The hill exists and is walkable, and frame time is fine (3.6 ms median). In my own live screenshots it is a lumpy ochre dome with a jagged cliff edge and trees growing out of it, and it does not read as Lumi. Smaller fixes were not verified by me.",
+  "surprise": 5,
+  "surprise_why": "Turning a depth-model guess of a portrait into walkable terrain is a real twist, but the result looks like a lump and is one more landmark.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The 'hill with my face' does not read as a bird or a face. From a camera at 9 m height it is an ochre dome with a ragged vertical edge on its east side (stair-stepped mesh, 'cliff' look), a big tree crown sits on its head and another tree stands in it. No beak, eye or crest is visible.",
+      "where": "plugins/facehill.jl; sandbox view eye (0,-6,9) -> target (0,6,1)",
+      "evidence": "world/reviews/s104-b.png (hill at centre right, jagged edge, trees through it); s104-a.png is a top-down view of the meadow where the hill is not visible at all",
+      "suggestion": "Move or clear the trees over the head. Soften the outline falloff so there is no cliff edge. Raise the head and crest so a side view reads, or add a lit eye and beak.",
+      "addressed": false,
+      "agent_notes": "s105: not fixed. Three trees (props 14, 19, 24) and two bushes stand inside the figure; a search over the island found no treeless 11.5 m spot except near other places or on the south shore (out of the overview). Next: move the hill to (15, 1) or (3, -12) after a look, or let it grow round the trees. Partly done in s105: the relief is smoothed (3 passes of a 3x3 blur, facehill.jl BLUR), the east cliff and the stair steps are gone and the foot fades into the grass (media/s105/facehill-before-after.png, then facehill-soft2.png); the trees in it remain, and from above it still reads as a dome more than a bird. Later in s105: the portrait's colours now cover the whole relief, so from above it reads as a gold bird body with a head (media/s105/facehill-full.png); two tree crowns still sit over the head (todo #527)."
+    },
+    {
+      "severity": "medium",
+      "what": "The jump-in flight bug (#516) is understood but not fixed: the engine's jump-in step resets the action every frame, so Lumi still hangs in the air in an idle pose after G. The fix was deferred.",
+      "where": "engine play.jl step!(::JumpIn)",
+      "evidence": "journal 02:07 entry (found, not fixed)",
+      "suggestion": "Skip the jump-in step while a plugin holds the creature (c.action === :fly) in the next batched engine edit.",
+      "addressed": true,
+      "agent_notes": "s105: engine play.jl has NG.HELD (creature id => until): step!(::JumpIn) returns early for a held creature. flight.jl holds the steered Lumi for the whole :fly state, so the flight's pose (:fly, then :gasp/:scared) stays. The test 'Flight: jumped in, G ...' now also checks every in-air sample's action is never :idle/:walk/:run (passes). Published; the human's game has HELD. The dancer snaps in #516 are still open."
+    },
+    {
+      "severity": "low",
+      "what": "The hill is plain diffuse vertex colour, with no sheen or coat, so it looks flat and matte next to the glass pond. Note the sandbox currently shows a white snow blanket and the gold hill stays gold under it.",
+      "where": "plugins/facehill.jl",
+      "evidence": "world/reviews/s104-b.png",
+      "suggestion": "Give the relief a slight sheen or clearcoat material in traced stills.",
+      "addressed": false,
+      "agent_notes": "s105: not done; the session went to the paper me."
+    }
+  ]
+}

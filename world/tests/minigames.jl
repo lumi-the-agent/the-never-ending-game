@@ -1534,16 +1534,21 @@ uitest("Flight: jumped in, G takes off and the camera keeps the flying Lumi in v
     s.state === :idle || Base.invokelatest(game.plugins["flight"].mod.finish!, s, game)
     interact!(game, [KeyDown(Keyboard.g), Wait(0.2), KeyUp(Keyboard.g)])
     check(s.state !== :idle, "G did not start a flight: state $(s.state)")
-    seen = Bool[]; hs = Float32[]
+    seen = Bool[]; hs = Float32[]; acts = Symbol[]
     for i in 1:16
         wait_seconds(game, 1.0)
         s.state === :idle && break
         push!(seen, NeverendingGame.on_screen(game.stage.scene, me.pos + Point3f(0, 0, 0.8f0)) !== nothing)
         push!(hs, me.pos[3] - NeverendingGame.ground(game.world.island, (me.pos[1], me.pos[2]))[3])
+        push!(acts, s.state === :fly ? me.action : :ground)
         i == 5 && screenshot(game, "flight-steered")
     end
     up = [seen[i] for i in eachindex(seen) if hs[i] > 1.5f0]
     check(length(up) >= 3 && all(up), "Lumi out of view while airborne: $(seen) at heights $(round.(hs; digits = 1)) m")
+    # s105 (#516): in the air the player's Lumi flaps (the flight's pose), never stands idle or walks
+    # (heights alone can't tell: the hill with my face lifts a Lumi standing on it 2 m above the terrain)
+    upacts = filter(!=(:ground), acts)
+    check(!isempty(upacts) && !any(a -> a in (:idle, :walk, :run), upacts), "Lumi's pose in the air: $(acts) at heights $(round.(hs; digits = 1)) m")
     fly_click(game, "Stop")
 end
 

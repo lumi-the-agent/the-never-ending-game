@@ -7363,6 +7363,20 @@
       "status": "done",
       "title": "A golden hill in my shape rises north of the middle",
       "updated": "2026-11-26T01:56:00.087"
+    },
+    {
+      "created": "2026-11-26T02:54:56.234",
+      "detail": "Review s104: three trees (props 14, 19, 24) and two bushes stand in the figure, and from the overview it reads as a dome. s105 smoothed the cliff (BLUR). Next: move the hill to an open spot (search in s105: (15, 1) or (3, -12), one prop each) or move the trees out with a stage rebuild, and paint the eyes and beak stronger.",
+      "est_minutes": 15.0,
+      "id": 527,
+      "kind": "polish",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "My face hill, readable: clear of the trees, a beak and eyes you can see from above",
+      "updated": "2026-11-26T02:54:56.234"
     }
   ]
 }

@@ -163,32 +163,32 @@
       "extra": 0.0,
       "id": 1,
       "memory": [
-        "[301922] built the facehill",
-        "[302246] had a nap",
-        "[302655] built the parade",
-        "[302685] built the facehill",
-        "[302753] built the pebblewords",
-        "[303100] had a nap",
-        "[303121] had a dance-off with Wibbles",
-        "[303130] ate berries",
-        "[303147] chatted with Pinchy",
-        "[303271] chatted with Pinchy",
-        "[303440] built firefly catch",
-        "[303463] splashed in the pond"
+        "[305456] built the flight and the paperme",
+        "[305503] had a big paint fight with Lumi and came home covered in spots",
+        "[305568] built the facehill",
+        "[305840] built the paperme",
+        "[305948] had a nap",
+        "[305984] everybody bounced on the big toadstool",
+        "[306104] had a dance-off with Sir Sniffsalot",
+        "[306109] caught the hiccups",
+        "[306172] built the paperme",
+        "[306211] built the paperme",
+        "[306334] built the facehill",
+        "[306355] built the paperme"
       ],
-      "mood": -0.13215467,
+      "mood": -0.17398158,
       "name": "Lumi",
       "needs": [
         1.0,
-        0.4357806,
-        0.503977,
+        0.49085748,
+        0.15475819,
         0.0
       ],
-      "phase": 1.002129e6,
+      "phase": 1.01020244e6,
       "pos": [
-        1.2688094,
-        0.9847177,
-        2.4163232
+        9.674951,
+        9.539471,
+        2.154861
       ],
       "seed": 0.19280809,
       "species": "Lumi",
@@ -198,39 +198,39 @@
         0.6988267,
         0.6282647
       ],
-      "yaw": -2.8283484
+      "yaw": 1.1121917
     },
     {
-      "action": "dance",
+      "action": "walk",
       "extra": 0.0,
       "id": 2,
       "memory": [
-        "[302703] had a nap",
-        "[302949] had a nap",
-        "[303005] ate berries",
-        "[303263] had a nap",
-        "[303276] bounced on the big toadstool",
-        "[303398] danced in a ring by the lantern",
-        "[303402] booped Cumulus",
-        "[303419] got booped by Sir Sniffsalot",
-        "[303518] caught a fish at the pier",
-        "[303536] chatted with Hopscotch",
-        "[303581] played in the rain",
-        "[303609] had a dance-off with Sir Sniffsalot"
+        "[305833] found treasures on the beach",
+        "[306043] had a nap",
+        "[306051] played statues with the whole island",
+        "[306112] caught the hiccups",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306228] hid from the rain under a tree",
+        "[306254] caught one of Lumi's golden sneeze feathers",
+        "[306266] ate berries",
+        "[306329] caught a fish at the pier",
+        "[306343] chatted with Hopscotch",
+        "[306356] chatted with Hopscotch",
+        "[306424] bounced on the big toadstool"
       ],
-      "mood": 0.31976962,
+      "mood": 0.7093934,
       "name": "Gloop",
       "needs": [
-        0.61433995,
-        0.50119287,
-        1.0,
-        0.41348326
+        0.7685468,
+        0.6601889,
+        0.8918043,
+        0.86888343
       ],
-      "phase": 3883.6372,
+      "phase": 1217.678,
       "pos": [
-        8.787251,
-        6.96831,
-        2.4923766
+        11.283815,
+        0.23102744,
+        1.7885896
       ],
       "seed": 0.001350224,
       "species": "Blorbo",
@@ -240,39 +240,39 @@
         0.5710874,
         0.45280856
       ],
-      "yaw": -0.35492617
+      "yaw": 2.1398025
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "walk",
+      "extra": 0.0,
       "id": 3,
       "memory": [
-        "[302684] had a nap",
-        "[303045] had a nap",
-        "[303121] had a dance-off with Lumi",
-        "[303140] put a stone on the cairn",
-        "[303208] hid from the rain under a tree",
-        "[303314] chatted with Cumulus",
-        "[303398] danced in a ring by the lantern",
-        "[303413] ate berries",
-        "[303444] got booped by Cumulus",
-        "[303459] gave Cumulus a flower",
-        "[303551] chatted with Cumulus",
-        "[303615] chatted with Truffle"
+        "[305890] put a stone on the cairn",
+        "[305964] danced in Lumi's conga line",
+        "[305984] everybody bounced on the big toadstool",
+        "[306022] danced in a ring by the lantern",
+        "[306146] had a nap",
+        "[306192] caught a fish at the pier",
+        "[306224] caught a fish at the pier",
+        "[306241] chatted with Pickles",
+        "[306244] got booped by Pickles",
+        "[306271] bounced on the big toadstool",
+        "[306356] found treasures on the beach",
+        "[306400] danced in a ring by the lantern"
       ],
-      "mood": 0.25480697,
+      "mood": 0.510601,
       "name": "Wibbles",
       "needs": [
-        0.673251,
-        0.6351038,
-        0.6230828,
-        0.735297
+        0.8965128,
+        0.72795683,
+        0.977403,
+        0.3637315
       ],
-      "phase": 7501.0073,
+      "phase": 5068.1035,
       "pos": [
-        -11.396269,
-        8.1209955,
-        2.0317476
+        -1.0164313,
+        -5.757903,
+        1.9920793
       ],
       "seed": 0.6232151,
       "species": "Blorbo",
@@ -282,38 +282,38 @@
         0.31199235,
         0.11479914
       ],
-      "yaw": 1.6319034
+      "yaw": -0.17020136
     },
     {
       "action": "sit",
       "extra": 0.0,
       "id": 4,
       "memory": [
-        "[302738] ate berries",
-        "[302776] had a dance-off with Cumulus",
-        "[303134] had a nap",
-        "[303147] chatted with Lumi",
-        "[303208] played in the rain",
-        "[303271] chatted with Lumi",
-        "[303376] caught a fish at the pier",
-        "[303415] chatted with Pickles",
-        "[303475] danced",
-        "[303540] danced in a ring by the lantern",
-        "[303587] got booped by Pickles",
-        "[303641] caught a fish at the pier"
+        "[305895] caught a fish at the pier",
+        "[305984] everybody bounced on the big toadstool",
+        "[305996] ate berries",
+        "[306003] bounced on the big toadstool",
+        "[306051] played statues with the whole island",
+        "[306109] caught the hiccups",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306252] caught one of Lumi's golden sneeze feathers",
+        "[306262] danced",
+        "[306312] had a dance-off with Truffle",
+        "[306325] chatted with Truffle",
+        "[306375] put a stone on the cairn"
       ],
-      "mood": 0.30758327,
+      "mood": 0.42904747,
       "name": "Pinchy",
       "needs": [
-        0.45846623,
-        0.62143403,
-        0.99525833,
-        0.6030883
+        0.45717233,
+        0.8128684,
+        0.8080246,
+        0.7515044
       ],
-      "phase": 5411.532,
+      "phase": 1052.7666,
       "pos": [
-        1.3865054,
-        21.036894,
+        1.2953594,
+        21.326221,
         0.65500003
       ],
       "seed": 0.7305508,
@@ -324,39 +324,39 @@
         0.37215954,
         0.86869425
       ],
-      "yaw": -1.513568
+      "yaw": 0.5471848
     },
     {
-      "action": "dance",
+      "action": "walk",
       "extra": 0.0,
       "id": 5,
       "memory": [
-        "[303048] ate berries",
-        "[303351] had a nap",
-        "[303361] ate berries",
-        "[303372] had a dance-off with Truffle",
-        "[303381] gave Sir Sniffsalot a flower",
-        "[303398] got a flower from Truffle",
-        "[303404] got booped by Truffle",
-        "[303421] chatted with Marshmallow",
-        "[303473] caught a fish at the pier",
-        "[303511] caught a fish at the pier",
-        "[303536] chatted with Gloop",
-        "[303581] played in the rain"
+        "[305870] gave Pinchy a flower",
+        "[305964] danced in Lumi's conga line",
+        "[305984] everybody bounced on the big toadstool",
+        "[305997] chatted with Cumulus",
+        "[306051] played statues with the whole island",
+        "[306176] had a nap",
+        "[306228] played in the rain",
+        "[306272] got a flower from Truffle",
+        "[306343] chatted with Gloop",
+        "[306356] chatted with Gloop",
+        "[306400] danced in a ring by the lantern",
+        "[306428] ate berries"
       ],
-      "mood": 0.53839123,
+      "mood": 0.4843876,
       "name": "Hopscotch",
       "needs": [
-        0.755001,
-        0.79573447,
-        1.0,
-        0.722673
+        0.9987618,
+        0.688275,
+        0.977403,
+        0.864034
       ],
-      "phase": 4024.9521,
+      "phase": 845.4294,
       "pos": [
-        10.972079,
-        7.971567,
-        2.3234124
+        -2.8110974,
+        -7.5609508,
+        1.8222575
       ],
       "seed": 0.43805802,
       "species": "Crabbit",
@@ -366,39 +366,39 @@
         0.34751338,
         0.7781487
       ],
-      "yaw": -3.4965181
+      "yaw": -1.3501589
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "dance",
+      "extra": 0.0,
       "id": 6,
       "memory": [
-        "[303085] had a nap",
-        "[303096] ate berries",
-        "[303208] played in the rain",
-        "[303251] caught a fish at the pier",
-        "[303314] chatted with Wibbles",
-        "[303345] put a stone on the cairn",
-        "[303398] danced in a ring by the lantern",
-        "[303402] got booped by Gloop",
-        "[303441] found treasures on the beach",
-        "[303444] booped Wibbles",
-        "[303459] got a flower from Wibbles",
-        "[303551] chatted with Wibbles"
+        "[305984] everybody bounced on the big toadstool",
+        "[305997] chatted with Hopscotch",
+        "[306051] played statues with the whole island",
+        "[306130] danced in a ring by the lantern",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306181] ate berries",
+        "[306228] played in the rain",
+        "[306284] gave Sir Sniffsalot a flower",
+        "[306382] got a flower from Truffle",
+        "[306400] danced in a ring by the lantern",
+        "[306404] booped Sir Sniffsalot",
+        "[306425] had a dance-off with Truffle"
       ],
-      "mood": 0.327902,
+      "mood": 0.38612705,
       "name": "Cumulus",
       "needs": [
-        0.6505343,
-        0.5000002,
-        0.7590851,
-        0.74989045
+        0.78459615,
+        0.614764,
+        1.0,
+        0.41568047
       ],
-      "phase": 4431.3296,
+      "phase": 1129.1934,
       "pos": [
-        2.4680135,
-        2.5429764,
-        1.9986904
+        -9.17723,
+        12.222785,
+        2.032586
       ],
       "seed": 0.9687723,
       "species": "Fluffkin",
@@ -408,39 +408,39 @@
         0.43716514,
         0.11403692
       ],
-      "yaw": -2.3272405
+      "yaw": -2.4124603
     },
     {
-      "action": "dance",
+      "action": "walk",
       "extra": 0.0,
       "id": 7,
       "memory": [
-        "[302840] had a nap",
-        "[303167] had a nap",
-        "[303208] played in the rain",
-        "[303248] danced in a ring by the lantern",
-        "[303362] put a stone on the cairn",
-        "[303368] put a stone on the cairn",
-        "[303381] put a stone on the cairn",
-        "[303403] bounced on the big toadstool",
-        "[303421] chatted with Hopscotch",
-        "[303540] danced in a ring by the lantern",
-        "[303581] hid from the rain under a tree",
-        "[303593] got booped by Sir Sniffsalot"
+        "[305597] caught a fish at the pier",
+        "[305636] caught a fish at the pier",
+        "[305704] played in the rain",
+        "[305721] danced in a ring by the lantern",
+        "[305784] had a nap",
+        "[305904] got a flower from Truffle",
+        "[305964] danced in Lumi's conga line",
+        "[305984] everybody bounced on the big toadstool",
+        "[306022] danced in a ring by the lantern",
+        "[306130] danced in a ring by the lantern",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306417] put a stone on the cairn"
       ],
-      "mood": 0.050048534,
+      "mood": 0.2764563,
       "name": "Marshmallow",
       "needs": [
-        0.7282568,
-        0.33066428,
-        0.9947778,
-        0.051111594
+        0.8638903,
+        0.799026,
+        0.8126304,
+        0.0
       ],
-      "phase": 3544.6409,
+      "phase": 1175.3872,
       "pos": [
-        9.790508,
-        4.783481,
-        2.4218316
+        -3.7500725,
+        2.5932589,
+        2.350206
       ],
       "seed": 0.7753243,
       "species": "Fluffkin",
@@ -450,39 +450,39 @@
         0.5516538,
         0.1397909
       ],
-      "yaw": 1.2158701
+      "yaw": 2.5590448
     },
     {
-      "action": "dance",
+      "action": "walk",
       "extra": 0.0,
       "id": 8,
       "memory": [
-        "[303347] gave Pickles a flower",
-        "[303351] got booped by Pickles",
-        "[303360] had a dance-off with Pickles",
-        "[303372] had a dance-off with Hopscotch",
-        "[303398] gave Hopscotch a flower",
-        "[303404] booped Hopscotch",
-        "[303493] danced",
-        "[303510] put a stone on the cairn",
-        "[303523] gave Sir Sniffsalot a flower",
-        "[303581] played in the rain",
-        "[303615] chatted with Wibbles",
-        "[303622] put a stone on the cairn"
+        "[306022] danced in a ring by the lantern",
+        "[306051] played statues with the whole island",
+        "[306130] danced in a ring by the lantern",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306254] caught one of Lumi's golden sneeze feathers",
+        "[306272] gave Hopscotch a flower",
+        "[306312] had a dance-off with Pinchy",
+        "[306325] chatted with Pinchy",
+        "[306382] gave Cumulus a flower",
+        "[306402] found treasures on the beach",
+        "[306410] danced",
+        "[306425] had a dance-off with Cumulus"
       ],
-      "mood": 0.4150687,
+      "mood": 0.68592745,
       "name": "Truffle",
       "needs": [
-        0.8696052,
-        0.39762324,
-        1.0,
-        0.37619734
+        0.96280557,
+        0.7784224,
+        0.99125755,
+        0.3826124
       ],
-      "phase": 6297.9375,
+      "phase": 1033.1425,
       "pos": [
-        11.975337,
-        5.7867384,
-        2.3068562
+        -14.925699,
+        10.685135,
+        1.3008113
       ],
       "seed": 0.40419817,
       "species": "Snootle",
@@ -492,39 +492,39 @@
         0.7798429,
         0.6361173
       ],
-      "yaw": 2.7866669
+      "yaw": -3.005342
     },
     {
-      "action": "walk",
+      "action": "idle",
       "extra": 0.0,
       "id": 9,
       "memory": [
-        "[303344] bounced on the big toadstool",
-        "[303347] got a flower from Truffle",
-        "[303351] booped Truffle",
-        "[303360] had a dance-off with Truffle",
-        "[303398] danced in a ring by the lantern",
-        "[303415] chatted with Pinchy",
-        "[303502] caught a fish at the pier",
-        "[303539] caught a fish at the pier",
-        "[303578] caught a fish at the pier",
-        "[303587] booped Pinchy",
-        "[303629] caught a fish at the pier",
-        "[303667] found treasures on the beach"
+        "[305327] chatted with Pinchy",
+        "[305374] got booped by Pinchy",
+        "[305704] played in the rain",
+        "[305758] chatted with Pinchy",
+        "[305806] had a dance-off with Hopscotch",
+        "[305817] booped Hopscotch",
+        "[305827] got booped by Hopscotch",
+        "[305886] booped Sir Sniffsalot",
+        "[306051] played statues with the whole island",
+        "[306228] played in the rain",
+        "[306241] chatted with Wibbles",
+        "[306244] booped Wibbles"
       ],
-      "mood": 0.43568814,
+      "mood": -0.42051727,
       "name": "Pickles",
       "needs": [
-        0.97323525,
-        0.6820193,
-        0.95828813,
-        0.43529642
+        0.0,
+        0.0,
+        0.98081106,
+        0.26452166
       ],
-      "phase": 9041.207,
+      "phase": 24.591429,
       "pos": [
-        -5.0536795,
-        14.502515,
-        1.7816428
+        2.765688,
+        21.302536,
+        -0.3
       ],
       "seed": 0.7968313,
       "species": "Snootle",
@@ -534,39 +534,39 @@
         0.28658164,
         0.91891617
       ],
-      "yaw": 0.6335257
+      "yaw": -2.096442
     },
     {
-      "action": "proud",
+      "action": "sit",
       "extra": 0.0,
       "id": 10,
       "memory": [
-        "[303368] had a nap",
-        "[303381] got a flower from Hopscotch",
-        "[303407] splashed in the pond",
-        "[303419] booped Gloop",
-        "[303465] bounced on the big toadstool",
-        "[303475] put a stone on the cairn",
-        "[303523] got a flower from Truffle",
-        "[303540] danced in a ring by the lantern",
-        "[303593] booped Marshmallow",
-        "[303609] had a dance-off with Gloop",
-        "[303624] put a stone on the cairn",
-        "[303652] put a stone on the cairn"
+        "[305934] put a stone on the cairn",
+        "[306051] played statues with the whole island",
+        "[306104] had a dance-off with Lumi",
+        "[306109] caught the hiccups",
+        "[306159] rode on a giant Lumi after it ate a golden mushroom",
+        "[306166] put a stone on the cairn",
+        "[306228] played in the rain",
+        "[306284] got a flower from Cumulus",
+        "[306294] ate berries",
+        "[306339] put a stone on the cairn",
+        "[306400] danced in a ring by the lantern",
+        "[306404] got booped by Cumulus"
       ],
-      "mood": 0.47098064,
+      "mood": 0.6457788,
       "name": "Sir Sniffsalot",
       "needs": [
-        0.58182645,
-        0.5815228,
-        0.9273932,
-        0.4448074
+        0.7205066,
+        0.53413475,
+        0.9450263,
+        0.7135055
       ],
-      "phase": 6833.8022,
+      "phase": 1576.7323,
       "pos": [
-        8.753963,
-        8.494706,
-        2.3851008
+        -10.708351,
+        -13.044068,
+        0.9577153
       ],
       "seed": 0.48208588,
       "species": "Snootle",
@@ -576,7 +576,7 @@
         0.98260796,
         0.79842675
       ],
-      "yaw": 2.3143725
+      "yaw": -1.6471614
     }
   ],
   "day_length": 18000.0,
@@ -1021,7 +1021,7 @@
     },
     {
       "data": {
-        "berries": 5
+        "berries": 6
       },
       "id": 60,
       "kind": "bush",
@@ -1049,7 +1049,7 @@
     },
     {
       "data": {
-        "berries": 6
+        "berries": 5
       },
       "id": 62,
       "kind": "bush",
@@ -4076,5 +4076,5 @@
     }
   ],
   "seed": 1,
-  "t": 303685.8666492376
+  "t": 306428.466648599
 }

@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-26T02:39:30.391",
+  "finished": "2026-11-26T02:39:31.980",
+  "id": "20261126-023930-391-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795657170.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795657170.png",
+    "text": "FISH"
+  },
+  "seconds": 0.5,
+  "started": "2026-11-26T02:39:31.460",
+  "status": "done"
+}

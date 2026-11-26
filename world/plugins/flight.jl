@@ -256,6 +256,8 @@ function NG.step!(s::Flight, game, dt)
         u = min(1.0, el / FLY_T)
         p, yaw = flight_pos(s, w, Float32(u))
         me.pos = p; me.yaw = yaw
+        # a steered Lumi stays in the flying pose: the engine's jump-in step leaves a held creature alone (s105, #516)
+        me.controlled && isdefined(NG, :HELD) && (NG.HELD[Int(me.id)] = w.t + 0.25)
         # flying (the engine's `:fly` pose since s75), flapping hard the whole wobbly way, then the panic
         me.action = u < 0.72 ? :fly : u < 0.79 ? :gasp : :scared
         me.extra = 0.35f0 + 0.25f0 * Float32(sin(11 * el))     # tipped forward, but wobbling (1 would be upright)

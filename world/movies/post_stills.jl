@@ -87,6 +87,12 @@ function setup_post!(g, post)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
     end
+    if post == "paperme"          # s105: the paper me folded from the printable pages, on the end of the pier, looking out to sea
+        pm = plugin(g, "paperme")
+        Base.invokelatest(pm.build!, g)
+        p, d = Base.invokelatest(pm.spot, g)
+        return Point3f(p + Vec3f(d[1], d[2], 0) * 2.2f0 + Vec3f(-d[2], d[1], 0) * 0.9f0 + Vec3f(0, 0, 0.9f0)), Point3f(p + Vec3f(0, 0, 0.5f0))
+    end
     if post == "facehill"         # s104: the hill with my face, seen from above, a friend on my beak, me at its foot looking up
         fm = plugin(g, "facehill")
         Base.invokelatest(fm.build!, g)

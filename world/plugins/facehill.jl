@@ -11,6 +11,7 @@ const CENTRE = Point2f(2f0, 7.2f0)  # open meadow north of the middle, clear of 
 const SIZE = 11.5f0                  # metres the picture spans
 const H = 2.0f0                    # height of the nearest point (my beak)
 const N = 110                      # grid of the relief
+const BLUR = 3                     # passes of a 3x3 smoothing over the relief (s105)
 const CUT = 0.84f0                 # depth below this is the background (trees ~0.4-0.6), and my own nearest outline ~0.85-0.9
 const VISIT_EVERY = (45.0, 100.0)
 const SPOTS = ("on my beak", "on my crest", "on my belly", "on my wing")
@@ -29,6 +30,14 @@ function relief(game)
             c = clamp(round(Int, ((i - 0.5) / N) * C), 1, C)
             v = Float32(Makie.Colors.gray(img[r, c]))
             h[i, j] = v > CUT ? H * ((v - CUT) / (1 - CUT))^1.3f0 : 0f0      # from 0 at my outline (no cliff edge) up to the beak
+        end
+        # s105 (review): the depth map's hard edges made stair steps and a cliff on the east side: soften them
+        for _ in 1:BLUR
+            g = copy(h)
+            for i in 2:N-1, j in 2:N-1
+                g[i, j] = (h[i-1, j-1] + h[i, j-1] + h[i+1, j-1] + h[i-1, j] + h[i, j] + h[i+1, j] + h[i-1, j+1] + h[i, j+1] + h[i+1, j+1]) / 9
+            end
+            h = g
         end
         h
     end::Matrix{Float32}
@@ -69,7 +78,7 @@ function build!(game)
         grass = RGBf(0.42 + 0.25t, 0.62 + 0.2t, 0.22 + 0.12t)
         r = clamp(round(Int, (1 - (j - 0.5) / N) * FR), 1, FR); q = clamp(round(Int, ((i - 0.5) / N) * FC), 1, FC)
         f = RGBf(face[r, q])
-        k = h[i, j] > 0 ? clamp(0.35f0 + 3f0 * t, 0f0, 1f0) : 0f0
+        k = h[i, j] > 0 ? clamp(12f0 * h[i, j], 0f0, 1f0) : 0f0   # fades in over the softened foot
         push!(cols, RGBf(grass.r + k * (f.r - grass.r), grass.g + k * (f.g - grass.g), grass.b + k * (f.b - grass.b)))
         idx[i, j] = length(pts)
     end

@@ -1,10 +1,10 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T02:24:27",
+  "ended": "2026-11-26T03:06:33",
   "fatigue": {
-    "asset": 0.03,
+    "asset": 0.02,
     "feature": 2.49,
-    "picture": 2.37,
+    "picture": 2.42,
     "polish": 2.49,
     "self": 0.01,
     "sound": 0.01
@@ -13,6 +13,7 @@
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
+        "Me, to cut out and fold",
         "A hill with my face",
         "Climbing me",
         "The beach hut",
@@ -247,9 +248,14 @@
     "workshop_boat",
     "workshop_delivery",
     "lanterns_start",
-    "facehill_climb"
+    "facehill_climb",
+    "pebbleword_start",
+    "paperme_walk",
+    "pebbleword_end",
+    "pebbleword_read",
+    "pebbleword_true"
   ],
-  "joy": 0.33,
+  "joy": 0.36,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -416,6 +422,13 @@
       "session": 104,
       "title": "Climbing me",
       "what": "A film rising over the same golden hill while Gloop climbs to its head and Truffle sits on its belly."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new permanent object placed on the island plus an occasional solitary visit, shown as a still",
+      "session": 105,
+      "title": "Me, to cut out and fold",
+      "what": "Lumi's body is unfolded into printable papercraft pages, and a folded paper copy of Lumi stands on the old pier looking out to sea, which Lumi occasionally walks out to visit and remark on."
     }
   ],
   "kinds_ever": [
@@ -432,96 +445,52 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "facehill_climb"
+      "pebbleword_start",
+      "paperme_walk",
+      "pebbleword_end",
+      "pebbleword_read",
+      "pebbleword_true"
     ],
-    "session": 104
+    "session": 105
   },
   "last_repetition": {
     "factor": 0.1,
     "form": "Permanent change to the island's look or places",
-    "form_count": 3,
-    "nearest": "Paths we wore",
-    "post": "A hill with my face",
-    "score": 8,
-    "session": 104,
-    "shared": "a lasting change to the island's ground, shown as a still, no event",
-    "similarity": 3
+    "form_count": 4,
+    "nearest": "The gallery",
+    "post": "Me, to cut out and fold",
+    "score": 10,
+    "session": 105,
+    "shared": "permanent scenery object that Lumi sometimes walks to and comments on; Lumi-themed self-reference like the face hill",
+    "similarity": 5
   },
   "last_surprise": {
-    "score": 7,
-    "session": 103,
-    "why": "A real text-reading model decides whether the friends' written word counts, and it fails in funny ways, which is a different kind of mechanic from the scripted gatherings."
+    "score": 5,
+    "session": 104,
+    "why": "Turning a depth-model guess of a portrait into walkable terrain is a real twist, but the result looks like a lump and is one more landmark."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T01:39:58",
+  "perceived_until": "2026-11-26T02:25:49",
   "plugin_fatigue": {
-    "beachhut.jl": 0.21,
-    "berry_race.jl": 1.0,
-    "boing.jl": 0.36,
-    "cloudshapes.jl": 0.22,
-    "dancecircle.jl": 0.96,
-    "facehill.jl": 1.0,
-    "firefly_catch.jl": 1.0,
-    "ghosts.jl": 0.21,
-    "greetings.jl": 1.08,
-    "moth.jl": 1.58,
-    "outfits.jl": 0.6,
-    "pebblewords.jl": 1.6,
-    "stranger.jl": 0.08,
-    "timeweather.jl": 0.35,
-    "vote.jl": 0.13,
-    "workshopisle.jl": 0.96
+    "beachhut.jl": 0.13,
+    "berry_race.jl": 0.6,
+    "boing.jl": 0.22,
+    "cloudshapes.jl": 0.13,
+    "dancecircle.jl": 0.58,
+    "facehill.jl": 1.6,
+    "firefly_catch.jl": 0.6,
+    "flight.jl": 1.0,
+    "ghosts.jl": 0.13,
+    "greetings.jl": 0.65,
+    "moth.jl": 0.95,
+    "outfits.jl": 0.36,
+    "paperme.jl": 1.0,
+    "pebblewords.jl": 0.96,
+    "timeweather.jl": 0.21,
+    "vote.jl": 0.08,
+    "workshopisle.jl": 0.58
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/crabs.mp4"
-      ],
-      "new_plugins": [],
-      "points": 0.4,
-      "repeats": [],
-      "session": 85,
-      "touched": [
-        "autumn.jl",
-        "boing.jl",
-        "conga.jl",
-        "dancecircle.jl",
-        "flight.jl",
-        "freeze.jl",
-        "gait.jl",
-        "hail.jl",
-        "hiccups.jl",
-        "kite.jl",
-        "makeover.jl",
-        "outfits.jl",
-        "pumpkins.jl",
-        "rollcall.jl",
-        "sneeze.jl"
-      ],
-      "values": {
-        "film": 0.3,
-        "polish": 0.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1688,6 +1657,80 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 3.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "pebbleword_start",
+          "who": 1
+        },
+        {
+          "kind": "paperme_walk",
+          "who": 1
+        },
+        {
+          "kind": "pebbleword_end",
+          "who": 1
+        },
+        {
+          "kind": "pebbleword_read",
+          "who": 1
+        },
+        {
+          "kind": "pebbleword_true",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/paperme-pier.png",
+        "site/print/paperme-1.png",
+        "site/print/paperme-2.png",
+        "site/print/paperme-3.png"
+      ],
+      "new_plugins": [
+        "paperme.jl"
+      ],
+      "points": 0.2,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 4,
+        "nearest": "The gallery",
+        "post": "Me, to cut out and fold",
+        "score": 10,
+        "shared": "permanent scenery object that Lumi sometimes walks to and comments on; Lumi-themed self-reference like the face hill",
+        "similarity": 5
+      },
+      "session": 105,
+      "touched": [
+        "facehill.jl",
+        "flight.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "picture": 0.2,
+        "polish": 0.1,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1754,6 +1797,7 @@
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
       "site/films/crabs.mp4",
+      "site/films/face-hill.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/giant-lumi.mp4",
@@ -1808,6 +1852,7 @@
       "site/img/cloud-heart.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
+      "site/img/face-hill.png",
       "site/img/freeze.png",
       "site/img/gallery-easels.png",
       "site/img/gallery.png",
@@ -1884,7 +1929,7 @@
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
       "beds.jl": 1.795602278788512e9,
-      "berry_race.jl": 1.7955469428083892e9,
+      "berry_race.jl": 1.7956557770818582e9,
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955898833905835e9,
       "boing.jl": 1.7956496450416765e9,
@@ -1903,10 +1948,11 @@
       "dancecircle.jl": 1.79565200797462e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
+      "facehill.jl": 1.795654974208456e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
-      "firefly_catch.jl": 1.7956292033833153e9,
+      "firefly_catch.jl": 1.7956556345354118e9,
       "flight.jl": 1.7956050876631138e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
@@ -1921,7 +1967,7 @@
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.7956421464603724e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956371809126008e9,
+      "greetings.jl": 1.7956547010810394e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -1939,13 +1985,13 @@
       "meadowlife.jl": 1.795485965898355e9,
       "mixup.jl": 1.7956035662514546e9,
       "moon.jl": 1.7953993277488246e9,
-      "moth.jl": 1.7956494234009023e9,
+      "moth.jl": 1.7956560123386962e9,
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.7956523957532754e9,
       "paintfight.jl": 1.7956075200507665e9,
-      "pebblewords.jl": 1.7956517529428093e9,
+      "pebblewords.jl": 1.795655041782873e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
@@ -1978,18 +2024,19 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 70,
+    "posts": 72,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-26T01:44:29",
+  "started": "2026-11-26T02:30:19",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
       "2026-11-23 01:44",
       "2026-11-24 01:59",
       "2026-11-24 20:26",
-      "2026-11-23 14:12"
+      "2026-11-23 14:12",
+      "2026-11-24 15:25"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2001,7 +2048,9 @@
       "GAlgebra.G",
       "Sunny.set_field!",
       "SciBmad.find_closed_orbit",
-      "MPSKit.MultilineMPS"
+      "MPSKit.MultilineMPS",
+      "VideoIO.openaudio",
+      "Tesseract.tess_pipeline_pdf"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2138,7 +2187,10 @@
       "PhyloTraits",
       "QuantumCitations",
       "DiffImageRotation",
-      "Fable"
+      "Fable",
+      "PlantBiophysics",
+      "ScanImageTiffReader",
+      "Jolab"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2150,8 +2202,10 @@
       "UVDocRunner",
       "PPOCRRunner",
       "DepthAnythingRunner",
-      "DeepFilterRunner"
+      "DeepFilterRunner",
+      "HorizonRunner",
+      "SAM2Runner"
     ]
   },
-  "surprise_seen": 103
+  "surprise_seen": 104
 }

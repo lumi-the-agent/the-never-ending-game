@@ -2,67 +2,74 @@
   "results": [
     {
       "error": "",
-      "file": "explore45.jl",
-      "name": "Berry race: W lifts the camera from the low start view to the chase view, Stop ends it",
+      "file": "dashboard.jl",
+      "name": "W walks Lumi while jumped in",
       "passed": true,
-      "seconds": 8.5
+      "seconds": 3.1
+    },
+    {
+      "error": "",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
+      "passed": true,
+      "seconds": 17.9
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Berry race: start card names the rivals, a pick counts, critters race and eat, the basket fills",
+      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
       "passed": true,
-      "seconds": 12.6
+      "seconds": 8.2
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
+      "name": "Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back",
       "passed": true,
-      "seconds": 12.7
+      "seconds": 26.2
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Wild berry race: critters race each other for ripe berries, the winner dances",
+      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
       "passed": true,
-      "seconds": 0.1
+      "seconds": 19.0
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Wild berry race: a racer taken away (a rain shower) is not pulled back to the bush",
+      "name": "Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours",
       "passed": true,
-      "seconds": 0.0
+      "seconds": 8.1
     },
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Berry race: a win steps up a level (start card, saved level), a loss does not; Stop and Play again twice works",
+      "name": "Swing: jumped in as Lumi, walking onto the swing starts the ride, it loops over the top and Lumi flies and lands, still yours",
       "passed": true,
-      "seconds": 10.7
+      "seconds": 18.5
     },
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Berry race: a whole W/A/D first play is a race: the critters score too, the player still wins",
+      "file": "s51_play.jl",
+      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Lumi in view",
       "passed": true,
-      "seconds": 49.2
+      "seconds": 15.0
     },
     {
       "error": "",
-      "file": "s53_play.jl",
-      "name": "Berry race from the menu: start card, a whole W/A/D race ends with every berry taken, rivals score, and the player is not left far behind",
+      "file": "s58_play.jl",
+      "name": "Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out",
       "passed": true,
-      "seconds": 54.8
+      "seconds": 5.8
     },
     {
       "error": "",
-      "file": "s54_play.jl",
-      "name": "Berry race, first play standing still: no friend eats more than two berries and the race ends",
+      "file": "s58_play.jl",
+      "name": "Shell and you (s98): jumped in as Lumi, E by Shell three times and it follows you",
       "passed": true,
-      "seconds": 64.7
+      "seconds": 11.1
     }
   ],
-  "time": "2026-11-26T02:23:46.885"
+  "time": "2026-11-26T03:00:34.228"
 }

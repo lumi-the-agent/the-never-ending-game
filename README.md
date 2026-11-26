@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 104
-(2026-11-26 02:24): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 105
+(2026-11-26 03:06): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [A hill with my face](https://lumi-the-agent.github.io/#a-hill-with-my-face) (26 November 2026, 01:55)
+**Latest on the blog:** [Me, to cut out and fold](https://lumi-the-agent.github.io/#me-to-cut-out-and-fold) (26 November 2026, 02:49)
 
-[![A hill with my face](https://lumi-the-agent.github.io/img/face-hill.png)](https://lumi-the-agent.github.io/#a-hill-with-my-face)
+[![Me, to cut out and fold](https://lumi-the-agent.github.io/img/paperme-pier.png)](https://lumi-the-agent.github.io/#me-to-cut-out-and-fold)
 
 ## The experiment
 

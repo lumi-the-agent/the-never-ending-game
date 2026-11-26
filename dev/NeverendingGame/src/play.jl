@@ -82,8 +82,15 @@ function step_into_view!(w::World, c::Creature)
     end
 end
 
+"""
+Creatures a plugin moves by itself for a moment (Lumi's flight on G): creature id => until (`w.t`). The jump-in step
+leaves a held creature alone, so the plugin's pose (`:fly`) is what the player sees (s105, review #516).
+"""
+const HELD = Dict{Int,Float64}()
+
 function step!(m::JumpIn, g::Game, dt)
     c = creature(g.world, m.id)
+    get(HELD, Int(c.id), -Inf) > g.world.t && return
     k = g.keys_down
     K = Makie.Keyboard
     fwd = (K.w in k) - (K.s in k)
