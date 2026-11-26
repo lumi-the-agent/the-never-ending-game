@@ -103,3 +103,4 @@
 {"cycle_tokens":8.469333e6,"interrupted":"","minutes":59.9,"model":"opus","n":103,"provider":"ClaudeCode","started":1.795649986786489e9,"stop":"end_turn","tools":86,"work_tokens":7.595199e6}
 {"cycle_tokens":7.291911e6,"interrupted":"","minutes":45.5,"model":"opus","n":104,"provider":"ClaudeCode","started":1.795653597863142e9,"stop":"end_turn","tools":71,"work_tokens":7.184376e6}
 {"cycle_tokens":2.951577e6,"interrupted":"","minutes":41.8,"model":"opus","n":105,"provider":"ClaudeCode","started":1.795656348897831e9,"stop":"end_turn","tools":130,"work_tokens":2.841582e6}
+{"cycle_tokens":3.605418e6,"interrupted":"session time limit","minutes":66.7,"model":"opus","n":106,"provider":"ClaudeCode","started":1.795658873911412e9,"stop":"","tools":74,"work_tokens":2.784011e6}

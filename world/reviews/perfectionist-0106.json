@@ -1,0 +1,292 @@
+{
+  "verdict": "needs_work",
+  "summary": "The three mini games are the island's solid core. Played for a minute each through interact!, a W/A/D steer won every one on a first try (fireflies 8/8 in 44 s, berries 10 to 4, hide and seek 4/4 in 40 s), with clear start cards, a HUD that points the way and level-up end cards. Everything around them is weaker. Jump-in's G flight leaves Lumi standing or 'scared' 8-10 m up while the camera looks at empty sea, the new missme board reads mirrored from behind, and the face hill reads as an ochre blob from every camera. Next to session 103 the island is more crowded and more yellow, but not better lit and not in better materials: still the same plastic under one sun.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "The 08:00 follow view has a good low light (long shadows over the beach), and night is a readable blue grey with lit windows. At 18:38 dozens of flat, unshaded orange discs up to 80 px wide float in front of the lens (dusk-follow*.png). All three s106 films and every post still are late morning. No traced picture has a real point or area light that lights its surroundings."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Unchanged since s103. In missme.mp4, face-hill.mp4, cloud-watching.mp4 and the new stills, pig, blob, board, workbench and hill are diffuse or plastic. The 'yesterday' ghosts are flat, unshaded white cut-outs (creatures.png), and the paper Lumi stands on a plain white card. Only the sea and the pond's glass read as real materials."
+    },
+    "world": {
+      "score": 6,
+      "why": "Since s103 (progress-overview.jpg, 4 panels: s20/s103/s105/s106) the overview gained the yellow face hill and yellow haze behind the cottage. Eye level gained a pale path of pebble-word stones and a giant yellow Lumi over the left third (progress-eye-level.jpg). Compared with s20 it is a different island: dense, varied, coloured. But the newest additions make the frame busier and yellower, not clearer. The face hill reads as a lumpy ochre mound from above (site/img/face-hill.png)."
+    },
+    "props": {
+      "score": 6,
+      "why": "Plenty of generated assets used well (cottage, swing, workbench, toadstools, easels). The missme board's text is mirrored from behind (jump-sheet-follow.png, row 2: '(nim 2) EM TUOHTIW'), and it stands in the middle of the island. Clutter grows: easels, a giant top hat and crates fill the follow views' foreground (follow2.png). The paper Lumi's legs are two navy sticks."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "The faces are good: Gloop's eyes, the crab, the hatted pigs, the little chick that follows Lumi in mini games. The 'yesterday' ghosts are faceless flat white silhouettes and show in half the close-ups."
+    },
+    "animation": {
+      "score": 5,
+      "why": "live_motion: 8 of 10 moving well. Wibbles turns 61° in one frame and a foot jumps 0.22 m (6.6 m/s); Hopscotch's claw judders. After G in jump-in, Lumi stayed :idle for ~4 s, then hung 8-10 m up in :gasp/:scared poses with its legs straight down (log: 'action scared z 8.67'). Every film jumps on frame 2 (missme 0.138, cloud-watching 0.067), and missme pops a pig and a sheep into the foreground at 7.71 s (0.152)."
+    },
+    "fun": {
+      "score": 7,
+      "why": "Played: all three mini games have a goal you understand at once, keys that answer, a clock, an end card with a new best and level 2 ('quicker fireflies', 'critters hurry sooner'), and a reward that lands on the island (fireflies to the lantern, berries to the basket). That is a real reason to play twice. Level 1 is too easy: a W-and-turn bot wins every game with half the time left. Jump-in's keys mostly do something (sneeze, hiccup, paint splats that stay, a rewind with scanlines). G's flight is the weak one: 4 s of nothing, then a lost camera. There is still no fourth game, and four sessions added things to watch, not to play."
+    },
+    "wow": {
+      "score": 6,
+      "why": "The ideas are radical (a depth model raising the meadow, papercraft of yourself, a measured 'they missed me'), but the pictures don't deliver them. The hill doesn't read as a face, and the missme film ends on Lumi's back behind a pig with the numbers unreadable at 960x540. A stranger would need the caption to get any of it."
+    },
+    "camera": {
+      "score": 4,
+      "why": "Mini game chase views are good (pitch ≤ 27°, the target ahead). In jump-in (follow), the G flight leaves the frame on empty sea with Lumi out of view, and twice the cottage stands in front of Lumi (jump-sheet-follow.png, row 2 frame 4 and row 3 frame 4). With 'Camera: orbit' picked, jump-in stays a 13 m, 32° map view where Lumi is a speck (jump-sheet.png). The missme film's payoff is shot from behind the pig and the blob."
+    },
+    "ui": {
+      "score": 5,
+      "why": "The mini game cards and HUD lines are clear. With the pointer on the controls bar (where Play and Stop are), the browser moth sits in front of the 3D view as a big white blur in every mini game shot (games-sheet.png, bottom-left of each frame). Lumi's long speech runs off the left edge in orbit (orbit.png), and hearts cover the name labels (follow-morning2.png)."
+    },
+    "style": {
+      "score": 5,
+      "why": "The clay toy look holds for the assets. On top of it come four other visual languages: flat white ghosts, flat orange dusk coins, an ochre depth-hill, and a low-poly faceted paper Lumi. More and more of the frame is the same saturated yellow (the hill, Lumi, the giant, flower fields)."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Sandbox frame 3.6 ms median, 6.3 ms p95, and 30 fps through four minutes of driven mini games."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "animation",
+      "title": "G flight in jump-in: a flying pose, and a camera that keeps Lumi in view",
+      "todo": 516,
+      "what": "Steering Lumi, G gives ~4 s of an idle Lumi ('Today... I FLY!'). Then Lumi is 8-10 m up in :gasp and :scared standing poses with its legs hanging, and for a moment the camera shows only the sea with Lumi out of frame. Elsewhere Wibbles turns 61° in one frame, and every film jumps on frame 2.",
+      "where": "plugins/flight.jl (player flight, NG.HELD), greetings.jl chase_camera!, game_clip warm-up",
+      "evidence": "reviews/perfectionist-shots/0106/jump-sheet-follow.png (row 3), play/log.txt ('C +2.5s: action fly z 10.51 pitch -17.7', 'P +2.5s: action scared z 8.67'), reviews/motion/perfectionist-0106-live/motion.png",
+      "suggestion": "Take off within 0.5 s of G with a crouch and a flap. Keep :fly with c.extra for the whole flight; any feeling goes on the face only. Frame the flight from the side and below with Lumi held near the frame centre.",
+      "done_when": "Screenshots every 0.5 s for 10 s after G in jump-in show Lumi in every frame with spread wings while z > 3 m, and the log shows action :fly whenever z is more than 1 m above the terrain.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "high",
+      "category": "materials",
+      "title": "Ghosts, paper Lumi, board: materials only a tracer can do",
+      "todo": 479,
+      "what": "The new things are plain diffuse: the 'yesterday' ghosts are flat white cut-outs with no shading, the paper Lumi is opaque on a white card, the board is plastic. Nothing in the three new films uses transmission, sheen, thin film, volumes or emission that lights anything.",
+      "where": "plugins/ghosts.jl, plugins/paperme.jl, plugins/missme.jl; site/img/*.png",
+      "evidence": "reviews/motion/perfectionist-0106-live/creatures.png, site/img/paperme-pier.png, site/img/missme-board.png",
+      "suggestion": "Ghosts as a thin-walled Glass or a scattering volume (pale, see-through, catching light at the rims), the paper Lumi as thin translucent paper (light through it from behind at the pier), the hill as something with sheen like straw or velvet moss. Show one in a traced close-up.",
+      "done_when": "A traced still (64+ samples) of a ghost shows the scene behind it through its body with brighter rims, and a live screenshot shows the ghost shaded, not a flat white shape.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "high",
+      "category": "lighting",
+      "title": "Dusk lights: glowing motes, not flat orange coins over the camera",
+      "todo": 237,
+      "what": "At 18:36-18:39 dozens of flat, unshaded orange discs float across the 3D view, some 80 px wide and right in front of the lens, hiding the board and the cottage. They neither glow nor light anything; they look like UI dots. Every film and post is still late morning.",
+      "where": "the dusk motes plugin (nightglow / fireflies); film hours in movies/*.jl",
+      "evidence": "reviews/perfectionist-shots/0106/dusk-follow.png, follow-dusk.png, follow-dusk2.png; the overviews of all three s106 films (all at noon)",
+      "suggestion": "Keep the motes small (<12 px at 5 m), soft-edged, culled within 2 m of the camera, and give a few of them a real point light in traced copies so the grass under them glows. Shoot the next film at golden hour or at night with those lights.",
+      "done_when": "A sandbox screenshot at 18:40 from the same free camera shows no disc larger than 15 px, and one traced post still at dusk or night shows grass lit by a nearby glowing thing.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "high",
+      "category": "world",
+      "title": "Face hill reads as a face from the overview and eye level",
+      "todo": 527,
+      "what": "From above, the hill is a lumpy ochre blob with drippy cliff edges next to a second yellow mound. At eye level it is a yellow wall behind the trees. No beak, eyes or crest a player could name; it is the biggest change in the progress overview since s103 and it looks like a mistake.",
+      "where": "plugins/facehill.jl",
+      "evidence": "site/img/face-hill.png, reviews/perfectionist-shots/0106/progress-overview.jpg (s103 vs s106), reviews/motion/perfectionist-0106/face-hill-overview.jpg",
+      "suggestion": "Exaggerate the relief of the features (eyes as dark pools or flower beds, beak as an orange ridge, crest as tall grass), clear the trees from the views that should read it, and smooth the cliff skirt into the meadow.",
+      "done_when": "In progress overview.png and a top-down traced still, the beak and both eyes are distinct, so a viewer names it 'Lumi's face' without the caption.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "high",
+      "category": "props",
+      "title": "The missme board reads right from both sides",
+      "todo": null,
+      "what": "The 'WITHOUT ME (2 min)' board stands in the middle of the island beside the workbench. From behind, the whole text is mirrored ('(nim 2) EM TUOHTIW'), which a player walking past sees first from half the island.",
+      "where": "plugins/missme.jl (board quad uv / one-sided picture)",
+      "evidence": "reviews/perfectionist-shots/0106/jump-sheet-follow.png row 2 frames 2-3 (play/jump-G.png, jump-G-later.png)",
+      "suggestion": "Give the board a wooden back (a second quad facing the other way with plank texture or a second correctly mapped copy of the text), like a real sign.",
+      "done_when": "Screenshots from the front and from behind the board show readable, unmirrored text or a plank back, never mirrored letters.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Jump-in keys you can see: no cottage in front of Lumi, no sea-only views",
+      "todo": 518,
+      "what": "s104 kept the chase eye out of the cottage, but the cottage still stands between the camera and Lumi: twice in 40 s of play, the roof and wall fill a third of the frame with Lumi half hidden. During G the view showed only the sea. With 'Camera: orbit' picked, jump-in stays a far map view where Lumi is a speck and no gag can be seen.",
+      "where": "plugins/greetings.jl chase_camera!, freecam.jl",
+      "evidence": "reviews/perfectionist-shots/0106/jump-sheet-follow.png (row 2 frame 4, row 3 frames 2 and 4), jump-sheet.png (orbit picked)",
+      "suggestion": "Score candidate chase views with NG.obstruction counting the cottage and actors and switch sides before Lumi is covered. Always use the chase view in jump-in whatever the dropdown says, and restore the player's camera at Stop.",
+      "done_when": "Screenshots every 2 s for 40 s of jump-in near the cottage, pressing E, Space, X, H, G, P and Z, show Lumi unblocked and inside the frame in all of them, with either camera choice.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "medium",
+      "category": "ui",
+      "title": "No moth blur over the view; speech inside the view, hearts off the names",
+      "todo": null,
+      "what": "With the pointer resting on the bottom bar (Play, Stop, the mini game menu), the browser moth sits in front of the lens as a big glowing white blur. It is in the bottom-left of every mini game shot. In orbit view Lumi's long drawled speech runs off the left edge, and emote hearts cover the creatures' names.",
+      "where": "plugins/moth.jl (ray_at_cursor outside the 3D viewport / too near the camera), speech labels, emotes",
+      "evidence": "reviews/perfectionist-shots/0106/games-sheet.png (bottom-left of each frame), orbit.png, follow-morning2.png",
+      "suggestion": "Hide the moth while the pointer is outside the 3D view's viewport or the hit is within 3 m of the eye. Clamp labels inside the view, wrap speech at ~30 characters, and lift emotes above the name line.",
+      "done_when": "A mini game screenshot taken right after clicking Play has no white blur in the 3D view; an orbit screenshot shows a whole speech line inside the view; a screenshot during hearts shows every name readable.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "A fourth mini game from the best gag; level 1 a little harder",
+      "todo": 437,
+      "what": "Four sessions in a row added things to watch or read (the board, the paper model, the hill, cloud shapes). The playable set is still three mini games and a key list. Level 1 is won by a bot that only holds W and turns: fireflies 8/8 with 16 s left, berries 10 to 4, hide and seek 4/4 with 80 s left.",
+      "where": "plugins/ (new mini game), missme.jl; firefly_catch.jl / berry_race.jl / hideseek level 1 numbers",
+      "evidence": "reviews/perfectionist-shots/0106/play/log.txt, games-sheet.png",
+      "suggestion": "Make 'did they miss me' playable: hide Lumi yourself for 60 s while friends search, and the counters become your score. Or make the shadow chase a game. Tighten level 1 so a straight-line bot only just wins.",
+      "done_when": "A fourth entry under Mini game with start card, clock, end card and 'R to play again', passing a W/A/D first-play test, and the reviewer's steer bot wins level 1 of each game with under a third of the time left.",
+      "addressed": true,
+      "agent_notes": "s107: filed as todos by the host (#516, #479, #237, #527, #532, #518, and the fourth mini game); #532 (board back) done in s107."
+    }
+  ],
+  "todos": [
+    {
+      "id": 69,
+      "action": "done",
+      "why": "Frames 3.6 ms median / 6.3 ms p95 through four minutes of driven mini games; no timeout in this review."
+    },
+    {
+      "id": 237,
+      "action": "keep",
+      "why": "Named in the dusk-motes finding; every film is still noon."
+    },
+    {
+      "id": 479,
+      "action": "keep",
+      "why": "Named in the materials finding.",
+      "title": "Ghosts, paper Lumi, board: materials only a tracer can do"
+    },
+    {
+      "id": 498,
+      "action": "keep",
+      "why": "Not checked this time; no traced dusk picture was made since."
+    },
+    {
+      "id": 513,
+      "action": "drop",
+      "why": "The slow-time film was posted in s101; a further close film is not what a player needs now."
+    },
+    {
+      "id": 516,
+      "action": "keep",
+      "why": "Named in the G flight / animation finding, which also covers #476 and #493.",
+      "title": "G flight in jump-in: a flying pose, and a camera that keeps Lumi in view"
+    },
+    {
+      "id": 476,
+      "action": "drop",
+      "why": "Merged into #516 (frame-2 jumps in all three films)."
+    },
+    {
+      "id": 493,
+      "action": "drop",
+      "why": "Lumi measured clean in live_motion; its mid-air poses are in #516."
+    },
+    {
+      "id": 518,
+      "action": "keep",
+      "why": "Named in a finding; the cottage still covers Lumi in jump-in.",
+      "title": "Jump-in keys you can see: no cottage in front of Lumi, no sea-only views"
+    },
+    {
+      "id": 499,
+      "action": "drop",
+      "why": "Played: fireflies glow green at noon, no dead stretches (8/8 in 44 s); superseded by the fun finding."
+    },
+    {
+      "id": 510,
+      "action": "keep",
+      "why": "follow2.png: a top hat and a crate fill the follow view's foreground."
+    },
+    {
+      "id": 517,
+      "action": "keep",
+      "why": "Hats looked right in creatures.png; rods not checked."
+    },
+    {
+      "id": 524,
+      "action": "drop",
+      "why": "The pebble words are pale and readable from above since s104; at eye level they read as a stepping-stone path, which is fine."
+    },
+    {
+      "id": 527,
+      "action": "keep",
+      "why": "Named in the face hill finding."
+    },
+    {
+      "id": 530,
+      "action": "keep",
+      "why": "The first real answer is still pending. Its film ends on the pig's back with the board unreadable at 960x540: reframe it on faces and a legible board insert.",
+      "title": "Did they miss me: the first real answer, filmed on faces and a board you can read"
+    },
+    {
+      "id": 437,
+      "action": "keep",
+      "why": "Named in the fun finding.",
+      "title": "A fourth mini game from the best gag; level 1 a little harder"
+    },
+    {
+      "id": 528,
+      "action": "keep",
+      "why": "A system-filed frame failure (text label offsets), still open."
+    },
+    {
+      "id": 325,
+      "action": "keep",
+      "why": "Faces used for some moments; not finished."
+    },
+    {
+      "id": 477,
+      "action": "keep",
+      "why": "Nest asset waiting for a look."
+    },
+    {
+      "id": 471,
+      "action": "keep",
+      "why": "Crab claws still don't react."
+    },
+    {
+      "id": 279,
+      "action": "keep",
+      "why": "Walks still get stuck (paperme visits taken on the way)."
+    },
+    {
+      "id": 427,
+      "action": "keep",
+      "why": "Still true."
+    }
+  ],
+  "engine": [
+    {
+      "what": "set_camera! takes only the dropdown strings ('Camera: follow'); set_camera!(game, \"follow\") silently picks :fixed. A tool for reviewers and tests should accept symbols or short names.",
+      "evidence": "dev/NeverendingGame/src/dashboard.jl:188-190"
+    },
+    {
+      "what": "game_clip's first frame differs from the second in every film (a pop at 0.04 s in all three films of s106).",
+      "evidence": "motion sheets of missme, cloud-watching and face-hill: largest jump at 0.04 s"
+    },
+    {
+      "what": "A reviewer cannot play through interact! without a test file (wait_frames needs g.tests). I had to build a TestRun by hand through eval (reviews/perfectionist-shots/0106/play.jl). A live command that runs a given function as a one-off test would help the tester and reviewers.",
+      "evidence": "dev/NeverendingGame/src/uitests.jl:141 wait_frames"
+    }
+  ],
+  "process": "The author works hard and inventively on goal 8 (radical ideas: depth-model terrain, papercraft, a measured 'did they miss me') and goal 5 (Lumi's own life and pages). The mini games got real attention in s104: berries nearer, fireflies within reach, the moth out of races, and it shows in play. But four sessions of new ideas went into things a player sees only through a caption, and the items that change every frame (materials #479, light #237, the G flight #516, the jump-in camera #518) moved little since s103. Goals 4 and 7 (rendering, tracer-only materials) are the furthest behind: no new material or real light in any s106 film. Goal 6 is half there: films are clean except frame-2 pops, but the player's own flight is still a standing Lumi in the sky. Goal 3 (physics) is idle. Goal 2 has releases but nothing at golden hour. The next sessions should make one of the new ideas look as good as it sounds (the ghosts as glass, the hill as a readable face, a flight that flies) rather than add a fifth idea."
+}

@@ -84,10 +84,12 @@ end
 uitest("Follow camera: a view low along the pier planks counts as blocked, a view from above does not") do game
     NG = NeverendingGame
     w = game.world
-    pts = [(x, y) for x in -30f0:0.5f0:30f0, y in -30f0:0.5f0:30f0 if NG.walkway_height(x, y) !== nothing]
+    # only the pier's own walkway (since s87/s104 the pond and the face hill are walkways too, and their points were taken)
+    pier = NG.WALKWAYS["pier"]
+    pts = [(x, y) for x in -30f0:0.5f0:30f0, y in -30f0:0.5f0:30f0 if Base.invokelatest(pier, x, y) !== nothing]
     check(length(pts) >= 10, "no pier found ($(length(pts)) walkway points)")
     a, b = pts[length(pts) ÷ 2], pts[end]
-    h = NG.walkway_height(a...)
+    h = Float32(Base.invokelatest(pier, a...))
     low = NG.obstruction(w, Point3f(a[1], a[2], h + 0.6f0), Point3f(b[1], b[2], h + 0.5f0))
     high = NG.obstruction(w, Point3f(a[1], a[2], h + 4.0f0), Point3f(b[1], b[2], h + 0.5f0))
     check(low >= 1 && low > high, "pier planks under the lens are not counted: low view $low, high view $high")

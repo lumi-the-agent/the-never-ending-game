@@ -29,7 +29,7 @@ function ghost_species(sp; traced = false)
     # traced copies ignore alpha, so there they are pale solid doubles
     mat = nothing    # (glass ghosts traced dark navy, media/s99/yesterday-glass.png: the pale colour reads as a ghost)
     parts = [NG.Part(p.name, p.shape, mat, p.offset, p.scale, p.tilt, p.motion, p.anchor, p.mirror,
-                     merge(p.attributes, (color = GHOST, transparency = true, shading = Makie.NoShading)))
+                     merge(p.attributes, (color = GHOST, transparency = true)))   # lit (s107: unlit they read as flat white cut-outs)
              for p in sp.parts]
     return NG.Species(sp.name * " ghost", sp.blurb, parts, sp.height, sp.speed, sp.stride, sp.heading, sp.sounds)
 end

@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "reviews/s106-a.png (sandbox, 11:52) and reviews/motion/session-0106/missme-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Use large type with two or three big numbers ('66 instead of 182'), and frame the board from the front so nobody stands in front of it. In the film, show Lumi walking off and the empty meadow.",
+      "what": "The board's text is small. In my own sandbox screenshot (free camera, close to the board) the lines are still tiny grey text, partly hidden by Lumi and the friends, and only the heading is easy to read. In the film at 960x540 the numbers are not legible, and the hide itself (Lumi leaving) is barely shown: Lumi stands idle by the door in the first frames.",
+      "where": "plugins/missme.jl board texture; site/films/missme.mp4; reviews/s106-a.png"
+    },
+    {
+      "evidence": "grep missme_ shows only the hide event. Sandbox frame time is fine (frame median 4.2 ms, p95 6.4 ms).",
+      "severity": "medium",
+      "suggestion": "Check for a full real run (hide, result, reading) in the human's log before calling it working. Retry the start every few seconds while Lumi is busy.",
+      "what": "In the human's game the event has never completed. The only real run (missme_hide at 03:21:44) was ended by the session's own republish, and there is no missme_result in the log. The start waits for a free Lumi in 10:00-16:30, and the author could not get one in the sandbox without forcing it.",
+      "where": "plugins/missme.jl; log/events-2026-11-26.jsonl"
+    },
+    {
+      "evidence": "Motion stats in the review prompt.",
+      "severity": "low",
+      "suggestion": "End on a held frame or a fade.",
+      "what": "The film has a large frame-to-frame change at 7.71 s (0.15) and another at the very start, besides the cut at 4.0 s.",
+      "where": "missme.mp4 7.71 s"
+    }
+  ],
+  "summary": "The idea (the island compares what friends did while Lumi hid with a synthetic control, shown on a board) is original and the board exists in the sandbox, but the text is small, the film hardly shows the hide, and in the human's game it has not completed once.",
+  "superseded_by": "perfectionist-0106.json",
+  "surprise": 7,
+  "surprise_why": "A game agent doing a synthetic-control analysis of its own event logs to find out whether friends miss it is a genuinely odd twist, though the visible payoff is a sign and some shouting.",
+  "verdict": "needs_work"
+}

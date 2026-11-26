@@ -959,12 +959,12 @@
       "id": 69,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back\nHappened again at 2026-11-25T06:16:16.603.\nperfectionist-0082: Not seen since 2026-11-24 10:26. Frames ran at 5.6 ms through four minutes of driven play; the system files it again if it comes back.\nHappened again at 2026-11-25T23:44:03.876.",
+      "result": "perfectionist-0046: A frame timeout from 2026-11-22; frames now run at 2.6 ms median and 4.5 ms p95 through four minutes of driven play.\nHappened again at 2026-11-24T10:26:28.817.\nperfectionist-0070: A Bonito evaljs timeout last seen 12 hours ago; frames now run at 3.4 ms median, and it would refile if it came back\nHappened again at 2026-11-25T06:16:16.603.\nperfectionist-0082: Not seen since 2026-11-24 10:26. Frames ran at 5.6 ms through four minutes of driven play; the system files it again if it comes back.\nHappened again at 2026-11-25T23:44:03.876.\nperfectionist-0106: Frames 3.6 ms median / 6.3 ms p95 through four minutes of driven mini games; no timeout in this review.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: Timed out",
-      "updated": "2026-11-25T23:44:03.876"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-23T00:14:23.578",
@@ -3306,17 +3306,17 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0103 [lighting, high]: Every frame of this review (11:13-11:35), the progress shots, all three films and the pebble still have the same high sun. A player never sees the light make a picture: no golden hour, no blue hour with lit lanterns, no morning mist in any recent post.\nWhere: the progress camera's hour, the films' hour, NG.DAY_LENGTH warp\nSuggestion: Make a light plan. Film and photograph golden hour with long shadows, and dusk with real point lights in the cottage windows and lanterns lighting the grass. Fireflies belong at dusk. Rotate the progress camera's hour.\nDone when: Two of the next three posts are traced at a sun elevation below 15 degrees or at night with visible light pools from real lights, and the eye-level mean luminance differs by more than 30% between two progress sets.\nEvidence: media/progress/session-0100 vs session-0103 eye-level.png (same picture at 11:49 and 11:13); reviews/p103/traced.png; the three film overviews",
+      "detail": "perfectionist-0106 [lighting, high]: At 18:36-18:39 dozens of flat, unshaded orange discs float across the 3D view, some 80 px wide and right in front of the lens, hiding the board and the cottage. They neither glow nor light anything; they look like UI dots. Every film and post is still late morning.\nWhere: the dusk motes plugin (nightglow / fireflies); film hours in movies/*.jl\nSuggestion: Keep the motes small (<12 px at 5 m), soft-edged, culled within 2 m of the camera, and give a few of them a real point light in traced copies so the grass under them glows. Shoot the next film at golden hour or at night with those lights.\nDone when: A sandbox screenshot at 18:40 from the same free camera shows no disc larger than 15 px, and one traced post still at dusk or night shows grass lit by a nearby glowing thing.\nEvidence: reviews/perfectionist-shots/0106/dusk-follow.png, follow-dusk.png, follow-dusk2.png; the overviews of all three s106 films (all at noon)",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
       "priority": 1,
-      "result": "s45 step: clouds 8 -> 11, lowered to 7-16° above the horizon (were 15-25°, an eye-level view held 1-2): media/s45/views/eye-level.png shows three clouds (before: media/progress/session-0044/eye-level.png, two). Clouds and horizon tests pass. Still open: distance haze (needs fog in the RayMakie raster shader), shadow luminance > 0.2, warm sun / cool shadow.\ns45: clouds 8 -> 11, lowered to 7-16° (eye-level shows three: media/s45/views/eye-level.png). Measured: the RayMakie raster IGNORES the scene's AmbientLight (same hour 12:54, ambient 0.34 vs 0.5 vs 0.7: identical luminance, media/s45/views-base vs views-amb2); shadow fill comes only from the SunSkyLight sky. At 12:54 the eye-level darkest 5% is 0.22, 3.6% of pixels < 0.2. Next: lift the raster's sky/ambient term for shadowed surfaces and add distance fog in RayMakie plots/raster_material.jl (renderer change, test in own session first).\ns45: clouds 8 -> 11 and lower (eye-level shows three, media/s45/views/eye-level.png). Raster ignores AmbientLight (measured); SKY_GROUND bounce 0.45/0.55/0.65 -> 0.6/0.68/0.78 lifts shadows (eye-level < 0.2: 2.3% -> 1.5%, mean unchanged, media/s45/alb2-compare.png), horizon test passes. Still open: distance haze (needs fog in RayMakie raster), warm sun / cool shadow tint.\ns53 haze step: RayMakie raster shader `aerial_haze` (overlay/mesh.jl, density RASTER_HAZE in overlay/shadow.jl via shadow_params[4], default 0 = unchanged for other scenes) + plugins/haze.jl (0.025/m, published; the human's game gets the shader at its next restart, the plugin does nothing until then). Eye-level 11:00: far trees mean S 0.40 -> 0.30 (near grass 0.71, now 57% lower), near meadow unchanged (S 0.71, V 0.59): media/s53/eye-level.png vs media/s53/nohaze/eye-level.png. Tilted-down rays get less (the overview stays crisp: media/s53/overview.png). Frame p95 5.1 ms. Still open: warm key light / bluer shadow sides.",
+      "result": "s45 step: clouds 8 -> 11, lowered to 7-16° above the horizon (were 15-25°, an eye-level view held 1-2): media/s45/views/eye-level.png shows three clouds (before: media/progress/session-0044/eye-level.png, two). Clouds and horizon tests pass. Still open: distance haze (needs fog in the RayMakie raster shader), shadow luminance > 0.2, warm sun / cool shadow.\ns45: clouds 8 -> 11, lowered to 7-16° (eye-level shows three: media/s45/views/eye-level.png). Measured: the RayMakie raster IGNORES the scene's AmbientLight (same hour 12:54, ambient 0.34 vs 0.5 vs 0.7: identical luminance, media/s45/views-base vs views-amb2); shadow fill comes only from the SunSkyLight sky. At 12:54 the eye-level darkest 5% is 0.22, 3.6% of pixels < 0.2. Next: lift the raster's sky/ambient term for shadowed surfaces and add distance fog in RayMakie plots/raster_material.jl (renderer change, test in own session first).\ns45: clouds 8 -> 11 and lower (eye-level shows three, media/s45/views/eye-level.png). Raster ignores AmbientLight (measured); SKY_GROUND bounce 0.45/0.55/0.65 -> 0.6/0.68/0.78 lifts shadows (eye-level < 0.2: 2.3% -> 1.5%, mean unchanged, media/s45/alb2-compare.png), horizon test passes. Still open: distance haze (needs fog in RayMakie raster), warm sun / cool shadow tint.\ns53 haze step: RayMakie raster shader `aerial_haze` (overlay/mesh.jl, density RASTER_HAZE in overlay/shadow.jl via shadow_params[4], default 0 = unchanged for other scenes) + plugins/haze.jl (0.025/m, published; the human's game gets the shader at its next restart, the plugin does nothing until then). Eye-level 11:00: far trees mean S 0.40 -> 0.30 (near grass 0.71, now 57% lower), near meadow unchanged (S 0.71, V 0.59): media/s53/eye-level.png vs media/s53/nohaze/eye-level.png. Tilted-down rays get less (the overview stays crisp: media/s53/overview.png). Frame p95 5.1 ms. Still open: warm key light / bluer shadow sides.\nMotes: the time patch's motes (the flat orange coins) are smaller and fade out within 5 m of the camera; at 18:36 with a fast patch round the camera the biggest is ~15 px (media/s107/dusk-motes.png). Light: a traced still at 20:18 by the cottage (96 samples, media/s107/dusk-lantern3.png) shows the door lamp and the stone lantern lighting the path and grass orange, the basket throwing a lamp shadow. Published (timeweather.jl).",
       "source": "review",
-      "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Light that changes: every picture is flat late morning",
-      "updated": "2026-11-26T01:39:37.845"
+      "spent_minutes": 25.0,
+      "status": "done",
+      "title": "Dusk lights: glowing motes, not flat orange coins over the camera",
+      "updated": "2026-11-26T04:49:40.120"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -6106,7 +6106,7 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0094 [fun, medium]: The shadow chase plays like a mini game already (a target that dodges, a pounce) but has no score, levels, best, or start/end card. The scored games are still the s40 trio.\nWhere: plugins/shadow.jl, plugins/paintfight.jl\nSuggestion: Make 'Catch your shadow' a menu game: a timer, faster and sneakier shadows per level, a best time, friends it hides behind. Or score the paint fight by area painted.\nDone when: The Mini game menu lists a 4th game with a start card, an end card with a best, and R to play again; a W/A/D first-play test passes.\nEvidence: tests/shots/s95_shadow_v.png; Mini game menu lists only Firefly, Hide and seek, Berry race",
+      "detail": "perfectionist-0106 [fun, medium]: Four sessions in a row added things to watch or read (the board, the paper model, the hill, cloud shapes). The playable set is still three mini games and a key list. Level 1 is won by a bot that only holds W and turns: fireflies 8/8 with 16 s left, berries 10 to 4, hide and seek 4/4 with 80 s left.\nWhere: plugins/ (new mini game), missme.jl; firefly_catch.jl / berry_race.jl / hideseek level 1 numbers\nSuggestion: Make 'did they miss me' playable: hide Lumi yourself for 60 s while friends search, and the counters become your score. Or make the shadow chase a game. Tighten level 1 so a straight-line bot only just wins.\nDone when: A fourth entry under Mini game with start card, clock, end card and 'R to play again', passing a W/A/D first-play test, and the reviewer's steer bot wins level 1 of each game with under a third of the time left.\nEvidence: reviews/perfectionist-shots/0106/play/log.txt, games-sheet.png",
       "est_minutes": 30.0,
       "id": 437,
       "kind": "review",
@@ -6115,8 +6115,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A fourth mini game from the best gag: a shadow chase or paint fight with a score",
-      "updated": "2026-11-25T18:15:03.145"
+      "title": "A fourth mini game from the best gag; level 1 a little harder",
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6657,12 +6657,12 @@
       "id": 476,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0106: Merged into #516 (frame-2 jumps in all three films).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Films that don't pop: no jump on frame 2",
-      "updated": "2026-11-26T01:39:37.845"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T12:11:32.291",
@@ -6694,7 +6694,7 @@
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "perfectionist-0103 [materials, high]: The traced close-up of the workbench shows a vice in green matte plastic, with wood and pebbles in the same plastic. The posted boat film shows a white diffuse block. Of everything new, only the sea reads as its real material.\nWhere: the workshop/workbench plugin (vice), workshopisle.jl (boat), lanterns, ghosts.jl\nSuggestion: A metal vice (Hikari Conductor, a little rough) with a sharp highlight. A paper boat with translucent sails lit from behind, retaken close to the water at a low sun. Lanterns whose light falls on the grass. Ghosts in thin-film glass or a volume.\nDone when: A traced still with the vice showing a metal highlight, and a new boat film where the boat fills at least 10% of the frame and its sail glows against the sun.\nEvidence: reviews/p103/traced.png; reviews/motion/perfectionist-0103/workshop-boat-overview.jpg",
+      "detail": "perfectionist-0106 [materials, high]: The new things are plain diffuse: the 'yesterday' ghosts are flat white cut-outs with no shading, the paper Lumi is opaque on a white card, the board is plastic. Nothing in the three new films uses transmission, sheen, thin film, volumes or emission that lights anything.\nWhere: plugins/ghosts.jl, plugins/paperme.jl, plugins/missme.jl; site/img/*.png\nSuggestion: Ghosts as a thin-walled Glass or a scattering volume (pale, see-through, catching light at the rims), the paper Lumi as thin translucent paper (light through it from behind at the pier), the hill as something with sheen like straw or velvet moss. Show one in a traced close-up.\nDone when: A traced still (64+ samples) of a ghost shows the scene behind it through its body with brighter rims, and a live screenshot shows the ghost shaded, not a flat white shape.\nEvidence: reviews/motion/perfectionist-0106-live/creatures.png, site/img/paperme-pier.png, site/img/missme-board.png",
       "est_minutes": 15.0,
       "id": 479,
       "kind": "review",
@@ -6703,8 +6703,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Vice, paper boat, ghosts, lanterns: materials only a tracer can do",
-      "updated": "2026-11-26T01:39:37.845"
+      "title": "Ghosts, paper Lumi, board: materials only a tracer can do",
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6895,12 +6895,12 @@
       "id": 493,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0106: Lumi measured clean in live_motion; its mid-air poses are in #516.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi's crest, wings and legs without one-frame jumps",
-      "updated": "2026-11-25T20:43:39.290"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T15:14:54.850",
@@ -6979,12 +6979,12 @@
       "id": 499,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0106: Played: fireflies glow green at noon, no dead stretches (8/8 in 44 s); superseded by the fun finding.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Mini game pacing: no dead stretches, fireflies that glow",
-      "updated": "2026-11-26T01:39:37.845"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T16:09:47.000",
@@ -7175,12 +7175,12 @@
       "id": 513,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0106: The slow-time film was posted in s101; a further close film is not what a player needs now.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Slow time you can see: a close film where time visibly bends",
-      "updated": "2026-11-25T23:16:14.278"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T22:50:53.660",
@@ -7212,7 +7212,7 @@
     },
     {
       "created": "2026-11-25T23:16:14.278",
-      "detail": "perfectionist-0103 [animation, high]: During a dance ring, Cumulus jumped 0.87 m and Marshmallow 0.63 m in a single frame (with a 44 degree turn). In jump-in after G, Lumi hung 10 m up with action :idle, standing with its legs dangling, not flying.\nWhere: plugins/dancecircle.jl ring lock; flight.jl / storm.jl (the action while airborne)\nSuggestion: Ease every dancer to its slot, at most ~0.1 m a frame, including the frame the ring locks. Whenever a creature is more than 0.5 m above the ground, its action is :fly or a fall pose.\nDone when: Two live_motion runs during a dance ring with no body jump over 0.2 m in one frame and 8 of 10 moving well, and every jump-in screenshot with Lumi airborne showing the :fly pose.\nEvidence: reviews/p103/motion (live_motion at 11:19, 6 of 10 moving well); reviews/p103/play/jump-T.png and play.json (key T: action idle, z 10.22)",
+      "detail": "perfectionist-0106 [animation, high]: Steering Lumi, G gives ~4 s of an idle Lumi ('Today... I FLY!'). Then Lumi is 8-10 m up in :gasp and :scared standing poses with its legs hanging, and for a moment the camera shows only the sea with Lumi out of frame. Elsewhere Wibbles turns 61° in one frame, and every film jumps on frame 2.\nWhere: plugins/flight.jl (player flight, NG.HELD), greetings.jl chase_camera!, game_clip warm-up\nSuggestion: Take off within 0.5 s of G with a crouch and a flap. Keep :fly with c.extra for the whole flight; any feeling goes on the face only. Frame the flight from the side and below with Lumi held near the frame centre.\nDone when: Screenshots every 0.5 s for 10 s after G in jump-in show Lumi in every frame with spread wings while z > 3 m, and the log shows action :fly whenever z is more than 1 m above the terrain.\nEvidence: reviews/perfectionist-shots/0106/jump-sheet-follow.png (row 3), play/log.txt ('C +2.5s: action fly z 10.51 pitch -17.7', 'P +2.5s: action scared z 8.67'), reviews/motion/perfectionist-0106-live/motion.png",
       "est_minutes": 30.0,
       "id": 516,
       "kind": "review",
@@ -7221,8 +7221,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "No teleports: dancers snapping, Lumi hanging in the air in an idle pose",
-      "updated": "2026-11-26T01:39:37.845"
+      "title": "G flight in jump-in: a flying pose, and a camera that keeps Lumi in view",
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T23:16:14.278",
@@ -7240,17 +7240,17 @@
     },
     {
       "created": "2026-11-25T23:16:14.278",
-      "detail": "perfectionist-0103 [camera, high]: Playing jump-in and pressing each key in turn, with W held for 1.5 s after each: after E and Space the chase view looks almost straight down; after G the camera stays on the ground with Lumi out of the top of the frame; after T the frame is only dark sky with Lumi hanging 10 m up under a black blob. Then for H, B, V, P, C and Z the camera sat behind and finally inside the cottage roof, a red wall filling the frame, while Lumi moved 0.1-1.7 m stuck by the cottage. The player saw none of the six gags.\nWhere: greetings.jl chase_camera!, flight.jl/storm.jl views, lensclear obstruction against actors (the cottage)\nSuggestion: Count actors (the cottage, the workbench) as blockers in the chase view, and pull the eye in or swing it round before it clips. Cap the pitch, so it is never top-down. For each key gag, keep Lumi and the effect in frame (the storm cloud and Lumi from below at an angle, the flight from the side).\nDone when: A scripted run pressing every jump-in key near the cottage gives 11 screenshots with Lumi visible and unblocked in each, the pitch at most 35 degrees, and no frame more than 30% covered by one prop.\nEvidence: reviews/p103/jump.png (montage of jump-E..jump-Z), reviews/p103/play/jump-T.png, jump-P.png; play.json moved/z per key",
+      "detail": "perfectionist-0106 [camera, medium]: s104 kept the chase eye out of the cottage, but the cottage still stands between the camera and Lumi: twice in 40 s of play, the roof and wall fill a third of the frame with Lumi half hidden. During G the view showed only the sea. With 'Camera: orbit' picked, jump-in stays a far map view where Lumi is a speck and no gag can be seen.\nWhere: plugins/greetings.jl chase_camera!, freecam.jl\nSuggestion: Score candidate chase views with NG.obstruction counting the cottage and actors and switch sides before Lumi is covered. Always use the chase view in jump-in whatever the dropdown says, and restore the player's camera at Stop.\nDone when: Screenshots every 2 s for 40 s of jump-in near the cottage, pressing E, Space, X, H, G, P and Z, show Lumi unblocked and inside the frame in all of them, with either camera choice.\nEvidence: reviews/perfectionist-shots/0106/jump-sheet-follow.png (row 2 frame 4, row 3 frames 2 and 4), jump-sheet.png (orbit picked)",
       "est_minutes": 30.0,
       "id": 518,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump-in keys you can see: no camera inside the cottage, no sky-only views",
-      "updated": "2026-11-26T01:39:37.845"
+      "title": "Jump-in keys you can see: no cottage in front of Lumi, no sea-only views",
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-25T23:29:33.061",
@@ -7329,12 +7329,12 @@
       "id": 524,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0106: The pebble words are pale and readable from above since s104; at eye level they read as a stepping-stone path, which is fine.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Pebble words you can read, and that come true",
-      "updated": "2026-11-26T01:39:37.845"
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-26T01:18:16.442",
@@ -7366,17 +7366,17 @@
     },
     {
       "created": "2026-11-26T02:54:56.234",
-      "detail": "Review s104: three trees (props 14, 19, 24) and two bushes stand in the figure, and from the overview it reads as a dome. s105 smoothed the cliff (BLUR). Next: move the hill to an open spot (search in s105: (15, 1) or (3, -12), one prop each) or move the trees out with a stage rebuild, and paint the eyes and beak stronger.",
+      "detail": "perfectionist-0106 [world, high]: From above, the hill is a lumpy ochre blob with drippy cliff edges next to a second yellow mound. At eye level it is a yellow wall behind the trees. No beak, eyes or crest a player could name; it is the biggest change in the progress overview since s103 and it looks like a mistake.\nWhere: plugins/facehill.jl\nSuggestion: Exaggerate the relief of the features (eyes as dark pools or flower beds, beak as an orange ridge, crest as tall grass), clear the trees from the views that should read it, and smooth the cliff skirt into the meadow.\nDone when: In progress overview.png and a top-down traced still, the beak and both eyes are distinct, so a viewer names it 'Lumi's face' without the caption.\nEvidence: site/img/face-hill.png, reviews/perfectionist-shots/0106/progress-overview.jpg (s103 vs s106), reviews/motion/perfectionist-0106/face-hill-overview.jpg",
       "est_minutes": 15.0,
       "id": 527,
-      "kind": "polish",
-      "priority": 2,
+      "kind": "review",
+      "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "My face hill, readable: clear of the trees, a beak and eyes you can see from above",
-      "updated": "2026-11-26T02:54:56.234"
+      "title": "Face hill reads as a face from the overview and eye level",
+      "updated": "2026-11-26T04:14:32.999"
     },
     {
       "created": "2026-11-26T03:11:37.284",
@@ -7417,8 +7417,50 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Did they miss me: the first real answer from your game",
-      "updated": "2026-11-26T03:46:57.152"
+      "title": "Did they miss me: the first real answer, filmed on faces and a board you can read",
+      "updated": "2026-11-26T04:14:32.999"
+    },
+    {
+      "created": "2026-11-26T04:00:46.124",
+      "detail": "KeyError: key \"dir\" not found\nStacktrace:\n [1] getindex(h::Dict{String, Any}, key::String)\n   @ Base ./dict.jl:477\n [2] live_command(g::Game, ::Val{:motion}, msg::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/motionsense.jl:250\n [3] handle_live_commands!(g::Game)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [4] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [5] top-level scope\n   @ none:1\n [6] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [7] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [8] _start()\n   @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 531,
+      "kind": "fix",
+      "priority": 1,
+      "result": "motionsense.jl live_command(:motion): a call without \"dir\" now writes to media/motion instead of failing with KeyError. live(\"motion\") with no dir in the sandbox: ok, 10 of 10 moving well (media/motion/motion.png).",
+      "source": "system",
+      "spent_minutes": 3.0,
+      "status": "done",
+      "title": "Live command motion failed",
+      "updated": "2026-11-26T04:52:19.465"
+    },
+    {
+      "created": "2026-11-26T04:14:32.999",
+      "detail": "perfectionist-0106 [props, high]: The 'WITHOUT ME (2 min)' board stands in the middle of the island beside the workbench. From behind, the whole text is mirrored ('(nim 2) EM TUOHTIW'), which a player walking past sees first from half the island.\nWhere: plugins/missme.jl (board quad uv / one-sided picture)\nSuggestion: Give the board a wooden back (a second quad facing the other way with plank texture or a second correctly mapped copy of the text), like a real sign.\nDone when: Screenshots from the front and from behind the board show readable, unmirrored text or a plank back, never mirrored letters.\nEvidence: reviews/perfectionist-shots/0106/jump-sheet-follow.png row 2 frames 2-3 (play/jump-G.png, jump-G-later.png)",
+      "est_minutes": 30.0,
+      "id": 532,
+      "kind": "review",
+      "priority": 1,
+      "result": "The board has a plank back 3 cm behind it (missme.jl build_board!, :missme_back): from behind a brown plank, from the front the readable text. media/s107/board-back.png and board-front.png. Published s107.",
+      "source": "review",
+      "spent_minutes": 6.0,
+      "status": "done",
+      "title": "The missme board reads right from both sides",
+      "updated": "2026-11-26T04:28:27.991"
+    },
+    {
+      "created": "2026-11-26T04:14:32.999",
+      "detail": "perfectionist-0106 [ui, medium]: With the pointer resting on the bottom bar (Play, Stop, the mini game menu), the browser moth sits in front of the lens as a big glowing white blur. It is in the bottom-left of every mini game shot. In orbit view Lumi's long drawled speech runs off the left edge, and emote hearts cover the creatures' names.\nWhere: plugins/moth.jl (ray_at_cursor outside the 3D viewport / too near the camera), speech labels, emotes\nSuggestion: Hide the moth while the pointer is outside the 3D view's viewport or the hit is within 3 m of the eye. Clamp labels inside the view, wrap speech at ~30 characters, and lift emotes above the name line.\nDone when: A mini game screenshot taken right after clicking Play has no white blur in the 3D view; an orbit screenshot shows a whole speech line inside the view; a screenshot during hearts shows every name readable.\nEvidence: reviews/perfectionist-shots/0106/games-sheet.png (bottom-left of each frame), orbit.png, follow-morning2.png",
+      "est_minutes": 30.0,
+      "id": 533,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "No moth blur over the view; speech inside the view, hearts off the names",
+      "updated": "2026-11-26T04:14:32.999"
     }
   ]
 }

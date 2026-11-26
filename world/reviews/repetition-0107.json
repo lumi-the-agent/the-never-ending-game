@@ -1,0 +1,11 @@
+{"posts": [
+{"post": "Lamps on", "what": "A traced still of the cottage path at evening with the door lamp and stone lantern lit warm orange and a basket throwing a lamp shadow; nothing happens.", "recipe": "quiet traced still of the island's evening light", "nearest": "Paths we wore", "similarity": 3, "shared": "a still showing how the ground/island looks, no event, no gag"},
+{"post": "My camera is bored too", "what": "A short film where the follow camera, following Lumi's mood, drifts off its subject to stare at a flower and the sea, then glides back after Lumi waves at it.", "recipe": "mood-driven camera behaviour, shown as a film", "nearest": "Someone's watching", "similarity": 3, "shared": "Lumi reacts to the camera/lens; otherwise a different thing (view rule, not an event)"}
+],
+"forms": [
+{"form": "Permanent change to the island's look or places", "posts": ["Me, to cut out and fold", "A hill with my face", "Climbing me", "The paper boat", "My workshop, out at sea", "Lamps on"]},
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["How much they miss me", "We wrote PIE", "Heart, then fish", "A heart up there"]},
+{"form": "Still or film of a failed fix or failed take", "posts": ["Nobody cared about the moth"]},
+{"form": "Something the visitor can now do from the browser", "posts": ["Your moth"]},
+{"form": "Change to how the island is seen (camera that follows Lumi's mood)", "posts": ["My camera is bored too"]}
+]}

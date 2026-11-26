@@ -259,8 +259,10 @@ function NG.step!(s::Flight, game, dt)
         # a steered Lumi stays in the flying pose: the engine's jump-in step leaves a held creature alone (s105, #516)
         me.controlled && isdefined(NG, :HELD) && (NG.HELD[Int(me.id)] = w.t + 0.25)
         # flying (the engine's `:fly` pose since s75), flapping hard the whole wobbly way, then the panic
-        me.action = u < 0.72 ? :fly : u < 0.79 ? :gasp : :scared
-        me.extra = 0.35f0 + 0.25f0 * Float32(sin(11 * el))     # tipped forward, but wobbling (1 would be upright)
+        # in the air it always flies (perfectionist s106: :gasp/:scared stood upright with hanging legs 8 m up); the panic
+        # at the end is the flare: upright, beating hard, feet down (`extra` 1)
+        me.action = :fly
+        me.extra = u < 0.72 ? 0.35f0 + 0.25f0 * Float32(sin(11 * el)) : min(1f0, 0.6f0 + 4f0 * Float32(u - 0.72))
         if w.t - s.lastf > (u < 0.72 ? 0.22 : 0.08)
             s.lastf = w.t
             feather!(s, w, p)

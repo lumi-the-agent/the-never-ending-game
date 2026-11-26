@@ -1,0 +1,22 @@
+JUMP walk: pitch 18.6 pos Float32[0.43505502, 0.16602182, 2.4995863]
+JUMP E: action idle goal idle z 2.5 pitch 18.4 eye-lumi 4.5 m
+   +2.5s: action idle goal idle z 2.5 pitch 18.4
+JUMP Space: action idle goal idle z 2.5 pitch 18.4 eye-lumi 4.5 m
+   +2.5s: action idle goal idle z 2.5 pitch 18.4
+JUMP X: action idle goal idle z 2.5 pitch 14.4 eye-lumi 7.0 m
+   +2.5s: action idle goal idle z 2.5 pitch 14.4
+JUMP H: action idle goal idle z 2.65 pitch 14.4 eye-lumi 7.0 m
+   +2.5s: action idle goal idle z 2.65 pitch 14.4
+JUMP G: action idle goal idle z 2.65 pitch 7.8 eye-lumi 10.8 m
+   +2.5s: action idle goal idle z 3.05 pitch 7.5
+JUMP C: action idle goal idle z 2.54 pitch 13.1 eye-lumi 8.8 m
+   +2.5s: action fly goal idle z 10.51 pitch -17.7
+JUMP P: action gasp goal idle z 2.3 pitch 13.6 eye-lumi 5.5 m
+   +2.5s: action scared goal idle z 8.67 pitch 14.6
+JUMP B: action idle goal idle z 1.98 pitch 14.6 eye-lumi 7.5 m
+   +2.5s: action idle goal idle z 2.53 pitch 14.6
+JUMP V: action idle goal idle z 1.98 pitch 14.6 eye-lumi 7.5 m
+   +2.5s: action idle goal idle z 2.13 pitch 25.9
+JUMP Z: action idle goal idle z 1.98 pitch 23.8 eye-lumi 5.2 m
+   +2.5s: action idle goal idle z 1.98 pitch 21.8
+DONE

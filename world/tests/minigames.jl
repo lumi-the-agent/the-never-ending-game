@@ -1548,7 +1548,7 @@ uitest("Flight: jumped in, G takes off and the camera keeps the flying Lumi in v
     # s105 (#516): in the air the player's Lumi flaps (the flight's pose), never stands idle or walks
     # (heights alone can't tell: the hill with my face lifts a Lumi standing on it 2 m above the terrain)
     upacts = filter(!=(:ground), acts)
-    check(!isempty(upacts) && !any(a -> a in (:idle, :walk, :run), upacts), "Lumi's pose in the air: $(acts) at heights $(round.(hs; digits = 1)) m")
+    check(!isempty(upacts) && all(==(:fly), upacts), "Lumi's pose in the air: $(acts) at heights $(round.(hs; digits = 1)) m")   # s107: the panic flies too
     fly_click(game, "Stop")
 end
 

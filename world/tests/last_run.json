@@ -2,74 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "dashboard.jl",
-      "name": "W walks Lumi while jumped in",
+      "file": "areas.jl",
+      "name": "Follow camera: a view low along the pier planks counts as blocked, a view from above does not",
       "passed": true,
-      "seconds": 3.1
-    },
-    {
-      "error": "",
-      "file": "dashboard.jl",
-      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
-      "passed": true,
-      "seconds": 17.9
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
-      "passed": true,
-      "seconds": 8.2
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back",
-      "passed": true,
-      "seconds": 26.2
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
-      "passed": true,
-      "seconds": 19.0
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours",
-      "passed": true,
-      "seconds": 8.1
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Swing: jumped in as Lumi, walking onto the swing starts the ride, it loops over the top and Lumi flies and lands, still yours",
-      "passed": true,
-      "seconds": 18.5
-    },
-    {
-      "error": "",
-      "file": "s51_play.jl",
-      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Lumi in view",
-      "passed": true,
-      "seconds": 15.0
-    },
-    {
-      "error": "",
-      "file": "s58_play.jl",
-      "name": "Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out",
-      "passed": true,
-      "seconds": 5.8
-    },
-    {
-      "error": "",
-      "file": "s58_play.jl",
-      "name": "Shell and you (s98): jumped in as Lumi, E by Shell three times and it follows you",
-      "passed": true,
-      "seconds": 11.1
+      "seconds": 0.1
     }
   ],
-  "time": "2026-11-26T03:00:34.228"
+  "time": "2026-11-26T04:37:31.465"
 }

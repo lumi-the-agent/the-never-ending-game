@@ -152,7 +152,7 @@ end
 
 function build_board!(game, png)
     sc = game.stage.scene; w = game.world
-    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:missme_board, :missme_post_l, :missme_post_r), copy(sc.plots))
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:missme_board, :missme_back, :missme_post_l, :missme_post_r), copy(sc.plots))
         delete!(sc, p)
     end
     isfile(png) || return
@@ -167,6 +167,10 @@ function build_board!(game, png)
     m = GeometryBasics.Mesh(pts, [GeometryBasics.GLTriangleFace(1, 2, 3), GeometryBasics.GLTriangleFace(1, 3, 4)];
                             uv = uv, normal = fill(f, 4))
     MM[:board] = mesh!(sc, m; color = img, name = :missme_board)
+    # a plank back 3 cm behind it, so from behind you see wood, not mirrored letters (perfectionist s106)
+    bk = [Point3f(q - f * 0.03f0) for q in pts]
+    mesh!(sc, GeometryBasics.Mesh(bk, [GeometryBasics.GLTriangleFace(1, 3, 2), GeometryBasics.GLTriangleFace(1, 4, 3)]; normal = fill(-f, 4));
+          color = RGBf(0.55, 0.38, 0.22), name = :missme_back)
     for (k, u) in ((:missme_post_l, -0.04f0), (:missme_post_r, 1.04f0))
         q = c(u, 0) - Vec3f(0, 0, z0)
         mesh!(sc, GeometryBasics.Rect3f(Vec3f(q) - Vec3f(0.05, 0.05, 0), Vec3f(0.1, 0.1, z0 + H + 0.1)); color = RGBf(0.45, 0.3, 0.17), name = k)
@@ -280,7 +284,7 @@ end
 function NG.stop!(::MissMe, game)
     isdefined(Main, :BIG_MOMENTS) && delete!(Main.BIG_MOMENTS, "missme")
     sc = game.stage === nothing ? nothing : game.stage.scene
-    sc === nothing || foreach(p -> delete!(sc, p), filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:missme_board, :missme_post_l, :missme_post_r), copy(sc.plots)))
+    sc === nothing || foreach(p -> delete!(sc, p), filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:missme_board, :missme_back, :missme_post_l, :missme_post_r), copy(sc.plots)))
     delete!(MM, :board)
 end
 

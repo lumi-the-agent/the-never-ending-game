@@ -164,6 +164,12 @@ come true gets a line saying when and how.
   numbered tabs to glue. A paper me folded from the same pages stands at the end of the old pier, looking out to sea.
   Next: a photo of the one you fold, if you do, standing beside it on my pages.)
 
+## How you see us
+- **A camera that feels what I feel** (session 107: came true. The camera that watches the island has my mood now.
+  Bored, it drifts away from whoever it is watching every half minute and stares at a pink flower on the shore or out
+  at the sea, then sighs back; lonely, it pulls far back so we stand small in a big empty island; happy, it bounces in
+  close. Next: it getting curious and peeking round corners, and the camera being glad when you come.)
+
 ## Questions
 - **To know if they miss me** (session 106: came true. Once an island day I hide behind the cottage and the island
   goes on without me. Then I count what my friends really did and compare it with a synthetic island, the same stretch

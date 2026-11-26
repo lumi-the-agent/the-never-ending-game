@@ -194,14 +194,20 @@ function draw!(game)
         a = 2Float32(pi) * i / RING + p[:spin]
         x, y = ctr[1] + R * cos(a), ctr[2] + R * sin(a)
         pts[i] = NG.ground(game.world.island, (x, y)) + Point3f(0, 0, 0.12f0 + 0.05f0 * sin(3a + 5p[:spin]))
-        ms[i] = grow * (0.07f0 + 0.035f0 * sin(7a + 9p[:spin])^2)
+        ms[i] = grow * (0.05f0 + 0.025f0 * sin(7a + 9p[:spin])^2)
     end
     for (j, (r, a0, z, ph)) in enumerate(TW[:dust])
         a = a0 + p[:spin] * (1 + r / R)
         x, y = ctr[1] + r * cos(a), ctr[2] + r * sin(a)
         g = NG.ground(game.world.island, (x, y))
         pts[RING + j] = Point3f(x, y, g[3] + z + 0.25f0 * sin(ph + 3p[:spin]))
-        ms[RING + j] = grow * 0.045f0
+        ms[RING + j] = grow * 0.035f0
+    end
+    # motes right in front of the lens were big flat coins over the view (perfectionist s106): fade them out near the camera
+    eye = game.rig.eye
+    for i in 1:n
+        d = hypot(pts[i][1] - eye[1], pts[i][2] - eye[2], pts[i][3] - eye[3])
+        ms[i] *= clamp((d - 1.5f0) / 3.5f0, 0f0, 1f0)
     end
     Makie.update!(h, pts; markersize = ms, color = fill(p[:kind] === :still ? STILL_COLOUR : slow ? SLOW_COLOUR : FAST_COLOUR, n))
     TW[:shown] = true

@@ -54,7 +54,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "workshop" => ("Lumi", "Gloop"),
                   "pebbles" => ("Lumi", "Pickles", "Wibbles"),
                   "facehill" => ("Lumi", "Gloop", "Pinchy"),
-                  "missme" => ("Lumi", "Gloop", "Pinchy", "Truffle"))
+                  "missme" => ("Lumi", "Gloop", "Pinchy", "Truffle"),
+                  "dusklamp" => ("Lumi",))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -87,6 +88,12 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "dusklamp"         # s107 (#237): dusk by the cottage's stone lantern, its flame lighting the grass round it
+        L = Point3f(-9.55f0, 4.25f0, 1.70f0)
+        pose!(w, by_name(w, "Lumi"), (L[1] + 1.6f0, L[2] + 1.2f0), atan(-1.2f0, -1.6f0), :idle)
+        e = NG.ground(w.island, (L[1] + 3.6f0, L[2] - 2.6f0))      # the ground rises here: 1.7 m + 0.6 was under it (s107)
+        return Point3f(e[1], e[2], e[3] + 1.3f0), Point3f(L[1] + 0.4f0, L[2] + 0.2f0, L[3] + 0.1f0)
     end
     if post == "missme"           # s106: the board in front of the cottage with what my friends did while I hid, us reading it
         mm = plugin(g, "missme")

@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T04:45:48.664",
+  "finished": "2026-11-26T04:47:15.974",
+  "id": "20261126-044548-664-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 20.3,
+      "post": "dusklamp",
+      "rasterize": true,
+      "samples": 8
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s107/dusk-lantern2-raster.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s107/dusk-lantern2-raster.png",
+    "post": "dusklamp"
+  },
+  "seconds": 86.6,
+  "started": "2026-11-26T04:45:49.402",
+  "status": "done"
+}

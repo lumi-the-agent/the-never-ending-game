@@ -247,6 +247,7 @@ end
 
 function live_command(g::Game, ::Val{:motion}, msg)
     g.screen === nothing && return Dict{String,Any}("ok" => false, "error" => "the game runs headless")
-    r = sense_motion!(g, String(msg["dir"]))
+    # without a "dir" the pictures go to media/motion (todo #531: a call without one failed with a KeyError)
+    r = sense_motion!(g, String(get(msg, "dir", joinpath(g.paths.media, "motion"))))
     return Dict{String,Any}("ok" => true, "text" => r.text, "images" => r.images)
 end

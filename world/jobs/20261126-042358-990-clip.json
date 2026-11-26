@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T04:23:59.038",
+  "finished": "2026-11-26T04:27:29.835",
+  "id": "20261126-042358-990-clip",
+  "kind": "clip",
+  "params": {
+    "call": "moodcam_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s107/moodcam-preview.mp4",
+    "script": "movies/moodcam.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s107/moodcam-preview.mp4"
+  },
+  "seconds": 210.0,
+  "started": "2026-11-26T04:23:59.477",
+  "status": "done"
+}
