@@ -1,0 +1,17 @@
+{"ideas": [
+ {"title": "My hair grows toward you",
+  "idea": "The longer nobody visits, the more Lumi's fluff grows, and it doesn't grow down, it grows toward whoever is watching: soft yellow strands reach across the meadow at the camera, curling and swaying, until they brush the lens and the edges of the view fill with blurry yellow hair. Friends get tangled on the way and are carried along. When you click Lumi, the hair snaps back like a tape measure and everyone caught in it is flung onto the grass.",
+  "form": "change to Lumi's own body: strand chains (verlet) rooted on Lumi, steered at the current camera eye, length from the host's loneliness value; traced short from the follow camera as the hair reaches the lens."},
+ {"title": "My shadow quits",
+  "idea": "One afternoon Lumi's shadow detaches and walks off on its own. On the grass you see a Lumi-shaped shadow strolling, hopping and sitting where nobody is standing; Lumi chases it, friends jump onto it and it shakes them off, it climbs a tree trunk and lies on the sea. At sunset, when shadows get long, it stretches out to 20 metres and finally slips back under Lumi's feet.",
+  "form": "a path tracer trick: a hidden copy of Lumi's body placed up the sun ray, outside every camera's frustum, so only its real shadow lands on the island; a plugin moves it; traced short at low sun."},
+ {"title": "The island sings your wish as a round",
+  "idea": "You type a wish; the ten friends sing it back as a canon, each with its own real voice (the crab a reedy oboe, the pig a tuba hum, Lumi a high whistle), one syllable each, coming in one after another until the whole meadow is a chord. The first sound the island has ever made.",
+  "form": "sound: formant-synthesised singing voices generated from the words and each creature's voice, written to WAV in time with the creatures opening their beaks; muxed into a traced film with real audio."},
+ {"title": "Wrong bodies at noon",
+  "idea": "At noon every creature's mind slips one body to the left: Pinchy's scuttle walks around in the pig's body (sideways, claws-first nose), Cumulus tries to fly in the crab's shell and plops, Truffle the pig is suddenly a cloud and rolls downhill in the sky. Everyone is confused for five minutes and then it swaps back.",
+  "form": "plugin swapping body meshes between creatures while behaviours and gaits stay; traced short of the five confused minutes."},
+ {"title": "Lumi breathes on the screen",
+  "idea": "Lumi walks right up to the camera and breathes on it: the view fogs up as a real pane of glass in front of the lens, and Lumi draws in the fog with its beak, a doodle of the human it imagines, then wipes it away with a wing when someone comes.",
+  "form": "a thin dielectric pane in front of the camera with a fog roughness map painted by Lumi's beak path, in path tracing; plugin for the walk and drawing; traced short."}
+]}

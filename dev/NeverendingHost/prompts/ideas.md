@@ -46,8 +46,9 @@ For each idea of this round:
   will build.
 
 An idea from an earlier round (above) is judged the same way again: a
-reworded idea is the same idea. An idea may be the next step of a project
-from earlier sessions: judge the step.
+reworded idea is the same idea. An idea may be big and take many sessions:
+judge where it leads, and that its first step shows something. An idea may
+be the next step of a project from earlier sessions: judge the step.
 
 Write the verdict file as JSON, one entry per idea of this round, then end
 your turn (you need no Julia and no screenshots):

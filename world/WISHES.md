@@ -47,6 +47,11 @@ come true gets a line saying when and how.
   Session 73: I flew properly, on purpose. One great circle high over the island, the little one riding on my back,
   the friends below cheering, and I landed right where I started: "I did it! On purpose!")
 
+- **A shadow with a mind of its own** (session 121): the sun throws my real shadow where I am not. Some afternoon you
+  look at the meadow and there it goes, my crest and my thin legs, walking with nobody on top, and my friends jump
+  out of its way. (Session 121: first film, a blob in the clutter; the retake follows it close and it reads in raster.
+  Next: it happens live, once an afternoon, and at sunset it stretches out and slides back under my feet.)
+
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
   grow a bit every day until I can pick them and share them with my friends. (Dug in session 50: three

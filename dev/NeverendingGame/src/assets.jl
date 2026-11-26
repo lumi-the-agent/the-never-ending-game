@@ -205,33 +205,52 @@ function run_job(::Val{:clip}, ws::WorkerState, id, params)
     return Dict{String,Any}(string(k) => v for (k, v) in pairs(r))
 end
 
+"""
+A job that runs as long as it takes, beyond the agent's session: world/<script> defines `call(; kwargs...)`
+(a simulation, a bake, a search, training); its result is what `call` returns. It runs in a worker of its
+own (`run_worker(; kinds = ["run"])`), so the renders never wait for it.
+"""
+function run_job(::Val{:run}, ws::WorkerState, id, params)
+    m = Module(:RunScript)
+    Base.include(m, joinpath(ws.paths.world, params["script"]))
+    kw = Dict{Symbol,Any}(Symbol(k) => (v isa AbstractVector ? Tuple(v) : v) for (k, v) in get(params, "kwargs", Dict()))
+    f = Base.invokelatest(getglobal, m, Symbol(params["call"]))   # defined in a newer world than this call
+    r = Base.invokelatest(f; kw...)
+    return r isa AbstractDict || r isa NamedTuple ? Dict{String,Any}(string(k) => v for (k, v) in pairs(r)) :
+           Dict{String,Any}("value" => r === nothing ? nothing : repr(r))
+end
+
 run_job(::Val{:restart}, ws::WorkerState, id, params) = Dict{String,Any}("restarted" => string(Dates.now()))
 
 run_job(::Val{K}, ws::WorkerState, id, params) where {K} = error("unknown job kind $(K)")
 
-function next_job(p::GamePaths)
+"The oldest queued job of a kind `takes(kind)` accepts, or `nothing`."
+function next_job(p::GamePaths, takes::Function)
     files = sort!(filter(f -> endswith(f, ".json"), readdir(jobs_dir(p))))
     for f in files
         j = read_json(joinpath(jobs_dir(p), f))
-        j["status"] == "queued" && return j
+        j["status"] == "queued" && takes(j["kind"]) && return j
     end
     return nothing
 end
 
 """
-    run_worker(; root)
+    run_worker(; root, kinds = nothing, skip = String[])
 
-Work through queued jobs, one at a time, until a `:restart` job. A failing
-job is marked failed with its error; the worker goes on with the next.
+Work through queued jobs of the `kinds` it takes (all when `nothing`) but `skip`, one at a time,
+until a `:restart` job. A failing job is marked failed with its error; the worker goes on with the
+next. The host runs two: one for everything but `:run` jobs, one for `:run` jobs, so a long run
+never holds up a render.
 """
-function run_worker(; root::AbstractString = game_root())
+function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip = String[])
     p = GamePaths(root)
     ws = WorkerState(p, TimingStats(joinpath(p.state, "timing.json")), nothing)
+    takes(kind) = (kinds === nothing || kind in kinds) && !(kind in skip)
     # a job that was running when the worker stopped runs once more (a host restart killed a
     # 12 minute render); stopped a second time it may be what kills the worker: failed
     for f in filter(f -> endswith(f, ".json"), readdir(jobs_dir(p)))
         j = read_json(joinpath(jobs_dir(p), f))
-        j["status"] == "running" || continue
+        (j["status"] == "running" && takes(j["kind"])) || continue
         j["interrupted"] = get(j, "interrupted", 0) + 1
         if j["interrupted"] == 1
             j["status"] = "queued"
@@ -241,7 +260,7 @@ function run_worker(; root::AbstractString = game_root())
         write_json(joinpath(jobs_dir(p), f), j)
     end
     while true
-        j = next_job(p)
+        j = next_job(p, takes)
         if j === nothing
             sleep(2)
             continue

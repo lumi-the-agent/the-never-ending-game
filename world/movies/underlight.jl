@@ -65,3 +65,18 @@ function underlight_clip(path; rasterize = false, samples = 16, width = 960, hei
                  rasterize, shot)
     return (path = path, u = get(Main.UNDERLIGHT, :u, -1), dim = NG.SUN_DIM[])
 end
+
+"""
+`underlight_still(path; samples = 64)`: the 'Lit from below' picture for my pages, written by the worker straight to
+`path` (a png in site/img): a half second of `underlight_clip` at `samples`, its last frame. The ring's bodies are
+cleared first, so nothing a previous film threw up hangs in the night sky.
+"""
+function underlight_still(path; samples = 64, kw...)
+    isdefined(Main, :ORBIT) && haskey(Main.ORBIT, :reset) && Main.ORBIT[:reset]()
+    tmp = tempname() * ".mp4"
+    r = underlight_clip(tmp; samples, fps = 4, seconds = 0.5, kw...)
+    run(`$(Sys.which("ffmpeg")) -y -loglevel error -sseof -0.3 -i $tmp -frames:v 1 -update 1 $path`)
+    rm(tmp)
+    Main.UNDERLIGHT[:force] = false     # the next job in this worker gets its sun back
+    return (path = path, u = r.u, dim = r.dim)
+end

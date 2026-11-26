@@ -118,8 +118,14 @@ decides. No post: 10, nothing new. `nothing` without a usable verdict (noted in 
 """
 function judge_repetition!(host, n::Int, marks::Dict{String,Int})
     jp = host.jp
-    since = datetime2unix(DateTime(load_mood(jp)["started"])) - local_utc_offset()
+    # from the end of the last session: a pending post that went up between the sessions counts here
+    m = load_mood(jp)
+    since = datetime2unix(min(DateTime(m["started"]), DateTime(get(m, "ended", m["started"])))) - local_utc_offset()
     ids = Set(p.id for p in session_posts(jp, since))
+    if isempty(ids) && has_pending(jp)
+        record!(host.activity, "repetition of session $n", "host", "its post is still rendering (pending): judged when it is up")
+        return nothing
+    end
     if isempty(ids)
         record!(host.activity, "repetition of session $n", "review", "nothing posted: worth ×0.10")
         return Dict{String,Any}("session" => n, "score" => 10, "similarity" => 10, "post" => "", "nearest" => "",

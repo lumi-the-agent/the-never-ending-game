@@ -4,7 +4,7 @@
 # turns in the character's BonitoAgents chat (dashboard.jl), where the human
 # watches it and can write to it at any time. Each session starts a fresh agent
 # conversation in that chat (its history stays on the page). The host sends the
-# session's prompt, a follow-up when a turn ends early (the same ones as ever:
+# session's opening, a follow-up when a turn ends (the rest of the prompt after the opening, then the same ones as ever:
 # the human's messages, posts, boredom, keep going), the wrap-up into the running
 # turn five minutes before the end or when the budget runs low, and stops the
 # turn at the deadline.
@@ -90,7 +90,8 @@ cancel_run!(run::AgentRun) = ACP.cancel!(run.client)
 The work session `label` in the dashboard chat (see the top of this file). `followups(run)` is
 what to send when a turn ends before the session does (`nothing`: the session is over).
 """
-function run_chat_session!(host, label::AbstractString, settings::AgentSettings, prompt::AbstractString; followups)
+function run_chat_session!(host, label::AbstractString, settings::AgentSettings, prompt::AbstractString; followups,
+                           timed = run -> nothing)
     d = host.dashboard
     model = character_model(d)
     fresh_conversation!(d, host.jp)
@@ -101,6 +102,8 @@ function run_chat_session!(host, label::AbstractString, settings::AgentSettings,
     try
         send_turn!(model, prompt)
         while true
+            note = timed(run)                       # a word into the running turn at a set time (the opening's end)
+            note === nothing || try_steer!(run, note)
             left = run.deadline - time()
             b = update_budget!(host.budget)
             reason = b["state"] == "exhausted" ? "the budget is used up" : b["state"] == "low" ? "the budget is running low" :

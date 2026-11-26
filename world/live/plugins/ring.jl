@@ -28,6 +28,8 @@ const LOOK = Dict(:pumpkin => (RGBf(0.96, 0.5, 0.12), 0.45f0), :ball => (RGBf(0.
                   :paint => (RGBf(0.35, 0.55, 1.0), 0.2f0))
 
 struct Ring <: System end
+const RIDE_MAX = 300f0   # s of ride time: past it a rider glides home whatever its orbit does
+const RIDE_FAR = 75f0    # m from the middle: past it, too
 push!(NG.BUSY_GOALS, :orbit)
 
 nrm(v) = sqrt(sum(abs2, v))
@@ -127,7 +129,8 @@ function ride!(game, c; laps = 4)
     p0 = Point3f(c.pos[1], c.pos[2], c.pos[3] + 0.4f0)
     rv = Vec3f(p0 - centre()); r0 = nrm(rv)
     v = tangent(rv) * vcirc(r0) * 1.12f0 + Vec3f(0, 0, 7f0)
-    O[:rider] = (c = c, p = p0, v = v, laps = laps, ang = 0f0, t0 = w.t, low = true, under = false)
+    O[:rider] = (c = c, p = p0, v = v, laps = laps, ang = 0f0, t0 = w.t, low = true, under = false,
+                 home = Point3f(c.pos), el = 0f0, homing = false, tdone = Inf32)
     NG.say!(w, c, "Wheeeee!"; duration = 1.6)
     NG.emit!(w, :ring_ride; who = c.name)
     true
@@ -139,6 +142,34 @@ function step_rider!(game, dt)
     w = game.world; c = R.c
     if c.controlled
         delete!(O, :rider); return
+    end
+    if !haskey(R, :el)       # a rider from before s121 (one may be lost far out): it comes home now
+        R = merge(R, (home = Point3f(NG.ground(w.island, (centre()[1], centre()[2]))), el = 0f0, homing = true, tdone = Inf32))
+    end
+    el = R.el + Float32(dt)
+    # a ride always ends at home: after its laps (plus a grace for the landing pass), past RIDE_MAX s, or past
+    # RIDE_FAR m from the middle, the friend stops falling freely and glides back to where it took off
+    homing = R.homing || el > RIDE_MAX || nrm(R.p - centre()) > RIDE_FAR || el > R.tdone + 40f0
+    if homing
+        homing && !R.homing && NG.say!(w, c, rand(("Coming home!", "Too far! Back I go!", "Wait for meee!")); duration = 1.8)
+        d = R.home - R.p; dist = nrm(d)
+        if dist < 0.8f0
+            c.pos = R.home
+            NG.say!(w, c, "...I'm home."; duration = 1.8)
+            NG.emit!(w, :ring_landed; who = c.name)
+            c.goal = NG.Goal()
+            delete!(O, :rider)
+            return
+        end
+        # aim a little above home until close, so the glide comes down onto the meadow, not through it
+        aim = R.home + Vec3f(0, 0, min(4f0, 0.25f0 * dist)) - R.p
+        vd = aim / max(nrm(aim), 1f-3) * clamp(0.6f0 * dist, 2.5f0, 14f0)
+        v = R.v + (vd - R.v) * min(1f0, 1.8f0 * Float32(dt))
+        p = R.p + Float32(dt) * v
+        c.pos = p; c.yaw += 3f0 * Float32(dt); c.action = :idle
+        c.goal = NG.Goal(:orbit, c.pos, :idle, 30.0, w.t + 30, true, 0, false)
+        O[:rider] = merge(R, (p = p, v = v, el = el, homing = true))
+        return
     end
     P = [R.p]; V = [R.v]
     n = max(1, ceil(Int, dt / (1 / 120)))
@@ -173,7 +204,8 @@ function step_rider!(game, dt)
         delete!(O, :rider)
         return
     end
-    O[:rider] = (c = c, p = p, v = v, laps = laps, ang = ang, t0 = R.t0, low = near, under = under)
+    O[:rider] = merge(R, (p = p, v = v, laps = laps, ang = ang, low = near, under = under, el = el,
+                          tdone = laps <= 0 ? min(R.tdone, el) : R.tdone))
 end
 
 function NG.step!(::Ring, game, dt)

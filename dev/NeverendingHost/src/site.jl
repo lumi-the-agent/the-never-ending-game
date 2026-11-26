@@ -165,6 +165,7 @@ end
 "What is wrong with this session's posts, or `nothing`: none yet, one without a picture or film, one too long."
 function post_problems(jp::JailPaths, run)
     posts = session_posts(jp, run.started)
+    isempty(posts) && has_pending(jp) && return nothing          # it goes up when its render is done
     isempty(posts) && return "Nothing new on your pages this session yet: what you make (rule 14) goes out as a post, " *
                              "path traced pictures or a short film with a caption of one to three sentences, dated with the real time."
     bare = [p.id for p in posts if !p.media]

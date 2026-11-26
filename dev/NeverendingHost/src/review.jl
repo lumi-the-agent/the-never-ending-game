@@ -4,13 +4,16 @@
 # as a player at the start of every session (prompts/session.md) and judges it
 # by its own taste.
 #
-# After a work session that finished todos or changed files, a reviewer
-# session starts in its own jail (read only except world/reviews), usually
-# with another model. It gets what a player or maintainer would get: the todo,
-# the author's journal claims, the list of changed files and the sandbox game,
-# never the author's conversation. It writes a verdict file; findings that are
-# not `pass` go to the top of the author's next session prompt and stay there
-# until the author marks the review addressed.
+# After a work session a reviewer judges the posts that went up since the last
+# review (a pending post that came up between sessions included), in its own
+# jail (read only except world/reviews), never seeing the author's conversation:
+# as a viewer would see them, and against the plugins the session changed (what
+# is real, what is only drawn). It scores surprise and fun, which move the
+# character's mood. It needs no sandbox, so it runs beside the next session;
+# until session 121 the reviewer also played the sandbox after every session,
+# and the next session waited for it. The character tests its own work. The
+# verdict file's findings go into the author's next session prompt and stay
+# there until the author marks the review addressed.
 #
 # Every few sessions a perfectionist review (art director, game designer and
 # demanding player in one) scores the whole game 0-10 per category against the
@@ -29,34 +32,25 @@ function short_path(jp::JailPaths, p::AbstractString)
     return startswith(p, jp.root) ? relpath(p, jp.root) : p
 end
 
-function work_review_prompt(host, n::Int, done::Vector, journal::AbstractString, changed::Vector{String},
-                            removed::Vector{String}, out::AbstractString)
-    jp = host.jp
+"The time from which posts are the next review's (`.jail/posts/review_mark.json`); `t0` before the first."
+review_mark(jp::JailPaths, t0::Real) =
+    isfile(review_mark_path(jp)) ? Float64(read_json(review_mark_path(jp))["since"]) : Float64(t0)
+
+review_mark_path(jp::JailPaths) = joinpath(jp.state, "posts", "review_mark.json")
+
+set_review_mark!(jp::JailPaths, t::Real) =
+    (mkpath(dirname(review_mark_path(jp))); write_json(review_mark_path(jp), Dict("since" => t, "time" => now_string())))
+
+function post_review_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, plugins::Vector{String}, out::AbstractString)
     io = IOBuffer()
-    println(io, "# Review of work session $n\n")
-    println(io, "Write your verdict to `$(out)`.\n")
-    if !isempty(done)
-        println(io, "## Todos the author marked done")
-        for t in done
-            println(io, "- #$(t["id"]) $(t["title"])")
-            isempty(t["detail"]) || println(io, "  detail: ", t["detail"])
-            isempty(t["result"]) || println(io, "  author's result: ", t["result"])
-        end
-        println(io)
-    end
-    println(io, "## The author's journal for this session")
-    println(io, isempty(strip(journal)) ? "(the author wrote no journal entry: that is itself a finding)" : journal)
-    println(io)
-    println(io, "## Files changed ($(length(changed)))")
-    foreach(p -> println(io, "- ", short_path(jp, p)), first(changed, 80))
-    length(changed) > 80 && println(io, "- … and $(length(changed) - 80) more")
-    isempty(removed) || (println(io, "\nRemoved:"); foreach(p -> println(io, "- ", short_path(jp, p)), removed))
+    println(io, "# Review after session $n: the posts that went up\n\nWrite your verdict to `$(out)`.\n")
+    post_lines(io, posts, boards)
+    println(io, "## Plugins the session added or changed")
+    isempty(plugins) ? println(io, "(none)") : foreach(p -> println(io, "- `$p`"), plugins)
     println(io)
     ph = post_history_lines(jp)
     isempty(ph) || println(io, ph, "\n")
-    films = first(sort!(filter(p -> endswith(p, ".mp4") && isfile(p), changed); by = p -> !occursin("/site/", p)), 4)
-    print(io, film_lines(films, joinpath(reviews_dir(jp), "motion", @sprintf("session-%04d", n))))
-    print(io, prompt_file("reviewer.md"), "\n", prompt_file("review.md"))
+    print(io, named(prompt_file("review.md"), jp))
     return String(take!(io))
 end
 
@@ -111,9 +105,9 @@ function perfectionist_prompt(jp::JailPaths, n::Int, out::AbstractString)
 end
 
 function run_review!(host, label::AbstractString, prompt::AbstractString, out::AbstractString;
-                     settings::AgentSettings = host.cfg.review, followups = run -> nothing)
+                     settings::AgentSettings = host.cfg.review, followups = run -> nothing, current::Bool = true)
     host.reviews += 1
-    run = run_agent!(host, :review, label, settings, prompt; followups)
+    run = run_agent!(host, :review, label, settings, prompt; followups, current)
     run === nothing && return nothing
     verdict, why = read_agent_json(out)
     if verdict === nothing
@@ -125,35 +119,33 @@ function run_review!(host, label::AbstractString, prompt::AbstractString, out::A
     return verdict
 end
 
-function review_work!(host, n::Int, t0::Real, marks::Dict{String,Int}, before::Dict)
+"""
+    review_posts!(host, n, t0, changed) -> verdict or nothing
+
+The review after session `n` (started at `t0`): the posts that went up since the last review, as a
+viewer sees them (their pictures, and a storyboard of each film), checked against the plugins the
+session `changed`, scored for surprise and fun. `nothing` without a new post (noted).
+"""
+function review_posts!(host, n::Int, t0::Real, changed::Vector{String})
     jp = host.jp
-    done = todos_done_since(jp, t0)
-    changed, removed = changed_files(before, file_manifest(watched_dirs(jp)))
-    filter!(p -> !startswith(p, reviews_dir(jp)), changed)
-    isempty(done) && isempty(changed) && return nothing
+    label = "review of session $n"
+    since, t = review_mark(jp, t0), time()
+    posts = [viewed_post(jp, id, html) for (id, html) in session_pieces(jp, since)]
+    set_review_mark!(jp, t)
+    if isempty(posts)
+        record!(host.activity, label, "host", "no post went up since the last review: nothing to review")
+        return nothing
+    end
     out = review_path(jp, @sprintf("session-%04d", n))
-    prompt = work_review_prompt(host, n, done, journal_since(jp, marks), changed, removed, out)
-    return run_review!(host, "review of session $n", prompt, out; followups = own_eyes(jp))
+    dir = joinpath(reviews_dir(jp), "posts", @sprintf("review-%04d", n))
+    boards = Dict{String,Any}(f => storyboard_or_nothing(f, dir) for p in posts for f in p.media if is_film(f))
+    plugins = sort!(filter(p -> endswith(p, ".jl") && occursin("/plugins/", p), changed))
+    return run_review!(host, label, post_review_prompt(jp, n, posts, boards, plugins, out), out; current = false)
 end
 
-"""
-A follow-up for a review that took no screenshot of its own (no new image
-under `world/reviews/`), once: the review of session 38 judged the new sea
-from the author's screenshots only.
-"""
-function own_eyes(jp::JailPaths)
-    asked = Ref(false)
-    return function (run)
-        asked[] && return nothing
-        for (dir, _, files) in walkdir(reviews_dir(jp)), f in files
-            endswith(f, ".png") && mtime(joinpath(dir, f)) >= run.started && return nothing
-        end
-        asked[] = true
-        return "Your verdict rests on the author's evidence only: you took no screenshot of your own. Take live " *
-               "screenshots of what this session changed (`NeverendingGame.live_screenshot(\"world/reviews/<name>.png\")`, " *
-               "other cameras or times of day where it matters), look at them, then rewrite the verdict file."
-    end
-end
+"`review_posts!` in the background: it needs no sandbox, so the next session does not wait for it."
+review_posts_later!(host, n::Int, t0::Real, changed::Vector{String}) =
+    errormonitor(@async Base.invokelatest(review_posts!, host, n, t0, changed))
 
 "The session of the latest perfectionist verdict in `world/reviews` (0 before the first)."
 function last_perfectionist(jp::JailPaths)

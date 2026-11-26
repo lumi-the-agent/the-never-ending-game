@@ -135,7 +135,7 @@ function jailed(jp::JailPaths, cfg::HostConfig, role::Symbol, argv::Vector{Strin
     # the games' and the worker's own output, read only at its real path in the masked `.jail`, so an
     # agent finds out why its game does not start; the agents' logs stay hidden (reviews are blind)
     if role in (:agent, :review)
-        for name in ("game", "sandbox", "worker")
+        for name in ("game", "sandbox", "worker", "runner")
             isfile(log_path(jp, name)) && push!(ro_binds, log_path(jp, name) => log_path(jp, name))
         end
     end

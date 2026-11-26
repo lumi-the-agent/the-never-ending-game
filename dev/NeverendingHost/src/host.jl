@@ -72,10 +72,16 @@ function start(root::AbstractString = dirname(dirname(dirname(@__DIR__))); agent
                                          joinpath(game_run(jp, instance), "web.sock")))
         end
     end
-    worker && start_service!(host, "worker", cfg -> "using NeverendingGame; NeverendingGame.run_worker()"; network = true)
+    if worker
+        # renders, assets and the rest, one at a time; `:run` jobs (as long as they take) in a worker of their own
+        start_service!(host, "worker", cfg -> "using NeverendingGame; NeverendingGame.run_worker(; skip = [\"run\"])"; network = true)
+        start_service!(host, "runner", cfg -> "using NeverendingGame; NeverendingGame.run_worker(; kinds = [\"run\"])";
+                       network = true, role = :worker)
+    end
     # the character's chat beside its game, where the sessions run (experimental, `[agent] chat`)
     agent && cfg.agent_chat && (host.dashboard = start_dashboard(host))
     agent && (host.loop = errormonitor(@async work_loop(host, revise)))
+    agent && errormonitor(@async pending_posts_loop(host))
     host.status_task = errormonitor(@async while host.running
         write_agent_status(host)
         sleep(5)
@@ -150,9 +156,46 @@ function start_game!(host::Host, instance::Symbol)
     host.services[name] = s
     start!(s, jp, () -> load_config(jp); on_exit = (s, info) -> begin
         record!(host.activity, name, "host", "$(name) exited with code $(info["exitcode"]) after $(info["uptime"]) s")
+        Base.invokelatest(restore_good_env!, host, s)
         Base.invokelatest(warn_agent_game_down, host, s)
     end)
     return s
+end
+
+# ── the game's Julia environment: the character adds what it likes, a broken one goes back ──
+
+"The files of the game's Julia environment (the character's: it may `Pkg.add` anything)."
+const ENV_FILES = ("Project.toml", "Manifest.toml")
+
+"Where the host keeps the environment the human's game last ran on for two minutes or more."
+good_env_dir(jp::JailPaths) = joinpath(jp.state, "env-good")
+
+"Keep the game's environment as the one to go back to, when the human's game has run on it for two minutes."
+function keep_good_env!(host)
+    s = get(host.services, "game", nothing)
+    (s !== nothing && isrunning(s) && time() - s.started >= 120) || return nothing
+    mkpath(good_env_dir(host.jp))
+    foreach(f -> cp(joinpath(host.jp.root, f), joinpath(good_env_dir(host.jp), f); force = true), ENV_FILES)
+    return nothing
+end
+
+"""
+When a game crashed at its start twice in a row and the environment changed since the human's game
+last ran well on it: that environment back (`keep_good_env!`), noted and told to the character.
+"""
+function restore_good_env!(host, s::Service)
+    jp = host.jp
+    crash_streak(s) == 2 || return nothing
+    good = good_env_dir(jp)
+    all(f -> isfile(joinpath(good, f)), ENV_FILES) || return nothing
+    all(f -> read(joinpath(good, f)) == read(joinpath(jp.root, f)), ENV_FILES) && return nothing
+    foreach(f -> cp(joinpath(good, f), joinpath(jp.root, f); force = true), ENV_FILES)
+    which = s.name == "game" ? "the human's game" : "your sandbox"
+    record!(host.activity, s.name, "host", "put the game environment back as the human's game last ran on it: $which did not start twice")
+    tell!(jp, "Host: $which did not start twice in a row after the Julia environment changed, so Project.toml and " *
+              "Manifest.toml are back as the human's game last ran with them. What you added is gone from them; " *
+              "add it again once you know why it broke the game."; from = "host")
+    return nothing
 end
 
 """
@@ -184,10 +227,9 @@ function warn_agent_game_down(host::Host, s::Service)
     record!(host.activity, run.label, "host", "told the agent that the game does not start" * (steered ? "" : " (in its inbox)"))
 end
 
-"Keep `code(cfg)` running as a Julia process in the jail of role `name`."
-function start_service!(host::Host, name::AbstractString, code::Function; network::Bool)
+"Keep `code(cfg)` running as a Julia process in the jail of `role`."
+function start_service!(host::Host, name::AbstractString, code::Function; network::Bool, role::Symbol = Symbol(name))
     jp = host.jp
-    role = Symbol(name)
     s = Service(name, cfg -> jailed(jp, cfg, role, julia_argv(jp, code(cfg); threads = cfg.threads);
                                     proxy = network ? host.proxy : nothing))
     host.services[name] = s
@@ -200,7 +242,7 @@ function stop!(host::Host)
     host.running = false
     host.current === nothing || cancel_run!(host.current)
     for (name, s) in host.services
-        stop!(s; ask = s -> name == "worker" || ask_game_shutdown(host.jp, name == "game" ? :live : :sandbox))
+        stop!(s; ask = s -> name in ("worker", "runner") || ask_game_shutdown(host.jp, name == "game" ? :live : :sandbox))
     end
     close(host.proxy)
     foreach(close, host.webs)
@@ -301,16 +343,54 @@ function service_lines(host::Host)
     return String(take!(io))
 end
 
+"How long the session's first turn, with nothing asked, may run before the character is asked to end it."
+const OPENING_MINUTES = 15
+
+"""
+The session's first turn: nothing asked of the character, only what it chose to keep (its memory,
+its projects) and the workbench. The rest of the prompt (`work_prompt`) follows when the turn ends;
+after `OPENING_MINUTES` it is asked to end it. Until session 121 the whole prompt came at once, with
+ten minutes to look around in its step 3: sessions 114-121 pitched after 7-18 tool calls and never
+opened RomeoDB, the time lost to everything else the prompt asked for.
+"""
+function opening_prompt(host::Host, n::Int, seen::AbstractDict)
+    jp, cfg = host.jp, host.cfg
+    io = IOBuffer()
+    println(io, "# Session $n, ", Dates.format(Dates.now(), "yyyy-mm-dd HH:MM"), "\n")
+    println(io, replace(named(prompt_file("opening.md"), jp), "{{MINUTES}}" => @sprintf("%.0f", cfg.agent.session_minutes),
+                        "{{OPENING}}" => string(OPENING_MINUTES)))
+    println(io, memory_lines(jp), "\n")
+    pj = project_lines(jp)
+    isempty(pj) || println(io, pj, "\n")
+    print(io, stumble_lines(seen["finds"], seen["name"]))
+    return String(take!(io))
+end
+
+"The projects the character keeps (`world/projects/*.md`): each one's title and next step."
+function project_lines(jp::JailPaths)
+    dir = joinpath(jp.world, "projects")
+    files = isdir(dir) ? sort!(filter(endswith(".md"), readdir(dir))) : String[]
+    isempty(files) && return ""
+    io = IOBuffer()
+    println(io, "## Your projects (`world/projects`)")
+    for f in files
+        text = read(joinpath(dir, f), String)
+        title = match(r"^# (.+)$"m, text)
+        next = match(r"^Next: (.+)$"m, text)
+        println(io, "- **", title === nothing ? f : strip(title[1]), "** (`projects/$f`)", next === nothing ? "" : ": next, " * first(strip(next[1]), 200))
+    end
+    return String(take!(io))
+end
+
 function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
     jp, cfg = host.jp, host.cfg
     io = IOBuffer()
-    println(io, "# Work session $n, ", Dates.format(Dates.now(), "yyyy-mm-dd HH:MM"), "\n")
-    @printf(io, "You run on %s%s. This session ends after %.0f minutes.\n\n", cfg.agent.provider,
+    println(io, "# The rest of session $n\n")
+    @printf(io, "You run on %s%s. This session ends %.0f minutes after it started.\n\n", cfg.agent.provider,
             isempty(cfg.agent.model) ? "" : " ($(cfg.agent.model))", cfg.agent.session_minutes)
     println(io, named(prompt_file("RULES.md"), jp), "\n")
     goals = goals_text(jp)
     isempty(goals) || println(io, goals, "\n")
-    println(io, memory_lines(jp), "\n")
     println(io, eye_lines(seen["eyes"], seen["name"]), "\n")
     println(io, motion_lines(seen["motion"], seen["name"]), "\n")
     println(io, mood_lines(jp), "\n")
@@ -319,8 +399,6 @@ function work_prompt(host::Host, n::Int, msgs, seen::AbstractDict)
     sl = site_lines(jp)
     isempty(sl) || println(io, sl, "\n")
     println(io, perception_lines(seen, msgs), "\n")
-    fl = stumble_lines(seen["finds"], seen["name"])
-    isempty(fl) || println(io, fl, "\n")
     rl = reader_lines(seen["readers"])
     isempty(rl) || println(io, rl, "\n")
     println(io, budget_lines(host), "\n")
@@ -468,7 +546,8 @@ end
 
 "`keep_going` (or, for a bored character with nothing new yet, `bored_followup`; for screenshots on its pages, `site_followup`), noted in the activity feed."
 function continue_session(host::Host, run)
-    text = something(post_followup(host.jp, run), bored_followup(host.jp, run), site_followup(host.jp, run), Some(keep_going(run)))
+    text = first_of(() -> post_followup(host.jp, run), () -> bored_followup(host.jp, run), () -> site_followup(host.jp, run),
+                    () -> keep_going(run))
     text === nothing || record!(host.activity, run.label, "host", "the agent ended its turn early; the session goes on")
     return text
 end
@@ -504,15 +583,22 @@ function one_session!(host::Host)
     seen["readers"] = reader_comments(host)
     seen["finds"] = stumble!(jp)
     mood_session_start!(jp, !isempty(seen["plays"]) || any(((_, m),) -> startswith(get(m, "from", "human"), "human"), msgs))
-    prompt = work_prompt(host, n, msgs, seen)
-    atomic_write(joinpath(jp.run, "last_prompt.md"), prompt)
+    keep_good_env!(host)
+    opening = opening_prompt(host, n, seen)
+    rest = Ref{Union{Nothing,String}}(work_prompt(host, n, msgs, seen))
+    atomic_write(joinpath(jp.run, "last_prompt.md"), opening * "\n\n---\n\n" * rest[])
     host.agent_state, host.agent_detail = "working", ""
-    followups = r -> something(human_followup(host), ideas_followup(host, n, r), post_critic_followup(host, n, r),
-                                continue_session(host, r), Some(nothing))
+    take_rest!() = (p = rest[]; rest[] = nothing; p)
+    followups = r -> first_of(take_rest!, () -> human_followup(host), () -> ideas_followup(host, n, r),
+                              () -> post_critic_followup(host, n, r), () -> continue_session(host, r))
+    nudged = Ref(false)
+    timed = r -> (rest[] !== nothing && !nudged[] && time() - r.started > 60OPENING_MINUTES) ?
+                 (nudged[] = true; "Host: $OPENING_MINUTES minutes have gone by. End this turn when you are at a good point, and the rest of the session comes.") :
+                 nothing
     run = if host.cfg.agent_chat && host.dashboard !== nothing
-        run_chat_session!(host, "session $n", host.cfg.agent, prompt; followups)
+        run_chat_session!(host, "session $n", host.cfg.agent, opening; followups, timed)
     else
-        run_agent!(host, :agent, "session $n", host.cfg.agent, prompt; followups)
+        run_agent!(host, :agent, "session $n", host.cfg.agent, opening; followups)
     end
     if run === nothing
         host.agent_state = "no_auth"
@@ -528,23 +614,34 @@ function one_session!(host::Host)
     work_tokens = tokens_since(host.budget, t0)
     host.agent_state = "publishing"
     publish!(host, n)
-    online!(publish_blog!, host, n, "publishing the blog")
-    online!(publish_game!, host, n, "publishing the game")
+    # the pushes to GitHub go on while the progress shots are taken; the next session waits for them
+    pushes = errormonitor(@async begin
+        online!(publish_blog!, host, n, "publishing the blog")
+        online!(publish_game!, host, n, "publishing the game")
+    end)
     progress_shots!(host, n)
-    # The human wrote while the session ended: the reviewers would keep the message waiting, so
-    # this session goes without them (the perfectionist, due by count, catches up next time). The
-    # human asked for a name and waited a quarter of an hour.
+    # the review of the posts needs no sandbox: it runs beside the next session
+    changed, _ = changed_files(before, file_manifest(watched_dirs(jp)))
+    host.cfg.review_enabled && review_posts_later!(host, n, t0, changed)
+    # The human wrote while the session ended: the perfectionist would keep the message waiting, so
+    # it catches up next time (due by count). The human asked for a name and waited a quarter of an hour.
     if human_waiting(jp)
-        record!(host.activity, "session $n", "host", "a message from the human is waiting: no review this time")
-        return finish_cycle!(host, n, t0, run, work_tokens)
-    end
-    if host.cfg.review_enabled
+        record!(host.activity, "session $n", "host", "a message from the human is waiting: no perfectionist review this time")
+    elseif host.cfg.review_enabled && n - last_perfectionist(jp) >= host.cfg.perfectionist_every
         host.agent_state = "reviewing"
-        review_work!(host, n, t0, marks, before)
-        # due by count, not by n % every: a review skipped or failed (no token) is caught up next session
-        n - last_perfectionist(jp) >= host.cfg.perfectionist_every && perfectionist!(host, n)
+        perfectionist!(host, n)
     end
+    wait(pushes)
     return finish_cycle!(host, n, t0, run, work_tokens)
+end
+
+"The first value one of `fs` (functions without arguments) returns that is not `nothing`; the rest are not called."
+function first_of(fs...)
+    for f in fs
+        x = f()
+        x === nothing || return x
+    end
+    return nothing
 end
 
 """

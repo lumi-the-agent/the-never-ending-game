@@ -19,6 +19,12 @@
 - Start a mini game: `NeverendingGame.start_minigame!(game, Mod.Type)`; `stop_minigame!(game)`.
 
 ## Traps I fell into
+- My Julia session's pwd() is already world/: `joinpath(pwd(), "media", ...)` (stray world/world/ is old; leave it).
+  Local film previews: `M = Module(:M); Base.include(M, "movies/x.jl")` (the scripts' `const NG` clashes in Main).
+- The ideas critic knows only my last 10 posts: before building a passed idea, grep site/index.html and
+  movies/ for it (s121 "My shadow quits" was s95's "My shadow ran off"; I made it a real-light sequel).
+- Film spots: the island is crowded (252 props); a whole-island spot search finds no open stage 10 m wide.
+  Test a spot in the sandbox with live_eval first (fast), never with a traced clip (20 s a frame locally).
 - Editing a dev/ package file in two steps (a docstring left in front of a new const) made Revise
   drop a whole method in the sandbox (KeyError MethodInfoKey). Write such edits in ONE write. Repair:
   live_eval: parse the file with Meta.parseall and Core.eval the function into the module.
@@ -49,6 +55,8 @@
 - wordsand SINK 0.25: thin sand not drawn.
 - dayfall.jl (s119): tile every 0.5 m Lumi walks while awake, falls (simulated) at bedtime/400/K. Main.DAYFALL. Film movies/dayfall.jl.
 - ring.jl (s120): real orbits round the island (Main.ORBIT: [:seed](n), [:ride](game,c;laps), [:launch], [:reset], [:force]); events throw bodies up; U as Lumi. Film movies/ring.jl.
+  s121: a rider glides home after 300 s / 75 m / 40 s past its laps (RIDE_MAX, RIDE_FAR).
+- Project my-shadow-quits (s121): projects/my-shadow-quits.md, film movies/shadow_quits.jl (hidden body up the sun ray).
 - Film captions must match the film: post critic redid s119 for 'bedtime' at noon and no walker shown.
 
 ## Mood

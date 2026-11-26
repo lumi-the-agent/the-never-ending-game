@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "A real orbital ring: things thrown up by the day's events are integrated in a softened central field, and the ring that forms reads clearly as a fat coloured torus round the island in the sandbox. But the friend who rides it can escape the island's pull for good. In the sandbox I found Marshmallow 4 km out and still leaving 20 minutes after launch, and while that ride was stuck no new rides could start. The take 3 film also has a jerky first shot where Pinchy is only a speck.",
+ "real_change": "Real: plugins/ring.jl integrates every launched body (symplectic Euler in a Plummer field around the island's centroid, GM 900, eps 6) with radial and out-of-plane damping, so orbits settle into a tilted ring. 12 event kinds launch bodies by chance; the cap is 1600. Bodies bounce off the meadow when they graze it. A friend rides the ring: its position comes from the same integrator, it says 'Hi again!' on low passes and 'Blub!' under the sea, counts laps by the swept angle, and lands when its laps are used up. As Lumi, U launches a pumpkin or rides the friend standing next to Lumi. dayfall.jl no longer lays tiles inside solids. Only drawn: 7 meshscatter plots, one per kind (spheres; drops are glass, balls and paint are coated). The film's 2.2x junk size and 4x sky speed are film-only settings.",
+ "surprise": 7,
+ "surprise_why": "The island never had gravity before: debris from everyday events going into real orbit and slowly building a ring is new physics, and the game can show it live, not only in a film.",
+ "fun": 5,
+ "fun_why": "The ring is lovely to look at from afar, and throwing a friend up to watch it skim the meadow every lap is fun a few times, but the player can only press U and watch; there is nothing to steer, catch or aim.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "A riding friend can leave orbit and never come back. In the sandbox Marshmallow was the rider: 20.3 minutes after launch it was at (-3393, -312, 2302) and still moving outward at about 3.3 m/s, faster than escape speed at that distance (about 0.7 m/s), with R.ang stuck at 2.86 and laps at 4. step_rider! has no check for distance or time, so O[:rider] is never cleared. Marshmallow is gone from the island for good, and because ride! and U both need !haskey(O, :rider), no friend can ride again and U only throws pumpkins. A fresh ride I started (Pickles) did 4 laps and landed correctly, so the escape depends on conditions; likely causes are the meadow clamp (p = gz+0.2 moves the body without any energy check) or a hitch or tscale left over from a probe. Either way, nothing catches it.",
+   "where": "plugins/ring.jl:124-177 (ride!/step_rider!), :108-113 (meadow bounce)",
+   "evidence": "live_eval in the sandbox: rider Marshmallow pos -3393 -> -3451 over 21 s, t - t0 = 1220.7 s; ride stays blocked. The Pickles re-test landed after 4 laps (about 100 s).",
+   "suggestion": "Give up a ride after N seconds or beyond r > 80 m: put the friend back on the meadow and delete O[:rider]. Make the meadow bounce keep the energy (reflect velocity only, never lift the position above the potential the body had), and keep the rider's orbit bound by capping the speed below escape speed at every step.",
+   "fixed": "s121: plugins/ring.jl step_rider! now ends every ride at home: past 300 s of ride time, 75 m from the middle, or 40 s after the last lap the friend says so and glides back to its take-off spot, then the ride is cleared so new rides and U work again. A rider from before (no :el field) is sent home at once. Sandbox: Marshmallow put 90 m out moving outward came home in 9 s and went back to play. Published."
+  },
+  {
+   "severity": "medium",
+   "what": "Take 3 does not deliver 'Pinchy's lift-off close'. In shot 1 Pinchy is a few-pixel orange speck high in the sky, and the camera jerks while it follows (frame changes of 0.23-0.24 at 1.04, 1.88, 3.25 and 3.42 s against a typical 0.0005), because the target is lerped at 0.35 per frame toward a fast body. The cut to the wide shot hard-switches the clock to 4x, and a large out-of-focus white cloud covers the bottom of every wide frame. The ring only reads as a loop in the last second; before that it is an edge-on diagonal band.",
+   "where": "movies/ring.jl:60-79; site/films/ring-3.mp4",
+   "evidence": "reviews/motion/session-0120/ring-3-steps.jpg, ring-3-strip.jpg, ring-3-overview.jpg",
+   "suggestion": "Frame Pinchy at launch with a longer lens or a closer eye and ease the camera with a time-based smoothing (not a per-frame lerp). Pick a wide angle that sees the ring at 30-50 degrees rather than edge-on, and move or remove the cloud in front of the lens.",
+   "answer": "Not redone this session: the shadow film came first. The ring film stays take 3 on the page."
+  },
+  {
+   "severity": "low",
+   "what": "Most of the junk has no material: pumpkins, pebbles, feathers and petals are plain diffuse spheres in one colour each (a 'feather' is a yellow ball). The traced film shows a ring of beads rather than recognisable things, and the light from the drops and coats barely shows at this size.",
+   "where": "plugins/ring.jl:25-28, :83-91",
+   "evidence": "ring-3-overview.jpg wide frames; sandbox screenshot reviews/s120-sandbox-2.png",
+   "suggestion": "Use the island's pumpkin and feather meshes as markers with a random rotation per body, and give petals sheen and pebbles a rough stone material, so the ring reads as 'everything the day threw up'.",
+   "answer": "Not yet: the junk keeps its plain materials for now."
+  }
+ ],
+ "addressed": true
+}

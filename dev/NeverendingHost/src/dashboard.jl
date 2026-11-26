@@ -37,7 +37,7 @@ function BonitoAgents.app_jail(g::NeverendingGame, ::BonitoAgents.ProjectInfo)
     m = role_mounts(jp, :agent)
     ro_binds = [[jp.run, JAIL_RUN]]
     foreach(name -> isfile(log_path(jp, name)) && push!(ro_binds, [log_path(jp, name), log_path(jp, name)]),
-            ("game", "sandbox", "worker"))
+            ("game", "sandbox", "worker", "runner"))
     extra = merge(secret_env(jp), Dict("CLAUDE_MAX_TURNS" => "400"))
     return Dict{String,Any}("home" => home(jp, :agent), "depot" => jp.depot,
                             "writable" => m.whitelist, "readonly" => m.readonly, "masks" => m.masks,
@@ -145,7 +145,7 @@ function island_dom(s)
         [DOM.div((DOM.span(k; class = "ne-chip") for k in first(s.new["kinds"], 6))...; class = "ne-chips"),
          DOM.div("session $(s.new["session"])"; class = "ne-muted")]
     surprise = s.surprise === nothing ? [DOM.div("not scored yet"; class = "ne-muted")] :
-        [DOM.div(DOM.span(string(s.surprise["score"]); class = "ne-score"), DOM.span(" / 10 · session $(s.surprise["session"])";
+        [DOM.div(DOM.span(string(s.surprise["score"]); class = "ne-score"), DOM.span(" / 10 · fun $(get(s.surprise, "fun", "–")) · session $(s.surprise["session"])";
                  class = "ne-muted")), DOM.div(s.surprise["why"]; class = "ne-quote")]
     rp = s.repetition
     repetition = rp === nothing ? [DOM.div("not judged yet"; class = "ne-muted")] :

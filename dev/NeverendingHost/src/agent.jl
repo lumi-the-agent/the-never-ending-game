@@ -247,10 +247,12 @@ end
 One jailed session of `settings.provider`: `prompt`, then each prompt
 `followups(run)` returns (e.g. messages the human sent meanwhile) until it
 returns nothing. `nothing` when the session could not start (the reason is in
-the activity feed).
+the activity feed). It is the host's current run (status, warnings to the agent)
+unless `current = false`: a run beside a work session (the post review) leaves
+the session that.
 """
 function run_agent!(host, role::Symbol, label::AbstractString, settings::AgentSettings, prompt::AbstractString;
-                    followups = run -> nothing)
+                    followups = run -> nothing, current::Bool = true)
     jp, cfg = host.jp, host.cfg
     launch, why = provider_launch(jp, settings)
     if launch isa TokenExpiring
@@ -283,7 +285,7 @@ function run_agent!(host, role::Symbol, label::AbstractString, settings::AgentSe
                    Task(nothing))
     run.consumer = errormonitor(@async consume!(host, run))
     outer = host.current            # a critic between the turns of a chat session gives the session back
-    host.current = run
+    current && (host.current = run) # a run beside the session (the post review) leaves it the current one
     record!(host.activity, label, "host", "started $(settings.provider)" * (isempty(settings.model) ? "" : " ($(settings.model))"))
     next = String(prompt)
     try
@@ -306,7 +308,7 @@ function run_agent!(host, role::Symbol, label::AbstractString, settings::AgentSe
     finally
         close(client)
         wait(run.consumer)
-        host.current = outer
+        current && (host.current = outer)
     end
     record!(host.activity, label, "host", @sprintf("ended (%s) after %.1f min, %d tool calls",
                                                    isempty(run.interrupted) ? run.stop_reason : run.interrupted,

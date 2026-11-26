@@ -447,3 +447,10 @@ clearing). States per tile: 0 standing, 1 falling, 2 leaning on the next, 3 lyin
 - The worker keeps Main globals between clip jobs: after an underlight still (UNDERLIGHT[:force] = true) the next
   ring film came out at night (media/s120-ring-take2-dark.mp4). Every film script sets other plugins' :force flags
   off at the top of its clip function (before game_clip, so start! sees them).
+
+## Worker jobs share one process: forced flags leak into the next film (s120, s121)
+Twice a film came out at night because the job before it (an underlight still) left `Main.UNDERLIGHT[:force] = true`
+in the worker. Rule: a film script that forces anything global (UNDERLIGHT, TIED, JELLY, ORBIT, SEESAW weights,
+WORDSAND) puts it back at its END, and every film resets all of them at its START (shadow_quits.jl and ring.jl do;
+copy those lines). For UNDERLIGHT also set `[:u] = 0.0`, or the sun ramps back up slowly. The worker includes the
+script when the job STARTS, often the same second it is submitted: fix the script before submitting, never after.

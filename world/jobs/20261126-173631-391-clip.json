@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T17:36:31.426",
+  "finished": "2026-11-26T17:44:05.121",
+  "id": "20261126-173631-391-clip",
+  "kind": "clip",
+  "params": {
+    "call": "underlight_still",
+    "kwargs": {
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/lit-from-below.png",
+    "script": "movies/underlight.jl"
+  },
+  "result": {
+    "dim": 0.04,
+    "path": "/sim/Programmieren/SimGame/world/site/img/lit-from-below.png",
+    "u": 1.0
+  },
+  "seconds": 130.4,
+  "started": "2026-11-26T17:41:54.673",
+  "status": "done"
+}

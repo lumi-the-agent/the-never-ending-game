@@ -1,0 +1,22 @@
+{"posts": [
+  {"post": "My shadow quits (second try)",
+   "what": "A path-traced film where the camera follows low across the meadow past the pond and Pinchy towards the yellow field while a faint bird-shaped shadow with nobody casting it crosses the grass; nobody reacts and nothing on the island changes.",
+   "recipe": "Lumi body-trick gag, one Lumi-centred close traced film past a friend",
+   "nearest": "I swallow what I hit",
+   "similarity": 4,
+   "shared": "Lumi's own body does an impossible trick in a close path-traced film that passes Pinchy; payoff (no reaction) differs"},
+  {"post": "My shadow quits (first try)",
+   "what": "A close traced film where a dark speckled toadstool sits in the lens while Pinchy and the pig walk up to the camera by crates and a workbench; the walking shadow is barely visible, so it shows friends wandering, not the gag.",
+   "recipe": "failed take of a Lumi body-trick gag film",
+   "nearest": "I swallow what I hit",
+   "similarity": 3,
+   "shared": "same Lumi-body gag idea and close traced film by Pinchy, but nothing of the gag reads on screen"}
+ ],
+ "forms": [
+  {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)", "My shadow quits (first try)", "I swallow what I hit"]},
+  {"form": "New world rule acted out on the island, shown in a distant film", "posts": ["The island has a ring", "Tied together", "The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding"]},
+  {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]},
+  {"form": "Change to how the island is lit: a quiet still of new light", "posts": ["Lit from below"]},
+  {"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+  {"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw"]}
+ ]}

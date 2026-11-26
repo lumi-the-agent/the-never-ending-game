@@ -1,14 +1,22 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-26T16:55:27",
+  "boredom": 0.65,
+  "ended": "2026-11-26T18:14:44",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.49,
-    "picture": 0.13,
+    "feature": 1.49,
+    "picture": 0.08,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "Lumi-led set-piece gag film, close up",
+      "posts": [
+        "My shadow quits (second try)",
+        "My shadow quits (first try)",
+        "I swallow what I hit"
+      ]
+    },
     {
       "form": "New world rule acted out on the island, shown in a distant film",
       "posts": [
@@ -41,18 +49,6 @@
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "posts": [
         "The island is a seesaw"
-      ]
-    },
-    {
-      "form": "Permanent change to the island's look or places",
-      "posts": [
-        "Breeding a new friend"
-      ]
-    },
-    {
-      "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
-      "posts": [
-        "I swallow what I hit"
       ]
     }
   ],
@@ -298,9 +294,14 @@
     "jelly_swallow",
     "dayfall",
     "ring_landed",
-    "ring_ride"
+    "ring_ride",
+    "tied_yank",
+    "word_overheard",
+    "tied_free",
+    "tied_up",
+    "tied_wrap"
   ],
-  "joy": 0.67,
+  "joy": 1.0,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -614,6 +615,20 @@
       "session": 120,
       "title": "The island has a ring",
       "what": "From the meadow a pumpkin, a ball and Pinchy fly up into the sky, then from far out a tilted band of hundreds of thrown-up things circles the island, dipping through the sea on one side; the island now has its own gravity and keeps whatever the day throws up in orbit."
+    },
+    {
+      "form": "Lumi-led set-piece gag film, close up",
+      "recipe": "Lumi body-trick gag, one Lumi-centred close traced film past a friend",
+      "session": 121,
+      "title": "My shadow quits (second try)",
+      "what": "A path-traced film where the camera follows low across the meadow past the pond and Pinchy towards the yellow field while a faint bird-shaped shadow with nobody casting it crosses the grass; nobody reacts and nothing on the island changes."
+    },
+    {
+      "form": "Lumi-led set-piece gag film, close up",
+      "recipe": "failed take of a Lumi body-trick gag film",
+      "session": 121,
+      "title": "My shadow quits (first try)",
+      "what": "A close traced film where a dark speckled toadstool sits in the lens while Pinchy and the pig walk up to the camera by crates and a workbench; the walking shadow is barely visible, so it shows friends wandering, not the gag."
     }
   ],
   "kinds_ever": [
@@ -630,30 +645,33 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "ring_landed",
-      "ring_ride"
+      "tied_yank",
+      "word_overheard",
+      "tied_free",
+      "tied_up",
+      "tied_wrap"
     ],
-    "session": 120
+    "session": 121
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "New world rule acted out on the island, shown in a distant film",
-    "form_count": 4,
-    "nearest": "The island is a seesaw",
-    "post": "The island has a ring",
-    "score": 10,
-    "session": 120,
-    "shared": "an island-wide physics rule shown in a distant film",
-    "similarity": 3
+    "factor": 1.0,
+    "form": "Lumi-led set-piece gag film, close up",
+    "form_count": 1,
+    "nearest": "I swallow what I hit",
+    "post": "My shadow quits (second try)",
+    "score": 4,
+    "session": 121,
+    "shared": "Lumi's own body does an impossible trick in a close path-traced film that passes Pinchy; payoff (no reaction) differs",
+    "similarity": 4
   },
   "last_surprise": {
     "fun": 5,
-    "score": 6,
-    "session": 119,
-    "why": "A domino chain with real hinge physics, laid by the agent's actual working hours and toppled at its bedtime, is something the island could not do before. It is a genuine new mechanic and not one more scripted gathering."
+    "score": 7,
+    "session": 120,
+    "why": "The island never had gravity before: debris from everyday events going into real orbit and slowly building a ring is new physics, and the game can show it live, not only in a film."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T16:06:49",
+  "perceived_until": "2026-11-26T17:29:15",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -667,73 +685,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 2.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "cloud_shape",
-          "who": 2
-        },
-        {
-          "kind": "cloudwatch_end",
-          "who": 1
-        },
-        {
-          "kind": "cloudwatch_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/moth-nobody-cared.mp4",
-        "site/films/moth.mp4",
-        "site/img/cloud-heart.png"
-      ],
-      "new_plugins": [
-        "cloudshapes.jl",
-        "moth.jl"
-      ],
-      "points": 10.6,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "Something the visitor can now do from the browser",
-        "form_count": 0,
-        "nearest": "Someone's watching",
-        "post": "Your moth",
-        "score": 4,
-        "shared": "the browser visitor affects the island and friends react",
-        "similarity": 4
-      },
-      "session": 101,
-      "touched": [
-        "timeweather.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 6.0,
-        "picture": 0.2,
-        "polish": 0.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1899,6 +1850,72 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "tied_yank",
+          "who": 9
+        },
+        {
+          "kind": "word_overheard",
+          "who": 3
+        },
+        {
+          "kind": "tied_free",
+          "who": 1
+        },
+        {
+          "kind": "tied_up",
+          "who": 1
+        },
+        {
+          "kind": "tied_wrap",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/my-shadow-quits-3.mp4",
+        "site/films/my-shadow-quits.mp4"
+      ],
+      "new_plugins": [],
+      "points": 11.0,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Lumi-led set-piece gag film, close up",
+        "form_count": 1,
+        "nearest": "I swallow what I hit",
+        "post": "My shadow quits (second try)",
+        "score": 4,
+        "shared": "Lumi's own body does an impossible trick in a close path-traced film that passes Pinchy; payoff (no reaction) differs",
+        "similarity": 4
+      },
+      "session": 121,
+      "touched": [
+        "ring.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 1.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2010,6 +2027,7 @@
       "site/films/pumpkins.wav",
       "site/films/real-flight.mp4",
       "site/films/rewind.mp4",
+      "site/films/ring-3.mp4",
       "site/films/sand-sledding.mp4",
       "site/films/shadow.mp4",
       "site/films/shell-ashore.mp4",
@@ -2145,7 +2163,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
-      "dayfall.jl": 1.7957032193239415e9,
+      "dayfall.jl": 1.7957068128551023e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
@@ -2169,7 +2187,7 @@
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7957003945031035e9,
+      "greetings.jl": 1.7957067811800735e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -2202,6 +2220,7 @@
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
+      "ring.jl": 1.7957077753249419e9,
       "rollcall.jl": 1.795596344849997e9,
       "seesaw.jl": 1.7956880676959178e9,
       "separation.jl": 1.7957000129809484e9,
@@ -2237,11 +2256,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 92,
+    "posts": 93,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T16:11:42",
+  "started": "2026-11-26T17:05:57",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2305,7 +2324,11 @@
       "ScanImageTiffReader.metadata",
       "PyThermo.shockjump!",
       "JpegTurbo.jpeg_encode",
-      "TcpInstruments.set_voltage"
+      "TcpInstruments.set_voltage",
+      "Overseer.entity_pool",
+      "Colors.whitebalance",
+      "WaterWaves1D.default_example",
+      "Javis.anim_scale"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2334,7 +2357,13 @@
       "https://www.bbc.co.uk/news/articles/ckm2mz3prq77o",
       "https://www.bbc.co.uk/news/articles/c9m2jke85xzxo",
       "https://www.bbc.co.uk/news/articles/cqvg2n4mzl1jo",
-      "https://www.bbc.co.uk/news/articles/c893r9ke5p97o"
+      "https://www.bbc.co.uk/news/articles/c893r9ke5p97o",
+      "https://www.bbc.co.uk/news/articles/c98r7p65edvgo",
+      "https://www.bbc.co.uk/news/articles/cmly7jve72r2o",
+      "https://www.bbc.co.uk/news/articles/cmlyd76kyx44o",
+      "https://www.bbc.co.uk/sport/cricket/videos/cwx2e0g93l3eo",
+      "https://www.bbc.co.uk/news/articles/crx209kwk4kzo",
+      "https://www.bbc.co.uk/news/videos/cvglrz5yr79go"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2525,7 +2554,13 @@
       "GeometryOpsCore",
       "Speasy",
       "ClearStacktrace",
-      "BlochSimulators"
+      "BlochSimulators",
+      "ParticleFilters",
+      "GeoStatsImages",
+      "HexMeshes",
+      "BoundaryLayerDynamics",
+      "NeighbourLists",
+      "WeatherReport"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -2535,8 +2570,12 @@
       "ProPainterRunner",
       "UVDocRunner",
       "FluxKleinRunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "Hunyuan3DRunner",
+      "DemucsRunner",
+      "DeepFilterRunner",
+      "PPOCRRunner"
     ]
   },
-  "surprise_seen": 119
+  "surprise_seen": 120
 }

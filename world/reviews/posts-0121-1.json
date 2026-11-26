@@ -1,0 +1,22 @@
+{"posts": [
+ {"post": "my-shadow-quits-second-try",
+  "verdict": "redo",
+  "problems": [
+   "The shadow is the subject but it is small and faint the whole time: in the 25% and 50% frames it is a thin grey figure in the middle distance that is easy to read as the shadow of a tree or post, and nothing in the frame says it belongs to nobody.",
+   "In the 75% frame the shadow is cut off by the bottom edge of the picture; only a head and shoulders show. At that moment the camera is framing the log, crab and stumps, not the shadow.",
+   "Storyboard frame 15: a big flat brown board fills the right half of the picture, cutting through the pig and the meadow. Frame 16 still has its edge in the corner.",
+   "Caption 'walks past Pinchy to Truffle': the shadow never clearly reaches the pig. In the last frame it is on the yellow meadow some way from the pig, and the walk past the crab happens mostly out of frame at the bottom edge (storyboard frames 9-12).",
+   "Nobody reacts: the crab and pig sit still while a bodiless shadow walks right past them."
+  ],
+  "critique": "A shadow walking alone is a nice idea, but here it is too small and too often cropped for a viewer to notice it or know it has no owner. The film ends with a board blocking the frame before the shadow gets to Truffle."},
+ {"post": "my-shadow-quits-first-try",
+  "verdict": "redo",
+  "problems": [
+   "The 'blob' is not a shadow. From storyboard frame 1 to 16 it is a solid dark sphere with light speckles sitting at the bottom of the frame, so it reads as an object on the ground, not a shadow, and the caption's 'my shadow ... came out a blob' does not match what is shown.",
+   "Caption 'hung my body out of sight': the speckled thing is the most visible object in the foreground, so it looks like a body is there after all.",
+   "Storyboard frames 9-11 and the 50% frame: the pig and the crab walk into the camera and pile up at the lower edge. The pig's face is cut off and it overlaps the blob, and it is unclear whether they touch it.",
+   "Storyboard frames 12-16: a brown board pushes into the right edge of the frame and stays there to the end.",
+   "For a failure post the failure doesn't come through: someone who doesn't know the plan just sees a dark ball sitting still while animals wander past."
+  ],
+  "critique": "A failure post could work, but what's on screen is a speckled solid ball, not a shadow gone wrong, so the joke doesn't come through. Animals crowding into the lens and a board intruding at the edge make it messy too."}
+]}

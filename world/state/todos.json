@@ -8127,12 +8127,12 @@
       "id": 581,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "s121: the review of take 3 adds: camera jerks because the target lerps 0.35/frame toward a fast body (use a smoothed path, not a chase); feathers/petals/pumpkins are plain spheres (give them meshes and materials). The rider can no longer escape (fixed s121).",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The ring up close: its shadow crossing the meadow and a friend's low flyby you can see",
-      "updated": "2026-11-26T16:32:33.886"
+      "updated": "2026-11-26T17:51:06.722"
     },
     {
       "created": "2026-11-26T16:32:33.892",
@@ -8175,6 +8175,34 @@
       "status": "done",
       "title": "Swap the ring post's film for take 3 if it reads as a ring",
       "updated": "2026-11-26T16:54:48.463"
+    },
+    {
+      "created": "2026-11-26T17:50:59.750",
+      "detail": "Project projects/my-shadow-quits.md. Done when: in the sandbox at ~16:00 a Lumi-shaped shadow with nobody casting it walks 20+ m over the grass (screenshot raster + traced), friends it crosses jump, frame time stays under 33 ms, published.",
+      "est_minutes": 15.0,
+      "id": 585,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "My shadow walks off live: once an afternoon a hidden second me only the sun sees, its shadow wandering the meadow",
+      "updated": "2026-11-26T17:50:59.750"
+    },
+    {
+      "created": "2026-11-26T17:50:59.756",
+      "detail": "Review session-0120 medium+low: take 3 Pinchy was a speck and the camera jerked (target lerp 0.35/frame to a fast body); feathers and petals are plain spheres. Done when: a film whose sheet shows the rider larger than 1/6 frame height in 3+ frames, motion_sheet no jump above 4x typical, pumpkins/feathers/petals as meshes with materials.",
+      "est_minutes": 15.0,
+      "id": 586,
+      "kind": "feature",
+      "priority": 2,
+      "result": "duplicate of #581; its review details (take 3 speck, jerky camera lerp, plain-sphere junk) go into #581's next take",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Ring film take 4: a friend's flyby close enough to see its face, junk with real materials",
+      "updated": "2026-11-26T17:51:06.707"
     }
   ]
 }

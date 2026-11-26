@@ -58,16 +58,6 @@ function open_todo_lines(jp::JailPaths; n::Int = 10)
                      t["status"] == "doing" ? ", doing" : "", t["title"]) for t in first(open, n)]
 end
 
-"Todos marked done after unix time `t0`."
-function todos_done_since(jp::JailPaths, t0::Real)
-    items, _ = todo_items(jp)
-    return filter(items) do t
-        t["status"] == "done" || return false
-        updated = DateTime(first(t["updated"], 19))
-        return datetime2unix(updated) - local_utc_offset() >= t0
-    end
-end
-
 "Seconds the local clock is ahead of UTC (todo timestamps are local)."
 local_utc_offset() = round(Dates.value(Dates.now() - Dates.now(Dates.UTC)) / 1000)
 

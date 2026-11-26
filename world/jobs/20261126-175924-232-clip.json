@@ -1,0 +1,39 @@
+{
+  "created": "2026-11-26T17:59:24.232",
+  "finished": "2026-11-26T18:12:22.554",
+  "id": "20261126-175924-232-clip",
+  "kind": "clip",
+  "params": {
+    "call": "quits_clip",
+    "kwargs": {
+      "samples": 20,
+      "seconds": 11.0,
+      "spot": [
+        -1,
+        8
+      ],
+      "track": true
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/my-shadow-quits-3.mp4",
+    "script": "movies/shadow_quits.jl"
+  },
+  "result": {
+    "c0": [
+      -1.0,
+      8.0
+    ],
+    "frames": 264,
+    "hour": 17.62235543062049,
+    "path": "/sim/Programmieren/SimGame/world/site/films/my-shadow-quits-3.mp4",
+    "score": -77.00918,
+    "seconds_per_frame": 2.3522977512894254,
+    "sun": [
+      -0.78312695,
+      -0.4103647,
+      0.4672399
+    ]
+  },
+  "seconds": 735.9,
+  "started": "2026-11-26T18:00:06.434",
+  "status": "done"
+}

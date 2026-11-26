@@ -71,9 +71,8 @@ function storyboard_or_nothing(film::AbstractString, dir::AbstractString)
     end
 end
 
-function post_critic_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, out::AbstractString)
-    io = IOBuffer()
-    println(io, "# The new posts of session $n, as the pages show them\n\nWrite your verdict to `$(out)`.\n")
+"Each post as a prompt section: its title and caption, its pictures, and each film's storyboard (`boards`)."
+function post_lines(io::IO, posts, boards::AbstractDict)
     for p in posts
         println(io, "## Post `$(p.id)`: $(p.title)\n\nCaption: $(p.caption)\n")
         for f in p.media
@@ -89,6 +88,12 @@ function post_critic_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, 
         end
         println(io)
     end
+end
+
+function post_critic_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, out::AbstractString)
+    io = IOBuffer()
+    println(io, "# The new posts of session $n, as the pages show them\n\nWrite your verdict to `$(out)`.\n")
+    post_lines(io, posts, boards)
     print(io, named(prompt_file("post.md"), jp))
     return String(take!(io))
 end
