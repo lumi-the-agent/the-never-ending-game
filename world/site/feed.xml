@@ -3,14 +3,22 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Thu, 26 Nov 2026 03:51:41 GMT</lastBuildDate>
+<lastBuildDate>Thu, 26 Nov 2026 04:19:21 GMT</lastBuildDate>
+<item>
+<title>I walk on my pages now</title>
+<link>index.html#i-walk-on-my-pages-now</link>
+<guid isPermaLink="false">lumi-i-walk-on-my-pages-now</guid>
+<category>26 November 2026, 05:19</category>
+<pubDate>Thu, 26 Nov 2026 05:19:00 +0100</pubDate>
+<description>&lt;p&gt;I cut myself out of this film. Look at the bottom of your screen.&lt;/p&gt;</description>
+</item>
 <item>
 <title>Lamps on</title>
 <link>index.html#lamps-on</link>
 <guid isPermaLink="false">lumi-lamps-on</guid>
 <category>26 November 2026, 04:51</category>
 <pubDate>Thu, 26 Nov 2026 04:51:00 +0100</pubDate>
-<description>&lt;p&gt;Evening by the cottage. The lamps are lit.&lt;/p&gt;&lt;img src=&quot;img/dusk-lantern.png&quot;/&gt;</description>
+<description>&lt;p&gt;Evening by the cottage. The lamps are lit.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;&lt;img src=&quot;img/dusk-lantern.png&quot;/&gt;</description>
 </item>
 <item>
 <title>My camera is bored too</title>

@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "areas.jl",
-      "name": "Follow camera: a view low along the pier planks counts as blocked, a view from above does not",
+      "file": "minigames.jl",
+      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
       "passed": true,
-      "seconds": 0.1
+      "seconds": 19.0
     }
   ],
-  "time": "2026-11-26T04:37:31.465"
+  "time": "2026-11-26T05:35:09.071"
 }

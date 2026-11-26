@@ -1,12 +1,12 @@
 {
-  "boredom": 0.72,
-  "ended": "2026-11-26T04:54:46",
+  "boredom": 0.65,
+  "ended": "2026-11-26T05:36:29",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.49,
-    "picture": 2.47,
+    "feature": 1.49,
+    "picture": 1.48,
     "polish": 2.49,
-    "self": 0.61,
+    "self": 0.37,
     "sound": 0.01
   },
   "forms": [
@@ -26,26 +26,19 @@
       "posts": [
         "How much they miss me",
         "We wrote PIE",
-        "Heart, then fish",
-        "A heart up there"
-      ]
-    },
-    {
-      "form": "Still or film of a failed fix or failed take",
-      "posts": [
-        "Nobody cared about the moth"
-      ]
-    },
-    {
-      "form": "Something the visitor can now do from the browser",
-      "posts": [
-        "Your moth"
+        "Heart, then fish"
       ]
     },
     {
       "form": "Change to how the island is seen (camera that follows Lumi's mood)",
       "posts": [
         "My camera is bored too"
+      ]
+    },
+    {
+      "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
+      "posts": [
+        "I walk on my pages now"
       ]
     }
   ],
@@ -258,9 +251,11 @@
     "paperme_look",
     "missme_hide",
     "moodcam_back",
-    "moodcam_drift"
+    "moodcam_drift",
+    "bottle_thrown",
+    "paperme_visit"
   ],
-  "joy": 0.91,
+  "joy": 1.0,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -455,6 +450,13 @@
       "session": 107,
       "title": "My camera is bored too",
       "what": "A short film where the follow camera, following Lumi's mood, drifts off its subject to stare at a flower and the sea, then glides back after Lumi waves at it."
+    },
+    {
+      "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
+      "recipe": "cut-out traced film of Lumi overlaid on the website, plays once on page open",
+      "session": 108,
+      "title": "I walk on my pages now",
+      "what": "A path-traced film of Lumi walking, waving and sitting is cut out with a matte and plays once over the bottom-left of Lumi's front page, so a visitor sees Lumi stroll across the site; nothing changes on the island."
     }
   ],
   "kinds_ever": [
@@ -471,135 +473,50 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "moodcam_back",
-      "moodcam_drift"
+      "bottle_thrown",
+      "paperme_visit"
     ],
-    "session": 107
+    "session": 108
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "Change to how the island is seen (camera that follows Lumi's mood)",
+    "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
     "form_count": 0,
     "nearest": "Someone's watching",
-    "post": "My camera is bored too",
+    "post": "I walk on my pages now",
     "score": 3,
-    "session": 107,
-    "shared": "Lumi reacts to the camera/lens; otherwise a different thing (view rule, not an event)",
+    "session": 108,
+    "shared": "Lumi turns to the viewer and waves; otherwise nothing in common (no gathering, no event, no island change, lives on the web page)",
     "similarity": 3
   },
   "last_surprise": {
-    "score": 7,
-    "session": 106,
-    "why": "A game agent doing a synthetic-control analysis of its own event logs to find out whether friends miss it is a genuinely odd twist, though the visible payoff is a sign and some shouting."
+    "score": 5,
+    "session": 107,
+    "why": "A camera that has Lumi's mood and wanders off to stare at a flower is a nice twist on something seen every frame, but it is an occasional drift, not a change in how the game works."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T04:14:53",
+  "perceived_until": "2026-11-26T04:56:10",
   "plugin_fatigue": {
-    "berry_race.jl": 0.22,
-    "boing.jl": 0.08,
-    "dancecircle.jl": 0.21,
-    "facehill.jl": 0.58,
-    "firefly_catch.jl": 0.22,
-    "flight.jl": 1.36,
-    "ghosts.jl": 1.05,
-    "greetings.jl": 0.23,
-    "missme.jl": 1.6,
-    "moodcam.jl": 1.0,
-    "moth.jl": 0.34,
-    "outfits.jl": 0.13,
-    "paperme.jl": 0.96,
-    "pebblewords.jl": 0.35,
-    "timeweather.jl": 1.08,
-    "workshopisle.jl": 0.21
+    "berry_race.jl": 0.13,
+    "dancecircle.jl": 0.13,
+    "facehill.jl": 1.35,
+    "firefly_catch.jl": 0.13,
+    "flight.jl": 1.82,
+    "gait.jl": 1.0,
+    "ghosts.jl": 0.63,
+    "greetings.jl": 0.14,
+    "lamplight.jl": 1.0,
+    "lensclear.jl": 1.0,
+    "missme.jl": 0.96,
+    "moodcam.jl": 0.6,
+    "moth.jl": 0.2,
+    "outfits.jl": 0.08,
+    "paperme.jl": 0.58,
+    "pebblewords.jl": 0.21,
+    "timeweather.jl": 0.65,
+    "workshopisle.jl": 0.13
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.6333333333333333,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "nap_woken",
-          "who": 9
-        },
-        {
-          "kind": "waterfight_hit",
-          "who": 4
-        },
-        {
-          "kind": "hail_ow",
-          "who": 4
-        },
-        {
-          "kind": "waterfight_start",
-          "who": 1
-        },
-        {
-          "kind": "hail_end",
-          "who": 1
-        },
-        {
-          "kind": "waterfight_end",
-          "who": 1
-        },
-        {
-          "kind": "mixup_end",
-          "who": 1
-        },
-        {
-          "kind": "mixup_swap",
-          "who": 1
-        },
-        {
-          "kind": "mixup_start",
-          "who": 1
-        },
-        {
-          "kind": "hail_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/mixup-silent.mp4",
-        "site/films/mixup.mp4",
-        "site/films/mixup.wav"
-      ],
-      "new_plugins": [
-        "frost.jl",
-        "mixup.jl"
-      ],
-      "points": 2.5,
-      "repeats": [],
-      "session": 88,
-      "touched": [
-        "flight.jl",
-        "islandnow.jl",
-        "outfits.jl"
-      ],
-      "values": {
-        "feature": 1.7,
-        "film": 0.3,
-        "polish": 0.1,
-        "post": 0.1,
-        "sound": 0.3
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1791,6 +1708,65 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "bottle_thrown",
+          "who": 1
+        },
+        {
+          "kind": "paperme_visit",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/pagewalk.mp4",
+        "site/films/pagewalk.webm"
+      ],
+      "new_plugins": [],
+      "points": 8.1,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
+        "form_count": 0,
+        "nearest": "Someone's watching",
+        "post": "I walk on my pages now",
+        "score": 3,
+        "shared": "Lumi turns to the viewer and waves; otherwise nothing in common (no gathering, no event, no island change, lives on the web page)",
+        "similarity": 3
+      },
+      "session": 108,
+      "touched": [
+        "facehill.jl",
+        "flight.jl",
+        "gait.jl",
+        "lamplight.jl",
+        "lensclear.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 0.1,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1877,6 +1853,7 @@
       "site/films/mixup-silent.mp4",
       "site/films/mixup.mp4",
       "site/films/mixup.wav",
+      "site/films/moodcam.mp4",
       "site/films/moth-nobody-cared.mp4",
       "site/films/moth.mp4",
       "site/films/one-more-stone-v2.mp4",
@@ -1913,6 +1890,7 @@
       "site/img/cloud-heart.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
+      "site/img/dusk-lantern.png",
       "site/img/face-hill.png",
       "site/img/freeze.png",
       "site/img/gallery-easels.png",
@@ -2019,7 +1997,7 @@
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.7956556345354118e9,
-      "flight.jl": 1.7956573662537308e9,
+      "flight.jl": 1.7956637295049057e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
@@ -2031,7 +2009,7 @@
       "gait.jl": 1.795596563071227e9,
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
-      "ghosts.jl": 1.7956421464603724e9,
+      "ghosts.jl": 1.795665171019011e9,
       "giant.jl": 1.7955898833974304e9,
       "greetings.jl": 1.7956547010810394e9,
       "hail.jl": 1.7955962775824723e9,
@@ -2049,8 +2027,9 @@
       "makeover.jl": 1.7955960056175299e9,
       "meadow.jl": 1.7956072049130402e9,
       "meadowlife.jl": 1.795485965898355e9,
-      "missme.jl": 1.7956601146964378e9,
+      "missme.jl": 1.7956636938005853e9,
       "mixup.jl": 1.7956035662514546e9,
+      "moodcam.jl": 1.7956652444866693e9,
       "moon.jl": 1.7953993277488246e9,
       "moth.jl": 1.7956560123386962e9,
       "newname.jl": 1.7955211508792114e9,
@@ -2080,7 +2059,7 @@
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.795589890088417e9,
       "tag.jl": 1.7955616074062378e9,
-      "timeweather.jl": 1.7956458069065177e9,
+      "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
@@ -2092,11 +2071,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 74,
+    "posts": 76,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T04:19:21",
+  "started": "2026-11-26T05:00:50",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2106,7 +2085,8 @@
       "2026-11-23 14:12",
       "2026-11-24 15:25",
       "2026-11-23 22:47",
-      "2026-11-22 23:44"
+      "2026-11-22 23:44",
+      "2026-11-23 22:59"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2124,7 +2104,9 @@
       "Comodo.indexmap!",
       "SeisModels.discontinuities",
       "ExoplanetsSysSim.calc_distance_vector_demo",
-      "Robotlib.calibNAXP"
+      "Robotlib.calibNAXP",
+      "MPIReco.reconstruct",
+      "SimpleSim.print_model_tree"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2270,7 +2252,10 @@
       "YaoArrayRegister",
       "PhysicalConstants",
       "InverseLangevinApproximations",
-      "Richardson"
+      "Richardson",
+      "Ether",
+      "Multivectors",
+      "YaoBlocks"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2288,8 +2273,10 @@
       "PPDocLayoutRunner",
       "Qwen3EmbeddingRunner",
       "ZImageRunner",
-      "FluxKleinRunner"
+      "FluxKleinRunner",
+      "MatAnyoneRunner",
+      "BonsaiRunner"
     ]
   },
-  "surprise_seen": 106
+  "surprise_seen": 107
 }

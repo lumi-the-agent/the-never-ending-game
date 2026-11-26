@@ -1,0 +1,34 @@
+{
+  "created": "2026-11-26T05:21:45.237",
+  "finished": "2026-11-26T05:24:02.079",
+  "id": "20261126-052145-237-clip",
+  "kind": "clip",
+  "params": {
+    "call": "matte_pagewalk",
+    "kwargs": {
+      "clicks": [
+        [
+          0.875,
+          0.3
+        ],
+        [
+          0.885,
+          0.22
+        ]
+      ],
+      "film": "/sim/Programmieren/SimGame/world/media/s108/pagewalk.mp4",
+      "seed_frame": 1
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/pagewalk.webm",
+    "script": "movies/matte.jl"
+  },
+  "result": {
+    "coverage": 0.021,
+    "frames": 163,
+    "path": "/sim/Programmieren/SimGame/world/site/films/pagewalk.webm",
+    "seed_pixels": 10978
+  },
+  "seconds": 136.3,
+  "started": "2026-11-26T05:21:45.766",
+  "status": "done"
+}

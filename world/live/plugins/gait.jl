@@ -4,7 +4,8 @@
 const NG = NeverendingGame
 
 "Gait radians per metre (the engine's were Crabbit 16, Fluffkin 12, Snootle 10, Blorbo 14)."
-const STRIDES = Dict("Crabbit" => 6.5f0, "Fluffkin" => 5.5f0, "Snootle" => 5.5f0, "Blorbo" => 7f0)   # s85: still 8-10 turns back a second running at 7-9
+const STRIDES = Dict("Crabbit" => 6.5f0, "Fluffkin" => 5.5f0, "Snootle" => 5.5f0, "Blorbo" => 7f0,   # s85: still 8-10 turns back a second running at 7-9
+                     "Lumi" => 5.5f0)   # s108: my long legs took 8 per metre, so running my body turned back 9-10 times a second
 const LAST = Ref(-Inf)
 
 struct Gait <: System end

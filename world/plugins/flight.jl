@@ -406,13 +406,36 @@ function flight_group(w)
     o = s.start + Point3f(RUN_T * 3.2f0 * s.dir[1], RUN_T * 3.2f0 * s.dir[2], 0)
     ctr = o + Point3f(LOOP_R * s.dir[1], LOOP_R * s.dir[2], 0)
     eye = ctr + Point3f(-14f0 * s.dir[1] + 3f0 * s.dir[2], -14f0 * s.dir[2] - 3f0 * s.dir[1], 0)
+    # the side to watch from is picked once per flight, the clearest of five round the loop (the cottage stood between
+    # the camera and my run-up: review #518, s108 test shot)
+    rot(e, a) = (v = e - ctr; ctr + Point3f(cos(a) * v[1] - sin(a) * v[2], sin(a) * v[1] + cos(a) * v[2], 0))
+    if get(F, :rotkey, nothing) != s.start
+        best = (Inf, 0f0)
+        for a in (0f0, 0.6f0, -0.6f0, 1.2f0, -1.2f0)
+            e = rot(eye, a); e = Point3f(e[1], e[2], NG.ground(w.island, (e[1], e[2]))[3] + 2.6f0)
+            o = NG.obstruction(w, e, Point3f(me.pos + Vec3f(0, 0, 0.8f0)))
+            o < best[1] - 0.05f0 && (best = (Float32(o), a))
+        end
+        F[:rotkey] = s.start; F[:rot] = best[2]
+    end
+    eye = rot(eye, F[:rot])
     eye = Point3f(eye[1], eye[2], NG.ground(w.island, (eye[1], eye[2]))[3] + 2.6f0)
     # look at Lumi itself, and keep up with it: a look point easing 10% a frame towards the loop's middle left a
     # fast-rising Lumi out of the top of the picture, the view on empty sky (perfectionist-0070, steered G)
     want = Point3f(0.9f0 * me.pos[1] + 0.1f0 * ctr[1], 0.9f0 * me.pos[2] + 0.1f0 * ctr[2], me.pos[3] + 0.4f0)
+    # late in the flight (the panic, the fall back towards the start) I came close to or behind that fixed eye and left
+    # the picture (s108 test: out of view at 7-10 m; perfectionist s106 'only the sea'): keep the eye at least 9 m back
+    # from me along the view, and ease it there so it never jumps
+    fwd = Point3f(ctr[1] - eye[1], ctr[2] - eye[2], 0); fwd = fwd / max(hypot(fwd[1], fwd[2]), 1f-3)
+    ahead = (me.pos[1] - eye[1]) * fwd[1] + (me.pos[2] - eye[2]) * fwd[2]
+    if ahead < 9f0
+        b = me.pos - fwd * 9f0
+        eye = Point3f(b[1], b[2], max(NG.ground(w.island, (b[1], b[2]))[3] + 2.6f0, me.pos[3] - 3f0))
+    end
+    F[:eye] = haskey(F, :eye) && F[:lookt] > w.t - 1 ? F[:eye] + 0.2f0 * (eye - F[:eye]) : eye
     F[:look] = haskey(F, :look) && F[:lookt] > w.t - 1 ? F[:look] + 0.35f0 * (want - F[:look]) : want
     F[:lookt] = w.t
-    return (me.id, pts, (eye, F[:look]))
+    return (me.id, pts, (F[:eye], F[:look]))
 end
 
 # ---------------------------------------------------------------- the nest on the cottage roof

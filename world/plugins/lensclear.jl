@@ -97,12 +97,26 @@ function toadstool_block(eye, target)
     return o
 end
 
+"The board by the cottage (missme.jl): cameras chose views through it (the G run-up, s108). Its spot is fixed per world."
+function board_block(game, eye, target)
+    haskey(game.plugins, "missme") || return 0f0
+    p = get!(() -> Base.invokelatest(game.plugins["missme"].mod.board_spot, game.world)[1], Main.LENSCLEAR_BOARD, objectid(game.world))
+    o = 0f0
+    for s in 0.1f0:0.1f0:0.9f0
+        q = eye + s * (target - eye)
+        hypot(q[1] - p[1], q[2] - p[2]) < 0.9f0 && q[3] < p[3] + 2.0f0 && (o += 1f0)
+    end
+    return o
+end
+
 function NG.start!(::LensClear, game)
+    isdefined(Main, :LENSCLEAR_BOARD) || Core.eval(Main, :(const LENSCLEAR_BOARD = Dict{UInt,Any}()))
     NG.CAMERA_BLOCKERS["lens"] = (eye, target) -> lens_block(game.world, eye, target)
     NG.CAMERA_BLOCKERS["toadstool"] = toadstool_block
+    NG.CAMERA_BLOCKERS["board"] = (eye, target) -> board_block(game, eye, target)
     nothing
 end
 NG.step!(::LensClear, game, dt) = nothing
-NG.stop!(::LensClear, game) = (delete!(NG.CAMERA_BLOCKERS, "lens"); delete!(NG.CAMERA_BLOCKERS, "toadstool"); nothing)
+NG.stop!(::LensClear, game) = (delete!(NG.CAMERA_BLOCKERS, "lens"); delete!(NG.CAMERA_BLOCKERS, "toadstool"); delete!(NG.CAMERA_BLOCKERS, "board"); nothing)
 
 register!(LensClear())

@@ -77,7 +77,10 @@ function build!(game)
         t = h[i, j] / H
         grass = RGBf(0.42 + 0.25t, 0.62 + 0.2t, 0.22 + 0.12t)
         r = clamp(round(Int, (1 - (j - 0.5) / N) * FR), 1, FR); q = clamp(round(Int, ((i - 0.5) / N) * FC), 1, FC)
-        f = RGBf(face[r, q])
+        f0 = RGBf(face[r, q])
+        # stronger contrast, so my dark eyes and orange beak stand out of the gold from far above (perfectionist s106)
+        con(x) = clamp(0.5f0 + 1.7f0 * (x - 0.5f0), 0f0, 1f0)
+        f = RGBf(con(f0.r), con(f0.g), con(f0.b))
         k = h[i, j] > 0 ? clamp(12f0 * h[i, j], 0f0, 1f0) : 0f0   # fades in over the softened foot
         push!(cols, RGBf(grass.r + k * (f.r - grass.r), grass.g + k * (f.g - grass.g), grass.b + k * (f.b - grass.b)))
         idx[i, j] = length(pts)

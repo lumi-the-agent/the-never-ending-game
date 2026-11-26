@@ -137,7 +137,9 @@ end
 function NG.step!(::Lamplight, game, dt)
     game.stage === nothing && return
     get(Main.LAMPLIGHT, :key, nothing) == lamp_key(game) || build_lamps!(game)
-    on = NG.night_factor(game.world) > 0.3f0 || get(Main.LAMPLIGHT, :force, false)
+    # lit from the golden hour on (sun under ~19 degrees), not only deep in the night: at 18:36 the live island was a
+    # flat blue-grey evening with every lamp still dark (review s107)
+    on = NG.night_factor(game.world) > 0.3f0 || NG.sun(game.world)[1][3] < 0.33f0 || get(Main.LAMPLIGHT, :force, false)
     for k in (:pools, :flames, :windows, :halos)
         p = Main.LAMPLIGHT[k]
         p.visible[] == on || (p.visible[] = on)

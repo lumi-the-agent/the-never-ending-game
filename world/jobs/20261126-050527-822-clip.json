@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T05:05:27.823",
+  "finished": "2026-11-26T05:10:52.468",
+  "id": "20261126-050527-822-clip",
+  "kind": "clip",
+  "params": {
+    "call": "pagewalk_clip",
+    "kwargs": {
+      "fps": 24,
+      "rasterize": false,
+      "samples": 24
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s108/pagewalk.mp4",
+    "script": "movies/pagewalk.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s108/pagewalk.mp4"
+  },
+  "seconds": 277.0,
+  "started": "2026-11-26T05:06:15.484",
+  "status": "done"
+}
