@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-26T07:32:06.975",
+  "finished": "2026-11-26T07:33:49.593",
+  "id": "20261126-073206-925-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wordround_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "seconds": 14.0,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s111/word-preview.mp4",
+    "script": "movies/wordround.jl"
+  },
+  "result": {
+    "lines": [
+      "Lumi: Ooh! A new word!",
+      "Lumi: MAINKY!",
+      "Lumi: It means the plop of a pebble in the pond."
+    ],
+    "path": "/sim/Programmieren/SimGame/world/media/s111/word-preview.mp4"
+  },
+  "seconds": 100.7,
+  "started": "2026-11-26T07:32:08.928",
+  "status": "done"
+}

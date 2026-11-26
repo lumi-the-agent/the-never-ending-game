@@ -1,12 +1,12 @@
 {
-  "boredom": 0.88,
-  "ended": "2026-11-26T07:13:48",
+  "boredom": 1.0,
+  "ended": "2026-11-26T07:59:43",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.13,
-    "picture": 0.53,
-    "polish": 2.49,
-    "self": 0.13,
+    "feature": 2.28,
+    "picture": 0.32,
+    "polish": 1.49,
+    "self": 0.08,
     "sound": 0.01
   },
   "forms": [
@@ -24,7 +24,8 @@
       "posts": [
         "How much they miss me",
         "We wrote PIE",
-        "Heart, then fish"
+        "Heart, then fish",
+        "A word goes round"
       ]
     },
     {
@@ -264,9 +265,13 @@
     "drift_start",
     "drafts_blob",
     "drafts_start",
-    "drafts_end"
+    "drafts_end",
+    "word_told",
+    "word_misheard",
+    "word_end",
+    "word_coined"
   ],
-  "joy": 0.91,
+  "joy": 0.96,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -489,6 +494,13 @@
       "session": 110,
       "title": "The island remembers being drawn",
       "what": "Now and then a grey patch of the island's first drafts drifts over the meadow, turning ground, trees and creatures inside it into grey boxes and pale blobs, who remark on it once."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "friends gather in a chain, pass something on, a small comic failure (mishearing) shown by spoken one-liners in a film",
+      "session": 111,
+      "title": "A word goes round",
+      "what": "Four friends stand in a row in a film and pass a newly coined word along by talking, each mishearing it a little, with subtitles showing woomboo, woompoo, woompo; the game also keeps a dictionary page."
     }
   ],
   "kinds_ever": [
@@ -505,110 +517,51 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "drafts_blob",
-      "drafts_start",
-      "drafts_end"
+      "word_told",
+      "word_misheard",
+      "word_end",
+      "word_coined"
     ],
-    "session": 110
+    "session": 111
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
-    "form_count": 0,
-    "nearest": "Slow time",
-    "post": "The island remembers being drawn",
-    "score": 6,
-    "session": 110,
-    "shared": "a drifting patch that changes whoever walks in, with a short remark; Slow time changed movement, this changes looks",
-    "similarity": 6
+    "factor": 0.4641588833612779,
+    "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+    "form_count": 1,
+    "nearest": "We wrote PIE",
+    "post": "A word goes round",
+    "score": 5,
+    "session": 111,
+    "shared": "friends gather round a made thing, a garbled result is the comic payoff, shown with text lines",
+    "similarity": 5
   },
   "last_surprise": {
     "score": 6,
-    "session": 109,
-    "why": "The island itself travels while nothing on it moves, which is a real twist. It is carried by plain domes, so it is not a 'show a friend' moment."
+    "session": 110,
+    "why": "Grey first-draft patches drifting over the island, with friends turned into blobs, are a real twist on how the island looks; the other work is polish."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T06:32:08",
+  "perceived_until": "2026-11-26T07:15:25",
   "plugin_fatigue": {
-    "areas.jl": 1.0,
-    "drafts.jl": 1.0,
-    "drift.jl": 1.6,
-    "facehill.jl": 0.49,
-    "flight.jl": 0.65,
-    "gait.jl": 0.36,
-    "ghosts.jl": 0.83,
-    "lamplight.jl": 0.36,
-    "lensclear.jl": 0.36,
-    "missme.jl": 0.35,
-    "moodcam.jl": 0.22,
-    "moth.jl": 0.07,
-    "paintfight.jl": 1.0,
-    "paperme.jl": 0.21,
-    "pebblewords.jl": 0.08,
-    "snowday.jl": 1.0,
-    "swing.jl": 1.0,
-    "timeweather.jl": 0.23
+    "areas.jl": 0.6,
+    "drafts.jl": 0.6,
+    "drift.jl": 0.96,
+    "facehill.jl": 0.29,
+    "flight.jl": 0.39,
+    "gait.jl": 0.22,
+    "ghosts.jl": 0.5,
+    "lamplight.jl": 0.22,
+    "lensclear.jl": 0.22,
+    "missme.jl": 0.21,
+    "moodcam.jl": 0.13,
+    "paintfight.jl": 0.6,
+    "paperme.jl": 0.13,
+    "snowday.jl": 0.6,
+    "swing.jl": 0.6,
+    "timeweather.jl": 0.14,
+    "wordround.jl": 1.0
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "rewind_start",
-          "who": 1
-        },
-        {
-          "kind": "rewind_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish",
-        "post",
-        "self",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/rewind.mp4",
-        "site/voice/game/rewind.mp3"
-      ],
-      "new_plugins": [],
-      "points": 1.6,
-      "repeat_factor": 0.2154434690031884,
-      "repeats": [],
-      "repetition": {
-        "nearest": "SWAPSIE",
-        "post": "◀◀ Rewind",
-        "score": 6,
-        "shared": "Lumi's found item triggers an island-wide effect on all friends that is then undone; the effect itself (time reversal of motion, no new body or prop) works differently and has no backfire or big payoff"
-      },
-      "session": 91,
-      "touched": [
-        "greetings.jl",
-        "islandnow.jl",
-        "rewind.jl",
-        "snowday.jl"
-      ],
-      "values": {
-        "film": 0.3,
-        "polish": 0.1,
-        "post": 0.1,
-        "self": 5.5,
-        "sound": 1.5
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1830,6 +1783,69 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "word_told",
+          "who": 10
+        },
+        {
+          "kind": "word_misheard",
+          "who": 8
+        },
+        {
+          "kind": "word_end",
+          "who": 1
+        },
+        {
+          "kind": "word_coined",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/words.html",
+        "site/films/word-goes-round.mp4"
+      ],
+      "new_plugins": [
+        "wordround.jl"
+      ],
+      "points": 3.9,
+      "repeat_factor": 0.4641588833612779,
+      "repeats": [],
+      "repetition": {
+        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+        "form_count": 1,
+        "nearest": "We wrote PIE",
+        "post": "A word goes round",
+        "score": 5,
+        "shared": "friends gather round a made thing, a garbled result is the comic payoff, shown with text lines",
+        "similarity": 5
+      },
+      "session": 111,
+      "touched": [],
+      "values": {
+        "feature": 0.3,
+        "film": 6.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1897,7 +1913,9 @@
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
       "site/films/crabs.mp4",
+      "site/films/drafts.mp4",
       "site/films/drift.mp4",
+      "site/films/drift2.mp4",
       "site/films/face-hill.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
@@ -2034,7 +2052,7 @@
       "releases/2026-11-24-a-day-in-my-new-life/a-day-in-my-new-life.mp4"
     ],
     "plugins": {
-      "areas.jl": 1.7956132613590338e9,
+      "areas.jl": 1.7956727950725677e9,
       "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
@@ -2057,7 +2075,8 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
-      "drift.jl": 1.7956699879316158e9,
+      "drafts.jl": 1.7956716446595652e9,
+      "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
       "facehill.jl": 1.7956672129113421e9,
@@ -2104,7 +2123,7 @@
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.7956523957532754e9,
-      "paintfight.jl": 1.7956075200507665e9,
+      "paintfight.jl": 1.795673383252837e9,
       "paperme.jl": 1.7956604006878855e9,
       "pebblewords.jl": 1.795655041782873e9,
       "presents.jl": 1.7955812359792938e9,
@@ -2118,14 +2137,14 @@
       "showers.jl": 1.7955924208595362e9,
       "sleepers.jl": 1.795623155458676e9,
       "sneeze.jl": 1.795596277582388e9,
-      "snowday.jl": 1.7956165390390103e9,
+      "snowday.jl": 1.795673383252672e9,
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "sunset.jl": 1.7954781267170784e9,
-      "swing.jl": 1.795589890088417e9,
+      "swing.jl": 1.7956732306886318e9,
       "tag.jl": 1.7955616074062378e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
@@ -2139,11 +2158,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 78,
+    "posts": 80,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T06:36:39",
+  "started": "2026-11-26T07:19:58",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2156,7 +2175,8 @@
       "2026-11-22 23:44",
       "2026-11-23 22:59",
       "2026-11-24 06:26",
-      "2026-11-24 18:27"
+      "2026-11-24 18:27",
+      "2026-11-23 07:47"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2180,7 +2200,9 @@
       "JuLIP.Base.repeat",
       "XPalm.xpalm",
       "MolecularEvolution.partition2obs",
-      "ModernRoboticsBook.vec_to_so3"
+      "ModernRoboticsBook.vec_to_so3",
+      "MosaicViews.mosaicview",
+      "GIFImages.gif_decode"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2335,12 +2357,17 @@
       "DynamicGridsInteract",
       "CellListMap",
       "EchogramColorSchemes",
-      "AAindex"
+      "AAindex",
+      "SpinWaveTheory",
+      "Fastnet",
+      "ImageShow"
     ],
     "vision": [
       "FluxKleinRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "ProPainterRunner",
+      "ZImageRunner"
     ]
   },
-  "surprise_seen": 109
+  "surprise_seen": 110
 }

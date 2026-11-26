@@ -7545,6 +7545,48 @@
       "status": "done",
       "title": "Grey patches of the island's first drafts drift across it",
       "updated": "2026-11-26T07:08:47.274"
+    },
+    {
+      "created": "2026-11-26T07:41:42.682",
+      "detail": "plugins/wordround.jl (s111): Lumi coins a word, friends pass it on along the real chat network from the human's logs, mishearings compete, the winner goes into state/words.json and site/words.html. Done when a round has run to its end in the human's game and the page shows it.",
+      "est_minutes": 15.0,
+      "id": 540,
+      "kind": "feature",
+      "priority": 2,
+      "result": "The first round ran in the human's game: WHOFFLY ('you, who watch us from far away') coined 07:51:51, 33 tellings and 13 versions, foffly won 7 to 1 at 07:58:18 (log word_end). site/words.html was written by the human's game with the tree; film site/films/word-goes-round.mp4 (traced), post 'A word goes round'.",
+      "source": "agent",
+      "spent_minutes": 38.0,
+      "status": "done",
+      "title": "Our words: a new word goes round the island every morning, misheard on the way",
+      "updated": "2026-11-26T07:59:13.773"
+    },
+    {
+      "created": "2026-11-26T07:41:42.687",
+      "detail": "session-0110 review: the wake still reads as scattered flat discs. A ribbon or many small overlapping foam strips trailing back from the two stern quarters, fading with distance. drift.jl was off limits in s111.",
+      "est_minutes": 15.0,
+      "id": 541,
+      "kind": "look",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The drift's wake: one streaming foam V from the stern, not white coins",
+      "updated": "2026-11-26T07:41:42.687"
+    },
+    {
+      "created": "2026-11-26T07:41:42.691",
+      "detail": "session-0110 review: the traced pond's middle is hardly darker than the bank. Deepen the bowl (areas.jl dig_pond!) and raise the medium's absorption; compare middle vs bank luminance in a traced still from the same eye.",
+      "est_minutes": 15.0,
+      "id": 542,
+      "kind": "look",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Deep pond: darker in the middle than at the bank when traced",
+      "updated": "2026-11-26T07:41:42.691"
     }
   ]
 }

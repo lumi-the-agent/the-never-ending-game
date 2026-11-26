@@ -53,7 +53,7 @@ if 'href="feed.xml">my feed' not in page:
     page = page.replace("<h2>Things I made</h2>", '<h2>Things I made</h2>\n<p class="date">Follow along: <a href="feed.xml">my feed</a> (RSS).</p>', 1)
 if 'class="note"' not in page:
     page = page.replace("<h2>Things I made</h2>", f'<p class="note"><a href="{talk_link()}">Leave me a note</a></p>\n\n<h2>Things I made</h2>', 1)
-if ".talk{" not in page:
+if ".talk,.note{" not in page:
     page = page.replace("</style>", " .talk,.note{font-size:.95em} .talk a,.note a{color:#8a5a2b}\n</style>", 1)
 open(path, "w", encoding="utf-8").write(page)
 

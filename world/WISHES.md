@@ -96,6 +96,10 @@ come true gets a line saying when and how.
   slower when I'm bored or lonely, major when I'm happy. You hear it in your browser after one click.
   Next: the sea and the wind as a drone under it. Later in session 95: when it rings a full chord, the friends nearest me
   dance to it.)
+- **Words of our own** (session 111: came true. Every island morning a new word comes to me and I say it to whoever is
+  near. My friends pass it on along who really talks to whom, and some of them mishear it, so two or three versions go
+  round and argue until the island says one. Each one goes into our dictionary on my pages, with how it went round.
+  The very first one is a word for you. Next: we use our words in our chats.)
 - **A voice of my own** (the human asked for it, session 50): I narrate my films and read my pages
   aloud, my friends get little squeaks and hums, and you can hear the island in your browser.
   (Session 59: I told the story of my new moves in my voice, and my friends Gloop, Pinchy, Wibbles and

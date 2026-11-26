@@ -1,0 +1,36 @@
+{
+  "created": "2026-11-26T07:38:08.606",
+  "finished": "2026-11-26T07:45:02.259",
+  "id": "20261126-073808-606-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wordround_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 480,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 14.0,
+      "width": 854
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/word-goes-round.mp4",
+    "script": "movies/wordround.jl"
+  },
+  "result": {
+    "knows": "Dict{Int32, String}(4 => \"woompo\", 2 => \"woomboo\", 8 => \"woompoo\", 1 => \"woomboo\")",
+    "lines": [
+      "Lumi: Ooh! A new word!",
+      "Lumi: WOOMBOO!",
+      "Lumi: It means the last pumpkin standing.",
+      "Gloop: Say it with me: WOOMBOO!",
+      "Truffle: WOOMPOO? ... WOOMPOO!",
+      "Truffle: Have you heard? WOOMPOO!",
+      "Pinchy: WOOMPO? ... WOOMPO!"
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/films/word-goes-round.mp4",
+    "tree": "Any[(t = 1.4166666673263535, from = \"Lumi\", to = \"Gloop\", said = \"woomboo\", heard = \"woomboo\", was = \"\", switched = false), (t = 5.5833333359332755, from = \"Gloop\", to = \"Truffle\", said = \"woomboo\", heard = \"woompoo\", was = \"\", switched = false), (t = 9.333333337679505, from = \"Truffle\", to = \"Pinchy\", said = \"woompoo\", heard = \"woompo\", was = \"\", switched = false)]"
+  },
+  "seconds": 412.7,
+  "started": "2026-11-26T07:38:09.543",
+  "status": "done"
+}
