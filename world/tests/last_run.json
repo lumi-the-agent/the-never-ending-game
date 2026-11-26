@@ -3,10 +3,31 @@
     {
       "error": "",
       "file": "minigames.jl",
-      "name": "Parade party: a parade of three led to a lantern turns into a dance ring with Lumi in the middle",
+      "name": "Wild berry race: critters race each other for ripe berries, the winner dances",
       "passed": true,
-      "seconds": 23.5
+      "seconds": 0.1
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Dance circle: critters dance in a ring by a lantern, Lumi walks in and they cheer",
+      "passed": true,
+      "seconds": 9.1
+    },
+    {
+      "error": "check failed: no dance ring after walking the parade 7.0 m to the lantern spot (now 0.6 m, followers 0, the three now Tuple{String, Symbol, Symbol, Float32}[(\"Hopscotch\", :sleep, :yawn, 5.5), (\"Wibbles\", :sleep, :sleep, 2.9), (\"Pinchy\", :sleep, :yawn, 1.7)], why they left [\"goal feel\", \"goal feel\", \"goal feel\"], Lumi controlled true, game NeverendingGame.JumpIn)",
+      "file": "minigames.jl",
+      "name": "Parade party: a parade of three led to a lantern turns into a dance ring with Lumi in the middle",
+      "passed": false,
+      "seconds": 42.5
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Dance rings have several places round the island, one in the golden flower field, each fully on land",
+      "passed": true,
+      "seconds": 0.1
     }
   ],
-  "time": "2026-11-26T00:37:05.488"
+  "time": "2026-11-26T01:13:17.711"
 }

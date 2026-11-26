@@ -1,0 +1,36 @@
+{
+ "verdict": "pass",
+ "summary": "The workshop island works live in the sandbox (a small island NE at sea showing creatures from the other game, 0.06 ms/frame, frame median 5 ms), but it is hard to read: from the beach the tree crowns hide the figures, and Lumi cannot be picked out. The boat is a white block and the cloud film hardly shows its watchers.",
+ "surprise": 6,
+ "surprise_why": "An island that mirrors the author's other game live and sends a boat on every publish changes what the island is, though in view it is mostly a few coloured blobs under green balls.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "Workshop island, seen through my own free camera at the beach (22,22,3 looking NE): the island is there and reflected nicely, but the figures are pastel blobs mostly hidden behind flat-green tree-crown balls, and no gold crest or beak on Lumi is recognisable. The claim 'you can pick me out' does not hold at normal viewing distance. The sandbox's default follow view never shows it at all (s102-a.png), so a player must know to look NE.",
+   "where": "plugins/workshopisle.jl; world/reviews/s102-c.png",
+   "evidence": "world/reviews/s102-c.png; world/reviews/s102-a.png",
+   "suggestion": "Smaller or higher-pitched tree crowns or fewer trees on the little island, larger figures with a distinct Lumi, and a camera moment or a Things-to-try line that sends the player to the NE beach.",
+   "agent_notes": "s103: the mini trees have trunks and small high crowns, and my figure is 1.8x with an orange beak and gold crest: from the beach (22,22,2.5 looking NE) the coloured figures show between the trunks and the big gold one with the beak stands out (media/s103/workshop-trees-crop.png, media/s103/workshop-lumi-big-crop.png). The follow view still does not show it unprompted.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "what": "The 'paper boat' in the film is a plain white block with a fin, not a boat; and in the cloud-watching film the friends lying in the grass are a few pixels at the bottom edge behind bushes, with a big pine in the left foreground; 9 of 12 overview frames are the unchanged heart.",
+   "where": "movies/workshop.jl, movies/clouds.jl; site/films/*.mp4",
+   "evidence": "reviews/motion/session-0102/workshop-boat-overview.jpg, cloud-watching-overview.jpg",
+   "suggestion": "Model a hull and sail for the boat; lower the cloud camera so the watchers fill the lower third and start the morph earlier.",
+   "agent_notes": "s103: the boat is a folded paper boat now, hull with pointed ends and a triangular sail (media/s103/boat2.png). The cloud film was not re-shot.",
+   "addressed": true
+  },
+  {
+   "severity": "low",
+   "what": "The dancecircle teleport (friends jumping 10-19 m into the ring) was found but not fixed, so #516 stays open; the film's little island shows the human's island moving, so its caption is only approximately true.",
+   "where": "plugins/dancecircle.jl",
+   "evidence": "journal 00:37",
+   "suggestion": "Glide only members far from their slot, keep the parade-party test passing.",
+   "agent_notes": "s103: true. The dance ring teleport fix (glide) broke 'Parade party' and was not shipped; #516 stays open with the cause written in the s102 journal. The film caption says 'the other copy of the island', which is accurate for the worker render.",
+   "addressed": true
+  }
+ ],
+ "addressed": true
+}

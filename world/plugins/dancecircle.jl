@@ -179,7 +179,11 @@ function NG.step!(s::DanceCircle, game, dt)
     # dance round the ring, facing the middle
     t = w.t - s.t0
     for (k, c) in enumerate(members)
-        c.pos = ring_point(w, s, k, n, t)
+        # a dancer still far from its place in the ring (on its way, or its slot moved when someone left) runs
+        # there over a second instead of jumping in one frame (s102 log/frames: running -> dancing 10-19 m away)
+        target = ring_point(w, s, k, n, t)
+        dd = Vec2f(target[1] - c.pos[1], target[2] - c.pos[2]); dist = hypot(dd[1], dd[2])
+        c.pos = dist > 1.5f0 ? NG.ground(w.island, (c.pos[1] + dd[1] * 0.35f0 / dist, c.pos[2] + dd[2] * 0.35f0 / dist)) : target
         c.yaw = atan(s.center[2] - c.pos[2], s.center[1] - c.pos[1]) - NG.species_of(c).heading
         c.action = :dance
         c.goal.action = :dance

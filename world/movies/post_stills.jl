@@ -51,7 +51,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "vote" => ("Lumi", "Gloop", "Pinchy", "Wibbles", "Cumulus", "Marshmallow", "Sir Sniffsalot"),
                   "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"),
                   "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"),
-                  "workshop" => ("Lumi", "Gloop"))
+                  "workshop" => ("Lumi", "Gloop"),
+                  "pebbles" => ("Lumi", "Pickles", "Wibbles"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -84,6 +85,22 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "pebbles"          # s103: PIE written in pebbles on the meadow, the friends waiting to hear what the reader says
+        pm = plugin(g, "pebblewords")
+        PWD = Main.PEBBLEWORDS
+        o = Base.invokelatest(pm.word_spot, g) - Point2f(0.42f0 * 6 * 3 / 2, 0.42f0 * 3.5f0)
+        rng = NG.Random.MersenneTwister(7)
+        cells = Base.invokelatest(pm.pebble_cells, "PIE", 0.45, rng; drop = 0.06)
+        PWD[:ev] = Dict{Symbol,Any}(:word => "PIE", :origin => o, :cells => cells, :shown => length(cells), :state => :reading,
+                                    :t0 => w.t, :friends => Int32[], :try => 1, :mess => 0.45)
+        Base.invokelatest(pm.draw!, g)
+        mid = o + Point2f(0.42f0 * 8, 0.42f0 * 3)
+        pose!(w, by_name(w, "Lumi"), (mid[1], mid[2] + 4.3f0), -pi / 2, :proud)
+        pose!(w, by_name(w, "Pickles"), (mid[1] - 2.8f0, mid[2] - 2.6f0), pi / 3, :idle)
+        pose!(w, by_name(w, "Wibbles"), (mid[1] + 3.0f0, mid[2] - 2.4f0), 2pi / 3, :idle)
+        z0 = NG.terrain_height(w.island, mid[1], mid[2])
+        return Point3f(mid[1], mid[2] - 6.5f0, z0 + 7.5f0), Point3f(mid[1], mid[2] + 0.6f0, z0)
     end
     if post == "workshop"         # s102: my workshop out at sea, the other game's friends moving on it, a paper boat on its way
         wm = plugin(g, "workshopisle")

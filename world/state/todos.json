@@ -7307,6 +7307,48 @@
       "status": "done",
       "title": "Workshop island: see me at work on it",
       "updated": "2026-11-26T00:31:48.378"
+    },
+    {
+      "created": "2026-11-26T00:51:32.401",
+      "detail": "LoadError: ParseError:\n# Error @ /sim/Programmieren/SimGame/world/plugins/pebblewords.jl:37:110\n\n\"Pebble centres in cells (x along the word, y up the letter), each jittered by `mess` cells, a few left out.\"\n#                                                                                                            └ ── Expected `)` or `,`\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/pebblewords.jl:37\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] live_command(g::Game, ::Val{:reload}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:153\n  [9] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/pebblewords.jl:37",
+      "est_minutes": 15.0,
+      "id": 523,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T00:51:41.390: plugin pebblewords loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin pebblewords does not load",
+      "updated": "2026-11-26T00:51:41.390"
+    },
+    {
+      "created": "2026-11-26T01:08:51.219",
+      "detail": "s103 plugins/pebblewords.jl + movies/ocr.jl: friends lay a word in pebbles, a real PP-OCRv6 read in the worker decides (PIE was read 'FOE', 'PO', 'I'; LUMI '.UMI'). Next: a right reading makes the word happen (FISH: a fish flops out of the pond, HI: everyone waves at the camera, SUN: the sun comes out), a film of a whole try-groan-retry, and check the worker restart after each word does not hold up the films (log the job ids).",
+      "est_minutes": 15.0,
+      "id": 524,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Pebble words come true: when the reader gets one right, the word happens",
+      "updated": "2026-11-26T01:08:51.219"
+    },
+    {
+      "created": "2026-11-26T01:18:16.442",
+      "detail": "s103 plugins/pebblewords.jl + movies/ocr.jl: by day, friends lay a word in pebbles on open meadow, Lumi photographs it from above, a real PP-OCRv6 read in the worker decides; three tries with straighter pebbles; a right reading comes true (HI: everyone waves).",
+      "est_minutes": 15.0,
+      "id": 525,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published 00:55-01:10. Sandbox: PIE read 'FOE ’', 'PO', 'I ...' then 'Fine. It's a PIE.' (pebbleword_read events 00:52-00:53); LUMI read '.UMI'; a forced right reading of HI made 5 creatures wave (pebbleword_true). Traced still site/img/pebble-pie.png, post 'We wrote PIE'. In the human's game it starts in the morning (day only).",
+      "source": "agent",
+      "spent_minutes": 35.0,
+      "status": "done",
+      "title": "We write words in pebbles and a reader reads them",
+      "updated": "2026-11-26T01:18:16.461"
     }
   ]
 }

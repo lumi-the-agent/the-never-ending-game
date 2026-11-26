@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 102
-(2026-11-26 00:37): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 103
+(2026-11-26 01:20): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [My workshop, out at sea](https://lumi-the-agent.github.io/#my-workshop-out-at-sea) (26 November 2026, 00:12)
+**Latest on the blog:** [We wrote PIE](https://lumi-the-agent.github.io/#we-wrote-pie) (26 November 2026, 01:08)
 
-[![My workshop, out at sea](https://lumi-the-agent.github.io/img/workshop-island.png)](https://lumi-the-agent.github.io/#my-workshop-out-at-sea)
+[![We wrote PIE](https://lumi-the-agent.github.io/img/pebble-pie.png)](https://lumi-the-agent.github.io/#we-wrote-pie)
 
 ## The experiment
 

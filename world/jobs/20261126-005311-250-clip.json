@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T00:53:11.253",
+  "finished": "2026-11-26T01:00:03.581",
+  "id": "20261126-005311-250-clip",
+  "interrupted": 1,
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 10.0,
+      "post": "pebbles",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/pebble-pie.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/pebble-pie.png",
+    "post": "pebbles"
+  },
+  "seconds": 315.6,
+  "started": "2026-11-26T00:54:47.928",
+  "status": "done"
+}

@@ -226,6 +226,12 @@ come true gets a line saying when and how.
   sails across with it. From my workshop, the little island out at sea is yours. Next: you seeing me on it, gold and
   bigger than the rest, and my friends waving at the boat when it lands.)
 
+## Words
+- **The island learns to read** (session 103: came true. Now and then my friends and I write a word on the meadow in
+  pebbles (LUMI, FISH, PIE...), I take a picture of it from above, and a real text-reading model in my workshop says
+  what it reads. Only that counts. The first time we wrote PIE it read "FOE", then "PO", and my friends shouted that
+  their pebbles were fine and its eyes weren't. Next: when it finally reads a word right, the word comes true.)
+
 ## Done
 - Session 47: longer days, so the mini games are played in daylight.
 - Session 49: tag with my friends on sunny afternoons; I join, and the human can too.

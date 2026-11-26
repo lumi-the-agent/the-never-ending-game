@@ -60,11 +60,22 @@ function poll!(game)
     end
 end
 
+"A folded paper boat, 1 long: a hull wider at the top than at the keel, pointed ends, a triangular sail (both sides)."
+function paper_boat()
+    P = Point3f[(-0.45, 0, 0), (0.45, 0, 0),                       # keel
+                (-0.75, -0.22, 0.28), (0.75, -0.22, 0.28), (-0.75, 0.22, 0.28), (0.75, 0.22, 0.28),   # gunwales
+                (-0.32, 0, 0.28), (0.32, 0, 0.28), (0, 0, 0.78),   # sail, front
+                (-0.32, 0, 0.28), (0.32, 0, 0.28), (0, 0, 0.78)]   # and back: own vertices (shared ones gave it zero normals: black)
+    F = GeometryBasics.TriangleFace{Int}[(1, 2, 4), (1, 4, 3), (2, 1, 5), (2, 5, 6), (1, 3, 5), (2, 6, 4),
+                                         (7, 8, 9), (11, 10, 12), (3, 4, 6), (3, 6, 5)]
+    return GeometryBasics.Mesh(P, F; normal = GeometryBasics.normals(P, F))
+end
+
 "The copy: the island's own ground, shrunk, its trees as little crowns."
 function build!(game)
     sc = game.stage.scene
     w = game.world
-    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:workshop_ground, :workshop_trees, :workshop_figures, :workshop_boat, :workshop_lumi), copy(sc.plots))
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:workshop_ground, :workshop_trees, :workshop_trunks, :workshop_figures, :workshop_boat, :workshop_lumi), copy(sc.plots))
         delete!(sc, p)                                 # (built again: names must stay unique)
     end
     ter = filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :terrain, sc.plots)
@@ -75,16 +86,22 @@ function build!(game)
     WI[:ground] = mesh!(sc, mm; color = colours, name = :workshop_ground)
     trees = [p for p in w.props if p.kind === :tree]
     # crowns held high and a little small, so the figures walking under them stay in sight
-    tp = isempty(trees) ? [Point3f(0, 0, -50)] : [mini(p.pos) + Point3f(0, 0, S * 6f0 * p.scale) for p in trees]
-    ts = isempty(trees) ? [0f0] : [S * 1.8f0 * p.scale for p in trees]
+    # small crowns held high on brown trunks, so the figures walking under them stay in sight (review s102: the
+    # figures were hidden behind green balls)
+    tp = isempty(trees) ? [Point3f(0, 0, -50)] : [mini(p.pos) + Point3f(0, 0, S * 7f0 * p.scale) for p in trees]
+    ts = isempty(trees) ? [0f0] : [S * 1.35f0 * p.scale for p in trees]
     WI[:trees] = meshscatter!(sc, tp; marker = Sphere(Point3f(0), 1f0), markersize = ts, color = RGBf(0.35, 0.62, 0.25), name = :workshop_trees)
+    kp = isempty(trees) ? [Point3f(0, 0, -50)] : [mini(p.pos) for p in trees]
+    ks = isempty(trees) ? [Vec3f(0)] : [Vec3f(S * 0.22f0 * p.scale, S * 0.22f0 * p.scale, S * 6.2f0 * p.scale) for p in trees]
+    WI[:trunks] = meshscatter!(sc, kp; marker = Makie.Cylinder(Point3f(0), Point3f(0, 0, 1), 1f0), markersize = ks,
+                               color = RGBf(0.55, 0.36, 0.22), name = :workshop_trunks)
     WI[:figs] = meshscatter!(sc, fill(Point3f(0, 0, -50), 12); marker = Sphere(Point3f(0), 1f0), markersize = fill(0f0, 12),
                              color = fill(RGBf(1, 1, 1), 12), name = :workshop_figures)
     WI[:lumi] = meshscatter!(sc, fill(Point3f(0, 0, -50), 4); marker = Sphere(Point3f(0), 1f0), markersize = fill(Vec3f(0), 4),
                              rotation = fill(Makie.Quaternionf(0, 0, 0, 1), 4),
                              color = [RGBf(1.0, 0.45, 0.1), RGBf(1.0, 0.85, 0.2), RGBf(1.0, 0.85, 0.2), RGBf(1.0, 0.85, 0.2)],
                              name = :workshop_lumi)
-    WI[:boat] = meshscatter!(sc, fill(Point3f(0, 0, -50), 2); marker = Rect3f(Vec3f(-0.5), Vec3f(1)), markersize = fill(Vec3f(0), 2),
+    WI[:boat] = meshscatter!(sc, fill(Point3f(0, 0, -50), 2); marker = paper_boat(), markersize = fill(Vec3f(0), 2),
                              rotation = fill(Makie.Quaternionf(0, 0, 0, 1), 2), color = [RGBf(0.97, 0.96, 0.92), RGBf(1, 1, 1)],
                              name = :workshop_boat)
     WI[:built] = true
@@ -110,7 +127,7 @@ function draw_figures!(game)
         a = j === nothing ? q.pos : p0.poses[j].pos + (q.pos - p0.poses[j].pos) * u
         c = NG.creature(w, q.id)
         nm = c === nothing ? get(names, q.id, "?") : c.name
-        big = nm == "Lumi" ? 1.4f0 : 1f0
+        big = nm == "Lumi" ? 1.8f0 : 1f0          # (1.4 did not stand out from the beach, review s102)
         pts[i] = mini(a) + Point3f(0, 0, FIG * big * 0.8f0)
         ms[i] = FIG * big
         cs[i] = figure_colour(c)
@@ -146,8 +163,8 @@ function draw_boat!(game)
     p = b.from + (b.to - b.from) * Float32(u)
     d = b.to - b.from
     q = Makie.qrotation(Vec3f(0, 0, 1), atan(d[2], d[1])) * Makie.qrotation(Vec3f(1, 0, 0), 0.12f0 * sin(2.3f0 * Float32(w.t)))
-    Makie.update!(WI[:boat], [p + Point3f(0, 0, 0.12f0), p + Point3f(0, 0, 0.5f0)];
-                  markersize = [Vec3f(1.1, 0.5, 0.22), Vec3f(0.5, 0.04, 0.6)], rotation = [q, q])
+    Makie.update!(WI[:boat], [p + Point3f(0, 0, 0.02f0), Point3f(0, 0, -50)];
+                  markersize = [Vec3f(1.4), Vec3f(0)], rotation = [q, q])
     WI[:boat_shown] = true
     if u >= 1
         WI[:sail] = nothing
@@ -195,9 +212,21 @@ end
 
 NG.published!(::WorkshopIsle, game, plugins) = send_boat!(game, join(plugins, ", "))
 
+"While a paper boat crosses, a quiet moment's camera stands on our beach and looks out at it and the little island."
+function boat_shot(w)
+    b = get(WI, :sail, nothing)
+    b === nothing && return nothing
+    d = b.to - b.from; n = hypot(d[1], d[2]); n < 1f-3 && return nothing
+    u = Vec3f(d[1] / n, d[2] / n, 0)
+    eye = b.to + u * 7f0 + Vec3f(0, 0, 2.8f0)
+    eye = Point3f(eye[1], eye[2], max(eye[3], NG.ground(w.island, (eye[1], eye[2]))[3] + 2.2f0))
+    return (eye, Point3f(CENTRE[1] * 0.85f0, CENTRE[2] * 0.85f0, 1.2f0))
+end
+
 function NG.start!(::WorkshopIsle, game)
+    NG.CAMERA_SHOTS["workshopisle"] = boat_shot
     if game.stage !== nothing
-        for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:workshop_ground, :workshop_trees, :workshop_figures, :workshop_boat, :workshop_lumi), copy(game.stage.scene.plots))
+        for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:workshop_ground, :workshop_trees, :workshop_trunks, :workshop_figures, :workshop_boat, :workshop_lumi), copy(game.stage.scene.plots))
             delete!(game.stage.scene, p)
         end
     end
@@ -207,7 +236,8 @@ function NG.start!(::WorkshopIsle, game)
 end
 
 function NG.stop!(::WorkshopIsle, game)
-    for k in (:ground, :trees, :figs, :boat, :lumi)
+    delete!(NG.CAMERA_SHOTS, "workshopisle")
+    for k in (:ground, :trees, :trunks, :figs, :boat, :lumi)
         haskey(WI, k) && WI[k].parent !== nothing && delete!(WI[k].parent, WI[k])
     end
     WI[:built] = false

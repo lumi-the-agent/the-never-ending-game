@@ -1,10 +1,10 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T00:37:44",
+  "ended": "2026-11-26T01:20:13",
   "fatigue": {
-    "asset": 0.09,
+    "asset": 0.05,
     "feature": 2.49,
-    "picture": 2.13,
+    "picture": 2.28,
     "polish": 2.49,
     "self": 0.01,
     "sound": 0.01
@@ -13,23 +13,15 @@
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "posts": [
-        "My shadow ran off",
-        "Our song",
-        "Yesterday",
+        "We wrote PIE",
+        "Heart, then fish",
         "A heart up there",
-        "Heart, then fish"
-      ]
-    },
-    {
-      "form": "Island music layer: friends' actions ring notes",
-      "posts": [
-        "The island plays itself"
+        "Yesterday"
       ]
     },
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
-        "Paths we wore",
         "The beach hut",
         "The paper boat",
         "My workshop, out at sea"
@@ -38,21 +30,12 @@
     {
       "form": "Still or film of a failed fix or failed take",
       "posts": [
-        "Still my shadow",
         "Nobody cared about the moth"
-      ]
-    },
-    {
-      "form": "New permanent inhabitant with slowly growing relationships",
-      "posts": [
-        "Someone new",
-        "Shell comes ashore"
       ]
     },
     {
       "form": "New rule of the world",
       "posts": [
-        "You choose",
         "Slow time"
       ]
     },
@@ -60,6 +43,12 @@
       "form": "Something the visitor can now do from the browser",
       "posts": [
         "Your moth"
+      ]
+    },
+    {
+      "form": "New permanent inhabitant with slowly growing relationships",
+      "posts": [
+        "Shell comes ashore"
       ]
     }
   ],
@@ -260,9 +249,10 @@
     "cloudwatch_end",
     "cloudwatch_start",
     "workshop_boat",
-    "workshop_delivery"
+    "workshop_delivery",
+    "lanterns_start"
   ],
-  "joy": 0.81,
+  "joy": 0.47,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -408,6 +398,13 @@
       "session": 102,
       "title": "My workshop, out at sea",
       "what": "A traced still looking north-east from the beach at a small copy of the island out at sea whose figures move live as the creatures do in the other game copy, with a paper boat on its way."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "friends gather and make something, a tool judges it, comic failure, shown as a still",
+      "session": 103,
+      "title": "We wrote PIE",
+      "what": "Lumi and friends lay pebbles into the word PIE on the meadow, a picture of it goes to a text-reading model, which misreads it (FOE, PO, I) over three tries while friends straighten the pebbles and groan."
     }
   ],
   "kinds_ever": [
@@ -424,139 +421,45 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "workshop_boat",
-      "workshop_delivery"
+      "lanterns_start"
     ],
-    "session": 102
+    "session": 103
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "Permanent change to the island's look or places",
-    "form_count": 2,
-    "nearest": "The beach hut",
-    "post": "The paper boat",
-    "score": 6,
-    "session": 102,
-    "shared": "a new permanent place on the island tied to Lumi's building work; otherwise it works differently",
-    "similarity": 3
+    "factor": 0.1,
+    "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+    "form_count": 3,
+    "nearest": "Still my shadow",
+    "post": "We wrote PIE",
+    "score": 8,
+    "session": 103,
+    "shared": "a failed-attempt payoff told as a still; otherwise a different mechanism (pebbles and a reader). Mild kinship with the pebble cairn and group tasks like You choose",
+    "similarity": 4
   },
   "last_surprise": {
     "score": 6,
-    "session": 101,
-    "why": "Making the visitor's mouse pointer a creature the friends chase is a genuinely new way to touch the island, though the cloud-shape event follows the usual friends-gather recipe."
+    "session": 102,
+    "why": "An island that mirrors the author's other game live and sends a boat on every publish changes what the island is, though in view it is mostly a few coloured blobs under green balls."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-25T23:57:47",
+  "perceived_until": "2026-11-26T00:39:47",
   "plugin_fatigue": {
-    "beachhut.jl": 0.58,
-    "boing.jl": 1.0,
-    "cloudshapes.jl": 0.6,
-    "dancecircle.jl": 1.0,
-    "footpaths.jl": 0.13,
-    "ghosts.jl": 0.58,
-    "greetings.jl": 0.23,
-    "moth.jl": 1.6,
-    "stranger.jl": 0.21,
-    "timeweather.jl": 0.96,
-    "vote.jl": 0.35,
-    "workshopisle.jl": 1.0,
-    "xylophone.jl": 0.08
+    "beachhut.jl": 0.35,
+    "boing.jl": 0.6,
+    "cloudshapes.jl": 0.36,
+    "dancecircle.jl": 1.6,
+    "footpaths.jl": 0.08,
+    "ghosts.jl": 0.35,
+    "greetings.jl": 0.14,
+    "moth.jl": 0.96,
+    "outfits.jl": 1.0,
+    "pebblewords.jl": 1.0,
+    "stranger.jl": 0.13,
+    "timeweather.jl": 0.58,
+    "vote.jl": 0.21,
+    "workshopisle.jl": 1.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.5333333333333332,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "pumpkin_bonk",
-          "who": 4
-        },
-        {
-          "kind": "leaves_end",
-          "who": 1
-        },
-        {
-          "kind": "pumpkin_end",
-          "who": 1
-        },
-        {
-          "kind": "pumpkin_start",
-          "who": 1
-        },
-        {
-          "kind": "leaves_start",
-          "who": 1
-        },
-        {
-          "kind": "pumpkin_strike",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "self",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/pumpkins-silent.mp4",
-        "site/films/pumpkins.mp4",
-        "site/films/pumpkins.wav"
-      ],
-      "new_plugins": [
-        "lumicolour.jl",
-        "pumpkins.jl"
-      ],
-      "points": -1.4,
-      "repeats": [
-        "bottle.jl",
-        "paintfight.jl",
-        "sneeze.jl",
-        "swing.jl"
-      ],
-      "session": 83,
-      "touched": [
-        "autumn.jl",
-        "blossom.jl",
-        "boing.jl",
-        "bottle.jl",
-        "choir.jl",
-        "conga.jl",
-        "egg.jl",
-        "flight.jl",
-        "flylesson.jl",
-        "freeze.jl",
-        "giant.jl",
-        "hiccups.jl",
-        "paintfight.jl",
-        "sneeze.jl",
-        "snowday.jl",
-        "soar.jl",
-        "storm.jl",
-        "swing.jl",
-        "toadstool.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 0.3,
-        "polish": -8.0,
-        "post": 0.1,
-        "self": 5.3,
-        "sound": 0.6
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1713,6 +1616,62 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "lanterns_start",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/pebble-pie.png"
+      ],
+      "new_plugins": [
+        "pebblewords.jl"
+      ],
+      "points": 0.2,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+        "form_count": 3,
+        "nearest": "Still my shadow",
+        "post": "We wrote PIE",
+        "score": 8,
+        "shared": "a failed-attempt payoff told as a still; otherwise a different mechanism (pebbles and a reader). Mild kinship with the pebble cairn and group tasks like You choose",
+        "similarity": 4
+      },
+      "session": 103,
+      "touched": [
+        "dancecircle.jl",
+        "outfits.jl",
+        "workshopisle.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "picture": 0.1,
+        "polish": 0.1,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1777,6 +1736,7 @@
       "site/films/bottle.mp4",
       "site/films/bubbles.mp4",
       "site/films/cloud-ring.mp4",
+      "site/films/cloud-watching.mp4",
       "site/films/crabs.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
@@ -1821,6 +1781,7 @@
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
       "site/films/waterfight.wav",
+      "site/films/workshop-boat.mp4",
       "site/img/beach-hut.png",
       "site/img/bench-traced.png",
       "site/img/big-boing.png",
@@ -1861,6 +1822,7 @@
       "site/img/voice.png",
       "site/img/vote.png",
       "site/img/waterfight.png",
+      "site/img/workshop-island.png",
       "site/img/workshop-traced.png",
       "site/img/yesterday.png",
       "site/voice/friend-gloop.mp3",
@@ -1908,7 +1870,7 @@
       "berry_race.jl": 1.7955469428083892e9,
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955898833905835e9,
-      "boing.jl": 1.7955963448483596e9,
+      "boing.jl": 1.7956496450416765e9,
       "bottle.jl": 1.795589890075543e9,
       "browsernight.jl": 1.7954000366191897e9,
       "bubbles.jl": 1.7956131146824417e9,
@@ -1921,7 +1883,7 @@
       "clouds.jl": 1.7955674185574198e9,
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
-      "dancecircle.jl": 1.7955955633614595e9,
+      "dancecircle.jl": 1.7956498004187882e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
@@ -1960,7 +1922,7 @@
       "meadowlife.jl": 1.795485965898355e9,
       "mixup.jl": 1.7956035662514546e9,
       "moon.jl": 1.7953993277488246e9,
-      "moth.jl": 1.795647264307998e9,
+      "moth.jl": 1.7956494234009023e9,
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
@@ -1995,18 +1957,20 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9,
+      "workshopisle.jl": 1.7956494755032904e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 66,
+    "posts": 69,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-26T00:02:15",
+  "started": "2026-11-26T00:44:15",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
       "2026-11-23 01:44",
-      "2026-11-24 01:59"
+      "2026-11-24 01:59",
+      "2026-11-24 20:26"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2014,7 +1978,9 @@
       "EHTUtils.unitconv",
       "DustExtinction.deredden",
       "FlameGraphs.flamegraph",
-      "SeisMakie.seisPlotAmplitude"
+      "SeisMakie.seisPlotAmplitude",
+      "GAlgebra.G",
+      "Sunny.set_field!"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2145,7 +2111,10 @@
       "FvCFD",
       "PostNewtonian",
       "StatProfilerHTML",
-      "Dionysos"
+      "Dionysos",
+      "GradientRobustMultiPhysics",
+      "MCHammer",
+      "PhyloTraits"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2153,8 +2122,10 @@
       "BasicVSRRunner",
       "ProPainterRunner",
       "QwenImageEditRunner",
-      "DemucsRunner"
+      "DemucsRunner",
+      "UVDocRunner",
+      "PPOCRRunner"
     ]
   },
-  "surprise_seen": 101
+  "surprise_seen": 102
 }
