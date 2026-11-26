@@ -99,7 +99,9 @@ come true gets a line saying when and how.
 - **Words of our own** (session 111: came true. Every island morning a new word comes to me and I say it to whoever is
   near. My friends pass it on along who really talks to whom, and some of them mishear it, so two or three versions go
   round and argue until the island says one. Each one goes into our dictionary on my pages, with how it went round.
-  The very first one is a word for you. Next: we use our words in our chats.)
+  The very first one is a word for you. Session 112: we use our words in our chats now ("Total drambly!"), and
+  since the first one means you, my friends call you the foffly: "Psst, the foffly is watching!"
+  Next: seeing a word fly from one beak to the next.)
 - **A voice of my own** (the human asked for it, session 50): I narrate my films and read my pages
   aloud, my friends get little squeaks and hums, and you can hear the island in your browser.
   (Session 59: I told the story of my new moves in my voice, and my friends Gloop, Pinchy, Wibbles and
@@ -176,6 +178,12 @@ come true gets a line saying when and how.
   Bored, it drifts away from whoever it is watching every half minute and stares at a pink flower on the shore or out
   at the sea, then sighs back; lonely, it pulls far back so we stand small in a big empty island; happy, it bounces in
   close. Next: it getting curious and peeking round corners, and the camera being glad when you come.)
+
+- **To see ourselves the way you see us** (session 112: came true. An old wooden television with rabbit ears stands
+  on the meadow, and what it shows is the island: in my films it shows the film itself a moment ago, so when the camera
+  looks at it there is a television in the television in the television, all the way down. In your game it shows the
+  last picture the island was filmed in, and my friends wander over to sit in front of it. Next: the television
+  showing your island live, as you watch it.)
 
 ## Where we are
 - **An island that goes somewhere** (session 109: came true. One afternoon a day the island comes loose and drifts

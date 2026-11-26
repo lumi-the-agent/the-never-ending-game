@@ -39,6 +39,7 @@
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
 /world/assets/20261125-114654-365-asset/
+/world/assets/20261126-083347-183-asset/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -316,6 +317,9 @@
 /world/reviews/motion/session-0111/word-goes-round-overview.jpg
 /world/reviews/motion/session-0111/word-goes-round-steps.jpg
 /world/reviews/motion/session-0111/word-goes-round-strip.jpg
+/world/reviews/motion/session-0112/island-on-tv-overview.jpg
+/world/reviews/motion/session-0112/island-on-tv-steps.jpg
+/world/reviews/motion/session-0112/island-on-tv-strip.jpg
 /world/reviews/p100-follow.png
 /world/reviews/p100-follow2.png
 /world/reviews/p100-tw-ring.png
@@ -1202,6 +1206,7 @@
 /world/reviews/s10_review.png
 /world/reviews/s11.png
 /world/reviews/s110-now.png
+/world/reviews/s111-a.png
 /world/reviews/s11_live.png
 /world/reviews/s12-live.png
 /world/reviews/s17r.png
@@ -1339,6 +1344,7 @@
 /world/reviews/views42/eye-level.png
 /world/reviews/views42/overview.png
 /world/state/footpaths.bin
+/world/state/missme-board.png
 /world/state/pebblewords/word-1795656873.png
 /world/state/pebblewords/word-1795656922.png
 /world/state/pebblewords/word-1795657995.png
@@ -1361,6 +1367,11 @@
 /world/state/pebblewords/word-1795667487.png
 /world/state/pebblewords/word-1795675606.png
 /world/state/pebblewords/word-1795675655.png
+/world/state/pebblewords/word-1795676571.png
+/world/state/pebblewords/word-1795676621.png
+/world/state/pebblewords/word-1795677560.png
+/world/state/pebblewords/word-1795678918.png
+/world/state/tv.png
 /world/tests/shots/areas_overview.png
 /world/tests/shots/ball-rally.png
 /world/tests/shots/ballplay-pass.png
@@ -1594,6 +1605,7 @@
 /world/site/films/hail.wav
 /world/site/films/hiccups-2.mp4
 /world/site/films/island-choir.mp4
+/world/site/films/island-on-tv.mp4
 /world/site/films/island-song.mp4
 /world/site/films/lanterns.mp4
 /world/site/films/leaves-silent.mp4

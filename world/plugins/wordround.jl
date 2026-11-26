@@ -29,7 +29,7 @@ const MEANINGS = ["the light through the cherry blossom", "the plop of a pebble 
                   "the last pumpkin standing", "the first warm stone of the morning", "laughing so hard you fall over"]
 const FIRST_MEANING = "you, who watch us from far away"
 const TELL = ("Psst! %s!", "Have you heard? %s!", "New word: %s!", "Do you know %s?", "Say it with me: %s!")
-const MISHEAR = 0.3          # chance a telling is misheard
+const MISHEAR = 0.15         # chance a telling is misheard (0.3 made 13 versions from 33 tellings: session-0111 review)
 const TELLS = 5              # most tellings per friend in one round
 const LASTS = 900.0          # s a round may last
 const RANGE = 30f0           # m a teller walks to tell someone
@@ -388,10 +388,32 @@ end
 
 morning(w) = 7.5 <= NG.daytime(w) * 24 <= 11.0
 
+# our words in our chats: between rounds a friend now and then uses one of the island's words (the newest most often)
+const USE = ("%s!", "That's so %s.", "Total %s!", "Feeling a bit %s today.", "Very %s, very %s.", "Ooh, %s!")
+const USE_FIRST = ("Psst, the %s is watching!", "Wave at the %s!", "Hello, %s!")   # the first word means the human
+
+function use_words!(game)
+    w = game.world
+    w.t >= get(WR, :chat_at, w.t + 1) || (haskey(WR, :chat_at) || (WR[:chat_at] = w.t + 20); return)
+    WR[:chat_at] = w.t + 25 + 35 * rand(w.rng)
+    words = load_words(game)
+    isempty(words) && return
+    e = rand(w.rng) < 0.6 ? words[end] : words[rand(w.rng, 1:length(words))]
+    whos = [c for c in w.creatures if awake(c) && !c.controlled && !any(s -> s.who == c.id, w.speech)]
+    isempty(whos) && return
+    c = whos[rand(w.rng, 1:length(whos))]
+    word = String(e["winner"])
+    first_word = e["meaning"] == FIRST_MEANING
+    line = fill_in(rand(w.rng, first_word ? USE_FIRST : USE), first_word ? word : (rand(w.rng) < 0.5 ? loud(word) : word))
+    NG.say!(w, c, uppercasefirst(line); duration = 3.0)
+    NG.emit!(w, :word_used; who = c.name, word)
+end
+
 function NG.step!(::WordRound, game, dt)
     w = game.world
     r = get(WR, :round, nothing)
     if r === nothing
+        game.dash === nothing || use_words!(game)
         game.dash === nothing && !get(WR, :force, false) && return
         game.minigame === nothing || game.minigame isa NG.JumpIn || return
         w.t >= get(WR, :try_at, -Inf) || return

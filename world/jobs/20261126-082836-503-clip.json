@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-26T08:28:36.503",
+  "finished": "2026-11-26T08:28:38.794",
+  "id": "20261126-082836-503-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795678117.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795678117.png",
+    "text": "LUMI"
+  },
+  "seconds": 0.3,
+  "started": "2026-11-26T08:28:38.483",
+  "status": "done"
+}

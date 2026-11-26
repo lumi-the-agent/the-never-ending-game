@@ -53,26 +53,46 @@
         "a treehouse": 0
       },
       "winner": "a berry bakery"
+    },
+    {
+      "island_t": 324100.33331115113,
+      "key": "boat",
+      "time": "2026-11-26T08:00:48",
+      "voters": {
+        "Cumulus": "a lighthouse",
+        "Gloop": "a little boat",
+        "Hopscotch": "a little boat",
+        "Pickles": "a little boat"
+      },
+      "votes": {
+        "a hot spring": 0,
+        "a lighthouse": 1,
+        "a little boat": 3
+      },
+      "winner": "a little boat"
     }
   ],
   "latest": {
-    "island_t": 306060.1999820181,
-    "key": "bakery",
-    "time": "2026-11-26T02:59:39",
+    "island_t": 324100.33331115113,
+    "key": "boat",
+    "time": "2026-11-26T08:00:48",
     "voters": {
-      "Marshmallow": "a berry bakery",
-      "Truffle": "a berry bakery"
+      "Cumulus": "a lighthouse",
+      "Gloop": "a little boat",
+      "Hopscotch": "a little boat",
+      "Pickles": "a little boat"
     },
     "votes": {
-      "a berry bakery": 2,
-      "a little boat": 0,
-      "a treehouse": 0
+      "a hot spring": 0,
+      "a lighthouse": 1,
+      "a little boat": 3
     },
-    "winner": "a berry bakery"
+    "winner": "a little boat"
   },
   "won": [
     "beachhut",
     "greenhouse",
-    "bakery"
+    "bakery",
+    "boat"
   ]
 }

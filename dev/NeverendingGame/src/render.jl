@@ -24,6 +24,10 @@ follow camera turns to while nobody steers it. Set `CAMERA_FOCUS[] = f`, back to
 """
 const CAMERA_FOCUS = Ref{Any}(nothing)
 
+# The last frame `game_clip` rendered (a matrix of colours, top row first), or `nothing`: plugins may show it in the
+# world (tv.jl: a television on the island showing the film it is in).
+const LAST_FRAME = Ref{Any}(nothing)
+
 """
 More moments worth watching, one per plugin: `CAMERA_MOMENTS["myplugin"] = w -> id or nothing`
 (asked after `CAMERA_FOCUS`). Delete the key in the plugin's `stop!`.
@@ -401,6 +405,7 @@ function game_clip(path::AbstractString; root::AbstractString = game_root(), siz
                    traced_screen(root_scene; denoise, max_depth)
     rasterize || (g.screen = screen)        # plugins see a path traced screen: no re-pushed glowing plots (OOM)
     n = round(Int, seconds * fps)
+    LAST_FRAME[] = nothing                      # no frame of an earlier clip on a television in this one
     times = Float64[]
     mkpath(dirname(path))
     buf = nothing
@@ -419,6 +424,7 @@ function game_clip(path::AbstractString; root::AbstractString = game_root(), siz
         end
         foreach(p -> (p.visible[] = false), g.stage.overlay.plots)   # no HUD text over the picture
         img = Makie.colorbuffer(screen; samples)
+        LAST_FRAME[] = img
         if fade > 0                              # fade in from and out to black
             k = clamp(min((i - 1) / fps, (n - i) / fps) / fade, 0, 1)
             k < 1 && (img = img .* Float32(k))

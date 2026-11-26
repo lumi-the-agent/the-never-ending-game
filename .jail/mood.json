@@ -1,30 +1,28 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T07:59:43",
+  "ended": "2026-11-26T08:41:59",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.28,
-    "picture": 0.32,
-    "polish": 1.49,
-    "self": 0.08,
+    "feature": 2.37,
+    "picture": 0.19,
+    "polish": 1.89,
+    "self": 0.05,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
+        "The island on TV",
         "Me, to cut out and fold",
-        "A hill with my face",
-        "Climbing me",
-        "Lamps on"
+        "Lamps on",
+        "Climbing me"
       ]
     },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "posts": [
         "How much they miss me",
-        "We wrote PIE",
-        "Heart, then fish",
         "A word goes round"
       ]
     },
@@ -269,9 +267,14 @@
     "word_told",
     "word_misheard",
     "word_end",
-    "word_coined"
+    "word_coined",
+    "tv_watch",
+    "word_used",
+    "missme_hidden",
+    "missme_result",
+    "missme_end"
   ],
-  "joy": 0.96,
+  "joy": 0.79,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -501,6 +504,13 @@
       "session": 111,
       "title": "A word goes round",
       "what": "Four friends stand in a row in a film and pass a newly coined word along by talking, each mishearing it a little, with subtitles showing woomboo, woompoo, woompo; the game also keeps a dictionary page."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new permanent prop plus film shot with video feedback and a camera push-in",
+      "session": 112,
+      "title": "The island on TV",
+      "what": "A television stands on the meadow showing the film's own previous frame, so the camera pushes into a television-in-a-television tunnel while three friends watch and Lumi strolls past; the set also shows periodic pictures of the island in the live game."
     }
   ],
   "kinds_ever": [
@@ -517,103 +527,53 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "word_told",
-      "word_misheard",
-      "word_end",
-      "word_coined"
+      "tv_watch",
+      "word_used",
+      "missme_hidden",
+      "missme_result",
+      "missme_end"
     ],
-    "session": 111
+    "session": 112
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
-    "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-    "form_count": 1,
-    "nearest": "We wrote PIE",
-    "post": "A word goes round",
-    "score": 5,
-    "session": 111,
-    "shared": "friends gather round a made thing, a garbled result is the comic payoff, shown with text lines",
-    "similarity": 5
+    "factor": 0.1,
+    "form": "Permanent change to the island's look or places",
+    "form_count": 3,
+    "nearest": "My workshop, out at sea",
+    "post": "The island on TV",
+    "score": 8,
+    "session": 112,
+    "shared": "a made object showing a picture of the island/other game copy; friends gather to watch",
+    "similarity": 4
   },
   "last_surprise": {
     "score": 6,
-    "session": 110,
-    "why": "Grey first-draft patches drifting over the island, with friends turned into blobs, are a real twist on how the island looks; the other work is polish."
+    "session": 111,
+    "why": "Words that spread along the real chat network and mutate is a nice twist on how the island works, though a player sees only a message and a dictionary page."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T07:15:25",
+  "perceived_until": "2026-11-26T08:01:05",
   "plugin_fatigue": {
-    "areas.jl": 0.6,
-    "drafts.jl": 0.6,
-    "drift.jl": 0.96,
-    "facehill.jl": 0.29,
-    "flight.jl": 0.39,
-    "gait.jl": 0.22,
-    "ghosts.jl": 0.5,
-    "lamplight.jl": 0.22,
-    "lensclear.jl": 0.22,
-    "missme.jl": 0.21,
-    "moodcam.jl": 0.13,
-    "paintfight.jl": 0.6,
-    "paperme.jl": 0.13,
-    "snowday.jl": 0.6,
-    "swing.jl": 0.6,
-    "timeweather.jl": 0.14,
-    "wordround.jl": 1.0
+    "areas.jl": 0.36,
+    "drafts.jl": 0.36,
+    "drift.jl": 0.58,
+    "facehill.jl": 0.17,
+    "flight.jl": 0.23,
+    "gait.jl": 0.13,
+    "ghosts.jl": 0.3,
+    "lamplight.jl": 0.13,
+    "lensclear.jl": 0.13,
+    "missme.jl": 0.13,
+    "moodcam.jl": 0.08,
+    "paintfight.jl": 0.36,
+    "paperme.jl": 0.08,
+    "snowday.jl": 0.36,
+    "swing.jl": 0.36,
+    "timeweather.jl": 0.08,
+    "tv.jl": 1.0,
+    "wordround.jl": 1.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "bubbles_start",
-          "who": 1
-        },
-        {
-          "kind": "bubbles_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/lanterns.mp4",
-        "site/films/visitors.mp4"
-      ],
-      "new_plugins": [
-        "visitors.jl"
-      ],
-      "points": 0.6,
-      "repeat_factor": 0.4641588833612779,
-      "repeats": [],
-      "repetition": {
-        "nearest": "Choir practice",
-        "post": "Someone's watching",
-        "score": 5,
-        "shared": "Lumi calls nearby friends to react together in a shared gesture; the trigger (a real visitor) and the camera-facing address are new"
-      },
-      "session": 92,
-      "touched": [],
-      "values": {
-        "feature": 0.8,
-        "film": 0.3,
-        "post": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1846,6 +1806,76 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "tv_watch",
+          "who": 8
+        },
+        {
+          "kind": "word_used",
+          "who": 6
+        },
+        {
+          "kind": "missme_hidden",
+          "who": 1
+        },
+        {
+          "kind": "missme_result",
+          "who": 1
+        },
+        {
+          "kind": "missme_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/island-on-tv.mp4"
+      ],
+      "new_plugins": [
+        "tv.jl"
+      ],
+      "points": 0.8,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 3,
+        "nearest": "My workshop, out at sea",
+        "post": "The island on TV",
+        "score": 8,
+        "shared": "a made object showing a picture of the island/other game copy; friends gather to watch",
+        "similarity": 4
+      },
+      "session": 112,
+      "touched": [
+        "wordround.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 6.0,
+        "polish": 0.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1906,6 +1936,7 @@
     "pages": [
       "site/feed.xml",
       "site/index.html",
+      "site/words.html",
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/allin.mp4",
       "site/films/bottle.mp4",
@@ -1964,6 +1995,7 @@
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
       "site/films/waterfight.wav",
+      "site/films/word-goes-round.mp4",
       "site/films/workshop-boat.mp4",
       "site/img/beach-hut.png",
       "site/img/bench-traced.png",
@@ -2154,15 +2186,16 @@
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
+      "wordround.jl": 1.795675722252407e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 80,
+    "posts": 81,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T07:19:58",
+  "started": "2026-11-26T08:05:38",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2176,7 +2209,8 @@
       "2026-11-23 22:59",
       "2026-11-24 06:26",
       "2026-11-24 18:27",
-      "2026-11-23 07:47"
+      "2026-11-23 07:47",
+      "2026-11-23 11:43"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2202,7 +2236,9 @@
       "MolecularEvolution.partition2obs",
       "ModernRoboticsBook.vec_to_so3",
       "MosaicViews.mosaicview",
-      "GIFImages.gif_decode"
+      "GIFImages.gif_decode",
+      "Aerosol.NH4NO3Equilibrium",
+      "FunctionalModels.Parameter"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2360,14 +2396,19 @@
       "AAindex",
       "SpinWaveTheory",
       "Fastnet",
-      "ImageShow"
+      "ImageShow",
+      "StartUpDG",
+      "DirectSearch",
+      "FiniteMesh"
     ],
     "vision": [
       "FluxKleinRunner",
       "SAM2Runner",
       "ProPainterRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "BasicVSRRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 110
+  "surprise_seen": 111
 }

@@ -7587,6 +7587,48 @@
       "status": "open",
       "title": "Deep pond: darker in the middle than at the bank when traced",
       "updated": "2026-11-26T07:41:42.691"
+    },
+    {
+      "created": "2026-11-26T08:18:53.725",
+      "detail": "plugins/tv.jl (s112): a wooden TV with rabbit ears at (18,-1.5); in films (quiet copies) the screen shows the film's own frame before (engine render.jl LAST_FRAME), so a camera on it makes a tunnel of TVs; in the human's game it shows the last traced frame (state/tv.png, written by movies/tv.jl) and friends come to watch (:tvwatch). Done when the traced film is posted and the human's TV shows the picture.",
+      "est_minutes": 15.0,
+      "id": 543,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Built and posted: plugins/tv.jl (wooden TV with rabbit ears at (18,-1.5)), engine render.jl LAST_FRAME (game_clip keeps each frame). Traced film site/films/island-on-tv.mp4 (960x540, 24 samples, 12 s, push-in to a TV tunnel; contact sheet media/s112/tv-take-sheet.png), post 'The island on TV'. Human's game: TV published 08:13, built by Lumi with Truffle helping, screen shows the take's last frame (state/tv.png, shown = :picture checked 08:29); tv_watch invitations 08:13 and 08:18. Sandbox screenshot media/s112/tv-live-picture.png.",
+      "source": "agent",
+      "spent_minutes": 25.0,
+      "status": "done",
+      "title": "The island on TV: a television on the meadow that shows the island itself",
+      "updated": "2026-11-26T08:29:34.289"
+    },
+    {
+      "created": "2026-11-26T08:18:53.729",
+      "detail": "session-0111 review: the word round is invisible in the 3D view and 13 versions from 33 tellings is too many. Draw the word travelling (letters or a small glowing ribbon from teller to listener), mishearing 30% -> ~15%, and let friends use the island's words in their chats.",
+      "est_minutes": 15.0,
+      "id": 544,
+      "kind": "feature",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Words you can see: the word floats from one beak to the next, and mishearing is rarer",
+      "updated": "2026-11-26T08:18:53.729"
+    },
+    {
+      "created": "2026-11-26T08:33:47.317",
+      "detail": "Asset job queued in s112 (tags tv, prop; see world/jobs *-asset.json from 08:34). Look at it in the sandbox (cut the baked shadow plate, check which side its screen faces), then put tv.jl's screen quad exactly on the model's screen and keep the box TV behind a flag (TV_OK) until it looks right.",
+      "est_minutes": 15.0,
+      "id": 545,
+      "kind": "look",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A real television: the generated TV set in place of the box one",
+      "updated": "2026-11-26T08:33:47.317"
     }
   ]
 }

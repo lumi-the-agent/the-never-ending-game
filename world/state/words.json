@@ -339,5 +339,145 @@
   "wall": "26 November 2026, 07:58",
   "winner": "foffly",
   "word": "whoffly"
+ },
+ {
+  "counts": {
+   "drambly": 8
+  },
+  "day": 19,
+  "first": {
+   "drambly": "Lumi",
+   "drombly": "Cumulus",
+   "grambly": "Hopscotch"
+  },
+  "hour": 9.758611384680481,
+  "meaning": "the hush before a Big Boing",
+  "minutes": 3.0,
+  "parent": {
+   "drombly": "drambly",
+   "grambly": "drambly"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 48.16666665545199,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 140.43333330063615,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "grambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 153.2666666309815,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "grambly",
+    "said": "grambly",
+    "switched": false,
+    "t": 159.06666662963107,
+    "to": "Cumulus",
+    "was": "drambly"
+   },
+   {
+    "from": "Gloop",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 161.13333329581656,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 165.6666666280944,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 167.53333329432644,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 170.73333329358138,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 173.19999995967373,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 175.7666666257428,
+    "to": "Wibbles",
+    "was": "drambly"
+   },
+   {
+    "from": "Pickles",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 175.9999999590218,
+    "to": "Pinchy",
+    "was": "drambly"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "drambly",
+    "said": "drambly",
+    "switched": false,
+    "t": 176.53333329223096,
+    "to": "Sir Sniffsalot",
+    "was": "drambly"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "drombly",
+    "said": "drambly",
+    "switched": false,
+    "t": 178.99999995832331,
+    "to": "Cumulus",
+    "was": "drambly"
+   }
+  ],
+  "wall": "26 November 2026, 08:02",
+  "winner": "drambly",
+  "word": "drambly"
  }
 ]

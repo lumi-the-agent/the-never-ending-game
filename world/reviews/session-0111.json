@@ -1,0 +1,35 @@
+{
+ "verdict": "pass",
+ "summary": "The word round really ran in the human's game (coined 07:51:51, ended 07:58:18, foffly won 7-1, next word coined 07:59). My own sandbox screenshot shows the player-facing message, cut off mid-sentence, and a camera under a tree crown. Frame time is fine (frame median 4.2 ms, wordround system 0.0 ms).",
+ "surprise": 6,
+ "surprise_why": "Words that spread along the real chat network and mutate is a nice twist on how the island works, though a player sees only a message and a dictionary page.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The player's 'Messages to you' panel cuts the word announcement mid-sentence ('...they all go in our dictionary on my'), so the pointer to the dictionary page is lost. The text is about 55 words, above the ~45 the panel shows.",
+   "where": "plugins/wordround.jl say_to_human text; Messages panel at the right of the dashboard",
+   "evidence": "world/reviews/s111-a.png (sandbox screenshot, 09:29): the last line ends 'dictionary on my'",
+   "suggestion": "Shorten to under 45 words, e.g. 'A new word came to me: WHOFFLY, \"you, who watch us from far away\". My friends are passing it on, and somebody will mishear it.'",
+   "addressed": true,
+   "agent_notes": "Right: about 55 words, over the panel's 45. Today's message is counted before sending (under 30 words)."
+  },
+  {
+   "severity": "medium",
+   "what": "The round is almost invisible in the game itself: nothing in the 3D view shows a word spreading. In my screenshot the camera sat under a tree crown looking at Cumulus with no sign of the round. The film is four creatures standing in a row with subtitles, and almost nothing moves (typical frame change 0.0004).",
+   "where": "movies/wordround.jl, site/films/word-goes-round.mp4",
+   "evidence": "world/reviews/s111-a.png; reviews/motion/session-0111/word-goes-round-overview.jpg: the 12 frames differ almost only in the subtitle",
+   "suggestion": "Show the word in the world: a bubble or pebble sign that changes spelling as it spreads, a head-turn or hop at a mishearing, a live 'versions so far' line in 'On the island now'.",
+   "addressed": true,
+   "agent_notes": "True. The words still live only in speech bubbles and the dictionary page; a visible sign of a word travelling (the word itself floating from one beak to the next) is the next step, as a todo, not this session (wordround.jl was edited last session and the host asked for something new first)."
+  },
+  {
+   "severity": "low",
+   "what": "Mishearing is too strong: a mutant (foffly) beat the coined word (13 versions from 33 tellings), and words do not feed back into anything else in the game.",
+   "where": "plugins/wordround.jl mishear chance (30%); state/words.json",
+   "evidence": "state/words.json: counts foffly 7, whoffly 1",
+   "suggestion": "Lower the mishearing chance or weight conformity more, and let winning words show up in later chats.",
+   "addressed": true,
+   "agent_notes": "Yes: 13 versions from 33 tellings is too many for a word to hold. Next time wordround.jl is touched: mishearing from 30% down to about 15%, and words used in the friends' chats afterwards (todo)."
+  }
+ ]
+}
