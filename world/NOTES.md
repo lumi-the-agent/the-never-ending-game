@@ -492,3 +492,22 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - CAUSE FOUND (s123): RayMakie turns `shading = NoShading` into an Emission material in the tracer. Both glass-rain
   films died in trace_renderobject on the spots plot (moved every frame) with Emission even after I removed the
   material kwarg. Traced moving meshscatters: no NoShading. Why emissive meshscatter updates fail is still open (#600).
+
+## s125 lessons
+- Ground layers lie ON the terrain as their own meshes: `:area_path` (the brown path, 465 vertices), `:wordsand`
+  (40401, redrawn by wordsand.jl at most every 0.5 s when dirty, so re-read its shape before lifting it),
+  `:sunset_path` (hidden). `:workshop_ground` is the workshop ISLE (model matrix offset), not on the main island.
+  Anything that moves the ground (groundwhale.jl GW_LAYERS, stomp.jl SP_LAYERS) must lift these too, or it moves unseen under them.
+- Lifting a mesh per frame: Makie.update! of the whole 48400-vertex terrain is only 0.26 ms. The cost is the Julia per-vertex
+  math. Precompute each vertex's grid cell + bilinear weights at build, compute a slope grid once per frame, skip vertices
+  that are flat and were flat: 22k vertices in 0.33 ms (naive 5 samples per vertex: 20 ms).
+- A plugin helper reading `Dict{Symbol,Any}` inside a per-vertex function makes every call dynamic: groundwhale's
+  `gw_path()` cost 11 ms a frame until typed (`::NTuple{2,NTuple{2,Float32}}`): 1.6 ms.
+- `c.goal = nothing` throws (the field is `Goal`): clear a goal with `NG.Goal()`.
+- Timing plugin functions with live_eval: pass the frame's argument types (Float32 dt), or @elapsed measures compilation.
+- Jump-in keys taken: WASD, E X H G C P M T B J U K V Z Q L(stomp). Free: I O N Y F. Add new keys to greetings.jl HINT and play.jl game_description.
+- stomp.jl: a 2D wave equation (Float32 grid 131x131, 3 substeps) is 0.06 ms; landings as new sources give an emergent
+  chain; SP_FADE^thumps keeps it from running away. Main.STOMP[:force] = true, [:at] = (x, y).
+- A traced 10 s film of a DEFORMING terrain (stomp.jl lifts the 48k terrain + 40k wordsand meshes every frame) was
+  still rendering after 20 min (other 10 s films: ~8 min). The tracer likely rebuilds those meshes' geometry each
+  frame. Next ground-moving film: 6 s, fps 20, or update the meshes only every other film frame; queue it FIRST.

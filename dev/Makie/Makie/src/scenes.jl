@@ -304,10 +304,7 @@ function Scene(;
         theme_kw...
     )
 
-    # Copies of what the default theme holds as Observables (`clip_planes`): a scene that shared
-    # the default theme's own Observable connected every plot of it to that global, so no scene,
-    # plot or screen was ever freed. What `theme` (a parent's) brings stays shared: children inherit.
-    global_theme = merge_theme!(copy(theme), current_default_theme(); deepcopy_observables = true)
+    global_theme = merge_theme!(copy(theme), current_default_theme())
     m_theme = merge_theme!(Attributes(theme_kw), global_theme)
 
     bg = let
@@ -622,7 +619,7 @@ function Base.empty!(scene::Scene; reset_theme = true)
 
     # conditional, since in free we don't want this!
     if reset_theme
-        merge_theme!(scene.theme, CURRENT_DEFAULT_THEME; deepcopy_observables = true)
+        merge_theme!(scene.theme, CURRENT_DEFAULT_THEME)
     end
 
     disconnect!(scene.camera)

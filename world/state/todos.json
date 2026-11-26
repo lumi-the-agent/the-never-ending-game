@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "RayMakie: this scene had 1 lights when it was first traced and has 2 now. A traced scene can move and change its lights (`set_light!`), not add or remove them.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] sync_lights!(state::RayMakie.RayMakieState, current::Vector{Makie.AbstractLight})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:481\n  [3] sync_lights!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:474 [inlined]\n  [4] render!(screen::RayMakie.Screen; finalize_framebuffer::Bool)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:658\n  [5] render!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:649 [inlined]\n  [6] trace!(screen::RayMakie.Screen; clear::Bool, samples::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1271\n  [7] trace!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1241 [inlined]\n  [8] colorbuffer(screen::RayMakie.Screen, format::Makie.ImageStorageFormat; figure::Nothing, clear::Bool, samples::Nothing, px_per_unit::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1182\n  [9] colorbuffer\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155 [inlined]\n [10] colorbuffer(screen::RayMakie.Screen)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155\n [11] live_command(g::Game, ::Val{:screenshot}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:141\n [12] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "detail": "IOError: mkdir(\"/sim/Programmieren/SimGame/media\"; mode=0o777): read-only file system (EROFS)\nStacktrace:\n  [1] _uv_error(prefix::String, c::Int32)\n    @ Base ./libuv.jl:114\n  [2] uv_error\n    @ ./libuv.jl:113 [inlined]\n  [3] mkdir(path::String; mode::UInt16)\n    @ Base.Filesystem ./file.jl:185\n  [4] mkdir\n    @ ./file.jl:177 [inlined]\n  [5] mkpath(path::String; mode::UInt16)\n    @ Base.Filesystem ./file.jl:245\n  [6] mkpath\n    @ ./file.jl:237 [inlined]\n  [7] live_command(g::Game, ::Val{:screenshot}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:140\n  [8] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-26T18:46:53.726"
+      "updated": "2026-11-26T21:05:15.107"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7128,7 +7128,7 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0121 [camera, high]: Follow at night: an orange barrow fills the right half of the view and Lumi peers out of pink foliage. Follow at 17:00: Lumi is cut off at the bottom and the camera stares at the sea. The motion camera was inside a bush for 2.2 s. The shadow film's first frames have a tree trunk over the left fifth.\nWhere: reviews/p0121/now.png, follow-17h.png, motion/motion-strip.png; my-shadow-quits-3 steps\nSuggestion: Cast a ray from the subject to the camera and pull the camera in front of whatever it hits, or fade those meshes. Keep the subject between the lower third and the middle of the frame, with its face visible.\nDone when: Ten follow-camera screenshots 5 s apart at day and night: the followed creature's face is in frame in all ten, and no prop covers more than 25% of any of them.\nEvidence: now.png (barrow), follow-17h.png (Lumi cut), motion-strip.png (22 of 24 frames green leaf)",
+      "detail": "perfectionist-0124 [camera, high]: Follow and free cameras: half the frame is a blurred yellow-orange smear (something right at the lens) with a white slab across the bottom right. The berry race's mid view has the same yellow blob over a third of the screen.\nWhere: follow/free camera rig\nSuggestion: Push the camera in front of anything within 2 m of the line to the target, and fade near meshes; frame the followed creature at a third of the image.\nDone when: Ten follow-cam screenshots a minute apart show no object covering more than 10% of the frame between camera and target.\nEvidence: world/reviews/p124/cam-follow.png, world/reviews/p124/cam-free.png, world/tests/shots/s53-berry-mid.png",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
@@ -7138,7 +7138,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Game cameras stop looking through pines, barrows and bushes",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7646,7 +7646,7 @@
     },
     {
       "created": "2026-11-26T09:10:14.547",
-      "detail": "perfectionist-0112 [fun, medium]: In my race the three critters scored 2, 2 and 1 in the first 18 s and nothing in the 35 s after (scores [2,2,1] at 18, 34 and 50 s), so the second half was me picking berries alone and the 9-5 win was never in doubt.\nWhere: plugins/berry_race.jl rival steering\nSuggestion: Log why each rival stops (no berry left near it, a goal taken by another plugin such as the snow day or TV watching), and keep them in the race (RACE_GOALS) until the end. A close race decided in the last seconds is the fun.\nDone when: Three races: every rival scores at least once after the 30 s mark in each\nEvidence: state samples while playing: (:playing, 4, [2,2,1], 18 s), (5, [2,2,1], 34 s), (8, [2,2,1], 50 s); reviews/p112/brs.jpg",
+      "detail": "perfectionist-0124 [fun, medium]: The race ended 11 to 3; the rivals were dancing and sitting in the grass at the end. Lumi raced as a jelly with Cumulus trapped inside shouting 'Let me OUT!' (the jelly state leaked into the mini game).\nWhere: berry_race plugin, jelly.jl\nSuggestion: Rivals that sprint, steal and gloat, so a race is close; starting a mini game spits out anyone swallowed.\nDone when: Three standing-still races end with the rivals at 6+ berries, and a race started while jelly shows Lumi in its normal body.\nEvidence: world/tests/shots/s53-berry-mid.png, s53-berry-end.png",
       "est_minutes": 30.0,
       "id": 547,
       "kind": "review",
@@ -7656,7 +7656,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Berry race rivals keep racing for the whole minute",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T09:38:44.486",
@@ -7730,17 +7730,17 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "perfectionist-0121 [animation, medium]: Pinchy jumps 0.27 m in one frame, moves at 8.2 m/s, and ends up inside a bush where the camera loses it. The s118 vibration finding is still open on top of this.\nWhere: reviews/p0121/motion/motion.png, motion-strip.png\nSuggestion: Cap the crab's speed at a scuttle (~2 m/s), ease into and out of moves, and keep its paths outside bush and tree footprints.\nDone when: live_motion lists Pinchy under 'Moving well' in three runs in a row.\nEvidence: live_motion: 'Pinchy: jumps 0.27 m in one frame at 0.9 s', 'moves at 8.2 m/s'",
+      "detail": "perfectionist-0124 [animation, high]: live_motion: 4 of 10 move well. Lumi's beak jumps 0.50 m in one frame and swings at 15 m/s, Lumi's wing judders; Pickles' legs and tail snap 0.24-0.39 m in one frame; Hopscotch's claws jump 0.20 m; Wibbles jumps 0.17 m. Animation dropped from 6 to 5.\nWhere: Lumi's bird body, quadruped gait, crab claws\nSuggestion: Blend every pose change over at least 0.15 s, limit part speeds to a few m/s, and keep animation clocks continuous when a goal changes.\nDone when: live_motion reports 8 of 10 moving well and no part jumping more than 0.1 m in one frame.\nEvidence: live_motion at 15:10 in the sandbox; world/reviews/p124/motion/motion.png",
       "est_minutes": 30.0,
       "id": 553,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Pinchy snaps, runs 8 m/s and walks into bushes",
-      "updated": "2026-11-26T18:25:35.055"
+      "title": "No snaps: Lumi's beak, Pickles' legs, claws that jump a metre a frame",
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7996,17 +7996,17 @@
     },
     {
       "created": "2026-11-26T13:49:08.514",
-      "detail": "perfectionist-0121 [wow, medium]: Eight films in a row went up with captions that admit they failed: 'came out a blob', 'small and far off', 'filmed from too far away', 'crashed my GPU'. Goal 2 has not moved in 35 reviews. The shadow film repeats session 95's idea. The ring film shows a streak.\nWhere: world/site/index.html, world/releases/\nSuggestion: Spend two sessions on one film: the jelly swallowing Pinchy or the rope knot, shot close at eye height at golden hour with a cut or two in VideoEditor, 128+ spp with OIDN. Put it in world/releases/ with its note.\nDone when: A new folder in world/releases/ holds a film whose motion sheet shows the creatures at least 1/4 of the frame high in most frames, with sun below 25° (long shadows), and no frame where a prop covers the lens.\nEvidence: site posts 'My shadow quits (first try)', '(second try)'; releases/ newest is 2026-11-24",
+      "detail": "perfectionist-0124 [wow, high]: 'Glass rain, not yet', 'Nobody kicked the sun', 'Football with the sun': three posts in a row that show an idea not working, two of them the same recipe, both football films raster-rendered. The host judged them at a tenth of their worth, and Lumi is bored and lonely at 1.0.\nWhere: world/site, world/releases\nSuggestion: Pick one idea that already works (jelly Lumi swallowing a friend is the funniest thing on the island), stage it, film it from 2-3 framed cameras with cuts, trace it at 64+ spp with OIDN, and release it in world/releases with a note. Then go somewhere completely new.\nDone when: world/releases/<date>-<name>/ holds a traced film with cuts whose overview sheet shows the subject framed in every shot and no failed take in its post.\nEvidence: glass-rain/football motion sheets; /run/neverending/mood.json",
       "est_minutes": 15.0,
       "id": 572,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Goal 2: release one film you would sign, not one more failed first take",
-      "updated": "2026-11-26T18:25:35.055"
+      "title": "Goal 2: release one finished film, not one more failed first take",
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T13:49:08.532",
@@ -8052,7 +8052,7 @@
     },
     {
       "created": "2026-11-26T14:52:04.307",
-      "detail": "perfectionist-0121 [world, high]: A dark grey band runs between the turquoise shallows and the white sand all along the shore. It is the fourth review in a row that names it.\nWhere: follow camera near the shore; reviews/p0121/follow-17h.png\nSuggestion: Look at the terrain's underwater skirt and the sea's depth tint where they meet. The shallows should fade from turquoise into wet sand, darker sand only a hand wide.\nDone when: follow-17h-style screenshot at the shore shows sea → wet sand → dry sand with no band darker than the wet sand.\nEvidence: follow-17h.png bottom half: a black band between the sea and the sand",
+      "detail": "perfectionist-0124 [world, high]: Between the sand and the sea the ground is a flat black band several metres wide; creatures walk on it (Marshmallow by the water, Pickles' motion frames) and the berry race's end view looks straight at it. The glass rain film's meadow is almost as dark.\nWhere: shoreline all round, island terrain colour\nSuggestion: Wet dark sand fading into the foam line, with a glossy coat in traced views so the wet beach reflects the sky.\nDone when: A screenshot of the shore from 5 m up shows no pixel darker than the wet sand between grass and sea.\nEvidence: world/reviews/p124/motion/motion.png, world/reviews/p124/motion/creatures.png, world/tests/shots/s53-berry-end.png",
       "est_minutes": 15.0,
       "id": 576,
       "kind": "review",
@@ -8062,7 +8062,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The black band round the shore is still there live",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T15:15:55.042",
@@ -8136,17 +8136,17 @@
     },
     {
       "created": "2026-11-26T16:32:33.892",
-      "detail": "perfectionist-0121 [world, high]: The dayfall's tiles stay standing as rows of untextured purple and yellow boards. They fence off the meadow and the paths and stand right next to Lumi. From the orbit they look like construction hoardings, not a toy.\nWhere: plugins/dayfall.jl; reviews/p0121/jumpin.png, orbit-17h-b.png, media/progress/session-0121/overview.png\nSuggestion: Once a run has fallen, the tiles should be gathered away (a friend carries them off, or they sink into the grass) within a minute. While they stand, give them a painted face or a generated tile mesh with wood grain and a coat in the trace, so a row of them is a picture.\nDone when: A screenshot from the orbit camera 5 minutes after a dayfall shows no standing slabs; a close screenshot of a standing run shows a textured tile, not a flat colour.\nEvidence: jumpin.png: eight purple slabs taller than Lumi; orbit-17h-b.png: yellow slab lines across the whole middle",
+      "detail": "perfectionist-0124 [world, high]: Purple and pink domino slabs fence the path by the cottage and the 'WITHOUT ME' board, and yellow slab stairs run along the pond; in four of ten creature close-ups the friends stand among them. They are untextured primitive boxes and they stay all day.\nWhere: cottage path, pond bank (plugins/dayfall.jl)\nSuggestion: After a dayfall the tiles fall over, sink into the ground and are gone within a minute (or become carved stone stepping tiles with a texture). Leftovers of a show should never stay out.\nDone when: live_motion creatures sheet and an orbit screenshot an hour after the dayfall show no purple, pink or yellow slabs.\nEvidence: world/reviews/p124/motion/creatures.png",
       "est_minutes": 15.0,
       "id": 582,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s125: dayfall.jl lays my day's tiles only while a player plays me (L.controlled); when nobody does, a standing line tips, falls and sinks in 6 s (no pop). Sandbox: jump-in walk laid tiles, stop -> 0 tiles 10 s later. Human's game after publish: length(DAYFALL[:base]) == 0 (media/s125-live-after-dayfall.png). No more standing slabs while I only work.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Clear the dayfall's leftover slabs off the meadow, or make them real tiles",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-26T21:12:23.507"
     },
     {
       "created": "2026-11-26T16:41:11.558",
@@ -8220,17 +8220,17 @@
     },
     {
       "created": "2026-11-26T18:25:35.055",
-      "detail": "perfectionist-0121 [world, high]: Two or three huge grey-white balls, several metres across, hang a few metres over the meadow by the easels. In the orbit view they cover half the frame. The same white dome blocks the bottom of every wide frame of the ring film. They are not props: no prop above z = 2 is bigger than 2.5.\nWhere: orbit camera; reviews/p0121/orbit-17h.png, orbit-17h-b.png; ring-3 overview frames 6 to 12\nSuggestion: Find the plugin (clouds, cloudshapes, bubbles or ring). Low clouds belong out at sea and well above the trees. If they are meant to be low fog banks, make them a volume in the trace and soft in the raster, never a matte ball in front of the lens.\nDone when: Orbit-camera screenshots at 3 times of day show no grey sphere bigger than a creature in the lower 2/3 of the frame.\nEvidence: orbit-17h.png: a lavender sphere over half the view; orbit-17h-b.png: two grey balls over the easels",
+      "detail": "perfectionist-0124 [world, medium]: Dozens of blue, orange and pink spheres hang motionless over the island in every view, raster and traced; from eye level they look like stray debris, not a ring.\nWhere: plugins/ring.jl\nSuggestion: Either make the ring read as a ring (high up, thin, all going round, shadows sweeping the meadow) or let it decay and the things fall back down with a thump.\nDone when: An orbit screenshot shows no sphere hanging below 30 m over the island.\nEvidence: world/reviews/p124/traced.png, world/reviews/p124/cam-orbit.png",
       "est_minutes": 30.0,
       "id": 588,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Giant matte grey spheres hang over the meadow and fill the camera",
-      "updated": "2026-11-26T18:25:35.055"
+      "title": "The ring's balls hang all over the sky and the meadow",
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T18:42:03.551",
@@ -8239,12 +8239,12 @@
       "id": 589,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0124: sync_sun!(::Stage, ::World) exists now and frames run without errors.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: MethodError: no method matching sync_sun!(::NeverendingGame.Stage, ::NeverendingGame.World)\nThe applicable method may be",
-      "updated": "2026-11-26T18:42:03.551"
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T18:52:00.794",
@@ -8253,12 +8253,12 @@
       "id": 590,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0124: Two posts already on sun football, judged repeats at x0.10; a third would be the same recipe.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Football with the sun: make it read live (ball big and bright, island dusky, friends keep playing)",
-      "updated": "2026-11-26T18:52:00.794"
+      "updated": "2026-11-26T20:49:05.993"
     },
     {
       "created": "2026-11-26T18:52:00.809",
@@ -8402,31 +8402,87 @@
     },
     {
       "created": "2026-11-26T20:16:44.217",
-      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:106 [inlined]\n  [3] stop!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:139\n  [4] (::NeverendingGame.var\"#unload!##2#unload!##3\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:170\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] unload!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:169\n  [7] install!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:137\n  [8] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [9] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:129 [inlined]\n  [3] stop!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:162\n  [4] (::NeverendingGame.var\"#unload!##2#unload!##3\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:170\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] unload!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:169\n  [7] install!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:137\n  [8] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [9] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 601,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T20:16:44.222: plugin groundwhale loaded cleanly.",
+      "result": "Closed at 2026-11-26T20:16:44.222: plugin groundwhale loaded cleanly.\nHappened again at 2026-11-26T20:57:32.791.\nClosed at 2026-11-26T20:57:32.796: plugin groundwhale loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:groundwhale.GroundWhale failed in stop and was switched off",
-      "updated": "2026-11-26T20:16:44.222"
+      "updated": "2026-11-26T20:57:32.796"
     },
     {
       "created": "2026-11-26T20:16:44.526",
-      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:129 [inlined]\n  [3] step!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game, dt::Float64)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:154\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:183 [inlined]\n  [3] step!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game, dt::Float64)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:208\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 602,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T20:16:47.332: plugin groundwhale loaded cleanly.\nHappened again at 2026-11-26T20:17:41.158.\nClosed at 2026-11-26T20:19:55.724: plugin groundwhale loaded cleanly.",
+      "result": "Closed at 2026-11-26T20:16:47.332: plugin groundwhale loaded cleanly.\nHappened again at 2026-11-26T20:17:41.158.\nClosed at 2026-11-26T20:19:55.724: plugin groundwhale loaded cleanly.\nHappened again at 2026-11-26T20:58:24.515.\nClosed at 2026-11-26T20:58:29.348: plugin groundwhale loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:groundwhale.GroundWhale failed in step! and was switched off",
-      "updated": "2026-11-26T20:19:55.724"
+      "updated": "2026-11-26T20:58:29.348"
+    },
+    {
+      "created": "2026-11-26T20:49:05.993",
+      "detail": "perfectionist-0124 [materials, high]: In the glass rain film the drops are lovely glass spheres, but they have all landed already, their focused light shows as flat pink oval chips on a near-black ground, and the pig and crab float in the air. It does not read as rain nor as a showcase.\nWhere: plugins/glassrain.jl, its film\nSuggestion: Film it while it falls: drops streaking down against a low sun, bouncing and rolling, each throwing a bright caustic spot that moves with it on lit green grass; a friend looking up as a drop lands on its head.\nDone when: A traced frame shows at least five drops in the air and bright caustic spots (not pink chips) on green grass, with every creature's feet on the ground.\nEvidence: world/reviews/motion/perfectionist-0124/glass-rain-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 603,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Glass rain: drops that land on grass and throw real caustics",
+      "updated": "2026-11-26T20:49:05.993"
+    },
+    {
+      "created": "2026-11-26T21:03:53.669",
+      "detail": "LoadError: syntax: unexpected semicolon in tuple around /sim/Programmieren/SimGame/world/plugins/stomp.jl:161\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/stomp.jl:154\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/stomp.jl:154",
+      "est_minutes": 15.0,
+      "id": 604,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T21:04:07.522: plugin stomp loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin stomp does not load",
+      "updated": "2026-11-26T21:04:07.522"
+    },
+    {
+      "created": "2026-11-26T21:09:58.038",
+      "detail": "plugins/stomp.jl: 2D wave equation on a 0.4 m grid under the island; terrain, path and word sand ride it; landings are new sources. L stomps when jumped in; I stomp once a morning 10:00-10:30.",
+      "est_minutes": 15.0,
+      "id": 605,
+      "kind": "build",
+      "priority": 3,
+      "result": "Sandbox: chain of 27 thumps from one stomp, up to 5 friends in the air at once, friends say WHEEE/Who did that?! (media/s125-stomp-prev2.png, s125-stomp-player.png: L key while jumped in made a 0.8 m crater). Cost: system:stomp 0.57 ms median / 0.71 p95 during a chain (mesh lift went from 20 ms to 0.33 ms by precomputed bilinear weights + slope grid), frame 5.5 ms. Published s125. Film job 20261126-210731-038-clip -> site/films/one-stomp.mp4.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "One stomp bounces the whole island: ground as a drum skin, chain reaction of throws (goal 3)",
+      "updated": "2026-11-26T21:09:58.095"
+    },
+    {
+      "created": "2026-11-26T21:29:36.635",
+      "detail": "Take 1 (s125, site/films/one-stomp.mp4) failed: from 10 m up the ground looks flat, nobody seen in the air, word sand flickers (wordsand.jl redraws over the lift). Done when: a 6 s traced film's sheet shows a visible ring of raised ground and at least two friends in the air in one frame. See projects/one-stomp.md.",
+      "est_minutes": 15.0,
+      "id": 606,
+      "kind": "build",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "One stomp take 2: a traced film where the rings and the thrown friends really read",
+      "updated": "2026-11-26T21:29:36.635"
     }
   ]
 }

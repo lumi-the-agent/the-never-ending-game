@@ -1,0 +1,34 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "Across all 16 board frames the glass spheres sit on the ground or at the shoreline. No falling streak appears in any frame, and no friend is seen running to or pouncing on a spot. The code spawns drops at random heights with GR[:force] (anywhere=true), so they reach the ground within ~2 s, then cycle every 4-7 s. The film starts after that and never frames the 10 m column they fall through.",
+      "severity": "high",
+      "suggestion": "Frame the shower from a higher, wider camera that takes in the 10 m fall column and the meadow at once. Start recording as the rain begins. Hold on one friend going after a spot until it pounces.",
+      "what": "The film never shows glass rain falling or friends chasing sun spots. Every drop already lies on the ground, so the post's subject is missing (the caption admits it).",
+      "where": "glass-rain.mp4, whole storyboard; glass-rain-at-25/50/75.jpg"
+    },
+    {
+      "evidence": "Grass under the tree is dark blue-black while the beach behind is lit. The spots are matte lilac/pink ellipses; only a few turn white in the 75% frame (glassrain.jl:81-82 Emission, SPOT_GLOW=6). rain_dots (glassrain.jl:145) should skip landed drops, yet dozens of discs cover the ground, so the dots plot is probably stale or the shade is the tree's.",
+      "severity": "high",
+      "suggestion": "Film in open sun away from the tree (SPOT is meant to be open meadow; this is under a canopy). Check the grass material in the traced render. Make the spots warm white and clearly brighter than the lit grass, and check that the hidden slots really disappear.",
+      "what": "The lighting and materials are broken. The meadow renders nearly black-navy like oil, and the 'bright sun spots' come out as flat pale-pink chips. Most of them do not glow, and they stay on the ground under drops that have already landed.",
+      "where": "glass-rain-at-25.jpg and -50.jpg foreground; board rows 1-3"
+    },
+    {
+      "evidence": "The pig's feet are a metre above the grass with no contact shadow. The trunk and canopy fill the top third of every frame, and the sheep, then the pig, block the lens in the first and last frames.",
+      "severity": "medium",
+      "suggestion": "Find out what lifts the friends (jump goals at glassrain.jl:173 colliding with the tree, or the new groundwhale heave). Keep the camera off the tree and bodies so the shower and the spots are what you see.",
+      "what": "The friends float and tumble in mid-air, and the framing is cluttered. The pig hangs upside down or hovers above the ground, the crab clings to the tree trunk, and the last frames are nothing but a close pig.",
+      "where": "glass-rain-at-25.jpg (upside-down pig), glass-rain-at-75.jpg (pig hovering, crab on trunk), board frames 13-16"
+    }
+  ],
+  "fun": 2,
+  "fun_why": "No rain falls and no spot gets chased in a way you can read; it is a cluttered, dark clip you would not watch twice.",
+  "real_change": "glassrain.jl is a real small simulation: 90 drops under gravity capped at a slow 4-4.8 m/s terminal speed. Each drop makes one glassy hop off the terrain, lies there 4-7 s, then respawns 10 m up. Each frame, a spot is projected along the sun direction to the ground under every falling drop more than 0.2 m up. Up to 5 friends take a :glassrain goal, walk to the nearest spot and 'pounce' (a jump plus a line) within 0.45 m. That chase is real behaviour. The 'lens focusing sun' part is only drawn: the spot is an Emission disc placed by a sun-ray projection, not light refracted through the glass, and its size is a fixed formula of height. The Hikari Glass on the drops is a material swap for traced films. groundwhale.jl (terrain heave) is not in this post.",
+  "summary": "An honest 'not yet' post, but the film shows a broken scene rather than glass rain. Nothing is seen falling, the meadow renders nearly black, the sun spots are flat pink coins instead of light, and the friends hover and tumble in the air. A tree trunk, a canopy and a pig fill most of the frame.",
+  "superseded_by": "perfectionist-0124.json",
+  "surprise": 3,
+  "surprise_why": "Glass drops throwing focused sun spots that the friends chase like cats is a nice idea, but the film shows marbles lying on a dark floor and friends milling about, which is the island's 'friends gather for a timed event' recipe with nothing new seen working.",
+  "verdict": "needs_work"
+}

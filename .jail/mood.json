@@ -1,14 +1,22 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T20:40:36",
+  "ended": "2026-11-26T21:32:23",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.28,
-    "picture": 0.02,
+    "feature": 2.37,
+    "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "New world rule acted out on the island, shown in a distant film",
+      "posts": [
+        "One stomp, first take",
+        "The island has a ring",
+        "Tied together"
+      ]
+    },
     {
       "form": "Change to how the island is lit or looks (light, weather effect)",
       "posts": [
@@ -24,14 +32,6 @@
         "My shadow quits (second try)",
         "My shadow quits (first try)",
         "I swallow what I hit"
-      ]
-    },
-    {
-      "form": "New world rule acted out on the island, shown in a distant film",
-      "posts": [
-        "The island has a ring",
-        "Tied together",
-        "Sand sledding"
       ]
     },
     {
@@ -300,7 +300,7 @@
     "glassrain_start",
     "glassrain_end"
   ],
-  "joy": 0.55,
+  "joy": 0.25,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -649,6 +649,13 @@
       "session": 124,
       "title": "Glass rain, not yet",
       "what": "A close, low traced film by a tree on the shore where glass drops already lie scattered on the dark grass with pink disc-shaped light spots among them, while the crab, pig, sheep and others drift and float about oddly; no rain falls and nothing reacts to it."
+    },
+    {
+      "form": "New world rule acted out on the island, shown in a distant film",
+      "recipe": "a new rule for the island's ground (stomp makes waves that throw friends), filmed from high above; failed take",
+      "session": 125,
+      "title": "One stomp, first take",
+      "what": "A high, tilted view of the meadow by the cottage with the friends standing or wandering about. A big patch of sand blinks on and off over the grass, and no stomp, ring or friend thrown into the air can be seen. The meant change, ground that rings like a drum when stomped, does not show."
     }
   ],
   "kinds_ever": [
@@ -673,24 +680,24 @@
     "session": 124
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "Change to how the island is lit or looks (light, weather effect)",
-    "form_count": 3,
-    "nearest": "Lit from below",
-    "post": "Glass rain, not yet",
-    "score": 8,
-    "session": 124,
-    "shared": "a traced showing of a new light effect on the island that does not really come off",
-    "similarity": 3
+    "factor": 0.2154434690031884,
+    "form": "New world rule acted out on the island, shown in a distant film",
+    "form_count": 2,
+    "nearest": "The island is a seesaw",
+    "post": "One stomp, first take",
+    "score": 6,
+    "session": 125,
+    "shared": "the island's ground moves under the friends' weight, shown in a distant film; here nothing visibly moves",
+    "similarity": 4
   },
   "last_surprise": {
-    "fun": 3,
+    "fun": 2,
     "score": 3,
-    "session": 123,
-    "why": "This is the second film of the same sun-ball drop in two sessions. What is new over 'Football with the sun' is a sea fix and a ball that wanders off alone, so there is less to see than in the first take."
+    "session": 124,
+    "why": "Glass drops throwing focused sun spots that the friends chase like cats is a nice idea, but the film shows marbles lying on a dark floor and friends milling about, which is the island's 'friends gather for a timed event' recipe with nothing new seen working."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T19:54:41",
+  "perceived_until": "2026-11-26T20:49:26",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -704,80 +711,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 3.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "pebbleword_start",
-          "who": 1
-        },
-        {
-          "kind": "paperme_walk",
-          "who": 1
-        },
-        {
-          "kind": "pebbleword_end",
-          "who": 1
-        },
-        {
-          "kind": "pebbleword_read",
-          "who": 1
-        },
-        {
-          "kind": "pebbleword_true",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/paperme-pier.png",
-        "site/print/paperme-1.png",
-        "site/print/paperme-2.png",
-        "site/print/paperme-3.png"
-      ],
-      "new_plugins": [
-        "paperme.jl"
-      ],
-      "points": 0.2,
-      "repeat_factor": 0.1,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places",
-        "form_count": 4,
-        "nearest": "The gallery",
-        "post": "Me, to cut out and fold",
-        "score": 10,
-        "shared": "permanent scenery object that Lumi sometimes walks to and comments on; Lumi-themed self-reference like the face hill",
-        "similarity": 5
-      },
-      "session": 105,
-      "touched": [
-        "facehill.jl",
-        "flight.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "picture": 0.2,
-        "polish": 0.1,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1941,6 +1874,57 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/one-stomp.mp4"
+      ],
+      "new_plugins": [
+        "stomp.jl"
+      ],
+      "points": 2.4,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "New world rule acted out on the island, shown in a distant film",
+        "form_count": 2,
+        "nearest": "The island is a seesaw",
+        "post": "One stomp, first take",
+        "score": 6,
+        "shared": "the island's ground moves under the friends' weight, shown in a distant film; here nothing visibly moves",
+        "similarity": 4
+      },
+      "session": 125,
+      "touched": [
+        "dayfall.jl",
+        "greetings.jl",
+        "groundwhale.jl",
+        "wordsand.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "film": 6.0,
+        "polish": 3.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2217,8 +2201,9 @@
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
-      "glassrain.jl": 1.7957191981743135e9,
+      "glassrain.jl": 1.7957202039441018e9,
       "greetings.jl": 1.7957067811800735e9,
+      "groundwhale.jl": 1.7957206067773602e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -2289,11 +2274,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 97,
+    "posts": 98,
     "self": "17087086040623195645",
     "wishes": 9
   },
-  "started": "2026-11-26T20:00:51",
+  "started": "2026-11-26T20:54:21",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2367,7 +2352,9 @@
       "ImageComponentAnalysis.label_components",
       "Measurements.measurement",
       "DiplodocusCollisions.EmissionFileLoad_Matrix",
-      "MuJoCo.visualise!"
+      "MuJoCo.visualise!",
+      "Gabs.issymplectic",
+      "Jusdl.connect!"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2615,28 +2602,15 @@
       "VariantVisualization",
       "BloqadeWaveforms",
       "MeshBridge",
-      "GeometricSolutions"
+      "GeometricSolutions",
+      "SPHKernels",
+      "Sound",
+      "GeometricFlux"
     ],
     "vision": [
-      "QwenImageEditRunner",
-      "MatAnyoneRunner",
       "ZImageRunner",
-      "DepthAnythingRunner",
-      "ProPainterRunner",
-      "UVDocRunner",
-      "FluxKleinRunner",
-      "NeuralLUTRunner",
-      "Hunyuan3DRunner",
-      "DemucsRunner",
-      "DeepFilterRunner",
-      "PPOCRRunner",
-      "SAM2Runner",
-      "Qwen3EmbeddingRunner",
-      "BasicVSRRunner",
-      "PPDocLayoutRunner",
-      "BonsaiRunner",
-      "HorizonRunner"
+      "UVDocRunner"
     ]
   },
-  "surprise_seen": 123
+  "surprise_seen": 124
 }

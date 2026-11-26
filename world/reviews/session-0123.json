@@ -1,24 +1,34 @@
-{"verdict": "needs_work",
- "summary": "An honest caption on a retake of last session's sun-ball film: the sun falls, really lights the meadow from below, and slides downhill. But the game the plugin is built around (friends chasing and kicking it) still never shows up, and the ball passes straight through a bush. It reads as a glowing white disc drifting across the frame.",
- "real_change": "sunball.jl (from s122, s123 adds only a fix that pushes it back out of the sea) simulates a real ball: it drops from 30 m with gravity and a small bounce, rolls downhill along the terrain and sand slope with grass friction, glances off tree trunks, and the waves push it back from the sea. Up to 5 friends get a :sunball goal to chase it, and anyone within 1.5 m kicks it (the player too). The sky really dims via SUN_DIM. In the traced film the ball is a Hikari Emission sphere, a real area light. In the live raster it is only drawn: a halo plus the one scene light re-aimed from the ball's direction. It has no spin (a translate, no rotation), and bushes, props and creatures do not stop it, only tree trunks. glassrain.jl (new this session) and dayfall.jl changed but appear in no post.",
- "surprise": 3,
- "surprise_why": "This is the second film of the same sun-ball drop in two sessions. What is new over 'Football with the sun' is a sea fix and a ball that wanders off alone, so there is less to see than in the first take.",
- "fun": 3,
- "fun_why": "Watching the real light sweep over grass and mushrooms is pretty once, but nothing happens to it: no kick, no reaction, no ball rolling in a way you can see. A viewer has no reason to watch it again.",
- "findings": [
-  {"severity": "high",
-   "what": "The plugin's actual game (friends chase the sun and kick it, every kick swinging the shadows) is missing from both sun posts. This one says outright that nobody looked, so the feature has still never been shown working on film.",
-   "where": "post nobody-kicked-the-sun, whole storyboard; sunball.jl play! (lines ~165-190)",
-   "evidence": "In frames 5-12 the ball passes within a couple of metres of the crab, the blue blob and the sheep, and none of them turn to it or chase it. Chasers are recruited only with rand < 0.02 per frame and only if not busy, and a kick needs the friend within 1.5 m. The caption is honest about this, but it means the film shows a light drifting past, not football.",
-   "suggestion": "Film the kick. Raise the recruit chance while :force is set (or recruit 3-5 friends at once in start_match!), give the chasers a run speed, and stage the ball's drop next to a friend so the first kick lands within a second. Then cut to the shadows swinging."},
-  {"severity": "medium",
-   "what": "The ball passes straight through a bush and then sits half inside it. Only tree trunks collide.",
-   "where": "storyboard frames 13-15; at-75 frame; sunball.jl roll! trunks() line ~66",
-   "evidence": "In frames 13-15 and the at-75 frame the glowing sphere is drawn intersecting the leaves of a bush. The code collects obstacles only from props with kind === :tree, so bushes, mushrooms, rocks and creatures are passed through.",
-   "suggestion": "Collide with every prop that has a footprint (bushes, rocks, the house), using a radius per kind. Better still, make bushes slow the ball and shake, so 'through a bush' becomes an event instead of a clipping bug."},
-  {"severity": "medium",
-   "what": "The sun ball looks like a flat, clipped white disc that slides rather than rolls. You cannot see any sphere shape, surface or spin.",
-   "where": "at-25, at-50, at-75 frames",
-   "evidence": "In all three full-size frames the ball is a uniform 100% white disc with a hard edge and no bloom or gradient. The code only translates the mesh (no rotation), so even a textured surface would slide. The caption admits 'it slid'.",
-   "suggestion": "Lower the emission strength on the visible surface or add a darker granulated texture (sunspots) so it clips less. Rotate the mesh by distance/RAD around the axis perpendicular to its velocity so it visibly rolls. Add a little glare or bloom in the export."}
- ]}
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "In frames 5-12 the ball passes within a couple of metres of the crab, the blue blob and the sheep, and none of them turn to it or chase it. Chasers are recruited only with rand < 0.02 per frame and only if not busy, and a kick needs the friend within 1.5 m. The caption is honest about this, but it means the film shows a light drifting past, not football.",
+      "severity": "high",
+      "suggestion": "Film the kick. Raise the recruit chance while :force is set (or recruit 3-5 friends at once in start_match!), give the chasers a run speed, and stage the ball's drop next to a friend so the first kick lands within a second. Then cut to the shadows swinging.",
+      "what": "The plugin's actual game (friends chase the sun and kick it, every kick swinging the shadows) is missing from both sun posts. This one says outright that nobody looked, so the feature has still never been shown working on film.",
+      "where": "post nobody-kicked-the-sun, whole storyboard; sunball.jl play! (lines ~165-190)"
+    },
+    {
+      "evidence": "In frames 13-15 and the at-75 frame the glowing sphere is drawn intersecting the leaves of a bush. The code collects obstacles only from props with kind === :tree, so bushes, mushrooms, rocks and creatures are passed through.",
+      "severity": "medium",
+      "suggestion": "Collide with every prop that has a footprint (bushes, rocks, the house), using a radius per kind. Better still, make bushes slow the ball and shake, so 'through a bush' becomes an event instead of a clipping bug.",
+      "what": "The ball passes straight through a bush and then sits half inside it. Only tree trunks collide.",
+      "where": "storyboard frames 13-15; at-75 frame; sunball.jl roll! trunks() line ~66"
+    },
+    {
+      "evidence": "In all three full-size frames the ball is a uniform 100% white disc with a hard edge and no bloom or gradient. The code only translates the mesh (no rotation), so even a textured surface would slide. The caption admits 'it slid'.",
+      "severity": "medium",
+      "suggestion": "Lower the emission strength on the visible surface or add a darker granulated texture (sunspots) so it clips less. Rotate the mesh by distance/RAD around the axis perpendicular to its velocity so it visibly rolls. Add a little glare or bloom in the export.",
+      "what": "The sun ball looks like a flat, clipped white disc that slides rather than rolls. You cannot see any sphere shape, surface or spin.",
+      "where": "at-25, at-50, at-75 frames"
+    }
+  ],
+  "fun": 3,
+  "fun_why": "Watching the real light sweep over grass and mushrooms is pretty once, but nothing happens to it: no kick, no reaction, no ball rolling in a way you can see. A viewer has no reason to watch it again.",
+  "real_change": "sunball.jl (from s122, s123 adds only a fix that pushes it back out of the sea) simulates a real ball: it drops from 30 m with gravity and a small bounce, rolls downhill along the terrain and sand slope with grass friction, glances off tree trunks, and the waves push it back from the sea. Up to 5 friends get a :sunball goal to chase it, and anyone within 1.5 m kicks it (the player too). The sky really dims via SUN_DIM. In the traced film the ball is a Hikari Emission sphere, a real area light. In the live raster it is only drawn: a halo plus the one scene light re-aimed from the ball's direction. It has no spin (a translate, no rotation), and bushes, props and creatures do not stop it, only tree trunks. glassrain.jl (new this session) and dayfall.jl changed but appear in no post.",
+  "summary": "An honest caption on a retake of last session's sun-ball film: the sun falls, really lights the meadow from below, and slides downhill. But the game the plugin is built around (friends chasing and kicking it) still never shows up, and the ball passes straight through a bush. It reads as a glowing white disc drifting across the frame.",
+  "superseded_by": "perfectionist-0124.json",
+  "surprise": 3,
+  "surprise_why": "This is the second film of the same sun-ball drop in two sessions. What is new over 'Football with the sun' is a sea fix and a ball that wanders off alone, so there is less to see than in the first take.",
+  "verdict": "needs_work"
+}

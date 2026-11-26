@@ -1,0 +1,11 @@
+{"posts": [{"post": "one-stomp",
+  "verdict": "redo",
+  "problems": [
+    "The caption's 'I' and 'my stomp' cannot be found: no character in any storyboard frame or full-size still does anything that reads as a stomp, and the one stomping is never singled out. The yellow bird and the crabs at the top centre are small, far off and half hidden behind the house and tree.",
+    "The dirt blinking to grass does show (storyboard row 4, the 75% still, then dirt partly back in the last frame), but it reads as a general rendering flicker. Nothing in the film ties it to a stomp, so the caption's cause and effect is not visible.",
+    "There are other glitches the caption does not mention, and they make the failure hard to read: the green egg in the middle swaps to a turtle-like mound and back (25% still vs 50% still, storyboard rows 2-4). A log with yellow flowers appears and vanishes next to it (rows 2 and 4 vs row 1), and a wooden sign-like figure and a ring-shaped pattern pop up in row 4.",
+    "75% still, right edge: the tree trunk passes through the pink pig. The pig at the bottom right also clips into the frame edge in several storyboard frames.",
+    "The camera shifts and shakes between frames (rows 3-4), so the blinking ground is hard to tell apart from camera movement.",
+    "The subject is lost in the busy foreground: the big yellow bush at the bottom left and the pigs in the foreground take up the frame, while the action is supposed to be at the back."
+  ],
+  "critique": "The film does show ground flicker and nobody flying, but you can't make out who stomps or when, and unrelated objects keep popping in and out, so it reads as a broken render rather than the specific failed stomp the caption describes."}]}

@@ -248,7 +248,10 @@ function NG.step!(::DayFall, game, dt)
             DF[:thought_now] = current_thought(game)
             was && !DF[:awake] && length(DF[:base]) > 10 && tip!(game)     # bedtime: my day falls
         end
-        if (DF[:awake] || L.controlled) && floor_at(game, L.pos[1], L.pos[2]) > 0.4f0
+        # s125 (reviews 0121, 0124: slabs fenced the meadow all day): only a player's walk lays my day; when
+        # nobody plays me, a standing line falls over and sinks, so watchers never find it lying about
+        !L.controlled && length(DF[:base]) > 2 && tip!(game)
+        if L.controlled && floor_at(game, L.pos[1], L.pos[2]) > 0.4f0
             xy = Vec2f(L.pos[1], L.pos[2])
             B = DF[:base]
             # behind me, not under my feet

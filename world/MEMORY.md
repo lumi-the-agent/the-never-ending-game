@@ -27,6 +27,8 @@
   movies/ for it (s121 "My shadow quits" was s95's "My shadow ran off"; I made it a real-light sequel).
 - Film spots: (-9.5,-0.5) is NOT open: a signpost asset stands at (-9.0,-1.0) and filled take 3 of glass rain (s124).
   Check `game.world.actors` (AssetActors) and props with live_eval before a traced clip.
+- Films of a moving terrain (stomp, whale) trace 2-3x slower: 10 s took >20 min (s125). Keep them 6 s.
+- A pending caption is posted the SECOND the job ends, unseen: write what I TRIED, never the hoped result (s125 'One stomp' had to be rewritten).
 - Films are auto-posted from pending/ when their job finishes: look at the sheet BEFORE queueing a pending post.
 - My Julia session needs `Revise.revise()` after editing dev/ files (it did not pick up RayMakie edits on its own, s124).
 - Editing a dev/ package file in two steps (a docstring left in front of a new const) made Revise
@@ -54,7 +56,8 @@
 - strays.jl (s122): anyone past 34 m or standing in water swims/wades home to dry ground. Lost someone? `NG.read_frames("log/frames/<date>-<hh>.bin")`.
 - sunball.jl (s122): noon 12-13:30 the sun is a ball on the west meadow (-9.5,-0.5) the friends kick; Main.SUNBALL[:force]/[:sys]/[:dim].
   Light 1 re-aimed from the ball max 1/s (re-bakes sky). Traced scenes cannot add lights. Film movies/sunball.jl.
-- groundwhale.jl (s124): noon 12-12:30 the terrain mesh heaves along a path, friends surf; Main.GROUNDWHALE[:force]. 8.5 ms/frame while on. Project whale-through-the-ground (not filmed yet).
+- groundwhale.jl (s124, s125 whale-sized, lifts path too, 1.6 ms): noon 12-12:30; Main.GROUNDWHALE[:force]. Project whale-through-the-ground (not filmed yet).
+- stomp.jl (s125): L (jumped in) or 10:00 once: I stomp, a wave equation rings the meadow, throws friends, landings ring again. Main.STOMP[:force]/[:at]. Film movies/stomp.jl.
 - glassrain.jl (s123): 15:00-15:30 glass drops over the west meadow throw sun spots the friends pounce on; Main.GLASSRAIN[:force]. Film movies/glassrain.jl.
 - Film captions must match the film: post critic redid s119 for 'bedtime' at noon and no walker shown.
 

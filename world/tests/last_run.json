@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Keep the island level: a first play with only W/A/D, walking to the high side, keeps the shore dry; end card",
+      "file": "s53_play.jl",
+      "name": "Berry race from the menu: start card, a whole W/A/D race ends with every berry taken, rivals score, and the player is not left far behind",
       "passed": true,
-      "seconds": 51.6
+      "seconds": 62.1
     }
   ],
-  "time": "2026-11-26T11:15:37.561"
+  "time": "2026-11-26T20:47:20.414"
 }

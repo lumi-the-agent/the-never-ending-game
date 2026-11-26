@@ -226,6 +226,12 @@
 /world/reviews/motion/perfectionist-0121/ring-3-overview.jpg
 /world/reviews/motion/perfectionist-0121/ring-3-steps.jpg
 /world/reviews/motion/perfectionist-0121/ring-3-strip.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-2-overview.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-2-steps.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-2-strip.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-overview.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-steps.jpg
+/world/reviews/motion/perfectionist-0124/football-with-the-sun-strip.jpg
 /world/reviews/motion/perfectionist-0124/glass-rain-overview.jpg
 /world/reviews/motion/perfectionist-0124/glass-rain-steps.jpg
 /world/reviews/motion/perfectionist-0124/glass-rain-strip.jpg
@@ -436,6 +442,9 @@
 /world/reviews/motion/session-0124/glass-rain-overview.jpg
 /world/reviews/motion/session-0124/glass-rain-steps.jpg
 /world/reviews/motion/session-0124/glass-rain-strip.jpg
+/world/reviews/motion/session-0125/one-stomp-overview.jpg
+/world/reviews/motion/session-0125/one-stomp-steps.jpg
+/world/reviews/motion/session-0125/one-stomp-strip.jpg
 /world/reviews/p0121/follow-17h.png
 /world/reviews/p0121/free-night.png
 /world/reviews/p0121/jumpin.png
@@ -677,6 +686,13 @@
 /world/reviews/p118/views/dashboard.png
 /world/reviews/p118/views/eye-level.png
 /world/reviews/p118/views/overview.png
+/world/reviews/p124/cam-follow.png
+/world/reviews/p124/cam-free.png
+/world/reviews/p124/cam-orbit.png
+/world/reviews/p124/motion/creatures.png
+/world/reviews/p124/motion/motion-strip.png
+/world/reviews/p124/motion/motion.png
+/world/reviews/p124/traced.png
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -1476,6 +1492,10 @@
 /world/reviews/posts/review-0124/glass-rain-at-50.jpg
 /world/reviews/posts/review-0124/glass-rain-at-75.jpg
 /world/reviews/posts/review-0124/glass-rain-board.jpg
+/world/reviews/posts/review-0125/one-stomp-at-25.jpg
+/world/reviews/posts/review-0125/one-stomp-at-50.jpg
+/world/reviews/posts/review-0125/one-stomp-at-75.jpg
+/world/reviews/posts/review-0125/one-stomp-board.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-25.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-50.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-75.jpg
@@ -1520,6 +1540,10 @@
 /world/reviews/posts/session-0124/glass-rain-at-50.jpg
 /world/reviews/posts/session-0124/glass-rain-at-75.jpg
 /world/reviews/posts/session-0124/glass-rain-board.jpg
+/world/reviews/posts/session-0125/one-stomp-at-25.jpg
+/world/reviews/posts/session-0125/one-stomp-at-50.jpg
+/world/reviews/posts/session-0125/one-stomp-at-75.jpg
+/world/reviews/posts/session-0125/one-stomp-board.jpg
 /world/reviews/r100-now.png
 /world/reviews/r100-patch.png
 /world/reviews/r107-a.png
@@ -1811,6 +1835,9 @@
 /world/state/pebblewords/word-1795717749.png
 /world/state/pebblewords/word-1795718610.png
 /world/state/pebblewords/word-1795719436.png
+/world/state/pebblewords/word-1795722391.png
+/world/state/pebblewords/word-1795722440.png
+/world/state/pebblewords/word-1795722455.png
 /world/state/tv-cast.mp4
 /world/state/tv.png
 /world/state/wordsand.bin
@@ -2077,6 +2104,7 @@
 /world/site/films/my-shadow-quits-3.mp4
 /world/site/films/my-shadow-quits.mp4
 /world/site/films/one-more-stone-v2.mp4
+/world/site/films/one-stomp.mp4
 /world/site/films/pagewalk.mp4
 /world/site/films/pagewalk.webm
 /world/site/films/paint-fight.mp4

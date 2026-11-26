@@ -198,7 +198,9 @@ function NG.step!(::WordSand, game, dt)
         H .= max.(H .* (1 - WIND) .- SWEEP, 0f0)
         WS[:dirty] = true
     end
-    if WS[:dirty] && w.t >= WS[:redraw_at]
+    # s125: while a stomp rings the ground, stomp.jl lifts this mesh; redrawing it flat then made the sand flicker
+    stomping = isdefined(Main, :STOMP) && haskey(Main.STOMP, :sys) && Main.STOMP[:sys].active
+    if WS[:dirty] && w.t >= WS[:redraw_at] && !stomping
         WS[:redraw_at] = w.t + 0.5
         WS[:dirty] = false
         slide!(H, WS[:box])

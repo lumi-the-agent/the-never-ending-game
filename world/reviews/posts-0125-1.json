@@ -1,0 +1,10 @@
+{"posts": [{"post": "one-stomp",
+  "verdict": "redo",
+  "problems": [
+    "No stomp can be seen anywhere: in none of the 16 storyboard frames or the three full frames is there a recognisable 'I', a raised foot, an impact moment or any ring/wave in the ground, so a viewer cannot tell who stomps, where or when.",
+    "The 'sand flickers' is not a flicker but the whole dirt clearing swapping to grass and back (storyboard row 1 dirt, row 4 frames 1-3 almost all grass, last frame dirt again; at-50 dirt vs at-75 grass with only a strip of path left). It reads as a terrain rendering bug, not as an effect of a stomp.",
+    "The coloured boards right of centre are standing upright in frame 1 / at-25 and lie flat on the ground from storyboard row 2 / at-50 onward, with no visible cause; they are the only thing that 'reacts', yet nothing connects them to a stomp.",
+    "The friends are not thrown and do not react: pigs, sheep and the chicken just stand or wander in every frame, so even the failure ('hardly moves') is not shown as a failed attempt against anything.",
+    "Composition: the large pine on the right covers about a third of every frame, and the camera is so high and wide that the characters are tiny; the moment that matters, if it exists, is lost in the clutter."
+  ],
+  "critique": "The caption admits failure, but the film does not even show the attempt: there is no visible stomper or impact, and the big 'flicker' is the clearing's ground texture popping between dirt and grass like a glitch while signs fall over with no cause. Someone scrolling would see a busy, wide island shot with a broken ground and no event."}]}

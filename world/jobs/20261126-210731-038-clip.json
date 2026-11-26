@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T21:07:31.091",
+  "finished": "2026-11-26T21:28:43.786",
+  "id": "20261126-210731-038-clip",
+  "kind": "clip",
+  "params": {
+    "call": "stomp_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 10.0,
+      "turn": 0.36,
+      "up": 8.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/one-stomp.mp4",
+    "script": "movies/stomp.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/one-stomp.mp4",
+    "thumps": 11
+  },
+  "seconds": 1271.1,
+  "started": "2026-11-26T21:07:32.484",
+  "status": "done"
+}

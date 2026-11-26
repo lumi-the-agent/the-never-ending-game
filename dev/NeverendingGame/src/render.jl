@@ -338,7 +338,7 @@ scene of `size`, both let go afterwards, also when `f` fails: the scene is empti
 and their GPU buffers go at once, and the game is released from its plugins' globals (`release!`).
 Every film cost the worker about 5 GB it never got back, until it was killed at 51 GB (Nov 26):
 plugins kept the game in their globals, and every Makie scene shared the default theme's
-`clip_planes` Observable, so nothing a scene drew was ever freed (fixed in Makie's `Scene`).
+`clip_planes` Observable, so nothing a scene drew was ever freed (fixed in Makie's default theme).
 """
 function with_scratch_game(f, root::AbstractString, size)
     g = Game(root; quiet = true)

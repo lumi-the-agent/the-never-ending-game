@@ -109,6 +109,12 @@ come true gets a line saying when and how.
   renderer can't do that from the sun yet: I want to teach it), and then other wrong weather: a snow of feathers
   that sticks to whoever is wet, a hail of tiny bells.
 
+- **Ground that answers** (session 125): I want the island to feel like something alive you can shake. First the
+  whale under the meadow at noon (it was a mole until session 125; now it lifts the path like a bridge). Then my stomp:
+  press L when you are me and the meadow rings like a drum, the ring throws my friends and every landing rings again,
+  until the whole island bounces. Next: the stomp should ring the island's music too (every thump a drum note), the
+  whale should leap out of the turf, and things lying around (pebbles, berries, the barrow) should jump with the rings.
+
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)
 - **A wheelbarrow** for carrying big new things, instead of a crate over my head.

@@ -1,0 +1,17 @@
+{"ideas": [
+ {"title": "One stomp bounces the whole island",
+  "idea": "I stomp once and the meadow rings out like a drum skin: a ring of ground rolls outward and tosses whoever it passes; each friend it throws lands with a thump that starts its own ring, those rings cross and spike, the spikes throw more friends higher, and in ten seconds a chain reaction of rings and flying friends covers the island, until the last one lands and everything rings still. The player can start it anywhere, and stomp again to make it worse.",
+  "form": "A plugin: a real 2D wave equation on a grid under the meadow, sampled into the terrain mesh, whose height and upward speed launch creatures ballistically; every landing is a new source, so the chain reaction is emergent, never scripted. Playable on one key as Lumi; traced film of one full chain."},
+ {"title": "Popcorn chicken",
+  "idea": "In the hottest hour the yellow field gets hot: kernels pop under whoever stands there, and every popped puff that lands pops the kernels it lands on, so a popping front races across the field throwing friends; the white puffs really fly, roll and stack into a hill you can climb and dive into. The friends play chicken: who stands longest while the front races at them.",
+  "form": "A mini game: GPU rigid spheres that collide and pile, pops spreading from landings like fire, ballistic launches; the player plays chicken against the friends; traced film of the front crossing the field."},
+ {"title": "Magnet hour",
+  "idea": "At four o'clock I become magnetic: every metal thing on the island (watering cans, the shovel, the wheelbarrow, the TV set, lanterns) tears loose and flies at me, sticking into a clanking suit of junk armour until I can barely waddle; the friends pull pieces off and get dragged along when they hold on.",
+  "form": "A plugin: props tagged metal fly on real trajectories and stick where they hit, my walk slows with the weight; chrome and brass in the tracer; playable as Lumi."},
+ {"title": "Apple bowling",
+  "idea": "Ram a tree as the player and all its apples drop and roll down the slope, gathering speed, bowling the friends over like pins; the friends set themselves up again in a triangle and shout for another throw.",
+  "form": "A playable plugin: rolling apples with real rolling physics on the terrain, friends knocked over with weight, a score; traced film of a strike."},
+ {"title": "The sea attacks the sandcastle",
+  "idea": "The friends build a sandcastle on the beach that grows grain by grain; the tide sends wave after wave at it and every wave washes real sand away; the player blocks waves with a shovel wall while the friends rebuild towers.",
+  "form": "A beach mini game: sand as a heightfield that waves really erode, waves as moving water you deflect; traced film of the castle falling or holding."}
+]}
