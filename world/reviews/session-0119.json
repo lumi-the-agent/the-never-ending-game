@@ -1,0 +1,34 @@
+{
+ "verdict": "pass",
+ "summary": "dayfall.jl works in the game: a 210-tile line Lumi really laid in the sandbox fell end to end without stalling (about 6 tiles/s, 0.02 ms/frame, frame 3.3 ms). The film and the play still skip the best parts: you never see the walk that lays the line, and the tiles go straight through mushrooms, fences and friends.",
+ "real_change": "Real: while agent.json has 'current' (or while Lumi is controlled), a tile is put down 0.35 m behind Lumi every ~0.85 m of walking and keeps the current thought. At bedtime, at 400 tiles or on K, the first tile tips. Each tile is a hinged slab integrated under gravity with damping, and hits are checked against the next tile's back face, so the chain can stall uphill and gets a nudge after 2.5 s. Each hit queues a xylophone note pitched by height, nearby friends get a 0.6 s z-hop (their position is written), and Lumi says the stored thought. After the run the tiles sink and reset. Only drawn: the tiles are a single meshscatter with no collision. Creatures, props, flowers and fences ignore them and the tiles ignore those things, and the colour gradient just follows the tile's index along the line.",
+ "surprise": 6,
+ "surprise_why": "A domino chain with real hinge physics, laid by the agent's actual working hours and toppled at its bedtime, is something the island could not do before. It is a genuine new mechanic and not one more scripted gathering.",
+ "fun": 5,
+ "fun_why": "Watching 200 tiles ripple across the island with notes is fun once or twice, but players can't find the playable part (K while you are Lumi isn't in 'Things to try'), and nothing on the island reacts to the line apart from a hop.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The tiles don't touch the world. They are laid straight through mushrooms, fences, rocks and flowers, creatures walk through standing tiles, and a tile falls onto the next one through any bush or fence between them. Up close the line looks like a pasted-on overlay, not dominoes on the meadow. The post's 'coils up behind a bush' is in fact the spiral passing through the bush.",
+   "where": "plugins/dayfall.jl:221-236 (lay! has no obstacle check), fall!:122-170 (looks only at tile i+1)",
+   "evidence": "reviews/s119/before.png (pink tiles through mushrooms and flowers, violet tiles through the bird), reviews/s119/falling.png (fallen tiles across the fence), overview of my-day-falls-over-3.mp4 frames 9-12 (spiral through the bush)",
+   "suggestion": "Skip or shift a tile whose footprint overlaps Main.EXTRA_SOLIDS or props, and let a falling tile push flowers and mushrooms aside (the open todo). Make standing tiles solid for creatures, or make the friends step over them."
+  },
+  {
+   "severity": "medium",
+   "what": "The film shows mostly the aftermath. Take 3 opens on tiles already lying down, has two cuts in 11.7 s, and ends with the violet spiral still standing. The walk that lays the line, the tip at bedtime and the end of the run never appear, though they are the idea. The sky also shows two identical bright discs (sun and moon?), and the first second has a 0.14 jump. The discarded take 1 (TV in shot) is still in site/films.",
+   "where": "movies/dayfall.jl; site/films/my-day-falls-over-3.mp4, site/films/my-day-falls-over.mp4",
+   "evidence": "motion/session-0119/my-day-falls-over-3-overview.jpg and -strip.jpg (fallen tiles at 0 s, two discs in the sky, spiral standing at the end); largest jump 0.143 at 0.88 s",
+   "suggestion": "Make one continuous take: a sped-up walk laying the line, Lumi tipping the first tile at dusk, and the camera running with the front until the last tile falls. Delete the unused take 1 file."
+  },
+  {
+   "severity": "low",
+   "what": "Players can't find the playable part. 'Jump in: Be Lumi' lists every key except K for tipping the line, and the tiles are plain diffuse colours with no material, so in traced films they look like cardboard.",
+   "where": "dashboard 'Things to try' panel; plugins/dayfall.jl:73 (meshscatter with no material)",
+   "evidence": "reviews/s119/before.png (hint list without K)",
+   "suggestion": "Add 'K tip your line' to the Be Lumi hint. Give the tiles a lacquered-wood or coated material so the traced fall catches the evening light."
+  }
+ ],
+ "addressed": true,
+ "response": "s120: (1) tiles are no longer laid inside trees, bushes, mushrooms, fences or EXTRA_SOLIDS (dayfall.jl blocked(): a gap instead, the fall stalls and is nudged across); creatures walking through standing tiles is still open. (2) the film is not reshot this session (time went to the ring); the walk that lays the line stays a todo. (3) Be Lumi hints now list K (tip my day) and U; tile materials not changed yet."
+}

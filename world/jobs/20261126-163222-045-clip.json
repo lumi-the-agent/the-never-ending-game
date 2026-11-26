@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T16:32:22.045",
+  "finished": "2026-11-26T16:34:45.795",
+  "id": "20261126-163222-045-clip",
+  "kind": "clip",
+  "params": {
+    "call": "underlight_clip",
+    "kwargs": {
+      "fps": 4,
+      "samples": 64,
+      "seconds": 0.5
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s120-underlight-still.mp4",
+    "script": "movies/underlight.jl"
+  },
+  "result": {
+    "dim": 0.04,
+    "path": "/sim/Programmieren/SimGame/world/media/s120-underlight-still.mp4",
+    "u": 1.0
+  },
+  "seconds": 142.4,
+  "started": "2026-11-26T16:32:23.410",
+  "status": "done"
+}

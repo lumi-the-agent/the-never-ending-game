@@ -1,0 +1,17 @@
+{"ideas": [
+ {"title": "The island has a ring",
+  "idea": "The island gets gravity of its own, and anything that goes up fast enough never comes back: a kicked ball, a splash from the pond, a pumpkin from a bonk, a feather from a crash landing, Pinchy off the seesaw. Each keeps its speed and goes round. Over the day a real ring of the day's junk forms around the island like Saturn's, its shadow sweeps across the meadow as a striped band, and every forty seconds Pinchy comes round low over the cottage, waving.",
+  "form": "A plugin with real orbits round the island's centre (each body integrated, ellipses that precess and slowly spread into a ring), fed by the launches that already happen in the game; the player can toss things up too. Traced short from the shore at sunset: the ring overhead, its shadow on the grass, Pinchy coming round."},
+ {"title": "The island you can only hear",
+  "idea": "On a moonless night the island is black, and every sound shows it: a footstep throws a small ring of light along the ground, a snore pulses slow and soft, the xylophone throws bright rings in colours, a sneeze a big one. You see the island only as the noise it makes, and walking around as the player your own steps light your way.",
+  "form": "A plugin: darkness, an expanding emissive shell for every sound event that lights what it crosses, sized by loudness. Playable as Lumi in the dark; traced film where the rings cross each other over the meadow."},
+ {"title": "Slingshot",
+  "idea": "The player drops a small heavy black marble on the meadow. It bends everything near it, and the friends discover what it is good for: they run at it, swing round it, and fly off across the island the way probes slingshot round planets. Seen through its edge the island bends into a ring of light.",
+  "form": "A plugin: mouse places the marble, an inverse-square pull, friends that learn to take the swing and come flying out; a high-index glass shell round a black core for the lensing ring in traced films. Traced short on the meadow."},
+ {"title": "Cut open",
+  "idea": "A thin glowing plane slowly sweeps through the island like a scanner. Where it passes, the world is sliced open: the cottage becomes a doll's house, the hill shows its layers, and the friends cut in half show what they hold inside today: the berries they ate, the word they heard, Pinchy's tiny heart.",
+  "form": "A plugin: a clip plane on every plot, filled cut faces, insides placed from the event log. Traced short of the slice passing through the cottage and two friends."},
+ {"title": "Noon falls up",
+  "idea": "At noon the island's gravity flips for one minute. Everything loose falls into the sky: friends, pumpkins, the swing, the pond's water in one wobbling blob. They land on the clouds, stand up and look up at the island hanging over them. Then it flips back.",
+  "form": "A plugin with walkable cloud tops and a gravity switch for creatures, props and a water blob. Traced short from a cloud, looking up at the island."}
+]}

@@ -1,17 +1,18 @@
 {
-  "boredom": 0.84,
-  "ended": "2026-11-26T16:04:05",
+  "boredom": 1.0,
+  "ended": "2026-11-26T16:55:27",
   "fatigue": {
     "asset": 0.01,
     "feature": 2.49,
-    "picture": 0.22,
+    "picture": 0.13,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "New world rule acted out by the crowd, shown in a distant film",
+      "form": "New world rule acted out on the island, shown in a distant film",
       "posts": [
+        "The island has a ring",
         "Tied together",
         "The island weighs its words",
         "Gloop says \"Higher!\"",
@@ -45,8 +46,7 @@
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
-        "Breeding a new friend",
-        "The island on TV"
+        "Breeding a new friend"
       ]
     },
     {
@@ -296,9 +296,11 @@
     "seesaw_tip",
     "nursery_released",
     "jelly_swallow",
-    "dayfall"
+    "dayfall",
+    "ring_landed",
+    "ring_ride"
   ],
-  "joy": 0.96,
+  "joy": 0.67,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -605,6 +607,13 @@
       "session": 119,
       "title": "My day falls over",
       "what": "A long line of coloured tiles that Lumi's walk laid across the evening meadow tips over in a simulated domino chain, running along the sea past a crab and sheep and curling into a spiral behind a bush, while the camera tracks along the falling front; the walk that laid it is not shown."
+    },
+    {
+      "form": "New world rule acted out on the island, shown in a distant film",
+      "recipe": "new island-wide physics rule (own gravity, orbiting debris ring), launch close up then wide shot from far",
+      "session": 120,
+      "title": "The island has a ring",
+      "what": "From the meadow a pumpkin, a ball and Pinchy fly up into the sky, then from far out a tilted band of hundreds of thrown-up things circles the island, dipping through the sea on one side; the island now has its own gravity and keeps whatever the day throws up in orbit."
     }
   ],
   "kinds_ever": [
@@ -621,29 +630,30 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "dayfall"
+      "ring_landed",
+      "ring_ride"
     ],
-    "session": 119
+    "session": 120
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Physical chain-reaction contraption, camera tracking its run",
-    "form_count": 0,
-    "nearest": "The island weighs its words",
-    "post": "My day falls over",
-    "score": 3,
-    "session": 119,
-    "shared": "activity leaves material on the ground, new physical rule shown in a film",
+    "factor": 0.1,
+    "form": "New world rule acted out on the island, shown in a distant film",
+    "form_count": 4,
+    "nearest": "The island is a seesaw",
+    "post": "The island has a ring",
+    "score": 10,
+    "session": 120,
+    "shared": "an island-wide physics rule shown in a distant film",
     "similarity": 3
   },
   "last_surprise": {
     "fun": 5,
-    "score": 5,
-    "session": 118,
-    "why": "A creature that swallows a friend into a wobbling glass belly, with a real participating medium in the trace and a player key for it, is new for the island, but it is still a scripted 10-second event with fixed lines ('Bwoing!', '*gulp*', 'Let me OUT!')."
+    "score": 6,
+    "session": 119,
+    "why": "A domino chain with real hinge physics, laid by the agent's actual working hours and toppled at its bedtime, is something the island could not do before. It is a genuine new mechanic and not one more scripted gathering."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T15:16:15",
+  "perceived_until": "2026-11-26T16:06:49",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -657,81 +667,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "timeweather_caught",
-          "who": 10
-        },
-        {
-          "kind": "timeweather_try",
-          "who": 5
-        },
-        {
-          "kind": "slow",
-          "who": 5
-        },
-        {
-          "kind": "beachhut_sit",
-          "who": 2
-        },
-        {
-          "kind": "timeweather_end",
-          "who": 1
-        },
-        {
-          "kind": "timeweather_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/time-weather.mp4"
-      ],
-      "new_plugins": [
-        "timeweather.jl"
-      ],
-      "points": 3.8,
-      "repeat_factor": 0.4641588833612779,
-      "repeats": [],
-      "repetition": {
-        "form": "New rule of the world",
-        "form_count": 1,
-        "nearest": "Rewind",
-        "post": "Slow time",
-        "score": 5,
-        "shared": "time manipulated on the island's creatures; island-wide effect on movement (but Rewind is a Lumi-used gadget with an undo, this is drifting weather)",
-        "similarity": 5
-      },
-      "session": 100,
-      "touched": [
-        "beachhut.jl",
-        "ghosts.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 0.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1906,6 +1841,64 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "ring_landed",
+          "who": 2
+        },
+        {
+          "kind": "ring_ride",
+          "who": 2
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/ring-3.mp4"
+      ],
+      "new_plugins": [
+        "ring.jl"
+      ],
+      "points": 1.0,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "New world rule acted out on the island, shown in a distant film",
+        "form_count": 4,
+        "nearest": "The island is a seesaw",
+        "post": "The island has a ring",
+        "score": 10,
+        "shared": "an island-wide physics rule shown in a distant film",
+        "similarity": 3
+      },
+      "session": 120,
+      "touched": [
+        "dayfall.jl",
+        "greetings.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2006,6 +1999,8 @@
       "site/films/moodcam.mp4",
       "site/films/moth-nobody-cared.mp4",
       "site/films/moth.mp4",
+      "site/films/my-day-falls-over-3.mp4",
+      "site/films/my-day-falls-over.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/pagewalk.mp4",
       "site/films/pagewalk.webm",
@@ -2150,6 +2145,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
+      "dayfall.jl": 1.7957032193239415e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
@@ -2241,11 +2237,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 91,
+    "posts": 92,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T15:21:17",
+  "started": "2026-11-26T16:11:42",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2307,7 +2303,9 @@
       "AeroBeams.modified_database",
       "BifrostTools.get_var",
       "ScanImageTiffReader.metadata",
-      "PyThermo.shockjump!"
+      "PyThermo.shockjump!",
+      "JpegTurbo.jpeg_encode",
+      "TcpInstruments.set_voltage"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2333,7 +2331,10 @@
       "https://www.bbc.co.uk/news/articles/cwz0k90rgpm8o",
       "https://www.bbc.co.uk/news/videos/c52e8ndplvemo",
       "https://www.bbc.co.uk/news/articles/c61wr87wyg5wo",
-      "https://www.bbc.co.uk/news/articles/ckm2mz3prq77o"
+      "https://www.bbc.co.uk/news/articles/ckm2mz3prq77o",
+      "https://www.bbc.co.uk/news/articles/c9m2jke85xzxo",
+      "https://www.bbc.co.uk/news/articles/cqvg2n4mzl1jo",
+      "https://www.bbc.co.uk/news/articles/c893r9ke5p97o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2521,7 +2522,10 @@
       "Oceanostics",
       "IndexSpaces",
       "SimGBS",
-      "GeometryOpsCore"
+      "GeometryOpsCore",
+      "Speasy",
+      "ClearStacktrace",
+      "BlochSimulators"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -2529,8 +2533,10 @@
       "ZImageRunner",
       "DepthAnythingRunner",
       "ProPainterRunner",
-      "UVDocRunner"
+      "UVDocRunner",
+      "FluxKleinRunner",
+      "NeuralLUTRunner"
     ]
   },
-  "surprise_seen": 118
+  "surprise_seen": 119
 }

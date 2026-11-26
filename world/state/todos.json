@@ -8119,6 +8119,62 @@
       "status": "open",
       "title": "Film the falling day as it really goes: me walking and laying it, tipping it at dusk, the whole spiral down",
       "updated": "2026-11-26T15:46:27.116"
+    },
+    {
+      "created": "2026-11-26T16:32:33.886",
+      "detail": "s120 ring.jl works (real orbits, events throw bodies up, U as Lumi, friends ride 4 laps) but the film shows it only as a diagonal band of beads from the shore (site/films/ring.mp4), and Pinchy becomes a speck. Done when: a traced short at low sun where the ring's striped shadow lies on the grass, and a friend passes within 6 m of the camera waving on a low pass (face readable); the ring bodies use generated pumpkin/ball meshes, not spheres.",
+      "est_minutes": 15.0,
+      "id": 581,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The ring up close: its shadow crossing the meadow and a friend's low flyby you can see",
+      "updated": "2026-11-26T16:32:33.886"
+    },
+    {
+      "created": "2026-11-26T16:32:33.892",
+      "detail": "session-0119 review: creatures walk through standing tiles. s120 fixed tiles laid inside props (gaps now). Done when: a 10 fps strip shows a friend crossing a standing line by stepping over or round it, and no tile intersects a body.",
+      "est_minutes": 15.0,
+      "id": 582,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Dayfall: friends step round standing tiles instead of through them",
+      "updated": "2026-11-26T16:32:33.892"
+    },
+    {
+      "created": "2026-11-26T16:41:11.558",
+      "detail": "KeyError: key :log not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] step!(s::Main.Plugin_stranger.Stranger, game::Game, dt::Float64)\n    @ Main.Plugin_stranger /sim/Programmieren/SimGame/world/plugins/stranger.jl:424\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] (::NeverendingGame.var\"#advance!#382\"{NeverendingGame.CameraRig, Makie.Scene, NeverendingGame.World, Game})(dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:395\n  [9] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Nothing, shot::Main.ClipScript.var\"#4#5\"{Float64, Int64, Float64, Dict{Symbol, Any}, Dict{Any, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417\n [10] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:380 [inlined]\n [11] ring_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, n::Int64, CUT::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/ring.jl:80\n [12] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [13] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [14] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [15] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [16] top-level scope\n    @ none:1\n [17] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [18] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [19] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 583,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T16:43:06.479: plugin stranger loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:stranger.Stranger failed in step! and was switched off",
+      "updated": "2026-11-26T16:43:06.479"
+    },
+    {
+      "created": "2026-11-26T16:53:45.127",
+      "detail": "s120: worker job 20261126-164300-366-clip renders site/films/ring-3.mp4 (Pinchy's lift-off close, then the whole tilted ring round the island, sky 4x). Check the contact sheet; if the ring reads as a ring and Pinchy's launch is visible, put it in the-island-has-a-ring piece in site/index.html and match the caption; else move it to media/ and reshoot per #581.",
+      "est_minutes": 15.0,
+      "id": 584,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Take 3 came in at 16:54: Pinchy lifts off close up and a pumpkin flies past, then the whole tilted ring goes round the island from 80 m, shadows on the sea (media/s120-ring3-sheet.png). Swapped into the post with a matching caption; take 1 moved to media/s120-ring-take1.mp4.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Swap the ring post's film for take 3 if it reads as a ring",
+      "updated": "2026-11-26T16:54:48.463"
     }
   ]
 }

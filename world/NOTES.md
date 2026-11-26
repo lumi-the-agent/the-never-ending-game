@@ -434,3 +434,16 @@ clearing). States per tile: 0 standing, 1 falling, 2 leaning on the next, 3 lyin
   `NG.submit_job(:restart)` before the clip fixed it. Restart the worker before a clip that matters.
 - s119 dayfall take 4 opened on 2 s of black (smoothed camera starting inside a bush): set S[:eye] from an open
   spot, or trim with `ffmpeg -ss`.
+
+## Orbits round the island (s120, plugins/ring.jl)
+- Softened point mass (Plummer, GM 900, eps 6 m) 8 m above the island's centroid; ring plane normal (0.5, 0, 0.866).
+  Radial-velocity damping + across-plane damping conserve angular momentum, so a launch settles on the circular
+  radius L^2/GM-ish: pick the radius first, then set the tangential speed L/r0 (launch!). Island radius is ~20 m,
+  so orbits need r > ~26 m or they cross the meadow (bodies bounce off it).
+- 1300 seeded bodies in 7 meshscatter plots (one per kind, own material): ring system 0.6 ms median in the sandbox.
+- Lesson: from the shore a 30-44 m ring reads as one diagonal band of beads; to see a friend on it, the orbit or the
+  camera must come within ~6 m. A raster clip in my own session costs ~4 min the first time (loading), so queue the
+  traced job straight after one quick raster check.
+- The worker keeps Main globals between clip jobs: after an underlight still (UNDERLIGHT[:force] = true) the next
+  ring film came out at night (media/s120-ring-take2-dark.mp4). Every film script sets other plugins' :force flags
+  off at the top of its clip function (before game_clip, so start! sees them).

@@ -34,10 +34,28 @@ function reset!()
     DF[:dirty] = true
 end
 
+"Is `xy` inside a tree trunk, a bush, a mushroom, a fence or another solid? (s120 review: tiles went through them)"
+function blocked(game, xy::Vec2f)
+    for p in game.world.props
+        r = p.kind === :tree ? 0.75f0 : 0.45f0
+        sum(abs2, xy - Vec2f(p.pos[1], p.pos[2])) < r^2 && return true
+    end
+    if isdefined(Main, :EXTRA_SOLIDS)
+        for (_, sol) in Main.EXTRA_SOLIDS, (c, r) in sol
+            sum(abs2, xy - Vec2f(c[1], c[2])) < (r + 0.2f0)^2 && return true
+        end
+    end
+    false
+end
+
 "Stand a tile at `xy` (the line goes on from the last one)."
 function lay!(game, xy::Vec2f, thought::AbstractString = "")
     B = DF[:base]
     length(B) >= MAXN && return false
+    if blocked(game, xy)          # no tile inside a bush: the line has a gap there and the fall stalls and is nudged on
+        DF[:gap] = true
+        return false
+    end
     z = floor_at(game, xy[1], xy[2])
     if !isempty(B)
         d = xy - Vec2f(B[end][1], B[end][2])
@@ -236,11 +254,12 @@ function NG.step!(::DayFall, game, dt)
             # behind me, not under my feet
             if isempty(B) || sum(abs2, xy - Vec2f(B[end][1], B[end][2])) >= (SPACING + 0.35f0)^2
                 back = isempty(B) ? xy : xy - (xy - Vec2f(B[end][1], B[end][2])) / sqrt(sum(abs2, xy - Vec2f(B[end][1], B[end][2]))) * 0.35f0
-                if !isempty(B) && sum(abs2, back - Vec2f(B[end][1], B[end][2])) > 1.5f0^2
+                if !isempty(B) && sum(abs2, back - Vec2f(B[end][1], B[end][2])) > 1.5f0^2 &&
+                   !(get(DF, :gap, false) && sum(abs2, back - Vec2f(B[end][1], B[end][2])) < 4f0^2)
                     # I jumped (a mini game, a ride): a new line starts where I am, the old one falls first
                     tip!(game)
                 else
-                    lay!(game, back, get(DF, :thought_now, ""))
+                    lay!(game, back, get(DF, :thought_now, "")) && (DF[:gap] = false)
                 end
             end
             length(B) >= MAXN && tip!(game)
