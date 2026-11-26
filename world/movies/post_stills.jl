@@ -52,7 +52,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "ghosts" => ("Lumi", "Gloop", "Pinchy"), "hut" => ("Lumi", "Pinchy", "Wibbles", "Sir Sniffsalot"),
                   "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"),
                   "workshop" => ("Lumi", "Gloop"),
-                  "pebbles" => ("Lumi", "Pickles", "Wibbles"))
+                  "pebbles" => ("Lumi", "Pickles", "Wibbles"),
+                  "facehill" => ("Lumi", "Gloop", "Pinchy"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -85,6 +86,18 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "facehill"         # s104: the hill with my face, seen from above, a friend on my beak, me at its foot looking up
+        fm = plugin(g, "facehill")
+        Base.invokelatest(fm.build!, g)
+        C = Base.invokelatest(getfield, fm, :CENTRE)
+        beak = Base.invokelatest(fm.peak_in, g, 0.35, 0.65, 0.55, 0.75)
+        beak === nothing || pose!(w, by_name(w, "Gloop"), (beak[1], beak[2]), -pi / 2, :sit)
+        beak === nothing || (by_name(w, "Gloop").pos = beak)
+        pose!(w, by_name(w, "Pinchy"), (C[1] + 3.5f0, C[2] - 1f0), pi, :idle)
+        pose!(w, by_name(w, "Lumi"), (C[1] - 1f0, C[2] - 8.2f0), pi / 2, :proud)
+        z0 = NG.terrain_height(w.island, C[1], C[2])
+        return Point3f(C[1], C[2] - 12f0, z0 + 15f0), Point3f(C[1], C[2] + 0.5f0, z0)
     end
     if post == "pebbles"          # s103: PIE written in pebbles on the meadow, the friends waiting to hear what the reader says
         pm = plugin(g, "pebblewords")

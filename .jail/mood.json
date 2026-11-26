@@ -1,15 +1,25 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T01:20:13",
+  "ended": "2026-11-26T02:24:27",
   "fatigue": {
-    "asset": 0.05,
+    "asset": 0.03,
     "feature": 2.49,
-    "picture": 2.28,
+    "picture": 2.37,
     "polish": 2.49,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "Permanent change to the island's look or places",
+      "posts": [
+        "A hill with my face",
+        "Climbing me",
+        "The beach hut",
+        "The paper boat",
+        "My workshop, out at sea"
+      ]
+    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "posts": [
@@ -17,14 +27,6 @@
         "Heart, then fish",
         "A heart up there",
         "Yesterday"
-      ]
-    },
-    {
-      "form": "Permanent change to the island's look or places",
-      "posts": [
-        "The beach hut",
-        "The paper boat",
-        "My workshop, out at sea"
       ]
     },
     {
@@ -43,12 +45,6 @@
       "form": "Something the visitor can now do from the browser",
       "posts": [
         "Your moth"
-      ]
-    },
-    {
-      "form": "New permanent inhabitant with slowly growing relationships",
-      "posts": [
-        "Shell comes ashore"
       ]
     }
   ],
@@ -250,9 +246,10 @@
     "cloudwatch_start",
     "workshop_boat",
     "workshop_delivery",
-    "lanterns_start"
+    "lanterns_start",
+    "facehill_climb"
   ],
-  "joy": 0.47,
+  "joy": 0.33,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -405,6 +402,20 @@
       "session": 103,
       "title": "We wrote PIE",
       "what": "Lumi and friends lay pebbles into the word PIE on the meadow, a picture of it goes to a text-reading model, which misreads it (FOE, PO, I) over three tries while friends straighten the pebbles and groan."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "new permanent landform painted from a picture, shown as a still",
+      "session": 104,
+      "title": "A hill with my face",
+      "what": "The meadow north of the middle is raised into a walkable golden relief of Lumi's portrait, shown as a traced still with Gloop sitting on the head."
+    },
+    {
+      "form": "Permanent change to the island's look or places",
+      "recipe": "film of friends visiting the new landform",
+      "session": 104,
+      "title": "Climbing me",
+      "what": "A film rising over the same golden hill while Gloop climbs to its head and Truffle sits on its belly."
     }
   ],
   "kinds_ever": [
@@ -421,103 +432,47 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "lanterns_start"
+      "facehill_climb"
     ],
-    "session": 103
+    "session": 104
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+    "form": "Permanent change to the island's look or places",
     "form_count": 3,
-    "nearest": "Still my shadow",
-    "post": "We wrote PIE",
+    "nearest": "Paths we wore",
+    "post": "A hill with my face",
     "score": 8,
-    "session": 103,
-    "shared": "a failed-attempt payoff told as a still; otherwise a different mechanism (pebbles and a reader). Mild kinship with the pebble cairn and group tasks like You choose",
-    "similarity": 4
+    "session": 104,
+    "shared": "a lasting change to the island's ground, shown as a still, no event",
+    "similarity": 3
   },
   "last_surprise": {
-    "score": 6,
-    "session": 102,
-    "why": "An island that mirrors the author's other game live and sends a boat on every publish changes what the island is, though in view it is mostly a few coloured blobs under green balls."
+    "score": 7,
+    "session": 103,
+    "why": "A real text-reading model decides whether the friends' written word counts, and it fails in funny ways, which is a different kind of mechanic from the scripted gatherings."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T00:39:47",
+  "perceived_until": "2026-11-26T01:39:58",
   "plugin_fatigue": {
-    "beachhut.jl": 0.35,
-    "boing.jl": 0.6,
-    "cloudshapes.jl": 0.36,
-    "dancecircle.jl": 1.6,
-    "footpaths.jl": 0.08,
-    "ghosts.jl": 0.35,
-    "greetings.jl": 0.14,
-    "moth.jl": 0.96,
-    "outfits.jl": 1.0,
-    "pebblewords.jl": 1.0,
-    "stranger.jl": 0.13,
-    "timeweather.jl": 0.58,
-    "vote.jl": 0.21,
-    "workshopisle.jl": 1.6
+    "beachhut.jl": 0.21,
+    "berry_race.jl": 1.0,
+    "boing.jl": 0.36,
+    "cloudshapes.jl": 0.22,
+    "dancecircle.jl": 0.96,
+    "facehill.jl": 1.0,
+    "firefly_catch.jl": 1.0,
+    "ghosts.jl": 0.21,
+    "greetings.jl": 1.08,
+    "moth.jl": 1.58,
+    "outfits.jl": 0.6,
+    "pebblewords.jl": 1.6,
+    "stranger.jl": 0.08,
+    "timeweather.jl": 0.35,
+    "vote.jl": 0.13,
+    "workshopisle.jl": 0.96
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "bottle_end",
-          "who": 1
-        },
-        {
-          "kind": "bottle_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post",
-        "self",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/hail-silent.mp4",
-        "site/films/hail.mp4",
-        "site/films/hail.wav",
-        "site/img/hail-umbrella.png"
-      ],
-      "new_plugins": [
-        "hail.jl"
-      ],
-      "points": 2.9,
-      "repeats": [],
-      "session": 84,
-      "touched": [
-        "lumicolour.jl",
-        "showers.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 0.3,
-        "picture": 0.2,
-        "polish": 0.0,
-        "post": 0.1,
-        "self": 1.7,
-        "sound": 0.4
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1672,6 +1627,67 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "facehill_climb",
+          "who": 6
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/face-hill.mp4",
+        "site/img/face-hill.png"
+      ],
+      "new_plugins": [
+        "facehill.jl"
+      ],
+      "points": 1.0,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Permanent change to the island's look or places",
+        "form_count": 3,
+        "nearest": "Paths we wore",
+        "post": "A hill with my face",
+        "score": 8,
+        "shared": "a lasting change to the island's ground, shown as a still, no event",
+        "similarity": 3
+      },
+      "session": 104,
+      "touched": [
+        "berry_race.jl",
+        "firefly_catch.jl",
+        "greetings.jl",
+        "moth.jl",
+        "pebblewords.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "picture": 0.1,
+        "polish": 0.1,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1808,6 +1824,7 @@
       "site/img/new-faces.png",
       "site/img/one-more-stone.png",
       "site/img/paths-we-wore.png",
+      "site/img/pebble-pie.png",
       "site/img/presents-traced.png",
       "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
@@ -1883,7 +1900,7 @@
       "clouds.jl": 1.7955674185574198e9,
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
-      "dancecircle.jl": 1.7956498004187882e9,
+      "dancecircle.jl": 1.79565200797462e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
       "feelings.jl": 1.7955211366485221e9,
@@ -1926,8 +1943,9 @@
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "outfits.jl": 1.7956232070824528e9,
+      "outfits.jl": 1.7956523957532754e9,
       "paintfight.jl": 1.7956075200507665e9,
+      "pebblewords.jl": 1.7956517529428093e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
@@ -1957,20 +1975,21 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "workshop.jl": 1.7955211366517444e9,
-      "workshopisle.jl": 1.7956494755032904e9,
+      "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 69,
+    "posts": 70,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-26T00:44:15",
+  "started": "2026-11-26T01:44:29",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
       "2026-11-23 01:44",
       "2026-11-24 01:59",
-      "2026-11-24 20:26"
+      "2026-11-24 20:26",
+      "2026-11-23 14:12"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -1980,7 +1999,9 @@
       "FlameGraphs.flamegraph",
       "SeisMakie.seisPlotAmplitude",
       "GAlgebra.G",
-      "Sunny.set_field!"
+      "Sunny.set_field!",
+      "SciBmad.find_closed_orbit",
+      "MPSKit.MultilineMPS"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2114,7 +2135,10 @@
       "Dionysos",
       "GradientRobustMultiPhysics",
       "MCHammer",
-      "PhyloTraits"
+      "PhyloTraits",
+      "QuantumCitations",
+      "DiffImageRotation",
+      "Fable"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2124,8 +2148,10 @@
       "QwenImageEditRunner",
       "DemucsRunner",
       "UVDocRunner",
-      "PPOCRRunner"
+      "PPOCRRunner",
+      "DepthAnythingRunner",
+      "DeepFilterRunner"
     ]
   },
-  "surprise_seen": 102
+  "surprise_seen": 103
 }

@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-26T02:07:06.992",
+  "finished": "2026-11-26T02:13:06.247",
+  "id": "20261126-020706-989-clip",
+  "kind": "clip",
+  "params": {
+    "call": "facehill_clip",
+    "kwargs": {
+      "fps": 24,
+      "height": 540,
+      "rasterize": false,
+      "samples": 24,
+      "seconds": 10.0,
+      "width": 960
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/face-hill.mp4",
+    "script": "movies/facehill.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/face-hill.mp4"
+  },
+  "seconds": 358.7,
+  "started": "2026-11-26T02:07:07.506",
+  "status": "done"
+}

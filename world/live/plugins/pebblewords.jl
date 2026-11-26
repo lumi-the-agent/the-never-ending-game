@@ -11,7 +11,7 @@ party_free(w) = w.t >= get(Main.LUMI_PARTY, :until, -Inf)
 claim_party!(w, secs) = (Main.LUMI_PARTY[:until] = w.t + secs; nothing)
 
 const WORDS = ("LUMI", "FISH", "HI", "SUN", "HOME", "PIE", "NOPE")
-const CELL = 0.42f0                      # m between pebbles
+const CELL = 0.36f0                      # m between pebbles (closer, so the letters read as strokes, review s103)
 const MAXP = 140
 const EVERY = (600.0, 1000.0)
 const TRIES = 3
@@ -90,7 +90,7 @@ function draw!(game)
     sc = game.stage.scene
     if !haskey(PW, :plot) || PW[:plot].parent === nothing
         PW[:plot] = meshscatter!(sc, fill(Point3f(0, 0, -50), MAXP); marker = Sphere(Point3f(0), 1f0), markersize = fill(Vec3f(0), MAXP),
-                                 color = RGBf(0.42, 0.42, 0.46), name = :pebblewords)
+                                 color = RGBf(0.93, 0.92, 0.88), name = :pebblewords)   # pale stones on the green read from afar
         PW[:drawn] = true
     end
     e = get(PW, :ev, nothing)
@@ -106,7 +106,7 @@ function draw!(game)
         cx, cy = e[:cells][i]
         q = world_at(e[:origin], cx, cy)
         pts[i] = NG.ground(w.island, (q[1], q[2])) + Point3f(0, 0, 0.04f0)
-        ms[i] = Vec3f(0.2f0, 0.17f0, 0.08f0)
+        ms[i] = Vec3f(0.22f0, 0.2f0, 0.09f0)
     end
     Makie.update!(PW[:plot], pts; markersize = ms)
     PW[:drawn] = true

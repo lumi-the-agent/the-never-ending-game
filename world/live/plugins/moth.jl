@@ -202,7 +202,9 @@ function NG.step!(::Moth, game, dt)
     MO[:yaw] = yaw
     flap = get(MO, :on_crest, false) ? 0.6f0 + 0.5f0 * sin(3f0 * tt) : 0.9f0 * sin(38f0 * tt)
     draw!(game, np + (get(MO, :on_crest, false) ? Point3f(0) : flutter), yaw, flap, true)
-    get(MO, :on_crest, false) ? let_go!(w) : chase!(w, np, land)
+    # never during a mini game: the berry race's rivals ran after the moth instead of racing (s104, the race test)
+    playing = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
+    (get(MO, :on_crest, false) || playing) ? let_go!(w) : chase!(w, np, land)
 end
 
 function NG.start!(::Moth, game)

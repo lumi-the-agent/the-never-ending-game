@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "my screenshot s103-b.png (HI, camera over the word's origin); frame times fine (frame median 2.7 ms, pebblewords step 0.01 ms)",
+      "severity": "medium",
+      "suggestion": "Use bigger, paler pebbles with letters ~1.5 m tall, remove flowers and tufts within the word's box, and give the camera a straight top-down group view while it is laid.",
+      "what": "The laid word cannot be read by a person. I started an HI in the sandbox and looked straight down at it from 6 m: about 20 small grey pebbles with flowers, grass tufts and a rock among them, and no letter shape. The author's PIE still has the same problem. A player cannot judge the reader's verdict, and the post's joke has nothing to land on.",
+      "where": "plugins/pebblewords.jl (CELL 0.42, pebble size, open_meadow); world/reviews/s103-b.png, site/img/pebble-pie.png"
+    },
+    {
+      "evidence": "the human's log has only workshop_delivery and say events for 'pebblewords'; the sandbox log has pebbleword_read/true/end",
+      "severity": "medium",
+      "suggestion": "Next session read the human's log for pebbleword_* events and a failed read job.",
+      "what": "Only the sandbox has run it. In the human's game it starts by day only and was published at night, so no pebbleword_* event exists there. The worker reader (loaded via load path, then a restart) is untested in that game.",
+      "where": "plugins/pebblewords.jl:204; log/events-2026-11-26.jsonl"
+    },
+    {
+      "evidence": "journal 01:13-01:14; the sandbox's Lumi view (s103-a.png) looks fine at rest",
+      "severity": "low",
+      "suggestion": "Find which action change snaps the wings, using a 0.2 s motion sheet.",
+      "what": "The dance-ring change and #516 are unproven: 'Parade party' failed in the full run, and Lumi's wings still jump 1.35 m in a frame.",
+      "where": "plugins/dancecircle.jl"
+    }
+  ],
+  "summary": "The pebble-word idea runs in the sandbox and is new: HI was read right on try 2 in my own run and nine friends waved. But what a player sees is a scatter of grey stones among flowers, with no letter visible, so the event is hard to follow by eye.",
+  "superseded_by": "perfectionist-0103.json",
+  "surprise": 7,
+  "surprise_why": "A real text-reading model decides whether the friends' written word counts, and it fails in funny ways, which is a different kind of mechanic from the scripted gatherings.",
+  "verdict": "pass"
+}

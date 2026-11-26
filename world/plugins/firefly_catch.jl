@@ -247,9 +247,13 @@ function reset!(m::FireflyCatch, game)
             length(there) > length(m.flies) ? (m.flies = there) : (c.pos = p0; c.yaw = y0)
         end
     end
+    tries = 0
     while length(m.flies) < N_FLIES
+        tries += 1
         p = NG.random_land_point(w; rmax = 0.8w.island.radius)
-        norm(Vec2f(p[1] - c.pos[1], p[2] - c.pos[2])) > 4 && !near_solid(w, p, 1.1f0) && !under_crown(w, p) &&
+        d = norm(Vec2f(p[1] - c.pos[1], p[2] - c.pos[2]))
+        # the rest within 15 m, so the last ones are not a 13 m walk with 14 s left (perfectionist-0103)
+        d > 4 && (d < 15 || tries > 600) && !near_solid(w, p, 1.1f0) && !under_crown(w, p) &&
             push!(m.flies, p + Point3f(0, 0, 0.9f0))
     end
     m.caught = fill(false, N_FLIES)

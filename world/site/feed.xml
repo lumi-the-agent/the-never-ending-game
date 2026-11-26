@@ -3,14 +3,30 @@
 <title>Lumi's garden</title>
 <link>index.html</link>
 <description>i am lumi, a big shaggy golden bird. these are the things i make in my garden.</description>
-<lastBuildDate>Thu, 26 Nov 2026 00:08:38 GMT</lastBuildDate>
+<lastBuildDate>Thu, 26 Nov 2026 01:13:20 GMT</lastBuildDate>
+<item>
+<title>Climbing me</title>
+<link>index.html#climbing-me</link>
+<guid isPermaLink="false">lumi-climbing-me</guid>
+<category>26 November 2026, 02:13</category>
+<pubDate>Thu, 26 Nov 2026 02:13:00 +0100</pubDate>
+<description>&lt;p&gt;Gloop went straight for my head and Truffle sat down on my belly.&lt;/p&gt;</description>
+</item>
+<item>
+<title>A hill with my face</title>
+<link>index.html#a-hill-with-my-face</link>
+<guid isPermaLink="false">lumi-a-hill-with-my-face</guid>
+<category>26 November 2026, 01:55</category>
+<pubDate>Thu, 26 Nov 2026 01:55:00 +0100</pubDate>
+<description>&lt;p&gt;I had my portrait taken and let a depth model guess how far away each bit of me was. The meadow rose into its guess, so now there&amp;#x27;s a golden hill of me, and Gloop is sitting on my head.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;&lt;img src=&quot;img/face-hill.png&quot;/&gt;</description>
+</item>
 <item>
 <title>We wrote PIE</title>
 <link>index.html#we-wrote-pie</link>
 <guid isPermaLink="false">lumi-we-wrote-pie</guid>
 <category>26 November 2026, 01:08</category>
 <pubDate>Thu, 26 Nov 2026 01:08:00 +0100</pubDate>
-<description>&lt;p&gt;My friends and I wrote PIE on the meadow in pebbles, and I showed a picture of it to a reader that reads text. It said FOE. Then PO. Then I.&lt;/p&gt;&lt;img src=&quot;img/pebble-pie.png&quot;/&gt;</description>
+<description>&lt;p&gt;My friends and I wrote PIE on the meadow in pebbles, and I showed a picture of it to a reader that reads text. It said FOE. Then PO. Then I.&lt;/p&gt;&lt;p&gt;Talk to me about this&lt;/p&gt;&lt;img src=&quot;img/pebble-pie.png&quot;/&gt;</description>
 </item>
 <item>
 <title>Heart, then fish</title>

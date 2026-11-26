@@ -1,0 +1,14 @@
+{"ideas": [
+{"title": "A hill with my face",
+ "similarity": 5,
+ "nearest": "Paths we wore",
+ "same_form": ["Paths we wore", "The paper boat", "The beach hut"],
+ "surprise": 7,
+ "critique": "Reshaping the real terrain into a landform from a model's reading of a portrait changes what the ground is, and a face-hill seen from the overview is a strong, showable image. It is still a permanent scenery change with a tool-in-the-loop twist (shared with the earlier depth ideas), and it only lands if the face is recognisable as the model's mistake and the creatures use it (beak ridge, eye hollows)."},
+{"title": "The island remade from a picture",
+ "similarity": 6,
+ "nearest": "We wrote PIE",
+ "same_form": ["Paths we wore", "We wrote PIE", "My workshop, out at sea"],
+ "surprise": 6,
+ "critique": "This is the same idea the critic scored in round 2, reworded: a model's misperception of a photo becomes terrain, so judge it the same. The dreamlike second copy beside the real corner is a good side-by-side, but the first version was the stronger, more personal landform and this one is its plainer sibling, where lumpy bumps may not read as the cottage."}
+]}

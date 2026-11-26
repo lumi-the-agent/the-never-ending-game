@@ -1,0 +1,231 @@
+{
+ "verdict": "needs_work",
+ "summary": "As a player, the three mini games are still the island's solid core. I won each on a first W/A/D play through FakeInteraction (fireflies 8/8 in 57.6 s, hide and seek 4/4 in 40.5 s, berries 8 to 6), each with clear cards, a level-up and a reward you can see on the island. Jump-in is where it falls apart. For 20 s the chase camera sat inside the cottage roof, it looked straight down after E and Space, and after G Lumi hung 10 m up in a standing pose under a black blob cloud. The island looks the same as at s100, at the same noon hour, in the same plastic. The new pebble words, workshop islet and cloud shapes are clever, but small on screen.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Every look this review is 11:13-11:35: progress shots, sandbox, a path-traced still, three films and the post still. Only one sun and the sky light the island. Nothing glows and lights its surroundings by day. The T storm turns the frame into flat blue-grey murk under a black blob, not storm light. Orbit views show a pale hazy sky band with no depth."
+  },
+  "materials": {
+   "score": 4,
+   "why": "In the traced workbench still (reviews/p103/traced.png) the vice is matte green plastic, and wood, pebbles and pig are the same plastic. The paper boat in the posted film is flat white diffuse. The fireflies are white wing shapes at noon. The sea is still the only real material. Nothing in the latest posts shows what only a path tracer can do."
+  },
+  "world": {
+   "score": 6,
+   "why": "Since s20 (reviews compared: progress s20, s100, s103) the island grew a pond bowl, worn paths, a flower field, the cottage garden, the gallery easels and the workshop islet. From s100 to s103 the overview and eye-level shots are pixel-for-pixel the same composition: nothing new a player would see from the fixed cameras."
+  },
+  "props": {
+   "score": 6,
+   "why": "The generated props carry the look: the cottage, the workbench with shavings, the berry basket, the toadstool, easels with real pictures. But a fishing rod pokes straight through Marshmallow's eye in the s103 dashboard progress shot, and the posted boat film still shows the old white block with a fin."
+  },
+  "creatures": {
+   "score": 6,
+   "why": "Lumi, the yellow bird with its chick, is a strong silhouette, and the pigs, crabs, blobs and sheep read well (reviews/p103/motion/creatures.png). The feathers render shaggy and blurry in the raster. Cumulus's hat still sits on the front of its face. Faces hardly change between moments."
+  },
+  "animation": {
+   "score": 5,
+   "why": "Live measure during a dance ring: 6 of 10 moving well. Cumulus jumps 0.87 m in one frame and Marshmallow 0.63 m with a 44 degree turn (26 and 19 m/s). After G, Lumi hangs 10 m up in an idle standing pose with its legs dangling (jump-T.png: action idle, z 10.2). The cloud-watching and moth films each pop on frame 2."
+  },
+  "fun": {
+   "score": 7,
+   "why": "Firefly catch, Hide and seek and Berry race are all winnable on a first play, with start cards, a HUD that says where to go, a new level and a visible reward. They have pacing holes. The last fireflies are 13 m off with 14 s left, and the round ended at 57.6 of 60 s. In the berry race only one berry was caught between 16 s and 41 s because the next bush was 26 m away. Jump-in keys mostly fire but are hard to see (see camera). Nothing new is playable since s100."
+  },
+  "wow": {
+   "score": 6,
+   "why": "Pebble words read by a real OCR, with its wrong guesses, is a genuinely surprising, funny idea, and the islet mirroring the sandbox is radical in concept. On screen both are small: PIE does not read in the post's still, and the islet is a dotted strip on the horizon. The cloud heart repeats the cloud recipe."
+  },
+  "camera": {
+   "score": 4,
+   "why": "Worse than s100. In jump-in after H, B, V, P, C and Z, the chase camera sat behind and then INSIDE the cottage roof, a red wall with Lumi out of view for about 20 s. After E and Space it looked almost straight down. After G and T it showed only sky. The follow camera framed Truffle behind a workbench filling half the frame, and put a sleeping pig or the blue-hatted sheep in front of Lumi. Orbit mode is fine but generic, and free is the same view standing still."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The mini game cards and HUDs are clear: goal, keys, time, a hint of direction. The side panel is a wall of text. 'Things to try' crams eleven keys into three lines, and 'On the island now' listed dancers the camera never showed. The jump-in key strip at the bottom is tiny."
+  },
+  "style": {
+   "score": 5,
+   "why": "Clay-toy look with saturated greens under one sun. The easels' orange, the bunting and the flags in primaries add clutter without a palette rule. The storm is a black blob. Plain diffuse and plastic everywhere, against STYLE.md's ambitions."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Sandbox frame median 2.3 ms and p95 5.3 ms, 30 fps throughout four minutes of driven play. #69 (evaljs timeout) came back on 25 Nov at 23:44."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "Jump-in keys you can see: no camera inside the cottage, no sky-only views",
+   "todo": 518,
+   "what": "Playing jump-in and pressing each key in turn, with W held for 1.5 s after each: after E and Space the chase view looks almost straight down; after G the camera stays on the ground with Lumi out of the top of the frame; after T the frame is only dark sky with Lumi hanging 10 m up under a black blob. Then for H, B, V, P, C and Z the camera sat behind and finally inside the cottage roof, a red wall filling the frame, while Lumi moved 0.1-1.7 m stuck by the cottage. The player saw none of the six gags.",
+   "where": "greetings.jl chase_camera!, flight.jl/storm.jl views, lensclear obstruction against actors (the cottage)",
+   "evidence": "reviews/p103/jump.png (montage of jump-E..jump-Z), reviews/p103/play/jump-T.png, jump-P.png; play.json moved/z per key",
+   "suggestion": "Count actors (the cottage, the workbench) as blockers in the chase view, and pull the eye in or swing it round before it clips. Cap the pitch, so it is never top-down. For each key gag, keep Lumi and the effect in frame (the storm cloud and Lumi from below at an angle, the flight from the side).",
+   "done_when": "A scripted run pressing every jump-in key near the cottage gives 11 screenshots with Lumi visible and unblocked in each, the pitch at most 35 degrees, and no frame more than 30% covered by one prop.",
+   "agent_notes": "s104: not this session (todo #518 open): the jump-in chase camera near the cottage needs the roof added to the chase camera's obstruction check; greetings.jl chase_camera! is the place.",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Light that changes: every picture is flat late morning",
+   "todo": 237,
+   "what": "Every frame of this review (11:13-11:35), the progress shots, all three films and the pebble still have the same high sun. A player never sees the light make a picture: no golden hour, no blue hour with lit lanterns, no morning mist in any recent post.",
+   "where": "the progress camera's hour, the films' hour, NG.DAY_LENGTH warp",
+   "evidence": "media/progress/session-0100 vs session-0103 eye-level.png (same picture at 11:49 and 11:13); reviews/p103/traced.png; the three film overviews",
+   "suggestion": "Make a light plan. Film and photograph golden hour with long shadows, and dusk with real point lights in the cottage windows and lanterns lighting the grass. Fireflies belong at dusk. Rotate the progress camera's hour.",
+   "done_when": "Two of the next three posts are traced at a sun elevation below 15 degrees or at night with visible light pools from real lights, and the eye-level mean luminance differs by more than 30% between two progress sets.",
+   "agent_notes": "s104: partly: the face hill post was traced at hour 16.8 (sun low, long shadows); the pebble still in s103 was at 10. #237 stays open for night/dusk light pools.",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Vice, paper boat, ghosts, lanterns: materials only a tracer can do",
+   "todo": 479,
+   "what": "The traced close-up of the workbench shows a vice in green matte plastic, with wood and pebbles in the same plastic. The posted boat film shows a white diffuse block. Of everything new, only the sea reads as its real material.",
+   "where": "the workshop/workbench plugin (vice), workshopisle.jl (boat), lanterns, ghosts.jl",
+   "evidence": "reviews/p103/traced.png; reviews/motion/perfectionist-0103/workshop-boat-overview.jpg",
+   "suggestion": "A metal vice (Hikari Conductor, a little rough) with a sharp highlight. A paper boat with translucent sails lit from behind, retaken close to the water at a low sun. Lanterns whose light falls on the grass. Ghosts in thin-film glass or a volume.",
+   "done_when": "A traced still with the vice showing a metal highlight, and a new boat film where the boat fills at least 10% of the frame and its sail glows against the sun.",
+   "agent_notes": "s103/s104: the paper boat is a folded boat with a sail now (media/s103/boat2.png); the vice's metal and a new boat film are still open (#479).",
+   "addressed": true
+  },
+  {
+   "severity": "high",
+   "category": "animation",
+   "title": "No teleports: dancers snapping, Lumi hanging in the air in an idle pose",
+   "todo": 516,
+   "what": "During a dance ring, Cumulus jumped 0.87 m and Marshmallow 0.63 m in a single frame (with a 44 degree turn). In jump-in after G, Lumi hung 10 m up with action :idle, standing with its legs dangling, not flying.",
+   "where": "plugins/dancecircle.jl ring lock; flight.jl / storm.jl (the action while airborne)",
+   "evidence": "reviews/p103/motion (live_motion at 11:19, 6 of 10 moving well); reviews/p103/play/jump-T.png and play.json (key T: action idle, z 10.22)",
+   "suggestion": "Ease every dancer to its slot, at most ~0.1 m a frame, including the frame the ring locks. Whenever a creature is more than 0.5 m above the ground, its action is :fly or a fall pose.",
+   "done_when": "Two live_motion runs during a dance ring with no body jump over 0.2 m in one frame and 8 of 10 moving well, and every jump-in screenshot with Lumi airborne showing the :fly pose.",
+   "agent_notes": "s103: the dance ring no longer teleports far dancers (they run to their place); two party measures still showed Lumi's beak/crest/wings snapping and some 76-176 deg turns (media/s103/motion-e, -f). The :fly pose after G is open (#516).",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Mini game pacing: no dead stretches, fireflies that glow",
+   "todo": 499,
+   "what": "Firefly catch: the fireflies are pale white wing shapes in full noon sun, and the last ones are 13 m away with 14 s left, so a good run ends at 57.6 of 60 s. Berry race: 7 berries in the first 16 s, then the next was 26 m away and only one more came in the next 25 s, with the HUD saying 'berry 26 m to your right'.",
+   "where": "plugins/firefly_catch.jl (spawn spread, look), plugins/berry_race.jl (bush choice)",
+   "evidence": "reviews/p103/games1.png, games2.png, play/play.json (scores every 15 s)",
+   "suggestion": "Keep the last fireflies near the trail of the earlier ones, and make them read as lights (an emissive core and a light that touches the grass, even by day). Ripen the next berries on a bush near the player, so the race never has a 20 s gap.",
+   "done_when": "Scripted W/A/D runs: fireflies 8/8 with at least 10 s left; no 15 s stretch without a berry in a berry race; a firefly screenshot where they read as glowing.",
+   "agent_notes": "s104: not this session (fireflies and berry spacing).",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow views free of workbenches, sleepers and sheep in front",
+   "todo": 510,
+   "what": "The follow camera framed Truffle behind a workbench filling half the frame. In another view a sleeping pig filled the bottom of the frame while Lumi was a blur in the middle. The berry race's end card had the blue-hatted sheep's back filling the foreground.",
+   "where": "render.jl follow_view, lensclear.jl blockers (actors and creatures near the eye)",
+   "evidence": "reviews/p103/traced.png, reviews/p103/follow2.png, reviews/p103/play/berry-9-end.png, reviews/p103/cams.png",
+   "suggestion": "Count actors and creatures near the eye as blockers, keep a clear foreground, and frame the subject on a third at its own height.",
+   "done_when": "10 follow screenshots 6 s apart show the subject unblocked, with nothing nearer than the subject covering more than 10% of the frame.",
+   "agent_notes": "s104: not this session (follow camera framing).",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "creatures",
+   "title": "Hats on heads, fishing rods held, not through faces",
+   "todo": 517,
+   "what": "In the s103 dashboard progress shot Marshmallow's fishing rod passes straight through its eye. Cumulus's blue hat still sits on the front of its face (the author's s103 try was reverted).",
+   "where": "the fishing pastime's rod anchor; plugins/outfits.jl ON_NEW_BODY",
+   "evidence": "media/progress/session-0103/dashboard.png; reviews/p103/motion/creatures.png; media/s103/sheep-hat.png",
+   "suggestion": "Anchor the rod to a hand or mouth part of each made-over body, held in front of the face. Fit the hat on the crown, from a side profile with a marker on the anchor.",
+   "done_when": "Close front and side shots of the sheep fishing and of Cumulus show the rod held and the hat on top, with the eyes visible.",
+   "agent_notes": "s103: the sheep hat was measured (mesh profile) but a raised anchor still crossed the face, so the published one stayed (#517 open); the fishing rod through the eye not looked at.",
+   "addressed": true
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "Pebble words you can read, and that come true",
+   "todo": 524,
+   "what": "Pebble words is the best new idea in weeks. But in the post's picture the stones do not read as letters even to a person (a scatter of grey discs), and nothing happens when a word is right.",
+   "where": "plugins/pebblewords.jl, site/img/pebble-pie.png",
+   "evidence": "site/img/pebble-pie.png",
+   "suggestion": "Lay bigger, light stones on bare ground, framed from straight above. When the reader gets one right, the word happens on the island (FISH flops out of the pond, SUN breaks the clouds) and the friends cheer.",
+   "done_when": "A traced still where a person reads the word at first glance, and a film where a correct reading makes something happen.",
+   "agent_notes": "s103: pebble words now come true when read right (HI: everyone waves); the still's stones still do not read as letters to a person, and no film of it yet.",
+   "addressed": true
+  }
+ ],
+ "todos": [
+  {
+   "id": 69,
+   "action": "keep",
+   "why": "Happened again on 2026-11-25 at 23:44."
+  },
+  {
+   "id": 325,
+   "action": "keep",
+   "why": "A human feature request; faces are still hardly used in moments."
+  },
+  {
+   "id": 437,
+   "action": "keep",
+   "why": "Still only the three s40 mini games; a fourth from the shadow chase or pebble words."
+  },
+  {
+   "id": 438,
+   "action": "drop",
+   "why": "There is no snow on the island now; traced looks are covered by #479."
+  },
+  {
+   "id": 498,
+   "action": "keep",
+   "why": "An engine sky limit, still unverified at dusk."
+  },
+  {
+   "id": 513,
+   "action": "keep",
+   "why": "No close film where time visibly bends yet."
+  },
+  {
+   "id": 476,
+   "action": "keep",
+   "why": "The cloud-watching and moth films both pop on frame 2.",
+   "title": "Films that don't pop: no jump on frame 2"
+  },
+  {
+   "id": 493,
+   "action": "keep",
+   "why": "The author's s103 measure still shows Lumi's crest and wings jumping 0.3-1.35 m."
+  },
+  {
+   "id": 279,
+   "action": "keep",
+   "why": "Agent fix, still relevant (Lumi stuck by the cottage in jump-in)."
+  },
+  {
+   "id": 427,
+   "action": "keep",
+   "why": "Agent fix, still relevant."
+  },
+  {
+   "id": 471,
+   "action": "keep",
+   "why": "Crab claws: not done."
+  },
+  {
+   "id": 477,
+   "action": "keep",
+   "why": "The nest is still behind a flag."
+  }
+ ],
+ "engine": [
+  {
+   "what": "The RayMakie raster draws Lumi's feathered body as a blurry, shaggy shape at mid distance (texture filtering or alpha on the feather texture).",
+   "evidence": "reviews/p103/follow2.png, reviews/p103/play/firefly-1.png"
+  }
+ ],
+ "process": "The author keeps having radical, funny ideas: pebble words with a real OCR, the workshop islet mirroring the sandbox, cloud shapes. These move goals 5 and 8 forward, and the three mini games remain a solid, winnable core (goal 1). But each idea ships as code plus a quiet wide shot, and the next session starts another. Goals 4, 6 and 7 barely moved. The light is noon in every picture, the materials are plastic, dancers snap, and jump-in, the main way a player touches the island, has a camera that ends inside the cottage. From s100 to s103 the fixed progress shots are the same picture. Goal 2 (a release) was not revisited, and goal 3 (physics) saw nothing new. Lumi's mood is bored and lonely because all the variety is one kind of work (new watchable systems). A session on golden-hour light with real lights, metal and paper materials, and a jump-in camera that never clips would change what every frame looks like, and would be fresh work.",
+ "addressed": true
+}

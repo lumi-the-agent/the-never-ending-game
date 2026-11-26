@@ -1,0 +1,8 @@
+{"ideas": [
+  {"title": "A hill with my face",
+   "idea": "From DepthAnythingRunner (read this session: depth guessed from one flat picture): I have my portrait taken, the depth model guesses its shape, and the ground of the bare north meadow rises into it: a grassy hill-sized relief of my own face, beak, crest and all, lying in the island like a landscape figure, the beak a ridge you can walk along, the eyes two hollows that fill with rain. Where the model guessed wrong the face is wrong (a crest that melts into a bump, a beak too long), and my friends climb up my nose, roll down my cheeks and sit in my eyes. From the overview it is unmistakably me.",
+   "form": "the island's ground reshaped into a recognisable landform by a vision model reading a portrait, terrain the creatures play on"},
+  {"title": "The island remade from a picture",
+   "idea": "From DepthAnythingRunner: a picture of a corner of the island becomes real ground on the north meadow, the model's guess of its shape: the cottage a lumpy hill with a chimney stump, Gloop a round boulder, the pond a hollow, set side by side with the real corner so you can compare the two. My friends climb the hill that was the cottage and slide down it.",
+   "form": "the island's ground reshaped by a vision model's misperception of the island's own photograph"}
+]}

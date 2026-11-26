@@ -214,7 +214,11 @@ function reset!(m::BerryRace, game)
     end
     line_up!(m, w, c)
     # the nearest bushes get the first berries: three of them a few steps from the start line
-    m.berries = grow_berries(w; bushes = sort([p for p in w.props if p.kind === :bush]; by = b -> flat(b.pos, c.pos)), toward = c.pos)
+    # only the bushes within 18 m (at least the nearest six): a berry 26 m away left the player 25 s without one
+    # (perfectionist-0103); nearer bushes get more than one berry each instead
+    near = sort([p for p in w.props if p.kind === :bush]; by = b -> flat(b.pos, c.pos))
+    near = near[1:max(min(6, length(near)), count(b -> flat(b.pos, c.pos) < 18f0, near))]
+    m.berries = grow_berries(w; bushes = near, toward = c.pos)
     # the three berries nearest the start line are the player's first picks: the critters leave them while they only walk
     P[:reserved] = first(sortperm([flat(b.foot, c.pos) for b in m.berries]), 3)
     m.rival_score = zeros(Int, length(m.rivals))

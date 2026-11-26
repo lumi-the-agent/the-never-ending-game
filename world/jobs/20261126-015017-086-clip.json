@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T01:50:17.122",
+  "finished": "2026-11-26T01:55:33.608",
+  "id": "20261126-015017-086-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 16.8,
+      "post": "facehill",
+      "samples": 64
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/face-hill.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/face-hill.png",
+    "post": "facehill"
+  },
+  "seconds": 315.1,
+  "started": "2026-11-26T01:50:18.134",
+  "status": "done"
+}

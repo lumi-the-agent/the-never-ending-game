@@ -3306,7 +3306,7 @@
     },
     {
       "created": "2026-11-23T17:17:00.927",
-      "detail": "perfectionist-0100 [lighting, high]: The last eight posts are all lit by the same high white sun from a blue sky; nothing in the frame lights anything else. The island has lanterns, a moon, a storm and fireflies, but none of the recent pictures uses them.\nWhere: movies/post_stills.jl hours, game_clip hour choices\nSuggestion: Pick an hour per post for its mood: the hut at sunset with its porthole glowing, ghosts at blue hour, slow time in long golden light with the dust lit from behind. Give the time patches their own light, a soft glow under the ring that tints the creatures inside.\nDone when: Of the next three posts, at least two are at dawn, dusk or night, with a light source in the frame lighting a creature (visible falloff on its body).\nEvidence: site/img/beach-hut.png, yesterday.png, vote.png, time-weather.mp4: all near noon",
+      "detail": "perfectionist-0103 [lighting, high]: Every frame of this review (11:13-11:35), the progress shots, all three films and the pebble still have the same high sun. A player never sees the light make a picture: no golden hour, no blue hour with lit lanterns, no morning mist in any recent post.\nWhere: the progress camera's hour, the films' hour, NG.DAY_LENGTH warp\nSuggestion: Make a light plan. Film and photograph golden hour with long shadows, and dusk with real point lights in the cottage windows and lanterns lighting the grass. Fireflies belong at dusk. Rotate the progress camera's hour.\nDone when: Two of the next three posts are traced at a sun elevation below 15 degrees or at night with visible light pools from real lights, and the eye-level mean luminance differs by more than 30% between two progress sets.\nEvidence: media/progress/session-0100 vs session-0103 eye-level.png (same picture at 11:49 and 11:13); reviews/p103/traced.png; the three film overviews",
       "est_minutes": 30.0,
       "id": 237,
       "kind": "review",
@@ -3316,7 +3316,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Light that changes: every picture is flat late morning",
-      "updated": "2026-11-25T23:16:14.278"
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-23T17:17:00.927",
@@ -6125,12 +6125,12 @@
       "id": 438,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0103: There is no snow on the island now; traced looks are covered by #479.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Snowflakes that read as snow in a traced picture",
-      "updated": "2026-11-25T12:33:43.331"
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T00:28:44.048",
@@ -6661,8 +6661,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films that don't pop: a cast on frame 2, Shell flipping round",
-      "updated": "2026-11-25T23:16:14.278"
+      "title": "Films that don't pop: no jump on frame 2",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T12:11:32.291",
@@ -6694,7 +6694,7 @@
     },
     {
       "created": "2026-11-25T12:17:57.924",
-      "detail": "perfectionist-0100 [materials, high]: The traced 'Yesterday' ghosts are opaque pale-blue plastic (alpha ignored), so they read as recoloured friends, not ghosts. Every traced picture this stretch is diffuse or plastic; Shell's coat is the only exception. The pond glass and lanterns are not in any recent picture.\nWhere: plugins/ghosts.jl (traced branch), site/img/yesterday.png, site/img/beach-hut.png\nSuggestion: Make ghosts a volume or thin glass with a faint emission, so they glow, refract and throw almost no shadow; in a tracer that is the whole point of a ghost. If Hikari lacks an opacity/alpha mask, add one: it is the limit behind halos, ghosts and fog sheets alike. Then one picture that shows lantern light on the pond's real water at dusk.\nDone when: A traced still where the ghosts are see-through (the scenery is visible through them) and cast pale or no shadows, and a dusk still with lantern light reflected in the pond.\nEvidence: site/img/yesterday.png: the ghosts are solid matte pale blue with hard shadows",
+      "detail": "perfectionist-0103 [materials, high]: The traced close-up of the workbench shows a vice in green matte plastic, with wood and pebbles in the same plastic. The posted boat film shows a white diffuse block. Of everything new, only the sea reads as its real material.\nWhere: the workshop/workbench plugin (vice), workshopisle.jl (boat), lanterns, ghosts.jl\nSuggestion: A metal vice (Hikari Conductor, a little rough) with a sharp highlight. A paper boat with translucent sails lit from behind, retaken close to the water at a low sun. Lanterns whose light falls on the grass. Ghosts in thin-film glass or a volume.\nDone when: A traced still with the vice showing a metal highlight, and a new boat film where the boat fills at least 10% of the frame and its sail glows against the sun.\nEvidence: reviews/p103/traced.png; reviews/motion/perfectionist-0103/workshop-boat-overview.jpg",
       "est_minutes": 15.0,
       "id": 479,
       "kind": "review",
@@ -6703,8 +6703,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Ghosts, lanterns and the pond: materials only a tracer can do",
-      "updated": "2026-11-25T23:16:14.278"
+      "title": "Vice, paper boat, ghosts, lanterns: materials only a tracer can do",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -6974,7 +6974,7 @@
     },
     {
       "created": "2026-11-25T15:49:22.798",
-      "detail": "perfectionist-0094 [fun, medium]: At the end of a round the camera sits between Lumi's legs and the caught flies are a clump of plain white balls around its body. Fireflies read as white pebbles, not glowing bugs. On a win with no best yet the card says 'Your best: Inf s' (only when m.t < 1, i.e. tests).\nWhere: plugins/firefly_catch.jl (end card ~line 440, fly look)\nSuggestion: Give flies a warm tinted emissive core with a soft halo and a blink. Pull the end camera back to frame Lumi and the swarm leaving. Say 'A new best time!' when best is Inf.\nDone when: An end-card screenshot shows Lumi whole, with flies as yellow-green glowing dots, and the card never contains 'Inf'.\nEvidence: tests/shots/firefly-end.png",
+      "detail": "perfectionist-0103 [fun, medium]: Firefly catch: the fireflies are pale white wing shapes in full noon sun, and the last ones are 13 m away with 14 s left, so a good run ends at 57.6 of 60 s. Berry race: 7 berries in the first 16 s, then the next was 26 m away and only one more came in the next 25 s, with the HUD saying 'berry 26 m to your right'.\nWhere: plugins/firefly_catch.jl (spawn spread, look), plugins/berry_race.jl (bush choice)\nSuggestion: Keep the last fireflies near the trail of the earlier ones, and make them read as lights (an emissive core and a light that touches the grass, even by day). Ripen the next berries on a bush near the player, so the race never has a 20 s gap.\nDone when: Scripted W/A/D runs: fireflies 8/8 with at least 10 s left; no 15 s stretch without a berry in a berry race; a firefly screenshot where they read as glowing.\nEvidence: reviews/p103/games1.png, games2.png, play/play.json (scores every 15 s)",
       "est_minutes": 30.0,
       "id": 499,
       "kind": "review",
@@ -6983,8 +6983,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Firefly catch: the last flies within reach, so a good run ends with time to spare",
-      "updated": "2026-11-25T20:43:39.290"
+      "title": "Mini game pacing: no dead stretches, fireflies that glow",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T16:09:47.000",
@@ -7128,7 +7128,7 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0100 [camera, medium]: Several views lose the subject or the scene. The follow camera held Sir Sniffsalot while it was hidden behind a crown, leaving only its label. After G in jump-in the chase camera sat inside a pig with Lumi's back filling the view. The Firefly catch end card is framed with a big faceted cherry crown over the left third. Labels and emotes (Zs, notes, 'Lumi') float over trees and hills, away from their creature.\nWhere: render.jl follow subject choice, lensclear.jl, label occlusion\nSuggestion: Drop a subject (or move the eye) once it has been hidden for more than 1 s. Hide or fade a label whose creature is occluded (depth test or an obstruction ray each half second).\nDone when: 10 follow screenshots and the end card of each mini game: the subject is visible in all of them, no crown or creature covers more than 15% of the frame, and every label sits over its creature.\nEvidence: reviews/p100-follow2.png, perfectionist-shots/play100/jump-fly.png, play100/firefly-9-end.png, play100/firefly-2.png, media/progress/session-0100/eye-level.png",
+      "detail": "perfectionist-0103 [camera, medium]: The follow camera framed Truffle behind a workbench filling half the frame. In another view a sleeping pig filled the bottom of the frame while Lumi was a blur in the middle. The berry race's end card had the blue-hatted sheep's back filling the foreground.\nWhere: render.jl follow_view, lensclear.jl blockers (actors and creatures near the eye)\nSuggestion: Count actors and creatures near the eye as blockers, keep a clear foreground, and frame the subject on a third at its own height.\nDone when: 10 follow screenshots 6 s apart show the subject unblocked, with nothing nearer than the subject covering more than 10% of the frame.\nEvidence: reviews/p103/traced.png, reviews/p103/follow2.png, reviews/p103/play/berry-9-end.png, reviews/p103/cams.png",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
@@ -7137,8 +7137,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Chase and follow views free of crowns, pigs and blocking cherry trees",
-      "updated": "2026-11-25T23:16:14.278"
+      "title": "Follow views free of workbenches, sleepers and sheep in front",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7212,7 +7212,7 @@
     },
     {
       "created": "2026-11-25T23:16:14.278",
-      "detail": "perfectionist-0100 [animation, high]: In the sandbox, Cumulus jumped 7.28 m in one frame (218 m/s) and Pickles 2.42 m (73 m/s) during a Big Boing party. In a second measure six creatures jumped 0.3-0.4 m in the same frame. Only 2 of 10 creatures moved well in both measures.\nWhere: plugins/boing.jl (launch/landing), whatever sets positions at a party start\nSuggestion: Bounce arcs that are integrated, not set: a crouch, a launch on a curve, an apex hang, and a squash on landing, with positions continuous every frame. Find the one-frame position sets (snap to the toadstool cap, snap to a party spot) and turn them into eased walks or arcs.\nDone when: Two live_motion measures taken during a Big Boing party show no creature jumping more than 0.3 m in one frame, and 6+ of 10 moving well.\nEvidence: live_motion reviews/motion/p100-live (boing_party at 23:00:36, boings at 23:00:49 in sandbox/log/events) and reviews/motion/p100-live2",
+      "detail": "perfectionist-0103 [animation, high]: During a dance ring, Cumulus jumped 0.87 m and Marshmallow 0.63 m in a single frame (with a 44 degree turn). In jump-in after G, Lumi hung 10 m up with action :idle, standing with its legs dangling, not flying.\nWhere: plugins/dancecircle.jl ring lock; flight.jl / storm.jl (the action while airborne)\nSuggestion: Ease every dancer to its slot, at most ~0.1 m a frame, including the frame the ring locks. Whenever a creature is more than 0.5 m above the ground, its action is :fly or a fall pose.\nDone when: Two live_motion runs during a dance ring with no body jump over 0.2 m in one frame and 8 of 10 moving well, and every jump-in screenshot with Lumi airborne showing the :fly pose.\nEvidence: reviews/p103/motion (live_motion at 11:19, 6 of 10 moving well); reviews/p103/play/jump-T.png and play.json (key T: action idle, z 10.22)",
       "est_minutes": 30.0,
       "id": 516,
       "kind": "review",
@@ -7221,36 +7221,36 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "No teleports: Big Boing bounces and party starts that jump metres",
-      "updated": "2026-11-25T23:16:14.278"
+      "title": "No teleports: dancers snapping, Lumi hanging in the air in an idle pose",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T23:16:14.278",
-      "detail": "perfectionist-0100 [creatures, high]: Cumulus's blue hat sits over its snout and then over its face as it turns, and in the creatures sheet a sheep's hat floats above the head with a gap. In the beach hut post one pig's head is buried inside another pig's body.\nWhere: plugins/outfits.jl anchors on the sheep makeover body (makeover.jl); separation for posed casts in movies/post_stills.jl\nSuggestion: Anchor hats on the sheep's real head piece: profile the mesh, as the crab lesson says, and follow the head's turn. Run the outfits test from the front and the side for every species. In post stills, keep posed creatures at least one body radius apart.\nDone when: A creatures sheet where every hat sits on top of its head in all 3 moments, and the beach hut still re-rendered with no bodies intersecting.\nEvidence: reviews/motion/p100-live/motion.png frames 4-6 (hat on the snout), reviews/motion/p100-live/creatures.png row 3 right (hat floating), site/img/beach-hut.png (pigs intersecting), perfectionist-shots/play100/jump-storm.png (Cumulus's hat tipped sideways over its face again, 10 minutes later)",
+      "detail": "perfectionist-0103 [creatures, medium]: In the s103 dashboard progress shot Marshmallow's fishing rod passes straight through its eye. Cumulus's blue hat still sits on the front of its face (the author's s103 try was reverted).\nWhere: the fishing pastime's rod anchor; plugins/outfits.jl ON_NEW_BODY\nSuggestion: Anchor the rod to a hand or mouth part of each made-over body, held in front of the face. Fit the hat on the crown, from a side profile with a marker on the anchor.\nDone when: Close front and side shots of the sheep fishing and of Cumulus show the rod held and the hat on top, with the eyes visible.\nEvidence: media/progress/session-0103/dashboard.png; reviews/p103/motion/creatures.png; media/s103/sheep-hat.png",
       "est_minutes": 30.0,
       "id": 517,
-      "kind": "review",
-      "priority": 1,
-      "result": "",
-      "source": "review",
-      "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Hats that stay on heads: Cumulus's hat on its snout and floating",
-      "updated": "2026-11-25T23:16:14.278"
-    },
-    {
-      "created": "2026-11-25T23:16:14.278",
-      "detail": "perfectionist-0100 [fun, medium]: In a real-key play run, G (fly) followed by 3 s of W left Lumi idle on the ground ('...I'm fine'), with the camera inside a pig. T dimmed the whole island to murk, but no storm cloud, rain or bolt was in the chase frame. A player pressing a key shown in 'Things to try' and seeing nothing thinks it is broken. Still only three mini games (todo #437), and the time laws give the player nothing to do.\nWhere: plugins/flight.jl (player G), plugins/storm.jl (player mode cloud), greetings.jl chase_camera!\nSuggestion: Make G work from anywhere: if there is no room for a run-up, hop straight up, and say why if it really cannot. In player mode, frame the storm cloud above Lumi, darken only under it, and let rain streak through the chase view. Then turn time weather into a fourth mini game: herd fleeing friends into a stopped-time ring before it drifts off to sea.\nDone when: A play run pressing G then W shows Lumi in the air (z > 3) within 3 s from 5 random spots, and the T screenshot shows the cloud and rain in frame.\nEvidence: perfectionist-shots/play100/jump-fly.png and jump-storm.png; log line 'jump fly: Lumi action idle z 1.57'",
-      "est_minutes": 30.0,
-      "id": 518,
       "kind": "review",
       "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump-in keys that always land: G flies, T shows its storm",
-      "updated": "2026-11-25T23:16:14.278"
+      "title": "Hats on heads, fishing rods held, not through faces",
+      "updated": "2026-11-26T01:39:37.845"
+    },
+    {
+      "created": "2026-11-25T23:16:14.278",
+      "detail": "perfectionist-0103 [camera, high]: Playing jump-in and pressing each key in turn, with W held for 1.5 s after each: after E and Space the chase view looks almost straight down; after G the camera stays on the ground with Lumi out of the top of the frame; after T the frame is only dark sky with Lumi hanging 10 m up under a black blob. Then for H, B, V, P, C and Z the camera sat behind and finally inside the cottage roof, a red wall filling the frame, while Lumi moved 0.1-1.7 m stuck by the cottage. The player saw none of the six gags.\nWhere: greetings.jl chase_camera!, flight.jl/storm.jl views, lensclear obstruction against actors (the cottage)\nSuggestion: Count actors (the cottage, the workbench) as blockers in the chase view, and pull the eye in or swing it round before it clips. Cap the pitch, so it is never top-down. For each key gag, keep Lumi and the effect in frame (the storm cloud and Lumi from below at an angle, the flight from the side).\nDone when: A scripted run pressing every jump-in key near the cottage gives 11 screenshots with Lumi visible and unblocked in each, the pitch at most 35 degrees, and no frame more than 30% covered by one prop.\nEvidence: reviews/p103/jump.png (montage of jump-E..jump-Z), reviews/p103/play/jump-T.png, jump-P.png; play.json moved/z per key",
+      "est_minutes": 30.0,
+      "id": 518,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Jump-in keys you can see: no camera inside the cottage, no sky-only views",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-25T23:29:33.061",
@@ -7324,17 +7324,17 @@
     },
     {
       "created": "2026-11-26T01:08:51.219",
-      "detail": "s103 plugins/pebblewords.jl + movies/ocr.jl: friends lay a word in pebbles, a real PP-OCRv6 read in the worker decides (PIE was read 'FOE', 'PO', 'I'; LUMI '.UMI'). Next: a right reading makes the word happen (FISH: a fish flops out of the pond, HI: everyone waves at the camera, SUN: the sun comes out), a film of a whole try-groan-retry, and check the worker restart after each word does not hold up the films (log the job ids).",
+      "detail": "perfectionist-0103 [wow, medium]: Pebble words is the best new idea in weeks. But in the post's picture the stones do not read as letters even to a person (a scatter of grey discs), and nothing happens when a word is right.\nWhere: plugins/pebblewords.jl, site/img/pebble-pie.png\nSuggestion: Lay bigger, light stones on bare ground, framed from straight above. When the reader gets one right, the word happens on the island (FISH flops out of the pond, SUN breaks the clouds) and the friends cheer.\nDone when: A traced still where a person reads the word at first glance, and a film where a correct reading makes something happen.\nEvidence: site/img/pebble-pie.png",
       "est_minutes": 15.0,
       "id": 524,
-      "kind": "feature",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Pebble words come true: when the reader gets one right, the word happens",
-      "updated": "2026-11-26T01:08:51.219"
+      "title": "Pebble words you can read, and that come true",
+      "updated": "2026-11-26T01:39:37.845"
     },
     {
       "created": "2026-11-26T01:18:16.442",
@@ -7349,6 +7349,20 @@
       "status": "done",
       "title": "We write words in pebbles and a reader reads them",
       "updated": "2026-11-26T01:18:16.461"
+    },
+    {
+      "created": "2026-11-26T01:56:00.066",
+      "detail": "s104 plugins/facehill.jl: my portrait (assets/facehill/portrait.png) read by Depth Anything V2 (assets/facehill/depth.png) became a relief mesh on the meadow at (0, 6), 13 m across, 2 m high at the beak, painted in my portrait's colours, walkable (WALKWAYS), friends climb to beak/crest/belly/wing peaks.",
+      "est_minutes": 15.0,
+      "id": 526,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published 01:50. Sandbox screenshots media/s104/facehill-1..3.png (first a flat mesa with cliff edges, then soft mounds from my outline up, then in my colours); traced still site/img/face-hill.png, post 'A hill with my face'.",
+      "source": "agent",
+      "spent_minutes": 25.0,
+      "status": "done",
+      "title": "A golden hill in my shape rises north of the middle",
+      "updated": "2026-11-26T01:56:00.087"
     }
   ]
 }

@@ -1,0 +1,20 @@
+{"ideas": [
+{"title": "The island remade from a picture",
+ "similarity": 4,
+ "nearest": "Paths we wore",
+ "same_form": [],
+ "surprise": 7,
+ "critique": "Turning a model's misperception of a photograph into real terrain (cottage as a lumpy hill, friends sliding down it) changes what the ground is, not one more event. It is the round-1 relief idea moved from props to geography, but terrain you can climb is a stronger payoff. The risk is that it reads as an odd bump unless the misreading is clearly recognisable in a still."},
+{"title": "Thoughts that fly off",
+ "similarity": 5,
+ "nearest": "We wrote PIE",
+ "same_form": ["We wrote PIE", "Heart, then fish", "A heart up there", "Yesterday"],
+ "surprise": 6,
+ "critique": "Turning the agent's real thought bubbles into paper-bird creatures that friends chase and read aloud reaches the human's goal 5 directly, and the words on the wings are real data. Friends chasing a flying object is the moth and the shadow chase again, and the island filling with them is more creatures of a kind it has. The reading-aloud gag is predictable."},
+{"title": "Lumi walks like its friends",
+ "similarity": 6,
+ "nearest": "Lights out",
+ "same_form": ["Lights out", "Slow time"],
+ "surprise": 5,
+ "critique": "This is the same idea the critic already scored in round 1, and a reworded idea is the same idea. A slow rule that changes Lumi's own body language from its real log is distinctive, but different walks are hard to tell apart in a still, and the notice-and-mimic payoff is a small gag. It also risks the goal-6 motion measures."}
+]}

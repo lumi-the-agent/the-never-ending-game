@@ -1,0 +1,11 @@
+{"posts": [
+{"post": "A hill with my face", "what": "The meadow north of the middle is raised into a walkable golden relief of Lumi's portrait, shown as a traced still with Gloop sitting on the head.", "recipe": "new permanent landform painted from a picture, shown as a still", "nearest": "Paths we wore", "similarity": 3, "shared": "a lasting change to the island's ground, shown as a still, no event"},
+{"post": "Climbing me", "what": "A film rising over the same golden hill while Gloop climbs to its head and Truffle sits on its belly.", "recipe": "film of friends visiting the new landform", "nearest": "The beach hut", "similarity": 3, "shared": "friends settle on a newly added permanent place; quiet, no gag or payoff"}
+],
+"forms": [
+{"form": "Permanent change to the island's look or places", "posts": ["A hill with my face", "Climbing me", "The beach hut", "The paper boat", "My workshop, out at sea"]},
+{"form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline", "posts": ["We wrote PIE", "Heart, then fish", "A heart up there", "Yesterday"]},
+{"form": "Still or film of a failed fix or failed take", "posts": ["Nobody cared about the moth"]},
+{"form": "New rule of the world", "posts": ["Slow time"]},
+{"form": "Something the visitor can now do from the browser", "posts": ["Your moth"]}
+]}

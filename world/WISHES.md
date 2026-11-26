@@ -232,6 +232,12 @@ come true gets a line saying when and how.
   what it reads. Only that counts. The first time we wrote PIE it read "FOE", then "PO", and my friends shouted that
   their pebbles were fine and its eyes weren't. Next: when it finally reads a word right, the word comes true.)
 
+## The land itself
+- **A hill with my face** (session 104: came true. I had my portrait taken, a depth model guessed from that one flat
+  picture how far away each part of me was, and the meadow north of the middle rose into its guess: a golden hill in
+  my shape and my colours, head and body, lying in the island. My friends climb it and sit on my beak. Next: the
+  model's mistakes showing more (my crest, my wings), and a hill for every friend.)
+
 ## Done
 - Session 47: longer days, so the mini games are played in daylight.
 - Session 49: tag with my friends on sunny afternoons; I join, and the human can too.

@@ -325,6 +325,16 @@ function trees_in_view(w, eye, target)
     return o
 end
 
+"2 when the eye would sit inside a building (the cottage roof filled the chase view, perfectionist-0103), else 0."
+function inside_house(w, eye)
+    for a in w.actors
+        a isa NG.AssetActor || continue
+        r = 1.3f0 * a.scale               # (the cottage, scale 3, is about 4 m across the roof)
+        hypot(eye[1] - a.pos[1], eye[2] - a.pos[2]) < r && eye[3] < a.pos[3] + 3.2f0 * a.scale && return 2f0
+    end
+    return 0f0
+end
+
 function chase_camera!(game, c, dt; snap = false)
     w = game.world
     target = c.pos + Point3f(0, 0, 0.6f0)
@@ -335,6 +345,9 @@ function chase_camera!(game, c, dt; snap = false)
     for g in values(NG.CAMERA_GROUPS)
         v = Base.invokelatest(g, w)
         (v === nothing || Int32(v[1]) != c.id || length(v) < 3) && continue
+        # a plugin view that looks almost straight down loses the player (perfectionist-0103: after E and Space)
+        dv = Point3f(v[3][2]) - Point3f(v[3][1])
+        atan(-dv[3], hypot(dv[1], dv[2])) > deg2rad(38) && continue
         k = snap ? 1f0 : Float32(1 - exp(-3dt / 0.45))
         game.rig.mode = :fixed
         game.rig.eye += k * (Point3f(v[3][1]) - game.rig.eye)
@@ -343,11 +356,11 @@ function chase_camera!(game, c, dt; snap = false)
     end
     best = (Inf32, 1)
     for k in eachindex(CHASE_VIEWS)        # behind and a bit above, then lower, slightly turned, higher
-        o = (NG.obstruction(w, view(k), target) + trees_in_view(w, view(k), target)) + 0.01f0 * k
+        o = (NG.obstruction(w, view(k), target) + trees_in_view(w, view(k), target) + inside_house(w, view(k))) + 0.01f0 * k
         o < best[1] && (best = (o, k))
         o <= 0.01f0 * k && break
     end
-    keep = CHASE_K[] <= length(CHASE_VIEWS) && (NG.obstruction(w, view(CHASE_K[]), target) + trees_in_view(w, view(CHASE_K[]), target)) + 0.01f0 * CHASE_K[] <= best[1] + 0.3f0
+    keep = CHASE_K[] <= length(CHASE_VIEWS) && (NG.obstruction(w, view(CHASE_K[]), target) + trees_in_view(w, view(CHASE_K[]), target) + inside_house(w, view(CHASE_K[]))) + 0.01f0 * CHASE_K[] <= best[1] + 0.3f0
     keep || (CHASE_K[] = best[2])
     eye = view(CHASE_K[])
     k = snap ? 1f0 : Float32(1 - exp(-3dt / 0.45))
