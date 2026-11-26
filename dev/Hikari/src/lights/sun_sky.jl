@@ -410,6 +410,9 @@ function sunsky_sun_rgb(direction::AbstractVector{<:Real}; intensity::Real = 1f0
     return RGB{Float32}(s * max(rgb[1], 0f0), s * max(rgb[2], 0f0), s * max(rgb[3], 0f0))
 end
 
+"How far below the horizon (as -z of the direction, ~4.6°) the baked sky fades into the ground colour."
+const HORIZON_FADE = 0.08f0
+
 """
     sunsky_to_envlight(; direction, intensity=1f0, turbidity=2.5f0, ...) -> (EnvironmentLight, SunLight)
 
@@ -465,14 +468,20 @@ function sunsky_to_envlight(;
             # Convert to world direction via equal-area mapping (Z-up)
             wi = equal_area_square_to_sphere(uv)
 
-            if wi[3] <= 0f0
+            # Below the horizon: the ground colour, but faded in from the horizon's own sky over a few
+            # degrees. A hard step there runs along the octahedral map's diagonals, and its texel
+            # staircase drew the horizon as a bright sawtooth band (dusk stills and raster views).
+            below = wi[3] <= 0f0
+            fade = below ? clamp(-wi[3] / HORIZON_FADE, 0f0, 1f0) : 0f0
+            if below && (!ground_enabled || fade >= 1f0)
                 sky_data[v_idx, u_idx] = ground_enabled ? ground_albedo * 0.3f0 : RGBSpectrum(0f0)
                 continue
             end
+            wd = below ? normalize(Vec3f(wi[1], wi[2], 1f-4)) : wi   # the sky just above, same azimuth
 
-            theta = Float64(acos(clamp(wi[3], 0f0, 1f0)))
+            theta = Float64(acos(clamp(wd[3], 0f0, 1f0)))
             # Angle between view direction and sun
-            cos_gamma = clamp(dot(wi, dir), -1f0, 1f0)
+            cos_gamma = clamp(dot(wd, dir), -1f0, 1f0)
             gamma = Float64(acos(cos_gamma))
 
             # Evaluate spectral sky at all sample wavelengths
@@ -486,10 +495,11 @@ function sunsky_to_envlight(;
             x, y, z = spectrum_to_xyz_hosek(sample_lambdas, sky_values)
             rgb = xyz_to_linear_srgb(Vec3f(Float32(x), Float32(y), Float32(z)))
 
-            sky_data[v_idx, u_idx] = RGBSpectrum(
+            sky = RGBSpectrum(
                 max(0f0, rgb[1]),
                 max(0f0, rgb[2]),
                 max(0f0, rgb[3]))
+            sky_data[v_idx, u_idx] = below ? sky * (1f0 - fade) + (ground_albedo * 0.3f0) * fade : sky
         end
     end
 

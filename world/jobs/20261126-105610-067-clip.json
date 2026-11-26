@@ -1,0 +1,19 @@
+{
+  "created": "2026-11-26T10:56:10.067",
+  "error": "MethodError: Cannot `convert` an object of type Tuple{Symbol, Int64} to an object of type Symbol\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  Symbol(::Any...)\n   @ Base strings/basic.jl:230\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setindex!(h::Dict{Symbol, Any}, v0::GeometryBasics.Point{3, Float32}, key0::Tuple{Symbol, Int64})\n    @ Base ./dict.jl:346\n  [2] (::Main.ClipScript.var\"#7#8\"{Float64, Float32, Tuple{Tuple{Float64, Float64}, Tuple{Float64, Float64}, Tuple{Float64, Float64}}, Dict{Symbol, Any}})(g::Game, rig::NeverendingGame.CameraRig, t::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/seesaw.jl:33\n  [3] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Nothing, shot::Main.ClipScript.var\"#7#8\"{Float64, Float32, Tuple{Tuple{Float64, Float64}, Tuple{Float64, Float64}, Tuple{Float64, Float64}}, Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421\n  [4] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:380 [inlined]\n  [5] seesaw_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, φ::Float32, legs::Tuple{Tuple{Float64, Float64}, Tuple{Float64, Float64}, Tuple{Float64, Float64}})\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/seesaw.jl:70\n  [6] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n  [7] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n  [8] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n  [9] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-26T10:57:50.178",
+  "id": "20261126-105610-067-clip",
+  "kind": "clip",
+  "params": {
+    "call": "seesaw_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 20
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s114/seesaw.mp4",
+    "script": "movies/seesaw.jl"
+  },
+  "seconds": 49.8,
+  "started": "2026-11-26T10:57:00.352",
+  "status": "failed"
+}

@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-26T11:21:25.228",
+  "finished": "2026-11-26T11:41:15.355",
+  "id": "20261126-112125-224-clip",
+  "kind": "clip",
+  "params": {
+    "call": "horizon_clip",
+    "kwargs": {
+      "samples": 48
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s114/horizon-dusk.mp4",
+    "script": "movies/horizon.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s114/horizon-dusk.mp4"
+  },
+  "seconds": 358.2,
+  "started": "2026-11-26T11:35:16.894",
+  "status": "done"
+}

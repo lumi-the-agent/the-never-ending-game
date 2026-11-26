@@ -94,29 +94,6 @@ function feel_surprise!(jp::JailPaths, m::AbstractDict)
     return m
 end
 
-"The prompt's lines on what happens on the island: the same things over and over, or something new."
-function happening_lines(jp::JailPaths, m::AbstractDict)
-    name = character_name(jp)
-    io = IOBuffer()
-    day = sort!([(k, length(w)) for (k, w) in happenings(jp, Dates.now() - Day(1))]; by = last, rev = true)
-    println(io, "What happens on $name's island over and over (the human's game, the last 24 hours): ",
-            isempty(day) ? "nothing at all." : join(("$k $(n)×" for (k, n) in first(day, 10)), ", ") * ".")
-    last_new = get(m, "last_new", nothing)
-    if last_new === nothing
-        println(io, "Since the host started counting, nothing new has happened on the island yet.")
-    else
-        println(io, "The last time something new happened: session $(last_new["session"]) (", join(last_new["kinds"], ", "), ").")
-    end
-    ls = get(m, "last_surprise", nothing)
-    ls === nothing || println(io, "How surprising the reviewer found session $(ls["session"]): $(ls["score"])/10. ", ls["why"])
-    posts = recent_posts(jp; n = 12)
-    isempty(posts) || println(io, "Your last posts (newest first): ", join((p.title for p in posts), " · "), ".")
-    print(io, "Boredom grows every session (+$BOREDOM_RISE). What eases it most is work that surprises the reviewer, ",
-          "who compares it with your last posts: a 6 (a nice twist) eases nothing, an 8 a lot, a 4 or less makes it worse. Something the island never had eases it a little. A new prop, polishing, ",
-          "or another post about the same things changes nothing.")
-    return String(take!(io))
-end
-
 mood_path(jp::JailPaths) = joinpath(jp.state, "mood.json")
 
 function load_mood(jp::JailPaths)
@@ -355,9 +332,6 @@ function feel_session!(m::AbstractDict, r::AbstractDict, contact::Bool)
     return m
 end
 
-"How tired the character is of something, in words."
-tiredness(f) = f >= 2.0 ? "fed up with it" : f >= FED_UP ? "tired of it" : f >= 0.5 ? "did it lately" : "fresh"
-
 "What a session's record says it made, and what it was worth."
 function made_parts(r::AbstractDict)
     parts = String[]
@@ -458,50 +432,16 @@ The host stopped while your session from $(m["started"]) ran (not your doing). "
            " Finish it and post it, or post it as it is, before anything new."
 end
 
-"The three kinds of work the character is least tired of (only kinds that tire)."
-freshest_kinds(m::AbstractDict) = first(sort!(filter(tires, collect(keys(KINDS))); by = k -> get(m["fatigue"], k, 0.0)), 3)
-
 """
-The prompt's mood section: the feeling, how tired the character is of each kind of
-work and of which plugins, what the last sessions were worth, and what this
-session should do. Bored (0.5): something of a fresh kind first; fed up
-(0.8): the plugins it is fed up with are not touched at all.
+The prompt's mood section: how the character feels now, and nothing of how it got there (the
+sessions behind it and what they were worth are in the read only copy, /run/neverending/mood.json).
 """
 function mood_lines(jp::JailPaths)
-    m = with_fatigue!(load_mood(jp))
+    m = load_mood(jp)
     name = character_name(jp)
     io = IOBuffer()
     @printf(io, "## How %s feels (the host's measure; read only at /run/neverending/mood.json)\n%s feels **%s** (boredom %.2f, joy %.2f, loneliness %.2f).\n",
             name, name, feeling(m), m["boredom"], m["joy"], m["loneliness"])
-    println(io, "\n", happening_lines(jp, m), "\n")
-    println(io, repetition_lines(m), "\n")
-    println(io, "Like Pino, $name also tires of doing the same kind of work: a kind done last session is worth about a third, ",
-            "two sessions in a row a sixth, after that almost nothing; editing a plugin the last two sessions edited costs 2 points. ",
-            "Varied work slows the boredom a little.\n")
-    println(io, "A film and the post every session makes (rule 14) never tire: ",
-            join(("$k $(first(KINDS[k])) points" for k in EVERY_SESSION), ", "), ", every time.\n")
-    println(io, "How tired $name is of each kind of work (worth now):")
-    for k in sort!(filter(k -> !(k in EVERY_SESSION), collect(keys(KINDS))); by = k -> get(m["fatigue"], k, 0.0))
-        f = get(m["fatigue"], k, 0.0)
-        @printf(io, "- %s: %s (%.0f %%): %s\n", k, tiredness(f), 100exp(-FATIGUE_BITE * f), last(KINDS[k]))
-    end
-    tired = sort!([f for (f, v) in m["plugin_fatigue"] if v >= FED_UP])
-    isempty(tired) || println(io, "Plugins $name is tired of (editing them costs): ", join(tired, ", "))
-    why = mood_reason(m)
-    isempty(why) || println(io, "\nWhat the last sessions were worth:\n", why)
-    fresh = freshest_kinds(m)
-    b = m["boredom"]
-    if b >= 0.8
-        recent = isempty(tired) ? sort!(unique(vcat((r["touched"] for r in last(m["sessions"], 2))...))) : tired
-        println(io, "\n$name is fed up with its island. Do not touch ", isempty(recent) ? "the plugins of the last sessions" : join(recent, ", "),
-                " this session. Before anything else, make something the island never had, unlike anything you posted, ",
-                "and publish it so it is in the human's game.")
-    elseif b >= 0.5
-        println(io, "\n$name is bored of its island. Before anything else this session, make something the island never had, ",
-                "and publish it so it is in the human's game.")
-    else
-        println(io, "\nWhat earns most now: ", join(fresh, ", "), ".")
-    end
     m["loneliness"] >= 0.7 && println(io, "$name misses the human: make something for them (a page, a film, a note) and tell them with say_to_human.")
     print(io, "Show it in the world: how $name looks and behaves follows its `feeling` in /run/neverending/mood.json, so the human sees how $name is.")
     return String(take!(io))

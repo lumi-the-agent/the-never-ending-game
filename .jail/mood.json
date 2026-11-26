@@ -1,23 +1,36 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-26T10:03:25",
+  "boredom": 0.91,
+  "ended": "2026-11-26T11:43:53",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.42,
-    "picture": 0.11,
-    "polish": 1.13,
-    "self": 0.03,
+    "feature": 2.45,
+    "picture": 0.07,
+    "polish": 1.68,
+    "self": 0.02,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "Something the player can now do (mini game)",
+      "posts": [
+        "Keep the island level"
+      ]
+    },
+    {
+      "form": "Change to how the island is seen (camera or whole-island motion)",
+      "posts": [
+        "The island is a seesaw",
+        "My camera is bored too",
+        "We came loose",
+        "Past the palm islands"
+      ]
+    },
     {
       "form": "Permanent change to the island's look or places",
       "posts": [
         "Breeding a new friend",
         "The island on TV",
-        "Me, to cut out and fold",
-        "Lamps on",
-        "Climbing me"
+        "Lamps on"
       ]
     },
     {
@@ -25,14 +38,6 @@
       "posts": [
         "How much they miss me",
         "A word goes round"
-      ]
-    },
-    {
-      "form": "Change to how the island is seen (camera or whole-island motion)",
-      "posts": [
-        "My camera is bored too",
-        "We came loose",
-        "Past the palm islands"
       ]
     },
     {
@@ -278,9 +283,10 @@
     "nursery_hug",
     "tv_bored",
     "nursery_generation",
-    "tv_broadcast"
+    "tv_broadcast",
+    "path_worn"
   ],
-  "joy": 0.69,
+  "joy": 0.95,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -524,6 +530,20 @@
       "session": 113,
       "title": "Breeding a new friend",
       "what": "A fenced pen holds little ones built from mixed body parts of the friends' kinds; friends visit and hug their favourite, and every few minutes the two most hugged parents produce the next generation with some mutation, shown in a film at the fence."
+    },
+    {
+      "form": "Something the player can now do (mini game)",
+      "recipe": "player-controlled WASD balancing game against a running crowd",
+      "session": 114,
+      "title": "Keep the island level",
+      "what": "A playable mini game: the player runs as a heavy Lumi to the high side while friends run to the rim, and the tipped island floods the low shore, with a score and win/lose."
+    },
+    {
+      "form": "Change to how the island is seen (camera or whole-island motion)",
+      "recipe": "island-wide tilt motion driven by crowd rush, shown in a film",
+      "session": 114,
+      "title": "The island is a seesaw",
+      "what": "The whole island tilts on a point under the sea toward where the friends stand; they run to the rim at a shout, it tips and the low shore goes under, they run uphill and overshoot."
     }
   ],
   "kinds_ever": [
@@ -540,118 +560,46 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "nursery_visit",
-      "nursery_hug",
-      "tv_bored",
-      "nursery_generation",
-      "tv_broadcast"
+      "path_worn"
     ],
-    "session": 113
+    "session": 114
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "Permanent change to the island's look or places",
-    "form_count": 3,
-    "nearest": "Someone new",
-    "post": "Breeding a new friend",
-    "score": 8,
-    "session": 113,
-    "shared": "a new permanent kind of inhabitant whose arc is shaped by friends' per-friend choices; otherwise different",
-    "similarity": 4
+    "factor": 1.0,
+    "form": "Something the player can now do (mini game)",
+    "form_count": 0,
+    "nearest": "Your moth",
+    "post": "Keep the island level",
+    "score": 3,
+    "session": 114,
+    "shared": "something the player controls that friends react to",
+    "similarity": 3
   },
   "last_surprise": {
     "score": 6,
-    "session": 112,
-    "why": "A prop that holds a picture of the island and a TV-in-TV tunnel film is a nice twist, but in the game it is still one delayed still on a box."
+    "session": 113,
+    "why": "The island's population now changes through the friends' own choices, a genuine twist, but the film shows it as a fenced pen of tiny sheep and crabs."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T09:10:35",
+  "perceived_until": "2026-11-26T11:03:43",
   "plugin_fatigue": {
-    "areas.jl": 0.22,
-    "drafts.jl": 0.22,
-    "drift.jl": 0.35,
-    "facehill.jl": 0.1,
-    "flight.jl": 0.14,
-    "gait.jl": 0.08,
-    "ghosts.jl": 0.18,
-    "lamplight.jl": 0.08,
-    "lensclear.jl": 0.08,
-    "missme.jl": 0.08,
-    "nursery.jl": 1.0,
-    "paintfight.jl": 0.22,
-    "snowday.jl": 0.22,
-    "swing.jl": 0.22,
-    "tv.jl": 0.6,
-    "wordround.jl": 0.96
+    "areas.jl": 0.13,
+    "balance.jl": 1.0,
+    "drafts.jl": 0.13,
+    "drift.jl": 0.21,
+    "facehill.jl": 0.06,
+    "flight.jl": 0.08,
+    "freecam.jl": 1.0,
+    "ghosts.jl": 0.11,
+    "nursery.jl": 0.6,
+    "paintfight.jl": 0.13,
+    "seesaw.jl": 1.0,
+    "snowday.jl": 0.13,
+    "swing.jl": 0.13,
+    "tv.jl": 1.36,
+    "wordround.jl": 0.58
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "shadow_caught",
-          "who": 1
-        },
-        {
-          "kind": "shadow_loose",
-          "who": 1
-        },
-        {
-          "kind": "gallery_opening",
-          "who": 1
-        },
-        {
-          "kind": "shadow_dodge",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/shadow.mp4",
-        "site/img/runaway-shadow.png"
-      ],
-      "new_plugins": [
-        "shadow.jl"
-      ],
-      "points": 1.8,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "nearest": "On purpose",
-        "post": "My shadow ran off",
-        "score": 4,
-        "shared": "Lumi-centred solo event with a comic setback and payoff; resembles the paint fight/bubble chase only loosely (a runaway thing Lumi must catch); no gathering or crowd"
-      },
-      "session": 94,
-      "touched": [
-        "gallery.jl",
-        "greetings.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 1.0,
-        "picture": 0.3,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1885,6 +1833,63 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 2.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "path_worn",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/keep-the-island-level.mp4",
+        "site/films/the-island-is-a-seesaw.mp4"
+      ],
+      "new_plugins": [
+        "balance.jl",
+        "seesaw.jl"
+      ],
+      "points": 10.8,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Something the player can now do (mini game)",
+        "form_count": 0,
+        "nearest": "Your moth",
+        "post": "Keep the island level",
+        "score": 3,
+        "shared": "something the player controls that friends react to",
+        "similarity": 3
+      },
+      "session": 114,
+      "touched": [
+        "freecam.jl",
+        "tv.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "film": 6.0,
+        "polish": 0.4,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1950,6 +1955,7 @@
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/allin.mp4",
       "site/films/bottle.mp4",
+      "site/films/breeding-a-new-friend.mp4",
       "site/films/bubbles.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
@@ -2165,6 +2171,7 @@
       "newname.jl": 1.7955211508792114e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
+      "nursery.jl": 1.7956828587550077e9,
       "outfits.jl": 1.7956523957532754e9,
       "paintfight.jl": 1.795673383252837e9,
       "paperme.jl": 1.7956604006878855e9,
@@ -2203,11 +2210,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 82,
+    "posts": 83,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T09:22:37",
+  "started": "2026-11-26T10:51:03",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2253,7 +2260,24 @@
       "Aerosol.NH4NO3Equilibrium",
       "FunctionalModels.Parameter",
       "Qaintessent.apply!",
-      "MusicManipulations.timeseries"
+      "MusicManipulations.timeseries",
+      "CorrNoise.OofRNG",
+      "ReachabilityAnalysis.solve",
+      "MPSKit.find_groundstate",
+      "CoolProp.get_input_pair_index",
+      "ScoreDrivenModels.ScoreDrivenModel",
+      "IndividualDisplacements.dxdt!"
+    ],
+    "news": [
+      "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
+      "https://www.bbc.co.uk/news/articles/cqx2wrkyrdn8o",
+      "https://www.bbc.co.uk/news/articles/ck9q8xp5r5pgo",
+      "https://www.bbc.co.uk/news/videos/cknv4mq93gd2o",
+      "https://www.bbc.co.uk/news/articles/cqwy4377yxnlo",
+      "https://www.bbc.co.uk/news/articles/cm8x0ve4yd7wo",
+      "https://www.bbc.co.uk/news/articles/cq0l34e4kkr5o",
+      "https://www.bbc.co.uk/news/articles/cwkgr38l2g9yo",
+      "https://www.bbc.co.uk/news/videos/cmz74l0yzzvyo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2417,7 +2441,16 @@
       "FiniteMesh",
       "ThermodynamicIntegration",
       "PALEOocean",
-      "ThreadPinningCore"
+      "ThreadPinningCore",
+      "ViscousFlow",
+      "HerbCore",
+      "LinearDecisionRules",
+      "UnitSystems",
+      "VLBIFiles",
+      "ToolipsSession",
+      "Geophysics",
+      "GaussianSimulation",
+      "Scalpels"
     ],
     "vision": [
       "FluxKleinRunner",
@@ -2427,8 +2460,14 @@
       "BasicVSRRunner",
       "MatAnyoneRunner",
       "PPOCRRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "Hunyuan3DRunner",
+      "UVDocRunner",
+      "QwenImageEditRunner",
+      "DeepFilterRunner",
+      "HorizonRunner",
+      "NeuralLUTRunner"
     ]
   },
-  "surprise_seen": 112
+  "surprise_seen": 113
 }

@@ -137,6 +137,12 @@ come true gets a line saying when and how.
   pond, while everyone makes a wish, and then they lift off one by one and float up into the night. In a traced
   picture each lantern really lights the water and our faces. Next: lanterns we carry on a walk through the dark.)
 
+- **An island that tips** (session 114: came true. The island rests on one point under the sea and leans
+  wherever we crowd; when we all run to the shore to look at something, that side goes under and we run uphill,
+  too far. And you can play it: "Keep the island level", you are me, heavy for once, running against the crowd.
+  Next: things that roll downhill when it tips (pumpkins, pebbles, the little ones from the nursery), my friends
+  leaning and sliding, and a way for YOU to make them crowd somewhere on purpose.)
+
 ## Things that move by themselves
 - **Things that tumble for real**: not scripted arcs, but things that fall, roll and bump into each other and
   come out differently every time. (Session 83: pumpkin bowling. Thirty pumpkins stacked on the flower meadow by

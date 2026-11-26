@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "separation.jl",
-      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
+      "file": "minigames.jl",
+      "name": "Keep the island level: a first play with only W/A/D, walking to the high side, keeps the shore dry; end card",
       "passed": true,
-      "seconds": 24.5
+      "seconds": 51.6
     }
   ],
-  "time": "2026-11-26T07:41:11.873"
+  "time": "2026-11-26T11:15:37.561"
 }

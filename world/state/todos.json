@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "Failed to resolve raster_renderobject:\n[ComputeEdge] raster_renderobject = #register_meshscatter_raster!##0((positions_transformed_f32c, rotation, markersize, f32c_scale, transform_marker, raster_uv_transform, vertex_position, faces, normal, uv, model_f32c, material, raster_path, scaled_color, alpha_colormap, scaled_colorrange, color_mapping_type, lowclip_color, highclip_color, nan_color, interpolate, fetch_pixel, matcap, shading, diffuse, specular, shininess, backlight, depth_shift, world_normalmatrix, view_normalmatrix, uniform_clip_planes, uniform_num_clip_planes, view, projection, eyeposition, resolution, viewport, raster_ambient, raster_light_color, raster_light_direction, raster_N_lights, raster_light_types, raster_light_colors, raster_light_parameters, raster_env_sh, raster_has_env, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:488\nDue to ERROR: ArgumentError: device storage requires an isbits element type, got Any\nStacktrace:\n  [1] checkedbytes\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/array.jl:5 [inlined]\n  [2] Mantle.LavaArray{Any, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:41\n  [3] Mantle.LavaArray{Any, 1}(data::Vector{Any}; kw::@Kwargs{bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:82\n  [4] Mantle.LavaArray(data::Vector{Any}; kw::@Kwargs{bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:86\n  [5] devicearray(d::Mantle.LavaDevice, data::Vector{Any})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:905\n  [6] (::RayMakie.var\"#mesh_raster!##0#mesh_raster!##1\"{Mantle.LavaDevice})(::Pair{Symbol, Any})\n    @ RayMakie ./none:-1\n  [7] iterate\n    @ ./generator.jl:48 [inlined]\n  [8] Dict{Symbol, GPUArraysCore.AbstractGPUArray}(kv::Base.Generator{Dict{Symbol, Any}, RayMakie.var\"#mesh_raster!##0#mesh_raster!##1\"{Mantle.LavaDevice}})\n    @ Base ./dict.jl:95\n  [9] mesh_raster!(screen::RayMakie.Screen, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}}, args::@NamedTuple{positions_transformed_f32c::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, f32c_scale::GeometryBasics.Vec{3, Float32}, transform_marker::Bool, raster_uv_transform::Vector{Any}, vertex_position::Vector{GeometryBasics.Point{3, Float32}}, faces::Vector{GeometryBasics.NgonFace{3, GeometryBasics",
+      "detail": "Failed to resolve raster_renderobject:\n[ComputeEdge] raster_renderobject = #register_raster_renderobject!##0((positions_transformed_f32c, faces, normals, texturecoordinates, model_f32c, material, raster_path, scaled_color, alpha_colormap, scaled_colorrange, color_mapping_type, lowclip_color, highclip_color, nan_color, interpolate_in_fragment_shader, interpolate, raster_uv_transform, fetch_pixel, matcap, shading, diffuse, specular, shininess, backlight, depth_shift, world_normalmatrix, view_normalmatrix, strokewidth, strokecolor, stroke_data_packed, uniform_clip_planes, uniform_num_clip_planes, view, projection, eyeposition, resolution, viewport, raster_ambient, raster_light_color, raster_light_direction, raster_N_lights, raster_light_types, raster_light_colors, raster_light_parameters, raster_env_sh, raster_has_env, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:85\nDue to ERROR: MethodError: no method matching sunsky_to_envlight(; direction::GeometryBasics.Vec{3, Float32}, intensity::Float32, turbidity::Float32, ground_enabled::Bool, ground_albedo::Hikari.RGBSpectrum, resolution::Int64)\nThe function `sunsky_to_envlight` exists, but no method is defined for this combination of argument types.\nStacktrace:\n  [1] project_environment!(sh::Matrix{Float32}, light::Makie.SunSkyLight)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:475\n  [2] unit_sh(light::Makie.SunSkyLight)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:458\n  [3] iterate\n    @ ./generator.jl:48 [inlined]\n  [4] _collect\n    @ ./array.jl:810 [inlined]\n  [5] collect_similar\n    @ ./array.jl:732 [inlined]\n  [6] map\n    @ ./abstractarray.jl:3375 [inlined]\n  [7] #register_raster_lights!##2\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:409 [inlined]\n  [8] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{raster_env_shapes::Base.RefValue{Vector{Makie.SunSkyLight}}}, @NamedTuple{raster_env_unit_sh::Base.RefValue{Vector{StaticArraysCore.SMatrix{3, 9, Float32, 27}}}}, ComputePipeline.MapFunctionWrapper{true, RayMakie.var\"#register_raster_lights!##2#register_raster_lights!##3\"}})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:2389\n  [9] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [10] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [11] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [12] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1562\n [13] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/Si",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-25T23:16:14.278"
+      "updated": "2026-11-26T11:18:38.986"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -6111,12 +6111,12 @@
       "id": 437,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "New mini game 'Keep the island level (WASD)' (plugins/balance.jl), the fourth under Mini game: start card (tests/shots/balance-start.png), friends crowd to the shore every 9→5 s and the island tips (seesaw.jl), Lumi weighs five friends, HUD with seconds left, tilt in degrees, which way the high side is and splashes 0/3 (balance-play.png), 3 splashes lose, 60 s dry wins, best level-seconds in bests.json, end card with R to play again (balance-end.png). First-play W/A/D test in tests/minigames.jl passes in the sandbox (51.6 s, 0 splashes, island tipped >1.7°). Published 11:16, loads ok in the human's game, frame 4.6 ms median.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Something new to PLAY after six watch-only sessions",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T11:16:08.630"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -6965,12 +6965,12 @@
       "id": 498,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Fixed at the source in Hikari (dev/Hikari/src/lights/sun_sky.jl): below the horizon the baked sky map now fades from the sky just above the horizon (same azimuth) into the ground colour over HORIZON_FADE = 0.08 of -z (~4.6°) instead of a hard step that ran along the octahedral map's diagonals. Traced check at 18:30 looking out to sea (movies/horizon.jl, worker restarted first, 48 spp, 1280x720): media/s114/horizon-dusk.png, rows 325-400 around the horizon: 0 isolated bright pixels above 0.9, comb pixels 1 at a 0.01 step (0 at 0.02). Raster: comb pixels per row 98 -> 0 (eyes/session-0114/ahead.png vs media/s114/horizon-after.png). Bake 29.5 -> 30.7 ms. Published 11:22 (the human's game has the function, renders fine).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "White sawtooth band along the horizon in traced dusk pictures",
-      "updated": "2026-11-25T18:15:03.145"
+      "updated": "2026-11-26T11:41:37.350"
     },
     {
       "created": "2026-11-25T15:49:22.798",
@@ -7245,12 +7245,12 @@
       "id": 518,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "s114 part 1 (published 11:5x): freecam.jl sets the camera menu to 'Camera: follow' when a jump-in starts (not counted as the player's pick, so their free/orbit choice comes back after the game); picking free or orbit during play still works. Sandbox: menu on free, then jump in: after 3 s the menu says follow, camera_pick = :follow, eye 7.7 m from Lumi, Lumi ~1/5 of the frame high (media/s114/jumpin-after-free-2.png). That view looked steeply down at night beside the nursery among trees (the chase camera's own pick round obstructions), not from behind. Still to do: the 'from behind' part, and screenshots after X, C and B.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Jump-in always gets the chase view, even after the free camera was used",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T11:43:23.490"
     },
     {
       "created": "2026-11-25T23:29:33.061",
@@ -7623,12 +7623,12 @@
       "id": 545,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s114 part 1 (published 11:29): traced materials on the old boxes: CoatedDiffuse lacquered wood (roughness 0.04), dark coated bezel, Hikari.Brass(roughness 0.12) knobs, Aluminum ears; traced sandbox view media/s114/tv-traced.png shows gold knobs and metal ears. Tried a Glass pane 7 cm in front of the screen: it blocks the sun's direct light to the screen, so the traced picture came out dark and speckled; removed. Still to do: the generated mesh (assets/20261126-083347-183-asset: x = width ±0.354, y = depth ±0.237 with the FRONT at -y, z = height ±0.5 incl. legs and antennae; front-face grey (screen) vertices roughly x -0.20..0.06, z -0.21..0.09, screen surface at y ≈ -0.21; placed with no rotation its front faces world -y like tv.jl's YAW), a coat on the screen quad itself (not a separate glass), raster gold for the knobs (RayMakie raster draws Brass pale grey).",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Real television: the generated TV set with glass, wood coat and brass",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T11:29:14.296"
     },
     {
       "created": "2026-11-26T09:10:14.547",
@@ -7671,6 +7671,76 @@
       "status": "done",
       "title": "A friend nobody has seen yet: the pen where the friends' hugs breed a new kind",
       "updated": "2026-11-26T09:46:54.715"
+    },
+    {
+      "created": "2026-11-26T10:41:47.628",
+      "detail": "SystemError: opening file \"/sim/Programmieren/SimGame/world/plugins/inventgames.jl\": No such file or directory\nStacktrace:\n  [1] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [2] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [3] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [4] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [5] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [6] Game(root::String; instance::Symbol, fps::Int64, quiet::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:96\n  [7] Game\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:85 [inlined]\n  [8] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::typeof(Main.ClipScript.quiet_morning), shot::Main.ClipScript.var\"#4#5\"{Float64, Vector{String}, Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:384\n  [9] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:380 [inlined]\n [10] invent_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, cast::Vector{String})\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/inventgames.jl:59\n [11] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [12] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [13] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [14] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [15] top-level scope\n    @ none:1\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [18] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 549,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Stale: plugins/inventgames.jl no longer exists (removed when its idea was dropped in the cut-off s114); the human's game lists 109 plugins, not ok: Pair{String, Any}[]",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin inventgames does not load",
+      "updated": "2026-11-26T11:10:04.284"
+    },
+    {
+      "created": "2026-11-26T10:54:47.405",
+      "detail": "LoadError: invalid method definition in Plugin_seesaw: function NeverendingGame.start! must be explicitly imported to be extended\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/seesaw.jl:126\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/seesaw.jl:126",
+      "est_minutes": 15.0,
+      "id": 550,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T10:55:06.016: plugin seesaw loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin seesaw does not load",
+      "updated": "2026-11-26T10:55:06.016"
+    },
+    {
+      "created": "2026-11-26T10:58:22.184",
+      "detail": "a plot named :seesaw_near is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] #mesh!#76\n    @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465 [inlined]\n  [7] mesh!\n    @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:463 [inlined]\n  [8] split_terrain!(game::Game)\n    @ Main.Plugin_seesaw /sim/Programmieren/SimGame/world/plugins/seesaw.jl:247\n  [9] step!(s::Main.Plugin_seesaw.Seesaw, game::Game, dt::Float64)\n    @ Main.Plugin_seesaw /sim/Programmieren/SimGame/world/plugins/seesaw.jl:273\n [10] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [12] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [13] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [14] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [15] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [16] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [17] top-level scope\n    @ none:1\n [18] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [19] exec_options(opts::Base.JLOptions)\n    @ Base ./clie",
+      "est_minutes": 15.0,
+      "id": 551,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T11:00:34.310: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:00:34.860.\nClosed at 2026-11-26T11:00:36.435: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:01:17.543.\nClosed at 2026-11-26T11:01:32.215: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:02:12.766.\nClosed at 2026-11-26T11:03:21.909: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:07:29.848.\nClosed at 2026-11-26T11:07:59.672: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:08:30.413.\nClosed at 2026-11-26T11:09:03.634: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:09:04.408.\nClosed at 2026-11-26T11:09:37.891: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:11:45.171.\nClosed at 2026-11-26T11:11:47.877: plugin seesaw loaded cleanly.\nHappened again at 2026-11-26T11:11:48.240.\nClosed at 2026-11-26T11:14:28.295: plugin seesaw loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:seesaw.Seesaw failed in step! and was switched off",
+      "updated": "2026-11-26T11:14:28.295"
+    },
+    {
+      "created": "2026-11-26T11:34:13.263",
+      "detail": "s114: the seesaw film (site/films/the-island-is-a-seesaw.mp4) is shot from 38 m: the tilt reads, the friends are dots. Next take: a camera 6-8 m from the crowd at the rim as it tips (they feel! :scared, lean forward running uphill), then pull out to the whole island overshooting. Also loose things (pumpkins, pebbles) could roll downhill while it tips (the original idea). Done when: a traced short where at least 3 friends' faces show the panic, posted.",
+      "est_minutes": 40.0,
+      "id": 552,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Seesaw up close: film a tipping moment where you SEE the friends panic, slide and run uphill",
+      "updated": "2026-11-26T11:34:13.263"
+    },
+    {
+      "created": "2026-11-26T11:34:13.269",
+      "detail": "The host's motion measure before s114: Lumi turns 45° in one frame at 2.1 s (beak and right leg jump 0.27 m with it), Sir Sniffsalot turns 64° at 0.9 s (tail jumps 0.21 m). Find which plugin or goal sets c.yaw directly (a goal switch, a feel!, a seat), ease it with a turn rate instead. Done when: live_motion() in the sandbox over 30 s shows no turn above 20° in one frame for any creature.",
+      "est_minutes": 30.0,
+      "id": 553,
+      "kind": "motion",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Snap turns: Lumi turns 45° and Sir Sniffsalot 64° in one frame (host motion measure s114)",
+      "updated": "2026-11-26T11:34:13.269"
     }
   ]
 }

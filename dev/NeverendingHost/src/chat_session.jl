@@ -26,11 +26,25 @@ end
 "The character's chat in the dashboard."
 character_model(d) = d.server.chat_models[d.chat.id]
 
-"A fresh agent conversation in the chat: its next turn starts a new session; the history stays on the page."
-function fresh_conversation!(d)
+"""
+A fresh agent conversation in the chat: its next turn starts a new session that knows nothing of the
+earlier ones; their history stays on the page. The chat's agent keeps a resume id of its own besides
+the chat's, and a fresh session in a chat with history gets that history as a prelude to its first
+prompt: with only the chat's id cleared, sessions 68-113 were one conversation, compacted seven
+times. The agent also gets its own Julia session and RomeoDB, as the host's own agents do
+(`julia_mcp`, `romeo_mcp`): the worker's Julia tools never reached the chat, and sessions 68-113
+ran every line of Julia inside the sandbox game, through its socket.
+"""
+function fresh_conversation!(d, jp::JailPaths)
+    model = character_model(d)
     d.chat.resume_session_id = nothing
+    model.agent.resume_session_id = nothing
+    for server in (julia_mcp(jp), romeo_mcp(jp))
+        any(s -> s.name == server.name, model.agent.mcp) || push!(model.agent.mcp, server)
+    end
     @lock d.server.lock BonitoAgents.save_projects!(d.server)
-    BonitoAgents.restart_chat_session!(character_model(d))
+    BonitoAgents.restart_chat_session!(model)
+    @lock model.lock model.pending_history_replay[] = ""
     return d
 end
 
@@ -79,7 +93,7 @@ what to send when a turn ends before the session does (`nothing`: the session is
 function run_chat_session!(host, label::AbstractString, settings::AgentSettings, prompt::AbstractString; followups)
     d = host.dashboard
     model = character_model(d)
-    fresh_conversation!(d)
+    fresh_conversation!(d, host.jp)
     run = ChatRun(:agent, label, settings, model, time(), time() + 60settings.session_minutes, 0.0, "", "",
                   length(BonitoAgents.shared(model).msgs_store) + 1)
     host.current = run

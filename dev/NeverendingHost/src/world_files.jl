@@ -92,18 +92,6 @@ function journal_since(jp::JailPaths, marks::Dict{String,Int})
     return String(take!(io))
 end
 
-"The last `## ` entry of the newest journal file."
-function last_journal_entry(jp::JailPaths; maxchars::Int = 2500)
-    dir = journal_dir(jp)
-    isdir(dir) || return ""
-    files = sort!(filter(f -> endswith(f, ".md"), readdir(dir)))
-    isempty(files) && return ""
-    text = read(joinpath(dir, last(files)), String)
-    i = findlast("\n## ", "\n" * text)
-    entry = i === nothing ? text : text[first(i):end]
-    return first(strip(entry), maxchars)
-end
-
 inbox_dir(jp::JailPaths) = joinpath(jp.world, "inbox")
 
 "Messages from the human not yet delivered, oldest first (they stay until `mark_read!`)."
@@ -168,62 +156,20 @@ character_name(jp::JailPaths) = isfile(name_path(jp)) ? String(strip(read(name_p
 "`text` with `{{NAME}}` put in for the character's name (the prompts are written that way)."
 named(text::AbstractString, jp::JailPaths) = replace(text, "{{NAME}}" => character_name(jp))
 
-"A wish that says it came true (\"half came true\" is still open)."
-const CAME_TRUE = r"(?<!half )came true"i
+"The character's own memory: what it chose to remember, the only thing of its past the session prompt shows."
+memory_path(jp::JailPaths) = joinpath(jp.world, "MEMORY.md")
 
-"The lines of a wish list as items: a heading, a wish (`- ` with its indented lines) or any other line."
-function wish_items(text::AbstractString)
-    items = Vector{String}[]
-    for line in eachline(IOBuffer(text))
-        if !isempty(items) && startswith(first(last(items)), "- ") && occursin(r"^\s+\S", line)
-            push!(last(items), line)
-        else
-            push!(items, [line])
-        end
-    end
-    return items
-end
+"How much of `memory_path` the session prompt shows, so the prompt does not grow with the character's past."
+const MEMORY_CHARS = 4000
 
-"A wish without its story: its lines joined, up to the first parenthesis (where what came of it starts)."
-wish_line(item::Vector{String}) = rstrip(first(split(join(strip.(item), " "), " ("; limit = 2)))
-
-"""
-    open_wishes(text) -> String
-
-The wish list `text` (world/WISHES.md) without the wishes that came true and without `## Done`:
-the title and intro, then each section that still has an open wish, with those wishes, one line
-each without what came of them so far.
-"""
-function open_wishes(text::AbstractString)
+"The prompt's memory section: the first `MEMORY_CHARS` of what the character chose to remember."
+function memory_lines(jp::JailPaths)
+    text = isfile(memory_path(jp)) ? strip(read(memory_path(jp), String)) : ""
     io = IOBuffer()
-    heading, sections, done = nothing, false, false
-    for item in wish_items(text)
-        line = first(item)
-        if startswith(line, "## ")
-            heading, sections, done = line, true, strip(line) == "## Done"
-        elseif startswith(line, "- ")
-            (done || any(l -> occursin(CAME_TRUE, l), item)) && continue
-            heading === nothing || (println(io, "\n", heading); heading = nothing)
-            println(io, wish_line(item))
-        elseif !sections
-            println(io, line)
-        end
-    end
-    return strip(String(take!(io)))
-end
-
-"""
-The character's open wishes (world/WISHES.md, the agent's to change; the human's goal 5), for the
-session prompt. The ones that came true stay in the file only: with thirty stories of wishes come
-true the whole file was most of what the character read before choosing what to make, and each new
-idea came out as one more of them, filed under a new heading.
-"""
-function wishes_text(jp::JailPaths)
-    name = character_name(jp)
-    isfile(wishes_path(jp)) ||
-        return "## $(name)'s wishes\n\nThere is no `world/WISHES.md` yet: write it this session, in $(name)'s voice (goal 5)."
-    return open_wishes(read(wishes_path(jp), String)) *
-           "\n\nWhat came of these so far, and the wishes that came true, are in `world/WISHES.md`."
+    println(io, "## What you chose to remember (`world/MEMORY.md`, the first $MEMORY_CHARS characters)")
+    print(io, isempty(text) ? "(nothing yet)" : first(text, MEMORY_CHARS))
+    length(text) > MEMORY_CHARS && print(io, "\n[cut here: the rest is not shown]")
+    return String(take!(io))
 end
 
 reviews_dir(jp::JailPaths) = joinpath(jp.world, "reviews")

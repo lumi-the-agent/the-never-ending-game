@@ -96,7 +96,7 @@ runs with your rights.
 
 - `world/`: the game and {{NAME}}'s working directory: `plugins/` (everything
   it added), `journal/`, `site/` (the blog), `assets/` (generated 3D models),
-  `reviews/`, its notes (`AGENTS.md`, `STYLE.md`, `WISHES.md`, `skills/`).
+  `reviews/`, its notes (`NOTES.md`, `MEMORY.md`, `STYLE.md`, `WISHES.md`, `skills/`).
 - `dev/NeverendingGame`: the engine. `dev/NeverendingHost`: the host (agent
   sessions, mood, curiosity, reviews, the jail, publishing); it runs from its
   own environment, which the agent cannot touch.

@@ -12,7 +12,6 @@
 # - functions from such packages with an example in their docs: something that
 #   runs in a few lines;
 # - JuliaVision's models (dev/JuliaVision, on the GPU) the game has never used;
-# - a page from the character's own diary, days old;
 # - the world outside: Wikipedia, a museum's artwork, an arXiv paper, the news
 #   (outside.jl).
 #
@@ -121,29 +120,6 @@ function doc_summary(doc::AbstractString, name::AbstractString)
     return first_sentence(replace(join(para, " "), r"\[([^\]]+)\]\([^)]+\)" => s"\1", "`" => ""))
 end
 
-"""
-    diary_finds(jp, seen; n = 1) -> Vector{Dict}
-
-`n` entries of the character's own diary (`world/journal`), at least two days old, at random, not
-shown before (`seen`, as `date HH:MM`): its heading and how it begins.
-"""
-function diary_finds(jp::JailPaths, seen; n::Int = 1)
-    dir = joinpath(jp.world, "journal")
-    isdir(dir) || return Dict{String,Any}[]
-    pool = Dict{String,Any}[]
-    for f in readdir(dir)
-        m = match(r"^(\d{4}-\d{2}-\d{2})\.md$", f)
-        (m === nothing || Date(m[1]) > today() - Day(2)) && continue
-        for e in eachmatch(r"^## (\d{1,2}:\d{2}) · (.+)\n+((?:(?!^## ).*\n?)*)"m, read(joinpath(dir, f), String))
-            key = "$(m[1]) $(e[1])"
-            key in seen && continue
-            push!(pool, Dict{String,Any}("name" => key, "title" => String(strip(e[2])),
-                                         "text" => first_sentence(replace(strip(e[3]), r"\s+" => " "))))
-        end
-    end
-    return first(shuffle!(pool), n)
-end
-
 "A summary's first sentence, at most 200 characters."
 first_sentence(text::AbstractString) = first(first(split(strip(text), r"(?<=[.!?])\s"; limit = 2)), 200)
 
@@ -203,7 +179,7 @@ function stumble!(jp::JailPaths)
     m = load_mood(jp)
     seen = get!(m, "stumbled", Dict{String,Any}())
     finds = Dict{String,Any}()
-    for (key, find) in (("packages", ecosystem_finds), ("functions", function_finds), ("vision", vision_finds), ("diary", diary_finds))
+    for (key, find) in (("packages", ecosystem_finds), ("functions", function_finds), ("vision", vision_finds))
         got = find(jp, get!(seen, key, Any[]))
         isempty(got) && (seen[key] = Any[]; got = find(jp, seen[key]))     # all shown: from the start
         append!(seen[key], [g["name"] for g in got])
@@ -219,7 +195,7 @@ function stumble_lines(finds::AbstractDict, name::AbstractString)
     all(isempty, values(finds)) && return ""
     io = IOBuffer()
     println(io, "## $name's workbench (drawn at random; not suggestions)")
-    pk, fs, vi, di = finds["packages"], finds["functions"], finds["vision"], finds["diary"]
+    pk, fs, vi = finds["packages"], finds["functions"], finds["vision"]
     if !isempty(pk)
         println(io, "Packages (RomeoDB `package_info` tells more; `Pkg.add` brings one in):")
         foreach(p -> println(io, "- $(p["name"]) ($(p["users"]) users", p["gpu"] ? ", runs on GPUs" : "", "): $(p["summary"])"), pk)
@@ -232,10 +208,6 @@ function stumble_lines(finds::AbstractDict, name::AbstractString)
         println(io, "Models in JuliaVision (dev/JuliaVision, on the GPU):")
         foreach(v -> println(io, "- $(v["name"])", v["in_env"] ? "" : " (not in the environment yet: `Pkg.develop(path = \"dev/JuliaVision/$(v["name"])\")`)",
                               ": $(v["summary"])"), vi)
-    end
-    if !isempty(di)
-        println(io, "From your own diary:")
-        foreach(d -> println(io, "- $(d["name"]), \"$(d["title"])\": $(d["text"])"), di)
     end
     outside_lines(io, finds)
     return String(take!(io))

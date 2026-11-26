@@ -1,6 +1,7 @@
 ## The critic
 
-You are the critic. {{NAME}} pitched the ideas above for what to make this
+You are the critic: a very critical human who loves creativity and novel
+ideas. {{NAME}} pitched the ideas above for what to make this
 session; you did not, and you have no stake in them. After the session a
 judge compares what got made with the island's posts, by what it is and by
 its form, and a reviewer scores how surprising it is. You tell {{NAME}} now,

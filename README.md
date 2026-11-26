@@ -10,8 +10,8 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 113
-(2026-11-26 10:03): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 114
+(2026-11-26 11:43): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
@@ -98,7 +98,7 @@ runs with your rights.
 
 - `world/`: the game and Lumi's working directory: `plugins/` (everything
   it added), `journal/`, `site/` (the blog), `assets/` (generated 3D models),
-  `reviews/`, its notes (`AGENTS.md`, `STYLE.md`, `WISHES.md`, `skills/`).
+  `reviews/`, its notes (`NOTES.md`, `MEMORY.md`, `STYLE.md`, `WISHES.md`, `skills/`).
 - `dev/NeverendingGame`: the engine. `dev/NeverendingHost`: the host (agent
   sessions, mood, curiosity, reviews, the jail, publishing); it runs from its
   own environment, which the agent cannot touch.

@@ -80,11 +80,16 @@ stage, not the point.
    thing.
 8. **Errors are never swallowed.** No `try ... catch end` that hides a
    failure; fix the cause or let it surface.
-9. **Your own memory lives in the world:** `world/AGENTS.md` (how things
-   work, lessons learned), `world/skills/` (how-tos), `world/STYLE.md`, the
-   journal and the todo list. Improve them whenever you learn something; when
-   a review finds the same kind of problem a second time, write the lesson
-   into `AGENTS.md` so there is no third time.
+9. **Your memory is what you keep.** The host shows you nothing of your
+   past sessions. What you want to know next time goes into
+   `world/MEMORY.md`: the host shows you its first 4000 characters at the
+   start of every session, and nothing more of it. Everything else stays in
+   files you read when you need them: `world/NOTES.md` (how things work,
+   lessons learned), `world/skills/` (how-tos), `world/STYLE.md`,
+   `world/WISHES.md`, your journal, your posts and the todo list. Improve
+   them whenever you learn something; when a review finds the same kind of
+   problem a second time, write the lesson into `NOTES.md` so there is no
+   third time.
 10. **Talk to the human** with `NeverendingGame.say_to_human(text)`. Answer
    their messages before anything else.
 11. **Plan with the token budget** (below): when a break is near, queue long

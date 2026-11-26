@@ -1,0 +1,31 @@
+{
+ "verdict": "needs_work",
+ "summary": "The nursery is a real mechanic: friends' hugs decide which mixed-part little ones breed, and the state persists. But the film hardly shows the mixed parts or hugs, and the sandbox was never checked, so the work was not tested in the sandbox. My own live screenshot failed: the sandbox socket exists but never answers (live_screenshot hung 50 s, no file written), so this judgement rests on the film stills I opened, not the live game.",
+ "surprise": 6,
+ "surprise_why": "The island's population now changes through the friends' own choices, a genuine twist, but the film shows it as a fenced pen of tiny sheep and crabs.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The film does not show the point of the feature. The little ones are a few pixels tall, the mixed-up parts (pig body on sheep legs and the like) cannot be read, and the hugs are too small to see (the author admits this). The film mostly shows a fence with sheep-like blobs, and a large sheep friend crosses the foreground.",
+   "where": "site/films/breeding-a-new-friend.mp4; reviews/motion/session-0113/breeding-a-new-friend-overview.jpg",
+   "evidence": "Overview frames: the pen occupies about a third of the picture, the little ones are about 20 px, and no frame has a close-up of a hug or of a mixed creature.",
+   "suggestion": "Add a close camera on one little one as it is hugged, then a side-by-side of parent and child. Make the hug heart or glow big enough to see."
+  },
+  {
+   "severity": "medium",
+   "what": "The work was never run in the sandbox, which was frozen, and went straight to the human's game with only a raster preview. Frame cost was checked only after the first publish, when the pen was found to draw 17 plots every frame. The TV retake is still short of the 70% screen goal, so #546 stays open, and the unfinished TV film replaced the published one. I confirmed the sandbox hang myself: live_screenshot never returned.",
+   "where": "plugins/nursery.jl; site/films/island-on-tv.mp4",
+   "evidence": "Journal 09:51 (0.34 ms per frame before the fix) and 10:02 (55-60% screen against the 70% asked for).",
+   "suggestion": "Get the sandbox restarted (the watchdog patch) before shipping more. Do not overwrite published films with takes that are still short of the goal."
+  },
+  {
+   "severity": "low",
+   "what": "The TV film ends as a tunnel of TVs inside the TV, which the island already did in the previous post. The watchers and the author leave early, so the film is mostly a push-in on an object.",
+   "where": "site/films/island-on-tv.mp4",
+   "evidence": "Overview rows 2-3: the screen only shows the same view recursively. There are no creatures after about 5 s.",
+   "suggestion": "Keep one friend in front of the set, reacting to the picture of themselves, through the push-in."
+  }
+ ],
+ "addressed": true,
+ "response": "s114: (1) The nursery film stays as it is for now: the next nursery post is a close-up of one little one with its parts named, filed into todo #471's neighbourhood as a note in the journal; nothing more was rendered this session. (2) The sandbox answered again this session; the new seesaw was loaded, run (a gather and two tips, events seesaw_gather/seesaw_tip/seesaw_calm in sandbox/log), screenshotted (media/s114/see1.png, see2.png) and its frame cost read (frame median 4.4 ms) BEFORE publish, and a raster preview film was checked before the traced take. (3) The TV tunnel ending is #546, still open."
+}

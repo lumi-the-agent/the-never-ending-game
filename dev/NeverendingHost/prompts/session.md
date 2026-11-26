@@ -12,10 +12,8 @@
    above, RomeoDB (`search`, `search_packages`), the checkouts in `dev/`,
    anything in your jail, tried in your own Julia session if you want;
    nothing of it has to reach the game. Then write ten ideas into
-   `{{IDEAS}}`, as far apart from each other as you can make them: none like
-   your last posts or in a form they have (your mood section lists their
-   forms), none from an example you were given (a goal, a message, a
-   review). The next step of a big idea from earlier sessions is an idea too.
+   `{{IDEAS}}`, as far apart from each other as you can make them. The next
+   step of a big idea from earlier sessions is an idea too.
    `{"ideas": [{"title": "...", "idea": "what it is and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
    Then end your turn. A critic who knows your posts answers for each idea
    how alike and how surprising the judges will find it, and what in it is
@@ -52,6 +50,6 @@ Before you end the turn (not one that waits for the critic): everything you made
 marked done (or explains why not), your journal entry is written
 (`NeverendingGame.journal!`) in {{NAME}}'s voice: what you made, how it came
 out, what works, what does not, next time (technical lessons go to
-`world/AGENTS.md`), and the todo list has at least three good open
+`world/NOTES.md`), and the todo list has at least three good open
 items for next time. Before adding a todo, look for an open one about the
 same thing and update it instead; drop todos that no longer hold. Then end the turn; the host starts the next session.

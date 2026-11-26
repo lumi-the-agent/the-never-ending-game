@@ -137,6 +137,17 @@ function NG.step!(::FreeCam, game, dt)
         LAST_MODE[] = rig.mode
         CHOSEN[] = (rig.mode, rig.eye, rig.target)
     else
+        # a jump-in always starts in the chase view behind Lumi; free or orbit is a pick during it (review #518:
+        # after 'Camera: free' once, Play circled Lumi 25 m out, a speck over the sea). Not a pick: what the player
+        # had chosen before still comes back after the game.
+        if !WAS_GAME[] && game.minigame isa NG.JumpIn
+            m = cam_menu(game)
+            if m.selection[] != "Camera: follow"
+                SYNCING[] = true
+                m.i_selected[] = findfirst(==("Camera: follow"), m.options[])
+                SYNCING[] = false
+            end
+        end
         WAS_GAME[] = true
         # a pick during a game is what comes back after it
         if pick !== nothing

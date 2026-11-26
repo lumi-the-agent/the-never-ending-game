@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T11:01:46.557",
+  "finished": "2026-11-26T11:16:10.062",
+  "id": "20261126-110146-557-clip",
+  "kind": "clip",
+  "params": {
+    "call": "seesaw_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 20
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s114/seesaw.mp4",
+    "script": "movies/seesaw.jl"
+  },
+  "result": {
+    "angle": 0.02712436,
+    "path": "/sim/Programmieren/SimGame/world/media/s114/seesaw.mp4"
+  },
+  "seconds": 494.7,
+  "started": "2026-11-26T11:07:55.406",
+  "status": "done"
+}

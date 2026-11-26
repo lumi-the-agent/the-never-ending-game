@@ -176,35 +176,3 @@ function feel_repetition!(m::AbstractDict, r::AbstractDict, rep::AbstractDict)
     length(judged) > 2POST_MEMORY && deleteat!(judged, 1:length(judged) - 2POST_MEMORY)
     return m
 end
-
-"The prompt's lines on repetition: the rule, the forms of the last posts, and how the last judged session fared."
-function repetition_lines(m::AbstractDict)
-    io = IOBuffer()
-    print(io, "After every session a judge compares what you made with your last $POST_MEMORY posts twice: by what it is and does ",
-          "(not by props, place or words), and by its form (what kind of change to the game it is and how it reaches whoever ",
-          "watches, with the premise taken away). From $(SIMILAR[1])/10 alike on the session is worth less, from $(SIMILAR[2])/10 ",
-          "on a tenth, and boredom rises by up to $REPEAT_BOREDOM more. A form one of your last $FORM_MEMORY posts has is still ",
-          @sprintf("free; one two of them have makes the session worth ×%.2f, three ×%.2f. ", repeat_factor(form_score(2)),
-                   repeat_factor(form_score(3))),
-          "A post counts with the higher of its two numbers, and your most original post decides, so posting everything you ",
-          "made never costs; a session that posts nothing is worth a tenth too.")
-    forms = get(m, "forms", Any[])
-    if !isempty(forms)
-        print(io, "\nYour last posts by form (the judge's groups):")
-        foreach(f -> print(io, "\n- ", f["form"], ": ", join(f["posts"], ", ")), forms)
-    end
-    lr = get(m, "last_repetition", nothing)
-    lr === nothing && return String(take!(io))
-    if isempty(lr["post"])
-        @printf(io, "\nSession %d posted nothing", lr["session"])
-    else
-        @printf(io, "\nSession %d's most original post, \"%s\", was %s/10 alike to \"%s\" (%s)", lr["session"], lr["post"],
-                get(lr, "similarity", lr["score"]), lr["nearest"], lr["shared"])
-        # (records from before session 96 have no form)
-        isempty(get(lr, "form", "")) ||
-            @printf(io, ", and its form (\"%s\") %s of the %d posts before it", lr["form"],
-                    lr["form_count"] == 0 ? "is in none" : "is in $(lr["form_count"])", FORM_MEMORY)
-    end
-    print(io, lr["factor"] < 1 ? @sprintf(": worth ×%.2f.", lr["factor"]) : ": no penalty.")
-    return String(take!(io))
-end

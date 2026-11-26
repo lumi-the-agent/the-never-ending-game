@@ -1,0 +1,46 @@
+{
+  "created": "2026-11-26T10:38:14.125",
+  "finished": "2026-11-26T10:39:16.139",
+  "id": "20261126-103814-125-clip",
+  "kind": "clip",
+  "params": {
+    "call": "invent_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "seconds": 14.0,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s114/invent-preview2.mp4",
+    "script": "movies/inventgames.jl"
+  },
+  "result": {
+    "events": 17,
+    "lines": [
+      "Sir Sniffsalot: oink? hello!",
+      "Wibbles: La la LAA!",
+      "Truffle: New game: BOOO!",
+      "Truffle: Touch the toadstool, then the TV, then the big rock. Someone is IT. FREEZE when called.",
+      "Marshmallow: I'm IT!",
+      "Truffle: Ha!",
+      "Marshmallow: Got you!",
+      "Gloop: Eek!",
+      "Gloop: Got it!",
+      "Truffle: Next!",
+      "Truffle: Wheee!",
+      "Truffle: Got it!",
+      "Truffle: FREEZE!",
+      "Gloop: Oops, I moved!",
+      "Pinchy: Pumpkin attack!"
+    ],
+    "nxt": "Dict{Int32, Int64}(4 => 1, 7 => 1, 2 => 2, 8 => 12)",
+    "path": "/sim/Programmieren/SimGame/world/media/s114/invent-preview2.mp4",
+    "players": "Int32[8, 2, 7]",
+    "pts": "Dict{Int32, Int64}(4 => 0, 7 => 0, 2 => 0, 8 => 11)",
+    "started": true
+  },
+  "seconds": 61.9,
+  "started": "2026-11-26T10:38:14.262",
+  "status": "done"
+}

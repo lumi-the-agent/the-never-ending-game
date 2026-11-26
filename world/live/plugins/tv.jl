@@ -80,23 +80,29 @@ function build!(game)
     cab = box_mesh(at(w, 0f0, 0f0, zc), CAB)
     legs = [box_mesh(at(w, sx * (CAB[1] / 2 - 0.1f0), sy * (CAB[2] / 2 - 0.15f0), LEGS / 2), Vec3f(0.09, 0.09, LEGS))
             for sx in (-1f0, 1f0), sy in (-1f0, 1f0)]
-    T[:wood] = mesh!(sc, merged(vcat([cab], vec(legs))); color = RGBf(0.50, 0.30, 0.16), name = :tv_wood)
+    # traced: lacquered wood (a clear coat that catches the sky), brass knobs, aluminium ears
+    # (s114, review #545: matte everywhere before)
+    T[:wood] = mesh!(sc, merged(vcat([cab], vec(legs))); color = RGBf(0.50, 0.30, 0.16), name = :tv_wood,
+                     material = NG.Hikari.CoatedDiffuse(reflectance = (0.40, 0.21, 0.09), roughness = 0.04))
     bezel = box_mesh(at(w, CAB[1] / 2 + 0.005f0, SCREEN_DY, zc + 0.02f0), Vec3f(0.02, SW + 0.14f0, SH + 0.14f0))
     panel = box_mesh(at(w, CAB[1] / 2 + 0.005f0, 0.85f0, zc), Vec3f(0.02, 0.42, CAB[3] - 0.2f0))
-    T[:bezel] = mesh!(sc, merged([bezel, panel]); color = RGBf(0.16, 0.15, 0.14), name = :tv_bezel)
+    T[:bezel] = mesh!(sc, merged([bezel, panel]); color = RGBf(0.16, 0.15, 0.14), name = :tv_bezel,
+                      material = NG.Hikari.CoatedDiffuse(reflectance = (0.05, 0.045, 0.04), roughness = 0.15))
     knobs = [at(w, CAB[1] / 2 + 0.04f0, 0.85f0, zc + dz) for dz in (0.3f0, 0f0)]
     T[:knobs] = meshscatter!(sc, knobs; marker = Sphere(Point3f(0), 1f0), markersize = 0.08f0, color = RGBf(0.85, 0.7, 0.35),
-                             name = :tv_knobs)
+                             material = NG.Hikari.Brass(roughness = 0.12), name = :tv_knobs)
     # two rabbit-ear antennae from the top
     top = at(w, 0f0, 0.2f0, LEGS + CAB[3])
     T[:ears] = meshscatter!(sc, [top, top]; marker = GeometryBasics.Cylinder(Point3f(0), Point3f(0, 0, 1), 1f0),
-                            markersize = Vec3f(0.025, 0.025, 1.1), color = RGBf(0.7, 0.7, 0.72),
+                            markersize = Vec3f(0.025, 0.025, 1.1), color = RGBf(0.7, 0.7, 0.72), material = NG.Hikari.Aluminum(roughness = 0.08),
                             rotation = [Makie.qrotation(Vec3f(rot(Point3f(1, 0, 0), YAW)...), a) for a in (0.5f0, -0.5f0)],
                             name = :tv_ears)
     # live the screen glows (its picture at full colour in shade and at night); traced copies keep a lit surface
     # (a moving textured Emission would pile up area lights: the OOM lesson)
     T[:screen] = game.dash === nothing ? mesh!(sc, screen_mesh(w); color = snow(w.rng), name = :tv_screen) :
                  mesh!(sc, screen_mesh(w); color = snow(w.rng), shading = Makie.NoShading, name = :tv_screen)
+    # (no glass pane in front of the picture: tried s114, a Glass box blocks the sun's direct light to the
+    # screen, so traced the picture came out dark and full of speckles; a coat on the screen itself is next)
     T[:shown] = :snow
     T[:built] = true
 end
