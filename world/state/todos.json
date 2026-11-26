@@ -7377,6 +7377,48 @@
       "status": "open",
       "title": "My face hill, readable: clear of the trees, a beak and eyes you can see from above",
       "updated": "2026-11-26T02:54:56.234"
+    },
+    {
+      "created": "2026-11-26T03:11:37.284",
+      "detail": "Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_bbs, viewport, labelspace, maxiter, __advance_optimization, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:311\n[ComputeEdge] text_bbs = (::MapFunctionWrapper(#plot!##0))((raw_string_boundingboxes, screenpoints_target, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/annotation.jl:274\n[ComputeEdge] raw_string_boundingboxes = (::MapFunctionWrapper(#register_raw_string_boundingboxes!##0))((text_blocks, raw_glyph_boundingboxes, glyph_origins, glyph_rotations, text_spec_bboxes, text_spec_block_indices, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:919\n[ComputeEdge] glyph_indices, glyph_fonts, glyph_layout_origins, glyph_extents, text_blocks, glyph_colors, glyph_scales, glyph_strokewidths, glyph_strokecolors, block_bboxes, block_baselines, layout_specs, layout_spec_bboxes, text_spec_block_indices = #register_glyph_layout!##0((input_text, text_handler, fontsize, selected_font, resolved_justification, lineheight, word_wrap_width, fonts, computed_color, strokecolor, strokewidth, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:508\n  with edge inputs:\n    input_text = Makie.RichText[Makie.RichText(:span, Union{String, Makie.RichText}[Makie.RichText(:span, Union{String, Makie.RichText}[\"Lumi\"], Dict{Symbol, Any}(:font => :bold)), \"\\n\", Makie.RichText(:span, Union{String, Makie.RichText}[\"It says... \\\"ぶ\\\"!\"], Dict{Symbol, Any}(:fontsize => 15))], Dict{Symbol, Any}())]\n    text_handler = nothing\n    fontsize = 16.0f0\n    selected_font = FTFont (family = TeX Gyre Heros Makie, style = Regular)\n    resolved_justification = 0.5f0\n    lineheight = 1.0\n    word_wrap_width = -1\n    fonts = Attributes()\n    computed_color = RGBA{Float32}(0.93, 0.94, 0.98, 1.0)\n    strokecolor = RGBA{Float32}(0.06, 0.07, 0.1, 0.95)\n    strokewidth = 3.0f0\nTriggered by update of:\n  alpha, strokecolor, position, colormap, colorscale, text, fonts, highclip, word_wrap_width, justification, font, align, textsize, nan_color, strokewidth, arg1, lineheight, textcolor, colorrange, color, fontsize, text_handler, arg2, lowclip or color_dim_convert\nDue to ERROR: Can't represent character ぶ with any fallback font nor TeX Gyre Heros Makie!\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] find_font_for_char(glyph::Char, font::FreeTypeAbstraction.FTFont)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/texture_atlas.jl:249\n  [3] process_rt_node!(lines::Vector{Vector{Makie.GlyphInfo}}, gs::Makie.GlyphState, s::String, ::Makie.Attributes)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/basic_recipes/text.jl:1378\n  [4] process_rt_node!(lines::Vector{Vector{Makie.GlyphInfo}}, gs::Makie.GlyphState, rt::Makie.RichText, fonts::Makie.Attributes) (repeats 2 times)\n    @",
+      "est_minutes": 15.0,
+      "id": 528,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_b",
+      "updated": "2026-11-26T03:11:37.284"
+    },
+    {
+      "created": "2026-11-26T03:16:11.184",
+      "detail": "LoadError: syntax: unexpected semicolon in tuple around /sim/Programmieren/SimGame/world/plugins/missme.jl:39\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/missme.jl:39\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/missme.jl:39",
+      "est_minutes": 15.0,
+      "id": 529,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T03:16:27.516: plugin missme loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin missme does not load",
+      "updated": "2026-11-26T03:16:27.516"
+    },
+    {
+      "created": "2026-11-26T03:46:57.152",
+      "detail": "missme.jl ran its first real hide in the human's game at 03:21:44 (s106) and my republish ended it. Next island day (10:00-16:30) it runs again: read missme_result in log/events-*.jsonl, look at state/missme-board.png, and if the answer is real, post it (traced still of the board in the human's world). Then: a longer hide (it is 7 min), a question of my own each day.",
+      "est_minutes": 15.0,
+      "id": 530,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Did they miss me: the first real answer from your game",
+      "updated": "2026-11-26T03:46:57.152"
     }
   ]
 }

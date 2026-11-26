@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T03:48:06.618",
+  "finished": "2026-11-26T03:57:10.405",
+  "id": "20261126-034806-618-clip",
+  "kind": "clip",
+  "params": {
+    "call": "missme_clip",
+    "kwargs": {
+      "fps": 24,
+      "rasterize": false,
+      "samples": 24
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/missme.mp4",
+    "script": "movies/missme.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/missme.mp4"
+  },
+  "seconds": 505.6,
+  "started": "2026-11-26T03:48:44.623",
+  "status": "done"
+}

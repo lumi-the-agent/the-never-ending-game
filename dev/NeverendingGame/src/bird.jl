@@ -209,7 +209,7 @@ function animate(m::Wing, c::PoseCtx)
     elseif a === :idle
         f, e = fidget(c)
         f == 1 && m.side > 0 && (up = 0.7f0 * e)  # preening under the left wing
-        f == 4 && (up = 0.3f0 * e * (1 + sin(31c.t)) / 2)
+        f == 4 && (up = 0.24f0 * e * (1 + sin(15c.t)) / 2)   # a feather shake you can follow (31 rad/s swung the tips at 6.8 m/s, s106)
     end
     c.mood < -0.1f0 && a !== :proud && (up -= 0.06f0)     # low: hugged to the body
     q = qrotation(Vec3f(1, 0, 0), m.side * max(up, -0.06f0))
@@ -266,11 +266,11 @@ function bird_upper(c::PoseCtx)
     elseif a === :idle
         f, e = fidget(c)
         if f == 1                         # preening under a wing
-            roll = -0.4f0 * e; pitch = 0.5f0 * e; yaw = -0.6f0 * e + 0.1f0 * e * sin(26c.t)
+            roll = -0.4f0 * e; pitch = 0.5f0 * e; yaw = -0.6f0 * e + 0.08f0 * e * sin(14c.t)
         elseif f == 2                     # a peek at the sky
             pitch = -0.45f0 * e; yaw = 0.3f0 * e * sin(1.6f0 * c.t)
         elseif f == 4                     # shaking out the feathers
-            roll = 0.2f0 * e * sin(31c.t); yaw = 0.15f0 * e * sin(23c.t); lift = 0.03f0 * e
+            roll = 0.14f0 * e * sin(15c.t); yaw = 0.1f0 * e * sin(11c.t); lift = 0.03f0 * e   # 31/23 rad/s alias at 30 fps (s106)
         end
         # just stopped (`extra`: 1 at the stop, down to 0 in 1.2 s, set by plugins/birdbody.jl):
         # the body rocks on over the hips and the crest flops back and forth, dying away

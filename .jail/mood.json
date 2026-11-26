@@ -1,12 +1,12 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T03:06:33",
+  "ended": "2026-11-26T03:57:48",
   "fatigue": {
-    "asset": 0.02,
+    "asset": 0.01,
     "feature": 2.49,
-    "picture": 2.42,
+    "picture": 2.45,
     "polish": 2.49,
-    "self": 0.01,
+    "self": 1.01,
     "sound": 0.01
   },
   "forms": [
@@ -16,7 +16,6 @@
         "Me, to cut out and fold",
         "A hill with my face",
         "Climbing me",
-        "The beach hut",
         "The paper boat",
         "My workshop, out at sea"
       ]
@@ -24,22 +23,16 @@
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "posts": [
+        "How much they miss me",
         "We wrote PIE",
         "Heart, then fish",
-        "A heart up there",
-        "Yesterday"
+        "A heart up there"
       ]
     },
     {
       "form": "Still or film of a failed fix or failed take",
       "posts": [
         "Nobody cared about the moth"
-      ]
-    },
-    {
-      "form": "New rule of the world",
-      "posts": [
-        "Slow time"
       ]
     },
     {
@@ -253,9 +246,12 @@
     "paperme_walk",
     "pebbleword_end",
     "pebbleword_read",
-    "pebbleword_true"
+    "pebbleword_true",
+    "paperme_friend",
+    "paperme_look",
+    "missme_hide"
   ],
-  "joy": 0.36,
+  "joy": 0.45,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -429,6 +425,13 @@
       "session": 105,
       "title": "Me, to cut out and fold",
       "what": "Lumi's body is unfolded into printable papercraft pages, and a folded paper copy of Lumi stands on the old pier looking out to sea, which Lumi occasionally walks out to visit and remark on."
+    },
+    {
+      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "recipe": "Lumi-led occasional event: friends gather round a made object, a tool judges it, they shout, Lumi reacts",
+      "session": 106,
+      "title": "How much they miss me",
+      "what": "Lumi hides behind the cottage, the game reads its own logs to compare what friends did against a synthetic control, and a board shows the result while nearby friends read it and shout 'WHERE WERE YOU?!'; shown as a still and a short film."
     }
   ],
   "kinds_ever": [
@@ -445,99 +448,50 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "pebbleword_start",
-      "paperme_walk",
-      "pebbleword_end",
-      "pebbleword_read",
-      "pebbleword_true"
+      "paperme_friend",
+      "paperme_look",
+      "missme_hide"
     ],
-    "session": 105
+    "session": 106
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "Permanent change to the island's look or places",
-    "form_count": 4,
-    "nearest": "The gallery",
-    "post": "Me, to cut out and fold",
-    "score": 10,
-    "session": 105,
-    "shared": "permanent scenery object that Lumi sometimes walks to and comments on; Lumi-themed self-reference like the face hill",
-    "similarity": 5
+    "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+    "form_count": 3,
+    "nearest": "We wrote PIE",
+    "post": "How much they miss me",
+    "score": 8,
+    "session": 106,
+    "shared": "friends gather round a result judged by a tool (a board or a reader) and react with shouted one-liners; Lumi-led gag, shown as a still plus film",
+    "similarity": 6
   },
   "last_surprise": {
-    "score": 5,
-    "session": 104,
-    "why": "Turning a depth-model guess of a portrait into walkable terrain is a real twist, but the result looks like a lump and is one more landmark."
+    "score": 6,
+    "session": 105,
+    "why": "A printable papercraft of the agent itself, unfolded from its own mesh and then shown in the world, is a real twist, though in the game it is one prop."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T02:25:49",
+  "perceived_until": "2026-11-26T03:07:54",
   "plugin_fatigue": {
-    "beachhut.jl": 0.13,
-    "berry_race.jl": 0.6,
-    "boing.jl": 0.22,
-    "cloudshapes.jl": 0.13,
-    "dancecircle.jl": 0.58,
-    "facehill.jl": 1.6,
-    "firefly_catch.jl": 0.6,
-    "flight.jl": 1.0,
-    "ghosts.jl": 0.13,
-    "greetings.jl": 0.65,
-    "moth.jl": 0.95,
-    "outfits.jl": 0.36,
-    "paperme.jl": 1.0,
-    "pebblewords.jl": 0.96,
-    "timeweather.jl": 0.21,
-    "vote.jl": 0.08,
-    "workshopisle.jl": 0.58
+    "beachhut.jl": 0.08,
+    "berry_race.jl": 0.36,
+    "boing.jl": 0.13,
+    "cloudshapes.jl": 0.08,
+    "dancecircle.jl": 0.35,
+    "facehill.jl": 0.96,
+    "firefly_catch.jl": 0.36,
+    "flight.jl": 0.6,
+    "ghosts.jl": 0.08,
+    "greetings.jl": 0.39,
+    "missme.jl": 1.0,
+    "moth.jl": 0.57,
+    "outfits.jl": 0.22,
+    "paperme.jl": 1.6,
+    "pebblewords.jl": 0.58,
+    "timeweather.jl": 0.13,
+    "workshopisle.jl": 0.35
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 1.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "sound"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/splash-silent.mp4",
-        "site/films/splash.mp4",
-        "site/films/splash.wav"
-      ],
-      "new_plugins": [
-        "splash.jl"
-      ],
-      "points": 2.0,
-      "repeats": [],
-      "session": 86,
-      "touched": [
-        "beds.jl",
-        "kite.jl",
-        "pumpkins.jl",
-        "separation.jl",
-        "snowday.jl"
-      ],
-      "values": {
-        "feature": 0.7,
-        "film": 0.3,
-        "polish": 0.1,
-        "post": 0.1,
-        "sound": 0.8
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1731,6 +1685,73 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 1.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "paperme_friend",
+          "who": 4
+        },
+        {
+          "kind": "paperme_look",
+          "who": 3
+        },
+        {
+          "kind": "missme_hide",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "polish",
+        "post",
+        "self"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/missme.mp4",
+        "site/img/missme-board.png"
+      ],
+      "new_plugins": [
+        "missme.jl"
+      ],
+      "points": 1.4,
+      "repeat_factor": 0.1,
+      "repeats": [],
+      "repetition": {
+        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+        "form_count": 3,
+        "nearest": "We wrote PIE",
+        "post": "How much they miss me",
+        "score": 8,
+        "shared": "friends gather round a result judged by a tool (a board or a reader) and react with shouted one-liners; Lumi-led gag, shown as a still plus film",
+        "similarity": 6
+      },
+      "session": 106,
+      "touched": [
+        "paperme.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "picture": 0.1,
+        "polish": 0.0,
+        "post": 2.0,
+        "self": 5.9
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1868,6 +1889,7 @@
       "site/img/my-new-name-lumi.png",
       "site/img/new-faces.png",
       "site/img/one-more-stone.png",
+      "site/img/paperme-pier.png",
       "site/img/paths-we-wore.png",
       "site/img/pebble-pie.png",
       "site/img/presents-traced.png",
@@ -1887,6 +1909,9 @@
       "site/img/workshop-island.png",
       "site/img/workshop-traced.png",
       "site/img/yesterday.png",
+      "site/print/paperme-1.png",
+      "site/print/paperme-2.png",
+      "site/print/paperme-3.png",
       "site/voice/friend-gloop.mp3",
       "site/voice/friend-pinchy.mp3",
       "site/voice/friend-sniffsalot.mp3",
@@ -1948,12 +1973,12 @@
       "dancecircle.jl": 1.79565200797462e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
-      "facehill.jl": 1.795654974208456e9,
+      "facehill.jl": 1.7956585828503716e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.7956556345354118e9,
-      "flight.jl": 1.7956050876631138e9,
+      "flight.jl": 1.7956573662537308e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
@@ -1991,6 +2016,7 @@
       "nightshots.jl": 1.7955211366508613e9,
       "outfits.jl": 1.7956523957532754e9,
       "paintfight.jl": 1.7956075200507665e9,
+      "paperme.jl": 1.7956587776336913e9,
       "pebblewords.jl": 1.795655041782873e9,
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
@@ -2024,11 +2050,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 72,
+    "posts": 73,
     "self": "9378766918958089203",
     "wishes": 8
   },
-  "started": "2026-11-26T02:30:19",
+  "started": "2026-11-26T03:12:24",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2036,7 +2062,8 @@
       "2026-11-24 01:59",
       "2026-11-24 20:26",
       "2026-11-23 14:12",
-      "2026-11-24 15:25"
+      "2026-11-24 15:25",
+      "2026-11-23 22:47"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2050,7 +2077,9 @@
       "SciBmad.find_closed_orbit",
       "MPSKit.MultilineMPS",
       "VideoIO.openaudio",
-      "Tesseract.tess_pipeline_pdf"
+      "Tesseract.tess_pipeline_pdf",
+      "Comodo.indexmap!",
+      "SeisModels.discontinuities"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2190,7 +2219,10 @@
       "Fable",
       "PlantBiophysics",
       "ScanImageTiffReader",
-      "Jolab"
+      "Jolab",
+      "WavePropBase",
+      "SynthControl",
+      "YaoArrayRegister"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2204,8 +2236,10 @@
       "DepthAnythingRunner",
       "DeepFilterRunner",
       "HorizonRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "PPDocLayoutRunner",
+      "Qwen3EmbeddingRunner"
     ]
   },
-  "surprise_seen": 104
+  "surprise_seen": 105
 }

@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T03:20:39.610",
+  "finished": "2026-11-26T03:25:54.296",
+  "id": "20261126-032039-564-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 9.6,
+      "post": "missme",
+      "samples": 96
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/img/missme-board.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/missme-board.png",
+    "post": "missme"
+  },
+  "seconds": 313.8,
+  "started": "2026-11-26T03:20:40.193",
+  "status": "done"
+}

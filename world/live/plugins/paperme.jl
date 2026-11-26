@@ -116,7 +116,7 @@ end
 
 # off until it works: in s105 the friends picked were blocked on the way (one stood in the sea beside the pier,
 # one far south did not move), and none arrived in the sandbox
-const FRIEND_OK = false
+const FRIEND_OK = true   # s106: only friends with a dry straight walk to the pier foot
 const FRIEND_LINES = ("Lumi? You look... flatter.", "Hello, paper Lumi!", "It doesn't answer...", "*pokes it* ...it's paper!")
 
 "Now and then a friend walks out along the pier to have a look at the paper me, and says what it thinks."
@@ -132,10 +132,10 @@ function friend_visit!(game)
             PM[:friend] = nothing
         elseif leg == 1 && (c.goal.arrived || hypot(c.pos[1] - c.goal.target[1], c.pos[2] - c.goal.target[2]) < 0.9f0)
             p, d = spot(game)
-            stand = p - Vec3f(d[1], d[2], 0) * 0.25f0 - Vec3f(-d[2], d[1], 0) * 0.7f0
+            stand = p - Vec3f(d[1], d[2], 0) * 0.7f0 - Vec3f(-d[2], d[1], 0) * 0.35f0   # on the deck (0.7 m aside was its edge)
             c.goal = NG.Goal(:paperlook, stand, :idle, 12.0, 0.0, false, 0, false)
             PM[:friend] = (id, 2)
-        elseif leg == 2 && c.goal.arrived
+        elseif leg == 2 && (c.goal.arrived || hypot(c.pos[1] - c.goal.target[1], c.pos[2] - c.goal.target[2]) < 0.6f0)
             p, _ = spot(game)
             c.yaw = atan(p[2] - c.pos[2], p[1] - c.pos[1])
             NG.say!(w, c, rand(w.rng, FRIEND_LINES); duration = 3.0)
@@ -155,7 +155,14 @@ function friend_visit!(game)
     ar = game.plugins["areas"].mod
     _, d = spot(game)
     foot = Base.invokelatest(getfield, ar, :PIER_START) - Vec2f(d[1], d[2]) * 0.6f0
-    # one of the nearest three: a straight walk from across the pond or round the coast gets blocked
+    # only friends with a straight walk on dry land to the pier's foot (from across the pond or round the coast the
+    # engine drops the walk, s105), within 25 m; one of the nearest three of those
+    P = Base.invokelatest(getfield, ar, :POND); PR = Base.invokelatest(getfield, ar, :POND_R)
+    dry(x, y) = NG.on_land(w.island, x, y; margin = 0.15) && hypot(x - P[1], y - P[2]) > PR + 0.5f0
+    clear(c) = (L = hypot(c.pos[1] - foot[1], c.pos[2] - foot[2]); L < 25 &&
+                all(k -> dry(c.pos[1] + (foot[1] - c.pos[1]) * k / ceil(Int, 2L), c.pos[2] + (foot[2] - c.pos[2]) * k / ceil(Int, 2L)), 0:ceil(Int, 2L)))
+    filter!(clear, cs)
+    isempty(cs) && (PM[:friend_at] = w.t + 20; return)
     sort!(cs; by = c -> hypot(c.pos[1] - foot[1], c.pos[2] - foot[2]))
     c = cs[rand(w.rng, 1:min(3, length(cs)))]
     NG.leave_interactions!(w, c)

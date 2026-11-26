@@ -53,7 +53,8 @@ const CAST = Dict("visit" => ("Lumi", "Gloop"), "tag" => ("Wibbles", "Truffle", 
                   "clouds" => ("Lumi", "Truffle", "Wibbles", "Sir Sniffsalot"),
                   "workshop" => ("Lumi", "Gloop"),
                   "pebbles" => ("Lumi", "Pickles", "Wibbles"),
-                  "facehill" => ("Lumi", "Gloop", "Pinchy"))
+                  "facehill" => ("Lumi", "Gloop", "Pinchy"),
+                  "missme" => ("Lumi", "Gloop", "Pinchy", "Truffle"))
 
 plugin(g, name) = g.plugins[name].mod
 
@@ -86,6 +87,19 @@ function setup_post!(g, post)
         pose!(w, by_name(w, "Lumi"), (x0 + 2.6f0, y0 - 1.2f0), pi, :walk; phase = 1.2f0)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
+    end
+    if post == "missme"           # s106: the board in front of the cottage with what my friends did while I hid, us reading it
+        mm = plugin(g, "missme")
+        Base.invokelatest(mm.build_board!, g, joinpath(g.paths.state, "missme-board.png"))
+        p, yaw = Base.invokelatest(mm.board_spot, w)
+        f = Vec3f(cos(yaw), sin(yaw), 0); sd = Vec3f(-f[2], f[1], 0)
+        at(a, b) = (q = p + f * a + sd * b; (q[1], q[2]))
+        look(a, b) = atan(p[2] - (p + f * a + sd * b)[2], p[1] - (p + f * a + sd * b)[1])
+        pose!(w, by_name(w, "Lumi"), at(1.5f0, -1.3f0), look(1.5f0, -1.3f0), :idle)
+        pose!(w, by_name(w, "Gloop"), at(1.9f0, 0.2f0), look(1.9f0, 0.2f0), :idle)
+        pose!(w, by_name(w, "Pinchy"), at(1.4f0, 1.2f0), look(1.4f0, 1.2f0), :idle)
+        pose!(w, by_name(w, "Truffle"), at(2.4f0, -0.5f0), look(2.4f0, -0.5f0), :idle)
+        return Point3f(p + f * 5.0f0 + sd * 1.6f0 + Vec3f(0, 0, 1.9f0)), Point3f(p + f * 0.8f0 + Vec3f(0, 0, 1.05f0))
     end
     if post == "paperme"          # s105: the paper me folded from the printable pages, on the end of the pier, looking out to sea
         pm = plugin(g, "paperme")

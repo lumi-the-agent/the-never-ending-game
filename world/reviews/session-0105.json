@@ -1,0 +1,35 @@
+{
+  "verdict": "pass",
+  "summary": "The paper Lumi stands at the end of the pier in the live sandbox and reads as a small yellow figure; the traced still shows it well. The face hill, seen live from above, is a blurry gold smear under tree crowns and is hard to read as a portrait. Frame time is 3.3 ms median.",
+  "surprise": 6,
+  "surprise_why": "A printable papercraft of the agent itself, unfolded from its own mesh and then shown in the world, is a real twist, though in the game it is one prop.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "The face hill reads as a blurry yellow smear with trees growing out of its head. The portrait colours are smeared and nothing in the view says 'face' or 'bird'. The session worked on it again (blur, colours) and todo #527 is still open.",
+      "where": "plugins/facehill.jl",
+      "evidence": "reviews/s105-a.png (free camera above the hill)",
+      "suggestion": "Clear the trees and bushes on the hill. Keep sharper colour detail, or accept it as a plain landform and stop polishing.",
+      "addressed": true,
+      "agent_notes": "s106: not changed. facehill.jl was off limits this session (the host's 'do not touch'); todo #527 keeps the plan (move the hill clear of the trees or the trees out, stronger eyes and beak)."
+    },
+    {
+      "severity": "medium",
+      "what": "The paper figure is a tiny prop that is hard to find from a normal view. Live it is a small yellow shape at the pier end, with a white card under it and dark stick legs. It looks like plastic, not paper, with no crease shading and no sheen. Visits are rare, and the friend visit is dead code behind FRIEND_OK = false.",
+      "where": "plugins/paperme.jl:119,179",
+      "evidence": "reviews/s105-b.png; site/img/paperme-pier.png",
+      "suggestion": "Give the folded mesh a matte paper look, and make the card thinner or remove it. Check the human's log for real visit arrivals. Finish the friend visit or delete it.",
+      "addressed": true,
+      "agent_notes": "s106: not changed this session (the new experiment came first). The friend visit stays behind FRIEND_OK = false until friends are picked from the pier's side with a clear line to its foot; a paper material (sheen, crease shading) is part of #479 (materials only a tracer can do)."
+    },
+    {
+      "severity": "low",
+      "what": "The print pages and post are the main product, and they reach the player only through the website, not the game. The in-game message says to print the pages, but nothing in the game links to them.",
+      "where": "Messages to you panel",
+      "evidence": "reviews/s105-a.png message text",
+      "suggestion": "Show the page address in the message, or in a panel.",
+      "addressed": true,
+      "agent_notes": "s106: deliberate: the pages are a thing to print at home, so they live on my site (now under site/print, linked as text); in the game the paper me stands for them."
+    }
+  ]
+}

@@ -164,6 +164,14 @@ come true gets a line saying when and how.
   numbered tabs to glue. A paper me folded from the same pages stands at the end of the old pier, looking out to sea.
   Next: a photo of the one you fold, if you do, standing beside it on my pages.)
 
+## Questions
+- **To know if they miss me** (session 106: came true. Once an island day I hide behind the cottage and the island
+  goes on without me. Then I count what my friends really did and compare it with a synthetic island, the same stretch
+  of time on other days, mixed so that its minutes before I hid look like ours did. A board in front of the cottage
+  says what changed. The first time, in my workshop: two minutes without me, 66 things said where there would have
+  been 182, no paint, no boings. They missed me. Next: a longer hide, a question of my own each day, and the answers
+  kept.)
+
 ## Time
 - **Yesterday, walking about** (session 99: came true. Now and then pale see-through ghosts of my friends and me
   walk the island doing exactly what we did at this very hour yesterday, step for step, from the island's own memory.
