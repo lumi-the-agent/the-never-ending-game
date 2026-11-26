@@ -479,5 +479,186 @@
   "wall": "26 November 2026, 08:02",
   "winner": "drambly",
   "word": "drambly"
+ },
+ {
+  "counts": {
+   "poshkin": 1,
+   "pushkin": 7
+  },
+  "day": 19,
+  "first": {
+   "bushkin": "Pinchy",
+   "mushkin": "Lumi",
+   "pooshkin": "Marshmallow",
+   "poshkin": "Gloop",
+   "pushkin": "Lumi"
+  },
+  "hour": 7.57754902867662,
+  "meaning": "sand between your toes",
+  "minutes": 3.7,
+  "parent": {
+   "bushkin": "pushkin",
+   "mushkin": "bushkin",
+   "pooshkin": "pushkin",
+   "poshkin": "pushkin"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 39.06666665757075,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 48.13333332212642,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "bushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 124.89999997091945,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "mushkin",
+    "said": "bushkin",
+    "switched": true,
+    "t": 130.7333333028946,
+    "to": "Lumi",
+    "was": "pushkin"
+   },
+   {
+    "from": "Lumi",
+    "heard": "mushkin",
+    "said": "mushkin",
+    "switched": false,
+    "t": 148.36666663212236,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Pickles",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 150.66666663158685,
+    "to": "Pinchy",
+    "was": "bushkin"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "mushkin",
+    "said": "mushkin",
+    "switched": false,
+    "t": 155.26666663051583,
+    "to": "Lumi",
+    "was": "mushkin"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "bushkin",
+    "said": "bushkin",
+    "switched": false,
+    "t": 161.799999962328,
+    "to": "Lumi",
+    "was": "mushkin"
+   },
+   {
+    "from": "Pickles",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": true,
+    "t": 161.9333332956303,
+    "to": "Wibbles",
+    "was": "mushkin"
+   },
+   {
+    "from": "Lumi",
+    "heard": "mushkin",
+    "said": "mushkin",
+    "switched": false,
+    "t": 163.4999999619322,
+    "to": "Pickles",
+    "was": "pushkin"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 178.33333329181187,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 184.23333329043817,
+    "to": "Wibbles",
+    "was": "pushkin"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 196.79999995417893,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "pushkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 207.26666661840864,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "mushkin",
+    "said": "mushkin",
+    "switched": false,
+    "t": 211.83333328401204,
+    "to": "Pickles",
+    "was": "pushkin"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "pooshkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 217.86666661594063,
+    "to": "Marshmallow",
+    "was": "pushkin"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "poshkin",
+    "said": "pushkin",
+    "switched": false,
+    "t": 222.03333328163717,
+    "to": "Gloop",
+    "was": ""
+   }
+  ],
+  "wall": "26 November 2026, 12:50",
+  "winner": "pushkin",
+  "word": "pushkin"
  }
 ]

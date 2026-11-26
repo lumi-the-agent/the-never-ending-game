@@ -1,0 +1,32 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "reviews/motion/session-0115/sand-sledding-overview.jpg: 12 near-identical frames; the jump metric is 0.005 at the 95th percentile My own sandbox screenshots (reviews/s115-b.png, s115-c.png): I poured a dune by hand, and it capped at 1.86 m. At dusk it reads as a smooth orange-brown hill, nearly the same colour as the path and terrain. There are no grains, ripples or grooves, so you cannot tell it is sand.",
+      "severity": "medium",
+      "suggestion": "Do not publish a film that does not show the new thing. Re-shoot low at the foot of the dune with the slider coming at the lens, and keep the haystack out of the shot.",
+      "what": "The sledding film shows almost nothing of sledding. The camera is far away and a blurry yellow haystack fills the lower right. The sliders are a few pixels. The whole 7 s is one static view with no readable motion, and it was published anyway.",
+      "where": "site/films/sand-sledding.mp4"
+    },
+    {
+      "evidence": "code: c.action = :jump; the speed is a fixed 3.5 m/s",
+      "severity": "medium",
+      "suggestion": "Use a lying or sliding pose, scale the speed with the slope, and add a sand spray. A sand-coloured groove only counts if the camera can see it.",
+      "what": "The 'sled' is the :jump action sliding along the ground at constant speed. Yaw is set to the direction of travel, and there is no belly or arms-up pose despite the 'arms up' claim. It has no acceleration or slope-dependent speed. It ends after 2.5 s or when the sand is thinner than 4 cm, so rides look like skating hops. In about 15 s of watching I saw no ride start with a 1.9 m dune and awake friends nearby. That is too short to say the rate is wrong, but nothing visible showed it.",
+      "where": "plugins/wordsand.jl:268-292 (sled!)"
+    },
+    {
+      "evidence": "motion sheets the-island-weighs-its-words-2-overview.jpg; jump metric 39 jumps, largest 0.14",
+      "severity": "medium",
+      "suggestion": "Publish one clean film made after the drawn_ground fix, with the words visible as they pour.",
+      "what": "The sand edge was a jagged staircase and 'black teeth' in two of the three published films, which the author admits. The first film also ends with the cottage buried under two sand mountains. Three posts of one idea, two with known visual flaws, read as filler. The speech bubbles are hidden in traced films, so the cause (words) is not visible.",
+      "where": "site/films/the-island-weighs-its-words*.mp4"
+    }
+  ],
+  "real_change": "Real: a persistent sand heightfield (saved to wordsand.bin) fed by every speech bubble. It slides to an angle of repose and gets 2%/min wind loss. Creatures are lifted onto it, boast when high, slump big dunes (avalanche) and ride the steepest side at 3.5 m/s (sled!, groove carved in the sand). Only drawn: the pouring grains and the mesh. The sled ride just sets action=:jump and moves the position, with no sled or belly pose.",
+  "summary": "Speech turning into sand that creatures stand on, slump and slide down is a real, new mechanic, and it cost nothing in frame time (p95 6.7 ms). In my own screenshots the sand is hard to read as sand, and the films that show it are weak or flawed.",
+  "superseded_by": "perfectionist-0115.json",
+  "surprise": 5,
+  "surprise_why": "Speech physically reshaping the ground is a genuine new link between creatures and terrain, but the slide and boast events follow the usual 'friends do a silly thing and shout' recipe.",
+  "verdict": "needs_work"
+}

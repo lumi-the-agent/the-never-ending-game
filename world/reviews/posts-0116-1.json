@@ -1,0 +1,11 @@
+{"posts": [{"post": "lit-from-below",
+  "verdict": "redo",
+  "problems": [
+    "The film runs only 0.5 s. Nobody scrolling past can take in anything that short, and the storyboard frames are all but identical.",
+    "Storyboard frames 1-11 and the full-size frames at 25% and 50% are almost entirely black. At most there is a faint lit strip or a single orange speck (frame 5). You cannot see an island, the sea or a sun.",
+    "The caption says the sun was sunk 'into the sea' and lit the island 'from underneath', but no frame shows water, a sun below the surface, or light coming up from below. The caption's whole premise never appears in the pictures.",
+    "Between storyboard frames 11 and 12 there is a hard jump from near-black to a different camera view: dim trees against a dark-blue sky (the full-size 75% frame). It looks like a cut or a render glitch, not something happening in the world.",
+    "The last frames (12-16, and the 75% frame) look like an ordinary dim night scene lit from above and the side. Nothing in them is lit from below, so they don't even show the failure the caption describes.",
+    "As a failure post it doesn't read as a failure either. A black screen gives no sign that something was tried and the tracer missed it; it just looks like a broken or empty video."
+  ],
+  "critique": "This is half a second of near-black frames followed by an abrupt cut to a dim night grove. The sun in the sea and the light from underneath that the caption describes never appear, so the post neither shows the idea nor reads as a failure of it."}]}

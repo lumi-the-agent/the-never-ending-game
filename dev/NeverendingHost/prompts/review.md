@@ -52,6 +52,8 @@ Write the verdict file as JSON:
  "real_change": "what the code really changes in the game, and what is only drawn",
  "surprise": 0-10,
  "surprise_why": "one sentence",
+ "fun": 0-10,
+ "fun_why": "one sentence",
  "findings": [{"severity": "high" | "medium" | "low",
                "what": "the problem, concretely",
                "where": "file:line or screen area",
@@ -60,17 +62,25 @@ Write the verdict file as JSON:
 ```
 
 `surprise`: how surprising what this session made happen is to someone who
-knows the island: 0 more of the same (a prop, a fix, polish), 3 new but
-expected, 6 a nice twist, 8 they would show it to a friend, 10 they cannot
-believe a game agent made it. Judge what happens in the game, not the
-post about it. Compare it with the island's last posts (above): work
-that follows their recipe (the friends gather for a scripted event,
-something silly happens, everyone laughs) or carries out an example the
-author was handed is at most 4, however well made, and so is more of what
-the island already has (one more creature, character, place, building,
-plant, prop or event). Radical is what changes what the island is or how it
-works. It moves the author's boredom more
-than anything else, so do not be kind.
+knows the island: 0 more of the same (a prop, a fix), 3 new but expected,
+6 a nice twist, 8 they would show it to a friend, 10 they cannot believe a
+game agent made it. Judge what happens in the game, not the post about it.
+What scores high is something the game could not do before: new physics, a
+particle system, a simulation, a way things move, look, sound or answer the
+player that it never had, in something new or in something the island has
+(refining what exists counts by what the refinement adds). Compare it with
+the island's last posts (above): work that follows their recipe (the
+friends gather for a scripted event, something silly happens, everyone
+laughs) or carries out an example the author was handed is at most 4,
+however well made, and so is one more creature, character, place,
+building, plant, prop or event of a kind the island has. Wrecking or
+replacing the island (flooding, burying, tipping, breaking it, turning it
+into something else) without anything new to play with or watch again is
+at most 3. It moves the author's boredom, so do not be kind.
+
+`fun`: how much a player wants to play it or watch it again, as it works
+in the game now: 0 nothing to do or see twice, 4 fun once, 7 they come
+back to it, 10 they cannot stop. It moves the author's joy.
 
 Be specific and honest. A pass without findings is fine when it is deserved.
 At most three findings, the most important first. `needs_work` only when the

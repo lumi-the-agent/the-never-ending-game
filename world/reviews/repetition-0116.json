@@ -1,0 +1,14 @@
+{"posts": [{"post": "Lit from below",
+  "what": "A raster still of the game's own view of the shore at the hour when the sun has sunk below the north sea and shines up from under the water, leaving only a faint warm glow on the undersides of the tree crowns; nothing moves or happens, and the traced film failed.",
+  "recipe": "new evening lighting on the whole island, shown as a quiet still",
+  "nearest": "Lamps on",
+  "similarity": 4,
+  "shared": "a quiet picture of a new evening light on the island, nobody acts"}],
+ "forms": [
+  {"form": "Change to how the island is lit: a quiet still of new light", "posts": ["Lit from below"]},
+  {"form": "New world rule that makes the creatures reshape the ground, shown in a film", "posts": ["The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding", "The island remembers being drawn"]},
+  {"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+  {"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw", "Past the palm islands"]},
+  {"form": "Permanent change to the island's look or places", "posts": ["Breeding a new friend", "The island on TV"]},
+  {"form": "Lumi-led set-piece gag film: a spoken punchline", "posts": ["A word goes round"]}
+ ]}

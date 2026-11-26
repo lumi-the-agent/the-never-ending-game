@@ -126,11 +126,11 @@ function ideas_body(log::AbstractDict)
     isempty(log["rounds"]) && return [DOM.div("session $(log["session"]): no round yet"; class = "ne-muted")]
     ideas = last(log["rounds"])["ideas"]
     passed = filter(i -> i["passes"], ideas)
-    shown = isempty(passed) ? [argmax(i -> i["worth"] * i["surprise"], ideas)] : passed
+    shown = isempty(passed) ? [argmax(strength, ideas)] : passed
     return [DOM.div(DOM.span(string(length(passed)); class = "ne-score"),
                     DOM.span(" of $(length(ideas)) passed · round $(length(log["rounds"])) of $IDEA_ROUNDS · session $(log["session"])";
                              class = "ne-muted")),
-            (DOM.div("“$(i["title"])”, surprise $(i["surprise"]): $(i["critique"])"; class = "ne-quote") for i in shown)...]
+            (DOM.div("“$(i["title"])”, surprise $(i["surprise"]), fun $(get(i, "fun", "–")): $(i["critique"])"; class = "ne-quote") for i in shown)...]
 end
 
 "A label and a bar from 0 to 1."

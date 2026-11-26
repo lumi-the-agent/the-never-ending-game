@@ -26,8 +26,10 @@ everyone share their shape.
   works differently.
 - 0-1: nothing in common but the island.
 
-A post that continues an earlier one (a project over several sessions) is
-judged by its new step: a step that shows the same again is a repeat.
+A post that continues or refines an earlier one (a project over several
+sessions, something the island has made to work, move, look or play better,
+or given a mechanism it lacked) is judged by what its new step adds: a real
+step is no repeat; a step that shows the same again is.
 
 ### Its form
 
@@ -41,7 +43,8 @@ picture), how it is shown. Group this session's posts and the last 10 earlier
 posts (marked above) by form: posts share a group when, premise aside, they
 are the same kind of thing. Group as a viewer scrolling through the posts
 who asks "another one of these?": a new premise in the same form is the same
-group. Name each group by its form in a few words; the last judge's groups
+group, while a refinement with a real new step is not in the group of what it
+refines. Name each group by its form in a few words; the last judge's groups
 are above, keep their names where they still fit. You only group: the host
 counts how many of the last 10 share a group with this session's posts.
 

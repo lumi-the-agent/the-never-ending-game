@@ -1,0 +1,20 @@
+{"ideas": [
+  {"title": "Football with the sun",
+   "similarity": 5,
+   "nearest": "Your moth",
+   "same_form": ["Keep the island level"],
+   "surprise": 5,
+   "critique": "This is round 2's walking sun with a kick added. Friends chasing a moving light is the moth again, and a playable ball game with the friends running after it comes right after Keep the island level. Kicking a round thing is the most predictable thing to do with it. What is still strong is the lighting: a dark island whose only light swings every shadow round at each kick, and a pond lit from inside. That only holds if the dark is truly dark and the shadow sweep is the star, not the football."},
+  {"title": "Lit from below",
+   "similarity": 3,
+   "nearest": "Lamps on",
+   "same_form": ["Lamps on"],
+   "surprise": 6,
+   "critique": "It flips where the whole island's light comes from, and caustics crawling over the undersides of crowns and chins are something only a path tracer gives. It is a real change to how the island looks, not one more prop. Nothing happens in it, though, so it is a mood film. Low-sample caustics through moving water easily denoise into a flat blue underglow that reads as plain night lighting, and then the idea is gone."},
+  {"title": "A puddle of sky came down",
+   "similarity": 5,
+   "nearest": "The island on TV",
+   "same_form": ["Breeding a new friend", "The island on TV", "Lamps on"],
+   "surprise": 5,
+   "critique": "This is round 2's sky sheet again, now made permanent. That makes it one more fixture that shows the island to itself while the friends look at it, like the TV. Climbing a tree to touch it is the expected gag. The readable upside-down friends overhead and silver beads rolling and merging in the grass are the strong, tracer-only parts. This version dropped the ripples, which were what kept the ceiling alive, so a still, blurry mirror becomes a backdrop."}
+]}

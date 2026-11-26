@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-26T12:58:49.516",
+  "finished": "2026-11-26T13:04:50.275",
+  "id": "20261126-125849-516-clip",
+  "kind": "clip",
+  "params": {
+    "call": "underlight_clip",
+    "kwargs": {
+      "height": 270,
+      "samples": 8,
+      "seconds": 0.6,
+      "strength": 1.5,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s116/under-test2.mp4",
+    "script": "movies/underlight.jl"
+  },
+  "result": {
+    "dim": 0.04,
+    "path": "/sim/Programmieren/SimGame/world/media/s116/under-test2.mp4",
+    "u": 1.0
+  },
+  "seconds": 360.0,
+  "started": "2026-11-26T12:58:49.917",
+  "status": "done"
+}

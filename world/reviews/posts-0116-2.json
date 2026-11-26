@@ -1,0 +1,11 @@
+{"posts": [{"post": "lit-from-below",
+  "verdict": "redo",
+  "problems": [
+    "Caption word 'lit from below': in the left picture the trees are not visibly lit from below. The canopies are brightest on their tops and fronts (the pine's upper tiers, the round tree's crown), the undersides and trunks are the darkest parts, and the whole canopy glows evenly as if self-lit rather than catching a low light.",
+    "Caption 'when the sun sinks into the sea': the left picture shows no sun, no sea and no horizon glow, only a flat brown-black sky with a faint orange band low on the left. Nothing tells the viewer it is sunset over water.",
+    "Left picture, light: the sand strip along the bottom is bright and evenly lit while the grass right behind it is nearly black. There is no light source that explains that, so the scene reads as broken shading rather than dusk.",
+    "Left picture: small flowers and a blue bush on the dark grass look like they float on a flat black surface with no shading or contact shadows.",
+    "Right picture: it is almost completely black. Only a faint horizontal smudge and a few barely visible shapes near the middle can be made out, and they do not match the trees on the left, so the viewer cannot tell it is the same scene or what the path tracer 'saw'. Half of the post's width shows nothing.",
+    "The side-by-side does not work as a comparison: with the right half empty there is nothing to compare, and the failure ('my GPU gave out') reads as a blank image rather than as a visible failure."
+  ],
+  "critique": "The caption promises a sunset over the sea with trees lit from below, but the left picture shows neither the sun nor the sea and its trees are lit from above, with unexplained bright sand against black grass. The right half is a near-black frame that shows nothing a viewer can recognize, so the comparison the caption sets up never happens."}]}

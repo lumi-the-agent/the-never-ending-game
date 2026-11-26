@@ -7,7 +7,7 @@ const NG = NeverendingGame
 
 const SECONDS = 60.0
 const HEAVY = 5.0f0              # Lumi's weight in friends
-const SPLASH_ANGLE = 0.095f0     # rad (5.4°): the low shore is under water
+const SPLASH_ANGLE = 0.065f0     # rad (3.7°): the low shore is a metre and a half under (5.4° until s116: a crowd peaked at 4.4°, so standing still won)
 const SPLASH_HOLD = 1.3          # s tipped that far before it floods
 const LEVEL_ANGLE = 0.035f0      # rad (2°): counts as level
 const MAX_SPLASHES = 3

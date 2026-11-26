@@ -10,8 +10,13 @@
 # the session will be judged afterwards (what it is and its form against the
 # posts, the reviewer's surprise) and says what is predictable in it, never
 # proposing one of its own; the host sends that back as the next turn. An idea
-# passes with no repeat penalty and an expected surprise of `IDEA_BAR`; after
-# `IDEA_ROUNDS` rounds the strongest goes. The rounds are kept outside the jail,
+# passes with no repeat penalty, an expected surprise of `IDEA_BAR` and fun of
+# `FUN_BAR`; after `IDEA_ROUNDS` rounds the strongest goes. While surprise alone
+# decided, and "changing what the island is" scored highest, the ideas that went
+# (sessions 109-116) wrecked the island: it drifted off, tipped and flooded, got
+# buried in sand. Now new mechanisms (physics, particles, simulation) and
+# refinements score high, wrecking it without anything to play is capped, and
+# fun has to be there too. The rounds are kept outside the jail,
 # by session, so a cut-off session goes on where it was.
 #
 # Before choosing, the session has time to look around (the workbench in
@@ -20,6 +25,8 @@
 
 "The surprise (0-10) the critic must expect for an idea to pass: they would show it to a friend."
 const IDEA_BAR = 8
+"The fun (0-10) the critic must expect as well: they come back to it (session 115 passed ways to wreck the island)."
+const FUN_BAR = 7
 "How many rounds of pitches the critic answers before the strongest idea goes."
 const IDEA_ROUNDS = 3
 "How often a turn may end without a new round before the session goes on without the critic."
@@ -85,7 +92,8 @@ end
 
 The critic's verdict `v` on this round's `pitched` ideas, scored by the host as the session will
 be: an idea's repeat penalty from the higher of its `similarity` and its form (how many of the last
-`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise`, and whether it passes.
+`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise` and `fun`, and whether it
+passes. A verdict without `fun` (the critic's before session 116) counts it as its surprise.
 """
 function score_ideas(v::AbstractDict, pitched, earlier)
     text = Dict(title_key(i["title"]) => i["idea"] for i in pitched)
@@ -96,20 +104,26 @@ function score_ideas(v::AbstractDict, pitched, earlier)
         same = get(i, "same_form", Any[])
         k = same isa AbstractVector ? count(in(last_ten), unique(title_key.(same))) : 0
         sim, surprise = clamp(i["similarity"], 0, 10), clamp(i["surprise"], 0, 10)
+        f = get(i, "fun", nothing)
+        fun = clamp(f isa Real ? f : surprise, 0, 10)
         s = max(sim, form_score(k))
         title = string(get(i, "title", ""))
         Dict{String,Any}("title" => title, "idea" => get(text, title_key(title), ""), "similarity" => sim,
-                         "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise,
-                         "worth" => repeat_factor(s), "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR,
+                         "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise, "fun" => fun,
+                         "worth" => repeat_factor(s), "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR && fun >= FUN_BAR,
                          "critique" => string(get(i, "critique", "")))
     end
 end
 
+"How strong an idea is when none passes: its surprise and fun, less its repeat penalty."
+strength(i::AbstractDict) = i["worth"] * (i["surprise"] + get(i, "fun", i["surprise"]))
+
 "An idea as the critic saw it, in a line."
 function idea_line(i::AbstractDict)
-    how = i["passes"] ? "passes" : i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) : "too expected"
+    how = i["passes"] ? "passes" : i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) :
+          i["surprise"] < IDEA_BAR ? "too expected" : "not fun enough"
     form = i["form_count"] == 0 ? "its form in none of your last $FORM_MEMORY posts" : "its form in $(i["form_count"]) of your last $FORM_MEMORY"
-    return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10: $how. $(i["critique"])"
+    return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10, fun $(i["fun"])/10: $how. $(i["critique"])"
 end
 
 "What the character hears after a round: the critic's word on each idea, then pass, another round, or the strongest."
@@ -123,11 +137,11 @@ function critique_text(scored, round::Int, rel::AbstractString)
     if !isempty(passed)
         print(io, "\nPassed: ", join(("\"$(i["title"])\"" for i in passed), ", "), ". Take the one of them you want most: ", then)
     elseif round < IDEA_ROUNDS
-        print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, and a surprise of ",
-              "$IDEA_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
+        print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, a surprise of ",
+              "$IDEA_BAR and fun of $FUN_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
               "strong, drop the rest, and add new ones far from everything so far; then end your turn.")
     else
-        best = argmax(i -> i["worth"] * i["surprise"], scored)
+        best = argmax(strength, scored)
         print(io, "\nNone passed in $IDEA_ROUNDS rounds. The strongest is \"$(best["title"])\"; take it, or one without a ",
               "penalty you want more: ", then)
     end
@@ -182,7 +196,7 @@ function ideas_followup(host, n::Int, run)
     passed = count(i -> i["passes"], scored)
     log["go"] = passed > 0 || r >= IDEA_ROUNDS
     save_ideas_log!(jp, log)
-    best = argmax(i -> i["worth"] * i["surprise"], scored)
+    best = argmax(strength, scored)
     record!(host.activity, "$label, round $r", "review",
             "$passed of $(length(scored)) passed; strongest \"$(best["title"])\" (surprise $(best["surprise"]))")
     return critique_text(scored, r, rel)

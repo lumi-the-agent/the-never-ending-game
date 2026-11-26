@@ -75,9 +75,10 @@ function new_happenings(jp::JailPaths, m::AbstractDict, from::DateTime)
 end
 
 """
-The newest session review's surprise (0-10, the reviewer's), moving boredom and joy once, before the
-next session: a 6 (a nice twist) holds them, every point above eases boredom by 0.08, every point
-below adds as much.
+The newest session review's surprise and fun (0-10, the reviewer's), moving boredom and joy once,
+before the next session: surprise moves boredom (a 6, a nice twist, holds it; every point above eases
+it by 0.08, every point below adds as much), fun moves joy the same way (0.04 a point from 6).
+Reviews before session 116 have no fun (nor does one that gives none as a number): their surprise moves joy.
 """
 function feel_surprise!(jp::JailPaths, m::AbstractDict)
     files = sort!(filter(f -> occursin(r"^session-\d+\.json$", f), readdir(reviews_dir(jp))))
@@ -88,9 +89,11 @@ function feel_surprise!(jp::JailPaths, m::AbstractDict)
     m["surprise_seen"] = n
     s = get(r, "surprise", nothing)
     s isa Real || return m
-    m["last_surprise"] = Dict{String,Any}("session" => n, "score" => s, "why" => string(get(r, "surprise_why", "")))
+    f = get(r, "fun", s)
+    f isa Real || (f = s)
+    m["last_surprise"] = Dict{String,Any}("session" => n, "score" => s, "why" => string(get(r, "surprise_why", "")), "fun" => f)
     m["boredom"] = round(clamp(m["boredom"] - 0.08 * (s - 6), 0, 1); digits = 2)
-    m["joy"] = round(clamp(m["joy"] + 0.04 * (s - 6), 0, 1); digits = 2)
+    m["joy"] = round(clamp(m["joy"] + 0.04 * (f - 6), 0, 1); digits = 2)
     return m
 end
 
@@ -131,11 +134,11 @@ end
 # session after, so it fades over a few sessions. What a kind is worth falls
 # steeply with its fatigue (×e^(-1.2·fatigue)): done last session ≈ 30 %, two in
 # a row ≈ 15 %, after that close to nothing. The first time ever of a kind earns
-# a bonus. Polishing tires per plugin as well: editing a plugin the last two
-# sessions edited costs points. A session that brings no real variety raises
-# boredom; a bored character is told what it is fed up with and what it is fresh for.
-# A film and the post every session (rule 14) are not kinds to vary and never
-# tire: while films tired too (40 % after one), sessions 96-98 posted stills.
+# a bonus. A session that brings no real variety raises boredom. A film and the
+# post every session (rule 14) are not kinds to vary and never tire: while films
+# tired too (40 % after one), sessions 96-98 posted stills. Refining what exists
+# (editing plugins) never tires either, and editing the same plugins again costs
+# nothing (until session 115 it did): making something better is never worth less.
 
 "What each kind of work is worth fresh, and what the prompt suggests for it."
 const KINDS = Dict(
@@ -149,14 +152,13 @@ const KINDS = Dict(
     "wish"    => (3.0, "a wish from WISHES.md come true"),
     "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 5)"),
 )
-"Worth the same every time, they never tire: a film, and the post every session makes (rule 14)."
-const EVERY_SESSION = ("film", "post")
-"Whether doing kind `k` again is worth less (a wish is its own thing each time)."
-tires(k) = !(k in EVERY_SESSION) && k != "wish"
+"Worth the same every time: a film, the post every session makes (rule 14), refining what exists, a wish (its own thing each time)."
+const NEVER_TIRE = ("film", "post", "polish", "wish")
+"Whether doing kind `k` again is worth less."
+tires(k) = !(k in NEVER_TIRE)
 const FATIGUE_KEEP = 0.6       # each session a kind's fatigue is multiplied by this, then +1 if it was done
 const FATIGUE_BITE = 1.2       # value × exp(-FATIGUE_BITE × fatigue)
 const FIRST_BONUS = 4.0        # the first time ever of a kind
-const FED_UP = 1.5             # fatigue from which a kind or plugin counts as fed up with (about two sessions in a row)
 
 ext(f) = lowercase(last(splitext(f)))
 is_film(f) = ext(f) in (".mp4", ".webm", ".mov")
@@ -249,11 +251,10 @@ end
 
 What a session's work is worth to the character in mood `m` (its fatigues and the
 kinds it ever did): per kind `value × amount × e^(-1.2 fatigue)` (+ the first
-time bonus), polishing per plugin (1 point fresh, -2 for a plugin the last two
-sessions edited too, up to 3 counted). Returns the session record.
+time bonus), polishing a point per plugin edited, up to 3. Returns the session record.
 """
 function score(m::AbstractDict, d::AbstractDict)
-    fat, pfat, ever = m["fatigue"], m["plugin_fatigue"], m["kinds_ever"]
+    fat, ever = m["fatigue"], m["kinds_ever"]
     worth = Dict{String,Float64}()
     for (k, a) in d["amount"]
         a > 0 || continue
@@ -261,28 +262,20 @@ function score(m::AbstractDict, d::AbstractDict)
         k in ever || (v += FIRST_BONUS)
         worth[k] = round(v; digits = 1)
     end
-    repeats = [f for f in d["touched"] if get(pfat, f, 0.0) >= FED_UP]
-    fresh = [f for f in d["touched"] if !(f in repeats)]
-    polish = sum(f -> exp(-1.5 * get(pfat, f, 0.0)), first(fresh, 3); init = 0.0) * exp(-FATIGUE_BITE * get(fat, "polish", 0.0))
-    isempty(d["touched"]) || (worth["polish"] = round(polish - 2length(repeats); digits = 1))   # the repeats cost in full
+    isempty(d["touched"]) || (worth["polish"] = first(KINDS["polish"]) * min(length(d["touched"]), 3))
     r = Dict{String,Any}(d)
     r["values"] = worth
     r["kinds"] = sort!(collect(keys(worth)))
-    r["repeats"] = repeats
     r["points"] = round(sum(values(worth); init = 0.0); digits = 1)
     return r
 end
 
-"After a session: each kind (that `tires`) and plugin it did tires (+1), the others rest (×0.6)."
+"After a session: each kind (that `tires`) it did tires (+1), the others rest (×0.6)."
 function tire!(m::AbstractDict, r::AbstractDict)
-    fat, pfat = m["fatigue"], m["plugin_fatigue"]
+    fat = m["fatigue"]
     for k in keys(KINDS)
         tires(k) || (delete!(fat, k); continue)
         fat[k] = round(FATIGUE_KEEP * get(fat, k, 0.0) + (k in r["kinds"] ? 1.0 : 0.0); digits = 2)
-    end
-    for f in union(keys(pfat), r["touched"], r["new_plugins"])
-        v = FATIGUE_KEEP * get(pfat, f, 0.0) + (f in r["touched"] || f in r["new_plugins"] ? 1.0 : 0.0)
-        v < 0.05 ? delete!(pfat, f) : (pfat[f] = round(v; digits = 2))
     end
     union!(m["kinds_ever"], r["kinds"])
     return m
@@ -305,7 +298,7 @@ and joy follow (the human's company is not in the records: loneliness stays).
 """
 function with_fatigue!(m::AbstractDict)
     haskey(m, "fatigue") && return m
-    m["fatigue"], m["plugin_fatigue"] = Dict{String,Any}(), Dict{String,Any}()
+    m["fatigue"] = Dict{String,Any}()
     m["kinds_ever"] = filter(!=("self"), collect(keys(KINDS)))   # before Nov 24 the character had made every kind but itself
     m["boredom"], m["joy"] = 0.0, 0.5
     m["sessions"] = map(m["sessions"]) do old
@@ -350,7 +343,6 @@ function made_parts(r::AbstractDict)
     end
     isempty(parts) && push!(parts, "nothing new")
     isempty(r["touched"]) || push!(parts, "edited " * join(r["touched"], ", "))
-    isempty(r["repeats"]) || push!(parts, "AGAIN on " * join(r["repeats"], ", ") * " (costs 2 each)")
     vals = get(r, "values", nothing)
     vals === nothing || isempty(vals) || push!(parts, "worth: " * join(("$k $(v)" for (k, v) in sort!(collect(vals))), ", "))
     return join(parts, "; ")

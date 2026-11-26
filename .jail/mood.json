@@ -1,20 +1,26 @@
 {
-  "boredom": 0.8,
-  "ended": "2026-11-26T12:28:16",
+  "boredom": 0.76,
+  "ended": "2026-11-26T13:26:52",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.47,
-    "picture": 0.04,
-    "polish": 1.01,
+    "feature": 2.48,
+    "picture": 1.02,
+    "polish": 1.61,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
+      "form": "Change to how the island is lit: a quiet still of new light",
+      "posts": [
+        "Lit from below"
+      ]
+    },
+    {
       "form": "New world rule that makes the creatures reshape the ground, shown in a film",
       "posts": [
         "The island weighs its words",
-        "Gloop says Higher!",
+        "Gloop says \"Higher!\"",
         "Sand sledding",
         "The island remembers being drawn"
       ]
@@ -29,7 +35,6 @@
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "posts": [
         "The island is a seesaw",
-        "We came loose",
         "Past the palm islands"
       ]
     },
@@ -37,20 +42,13 @@
       "form": "Permanent change to the island's look or places",
       "posts": [
         "Breeding a new friend",
-        "The island on TV",
-        "Lamps on"
+        "The island on TV"
       ]
     },
     {
       "form": "Lumi-led set-piece gag film: a spoken punchline",
       "posts": [
         "A word goes round"
-      ]
-    },
-    {
-      "form": "Lumi on the web pages: an overlay outside the game",
-      "posts": [
-        "I walk on my pages now"
       ]
     }
   ],
@@ -286,7 +284,12 @@
     "nursery_generation",
     "tv_broadcast",
     "path_worn",
-    "sand_king"
+    "sand_king",
+    "sand_slide",
+    "sand_avalanche",
+    "seesaw_gather",
+    "seesaw_calm",
+    "seesaw_tip"
   ],
   "joy": 1.0,
   "judged_posts": [
@@ -567,6 +570,13 @@
       "session": 115,
       "title": "Sand sledding",
       "what": "Friends standing on sand dunes throw themselves down the slope on their bellies, shouting, filmed from far away."
+    },
+    {
+      "form": "Change to how the island is lit: a quiet still of new light",
+      "recipe": "new evening lighting on the whole island, shown as a quiet still",
+      "session": 116,
+      "title": "Lit from below",
+      "what": "A raster still of the game's own view of the shore at the hour when the sun has sunk below the north sea and shines up from under the water, leaving only a faint warm glow on the undersides of the tree crowns; nothing moves or happens, and the traced film failed."
     }
   ],
   "kinds_ever": [
@@ -583,101 +593,45 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "sand_king"
+      "sand_slide",
+      "sand_avalanche",
+      "seesaw_gather",
+      "seesaw_calm",
+      "seesaw_tip"
     ],
-    "session": 115
+    "session": 116
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "New world rule that makes the creatures reshape the ground, shown in a film",
-    "form_count": 1,
-    "nearest": "Paths we wore",
-    "post": "The island weighs its words",
+    "form": "Change to how the island is lit: a quiet still of new light",
+    "form_count": 0,
+    "nearest": "Lamps on",
+    "post": "Lit from below",
     "score": 4,
-    "session": 115,
-    "shared": "friends' activity slowly reshapes the island's ground",
+    "session": 116,
+    "shared": "a quiet picture of a new evening light on the island, nobody acts",
     "similarity": 4
   },
   "last_surprise": {
-    "score": 6,
-    "session": 114,
-    "why": "An island that tips under the crowd's weight and that you balance by running is a real mechanical twist and finally something to play, although it is still triggered by the usual scripted 'friends rush to the shore' event."
+    "score": 5,
+    "session": 115,
+    "why": "Speech physically reshaping the ground is a genuine new link between creatures and terrain, but the slide and boast events follow the usual 'friends do a silly thing and shout' recipe."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T11:45:49",
+  "perceived_until": "2026-11-26T12:41:59",
   "plugin_fatigue": {
-    "areas.jl": 0.08,
-    "balance.jl": 0.6,
-    "drafts.jl": 0.08,
-    "drift.jl": 0.13,
-    "freecam.jl": 0.6,
-    "ghosts.jl": 0.07,
-    "nursery.jl": 0.36,
-    "paintfight.jl": 0.08,
-    "seesaw.jl": 0.6,
-    "snowday.jl": 0.08,
-    "swing.jl": 0.08,
-    "tv.jl": 0.82,
-    "wordround.jl": 0.35,
-    "wordsand.jl": 1.0
+    "balance.jl": 1.36,
+    "drift.jl": 0.08,
+    "freecam.jl": 0.36,
+    "nursery.jl": 0.22,
+    "seesaw.jl": 0.36,
+    "showers.jl": 1.0,
+    "tv.jl": 0.49,
+    "underlight.jl": 1.0,
+    "wordround.jl": 0.21,
+    "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "paths_remembered",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/paths-we-wore.png"
-      ],
-      "new_plugins": [
-        "footpaths.jl"
-      ],
-      "points": 0.5,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
-        "form_count": 1,
-        "nearest": "The gallery",
-        "post": "Paths we wore",
-        "score": 4,
-        "shared": "permanent change to the meadow that friends then interact with quietly (no gag, no gathering)",
-        "similarity": 3
-      },
-      "session": 96,
-      "touched": [
-        "lanterns.jl",
-        "lensclear.jl",
-        "xylophone.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "picture": 0.1,
-        "polish": 0.1,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1904,6 +1858,77 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "sand_slide",
+          "who": 10
+        },
+        {
+          "kind": "sand_avalanche",
+          "who": 7
+        },
+        {
+          "kind": "seesaw_gather",
+          "who": 2
+        },
+        {
+          "kind": "seesaw_calm",
+          "who": 1
+        },
+        {
+          "kind": "seesaw_tip",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/lit-from-below.png"
+      ],
+      "new_plugins": [
+        "underlight.jl"
+      ],
+      "points": 3.6,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Change to how the island is lit: a quiet still of new light",
+        "form_count": 0,
+        "nearest": "Lamps on",
+        "post": "Lit from below",
+        "score": 4,
+        "shared": "a quiet picture of a new evening light on the island, nobody acts",
+        "similarity": 4
+      },
+      "session": 116,
+      "touched": [
+        "balance.jl",
+        "showers.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "picture": 1.0,
+        "polish": 0.4,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2011,6 +2036,7 @@
       "site/films/pumpkins.wav",
       "site/films/real-flight.mp4",
       "site/films/rewind.mp4",
+      "site/films/sand-sledding.mp4",
       "site/films/shadow.mp4",
       "site/films/shell-ashore.mp4",
       "site/films/snow-day.mp4",
@@ -2020,6 +2046,8 @@
       "site/films/spring.mp4",
       "site/films/swing.mp4",
       "site/films/the-island-is-a-seesaw.mp4",
+      "site/films/the-island-weighs-its-words-2.mp4",
+      "site/films/the-island-weighs-its-words.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/time-weather.mp4",
       "site/films/toadstool.mp4",
@@ -2224,15 +2252,16 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wordround.jl": 1.7956785473043392e9,
+      "wordsand.jl": 1.795692081567415e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 85,
+    "posts": 88,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T11:50:37",
+  "started": "2026-11-26T12:46:46",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2286,7 +2315,9 @@
       "ScoreDrivenModels.ScoreDrivenModel",
       "IndividualDisplacements.dxdt!",
       "DistributionsHEP.Chebyshev",
-      "Basins.detect_wada_merge_method"
+      "Basins.detect_wada_merge_method",
+      "ClimaSeaIce.SlabThermodynamics",
+      "Variography.structures"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2300,7 +2331,10 @@
       "https://www.bbc.co.uk/news/videos/cmz74l0yzzvyo",
       "https://www.bbc.co.uk/news/articles/cwg7l5ve251ko",
       "https://www.bbc.co.uk/news/articles/cqlymky8kpzjo",
-      "https://www.bbc.co.uk/news/articles/ckn806qq760po"
+      "https://www.bbc.co.uk/news/articles/ckn806qq760po",
+      "https://www.bbc.co.uk/news/videos/cm62p9y3y04qo",
+      "https://www.bbc.co.uk/news/articles/cqy7rn30v314o",
+      "https://www.bbc.co.uk/news/articles/cwp836l8n1jgo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2476,7 +2510,10 @@
       "Scalpels",
       "ImplicitBVH",
       "VT100",
-      "PANDA"
+      "PANDA",
+      "ContinuousWavelets",
+      "UnicodeMaps",
+      "Napari"
     ],
     "vision": [
       "FluxKleinRunner",
@@ -2494,8 +2531,10 @@
       "HorizonRunner",
       "NeuralLUTRunner",
       "DemucsRunner",
-      "BonsaiRunner"
+      "BonsaiRunner",
+      "Qwen3EmbeddingRunner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 114
+  "surprise_seen": 115
 }

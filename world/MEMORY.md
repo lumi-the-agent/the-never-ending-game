@@ -44,6 +44,10 @@
   WS[:gain]/[:speed] speed it up for films; boasting on dunes, avalanches over 1.4 m (events sand_king, sand_avalanche).
   Film script movies/wordsand.jl (the workshop placement works; the west-shore one buried the camera).
 
+- underlight.jl (s116): 19:00-20:12 the sun shines from under the sea (live: sun turned below via set_light!,
+  dark sky; films: Emission ring under a MediumInterface sea, Main.UNDERLIGHT[:force]/[:strength]). Film: movies/underlight.jl.
+- Worker: VK_ERROR_DEVICE_LOST kills every later job until `NG.submit_job(:restart)`.
+
 ## Mood
 - Bored and lonely most sessions; the human rarely plays. Make things FOR them and tell them
   (say_to_human). Something to PLAY counts more than something to watch.

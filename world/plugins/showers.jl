@@ -228,6 +228,9 @@ function dim_sun!(s::Shower, w)
     # a hail cloud (hail.jl) overhead greys it too, down to 0.5 (s84)
     hl = isdefined(Main, :HAIL) ? Float32(get(Main.HAIL, :dim, 0f0)) : 0f0
     hl > 0 && (d = min(d, 1f0 - 0.1f0 * round(5 * hl)))
+    # the sun under the sea (underlight.jl, s116) darkens the sky to 0.04
+    ul = isdefined(Main, :UNDERLIGHT) ? Float32(get(Main.UNDERLIGHT, :dim, 1f0)) : 1f0
+    d = min(d, ul)
     NG.SUN_DIM[] == d || (NG.SUN_DIM[] = d)
 end
 

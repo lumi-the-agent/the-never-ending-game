@@ -387,3 +387,20 @@ Read the one you need before you start:
   ground, and a layer 3.5 cm under it pokes through in a jagged staircase. See wordsand.jl `drawn_ground`.
 - Two-step plugin edits where the first adds a call to a function the second defines: the reload in between
   switches the system off (UndefVarError); the next reload brings it back. Write such edits in one go.
+
+## Light from under the water (s116, plugins/underlight.jl)
+- The stage sea is Hikari.Glass: it BLOCKS shadow rays, so a light under it reaches nothing by next-event
+  estimation. `Hikari.MediumInterface(Glass(...); shadows = 1.33f0)` lets shadow rays through (Fresnel
+  weighted, no caustics). underlight.jl hides the stage sea and shows such a copy in films.
+- Every triangle of an `Emission` mesh is its own area light: a 1152-triangle emissive ring made the
+  worker clip fail resolving another plot's trace_renderobject (likely GPU memory). Keep emitters to ~100 tris.
+- A plot whose `visible` is switched after the clip's scene is built may not reach the trace (the first
+  under-light take stayed dark): build film-only plots visible from the start (decide in build!).
+- The live raster has no Emission light; to light from below there, `Makie.set_light!(scene, 1; direction = d)`
+  with d.z < 0 works (re-assert whenever `game.stage.sun_dir` changed: sync_sun! re-aims the sun every 1°).
+- plugins/showers.jl owns NG.SUN_DIM every frame (min of rain, storm, hail, underlight): add a new
+  dimmer there as another `min`, never set SUN_DIM from a second plugin alone.
+- s116: every 960x540 traced take with underlight's emissive ring (56 triangles, 19-62 m radius, strength 1.2-2)
+  lost the worker GPU (VK_ERROR_DEVICE_LOST after 200-400 s), under the glass sea and on top of it alike.
+  Try a 480x270 still first before a full film with a new big light. After a device loss every later job
+  fails until `NG.submit_job(:restart)`.

@@ -758,17 +758,17 @@
     },
     {
       "created": "2026-11-22T22:26:42.890",
-      "detail": "MethodError: no method matching -(::GeometryBasics.Point{2, Float32}, ::Float32)\nFor element-wise subtraction, use broadcasting with dot syntax: array .- scalar\nThe function `-` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  -(!Matched::Complex{Bool}, ::Real)\n   @ Base complex.jl:329\n  -(!Matched::ChainRulesCore.ZeroTangent, ::Any)\n   @ ChainRulesCore ~/.julia/packages/ChainRulesCore/9QALR/src/tangent_arithmetic.jl:101\n  -(!Matched::ChainRulesCore.NotImplemented, ::Any)\n   @ ChainRulesCore ~/.julia/packages/ChainRulesCore/9QALR/src/tangent_arithmetic.jl:49\n  ...\n\nStacktrace:\n  [1] catmull(ps::Vector{GeometryBasics.Point{2, Float32}}, step::Float32)\n    @ Main.Plugin_areas /sim/Programmieren/SimGame/world/plugins/areas.jl:40\n  [2] in_the_way(p::NeverendingGame.Prop)\n    @ Main.Plugin_areas /sim/Programmieren/SimGame/world/plugins/areas.jl:169\n  [3] #12\n    @ /sim/Programmieren/SimGame/world/plugins/areas.jl:177 [inlined]\n  [4] filter!(f::Main.Plugin_areas.var\"#12#13\", a::Vector{NeverendingGame.Prop})\n    @ Base ./array.jl:2982\n  [5] start!(s::Main.Plugin_areas.Areas, game::Game)\n    @ Main.Plugin_areas /sim/Programmieren/SimGame/world/plugins/areas.jl:177\n  [6] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:232\n  [7] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:187\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:232\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:313\n [10] run_game(; root::String, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:376\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "LavaVulkanError in get_semaphore_counter_value:\n  VkResult: -4 — failed to execute #= /home/simon/.julia/packages/Vulkan/4zVVA/generated/linux.jl:91072 =# @dispatch device vkGetSemaphoreCounterValue(device, semaphore, pValue)\n  Suggestion: Device lost. Call reset_device!(device) to reinitialize, or restart Julia.\nStacktrace:\n  [1] query_timeline\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:600 [inlined]\n  [2] passed(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, v::UInt64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:124\n  [3] waitfor\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:572 [inlined]\n  [4] waitfor!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/backend.jl:460 [inlined]\n  [5] release!(rec::Mantle.Recording)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:131\n  [6] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n  [7] release!(rec::Mantle.RecordingParts{Mantle.Recording})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/kalaunch.jl:1182\n  [8] droprecording!(pl::Mantle.Plan{Mantle.LavaDevice, Tuple{Mantle.GPURef{Int32}, Mantle.GPURef{Hikari.PerspectiveCamera}, Mantle.GPURef{Raycore.SetKey}, Mantle.GPURef{Hikari.GPUFilterParams}, Mantle.Buffer{Int32, 1}, Mantle.Buffer{Mantle.Predicate, 1}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/build.jl:1299\n  [9] free!(pl::Mantle.Plan{Mantle.LavaDevice, Tuple{Mantle.GPURef{Int32}, Mantle.GPURef{Hikari.PerspectiveCamera}, Mantle.GPURef{Raycore.SetKey}, Mantle.GPURef{Hikari.GPUFilterParams}, Mantle.Buffer{Int32, 1}, Mantle.Buffer{Mantle.Predicate, 1}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/build.jl:1337\n [10] #foreach##0\n    @ ./tuple.jl:691 [inlined]\n [11] BottomRF\n    @ ./reduce.jl:78 [inlined]\n [12] afoldl\n    @ ./operators.jl:599 [inlined]\n [13] _foldl_impl\n    @ ./reduce.jl:60 [inlined]\n [14] foldl_impl\n    @ ./reduce.jl:40 [inlined]\n [15] mapfoldl_impl\n    @ ./reduce.jl:36 [inlined]\n [16] mapfoldl\n    @ ./reduce.jl:167 [inlined]\n [17] foldl\n    @ ./reduce.jl:190 [inlined]\n [18] foreach\n    @ ./tuple.jl:691 [inlined]\n [19] free!(plans::Hikari.VPPlans{Hikari.PerRun{Hikari.PerspectiveCamera}, Mantle.Plan{Mantle.LavaDevice, Tuple{Mantle.GPURef{Int32}, Mantle.GPURef{Hikari.PerspectiveCamera}, Mantle.GPURef{Raycore.SetKey}, Mantle.GPURef{Hikari.GPUFilterParams}, Mantle.Buffer{Int32, 1}, Mantle.Buffer{Mantle.Predicate, 1}}}, Mantle.Plan{Mantle.LavaDevice, Tuple{}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/graph.jl:836\n [20] invalidate!(vp::Hikari.VolPath)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:185\n [21] invalidate_plans!\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:192 [inlined]\n [22] (::Hikari.var\"#notify_listeners##4#notify_listeners",
       "est_minutes": 15.0,
       "id": 55,
       "kind": "fix",
       "priority": 1,
-      "result": "fixed in session 20 (Point vcat, update! with arg1)",
+      "result": "fixed in session 20 (Point vcat, update! with arg1)\nHappened again at 2026-11-26T13:08:19.862.\nClosed at 2026-11-26T13:09:52.791: plugin areas loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "dropped",
       "title": "system:areas.Areas failed in start! and was switched off",
-      "updated": "2026-11-22T22:54:46.912"
+      "updated": "2026-11-26T13:09:52.791"
     },
     {
       "created": "2026-11-22T22:30:24.651",
@@ -2872,17 +2872,17 @@
     },
     {
       "created": "2026-11-23T11:40:08.229",
-      "detail": "UndefVarError: `SUN_DIM` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:47 [inlined]\n  [2] dim_sun!(s::Main.Plugin_showers.Shower, w::NeverendingGame.World)\n    @ Main.Plugin_showers /sim/Programmieren/SimGame/world/plugins/showers.jl:201\n  [3] step!(s::Main.Plugin_showers.Shower, game::Game, dt::Float64)\n    @ Main.Plugin_showers /sim/Programmieren/SimGame/world/plugins/showers.jl:256\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:249\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:201\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:249 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:241 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:249\n  [9] (::Main.ClipScript.var\"#setup#4\"{String, Dict{Symbol, Any}})(g::Game)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/cairn_release.jl:22\n [10] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Int64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#setup#4\"{String, Dict{Symbol, Any}}, shot::Main.ClipScript.var\"#shot#7\"{Int64, Dict{Symbol, Any}}, fade::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:252\n [11] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:241 [inlined]\n [12] cairn_movie(path::String; carrier::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool, fps::Int64, max_seconds::Int64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/cairn_release.jl:81\n [13] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [14] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:191\n [15] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:242\n [16] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:220\n [17] top-level scope\n    @ none:1\n [18] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [19] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [20] _start()\n    @ Base ./client.jl:550",
+      "detail": "ArgumentError: Mantle: this device is retired (`retire!`, `reset_device!`, or the process is exiting), so nothing is allocated on it. Allocate on the device `reset_device!` returned.\nStacktrace:\n  [1] refuseretired\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/runtime/lifecycle.jl:98 [inlined]\n  [2] #acquire!#17\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:443 [inlined]\n  [3] acquire!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:440 [inlined]\n  [4] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:669\n  [5] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [6] #download_typed!#574\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:710 [inlined]\n  [7] download_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:709 [inlined]\n  [8] Array(src::Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:199\n  [9] map(f::Type{Array}, t::Tuple{Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1}, Mantle.LavaArray{Hikari.SunLight{Hikari.RGBIlluminantSpectrum}, 1}, Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}})\n    @ Base ./tuple.jl:360\n [10] Hikari.BVHLightSampler(lights::Raycore.MultiTypeSet{Mantle.LavaDevice}; scene_radius::Float32)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:303\n [11] BVHLightSampler\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:292 [inlined]\n [12] refresh_lights!(vp::Hikari.VolPath, scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:208\n [13] (::Hikari.var\"#notify_lights_changed##0#notify_lights_changed##1\"{Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.Multi",
       "est_minutes": 15.0,
       "id": 206,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-23T11:44:33.808: plugin showers loaded cleanly.",
+      "result": "Closed at 2026-11-23T11:44:33.808: plugin showers loaded cleanly.\nHappened again at 2026-11-26T13:08:51.561.\nClosed at 2026-11-26T13:09:58.856: plugin showers loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:showers.Shower failed in step! and was switched off",
-      "updated": "2026-11-23T11:44:33.808"
+      "updated": "2026-11-26T13:09:58.856"
     },
     {
       "created": "2026-11-23T11:46:12.193",
@@ -5350,17 +5350,17 @@
     },
     {
       "created": "2026-11-24T14:52:56.767",
-      "detail": "boing: no open place for the toadstool\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] init!(s::Main.Plugin_boing.Boing, game::Game)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:433\n  [3] start!(s::Main.Plugin_boing.Boing, game::Game)\n    @ Main.Plugin_boing /sim/Programmieren/SimGame/world/plugins/boing.jl:427\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "LavaVulkanError in get_semaphore_counter_value:\n  VkResult: -4 — failed to execute #= /home/simon/.julia/packages/Vulkan/4zVVA/generated/linux.jl:91072 =# @dispatch device vkGetSemaphoreCounterValue(device, semaphore, pValue)\n  Suggestion: Device lost. Call reset_device!(device) to reinitialize, or restart Julia.\nStacktrace:\n  [1] query_timeline\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:600 [inlined]\n  [2] passed(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, v::UInt64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:124\n  [3] waitfor\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:572 [inlined]\n  [4] waitfor!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/backend.jl:460 [inlined]\n  [5] release!(rec::Mantle.Recording)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:131\n  [6] droprecording!(pl::Mantle.Plan{Mantle.LavaDevice, Tuple{}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/build.jl:1299\n  [7] free!(pl::Mantle.Plan{Mantle.LavaDevice, Tuple{}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/build.jl:1337\n  [8] #foreach##0\n    @ ./tuple.jl:691 [inlined]\n  [9] BottomRF\n    @ ./reduce.jl:78 [inlined]\n [10] afoldl\n    @ ./operators.jl:600 [inlined]\n [11] _foldl_impl\n    @ ./reduce.jl:60 [inlined]\n [12] foldl_impl\n    @ ./reduce.jl:40 [inlined]\n [13] mapfoldl_impl\n    @ ./reduce.jl:36 [inlined]\n [14] mapfoldl\n    @ ./reduce.jl:167 [inlined]\n [15] foldl\n    @ ./reduce.jl:190 [inlined]\n [16] foreach\n    @ ./tuple.jl:691 [inlined]\n [17] free!(plans::Hikari.VPPlans{Hikari.PerRun{Hikari.PerspectiveCamera}, Mantle.Plan{Mantle.LavaDevice, Tuple{Mantle.GPURef{Int32}, Mantle.GPURef{Hikari.PerspectiveCamera}, Mantle.GPURef{Raycore.SetKey}, Mantle.GPURef{Hikari.GPUFilterParams}, Mantle.Buffer{Int32, 1}, Mantle.Buffer{Mantle.Predicate, 1}}}, Mantle.Plan{Mantle.LavaDevice, Tuple{}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/graph.jl:836\n [18] invalidate!(vp::Hikari.VolPath)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:185\n [19] invalidate_plans!\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:192 [inlined]\n [20] (::Hikari.var\"#notify_listeners##4#notify_listeners##5\"{typeof(Hikari.invalidate_plans!)})(w::WeakRef)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/scene.jl:169\n [21] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [22] (::Hikari.var\"#notify_listeners##0#notify_listeners##1\"{typeof(Hikari.invalidate_plans!), Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.",
       "est_minutes": 15.0,
       "id": 383,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T14:53:29.082: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:29.320.\nClosed at 2026-11-24T14:53:43.582: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:43.774.\nClosed at 2026-11-24T14:54:00.675: plugin boing loaded cleanly.",
+      "result": "Closed at 2026-11-24T14:53:29.082: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:29.320.\nClosed at 2026-11-24T14:53:43.582: plugin boing loaded cleanly.\nHappened again at 2026-11-24T14:53:43.774.\nClosed at 2026-11-24T14:54:00.675: plugin boing loaded cleanly.\nHappened again at 2026-11-26T13:08:23.938.\nClosed at 2026-11-26T13:09:53.459: plugin boing loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:boing.Boing failed in start! and was switched off",
-      "updated": "2026-11-24T14:54:00.675"
+      "updated": "2026-11-26T13:09:53.459"
     },
     {
       "created": "2026-11-24T14:54:09.536",
@@ -7128,17 +7128,17 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0109 [camera, medium]: The follow camera framed the giant Lumi between two blurred tree crowns that fill 60% of the frame. The progress dashboard shot shows Pickles behind two gallery easels with a flower stem in front. The mood camera's glide back in its own film passes through a big white rock at the left edge (8.7-8.8 s).\nWhere: render.jl follow view, lensclear.jl blockers (gallery easels, crowns at close range), moodcam.jl glide path\nSuggestion: Count gallery easels, rocks and near crowns (anything within 3 m of the eye) as blockers. When the subject is giant, pull the eye back over the crowns. Check the moodcam glide's path, not only its two end points, with NG.obstruction.\nDone when: 10 follow screenshots 6 s apart in the busy sandbox show no foreground object covering more than 20% of the view, and the moodcam film has no frame with a rock or crown in the near foreground.\nEvidence: reviews/p109/follow2.png, media/progress/session-0109/dashboard.png, reviews/motion/perfectionist-0109/moodcam-steps.jpg",
+      "detail": "perfectionist-0115 [camera, high]: For the whole minute of 'Keep the island level' the chase camera sat inside a pine: dark needles over 60% of the frame, Lumi a dim shape behind them. The start card covered a camera inside a trunk. In follow mode Lumi's name tag floated in the sky with a tree crown over the frame.\nWhere: camera rig (follow/chase), plugins/balance.jl camera\nSuggestion: Sphere-cast from the target to the camera against crowns, trunks, rocks and dunes, and pull in or swing round before anything covers the creature. For balance, a high three-quarter view that shows both rims and which way the island is tipping.\nDone when: Five screenshots 10 s apart during a balance round and five in follow mode: Lumi unobstructed and larger than 8% of the frame in every one.\nEvidence: reviews/p115/balance-start.png, balance-15s.png, balance-end.png, cam-follow-b.png",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow and mood cameras stop looking through crowns, easels and rocks",
-      "updated": "2026-11-26T06:31:47.987"
+      "title": "Game cameras stop looking through pines and crowns (balance, follow)",
+      "updated": "2026-11-26T12:41:33.985"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7497,12 +7497,12 @@
       "id": 536,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0115: Live measure at dawn s115: 9/10 move well, Hopscotch not flagged (only Truffle's tail).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Hopscotch: no judder, 10 m/s slides or cap that blinks",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T12:41:33.985"
     },
     {
       "created": "2026-11-26T06:31:47.987",
@@ -7525,12 +7525,12 @@
       "id": 538,
       "kind": "review",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0115: Low style note from s109 superseded by the concrete sand and firefly findings.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "One big effect at a time: giant and flight join the claim; five busy-afternoon screenshots",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T12:41:33.985"
     },
     {
       "created": "2026-11-26T07:08:47.268",
@@ -7618,7 +7618,7 @@
     },
     {
       "created": "2026-11-26T08:33:47.317",
-      "detail": "perfectionist-0112 [props, high]: The TV on the meadow is brown cuboids with a flat quad screen. When traced it is matte everywhere, with no glass on the screen and no gloss on the wood. The generated TV mesh is finished and unused.\nWhere: plugins/tv.jl, assets/20261126-083347-183-asset/mesh.jls\nSuggestion: Swap in the mesh (shadow plate cut, facing checked), the picture quad under a thin Glass or coated layer that reflects the sky when traced, clearcoat wood, Conductor brass knobs, and in traced copies a soft screen glow that lights the watchers' faces.\nDone when: A traced still from the same eye: a sky reflection on the screen, a highlight on the wood, the TV's silhouette no longer a box\nEvidence: reviews/p112/tvs.jpg (raster and traced, same view from 5 m)",
+      "detail": "perfectionist-0115 [props, high]: Still open from s112 and untouched this session (journal 12:20 says so). The TV that the 'island on TV' post is about is brown cuboids with a flat quad screen.\nWhere: plugins/tv.jl\nSuggestion: Use the generated TV mesh, with a coated wood case, curved glass with real reflection over the screen image, and brass knobs.\nDone when: A traced still at 1.5 m from the TV shows the window reflected in the screen glass and a highlight on the wood.\nEvidence: perfectionist-0112 finding; journal 2026-11-26 12:20",
       "est_minutes": 15.0,
       "id": 545,
       "kind": "review",
@@ -7628,7 +7628,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Real television: the generated TV set with glass, wood coat and brass",
-      "updated": "2026-11-26T11:29:14.296"
+      "updated": "2026-11-26T12:41:33.985"
     },
     {
       "created": "2026-11-26T09:10:14.547",
@@ -7721,12 +7721,12 @@
       "id": 552,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0115: Same 'film it close' fix as #556 and this review's film finding; kept there.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Seesaw up close: film a tipping moment where you SEE the friends panic, slide and run uphill",
-      "updated": "2026-11-26T11:34:13.263"
+      "updated": "2026-11-26T12:41:33.985"
     },
     {
       "created": "2026-11-26T11:34:13.269",
@@ -7772,17 +7772,213 @@
     },
     {
       "created": "2026-11-26T12:14:41.153",
-      "detail": "wordsand.jl (s115) turns speech into sand, but traced clips hide speech bubbles, so the film does not show that the sand IS the words. Make a take (raster bubbles composited, or bubbles as plots in traced copies) where you read 'HIGHER!' as it pours. Then let friends who are bored climb the highest dune and slide down on their bellies (a sled pose), leaving a groove in H.\nDone when: a film where at least three spoken lines are readable while their sand falls, and in the sandbox a friend slides down a dune with a groove left behind (screenshot).",
+      "detail": "perfectionist-0115 [wow, medium]: 'Sand sledding' is shot from about 40 m behind a blurred haystack that fills the lower right third. The slides are specks, and the caption apologises. Neither sand film lets you read that the sand IS the words: no bubble is legible as it pours. 'Gloop says Higher!' starts with a black-toothed sand edge.\nWhere: the s115 films; plugins/wordsand.jl\nSuggestion: One close take at 3-6 m: a friend shouts, the word pours out letter by letter as sand, the heap rises under them, then they bellyflop down at the camera. Fold #552 (seesaw up close) into the same 'film it close' habit.\nDone when: A film whose motion overview has a readable word in at least 3 of 12 frames and a sliding creature larger than 15% of the frame height.\nEvidence: reviews/motion/perfectionist-0115/sand-sledding-overview.jpg, the-island-weighs-its-words-2-overview.jpg",
       "est_minutes": 15.0,
       "id": 556,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Film the words turning to sand: readable bubbles, a slider coming at the lens",
+      "updated": "2026-11-26T12:41:33.985"
+    },
+    {
+      "created": "2026-11-26T12:41:33.985",
+      "detail": "perfectionist-0115 [fun, high]: I started 'Keep the island level', never pressed a key, and won: t=60, 0/3 splashes, 'Dry feet for 60 seconds! The island was level for 13 s (a new best)'. The tilt peaked at 4.4° (splash at 5.4°). The game the author built for the player to play does not need a player.\nWhere: plugins/balance.jl (SPLASH_ANGLE, CALL_EVERY, crowd size, HEAVY)\nSuggestion: Tune it so an idle player floods within about 15 s: bigger crowds later in the round, two crowds at once on opposite sides, a crowd that runs after Lumi. Show the flooding shore in the view (water racing up the meadow, friends hopping) so a near-splash is visible before it counts, and finish on a score worth beating.\nDone when: A run with no input ends with 3 splashes before 30 s, and a run where the player moves toward the high side gets to 60 s; both shown in two end-card screenshots.\nEvidence: reviews/p115/balance-15s.png, balance-30s.png, balance-end.png; live_eval state: over t=60 splashes=0 level=13",
+      "est_minutes": 30.0,
+      "id": 557,
+      "kind": "review",
+      "priority": 1,
+      "result": "SPLASH_ANGLE 5.4° -> 3.7° (balance.jl). Sandbox: a run with no input ended at t=16.2 s with 3/3 splashes (media/s116/balance-idle.png); a run where Lumi walks (3.5 m/s) to 11 m on the high side every second ended at t=60 with 0 splashes, 'Dry feet for 60 seconds! level for 38 s' (media/s116/balance-played.png). Published.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Keep the island level is won by standing still: make the crowd a threat",
+      "updated": "2026-11-26T13:08:17.049"
+    },
+    {
+      "created": "2026-11-26T12:41:33.985",
+      "detail": "perfectionist-0115 [world, high]: The host's eye-level progress camera (the meadow at 1.6 m, the island's nicest view in s112) has shown a grey wavy wall since s114 (session-0114 and session-0115 eye-level.png). It is placed from the untilted ground() height, so the seesaw or sinking island puts it under the sea or inside the terrain. A player who walks into the meadow probably sees the same mismatch between drawn ground and ground().\nWhere: plugins/seesaw.jl versus ground(); NeverendingGame/src/progress.jl:14\nSuggestion: Make ground() (or the drawn transform) agree with the tilt, or keep the island level when nobody is playing so the meadow is at rest, and check the eye-level view after every seesaw change.\nDone when: The next session's eye-level.png shows the meadow, mushrooms and trees again, as in session-0112.\nEvidence: media/progress/session-0112/eye-level.png (meadow) vs session-0114 and session-0115 eye-level.png (grey wall)",
+      "est_minutes": 30.0,
+      "id": 558,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The meadow eye-level view is a grey wall since the seesaw",
+      "updated": "2026-11-26T12:41:33.985"
+    },
+    {
+      "created": "2026-11-26T12:41:33.985",
+      "detail": "perfectionist-0115 [materials, high]: In the raster the fireflies are big flat circles with a halo pasted on the view (cam-follow.png: six discs across the frame, one as large as a flower). In the traced still at dawn they are opaque pale spheres that light nothing: no glow on the grass, none on Wibbles a metre away. This should be the one place on the island where a path tracer shows small lights lighting a night meadow.\nWhere: plugins/nightglow.jl / firefly_catch.jl, the traced copies\nSuggestion: Small emissive spheres (Hikari emission, a few cm) with a point light on the nearest few, so the grass and faces under them warm up; in the raster, small bright points with a soft bloom, not discs larger than a flower. A dusk traced still where the fireflies are the key light on a sleeping friend.\nDone when: A traced still at night where the grass around a firefly is visibly brighter (a luminance ring) and a raster follow shot where no firefly is wider than 15 px.\nEvidence: reviews/p115/cam-follow.png, reviews/p115/traced.png",
+      "est_minutes": 30.0,
+      "id": 559,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Fireflies that glow: emissive with real light, not flat discs and dead balls",
+      "updated": "2026-11-26T12:41:33.985"
+    },
+    {
+      "created": "2026-11-26T12:41:33.985",
+      "detail": "perfectionist-0115 [world, medium]: In the creature close-ups (dawn) the shore is a wide black band between the sand and the sea in three tiles. The orbit and free views show brown sand over large parts of what was the green meadow in s112, so the island is turning into a sandpit.\nWhere: plugins/wordsand.jl (drawn_ground, wind decay), shore terrain colour\nSuggestion: Sand heaps with a wet darker rim that blends into grass, faster wind decay away from the speaking spots, and a shore that is wet sand and foam rather than black.\nDone when: An orbit screenshot with the meadow at least 70% green and a close-up of the shore with no pixel run of near-black (<0.05) wider than 20 px.\nEvidence: reviews/motion/p115/creatures.png rows 1-3; reviews/p115/cam-orbit.png vs media/progress/session-0112/overview.png",
+      "est_minutes": 30.0,
+      "id": 560,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sand edges and the shore: no black band, and a meadow left green",
+      "updated": "2026-11-26T12:41:33.985"
+    },
+    {
+      "created": "2026-11-26T12:41:33.985",
+      "detail": "perfectionist-0115 [animation, low]: Both new films begin with a jump: frame 1 to 2 changes 0.211 in sand-sledding and 0.140 in the Gloop take. A green tree blob fills the first frame and is gone in the next.\nWhere: make-movie pipeline (first traced frame before the scene is settled)\nSuggestion: Warm up one or two frames and drop them, or start the take after the scene's first update.\nDone when: The motion sheet of the next film shows no jump at 0.04 s.\nEvidence: the-island-weighs-its-words-2-steps.jpg frame 1; motion stats 0.04 s",
+      "est_minutes": 30.0,
+      "id": 561,
+      "kind": "review",
+      "priority": 3,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Films start on a popped first frame",
+      "updated": "2026-11-26T12:41:33.985"
+    },
+    {
+      "created": "2026-11-26T12:59:21.666",
+      "detail": "UndefVarError: `UNDER_DIR` not defined in `Main.Plugin_underlight`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] raster_light!(game::Game, under::Bool)\n    @ Main.Plugin_underlight /sim/Programmieren/SimGame/world/plugins/underlight.jl:125\n  [2] step!(::Main.Plugin_underlight.Underlight, game::Game, dt::Float64)\n    @ Main.Plugin_underlight /sim/Programmieren/SimGame/world/plugins/underlight.jl:107\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 562,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T12:59:25.101: plugin underlight loaded cleanly.\nHappened again at 2026-11-26T12:59:25.509.\nClosed at 2026-11-26T12:59:27.185: plugin underlight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:underlight.Underlight failed in step! and was switched off",
+      "updated": "2026-11-26T12:59:27.185"
+    },
+    {
+      "created": "2026-11-26T13:08:38.948",
+      "detail": "LavaVulkanError in get_semaphore_counter_value:\n  VkResult: -4 — failed to execute #= /home/simon/.julia/packages/Vulkan/4zVVA/generated/linux.jl:91072 =# @dispatch device vkGetSemaphoreCounterValue(device, semaphore, pValue)\n  Suggestion: Device lost. Call reset_device!(device) to reinitialize, or restart Julia.\nStacktrace:\n  [1] query_timeline\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:600 [inlined]\n  [2] passed(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, v::UInt64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:124\n  [3] reclaim!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:345\n  [4] drain!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:364 [inlined]\n  [5] acquire!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:405\n  [6] oneshot!(f::Mantle.var\"#567#568\"{Mantle.VkManagedBuffer, Ptr{UInt8}, Int64, Int64}, ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}; tag::Symbol)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:444\n  [7] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:657\n  [8] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [9] upload_typed!(dst::Mantle.VkManagedBuffer, data::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, first::Int64, n::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:705\n [10] upload_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:697 [inlined]\n [11] copyhost!(dest::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, doffs::Int64, src::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, soffs::Int64, n::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:262\n [12] copyto!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:254 [inlined]\n [13] setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:60 [inlined]\n [14] scalar_setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:42 [inlined]\n [15] _setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:26 [inlined]\n [16] setindex!(A::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, v::Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, Is::UInt32)\n   ",
+      "est_minutes": 15.0,
+      "id": 563,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:56.693: plugin lamplight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:lamplight.Lamplight failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:56.693"
+    },
+    {
+      "created": "2026-11-26T13:08:43.229",
+      "detail": "ArgumentError: Mantle: this device is retired (`retire!`, `reset_device!`, or the process is exiting), so nothing is allocated on it. Allocate on the device `reset_device!` returned.\nStacktrace:\n  [1] refuseretired\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/runtime/lifecycle.jl:98 [inlined]\n  [2] #acquire!#17\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:443 [inlined]\n  [3] acquire!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:440 [inlined]\n  [4] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:669\n  [5] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [6] #download_typed!#574\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:710 [inlined]\n  [7] download_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:709 [inlined]\n  [8] Array(src::Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:199\n  [9] map(f::Type{Array}, t::Tuple{Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1}, Mantle.LavaArray{Hikari.SunLight{Hikari.RGBIlluminantSpectrum}, 1}, Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}})\n    @ Base ./tuple.jl:360\n [10] Hikari.BVHLightSampler(lights::Raycore.MultiTypeSet{Mantle.LavaDevice}; scene_radius::Float32)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:303\n [11] BVHLightSampler\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:292 [inlined]\n [12] refresh_lights!(vp::Hikari.VolPath, scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:208\n [13] (::Hikari.var\"#notify_lights_changed##0#notify_lights_changed##1\"{Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.Multi",
+      "est_minutes": 15.0,
+      "id": 564,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:57.381: plugin moon loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:moon.Moon failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:57.381"
+    },
+    {
+      "created": "2026-11-26T13:08:43.704",
+      "detail": "ArgumentError: Mantle: this device is retired (`retire!`, `reset_device!`, or the process is exiting), so nothing is allocated on it. Allocate on the device `reset_device!` returned.\nStacktrace:\n  [1] refuseretired\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/runtime/lifecycle.jl:98 [inlined]\n  [2] #acquire!#17\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:443 [inlined]\n  [3] acquire!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:440 [inlined]\n  [4] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:669\n  [5] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [6] #download_typed!#574\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:710 [inlined]\n  [7] download_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:709 [inlined]\n  [8] Array(src::Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:199\n  [9] map(f::Type{Array}, t::Tuple{Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1}, Mantle.LavaArray{Hikari.SunLight{Hikari.RGBIlluminantSpectrum}, 1}, Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}})\n    @ Base ./tuple.jl:360\n [10] Hikari.BVHLightSampler(lights::Raycore.MultiTypeSet{Mantle.LavaDevice}; scene_radius::Float32)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:303\n [11] BVHLightSampler\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:292 [inlined]\n [12] refresh_lights!(vp::Hikari.VolPath, scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:208\n [13] (::Hikari.var\"#notify_lights_changed##0#notify_lights_changed##1\"{Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.Multi",
+      "est_minutes": 15.0,
+      "id": 565,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:57.457: plugin nightglow loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:nightglow.NightGlow failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:57.457"
+    },
+    {
+      "created": "2026-11-26T13:08:54.073",
+      "detail": "ArgumentError: Mantle: this device is retired (`retire!`, `reset_device!`, or the process is exiting), so nothing is allocated on it. Allocate on the device `reset_device!` returned.\nStacktrace:\n  [1] refuseretired\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/runtime/lifecycle.jl:98 [inlined]\n  [2] #acquire!#17\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:443 [inlined]\n  [3] acquire!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/memory/pool.jl:440 [inlined]\n  [4] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:669\n  [5] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [6] #download_typed!#574\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:710 [inlined]\n  [7] download_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:709 [inlined]\n  [8] Array(src::Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:199\n  [9] map(f::Type{Array}, t::Tuple{Mantle.LavaArray{Hikari.EnvironmentLight{Hikari.RGBSpectrum, Hikari.EnvironmentMap{Hikari.RGBSpectrum, Raycore.TextureRef{Mantle.LavaArray{Hikari.RGBSpectrum, 2}, Hikari.RGBSpectrum, 2, 1}, Hikari.Distribution2D{Raycore.TextureRef{Mantle.LavaArray{Float32, 1}, Float32, 1, 3}, Raycore.TextureRef{Mantle.LavaArray{Float32, 2}, Float32, 2, 2}}}}, 1}, Mantle.LavaArray{Hikari.SunLight{Hikari.RGBIlluminantSpectrum}, 1}, Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}})\n    @ Base ./tuple.jl:360\n [10] Hikari.BVHLightSampler(lights::Raycore.MultiTypeSet{Mantle.LavaDevice}; scene_radius::Float32)\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:303\n [11] BVHLightSampler\n    @ /sim/Programmieren/SimGame/dev/Hikari/src/lights/bvh-light-sampler.jl:292 [inlined]\n [12] refresh_lights!(vp::Hikari.VolPath, scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/volpath.jl:208\n [13] (::Hikari.var\"#notify_lights_changed##0#notify_lights_changed##1\"{Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.Multi",
+      "est_minutes": 15.0,
+      "id": 566,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:59.231: plugin stars loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:stars.Stars failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:59.231"
+    },
+    {
+      "created": "2026-11-26T13:08:55.872",
+      "detail": "LavaVulkanError in get_semaphore_counter_value:\n  VkResult: -4 — failed to execute #= /home/simon/.julia/packages/Vulkan/4zVVA/generated/linux.jl:91072 =# @dispatch device vkGetSemaphoreCounterValue(device, semaphore, pValue)\n  Suggestion: Device lost. Call reset_device!(device) to reinitialize, or restart Julia.\nStacktrace:\n  [1] query_timeline\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:600 [inlined]\n  [2] passed(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, v::UInt64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:124\n  [3] reclaim!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:345\n  [4] drain!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:364 [inlined]\n  [5] acquire!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:405\n  [6] oneshot!(f::Mantle.var\"#567#568\"{Mantle.VkManagedBuffer, Ptr{UInt8}, Int64, Int64}, ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}; tag::Symbol)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:444\n  [7] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:657\n  [8] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [9] upload_typed!(dst::Mantle.VkManagedBuffer, data::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, first::Int64, n::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:705\n [10] upload_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:697 [inlined]\n [11] copyhost!(dest::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, doffs::Int64, src::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, soffs::Int64, n::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:262\n [12] copyto!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:254 [inlined]\n [13] setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:60 [inlined]\n [14] scalar_setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:42 [inlined]\n [15] _setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:26 [inlined]\n [16] setindex!(A::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, v::Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, Is::UInt32)\n   ",
+      "est_minutes": 15.0,
+      "id": 567,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:59.405: plugin sunset loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:sunset.Sunset failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:59.405"
+    },
+    {
+      "created": "2026-11-26T13:08:58.139",
+      "detail": "LavaVulkanError in get_semaphore_counter_value:\n  VkResult: -4 — failed to execute #= /home/simon/.julia/packages/Vulkan/4zVVA/generated/linux.jl:91072 =# @dispatch device vkGetSemaphoreCounterValue(device, semaphore, pValue)\n  Suggestion: Device lost. Call reset_device!(device) to reinitialize, or restart Julia.\nStacktrace:\n  [1] query_timeline\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/command.jl:600 [inlined]\n  [2] passed(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, v::UInt64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:124\n  [3] reclaim!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:345\n  [4] drain!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:364 [inlined]\n  [5] acquire!(ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}})\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:405\n  [6] oneshot!(f::Mantle.var\"#567#568\"{Mantle.VkManagedBuffer, Ptr{UInt8}, Int64, Int64}, ch::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}; tag::Symbol)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/graph/lifetime.jl:444\n  [7] copy_buffer!(direction::Symbol, managed::Mantle.VkManagedBuffer, host_ptr::Ptr{UInt8}, nbytes::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:657\n  [8] copy_buffer!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:603 [inlined]\n  [9] upload_typed!(dst::Mantle.VkManagedBuffer, data::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, first::Int64, n::Int64; offset::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:705\n [10] upload_typed!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:697 [inlined]\n [11] copyhost!(dest::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, doffs::Int64, src::Vector{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}}, soffs::Int64, n::Int64)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:262\n [12] copyto!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/gpuarrays.jl:254 [inlined]\n [13] setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:60 [inlined]\n [14] scalar_setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:42 [inlined]\n [15] _setindex!\n    @ ~/.julia/packages/GPUArrays/zDfQ9/src/host/indexing.jl:26 [inlined]\n [16] setindex!(A::Mantle.LavaArray{Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, 1}, v::Hikari.DiffuseAreaLight{Hikari.RGBSpectrum}, Is::UInt32)\n   ",
+      "est_minutes": 15.0,
+      "id": 568,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T13:09:59.648: plugin underlight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:underlight.Underlight failed in start! and was switched off",
+      "updated": "2026-11-26T13:09:59.648"
+    },
+    {
+      "created": "2026-11-26T13:17:00.766",
+      "detail": "underlight.jl films put an Emission ring under a sea made of Hikari.MediumInterface(Glass; shadows = 1.33): two 960x540 worker clips died with VK_ERROR_DEVICE_LOST after 200-400 s (jobs 20261126-125849-517, -130916-414). Find the hang in Hikari's shadow pass through a dielectric over an emitter (dev/Hikari integrators/volpath/graph.jl shadow_pass!), fix it there, then move the ring back under the water (z = -0.55) so the light comes up through the waves. Done when: a traced 5 s clip with the ring under the glass sea finishes and the tree crowns at the north shore are lit from below.",
+      "est_minutes": 15.0,
+      "id": 569,
       "kind": "build",
       "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Sand dunes you can watch being said: a take with readable speech bubbles, and friends who sled down the dunes on purpose",
-      "updated": "2026-11-26T12:14:41.153"
+      "title": "Sun under the sea in films: light through the water without losing the GPU",
+      "updated": "2026-11-26T13:17:00.766"
+    },
+    {
+      "created": "2026-11-26T13:24:23.802",
+      "detail": "underlight.jl works live (raster: sun turned below the north sea, dark sky, gold skin on the water, 19:00-20:12; media/s116/under3.png). In traced films every take with the Emission ring lost the worker's GPU (VK_ERROR_DEVICE_LOST after ~200-400 s: jobs -125849-517, -130916-414, -131644-882; the ring was under a MediumInterface sea in two of them and on top of the water in the third). The one take that finished (-125849-516) was dark: the ring had been switched visible after the trace scene was built. Next: a 480x270 4-spp still of the ring alone to find which part hangs (emitter area? 56 big triangles 60 m wide?), maybe split it into many small quads near the shore only. Done when: a traced 5-8 s film where the north shore's tree crowns and friends' chins are lit from below.",
+      "est_minutes": 15.0,
+      "id": 570,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Film the sun under the sea once the worker survives it",
+      "updated": "2026-11-26T13:24:23.802"
     }
   ]
 }
