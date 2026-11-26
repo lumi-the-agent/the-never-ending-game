@@ -185,7 +185,7 @@ end
 emissive(materials) = any(m -> Hikari.get_emission_info(Hikari.surface_material(m)) !== nothing, materials)
 
 """
-    push_emitters!(hikari_scene, mesh, materials, transforms) -> Vector{SceneHandle}
+    push_emitters!(hikari_scene, mesh, materials, transforms, pool = SceneHandle[]) -> Vector{SceneHandle}
 
 Glowing instances, one mesh each with its vertices moved by the instance's
 transform. Hikari makes area lights of an emitter's triangles as they are
@@ -193,15 +193,38 @@ pushed, so they have to be where the instance is: it refuses emissive
 materials on an instanced mesh, and a meshscatter of glowing markers
 (fireflies, lit windows) stopped the whole scene from tracing. Instances
 scaled to nothing (hidden) are left out.
+
+`pool` holds deleted emitters of the same plot (the last frame's): each new
+one takes the material slot and the light slots of the first of them
+(`push_reused!`), and what is left in `pool` is still free afterwards.
 """
-function push_emitters!(hikari_scene, mesh::GeometryBasics.Mesh, materials, transforms)
+function push_emitters!(hikari_scene, mesh::GeometryBasics.Mesh, materials, transforms,
+                        pool::Vector{Hikari.SceneHandle} = Hikari.SceneHandle[])
     handles = Hikari.SceneHandle[]
     for (m, t) in zip(materials, transforms)
         lin = Mat3f(t[1, 1], t[2, 1], t[3, 1], t[1, 2], t[2, 2], t[3, 2], t[1, 3], t[2, 3], t[3, 3])
         abs(det(lin)) < 1f-12 && continue
-        push!(handles, push!(hikari_scene, transformed_mesh(mesh, t, lin), m))
+        placed = transformed_mesh(mesh, t, lin)
+        push!(handles, isempty(pool) ? push!(hikari_scene, placed, m) :
+                                       push_reused!(hikari_scene, placed, m, popfirst!(pool)))
     end
     return handles
+end
+
+"""
+    push_reused!(hikari_scene, placed, material, old::SceneHandle) -> SceneHandle
+
+`placed` (one glowing instance where it is now) pushed into the material slot
+and the light slots of `old`, an emitter already deleted from the scene.
+Deleting an emitter only switches its lights off (Hikari keeps the slots), so
+pushing every moved instance anew grew the light set by the marker's faces
+for every instance on every frame: 90 moving sun spots of 96 faces were half a
+million lights after 60 frames, each frame slower, and the glass rain films
+(s123, NeverendingGame) failed in `trace_renderobject`.
+"""
+function push_reused!(hikari_scene, placed::GeometryBasics.Mesh, material, old::Hikari.SceneHandle)
+    Hikari.update_material!(hikari_scene, old.interface, material)
+    return push!(hikari_scene, placed, old.interface, material; area_lights = old.area_lights)
 end
 
 "`mesh` with its positions moved by `t` and its normals by the inverse transpose of `lin`, the linear part of `t`."
@@ -239,39 +262,52 @@ function uv_groups(ts::AbstractVector, n)
     return sort!([UVGroup(t, idx) for (t, idx) in groups]; by = g -> first(g[2]))
 end
 
-"""Instances of one marker into the traced scene; glowing ones as meshes of their own (`push_emitters!`)."""
-push_instances!(hikari_scene, mesh, materials, transforms) =
-    emissive(materials) ? push_emitters!(hikari_scene, mesh, materials, transforms) :
+"""Instances of one marker into the traced scene; glowing ones as meshes of their own (`push_emitters!`, which takes their slots from `pool`)."""
+push_instances!(hikari_scene, mesh, materials, transforms, pool = Hikari.SceneHandle[]) =
+    emissive(materials) ? push_emitters!(hikari_scene, mesh, materials, transforms, pool) :
                           push!(hikari_scene, mesh, materials, transforms)
 
 """
 The NamedTuple stored in :trace_renderobject. Always the same field set, so the
 update path can rely on it. `groups` (`uv_groups`) are pushed one after the
 other: `handles` and `materials` are in group order, `geometries` holds each
-group's instanced mesh.
+group's instanced mesh. `spare` are deleted emitters whose slots the next
+rebuild takes first (`push_emitters!`): hidden instances leave some over.
 """
-scatter_robj(handles, n, materials; groups = UVGroup[], geometries = Any[]) =
+scatter_robj(handles, n, materials; groups = UVGroup[], geometries = Any[], spare = Hikari.SceneHandle[]) =
     (handles = handles, n_instances = n, materials = materials, mi_indices = map(h -> h.interface, handles),
-     groups = groups, geometries = geometries)
+     groups = groups, geometries = geometries, spare = spare)
 
-function meshscatter_create!(hikari_scene, state, args)
+"""
+    emitter_pool(robj) -> Vector{SceneHandle}
+
+The emitters of a glowing meshscatter's last render object, deleted, for the
+rebuild to reuse (`push_reused!`). Empty when it glowed not: instanced meshes
+share one interface and keep their own path.
+"""
+function emitter_pool(robj)
+    emissive(robj.materials) || return Hikari.SceneHandle[]
+    return vcat(robj.handles, hasproperty(robj, :spare) ? robj.spare : Hikari.SceneHandle[])
+end
+
+function meshscatter_create!(hikari_scene, state, args; pool::Vector{Hikari.SceneHandle} = Hikari.SceneHandle[])
     n = length(args.trace_transforms)
     state.needs_film_clear = true
-    n == 0 && return scatter_robj(Hikari.SceneHandle[], 0, args.trace_materials)
+    n == 0 && return scatter_robj(Hikari.SceneHandle[], 0, args.trace_materials; spare = pool)
 
     transforms_mat4 = map(mat3x4_to_mat4, Array(args.trace_transforms))
     materials = Vector(args.trace_materials)
     groups = args.trace_uv_groups
-    isempty(groups) && return scatter_robj(push_instances!(hikari_scene, args.trace_marker_mesh, materials, transforms_mat4),
-                                           n, materials)
+    isempty(groups) && return scatter_robj(push_instances!(hikari_scene, args.trace_marker_mesh, materials, transforms_mat4, pool),
+                                           n, materials; spare = pool)
     handles = Hikari.SceneHandle[]
     geometries = Any[]
     for (t, idx) in groups
-        hs = push_instances!(hikari_scene, traced_uvs(args.trace_marker_mesh, t), materials[idx], transforms_mat4[idx])
+        hs = push_instances!(hikari_scene, traced_uvs(args.trace_marker_mesh, t), materials[idx], transforms_mat4[idx], pool)
         isempty(hs) || push!(geometries, first(hs).geometry)
         append!(handles, hs)
     end
-    return scatter_robj(handles, n, materials[reduce(vcat, last.(groups))]; groups, geometries)
+    return scatter_robj(handles, n, materials[reduce(vcat, last.(groups))]; groups, geometries, spare = pool)
 end
 
 function meshscatter_update!(hikari_scene, state, robj, args, changed)
@@ -283,7 +319,7 @@ function meshscatter_update!(hikari_scene, state, robj, args, changed)
         if changed.trace_marker_mesh || changed.trace_uv_groups || changed.trace_materials || n != robj.n_instances ||
            emissive(robj.materials)
             delete_trace_handles!(hikari_scene, robj)
-            return meshscatter_create!(hikari_scene, state, args)
+            return meshscatter_create!(hikari_scene, state, args; pool = emitter_pool(robj))
         end
         if changed.trace_transforms
             for (geometry, (_, idx)) in zip(robj.geometries, robj.groups)
@@ -300,7 +336,7 @@ function meshscatter_update!(hikari_scene, state, robj, args, changed)
         changed.trace_marker_mesh || changed.trace_transforms || changed.trace_materials || n != robj.n_instances ||
             return robj
         delete_trace_handles!(hikari_scene, robj)
-        return meshscatter_create!(hikari_scene, state, args)
+        return meshscatter_create!(hikari_scene, state, args; pool = emitter_pool(robj))
     end
 
     # One material object for every instance is one interface they all share

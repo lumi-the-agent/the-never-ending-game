@@ -20,6 +20,8 @@ const LIE = 4.0                # s a landed drop lies in the grass
 const CHASERS = 5
 const SPOT = (-9.5f0, -0.5f0)  # the open west meadow (nothing within 4.5 m)
 const DOT = RGBf(1.0, 0.96, 0.78)
+"Emission strength of the traced spots: a lens's sun on the grass, brighter than the lit grass round it."
+const SPOT_GLOW = 6f0
 const LINES = ("The rain is GLASS!", "Got it! ...no.", "It's on my nose!", "Hot spot! Hot spot!", "Stay STILL!",
                "Another one!", "It tickles!", "Mine!")
 const HIDE = Point3f(0, 0, -50)
@@ -74,10 +76,10 @@ function rain_build!(game)
                      transparency = true, name = :glassrain_drops)
     disc = GeometryBasics.normal_mesh(GeometryBasics.Tessellation(Makie.Cylinder(Point3f(0), Point3f(0, 0, 0.01f0), 1f0), 48))   # round, not hexagons (s123 live-2)
     GR[:dots_plot] = quiet ?
-        # s123: an Emission meshscatter whose instances move every frame failed RayMakie's trace_renderobject
-        # mid-film (job 20261126-192329-664): the traced spots are bright cream discs until that is fixed
-        # (NoShading is turned into an Emission material by RayMakie too: the retake failed the same way)
-        meshscatter!(sc, hide; marker = disc, markersize = tiny, color = DOT, name = :glassrain_dots) :
+        # Traced: the spots glow (Emission). s123 films failed with that because RayMakie pushed every moved
+        # emitter's lights anew (half a million after 60 frames); s124 fixed it to reuse the slots (push_reused!).
+        meshscatter!(sc, hide; marker = disc, markersize = tiny, color = DOT, name = :glassrain_dots,
+                     material = NG.Hikari.Emission(color = DOT, strength = SPOT_GLOW, two_sided = false)) :
         meshscatter!(sc, hide; marker = disc, markersize = tiny, color = DOT, shading = Makie.NoShading, name = :glassrain_dots)
     GR[:scene] = sc
 end

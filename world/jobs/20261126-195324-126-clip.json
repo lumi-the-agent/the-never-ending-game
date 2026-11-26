@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T19:53:24.126",
+  "finished": "2026-11-26T20:04:19.951",
   "id": "20261126-195324-126-clip",
   "kind": "clip",
   "params": {
@@ -11,6 +12,11 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/glass-rain.mp4",
     "script": "movies/glassrain.jl"
   },
+  "result": {
+    "dots": 21,
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-rain.mp4"
+  },
+  "seconds": 653.5,
   "started": "2026-11-26T19:53:26.135",
-  "status": "running"
+  "status": "done"
 }

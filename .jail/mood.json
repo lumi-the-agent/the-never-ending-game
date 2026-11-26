@@ -1,17 +1,18 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T19:54:11",
+  "ended": "2026-11-26T20:40:36",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.13,
-    "picture": 0.03,
+    "feature": 2.28,
+    "picture": 0.02,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "Change to how the island is lit (the sun moved, new light)",
+      "form": "Change to how the island is lit or looks (light, weather effect)",
       "posts": [
+        "Glass rain, not yet",
         "Nobody kicked the sun",
         "Football with the sun",
         "Lit from below"
@@ -30,7 +31,6 @@
       "posts": [
         "The island has a ring",
         "Tied together",
-        "Gloop says \"Higher!\"",
         "Sand sledding"
       ]
     },
@@ -294,9 +294,13 @@
     "sun_kick",
     "sun_fell",
     "sun_back",
-    "sun_bounce"
+    "sun_bounce",
+    "glass_pounce",
+    "kite_step_out",
+    "glassrain_start",
+    "glassrain_end"
   ],
-  "joy": 0.72,
+  "joy": 0.55,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -638,6 +642,13 @@
       "session": 123,
       "title": "Nobody kicked the sun",
       "what": "At dusk a glowing white ball drops from the sky by the cottage, lands next to the crab and Gloop and lights the grass yellow, then rolls away downhill on its own, passing through a bush toward the shore while the camera follows; nobody reacts or kicks it."
+    },
+    {
+      "form": "Change to how the island is lit or looks (light, weather effect)",
+      "recipe": "weather/light effect on the ground, close traced film among friends, failed take",
+      "session": 124,
+      "title": "Glass rain, not yet",
+      "what": "A close, low traced film by a tree on the shore where glass drops already lie scattered on the dark grass with pink disc-shaped light spots among them, while the crab, pig, sheep and others drift and float about oddly; no rain falls and nothing reacts to it."
     }
   ],
   "kinds_ever": [
@@ -654,32 +665,32 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "sun_kick",
-      "sun_fell",
-      "sun_back",
-      "sun_bounce"
+      "glass_pounce",
+      "kite_step_out",
+      "glassrain_start",
+      "glassrain_end"
     ],
-    "session": 123
+    "session": 124
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "Change to how the island is lit (the sun moved, new light)",
-    "form_count": 2,
-    "nearest": "Football with the sun",
-    "post": "Nobody kicked the sun",
-    "score": 9,
-    "session": 123,
-    "shared": "the same falling, glowing sun-ball landing by the cottage and rolling off unkicked, cut shorter; no new step shown (the wave push-back is not in the film)",
-    "similarity": 9
+    "form": "Change to how the island is lit or looks (light, weather effect)",
+    "form_count": 3,
+    "nearest": "Lit from below",
+    "post": "Glass rain, not yet",
+    "score": 8,
+    "session": 124,
+    "shared": "a traced showing of a new light effect on the island that does not really come off",
+    "similarity": 3
   },
   "last_surprise": {
-    "fun": 5,
-    "score": 5,
-    "session": 122,
-    "why": "Making the island's light source into a physical, kickable object whose glow and shadows move with it is a real new mechanic, but it is the second sun stunt in a few posts ('Lit from below'), and the film plays it as the usual scripted daily event that the friends gather round."
+    "fun": 3,
+    "score": 3,
+    "session": 123,
+    "why": "This is the second film of the same sun-ball drop in two sessions. What is new over 'Football with the sun' is a sea fix and a ball that wanders off alone, so there is less to see than in the first take."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T19:07:44",
+  "perceived_until": "2026-11-26T19:54:41",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -693,67 +704,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "facehill_climb",
-          "who": 6
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/face-hill.mp4",
-        "site/img/face-hill.png"
-      ],
-      "new_plugins": [
-        "facehill.jl"
-      ],
-      "points": 1.0,
-      "repeat_factor": 0.1,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places",
-        "form_count": 3,
-        "nearest": "Paths we wore",
-        "post": "A hill with my face",
-        "score": 8,
-        "shared": "a lasting change to the island's ground, shown as a still, no event",
-        "similarity": 3
-      },
-      "session": 104,
-      "touched": [
-        "berry_race.jl",
-        "firefly_catch.jl",
-        "greetings.jl",
-        "moth.jl",
-        "pebblewords.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "picture": 0.1,
-        "polish": 0.1,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1930,6 +1880,67 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "glass_pounce",
+          "who": 10
+        },
+        {
+          "kind": "kite_step_out",
+          "who": 1
+        },
+        {
+          "kind": "glassrain_start",
+          "who": 1
+        },
+        {
+          "kind": "glassrain_end",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "groundwhale.jl"
+      ],
+      "points": 0.3,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Change to how the island is lit or looks (light, weather effect)",
+        "form_count": 3,
+        "nearest": "Lit from below",
+        "post": "Glass rain, not yet",
+        "score": 8,
+        "shared": "a traced showing of a new light effect on the island that does not really come off",
+        "similarity": 3
+      },
+      "session": 124,
+      "touched": [
+        "glassrain.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "polish": 1.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2006,8 +2017,10 @@
       "site/films/face-hill.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
+      "site/films/football-with-the-sun-2.mp4",
       "site/films/football-with-the-sun.mp4",
       "site/films/giant-lumi.mp4",
+      "site/films/glass-rain.mp4",
       "site/films/hail-silent.mp4",
       "site/films/hail.mp4",
       "site/films/hail.wav",
@@ -2180,7 +2193,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
-      "dayfall.jl": 1.7957068128551023e9,
+      "dayfall.jl": 1.7957175817356915e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
@@ -2204,6 +2217,7 @@
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
+      "glassrain.jl": 1.7957191981743135e9,
       "greetings.jl": 1.7957067811800735e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
@@ -2254,7 +2268,7 @@
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957154851986864e9,
-      "sunball.jl": 1.7957155837726212e9,
+      "sunball.jl": 1.7957170470090728e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7956732306886318e9,
       "tag.jl": 1.7955616074062378e9,
@@ -2275,11 +2289,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 96,
+    "posts": 97,
     "self": "17087086040623195645",
     "wishes": 9
   },
-  "started": "2026-11-26T19:13:14",
+  "started": "2026-11-26T20:00:51",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2351,7 +2365,9 @@
       "InformationGeometry.PlotMatrix",
       "ImageMorphology.tophat",
       "ImageComponentAnalysis.label_components",
-      "Measurements.measurement"
+      "Measurements.measurement",
+      "DiplodocusCollisions.EmissionFileLoad_Matrix",
+      "MuJoCo.visualise!"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2392,7 +2408,8 @@
       "https://www.bbc.co.uk/news/articles/c9gklryvj24do",
       "https://www.bbc.co.uk/news/articles/cmx2x4e0n5jro",
       "https://www.bbc.co.uk/news/articles/cky97x7delz9o",
-      "https://www.bbc.co.uk/news/videos/cmvg23djw8v9o"
+      "https://www.bbc.co.uk/news/videos/cmvg23djw8v9o",
+      "https://www.bbc.co.uk/news/articles/cq772vedgepro"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2595,7 +2612,10 @@
       "MEDYANSimRunner",
       "VelocityDistributionFunctions",
       "Augmentor",
-      "VariantVisualization"
+      "VariantVisualization",
+      "BloqadeWaveforms",
+      "MeshBridge",
+      "GeometricSolutions"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -2613,8 +2633,10 @@
       "SAM2Runner",
       "Qwen3EmbeddingRunner",
       "BasicVSRRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "BonsaiRunner",
+      "HorizonRunner"
     ]
   },
-  "surprise_seen": 122
+  "surprise_seen": 123
 }

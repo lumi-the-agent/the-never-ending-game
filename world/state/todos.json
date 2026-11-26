@@ -8393,12 +8393,40 @@
       "id": 600,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "RayMakie leaked lights for moving emissive meshscatters (8640 new lights a frame); fixed with slot reuse (push_reused!, emitter_pool) in dev/Makie/RayMakie/src/plots/meshscatter.jl, test test/test_meshscatter_moving_emitters.jl passes (lights stay 8641 over 30 frames), trace_visibility/traced_memory/interfaces/uv_transform tests pass. Take 4 job 20261126-201833-798 rendered 8 s with Emission spots without failing (1142 s): site/films/glass-rain.mp4, sheet media/s124-glassrain-take4-sheet.png. The spots read as pale pink discs in the tree's shade: brighter spots and a sunny spot are the glass-rain project's next step.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Glass rain spots glow again: find why an emissive meshscatter breaks a traced film",
-      "updated": "2026-11-26T19:48:20.537"
+      "updated": "2026-11-26T20:39:22.128"
+    },
+    {
+      "created": "2026-11-26T20:16:44.217",
+      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:106 [inlined]\n  [3] stop!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:139\n  [4] (::NeverendingGame.var\"#unload!##2#unload!##3\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:170\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] unload!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:169\n  [7] install!(g::Game, p::NeverendingGame.Plugin)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:137\n  [8] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [9] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 601,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T20:16:44.222: plugin groundwhale loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:groundwhale.GroundWhale failed in stop and was switched off",
+      "updated": "2026-11-26T20:16:44.222"
+    },
+    {
+      "created": "2026-11-26T20:16:44.526",
+      "detail": "MethodError: Cannot `convert` an object of type Nothing to an object of type NeverendingGame.Goal\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  NeverendingGame.Goal(::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any, !Matched::Any)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/world.jl:72\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setproperty!(x::NeverendingGame.Creature, f::Symbol, v::Nothing)\n    @ Base ./Base_compiler.jl:57\n  [2] gw_end!\n    @ /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:129 [inlined]\n  [3] step!(sys::Main.Plugin_groundwhale.GroundWhale, game::Game, dt::Float64)\n    @ Main.Plugin_groundwhale /sim/Programmieren/SimGame/world/plugins/groundwhale.jl:154\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 602,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T20:16:47.332: plugin groundwhale loaded cleanly.\nHappened again at 2026-11-26T20:17:41.158.\nClosed at 2026-11-26T20:19:55.724: plugin groundwhale loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:groundwhale.GroundWhale failed in step! and was switched off",
+      "updated": "2026-11-26T20:19:55.724"
     }
   ]
 }

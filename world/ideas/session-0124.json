@@ -1,0 +1,17 @@
+{"ideas": [
+ {"title": "A whale swims through the ground",
+  "idea": "At noon a whale swims through the island as if the ground were sea. You never see it, only the meadow heaving up in a long rolling bulge that travels across the island: grass and flowers ride up and down, trees lean and right themselves, a basket rolls off. The friends run to the bulge and surf it, sliding down its front. At the end the whale's tail fluke breaks up out of the grass, all turf and roots, and slaps down, and the ground rings out in waves.",
+  "form": "the solid ground becomes a medium: a travelling heave in the terrain that moves props, trees and creatures with it (ground waves from the slap), friends that surf it; a generated turf fluke asset; a traced short"},
+ {"title": "Somebody is looking in",
+  "idea": "Sharpened suitcase: our island turns out to be the tiny one. The sun goes dark because a giant eye leans over the sky, a giant Gloop peering into the suitcase our island lies in. A giant claw pokes our sea and a wave rolls over the beach; the friends look up and wave, and the giant eye blinks and the daylight flickers with it.",
+  "form": "the coupling both ways: a giant face asset in the sky that eclipses the real sun (light dims with its blink), a poke that makes a real wave on our shore; a traced short"},
+ {"title": "Fished out of the sea",
+  "idea": "A fishing line comes down from the clouds and hooks the tallest pine. Slowly the whole island is reeled up out of the sea: water pours off its underside in sheets, roots and rocks dangle, the friends cling to the grass as it tilts. At the top the line snaps, the island falls back and lands with a wave that rings round the horizon.",
+  "form": "the whole island as a body on a line: lift, sway, water pouring off the underside, a fall and a huge splash wave; traced short from out at sea"},
+ {"title": "Heavy hearts",
+  "idea": "Feelings have weight. A sad friend gets heavy and sinks into the grass to the knees, then the waist, leaving a dent; a happy one gets light and drifts off the ground on tiptoe. The friends notice and act: two of them pull a sinking friend out by the arms, the light ones are held down by holding hands. Cheering someone up literally lifts them out of the ground.",
+  "form": "creatures' real moods drive their weight and the ground's give; rescue and holding-down interactions; a short"},
+ {"title": "Marbles with the stars",
+  "idea": "Late at night stars drop out of the sky onto the meadow, warm glowing marbles. The friends play marbles with them: flick, roll, click, the light of each star sliding across their faces and the grass as it rolls. Whoever wins keeps their star, and it lights their bed all night.",
+  "form": "rolling, clicking glowing spheres as real moving lights (RayMakie can trace moving emitters now), a flicking game for creatures and the player; traced night short"}
+]}

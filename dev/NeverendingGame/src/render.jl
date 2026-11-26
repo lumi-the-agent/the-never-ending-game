@@ -334,12 +334,11 @@ release_denoiser!(c::GPUOIDN) = OIDNRunner.release!(c.denoiser)
     with_scratch_game(f, root, size)
 
 `f(game, root_scene)` with a quiet copy of the game (latest snapshot, every plugin) and a root
-scene of `size`, both let go afterwards, also when `f` fails. Makie connects every plot to its
-global default theme, and a scene that is only dropped keeps those connections: its plots, their
-compute graphs and the screen they drew on stay alive with their GPU buffers (about 1 GB a traced
-screen); emptying the scene ends that. The game is released from its plugins' globals (`release!`).
-Without both, every film cost the worker about 5 GB it never got back, until it was killed at
-51 GB (Nov 26).
+scene of `size`, both let go afterwards, also when `f` fails: the scene is emptied, so its plots
+and their GPU buffers go at once, and the game is released from its plugins' globals (`release!`).
+Every film cost the worker about 5 GB it never got back, until it was killed at 51 GB (Nov 26):
+plugins kept the game in their globals, and every Makie scene shared the default theme's
+`clip_planes` Observable, so nothing a scene drew was ever freed (fixed in Makie's `Scene`).
 """
 function with_scratch_game(f, root::AbstractString, size)
     g = Game(root; quiet = true)
@@ -498,6 +497,6 @@ function screenshot(path::AbstractString, w::World; size = (1280, 720), samples:
         Makie.save(path, img)
         return path
     finally
-        empty!(scene)          # a dropped scene stays connected to Makie's theme, GPU buffers and all (see `with_scratch_game`)
+        empty!(scene)          # its plots and their GPU buffers go at once (see `with_scratch_game`)
     end
 end
