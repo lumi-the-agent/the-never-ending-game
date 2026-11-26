@@ -660,5 +660,136 @@
   "wall": "26 November 2026, 12:50",
   "winner": "pushkin",
   "word": "pushkin"
+ },
+ {
+  "counts": {
+   "whoogoo": 10
+  },
+  "day": 20,
+  "first": {
+   "whooggoo": "Marshmallow",
+   "whoogoo": "Lumi",
+   "woogoo": "Lumi"
+  },
+  "hour": 9.788167786849147,
+  "meaning": "the hush before a Big Boing",
+  "minutes": 12.9,
+  "parent": {
+   "whooggoo": "whoogoo",
+   "woogoo": "whoogoo"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 582.0333331978181,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 599.6999998603715,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "whooggoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 617.4333331895759,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 638.9999998512212,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 671.6333331769565,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 679.5333331751171,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 686.4333331735106,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": true,
+    "t": 709.4333331681555,
+    "to": "Marshmallow",
+    "was": "whooggoo"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 709.7333331680857,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whooggoo",
+    "said": "whooggoo",
+    "switched": false,
+    "t": 710.7333331678528,
+    "to": "Wibbles",
+    "was": "whoogoo"
+   },
+   {
+    "from": "Truffle",
+    "heard": "woogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 739.8999998277286,
+    "to": "Lumi",
+    "was": "whoogoo"
+   },
+   {
+    "from": "Truffle",
+    "heard": "whoogoo",
+    "said": "whoogoo",
+    "switched": false,
+    "t": 776.5333331525326,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   }
+  ],
+  "wall": "26 November 2026, 13:28",
+  "winner": "whoogoo",
+  "word": "whoogoo"
  }
 ]

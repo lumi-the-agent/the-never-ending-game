@@ -1,0 +1,14 @@
+{"posts": [{"post": "Tied together",
+  "what": "From high above, about ten friends are tied in a row to one red rope across the meadow. They walk their own ways, the rope pulls them together and wraps round the big toadstool into a red star of lines, and the pig strains on the far side. Nothing on the island changes besides the tangle.",
+  "recipe": "all friends coupled by a new physical rule, crowd drifts into a heap, filmed from far",
+  "nearest": "The island is a seesaw",
+  "similarity": 4,
+  "shared": "an occasional island-wide physics rule that couples the whole crowd, shown in a distant high film without a punchline"}],
+ "forms": [
+  {"form": "New world rule acted out by the crowd, shown in a distant film", "posts": ["Tied together", "The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding"]},
+  {"form": "Change to how the island is lit: a quiet still of new light", "posts": ["Lit from below"]},
+  {"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+  {"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw", "Past the palm islands"]},
+  {"form": "Permanent change to the island's look or places", "posts": ["Breeding a new friend", "The island on TV"]},
+  {"form": "Lumi-led set-piece gag film: a spoken punchline", "posts": ["A word goes round"]}
+ ]}

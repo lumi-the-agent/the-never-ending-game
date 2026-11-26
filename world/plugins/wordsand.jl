@@ -14,7 +14,8 @@ const CELL = 0.5f0
 const N = round(Int, 2HALF / CELL) + 1
 const SIGMA = 0.9f0                  # a word's heap spreads about this far (m)
 const REPOSE = 0.33f0                # steepest sand slope (rise per metre) before it slides
-const WIND = 0.02f0                  # share of the sand the wind takes per minute
+const WIND = 0.05f0                  # share of the sand the wind takes per minute
+const SWEEP = 0.012f0                # m the wind lifts off every cell per minute: a dusting blows away, the meadow shows again (s117: the island had become a sandpit)
 const POUR = 1.6f0                   # s a word takes to pour out
 const MAXH = 2.0f0                   # no dune higher than this: the follow camera (2-3 m over its subject) stays out of the sand
 const GRAINS = 360                   # falling grains drawn at once
@@ -74,8 +75,13 @@ end
 
 function sand_at(H, x, y)
     i, j = cellof(x, y)
-    return H[i, j]
+    T = get(WS, :T, nothing)
+    T === nothing && return H[i, j]
+    return H[i, j] * shore_thin(T[i, j])
 end
+
+"How much of a cell's sand is drawn: none at the waterline, all of it 0.55 m up the beach (see `sand_mesh`)."
+shore_thin(t) = clamp((t - 0.05f0) / 0.5f0, 0f0, 1f0)
 
 "The sand as one mesh draped over the ground (only cells with sand in them)."
 function sand_mesh(H, T)
@@ -83,7 +89,9 @@ function sand_mesh(H, T)
     cols = Vector{RGBf}(undef, N * N)
     @inbounds for j in 1:N, i in 1:N
         x, y = xy(i, j)
-        h = H[i, j]
+        # toward the waterline the drawn sand thins to nothing, so its edge sinks under the beach instead of
+        # standing over it in dark teeth (s117: the black band along the shore, perfectionist s115)
+        h = H[i, j] * shore_thin(T[i, j])
         pts[i + (j - 1) * N] = Point3f(x, y, T[i, j] + h - 0.05f0)         # no sand: just under the grass
         a = clamp(h / 0.9f0, 0f0, 1f0)
         speck = 0.94f0 + 0.06f0 * Float32((hash((i, j)) % 1000) / 1000)
@@ -94,7 +102,7 @@ function sand_mesh(H, T)
     @inbounds for j in 1:N-1, i in 1:N-1
         k = i + (j - 1) * N
         max(H[i, j], H[i + 1, j], H[i, j + 1], H[i + 1, j + 1]) > 0.05f0 || continue
-        min(T[i, j], T[i + 1, j + 1]) > 0.05f0 || continue                   # not in the sea
+        min(T[i, j], T[i + 1, j], T[i, j + 1], T[i + 1, j + 1]) > 0.05f0 || continue   # not in the sea (no corner dips)
         push!(faces, GeometryBasics.TriangleFace(k, k + 1, k + N + 1))
         push!(faces, GeometryBasics.TriangleFace(k, k + N + 1, k + N))
     end
@@ -186,8 +194,7 @@ function NG.step!(::WordSand, game, dt)
     # the wind takes a little; the sand slides to its slope
     if w.t >= WS[:wind_at]
         WS[:wind_at] = w.t + 60
-        H .*= (1 - WIND)
-        H[H .< 0.002f0] .= 0
+        H .= max.(H .* (1 - WIND) .- SWEEP, 0f0)
         WS[:dirty] = true
     end
     if WS[:dirty] && w.t >= WS[:redraw_at]

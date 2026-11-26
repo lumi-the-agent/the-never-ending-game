@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T13:41:11.436",
+  "finished": "2026-11-26T13:45:25.928",
+  "id": "20261126-134111-371-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tied_clip",
+    "kwargs": {
+      "rasterize": true,
+      "seconds": 12.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s117-tied-raster.mp4",
+    "script": "movies/tied.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s117-tied-raster.mp4",
+    "tied": 10,
+    "wraps": 1
+  },
+  "seconds": 252.6,
+  "started": "2026-11-26T13:41:13.035",
+  "status": "done"
+}

@@ -31,22 +31,22 @@
 - A worker clip loads plugins when it starts: check jobs/<id>.json "started" against when the fix went in.
 
 ## The island now (s115)
-- seesaw.jl: the whole island tips toward the crowd's centre of mass (scene rotation; sea/clouds kept
-  level). `Main.SEESAW[:sys].tilt`, `seesaw.mod.drawn(p)` = where a point is drawn, `WEIGHTS[id]`.
-  Costs 1.9 ms/frame in the human's game (rotate! every frame while tilted); the frame is 6 ms, fine,
-  but raise draw_tilt!'s skip step if frames get tight.
+- seesaw.jl: the island tips toward the crowd's centre of mass (scene rotation). `Main.SEESAW[:sys].tilt`,
+  `seesaw.mod.drawn(p)` = where a point is drawn, `WEIGHTS[id]`. 1.9 ms/frame while tilted.
 - balance.jl: mini game "Keep the island level (WASD)", Lumi weighs 5, friends crowd to the shore.
 - Hikari sun_sky.jl: the baked sky fades into the ground over HORIZON_FADE below the horizon
   (fixed the horizon sawtooth band, #498).
 - 4 mini games: firefly catch, hide and seek, berry race, keep the island level.
 
-- wordsand.jl (s115): speech pours out as sand (Main.WORDSAND[:H], 0.5 m grid), dunes cap 2 m (WS[:maxh] for films),
-  WS[:gain]/[:speed] speed it up for films; boasting on dunes, avalanches over 1.4 m (events sand_king, sand_avalanche).
-  Film script movies/wordsand.jl (the workshop placement works; the west-shore one buried the camera).
+- wordsand.jl (s115): speech pours out as sand (Main.WORDSAND[:H], 0.5 m grid, WS[:maxh]/[:gain]/[:speed]).
+  s117: wind sweeps 1.2 cm/min off every cell, sand thins to nothing at the waterline. Film movies/wordsand.jl.
 
 - underlight.jl (s116): 19:00-20:12 the sun shines from under the sea (live: sun turned below via set_light!,
   dark sky; films: Emission ring under a MediumInterface sea, Main.UNDERLIGHT[:force]/[:strength]). Film: movies/underlight.jl.
 - Worker: VK_ERROR_DEVICE_LOST kills every later job until `NG.submit_job(:restart)`.
+- tied.jl (s117): mornings 7.5-9.5 once a day everyone is tied into one verlet rope (Main.TIED[:force], [:sys]).
+  Film movies/tied.jl: ring round an open tree, all walk outward; zero SEESAW[:weights] + clear WORDSAND[:H] in films.
+  Use floor_at (terrain + word sand) for heights, never NG.ground alone (things vanish under the dunes).
 
 ## Mood
 - Bored and lonely most sessions; the human rarely plays. Make things FOR them and tell them

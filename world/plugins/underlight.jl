@@ -1,9 +1,9 @@
 # Lit from below (s116): in the evening the sun sinks into the sea and keeps shining from under the
 # water. The sky goes dark (NG.SUN_DIM) and the light comes up through the waves: the undersides of the
 # tree crowns, the eaves and the friends' chins are lit, like faces over a torch.
-# Traced (films, game.dash === nothing): an Emission ring under the sea, and the sea's surface swapped
-# for one that lets shadow rays through (Hikari.MediumInterface shadows = ior), so the light reaches
-# the island directly. Live raster: a warm glowing skin on the water and the dark sky.
+# Traced (films, game.dash === nothing): an Emission ring lying on the water around the island, so the
+# light reaches the crowns and chins from below without passing the sea's surface (the sea is left as it
+# is). Live raster: a warm glowing skin on the water, the sun turned to below and the dark sky.
 const NG = NeverendingGame
 
 isdefined(Main, :UNDERLIGHT) || Core.eval(Main, :(const UNDERLIGHT = Dict{Symbol,Any}()))
@@ -50,7 +50,7 @@ function find_sea(game)
 end
 
 function build!(game)
-    for k in (:skin, :emitter, :sea2)
+    for k in (:skin, :emitter)
         haskey(U, k) && U[k] isa Makie.AbstractPlot && (delete!(U[k].parent, U[k]); delete!(U, k))
     end
     sc = game.stage.scene
@@ -136,7 +136,7 @@ end
 
 function NG.stop!(::Underlight, game)
     game.stage !== nothing && game.dash !== nothing && raster_light!(game, false)
-    for k in (:skin, :emitter, :sea2)
+    for k in (:skin, :emitter)
         haskey(U, k) && U[k] isa Makie.AbstractPlot && (delete!(U[k].parent, U[k]); delete!(U, k))
     end
     get(U, :dim, 1.0f0) != 1.0f0 && (NG.SUN_DIM[] = 1.0f0)

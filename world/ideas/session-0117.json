@@ -1,0 +1,14 @@
+{"ideas": [
+ {"title": "Tied together",
+  "idea": "One morning all my friends wake up tied in one long elastic rope, each to the next, Lumi somewhere in the middle. Nobody agrees where to go: the sheep wants its bed, Pickles wants berries, the ball rolls off. The rope stretches and snaps them back, two friends going round a tree from different sides wrap themselves up, a friend who runs downhill catapults the one behind it over a bush, and the whole chain flops into the sea if enough of them pull that way. Nothing is scripted: it is just ten wills and one rope.",
+  "form": "a plugin: a real verlet rope with springs between all creatures, applied after their own walking, so their goals fight the rope; the rope wraps around tree trunks; when you jump in, Lumi pulls too. A path traced short from above of the chain getting tangled"},
+ {"title": "Jelly day, for real",
+  "idea": "The ground turns to jelly and it is a physics toy, not a gag: a 2D wave equation runs under the whole island. Any body that lands sends rings out, waves that reach a friend throw it up, and when it lands it starts new rings, so one jump grows into a chain of bounces running across the meadow that nobody planned. Trees lean and spring back on the swell. You can play it: jump in and stomp to launch friends on the far side.",
+  "form": "a plugin: wave equation on a terrain grid that displaces the ground mesh, everything rides it and feeds it back; a short film of one stomp turning into an island-wide chain of launches"},
+ {"title": "Lumi turns magnetic",
+  "idea": "Lumi touches the old TV and comes away magnetic. Everything metal on the island starts sliding toward it, then flying: buckets, the shovel, the wheelbarrow, the brass bits of the xylophone, a friend wearing a crown. Lumi becomes a walking ball of junk that gets heavier and slower, waddling, and has to shake to throw it all off.",
+  "form": "a plugin with attraction physics for metal props and pieces sticking to Lumi's body; playable as Lumi; a path traced short with all that metal catching the light"},
+ {"title": "Two heads",
+  "idea": "Two friends bump hard and come out as one creature with two heads that never agree: each head pulls the body toward what it wants, so it zigzags, spins and tugs itself in circles, until a sneeze splits them apart again.",
+  "form": "a plugin where a fused body is steered by two competing goals with a physical tug between them; a short film of one walk across the meadow"}
+]}

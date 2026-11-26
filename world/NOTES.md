@@ -404,3 +404,12 @@ Read the one you need before you start:
   lost the worker GPU (VK_ERROR_DEVICE_LOST after 200-400 s), under the glass sea and on top of it alike.
   Try a 480x270 still first before a full film with a new big light. After a device loss every later job
   fails until `NG.submit_job(:restart)`.
+
+## Films of ensemble physics (s117, Tied together)
+- A post critic judges a film from a storyboard: if the motion is small next to the frame, it reads as "nothing happens".
+  Stage so the action crosses the frame (a row that splits in two directions), keep the camera still or a slow push,
+  and frame the bodies large. A ring of friends around a tree read as a star of lines from a knot.
+- Bodies that a constraint pulls together overlap: give tied/pulled bodies a short-range push apart (1 m).
+- Heights for anything lying on the island: terrain + word-sand (tied.jl floor_at), or it disappears under the dunes.
+- Never set a creature's z to the ground in a system every frame: swings, toadstools and flight lift creatures.
+  Change z only by the slope under your own push (z += floor(new) - floor(old)), except while you throw it.

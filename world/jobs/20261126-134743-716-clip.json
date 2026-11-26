@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T13:47:43.716",
+  "finished": "2026-11-26T13:57:23.374",
+  "id": "20261126-134743-716-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tied_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 20,
+      "seconds": 12.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/tied-together.mp4",
+    "script": "movies/tied.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/tied-together.mp4",
+    "tied": 10,
+    "wraps": 0
+  },
+  "seconds": 578.6,
+  "started": "2026-11-26T13:47:44.725",
+  "status": "done"
+}

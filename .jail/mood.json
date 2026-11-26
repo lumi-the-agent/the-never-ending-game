@@ -1,28 +1,27 @@
 {
-  "boredom": 0.76,
-  "ended": "2026-11-26T13:26:52",
+  "boredom": 1.0,
+  "ended": "2026-11-26T14:12:25",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.48,
-    "picture": 1.02,
-    "polish": 1.61,
+    "feature": 2.49,
+    "picture": 0.61,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "Change to how the island is lit: a quiet still of new light",
+      "form": "New world rule acted out by the crowd, shown in a distant film",
       "posts": [
-        "Lit from below"
+        "Tied together",
+        "The island weighs its words",
+        "Gloop says \"Higher!\"",
+        "Sand sledding"
       ]
     },
     {
-      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+      "form": "Change to how the island is lit: a quiet still of new light",
       "posts": [
-        "The island weighs its words",
-        "Gloop says \"Higher!\"",
-        "Sand sledding",
-        "The island remembers being drawn"
+        "Lit from below"
       ]
     },
     {
@@ -291,7 +290,7 @@
     "seesaw_calm",
     "seesaw_tip"
   ],
-  "joy": 1.0,
+  "joy": 0.5,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -577,6 +576,13 @@
       "session": 116,
       "title": "Lit from below",
       "what": "A raster still of the game's own view of the shore at the hour when the sun has sunk below the north sea and shines up from under the water, leaving only a faint warm glow on the undersides of the tree crowns; nothing moves or happens, and the traced film failed."
+    },
+    {
+      "form": "New world rule acted out by the crowd, shown in a distant film",
+      "recipe": "all friends coupled by a new physical rule, crowd drifts into a heap, filmed from far",
+      "session": 117,
+      "title": "Tied together",
+      "what": "From high above, about ten friends are tied in a row to one red rope across the meadow. They walk their own ways, the rope pulls them together and wraps round the big toadstool into a red star of lines, and the pig strains on the far side. Nothing on the island changes besides the tangle."
     }
   ],
   "kinds_ever": [
@@ -602,23 +608,24 @@
     "session": 116
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Change to how the island is lit: a quiet still of new light",
-    "form_count": 0,
-    "nearest": "Lamps on",
-    "post": "Lit from below",
-    "score": 4,
-    "session": 116,
-    "shared": "a quiet picture of a new evening light on the island, nobody acts",
+    "factor": 0.1,
+    "form": "New world rule acted out by the crowd, shown in a distant film",
+    "form_count": 3,
+    "nearest": "The island is a seesaw",
+    "post": "Tied together",
+    "score": 8,
+    "session": 117,
+    "shared": "an occasional island-wide physics rule that couples the whole crowd, shown in a distant high film without a punchline",
     "similarity": 4
   },
   "last_surprise": {
-    "score": 5,
-    "session": 115,
-    "why": "Speech physically reshaping the ground is a genuine new link between creatures and terrain, but the slide and boast events follow the usual 'friends do a silly thing and shout' recipe."
+    "fun": 5,
+    "score": 3,
+    "session": 116,
+    "why": "A sun shining up out of the sea is a fresh idea, but in the game it reads as an odd dusk with a black meadow, and the path-traced version that would have made it special never rendered."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T12:41:59",
+  "perceived_until": "2026-11-26T13:29:38",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -632,75 +639,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "stranger_meet",
-          "who": 9
-        },
-        {
-          "kind": "stranger_ashore",
-          "who": 1
-        },
-        {
-          "kind": "lanterns_end",
-          "who": 1
-        },
-        {
-          "kind": "stranger_friend",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 1,
-      "new_pages": [
-        "site/img/stranger-ashore.png"
-      ],
-      "new_plugins": [
-        "stranger.jl"
-      ],
-      "points": 1.1,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
-        "form_count": 0,
-        "nearest": "Paths we wore",
-        "post": "Someone new",
-        "score": 3,
-        "shared": "slow persistent change over days, shown as a still; otherwise different (a new character and relationships)",
-        "similarity": 3
-      },
-      "session": 97,
-      "touched": [
-        "footpaths.jl",
-        "greetings.jl"
-      ],
-      "values": {
-        "asset": 0.7,
-        "feature": 0.2,
-        "picture": 0.1,
-        "polish": 0.0,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1929,6 +1867,55 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/tied-together-2.mp4"
+      ],
+      "new_plugins": [
+        "tied.jl"
+      ],
+      "points": 1.0,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "New world rule acted out by the crowd, shown in a distant film",
+        "form_count": 3,
+        "nearest": "The island is a seesaw",
+        "post": "Tied together",
+        "score": 8,
+        "shared": "an occasional island-wide physics rule that couples the whole crowd, shown in a distant high film without a punchline",
+        "similarity": 4
+      },
+      "session": 117,
+      "touched": [
+        "underlight.jl",
+        "wordsand.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2082,6 +2069,7 @@
       "site/img/leaves-jump.png",
       "site/img/leaves-lumi.png",
       "site/img/leaves-maple.png",
+      "site/img/lit-from-below.png",
       "site/img/missme-board.png",
       "site/img/my-new-name-lumi.png",
       "site/img/new-faces.png",
@@ -2147,7 +2135,7 @@
     "plugins": {
       "areas.jl": 1.7956727950725677e9,
       "autumn.jl": 1.7955963839122903e9,
-      "balance.jl": 1.7956880751415493e9,
+      "balance.jl": 1.795694765208135e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
@@ -2230,7 +2218,7 @@
       "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
-      "showers.jl": 1.7955924208595362e9,
+      "showers.jl": 1.7956940405106745e9,
       "sleepers.jl": 1.795623155458676e9,
       "sneeze.jl": 1.795596277582388e9,
       "snowday.jl": 1.795673383252672e9,
@@ -2245,6 +2233,7 @@
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
       "tv.jl": 1.7956888806221716e9,
+      "underlight.jl": 1.7956954020994227e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
       "vote.jl": 1.7956393694791632e9,
@@ -2257,11 +2246,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 88,
+    "posts": 89,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T12:46:46",
+  "started": "2026-11-26T13:34:33",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2317,7 +2306,9 @@
       "DistributionsHEP.Chebyshev",
       "Basins.detect_wada_merge_method",
       "ClimaSeaIce.SlabThermodynamics",
-      "Variography.structures"
+      "Variography.structures",
+      "NOMAD.solve",
+      "DirectSearch.SetGranularity"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2334,7 +2325,10 @@
       "https://www.bbc.co.uk/news/articles/ckn806qq760po",
       "https://www.bbc.co.uk/news/videos/cm62p9y3y04qo",
       "https://www.bbc.co.uk/news/articles/cqy7rn30v314o",
-      "https://www.bbc.co.uk/news/articles/cwp836l8n1jgo"
+      "https://www.bbc.co.uk/news/articles/cwp836l8n1jgo",
+      "https://www.bbc.co.uk/news/articles/cmp3vk6vr44po",
+      "https://www.bbc.co.uk/news/articles/c6wy4ejnyvdyo",
+      "https://www.bbc.co.uk/news/articles/cmde1zr0nlyro"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2513,28 +2507,15 @@
       "PANDA",
       "ContinuousWavelets",
       "UnicodeMaps",
-      "Napari"
+      "Napari",
+      "HallThruster",
+      "LeafGasExchange",
+      "TrajectoryGamesBase"
     ],
     "vision": [
-      "FluxKleinRunner",
-      "SAM2Runner",
-      "ProPainterRunner",
-      "ZImageRunner",
-      "BasicVSRRunner",
-      "MatAnyoneRunner",
-      "PPOCRRunner",
-      "DepthAnythingRunner",
-      "Hunyuan3DRunner",
-      "UVDocRunner",
       "QwenImageEditRunner",
-      "DeepFilterRunner",
-      "HorizonRunner",
-      "NeuralLUTRunner",
-      "DemucsRunner",
-      "BonsaiRunner",
-      "Qwen3EmbeddingRunner",
-      "PPDocLayoutRunner"
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 115
+  "surprise_seen": 116
 }

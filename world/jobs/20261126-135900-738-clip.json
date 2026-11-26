@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-26T13:59:00.738",
+  "error": "LoadError: syntax: invalid named tuple element \"cs[li]\" around /sim/Programmieren/SimGame/world/movies/tied.jl:49\nStacktrace:\n [1] top-level scope\n   @ /sim/Programmieren/SimGame/world/movies/tied.jl:23\n [2] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:195\n [4] run_worker(; root::String)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [5] run_worker()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/movies/tied.jl:23",
+  "finished": "2026-11-26T13:59:02.121",
+  "id": "20261126-135900-738-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tied_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 10.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/tied-together-2.mp4",
+    "script": "movies/tied.jl"
+  },
+  "seconds": 0.3,
+  "started": "2026-11-26T13:59:01.798",
+  "status": "failed"
+}

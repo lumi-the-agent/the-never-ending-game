@@ -1,0 +1,20 @@
+{
+  "created": "2026-11-26T14:07:14.773",
+  "error": "UndefVarError: `norm` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.\nHint: a global variable of this name also exists in LinearAlgebra.\n    - Also exported by ColorVectorSpace (loaded but not imported in Main).\n    - Also exported by ImageCore (loaded but not imported in Main).\n    - Also exported by ImageBase (loaded but not imported in Main).\nStacktrace:\n  [1] (::Main.ClipScript.var\"#17#18\"{GeometryBasics.Vec{2, Float32}})(t::GeometryBasics.Vec{2, Float32})\n    @ Main.ClipScript ./none:-1\n  [2] MappingRF\n    @ ./reduce.jl:92 [inlined]\n  [3] _foldl_impl(op::Base.MappingRF{Main.ClipScript.var\"#17#18\"{GeometryBasics.Vec{2, Float32}}, Base.BottomRF{typeof(min)}}, init::Base._InitialValue, itr::Vector{GeometryBasics.Vec{2, Float32}})\n    @ Base ./reduce.jl:50\n  [4] foldl_impl\n    @ ./reduce.jl:40 [inlined]\n  [5] mapfoldl_impl\n    @ ./reduce.jl:36 [inlined]\n  [6] mapfoldl\n    @ ./reduce.jl:167 [inlined]\n  [7] mapreduce\n    @ ./reduce.jl:300 [inlined]\n  [8] minimum\n    @ ./reduce.jl:729 [inlined]\n  [9] (::Main.ClipScript.var\"#11#12\"{Float64, Dict{Any, Any}})(g::Game, rig::NeverendingGame.CameraRig, t::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/tied.jl:51\n [10] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Nothing, shot::Main.ClipScript.var\"#11#12\"{Float64, Dict{Any, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421\n [11] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:380 [inlined]\n [12] tied_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/tied.jl:96\n [13] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [14] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [15] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n [16] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n [17] top-level scope\n    @ none:1\n [18] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [19] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [20] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-26T14:09:06.725",
+  "id": "20261126-140714-773-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tied_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16,
+      "seconds": 9.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/tied-together-3.mp4",
+    "script": "movies/tied.jl"
+  },
+  "seconds": 110.7,
+  "started": "2026-11-26T14:07:15.641",
+  "status": "failed"
+}

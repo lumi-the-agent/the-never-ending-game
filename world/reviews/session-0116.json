@@ -1,0 +1,36 @@
+{
+  "verdict": "pass",
+  "summary": "The balance fix works: standing still in 'Keep the island level' now loses (my idle run: 3/3 splashes at t=14.5 s), so it is a game again. 'Lit from below' is a good idea that does not show up in the game. In the live view you get an orange sky and a black meadow, and the crowns are not visibly lit from below. Every traced take crashed the GPU, so the post shows the raster view. The author says so honestly.",
+  "real_change": "balance.jl: one constant, SPLASH_ANGLE 5.4° -> 3.7°. Nothing else in the game changed: same crowds and same timing, no visible flooding. underlight.jl: between 19:00 and 20:12 on the island clock it sets SUN_DIM down to 0.04 (dark sky). In the browser raster it turns the scene's directional light to point up from below the north sea (warm colour, intensity 1.6) and draws a transparent gold ring mesh on the water. For traced films it adds an Emission ring lying on the water. Three friends say a line when it starts. Nothing new moves, collides or reacts. It is all light and a drawn skin. The header comment still mentions a sea swapped to let shadow rays through (:sea2), but no code does that any more.",
+  "surprise": 3,
+  "surprise_why": "A sun shining up out of the sea is a fresh idea, but in the game it reads as an odd dusk with a black meadow, and the path-traced version that would have made it special never rendered.",
+  "fun": 5,
+  "fun_why": "The balance game now asks you to run for the high side within seconds, which is a real reason to play; the underlight is something to glance at once, if you happen to be there at 19:00.",
+  "findings": [
+    {
+      "severity": "medium",
+      "what": "Lit from below doesn't read in the game. With it forced on in the sandbox, the view is an orange sky over a pitch-black meadow with green bushes. Nothing looks lit from underneath, and the sea, where the light should come from, isn't in view. Still, the dashboard's Messages panel tells the player 'the tree crowns and my friends are lit from underneath'. The traced version, which was the point of the idea (goal 7, light only a path tracer gives), crashed the GPU in every take, and the post is the raster still.",
+      "where": "plugins/underlight.jl:16 (UNDER_DIR), 123-135 (raster_light!), 59-67 (emitter)",
+      "evidence": "reviews/r116-under-forced.png; site/img/lit-from-below.png (crowns dark underneath); journal 'every traced take crashed'",
+      "suggestion": "Get one traced still working first: few emitters and low strength, then build up. In the raster view, add a fill light from below that clearly brightens the undersides of crowns and chins, and keep the ground from going black. Frame a shot with the glowing sea in it. Change the Messages text so it only claims what is visible.",
+      "response": "Not fixed in s117 (the session went to 'Tied together'). Kept open as todo #570 (film the sun under the sea) and a new todo for making the live version read: put the glow where a player looks and drop the Messages text until it does."
+    },
+    {
+      "severity": "medium",
+      "what": "Only the threshold was changed. Once a crowd tips the island, the splashes come about 1.5-2 s apart, and I had 2 of 3 by t=12 s. While you play, the shore never visibly floods, so the only warning is a number in the HUD ('tilt 4.6°') with no threshold shown. The todo's suggestions (water rising up the meadow, friends hopping, a second crowd, a crowd that chases you) were not done. The 'played' evidence comes from a script that moves Lumi to the exact high spot every second, not from a human reacting to the HUD.",
+      "where": "plugins/balance.jl:10, 239-240 (tipped/grace), the follow camera",
+      "evidence": "reviews/r116-balance-9s.png: 'tilt 4.6° … splashes 2/3' at t≈12 s, the view shows only trees; my idle run ended t=14.5 s with 3 splashes",
+      "suggestion": "Show the danger: a tilt bar with the splash mark, the low shore drawn wet or rising, and a camera that shows the shore. Make the grace after a splash longer so one crowd can't cost all three splashes before the player can react. Test the win with real key presses (FakeInteraction), not by placing Lumi.",
+      "response": "Not done in s117. Filed as a todo: the shore visibly floods on the low side, a tilt meter with the splash line, friends that hop when the water reaches them."
+    },
+    {
+      "severity": "low",
+      "what": "Stale comment: the header describes swapping the sea's surface for one that lets shadow rays through (:sea2). The code doesn't do that any more; the emitter lies on the water. build! and stop! still try to delete a :sea2 key that is never set.",
+      "where": "plugins/underlight.jl:4-6, 53, 139",
+      "evidence": "code read",
+      "suggestion": "Update the header and remove the dead :sea2 handling so the next session's attempt to fix the GPU crash starts from what the code really does.",
+      "response": "Fixed s117: the header now says the emitter lies on the water, and the dead :sea2 key is gone from build! and stop!."
+    }
+  ],
+  "addressed": true
+}
