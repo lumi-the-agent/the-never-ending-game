@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T11:57:44.846",
+  "finished": "2026-11-26T11:59:26.746",
+  "id": "20261126-115744-779-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wordsand_clip",
+    "kwargs": {
+      "rasterize": true
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/wordsand-raster.mp4",
+    "script": "movies/wordsand.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/wordsand-raster.mp4",
+    "peak": 0.0,
+    "poured": 1
+  },
+  "seconds": 101.0,
+  "started": "2026-11-26T11:57:45.725",
+  "status": "done"
+}

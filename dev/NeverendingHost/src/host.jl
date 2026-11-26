@@ -507,7 +507,8 @@ function one_session!(host::Host)
     prompt = work_prompt(host, n, msgs, seen)
     atomic_write(joinpath(jp.run, "last_prompt.md"), prompt)
     host.agent_state, host.agent_detail = "working", ""
-    followups = r -> something(human_followup(host), ideas_followup(host, n, r), continue_session(host, r), Some(nothing))
+    followups = r -> something(human_followup(host), ideas_followup(host, n, r), post_critic_followup(host, n, r),
+                                continue_session(host, r), Some(nothing))
     run = if host.cfg.agent_chat && host.dashboard !== nothing
         run_chat_session!(host, "session $n", host.cfg.agent, prompt; followups)
     else

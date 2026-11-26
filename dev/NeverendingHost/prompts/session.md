@@ -22,7 +22,10 @@
    passes (the host says when). Of those that pass, take the one you want
    most, then build it, film or path trace it, publish it and post it,
    before anything else. Tell the human's game what you are up to with
-   `NeverendingGame.think!`.
+   `NeverendingGame.think!`. Once it is posted, end your turn: a critic who
+   has not seen it looks at the post the way someone scrolling your pages
+   does, and answers. Fix what it finds in the post itself, then end your
+   turn again.
 4. Then open review findings, before other new work. The host has already filed a
    perfectionist review's findings as todos (`kind` review, its `done_when`
    in the detail) and closed the todos it found done, stale or duplicated:

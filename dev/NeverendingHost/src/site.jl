@@ -144,18 +144,22 @@ end
 The posts dated `since` (unix time) or later: id, whether it has a picture or film, its words.
 """
 function session_posts(jp::JailPaths, since::Real)
+    return [(id, media = length(post_media(html)) > length(missing_media(jp, html)), missing = missing_media(jp, html),
+             words = caption_words(html)) for (id, html) in session_pieces(jp, since)]
+end
+
+"The posts on the front page dated `since` (unix time) or later: their ids and html."
+function session_pieces(jp::JailPaths, since::Real)
     page = joinpath(site_dir(jp), "index.html")
-    isfile(page) || return NamedTuple[]
-    posts = NamedTuple[]
+    pieces = Tuple{String,String}[]
+    isfile(page) || return pieces
     for m in eachmatch(PIECE, read(page, String))
         d = match(r"<span class=\"date\">(\d{1,2} \w+ \d{4}, \d{1,2}:\d{2})</span>", m[2])
         d === nothing && continue
         datetime2unix(DateTime(d[1], dateformat"d U yyyy, H:M")) - local_utc_offset() >= since - 60 || continue
-        media = post_media(m[2])
-        missing = missing_media(jp, m[2])
-        push!(posts, (id = m[1], media = length(media) > length(missing), missing, words = caption_words(m[2])))
+        push!(pieces, (String(m[1]), String(m[2])))
     end
-    return posts
+    return pieces
 end
 
 "What is wrong with this session's posts, or `nothing`: none yet, one without a picture or film, one too long."

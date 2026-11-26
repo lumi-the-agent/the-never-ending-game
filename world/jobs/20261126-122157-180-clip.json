@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-26T12:21:57.180",
+  "finished": "2026-11-26T12:27:33.174",
+  "id": "20261126-122157-180-clip",
+  "kind": "clip",
+  "params": {
+    "call": "sled_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 16
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/sand-sledding.mp4",
+    "script": "movies/wordsand.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/sand-sledding.mp4",
+    "slides": {
+      "5": {
+        "dir": [
+          0.6413561,
+          -0.7672433
+        ],
+        "t0": 350908.11126960104
+      }
+    }
+  },
+  "seconds": 334.4,
+  "started": "2026-11-26T12:21:58.773",
+  "status": "done"
+}

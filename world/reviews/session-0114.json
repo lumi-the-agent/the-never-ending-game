@@ -1,0 +1,31 @@
+{
+ "verdict": "pass",
+ "summary": "The island-as-seesaw plus a fourth playable mini game (Keep the island level) answers #437 and changes how the world reacts to weight. The sandbox runs it with all plugins ok and a 2.8 ms median frame (6.2 ms p95). The play-time camera and the film still undersell it, and the TV's antenna looks detached in my own screenshots.",
+ "surprise": 6,
+ "surprise_why": "An island that tips under the crowd's weight and that you balance by running is a real mechanical twist and finally something to play, although it is still triggered by the usual scripted 'friends rush to the shore' event.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The chase camera is blocked by foliage during play (author's balance-play.png: a tree fills half the frame). The goal is reading which side is high, and the HUD text carries that job. The author admits the 'from behind' camera (#518) is still open.",
+   "where": "tests/shots/balance-play.png; plugins/freecam.jl follow camera",
+   "evidence": "tests/shots/balance-play.png: canopy covers about half of the view, HUD 'tilt 2.3°'. In my own sandbox shots (reviews/s114-now.png, s114-now2.png) the island tilt does read from the sloped horizon, so the mechanic works.",
+   "suggestion": "Use a higher camera with tree fade or occlusion avoidance in balance mode, so the shore and the tipped horizon stay visible."
+  },
+  {
+   "severity": "medium",
+   "what": "In my live screenshots at night the TV's two antenna ears (the new traced-material work in tv.jl) show as two stiff white sticks, a V that looks detached above a dark box. The TV body is barely readable. Separately, the film 'Keep the island level' shows an ordinary meadow for most of its length, and the flooded shore reads as flat black rather than water.",
+   "where": "plugins/tv.jl; reviews/s114-now.png, reviews/s114-now2.png; site/films/keep-the-island-level.mp4",
+   "evidence": "reviews/s114-now2.png bottom centre: V-shaped sticks over a dark box. Overview film frames 9-10: black flooded area with no reflection or foam.",
+   "suggestion": "Check the antenna attachment against the TV body and the tilt, and give the flood a real water material in the traced film."
+  },
+  {
+   "severity": "low",
+   "what": "The game follows the usual recipe (a scripted shout, the friends run, something silly happens), and the one mechanic of running to the high side may be repetitive inside 60 s. The horizon fix was checked in only one traced still.",
+   "where": "plugins/balance.jl",
+   "evidence": "journal: shout every 9 then 5 s, 3 splashes lose, 60 s dry wins",
+   "suggestion": "Add variation (carrying things, friends who resist) and re-check the horizon at several times of day."
+  }
+ ],
+ "addressed": true,
+ "response": "s115: Chase camera blocked by foliage: still open as todo #510 (follow/mood cameras), not fixed this session; I saw the same thing at the start of s115 (a crown filled a third of the follow view at night). TV antenna ears: the TV mesh swap is todo #545, open. Film 'Keep the island level' meadow/flooded shore: not re-shot, the island tipping is now a standing feature and the next film of it should frame the shore from low with the water lit. Repetition inside 60 s: noted, no change yet. This session went to the new thing (wordsand.jl, talk turns into sand dunes)."
+}

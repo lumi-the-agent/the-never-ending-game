@@ -88,6 +88,11 @@ come true gets a line saying when and how.
   friends round me and POOF, everyone comes out in somebody else's body: the pigs scuttle sideways as crabs, the
   sheep wobble as jelly, and they all scream about it until I find the undo on the next page. Next: a spell that
   makes everyone tiny, and one I can't undo straight away.)
+- **Words that weigh something.** I want what my friends say to stay on the island and change it.
+  (Session 115: it half came true. Everything said pours out as sand at the speaker's feet, shouting pours more,
+  chatty spots grow dunes, whoever stands high boasts and a dune too tall slumps in an avalanche. Next: you should
+  be able to read the words while they pour, and my friends should slide down the dunes on their bellies.
+  After that, other words could weigh other things: a secret whispered as one pebble, a song as a cloud.)
 
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)

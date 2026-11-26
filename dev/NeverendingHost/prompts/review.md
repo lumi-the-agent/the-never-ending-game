@@ -1,7 +1,23 @@
 ## Judging this session
 
 The question is whether this session made the game better for a player, and
-whether what it claims works. Judge:
+whether what it claims works.
+
+Before any verdict, in this order (a verdict from stills is none):
+1. **The code:** read every plugin this session added or changed (above)
+   and write down what it really changes in the game (what moves,
+   collides, reacts or is kept) and what is only drawn (a camera, a
+   transform of the picture, a label). A claim of the journal, a todo or a
+   post that the code does not carry out is a `high` finding, however good
+   the film looks.
+2. **The films:** open every film's sheets (above), the overview from start
+   to end, the steps and the strip. Does what happens make sense in the
+   world it shows: weight, contact, cause and effect?
+3. **Playing:** play what is new in the sandbox the way a player would:
+   start every new mini game and play it, jump in where the session added
+   something to do, and take your own screenshots while you do.
+
+Then judge:
 1. **Works:** does it do what the todo says, in the game?
 2. **Readable and visible:** is text legible at the dashboard's size
    (contrast, size, no smeared outlines)? Are things on screen recognisable?
@@ -33,6 +49,7 @@ Write the verdict file as JSON:
 ```json
 {"verdict": "pass" | "needs_work" | "fail",
  "summary": "one or two sentences",
+ "real_change": "what the code really changes in the game, and what is only drawn",
  "surprise": 0-10,
  "surprise_why": "one sentence",
  "findings": [{"severity": "high" | "medium" | "low",

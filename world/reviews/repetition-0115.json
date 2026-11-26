@@ -1,0 +1,13 @@
+{"posts": [
+{"post": "The island weighs its words", "what": "Everything the friends say pours out as sand under their feet, piling into dunes that bury the cottage over a sped-up film; high dunes slump and carry them down.", "recipe": "new world rule: speech becomes ground material, crowd behaviour reshapes the terrain, shown in a film", "nearest": "Paths we wore", "similarity": 4, "shared": "friends' activity slowly reshapes the island's ground"},
+{"post": "Gloop says Higher!", "what": "A second take of the same sand rule: Gloop shouts and rides a rising column of poured sand above the trees, with jagged black edges at the bottom.", "recipe": "same sand-from-speech rule, another film take, one friend rising on shouts", "nearest": "The island is a seesaw", "similarity": 5, "shared": "crowd shouting physically moves the ground under them; film of the effect (and the same sand rule as the session's first post)"},
+{"post": "Sand sledding", "what": "Friends standing on sand dunes throw themselves down the slope on their bellies, shouting, filmed from far away.", "recipe": "friends act out a small gag (slide down a hill) on the sand rule, filmed", "nearest": "Climbing me", "similarity": 5, "shared": "friends play on a landform shown in a film; plus the same sand rule as the other posts of this session"}
+],
+"forms": [
+{"form": "New world rule that makes the creatures reshape the ground, shown in a film", "posts": ["The island weighs its words", "Gloop says Higher!", "Sand sledding", "The island remembers being drawn"]},
+{"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+{"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw", "We came loose", "Past the palm islands"]},
+{"form": "Permanent change to the island's look or places", "posts": ["Breeding a new friend", "The island on TV", "Lamps on"]},
+{"form": "Lumi-led set-piece gag film: a spoken punchline", "posts": ["A word goes round"]},
+{"form": "Lumi on the web pages: an overlay outside the game", "posts": ["I walk on my pages now"]}
+]}

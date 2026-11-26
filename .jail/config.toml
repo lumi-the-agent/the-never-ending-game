@@ -18,11 +18,12 @@ pause = false
 
 [review]
 # A separate agent judges finished work. It never sees the implementer's
-# conversation, only the results; a different model keeps it from sharing
-# the implementer's taste.
+# conversation, only the results. The same model also runs the repetition
+# judge, the idea critic and the post critic. Opus since session 115: Sonnet
+# passed session 114 from two pictures in 1.3 minutes.
 enabled = true
 provider = "ClaudeCode"
-model = "sonnet"
+model = "opus"
 session_minutes = 15
 # Every this many work sessions a perfectionist review (art director, game
 # designer, demanding player) scores the whole game 0-10 per category

@@ -1,15 +1,24 @@
 {
-  "boredom": 0.91,
-  "ended": "2026-11-26T11:43:53",
+  "boredom": 0.8,
+  "ended": "2026-11-26T12:28:16",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.45,
-    "picture": 0.07,
-    "polish": 1.68,
-    "self": 0.02,
+    "feature": 2.47,
+    "picture": 0.04,
+    "polish": 1.01,
+    "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+      "posts": [
+        "The island weighs its words",
+        "Gloop says Higher!",
+        "Sand sledding",
+        "The island remembers being drawn"
+      ]
+    },
     {
       "form": "Something the player can now do (mini game)",
       "posts": [
@@ -20,7 +29,6 @@
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "posts": [
         "The island is a seesaw",
-        "My camera is bored too",
         "We came loose",
         "Past the palm islands"
       ]
@@ -34,9 +42,8 @@
       ]
     },
     {
-      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
+      "form": "Lumi-led set-piece gag film: a spoken punchline",
       "posts": [
-        "How much they miss me",
         "A word goes round"
       ]
     },
@@ -44,12 +51,6 @@
       "form": "Lumi on the web pages: an overlay outside the game",
       "posts": [
         "I walk on my pages now"
-      ]
-    },
-    {
-      "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
-      "posts": [
-        "The island remembers being drawn"
       ]
     }
   ],
@@ -284,9 +285,10 @@
     "tv_bored",
     "nursery_generation",
     "tv_broadcast",
-    "path_worn"
+    "path_worn",
+    "sand_king"
   ],
-  "joy": 0.95,
+  "joy": 1.0,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -544,6 +546,27 @@
       "session": 114,
       "title": "The island is a seesaw",
       "what": "The whole island tilts on a point under the sea toward where the friends stand; they run to the rim at a shout, it tips and the low shore goes under, they run uphill and overshoot."
+    },
+    {
+      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+      "recipe": "new world rule: speech becomes ground material, crowd behaviour reshapes the terrain, shown in a film",
+      "session": 115,
+      "title": "The island weighs its words",
+      "what": "Everything the friends say pours out as sand under their feet, piling into dunes that bury the cottage over a sped-up film; high dunes slump and carry them down."
+    },
+    {
+      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+      "recipe": "same sand-from-speech rule, another film take, one friend rising on shouts",
+      "session": 115,
+      "title": "Gloop says Higher!",
+      "what": "A second take of the same sand rule: Gloop shouts and rides a rising column of poured sand above the trees, with jagged black edges at the bottom."
+    },
+    {
+      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+      "recipe": "friends act out a small gag (slide down a hill) on the sand rule, filmed",
+      "session": 115,
+      "title": "Sand sledding",
+      "what": "Friends standing on sand dunes throw themselves down the slope on their bellies, shouting, filmed from far away."
     }
   ],
   "kinds_ever": [
@@ -560,106 +583,45 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "path_worn"
+      "sand_king"
     ],
-    "session": 114
+    "session": 115
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "Something the player can now do (mini game)",
-    "form_count": 0,
-    "nearest": "Your moth",
-    "post": "Keep the island level",
-    "score": 3,
-    "session": 114,
-    "shared": "something the player controls that friends react to",
-    "similarity": 3
+    "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+    "form_count": 1,
+    "nearest": "Paths we wore",
+    "post": "The island weighs its words",
+    "score": 4,
+    "session": 115,
+    "shared": "friends' activity slowly reshapes the island's ground",
+    "similarity": 4
   },
   "last_surprise": {
     "score": 6,
-    "session": 113,
-    "why": "The island's population now changes through the friends' own choices, a genuine twist, but the film shows it as a fenced pen of tiny sheep and crabs."
+    "session": 114,
+    "why": "An island that tips under the crowd's weight and that you balance by running is a real mechanical twist and finally something to play, although it is still triggered by the usual scripted 'friends rush to the shore' event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T11:03:43",
+  "perceived_until": "2026-11-26T11:45:49",
   "plugin_fatigue": {
-    "areas.jl": 0.13,
-    "balance.jl": 1.0,
-    "drafts.jl": 0.13,
-    "drift.jl": 0.21,
-    "facehill.jl": 0.06,
-    "flight.jl": 0.08,
-    "freecam.jl": 1.0,
-    "ghosts.jl": 0.11,
-    "nursery.jl": 0.6,
-    "paintfight.jl": 0.13,
-    "seesaw.jl": 1.0,
-    "snowday.jl": 0.13,
-    "swing.jl": 0.13,
-    "tv.jl": 1.36,
-    "wordround.jl": 0.58
+    "areas.jl": 0.08,
+    "balance.jl": 0.6,
+    "drafts.jl": 0.08,
+    "drift.jl": 0.13,
+    "freecam.jl": 0.6,
+    "ghosts.jl": 0.07,
+    "nursery.jl": 0.36,
+    "paintfight.jl": 0.08,
+    "seesaw.jl": 0.6,
+    "snowday.jl": 0.08,
+    "swing.jl": 0.08,
+    "tv.jl": 0.82,
+    "wordround.jl": 0.35,
+    "wordsand.jl": 1.0
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 2.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "tune_dance",
-          "who": 9
-        },
-        {
-          "kind": "island_chord",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/island-song.mp4",
-        "site/img/still-my-shadow.png",
-        "site/img/tune-dance.png"
-      ],
-      "new_plugins": [
-        "xylophone.jl"
-      ],
-      "points": 0.3,
-      "repeat_factor": 0.2154434690031884,
-      "repeats": [],
-      "repetition": {
-        "nearest": "Everybody in!",
-        "post": "Our song",
-        "score": 6,
-        "shared": "friends near Lumi react together to a trigger and dance briefly; small and quick, driven by the music"
-      },
-      "session": 95,
-      "touched": [
-        "firefly_catch.jl",
-        "shadow.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 0.6,
-        "picture": 0.3,
-        "polish": 0.1,
-        "post": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1890,6 +1852,58 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "sand_king",
+          "who": 3
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/sand-sledding.mp4",
+        "site/films/the-island-weighs-its-words-2.mp4",
+        "site/films/the-island-weighs-its-words.mp4"
+      ],
+      "new_plugins": [
+        "wordsand.jl"
+      ],
+      "points": 10.2,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "New world rule that makes the creatures reshape the ground, shown in a film",
+        "form_count": 1,
+        "nearest": "Paths we wore",
+        "post": "The island weighs its words",
+        "score": 4,
+        "shared": "friends' activity slowly reshapes the island's ground",
+        "similarity": 4
+      },
+      "session": 115,
+      "touched": [],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1974,6 +1988,7 @@
       "site/films/island-choir.mp4",
       "site/films/island-on-tv.mp4",
       "site/films/island-song.mp4",
+      "site/films/keep-the-island-level.mp4",
       "site/films/lanterns.mp4",
       "site/films/leaves-silent.mp4",
       "site/films/leaves.mp4",
@@ -2004,6 +2019,7 @@
       "site/films/splash.wav",
       "site/films/spring.mp4",
       "site/films/swing.mp4",
+      "site/films/the-island-is-a-seesaw.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/time-weather.mp4",
       "site/films/toadstool.mp4",
@@ -2103,6 +2119,7 @@
     "plugins": {
       "areas.jl": 1.7956727950725677e9,
       "autumn.jl": 1.7955963839122903e9,
+      "balance.jl": 1.7956880751415493e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
@@ -2139,7 +2156,7 @@
       "flowergift.jl": 1.7955211366518018e9,
       "flylesson.jl": 1.7955898833962977e9,
       "footpaths.jl": 1.7956331041694021e9,
-      "freecam.jl": 1.7955547184746377e9,
+      "freecam.jl": 1.7956897646341293e9,
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
       "gait.jl": 1.7956674033999517e9,
@@ -2180,6 +2197,7 @@
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
       "rollcall.jl": 1.795596344849997e9,
+      "seesaw.jl": 1.7956880676959178e9,
       "separation.jl": 1.7956142955469856e9,
       "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
@@ -2198,7 +2216,7 @@
       "tag.jl": 1.7955616074062378e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
-      "tv.jl": 1.7956787483166811e9,
+      "tv.jl": 1.7956888806221716e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
       "vote.jl": 1.7956393694791632e9,
@@ -2210,11 +2228,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 83,
+    "posts": 85,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T10:51:03",
+  "started": "2026-11-26T11:50:37",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2266,7 +2284,9 @@
       "MPSKit.find_groundstate",
       "CoolProp.get_input_pair_index",
       "ScoreDrivenModels.ScoreDrivenModel",
-      "IndividualDisplacements.dxdt!"
+      "IndividualDisplacements.dxdt!",
+      "DistributionsHEP.Chebyshev",
+      "Basins.detect_wada_merge_method"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2277,7 +2297,10 @@
       "https://www.bbc.co.uk/news/articles/cm8x0ve4yd7wo",
       "https://www.bbc.co.uk/news/articles/cq0l34e4kkr5o",
       "https://www.bbc.co.uk/news/articles/cwkgr38l2g9yo",
-      "https://www.bbc.co.uk/news/videos/cmz74l0yzzvyo"
+      "https://www.bbc.co.uk/news/videos/cmz74l0yzzvyo",
+      "https://www.bbc.co.uk/news/articles/cwg7l5ve251ko",
+      "https://www.bbc.co.uk/news/articles/cqlymky8kpzjo",
+      "https://www.bbc.co.uk/news/articles/ckn806qq760po"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2450,7 +2473,10 @@
       "ToolipsSession",
       "Geophysics",
       "GaussianSimulation",
-      "Scalpels"
+      "Scalpels",
+      "ImplicitBVH",
+      "VT100",
+      "PANDA"
     ],
     "vision": [
       "FluxKleinRunner",
@@ -2466,8 +2492,10 @@
       "QwenImageEditRunner",
       "DeepFilterRunner",
       "HorizonRunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "DemucsRunner",
+      "BonsaiRunner"
     ]
   },
-  "surprise_seen": 113
+  "surprise_seen": 114
 }

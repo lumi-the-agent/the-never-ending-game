@@ -7741,6 +7741,48 @@
       "status": "open",
       "title": "Snap turns: Lumi turns 45° and Sir Sniffsalot 64° in one frame (host motion measure s114)",
       "updated": "2026-11-26T11:34:13.269"
+    },
+    {
+      "created": "2026-11-26T11:56:37.209",
+      "detail": "LoadError: syntax: unexpected semicolon in tuple around /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71",
+      "est_minutes": 15.0,
+      "id": 554,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T11:56:56.310: plugin wordsand loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin wordsand does not load",
+      "updated": "2026-11-26T11:56:56.310"
+    },
+    {
+      "created": "2026-11-26T11:57:18.051",
+      "detail": "UndefVarError: `hill_life!` not defined in `Main.Plugin_wordsand`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] step!(::Main.Plugin_wordsand.WordSand, game::Game, dt::Float64)\n    @ Main.Plugin_wordsand /sim/Programmieren/SimGame/world/plugins/wordsand.jl:203\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 555,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T11:57:51.246: plugin wordsand loaded cleanly.\nHappened again at 2026-11-26T11:58:35.429.\nClosed at 2026-11-26T11:59:27.137: plugin wordsand loaded cleanly.\nHappened again at 2026-11-26T12:12:58.493.\nClosed at 2026-11-26T12:13:07.077: plugin wordsand loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:wordsand.WordSand failed in step! and was switched off",
+      "updated": "2026-11-26T12:13:07.077"
+    },
+    {
+      "created": "2026-11-26T12:14:41.153",
+      "detail": "wordsand.jl (s115) turns speech into sand, but traced clips hide speech bubbles, so the film does not show that the sand IS the words. Make a take (raster bubbles composited, or bubbles as plots in traced copies) where you read 'HIGHER!' as it pours. Then let friends who are bored climb the highest dune and slide down on their bellies (a sled pose), leaving a groove in H.\nDone when: a film where at least three spoken lines are readable while their sand falls, and in the sandbox a friend slides down a dune with a groove left behind (screenshot).",
+      "est_minutes": 15.0,
+      "id": 556,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sand dunes you can watch being said: a take with readable speech bubbles, and friends who sled down the dunes on purpose",
+      "updated": "2026-11-26T12:14:41.153"
     }
   ]
 }

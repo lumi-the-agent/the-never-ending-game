@@ -376,3 +376,14 @@ Read the one you need before you start:
 - A world rule that changes how the whole stage is drawn (seesaw: scene rotation) leaves the camera in
   world coordinates: a chase camera must aim at where its subject is DRAWN (seesaw `drawn(p)`), or the
   subject slides off centre by a metre and a half at 15 m and 0.1 rad.
+
+## Plot updates and worker timing (s115)
+- Move a plot's data with `Makie.update!(plot; arg1 = new, color = cols)`. `plot[1][] = x` on a plot made in the same
+  frame throws UndefRefError in ComputePipeline.store! and the system is switched off (wordsand.jl, first take).
+- A worker clip job loads world/plugins when it STARTS, not when submitted: a fix written after a job started does
+  not reach it, one written before it starts does. Check `jobs/<id>.json` "started" before trusting a take.
+- Anything draped over the terrain must follow the DRAWN mesh (NG.terrain_mesh: straight chords between 0.9 m
+  samples, faces split (a,b)-(a+1,b)-(a+1,b+1)), not `terrain_height`: on hilltops the curve is cm above the drawn
+  ground, and a layer 3.5 cm under it pokes through in a jagged staircase. See wordsand.jl `drawn_ground`.
+- Two-step plugin edits where the first adds a call to a function the second defines: the reload in between
+  switches the system off (UndefVarError); the next reload brings it back. Write such edits in one go.

@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T11:57:45.257",
+  "finished": "2026-11-26T12:09:12.310",
+  "id": "20261126-115745-253-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wordsand_clip",
+    "kwargs": {
+      "rasterize": false,
+      "samples": 20
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/the-island-weighs-its-words.mp4",
+    "script": "movies/wordsand.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/the-island-weighs-its-words.mp4",
+    "peak": 5.764948,
+    "poured": 76
+  },
+  "seconds": 585.5,
+  "started": "2026-11-26T11:59:26.789",
+  "status": "done"
+}
