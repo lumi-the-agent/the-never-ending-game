@@ -2,80 +2,66 @@
  "babies": [
   {
    "genes": {
-    "body": "Snootle",
+    "body": "Crabbit",
     "extra": "Fluffkin",
     "legs": "Fluffkin",
-    "size": 0.5379071954417121
-   },
-   "hugged_at": 362592.6999688556,
-   "huggers": [
-    "Truffle"
-   ],
-   "hugs": 1,
-   "moving": false,
-   "next_turn": 362594.62952423195,
-   "pos": [
-    12.197173619017997,
-    -7.166243340055911
-   ],
-   "yaw": -0.673762521296012
-  },
-  {
-   "genes": {
-    "body": "Fluffkin",
-    "extra": "Fluffkin",
-    "legs": "Fluffkin",
-    "size": 0.5280131647600645
+    "size": 0.5821628779302463
    },
    "huggers": [],
    "hugs": 0,
-   "moving": true,
-   "next_turn": 362593.8289816018,
    "pos": [
-    13.815769420493758,
-    -7.551316398475249
+    13.136396103067893,
+    -6.363603896932108
    ],
-   "yaw": 2.7448091905895025
+   "yaw": 5.29199703204132
   },
   {
    "genes": {
-    "body": "Fluffkin",
-    "extra": "Fluffkin",
+    "body": "Crabbit",
+    "extra": "Blorbo",
     "legs": "Fluffkin",
-    "size": 0.549210753924458
+    "size": 0.6054772464932333
    },
    "huggers": [],
    "hugs": 0,
-   "moving": true,
-   "next_turn": 362593.58830784063,
    "pos": [
-    12.506264356446716,
-    -7.58590843911629
+    11.863603896932107,
+    -6.363603896932107
    ],
-   "yaw": 1.5814876180392956
+   "yaw": 0.9037452255339763
   },
   {
    "genes": {
-    "body": "Blorbo",
+    "body": "Crabbit",
     "extra": "Fluffkin",
     "legs": "Fluffkin",
-    "size": 0.5691396263896041
+    "size": 0.5972474708893151
    },
-   "hugged_at": 362520.53330220573,
-   "huggers": [
-    "Gloop"
-   ],
-   "hugs": 1,
-   "moving": true,
-   "next_turn": 362594.05523506715,
+   "huggers": [],
+   "hugs": 0,
    "pos": [
-    12.21508710049579,
-    -7.3376115859331605
+    11.863603896932107,
+    -7.636396103067892
    ],
-   "yaw": -1.3164501082892686
+   "yaw": 2.5430475876135366
+  },
+  {
+   "genes": {
+    "body": "Crabbit",
+    "extra": "Fluffkin",
+    "legs": "Fluffkin",
+    "size": 0.6036948616401052
+   },
+   "huggers": [],
+   "hugs": 0,
+   "pos": [
+    13.136396103067893,
+    -7.636396103067893
+   ],
+   "yaw": 5.177173523390979
   }
  ],
- "gen": 78,
+ "gen": 85,
  "history": [
   {
    "gen": 1,
@@ -3233,6 +3219,293 @@
      "hugs": 0
     }
    ]
+  },
+  {
+   "gen": 78,
+   "kids": [
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5379071954417121
+     },
+     "hugs": 2
+    },
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5280131647600645
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.549210753924458
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Blorbo",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5691396263896041
+     },
+     "hugs": 2
+    }
+   ]
+  },
+  {
+   "gen": 79,
+   "kids": [
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Fluffkin",
+      "legs": "Blorbo",
+      "size": 0.5308230682217957
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5262403354562776
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Crabbit",
+      "legs": "Fluffkin",
+      "size": 0.5281666834917015
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5257849593462502
+     },
+     "hugs": 2
+    }
+   ]
+  },
+  {
+   "gen": 80,
+   "kids": [
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5431891435770239
+     },
+     "hugs": 3
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5247601166740788
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Snootle",
+      "legs": "Fluffkin",
+      "size": 0.5256574987114965
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Crabbit",
+      "legs": "Fluffkin",
+      "size": 0.5081233954262917
+     },
+     "hugs": 1
+    }
+   ]
+  },
+  {
+   "gen": 81,
+   "kids": [
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5571590492173105
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Fluffkin",
+      "extra": "Fluffkin",
+      "legs": "Blorbo",
+      "size": 0.5563111889966001
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5510062348096586
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Blorbo",
+      "legs": "Fluffkin",
+      "size": 0.5346976330824378
+     },
+     "hugs": 1
+    }
+   ]
+  },
+  {
+   "gen": 82,
+   "kids": [
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5406263068843802
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Blorbo",
+      "legs": "Fluffkin",
+      "size": 0.5257551737276864
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5680479164756186
+     },
+     "hugs": 2
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5623537038025583
+     },
+     "hugs": 3
+    }
+   ]
+  },
+  {
+   "gen": 83,
+   "kids": [
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Blorbo",
+      "size": 0.5816350974931472
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Crabbit",
+      "legs": "Fluffkin",
+      "size": 0.5588560131460109
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5729273618343127
+     },
+     "hugs": 4
+    },
+    {
+     "genes": {
+      "body": "Snootle",
+      "extra": "Snootle",
+      "legs": "Fluffkin",
+      "size": 0.5705806259296237
+     },
+     "hugs": 0
+    }
+   ]
+  },
+  {
+   "gen": 84,
+   "kids": [
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Blorbo",
+      "size": 0.566421903721251
+     },
+     "hugs": 1
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.6047303137671947
+     },
+     "hugs": 2
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.603110809808808
+     },
+     "hugs": 0
+    },
+    {
+     "genes": {
+      "body": "Crabbit",
+      "extra": "Fluffkin",
+      "legs": "Fluffkin",
+      "size": 0.5814973362526684
+     },
+     "hugs": 0
+    }
+   ]
   }
  ],
  "released": [
@@ -3245,12 +3518,12 @@
     "size": 0.62
    },
    "moving": true,
-   "next_turn": 362594.34052001144,
+   "next_turn": 365451.5265710468,
    "pos": [
-    13.492594935222206,
-    -14.004609819344157
+    15.513012082223357,
+    -5.730710560085227
    ],
-   "yaw": 1912.5953747882072
+   "yaw": 2277.102291303182
   },
   {
    "gen": 53,
@@ -3261,12 +3534,12 @@
     "size": 0.5876333077335107
    },
    "moving": false,
-   "next_turn": 362593.13326504955,
+   "next_turn": 365453.3330972752,
    "pos": [
-    5.920085473582324,
-    -10.72240582006295
+    8.278881249041568,
+    -5.748635638384245
    ],
-   "yaw": 1344.3459166293244
+   "yaw": 1687.2933858856609
   },
   {
    "gen": 77,
@@ -3276,13 +3549,29 @@
     "legs": "Fluffkin",
     "size": 0.5565497181300648
    },
-   "moving": false,
-   "next_turn": 362595.6434259147,
+   "moving": true,
+   "next_turn": 365451.2604887174,
    "pos": [
-    10.264462130264722,
-    -0.7659733332708054
+    8.20369925678083,
+    -4.534691969425864
    ],
-   "yaw": 5.173643300483751
+   "yaw": 325.24062731272085
+  },
+  {
+   "gen": 83,
+   "genes": {
+    "body": "Crabbit",
+    "extra": "Fluffkin",
+    "legs": "Fluffkin",
+    "size": 0.5729273618343127
+   },
+   "moving": true,
+   "next_turn": 365451.71051147446,
+   "pos": [
+    4.485657855376858,
+    -3.742039287313802
+   ],
+   "yaw": 24.850552837020395
   }
  ]
 }

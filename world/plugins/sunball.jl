@@ -172,7 +172,9 @@ function roll!(s::SunBall, game, dt)
     end
     R = Float32(w.island.radius)
     rq = hypot(q[1], q[2])
-    if rq > R + 1f0                                  # in the sea: the waves push it back to the beach
+    # In the sea the waves push it back to the beach. "In the sea" is the ground under it, not a radius:
+    # the west shore is still under water at r = 22.5 m (s123: take 2 sank there and stayed).
+    if rq > 1f0 && NG.ground(w.island, (q[1], q[2]))[3] < 0.05f0
         v = Vec3f(v[1] - 3f0 * q[1] / rq * dt, v[2] - 3f0 * q[2] / rq * dt, v[3])
         rq > R + 6f0 && (q = Point3f(q[1] * (R + 6f0) / rq, q[2] * (R + 6f0) / rq, q[3]))
     end

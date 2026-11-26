@@ -331,6 +331,38 @@ release_denoiser!(::Nothing) = nothing
 release_denoiser!(c::GPUOIDN) = OIDNRunner.release!(c.denoiser)
 
 """
+    with_scratch_game(f, root, size)
+
+`f(game, root_scene)` with a quiet copy of the game (latest snapshot, every plugin) and a root
+scene of `size`, both let go afterwards, also when `f` fails. Makie connects every plot to its
+global default theme, and a scene that is only dropped keeps those connections: its plots, their
+compute graphs and the screen they drew on stay alive with their GPU buffers (about 1 GB a traced
+screen); emptying the scene ends that. The game is released from its plugins' globals (`release!`).
+Without both, every film cost the worker about 5 GB it never got back, until it was killed at
+51 GB (Nov 26).
+"""
+function with_scratch_game(f, root::AbstractString, size)
+    g = Game(root; quiet = true)
+    root_scene = Scene(; size)
+    try
+        return f(g, root_scene)
+    finally
+        empty!(root_scene)
+        Base.invokelatest(release!, g)       # the plugins' globals were defined after this call began
+    end
+end
+
+"`f(screen)`, then `screen` closed and the denoiser `oidn` let go, also when `f` fails."
+function with_screen(f, screen, oidn)
+    try
+        return f(screen)
+    finally
+        close(screen)
+        release_denoiser!(oidn)
+    end
+end
+
+"""
     game_still(path; root, size, samples, max_depth, rig, steps, denoise) -> path
 
 Path trace what a player sees: a quiet copy of the game (latest world snapshot, every
@@ -341,27 +373,24 @@ the generated trees, flowers, lamps and the cottage, not only the engine's primi
 """
 function game_still(path::AbstractString; root::AbstractString = game_root(), size = (1280, 720), samples::Int = 128,
                     max_depth::Int = 8, rig::CameraRig = CameraRig(), steps::Int = 3, denoise::Bool = true)
-    g = Game(root; quiet = true)
-    w = g.world
-    # like the dashboard: the 3D view is a child of a root scene, so plugins get their 2D overlay (HUDs, emotes)
-    root_scene = Scene(; size)
-    scene = Scene(root_scene; viewport = Rect2i(0, 0, size...), lights = stage_lights(w))
-    cam3d!(scene)
-    g.stage = Stage(scene, w; show_names = false)
-    for _ in 1:steps
-        Base.invokelatest(step_systems!, g, 1 / 30)
-        sync!(g.stage, w)
-        sync_actors!(g)
+    return with_scratch_game(root, size) do g, root_scene
+        w = g.world
+        # like the dashboard: the 3D view is a child of a root scene, so plugins get their 2D overlay (HUDs, emotes)
+        scene = Scene(root_scene; viewport = Rect2i(0, 0, size...), lights = stage_lights(w))
+        cam3d!(scene)
+        g.stage = Stage(scene, w; show_names = false)
+        for _ in 1:steps
+            Base.invokelatest(step_systems!, g, 1 / 30)
+            sync!(g.stage, w)
+            sync_actors!(g)
+        end
+        foreach(p -> (p.visible[] = false), g.stage.overlay.plots)   # a clean still: no HUD text over the picture
+        sync_sun!(g.stage, w)
+        update_camera!(rig, w, scene, 0.0; snap = true)
+        img = with_screen(screen -> Makie.colorbuffer(screen; samples), traced_screen(root_scene; denoise, max_depth)...)
+        Makie.save(path, img)
+        path
     end
-    foreach(p -> (p.visible[] = false), g.stage.overlay.plots)   # a clean still: no HUD text over the picture
-    sync_sun!(g.stage, w)
-    update_camera!(rig, w, scene, 0.0; snap = true)
-    screen, oidn = traced_screen(root_scene; denoise, max_depth)
-    img = Makie.colorbuffer(screen; samples)
-    close(screen)
-    release_denoiser!(oidn)
-    Makie.save(path, img)
-    return path
 end
 
 """
@@ -381,19 +410,15 @@ function game_clip(path::AbstractString; root::AbstractString = game_root(), siz
                    fps::Int = 24, samples::Int = 48, max_depth::Int = 6, hour = nothing, warmup::Real = 20,
                    rig::CameraRig = CameraRig(), rasterize::Bool = false, setup = nothing,
                    shot = nothing, fade::Real = 0, denoise::Bool = true)
-    g = Game(root; quiet = true)
-    try
-        return film!(g, path; size, seconds, fps, samples, max_depth, hour, warmup, rig, rasterize, setup, shot, fade, denoise)
-    finally
-        release!(g)            # the finished game must not stay alive in its plugins' globals (5 GB a film)
+    return with_scratch_game(root, size) do g, root_scene
+        film!(g, root_scene, path; size, seconds, fps, samples, max_depth, hour, warmup, rig, rasterize, setup, shot, fade, denoise)
     end
 end
 
-function film!(g, path::AbstractString; size, seconds, fps, samples, max_depth, hour, warmup, rig, rasterize, setup,
-               shot, fade, denoise)
+function film!(g, root_scene::Scene, path::AbstractString; size, seconds, fps, samples, max_depth, hour, warmup, rig,
+               rasterize, setup, shot, fade, denoise)
     w = g.world
     hour === nothing || skip_to_hour!(w, hour)
-    root_scene = Scene(; size)
     scene = Scene(root_scene; viewport = Rect2i(0, 0, size...), lights = stage_lights(w))
     cam3d!(scene)
     g.stage = Stage(scene, w; show_names = false)
@@ -417,39 +442,42 @@ function film!(g, path::AbstractString; size, seconds, fps, samples, max_depth, 
     LAST_FRAME[] = nothing                      # no frame of an earlier clip on a television in this one
     times = Float64[]
     mkpath(dirname(path))
-    buf = nothing
     writer = nothing
-    i = 0
-    while i < n
-        i += 1
-        t0 = time()
-        Base.invokelatest(advance!, 1 / fps)
-        # a director: `shot(g, rig, t)` moves a :fixed rig (cuts, dollies); a number it returns is
-        # the clip's new end in seconds (so the fade out lands on the end once the moment is over)
-        if shot !== nothing
-            stop = Base.invokelatest(shot, g, rig, (i - 1) / fps)
-            stop isa Real && (n = clamp(round(Int, stop * fps), i, n))
-            update_camera!(rig, w, scene, 0.0; snap = true)
+    with_screen(screen, oidn) do screen
+        buf = nothing
+        i = 0
+        try
+            while i < n
+                i += 1
+                t0 = time()
+                Base.invokelatest(advance!, 1 / fps)
+                # a director: `shot(g, rig, t)` moves a :fixed rig (cuts, dollies); a number it returns is
+                # the clip's new end in seconds (so the fade out lands on the end once the moment is over)
+                if shot !== nothing
+                    stop = Base.invokelatest(shot, g, rig, (i - 1) / fps)
+                    stop isa Real && (n = clamp(round(Int, stop * fps), i, n))
+                    update_camera!(rig, w, scene, 0.0; snap = true)
+                end
+                foreach(p -> (p.visible[] = false), g.stage.overlay.plots)   # no HUD text over the picture
+                img = Makie.colorbuffer(screen; samples)
+                LAST_FRAME[] = img
+                if fade > 0                              # fade in from and out to black
+                    k = clamp(min((i - 1) / fps, (n - i) / fps) / fade, 0, 1)
+                    k < 1 && (img = img .* Float32(k))
+                end
+                if writer === nothing
+                    buf = Matrix{RGB{Colors.N0f8}}(undef, Base.size(img)...)
+                    writer = VideoIO.open_video_out(path, eltype(buf), Base.size(buf); framerate = fps,
+                                                    encoder_options = (crf = 18, preset = "slow"))
+                end
+                buf .= RGB{Colors.N0f8}.(img)
+                write(writer, buf)
+                push!(times, time() - t0)
+            end
+        finally
+            writer === nothing || VideoIO.close_video_out!(writer)
         end
-        foreach(p -> (p.visible[] = false), g.stage.overlay.plots)   # no HUD text over the picture
-        img = Makie.colorbuffer(screen; samples)
-        LAST_FRAME[] = img
-        if fade > 0                              # fade in from and out to black
-            k = clamp(min((i - 1) / fps, (n - i) / fps) / fade, 0, 1)
-            k < 1 && (img = img .* Float32(k))
-        end
-        if writer === nothing
-            buf = Matrix{RGB{Colors.N0f8}}(undef, Base.size(img)...)
-            writer = VideoIO.open_video_out(path, eltype(buf), Base.size(buf); framerate = fps,
-                                            encoder_options = (crf = 18, preset = "slow"))
-        end
-        buf .= RGB{Colors.N0f8}.(img)
-        write(writer, buf)
-        push!(times, time() - t0)
     end
-    VideoIO.close_video_out!(writer)
-    close(screen)
-    release_denoiser!(oidn)
     return (; path, frames = n, seconds_per_frame = sum(times) / max(n, 1), hour = 24daytime(w))
 end
 
@@ -462,11 +490,14 @@ is untouched).
 function screenshot(path::AbstractString, w::World; size = (1280, 720), samples::Int = 128, max_depth::Int = 8,
                     rig::CameraRig = CameraRig())
     scene = stage_scene(w; size)
-    st = Stage(scene, w)
-    update_camera!(rig, w, scene, 0.0; snap = true)
-    screen = RayMakie.Screen(scene; visible = false, rasterize = false, exposure = FILM_EXPOSURE, max_depth)
-    img = Makie.colorbuffer(screen; samples)
-    close(screen)
-    Makie.save(path, img)
-    return path
+    try
+        st = Stage(scene, w)
+        update_camera!(rig, w, scene, 0.0; snap = true)
+        screen = RayMakie.Screen(scene; visible = false, rasterize = false, exposure = FILM_EXPOSURE, max_depth)
+        img = with_screen(screen -> Makie.colorbuffer(screen; samples), screen, nothing)
+        Makie.save(path, img)
+        return path
+    finally
+        empty!(scene)          # a dropped scene stays connected to Makie's theme, GPU buffers and all (see `with_scratch_game`)
+    end
 end

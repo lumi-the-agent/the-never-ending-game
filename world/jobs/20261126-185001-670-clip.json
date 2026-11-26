@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T18:50:01.670",
+  "finished": "2026-11-26T19:16:42.916",
   "id": "20261126-185001-670-clip",
   "kind": "clip",
   "params": {
@@ -15,6 +16,16 @@
     "path": "/sim/Programmieren/SimGame/world/media/s122-sunball-take2.mp4",
     "script": "movies/sunball.jl"
   },
+  "result": {
+    "dim": 0.1,
+    "path": "/sim/Programmieren/SimGame/world/media/s122-sunball-take2.mp4",
+    "pos": [
+      -22.74162,
+      -3.3705847,
+      0.25
+    ]
+  },
+  "seconds": 716.4,
   "started": "2026-11-26T19:04:46.515",
-  "status": "running"
+  "status": "done"
 }

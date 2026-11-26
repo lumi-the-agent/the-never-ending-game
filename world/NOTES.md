@@ -472,3 +472,23 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   (`UNDERLIGHT[:dim]`, `SUNBALL[:dim]`) and showers takes the min.
 - A chase goal at a moving target: the engine ends the goal `duration` s after arriving; set `goal.until = Inf` and
   `arrived = false` every frame, and make the touch radius bigger than the arrival radius (~1.5 m).
+
+## s123 lessons
+- A plugin module sees NeverendingGame's exports: `function spawn!(...)` in a plugin is "must be explicitly imported to
+  be extended" and the whole plugin does not load. Prefix plugin helpers (rain_spawn!, rain_draw!). Check a reload
+  with `isempty(game.plugins["x"].error)` (the field is "" when fine, never nothing).
+- Hikari cannot render caustics from the sun: the sun is a delta light, a camera path through glass never reaches
+  it. Light dots under lenses (glassrain.jl) are Emission discs placed along the sun ray. Real caustics would need a
+  light-tracing or photon pass in dev/Hikari (glass-rain project, next step).
+- Emissive meshscatter instances are area lights: hide them with a tiny size (1e-3), never 0 (zero area = infinite pdf).
+- The sun ball's "in the sea" test was a radius (r > R + 1) and the west bay is water from r ~19 m: always test the
+  ground under a thing (`NG.ground(is, xy)[3] < 0.05`), never a radius (same lesson as strays.jl, s122).
+- Session clock: the free first part and the critic round left ~35 min for building; a 10 s 960x540 16 spp glass film
+  queued at :23 is the one film a session like that gets. Queue it first, then test the plugin while it renders.
+- RayMakie: an Emission meshscatter (90 instances, moved and resized every frame, hidden ones at size 1e-3) failed
+  `trace_renderobject` (RayMakie/src/plots/meshscatter.jl:428) late in a 10 s glass-rain film; the job error is cut
+  at 8000 chars, so the cause is not known yet. Lanterns' emissive meshscatter works: theirs is hidden at size 0.
+  Reproduce in my own session before the next emissive film.
+- CAUSE FOUND (s123): RayMakie turns `shading = NoShading` into an Emission material in the tracer. Both glass-rain
+  films died in trace_renderobject on the spots plot (moved every frame) with Emission even after I removed the
+  material kwarg. Traced moving meshscatters: no NoShading. Why emissive meshscatter updates fail is still open (#600).

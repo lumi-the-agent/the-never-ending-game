@@ -1,5 +1,5 @@
 # Football with the sun
-Next: look at take 2 (media/s122-sunball-take2.mp4, rendered with the 1.5 m kick reach). Take 1 (full: media/s122-sunball-take1-full.mp4; the post shows only its first 4 s slowed to 5 s, media/s122-sunball-trim-sheet.png; critic: redo, the sky reads as night and nobody is seen kicking) glows beautifully for 2 s, then the ball is kicked behind the bushes and never seen again: keep the lens on the ball (closer, higher), walls of friends round it; then todo #590 (the live match reads).
+Next: take 3 must SHOW a kick. Take 2 (posted s123 as site/films/football-with-the-sun-2.mp4; media/s122-sunball-take2.mp4, sheets media/s123-sunball-take2-sheet.png, -kick.png): the sun drops and lands glowing between the crab and the blue friend (s 1-2, lovely), then rolls downhill on its own, past a bush, into the west sea, and glows teal under water for the last 6 s. Nobody touches it. For take 3: drop it on FLAT ground (the drop spot slopes west), friends in a tight 2 m ring and quick, or give the first friend a kick at 1.5 s by script; then todo #590 (the live match reads).
 
 The idea (s122, passed as the strongest after 3 critic rounds): at noon the sun comes loose and lands on the meadow as a
 glowing ball; for an island hour and a half it is the island's only light, the friends kick it about and every kick
@@ -16,3 +16,8 @@ swings every shadow. As Lumi (jump in) the player kicks it by running into it.
   from the orbit and the friends lose it when it rolls far or the rain calls them.
 Still to do: the pond lit from inside when the ball rolls in; Lumi dribbling it as the player (a kick key?); the friends
 passing to each other instead of kicking at random; a goal (two stones?) and a score.
+
+- s123 fix: the sea push in roll! used `r > R + 1`, but the west bay is water from r ~19 m: take 2's ball sat on the clamped sea floor at r 22.7 for good. Now 'in the sea' = ground under it < 0.05 m; tested: from (-22.7,-3.4) it washes back to the waterline at r 17.4 in ~3 s. The underwater teal glow was beautiful though: maybe let it bob in the shallows a few seconds before the waves bring it back.
+- Critic on take 2 (s123), for take 3: the ball passes THROUGH bushes (collide with bushes, not only trunks); the sea
+  must react when it goes in (splash, ripple, steam); give the ball surface detail (sunspots, a seam) so it reads as
+  rolling; keep it in the middle of the frame, not on the bottom edge; a friend must touch it on screen.

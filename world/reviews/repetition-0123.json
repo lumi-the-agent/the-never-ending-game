@@ -1,0 +1,10 @@
+{"posts": [{"post": "Nobody kicked the sun",
+            "what": "At dusk a glowing white ball drops from the sky by the cottage, lands next to the crab and Gloop and lights the grass yellow, then rolls away downhill on its own, passing through a bush toward the shore while the camera follows; nobody reacts or kicks it.",
+            "recipe": "light-ball falls among friends, glows, rolls off alone, camera follows",
+            "nearest": "Football with the sun",
+            "similarity": 9,
+            "shared": "the same falling, glowing sun-ball landing by the cottage and rolling off unkicked, cut shorter; no new step shown (the wave push-back is not in the film)"}],
+ "forms": [{"form": "Change to how the island is lit (the sun moved, new light)", "posts": ["Nobody kicked the sun", "Football with the sun", "Lit from below"]},
+           {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)", "My shadow quits (first try)", "I swallow what I hit"]},
+           {"form": "New world rule acted out on the island, shown in a distant film", "posts": ["The island has a ring", "Tied together", "Gloop says \"Higher!\"", "Sand sledding"]},
+           {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]}]}

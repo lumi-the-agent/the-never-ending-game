@@ -1,10 +1,10 @@
 {
-  "boredom": 0.99,
-  "ended": "2026-11-26T19:07:12",
+  "boredom": 1.0,
+  "ended": "2026-11-26T19:54:11",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.89,
-    "picture": 0.05,
+    "feature": 2.13,
+    "picture": 0.03,
     "self": 0.01,
     "sound": 0.01
   },
@@ -12,6 +12,7 @@
     {
       "form": "Change to how the island is lit (the sun moved, new light)",
       "posts": [
+        "Nobody kicked the sun",
         "Football with the sun",
         "Lit from below"
       ]
@@ -29,7 +30,6 @@
       "posts": [
         "The island has a ring",
         "Tied together",
-        "The island weighs its words",
         "Gloop says \"Higher!\"",
         "Sand sledding"
       ]
@@ -290,9 +290,13 @@
     "tied_up",
     "tied_wrap",
     "stray_home",
-    "stray_swim"
+    "stray_swim",
+    "sun_kick",
+    "sun_fell",
+    "sun_back",
+    "sun_bounce"
   ],
-  "joy": 0.88,
+  "joy": 0.72,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -627,6 +631,13 @@
       "session": 122,
       "title": "Football with the sun",
       "what": "At dusk on the meadow a glowing white ball drops out of the sky by the cottage and lands among the friends, lights Pinchy and the grass around it from below, then rolls off down the path past the stone beds while the camera follows; you don't really see anyone chase or kick it."
+    },
+    {
+      "form": "Change to how the island is lit (the sun moved, new light)",
+      "recipe": "light-ball falls among friends, glows, rolls off alone, camera follows",
+      "session": 123,
+      "title": "Nobody kicked the sun",
+      "what": "At dusk a glowing white ball drops from the sky by the cottage, lands next to the crab and Gloop and lights the grass yellow, then rolls away downhill on its own, passing through a bush toward the shore while the camera follows; nobody reacts or kicks it."
     }
   ],
   "kinds_ever": [
@@ -643,30 +654,32 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "stray_home",
-      "stray_swim"
+      "sun_kick",
+      "sun_fell",
+      "sun_back",
+      "sun_bounce"
     ],
-    "session": 122
+    "session": 123
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
+    "factor": 0.1,
     "form": "Change to how the island is lit (the sun moved, new light)",
-    "form_count": 1,
-    "nearest": "Lit from below",
-    "post": "Football with the sun",
-    "score": 5,
-    "session": 122,
-    "shared": "the sun moved somewhere odd, lighting things from below",
-    "similarity": 5
+    "form_count": 2,
+    "nearest": "Football with the sun",
+    "post": "Nobody kicked the sun",
+    "score": 9,
+    "session": 123,
+    "shared": "the same falling, glowing sun-ball landing by the cottage and rolling off unkicked, cut shorter; no new step shown (the wave push-back is not in the film)",
+    "similarity": 9
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 2,
-    "session": 121,
-    "why": "It is a film-only retake of s95's 'My shadow ran off', made by hiding the body up the sun's ray, and on screen it comes out as a smudge most viewers would miss."
+    "fun": 5,
+    "score": 5,
+    "session": 122,
+    "why": "Making the island's light source into a physical, kickable object whose glow and shadows move with it is a real new mechanic, but it is the second sun stunt in a few posts ('Lit from below'), and the film plays it as the usual scripted daily event that the friends gather round."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T18:25:56",
+  "perceived_until": "2026-11-26T19:07:44",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -680,62 +693,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "lanterns_start",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/pebble-pie.png"
-      ],
-      "new_plugins": [
-        "pebblewords.jl"
-      ],
-      "points": 0.2,
-      "repeat_factor": 0.1,
-      "repeats": [],
-      "repetition": {
-        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-        "form_count": 3,
-        "nearest": "Still my shadow",
-        "post": "We wrote PIE",
-        "score": 8,
-        "shared": "a failed-attempt payoff told as a still; otherwise a different mechanism (pebbles and a reader). Mild kinship with the pebble cairn and group tasks like You choose",
-        "similarity": 4
-      },
-      "session": 103,
-      "touched": [
-        "dancecircle.jl",
-        "outfits.jl",
-        "workshopisle.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "picture": 0.1,
-        "polish": 0.1,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1907,6 +1864,72 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "sun_kick",
+          "who": 10
+        },
+        {
+          "kind": "sun_fell",
+          "who": 1
+        },
+        {
+          "kind": "sun_back",
+          "who": 1
+        },
+        {
+          "kind": "sun_bounce",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/football-with-the-sun-2.mp4"
+      ],
+      "new_plugins": [
+        "glassrain.jl"
+      ],
+      "points": 1.0,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Change to how the island is lit (the sun moved, new light)",
+        "form_count": 2,
+        "nearest": "Football with the sun",
+        "post": "Nobody kicked the sun",
+        "score": 9,
+        "shared": "the same falling, glowing sun-ball landing by the cottage and rolling off unkicked, cut shorter; no new step shown (the wave push-back is not in the film)",
+        "similarity": 9
+      },
+      "session": 123,
+      "touched": [
+        "dayfall.jl",
+        "sunball.jl"
+      ],
+      "values": {
+        "feature": 0.4,
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1983,6 +2006,7 @@
       "site/films/face-hill.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
+      "site/films/football-with-the-sun.mp4",
       "site/films/giant-lumi.mp4",
       "site/films/hail-silent.mp4",
       "site/films/hail.mp4",
@@ -2220,7 +2244,7 @@
       "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
-      "showers.jl": 1.7956940405106745e9,
+      "showers.jl": 1.795715242133071e9,
       "sleepers.jl": 1.795623155458676e9,
       "sneeze.jl": 1.795596277582388e9,
       "snowday.jl": 1.795673383252672e9,
@@ -2229,6 +2253,8 @@
       "stars.jl": 1.7954845797675962e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
+      "strays.jl": 1.7957154851986864e9,
+      "sunball.jl": 1.7957155837726212e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7956732306886318e9,
       "tag.jl": 1.7955616074062378e9,
@@ -2249,11 +2275,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 95,
+    "posts": 96,
     "self": "17087086040623195645",
-    "wishes": 8
+    "wishes": 9
   },
-  "started": "2026-11-26T18:31:27",
+  "started": "2026-11-26T19:13:14",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2323,7 +2349,9 @@
       "WaterWaves1D.default_example",
       "Javis.anim_scale",
       "InformationGeometry.PlotMatrix",
-      "ImageMorphology.tophat"
+      "ImageMorphology.tophat",
+      "ImageComponentAnalysis.label_components",
+      "Measurements.measurement"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2361,7 +2389,10 @@
       "https://www.bbc.co.uk/news/videos/cvglrz5yr79go",
       "https://www.bbc.co.uk/news/articles/c39w9y5dx4k5o",
       "https://www.bbc.co.uk/news/articles/c3gre90l0g45o",
-      "https://www.bbc.co.uk/news/articles/c9gklryvj24do"
+      "https://www.bbc.co.uk/news/articles/c9gklryvj24do",
+      "https://www.bbc.co.uk/news/articles/cmx2x4e0n5jro",
+      "https://www.bbc.co.uk/news/articles/cky97x7delz9o",
+      "https://www.bbc.co.uk/news/videos/cmvg23djw8v9o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2561,7 +2592,10 @@
       "WeatherReport",
       "AtomTwin",
       "ImageInpainting",
-      "MEDYANSimRunner"
+      "MEDYANSimRunner",
+      "VelocityDistributionFunctions",
+      "Augmentor",
+      "VariantVisualization"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -2577,8 +2611,10 @@
       "DeepFilterRunner",
       "PPOCRRunner",
       "SAM2Runner",
-      "Qwen3EmbeddingRunner"
+      "Qwen3EmbeddingRunner",
+      "BasicVSRRunner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 121
+  "surprise_seen": 122
 }

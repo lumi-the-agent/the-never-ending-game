@@ -10,7 +10,7 @@ const DF = Main.DAYFALL
 
 const SPACING = 0.5f0      # m between two tiles
 const H, T, W = 0.95f0, 0.11f0, 0.42f0   # tile height, thickness, width
-const MAXN = 400
+const MAXN = 60        # s123: 400 stood all session and fenced off the meadow (review 0121); 30 m of day, then it falls and sings
 const G = 9.81f0
 const SCALE = (0, 2, 4, 7, 9)
 

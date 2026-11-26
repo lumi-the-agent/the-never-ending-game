@@ -1,0 +1,12 @@
+{"posts": [{"post": "nobody-kicked-the-sun",
+  "verdict": "redo",
+  "problems": [
+    "The 'sun' is a flat, unshaded white disc in every frame (storyboard 2-16, all three full frames). It has no surface, no rolling and no sense of volume, so it reads as a blown-out sprite rather than an object sliding over grass.",
+    "Storyboard frames 5-6 and the 25% frame: the disc passes straight through the sheep and the blue figure. The sheep and the pig behind it neither move nor get pushed, so it looks like clipping, not contact.",
+    "'Among my friends': once the sun has landed (storyboard 6-12, 50% frame), the crab, the blue figure and the sheep stand frozen beside a glowing ball. Their faces stay mostly dark even at arm's length. 'Nobody kicked it' covers the missing kick, but not the fact that nobody reacts at all.",
+    "'It slid': nothing visible starts or drives the slide. The ground looks flat, and the ball drifts toward the camera with no push and no slope to explain it.",
+    "'Through a bush' (storyboard 13-14, 75% frame): the bush leaves cut through the disc and the bush doesn't bend or move. It reads as two meshes overlapping, not something going through.",
+    "'Toward the sea': you never clearly see the sea. In storyboard 16 there is only a dark teal sliver at the bottom left, and a huge dark green blob covers the right third of the frame, as if the camera ran into foliage.",
+    "The camera trails the ball and keeps it low in the frame. The friends get small and drift into the background from storyboard 9 on, so the 'among my friends' part is lost for most of the film."
+  ],
+  "critique": "A falling sun that lights the grass is a lovely idea, and the yellow pool of light really works. But the ball is a flat white disc that clips through the sheep and the bush, slides with no cause and ends against a blob of foliage instead of the sea. The caption promises more contact and place than the film shows."}]}

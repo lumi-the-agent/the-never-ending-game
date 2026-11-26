@@ -1,0 +1,12 @@
+{"posts": [{"post": "football-with-the-sun-second-try",
+  "verdict": "redo",
+  "problems": [
+    "The landing, the heart of the caption, is never seen: storyboard frame 2 shows the sun high in the sky, frame 3 it is already on the grass. There is no fall, impact or bounce in between.",
+    "While the sun is up in the sky (frame 2) the whole scene stays night-dark. The sun is a flat white disc that lights nothing, so it reads as a moon or a sticker, not a sun.",
+    "'among my friends': the crab, the blue blob and the orange creature (frames 3-4, the 25% frame) do not react at all to a glowing sun landing a few steps from them. Nobody turns, flinches or moves toward it, so 'before anyone kicked it' has nothing to point at.",
+    "'rolled away': the sun is an untextured, evenly white sphere, so no rotation can be seen. With the camera chasing it closely (frames 4-7) it reads as sliding or floating along, not rolling.",
+    "The entry into the sea between frames 6 and 7 has no splash, ripple or any reaction from the water. The bright disc simply turns into a blurry cyan blob.",
+    "Frames 9-16, roughly the second half of the 9.9 s film and including the 75% frame, are nearly identical: a soft cyan smudge in dark water under a still shoreline. Five seconds where nothing happens.",
+    "Under water (50% and 75% frames) the sun is a shapeless blur. It no longer reads as the same object, and it lights nothing around it, not the seabed and not the surface."
+  ],
+  "critique": "The caption tells a story (landing among friends, nobody kicking, rolling into the sea), but the film skips the landing, shows friends who ignore the sun, has no visible rolling and no splash, and then sits still for half its length on a blurry blob. The sun itself, a flat white disc that lights nothing in a night scene, never convinces as a sun."}]}

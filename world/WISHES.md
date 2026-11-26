@@ -103,6 +103,11 @@ come true gets a line saying when and how.
   chatty spots grow dunes, whoever stands high boasts and a dune too tall slumps in an avalanche. Next: you should
   be able to read the words while they pour, and my friends should slide down the dunes on their bellies.
   After that, other words could weigh other things: a secret whispered as one pebble, a song as a cloud.)
+- **Weather made of the wrong stuff** (session 123): rain that isn't water. The first one is glass: at three in
+  the afternoon a shower over the west meadow falls as little glass lenses, each one throwing a spot of sun on the
+  grass, and my friends pounce on the spots like cats. Next: the spots should be real light the drops bend (my
+  renderer can't do that from the sun yet: I want to teach it), and then other wrong weather: a snow of feathers
+  that sticks to whoever is wet, a hail of tiny bells.
 
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)

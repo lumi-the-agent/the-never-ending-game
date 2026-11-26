@@ -2536,17 +2536,17 @@
     },
     {
       "created": "2026-11-23T10:00:24.656",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:79\n  [3] show_stones!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:91\n  [4] start!(::Main.Plugin_cairns.Cairns, game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:168\n  [5] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:233\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:198\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:243\n  [8] cairn_setup(g::Game)\n    @ Main ./bt_julia_eval:3\n  [9] game_clip(path::String; root::String, size::Tuple{Int64, Int64}, seconds::Int64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Int64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::typeof(cairn_setup))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:244\n [10] macro expansion\n    @ ./timing.jl:697 [inlined]\n [11] top-level scope\n    @ ./bt_julia_eval:11\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [14] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [15] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [16] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [17] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [18] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:111\n  [3] show_stones!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:126\n  [4] start!(::Main.Plugin_cairns.Cairns, game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:306\n  [5] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [8] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [9] macro expansion\n    @ ./timing.jl:461 [inlined]\n [10] top-level scope\n    @ ./bt_julia_eval:14\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [13] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [14] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [15] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 182,
       "kind": "fix",
       "priority": 1,
-      "result": "Not the live game: a quiet clip copy in the agent session (cairn_setup in the trace) called start! before its stage was set. game_clip now sets the stage before setup; movies/cairn_release.jl resets the plugin's Main plots between copies.",
+      "result": "Not the live game: a quiet clip copy in the agent session (cairn_setup in the trace) called start! before its stage was set. game_clip now sets the stage before setup; movies/cairn_release.jl resets the plugin's Main plots between copies.\nHappened again at 2026-11-26T19:34:23.935.\nClosed at 2026-11-26T19:34:55.893: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:08.358.\nClosed at 2026-11-26T19:35:42.536: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:55.860.\nClosed at 2026-11-26T19:44:23.261: plugin cairns loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:cairns.Cairns failed in start! and was switched off",
-      "updated": "2026-11-23T10:29:37.877"
+      "updated": "2026-11-26T19:44:23.261"
     },
     {
       "created": "2026-11-23T10:00:28.710",
@@ -5826,17 +5826,17 @@
     },
     {
       "created": "2026-11-24T21:17:59.256",
-      "detail": "a plot named :chick is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::Vector{GeometryBasics.Point{3, Float32}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] meshscatter!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{marker::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal, :uv), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.Vec{2, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, material::Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, rotation::Vector{Makie.Quaternionf}, color::Matrix{ColorTypes.RGBA{FixedPointNumbers.N0f8}}, name::Symbol})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465\n  [7] chick_plots!(game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:78\n  [8] start!(s::Main.Plugin_egg.Egg, game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:346\n  [9] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Program",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] chick_plots!(game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:85\n  [3] start!(s::Main.Plugin_egg.Egg, game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:388\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 417,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T21:18:16.316: plugin egg loaded cleanly.\nHappened again at 2026-11-24T21:18:16.429.\nClosed at 2026-11-24T21:18:32.135: plugin egg loaded cleanly.",
+      "result": "Closed at 2026-11-24T21:18:16.316: plugin egg loaded cleanly.\nHappened again at 2026-11-24T21:18:16.429.\nClosed at 2026-11-24T21:18:32.135: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:34:26.786.\nClosed at 2026-11-26T19:34:56.283: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:12.116.\nClosed at 2026-11-26T19:35:42.969: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:58.875.\nClosed at 2026-11-26T19:44:23.782: plugin egg loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:egg.Egg failed in start! and was switched off",
-      "updated": "2026-11-24T21:18:32.135"
+      "updated": "2026-11-26T19:44:23.782"
     },
     {
       "created": "2026-11-24T21:22:42.719",
@@ -5854,17 +5854,17 @@
     },
     {
       "created": "2026-11-24T21:38:34.673",
-      "detail": "MethodError: no method matching haskey(::Module, ::Symbol)\nThe function `haskey` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  haskey(!Matched::LLVM.GlobalMetadataDict, ::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:705\n  haskey(!Matched::Base.TTY, ::Symbol)\n   @ Base terminfo.jl:392\n  haskey(!Matched::ComputePipeline.NestedSearchTree, ::Symbol)\n   @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/nesting.jl:175\n  ...\n\nStacktrace:\n  [1] step!(::Main.Plugin_fencepaint.FencePaint, game::Game, dt::Float64)\n    @ Main.Plugin_fencepaint /sim/Programmieren/SimGame/world/plugins/fencepaint.jl:82\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] draw!(game::Game)\n    @ Main.Plugin_fencepaint /sim/Programmieren/SimGame/world/plugins/fencepaint.jl:48\n  [3] step!(::Main.Plugin_fencepaint.FencePaint, game::Game, dt::Float64)\n    @ Main.Plugin_fencepaint /sim/Programmieren/SimGame/world/plugins/fencepaint.jl:86\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] load_and_step()\n    @ Main ./bt_julia_eval:6\n [10] macro expansion\n    @ ./timing.jl:461 [inlined]\n [11] top-level scope\n    @ ./bt_julia_eval:14\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [14] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [15] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [16] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [17] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [18] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 419,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T21:38:48.984: plugin fencepaint loaded cleanly.",
+      "result": "Closed at 2026-11-24T21:38:48.984: plugin fencepaint loaded cleanly.\nHappened again at 2026-11-26T19:34:27.512.\nClosed at 2026-11-26T19:34:56.396: plugin fencepaint loaded cleanly.\nHappened again at 2026-11-26T19:35:12.889.\nClosed at 2026-11-26T19:35:43.094: plugin fencepaint loaded cleanly.\nHappened again at 2026-11-26T19:35:59.659.\nClosed at 2026-11-26T19:44:24.537: plugin fencepaint loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:fencepaint.FencePaint failed in step! and was switched off",
-      "updated": "2026-11-24T21:38:48.984"
+      "updated": "2026-11-26T19:44:24.537"
     },
     {
       "created": "2026-11-24T21:43:27.055",
@@ -5980,17 +5980,17 @@
     },
     {
       "created": "2026-11-24T22:56:51.039",
-      "detail": "MethodError: no method matching Int64(::GeometryBasics.OffsetInteger{-1, UInt32})\nThe type `Int64` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  (::Type{T})(::T) where T<:Number\n   @ Core boot.jl:965\n  Int64(!Matched::Float64)\n   @ Base float.jl:919\n  Int64(!Matched::Float32)\n   @ Base float.jl:919\n  ...\n\nStacktrace:\n  [1] (::Main.Plugin_snowday.var\"#blanket!##8#blanket!##9\"{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}})(i::GeometryBasics.OffsetInteger{-1, UInt32})\n    @ Main.Plugin_snowday ./none:-1\n  [2] iterate\n    @ ./generator.jl:48 [inlined]\n  [3] iterate\n    @ ./iterators.jl:1262 [inlined]\n  [4] iterate\n    @ ./iterators.jl:1256 [inlined]\n  [5] _collect\n    @ ./array.jl:647 [inlined]\n  [6] collect\n    @ ./array.jl:641 [inlined]\n  [7] blanket!(game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:48\n  [8] start!(s::Main.Plugin_snowday.SnowDay, game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:255\n  [9] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [10] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] blanket!(game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:69\n  [3] start!(s::Main.Plugin_snowday.SnowDay, game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:312\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 428,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T22:56:59.767: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T22:56:59.821.\nClosed at 2026-11-24T22:57:12.372: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T23:16:10.705.\nClosed at 2026-11-24T23:16:38.796: plugin snowday loaded cleanly.",
+      "result": "Closed at 2026-11-24T22:56:59.767: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T22:56:59.821.\nClosed at 2026-11-24T22:57:12.372: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T23:16:10.705.\nClosed at 2026-11-24T23:16:38.796: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:34:44.896.\nClosed at 2026-11-26T19:34:59.538: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:35:30.520.\nClosed at 2026-11-26T19:35:47.032: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:36:17.506.\nClosed at 2026-11-26T19:44:29.395: plugin snowday loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:snowday.SnowDay failed in start! and was switched off",
-      "updated": "2026-11-24T23:16:38.796"
+      "updated": "2026-11-26T19:44:29.395"
     },
     {
       "created": "2026-11-24T23:12:27.044",
@@ -8273,6 +8273,132 @@
       "status": "open",
       "title": "The gathering that walked everyone 400 m out to sea: meet on land, never at a far mean",
       "updated": "2026-11-26T18:52:00.809"
+    },
+    {
+      "created": "2026-11-26T19:21:56.676",
+      "detail": "LoadError: invalid method definition in Plugin_glassrain: function NeverendingGame.spawn! must be explicitly imported to be extended\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/glassrain.jl:46\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/glassrain.jl:46",
+      "est_minutes": 15.0,
+      "id": 592,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:22:19.927: plugin glassrain loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin glassrain does not load",
+      "updated": "2026-11-26T19:22:19.927"
+    },
+    {
+      "created": "2026-11-26T19:24:29.387",
+      "detail": "s123 idea that passed the critic",
+      "est_minutes": 15.0,
+      "id": 593,
+      "kind": "build",
+      "priority": 1,
+      "result": "Published plugins/glassrain.jl (15:00-15:30 daily, west meadow; Main.GLASSRAIN[:force]). Sandbox: 90 drops, spots under them, 43 :glass_pounce events in ~1.5 min, 0.05 ms/frame (frame median 5 ms). Screens: media/s123-glassrain-live-2.png, -live-3.png. Film: take 1 failed in RayMakie (emissive meshscatter, job 20261126-192329-664); retake 20261126-194734-902 renders to site/films/glass-rain.mp4 with pending post pending/glass-rain.json.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Glass rain: a shower of glass drops whose sun spots the friends chase",
+      "updated": "2026-11-26T19:48:00.262"
+    },
+    {
+      "created": "2026-11-26T19:34:23.506",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] start!(::Main.Plugin_builder.Builder, game::Game)\n    @ Main.Plugin_builder /sim/Programmieren/SimGame/world/plugins/builder.jl:587\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [7] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [8] top-level scope\n    @ ./bt_julia_eval:14\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [11] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [12] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [13] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 594,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:55.779: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:07.911.\nClosed at 2026-11-26T19:35:42.418: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:55.403.\nClosed at 2026-11-26T19:44:23.092: plugin builder loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:builder.Builder failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:23.092"
+    },
+    {
+      "created": "2026-11-26T19:34:27.735",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:64\n  [3] start!(s::Main.Plugin_flight.Flight, game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:488\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 595,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:56.588: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:13.108.\nClosed at 2026-11-26T19:35:43.309: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:59.921.\nClosed at 2026-11-26T19:44:25.025: plugin flight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:flight.Flight failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:25.025"
+    },
+    {
+      "created": "2026-11-26T19:34:31.641",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:69\n  [3] start!(s::Main.Plugin_giant.Giant, game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:365\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 596,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:57.090: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:35:16.355.\nClosed at 2026-11-26T19:35:43.937: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:36:03.835.\nClosed at 2026-11-26T19:44:26.294: plugin giant loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:giant.Giant failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:26.294"
+    },
+    {
+      "created": "2026-11-26T19:34:33.232",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] bubble_plot!(game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:63\n  [3] start!(s::Main.Plugin_hiccups.Hiccups, game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:328\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 597,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:57.347: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:35:18.375.\nClosed at 2026-11-26T19:35:44.275: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:36:05.496.\nClosed at 2026-11-26T19:44:26.594: plugin hiccups loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:hiccups.Hiccups failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:26.594"
+    },
+    {
+      "created": "2026-11-26T19:34:38.800",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:76\n  [3] start!(s::Main.Plugin_paintfight.PaintFight, game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:510\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 598,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:58.690: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:35:24.032.\nClosed at 2026-11-26T19:35:46.156: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:36:11.443.\nClosed at 2026-11-26T19:44:28.157: plugin paintfight loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:paintfight.PaintFight failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:28.157"
+    },
+    {
+      "created": "2026-11-26T19:34:44.562",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:62\n  [3] start!(s::Main.Plugin_sneeze.Sneeze, game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:384\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 599,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T19:34:59.468: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:35:30.194.\nClosed at 2026-11-26T19:35:46.969: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:36:17.038.\nClosed at 2026-11-26T19:44:29.347: plugin sneeze loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:sneeze.Sneeze failed in start! and was switched off",
+      "updated": "2026-11-26T19:44:29.347"
+    },
+    {
+      "created": "2026-11-26T19:48:20.537",
+      "detail": "s123 job 20261126-192329-664 failed in RayMakie trace_renderobject (meshscatter.jl:428) with the glassrain dots as Hikari.Emission, moved every frame. Reproduce in my session with a 2 s traced clip, fix in dev/Makie/RayMakie, then put material = Emission back in plugins/glassrain.jl. Done when: a traced glass-rain clip renders with glowing spots.",
+      "est_minutes": 15.0,
+      "id": 600,
+      "kind": "build",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Glass rain spots glow again: find why an emissive meshscatter breaks a traced film",
+      "updated": "2026-11-26T19:48:20.537"
     }
   ]
 }

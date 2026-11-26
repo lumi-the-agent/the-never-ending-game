@@ -1,0 +1,34 @@
+{
+ "verdict": "pass",
+ "summary": "The sun drops out of the sky onto the meadow as a glowing ball, lights the crab and the grass around it with real shadows from the ground, and then ends up by the hill. The light is the best thing in the film. The 'football' itself never shows: no kick can be seen, and in the last third the ball sits half hidden behind a stone cairn.",
+ "real_change": "sunball.jl is a real system. Once a day at noon a 1 m ball falls from 30 m with gravity, bounces, rolls downhill along the terrain and word-sand slope, slows on the grass, glances off tree trunks and gets pushed back from the sea. Up to five friends set chase goals for it, and anyone who runs into it (the player too) kicks it with a speed and direction. It shouts lines, emits events, and at 13:30 it floats back up. showers.jl takes SUNBALL[:dim] into NG.SUN_DIM, so the sky really dims. In traced films the ball is an Emission mesh, so it is a real moving area light. In the live raster it is only drawn: a flat unlit sphere plus a transparent halo, with the scene's single directional light re-aimed from the ball's direction at most once a second. strays.jl is unrelated: friends far out at sea now swim home, which is real behaviour.",
+ "surprise": 5,
+ "surprise_why": "Making the island's light source into a physical, kickable object whose glow and shadows move with it is a real new mechanic, but it is the second sun stunt in a few posts ('Lit from below'), and the film plays it as the usual scripted daily event that the friends gather round.",
+ "fun": 5,
+ "fun_why": "A rolling light that swings every shadow is something you'd want to kick about yourself, but the film shows no kick and no chase, just a ball that lands and drifts off while the camera wanders.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The title promises football, but the film never shows a kick or a friend chasing the ball. The ball just changes place between shots, and since the camera is moving at the same time, a viewer can't tell what pushed it.",
+   "where": "football-with-the-sun.mp4, storyboard frames 7-13",
+   "evidence": "The crab stands next to the ball in frames 7-9. Then the ball is near the signpost, then by the hill, and no contact or launch can be seen. The code does have kicks (play!, sp 3.5-6.5 m/s), but none is filmed.",
+   "suggestion": "Hold the camera still and wide enough to catch one or two clear kicks: a friend runs in, the ball shoots off, and the shadows swing with it."
+  },
+  {
+   "severity": "medium",
+   "what": "The ball, which is the subject, ends up mostly hidden behind a stack of stones and a bush for the last third, so 'rolled off down the path' reads as 'disappeared behind rocks'. The first frame is also wasted on empty grass.",
+   "where": "football-with-the-sun-at-75.jpg; storyboard frames 1 and 13-16",
+   "evidence": "At 75% a dark cairn of stones cuts through the glowing sphere, and only a green-lit bush shows that it is there. Frame 1 is an empty meadow slope with nothing in it.",
+   "suggestion": "Follow the ball with a camera that keeps it clear of occluders, and start the film with the sun still in the sky."
+  },
+  {
+   "severity": "low",
+   "what": "'The sky went dark' isn't shown as a change: the sky is already the same deep dusk blue in the first frame, before the sun falls. While it is falling, the sun is a flat white disc with no glow, so it reads as a moon.",
+   "where": "storyboard frames 1-5; football-with-the-sun-at-25.jpg",
+   "evidence": "The sky tone is the same from frame 1 to frame 16. At 25% the ball is a hard-edged white circle against the blue, with no bloom and no light on the clouds.",
+   "suggestion": "Begin at bright noon so the dimming plays on screen, and give the falling sun some glow or light on the clouds and ground as it comes down."
+  }
+ ],
+ "addressed": true,
+ "response": "s123: the post stays as it is (it is take 1, captioned for what it shows). The missing kick is the next step of the project: take 2 (seen s123) still shows no kick, so take 3 drops the sun on flat ground inside a tight ring of friends with a scripted first kick, and the ball now washes back out of the sea instead of vanishing (projects/football-with-the-sun.md)."
+}

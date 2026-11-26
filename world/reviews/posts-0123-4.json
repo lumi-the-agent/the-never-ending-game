@@ -1,0 +1,12 @@
+{"posts": [{"post": "nobody-kicked-the-sun-football-second-try",
+  "verdict": "redo",
+  "problems": [
+    "Storyboard frame 4 and the 25% frame: the sun lands inside the group and cuts straight through the crab and the blue friend. A glowing ball sits half inside their bodies, and nobody flinches, burns or gets pushed. It looks like a clipping bug, not like friends choosing not to kick.",
+    "Caption 'Nobody moved' does not match storyboard frames 5-8 and the 50% frame. The crab and the blue friend change places, and the crab walks off to the right, so the stillness the caption depends on is not there.",
+    "Storyboard frames 11-12 and the 75% frame: the sun passes through the middle of the bush. The bush lights up but does not bend, shake or part, so 'slid through a bush' looks like two meshes overlapping.",
+    "The sun is a flat, unshaded white disc with a faceted polygon outline (25%, 50% and 75% frames). It has no glow or halo and no sense of size or heat. The sky stays dark night the whole time, so only a small patch of grass shows that the sun came down.",
+    "Storyboard frames 13-14 and the 75% frame: a blurry green canopy fills the right third of the picture and hides the scene at the moment the sun reaches the shore.",
+    "Storyboard frames 15-16: the sun ends half sunk at the bottom edge of the frame, cut off by the border. The light changes to cyan, but there is no splash, steam or ripple, so the trip into the sea has no visible effect.",
+    "The title says football, but nothing in the film sets up a game: there is no pitch, no goal, and the friends are not gathered to play. 'Nobody kicked' has no situation behind it."
+  ],
+  "critique": "A falling sun that nobody reacts to could be a funny failure, but here it reads as a rendering bug: the sun clips through the friends and the bush, the friends move even though the caption says they did not, and the sun itself is a flat white disc that leaves the night sky unchanged. The ending into the sea is half cropped and hidden behind a blurred tree."}]}
