@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "Failed to resolve raster_renderobject:\n[ComputeEdge] raster_renderobject = #register_raster_renderobject!##0((positions_transformed_f32c, faces, normals, texturecoordinates, model_f32c, material, raster_path, scaled_color, alpha_colormap, scaled_colorrange, color_mapping_type, lowclip_color, highclip_color, nan_color, interpolate_in_fragment_shader, interpolate, raster_uv_transform, fetch_pixel, matcap, shading, diffuse, specular, shininess, backlight, depth_shift, world_normalmatrix, view_normalmatrix, strokewidth, strokecolor, stroke_data_packed, uniform_clip_planes, uniform_num_clip_planes, view, projection, eyeposition, resolution, viewport, raster_ambient, raster_light_color, raster_light_direction, raster_N_lights, raster_light_types, raster_light_colors, raster_light_parameters, raster_env_sh, raster_has_env, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:85\nDue to ERROR: MethodError: no method matching sunsky_to_envlight(; direction::GeometryBasics.Vec{3, Float32}, intensity::Float32, turbidity::Float32, ground_enabled::Bool, ground_albedo::Hikari.RGBSpectrum, resolution::Int64)\nThe function `sunsky_to_envlight` exists, but no method is defined for this combination of argument types.\nStacktrace:\n  [1] project_environment!(sh::Matrix{Float32}, light::Makie.SunSkyLight)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:475\n  [2] unit_sh(light::Makie.SunSkyLight)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:458\n  [3] iterate\n    @ ./generator.jl:48 [inlined]\n  [4] _collect\n    @ ./array.jl:810 [inlined]\n  [5] collect_similar\n    @ ./array.jl:732 [inlined]\n  [6] map\n    @ ./abstractarray.jl:3375 [inlined]\n  [7] #register_raster_lights!##2\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:409 [inlined]\n  [8] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{raster_env_shapes::Base.RefValue{Vector{Makie.SunSkyLight}}}, @NamedTuple{raster_env_unit_sh::Base.RefValue{Vector{StaticArraysCore.SMatrix{3, 9, Float32, 27}}}}, ComputePipeline.MapFunctionWrapper{true, RayMakie.var\"#register_raster_lights!##2#register_raster_lights!##3\"}})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:2389\n  [9] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [10] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [11] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [12] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1562\n [13] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/Si",
+      "detail": "RayMakie: this scene had 1 lights when it was first traced and has 2 now. A traced scene can move and change its lights (`set_light!`), not add or remove them.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] sync_lights!(state::RayMakie.RayMakieState, current::Vector{Makie.AbstractLight})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:481\n  [3] sync_lights!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/RayMakie.jl:474 [inlined]\n  [4] render!(screen::RayMakie.Screen; finalize_framebuffer::Bool)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:658\n  [5] render!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:649 [inlined]\n  [6] trace!(screen::RayMakie.Screen; clear::Bool, samples::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1271\n  [7] trace!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1241 [inlined]\n  [8] colorbuffer(screen::RayMakie.Screen, format::Makie.ImageStorageFormat; figure::Nothing, clear::Bool, samples::Nothing, px_per_unit::Nothing)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1182\n  [9] colorbuffer\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155 [inlined]\n [10] colorbuffer(screen::RayMakie.Screen)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1155\n [11] live_command(g::Game, ::Val{:screenshot}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:141\n [12] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-26T18:46:53.726"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7128,7 +7128,7 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0115 [camera, high]: For the whole minute of 'Keep the island level' the chase camera sat inside a pine: dark needles over 60% of the frame, Lumi a dim shape behind them. The start card covered a camera inside a trunk. In follow mode Lumi's name tag floated in the sky with a tree crown over the frame.\nWhere: camera rig (follow/chase), plugins/balance.jl camera\nSuggestion: Sphere-cast from the target to the camera against crowns, trunks, rocks and dunes, and pull in or swing round before anything covers the creature. For balance, a high three-quarter view that shows both rims and which way the island is tipping.\nDone when: Five screenshots 10 s apart during a balance round and five in follow mode: Lumi unobstructed and larger than 8% of the frame in every one.\nEvidence: reviews/p115/balance-start.png, balance-15s.png, balance-end.png, cam-follow-b.png",
+      "detail": "perfectionist-0121 [camera, high]: Follow at night: an orange barrow fills the right half of the view and Lumi peers out of pink foliage. Follow at 17:00: Lumi is cut off at the bottom and the camera stares at the sea. The motion camera was inside a bush for 2.2 s. The shadow film's first frames have a tree trunk over the left fifth.\nWhere: reviews/p0121/now.png, follow-17h.png, motion/motion-strip.png; my-shadow-quits-3 steps\nSuggestion: Cast a ray from the subject to the camera and pull the camera in front of whatever it hits, or fade those meshes. Keep the subject between the lower third and the middle of the frame, with its face visible.\nDone when: Ten follow-camera screenshots 5 s apart at day and night: the followed creature's face is in frame in all ten, and no prop covers more than 25% of any of them.\nEvidence: now.png (barrow), follow-17h.png (Lumi cut), motion-strip.png (22 of 24 frames green leaf)",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
@@ -7137,8 +7137,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Game cameras stop looking through pines and crowns (balance, follow)",
-      "updated": "2026-11-26T12:41:33.985"
+      "title": "Game cameras stop looking through pines, barrows and bushes",
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7371,12 +7371,12 @@
       "id": 527,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0121: The face hill shows in none of the 8 views or 3 films; the camera, shore and slab findings matter more.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The face hill: a crisp texture up close and a face from the overview",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T03:11:37.284",
@@ -7385,12 +7385,12 @@
       "id": 528,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0121: The frame failure happened once (today 03:11) and not again in 15 hours of logs.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A frame failed: Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_b",
-      "updated": "2026-11-26T03:11:37.284"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T03:16:11.184",
@@ -7455,12 +7455,12 @@
       "id": 533,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0121: No moth blur and no misplaced speech in 8 screenshots this review.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "No moth blur over the view; speech inside the view, hearts off the names",
-      "updated": "2026-11-26T04:14:32.999"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T06:09:12.667",
@@ -7567,12 +7567,12 @@
       "id": 541,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0121: The drift is no longer filmed or shown; reopen if it comes back.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The drift's wake: one streaming foam V from the stern, not white coins",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T07:41:42.691",
@@ -7730,7 +7730,7 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "perfectionist-0118 [animation, medium]: Live, the crab's body and both claws flick back and forth 9 times a second. It reads as a shiver, not a scuttle.\nWhere: makeover.jl crab rig / claw snap, gait.jl\nSuggestion: Low-pass the crab's heading and claw angle (critically damped spring) and make the claw snap a deliberate 0.3 s pinch with anticipation.\nDone when: live_motion reports Pinchy among 'moving well' in three runs.\nEvidence: reviews/p118/motion/motion.png and motion-strip.png (live_motion: 'Pinchy: body turns back 9 times a second')",
+      "detail": "perfectionist-0121 [animation, medium]: Pinchy jumps 0.27 m in one frame, moves at 8.2 m/s, and ends up inside a bush where the camera loses it. The s118 vibration finding is still open on top of this.\nWhere: reviews/p0121/motion/motion.png, motion-strip.png\nSuggestion: Cap the crab's speed at a scuttle (~2 m/s), ease into and out of moves, and keep its paths outside bush and tree footprints.\nDone when: live_motion lists Pinchy under 'Moving well' in three runs in a row.\nEvidence: live_motion: 'Pinchy: jumps 0.27 m in one frame at 0.9 s', 'moves at 8.2 m/s'",
       "est_minutes": 30.0,
       "id": 553,
       "kind": "review",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Pinchy vibrates: body and claws turn back 9 times a second",
-      "updated": "2026-11-26T15:15:55.042"
+      "title": "Pinchy snaps, runs 8 m/s and walks into bushes",
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7800,7 +7800,7 @@
     },
     {
       "created": "2026-11-26T12:41:33.985",
-      "detail": "perfectionist-0118 [world, high]: In the sandbox the bottom fifth of the eye-level view is a flat white-grey slab. In the human's game at session 118 the view is a grass sheet floating over a white wall. The progress camera sits on the untilted ground height, so whenever the seesaw tilts, it ends up inside or under the terrain.\nWhere: dev/NeverendingGame/src/progress.jl:14 (eye-level camera) with the seesaw tilt\nSuggestion: Place the camera with the tilted ground height (the seesaw's transform), and find what the white slab in front is (sand layer or tilted sea) and hide it from the camera's near plane.\nDone when: Two eye-level progress shots, one with the island level and one tilted at least 3°, both show the meadow and horizon with no flat white or grey band in the lower third.\nEvidence: reviews/p118/views/eye-level.png, media/progress/session-0118/eye-level.png",
+      "detail": "perfectionist-0121 [camera, high]: The eye-level progress shot is still a grey sheet across the lower 2/3, under a strip of green and sky. It is the same shot as the last three reviews.\nWhere: media/progress/session-0121/eye-level.png\nSuggestion: Clamp the eye-level camera above the terrain and the water plane at the point it looks from, after the seesaw tilt. Frame a creature or a landmark in the lower third.\nDone when: The next progress eye-level.png shows grass, creatures and props from head height, with no flat grey or white surface over more than 10% of the frame.\nEvidence: media/progress/session-0121/eye-level.png",
       "est_minutes": 30.0,
       "id": 558,
       "kind": "review",
@@ -7810,7 +7810,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Eye-level view: no white slab or grey wall, on a tilted island too",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7823,8 +7823,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Fireflies that glow: no cyan beads all over the day meadow",
-      "updated": "2026-11-26T15:15:55.042"
+      "title": "Fireflies that glow: small warm points that light the grass, not big discs over faces",
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7996,17 +7996,17 @@
     },
     {
       "created": "2026-11-26T13:49:08.514",
-      "detail": "perfectionist-0118 [camera, high]: The only film of the tied morning is shot from about 30 m up. Ten creatures are specks on a red line, the rope cuts straight through the fence and bodies, and you never see anybody being dragged or thrown, which is the whole joke.\nWhere: site/films/tied-together-2.mp4, plugins/tied.jl\nSuggestion: Make it playable first (#572: the player as Lumi drags the chain, and a rope wound round a trunk slingshots someone). Then shoot at creature height, 3-5 m away, following one tug: a pig digging in, the rope going taut with sag, a sheep yanked off its feet. Add rope collision with fence rails and bodies.\nDone when: A film whose overview sheet shows in most frames at least two creatures each taller than 1/6 of the frame height, a visibly taut rope between them, and one creature airborne from a yank.\nEvidence: reviews/motion/perfectionist-0118/tied-together-2-overview.jpg and -strip.jpg",
+      "detail": "perfectionist-0121 [wow, medium]: Eight films in a row went up with captions that admit they failed: 'came out a blob', 'small and far off', 'filmed from too far away', 'crashed my GPU'. Goal 2 has not moved in 35 reviews. The shadow film repeats session 95's idea. The ring film shows a streak.\nWhere: world/site/index.html, world/releases/\nSuggestion: Spend two sessions on one film: the jelly swallowing Pinchy or the rope knot, shot close at eye height at golden hour with a cut or two in VideoEditor, 128+ spp with OIDN. Put it in world/releases/ with its note.\nDone when: A new folder in world/releases/ holds a film whose motion sheet shows the creatures at least 1/4 of the frame high in most frames, with sun below 25° (long shadows), and no frame where a prop covers the lens.\nEvidence: site posts 'My shadow quits (first try)', '(second try)'; releases/ newest is 2026-11-24",
       "est_minutes": 15.0,
       "id": 572,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Film Tied together up close: pulls, throws and a rope round a trunk",
-      "updated": "2026-11-26T15:15:55.042"
+      "title": "Goal 2: release one film you would sign, not one more failed first take",
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T13:49:08.532",
@@ -8052,7 +8052,7 @@
     },
     {
       "created": "2026-11-26T14:52:04.307",
-      "detail": "perfectionist-0118 [world, high]: Along most of the coast a dark, nearly black stripe sits between the sand and the bright shallows ring. Seen from the pier and the western path it looks like a tar line round the island.\nWhere: shoreline, raster live view (shallows ring vs sea plot)\nSuggestion: Close the gap by extending the shallows mesh under the beach edge or raising the sea's alpha falloff near the shore, then add a moving foam line at the waterline.\nDone when: Screenshots from the pier and from the western path show sand blending into turquoise water with no pixel darker than the deep sea along the waterline.\nEvidence: reviews/p118/motion/creatures.png tiles row 2 col 1 and row 5 col 1",
+      "detail": "perfectionist-0121 [world, high]: A dark grey band runs between the turquoise shallows and the white sand all along the shore. It is the fourth review in a row that names it.\nWhere: follow camera near the shore; reviews/p0121/follow-17h.png\nSuggestion: Look at the terrain's underwater skirt and the sea's depth tint where they meet. The shallows should fade from turquoise into wet sand, darker sand only a hand wide.\nDone when: follow-17h-style screenshot at the shore shows sea → wet sand → dry sand with no band darker than the wet sand.\nEvidence: follow-17h.png bottom half: a black band between the sea and the sand",
       "est_minutes": 15.0,
       "id": 576,
       "kind": "review",
@@ -8062,7 +8062,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The black band round the shore is still there live",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T15:15:55.042",
@@ -8085,12 +8085,12 @@
       "id": 578,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0121: No orange flecks in 8 screenshots or the 3 films this review.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Word sand: no orange flecks hanging in the air round the creatures",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T15:36:05.163",
@@ -8136,17 +8136,17 @@
     },
     {
       "created": "2026-11-26T16:32:33.892",
-      "detail": "session-0119 review: creatures walk through standing tiles. s120 fixed tiles laid inside props (gaps now). Done when: a 10 fps strip shows a friend crossing a standing line by stepping over or round it, and no tile intersects a body.",
+      "detail": "perfectionist-0121 [world, high]: The dayfall's tiles stay standing as rows of untextured purple and yellow boards. They fence off the meadow and the paths and stand right next to Lumi. From the orbit they look like construction hoardings, not a toy.\nWhere: plugins/dayfall.jl; reviews/p0121/jumpin.png, orbit-17h-b.png, media/progress/session-0121/overview.png\nSuggestion: Once a run has fallen, the tiles should be gathered away (a friend carries them off, or they sink into the grass) within a minute. While they stand, give them a painted face or a generated tile mesh with wood grain and a coat in the trace, so a row of them is a picture.\nDone when: A screenshot from the orbit camera 5 minutes after a dayfall shows no standing slabs; a close screenshot of a standing run shows a textured tile, not a flat colour.\nEvidence: jumpin.png: eight purple slabs taller than Lumi; orbit-17h-b.png: yellow slab lines across the whole middle",
       "est_minutes": 15.0,
       "id": 582,
-      "kind": "fix",
-      "priority": 2,
+      "kind": "review",
+      "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Dayfall: friends step round standing tiles instead of through them",
-      "updated": "2026-11-26T16:32:33.892"
+      "title": "Clear the dayfall's leftover slabs off the meadow, or make them real tiles",
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T16:41:11.558",
@@ -8183,12 +8183,12 @@
       "id": 585,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0121: plugins/shadow.jl (s95) already lets the shadow run off live; a second version of the same trick costs a session a player would not notice.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "My shadow walks off live: once an afternoon a hidden second me only the sun sees, its shadow wandering the meadow",
-      "updated": "2026-11-26T17:50:59.750"
+      "updated": "2026-11-26T18:25:35.055"
     },
     {
       "created": "2026-11-26T17:50:59.756",
@@ -8203,6 +8203,76 @@
       "status": "dropped",
       "title": "Ring film take 4: a friend's flyby close enough to see its face, junk with real materials",
       "updated": "2026-11-26T17:51:06.707"
+    },
+    {
+      "created": "2026-11-26T18:25:35.055",
+      "detail": "perfectionist-0121 [creatures, high]: One of the ten friends is gone. Pickles the Snootle is at (-2136, -1449, -1.4), under the water and far beyond the island. In the creatures sheet it is a pig floating in a dark blue void. The ring fix in s121 brings ring riders home, but other things (drift, ring, seesaw, throws) can still strand a creature.\nWhere: live sandbox: game.world.creatures; reviews/p0121/motion/creatures.png row 5 left\nSuggestion: One general rule in the core, not per plugin: any creature more than ~30 m from the island centre, or below sea level for more than a few seconds, swims or flies home with a funny line ('Where did everybody GO?'). Make the walk back a little moment of its own.\nDone when: After an hour of sandbox time, every creature's position is within 30 m of the island and above z = 0; Pickles shows up on its own tile in live_motion's creatures sheet.\nEvidence: live_eval creature positions: Pickles:Snootle@[-2136.2, -1449.1, -1.4]",
+      "est_minutes": 30.0,
+      "id": 587,
+      "kind": "review",
+      "priority": 1,
+      "result": "s122: plugins/strays.jl (published). Cause found in log/frames: 16:17 a ring launch threw Pickles to 4.7 km, it fell 2.1 km out; 16:54 a gathering at everyone's middle walked all ten 400 m out to sea (both games). Now anyone past 34 m, or standing in water inside 0.5 R, swims/wades home (2.5-12 m/s, bobbing, 'Swimming home!') until dry ground (>0.15 m). Sandbox: all 10 swam ~400 m back (Pickles from 1472 m), then all on dry land r 16-19.5 m, z 0.3-1.4 (live_eval 18:52). media/s122-swimhome.png. strays 0.01 ms/frame. Live game: 9 home at 18:37, Pickles swimming in. Not run for a full sandbox hour.",
+      "source": "review",
+      "spent_minutes": 20.0,
+      "status": "done",
+      "title": "Pickles is lost 2.6 km out under the sea: bring strays home",
+      "updated": "2026-11-26T18:52:00.725"
+    },
+    {
+      "created": "2026-11-26T18:25:35.055",
+      "detail": "perfectionist-0121 [world, high]: Two or three huge grey-white balls, several metres across, hang a few metres over the meadow by the easels. In the orbit view they cover half the frame. The same white dome blocks the bottom of every wide frame of the ring film. They are not props: no prop above z = 2 is bigger than 2.5.\nWhere: orbit camera; reviews/p0121/orbit-17h.png, orbit-17h-b.png; ring-3 overview frames 6 to 12\nSuggestion: Find the plugin (clouds, cloudshapes, bubbles or ring). Low clouds belong out at sea and well above the trees. If they are meant to be low fog banks, make them a volume in the trace and soft in the raster, never a matte ball in front of the lens.\nDone when: Orbit-camera screenshots at 3 times of day show no grey sphere bigger than a creature in the lower 2/3 of the frame.\nEvidence: orbit-17h.png: a lavender sphere over half the view; orbit-17h-b.png: two grey balls over the easels",
+      "est_minutes": 30.0,
+      "id": 588,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Giant matte grey spheres hang over the meadow and fill the camera",
+      "updated": "2026-11-26T18:25:35.055"
+    },
+    {
+      "created": "2026-11-26T18:42:03.551",
+      "detail": "MethodError: no method matching sync_sun!(::NeverendingGame.Stage, ::NeverendingGame.World)\nThe applicable method may be too new: running in world age 54087, while current world is 54087.\nStacktrace:\n [1] sync!(st::NeverendingGame.Stage, w::NeverendingGame.World)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:323\n [2] (::NeverendingGame.var\"#frame!##6#frame!##7\"{Game, Float64, NeverendingGame.World})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:346\n [3] timed_ms(f::NeverendingGame.var\"#frame!##6#frame!##7\"{Game, Float64, NeverendingGame.World})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248\n [4] frame!(g::Game, dt::Float64)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:345\n [5] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 589,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: MethodError: no method matching sync_sun!(::NeverendingGame.Stage, ::NeverendingGame.World)\nThe applicable method may be",
+      "updated": "2026-11-26T18:42:03.551"
+    },
+    {
+      "created": "2026-11-26T18:52:00.794",
+      "detail": "s122 sunball.jl is live: noon 12-13:30 the sun is a ball on the west meadow (-9.5,-0.5), light 1 re-aimed from it at most 1/s (each aim re-bakes the sky 35 ms; a traced scene cannot add a light). Seen: from orbit the ball is a small dot and the day still looks like day (media/s122-sunball-1.png); rain takes the chasers away (showers goals are busy); a forced ball once stuck by the house. Done when: a follow screenshot during the match shows the ball glowing, long shadows pointing away from it, 3+ friends within 3 m of it, and frame p95 < 20 ms.",
+      "est_minutes": 15.0,
+      "id": 590,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Football with the sun: make it read live (ball big and bright, island dusky, friends keep playing)",
+      "updated": "2026-11-26T18:52:00.794"
+    },
+    {
+      "created": "2026-11-26T18:52:00.809",
+      "detail": "s122: at 16:54 (log/frames 2026-11-26-17.bin) all ten walked from the meadow toward Pickles, who lay 2.1 km out: some gathering uses the middle of everyone's positions. Find it (grep mean/sum of creature positions in plugins), clamp its meeting point to dry land. Done when: with one friend placed 500 m out in the sandbox, no gathering target is ever past 20 m from the middle.",
+      "est_minutes": 15.0,
+      "id": 591,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The gathering that walked everyone 400 m out to sea: meet on land, never at a far mean",
+      "updated": "2026-11-26T18:52:00.809"
     }
   ]
 }

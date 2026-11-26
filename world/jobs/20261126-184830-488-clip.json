@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-26T18:48:30.550",
+  "finished": "2026-11-26T19:04:46.409",
+  "id": "20261126-184830-488-clip",
+  "kind": "clip",
+  "params": {
+    "call": "sunball_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 10.0,
+      "spot": [
+        -9.5,
+        -0.5
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/football-with-the-sun.mp4",
+    "script": "movies/sunball.jl"
+  },
+  "result": {
+    "dim": 0.2,
+    "path": "/sim/Programmieren/SimGame/world/site/films/football-with-the-sun.mp4",
+    "pos": [
+      3.505336,
+      4.1357927,
+      2.507289
+    ]
+  },
+  "seconds": 975.0,
+  "started": "2026-11-26T18:48:31.058",
+  "status": "done"
+}

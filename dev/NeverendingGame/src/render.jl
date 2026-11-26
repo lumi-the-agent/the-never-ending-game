@@ -382,6 +382,15 @@ function game_clip(path::AbstractString; root::AbstractString = game_root(), siz
                    rig::CameraRig = CameraRig(), rasterize::Bool = false, setup = nothing,
                    shot = nothing, fade::Real = 0, denoise::Bool = true)
     g = Game(root; quiet = true)
+    try
+        return film!(g, path; size, seconds, fps, samples, max_depth, hour, warmup, rig, rasterize, setup, shot, fade, denoise)
+    finally
+        release!(g)            # the finished game must not stay alive in its plugins' globals (5 GB a film)
+    end
+end
+
+function film!(g, path::AbstractString; size, seconds, fps, samples, max_depth, hour, warmup, rig, rasterize, setup,
+               shot, fade, denoise)
     w = g.world
     hour === nothing || skip_to_hour!(w, hour)
     root_scene = Scene(; size)

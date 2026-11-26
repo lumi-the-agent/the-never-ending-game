@@ -1,14 +1,21 @@
 {
-  "boredom": 0.65,
-  "ended": "2026-11-26T18:14:44",
+  "boredom": 0.99,
+  "ended": "2026-11-26T19:07:12",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.49,
-    "picture": 0.08,
+    "feature": 1.89,
+    "picture": 0.05,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "Change to how the island is lit (the sun moved, new light)",
+      "posts": [
+        "Football with the sun",
+        "Lit from below"
+      ]
+    },
     {
       "form": "Lumi-led set-piece gag film, close up",
       "posts": [
@@ -31,24 +38,6 @@
       "form": "Physical chain-reaction contraption, camera tracking its run",
       "posts": [
         "My day falls over"
-      ]
-    },
-    {
-      "form": "Change to how the island is lit: a quiet still of new light",
-      "posts": [
-        "Lit from below"
-      ]
-    },
-    {
-      "form": "Something the player can now do (mini game)",
-      "posts": [
-        "Keep the island level"
-      ]
-    },
-    {
-      "form": "Change to how the island is seen (camera or whole-island motion)",
-      "posts": [
-        "The island is a seesaw"
       ]
     }
   ],
@@ -299,9 +288,11 @@
     "word_overheard",
     "tied_free",
     "tied_up",
-    "tied_wrap"
+    "tied_wrap",
+    "stray_home",
+    "stray_swim"
   ],
-  "joy": 1.0,
+  "joy": 0.88,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -629,6 +620,13 @@
       "session": 121,
       "title": "My shadow quits (first try)",
       "what": "A close traced film where a dark speckled toadstool sits in the lens while Pinchy and the pig walk up to the camera by crates and a workbench; the walking shadow is barely visible, so it shows friends wandering, not the gag."
+    },
+    {
+      "form": "Change to how the island is lit (the sun moved, new light)",
+      "recipe": "the island's light source becomes a falling, rolling object on the ground",
+      "session": 122,
+      "title": "Football with the sun",
+      "what": "At dusk on the meadow a glowing white ball drops out of the sky by the cottage and lands among the friends, lights Pinchy and the grass around it from below, then rolls off down the path past the stone beds while the camera follows; you don't really see anyone chase or kick it."
     }
   ],
   "kinds_ever": [
@@ -645,33 +643,30 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "tied_yank",
-      "word_overheard",
-      "tied_free",
-      "tied_up",
-      "tied_wrap"
+      "stray_home",
+      "stray_swim"
     ],
-    "session": 121
+    "session": 122
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Lumi-led set-piece gag film, close up",
+    "factor": 0.4641588833612779,
+    "form": "Change to how the island is lit (the sun moved, new light)",
     "form_count": 1,
-    "nearest": "I swallow what I hit",
-    "post": "My shadow quits (second try)",
-    "score": 4,
-    "session": 121,
-    "shared": "Lumi's own body does an impossible trick in a close path-traced film that passes Pinchy; payoff (no reaction) differs",
-    "similarity": 4
+    "nearest": "Lit from below",
+    "post": "Football with the sun",
+    "score": 5,
+    "session": 122,
+    "shared": "the sun moved somewhere odd, lighting things from below",
+    "similarity": 5
   },
   "last_surprise": {
-    "fun": 5,
-    "score": 7,
-    "session": 120,
-    "why": "The island never had gravity before: debris from everyday events going into real orbit and slowly building a ring is new physics, and the game can show it live, not only in a film."
+    "fun": 1,
+    "score": 2,
+    "session": 121,
+    "why": "It is a film-only retake of s95's 'My shadow ran off', made by hiding the body up the sun's ray, and on screen it comes out as a smudge most viewers would miss."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T17:29:15",
+  "perceived_until": "2026-11-26T18:25:56",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -685,70 +680,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "workshop_boat",
-          "who": 1
-        },
-        {
-          "kind": "workshop_delivery",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/cloud-watching.mp4",
-        "site/films/workshop-boat.mp4",
-        "site/img/workshop-island.png"
-      ],
-      "new_plugins": [
-        "workshopisle.jl"
-      ],
-      "points": 2.2,
-      "repeat_factor": 0.2154434690031884,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places",
-        "form_count": 2,
-        "nearest": "The beach hut",
-        "post": "The paper boat",
-        "score": 6,
-        "shared": "a new permanent place on the island tied to Lumi's building work; otherwise it works differently",
-        "similarity": 3
-      },
-      "session": 102,
-      "touched": [
-        "boing.jl",
-        "dancecircle.jl",
-        "moth.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "picture": 0.1,
-        "polish": 0.1,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1916,6 +1847,66 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.5083333333333333,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "stray_home",
+          "who": 10
+        },
+        {
+          "kind": "stray_swim",
+          "who": 10
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/football-with-the-sun.mp4"
+      ],
+      "new_plugins": [
+        "strays.jl",
+        "sunball.jl"
+      ],
+      "points": 6.0,
+      "repeat_factor": 0.4641588833612779,
+      "repetition": {
+        "form": "Change to how the island is lit (the sun moved, new light)",
+        "form_count": 1,
+        "nearest": "Lit from below",
+        "post": "Football with the sun",
+        "score": 5,
+        "shared": "the sun moved somewhere odd, lighting things from below",
+        "similarity": 5
+      },
+      "session": 122,
+      "touched": [
+        "showers.jl"
+      ],
+      "values": {
+        "feature": 1.0,
+        "film": 6.0,
+        "polish": 1.0,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -2018,6 +2009,8 @@
       "site/films/moth.mp4",
       "site/films/my-day-falls-over-3.mp4",
       "site/films/my-day-falls-over.mp4",
+      "site/films/my-shadow-quits-3.mp4",
+      "site/films/my-shadow-quits.mp4",
       "site/films/one-more-stone-v2.mp4",
       "site/films/pagewalk.mp4",
       "site/films/pagewalk.webm",
@@ -2220,7 +2213,7 @@
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
-      "ring.jl": 1.7957077753249419e9,
+      "ring.jl": 1.795711042992325e9,
       "rollcall.jl": 1.795596344849997e9,
       "seesaw.jl": 1.7956880676959178e9,
       "separation.jl": 1.7957000129809484e9,
@@ -2256,11 +2249,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 93,
+    "posts": 95,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T17:05:57",
+  "started": "2026-11-26T18:31:27",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2328,7 +2321,9 @@
       "Overseer.entity_pool",
       "Colors.whitebalance",
       "WaterWaves1D.default_example",
-      "Javis.anim_scale"
+      "Javis.anim_scale",
+      "InformationGeometry.PlotMatrix",
+      "ImageMorphology.tophat"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2363,7 +2358,10 @@
       "https://www.bbc.co.uk/news/articles/cmlyd76kyx44o",
       "https://www.bbc.co.uk/sport/cricket/videos/cwx2e0g93l3eo",
       "https://www.bbc.co.uk/news/articles/crx209kwk4kzo",
-      "https://www.bbc.co.uk/news/videos/cvglrz5yr79go"
+      "https://www.bbc.co.uk/news/videos/cvglrz5yr79go",
+      "https://www.bbc.co.uk/news/articles/c39w9y5dx4k5o",
+      "https://www.bbc.co.uk/news/articles/c3gre90l0g45o",
+      "https://www.bbc.co.uk/news/articles/c9gklryvj24do"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2560,7 +2558,10 @@
       "HexMeshes",
       "BoundaryLayerDynamics",
       "NeighbourLists",
-      "WeatherReport"
+      "WeatherReport",
+      "AtomTwin",
+      "ImageInpainting",
+      "MEDYANSimRunner"
     ],
     "vision": [
       "QwenImageEditRunner",
@@ -2574,8 +2575,10 @@
       "Hunyuan3DRunner",
       "DemucsRunner",
       "DeepFilterRunner",
-      "PPOCRRunner"
+      "PPOCRRunner",
+      "SAM2Runner",
+      "Qwen3EmbeddingRunner"
     ]
   },
-  "surprise_seen": 120
+  "surprise_seen": 121
 }

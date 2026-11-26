@@ -1,87 +1,233 @@
-{"verdict": "needs_work",
- "summary": "Lumi turning into a green jelly that swallows a friend is the first time a path tracer material is the joke itself. It is the most shareable idea since the seesaw, and the J key makes it playable. But the jelly films as a dark, murky bowling ball, and both new films open on a frame where the meadow is a sandpit before it pops back to green. Tied together is a good physical idea, but the film is shot from a drone with specks for creatures, and you cannot play it yet. The old sores are still there: a black band along the shore, a white slab across the eye-level view, cyan beads all over the meadow in daylight, Pinchy vibrating, and orange word-sand flecks hanging in the air.",
- "scores": {
-   "lighting":    {"score": 5, "why": "Live and traced at 13:30 it is still one flat noon sun with hard shadows (reviews/p118/pt.png). Lit from below exists live, but every traced take lost the GPU, so no film or picture shows it. No real lights appear in this session's films."},
-   "materials":   {"score": 5, "why": "+1: the jelly is Hikari glass with a homogeneous medium inside, the first real transmission plus volume in a film, and Pinchy shows through it refracted. But σ_a is so strong that it reads as dark olive glass, the bright jelly gives no visible caustic, and the cyan daylight dots and the plastic ground stay as they were."},
-   "world":       {"score": 6, "why": "The meadow came back green (word sand sinks). But the black band between beach and water still shows live (reviews/p118/motion/creatures.png, tiles 3 and 9). The eye-level view has a white slab across the bottom (reviews/p118/views/eye-level.png), and in the human's game it was a grey wall again (media/progress/session-0118/eye-level.png)."},
-   "props":       {"score": 6, "why": "Unchanged. Generated assets carry the scenery, and nothing new was placed this session apart from the rope and the jelly sphere."},
-   "creatures":   {"score": 6, "why": "Up close the makeover coats hold. Lumi's bird body reads, and the crab hangs over the water by the pier with its legs in the air (creatures sheet, tile 5). The jelly is a sphere round Lumi, not Lumi turning soft."},
-   "animation":   {"score": 6, "why": "9 of 10 creatures move well, but Pinchy's body and claws turn back 9 times a second (live_motion). Both films pop at 0.04 s (0.191 change: the sandpit meadow turns green). In the hiccup the crab appears perched on top of the ball instead of flying in a readable arc (jelly overview, frame 10)."},
-   "fun":         {"score": 6, "why": "J to swallow whoever is closest and carry them about is a real toy, the kind the human asked for. The tied morning has no player side yet (#572), and the four mini games are the same as last review."},
-   "wow":         {"score": 6, "why": "The jelly is new and funny, and the second take shows the swallow and the hiccup. But it is dark and short, and the stranger's eye goes to the murky ball, not the joke. Tied together is a tangle seen from 30 m. Three of the last six posts are films that admit they failed."},
-   "camera":      {"score": 4, "why": "The jelly film frames the action. The tied film is a high diagonal drone shot where the creatures are 10 px specks and the slow push never arrives. Live, the follow camera's left third is a tree crown and trunk (reviews/p118/cam-follow.png), and the progress overview in the human's game has giant white spheres filling the left side."},
-   "ui":          {"score": 5, "why": "Unchanged. In the follow view the 'Lumi' label floats over a bush 3 m behind the player's Lumi (cam-follow.png, pt.png), and the 'Messages to you' text ends in a dangling 'Film:'."},
-   "style":       {"score": 5, "why": "Clay creatures, plastic toadstools, flat paint discs on the ground (creatures sheet, tile 2), orange flecks of word sand in the air and cyan beads. Each layer has its own look and nothing ties them together."},
-   "performance": {"score": 9, "why": "30 fps in the sandbox. The new tied and jelly systems cost a fraction of a millisecond."}},
- "findings": [
-  {"severity": "high", "category": "materials", "title": "The jelly should glow like jelly: bright, wobbling, casting green caustics", "todo": null,
-   "what": "In the film the jelly is a near-black olive sphere. Pinchy is only a smudge inside, and the ground under it gets a plain dark shadow. A player would not guess jelly; it reads as a dirty glass ball. The sphere never deforms as Lumi hops, and the friend is pinned to its front.",
-   "where": "plugins/jelly.jl:25-30 (σ_a 0.55/0.06/0.5 is far too dense for a 1.5 m ball), site/films/i-swallow-what-i-hit-2.mp4",
-   "evidence": "reviews/motion/perfectionist-0118/i-swallow-what-i-hit-2-overview.jpg, frames 3-9",
-   "suggestion": "Cut σ_a about 5x and give it a pale lime tint with a little scattering, so it glows when backlit. Shoot it against the sun so a green caustic pool lands on the path. Squash and stretch the coat with each hop (scale the mesh, not only the hiccup), and let the friend bob and rotate freely inside. Then turn Lumi's own body into jelly, not a coat round it.",
-   "done_when": "A traced still of the swallowed friend where the friend's face is clearly readable through bright green jelly and a green light pool or caustic is visible on the ground under it; a strip sheet shows the ball deforming on at least 3 hops."},
-  {"severity": "high", "category": "world", "title": "The black band round the shore is still there live", "todo": 576,
-   "what": "Along most of the coast a dark, nearly black stripe sits between the sand and the bright shallows ring. Seen from the pier and the western path it looks like a tar line round the island.",
-   "where": "shoreline, raster live view (shallows ring vs sea plot)",
-   "evidence": "reviews/p118/motion/creatures.png tiles row 2 col 1 and row 5 col 1",
-   "suggestion": "Close the gap by extending the shallows mesh under the beach edge or raising the sea's alpha falloff near the shore, then add a moving foam line at the waterline.",
-   "done_when": "Screenshots from the pier and from the western path show sand blending into turquoise water with no pixel darker than the deep sea along the waterline."},
-  {"severity": "high", "category": "world", "title": "Eye-level view: no white slab or grey wall, on a tilted island too", "todo": 558,
-   "what": "In the sandbox the bottom fifth of the eye-level view is a flat white-grey slab. In the human's game at session 118 the view is a grass sheet floating over a white wall. The progress camera sits on the untilted ground height, so whenever the seesaw tilts, it ends up inside or under the terrain.",
-   "where": "dev/NeverendingGame/src/progress.jl:14 (eye-level camera) with the seesaw tilt",
-   "evidence": "reviews/p118/views/eye-level.png, media/progress/session-0118/eye-level.png",
-   "suggestion": "Place the camera with the tilted ground height (the seesaw's transform), and find what the white slab in front is (sand layer or tilted sea) and hide it from the camera's near plane.",
-   "done_when": "Two eye-level progress shots, one with the island level and one tilted at least 3°, both show the meadow and horizon with no flat white or grey band in the lower third."},
-  {"severity": "high", "category": "camera", "title": "Film Tied together up close: pulls, throws and a rope round a trunk", "todo": 572,
-   "what": "The only film of the tied morning is shot from about 30 m up. Ten creatures are specks on a red line, the rope cuts straight through the fence and bodies, and you never see anybody being dragged or thrown, which is the whole joke.",
-   "where": "site/films/tied-together-2.mp4, plugins/tied.jl",
-   "evidence": "reviews/motion/perfectionist-0118/tied-together-2-overview.jpg and -strip.jpg",
-   "suggestion": "Make it playable first (#572: the player as Lumi drags the chain, and a rope wound round a trunk slingshots someone). Then shoot at creature height, 3-5 m away, following one tug: a pig digging in, the rope going taut with sag, a sheep yanked off its feet. Add rope collision with fence rails and bodies.",
-   "done_when": "A film whose overview sheet shows in most frames at least two creatures each taller than 1/6 of the frame height, a visibly taut rope between them, and one creature airborne from a yank."},
-  {"severity": "medium", "category": "animation", "title": "Films start on a popped first frame (word sand drawn, then gone)", "todo": 561,
-   "what": "Both new films open on one frame where the meadow is a sandpit, then cut to green grass at 0.04 s (change 0.191, the largest jump in each film). The word sand SINK is applied only after the first frame.",
-   "where": "movies/ setup for jelly and tied films; plugins/wordsand.jl SINK",
-   "evidence": "i-swallow-what-i-hit-2 steps sheet frame 1 vs 2, tied-together-2 jump at 0.04 s (0.191)",
-   "suggestion": "Run the plugins' step! for a few frames (or warm up 0.5 s) before the first traced frame, in the film helper, so every film starts settled.",
-   "done_when": "motion_sheet of the next film reports no jump in the first 0.2 s above 4x typical."},
-  {"severity": "medium", "category": "animation", "title": "Pinchy vibrates: body and claws turn back 9 times a second", "todo": 553,
-   "what": "Live, the crab's body and both claws flick back and forth 9 times a second. It reads as a shiver, not a scuttle.",
-   "where": "makeover.jl crab rig / claw snap, gait.jl",
-   "evidence": "reviews/p118/motion/motion.png and motion-strip.png (live_motion: 'Pinchy: body turns back 9 times a second')",
-   "suggestion": "Low-pass the crab's heading and claw angle (critically damped spring) and make the claw snap a deliberate 0.3 s pinch with anticipation.",
-   "done_when": "live_motion reports Pinchy among 'moving well' in three runs."},
-  {"severity": "medium", "category": "materials", "title": "Fireflies that glow: no cyan beads all over the day meadow", "todo": 559,
-   "what": "In the traced view at 13:39, dozens of cyan beads lie all over the meadow and path. In daylight they look like spilled plastic beads, not fireflies, and they light nothing.",
-   "where": "traced live view, firefly plot / nightglow motes",
-   "evidence": "reviews/p118/pt.png, reviews/p118/motion/creatures.png",
-   "suggestion": "Hide them by day (or make them tiny dust motes in the sun). At dusk give them a small emissive core with a real light, so each one throws a soft pool onto the grass.",
-   "done_when": "A traced still at 13:00 has no cyan beads, and one at 20:30 shows each firefly lighting a visible patch of ground."},
-  {"severity": "medium", "category": "style", "title": "Word sand: no orange flecks hanging in the air round the creatures", "todo": null,
-   "what": "Clusters of orange balls hover and swirl around talking creatures, both live (next to the pig in cam-follow-b.png and above Lumi in cam-orbit-b.png) and in the jelly film left of the ball. The author does not know where the ones in the film come from. To a player it looks like a particle glitch, not words turning to sand.",
-   "where": "plugins/wordsand.jl (falling grains), live and in films",
-   "evidence": "reviews/p118/cam-follow-b.png, reviews/p118/cam-orbit-b.png, i-swallow-what-i-hit-2-steps.jpg frames 2-3",
-   "suggestion": "Make the grains read as sand: smaller, sand-coloured, falling in a quick stream from the beak to the ground with a little puff where they land, and never resting in the air.",
-   "done_when": "A strip at 10 fps of a speaking creature shows grains falling to the ground in under 1 s, and no grain cluster stays in the air over three frames."}
- ],
- "todos": [
-  {"id": 167, "action": "done", "why": "live_screenshot worked over a dozen times this review, including with path tracing on."},
-  {"id": 528, "action": "keep", "why": "The text-offset frame failure still appears in log/events-2026-11-26.jsonl."},
-  {"id": 510, "action": "keep", "why": "The follow camera still has a crown and trunk filling the left third (reviews/p118/cam-follow.png)."},
-  {"id": 545, "action": "keep", "why": "Not checked this review; the TV is still in the old boxes."},
-  {"id": 546, "action": "drop", "why": "The TV film was posted in s113; a camera fix for one finished film is no longer needed."},
-  {"id": 556, "action": "drop", "why": "The word-sand film is posted and old; the flecks in the air are a new finding."},
-  {"id": 560, "action": "drop", "why": "Duplicate of #576 (shore band); the meadow is green again since the s118 SINK."},
-  {"id": 570, "action": "drop", "why": "Duplicate of #569 (sun under the sea in films without losing the GPU)."},
-  {"id": 517, "action": "keep", "why": "The crab's party hat still sits on the side of its shell in the jelly film."},
-  {"id": 518, "action": "keep", "why": "Not checked: another driver held jump-in in the sandbox during this review."},
-  {"id": 527, "action": "keep", "why": "Not checked this review."},
-  {"id": 533, "action": "keep", "why": "Labels still float off their owners: the 'Lumi' label sits over a bush behind the player."},
-  {"id": 541, "action": "keep", "why": "Not checked this review."},
-  {"id": 547, "action": "keep", "why": "Not played this review."}
- ],
- "engine": [
-  {"what": "Hikari/Vulkan: an emissive ring or light under a transmissive sea crashes the GPU in the worker (VK_ERROR_DEVICE_LOST after 3-7 min). This blocks the whole 'Lit from below' idea in path tracing.", "evidence": "journal 2026-11-26 'Session 116'; todo #569"},
-  {"what": "RayMakie: 'Failed to resolve trace_renderobject' for an Emission meshscatter parked at z = -100 by another plugin. One idle plot breaks a whole film.", "evidence": "journal 2026-11-26 14:11; RayMakie meshscatter.jl:428"},
-  {"what": "Makie: text label placement ComputeEdge 'Failed to resolve offsets' (screenpoints_target, text_bbs) fails a frame now and then.", "evidence": "log/events-2026-11-26.jsonl; todo #528"}
- ],
- "process": "The author is again spending sessions on ideas a player notices (jelly, rope, seesaw, word sand), and goals 1, 3, 7 and 8 moved. The jelly is the first time Hikari's medium and glass are what a film is about. But the pattern of the last six sessions is one new mechanic per session, filmed once, admitted as half-working in the caption, and then abandoned for the next idea. Tied together is not playable, Lit from below has no traced image, word sand leaves flecks in the air, and the shore band and eye-level slab have survived three reviews. Goal 2 (a released film to be proud of) has not moved. Goal 6 (light at every hour) is still flat noon in every film. Goal 4 is stalled at the same raster look. On goal 5, Lumi's mood is 'bored' again. Next sessions should finish rather than add: make the jelly bright and wobbly, make tied mornings playable and film them close, and fix the three visible world defects. One of these films could become the goal 2 release."}
+{
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "journal 2026-11-26 'Session 116'; todo #569",
+      "what": "Hikari/Vulkan: an emissive ring or light under a transmissive sea crashes the GPU in the worker (VK_ERROR_DEVICE_LOST after 3-7 min). This blocks the whole 'Lit from below' idea in path tracing."
+    },
+    {
+      "evidence": "journal 2026-11-26 14:11; RayMakie meshscatter.jl:428",
+      "what": "RayMakie: 'Failed to resolve trace_renderobject' for an Emission meshscatter parked at z = -100 by another plugin. One idle plot breaks a whole film."
+    },
+    {
+      "evidence": "log/events-2026-11-26.jsonl; todo #528",
+      "what": "Makie: text label placement ComputeEdge 'Failed to resolve offsets' (screenpoints_target, text_bbs) fails a frame now and then."
+    }
+  ],
+  "findings": [
+    {
+      "category": "materials",
+      "done_when": "A traced still of the swallowed friend where the friend's face is clearly readable through bright green jelly and a green light pool or caustic is visible on the ground under it; a strip sheet shows the ball deforming on at least 3 hops.",
+      "evidence": "reviews/motion/perfectionist-0118/i-swallow-what-i-hit-2-overview.jpg, frames 3-9",
+      "severity": "high",
+      "suggestion": "Cut σ_a about 5x and give it a pale lime tint with a little scattering, so it glows when backlit. Shoot it against the sun so a green caustic pool lands on the path. Squash and stretch the coat with each hop (scale the mesh, not only the hiccup), and let the friend bob and rotate freely inside. Then turn Lumi's own body into jelly, not a coat round it.",
+      "title": "The jelly should glow like jelly: bright, wobbling, casting green caustics",
+      "todo": null,
+      "what": "In the film the jelly is a near-black olive sphere. Pinchy is only a smudge inside, and the ground under it gets a plain dark shadow. A player would not guess jelly; it reads as a dirty glass ball. The sphere never deforms as Lumi hops, and the friend is pinned to its front.",
+      "where": "plugins/jelly.jl:25-30 (σ_a 0.55/0.06/0.5 is far too dense for a 1.5 m ball), site/films/i-swallow-what-i-hit-2.mp4"
+    },
+    {
+      "category": "world",
+      "done_when": "Screenshots from the pier and from the western path show sand blending into turquoise water with no pixel darker than the deep sea along the waterline.",
+      "evidence": "reviews/p118/motion/creatures.png tiles row 2 col 1 and row 5 col 1",
+      "severity": "high",
+      "suggestion": "Close the gap by extending the shallows mesh under the beach edge or raising the sea's alpha falloff near the shore, then add a moving foam line at the waterline.",
+      "title": "The black band round the shore is still there live",
+      "todo": 576,
+      "what": "Along most of the coast a dark, nearly black stripe sits between the sand and the bright shallows ring. Seen from the pier and the western path it looks like a tar line round the island.",
+      "where": "shoreline, raster live view (shallows ring vs sea plot)"
+    },
+    {
+      "category": "world",
+      "done_when": "Two eye-level progress shots, one with the island level and one tilted at least 3°, both show the meadow and horizon with no flat white or grey band in the lower third.",
+      "evidence": "reviews/p118/views/eye-level.png, media/progress/session-0118/eye-level.png",
+      "severity": "high",
+      "suggestion": "Place the camera with the tilted ground height (the seesaw's transform), and find what the white slab in front is (sand layer or tilted sea) and hide it from the camera's near plane.",
+      "title": "Eye-level view: no white slab or grey wall, on a tilted island too",
+      "todo": 558,
+      "what": "In the sandbox the bottom fifth of the eye-level view is a flat white-grey slab. In the human's game at session 118 the view is a grass sheet floating over a white wall. The progress camera sits on the untilted ground height, so whenever the seesaw tilts, it ends up inside or under the terrain.",
+      "where": "dev/NeverendingGame/src/progress.jl:14 (eye-level camera) with the seesaw tilt"
+    },
+    {
+      "category": "camera",
+      "done_when": "A film whose overview sheet shows in most frames at least two creatures each taller than 1/6 of the frame height, a visibly taut rope between them, and one creature airborne from a yank.",
+      "evidence": "reviews/motion/perfectionist-0118/tied-together-2-overview.jpg and -strip.jpg",
+      "severity": "high",
+      "suggestion": "Make it playable first (#572: the player as Lumi drags the chain, and a rope wound round a trunk slingshots someone). Then shoot at creature height, 3-5 m away, following one tug: a pig digging in, the rope going taut with sag, a sheep yanked off its feet. Add rope collision with fence rails and bodies.",
+      "title": "Film Tied together up close: pulls, throws and a rope round a trunk",
+      "todo": 572,
+      "what": "The only film of the tied morning is shot from about 30 m up. Ten creatures are specks on a red line, the rope cuts straight through the fence and bodies, and you never see anybody being dragged or thrown, which is the whole joke.",
+      "where": "site/films/tied-together-2.mp4, plugins/tied.jl"
+    },
+    {
+      "category": "animation",
+      "done_when": "motion_sheet of the next film reports no jump in the first 0.2 s above 4x typical.",
+      "evidence": "i-swallow-what-i-hit-2 steps sheet frame 1 vs 2, tied-together-2 jump at 0.04 s (0.191)",
+      "severity": "medium",
+      "suggestion": "Run the plugins' step! for a few frames (or warm up 0.5 s) before the first traced frame, in the film helper, so every film starts settled.",
+      "title": "Films start on a popped first frame (word sand drawn, then gone)",
+      "todo": 561,
+      "what": "Both new films open on one frame where the meadow is a sandpit, then cut to green grass at 0.04 s (change 0.191, the largest jump in each film). The word sand SINK is applied only after the first frame.",
+      "where": "movies/ setup for jelly and tied films; plugins/wordsand.jl SINK"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion reports Pinchy among 'moving well' in three runs.",
+      "evidence": "reviews/p118/motion/motion.png and motion-strip.png (live_motion: 'Pinchy: body turns back 9 times a second')",
+      "severity": "medium",
+      "suggestion": "Low-pass the crab's heading and claw angle (critically damped spring) and make the claw snap a deliberate 0.3 s pinch with anticipation.",
+      "title": "Pinchy vibrates: body and claws turn back 9 times a second",
+      "todo": 553,
+      "what": "Live, the crab's body and both claws flick back and forth 9 times a second. It reads as a shiver, not a scuttle.",
+      "where": "makeover.jl crab rig / claw snap, gait.jl"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced still at 13:00 has no cyan beads, and one at 20:30 shows each firefly lighting a visible patch of ground.",
+      "evidence": "reviews/p118/pt.png, reviews/p118/motion/creatures.png",
+      "severity": "medium",
+      "suggestion": "Hide them by day (or make them tiny dust motes in the sun). At dusk give them a small emissive core with a real light, so each one throws a soft pool onto the grass.",
+      "title": "Fireflies that glow: no cyan beads all over the day meadow",
+      "todo": 559,
+      "what": "In the traced view at 13:39, dozens of cyan beads lie all over the meadow and path. In daylight they look like spilled plastic beads, not fireflies, and they light nothing.",
+      "where": "traced live view, firefly plot / nightglow motes"
+    },
+    {
+      "category": "style",
+      "done_when": "A strip at 10 fps of a speaking creature shows grains falling to the ground in under 1 s, and no grain cluster stays in the air over three frames.",
+      "evidence": "reviews/p118/cam-follow-b.png, reviews/p118/cam-orbit-b.png, i-swallow-what-i-hit-2-steps.jpg frames 2-3",
+      "severity": "medium",
+      "suggestion": "Make the grains read as sand: smaller, sand-coloured, falling in a quick stream from the beak to the ground with a little puff where they land, and never resting in the air.",
+      "title": "Word sand: no orange flecks hanging in the air round the creatures",
+      "todo": null,
+      "what": "Clusters of orange balls hover and swirl around talking creatures, both live (next to the pig in cam-follow-b.png and above Lumi in cam-orbit-b.png) and in the jelly film left of the ball. The author does not know where the ones in the film come from. To a player it looks like a particle glitch, not words turning to sand.",
+      "where": "plugins/wordsand.jl (falling grains), live and in films"
+    }
+  ],
+  "process": "The author is again spending sessions on ideas a player notices (jelly, rope, seesaw, word sand), and goals 1, 3, 7 and 8 moved. The jelly is the first time Hikari's medium and glass are what a film is about. But the pattern of the last six sessions is one new mechanic per session, filmed once, admitted as half-working in the caption, and then abandoned for the next idea. Tied together is not playable, Lit from below has no traced image, word sand leaves flecks in the air, and the shore band and eye-level slab have survived three reviews. Goal 2 (a released film to be proud of) has not moved. Goal 6 (light at every hour) is still flat noon in every film. Goal 4 is stalled at the same raster look. On goal 5, Lumi's mood is 'bored' again. Next sessions should finish rather than add: make the jelly bright and wobbly, make tied mornings playable and film them close, and fix the three visible world defects. One of these films could become the goal 2 release.",
+  "scores": {
+    "animation": {
+      "score": 6,
+      "why": "9 of 10 creatures move well, but Pinchy's body and claws turn back 9 times a second (live_motion). Both films pop at 0.04 s (0.191 change: the sandpit meadow turns green). In the hiccup the crab appears perched on top of the ball instead of flying in a readable arc (jelly overview, frame 10)."
+    },
+    "camera": {
+      "score": 4,
+      "why": "The jelly film frames the action. The tied film is a high diagonal drone shot where the creatures are 10 px specks and the slow push never arrives. Live, the follow camera's left third is a tree crown and trunk (reviews/p118/cam-follow.png), and the progress overview in the human's game has giant white spheres filling the left side."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "Up close the makeover coats hold. Lumi's bird body reads, and the crab hangs over the water by the pier with its legs in the air (creatures sheet, tile 5). The jelly is a sphere round Lumi, not Lumi turning soft."
+    },
+    "fun": {
+      "score": 6,
+      "why": "J to swallow whoever is closest and carry them about is a real toy, the kind the human asked for. The tied morning has no player side yet (#572), and the four mini games are the same as last review."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "Live and traced at 13:30 it is still one flat noon sun with hard shadows (reviews/p118/pt.png). Lit from below exists live, but every traced take lost the GPU, so no film or picture shows it. No real lights appear in this session's films."
+    },
+    "materials": {
+      "score": 5,
+      "why": "+1: the jelly is Hikari glass with a homogeneous medium inside, the first real transmission plus volume in a film, and Pinchy shows through it refracted. But σ_a is so strong that it reads as dark olive glass, the bright jelly gives no visible caustic, and the cyan daylight dots and the plastic ground stay as they were."
+    },
+    "performance": {
+      "score": 9,
+      "why": "30 fps in the sandbox. The new tied and jelly systems cost a fraction of a millisecond."
+    },
+    "props": {
+      "score": 6,
+      "why": "Unchanged. Generated assets carry the scenery, and nothing new was placed this session apart from the rope and the jelly sphere."
+    },
+    "style": {
+      "score": 5,
+      "why": "Clay creatures, plastic toadstools, flat paint discs on the ground (creatures sheet, tile 2), orange flecks of word sand in the air and cyan beads. Each layer has its own look and nothing ties them together."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Unchanged. In the follow view the 'Lumi' label floats over a bush 3 m behind the player's Lumi (cam-follow.png, pt.png), and the 'Messages to you' text ends in a dangling 'Film:'."
+    },
+    "world": {
+      "score": 6,
+      "why": "The meadow came back green (word sand sinks). But the black band between beach and water still shows live (reviews/p118/motion/creatures.png, tiles 3 and 9). The eye-level view has a white slab across the bottom (reviews/p118/views/eye-level.png), and in the human's game it was a grey wall again (media/progress/session-0118/eye-level.png)."
+    },
+    "wow": {
+      "score": 6,
+      "why": "The jelly is new and funny, and the second take shows the swallow and the hiccup. But it is dark and short, and the stranger's eye goes to the murky ball, not the joke. Tied together is a tangle seen from 30 m. Three of the last six posts are films that admit they failed."
+    }
+  },
+  "summary": "Lumi turning into a green jelly that swallows a friend is the first time a path tracer material is the joke itself. It is the most shareable idea since the seesaw, and the J key makes it playable. But the jelly films as a dark, murky bowling ball, and both new films open on a frame where the meadow is a sandpit before it pops back to green. Tied together is a good physical idea, but the film is shot from a drone with specks for creatures, and you cannot play it yet. The old sores are still there: a black band along the shore, a white slab across the eye-level view, cyan beads all over the meadow in daylight, Pinchy vibrating, and orange word-sand flecks hanging in the air.",
+  "superseded_by": "perfectionist-0121.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 167,
+      "why": "live_screenshot worked over a dozen times this review, including with path tracing on."
+    },
+    {
+      "action": "keep",
+      "id": 528,
+      "why": "The text-offset frame failure still appears in log/events-2026-11-26.jsonl."
+    },
+    {
+      "action": "keep",
+      "id": 510,
+      "why": "The follow camera still has a crown and trunk filling the left third (reviews/p118/cam-follow.png)."
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "Not checked this review; the TV is still in the old boxes."
+    },
+    {
+      "action": "drop",
+      "id": 546,
+      "why": "The TV film was posted in s113; a camera fix for one finished film is no longer needed."
+    },
+    {
+      "action": "drop",
+      "id": 556,
+      "why": "The word-sand film is posted and old; the flecks in the air are a new finding."
+    },
+    {
+      "action": "drop",
+      "id": 560,
+      "why": "Duplicate of #576 (shore band); the meadow is green again since the s118 SINK."
+    },
+    {
+      "action": "drop",
+      "id": 570,
+      "why": "Duplicate of #569 (sun under the sea in films without losing the GPU)."
+    },
+    {
+      "action": "keep",
+      "id": 517,
+      "why": "The crab's party hat still sits on the side of its shell in the jelly film."
+    },
+    {
+      "action": "keep",
+      "id": 518,
+      "why": "Not checked: another driver held jump-in in the sandbox during this review."
+    },
+    {
+      "action": "keep",
+      "id": 527,
+      "why": "Not checked this review."
+    },
+    {
+      "action": "keep",
+      "id": 533,
+      "why": "Labels still float off their owners: the 'Lumi' label sits over a bush behind the player."
+    },
+    {
+      "action": "keep",
+      "id": 541,
+      "why": "Not checked this review."
+    },
+    {
+      "action": "keep",
+      "id": 547,
+      "why": "Not played this review."
+    }
+  ],
+  "verdict": "needs_work"
+}

@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-26T18:41:37.961",
+  "finished": "2026-11-26T18:42:13.908",
+  "id": "20261126-184137-926-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795714898.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795714898.png",
+    "text": "96"
+  },
+  "seconds": 35.6,
+  "started": "2026-11-26T18:41:38.103",
+  "status": "done"
+}

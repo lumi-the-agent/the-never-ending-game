@@ -438,3 +438,37 @@ function run_game(; root::AbstractString = game_root(), instance::Symbol = :live
     end
     return g
 end
+
+"""
+    release!(game)
+
+Let a finished game go (a film's, in the worker or a session): what its plugins keep in their own
+globals is emptied. A plugin loads into a new module for every game, and that module lives as long as
+the process does (its types are never freed); a plugin that kept the game in a global
+(`nightshots`' `CURRENT`, `balance`'s `CURRENT_GAME`) kept the whole game, its scene and GPU buffers
+with it: about 5 GB per film, until the worker was killed at 51 GB (Nov 26). What a plugin shares
+on purpose, a container that is also a global of `Main` or of a package (`const S = Main.SEESAW`,
+an alias of an engine list), is left alone.
+"""
+function release!(g::Game)
+    shared = Base.IdSet{Any}()
+    for m in (Main, Base.loaded_modules_array()...), n in names(m; all = true)
+        isdefined(m, n) && push!(shared, getglobal(m, n))
+    end
+    for p in values(g.plugins)
+        p.mod === nothing && continue
+        for n in names(p.mod; all = true)
+            isdefined(p.mod, n) || continue
+            v = getglobal(p.mod, n)
+            v in shared || release_value!(v)
+        end
+    end
+    return nothing
+end
+
+"Empty what a finished plugin module holds: a `Ref` that may hold `nothing`, a dict, a set, a vector of references."
+release_value!(v) = nothing
+release_value!(r::Base.RefValue{T}) where {T} = (Nothing <: T && (r[] = nothing); nothing)
+release_value!(d::AbstractDict) = (empty!(d); nothing)
+release_value!(s::AbstractSet) = (empty!(s); nothing)
+release_value!(v::Vector{T}) where {T} = (isbitstype(T) || empty!(v); nothing)

@@ -1,0 +1,34 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "Every frame shows the same meadow with the toadstool in the foreground, Pinchy the crab and Truffle the pig wandering toward the lens, then the crab right in the lens at the end. No owner-less shadow can be picked out in any frame.",
+      "severity": "high",
+      "suggestion": "Don't publish failed takes. Delete this post and keep only a take where the shadow is clearly the subject.",
+      "what": "The first-try post shows nothing it is about: no shadow walks anywhere in the film. The hidden body's shadow either falls outside the shot or is covered by the scenery, and the post went up anyway with a caption that admits the failure.",
+      "where": "my-shadow-quits-first-try, all 16 storyboard frames; my-shadow-quits-at-50.jpg"
+    },
+    {
+      "evidence": "The shot function sets l.pos to ground + 15 m along the sun vector every frame and moves rig.eye itself. ring.jl only changes orbit riders (line ~147: 'a rider from before s121 … comes home now').",
+      "severity": "high",
+      "suggestion": "Turn it into a real event in shadow.jl. For example, Lumi's body actually lifts away (a balloon, or a hop up the sunbeam the player can see), and the real shadow keeps walking the player's input path. Pinchy's reaction should come from the shadow passing over it, not from a film timer.",
+      "what": "The 'shadow quits' only happens inside a film script. The session's code change (ring.jl) has nothing to do with shadows, and the game cannot do this anywhere a player could see it. Pinchy's jump and scream are also scripted by the film and are not visible in the frames.",
+      "where": "movies/shadow_quits.jl:118-140 (l.pos = ground + D*sun, pinned friends, scripted EEK); plugins/ring.jl"
+    },
+    {
+      "evidence": "At 50% the shadow is a grey figure about 60 px tall near the centre, behind the cattails. At 75% only Pinchy and the log are there, and no shadow is visible. Cattails cover the lower foreground in most frames.",
+      "severity": "medium",
+      "suggestion": "Use the low sun so the shadow is long and dark, shoot on open sand from a high angle, keep the shadow at least half the frame height, and stay on it as it passes over a friend who visibly jumps.",
+      "what": "In the second try the shadow is tiny, low in contrast and far off. It crosses the shot in about a third of the frames and has left by the 75% frame, while the cattails, the pond and the haystack fill the picture. The camera slides sideways the whole time, so the shadow never holds still long enough to read.",
+      "where": "my-shadow-quits-second-try, storyboard rows 1-2; my-shadow-quits-3-at-50.jpg vs -at-75.jpg"
+    }
+  ],
+  "fun": 1,
+  "fun_why": "In one film you never see the shadow, and in the other you have to hunt for a small grey blob while the camera drifts across a busy meadow; there is nothing to play and little reason to watch again.",
+  "real_change": "Game: nothing new. The only plugin changed, ring.jl (live and plugins copies are identical), adds a fix that brings old orbit riders home (the 'rider from before s121' branch). Nothing in it has to do with shadows. The shadow trick lives only in movies/shadow_quits.jl: every frame, the film's shot function moves Lumi's body D=15 m up along the sun direction, overrides its gait and yaw, pins Pinchy and Truffle in place, scripts their jump and their 'EEK!' line when the walk passes them, and moves the camera. The shadow is a real raytraced shadow, but the 'shadow that quits' is a staged camera-and-teleport setup that no player can ever run into or trigger. The earlier shadow.jl (s95, the runaway shadow drawn as dark cylinders) was not touched.",
+  "summary": "Neither film really shows a shadow walking without its owner. The first try shows no shadow at all, only a toadstool, Pinchy and Truffle, and its caption admits this. The second try shows a small, faint person-shaped shadow on the meadow for a few frames, far behind Pinchy, and it is gone by three quarters in. Nothing in the game itself changed: the whole effect is a one-off film script.",
+  "superseded_by": "perfectionist-0121.json",
+  "surprise": 2,
+  "surprise_why": "It is a film-only retake of s95's 'My shadow ran off', made by hiding the body up the sun's ray, and on screen it comes out as a smudge most viewers would miss.",
+  "verdict": "needs_work"
+}

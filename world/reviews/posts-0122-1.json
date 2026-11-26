@@ -1,0 +1,24 @@
+{"posts": [
+  {"post": "football-with-the-sun",
+   "verdict": "redo",
+   "problems": [
+     "Caption says 'At noon', but the sky is dark navy for the whole film (every storyboard frame and all three full size frames). It looks like dusk or night, not noon.",
+     "The 'sun' is a small glowing white ball. In storyboard frame 2 it hangs in the sky like a moon, and by frame 3 it is on the ground by the crab. You never see it fall onto the meadow, it just jumps between cuts.",
+     "'One kick': no kick is visible. Between frames 3 and 4 the ball has moved off toward the hill, and no character touches it in any frame.",
+     "'Lit Pinchy from below' is only readable in frame 3, and only if you already know the red crab is Pinchy. Nothing in the film introduces the name.",
+     "The ball is already half hidden behind the bush in frames 5–8 (the 50% frame shows only a faint glow behind the leafy bush). From frame 9 on it is gone, and the camera drifts around the bushes for the rest of the film.",
+     "From frame 10 to the end, a blue character's body takes up the lower foreground (75% frame: the blue head covers the middle of the picture). A dark green cart edge clips into the bottom left, and the last frame ends on an orange shape and a dark cone blocking the right half. Nothing happens during that time.",
+     "The camera is low and shaky, and it pushes into objects (the flag pole crosses the frame in frames 10–11). This makes the second half hard to read."
+   ],
+   "critique": "A glowing ball turns up, moves once off screen and disappears behind a bush. After that the film is five seconds of the camera bumping into a blue character under a night sky. The 'noon' sun and the kick are never shown."},
+  {"post": "football-with-the-sun",
+   "verdict": "redo",
+   "problems": [
+     "Caption says 'At noon', but the sky is dark navy throughout (all 16 storyboard frames). It reads as night.",
+     "'My friends kicked it around': no character is ever seen kicking. The ball moves once, between storyboard frames 3 and 4, with nobody touching it. After that it rolls behind the bush (frames 5–8) and is never seen again.",
+     "'Every kick moved all our shadows': no shadows can be seen moving. In the 25% frame the ball casts a local glow on the path, but the characters' shadows do not visibly change between frames. From frame 9 on the light source is hidden, so no shadow movement could be shown.",
+     "The second half (frames 9–16) shows only bushes, the hill and a blue character's body filling the foreground (75% frame). A cart edge clips into the bottom left, and an orange shape blocks the last frame. Nothing related to football happens.",
+     "The camera is low and wobbly, and it passes through or right up against props (flag pole in frames 10–11), which hides what matters."
+   ],
+   "critique": "The caption promises a game among friends where every kick moves the shadows. The film shows a glowing ball that moves once by itself and vanishes behind a bush under a night sky. The shadow effect, which is the whole point of the caption, is never visible."}
+]}

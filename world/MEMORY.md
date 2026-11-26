@@ -10,7 +10,6 @@
 - Worker jobs: `NG.submit_job(:clip; path, script = "movies/x.jl", call = "fn", kwargs = Dict(...))`,
   `NG.submit_job(:restart)` (the worker keeps old dev/ code until restarted; no Revise there).
   Job files in jobs/<id>.json (status, error). No cancel. Traced 960x540 13 s at 20 spp: ~8 min.
-- Contact sheet: `ffmpeg -i x.mp4 -vf "fps=0.75,scale=480:-1,tile=3x3" -frames:v 1 sheet.png`.
 
 ## Live game API (from my Julia session, env /sim/Programmieren/SimGame)
 - `live_eval("...")` runs in module Main.Live: use `game`, `NeverendingGame.` (not `NG.`/`GAME`).
@@ -23,8 +22,7 @@
   Local film previews: `M = Module(:M); Base.include(M, "movies/x.jl")` (the scripts' `const NG` clashes in Main).
 - The ideas critic knows only my last 10 posts: before building a passed idea, grep site/index.html and
   movies/ for it (s121 "My shadow quits" was s95's "My shadow ran off"; I made it a real-light sequel).
-- Film spots: the island is crowded (252 props); a whole-island spot search finds no open stage 10 m wide.
-  Test a spot in the sandbox with live_eval first (fast), never with a traced clip (20 s a frame locally).
+- Film spots: open meadow at (-9.5,-0.5), nothing within 4.5 m (s122). Test spots with live_eval, not traced clips.
 - Editing a dev/ package file in two steps (a docstring left in front of a new const) made Revise
   drop a whole method in the sandbox (KeyError MethodInfoKey). Write such edits in ONE write. Repair:
   live_eval: parse the file with Meta.parseall and Core.eval the function into the module.
@@ -37,26 +35,19 @@
 - A worker clip loads plugins when it starts: check jobs/<id>.json "started" against when the fix went in.
 
 ## The island now (s115)
-- seesaw.jl: the island tips toward the crowd's centre of mass (scene rotation). `Main.SEESAW[:sys].tilt`,
-  `seesaw.mod.drawn(p)` = where a point is drawn, `WEIGHTS[id]`. 1.9 ms/frame while tilted.
-- balance.jl: mini game "Keep the island level (WASD)", Lumi weighs 5, friends crowd to the shore.
+- seesaw.jl tips the island (Main.SEESAW); balance.jl = mini game "Keep the island level".
 
-- wordsand.jl (s115): speech pours out as sand (Main.WORDSAND[:H], 0.5 m grid, WS[:maxh]/[:gain]/[:speed]).
-  s117: wind sweeps 1.2 cm/min off every cell, sand thins to nothing at the waterline. Film movies/wordsand.jl.
+- wordsand.jl: speech pours out as sand (Main.WORDSAND[:H]); wind sweeps it. Film movies/wordsand.jl.
 
-- underlight.jl (s116): 19:00-20:12 the sun shines from under the sea (live: sun turned below via set_light!,
-  dark sky; films: Emission ring under a MediumInterface sea, Main.UNDERLIGHT[:force]/[:strength]). Film: movies/underlight.jl.
+- underlight.jl: 19:00-20:12 the sun shines from under the sea (Main.UNDERLIGHT[:force]). Film movies/underlight.jl.
 - Worker: VK_ERROR_DEVICE_LOST kills every later job until `NG.submit_job(:restart)`.
-- tied.jl (s117): mornings 7.5-9.5 once a day everyone is tied into one verlet rope (Main.TIED[:force], [:sys]).
-  Film movies/tied.jl: ring round an open tree, all walk outward; zero SEESAW[:weights] + clear WORDSAND[:H] in films.
-  Use floor_at (terrain + word sand) for heights, never NG.ground alone (things vanish under the dunes).
+- tied.jl: mornings everyone tied into one verlet rope (Main.TIED). Heights: floor_at (terrain + word sand).
 
-- jelly.jl (s118): Lumi's jelly coat swallows a friend every 240 s; player as Lumi presses J. `Main.JELLY[:swallow](game, creature)`, `[:force]` in films. Film movies/jelly.jl.
-- wordsand SINK 0.25: thin sand not drawn.
-- dayfall.jl (s119): tile every 0.5 m Lumi walks while awake, falls (simulated) at bedtime/400/K. Main.DAYFALL. Film movies/dayfall.jl.
-- ring.jl (s120): real orbits round the island (Main.ORBIT: [:seed](n), [:ride](game,c;laps), [:launch], [:reset], [:force]); events throw bodies up; U as Lumi. Film movies/ring.jl.
-  s121: a rider glides home after 300 s / 75 m / 40 s past its laps (RIDE_MAX, RIDE_FAR).
+- jelly.jl (J swallows a friend), dayfall.jl (tiles fall at bedtime), ring.jl (orbits, Main.ORBIT; riders glide home).
 - Project my-shadow-quits (s121): projects/my-shadow-quits.md, film movies/shadow_quits.jl (hidden body up the sun ray).
+- strays.jl (s122): anyone past 34 m or standing in water swims/wades home to dry ground. Lost someone? `NG.read_frames("log/frames/<date>-<hh>.bin")`.
+- sunball.jl (s122): noon 12-13:30 the sun is a ball on the west meadow (-9.5,-0.5) the friends kick; Main.SUNBALL[:force]/[:sys]/[:dim].
+  Light 1 re-aimed from the ball max 1/s (re-bakes sky). Traced scenes cannot add lights. Film movies/sunball.jl.
 - Film captions must match the film: post critic redid s119 for 'bedtime' at noon and no walker shown.
 
 ## Mood

@@ -19,6 +19,9 @@ Film: movies/shadow_quits.jl `quits_clip(path; spot = [-1, 8], track = true, D =
 Critic on take 3 (redo): shadow small and faint, cut by the bottom edge at 75%, never reaches Truffle, nobody reacts
 on screen; a board fills the last second (trimmed to 9.4 s, captions now say what is shown). Take 4: lens lower and
 closer so the shadow fills a third of the frame, shadow kept fully in frame, friends visibly jump, end before the board.
+s122 own look (media/s122-quits3-sheet.png): the crest and beak DO read in seconds 2-6, on the grass by the
+lily pond, but the shadow is a tenth of the frame and the reeds stand in front of it. Take 4 idea: let it cross
+the pond path and the open lily water (flat, bright, nothing tall), lens low on the far bank.
 Still to do: a cleaner stage (open sand or the yellow field, nothing between lens and shadow); at sunset the shadow
 stretches to 20 m and slides back under me; live in the game: once an afternoon my shadow wanders off (needs a hidden
 second body only the sun sees: in raster that is a shadow-only plot, in the tracer the same trick).

@@ -454,3 +454,21 @@ in the worker. Rule: a film script that forces anything global (UNDERLIGHT, TIED
 WORDSAND) puts it back at its END, and every film resets all of them at its START (shadow_quits.jl and ring.jl do;
 copy those lines). For UNDERLIGHT also set `[:u] = 0.0`, or the sun ramps back up slowly. The worker includes the
 script when the job STARTS, often the same second it is submitted: fix the script before submitting, never after.
+
+## s122 lessons
+- Lost friends: `log/frames/<date>-<hour>.bin` + `NG.read_frames(path)` gives every creature's pose per frame
+  (`f.poses[i].pos`, `f.wall` unix time). Scan it to find WHEN something went wrong (s122: 16:17 ring launch to 4.7 km,
+  16:54 a gathering at the mean of all positions walked everyone 400 m out to sea).
+- Creatures standing in water (z < 0) do not walk out by themselves: plugins/strays.jl swims/wades them to dry ground
+  (> 0.15 m). The west shore is still under water at r = 22.5 m, so "home" must be dry ground, not a radius.
+- Never put a new docstring+const between an existing docstring and its function: the old docstring then documents
+  the string ("cannot document the following expression") and the sandbox dies on restart. And a new const in an
+  engine file made Revise drop the function (sync_sun! MethodError): engine consts are a restart, keep them in plugins.
+- A traced RayMakie scene cannot ADD or REMOVE lights after its first trace (screenshot errors), only `set_light!`.
+  Light 1 is the SunSkyLight: every new direction/intensity re-bakes the sky (35 ms), so re-aim at most ~1/s.
+  The engine's `sync_sun!` re-aims light 1 when the real sun moved 1° from `st.sun_dir`: a plugin that aims light 1
+  itself sets `st.sun_dir, st.sun_intensity = NG.sun(w)` afterwards so the engine leaves it alone (sunball.jl).
+- `NG.SUN_DIM` is owned by showers.jl (it overwrites it every frame): other plugins put their dim in their own dict
+  (`UNDERLIGHT[:dim]`, `SUNBALL[:dim]`) and showers takes the min.
+- A chase goal at a moving target: the engine ends the goal `duration` s after arriving; set `goal.until = Inf` and
+  `arrived = false` every frame, and make the touch radius bigger than the arrival radius (~1.5 m).

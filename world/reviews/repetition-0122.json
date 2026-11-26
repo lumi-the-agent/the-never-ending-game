@@ -1,0 +1,12 @@
+{"posts": [{"post": "Football with the sun",
+            "what": "At dusk on the meadow a glowing white ball drops out of the sky by the cottage and lands among the friends, lights Pinchy and the grass around it from below, then rolls off down the path past the stone beds while the camera follows; you don't really see anyone chase or kick it.",
+            "recipe": "the island's light source becomes a falling, rolling object on the ground",
+            "nearest": "Lit from below",
+            "similarity": 5,
+            "shared": "the sun moved somewhere odd, lighting things from below"}],
+ "forms": [
+  {"form": "Change to how the island is lit (the sun moved, new light)", "posts": ["Football with the sun", "Lit from below"]},
+  {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)", "My shadow quits (first try)", "I swallow what I hit"]},
+  {"form": "New world rule acted out on the island, shown in a distant film", "posts": ["The island has a ring", "Tied together", "The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding"]},
+  {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]}
+ ]}

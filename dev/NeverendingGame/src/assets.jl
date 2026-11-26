@@ -224,6 +224,15 @@ run_job(::Val{:restart}, ws::WorkerState, id, params) = Dict{String,Any}("restar
 
 run_job(::Val{K}, ws::WorkerState, id, params) where {K} = error("unknown job kind $(K)")
 
+"""
+The worker's peak memory (GB) after which it ends between two jobs, and the host starts a fresh one.
+Every film builds a new `Game`, and its plugins load into new modules that live as long as the
+process (their types are never freed); a plugin that keeps the game in a global (`nightshots`'
+`CURRENT`, `balance`'s `CURRENT_GAME`) keeps that whole game alive, its scene and GPU buffers with
+it: about 5 GB per film. On Nov 26 the worker grew to 51 GB over eleven films and was killed.
+"""
+const WORKER_MAX_GB = 28
+
 "The oldest queued job of a kind `takes(kind)` accepts, or `nothing`."
 function next_job(p::GamePaths, takes::Function)
     files = sort!(filter(f -> endswith(f, ".json"), readdir(jobs_dir(p))))
@@ -283,6 +292,10 @@ function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip 
         j["seconds"] = round(time() - t0; digits = 1)
         write_json(job_path(p, id), j)
         j["kind"] == "restart" && return    # the host starts a fresh worker with the current code
+        if Sys.maxrss() / 2^30 > WORKER_MAX_GB
+            @info "worker: $(round(Sys.maxrss() / 2^30; digits = 1)) GB at its peak (over $WORKER_MAX_GB): ending, the host starts a fresh one"
+            return
+        end
     end
 end
 

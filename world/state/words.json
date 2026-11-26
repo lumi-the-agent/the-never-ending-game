@@ -791,5 +791,513 @@
   "wall": "26 November 2026, 13:28",
   "winner": "whoogoo",
   "word": "whoogoo"
+ },
+ {
+  "counts": {
+   "whamo": 4
+  },
+  "day": 20,
+  "first": {
+   "whamo": "Lumi"
+  },
+  "hour": 8.311451111879245,
+  "meaning": "the last pumpkin standing",
+  "minutes": 15.0,
+  "parent": {},
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "whamo",
+    "said": "whamo",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whamo",
+    "said": "whamo",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whamo",
+    "said": "whamo",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Truffle",
+    "was": ""
+   }
+  ],
+  "wall": "26 November 2026, 18:18",
+  "winner": "whamo",
+  "word": "whamo"
+ },
+ {
+  "counts": {
+   "whupish": 8
+  },
+  "day": 21,
+  "first": {
+   "fupish": "Cumulus",
+   "whoopish": "Pinchy",
+   "whupish": "Lumi",
+   "whuposh": "Sir Sniffsalot",
+   "whupy": "Gloop",
+   "wupish": "Pickles",
+   "wuposh": "Gloop"
+  },
+  "hour": 10.915887187467206,
+  "meaning": "the first warm stone of the morning",
+  "minutes": 4.9,
+  "parent": {
+   "fupish": "whupish",
+   "whoopish": "whupish",
+   "whuposh": "whupish",
+   "whupy": "whupish",
+   "wupish": "whupish",
+   "wuposh": "whuposh"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 8.79999999795109,
+    "to": "Hopscotch",
+    "was": "whupish"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 10.266666664276272,
+    "to": "Marshmallow",
+    "was": "whupish"
+   },
+   {
+    "from": "Gloop",
+    "heard": "fupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 11.233333330717869,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whuposh",
+    "said": "whupish",
+    "switched": true,
+    "t": 12.299999997136183,
+    "to": "Sir Sniffsalot",
+    "was": "whupish"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 12.866666663670912,
+    "to": "Lumi",
+    "was": "whupish"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 15.299999996437691,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "wuposh",
+    "said": "whuposh",
+    "switched": false,
+    "t": 18.099999995785765,
+    "to": "Gloop",
+    "was": "whupish"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 19.33333332883194,
+    "to": "Hopscotch",
+    "was": "whupish"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 19.366666662157513,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 20.299999995273538,
+    "to": "Marshmallow",
+    "was": "whupish"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 23.399999994551763,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 24.36666666099336,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 28.39999999338761,
+    "to": "Hopscotch",
+    "was": "whupish"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whuposh",
+    "said": "whupish",
+    "switched": false,
+    "t": 28.83333332662005,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 32.46666665910743,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 33.43333332554903,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 37.89999999117572,
+    "to": "Hopscotch",
+    "was": "whupish"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "wupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 46.29999998921994,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 46.29999998921994,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 50.36666665493976,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 55.433333320426755,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 55.93333332031034,
+    "to": "Sir Sniffsalot",
+    "was": "whupish"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 55.93333332031034,
+    "to": "Gloop",
+    "was": "whupish"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 59.99999998603016,
+    "to": "Gloop",
+    "was": "whupish"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 64.06666665174998,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Pickles",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 66.16666665126104,
+    "to": "Sir Sniffsalot",
+    "was": "whupish"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 70.23333331698086,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 92.79999997839332,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 94.76666664460208,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 94.76666664460208,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 101.86666664294899,
+    "to": "Marshmallow",
+    "was": "whupish"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 103.83333330915775,
+    "to": "Cumulus",
+    "was": "whupish"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 105.93333330866881,
+    "to": "Pinchy",
+    "was": "whupish"
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 107.83333330822643,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 110.36666664096992,
+    "to": "Marshmallow",
+    "was": "whupish"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 114.99999997322448,
+    "to": "Sir Sniffsalot",
+    "was": "whupish"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 119.4333333055256,
+    "to": "Pickles",
+    "was": "whupish"
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupy",
+    "said": "whupish",
+    "switched": false,
+    "t": 124.26666663773358,
+    "to": "Gloop",
+    "was": "whupish"
+   },
+   {
+    "from": "Lumi",
+    "heard": "whupish",
+    "said": "whupish",
+    "switched": false,
+    "t": 138.53333330107853,
+    "to": "Hopscotch",
+    "was": "whupish"
+   },
+   {
+    "from": "Lumi",
+    "heard": "whoopish",
+    "said": "whupish",
+    "switched": false,
+    "t": 156.69999996351544,
+    "to": "Pinchy",
+    "was": "whupish"
+   }
+  ],
+  "wall": "26 November 2026, 18:51",
+  "winner": "whupish",
+  "word": "whupish"
  }
 ]
