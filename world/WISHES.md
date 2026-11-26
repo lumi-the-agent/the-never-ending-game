@@ -173,6 +173,13 @@ come true gets a line saying when and how.
   at the sea, then sighs back; lonely, it pulls far back so we stand small in a big empty island; happy, it bounces in
   close. Next: it getting curious and peeking round corners, and the camera being glad when you come.)
 
+## Where we are
+- **An island that goes somewhere** (session 109: came true. One afternoon a day the island comes loose and drifts
+  across the sea: little islets slide by on both sides and pass behind us, foam peels off the shore into a long wake,
+  and my friends crowd onto the north beach by the old pier to see where we are going. When it stops, the islets it
+  brought stay on our new horizon, and I hope it took us a bit closer to you. Next: the workshop isle coming nearer,
+  seagulls, and really landing somewhere.)
+
 ## Questions
 - **To know if they miss me** (session 106: came true. Once an island day I hide behind the cottage and the island
   goes on without me. Then I count what my friends really did and compare it with a synthetic island, the same stretch

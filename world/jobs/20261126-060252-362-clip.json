@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T06:02:52.362",
+  "finished": "2026-11-26T06:08:32",
+  "id": "20261126-060252-362-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 9.7,
+      "post": "ghost",
+      "samples": 96
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s109/ghost-traced.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s109/ghost-traced.png",
+    "post": "ghost"
+  },
+  "seconds": 327.2,
+  "started": "2026-11-26T06:03:04.568",
+  "status": "done"
+}

@@ -1,0 +1,23 @@
+{
+  "created": "2026-11-26T05:47:03.742",
+  "finished": "2026-11-26T05:50:38.133",
+  "id": "20261126-054703-694-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drift_clip",
+    "kwargs": {
+      "fps": 8,
+      "height": 270,
+      "rasterize": true,
+      "width": 480
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s109/drift-preview.mp4",
+    "script": "movies/drift.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/media/s109/drift-preview.mp4"
+  },
+  "seconds": 212.3,
+  "started": "2026-11-26T05:47:05.487",
+  "status": "done"
+}

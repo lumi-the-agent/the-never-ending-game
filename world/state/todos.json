@@ -6699,12 +6699,12 @@
       "id": 479,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Ghosts: traced, each ghost part is Hikari's ghost recipe (Mix(Diffuse pale blue, Transparent; 0.65) + Sheen for the rims): a traced still at 96 samples shows the path, the pier and the sea through the ghost crab and pigs, rims brighter (media/s109/ghost-traced.png, post_stills.jl 'ghost'). Live they are lit, not flat (s107, media/s107/ghost-lit.png). Published. The first traced try lost the GPU (worker state after the day's jobs); after a :restart it rendered in 327 s. Paper me and board materials not changed.",
       "source": "review",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 15.0,
+      "status": "done",
       "title": "Ghosts, paper Lumi, board: materials only a tracer can do",
-      "updated": "2026-11-26T04:14:32.999"
+      "updated": "2026-11-26T06:08:54.800"
     },
     {
       "created": "2026-11-25T12:33:43.331",
@@ -7461,6 +7461,20 @@
       "status": "open",
       "title": "No moth blur over the view; speech inside the view, hearts off the names",
       "updated": "2026-11-26T04:14:32.999"
+    },
+    {
+      "created": "2026-11-26T06:09:12.667",
+      "detail": "s109: plugins/drift.jl draws its seven islets as a sand sphere and a green dome. An asset job for 'a tiny round sandy islet with two leaning palm trees' was queued at the end of s109 (look in world/jobs for the 'islet' asset). Next: look at it, then draw the islets as ONE instanced plot of that model (NG.load_asset + NG.asset_instances!) behind a flag ISLET_OK, scaled 5-13 m, and film a drift again.",
+      "est_minutes": 15.0,
+      "id": 534,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Islets that look like islets: the drift's passing islands from a generated asset",
+      "updated": "2026-11-26T06:09:12.667"
     }
   ]
 }

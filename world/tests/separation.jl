@@ -124,6 +124,11 @@ uitest("Follow camera: holds each creature at least 6 s and mostly sees faces, n
     game.minigame === nothing || (click(game, "Stop"); wait_frames(game, 2))
     game.rig.mode = :follow; game.rig.subject = 0
     w = game.world
+    # a drift of the whole island (drift.jl, s109) points the camera out to sea over the crew on purpose: end it first
+    if isdefined(Main, :DRIFT) && get(Main.DRIFT, :on, false)
+        Main.DRIFT[:t0] = w.t - 149.5
+        wait_seconds(game, 8.0)
+    end
     runs = Tuple{Int32,Float64,Float64}[]     # (id, from, to) in w.t
     front = 0; seen = 0
     t0 = time()

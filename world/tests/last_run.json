@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "minigames.jl",
-      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
+      "file": "separation.jl",
+      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
       "passed": true,
-      "seconds": 19.0
+      "seconds": 32.0
     }
   ],
-  "time": "2026-11-26T05:35:09.071"
+  "time": "2026-11-26T06:17:11.285"
 }

@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T05:50:57.889",
+  "finished": "2026-11-26T05:58:12.813",
+  "id": "20261126-055057-889-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drift_clip",
+    "kwargs": {
+      "fps": 24,
+      "rasterize": false,
+      "samples": 24
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/drift.mp4",
+    "script": "movies/drift.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/drift.mp4"
+  },
+  "seconds": 434.6,
+  "started": "2026-11-26T05:50:58.217",
+  "status": "done"
+}

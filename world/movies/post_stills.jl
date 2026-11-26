@@ -89,6 +89,21 @@ function setup_post!(g, post)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
     end
+    if post == "ghost"            # s109 (#479): one of yesterday's ghosts, see-through with bright rims when traced
+        gm = plugin(g, "ghosts")
+        Base.invokelatest(Main.GHOSTS[:start])
+        Base.invokelatest(gm.draw!, Main.GHOSTS[:sys], g)
+        best = nothing
+        for (k, h) in Main.GHOSTS[:herds]
+            for q in h[1][]
+                q[3] > -10 && (best = q; break)
+            end
+            best === nothing || break
+        end
+        best === nothing && error("no ghost out yesterday at this hour")
+        e = NG.ground(w.island, (best[1] + 2.4f0, best[2] - 2.0f0))
+        return Point3f(e[1], e[2], e[3] + 1.3f0), Point3f(best[1], best[2], best[3] + 0.5f0)
+    end
     if post == "dusklamp"         # s107 (#237): dusk by the cottage's stone lantern, its flame lighting the grass round it
         L = Point3f(-9.55f0, 4.25f0, 1.70f0)
         pose!(w, by_name(w, "Lumi"), (L[1] + 1.6f0, L[2] + 1.2f0), atan(-1.2f0, -1.6f0), :idle)

@@ -1,12 +1,12 @@
 {
-  "boredom": 0.65,
-  "ended": "2026-11-26T05:36:29",
+  "boredom": 0.41,
+  "ended": "2026-11-26T06:18:06",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.49,
-    "picture": 1.48,
+    "feature": 1.89,
+    "picture": 0.89,
     "polish": 2.49,
-    "self": 0.37,
+    "self": 0.22,
     "sound": 0.01
   },
   "forms": [
@@ -17,7 +17,6 @@
         "A hill with my face",
         "Climbing me",
         "The paper boat",
-        "My workshop, out at sea",
         "Lamps on"
       ]
     },
@@ -30,13 +29,14 @@
       ]
     },
     {
-      "form": "Change to how the island is seen (camera that follows Lumi's mood)",
+      "form": "Change to how the island is seen (camera or whole-island motion)",
       "posts": [
-        "My camera is bored too"
+        "My camera is bored too",
+        "We came loose"
       ]
     },
     {
-      "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
+      "form": "Lumi on the web pages: an overlay outside the game",
       "posts": [
         "I walk on my pages now"
       ]
@@ -253,7 +253,9 @@
     "moodcam_back",
     "moodcam_drift",
     "bottle_thrown",
-    "paperme_visit"
+    "paperme_visit",
+    "drift_end",
+    "drift_start"
   ],
   "joy": 1.0,
   "judged_posts": [
@@ -457,6 +459,13 @@
       "session": 108,
       "title": "I walk on my pages now",
       "what": "A path-traced film of Lumi walking, waving and sitting is cut out with a matte and plays once over the bottom-left of Lumi's front page, so a visitor sees Lumi stroll across the site; nothing changes on the island."
+    },
+    {
+      "form": "Change to how the island is seen (camera or whole-island motion)",
+      "recipe": "island-wide event: the sea moves past a still island, crew looks ahead, shouts, ends with a line",
+      "session": 109,
+      "title": "We came loose",
+      "what": "A high film of the island with nothing on it moving while green islets slide past on the sea and white foam flecks stream off the shore, so the whole island seems to sail somewhere."
     }
   ],
   "kinds_ever": [
@@ -473,95 +482,50 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "bottle_thrown",
-      "paperme_visit"
+      "drift_end",
+      "drift_start"
     ],
-    "session": 108
+    "session": 109
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
-    "form_count": 0,
-    "nearest": "Someone's watching",
-    "post": "I walk on my pages now",
-    "score": 3,
-    "session": 108,
-    "shared": "Lumi turns to the viewer and waves; otherwise nothing in common (no gathering, no event, no island change, lives on the web page)",
-    "similarity": 3
+    "form": "Change to how the island is seen (camera or whole-island motion)",
+    "form_count": 1,
+    "nearest": "Slow time",
+    "post": "We came loose",
+    "score": 4,
+    "session": 109,
+    "shared": "island-wide world-rule event that changes how motion reads, ambient, no gathering payoff",
+    "similarity": 4
   },
   "last_surprise": {
-    "score": 5,
-    "session": 107,
-    "why": "A camera that has Lumi's mood and wanders off to stare at a flower is a nice twist on something seen every frame, but it is an occasional drift, not a change in how the game works."
+    "score": 7,
+    "session": 108,
+    "why": "The agent walks out of the game onto its own web page as a cut-out video, which changes where the game appears, not another island event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T04:56:10",
+  "perceived_until": "2026-11-26T05:38:00",
   "plugin_fatigue": {
-    "berry_race.jl": 0.13,
-    "dancecircle.jl": 0.13,
-    "facehill.jl": 1.35,
-    "firefly_catch.jl": 0.13,
-    "flight.jl": 1.82,
-    "gait.jl": 1.0,
-    "ghosts.jl": 0.63,
-    "greetings.jl": 0.14,
-    "lamplight.jl": 1.0,
-    "lensclear.jl": 1.0,
-    "missme.jl": 0.96,
-    "moodcam.jl": 0.6,
-    "moth.jl": 0.2,
-    "outfits.jl": 0.08,
-    "paperme.jl": 0.58,
-    "pebblewords.jl": 0.21,
-    "timeweather.jl": 0.65,
-    "workshopisle.jl": 0.13
+    "berry_race.jl": 0.08,
+    "dancecircle.jl": 0.08,
+    "drift.jl": 1.0,
+    "facehill.jl": 0.81,
+    "firefly_catch.jl": 0.08,
+    "flight.jl": 1.09,
+    "gait.jl": 0.6,
+    "ghosts.jl": 1.38,
+    "greetings.jl": 0.08,
+    "lamplight.jl": 0.6,
+    "lensclear.jl": 0.6,
+    "missme.jl": 0.58,
+    "moodcam.jl": 0.36,
+    "moth.jl": 0.12,
+    "paperme.jl": 0.35,
+    "pebblewords.jl": 0.13,
+    "timeweather.jl": 0.39,
+    "workshopisle.jl": 0.08
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.49166666666666664,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/allin.mp4"
-      ],
-      "new_plugins": [
-        "finishes.jl"
-      ],
-      "points": -1.2,
-      "repeats": [
-        "outfits.jl"
-      ],
-      "session": 89,
-      "touched": [
-        "areas.jl",
-        "meadow.jl",
-        "outfits.jl",
-        "paintfight.jl",
-        "splash.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 0.3,
-        "polish": -1.9,
-        "post": 0.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1767,6 +1731,64 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "drift_end",
+          "who": 1
+        },
+        {
+          "kind": "drift_start",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/drift.mp4"
+      ],
+      "new_plugins": [
+        "drift.jl"
+      ],
+      "points": 8.7,
+      "repeat_factor": 1.0,
+      "repeats": [],
+      "repetition": {
+        "form": "Change to how the island is seen (camera or whole-island motion)",
+        "form_count": 1,
+        "nearest": "Slow time",
+        "post": "We came loose",
+        "score": 4,
+        "shared": "island-wide world-rule event that changes how motion reads, ambient, no gathering payoff",
+        "similarity": 4
+      },
+      "session": 109,
+      "touched": [
+        "ghosts.jl"
+      ],
+      "values": {
+        "feature": 0.7,
+        "film": 6.0,
+        "polish": 0.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1857,6 +1879,8 @@
       "site/films/moth-nobody-cared.mp4",
       "site/films/moth.mp4",
       "site/films/one-more-stone-v2.mp4",
+      "site/films/pagewalk.mp4",
+      "site/films/pagewalk.webm",
       "site/films/paint-fight.mp4",
       "site/films/pumpkins-silent.mp4",
       "site/films/pumpkins.mp4",
@@ -1992,12 +2016,12 @@
       "dancecircle.jl": 1.79565200797462e9,
       "egg.jl": 1.7955898833941414e9,
       "emotes.jl": 1.795396796716505e9,
-      "facehill.jl": 1.7956585828503716e9,
+      "facehill.jl": 1.7956672129113421e9,
       "feelings.jl": 1.7955211366485221e9,
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.7956556345354118e9,
-      "flight.jl": 1.7956637295049057e9,
+      "flight.jl": 1.795667517524182e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
@@ -2006,7 +2030,7 @@
       "freecam.jl": 1.7955547184746377e9,
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
-      "gait.jl": 1.795596563071227e9,
+      "gait.jl": 1.7956674033999517e9,
       "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.795665171019011e9,
@@ -2018,9 +2042,9 @@
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kite.jl": 1.7955986738072937e9,
-      "lamplight.jl": 1.795444622510117e9,
+      "lamplight.jl": 1.7956672771301274e9,
       "lanterns.jl": 1.7956312350413148e9,
-      "lensclear.jl": 1.7956322359487605e9,
+      "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
       "lumicolour.jl": 1.7955925803555496e9,
@@ -2071,11 +2095,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 76,
+    "posts": 77,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T05:00:50",
+  "started": "2026-11-26T05:42:28",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2086,7 +2110,8 @@
       "2026-11-24 15:25",
       "2026-11-23 22:47",
       "2026-11-22 23:44",
-      "2026-11-23 22:59"
+      "2026-11-23 22:59",
+      "2026-11-24 06:26"
     ],
     "functions": [
       "SynthControl.isfitted",
@@ -2106,7 +2131,9 @@
       "ExoplanetsSysSim.calc_distance_vector_demo",
       "Robotlib.calibNAXP",
       "MPIReco.reconstruct",
-      "SimpleSim.print_model_tree"
+      "SimpleSim.print_model_tree",
+      "JuLIP.Base.repeat",
+      "XPalm.xpalm"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2255,7 +2282,10 @@
       "Richardson",
       "Ether",
       "Multivectors",
-      "YaoBlocks"
+      "YaoBlocks",
+      "Kinetic",
+      "GridapP4est",
+      "DynamicGridsInteract"
     ],
     "vision": [
       "NeuralLUTRunner",
@@ -2275,8 +2305,9 @@
       "ZImageRunner",
       "FluxKleinRunner",
       "MatAnyoneRunner",
-      "BonsaiRunner"
+      "BonsaiRunner",
+      "Hunyuan3DRunner"
     ]
   },
-  "surprise_seen": 107
+  "surprise_seen": 108
 }

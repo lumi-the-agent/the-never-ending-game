@@ -27,7 +27,10 @@ Ghosts() = Ghosts(false, 0.0, 0.0, Any[], 1, Set{Int32}())
 "A see-through copy of a species: same parts and motions, every part a pale translucent colour."
 function ghost_species(sp; traced = false)
     # traced copies ignore alpha, so there they are pale solid doubles
-    mat = nothing    # (glass ghosts traced dark navy, media/s99/yesterday-glass.png: the pale colour reads as a ghost)
+    # traced: half see-through with a sheen that brightens the rims (Hikari's own ghost recipe, materials.md: Diffuse
+    # mixed with Transparent; glass ghosts had traced dark navy in s99). Live: the pale translucent colour, lit.
+    mat = traced ? NG.Hikari.Add(NG.Hikari.Mix(NG.Hikari.Diffuse(color = (0.78, 0.9, 1.0)), NG.Hikari.Transparent(); factor = 0.65f0),
+                                 NG.Hikari.Sheen(color = (0.85, 0.97, 1.0), roughness = 0.3f0)) : nothing
     parts = [NG.Part(p.name, p.shape, mat, p.offset, p.scale, p.tilt, p.motion, p.anchor, p.mirror,
                      merge(p.attributes, (color = GHOST, transparency = true)))   # lit (s107: unlit they read as flat white cut-outs)
              for p in sp.parts]
