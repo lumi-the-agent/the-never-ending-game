@@ -11,6 +11,8 @@
   `NG.submit_job(:restart)` (the worker keeps old dev/ code until restarted; no Revise there).
   Job files in jobs/<id>.json (status, error). No cancel. Traced 960x540 13 s at 20 spp: ~8 min.
 
+- Sound (s129): physics/echo.jl traces echoes on Raycore (KA kernel, CPU or Mantle.Device(): 600k rays 0.13 s on GPU).
+  Project island-echo. The island is dry: late echo -20 dB (pond) to -29 dB. Etching filter: tools/etch.jl.
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.
 

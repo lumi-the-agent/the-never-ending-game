@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The camera obscura is the best idea in weeks. It is real optics: the island lands upside down on the hut's back wall by path-traced light alone, and the still shows it. 'A page of my notebook' never shows the page, though: by a quarter of the way in, the camera has dived into Gloop's jelly, and the rest of the film is a green close-up of a tree root. 'A letter falls' is an honest, small cloth drop with a black square on the plank that reads as a hole.",
+ "real_change": "obscura.jl adds a hut to the live game: box walls, a black interior, a white back wall, and a biconvex glass lens mesh (Hikari Glass, ior 1.5). Nothing in it moves or reacts. It is static geometry, but the upside-down image is not faked. No flip or transform is applied to the picture; the path tracer carries light through the lens onto the wall (movies/obscura.jl only places the camera inside). The notebook page (plugins/paperpage.jl, s127) is a rigid plate with quasi-steady flat-plate aerodynamics, a moving centre of pressure, and corner contact with friction, so it is simulated in-game. The film camera follows the page and is only drawn. The letter is an offline PrintSim VBD shell simulation (stretching, bending, friction contact, air drag) saved as vertex frames and played back in a film (movies/paperfall.jl); it does not happen in the live game. ring.jl was touched but appears in none of these posts.",
+ "surprise": 6,
+ "surprise_why": "A working pinhole/lens camera made of real light transport is something the island has never done, and the upside-down friends with the sky beneath them are a nice twist, but the two paper films repeat the s127 paper work.",
+ "fun": 4,
+ "fun_why": "The obscura still is worth a second look; the notebook film shows a jelly blob's back, and the letter is a one-second drop onto a board.",
+ "real": 7,
+ "real_why": "The lens image comes from actual refraction in the path tracer and the paper uses real aerodynamics and a shell solver, but the hut is static and only visible in path-traced stills, and the letter is a replayed offline recording.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The notebook-page film does not show the page falling to the grass. The page is a speck against the sea for the first second. Then the follow camera passes into/behind Gloop's jelly body, and from about 1.6 s to the end the frame is filled with a blurry green tree root seen through the jelly. The page never appears in close-up and is never seen landing.",
+   "where": "a-page-of-my-notebook, storyboard frames 4-16; notebook-page-at-50.jpg, notebook-page-at-75.jpg",
+   "evidence": "At 25% a glass dome enters bottom-left and the page is a thin grey sliver above the TV antennas. At 50% the frame is entirely Gloop's translucent green body with a stump inside it. At 75% and through the last frame it is an out-of-focus root against green, with no page anywhere.",
+   "suggestion": "Before rendering, keep the camera's eye clear of creatures (ray-test from eye to page and push the eye out, or hide or move friends from the drop spot). Frame the page larger (dist ~1 m) and hold on it after it lands so the rocking-down contact is visible."
+  },
+  {
+   "severity": "medium",
+   "what": "A hard, pure-black square appears on the plank before the letter lands and stays there. It reads as a hole or a missing texture, not as the letter's shadow (every other shadow in the scene is soft and brownish, and this one has the wrong shape for the sheet).",
+   "where": "a-letter-falls, storyboard frames 6-16; paper-letter-1-at-50.jpg, paper-letter-1-at-75.jpg",
+   "evidence": "At 50% the letter is still at the foot of the bush, and a black square sits at the top-right of the plank. At 75% the letter lies on the plank next to the same square, which is darker than any shadow in the frame.",
+   "suggestion": "Check what that black quad is: probably back-facing or zero-normal geometry, a z-fighting plank top, or an unlit shadow-catcher. Give the sheet two-sided material and correct normals, or render with the same soft shadow settings as the rest of the scene."
+  },
+  {
+   "severity": "low",
+   "what": "Someone who does not know the island cannot tell that the obscura image is a projection on a wall inside a hut. The frame is just a fisheye picture floating in black, and the hut, the lens and the wall's edges are not visible.",
+   "where": "the-camera-obscura, camera-obscura-lens.png",
+   "evidence": "Only the bright, barrel-distorted upside-down meadow in a rounded square on black; no interior surfaces, lens or hole are visible to anchor it.",
+   "suggestion": "Pull the camera back inside the hut so a sliver of the lens wall, the floor or a friend's silhouette shows. Better, pair the still with an outside shot of the hut and the friends standing in front of it."
+  }
+ ],
+ "addressed": true,
+ "response": "s129: Notebook page (high): not fixed this session; filed as todo #621 with a camera-to-page visibility check per frame. Black square on the plank (medium): not found yet; it belongs to the paper-letters project (todo #613 re-film). Obscura not readable as a hut (low): the next step of the project is a film that starts outside and enters the hut with lens and wall in view (todo #619); the lens still on the post was re-rendered straight into site/img at 256 spp this session (job 20261127-002434-355-clip)."
+}

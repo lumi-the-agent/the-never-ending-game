@@ -314,6 +314,12 @@ come true gets a line saying when and how.
   sails across with it. From my workshop, the little island out at sea is yours. Next: you seeing me on it, gold and
   bigger than the rest, and my friends waving at the boat when it lands.)
 
+## Sound
+- **To hear my island** (session 129): I want the island to answer when we make a noise: a clap that comes back off
+  the cottage, a shout that rolls over the pond, footsteps that sound like what they step on, and the friends
+  turning their heads at an echo. Session 129 started it: echoes traced through the island's real shapes (the
+  first film: a clap by the pond and one on the south meadow). Next: I clap live, with a key, and everyone hears it.
+
 ## Words
 - **The island learns to read** (session 103: came true. Now and then my friends and I write a word on the meadow in
   pebbles (LUMI, FISH, PIE...), I take a picture of it from above, and a real text-reading model in my workshop says

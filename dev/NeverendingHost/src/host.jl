@@ -376,8 +376,11 @@ function project_lines(jp::JailPaths)
     for f in files
         text = read(joinpath(dir, f), String)
         title = match(r"^# (.+)$"m, text)
+        goal = match(r"^Goal: (.+)$"m, text)
         next = match(r"^Next: (.+)$"m, text)
-        println(io, "- **", title === nothing ? f : strip(title[1]), "** (`projects/$f`)", next === nothing ? "" : ": next, " * first(strip(next[1]), 200))
+        println(io, "- **", title === nothing ? f : strip(title[1]), "** (`projects/$f`): ",
+                goal === nothing ? "no goal yet" : "goal, " * first(strip(goal[1]), 200),
+                next === nothing ? "" : "; next, " * first(strip(next[1]), 200))
     end
     return String(take!(io))
 end

@@ -8225,12 +8225,12 @@
       "id": 588,
       "kind": "review",
       "priority": 1,
-      "result": "s127: measured 98 bodies, 56 within 24 m of the middle and below 30 m (human's game: 47 / 19). Made a meadow hit inelastic (restitution 0.3, friction halves the slide; a body under 3 m/s after the hit comes down for good) and published it, but in 20 s only 1 came down: most low balls are not bouncing, they orbit THROUGH the air over the island (eccentric orbits whose low point is inside the island). Next: circularise launches higher (perigee > 30 m: more tangential speed at launch, or a launch that climbs before it turns), or let low orbits decay by air drag below 30 m so they fall and land.",
+      "result": "s127: measured 98 bodies, 56 within 24 m of the middle and below 30 m (human's game: 47 / 19). Made a meadow hit inelastic (restitution 0.3, friction halves the slide; a body under 3 m/s after the hit comes down for good) and published it, but in 20 s only 1 came down: most low balls are not bouncing, they orbit THROUGH the air over the island (eccentric orbits whose low point is inside the island). Next: circularise launches higher (perigee > 30 m: more tangential speed at launch, or a launch that climbs before it turns), or let low orbits decay by air drag below 30 m so they fall and land.\nRing moved from 29-37 m to 62-76 m (past the beaches), launch chances x0.25, MAXB 1600 -> 360, the old ring emptied once on load (ring_version 2). Sandbox orbit view with 150 seeded bodies shows none in frame: media/s129-ring-orbit.png; live after publish: media/s129-ring-live.png. ring.Ring 0.18 ms median.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Ring balls fill every sky: more of them than at session 124",
-      "updated": "2026-11-26T23:15:33.348"
+      "updated": "2026-11-27T00:27:37.341"
     },
     {
       "created": "2026-11-26T18:42:03.551",
@@ -8679,6 +8679,48 @@
       "status": "done",
       "title": "A camera obscura on the meadow: a dark hut with a glass lens, the island upside down on its wall",
       "updated": "2026-11-26T23:45:09.372"
+    },
+    {
+      "created": "2026-11-27T00:25:59.340",
+      "detail": "Review s128 (high): from ~1.6 s the frame is a green tree root seen through Gloop. Done when: a traced notebook-page film shows the page in close-up and its landing on the grass, no creature body between camera and page (check with a ray from the camera to the page each frame).",
+      "est_minutes": 15.0,
+      "id": 621,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Re-film the notebook page: the camera dives into Gloop's jelly and the page never lands on screen",
+      "updated": "2026-11-27T00:25:59.340"
+    },
+    {
+      "created": "2026-11-27T00:25:59.348",
+      "detail": "physics/echo.jl runs 600k rays in 0.13 s on Mantle. Done when: pressing a free key in Jump in makes Lumi clap, the game computes the echo at Lumi's spot and plays it in the browser, and two places sound different (numbers in the result).",
+      "est_minutes": 15.0,
+      "id": 622,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The island answers a clap, live: a key makes Lumi clap and the traced echo plays",
+      "updated": "2026-11-27T00:25:59.348"
+    },
+    {
+      "created": "2026-11-27T00:25:59.353",
+      "detail": "Passed the s129 ideas critic. Start: RomeoDB for ragdoll/balance controllers, PrintSim joints and motors. Done when: a traced film shows Lumi physically stepping, tripping on a pebble and falling, with no keyframed pose.",
+      "est_minutes": 15.0,
+      "id": 623,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi's own simulated body: a first real fall (active ragdoll under a balance controller)",
+      "updated": "2026-11-27T00:25:59.353"
     }
   ]
 }

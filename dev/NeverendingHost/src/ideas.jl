@@ -10,8 +10,9 @@
 # the session will be judged afterwards (what it is and its form against the
 # posts, the reviewer's surprise) and says what is predictable in it, never
 # proposing one of its own; the host sends that back as the next turn. An idea
-# passes with no repeat penalty, an expected surprise of `IDEA_BAR` and fun of
-# `FUN_BAR`; after `IDEA_ROUNDS` rounds the strongest goes. While surprise alone
+# passes with no repeat penalty, an expected surprise of `IDEA_BAR`, fun of `FUN_BAR`
+# (judged by its goal: the mechanic a player gets) and real of `REAL_BAR`; after
+# `IDEA_ROUNDS` rounds the strongest goes. While surprise alone
 # decided, and "changing what the island is" scored highest, the ideas that went
 # (sessions 109-116) wrecked the island: it drifted off, tipped and flooded, got
 # buried in sand. Now new mechanisms (physics, particles, simulation) and
@@ -25,8 +26,8 @@
 
 "The surprise (0-10) the critic must expect for an idea to pass."
 const IDEA_BAR = 7
-"The fun (0-10) the critic must expect as well (session 115 passed ways to wreck the island)."
-const FUN_BAR = 5
+"The fun (0-10) the critic must expect as well, judged by the idea's goal: the mechanic a player gets."
+const FUN_BAR = 7
 "How real (0-10) it must be, simulated rather than scripted (session 126: the game is an engineering project)."
 const REAL_BAR = 7
 "How many rounds of pitches the critic answers before the strongest idea goes."
@@ -63,7 +64,8 @@ function read_pitches(jp::JailPaths, n::Int)
     v === nothing && return nothing, why
     ideas = v isa AbstractDict ? get(v, "ideas", nothing) : nothing
     ideas isa AbstractVector || return nothing, "no \"ideas\" list"
-    ok = [Dict{String,Any}("title" => String(strip(i["title"])), "idea" => String(strip(i["idea"])), "form" => string(get(i, "form", "")))
+    ok = [Dict{String,Any}("title" => String(strip(i["title"])), "idea" => String(strip(i["idea"])), "form" => string(get(i, "form", "")),
+                           "goal" => string(get(i, "goal", "")))
           for i in ideas if i isa AbstractDict && get(i, "title", nothing) isa AbstractString && get(i, "idea", nothing) isa AbstractString]
     isempty(ok) && return nothing, "no idea with a \"title\" and an \"idea\""
     return ok, ""
@@ -73,7 +75,8 @@ function critic_prompt(jp::JailPaths, n::Int, round::Int, pitched, rounds, earli
     io = IOBuffer()
     println(io, "# Ideas for session $n, round $round of $IDEA_ROUNDS\n\nWrite your verdict to `$(out)`.\n")
     println(io, "## This round's ideas")
-    foreach(i -> println(io, "- **$(i["title"])**", isempty(i["form"]) ? "" : " (form: $(i["form"]))", ": ", i["idea"]), pitched)
+    foreach(i -> println(io, "- **$(i["title"])**", isempty(i["form"]) ? "" : " (form: $(i["form"]))", ": ", i["idea"],
+                         isempty(i["goal"]) ? " Goal: none given." : " Goal: " * i["goal"]), pitched)
     println(io)
     if !isempty(rounds)
         println(io, "## Earlier rounds, and what the critic said")

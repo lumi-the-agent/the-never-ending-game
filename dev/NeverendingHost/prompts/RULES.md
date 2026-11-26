@@ -112,8 +112,10 @@ build, the way the lead of a great game is built.
    problem a second time, write the lesson into `NOTES.md` so there is no
    third time. Something that takes many sessions is a project: a file of
    its own in `world/projects/` (first line `# its title`, a line
+   `Goal: what a player can do when it is done, and why that is fun`, a line
    `Next: the next step`, then whatever you want to keep about it); the host
-   lists your projects with their next step at the start of every session.
+   lists your projects with their goal and next step at the start of every
+   session. Every step moves the project towards its goal.
 10. **Talk to the human** with `NeverendingGame.say_to_human(text)`. Answer
    their messages before anything else.
 11. **Long work runs beside you, not in your session.** Renders, assets and

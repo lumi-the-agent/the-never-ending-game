@@ -14,7 +14,9 @@ const EPS = 6f0                      # softening: its mass is spread through the
 const NRM = Vec3f(0.5f0, 0f0, 0.866f0)   # the ring plane's normal: tilted 30 degrees
 const KR = 0.05f0                    # damping of in-and-out speed (bumps between bodies)
 const KN = 0.06f0                    # damping of speed across the ring plane
-const MAXB = 1600
+const MAXB = 360                     # s129: 1600 filled every sky (review 0127)
+const RING_R = (62f0, 14f0)          # s129: orbits from 62 to 76 m, out past the beaches, not over the meadow
+const LAUNCH_SCALE = 0.25            # s129: a quarter of the old chances: the day throws fewer things up
 const RIDE_EVERY = 600.0             # real seconds between friends going up, live
 # which of the island's events throw something up: chance, what goes up, how many
 const LAUNCH = Dict(:ball_kick => (0.5, :ball, 1), :splash => (0.8, :drop, 4), :pumpkin_bonk => (1.0, :pumpkin, 1),
@@ -50,8 +52,8 @@ function bodies()
 end
 count_bodies() = sum(length(b.P) for b in values(bodies()))
 
-"Throw one body of `kind` up from `p0`, fast enough to stay up at a radius between 26 and 44 m."
-function launch!(kind, p0; rc = 29f0 + 8f0 * rand(Float32))
+"Throw one body of `kind` up from `p0`, fast enough to stay up at a radius between 62 and 76 m."
+function launch!(kind, p0; rc = RING_R[1] + RING_R[2] * rand(Float32))
     B = bodies()[kind]
     rv = Vec3f(p0 - centre()); r0 = max(nrm(rv), 3f0)
     L = rc * vcirc(rc)
@@ -65,7 +67,7 @@ end
 function seed!(n)
     for _ in 1:n
         k = rand((:pumpkin, :ball, :drop, :drop, :pebble, :pebble, :feather, :petal, :petal, :paint))
-        r = 29f0 + 8f0 * rand(Float32) + (rand() < 0.15 ? 6f0 * randn(Float32) : 0f0)
+        r = RING_R[1] + RING_R[2] * rand(Float32) + (rand() < 0.15 ? 6f0 * randn(Float32) : 0f0)
         # a random direction in the ring plane
         a = 2f0 * Float32(pi) * rand(Float32)
         e1 = normalize(cross(NRM, Vec3f(0, 1, 0))); e2 = cross(NRM, e1)
@@ -228,7 +230,7 @@ function NG.step!(::Ring, game, dt)
         spec === nothing && continue
         get(O, :quiet, false) && continue
         chance, kind, n = spec
-        rand() < chance || continue
+        rand() < chance * LAUNCH_SCALE || continue
         c = find_creature(w, string(get(d, "who", "")))
         c === nothing && continue
         for _ in 1:n
@@ -282,6 +284,8 @@ end
 
 function NG.start!(::Ring, game)
     delete!(O, :plots)
+    # s129: the old 29-37 m ring hung its balls over the meadow in every view; a new, wider ring starts empty
+    get(O, :ring_version, 1) < 2 && (delete!(O, :B); O[:ring_version] = 2)
     w = game.world
     xs = Float32[]; ys = Float32[]
     for x in -30f0:2f0:30f0, y in -30f0:2f0:30f0

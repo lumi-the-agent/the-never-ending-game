@@ -37,9 +37,11 @@ For each idea of this round:
   (at most 3). An idea that carries out an example the human's goals
   (above) name is at most 4; working in an area a goal names is not capped.
   A vague pitch is scored by its most likely, plainest version.
-- `fun` (0-10): how much someone wants to play it or watch it again: 0
-  nothing to do or see twice, 4 fun once, 7 they come back to it, 10 they
-  cannot stop.
+- `fun` (0-10): how much fun its goal is in a game, the mechanic a player
+  gets when it is done: 0 nothing to do or see twice, 4 fun once, 7 they come
+  back to it, 10 they cannot stop. Without a goal a player can do something
+  with (only something to watch, or a technique with no use yet) it is at
+  most 4, however real.
 - `real` (0-10): how real it will be, made as pitched: 0 a scripted scene or
   only a look (the picture moves, nothing is simulated), 4 a simple
   simulation of one effect, 7 a simulation that holds up wherever you look
@@ -53,7 +55,9 @@ For each idea of this round:
 An idea from an earlier round (above) is judged the same way again: a
 reworded idea is the same idea. An idea may be big and take many sessions:
 judge where it leads, and that its first step shows something. An idea may
-be the next step of a project from earlier sessions: judge the step.
+be the next step of a project from earlier sessions: judge the step, and
+whether it brings the project's goal closer; a step that only shows the same
+thing again does not.
 
 Write the verdict file as JSON, one entry per idea of this round, then end
 your turn (you need no Julia and no screenshots):

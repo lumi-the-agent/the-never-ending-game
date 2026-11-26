@@ -558,3 +558,23 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - Plot names are unique per scene: number them (Symbol(:obscura_hut_, k)) and clean up by prefix.
 - A bt_wait `until` grep for '"status": *"(done|failed)"' on a job file did not fire although the job was done
   (reason unknown; the file does say "status": "done"): wait in shorter steps and read the job file myself.
+
+## Etching filter (s129, free time; Bracquemond's "Road to Sevres" on the workbench)
+- tools/etch.jl: `include("tools/etch.jl"); save(path, EtchArt.to8(EtchArt.etch(load(src))))`, ~1.3 s for 1280x720.
+  Short curved pen strokes (3 sub-segments walking the structure-tensor tangent), 4 crossing layers by darkness,
+  strokes per cell from a target ink coverage, thin ridge outlines (non-max suppression), aquatint grain, plate mark.
+- Global line patterns (phase = x.n) with a varying angle make zebra moire: place short strokes instead.
+- A fixed contrast curve suits no two pictures: stretch each between its own 5th and 95th percentile darkness.
+- Best: media/s129-etch-lantern-3.png (dusk lantern: lit ground stays paper, the door arch deep), -paths-4.png.
+  Not posted. Top-down views read worse than eye-level ones (the print is a road at eye level).
+
+## Sound by ray tracing (s129, projects/island-echo.md)
+- Raycore on any backend: `tlas = Raycore.TLAS(backend); push!(tlas, mesh, 4x4 SMatrix); Raycore.sync!(tlas)`,
+  then `st = Adapt.adapt(backend, tlas)` and `Raycore.closest_hit(st, Raycore.Ray(; o, d))` / `any_hit` INSIDE a
+  KA kernel (a bare BLAS has no closest_hit method). KA and Adapt: `Raycore.KernelAbstractions`, `Raycore.Adapt`
+  (neither is in the game env by name). The same kernel ran on KA.CPU() and Mantle.Device().
+- World triangles of the stage: scratch game + `NG.Stage(scene, w)` + `NG.sync!`, `Makie.collect_atomic_plots`:
+  94 meshscatter + 4 mesh, 1.4M triangles. markersize can be a Vec3f (a StaticVector, not per-instance).
+- Diffuse rain alone misses the mirror echo of a wall: add a receiver sphere for reflected rays.
+- The echo film (9.5 s, 960x540, 24 spp, the pond in frame) was still rendering after 20 min (job 20261127-002415-707):
+  the silent mp4 grows in 256 KB steps (~2 min each). Shots with water in frame: 6 s and 16 spp, queue them first.
