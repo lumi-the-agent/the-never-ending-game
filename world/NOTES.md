@@ -511,3 +511,14 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - A traced 10 s film of a DEFORMING terrain (stomp.jl lifts the 48k terrain + 40k wordsand meshes every frame) was
   still rendering after 20 min (other 10 s films: ~8 min). The tracer likely rebuilds those meshes' geometry each
   frame. Next ground-moving film: 6 s, fps 20, or update the meshes only every other film frame; queue it FIRST.
+
+## s126 lessons
+- A plugin that writes another plugin's mesh (stomp lifting :wordsand) must notice when the owner redraws it: keep the
+  mesh object you last wrote (`pl[1][]` after update!) and re-read the layer when the plot holds a different one.
+  Capturing vertices once at a trigger is not enough when the owner redraws in the gap before the effect starts.
+- Film shot functions run in a module that does not see LinearAlgebra: `using LinearAlgebra: norm` in movies/*.jl.
+- Plugins reach Hikari as `NG.Hikari` (a bare `Hikari.Glass` is UndefVarError in Main.Plugin_x and switches the system off).
+- The engine never walks a creature off land (move_heading! refuses), so a plugin that puts bodies on the sea must
+  drive c.pos itself and keep the goal `arrived` with target = pos (glasssea.jl).
+- Raster previews at fps 4 run the world at dt 0.25 while plugins clamp dt to 0.05: motion looks 5x slow there.
+- My sense of the clock was 10 min ahead all session: check `date` before planning around the worker.

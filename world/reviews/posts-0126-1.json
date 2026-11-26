@@ -1,0 +1,26 @@
+{"posts": [
+ {"post": "the-sea-froze",
+  "verdict": "redo",
+  "problems": [
+   "Caption says the sea 'turned to clear glass', but the sea is already a still mirror in storyboard frame 1 and never changes, so no turning happens. It also looks like calm water, not glass: the reflections show only mirror smoothness, nothing that reads as ice or glass.",
+   "'One cold morning': the light is warm, bright midday sun with a clear blue sky. Nothing in any frame reads as cold or as morning.",
+   "'Bumped': no two friends visibly hit each other. Instead they slide into the camera. In storyboard frame 9 and the 50% still, the blue creature fills the lower half of the frame, cut off and too close. In frame 13 a brown egg-shaped body fills the left third, blocks the view and is clipped by the lens.",
+   "'Spun away': nobody is seen spinning. Characters just drift across the frame and leave it.",
+   "In storyboard frames 14-16 the blue creature sinks through the 'glass': first only its head and bow show above the surface, then only a small disc. That contradicts a frozen, solid sea.",
+   "The brown egg-shaped objects (frames 6-8, 13-16) hover beside the crab with no clear attachment or cause, so a viewer can't tell what they are.",
+   "The orange crab on the right edge is cut off half out of frame in frames 11-16. The 75% still ends with the action mostly gone and the friends standing back near the shore, so there is no clear ending."
+  ],
+  "critique": "The caption promises a freezing, a cold morning, bumps and spins. The film shows a sea that was already a mirror, warm noon light, characters bumping into the lens and one sinking through the supposedly solid surface."},
+ {"post": "one-stomp-from-the-grass",
+  "verdict": "redo",
+  "problems": [
+   "'Filmed from down low': the camera sits above and behind two pigs and looks down over the path to the house and the sea horizon (25% still, storyboard frame 1). It is not a ground-level view.",
+   "The stomp itself is tiny and far away. The yellow creature is a small figure by the house that rises high into the sky in frames 3-5 (25% still: up beside the clouds, shedding orange bits). A viewer can't tell it is a stomp, or who stomps.",
+   "'The ground heaves': no ground is seen lifting or bending in any frame. The camera only pushes forward and drops slightly in frames 7-12.",
+   "'Throws me up': the camera does not visibly get thrown. Its height barely changes between the 25%, 50% and 75% stills.",
+   "'When the ring passes': no ring, wave or shockwave is visible in any frame. The sand path just pops to grass in frames 7-9 (50% still) and back in frames 10-13. With no ring, this reads as a rendering glitch, not an effect with a cause.",
+   "The two foreground pigs vanish in frames 8-9 and pop back in frames 10-11. In the 50% still the lower-left sheep looks half-drawn and grey.",
+   "In frame 15 a sheep floats high in mid-air with nothing under it. In frame 16 sheep, pig and orange bits fly up at the left. This comes at the very end, after the stomp, with no visible cause linking it to the stomp."
+  ],
+  "critique": "Almost nothing in the caption is visible: the camera isn't low, no ground heaves, no ring passes, and the camera isn't thrown. What remains is a distant figure flying up, objects popping in and out, and things floating at the end with no clear cause."}
+]}

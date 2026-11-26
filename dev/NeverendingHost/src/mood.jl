@@ -79,6 +79,8 @@ The newest session review's surprise and fun (0-10, the reviewer's), moving bore
 before the next session: surprise moves boredom (a 6, a nice twist, holds it; every point above eases
 it by 0.08, every point below adds as much), fun moves joy the same way (0.04 a point from 6).
 Reviews before session 116 have no fun (nor does one that gives none as a number): their surprise moves joy.
+Since session 127 a review also says how `real` the work is (simulated, not scripted): boredom then moves
+with the mean of surprise and real.
 """
 function feel_surprise!(jp::JailPaths, m::AbstractDict)
     files = sort!(filter(f -> occursin(r"^session-\d+\.json$", f), readdir(reviews_dir(jp))))
@@ -91,6 +93,8 @@ function feel_surprise!(jp::JailPaths, m::AbstractDict)
     s isa Real || return m
     f = get(r, "fun", s)
     f isa Real || (f = s)
+    rl = get(r, "real", nothing)
+    rl isa Real && (s = (s + rl) / 2)      # since session 127 how real it is moves boredom with the surprise
     m["last_surprise"] = Dict{String,Any}("session" => n, "score" => s, "why" => string(get(r, "surprise_why", "")), "fun" => f)
     m["boredom"] = round(clamp(m["boredom"] - 0.08 * (s - 6), 0, 1); digits = 2)
     m["joy"] = round(clamp(m["joy"] + 0.04 * (f - 6), 0, 1); digits = 2)

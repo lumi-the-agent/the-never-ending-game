@@ -1,0 +1,23 @@
+{"ideas": [
+ {"title": "The lanterns walk out on us",
+  "similarity": 6,
+  "nearest": "Nobody kicked the sun",
+  "same_form": ["Glass rain, not yet", "Nobody kicked the sun", "Football with the sun"],
+  "surprise": 5,
+  "fun": 5,
+  "critique": "This is the third time a light source turns into a thing that moves among the friends, and twice that ended with a glowing ball rolling off while nobody reacted. Here it is lanterns with legs, the same shape at a bigger count. The strong part is the island going dark lane by lane, with many real moving lights pooling on wet sand and sea. That is light a raster engine cannot fake, but only if the darkness and the ring can be read in the traced film and the gait is not a slide."},
+ {"title": "A bottle washes up with another island inside",
+  "similarity": 6,
+  "nearest": "The island on TV",
+  "same_form": ["I swallow what I hit"],
+  "surprise": 5,
+  "fun": 5,
+  "critique": "A prop that holds a live copy of the island while the friends crowd round it is the TV recipe and the painting recipe again, and the tiny Lumi waving back is the beat everyone expects. Real curved, thick refracting glass bending a living miniature is a genuine path-tracer moment, but at that scale the puppets may blur into a green smear, and then all that is left is a bottle on the beach."},
+ {"title": "The sea freezes into glass and we skate",
+  "similarity": 4,
+  "nearest": "Glass rain, not yet",
+  "same_form": ["Glass rain, not yet"],
+  "surprise": 6,
+  "fun": 7,
+  "critique": "Swapping the sea for something else sits close to the island's habit of replacing its surroundings, and glass with caustic spots was already tried (and failed) in the glass rain. What is new and strong: low-friction sliding where bodies bump and spin is play physics the island never had and that a player can come back to, and caustics thrown through a clear sea onto the seabed are the clearest material-and-light showcase in this round. It only counts if the caustics actually converge in the trace and the sliding is simulated, not friends drifting."}
+]}

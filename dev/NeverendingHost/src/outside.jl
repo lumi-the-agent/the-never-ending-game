@@ -7,7 +7,8 @@
 # remembering its drafts, watching itself on a television). Now the host also
 # draws from outside, at random: Wikipedia articles, an artwork of the Cleveland
 # Museum of Art's open access collection, an arXiv paper, and the world news of
-# the day. The host fetches them into `run/workbench/` (the character reads them
+# the day, and games people loved (Wikipedia's lists of the best and the best
+# selling ones). The host fetches them into `run/workbench/` (the character reads them
 # at /run/neverending/workbench), so the jail's network stays as it was: the
 # character can read all of it and write nowhere.
 
@@ -20,6 +21,13 @@ const WIKI_PICK = 2
 
 "How many of the day's news are shown."
 const NEWS_PICK = 3
+
+"How many games from `GAME_LISTS` are shown, and how many shown ones are remembered (none comes twice)."
+const GAME_PICK = 3
+const GAME_MEMORY = 1000
+
+"Wikipedia's lists of the games people loved most: the acclaimed and the best selling."
+const GAME_LISTS = ("List_of_video_games_listed_among_the_best", "List_of_best-selling_video_games")
 
 "How many shown news links are remembered, so the same story is not shown twice."
 const NEWS_MEMORY = 300
@@ -137,6 +145,42 @@ function news_finds(seen)
     return [Dict{String,Any}("name" => i.link, "title" => i.title, "summary" => i.text) for i in first(fresh, NEWS_PICK)]
 end
 
+"A title as part of a Wikipedia API url: spaces as underscores, everything but letters, digits and `-._~` percent-encoded."
+wiki_escape(t::AbstractString) =
+    join(b in UInt8('A'):UInt8('Z') || b in UInt8('a'):UInt8('z') || b in UInt8('0'):UInt8('9') || b in codeunits("-._~") ?
+         Char(b) : b == UInt8(' ') ? "_" : "%" * uppercase(string(b; base = 16, pad = 2)) for b in codeunits(t))
+
+"The games a list page names: the italic links of its table rows, its references left out."
+function list_games(page::AbstractString)
+    v = fetch_json("https://en.wikipedia.org/w/api.php?action=parse&format=json&formatversion=2&page=$page&prop=wikitext&redirects=1")
+    w = replace(v["parse"]["wikitext"], r"<ref[^>/]*/>" => "", r"(?s)<ref[^>]*>.*?</ref>" => "")
+    titles = String[]
+    for line in eachline(IOBuffer(w)), m in eachmatch(r"''\[\[([^\]]+)\]\]''", line)
+        (startswith(line, "|") || startswith(line, "!")) && push!(titles, strip(first(split(m[1], '|'))))
+    end
+    return unique!(titles)
+end
+
+"""
+    game_finds(dir, seen) -> Vector{Dict}
+
+`GAME_PICK` games from `GAME_LISTS` not shown before (`seen`, their titles), at random, each article
+written whole into `dir` with its lead picture.
+"""
+function game_finds(dir::AbstractString, seen)
+    pool = shuffle!(filter(t -> !(t in seen), unique!(vcat(list_games.(GAME_LISTS)...))))
+    return map(enumerate(first(pool, GAME_PICK))) do (i, title)
+        x = fetch_json("$WIKI_API&prop=extracts|pageimages|info&explaintext=1&exsectionformat=plain&inprop=url&pithumbsize=800&pilicense=any&redirects=1&titles=$(wiki_escape(title))")
+        page = only(x["query"]["pages"])
+        text = text_or_empty(get(page, "extract", nothing))
+        file = "game-$i.txt"
+        write(joinpath(dir, file), page["title"], "\n", get(page, "fullurl", ""), "\n\n", text)
+        find = Dict{String,Any}("name" => title, "title" => page["title"], "summary" => first_sentence(text), "file" => file)
+        haskey(page, "thumbnail") && (find["picture"] = fetch_file(page["thumbnail"]["source"], dir, "game-$i"))
+        find
+    end
+end
+
 "`f()`, or nothing found when `source` cannot be reached (said in the host's log)."
 function reached(f, source::AbstractString)
     try
@@ -159,12 +203,16 @@ function outside_finds!(jp::JailPaths, seen::AbstractDict)
     rm(dir; recursive = true, force = true)
     mkpath(dir)
     news_seen = get!(seen, "news", Any[])
+    games_seen = get!(seen, "games", Any[])
     finds = Dict{String,Any}("wikipedia" => reached(() -> wikipedia_finds(dir), "Wikipedia"),
                              "art" => reached(() -> art_finds(dir), "the Cleveland Museum of Art"),
                              "arxiv" => reached(() -> arxiv_finds(dir), "arXiv"),
-                             "news" => reached(() -> news_finds(news_seen), "the BBC's news feed"))
+                             "news" => reached(() -> news_finds(news_seen), "the BBC's news feed"),
+                             "games" => reached(() -> game_finds(dir, games_seen), "Wikipedia's lists of games"))
     append!(news_seen, [n["name"] for n in finds["news"]])
     seen["news"] = last(news_seen, NEWS_MEMORY)
+    append!(games_seen, [g["name"] for g in finds["games"]])
+    seen["games"] = last(games_seen, GAME_MEMORY)
     return finds
 end
 
@@ -187,6 +235,10 @@ function outside_lines(io::IO, finds::AbstractDict)
     if !isempty(finds["arxiv"])
         println(io, "On arXiv:")
         foreach(p -> println(io, "- $(p["name"])", isempty(p["field"]) ? "" : " ($(p["field"]))", ": $(p["summary"]) ($(at(p)))"), finds["arxiv"])
+    end
+    if !isempty(finds["games"])
+        println(io, "Games people loved (Wikipedia's lists of the best and the best selling):")
+        foreach(g -> println(io, "- $(g["title"]): $(g["summary"]) ($(at(g)))"), finds["games"])
     end
     if !isempty(finds["news"])
         println(io, "In the news today (BBC World):")

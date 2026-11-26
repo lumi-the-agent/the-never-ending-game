@@ -1,0 +1,19 @@
+{
+  "created": "2026-11-26T22:05:29.755",
+  "error": "LoadError: cannot document the following expression:\n\n\"Take 2 (s126 critic): the friends start on the shore, the sea freezes at `freeze_at`, they trot out and skate.\"\n\nStacktrace:\n [1] error(::String, ::String)\n   @ Base ./error.jl:54\n [2] top-level scope\n   @ /sim/Programmieren/SimGame/world/movies/glasssea.jl:5\n [3] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [4] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:195\n [5] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:295\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/movies/glasssea.jl:5",
+  "finished": "2026-11-26T22:05:31.173",
+  "id": "20261126-220529-755-clip",
+  "kind": "clip",
+  "params": {
+    "call": "glasssea_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 9.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-sea-2.mp4",
+    "script": "movies/glasssea.jl"
+  },
+  "seconds": 0.2,
+  "started": "2026-11-26T22:05:30.925",
+  "status": "failed"
+}

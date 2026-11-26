@@ -19,15 +19,6 @@ function jelly_clip(path; rasterize = false, samples = 24, width = 960, height =
         J[:force] = true
         if !haskey(S, :go)
             S[:go] = true
-            if isdefined(Main, :SEESAW) && haskey(Main.SEESAW, :sys)
-                for c in w.creatures
-                    Main.SEESAW[:weights][c.id] = 0f0
-                end
-                Main.SEESAW[:sys].tilt = Vec2f(0); Main.SEESAW[:sys].spin = Vec2f(0)
-            end
-            if isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-                Main.WORDSAND[:H] .= 0; Main.WORDSAND[:dirty] = true; Main.WORDSAND[:gain] = 0f0
-            end
             isdefined(Main, :TIED) && (Main.TIED[:force] = false)
             d = Vec2f(cos(0.4f0), sin(0.4f0))      # the way the action runs (left to right in the frame)
             n = Vec2f(-d[2], d[1])                 # from the action toward the camera

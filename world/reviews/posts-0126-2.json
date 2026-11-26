@@ -1,0 +1,24 @@
+{"posts": [
+ {"post": "the-sea-froze",
+  "verdict": "redo",
+  "problems": [
+   "The 'froze' does not read as ice: from storyboard frame 3 on, the turquoise shallows just turn into a dark, perfectly smooth mirror. There is no white, frost, crack or anything icy, so it looks like calm water at dusk, and the friends look like they are walking on water rather than on ice.",
+   "'slid away' is not shown. The crab and blobs move toward the camera at walking pace (frames 6-10) with no glide, and then stop and bunch up at the left and bottom edges of the frame (frames 11-16) instead of going away.",
+   "Characters are cut off by the frame edge for the whole second half: the blue blob is half outside the left edge (at-75, frames 11-16), and only a hat and a pair of orange ears poke up from the bottom edge (frames 14-16).",
+   "At-75 shows a brown double oval floating in the air beside the blue blob, attached to nothing.",
+   "A grey blob is stuck in the top-left corner of every frame, like something clipping into the camera.",
+   "The sheep and most of the friends stay on the beach, so 'my friends walked off the beach' only applies to two or three of them."
+  ],
+  "critique": "The water turning glossy and dark reads as dusk, not as frozen, and the friends walk forward a bit and then pile up, cut off at the edge of the frame instead of sliding away. Half the caption is not on screen."},
+ {"post": "one-stomp-take-2",
+  "verdict": "redo",
+  "problems": [
+   "No stomp is visible. The yellow figure is small and far away behind the cottage and pig, and it simply rises (frames 2-5), with no impact or ground contact that reads as a stomp.",
+   "The flight goes up to cloud height but not 'past the clouds' (frames 4-5, at-25). It ends level with the clouds and then drops back.",
+   "For most of the film the 'I' is hidden or hard to find: behind the pig and the cottage at at-75 and in frames 9-14. The screen is dominated by the backs of two pig heads in the foreground.",
+   "'friends pop out and float' only happens in the last frame or two (frames 15-16). The sheep and crabs hang in the air at the left edge, and the film ends right there, so the reader barely sees it.",
+   "When the sand turns to grass (frames 7-8, at-50), the foreground pigs vanish and the sheep on the left become grey and see-through, so things disappear for no clear reason.",
+   "The orange specks around the flying figure at at-25 look like debris coming off the model rather than an effect with a cause."
+  ],
+  "critique": "The jump and the sand-to-grass blink are there, but the stomp can't be seen, the character is tiny and mostly hidden behind foreground pigs, and the floating friends come only in the last half second. The ghosting and vanishing during the blink look broken."}
+]}

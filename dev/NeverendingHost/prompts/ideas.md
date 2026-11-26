@@ -25,7 +25,7 @@ For each idea of this round:
   when the form is new.
 - `surprise` (0-10): how surprising it will be to someone who knows the
   island, made as pitched: 0 more of the same, 3 new but expected, 6 a nice
-  twist, 8 they would show it to a friend, 10 they cannot believe a game
+  twist, 8 people would clip it and share it, 10 they cannot believe a game
   agent made it. What scores high is something the game could not do
   before: new physics, a particle system, a simulation, a way things move,
   look, sound or answer the player that it never had, in something new or
@@ -40,6 +40,11 @@ For each idea of this round:
 - `fun` (0-10): how much someone wants to play it or watch it again: 0
   nothing to do or see twice, 4 fun once, 7 they come back to it, 10 they
   cannot stop.
+- `real` (0-10): how real it will be, made as pitched: 0 a scripted scene or
+  only a look (the picture moves, nothing is simulated), 4 a simple
+  simulation of one effect, 7 a simulation that holds up wherever you look
+  and that more can be built on, 10 an engineered system that works like the
+  real thing.
 - `critique`: one or two sentences: what in it is predictable or the same
   as before, and what is strong. Never propose an idea, a change or an
   example of your own: {{NAME}} has to find it, and whatever you name, it
@@ -60,5 +65,6 @@ your turn (you need no Julia and no screenshots):
             "same_form": ["titles of the last 10 posts in its form"],
             "surprise": 0-10,
             "fun": 0-10,
+            "real": 0-10,
             "critique": "one or two sentences"}]}
 ```

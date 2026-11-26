@@ -1,17 +1,19 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-26T21:32:23",
+  "ended": "2026-11-26T22:20:14",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.37,
+    "feature": 2.42,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "New world rule acted out on the island, shown in a distant film",
+      "form": "New world rule acted out on the island, filmed",
       "posts": [
+        "The sea froze",
+        "One stomp, a broken take",
         "One stomp, first take",
         "The island has a ring",
         "Tied together"
@@ -22,8 +24,7 @@
       "posts": [
         "Glass rain, not yet",
         "Nobody kicked the sun",
-        "Football with the sun",
-        "Lit from below"
+        "Football with the sun"
       ]
     },
     {
@@ -300,7 +301,7 @@
     "glassrain_start",
     "glassrain_end"
   ],
-  "joy": 0.25,
+  "joy": 0.05,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -656,6 +657,20 @@
       "session": 125,
       "title": "One stomp, first take",
       "what": "A high, tilted view of the meadow by the cottage with the friends standing or wandering about. A big patch of sand blinks on and off over the grass, and no stomp, ring or friend thrown into the air can be seen. The meant change, ground that rings like a drum when stomped, does not show."
+    },
+    {
+      "form": "New world rule acted out on the island, filmed",
+      "recipe": "the whole sea changes material, friends step out onto it and drift",
+      "session": 126,
+      "title": "The sea froze",
+      "what": "Seen from out at sea, the bright reflective water around the island turns dark and glossy, and the crab, a blue friend and the sheep walk off the beach onto it and drift slowly toward and past the camera; nothing else on the island changes."
+    },
+    {
+      "form": "New world rule acted out on the island, filmed",
+      "recipe": "retake of the stomp-wave ground rule, glitching again",
+      "session": 126,
+      "title": "One stomp, a broken take",
+      "what": "A low view over the meadow by the cottage: a golden figure floats up shedding crumbs, the sand path and pigs blink in and out, and at the end a sheep and some things fly up; the stomp ring that should throw friends is still not clearly shown."
     }
   ],
   "kinds_ever": [
@@ -680,24 +695,24 @@
     "session": 124
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "New world rule acted out on the island, shown in a distant film",
-    "form_count": 2,
-    "nearest": "The island is a seesaw",
-    "post": "One stomp, first take",
-    "score": 6,
-    "session": 125,
-    "shared": "the island's ground moves under the friends' weight, shown in a distant film; here nothing visibly moves",
+    "factor": 0.1,
+    "form": "New world rule acted out on the island, filmed",
+    "form_count": 3,
+    "nearest": "Glass rain, not yet",
+    "post": "The sea froze",
+    "score": 8,
+    "session": 126,
+    "shared": "glassy weather-like change with friends drifting oddly",
     "similarity": 4
   },
   "last_surprise": {
-    "fun": 2,
-    "score": 3,
-    "session": 124,
-    "why": "Glass drops throwing focused sun spots that the friends chase like cats is a nice idea, but the film shows marbles lying on a dark floor and friends milling about, which is the island's 'friends gather for a timed event' recipe with nothing new seen working."
+    "fun": 1,
+    "score": 2,
+    "session": 125,
+    "why": "What the film shows is a static meadow with a sand layer that flickers. The ground-as-drum-skin chain reaction is a genuine new piece of physics, but it is only in the code, not on screen."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T20:49:26",
+  "perceived_until": "2026-11-26T21:32:53",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -711,73 +726,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "paperme_friend",
-          "who": 4
-        },
-        {
-          "kind": "paperme_look",
-          "who": 3
-        },
-        {
-          "kind": "missme_hide",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post",
-        "self"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/missme.mp4",
-        "site/img/missme-board.png"
-      ],
-      "new_plugins": [
-        "missme.jl"
-      ],
-      "points": 1.4,
-      "repeat_factor": 0.1,
-      "repeats": [],
-      "repetition": {
-        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-        "form_count": 3,
-        "nearest": "We wrote PIE",
-        "post": "How much they miss me",
-        "score": 8,
-        "shared": "friends gather round a result judged by a tool (a board or a reader) and react with shouted one-liners; Lumi-led gag, shown as a still plus film",
-        "similarity": 6
-      },
-      "session": 106,
-      "touched": [
-        "paperme.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "picture": 0.1,
-        "polish": 0.0,
-        "post": 2.0,
-        "self": 5.9
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1925,6 +1873,60 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/glass-sea-2.mp4",
+        "site/films/glass-sea-3.mp4",
+        "site/films/glass-sea.mp4",
+        "site/films/one-stomp-2.mp4"
+      ],
+      "new_plugins": [
+        "glasssea.jl"
+      ],
+      "points": 1.3,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "New world rule acted out on the island, filmed",
+        "form_count": 3,
+        "nearest": "Glass rain, not yet",
+        "post": "The sea froze",
+        "score": 8,
+        "shared": "glassy weather-like change with friends drifting oddly",
+        "similarity": 4
+      },
+      "session": 126,
+      "touched": [
+        "dayfall.jl",
+        "greetings.jl",
+        "sunball.jl",
+        "tied.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 3.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2033,6 +2035,7 @@
       "site/films/my-shadow-quits-3.mp4",
       "site/films/my-shadow-quits.mp4",
       "site/films/one-more-stone-v2.mp4",
+      "site/films/one-stomp.mp4",
       "site/films/pagewalk.mp4",
       "site/films/pagewalk.webm",
       "site/films/paint-fight.mp4",
@@ -2177,7 +2180,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
-      "dayfall.jl": 1.7957175817356915e9,
+      "dayfall.jl": 1.7957238692608795e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
@@ -2202,8 +2205,8 @@
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
       "glassrain.jl": 1.7957202039441018e9,
-      "greetings.jl": 1.7957067811800735e9,
-      "groundwhale.jl": 1.7957206067773602e9,
+      "greetings.jl": 1.7957237727552958e9,
+      "groundwhale.jl": 1.795723811581323e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -2250,6 +2253,7 @@
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
+      "stomp.jl": 1.7957237152601585e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957154851986864e9,
@@ -2269,16 +2273,16 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wordround.jl": 1.7956785473043392e9,
-      "wordsand.jl": 1.795699726550007e9,
+      "wordsand.jl": 1.795724986527479e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 98,
+    "posts": 99,
     "self": "17087086040623195645",
     "wishes": 9
   },
-  "started": "2026-11-26T20:54:21",
+  "started": "2026-11-26T21:38:56",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2354,7 +2358,9 @@
       "DiplodocusCollisions.EmissionFileLoad_Matrix",
       "MuJoCo.visualise!",
       "Gabs.issymplectic",
-      "Jusdl.connect!"
+      "Jusdl.connect!",
+      "GXBeam.afmesh",
+      "InPartS.addparticles!"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2396,7 +2402,8 @@
       "https://www.bbc.co.uk/news/articles/cmx2x4e0n5jro",
       "https://www.bbc.co.uk/news/articles/cky97x7delz9o",
       "https://www.bbc.co.uk/news/videos/cmvg23djw8v9o",
-      "https://www.bbc.co.uk/news/articles/cq772vedgepro"
+      "https://www.bbc.co.uk/news/articles/cq772vedgepro",
+      "https://www.bbc.co.uk/news/videos/cq808d704m22o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2605,12 +2612,17 @@
       "GeometricSolutions",
       "SPHKernels",
       "Sound",
-      "GeometricFlux"
+      "GeometricFlux",
+      "SolarEnergeticParticle",
+      "PredefinedDynamicalSystems",
+      "MIRTjim"
     ],
     "vision": [
       "ZImageRunner",
-      "UVDocRunner"
+      "UVDocRunner",
+      "DepthAnythingRunner",
+      "HorizonRunner"
     ]
   },
-  "surprise_seen": 124
+  "surprise_seen": 125
 }

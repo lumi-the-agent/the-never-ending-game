@@ -23,10 +23,12 @@
 # curiosity.jl, RomeoDB, the checkouts); what it looks at, and whether an idea
 # comes from there, is the character's. Only the ideas are judged.
 
-"The surprise (0-10) the critic must expect for an idea to pass: they would show it to a friend."
-const IDEA_BAR = 8
-"The fun (0-10) the critic must expect as well: they come back to it (session 115 passed ways to wreck the island)."
-const FUN_BAR = 7
+"The surprise (0-10) the critic must expect for an idea to pass."
+const IDEA_BAR = 7
+"The fun (0-10) the critic must expect as well (session 115 passed ways to wreck the island)."
+const FUN_BAR = 5
+"How real (0-10) it must be, simulated rather than scripted (session 126: the game is an engineering project)."
+const REAL_BAR = 7
 "How many rounds of pitches the critic answers before the strongest idea goes."
 const IDEA_ROUNDS = 3
 "How often a turn may end without a new round before the session goes on without the critic."
@@ -92,8 +94,8 @@ end
 
 The critic's verdict `v` on this round's `pitched` ideas, scored by the host as the session will
 be: an idea's repeat penalty from the higher of its `similarity` and its form (how many of the last
-`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise` and `fun`, and whether it
-passes. A verdict without `fun` (the critic's before session 116) counts it as its surprise.
+`FORM_MEMORY` `earlier` posts are in `same_form`), its expected `surprise`, `fun` and `real`, and
+whether it passes. A verdict without `fun` counts it as its surprise, one without `real` as 0.
 """
 function score_ideas(v::AbstractDict, pitched, earlier)
     text = Dict(title_key(i["title"]) => i["idea"] for i in pitched)
@@ -106,24 +108,26 @@ function score_ideas(v::AbstractDict, pitched, earlier)
         sim, surprise = clamp(i["similarity"], 0, 10), clamp(i["surprise"], 0, 10)
         f = get(i, "fun", nothing)
         fun = clamp(f isa Real ? f : surprise, 0, 10)
+        r = get(i, "real", nothing)
+        real = clamp(r isa Real ? r : 0, 0, 10)
         s = max(sim, form_score(k))
         title = string(get(i, "title", ""))
         Dict{String,Any}("title" => title, "idea" => get(text, title_key(title), ""), "similarity" => sim,
-                         "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise, "fun" => fun,
-                         "worth" => repeat_factor(s), "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR && fun >= FUN_BAR,
+                         "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise, "fun" => fun, "real" => real,
+                         "worth" => repeat_factor(s), "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR && fun >= FUN_BAR && real >= REAL_BAR,
                          "critique" => string(get(i, "critique", "")))
     end
 end
 
-"How strong an idea is when none passes: its surprise and fun, less its repeat penalty."
-strength(i::AbstractDict) = i["worth"] * (i["surprise"] + get(i, "fun", i["surprise"]))
+"How strong an idea is when none passes: its surprise, fun and how real it is, less its repeat penalty."
+strength(i::AbstractDict) = i["worth"] * (i["surprise"] + get(i, "fun", i["surprise"]) + get(i, "real", 0))
 
 "An idea as the critic saw it, in a line."
 function idea_line(i::AbstractDict)
     how = i["passes"] ? "passes" : i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) :
-          i["surprise"] < IDEA_BAR ? "too expected" : "not fun enough"
+          i["surprise"] < IDEA_BAR ? "too expected" : get(i, "real", 0) < REAL_BAR ? "not real enough" : "not fun enough"
     form = i["form_count"] == 0 ? "its form in none of your last $FORM_MEMORY posts" : "its form in $(i["form_count"]) of your last $FORM_MEMORY"
-    return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10, fun $(i["fun"])/10: $how. $(i["critique"])"
+    return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10, fun $(i["fun"])/10, real $(get(i, "real", 0))/10: $how. $(i["critique"])"
 end
 
 "What the character hears after a round: the critic's word on each idea, then pass, another round, or the strongest."
@@ -138,7 +142,7 @@ function critique_text(scored, round::Int, rel::AbstractString)
         print(io, "\nPassed: ", join(("\"$(i["title"])\"" for i in passed), ", "), ". Take the one of them you want most: ", then)
     elseif round < IDEA_ROUNDS
         print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, a surprise of ",
-              "$IDEA_BAR and fun of $FUN_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
+              "$IDEA_BAR, fun of $FUN_BAR and real of $REAL_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
               "strong, drop the rest, and add new ones far from everything so far; then end your turn.")
     else
         best = argmax(strength, scored)

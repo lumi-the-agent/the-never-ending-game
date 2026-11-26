@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-26T22:07:29.751",
+  "finished": "2026-11-26T22:17:21.315",
+  "id": "20261126-220729-750-clip",
+  "kind": "clip",
+  "params": {
+    "call": "glasssea_clip",
+    "kwargs": {
+      "center": [
+        22.7,
+        6.12
+      ],
+      "dist": 6.0,
+      "samples": 16,
+      "seconds": 9.0,
+      "side": 3.5,
+      "up": 1.4
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-sea-3.mp4",
+    "script": "movies/glasssea.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-sea-3.mp4",
+    "skaters": 5
+  },
+  "seconds": 331.7,
+  "started": "2026-11-26T22:11:49.618",
+  "status": "done"
+}

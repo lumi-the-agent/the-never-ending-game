@@ -18,15 +18,6 @@ function quits_clip(path; rasterize = false, samples = 24, width = 960, height =
         w = g.world
         if !haskey(S, :go)
             S[:go] = true
-            if isdefined(Main, :SEESAW) && haskey(Main.SEESAW, :sys)
-                for c in w.creatures
-                    Main.SEESAW[:weights][c.id] = 0f0
-                end
-                Main.SEESAW[:sys].tilt = Vec2f(0); Main.SEESAW[:sys].spin = Vec2f(0)
-            end
-            if isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-                Main.WORDSAND[:H] .= 0; Main.WORDSAND[:dirty] = true; Main.WORDSAND[:gain] = 0f0
-            end
             isdefined(Main, :TIED) && (Main.TIED[:force] = false)
             isdefined(Main, :UNDERLIGHT) && (Main.UNDERLIGHT[:force] = false; Main.UNDERLIGHT[:u] = 0.0)   # a still before may have left the sun under the sea
             isdefined(Main, :ORBIT) && haskey(Main.ORBIT, :reset) && Main.ORBIT[:reset]()

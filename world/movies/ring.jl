@@ -21,15 +21,6 @@ function ring_clip(path; rasterize = false, samples = 16, width = 960, height = 
         O[:force] = true
         if !haskey(S, :go)
             S[:go] = true
-            if isdefined(Main, :SEESAW) && haskey(Main.SEESAW, :sys)
-                for c in w.creatures
-                    Main.SEESAW[:weights][c.id] = 0f0
-                end
-                Main.SEESAW[:sys].tilt = Vec2f(0); Main.SEESAW[:sys].spin = Vec2f(0)
-            end
-            if isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-                Main.WORDSAND[:H] .= 0; Main.WORDSAND[:dirty] = true; Main.WORDSAND[:gain] = 0f0
-            end
             isdefined(Main, :TIED) && (Main.TIED[:force] = false)
             isdefined(Main, :JELLY) && (Main.JELLY[:force] = true)
             isdefined(Main, :DAYFALL) && haskey(Main.DAYFALL, :reset) && Main.DAYFALL[:reset]()

@@ -132,14 +132,10 @@ function draw_rope!(s::Tied)
     show_rope!(s, true)
 end
 
-"The ground as it is drawn: the terrain plus the dunes of spoken sand (wordsand.jl), never under the sea."
+"The ground as it is drawn: the terrain, never under the sea."
 function floor_at(game, x, y)
     w = game.world
     z = NG.ground(w.island, (x, y))[3]
-    ws = get(game.plugins, "wordsand", nothing)
-    if ws !== nothing && isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-        z += Base.invokelatest(ws.mod.sand_at, Main.WORDSAND[:H], Float32(x), Float32(y))
-    end
     return Float32(z)
 end
 

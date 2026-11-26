@@ -36,14 +36,10 @@ end
 
 hour_of(w) = 24 * NG.daytime(w)
 
-"The ground as it is drawn: the terrain plus the dunes of spoken sand (wordsand.jl)."
+"The ground as it is drawn: the terrain."
 function floor_at(game, x, y)
     w = game.world
     z = NG.ground(w.island, (x, y))[3]
-    ws = get(game.plugins, "wordsand", nothing)
-    if ws !== nothing && isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-        z += Base.invokelatest(ws.mod.sand_at, Main.WORDSAND[:H], Float32(x), Float32(y))
-    end
     return max(Float32(z), -0.25f0)
 end
 

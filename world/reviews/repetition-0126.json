@@ -1,0 +1,20 @@
+{"posts": [
+  {"post": "The sea froze",
+   "what": "Seen from out at sea, the bright reflective water around the island turns dark and glossy, and the crab, a blue friend and the sheep walk off the beach onto it and drift slowly toward and past the camera; nothing else on the island changes.",
+   "recipe": "the whole sea changes material, friends step out onto it and drift",
+   "nearest": "Glass rain, not yet",
+   "similarity": 4,
+   "shared": "glassy weather-like change with friends drifting oddly"},
+  {"post": "One stomp, a broken take",
+   "what": "A low view over the meadow by the cottage: a golden figure floats up shedding crumbs, the sand path and pigs blink in and out, and at the end a sheep and some things fly up; the stomp ring that should throw friends is still not clearly shown.",
+   "recipe": "retake of the stomp-wave ground rule, glitching again",
+   "nearest": "One stomp, first take",
+   "similarity": 8,
+   "shared": "same stomp rule, same meadow, same blinking sand failure; only a little more lift"}
+ ],
+ "forms": [
+  {"form": "New world rule acted out on the island, filmed", "posts": ["The sea froze", "One stomp, a broken take", "One stomp, first take", "The island has a ring", "Tied together"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Glass rain, not yet", "Nobody kicked the sun", "Football with the sun"]},
+  {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)", "My shadow quits (first try)", "I swallow what I hit"]},
+  {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]}
+ ]}

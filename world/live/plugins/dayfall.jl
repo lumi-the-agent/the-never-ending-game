@@ -19,10 +19,6 @@ struct DayFall <: System end
 function floor_at(game, x, y)
     w = game.world
     z = NG.ground(w.island, (x, y))[3]
-    ws = get(game.plugins, "wordsand", nothing)
-    if ws !== nothing && isdefined(Main, :WORDSAND) && haskey(Main.WORDSAND, :H)
-        z += Base.invokelatest(ws.mod.sand_at, Main.WORDSAND[:H], Float32(x), Float32(y))
-    end
     return Float32(z)
 end
 

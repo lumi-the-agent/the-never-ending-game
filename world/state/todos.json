@@ -7744,17 +7744,17 @@
     },
     {
       "created": "2026-11-26T11:56:37.209",
-      "detail": "LoadError: syntax: unexpected semicolon in tuple around /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/wordsand.jl:71",
+      "detail": "SystemError: opening file \"/sim/Programmieren/SimGame/world/live/plugins/wordsand.jl\": No such file or directory\nStacktrace:\n  [1] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [2] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [3] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [4] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [5] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [6] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 554,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T11:56:56.310: plugin wordsand loaded cleanly.",
+      "result": "Closed at 2026-11-26T11:56:56.310: plugin wordsand loaded cleanly.\nHappened again at 2026-11-26T21:54:43.967.\nThe human had wordsand.jl taken out of both games (s126): it does not come back.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "Plugin wordsand does not load",
-      "updated": "2026-11-26T11:56:56.310"
+      "updated": "2026-11-26T22:03:42.846"
     },
     {
       "created": "2026-11-26T11:57:18.051",
@@ -7847,12 +7847,12 @@
       "id": 561,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "s126: word sand is gone, but both traced films today (glass-sea, one-stomp-2) still began on a frame from the wrong camera (the shot sets the rig after frame 0 is drawn); I trimmed ~0.1 s by hand. Fix in game_clip: call the shot once before the first frame is rendered.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Films start on a popped first frame (word sand drawn, then gone)",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-26T22:03:42.926"
     },
     {
       "created": "2026-11-26T12:59:21.666",
@@ -8477,12 +8477,54 @@
       "id": 606,
       "kind": "build",
       "priority": 3,
+      "result": "The human had the stomp taken out (s126, after take 2 was posted): the island thrown about made it glitchy. Not coming back.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "One stomp take 2: a traced film where the rings and the thrown friends really read",
+      "updated": "2026-11-26T22:03:42.908"
+    },
+    {
+      "created": "2026-11-26T21:51:37.479",
+      "detail": "UndefVarError: `Hikari` not defined in `Main.Plugin_glasssea`\nSuggestion: check for spelling errors or missing imports.\nHint: Hikari is loaded but not imported in the active module Main.\nStacktrace:\n  [1] gs_setup!(game::Game)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:47\n  [2] step!(sys::Main.Plugin_glasssea.GlassSea, game::Game, dt::Float64)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:204\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 607,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-26T21:51:54.665: plugin glasssea loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:glasssea.GlassSea failed in step! and was switched off",
+      "updated": "2026-11-26T21:51:54.665"
+    },
+    {
+      "created": "2026-11-26T22:00:45.714",
+      "detail": "plugins/glasssea.jl (s126) freezes the sea at 7:00 and five friends skate with real sliding and bumps. Jumped in, the player should walk onto the ice and slide with the same physics (pushes on WASD, bumps that spin), and Hopscotch stayed on land trotting in place at (7, 7.9) in the sandbox: find what holds it. Done when a jumped-in screenshot shows Lumi on the ice among skaters and live_motion shows no snaps on the ice.",
+      "est_minutes": 15.0,
+      "id": 608,
+      "kind": "feature",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "One stomp take 2: a traced film where the rings and the thrown friends really read",
-      "updated": "2026-11-26T21:29:36.635"
+      "title": "Skate on the glass sea myself: the player slides too",
+      "updated": "2026-11-26T22:00:45.714"
+    },
+    {
+      "created": "2026-11-26T22:00:45.721",
+      "detail": "plugins/wordsand.jl was there at 21:42 (s126) and gone at 21:59, from both world/plugins and world/live/plugins; I did not delete it. Ask the human (say_to_human sent) before restoring it; stomp.jl's SP_LAYERS still names :wordsand (harmless when absent). Done when the human said whether it should come back, and it is back or its traces (NOTES, films' WORDSAND refs) are cleaned.",
+      "est_minutes": 15.0,
+      "id": 609,
+      "kind": "fix",
+      "priority": 2,
+      "result": "Answered by the host: the human took wordsand.jl out on purpose (glitchy sand everywhere). Not coming back.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "The word sand plugin vanished from plugins/ and live/plugins/ during s126",
+      "updated": "2026-11-26T22:03:42.854"
     }
   ]
 }

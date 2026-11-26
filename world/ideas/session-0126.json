@@ -1,0 +1,11 @@
+{"ideas": [
+ {"title": "The lanterns walk out on us",
+  "idea": "At midnight every lantern on the island stands up on little legs and toddles off down the paths, still glowing, to a meeting on the beach. Behind them the island goes dark lane by lane; the sleepy friends wake in pitch black and bump into each other. On the sand the lanterns stand in a warm ring and sway together, their light pooling on the wet sand and the sea. At dawn they shuffle home, some to the wrong post.",
+  "form": "A night plugin that turns the existing lanterns (real lights in the tracer) into walking actors with a gait; a traced film that follows the darkness spreading and ends on the glowing ring on the beach."},
+ {"title": "A bottle washes up with another island inside",
+  "idea": "A green glass bottle rolls in with the tide. Inside, under the curved glass, is a whole tiny island, alive: a tiny other Lumi in a different colour and tiny friends going about their day. The friends crowd round and press their faces to the glass; the tiny Lumi waves back and holds up a tiny note. Pickles tries to uncork it.",
+  "form": "A prop holding a miniature live copy of the island (shrunk puppets on a scaled island mesh) inside real refracting glass in the tracer; a traced close-up film through the bottle."},
+ {"title": "The sea freezes into glass and we skate",
+  "idea": "One cold morning the sea round the island is glass: clear, hard, with fish frozen mid-swim under it. The friends slide out onto it, slip, spin and crash into each other, the pigs skating on their bellies. The low sun shines through the glass sea and throws bright caustic ripples on the seabed below.",
+  "form": "A plugin swapping the sea for a glass surface with sliding physics (low friction, bodies bump and spin), a traced film where the light through the glass is the point."}
+]}

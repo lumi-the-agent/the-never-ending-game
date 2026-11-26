@@ -1,0 +1,22 @@
+{
+  "created": "2026-11-26T21:57:56.909",
+  "finished": "2026-11-26T22:02:16.122",
+  "id": "20261126-215756-909-clip",
+  "kind": "clip",
+  "params": {
+    "call": "glasssea_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 8.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-sea.mp4",
+    "script": "movies/glasssea.jl"
+  },
+  "result": {
+    "bumps": 5,
+    "path": "/sim/Programmieren/SimGame/world/site/films/glass-sea.mp4"
+  },
+  "seconds": 258.1,
+  "started": "2026-11-26T21:57:58.057",
+  "status": "done"
+}

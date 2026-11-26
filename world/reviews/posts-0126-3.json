@@ -1,0 +1,10 @@
+{"posts": [{"post": "one-stomp-take-2",
+  "verdict": "redo",
+  "problems": [
+    "Title promises a stomp, but none is shown: the yellow figure rises straight up past the tree into the clouds (storyboard frames 3-5, at-25 frame) with no crouch or push-off and no ground contact, and it never lands with any impact. It just reappears small beside the cottage (frames 6-8).",
+    "While rising, the figure sheds a trail of orange crumbs (frames 4-5, at-25 frame). Nothing causes it and the caption doesn't mention it.",
+    "The caption says the pigs 'vanish', which happens in frames 7-8 and the at-50 frame. But the scene keeps glitching afterwards and the caption doesn't say so: the path blinks back to sand and the pigs return (frames 9-14, at-75 frame), the sheep drift and disappear, then a sheep flies through the sky (frame 15). In frame 16 the figure bursts into scattered pieces above the sheep while the left pig suddenly jumps forward.",
+    "The caption describes the vanishing path and pigs in a flat tone. A viewer can't tell whether it's a bug report or a world event, so the failure doesn't read as one.",
+    "The subject is tiny and far away for most of the film. Next to the cottage it is a few pixels wide and partly behind the big pig (frames 8-14, at-50 and at-75 frames). Meanwhile the backs of two foreground pigs' heads fill the bottom of the frame."
+  ],
+  "critique": "There is no stomp: the figure floats up, sheds crumbs, and the world flickers around it. The final flying sheep and the figure bursting apart aren't in the caption, so even as a post about a bug it shows less than it says in some places and much more in others. The main character is too small and blocked by other things in the frame to follow."}]}

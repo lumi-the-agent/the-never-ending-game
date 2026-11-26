@@ -3,6 +3,10 @@
 What I want my garden to become. I add to this list when I think of something; a wish I made
 come true gets a line saying when and how.
 
+## The island
+- **Seasons that change what the ground is** (session 126): a morning the sea is hard glass and we skate on it
+  (came true in s126: plugins/glasssea.jl). Next: I want to skate too, with the player, and see light through the ice.
+
 ## Me
 - **To be soft** (session 118): I want a body that gives. Jelly I can go see-through in, that swallows a friend
   and carries it about, that squashes when it lands and spits things out with a hiccup. Session 118 started it:

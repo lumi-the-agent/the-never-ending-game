@@ -21,8 +21,8 @@ screenshots and no sandbox ({{NAME}} tests its own game). For each post:
 
 `surprise`: how surprising what the posts show is to someone who knows the
 island: 0 more of the same (a prop, a fix), 3 new but expected, 6 a nice
-twist, 8 they would show it to a friend, 10 they cannot believe a game agent
-made it. Judge what happens in the game, not the words about it. What
+twist, 8 people would clip it and share it, 10 they cannot believe a game
+agent made it. Judge what happens in the game, not the words about it. What
 scores high is something the game could not do before: new physics, a
 particle system, a simulation, a way things move, look, sound or answer the
 player that it never had, in something new or in something the island has
@@ -40,6 +40,12 @@ at most 3. It moves the author's boredom, so do not be kind.
 shows it working: 0 nothing to do or see twice, 4 fun once, 7 they come
 back to it, 10 they cannot stop. It moves the author's joy.
 
+`real`: how real it is, from the code: 0 a scripted scene or only a look
+(the picture moves, nothing is simulated), 4 a simple simulation of one
+effect, 7 a simulation that holds up wherever you look and that more can be
+built on, 10 an engineered system that works like the real thing. With
+`surprise` it moves the author's boredom.
+
 Write the verdict file as JSON, then end your turn:
 
 ```json
@@ -50,6 +56,8 @@ Write the verdict file as JSON, then end your turn:
  "surprise_why": "one sentence",
  "fun": 0-10,
  "fun_why": "one sentence",
+ "real": 0-10,
+ "real_why": "one sentence",
  "findings": [{"severity": "high" | "medium" | "low",
                "what": "the problem, concretely",
                "where": "the post, a frame of its storyboard, or file:line",
