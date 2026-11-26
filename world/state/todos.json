@@ -2331,12 +2331,12 @@
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-26T11:18:38.986"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7637,12 +7637,12 @@
       "id": 546,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0118: The TV film was posted in s113; a camera fix for one finished film is no longer needed.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "TV film camera: no pushing through heads and bubbles on the way in",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T09:10:14.547",
@@ -7730,17 +7730,17 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "The host's motion measure before s114: Lumi turns 45° in one frame at 2.1 s (beak and right leg jump 0.27 m with it), Sir Sniffsalot turns 64° at 0.9 s (tail jumps 0.21 m). Find which plugin or goal sets c.yaw directly (a goal switch, a feel!, a seat), ease it with a turn rate instead. Done when: live_motion() in the sandbox over 30 s shows no turn above 20° in one frame for any creature.",
+      "detail": "perfectionist-0118 [animation, medium]: Live, the crab's body and both claws flick back and forth 9 times a second. It reads as a shiver, not a scuttle.\nWhere: makeover.jl crab rig / claw snap, gait.jl\nSuggestion: Low-pass the crab's heading and claw angle (critically damped spring) and make the claw snap a deliberate 0.3 s pinch with anticipation.\nDone when: live_motion reports Pinchy among 'moving well' in three runs.\nEvidence: reviews/p118/motion/motion.png and motion-strip.png (live_motion: 'Pinchy: body turns back 9 times a second')",
       "est_minutes": 30.0,
       "id": 553,
-      "kind": "motion",
+      "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Snap turns: Lumi turns 45° and Sir Sniffsalot 64° in one frame (host motion measure s114)",
-      "updated": "2026-11-26T11:34:13.269"
+      "title": "Pinchy vibrates: body and claws turn back 9 times a second",
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7777,12 +7777,12 @@
       "id": 556,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0118: The word-sand film is posted and old; the flecks in the air are a new finding.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Film the words turning to sand: readable bubbles, a slider coming at the lens",
-      "updated": "2026-11-26T12:41:33.985"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7800,7 +7800,7 @@
     },
     {
       "created": "2026-11-26T12:41:33.985",
-      "detail": "perfectionist-0115 [world, high]: The host's eye-level progress camera (the meadow at 1.6 m, the island's nicest view in s112) has shown a grey wavy wall since s114 (session-0114 and session-0115 eye-level.png). It is placed from the untilted ground() height, so the seesaw or sinking island puts it under the sea or inside the terrain. A player who walks into the meadow probably sees the same mismatch between drawn ground and ground().\nWhere: plugins/seesaw.jl versus ground(); NeverendingGame/src/progress.jl:14\nSuggestion: Make ground() (or the drawn transform) agree with the tilt, or keep the island level when nobody is playing so the meadow is at rest, and check the eye-level view after every seesaw change.\nDone when: The next session's eye-level.png shows the meadow, mushrooms and trees again, as in session-0112.\nEvidence: media/progress/session-0112/eye-level.png (meadow) vs session-0114 and session-0115 eye-level.png (grey wall)",
+      "detail": "perfectionist-0118 [world, high]: In the sandbox the bottom fifth of the eye-level view is a flat white-grey slab. In the human's game at session 118 the view is a grass sheet floating over a white wall. The progress camera sits on the untilted ground height, so whenever the seesaw tilts, it ends up inside or under the terrain.\nWhere: dev/NeverendingGame/src/progress.jl:14 (eye-level camera) with the seesaw tilt\nSuggestion: Place the camera with the tilted ground height (the seesaw's transform), and find what the white slab in front is (sand layer or tilted sea) and hide it from the camera's near plane.\nDone when: Two eye-level progress shots, one with the island level and one tilted at least 3°, both show the meadow and horizon with no flat white or grey band in the lower third.\nEvidence: reviews/p118/views/eye-level.png, media/progress/session-0118/eye-level.png",
       "est_minutes": 30.0,
       "id": 558,
       "kind": "review",
@@ -7809,22 +7809,22 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The meadow eye-level view is a grey wall since the seesaw",
-      "updated": "2026-11-26T12:41:33.985"
+      "title": "Eye-level view: no white slab or grey wall, on a tilted island too",
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T12:41:33.985",
-      "detail": "perfectionist-0115 [materials, high]: In the raster the fireflies are big flat circles with a halo pasted on the view (cam-follow.png: six discs across the frame, one as large as a flower). In the traced still at dawn they are opaque pale spheres that light nothing: no glow on the grass, none on Wibbles a metre away. This should be the one place on the island where a path tracer shows small lights lighting a night meadow.\nWhere: plugins/nightglow.jl / firefly_catch.jl, the traced copies\nSuggestion: Small emissive spheres (Hikari emission, a few cm) with a point light on the nearest few, so the grass and faces under them warm up; in the raster, small bright points with a soft bloom, not discs larger than a flower. A dusk traced still where the fireflies are the key light on a sleeping friend.\nDone when: A traced still at night where the grass around a firefly is visibly brighter (a luminance ring) and a raster follow shot where no firefly is wider than 15 px.\nEvidence: reviews/p115/cam-follow.png, reviews/p115/traced.png",
+      "detail": "perfectionist-0118 [materials, medium]: In the traced view at 13:39, dozens of cyan beads lie all over the meadow and path. In daylight they look like spilled plastic beads, not fireflies, and they light nothing.\nWhere: traced live view, firefly plot / nightglow motes\nSuggestion: Hide them by day (or make them tiny dust motes in the sun). At dusk give them a small emissive core with a real light, so each one throws a soft pool onto the grass.\nDone when: A traced still at 13:00 has no cyan beads, and one at 20:30 shows each firefly lighting a visible patch of ground.\nEvidence: reviews/p118/pt.png, reviews/p118/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 559,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Fireflies that glow: emissive with real light, not flat discs and dead balls",
-      "updated": "2026-11-26T12:41:33.985"
+      "title": "Fireflies that glow: no cyan beads all over the day meadow",
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7833,26 +7833,26 @@
       "id": 560,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0118: Duplicate of #576 (shore band); the meadow is green again since the s118 SINK.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Sand edges and the shore: no black band, and a meadow left green",
-      "updated": "2026-11-26T12:41:33.985"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T12:41:33.985",
-      "detail": "perfectionist-0115 [animation, low]: Both new films begin with a jump: frame 1 to 2 changes 0.211 in sand-sledding and 0.140 in the Gloop take. A green tree blob fills the first frame and is gone in the next.\nWhere: make-movie pipeline (first traced frame before the scene is settled)\nSuggestion: Warm up one or two frames and drop them, or start the take after the scene's first update.\nDone when: The motion sheet of the next film shows no jump at 0.04 s.\nEvidence: the-island-weighs-its-words-2-steps.jpg frame 1; motion stats 0.04 s",
+      "detail": "perfectionist-0118 [animation, medium]: Both new films open on one frame where the meadow is a sandpit, then cut to green grass at 0.04 s (change 0.191, the largest jump in each film). The word sand SINK is applied only after the first frame.\nWhere: movies/ setup for jelly and tied films; plugins/wordsand.jl SINK\nSuggestion: Run the plugins' step! for a few frames (or warm up 0.5 s) before the first traced frame, in the film helper, so every film starts settled.\nDone when: motion_sheet of the next film reports no jump in the first 0.2 s above 4x typical.\nEvidence: i-swallow-what-i-hit-2 steps sheet frame 1 vs 2, tied-together-2 jump at 0.04 s (0.191)",
       "est_minutes": 30.0,
       "id": 561,
       "kind": "review",
-      "priority": 3,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films start on a popped first frame",
-      "updated": "2026-11-26T12:41:33.985"
+      "title": "Films start on a popped first frame (word sand drawn, then gone)",
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T12:59:21.666",
@@ -7973,12 +7973,12 @@
       "id": 570,
       "kind": "build",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0118: Duplicate of #569 (sun under the sea in films without losing the GPU).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Film the sun under the sea once the worker survives it",
-      "updated": "2026-11-26T13:24:23.802"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T13:40:01.311",
@@ -7996,17 +7996,17 @@
     },
     {
       "created": "2026-11-26T13:49:08.514",
-      "detail": "tied.jl (s117) ties everyone with a verlet rope. Next: a jump-in 'tug' mini game (pull the chain to the berry bushes while each friend pulls its own way), real wraps round trunks seen in a traced close-up, a catapult when a wrapped rope lets go. Done when: a 10 s film where a trunk wrap is visible and one friend is flung over another.",
+      "detail": "perfectionist-0118 [camera, high]: The only film of the tied morning is shot from about 30 m up. Ten creatures are specks on a red line, the rope cuts straight through the fence and bodies, and you never see anybody being dragged or thrown, which is the whole joke.\nWhere: site/films/tied-together-2.mp4, plugins/tied.jl\nSuggestion: Make it playable first (#572: the player as Lumi drags the chain, and a rope wound round a trunk slingshots someone). Then shoot at creature height, 3-5 m away, following one tug: a pig digging in, the rope going taut with sag, a sheep yanked off its feet. Add rope collision with fence rails and bodies.\nDone when: A film whose overview sheet shows in most frames at least two creatures each taller than 1/6 of the frame height, a visibly taut rope between them, and one creature airborne from a yank.\nEvidence: reviews/motion/perfectionist-0118/tied-together-2-overview.jpg and -strip.jpg",
       "est_minutes": 15.0,
       "id": 572,
-      "kind": "build",
+      "kind": "review",
       "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Tied together, part 2: play it. When you jump in on a tied morning, Lumi's pull is strong enough to drag the chain, and a rope that winds round a trunk makes a slingshot",
-      "updated": "2026-11-26T13:49:08.514"
+      "title": "Film Tied together up close: pulls, throws and a rope round a trunk",
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T13:49:08.532",
@@ -8015,12 +8015,12 @@
       "id": 573,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "Superseded by perfectionist-0118.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Keep the island level: the low shore visibly floods and friends hop out of the water, the tilt meter shows the splash line",
-      "updated": "2026-11-26T13:49:08.532"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T13:49:08.551",
@@ -8029,12 +8029,12 @@
       "id": 574,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "Superseded by perfectionist-0118.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lit from below has to read live: the glow where a player looks, crowns visibly lit from under, or the Messages text goes",
-      "updated": "2026-11-26T13:49:08.551"
+      "updated": "2026-11-26T15:15:55.042"
     },
     {
       "created": "2026-11-26T14:39:28.918",
@@ -8052,17 +8052,73 @@
     },
     {
       "created": "2026-11-26T14:52:04.307",
-      "detail": "s118: hiding the shallows plot shows the whole sea near-black in the raster (media/shore-noshallows.png); the ring's first band (alpha 0 at -0.6 m) leaves a dark strip at the waterline. Done when: an overview screenshot with no near-black run (<0.05) along the coast wider than 20 px.",
+      "detail": "perfectionist-0118 [world, high]: Along most of the coast a dark, nearly black stripe sits between the sand and the bright shallows ring. Seen from the pier and the western path it looks like a tar line round the island.\nWhere: shoreline, raster live view (shallows ring vs sea plot)\nSuggestion: Close the gap by extending the shallows mesh under the beach edge or raising the sea's alpha falloff near the shore, then add a moving foam line at the waterline.\nDone when: Screenshots from the pier and from the western path show sand blending into turquoise water with no pixel darker than the deep sea along the waterline.\nEvidence: reviews/p118/motion/creatures.png tiles row 2 col 1 and row 5 col 1",
       "est_minutes": 15.0,
       "id": 576,
-      "kind": "fix",
+      "kind": "review",
       "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The black band round the shore is still there live",
+      "updated": "2026-11-26T15:15:55.042"
+    },
+    {
+      "created": "2026-11-26T15:15:55.042",
+      "detail": "perfectionist-0118 [materials, high]: In the film the jelly is a near-black olive sphere. Pinchy is only a smudge inside, and the ground under it gets a plain dark shadow. A player would not guess jelly; it reads as a dirty glass ball. The sphere never deforms as Lumi hops, and the friend is pinned to its front.\nWhere: plugins/jelly.jl:25-30 (σ_a 0.55/0.06/0.5 is far too dense for a 1.5 m ball), site/films/i-swallow-what-i-hit-2.mp4\nSuggestion: Cut σ_a about 5x and give it a pale lime tint with a little scattering, so it glows when backlit. Shoot it against the sun so a green caustic pool lands on the path. Squash and stretch the coat with each hop (scale the mesh, not only the hiccup), and let the friend bob and rotate freely inside. Then turn Lumi's own body into jelly, not a coat round it.\nDone when: A traced still of the swallowed friend where the friend's face is clearly readable through bright green jelly and a green light pool or caustic is visible on the ground under it; a strip sheet shows the ball deforming on at least 3 hops.\nEvidence: reviews/motion/perfectionist-0118/i-swallow-what-i-hit-2-overview.jpg, frames 3-9",
+      "est_minutes": 30.0,
+      "id": 577,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The jelly should glow like jelly: bright, wobbling, casting green caustics",
+      "updated": "2026-11-26T15:15:55.042"
+    },
+    {
+      "created": "2026-11-26T15:15:55.042",
+      "detail": "perfectionist-0118 [style, medium]: Clusters of orange balls hover and swirl around talking creatures, both live (next to the pig in cam-follow-b.png and above Lumi in cam-orbit-b.png) and in the jelly film left of the ball. The author does not know where the ones in the film come from. To a player it looks like a particle glitch, not words turning to sand.\nWhere: plugins/wordsand.jl (falling grains), live and in films\nSuggestion: Make the grains read as sand: smaller, sand-coloured, falling in a quick stream from the beak to the ground with a little puff where they land, and never resting in the air.\nDone when: A strip at 10 fps of a speaking creature shows grains falling to the ground in under 1 s, and no grain cluster stays in the air over three frames.\nEvidence: reviews/p118/cam-follow-b.png, reviews/p118/cam-orbit-b.png, i-swallow-what-i-hit-2-steps.jpg frames 2-3",
+      "est_minutes": 30.0,
+      "id": 578,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Word sand: no orange flecks hanging in the air round the creatures",
+      "updated": "2026-11-26T15:15:55.042"
+    },
+    {
+      "created": "2026-11-26T15:36:05.163",
+      "detail": "dayfall.jl: tile every 0.5 m Lumi walks while a session runs (or when played), simulated hinged chain, notes per hit, thoughts pop. Film movies/dayfall.jl.",
+      "est_minutes": 15.0,
+      "id": 579,
+      "kind": "feature",
+      "priority": 1,
+      "result": "dayfall.jl published (0.02 ms/frame; sandbox laid 110 tiles in 6 min of Lumi walking, test spiral of 70 fell end to end at ~5.7 tiles/s). Film site/films/my-day-falls-over.mp4 (traced 960x540, 20 spp), sheet media/s119-dayfall-traced-sheet.png; raster media/s119-dayfall-raster-sheet.png. Post critic: redo (TV in shot, no walker) -> caption now says only what it shows; follow-up todo for the walk + dusk film.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "My day falls over and sings: a domino line of my walk that falls at bedtime",
+      "updated": "2026-11-26T15:50:51.025"
+    },
+    {
+      "created": "2026-11-26T15:46:27.116",
+      "detail": "movies/dayfall.jl: Lumi walks the path sped up and lays tiles (DF[:lay] as it passes), hour ~19, tip by Lumi with a push, seconds long enough for the spiral to finish; tiles push flowers/mushrooms aside; one friend mistimes the hop. Done when: a traced film whose sheet shows Lumi laying tiles, Lumi tipping the first, evening light, and the last tile falling.",
+      "est_minutes": 15.0,
+      "id": 580,
+      "kind": "feature",
+      "priority": 2,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The black band round the shore: the dark raster sea shows between beach and the shallows ring",
-      "updated": "2026-11-26T14:52:04.307"
+      "title": "Film the falling day as it really goes: me walking and laying it, tipping it at dusk, the whole spiral down",
+      "updated": "2026-11-26T15:46:27.116"
     }
   ]
 }

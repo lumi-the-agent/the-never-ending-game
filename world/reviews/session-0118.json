@@ -1,0 +1,34 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "reviews/motion/session-0118/live/creatures.png (row 2: Gloop through Lumi), reviews/s118-j4.png, reviews/s118-j5.png",
+      "severity": "medium",
+      "suggestion": "Move the friend's float point to the coat's free volume, from Lumi's body radius to the jelly radius, and let it drift and bump against the inner wall, or shrink Lumi into the jelly the way the author's 'my own feathers turned to jelly' note says. Stop the coat at props.",
+      "what": "The friend is not inside a jelly Lumi, it is pinned into Lumi's chest. The coat is a sphere centred on Lumi, so up close the swallowed friend overlaps her body: Gloop's blue body passes through Lumi's front. From above, it reads as two creatures standing in one bubble, not as being swallowed. When I walked with W during the carry, Lumi went straight into an easel and the coat passed through it.",
+      "where": "plugins/jelly.jl:146-153 (inside = lp + fw*0.6, no clearance from Lumi's body), coat at :120"
+    },
+    {
+      "evidence": "reviews/motion/session-0118/i-swallow-what-i-hit-2-steps.jpg (frames 1-3)",
+      "severity": "medium",
+      "suggestion": "Do the stage setup (sand clear, seesaw reset, placing) before the recorder starts, or drop the warm-up frames from the export.",
+      "what": "Both films open with a pop. Frames 0-2 show a different camera and the meadow buried in word sand, then the film's setup clears the sand and jumps to the shot. Take 2's largest jump is 0.191 at 0.04 s and take 1's is 0.134 at 0.29 s, so the first thing a viewer sees is a flash of a sandpit.",
+      "where": "movies/jelly.jl:24-30 (WORDSAND[:H] cleared inside the first shot call, after frames were already rendered)"
+    },
+    {
+      "evidence": "reviews/s118-j4.png (orange column above the coat while Pinchy says 'It's squishy in here!'), reviews/motion/session-0118/live/creatures.png row 1-2",
+      "severity": "low",
+      "suggestion": "Keep sand from a creature with goal :jelly inside the coat (let it settle in the belly), or hold it back until the hiccup throws it out with the friend.",
+      "what": "The 'orange dots left of the ball' the author could not explain are most likely the friend's own speech turned to word sand ('It's squishy in here!', 'Let me OUT!'), falling from the speaker inside the jelly straight through the glass. Live, they stream out of the coat as an orange column.",
+      "where": "plugins/jelly.jl:182-186 with wordsand.jl"
+    }
+  ],
+  "fun": 5,
+  "fun_why": "Pressing J next to a friend and watching it get swallowed, carried and spat across the meadow is funny the first few times, but you cannot aim the spit, keep the friend, or do anything with it inside, so it is fun once more than a toy.",
+  "real_change": "jelly.jl moves the creatures: Lumi hops to the victim (scripted lerp with a sine hop), then strolls a small arc unless the player walks her. The victim's position is overwritten every frame, pinned 0.6 m in front of Lumi with a bob and a spin. At the hiccup it follows a true parabola (v=5 m/s up, 2.8 m/s back) and stops where it meets the terrain. Both are held by a :jelly goal, which separation.jl now respects, and it emits :jelly_swallow. J in Jump-in starts it on the nearest creature within 3.5 m. On its own it runs every 240 real seconds. Only drawn: the coat, one sphere mesh that is translated and scaled (grow, squash, wobble), with a Hikari Glass + HomogeneousMedium material traced and translucent green in raster. wordsand.jl only stops drawing sand thinner than 25 cm (SINK); the sand stays in the field. play.jl adds 'J swallow' to the help text.",
+  "summary": "The swallow works in the game. Lumi grows a see-through green jelly that swallows the nearest friend, carries it, then hiccups it out on a ballistic arc. As Lumi, J does it on demand, and with nobody near it says so. The traced take 2 shows real glass with a green medium inside. The weak spots are how the friend sits inside the jelly and a sand-filled pop on the films' first frames.",
+  "superseded_by": "perfectionist-0118.json",
+  "surprise": 5,
+  "surprise_why": "A creature that swallows a friend into a wobbling glass belly, with a real participating medium in the trace and a player key for it, is new for the island, but it is still a scripted 10-second event with fixed lines ('Bwoing!', '*gulp*', 'Let me OUT!').",
+  "verdict": "pass"
+}

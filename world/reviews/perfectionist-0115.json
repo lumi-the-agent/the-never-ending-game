@@ -1,84 +1,205 @@
 {
-  "verdict": "needs_work",
-  "summary": "Speech that falls out of my friends as sand and piles up into dunes they boast on and sled down is the most original thing on the island since the seesaw. A stranger would want to see it, but neither film shows it: one is shot from far behind a blurred haystack, the other has black teeth along the bottom. Meanwhile the game added in s114 for the player to actually play is won by standing still. At dawn the live views keep looking through pine trees and tree crowns, and the meadow eye-level view has been a grey wall since the seesaw arrived.",
-  "scores": {
-    "lighting": {"score": 5, "why": "Dawn in the raster has warm lit cottage windows and lamps, and the orbit view at 05:25 has a real mood. The traced still at 05:49 is a flat dark sky over grainy green; the dozen fireflies are opaque pale balls that cast no light on the grass or on Wibbles a metre away. One sun and a fill light, as before."},
-    "materials": {"score": 4, "why": "Nothing new in materials since s112. The TV is still cuboids. The new sand is a plain diffuse orange, and the traced fireflies are plain spheres rather than emitters. The sea is still the only material that shows what a path tracer can do."},
-    "world": {"score": 6, "why": "Terrain that changes with what is said is a real world mechanic: dunes, grooves, a column of sand under Gloop. But a lot of the meadow is now brown sand in the orbit and free views (cam-orbit.png versus the green s112 overview), the films show jagged black sand edges, and in the creature close-ups the shore is a black band between land and sea."},
-    "props": {"score": 6, "why": "Unchanged: generated assets are used across the island, but the s112 TV finding still stands (cuboids, flat screen). The gallery easels crowd the overview."},
-    "creatures": {"score": 6, "why": "The faces and silhouettes read (sheep with a bow, pig with a beanie, yellow spiky Lumi). In the traced still a big brown lump sits in front of Wibbles' face, and half the creatures could not be checked up close because the close-up camera was behind trees or facing the sea."},
-    "animation": {"score": 6, "why": "Live measure at dawn: 9 of 10 move well; only Truffle's tail jumps 0.15 m in one frame. The films have a first-frame pop (0.211 change at 0.04 s in sand-sledding, 0.140 in the Gloop take), and in the sledding film the slides are too small to read as motion."},
-    "fun": {"score": 6, "why": "Down from 7. 'Keep the island level' was the answer to 'something to PLAY', but I pressed no key for 60 s and won: 0/3 splashes and 'Dry feet for 60 seconds! ... a new best'. The tilt never went past 4.4°. A game that plays itself is not a game. Sledding and boasting on dunes are fun to watch, not to play."},
-    "wow": {"score": 6, "why": "'The island weighs its words' and 'Gloop says Higher!' are unguessable ideas, the best since the seesaw. 'Sand sledding' is a weak film the post apologises for, and three posts in one session from one mechanic is one idea told three times."},
-    "camera": {"score": 4, "why": "In the mini game the chase camera sat inside a pine for the whole minute (balance-15s, balance-end). The start card covered a camera inside Lumi's body or a trunk. The follow view looked through crowns or put Lumi's name tag in the sky. The progress eye-level camera on the meadow has been a grey wall since s114. The sledding film is shot from 40 m behind a blurred haystack."},
-    "ui": {"score": 5, "why": "The mini game cards are clear. 'Things to try' is still a wall of keys. The traced still keeps a raster 'Wibbles' name tag floating over the trace."},
-    "style": {"score": 5, "why": "Soft clay creatures and blobby trees hold together. Orange sand piles, flat glowing firefly discs and the black shore band pull it apart."},
-    "performance": {"score": 9, "why": "Sandbox frame p95 7.6 ms (median 4.3) at 10 creatures and 252 props; wordsand p95 0.77 ms."}
-  },
-  "findings": [
-    {"severity": "high", "category": "fun", "title": "Keep the island level is won by standing still: make the crowd a threat", "todo": null,
-     "what": "I started 'Keep the island level', never pressed a key, and won: t=60, 0/3 splashes, 'Dry feet for 60 seconds! The island was level for 13 s (a new best)'. The tilt peaked at 4.4° (splash at 5.4°). The game the author built for the player to play does not need a player.",
-     "where": "plugins/balance.jl (SPLASH_ANGLE, CALL_EVERY, crowd size, HEAVY)",
-     "evidence": "reviews/p115/balance-15s.png, balance-30s.png, balance-end.png; live_eval state: over t=60 splashes=0 level=13",
-     "suggestion": "Tune it so an idle player floods within about 15 s: bigger crowds later in the round, two crowds at once on opposite sides, a crowd that runs after Lumi. Show the flooding shore in the view (water racing up the meadow, friends hopping) so a near-splash is visible before it counts, and finish on a score worth beating.",
-     "done_when": "A run with no input ends with 3 splashes before 30 s, and a run where the player moves toward the high side gets to 60 s; both shown in two end-card screenshots."},
-    {"severity": "high", "category": "camera", "title": "Game cameras stop looking through pines and crowns (balance, follow)", "todo": 510,
-     "what": "For the whole minute of 'Keep the island level' the chase camera sat inside a pine: dark needles over 60% of the frame, Lumi a dim shape behind them. The start card covered a camera inside a trunk. In follow mode Lumi's name tag floated in the sky with a tree crown over the frame.",
-     "where": "camera rig (follow/chase), plugins/balance.jl camera",
-     "evidence": "reviews/p115/balance-start.png, balance-15s.png, balance-end.png, cam-follow-b.png",
-     "suggestion": "Sphere-cast from the target to the camera against crowns, trunks, rocks and dunes, and pull in or swing round before anything covers the creature. For balance, a high three-quarter view that shows both rims and which way the island is tipping.",
-     "done_when": "Five screenshots 10 s apart during a balance round and five in follow mode: Lumi unobstructed and larger than 8% of the frame in every one."},
-    {"severity": "high", "category": "world", "title": "The meadow eye-level view is a grey wall since the seesaw", "todo": null,
-     "what": "The host's eye-level progress camera (the meadow at 1.6 m, the island's nicest view in s112) has shown a grey wavy wall since s114 (session-0114 and session-0115 eye-level.png). It is placed from the untilted ground() height, so the seesaw or sinking island puts it under the sea or inside the terrain. A player who walks into the meadow probably sees the same mismatch between drawn ground and ground().",
-     "where": "plugins/seesaw.jl versus ground(); NeverendingGame/src/progress.jl:14",
-     "evidence": "media/progress/session-0112/eye-level.png (meadow) vs session-0114 and session-0115 eye-level.png (grey wall)",
-     "suggestion": "Make ground() (or the drawn transform) agree with the tilt, or keep the island level when nobody is playing so the meadow is at rest, and check the eye-level view after every seesaw change.",
-     "done_when": "The next session's eye-level.png shows the meadow, mushrooms and trees again, as in session-0112."},
-    {"severity": "high", "category": "materials", "title": "Fireflies that glow: emissive with real light, not flat discs and dead balls", "todo": null,
-     "what": "In the raster the fireflies are big flat circles with a halo pasted on the view (cam-follow.png: six discs across the frame, one as large as a flower). In the traced still at dawn they are opaque pale spheres that light nothing: no glow on the grass, none on Wibbles a metre away. This should be the one place on the island where a path tracer shows small lights lighting a night meadow.",
-     "where": "plugins/nightglow.jl / firefly_catch.jl, the traced copies",
-     "evidence": "reviews/p115/cam-follow.png, reviews/p115/traced.png",
-     "suggestion": "Small emissive spheres (Hikari emission, a few cm) with a point light on the nearest few, so the grass and faces under them warm up; in the raster, small bright points with a soft bloom, not discs larger than a flower. A dusk traced still where the fireflies are the key light on a sleeping friend.",
-     "done_when": "A traced still at night where the grass around a firefly is visibly brighter (a luminance ring) and a raster follow shot where no firefly is wider than 15 px."},
-    {"severity": "high", "category": "props", "title": "Real television: the generated TV set with glass, wood coat and brass", "todo": 545,
-     "what": "Still open from s112 and untouched this session (journal 12:20 says so). The TV that the 'island on TV' post is about is brown cuboids with a flat quad screen.",
-     "where": "plugins/tv.jl",
-     "evidence": "perfectionist-0112 finding; journal 2026-11-26 12:20",
-     "suggestion": "Use the generated TV mesh, with a coated wood case, curved glass with real reflection over the screen image, and brass knobs.",
-     "done_when": "A traced still at 1.5 m from the TV shows the window reflected in the screen glass and a highlight on the wood."},
-    {"severity": "medium", "category": "wow", "title": "Film the words turning to sand: readable bubbles, a slider coming at the lens", "todo": 556,
-     "what": "'Sand sledding' is shot from about 40 m behind a blurred haystack that fills the lower right third. The slides are specks, and the caption apologises. Neither sand film lets you read that the sand IS the words: no bubble is legible as it pours. 'Gloop says Higher!' starts with a black-toothed sand edge.",
-     "where": "the s115 films; plugins/wordsand.jl",
-     "evidence": "reviews/motion/perfectionist-0115/sand-sledding-overview.jpg, the-island-weighs-its-words-2-overview.jpg",
-     "suggestion": "One close take at 3-6 m: a friend shouts, the word pours out letter by letter as sand, the heap rises under them, then they bellyflop down at the camera. Fold #552 (seesaw up close) into the same 'film it close' habit.",
-     "done_when": "A film whose motion overview has a readable word in at least 3 of 12 frames and a sliding creature larger than 15% of the frame height."},
-    {"severity": "medium", "category": "world", "title": "Sand edges and the shore: no black band, and a meadow left green", "todo": null,
-     "what": "In the creature close-ups (dawn) the shore is a wide black band between the sand and the sea in three tiles. The orbit and free views show brown sand over large parts of what was the green meadow in s112, so the island is turning into a sandpit.",
-     "where": "plugins/wordsand.jl (drawn_ground, wind decay), shore terrain colour",
-     "evidence": "reviews/motion/p115/creatures.png rows 1-3; reviews/p115/cam-orbit.png vs media/progress/session-0112/overview.png",
-     "suggestion": "Sand heaps with a wet darker rim that blends into grass, faster wind decay away from the speaking spots, and a shore that is wet sand and foam rather than black.",
-     "done_when": "An orbit screenshot with the meadow at least 70% green and a close-up of the shore with no pixel run of near-black (<0.05) wider than 20 px."},
-    {"severity": "low", "category": "animation", "title": "Films start on a popped first frame", "todo": null,
-     "what": "Both new films begin with a jump: frame 1 to 2 changes 0.211 in sand-sledding and 0.140 in the Gloop take. A green tree blob fills the first frame and is gone in the next.",
-     "where": "make-movie pipeline (first traced frame before the scene is settled)",
-     "evidence": "the-island-weighs-its-words-2-steps.jpg frame 1; motion stats 0.04 s",
-     "suggestion": "Warm up one or two frames and drop them, or start the take after the scene's first update.",
-     "done_when": "The motion sheet of the next film shows no jump at 0.04 s."}
-  ],
-  "todos": [
-    {"id": 536, "action": "done", "why": "Live measure at dawn s115: 9/10 move well, Hopscotch not flagged (only Truffle's tail)."},
-    {"id": 538, "action": "drop", "why": "Low style note from s109 superseded by the concrete sand and firefly findings."},
-    {"id": 552, "action": "drop", "why": "Same 'film it close' fix as #556 and this review's film finding; kept there."},
-    {"id": 517, "action": "keep", "why": "Not rechecked this time; hats and rods are still worth checking up close."},
-    {"id": 518, "action": "keep", "why": "Not rechecked; jump-in camera after free mode."},
-    {"id": 527, "action": "keep", "why": "The face hill still reads as a yellow smear in the orbit view."},
-    {"id": 533, "action": "keep", "why": "Not rechecked with the pointer on the bar."},
-    {"id": 541, "action": "keep", "why": "The drift wake has not been worked on."},
-    {"id": 546, "action": "keep", "why": "The TV film camera has not been reworked."},
-    {"id": 547, "action": "keep", "why": "Not rechecked this session."}
-  ],
+  "addressed": true,
   "engine": [
-    {"what": "interact! (FakeInteraction) only works inside a world/tests test, so a reviewer who may only write under world/reviews cannot play a mini game with keys; I had to start it with start_minigame! and could not press W or R.", "evidence": "NG.interact! docstring: 'only inside a test'; live_eval cannot see Makie.MouseTo"}
+    {
+      "evidence": "NG.interact! docstring: 'only inside a test'; live_eval cannot see Makie.MouseTo",
+      "what": "interact! (FakeInteraction) only works inside a world/tests test, so a reviewer who may only write under world/reviews cannot play a mini game with keys; I had to start it with start_minigame! and could not press W or R."
+    }
   ],
-  "process": "The author keeps inventing (goal 8 is well served: words that weigh something is a fresh idea, and a wish from WISHES.md was worked on, goal 5). But the pattern from the last review holds: each idea ships at about 70% and the next one starts. This session even stretched one mechanic into three posts while the s112 high findings (TV mesh #545, follow camera #510) were deferred again. Goal 1 (playable interactions) got its first real game in s114, and it turns out to need no player. That should be fixed before anything new is added to play. Goal 3 (physics on the GPU, Maelstrom water, the spray can) has had no work for many sessions; the sand is a CPU heightfield, a step toward 'the island reacts', but nothing runs on Mantle. Goal 6 (motion) is holding at 9/10. Goals 4 and 7 (materials, light) have not moved since s110: dawn and night traces are flat, and the fireflies would be the cheapest showcase on the island. Goal 2 (a film to be proud of) is no closer: the films are cheap takes, shot from far, which their own captions apologise for. Recommendation for s116: fix the balance game's difficulty and the game camera, then one close, readable traced film of the sand words with emissive fireflies at dusk."
+  "findings": [
+    {
+      "category": "fun",
+      "done_when": "A run with no input ends with 3 splashes before 30 s, and a run where the player moves toward the high side gets to 60 s; both shown in two end-card screenshots.",
+      "evidence": "reviews/p115/balance-15s.png, balance-30s.png, balance-end.png; live_eval state: over t=60 splashes=0 level=13",
+      "severity": "high",
+      "suggestion": "Tune it so an idle player floods within about 15 s: bigger crowds later in the round, two crowds at once on opposite sides, a crowd that runs after Lumi. Show the flooding shore in the view (water racing up the meadow, friends hopping) so a near-splash is visible before it counts, and finish on a score worth beating.",
+      "title": "Keep the island level is won by standing still: make the crowd a threat",
+      "todo": null,
+      "what": "I started 'Keep the island level', never pressed a key, and won: t=60, 0/3 splashes, 'Dry feet for 60 seconds! The island was level for 13 s (a new best)'. The tilt peaked at 4.4° (splash at 5.4°). The game the author built for the player to play does not need a player.",
+      "where": "plugins/balance.jl (SPLASH_ANGLE, CALL_EVERY, crowd size, HEAVY)"
+    },
+    {
+      "category": "camera",
+      "done_when": "Five screenshots 10 s apart during a balance round and five in follow mode: Lumi unobstructed and larger than 8% of the frame in every one.",
+      "evidence": "reviews/p115/balance-start.png, balance-15s.png, balance-end.png, cam-follow-b.png",
+      "severity": "high",
+      "suggestion": "Sphere-cast from the target to the camera against crowns, trunks, rocks and dunes, and pull in or swing round before anything covers the creature. For balance, a high three-quarter view that shows both rims and which way the island is tipping.",
+      "title": "Game cameras stop looking through pines and crowns (balance, follow)",
+      "todo": 510,
+      "what": "For the whole minute of 'Keep the island level' the chase camera sat inside a pine: dark needles over 60% of the frame, Lumi a dim shape behind them. The start card covered a camera inside a trunk. In follow mode Lumi's name tag floated in the sky with a tree crown over the frame.",
+      "where": "camera rig (follow/chase), plugins/balance.jl camera"
+    },
+    {
+      "category": "world",
+      "done_when": "The next session's eye-level.png shows the meadow, mushrooms and trees again, as in session-0112.",
+      "evidence": "media/progress/session-0112/eye-level.png (meadow) vs session-0114 and session-0115 eye-level.png (grey wall)",
+      "severity": "high",
+      "suggestion": "Make ground() (or the drawn transform) agree with the tilt, or keep the island level when nobody is playing so the meadow is at rest, and check the eye-level view after every seesaw change.",
+      "title": "The meadow eye-level view is a grey wall since the seesaw",
+      "todo": null,
+      "what": "The host's eye-level progress camera (the meadow at 1.6 m, the island's nicest view in s112) has shown a grey wavy wall since s114 (session-0114 and session-0115 eye-level.png). It is placed from the untilted ground() height, so the seesaw or sinking island puts it under the sea or inside the terrain. A player who walks into the meadow probably sees the same mismatch between drawn ground and ground().",
+      "where": "plugins/seesaw.jl versus ground(); NeverendingGame/src/progress.jl:14"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced still at night where the grass around a firefly is visibly brighter (a luminance ring) and a raster follow shot where no firefly is wider than 15 px.",
+      "evidence": "reviews/p115/cam-follow.png, reviews/p115/traced.png",
+      "severity": "high",
+      "suggestion": "Small emissive spheres (Hikari emission, a few cm) with a point light on the nearest few, so the grass and faces under them warm up; in the raster, small bright points with a soft bloom, not discs larger than a flower. A dusk traced still where the fireflies are the key light on a sleeping friend.",
+      "title": "Fireflies that glow: emissive with real light, not flat discs and dead balls",
+      "todo": null,
+      "what": "In the raster the fireflies are big flat circles with a halo pasted on the view (cam-follow.png: six discs across the frame, one as large as a flower). In the traced still at dawn they are opaque pale spheres that light nothing: no glow on the grass, none on Wibbles a metre away. This should be the one place on the island where a path tracer shows small lights lighting a night meadow.",
+      "where": "plugins/nightglow.jl / firefly_catch.jl, the traced copies"
+    },
+    {
+      "category": "props",
+      "done_when": "A traced still at 1.5 m from the TV shows the window reflected in the screen glass and a highlight on the wood.",
+      "evidence": "perfectionist-0112 finding; journal 2026-11-26 12:20",
+      "severity": "high",
+      "suggestion": "Use the generated TV mesh, with a coated wood case, curved glass with real reflection over the screen image, and brass knobs.",
+      "title": "Real television: the generated TV set with glass, wood coat and brass",
+      "todo": 545,
+      "what": "Still open from s112 and untouched this session (journal 12:20 says so). The TV that the 'island on TV' post is about is brown cuboids with a flat quad screen.",
+      "where": "plugins/tv.jl"
+    },
+    {
+      "category": "wow",
+      "done_when": "A film whose motion overview has a readable word in at least 3 of 12 frames and a sliding creature larger than 15% of the frame height.",
+      "evidence": "reviews/motion/perfectionist-0115/sand-sledding-overview.jpg, the-island-weighs-its-words-2-overview.jpg",
+      "severity": "medium",
+      "suggestion": "One close take at 3-6 m: a friend shouts, the word pours out letter by letter as sand, the heap rises under them, then they bellyflop down at the camera. Fold #552 (seesaw up close) into the same 'film it close' habit.",
+      "title": "Film the words turning to sand: readable bubbles, a slider coming at the lens",
+      "todo": 556,
+      "what": "'Sand sledding' is shot from about 40 m behind a blurred haystack that fills the lower right third. The slides are specks, and the caption apologises. Neither sand film lets you read that the sand IS the words: no bubble is legible as it pours. 'Gloop says Higher!' starts with a black-toothed sand edge.",
+      "where": "the s115 films; plugins/wordsand.jl"
+    },
+    {
+      "category": "world",
+      "done_when": "An orbit screenshot with the meadow at least 70% green and a close-up of the shore with no pixel run of near-black (<0.05) wider than 20 px.",
+      "evidence": "reviews/motion/p115/creatures.png rows 1-3; reviews/p115/cam-orbit.png vs media/progress/session-0112/overview.png",
+      "severity": "medium",
+      "suggestion": "Sand heaps with a wet darker rim that blends into grass, faster wind decay away from the speaking spots, and a shore that is wet sand and foam rather than black.",
+      "title": "Sand edges and the shore: no black band, and a meadow left green",
+      "todo": null,
+      "what": "In the creature close-ups (dawn) the shore is a wide black band between the sand and the sea in three tiles. The orbit and free views show brown sand over large parts of what was the green meadow in s112, so the island is turning into a sandpit.",
+      "where": "plugins/wordsand.jl (drawn_ground, wind decay), shore terrain colour"
+    },
+    {
+      "category": "animation",
+      "done_when": "The motion sheet of the next film shows no jump at 0.04 s.",
+      "evidence": "the-island-weighs-its-words-2-steps.jpg frame 1; motion stats 0.04 s",
+      "severity": "low",
+      "suggestion": "Warm up one or two frames and drop them, or start the take after the scene's first update.",
+      "title": "Films start on a popped first frame",
+      "todo": null,
+      "what": "Both new films begin with a jump: frame 1 to 2 changes 0.211 in sand-sledding and 0.140 in the Gloop take. A green tree blob fills the first frame and is gone in the next.",
+      "where": "make-movie pipeline (first traced frame before the scene is settled)"
+    }
+  ],
+  "process": "The author keeps inventing (goal 8 is well served: words that weigh something is a fresh idea, and a wish from WISHES.md was worked on, goal 5). But the pattern from the last review holds: each idea ships at about 70% and the next one starts. This session even stretched one mechanic into three posts while the s112 high findings (TV mesh #545, follow camera #510) were deferred again. Goal 1 (playable interactions) got its first real game in s114, and it turns out to need no player. That should be fixed before anything new is added to play. Goal 3 (physics on the GPU, Maelstrom water, the spray can) has had no work for many sessions; the sand is a CPU heightfield, a step toward 'the island reacts', but nothing runs on Mantle. Goal 6 (motion) is holding at 9/10. Goals 4 and 7 (materials, light) have not moved since s110: dawn and night traces are flat, and the fireflies would be the cheapest showcase on the island. Goal 2 (a film to be proud of) is no closer: the films are cheap takes, shot from far, which their own captions apologise for. Recommendation for s116: fix the balance game's difficulty and the game camera, then one close, readable traced film of the sand words with emissive fireflies at dusk.",
+  "scores": {
+    "animation": {
+      "score": 6,
+      "why": "Live measure at dawn: 9 of 10 move well; only Truffle's tail jumps 0.15 m in one frame. The films have a first-frame pop (0.211 change at 0.04 s in sand-sledding, 0.140 in the Gloop take), and in the sledding film the slides are too small to read as motion."
+    },
+    "camera": {
+      "score": 4,
+      "why": "In the mini game the chase camera sat inside a pine for the whole minute (balance-15s, balance-end). The start card covered a camera inside Lumi's body or a trunk. The follow view looked through crowns or put Lumi's name tag in the sky. The progress eye-level camera on the meadow has been a grey wall since s114. The sledding film is shot from 40 m behind a blurred haystack."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "The faces and silhouettes read (sheep with a bow, pig with a beanie, yellow spiky Lumi). In the traced still a big brown lump sits in front of Wibbles' face, and half the creatures could not be checked up close because the close-up camera was behind trees or facing the sea."
+    },
+    "fun": {
+      "score": 6,
+      "why": "Down from 7. 'Keep the island level' was the answer to 'something to PLAY', but I pressed no key for 60 s and won: 0/3 splashes and 'Dry feet for 60 seconds! ... a new best'. The tilt never went past 4.4°. A game that plays itself is not a game. Sledding and boasting on dunes are fun to watch, not to play."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "Dawn in the raster has warm lit cottage windows and lamps, and the orbit view at 05:25 has a real mood. The traced still at 05:49 is a flat dark sky over grainy green; the dozen fireflies are opaque pale balls that cast no light on the grass or on Wibbles a metre away. One sun and a fill light, as before."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Nothing new in materials since s112. The TV is still cuboids. The new sand is a plain diffuse orange, and the traced fireflies are plain spheres rather than emitters. The sea is still the only material that shows what a path tracer can do."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Sandbox frame p95 7.6 ms (median 4.3) at 10 creatures and 252 props; wordsand p95 0.77 ms."
+    },
+    "props": {
+      "score": 6,
+      "why": "Unchanged: generated assets are used across the island, but the s112 TV finding still stands (cuboids, flat screen). The gallery easels crowd the overview."
+    },
+    "style": {
+      "score": 5,
+      "why": "Soft clay creatures and blobby trees hold together. Orange sand piles, flat glowing firefly discs and the black shore band pull it apart."
+    },
+    "ui": {
+      "score": 5,
+      "why": "The mini game cards are clear. 'Things to try' is still a wall of keys. The traced still keeps a raster 'Wibbles' name tag floating over the trace."
+    },
+    "world": {
+      "score": 6,
+      "why": "Terrain that changes with what is said is a real world mechanic: dunes, grooves, a column of sand under Gloop. But a lot of the meadow is now brown sand in the orbit and free views (cam-orbit.png versus the green s112 overview), the films show jagged black sand edges, and in the creature close-ups the shore is a black band between land and sea."
+    },
+    "wow": {
+      "score": 6,
+      "why": "'The island weighs its words' and 'Gloop says Higher!' are unguessable ideas, the best since the seesaw. 'Sand sledding' is a weak film the post apologises for, and three posts in one session from one mechanic is one idea told three times."
+    }
+  },
+  "summary": "Speech that falls out of my friends as sand and piles up into dunes they boast on and sled down is the most original thing on the island since the seesaw. A stranger would want to see it, but neither film shows it: one is shot from far behind a blurred haystack, the other has black teeth along the bottom. Meanwhile the game added in s114 for the player to actually play is won by standing still. At dawn the live views keep looking through pine trees and tree crowns, and the meadow eye-level view has been a grey wall since the seesaw arrived.",
+  "superseded_by": "perfectionist-0118.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 536,
+      "why": "Live measure at dawn s115: 9/10 move well, Hopscotch not flagged (only Truffle's tail)."
+    },
+    {
+      "action": "drop",
+      "id": 538,
+      "why": "Low style note from s109 superseded by the concrete sand and firefly findings."
+    },
+    {
+      "action": "drop",
+      "id": 552,
+      "why": "Same 'film it close' fix as #556 and this review's film finding; kept there."
+    },
+    {
+      "action": "keep",
+      "id": 517,
+      "why": "Not rechecked this time; hats and rods are still worth checking up close."
+    },
+    {
+      "action": "keep",
+      "id": 518,
+      "why": "Not rechecked; jump-in camera after free mode."
+    },
+    {
+      "action": "keep",
+      "id": 527,
+      "why": "The face hill still reads as a yellow smear in the orbit view."
+    },
+    {
+      "action": "keep",
+      "id": 533,
+      "why": "Not rechecked with the pointer on the bar."
+    },
+    {
+      "action": "keep",
+      "id": 541,
+      "why": "The drift wake has not been worked on."
+    },
+    {
+      "action": "keep",
+      "id": 546,
+      "why": "The TV film camera has not been reworked."
+    },
+    {
+      "action": "keep",
+      "id": 547,
+      "why": "Not rechecked this session."
+    }
+  ],
+  "verdict": "needs_work"
 }

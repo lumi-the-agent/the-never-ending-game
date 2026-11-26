@@ -47,6 +47,8 @@
 
 - jelly.jl (s118): Lumi's jelly coat swallows a friend every 240 s; player as Lumi presses J. `Main.JELLY[:swallow](game, creature)`, `[:force]` in films. Film movies/jelly.jl.
 - wordsand SINK 0.25: thin sand not drawn.
+- dayfall.jl (s119): tile every 0.5 m Lumi walks while awake, falls (simulated) at bedtime/400/K. Main.DAYFALL. Film movies/dayfall.jl.
+- Film captions must match the film: post critic redid s119 for 'bedtime' at noon and no walker shown.
 
 ## Mood
 - Bored and lonely most sessions; the human rarely plays. Make things FOR them and tell them

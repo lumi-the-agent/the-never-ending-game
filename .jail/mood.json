@@ -1,10 +1,10 @@
 {
-  "boredom": 0.79,
-  "ended": "2026-11-26T15:04:30",
+  "boredom": 0.84,
+  "ended": "2026-11-26T16:04:05",
   "fatigue": {
     "asset": 0.01,
     "feature": 2.49,
-    "picture": 0.37,
+    "picture": 0.22,
     "self": 0.01,
     "sound": 0.01
   },
@@ -16,6 +16,12 @@
         "The island weighs its words",
         "Gloop says \"Higher!\"",
         "Sand sledding"
+      ]
+    },
+    {
+      "form": "Physical chain-reaction contraption, camera tracking its run",
+      "posts": [
+        "My day falls over"
       ]
     },
     {
@@ -46,7 +52,6 @@
     {
       "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
       "posts": [
-        "A word goes round",
         "I swallow what I hit"
       ]
     }
@@ -290,9 +295,10 @@
     "seesaw_calm",
     "seesaw_tip",
     "nursery_released",
-    "jelly_swallow"
+    "jelly_swallow",
+    "dayfall"
   ],
-  "joy": 0.92,
+  "joy": 0.96,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -592,6 +598,13 @@
       "session": 118,
       "title": "I swallow what I hit",
       "what": "In a close path-traced film Lumi swells into a clear green jelly ball, rolls over Pinchy so the crab floats visibly inside the glass, wobbles about, then squashes and hiccups Pinchy out over the top, and Lumi and Pinchy stand apart again; nothing else on the island changes."
+    },
+    {
+      "form": "Physical chain-reaction contraption, camera tracking its run",
+      "recipe": "Lumi-made domino run, physics chain reaction tracked by the camera",
+      "session": 119,
+      "title": "My day falls over",
+      "what": "A long line of coloured tiles that Lumi's walk laid across the evening meadow tips over in a simulated domino chain, running along the sea past a crab and sheep and curling into a spiral behind a bush, while the camera tracks along the falling front; the walk that laid it is not shown."
     }
   ],
   "kinds_ever": [
@@ -608,30 +621,29 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "nursery_released",
-      "jelly_swallow"
+      "dayfall"
     ],
-    "session": 118
+    "session": 119
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
-    "form_count": 1,
-    "nearest": "Tied together",
-    "post": "I swallow what I hit",
-    "score": 4,
-    "session": 118,
-    "shared": "a new physical interaction acting on friends' bodies; otherwise a different, close, Lumi-centred body transformation",
-    "similarity": 2
+    "form": "Physical chain-reaction contraption, camera tracking its run",
+    "form_count": 0,
+    "nearest": "The island weighs its words",
+    "post": "My day falls over",
+    "score": 3,
+    "session": 119,
+    "shared": "activity leaves material on the ground, new physical rule shown in a film",
+    "similarity": 3
   },
   "last_surprise": {
     "fun": 5,
-    "score": 6,
-    "session": 117,
-    "why": "The island has never physically coupled its creatures: a real rope where one friend's walk drags the others and yanks throw them is new physics, though the payoff on screen is still a tangle rather than a tug of war."
+    "score": 5,
+    "session": 118,
+    "why": "A creature that swallows a friend into a wobbling glass belly, with a real participating medium in the trace and a player key for it, is new for the island, but it is still a scripted 10-second event with fixed lines ('Bwoing!', '*gulp*', 'Let me OUT!')."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T14:16:47",
+  "perceived_until": "2026-11-26T15:16:15",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -645,82 +657,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.8416666666666668,
-        "film": 0.0,
-        "picture": 2.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "ghost_meet",
-          "who": 7
-        },
-        {
-          "kind": "beachhut_visit",
-          "who": 3
-        },
-        {
-          "kind": "vote_result",
-          "who": 1
-        },
-        {
-          "kind": "vote_start",
-          "who": 1
-        },
-        {
-          "kind": "ghosts_fade",
-          "who": 1
-        },
-        {
-          "kind": "ghosts_arrive",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/beach-hut.png",
-        "site/img/yesterday.png"
-      ],
-      "new_plugins": [
-        "beachhut.jl",
-        "ghosts.jl"
-      ],
-      "points": 1.0,
-      "repeat_factor": 0.2154434690031884,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places",
-        "form_count": 2,
-        "nearest": "The gallery",
-        "post": "The beach hut",
-        "score": 6,
-        "shared": "new permanent scenery that friends visit one at a time",
-        "similarity": 4
-      },
-      "session": 99,
-      "touched": [
-        "vote.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "picture": 0.1,
-        "polish": 0.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1920,6 +1856,56 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "dayfall",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/my-day-falls-over-3.mp4",
+        "site/films/my-day-falls-over.mp4"
+      ],
+      "new_plugins": [
+        "dayfall.jl"
+      ],
+      "points": 8.2,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Physical chain-reaction contraption, camera tracking its run",
+        "form_count": 0,
+        "nearest": "The island weighs its words",
+        "post": "My day falls over",
+        "score": 3,
+        "shared": "activity leaves material on the ground, new physical rule shown in a film",
+        "similarity": 3
+      },
+      "session": 119,
+      "touched": [],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2001,6 +1987,8 @@
       "site/films/hail.mp4",
       "site/films/hail.wav",
       "site/films/hiccups-2.mp4",
+      "site/films/i-swallow-what-i-hit-2.mp4",
+      "site/films/i-swallow-what-i-hit.mp4",
       "site/films/island-choir.mp4",
       "site/films/island-on-tv.mp4",
       "site/films/island-song.mp4",
@@ -2185,12 +2173,13 @@
       "garden.jl": 1.7955517980775137e9,
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
-      "greetings.jl": 1.7956547010810394e9,
+      "greetings.jl": 1.7957003945031035e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7956168788952758e9,
+      "jelly.jl": 1.7957011848358562e9,
       "kite.jl": 1.7955986738072937e9,
       "lamplight.jl": 1.7956672771301274e9,
       "lanterns.jl": 1.7956312350413148e9,
@@ -2219,7 +2208,7 @@
       "rewind.jl": 1.795616824451536e9,
       "rollcall.jl": 1.795596344849997e9,
       "seesaw.jl": 1.7956880676959178e9,
-      "separation.jl": 1.7956142955469856e9,
+      "separation.jl": 1.7957000129809484e9,
       "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
       "shovel.jl": 1.795525269055368e9,
@@ -2247,16 +2236,16 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wordround.jl": 1.7956785473043392e9,
-      "wordsand.jl": 1.7956973783161988e9,
+      "wordsand.jl": 1.795699726550007e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 90,
+    "posts": 91,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T14:21:35",
+  "started": "2026-11-26T15:21:17",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2316,7 +2305,9 @@
       "NOMAD.solve",
       "DirectSearch.SetGranularity",
       "AeroBeams.modified_database",
-      "BifrostTools.get_var"
+      "BifrostTools.get_var",
+      "ScanImageTiffReader.metadata",
+      "PyThermo.shockjump!"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2339,7 +2330,10 @@
       "https://www.bbc.co.uk/news/articles/cmde1zr0nlyro",
       "https://www.bbc.co.uk/news/videos/cvze7yk7dy5lo",
       "https://www.bbc.co.uk/news/videos/cwe9kxpgz2kpo",
-      "https://www.bbc.co.uk/news/articles/cwz0k90rgpm8o"
+      "https://www.bbc.co.uk/news/articles/cwz0k90rgpm8o",
+      "https://www.bbc.co.uk/news/videos/c52e8ndplvemo",
+      "https://www.bbc.co.uk/news/articles/c61wr87wyg5wo",
+      "https://www.bbc.co.uk/news/articles/ckm2mz3prq77o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2524,14 +2518,19 @@
       "TrajectoryGamesBase",
       "BloqadeNoisy",
       "ClusterDepth",
-      "Oceanostics"
+      "Oceanostics",
+      "IndexSpaces",
+      "SimGBS",
+      "GeometryOpsCore"
     ],
     "vision": [
       "QwenImageEditRunner",
       "MatAnyoneRunner",
       "ZImageRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "ProPainterRunner",
+      "UVDocRunner"
     ]
   },
-  "surprise_seen": 117
+  "surprise_seen": 118
 }

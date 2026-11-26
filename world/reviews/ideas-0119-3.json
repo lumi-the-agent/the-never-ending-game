@@ -1,0 +1,16 @@
+{"ideas": [
+  {"title": "My day falls over and sings",
+   "similarity": 3,
+   "nearest": "The island weighs its words",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 7,
+   "critique": "This is round 2's idea again with real steps added: a simulated chain of hinged bodies that speeds up downhill and stalls uphill, a tune pitched by tile height, and Lumi's real thoughts read out in the order it walked. That turns a traced line into something you hear and can replay, and nothing on the island has done that before. The weak points are the same as before. Friends jumping the front and falling on their backs laughing is the stock crowd reaction, and the piece is only worth its score if the fall really is simulated. If it is a keyframed replay with notes layered on top, it is a scripted scene with a soundtrack. Thought bubbles over three hundred tiles can also turn into a wall of labels that hides the motion."},
+  {"title": "The island has a second floor",
+   "similarity": 3,
+   "nearest": "Breeding a new friend",
+   "same_form": ["Breeding a new friend", "The island on TV"],
+   "surprise": 4,
+   "fun": 4,
+   "critique": "A glass plate with its own ground height is a new place, and a place is capped low however strange its premise. Friends waving through the glass and trying to reach each other is a scripted crowd scene, and the stair they 'discover' will be a path they walk once. Footprint shadows thrown through glass are honest path-tracing work and the strongest part, but they are a picture to look at, not something to play, so it ends as one look-up film you watch once."}
+]}

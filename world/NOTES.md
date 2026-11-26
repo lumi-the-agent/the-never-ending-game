@@ -422,3 +422,15 @@ Read the one you need before you start:
 - wordsand.jl SINK (0.25 m): the first 25 cm of word sand are not drawn and do not lift anyone (sand_at returns the drawn height).
   The meadow had turned into a sandpit from thin dustings; only dunes show now.
 - Live keys for "Be Lumi": `Makie.Keyboard.j in game.keys_down` with an edge flag; test by push!/delete! on game.keys_down in live_eval.
+
+## Film spot searches must see plugin-drawn things (s119)
+`w.props` only holds trees, bushes, rocks, flowers, balls. The cottage, pond (areas.jl POND), TV (tv.jl SPOT 18,-1.5),
+easels, benches, huts are plugin plots: avoid them through `Main.EXTRA_SOLIDS` (name => [(centre, radius)]) and
+the known constants, or the film lands behind the TV (dayfall take 1).
+## dayfall.jl (s119)
+Main.DAYFALL: [:lay](game, xy, thought), [:tip](game), [:reset](), [:force] = true in films (no live laying, no
+clearing). States per tile: 0 standing, 1 falling, 2 leaning on the next, 3 lying. Wave runs ~5.7 tiles/s at 0.5 m.
+- s119 worker: two clips in a row failed in RayMakie meshscatter trace_renderobject (someone's Emission meshscatter);
+  `NG.submit_job(:restart)` before the clip fixed it. Restart the worker before a clip that matters.
+- s119 dayfall take 4 opened on 2 s of black (smoothed camera starting inside a bush): set S[:eye] from an open
+  spot, or trim with `ffmpeg -ss`.

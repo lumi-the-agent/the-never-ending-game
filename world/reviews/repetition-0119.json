@@ -1,0 +1,17 @@
+{"posts": [
+  {"post": "My day falls over",
+   "what": "A long line of coloured tiles that Lumi's walk laid across the evening meadow tips over in a simulated domino chain, running along the sea past a crab and sheep and curling into a spiral behind a bush, while the camera tracks along the falling front; the walk that laid it is not shown.",
+   "recipe": "Lumi-made domino run, physics chain reaction tracked by the camera",
+   "nearest": "The island weighs its words",
+   "similarity": 3,
+   "shared": "activity leaves material on the ground, new physical rule shown in a film"}
+],
+ "forms": [
+  {"form": "New world rule acted out by the crowd, shown in a distant film", "posts": ["Tied together", "The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding"]},
+  {"form": "Physical chain-reaction contraption, camera tracking its run", "posts": ["My day falls over"]},
+  {"form": "Change to how the island is lit: a quiet still of new light", "posts": ["Lit from below"]},
+  {"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+  {"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw"]},
+  {"form": "Permanent change to the island's look or places", "posts": ["Breeding a new friend", "The island on TV"]},
+  {"form": "Lumi-led set-piece gag film, close up, with a comic payoff", "posts": ["I swallow what I hit"]}
+ ]}

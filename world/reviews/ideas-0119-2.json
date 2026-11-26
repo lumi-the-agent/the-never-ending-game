@@ -1,0 +1,23 @@
+{"ideas": [
+  {"title": "Everywhere I walked today falls over",
+   "similarity": 3,
+   "nearest": "Tied together",
+   "same_form": ["Keep the island level"],
+   "surprise": 7,
+   "fun": 7,
+   "critique": "This is round 1's Domino island again, but now it has a mechanism behind it: the line is laid by Lumi's real working day, so it differs every session, the player can lay one too, and friends trip it early. That is a real step, and an island-long chain of hinged rigid bodies would be physics the island has never had. Two things would sink it: friends and flowers getting flattened, which is the stock payoff again, and a fall that is keyframed or replayed instead of simulated, which would make it a scripted scene."},
+  {"title": "Billiards on the meadow",
+   "similarity": 4,
+   "nearest": "Keep the island level",
+   "same_form": ["Keep the island level"],
+   "surprise": 5,
+   "fun": 7,
+   "critique": "Rolling bodies that collide, lose speed to friction and run up and down the real terrain would be new physics you can play, and you can take the cue yourself. But friends used as round objects comes straight after 'I swallow what I hit', and friends stuck in holes complaining is the usual one-liner reaction. Six holes on a flat meadow is a game everyone already knows."},
+  {"title": "Long exposure night",
+   "similarity": 5,
+   "nearest": "Lit from below",
+   "same_form": ["Lit from below"],
+   "surprise": 5,
+   "fun": 3,
+   "critique": "Building up a whole replayed night in one traced exposure is honest work only a path tracer can do, and lantern light that really falls on the ground is the strong part. It is still a quiet light still, the form of 'Lit from below' and 'Lamps on'. Friends just wander with lanterns, so nothing new happens on the island and there is nothing to play. You look at it once."}
+]}

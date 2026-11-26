@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-26T15:10:15.006",
+  "finished": "2026-11-26T15:14:03.944",
+  "id": "20261126-151015-006-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tv_still",
+    "kwargs": {
+      "eye": [
+        2.0446906089782715,
+        -2.067990303039551,
+        4.800632476806641
+      ],
+      "target": [
+        1.1936839818954468,
+        1.669685959815979,
+        2.9756321907043457
+      ]
+    },
+    "path": "/sim/Programmieren/SimGame/world/state/tv-cast.mp4",
+    "script": "movies/tv.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/state/tv-cast.mp4",
+    "saved": true
+  },
+  "seconds": 226.7,
+  "started": "2026-11-26T15:10:16.970",
+  "status": "done"
+}
