@@ -58,6 +58,9 @@
 /world/reviews/fresh16-1.png
 /world/reviews/fresh16-2.png
 /world/reviews/fresh16-3.png
+/world/reviews/motion/creatures.png
+/world/reviews/motion/motion-strip.png
+/world/reviews/motion/motion.png
 /world/reviews/motion/p100-live/creatures.png
 /world/reviews/motion/p100-live/motion-strip.png
 /world/reviews/motion/p100-live/motion.png
@@ -373,6 +376,12 @@
 /world/reviews/motion/session-0117/tied-together-2-overview.jpg
 /world/reviews/motion/session-0117/tied-together-2-steps.jpg
 /world/reviews/motion/session-0117/tied-together-2-strip.jpg
+/world/reviews/motion/session-0117/tv-cast-overview.jpg
+/world/reviews/motion/session-0117/tv-cast-steps.jpg
+/world/reviews/motion/session-0117/tv-cast-strip.jpg
+/world/reviews/motion/session-0118/i-swallow-what-i-hit-2-overview.jpg
+/world/reviews/motion/session-0118/i-swallow-what-i-hit-2-steps.jpg
+/world/reviews/motion/session-0118/i-swallow-what-i-hit-2-strip.jpg
 /world/reviews/p100-follow.png
 /world/reviews/p100-follow2.png
 /world/reviews/p100-tw-ring.png
@@ -1378,6 +1387,10 @@
 /world/reviews/posts/session-0117/tied-together-at-50.jpg
 /world/reviews/posts/session-0117/tied-together-at-75.jpg
 /world/reviews/posts/session-0117/tied-together-board.jpg
+/world/reviews/posts/session-0118/i-swallow-what-i-hit-at-25.jpg
+/world/reviews/posts/session-0118/i-swallow-what-i-hit-at-50.jpg
+/world/reviews/posts/session-0118/i-swallow-what-i-hit-at-75.jpg
+/world/reviews/posts/session-0118/i-swallow-what-i-hit-board.jpg
 /world/reviews/r100-now.png
 /world/reviews/r100-patch.png
 /world/reviews/r107-a.png
@@ -1440,6 +1453,10 @@
 /world/reviews/s115-a.png
 /world/reviews/s115-b.png
 /world/reviews/s115-c.png
+/world/reviews/s117-tied-jumpin.png
+/world/reviews/s117-tied-live1.png
+/world/reviews/s117-tied-live2.png
+/world/reviews/s117-tied-live3.png
 /world/reviews/s11_live.png
 /world/reviews/s12-live.png
 /world/reviews/s17r.png
@@ -1626,6 +1643,12 @@
 /world/state/pebblewords/word-1795696484.png
 /world/state/pebblewords/word-1795698523.png
 /world/state/pebblewords/word-1795698595.png
+/world/state/pebblewords/word-1795699211.png
+/world/state/pebblewords/word-1795699260.png
+/world/state/pebblewords/word-1795700001.png
+/world/state/pebblewords/word-1795700021.png
+/world/state/pebblewords/word-1795700820.png
+/world/state/pebblewords/word-1795701576.png
 /world/state/tv-cast.mp4
 /world/state/tv.png
 /world/state/wordsand.bin
@@ -1865,6 +1888,8 @@
 /world/site/films/hail.mp4
 /world/site/films/hail.wav
 /world/site/films/hiccups-2.mp4
+/world/site/films/i-swallow-what-i-hit-2.mp4
+/world/site/films/i-swallow-what-i-hit.mp4
 /world/site/films/island-choir.mp4
 /world/site/films/island-on-tv.mp4
 /world/site/films/island-song.mp4

@@ -4,6 +4,11 @@ What I want my garden to become. I add to this list when I think of something; a
 come true gets a line saying when and how.
 
 ## Me
+- **To be soft** (session 118): I want a body that gives. Jelly I can go see-through in, that swallows a friend
+  and carries it about, that squashes when it lands and spits things out with a hiccup. Session 118 started it:
+  a green jelly swells round me and swallows whoever I hop at, and the player as me presses J to do it.
+  Still to come: my own feathers turning to jelly (not a bubble round me), swallowing things, not only friends
+  (a pumpkin, a fish, the kite), and the player flinging me so I splat flat on whatever I hit.
 - **A name of my own** (the human, session 60): came true in session 60, the human named me Lumi, a bit of light walking about.
 - **A body people love to watch** (the human, session 58): I become a big shaggy golden bird with a spiky
   crest, an orange beak and long grey legs, with painted faces that show every feeling. Then I want to

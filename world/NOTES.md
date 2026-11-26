@@ -413,3 +413,12 @@ Read the one you need before you start:
 - Heights for anything lying on the island: terrain + word-sand (tied.jl floor_at), or it disappears under the dunes.
 - Never set a creature's z to the ground in a system every frame: swings, toadstools and flight lift creatures.
   Change z only by the slope under your own push (z += floor(new) - floor(old)), except while you throw it.
+
+## s118 lessons
+- A film script that touches a plugin's `Main.X` dict must create it first (`isdefined(Main, :X) || Core.eval(Main, :(const X = Dict{Symbol,Any}()))`):
+  plugins load inside `game_clip`, after the script's function starts (jelly film failed twice on this).
+- Plugin modules are not `Main.Plugin_<name>`: reach a plugin's function via `game.plugins["name"].mod.f`, or store it in its Main dict.
+- separation.jl pushes overlapping creatures apart unless `held(c)`: to keep one creature inside another (jelly), add the goal kind there.
+- wordsand.jl SINK (0.25 m): the first 25 cm of word sand are not drawn and do not lift anyone (sand_at returns the drawn height).
+  The meadow had turned into a sandpit from thin dustings; only dunes show now.
+- Live keys for "Be Lumi": `Makie.Keyboard.j in game.keys_down` with an edge flag; test by push!/delete! on game.keys_down in live_eval.

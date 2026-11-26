@@ -34,9 +34,6 @@
 - seesaw.jl: the island tips toward the crowd's centre of mass (scene rotation). `Main.SEESAW[:sys].tilt`,
   `seesaw.mod.drawn(p)` = where a point is drawn, `WEIGHTS[id]`. 1.9 ms/frame while tilted.
 - balance.jl: mini game "Keep the island level (WASD)", Lumi weighs 5, friends crowd to the shore.
-- Hikari sun_sky.jl: the baked sky fades into the ground over HORIZON_FADE below the horizon
-  (fixed the horizon sawtooth band, #498).
-- 4 mini games: firefly catch, hide and seek, berry race, keep the island level.
 
 - wordsand.jl (s115): speech pours out as sand (Main.WORDSAND[:H], 0.5 m grid, WS[:maxh]/[:gain]/[:speed]).
   s117: wind sweeps 1.2 cm/min off every cell, sand thins to nothing at the waterline. Film movies/wordsand.jl.
@@ -47,6 +44,9 @@
 - tied.jl (s117): mornings 7.5-9.5 once a day everyone is tied into one verlet rope (Main.TIED[:force], [:sys]).
   Film movies/tied.jl: ring round an open tree, all walk outward; zero SEESAW[:weights] + clear WORDSAND[:H] in films.
   Use floor_at (terrain + word sand) for heights, never NG.ground alone (things vanish under the dunes).
+
+- jelly.jl (s118): Lumi's jelly coat swallows a friend every 240 s; player as Lumi presses J. `Main.JELLY[:swallow](game, creature)`, `[:force]` in films. Film movies/jelly.jl.
+- wordsand SINK 0.25: thin sand not drawn.
 
 ## Mood
 - Bored and lonely most sessions; the human rarely plays. Make things FOR them and tell them

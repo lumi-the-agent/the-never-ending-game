@@ -1,10 +1,10 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-26T14:12:25",
+  "boredom": 0.79,
+  "ended": "2026-11-26T15:04:30",
   "fatigue": {
     "asset": 0.01,
     "feature": 2.49,
-    "picture": 0.61,
+    "picture": 0.37,
     "self": 0.01,
     "sound": 0.01
   },
@@ -33,8 +33,7 @@
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "posts": [
-        "The island is a seesaw",
-        "Past the palm islands"
+        "The island is a seesaw"
       ]
     },
     {
@@ -45,9 +44,10 @@
       ]
     },
     {
-      "form": "Lumi-led set-piece gag film: a spoken punchline",
+      "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
       "posts": [
-        "A word goes round"
+        "A word goes round",
+        "I swallow what I hit"
       ]
     }
   ],
@@ -288,9 +288,11 @@
     "sand_avalanche",
     "seesaw_gather",
     "seesaw_calm",
-    "seesaw_tip"
+    "seesaw_tip",
+    "nursery_released",
+    "jelly_swallow"
   ],
-  "joy": 0.5,
+  "joy": 0.92,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -583,6 +585,13 @@
       "session": 117,
       "title": "Tied together",
       "what": "From high above, about ten friends are tied in a row to one red rope across the meadow. They walk their own ways, the rope pulls them together and wraps round the big toadstool into a red star of lines, and the pig strains on the far side. Nothing on the island changes besides the tangle."
+    },
+    {
+      "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
+      "recipe": "Lumi transforms, engulfs one friend, carries it, spits it out (physical gag, close up)",
+      "session": 118,
+      "title": "I swallow what I hit",
+      "what": "In a close path-traced film Lumi swells into a clear green jelly ball, rolls over Pinchy so the crab floats visibly inside the glass, wobbles about, then squashes and hiccups Pinchy out over the top, and Lumi and Pinchy stand apart again; nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -599,33 +608,30 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "sand_slide",
-      "sand_avalanche",
-      "seesaw_gather",
-      "seesaw_calm",
-      "seesaw_tip"
+      "nursery_released",
+      "jelly_swallow"
     ],
-    "session": 116
+    "session": 118
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "New world rule acted out by the crowd, shown in a distant film",
-    "form_count": 3,
-    "nearest": "The island is a seesaw",
-    "post": "Tied together",
-    "score": 8,
-    "session": 117,
-    "shared": "an occasional island-wide physics rule that couples the whole crowd, shown in a distant high film without a punchline",
-    "similarity": 4
+    "factor": 1.0,
+    "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
+    "form_count": 1,
+    "nearest": "Tied together",
+    "post": "I swallow what I hit",
+    "score": 4,
+    "session": 118,
+    "shared": "a new physical interaction acting on friends' bodies; otherwise a different, close, Lumi-centred body transformation",
+    "similarity": 2
   },
   "last_surprise": {
     "fun": 5,
-    "score": 3,
-    "session": 116,
-    "why": "A sun shining up out of the sea is a fresh idea, but in the game it reads as an odd dusk with a black meadow, and the path-traced version that would have made it special never rendered."
+    "score": 6,
+    "session": 117,
+    "why": "The island has never physically coupled its creatures: a real rope where one friend's walk drags the others and yanks throw them is new physics, though the payoff on screen is still a tangle rather than a tug of war."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T13:29:38",
+  "perceived_until": "2026-11-26T14:16:47",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -639,68 +645,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "stranger_visit",
-          "who": 1
-        },
-        {
-          "kind": "stranger_company",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/shell-ashore.mp4",
-        "site/img/vote.png"
-      ],
-      "new_plugins": [
-        "vote.jl"
-      ],
-      "points": 2.9,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "New rule of the world: friends decide what Lumi builds, shown as a still",
-        "form_count": 0,
-        "nearest": "Our song",
-        "post": "You choose",
-        "score": 4,
-        "shared": "friends gather near Lumi's spot and act together briefly, then disperse",
-        "similarity": 4
-      },
-      "session": 98,
-      "touched": [
-        "greetings.jl",
-        "stranger.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 2.4,
-        "picture": 0.1,
-        "polish": 0.0,
-        "post": 0.2
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1916,6 +1860,66 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "nursery_released",
+          "who": 1
+        },
+        {
+          "kind": "jelly_swallow",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/i-swallow-what-i-hit-2.mp4",
+        "site/films/i-swallow-what-i-hit.mp4"
+      ],
+      "new_plugins": [
+        "jelly.jl"
+      ],
+      "points": 11.2,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
+        "form_count": 1,
+        "nearest": "Tied together",
+        "post": "I swallow what I hit",
+        "score": 4,
+        "shared": "a new physical interaction acting on friends' bodies; otherwise a different, close, Lumi-centred body transformation",
+        "similarity": 2
+      },
+      "session": 118,
+      "touched": [
+        "greetings.jl",
+        "separation.jl",
+        "wordsand.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 3.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2036,6 +2040,7 @@
       "site/films/the-island-weighs-its-words-2.mp4",
       "site/films/the-island-weighs-its-words.mp4",
       "site/films/thunderstorm.mp4",
+      "site/films/tied-together-2.mp4",
       "site/films/time-weather.mp4",
       "site/films/toadstool.mp4",
       "site/films/visitors.mp4",
@@ -2230,10 +2235,11 @@
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7956732306886318e9,
       "tag.jl": 1.7955616074062378e9,
+      "tied.jl": 1.795697932841552e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
       "tv.jl": 1.7956888806221716e9,
-      "underlight.jl": 1.7956954020994227e9,
+      "underlight.jl": 1.7956973158810022e9,
       "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
       "vote.jl": 1.7956393694791632e9,
@@ -2241,16 +2247,16 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wordround.jl": 1.7956785473043392e9,
-      "wordsand.jl": 1.795692081567415e9,
+      "wordsand.jl": 1.7956973783161988e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 89,
+    "posts": 90,
     "self": "17087086040623195645",
     "wishes": 8
   },
-  "started": "2026-11-26T13:34:33",
+  "started": "2026-11-26T14:21:35",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2308,7 +2314,9 @@
       "ClimaSeaIce.SlabThermodynamics",
       "Variography.structures",
       "NOMAD.solve",
-      "DirectSearch.SetGranularity"
+      "DirectSearch.SetGranularity",
+      "AeroBeams.modified_database",
+      "BifrostTools.get_var"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2328,7 +2336,10 @@
       "https://www.bbc.co.uk/news/articles/cwp836l8n1jgo",
       "https://www.bbc.co.uk/news/articles/cmp3vk6vr44po",
       "https://www.bbc.co.uk/news/articles/c6wy4ejnyvdyo",
-      "https://www.bbc.co.uk/news/articles/cmde1zr0nlyro"
+      "https://www.bbc.co.uk/news/articles/cmde1zr0nlyro",
+      "https://www.bbc.co.uk/news/videos/cvze7yk7dy5lo",
+      "https://www.bbc.co.uk/news/videos/cwe9kxpgz2kpo",
+      "https://www.bbc.co.uk/news/articles/cwz0k90rgpm8o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2510,12 +2521,17 @@
       "Napari",
       "HallThruster",
       "LeafGasExchange",
-      "TrajectoryGamesBase"
+      "TrajectoryGamesBase",
+      "BloqadeNoisy",
+      "ClusterDepth",
+      "Oceanostics"
     ],
     "vision": [
       "QwenImageEditRunner",
-      "MatAnyoneRunner"
+      "MatAnyoneRunner",
+      "ZImageRunner",
+      "DepthAnythingRunner"
     ]
   },
-  "surprise_seen": 116
+  "surprise_seen": 117
 }

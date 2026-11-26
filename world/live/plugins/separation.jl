@@ -25,7 +25,7 @@ function arrive_at_edge!(c, w, q, need)
     g.until = w.t + g.duration
     return
 end
-held(c) = c.controlled || c.goal.kind === :giant || c.goal.kind === :rewind || c.goal.kind === :bubbles && c.action in (:jump, :scared)   # (s90: a push snapped friends floating in a bubble back onto the grass, their hats left up in it)
+held(c) = c.controlled || c.goal.kind === :giant || c.goal.kind === :jelly || c.goal.kind === :rewind || c.goal.kind === :bubbles && c.action in (:jump, :scared)   # (s90: a push snapped friends floating in a bubble back onto the grass, their hats left up in it)
 "Every (centre, radius) other plugins made solid (Main.EXTRA_SOLIDS, workshop.jl)."
 extra_solids() = isdefined(Main, :EXTRA_SOLIDS) ? collect(Iterators.flatten(values(Main.EXTRA_SOLIDS))) : Tuple{Point2f,Float32}[]
 footprint(c, kind) = c.controlled ? get(SQUEEZE, kind, get(SOLID, kind, 0.0f0)) : get(SOLID, kind, 0.0f0)

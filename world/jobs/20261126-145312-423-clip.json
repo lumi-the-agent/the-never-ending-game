@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-26T14:53:12.423",
+  "finished": "2026-11-26T15:03:40.837",
+  "id": "20261126-145312-423-clip",
+  "kind": "clip",
+  "params": {
+    "call": "jelly_clip",
+    "kwargs": {
+      "samples": 16
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/i-swallow-what-i-hit-2.mp4",
+    "script": "movies/jelly.jl"
+  },
+  "result": {
+    "c0": [
+      -2.0,
+      7.0
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/films/i-swallow-what-i-hit-2.mp4"
+  },
+  "seconds": 627.8,
+  "started": "2026-11-26T14:53:12.752",
+  "status": "done"
+}

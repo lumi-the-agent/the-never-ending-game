@@ -24,11 +24,11 @@ const RIPPLE_STEP = 0.16      # seconds between two hops of a ripple down the li
 # nobody reads 11 keys before playing): what to do first, the toys in one line, then the short key strip takes over
 const HINT = """You are Lumi:  W/S walk   A/D turn   Shift run   Space jump
 E  wave at a friend (twice: they join your parade)   V  your shadow runs off
-X sneeze  ·  G fly  ·  C sing  ·  P paint  ·  M grow  ·  T storm  ·  B bubble  ·  Z rewind
+X sneeze  ·  G fly  ·  C sing  ·  P paint  ·  M grow  ·  T storm  ·  B bubble  ·  J swallow  ·  Z rewind
 Wade into the pond (Q splashes), onto the swing or into a leaf pile"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
-const HINT_SHORT = "WASD walk   E wave · give   Space jump   X sneeze   G fly   C sing   P paint   M grow   T storm   Q splash   B bubble   V shadow   Z rewind"   # (s87: the long line ran off both edges)
+const HINT_SHORT = "WASD walk   E wave · give   Space jump   X sneeze   G fly   C sing   P paint   M grow   T storm   Q splash   B bubble   J swallow   V shadow   Z rewind"   # (s87: the long line ran off both edges)
 const HINT_FULL = 5.0
 const HINT_END = 20.0
 

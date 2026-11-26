@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-26T14:27:31.934",
+  "error": "UndefVarError: `JELLY` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:47 [inlined]\n  [2] jelly_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, victim::String)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/jelly.jl:14\n  [3] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n  [4] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n  [5] run_worker(; root::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:254\n  [6] run_worker()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:227\n  [7] top-level scope\n    @ none:1\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [10] _start()\n    @ Base ./client.jl:550",
+  "finished": "2026-11-26T14:27:45.387",
+  "id": "20261126-142731-867-clip",
+  "kind": "clip",
+  "params": {
+    "call": "jelly_clip",
+    "kwargs": {
+      "rasterize": true
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/jelly-preview.mp4",
+    "script": "movies/jelly.jl"
+  },
+  "seconds": 12.1,
+  "started": "2026-11-26T14:27:32.968",
+  "status": "failed"
+}

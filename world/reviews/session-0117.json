@@ -1,0 +1,27 @@
+{"verdict": "pass",
+ "summary": "Tied together is real physics that works in the game: a verlet rope pinned at every friend's waist that lies on the ground, wraps tree trunks and drags whole groups across the meadow, and you can haul the line yourself as Lumi. The published film shows almost none of this: it opens on a frame from another scene and stays too far back, where the rope reads as a red star around the toadstool.",
+ "real_change": "tied.jl (simulated): once a day at 7:30-9:30, or when TIED[:force] is set, all 10 non-ghost friends are chained nearest to nearest. 70 verlet points are pinned at their waists, rest on the ground (terrain plus wordsand), are pushed out of tree trunks and are solved with 10 distance iterations. How far each piece is stretched past its rest length becomes a pull on the friends' positions, capped at 22 m/s² and 4 m/s, with a throw of up to 5.5 m/s upward after a yank of more than 2.8 m/s (once per 3.5 s per friend). Tied friends push each other apart within 1 m, and they shout lines and remember the morning. Measured in the sandbox, friends were dragged 4-5 m in 4 s. Jumped in as Lumi, holding W pulled Cumulus, Hopscotch and Marshmallow after me. The rope wrapped a trunk (wraps counter 3→4). wordsand.jl (simulated): the wind now also lifts 1.2 cm per cell per minute. Drawn only: shore_thin fades the drawn sand (and sand_at) to zero at the waterline. underlight.jl: header comment only. Only drawn: the rope itself, stiff red meshscatter cylinders.",
+ "surprise": 6,
+ "surprise_why": "The island has never physically coupled its creatures: a real rope where one friend's walk drags the others and yanks throw them is new physics, though the payoff on screen is still a tangle rather than a tug of war.",
+ "fun": 5,
+ "fun_why": "Jumping in on a tied morning and hauling the whole line behind you is fun for a minute, but there is no goal (no tug game yet), and it only happens for two island hours once a day.",
+ "findings": [
+  {"severity": "medium",
+   "what": "The published film does not show the feature. Frame 0.04 s comes from another scene, with the meadow buried in orange sand and another camera (the 0.191 jump in the motion sheet). After that comes a wide, high shot where the friends are a few pixels tall and the rope is a star of red lines through the toadstool and the fence. Nobody is visibly pulled or thrown, so cause and effect is lost. The caption ('Mostly we ended up in one knot') admits the film failed instead of fixing it.",
+   "where": "site/films/tied-together-2.mp4, 0.04 s and the whole framing",
+   "evidence": "reviews/motion/session-0117/tied-together-2-steps.jpg (frame 1 sandy, frames 2-8 the meadow), tied-together-2-overview.jpg",
+   "suggestion": "Drop the first frames and shoot movies/tied.jl at chase-camera distance on 3-4 friends, so one strong walker visibly drags a neighbour and throws them. Fix the trace_renderobject error on underlight's parked Emission meshscatter first (hide it or remove it from the traced scene)."
+  },
+  {"severity": "medium",
+   "what": "Up close the rope looks like stiff red rods, not a rope. It is a chain of straight cylinders with no sag between waists, and it runs straight through bodies (the blue bird), through the yellow face hill/blob mounds and through fences, because floor_at only knows terrain and wordsand. Some friends also ignore it completely: Sir Sniffsalot carried a rope velocity of (-1.16, 1.41) m/s but did not move a centimetre in 30 s, because another system holds his position. So 'sleepers get dragged along' and 'whoever walks hardest drags the rest' do not hold for everyone.",
+   "where": "plugins/tied.jl:163-171 (floor_at), 196-202 (step 1 position write), draw_rope!",
+   "evidence": "reviews/s117-tied-jumpin.png (rope through the bird and into the yellow mound), reviews/motion/creatures.png, live_eval: Sir Sniffsalot fixed at (8.6, 1.8) while tied",
+   "suggestion": "Collide rope points against creature capsules and prop bounding cylinders (fence rails, mounds). Let the rope sag by allowing slack below rest length near the ground. Apply the rope's pull after other movers (or mark tied creatures so sitting/sleeping systems yield) so every friend on the rope actually moves."
+  },
+  {"severity": "low",
+   "what": "The sand fix is hard to see in the dashboard. Only 6% of wordsand cells hold more than 5 cm (mean 2.5 cm), yet the meadow around the cottage still reads as an orange sandpit in the live view, and a dark band still runs along the waterline in the free-camera view. Either something else colours the ground or the wordsand mesh at h≈0 still shows. The player still sees a sand island.",
+   "where": "plugins/wordsand.jl:86-100 (sand_mesh at zero sand), dashboard view",
+   "evidence": "reviews/s117-tied-live1.png (orange beach and black band at the shore), reviews/s117-tied-live2.png, live_eval WORDSAND[:H] stats",
+   "suggestion": "Find out what still paints the meadow orange (hide the wordsand mesh where H≈0 and compare). Take the shore screenshot from the dashboard camera, not from a chosen angle."
+  }
+ ]}

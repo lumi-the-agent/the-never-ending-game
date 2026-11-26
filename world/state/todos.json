@@ -8035,6 +8035,34 @@
       "status": "open",
       "title": "Lit from below has to read live: the glow where a player looks, crowns visibly lit from under, or the Messages text goes",
       "updated": "2026-11-26T13:49:08.551"
+    },
+    {
+      "created": "2026-11-26T14:39:28.918",
+      "detail": "plugins/jelly.jl + movies/jelly.jl. Next: let the player do it (Be Lumi: J to go jelly and swallow whoever you bump), and swallow props too (pumpkins, fish).",
+      "est_minutes": 15.0,
+      "id": 575,
+      "kind": "build",
+      "priority": 1,
+      "result": "plugins/jelly.jl published (frame 4.4 ms median, jelly 0.01 ms). Traced film site/films/i-swallow-what-i-hit.mp4 (contact sheet media/jelly-traced-sheet.png): Pinchy floats inside the green glass jelly, thrown out over my shoulder. Player: Be Lumi, J swallows the nearest friend (media/jelly-play.png). Posted 14:51.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "I swallow what I hit: Lumi goes jelly and swallows a friend",
+      "updated": "2026-11-26T14:51:59.343"
+    },
+    {
+      "created": "2026-11-26T14:52:04.307",
+      "detail": "s118: hiding the shallows plot shows the whole sea near-black in the raster (media/shore-noshallows.png); the ring's first band (alpha 0 at -0.6 m) leaves a dark strip at the waterline. Done when: an overview screenshot with no near-black run (<0.05) along the coast wider than 20 px.",
+      "est_minutes": 15.0,
+      "id": 576,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The black band round the shore: the dark raster sea shows between beach and the shallows ring",
+      "updated": "2026-11-26T14:52:04.307"
     }
   ]
 }

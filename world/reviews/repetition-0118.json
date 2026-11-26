@@ -1,0 +1,14 @@
+{"posts": [{"post": "I swallow what I hit",
+            "what": "In a close path-traced film Lumi swells into a clear green jelly ball, rolls over Pinchy so the crab floats visibly inside the glass, wobbles about, then squashes and hiccups Pinchy out over the top, and Lumi and Pinchy stand apart again; nothing else on the island changes.",
+            "recipe": "Lumi transforms, engulfs one friend, carries it, spits it out (physical gag, close up)",
+            "nearest": "Tied together",
+            "similarity": 2,
+            "shared": "a new physical interaction acting on friends' bodies; otherwise a different, close, Lumi-centred body transformation"}],
+ "forms": [
+  {"form": "New world rule acted out by the crowd, shown in a distant film", "posts": ["Tied together", "The island weighs its words", "Gloop says \"Higher!\"", "Sand sledding"]},
+  {"form": "Change to how the island is lit: a quiet still of new light", "posts": ["Lit from below"]},
+  {"form": "Something the player can now do (mini game)", "posts": ["Keep the island level"]},
+  {"form": "Change to how the island is seen (camera or whole-island motion)", "posts": ["The island is a seesaw"]},
+  {"form": "Permanent change to the island's look or places", "posts": ["Breeding a new friend", "The island on TV"]},
+  {"form": "Lumi-led set-piece gag film, close up, with a comic payoff", "posts": ["A word goes round", "I swallow what I hit"]}
+ ]}

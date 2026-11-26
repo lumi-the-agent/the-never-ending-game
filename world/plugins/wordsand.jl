@@ -18,6 +18,7 @@ const WIND = 0.05f0                  # share of the sand the wind takes per minu
 const SWEEP = 0.012f0                # m the wind lifts off every cell per minute: a dusting blows away, the meadow shows again (s117: the island had become a sandpit)
 const POUR = 1.6f0                   # s a word takes to pour out
 const MAXH = 2.0f0                   # no dune higher than this: the follow camera (2-3 m over its subject) stays out of the sand
+const SINK = 0.25f0                  # the first 25 cm of sand settle into the grass and are not drawn: a dusting leaves the meadow green, only real dunes show (s118: the meadow round the cottage read as a sandpit, perfectionist s115/s117)
 const GRAINS = 360                   # falling grains drawn at once
 const SAND_LO = RGBf(0.86, 0.72, 0.47)   # thin sand: pale gold
 const SAND_HI = RGBf(0.93, 0.62, 0.36)   # deep heaps: warmer, apricot (STYLE: warm, saturated)
@@ -76,8 +77,8 @@ end
 function sand_at(H, x, y)
     i, j = cellof(x, y)
     T = get(WS, :T, nothing)
-    T === nothing && return H[i, j]
-    return H[i, j] * shore_thin(T[i, j])
+    T === nothing && return max(0f0, H[i, j] - SINK)
+    return max(0f0, H[i, j] * shore_thin(T[i, j]) - SINK)
 end
 
 "How much of a cell's sand is drawn: none at the waterline, all of it 0.55 m up the beach (see `sand_mesh`)."
@@ -91,7 +92,7 @@ function sand_mesh(H, T)
         x, y = xy(i, j)
         # toward the waterline the drawn sand thins to nothing, so its edge sinks under the beach instead of
         # standing over it in dark teeth (s117: the black band along the shore, perfectionist s115)
-        h = H[i, j] * shore_thin(T[i, j])
+        h = max(0f0, H[i, j] * shore_thin(T[i, j]) - SINK)
         pts[i + (j - 1) * N] = Point3f(x, y, T[i, j] + h - 0.05f0)         # no sand: just under the grass
         a = clamp(h / 0.9f0, 0f0, 1f0)
         speck = 0.94f0 + 0.06f0 * Float32((hash((i, j)) % 1000) / 1000)
@@ -101,7 +102,7 @@ function sand_mesh(H, T)
     faces = GeometryBasics.TriangleFace{Int}[]
     @inbounds for j in 1:N-1, i in 1:N-1
         k = i + (j - 1) * N
-        max(H[i, j], H[i + 1, j], H[i, j + 1], H[i + 1, j + 1]) > 0.05f0 || continue
+        max(H[i, j], H[i + 1, j], H[i, j + 1], H[i + 1, j + 1]) > SINK + 0.04f0 || continue
         min(T[i, j], T[i + 1, j], T[i, j + 1], T[i + 1, j + 1]) > 0.05f0 || continue   # not in the sea (no corner dips)
         push!(faces, GeometryBasics.TriangleFace(k, k + 1, k + N + 1))
         push!(faces, GeometryBasics.TriangleFace(k, k + N + 1, k + N))
