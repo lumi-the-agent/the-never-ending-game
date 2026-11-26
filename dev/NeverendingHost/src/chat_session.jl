@@ -9,6 +9,14 @@
 # turn five minutes before the end or when the budget runs low, and stops the
 # turn at the deadline.
 
+"""
+A turn that ends this soon (seconds) without a tool call failed at once: the next waits, from 15 s
+doubling up to `EMPTY_TURN_MAX`, and the feed says what the agent answered (`last_said`). On Nov 26
+the host sent 272 such turns in three and a half minutes while a weekly usage limit held.
+"""
+const EMPTY_TURN_SECONDS = 10.0
+const EMPTY_TURN_MAX = 300.0
+
 "A work session run in the dashboard chat: the fields the follow-ups and the status read, as `AgentRun` has them."
 mutable struct ChatRun
     role::Symbol
@@ -70,6 +78,13 @@ end
 tool_count(model, first::Int) = count(m -> occursin("Tool", string(typeof(m))),
                                       @view BonitoAgents.shared(model).msgs_store[first:end])
 
+"What the agent last said in the chat from message `first` on (a failed turn says why: \"You've hit your weekly limit · resets …\"), or `nothing`."
+function last_said(model, first::Int)
+    msgs = BonitoAgents.shared(model).msgs_store
+    i = findlast(m -> m isa BonitoAgents.AgentMsg, @view msgs[min(first, length(msgs) + 1):end])
+    return i === nothing ? nothing : strip(msgs[first + i - 1].text)
+end
+
 "The tool calls a run made so far."
 tools(run::ChatRun) = tool_count(run.model, run.first_msg)
 tools(run::AgentRun) = run.tools
@@ -101,6 +116,7 @@ function run_chat_session!(host, label::AbstractString, settings::AgentSettings,
     record!(host.activity, label, "host", "started in the dashboard chat")
     try
         send_turn!(model, prompt)
+        sent, tools_sent, from, empty_turns, why_before = time(), 0, run.first_msg, 0, nothing
         while true
             note = timed(run)                       # a word into the running turn at a set time (the opening's end)
             note === nothing || try_steer!(run, note)
@@ -123,12 +139,26 @@ function run_chat_session!(host, label::AbstractString, settings::AgentSettings,
                 break
             end
             BonitoAgents.wait_idle(model; timeout = clamp(left, 1.0, 10.0)) || continue
+            if time() - sent < EMPTY_TURN_SECONDS && tools(run) == tools_sent
+                empty_turns += 1
+                why = last_said(model, from)
+                why == why_before || record!(host.activity, label, "host",
+                    "a turn ended at once, " * (why === nothing ? "without a word" : "answering \"" * first(why, 300) * "\"") *
+                    ": waiting before each next one")
+                why_before = why
+                sleep(clamp(15.0 * 2.0^(empty_turns - 1), 0.0, min(EMPTY_TURN_MAX, max(run.deadline - time(), 0.0))))
+            else
+                empty_turns == 0 || record!(host.activity, label, "host", "the agent works again")
+                empty_turns, why_before = 0, nothing
+            end
             next = followups(run)                   # the turn ended before the session did
             if next === nothing
                 run.stop_reason = "end_turn"
                 break
             end
+            from = length(BonitoAgents.shared(model).msgs_store) + 1
             send_turn!(model, next)
+            sent, tools_sent = time(), tools(run)
         end
     finally
         host.current = nothing

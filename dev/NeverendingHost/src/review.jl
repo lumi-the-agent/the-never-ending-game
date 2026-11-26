@@ -41,10 +41,18 @@ review_mark_path(jp::JailPaths) = joinpath(jp.state, "posts", "review_mark.json"
 set_review_mark!(jp::JailPaths, t::Real) =
     (mkpath(dirname(review_mark_path(jp))); write_json(review_mark_path(jp), Dict("since" => t, "time" => now_string())))
 
-function post_review_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, plugins::Vector{String}, out::AbstractString)
+function post_review_prompt(jp::JailPaths, n::Int, posts, boards::AbstractDict, plugins::Vector{String}, pages,
+                            out::AbstractString)
     io = IOBuffer()
     println(io, "# Review after session $n: the posts that went up\n\nWrite your verdict to `$(out)`.\n")
     post_lines(io, posts, boards)
+    if !isempty(pages)
+        println(io, "## Changes to the pages themselves, around the posts\n")
+        for p in pages
+            println(io, "`world/site/$(p.file)`", isempty(p.media) ? "" : ", showing " * join(("`$m`" for m in p.media), ", "), ":")
+            println(io, "```diff\n", first(p.diff, 6000), "\n```\n")
+        end
+    end
     println(io, "## Plugins the session added or changed")
     isempty(plugins) ? println(io, "(none)") : foreach(p -> println(io, "- `$p`"), plugins)
     println(io)
@@ -120,32 +128,34 @@ function run_review!(host, label::AbstractString, prompt::AbstractString, out::A
 end
 
 """
-    review_posts!(host, n, t0, changed) -> verdict or nothing
+    review_posts!(host, n, t0, changed, pages_before) -> verdict or nothing
 
 The review after session `n` (started at `t0`): the posts that went up since the last review, as a
 viewer sees them (their pictures, and a storyboard of each film), checked against the plugins the
-session `changed`, scored for surprise and fun. `nothing` without a new post (noted).
+session `changed`, and what changed in the pages around the posts since `pages_before` (a
+`page_snapshot`), scored for surprise, fun and how real it is. `nothing` without either (noted).
 """
-function review_posts!(host, n::Int, t0::Real, changed::Vector{String})
+function review_posts!(host, n::Int, t0::Real, changed::Vector{String}, pages_before::AbstractDict)
     jp = host.jp
     label = "review of session $n"
     since, t = review_mark(jp, t0), time()
     posts = [viewed_post(jp, id, html) for (id, html) in session_pieces(jp, since)]
+    pages = page_changes(jp, pages_before)
     set_review_mark!(jp, t)
-    if isempty(posts)
-        record!(host.activity, label, "host", "no post went up since the last review: nothing to review")
+    if isempty(posts) && isempty(pages)
+        record!(host.activity, label, "host", "no post went up and the pages did not change: nothing to review")
         return nothing
     end
     out = review_path(jp, @sprintf("session-%04d", n))
     dir = joinpath(reviews_dir(jp), "posts", @sprintf("review-%04d", n))
     boards = Dict{String,Any}(f => storyboard_or_nothing(f, dir) for p in posts for f in p.media if is_film(f))
     plugins = sort!(filter(p -> endswith(p, ".jl") && occursin("/plugins/", p), changed))
-    return run_review!(host, label, post_review_prompt(jp, n, posts, boards, plugins, out), out; current = false)
+    return run_review!(host, label, post_review_prompt(jp, n, posts, boards, plugins, pages, out), out; current = false)
 end
 
 "`review_posts!` in the background: it needs no sandbox, so the next session does not wait for it."
-review_posts_later!(host, n::Int, t0::Real, changed::Vector{String}) =
-    errormonitor(@async Base.invokelatest(review_posts!, host, n, t0, changed))
+review_posts_later!(host, n::Int, t0::Real, changed::Vector{String}, pages_before::AbstractDict) =
+    errormonitor(@async Base.invokelatest(review_posts!, host, n, t0, changed, pages_before))
 
 "The session of the latest perfectionist verdict in `world/reviews` (0 before the first)."
 function last_perfectionist(jp::JailPaths)

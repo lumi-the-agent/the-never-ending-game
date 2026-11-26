@@ -19,6 +19,10 @@ const SEA_BOUNCE = 0.85f0      # restitution
 const SEA_SKATERS = 5
 const SEA_LINES = ("Whoa!", "Oof!", "Wheee!", "I can't stop!", "Sorry!", "Again!", "My feet are gone!")
 const SEA_FISH = 14
+const SEA_FROST = 3000         # white frost flakes on the ice, in patches, thickest over the shallows (s127)
+const SEA_MARKS = 700          # skate marks: a pale scratch every SEA_MARK_STEP m a body slides, they stay till the thaw
+const SEA_MARK_STEP = 0.22f0
+const SEA_FROST_RGB = (0.93f0, 0.96f0, 0.99f0)
 
 mutable struct Skater
     vel::Vec2f
@@ -40,7 +44,7 @@ gs_find(sc, name) = (i = findfirst(p -> haskey(p.attributes, :name) && p.attribu
 
 function gs_setup!(game)
     sc = game.stage.scene
-    for name in (:glasssea_ice, :glasssea_fish)      # plot names are unique: drop a crashed run's plots
+    for name in (:glasssea_ice, :glasssea_fish, :glasssea_frost, :glasssea_marks)   # plot names are unique: drop a crashed run's plots
         p = gs_find(sc, name)
         p === nothing || delete!(sc, p)
     end
@@ -51,7 +55,73 @@ function gs_setup!(game)
                              markersize = Vec3f(0.34, 0.11, 0.15), rotation = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_FISH),
                              color = RGBf(0.98, 0.55, 0.18), material = NG.Hikari.Plastic(color = (0.98, 0.5, 0.15), roughness = 0.25),
                              name = :glasssea_fish, visible = false)
+    disc = Makie.Cylinder(Point3f(0, 0, 0), Point3f(0, 0, 1), 1f0)
+    frost = NG.Hikari.Diffuse(color = SEA_FROST_RGB)
+    GS[:frost] = meshscatter!(sc, fill(Point3f(0, 0, -50), SEA_FROST); marker = disc, markersize = fill(Vec3f(0.5, 0.3, 0.004), SEA_FROST),
+                              rotation = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_FROST), color = RGBf(SEA_FROST_RGB...),
+                              material = frost, name = :glasssea_frost, visible = false)
+    GS[:marks] = meshscatter!(sc, fill(Point3f(0, 0, -50), SEA_MARKS); marker = disc, markersize = Vec3f(0.16, 0.025, 0.003),
+                              rotation = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_MARKS), color = RGBf(SEA_FROST_RGB...),
+                              material = frost, name = :glasssea_marks, visible = false)
     GS[:scene] = sc
+end
+
+"Frost in patches round `c`: cluster seeds, flakes round each, kept where the water under the ice is shallow (white
+shore ice) more often than over the deep."
+function gs_frost!(is, c)
+    fp = Point3f[]; fs = Vec3f[]; fr = Makie.Quaternionf[]
+    tries = 0
+    while length(fp) < SEA_FROST && tries < 40 * SEA_FROST
+        tries += 1
+        a = 2pi * rand(); r = 18 * sqrt(rand())
+        sx, sy = c[1] + r * cos(a), c[2] + r * sin(a)
+        gs_on_ice(is, sx, sy) || continue
+        deep = SEA_ICE - NG.terrain_height(is, sx, sy)
+        rand() < 0.2 + 0.8 * exp(-deep / 1.5) || continue
+        for _ in 1:rand(15:40)
+            length(fp) >= SEA_FROST && break
+            x, y = sx + 1.1 * randn(), sy + 1.1 * randn()
+            gs_on_ice(is, x, y) || continue
+            big = 0.05f0 + 0.3f0 * rand(Float32)^2 * Float32(exp(-(SEA_ICE - NG.terrain_height(is, x, y)) / 2.5))
+            push!(fp, Point3f(x, y, SEA_ICE + 0.002f0 + 0.002f0 * rand(Float32)))
+            push!(fs, Vec3f(big, big * (0.35f0 + 0.5f0 * rand(Float32)), 0.004f0))
+            push!(fr, Makie.qrotation(Vec3f(0, 0, 1), Float32(2pi * rand())))
+        end
+    end
+    while length(fp) < SEA_FROST
+        push!(fp, Point3f(0, 0, -50)); push!(fs, Vec3f(0.01)); push!(fr, Makie.Quaternionf(0, 0, 0, 1))
+    end
+    Makie.update!(GS[:frost]; arg1 = fp, markersize = fs, rotation = fr)
+    GS[:frost].visible = true
+    GS[:markpos] = fill(Point3f(0, 0, -50), SEA_MARKS)
+    GS[:markrot] = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_MARKS)
+    GS[:marknext] = 1
+    GS[:marklast] = Dict{Int32,Point2f}()
+    GS[:markdirty] = false
+    Makie.update!(GS[:marks]; arg1 = GS[:markpos], rotation = GS[:markrot])
+    GS[:marks].visible = true
+end
+
+"A slide leaves a scratch on the ice every SEA_MARK_STEP m, along the way it went (a ring of SEA_MARKS, oldest first out)."
+function gs_mark!(id, x, y, vel)
+    last = GS[:marklast]::Dict{Int32,Point2f}
+    p = get(last, id, nothing)
+    p === nothing && (last[id] = Point2f(x, y); return)
+    hypot(x - p[1], y - p[2]) < SEA_MARK_STEP && return
+    last[id] = Point2f(x, y)
+    norm(vel) < 0.4f0 && return
+    k = GS[:marknext]::Int
+    pos = GS[:markpos]::Vector{Point3f}; rot = GS[:markrot]::Vector{Makie.Quaternionf}
+    pos[k] = Point3f(x, y, SEA_ICE + 0.005f0)
+    rot[k] = Makie.qrotation(Vec3f(0, 0, 1), atan(vel[2], vel[1]))
+    GS[:marknext] = k % SEA_MARKS + 1
+    GS[:markdirty] = true
+end
+
+function gs_marks_draw!()
+    get(GS, :markdirty, false) || return
+    GS[:markdirty] = false
+    Makie.update!(GS[:marks]; arg1 = GS[:markpos], rotation = GS[:markrot])
 end
 
 "Water just off the shore nearest (x, y): march out from the island's middle along that bearing."
@@ -100,6 +170,7 @@ function gs_freeze!(sys::GlassSea, game; forced = false)
     end
     Makie.update!(GS[:fish]; arg1 = fp, rotation = fr)
     GS[:fish].visible = true
+    gs_frost!(is, sys.center)
     me = findfirst(c -> c.name == "Lumi", w.creatures)
     me === nothing || NG.say!(w, w.creatures[me], "The sea froze! Everyone out!")
     NG.emit!(w, :glasssea_freeze; skaters = length(sys.sk))
@@ -117,6 +188,7 @@ function gs_thaw!(sys::GlassSea, game)
     empty!(sys.sk)
     sys.on = false
     GS[:ice].visible = false; GS[:fish].visible = false
+    GS[:frost].visible = false; GS[:marks].visible = false
     NG.emit!(w, :glasssea_thaw)
 end
 
@@ -161,6 +233,7 @@ function gs_skate!(sys::GlassSea, w, c, s::Skater, dt)
         nx, ny = x, y
     end
     c.pos = Point3f(nx, ny, SEA_ICE)
+    gs_mark!(c.id, nx, ny, s.vel)
     if abs(s.spin) > 0.3f0
         c.yaw = NG.wrap_angle(c.yaw + s.spin * Float32(dt))
         s.spin *= exp(-0.7f0 * Float32(dt))
@@ -203,7 +276,7 @@ end
 
 function NG.step!(sys::GlassSea, game, dt)
     game.stage === nothing && return
-    get(GS, :scene, nothing) === game.stage.scene || gs_setup!(game)
+    (get(GS, :scene, nothing) === game.stage.scene && haskey(GS, :marks)) || gs_setup!(game)
     w = game.world
     GS[:sys] = sys
     hour = 24 * NG.daytime(w)
@@ -227,6 +300,7 @@ function NG.step!(sys::GlassSea, game, dt)
         gs_skate!(sys, w, c, s, dt)
     end
     gs_bumps!(sys, w)
+    gs_marks_draw!()
 end
 
 function NG.stop!(sys::GlassSea, game)

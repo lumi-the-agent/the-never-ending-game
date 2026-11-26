@@ -96,7 +96,8 @@ end
 
 ground_z(w, p) = NG.terrain_height(w.island, p[1], p[2])
 
-function integrate!(w, P, V, dt; damp = true)
+function integrate!(w, P, V, dt; damp = true, land = true)
+    down = Int[]
     for i in eachindex(P)
         p = P[i]; v = V[i]
         a = accel(p)
@@ -106,15 +107,20 @@ function integrate!(w, P, V, dt; damp = true)
         end
         v += dt * a
         p += dt * v
-        # grazing the island: bounce off the meadow
+        # grazing the island: a ball hitting grass loses most of its energy (restitution 0.3, friction halves
+        # the slide); one that hits slowly has come down for good and leaves the sky (s127: low bodies used to
+        # bounce at 0.8 for ever and hung over the meadow, review 0124)
         if abs(p[1]) < 24 && abs(p[2]) < 24
             gz = ground_z(w, p)
             if gz > 0.2f0 && p[3] < gz + 0.2f0 && v[3] < 0
-                v = Vec3f(v[1], v[2], -0.8f0 * v[3]); p = Point3f(p[1], p[2], gz + 0.2f0)
+                v = Vec3f(0.5f0 * v[1], 0.5f0 * v[2], -0.3f0 * v[3]); p = Point3f(p[1], p[2], gz + 0.2f0)
+                land && nrm(v) < 3f0 && push!(down, i)
             end
         end
         P[i] = p; V[i] = v
     end
+    isempty(down) || (deleteat!(P, down); deleteat!(V, down))
+    return length(down)
 end
 
 function find_creature(w, name)
@@ -174,7 +180,7 @@ function step_rider!(game, dt)
     P = [R.p]; V = [R.v]
     n = max(1, ceil(Int, dt / (1 / 120)))
     for _ in 1:n
-        integrate!(w, P, V, Float32(dt / n); damp = false)
+        integrate!(w, P, V, Float32(dt / n); damp = false, land = false)
     end
     p, v = P[1], V[1]
     rv = p - centre()

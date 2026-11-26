@@ -39,6 +39,7 @@
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
 /world/assets/20261125-114654-365-asset/
+/world/physics/paperfall-s127.jls
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -1502,6 +1503,14 @@
 /world/reviews/posts/review-0125/one-stomp-at-50.jpg
 /world/reviews/posts/review-0125/one-stomp-at-75.jpg
 /world/reviews/posts/review-0125/one-stomp-board.jpg
+/world/reviews/posts/review-0126/glass-sea-2-at-25.jpg
+/world/reviews/posts/review-0126/glass-sea-2-at-50.jpg
+/world/reviews/posts/review-0126/glass-sea-2-at-75.jpg
+/world/reviews/posts/review-0126/glass-sea-2-board.jpg
+/world/reviews/posts/review-0126/one-stomp-2-at-25.jpg
+/world/reviews/posts/review-0126/one-stomp-2-at-50.jpg
+/world/reviews/posts/review-0126/one-stomp-2-at-75.jpg
+/world/reviews/posts/review-0126/one-stomp-2-board.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-25.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-50.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-75.jpg
@@ -2128,8 +2137,8 @@
 /world/site/films/one-stomp-2.mp4
 /world/site/films/one-stomp.mp4
 /world/site/films/pagewalk.mp4
-/world/site/films/pagewalk.webm
 /world/site/films/paint-fight.mp4
+/world/site/films/paper-letter-1.mp4
 /world/site/films/pumpkins-silent.mp4
 /world/site/films/pumpkins.mp4
 /world/site/films/pumpkins.wav

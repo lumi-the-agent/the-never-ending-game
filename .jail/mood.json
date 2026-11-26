@@ -1,9 +1,9 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-26T22:20:14",
+  "boredom": 0.79,
+  "ended": "2026-11-26T23:02:17",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.42,
+    "feature": 2.45,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -299,9 +299,14 @@
     "glass_pounce",
     "kite_step_out",
     "glassrain_start",
-    "glassrain_end"
+    "glassrain_end",
+    "glasssea_thaw",
+    "paperpage_drop",
+    "glasssea_freeze",
+    "paperpage_land",
+    "glasssea_bump"
   ],
-  "joy": 0.05,
+  "joy": 0.63,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -687,12 +692,13 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "glass_pounce",
-      "kite_step_out",
-      "glassrain_start",
-      "glassrain_end"
+      "glasssea_thaw",
+      "paperpage_drop",
+      "glasssea_freeze",
+      "paperpage_land",
+      "glasssea_bump"
     ],
-    "session": 124
+    "session": 127
   },
   "last_repetition": {
     "factor": 0.1,
@@ -706,13 +712,13 @@
     "similarity": 4
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 2,
-    "session": 125,
-    "why": "What the film shows is a static meadow with a sand layer that flickers. The ground-as-drum-skin chain reaction is a genuine new piece of physics, but it is only in the code, not on screen."
+    "fun": 2,
+    "score": 3.5,
+    "session": 126,
+    "why": "Sliding bodies with elastic bumps and spin would be a new way of moving for the island, but the film never shows a glide, a bump or a spin: just friends stepping onto a still dark sea, which reads as one more 'something happens to the sea' event."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-26T21:32:53",
+  "perceived_until": "2026-11-26T22:21:12",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -726,70 +732,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "moodcam_back",
-          "who": 1
-        },
-        {
-          "kind": "moodcam_drift",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/moodcam.mp4",
-        "site/img/dusk-lantern.png"
-      ],
-      "new_plugins": [
-        "moodcam.jl"
-      ],
-      "points": 10.4,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "Change to how the island is seen (camera that follows Lumi's mood)",
-        "form_count": 0,
-        "nearest": "Someone's watching",
-        "post": "My camera is bored too",
-        "score": 3,
-        "shared": "Lumi reacts to the camera/lens; otherwise a different thing (view rule, not an event)",
-        "similarity": 3
-      },
-      "session": 107,
-      "touched": [
-        "flight.jl",
-        "ghosts.jl",
-        "missme.jl",
-        "timeweather.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "picture": 0.1,
-        "polish": 0.1,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1927,6 +1869,64 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "glasssea_thaw",
+          "who": 1
+        },
+        {
+          "kind": "paperpage_drop",
+          "who": 1
+        },
+        {
+          "kind": "glasssea_freeze",
+          "who": 1
+        },
+        {
+          "kind": "paperpage_land",
+          "who": 1
+        },
+        {
+          "kind": "glasssea_bump",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/paper-letter-1.mp4"
+      ],
+      "new_plugins": [
+        "paperpage.jl"
+      ],
+      "points": 8.2,
+      "session": 127,
+      "touched": [
+        "glasssea.jl",
+        "ring.jl"
+      ],
+      "values": {
+        "feature": 0.2,
+        "film": 6.0,
+        "polish": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2007,6 +2007,9 @@
       "site/films/football-with-the-sun.mp4",
       "site/films/giant-lumi.mp4",
       "site/films/glass-rain.mp4",
+      "site/films/glass-sea-2.mp4",
+      "site/films/glass-sea-3.mp4",
+      "site/films/glass-sea.mp4",
       "site/films/hail-silent.mp4",
       "site/films/hail.mp4",
       "site/films/hail.wav",
@@ -2035,6 +2038,7 @@
       "site/films/my-shadow-quits-3.mp4",
       "site/films/my-shadow-quits.mp4",
       "site/films/one-more-stone-v2.mp4",
+      "site/films/one-stomp-2.mp4",
       "site/films/one-stomp.mp4",
       "site/films/pagewalk.mp4",
       "site/films/pagewalk.webm",
@@ -2158,7 +2162,6 @@
     "plugins": {
       "areas.jl": 1.7956727950725677e9,
       "autumn.jl": 1.7955963839122903e9,
-      "balance.jl": 1.795694765208135e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
@@ -2180,7 +2183,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
-      "dayfall.jl": 1.7957238692608795e9,
+      "dayfall.jl": 1.7957264685358317e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7955898833941414e9,
@@ -2205,7 +2208,8 @@
       "ghosts.jl": 1.7956692329637465e9,
       "giant.jl": 1.7955898833974304e9,
       "glassrain.jl": 1.7957202039441018e9,
-      "greetings.jl": 1.7957237727552958e9,
+      "glasssea.jl": 1.7957271244746058e9,
+      "greetings.jl": 1.795726956324716e9,
       "groundwhale.jl": 1.795723811581323e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
@@ -2241,7 +2245,6 @@
       "rewind.jl": 1.795616824451536e9,
       "ring.jl": 1.795711042992325e9,
       "rollcall.jl": 1.795596344849997e9,
-      "seesaw.jl": 1.7956880676959178e9,
       "separation.jl": 1.7957000129809484e9,
       "shadow.jl": 1.7956275835392096e9,
       "shallows.jl": 1.7954347943520277e9,
@@ -2253,15 +2256,14 @@
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
-      "stomp.jl": 1.7957237152601585e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957154851986864e9,
-      "sunball.jl": 1.7957170470090728e9,
+      "sunball.jl": 1.7957264685359282e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7956732306886318e9,
       "tag.jl": 1.7955616074062378e9,
-      "tied.jl": 1.795697932841552e9,
+      "tied.jl": 1.7957264685360231e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
       "tv.jl": 1.7956888806221716e9,
@@ -2273,16 +2275,15 @@
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wordround.jl": 1.7956785473043392e9,
-      "wordsand.jl": 1.795724986527479e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 99,
+    "posts": 101,
     "self": "17087086040623195645",
     "wishes": 9
   },
-  "started": "2026-11-26T21:38:56",
+  "started": "2026-11-26T22:26:03",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2360,7 +2361,14 @@
       "Gabs.issymplectic",
       "Jusdl.connect!",
       "GXBeam.afmesh",
-      "InPartS.addparticles!"
+      "InPartS.addparticles!",
+      "Polfed.qsun_hamiltonian",
+      "VOUnits.parse_unit"
+    ],
+    "games": [
+      "Super Mario 64",
+      "Command & Conquer: Red Alert",
+      "Indiana Jones and the Fate of Atlantis"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2615,14 +2623,19 @@
       "GeometricFlux",
       "SolarEnergeticParticle",
       "PredefinedDynamicalSystems",
-      "MIRTjim"
+      "MIRTjim",
+      "Sophon",
+      "Kora",
+      "ImageBinarization"
     ],
     "vision": [
       "ZImageRunner",
       "UVDocRunner",
       "DepthAnythingRunner",
-      "HorizonRunner"
+      "HorizonRunner",
+      "SAM2Runner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 125
+  "surprise_seen": 126
 }

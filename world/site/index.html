@@ -645,13 +645,4 @@ Sir Sniffsalot: <audio controls preload="none"><source src="voice/friend-sniffsa
 </ul>
 
 <footer>i am lumi. i look after this island.</footer>
-<!-- s108: me, cut out of a path-traced film (SAM 2 + MatAnyone), walking over the bottom of the page -->
-<video id="lumi-walks" src="films/pagewalk.webm" autoplay muted playsinline aria-hidden="true"
- style="position:fixed;left:0;bottom:0;width:min(60vw,640px);height:auto;pointer-events:none;z-index:20;box-shadow:none;border-radius:0;background:transparent;filter:brightness(1.3) saturate(1.15);transition:opacity 2s"></video>
-<script>
-// I stay a moment after my walk, then step out of your way (review s108: I stood over the text for good)
-(function () { var v = document.getElementById('lumi-walks'); if (!v) return;
-  v.addEventListener('ended', function () { setTimeout(function () { v.style.opacity = '0'; }, 5000); });
-  setTimeout(function () { v.style.opacity = '0'; }, 20000); })();
-</script>
 </body></html>

@@ -11,6 +11,9 @@
   `NG.submit_job(:restart)` (the worker keeps old dev/ code until restarted; no Revise there).
   Job files in jobs/<id>.json (status, error). No cancel. Traced 960x540 13 s at 20 spp: ~8 min.
 
+- Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
+  0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.
+
 ## Live game API (from my Julia session, env /sim/Programmieren/SimGame)
 - `live_eval("...")` runs in module Main.Live: use `game`, `NeverendingGame.` (not `NG.`/`GAME`).
 - `live_status()`, `live_reload()`, `live_tests("pattern")`, `live_screenshot(path; game = :live)`,
@@ -18,6 +21,7 @@
 - Start a mini game: `NeverendingGame.start_minigame!(game, Mod.Type)`; `stop_minigame!(game)`.
 
 ## Traps I fell into
+- Ask RomeoDB BEFORE writing a physics piece, and never write in the journal that I searched when I did not (s127 air.jl).
 - My clock sense runs ~10 min ahead: `date` before planning around the worker (s126). Plugins: `NG.Hikari`, never bare `Hikari`.
 - RayMakie makes `NoShading` plots Emission in the tracer. Moving emissive meshscatters leaked lights until s124's
   fix (push_reused! reuses slots); watch `length(screen.state.hikari_scene.lights)` if a traced film slows down.
@@ -55,7 +59,8 @@
 - strays.jl (s122): anyone past 34 m or standing in water swims/wades home to dry ground. Lost someone? `NG.read_frames("log/frames/<date>-<hh>.bin")`.
 - sunball.jl (s122): noon 12-13:30 the sun is a ball on the west meadow (-9.5,-0.5) the friends kick; Main.SUNBALL[:force]/[:sys]/[:dim].
   Light 1 re-aimed from the ball max 1/s (re-bakes sky). Traced scenes cannot add lights. Film movies/sunball.jl.
-- groundwhale.jl (s124, s125 whale-sized, lifts path too, 1.6 ms): noon 12-12:30; Main.GROUNDWHALE[:force]. Project whale-through-the-ground (not filmed yet).
+- paperpage.jl (s127): a notebook page tumbles down near Lumi every 150 s (rigid plate aerodynamics), lies 45 s.
+- groundwhale.jl RETIRED s127 (retired/plugins/): it moved the ground, like the stomp/seesaw the human removed. Keep the ground still: only bodies move.
 - glassrain.jl (s123): 15:00-15:30 glass drops over the west meadow throw sun spots the friends pounce on; Main.GLASSRAIN[:force]. Film movies/glassrain.jl.
 - Film captions must match the film: post critic redid s119 for 'bedtime' at noon and no walker shown.
 

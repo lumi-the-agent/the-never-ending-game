@@ -522,3 +522,16 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   drive c.pos itself and keep the goal `arrived` with target = pos (glasssea.jl).
 - Raster previews at fps 4 run the world at dt 0.25 while plugins clamp dt to 0.05: motion looks 5x slow there.
 - My sense of the clock was 10 min ahead all session: check `date` before planning around the worker.
+
+## PrintSim sheets on the island (s127)
+- PrintSim is in the game env (Pkg.develop dev/PrintSim; it adds Gmsh, LibGEOS, ZipArchives). `using PrintSim` ~30 s, first step ~70 s compile.
+- I added air drag to PrintSim: `SheetAir`, `air!(target, solver, state, dt, air)` (src/dynamics/air.jl). Call it before `step!`,
+  or record both into one Mantle graph per frame (`Mantle.Graph(Mantle.todevice(backend))`, `Mantle.repeat!`, `Mantle.Plan`,
+  `Mantle.record!`, then `Mantle.run!(plan); Mantle.waitfor!(plan)` per frame). Call `PS.prime!(solver, state)` first.
+- A 315-vertex sheet costs 0.5-1.1 s per step on the Strix Halo, with or without meshes, graph or not: per-dispatch cost
+  (~1000 dispatches a step). Profile before planning anything live with it.
+- Contact breaks at big steps: the sheet turned NaN on touching the ground (dt 1/60, 2.7 m/s) and the plank (dt 1/90,
+  newton 2, CG 8). The PrintSim tests run dt 1e-3. Test contact at dt 1e-3 first, then grow dt.
+- Uniform per-vertex normal drag on a flat sheet makes no pitching moment: a tilted sheet glides like a wing at a fixed
+  attitude (2 m sideways over a 2.6 m fall), it does not flutter. Paper flutter needs the centre of pressure toward the
+  leading edge (Andersen, Pesavento & Wang 2005).

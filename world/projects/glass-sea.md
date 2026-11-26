@@ -1,5 +1,5 @@
 # The sea freezes into glass
-Next: bumps the lens SEES: in the film shot, push pairs of friends at each other at 2-3 m/s in front of the lens, and a soft wall round the skating ground so nobody slides out of frame or into the lens; then frost marks (skate tracks that stay), and me on the ice jumped in (todo #608). Posted take 2 (site/films/glass-sea-2.mp4): the freeze reads; no bump shows.
+Next: a traced take 4 in morning light with the frost and skate marks (s127; raster media/s127-glasssea-frost-raster2.png reads as ice: speckled frost, long straight tracks, a 'Sorry!' bump). Aim pairs at each other in the shot, soft wall so nobody leaves the frame; me on the ice jumped in (todo #608). Check: the white dots in the air in that shot (snow from another plugin?) and the grey slab field on the meadow (dayfall tiles lying there while nobody plays me?).
 
 The idea (s126, the critic's strongest of three rounds: surprise 6, fun 7, "too expected" but no likeness penalty):
 one cold morning the sea round the island is clear hard glass, fish hang frozen mid-swim under it, and the friends
@@ -32,3 +32,4 @@ caustics really converge (they cannot yet: see Next).
   corner in every frame (something at the lens: check before the next take); brown double oval floats beside the blob.
   Post trimmed to 7 s, caption now "I tried to freeze the sea...". Next take: WHITE frost (a pale diffuse/rough layer or
   white specks and cracks), faster glides (push at 3+ m/s once on the ice), all five friends on the ice.
+- s127: frost = 3000 small white Diffuse discs (meshscatter :glasssea_frost) in patches round the skating ground, kept more over shallow water; skate marks = a ring of 700 thin scratches (:glasssea_marks) laid every 0.22 m a body slides > 0.4 m/s, along its heading, gone at the thaw. First try (900 discs up to 1.2 m) read as grey paper lily pads (media/s127-glasssea-frost-raster.png). Cost 0.01 ms. Published.

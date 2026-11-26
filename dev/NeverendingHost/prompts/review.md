@@ -18,6 +18,12 @@ screenshots and no sandbox ({{NAME}} tests its own game). For each post:
    game (what moves, collides, reacts or is kept) and what is only drawn (a
    camera, a transform of the picture, a label). A caption's claim that the
    code does not carry out is a `high` finding, however good the film looks.
+3. **The pages:** when the pages themselves changed around the posts
+   (above), judge the change as visitors see it, in Chrome, Firefox and
+   Safari, on a phone too: open what it shows (decode a film's frames, look
+   at the pictures). Something that works in only some browsers (a film's
+   alpha channel, a codec, an API), covers the words or looks broken is a
+   `high` finding.
 
 `surprise`: how surprising what the posts show is to someone who knows the
 island: 0 more of the same (a prop, a fix), 3 new but expected, 6 a nice

@@ -573,6 +573,7 @@ function one_session!(host::Host)
     jp = host.jp
     n = host.sessions + 1
     before = file_manifest(watched_dirs(jp))
+    pages_before = page_snapshot(jp)
     marks = journal_marks(jp)
     t0 = time()
     msgs = unread_messages(jp)
@@ -622,7 +623,7 @@ function one_session!(host::Host)
     progress_shots!(host, n)
     # the review of the posts needs no sandbox: it runs beside the next session
     changed, _ = changed_files(before, file_manifest(watched_dirs(jp)))
-    host.cfg.review_enabled && review_posts_later!(host, n, t0, changed)
+    host.cfg.review_enabled && review_posts_later!(host, n, t0, changed, pages_before)
     # The human wrote while the session ended: the perfectionist would keep the message waiting, so
     # it catches up next time (due by count). The human asked for a name and waited a quarter of an hour.
     if human_waiting(jp)

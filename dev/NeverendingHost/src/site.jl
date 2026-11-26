@@ -307,3 +307,46 @@ function reader_lines(said)
     foreach(c -> println(io, "- [$(first(c["when"], 16))] $(c["who"]) on \"$(c["where"])\": $(c["text"]) ($(c["url"]))"), said)
     return String(take!(io))
 end
+
+# ── the pages themselves: what a session changes around the posts ──────────────
+#
+# Session 108 put a film of the character, cut out with an alpha channel, over the bottom of every
+# page. In a browser that drops WebM alpha (Safari, some hardware decoders) it was a rectangle of the
+# island with half a bird in it, on every page, for weeks: no reviewer looked at the pages, only at
+# the posts. The review now gets every change to the pages around the posts.
+
+"The site's pages as code at a moment: every html, js and css file below world/site, its posts taken out."
+function page_snapshot(jp::JailPaths)
+    site = site_dir(jp)
+    snap = Dict{String,String}()
+    isdir(site) || return snap
+    for (root, _, files) in walkdir(site), f in files
+        splitext(f)[2] in (".html", ".js", ".css") || continue
+        p = joinpath(root, f)
+        snap[relpath(p, site)] = replace(read(p, String), PIECE => "")
+    end
+    return snap
+end
+
+"""
+    page_changes(jp, before) -> Vector{NamedTuple}
+
+What changed in the pages since `before` (a `page_snapshot`), posts aside: each file's unified diff
+(`file`, `diff`) and the media its new lines show (`media`, absolute paths).
+"""
+function page_changes(jp::JailPaths, before::AbstractDict)
+    now = page_snapshot(jp)
+    out = NamedTuple{(:file, :diff, :media),Tuple{String,String,Vector{String}}}[]
+    for f in sort!(collect(union(keys(before), keys(now))))
+        a, b = get(before, f, ""), get(now, f, "")
+        a == b && continue
+        diff = mktempdir() do dir
+            write(joinpath(dir, "before"), a); write(joinpath(dir, "after"), b)
+            read(ignorestatus(`diff -u --label "$f (before)" --label "$f (after)" $(joinpath(dir, "before")) $(joinpath(dir, "after"))`), String)
+        end
+        added = join((l for l in split(diff, '\n') if startswith(l, "+") && !startswith(l, "+++")), "\n")
+        media = [joinpath(site_dir(jp), m) for m in post_media(added)]
+        push!(out, (file = f, diff = diff, media = media))
+    end
+    return out
+end
