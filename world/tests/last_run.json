@@ -1,12 +1,4 @@
 {
-  "results": [
-    {
-      "error": "",
-      "file": "separation.jl",
-      "name": "Follow camera: holds each creature at least 6 s and mostly sees faces, not backs",
-      "passed": true,
-      "seconds": 32.0
-    }
-  ],
-  "time": "2026-11-26T06:17:11.285"
+  "results": [],
+  "time": "2026-11-26T07:09:58.940"
 }

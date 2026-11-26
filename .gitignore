@@ -39,7 +39,6 @@
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
 /world/assets/20261125-114654-365-asset/
-/world/assets/20261126-060910-427-asset/
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
 /world/releases/2026-11-23-one-more-stone/one-more-stone.mp4
@@ -65,6 +64,9 @@
 /world/reviews/motion/p100-live2/creatures.png
 /world/reviews/motion/p100-live2/motion-strip.png
 /world/reviews/motion/p100-live2/motion.png
+/world/reviews/motion/p109/creatures.png
+/world/reviews/motion/p109/motion-strip.png
+/world/reviews/motion/p109/motion.png
 /world/reviews/motion/p82/creatures.png
 /world/reviews/motion/p82/motion-strip.png
 /world/reviews/motion/p82/motion.png
@@ -173,6 +175,15 @@
 /world/reviews/motion/perfectionist-0106/missme-overview.jpg
 /world/reviews/motion/perfectionist-0106/missme-steps.jpg
 /world/reviews/motion/perfectionist-0106/missme-strip.jpg
+/world/reviews/motion/perfectionist-0109/drift-overview.jpg
+/world/reviews/motion/perfectionist-0109/drift-steps.jpg
+/world/reviews/motion/perfectionist-0109/drift-strip.jpg
+/world/reviews/motion/perfectionist-0109/moodcam-overview.jpg
+/world/reviews/motion/perfectionist-0109/moodcam-steps.jpg
+/world/reviews/motion/perfectionist-0109/moodcam-strip.jpg
+/world/reviews/motion/perfectionist-0109/pagewalk-overview.jpg
+/world/reviews/motion/perfectionist-0109/pagewalk-steps.jpg
+/world/reviews/motion/perfectionist-0109/pagewalk-strip.jpg
 /world/reviews/motion/session-0075/cloud-ring-overview.jpg
 /world/reviews/motion/session-0075/cloud-ring-steps.jpg
 /world/reviews/motion/session-0075/makeover-overview.jpg
@@ -296,6 +307,12 @@
 /world/reviews/motion/session-0109/drift-overview.jpg
 /world/reviews/motion/session-0109/drift-steps.jpg
 /world/reviews/motion/session-0109/drift-strip.jpg
+/world/reviews/motion/session-0110/drafts-overview.jpg
+/world/reviews/motion/session-0110/drafts-steps.jpg
+/world/reviews/motion/session-0110/drafts-strip.jpg
+/world/reviews/motion/session-0110/drift2-overview.jpg
+/world/reviews/motion/session-0110/drift2-steps.jpg
+/world/reviews/motion/session-0110/drift2-strip.jpg
 /world/reviews/p100-follow.png
 /world/reviews/p100-follow2.png
 /world/reviews/p100-tw-ring.png
@@ -347,6 +364,10 @@
 /world/reviews/p103/play/jump-X.png
 /world/reviews/p103/play/jump-Z.png
 /world/reviews/p103/traced.png
+/world/reviews/p109/follow1.png
+/world/reviews/p109/follow2.png
+/world/reviews/p109/follow3.png
+/world/reviews/p109/trace-pond.png
 /world/reviews/p18-fixed.png
 /world/reviews/p18-follow.png
 /world/reviews/p18-orbit.png
@@ -1173,6 +1194,8 @@
 /world/reviews/s106-a.png
 /world/reviews/s108-dusk.png
 /world/reviews/s108-now.png
+/world/reviews/s109-drift-a.png
+/world/reviews/s109-now.png
 /world/reviews/s10_review.png
 /world/reviews/s11.png
 /world/reviews/s11_live.png
@@ -1553,7 +1576,9 @@
 /world/site/films/cloud-ring.mp4
 /world/site/films/cloud-watching.mp4
 /world/site/films/crabs.mp4
+/world/site/films/drafts.mp4
 /world/site/films/drift.mp4
+/world/site/films/drift2.mp4
 /world/site/films/face-hill.mp4
 /world/site/films/first-flight.mp4
 /world/site/films/flying-lesson.mp4

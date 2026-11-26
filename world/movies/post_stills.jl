@@ -89,6 +89,16 @@ function setup_post!(g, post)
         z0 = NG.terrain_height(w.island, x0, y0)
         return Point3f(x0 + 0.8f0, y0 - 4.2f0, z0 + 1.3f0), Point3f(x0, y0, z0 + 0.25f0)
     end
+    if post == "pond"             # s110 (#535): the lily pond from eye level 7 m away, the cherry grove behind it
+        ar = plugin(g, "areas")
+        P = Base.invokelatest(getfield, ar, :POND)
+        B = Point2f(-13.5f0, 13.5f0)
+        d = Point2f(P[1] - B[1], P[2] - B[2]); d = d / hypot(d[1], d[2])
+        e = Point2f(P[1], P[2]) + d * 7f0
+        ge = NG.ground(w.island, (e[1], e[2]))
+        gp = NG.ground(w.island, (P[1], P[2]))
+        return Point3f(e[1], e[2], ge[3] + 1.5f0), Point3f(P[1], P[2], gp[3] + 0.2f0)
+    end
     if post == "ghost"            # s109 (#479): one of yesterday's ghosts, see-through with bright rims when traced
         gm = plugin(g, "ghosts")
         Base.invokelatest(Main.GHOSTS[:start])

@@ -4,6 +4,11 @@
 # a little snow-Lumi. A few minutes later it all thaws away again (the snowman last).
 isdefined(Main, :SNOWDAY) || Core.eval(Main, :(const SNOWDAY = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# one island-wide effect at a time (s110, review #538: snow, a paint fight and a drift together drowned each other out)
+isdefined(Main, :ISLAND_FX) || Core.eval(Main, :(const ISLAND_FX = Dict{Symbol,Any}()))
+fx_free(w) = w.t >= get(Main.ISLAND_FX, :until, -Inf)
+claim_fx!(w, secs, who) = (Main.ISLAND_FX[:until] = w.t + secs; Main.ISLAND_FX[:who] = who; nothing)
 const S = Main.SNOWDAY
 
 const GAP = (5400.0, 9000.0)      # sim seconds between two snow days (1-2 island days)
@@ -235,7 +240,12 @@ function NG.step!(s::SnowDay, game, dt)
         testing = game.tests !== nothing && NG.running(game.tests)
         busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
         if w.t >= s.next_t && !testing && !busy_game && 9 < 24 * NG.daytime(w) < 16
-            begin!(s, game)
+            if fx_free(w)
+                claim_fx!(w, T_FALL + T_SNOWY + T_THAW, "snow")
+                begin!(s, game)
+            else
+                s.next_t = w.t + 60
+            end
         end
         return
     end

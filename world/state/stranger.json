@@ -1,8 +1,8 @@
 {
   "arrived": true,
   "pos": [
-    3.6479254,
-    19.272104
+    7.9329453,
+    -2.6871738
   ],
   "state": "roam",
   "trust": {
@@ -16,5 +16,5 @@
     "Truffle": 1.0,
     "Wibbles": 1.0
   },
-  "visits": 37
+  "visits": 40
 }

@@ -1,5 +1,6 @@
 {
   "created": "2026-11-26T06:09:10.427",
+  "finished": "2026-11-26T06:22:43.314",
   "id": "20261126-060910-427-asset",
   "kind": "asset",
   "params": {
@@ -10,6 +11,21 @@
       "drift"
     ]
   },
+  "result": {
+    "created": "2026-11-26T06:22:43.102",
+    "faces": 38791,
+    "id": "20261126-060910-427-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261126-060910-427-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261126-060910-427-asset/mesh.jls",
+    "prompt": "a tiny round sandy islet with two leaning palm trees and a few rocks, stylized clay toy, soft colors, seen from the side, resting on the ground",
+    "seconds": 808.0,
+    "tags": [
+      "prop",
+      "islet",
+      "drift"
+    ]
+  },
+  "seconds": 811.2,
   "started": "2026-11-26T06:09:12.157",
-  "status": "running"
+  "status": "done"
 }

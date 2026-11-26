@@ -167,7 +167,11 @@ function make_area_plots!(scene, w)
                        # live, near-clear in traced copies, where the sky and the sandy floor give the colour
                        material = NG.Hikari.MediumInterface(NG.Hikari.Glass(color = get(Main.AREA_PLOTS, :live, false) ? (0.4, 0.72, 0.95) : (0.9, 0.98, 0.95),
                                                                             ior = 1.33, roughness = 0.01);
-                                                            inside = nothing, shadows = 1.33),   # sun through the surface: a lit floor (s89: plain glass shadowed it navy)
+                                                            # s110 (#535): water that absorbs red first, so the deep middle reads darker teal
+                                                            # than the sandy bank and the sky's reflection stands out on it
+                                                            inside = NG.Hikari.HomogeneousMedium(σ_a = NG.Hikari.RGBSpectrum(0.9f0, 0.35f0, 0.22f0),
+                                                                                                 σ_s = NG.Hikari.RGBSpectrum(0.02f0)),
+                                                            shadows = 1.33),   # sun through the surface: a lit floor (s89: plain glass shadowed it navy)
                        name = :area_pond))
     st = Point3f[]; ssz = Vec3f[]
     for k in 1:22

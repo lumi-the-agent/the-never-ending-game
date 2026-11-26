@@ -4,6 +4,11 @@
 # islets it brought stay on our new horizon. (Nothing on the island moves: the sea and what is in it go by.)
 isdefined(Main, :DRIFT) || Core.eval(Main, :(const DRIFT = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# one island-wide effect at a time (s110, review #538: snow, a paint fight and a drift together drowned each other out)
+isdefined(Main, :ISLAND_FX) || Core.eval(Main, :(const ISLAND_FX = Dict{Symbol,Any}()))
+fx_free(w) = w.t >= get(Main.ISLAND_FX, :until, -Inf)
+claim_fx!(w, secs, who) = (Main.ISLAND_FX[:until] = w.t + secs; Main.ISLAND_FX[:who] = who; nothing)
 const D = Main.DRIFT
 
 const SPEED = 5.0f0          # m/s the sea goes by (2.2 hardly showed on the horizon)
@@ -14,6 +19,8 @@ const NFOAM = 160
 const FAR = 120f0            # islets wrap from behind to ahead at this distance
 const LINES = ("Where are we GOING?!", "Land ho! ...no, just a rock.", "Bye, old sea!", "Are we a boat now?", "Faster!")
 const HIDDEN = Point3f(0, 0, -100)
+const ISLET = "20261126-060910-427-asset"   # s109 asset job: a tiny round sandy islet with two leaning palm trees
+const ISLET_OK = true                         # looked at its picture (s109) and its mesh on the sea (s110)
 
 struct Drift <: System end
 
@@ -30,7 +37,7 @@ end
 
 function build!(game)
     sc = game.stage.scene
-    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:drift_sand, :drift_green, :drift_foam), copy(sc.plots))
+    for p in filter(p -> haskey(p.attributes, :name) && p.attributes[:name][] in (:drift_sand, :drift_green, :drift_foam, :drift_isl), copy(sc.plots))
         delete!(sc, p)
     end
     n = NISLETS
@@ -38,6 +45,15 @@ function build!(game)
                             color = RGBf(0.93, 0.85, 0.62), name = :drift_sand)
     D[:green] = meshscatter!(sc, fill(HIDDEN, n); marker = Sphere(Point3f(0), 1f0), markersize = fill(Vec3f(0.01), n),
                              color = RGBf(0.36, 0.62, 0.3), name = :drift_green)
+    # s110 (review #534): the islets from a generated asset (a sand disc, two leaning palms, rocks) instead of domes
+    if ISLET_OK && isfile(joinpath(game.paths.world, "assets", ISLET, "mesh.jls"))
+        model = NG.lifted_asset(game.paths, ISLET)
+        ps = GeometryBasics.coordinates(model.mesh)
+        D[:isl_ext] = Float32(max(maximum(p[1] for p in ps) - minimum(p[1] for p in ps), maximum(p[2] for p in ps) - minimum(p[2] for p in ps)))
+        D[:isl_z0] = Float32(minimum(p[3] for p in ps))
+        D[:isl] = NG.asset_instances!(sc, model, fill(HIDDEN, n); markersize = fill(Vec3f(0.01), n),
+                                      rotation = [NG.rot_z(2f0 * Float32(pi) * k / n) for k in 1:n], name = :drift_isl)
+    end
     D[:foam] = meshscatter!(sc, fill(HIDDEN, NFOAM); marker = Sphere(Point3f(0), 1f0), markersize = fill(Vec3f(0.01), NFOAM),
                             color = RGBf(0.97, 0.98, 1.0), name = :drift_foam)
     D[:built] = true
@@ -95,7 +111,10 @@ function step_drift!(game, dt)
     # foam: born at the stern half of the shore and along the bow, carried back with the sea
     if v > 0.2f0
         for _ in 1:4
-            a = atan(d[2], d[1]) + Float32(pi) * (rand(w.rng) < 0.8 ? (0.55f0 + 0.9f0 * rand(w.rng)) : (-0.25f0 + 0.5f0 * rand(w.rng)))
+            # the two stern quarters make the V of a wake; a little at the bow for its wave
+            u = rand(w.rng)
+            a = atan(d[2], d[1]) + Float32(pi) * (u < 0.4 ? (0.72f0 + 0.06f0 * randn(w.rng)) : u < 0.8 ? (-0.72f0 + 0.06f0 * randn(w.rng)) :
+                                                  u < 0.9 ? (0.8f0 + 0.4f0 * rand(w.rng)) : (-0.2f0 + 0.4f0 * rand(w.rng)))
             r = shore(w, a) + 0.4f0
             fp = D[:foamp]; k = D[:foamk]
             fp[k] = (Point3f(r * cos(a), r * sin(a), 0.04f0), w.t)
@@ -107,7 +126,9 @@ function step_drift!(game, dt)
         p, t0 = fp[k]
         p[3] < -50 && continue
         out = Point2f(p[1], p[2]); out = out / max(hypot(out[1], out[2]), 1f-3)
-        fp[k] = (p + Point3f(-d[1] * v + 0.15f0 * out[1], -d[2] * v + 0.15f0 * out[2], 0) * Float32(dt), t0)
+        side = d[1] * out[2] - d[2] * out[1] > 0 ? 1f0 : -1f0          # which arm of the V
+        sp_ = Point2f(-d[2], d[1]) * side
+        fp[k] = (p + Point3f(-d[1] * v + 0.45f0 * v * sp_[1], -d[2] * v + 0.45f0 * v * sp_[2], 0) * Float32(dt), t0)
     end
     # the workshop isle out at sea comes nearer too (only it: the far horizon stays), up to 20 m, then it waits for us
     D[:wi] = min(20f0, Float32(get(D, :wi, 0f0)) + v * Float32(dt) * 0.25f0)
@@ -150,8 +171,15 @@ function draw!(game)
     w = game.world
     isl = D[:islets]
     sand = [Point3f(p[1], p[2], -0.3f0) for (p, r) in isl]; gr = [Point3f(p[1], p[2], 0.2f0) for (p, r) in isl]
-    Makie.update!(D[:sand], sand; markersize = [Vec3f(r, r * 0.8f0, 0.8f0) for (p, r) in isl])
-    Makie.update!(D[:green], gr; markersize = [Vec3f(0.62f0r, 0.5f0r, 0.42f0r) for (p, r) in isl])
+    if haskey(D, :isl) && D[:isl].parent !== nothing
+        ext = D[:isl_ext]::Float32; z0 = D[:isl_z0]::Float32
+        Makie.update!(D[:isl], [Point3f(p[1], p[2], -z0 * (2r / ext) - 0.25f0) for (p, r) in isl]; markersize = [Vec3f(2r / ext) for (p, r) in isl])
+        Makie.update!(D[:sand], fill(HIDDEN, length(isl)); markersize = fill(Vec3f(0.01), length(isl)))
+        Makie.update!(D[:green], fill(HIDDEN, length(isl)); markersize = fill(Vec3f(0.01), length(isl)))
+    else
+        Makie.update!(D[:sand], sand; markersize = [Vec3f(r, r * 0.8f0, 0.8f0) for (p, r) in isl])
+        Makie.update!(D[:green], gr; markersize = [Vec3f(0.62f0r, 0.5f0r, 0.42f0r) for (p, r) in isl])
+    end
     fp = get(D, :foamp, nothing)
     fp === nothing && return
     ms = [p[3] < -50 ? Vec3f(0.01) : (a = Float32(w.t - t0); f = max(0f0, 1 - a / 12); Vec3f(0.5f0 + 0.08f0 * a, 0.5f0 + 0.08f0 * a, 0.05f0) * f + Vec3f(0.01))
@@ -173,8 +201,9 @@ function NG.step!(::Drift, game, dt)
     # the very first time the island comes loose it does not wait for an afternoon: whenever it is, night or day,
     # whoever is awake runs to the bow (a file in the game's own state remembers that it has happened)
     first = game.dash !== nothing && !isfile(joinpath(game.paths.state, "drift.json"))
-    want = get(D, :force, false) || first || (game.dash !== nothing && get(D, :day, -1) != day && HOURS[1] < h < HOURS[2] && party_free(w))
+    want = get(D, :force, false) || first || (game.dash !== nothing && get(D, :day, -1) != day && HOURS[1] < h < HOURS[2] && party_free(w) && fx_free(w))
     want || return
+    claim_fx!(w, LASTS + 10, "drift")
     first && write(joinpath(game.paths.state, "drift.json"), "{\"first\": $(w.t)}")
     D[:force] = false; D[:day] = day
     start_drift!(game)

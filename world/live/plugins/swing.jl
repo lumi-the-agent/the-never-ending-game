@@ -228,7 +228,10 @@ function NG.step!(s::Swing, game, dt)
         p0 = SW[:hop_from]
         rider.pos = p0 + (c - Point3f(0, 0, 0.18f0) - p0) * u + Point3f(0, 0, 0.7f0 * 4u * (1 - u))
         rider.action = u < 1 ? :jump : :sit; rider.goal.action = rider.action
-        rider.yaw = yaw + Float32(pi / 2)
+        # turn round to face the swing during the hop, not in one frame (s110 #536: a crab snapped 165 degrees), and
+        # by the species' own heading (crab bodies face their own way)
+        want = yaw + Float32(pi / 2) - NG.species_of(rider).heading
+        rider.yaw = rider.yaw + NG.wrap_angle(want - rider.yaw) * 0.2f0
         draw_seat!(w, 0f0)
         el >= T_HOP && (s.state = :swing; s.t0 = w.t)
         return
@@ -308,7 +311,8 @@ function ride!(s::Swing, w, rider)
     _, yaw, _, _ = geometry(w)
     rider.pos = c - Point3f(0, 0, 0.18f0)
     rider.action = :sit; rider.goal.action = :sit
-    rider.yaw = yaw + Float32(pi / 2)
+    want = yaw + Float32(pi / 2) - NG.species_of(rider).heading
+    rider.yaw = rider.yaw + NG.wrap_angle(want - rider.yaw) * 0.2f0
     draw_seat!(w, s.theta)
 end
 

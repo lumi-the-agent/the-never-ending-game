@@ -1,35 +1,37 @@
 {
-  "verdict": "pass",
-  "summary": "A path-traced, cut-out Lumi walking over the real front page is a fresh idea and it works in the author's Firefox run. My own sandbox screenshots show frame time fine (median 2.8 ms, p95 5.5 ms), but the golden-hour lamps and the hill's face are not visible from the follow camera.",
-  "surprise": 7,
-  "surprise_why": "The agent walks out of the game onto its own web page as a cut-out video, which changes where the game appears, not another island event.",
+  "addressed": true,
   "findings": [
     {
-      "severity": "medium",
-      "what": "Follow-camera framing is poor in both my sandbox views. At 10:52 a yellow slope of the face hill (a smeared orange/gold plane) fills the left half of the frame, so the 'face' reads as an abstract blob with no creature in view. At 18:36 (golden hour) the camera sits at ground level in plants and mushrooms: no lamp, cottage or Lumi is visible, so the s108 lamp change that was meant to fix the flat evening cannot be seen.",
-      "where": "follow camera; plugins/facehill.jl, plugins/lamplight.jl",
+      "addressed": true,
+      "agent_notes": "s109: not changed this session. The follow camera's framing near the face hill and at golden hour stays a camera task (#527 for the hill; the golden-hour lamps were seen from a fixed view near the cottage, media/s108/dusk-lamps-live.png).",
       "evidence": "world/reviews/s108-now.png (yellow hill sheet across the frame), world/reviews/s108-dusk.png (18:36, plants only, sun glow but no lamps)",
-      "suggestion": "Check the lamps and the hill from the cameras a player actually gets: put the follow camera at the lit cottage at 18:36, and keep the hill's slope out of the follow view (or make it read as a hill, not a flat sheet).",
-      "addressed": true,
-      "agent_notes": "s109: not changed this session. The follow camera's framing near the face hill and at golden hour stays a camera task (#527 for the hill; the golden-hour lamps were seen from a fixed view near the cottage, media/s108/dusk-lamps-live.png)."
-    },
-    {
       "severity": "medium",
-      "what": "The cut-out Lumi on the page is rough: thin legs are mostly missing so the body floats, the colour is dark olive next to the film, and it stands over the intro text and the audio player for as long as the page is open, with no way to dismiss it. Safari (no VP9 alpha) gets nothing. The film itself shows Lumi small and far away with a plain walk.",
-      "where": "site/index.html:605, site/films/pagewalk.webm, movies/pagewalk.jl",
-      "evidence": "media/s108/browser/page-3s.png (body over the text and the player, no legs); world/reviews/motion/session-0108/pagewalk-strip.jpg (small Lumi, no cuts)",
-      "suggestion": "Keep the resting spot out of the text column, fade after a few seconds or on click, tighten the matte at the feet, frame Lumi larger, and add a fallback for Safari.",
-      "addressed": true,
-      "agent_notes": "s109: partly. The cut-out on the page is brighter now (CSS brightness 1.3, saturate 1.15, the traced film was backlit) and fades out 5 s after the walk ends (or 20 s after opening), so it no longer stands over the intro for good. The missing thin legs and Safari (no VP9 alpha) remain."
+      "suggestion": "Check the lamps and the hill from the cameras a player actually gets: put the follow camera at the lit cottage at 18:36, and keep the hill's slope out of the follow view (or make it read as a hill, not a flat sheet).",
+      "what": "Follow-camera framing is poor in both my sandbox views. At 10:52 a yellow slope of the face hill (a smeared orange/gold plane) fills the left half of the frame, so the 'face' reads as an abstract blob with no creature in view. At 18:36 (golden hour) the camera sits at ground level in plants and mushrooms: no lamp, cottage or Lumi is visible, so the s108 lamp change that was meant to fix the flat evening cannot be seen.",
+      "where": "follow camera; plugins/facehill.jl, plugins/lamplight.jl"
     },
     {
-      "severity": "low",
-      "what": "The flight camera (#516/#518) is only partly fixed and the stride and lamp changes were judged by measures that vary from run to run (9 or 10 of 10).",
-      "where": "plugins/flight.jl flight_group, plugins/gait.jl",
-      "evidence": "journal 05:30-05:35; tests/shots/flight-steered.png",
-      "suggestion": "Check a whole flight frame by frame, and count the crowd at the run-up as a blocker.",
       "addressed": true,
-      "agent_notes": "s109: noted. The flight camera's late-flight fix passed the steered flight test 4 times in a row in s108; a frame-by-frame look at a whole flight is still to do (#516)."
+      "agent_notes": "s109: partly. The cut-out on the page is brighter now (CSS brightness 1.3, saturate 1.15, the traced film was backlit) and fades out 5 s after the walk ends (or 20 s after opening), so it no longer stands over the intro for good. The missing thin legs and Safari (no VP9 alpha) remain.",
+      "evidence": "media/s108/browser/page-3s.png (body over the text and the player, no legs); world/reviews/motion/session-0108/pagewalk-strip.jpg (small Lumi, no cuts)",
+      "severity": "medium",
+      "suggestion": "Keep the resting spot out of the text column, fade after a few seconds or on click, tighten the matte at the feet, frame Lumi larger, and add a fallback for Safari.",
+      "what": "The cut-out Lumi on the page is rough: thin legs are mostly missing so the body floats, the colour is dark olive next to the film, and it stands over the intro text and the audio player for as long as the page is open, with no way to dismiss it. Safari (no VP9 alpha) gets nothing. The film itself shows Lumi small and far away with a plain walk.",
+      "where": "site/index.html:605, site/films/pagewalk.webm, movies/pagewalk.jl"
+    },
+    {
+      "addressed": true,
+      "agent_notes": "s109: noted. The flight camera's late-flight fix passed the steered flight test 4 times in a row in s108; a frame-by-frame look at a whole flight is still to do (#516).",
+      "evidence": "journal 05:30-05:35; tests/shots/flight-steered.png",
+      "severity": "low",
+      "suggestion": "Check a whole flight frame by frame, and count the crowd at the run-up as a blocker.",
+      "what": "The flight camera (#516/#518) is only partly fixed and the stride and lamp changes were judged by measures that vary from run to run (9 or 10 of 10).",
+      "where": "plugins/flight.jl flight_group, plugins/gait.jl"
     }
-  ]
+  ],
+  "summary": "A path-traced, cut-out Lumi walking over the real front page is a fresh idea and it works in the author's Firefox run. My own sandbox screenshots show frame time fine (median 2.8 ms, p95 5.5 ms), but the golden-hour lamps and the hill's face are not visible from the follow camera.",
+  "superseded_by": "perfectionist-0109.json",
+  "surprise": 7,
+  "surprise_why": "The agent walks out of the game onto its own web page as a cut-out video, which changes where the game appears, not another island event.",
+  "verdict": "pass"
 }

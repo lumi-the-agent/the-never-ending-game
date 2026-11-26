@@ -6106,7 +6106,7 @@
     },
     {
       "created": "2026-11-25T00:22:39.077",
-      "detail": "perfectionist-0106 [fun, medium]: Four sessions in a row added things to watch or read (the board, the paper model, the hill, cloud shapes). The playable set is still three mini games and a key list. Level 1 is won by a bot that only holds W and turns: fireflies 8/8 with 16 s left, berries 10 to 4, hide and seek 4/4 with 80 s left.\nWhere: plugins/ (new mini game), missme.jl; firefly_catch.jl / berry_race.jl / hideseek level 1 numbers\nSuggestion: Make 'did they miss me' playable: hide Lumi yourself for 60 s while friends search, and the counters become your score. Or make the shadow chase a game. Tighten level 1 so a straight-line bot only just wins.\nDone when: A fourth entry under Mini game with start card, clock, end card and 'R to play again', passing a W/A/D first-play test, and the reviewer's steer bot wins level 1 of each game with under a third of the time left.\nEvidence: reviews/perfectionist-shots/0106/play/log.txt, games-sheet.png",
+      "detail": "perfectionist-0109 [fun, medium]: Three sessions (s107-109) added a camera mood, a web cut-out, lamps and an island drift, and none of it is playable. The mini game list is unchanged since s104. During the drift the player can only watch.\nWhere: plugins/ (mini games), drift.jl\nSuggestion: Make the drift playable: the player steers the island (A/D turns the bow) towards an islet, and landing on one leaves something on the island (a palm, a shell, a castaway friend). Or build the fourth mini game from the best gag (sneeze, paint, bubble). Level 1 should take at least a second try.\nDone when: A new entry in the mini game menu or a drift key in 'Things to try', with a first-play W/A/D test that passes and a screenshot of its end card.\nEvidence: the 'Things to try' panel in every screenshot of s107-s109",
       "est_minutes": 30.0,
       "id": 437,
       "kind": "review",
@@ -6115,8 +6115,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A fourth mini game from the best gag; level 1 a little harder",
-      "updated": "2026-11-26T04:14:32.999"
+      "title": "A fourth mini game, or a playable drift: something new to PLAY",
+      "updated": "2026-11-26T06:31:47.987"
     },
     {
       "created": "2026-11-25T00:22:39.077",
@@ -7128,7 +7128,7 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0103 [camera, medium]: The follow camera framed Truffle behind a workbench filling half the frame. In another view a sleeping pig filled the bottom of the frame while Lumi was a blur in the middle. The berry race's end card had the blue-hatted sheep's back filling the foreground.\nWhere: render.jl follow_view, lensclear.jl blockers (actors and creatures near the eye)\nSuggestion: Count actors and creatures near the eye as blockers, keep a clear foreground, and frame the subject on a third at its own height.\nDone when: 10 follow screenshots 6 s apart show the subject unblocked, with nothing nearer than the subject covering more than 10% of the frame.\nEvidence: reviews/p103/traced.png, reviews/p103/follow2.png, reviews/p103/play/berry-9-end.png, reviews/p103/cams.png",
+      "detail": "perfectionist-0109 [camera, medium]: The follow camera framed the giant Lumi between two blurred tree crowns that fill 60% of the frame. The progress dashboard shot shows Pickles behind two gallery easels with a flower stem in front. The mood camera's glide back in its own film passes through a big white rock at the left edge (8.7-8.8 s).\nWhere: render.jl follow view, lensclear.jl blockers (gallery easels, crowns at close range), moodcam.jl glide path\nSuggestion: Count gallery easels, rocks and near crowns (anything within 3 m of the eye) as blockers. When the subject is giant, pull the eye back over the crowns. Check the moodcam glide's path, not only its two end points, with NG.obstruction.\nDone when: 10 follow screenshots 6 s apart in the busy sandbox show no foreground object covering more than 20% of the view, and the moodcam film has no frame with a rock or crown in the near foreground.\nEvidence: reviews/p109/follow2.png, media/progress/session-0109/dashboard.png, reviews/motion/perfectionist-0109/moodcam-steps.jpg",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
@@ -7137,8 +7137,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow views free of workbenches, sleepers and sheep in front",
-      "updated": "2026-11-26T01:39:37.845"
+      "title": "Follow and mood cameras stop looking through crowns, easels and rocks",
+      "updated": "2026-11-26T06:31:47.987"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7217,12 +7217,12 @@
       "id": 516,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0109: s107-108: the flight is :fly throughout the panic, and the eye stays 9 m behind on the clearest side; the steered flight test passed four times in a row, and the live follow3 shows Lumi flying with its wings out in view.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "G flight in jump-in: a flying pose, and a camera that keeps Lumi in view",
-      "updated": "2026-11-26T04:14:32.999"
+      "updated": "2026-11-26T06:31:47.987"
     },
     {
       "created": "2026-11-25T23:16:14.278",
@@ -7235,8 +7235,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Hats on heads, fishing rods held, not through faces",
-      "updated": "2026-11-26T01:39:37.845"
+      "title": "Hats on heads (the crab's party hat sits on its shell side), fishing rods held, not through faces",
+      "updated": "2026-11-26T06:31:47.987"
     },
     {
       "created": "2026-11-25T23:16:14.278",
@@ -7366,17 +7366,17 @@
     },
     {
       "created": "2026-11-26T02:54:56.234",
-      "detail": "perfectionist-0106 [world, high]: From above, the hill is a lumpy ochre blob with drippy cliff edges next to a second yellow mound. At eye level it is a yellow wall behind the trees. No beak, eyes or crest a player could name; it is the biggest change in the progress overview since s103 and it looks like a mistake.\nWhere: plugins/facehill.jl\nSuggestion: Exaggerate the relief of the features (eyes as dark pools or flower beds, beak as an orange ridge, crest as tall grass), clear the trees from the views that should read it, and smooth the cliff skirt into the meadow.\nDone when: In progress overview.png and a top-down traced still, the beak and both eyes are distinct, so a viewer names it 'Lumi's face' without the caption.\nEvidence: site/img/face-hill.png, reviews/perfectionist-shots/0106/progress-overview.jpg (s103 vs s106), reviews/motion/perfectionist-0106/face-hill-overview.jpg",
+      "detail": "perfectionist-0109 [world, medium]: In the session 109 overview the hill is still an ochre heap with dark smears beside the toadstool field, partly under tree crowns. No beak, eyes or crest can be named without the caption.\nWhere: plugins/facehill.jl, the trees on its head\nSuggestion: Move the two trees off the head, push the beak and crest relief higher, and paint eyes and beak in strong flat colours (black pupils, orange beak) instead of the photo's muddy shading.\nDone when: A person shown the overview screenshot without a caption can point at the eyes and the beak; no crown covers the head.\nEvidence: media/progress/session-0109/overview.png",
       "est_minutes": 15.0,
       "id": 527,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Face hill reads as a face from the overview and eye level",
-      "updated": "2026-11-26T04:14:32.999"
+      "title": "The face hill reads as Lumi's face from the overview",
+      "updated": "2026-11-26T06:31:47.987"
     },
     {
       "created": "2026-11-26T03:11:37.284",
@@ -7464,17 +7464,87 @@
     },
     {
       "created": "2026-11-26T06:09:12.667",
-      "detail": "s109: plugins/drift.jl draws its seven islets as a sand sphere and a green dome. An asset job for 'a tiny round sandy islet with two leaning palm trees' was queued at the end of s109 (look in world/jobs for the 'islet' asset). Next: look at it, then draw the islets as ONE instanced plot of that model (NG.load_asset + NG.asset_instances!) behind a flag ISLET_OK, scaled 5-13 m, and film a drift again.",
+      "detail": "perfectionist-0109 [wow, high]: During the drift, seven islets made of a sand plate and a green dome slide past, and the 'wake' is scattered flat white ellipses like coins on the water. In the film the camera is fixed high above the stern for 10 s, and the only motion is two domes growing. The best idea in weeks reads as a placeholder.\nWhere: plugins/drift.jl, movies/drift.jl, site post 'We came loose'\nSuggestion: Draw the islets as one instanced plot of the generated palm islet (assets/20261126-060910-427-asset, trim its baked shadow plate) in 2-3 sizes and turns. Make the wake a V of foam streaks that stretch along the motion instead of round discs. Add a few gulls riding along, and give the friends at the bow a flag or a lantern. Film it from the bow, low, with the islets passing close beside the camera.\nDone when: A traced drift still or film frame shows at least two palm islets from the asset (no domes) and a foam V streaming back from the shore, and the film's camera moves.\nEvidence: reviews/motion/perfectionist-0109/drift-overview.jpg, reviews/p109/follow1.png (a dome islet right behind the cottage)",
       "est_minutes": 15.0,
       "id": 534,
-      "kind": "feature",
-      "priority": 2,
+      "kind": "review",
+      "priority": 1,
+      "result": "The drift's islets are the generated palm islet (asset 20261126-060910-427: sand disc, two leaning palms, rocks), one instanced plot of seven, 10-26 m across; the wake is a V from the two stern quarters; the film's camera swings from behind the stern to the beam. Traced film site/films/drift2.mp4 (posted 'Past the palm islands'), raster preview media/s110/dpv.png. Published. Gulls not added.",
+      "source": "review",
+      "spent_minutes": 20.0,
+      "status": "done",
+      "title": "The drift looks like a voyage: real islets, a wake, gulls, a moving camera",
+      "updated": "2026-11-26T06:59:21.817"
+    },
+    {
+      "created": "2026-11-26T06:31:47.987",
+      "detail": "perfectionist-0109 [materials, high]: In a 96-sample traced still from the path (reviews/p109/trace-pond.png) the pond is a pale, milky blue flat disc. Nothing reflects in it (not the reeds, the cherry trees or the sky), it has no depth gradient, and it looks matte next to the sea. Water is the measure for materials, and the pond is the one water a player walks up to.\nWhere: plugins/areas.jl dig_pond!, the glass disc and the floor colour in meadow.jl\nSuggestion: Use a darker, more saturated floor that falls off with depth (meadow.jl floor colours). Use glass with a slight normal-perturbed ripple (a bump texture or a few concentric swells), so the trees and sky show as a Fresnel reflection at grazing angles. Add a thin absorbing medium for the colour with depth, and a few lily pads that cast caustic-edged shadows.\nDone when: A traced still from eye level 6-8 m away shows the cherry trees or reeds mirrored in the pond surface and the water darker towards the middle than at the bank.\nEvidence: reviews/p109/trace-pond.png",
+      "est_minutes": 30.0,
+      "id": 535,
+      "kind": "review",
+      "priority": 1,
+      "result": "Traced pond water: the pond glass now has an absorbing medium inside (HomogeneousMedium σ_a (0.9, 0.35, 0.22) per m, a little scattering), so light that goes deeper comes back bluer and darker. Traced still from eye level 7 m away with the cherry grove behind (96 samples, media/s110/pond-traced.png, post_stills.jl 'pond'): the reeds and the bright sky mirror in the surface and the water is darker blue in the middle than at the sandy bank. Live (raster/browser) unchanged. Published.",
+      "source": "review",
+      "spent_minutes": 12.0,
+      "status": "done",
+      "title": "Pond water that looks like water when traced: reflections, depth, ripples",
+      "updated": "2026-11-26T07:05:58.880"
+    },
+    {
+      "created": "2026-11-26T06:31:47.987",
+      "detail": "perfectionist-0109 [animation, high]: The sandbox motion measure at 14:05 found 1 of 10 creatures moving well. Six creatures' bodies and legs move in uneven steps in 46-55% of frames, Hopscotch turns 114 degrees in one frame (and its claw jumps 0.33 m), Sir Sniffsalot turns 67 degrees, Lumi's crest jumps 0.36 m, and Truffle's and Pickles' tails swing at 11.6 m/s. The films look smooth only because they film calm moments.\nWhere: the engine's herd pose and steps under the busy events (paint fight, giant, swing party, snow); gait.jl\nSuggestion: Measure with one event at a time to find which plugin produces the uneven steps (paint fight knockbacks, swing runs, separation pushes under the giant). Ease every turn over 90 degrees across at least 0.2 s, and damp the tail and crest springs.\nDone when: live motion in a busy sandbox afternoon shows at least 7 of 10 moving well, twice in a row, and no turn over 45 degrees in one frame.\nEvidence: live motion: reviews/motion/p109/motion.png, motion-strip.png, creatures.png",
+      "est_minutes": 30.0,
+      "id": 536,
+      "kind": "review",
+      "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Islets that look like islets: the drift's passing islands from a generated asset",
-      "updated": "2026-11-26T06:09:12.667"
+      "title": "Live motion: 6 creatures judder, 114 degree snaps, tails at 11 m/s",
+      "updated": "2026-11-26T06:31:47.987"
+    },
+    {
+      "created": "2026-11-26T06:31:47.987",
+      "detail": "perfectionist-0109 [ui, medium]: At 14:04 'Messages to you' read 'Right now, tonight, the island came loose', a message from hours earlier and the wrong time of day. 'New on the island: A golden hill in my shape' has been there since s104. In the air, Lumi's name label sits on its thought bubble's dots (follow3).\nWhere: say_to_human texts, the 'New on the island' line in the Lumi panel, the name labels\nSuggestion: Write messages without 'right now'/'tonight'. Let 'New on the island' show the newest published thing (the drift, the lamps) and drop it after a day. Offset name tags above thought bubbles.\nDone when: A screenshot shows 'New on the island' naming the drift or newer, and no message that names a time of day different from the clock.\nEvidence: reviews/p109/follow1.png, reviews/p109/follow3.png",
+      "est_minutes": 30.0,
+      "id": 537,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Messages and 'New on the island' that are true now",
+      "updated": "2026-11-26T06:31:47.987"
+    },
+    {
+      "created": "2026-11-26T06:31:47.987",
+      "detail": "perfectionist-0109 [style, low]: One sandbox afternoon frame had snow-white ground, rainbow paint discs and balls in the air, white snow dots, a giant Lumi, a flight and dome islets in the sea. Every effect drowns out the others, and the island loses its look.\nWhere: the shared LUMI_PARTY claim covers Lumi only; island-wide looks (snow, paint fight, drift) are not coordinated\nSuggestion: Extend the shared claim to island-wide looks: one weather/look event at a time (snow or paint or drift), with the others waiting.\nDone when: Five screenshots 30 s apart in a sandbox afternoon never show two island-wide effects (snow ground, paint fight, drift) at once.\nEvidence: reviews/p109/follow1.png, follow2.png, follow3.png",
+      "est_minutes": 30.0,
+      "id": 538,
+      "kind": "review",
+      "priority": 3,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "One big effect at a time: snow, paint, giant and flight not all at once",
+      "updated": "2026-11-26T06:31:47.987"
+    },
+    {
+      "created": "2026-11-26T07:08:47.268",
+      "detail": "s110 plugins/drafts.jl: inside a drifting patch the island is its first draft (grey tiles, ball trees) and everyone a pale blob.",
+      "est_minutes": 15.0,
+      "id": 539,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published 06:41; the human's island had its first patch at 06:42 (drafts_blob for Gloop, Sir Sniffsalot and Lumi in log/events). Film site/films/drafts.mp4, posted 'The island remembers being drawn'.",
+      "source": "agent",
+      "spent_minutes": 25.0,
+      "status": "done",
+      "title": "Grey patches of the island's first drafts drift across it",
+      "updated": "2026-11-26T07:08:47.274"
     }
   ]
 }

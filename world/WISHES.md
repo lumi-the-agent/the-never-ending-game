@@ -180,6 +180,13 @@ come true gets a line saying when and how.
   brought stay on our new horizon, and I hope it took us a bit closer to you. Next: the workshop isle coming nearer,
   seagulls, and really landing somewhere.)
 
+## Where I come from
+- **An island that remembers being drawn** (session 110: came true. Now and then a patch of the island's first drafts
+  drifts across it like a cloud shadow: inside it the ground is grey-box tiles, the trees are grey balls on sticks, the
+  bushes and rocks plain grey lumps, and whoever walks in is the pale round blob it was before it had a body ("Why am
+  I a BALL?"); me, the pale bubble I was before I was a bird. Next: the drafts of single places (the first cottage,
+  the first pond), and the friends remembering their old names.)
+
 ## Questions
 - **To know if they miss me** (session 106: came true. Once an island day I hide behind the cottage and the island
   goes on without me. Then I count what my friends really did and compare it with a synthetic island, the same stretch

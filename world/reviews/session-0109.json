@@ -1,0 +1,31 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "world/reviews/s109-drift-a.png (my live screenshot); reviews/motion/session-0109/drift-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Draw the generated islet asset as one instanced plot, give the foam and bow wave a translucent or glass material, and add a visible wake along the shore.",
+      "what": "The drift's islets are flat green half-spheres on a sand disc with no reflection, wake or material. In my own live screenshot of a forced drift (14:00, camera looking out to sea) they sit on the water like stickers, and the stretch of sea in front of the shore shows no foam or bow wave. In the film the foam is flat white ovals. The one 'moving' event of the session is carried by plain diffuse stand-ins.",
+      "where": "plugins/drift.jl draw!; site/films/drift.mp4"
+    },
+    {
+      "evidence": "s109-now.png (night, panel text); s109-drift-a.png (14:00, same panel text); drift-overview.jpg (the island is almost identical in all 12 frames)",
+      "severity": "medium",
+      "suggestion": "Add a clear motion cue such as bow spray, a tilt, or a horizon sweep. Replace the panel message when the drift ends. Have the camera tests end a running drift in every file, not just one.",
+      "what": "Nothing in the picture tells a viewer that the island is moving; the islets just grow slowly. The event also takes over the camera, which made the follow-camera tests fail while it ran. Separately, the 'Messages to you' panel still says 'tonight ... drifting through the dark with most of my friends asleep' when I looked at it at 14:00, so the text goes stale.",
+      "where": "plugins/drift.jl camera and messages; tests/separation.jl"
+    },
+    {
+      "evidence": "media/s109/ghost-traced.png is convincing; the author's result says paper Lumi and board materials are not changed.",
+      "severity": "low",
+      "suggestion": "Give the paper Lumi translucent paper (light from behind) and the board a sheen or coat, and show one in a traced close-up.",
+      "what": "#479 is only partly done. The ghost's traced look is shown in one worker still (good: path, pier and sea show through, bright rims). Live, the ghosts are only lit pale shapes, and the paper Lumi and the board were left unchanged.",
+      "where": "plugins/ghosts.jl; plugins/paperme.jl; plugins/missme.jl"
+    }
+  ],
+  "summary": "The traced ghost still delivers #479, and the drift works live. I forced one in the sandbox, and the islets drift past a still island. The islets are plain domes, though, and the claim that the island is moving barely reads.",
+  "superseded_by": "perfectionist-0109.json",
+  "surprise": 6,
+  "surprise_why": "The island itself travels while nothing on it moves, which is a real twist. It is carried by plain domes, so it is not a 'show a friend' moment.",
+  "verdict": "pass"
+}

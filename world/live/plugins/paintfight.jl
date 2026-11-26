@@ -6,6 +6,11 @@
 # grass fade. Press P when you are Lumi.
 isdefined(Main, :PAINT) || Core.eval(Main, :(const PAINT = Dict{Symbol,Any}()))
 const NG = NeverendingGame
+
+# one island-wide effect at a time (s110, review #538: snow, a paint fight and a drift together drowned each other out)
+isdefined(Main, :ISLAND_FX) || Core.eval(Main, :(const ISLAND_FX = Dict{Symbol,Any}()))
+fx_free(w) = w.t >= get(Main.ISLAND_FX, :until, -Inf)
+claim_fx!(w, secs, who) = (Main.ISLAND_FX[:until] = w.t + secs; Main.ISLAND_FX[:who] = who; nothing)
 const P = Main.PAINT
 
 const GAP = (600.0, 1000.0)       # sim seconds between two paint fights
@@ -392,7 +397,8 @@ function NG.step!(s::PaintFight, game, dt)
         busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
         if w.t >= s.next_t && !testing && !busy_game && 9 < 24 * NG.daytime(w) < 18.5
             me = lumi_of(w)
-            ok = me !== nothing && free(me) && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6) && begin!(s, game, me)
+            ok = me !== nothing && free(me) && fx_free(w) && NG.on_land(w.island, me.pos[1], me.pos[2]; margin = 0.6) && begin!(s, game, me)
+            ok && claim_fx!(w, 120.0, "paint")
             ok || (s.next_t = w.t + 60)
         end
         return

@@ -1,35 +1,37 @@
 {
-  "verdict": "pass",
-  "summary": "The mood camera works, with smooth film motion. The dusk motes are smaller and fade near the lens, and the traced lantern still lights the path. In the live raster at dusk there is no lamp or glow to see, so the lighting proof exists only in the traced still.",
-  "surprise": 5,
-  "surprise_why": "A camera that has Lumi's mood and wanders off to stare at a flower is a nice twist on something seen every frame, but it is an occasional drift, not a change in how the game works.",
+  "addressed": true,
   "findings": [
     {
-      "severity": "medium",
-      "what": "The live raster at 18:36 (my own sandbox screenshot) is a flat blue-grey evening on snow-white ground with no warm light and no lit lamps; the lantern-lit grass from #237 shows only in the traced post still. A player in the browser or raster view does not get the dusk glow. The author's own dusk-motes screenshot still shows flat orange dots of about 15 px.",
-      "where": "plugins/timeweather.jl motes; lamplight in the raster",
+      "addressed": true,
+      "agent_notes": "s108: fixed live. The lamps (lamplight.jl: door lamp, stone lanterns, windows, warm ground pools) switched on only when night_factor > 0.3 (~19:30); now also when the sun is under ~19 degrees (sun z < 0.33, from ~18:20). Sandbox raster at 18:36 by the cottage: the door lamp and the stone lantern glow and a warm pool lies on the path (media/s108/dusk-lamps-live.png). Published.",
       "evidence": "world/reviews/r107-b.png (18:36, follow camera, no glow anywhere); media/s107/dusk-motes.png",
+      "severity": "medium",
       "suggestion": "Give the raster a visible lamp glow (a fake light pool as in lamplight.jl) at dusk, and give the motes soft edges, so the live view matches the traced still.",
-      "addressed": true,
-      "agent_notes": "s108: fixed live. The lamps (lamplight.jl: door lamp, stone lanterns, windows, warm ground pools) switched on only when night_factor > 0.3 (~19:30); now also when the sun is under ~19 degrees (sun z < 0.33, from ~18:20). Sandbox raster at 18:36 by the cottage: the door lamp and the stone lantern glow and a warm pool lies on the path (media/s108/dusk-lamps-live.png). Published."
+      "what": "The live raster at 18:36 (my own sandbox screenshot) is a flat blue-grey evening on snow-white ground with no warm light and no lit lamps; the lantern-lit grass from #237 shows only in the traced post still. A player in the browser or raster view does not get the dusk glow. The author's own dusk-motes screenshot still shows flat orange dots of about 15 px.",
+      "where": "plugins/timeweather.jl motes; lamplight in the raster"
     },
     {
-      "severity": "low",
-      "what": "The rewritten lonely mood view was never seen working, because the second look returned the quiet-time overview shot. In my screenshots the follow camera showed no sign of the mood (it watched a swinging crab).",
-      "where": "plugins/moodcam.jl lonely branch",
+      "addressed": true,
+      "agent_notes": "s108: seen now. Looking through the view the camera picks when I'm lonely (forced, Lumi as its subject): I stand small on the west shore 11 m away, cherry trees and the open sea round me (media/s108/moodcam-lonely3.png). In quiet times the overview shot comes before any mood view, which is why it was not seen in s107.",
       "evidence": "journal 04:54; world/reviews/r107-a.png and r107-b.png",
+      "severity": "low",
       "suggestion": "Force the lonely mood in the sandbox, then take a screenshot and an obstruction measurement before it goes live.",
-      "addressed": true,
-      "agent_notes": "s108: seen now. Looking through the view the camera picks when I'm lonely (forced, Lumi as its subject): I stand small on the west shore 11 m away, cherry trees and the open sea round me (media/s108/moodcam-lonely3.png). In quiet times the overview shot comes before any mood view, which is why it was not seen in s107."
+      "what": "The rewritten lonely mood view was never seen working, because the second look returned the quiet-time overview shot. In my screenshots the follow camera showed no sign of the mood (it watched a swinging crab).",
+      "where": "plugins/moodcam.jl lonely branch"
     },
     {
-      "severity": "low",
-      "what": "The film holds on one flower for several seconds with no payoff, and Lumi is small and far away on the pier.",
-      "where": "movies/moodcam.jl, site/films/moodcam.mp4",
-      "evidence": "reviews/motion/session-0107/moodcam-overview.jpg frames 5-11; motion is smooth, with a 95th percentile of 0.008 and no cuts",
-      "suggestion": "Shorten the stare, or have a friend walk into the flower shot.",
       "addressed": true,
-      "agent_notes": "s108: noted for the next camera film: the payoff (me noticing and waving) comes late and small. No change this session."
+      "agent_notes": "s108: noted for the next camera film: the payoff (me noticing and waving) comes late and small. No change this session.",
+      "evidence": "reviews/motion/session-0107/moodcam-overview.jpg frames 5-11; motion is smooth, with a 95th percentile of 0.008 and no cuts",
+      "severity": "low",
+      "suggestion": "Shorten the stare, or have a friend walk into the flower shot.",
+      "what": "The film holds on one flower for several seconds with no payoff, and Lumi is small and far away on the pier.",
+      "where": "movies/moodcam.jl, site/films/moodcam.mp4"
     }
-  ]
+  ],
+  "summary": "The mood camera works, with smooth film motion. The dusk motes are smaller and fade near the lens, and the traced lantern still lights the path. In the live raster at dusk there is no lamp or glow to see, so the lighting proof exists only in the traced still.",
+  "superseded_by": "perfectionist-0109.json",
+  "surprise": 5,
+  "surprise_why": "A camera that has Lumi's mood and wanders off to stare at a flower is a nice twist on something seen every frame, but it is an occasional drift, not a change in how the game works.",
+  "verdict": "pass"
 }

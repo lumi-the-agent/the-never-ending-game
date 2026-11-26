@@ -1,0 +1,254 @@
+{
+  "verdict": "needs_work",
+  "summary": "The island now does stranger things: the camera wanders off when Lumi is bored, the whole island drifts across the sea, the cottage lamps light the path at dusk, and a cut-out Lumi walks across its own web page. But the most radical new idea is drawn with placeholders: the drifting islets are green domes on sand plates and the wake is flat white coins. In the sandbox at 14:04, snow, a paint fight, a giant Lumi, a flight, a choir and a swing party all ran at once, and only 1 of 10 creatures moved cleanly. Play has not changed: there are still three mini games and a key list.",
+  "scores": {
+    "lighting": {
+      "score": 5,
+      "why": "Better at dusk: the lamps come on from about 18:20, and the traced dusk-lantern still shows a warm pool of light and a lamp shadow on the path. Day is still one sun on clay with no light that matters, the traced pond still (reviews/p109/trace-pond.png) is flat noon, and the progress night eye-level shot is lit by firefly dots."
+    },
+    "materials": {
+      "score": 4,
+      "why": "The ghosts are the first real tracer-only material (Diffuse/Transparent mix plus Sheen, media/s109/ghost-traced.png), and it is good, but ghosts are a rare event. Everything a player always sees is still plastic: the traced pond is a pale, matte blue disc with no reflection of the reeds or trees and no depth, and the drift islets are flat-coloured domes."
+    },
+    "world": {
+      "score": 6,
+      "why": "The drift is a real change to what the island is, and the workshop isle comes nearer during it. The face hill still reads as an ochre heap from the overview, and the drift's islets look like pudding moulds on plates next to the detailed island."
+    },
+    "props": {
+      "score": 6,
+      "why": "Generated assets are many and well used (cottage, swing, beach hut, gallery easels). The new props this round are hand-made primitives: domes, discs, white foam ellipses. The islet asset is done (palms, rocks, sand) but not used yet."
+    },
+    "creatures": {
+      "score": 6,
+      "why": "Up close (reviews/motion/p109/creatures.png) the bodies are appealing: pig, sheep, crab, blob and Lumi each have hats and faces that read. The crab's party hat sits on the side of its shell, and the giant Lumi with an egg chick next to it doubles the silhouette."
+    },
+    "animation": {
+      "score": 5,
+      "why": "The films are clean (drift has one first-frame islet pop at 0.04 s; pagewalk is smooth). The live sandbox is not: 1 of 10 moving well, with juddering in 46-55% of frames on Cumulus, Marshmallow, Pickles, Pinchy, Sir Sniffsalot and Truffle, Hopscotch turning 114 degrees in one frame, Lumi's crest jumping 0.36 m, and Truffle's and Pickles' tails at 11.6 m/s."
+    },
+    "fun": {
+      "score": 7,
+      "why": "No change since s106: the same three mini games and the jump-in key list (G now flies and is filmed properly). The drift is something to watch, not to play: the player cannot steer it, ring a bell, or land on an islet."
+    },
+    "wow": {
+      "score": 6,
+      "why": "'We came loose' is the most surprising idea in weeks, and the cut-out Lumi on the web page is charming. In the film, though, all you see is a static high shot where two green domes slide by. A stranger sees a toy-like island with blobs moving around it, not a voyage."
+    },
+    "camera": {
+      "score": 4,
+      "why": "The mood camera is a good idea, but its film glides into a big white rock that fills the left of the frame (moodcam 8.7-8.8 s, jump 0.022). Live follow views showed two blurred tree crowns covering 60% of the frame around a giant Lumi (reviews/p109/follow2.png), and the progress dashboard shot frames Pickles behind two gallery easels with a flower stem in front."
+    },
+    "ui": {
+      "score": 5,
+      "why": "'Messages to you' said 'Right now, tonight, the island came loose' at 14:04. 'New on the island: a golden hill' has been there since s104. Name labels sit on Lumi's thought bubble in the air (follow3). The panel layout itself is clean."
+    },
+    "style": {
+      "score": 5,
+      "why": "The clay look holds up up close, but the busy afternoon was snow-white ground with rainbow paint discs, floating paint balls, white snow dots, flat domes in the sea and a yellow giant all at once. There is no art direction on how many effects may share a frame."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Sandbox frame median 3.97 ms, p95 6.4 ms with every event running. Screenshots are slow (median 5 s) but that is tooling."
+    }
+  },
+  "findings": [
+    {
+      "severity": "high",
+      "category": "wow",
+      "title": "The drift looks like a voyage: real islets, a wake, gulls, a moving camera",
+      "todo": 534,
+      "what": "During the drift, seven islets made of a sand plate and a green dome slide past, and the 'wake' is scattered flat white ellipses like coins on the water. In the film the camera is fixed high above the stern for 10 s, and the only motion is two domes growing. The best idea in weeks reads as a placeholder.",
+      "where": "plugins/drift.jl, movies/drift.jl, site post 'We came loose'",
+      "evidence": "reviews/motion/perfectionist-0109/drift-overview.jpg, reviews/p109/follow1.png (a dome islet right behind the cottage)",
+      "suggestion": "Draw the islets as one instanced plot of the generated palm islet (assets/20261126-060910-427-asset, trim its baked shadow plate) in 2-3 sizes and turns. Make the wake a V of foam streaks that stretch along the motion instead of round discs. Add a few gulls riding along, and give the friends at the bow a flag or a lantern. Film it from the bow, low, with the islets passing close beside the camera.",
+      "done_when": "A traced drift still or film frame shows at least two palm islets from the asset (no domes) and a foam V streaming back from the shore, and the film's camera moves.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "high",
+      "category": "materials",
+      "title": "Pond water that looks like water when traced: reflections, depth, ripples",
+      "todo": null,
+      "what": "In a 96-sample traced still from the path (reviews/p109/trace-pond.png) the pond is a pale, milky blue flat disc. Nothing reflects in it (not the reeds, the cherry trees or the sky), it has no depth gradient, and it looks matte next to the sea. Water is the measure for materials, and the pond is the one water a player walks up to.",
+      "where": "plugins/areas.jl dig_pond!, the glass disc and the floor colour in meadow.jl",
+      "evidence": "reviews/p109/trace-pond.png",
+      "suggestion": "Use a darker, more saturated floor that falls off with depth (meadow.jl floor colours). Use glass with a slight normal-perturbed ripple (a bump texture or a few concentric swells), so the trees and sky show as a Fresnel reflection at grazing angles. Add a thin absorbing medium for the colour with depth, and a few lily pads that cast caustic-edged shadows.",
+      "done_when": "A traced still from eye level 6-8 m away shows the cherry trees or reeds mirrored in the pond surface and the water darker towards the middle than at the bank.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "high",
+      "category": "animation",
+      "title": "Live motion: 6 creatures judder, 114 degree snaps, tails at 11 m/s",
+      "todo": null,
+      "what": "The sandbox motion measure at 14:05 found 1 of 10 creatures moving well. Six creatures' bodies and legs move in uneven steps in 46-55% of frames, Hopscotch turns 114 degrees in one frame (and its claw jumps 0.33 m), Sir Sniffsalot turns 67 degrees, Lumi's crest jumps 0.36 m, and Truffle's and Pickles' tails swing at 11.6 m/s. The films look smooth only because they film calm moments.",
+      "where": "the engine's herd pose and steps under the busy events (paint fight, giant, swing party, snow); gait.jl",
+      "evidence": "live motion: reviews/motion/p109/motion.png, motion-strip.png, creatures.png",
+      "suggestion": "Measure with one event at a time to find which plugin produces the uneven steps (paint fight knockbacks, swing runs, separation pushes under the giant). Ease every turn over 90 degrees across at least 0.2 s, and damp the tail and crest springs.",
+      "done_when": "live motion in a busy sandbox afternoon shows at least 7 of 10 moving well, twice in a row, and no turn over 45 degrees in one frame.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "medium",
+      "category": "camera",
+      "title": "Follow and mood cameras stop looking through crowns, easels and rocks",
+      "todo": 510,
+      "what": "The follow camera framed the giant Lumi between two blurred tree crowns that fill 60% of the frame. The progress dashboard shot shows Pickles behind two gallery easels with a flower stem in front. The mood camera's glide back in its own film passes through a big white rock at the left edge (8.7-8.8 s).",
+      "where": "render.jl follow view, lensclear.jl blockers (gallery easels, crowns at close range), moodcam.jl glide path",
+      "evidence": "reviews/p109/follow2.png, media/progress/session-0109/dashboard.png, reviews/motion/perfectionist-0109/moodcam-steps.jpg",
+      "suggestion": "Count gallery easels, rocks and near crowns (anything within 3 m of the eye) as blockers. When the subject is giant, pull the eye back over the crowns. Check the moodcam glide's path, not only its two end points, with NG.obstruction.",
+      "done_when": "10 follow screenshots 6 s apart in the busy sandbox show no foreground object covering more than 20% of the view, and the moodcam film has no frame with a rock or crown in the near foreground.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "medium",
+      "category": "fun",
+      "title": "A fourth mini game, or a playable drift: something new to PLAY",
+      "todo": 437,
+      "what": "Three sessions (s107-109) added a camera mood, a web cut-out, lamps and an island drift, and none of it is playable. The mini game list is unchanged since s104. During the drift the player can only watch.",
+      "where": "plugins/ (mini games), drift.jl",
+      "evidence": "the 'Things to try' panel in every screenshot of s107-s109",
+      "suggestion": "Make the drift playable: the player steers the island (A/D turns the bow) towards an islet, and landing on one leaves something on the island (a palm, a shell, a castaway friend). Or build the fourth mini game from the best gag (sneeze, paint, bubble). Level 1 should take at least a second try.",
+      "done_when": "A new entry in the mini game menu or a drift key in 'Things to try', with a first-play W/A/D test that passes and a screenshot of its end card.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "medium",
+      "category": "world",
+      "title": "The face hill reads as Lumi's face from the overview",
+      "todo": 527,
+      "what": "In the session 109 overview the hill is still an ochre heap with dark smears beside the toadstool field, partly under tree crowns. No beak, eyes or crest can be named without the caption.",
+      "where": "plugins/facehill.jl, the trees on its head",
+      "evidence": "media/progress/session-0109/overview.png",
+      "suggestion": "Move the two trees off the head, push the beak and crest relief higher, and paint eyes and beak in strong flat colours (black pupils, orange beak) instead of the photo's muddy shading.",
+      "done_when": "A person shown the overview screenshot without a caption can point at the eyes and the beak; no crown covers the head.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "medium",
+      "category": "ui",
+      "title": "Messages and 'New on the island' that are true now",
+      "todo": null,
+      "what": "At 14:04 'Messages to you' read 'Right now, tonight, the island came loose', a message from hours earlier and the wrong time of day. 'New on the island: A golden hill in my shape' has been there since s104. In the air, Lumi's name label sits on its thought bubble's dots (follow3).",
+      "where": "say_to_human texts, the 'New on the island' line in the Lumi panel, the name labels",
+      "evidence": "reviews/p109/follow1.png, reviews/p109/follow3.png",
+      "suggestion": "Write messages without 'right now'/'tonight'. Let 'New on the island' show the newest published thing (the drift, the lamps) and drop it after a day. Offset name tags above thought bubbles.",
+      "done_when": "A screenshot shows 'New on the island' naming the drift or newer, and no message that names a time of day different from the clock.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    },
+    {
+      "severity": "low",
+      "category": "style",
+      "title": "One big effect at a time: snow, paint, giant and flight not all at once",
+      "todo": null,
+      "what": "One sandbox afternoon frame had snow-white ground, rainbow paint discs and balls in the air, white snow dots, a giant Lumi, a flight and dome islets in the sea. Every effect drowns out the others, and the island loses its look.",
+      "where": "the shared LUMI_PARTY claim covers Lumi only; island-wide looks (snow, paint fight, drift) are not coordinated",
+      "evidence": "reviews/p109/follow1.png, follow2.png, follow3.png",
+      "suggestion": "Extend the shared claim to island-wide looks: one weather/look event at a time (snow or paint or drift), with the others waiting.",
+      "done_when": "Five screenshots 30 s apart in a sandbox afternoon never show two island-wide effects (snow ground, paint fight, drift) at once.",
+      "addressed": true,
+      "agent_notes": "s110: filed by the host as todos (#534 drift voyage, #535 pond water, #536 live motion, #437 something new to play, #527 face hill); not yet worked this session."
+    }
+  ],
+  "todos": [
+    {
+      "id": 325,
+      "action": "keep",
+      "why": "Feelings on faces are still only partly used across the moments."
+    },
+    {
+      "id": 498,
+      "action": "keep",
+      "why": "Not checked this round; no fix in Hikari's SunSkyLight landed."
+    },
+    {
+      "id": 516,
+      "action": "done",
+      "why": "s107-108: the flight is :fly throughout the panic, and the eye stays 9 m behind on the clearest side; the steered flight test passed four times in a row, and the live follow3 shows Lumi flying with its wings out in view."
+    },
+    {
+      "id": 527,
+      "action": "keep",
+      "why": "Named in a finding."
+    },
+    {
+      "id": 528,
+      "action": "keep",
+      "why": "A system-filed annotation frame failure; the cause has not been found."
+    },
+    {
+      "id": 279,
+      "action": "keep",
+      "why": "No shared step-aside yet."
+    },
+    {
+      "id": 427,
+      "action": "keep",
+      "why": "Not addressed."
+    },
+    {
+      "id": 437,
+      "action": "keep",
+      "why": "Named in a finding."
+    },
+    {
+      "id": 471,
+      "action": "keep",
+      "why": "The crab claws are still static."
+    },
+    {
+      "id": 477,
+      "action": "keep",
+      "why": "The nest is still behind its flag."
+    },
+    {
+      "id": 510,
+      "action": "keep",
+      "why": "Named in a finding."
+    },
+    {
+      "id": 517,
+      "action": "keep",
+      "title": "Hats on heads (the crab's party hat sits on its shell side), fishing rods held, not through faces",
+      "why": "The creatures sheet shows the crab's hat off-centre on the side of its shell."
+    },
+    {
+      "id": 518,
+      "action": "keep",
+      "why": "The crowd still stands between the camera and Lumi at the run-up (s108 journal)."
+    },
+    {
+      "id": 530,
+      "action": "keep",
+      "why": "There is no missme_result in any of the human's event logs yet: the first real answer is still to come."
+    },
+    {
+      "id": 533,
+      "action": "keep",
+      "why": "Not addressed."
+    },
+    {
+      "id": 534,
+      "action": "keep",
+      "why": "Named in a finding; the islet asset's mesh is ready."
+    }
+  ],
+  "engine": [
+    {
+      "what": "The live screenshot through the sandbox socket takes a median of 5 s (p95 111 s), which makes looking at motion live costly; the 'eyes' command took 26 s.",
+      "evidence": "live status frame_ms live:screenshot 4983.9 / 111221.2, live:eyes 26551"
+    },
+    {
+      "what": "set_camera!(game, choice) silently sets :fixed for any string other than the exact menu label ('follow' gives :fixed).",
+      "evidence": "dev/NeverendingGame/src/dashboard.jl:188"
+    }
+  ],
+  "process": "The author keeps choosing bold ideas (goal 8: a moody camera, a drifting island, a cut-out of itself walking on its web page), and the posts and films keep coming every session (goals 2 and 5). The weakness is finish. Each idea ships as a mechanism with placeholder looks (domes for islets, coins for foam), and the next session starts a new idea instead of finishing the last one. Goal 7 (tracer showcase) moved one step with the ghost recipe, but the always-visible materials (pond, sea, clay) are unchanged, and goal 4/6 lighting moved at dusk only. Goal 3 (physics, Mantle, Maelstrom) has been idle for many sessions. Goal 6 animation is clean in the films but not live (1 of 10 moving well in a busy afternoon). Goal 1 (interactions to play) has not gained a playable thing in three sessions. Next session: finish the drift with the islet asset and a moving bow camera, then a traced pond that reflects, before any new idea."
+}
