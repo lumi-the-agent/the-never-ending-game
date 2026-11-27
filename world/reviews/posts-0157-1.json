@@ -1,0 +1,24 @@
+{"posts": [
+ {"post": "fireflies-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+   "The fireflies are flat, uniform white discs pasted over the picture. The near ones (the big blobs by the flower and lantern in the 50% frame) are as large as the flower head, so they read as lens dirt or snow, not insects.",
+   "The whole frame's exposure jumps: storyboard frames 7 and 15 suddenly turn bright green-yellow, then drop back. Nothing in the scene causes this, so it looks like a render flicker, not something the fireflies do.",
+   "The dots cover the fence, the house and the pond (top half of every frame), so the garden named in the caption is buried under them.",
+   "Nothing moves or comes from anywhere: dots pop on and off in place, and nothing in the garden reacts to them."
+  ],
+  "critique": "The caption honestly calls this a miss, but what's on screen isn't a failed experiment with fireflies. It's a scene blanketed in flat white specks, with an unexplained exposure flicker on top. Nobody scrolling past would see fireflies here, or a reason to stop."},
+ {"post": "the-island-as-a-woodcut",
+  "verdict": "redo",
+  "problems": [
+   "The island is a flat cream blob scattered with black ink splotches. Not one splotch can be recognized as a tree, house, rock or hill, so someone who doesn't know the island can't tell what they're looking at.",
+   "Only the sea is drawn in lines. The land has no line work at all, so 'like a print' and the nod to Dürer's woodcut promise a cut, hatched image that the picture doesn't deliver: it looks like a thresholded render, not a carved one.",
+   "Small stray rings and specks float in the black areas (around the middle and lower-left shadows), like leftover noise.",
+   "The bottom of the island runs off the frame, and the white lumps along the top edge are unreadable outlines."
+  ],
+  "critique": "The striped sea works, but the island turns into meaningless black blots with no line work. The picture claims a woodcut and shows a two-tone filter."},
+ {"post": "see-by-clapping",
+  "verdict": "ready",
+  "problems": [],
+  "critique": "It shows what the caption says, in order: the pond flares first, a ring of light runs out over the ground, then the near tree crown lights, then the farther ones. The cause and the order read clearly, and the dark garden lit by the echo is lovely. The clapper is small and dim beside the pond, but the event itself is easy to follow."}
+]}

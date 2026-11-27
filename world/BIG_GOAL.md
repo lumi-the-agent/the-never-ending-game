@@ -16,10 +16,13 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 - [ ] The coil crane powered by cells: more cells lift more spikes
 - [ ] A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve
   - [x] The physics: I dl x B over every turn, brush contact switching, back-EMF, L, friction (motor.jl s154; misbuilds stall or reverse)
-  - [ ] It runs and turns something you can see, in real copper, iron and wood, big and clear (todo #743, NEXT)
+  - [x] Three coils on a 3-segment ring: it starts by itself from every angle, bench and film size (s157, Motor.Drum)
+  - [ ] It turns something you can see, in real copper, iron and wood, big and clear (todo #743, NEXT)
   - [ ] A bench in Jump in where the beak places the parts and touches the last wire (todo #734)
 - [ ] The motor on the potter's wheel: it turns by itself; turned by hand it is a generator that lights a wire
 - [ ] Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain
+  - [x] A wheel in sand: sinkage, rolling resistance, drive from slip (s157, physics/wheelsand.jl)
+  - [ ] The friends pull the cart up the dune (projects/cart.md)
 - [ ] The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do
 - [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
 - [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island

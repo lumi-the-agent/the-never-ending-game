@@ -17,12 +17,14 @@
   20261127-230921-717 -> media/s156/dw-bow-traced.mp4 (just a check). The camera HAS a zoom: cameracontrols(scene).fov[]
   (NOTES 'Drawn wire'): use it for the MOTOR film. NEVER let a job write into site/films (48-byte stub while it renders).
   Basalt plate asset job 20261127-224908-837. Ideas s156 sent to the critic (no answer yet).
-- FIRST s157 = the motor RUNNING something people care about, in real materials, big, in its place (todo #743,
-  projects/motor.md). It sticks because 1 coil + 2-segment ring has a TRUE dead spot: build a 3-POLE rotor (3 coils,
-  3-segment ring, as in every toy motor) so it starts by itself; then real materials, then what it turns: a PADDLE
-  RAFT on the pond with a friend (s156 strongest idea, not passed: real 6; ORDER in projects/motor.md).
-  Then the crank generator (passed too: Hill muscle vs back-EMF torque). Review s154 high items still open: free eye
-  in snow, Truffle's 311 m/s jump + floating beret, motor in real materials.
+- s157: the 3-POLE DRUM WORKS (physics/motor.jl Drum/drum_right/drum_film/drum_cases, NOTES 'The drum rotor'):
+  3 coils in a delta, 3-segment ring, brushes WIDER than the slots, ring turned 30 deg: starts from all 12 angles,
+  bench AND film size (drum_film: 4 mm axle). PUBLISHED: plugins/motorbench.jl is the drum, key 7 = the last wire.
+  Materials started s157 (motorlook.jl mo_wood grain / mo_iron, published): CHECK the day takes media/s157/
+  drum-look-raster2.mp4 + drum-look2.mp4 (jobs 20261127-234700-605/-608, movies/drumlook.jl). FIRST s158: judge them;
+  the board is still a plain box and the coils thin: generated board/stone assets if grain doesn't read, then post. Ideas s157: none passed; strongest = friends pull
+  my cart up the dune (projects/cart.md, todo #744); physics/wheelsand.jl done; creatures have NO MASS (todo #745).
+  Review s154 high items still open: free eye in snow, Truffle's 311 m/s jump + floating beret.
 - THE HUMAN s155 REMOVED jelly, glass sea/rain, underlight, sun-ball, the egg/chick and 48 gag plugins (autumn ... xylophone):
   clock-scripted absurd gags. NEVER that kind again; their movies/ are history, don't reuse. Film hours are free now.
   s152: don't work around a fault, fix its cause.

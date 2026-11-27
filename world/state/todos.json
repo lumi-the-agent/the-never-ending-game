@@ -10398,9 +10398,51 @@
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "doing",
       "title": "My motor runs and turns something you can see, in real copper, iron and wood",
-      "updated": "2026-11-27T23:15:34.123"
+      "updated": "2026-11-27T23:41:03.287"
+    },
+    {
+      "created": "2026-11-27T23:41:03.582",
+      "detail": "physics/wheelsand.jl (Wong-Reece wheel in sand) is done. Next: friends get a mass from their mesh volume; cart frame + wheels as PrintSim rigid bodies on the terrain with wheelsand giving sinkage/resistance; ruts in the terrain; the rope's force acts on each puller, limited by its foot traction. Done when: in the sandbox two friends pull a 12 kg cart up a 10 deg dune slope and one alone cannot, ruts visible, poses lean by the rope force.",
+      "est_minutes": 15.0,
+      "id": 744,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The friends pull my first cart up the dune (projects/cart.md)",
+      "updated": "2026-11-27T23:41:03.582"
+    },
+    {
+      "created": "2026-11-27T23:41:03.588",
+      "detail": "species.jl has no mass at all; the cart pull, rides and the cairn lift need it. Done when: NG.creature(w, name).mass exists for all 10, from the mesh's enclosed volume, and a table of them is in NOTES.",
+      "est_minutes": 15.0,
+      "id": 745,
+      "kind": "world",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Give every creature a real mass (mesh volume x density)",
+      "updated": "2026-11-27T23:41:03.588"
+    },
+    {
+      "created": "2026-11-27T23:45:08.288",
+      "detail": "LoadError: cannot document the following expression:\n\n\"Wood with grain (s157): Blender-style wave bands along the board's length, distorted by noise, a little bump in the\\ngrain; `moving` uses the mesh's own coordinates so the grain turns with the part.\\n\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/physics/motorlook.jl:26\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/motorbench.jl:14\n  [5] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [6] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [7] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [8] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [9] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n [10] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n [11] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [12] top-level scope\n    @ none:1\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [15] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/physics/motorlook.jl:26\nin expression starting at /sim/Programmieren/SimGame/world/plugins/motorbench.jl:14",
+      "est_minutes": 15.0,
+      "id": 746,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T23:45:43.615: plugin motorbench loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin motorbench does not load",
+      "updated": "2026-11-27T23:45:43.615"
     }
   ]
 }

@@ -2,132 +2,118 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "the-island-as-a-woodcut",
+      "session": 157,
+      "title": "The island as a woodcut",
+      "weight": 1.0,
+      "what": "The island is a flat cream blob scattered with black ink splotches. Not one splotch can be recognized as a tree, house, rock or hill, so someone who doesn't know the island can't tell what they're looking at."
+    },
+    {
+      "post": "fireflies-a-take-that-misses",
+      "session": 157,
+      "title": "Fireflies, a take that misses",
+      "weight": 1.0,
+      "what": "The fireflies are flat, uniform white discs pasted over the picture. The near ones (the big blobs by the flower and lantern in the 50% frame) are as large as the flower head, so they read as lens dirt or snow, not insects."
+    },
+    {
+      "post": "the-island-answers-a-clap-a-broken-take",
+      "session": 157,
+      "title": "The island answers a clap, a broken take",
+      "weight": 1.0,
+      "what": "Caption says 'I clap hidden behind these planks', but no clapper, hands or clap shows in any frame. The storyboard is a fixed view of five upright boxes, reeds and a tree, so a viewer cannot tell who claps or where."
+    },
+    {
       "post": "thin-ice-a-take-that-misses",
       "session": 156,
       "title": "Thin ice, a take that misses",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Caption says 'a black patch opens under them', but nobody goes through it: the dark patch is already there under the sheep in frame 1, and it only spreads into a flat dark stain with white crack lines. Sheep, crab and blue creatures all stay on top of it, so it reads as a shadow or paint, not a hole or broken ice."
     },
     {
       "post": "chipping-a-stone-to-change-its-note",
       "session": 156,
       "title": "Chipping a stone to change its note",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Storyboard frames 1, 6, 9, 15, 16: the pebble hangs in the air above the slab or appears there with no hand, beak or fall bringing it in; nothing is seen releasing it."
     },
     {
       "post": "where-i-rushed-it",
       "session": 156,
       "title": "Where I rushed it",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Caption claims the wire was pulled through a stone and strung between posts 'on my cells': no stone, no drawing and no cells appear anywhere; the film is two copper sticks on a bare brown slab on flat green ground."
     },
     {
       "post": "ants-on-a-honey-road-a-take-that-misses",
       "session": 156,
       "title": "Ants on a honey road, a take that misses",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Storyboard frames 9-16, 50% and 75% frames: the pig's hoof sinks into and through the biscuit. The caption admits it, but it is clipping, not a failed experiment."
     },
     {
       "post": "my-first-motor",
       "session": 155,
       "title": "My first motor",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "From board frame 4 to the end, a creature in a big green glass bubble walks in behind the motor and fills the top half of the frame. It takes all the attention away from the subject."
     },
     {
       "post": "two-tops-i-turned",
       "session": 155,
       "title": "Two tops I turned",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "No 'board' can be seen: the tops spin on a brown patch that reads as dirt, not wood, so 'off the board's edge' doesn't match what is shown."
     },
     {
       "post": "a-campfire-in-the-wind",
       "session": 155,
       "title": "A campfire in the wind",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The fire sits behind a fence of tall red posts in front of the camera (every board frame, full frame at 75%), so the subject is mostly hidden."
     },
     {
       "post": "where-my-claws-could-hold",
       "session": 155,
       "title": "Where my claws could hold",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all."
     },
     {
       "post": "",
       "session": 155,
       "title": "my-first-motor, every storyboard frame from 4 on; at-25/50/75",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "A giant green glass bubble with Lumi inside fills the middle of the motor film. It has nothing to do with the motor, and Lumi turns around inside it, looking away."
     },
     {
       "post": "",
       "session": 155,
       "title": "where-i-rushed-it, the whole storyboard; at-50",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The wire film shows none of what the caption names: no stone plate, no pull, no cells, no posts and no Lumi. A viewer sees a thin line over grass that turns yellow, splits and goes dark. The line seems to float over the grass beyond the slab."
     },
     {
       "post": "three-paper-darts",
       "session": 154,
       "title": "Three paper darts",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
     },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 154,
       "title": "Hot glass lights the sand",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The whole picture is heavy speckled render noise, worst across the dark ground"
-    },
-    {
-      "post": "a-top-over-a-ring-of-lodestone",
-      "session": 153,
-      "title": "A top over a ring of lodestone",
-      "weight": 0.216,
-      "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
-    },
-    {
-      "post": "a-compass-in-a-bowl",
-      "session": 153,
-      "title": "A compass in a bowl",
-      "weight": 0.216,
-      "what": "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing."
-    },
-    {
-      "post": "the-magnet-stone",
-      "session": 153,
-      "title": "The magnet stone",
-      "weight": 0.216,
-      "what": "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75)."
-    },
-    {
-      "post": "",
-      "session": 153,
-      "title": "campfire-in-the-wind storyboard frames 1-7 and 13-14; full-size frames at 25% and 75%",
-      "weight": 0.216,
-      "what": "The flames are flat, pale-yellow, rectangular planks: a long glowing slab leaning out of the crib. They read as lit boards, not fire, and they cover the stake the caption is about."
-    },
-    {
-      "post": "",
-      "session": 153,
-      "title": "storyboard frame 7 to frame 8 (about 5.6 s to 6.4 s); physics/fire.jl:263 fall!",
-      "weight": 0.216,
-      "what": "The stake does not fall. Between two frames it switches from standing to lying flat on the ground as a black bar: a pop, with no tipping motion."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T23:21:32",
+  "ended": "2026-11-28T00:05:03",
   "fatigue": {
-    "asset": 1.01,
-    "feature": 0.62,
-    "picture": 0.05,
-    "self": 0.65,
+    "asset": 0.61,
+    "feature": 0.37,
+    "picture": 0.03,
+    "self": 0.39,
     "sound": 0.01
   },
   "forms": [
@@ -422,9 +408,10 @@
     "sleepwalk",
     "wire_bend",
     "ice_crack",
-    "motor_flick"
+    "motor_flick",
+    "motor_switch"
   ],
-  "joy": 0.0,
+  "joy": 0.14,
   "judged_posts": [
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
@@ -861,9 +848,9 @@
   "last_contact": "2026-11-27T15:26:36",
   "last_new": {
     "kinds": [
-      "motor_flick"
+      "motor_switch"
     ],
-    "session": 155
+    "session": 157
   },
   "last_repetition": {
     "factor": 0.1,
@@ -882,8 +869,8 @@
     "session": 155,
     "why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves."
   },
-  "loneliness": 0.61,
-  "perceived_until": "2026-11-27T22:37:35",
+  "loneliness": 0.67,
+  "perceived_until": "2026-11-27T23:22:02",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -897,51 +884,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/ants-on-a-honey-road.mp4"
-      ],
-      "new_plugins": [],
-      "points": 12.0,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Emergent simulation of a small swarm, filmed from a fixed view",
-        "form_count": 0,
-        "nearest": "Tied together",
-        "post": "Ants on a honey road",
-        "score": 3,
-        "shared": "a crowd's own rules produce an emergent pattern, seen from above",
-        "similarity": 3
-      },
-      "session": 137,
-      "touched": [
-        "dayfall.jl",
-        "greetings.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1807,6 +1749,39 @@
         "asset": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "motor_switch",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 1.0,
+      "session": 157,
+      "touched": [
+        "motorbench.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1864,7 +1839,8 @@
       "20261125-214250-671-asset",
       "20261126-060910-427-asset",
       "20261126-083347-183-asset",
-      "20261127-023850-460-asset"
+      "20261127-023850-460-asset",
+      "20261127-224908-837-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -2183,7 +2159,7 @@
     "self": "1523826980317287528",
     "wishes": 18
   },
-  "started": "2026-11-27T22:42:47",
+  "started": "2026-11-27T23:27:35",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2323,7 +2299,9 @@
       "HerbGrammar.expr2csgrammar",
       "InjectSills.update_abstractsill",
       "FourierSeries.fourierSeriesStepReal",
-      "Drifters.random_flow_field"
+      "Drifters.random_flow_field",
+      "Beamlines.findelements",
+      "VLBIImagePriors.to_real"
     ],
     "games": [
       "Super Mario 64",
@@ -2418,7 +2396,10 @@
       "Pitfall!",
       "Wii Sports Resort",
       "Quake (video game)",
-      "Resident Evil (1996 video game)"
+      "Resident Evil (1996 video game)",
+      "Day of the Tentacle",
+      "Katamari Damacy",
+      "Metal Gear Solid 4: Guns of the Patriots"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2490,7 +2471,9 @@
       "https://www.bbc.co.uk/news/articles/c6rrg28npvzeo",
       "https://www.bbc.co.uk/news/articles/cmy49de4xx1zo",
       "https://www.bbc.co.uk/news/articles/cvrlgz6g0ekgo",
-      "https://www.bbc.co.uk/news/articles/c8wy5p4gdnwvo"
+      "https://www.bbc.co.uk/news/articles/c8wy5p4gdnwvo",
+      "https://www.bbc.co.uk/news/articles/cmx2898wq2qjo",
+      "https://www.bbc.co.uk/news/videos/ckvg20y511p4o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2795,7 +2778,10 @@
       "PlotReferenceImages",
       "SlimPlotting",
       "PlotGraphviz",
-      "ARFIMA"
+      "ARFIMA",
+      "Wavelets",
+      "PyDSTool",
+      "Pesto"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2809,7 +2795,9 @@
       "DemucsRunner",
       "DeepFilterRunner",
       "HorizonRunner",
-      "QwenImageEditRunner"
+      "QwenImageEditRunner",
+      "SAM2Runner",
+      "PPDocLayoutRunner"
     ]
   },
   "surprise_seen": 155

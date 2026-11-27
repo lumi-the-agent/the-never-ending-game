@@ -1,0 +1,11 @@
+{"posts": [{"post": "the-island-answers-a-clap-a-broken-take",
+  "verdict": "redo",
+  "problems": [
+    "Caption says 'I clap hidden behind these planks', but no clapper, hands or clap shows in any frame. The storyboard is a fixed view of five upright boxes, reeds and a tree, so a viewer cannot tell who claps or where.",
+    "'The island answers': none of the pictures shows anything answering a sound. The sheep drifts a little behind the reeds and the figures on the far dock shift (25%/50%/75% frames), but nothing visibly reacts to a clap. With the sound off nothing happens at all.",
+    "A flat white rectangle appears out of nothing on the tree crown (storyboard frames 5-8, and the 25% frame at top right of the crown). It slides across the foliage and down toward the sheep (50% frame, next to the sheep's head), then it is gone. It has no source, no thrower and nowhere it lands.",
+    "The 'planks' are plain untextured yellow and orange slabs standing upright in the pond. They don't look like wood and don't belong to the island; they read as placeholder blocks.",
+    "What matters is hidden: the sheep, the only animal close by, is mostly behind the cattail stems and slabs in every frame. The figures that might react are tiny and far away on the dock.",
+    "'My second place, inside a tree, came out black': the film never shows this second take. The last storyboard frame (16) only shows the same view fading dark, which reads as a fade-out or a render fault, not as a second camera position."
+  ],
+  "critique": "The caption describes a clap, a hidden listener and an island answering, but the film shows a static view of bare slabs with nothing clearly reacting. A white scrap floats out of nowhere across the tree, and the promised black second take never appears."}]}

@@ -1199,3 +1199,42 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   material whose geometry is rebuilt per frame. And a game_clip in the agent session competes with the worker's
   trace for the GPU: queue raster checks to the worker instead.
 - Never let a job write into site/films: the mp4 is a 48-byte stub until it finishes (perfectionist s154 found one).
+
+## The drum rotor: 3 coils, 3-segment ring (s157 free part, physics/motor.jl `Drum`, todo #743)
+- `Motor.Drum` / `drum_bench` / `drum_right` / `drum_cases()`: n coils (drum winding, coils across the drum at 120 deg,
+  each a bit longer so the ends cross), joined in a closed DELTA, junction k soldered to segment k. Per substep the
+  coil network is solved implicitly (L matrix with mutuals from Neumann, coil R, motional EMF per coil, Kirchhoff at each
+  segment and at the plus brush, cells Norton, minus brush ground). `stall_torque(st, d, θ)` = DC torque held still.
+- Starts by itself ONLY if (a) brushes are WIDER than the slots (8 deg brush in a 10 deg gap: open circuit at 6 angles,
+  min torque 0 -> it sticks) and (b) the ring is turned right on the axle: 6 deg slots, 12 deg brushes, ring turned
+  30 deg: stall torque 0.35..0.43 mN m everywhere vs friction 0.30: RUNS from all 12 start angles (5.6-5.8 rev/s at 1.5 s).
+  Ring at 0 deg: min 0.22 (sticks somewhere); at 110 deg: min -0.13 (stalls). Converged: 10 vs 20 pts per side 0.2%;
+  kt + ke = 3e-16 (energy). Misbuilds: stones turned round -> backwards -5.65; narrow brushes -> stall; lodestone ->
+  stall; ONE cell now runs (2.78 rev/s): the drum is a real motor, the 2-segment one never was.
+- Margin at bench size is thin (0.35 vs 0.30). Next: the film-size drum (s = 3, like big_bench), then real materials.
+- Film size (drum_right(s = 3, N = 80, rw = 0.35e-3, brush_F 0.06, big_bench's rotor mass/inertia, 6 cells)): STALLS
+  from 0, 1, 2 rad: stall torque 4.28..5.35 mN m vs friction 5.18 (the 3 coils carry 3x the copper; the 9 mm axle in
+  its bearing dominates friction). Real fixes are parts, not tuning: a thinner axle (r 2 mm), lower-resistance cells
+  (6 brine cells = 18 Ohm: the cells limit the current, road step 2 = plate area), fewer heavier turns. Decide by
+  which part the player would change, then check again with drum_cases-style starts at s = 3.
+- FIXED (s157): `Motor.drum_film()` = the s = 3 drum on a 4 mm axle (r 2 mm): bearing friction 5.18 -> 2.66 mN m,
+  stall torque >= 4.28 everywhere: runs from all 12 angles, 2.07 rev/s at 4 s (2.26 with 0.04 N brush springs).
+  The axle was the part: in big_bench the 9 mm axle's bearing friction was half the whole budget.
+
+## Wheels in sand (s157, physics/wheelsand.jl, cart road step)
+- Wong-Reece rigid wheel: Bekker sigma under the arc (peak moved forward with slip), Janosi-Hanamoto shear, integrated
+  for load (-> entry angle, sinkage), drawbar pull and torque. Soils from Wong Table 2.3 (dry sand, sandy loam, snow,
+  clay). `towed(s, W, r, b)` finds the zero-torque slip; `cart_climb(...)` = roll + grade vs pullers (weight x tan phi x 0.8).
+- Check: sinkage ~26% above Bekker's closed form z0 = [3W/((3-n)(kc + b kphi) sqrt(2r))]^(2/(2n+1)) (that form drops
+  the shear and uses small angles); towed resistance ~45% above pure compaction (bulldozing by negative slip).
+- Numbers: dry sand, r 0.2 m, 12 kg cart on 10 deg: 3 cm rim sinks 2.2 cm, 8 cm rim 1.2 cm; one 8 kg friend can't
+  pull it (33 N vs 40-47 N), two can. A 35 kg cart (riders) on 15 deg needs 167-195 N: friends can't; the motor must.
+- THE GAME'S CREATURES HAVE NO MASS (species.jl has none): give each a mass from its mesh volume x ~1000 kg/m^3
+  before friends pull or ride anything.
+- THIRD TIME (s157, motorlook.jl): inserted new functions right above `function motor_plots!`, i.e. BETWEEN its
+  docstring and its function -> "cannot document the following expression" at plugin load; publish refused it and
+  the sandbox silently dropped the system (live_reload said ok first). RULE: before inserting code, search upward
+  for a closing `"""`; insert ABOVE the docstring. After live_reload check `live_status()["systems"]` has the system.
+- Hikari node textures work for wood and iron in plugins: `NG.Hikari.TextureNodes` (wave bands + color_ramp + bump),
+  motorlook.jl mo_wood (texture_coordinate().object for moving parts) / mo_iron. Check by day in a worker traced
+  take: movies/drumlook.jl drum_look (s157 jobs -> media/s157/drum-look*.mp4).

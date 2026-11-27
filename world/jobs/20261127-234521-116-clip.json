@@ -1,0 +1,28 @@
+{
+  "created": "2026-11-27T23:45:21.148",
+  "finished": "2026-11-27T23:46:46.100",
+  "id": "20261127-234521-116-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_look",
+    "kwargs": {
+      "rasterize": true,
+      "seconds": 2.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s157/drum-look-raster.mp4",
+    "script": "movies/drumlook.jl"
+  },
+  "result": {
+    "frames": 48,
+    "hour": 10.50483039716902,
+    "path": "/sim/Programmieren/SimGame/world/media/s157/drum-look-raster.mp4",
+    "seconds_per_frame": 1.0059579461812973,
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 83.8,
+  "started": "2026-11-27T23:45:22.278",
+  "status": "done"
+}
