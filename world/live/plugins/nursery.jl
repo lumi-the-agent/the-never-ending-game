@@ -136,7 +136,7 @@ function draw!(game)
             sp = NG.SPECIES[kind]
             out = [(Point3f[], Makie.Quaternionf[], Vec3f[], Makie.Mat{2,3,Float32}[]) for _ in sp.parts]
             NG.pose_parts!(out, sp, p, Float32(b["yaw"]) - sp.heading, moving ? :walk : :idle, Float32(w.t * 6 + i), 0.8f0, 0f0,
-                           Float32(i), Float32(w.t))
+                           Float32(i), NG.anim_time(w))
             for (j, part) in enumerate(sp.parts)
                 want = part.name === :body ? g["body"] == kind :
                        part.name in legs_of(kind) ? g["legs"] == kind : g["extra"] == kind

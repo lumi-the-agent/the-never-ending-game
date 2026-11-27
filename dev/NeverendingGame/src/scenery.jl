@@ -268,7 +268,11 @@ about-turn takes a quarter second. Kept per creature object and per world (quiet
 Plugins that pose parts themselves (hats, paint, feathers) use `drawn_yaw(c)` so they turn with the body.
 """
 const DRAWN_YAW = WeakKeyDict{Creature,Float32}()
-const DRAWN_T = WeakKeyDict{World,Float32}()
+const DRAWN_T = WeakKeyDict{World,Float64}()   # s132: Float64, a Float32 sim time steps 1/32 s past 262144 s
+"The creatures' animation clock: the sim time wrapped at 4096 s. A Float32 of the raw sim time (425000 s in s132) only
+steps 1/32 s, so every swing, bob and fidget moved in uneven 1-or-2-quantum steps each frame (live_motion 'judder');
+at 4096 s it is exact to 0.5 ms. The cost: every periodic motion jumps once per 68 minutes of island time."
+anim_time(w::World) = Float32(mod(w.t, 4096.0))
 const DRAWN_TURN = 12.0f0
 const DRAWN_FREE = 0.25f0             # rad per frame that pass straight through (a walk turns at most 5 rad/s)
 const DRAWN_ON = Ref(true)            # false: drawn = real heading (to compare)
@@ -278,7 +282,7 @@ drawn_yaw(c) = get(DRAWN_YAW, c, c.yaw)
 
 "Move every creature's drawn heading towards its real one."
 function turn_drawn!(w::World)
-    t = Float32(w.t); dt = t - get(DRAWN_T, w, t); DRAWN_T[w] = t
+    t = w.t; dt = Float32(t - get(DRAWN_T, w, t)); DRAWN_T[w] = t
     step = max(DRAWN_FREE, 0.0f0 < dt < 0.5f0 ? DRAWN_TURN * dt : 10.0f0)
     for c in w.creatures
         y = get(DRAWN_YAW, c, c.yaw)
@@ -290,7 +294,7 @@ end
 
 "Copy the world into the stage. Cheap: a few array writes per species."
 function sync!(st::Stage, w::World)
-    t = Float32(w.t)
+    t = anim_time(w)
     turn_drawn!(w)
     groups = Dict{String,Vector{Creature}}()
     for c in w.creatures

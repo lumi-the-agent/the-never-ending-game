@@ -237,7 +237,7 @@ function NG.step!(::Outfits, game, dt)
     game.stage === nothing && return
     get(OP, :key, nothing) == (OUTFIT_VERSION, game.stage.scene, objectid(OUTFITS)) || build_outfits!(game)
     w = game.world
-    t = Float32(w.t)
+    t = NG.anim_time(w)
     talking = Set(b.who for b in w.speech if b.until > w.t)
     inst = Dict(k => (Point3f[], Makie.Quaternionf[], Vec3f[]) for k in keys(OP[:plots]))
     for c in w.creatures

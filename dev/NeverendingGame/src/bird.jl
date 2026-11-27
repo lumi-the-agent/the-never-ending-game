@@ -204,8 +204,10 @@ function animate(m::Wing, c::PoseCtx)
         up = 0.45f0 + 0.1f0 * sin(c.phase)       # once a stride (s92)
     elseif a === :walk
         up = 0.08f0 + 0.06f0 * sin(c.phase + (m.side > 0 ? 0f0 : Float32(pi)))
-    elseif a === :wave || a === :talk
+    elseif a === :wave
         up = m.side > 0 ? 0.9f0 + 0.35f0 * sin(10c.t) : 0.1f0
+    elseif a === :talk          # s132: a small, slow hand gesture; talking with the wave (0.9 rad, 10 rad/s) held the
+        up = m.side > 0 ? 0.3f0 + 0.12f0 * sin(4.5f0 * c.t) : 0.05f0      # wing out like a T all session (perfectionist-0130)
     elseif a === :idle
         f, e = fidget(c)
         f == 1 && m.side > 0 && (up = 0.7f0 * e)  # preening under the left wing

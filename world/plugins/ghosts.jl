@@ -99,13 +99,16 @@ function draw!(s::Ghosts, game)
     for p in f.poses
         c = NG.creature(w, p.id)
         c === nothing && continue
+        # s132: a ghost on the very spot of its living self (asleep in the same bed as yesterday) only made the
+        # sleeper look like a broken see-through creature: show the ones that are somewhere else
+        hypot(p.pos[1] - c.pos[1], p.pos[2] - c.pos[2]) < 0.8f0 && continue
         push!(get!(() -> Any[], groups, c.species), (p, c))
     end
     for (species, ps) in groups
         h = herd_of(game, species)
         h === nothing && continue
         Makie.update!(h, [p.pos for (p, _) in ps]; motion = [Vec3f(p.yaw, p.phase, p.mood) for (p, _) in ps],
-                      state = [Vec3f(p.action, p.extra, c.seed) for (p, c) in ps], time = Float32(w.t))
+                      state = [Vec3f(p.action, p.extra, c.seed) for (p, c) in ps], time = NG.anim_time(w))
     end
     for (species, h) in hs
         haskey(groups, species) || hide!(h)

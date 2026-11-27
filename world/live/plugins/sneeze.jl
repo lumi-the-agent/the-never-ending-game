@@ -71,7 +71,7 @@ function draw_feathers!(s::Sneeze, w)
     # feather sized (s69: 0.56 m long they lay on the meadow like banana slices, perfectionist-0067)
     ms = [s.fgone[i] ? Vec3f(0) : Vec3f(0.035, 0.15, 0.008) for i in 1:N]
     rot = [Makie.qrotation(Vec3f(0, 0, 1), s.fspin[i] * Float32(s.frest[i] ? 1 : w.t)) *
-           Makie.qrotation(Vec3f(1, 0, 0), s.frest[i] ? 0f0 : 0.6f0 * sin(Float32(3w.t) + i)) for i in 1:N]
+           Makie.qrotation(Vec3f(1, 0, 0), s.frest[i] ? 0f0 : 0.6f0 * sin((3f0 * NG.anim_time(w)) + i)) for i in 1:N]
     Makie.update!(p; arg1 = copy(s.fpos), markersize = ms, rotation = rot)
 end
 
@@ -125,7 +125,7 @@ function fly_feathers!(s::Sneeze, w, dt)
         # gravity, a lot of air drag, and a leafy side-to-side sway on the way down
         v = v + Vec3f(0, 0, -9.0f0 * dt)
         v = v * Float32(exp(-2.2dt))
-        sway = 0.9f0 * sin(Float32(4w.t) + 1.7f0i)
+        sway = 0.9f0 * sin((4f0 * NG.anim_time(w)) + 1.7f0i)
         p = s.fpos[i] + Point3f(v * Float32(dt)) + Point3f(sway * Float32(dt), 0, 0)
         g = NG.ground(w.island, (p[1], p[2]))
         if p[3] <= g[3] + 0.03f0 && v[3] < 0

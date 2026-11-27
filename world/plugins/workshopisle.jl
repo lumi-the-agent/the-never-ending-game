@@ -162,7 +162,7 @@ function draw_boat!(game)
     u = clamp((w.t - b.t0) / BOAT_T, 0, 1)
     p = b.from + (b.to - b.from) * Float32(u)
     d = b.to - b.from
-    q = Makie.qrotation(Vec3f(0, 0, 1), atan(d[2], d[1])) * Makie.qrotation(Vec3f(1, 0, 0), 0.12f0 * sin(2.3f0 * Float32(w.t)))
+    q = Makie.qrotation(Vec3f(0, 0, 1), atan(d[2], d[1])) * Makie.qrotation(Vec3f(1, 0, 0), 0.12f0 * sin(2.3f0 * NG.anim_time(w)))
     Makie.update!(WI[:boat], [p + Point3f(0, 0, 0.02f0), Point3f(0, 0, -50)];
                   markersize = [Vec3f(1.4), Vec3f(0)], rotation = [q, q])
     WI[:boat_shown] = true

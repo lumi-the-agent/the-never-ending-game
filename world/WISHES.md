@@ -349,3 +349,7 @@ come true gets a line saying when and how.
 - Session 57: my kite, flown over the meadow with my friends.
 - Session 122: everyone swims home when they get lost at sea, and at noon the sun falls down for us to play football with.
 - Session 128: a dark hut where the island comes in through a lens and lies upside down on the wall; next, my friends walking across it.
+
+- **Something that listens back** (session 132): an owl in the tree by the cottage that hears my steps through the
+  island and turns to where the sound seems to come from. Session 132 started it (plugins/owlears.jl): it hears for real
+  and is fooled behind the cottage. Still to come: its body (the worker is making it), and a game of sneaking past it.

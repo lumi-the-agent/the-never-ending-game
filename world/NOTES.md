@@ -640,3 +640,58 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - Friends skipping stones (s131): stoneskip.jl walks a random awake friend to the nearest shore (16 directions,
   marching 1 m steps to the first sea point, a spot 1.5 m before it) with Goal(:skipstones, ...), throws on arrival;
   every 75 s by day. Sandbox: Gloop 9 skips, Marshmallow 6 (events stone_throw / stone_skipped).
+
+## The ring's trapped bodies (s132 free time, plugins/ring.jl)
+- The dark blue / pink / grey balls hanging over the trees in the human's island (19:33 dusk) were the ring's own
+  bodies: 31 of 54 paint blobs (+2 pebbles, 1 petal) circling 4-11 m round the ring centre (8 m over the meadow),
+  11 more at 26-43 m. Weak throws (launch! from a spot where `tangent(rv)` is nearly 0, rv close to the normal NRM)
+  are bound in the soft Plummer core, and the KR/KN damping settles them into neat little circles there for ever;
+  their tilted orbits never dip low enough to hit the ground code.
+- Fix: `trapped(p, v)`: energy below `ecirc(TRAP_R = 45 m)` (-10.1; the settled 62 m ring is -7.3) means the
+  orbit ends up inside 45 m. Such bodies move to a per-kind falling list `O[:F]` (sticky: a fall speeds them up,
+  so an energy test each step would flip them back), fall with plain g, bounce, and are gone once still or below
+  z -0.5. Drawn with the ring plot (`vcat(b.P, f.P)`). Riders (land = false) untouched.
+- Numbers: the human's 108 bodies -> 42 fell in ~6 s, 66 left (45-878 m). 40 throws from random meadow spots: 28 out
+  to the ring, 12 fall back. Cost 0.11 ms. Finding things like this: project every visible instance with
+  `scene.camera.projectionview[]` and count by plot name, but skip markersize 0 (popped hiccup bubbles keep their
+  last positions at size 0 and fooled me first). A `Vec3f` markersize `isa AbstractVector`: test StaticVector first.
+- Still open: the sandbox at 22:30 (3 s after skip_to_hour!) had tree crowns lit bright green like afternoon.
+
+## The owl hears (s132, projects/owl-ears.md, plugins/owlears.jl, physics/echo.jl `hear`)
+- `hear(tlas, backend, src, ear)`: like echo_arrivals but every arrival also stores where it comes FROM; the listener
+  places the sound by the first wavefront (2 ms window after the first 2% of the energy): the precedence effect.
+  The direct path goes through `los_kernel!` (a host `Raycore.closest_hit` needs the ADAPTED accel: MethodError on a TLAS).
+- `solid_triangles(scene)` (SOLID_NAMES regex on plot names): the whole stage gave 'blocked' for a footstep in open
+  meadow (grass tufts, creatures in the BVH). Solid world = 4.3 M triangles (generated assets are dense): 0.75 s to
+  collect, 1.1 s to build (CPU, POCL). 20k rays 16 ms, 8k rays ~6 ms. The plugin collects once on the main thread
+  and builds in a Threads.@spawn task. The unnamed `meshscatter_9..13` plots are the AssetActors (the cottage etc).
+- All Makie plots report `typeof(p).name.name == :Plot` now (compute pipeline): tell them apart by `p.name[]`.
+- A footstep at 0.1 m in the meadow is really behind a hump of the ground for an ear 3.5 m up (clear at 1 m).
+- Play test (sandbox 22:30, owl head (-11.1, 5.6, 5.3)): behind the cottage the direct path is blocked every step,
+  level -26..-32 dB, the owl turns 17-22 deg off (once 55, once 2); in view -15.6 dB, 13 deg off (8k rays of noise).
+- The owl body waits for asset 20261127-023850-460-asset in the catalog (looked for every 30 s), so it appears in the
+  human's island by itself once the worker made it. Cost 0.01 ms/frame; a step 8k rays.
+- Live eval trap: `Core.eval(Main, :(X = Module(...)))` then `Main.X` in the same eval: world age error; use
+  `Base.invokelatest(getfield, Main, :X)`.
+
+## Float32 sim time (s132, scenery.jl `anim_time`, `turn_drawn!`)
+- `Float32(w.t)` at w.t ~ 425000 s (island days of sim time) steps 1/32 s (2^-5; past 524288 s 1/16 s). Herd poses
+  (sync! `time = t`) and the drawn turn speed (turn_drawn! dt) used it: every swing, bob, fidget and turn moved in
+  uneven 1-or-2-quantum steps per frame. live_motion 'Moving well' 4 -> 7 of 10 and 'Judder' gone after
+  `anim_time(w) = Float32(mod(w.t, 4096.0))` (exact to 0.5 ms; one jump per 68 min of island time) and a Float64 dt.
+- Rule: never hand Float32(w.t) to anything that differences or multiplies time; wrap it or keep Float64.
+  Other suspects to check: plugins that do `Float32(w.t)` for animation (grep world/plugins).
+- live_motion varies run to run (different behaviours): measure twice. Three friends jumping 12 m in one frame at the
+  same moment is a world teleport (a plugin moving them), not a pose problem.
+- s132 later: the 19 sin/cos uses in 11 plugins switched to NG.anim_time(w) and published; stamps/differences still to review (#638).
+
+## Panel text (s132, dashboard.jl `wrap_text`/`whole_cut`)
+- Past `maxlines` the text now ends at the longest whole sentence that fits, or the longest clause (`;`/`,`, closed with a
+  full stop) with balanced brackets; never mid-phrase. 'New on the island' is the last done player-facing todo
+  (kinds look/motion/world/feature/explore/user, not :review, no '.jl' or 'check/test' in the title): finish a
+  feature todo for this session's thing or it keeps naming an old one.
+- My Julia session's Revise did not pick up dashboard.jl edits (`isdefined(NG, :whole_cut)` false): `Base.include(NG, path)`.
+- s132 TRAP after the herd clock change: plugins that pose parts themselves (outfits, paintfight, sleepers, egg,
+  nursery: `NG.pose_parts!(..., t)`) MUST use the same clock as the herd (`NG.anim_time(w)`), or hats and paint
+  posed on the raw time no longer match the body they sit on. Switched and published. choir.jl: `ids[rand(1:n)]` with
+  n = 0 (all singers asleep after a time jump) killed it; guarded.

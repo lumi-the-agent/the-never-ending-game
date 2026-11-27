@@ -346,7 +346,7 @@ function NG.step!(s::Flight, game, dt)
     elseif s.state === :stuck
         # planted up to the neck, a little wiggle; the friends arrive and tug
         me.pos = s.land - Point3f(0, 0, 1.05f0 - 0.08f0 * Float32(el / STUCK_T))
-        me.yaw += 3f0 * Float32(dt) * sin(Float32(9w.t))
+        me.yaw += 3f0 * Float32(dt) * sin((9f0 * NG.anim_time(w)))
         me.action = :scared
         for c in ws
             if c.goal.arrived

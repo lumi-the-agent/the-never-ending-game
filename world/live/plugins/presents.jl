@@ -448,7 +448,7 @@ function draw_present!(game, w, me)
         a = me.yaw + NG.species_of(me).heading
         r = NG.body_radius(NG.species_of(me))
         pos = if job[:stage] === :carry
-            me.pos + Point3f(0, 0, 2.15f0 * r + 0.04f0 * sin(6f0 * Float32(w.t)))
+            me.pos + Point3f(0, 0, 2.15f0 * r + 0.04f0 * sin(6f0 * NG.anim_time(w)))
         else                                      # held out to the friend
             o = NG.creature(w, job[:to])
             0.5f0 * (Point3f(me.pos...) + Point3f(o.pos...)) + Point3f(0, 0, 0.9f0 * r)
@@ -459,7 +459,7 @@ function draw_present!(game, w, me)
         c = NG.creature(w, id)                # sat halfway inside the long piglet bodies, perfectionist-0079)
         a = c.yaw + NG.species_of(c).heading
         h = NG.species_of(c).height
-        push!(get!(want, g, Tuple{Point3f,Float32}[]), (c.pos + Point3f(0, 0, h + 0.02f0 + 0.03f0 * sin(5f0 * Float32(w.t) + id)), a))
+        push!(get!(want, g, Tuple{Point3f,Float32}[]), (c.pos + Point3f(0, 0, h + 0.02f0 + 0.03f0 * sin(5f0 * NG.anim_time(w) + id)), a))
     end
     shown = get(PR, :shown_n, Dict{Symbol,Int}())
     for (k, (plot, s)) in plots

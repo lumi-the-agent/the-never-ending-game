@@ -49,7 +49,7 @@ function NG.step!(s::Strays, game, dt)
         step = speed * dt
         ux = -c.pos[1] / r; uy = -c.pos[2] / r
         x = c.pos[1] + ux * step; y = c.pos[2] + uy * step
-        bob = 0.06f0 * sin(Float32(w.t) * 5f0 + c.seed * 6.283f0)
+        bob = 0.06f0 * sin(NG.anim_time(w) * 5f0 + c.seed * 6.283f0)
         c.pos = Point3f(x, y, max(SWIM_Z + bob, NG.ground(w.island, (x, y))[3]))
         c.yaw = atan(uy, ux) - NG.species_of(c).heading
         c.action = :swim

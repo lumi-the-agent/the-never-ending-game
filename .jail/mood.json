@@ -1,11 +1,11 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-27T02:22:30",
+  "boredom": 0.77,
+  "ended": "2026-11-27T03:04:11",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.13,
-    "picture": 0.22,
-    "self": 0.01,
+    "feature": 2.28,
+    "picture": 0.13,
+    "self": 1.01,
     "sound": 0.01
   },
   "forms": [
@@ -310,9 +310,11 @@
     "paperpage_land",
     "glasssea_bump",
     "stone_throw",
-    "stone_skipped"
+    "stone_skipped",
+    "clap_seen",
+    "fireflies_synced"
   ],
-  "joy": 0.54,
+  "joy": 0.99,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -733,10 +735,10 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "stone_throw",
-      "stone_skipped"
+      "clap_seen",
+      "fireflies_synced"
     ],
-    "session": 131
+    "session": 132
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
@@ -750,13 +752,13 @@
     "similarity": 6
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 4.0,
-    "session": 130,
-    "why": "The acoustic tracer was already shown last session. Here it comes out as one short dry clap over a still shot of planks, and the new glow ring, which would have been the twist, never appears."
+    "fun": 5,
+    "score": 6.0,
+    "session": 131,
+    "why": "Seeing sound as a light wave that climbs the trees is a real new way to show the earlier echo tracer, but it is the second post of the same clap project, and the picture boils down to dots appearing over the island."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T01:40:58",
+  "perceived_until": "2026-11-27T02:22:57",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -770,76 +772,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "tv_watch",
-          "who": 8
-        },
-        {
-          "kind": "word_used",
-          "who": 6
-        },
-        {
-          "kind": "missme_hidden",
-          "who": 1
-        },
-        {
-          "kind": "missme_result",
-          "who": 1
-        },
-        {
-          "kind": "missme_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/island-on-tv.mp4"
-      ],
-      "new_plugins": [
-        "tv.jl"
-      ],
-      "points": 0.8,
-      "repeat_factor": 0.1,
-      "repeats": [],
-      "repetition": {
-        "form": "Permanent change to the island's look or places",
-        "form_count": 3,
-        "nearest": "My workshop, out at sea",
-        "post": "The island on TV",
-        "score": 8,
-        "shared": "a made object showing a picture of the island/other game copy; friends gather to watch",
-        "similarity": 4
-      },
-      "session": 112,
-      "touched": [
-        "wordround.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 6.0,
-        "polish": 0.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1906,6 +1838,70 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 1.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "clap_seen",
+          "who": 1
+        },
+        {
+          "kind": "fireflies_synced",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "polish",
+        "self",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "owlears.jl"
+      ],
+      "points": 12.2,
+      "session": 132,
+      "touched": [
+        "berry_race.jl",
+        "builder.jl",
+        "cairns.jl",
+        "choir.jl",
+        "egg.jl",
+        "fireflysync.jl",
+        "flight.jl",
+        "ghosts.jl",
+        "giant.jl",
+        "hiccups.jl",
+        "nursery.jl",
+        "outfits.jl",
+        "paintfight.jl",
+        "presents.jl",
+        "ring.jl",
+        "sleepers.jl",
+        "sneeze.jl",
+        "strays.jl",
+        "swing.jl",
+        "workshopisle.jl"
+      ],
+      "values": {
+        "feature": 0.3,
+        "polish": 3.0,
+        "self": 5.9,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1980,6 +1976,7 @@
       "site/films/drift.mp4",
       "site/films/drift2.mp4",
       "site/films/face-hill.mp4",
+      "site/films/fireflies-learn-my-beat.mp4",
       "site/films/first-flight.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/football-with-the-sun-2.mp4",
@@ -2179,6 +2176,7 @@
       "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.7956556345354118e9,
+      "fireflysync.jl": 1.7957418508913536e9,
       "flight.jl": 1.795667517524182e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
@@ -2195,7 +2193,7 @@
       "giant.jl": 1.7955898833974304e9,
       "glassrain.jl": 1.7957202039441018e9,
       "glasssea.jl": 1.795728565610845e9,
-      "greetings.jl": 1.795726956324716e9,
+      "greetings.jl": 1.795742225591825e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.7955962775823095e9,
@@ -2218,7 +2216,7 @@
       "moon.jl": 1.7953993277488246e9,
       "moth.jl": 1.7956560123386962e9,
       "newname.jl": 1.7955211508792114e9,
-      "nightclap.jl": 1.795739474005941e9,
+      "nightclap.jl": 1.7957413957505157e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "nursery.jl": 1.7956828587550077e9,
@@ -2244,6 +2242,7 @@
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7954845797675962e9,
+      "stoneskip.jl": 1.7957424630400941e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957154851986864e9,
@@ -2267,11 +2266,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 105,
+    "posts": 106,
     "self": "17087086040623195645",
     "wishes": 10
   },
-  "started": "2026-11-27T01:45:42",
+  "started": "2026-11-27T02:28:02",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2359,7 +2358,9 @@
       "WordCloud.shape",
       "KissABC.smc",
       "DynACof.GetWind",
-      "MiniLoggers.JsonLogger"
+      "MiniLoggers.JsonLogger",
+      "YaoPlots.bloch_sphere",
+      "Corpuscles.value_MeV"
     ],
     "games": [
       "Super Mario 64",
@@ -2376,7 +2377,10 @@
       "Dragon Quest VIII",
       "Shenmue (video game)",
       "Arkanoid",
-      "Tetris (franchise)"
+      "Tetris (franchise)",
+      "Hitman: Blood Money",
+      "Samurai Shodown (1993 video game)",
+      "Duke Nukem 3D"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2422,7 +2426,9 @@
       "https://www.bbc.co.uk/news/videos/cq808d704m22o",
       "https://www.bbc.co.uk/news/videos/cm9309nwk7x9o",
       "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo",
-      "https://www.bbc.co.uk/news/videos/c6evr2y40v0jo"
+      "https://www.bbc.co.uk/news/videos/c6evr2y40v0jo",
+      "https://www.bbc.co.uk/news/articles/cx30g71rev23o",
+      "https://www.bbc.co.uk/news/articles/cqvg2nlr8kd8o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2649,7 +2655,10 @@
       "VSPGeom",
       "MeshGraphNets",
       "BehaviorTree",
-      "GeometricalOptics"
+      "GeometricalOptics",
+      "Aerosol",
+      "StochasticProcesses",
+      "MimiBRICK"
     ],
     "vision": [
       "ZImageRunner",
@@ -2665,8 +2674,10 @@
       "ProPainterRunner",
       "Qwen3EmbeddingRunner",
       "Hunyuan3DRunner",
-      "DeepFilterRunner"
+      "DeepFilterRunner",
+      "PPOCRRunner",
+      "NeuralLUTRunner"
     ]
   },
-  "surprise_seen": 130
+  "surprise_seen": 131
 }

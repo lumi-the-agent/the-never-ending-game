@@ -282,7 +282,7 @@ function NG.step!(s::Giant, game, dt)
         for (k, id) in enumerate(s.riders)
             c = NG.creature(w, id)
             mine(c) || continue
-            c.pos = st[k] + Point3f(0, 0, 0.15f0 * abs(sin(Float32(6w.t) + k)))
+            c.pos = st[k] + Point3f(0, 0, 0.15f0 * abs(sin((6f0 * NG.anim_time(w)) + k)))
             c.yaw = me.yaw
             hold!(c, w, isodd(k) ? :laugh : :proud)
             rand(w.rng) < 0.004 && NG.say!(w, c, rand(w.rng, RIDE); duration = 1.6)

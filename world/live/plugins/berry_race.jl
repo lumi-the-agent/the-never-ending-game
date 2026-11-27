@@ -462,11 +462,11 @@ function NG.step!(m::BerryRace, game, dt)
         end
         step_rivals!(m, game, dt)
     end
-    bob = 0.03f0 * sin(Float32(3w.t))
+    bob = 0.03f0 * sin((3f0 * NG.anim_time(w)))
     pos = [b.taken == 0 ? b.pos + Point3f(0, 0, bob) : PARK for b in m.berries]
-    Makie.update!(P[:berries]; arg1 = pos, markersize = 0.21f0 + 0.03f0 * sin(Float32(5w.t)))
+    Makie.update!(P[:berries]; arg1 = pos, markersize = 0.21f0 + 0.03f0 * sin((5f0 * NG.anim_time(w))))
     # a small light over far berries, so you can find them
-    Makie.update!(P[:marks]; arg1 = [b.taken == 0 && flat(b.pos, c.pos) > 5 ? b.pos + Point3f(0, 0, 0.9f0 + 0.15f0 * sin(Float32(2w.t) + i)) : PARK
+    Makie.update!(P[:marks]; arg1 = [b.taken == 0 && flat(b.pos, c.pos) > 5 ? b.pos + Point3f(0, 0, 0.9f0 + 0.15f0 * sin((2f0 * NG.anim_time(w)) + i)) : PARK
                                      for (i, b) in enumerate(m.berries)])
     m.pop_t += dt
     if m.pop_t < 0.6
@@ -702,7 +702,7 @@ function NG.step!(s::WildRace, game, dt)
     end
     pts = fill(PARK, WILD_MAX)
     for (i, b) in enumerate(s.berries)
-        b.taken == 0 && (pts[i] = b.pos + Point3f(0, 0, 0.03f0 * sin(Float32(3w.t) + i)))
+        b.taken == 0 && (pts[i] = b.pos + Point3f(0, 0, 0.03f0 * sin((3f0 * NG.anim_time(w)) + i)))
     end
     get(P, :wild_pts, nothing) == pts || (P[:wild_pts] = pts; Makie.update!(P[:wild]; arg1 = pts))
 end

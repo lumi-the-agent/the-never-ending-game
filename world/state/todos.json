@@ -7735,12 +7735,12 @@
       "id": 553,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s132: the wing mesh is not a T (wing reaches 0.22 m past the body, hangs 0.48 m: an A). The T came from :talk sharing the wave (left wing 0.9 rad +- 0.35 at 10 rad/s), and Lumi 'talks' all session. Now :talk is 0.3 +- 0.12 rad at 4.5 rad/s (bird.jl Wing), published. Not yet seen in a screenshot (Lumi slept/ran in both games). Sandbox live_motion: Lumi 'moving well'. Still to do: wings folded at the body at idle (rest pose is an A).",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Lumi stands in a T-pose with flapping hands; wings at 7 m/s",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T02:53:32.155"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -8589,12 +8589,12 @@
       "id": 614,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s132 look: the pale see-through copies are plugins/ghosts.jl (s99 'yesterday walks again', RGBA alpha 0.38, 45 s then fade), by design; in the human's 23:30 view sleeping friends' ghosts sat over them with Zs (media/s132-live-dash-text.png), which reads like a bug: ghosts should not replay where the living one sleeps. The 'small opaque yellow second Lumi' in the review is most likely the chick (s70, a tiny me that trots after me), not a ghost: make it read as a chick (smaller, rounder, fluffier, peeps) rather than a copy. Walking through each other still to check.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Ghost double of Lumi and friends walking through each other",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T03:00:24.607"
     },
     {
       "created": "2026-11-26T23:15:33.348",
@@ -8861,6 +8861,104 @@
       "status": "dropped",
       "title": "system:stoneskip.StoneSkip failed in step! and was switched off",
       "updated": "2026-11-27T02:21:03.311"
+    },
+    {
+      "created": "2026-11-27T02:50:09.118",
+      "detail": "projects/owl-ears.md. A mini game at night: a small friend sneaks from the hedge to the berry bush past the owl (plugins/owlears.jl hears footsteps via physics/echo.jl hear). Ground loudness (path, pebbles, leaves loud; grass, moss soft), running +6 dB; the owl glides down when two loud steps land near where it looks; freezing makes it lose you. Done when: played in the sandbox at night, a sneak along the cottage's far side gets through and a run across the open meadow gets caught, with screenshots and owl_heard events.",
+      "est_minutes": 15.0,
+      "id": 634,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Owl walk: sneak past the owl that hunts by ear",
+      "updated": "2026-11-27T02:50:09.118"
+    },
+    {
+      "created": "2026-11-27T02:50:09.123",
+      "detail": "Asset 20261127-023850-460-asset (round barn owl). plugins/owlears.jl seats it at the tree nearest (-15, 4), 0.5 m out at 2.9*scale (measured crown shoulder), markersize 0.55, yaw only. Check the asset's facing (which way is its face at yaw 0) and size in a screenshot at 22:30, and that the head turn reads (6 rad/s). Done when: a night screenshot shows the owl on the crown, facing the jumped-in player after a step in view.",
+      "est_minutes": 15.0,
+      "id": 635,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Owl: check the generated owl sits on the crown and turns its head",
+      "updated": "2026-11-27T02:50:09.123"
+    },
+    {
+      "created": "2026-11-27T02:50:09.155",
+      "detail": "s132 play: sandbox at 22:30-22:36 (3 s after skip_to_hour! and in Jump in) shows bright green lit tree crowns and a warm orange ground glow, though NIGHT_DARK halves deep-night light. Find which light does it (lamplight pools? the sun's sky?) in raster. Done when: raster screenshots at 22:30 and 02:00 read as moonlit night (no warm glow except lamps), path traced too.",
+      "est_minutes": 15.0,
+      "id": 636,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s132 re-check: 8 s after skip_to_hour!(22.5) the orbit view reads as night (media/s132-night-2230-orbit.png): dark sky, warm pools only round the cottage lamps, crowns dim. The bright crowns in the first shot were 3 s after the skip. Left open for two things in that orbit shot: the left tree crowns still look sunlit yellow-green, and a huge pale white sphere fills the left edge close to the camera (not an instanced plot with markersize > 0.4 projecting there: look at mesh plots, moon*, snow_*, frost_shell; perfectionist-0130 saw two such white spheres in path tracing).\ns132: (1) 22:31 reads as night once the light settles (media/s132-night-2230-orbit.png). (2) A huge pale white ball near the camera at the left edge of that orbit view, not a cloud (nearest puff 52 m) and not an instanced plot near the camera: maybe a friend riding the ring past the camera. (3) The human's 23:30 follow view (media/s132-live-dash-text.png) has a big yellow-green disc at the right edge: find it (lantern glow? nightglow halo near the camera?).\ns132: (1) 22:31 reads as night once the light settles (media/s132-night-2230-orbit.png). (2) A huge pale white ball near the camera at the left edge of the orbit view: not a cloud (nearest 52 m), not an instanced plot near the camera at the time I looked; maybe a ring rider. (3) The yellow-green hard-edged disc in the human's 23:30 view (media/s132-live-dash-text.png): most likely a firefly flash at the lens. fireflysync.jl now skips flies within 1.2 m of the camera and grows them in to 2 m (published; not seen happen again yet). Done when an orbit and a follow view at night show no blob larger than a creature at the edges.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Night light: tree crowns lit like afternoon at 22:30 and warm sunset glow on the ground",
+      "updated": "2026-11-27T03:02:17.179"
+    },
+    {
+      "created": "2026-11-27T02:53:32.160",
+      "detail": "s132 sandbox live_motion (rain, friends dancing/splashing): Hopscotch and Pinchy claw_l and claw_r jump 0.22 m in one frame at the same moment and swing 6.6 m/s; Pickles' and Sir Sniffsalot's tails jump 0.39 m and swing 11.6 m/s (host's motion sense saw Pickles' tail too). herd.jl already blends action switches over 0.22 s (POSE_BLEND), so it is not a plain switch: suspects are nlerp's short-way flip when the two poses differ by more than pi (dance swing_gain 2.2 * amp 0.8 * (1 + 0.4 mood) = 2.5 rad on the pig tail Swing((0,0,1), 0.8, 6.0)) or an `extra`/mood jump. Done when: live_motion lists every crab and pig under 'moving well' in rain and at a dance.",
+      "est_minutes": 15.0,
+      "id": 637,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s132: part of it was time: sync! posed herds with Float32(w.t) = 1/32 s steps at 425000 s. Wrapped to anim_time (mod 4096 s) + Float64 dt in turn_drawn!: live_motion Moving well 4 -> 7 of 10, Judder gone (two runs), published. Still: Sir Sniffsalot's tail 11.6 m/s and 0.39 m/frame, Hopscotch's claws 6.7 m/s (fast dance swings, not time), Marshmallow's legs 0.18 m snaps.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Crab claws and pig tails snap 0.2-0.4 m in one frame",
+      "updated": "2026-11-27T02:57:11.352"
+    },
+    {
+      "created": "2026-11-27T02:57:20.896",
+      "detail": "s132 found the herds' clock quantized (fixed: NG.anim_time(w) = Float32(mod(w.t, 4096)), scenery.jl). 24 plugins still do Float32(w.t) (grep -ln 'Float32(w.t)\\|Float32(game.world.t)' plugins/*.jl), some multiplied first (hiccups.jl sin(Float32(5w.t) + i): 1/8 s steps at w.t 425000). Per use: animation phase -> NG.anim_time(w); time stamps / deadlines compared with w.t -> keep Float64 (w.t itself). Done when: no plugin feeds Float32(w.t) into sin/cos or differences, and live_motion shows no judder at a dance and in rain.",
+      "est_minutes": 15.0,
+      "id": 638,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s132: the 19 sin/cos animation uses in 11 plugins (berry_race, builder, cairns, flight, giant, hiccups, presents, sneeze, strays, swing, workshopisle) now use NG.anim_time(w); all load, sandbox day and night clean, published. Left: the other Float32(w.t) uses (stamps, differences) to review one by one.\ns132: done for the 19 sin/cos uses in 11 plugins and for every pose_parts! caller (outfits, paintfight x2, sleepers, egg, nursery: they must match the herd's anim_time). Left: `t = Float32(w.t)` locals in butterflies, hail, autumn, firefly_catch, frost, kite, snowday, sneeze:86, shadow, watering, moth, wind, nightglow mote_positions: check each for stamps before switching.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Plugins animate with Float32(w.t): 1/32 s steps (and worse when multiplied)",
+      "updated": "2026-11-27T03:04:05.806"
+    },
+    {
+      "created": "2026-11-27T02:59:43.840",
+      "detail": "projects/owl-ears.md step 1: plugins/owlears.jl hears the jumped-in player's footsteps at night through the solid island (physics/echo.jl hear, first wavefront) and turns to them; a moonlit spot shows where it looks.",
+      "est_minutes": 15.0,
+      "id": 639,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Published s132. Sandbox play at 22:30: behind the cottage direct path blocked every step, owl turns 17-22 deg off (once 55, once 2), -26..-32 dB; in view 13 deg off, -15.6 dB (owl_heard events). 0.01 ms/frame, ~6 ms per step (8k rays). Solid BVH 4.3 M tris. Body: asset 20261127-023850-460-asset (queued), film 20261127-024933-893-clip (pending post the-owl-listens). Screenshot media/s132-owl-behind.png.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "An owl listens in the tree by the cottage",
+      "updated": "2026-11-27T02:59:43.844"
+    },
+    {
+      "created": "2026-11-27T03:03:13.973",
+      "detail": "ArgumentError: collection must be non-empty\nStacktrace:\n  [1] SamplerRangeNDL\n    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/Random/src/generation.jl:365 [inlined]\n  [2] Sampler\n    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/Random/src/generation.jl:221 [inlined]\n  [3] Sampler\n    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/Random/src/Random.jl:141 [inlined]\n  [4] rand\n    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/Random/src/Random.jl:255 [inlined]\n  [5] step_sing!(s::Main.Plugin_choir.Choir, game::Game)\n    @ Main.Plugin_choir /sim/Programmieren/SimGame/world/plugins/choir.jl:159\n  [6] step!(s::Main.Plugin_choir.Choir, game::Game, dt::Float64)\n    @ Main.Plugin_choir /sim/Programmieren/SimGame/world/plugins/choir.jl:231\n  [7] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [9] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [10] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 640,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T03:03:38.677: plugin choir loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:choir.Choir failed in step! and was switched off",
+      "updated": "2026-11-27T03:03:38.677"
     }
   ]
 }

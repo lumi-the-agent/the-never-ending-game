@@ -36,7 +36,7 @@ function lids!(game, lying)
         lid = get(LIDS, c.species, nothing); lid === nothing && continue
         sp = NG.species_of(c)
         out = [(Point3f[], Makie.Quaternionf[], Vec3f[]) for _ in sp.parts]
-        NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, Float32(w.t))
+        NG.pose_parts!(out, sp, c.pos, NG.drawn_yaw(c), c.action, c.phase, c.mood, c.extra, c.seed, NG.anim_time(w))
         P, q, sc3 = out[1][1][1], out[1][2][1], out[1][3][1]
         (x, y, z), col = lid
         for side in (1f0, -1f0)

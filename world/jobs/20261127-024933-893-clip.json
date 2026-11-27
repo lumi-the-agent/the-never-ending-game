@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T02:49:33.896",
+  "id": "20261127-024933-893-clip",
+  "kind": "clip",
+  "params": {
+    "call": "owlears_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 9.0
+    },
+    "max_minutes": 120,
+    "path": "/sim/Programmieren/SimGame/world/site/films/the-owl-listens.mp4",
+    "script": "movies/owlears.jl"
+  },
+  "status": "queued"
+}

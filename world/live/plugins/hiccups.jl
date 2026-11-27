@@ -78,7 +78,7 @@ function step_bubbles!(s::Hiccups, w, dt)
     for i in 1:NB
         s.bage[i] >= 2.2f0 && continue
         s.bage[i] += Float32(dt)
-        s.bpos[i] += Point3f(s.bvel[i] * Float32(dt)) + Point3f(0.25f0 * sin(Float32(5w.t) + i) * Float32(dt), 0, 0)
+        s.bpos[i] += Point3f(s.bvel[i] * Float32(dt)) + Point3f(0.25f0 * sin((5f0 * NG.anim_time(w)) + i) * Float32(dt), 0, 0)
         a = s.bage[i]
         # grows quickly, wobbles up, pops
         ms[i] = a >= 2.2f0 ? 0f0 : 0.13f0 * min(1f0, 4a) * (1 + 0.08f0 * sin(14a))

@@ -96,7 +96,7 @@ function draw_chick!(w)
     shown = c[:hatched] || get(E, :peek, false)
     p = c[:pos]
     if shown
-        NG.pose_parts!(out, sp, p, c[:yaw], c[:action], c[:phase], 0.8f0, 0f0, 7f0, Float32(w.t))
+        NG.pose_parts!(out, sp, p, c[:yaw], c[:action], c[:phase], 0.8f0, 0f0, 7f0, NG.anim_time(w))
     end
     for (j, part) in enumerate(sp.parts)
         o = out[j]

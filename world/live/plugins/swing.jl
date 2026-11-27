@@ -177,7 +177,7 @@ function NG.step!(s::Swing, game, dt)
     s.next_t < 0 && (s.next_t = w.t + 600.0)
     if s.state === :idle
         # the empty seat settles
-        s.amp *= Float32(exp(-0.3 * dt)); s.theta = s.amp * sin(2.65f0 * Float32(w.t))
+        s.amp *= Float32(exp(-0.3 * dt)); s.theta = s.amp * sin(2.65f0 * NG.anim_time(w))
         s.amp > 0.002f0 && draw_seat!(w, s.theta)
         testing = game.tests !== nothing && NG.running(game.tests)
         busy_game = game.minigame !== nothing && !(game.minigame isa NG.JumpIn)
@@ -272,7 +272,7 @@ function NG.step!(s::Swing, game, dt)
         return
     end
     # the empty seat swings on, slowing down
-    s.amp *= Float32(exp(-0.4 * dt)); s.theta = s.amp * sin(2.65f0 * Float32(w.t)); draw_seat!(w, s.theta)
+    s.amp *= Float32(exp(-0.4 * dt)); s.theta = s.amp * sin(2.65f0 * NG.anim_time(w)); draw_seat!(w, s.theta)
     if s.state === :fly
         p0, v = s.flight
         t = Float32(el)

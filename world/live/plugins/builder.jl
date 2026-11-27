@@ -371,7 +371,7 @@ function planks!(game)
         Makie.update!(d[:planks]; arg1 = [HIDE], markersize = [Vec3f(0)], rotation = [Quaternionf(0, 0, 0, 1)])
         return
     end
-    pts = [c.pos + Point3f(0, 0, 0.95f0 * NG.species_of(c).height + 0.05f0 + 0.03f0 * sin(Float32(8w.t) + c.id)) for c in cs]
+    pts = [c.pos + Point3f(0, 0, 0.95f0 * NG.species_of(c).height + 0.05f0 + 0.03f0 * sin((8f0 * NG.anim_time(w)) + c.id)) for c in cs]
     rots = [Makie.qrotation(Vec3f(0, 0, 1), c.yaw + NG.species_of(c).heading) for c in cs]
     Makie.update!(d[:planks]; arg1 = pts, markersize = [Vec3f(0.16, 0.9, 0.05) for _ in cs], rotation = rots)
 end
@@ -400,7 +400,7 @@ function crate!(game)
         a, r = c.yaw + sp.heading, NG.body_radius(sp)
         q = Makie.qrotation(Vec3f(0, 0, 1), a + Float32(pi / 2))     # its long side across the arms
         # held in front at belly height like a box in both arms (riding over the leaf it looked like it floated, s56)
-        at = c.pos + Point3f((r + 0.1f0) * cos(a), (r + 0.1f0) * sin(a), 0.4f0r + 0.02f0 * sin(Float32(8w.t)))
+        at = c.pos + Point3f((r + 0.1f0) * cos(a), (r + 0.1f0) * sin(a), 0.4f0r + 0.02f0 * sin((8f0 * NG.anim_time(w))))
         Makie.update!(d[:crate]; arg1 = [at], markersize = [Vec3f(B[:crate_scale])], rotation = [q])
         haskey(d, :carry) || carry_copy!(game, job)
         haskey(d, :carry) && Makie.update!(d[:carry]; arg1 = [at + Point3f(0, 0, 0.3f0)], rotation = [q])

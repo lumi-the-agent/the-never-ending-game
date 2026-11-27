@@ -281,8 +281,30 @@ function wrap_text(s::AbstractString, n::Int; maxlines::Int = 6)
         end
         push!(lines, line)
     end
-    length(lines) > maxlines && (lines = lines[1:maxlines])   # drop whole trailing lines, never print "…"
+    if length(lines) > maxlines
+        # s132 (perfectionist-0130: panels ended in "U throw up into", "so it"): too long, so end at the last whole
+        # sentence that fits, else at the last clause (; or ,) closed with a full stop; never mid-phrase, never "…"
+        cut = whole_cut(s, n, maxlines)
+        cut === nothing || return cut
+        lines = lines[1:maxlines]
+    end
     return join((length(l) > n ? first(l, n) : l for l in lines), "\n")
+end
+
+"The longest whole-sentence (or else whole-clause) beginning of `s` that wraps into `maxlines` lines, or nothing."
+function whole_cut(s::AbstractString, n::Int, maxlines::Int)
+    fits(t) = count(==('\n'), wrap_text(t, n; maxlines = typemax(Int))) + 1 <= maxlines
+    balanced(t) = count(==('('), t) == count(==(')'), t)
+    best = ""
+    for (pat, close) in ((r"(?<=[.!?])\s", ""), (r"[;,]\s", "."))
+        for m in eachmatch(pat, s)
+            e = m.offset
+            t = rstrip(s[1:prevind(s, e + (close == "" ? 0 : 1))], [' ', ';', ','])
+            t = close == "" ? t : t * close
+            !isempty(t) && length(t) > length(best) && balanced(t) && fits(t) && (best = t)
+        end
+    end
+    return isempty(best) ? nothing : wrap_text(best, n; maxlines = typemax(Int))
 end
 first_line(s::AbstractString) = strip(first(split(strip(s), '\n')))
 

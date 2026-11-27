@@ -98,10 +98,46 @@ end
 
 ground_z(w, p) = NG.terrain_height(w.island, p[1], p[2])
 
-function integrate!(w, P, V, dt; damp = true, land = true)
+"The pull's potential at distance r from the centre (per kg)."
+potential(r) = -GM / sqrt(r^2 + EPS^2)
+# s132: a weak throw never reaches the ring (62-76 m): the damping settled such bodies into little circles 4-30 m
+# round a point 8 m over the meadow (31 of 54 paint blobs hung over the trees in the human's island). A body with
+# less energy than a circular orbit at TRAP_R ends up circling inside TRAP_R (the damping only takes energy away;
+# the settled ring has E >= ecirc(62 m) = -7.3, TRAP_R 45 m is -10.1). Those are in the island's own air: plain
+# gravity takes them back down.
+const TRAP_R = 45f0
+const G_AIR = Vec3f(0, 0, -9.81f0)
+ecirc(r) = vcirc(r)^2 / 2 + potential(r)
+trapped(p, v) = sum(abs2, v) / 2 + potential(nrm(p - centre())) < ecirc(TRAP_R)
+"Bodies that fell out of the sky, per kind: once trapped they stay falling (a fall speeds them up again)."
+falling() = get!(() -> Dict(k => (P = Point3f[], V = Vec3f[]) for k in KINDS), O, :F)
+
+"Plain gravity for the fallen: they bounce on the meadow and are gone once they lie still or reach the sea."
+function fall!(w, P, V, dt)
+    gone = Int[]
+    for i in eachindex(P)
+        v = V[i] + dt * G_AIR
+        p = P[i] + dt * v
+        p[3] < -0.5f0 && (push!(gone, i); continue)
+        gz = ground_z(w, p)
+        if gz > 0.2f0 && p[3] < gz + 0.2f0 && v[3] < 0
+            v = Vec3f(0.5f0 * v[1], 0.5f0 * v[2], -0.3f0 * v[3]); p = Point3f(p[1], p[2], gz + 0.2f0)
+            nrm(v) < 3f0 && (push!(gone, i); continue)
+        end
+        P[i] = p; V[i] = v
+    end
+    isempty(gone) || (deleteat!(P, gone); deleteat!(V, gone))
+    nothing
+end
+
+function integrate!(w, P, V, dt; damp = true, land = true, fall = nothing)
     down = Int[]
     for i in eachindex(P)
         p = P[i]; v = V[i]
+        if fall !== nothing && trapped(p, v)
+            push!(fall.P, p); push!(fall.V, v); push!(down, i)
+            continue
+        end
         a = accel(p)
         if damp
             rv = p - centre(); rh = rv / max(nrm(rv), 1f-3)
@@ -262,20 +298,20 @@ function NG.step!(::Ring, game, dt)
     end
     # integrate (two substeps a frame are plenty for 25-45 m orbits)
     for k in KINDS
-        b = bodies()[k]
-        isempty(b.P) && continue
+        b = bodies()[k]; f = falling()[k]
         nsub = max(2, ceil(Int, rng_dt / 0.02f0))
         for _ in 1:nsub
-            integrate!(w, b.P, b.V, rng_dt / nsub)
+            isempty(b.P) || integrate!(w, b.P, b.V, rng_dt / nsub; fall = f)
+            isempty(f.P) || fall!(w, f.P, f.V, rng_dt / nsub)
         end
     end
     step_rider!(game, rng_dt)
     for k in KINDS
-        b = bodies()[k]; p = PL[k]
-        if isempty(b.P)
+        b = bodies()[k]; f = falling()[k]; p = PL[k]
+        if isempty(b.P) && isempty(f.P)
             p.visible[] && (p.visible = false)
         else
-            Makie.update!(p; arg1 = copy(b.P))
+            Makie.update!(p; arg1 = vcat(b.P, f.P))
             p.visible[] || (p.visible = true)
         end
     end

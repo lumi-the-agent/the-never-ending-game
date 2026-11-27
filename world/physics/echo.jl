@@ -193,8 +193,9 @@ end
 
 The world triangles of every visible mesh and meshscatter in a stage scene (transforms, markersize and rotation
 applied). Call it while the scene is alive (inside `with_scratch_game`'s do-block or a film's `setup`).
+`keep(plot)` picks the plots (atomic plots: test `Makie.parent_scene`-free things like the name of the top plot).
 """
-function stage_triangles(scene)
+function stage_triangles(scene; keep = p -> true)
     tris = NTuple{3,Point3f}[]
     addmesh!(m, f) = begin
         ps = GeometryBasics.decompose(Point3f, m); fs = GeometryBasics.decompose(GLTriangleFace, m)
@@ -204,6 +205,7 @@ function stage_triangles(scene)
     end
     for p in Makie.collect_atomic_plots(scene)
         Makie.to_value(get(p.attributes, :visible, true)) || continue
+        keep(p) || continue
         M = Makie.transformationmatrix(p)[]
         tf(x) = Point3f((M * Vec4f(x[1], x[2], x[3], 1))[Vec(1, 2, 3)])
         if p isa Makie.Mesh
@@ -220,4 +222,118 @@ function stage_triangles(scene)
         end
     end
     tris
+end
+
+# ── Hearing where a sound comes from (s132, projects/owl-ears.md) ──────────────────────────────────────────────
+# The owl's head is the ear. Like echo_kernel!, every ray from the sound bounces through the island; each arrival
+# at the head also records the direction it comes FROM (unit vector from the head), so the listener can place the
+# sound the way animals do: by the first wavefront (precedence effect), not by the loudest.
+KA.@kernel function hear_kernel!(delay, energy, from, tlas, src, ear, ear_r, u, refl, scatter, B)
+    i = KA.@index(Global)
+    @inbounds begin
+        d = unit_dir(u[1, i], u[2, i])
+        o = src; e = 1f0; L = 0f0
+        for b in 1:2B
+            delay[b, i] = 0f0; energy[b, i] = 0f0
+            from[1, b, i] = 0f0; from[2, b, i] = 0f0; from[3, b, i] = 0f0
+        end
+        for b in 0:B
+            hit, tri, t, _, _ = Raycore.closest_hit(tlas, Raycore.Ray(; o = o, d = d))
+            tseg = hit ? t : 2000f0
+            if b >= 1            # a reflected ray passing through the head: comes from back along the ray
+                s = clamp(dot(ear - o, d), 0f0, tseg)
+                if norm(o + s * d - ear) < ear_r
+                    energy[2b, i] = e; delay[2b, i] = (L + s) / SOUND_C
+                    from[1, 2b, i] = -d[1]; from[2, 2b, i] = -d[2]; from[3, 2b, i] = -d[3]
+                end
+            end
+            (hit && b < B) || break
+            x = o + t * d; L += t
+            v = tri.vertices
+            n = normalize(cross(v[2] - v[1], v[3] - v[1]))
+            dot(n, d) > 0 && (n = -n)
+            e *= refl
+            x = x + 0.01f0 * n
+            toear = ear - x; de = norm(toear); w = toear / de
+            c = dot(n, w)
+            if c > 0
+                blocked, _, tb, _, _ = Raycore.any_hit(tlas, Raycore.Ray(; o = x, d = w))
+                if !blocked || tb > de
+                    energy[2b + 1, i] = e * scatter * c / Float32(pi) * (Float32(pi) * ear_r^2) / max(de * de, 0.25f0)
+                    delay[2b + 1, i] = (L + de) / SOUND_C
+                    from[1, 2b + 1, i] = -w[1]; from[2, 2b + 1, i] = -w[2]; from[3, 2b + 1, i] = -w[3]
+                end
+            end
+            r = d - 2f0 * dot(d, n) * n
+            j = unit_dir((u[3, i] * (b + 1)) % 1f0, (u[4, i] * (b + 1)) % 1f0)
+            d = normalize(r + 0.25f0 * j); dot(d, n) < 0 && (d = r)
+            e *= (1f0 - scatter)
+            o = x
+        end
+    end
+end
+
+"Line of sight: 1 in `open_[1]` when nothing is hit from `o` along `d` within `r`."
+KA.@kernel function los_kernel!(open_, tlas, o, d, r)
+    i = KA.@index(Global)
+    hit, _, t, _, _ = Raycore.closest_hit(tlas, Raycore.Ray(; o = o, d = d))
+    @inbounds open_[i] = (hit && t < r) ? Int32(0) : Int32(1)
+end
+
+"""
+    hear(tlas, backend, src, ear; rays, bounces, window = 0.002) -> NamedTuple
+
+What a listener with its head at `ear` hears of a sound at `src` (energies relative to a unit source):
+`direct` (the straight path is open), `t0` (s, the first wavefront), `from` (unit vector from the head toward where
+the first wavefront comes from: the energy-weighted direction of everything arriving within `window` of `t0`; the
+precedence effect), `level` (dB re a unit source at 1 m, all energy in the first 80 ms), `n` (arrivals).
+"""
+function hear(tlas, backend, src, ear; rays = 20_000, bounces = 3, refl = 0.8f0, scatter = 0.5f0, ear_r = 0.5f0,
+              window = 0.002f0, seed = 1)
+    src = Point3f(src); ear = Point3f(ear)
+    st = Adapt.adapt(backend, tlas)
+    u = KA.allocate(backend, Float32, 4, rays); copyto!(u, rand(MersenneTwister(seed), Float32, 4, rays))
+    delay = KA.zeros(backend, Float32, 2bounces + 1, rays); energy = KA.zeros(backend, Float32, 2bounces + 1, rays)
+    from = KA.zeros(backend, Float32, 3, 2bounces + 1, rays)
+    hear_kernel!(backend)(delay, energy, from, st, src, ear, Float32(ear_r), u, Float32(refl), Float32(scatter),
+                          bounces; ndrange = rays)
+    KA.synchronize(backend)
+    D = vec(Array(delay)); E = vec(Array(energy)) ./ rays; F = reshape(Array(from), 3, :)
+    k = findall(>(0f0), E)
+    D = D[k]; E = E[k]; F = F[:, k]
+    # the direct sound, if nothing stands between (inverse square: 1/(4 pi r^2) of a unit source through the head)
+    dv = Vec3f(src - ear); r = norm(dv)
+    open_ = KA.zeros(backend, Int32, 1)
+    los_kernel!(backend)(open_, st, ear, dv / r, r - 0.05f0; ndrange = 1)
+    KA.synchronize(backend)
+    direct = Array(open_)[1] == 1
+    if direct
+        push!(D, r / SOUND_C); push!(E, Float32(pi) * ear_r^2 / (4f0 * Float32(pi) * r^2))
+        F = hcat(F, dv / r)
+    end
+    isempty(E) && return (direct = direct, t0 = Inf32, from = Vec3f(0), level = -Inf32, n = 0)
+    # the first wavefront: the earliest arrival carrying a noticeable share (single stray rays are noise)
+    o = sortperm(D); cum = cumsum(E[o]); tot = cum[end]
+    first_i = o[findfirst(>=(0.02f0 * tot), cum)]
+    t0 = D[first_i]
+    w = findall(t -> t0 <= t <= t0 + window, D)
+    f = sum(E[j] * Vec3f(F[1, j], F[2, j], F[3, j]) for j in w)
+    early = sum(E[j] for j in eachindex(D) if D[j] <= t0 + 0.08f0)
+    (direct = direct, t0 = t0, from = f / max(norm(f), 1f-9), level = 10f0 * log10(early * 4f0 * Float32(pi) / (Float32(pi) * ear_r^2)),
+     n = length(E))
+end
+
+"The solid world a sound meets: terrain, trees, rocks, logs, buildings and the asset actors; no grass, flowers,
+creatures, particles or sky (a footstep in the grass must not count as walled in)."
+const SOLID_NAMES = r"^(terrain|flora_tree|flora_bush|flora_rock|meadowlife_(log|stump|stones)|cairn_stones|gallery_(easels|wood)|area_pier|area_pond_stones|beachhut|obscura_hut_[0-9]|workshop_(bench|crate|rack)|tv_wood|swing_frame|garden_fence|blossom_trees|wheelbarrow|lookout_bench|meshscatter_[0-9]+)"
+function solid_triangles(scene)
+    keepers = Set{Any}()
+    for p in scene.plots
+        nm = haskey(p.attributes, :name) ? string(Makie.to_value(p.attributes[:name])) : ""
+        occursin(SOLID_NAMES, nm) || continue
+        for q in Makie.collect_atomic_plots(p)
+            push!(keepers, q)
+        end
+    end
+    stage_triangles(scene; keep = q -> q in keepers)
 end

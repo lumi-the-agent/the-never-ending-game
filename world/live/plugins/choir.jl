@@ -156,7 +156,8 @@ function step_sing!(s::Choir, game)
         note!(w, :silence, 0, nothing)
     elseif s.stage == 2 && el > 1.3
         s.stage = 3; s.t0 = w.t
-        s.sour in ids || (s.sour = ids[rand(w.rng, 1:n)])
+        # s132: every singer can be gone (asleep after a time jump): then nobody sings the sour note
+        s.sour in ids || (s.sour = n > 0 ? ids[rand(w.rng, 1:n)] : Int32(-1))
         c = NG.creature(w, s.sour)
         if c !== nothing
             NG.say!(w, c, "♪ BWAAAAARP!"; duration = 2.0)

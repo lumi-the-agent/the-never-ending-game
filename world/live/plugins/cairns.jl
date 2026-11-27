@@ -380,7 +380,7 @@ function NG.step!(::Cairns, game, dt)
     for c in cs
         h = NG.species_of(c).height
         lift = get(HAT_LIFT, c.name, 0.0f0)          # on top of the hat, not inside it (the film hid it in Cumulus' beanie)
-        push!(pos, c.pos + Point3f(0, 0, 0.9f0h + 0.06f0 + lift + 0.03f0 * sin(Float32(8w.t))))   # on the head, under the name tag
+        push!(pos, c.pos + Point3f(0, 0, 0.9f0h + 0.06f0 + lift + 0.03f0 * sin((8f0 * NG.anim_time(w)))))   # on the head, under the name tag
         push!(sz, Vec3f(0.25f0, 0.21f0, 0.13f0))
     end
     isempty(pos) && (push!(pos, HIDE); push!(sz, Vec3f(0)))

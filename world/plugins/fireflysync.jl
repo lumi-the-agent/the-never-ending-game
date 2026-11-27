@@ -104,10 +104,15 @@ function NG.step!(::FireflySync, game, dt)
         end
     end
     pos = fill(FY_HIDE, FY_N); ms = zeros(Float32, FY_N)
+    # s132: a fly flashing right in front of the lens filled the human's view with a yellow-green disc; flies
+    # within 1.2 m of the camera are not drawn, and grow in between 1.2 and 2 m
+    eye = Point3f(Makie.inv(game.stage.scene.camera.view[])[Vec(1, 2, 3), 4])
     for i in 1:FY_N
         b = fy_glow(sw.age[i])
         b > 0.02f0 || continue
-        pos[i] = sw.pos[i]; ms[i] = FY_SIZE * sqrt(b)
+        d = sqrt(sum(abs2, sw.pos[i] - eye))
+        d > 1.2f0 || continue
+        pos[i] = sw.pos[i]; ms[i] = FY_SIZE * sqrt(b) * min(1f0, (d - 1.2f0) / 0.8f0)
     end
     Makie.update!(FY[:plot]; arg1 = pos, markersize = ms)
     la = fy_glow(Float32(now - FY[:lamp_t]) / 1.5f0)
