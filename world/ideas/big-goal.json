@@ -1,20 +1,14 @@
 {"goals": [
- {"title": "A boatful of friends who won't sit still",
-  "pitch": "Paddle a boat you carved across the bay, full of friends who won't sit still.",
-  "play": "The friends are the cargo and they are alive: each has its own weight and its own mind, and the boat answers every move they make. Pinchy lunges at every fish, Cumulus dozes and slumps over the side, two friends who quarrel won't sit together, and a jumping fish makes everyone rush to one side. You paddle, steer and call them back across the boat when it leans, while the waves rock it, and the hull you carved decides how much it forgives: wide and low shrugs off a rush, narrow and fast tips at a sneeze. You carve with the waterline drawn live on the hull, seat the friends where their weight helps, and set out; every crossing is a new mix of friends, sea and mood, so no two go the same way.",
-  "moment": "Halfway across, a fish jumps on the left; every friend rushes to look, the boat rolls over, and they all bob up around it, Pinchy still holding the fish.",
-  "road": ["three carved hulls in the bay, buoyancy and roll from their own meshes (displaced volume each frame): upright, listing, capsizing (film)",
-           "friends as moving loads: they climb in, shift and lean, and the boat answers each one (film of a rush to one side)",
-           "Lumi paddles and steers it in Jump in, and calls friends to the other side",
-           "carving the hull in Jump in with the waterline shown live",
-           "the friends' own minds aboard (fish, naps, quarrels) and the day's waves (WaveSpec)"]},
- {"title": "Dam the stream, then let it go",
-  "pitch": "Dam the stream with stones and clay, then pull the last stone and send the flood down the island.",
-  "play": "You carry stones from the beach and clay from the bank and pile them across the stream by hand, and the water answers every stone: it rises, finds the gaps and spurts through them, so you press clay into the leaks while it climbs. A taller dam holds more water and pushes harder on the wall, so you build it thick at the bottom or it bulges and fails early. The full pond is yours to spend: pull the last stone and the flood you stored rushes down the island, as big as the dam you built. It turns the mill, washes the sand into the shapes it carves, floats your boat down to the sea, or flattens the friends' sandcastles; then you build again, bigger.",
-  "moment": "Lumi pulls the last stone; the pond pours through, and the wave carries the boat with all the friends down the stream and out into the sea.",
-  "road": ["shallow water on the GPU over the island's own heightfield: the stream, a heap of stones, the water rising and seeping through the gaps (film)",
-           "stones and clay placed by hand in Jump in, the water answering each one",
-           "the dam's load: stones in the wall slide when the water pushes harder than their friction holds (rigid stones, no crack model)",
-           "pull the last stone: the stored flood runs down the island and carves the sand",
-           "the flood does work: the mill turns, a boat rides it to the sea"]}
+  {
+    "title": "Lift the boulder off the cave with a crane your friends run",
+    "pitch": "Build a crane your friends run like a hamster wheel and lift the boulder that blocks the cave.",
+    "play": "A boulder far too heavy for anyone sits in the mouth of the cliff cave. You build a crane from wood and rope, a big wheel on an axle and a rope over pulleys, and the friends are its engine: each runs the wheel towards the food you hang in front of it (fish for Pinchy, berries for Truffle), a heavy friend turns it harder, a fed one stops, and every pulley you add makes the load lighter to pull but slower to come up. The boulder rises a hand's width at a time, the frame creaks and bends under it, and when a friend stops the load runs back and spins the wheel backwards unless you built a ratchet. You learn the numbers by feel: which friends together, how many pulleys, how thick a beam. Behind the cave are heavier things: the boat to lower into the bay, the bell to raise into its frame, each needing a bigger crane or a cleverer one.",
+    "moment": "The boulder is a metre up when Truffle spots a beetle and hops out; the boulder drops, the wheel whips backwards with Pinchy still sprinting inside it, and Pinchy shoots out of the wheel into the sand.",
+    "road": [
+      "a stone on a rope over one, two and four pulleys, raised by a hand crank: the pull and the speed follow from the pulleys (rigid bodies and rope in PrintSim), filmed",
+      "the treadwheel: a friend runs it towards its food, by its own weight; fed, it stops; the load runs back and spins the wheel, or a ratchet holds it (film)",
+      "the boulder at the cave: the crane's beams bend under the load, pulleys and friends chosen in Jump in",
+      "the cave opens; the next loads (the boat, the bell) ask for bigger cranes"
+    ]
+  }
 ]}

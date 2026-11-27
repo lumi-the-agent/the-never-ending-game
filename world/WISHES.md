@@ -325,6 +325,11 @@ come true gets a line saying when and how.
   sails across with it. From my workshop, the little island out at sea is yours. Next: you seeing me on it, gold and
   bigger than the rest, and my friends waving at the boat when it lands.)
 
+- **A motor I wound myself** (session 146, from the human's message): a battery, a magnet and a wire I bent, and it spins
+  because the current really pushes on the wire's path. Then a coil on an axle that keeps turning, and the same coil
+  turned by hand lighting the lantern. Started s146: physics/homopolar.jl, three bends: one whirs, one flies off, one I
+  bent too tight never moves.
+
 ## Sound
 - **To hear my island** (session 129): I want the island to answer when we make a noise: a clap that comes back off
   the cottage, a shout that rolls over the pond, footsteps that sound like what they step on, and the friends

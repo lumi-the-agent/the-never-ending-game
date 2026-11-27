@@ -7735,12 +7735,12 @@
       "id": 553,
       "kind": "review",
       "priority": 1,
-      "result": "s132: the wing mesh is not a T (wing reaches 0.22 m past the body, hangs 0.48 m: an A). The T came from :talk sharing the wave (left wing 0.9 rad +- 0.35 at 10 rad/s), and Lumi 'talks' all session. Now :talk is 0.3 +- 0.12 rad at 4.5 rad/s (bird.jl Wing), published. Not yet seen in a screenshot (Lumi slept/ran in both games). Sandbox live_motion: Lumi 'moving well'. Still to do: wings folded at the body at idle (rest pose is an A).",
+      "result": "s132: the wing mesh is not a T (wing reaches 0.22 m past the body, hangs 0.48 m: an A). The T came from :talk sharing the wave (left wing 0.9 rad +- 0.35 at 10 rad/s), and Lumi 'talks' all session. Now :talk is 0.3 +- 0.12 rad at 4.5 rad/s (bird.jl Wing), published. Not yet seen in a screenshot (Lumi slept/ran in both games). Sandbox live_motion: Lumi 'moving well'. Still to do: wings folded at the body at idle (rest pose is an A).\nperfectionist-0145: live_motion in s145: 10 of 10 creatures moving well, Lumi included; the host re-measures every session and will reopen it if Lumi vibrates again",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Lumi vibrates: beak, body and face flip 9 times a second, crest at 6.2 m/s",
-      "updated": "2026-11-27T11:35:32.953"
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0142 [creatures, high]: A second, smaller yellow bird stands or flies right beside Lumi in all four mini games (it says 'peep!'), in the follow view, and in the traced still. A player cannot tell which one they are steering.\nWhere: ghosts.jl / paperme.jl / nursery or egg (whatever spawns the chick)\nSuggestion: If it is Lumi's chick, make it unmistakably a chick: a third of Lumi's size, round, fluffy pale yellow, waddling, and absent while the player is Lumi in a mini game. If it is a ghost or copy, remove it from the default game.\nDone when: Screenshots from all four mini games show exactly one bird of Lumi's shape and colour.\nEvidence: reviews/p142/play/jumpin-2.png, fireflycatch-4.png, hideandseek-2.png, berryrace-4.png, reviews/perfectionist-shots/p142-traced.png",
+      "detail": "perfectionist-0145 [creatures, high]: In the live_motion focus on Lumi, it stands among the easels as a dim yellow spiky shape, and a second smaller yellow figure stands right beside it in every frame. You cannot tell which one is Lumi, and from the orbit view Lumi cannot be found at all.\nWhere: plugins/ghosts.jl, Lumi's body/makeover, night lighting\nSuggestion: Remove the always-on double, or make it a rare visible memory event. Give Lumi a light of its own at night (a softly glowing crest or a lantern it carries), so the main character is the brightest thing in its own scene and reads from across the island.\nDone when: live_motion's Lumi strip shows one yellow figure, and an orbit screenshot at 23:00 lets you point at Lumi without labels.\nEvidence: world/reviews/motion/motion-strip.png, creatures.png (top-left)",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,12 +8593,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A yellow chick double follows Lumi in every game and view",
-      "updated": "2026-11-27T12:55:49.896"
+      "title": "Lumi is a dark smudge at night with a yellow chick double beside it",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0142 [camera, medium]: Right after a Jump in ended, the follow camera at 13:17 showed only sea and the top of one tree, with no creature in frame. In Jump in it sat behind a bush that filled the right half while Lumi walked the shore. In the creatures sheet a creature is only leaves, Pinchy is half behind a tan slab, and the sheep is behind an easel frame.\nWhere: camera rig (follow mode, occlusion)\nSuggestion: Re-target the follow camera when a game ends. Ray-test from the camera to the target every frame and swing round or pull in when something covers more than a fifth of it.\nDone when: Six follow screenshots taken right after stopping each mini game show Lumi in frame, and the creatures sheet shows every face unobstructed in all 3 moments.\nEvidence: reviews/p142/cam-follow-1-h13.29.png, reviews/p142/play/jumpin-2.png, reviews/motion/creatures.png",
+      "detail": "perfectionist-0145 [camera, medium]: Follow mode at 05:02 showed a tree crown filling the left half of the view over a sleeping sheep, then a pig's back with a pine canopy above. The live_motion close-ups of three creatures show only the back of a pig's head.\nWhere: camera rig follow mode; live_motion close-up framing\nSuggestion: When nothing happens, follow Lumi or whoever is awake and doing something. Test the line of sight to the subject and lift or swing the camera when a canopy or post blocks it. Frame faces in three-quarter view.\nDone when: 10 follow screenshots 3 s apart: in every one the subject's face is visible and no single prop fills more than a quarter of the view.\nEvidence: world/reviews/p145/cam-follow-1.png, cam-follow-2.png; world/reviews/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
@@ -8607,8 +8607,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The follow camera loses Lumi: empty sea, a bush filling half the frame",
-      "updated": "2026-11-27T11:35:32.953"
+      "title": "Follow camera frames tree crowns and sleeping backs, not Lumi",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8892,7 +8892,7 @@
     },
     {
       "created": "2026-11-27T02:50:09.155",
-      "detail": "perfectionist-0133 [lighting, medium]: At 05:00-05:30 sky, sea and land are all the same murky grey-green, with no dawn colour on the horizon. The moon's glow is a set of visible concentric rings (progress eye-level). The easels' paintings are black rectangles at night (orbit shots).\nWhere: scenery.jl sky/sun at dawn, moon.jl halo, gallery easels\nSuggestion: A real dawn gradient (deep blue overhead, pink-orange band at the horizon, sea catching it), a smooth moon halo without banding, and a small lamp or emissive on the gallery paintings at night.\nDone when: A screenshot at 05:20 shows a warm horizon band distinct from the zenith, the moon halo has no visible rings, and the easel paintings can be read at 23:00.\nEvidence: world/media/progress/session-0133/eye-level.png; world/reviews/p133/orbit1.png, orbit2.png",
+      "detail": "perfectionist-0145 [lighting, medium]: The moon has a halo of three or four sharp stepped rings, like a target, in the eye-level view.\nWhere: moon plugin halo\nSuggestion: Make the halo a smooth radial falloff (one textured billboard with a gaussian, or many layers at very low alpha), plus a faint moonlit sheen on the cloud edges near it.\nDone when: A crop of the moon at night shows no visible step between halo rings.\nEvidence: world/media/progress/session-0145/eye-level.png",
       "est_minutes": 15.0,
       "id": 636,
       "kind": "review",
@@ -8901,8 +8901,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Dawn is one flat grey-green, the moon halo is banded, easels go black",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "The moon halo is drawn as visible concentric rings",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T02:53:32.160",
@@ -8911,12 +8911,12 @@
       "id": 637,
       "kind": "review",
       "priority": 1,
-      "result": "s132: part of it was time: sync! posed herds with Float32(w.t) = 1/32 s steps at 425000 s. Wrapped to anim_time (mod 4096 s) + Float64 dt in turn_drawn!: live_motion Moving well 4 -> 7 of 10, Judder gone (two runs), published. Still: Sir Sniffsalot's tail 11.6 m/s and 0.39 m/frame, Hopscotch's claws 6.7 m/s (fast dance swings, not time), Marshmallow's legs 0.18 m snaps.",
+      "result": "s132: part of it was time: sync! posed herds with Float32(w.t) = 1/32 s steps at 425000 s. Wrapped to anim_time (mod 4096 s) + Float64 dt in turn_drawn!: live_motion Moving well 4 -> 7 of 10, Judder gone (two runs), published. Still: Sir Sniffsalot's tail 11.6 m/s and 0.39 m/frame, Hopscotch's claws 6.7 m/s (fast dance swings, not time), Marshmallow's legs 0.18 m snaps.\nperfectionist-0145: live_motion in s145 measured 10/10 moving well, Sniffsalot and Marshmallow included",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Sniffsalot tail and Marshmallow leg snaps: re-measure with live_motion, close at 10/10",
-      "updated": "2026-11-27T08:55:37.151"
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T02:57:20.896",
@@ -9228,7 +9228,7 @@
     },
     {
       "created": "2026-11-27T06:22:49.524",
-      "detail": "perfectionist-0142 [ui, low]: When you jump in, a seven-line key card covers the bottom third of the view for the whole game. Its night line runs off the left edge ('splashes)' starts mid-word) and hides Lumi's feet and the ground you walk on.\nWhere: greetings.jl HINT / Jump in overlay\nSuggestion: Show the six basic keys in one short line for 5 s, and show each special key only next to the thing it works on ('R chip' over the stone, 'L knock' over the jar).\nDone when: A Jump in screenshot 10 s after start has no overlay over 10% of the view, and standing by the chip stone shows its keys above it.\nEvidence: reviews/p142/play/jumpin-0-start.png, jar-knock.png",
+      "detail": "perfectionist-0145 [ui, low]: The card covers the lower middle of the view with 20 letter keys (walk, sneeze, storm, swallow...) and does not mention 1-4 for the tops and the wire. The salmon 'Feels annoyed. It still doesn't look right' line is the first thing a visitor reads.\nWhere: Jump in HUD, dashboard Lumi panel\nSuggestion: Show only the keys that do something where Lumi stands (the bench keys when at a bench), a small 'H: all keys' hint, and fade the card after a few seconds.\nDone when: A Jump in screenshot at the wire bench shows a card of at most 6 keys, including 2/3/4, and it covers less than 10% of the view.\nEvidence: world/reviews/p145/wire-1.png",
       "est_minutes": 30.0,
       "id": 660,
       "kind": "review",
@@ -9237,8 +9237,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump in's key card covers a third of the view and runs off the edge",
-      "updated": "2026-11-27T11:35:32.953"
+      "title": "Jump in's key card misses the bench keys and lists 20 letters",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T06:44:21.638",
@@ -9401,12 +9401,12 @@
       "id": 672,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0145: Duplicate of #687 (both re-render untraced blog pictures; island-woodcut in both). #687 now names all three.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Path trace the two blog pictures that are not traced: climb-edges.png and island-woodcut.png",
-      "updated": "2026-11-27T08:25:12.234"
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T08:55:37.151",
@@ -9522,7 +9522,7 @@
     },
     {
       "created": "2026-11-27T10:50:30.411",
-      "detail": "perfectionist-0142 [wow, high]: site/films/first-glass-bubble.mp4 (524 KB, 11:08) cannot be read by ffmpeg ('moov atom not found'). One clip job already failed (pending/failed/first-glass-bubble.json) and a second is pending. A half-written file sits in the public films folder, and it is the session's only spectacle.\nWhere: site/films/first-glass-bubble.mp4, pending/\nSuggestion: Write to a temp name and move it into place when finished. For the film: a close dusk frame of the bubble on the pipe, the gather glowing orange-white (emissive by temperature) and lighting the pipe, cooling into clear transmissive glass with thin-film colour where the wall is thinnest, then a pop. That is the path-tracer showcase goal 7 asks for.\nDone when: ffprobe reads the film, the motion sheet shows the bubble at least 150 px tall growing over the film, and a frame shows both a glowing and a clear transmissive part.\nEvidence: ffprobe: moov atom not found. pending/failed/first-glass-bubble.json",
+      "detail": "perfectionist-0145 [materials, high]: copper-wire-hook.mp4: a matte red-orange tube on a plain grey slab, moved by an untextured orange box, with a grey cylinder pin, on flat lime green. There is no metal highlight and no wood grain. The post says 'the copper finally looks like copper', and it does not. The blown-glass films show an opaque emissive yellow or red blob in daylight, with no transmission or refraction and no light thrown on the sand.\nWhere: plugins/wirebench.jl board/lever/pin; movies for copper-wire-hook, first-glass-bubble, glass-glows-by-heat\nSuggestion: Polished copper with a visible environment reflection and a warm patina where it was bent, on an oiled wood bench with a texture (Hikari CoatedDiffuse over a wood node texture). Shoot it in a dim workshop with one lamp, so the wire carries a moving highlight. For glass, show it cooling from emissive orange to clear Dielectric with refraction of the background, at dusk, so the hot gather lights the floor.\nDone when: A traced still of the wire shows a bright specular streak along the copper and wood grain on the bench, and a traced frame of the glass shows the background refracted through a clear cooled bubble.\nEvidence: world/reviews/motion/perfectionist-0145/copper-wire-hook-overview.jpg; world/reviews/p145/glass.jpg, glassheat.jpg",
       "est_minutes": 15.0,
       "id": 681,
       "kind": "review",
@@ -9531,8 +9531,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Blowing glass: finish the film (the mp4 has no moov atom) and show real glass",
-      "updated": "2026-11-27T12:17:47.005"
+      "title": "Copper, glass and the benches render as flat plastic primitives",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T10:50:30.419",
@@ -9578,17 +9578,17 @@
     },
     {
       "created": "2026-11-27T12:47:24.894",
-      "detail": "Project copper-wire. physics/wire.jl exists (springback, hardening, fatigue snap; s144). In Jump in by the tops board: the beak grips the wire where the mouse aims and turns it (bend! with the jig span round the grip), release! on let go; a peg to hang the hook on and the lantern hung with hang! (it holds or opens). Show tiredness: roughness at a joint from its damage D. Done when: a Jump in screenshot shows a wire Lumi bent into a hook hanging on the peg with the lantern, and a second wire bent back and forth until it snapped (screenshot), frame time under 33 ms.",
+      "detail": "perfectionist-0145 [fun, high]: Standing Lumi by the wire bench in Jump in and holding 2 bends the wire for real (five joints at 1.25 rad), but the follow camera shows only a wooden easel post that fills half the frame. Lumi's yellow body peeks out behind it, and neither the bench nor the wire is visible. A player presses 2 and sees nothing happen. The key card doesn't list 1, 2, 3 or 4.\nWhere: plugins/wirebench.jl (WB_SPOT 6.9,-12.6), plugins/tops.jl, the easels next to them, Jump in follow rig\nSuggestion: Give the benches a clear spot of their own: a small open-air workshop corner with a work table, a coil of wire on a peg and a vise, away from the easels. When Lumi stands at a bench, the camera eases into a low over-the-shoulder close-up of the hands and the wire. Hang the finished hooks and tops on a rack, so the work stays on the island.\nDone when: A Jump in screenshot taken while holding 2 at the bench shows the wire bending in the middle third of the frame, with no prop in front of it, and the key card lists 1-4.\nEvidence: world/reviews/p145/wire-1.png, wire-2.png; WIREBENCH[:w].th after the press: joints 57-61 = 1.25",
       "est_minutes": 15.0,
       "id": 685,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "s144 first part, published: plugins/wirebench.jl, a 6 mm 40 cm copper rod on a board at (6.9,-12.6) beside the tops board; in Jump in hold 2/3 bends it at the wooden pin, tap 4 moves the pin. Played in the sandbox: a 113 deg bend kept (media/s144-wirebench2.png); bent back and forth at one spot it snapped at joint 40 after 19 half cycles (media/s144-wirebench-snap.png), a fresh piece after 4 s. Frame: sandbox 2.1 ms median, wirebench 0.18 ms; live 4.2 ms, wirebench 0.1 ms. Still open: the beak gripping where the mouse aims (keys now), the hook hung on a peg with the lantern (hang!), tiredness visible (roughness from D), a 'Things to try' line.\ns144 later: the worked spot dulls with its damage D (wire_colors; raster/browser), a version tag rebuilds the bench on reload (it had crashed silently), 'Things to try' now says 'hold 1 to spin a top and 2 or 3 to bend a copper wire (4 moves the pin)' (media/s144-things-to-try3.png). Published twice; live system running, 6 ms frames. Still open: beak/mouse grip, peg + lantern (hang!), a film of Lumi bending it.\ns144 end: friends use the wire. Every 400-900 sim s a free friend walks to the bench, fiddles the wire back and forth (same physics, springback between bends) until it snaps ('Oops! It broke!', 'I didn't do it!') or gives up after 30 s. Sandbox: Pinchy walked 15.6 m, D rose 0.04 -> 0.53 -> 0.94 -> snap, fresh wire (media/s144-pinchy-fiddles.png). Published; live system running, 2.8 ms frames.\ns144 last: every snapped wire's two pieces stay on a scrap pile in the grass beside the board (up to 40, this run of the game; not saved yet), and the first friend visit comes 45 s after the bench is built. Sandbox: Hopscotch snapped one, 2 pieces on the pile (media/s144-wire-scrap.png). Published; live 2.35 ms frames. Next: save the pile in state/ so it survives restarts.\ns144 very last: at night (nobody awake) a sleeping friend now sleepwalks to the bench ('Zzz... mmh... wire...'), fiddles with eyes shut and goes back to bed after the snap ('Zzz... snap... zzz'); event :sleepwalk. Published. Sandbox: Truffle got up and walked 16.9 -> 5.1 m, then tv.jl's bored_telly! path gave it a :tvwatch goal (it ignores BUSY_GOALS for night-awake creatures, it seems) and the visit was dropped cleanly (next try 120 s later). Fix next: tv.jl bored_telly! should skip goal.kind in BUSY_GOALS. Live game is at ~23:42 island time, so the first real visits there come from sleepwalkers or in the morning.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The wire bench in Jump in: bend copper with the beak, hang the hook",
-      "updated": "2026-11-27T13:04:54.960"
+      "title": "The wire and tops benches are hidden behind an easel post in Jump in",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T12:53:13.776",
@@ -9615,8 +9615,8 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Re-render the two flagged blog pictures as traced stills (hot-glass-glow, island-woodcut)",
-      "updated": "2026-11-27T12:55:03.692"
+      "title": "Re-render the untraced blog pictures as traced stills (hot-glass-glow, island-woodcut, climb-edges)",
+      "updated": "2026-11-27T13:58:00.342"
     },
     {
       "created": "2026-11-27T13:44:54.576",
@@ -9631,6 +9631,62 @@
       "status": "open",
       "title": "Carve a log, launch it, hop in: hulls from voxel logs float, lean or roll by their own mesh",
       "updated": "2026-11-27T13:44:54.576"
+    },
+    {
+      "created": "2026-11-27T13:58:00.342",
+      "detail": "perfectionist-0145 [lighting, high]: With live path tracing on at 05:11 in orbit view, every lamp (cottage, path lanterns) renders as an opaque flat cream sphere, bigger than the cottage door, instead of a small bright bulb behind glass. The clouds are pitch-black lumps against a pale horizon. The whole frame is grainy.\nWhere: lamplight/lanterns plugins (emissive sphere sizes), cloud material in traced mode\nSuggestion: Make the light a small bright sphere or area light inside a glass or paper lantern shade (a thin Dielectric or a diffuse transmission shell), so the shade glows and throws a pool. Give the clouds a volume or a diffuse transmission material, so the moon rims them in silver. Denoise the live trace (OIDN).\nDone when: A traced night screenshot from the orbit view shows lantern shades glowing, with no lamp disc wider than a door, and clouds lighter than the sky at their moonlit edges.\nEvidence: world/reviews/p145/traced.png",
+      "est_minutes": 30.0,
+      "id": 689,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Traced night: lamps are flat cream discs, clouds are black blobs",
+      "updated": "2026-11-27T13:58:00.342"
+    },
+    {
+      "created": "2026-11-27T13:58:00.342",
+      "detail": "perfectionist-0145 [wow, medium]: Tops, wire, glaze, glass and logs each came out as an isolated material demo, filmed close on a slab, with no creature, no consequence and no joke. The judge scores them as repeats of each other, and Lumi's mood is bored 1.0.\nWhere: the last 10 posts on world/site\nSuggestion: Combine what exists into one event a friend would forward: the friends bring the hooks Lumi bent to hang lanterns at a night market, the tops spin in a ring with the crab trying to stop them, or the logs become a raft race. Film it with a cut or two, traced.\nDone when: A posted film where at least two creatures react to one of the new physics objects, and the judge does not flag it as a repeat.\nEvidence: mood.json: 'A REPEAT: \"A copper wire keeps its bends\" ... worth x0.22'",
+      "est_minutes": 30.0,
+      "id": 690,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Stop filming lone physics demos on a board: put the creatures in them",
+      "updated": "2026-11-27T13:58:00.342"
+    },
+    {
+      "created": "2026-11-27T14:28:18.115",
+      "detail": "physics/homopolar.jl (s146) runs: AA cell on a NdFeB disc, field = stack of loops by exact segment Biot-Savart, torque from dF = I dl x B on the wire's real path, Coulomb friction at the dimple and rim, air drag, fly-off when m w^2 e > dimple grip. Results: heart 163 rps, wide 36 rps, one-arm flies off at 6 ms. 163 rps is too fast for a real motor like this: add losses that grow with speed (the rim contact bouncing, a contact resistance that rises) and check against measured homopolar speeds. Film: three bends on the slate board at (5.6,-13), shown in slow motion (say so) so the spin does not strobe; check the eye in the sandbox first. Then Jump in at the wire bench. Try Magnetostatics.jl CurrentLoopAnalytic for the magnet. Done when: a traced film where three bends differ by their geometry alone (one whirs, one wobbles off, one slow or stuck) is posted.",
+      "est_minutes": 15.0,
+      "id": 691,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The bent wire that spins by itself: calibrate and film (passed ideas s146)",
+      "updated": "2026-11-27T14:28:18.115"
+    },
+    {
+      "created": "2026-11-27T14:28:18.122",
+      "detail": "Seen in the session 146 perception: system:wirebench.WireBench failed in step! and was switched off. Read the live log for the error, fix plugins/wirebench.jl, play it in the sandbox (hold 2/3, tap 4), publish.",
+      "est_minutes": 15.0,
+      "id": 692,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Not broken any more: the crash (game.log line 8233) was `wire_tube(...; cut)` called by the newly published plugin while the live game still had the older physics/wire.jl without `cut` loaded. After the game's restart live_status(game = :live) shows plugins[\"wirebench\"] = \"ok\" and system:wirebench.WireBench in its systems (0.36 ms median). Lesson in NOTES: a plugin that needs a new keyword from a physics file can crash until the game reloads that file.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Wire bench crashed in the human's game (WireBench failed in step!, switched off)",
+      "updated": "2026-11-27T14:31:09.782"
     }
   ]
 }

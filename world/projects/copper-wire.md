@@ -1,6 +1,6 @@
 # Copper wire that remembers every bend
 Goal: the player bends a copper wire with Lumi's beak into a hook, a ring, a spring or a little wire friend; every bend stays, it springs back a little so you learn to over-bend, a spot bent twice is stiffer so the next bend goes beside it, and bending one spot back and forth snaps it like a paper clip. The hooks hang the lantern and the jug. Fun because the wire answers every move at once and keeps it, and what you bend gets used.
-Next: todo #685, the beak grips where the mouse aims (no keys), and the lantern hangs on the hook with `hang!` (holds, or opens and drops it). The s145 retake is on the page (site/films/copper-wire-hook.mp4, sheet media/s145-wire-retake-sheet.png): slate board, Copper(roughness 0.18), camera 10 cm off; the lever still overlaps the wire's end in the last second, and the finished shape reads as a triangle, so the next film should hang something on it. The wire bench is in the game (s144, plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 to bend at the pin, tap 4 to move the pin; it snaps after ~19 reversals at one spot). Friends visit and fiddle it until it snaps (every 400-900 sim s, first 45 s after the bench is built), and snapped pieces lie on a scrap pile beside the board (in memory only: save it to state/ next). Next on it (todo #685): the beak grips where the mouse aims instead of keys, a peg to hang the hook on and the lantern hung with `hang!` (holds or opens), the joint's surface dulling with its damage D so the snap is seen coming, and a line in 'Things to try'. Then a film of Lumi bending it in the game.
+Next: look at the motor film (job 20261127-142949-501 -> site/films/wire-spins-itself.mp4, pending post 'A wire that spins by itself', movies/homopolar.jl); then todo #691 (check the spin rates against real homopolar motors, put it on the wire bench in Jump in: the wire YOU bent goes on the cell), todo #692 (the wire bench crashed in the human's game). Older: #685 beak grips where the mouse aims, the lantern on the hook.
 
 ## What exists (s144)
 - physics/wire.jl: planar quasi-static wire, joints with elastic-plastic bending (yield moment sigma*Z, Hollomon hardening),
@@ -18,3 +18,15 @@ Next: todo #685, the beak grips where the mouse aims (no keys), and the lantern 
 - Show the tiredness: the surface at a joint dulls and roughens with its damage D (roughness from D), so the snap is
   seen coming, not a hidden timer (the critic's worry).
 - Over-bending as a skill: wide bends (a ring, a spring) spring back visibly.
+
+
+## s146: the bent wire that spins by itself (the human asked for a real electric motor)
+- physics/homopolar.jl: AA cell (1.5 V, 0.12 ohm) on a NdFeB disc (Br 1.2 T, 25 x 6 mm) as 10 loops x 64 exact
+  Biot-Savart segments; dF = I dl x B summed along the wire's real polyline (0.7 mm pieces); torque about the axis.
+  Rim pressure from the bend: an arm bent `squeeze` tighter than the magnet presses 3EI/L^3 * squeeze (copper E 117 GPa).
+  Coulomb friction static/kinetic at the rim and the dimple, air drag, and a fitted contact-chatter loss 1e-6 N m s
+  per contact (the only fitted number: it brings the heart to ~25 rev/s). Fly-off when m w^2 e > dimple grip.
+- Results: ~11 A; heart torque 3.9e-4 N m -> 24.7 rev/s; one-arm flies off after 5.8 ms; a heart squeezed 0.6 mm
+  (N 0.068 N) has static friction 5.9e-4 > 3.9e-4 and never starts. Without the chatter loss the heart ran 163 rev/s.
+- Not yet: Magnetostatics.jl (CurrentLoopAnalytic) for the magnet; back-EMF (0.03 V at 1000 rad/s, small); the wire
+  after fly-off is a simple ballistic hop in the film, not a rigid body.

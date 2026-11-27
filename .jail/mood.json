@@ -1,58 +1,73 @@
 {
-  "annoyance": 0.96,
+  "annoyance": 1.0,
   "annoyed": [
+    {
+      "post": "",
+      "session": 145,
+      "title": "movies/wire.jl:17-21 and 73-75; the whole film",
+      "weight": 0.6,
+      "what": "The caption says a wooden lever bends the wire. In the code the solver bends the wire by a scripted angle, and the lever is then placed along the bent arm. It is the result, not the cause, and no hand or body moves it."
+    },
+    {
+      "post": "",
+      "session": 145,
+      "title": "storyboard frames 7 -> 8 (about 2.8 s -> 3.2 s)",
+      "weight": 0.6,
+      "what": "Between the first and second bend the pin and lever teleport. The pin jumps from the first corner to the far end of the second leg, and the lever jumps from lower right to upper left in one step. Nothing carries them there."
+    },
     {
       "post": "two-tops-i-turned",
       "session": 144,
       "title": "Two tops I turned",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem."
     },
     {
       "post": "",
       "session": 144,
       "title": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything."
     },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 143,
       "title": "Hot glass lights the sand",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow."
     },
     {
       "post": "",
       "session": 143,
       "title": "blowing-glass, every storyboard frame; the pipe swings at 3.0-3.5 s (frames 7-8); hot-glass-lights-the-sand",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Nobody blows or holds the pipe. The caption says the gather 'takes my breath', but no body is anywhere near. A bare pipe enters from the frame edge, its far end unheld. It swings from level to steeply dipped on its own, and the bubble inflates with no one at the other end."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T13:49:14",
+  "ended": "2026-11-27T14:41:55",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.18,
-    "picture": 0.37,
+    "feature": 0.71,
+    "picture": 0.22,
     "self": 0.01,
-    "sound": 0.03
+    "sound": 0.02
   },
   "forms": [
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "posts": [
+        "Three logs in the sea",
+        "Two tops I turned",
+        "A snowball that grows as it rolls, a take that misses"
+      ]
+    },
     {
       "form": "A material is worked by a tool and its simulated state shown close up",
       "posts": [
         "A copper wire keeps its bends",
         "Blowing glass",
         "Hot glass lights the sand"
-      ]
-    },
-    {
-      "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
-      "posts": [
-        "Two tops I turned",
-        "A snowball that grows as it rolls, a take that misses"
       ]
     },
     {
@@ -77,8 +92,7 @@
     {
       "form": "Emergent simulation of a small swarm, filmed from a fixed view",
       "posts": [
-        "Ants on a honey road, a take that misses",
-        "Ants on a honey road"
+        "Ants on a honey road, a take that misses"
       ]
     }
   ],
@@ -352,17 +366,11 @@
     "meteor_seen",
     "jug_fired",
     "wire_snap",
-    "sleepwalk"
+    "sleepwalk",
+    "wire_bend"
   ],
-  "joy": 0.36,
+  "joy": 0.22,
   "judged_posts": [
-    {
-      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-      "recipe": "quiet gathering in the grass, cloud shape sequence, shown as a film",
-      "session": 102,
-      "title": "Heart, then fish",
-      "what": "A film of Lumi and Wibbles lying in the grass while a cloud heart above comes apart and swims off as a fish; the traced film of the already-posted cloud-watching event."
-    },
     {
       "form": "Permanent change to the island's look or places",
       "recipe": "new scenery place plus a recurring delivery gag, shown as a film",
@@ -775,6 +783,13 @@
       "session": 145,
       "title": "A copper wire keeps its bends",
       "what": "Fixed close view of a dark slate board on the grass: a wooden lever swings around a grey pin twice, bending a straight copper wire into a hook and then a triangle, and the wire keeps both bends after the lever stops; nobody holds the lever and nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "several simulated objects released side by side, fixed camera watches them settle differently by shape",
+      "session": 146,
+      "title": "Three logs in the sea",
+      "what": "From a fixed end-on view over the open sea, three wooden logs of different cross-section float side by side: the wide flat one stays, the square one tips onto its corner, the tall one falls flat and settles; nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -791,29 +806,29 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "sleepwalk"
+      "wire_bend"
     ],
-    "session": 145
+    "session": 146
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
-    "form": "A material is worked by a tool and its simulated state shown close up",
+    "form": "Physics study of simulated objects moving alone, filmed",
     "form_count": 2,
-    "nearest": "Blowing glass",
-    "post": "A copper wire keeps its bends",
+    "nearest": "Two tops I turned",
+    "post": "Three logs in the sea",
     "score": 6,
-    "session": 145,
-    "shared": "a material worked by a tool with nobody holding it, its simulated change shown in a close fixed view",
-    "similarity": 5
+    "session": 146,
+    "shared": "simulated objects left alone side by side, fixed close view, physics comparison of shapes",
+    "similarity": 6
   },
   "last_surprise": {
-    "fun": 4,
+    "fun": 3,
     "score": 5.5,
-    "session": 144,
-    "why": "Real tops tilting and precessing because of their turned shape and friction is something the island never showed before, but on film it reads as two toys wobbling on a brown disc."
+    "session": 145,
+    "why": "Metal that yields, hardens, springs back and keeps its shape is physics the island didn't have, but the post shows it as two plain bends on a bare slate square, with no maker and no hook used for anything."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T13:05:52",
+  "perceived_until": "2026-11-27T13:58:21",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -827,60 +842,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/glass-sea-2.mp4",
-        "site/films/glass-sea-3.mp4",
-        "site/films/glass-sea.mp4",
-        "site/films/one-stomp-2.mp4"
-      ],
-      "new_plugins": [
-        "glasssea.jl"
-      ],
-      "points": 1.3,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "New world rule acted out on the island, filmed",
-        "form_count": 3,
-        "nearest": "Glass rain, not yet",
-        "post": "The sea froze",
-        "score": 8,
-        "shared": "glassy weather-like change with friends drifting oddly",
-        "similarity": 4
-      },
-      "session": 126,
-      "touched": [
-        "dayfall.jl",
-        "greetings.jl",
-        "sunball.jl",
-        "tied.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 3.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1803,6 +1764,49 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "wire_bend",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/wire-spins-itself.mp4"
+      ],
+      "new_plugins": [],
+      "points": 1.3,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 2,
+        "nearest": "Two tops I turned",
+        "post": "Three logs in the sea",
+        "score": 6,
+        "shared": "simulated objects left alone side by side, fixed close view, physics comparison of shapes",
+        "similarity": 6
+      },
+      "session": 146,
+      "touched": [],
+      "values": {
+        "film": 6.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1958,6 +1962,7 @@
       "site/films/the-island-weighs-its-words.mp4",
       "site/films/the-owl-listens.mp4",
       "site/films/thin-ice-broken-take.mp4",
+      "site/films/three-logs-float.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/tied-together-2.mp4",
       "site/films/time-weather.mp4",
@@ -2192,17 +2197,17 @@
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
-      "wirebench.jl": 1.7957810178657045e9,
+      "wirebench.jl": 1.7957821373606617e9,
       "wordround.jl": 1.7956785473043392e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 126,
+    "posts": 127,
     "self": "369107370865776265",
     "wishes": 17
   },
-  "started": "2026-11-27T13:12:07",
+  "started": "2026-11-27T14:03:54",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2318,7 +2323,9 @@
       "RadiiPolynomial.oddsym",
       "RemoteS.clip_orbits",
       "DelaunayTriangulation.getx",
-      "ImageContainers.storeimage"
+      "ImageContainers.storeimage",
+      "ScaleBar.scalebar",
+      "LowerTriangularArrays.lta_view"
     ],
     "games": [
       "Super Mario 64",
@@ -2377,7 +2384,10 @@
       "Homeworld",
       "Call of Duty",
       "Halo 3",
-      "Xenogears"
+      "Xenogears",
+      "The Legend of Zelda: Majora's Mask",
+      "Sensible Soccer",
+      "StarCraft (video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2437,7 +2447,10 @@
       "https://www.bbc.co.uk/news/articles/c69q8yjj1v0po",
       "https://www.bbc.co.uk/news/articles/crkgvjy7q83wo",
       "https://www.bbc.co.uk/news/articles/ckr5grlq78n9o",
-      "https://www.bbc.co.uk/news/articles/cq4gnj2ldkyzo"
+      "https://www.bbc.co.uk/news/articles/cq4gnj2ldkyzo",
+      "https://www.bbc.co.uk/sport/football/articles/c69q8y5x03ywo",
+      "https://www.bbc.co.uk/news/articles/cw4gnm3m9deno",
+      "https://www.bbc.co.uk/news/articles/ckr5gr4g8gn5o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2706,7 +2719,10 @@
       "AdaOPS",
       "WaveSpec",
       "ActiveInference",
-      "SpinGlassExhaustive"
+      "SpinGlassExhaustive",
+      "PYTHIA8",
+      "OrbitalTrajectories",
+      "FjordSim"
     ],
     "vision": [
       "ZImageRunner",
@@ -2714,8 +2730,10 @@
       "ProPainterRunner",
       "DepthAnythingRunner",
       "Hunyuan3DRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "BasicVSRRunner",
+      "QwenImageEditRunner"
     ]
   },
-  "surprise_seen": 144
+  "surprise_seen": 145
 }

@@ -2548,5 +2548,108 @@
   "wall": "27 November 2026, 09:41",
   "winner": "spople",
   "word": "spople"
+ },
+ {
+  "counts": {
+   "bambkin": 8,
+   "bombkin": 1
+  },
+  "day": 25,
+  "first": {
+   "bambkin": "Lumi",
+   "bombkin": "Pickles"
+  },
+  "hour": 9.842842553688715,
+  "meaning": "laughing so hard you fall over",
+  "minutes": 3.3,
+  "parent": {
+   "bombkin": "bambkin"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 112.69999997375999,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Wibbles",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 119.13333330559544,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 139.46666663419455,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 143.23333329998422,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 170.66666662693024,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 181.63333329104353,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 189.3666666225763,
+    "to": "Marshmallow",
+    "was": "bambkin"
+   },
+   {
+    "from": "Truffle",
+    "heard": "bombkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 195.53333328780718,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "bambkin",
+    "said": "bambkin",
+    "switched": false,
+    "t": 197.46666662069038,
+    "to": "Gloop",
+    "was": ""
+   }
+  ],
+  "wall": "27 November 2026, 14:40",
+  "winner": "bambkin",
+  "word": "bambkin"
  }
 ]

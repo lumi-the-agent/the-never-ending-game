@@ -34,3 +34,28 @@ Ideas round s144 passed: "Copper wire that remembers every bend" (surprise/fun/r
 - r15: 'A boatful of friends who won't sit still' (the friends are live moving loads: a fish jumps, all rush, it rolls),
   'Dam the stream, then let it go' (the player pulls the last stone; the stored flood does work; wall = sliding rigid stones).
   NEXT SESSION: film the boat's first step (three hulls from their meshes) before round 16.
+
+## s146, round 16
+- r15 scores: boat 7/6/8/7/9, dam 8/6/8/7/9: 'memorable' 6 for both (tippy-boat party games, damming in god games).
+- r16: boat with its first step FILMED (three-logs-float.mp4 retaken end-on), carving made the centre again;
+  new 'Shave a bell until it sings a friend's note' (cast in sand, tune by shaving the inside like real founders,
+  metal only comes off; each friend hums its note; physics/modes.jl already gives modes from a mesh). Dam rested.
+- r16 (late): the human's message (14:1x) asked for real materials and physics enough to build an electric motor: added 'Wind a motor from the wire you bent' (homopolar first, then a commutator coil, dynamo).
+- r16 scores: motor 7/7/7/6/10 (the human's own test; predictable answer, a supply chain before the first whir, hook-ups
+  a list with no reason to wind a second coil), bell 7/6/6/6/7 (tuning by ear invisible, sound clips travel less), boat
+  7/5/8/7/8 (nothing new since r15, scripted fidgets, adze feel untested). Bell and boat dropped as big goals (boat stays a project).
+- r17: motor -> 'Wind a motor strong enough to lift a friend' (propeller hats; each friend's weight needs its own coil;
+  reaction torque spins the friend: a real, funny failure), new 'Cut sticks into legs and let the sea wind walk them'
+  (wind-driven linkage walker, foot path from stick lengths, PrintSim pin joints).
+- r17 scores: motor-lift 8/7/8/6/9 (a hand-wound motor lifting a pig can't be honest: either cheated or only Pinchy
+  flies; short cast ends the loop), walker 8/6/8/7/9 (Theo Jansen's Strandbeest image; the copy step collapses search).
+  Both dropped as big goals (the motor stays the human's wish: a project candidate).
+- r18: new 'A crane the friends walk like a hamster wheel' (treadwheel + pulleys + stone tower; friends' own minds are
+  the engine), new 'Build the clock that wakes the island' (pendulum length sets the friends' day).
+- r18 scores: crane 8/7/8/7/9 (first where friends are part of the machine; minds = scripted distractions; stacking
+  stones familiar), clock 7/6/6/5/8 (feedback a week long; dropped).
+- r19: 'Raise a stone arch with a crane the friends walk' (friends walk towards food you hang = readable; the tower
+  becomes an arch on a wooden form: knock the props out, it stands by compression or drops into the stream).
+- r19 scores: crane+arch 7/7/7/7/9 (two machines in one pitch; masonry arches are what solvers do worst: a good arch
+  sagging or a bad one holding makes the payoff a lie; carrot-on-a-stick is an old gag; the holding arch clips gently).
+- r20: crane only: 'Lift the boulder off the cave with a crane your friends run' (one load, one goal, the failure is the clip).

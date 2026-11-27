@@ -45,8 +45,8 @@ function roll_track(L, w, h; density = 500.0, frames = 168, fps = 24, phi0 = deg
     return out
 end
 
-function hulls_clip(path; rasterize = false, samples = 20, width = 960, height = 540, fps = 24, seconds = 7.0,
-                    hour = 16.5, spot = (-4f0, 18f0))
+function hulls_clip(path; rasterize = false, samples = 20, width = 960, height = 540, fps = 24, seconds = 8.0, hold = 1.2,
+                    hour = 11.0, spot = (-4f0, 18f0))
     nf = round(Int, seconds * fps)
     logs = [(1.2, 0.60, 0.25, RGBf(0.62, 0.45, 0.28)), (1.2, 0.36, 0.36, RGBf(0.55, 0.38, 0.22)), (1.2, 0.18, 0.60, RGBf(0.70, 0.55, 0.36))]
     tracks = [roll_track(L, w, h; frames = nf, fps) for (L, w, h, _) in logs]
@@ -60,7 +60,7 @@ function hulls_clip(path; rasterize = false, samples = 20, width = 960, height =
         g = NG.ground(w.island, spot)
         S[:beach] = g
         S[:plots] = map(enumerate(logs)) do (i, (L, wd, h, c))
-            mesh!(gm.stage.scene, GeometryBasics.normal_mesh(Rect3f(Point3f(-L/2, -wd/2, -h/2), Vec3f(L, wd, h)));
+            mesh!(gm.stage.scene, GeometryBasics.normal_mesh(Rect3f(Point3f(-wd/2, -L/2, -h/2), Vec3f(wd, L, h)));
                   color = c, name = Symbol("hull_log_", i),
                   material = NG.Hikari.Diffuse(color = (Float64(c.r), Float64(c.g), Float64(c.b)), roughness = 0.6f0))
         end
@@ -70,16 +70,16 @@ function hulls_clip(path; rasterize = false, samples = 20, width = 960, height =
         end
     end
     shot = function (gm, rig, t)
-        k = clamp(round(Int, t * fps) + 1, 1, nf)
+        k = clamp(round(Int, (t - hold) * fps) + 1, 1, nf)     # held upright for `hold` s, then let go
         x, y = spot
         for (i, p) in enumerate(S[:plots])
             phi, zc = tracks[i][k]
-            Makie.rotate!(p, Makie.qrotation(Vec3f(1, 0, 0), Float32(phi)))
-            Makie.translate!(p, Vec3f(x + (i - 2) * 1.7f0, y + 4.5f0, Float32(zc)))
+            Makie.rotate!(p, Makie.qrotation(Vec3f(0, 1, 0), Float32(phi)))   # logs lie along y: seen end-on from the shore
+            Makie.translate!(p, Vec3f(x + (i - 2) * 1.25f0, y + 5.5f0, Float32(zc)))
         end
         rig.mode = :fixed
-        rig.eye = Point3f(x + 0.3f0, y + 0.6f0, S[:beach][3] + 1.1f0)
-        rig.target = Point3f(x, y + 4.5f0, 0.0f0)
+        rig.eye = Point3f(x, y + 1.5f0, 0.95f0)                # s146: end-on, the cross-sections are the story
+        rig.target = Point3f(x, y + 5.5f0, 0.0f0)
         return nothing
     end
     r = NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rasterize,

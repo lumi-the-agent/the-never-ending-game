@@ -1,26 +1,36 @@
-{"verdict": "needs_work",
- "summary": "A real rigid-body top simulation, but for over half the film the blue top hangs in the air above the grass with no shadow, standing on its stem. The caption calls this a joke instead of a miss. The session's own work, a copper wire bender, has no post at all.",
- "real_change": "Neither session plugin makes what the film shows. wirebench.jl (both copies, 207 lines) adds a copper rod on a board that you bend with keys 2/3/4: physics/wire.jl gives each joint elastic then plastic bending, work hardening, springback and fatigue cracking. No post shows any of it. The tops come from s143's physics/top.jl and tops.jl. physics/top.jl is a real rigid body: mass and inertia from the turned profile, contact at the lowest point of the curved surface, sliding friction. But it is solved against an endless plane at z = 0 and played back on a mesh, so the board and the island's ground never take part in the solve. That is why the blue top 'leaves' the board and keeps spinning in thin air.",
- "surprise": 5,
- "surprise_why": "Real tops tilting and precessing because of their turned shape and friction is something the island never showed before, but on film it reads as two toys wobbling on a brown disc.",
- "fun": 4,
- "fun_why": "The red top's wobble and precession are pleasant to watch once, but a floating blue top and a fixed low camera with nobody spinning them leave little to come back for.",
- "real": 6,
- "real_why": "The top dynamics are a real simulation (inertia from the profile, a contact point that moves over the curved surface, friction), but its ground is an imaginary plane, cut off from the world it is drawn in.",
- "findings": [
-  {"severity": "high",
-   "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything.",
-   "where": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%",
-   "evidence": "At 25% it is still on the board with a shadow. At 50% it hangs over the grass on its side, and at 75% it stands upright on its stem in the air, well above the lawn, with no shadow under it. spin_top in physics/top.jl solves 'on a plane at z = 0', and the frames are only played back at the board's height.",
-   "suggestion": "Give the solver the board as a finite disc (or the island's ground height under the contact point) so a top that rolls off falls and lands. Or cut the take before it leaves, and post it as 'a take that misses' instead of a joke caption that admits the bug."},
-  {"severity": "medium",
-   "what": "The film has no cause: no hand, string or Lumi is ever seen, and both tops are already spinning in the first frame. 'Two tops I turned' never shows the turning (the lathe) or the throw.",
-   "where": "two-turned-tops: storyboard frame 1",
-   "evidence": "The red top is already tilted and spinning in frame 1, and the blue one first appears in frame 2, already spinning beside it. tops.jl has a wind-and-release interaction (HOLD 1), but the film never shows it.",
-   "suggestion": "Open on Lumi winding the string and letting go, or on the top coming off the lathe, then follow the spin."},
-  {"severity": "medium",
-   "what": "The session's real new work, a copper wire that bends plastically, springs back and snaps from fatigue, has no post. The post that did go up re-shows the previous session's tops.",
-   "where": "plugins/wirebench.jl:1-5",
-   "evidence": "Only wirebench.jl changed this session. Its header describes elastic and then plastic joints, work hardening, springback and fatigue snapping, all simulated, and none of it appears in any post.",
-   "suggestion": "Film the wire being bent back and forth at one spot until it cracks and snaps. That is new, and it is what this session made."}
- ]}
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "At 25% it is still on the board with a shadow. At 50% it hangs over the grass on its side, and at 75% it stands upright on its stem in the air, well above the lawn, with no shadow under it. spin_top in physics/top.jl solves 'on a plane at z = 0', and the frames are only played back at the board's height.",
+      "severity": "high",
+      "suggestion": "Give the solver the board as a finite disc (or the island's ground height under the contact point) so a top that rolls off falls and lands. Or cut the take before it leaves, and post it as 'a take that misses' instead of a joke caption that admits the bug.",
+      "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything.",
+      "where": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%"
+    },
+    {
+      "evidence": "The red top is already tilted and spinning in frame 1, and the blue one first appears in frame 2, already spinning beside it. tops.jl has a wind-and-release interaction (HOLD 1), but the film never shows it.",
+      "severity": "medium",
+      "suggestion": "Open on Lumi winding the string and letting go, or on the top coming off the lathe, then follow the spin.",
+      "what": "The film has no cause: no hand, string or Lumi is ever seen, and both tops are already spinning in the first frame. 'Two tops I turned' never shows the turning (the lathe) or the throw.",
+      "where": "two-turned-tops: storyboard frame 1"
+    },
+    {
+      "evidence": "Only wirebench.jl changed this session. Its header describes elastic and then plastic joints, work hardening, springback and fatigue snapping, all simulated, and none of it appears in any post.",
+      "severity": "medium",
+      "suggestion": "Film the wire being bent back and forth at one spot until it cracks and snaps. That is new, and it is what this session made.",
+      "what": "The session's real new work, a copper wire that bends plastically, springs back and snaps from fatigue, has no post. The post that did go up re-shows the previous session's tops.",
+      "where": "plugins/wirebench.jl:1-5"
+    }
+  ],
+  "fun": 4,
+  "fun_why": "The red top's wobble and precession are pleasant to watch once, but a floating blue top and a fixed low camera with nobody spinning them leave little to come back for.",
+  "real": 6,
+  "real_change": "Neither session plugin makes what the film shows. wirebench.jl (both copies, 207 lines) adds a copper rod on a board that you bend with keys 2/3/4: physics/wire.jl gives each joint elastic then plastic bending, work hardening, springback and fatigue cracking. No post shows any of it. The tops come from s143's physics/top.jl and tops.jl. physics/top.jl is a real rigid body: mass and inertia from the turned profile, contact at the lowest point of the curved surface, sliding friction. But it is solved against an endless plane at z = 0 and played back on a mesh, so the board and the island's ground never take part in the solve. That is why the blue top 'leaves' the board and keeps spinning in thin air.",
+  "real_why": "The top dynamics are a real simulation (inertia from the profile, a contact point that moves over the curved surface, friction), but its ground is an imaginary plane, cut off from the world it is drawn in.",
+  "summary": "A real rigid-body top simulation, but for over half the film the blue top hangs in the air above the grass with no shadow, standing on its stem. The caption calls this a joke instead of a miss. The session's own work, a copper wire bender, has no post at all.",
+  "superseded_by": "perfectionist-0145.json",
+  "surprise": 5,
+  "surprise_why": "Real tops tilting and precessing because of their turned shape and friction is something the island never showed before, but on film it reads as two toys wobbling on a brown disc.",
+  "verdict": "needs_work"
+}

@@ -937,3 +937,11 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
   sandbox keeps showing the old look while the file says otherwise (s145: the slate board stayed brown for 8 min).
 - Film scripts run in `Main.ClipScript` without Colors' exports: `red(c)` is undefined there (s145 logs film failed in
   setup). Use the fields `c.r, c.g, c.b`. A job that dies in setup fails within ~1 minute; check it before walking away.
+- Film a rotation along its axis (s146): three logs rolling about their long axis, filmed side-on, looked like three
+  still boards (s145 three-logs film). End-on, the same roll reads in one frame. Before a traced job, ask: from this
+  eye, does the thing that changes change the silhouette? Also: fast events (a plank falling over in 0.8 s) need a hold
+  before release, or they happen inside the fade-in.
+- Plugin + physics file out of step (s146): the wire bench crashed in the human's game with `wire_tube(...; cut)` not
+  found: the published plugin used a keyword the game's already-loaded physics/wire.jl did not have yet. It ran again
+  after the game restarted. When a plugin starts using something new from physics/*.jl, check the human's game after
+  publish (`live_status(game = :live)["plugins"]`) and look for the error in ../.jail/logs/game.log.

@@ -1,0 +1,23 @@
+{"goals": [
+  {"title": "Wind a motor from the wire you bent",
+   "clear": 7,
+   "memorable": 7,
+   "shareable": 7,
+   "play": 6,
+   "fit": 10,
+   "critique": "This is new. It is the human's own named test, a motor that runs because the simulation makes it run, built from parts the player made. The failures you can read (a sloppy coil wobbles, no split ring and it rocks and stops dead, a stall at the dead spot that needs a flick) make tinkering with it real tinkering, and the road starts with the smallest honest motor before the coil, which is the right order. The weak side is that it is the most predictable answer to the human's brief, and the pitch quietly stacks a whole supply chain on it (lodestone mining, a seawater battery, the wire bench, wound coils) before the first whir can be played. Once one motor whirs, the hook-ups (fan, paddle, carousel, dynamo) are a list of outputs rather than a reason to wind a second, different coil."},
+  {"title": "Shave a bell until it sings a friend's note",
+   "clear": 7,
+   "memorable": 6,
+   "shareable": 6,
+   "play": 6,
+   "fit": 7,
+   "critique": "This is new, and it is the one candidate where a material's shape is heard and not seen. The step that already exists (modes from a mesh) sits right under it, and because metal only comes off, every shave is a real bet with a permanent cost. But tuning partials by ear is a skill most players do not have and cannot see, so it risks turning into nudging a slider until a meter goes green. Sound clips also travel less well than visual ones. It works one material with one tool and builds nothing the island uses beyond a chime at dusk, so it touches the human's world of devices and building only at its edge."},
+  {"title": "Carve a boat that carries every friend across",
+   "clear": 7,
+   "memorable": 5,
+   "shareable": 8,
+   "play": 7,
+   "fit": 8,
+   "critique": "This is the boat line for the fourth round. The rework stitches round 14's live-waterline carving back onto round 15's fidgeting passengers, so carving is the game again, and the filmed first step is real proof. The fish-jump capsize is still the best clip on the table. But nothing in it is new since last round: capsizing boats with unruly passengers are familiar from party and ship games, the friends' fidgets are still scripted moods, and whether an adze stroke by mouse feels like shaping and not like slow erasing is still untested after three rounds."}
+]}

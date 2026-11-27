@@ -6,44 +6,44 @@
       "p95_ms": 0.01
     },
     "frame": {
-      "median_ms": 2.76,
-      "p95_ms": 7.19
+      "median_ms": 2.21,
+      "p95_ms": 6.15
     },
     "live:eval": {
       "median_ms": 149.53,
       "p95_ms": 341.51
     },
     "live:publish": {
-      "median_ms": 70.49,
+      "median_ms": 67.98,
       "p95_ms": 2248.11
     },
     "live:save": {
       "median_ms": 2.05,
-      "p95_ms": 63.82
+      "p95_ms": 51.15
     },
     "live:screenshot": {
       "median_ms": 812.8,
       "p95_ms": 28850.08
     },
     "live:status": {
-      "median_ms": 1.85,
+      "median_ms": 1.86,
       "p95_ms": 2.81
     },
     "panels": {
-      "median_ms": 3.75,
-      "p95_ms": 5.33
+      "median_ms": 3.66,
+      "p95_ms": 4.87
     },
     "sim": {
-      "median_ms": 0.08,
-      "p95_ms": 0.17
+      "median_ms": 0.04,
+      "p95_ms": 0.08
     },
     "sync": {
-      "median_ms": 0.15,
-      "p95_ms": 0.48
+      "median_ms": 0.14,
+      "p95_ms": 0.36
     },
     "system:areas.Areas": {
       "median_ms": 0.02,
-      "p95_ms": 0.08
+      "p95_ms": 0.09
     },
     "system:autumn.Autumn": {
       "median_ms": 0.0,
@@ -71,7 +71,7 @@
     },
     "system:berry_race.WildRace": {
       "median_ms": 0.0,
-      "p95_ms": 0.02
+      "p95_ms": 0.01
     },
     "system:birdbody.BirdBody": {
       "median_ms": 0.0,
@@ -102,8 +102,8 @@
       "p95_ms": 0.02
     },
     "system:builder.Builder": {
-      "median_ms": 0.01,
-      "p95_ms": 0.03
+      "median_ms": 0.04,
+      "p95_ms": 0.19
     },
     "system:bumpcue.BumpCue": {
       "median_ms": 0.0,
@@ -111,15 +111,15 @@
     },
     "system:butterflies.Butterflies": {
       "median_ms": 0.04,
-      "p95_ms": 0.1
+      "p95_ms": 0.11
     },
     "system:cairns.Cairns": {
       "median_ms": 0.0,
       "p95_ms": 0.01
     },
     "system:camcut.CamCut": {
-      "median_ms": 0.42,
-      "p95_ms": 2.13
+      "median_ms": 0.14,
+      "p95_ms": 0.43
     },
     "system:chipstone.ChipStone": {
       "median_ms": 0.0,
@@ -130,7 +130,7 @@
       "p95_ms": 0.0
     },
     "system:clouds.Clouds": {
-      "median_ms": 0.03,
+      "median_ms": 0.04,
       "p95_ms": 0.07
     },
     "system:cloudshapes.CloudShapes": {
@@ -142,8 +142,8 @@
       "p95_ms": 0.01
     },
     "system:dancecircle.DanceCircle": {
-      "median_ms": 0.0,
-      "p95_ms": 0.0
+      "median_ms": 0.01,
+      "p95_ms": 0.03
     },
     "system:dandelion.Dandelion": {
       "median_ms": 0.0,
@@ -162,12 +162,12 @@
       "p95_ms": 0.04
     },
     "system:egg.Egg": {
-      "median_ms": 0.09,
-      "p95_ms": 0.26
+      "median_ms": 0.06,
+      "p95_ms": 0.19
     },
     "system:emotes.Emotes": {
-      "median_ms": 0.03,
-      "p95_ms": 0.38
+      "median_ms": 0.02,
+      "p95_ms": 0.22
     },
     "system:facehill.FaceHill": {
       "median_ms": 0.0,
@@ -190,23 +190,23 @@
       "p95_ms": 0.02
     },
     "system:fireflysync.FireflySync": {
-      "median_ms": 0.14,
-      "p95_ms": 0.22
+      "median_ms": 0.0,
+      "p95_ms": 0.01
     },
     "system:flight.Flight": {
       "median_ms": 0.0,
       "p95_ms": 0.01
     },
     "system:flora.Flora": {
-      "median_ms": 0.08,
-      "p95_ms": 0.16
+      "median_ms": 0.1,
+      "p95_ms": 0.17
     },
     "system:flowerfield.FlowerField": {
       "median_ms": 0.0,
       "p95_ms": 0.0
     },
     "system:flowergift.FlowerGift": {
-      "median_ms": 0.0,
+      "median_ms": 0.01,
       "p95_ms": 0.01
     },
     "system:flylesson.FlyLesson": {
@@ -227,15 +227,15 @@
     },
     "system:frost.Frost": {
       "median_ms": 0.0,
-      "p95_ms": 0.0
+      "p95_ms": 0.01
     },
     "system:gait.Gait": {
       "median_ms": 0.0,
       "p95_ms": 0.0
     },
     "system:gallery.Gallery": {
-      "median_ms": 0.01,
-      "p95_ms": 0.02
+      "median_ms": 0.0,
+      "p95_ms": 0.01
     },
     "system:garden.Garden": {
       "median_ms": 0.0,
@@ -246,8 +246,8 @@
       "p95_ms": 0.01
     },
     "system:giant.Giant": {
-      "median_ms": 0.0,
-      "p95_ms": 0.0
+      "median_ms": 0.03,
+      "p95_ms": 0.08
     },
     "system:glassrain.GlassRain": {
       "median_ms": 0.0,
@@ -255,7 +255,7 @@
     },
     "system:glasssea.GlassSea": {
       "median_ms": 0.0,
-      "p95_ms": 0.0
+      "p95_ms": 0.01
     },
     "system:greetings.Greetings": {
       "median_ms": 0.0,
@@ -275,7 +275,7 @@
     },
     "system:hiccups.Hiccups": {
       "median_ms": 0.0,
-      "p95_ms": 0.01
+      "p95_ms": 0.0
     },
     "system:jelly.Jelly": {
       "median_ms": 0.0,
@@ -322,16 +322,16 @@
       "p95_ms": 0.01
     },
     "system:meadow.Meadow": {
-      "median_ms": 0.0,
+      "median_ms": 0.01,
       "p95_ms": 0.01
     },
     "system:meadowlife.MeadowLife": {
-      "median_ms": 0.0,
+      "median_ms": 0.01,
       "p95_ms": 0.01
     },
     "system:meteors.Meteors": {
       "median_ms": 0.0,
-      "p95_ms": 0.02
+      "p95_ms": 0.0
     },
     "system:missme.MissMe": {
       "median_ms": 0.0,
@@ -362,24 +362,24 @@
       "p95_ms": 0.01
     },
     "system:nightglow.NightGlow": {
-      "median_ms": 0.02,
-      "p95_ms": 0.05
+      "median_ms": 0.01,
+      "p95_ms": 0.03
     },
     "system:nightshots.NightShots": {
       "median_ms": 0.0,
       "p95_ms": 0.0
     },
     "system:nursery.Nursery": {
-      "median_ms": 0.04,
-      "p95_ms": 0.43
+      "median_ms": 0.05,
+      "p95_ms": 0.42
     },
     "system:obscura.Obscura": {
       "median_ms": 0.0,
       "p95_ms": 0.01
     },
     "system:outfits.Outfits": {
-      "median_ms": 0.17,
-      "p95_ms": 0.44
+      "median_ms": 0.15,
+      "p95_ms": 0.36
     },
     "system:owlears.OwlEars": {
       "median_ms": 0.0,
@@ -390,12 +390,12 @@
       "p95_ms": 0.01
     },
     "system:paperme.PaperMe": {
-      "median_ms": 0.01,
+      "median_ms": 0.02,
       "p95_ms": 0.05
     },
     "system:paperpage.PaperPage": {
       "median_ms": 0.0,
-      "p95_ms": 0.01
+      "p95_ms": 0.02
     },
     "system:pebblewords.PebbleWords": {
       "median_ms": 0.0,
@@ -403,7 +403,7 @@
     },
     "system:presents.Presents": {
       "median_ms": 0.01,
-      "p95_ms": 0.03
+      "p95_ms": 0.04
     },
     "system:pumpkins.Pumpkins": {
       "median_ms": 0.0,
@@ -414,15 +414,15 @@
       "p95_ms": 0.01
     },
     "system:ring.Ring": {
-      "median_ms": 0.28,
-      "p95_ms": 0.56
+      "median_ms": 0.29,
+      "p95_ms": 0.45
     },
     "system:rollcall.RollCall": {
       "median_ms": 0.0,
-      "p95_ms": 0.01
+      "p95_ms": 0.0
     },
     "system:separation.Separation": {
-      "median_ms": 0.03,
+      "median_ms": 0.04,
       "p95_ms": 0.07
     },
     "system:shadow.Shadow": {
@@ -431,23 +431,23 @@
     },
     "system:shallows.Shallows": {
       "median_ms": 0.01,
-      "p95_ms": 0.03
+      "p95_ms": 0.04
     },
     "system:shovel.Shovel": {
       "median_ms": 0.0,
       "p95_ms": 0.0
     },
     "system:showers.Shower": {
-      "median_ms": 0.01,
-      "p95_ms": 0.28
+      "median_ms": 0.0,
+      "p95_ms": 0.02
     },
     "system:sleepers.Sleepers": {
-      "median_ms": 0.01,
-      "p95_ms": 0.04
+      "median_ms": 0.0,
+      "p95_ms": 0.01
     },
     "system:sneeze.Sneeze": {
-      "median_ms": 0.0,
-      "p95_ms": 0.0
+      "median_ms": 0.06,
+      "p95_ms": 0.14
     },
     "system:snowday.SnowDay": {
       "median_ms": 0.0,
@@ -458,7 +458,7 @@
       "p95_ms": 0.01
     },
     "system:splash.Splash": {
-      "median_ms": 0.0,
+      "median_ms": 0.01,
       "p95_ms": 0.02
     },
     "system:stars.Stars": {
@@ -466,7 +466,7 @@
       "p95_ms": 0.01
     },
     "system:stoneskip.StoneSkip": {
-      "median_ms": 0.01,
+      "median_ms": 0.0,
       "p95_ms": 0.02
     },
     "system:storm.Storm": {
@@ -474,7 +474,7 @@
       "p95_ms": 0.01
     },
     "system:stranger.Stranger": {
-      "median_ms": 0.03,
+      "median_ms": 0.04,
       "p95_ms": 0.1
     },
     "system:strays.Strays": {
@@ -499,11 +499,11 @@
     },
     "system:tied.Tied": {
       "median_ms": 0.0,
-      "p95_ms": 0.0
+      "p95_ms": 0.01
     },
     "system:timeweather.TimeWeather": {
       "median_ms": 0.1,
-      "p95_ms": 0.22
+      "p95_ms": 0.26
     },
     "system:toadstool.Toadstool": {
       "median_ms": 0.01,
@@ -543,15 +543,15 @@
     },
     "system:wind.Wind": {
       "median_ms": 0.0,
-      "p95_ms": 0.1
+      "p95_ms": 0.09
     },
     "system:wirebench.WireBench": {
-      "median_ms": 0.1,
-      "p95_ms": 0.77
+      "median_ms": 0.07,
+      "p95_ms": 0.52
     },
     "system:wordround.WordRound": {
       "median_ms": 0.0,
-      "p95_ms": 0.0
+      "p95_ms": 0.01
     },
     "system:workshop.Workshop": {
       "median_ms": 0.0,
@@ -566,5 +566,5 @@
       "p95_ms": 0.01
     }
   },
-  "time": "2026-11-27T13:49:06.275"
+  "time": "2026-11-27T14:41:07.324"
 }

@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-27T14:06:25.718",
+  "finished": "2026-11-27T14:16:36.271",
+  "id": "20261127-140625-652-clip",
+  "kind": "clip",
+  "params": {
+    "call": "hulls_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/site/films/three-logs-float.mp4",
+    "script": "movies/hulls.jl"
+  },
+  "result": {
+    "final_deg": [
+      0.0,
+      45.3,
+      90.5
+    ],
+    "frames": 192,
+    "hour": 11.00527157018338,
+    "path": "/sim/Programmieren/SimGame/world/site/films/three-logs-float.mp4",
+    "seconds_per_frame": 2.865027337024609
+  },
+  "seconds": 609.4,
+  "started": "2026-11-27T14:06:26.829",
+  "status": "done"
+}

@@ -1,91 +1,239 @@
 {
- "verdict": "needs_work",
- "summary": "For an island hour and a half around noon the island looks broken. sunball.jl (s122) dims the sky to 0.1 and aims a low sun from a ball on the meadow, but the ball shows in none of my views. A player sees murky dusk at midday, and every progress shot is taken in that hour. After 13:30 the island is at its best: bright, colourful, a rainbow, friends dancing with music notes. The four mini games still work and give clear feedback, but none changed. This session's new things (a 14 cm jar, a snowball film shot from behind a slab, a glass film that does not play) are original ideas that do not reach a player yet.",
- "scores": {
-  "lighting": {"score": 4, "why": "Outside the sun-ball hour the raster is bright and warm (13:41: blue sky, saturated greens, a rainbow over the sea; p142/cam-free-4-h13.69.png). From 12:00 to 13:30 the sky sits at 0.1 and the island goes olive and black-green, with no visible cause. The traced still in that hour has a low golden key and long shadows, nicer than the raster, but grainy with firefly speckle."},
-  "materials": {"score": 4, "why": "The jar's glaze comes from a real thickness simulation, a strong idea, but on film it reads as matte olive plastic with raised-looking lines. The coat shows in one glint, with no depth and no pale rim. The glass film, which could show transmission and glowing glass, is unreadable. The sea is still the only convincing material."},
-  "world": {"score": 4, "why": "Same island: cottage, pond, easels, floating palm islands, pier. It reads well at 13:40 but is unreadable during the noon dusk. A black untextured box stands on the shore near the hut (p142/play/jumpin-4.png)."},
-  "props": {"score": 6, "why": "Generated trees, mushrooms, easels, swing and lantern hold up. The new jar is invisible at 14 cm on the meadow, and I did not find it from any camera."},
-  "creatures": {"score": 5, "why": "Faces read well up close, and the 13:33 dance crowd (sheep, crab with party hat, pigs) is charming. A second, smaller yellow bird follows Lumi in every mini game and in the follow and traced views."},
-  "animation": {"score": 5, "why": "live_motion: 6 of 10 move well. Lumi's beak, body and face turn back 9 times a second, and its crest swings at 6.2 m/s. Pinchy vibrates at 9 Hz, Truffle judders (44%), and Sir Sniffsalot's tail jumps 0.17 m in one frame. The jug film is clean. The snowball film has 50 jumps (fade-in and camera drift)."},
-  "fun": {"score": 6, "why": "I played all four games for about a minute each through interact!. Firefly catch has a clear card, 'Time's up 1/8', a tip and a lantern reward. Hide and seek gives 'a giggle 22 m to your left'. Berry race gives 'The critters win 2 to 0' with a tip. Jump in has 25+ keys of toys. All work and invite a replay, but none changed, and nothing this session is playable: the jar does nothing and the snowball is not in the game."},
-  "wow": {"score": 4, "why": "The last posts: a still jar, a snowball miss, a chip-stone take 2, an ant miss, a lantern knock. Four of the last ten are misses. The glass bubble, the one with spectacle, has an unreadable mp4. The sun football hour could be the island's biggest wow and is invisible."},
-  "camera": {"score": 4, "why": "At 13:17 the follow camera shows only empty sea and one tree top (p142/cam-follow-1-h13.29.png). In Jump in the follow camera sits behind a bush filling half the frame (p142/play/jumpin-2.png). The creatures sheet has a creature lost in a crown and Pinchy behind a slab. The snowball film is shot from behind a slab. At 13:33 follow and 13:42 orbit the composition is good."},
-  "ui": {"score": 4, "why": "Mini game cards and HUDs are readable and helpful. Jump in's key card covers the bottom third of the view and its lines run off the left edge ('splashes)' is cut). 'Things to try' never mentions the jar, the chip stone or the sun football."},
-  "style": {"score": 5, "why": "The cozy toy style holds up and is cohesive in good light. The noon dusk turns it into muddy olive and brown, and the yellow double makes Lumi's silhouette ambiguous."},
-  "performance": {"score": 9, "why": "30 fps, frame median 2.9 ms, p95 6.4 ms, also through four mini games. Path tracing toggles on and off without crashing (the 0139 crash is fixed)."}
- },
- "findings": [
-  {"severity": "high", "category": "lighting", "title": "Sun football at noon reads as broken dusk: the fallen sun is nowhere to see", "todo": 659,
-   "what": "From 12:00 to 13:30 sunball.jl dims the sky to SUN_DIM 0.1 and aims the sun from a ball on the meadow, 8 degrees up (scene light z = 0.14, while the clock's sun is at z = 0.91). In none of my 15 screenshots from 12:50 to 13:30 (free, follow, orbit, four mini games) is the ball visible: the island is murky olive with a sunset band. The only trace is a pale disc on the land at the edge of two frames. A player at lunchtime thinks the lighting is broken, and every progress shot (taken around 12:50) shows this.",
-   "where": "plugins/sunball.jl, showers.jl (SUN_DIM), the progress cameras",
-   "evidence": "media/progress/session-0142/overview.png and eye-level.png (12:50), reviews/perfectionist-shots/p142-cam-follow.png (disc on the land), reviews/p142/cam-orbit-1-h13.3.png (13:17 dusk) next to reviews/p142/cam-orbit-4-h13.7.png (13:42 bright); live_eval: SUNBALL[:dim] = 0.1, scene sun z = 0.14",
-   "suggestion": "Make the event read in one glance. Show the fall itself (a streak from the sky and a thump on the grass). Give the ball a big bloom halo and a warm pool of light on the grass, and let the friends' long shadows wheel round it as it rolls. Have the follow camera cut to the ball at the drop, and put a line in 'Things to try' ('the sun fell! jump in and kick it'). Keep the sky dusky but not black-green, about 0.3 instead of 0.1, and keep it to 30 minutes so noon is mostly noon. Take the progress shots outside the window.",
-   "done_when": "With SUNBALL[:force] = true, the follow and orbit screenshots show the glowing ball at least 40 px across with a visible warm light pool and shadows pointing away from it. A 12:50 overview has mean ground luminance at least half of the 13:42 one."},
-  {"severity": "high", "category": "wow", "title": "Blowing glass: finish the film (the mp4 has no moov atom) and show real glass", "todo": 681,
-   "what": "site/films/first-glass-bubble.mp4 (524 KB, 11:08) cannot be read by ffmpeg ('moov atom not found'). One clip job already failed (pending/failed/first-glass-bubble.json) and a second is pending. A half-written file sits in the public films folder, and it is the session's only spectacle.",
-   "where": "site/films/first-glass-bubble.mp4, pending/",
-   "evidence": "ffprobe: moov atom not found. pending/failed/first-glass-bubble.json",
-   "suggestion": "Write to a temp name and move it into place when finished. For the film: a close dusk frame of the bubble on the pipe, the gather glowing orange-white (emissive by temperature) and lighting the pipe, cooling into clear transmissive glass with thin-film colour where the wall is thinnest, then a pop. That is the path-tracer showcase goal 7 asks for.",
-   "done_when": "ffprobe reads the film, the motion sheet shows the bubble at least 150 px tall growing over the film, and a frame shows both a glowing and a clear transmissive part."},
-  {"severity": "high", "category": "creatures", "title": "A yellow chick double follows Lumi in every game and view", "todo": 614,
-   "what": "A second, smaller yellow bird stands or flies right beside Lumi in all four mini games (it says 'peep!'), in the follow view, and in the traced still. A player cannot tell which one they are steering.",
-   "where": "ghosts.jl / paperme.jl / nursery or egg (whatever spawns the chick)",
-   "evidence": "reviews/p142/play/jumpin-2.png, fireflycatch-4.png, hideandseek-2.png, berryrace-4.png, reviews/perfectionist-shots/p142-traced.png",
-   "suggestion": "If it is Lumi's chick, make it unmistakably a chick: a third of Lumi's size, round, fluffy pale yellow, waddling, and absent while the player is Lumi in a mini game. If it is a ghost or copy, remove it from the default game.",
-   "done_when": "Screenshots from all four mini games show exactly one bird of Lumi's shape and colour."},
-  {"severity": "high", "category": "animation", "title": "Lumi vibrates: beak, body and face flip 9 times a second, crest at 6.2 m/s", "todo": 553,
-   "what": "Lumi stands by its workbench and its head and body flick back and forth constantly. The strip shows the beak pointing a different way in nearly every frame. Pinchy vibrates the same way (9 Hz on body and both claws).",
-   "where": "Lumi idle and talk pose (makeover, birdbody, gait)",
-   "evidence": "reviews/motion/motion-strip.png, live_motion (Vibrating: Lumi beak/body/face 9/s, Pinchy body/claws 9/s, crest 6.2 m/s)",
-   "suggestion": "Filter look-at and turn targets with a critically damped spring (around 0.3 s), keep idle head moves to slow glances with holds, and drive the crest from damped secondary motion instead of the raw head angular velocity.",
-   "done_when": "live_motion lists no Vibrating or Too-fast entries for Lumi or Pinchy over two runs."},
-  {"severity": "medium", "category": "camera", "title": "Snowball take 2: a checked camera, a ball you can see, and push it in the game", "todo": 680,
-   "what": "In the snowball film a brown slab fills the lower half for all 9 s, and the ball is a tiny white dot rolling far away. The film opens with a 0.5 s fade from black (the largest jumps). The snow field and the ball do not exist in the game yet.",
-   "where": "site/films/snowball-grows.mp4, physics/snowball.jl",
-   "evidence": "reviews/motion/perfectionist-0142/snowball-grows-overview.jpg and -steps.jpg",
-   "suggestion": "Use a low camera following the ball at 2 to 3 m, so you see it grow from fist to barrel and the green trail open behind it, and end on the splash into the sea. Render a raster test from the exact final camera before tracing. Then add it to Jump in so the player pushes it.",
-   "done_when": "The film's overview shows the ball at least 80 px tall in every frame with no occluder over 10% of the frame, and in Jump in a key push grows a ball (screenshot)."},
-  {"severity": "medium", "category": "materials", "title": "The glazed jar reads as matte plastic, and players can't find or use it", "todo": 678,
-   "what": "On film the jar is uniform dark olive with raised-looking lines and only a small sun glint. There is no depth in the glaze, no pale rim, no handle. In the game it is a 14 cm thing on a big meadow: a few pixels in a close free-camera shot, absent from the default cameras. 'Things to try' does not mention it, and there is nothing to do with it.",
-   "where": "plugins/kiln.jl (KilnJug at 4, -16.5), site/films/first-jug.mp4",
-   "evidence": "reviews/motion/perfectionist-0142/first-jug-overview.jpg, reviews/perfectionist-shots/p142-now.png",
-   "suggestion": "Use a coated or dielectric glaze over the clay with absorption by simulated thickness, so the cuts go deeper green and the rims thin to pale. Put the wheel and kiln where a player walks past, with a shelf of fired pots at readable scale, and let the player throw and fire one (#678), each pot keeping the player's marks.",
-   "done_when": "A traced close-up shows the glaze visibly lighter at the rim and deeper in the cuts, and a follow-camera screenshot from the kiln area shows the pots at least 40 px tall."},
-  {"severity": "medium", "category": "camera", "title": "The follow camera loses Lumi: empty sea, a bush filling half the frame", "todo": 615,
-   "what": "Right after a Jump in ended, the follow camera at 13:17 showed only sea and the top of one tree, with no creature in frame. In Jump in it sat behind a bush that filled the right half while Lumi walked the shore. In the creatures sheet a creature is only leaves, Pinchy is half behind a tan slab, and the sheep is behind an easel frame.",
-   "where": "camera rig (follow mode, occlusion)",
-   "evidence": "reviews/p142/cam-follow-1-h13.29.png, reviews/p142/play/jumpin-2.png, reviews/motion/creatures.png",
-   "suggestion": "Re-target the follow camera when a game ends. Ray-test from the camera to the target every frame and swing round or pull in when something covers more than a fifth of it.",
-   "done_when": "Six follow screenshots taken right after stopping each mini game show Lumi in frame, and the creatures sheet shows every face unobstructed in all 3 moments."},
-  {"severity": "low", "category": "ui", "title": "Jump in's key card covers a third of the view and runs off the edge", "todo": 660,
-   "what": "When you jump in, a seven-line key card covers the bottom third of the view for the whole game. Its night line runs off the left edge ('splashes)' starts mid-word) and hides Lumi's feet and the ground you walk on.",
-   "where": "greetings.jl HINT / Jump in overlay",
-   "evidence": "reviews/p142/play/jumpin-0-start.png, jar-knock.png",
-   "suggestion": "Show the six basic keys in one short line for 5 s, and show each special key only next to the thing it works on ('R chip' over the stone, 'L knock' over the jar).",
-   "done_when": "A Jump in screenshot 10 s after start has no overlay over 10% of the view, and standing by the chip stone shows its keys above it."}
- ],
- "todos": [
-  {"id": 664, "action": "done", "why": "L in Jump in knocks placed assets (published s138); the chip stone answers since s141"},
-  {"id": 638, "action": "done", "why": "s132 moved every plugin to anim_time; the remaining snaps are tracked in #637"},
-  {"id": 674, "action": "done", "why": "'Chipping a stone to change its note' take 2 passed and is posted with the pebble hits visible"},
-  {"id": 661, "action": "drop", "why": "duplicate of #663 (ants in Jump in), which is the clearer goal"},
-  {"id": 675, "action": "drop", "why": "duplicate of #680 (snowball take 2 and in the game)"},
-  {"id": 618, "action": "drop", "why": "duplicate of #610 (paper flutter pitching moment)"},
-  {"id": 647, "action": "drop", "why": "no snow discs in the 0142 progress shots or my 30 live shots; refile if snow returns"},
-  {"id": 637, "action": "keep", "why": "live_motion still: Sniffsalot tail 0.17 m one-frame jump, Truffle judder 44%"},
-  {"id": 545, "action": "keep", "why": "the TV still lacks the generated set with glass"},
-  {"id": 577, "action": "keep", "why": "jelly glow and caustics not done"},
-  {"id": 603, "action": "keep", "why": "glass rain caustics not done"},
-  {"id": 636, "action": "keep", "why": "dawn is a separate problem from the noon sun-ball hour (#659)"},
-  {"id": 643, "action": "keep", "why": "fireflies still read as sparkle noise in the traced still"},
-  {"id": 646, "action": "keep", "why": "no skipping take 2 yet"},
-  {"id": 648, "action": "keep", "why": "clap visuals unchanged"},
-  {"id": 654, "action": "keep", "why": "releases/ still has no boomerang release"}
- ],
- "engine": [
-  {"what": "The host publishes a film path into site/films before the clip job finishes, so a half-written mp4 (no moov atom) is public while the job is pending or after it fails", "evidence": "site/films/first-glass-bubble.mp4 unreadable, pending/failed/first-glass-bubble.json"},
-  {"what": "NeverendingGame.sun(w) and the stage's light disagree during sunball (z 0.91 vs 0.14): a plugin aims light 1 directly, so sync_sun! and anything reading sun(w) (films, progress shots) do not know where the light is", "evidence": "live_eval at 13:03: sun(w) dir z 0.91 intensity 0.12, scene SunSkyLight z 0.14 intensity 0.65"}
- ],
- "process": "The author is inventing real physics: a thin-film glaze solver whose result matched a museum pot without being told to, and a viscous glass sheet that matches the textbook growth rate to 0.5%. That is the radical, own-idea work goal 8 asks for, and it moves goals 3 and 7 on paper. But the player's island did not get better this session. The noon sun football (an old, excellent idea) is invisible and makes every lunchtime look broken. The chick double and Lumi's 9 Hz vibration from earlier reviews are untouched. This session's outputs are an invisible jar, a snowball film behind a slab (the same untested-camera mistake as s129, which the journal admits) and an unreadable glass film. Goals: 1 (interactions) is stalled, with the mini games unchanged and the new toys unplayable. 2 has no release candidate. 3 and 8 moved in simulation, not in the game. 4 and 6 are flat: good light after 13:30, broken around noon, animation still vibrating. 5: Lumi stands at its workbench, but is bored every session. Before the potter's wheel and glass in Jump in, spend one session on what a visitor sees in the first minute: make the sun-ball hour read (or shorten it), one Lumi that stands still, and the glass film finished and framed close. My review covered all four mini games for about a minute each through interact! (reviews/p142/play), free, follow and orbit cameras four times from 13:17 to 13:42 (reviews/p142/cam-*), and progress shots 0020, 0139, 0141 and 0142 side by side. My attempt to put Lumi beside the jar in Jump in did not take: Lumi stayed by the swing, so I could not test the jar by hand."
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "site/films/first-glass-bubble.mp4 unreadable, pending/failed/first-glass-bubble.json",
+      "what": "The host publishes a film path into site/films before the clip job finishes, so a half-written mp4 (no moov atom) is public while the job is pending or after it fails"
+    },
+    {
+      "evidence": "live_eval at 13:03: sun(w) dir z 0.91 intensity 0.12, scene SunSkyLight z 0.14 intensity 0.65",
+      "what": "NeverendingGame.sun(w) and the stage's light disagree during sunball (z 0.91 vs 0.14): a plugin aims light 1 directly, so sync_sun! and anything reading sun(w) (films, progress shots) do not know where the light is"
+    }
+  ],
+  "findings": [
+    {
+      "category": "lighting",
+      "done_when": "With SUNBALL[:force] = true, the follow and orbit screenshots show the glowing ball at least 40 px across with a visible warm light pool and shadows pointing away from it. A 12:50 overview has mean ground luminance at least half of the 13:42 one.",
+      "evidence": "media/progress/session-0142/overview.png and eye-level.png (12:50), reviews/perfectionist-shots/p142-cam-follow.png (disc on the land), reviews/p142/cam-orbit-1-h13.3.png (13:17 dusk) next to reviews/p142/cam-orbit-4-h13.7.png (13:42 bright); live_eval: SUNBALL[:dim] = 0.1, scene sun z = 0.14",
+      "severity": "high",
+      "suggestion": "Make the event read in one glance. Show the fall itself (a streak from the sky and a thump on the grass). Give the ball a big bloom halo and a warm pool of light on the grass, and let the friends' long shadows wheel round it as it rolls. Have the follow camera cut to the ball at the drop, and put a line in 'Things to try' ('the sun fell! jump in and kick it'). Keep the sky dusky but not black-green, about 0.3 instead of 0.1, and keep it to 30 minutes so noon is mostly noon. Take the progress shots outside the window.",
+      "title": "Sun football at noon reads as broken dusk: the fallen sun is nowhere to see",
+      "todo": 659,
+      "what": "From 12:00 to 13:30 sunball.jl dims the sky to SUN_DIM 0.1 and aims the sun from a ball on the meadow, 8 degrees up (scene light z = 0.14, while the clock's sun is at z = 0.91). In none of my 15 screenshots from 12:50 to 13:30 (free, follow, orbit, four mini games) is the ball visible: the island is murky olive with a sunset band. The only trace is a pale disc on the land at the edge of two frames. A player at lunchtime thinks the lighting is broken, and every progress shot (taken around 12:50) shows this.",
+      "where": "plugins/sunball.jl, showers.jl (SUN_DIM), the progress cameras"
+    },
+    {
+      "category": "wow",
+      "done_when": "ffprobe reads the film, the motion sheet shows the bubble at least 150 px tall growing over the film, and a frame shows both a glowing and a clear transmissive part.",
+      "evidence": "ffprobe: moov atom not found. pending/failed/first-glass-bubble.json",
+      "severity": "high",
+      "suggestion": "Write to a temp name and move it into place when finished. For the film: a close dusk frame of the bubble on the pipe, the gather glowing orange-white (emissive by temperature) and lighting the pipe, cooling into clear transmissive glass with thin-film colour where the wall is thinnest, then a pop. That is the path-tracer showcase goal 7 asks for.",
+      "title": "Blowing glass: finish the film (the mp4 has no moov atom) and show real glass",
+      "todo": 681,
+      "what": "site/films/first-glass-bubble.mp4 (524 KB, 11:08) cannot be read by ffmpeg ('moov atom not found'). One clip job already failed (pending/failed/first-glass-bubble.json) and a second is pending. A half-written file sits in the public films folder, and it is the session's only spectacle.",
+      "where": "site/films/first-glass-bubble.mp4, pending/"
+    },
+    {
+      "category": "creatures",
+      "done_when": "Screenshots from all four mini games show exactly one bird of Lumi's shape and colour.",
+      "evidence": "reviews/p142/play/jumpin-2.png, fireflycatch-4.png, hideandseek-2.png, berryrace-4.png, reviews/perfectionist-shots/p142-traced.png",
+      "severity": "high",
+      "suggestion": "If it is Lumi's chick, make it unmistakably a chick: a third of Lumi's size, round, fluffy pale yellow, waddling, and absent while the player is Lumi in a mini game. If it is a ghost or copy, remove it from the default game.",
+      "title": "A yellow chick double follows Lumi in every game and view",
+      "todo": 614,
+      "what": "A second, smaller yellow bird stands or flies right beside Lumi in all four mini games (it says 'peep!'), in the follow view, and in the traced still. A player cannot tell which one they are steering.",
+      "where": "ghosts.jl / paperme.jl / nursery or egg (whatever spawns the chick)"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion lists no Vibrating or Too-fast entries for Lumi or Pinchy over two runs.",
+      "evidence": "reviews/motion/motion-strip.png, live_motion (Vibrating: Lumi beak/body/face 9/s, Pinchy body/claws 9/s, crest 6.2 m/s)",
+      "severity": "high",
+      "suggestion": "Filter look-at and turn targets with a critically damped spring (around 0.3 s), keep idle head moves to slow glances with holds, and drive the crest from damped secondary motion instead of the raw head angular velocity.",
+      "title": "Lumi vibrates: beak, body and face flip 9 times a second, crest at 6.2 m/s",
+      "todo": 553,
+      "what": "Lumi stands by its workbench and its head and body flick back and forth constantly. The strip shows the beak pointing a different way in nearly every frame. Pinchy vibrates the same way (9 Hz on body and both claws).",
+      "where": "Lumi idle and talk pose (makeover, birdbody, gait)"
+    },
+    {
+      "category": "camera",
+      "done_when": "The film's overview shows the ball at least 80 px tall in every frame with no occluder over 10% of the frame, and in Jump in a key push grows a ball (screenshot).",
+      "evidence": "reviews/motion/perfectionist-0142/snowball-grows-overview.jpg and -steps.jpg",
+      "severity": "medium",
+      "suggestion": "Use a low camera following the ball at 2 to 3 m, so you see it grow from fist to barrel and the green trail open behind it, and end on the splash into the sea. Render a raster test from the exact final camera before tracing. Then add it to Jump in so the player pushes it.",
+      "title": "Snowball take 2: a checked camera, a ball you can see, and push it in the game",
+      "todo": 680,
+      "what": "In the snowball film a brown slab fills the lower half for all 9 s, and the ball is a tiny white dot rolling far away. The film opens with a 0.5 s fade from black (the largest jumps). The snow field and the ball do not exist in the game yet.",
+      "where": "site/films/snowball-grows.mp4, physics/snowball.jl"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced close-up shows the glaze visibly lighter at the rim and deeper in the cuts, and a follow-camera screenshot from the kiln area shows the pots at least 40 px tall.",
+      "evidence": "reviews/motion/perfectionist-0142/first-jug-overview.jpg, reviews/perfectionist-shots/p142-now.png",
+      "severity": "medium",
+      "suggestion": "Use a coated or dielectric glaze over the clay with absorption by simulated thickness, so the cuts go deeper green and the rims thin to pale. Put the wheel and kiln where a player walks past, with a shelf of fired pots at readable scale, and let the player throw and fire one (#678), each pot keeping the player's marks.",
+      "title": "The glazed jar reads as matte plastic, and players can't find or use it",
+      "todo": 678,
+      "what": "On film the jar is uniform dark olive with raised-looking lines and only a small sun glint. There is no depth in the glaze, no pale rim, no handle. In the game it is a 14 cm thing on a big meadow: a few pixels in a close free-camera shot, absent from the default cameras. 'Things to try' does not mention it, and there is nothing to do with it.",
+      "where": "plugins/kiln.jl (KilnJug at 4, -16.5), site/films/first-jug.mp4"
+    },
+    {
+      "category": "camera",
+      "done_when": "Six follow screenshots taken right after stopping each mini game show Lumi in frame, and the creatures sheet shows every face unobstructed in all 3 moments.",
+      "evidence": "reviews/p142/cam-follow-1-h13.29.png, reviews/p142/play/jumpin-2.png, reviews/motion/creatures.png",
+      "severity": "medium",
+      "suggestion": "Re-target the follow camera when a game ends. Ray-test from the camera to the target every frame and swing round or pull in when something covers more than a fifth of it.",
+      "title": "The follow camera loses Lumi: empty sea, a bush filling half the frame",
+      "todo": 615,
+      "what": "Right after a Jump in ended, the follow camera at 13:17 showed only sea and the top of one tree, with no creature in frame. In Jump in it sat behind a bush that filled the right half while Lumi walked the shore. In the creatures sheet a creature is only leaves, Pinchy is half behind a tan slab, and the sheep is behind an easel frame.",
+      "where": "camera rig (follow mode, occlusion)"
+    },
+    {
+      "category": "ui",
+      "done_when": "A Jump in screenshot 10 s after start has no overlay over 10% of the view, and standing by the chip stone shows its keys above it.",
+      "evidence": "reviews/p142/play/jumpin-0-start.png, jar-knock.png",
+      "severity": "low",
+      "suggestion": "Show the six basic keys in one short line for 5 s, and show each special key only next to the thing it works on ('R chip' over the stone, 'L knock' over the jar).",
+      "title": "Jump in's key card covers a third of the view and runs off the edge",
+      "todo": 660,
+      "what": "When you jump in, a seven-line key card covers the bottom third of the view for the whole game. Its night line runs off the left edge ('splashes)' starts mid-word) and hides Lumi's feet and the ground you walk on.",
+      "where": "greetings.jl HINT / Jump in overlay"
+    }
+  ],
+  "process": "The author is inventing real physics: a thin-film glaze solver whose result matched a museum pot without being told to, and a viscous glass sheet that matches the textbook growth rate to 0.5%. That is the radical, own-idea work goal 8 asks for, and it moves goals 3 and 7 on paper. But the player's island did not get better this session. The noon sun football (an old, excellent idea) is invisible and makes every lunchtime look broken. The chick double and Lumi's 9 Hz vibration from earlier reviews are untouched. This session's outputs are an invisible jar, a snowball film behind a slab (the same untested-camera mistake as s129, which the journal admits) and an unreadable glass film. Goals: 1 (interactions) is stalled, with the mini games unchanged and the new toys unplayable. 2 has no release candidate. 3 and 8 moved in simulation, not in the game. 4 and 6 are flat: good light after 13:30, broken around noon, animation still vibrating. 5: Lumi stands at its workbench, but is bored every session. Before the potter's wheel and glass in Jump in, spend one session on what a visitor sees in the first minute: make the sun-ball hour read (or shorten it), one Lumi that stands still, and the glass film finished and framed close. My review covered all four mini games for about a minute each through interact! (reviews/p142/play), free, follow and orbit cameras four times from 13:17 to 13:42 (reviews/p142/cam-*), and progress shots 0020, 0139, 0141 and 0142 side by side. My attempt to put Lumi beside the jar in Jump in did not take: Lumi stayed by the swing, so I could not test the jar by hand.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "live_motion: 6 of 10 move well. Lumi's beak, body and face turn back 9 times a second, and its crest swings at 6.2 m/s. Pinchy vibrates at 9 Hz, Truffle judders (44%), and Sir Sniffsalot's tail jumps 0.17 m in one frame. The jug film is clean. The snowball film has 50 jumps (fade-in and camera drift)."
+    },
+    "camera": {
+      "score": 4,
+      "why": "At 13:17 the follow camera shows only empty sea and one tree top (p142/cam-follow-1-h13.29.png). In Jump in the follow camera sits behind a bush filling half the frame (p142/play/jumpin-2.png). The creatures sheet has a creature lost in a crown and Pinchy behind a slab. The snowball film is shot from behind a slab. At 13:33 follow and 13:42 orbit the composition is good."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "Faces read well up close, and the 13:33 dance crowd (sheep, crab with party hat, pigs) is charming. A second, smaller yellow bird follows Lumi in every mini game and in the follow and traced views."
+    },
+    "fun": {
+      "score": 6,
+      "why": "I played all four games for about a minute each through interact!. Firefly catch has a clear card, 'Time's up 1/8', a tip and a lantern reward. Hide and seek gives 'a giggle 22 m to your left'. Berry race gives 'The critters win 2 to 0' with a tip. Jump in has 25+ keys of toys. All work and invite a replay, but none changed, and nothing this session is playable: the jar does nothing and the snowball is not in the game."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "Outside the sun-ball hour the raster is bright and warm (13:41: blue sky, saturated greens, a rainbow over the sea; p142/cam-free-4-h13.69.png). From 12:00 to 13:30 the sky sits at 0.1 and the island goes olive and black-green, with no visible cause. The traced still in that hour has a low golden key and long shadows, nicer than the raster, but grainy with firefly speckle."
+    },
+    "materials": {
+      "score": 4,
+      "why": "The jar's glaze comes from a real thickness simulation, a strong idea, but on film it reads as matte olive plastic with raised-looking lines. The coat shows in one glint, with no depth and no pale rim. The glass film, which could show transmission and glowing glass, is unreadable. The sea is still the only convincing material."
+    },
+    "performance": {
+      "score": 9,
+      "why": "30 fps, frame median 2.9 ms, p95 6.4 ms, also through four mini games. Path tracing toggles on and off without crashing (the 0139 crash is fixed)."
+    },
+    "props": {
+      "score": 6,
+      "why": "Generated trees, mushrooms, easels, swing and lantern hold up. The new jar is invisible at 14 cm on the meadow, and I did not find it from any camera."
+    },
+    "style": {
+      "score": 5,
+      "why": "The cozy toy style holds up and is cohesive in good light. The noon dusk turns it into muddy olive and brown, and the yellow double makes Lumi's silhouette ambiguous."
+    },
+    "ui": {
+      "score": 4,
+      "why": "Mini game cards and HUDs are readable and helpful. Jump in's key card covers the bottom third of the view and its lines run off the left edge ('splashes)' is cut). 'Things to try' never mentions the jar, the chip stone or the sun football."
+    },
+    "world": {
+      "score": 4,
+      "why": "Same island: cottage, pond, easels, floating palm islands, pier. It reads well at 13:40 but is unreadable during the noon dusk. A black untextured box stands on the shore near the hut (p142/play/jumpin-4.png)."
+    },
+    "wow": {
+      "score": 4,
+      "why": "The last posts: a still jar, a snowball miss, a chip-stone take 2, an ant miss, a lantern knock. Four of the last ten are misses. The glass bubble, the one with spectacle, has an unreadable mp4. The sun football hour could be the island's biggest wow and is invisible."
+    }
+  },
+  "summary": "For an island hour and a half around noon the island looks broken. sunball.jl (s122) dims the sky to 0.1 and aims a low sun from a ball on the meadow, but the ball shows in none of my views. A player sees murky dusk at midday, and every progress shot is taken in that hour. After 13:30 the island is at its best: bright, colourful, a rainbow, friends dancing with music notes. The four mini games still work and give clear feedback, but none changed. This session's new things (a 14 cm jar, a snowball film shot from behind a slab, a glass film that does not play) are original ideas that do not reach a player yet.",
+  "superseded_by": "perfectionist-0145.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 664,
+      "why": "L in Jump in knocks placed assets (published s138); the chip stone answers since s141"
+    },
+    {
+      "action": "done",
+      "id": 638,
+      "why": "s132 moved every plugin to anim_time; the remaining snaps are tracked in #637"
+    },
+    {
+      "action": "done",
+      "id": 674,
+      "why": "'Chipping a stone to change its note' take 2 passed and is posted with the pebble hits visible"
+    },
+    {
+      "action": "drop",
+      "id": 661,
+      "why": "duplicate of #663 (ants in Jump in), which is the clearer goal"
+    },
+    {
+      "action": "drop",
+      "id": 675,
+      "why": "duplicate of #680 (snowball take 2 and in the game)"
+    },
+    {
+      "action": "drop",
+      "id": 618,
+      "why": "duplicate of #610 (paper flutter pitching moment)"
+    },
+    {
+      "action": "drop",
+      "id": 647,
+      "why": "no snow discs in the 0142 progress shots or my 30 live shots; refile if snow returns"
+    },
+    {
+      "action": "keep",
+      "id": 637,
+      "why": "live_motion still: Sniffsalot tail 0.17 m one-frame jump, Truffle judder 44%"
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "the TV still lacks the generated set with glass"
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "jelly glow and caustics not done"
+    },
+    {
+      "action": "keep",
+      "id": 603,
+      "why": "glass rain caustics not done"
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "dawn is a separate problem from the noon sun-ball hour (#659)"
+    },
+    {
+      "action": "keep",
+      "id": 643,
+      "why": "fireflies still read as sparkle noise in the traced still"
+    },
+    {
+      "action": "keep",
+      "id": 646,
+      "why": "no skipping take 2 yet"
+    },
+    {
+      "action": "keep",
+      "id": 648,
+      "why": "clap visuals unchanged"
+    },
+    {
+      "action": "keep",
+      "id": 654,
+      "why": "releases/ still has no boomerang release"
+    }
+  ],
+  "verdict": "needs_work"
 }

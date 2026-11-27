@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "bend!(w, i0, i1, phi/nb) runs from a fixed plan. The lever is placed with translate!/rotate! from Pw[lv+2] and the direction of Pw[lv+7]->Pw[lv+8]. The playable plugin plugins/wirebench.jl has no lever mesh at all: a key press bends the wire directly.",
+      "severity": "high",
+      "suggestion": "Make the lever the input: give it an angle around the pin, turn it (by Lumi's hand or a key in the bench), and get the wire's bend from the lever contact pushing on the free arm. Or reword the caption so it doesn't claim the lever does the work, and put the lever into the playable bench too.",
+      "what": "The caption says a wooden lever bends the wire. In the code the solver bends the wire by a scripted angle, and the lever is then placed along the bent arm. It is the result, not the cause, and no hand or body moves it.",
+      "where": "movies/wire.jl:17-21 and 73-75; the whole film"
+    },
+    {
+      "evidence": "Frame 7: pin at the first bend, lever along the right arm. Frame 8: pin at the top of the slanted leg, lever lying over the wire there. The pin position is recomputed from lv-6 each frame, so changing the plan's joint index moves it at once.",
+      "severity": "high",
+      "suggestion": "Animate the move between bends: lift the lever, slide the wire through or move the pin along it, or cut visibly to a second setup.",
+      "what": "Between the first and second bend the pin and lever teleport. The pin jumps from the first corner to the far end of the second leg, and the lever jumps from lower right to upper left in one step. Nothing carries them there.",
+      "where": "storyboard frames 7 -> 8 (about 2.8 s -> 3.2 s)"
+    },
+    {
+      "evidence": "The orange lever box overlaps the bottom wire near its left end, with a short wire stub running under its right side. The pin stands detached at the apex while the corner bends ~4 mm away (the 0.0035 offset in movies/wire.jl:72).",
+      "severity": "medium",
+      "suggestion": "Keep the lever on the outside of the arm it pushes and lift it off when it lets go. Put the bend radius on the pin so the wire visibly wraps it. A closer, lower camera would also show the copper's sheen and the springback, which are barely visible now.",
+      "what": "In the second half the lever lies through the wire. At the end it sits on the straight first leg, and the wire's free end pokes out from under its side. The bends also don't wrap 'around a pin': the pin stands beside the corners, and the shape ends as an open triangle, not a hook.",
+      "where": "copper-wire-hook-at-75.jpg; storyboard frames 11-16"
+    }
+  ],
+  "fun": 3,
+  "fun_why": "Watching a rod get bent into a triangle once is mildly satisfying. There's no hand, no sound, no snap and no use for the hook, so there's little reason to watch again.",
+  "real": 6,
+  "real_change": "Simulated (physics/wire.jl, used by plugins/wirebench.jl and movies/wire.jl): a planar chain of joints with an elastic-then-plastic moment-angle law, Hollomon work hardening, springback on release and low-cycle fatigue that can snap the wire. In game, HOLD 2/3 bends where the pin grips, TAP 4 jumps the pin 6 joints along, a friend sometimes fiddles with it until it snaps, and the pieces pile up beside the board. Only drawn: in the film the bend is a scripted angle plan (wire_plan: 100 deg at joints 40-46, then 150 deg at 88-96). The pin and lever are placed every frame from the wire's computed shape (movies/wire.jl:69-75), so the lever follows the wire and nothing pushes it. Neither the pin nor the lever collides with anything, and the lever does not exist in the playable wirebench at all. The film is also a separate 4 cm movie wire, not the 40 cm bench the player uses.",
+  "real_why": "A real 1D plastic-hinge model with hardening and fatigue that other things could build on, but it's planar and quasi-static, and the tools in the film are kinematic decorations with no contact.",
+  "summary": "The copper does really keep its bends: the shape comes from an elastoplastic hinge model with springback, and that is new for the island. But the 'wooden lever' in the caption doesn't do the bending. It is posed on the wire after the solver has bent it, nothing moves it, and between the two bends the pin and lever jump to new places.",
+  "superseded_by": "perfectionist-0145.json",
+  "surprise": 5,
+  "surprise_why": "Metal that yields, hardens, springs back and keeps its shape is physics the island didn't have, but the post shows it as two plain bends on a bare slate square, with no maker and no hook used for anything.",
+  "verdict": "needs_work"
+}

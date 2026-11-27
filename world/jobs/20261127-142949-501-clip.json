@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T14:29:49.501",
+  "id": "20261127-142949-501-clip",
+  "kind": "clip",
+  "params": {
+    "call": "homopolar_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/wire-spins-itself.mp4",
+    "script": "movies/homopolar.jl"
+  },
+  "started": "2026-11-27T14:29:51.351",
+  "status": "running"
+}

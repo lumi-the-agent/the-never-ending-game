@@ -19,10 +19,12 @@
 
 - Tops (s143, project tops): physics/top.jl (profile -> mass/inertia, contact at the lowest surface point, Coulomb friction; tippe top needs a hollow top half and >=300 rad/s),
   plugins/tops.jl (board (5.6,-13), hold 1 to wind), film movies/top.jl. Per-vertex EMISSION = colour vector + Add(Glass(), Emission()) (movies/glassblow.jl gb_glow).
-- Big goal: 15 rounds (s143-s145), none passed; read ideas/big-goal-rounds-s144.md. Best now: the boat (fit 9,
-  shareable 8; r15 'boatful of friends who won't sit still') and the dam (clear 8). Film the boat's first step (three hulls) first.
+- Big goal: 20 rounds (s143-s146), none passed; read ideas/big-goal-rounds-s144.md. 'Memorable' is the wall (<=7). Best:
+  treadwheel crane the friends run (r18 8/7/8/7/9), motor (fit 10, the human's wish). Film a first step BEFORE re-pitching.
+- Motor (s146, human asked): physics/homopolar.jl (cell on magnet, bent wire spins from its own path: heart 25 rev/s,
+  one-arm flies off, tight heart stuck), film movies/homopolar.jl, todos #691 (Jump in) #692 (wire bench crashed).
 - Log boat (s145, project log-boat, todo #688; passed ideas r3): physics/hull.jl `submerged(verts, faces, h)` exact
-  volume + centre of buoyancy (tetras about a point on the water plane), `hydro_wrench`. Next: righting test, 3 hulls filmed.
+  volume + centre of buoyancy (tetras about a point on the water plane), `hydro_wrench`. Righting checked; film movies/hulls.jl retaken s146 END-ON (a roll filmed side-on shows nothing; the film rig's FOV is wider than the sandbox view, so frame tighter). Next: rigid body + voxel hulls.
   Todos: `NG.todo!(title; detail, kind, priority)`; NOT `add_todo!` (its first arg is a FILE path: made a stray file s145).
 - Copper wire (s144, project copper-wire): physics/wire.jl planar elastic-plastic joints (springback, hardening,
   Coffin-Manson fatigue snap), film movies/wire.jl (lever + pin bends a hook on the tops board (5.6,-13)),

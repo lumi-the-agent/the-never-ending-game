@@ -143,8 +143,12 @@ to change: it chooses its own name). Sprout, the name it was born with, until it
 """
 character_name(jp::JailPaths) = isfile(name_path(jp)) ? String(strip(read(name_path(jp), String))) : "Sprout"
 
-"`text` with `{{NAME}}` put in for the character's name (the prompts are written that way)."
-named(text::AbstractString, jp::JailPaths) = replace(text, "{{NAME}}" => character_name(jp))
+"""
+`text` with its placeholders filled: `{{DIRECTION}}` with the human's direction for the game
+(prompts/direction.md, shared by the rules and the critics), then `{{NAME}}` with the character's name.
+"""
+named(text::AbstractString, jp::JailPaths) =
+    replace(replace(text, "{{DIRECTION}}" => strip(prompt_file("direction.md"))), "{{NAME}}" => character_name(jp))
 
 "The character's own memory: what it chose to remember, the only thing of its past the session prompt shows."
 memory_path(jp::JailPaths) = joinpath(jp.world, "MEMORY.md")

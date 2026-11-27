@@ -1,0 +1,72 @@
+{"ideas": [
+  {
+    "title": "The bent wire that spins by itself",
+    "goal": "At the wire bench the player bends a copper wire into any shape, sets it on a battery standing on a magnet, and it spins or doesn't by its own shape: a lopsided bend wobbles and falls off, a balanced one whirs. Fun because the shape you bent by hand is the motor, and every try is ten seconds.",
+    "toward": "The human's own wish (a real electric motor from real materials) and the big goal's 'tools act by what they physically do': the first electric physics on the island, built on the wire that already keeps its bends.",
+    "idea": "A homopolar motor: current from the battery's voltage and the wire's own resistance (copper resistivity, its length and gauge), the magnet's field (a cylinder magnet's exact field from its surface current), the force I dl x B summed along the wire's real polyline, torque about the battery's axis, contact friction at the tip and the rim; the wire is a rigid body from wire.jl's joints. Watching: the wire you bent shivers, then spins faster until friction holds it, the spark at the contact.",
+    "form": "physics/homopolar.jl + a stand on the wire bench in Jump in (tap a key to set the wire on the battery); a traced close-up film of three different bends: one whirs, one wobbles off, one won't start."
+  },
+  {
+    "title": "Skip a stone you chipped",
+    "goal": "The player chips a beach stone flatter with the hammer and skips it across the bay; the number of skips comes from its own shape, spin and the angle it hits the water. Fun because everyone has done it, getting good is real (flat, fast, low, spinning) and the friends try to beat your count.",
+    "toward": "A stone that keeps what was done to it and does what its shape would do, thrown: the chip stone's marks decide how it flies.",
+    "idea": "Each water contact uses the stone's real underside: the wetted area of the tilted mesh below the water plane (hull.jl's submerged volume, already exact) gives the lift and drag of the planing impact (the Bocquet skipping model), the spin keeps its tilt by gyroscopic stiffness, each touch leaves a ring of ripples. Watching: the stone hops, five, six, seven rings across the bay, the last skip a skitter.",
+    "form": "physics/skip.jl on top of hull.jl + Jump in throw by mouse drag; a film where a round stone sinks at once and a chipped flat one skips nine times, with the ripple rings."
+  },
+  {
+    "title": "A log that rocks when a friend climbs in",
+    "goal": "The player pushes a carved log into the bay and a friend climbs on: it lists towards the friend, rolls back, settles; two friends on one side tip it. Fun because the boat answers each body on it.",
+    "toward": "Project log-boat's next step: a hull that floats by its own carved shape, carrying the friends.",
+    "idea": "A full 6-dof rigid hull driven by hydro_wrench from its own mesh each step (buoyancy at the submerged centroid, water damping, added mass), the day's waves from WaveSpec, a friend as a moving point mass that walks along the deck. Watching: the log dips under Truffle's weight, bobs, settles at a slant; Pinchy jumps on the other end and it levels.",
+    "form": "physics/hull.jl rigid body + plugins/logboat.jl in the bay; a traced film of a friend climbing on, the hull rolling and settling."
+  },
+  {
+    "title": "Pull a stone up with two pulleys",
+    "goal": "In Jump in Lumi hauls a stone up a frame by a rope; with one pulley it won't budge, with two it rises slowly, with four it floats up and the rope runs long. Fun because the player feels mechanical advantage with their own pull.",
+    "toward": "The crane line's first proof: rope and pulleys that work by what they are, on rigid bodies.",
+    "idea": "A rope as a chain of segments over pulley wheels (PrintSim joints and contact), the stone a rigid body, Lumi's pull limited to its strength: the tension through the rope follows from friction on each wheel. Watching: Lumi leaning back on the rope, the stone stuck, then a second pulley added and the stone climbing.",
+    "form": "plugins/pulleys.jl near the cottage + a film of one, two and four pulleys side by side."
+  },
+  {
+    "title": "A reed whistle you carve",
+    "goal": "The player cuts a reed to length and burns finger holes into it; blowing it plays the note of its bore and the holes you made. Fun because you can tune your own instrument and play the friends a tune they dance to.",
+    "toward": "'It rings with its own note': a made thing that sounds by its own shape, and the friends using what we make.",
+    "idea": "The pipe's air column: an open-closed tube's resonances from the bore length and radius (end correction), each open hole shortening the effective length by its size and place (a transmission-line model of the bore), a jet-edge excitation; the note heard is synthesized from those resonances. Watching: Lumi blowing, cheeks out, the friends turning to the note.",
+    "form": "physics/whistle.jl + Jump in (cut with one key, burn a hole with the mouse, blow with another); a film with sound."
+  },
+  {
+    "title": "Paint that drips and stays",
+    "goal": "The player sprays paint onto the cottage, a rock, a friend: thick paint runs down in drips that dry where they stop, and it stays there for good. Fun because the island keeps your graffiti, and too much paint in one spot runs.",
+    "toward": "Marks that stay on what you touch, the human's spray can; the glaze film flow already does thin liquid on surfaces.",
+    "idea": "Spray droplets traced from the can into the world (Raycore hits on the GPU), paint thickness stored per surface patch, and the glaze solver's thin-film flow running it downhill where it is thick, then drying. Watching: a cloud from the can, the colour building up, a drip crawling down the cottage wall and stopping.",
+    "form": "Engine change (a paint layer on meshes) + plugins/spraycan.jl; a film of Lumi spraying a stripe and the drips running."
+  },
+  {
+    "title": "Lumi falls for real",
+    "goal": "Lumi trips on a root, tumbles, and gets up the way a body has to, every fall different. Fun to watch because the hero has weight.",
+    "toward": "Things stand and break by their own mass, Lumi first: its own body as a simulated thing.",
+    "idea": "An active ragdoll for Lumi's body (rigid segments and joints in PrintSim, a balance controller that tracks the walk pose) that lets go when pushed past its support and finds its feet again. Watching: a stumble, arms out, a sit-down bump, a scramble up.",
+    "form": "Engine change to Lumi's body + a slow-motion film of three falls."
+  },
+  {
+    "title": "A coil that grabs nails",
+    "goal": "The player winds wire around an iron nail, connects the battery and it picks up nails and bottle caps; more turns lift more, cut the current and they drop. Fun because it is a magnet you made and switch.",
+    "toward": "The second electric device, the same coil the motor needs later.",
+    "idea": "The field of the wound coil from its real path (Biot-Savart on the GPU), the iron core multiplying it, the pull on each loose iron piece from the field gradient, the pieces as rigid bodies that fly up and stick. Watching: nails sliding over the bench towards the nail, a clump hanging, all dropping at the switch.",
+    "form": "physics/coil.jl + the wire bench; film."
+  },
+  {
+    "title": "Fold a paper boat and race the stream",
+    "goal": "The player folds paper into a boat and drops it in the stream; the folds decide whether it floats upright, spins or soaks and sinks. Fun because folding is quick, the stream carries it and the friends cheer it down.",
+    "toward": "Paper that keeps its folds, the third material of the big goal.",
+    "idea": "The folded sheet from crease angles, its buoyancy from hull.jl, the stream's flow pushing on it, water soaking into the paper over time making it heavier and softer until it slumps. Watching: a little white boat bobbing down the stream past the friends, tipping at the rapids.",
+    "form": "physics/paperboat.jl + plugin at the stream; film."
+  },
+  {
+    "title": "Pound clay into a brick and build a wall",
+    "goal": "The player presses wet clay into a mould, dries the bricks in the sun, and lays a wall that stands by its bond; a wet brick slumps. Fun because the wall is yours brick by brick and you see why bricks are staggered.",
+    "toward": "Clay from the pond bank worked into something the island uses: building.",
+    "idea": "Bricks as rigid bodies whose stiffness and strength come from their water content (drying over game hours), the wall standing by friction and weight; a soft brick creeps under load. Watching: rows rising, a straight-jointed wall falling where a staggered one holds when a friend leans on it.",
+    "form": "plugin + film of two walls and a leaning pig."
+  }
+]}

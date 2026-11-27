@@ -1,0 +1,7 @@
+{"goals": [{"title": "Lift the boulder off the cave with a crane your friends run",
+            "clear": 8,
+            "memorable": 7,
+            "shareable": 8,
+            "play": 6,
+            "fit": 9,
+            "critique": "This is the treadwheel crane from rounds 18 and 19 for the third time. This rework drops the arch, so the physics engine no longer has to keep many rigid stones standing on friction, and one heavy body on a rope over pulleys is far more likely to behave honestly. The beams bending under the load and the load running back unless you built a ratchet are real failures the player causes and can read. But the payoff has shrunk from a held-breath bet (does the arch stand?) to a gate that opens once the load goes high enough. The headline clip, the wheel whipping backwards and throwing Pinchy into the sand, is the same clip as round 18, and the boat and the bell are just bigger numbers on the same lift, so the player has little reason to come back once the cave is open. Bending beams also quietly add a deformable-structure solver to a road that used to need only rigid bodies and rope."}]}

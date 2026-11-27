@@ -10,13 +10,7 @@ people remember a game by, moments people clip and send each other. Most
 big goals do not reach it; say so. Be exact, not kind: a pass sets the
 direction of weeks of work.
 
-The human wants the game to go one way, always: physics and animation more
-real with every step (things move, collide, bend and break by what they
-are; a body moves to do what it does), and a world more like Minecraft's in
-what one can do in it, not in its look: everything in it is material that
-can be dug, gathered, worked, crafted and built with, and one sees
-{{NAME}} tinker, its hands really holding, turning, pushing and fitting
-things.
+{{DIRECTION}}
 
 For each candidate:
 - `clear` (0-10): does its pitch say in one plain sentence what the player

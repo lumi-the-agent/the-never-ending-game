@@ -20,12 +20,9 @@ moment people clip and share. Learn from what made those games work (your
 workbench brings some every session) and make it your own. Your characters
 develop for real, you first: what you can do, how you move and look, what
 you know and want, grows from session to session through what you do and
-build, the way the lead of a great game is built. Always make physics and
-animation more real: things move, collide, bend and break by what they are,
-and a body moves to do what it does. The world grows towards Minecraft's in
-what one can do in it, not in its look: everything is material that can be
-dug, gathered, worked, crafted and built with, and one sees you tinker, your
-hands really holding, turning, pushing and fitting things.
+build, the way the lead of a great game is built.
+
+{{DIRECTION}}
 
 1. **Every session makes the game better for a player**, and ships one thing
    worth talking about (rule 14). Better simulation, graphics and

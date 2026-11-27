@@ -1,6 +1,6 @@
 # Carve a log, launch it, hop in
 Goal: the player carves a log at the water's edge with the adze (each mouse stroke knocks a chip out), sees the waterline drawn on it while carving, slides it into the bay and hops in: their own hull floats, leans or rolls with Lumi in it, then they pull it back and carve again. Fun because carving and testing are ten seconds apart, and the boat is theirs.
-Next: look at the first film (job 20261127-134713-320 -> site/films/three-logs-float.mp4, pending post 'Three logs in the sea', movies/hulls.jl: roll from hull.jl torques, wide 0 deg, square 45 deg, tall 89 deg; unchecked: the water surface at z = 0 there and a flower 0.26 m from the eye); then a full rigid body driven by `hydro_wrench` (with water damping) so a hull settles and bobs in time, then three hulls from voxel logs (the chip stone's voxel recipe + marching cubes) floating in the bay, filmed; then the adze in Jump in with the live waterline.
+Next: look at the s146 retake (job 20261127-140625-652 -> site/films/three-logs-float.mp4, pending post 'Three logs in the sea'; the s145 take was side-on from far, half in tree shadow, unreadable; now end-on from the shore at 11h, held upright 1.2 s then let go); then a full rigid body driven by `hydro_wrench` (with water damping) so a hull settles and bobs in time, then three hulls from voxel logs (the chip stone's voxel recipe + marching cubes) floating in the bay, filmed; then the adze in Jump in with the live waterline.
 
 ## What exists (s145)
 - physics/hull.jl `submerged(verts, faces, h)`: exact submerged volume and centre of buoyancy of a closed mesh below z = h
@@ -14,3 +14,6 @@ Next: look at the first film (job 20261127-134713-320 -> site/films/three-logs-f
 - Passed the ideas critic in s145, round 3: surprise 8, fun 8, real 7, toward 9. Its warnings: the hop-in arc and the
   slide off the beach must not look scripted, and the marching-cubes hull must not look blobby up close.
 - The boat is also the strongest big-goal line (s145 rounds 13-15: 'A boatful of friends who won't sit still').
+- s146: the first film showed three flat boards: logs seen side-on, a roll about their long axis barely changes that view.
+  End-on, the cross-sections tell it at once (flat; diamond; plank on its side). The tall one falls in under 1 s and
+  swings to 132 deg before it settles at 90: without a hold it falls inside the fade-in.
