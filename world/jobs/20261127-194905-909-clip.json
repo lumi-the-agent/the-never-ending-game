@@ -1,0 +1,14 @@
+{
+  "created": "2026-11-27T19:49:05.909",
+  "id": "20261127-194905-909-clip",
+  "kind": "clip",
+  "params": {
+    "call": "fire_clip",
+    "kwargs": {},
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/campfire-in-the-wind.mp4",
+    "script": "movies/fire.jl"
+  },
+  "started": "2026-11-27T19:52:22.900",
+  "status": "running"
+}

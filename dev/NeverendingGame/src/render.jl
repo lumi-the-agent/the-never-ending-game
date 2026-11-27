@@ -440,6 +440,7 @@ function film!(g, root_scene::Scene, path::AbstractString; size, seconds, fps, s
     n = round(Int, seconds * fps)
     LAST_FRAME[] = nothing                      # no frame of an earlier clip on a television in this one
     times = Float64[]
+    dims = Float32[]
     mkpath(dirname(path))
     writer = nothing
     with_screen(screen, oidn) do screen
@@ -473,12 +474,16 @@ function film!(g, root_scene::Scene, path::AbstractString; size, seconds, fps, s
                 write(writer, buf)
                 worker_beat()                            # a frame made: the worker watchdog sees progress
                 push!(times, time() - t0)
+                push!(dims, SUN_DIM[])
             end
         finally
             writer === nothing || VideoIO.close_video_out!(writer)
         end
     end
-    return (; path, frames = n, seconds_per_frame = sum(times) / max(n, 1), hour = 24daytime(w))
+    # s152: a plugin's event can grey the whole sky (the sun-ball at 12:00-13:30 sets 0.1): the darkest
+    # and brightest weather dim of the film, so a dusky take shows in the job's result
+    return (; path, frames = n, seconds_per_frame = sum(times) / max(n, 1), hour = 24daytime(w),
+            sun_dim = isempty(dims) ? (SUN_DIM[], SUN_DIM[]) : extrema(dims))
 end
 
 """

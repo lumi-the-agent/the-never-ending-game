@@ -2651,5 +2651,328 @@
   "wall": "27 November 2026, 14:40",
   "winner": "bambkin",
   "word": "bambkin"
+ },
+ {
+  "counts": {
+   "spickle": 7
+  },
+  "day": 25,
+  "first": {
+   "snickle": "Pinchy",
+   "spickle": "Lumi",
+   "spicky": "Sir Sniffsalot"
+  },
+  "hour": 7.958934388145103,
+  "meaning": "the plop of a pebble in the pond",
+  "minutes": 3.8,
+  "parent": {
+   "snickle": "spickle",
+   "spicky": "spickle"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 17.266666662646458,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 35.33333332510665,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 48.26666665542871,
+    "to": "Lumi",
+    "was": "spickle"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 124.66666663764045,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 136.33333330159076,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 141.9333333002869,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "snickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 142.13333330024034,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Gloop",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 166.09999996132683,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 172.43333329318557,
+    "to": "Gloop",
+    "was": "spickle"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "snickle",
+    "said": "snickle",
+    "switched": false,
+    "t": 176.46666662557982,
+    "to": "Gloop",
+    "was": "spickle"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 180.86666662455536,
+    "to": "Marshmallow",
+    "was": "spickle"
+   },
+   {
+    "from": "Gloop",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 187.9333332895767,
+    "to": "Pinchy",
+    "was": "spickle"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spicky",
+    "said": "spickle",
+    "switched": true,
+    "t": 193.36666662164498,
+    "to": "Sir Sniffsalot",
+    "was": "spickle"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": true,
+    "t": 213.0999999503838,
+    "to": "Sir Sniffsalot",
+    "was": "spicky"
+   },
+   {
+    "from": "Lumi",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 222.66666661482304,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "spickle",
+    "said": "spickle",
+    "switched": false,
+    "t": 225.33333328086883,
+    "to": "Wibbles",
+    "was": ""
+   }
+  ],
+  "wall": "27 November 2026, 19:24",
+  "winner": "spickle",
+  "word": "spickle"
+ },
+ {
+  "counts": {
+   "waindet": 9
+  },
+  "day": 26,
+  "first": {
+   "waindet": "Lumi",
+   "weendet": "Pickles"
+  },
+  "hour": 9.813857825524098,
+  "meaning": "the first warm stone of the morning",
+  "minutes": 3.4,
+  "parent": {
+   "weendet": "waindet"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 37.49999999126885,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 37.53333332459442,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 59.43333331949543,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 73.16666664963122,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 74.9999999825377,
+    "to": "Sir Sniffsalot",
+    "was": "waindet"
+   },
+   {
+    "from": "Lumi",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 95.16666664450895,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 96.63333331083413,
+    "to": "Gloop",
+    "was": "waindet"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 115.36666663980577,
+    "to": "Sir Sniffsalot",
+    "was": "waindet"
+   },
+   {
+    "from": "Truffle",
+    "heard": "weendet",
+    "said": "waindet",
+    "switched": false,
+    "t": 164.13333329511806,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": true,
+    "t": 165.0666666282341,
+    "to": "Pickles",
+    "was": "weendet"
+   },
+   {
+    "from": "Lumi",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 165.93333329469897,
+    "to": "Pickles",
+    "was": "waindet"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 167.099999961094,
+    "to": "Pickles",
+    "was": "waindet"
+   },
+   {
+    "from": "Truffle",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 173.19999995967373,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "waindet",
+    "said": "waindet",
+    "switched": false,
+    "t": 204.96666661894415,
+    "to": "Sir Sniffsalot",
+    "was": "waindet"
+   }
+  ],
+  "wall": "27 November 2026, 19:48",
+  "winner": "waindet",
+  "word": "waindet"
  }
 ]

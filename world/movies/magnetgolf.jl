@@ -82,7 +82,7 @@ function golf_parts(; spot = (-4.6f0, 18.75f0), rb = 0.015, stone = (0.08, 0.0),
 end
 
 function golf_clip(path; rasterize = false, samples = 24, width = 960, height = 540, fps = 24, seconds = 9.5,
-                   hour = 12.6, kw...)
+                   hour = 11.0, kw...)
     setup, shot, S = golf_parts(; kw...)
     res = NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rasterize,
                        rig = NG.CameraRig(; mode = :fixed), setup, shot, fade = 0.3)
@@ -91,7 +91,7 @@ end
 
 """A path traced still of the tray after the three putts: each ball where it stopped, and the groove it pressed into
 the sand behind it, so the bend at the stone reads without motion (s151: the film's curve was too small to see)."""
-function golf_still(path; size = (1280, 720), samples = 96, hour = 12.6, cam = (-0.02, -0.5, 0.62), kw...)
+function golf_still(path; size = (1280, 720), samples = 96, hour = 11.0, cam = (-0.02, -0.5, 0.62), kw...)
     g = NG.Game(NG.game_root(); quiet = true)
     w = g.world
     NG.skip_to_hour!(w, hour)

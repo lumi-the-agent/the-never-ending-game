@@ -1090,3 +1090,33 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
   Hikari.Conductor keywords are `ior` and `extinction` (not eta/k).
 - The sandbox clock (`Libc.strftime`) is the real time; trust it over my guess (s151 I thought I had 13 minutes left
   and had 35).
+
+## Films at noon come out dusky: the sun-ball (s152)
+Every day from 12:00 to 13:30 (plugins/sunball.jl FROM_H/TO_H) the sun falls onto the meadow and `SUNBALL[:dim] = 0.1`;
+showers.jl's `dim_sun!` takes the min of every dim into `NG.SUN_DIM`, so the whole island goes dusky. A film or still
+with `hour` in 12.0-13.5 lands inside it: s151's putting retake (12.6) and the groove still came out dark, and the
+compass film (13.0) was murky. Other daily windows: glass sea 7.0-7.5, glass rain 15.0-15.5, underlight from 19.0.
+Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.SUNBALL[:dim]` is 0.1 right after load.
+- THE HUMAN (s152): moving films to dodge it was a workaround; a sun that falls every noon is a script, not the world.
+  The clock trigger is gone (sunball.jl starts only on SUNBALL[:force]). LESSON: when something looks wrong, fix its
+  cause in the world; never film around it. Glass sea 7:00, glass rain 15:00, underlight 19:00 are timed scripts too.
+
+## Fire (s152, physics/fire.jl, plugins/campfire.jl, movies/fire.jl, project fire)
+- Model: FireBody = lumped heated skin (6 mm wood), moisture of the SKIN only boils first (the whole post's water held
+  a stake at 100 C for 20 min), piloted ignition 350 C, burning flux G, char 0.65 mm/min, EN 1995-1-2 reduced section
+  -> break -> `fall!` downwind. Flames of bodies < 0.3 m apart MERGE (four 20 kW log flames never lit anything; one
+  82 kW flame does), heat-weighted top (the max put the pile's flame over a 1 m stake). Inside a flame: convection
+  + flame radiation (eps 0.3) ~45 kW/m^2; with convection alone (10) nothing in the flame ever caught.
+- Explicit step on a skin that burns away goes NaN: clamp T to [T_amb, T_flame + 100].
+- Fire time on the island clock: 86400 / w.day_length = 4.8x (a stake catches ~22 real s after lighting).
+- Finding a clear film spot: props are NOT enough (s152: a house a plugin draws stood round the camera). Search with
+  the bounding boxes of every scene plot < 30 m wide too (live_eval snippet in the s152 journal); the clearest spot on
+  the island is the south shore (-3.0, -16.0), only 1.4 m clear for fire + camera + Lumi.
+- Worker clip scripts: `Base.include(@__MODULE__, path)`, never bare `include` (ClipScript has none; the job failed).
+- Plugin state in a Main dict across reloads: a struct from an included physics file is a NEW type after each reload;
+  check `x isa Vector{FireBody}` and rebuild (MethodError, the system switched itself off). And a Dict{Symbol,Any}
+  can't take a Keyboard.Button key (use Symbol("key_", Int(k))).
+- Burning rate = surface heat balance (Drysdale ch. 5): (own merged flame's eps(1-exp(-0.8 D)) sigma T_f^4 + 8 kW/m^2
+  + other flames - char re-radiation at 500 C) / 1.8 MJ/kg; flame-out under 3 g/m^2s. A lone stake dies, a crib holds.
+- Jump-in in a live_eval test: `start_minigame!(game, JumpIn)` moves Lumi to its start AFTER your placement; place
+  Lumi in a second eval, and press keys only once `near` is true (a press while not near is used up).

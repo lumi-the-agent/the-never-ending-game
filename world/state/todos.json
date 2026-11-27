@@ -2331,12 +2331,12 @@
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-27T17:57:06.119"
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -2536,17 +2536,17 @@
     },
     {
       "created": "2026-11-23T10:00:24.656",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:111\n  [3] show_stones!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:126\n  [4] start!(::Main.Plugin_cairns.Cairns, game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:306\n  [5] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [8] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [9] macro expansion\n    @ ./timing.jl:461 [inlined]\n [10] top-level scope\n    @ ./bt_julia_eval:14\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [13] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [14] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [15] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:111\n  [3] show_stones!(game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:126\n  [4] start!(::Main.Plugin_cairns.Cairns, game::Game)\n    @ Main.Plugin_cairns /sim/Programmieren/SimGame/world/plugins/cairns.jl:306\n  [5] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [8] top-level scope\n    @ ./bt_julia_eval:6\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [11] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [12] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [13] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 182,
       "kind": "fix",
       "priority": 1,
-      "result": "Not the live game: a quiet clip copy in the agent session (cairn_setup in the trace) called start! before its stage was set. game_clip now sets the stage before setup; movies/cairn_release.jl resets the plugin's Main plots between copies.\nHappened again at 2026-11-26T19:34:23.935.\nClosed at 2026-11-26T19:34:55.893: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:08.358.\nClosed at 2026-11-26T19:35:42.536: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:55.860.\nClosed at 2026-11-26T19:44:23.261: plugin cairns loaded cleanly.",
+      "result": "Not the live game: a quiet clip copy in the agent session (cairn_setup in the trace) called start! before its stage was set. game_clip now sets the stage before setup; movies/cairn_release.jl resets the plugin's Main plots between copies.\nHappened again at 2026-11-26T19:34:23.935.\nClosed at 2026-11-26T19:34:55.893: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:08.358.\nClosed at 2026-11-26T19:35:42.536: plugin cairns loaded cleanly.\nHappened again at 2026-11-26T19:35:55.860.\nClosed at 2026-11-26T19:44:23.261: plugin cairns loaded cleanly.\nHappened again at 2026-11-27T19:35:14.435.\nClosed at 2026-11-27T19:36:35.315: plugin cairns loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:cairns.Cairns failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:23.261"
+      "updated": "2026-11-27T19:36:35.315"
     },
     {
       "created": "2026-11-23T10:00:28.710",
@@ -5826,17 +5826,17 @@
     },
     {
       "created": "2026-11-24T21:17:59.256",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] chick_plots!(game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:85\n  [3] start!(s::Main.Plugin_egg.Egg, game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:388\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] chick_plots!(game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:98\n  [3] start!(s::Main.Plugin_egg.Egg, game::Game)\n    @ Main.Plugin_egg /sim/Programmieren/SimGame/world/plugins/egg.jl:412\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 417,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T21:18:16.316: plugin egg loaded cleanly.\nHappened again at 2026-11-24T21:18:16.429.\nClosed at 2026-11-24T21:18:32.135: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:34:26.786.\nClosed at 2026-11-26T19:34:56.283: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:12.116.\nClosed at 2026-11-26T19:35:42.969: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:58.875.\nClosed at 2026-11-26T19:44:23.782: plugin egg loaded cleanly.",
+      "result": "Closed at 2026-11-24T21:18:16.316: plugin egg loaded cleanly.\nHappened again at 2026-11-24T21:18:16.429.\nClosed at 2026-11-24T21:18:32.135: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:34:26.786.\nClosed at 2026-11-26T19:34:56.283: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:12.116.\nClosed at 2026-11-26T19:35:42.969: plugin egg loaded cleanly.\nHappened again at 2026-11-26T19:35:58.875.\nClosed at 2026-11-26T19:44:23.782: plugin egg loaded cleanly.\nHappened again at 2026-11-27T19:35:19.574.\nClosed at 2026-11-27T19:36:35.885: plugin egg loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:egg.Egg failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:23.782"
+      "updated": "2026-11-27T19:36:35.885"
     },
     {
       "created": "2026-11-24T21:22:42.719",
@@ -5980,17 +5980,17 @@
     },
     {
       "created": "2026-11-24T22:56:51.039",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] blanket!(game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:69\n  [3] start!(s::Main.Plugin_snowday.SnowDay, game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:312\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] blanket!(game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:69\n  [3] start!(s::Main.Plugin_snowday.SnowDay, game::Game)\n    @ Main.Plugin_snowday /sim/Programmieren/SimGame/world/plugins/snowday.jl:312\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 428,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T22:56:59.767: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T22:56:59.821.\nClosed at 2026-11-24T22:57:12.372: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T23:16:10.705.\nClosed at 2026-11-24T23:16:38.796: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:34:44.896.\nClosed at 2026-11-26T19:34:59.538: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:35:30.520.\nClosed at 2026-11-26T19:35:47.032: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:36:17.506.\nClosed at 2026-11-26T19:44:29.395: plugin snowday loaded cleanly.",
+      "result": "Closed at 2026-11-24T22:56:59.767: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T22:56:59.821.\nClosed at 2026-11-24T22:57:12.372: plugin snowday loaded cleanly.\nHappened again at 2026-11-24T23:16:10.705.\nClosed at 2026-11-24T23:16:38.796: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:34:44.896.\nClosed at 2026-11-26T19:34:59.538: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:35:30.520.\nClosed at 2026-11-26T19:35:47.032: plugin snowday loaded cleanly.\nHappened again at 2026-11-26T19:36:17.506.\nClosed at 2026-11-26T19:44:29.395: plugin snowday loaded cleanly.\nHappened again at 2026-11-27T19:35:47.623.\nClosed at 2026-11-27T19:36:39.667: plugin snowday loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:snowday.SnowDay failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:29.395"
+      "updated": "2026-11-27T19:36:39.667"
     },
     {
       "created": "2026-11-24T23:12:27.044",
@@ -8304,87 +8304,87 @@
     },
     {
       "created": "2026-11-26T19:34:23.506",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] start!(::Main.Plugin_builder.Builder, game::Game)\n    @ Main.Plugin_builder /sim/Programmieren/SimGame/world/plugins/builder.jl:587\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [7] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [8] top-level scope\n    @ ./bt_julia_eval:14\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [11] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [12] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [13] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] start!(::Main.Plugin_builder.Builder, game::Game)\n    @ Main.Plugin_builder /sim/Programmieren/SimGame/world/plugins/builder.jl:587\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] top-level scope\n    @ ./bt_julia_eval:6\n  [7] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [8] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n  [9] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [10] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [11] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 594,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:55.779: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:07.911.\nClosed at 2026-11-26T19:35:42.418: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:55.403.\nClosed at 2026-11-26T19:44:23.092: plugin builder loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:55.779: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:07.911.\nClosed at 2026-11-26T19:35:42.418: plugin builder loaded cleanly.\nHappened again at 2026-11-26T19:35:55.403.\nClosed at 2026-11-26T19:44:23.092: plugin builder loaded cleanly.\nHappened again at 2026-11-27T19:35:13.782.\nClosed at 2026-11-27T19:36:35.209: plugin builder loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:builder.Builder failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:23.092"
+      "updated": "2026-11-27T19:36:35.209"
     },
     {
       "created": "2026-11-26T19:34:27.735",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:64\n  [3] start!(s::Main.Plugin_flight.Flight, game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:488\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:64\n  [3] start!(s::Main.Plugin_flight.Flight, game::Game)\n    @ Main.Plugin_flight /sim/Programmieren/SimGame/world/plugins/flight.jl:488\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 595,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:56.588: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:13.108.\nClosed at 2026-11-26T19:35:43.309: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:59.921.\nClosed at 2026-11-26T19:44:25.025: plugin flight loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:56.588: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:13.108.\nClosed at 2026-11-26T19:35:43.309: plugin flight loaded cleanly.\nHappened again at 2026-11-26T19:35:59.921.\nClosed at 2026-11-26T19:44:25.025: plugin flight loaded cleanly.\nHappened again at 2026-11-27T19:35:21.522.\nClosed at 2026-11-27T19:36:36.224: plugin flight loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:flight.Flight failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:25.025"
+      "updated": "2026-11-27T19:36:36.224"
     },
     {
       "created": "2026-11-26T19:34:31.641",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:69\n  [3] start!(s::Main.Plugin_giant.Giant, game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:365\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:69\n  [3] start!(s::Main.Plugin_giant.Giant, game::Game)\n    @ Main.Plugin_giant /sim/Programmieren/SimGame/world/plugins/giant.jl:365\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 596,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:57.090: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:35:16.355.\nClosed at 2026-11-26T19:35:43.937: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:36:03.835.\nClosed at 2026-11-26T19:44:26.294: plugin giant loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:57.090: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:35:16.355.\nClosed at 2026-11-26T19:35:43.937: plugin giant loaded cleanly.\nHappened again at 2026-11-26T19:36:03.835.\nClosed at 2026-11-26T19:44:26.294: plugin giant loaded cleanly.\nHappened again at 2026-11-27T19:35:26.095.\nClosed at 2026-11-27T19:36:36.776: plugin giant loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:giant.Giant failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:26.294"
+      "updated": "2026-11-27T19:36:36.776"
     },
     {
       "created": "2026-11-26T19:34:33.232",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] bubble_plot!(game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:63\n  [3] start!(s::Main.Plugin_hiccups.Hiccups, game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:328\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] bubble_plot!(game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:63\n  [3] start!(s::Main.Plugin_hiccups.Hiccups, game::Game)\n    @ Main.Plugin_hiccups /sim/Programmieren/SimGame/world/plugins/hiccups.jl:328\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 597,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:57.347: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:35:18.375.\nClosed at 2026-11-26T19:35:44.275: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:36:05.496.\nClosed at 2026-11-26T19:44:26.594: plugin hiccups loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:57.347: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:35:18.375.\nClosed at 2026-11-26T19:35:44.275: plugin hiccups loaded cleanly.\nHappened again at 2026-11-26T19:36:05.496.\nClosed at 2026-11-26T19:44:26.594: plugin hiccups loaded cleanly.\nHappened again at 2026-11-27T19:35:30.464.\nClosed at 2026-11-27T19:36:37.092: plugin hiccups loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:hiccups.Hiccups failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:26.594"
+      "updated": "2026-11-27T19:36:37.092"
     },
     {
       "created": "2026-11-26T19:34:38.800",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:76\n  [3] start!(s::Main.Plugin_paintfight.PaintFight, game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:510\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] plots!(game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:76\n  [3] start!(s::Main.Plugin_paintfight.PaintFight, game::Game)\n    @ Main.Plugin_paintfight /sim/Programmieren/SimGame/world/plugins/paintfight.jl:510\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 598,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:58.690: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:35:24.032.\nClosed at 2026-11-26T19:35:46.156: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:36:11.443.\nClosed at 2026-11-26T19:44:28.157: plugin paintfight loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:58.690: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:35:24.032.\nClosed at 2026-11-26T19:35:46.156: plugin paintfight loaded cleanly.\nHappened again at 2026-11-26T19:36:11.443.\nClosed at 2026-11-26T19:44:28.157: plugin paintfight loaded cleanly.\nHappened again at 2026-11-27T19:35:41.098.\nClosed at 2026-11-27T19:36:38.850: plugin paintfight loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:paintfight.PaintFight failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:28.157"
+      "updated": "2026-11-27T19:36:38.850"
     },
     {
       "created": "2026-11-26T19:34:44.562",
-      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:62\n  [3] start!(s::Main.Plugin_sneeze.Sneeze, game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:384\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] load_and_step()\n    @ Main ./bt_julia_eval:6\n  [8] macro expansion\n    @ ./timing.jl:461 [inlined]\n  [9] top-level scope\n    @ ./bt_julia_eval:14\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [12] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [13] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [14] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] feather_plot!(game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:62\n  [3] start!(s::Main.Plugin_sneeze.Sneeze, game::Game)\n    @ Main.Plugin_sneeze /sim/Programmieren/SimGame/world/plugins/sneeze.jl:384\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] top-level scope\n    @ ./bt_julia_eval:6\n  [8] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [9] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [10] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [11] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [12] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 599,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T19:34:59.468: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:35:30.194.\nClosed at 2026-11-26T19:35:46.969: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:36:17.038.\nClosed at 2026-11-26T19:44:29.347: plugin sneeze loaded cleanly.",
+      "result": "Closed at 2026-11-26T19:34:59.468: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:35:30.194.\nClosed at 2026-11-26T19:35:46.969: plugin sneeze loaded cleanly.\nHappened again at 2026-11-26T19:36:17.038.\nClosed at 2026-11-26T19:44:29.347: plugin sneeze loaded cleanly.\nHappened again at 2026-11-27T19:35:47.317.\nClosed at 2026-11-27T19:36:39.616: plugin sneeze loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:sneeze.Sneeze failed in start! and was switched off",
-      "updated": "2026-11-26T19:44:29.347"
+      "updated": "2026-11-27T19:36:39.616"
     },
     {
       "created": "2026-11-26T19:48:20.537",
@@ -8584,17 +8584,17 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0148 [creatures, high]: A smaller yellow chick with blue legs walks beside Lumi in daylight too, in follow view and in Firefly catch. Players read it as a second Lumi or a rendering bug, and the 'Lumi' label sits between them.\nWhere: follow camera, Firefly catch\nSuggestion: If it is the ghost replay, give it a clear look of its own (translucent and blue-tinted, or a dotted outline) or remove it while the player is Lumi. If it is a chick, give it a different colour and name.\nDone when: a follow screenshot and a firefly-view shot show exactly one yellow bird near the 'Lumi' label\nEvidence: reviews/p148/cam-follow.png, tests/shots/firefly-view-30s.png",
+      "detail": "perfectionist-0151 [creatures, high]: A grey-white, half-transparent bird with Lumi's own crest and stance follows Lumi everywhere and says 'peep!'. In every view it looks like a rendering bug, a faded duplicate of the hero, not a baby. It overlaps Lumi's shoulder in the live motion strip.\nWhere: the chick that follows Lumi (egg.jl / ghosts.jl), its material\nSuggestion: Give the chick its own design: opaque, fluffy, a clear colour of its own (pale peach or downy cream with a bright beak), half Lumi's height with a round baby silhouette, and toddling a step behind instead of overlapping.\nDone when: In live_motion's strip and a follow screenshot, the chick is opaque, visibly a different colour and shape from Lumi, and never overlaps Lumi's body.\nEvidence: reviews/p151/play/firefly-start.png, play/berry-5.png, play/jumpin-start.png, motion/p151/motion-strip.png",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
       "priority": 1,
-      "result": "s132 look: the pale see-through copies are plugins/ghosts.jl (s99 'yesterday walks again', RGBA alpha 0.38, 45 s then fade), by design; in the human's 23:30 view sleeping friends' ghosts sat over them with Zs (media/s132-live-dash-text.png), which reads like a bug: ghosts should not replay where the living one sleeps. The 'small opaque yellow second Lumi' in the review is most likely the chick (s70, a tiny me that trots after me), not a ghost: make it read as a chick (smaller, rounder, fluffier, peeps) rather than a copy. Walking through each other still to check.\ns144: still true, the yellow chick ('peep!') stands beside Lumi in the follow view (media/s144-things-to-try3.png).",
+      "result": "s132 look: the pale see-through copies are plugins/ghosts.jl (s99 'yesterday walks again', RGBA alpha 0.38, 45 s then fade), by design; in the human's 23:30 view sleeping friends' ghosts sat over them with Zs (media/s132-live-dash-text.png), which reads like a bug: ghosts should not replay where the living one sleeps. The 'small opaque yellow second Lumi' in the review is most likely the chick (s70, a tiny me that trots after me), not a ghost: make it read as a chick (smaller, rounder, fluffier, peeps) rather than a copy. Walking through each other still to check.\ns144: still true, the yellow chick ('peep!') stands beside Lumi in the follow view (media/s144-things-to-try3.png).\ns152: chick body/wings/face tinted apricot (0.98, 0.62, 0.38) instead of cream (plugins/egg.jl); sandbox media/s152/chick-apricot.png: reads as its own warm bird beside Lumi. Published. Still open: it follows so close it overlaps Lumi's body (done_when wants no overlap) and has Lumi's crest shape.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi is a dark smudge at night with a yellow chick double beside it",
-      "updated": "2026-11-27T16:53:51.356"
+      "title": "Lumi's chick reads as a see-through grey ghost of Lumi",
+      "updated": "2026-11-27T19:58:19.536"
     },
     {
       "created": "2026-11-26T23:15:33.348",
@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0148 [fun, medium]: Two of the game's own tests fail now: standing on a firefly scores 0, and Lumi is blocked in 15 of 40 seconds (a big tree fills half the view). The fireflies are still flat lime discs with ring halos.\nWhere: plugins/firefly_catch.jl, its camera\nSuggestion: Fix the catch radius. Have the chase camera pull up and over occluders (or fade the foliage that blocks Lumi). Make the flies small emissive cores whose light falls on the grass, not discs.\nDone when: all Firefly tests pass, and a 30 s shot shows Lumi unblocked with glowing points that light the ground around them\nEvidence: live_tests('Firefly'): 2 of 5 fail; tests/shots/firefly-view-30s.png",
+      "detail": "perfectionist-0151 [fun, medium]: Firefly catch, Hide and seek and Berry race all play as 'hold W toward the direction the text HUD names'. Playing each for about 25 s, I got 1/8, 0/4 and 0 against 1. Nothing changes between rounds, and the friends never do anything you'd tell someone about. Firefly catch still fails 2 of its own tests (a fly under Lumi isn't caught; Lumi is blocked in 15 of 40 samples). In all three, the low chase view is half trees and smeared mounds.\nWhere: plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; chase camera\nSuggestion: Give each game one verb of its own that uses the island's physics: hiders who flee and must be cornered, berries that roll downhill when a rival bumps the bush, fireflies you herd with the lantern flash. Use a chase camera that pulls up over occluders.\nDone when: Both failing firefly tests pass, and each game has a distinct action besides WASD shown on its key pad. Five screenshots in a round each show Lumi unblocked in the centre third.\nEvidence: reviews/p151/play/log.txt, play/firefly-5.png, play/hide-10.png, play/berry-5.png; tests/last_run.json",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Firefly catch: catching by standing on a fly fails, chase view loses Lumi",
-      "updated": "2026-11-27T16:53:51.356"
+      "title": "Three mini games are one recipe: walk to the HUD's arrow",
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9144,7 +9144,7 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "perfectionist-0136 [wow, medium]: The boomerang film is the first in a while with real physics, a clear story (throw, loop over the sea, catch) and a traced sea. Two problems hold it back: the plank, and the boomerang itself, a dark stick a few pixels wide over the water.\nWhere: site/films/a-boomerang-comes-back-2.mp4 (it should live in media/, see #657)\nSuggestion: Give the boomerang a lacquered painted-wood material with a coat and a bright stripe. Add a closer chase camera and its shadow racing over the water. Then release it under world/releases (goal 2).\nDone when: The boomerang covers 40 px or more in the chase frames, its painted coat shows a highlight, and a world/releases/<date>-boomerang folder exists.\nEvidence: world/reviews/p136/boomerang-sheet.jpg",
+      "detail": "perfectionist-0151 [wow, medium]: Goal 2 asks for a path traced video the author is proud of in world/releases. The last release is 2026-11-24, and dozens of films since went only to the pages.\nWhere: world/releases/\nSuggestion: A cut of several real moments with creatures (boomerang take 4, the glass sea skate, the cloud heart), with cuts made in VideoEditor and a note.\nDone when: A new folder in world/releases holds an mp4 and a note, and say_to_human names it.\nEvidence: ls world/releases: last 2026-11-24-a-day-in-my-new-life",
       "est_minutes": 15.0,
       "id": 654,
       "kind": "review",
@@ -9153,8 +9153,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Release the boomerang film (take 4) in world/releases with a note",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "No release since 2026-11-24: put out the best film you have",
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9634,21 +9634,21 @@
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0148 [lighting, medium]: With path tracing on in orbit view, clouds are speckled noise and a row of black flat shapes hangs over the water. The sky's palm islets from the raster view are missing.\nWhere: traced dashboard, sky\nSuggestion: Find the black slabs (cloud shadow cards? cloudshapes?) and hide them from the tracer. Denoise the clouds or give them a volume. Bring the floating islets into the traced scene.\nDone when: a traced orbit screenshot after 50 s shows no dark shapes in the sky, smooth clouds, and the palm islets present\nEvidence: reviews/p148/traced.png vs reviews/p148/cam-orbit.png",
+      "detail": "perfectionist-0151 [materials, high]: With path tracing on at dawn, rain falls as opaque white sticks, the cottage lamp glows are flat yellow discs with no falloff, the dark clouds are speckled, and a dark slab fills the bottom right.\nWhere: traced live view; showers.jl, lamplight/nightglow glow shells, cloud material\nSuggestion: Give rain a Dielectric (or skip it when traced), drop the emissive glow shells in favour of real point lights inside the lamps so the light falls on the ground, and use a volume or a smoother material for the clouds.\nDone when: A traced orbit screenshot during a shower shows thin, transparent streaks (or none), lamps as small bright points lighting the ground around them, and smooth clouds.\nEvidence: reviews/p151/traced.png",
       "est_minutes": 30.0,
       "id": 689,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Traced view: grainy clouds and black slabs floating above the sea",
-      "updated": "2026-11-27T16:53:51.356"
+      "title": "Traced view: rain as white rods, blown-out lamp discs, grainy clouds",
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0148 [wow, high]: Twenty posts of physics experiments (darts, wires, logs, tops, magnets). Every one has a dry caption, the creatures don't care, and the camera is far away. A tiny grey paper triangle over the bay is not a film anyone forwards.\nWhere: world/site posts, films\nSuggestion: Make one event the whole island takes part in: friends gather and cheer, a dart lands on a pig's head, a crab carries away the magnet spike. Film it close at golden hour, path traced, with reactions on faces.\nDone when: one post's film shows at least two creatures reacting on camera to a physics toy, the toy at least 1/5 of the frame height\nEvidence: three-paper-darts-overview.jpg: the dart is ~20 px; magnet-stone film inside a bush",
+      "detail": "perfectionist-0151 [camera, high]: iron-ball-stone.mp4 and -2 show a static, dark, oblique view of a flat brown tray and three tiny black balls. No Lumi, no friend, nobody putting, and the 'stone' is a black ellipse. It is the lone physics demo on a board that #690 asked to stop.\nWhere: site/films/iron-ball-stone.mp4, iron-ball-stone-2.mp4\nSuggestion: If the tray stays at all: low and close, Lumi's beak making the putt, a friend watching the ball curve and groaning when it sticks, in real daylight, with polished steel balls that mirror the sky.\nDone when: Every frame of the posted film's overview sheet shows a creature with its head in frame, and the balls are larger than 20 px and visibly metallic.\nEvidence: reviews/motion/perfectionist-0151/iron-ball-stone-2-overview.jpg",
       "est_minutes": 30.0,
       "id": 690,
       "kind": "review",
@@ -9657,8 +9657,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Stop filming lone physics demos on a board: put the creatures in them",
-      "updated": "2026-11-27T16:53:51.356"
+      "title": "Putting tray films: a dim brown board with black dots and no creature",
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T14:28:18.115",
@@ -9919,12 +9919,12 @@
       "id": 709,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0151: Duplicate of #687 (re-render hot glass and the other untraced pictures)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Hot glass picture: render it again in the worker (it was a grainy still from my own session)",
-      "updated": "2026-11-27T16:30:58.227"
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T16:32:03.613",
@@ -9942,17 +9942,17 @@
     },
     {
       "created": "2026-11-27T16:53:51.356",
-      "detail": "perfectionist-0148 [camera, high]: magnet-stone-beach.mp4 spends 9 of 12 overview frames inside green foliage with tree trunks as silhouettes. compass-bowl.mp4 never shows the compass, only a bird's legs walking past a hydrangea. Both were posted.\nWhere: the movie pipeline / film camera placement; world/site posts for magnet stone and compass\nSuggestion: Before a film renders, raycast from the camera to the subject on every keyframe and refuse occluded shots, the way the firefly test checks visibility. Frame the subject at 1/3 of the frame height, and write the overview sheet before posting, so a film that misses is never published.\nDone when: the next three films' overview sheets show the named subject unoccluded and at least 150 px tall in 12 of 12 frames\nEvidence: reviews/motion/perfectionist-0148/magnet-stone-beach-overview.jpg, compass-bowl-overview.jpg",
+      "detail": "perfectionist-0151 [camera, medium]: scrap-crane.mp4 frames Lumi from behind and below. Its head is out of frame in 8 of 12 overview frames, the coil reads as a brown stick, and the pegs are black hairlines. The film starts on a black frame and fades in. It is still posted.\nWhere: site/films/scrap-crane.mp4\nSuggestion: Before posting, open the overview sheet and reject any film where the subject's face is out of frame. Frame three-quarters from the front at Lumi's eye height, with the cord and the payload in shot.\nDone when: The overview sheet of every new film shows the main creature's head in all 12 frames, and the first frame is not black.\nEvidence: reviews/motion/perfectionist-0151/scrap-crane-overview.jpg, scrap-crane-steps.jpg",
       "est_minutes": 30.0,
       "id": 711,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films shot from inside a bush and at grass height: check every frame before posting",
-      "updated": "2026-11-27T16:53:51.356"
+      "title": "Scrap crane film: Lumi from behind, head cut off, opens on black",
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T16:53:51.356",
@@ -9961,12 +9961,12 @@
       "id": 712,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0151: live_motion: 10 of 10 creatures move well, Pinchy's snap is gone",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Pinchy walks through the fence and snaps 0.30 m in one frame",
-      "updated": "2026-11-27T16:53:51.356"
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T16:53:51.356",
@@ -9975,12 +9975,12 @@
       "id": 713,
       "kind": "review",
       "priority": 3,
-      "result": "s149: the Z (emotes.jl) floated 2.2 s after a friend woke the sleeper (nap_woken, 72 in the human's game since s148), so 'meeting someone new' showed under a Z. Now a creature's z's go the moment it is no longer asleep: sandbox test, Lumi asleep with the camera on it = 1 z live, 0.3 s after waking = 0 (live_eval count of Main.EMOTES[:live]). Published (emotes ok, live frame p95 7.4 ms). The overlapping name labels part is not done.\nHALF (s149): Z over a thought fixed and published (emotes.jl drops a creature's z's when it wakes; sandbox 1 z asleep -> 0 z 0.3 s after waking). Still to do: name labels that stack on one spot in follow view.",
+      "result": "s149: the Z (emotes.jl) floated 2.2 s after a friend woke the sleeper (nap_woken, 72 in the human's game since s148), so 'meeting someone new' showed under a Z. Now a creature's z's go the moment it is no longer asleep: sandbox test, Lumi asleep with the camera on it = 1 z live, 0.3 s after waking = 0 (live_eval count of Main.EMOTES[:live]). Published (emotes ok, live frame p95 7.4 ms). The overlapping name labels part is not done.\nHALF (s149): Z over a thought fixed and published (emotes.jl drops a creature's z's when it wakes; sandbox 1 z asleep -> 0 z 0.3 s after waking). Still to do: name labels that stack on one spot in follow view.\nperfectionist-0151: Fixed in s149 (Z clears when woken); not seen in any of this review's screenshots",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Dashboard contradicts itself: Z sleeping over 'meeting someone new'",
-      "updated": "2026-11-27T17:22:09.300"
+      "updated": "2026-11-27T19:27:07.754"
     },
     {
       "created": "2026-11-27T17:16:10.985",
@@ -10073,12 +10073,124 @@
       "id": 720,
       "kind": "build",
       "priority": 3,
+      "result": "perfectionist-0151: One more iron sand film; the magnet run is now a repeat, see the 'Leave magnets' finding",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Retake the iron sand as a film where you see the cause (pour, taps, stone dug up)",
+      "updated": "2026-11-27T19:27:07.754"
+    },
+    {
+      "created": "2026-11-27T19:27:07.754",
+      "detail": "perfectionist-0151 [camera, high]: Since s150 the game's standing view is 'Camera: free', parked where a film was shot. In s150 that was a rock on the beach, and now it is inside the ground: the human sees a green-brown wall and a slice of sky. Switching to free in the sandbox lands at the same spot. In s148 the same progress shot showed Lumi on the path.\nWhere: dashboard camera menu / rig (dashboard.jl set_camera!, freecam.jl); whatever filming code leaves the rig in :fixed\nSuggestion: Every filming or still job restores the human's camera pick when it ends. Free mode never starts below terrain height + 1.5 m or inside a prop. Better still, the default view is a composed shot of what Lumi is doing.\nDone when: The next progress dashboard.png shows Lumi on the island in follow mode, and switching to free in the sandbox shows the island from above the ground.\nEvidence: media/progress/session-0151/dashboard.png, session-0150/dashboard.png vs session-0148/dashboard.png; reviews/p151/cam-free.png",
+      "est_minutes": 30.0,
+      "id": 721,
+      "kind": "review",
+      "priority": 1,
+      "result": "s152: free_start! (plugins/freecam.jl) now scores each candidate view by the ground along the line of sight (ground_hits, 16 samples to 4x the target distance) besides props; target z lifted over the ground ahead. From the north beach it used to look uphill into the slope. Sandbox: picking 'Camera: free' shows Lumi, the island and the sea (media/s152/freecam-pick.png). Published. The human's game was in :follow at 19:4x (live_eval game.rig.mode). Still open: find what leaves the rig :fixed for the progress shot.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The dashboard opens on a free camera stuck inside the terrain",
+      "updated": "2026-11-27T19:57:44.838"
+    },
+    {
+      "created": "2026-11-27T19:27:07.754",
+      "detail": "perfectionist-0151 [wow, high]: Six sessions in a row on magnetism (stone, top, compass, iron sticks, coil, putting tray). The host judged the last three each a repeat worth ×0.10, and Lumi's measured mood is boredom 1.0, annoyance 1.0, joy 0.14. Meanwhile goal 3 (spray paint, splashable water that carries things, things that burn) and goal 5 (Lumi's garden, the mailbox) have not moved.\nWhere: plugins/magnetgolf.jl, ironsand.jl, magnetstone.jl, wirebench.jl; /run/neverending/mood.json\nSuggestion: Pick something a player touches and a stranger shares, from a goal that has not moved: water you splash that carries a friend's hat away, or a spray can that paints a pig. Put creatures in it with a reaction (a friend shrieks, chases, laughs). Park every magnet todo until the next post is not a repeat.\nDone when: The next session's post is not judged a repeat (no ×0.10 line in mood.json), and boredom in mood.json is below 0.6.\nEvidence: /run/neverending/mood.json 'why': A REPEAT ×0.10 in s149, s150, s151; last 9 posts all magnet themed",
+      "est_minutes": 30.0,
+      "id": 722,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Leave magnets: one session of something of a completely different kind",
+      "updated": "2026-11-27T19:27:07.754"
+    },
+    {
+      "created": "2026-11-27T19:35:31.674",
+      "detail": "FieldError: type Nothing has no field `scene`; Nothing has no fields at all.\nStacktrace:\n  [1] getproperty\n    @ ./Base_compiler.jl:54 [inlined]\n  [2] step!(::Main.Plugin_kiln.KilnJug, game::Game, dt::Float64)\n    @ Main.Plugin_kiln /sim/Programmieren/SimGame/world/plugins/kiln.jl:25\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] top-level scope\n    @ ./bt_julia_eval:6\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [11] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [12] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [13] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "est_minutes": 15.0,
+      "id": 723,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T19:36:37.366: plugin kiln loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:kiln.KilnJug failed in step! and was switched off",
+      "updated": "2026-11-27T19:36:37.366"
+    },
+    {
+      "created": "2026-11-27T19:51:13.236",
+      "detail": "MethodError: Cannot `convert` an object of type Makie.Keyboard.Button to an object of type Symbol\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  Symbol(::Enum)\n   @ Base Enums.jl:34\n  Symbol(::Any...)\n   @ Base strings/basic.jl:230\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setindex!(h::Dict{Symbol, Any}, v0::Bool, key0::Makie.Keyboard.Button)\n    @ Base ./dict.jl:346\n  [2] (::Main.Plugin_campfire.var\"#pressed#pressed##0\"{Game})(k::Makie.Keyboard.Button)\n    @ Main.Plugin_campfire /sim/Programmieren/SimGame/world/plugins/campfire.jl:122\n  [3] step!(::Main.Plugin_campfire.Campfire, game::Game, dt::Float64)\n    @ Main.Plugin_campfire /sim/Programmieren/SimGame/world/plugins/campfire.jl:123\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] (::NeverendingGame.var\"#advance!#399\"{NeverendingGame.CameraRig, Game, Makie.Scene, NeverendingGame.World})(dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:428\n [10] (::NeverendingGame.var\"#400#401\"{Int64, Int64, NeverendingGame.CameraRig, Main.ClipScript.var\"#46#47\"{Main.ClipScript.var\"#44#45\"{Float64, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, Dict{Symbol, Any}}, Int64, Game, String, Vector{Float32}, Vector{Float64}, NeverendingGame.var\"#advance!#399\"{NeverendingGame.CameraRig, Game, Makie.Scene, NeverendingGame.World}, Makie.Scene, NeverendingGame.World})(screen::RayMakie.Screen)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:453\n [11] with_screen(f::NeverendingGame.var\"#400#401\"{Int64, Int64, NeverendingGame.CameraRig, Main.ClipScript.var\"#46#47\"{Main.ClipScript.var\"#44#45\"{Float64, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, Dict{Symbol, Any}}, Int64, Game, String, Vector{Float32}, Vector{Float64}, NeverendingGame.var\"#advance!#399\"{NeverendingGame.CameraRig, Game, Makie.Scene, NeverendingGame.World}, Makie.Scene, NeverendingGame.World}, screen::RayMakie.Screen, oidn::NeverendingGame.GPUOIDN)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:357\n [12] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64,",
+      "est_minutes": 15.0,
+      "id": 724,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T19:52:02.280: plugin campfire loaded cleanly.\nHappened again at 2026-11-27T19:52:03.010.\nClosed at 2026-11-27T19:52:04.455: plugin campfire loaded cleanly.\nHappened again at 2026-11-27T19:52:05.052.\nClosed at 2026-11-27T19:52:29.773: plugin campfire loaded cleanly.\nHappened again at 2026-11-27T19:56:05.641.\nClosed at 2026-11-27T19:57:15.374: plugin campfire loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:campfire.Campfire failed in step! and was switched off",
+      "updated": "2026-11-27T19:57:15.374"
+    },
+    {
+      "created": "2026-11-27T19:53:55.549",
+      "detail": "Project fire (projects/fire.md). physics/fire.jl + plugins/campfire.jl (south shore -3,-16: 7 light, 8 sea water). Next: thick wood self-extinguishes without neighbours' heat; Lumi's beak really carrying water from the sea (not a key that teleports it); smoke; props carry FireBodies (fences, stools, trees); the grass bed.",
+      "est_minutes": 15.0,
+      "id": 725,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s152 first step: physics/fire.jl (Heskestad flame height, Thomas lean, point-source radiation, immersed-flame flux ~45 kW/m2, skin moisture boils first, EN 1995-1-2 char section -> break -> fall downwind). Headless: 4-log crib 82 kW, 2 m/s wind: stake 0.45 m downwind catches 1.8 min, breaks 8.9, out 15; upwind/side stay; calm: nothing catches. plugins/campfire.jl published (campfire step 0.8 ms; media/s152/campfire-play2.png: ring of stakes, flames leaning, Lumi beside). Film job 20261127-194905-909 -> site/films/campfire-in-the-wind.mp4 (pending post).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Fire that spreads: a campfire you light and fight (passed idea s152)",
+      "updated": "2026-11-27T19:53:55.619"
+    },
+    {
+      "created": "2026-11-27T19:53:55.624",
+      "detail": "Now key 8 drops 0.4 kg of water on the nearest wood. Make it a body action: Lumi walks to the sea, scoops water in its beak (NG.beak_tips), carries it, and it splashes on what it hits; sand kicked onto embers smothers them (oxygen). Thick wood alone should go out (flame-out below a critical net flux). Done when a film shows Lumi saving a stake by a real carried beakful.",
+      "est_minutes": 15.0,
+      "id": 726,
+      "kind": "feature",
+      "priority": 1,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Retake the iron sand as a film where you see the cause (pour, taps, stone dug up)",
-      "updated": "2026-11-27T18:49:00.962"
+      "title": "Fire: Lumi fights the fire with its beak (carry sea water, drag a burning stake away, kick sand)",
+      "updated": "2026-11-27T19:53:55.624"
+    },
+    {
+      "created": "2026-11-27T19:53:55.630",
+      "detail": "Give props FireBodies from their kind (materials table: wood density, moisture by weather), heat between them via Raycore queries (not a CPU pair loop), grass cells with Rothermel spread (Wildfires.jl). Burnt props stay charred (saved). Done when a fire on the meadow can reach a fence prop and leave it charred in the saved world.",
+      "est_minutes": 15.0,
+      "id": 727,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Fire: the island's wood props burn by what they are (fences, stools, trees, the grass bed)",
+      "updated": "2026-11-27T19:53:55.630"
+    },
+    {
+      "created": "2026-11-27T20:13:41.388",
+      "detail": "The human, s152: a sun that falls onto the meadow every noon is a script, not the world simulating (sunball's clock trigger removed s152). Go through every plugin with FROM_H/TO_H windows: either something in the simulation causes it (frost from a cold clear night for the glass sea, rain glass from a real shower over hot sand) or it only starts when the player or a creature does something. Done when no plugin starts a world-changing event by the clock alone.",
+      "est_minutes": 15.0,
+      "id": 728,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Daily clock-scripted events: keep only what the world really causes (glass sea 7:00, glass rain 15:00, sun under the sea 19:00)",
+      "updated": "2026-11-27T20:13:41.388"
     }
   ]
 }

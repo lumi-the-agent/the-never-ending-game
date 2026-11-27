@@ -234,23 +234,56 @@
         "a little boat": 2
       },
       "winner": "a little boat"
+    },
+    {
+      "island_t": 449085.13328205084,
+      "key": "boat",
+      "time": "2026-11-27T19:28:46",
+      "voters": {
+        "Gloop": "a little boat",
+        "Hopscotch": "a little boat",
+        "Pickles": "a little boat",
+        "Sir Sniffsalot": "a greenhouse",
+        "Truffle": "a greenhouse",
+        "Wibbles": "a little boat"
+      },
+      "votes": {
+        "a greenhouse": 2,
+        "a little boat": 4,
+        "a treehouse": 0
+      },
+      "winner": "a little boat"
+    },
+    {
+      "island_t": 450030.0999484975,
+      "key": "greenhouse",
+      "time": "2026-11-27T19:44:34",
+      "voters": {
+        "Cumulus": "a greenhouse",
+        "Gloop": "a little boat"
+      },
+      "votes": {
+        "a berry bakery": 0,
+        "a greenhouse": 1,
+        "a little boat": 1
+      },
+      "winner": "a greenhouse"
     }
   ],
   "latest": {
-    "island_t": 432030.09995268844,
-    "key": "boat",
-    "time": "2026-11-27T14:36:05",
+    "island_t": 450030.0999484975,
+    "key": "greenhouse",
+    "time": "2026-11-27T19:44:34",
     "voters": {
-      "Gloop": "a little boat",
-      "Pinchy": "a greenhouse",
-      "Wibbles": "a little boat"
+      "Cumulus": "a greenhouse",
+      "Gloop": "a little boat"
     },
     "votes": {
+      "a berry bakery": 0,
       "a greenhouse": 1,
-      "a hot spring": 0,
-      "a little boat": 2
+      "a little boat": 1
     },
-    "winner": "a little boat"
+    "winner": "a greenhouse"
   },
   "won": [
     "beachhut",
@@ -265,6 +298,8 @@
     "boat",
     "greenhouse",
     "beachhut",
-    "boat"
+    "boat",
+    "boat",
+    "greenhouse"
   ]
 }

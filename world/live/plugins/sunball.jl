@@ -104,7 +104,9 @@ function NG.step!(s::SunBall, game, dt)
     if !s.on
         h = hour_of(w)
         day = floor(Int, w.t / w.day_length)
-        (force || (FROM_H <= h < TO_H && day != s.day && game.minigame === nothing)) || return
+        # s152, the human: a sun that falls onto the meadow every noon and greys the whole island is a script playing,
+        # not the world simulating. It no longer comes loose by the clock; only `SUNBALL[:force]` (old films, tests).
+        force || return
         start_match!(s, game)
     end
     if s.leaving < 0 && !force && !(FROM_H <= hour_of(w) < TO_H + 0.05)

@@ -5,7 +5,7 @@
 using NeverendingGame, GeometryBasics, Makie, LinearAlgebra
 const NG = NeverendingGame
 
-function compass_clip(path; rasterize = false, samples = 16, width = 960, height = 540, fps = 24, seconds = 8.0, hour = 13.0)   # s148: 16.5 left the foreground in deep shadow
+function compass_clip(path; rasterize = false, samples = 16, width = 960, height = 540, fps = 24, seconds = 8.0, hour = 11.0)   # s148: 16.5 left the foreground in deep shadow
     bx, by = -4.9, 17.8
     setup = function (gm)
         for p in gm.stage.scene.plots

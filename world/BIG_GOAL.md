@@ -21,6 +21,8 @@ The moment people share: The first motor wound from beach copper, put together b
   - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
 - [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
 - [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
+  - [ ] Heat and fire in real things: wood heats, dries, catches, chars and breaks; wind leans the flames (physics/fire.jl s152, project fire)
+  - [ ] A fire the player lights and fights: campfire, stakes, pond water (next)
 - [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
   - [x] The coil's own field: Biot-Savart over every wound turn, core and spikes solved together (physics/coilcrane.jl, s150)
   - [ ] The scrap crane: lowered into a spike pile, lifted, switched off over a friend (film; s150 take came up empty: contact inside the winding, NOTES)

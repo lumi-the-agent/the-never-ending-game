@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "At 50% the beak tip is at about (680,130) and the cord's top end at about (645,130), not touching it. At 75% the body fills the frame up to the neck, and the cord runs straight up past the top edge with no head in sight.",
+      "severity": "high",
+      "suggestion": "Pin the cord's top end to the beak-tip bone every frame, and frame the shot so beak, cord, coil and pegs are all in view, e.g. pull the camera back or tilt it up.",
+      "what": "The cord the coil hangs on is not attached to the beak. For most of the film Lumi's head is above the frame, so the cord's top end is never seen. Where the beak is in view, the cord stops below the beak tip with a gap, so the coil hangs from nothing.",
+      "where": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-50.jpg, scrap-crane-at-75.jpg"
+    },
+    {
+      "evidence": "A thin brown plank lies at about (510-670, 390-450), away from the sand edge, with grass between them. The tray is set by its highest corner + 0.05, and the slope hides the near rim. Only part of the rim pokes out.",
+      "severity": "medium",
+      "suggestion": "Give the tray legs or a plinth down to the ground on its low side, or level the ground under it, so all four rims stand around the sand and can be seen.",
+      "what": "The tray's front rim is missing from the tray and lies as a loose plank on the grass in front of it. The sand's front edge runs straight into the grass, so the tray looks half sunk and broken.",
+      "where": "putting-past-a-magnet-stone, all frames, iron-ball-stone-at-50.jpg lower middle; plugins/magnetgolf.jl:59-66"
+    },
+    {
+      "evidence": "The balls start in the far shadowed corner, are tiny at this distance, and come to rest about 0.3 m apart on the right half of the tray. No groove trail can be seen, although the plugin draws one.",
+      "severity": "medium",
+      "suggestion": "Film from above, close in, with the groove trail drawn for each ball (in three colours) and the stone's disk shown faintly, so the straight, bent and captured paths can be read at a glance. End on a putt that goes into the cup.",
+      "what": "The caption promises one straight, one swinging round and one caught, but the film shows nothing a viewer can tell apart as a straight path or a curve. Two balls stop in the middle of the tray, the third creeps into the dark disk, and no trail or groove marks the bend. The cup never appears, so it is not clear what game this is.",
+      "where": "putting-past-a-magnet-stone, storyboard frames 2-16"
+    }
+  ],
+  "fun": 4,
+  "fun_why": "Putting to find a hidden stone could be replayed in the game, but the film shows three slow balls stopping mid-tray with no cup in sight, and the crane film is a dip that comes back empty.",
+  "real": 6,
+  "real_change": "magnetgolf.jl adds a playable sand tray. An iron ball rolls by physics/magnetgolf.jl: it gets an induced moment in the field of a buried lodestone (em.jl) and feels F proportional to grad|H|^2, with 7/5 rolling inertia and rolling resistance on sand. Inside the plugin the ball bounces off the rims, the cup catches it below 0.6 m/s, the stone is reburied at a random place, depth and tilt, and iron sand can be sprinkled and tapped. The rims are an axis-aligned clamp with a 0.5 restitution. The groove trail, the dark stone disk shown after the cup and the camera are only drawn. The three-ball film is not something the plugin can play (it has one ball), so it was staged with a separate script. The coil crane draws on physics/coilcrane.jl from s150 (Biot-Savart over the wound helix, core and pegs solved together as soft iron). This session added no crane plugin, and nothing visible in the film shows the cord or the dip being simulated.",
+  "real_why": "The ball's force comes from a real induced-moment field of arbitrarily placed and tilted stones, with rolling inertia and resistance, so other things could be built on it. But the tray is a flat box with clamp-and-halve rims, and the ball never meets the sand it rolls on (no dents, no slope).",
+  "summary": "The magnet golf film shows a real effect: one ball is pulled into the stone's spot while the others stop beside it. But the 'straight' and 'swings round' paths can't be told apart, and the tray's front rim lies loose on the grass. The coil film is a null result filmed with Lumi's head cut off at the top of the frame, and its cord stops short of the beak, so the coil is not seen hanging from anything.",
+  "superseded_by": "perfectionist-0151.json",
+  "surprise": 4,
+  "surprise_why": "Golf bent by a hidden magnet is a nice game idea, but it is the sixth magnet post in a row (magnet stone, iron sticks, compass, levitron, wire motor), and the crane post shows that nothing happens.",
+  "verdict": "needs_work"
+}

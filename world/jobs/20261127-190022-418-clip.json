@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T19:00:22.420",
+  "finished": "2026-11-27T19:14:14.427",
   "id": "20261127-190022-418-clip",
   "kind": "clip",
   "params": {
@@ -11,6 +12,11 @@
     "path": "/sim/Programmieren/SimGame/world/site/img/putting-grooves.png",
     "script": "movies/magnetgolf.jl"
   },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/img/putting-grooves.png",
+    "putts": "[(stop = :stopped, t = 1.66, last = (1.6600000000000013, 0.25204452811918526, -0.149448370541959)), (stop = :stopped, t = 1.71, last = (1.7000000000000013, 0.29685006221027166, 0.044617125991806714)), (stop = :stopped, t = 1.67, last = (1.6600000000000013, 0.11605843729830219, -0.0004681539869268931))]"
+  },
+  "seconds": 171.5,
   "started": "2026-11-27T19:11:22.886",
-  "status": "running"
+  "status": "done"
 }

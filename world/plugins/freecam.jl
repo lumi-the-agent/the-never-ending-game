@@ -86,6 +86,16 @@ function NG.stop!(::FreeCam, game)
     return
 end
 
+"How many of 16 points on the line from `a` to `b` lie under the ground (or less than 0.3 m over it)."
+function ground_hits(w, a, b)
+    n = 0
+    for k in 1:16
+        p = a + (k / 16f0) * (b - a)
+        p[3] < NG.terrain_height(w.island, p[1], p[2]) + 0.3f0 && (n += 1)
+    end
+    return n
+end
+
 "A low view of Lumi from the side, looking on across the island: the free flight's first picture."
 function free_start!(game)
     w = game.world; rig = game.rig
@@ -101,9 +111,12 @@ function free_start!(game)
         eye = Point3f(e2[1], e2[2], NG.terrain_height(w.island, e2[1], e2[2]) + 1.8f0)
         # Lumi on the left third, the island open on the right (centred, it hid the view, s44)
         rt = Vec2f(dd[2], -dd[1])
-        target = c.pos + Point3f(4f0 * dd[1] + 2.2f0 * rt[1], 4f0 * dd[2] + 2.2f0 * rt[2], 0.6f0)
+        tx, ty = c.pos[1] + 4f0 * dd[1] + 2.2f0 * rt[1], c.pos[2] + 4f0 * dd[2] + 2.2f0 * rt[2]
+        target = Point3f(tx, ty, max(c.pos[3], NG.terrain_height(w.island, tx, ty)) + 0.6f0)
         # the line to Lumi and the line the camera looks along (a bush filled the right edge, s44)
         s = NG.obstruction(w, eye, c.pos + Point3f(0, 0, 0.5f0)) + NG.obstruction(w, eye, target)
+        # and the ground: from the north beach it looked uphill into the slope, a green-brown wall (review s151)
+        s += 4 * ground_hits(w, eye, target + 3f0 * (target - eye))
         (best === nothing || s < best[1]) && (best = (s, eye, target))
         s <= 0 && break
     end

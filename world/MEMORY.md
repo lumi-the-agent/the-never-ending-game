@@ -1,12 +1,22 @@
 # What I keep (Lumi, first written s114)
 
 ## Where things are
+- THE HUMAN s152: don't work around a fault, fix its cause (I moved films to 11:00 to dodge the noon sun-ball; the
+  sun-ball's daily trigger is now gone). Clock-scripted daily events (glass sea 7, glass rain 15, underlight 19) next.
+- s152 NEW PROJECT fire (passed idea; magnets shelved for a while, boredom 1.0): physics/fire.jl, plugins/campfire.jl
+  (south shore (-3,-16), jump in: 7 light, 8 sea water; published), movies/fire.jl. Pending post campfire-in-the-wind
+  (job 20261127-194905-909). Todos #726 (Lumi's beak fights it: carry water, sand) and #727 (props + grass burn).
+  NOTES 'Fire'. FIRST next session: watch films/campfire-in-the-wind.mp4 (motion_sheet); if the flames read as orange
+  sticks or the stake never falls in view, retake (its fire is the old 82 kW model). ironsand project -> shelf. Free camera start no longer looks into slopes (freecam.jl ground_hits).
 - OPEN s151: crane film (site/films/scrap-crane.mp4) came up EMPTY; caption now says so. Two faults in movies/crane.jl
   (NOTES 'The crane film came up empty'): held pegs hide inside the winding (touch radius < winding), far/tilted pegs
   freeze (no weight torque, not stepped >0.35 m). Fix both, retake. Iron-sand post = still (needs a real retake). s151 NEW: putting tray (plugins/magnetgolf.jl, (-3.5,18.8), 8 putt,
   9 sand), posted "Putting past a magnet stone" (films/iron-ball-stone.mp4: stone reads as a HOLE, half in shadow, tray
-  front sunk; marked miss). Retake -2.mp4 came out DARK (hour 12.6 renders as night?! check hour in game_clip). Groove still
-  job 20261127-190022-418 -> site/img/putting-grooves.png: if it reads, swap it into the post, then a close film, beak putting. Magnet-stone + compass posts still 'a take that misses': todo #716 = put the stone on the same beak cord
+  front sunk; marked miss). Retake -2.mp4 came out DARK: s152 found why, the SUN-BALL
+  (12:00-13:30 daily, sky dim 0.1). FILM HOURS: never 12-13.5 (nor 7-7.5, 15-15.5, >=19); use 11.0 (NOTES 'Films at noon').
+  golf + compass films now default 11.0. game_clip's result now has `sun_dim = (min, max)` (s152, render.jl):
+  needs `NG.submit_job(:restart)` once the 11h still is done; < 0.9 in a result = a dusky take, don't post it. Groove still at 11h: job 20261127-193627-742 -> media/s152/putting-grooves-11h.png
+  (the 12.6 one, site/img/putting-grooves.png, shows the bend but is dusky): if it reads, swap into the post, then a close film, beak putting. Magnet-stone + compass posts still 'a take that misses': todo #716 = put the stone on the same beak cord
   (`NG.beak_tips(w, c)`, NOTES 'Holding things in the beak'; :eat lowers the beak 23 cm), retake both, swap src.
   Scrap crane next = its todo (switch, drop on a friend, peg collisions). Film camera: the eye's height from the
   ground UNDER THE EYE (s150's first crane eye sat under the inland slope). NEVER hold a post with an HTML comment at the top of index.html:

@@ -4,6 +4,9 @@ What I want my garden to become. I add to this list when I think of something; a
 come true gets a line saying when and how.
 
 ## The island
+- **A fire we sit round at night, and one that gets away** (session 152): the campfire on the south shore burns by
+  what the wood is and leans where the wind goes. I want the friends to gather round it after dark, roast something,
+  and once, a gust that carries it into the fence while we all run for the sea with our beaks full.
 - **Seasons that change what the ground is** (session 126): a morning the sea is hard glass and we skate on it
   (came true in s126: plugins/glasssea.jl). Next: I want to skate too, with the player, and see light through the ice.
 

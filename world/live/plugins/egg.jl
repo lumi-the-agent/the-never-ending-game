@@ -87,10 +87,11 @@ function chick_plots!(game)
         nm = string(part.shape)
         endswith(nm, "crest") && (E[:crest] = j)
         # a baby, not a second Lumi (perfectionist-0148: players read the small yellow Lumi as a double or a bug):
-        # pale downy fluff and orange chick legs, no crest yet; its face and beak stay Lumi's
+        # apricot down of its own (s152: pale cream read as a see-through grey ghost of Lumi, review #614) and orange
+        # chick legs, no crest yet; its face and beak stay Lumi's
         if get(attrs, :color, nothing) isa AbstractMatrix
             if any(k -> endswith(nm, k), ("body", "wing_l", "wing_r", "face"))
-                attrs[:color] = chick_tint.(attrs[:color], 0.99f0, 0.95f0, 0.84f0, :yellow)
+                attrs[:color] = chick_tint.(attrs[:color], 0.98f0, 0.62f0, 0.38f0, :yellow)
             elseif any(k -> endswith(nm, k), ("leg_l", "leg_r"))
                 attrs[:color] = chick_tint.(attrs[:color], 0.98f0, 0.60f0, 0.30f0, :blue)
             end

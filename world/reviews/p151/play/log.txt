@@ -1,0 +1,15 @@
+firefly start: Main.Plugin_firefly_catch.FireflyCatch state=ready t=0.0 t_state=1.2666666666666673 score=0 lumi=1 spark_t=100.2666666666666 flash=0.0
+firefly 2: Lumi Float32[1.5, 0.1, 2.4] Main.Plugin_firefly_catch.FireflyCatch state=playing t=5.6999999999999895 t_state=5.6999999999999895 score=1 lumi=1 spark_t=3.3999999999999977 flash=0.0
+firefly 5: Lumi Float32[1.6, 2.8, 3.0] Main.Plugin_firefly_catch.FireflyCatch state=playing t=12.666666666666632 t_state=12.666666666666632 score=1 lumi=1 spark_t=10.36666666666664 flash=0.0
+firefly 12: Lumi Float32[-1.4, 4.6, 2.0] Main.Plugin_firefly_catch.FireflyCatch state=playing t=28.3333333333339 t_state=28.3333333333339 score=1 lumi=1 spark_t=26.033333333333786 flash=0.0
+firefly end: Main.Plugin_firefly_catch.FireflyCatch state=playing t=28.433333333333906 t_state=28.433333333333906 score=1 lumi=1 spark_t=26.13333333333379 flash=0.0
+hide start: Main.Plugin_hideseek.HideSeek lumi=1 last_giggle=0 state=ready t=0.0 t_state=1.1333333333333335 flash=0.0
+hide 2: Lumi Float32[1.5, 0.1, 2.4] Main.Plugin_hideseek.HideSeek lumi=1 last_giggle=1 state=playing t=5.833333333333322 t_state=5.833333333333322 flash=0.0
+hide 5: Lumi Float32[3.8, 1.5, 2.2] Main.Plugin_hideseek.HideSeek lumi=1 last_giggle=1 state=playing t=12.799999999999965 t_state=12.799999999999965 flash=0.0
+hide 10: Lumi Float32[0.8, 3.4, 2.7] Main.Plugin_hideseek.HideSeek lumi=1 last_giggle=4 state=playing t=23.86666666666701 t_state=23.86666666666701 flash=0.0
+hide end: Main.Plugin_hideseek.HideSeek lumi=1 last_giggle=4 state=playing t=23.966666666667017 t_state=23.966666666667017 flash=0.0
+berry start: Main.Plugin_berry_race.BerryRace state=ready t=0.0 t_state=1.166666666666667 score=0 lumi=1 pop_t=100.1666666666666 flash=0.0
+berry 2: Lumi Float32[-2.8, -6.3, 2.0] Main.Plugin_berry_race.BerryRace state=playing t=5.6999999999999895 t_state=5.6999999999999895 score=0 lumi=1 pop_t=105.86666666666628 flash=0.0
+berry 5: Lumi Float32[-2.0, -4.2, 2.3] Main.Plugin_berry_race.BerryRace state=playing t=12.699999999999966 t_state=12.699999999999966 score=0 lumi=1 pop_t=3.8333333333333295 flash=0.0
+berry 10: Lumi Float32[-3.0, 0.8, 2.6] Main.Plugin_berry_race.BerryRace state=playing t=23.93333333333368 t_state=23.93333333333368 score=0 lumi=1 pop_t=3.5333333333333306 flash=0.0
+berry end: Main.Plugin_berry_race.BerryRace state=playing t=24.00000000000035 t_state=24.00000000000035 score=0 lumi=1 pop_t=3.599999999999997 flash=0.0

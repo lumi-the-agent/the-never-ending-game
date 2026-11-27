@@ -5,59 +5,66 @@
       "post": "putting-past-a-magnet-stone",
       "session": 151,
       "title": "Putting past a magnet stone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "There is no stone anywhere in the picture. The 'magnet stone' is a flat black ellipse that looks like a hole in the sand (every storyboard frame and the 25/50/75 stills), so a viewer reads it as a putting hole, not a sunken magnet."
+    },
+    {
+      "post": "",
+      "session": 151,
+      "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-50.jpg, scrap-crane-at-75.jpg",
+      "weight": 0.6,
+      "what": "The cord the coil hangs on is not attached to the beak. For most of the film Lumi's head is above the frame, so the cord's top end is never seen. Where the beak is in view, the cord stops below the beak tip with a gap, so the coil hangs from nothing."
     },
     {
       "post": "",
       "session": 150,
       "title": "a-coil-on-a-cord, storyboard frames 9-16 and scrap-crane-at-75.jpg",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The caption says some pegs come up with the coil, but the film never shows a peg hanging from it."
     },
     {
       "post": "",
       "session": 150,
       "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-75.jpg",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The framing hides the action. Lumi's head and the beak holding the cord are cut off at the top for most of the film, and the coil and pegs are tiny in the lower right."
     },
     {
       "post": "a-compass-in-a-bowl",
       "session": 149,
       "title": "A compass in a bowl",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The cause is never in the picture: in all 16 storyboard frames only the bowl, the lily pad and the needle show. The caption itself says the magnet stone is 'out of the picture', so to a viewer the needle turns by itself."
     },
     {
       "post": "the-magnet-stone",
       "session": 149,
       "title": "The magnet stone",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The stone moves over the grass with nothing moving it: no hand, no push, no slope. It glides and tilts through the whole storyboard, a motion with no cause."
     },
     {
       "post": "a-top-over-a-ring-of-lodestone",
       "session": 149,
       "title": "A top over a ring of lodestone",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The subject named in the title, a top floating over a lodestone ring, is never shown. The grey ring in the background (right side, every storyboard frame) is empty from start to end."
     },
     {
       "post": "",
       "session": 149,
       "title": "the-magnet-stone, storyboard frames 1-16; magnet-stone-beach-3-at-75.jpg; plugins/magnetstone.jl:2-3",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The magnet stone moves with nothing moving it. It slides and tumbles across the grass 'by itself', and no carrier is in the shot. In the code it is held in front of Lumi, so this is a carried thing that floats beside a body the camera has cut out. The spikes barely react: one or two twitch and touch it near the end, and nothing jumps to it."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T19:12:21",
+  "ended": "2026-11-27T20:14:01",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.76,
-    "picture": 0.62,
-    "self": 0.61,
+    "feature": 2.06,
+    "picture": 0.37,
+    "self": 0.37,
     "sound": 0.01
   },
   "forms": [
@@ -358,7 +365,7 @@
     "wire_bend",
     "ice_crack"
   ],
-  "joy": 0.14,
+  "joy": 0.42,
   "judged_posts": [
     {
       "form": "Change to how the island is seen (camera that follows Lumi's mood)",
@@ -811,13 +818,13 @@
     "similarity": 8
   },
   "last_surprise": {
-    "fun": 3,
+    "fun": 4,
     "score": 5.0,
-    "session": 150,
-    "why": "A Biot-Savart electromagnet coupled to a soft-iron solver is new physics, but it's the fifth magnet post in a row, and on screen it looks like a stick dipped into a pile of sticks."
+    "session": 151,
+    "why": "Golf bent by a hidden magnet is a nice game idea, but it is the sixth magnet post in a row (magnet stone, iron sticks, compass, levitron, wire motor), and the crane post shows that nothing happens."
   },
-  "loneliness": 0.26,
-  "perceived_until": "2026-11-27T18:25:38",
+  "loneliness": 0.34,
+  "perceived_until": "2026-11-27T19:27:32",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -831,70 +838,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [
-        {
-          "kind": "clap_seen",
-          "who": 1
-        },
-        {
-          "kind": "fireflies_synced",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "polish",
-        "self",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [
-        "owlears.jl"
-      ],
-      "points": 12.2,
-      "session": 132,
-      "touched": [
-        "berry_race.jl",
-        "builder.jl",
-        "cairns.jl",
-        "choir.jl",
-        "egg.jl",
-        "fireflysync.jl",
-        "flight.jl",
-        "ghosts.jl",
-        "giant.jl",
-        "hiccups.jl",
-        "nursery.jl",
-        "outfits.jl",
-        "paintfight.jl",
-        "presents.jl",
-        "ring.jl",
-        "sleepers.jl",
-        "sneeze.jl",
-        "strays.jl",
-        "swing.jl",
-        "workshopisle.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "polish": 3.0,
-        "self": 5.9,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1792,6 +1735,44 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/campfire-in-the-wind.mp4"
+      ],
+      "new_plugins": [
+        "campfire.jl"
+      ],
+      "points": 9.5,
+      "session": 152,
+      "touched": [
+        "egg.jl",
+        "freecam.jl",
+        "sunball.jl"
+      ],
+      "values": {
+        "feature": 0.5,
+        "film": 6.0,
+        "polish": 3.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1897,6 +1878,8 @@
       "site/films/hiccups-2.mp4",
       "site/films/i-swallow-what-i-hit-2.mp4",
       "site/films/i-swallow-what-i-hit.mp4",
+      "site/films/iron-ball-stone-2.mp4",
+      "site/films/iron-ball-stone.mp4",
       "site/films/iron-sand-2.mp4",
       "site/films/iron-sand.mp4",
       "site/films/island-answers-a-clap-broken.mp4",
@@ -2015,6 +1998,7 @@
       "site/img/paths-we-wore.png",
       "site/img/pebble-pie.png",
       "site/img/presents-traced.png",
+      "site/img/putting-grooves.png",
       "site/img/runaway-shadow.png",
       "site/img/sleepers.png",
       "site/img/still-my-shadow.png",
@@ -2143,6 +2127,7 @@
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
       "lumicolour.jl": 1.7955925803555496e9,
+      "magnetgolf.jl": 1.7958016067549756e9,
       "magnetstone.jl": 1.7957941185968773e9,
       "makeover.jl": 1.7955960056175299e9,
       "meadow.jl": 1.7956072049130402e9,
@@ -2207,11 +2192,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 134,
+    "posts": 135,
     "self": "16451668292810133953",
     "wishes": 18
   },
-  "started": "2026-11-27T18:31:52",
+  "started": "2026-11-27T19:33:44",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2341,7 +2326,9 @@
       "SubpixelRegistration.phase_offset",
       "MolecularEvolution.char_proportions",
       "PhysicalParticles.pconvert",
-      "GeometricalOptics.zernike"
+      "GeometricalOptics.zernike",
+      "MissingPatterns.missingsentinels",
+      "NeuralNetworkParameters.foldparameters"
     ],
     "games": [
       "Super Mario 64",
@@ -2421,7 +2408,10 @@
       "Mario Kart 8",
       "Perfect Dark",
       "Ninja Gaiden (NES video game)",
-      "Another World (video game)"
+      "Another World (video game)",
+      "Final Fantasy VII",
+      "Double Dragon (video game)",
+      "Pokémon (video game series)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2781,12 +2771,17 @@
       "BitSAD",
       "AtomicStructure",
       "ConsensusBasedX",
-      "ReactionMechanismSimulator"
+      "ReactionMechanismSimulator",
+      "ParticleCorrelations",
+      "Metis",
+      "ExactWrightFisher"
     ],
     "vision": [
       "DepthAnythingRunner",
-      "Hunyuan3DRunner"
+      "Hunyuan3DRunner",
+      "FluxKleinRunner",
+      "BonsaiRunner"
     ]
   },
-  "surprise_seen": 150
+  "surprise_seen": 151
 }

@@ -52,7 +52,9 @@ build, the way the lead of a great game is built.
    human's goals, and the human's game (`world/live`, changed by `publish`).
    A limit of the renderer, the GPU layer, the physics or anything else in
    `dev/` is yours to fix where it lives, not to work around: make the change minimal, test it in your own session first, and
-   note what you changed and why in the journal. These checkouts hold the
+   note what you changed and why in the journal. The same holds for your own
+   game: something of yours that gets in your way (an old plugin, a daily
+   event, a hack) you fix or take out, never work around. These checkouts hold the
    human's uncommitted work: never commit, stash, reset or check out
    anything there. A package you need to change that is not
    checked out you may fork: clone it into `dev/<Name>` and `Pkg.develop` it
