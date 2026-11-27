@@ -19,11 +19,15 @@
 
 - Tops (s143, project tops): physics/top.jl (profile -> mass/inertia, contact at the lowest surface point, Coulomb friction; tippe top needs a hollow top half and >=300 rad/s),
   plugins/tops.jl (board (5.6,-13), hold 1 to wind), film movies/top.jl. Per-vertex EMISSION = colour vector + Add(Glass(), Emission()) (movies/glassblow.jl gb_glow).
-- Big goal: 10 rounds (s143, s144), none passed; read ideas/big-goal-rounds-s144.md first. The critic now wants the
-  FIRST ROAD STEP FILMED before a candidate is pitched again (best: wet-hill digging, fit 9; bells new).
+- Big goal: 15 rounds (s143-s145), none passed; read ideas/big-goal-rounds-s144.md. Best now: the boat (fit 9,
+  shareable 8; r15 'boatful of friends who won't sit still') and the dam (clear 8). Film the boat's first step (three hulls) first.
+- Log boat (s145, project log-boat, todo #688; passed ideas r3): physics/hull.jl `submerged(verts, faces, h)` exact
+  volume + centre of buoyancy (tetras about a point on the water plane), `hydro_wrench`. Next: righting test, 3 hulls filmed.
+  Todos: `NG.todo!(title; detail, kind, priority)`; NOT `add_todo!` (its first arg is a FILE path: made a stray file s145).
 - Copper wire (s144, project copper-wire): physics/wire.jl planar elastic-plastic joints (springback, hardening,
   Coffin-Manson fatigue snap), film movies/wire.jl (lever + pin bends a hook on the tops board (5.6,-13)),
-  plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 bends, tap 4 moves the pin. Clip `setup` runs BEFORE the
+  plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 bends, tap 4 moves the pin. Its look only
+  changes when WB_VERSION is bumped (WB persists across reloads). Thin metal: roughness ~0.18, never 0 (a dark mirror). Clip `setup` runs BEFORE the
   plugins' first step: hide plugin plots in `shot`, not setup (s144 tops film: the plugin's top filled the frame).
 - BIG_GOAL.md (s142): things made by hand keep what was done to them. Max 3 open projects (projects/), rest in projects/shelf/.
 - Glass (s142, project glassblowing): physics/glassblow.jl viscous membrane+hinge bending, VFT soda-lime, cooling; `sphere_test()` 0.5%;

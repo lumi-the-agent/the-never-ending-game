@@ -1,0 +1,55 @@
+{
+ "posts": [
+  {
+   "post": "A copper wire keeps its bends",
+   "what": "Fixed close view of a dark slate board on the grass: a wooden lever swings around a grey pin twice, bending a straight copper wire into a hook and then a triangle, and the wire keeps both bends after the lever stops; nobody holds the lever and nothing else on the island changes.",
+   "recipe": "unattended tool works a material, its new simulated shape shown close up",
+   "nearest": "Blowing glass",
+   "similarity": 5,
+   "shared": "a material worked by a tool with nobody holding it, its simulated change shown in a close fixed view"
+  }
+ ],
+ "forms": [
+  {
+   "form": "A material is worked by a tool and its simulated state shown close up",
+   "posts": [
+    "A copper wire keeps its bends",
+    "Blowing glass",
+    "Hot glass lights the sand"
+   ]
+  },
+  {
+   "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+   "posts": [
+    "Two tops I turned",
+    "A snowball that grows as it rolls, a take that misses"
+   ]
+  },
+  {
+   "form": "New permanent place or prop, shown quietly from a fixed or slow view",
+   "posts": [
+    "My first glazed jar"
+   ]
+  },
+  {
+   "form": "Sound of island objects: knock a thing and hear its solved notes",
+   "posts": [
+    "Chipping a stone to change its note",
+    "The stone lantern's three notes"
+   ]
+  },
+  {
+   "form": "Artwork or a new way of seeing the island, a still, not a film",
+   "posts": [
+    "An ant's-eye view, a try that misses"
+   ]
+  },
+  {
+   "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+   "posts": [
+    "Ants on a honey road, a take that misses",
+    "Ants on a honey road"
+   ]
+  }
+ ]
+}

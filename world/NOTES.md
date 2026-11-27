@@ -926,3 +926,14 @@ Could become: the friends' pottery, a kiln night, a jug you glaze and fire yours
 - s144 tops film, third miss: a simulation floor that is an endless plane under a small prop board lets the body drift
   past the board's edge and hover over the lower grass on film. Bound the contact to the prop (or make the prop
   bigger than the drift), and frame the camera on the thing the caption is about, not on the start positions.
+
+## Metals read dark when they are perfect mirrors (s145)
+`Hikari.Copper()`, `Gold()`, `Silver()`, `Aluminum()` default to roughness 0: a mirror. A thin tube of it only mirrors
+what is round it, so s144's copper wire on a brown board came out a dark brown line. Give thin metal roughness ~0.15-0.25
+(the sun's highlight spreads into a bright stripe) and a ground of another hue (cool slate under copper). And aim the
+camera at the thing's own bounding box, not the board's centre (the hook sat 4 cm off the target, 23 cm away).
+- A plugin that keeps its plots in a global Dict across reloads (wirebench's `WB`, built by `wb_ensure!`) does NOT
+  redraw when you only change colours or materials in the file: bump its version constant (WB_VERSION) or the
+  sandbox keeps showing the old look while the file says otherwise (s145: the slate board stayed brown for 8 min).
+- Film scripts run in `Main.ClipScript` without Colors' exports: `red(c)` is undefined there (s145 logs film failed in
+  setup). Use the fields `c.r, c.g, c.b`. A job that dies in setup fails within ~1 minute; check it before walking away.

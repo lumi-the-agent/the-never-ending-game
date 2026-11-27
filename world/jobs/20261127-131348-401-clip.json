@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-27T13:13:48.401",
+  "finished": "2026-11-27T13:33:49.460",
+  "id": "20261127-131348-401-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wire_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/copper-wire-hook.mp4",
+    "script": "movies/wire.jl"
+  },
+  "result": {
+    "bend1_kept": 99.04095636153681,
+    "bend2_kept": 148.70329424557258,
+    "frames": 168,
+    "hour": 16.61176704149849,
+    "path": "/sim/Programmieren/SimGame/world/site/films/copper-wire-hook.mp4",
+    "seconds_per_frame": 4.4636661197458
+  },
+  "seconds": 806.8,
+  "started": "2026-11-27T13:20:22.699",
+  "status": "done"
+}

@@ -1,51 +1,58 @@
 {
-  "annoyance": 1.0,
+  "annoyance": 0.96,
   "annoyed": [
     {
       "post": "two-tops-i-turned",
       "session": 144,
       "title": "Two tops I turned",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem."
+    },
+    {
+      "post": "",
+      "session": 144,
+      "title": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%",
+      "weight": 0.6,
+      "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything."
     },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 143,
       "title": "Hot glass lights the sand",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow."
     },
     {
       "post": "",
       "session": 143,
       "title": "blowing-glass, every storyboard frame; the pipe swings at 3.0-3.5 s (frames 7-8); hot-glass-lights-the-sand",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Nobody blows or holds the pipe. The caption says the gather 'takes my breath', but no body is anywhere near. A bare pipe enters from the frame edge, its far end unheld. It swings from level to steeply dipped on its own, and the bubble inflates with no one at the other end."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T13:05:25",
+  "ended": "2026-11-27T13:49:14",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.97,
-    "picture": 0.62,
+    "feature": 1.18,
+    "picture": 0.37,
     "self": 0.01,
-    "sound": 0.05
+    "sound": 0.03
   },
   "forms": [
+    {
+      "form": "A material is worked by a tool and its simulated state shown close up",
+      "posts": [
+        "A copper wire keeps its bends",
+        "Blowing glass",
+        "Hot glass lights the sand"
+      ]
+    },
     {
       "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
       "posts": [
         "Two tops I turned",
-        "A snowball that grows as it rolls, a take that misses",
-        "Dandelion clocks, a take that misses"
-      ]
-    },
-    {
-      "form": "Crafting a hot material, its simulated state shown close up",
-      "posts": [
-        "Blowing glass",
-        "Hot glass lights the sand"
+        "A snowball that grows as it rolls, a take that misses"
       ]
     },
     {
@@ -344,17 +351,11 @@
     "fireflies_synced",
     "meteor_seen",
     "jug_fired",
-    "wire_snap"
+    "wire_snap",
+    "sleepwalk"
   ],
-  "joy": 0.54,
+  "joy": 0.36,
   "judged_posts": [
-    {
-      "form": "Still or film of a failed fix or failed take",
-      "recipe": "film of a failed take of the moth feature",
-      "session": 101,
-      "title": "Nobody cared about the moth",
-      "what": "A film of the first failed take of the moth: friends stand still while the moth flies round their noses because their notice timer was late."
-    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "recipe": "quiet gathering in the grass, cloud shape sequence, shown as a film",
@@ -767,6 +768,13 @@
       "session": 144,
       "title": "Two tops I turned",
       "what": "Fixed low view of a brown board on the grass: a red-white top and a small blue-white top spin and wobble side by side, then the blue one drifts off the board's left edge and keeps spinning out over the grass, while the red one precesses in place; nobody touches them and nothing else on the island changes."
+    },
+    {
+      "form": "A material is worked by a tool and its simulated state shown close up",
+      "recipe": "unattended tool works a material, its new simulated shape shown close up",
+      "session": 145,
+      "title": "A copper wire keeps its bends",
+      "what": "Fixed close view of a dark slate board on the grass: a wooden lever swings around a grey pin twice, bending a straight copper wire into a hook and then a triangle, and the wire keeps both bends after the lever stops; nobody holds the lever and nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -783,29 +791,29 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "wire_snap"
+      "sleepwalk"
     ],
-    "session": 144
+    "session": 145
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
-    "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+    "form": "A material is worked by a tool and its simulated state shown close up",
     "form_count": 2,
-    "nearest": "A snowball that grows as it rolls, a take that misses",
-    "post": "Two tops I turned",
+    "nearest": "Blowing glass",
+    "post": "A copper wire keeps its bends",
     "score": 6,
-    "session": 144,
-    "shared": "a physics study of solo simulated objects moving by themselves, watched from a fixed view, nobody involved",
+    "session": 145,
+    "shared": "a material worked by a tool with nobody holding it, its simulated change shown in a close fixed view",
     "similarity": 5
   },
   "last_surprise": {
-    "fun": 3,
-    "score": 6.5,
-    "session": 143,
-    "why": "A temperature-dependent viscous glass membrane that inflates, sags and stiffens is new physics the island never had. It is a nice step past the kiln and glaze posts, but on screen it reads as a yellow balloon turning red."
+    "fun": 4,
+    "score": 5.5,
+    "session": 144,
+    "why": "Real tops tilting and precessing because of their turned shape and friction is something the island never showed before, but on film it reads as two toys wobbling on a brown disc."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T12:23:23",
+  "perceived_until": "2026-11-27T13:05:52",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -819,57 +827,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/one-stomp.mp4"
-      ],
-      "new_plugins": [
-        "stomp.jl"
-      ],
-      "points": 2.4,
-      "repeat_factor": 0.2154434690031884,
-      "repetition": {
-        "form": "New world rule acted out on the island, shown in a distant film",
-        "form_count": 2,
-        "nearest": "The island is a seesaw",
-        "post": "One stomp, first take",
-        "score": 6,
-        "shared": "the island's ground moves under the friends' weight, shown in a distant film; here nothing visibly moves",
-        "similarity": 4
-      },
-      "session": 125,
-      "touched": [
-        "dayfall.jl",
-        "greetings.jl",
-        "groundwhale.jl",
-        "wordsand.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "film": 6.0,
-        "polish": 3.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1799,6 +1756,53 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "sleepwalk",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/three-logs-float.mp4"
+      ],
+      "new_plugins": [],
+      "points": 1.5,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "A material is worked by a tool and its simulated state shown close up",
+        "form_count": 2,
+        "nearest": "Blowing glass",
+        "post": "A copper wire keeps its bends",
+        "score": 6,
+        "shared": "a material worked by a tool with nobody holding it, its simulated change shown in a close fixed view",
+        "similarity": 5
+      },
+      "session": 145,
+      "touched": [
+        "wirebench.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1873,6 +1877,7 @@
       "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
+      "site/films/copper-wire-hook.mp4",
       "site/films/crabs.mp4",
       "site/films/dandelion-clocks.mp4",
       "site/films/drafts.mp4",
@@ -2187,16 +2192,17 @@
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
+      "wirebench.jl": 1.7957810178657045e9,
       "wordround.jl": 1.7956785473043392e9,
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 124,
+    "posts": 126,
     "self": "369107370865776265",
-    "wishes": 16
+    "wishes": 17
   },
-  "started": "2026-11-27T12:29:29",
+  "started": "2026-11-27T13:12:07",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2310,7 +2316,9 @@
       "CoolProp.saturation_ancillary",
       "CellListMap.InPlaceNeighborList",
       "RadiiPolynomial.oddsym",
-      "RemoteS.clip_orbits"
+      "RemoteS.clip_orbits",
+      "DelaunayTriangulation.getx",
+      "ImageContainers.storeimage"
     ],
     "games": [
       "Super Mario 64",
@@ -2366,7 +2374,10 @@
       "Undertale",
       "Gran Turismo 4",
       "Virtua Fighter 2",
-      "Homeworld"
+      "Homeworld",
+      "Call of Duty",
+      "Halo 3",
+      "Xenogears"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2423,7 +2434,10 @@
       "https://www.bbc.co.uk/news/articles/cre3dj5n7dpwo",
       "https://www.bbc.co.uk/news/articles/c58j4pw9xjrlo",
       "https://www.bbc.co.uk/news/articles/ck053e1d3ly1o",
-      "https://www.bbc.co.uk/news/articles/c69q8yjj1v0po"
+      "https://www.bbc.co.uk/news/articles/c69q8yjj1v0po",
+      "https://www.bbc.co.uk/news/articles/crkgvjy7q83wo",
+      "https://www.bbc.co.uk/news/articles/ckr5grlq78n9o",
+      "https://www.bbc.co.uk/news/articles/cq4gnj2ldkyzo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2689,14 +2703,19 @@
       "CompetingClocks",
       "UnitfulIntegration",
       "ClimateTools",
-      "AdaOPS"
+      "AdaOPS",
+      "WaveSpec",
+      "ActiveInference",
+      "SpinGlassExhaustive"
     ],
     "vision": [
       "ZImageRunner",
       "NeuralLUTRunner",
       "ProPainterRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "Hunyuan3DRunner",
+      "PPDocLayoutRunner"
     ]
   },
-  "surprise_seen": 143
+  "surprise_seen": 144
 }

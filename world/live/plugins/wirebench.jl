@@ -13,7 +13,7 @@ const WB_SPOT = (6.9f0, -12.6f0)
 const WB_NEAR = 1.4f0
 const WB_KEYS = (Makie.Keyboard._2, Makie.Keyboard._3, Makie.Keyboard._4)
 const WB_RATE = deg2rad(70)          # how fast the beak turns the wire (rad/s)
-const WB_VERSION = 4                 # bump when the state in WB changes shape
+const WB_VERSION = 5                 # bump when the state in WB changes shape (or the look: s145 slate board)
 
 struct WireBench <: System end
 
@@ -30,20 +30,20 @@ function wb_ensure!(game)
     WB[:origin] = top - Point3f(0.2f0, 0.05f0, 0)
     w = wb_new(); WB[:w] = w; WB[:grip] = 30; WB[:snapped_at] = -1.0; WB[:loaded] = false
     board = GeometryBasics.normal_mesh(Rect3f(top - Point3f(0.3f0, 0.3f0, 0.04f0), Vec3f(0.6f0, 0.6f0, 0.04f0)))
-    mesh!(game.stage.scene, board; color = RGBf(0.55, 0.38, 0.22), name = :wirebench_board,
-          material = NG.Hikari.Diffuse(color = (0.55, 0.38, 0.22), roughness = 0.5f0))
+    mesh!(game.stage.scene, board; color = RGBf(0.30, 0.34, 0.38), name = :wirebench_board,   # s145: slate, copper stands out
+          material = NG.Hikari.Diffuse(color = (0.30, 0.34, 0.38), roughness = 0.7f0))
     WB[:wire_obs] = Observable(wire_tube(w, w.th, WB[:origin]))
     WB[:col_obs] = Observable([RGBf(c...) for c in wire_colors(w)])
     WB[:end_obs] = Observable(wire_tube(w, w.th, WB[:origin]; range = 1:2))
-    mesh!(game.stage.scene, WB[:wire_obs]; color = WB[:col_obs], material = NG.Hikari.Copper(), name = :wirebench_wire)
-    mesh!(game.stage.scene, WB[:end_obs]; color = RGBf(0.85, 0.45, 0.3), material = NG.Hikari.Copper(), name = :wirebench_end, visible = false)
+    mesh!(game.stage.scene, WB[:wire_obs]; color = WB[:col_obs], material = NG.Hikari.Copper(roughness = 0.18f0), name = :wirebench_wire)   # roughness 0 traced as a dark mirror
+    mesh!(game.stage.scene, WB[:end_obs]; color = RGBf(0.85, 0.45, 0.3), material = NG.Hikari.Copper(roughness = 0.18f0), name = :wirebench_end, visible = false)
     pin = GeometryBasics.normal_mesh(Cylinder(Point3f(0), Point3f(0, 0, 0.03f0), 0.008f0))
-    WB[:pin] = mesh!(game.stage.scene, pin; color = RGBf(0.3, 0.2, 0.12), name = :wirebench_pin,
-                     material = NG.Hikari.Diffuse(color = (0.3, 0.2, 0.12)))
+    WB[:pin] = mesh!(game.stage.scene, pin; color = RGBf(0.7, 0.7, 0.72), name = :wirebench_pin,
+                     material = NG.Hikari.Aluminum(roughness = 0.35f0))
     WB[:next_visit] = game.world.t + 45.0                # a friend comes soon after the bench is (re)built
     haskey(WB, :scrap) || (WB[:scrap] = Any[])
     WB[:scrap_obs] = Observable(wb_scrap_mesh(game))
-    mesh!(game.stage.scene, WB[:scrap_obs]; color = RGBf(0.6, 0.35, 0.25), material = NG.Hikari.Copper(), name = :wirebench_scrap)
+    mesh!(game.stage.scene, WB[:scrap_obs]; color = RGBf(0.6, 0.35, 0.25), material = NG.Hikari.Copper(roughness = 0.3f0), name = :wirebench_scrap)
     wb_redraw!(game)
     return
 end

@@ -1,0 +1,16 @@
+{"goals": [
+  {"title": "Hang it on wire you bent",
+   "clear": 7,
+   "memorable": 6,
+   "shareable": 8,
+   "play": 7,
+   "fit": 9,
+   "critique": "This is round 11's wire candidate again, but the rework fixes real faults. The first sentence now says plainly what the player does. The mouse action is concrete: pull the wire round a peg, watch it spring back, and learn to over-bend. The thin errand scaffolding has given way to things you actually hang, and each of them can fail. Pinchy flying off a swing when a link opens is a clip people would send, and the road opens with a step that is already filmed and then a playable step, so its order is sound. What stays weak is that a hook that holds is a quiet success and only failure is dramatic. And 'slowly opens under load' needs creep and plasticity in a GPU rod solver that does not exist yet, so the whole bet rests on whether a few degrees of springback read as feel and not as noise."},
+  {"title": "Grind a lens from sea glass",
+   "clear": 7,
+   "memorable": 7,
+   "shareable": 8,
+   "play": 6,
+   "fit": 7,
+   "critique": "This one is new, and it is the only candidate whose core needs the path tracer. Every stroke stays in the glass, a lumpy curve shows up as a smeared spot and a scratch as a streak, and that ties hand-work to light more tightly than anything pitched so far. The camera obscura, with a friend walking upside down across the wall, is a moment people remember. But burning wood with a magnifier is a familiar trick. Grinding risks being slow, blind sanding whose result only shows when you hold the lens up, and after the sign, the lantern and the kiln the uses run thin. It works one material with one tool, and it builds little the island can stand on. Live caustics through an arbitrary ground surface, fast enough to aim by hand and still showing in the browser's raster, is a large unproven rendering bet, so the first film has to show a good curve and a lumpy one clearly differing before anything else."}
+]}

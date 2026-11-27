@@ -42,14 +42,15 @@ function wire_clip(path; rasterize = false, samples = 16, width = 960, height = 
         P = Point3f(g[1], g[2], g[3] + 0.05f0)
         S[:P] = P
         board = GeometryBasics.normal_mesh(Rect3f(P - Point3f(0.09f0, 0.07f0, 0.03f0), Vec3f(0.2f0, 0.14f0, 0.03f0)))
-        mesh!(gm.stage.scene, board; color = RGBf(0.55, 0.38, 0.22), name = :wire_board,
-              material = NG.Hikari.Diffuse(color = (0.55, 0.38, 0.22), roughness = 0.5f0))
+        # s145: a cool slate board, so the orange copper stands out (the brown board swallowed it)
+        mesh!(gm.stage.scene, board; color = RGBf(0.30, 0.34, 0.38), name = :wire_board,
+              material = NG.Hikari.Diffuse(color = (0.30, 0.34, 0.38), roughness = 0.7f0))
         S[:o] = P - Point3f(0.06f0, 0.03f0, 0)                       # where the wire starts
         S[:w] = Wire()
         S[:mw] = mesh!(gm.stage.scene, wire_tube(S[:w], frames[1][1], S[:o]); color = RGBf(0.85, 0.45, 0.3),
-                       material = NG.Hikari.Copper(), name = :wire_copper)
+                       material = NG.Hikari.Copper(roughness = 0.18f0), name = :wire_copper)   # roughness 0 = mirror, reads dark
         S[:pin] = mesh!(gm.stage.scene, GeometryBasics.normal_mesh(Cylinder(Point3f(0), Point3f(0, 0, 0.012f0), 0.003f0));
-                        color = RGBf(0.3, 0.2, 0.12), name = :wire_pin, material = NG.Hikari.Diffuse(color = (0.3, 0.2, 0.12)))
+                        color = RGBf(0.7, 0.7, 0.72), name = :wire_pin, material = NG.Hikari.Aluminum(roughness = 0.35f0))
         S[:lever] = mesh!(gm.stage.scene, GeometryBasics.normal_mesh(Rect3f(Point3f(0, -0.004f0, 0.0f0), Vec3f(0.05f0, 0.008f0, 0.006f0)));
                           color = RGBf(0.75, 0.6, 0.4), name = :wire_lever, material = NG.Hikari.Diffuse(color = (0.75, 0.6, 0.4), roughness = 0.4f0))
         for c in w.creatures
@@ -74,8 +75,9 @@ function wire_clip(path; rasterize = false, samples = 16, width = 960, height = 
         Makie.rotate!(S[:lever], Makie.qrotation(Vec3f(0, 0, 1), al))
         P = S[:P]
         rig.mode = :fixed
-        rig.eye = Point3f(P[1] + 0.01f0, P[2] - 0.17f0, P[3] + 0.15f0)
-        rig.target = Point3f(P[1] + 0.005f0, P[2] + 0.0f0, P[3])
+        T = S[:o] + Point3f(0.022f0, 0.022f0, 0.002f0)            # s145: the finished hook spans x 0..0.043, y 0..0.048
+        rig.target = T
+        rig.eye = T + Point3f(0.0f0, -0.078f0, 0.062f0)           # ~10 cm away; was 23 cm and 4 cm off the hook
         return nothing
     end
     r = NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rasterize,

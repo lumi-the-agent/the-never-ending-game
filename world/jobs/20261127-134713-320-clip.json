@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T13:47:13.320",
+  "id": "20261127-134713-320-clip",
+  "kind": "clip",
+  "params": {
+    "call": "hulls_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/site/films/three-logs-float.mp4",
+    "script": "movies/hulls.jl"
+  },
+  "started": "2026-11-27T13:47:13.417",
+  "status": "running"
+}

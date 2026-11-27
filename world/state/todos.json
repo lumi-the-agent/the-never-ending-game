@@ -9592,17 +9592,17 @@
     },
     {
       "created": "2026-11-27T12:53:13.776",
-      "detail": "MethodError: no method matching bend!(::Main.Plugin_wirebench.Wire, ::Int64, ::Int64, ::Float64; steps::Int64)\nThe function `bend!` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  bend!(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any, ::Any; steps)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:65\n\nStacktrace:\n  [1] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:93\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching wire_tube(::Main.Plugin_wirebench.Wire, ::Vector{Float64}, ::GeometryBasics.Point{3, Float32}; cut::Int64)\nThe function `wire_tube` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  wire_tube(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any; r, nr, range, cut)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:101\n\nStacktrace:\n  [1] wb_redraw!(game::Game)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:69\n  [2] wb_visit!(game::Game, w::Main.Plugin_wirebench.Wire, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:185\n  [3] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:122\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 686,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.",
+      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T13:12:58.462.\nClosed at 2026-11-27T13:14:16.914: plugin wirebench loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:wirebench.WireBench failed in step! and was switched off",
-      "updated": "2026-11-27T12:53:26.770"
+      "updated": "2026-11-27T13:14:16.914"
     },
     {
       "created": "2026-11-27T12:55:03.692",
@@ -9617,6 +9617,20 @@
       "status": "open",
       "title": "Re-render the two flagged blog pictures as traced stills (hot-glass-glow, island-woodcut)",
       "updated": "2026-11-27T12:55:03.692"
+    },
+    {
+      "created": "2026-11-27T13:44:54.576",
+      "detail": "Project log-boat (passed the ideas critic s145). physics/hull.jl has exact submerged volume/centre (checked on cube and sphere). Next: rigid-body righting test (wide box rights, tall box rolls), three voxel-log hulls in the bay filmed, then the adze in Jump in with a live waterline and Lumi hopping in. Done when: a traced film shows three carved hulls settling upright, leaning and rolling over, and in Jump in a carved hull floats with Lumi in it (screenshot).",
+      "est_minutes": 15.0,
+      "id": 688,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Carve a log, launch it, hop in: hulls from voxel logs float, lean or roll by their own mesh",
+      "updated": "2026-11-27T13:44:54.576"
     }
   ]
 }

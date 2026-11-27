@@ -1,0 +1,46 @@
+UndefVarError: `red` not defined in `Main.ClipScript`
+Suggestion: check for spelling errors or missing imports.
+Hint: a global variable of this name also exists in ColorTypes.
+    - Also exported by Colors (loaded but not imported in Main).
+    - Also exported by PlotUtils (loaded but not imported in Main).
+    - Also exported by ImageCore (loaded but not imported in Main).
+    - Also exported by ImageBase (loaded but not imported in Main).
+Stacktrace:
+  [1] (::Main.ClipScript.var"#19#20"{Game})(::Tuple{Int64, Tuple{Float64, Float64, Float64, ColorTypes.RGB{Float32}}})
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/hulls.jl:63
+  [2] iterate
+    @ ./generator.jl:48 [inlined]
+  [3] collect(itr::Base.Generator{Base.Iterators.Enumerate{Vector{Tuple{Float64, Float64, Float64, ColorTypes.RGB{Float32}}}}, Main.ClipScript.var"#19#20"{Game}})
+    @ Base ./array.jl:790
+  [4] map
+    @ ./abstractarray.jl:3405 [inlined]
+  [5] (::Main.ClipScript.var"#17#18"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Vector{Tuple{Float64, Float64, Float64, ColorTypes.RGB{Float32}}}})(gm::Game)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/hulls.jl:62
+  [6] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var"#17#18"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Vector{Tuple{Float64, Float64, Float64, ColorTypes.RGB{Float32}}}}, shot::Main.ClipScript.var"#21#22"{Int64, Tuple{Float32, Float32}, Dict{Symbol, Any}, Vector{Vector{Tuple{Float64, Float64}}}, Int64}, fade::Float64, denoise::Bool)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:424
+  [7] film!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]
+  [8] #388
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:413 [inlined]
+  [9] with_scratch_game(f::NeverendingGame.var"#388#389"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Float64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var"#17#18"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Vector{Tuple{Float64, Float64, Float64, ColorTypes.RGB{Float32}}}}, Main.ClipScript.var"#21#22"{Int64, Tuple{Float32, Float32}, Dict{Symbol, Any}, Vector{Vector{Tuple{Float64, Float64}}}, Int64}, Float64, Bool, String}, root::String, size::Tuple{Int64, Int64})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:347
+ [10] #game_clip#386
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]
+ [11] game_clip
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:408 [inlined]
+ [12] hulls_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, spot::Tuple{Float32, Float32})
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/hulls.jl:85
+ [13] invokelatest
+    @ ./Base_compiler.jl:250 [inlined]
+ [14] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198
+ [15] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366
+ [16] top-level scope
+    @ none:1
+ [17] eval(m::Module, e::Any)
+    @ Core ./boot.jl:489
+ [18] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:283
+ [19] _start()
+    @ Base ./client.jl:550
