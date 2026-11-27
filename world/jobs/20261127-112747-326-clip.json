@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-27T11:27:47.326",
+  "finished": "2026-11-27T11:27:49.923",
+  "id": "20261127-112747-326-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795775267.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/state/pebblewords/word-1795775267.png",
+    "text": "Sun"
+  },
+  "seconds": 0.6,
+  "started": "2026-11-27T11:27:49.323",
+  "status": "done"
+}

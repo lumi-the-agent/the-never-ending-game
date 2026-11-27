@@ -1,0 +1,20 @@
+{"goals": [
+ {"title": "Build with the waves",
+  "pitch": "Stand in the surf and set stones, and every wave that runs up the beach carries black, white and pink sand and drops it behind them, so wave by wave you grow a striped land bridge to the far rock before the evening tide cuts Pickles off out there.",
+  "play": "You work IN the waves, not between tides: a wave comes every few seconds, swirls a coloured cloud round your stones and leaves a thin new stripe where the water slowed; you see the result of every move before the next wave, so you shift a stone, dig a notch, press wet sand with your feet, and watch the next stripe go where you meant. The slow tide is the stakes: each island evening the water rises and Pickles, who forages on the far rock at low water, is stranded unless your bridge stands above it; a big wave tests the weak spot, and what you built (or what the sea took) stays for tomorrow. Three sands, the tide clock and the waves are the whole toolkit, and every bridge comes out striped in its own way.",
+  "moment": "The evening tide rising round the far rock, the last stripe of pink settling into the gap behind your stones, and Pickles trotting home over a sand bridge that did not exist that morning while the water closes in behind it.",
+  "road": ["first check it is fun: one stone and a small surf box on the GPU, a wave every few seconds carrying three coloured sands, and a stripe that visibly grows behind the stone with each wave (a film)",
+           "Lumi in the surf in Jump in: set and nudge stones, dig, press sand; the beach as a height field that keeps what you did and its colours",
+           "the tide from the island's moon over the whole shore; the big wave that finds the weak spot",
+           "Pickles forages on the far rock and gets stranded at high water; the friends use whatever land you grew",
+           "the coastline saved for good, and a film of one day's bridge"]},
+ {"title": "A bridge the friends trust",
+  "pitch": "Gather sticks, stones and grass rope on the island and tie them into a bridge over the stream with your beak; each friend crosses only when it trusts it, and their real weight tests every knot: green sticks bend, dry ones snap, and Truffle is heavy.",
+  "play": "Each crossing is a test with a verdict you can see: a light friend dances over, the heavy pig makes the middle sag, a knot slips, a dry stick cracks, splash. You fish them out, look at what broke, and build it better: thicker sticks where it sagged, a stone pier in the middle, a second rope. Wood you gather behaves by what it is (fresh hazel bends and holds, driftwood is light and brittle, wet rope stretches), so finding the right material is half the game. Bridges stay: the friends take the routes you built every day, and new gaps (the ravine, the gap to the far rock) want longer bridges.",
+  "moment": "Truffle halfway across your stick bridge, the middle sagging lower with every step, one dry stick cracking like a gunshot, and the pig landing in the stream in a fountain of water while the others cheer.",
+  "road": ["one stick that bends and snaps by its wood (green or dry), held in Lumi's beak in Jump in",
+           "tie two sticks with grass rope: a joint that holds, slips or breaks under load (PrintSim rods and joints on the GPU)",
+           "a creature walking on what you built, its weight on every piece",
+           "gathering: hazel, driftwood, grass rope, stones, each by what it is",
+           "bridges kept for good, friends using the routes, a film of the first crossing that holds"]}
+]}

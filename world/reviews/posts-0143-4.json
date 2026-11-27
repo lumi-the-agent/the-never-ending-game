@@ -1,0 +1,11 @@
+{"posts": [{"post": "hot-glass-lights-the-sand",
+            "verdict": "redo",
+            "problems": [
+              "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow.",
+              "The caption says 'sand', but nothing in the picture reads as sand: there is no grain, no texture, no ripple, just a flat noisy dark plane. Without the caption it could be any floor.",
+              "The caption says the light falls 'orange', but the glow on the ground and the bubble itself are a saturated red.",
+              "The bubble does not read as glass: it is a flat, cartoon-like red blob with smeared light and dark patches inside, and nothing in it is clear, refracted or glossy, so 'hot glass' is only in the caption.",
+              "The pipe is pure flat black right up to the bubble and takes none of its glow, so its end next to a glowing hot mass looks pasted in.",
+              "There is no sense of scale or place: the pipe comes in from the left edge with no hand or holder, and nothing else in the frame shows where this is or how big the bubble is."
+            ],
+            "critique": "The idea of a glowing gather lighting the ground in the dark is good, but the picture is grainy and the 'glass' looks like a flat red blob. The 'sand' and 'orange' in the caption are not in the image."}]}

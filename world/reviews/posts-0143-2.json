@@ -1,0 +1,12 @@
+{"posts": [{"post": "hot-glass-cooling-on-a-pipe",
+            "verdict": "redo",
+            "problems": [
+              "The pipe floats in mid-air for the whole film with no support and no hand on it (storyboard frames 1-16). The caption admits 'nobody holds the pipe yet', but that doesn't make a free-floating tool acceptable.",
+              "The pipe 'dips' by itself: it is horizontal in frames 1-6, then swings to a steep diagonal in frames 7-9 with nothing moving it. That is motion without a cause, and the pivot is off-screen, so the swing is unexplained.",
+              "The glass does not visibly hang or sway when the pipe swings: from frame 9 on, it stays rigidly fixed to the pipe tip with no reaction to the swing.",
+              "'Glow' and 'hot' aren't shown. The orange glass in frames 1-8 looks like a lit, translucent orange blob with no emission: it casts no light onto the ground or the grass around it, and the bright sunlight next to it is just as strong (25% and 50% frames).",
+              "The cooled glass in frames 13-16 and in the 75% frame is a flat dark brown-red with small dark specks on its surface. It reads as a chocolate egg or a dirty surface, not as glass that cooled.",
+              "In frames 1-6 and the 25% frame, the glass hangs at the pipe tip like a lumpy blob, and the 'swells' from the caption is barely readable. The scale change is small, and it is mixed up with the camera getting closer after the dip.",
+              "The camera sits low in the grass with a wooden post on the right taking up frame space, and the glass and pipe are pushed to the left edge in the second half (frames 9-16)."
+            ],
+            "critique": "This is a floating pipe that tilts on its own, with a blob changing color on the end. It isn't hot glass: nothing glows, nothing holds or moves the pipe, and the 'cooled' result looks like a brown egg rather than glass."}]}

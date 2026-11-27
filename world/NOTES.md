@@ -890,3 +890,23 @@ Could become: the friends' pottery, a kiln night, a jug you glaze and fire yours
   `GeometryBasics.expand_faceviews`. Plot `name`s must be unique in a scene (two band meshes both `:glassblow` failed
   the job in 80 s). A raster film with seconds = 1.5 catches both before the worker does.
 - The host deletes a pending post whose job failed: write it again with the new job id.
+
+## s143 lessons (glow)
+- Per-vertex EMISSION needs no new Hikari node: give `mesh!` a vertex colour vector and `material = Hikari.Add(Glass(), Emission(strength = s))`;
+  RayMakie merges it into the Emission as a VertexColorTexture, smoothly interpolated (in an Add it is found by paths, not sampled as a light).
+- Hot things glow by Planck: relative to 1000 C, red radiance is 0.21 at 900 C, 0.03 at 800 C, 0.003 at 700 C. Below ~800 C glass in daylight is
+  just clear glass. `gb_glow(T)` in movies/glassblow.jl.
+- Tippe top (s143, physics/top.jl): it inverts by sliding friction only if (1) the centre is well below the ball's centre
+  (a solid ball cut flat gave alpha 0.06 and never flipped: hollow the upper half, `tippe_hollow`), (2) 1 - alpha < I1/I3 < 1 + alpha,
+  (3) the stem ends in a half ball, and (4) the spin is hard enough: 180 rad/s rolled it onto its rim at ~120 deg and it stalled,
+  300 rad/s stood it on its stem (tilt ~170, centre 22 -> 35 mm). Air drag torque on a 2 cm top is ~1e-10 w^2, not 1e-6 (that killed the spin in 0.5 s).
+- Penalty contact at the moving lowest point of a surface of revolution: height of ring s = x_z + s a_z - r sqrt(1 - a_z^2), take the min.
+- A plugin that keeps a struct instance in Main.<DICT> across reloads breaks on the next reload (the struct is a NEW type in
+  the new module: MethodError, the system is switched off; it stays off until the file changes again AND the bad state is
+  cleared). Keep only plain data there (arrays, numbers), rebuild typed things. Same lesson as fireflysync (s131), third time.
+- Scale a top (or any contact toy) to the camera, not to real life: a 4 cm top is ~5 px in the follow camera. Physics scales
+  with omega sqrt(R/g) (same flip at 8 cm with half the spin), contact stiffness with m/R.
+- s143 glass post took 4 redos: a still rendered in my own session has NO OIDN (grain everywhere) and RayMakie's default
+  background is blown-out white. Stills for posts go through the worker (`trace` job / post_still) or not at all. A glow
+  that lights things needs a real light (PointLight at the gather); Emission inside Add lights nothing. A tool in a picture
+  needs a holder (Lumi) or the critic calls it floating, every time.

@@ -1,0 +1,18 @@
+# Carved tops and the ring
+Goal: the player turns a top from wood or clay on the lathe (the mouse cuts the profile), spins it in the sand ring and battles the creatures' tops; the one that wobbles down or is knocked out first loses. The profile you cut is the top's mass, balance and tip, so a low wide top spins long, a lopsided one wanders, and a round fat one flips itself over onto its stem (the tippe top). Fun because each top is a design tested in seconds, and losing tells you what to carve next.
+Next: look at the film (job 20261127-115931-624-clip, site/films/two-turned-tops.mp4, pending post 'Two tops I turned'; raster check 20261127-115931-564 -> media/s143-tops-raster.mp4). Then a top at Lumi's scale (~10 cm, spins re-tuned by sqrt(g/R)) with a close camera while it spins (at 4 cm it is invisible from the follow camera), then the lathe (the mouse cuts the profile), then two tops in a ring with top-on-top contact on the GPU (PrintSim affine bodies / IPC) and the creatures' own tops from the same lathe. Todo #683.
+
+## s143: physics/top.jl
+- A solid of revolution from a profile r(z): mass, centre and inertia by integrating discs (rho pi r^2, I3 = rho pi r^4/2, I1 = rho pi r^2 (r^2/4 + s^2)).
+- Rigid body (quaternion, body-frame Euler equations) on a plane. Contact point = the lowest point of the surface: for every ring s of the profile, height = x_z + s a_z - r sqrt(1 - a_z^2); take the minimum. Penalty normal force + regularised Coulomb friction at that point, so the tip slides and rolls and the tippe top can invert by friction alone (nothing scripted).
+- Spin sweep (s143, tippe top cut 1.6, stem 1.0, hollow wall 0.15, mu 0.35): from tilt 0.15 rad, 200-250 rad/s flips over and falls
+  back onto its rim (~118 deg), 300-360 rad/s stands on its stem (168-178 deg) after 2.7-2.9 s. From tilt 0.12 rad it NEVER flips (stays at 5-7 deg
+  for 8 s): not physical (a spinning tippe top is unstable upright); suspect the penalty damping or the discrete bottom rings. Look at it.
+- plugins/tops.jl: board at (5.6, -13), hold 1 to wind, spin_top on a thread, played back per frame. First 2 cm (invisible in the follow camera),
+  then R = 8 cm / 1 kg (k 6.4e4, dt 4e-5, wind 40-220 rad/s): flips at the same omega sqrt(R/g); 150+ rad/s stands it on its stem in 5-6 s.
+  A reload with a new TopShape type fails on an old instance kept in Main.TOPS: build the shape fresh each spin.
+- The 0.12 rad mystery (s143, solved, not yet applied): tippe_profile spaces rings evenly in HEIGHT, so the ball's bottom is a blunt
+  cone (first ring 3.3 mm out) and the top balances on its point. Rings evenly in polar angle: the 2 cm top flips from any tilt
+  (0.05 rad: 2.75 s at 300 rad/s) but 180 rad/s no longer flips, and the 8 cm top at 100-220 rad/s did not flip within 12 s
+  (61 deg at 220). So the blunt pole helped it flip: retune (mu, a less hollow top, longer runs) with polar spacing before
+  switching. The parabola between rings (lowest_point) is in and changed nothing measurable.

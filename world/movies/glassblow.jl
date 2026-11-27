@@ -1,7 +1,7 @@
 # The first glass bubble (s142, project glassblowing): physics/glassblow.jl blows a gather of soda-lime glass at
 # 1000 C on a steel pipe: 600 Pa of breath for 5 s, the pipe turning half a turn a second for 3 s, then dipped 57
 # degrees so gravity pulls it long. Each triangle cools by its own thickness (thin walls freeze first) and is drawn
-# in one of four heat bands: three glowing (glass plus blackbody-ish emission), the coolest clear glass.
+# glowing by its own temperature (Planck, per vertex): glass plus emission, clear below ~800 C.
 #   submit_job(:clip; path, script = "movies/glassblow.jl", call = "glassblow_clip", kwargs = Dict(...))
 using NeverendingGame, GeometryBasics, Makie, LinearAlgebra
 const NG = NeverendingGame
@@ -9,8 +9,24 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "glassblow.jl"))
 
 gb_plan(t) = (t < 5.0 ? 600.0 : 0.0, clamp(t - 3.0, 0.0, 1.0) * 1.0, t < 3.0 ? 0.5 : 0.0)
 
-const GB_BANDS = ((1223.0, Inf, (1.0, 0.55, 0.16), 3.0), (1123.0, 1223.0, (1.0, 0.40, 0.08), 1.6),
-                  (1023.0, 1123.0, (1.0, 0.24, 0.04), 0.7), (-Inf, 1023.0, (0.0, 0.0, 0.0), 0.0))
+# Hot glass glows as a black body: Planck radiance at 610/550/465 nm relative to red at 1000 C, per vertex
+# (s143; before, four heat bands with jagged edges). It falls ~5x per 100 C, so below ~800 C the glass is clear.
+gb_planck(lam, T) = 1 / (lam^5 * (exp(0.014388 / (lam * T)) - 1))
+const GB_REF = gb_planck(610e-9, 1273.0)
+function gb_glow(T)
+    r, g, b = gb_planck(610e-9, T) / GB_REF, gb_planck(550e-9, T) / GB_REF, gb_planck(465e-9, T) / GB_REF
+    s = max(1, r)          # hotter than 1000 C: keep the hue, cap the level
+    return RGBf(r / s, g / s, b / s)
+end
+
+"""Each vertex's temperature: the mean of its triangles'."""
+function gb_vertex_T(F, T, nv)
+    acc, n = zeros(nv), zeros(Int, nv)
+    for (k, f) in enumerate(F), v in f
+        acc[v] += T[k]; n[v] += 1
+    end
+    return acc ./ max.(n, 1)
+end
 
 function gb_world(fr, P)
     p, s = fr.pitch, fr.spin
@@ -20,11 +36,7 @@ function gb_world(fr, P)
     [Point3f(P[1] + W[1, i], P[2] + W[2, i], P[3] + W[3, i]) for i in 1:size(W, 2)]
 end
 
-function gb_band_mesh(pts, F, T, lo, hi, P)
-    fs = [TriangleFace(a, b, c) for (k, (a, b, c)) in enumerate(F) if lo <= T[k] < hi]
-    isempty(fs) && return GeometryBasics.normal_mesh(GeometryBasics.Mesh([P, P + Point3f(0, 1f-5, 0), P + Point3f(0, 0, 1f-5)], [TriangleFace(1, 2, 3)]))
-    return GeometryBasics.normal_mesh(GeometryBasics.Mesh(pts, fs))
-end
+gb_mesh(pts, F) = GeometryBasics.normal_mesh(GeometryBasics.Mesh(pts, [TriangleFace(a, b, c) for (a, b, c) in F]))
 
 function glassblow_clip(path; rasterize = false, samples = 24, width = 960, height = 540, fps = 24, seconds = 8.0,
                         hour = 18.4, spot = (5.0f0, -17.4f0), level = 3)
@@ -40,11 +52,8 @@ function glassblow_clip(path; rasterize = false, samples = 24, width = 960, heig
         P = Point3f(base[1], base[2], base[3] + 1.0f0)
         S[:P] = P
         pts = gb_world(frames[1], P)
-        S[:bands] = map(enumerate(GB_BANDS)) do (bi, (lo, hi, col, st))
-            mat = st > 0 ? NG.Hikari.Add(NG.Hikari.Glass(), NG.Hikari.Emission(color = col, strength = st)) : NG.Hikari.Glass()
-            mesh!(gm.stage.scene, gb_band_mesh(pts, g.F, frames[1].T, lo, hi, P); color = st > 0 ? RGBf(col...) : RGBf(0.85, 0.92, 0.9),
-                  material = mat, name = Symbol("glassblow_", bi))
-        end
+        S[:glass] = mesh!(gm.stage.scene, gb_mesh(pts, g.F); color = gb_glow.(gb_vertex_T(g.F, frames[1].T, length(pts))),
+                          material = NG.Hikari.Add(NG.Hikari.Glass(), NG.Hikari.Emission(strength = 3.0)), name = :glassblow_glass)
         pipe = GeometryBasics.expand_faceviews(GeometryBasics.normal_mesh(Cylinder(P - Point3f(1.1f0, 0, 0), P + Point3f(0.004f0, 0, 0), 0.008f0)))
         S[:pipe] = mesh!(gm.stage.scene, pipe; color = RGBf(0.35, 0.35, 0.37), name = :glassblow_pipe,
                          material = NG.Hikari.Metallic(base_color = (0.55, 0.55, 0.57), roughness = 0.35))
@@ -60,9 +69,8 @@ function glassblow_clip(path; rasterize = false, samples = 24, width = 960, heig
         P = S[:P]
         fr = frames[clamp(round(Int, t / frames[1].t), 1, length(frames))]
         pts = gb_world(fr, P)
-        for (b, (lo, hi, _, _)) in zip(S[:bands], GB_BANDS)
-            b[1][] = gb_band_mesh(pts, g.F, fr.T, lo, hi, P)
-        end
+        S[:glass][1][] = gb_mesh(pts, g.F)
+        S[:glass].color[] = gb_glow.(gb_vertex_T(g.F, fr.T, length(pts)))
         p = fr.pitch      # the pipe dips with the bubble
         S[:pipe][1][] = GeometryBasics.expand_faceviews(GeometryBasics.normal_mesh(Cylinder(P - Point3f(1.1f0 * cos(p), 0, -1.1f0 * sin(p)), P, 0.008f0)))
         c = sum(pts) / length(pts)

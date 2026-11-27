@@ -1,0 +1,17 @@
+{
+  "created": "2026-11-27T11:59:31.624",
+  "id": "20261127-115931-624-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tops_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 6.0
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/site/films/two-turned-tops.mp4",
+    "script": "movies/top.jl"
+  },
+  "started": "2026-11-27T12:17:58.320",
+  "status": "running"
+}

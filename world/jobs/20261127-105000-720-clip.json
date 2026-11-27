@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T10:50:00.720",
+  "finished": "2026-11-27T11:13:46.453",
   "id": "20261127-105000-720-clip",
   "kind": "clip",
   "params": {
@@ -11,6 +12,23 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/first-glass-bubble.mp4",
     "script": "movies/glassblow.jl"
   },
+  "result": {
+    "T_C": [
+      626.1768665110176,
+      957.0288743905768
+    ],
+    "burst": 0,
+    "frames": 192,
+    "hour": 18.415815351727197,
+    "len_cm": 11.549998478496835,
+    "path": "/sim/Programmieren/SimGame/world/site/films/first-glass-bubble.mp4",
+    "seconds_per_frame": 6.453154901663463,
+    "wall_mm": [
+      0.7270553957889404,
+      21.84031387704762
+    ]
+  },
+  "seconds": 1424.3,
   "started": "2026-11-27T10:50:01.799",
-  "status": "running"
+  "status": "done"
 }

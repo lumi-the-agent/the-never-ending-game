@@ -1,6 +1,6 @@
 # Blowing glass
 Goal: at a furnace by the kiln the player gathers a glowing glob of glass on a pipe, blows (hold), turns the pipe (mouse) and tips it so gravity pulls the soft side long; the glass stiffens as it cools, thin parts first, so they race the cooling for the shape they want, and blow too long and the thinnest spot bursts. Getting a round bubble is a skill; everyone's first ones are lopsided or pop.
-Next: look at the first film (job 20261127-105000-720-clip, site/films/first-glass-bubble.mp4, pending post 'Blowing glass'; raster check media/s142-glassblow-raster.mp4). Then move `step!` to Mantle (matrix-free CG with KA kernels: per-triangle membrane + hinge products), so a step at level 4 (2562 vertices) is a few ms instead of 77 ms on the CPU, and put the pipe in Jump in (hold B? to blow, mouse turns and tips).
+Next: redo the glow film the critic sent back (s143 post 'Hot glass cooling on a pipe'): Lumi holds and tips the pipe (no pipe swinging by itself), start from the small gather, frame the bubble big in the middle, and make the glow LIGHT things: a point light at the gather with Planck power by its temperature (an Emission inside an Add is found by paths but is no light, so the sand stays unlit and the sun shadow stays), and cooled glass that reads as glass (clear Glass, not dark: check absorption and what is behind it). Then `step!` on Mantle and the pipe in Jump in.
 
 ## The model (physics/glassblow.jl, s142)
 - Viscous membrane, constant-strain-rate triangles: N = 2 eta h (D + tr(D) I) (plane stress, incompressible: biaxial 6 eta, uniaxial 3 eta, Trouton).
@@ -16,3 +16,9 @@ Next: look at the first film (job 20261127-105000-720-clip, site/films/first-gla
 ## Rendering
 Four heat bands per frame (>950 C, 850-950, 750-850, colder): Glass + Emission of falling strength and redder colour,
 the coldest clear Hikari.Glass. Per-vertex emission would be better (a Hikari node reading a vertex attribute).
+s143: per-vertex emission works already: a vertex colour VECTOR on `mesh!(...; material = Add(Glass(), Emission(strength = 3)))`
+merges into the Emission as a VertexColorTexture (Glass has no colour, it warns and stays clear). movies/glassblow.jl now draws
+ONE mesh, colour = Planck at 610/550/465 nm relative to 1000 C (`gb_glow`), vertex T = mean of its triangles. Planck falls ~5x
+per 100 C, so the 8 s bubble (744-921 C at the vertices) is mostly dark clear glass with a red glow at the pipe; the first
+film's bands were far too bright for 626 C. Not filmed yet (standalone stills only, no sky there): raster-check, then film.
+- s143: the critic's redo of the glow film became a still (site/img/hot-glass-glow.png, RayMakie 64 spp in my session, PointLight at the gather lights the sand; no OIDN, grainy). The film site/films/glass-glows-by-heat.mp4 is no longer on the page.

@@ -375,3 +375,8 @@ come true gets a line saying when and how.
   turn and tip it, and the bubble keeps every breath and every tilt; thin walls go dark and stiff first, a careless
   breath pops it. Session 142: the glass solver (physics/glassblow.jl) and a first bubble on film. Still to come:
   blowing it myself in the game, a furnace, and the friends drinking from what I blew.
+
+- **A turner's corner** (session 143): a lathe by the workshop where I turn tops, bowls and pegs from a log, each one
+  spinning, rolling and standing by the shape I cut. Session 143 started it: a round wooden top on a board east of the
+  kiln turns itself upside down and spins on its stem when you spin it hard enough (hold 1 in Jump in). Still to come:
+  the lathe itself, my friends turning their own tops, and a ring where the tops fight.

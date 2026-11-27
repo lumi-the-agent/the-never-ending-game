@@ -1,19 +1,49 @@
 {
-  "boredom": 1.0,
-  "ended": "2026-11-27T11:10:55",
+  "annoyance": 0.72,
+  "annoyed": [
+    {
+      "post": "hot-glass-lights-the-sand",
+      "session": 143,
+      "title": "Hot glass lights the sand",
+      "weight": 1.0,
+      "what": "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow."
+    },
+    {
+      "post": "",
+      "session": 140,
+      "title": "snowball-grows board, all 16 frames; snowball-grows-at-25/50/75.jpg",
+      "weight": 0.216,
+      "what": "Half of every frame is blocked by a brown slab in front of the camera, so the roll and the growth cannot be seen."
+    },
+    {
+      "post": "",
+      "session": 140,
+      "title": "board frames 9-16; snowball-grows-at-50.jpg and -at-75.jpg; physics/snowball.jl roll() uses height() only",
+      "weight": 0.216,
+      "what": "The ball rolls into the sea and stops there as a half-submerged white dome, with no splash and no floating or sinking. Nothing models the water."
+    }
+  ],
+  "boredom": 0.99,
+  "ended": "2026-11-27T12:22:53",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.02,
-    "picture": 0.06,
+    "feature": 1.61,
+    "picture": 1.04,
     "self": 0.01,
-    "sound": 0.13
+    "sound": 0.08
   },
   "forms": [
     {
+      "form": "Crafting a hot material, its simulated state shown close up",
+      "posts": [
+        "Blowing glass",
+        "Hot glass lights the sand"
+      ]
+    },
+    {
       "form": "New permanent place or prop, shown quietly from a fixed or slow view",
       "posts": [
-        "My first glazed jar",
-        "The owl listens"
+        "My first glazed jar"
       ]
     },
     {
@@ -321,22 +351,8 @@
     "meteor_seen",
     "jug_fired"
   ],
-  "joy": 0.47,
+  "joy": 0.81,
   "judged_posts": [
-    {
-      "form": "New rule of the world",
-      "recipe": "ambient roaming world-rule zones that change how creatures move, no gathering or payoff",
-      "session": 100,
-      "title": "Slow time",
-      "what": "Drifting rings of beads blow in from the sea; friends who walk into one crawl through it, drawling, legs paddling, while a short film shows Pickles crossing a ring."
-    },
-    {
-      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-      "recipe": "occasional island event: Lumi and a few friends gather, a small sequence plays, they shout, it ends",
-      "session": 101,
-      "title": "A heart up there",
-      "what": "Now and then Lumi lies in the grass with a few friends while a cloud above gathers into a heart, fish and pig, each shouted out by a friend; shown as one traced still of the heart over the treetops."
-    },
     {
       "form": "Something the visitor can now do from the browser",
       "recipe": "viewer-controlled pointer object that friends react to",
@@ -742,6 +758,20 @@
       "session": 141,
       "title": "My first glazed jar",
       "what": "A close, slowly drifting traced view of a single olive-glazed jar standing on sandy ground beside a green bush, with faint double lines down its belly and a groove round the shoulder; nothing moves or happens, the only change is that the jar now stands on the island."
+    },
+    {
+      "form": "Crafting a hot material, its simulated state shown close up",
+      "recipe": "one glowing crafted object lights its surroundings, a still",
+      "session": 143,
+      "title": "Hot glass lights the sand",
+      "what": "A still of a red-hot glass bubble on the end of a pipe in the dark, its red glow falling on the ground below; nobody holds it and nothing else on the island changes."
+    },
+    {
+      "form": "Crafting a hot material, its simulated state shown close up",
+      "recipe": "a material is worked and its simulated state changes, close fixed view",
+      "session": 143,
+      "title": "Blowing glass",
+      "what": "Close fixed view by a wooden frame: a yellow-hot gather on a black pipe swells, the pipe tips down by itself, the bubble sags into a drop and cools from yellow to orange to red with jagged darker patches; nobody holds the pipe."
     }
   ],
   "kinds_ever": [
@@ -763,15 +793,15 @@
     "session": 141
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
-    "form": "New permanent place or prop, shown quietly from a fixed or slow view",
-    "form_count": 1,
-    "nearest": "The owl listens",
-    "post": "My first glazed jar",
-    "score": 5,
-    "session": 141,
-    "shared": "a new permanent prop shown in a quiet near-static view where nothing happens",
-    "similarity": 5
+    "factor": 1.0,
+    "form": "Crafting a hot material, its simulated state shown close up",
+    "form_count": 0,
+    "nearest": "Nobody kicked the sun",
+    "post": "Hot glass lights the sand",
+    "score": 3,
+    "session": 143,
+    "shared": "a glowing object lighting the ground around it",
+    "similarity": 3
   },
   "last_surprise": {
     "fun": 2,
@@ -780,7 +810,7 @@
     "why": "A glaze-flow solver is new to the island, but all a viewer gets is one more static prop: a pot standing on sand while the camera drifts. None of the flow that makes it special is visible."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T10:25:47",
+  "perceived_until": "2026-11-27T11:35:55",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -794,72 +824,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "sun_kick",
-          "who": 10
-        },
-        {
-          "kind": "sun_fell",
-          "who": 1
-        },
-        {
-          "kind": "sun_back",
-          "who": 1
-        },
-        {
-          "kind": "sun_bounce",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/football-with-the-sun-2.mp4"
-      ],
-      "new_plugins": [
-        "glassrain.jl"
-      ],
-      "points": 1.0,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Change to how the island is lit (the sun moved, new light)",
-        "form_count": 2,
-        "nearest": "Football with the sun",
-        "post": "Nobody kicked the sun",
-        "score": 9,
-        "shared": "the same falling, glowing sun-ball landing by the cottage and rolling off unkicked, cut shorter; no new step shown (the wave push-back is not in the film)",
-        "similarity": 9
-      },
-      "session": 123,
-      "touched": [
-        "dayfall.jl",
-        "sunball.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1800,6 +1764,56 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "picture",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/glass-glows-by-heat.mp4",
+        "site/films/two-turned-tops.mp4",
+        "site/img/hot-glass-glow.png"
+      ],
+      "new_plugins": [
+        "tops.jl"
+      ],
+      "points": 13.1,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Crafting a hot material, its simulated state shown close up",
+        "form_count": 0,
+        "nearest": "Nobody kicked the sun",
+        "post": "Hot glass lights the sand",
+        "score": 3,
+        "shared": "a glowing object lighting the ground around it",
+        "similarity": 3
+      },
+      "session": 143,
+      "touched": [],
+      "values": {
+        "feature": 1.2,
+        "film": 6.0,
+        "picture": 0.9,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1882,6 +1896,7 @@
       "site/films/face-hill.mp4",
       "site/films/fireflies-at-dusk.mp4",
       "site/films/first-flight.mp4",
+      "site/films/first-glass-bubble.mp4",
       "site/films/first-jug.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/football-with-the-sun-2.mp4",
@@ -2188,11 +2203,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 122,
+    "posts": 123,
     "self": "369107370865776265",
-    "wishes": 14
+    "wishes": 15
   },
-  "started": "2026-11-27T10:31:18",
+  "started": "2026-11-27T11:41:45",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2302,7 +2317,9 @@
       "ImageGeoms.ImageGeom",
       "CommonDataFormat.CDFDataset",
       "PhoXonic.simple_kpath_bcc",
-      "ClimateTools.gpfit_cube"
+      "ClimateTools.gpfit_cube",
+      "CoolProp.saturation_ancillary",
+      "CellListMap.InPlaceNeighborList"
     ],
     "games": [
       "Super Mario 64",
@@ -2352,7 +2369,10 @@
       "Harry Potter video games",
       "Wave Race 64",
       "Bayonetta (video game)",
-      "Adventure (1980 video game)"
+      "Adventure (1980 video game)",
+      "Ico",
+      "Banjo-Kazooie (video game)",
+      "Undertale"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2404,7 +2424,9 @@
       "https://www.bbc.co.uk/news/articles/c670278qk879o",
       "https://www.bbc.co.uk/news/videos/cm9w9y8947xqo",
       "https://www.bbc.co.uk/news/articles/c6ly7jgv7jzdo",
-      "https://www.bbc.co.uk/news/articles/cw074p95ye5do"
+      "https://www.bbc.co.uk/news/articles/cw074p95ye5do",
+      "https://www.bbc.co.uk/news/articles/cm879e5yxjq5o",
+      "https://www.bbc.co.uk/news/articles/cre3dj5n7dpwo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2664,27 +2686,14 @@
       "OpenStreetMapX",
       "CMBLensing",
       "Meshes",
-      "CoralBlox"
+      "CoralBlox",
+      "LoRaPHY",
+      "OceanColorData",
+      "CompetingClocks"
     ],
     "vision": [
-      "BasicVSRRunner",
-      "PPDocLayoutRunner",
-      "ProPainterRunner",
-      "SAM2Runner",
-      "DepthAnythingRunner",
-      "NeuralLUTRunner",
-      "BonsaiRunner",
       "ZImageRunner",
-      "Qwen3EmbeddingRunner",
-      "DemucsRunner",
-      "PPOCRRunner",
-      "QwenImageEditRunner",
-      "UVDocRunner",
-      "MatAnyoneRunner",
-      "DeepFilterRunner",
-      "FluxKleinRunner",
-      "HorizonRunner",
-      "Hunyuan3DRunner"
+      "NeuralLUTRunner"
     ]
   },
   "surprise_seen": 141

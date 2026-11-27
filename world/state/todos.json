@@ -7730,7 +7730,7 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "perfectionist-0130 [animation, high]: Standing, Lumi holds its wings straight out like a T and the tips flick at 6.9 m/s. The crest swings at 7.4 m/s. Cumulus's leg steps unevenly (42% frame to frame). Nothing reads as weight or rest.\nWhere: birdbody.jl, gait.jl\nSuggestion: An idle with wings folded at the sides, a slow breath, the crest bouncing once after a head turn. Save the open wings for the moment it celebrates.\nDone when: live_motion reports Lumi and Cumulus under 'moving well', and the motion strip shows wings folded at the body in an idle pose.\nEvidence: reviews/p130/motion/motion-strip.png, live_motion text",
+      "detail": "perfectionist-0142 [animation, high]: Lumi stands by its workbench and its head and body flick back and forth constantly. The strip shows the beak pointing a different way in nearly every frame. Pinchy vibrates the same way (9 Hz on body and both claws).\nWhere: Lumi idle and talk pose (makeover, birdbody, gait)\nSuggestion: Filter look-at and turn targets with a critically damped spring (around 0.3 s), keep idle head moves to slow glances with holds, and drive the crest from damped secondary motion instead of the raw head angular velocity.\nDone when: live_motion lists no Vibrating or Too-fast entries for Lumi or Pinchy over two runs.\nEvidence: reviews/motion/motion-strip.png, live_motion (Vibrating: Lumi beak/body/face 9/s, Pinchy body/claws 9/s, crest 6.2 m/s)",
       "est_minutes": 30.0,
       "id": 553,
       "kind": "review",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi's idle: wings folded, slow breath, no beak/crest snap (0.25 m/frame now)",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "Lumi vibrates: beak, body and face flip 9 times a second, crest at 6.2 m/s",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0139 [creatures, high]: A second, smaller yellow Lumi with dark bands across its face stood right beside Lumi in every mini game I played: Jump in, Firefly catch, Berry race and Hide and seek. It is also in the follow view and the motion sheet. To a player it reads as a duplicated or glitched main character, not a chick. A flat paper Lumi stands on the pier too.\nWhere: next to Lumi everywhere; the pier\nSuggestion: Make the chick unmistakably a chick: a third of Lumi's size, round and fluffy, a different shade, with a peep and a hop. Or let it leave Lumi's side most of the time. Retire the paper cut-out, or give it a clear reason to be there (a scarecrow in the garden).\nDone when: In a Jump in screenshot and the live_motion creature sheet, no second figure with Lumi's silhouette and more than half its height stands within 3 m of Lumi.\nEvidence: world/reviews/p139/play/jumpin-0-start.png, jumpin-2.png, sheet-fireflycatch.png, motion/motion.png, motion/creatures.png (bottom left)",
+      "detail": "perfectionist-0142 [creatures, high]: A second, smaller yellow bird stands or flies right beside Lumi in all four mini games (it says 'peep!'), in the follow view, and in the traced still. A player cannot tell which one they are steering.\nWhere: ghosts.jl / paperme.jl / nursery or egg (whatever spawns the chick)\nSuggestion: If it is Lumi's chick, make it unmistakably a chick: a third of Lumi's size, round, fluffy pale yellow, waddling, and absent while the player is Lumi in a mini game. If it is a ghost or copy, remove it from the default game.\nDone when: Screenshots from all four mini games show exactly one bird of Lumi's shape and colour.\nEvidence: reviews/p142/play/jumpin-2.png, fireflycatch-4.png, hideandseek-2.png, berryrace-4.png, reviews/perfectionist-shots/p142-traced.png",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,12 +8593,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A yellow chick double follows Lumi; a paper Lumi stands on the pier",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "A yellow chick double follows Lumi in every game and view",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0139 [camera, medium]: Orbit: a shed roof, a black slab and a workbench fill the bottom third. Firefly catch start: the camera stands inside the garden fence. Follow on the beach: a tree crown fills the left third. Hide and seek: the giant yellow face-hill fills half the frame. Follow: the pink crown sits above Lumi with the speech line across it.\nWhere: orbit, follow and the mini game cameras\nSuggestion: Raycast from the target to the eye and pull the camera in front of the first hit, or fade the occluder. Keep the eye out of a 2 m sphere around any prop bigger than 1 m.\nDone when: Five orbit, five follow and one screenshot per mini game, 5 s apart, show no object covering more than 10% of the frame in front of the subject.\nEvidence: world/reviews/p139/raster-after.png, play/jumpin-2.png, play/sheet-fireflycatch.png, play/sheet-hideandseek.png, cam-follow.png",
+      "detail": "perfectionist-0142 [camera, medium]: Right after a Jump in ended, the follow camera at 13:17 showed only sea and the top of one tree, with no creature in frame. In Jump in it sat behind a bush that filled the right half while Lumi walked the shore. In the creatures sheet a creature is only leaves, Pinchy is half behind a tan slab, and the sheep is behind an easel frame.\nWhere: camera rig (follow mode, occlusion)\nSuggestion: Re-target the follow camera when a game ends. Ray-test from the camera to the target every frame and swing round or pull in when something covers more than a fifth of it.\nDone when: Six follow screenshots taken right after stopping each mini game show Lumi in frame, and the creatures sheet shows every face unobstructed in all 3 moments.\nEvidence: reviews/p142/cam-follow-1-h13.29.png, reviews/p142/play/jumpin-2.png, reviews/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
@@ -8607,8 +8607,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Every camera mode lands behind a slab, a fence or inside a crown",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "The follow camera loses Lumi: empty sea, a bush filling half the frame",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8645,12 +8645,12 @@
       "id": 618,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0142: duplicate of #610 (paper flutter pitching moment)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The notebook page tumbles like a coin: give it the air's added mass and the Munk moment",
-      "updated": "2026-11-26T23:38:29.359"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-26T23:38:29.364",
@@ -8925,12 +8925,12 @@
       "id": 638,
       "kind": "fix",
       "priority": 1,
-      "result": "s132: the 19 sin/cos animation uses in 11 plugins (berry_race, builder, cairns, flight, giant, hiccups, presents, sneeze, strays, swing, workshopisle) now use NG.anim_time(w); all load, sandbox day and night clean, published. Left: the other Float32(w.t) uses (stamps, differences) to review one by one.\ns132: done for the 19 sin/cos uses in 11 plugins and for every pose_parts! caller (outfits, paintfight x2, sleepers, egg, nursery: they must match the herd's anim_time). Left: `t = Float32(w.t)` locals in butterflies, hail, autumn, firefly_catch, frost, kite, snowday, sneeze:86, shadow, watering, moth, wind, nightglow mote_positions: check each for stamps before switching.",
+      "result": "s132: the 19 sin/cos animation uses in 11 plugins (berry_race, builder, cairns, flight, giant, hiccups, presents, sneeze, strays, swing, workshopisle) now use NG.anim_time(w); all load, sandbox day and night clean, published. Left: the other Float32(w.t) uses (stamps, differences) to review one by one.\ns132: done for the 19 sin/cos uses in 11 plugins and for every pose_parts! caller (outfits, paintfight x2, sleepers, egg, nursery: they must match the herd's anim_time). Left: `t = Float32(w.t)` locals in butterflies, hail, autumn, firefly_catch, frost, kite, snowday, sneeze:86, shadow, watering, moth, wind, nightglow mote_positions: check each for stamps before switching.\nperfectionist-0142: s132 moved every plugin to anim_time; the remaining snaps are tracked in #637",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Plugins animate with Float32(w.t): 1/32 s steps (and worse when multiplied)",
-      "updated": "2026-11-27T03:04:05.806"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T02:59:43.840",
@@ -9051,12 +9051,12 @@
       "id": 647,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0142: no snow discs in the 0142 progress shots or my 30 live shots; refile if snow returns",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Snow blanket shows as white paper discs, and the traced land turns white",
-      "updated": "2026-11-27T08:55:37.151"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T03:59:27.937",
@@ -9214,7 +9214,7 @@
     },
     {
       "created": "2026-11-27T06:22:49.524",
-      "detail": "perfectionist-0136 [lighting, high]: At 12:46 to 13:10 the live island is a dim grey-green with a low golden sun, as at sunset. Session 0020 at 11:09 had a blue sky and sunlit grass. The live traced view at 12:51 shows a black sea with specks. A player who opens the game at lunchtime sees evening.\nWhere: the live dashboard; sun path / exposure / weather (TimeWeather, Storm, Hail, Haze)\nSuggestion: Find what dims noon (sun elevation curve, exposure, a weather stuck on, the haze) and give midday a high warm sun, a blue sky and crisp short shadows. Save the golden light for the real evening, so the day has a shape.\nDone when: A live screenshot between 12:00 and 13:00 has a sky mean brightness above 0.6 with a blue hue, short sun shadows under the trees, and the live traced view at noon shows a blue sea.\nEvidence: media/progress/session-0020/eye-level.png against media/progress/session-0136/eye-level.png; world/reviews/p136/cams/orbit-sheet.jpg; world/reviews/p136/traced.png",
+      "detail": "perfectionist-0142 [lighting, high]: From 12:00 to 13:30 sunball.jl dims the sky to SUN_DIM 0.1 and aims the sun from a ball on the meadow, 8 degrees up (scene light z = 0.14, while the clock's sun is at z = 0.91). In none of my 15 screenshots from 12:50 to 13:30 (free, follow, orbit, four mini games) is the ball visible: the island is murky olive with a sunset band. The only trace is a pale disc on the land at the edge of two frames. A player at lunchtime thinks the lighting is broken, and every progress shot (taken around 12:50) shows this.\nWhere: plugins/sunball.jl, showers.jl (SUN_DIM), the progress cameras\nSuggestion: Make the event read in one glance. Show the fall itself (a streak from the sky and a thump on the grass). Give the ball a big bloom halo and a warm pool of light on the grass, and let the friends' long shadows wheel round it as it rolls. Have the follow camera cut to the ball at the drop, and put a line in 'Things to try' ('the sun fell! jump in and kick it'). Keep the sky dusky but not black-green, about 0.3 instead of 0.1, and keep it to 30 minutes so noon is mostly noon. Take the progress shots outside the window.\nDone when: With SUNBALL[:force] = true, the follow and orbit screenshots show the glowing ball at least 40 px across with a visible warm light pool and shadows pointing away from it. A 12:50 overview has mean ground luminance at least half of the 13:42 one.\nEvidence: media/progress/session-0142/overview.png and eye-level.png (12:50), reviews/perfectionist-shots/p142-cam-follow.png (disc on the land), reviews/p142/cam-orbit-1-h13.3.png (13:17 dusk) next to reviews/p142/cam-orbit-4-h13.7.png (13:42 bright); live_eval: SUNBALL[:dim] = 0.1, scene sun z = 0.14",
       "est_minutes": 30.0,
       "id": 659,
       "kind": "review",
@@ -9223,22 +9223,22 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Noon looks like dusk: worse than session 20 at the same hour",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "Sun football at noon reads as broken dusk: the fallen sun is nowhere to see",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T06:22:49.524",
-      "detail": "perfectionist-0139 [ui, medium]: Jump in's start card is 7 lines over the bottom third of the view, and two lines are cut at both edges ('splashes), onto the swing or a leaf pile; ...', '... L knocks o'). After it fades, a 3-line box with 22 keys stays. Things to try in the side panel names none of the boomerang, knock, chip or dandelion toys.\nWhere: Jump in HUD; side panel 'Things to try'\nSuggestion: Show context keys: 'L knock' and 'R chip' appear only by something knockable, 'F lantern' only at night, 'O boomerang' only on a beach. Keep the global box to 6 keys and let Things to try list the 3 newest toys with their places.\nDone when: In a Jump in screenshot at 1280x720 no HUD text is clipped by the view's edges, the global key box has at most 8 entries, and standing by the chip stone shows its keys there.\nEvidence: world/reviews/p139/play/jumpin-0-start.png, sheet-chip.png (top row)",
+      "detail": "perfectionist-0142 [ui, low]: When you jump in, a seven-line key card covers the bottom third of the view for the whole game. Its night line runs off the left edge ('splashes)' starts mid-word) and hides Lumi's feet and the ground you walk on.\nWhere: greetings.jl HINT / Jump in overlay\nSuggestion: Show the six basic keys in one short line for 5 s, and show each special key only next to the thing it works on ('R chip' over the stone, 'L knock' over the jar).\nDone when: A Jump in screenshot 10 s after start has no overlay over 10% of the view, and standing by the chip stone shows its keys above it.\nEvidence: reviews/p142/play/jumpin-0-start.png, jar-knock.png",
       "est_minutes": 30.0,
       "id": 660,
       "kind": "review",
-      "priority": 2,
+      "priority": 3,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump in's key card runs off the screen; show keys where they apply",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "Jump in's key card covers a third of the view and runs off the edge",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T06:44:21.638",
@@ -9247,12 +9247,12 @@
       "id": 661,
       "kind": "build",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0142: duplicate of #663 (ants in Jump in), which is the clearer goal",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Ants on a honey road: a colony that follows your honey line and drags a biscuit home",
-      "updated": "2026-11-27T06:44:21.638"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T06:44:30.173",
@@ -9289,12 +9289,12 @@
       "id": 664,
       "kind": "feature",
       "priority": 1,
-      "result": "s138: L in Jump in knocks the nearest placed asset (plugins/knock.jl, published with the hint in greetings.jl). Sandbox: cottage stone lantern (scale 0.9) -> stone, partials 233/286/490 Hz (amp 0.08/1.0/0.35); signpost (wood, scale 1.2) -> 60.5/62.7/135 Hz. Frame 3.5 ms median, knock system 0.0 ms. Modes from physics/modes.jl cached in state/modes/<id>.jls (5 assets). Not done yet: the visible sway on the placed asset, props (trees, pumpkins) without modes, the cottage solves as a solid block, and no browser recording that the sound plays.\ns138 later: the sway works and is published: while a knocked thing rings (2.4 s) its instance is hidden (scale 0, real scale kept in state/knock-hidden.txt and restored by start! after a restart) and a deformed copy sways in its loudest mode, slowed and exaggerated to 4 % of its height: media/s138-knock-sway-pair.png (two frames 0.12 s apart, the roof leans then returns). Frame 3.1 ms median, 6.8 ms p95. Still open (why not done): trees and pumpkins are props without modes (only placed assets ring), the key is L (K is dayfall's tip), and no browser recording yet proves the sound plays.",
+      "result": "s138: L in Jump in knocks the nearest placed asset (plugins/knock.jl, published with the hint in greetings.jl). Sandbox: cottage stone lantern (scale 0.9) -> stone, partials 233/286/490 Hz (amp 0.08/1.0/0.35); signpost (wood, scale 1.2) -> 60.5/62.7/135 Hz. Frame 3.5 ms median, knock system 0.0 ms. Modes from physics/modes.jl cached in state/modes/<id>.jls (5 assets). Not done yet: the visible sway on the placed asset, props (trees, pumpkins) without modes, the cottage solves as a solid block, and no browser recording that the sound plays.\ns138 later: the sway works and is published: while a knocked thing rings (2.4 s) its instance is hidden (scale 0, real scale kept in state/knock-hidden.txt and restored by start! after a restart) and a deformed copy sways in its loudest mode, slowed and exaggerated to 4 % of its height: media/s138-knock-sway-pair.png (two frames 0.12 s apart, the roof leans then returns). Frame 3.1 ms median, 6.8 ms p95. Still open (why not done): trees and pumpkins are props without modes (only placed assets ring), the key is L (K is dayfall's tip), and no browser recording yet proves the sound plays.\nperfectionist-0142: L in Jump in knocks placed assets (published s138); the chip stone answers since s141",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Knock on anything, live: K in Jump in rings whatever stands in front of Lumi",
-      "updated": "2026-11-27T07:36:59.493"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T07:30:38.385",
@@ -9429,12 +9429,12 @@
       "id": 674,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0142: 'Chipping a stone to change its note' take 2 passed and is posted with the pebble hits visible",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Film the knock and the chip so a stranger hears and sees them",
-      "updated": "2026-11-27T08:55:37.151"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T09:23:25.778",
@@ -9443,12 +9443,12 @@
       "id": 675,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0142: duplicate of #680 (snowball take 2 and in the game)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Push a snowball in Jump in: the snow field and the growing ball live in the game",
-      "updated": "2026-11-27T09:23:25.778"
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T09:23:25.793",
@@ -9480,17 +9480,17 @@
     },
     {
       "created": "2026-11-27T10:07:59.367",
-      "detail": "project pottery, goals 1+3+7. In Jump in at a wheel by the chip stone: the jug spins, the mouse pulls the wall in/out (lathe profile), a key cuts a line where the beak points; a kiln next to it fires it with Glaze.fire_ka! on Mantle (1.3 s) and the fired jug replaces the plain one. done_when: in the sandbox I shape and cut a jug and its fired colour shows my cuts (screenshot), frames < 33 ms, published.",
+      "detail": "perfectionist-0142 [materials, medium]: On film the jar is uniform dark olive with raised-looking lines and only a small sun glint. There is no depth in the glaze, no pale rim, no handle. In the game it is a 14 cm thing on a big meadow: a few pixels in a close free-camera shot, absent from the default cameras. 'Things to try' does not mention it, and there is nothing to do with it.\nWhere: plugins/kiln.jl (KilnJug at 4, -16.5), site/films/first-jug.mp4\nSuggestion: Use a coated or dielectric glaze over the clay with absorption by simulated thickness, so the cuts go deeper green and the rims thin to pale. Put the wheel and kiln where a player walks past, with a shelf of fired pots at readable scale, and let the player throw and fire one (#678), each pot keeping the player's marks.\nDone when: A traced close-up shows the glaze visibly lighter at the rim and deeper in the cuts, and a follow-camera screenshot from the kiln area shows the pots at least 40 px tall.\nEvidence: reviews/motion/perfectionist-0142/first-jug-overview.jpg, reviews/perfectionist-shots/p142-now.png",
       "est_minutes": 60.0,
       "id": 678,
-      "kind": "feature",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The potter's wheel: shape your own jug, cut it, fire it",
-      "updated": "2026-11-27T10:07:59.367"
+      "title": "The glazed jar reads as matte plastic, and players can't find or use it",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T10:07:59.372",
@@ -9508,31 +9508,31 @@
     },
     {
       "created": "2026-11-27T10:20:54.543",
-      "detail": "project snowball, review 0140 (all three findings): take 2 with the camera checked for props on the sight line (list w.props within 1.5 m of the eye AND along eye->ball), 3 m from the run, ball large in frame; physics/snowball.jl in a plugin on a snow field over the meadow, pushed by Lumi in Jump in; at the waterline the ball floats or sinks by its density (snow ~400 kg/m3 floats) instead of following the seabed. done_when: traced take 2 posted with the ball growing in frame, the plugin published, a sandbox screenshot of me pushing it.",
+      "detail": "perfectionist-0142 [camera, medium]: In the snowball film a brown slab fills the lower half for all 9 s, and the ball is a tiny white dot rolling far away. The film opens with a 0.5 s fade from black (the largest jumps). The snow field and the ball do not exist in the game yet.\nWhere: site/films/snowball-grows.mp4, physics/snowball.jl\nSuggestion: Use a low camera following the ball at 2 to 3 m, so you see it grow from fist to barrel and the green trail open behind it, and end on the splash into the sea. Render a raster test from the exact final camera before tracing. Then add it to Jump in so the player pushes it.\nDone when: The film's overview shows the ball at least 80 px tall in every frame with no occluder over 10% of the frame, and in Jump in a key push grows a ball (screenshot).\nEvidence: reviews/motion/perfectionist-0142/snowball-grows-overview.jpg and -steps.jpg",
       "est_minutes": 60.0,
       "id": 680,
       "kind": "review",
       "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Snowball take 2 and in the game: a clear camera, push it yourself, the sea stops it",
-      "updated": "2026-11-27T10:20:54.543"
+      "title": "Snowball take 2: a checked camera, a ball you can see, and push it in the game",
+      "updated": "2026-11-27T11:35:32.953"
     },
     {
       "created": "2026-11-27T10:50:30.411",
-      "detail": "Project glassblowing. physics/glassblow.jl (viscous membrane + viscous hinge bending, VFT soda-lime viscosity, radiative cooling, burst by thickness), checked by sphere_test against dR/dt = pR^2/(12 eta h); a traced film of one bubble. done_when: test within 2%, film rendered and posted.",
+      "detail": "perfectionist-0142 [wow, high]: site/films/first-glass-bubble.mp4 (524 KB, 11:08) cannot be read by ffmpeg ('moov atom not found'). One clip job already failed (pending/failed/first-glass-bubble.json) and a second is pending. A half-written file sits in the public films folder, and it is the session's only spectacle.\nWhere: site/films/first-glass-bubble.mp4, pending/\nSuggestion: Write to a temp name and move it into place when finished. For the film: a close dusk frame of the bubble on the pipe, the gather glowing orange-white (emissive by temperature) and lighting the pipe, cooling into clear transmissive glass with thin-film colour where the wall is thinnest, then a pop. That is the path-tracer showcase goal 7 asks for.\nDone when: ffprobe reads the film, the motion sheet shows the bubble at least 150 px tall growing over the film, and a frame shows both a glowing and a clear transmissive part.\nEvidence: ffprobe: moov atom not found. pending/failed/first-glass-bubble.json",
       "est_minutes": 15.0,
       "id": 681,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
-      "result": "s142: physics/glassblow.jl written. sphere_test(): R_sim 0.030383 vs closed form 0.030385 (0.5% of the growth). Blow at 1000 C, 8 mm walls, 25 mm gather, level 3: 600 Pa -> 11 cm long, no burst, walls 0.72 mm, coldest 625 C; 900 Pa -> 31.5 cm, walls 0.16 mm, frozen at 333 C before tearing; 1200 Pa -> bursts at 1.96 s. CPU ~35 ms/step (level 3). Raster check media/s142-glassblow-raster.mp4 (1.5 s). Traced film job 20261127-105000-720-clip -> site/films/first-glass-bubble.mp4, still rendering at 11:10 (pending post 'Blowing glass'). Not done until the film is looked at: if the bubble is too small in frame or the glow reads wrong, retake (camera closer, P + 0.25 m).",
-      "source": "agent",
+      "result": "s142: physics/glassblow.jl written. sphere_test(): R_sim 0.030383 vs closed form 0.030385 (0.5% of the growth). Blow at 1000 C, 8 mm walls, 25 mm gather, level 3: 600 Pa -> 11 cm long, no burst, walls 0.72 mm, coldest 625 C; 900 Pa -> 31.5 cm, walls 0.16 mm, frozen at 333 C before tearing; 1200 Pa -> bursts at 1.96 s. CPU ~35 ms/step (level 3). Raster check media/s142-glassblow-raster.mp4 (1.5 s). Traced film job 20261127-105000-720-clip -> site/films/first-glass-bubble.mp4, still rendering at 11:10 (pending post 'Blowing glass'). Not done until the film is looked at: if the bubble is too small in frame or the glow reads wrong, retake (camera closer, P + 0.25 m).\ns143: the first film is fine (ffprobe 8.0 s, 192 frames; the 'no moov' was a half-written file during the render). It drew four heat bands with jagged edges and glowed bright red at 626 C. movies/glassblow.jl now draws one mesh with per-vertex Planck glow (gb_glow); raster check media/s143-glassglow-raster.mp4 (job 20261127-114941-891, 3.9 s/frame) ran; traced job 20261127-114942-476 -> site/films/glass-glows-by-heat.mp4, pending post 'Glass that glows by its heat'. Done when that film shows a glowing and a clear part.\ns143: per-vertex Planck film done (job 20261127-114942-476, site/films/glass-glows-by-heat.mp4, posted as 'Glass that glows by its heat', 6.3 s/frame). The bands are gone, smooth red-orange to brown as it cools. NOT done: no frame shows a CLEAR transmissive part, the cooled glass reads dark brown (emission dims right, but the Glass itself looks dark at 18:24 against shade). Next: check the Glass material's absorption/tint and the light behind it, or film it against the bright sky.\ns143 critic sent the glow film back (redo): pipe held by nobody and swinging by itself, bubble already half blown in frame 1, glow lights nothing (Emission in an Add is no light) and casts a sun shadow, cooled glass reads as an opaque plum, bubble small low-left with a post in the middle. Caption now says only what it shows ('Hot glass cooling on a pipe ... Nobody holds the pipe yet.'). Redo plan in projects/glassblowing.md Next.",
+      "source": "review",
       "spent_minutes": 0.0,
-      "status": "doing",
-      "title": "Blow glass: a first bubble from a real viscous glass sheet",
-      "updated": "2026-11-27T11:10:33.820"
+      "status": "open",
+      "title": "Blowing glass: finish the film (the mp4 has no moov atom) and show real glass",
+      "updated": "2026-11-27T12:17:47.005"
     },
     {
       "created": "2026-11-27T10:50:30.419",
@@ -9547,6 +9547,34 @@
       "status": "open",
       "title": "Glass blowing in Jump in: the solver on Mantle, the pipe at a furnace by the kiln",
       "updated": "2026-11-27T10:50:30.419"
+    },
+    {
+      "created": "2026-11-27T12:00:31.296",
+      "detail": "Project tops (projects/tops.md). physics/top.jl spins a solid of revolution on its own lowest surface point with penalty contact + Coulomb friction (a pointed top precesses at ~36 deg; a hollow round tippe top stands on its stem at 300 rad/s, stalls on its rim at 180). Next: the mouse cuts the profile on a lathe at the workshop, spin it with a pull (the pull's strength is the spin), then two tops in a ring with top-on-top contact on the GPU (PrintSim affine bodies + IPC), the creatures turning their own on the same lathe. Done when: in Jump in a player turns a top, spins it in the ring against a creature's, and a screenshot + film show both tops colliding and one wobbling out.",
+      "est_minutes": 15.0,
+      "id": 683,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s143: plugins/tops.jl published: tippe top on a board at (5.6, -13), hold 1 by it in Jump in to wind (60-360 rad/s), spin_top on a thread, played back. Sandbox test: 1.7 s hold -> 360 rad/s, stood on its stem (tilt 169 deg at 3.9 s, event top_flip); frame 4.05 ms median, tops system 0.15 ms. Not done: at 4 cm it is a few px in the follow camera (media/s143-tops-live.png shows the meadow, no top): make a Lumi-sized top (~10 cm, re-tune spin by sqrt(g/R)) and a close camera while it spins; then the lathe and the ring.\ns143 later: the live top is now Lumi-sized (R 8 cm, 1 kg, k 6.4e4, dt 4e-5; wind 40-220 rad/s; 70 cm board). Sandbox: 220 rad/s -> stood on its stem (max 173 deg, event top_flip, Lumi says 'It stood up on its head!'); media/s143-tops-live-big.png shows the board by Lumi from the follow camera (the top itself hidden behind Lumi and the chick in that frame); frame 7.5 ms median / 15.7 p95. Published. Still to do: a close camera while it spins, 'Things to try' line, the lathe, the ring.\ns143: 'Things to try' Jump in line now starts with 'by the board east of the kiln hold 1 to spin a top (hard, and it flips)' (dev/NeverendingGame/src/play.jl game_description), media/s143-things-to-try.png; published.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Carved tops: the lathe in Jump in and a top ring with the creatures",
+      "updated": "2026-11-27T12:07:18.032"
+    },
+    {
+      "created": "2026-11-27T12:02:34.864",
+      "detail": "TaskFailedException\nStacktrace:\n  [1] #wait#601\n    @ ./task.jl:363 [inlined]\n  [2] wait\n    @ ./task.jl:360 [inlined]\n  [3] fetch\n    @ ./task.jl:554 [inlined]\n  [4] step!(::Main.Plugin_tops.Tops, game::Game, dt::Float64)\n    @ Main.Plugin_tops /sim/Programmieren/SimGame/world/plugins/tops.jl:80\n  [5] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [8] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [9] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [10] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [11] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [12] top-level scope\n    @ none:1\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [15] _start()\n    @ Base ./client.jl:550\n\n    nested task error: MethodError: no method matching spin_top(::Main.Plugin_tops.TopShape; omega::Float64, tilt::Float64, seconds::Float64, air::Float64, mu::Float64)\n    The function `spin_top` exists, but no method is defined for this combination of argument types.\n    \n    Closest candidates are:\n      spin_top(!Matched::Main.Plugin_tops.TopShape; omega, tilt, seconds, dt, mu, k, c, air, record, v0)\n       @ Main.Plugin_tops /sim/Programmieren/SimGame/world/physics/top.jl:101\n    \n    Stacktrace:\n     [1] (::Main.Plugin_tops.var\"#14#15\"{Main.Plugin_tops.TopShape, Float64})()\n       @ Main.Plugin_tops /sim/Programmieren/SimGame/world/plugins/tops.jl:106",
+      "est_minutes": 15.0,
+      "id": 684,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T12:03:29.103: plugin tops loaded cleanly.\nHappened again at 2026-11-27T12:03:29.440.\nClosed at 2026-11-27T12:03:59.014: plugin tops loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:tops.Tops failed in step! and was switched off",
+      "updated": "2026-11-27T12:03:59.014"
     }
   ]
 }

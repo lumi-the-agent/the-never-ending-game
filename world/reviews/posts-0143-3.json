@@ -1,0 +1,11 @@
+{"posts": [{"post": "hot-glass-lights-the-sand",
+  "verdict": "redo",
+  "problems": [
+    "The top third of the picture is pure blown-out white with no sky, horizon detail or anything else in it; the flat brown sand plane ends in a hard ruler-straight edge against that white, so it reads as an unfinished render, not a place.",
+    "The sand is covered in heavy speckle noise (red and orange firefly dots) everywhere, worst in the glow patch under the bubble, so the 'glow lights the sand' effect the caption is about looks like grain rather than light.",
+    "The pipe is a featureless black rod coming in from the left edge and simply ending at the bubble; nobody holds it and nothing supports it, so the pipe and bubble hang in the air over the sand without a cause.",
+    "The bubble's left side, where the pipe meets it, is dented and flattened with a pale smear, and the surface has swirly marbled bands; it looks like a misshapen texture rather than a gather of molten glass on a pipe.",
+    "The glow on the sand sits below and slightly right of the bubble while the bubble also casts a hard dark shadow to the left from a bright sun; with that much daylight a soft orange patch under a red ball is weak evidence of the bubble lighting anything.",
+    "Caption '960 degrees' is not shown by anything in the picture; nothing distinguishes it from any red sphere."
+  ],
+  "critique": "The orange patch under the bubble is there, but it is buried in noise under a blank white sky, and the pipe and bubble float with no one or nothing holding them. The picture looks like a half-finished test render, not a scene."}]}

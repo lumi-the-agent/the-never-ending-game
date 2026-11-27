@@ -1,0 +1,25 @@
+options: Jump in (WASD) | Firefly catch (WASD) | Hide and seek (WASD) | Berry race (WASD)
+Jump in (WASD): started NeverendingGame.JumpIn; on screen: 
+Jump in (WASD): t=29.0 s score ?; on screen: 
+Jump in (WASD): t=46.0 s score ?; on screen: 
+Jump in (WASD): t=64.0 s score ?; on screen: 
+Jump in (WASD): t=81.0 s score ?; on screen: 
+Firefly catch (WASD): started Main.Plugin_firefly_catch.FireflyCatch; on screen: 
+Firefly catch (WASD): t=24.0 s score 1; on screen: 
+Firefly catch (WASD): t=42.0 s score 1; on screen: 
+Firefly catch (WASD): t=59.0 s score 1; on screen: 
+Firefly catch (WASD): t=77.0 s score 1; on screen: 
+Hide and seek (WASD): started Main.Plugin_hideseek.HideSeek; on screen: 
+Hide and seek (WASD): t=24.0 s score ?; on screen: 
+Hide and seek (WASD): t=42.0 s score ?; on screen: 
+Hide and seek (WASD): t=59.0 s score ?; on screen: 
+Hide and seek (WASD): t=77.0 s score ?; on screen: 
+Berry race (WASD): started Main.Plugin_berry_race.BerryRace; on screen: 
+Berry race (WASD): t=24.0 s score 0; on screen: 
+Berry race (WASD): t=41.0 s score 0; on screen: 
+Berry race (WASD): t=58.0 s score 0; on screen: 
+Berry race (WASD): t=76.0 s score 0; on screen: 
+by the jar: 
+L by the jar: 
+chip: 
+finished
