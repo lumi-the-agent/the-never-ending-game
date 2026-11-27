@@ -10199,12 +10199,12 @@
       "id": 729,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "s154: campfire-in-the-wind-2.mp4 (job 20261127-204058-735, 18.3 h, sun_dim 1.0) swapped into the post; flames now read as fire leaning downwind (media/s154/campfire2-sheet.png, campfire2-fall.png). Still a miss: the front stakes hide which caught; miss note rewritten.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Campfire film retake with gas flames: swap campfire-in-the-wind-2.mp4 into the post",
-      "updated": "2026-11-27T20:41:30.291"
+      "updated": "2026-11-27T21:25:58.902"
     },
     {
       "created": "2026-11-27T20:41:30.519",
@@ -10255,12 +10255,54 @@
       "id": 733,
       "kind": "feature",
       "priority": 1,
+      "result": "s154: lightning shelved (projects/shelf/lightning.md) until the cart drives; the human asked for the motor road first. The leader (estatic.jl leader_eq) is solved as a conductor; its open problem (sideways wander) is written in the shelf file.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Lightning: the stepped leader finds its path through the field round what stands on the hill",
+      "updated": "2026-11-27T21:26:03.073"
+    },
+    {
+      "created": "2026-11-27T21:25:59.199",
+      "detail": "Project motor (projects/motor.md). physics/motor.jl s154 runs every misbuild by itself (motor_cases). Next: a Jump in bench near the coil crane where Lumi's beak places stones, rotor, ring, brushes and touches the last wire; the rotor turns by Motor.spin stepped at game rate (dt 2e-4 substeps, coupling tabulated). Done when: in the sandbox, a built-right motor whirs, a flipped stone runs it backwards, and a screenshot + fps (< 33 ms) are in the result.",
+      "est_minutes": 15.0,
+      "id": 734,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s154: plugins/motorbench.jl published (live status ok). Motor at (5.6,-14.3), south of the tops board, switched on: it sticks short of its dead spot by itself (θ 2.86). Jump in: 7 beak flick (+15 rad/s), 8/9 turn a stone round (red north faces move). Played in the sandbox: two flicks -> 3.01 rev/s, 26 sparks at handovers, 2.03 rev/s 2 s later. Frame median 2.2 ms, p95 6.1 ms. Screenshot media/s154/motorbench-1.png. Not yet: the beak isn't animated on a flick, no spark light or sound, plain wood board.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "A motor fitted by hand: bench plugin, parts placed with the beak, physics/motor.jl live",
+      "updated": "2026-11-27T21:37:52.606"
+    },
+    {
+      "created": "2026-11-27T21:25:59.206",
+      "detail": "Big goal road steps 2-3. Replace Motor.Build's fixed cells (emf, R) by a contact-made nodal circuit solve shared with the coil crane: wires, contacts, cells (Cu/Fe in brine: electrode potentials and brine conductivity from the materials table), coil resistance, Joule heat. Done when: the same motor runs off two clam-shell cells, and the crane lifts more spikes with more cells.",
+      "est_minutes": 15.0,
+      "id": 735,
+      "kind": "feature",
+      "priority": 1,
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
-      "title": "Lightning: the stepped leader finds its path through the field round what stands on the hill",
-      "updated": "2026-11-27T20:54:08.328"
+      "status": "open",
+      "title": "Circuit from what touches what + a cell of two metals in sea water",
+      "updated": "2026-11-27T21:25:59.206"
+    },
+    {
+      "created": "2026-11-27T21:33:58.602",
+      "detail": "Project motor. Motor.State/step!/flick! in movies/motor.jl: switched on it sticks (first-motor-sticks.mp4); Lumi leans in and flicks the ring end with its beak (NG.beak_tips, :eat lowers the beak 23 cm): a weak flick turns ~12 handovers and dies, a hard one keeps it going with sparks at the brushes. Real wood board (grain, not a brown slab), stones that look like ferrite. Done when: the overview sheet shows Lumi's beak touching the rotor in the flick frames and the rotor turning after.",
+      "est_minutes": 15.0,
+      "id": 736,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Motor film 2: Lumi's beak flicks the stuck rotor (a 20 rad/s flick dies, 30 rad/s runs)",
+      "updated": "2026-11-27T21:33:58.602"
     }
   ]
 }

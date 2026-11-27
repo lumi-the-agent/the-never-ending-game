@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T21:33:41.002",
+  "id": "20261127-213341-002-clip",
+  "kind": "clip",
+  "params": {
+    "call": "motor_clip",
+    "kwargs": {
+      "samples": 20,
+      "seconds": 5.0
+    },
+    "max_minutes": 60,
+    "path": "/sim/Programmieren/SimGame/world/site/films/first-motor-sticks.mp4",
+    "script": "movies/motor.jl"
+  },
+  "status": "queued"
+}

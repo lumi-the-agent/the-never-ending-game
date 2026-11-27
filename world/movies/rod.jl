@@ -15,8 +15,8 @@ function rod_parts()
         S[:o] = o
         rod = GeometryBasics.normal_mesh(Cylinder(o, o + Vec3f(0, 0, 2.15f0), 0.02f0))
         cap = GeometryBasics.normal_mesh(Sphere(o + Vec3f(0, 0, 2.15f0), 0.02f0))
-        for m in (rod, cap)
-            mesh!(gm.stage.scene, m; color = RGBf(0.85, 0.5, 0.35), name = :rod_copper,
+        for (nm, m) in ((:rod_copper, rod), (:rod_cap, cap))      # plot names must be unique in a scene
+            mesh!(gm.stage.scene, m; color = RGBf(0.85, 0.5, 0.35), name = nm,
                   material = NG.Hikari.Metallic(base_color = (0.95, 0.64, 0.54), roughness = 0.25))
         end
         for c in w.creatures
@@ -31,7 +31,9 @@ function rod_parts()
             me.pos = NG.ground(gm.world.island, (o[1] - 0.9f0, o[2] + 0.1f0)); me.yaw = 0f0
         end
         rig.mode = :fixed
-        rig.eye = Point3f(o[1] - 0.6f0, o[2] - 3.4f0, o[3] + 1.2f0)
+        ex, ey = o[1] - 0.6f0, o[2] - 3.4f0
+        ge = NG.ground(gm.world.island, (ex, ey))[3]              # the eye's height over the ground UNDER the eye
+        rig.eye = Point3f(ex, ey, max(o[3] + 1.2f0, ge + 1.0f0))
         rig.target = Point3f(o[1] - 0.4f0, o[2], o[3] + 1.1f0)
         return nothing
     end

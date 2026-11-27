@@ -1,0 +1,17 @@
+{
+  "created": "2026-11-27T21:25:04.201",
+  "id": "20261127-212504-198-clip",
+  "kind": "clip",
+  "params": {
+    "call": "motor_clip",
+    "kwargs": {
+      "samples": 20,
+      "seconds": 9.0
+    },
+    "max_minutes": 60,
+    "path": "/sim/Programmieren/SimGame/world/site/films/first-motor.mp4",
+    "script": "movies/motor.jl"
+  },
+  "started": "2026-11-27T21:25:05.204",
+  "status": "running"
+}

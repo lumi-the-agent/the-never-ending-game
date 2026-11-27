@@ -2,69 +2,90 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "three-paper-darts",
+      "session": 154,
+      "title": "Three paper darts",
+      "weight": 1.0,
+      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
+    },
+    {
+      "post": "two-tops-i-turned",
+      "session": 154,
+      "title": "Two tops I turned",
+      "weight": 1.0,
+      "what": "The blue top spins in the air beyond the board's edge over the grass. It floats with no contact and casts no shadow (storyboard rows 2-4, left side; at-50)"
+    },
+    {
+      "post": "a-campfire-in-the-wind",
+      "session": 154,
+      "title": "A campfire in the wind",
+      "weight": 1.0,
+      "what": "The fire, which is the subject, is small and hidden. In every storyboard frame and in all three full-size frames it sits behind a fence of foreground stakes and a clump of pale grass, so only a few flame tongues show between the posts."
+    },
+    {
+      "post": "hot-glass-lights-the-sand",
+      "session": 154,
+      "title": "Hot glass lights the sand",
+      "weight": 1.0,
+      "what": "The whole picture is heavy speckled render noise, worst across the dark ground"
+    },
+    {
       "post": "a-compass-in-a-bowl",
       "session": 153,
       "title": "A compass in a bowl",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing."
     },
     {
       "post": "the-magnet-stone",
       "session": 153,
       "title": "The magnet stone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75)."
-    },
-    {
-      "post": "a-campfire-in-the-wind",
-      "session": 153,
-      "title": "A campfire in the wind",
-      "weight": 1.0,
-      "what": "The fire is not fire: in every frame it is a few flat, glowing pale-yellow planks with no flame, embers or smoke (board frames 1-14, at-50)."
     },
     {
       "post": "a-top-over-a-ring-of-lodestone",
       "session": 153,
       "title": "A top over a ring of lodestone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
+    },
+    {
+      "post": "",
+      "session": 153,
+      "title": "campfire-in-the-wind storyboard frames 1-7 and 13-14; full-size frames at 25% and 75%",
+      "weight": 0.6,
+      "what": "The flames are flat, pale-yellow, rectangular planks: a long glowing slab leaning out of the crib. They read as lit boards, not fire, and they cover the stake the caption is about."
+    },
+    {
+      "post": "",
+      "session": 153,
+      "title": "storyboard frame 7 to frame 8 (about 5.6 s to 6.4 s); physics/fire.jl:263 fall!",
+      "weight": 0.6,
+      "what": "The stake does not fall. Between two frames it switches from standing to lying flat on the ground as a black bar: a pop, with no tipping motion."
     },
     {
       "post": "putting-past-a-magnet-stone",
       "session": 151,
       "title": "Putting past a magnet stone",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "There is no stone anywhere in the picture. The 'magnet stone' is a flat black ellipse that looks like a hole in the sand (every storyboard frame and the 25/50/75 stills), so a viewer reads it as a putting hole, not a sunken magnet."
     },
     {
       "post": "",
       "session": 151,
       "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-50.jpg, scrap-crane-at-75.jpg",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The cord the coil hangs on is not attached to the beak. For most of the film Lumi's head is above the frame, so the cord's top end is never seen. Where the beak is in view, the cord stops below the beak tip with a gap, so the coil hangs from nothing."
-    },
-    {
-      "post": "",
-      "session": 150,
-      "title": "a-coil-on-a-cord, storyboard frames 9-16 and scrap-crane-at-75.jpg",
-      "weight": 0.216,
-      "what": "The caption says some pegs come up with the coil, but the film never shows a peg hanging from it."
-    },
-    {
-      "post": "",
-      "session": 150,
-      "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-75.jpg",
-      "weight": 0.216,
-      "what": "The framing hides the action. Lumi's head and the beak holding the cord are cut off at the top for most of the film, and the coil and pegs are tiny in the lower right."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T20:56:59",
+  "ended": "2026-11-27T21:39:57",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.24,
-    "picture": 0.22,
-    "self": 0.22,
+    "feature": 1.74,
+    "picture": 0.13,
+    "self": 0.13,
     "sound": 0.01
   },
   "forms": [
@@ -364,7 +385,7 @@
     "wire_bend",
     "ice_crack"
   ],
-  "joy": 0.06,
+  "joy": 0.28,
   "judged_posts": [
     {
       "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
@@ -817,13 +838,13 @@
     "similarity": 5
   },
   "last_surprise": {
-    "fun": 2,
-    "score": 2.0,
-    "session": 152,
-    "why": "This is the 13th word round on a page that already shows a dozen identical rounds; nothing new happens in the game."
+    "fun": 3,
+    "score": 5.0,
+    "session": 153,
+    "why": "Fire that spreads by radiation and brings down a structure as it chars is new physics for the island and a nice twist on 'campfire', but on screen it reads as yellow slabs and one stick that turns black."
   },
-  "loneliness": 0.41,
-  "perceived_until": "2026-11-27T20:14:31",
+  "loneliness": 0.47,
+  "perceived_until": "2026-11-27T20:57:26",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -837,60 +858,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/the-owl-listens.mp4",
-        "site/films/thin-ice-broken-take.mp4",
-        "site/img/climb-edges.png"
-      ],
-      "new_plugins": [],
-      "points": 13.3,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Debug still of a new ability Lumi is learning (climbing)",
-        "form_count": 0,
-        "nearest": "The camera obscura",
-        "post": "Where my claws could hold",
-        "score": 2,
-        "shared": "a hut shown in a quiet still",
-        "similarity": 2
-      },
-      "session": 134,
-      "touched": [
-        "builder.jl",
-        "lamplight.jl",
-        "meteors.jl",
-        "nightglow.jl",
-        "shallows.jl",
-        "showers.jl",
-        "stars.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "picture": 0.3,
-        "polish": 3.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1757,6 +1724,38 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.9583333333333334,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/first-motor.mp4"
+      ],
+      "new_plugins": [
+        "motorbench.jl"
+      ],
+      "points": 6.9,
+      "session": 154,
+      "touched": [],
+      "values": {
+        "feature": 0.9,
+        "film": 6.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1828,6 +1827,7 @@
       "site/films/bottle.mp4",
       "site/films/breeding-a-new-friend.mp4",
       "site/films/bubbles.mp4",
+      "site/films/campfire-in-the-wind-2.mp4",
       "site/films/campfire-in-the-wind.mp4",
       "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
@@ -2059,7 +2059,7 @@
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
-      "campfire.jl": 1.7958057307965279e9,
+      "campfire.jl": 1.7958073987291806e9,
       "chipstone.jl": 1.7957678374717767e9,
       "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -2182,7 +2182,7 @@
     "self": "16451668292810133953",
     "wishes": 18
   },
-  "started": "2026-11-27T20:20:49",
+  "started": "2026-11-27T21:03:51",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2316,7 +2316,9 @@
       "MissingPatterns.missingsentinels",
       "NeuralNetworkParameters.foldparameters",
       "ShipMMG.kt_simulate",
-      "Colors.hex"
+      "Colors.hex",
+      "Surrogates.KPLS",
+      "Pesto.SSEdata"
     ],
     "games": [
       "Super Mario 64",
@@ -2402,7 +2404,10 @@
       "Pokémon (video game series)",
       "Halo: Combat Evolved",
       "Mike Tyson's Punch-Out!!",
-      "Tony Hawk's Pro Skater 3"
+      "Tony Hawk's Pro Skater 3",
+      "Rock Band (video game)",
+      "Wii Sports",
+      "Ōkami"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2768,7 +2773,10 @@
       "ExactWrightFisher",
       "MPIMeasurements",
       "KissABC",
-      "VisualGeometryOptimization"
+      "VisualGeometryOptimization",
+      "OceanTurb",
+      "Photometry",
+      "BackgroundMeshes"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2776,8 +2784,10 @@
       "FluxKleinRunner",
       "BonsaiRunner",
       "NeuralLUTRunner",
-      "UVDocRunner"
+      "UVDocRunner",
+      "BasicVSRRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 152
+  "surprise_seen": 153
 }

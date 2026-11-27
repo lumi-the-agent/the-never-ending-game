@@ -1,0 +1,74 @@
+{
+ "ideas": [
+  {
+   "title": "A motor fitted by hand that runs because the field pushes it",
+   "goal": "The player fits a motor together from parts on a bench: the magnet stone as the stator, a coil wound on a wooden rotor, an axle in two forked sticks, a split copper ring and two springy brushes, then touches the wires to a cell. Built right, it kicks, stalls on a dead spot, and with a nudge whirs. With the stone the wrong way round it runs backwards; with the brushes off the gap it buzzes and sparks. Tinkering until it runs is the game, and every fault is the real fault.",
+   "toward": "The heart of the big goal: 'coil, stone, axle and brushes fitted by hand spin, buzz or stall by how they were built'.",
+   "idea": "The rotor is a rigid body on a hinge. Its torque is the Lorentz force on every wound turn in the stone's field (em.jl's field of the real stone mesh, coilcrane.jl's turns), with the current from a circuit solve that knows which commutator segment each brush touches at this angle. That reverses the current every half turn by contact, not by script. Back-EMF from the turns cutting the field limits the speed; bearing friction and brush drag come from contact forces. A brush that loses contact breaks the circuit and draws a spark.",
+   "form": "A plugin bench next to the coil crane, parts placed with the beak. Film: close and path traced, copper turns catching the light, Lumi touching the last wire, the rotor jerking, stalling, Lumi flicking it with its beak, then a blur."
+  },
+  {
+   "title": "A cart that drives because its parts do",
+   "goal": "The player puts the motor, a row of cells and a switch on a wooden frame with four wheels and an axle, belts the motor to the axle, and the cart rolls. Too heavy and it stalls on the dune, too many cells and the wire cooks, friends on board slow it down. Driving something you built yourself across the island is the payoff of everything before it.",
+   "toward": "The end of the road: an electric cart, the first whole machine made of the parts.",
+   "idea": "Wheels and frame as rigid bodies with rolling friction and contact on the terrain heightfield; a belt or gear pair as a kinematic constraint whose torque comes from the motor's own solve. The cells' voltage sags under load, the motor's current rises as it slows, Joule heat warms the coil. Friends who climb on add their mass.",
+   "form": "A project over several sessions. The first step is a rolling cart on the terrain pushed by hand, then with the motor. Film: the cart crawling up the path with Truffle on the back."
+  },
+  {
+   "title": "Static in Truffle's fur",
+   "goal": "The player rubs a lump of beach amber on a woolly friend, then brings it near another: the friend's fur stands up strand by strand, paper scraps leap to the amber, and if the noses get close a spark snaps across and both friends jump. A game of sneaking up on friends with a charged stone, which looks different every time because whether it sparks depends on the gap, the charge and how pointy the nose is.",
+   "toward": "The field solver (physics/estatic.jl) on bodies the player moves, not just rods: charge that moves when things touch, the first 'circuit from what touches what'.",
+   "idea": "Triboelectric charge from rubbing (charge per stroke from the two materials' places in the triboelectric series, in the materials table). The amber and the friend become boundary-element conductors and insulators. The fur is a few hundred strands as charged elastic fibres, each repelled by the others' charge, so the fur stands up by the field. Paper scraps lift when the field force beats their weight. A spark fires when the field at the closest point passes air's breakdown (3 MV/m, less for a sharp nose); the charge drains through it and makes a bright little channel and a crack sound.",
+   "form": "A plugin: amber on the north beach, Jump in, R rubs, walk up to a friend. Film: a close path traced shot of Lumi rubbing amber on Truffle, the fur rising, then the spark to Gloop's nose and both leaping back."
+  },
+  {
+   "title": "Sparks off the grindstone tell you the metal",
+   "goal": "Hold anything you found against a spinning grindstone (Lumi pedals it) and read the sparks: iron throws long yellow streaks that burst into stars, copper throws none, the magnet stone gives short dull red ones. It is how the player learns what a lump is before smelting it, a small skill of looking, and pretty every time.",
+   "toward": "The materials table read by every system: carbon content, oxidation heat and melting point decide the sparks, not a picture per material.",
+   "idea": "The wheel takes off chips at a rate set by the pressure and the material's hardness. Each chip is a hot particle that flies ballistically with drag, cools by radiation and convection, and burns while its iron oxidises (the heat of oxidation keeps it glowing). Carbon in it boils off as CO and bursts the chip into stars. The colour is Planck from the particle's temperature, as emissive trails in the tracer.",
+   "form": "A plugin bench beside the kiln (4,-16.5), and a night film close on the wheel: an iron spike makes a fan of branching sparks over Lumi's goggles, then copper makes none."
+  },
+  {
+   "title": "A cell in a clam shell lifts the crane",
+   "goal": "The player puts a copper wire and an iron nail into a clam shell of sea water, joins them to the coil, and the crane picks up spikes. Two shells in a row lift twice the pile, and a wire touching the wrong post drops the lot. Building batteries is the moment you get power from the beach.",
+   "toward": "'Two metals in brine make a cell': the first electric current on the island, driving the coil crane (coilcrane.jl) by a current nobody set.",
+   "idea": "Each cell's voltage comes from the two metals' electrode potentials in the materials table (Cu/Fe in brine about 0.5-0.8 V). Its internal resistance comes from the brine's conductivity and the gap. The circuit is solved from what touches what (a nodal solve over contacts: wires, posts, coil), so the current drops as the cells polarise and the iron corrodes. The coil's current goes into the existing Biot-Savart solve. Too many cells heat the thin coil wire (Joule).",
+   "form": "Plugin: shells by the crane, place parts with the beak. Film: Lumi drops a nail in the second shell, the crane drags itself into the spike pile and lifts a bigger bundle."
+  },
+  {
+   "title": "Bellows and green rock: the first copper bead",
+   "goal": "The player loads the kiln with charcoal and crushed green rock and works the bellows by hopping on them. Too slow and the fire sulks, too fast and it blows cold, and in the end a red copper bead sinks out of the slag. A rhythm game with a furnace, and the prize is a material you can make wire from.",
+   "toward": "'Copper from green rock': the step that turns the materials table into things the player makes.",
+   "idea": "The fire's heat balance (fire.jl): the air the bellows push per hop sets how much charcoal burns, against loss through the kiln wall. Malachite gives up CO2 above about 300 C and is reduced by CO above about 800 C. Copper melts at 1085 C and runs down through the charge by gravity. The kiln's inside glows by its own temperature (Planck) through the mouth, and the bead's mass comes from the ore put in.",
+   "form": "Plugin on the kiln: Jump in, hop to pump. Film: night, the kiln mouth brightening with each hop, Lumi's feathers lit orange, the bead pulled out with tongs."
+  },
+  {
+   "title": "A hot wire in dry grass",
+   "goal": "Too thin a wire on a cell glows red, then sets the grass under it alight, and the player has to stamp it out or let it burn into a firebreak on purpose. A tool for clearing ground, and a trap for the careless.",
+   "toward": "'Thin wire heats and melts', joined to real fire: two systems of the road meeting in one thing a player does.",
+   "idea": "Joule heat I^2 R in each wire segment (R from length, cross-section and copper's resistivity, which rises with temperature), cooled by convection and radiation; the wire glows by Planck and melts at 1085 C. Grass blades near it take its radiant heat into fire.jl's heat balance, dry, then catch, and the fire spreads blade to blade with the wind.",
+   "form": "Plugin: a patch of dry grass by the campfire. Film: the wire turning dull red, then orange, a blade curling, smoke, flame running downwind, Lumi stamping."
+  },
+  {
+   "title": "Turn the potter's wheel and the wire glows",
+   "goal": "Spin the potter's wheel with the magnet stone fixed to it over a coil and a thin wire glows: faster spinning, brighter glow, and with the wire shorted the wheel suddenly gets heavy to turn. The player feels the generator push back, which is the surprise everybody remembers from physics class.",
+   "toward": "'Turned backwards it lights a lamp': the motor's twin, using em.jl's field of a real stone and the coil's turns.",
+   "idea": "The flux of the spinning stone through the coil from em.jl, sampled over the wheel's angle. The EMF is -dPhi/dt; the current comes from the circuit's resistance, and Joule heat warms and lights the wire. The back torque I x dPhi/dtheta feeds the wheel's rigid-body spin, so the player's kicks slow down under load.",
+   "form": "Plugin on the existing potter's wheel. Film: Lumi kicking the wheel, a filament wire going from dark to orange, then the wheel stalling when a friend touches the wires together."
+  },
+  {
+   "title": "Wire through the draw plate",
+   "goal": "The player pulls a copper rod through a stone plate with smaller and smaller holes. It gets thinner and harder each pass until it snaps, unless they anneal it in the fire between passes. A craft you get good at, and the wire you make is what the coils are wound from.",
+   "toward": "'Drawn into wire that keeps its bends': wire.jl's work hardening becomes something the player does.",
+   "idea": "Each pass reduces the area by the hole's ratio. The pulling force comes from the flow stress (which rises with strain, wire.jl's hardening law) and the die friction; the rod snaps where the force passes its tensile strength. Annealing in the fire (heat above recrystallisation, about 300 C for copper) resets the hardening. The wire's diameter is kept and is what the coil and resistance use.",
+   "form": "Plugin by the wire bench. Film: Lumi hauling on the wire with its beak, braced backwards, the copper getting thinner and shinier, a snap and a tumble on the third pass."
+  },
+  {
+   "title": "A buzzer that sings by breaking its own circuit",
+   "goal": "The player bends a strip of iron over a small coil so it just touches a contact. Switched on, the coil pulls the strip, the contact breaks, the strip springs back, and it buzzes. Shorter strip, higher note; bend the contact closer and the tone changes. A horn for the cart, a doorbell for the mailbox, and an instrument the friends dance to.",
+   "toward": "Self-switching circuits (the commutator's cousin) and the first machine part you hear: contact-made circuits in the solver, sound from real vibration.",
+   "idea": "The strip is an elastic beam (modes.jl FEM, or wire.jl joints), pulled by the coil's field on soft iron (softiron.jl's magnetisation). The circuit solve opens when the strip leaves the contact, the current decays by L/R, the strip swings back, and the cycle's frequency and waveform come out of the simulation. The sound is the strip's velocity radiated as a dipole, written to the film's audio as in the knock film.",
+   "form": "Plugin on the crane bench: Jump in, press to switch. Film with sound: Lumi bending the strip with its beak, the buzz rising in pitch, Wibbles starting a conga to it."
+  }
+ ]
+}

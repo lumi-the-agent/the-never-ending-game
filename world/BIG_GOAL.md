@@ -1,31 +1,22 @@
-# Sparks from stones
+# From beach stones to an electric cart
 
-Lumi finds a magnet stone on the beach and green rock in the cliff, and from them builds electricity by hand: copper smelted and drawn into wire, a coil wound turn by turn, a battery from two metals in brine, and whatever you put together pulls, spins, buzzes or burns by the real fields it makes, nothing scripted.
+Lumi builds an electric cart from nothing but what the island has: copper smelted from green rock, wire pulled through a stone plate, cells of two metals in sea water, a motor wound and fitted part by part. The cart drives the friends round the island because every part works, and nothing is scripted.
 
-Play: Tinkering that never runs out: gather, smelt, draw, wind, connect, switch on, and the island's one field solver decides what happens. More turns pull harder, thin wire glows and melts, a magnet the wrong way round kicks the rotor backwards, a nail by the stone flies to it. Every build is different because the player chooses the parts, their materials and where they sit, and builds nobody planned work too (a compass from a needle, a coil that throws a nail, a wire that spins on a cell). Then the parts drive what was made before: the potter's wheel, the log boat's paddle, the paper glider's launcher.
+Play: Gather, smelt, draw, wind, fit, switch on, and the one field-and-circuit solver decides what happens. More turns give more torque, thin wire glows and melts, a magnet put in the wrong way round drives the rotor backwards, too few cells and the cart crawls up the hill, a loose brush makes it stutter. Every build is different because the player chooses the parts, their sizes and materials and where they sit. Then the cart gets better the way real ones did: a gear pair for the hill, a second motor, a switch to reverse, a hill run that charges the cells as it brakes.
 
-The moment people share: The first motor wound from beach copper, put together by Lumi's beak part by part, coughs, stalls, then whirs and pushes the log boat out across the bay, or a misbuilt one wrenches itself off the bench and the friends scatter.
+The moment people share: The first cart, all wooden frame and copper coils, coughs, lurches forward with three friends on board, crawls up the dune and runs away down the other side. Or a misbuilt motor spins its own rotor out of the frame and the friends scatter.
 
 ## Road
 
-- [ ] A magnet stone every iron thing feels by distance and pose, and jumps to
-  - [x] Done s147: field of any magnet mesh (physics/em.jl), the stone on the north beach (5 in Jump in), the compass bowl
-  - [ ] Lightning makes a lodestone: the strike finds its path by the field round what the player put up (project lightning; physics/estatic.jl s153, rod tip field within 10% of theory)
-  - [ ] Iron magnetises iron: spikes hang in chains (physics/softiron.jl solved s148: 2 hold, the 3rd at the edge)
-  - [ ] The anchor chain and other iron on the island feel it too
-  - [x] A spinning top floats over a ring magnet by the field alone (physics/levitron.jl, s148; playable next)
-  - [x] Iron sand shows any field: tap it and read where a buried stone lies, then dig (s149, plugins/ironsand.jl)
-  - [ ] Sand grains as needles that turn only where the field beats friction; two stones under one patch
-  - [x] Putting over a hidden stone: an iron ball bends round it on a sand tray, groove shows the bend (s151, plugins/magnetgolf.jl)
-  - [ ] Sprinkle iron sand on the tray to read the break before the putt; friends take turns
-- [ ] One materials table read by every system (copper, iron, magnet stone, wood, brine)
-  - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
-- [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
-- [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
-  - [ ] Heat and fire in real things: wood heats, dries, catches, chars and breaks; wind leans the flames (physics/fire.jl s152; flames as hot gas glowing by Planck s153)
-  - [ ] A fire the player lights and fights: campfire, stakes, pond water (next)
-- [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
-  - [x] The coil's own field: Biot-Savart over every wound turn, core and spikes solved together (physics/coilcrane.jl, s150)
-  - [ ] The scrap crane: lowered into a spike pile, lifted, switched off over a friend (film; s150 take came up empty: contact inside the winding, NOTES)
-- [ ] Coil, stone, axle and brushes fitted by hand spin, buzz or stall by how they were built
-- [ ] The motor drives the wheel, the paddle and the launcher; turned backwards it lights a lamp
+- [x] Done s146-151: any magnet's field (em.jl), the homopolar wire motor, coil Biot-Savart (coilcrane.jl), the beach magnet stone
+- [ ] A circuit solver from what touches what: wires, contacts, resistance from length and section, Joule heat
+- [ ] A cell from copper and iron in a clam shell of sea water: voltage, internal resistance, polarisation
+- [ ] The coil crane powered by cells: more cells lift more spikes
+- [ ] A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve
+  - [x] The physics: I dl x B over every turn, brush contact switching, back-EMF, L, friction (motor.jl s154; misbuilds stall or reverse)
+  - [ ] A bench in Jump in where the beak places the parts and touches the last wire (todo #734)
+- [ ] The motor on the potter's wheel: it turns by itself; turned by hand it is a generator that lights a wire
+- [ ] Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain
+- [ ] The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do
+- [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
+- [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island

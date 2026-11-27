@@ -1,38 +1,18 @@
 {"goals": [
- {"title": "Sparks from stones",
-  "pitch": "Lumi finds a magnet stone on the beach and green rock in the cliff, and from them builds electricity by hand: copper smelted and drawn into wire, a coil wound turn by turn, a battery from two metals in brine, and whatever you put together pulls, spins, buzzes or burns by the real fields it makes, nothing scripted.",
-  "play": "Tinkering that never runs out: gather, smelt, draw, wind, connect, switch on, and the island's one field solver decides what happens. More turns pull harder, thin wire glows and melts, a magnet the wrong way round kicks the rotor backwards, a nail by the stone flies to it. Every build is different because the player chooses the parts, their materials and where they sit, and builds nobody planned work too (a compass from a needle, a coil that throws a nail, a wire that spins on a cell). Then the parts drive what was made before: the potter's wheel, the log boat's paddle, the paper glider's launcher.",
-  "moment": "The first motor wound from beach copper, put together by Lumi's beak part by part, coughs, stalls, then whirs and pushes the log boat out across the bay, or a misbuilt one wrenches itself off the bench and the friends scatter.",
-  "road": [
-   "A magnet stone with a real field: carry it and every iron thing on the island (nails, the anchor chain) feels it by distance and pose, and jumps to it",
-   "One materials table on the island (copper, iron, magnet stone, wood, brine): conductivity, permeability, magnetisation, density, melting point, read by every system",
-   "Copper from green rock: smelt it in the kiln and draw it through a stone die into wire that keeps every bend (wire.jl)",
-   "A circuit from what touches what: two metals in brine make a cell, current flows through whatever wire connects them, thin wire heats and melts",
-   "A coil wound by turning a spindle with the beak: its field from its own turns lifts nails, it is an electromagnet",
-   "Coil, magnet stone, axle and brushes fitted by hand: the push on every bit of wire turns real bodies, and it spins, buzzes or stalls by how it was built",
-   "The motor drives the wheel, the paddle and the launcher; turned backwards by the treadwheel it lights a lamp (induction from the same fields)"
-  ]},
- {"title": "Every wing is answered by its sky",
-  "pitch": "Lumi can't fly, so it builds wings from cane and paper, and every island in the archipelago has its own sky (a gusty cliff, a long calm reach, a thermal over black rock): each crash shows on the replay where the air beat the wing, and the player chooses how to answer: a splint, a thicker spar, more camber folded in, a shorter span, the ballast stone moved.",
-  "play": "Build, jump, crash, read the replay, choose a trade, jump again. No fix is free (a splint is weight, camber is drag, a short span sinks), and no wing flies every sky, so the shelf fills with wings, each named by its crashes, and the player picks one for the day's wind or builds a new one. The friends ride along and each weighs what it weighs, so a wing for Pinchy is not a wing for Truffle.",
-  "moment": "The slow-motion replay of a soft tip curling up in the thermal a second before the dive, then the same wing, splinted where it broke, riding that thermal over the black rock with Pinchy holding on.",
-  "road": [
-   "The paper dart that flies by its folds (physics/glider.jl), with induced drag, thrown by Lumi",
-   "A cane and paper wing whose spars bend under the air load, fed back through the vortex lattice of the bent shape (checked against a cantilever)",
-   "Lumi jumps off the dune with it and the spar breaks where the stress beat the cane; the replay shows where",
-   "The player's answers: splint, thicker spar, fold, trim, ballast, each changing mass, stiffness and shape",
-   "Three skies with their own wind fields; the wing shelf",
-   "A friend as a passenger, its mass on the wing"
-  ]},
- {"title": "Toys the friends wear out",
-  "pitch": "The friends ask Lumi for toys (a top that beats Truffle's, a boat that carries Pinchy, a kite for the cliff wind) and Lumi builds each one from real materials, part by part; then the friends really play with them, by physics, until they chip, bend, sink or snap, and come back asking for a better one.",
-  "play": "Read what a friend wants, choose materials and shape, build it at the bench, hand it over and watch them play: the toy's life is the test. A friend that plays rough breaks toys at their weak spot, so the next one is built tougher, lighter or stranger, and each friend's playroom fills with the history of what Lumi made them.",
-  "moment": "Truffle's tenth top, turned from oak with a copper tip after nine split or wobbled, wins the spinning ring against Cumulus's, and the whole island cheers on the board.",
-  "road": [
-   "A friend asks, and plays with a top from the tops board until it falls",
-   "Toys wear: chips, bends and cracks stay on them",
-   "A boat for Pinchy from the log boat's hull code; it floats or sinks by its own shape",
-   "A spinning ring where two friends' tops fight by contact physics",
-   "A playroom shelf per friend with every toy they wore out"
-  ]}
+{"title": "From beach stones to an electric cart",
+ "pitch": "Lumi builds an electric cart from nothing but what the island has: copper smelted from green rock, wire pulled through a stone plate, cells of two metals in sea water, a motor wound and fitted part by part. The cart drives the friends round the island because every part works, and nothing is scripted.",
+ "play": "Gather, smelt, draw, wind, fit, switch on, and the one field-and-circuit solver decides what happens. More turns give more torque, thin wire glows and melts, a magnet put in the wrong way round drives the rotor backwards, too few cells and the cart crawls up the hill, a loose brush makes it stutter. Every build is different because the player chooses the parts, their sizes and materials and where they sit. Then the cart gets better the way real ones did: a gear pair for the hill, a second motor, a switch to reverse, a hill run that charges the cells as it brakes.",
+ "moment": "The first cart, all wooden frame and copper coils, coughs, lurches forward with three friends on board, crawls up the dune and runs away down the other side. Or a misbuilt motor spins its own rotor out of the frame and the friends scatter.",
+ "road": [
+  "Done s146-151: any magnet's field (em.jl), the homopolar wire motor, coil Biot-Savart (coilcrane.jl), the beach magnet stone",
+  "A circuit solver from what touches what: wires, contacts, resistance from length and section, Joule heat",
+  "A cell from copper and iron in a clam shell of sea water: voltage, internal resistance, polarisation",
+  "The coil crane powered by cells: more cells lift more spikes",
+  "A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve",
+  "The motor on the potter's wheel: it turns by itself; turned by hand it is a generator that lights a wire",
+  "Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain",
+  "The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do",
+  "Gears for the hill, reverse, braking that charges the cells; friends ride along",
+  "Copper from green rock in the kiln, drawn into wire, so every part is made on the island"
+ ]}
 ]}

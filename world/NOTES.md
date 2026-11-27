@@ -1136,3 +1136,19 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   (q / (2 pi eps0 r)), earthed plane z = 0 by mirror charges. Storm field E0 down: phi0 = E0 z, solve P q = V - phi0.
 - Checked against Forbes' capped-rod enhancement within 10% (projects/lightning.md). Measure the field a couple of
   radii OFF the surface: on a panel centroid the field of the panel itself is singular.
+
+## The motor (s154, physics/motor.jl, project motor)
+- A motor needs no motor code: torque = sum I dl x B over one turn (x N) in em.jl's field, back-EMF = sum (v x B).dl
+  along the same turn; check `coil_coupling(b, θ)`: the two come out equal and opposite (energy conservation, a free test).
+- Tabulate the coupling over θ once per build (180 angles): a rigid rotor's field coupling depends only on θ; then
+  spin() runs 10k steps/s of physics in ms. Rebuild the table when a part moves.
+- Coulomb friction with a light rotor stops a flick in ~0.05 s: a beak flick needs ~40 rad/s at bench size.
+- A wide commutator gap (20 deg) traps a heavy rotor INSIDE the gap (open circuit, no torque, coasting not enough):
+  real commutators have narrow gaps for this reason. Start angle matters for weak motors (one cell: runs from 0.8 rad,
+  stalls from pi/2); test cases from the same angle (pi/2) or the comparison lies.
+- Film framing: a 0.2 m machine next to Lumi (1.1 m): camera low (0.2 m) and close (0.55 m) at 3/4 from the
+  commutator end, Lumi 3.2 m behind on the same line; looking ALONG the stones' axis hides the rotor behind a stone.
+- s154 LESSON: em.jl `force(Bf, path, I)` samples B at each segment's MIDPOINT only. A coil side drawn as ONE segment
+  over a magnet's face samples the peak field and overestimates torque ~30%: always subdivide paths (rect_turn n = 10)
+  and check the answer moves less than a few % when n doubles, BEFORE filming. The first motor film rendered on the
+  coarse turn and had to be withdrawn.

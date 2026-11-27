@@ -76,13 +76,20 @@ world(m::Magnet, k) = collect(m.pos) + m.R * collect(m.pts[k])
 
 """H (A/m) at world point p from magnet m (valid outside the material, and away from its surface by more than a quadrature cell)."""
 function H(m::Magnet, p)
-    h = zeros(3); pv = collect(Float64, p)
-    for k in eachindex(m.q)
-        d = pv - world(m, k)
-        r = norm(d)
-        h .+= m.q[k] / (4pi * r^3) .* d
+    # no allocation per charge (s154: the motor's coupling table took 10 s with `world(m, k)` vectors)
+    R = m.R; o = m.pos
+    px = Float64(p[1]); py = Float64(p[2]); pz = Float64(p[3])
+    hx = 0.0; hy = 0.0; hz = 0.0
+    @inbounds for k in eachindex(m.q)
+        a = m.pts[k]
+        dx = px - (o[1] + R[1, 1] * a[1] + R[1, 2] * a[2] + R[1, 3] * a[3])
+        dy = py - (o[2] + R[2, 1] * a[1] + R[2, 2] * a[2] + R[2, 3] * a[3])
+        dz = pz - (o[3] + R[3, 1] * a[1] + R[3, 2] * a[2] + R[3, 3] * a[3])
+        r2 = dx * dx + dy * dy + dz * dz
+        c = m.q[k] / (4pi * r2 * sqrt(r2))
+        hx += c * dx; hy += c * dy; hz += c * dz
     end
-    h
+    [hx, hy, hz]
 end
 B(ms::AbstractVector{Magnet}, p) = MU0 .* sum(H(m, p) for m in ms)
 B(m::Magnet, p) = MU0 .* H(m, p)

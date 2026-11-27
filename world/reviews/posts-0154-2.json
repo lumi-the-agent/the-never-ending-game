@@ -1,0 +1,11 @@
+{"posts": [{"post": "a-campfire-in-the-wind",
+  "verdict": "redo",
+  "problems": [
+    "The fire, which is the subject, is small and hidden. In every storyboard frame and in all three full-size frames it sits behind a fence of foreground stakes and a clump of pale grass, so only a few flame tongues show between the posts.",
+    "The stake does not visibly fall. In storyboard frames 1-7 nothing lies on the ground, and in frame 8 a black beam is suddenly lying flat to the right of the fire. No frame shows it tipping, sliding or landing, and you can't tell which of the upright stakes it was, because the cluster of posts looks the same before and after.",
+    "The fallen stake is jet black, a uniform dark bar with no wood grain, char texture or embers (full-size frames at 50% and 75%). It reads as a flat shadow or a drawing glitch rather than a burnt wooden stake, and the caption doesn't say it burned.",
+    "The flames don't keep a steady downwind lean, despite 'flames leaning downwind' in the caption. At 25% the flame leans left/up, at 50% it streams right, and at 75% it is upright and small. Nothing else in the scene shows wind: no grass, leaves or smoke move.",
+    "The yellow bird on the left stands frozen in the same pose with its arms out through all 16 storyboard frames, during what the caption calls twenty minutes sped up. It doesn't react to the fire or the falling stake.",
+    "The upright stakes are plain orange-red boxes with no wood texture, and one is cut off by the tree trunk behind it, which has the same red colour. The posts and the trunk merge into one shape at the top of the frame."
+  ],
+  "critique": "The two things the caption promises, flames leaning in the wind and a stake ending up on the ground, are hard to see: the fire is hidden behind posts and grass, and the stake appears flat on the ground between two frames as a featureless black bar, with no fall shown. Nothing else in the scene reacts to the wind or the fire, including the frozen bird."}]}

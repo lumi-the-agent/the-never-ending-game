@@ -1,0 +1,38 @@
+{"posts": [
+ {"post": "a-campfire-in-the-wind",
+  "verdict": "redo",
+  "problems": [
+   "The tall stakes stand between the camera and the fire through the whole film, so the flames show only in slits between them (every storyboard frame, at-50, at-75)",
+   "Caption says the downwind stake 'catches, chars and falls': no stake ever looks charred. One flat black bar is suddenly lying on the ground (storyboard row 2, frame 4 onward), and the fall itself can't be read",
+   "The stakes still standing are the same fresh brown from start to end. Nothing about them reads as upwind versus downwind, and no wind shows anywhere except in the flame direction",
+   "Leafy plants grow up through the fire pit and stay green and untouched by the flames (at-50, at-75)",
+   "The yellow bird stands frozen beside a fire for 'twenty minutes' and doesn't react"
+  ],
+  "critique": "The claim the caption makes (a stake catching, charring and falling) is hidden behind the very stakes it is about. All a viewer sees is flicker between brown posts and a black bar that turns up on the ground."},
+ {"post": "three-paper-darts",
+  "verdict": "redo",
+  "problems": [
+   "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water",
+   "Nothing shows where a dart comes from: no hand, no launch, and the 'rail' is a bare T-post. The dart is just there next to it (storyboard frames 1, 6, 12)",
+   "Halfway through the first flight the camera cuts to empty water (storyboard row 1 frame 4, row 2 frame 1), and the dart becomes a speck in the sea",
+   "Nothing tells the three folds apart and there are no labels, so 'dives, glides, rears up' can't be told apart from the frames. Where each dart lands is never shown"
+  ],
+  "critique": "The comparison the caption promises can't be seen: three near-invisible specks with no launch and no landing, in a wide view of the island."},
+ {"post": "two-tops-i-turned",
+  "verdict": "redo",
+  "problems": [
+   "The blue top spins in the air beyond the board's edge over the grass. It floats with no contact and casts no shadow (storyboard rows 2-4, left side; at-50)",
+   "The caption itself admits a simulation bug ('my simulation still had floor and the island didn't'). That is broken physics shown as content, not a failed experiment",
+   "Both tops are already spinning when the film starts. No hand spins them, and neither comes to rest by the end",
+   "The 'board' is a plain brown disc filling the lower half of the frame"
+  ],
+  "critique": "A top hovering in the air with no shadow is a bug, and the caption saying so doesn't make it watchable. The red top just wobbles in place with no start and no end."},
+ {"post": "hot-glass-lights-the-sand",
+  "verdict": "redo",
+  "problems": [
+   "The whole picture is heavy speckled render noise, worst across the dark ground",
+   "The pipe floats in black space: no one holds it, no furnace, nothing of the island. The 'sand' is a featureless dark plane",
+   "The bubble is a flat, blotchy orange-red with smeared highlights. It doesn't read as glass or as a glowing hot surface"
+  ],
+  "critique": "The red pool on the ground does show the claimed glow, but the image is grainy, empty and placeless, and the bubble doesn't look like hot glass."}
+]}

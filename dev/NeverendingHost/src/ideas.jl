@@ -13,7 +13,11 @@
 # passes with no repeat penalty, an expected surprise of `IDEA_BAR`, fun of `FUN_BAR`
 # (judged by its goal: the mechanic a player gets), real of `REAL_BAR` and toward of
 # `TOWARD_BAR` (how much closer it brings the character's big goal, `BIG_GOAL.md`); after
-# `IDEA_ROUNDS` rounds the strongest goes. While surprise alone
+# `IDEA_ROUNDS` rounds the strongest goes. A step on the big goal's road passes without the
+# surprise and fun bars (`ROAD_BAR`): in sessions 150-153 the road's steps (smelting copper, a
+# cell from two metals in brine, drawing wire) scored toward 8-9 and surprise 3-6 and never
+# passed, while side quests with a surprise of 8 (fire, lightning) went instead, and the motor
+# the big goal leads to never came closer. While surprise alone
 # decided, and "changing what the island is" scored highest, the ideas that went
 # (sessions 109-116) wrecked the island: it drifted off, tipped and flooded, got
 # buried in sand. Now new mechanisms (physics, particles, simulation) and
@@ -33,6 +37,9 @@ const FUN_BAR = 7
 const REAL_BAR = 7
 "How much closer (0-10) it must bring the character's big goal (Nov 27: fifteen projects with no aim above them)."
 const TOWARD_BAR = 6
+"""How much closer (0-10) an idea must bring the big goal to pass as a step on its road, real and no
+repeat but without the surprise and fun bars: the big goal's critic already judged its moment and play."""
+const ROAD_BAR = 8
 "How many rounds of pitches the critic answers before the strongest idea goes."
 const IDEA_ROUNDS = 3
 "How often a turn may end without a new round before the session goes on without the critic."
@@ -125,18 +132,19 @@ function score_ideas(v::AbstractDict, pitched, earlier)
         Dict{String,Any}("title" => title, "idea" => get(text, title_key(title), ""), "similarity" => sim,
                          "nearest" => string(get(i, "nearest", "")), "form_count" => k, "surprise" => surprise, "fun" => fun, "real" => real,
                          "toward" => toward, "worth" => repeat_factor(s),
-                         "passes" => repeat_share(s) == 0 && surprise >= IDEA_BAR && fun >= FUN_BAR && real >= REAL_BAR && toward >= TOWARD_BAR,
+                         "passes" => repeat_share(s) == 0 && real >= REAL_BAR &&
+                                     (toward >= ROAD_BAR || surprise >= IDEA_BAR && fun >= FUN_BAR && toward >= TOWARD_BAR),
                          "critique" => string(get(i, "critique", "")))
     end
 end
 
-"How strong an idea is when none passes: its surprise, fun, how real it is and how far it gets the big goal, less its repeat penalty."
-strength(i::AbstractDict) = i["worth"] * (i["surprise"] + get(i, "fun", i["surprise"]) + get(i, "real", 0) + get(i, "toward", 0))
+"How strong an idea is when none passes: its surprise, fun, how real it is and, twice, how far it gets the big goal, less its repeat penalty."
+strength(i::AbstractDict) = i["worth"] * (i["surprise"] + get(i, "fun", i["surprise"]) + get(i, "real", 0) + 2 * get(i, "toward", 0))
 
 "An idea as the critic saw it, in a line."
 function idea_line(i::AbstractDict)
     how = i["passes"] ? "passes" : i["worth"] < 1 ? @sprintf("would be worth ×%.2f", i["worth"]) :
-          i["surprise"] < IDEA_BAR ? "too expected" : get(i, "real", 0) < REAL_BAR ? "not real enough" :
+          get(i, "real", 0) < REAL_BAR ? "not real enough" : i["surprise"] < IDEA_BAR ? "too expected" :
           i["fun"] < FUN_BAR ? "not fun enough" : "too far from your big goal"
     form = i["form_count"] == 0 ? "its form in none of your last $FORM_MEMORY posts" : "its form in $(i["form_count"]) of your last $FORM_MEMORY"
     return "- **$(i["title"])**: $(i["similarity"])/10 like \"$(i["nearest"])\", $form, surprise $(i["surprise"])/10, fun $(i["fun"])/10, real $(get(i, "real", 0))/10, toward your big goal $(get(i, "toward", 0))/10: $how. $(i["critique"])"
@@ -153,8 +161,9 @@ function critique_text(scored, round::Int, rel::AbstractString)
     if !isempty(passed)
         print(io, "\nPassed: ", join(("\"$(i["title"])\"" for i in passed), ", "), ". Take the one of them you want most: ", then)
     elseif round < IDEA_ROUNDS
-        print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, a surprise of ",
-              "$IDEA_BAR, fun of $FUN_BAR, real of $REAL_BAR and toward your big goal of $TOWARD_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
+        print(io, "\nNone passed yet. The bar: nothing like your last posts in what it is or in its form, real of $REAL_BAR, and ",
+              "either a surprise of $IDEA_BAR, fun of $FUN_BAR and toward your big goal of $TOWARD_BAR, or, as a step on its road, ",
+              "toward of $ROAD_BAR. Write round $(round + 1) into `$rel`: sharpen what the critic found ",
               "strong, drop the rest, and add new ones far from everything so far; then end your turn.")
     else
         best = argmax(strength, scored)

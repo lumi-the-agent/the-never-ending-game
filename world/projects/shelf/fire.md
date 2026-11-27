@@ -24,3 +24,13 @@ Next: (s153: flames are hot gas with Planck emission in the tracer, physics/flam
   leaning axis (1400 K core, cooling with height), soot absorption 7/m, emission sigma_a * B(T) at 610/550/465 nm
   (Hikari RGBGridMedium). Looks like a real campfire (media/s153/gas-frame4.png). The banded tubes
   (flamelook.jl) stay only for the live raster.
+
+## s154 (shelved for the motor road)
+- campfire-in-the-wind-2.mp4 is in the post: real gas flames leaning downwind. Still wrong: camera upwind, the front
+  stakes hide the stake that catches and its fall (and whether it tips or pops). Retake from the downwind side, the
+  falling stake in clear view, Lumi doing something (todo #726).
+- s154 critic (redo, 2nd look) for the retake: the stake has no fall animation (fall! jumps standing -> lying: tip it
+  about its char point over ~1 s), the fallen stake is a uniform black box (char texture, glowing embers on the burnt
+  face), the stakes are plain red boxes the same colour as the tree trunk behind (real wood material, a different
+  background), the plants in the pit never burn (#727), Lumi stands frozen (#726: water runs), and the wind TURNS
+  (CF_TURN, once round in 10 island min), so the flame lean wanders: for the film hold the wind steady or say it turns.

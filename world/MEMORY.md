@@ -3,15 +3,17 @@
 ## Where things are
 - THE HUMAN s152: don't work around a fault, fix its cause (I moved films to 11:00 to dodge the noon sun-ball; the
   sun-ball's daily trigger is now gone). Clock-scripted daily events (glass sea 7, glass rain 15, underlight 19) next.
-- s152 NEW PROJECT fire (passed idea; magnets shelved for a while, boredom 1.0): physics/fire.jl, plugins/campfire.jl
-  (south shore (-3,-16), jump in: 7 light, 8 sea water; published), movies/fire.jl. Pending post campfire-in-the-wind
-  (job 20261127-194905-909). Todos #726 (Lumi's beak fights it: carry water, sand) and #727 (props + grass burn).
-  NOTES 'Fire'. THE HUMAN s153: REAL MATERIALS, not clay (STYLE.md rewritten): silly in what happens, real in what things are made of.
-  s153 flames: physics/flamevolume.jl = hot gas, Planck emission (Hikari RGBGridMedium, movies/fire.jl gas=true);
-  flamelook.jl tubes = stopgap. FIRST next session (todo #729): job 20261127-204058-735 -> site/films/campfire-in-the-wind-2.mp4,
-  motion_sheet it, swap src in the posted 'a-campfire-in-the-wind' (plank film + miss note up now; note off once critic says ready). Then #730 real wood, #731.
-  s153 NEW PROJECT lightning (passed idea): physics/estatic.jl (BEM, rod tip checked); next the stepped leader.
-  Pending post copper-rod-before-a-storm (movies/rod.jl, UNTESTED, job 20261127-205618-787): check it went up. ironsand project -> shelf. Free camera start no longer looks into slopes (freecam.jl ground_hits).
+- THE HUMAN s154: "why aren't you following the motor road? you did the simplest thing and dropped it"; they want
+  WHOLE MACHINES from my parts, up to an ELECTRIC CAR that drives because every part works. BIG GOAL now (round 27):
+  'From beach stones to an electric cart'. MOTOR ROAD FIRST, no side trips (fire + lightning -> projects/shelf/).
+  Project motor (projects/motor.md): physics/motor.jl (Motor.Build/spin/motor_cases: misbuilds stall or reverse by
+  themselves), film movies/motor.jl. FILM WITHDRAWN: it used a coarse coil (1 field sample per side); with sides
+  subdivided the motors stick short of the dead spot; a 30 rad/s flick runs them. Honest 5 s film queued (job
+  20261127-213341-002, pending my-first-motor: 'turns a fifth of a turn and sticks'): CHECK it went up. Next film: beak flicks. Todos #734 bench plugin (doing), #735 circuit solver + brine cell. NOTES 'The motor'.
+- Fire (shelved s154): physics/fire.jl, flamevolume.jl (gas flames), plugins/campfire.jl (-3,-16). Post
+  a-campfire-in-the-wind now shows -2.mp4 (real flames), still marked miss: front stakes hide the one that falls.
+  Lightning (shelved): estatic.jl `leader_eq` (conductor channel) wanders sideways; rod film failed (dup plot name, fixed, not requeued).
+  THE HUMAN s153: REAL MATERIALS, not clay (STYLE.md). Free camera start fixed s153 (freecam.jl ground_hits).
 - OPEN s151: crane film (site/films/scrap-crane.mp4) came up EMPTY; caption now says so. Two faults in movies/crane.jl
   (NOTES 'The crane film came up empty'): held pegs hide inside the winding (touch radius < winding), far/tilted pegs
   freeze (no weight torque, not stepped >0.35 m). Fix both, retake. Iron-sand post = still (needs a real retake). s151 NEW: putting tray (plugins/magnetgolf.jl, (-3.5,18.8), 8 putt,

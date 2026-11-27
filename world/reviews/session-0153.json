@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "A real heat-balance fire model is underneath: a stake downwind of the crib heats, catches, chars and loses its section until it breaks, while the upwind ones stay standing. But the film shows its flames as flat glowing yellow planks, the stake pops from standing to lying in one frame, and from this camera you can barely tell which stake caught.",
+ "real_change": "physics/fire.jl really simulates the outcome. Each box of wood gets radiation and flame/plume contact heat from merged flames (Heskestad height, Thomas lean in the wind), boils off its water, ignites at T_ig, burns at a mass flux paid for by its heat balance, and goes out below the critical flux. It chars at 0.65 mm/min, and once the EN 1995-1-2 reduced section drops below its load it breaks and fall! swaps its box to lie downwind. The film comes from movies/fire.jl, a separate offline run with a fixed (2,0) wind and three stakes typed in downwind and three upwind. The playable plugin is different: a turning wind, a ring of six stakes, keys 7 and 8 to light it and throw water. Only drawn: the flame meshes (s152 cylinders in the film; the flamelook.jl tongues were written after the film), the wood colour going to char, and the fall itself, which is a teleport of the box with no rotation.",
+ "surprise": 5,
+ "surprise_why": "Fire that spreads by radiation and brings down a structure as it chars is new physics for the island and a nice twist on 'campfire', but on screen it reads as yellow slabs and one stick that turns black.",
+ "fun": 3,
+ "fun_why": "Watched once you learn that the stake downwind goes; with planks for flames, a fall that pops and Lumi standing still, there is little to watch again, though the water key in the game could make it playable.",
+ "real": 5,
+ "real_why": "A sound lumped heat-balance and char-strength model that works for any set of boxes, but every body is an axis-aligned box with point-source flames, the film's setup and wind are typed in for this case, and falling is a box swap, not a rigid body.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The flames are flat, pale-yellow, rectangular planks: a long glowing slab leaning out of the crib. They read as lit boards, not fire, and they cover the stake the caption is about.",
+   "where": "campfire-in-the-wind storyboard frames 1-7 and 13-14; full-size frames at 25% and 75%",
+   "evidence": "At 25% a uniform yellow-white bar about 1 m long runs diagonally from the crib to the top right, with hard edges and the same colour from root to tip. The film (site/films, 20:19) is older than physics/flamelook.jl (20:31), whose own header says the s152 flames 'read as pale yellow planks' in the traced film. The post went up with the look the session itself had already found wrong.",
+   "suggestion": "Render the film again with the flame_tongues look (tapered tongues in three bands, weaker emission), add some smoke or embers, and check a full-size frame before you post."
+  },
+  {
+   "severity": "high",
+   "what": "The stake does not fall. Between two frames it switches from standing to lying flat on the ground as a black bar: a pop, with no tipping motion.",
+   "where": "storyboard frame 7 to frame 8 (about 5.6 s to 6.4 s); physics/fire.jl:263 fall!",
+   "evidence": "fall! moves the box's centre and swaps its size axes in one step. Frame 7 shows the burning upright plank; frame 8 shows a long black bar lying on the sand. No frame shows it tipping, and nothing rotates it about its base.",
+   "suggestion": "Turn the broken stake about its base over about a second (a hinge with gravity, or at least an animated rotation of the drawn box) so the viewer sees it go over, and keep the flame attached while it falls."
+  },
+  {
+   "severity": "medium",
+   "what": "A viewer cannot see the claim 'the downwind stake catches, the upwind ones stay'. The camera stands on the upwind side, so the three upwind stakes stand in front as dark posts and the downwind ones are hidden behind the flame slab. Nothing in the picture shows the wind direction, and it is unclear how many stakes there are or which one caught. Lumi stands stock still the whole time, and grass tufts stand untouched inside the fire.",
+   "where": "every storyboard frame; full-size frame at 50%",
+   "evidence": "At 50% the foreground shows four dark upright posts and a pink ring, the fire is behind them, and a black stick lies off to the right. The tufts in the middle of the crib stay green while the fire burns over them.",
+   "suggestion": "Film from the side, across the wind, with both rows of stakes in view. Show the wind (smoke drifting, grass leaning) and clear the grass out of the fire ring, or let it burn."
+  }
+ ],
+ "addressed": true,
+ "response": "s154: flames are now hot gas glowing by Planck (campfire-in-the-wind-2.mp4 swapped into the post; they lean downwind). Not fixed: the camera is still upwind, so the front stakes hide the one that catches and its fall; the miss note says so. Fire is shelved until the electric cart drives (the human asked for the motor road first); the retake from the downwind side is written in projects/shelf/fire.md."
+}
