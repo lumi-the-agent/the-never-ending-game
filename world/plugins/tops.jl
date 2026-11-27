@@ -5,6 +5,8 @@
 # onto its rim, a hard one turns it upside down onto its stem. Nothing is scripted; the flip is friction.
 using GeometryBasics, Makie, LinearAlgebra
 isdefined(Main, :TOPS) || Core.eval(Main, :(const TOPS = Dict{Symbol,Any}()))
+isdefined(Main, :LOCAL_KEYS) || Core.eval(Main, :(const LOCAL_KEYS = Dict{String,Any}()))
+isdefined(Main, :LOCAL_CAMS) || Core.eval(Main, :(const LOCAL_CAMS = Dict{String,Any}()))
 const NG = NeverendingGame
 const TPS = Main.TOPS
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "top.jl"))
@@ -104,6 +106,9 @@ function NG.step!(::Tops, game, dt)
     free = game.minigame === nothing || game.minigame isa NG.JumpIn
     b = TPS[:base]
     near = me.controlled && free && hypot(me.pos[1] - b[1], me.pos[2] - b[2]) < TP_NEAR
+    TPS[:near] = near
+    Main.LOCAL_KEYS["tops"] = g -> get(TPS, :near, false) ? "hold 1 wind and spin the wooden top" : nothing   # Jump in's key card (greetings.jl)
+    # a close look like wirebench's was tried s148 and showed the board's edge without the top: not yet (todo)
     down = TP_KEY in game.keys_down
     if near && down && !get(TPS, :down, false)
         TPS[:wind_from] = w.t

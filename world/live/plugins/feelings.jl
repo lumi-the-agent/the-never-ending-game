@@ -13,9 +13,9 @@ const READ_EVERY = 30.0          # s between reads of the mood file
 const STANCE_EVERY = (15.0, 25.0) # s between two stances while Lumi stands about
 
 "The mood (-1 sad … 1 happy, the resting face) each feeling pulls Lumi towards, and its stances (`NG.feel!`)."
-const MOOD = Dict("proud" => 0.85f0, "content" => 0.55f0, "curious" => 0.45f0, "bored" => -0.2f0, "lonely" => -0.55f0)
+const MOOD = Dict("proud" => 0.85f0, "content" => 0.55f0, "curious" => 0.45f0, "bored" => -0.2f0, "lonely" => -0.55f0, "annoyed" => -0.35f0)
 const STANCES = Dict("proud" => (:proud,), "content" => (), "curious" => (:think,), "bored" => (:sigh, :yawn),
-                     "lonely" => (:sigh,))
+                     "lonely" => (:sigh,), "annoyed" => (:angry, :pout))
 const SIGN_EVERY = (45.0, 90.0)  # s between two signs of the feeling
 
 "What Lumi does to show a feeling: an emote and a few lines in its voice."
@@ -24,6 +24,8 @@ const SIGNS = Dict(
     "content" => (:note,  ("*hums*", "What a nice day.", "*hums a garden song*", "All is well.")),
     "bored"   => (:sleep, ("*sigh* I need something new to make.", "Hmm... same old, same old.", "*kicks a pebble*", "I wish I had a new thing to build.")),
     "lonely"  => (:sulk,  ("Where is everybody?", "Anyone want to play?", "*looks around for a friend*", "It's quiet today.")),
+    # s148: the host measured "annoyed" for sessions and Lumi showed "content": unknown feelings fell back to it
+    "annoyed" => (:sulk,  ("Hmph. That's not how it should look.", "*stamps a foot*", "Again! It's still wrong.", "*glares at the workbench*")),
     "curious" => (:what,  ("Ooh, what's over there?", "I wonder...", "Hm? What was that?", "So many things to find out!")),
 )
 

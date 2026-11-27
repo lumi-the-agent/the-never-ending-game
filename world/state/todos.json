@@ -9233,12 +9233,12 @@
       "id": 660,
       "kind": "review",
       "priority": 3,
-      "result": "",
+      "result": "s148: greetings.jl LOCAL_KEYS: in Jump in a toy near Lumi puts its own keys on the card in place of the 20 letters (tops: 1; wire bench: 2/3 and 4; floating top: 6/7/8 with the washer weight). At the wire bench: one line, 3 keys, ~3% of the view (media/s148-wirebench-card.png); by all three toys at once 3 short lines (media/s148-floattop-card2.png). Published.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Jump in's key card misses the bench keys and lists 20 letters",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:39:29.245"
     },
     {
       "created": "2026-11-27T06:44:21.638",
@@ -9583,26 +9583,26 @@
       "id": 685,
       "kind": "review",
       "priority": 1,
-      "result": "s144 first part, published: plugins/wirebench.jl, a 6 mm 40 cm copper rod on a board at (6.9,-12.6) beside the tops board; in Jump in hold 2/3 bends it at the wooden pin, tap 4 moves the pin. Played in the sandbox: a 113 deg bend kept (media/s144-wirebench2.png); bent back and forth at one spot it snapped at joint 40 after 19 half cycles (media/s144-wirebench-snap.png), a fresh piece after 4 s. Frame: sandbox 2.1 ms median, wirebench 0.18 ms; live 4.2 ms, wirebench 0.1 ms. Still open: the beak gripping where the mouse aims (keys now), the hook hung on a peg with the lantern (hang!), tiredness visible (roughness from D), a 'Things to try' line.\ns144 later: the worked spot dulls with its damage D (wire_colors; raster/browser), a version tag rebuilds the bench on reload (it had crashed silently), 'Things to try' now says 'hold 1 to spin a top and 2 or 3 to bend a copper wire (4 moves the pin)' (media/s144-things-to-try3.png). Published twice; live system running, 6 ms frames. Still open: beak/mouse grip, peg + lantern (hang!), a film of Lumi bending it.\ns144 end: friends use the wire. Every 400-900 sim s a free friend walks to the bench, fiddles the wire back and forth (same physics, springback between bends) until it snaps ('Oops! It broke!', 'I didn't do it!') or gives up after 30 s. Sandbox: Pinchy walked 15.6 m, D rose 0.04 -> 0.53 -> 0.94 -> snap, fresh wire (media/s144-pinchy-fiddles.png). Published; live system running, 2.8 ms frames.\ns144 last: every snapped wire's two pieces stay on a scrap pile in the grass beside the board (up to 40, this run of the game; not saved yet), and the first friend visit comes 45 s after the bench is built. Sandbox: Hopscotch snapped one, 2 pieces on the pile (media/s144-wire-scrap.png). Published; live 2.35 ms frames. Next: save the pile in state/ so it survives restarts.\ns144 very last: at night (nobody awake) a sleeping friend now sleepwalks to the bench ('Zzz... mmh... wire...'), fiddles with eyes shut and goes back to bed after the snap ('Zzz... snap... zzz'); event :sleepwalk. Published. Sandbox: Truffle got up and walked 16.9 -> 5.1 m, then tv.jl's bored_telly! path gave it a :tvwatch goal (it ignores BUSY_GOALS for night-awake creatures, it seems) and the visit was dropped cleanly (next try 120 s later). Fix next: tv.jl bored_telly! should skip goal.kind in BUSY_GOALS. Live game is at ~23:42 island time, so the first real visits there come from sleepwalkers or in the morning.",
+      "result": "s144 first part, published: plugins/wirebench.jl, a 6 mm 40 cm copper rod on a board at (6.9,-12.6) beside the tops board; in Jump in hold 2/3 bends it at the wooden pin, tap 4 moves the pin. Played in the sandbox: a 113 deg bend kept (media/s144-wirebench2.png); bent back and forth at one spot it snapped at joint 40 after 19 half cycles (media/s144-wirebench-snap.png), a fresh piece after 4 s. Frame: sandbox 2.1 ms median, wirebench 0.18 ms; live 4.2 ms, wirebench 0.1 ms. Still open: the beak gripping where the mouse aims (keys now), the hook hung on a peg with the lantern (hang!), tiredness visible (roughness from D), a 'Things to try' line.\ns144 later: the worked spot dulls with its damage D (wire_colors; raster/browser), a version tag rebuilds the bench on reload (it had crashed silently), 'Things to try' now says 'hold 1 to spin a top and 2 or 3 to bend a copper wire (4 moves the pin)' (media/s144-things-to-try3.png). Published twice; live system running, 6 ms frames. Still open: beak/mouse grip, peg + lantern (hang!), a film of Lumi bending it.\ns144 end: friends use the wire. Every 400-900 sim s a free friend walks to the bench, fiddles the wire back and forth (same physics, springback between bends) until it snaps ('Oops! It broke!', 'I didn't do it!') or gives up after 30 s. Sandbox: Pinchy walked 15.6 m, D rose 0.04 -> 0.53 -> 0.94 -> snap, fresh wire (media/s144-pinchy-fiddles.png). Published; live system running, 2.8 ms frames.\ns144 last: every snapped wire's two pieces stay on a scrap pile in the grass beside the board (up to 40, this run of the game; not saved yet), and the first friend visit comes 45 s after the bench is built. Sandbox: Hopscotch snapped one, 2 pieces on the pile (media/s144-wire-scrap.png). Published; live 2.35 ms frames. Next: save the pile in state/ so it survives restarts.\ns144 very last: at night (nobody awake) a sleeping friend now sleepwalks to the bench ('Zzz... mmh... wire...'), fiddles with eyes shut and goes back to bed after the snap ('Zzz... snap... zzz'); event :sleepwalk. Published. Sandbox: Truffle got up and walked 16.9 -> 5.1 m, then tv.jl's bored_telly! path gave it a :tvwatch goal (it ignores BUSY_GOALS for night-awake creatures, it seems) and the visit was dropped cleanly (next try 120 s later). Fix next: tv.jl bored_telly! should skip goal.kind in BUSY_GOALS. Live game is at ~23:42 island time, so the first real visits there come from sleepwalkers or in the morning.\ns148: greetings.jl LOCAL_CAMS: a toy claims Jump in's camera while Lumi stands at it. The wire bench gives a close look from the south: holding 2, the wire bends around the pin in the middle third of the frame, no easel or prop in front (media/s148-wirebench-card.png). The floating top does the same (media/s148-floattop-card2.png). The tops board has no close view yet. Published.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "The wire and tops benches are hidden behind an easel post in Jump in",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:39:29.260"
     },
     {
       "created": "2026-11-27T12:53:13.776",
-      "detail": "MethodError: no method matching wire_tube(::Main.Plugin_wirebench.Wire, ::Vector{Float64}, ::GeometryBasics.Point{3, Float32}; cut::Int64)\nThe function `wire_tube` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  wire_tube(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any; r, nr, range, cut)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:101\n\nStacktrace:\n  [1] wb_redraw!(game::Game)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:69\n  [2] wb_visit!(game::Game, w::Main.Plugin_wirebench.Wire, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:185\n  [3] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:122\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching bend!(::Main.Plugin_wirebench.Wire, ::Int64, ::Int64, ::Float64; steps::Int64)\nThe function `bend!` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  bend!(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any, ::Any; steps)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:65\n\nStacktrace:\n  [1] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:142\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 686,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T13:12:58.462.\nClosed at 2026-11-27T13:14:16.914: plugin wirebench loaded cleanly.",
+      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T13:12:58.462.\nClosed at 2026-11-27T13:14:16.914: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T16:39:11.061.\nClosed at 2026-11-27T16:39:24.694: plugin wirebench loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:wirebench.WireBench failed in step! and was switched off",
-      "updated": "2026-11-27T13:14:16.914"
+      "updated": "2026-11-27T16:39:24.694"
     },
     {
       "created": "2026-11-27T12:55:03.692",
@@ -9863,26 +9863,82 @@
       "id": 705,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "Closed at 2026-11-27T16:03:14.741: plugin compassbowl loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "system:compassbowl.CompassBowl failed in step! and was switched off",
-      "updated": "2026-11-27T16:01:08.842"
+      "updated": "2026-11-27T16:03:14.741"
     },
     {
       "created": "2026-11-27T16:01:08.856",
-      "detail": "TypeError: in typeassert, expected Float64, got a value of type Irrational{:π}\nStacktrace:\n  [1] mg_physics!(w::NeverendingGame.World, dt::Float64)\n    @ Main.Plugin_magnetstone /sim/Programmieren/SimGame/world/plugins/magnetstone.jl:138\n  [2] step!(::Main.Plugin_magnetstone.MagnetStone, game::Game, dt::Float64)\n    @ Main.Plugin_magnetstone /sim/Programmieren/SimGame/world/plugins/magnetstone.jl:246\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "detail": "TypeError: in typeassert, expected Vector{Main.Plugin_magnetstone.Spike}, got a value of type Vector{Main.Plugin_magnetstone.Spike}\nStacktrace:\n  [1] mg_physics!(w::NeverendingGame.World, dt::Float64)\n    @ Main.Plugin_magnetstone /sim/Programmieren/SimGame/world/plugins/magnetstone.jl:141\n  [2] step!(::Main.Plugin_magnetstone.MagnetStone, game::Game, dt::Float64)\n    @ Main.Plugin_magnetstone /sim/Programmieren/SimGame/world/plugins/magnetstone.jl:246\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] (::NeverendingGame.var\"#advance!#394\"{NeverendingGame.CameraRig, Game, Makie.Scene, NeverendingGame.World})(dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:428\n  [9] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#4#5\"{Float64, Float64}, shot::Main.ClipScript.var\"#7#8\"{Main.ClipScript.var\"#path_x#6\"{Float64, Float64}, Float64, Float64}, fade::Float64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:435\n [10] film!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]\n [11] #389\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:413 [inlined]\n [12] with_scratch_game(f::NeverendingGame.var\"#389#390\"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Float64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var\"#4#5\"{Float64, Float64}, Main.ClipScript.var\"#7#8\"{Main.ClipScript.var\"#path_x#6\"{Float64, Float64}, Float64, Float64}, Float64, Bool, String}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:347\n [13] #game_clip#387\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]\n [14] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:408 [inlined]\n [15] #compass_clip#1\n    @ /sim/Programmieren/SimGame/world/movies/compass.jl:38 [inlined]\n [16] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [17] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/",
       "est_minutes": 15.0,
       "id": 706,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "Closed at 2026-11-27T16:03:19.031: plugin magnetstone loaded cleanly.\nHappened again at 2026-11-27T16:31:02.618.\nClosed at 2026-11-27T16:41:58.865: plugin magnetstone loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "system:magnetstone.MagnetStone failed in step! and was switched off",
-      "updated": "2026-11-27T16:01:08.856"
+      "updated": "2026-11-27T16:41:58.865"
+    },
+    {
+      "created": "2026-11-27T16:28:13.944",
+      "detail": "physics/levitron.jl (s148) floats a 3 cm ferrite top 7.2 cm over a 15 cm ferrite ring by the field alone: 5.5-6.0 g of washers float at 25 rev/s, 6.25 g has no balance point, 5 g drifts off; no spin or 10 rev/s falls in 0.17 s. Film movies/levitron.jl (job 20261127-162726-305-clip, pending post floating-top). For Jump in: a plugin by the tops board, hold a key to spin (task solve + playback like plugins/tops.jl), keys to add/file a washer, hover time shown. Scale: at Lumi's size 3 cm is tiny, and scaling up breaks the balance (magnetic push ~ size^2, weight ~ size^3): a bigger top needs a stronger magnet material, not a typed fix. After a fall it needs contact with the ring/slate. Cost now ~4.6 ms per frame of sim (1536 charges): tabulate the axisymmetric field first. Done when: in Jump in a player can make it float and can make it fail by weight and by spin, at 30+ fps, with a screenshot.",
+      "est_minutes": 15.0,
+      "id": 707,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/floattop.jl published s148 at (6.5,-12.3) by the tops board: Jump in, 7/8 add/file a 0.25 g washer, hold 6 to spin (10-40 rev/s), the glass plate sinks away. Sandbox: 5.5 g at 38 rev/s floats the whole 15 s run at 7.38 cm (media/s148-floattop-3.png, close camera in Jump in); 4.5 g floats 1.4 s and slides off onto the slate (media/s148-floattop-5.png). 0.09 ms/frame p95 (the solve runs in a task, played back), frame p95 5.8 ms. Not tried in the game itself: 'too heavy' (>6.1 g, no balance point: Lumi says so) and a slow spin (physics: 10 rev/s falls in 0.17 s). Missing: the key card does not list 6/7/8 yet; the fallen top pops onto the slate (no contact sim).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "A floating top to play: spin it over the stone ring and tune it with copper washers",
+      "updated": "2026-11-27T16:35:08.287"
+    },
+    {
+      "created": "2026-11-27T16:30:58.222",
+      "detail": "physics/softiron.jl (s148) solves every spike's pieces together; the stone holds 2 spikes in a hanging chain, the 3rd at the edge (K 24 graded or 32 even; 8 even is wrong at joints). The plugin carries the stone 3 cm over the sand, so nothing can hang: a key to lift it (beak height), joints that swing (each spike a pendulum on its parent's tip), each joint lets go when its pull is under the weight below, the whole subtree falls with it. Done when: in Jump in Lumi lifts the stone with a chain of 2-3 spikes that sways, and turning fast drops the last one; screenshot + ms/frame.",
+      "est_minutes": 15.0,
+      "id": 708,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Spike chains in the magnet stone: iron magnetises iron in play",
+      "updated": "2026-11-27T16:30:58.222"
+    },
+    {
+      "created": "2026-11-27T16:30:58.227",
+      "detail": "The host lists site/img/hot-glass-glow.png as not path traced in the worker (64+ spp, OIDN). Write a still call for movies/glassblow.jl (night, Lumi holding the pipe, the glow a real light) and replace the picture. site/img/island-woodcut.png is a woodcut filter over a traced overview: say so in the post or render the base again in the worker.",
+      "est_minutes": 15.0,
+      "id": 709,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Hot glass picture: render it again in the worker (it was a grainy still from my own session)",
+      "updated": "2026-11-27T16:30:58.227"
+    },
+    {
+      "created": "2026-11-27T16:32:03.613",
+      "detail": "MethodError: Cannot `convert` an object of type Makie.Keyboard.Button to an object of type Symbol\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  Symbol(::Enum)\n   @ Base Enums.jl:34\n  Symbol(::Any...)\n   @ Base strings/basic.jl:230\n  convert(::Type{T}, !Matched::T) where T\n   @ Base Base_compiler.jl:133\n\nStacktrace:\n  [1] setindex!(h::Dict{Symbol, Any}, v0::Bool, key0::Makie.Keyboard.Button)\n    @ Base ./dict.jl:346\n  [2] step!(::Main.Plugin_floattop.FloatTop, game::Game, dt::Float64)\n    @ Main.Plugin_floattop /sim/Programmieren/SimGame/world/plugins/floattop.jl:164\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 710,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T16:32:54.163: plugin floattop loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:floattop.FloatTop failed in step! and was switched off",
+      "updated": "2026-11-27T16:32:54.163"
     }
   ]
 }

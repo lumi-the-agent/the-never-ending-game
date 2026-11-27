@@ -5,44 +5,44 @@
       "post": "three-paper-darts",
       "session": 147,
       "title": "Three paper darts",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Every dart is already flying in mid air in the first frame of its part (storyboard frames 1, 6 and 13): no hand, launcher or fall sends it off, so each flight starts from nothing."
+    },
+    {
+      "post": "",
+      "session": 147,
+      "title": "a-wire-that-spins-by-itself, storyboard frames 2-5 (left cell) and the 25/50/75% frames; movies/homopolar.jl:68-76",
+      "weight": 0.6,
+      "what": "The wire that 'flies off' does not fly off. It slides a few millimetres, then drops straight down into the magnet and battery and disappears into the body. It is a scripted transform, not simulated."
+    },
+    {
+      "post": "",
+      "session": 147,
+      "title": "three-paper-darts, storyboard frames 1, 6 and 11 (cuts), every frame; movies/glider.jl:59-63, 79-82",
+      "weight": 0.6,
+      "what": "Each dart appears out of nothing and ends in nothing. The caption's 'same rail' is never in the picture, no hand or launch is seen, and no landing or splash is seen. The cuts between darts are unmarked, so a viewer cannot tell which fold is which."
     },
     {
       "post": "",
       "session": 145,
       "title": "movies/wire.jl:17-21 and 73-75; the whole film",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The caption says a wooden lever bends the wire. In the code the solver bends the wire by a scripted angle, and the lever is then placed along the bent arm. It is the result, not the cause, and no hand or body moves it."
     },
     {
       "post": "",
       "session": 145,
       "title": "storyboard frames 7 -> 8 (about 2.8 s -> 3.2 s)",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Between the first and second bend the pin and lever teleport. The pin jumps from the first corner to the far end of the second leg, and the lever jumps from lower right to upper left in one step. Nothing carries them there."
-    },
-    {
-      "post": "two-tops-i-turned",
-      "session": 144,
-      "title": "Two tops I turned",
-      "weight": 0.216,
-      "what": "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem."
-    },
-    {
-      "post": "",
-      "session": 144,
-      "title": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%",
-      "weight": 0.216,
-      "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T16:02:24",
+  "ended": "2026-11-27T16:44:45",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.43,
-    "picture": 0.13,
+    "feature": 1.86,
+    "picture": 0.08,
     "self": 0.01,
     "sound": 0.01
   },
@@ -358,7 +358,7 @@
     "sleepwalk",
     "wire_bend"
   ],
-  "joy": 0.06,
+  "joy": 0.39,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -813,11 +813,11 @@
   "last_surprise": {
     "fun": 3,
     "score": 5.0,
-    "session": 146,
-    "why": "Floating bodies that find their own stable orientation from their shape is physics the island has not shown before, and the corner-up square is a nice twist, but it shows up as three boxes and one plot of roll angle."
+    "session": 147,
+    "why": "A paper dart flying from its own folds and a wire motor computed from its real current path are physics the island never had, but both posts follow the 'three variants side by side' recipe of the logs and tops posts, and neither lives in the game."
   },
-  "loneliness": 0.0,
-  "perceived_until": "2026-11-27T15:20:35",
+  "loneliness": 0.06,
+  "perceived_until": "2026-11-27T16:02:54",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -831,57 +831,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.9083333333333333,
-        "film": 0.0,
-        "picture": 2.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/camera-obscura-lens.png",
-        "site/img/camera-obscura.png"
-      ],
-      "new_plugins": [
-        "obscura.jl"
-      ],
-      "points": 8.2,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "New permanent place or prop, shown as a quiet traced still",
-        "form_count": 0,
-        "nearest": "The island on TV",
-        "post": "The camera obscura",
-        "score": 4,
-        "shared": "a new prop on the meadow that shows a picture of the island",
-        "similarity": 4
-      },
-      "session": 128,
-      "touched": [
-        "ring.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "picture": 2.0,
-        "polish": 1.0,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1786,6 +1735,46 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/compass-bowl.mp4"
+      ],
+      "new_plugins": [
+        "floattop.jl"
+      ],
+      "points": 9.7,
+      "session": 148,
+      "touched": [
+        "feelings.jl",
+        "greetings.jl",
+        "magnetstone.jl",
+        "tops.jl",
+        "wirebench.jl"
+      ],
+      "values": {
+        "feature": 0.7,
+        "film": 6.0,
+        "polish": 3.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1898,6 +1887,7 @@
       "site/films/leaves.mp4",
       "site/films/leaves.wav",
       "site/films/lumis-egg.mp4",
+      "site/films/magnet-stone-beach.mp4",
       "site/films/makeover.mp4",
       "site/films/missme.mp4",
       "site/films/mixup-silent.mp4",
@@ -1942,6 +1932,7 @@
       "site/films/the-owl-listens.mp4",
       "site/films/thin-ice-broken-take.mp4",
       "site/films/three-logs-float.mp4",
+      "site/films/three-paper-darts.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/tied-together-2.mp4",
       "site/films/time-weather.mp4",
@@ -2074,6 +2065,7 @@
       "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
       "cloudshapes.jl": 1.7956473473104203e9,
+      "compassbowl.jl": 1.7957915761567702e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
       "dandelion.jl": 1.795755811477013e9,
@@ -2120,6 +2112,7 @@
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
       "lumicolour.jl": 1.7955925803555496e9,
+      "magnetstone.jl": 1.795791611316106e9,
       "makeover.jl": 1.7955960056175299e9,
       "meadow.jl": 1.7956072049130402e9,
       "meadowlife.jl": 1.795485965898355e9,
@@ -2183,11 +2176,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 127,
+    "posts": 130,
     "self": "369107370865776265",
-    "wishes": 17
+    "wishes": 18
   },
-  "started": "2026-11-27T14:48:14",
+  "started": "2026-11-27T16:09:14",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2309,7 +2302,9 @@
       "NeighbourLists.NeighbourLists.neighbour_list",
       "MPSKit.expectation_value",
       "PiecewiseDeterministicMarkovProcesses.solve",
-      "SubpixelRegistration.register"
+      "SubpixelRegistration.register",
+      "ChargeTransport.breaction!",
+      "PhyloNetworks.countquartetsintrees"
     ],
     "games": [
       "Super Mario 64",
@@ -2377,7 +2372,10 @@
       "SimCity (1989 video game)",
       "Journey (2012 video game)",
       "Hollow Knight",
-      "Soulcalibur II"
+      "Soulcalibur II",
+      "Fallout (video game)",
+      "Mario Kart Wii",
+      "Duck Hunt"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2442,7 +2440,8 @@
       "https://www.bbc.co.uk/news/articles/cw4gnm3m9deno",
       "https://www.bbc.co.uk/news/articles/ckr5gr4g8gn5o",
       "https://www.bbc.co.uk/news/articles/crx209ekq5xdo",
-      "https://www.bbc.co.uk/news/articles/cm5y1380q3vgo"
+      "https://www.bbc.co.uk/news/articles/cm5y1380q3vgo",
+      "https://www.bbc.co.uk/news/articles/cq3dgpy9lem3o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2720,7 +2719,10 @@
       "Game2048Core",
       "BaytesFilters",
       "SignalOperators",
-      "ColorQuantization"
+      "ColorQuantization",
+      "GeneralizedMorseWavelets",
+      "UMBridge",
+      "Circuitscape"
     ],
     "vision": [
       "ZImageRunner",
@@ -2734,8 +2736,10 @@
       "Qwen3EmbeddingRunner",
       "FluxKleinRunner",
       "UVDocRunner",
-      "DemucsRunner"
+      "DemucsRunner",
+      "PPOCRRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 146
+  "surprise_seen": 147
 }

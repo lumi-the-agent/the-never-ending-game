@@ -7,7 +7,7 @@ using NeverendingGame, GeometryBasics, Makie, LinearAlgebra
 const NG = NeverendingGame
 
 function magnet_clip(path; rasterize = false, samples = 16, width = 960, height = 540, fps = 24, seconds = 9.0,
-                     hour = 16.5, y0 = 18.9, xa = -5.1, xb = -2.7)
+                     hour = 16.5, y0 = 18.9, xa = -5.1, xb = -2.7, ly = 0.85, eback = 0.7, eup = 0.65)
     # spikes: (x, distance from the path, yaw in degrees); the path runs along +x at y0, the camera looks from the sea side
     lay = [(-4.6, 0.10, 20), (-4.2, -0.17, 75), (-3.9, 0.24, 130), (-3.55, -0.09, 100), (-3.3, 0.33, 10),
            (-3.05, -0.21, 160), (-2.95, 0.15, 60), (-4.4, 0.45, 45)]
@@ -17,6 +17,8 @@ function magnet_clip(path; rasterize = false, samples = 16, width = 960, height 
             haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat, :autumn_fall) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
+        # flowers between the inland eye and the path stand in the foreground (s148): this film's world only
+        filter!(p -> !(p.kind === :flower && xa - 0.8 < p.pos[1] < xb + 0.8 && y0 - eback - 0.3 < p.pos[2] < y0 + 1), gm.world.props)
         for c in gm.world.creatures
             hypot(c.pos[1] - xa, c.pos[2] - y0) < 6 && c.name != "Lumi" && (c.pos = NG.ground(gm.world.island, (Float32(xa) + 12f0, Float32(y0) - 14f0)); c.goal = NG.Goal())
             c.name == "Lumi" && (c.controlled = true)
@@ -47,16 +49,18 @@ function magnet_clip(path; rasterize = false, samples = 16, width = 960, height 
             MS[:c] = (x, y0, gz + 0.045 + 0.03)
         end
         me = NG.creature(w, "Lumi")
-        if me !== nothing
-            me.pos = NG.ground(w.island, (Float32(x - 0.45), Float32(y0)))
+        if me !== nothing                                 # Lumi walks on the sea side, beyond the stone from the eye
+            me.pos = NG.ground(w.island, (Float32(x - 0.6), Float32(y0 + ly)))
             me.yaw = 0f0
         end
         cx = Float32(xa + 0.15 + 0.8 * (x - xa))         # the camera drifts after the stone
         gzc = NG.ground(w.island, (cx, Float32(y0)))[3]
+        gze = NG.ground(w.island, (cx, Float32(y0 - eback)))[3]
         rig.mode = :fixed
-        # from the water side looking up the beach (inland the ground rises above any low eye: s147's first try was inside the hill)
-        rig.eye = Point3f(cx - 0.1f0, Float32(y0) + 1.1f0, max(gzc, 0f0) + 0.45f0)
-        rig.target = Point3f(cx + 0.25f0, Float32(y0), gzc + 0.05f0)
+        # s148: from inland and above, looking down to the sea. s147's eye sat at the waterline 1.1 m from the
+        # path and Lumi, walking between, filled the frame.
+        rig.eye = Point3f(cx - 0.1f0, Float32(y0 - eback), gze + Float32(eup))
+        rig.target = Point3f(cx + 0.2f0, Float32(y0) + 0.1f0, gzc)
         return nothing
     end
     res = NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.5, rasterize,

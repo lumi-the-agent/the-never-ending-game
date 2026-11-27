@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-27T16:27:26.305",
+  "id": "20261127-162726-305-clip",
+  "kind": "clip",
+  "params": {
+    "call": "levitron_clip",
+    "kwargs": {
+      "samples": 24
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/floating-top.mp4",
+    "script": "movies/levitron.jl"
+  },
+  "status": "queued"
+}

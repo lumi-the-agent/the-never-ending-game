@@ -8,15 +8,15 @@ The moment people share: The first motor wound from beach copper, put together b
 
 ## Road
 
-- [ ] A magnet stone with a real field: carry it and every iron thing on the island (nails, the anchor chain) feels it by distance and pose, and jumps to it
-  - [x] Field of any magnet mesh, force and torque on magnets and currents (physics/em.jl, checked against the closed form) (s147)
-  - [x] The magnet stone on the north beach: carried with 5 in Jump in, iron spikes slide, turn and jump to it by its field (plugins/magnetstone.jl, published s147)
-  - [ ] Iron magnetises iron: spikes hang from each other in chains (a volume solve), the anchor chain
-  - [x] A compass bowl: a magnetised spike on a lily pad turns to north and to the stone by m x B (plugins/compassbowl.jl, s147)
-- [ ] One materials table on the island (copper, iron, magnet stone, wood, brine): conductivity, permeability, magnetisation, density, melting point, read by every system
-  - [x] First table in physics/em.jl (EM.MATERIALS: Br, density, resistivity, mu_r); melting point and brine still missing (s147)
-- [ ] Copper from green rock: smelt it in the kiln and draw it through a stone die into wire that keeps every bend (wire.jl)
-- [ ] A circuit from what touches what: two metals in brine make a cell, current flows through whatever wire connects them, thin wire heats and melts
-- [ ] A coil wound by turning a spindle with the beak: its field from its own turns lifts nails, it is an electromagnet
-- [ ] Coil, magnet stone, axle and brushes fitted by hand: the push on every bit of wire turns real bodies, and it spins, buzzes or stalls by how it was built
-- [ ] The motor drives the wheel, the paddle and the launcher; turned backwards by the treadwheel it lights a lamp (induction from the same fields)
+- [ ] A magnet stone every iron thing feels by distance and pose, and jumps to
+  - [x] Done s147: field of any magnet mesh (physics/em.jl), the stone on the north beach (5 in Jump in), the compass bowl
+  - [ ] Iron magnetises iron: spikes hang in chains (physics/softiron.jl solved s148: 2 hold, the 3rd at the edge)
+  - [ ] The anchor chain and other iron on the island feel it too
+  - [x] A spinning top floats over a ring magnet by the field alone (physics/levitron.jl, s148; playable next)
+- [ ] One materials table read by every system (copper, iron, magnet stone, wood, brine)
+  - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
+- [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
+- [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
+- [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
+- [ ] Coil, stone, axle and brushes fitted by hand spin, buzz or stall by how they were built
+- [ ] The motor drives the wheel, the paddle and the launcher; turned backwards it lights a lamp

@@ -38,6 +38,12 @@ const HINT_SHORT = "WASD walk   E wave   Space jump   X sneeze   G fly   C sing 
 const HINT_FULL = 5.0
 const HINT_END = 20.0
 
+# s148: toys near Lumi put their own keys on the card (perfectionist-0145: the 20-letter card never listed 1-4):
+# LOCAL_KEYS[name] = game -> "keys line" or nothing; while any answers in Jump in, the card shows only those
+isdefined(Main, :LOCAL_KEYS) || Core.eval(Main, :(const LOCAL_KEYS = Dict{String,Any}()))
+# and a toy too small for the chase camera claims the view here: LOCAL_CAMS[name] = game -> (eye, target) or nothing
+# (s148: floattop set its own camera and the chase camera overwrote it whenever it ran after it)
+isdefined(Main, :LOCAL_CAMS) || Core.eval(Main, :(const LOCAL_CAMS = Dict{String,Any}()))
 isdefined(Main, :PARADE_LEFT) || Core.eval(Main, :(const PARADE_LEFT = Dict{Int32,String}()))
 isdefined(Main, :GREETING_PLOTS) || Core.eval(Main, :(const GREETING_PLOTS = Dict{Symbol,Any}()))
 const GP = Main.GREETING_PLOTS
@@ -410,19 +416,27 @@ function NG.step!(s::Greetings, game, dt)
         s.hint_t += dt
         # once the player walks off, the full card makes way at once (tester s59: it covered the strut for 4 s)
         jumped_in && 1.5 < s.hint_t < HINT_FULL && me.action in (:walk, :run) && (s.hint_t = HINT_FULL)
-        show =jumped_in && s.hint_t < HINT_END
+        here = jumped_in ? filter(!isnothing, [Base.invokelatest(f, game) for f in values(Main.LOCAL_KEYS)]) : String[]
+        show = jumped_in && (s.hint_t < HINT_END || !isempty(here))
         GP[:hint].visible[] == show || (GP[:hint].visible[] = show)
-        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 16)
+        txt, fs = !isempty(here) && s.hint_t >= 1.5 ? (join(here, "\n"), 16) : s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 16)
         if show && GP[:hint].text[] != txt
             # the one-line strip drops to the bottom edge, small, out of the way of Lumi (review: across the middle of the view)
             GP[:hint].text[] = txt; GP[:hint].fontsize[] = fs
-            Makie.update!(GP[:hint]; arg1 = txt === HINT ? Point2f(0.5, 0.2) : Point2f(0.5, 0.12))
+            Makie.update!(GP[:hint]; arg1 = txt == HINT ? Point2f(0.5, 0.2) : Point2f(0.5, 0.12))
         end
     end
     # Jump in's follow camera; orbit and free round Lumi are freecam.jl's (the chase used to take
     # every pick, so all three menu modes looked the same while playing, the human 2026-11-23)
     if game.minigame isa NG.JumpIn && NG.camera_pick(game) === :follow
-        chase_camera!(game, me, dt; snap = !s.was_controlled)
+        cams = filter(!isnothing, [Base.invokelatest(f, game) for f in values(Main.LOCAL_CAMS)])
+        if isempty(cams)
+            chase_camera!(game, me, dt; snap = !s.was_controlled)
+        else
+            # two toys close together both claim it: the one whose target is nearest Lumi
+            v = argmin(c -> hypot(c[2][1] - me.pos[1], c[2][2] - me.pos[2]), cams)
+            game.rig.mode = :fixed; game.rig.eye = v[1]; game.rig.target = v[2]
+        end
     end   # after a jump-in, freecam.jl brings back the camera the player had chosen
     s.was_controlled = game.minigame isa NG.JumpIn
 end

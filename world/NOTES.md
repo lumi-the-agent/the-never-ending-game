@@ -986,3 +986,26 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
 - Film framing that worked (s147 darts retake): one shot per subject, camera ~1.7 m to the side, trailing the subject's
   path with an exponential follow (x tau 0.18 s, z tau 0.06 s); check the subject's angle from the view axis over the
   whole computed path before rendering (half vfov 22.5 deg, half hfov ~36 deg at 16:9).
+
+## s148 lessons
+- A film script that writes a plugin's state must write the plugin's TYPES: movies/compass.jl set MS[:psi] = pi
+  (Irrational) and switched off magnetstone AND compassbowl in the sandbox (`::Float64` asserts). Float64(pi).
+- Field functions passed into a solver: a NAMED function. An anonymous global closure made SoftIron.solve! 23x slower.
+- Charges near a face: a softened point gives ~0 field right in front of it, a real face its strongest (sigma/2).
+  Anything that touches (chains, joints) needs the face as a disc (physics/softiron.jl `hface`, 7-point rule).
+- Levitron (physics/levitron.jl): the vertically STABLE balance is where the gradient weakens with height; the
+  other zero of the force (lower) is unstable. Start a float at the stable height, never lift it off from below.
+- Scale: magnetic push ~ size^2, weight ~ size^3. A magnet toy scaled up for the follow camera stops working;
+  pick a stronger material or a closer camera, never a typed force.
+- plugins/feelings.jl fell back to "content" for any feeling it did not know: "annoyed" showed as content for
+  sessions. When the host names a new feeling, give it a MOOD value, stances and lines.
+- Jump in hooks (s148, plugins/greetings.jl): `Main.LOCAL_KEYS[name] = game -> "line" or nothing` puts a toy's keys on
+  the card while Lumi is near (in place of the 20 letters); `Main.LOCAL_CAMS[name] = game -> (eye, target) or nothing`
+  claims Jump in's camera (a plugin setting game.rig itself loses to greetings' chase camera when greetings runs later,
+  i.e. whenever greetings was reloaded after it). Used by tops (keys), wirebench and floattop (keys + close view).
+- Dashboard "Things to try" shows a mini game's description only up to its first comma or semicolon (play.jl).
+- A plugin whose state lives in Main (MS = Main.MAGSTONE) and holds structs of its own type breaks on a reload in the
+  worker: the new module's `Spike` is another type. Check `x isa Vector{Spike}` in the ensure function and rebuild
+  (s148: the compass film had no stone and no spikes; tops.jl does the same with TopShape).
+- Holding a post: never wrap it in an HTML comment at the top of site/index.html. The host puts new posts before the
+  first piece, inside the comment, and the closer then shows the held film (s148). Move the piece out (media/held-posts/).

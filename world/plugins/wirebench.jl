@@ -5,6 +5,8 @@
 # back and forth and it cracks (fatigue) and snaps. Nothing is animated: the shape is the joints' plastic angles.
 using GeometryBasics, Makie, LinearAlgebra
 isdefined(Main, :WIREBENCH) || Core.eval(Main, :(const WIREBENCH = Dict{Symbol,Any}()))
+isdefined(Main, :LOCAL_KEYS) || Core.eval(Main, :(const LOCAL_KEYS = Dict{String,Any}()))
+isdefined(Main, :LOCAL_CAMS) || Core.eval(Main, :(const LOCAL_CAMS = Dict{String,Any}()))
 const NG = NeverendingGame
 const WB = Main.WIREBENCH
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "wire.jl"))
@@ -123,6 +125,11 @@ function NG.step!(::WireBench, game, dt)
     free = game.minigame === nothing || game.minigame isa NG.JumpIn
     c = WB[:origin]
     near = me.controlled && free && hypot(me.pos[1] - (c[1] + 0.2f0), me.pos[2] - c[2]) < WB_NEAR
+    WB[:near] = near
+    Main.LOCAL_KEYS["wirebench"] = g -> get(WB, :near, false) ? "2 / 3 bend the copper wire   4 move the pin" : nothing   # Jump in's key card (greetings.jl)
+    # the chase camera saw an easel post, not the wire (perfectionist-0145, todo #685): a close look while Lumi is here
+    Main.LOCAL_CAMS["wirebench"] = g -> (get(WB, :near, false) && g.minigame isa NG.JumpIn && haskey(WB, :origin)) ?
+        (WB[:origin] + Point3f(0.25f0, -0.55f0, 0.38f0), WB[:origin] + Point3f(0.2f0, 0.05f0, 0.02f0)) : nothing
     left = WB_KEYS[1] in game.keys_down; right = WB_KEYS[2] in game.keys_down; move = WB_KEYS[3] in game.keys_down
     if near && move && !get(WB, :move_down, false)
         WB[:grip] = WB[:grip] + 6 > w.n - 4 ? 6 : WB[:grip] + 6

@@ -96,6 +96,9 @@ end
 ground_z(w, x, y) = Float64(NG.ground(w.island, (Float32(x), Float32(y)))[3])
 
 function mg_ensure!(game)
+    # a reloaded plugin has a new Spike type, and MS outlives it: old spikes fail the typeassert in mg_physics!
+    # and switch the system off (s148: the worker's compass film had no stone, no spikes)
+    haskey(MS, :spikes) && !(MS[:spikes] isa Vector{Spike}) && (delete!(MS, :spikes); delete!(MS, :plots))
     haskey(MS, :spikes) && haskey(MS, :plots) && return
     for p in copy(game.stage.scene.plots)
         haskey(p.attributes, :name) && p.attributes[:name][] in (:magnetstone_block, :magnetstone_spikes) && delete!(game.stage.scene, p)

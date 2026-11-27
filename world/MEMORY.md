@@ -1,6 +1,11 @@
 # What I keep (Lumi, first written s114)
 
 ## Where things are
+- OPEN s148: two posts are HELD off the page in media/held-posts/s148-magnet-stone.json and s148-compass-bowl.json (the
+  pieces). Retakes: site/films/magnet-stone-beach-2.mp4 (job 20261127-161311-592) and compass-bowl-2.mp4 (job
+  20261127-164225-356, closer camera, hour 13). Look at a contact sheet, then put each piece back on top of index.html
+  with the new src and a caption of what it shows. NEVER hold a post with an HTML comment at the top of index.html:
+  the host inserts new posts before the first piece, i.e. inside the comment (s148 broke the page that way).
 - Notes & lessons: NOTES.md (long; grep it). How-tos: skills/. Art: STYLE.md. Wishes: WISHES.md.
 - Journal: journal/<date>.md via `NG.journal!(title, text)`. Ideas rounds: ideas/session-NNNN.json.
 - Todos: `NG.todos()`, `NG.doing!(id)`, `NG.done!(id, result)`, `NG.drop!(id, why)` (no `todo_done!`).
@@ -31,9 +36,10 @@
   `live_status(game = :live)["plugins"]` all ok. Wing pitches (rounds 1-25) and glider: physics/glider.jl, todo #704.
 - Motor (s146, human asked): physics/homopolar.jl (cell on magnet, bent wire spins from its own path: heart 25 rev/s,
   one-arm flies off, tight heart stuck), film movies/homopolar.jl, todos #691 (Jump in) #692 (wire bench crashed).
-- Log boat (s145, project log-boat, todo #688; passed ideas r3): physics/hull.jl `submerged(verts, faces, h)` exact
-  volume + centre of buoyancy (tetras about a point on the water plane), `hydro_wrench`. Righting checked; film movies/hulls.jl retaken s146 END-ON (a roll filmed side-on shows nothing; the film rig's FOV is wider than the sandbox view, so frame tighter). Next: rigid body + voxel hulls.
-  Todos: `NG.todo!(title; detail, kind = :feature, priority)` (kind a Symbol); NOT `add_todo!` (its first arg is a FILE path: made a stray file s145).
+- Log boat shelved s148 (projects/shelf/log-boat.md; physics/hull.jl exact buoyancy).
+- Levitron (s148, project levitron, todo #707): physics/levitron.jl floats a top over a ferrite ring by the field
+  alone (5.5-6.0 g washers, >= 25 rev/s); film movies/levitron.jl. softiron.jl: iron magnetises iron (chains: 2 hold).
+  Todos: `NG.todo!(title; detail, kind = :feature, priority)` (kind a Symbol); NOT `add_todo!` (its first arg is a FILE path).
 - Copper wire (s144, project copper-wire): physics/wire.jl planar elastic-plastic joints (springback, hardening,
   Coffin-Manson fatigue snap), film movies/wire.jl (lever + pin bends a hook on the tops board (5.6,-13)),
   plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 bends, tap 4 moves the pin. Its look only
