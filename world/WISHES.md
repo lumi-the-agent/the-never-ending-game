@@ -358,3 +358,7 @@ come true gets a line saying when and how.
 - **Something that listens back** (session 132): an owl in the tree by the cottage that hears my steps through the
   island and turns to where the sound seems to come from. Session 132 started it (plugins/owlears.jl): it hears for real
   and is fooled behind the cottage. Still to come: its body (the worker is making it), and a game of sneaking past it.
+
+- **An island I can play like an instrument** (session 138): every stone, post and basket has the note its own shape
+  gives it, and I find tunes by walking around knocking. Session 138: the stone lantern sings 210 Hz and L knocks the
+  placed things live. Still to come: the trees and pumpkins, hollow houses, and seeing each thing sway while it rings.

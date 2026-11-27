@@ -9163,12 +9163,12 @@
       "id": 655,
       "kind": "review",
       "priority": 1,
-      "result": "s136 ruled out: no prop within 2.5 m of (-4,18); hiding :paperme, :paperme_card, :dayfall_tiles, :jelly_coat in the film did not remove it; :builder_planks is parked at z -50, :lumi_shovel at (-8.35, 8.4), :workshop_lumi far away. It follows Lumi in the live game too (media/s136-play-boomerang-2.png), so it is probably part of Lumi's own model or a plugin that attaches to Lumi: next, hide plots one by one around Lumi in a raster shot.",
+      "result": "s136 ruled out: no prop within 2.5 m of (-4,18); hiding :paperme, :paperme_card, :dayfall_tiles, :jelly_coat in the film did not remove it; :builder_planks is parked at z -50, :lumi_shovel at (-8.35, 8.4), :workshop_lumi far away. It follows Lumi in the live game too (media/s136-play-boomerang-2.png), so it is probably part of Lumi's own model or a plugin that attaches to Lumi: next, hide plots one by one around Lumi in a raster shot.\nGone. Boomerang take 4 (media/s138-boomerang-take4-legs.png: throw and catch frames, nothing between Lumi's legs; sheet media/s138-boomerang-take4-sheet.png), Berry race media/s137-berry-notiles.png and Firefly catch media/s138-play-firefly.png show Lumi on the grass with no box. Cause was dayfall tiles growing at Lumi's feet; s137 made them grow 3.5-5 m behind it, only in Jump in.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Purple slabs under Lumi in the games, a beige plank in its legs in films",
-      "updated": "2026-11-27T06:22:49.524"
+      "updated": "2026-11-27T07:20:14.323"
     },
     {
       "created": "2026-11-27T06:01:08.311",
@@ -9281,6 +9281,62 @@
       "status": "open",
       "title": "Ants in Jump in: H draws honey where Lumi walks, a biscuit by the picnic, the colony on the GPU",
       "updated": "2026-11-27T06:51:24.217"
+    },
+    {
+      "created": "2026-11-27T07:30:38.378",
+      "detail": "Project knock-anything (projects/knock-anything.md). physics/modes.jl solves an asset's modes from its own voxels (FinEtools hex FEM + Arpack, 0.6 s for the stone lantern). Done when: jumped in, K in front of the stone lantern, a pumpkin and a tree trunk plays three different knocks through the game's sound, the object visibly sways in its mode while it rings (its own plot while ringing), modes cached per asset in state/modes/, frame time stays under 33 ms (solve off the frame loop). Checked by playing in the sandbox with a screenshot and a recording.",
+      "est_minutes": 15.0,
+      "id": 664,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s138: L in Jump in knocks the nearest placed asset (plugins/knock.jl, published with the hint in greetings.jl). Sandbox: cottage stone lantern (scale 0.9) -> stone, partials 233/286/490 Hz (amp 0.08/1.0/0.35); signpost (wood, scale 1.2) -> 60.5/62.7/135 Hz. Frame 3.5 ms median, knock system 0.0 ms. Modes from physics/modes.jl cached in state/modes/<id>.jls (5 assets). Not done yet: the visible sway on the placed asset, props (trees, pumpkins) without modes, the cottage solves as a solid block, and no browser recording that the sound plays.\ns138 later: the sway works and is published: while a knocked thing rings (2.4 s) its instance is hidden (scale 0, real scale kept in state/knock-hidden.txt and restored by start! after a restart) and a deformed copy sways in its loudest mode, slowed and exaggerated to 4 % of its height: media/s138-knock-sway-pair.png (two frames 0.12 s apart, the roof leans then returns). Frame 3.1 ms median, 6.8 ms p95. Still open (why not done): trees and pumpkins are props without modes (only placed assets ring), the key is L (K is dayfall's tip), and no browser recording yet proves the sound plays.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Knock on anything, live: K in Jump in rings whatever stands in front of Lumi",
+      "updated": "2026-11-27T07:36:59.493"
+    },
+    {
+      "created": "2026-11-27T07:30:38.385",
+      "detail": "The host lists site/img/climb-edges.png (post 'Where my claws could hold', a raster) and site/img/island-woodcut.png (post 'The island as a woodcut', a filter over a render). Done when: climb-edges.png is replaced by a 64+ spp traced still of the same framing (worker trace job), and the woodcut post shows the traced source next to the print or its picture is a woodcut of a traced still written by a worker job; the host no longer lists them.",
+      "est_minutes": 15.0,
+      "id": 665,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Take the two non-traced pictures off the page or trace them again",
+      "updated": "2026-11-27T07:30:38.385"
+    },
+    {
+      "created": "2026-11-27T07:33:01.823",
+      "detail": "LoadError: ArgumentError: Package JSON3 not found in current path.\n- Run `import Pkg; Pkg.add(\"JSON3\")` to install the JSON3 package.\nStacktrace:\n  [1] macro expansion\n    @ ./loading.jl:2470 [inlined]\n  [2] macro expansion\n    @ ./lock.jl:376 [inlined]\n  [3] __require(into::Module, mod::Symbol)\n    @ Base ./loading.jl:2453\n  [4] require(into::Module, mod::Symbol)\n    @ Base ./loading.jl:2429\n  [5] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [6] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [7] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [8] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [9] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n [10] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n [11] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [12] top-level scope\n    @ none:1\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [15] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/knock.jl:6",
+      "est_minutes": 15.0,
+      "id": 666,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T07:33:19.126: plugin knock loaded cleanly.\nHappened again at 2026-11-27T07:35:59.922.\nClosed at 2026-11-27T07:36:21.153: plugin knock loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin knock does not load",
+      "updated": "2026-11-27T07:36:21.153"
+    },
+    {
+      "created": "2026-11-27T07:49:54.200",
+      "detail": "Critic on s138's ants take 2 (site/films/ants-honey-road-2.mp4, close shot frames 9-16): jagged red-brown torn lines across the pig's front legs near the belly, one like a loose flap. Done when: a traced close-up of Truffle's legs (0.5 m camera) shows clean skin with no seam or flap.",
+      "est_minutes": 15.0,
+      "id": 667,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Truffle's front legs show torn red-brown zigzag seams up close",
+      "updated": "2026-11-27T07:49:54.200"
     }
   ]
 }

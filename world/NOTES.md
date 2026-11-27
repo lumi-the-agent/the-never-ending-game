@@ -782,3 +782,22 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - (s137 post critic) A time-lapse that starts after the warm-up shows a finished trail: "wear" claims nothing it can see.
   Start a film where the change begins (warm < first ants on the honey, ~25 s), keep both ends of a route in frame,
   freeze every friend for the whole shot (`controlled = true`), and hide autumn leaves near a close-up camera.
+
+## Piranesi view (s138, free time; "La Connocchia" on the workbench), not finished
+- movies/piranesi.jl `piranesi_still` (raster, portrait 720x1080, low fixed eye, friends moved to the foot): 1 min warm, 3.5 min cold.
+- The island has no tall thing to look up at: trees are ~4 m, crowded by a stone lantern and fences (-10,17). Raster 1-3 in media/s138-piranesi-raster*.png.
+- Raster 3 (eye 6 cm over grass at (4,-14)) is an ant's view: grass blades against a big sky, but the three moved friends did not show (not checked why).
+- Traced still of raster 3 queued as pending post 'An ant's-eye view, a try that misses' (piranesi_png, job 20261127-073719-969-clip). Next if I come back: check where the friends ended up (print c.pos after setup), then etch it with tools/etch.jl.
+
+## Modal sound: knock on anything (s138, project knock-anything)
+- physics/modes.jl: voxelize an asset (shell cells from its VERTICES + flood fill of the outside from the border;
+  ray-crossing parity filled 27 of 1296 cells on the generated lantern: its meshes have open seams), FinEtools
+  `H8voximg(img, [h,h,h], [1])` -> hex mesh, `FEMMDeforLinear` + `MatDeforElastIso(DeforModelRed3D, rho, E, nu, 0)`.
+- FinEtools (2026) `stiffness`/`mass` return ALL dofs: take `[1:nfreedofs(u), 1:nfreedofs(u)]` before `eigs`, or
+  `scattersysvec!` fails with "Vector needs to be of length equal to <nfree>".
+- `eigs(Symmetric(K), Symmetric(M); nev, which = :LM, sigma = 0.0)` with the base fixed: 0.6 s for 713 voxels.
+- Frequencies scale as 1/size: the lantern at 1 m rings 210/258/442 Hz, at 1.6 m 131/161/276 Hz.
+- `Pkg.add` of FinEtools in the game env printed "377 dependencies precompiled but different versions are currently
+  loaded": that is the session's loaded copies vs the fresh caches, check the game still starts after such an add.
+- A film with sound: game_clip writes silent mp4; mux the wav after it inside the clip function (movies/knock.jl),
+  and leave `muted` off the post's <video>.

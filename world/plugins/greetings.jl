@@ -27,13 +27,13 @@ E  wave at a friend (twice: they join your parade)   V  your shadow runs off
 X sneeze  ·  G fly  ·  C sing  ·  P paint  ·  M grow  ·  T storm  ·  B bubble  ·  J swallow  ·  Z rewind
 U  throw something up into orbit (or the friend next to you)   K  tip my day over
 At night: F flashes your lantern (keep the fireflies' beat), N claps and you see where the sound goes
-Wade into the pond (Q splashes), onto the swing or a leaf pile; Y skips a stone, O boomerang, I blow a dandelion"""
+Wade into the pond (Q splashes), onto the swing or a leaf pile; Y skips a stone, O boomerang, I blow a dandelion, L knocks on the thing in front of you"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
 # s87: one long line ran off both edges; s137 (review 0136: 12 px was ~8 px tall): three lines at 16 px
 const HINT_SHORT = "WASD walk   E wave   Space jump   X sneeze   G fly   C sing   P paint\n" *
                    "M grow   T storm   B bubble   J swallow   U throw   V shadow   Z rewind\n" *
-                   "F lantern   N clap   Y skip   O boomerang   I dandelion"
+                   "F lantern   N clap   Y skip   O boomerang   I dandelion   L knock"
 const HINT_FULL = 5.0
 const HINT_END = 20.0
 

@@ -1,26 +1,27 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T07:05:07",
+  "ended": "2026-11-27T07:51:08",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.91,
-    "picture": 0.71,
-    "self": 0.08,
-    "sound": 0.01
+    "feature": 1.55,
+    "picture": 0.43,
+    "self": 0.05,
+    "sound": 1.01
   },
   "forms": [
+    {
+      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+      "posts": [
+        "Ants on a honey road, a take that misses",
+        "Ants on a honey road"
+      ]
+    },
     {
       "form": "Physics study of a single falling or thrown object, filmed",
       "posts": [
         "A boomerang that comes back",
         "Dandelion clocks, a take that misses",
         "Skipping stones, a take that misses"
-      ]
-    },
-    {
-      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
-      "posts": [
-        "Ants on a honey road"
       ]
     },
     {
@@ -33,21 +34,13 @@
     {
       "form": "New permanent place or prop, shown quietly from a fixed view",
       "posts": [
-        "The owl listens",
-        "The camera obscura"
+        "The owl listens"
       ]
     },
     {
       "form": "New world rule acted out on the island, filmed",
       "posts": [
         "Thin ice, a take that misses"
-      ]
-    },
-    {
-      "form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)",
-      "posts": [
-        "See by clapping",
-        "The island answers a clap, a broken take"
       ]
     },
     {
@@ -332,15 +325,8 @@
     "fireflies_synced",
     "meteor_seen"
   ],
-  "joy": 0.82,
+  "joy": 0.37,
   "judged_posts": [
-    {
-      "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
-      "recipe": "slow persistent change of the island's ground from accumulated walking; a still",
-      "session": 96,
-      "title": "Paths we wore",
-      "what": "The island's grass wears to bare earth along the routes friends walk most, seeded from three days of logged positions, shown in a traced still of the pond ring, pier trail and cottage door; nothing happens as an event."
-    },
     {
       "form": "New permanent inhabitant with slowly growing relationships, shown as a still",
       "recipe": "new permanent inhabitant with a slowly growing per-friend trust arc, shown as a still",
@@ -753,6 +739,13 @@
       "session": 137,
       "title": "A boomerang that comes back",
       "what": "Lumi throws a boomerang from the shore; the camera follows it spinning out over the open sea, curving round and flying back over the beach toward Lumi's raised wing on the meadow."
+    },
+    {
+      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+      "recipe": "ant swarm wears a trail to a biscuit, fixed view, plus close shot",
+      "session": 138,
+      "title": "Ants on a honey road, a take that misses",
+      "what": "From the same fixed low meadow view, swarms of tiny ants trail along a curved red honey line and a straight chord toward an orange biscuit while leaves blow past and pigs wander up, then a cut to a close shot where ants ring the biscuit under a pig's hoof that stands in it; the biscuit never moves."
     }
   ],
   "kinds_ever": [
@@ -774,24 +767,24 @@
     "session": 133
   },
   "last_repetition": {
-    "factor": 1.0,
+    "factor": 0.1,
     "form": "Emergent simulation of a small swarm, filmed from a fixed view",
-    "form_count": 0,
-    "nearest": "Tied together",
-    "post": "Ants on a honey road",
-    "score": 3,
-    "session": 137,
-    "shared": "a crowd's own rules produce an emergent pattern, seen from above",
-    "similarity": 3
+    "form_count": 1,
+    "nearest": "Ants on a honey road",
+    "post": "Ants on a honey road, a take that misses",
+    "score": 9,
+    "session": 138,
+    "shared": "same ant colony, honey line, biscuit and fixed low view; only a close shot added, no new step shown",
+    "similarity": 9
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 3.0,
-    "session": 135,
-    "why": "One still is a fix of the last post's missed ledge and the other is one more creature placed on a tree; the clever part, the owl hearing around the cottage roof, is never shown."
+    "fun": 3,
+    "score": 5.0,
+    "session": 137,
+    "why": "Emergent ant trails that refuse the player's road are new for the island and a nice twist. But it's a film-only sim, the payoff (pulling the biscuit together) never happens on screen, and the boomerang is a re-take of last session."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T06:23:10",
+  "perceived_until": "2026-11-27T07:05:36",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -805,66 +798,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "nursery_released",
-          "who": 1
-        },
-        {
-          "kind": "jelly_swallow",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/i-swallow-what-i-hit-2.mp4",
-        "site/films/i-swallow-what-i-hit.mp4"
-      ],
-      "new_plugins": [
-        "jelly.jl"
-      ],
-      "points": 11.2,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Lumi-led set-piece gag film, close up, with a comic payoff",
-        "form_count": 1,
-        "nearest": "Tied together",
-        "post": "I swallow what I hit",
-        "score": 4,
-        "shared": "a new physical interaction acting on friends' bodies; otherwise a different, close, Lumi-centred body transformation",
-        "similarity": 2
-      },
-      "session": 118,
-      "touched": [
-        "greetings.jl",
-        "separation.jl",
-        "wordsand.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 3.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1873,6 +1806,60 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post",
+        "sound",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/ants-honey-road-2.mp4",
+        "site/films/stone-lantern-notes.mp4.silent.mp4",
+        "site/sounds/stone-lantern-knocks.wav"
+      ],
+      "new_plugins": [
+        "knock.jl"
+      ],
+      "points": 1.7,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+        "form_count": 1,
+        "nearest": "Ants on a honey road",
+        "post": "Ants on a honey road, a take that misses",
+        "score": 9,
+        "shared": "same ant colony, honey line, biscuit and fixed low view; only a close shot added, no new step shown",
+        "similarity": 9
+      },
+      "session": 138,
+      "touched": [
+        "greetings.jl"
+      ],
+      "values": {
+        "feature": 1.3,
+        "film": 6.0,
+        "polish": 1.0,
+        "post": 2.0,
+        "sound": 4.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1936,10 +1923,10 @@
       "site/feed.xml",
       "site/index.html",
       "site/words.html",
-      "site/films/a-boomerang-comes-back-2.mp4",
       "site/films/a-boomerang-comes-back-3.mp4",
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/allin.mp4",
+      "site/films/ants-on-a-honey-road.mp4",
       "site/films/bottle.mp4",
       "site/films/breeding-a-new-friend.mp4",
       "site/films/bubbles.mp4",
@@ -2149,7 +2136,7 @@
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
       "dandelion.jl": 1.795755811477013e9,
-      "dayfall.jl": 1.7957264685358317e9,
+      "dayfall.jl": 1.7957585374541621e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7957449866905174e9,
@@ -2176,7 +2163,7 @@
       "giant.jl": 1.7957446568247983e9,
       "glassrain.jl": 1.7957202039441018e9,
       "glasssea.jl": 1.7957467030097435e9,
-      "greetings.jl": 1.7957558351796389e9,
+      "greetings.jl": 1.7957586034400096e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795744656825295e9,
@@ -2251,11 +2238,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 114,
+    "posts": 116,
     "self": "369107370865776265",
     "wishes": 11
   },
-  "started": "2026-11-27T06:27:57",
+  "started": "2026-11-27T07:10:49",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2355,7 +2342,9 @@
       "StartUpDG.read_Gmsh_2D_v4",
       "Bigleaf.kinematic_viscosity",
       "SurfaceFluxes.minimum_wind_speed",
-      "DiffEqCallbacks.IntegratingSumCallback"
+      "DiffEqCallbacks.IntegratingSumCallback",
+      "Jutul.vectorize_variables",
+      "MuTuner.MuTunerLogger"
     ],
     "games": [
       "Super Mario 64",
@@ -2390,7 +2379,10 @@
       "The Last of Us Part II",
       "Valkyria Chronicles (video game)",
       "Kingdom Hearts II",
-      "Max Payne (video game)"
+      "Max Payne (video game)",
+      "Speedball 2: Brutal Deluxe",
+      "Galaga",
+      "Call of Duty: Black Ops"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2684,7 +2676,10 @@
       "ThreeBodyDecays",
       "SyntheticEddyMethod",
       "SimpleGA",
-      "GraphsColoring"
+      "GraphsColoring",
+      "SkyDomes",
+      "MiniObserve",
+      "ImageDistances"
     ],
     "vision": [
       "BasicVSRRunner",
@@ -2694,8 +2689,10 @@
       "DepthAnythingRunner",
       "NeuralLUTRunner",
       "BonsaiRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "Qwen3EmbeddingRunner",
+      "DemucsRunner"
     ]
   },
-  "surprise_seen": 135
+  "surprise_seen": 137
 }

@@ -1,0 +1,21 @@
+{
+  "cause": "UndefVarError: `include` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.",
+  "created": "2026-11-27T07:29:58.068",
+  "error": "LoadError: UndefVarError: `include` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] top-level scope\n   @ /sim/Programmieren/SimGame/world/movies/knock.jl:7\n [2] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:195\n [4] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366\n [5] top-level scope\n   @ none:1\n [6] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [7] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [8] _start()\n   @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/movies/knock.jl:7",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261127-072958-017-clip.error.txt",
+  "finished": "2026-11-27T07:29:59.843",
+  "id": "20261127-072958-017-clip",
+  "kind": "clip",
+  "params": {
+    "call": "knock_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/stone-lantern-notes.mp4",
+    "script": "movies/knock.jl"
+  },
+  "seconds": 0.6,
+  "started": "2026-11-27T07:29:58.873",
+  "status": "failed"
+}

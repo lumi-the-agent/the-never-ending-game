@@ -515,6 +515,9 @@
 /world/reviews/motion/session-0137/dandelion-clocks-overview.jpg
 /world/reviews/motion/session-0137/dandelion-clocks-steps.jpg
 /world/reviews/motion/session-0137/dandelion-clocks-strip.jpg
+/world/reviews/motion/session-0138/ants-honey-road-2-overview.jpg
+/world/reviews/motion/session-0138/ants-honey-road-2-steps.jpg
+/world/reviews/motion/session-0138/ants-honey-road-2-strip.jpg
 /world/reviews/p0121/follow-17h.png
 /world/reviews/p0121/free-night.png
 /world/reviews/p0121/jumpin.png
@@ -1679,6 +1682,22 @@
 /world/reviews/posts/review-0135/the-owl-listens-at-50.jpg
 /world/reviews/posts/review-0135/the-owl-listens-at-75.jpg
 /world/reviews/posts/review-0135/the-owl-listens-board.jpg
+/world/reviews/posts/review-0137/a-boomerang-comes-back-3-at-25.jpg
+/world/reviews/posts/review-0137/a-boomerang-comes-back-3-at-50.jpg
+/world/reviews/posts/review-0137/a-boomerang-comes-back-3-at-75.jpg
+/world/reviews/posts/review-0137/a-boomerang-comes-back-3-board.jpg
+/world/reviews/posts/review-0137/ants-on-a-honey-road-at-25.jpg
+/world/reviews/posts/review-0137/ants-on-a-honey-road-at-50.jpg
+/world/reviews/posts/review-0137/ants-on-a-honey-road-at-75.jpg
+/world/reviews/posts/review-0137/ants-on-a-honey-road-board.jpg
+/world/reviews/posts/review-0137/dandelion-clocks-at-25.jpg
+/world/reviews/posts/review-0137/dandelion-clocks-at-50.jpg
+/world/reviews/posts/review-0137/dandelion-clocks-at-75.jpg
+/world/reviews/posts/review-0137/dandelion-clocks-board.jpg
+/world/reviews/posts/review-0138/ants-honey-road-2-at-25.jpg
+/world/reviews/posts/review-0138/ants-honey-road-2-at-50.jpg
+/world/reviews/posts/review-0138/ants-honey-road-2-at-75.jpg
+/world/reviews/posts/review-0138/ants-honey-road-2-board.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-25.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-50.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-75.jpg
@@ -1775,6 +1794,10 @@
 /world/reviews/posts/session-0137/dandelion-clocks-at-50.jpg
 /world/reviews/posts/session-0137/dandelion-clocks-at-75.jpg
 /world/reviews/posts/session-0137/dandelion-clocks-board.jpg
+/world/reviews/posts/session-0138/ants-honey-road-2-at-25.jpg
+/world/reviews/posts/session-0138/ants-honey-road-2-at-50.jpg
+/world/reviews/posts/session-0138/ants-honey-road-2-at-75.jpg
+/world/reviews/posts/session-0138/ants-honey-road-2-board.jpg
 /world/reviews/r100-now.png
 /world/reviews/r100-patch.png
 /world/reviews/r107-a.png
@@ -1990,6 +2013,11 @@
 /world/reviews/views42/overview.png
 /world/state/footpaths.bin
 /world/state/missme-board.png
+/world/state/modes/20261122-195434-518-asset.jls
+/world/state/modes/20261122-214627-077-asset.jls
+/world/state/modes/20261122-214627-161-asset.jls
+/world/state/modes/20261122-214637-773-asset.jls
+/world/state/modes/20261123-003412-747-asset.jls
 /world/state/pebblewords/word-1795656873.png
 /world/state/pebblewords/word-1795656922.png
 /world/state/pebblewords/word-1795657995.png
@@ -2095,6 +2123,7 @@
 /world/state/pebblewords/word-1795757953.png
 /world/state/pebblewords/word-1795757996.png
 /world/state/pebblewords/word-1795758011.png
+/world/state/pebblewords/word-1795759944.png
 /world/state/tv-cast.mp4
 /world/state/tv.png
 /world/state/wordsand.bin
@@ -2329,6 +2358,7 @@
 /world/site/films/a-boomerang-comes-back-3.mp4
 /world/site/films/a-day-in-my-new-life.mp4
 /world/site/films/allin.mp4
+/world/site/films/ants-honey-road-2.mp4
 /world/site/films/ants-on-a-honey-road.mp4
 /world/site/films/bottle.mp4
 /world/site/films/breeding-a-new-friend.mp4
@@ -2404,6 +2434,7 @@
 /world/site/films/splash.mp4
 /world/site/films/splash.wav
 /world/site/films/spring.mp4
+/world/site/films/stone-lantern-notes.mp4.silent.mp4
 /world/site/films/swing.mp4
 /world/site/films/the-island-is-a-seesaw.mp4
 /world/site/films/the-island-weighs-its-words-2.mp4
@@ -2478,6 +2509,7 @@
 /world/site/print/paperme-1.png
 /world/site/print/paperme-2.png
 /world/site/print/paperme-3.png
+/world/site/sounds/stone-lantern-knocks.wav
 /world/site/voice/friend-gloop.mp3
 /world/site/voice/friend-pinchy.mp3
 /world/site/voice/friend-sniffsalot.mp3

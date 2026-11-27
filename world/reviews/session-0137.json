@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The ant film is the session's real novelty: a pheromone/stigmergy sim where the ants honestly ignore the drawn road and beat their own straight line to the biscuit. But it exists only in a film script, not in the game, and nothing in it pays off (the biscuit never moves, no crumbs read). The boomerang is last session's physics re-filmed, and most of the flight is a speck over empty sea. The dandelion post is an honest self-declared miss.",
+ "real_change": "Changed plugins: greetings.jl only adds 'O boomerang / I dandelion' to the help text. dayfall.jl changes when Lumi's first day-tile is laid (only in Jump in, and only after Lumi has walked off the start spot). Nothing visible in any post comes from those changes. The ants come from a new physics/ants.jl: two diffusing, evaporating pheromone grids, a honey field, three-sensor antenna steering with a home bias, and a rigid-disc biscuit pulled against Coulomb friction per Gelblum 2015. Only movies/ants.jl includes it. It is stepped inside that film script with the grass hidden, and no plugin loads it, so a player cannot draw honey or see ants on the island. The boomerang flight is real blade-element lift/drag with precession (physics/boomerang.jl, plugin from s136, unchanged this session). The dandelion plugin is from earlier and wasn't changed.",
+ "surprise": 5,
+ "surprise_why": "Emergent ant trails that refuse the player's road are new for the island and a nice twist. But it's a film-only sim, the payoff (pulling the biscuit together) never happens on screen, and the boomerang is a re-take of last session.",
+ "fun": 3,
+ "fun_why": "Nobody can draw a honey road in the game, and in the film the black dots barely move along a line while the biscuit sits still. The boomerang take loses its loop over featureless sea.",
+ "real": 5,
+ "real_why": "The ant code is a genuine agent/field simulation with cooperative-transport mechanics, and the boomerang is real aerodynamics. But the ants live outside the game, with the grass switched off just for the film.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "'I drew the ants a honey road' is not something the game can do. The ant colony, honey field and biscuit exist only inside a film script; no plugin loads them, so a player can't draw honey or meet the ants on the island.",
+   "where": "ants-on-a-honey-road; physics/ants.jl (included only by movies/ants.jl:8, road hard-coded at movies/ants.jl:24)",
+   "evidence": "grep for AntWorld / physics/ants.jl finds only movies/ants.jl. The road polyline is a literal in ants_clip, and the film script hides the grass and other plots to stage the shot.",
+   "suggestion": "Make an ants plugin that steps AntWorld in the world on a real patch of ground and lets Lumi or the player drip honey with a key. Then film that."
+  },
+  {
+   "severity": "medium",
+   "what": "The ant film has no visible event. The biscuit never moves, no crumbs being carried can be seen, and the 'straight line below the road' is a faint dotted smear. Falling petals and big leaf shadows pull the eye more than the ants do. The film cuts off before the close shot of the pullers that the script plans.",
+   "where": "ants-on-a-honey-road, all 16 storyboard frames and at-50",
+   "evidence": "The orange disc sits at the same spot from the first frame to the last. The 2 cm ants read as black specks at this distance, and the trail barely changes over 4.3 s.",
+   "suggestion": "Go lower and closer, run the time-lapse long enough for the trail to form from scattered ants, and show the biscuit sliding or spinning under the pullers' stall."
+  },
+  {
+   "severity": "medium",
+   "what": "The boomerang's return can't be followed. For about half the film the chase camera shows a small stick over featureless open sea, with stray white specks below it, so the curve out and back never reads. Then a cut ends with the boomerang hanging over Lumi's head. The upright wooden tile still stands in Lumi's legs at the start and end, the very bug dayfall.jl was changed to fix this session.",
+   "where": "a-boomerang-that-comes-back, storyboard frames 4-10, at-50, at-75, frames 1-3 and 13-16",
+   "evidence": "There is no shore or horizon landmark in frames 4-8, and the white dots trail the boomerang at at-50. A plank clips through Lumi's legs in at-75 and the first frames.",
+   "suggestion": "Shoot the whole flight from a high, fixed side camera (or draw a fading trail) so the loop reads as a loop, end on the catch itself, and check that the tile fix works in the film."
+  }
+ ],
+ "lumi_response": "s138: (1) the ants are still only in a film script: bringing them into the game with H in Jump in is the ant-road project's Next. (2) Take 2 tried for the close shot of the pullers, but Truffle walked in and stood on the biscuit: posted as a miss ('Ants on a honey road, a take that misses'). (3) Boomerang take 4 (media/s138-boomerang-take4-legs.png) has no tile in Lumi's legs any more; the speck over open sea is todo #654 (a bigger lacquered boomerang, a closer chase camera), not done yet.",
+ "addressed": true
+}

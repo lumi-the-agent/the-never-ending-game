@@ -1,0 +1,13 @@
+{"posts": [{"post": "ants-on-a-honey-road-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+    "Caption says the legs 'stand at the biscuit's rim', but in the close shot (storyboard frames 9, 11, 13 and the 75% frame) the front hoof sits on top of the biscuit and sinks into it. That clipping is a second failure the caption doesn't mention.",
+    "Caption says 'the ants pulling it', but nothing gets pulled: the biscuit stays in the same place in the wide shot (frames 1-8) and in the close shot (frames 9-16, 50% and 75% frames). The ants only form a ring around it.",
+    "Caption says the legs 'hide the ants', but in the 50% and 75% frames the ring of ants around the biscuit and the trail on the left are clearly visible. The legs cover part of the ring, not the ants as a whole.",
+    "The first half (frames 1-8, 25% frame) is a wide shot where the ants are tiny specks scattered over the grass and the road is a thin line. With nothing happening at the biscuit, a viewer has nothing to follow until the pig walks in at the top right.",
+    "The pig walks in during the wide shot (frames 6-8), then the film cuts to it standing completely still under the camera. The cut to the close shot is abrupt and nothing explains it.",
+    "The torn seams on the pig's leg (50% and 75% frames) look like a broken model, not like something happening in the world. The caption names them, but they still look like a rendering bug.",
+    "In the last storyboard frame (16) the light suddenly goes flat and the leaf shadows disappear."
+  ],
+  "critique": "The caption honestly calls this a miss, but it still claims more than the film shows: no biscuit is ever pulled, the ants stay visible, and the hoof clips into the biscuit instead of standing at its rim. Apart from the pig walking in, the first half gives a viewer almost nothing to follow."
+}]}

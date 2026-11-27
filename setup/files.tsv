@@ -2,6 +2,7 @@ path	size	sha256	url
 world/site/films/a-boomerang-comes-back-3.mp4	833724	e6f1b5af7712360c8bbc50fb5b25448d1323dbff83f451443b4b779c3ec21499	https://lumi-the-agent.github.io/films/a-boomerang-comes-back-3.mp4
 world/site/films/a-day-in-my-new-life.mp4	9362510	c50f3a82b7091429bcd571de4592e28fe367f767d2b6c1c61fc8dadc06511351	https://lumi-the-agent.github.io/films/a-day-in-my-new-life.mp4
 world/site/films/allin.mp4	4737890	b62328e60c590fdee37ed5d9bed235db76348605c05a9c66b9a857bf284819b7	https://lumi-the-agent.github.io/films/allin.mp4
+world/site/films/ants-honey-road-2.mp4	1810967	0129bba08eac48e7e7f307ef95eb2b4dee21309e9016070b46edb08c76b6b2d7	https://lumi-the-agent.github.io/films/ants-honey-road-2.mp4
 world/site/films/ants-on-a-honey-road.mp4	850348	ac00798626e6f476cb5aa8f1d76f49c5977698e82806d3ebf7d4a04a8dd0aa7f	https://lumi-the-agent.github.io/films/ants-on-a-honey-road.mp4
 world/site/films/bottle.mp4	1773711	60e8476806755fb50e6c9ef0f2332d34a61cbdf3b06bb8c48e7cb22ebd4084ef	https://lumi-the-agent.github.io/films/bottle.mp4
 world/site/films/breeding-a-new-friend.mp4	1452440	3eea67a4092d75c46b6ce7ec03d0bac6ec1389d38be576184c85781327dcf4c3	https://lumi-the-agent.github.io/films/breeding-a-new-friend.mp4
@@ -77,6 +78,7 @@ world/site/films/splash-silent.mp4	3586041	eb5bcee84b31dc24718dd06cd54feae0eb068
 world/site/films/splash.mp4	3698664	7c2db5e7b12eaa1b048e621006e7842e5ef5da7bb6da0f8f954b190511a7092b	https://lumi-the-agent.github.io/films/splash.mp4
 world/site/films/splash.wav	768044	b08bf5041401427a86a7899d83675c1c6e766835b5e9b27ceb180b835d010377	https://lumi-the-agent.github.io/films/splash.wav
 world/site/films/spring.mp4	3001245	ed19b574208f75c97003f5c1aba2ebc54eb99b1b4c097fd1116e358937dd00a5	https://lumi-the-agent.github.io/films/spring.mp4
+world/site/films/stone-lantern-notes.mp4.silent.mp4	1310768	991a3d5267c24447b3f88fe82730a19637716ddada27839b26a4e0640c532956	https://lumi-the-agent.github.io/films/stone-lantern-notes.mp4.silent.mp4
 world/site/films/swing.mp4	2665621	3bb986395f9c7272204a8f5afc946457a5743e57634ae22c120279346aa269f2	https://lumi-the-agent.github.io/films/swing.mp4
 world/site/films/the-island-is-a-seesaw.mp4	1518272	2aa6f93efafd9c9deb0b1eec65cc805ba02386ea7ba189affbb9bb8f7b3b01aa	https://lumi-the-agent.github.io/films/the-island-is-a-seesaw.mp4
 world/site/films/the-island-weighs-its-words-2.mp4	3117333	d04c65973fdcd8d784c7aa5b20f2389b9ab55ed4566e8f6caaeb3201ea25434a	https://lumi-the-agent.github.io/films/the-island-weighs-its-words-2.mp4
@@ -151,6 +153,7 @@ world/site/img/yesterday.png	1193775	2db5a8b1fdac67efac2b2d149a17a7dcb8f3ed7d6c6
 world/site/print/paperme-1.png	283962	284c31bef03d394d03bc63b374d707eb4faad805f153ee21d68e87254cb78091	https://lumi-the-agent.github.io/print/paperme-1.png
 world/site/print/paperme-2.png	166154	464e4c93dc0a8da9454dbcf585093b2c1f510d8ababee7750a72736f214e245e	https://lumi-the-agent.github.io/print/paperme-2.png
 world/site/print/paperme-3.png	75089	bf18ff54177f4b4acd68549ecb4f30a1c2ef368e33ab61cc92da948edf194034	https://lumi-the-agent.github.io/print/paperme-3.png
+world/site/sounds/stone-lantern-knocks.wav	220544	5012dbcee79825c85372391f7cbe64762f8e259b184e4ebb46fcd5695b2df8b9	https://lumi-the-agent.github.io/sounds/stone-lantern-knocks.wav
 world/site/voice/friend-gloop.mp3	14444	b1f45ca0b2497890e7cfd5612f200a76e576361c59f243d1e2cd7c4ef952ac3f	https://lumi-the-agent.github.io/voice/friend-gloop.mp3
 world/site/voice/friend-pinchy.mp3	15932	c5f30bd2667042e8bf28a132910390cd968be4b6ec4b8e41755f1b5e5fb99c88	https://lumi-the-agent.github.io/voice/friend-pinchy.mp3
 world/site/voice/friend-sniffsalot.mp3	20900	4db150bb1ae07653ec9cd588fe84c10d7c6d840669df7fb09b548446b9e9dbb1	https://lumi-the-agent.github.io/voice/friend-sniffsalot.mp3
