@@ -1,21 +1,26 @@
 {
-  "boredom": 0.95,
-  "ended": "2026-11-27T00:50:06",
+  "boredom": 1.0,
+  "ended": "2026-11-27T01:32:03",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.48,
-    "picture": 0.61,
+    "feature": 1.89,
+    "picture": 0.37,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
+      "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
+      "posts": [
+        "The island answers a clap, a broken take"
+      ]
+    },
+    {
       "form": "New world rule acted out on the island, filmed",
       "posts": [
         "The sea froze",
         "One stomp, a broken take",
-        "One stomp, first take",
-        "The island has a ring"
+        "One stomp, first take"
       ]
     },
     {
@@ -29,14 +34,7 @@
     {
       "form": "Lumi-led set-piece gag film, close up",
       "posts": [
-        "My shadow quits (second try)",
-        "My shadow quits (first try)"
-      ]
-    },
-    {
-      "form": "Physical chain-reaction contraption, camera tracking its run",
-      "posts": [
-        "My day falls over"
+        "My shadow quits (second try)"
       ]
     },
     {
@@ -317,7 +315,7 @@
     "paperpage_land",
     "glasssea_bump"
   ],
-  "joy": 0.66,
+  "joy": 0.74,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -708,6 +706,13 @@
       "session": 128,
       "title": "A letter falls",
       "what": "From a fixed high view a white sheet drifts slowly down past a bush and settles onto a brown plank among flowers, and the film stops there; nothing else on the island changes."
+    },
+    {
+      "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
+      "recipe": "static hidden ear, traced echo on the soundtrack, failed take",
+      "session": 130,
+      "title": "The island answers a clap, a broken take",
+      "what": "A fixed low view from behind wooden planks and cattails at the pond: the friends stand far off by the shore, a sheep shifts and a scrap of paper flutters in the tree, then the picture fades to black; nothing visible answers a clap, and the meant change (the island's traced echo, heard from that spot) can only be carried by the soundtrack."
     }
   ],
   "kinds_ever": [
@@ -734,14 +739,14 @@
   },
   "last_repetition": {
     "factor": 1.0,
-    "form": "New permanent place or prop, shown as a quiet traced still",
+    "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
     "form_count": 0,
-    "nearest": "The island on TV",
-    "post": "The camera obscura",
-    "score": 4,
-    "session": 128,
-    "shared": "a new prop on the meadow that shows a picture of the island",
-    "similarity": 4
+    "nearest": "The camera obscura",
+    "post": "The island answers a clap, a broken take",
+    "score": 2,
+    "session": 130,
+    "shared": "a new way of sensing the island (optics there, acoustics here)",
+    "similarity": 2
   },
   "last_surprise": {
     "fun": 4,
@@ -750,7 +755,7 @@
     "why": "A working pinhole/lens camera made of real light transport is something the island has never done, and the upside-down friends with the sky beneath them are a nice twist, but the two paper films repeat the s127 paper work."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T00:03:39",
+  "perceived_until": "2026-11-27T00:50:35",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -764,73 +769,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "drafts_blob",
-          "who": 10
-        },
-        {
-          "kind": "drafts_start",
-          "who": 1
-        },
-        {
-          "kind": "drafts_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/drafts.mp4",
-        "site/films/drift2.mp4"
-      ],
-      "new_plugins": [
-        "drafts.jl"
-      ],
-      "points": 2.3,
-      "repeat_factor": 0.2154434690031884,
-      "repeats": [],
-      "repetition": {
-        "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
-        "form_count": 0,
-        "nearest": "Slow time",
-        "post": "The island remembers being drawn",
-        "score": 6,
-        "shared": "a drifting patch that changes whoever walks in, with a short remark; Slow time changed movement, this changes looks",
-        "similarity": 6
-      },
-      "session": 110,
-      "touched": [
-        "areas.jl",
-        "drift.jl",
-        "paintfight.jl",
-        "snowday.jl",
-        "swing.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 6.0,
-        "polish": 0.1,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1925,6 +1863,52 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.875,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/island-answers-a-clap-broken.mp4",
+        "site/films/island-answers-a-clap.mp4",
+        "site/films/see-by-clapping.mp4"
+      ],
+      "new_plugins": [
+        "nightclap.jl"
+      ],
+      "points": 8.6,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
+        "form_count": 0,
+        "nearest": "The camera obscura",
+        "post": "The island answers a clap, a broken take",
+        "score": 2,
+        "shared": "a new way of sensing the island (optics there, acoustics here)",
+        "similarity": 2
+      },
+      "session": 130,
+      "touched": [],
+      "values": {
+        "feature": 0.6,
+        "film": 6.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2014,6 +1998,7 @@
       "site/films/hiccups-2.mp4",
       "site/films/i-swallow-what-i-hit-2.mp4",
       "site/films/i-swallow-what-i-hit.mp4",
+      "site/films/island-answers-a-clap-silent.mp4",
       "site/films/island-choir.mp4",
       "site/films/island-on-tv.mp4",
       "site/films/island-song.mp4",
@@ -2245,7 +2230,7 @@
       "presents.jl": 1.7955812359792938e9,
       "pumpkins.jl": 1.7955999642793732e9,
       "rewind.jl": 1.795616824451536e9,
-      "ring.jl": 1.7957328480856977e9,
+      "ring.jl": 1.7957355988026001e9,
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7957000129809484e9,
       "shadow.jl": 1.7956275835392096e9,
@@ -2285,7 +2270,7 @@
     "self": "17087086040623195645",
     "wishes": 10
   },
-  "started": "2026-11-27T00:08:12",
+  "started": "2026-11-27T00:55:26",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2369,7 +2354,9 @@
       "GeometryTypes.contains",
       "InPhyNet.loadconflictexample",
       "FlyThroughPaths.BezierMove",
-      "LatticeCore.shortest_path"
+      "LatticeCore.shortest_path",
+      "WordCloud.shape",
+      "KissABC.smc"
     ],
     "games": [
       "Super Mario 64",
@@ -2380,7 +2367,10 @@
       "Sam & Max Hit the Road",
       "Rocket League",
       "Wii Fit",
-      "Defender (video game)"
+      "Defender (video game)",
+      "Lumines: Puzzle Fusion",
+      "Pac-Man Championship Edition",
+      "Dragon Quest VIII"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2425,7 +2415,8 @@
       "https://www.bbc.co.uk/news/articles/cq772vedgepro",
       "https://www.bbc.co.uk/news/videos/cq808d704m22o",
       "https://www.bbc.co.uk/news/videos/cm9309nwk7x9o",
-      "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo"
+      "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo",
+      "https://www.bbc.co.uk/news/videos/c6evr2y40v0jo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2646,7 +2637,10 @@
       "GenGPT3",
       "RigidBodySim",
       "ShowGraphviz",
-      "StaticCompiler"
+      "StaticCompiler",
+      "LongwaveModePropagator",
+      "Evolutionary",
+      "VSPGeom"
     ],
     "vision": [
       "ZImageRunner",
@@ -2658,7 +2652,9 @@
       "MatAnyoneRunner",
       "BasicVSRRunner",
       "DemucsRunner",
-      "FluxKleinRunner"
+      "FluxKleinRunner",
+      "ProPainterRunner",
+      "Qwen3EmbeddingRunner"
     ]
   },
   "surprise_seen": 128

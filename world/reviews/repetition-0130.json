@@ -1,0 +1,14 @@
+{"posts": [{"post": "The island answers a clap, a broken take",
+            "what": "A fixed low view from behind wooden planks and cattails at the pond: the friends stand far off by the shore, a sheep shifts and a scrap of paper flutters in the tree, then the picture fades to black; nothing visible answers a clap, and the meant change (the island's traced echo, heard from that spot) can only be carried by the soundtrack.",
+            "recipe": "static hidden ear, traced echo on the soundtrack, failed take",
+            "nearest": "The camera obscura",
+            "similarity": 2,
+            "shared": "a new way of sensing the island (optics there, acoustics here)"}],
+ "forms": [
+  {"form": "Change to how the island sounds, heard from a fixed spot (acoustic film)", "posts": ["The island answers a clap, a broken take"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["The sea froze", "One stomp, a broken take", "One stomp, first take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Glass rain, not yet", "Nobody kicked the sun", "Football with the sun"]},
+  {"form": "Lumi-led set-piece gag film, close up", "posts": ["My shadow quits (second try)"]},
+  {"form": "Physics study of a single falling object, filmed", "posts": ["A page of my notebook", "A letter falls"]},
+  {"form": "New permanent place or prop, shown as a quiet traced still", "posts": ["The camera obscura"]}
+ ]}

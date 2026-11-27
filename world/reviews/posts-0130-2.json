@@ -1,0 +1,13 @@
+{"posts": [{"post": "the-island-answers-a-clap-a-broken-take",
+  "verdict": "redo",
+  "problems": [
+    "The last quarter of the film is black: storyboard row 4 (frames 13-16) is all black, and the 75% frame is almost black with only faint ghost outlines. So about a quarter of a 4.8 s film shows nothing.",
+    "The caption says 'After the cut it stood inside a tree', but no cut is visible. Storyboard frames 1-12 are one static shot from the same camera, then the film goes black. The viewer never gets a shot after a cut.",
+    "It is never clear what 'it' is. The only thing that reacts is a white woolly animal on the right (storyboard frames 2-12, at-25 and at-50). It drifts a little toward the cattails and tree trunk, and it is mostly hidden behind the yellow plank and the cattail stems. In frames 10-12 it overlaps the reeds and trunk, but it is small and covered, so 'stood inside a tree' can't be read from the pictures.",
+    "The clap can't be seen and there is no cause on screen. The caption puts the clapper behind the planks, out of view, so with no sound nothing in the frames shows why the animal moves. The answer to the clap is a slight shuffle at the edge of the frame.",
+    "A flat grey rectangle floats on the tree's foliage (at-25 frame, upper middle of the tree; storyboard frames 3 and 5). It is a stray, half-drawn piece of geometry.",
+    "Storyboard frame 1 has a dark grey band over the top-left of the sky that is gone by frame 2. It looks like a render or exposure glitch at the start.",
+    "The framing is cluttered: the near planks and the cattails in the foreground take up most of the picture, and the subject is pushed to the right edge, partly cut off and covered."
+  ],
+  "critique": "This is meant to be a broken take, but the failure doesn't read. The caption's cut and the animal 'inside a tree' aren't visible, the animal is small and hidden behind cattails at the frame's edge, and the last quarter of the film is black. On top of that there are stray glitches the caption doesn't mention: a grey quad on the tree and a dark band in the first frame."
+}]}

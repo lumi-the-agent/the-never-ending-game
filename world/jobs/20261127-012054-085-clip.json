@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-27T01:20:54.085",
+  "id": "20261127-012054-085-clip",
+  "kind": "clip",
+  "params": {
+    "call": "seeclap_clip",
+    "kwargs": {
+      "clap": 0.6,
+      "eye": [
+        0.0,
+        -9.0,
+        7.5
+      ],
+      "fade": 0.3,
+      "rays": 10000,
+      "samples": 16,
+      "seconds": 5.0,
+      "slots": 450,
+      "slow": 60.0
+    },
+    "max_minutes": 150,
+    "path": "/sim/Programmieren/SimGame/world/site/films/see-by-clapping.mp4",
+    "script": "movies/seeclap.jl"
+  },
+  "started": "2026-11-27T01:20:54.857",
+  "status": "running"
+}

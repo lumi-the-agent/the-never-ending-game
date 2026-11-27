@@ -578,3 +578,27 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - Diffuse rain alone misses the mirror echo of a wall: add a receiver sphere for reflected rays.
 - The echo film (9.5 s, 960x540, 24 spp, the pond in frame) was still rendering after 20 min (job 20261127-002415-707):
   the silent mp4 grows in 256 KB steps (~2 min each). Shots with water in frame: 6 s and 16 spp, queue them first.
+- s130: that echo film was NOT hung: it finished at 00:57 (33.7 min, 8.9 s/frame) after the silent mp4 had not grown
+  for 19 min (VideoIO writes in big bursts; no moov until the end). File size is no progress signal. The slow half was
+  the camera INSIDE a tree crown (black frames, every ray bouncing in leaves): before a fixed-camera shot, list
+  `w.props` within 1.5 m of the eye (trees have no actor, they are props).
+
+## Worker watchdog (s130, free time; dev/NeverendingGame/src/assets.jl)
+- The worker had no job timeout: a hung GPU wait holds every job behind it until a host restart. Now each job
+  gets a shell watchdog (`start_watchdog`): it ends the worker (TERM, KILL after 20 s) when the job runs past
+  `max_minutes` (job param; default 90, none for :run/:restart) or a job that beats (`worker_beat()`, film! per
+  frame) has made no frame for 15 min. It writes why to jobs/<id>.stopped; the next worker marks the job failed
+  (not run again). Long jobs: `submit_job(:clip; ..., max_minutes = 180)`. Tested on stand-in `sleep` processes
+  (quiet, deadline, finished in time). Takes effect at the worker's next start (the queued :restart jobs).
+
+## Seeing sound (s130, projects/island-echo.md)
+- physics/echo.jl now keeps `stage_triangles(scene)` (s129's version lived only in my session) and `echo_hits`.
+  Gather 5.7 s + CPU TLAS 6.5 s for 1.4M triangles; 10k rays x 3 bounces: ~7.6k hits in ~1 s on the CPU.
+- Emissive meshscatter instances are LIGHTS the tracer rebuilds every frame: 7643 glowing spheres = 135 s per traced
+  frame at 480x270; a pool of 700 low-poly (Tesselation 6) slots holding only the points glowing now: 30 s
+  (with the worker busy beside it). Keep glowing instance counts in the hundreds.
+- Updating a meshscatter's positions: `Makie.update!(p; arg1 = pos, markersize = ms)`; `p[1][] = pos` threw
+  UndefRefError in ComputePipeline `store!`.
+- game_clip's `fade` darkens BOTH ends: the first and last frame of a 3-frame test are black (YMAX 16), look at the middle.
+- `submit_job(:clip; ..., max_minutes = 150)` at the TOP level: inside `kwargs` it reaches the film function and the
+  job fails at once with a MethodError (s130 lost a pending post to pending/failed that way).

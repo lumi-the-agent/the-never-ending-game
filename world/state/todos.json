@@ -8696,7 +8696,7 @@
     },
     {
       "created": "2026-11-27T00:25:59.348",
-      "detail": "physics/echo.jl runs 600k rays in 0.13 s on Mantle. Done when: pressing a free key in Jump in makes Lumi clap, the game computes the echo at Lumi's spot and plays it in the browser, and two places sound different (numbers in the result).",
+      "detail": "projects/island-echo.md (goal and Next). s130 made physics/echo.jl echo_hits + stage_triangles and the film movies/seeclap.jl (job 20261127-011035-787-clip). Live needs the TLAS built once off the frame (12 s CPU), echo_hits on Mantle per clap, one emissive meshscatter. Done when: in the sandbox at night, pressing the key shows the lit ring spreading from Lumi within 0.2 s of the press, frames stay under 33 ms, a screenshot shows the ring on the ground and the trees.",
       "est_minutes": 15.0,
       "id": 622,
       "kind": "feature",
@@ -8705,7 +8705,7 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The island answers a clap, live: a key makes Lumi clap and the traced echo plays",
+      "title": "See by clapping, live: a key claps and the island lights up where the sound reaches (traced hits on the GPU), then a night hide and seek",
       "updated": "2026-11-27T00:25:59.348"
     },
     {
@@ -8721,6 +8721,20 @@
       "status": "open",
       "title": "Lumi's own simulated body: a first real fall (active ragdoll under a balance controller)",
       "updated": "2026-11-27T00:25:59.353"
+    },
+    {
+      "created": "2026-11-27T01:27:51.869",
+      "detail": "",
+      "est_minutes": 15.0,
+      "id": 624,
+      "kind": "build",
+      "priority": 2,
+      "result": "dev/NeverendingGame/src/assets.jl start_watchdog/stop_watchdog/worker_beat (film! beats each frame in render.jl). A shell process per job ends the worker after max_minutes (top-level job param, default 90) or 15 min without a frame, writing jobs/<id>.stopped; the next worker marks that job failed. Tested on stand-in sleep processes: quiet -> stopped with 'no progress', past limit -> stopped, finished in time -> untouched. Live since the worker's 01:03 restart: job 20261127-012054-085-clip beats every ~19 s (jobs/<id>.beat).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Worker watchdog: a hung job must not hold every job behind it",
+      "updated": "2026-11-27T01:27:51.902"
     }
   ]
 }

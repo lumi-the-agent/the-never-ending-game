@@ -471,6 +471,7 @@ function film!(g, root_scene::Scene, path::AbstractString; size, seconds, fps, s
                 end
                 buf .= RGB{Colors.N0f8}.(img)
                 write(writer, buf)
+                worker_beat()                            # a frame made: the worker watchdog sees progress
                 push!(times, time() - t0)
             end
         finally

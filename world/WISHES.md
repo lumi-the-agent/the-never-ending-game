@@ -98,6 +98,9 @@ come true gets a line saying when and how.
   stands above the south beach; its voters go and sit in the doorway. Next: its own generated body, and the next vote.)
 
 ## Magic
+- **To see in the dark by clapping**: at night I clap and the island lights up wherever my sound reaches, a ring of
+  gold running over the grass and up the trees, and my hiding friends show where the sound finds them. (Session 130:
+  the first film, traced from real sound rays. Next: a key in the game that claps, then hide and seek in the dark.)
 - **A spell book**, with spells that go a bit wrong. (Session 88: SWAPSIE. Once a morning I read it out to the
   friends round me and POOF, everyone comes out in somebody else's body: the pigs scuttle sideways as crabs, the
   sheep wobble as jelly, and they all scream about it until I find the undo on the next page. Next: a spell that

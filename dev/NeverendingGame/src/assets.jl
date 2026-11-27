@@ -233,6 +233,56 @@ this bounds that, and whatever leaks next.
 """
 const WORKER_MAX_GB = 28
 
+"""
+A job that hangs (a GPU wait that never returns) is stopped from OUTSIDE the worker, by a shell process:
+s129's echo film stopped writing frames at 00:38 and held four jobs behind it, and nothing in the worker
+can interrupt a stuck ccall. The shell ends the worker when the job runs past `max_minutes` (a job
+param; default `WORKER_JOB_MIN`, none for `:run` and `:restart`) or when a job that beats
+(`worker_beat()`, a film each frame) has not beaten for `WORKER_QUIET_MIN` minutes. It writes
+why to `jobs/<id>.stopped` first; the next worker marks that job failed instead of running it again.
+"""
+const WORKER_JOB_MIN = 90
+const WORKER_QUIET_MIN = 15
+const WORKER_BEAT = Ref("")
+
+"Called by long jobs as they make progress (`film!`: each frame); the watchdog counts quiet minutes from the last one."
+worker_beat() = (isempty(WORKER_BEAT[]) || touch(WORKER_BEAT[]); nothing)
+
+job_minutes(j) = get(j["params"], "max_minutes", j["kind"] in ("run", "restart") ? nothing : WORKER_JOB_MIN)
+
+function start_watchdog(p::GamePaths, j; pid = getpid(), quiet_min = WORKER_QUIET_MIN, poll = 30)
+    mins = job_minutes(j)
+    mins === nothing && return nothing
+    id = j["id"]
+    beat = joinpath(jobs_dir(p), id * ".beat")
+    stopped = joinpath(jobs_dir(p), id * ".stopped")
+    WORKER_BEAT[] = beat
+    quiet = round(Int, 60 * quiet_min)
+    script = """
+    deadline=\$(( \$(date +%s) + $(round(Int, 60 * mins)) ))
+    while sleep $poll; do
+      now=\$(date +%s)
+      if [ \$now -ge \$deadline ]; then
+        echo "it ran past its limit of $(mins) min" > '$stopped'; break
+      fi
+      if [ -f '$beat' ] && [ \$(( now - \$(stat -c %Y '$beat') )) -ge $quiet ]; then
+        echo "no progress for $(quiet_min) min (last beat \$(date -r '$beat' +%H:%M:%S))" > '$stopped'; break
+      fi
+    done
+    echo "worker watchdog: job $id: \$(cat '$stopped'); stopping the worker ($pid)" >&2
+    kill -TERM $pid; sleep 20
+    grep -q julia /proc/$pid/cmdline 2>/dev/null && kill -KILL $pid
+    """
+    return run(`sh -c $script`; wait = false)
+end
+
+function stop_watchdog(p::GamePaths, j, wd)
+    wd === nothing || kill(wd)
+    WORKER_BEAT[] = ""
+    rm(joinpath(jobs_dir(p), j["id"] * ".beat"); force = true)
+    return nothing
+end
+
 "The oldest queued job of a kind `takes(kind)` accepts, or `nothing`."
 function next_job(p::GamePaths, takes::Function)
     files = sort!(filter(f -> endswith(f, ".json"), readdir(jobs_dir(p))))
@@ -274,7 +324,13 @@ function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip 
         j = read_json(joinpath(jobs_dir(p), f))
         (j["status"] == "running" && takes(j["kind"])) || continue
         j["interrupted"] = get(j, "interrupted", 0) + 1
-        if j["interrupted"] == 1
+        stopped = joinpath(jobs_dir(p), j["id"] * ".stopped")
+        rm(joinpath(jobs_dir(p), j["id"] * ".beat"); force = true)
+        if isfile(stopped)             # the watchdog ended the last worker over this job: it hangs, not again
+            j["status"] = "failed"; j["error"] = "the worker watchdog stopped it: " * strip(read(stopped, String))
+            j["finished"] = string(Dates.now())
+            rm(stopped)
+        elseif j["interrupted"] == 1
             j["status"] = "queued"
         else
             j["status"] = "failed"; j["error"] = "the worker stopped twice while running it"
@@ -291,6 +347,7 @@ function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip 
         j["status"] = "running"; j["started"] = string(Dates.now())
         write_json(job_path(p, id), j)
         t0 = time()
+        wd = start_watchdog(p, j)
         try
             j["result"] = run_job(Val(Symbol(j["kind"])), ws, id, j["params"])
             j["status"] = "done"
@@ -300,6 +357,8 @@ function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip 
             # the job failed, not the worker: record why and go on
             j["status"] = "failed"
             j["error"] = clip_error(sprint(showerror, e, catch_backtrace()))
+        finally
+            stop_watchdog(p, j, wd)
         end
         j["finished"] = string(Dates.now())
         j["seconds"] = round(time() - t0; digits = 1)

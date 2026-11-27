@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T00:24:34.355",
+  "finished": "2026-11-27T01:00:08.663",
   "id": "20261127-002434-355-clip",
   "kind": "clip",
   "params": {
@@ -26,5 +27,29 @@
     "path": "/sim/Programmieren/SimGame/world/site/img/camera-obscura-lens.png",
     "script": "movies/obscura.jl"
   },
-  "status": "queued"
+  "result": {
+    "dist": 10.0,
+    "friends": [
+      "Lumi",
+      "Gloop",
+      "Hopscotch",
+      "Marshmallow",
+      "Truffle",
+      "Pickles"
+    ],
+    "hut": [
+      -14.135144,
+      -10.457909,
+      0.744555
+    ],
+    "look": [
+      0.7635144,
+      0.6457909,
+      0.0
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/img/camera-obscura-lens.png"
+  },
+  "seconds": 131.2,
+  "started": "2026-11-27T00:57:57.487",
+  "status": "done"
 }

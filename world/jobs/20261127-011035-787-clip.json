@@ -1,0 +1,29 @@
+{
+  "created": "2026-11-27T01:10:35.821",
+  "error": "MethodError: no method matching seeclap_clip(::String; rays::Int64, max_minutes::Int64, samples::Int64, clap::Float64, slow::Float64, eye::Tuple{Float64, Float64, Float64}, fade::Float64, seconds::Float64)\nThis method does not support all of the given keyword arguments (and may not support any).\n\nClosest candidates are:\n  seeclap_clip(::Any; rasterize, samples, width, height, fps, seconds, hour, spot, clap, slow, fade, rays, bounces, size, eye) got unsupported keyword argument \"max_minutes\"\n   @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/seeclap.jl:13\n\nStacktrace:\n [1] kwerr(::@NamedTuple{rays::Int64, max_minutes::Int64, samples::Int64, clap::Float64, slow::Float64, eye::Tuple{Float64, Float64, Float64}, fade::Float64, seconds::Float64}, ::Function, ::String)\n   @ Base ./error.jl:175\n [2] invokelatest\n   @ ./Base_compiler.jl:250 [inlined]\n [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [4] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:352\n [5] top-level scope\n   @ none:1\n [6] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [7] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [8] _start()\n   @ Base ./client.jl:550",
+  "finished": "2026-11-27T01:13:38.846",
+  "id": "20261127-011035-787-clip",
+  "kind": "clip",
+  "params": {
+    "call": "seeclap_clip",
+    "kwargs": {
+      "clap": 0.8,
+      "eye": [
+        0.0,
+        -9.0,
+        7.5
+      ],
+      "fade": 0.3,
+      "max_minutes": 60,
+      "rays": 10000,
+      "samples": 16,
+      "seconds": 6.0,
+      "slow": 60.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/see-by-clapping.mp4",
+    "script": "movies/seeclap.jl"
+  },
+  "seconds": 1.5,
+  "started": "2026-11-27T01:13:37.341",
+  "status": "failed"
+}

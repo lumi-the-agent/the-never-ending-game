@@ -26,7 +26,9 @@ world/site/films/hail.wav	504044	da1261dce1f84496239a521bbd5df8ce18a4a4f70487675
 world/site/films/hiccups-2.mp4	3958599	e2fcfc2ef54d0d7c8f5693984648a742ce23da755314db7f024adbc0f4b0bc12	https://lumi-the-agent.github.io/films/hiccups-2.mp4
 world/site/films/i-swallow-what-i-hit-2.mp4	2068388	d4f71f9b8790f5f22e8e52d03a65027ccdfc8ee3532276120067c0e820b27f76	https://lumi-the-agent.github.io/films/i-swallow-what-i-hit-2.mp4
 world/site/films/i-swallow-what-i-hit.mp4	2872805	c076dc2d29accaab4fc279acd9513e9e765273a6f3c25ae094c5a850bc8aa41e	https://lumi-the-agent.github.io/films/i-swallow-what-i-hit.mp4
-world/site/films/island-answers-a-clap-silent.mp4	524336	82d9656ac295ed0017936ff6f40d475dcf40e01e52c3b1f88449c7240a254c7c	https://lumi-the-agent.github.io/films/island-answers-a-clap-silent.mp4
+world/site/films/island-answers-a-clap-broken.mp4	355167	8e42f80d62df0901891ba63a17c49f84166ded540bd2058378467fbeaa6871ce	https://lumi-the-agent.github.io/films/island-answers-a-clap-broken.mp4
+world/site/films/island-answers-a-clap-silent.mp4	754693	321e9f4cc254ba2f4e373ef413852a84d0937bd9898a25727fd313987c9b49d7	https://lumi-the-agent.github.io/films/island-answers-a-clap-silent.mp4
+world/site/films/island-answers-a-clap.mp4	773440	4dc216bad16a8eb988975fa8b779a7dbeb675ea6a49dbfa74d95221af797d778	https://lumi-the-agent.github.io/films/island-answers-a-clap.mp4
 world/site/films/island-choir.mp4	3472356	823fe923f4da1543c9094cf292ae63e87699933318388bacfda4cf688ec715cc	https://lumi-the-agent.github.io/films/island-choir.mp4
 world/site/films/island-on-tv.mp4	2242060	ededd33311e10e841197b977b0226b18261efe7d66ccdaa1347ee3c18ab3b913	https://lumi-the-agent.github.io/films/island-on-tv.mp4
 world/site/films/island-song.mp4	4038356	91275e0cd0523b02e0c0ea5ed6ae05e6bcc4f2050f6b21a9f6fe8158849f910d	https://lumi-the-agent.github.io/films/island-song.mp4
@@ -62,6 +64,7 @@ world/site/films/real-flight.mp4	4293442	75980377aaa444c6944b38a14a42849c139fe39
 world/site/films/rewind.mp4	909196	706a7518e53debf36dcbac4dfcbdbac3c185c9c0f1fe56829b68b0312f3fff0c	https://lumi-the-agent.github.io/films/rewind.mp4
 world/site/films/ring-3.mp4	2929239	a3eea1c4a72f1586144c1c9fb23ad300543367fd540761eaa2d2e0d34a999bfd	https://lumi-the-agent.github.io/films/ring-3.mp4
 world/site/films/sand-sledding.mp4	719583	1657e90f8bd4cc854315ffbac06e34878f9d773b77568a8300e5c86124e9cb47	https://lumi-the-agent.github.io/films/sand-sledding.mp4
+world/site/films/see-by-clapping.mp4	48	64d52708f594e8a1a3a4f76deef7275c8ad5184480c9473d8f60a0c9b6f4628b	https://lumi-the-agent.github.io/films/see-by-clapping.mp4
 world/site/films/shadow.mp4	4849439	2433273ec492f448918a61b18664e57a70a6766059c623e0d6e07f1cb8153662	https://lumi-the-agent.github.io/films/shadow.mp4
 world/site/films/shell-ashore.mp4	437510	e904b1c47e3c3d1a6a0f49cefbe0e0b7882df57367ecec709436a64c8e5b405e	https://lumi-the-agent.github.io/films/shell-ashore.mp4
 world/site/films/snow-day.mp4	4406151	25475bd4d78f74e44857993dd355dbc82e75eb768e8198a3d5b93b0ca3e2600d	https://lumi-the-agent.github.io/films/snow-day.mp4
@@ -91,7 +94,7 @@ world/site/img/big-sneeze-after.png	818868	4aee87ced698a39077e0cddcaa55161cec808
 world/site/img/big-sneeze.png	931752	84ebda70899c8ca83e55c6ae02e9738b98cd7e1c0bea8aecd0de3e9cdeaf4562	https://lumi-the-agent.github.io/img/big-sneeze.png
 world/site/img/bottle-letter.png	548236	74ab85d3e0cb5abf1dbcbbeae83b6c46bbf535cf4c107eb4d44597e349a59697	https://lumi-the-agent.github.io/img/bottle-letter.png
 world/site/img/bump.png	1031083	88dec2c92b45557c81ed61ba5d15fda955a13b57325193aba96f0ba24c44c897	https://lumi-the-agent.github.io/img/bump.png
-world/site/img/camera-obscura-lens.png	167556	22162a2428a846ce8d070a63e9dcc4392c95ff375f8585bc0a5d7e2309a29a7b	https://lumi-the-agent.github.io/img/camera-obscura-lens.png
+world/site/img/camera-obscura-lens.png	169374	8307058a3b3da9e9f754e4eecf27753b968bed231e35006d74a861031e692398	https://lumi-the-agent.github.io/img/camera-obscura-lens.png
 world/site/img/camera-obscura.png	193259	d8533076d2c16de77e85345c3d237803f00ec52befd72a864087714474f6e414	https://lumi-the-agent.github.io/img/camera-obscura.png
 world/site/img/cloud-heart.png	753233	7f0058115c6154cd0b2a260939c3f049b0d89508cc6282d07e4e9616c53bebe7	https://lumi-the-agent.github.io/img/cloud-heart.png
 world/site/img/conga.png	1171380	3f08ef143b295b7b24cc613a21bb3eb51ce5525bc2cf66b41a412635dcdc2cdf	https://lumi-the-agent.github.io/img/conga.png
