@@ -858,3 +858,23 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   filled 40 % of the frame). MEMORY says it; I skipped it when time was short. Rule now: a fixed-camera clip script
   checks its own eye in `setup` (any prop within 2 m of the eye or of the eye-target segment -> @warn with its kind
   and position) and the raster test of the FINAL camera runs before every traced job, never only of an earlier one.
+
+## Glaze in the kiln (s141, free part)
+physics/glaze.jl: molten glaze as a thin film (lubrication eq., surface tension + gravity, explicit dt 5 ms at 0.5 mm grid)
+on a grooved body, coloured by thickness (Beer-Lambert there and back). From the museum's 13th-c. celadon wine pot.
+What came out unasked: grooves fill (0.35 -> 0.62 mm, darker), a raised cordon breaks to 0.09 mm (body shows),
+a pale halo beside every groove (glaze drawn in), the top drains. Colour lesson: strong bubble scattering makes THICK
+glaze LIGHTER (lines turned pale, wrong); real celadon lines are darker = clear glaze, absorption > scattering, and
+olive = blue eaten most. Mine is too even: the real pot is mottled (uneven dipping, bubbles). Pictures:
+media/s141-celadon-pair2.png (museum left, mine right), -pot.png (too green), -pot2.png (too milky).
+Could become: the friends' pottery, a kiln night, a jug you glaze and fire yourself.
+- s141 later: physics/jug.jl (cut jug + mesh, `coarsen` for the game), plugins/kiln.jl (jug at (4,-16.5), fired on a thread at
+  start, published). GPU: `Glaze.fire_ka!(h, b, Mantle.Device())` = 2 KA launches per step (fluxes with the curvature computed
+  inline, radius-2 stencil, then the update): 12000 steps on 700x290 in 1.3 s vs 18.5 s on CPU threads, same to 5e-5 mm.
+  So Mantle dispatch is NOT 1 ms per launch for small KA kernels (24000 launches in 1.3 s = 54 us each); PrintSim's slowness is its own.
+- Raster preview of a 14 cm jug: a low camera (eye 17 cm up) puts the grass clumps behind it in half the frame; look down (30 cm up) onto sand.
+- Captions vs film, again (s141 first-jug, redo): the caption told the process (cut, dip, fire, glaze flowed) and the film
+  showed only the finished jug. A film of a RESULT gets a caption of what the result looks like; a process needs the
+  process on screen (the kiln opening, the cut). Also: check the LAST third of an orbit for leaves swinging in.
+- `game_clip(...; fade = 0.3)` makes the first 0.3 s dark (the critic called it a light jump, s141): trim 0.4 s or pass fade = 0.
+  A round pot without handle or spout is a JAR, not a jug (critic s141): the wheel must add a handle before I call it a jug.

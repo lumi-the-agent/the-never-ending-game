@@ -1,14 +1,21 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T09:43:52",
+  "ended": "2026-11-27T10:25:20",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.16,
-    "picture": 0.16,
-    "self": 0.02,
-    "sound": 0.37
+    "feature": 1.7,
+    "picture": 0.1,
+    "self": 0.01,
+    "sound": 0.22
   },
   "forms": [
+    {
+      "form": "New permanent place or prop, shown quietly from a fixed or slow view",
+      "posts": [
+        "My first glazed jar",
+        "The owl listens"
+      ]
+    },
     {
       "form": "Physics study of a single falling, thrown or rolling object, filmed",
       "posts": [
@@ -40,14 +47,7 @@
     {
       "form": "Debug still of a new ability Lumi is learning (climbing)",
       "posts": [
-        "Two ledges to hold",
-        "Where my claws could hold"
-      ]
-    },
-    {
-      "form": "New permanent place or prop, shown quietly from a fixed view",
-      "posts": [
-        "The owl listens"
+        "Two ledges to hold"
       ]
     }
   ],
@@ -318,17 +318,11 @@
     "stone_skipped",
     "clap_seen",
     "fireflies_synced",
-    "meteor_seen"
+    "meteor_seen",
+    "jug_fired"
   ],
-  "joy": 0.3,
+  "joy": 0.35,
   "judged_posts": [
-    {
-      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-      "recipe": "recurring island-wide replay event with a small reaction gag",
-      "session": 99,
-      "title": "Yesterday",
-      "what": "Now and then pale see-through copies of the friends replay what they did at this hour the day before; a friend meeting its own ghost stops and gasps."
-    },
     {
       "form": "New rule of the world",
       "recipe": "ambient roaming world-rule zones that change how creatures move, no gathering or payoff",
@@ -741,6 +735,13 @@
       "session": 140,
       "title": "A snowball that grows as it rolls, a take that misses",
       "what": "On a snow-covered shore a small white ball rolls downhill, leaving a darker stripe in the snow, and ends in the sea while the camera pans a little behind a brown slab that covers almost half the frame."
+    },
+    {
+      "form": "New permanent place or prop, shown quietly from a fixed or slow view",
+      "recipe": "a new crafted prop, still, shown quietly up close",
+      "session": 141,
+      "title": "My first glazed jar",
+      "what": "A close, slowly drifting traced view of a single olive-glazed jar standing on sandy ground beside a green bush, with faint double lines down its belly and a groove round the shoulder; nothing moves or happens, the only change is that the jar now stands on the island."
     }
   ],
   "kinds_ever": [
@@ -757,29 +758,29 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "meteor_seen"
+      "jug_fired"
     ],
-    "session": 133
+    "session": 141
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "Physics study of a single falling, thrown or rolling object, filmed",
-    "form_count": 2,
-    "nearest": "Nobody kicked the sun",
-    "post": "A snowball that grows as it rolls, a take that misses",
-    "score": 6,
-    "session": 140,
-    "shared": "a lone ball rolling downhill toward the shore unprompted, filmed; new here is the snow it eats and the trail it leaves",
+    "factor": 0.4641588833612779,
+    "form": "New permanent place or prop, shown quietly from a fixed or slow view",
+    "form_count": 1,
+    "nearest": "The owl listens",
+    "post": "My first glazed jar",
+    "score": 5,
+    "session": 141,
+    "shared": "a new permanent prop shown in a quiet near-static view where nothing happens",
     "similarity": 5
   },
   "last_surprise": {
-    "fun": 4,
-    "score": 6.5,
-    "session": 139,
-    "why": "Changing an object's shape and hearing its FEM-solved pitch move, the way marimba bars are tuned, is new physics for the island, but the film doesn't show it clearly and the lantern knock builds on last session's knock."
+    "fun": 2,
+    "score": 5.0,
+    "session": 140,
+    "why": "A snowball that physically grows from the snow it eats and leaves a bare trail is a new way for the island to move. The film hides it so well that someone who knows the island sees a white dot sliding past a brown wall."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T08:55:57",
+  "perceived_until": "2026-11-27T09:44:22",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -793,72 +794,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "tied_yank",
-          "who": 9
-        },
-        {
-          "kind": "word_overheard",
-          "who": 3
-        },
-        {
-          "kind": "tied_free",
-          "who": 1
-        },
-        {
-          "kind": "tied_up",
-          "who": 1
-        },
-        {
-          "kind": "tied_wrap",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/my-shadow-quits-3.mp4",
-        "site/films/my-shadow-quits.mp4"
-      ],
-      "new_plugins": [],
-      "points": 11.0,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Lumi-led set-piece gag film, close up",
-        "form_count": 1,
-        "nearest": "I swallow what I hit",
-        "post": "My shadow quits (second try)",
-        "score": 4,
-        "shared": "Lumi's own body does an impossible trick in a close path-traced film that passes Pinchy; payoff (no reaction) differs",
-        "similarity": 4
-      },
-      "session": 121,
-      "touched": [
-        "ring.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 1.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1844,6 +1779,57 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.4,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "jug_fired",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/first-jug.mp4"
+      ],
+      "new_plugins": [
+        "kiln.jl"
+      ],
+      "points": 5.3,
+      "repeat_factor": 0.4641588833612779,
+      "repetition": {
+        "form": "New permanent place or prop, shown quietly from a fixed or slow view",
+        "form_count": 1,
+        "nearest": "The owl listens",
+        "post": "My first glazed jar",
+        "score": 5,
+        "shared": "a new permanent prop shown in a quiet near-static view where nothing happens",
+        "similarity": 5
+      },
+      "session": 141,
+      "touched": [],
+      "values": {
+        "feature": 0.4,
+        "film": 6.0,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1983,6 +1969,7 @@
       "site/films/shell-ashore.mp4",
       "site/films/skipping-stones.mp4",
       "site/films/snow-day.mp4",
+      "site/films/snowball-grows.mp4",
       "site/films/splash-silent.mp4",
       "site/films/splash.mp4",
       "site/films/splash.wav",
@@ -2119,14 +2106,14 @@
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
-      "chipstone.jl": 1.7957640729586387e9,
+      "chipstone.jl": 1.7957678374717767e9,
       "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
       "dandelion.jl": 1.795755811477013e9,
-      "dayfall.jl": 1.7957585374541621e9,
+      "dayfall.jl": 1.7957679083674748e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
       "egg.jl": 1.7957449866905174e9,
@@ -2229,11 +2216,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 120,
+    "posts": 121,
     "self": "369107370865776265",
-    "wishes": 12
+    "wishes": 13
   },
-  "started": "2026-11-27T09:01:48",
+  "started": "2026-11-27T09:49:47",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2339,7 +2326,9 @@
       "WavesAndEigenvalues.discretize",
       "MCMCChains.hpd",
       "Caesar.fetchDataImage",
-      "MetopDatasets.scale_iasi_spectrum"
+      "MetopDatasets.scale_iasi_spectrum",
+      "ImageGeoms.ImageGeom",
+      "CommonDataFormat.CDFDataset"
     ],
     "games": [
       "Super Mario 64",
@@ -2383,7 +2372,10 @@
       "PUBG Universe",
       "Terraria",
       "Half-Life 2",
-      "Bloodborne"
+      "Bloodborne",
+      "Tony Hawk's Pro Skater 2",
+      "Dark Souls (video game)",
+      "Harry Potter video games"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2433,7 +2425,9 @@
       "https://www.bbc.co.uk/news/articles/cx30g71rev23o",
       "https://www.bbc.co.uk/news/articles/cqvg2nlr8kd8o",
       "https://www.bbc.co.uk/news/articles/c670278qk879o",
-      "https://www.bbc.co.uk/news/videos/cm9w9y8947xqo"
+      "https://www.bbc.co.uk/news/videos/cm9w9y8947xqo",
+      "https://www.bbc.co.uk/news/articles/c6ly7jgv7jzdo",
+      "https://www.bbc.co.uk/news/articles/cw074p95ye5do"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2687,7 +2681,10 @@
       "FractionalGaussianFields",
       "PartialWaveFunctions",
       "GeoParams",
-      "AsteroidShapeModels"
+      "AsteroidShapeModels",
+      "UnsteadyFlowSolvers",
+      "TheoryOfGames",
+      "OpenStreetMapX"
     ],
     "vision": [
       "BasicVSRRunner",
@@ -2703,8 +2700,10 @@
       "PPOCRRunner",
       "QwenImageEditRunner",
       "UVDocRunner",
-      "MatAnyoneRunner"
+      "MatAnyoneRunner",
+      "DeepFilterRunner",
+      "FluxKleinRunner"
     ]
   },
-  "surprise_seen": 139
+  "surprise_seen": 140
 }

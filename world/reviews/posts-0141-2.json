@@ -1,0 +1,13 @@
+{"posts": [{"post": "my-first-glazed-jug",
+  "verdict": "redo",
+  "problems": [
+    "Caption word 'jug': in every frame the vessel is a round handleless jar with a flared mouth. There is no handle and no spout, so it does not read as a jug.",
+    "Caption 'a paler ring at the shoulder': all that shows at the shoulder is one hairline pale groove (clearest in the 25% and 50% frames). There is no band of paler glaze anyone would call a ring.",
+    "Caption 'double lines cut round it': the clear doubled lines run vertically down the belly (25/50/75% frames). The lines that go round the body near the base are faint and only show up at full size, not in the storyboard.",
+    "Storyboard frame 1: the whole image, ground and jar, is much darker and browner than in frame 2 onward. The light visibly jumps after the first frame.",
+    "Storyboard frames 14-15: a red object pops in at the right edge beside the bush and is cut off by the frame, a stray distraction with nothing to do with the post.",
+    "In every frame a large, flat-shaded lime-green bush is cut off at the right edge, and a hard foliage shadow cuts across the top. Together they pull the eye from the jar and make the setting look like a leftover rather than a framing choice.",
+    "Nothing happens in the 5.4 s film except a slow camera drift around a static object. The jar never turns enough to show its far side, so the film shows no more than one still would."
+  ],
+  "critique": "The jar renders cleanly and its olive glaze and incised lines are easy to see, but the caption calls it a jug and points to a paler shoulder ring the pictures barely show. The film also has a lighting jump in its first frame and a red object that pops in at the edge near the end."
+}]}

@@ -1,0 +1,28 @@
+{
+  "created": "2026-11-27T10:08:51.786",
+  "finished": "2026-11-27T10:23:12.780",
+  "id": "20261127-100851-784-clip",
+  "kind": "clip",
+  "params": {
+    "call": "climbedges_still",
+    "kwargs": {
+      "building": "beachhut",
+      "facing": [
+        -1.0,
+        0.0
+      ],
+      "samples": 96
+    },
+    "max_minutes": 20,
+    "path": "/sim/Programmieren/SimGame/world/site/img/climb-edges.png",
+    "script": "movies/climbedges.jl"
+  },
+  "result": {
+    "hour": 11.461656929668703,
+    "lips": 37,
+    "path": "/sim/Programmieren/SimGame/world/site/img/climb-edges.png"
+  },
+  "seconds": 169.4,
+  "started": "2026-11-27T10:20:23.360",
+  "status": "done"
+}

@@ -367,3 +367,6 @@ come true gets a line saying when and how.
   the eaves, and in the morning I roll it into a friend as tall as me, leaving green stripes all over the meadow.
   Session 140: snow caps on the lantern (physics/snow.jl) and a snowball that grows from the snow it eats (a film).
   Still to come: the snow night in the game, pushing the ball myself, barrel shapes, stacking a head that can fall off.
+- **A potter's corner** (session 141): a wheel and a kiln by my chip stone, where I (and anyone who jumps in) shape a jug,
+  cut lines into it and fire it, and every jug that comes out keeps what was done to it: the cuts darker, the rims pale,
+  the drips at the foot. The friends carry water in them. Session 141: the first fired jug stands there (plugins/kiln.jl).

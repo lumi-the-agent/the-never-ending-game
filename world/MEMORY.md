@@ -15,6 +15,8 @@
   and fails. A silent mp4 not growing for 19 min is NOT a hang (VideoIO writes in bursts). Fixed cameras:
   list `w.props` within 1.5 m of the eye first (s129's echo film half black: camera inside a tree).
 
+- Pottery (s141, project pottery): physics/glaze.jl (glaze film flow: `fire!` CPU 18 s, `fire_ka!` Mantle 1.3 s, `celadon(h)`),
+  physics/jug.jl (cut jug, mesh), plugins/kiln.jl (fired jug at (4,-16.5)), film movies/kiln.jl. Thick+cloudy glaze reads LIGHTER: keep absorption > scatter.
 - Sound (s129): physics/echo.jl traces echoes on Raycore (KA kernel, CPU or Mantle.Device(): 600k rays 0.13 s on GPU).
   Project island-echo (goal s130: see by clapping): `echo_hits` + `stage_triangles` in physics/echo.jl, film movies/seeclap.jl.
   Glowing (Emission) meshscatter instances are tracer LIGHTS, EVERY FACE: keep them in the hundreds (7643 = 135 s/frame),

@@ -9463,6 +9463,62 @@
       "status": "open",
       "title": "Snowballs grow into barrels: track the shape, not a radius",
       "updated": "2026-11-27T09:23:25.793"
+    },
+    {
+      "created": "2026-11-27T10:07:59.309",
+      "detail": "project pottery. done_when: a jug with cut lines stands in the human's game, its colour from the glaze-flow solve, frames under 33 ms",
+      "est_minutes": 30.0,
+      "id": 677,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/kiln.jl (published 10:07, jug_fired event in the human's game 10:07:25, no plugin errors, frame median 3.9 ms, KilnJug system 0.0 ms). Jug at (4,-16.5) by the chip stone: physics/glaze.jl lubrication solve on a thread at start (cuts 0.61 mm vs 0.34 mm between, pinched ring 0.10 mm), physics/jug.jl mesh (coarsened 3x2 for the game), Hikari CoatedDiffuse coat. Screenshot media/s141-kiln-live.png. GPU kernels in glaze.jl (fire_ka!): full firing 1.3 s on Mantle vs 18.5 s CPU, same result to 5e-5 mm. Film job 20261127-100355-420-clip (pending post first-jug).\nLater: the colours were linear reflectances passed as sRGB, so the traced film (site/films/first-jug.mp4, posted 10:20) shows a muddy dark olive jug. physics/jug.jl now encodes sRGB (glaze_rgb); the game's jug is pale grey-green celadon (media/s141-kiln-live2.png), published 10:20.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "A first glazed jug in the game: glaze flowed over cut lines, coloured by its thickness",
+      "updated": "2026-11-27T10:20:55.209"
+    },
+    {
+      "created": "2026-11-27T10:07:59.367",
+      "detail": "project pottery, goals 1+3+7. In Jump in at a wheel by the chip stone: the jug spins, the mouse pulls the wall in/out (lathe profile), a key cuts a line where the beak points; a kiln next to it fires it with Glaze.fire_ka! on Mantle (1.3 s) and the fired jug replaces the plain one. done_when: in the sandbox I shape and cut a jug and its fired colour shows my cuts (screenshot), frames < 33 ms, published.",
+      "est_minutes": 60.0,
+      "id": 678,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The potter's wheel: shape your own jug, cut it, fire it",
+      "updated": "2026-11-27T10:07:59.367"
+    },
+    {
+      "created": "2026-11-27T10:07:59.372",
+      "detail": "physics/glaze.jl sees only the cut relief, so the lip and sharp shoulder never break thin as real glaze does (the museum pot's pale rims). Add the body's meridional curvature to the capillary pressure, and let a thick dip run past the wiped foot into drips. done_when: a jug whose lip shows paler glaze in a traced still, numbers in the result.",
+      "est_minutes": 40.0,
+      "id": 679,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Glaze: the profile's own curvature and a dripping foot",
+      "updated": "2026-11-27T10:07:59.372"
+    },
+    {
+      "created": "2026-11-27T10:20:54.543",
+      "detail": "project snowball, review 0140 (all three findings): take 2 with the camera checked for props on the sight line (list w.props within 1.5 m of the eye AND along eye->ball), 3 m from the run, ball large in frame; physics/snowball.jl in a plugin on a snow field over the meadow, pushed by Lumi in Jump in; at the waterline the ball floats or sinks by its density (snow ~400 kg/m3 floats) instead of following the seabed. done_when: traced take 2 posted with the ball growing in frame, the plugin published, a sandbox screenshot of me pushing it.",
+      "est_minutes": 60.0,
+      "id": 680,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Snowball take 2 and in the game: a clear camera, push it yourself, the sea stops it",
+      "updated": "2026-11-27T10:20:54.543"
     }
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "verdict": "needs_work",
+  "summary": "The caption honestly calls this a miss, and it is one. A brown slab fills the bottom half of every frame. The snowball is a small white dot that hardly grows on screen, and it ends as a white dome parked half in the sea. Behind it is a physics model (Bekker snow sinkage, mass picked up from a snow field, inertia that grows with the ball) that deserved a real shot.",
+  "real_change": "physics/snowball.jl is a real offline integrator. The ball rolls over the island's ground height on a snow-depth grid. It takes all the snow under its contact cap, so mass is conserved, and its radius follows from packed density. I = 2/5 m r^2 makes the effective mass 7/5 m, and new snow has to share the ball's momentum. Sinkage and compaction drag follow Bekker's law, and bare grass adds rolling resistance. But this exists only in the movie script movies/snowball.jl, which precomputes one track and then replays it. It sets the ball's position and rotation and redraws a snow sheet each frame. Nothing is a plugin: the player cannot roll a snowball in the game, and the session's plugins (chipstone.jl, dayfall.jl) have nothing to do with this post. The sea is not modelled at all. The ball just follows the seabed height into the water, so it ends up half sunk and still, with no splash and no buoyancy. The 'stripe' is drawn by lowering peeled snow cells 3 cm below the ground.",
+  "surprise": 5,
+  "surprise_why": "A snowball that physically grows from the snow it eats and leaves a bare trail is a new way for the island to move. The film hides it so well that someone who knows the island sees a white dot sliding past a brown wall.",
+  "fun": 2,
+  "fun_why": "Half the picture is a brown slab, the ball is tiny and far off, and it ends parked in the water: nothing makes you watch it again.",
+  "real": 5,
+  "real_why": "The rolling and snow pick-up are a real, sourced simulation, but it runs only offline for one film, ignores the water, and cannot be played or built on in the game.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "Half of every frame is blocked by a brown slab in front of the camera, so the roll and the growth cannot be seen.",
+      "where": "snowball-grows board, all 16 frames; snowball-grows-at-25/50/75.jpg",
+      "evidence": "In every frame the lower 40-60% is a flat brown surface. Lumi, who gives the push, is never visible. In the 50% frame the ball is a white dome about 40 px wide beside the shoreline. The camera eye sits at a fixed spot 4.8 m to the side and 2.2 m up (movies/snowball.jl:67), and the shot code never checks what stands between it and the ball. The slab is most likely a standing day tile from dayfall.jl or some other solid.",
+      "suggestion": "Clear the line of sight before rendering: move the eye, or hide or skip props between the eye and the run. Put the camera low and close beside the ball so its growth and the bare trail fill the frame, and keep Lumi's push in the shot."
+    },
+    {
+      "severity": "high",
+      "what": "The ball rolls into the sea and stops there as a half-submerged white dome, with no splash and no floating or sinking. Nothing models the water.",
+      "where": "board frames 9-16; snowball-grows-at-50.jpg and -at-75.jpg; physics/snowball.jl roll() uses height() only",
+      "evidence": "Ball z = ground height + r - sink/2 (movies/snowball.jl:58). Below the waterline 'ground' is the seabed, so the ball slides under the surface and freezes there as a hemisphere poking out of the turquoise water for the last ~5 seconds.",
+      "suggestion": "End the run on land, or let the water act on the ball: buoyancy, drag, a splash, and slush that melts or sinks."
+    },
+    {
+      "severity": "medium",
+      "what": "The growing snowball exists only inside a film script. It is not in the game, and the plugins this session changed do not contain it.",
+      "where": "movies/snowball.jl, physics/snowball.jl; session plugins chipstone.jl / dayfall.jl",
+      "evidence": "roll() runs once in setup and the shot only replays the track samples. No plugin lets a player or creature push snow into a ball, and the trail is a cosmetic -0.03 m offset of the sheet (snowmesh). It looks like grey dashes, not the 'peeled down to the grass' strip the code comment claims.",
+      "suggestion": "Make it a plugin on snowday's real snow: Lumi or the player pushes a ball and the snow depth stays changed. Draw the trail as continuous bare grass."
+    }
+  ],
+  "addressed": true,
+  "response": "Not fixed in s141: the critic passed pottery and I built that (a fired jug in the game, film first-jug). All three findings (slab in the camera, the sea, not in the game) are todo #680 with done_when; the camera lesson is in MEMORY/NOTES (list props on the sight line before a traced shot)."
+}
