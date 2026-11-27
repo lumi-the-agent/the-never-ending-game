@@ -1,0 +1,225 @@
+{
+ "verdict": "needs_work",
+ "summary": "Lumi has finally become a character: a big shaggy yellow bird you'd recognise from across the island. The four mini games all start, explain themselves and guide you with clear direction hints, and Jump in answers almost every key with a line or an effect. The boomerang film is a real toy with real flight physics over a well-traced sea. Around Lumi, the game looks worse than it did 116 sessions ago. Noon at 12:46 is a dim grey-green dusk, where session 0020 at 11:09 had a blue sky and sunlit grass. A stack of purple slabs stands under Lumi in the mini games and a beige plank in its legs in films, a small yellow double peeps along behind it, and every camera mode lands behind a flat slab or inside a broken roof.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "Down 1. Same hour, side by side: session-0020 eye-level at 11:09 has a bright blue sky and sunlit green grass; session-0136 at 12:46 is murky grey-green, with a low golden sun like sunset (p136/cams/orbit-sheet.jpg at 13:10). The live traced view at 12:51 is almost night: a black sea and snow-like specks (p136/traced.png). The worker's traced films are bright and clean, so the live game and the films don't match. The real lights are the cottage lantern, the climb dots and the firefly discs."
+  },
+  "materials": {
+   "score": 5,
+   "why": "The traced sea in the boomerang film is the best water so far. Lumi's feathers read as a soft shaggy coat. The boomerang is a dark untextured stick, the firefly-catch fireflies are flat lime discs with ring halos, the thin-ice film is white paint blots, and this session added no glass, metal or volume."
+  },
+  "world": {
+   "score": 4,
+   "why": "No new place this session. The overview is a dark carpet of hundreds of small props with no readable areas; session 0020 had a calmer, clearer layout. Orbit shows a hard grey band at the horizon where the sky meets the sea (p136/cams/orbit-sheet.jpg, middle)."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated assets are everywhere (hut, mushroom houses, pier, easels with paintings). New props this session are primitives: the boomerang stick, grey seed dots, cyan dots, and purple slabs that stand in the play area."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Lumi's new body is a real step up, and the friends react to the player ('Flap harder!', 'Lumi, get in here!'). But a small yellow chick-Lumi follows Lumi into every game saying 'peep!', a yellow paper figure stands on the pier, the crab's party hat floats above its head, and a translucent pig ghost hangs in the traced view."
+  },
+  "animation": {
+   "score": 5,
+   "why": "live_motion: Hopscotch and Pinchy turn their body and both claws back 9 times a second. Pickles' legs jump 0.17 to 0.21 m in one frame at 2.7 s and swing at up to 7.9 m/s. The owl film has two 0.05 jumps at its ends and fades to black."
+  },
+  "fun": {
+   "score": 6,
+   "why": "I played each game for about a minute through interact!. Firefly catch (1/8 in 42 s), Hide and seek (1/4, 'a giggle 10 m ahead') and Berry race (0 against the critters' 4) all have a clear goal card and good HUD hints. Jump in reacts to O, I, X, H, E, G, C, P, B, J and T with speech and effects, and the boomerang tells you to throw with the wind. No game keeps a best score or gives a reward on the island, so there is no reason to play twice, and Jump in's 18 keys sit in a tiny unreadable strip."
+  },
+  "wow": {
+   "score": 4,
+   "why": "Up 1 for the boomerang film: a real loop over a traced sea and a catch. Its frames show the plank in Lumi's legs, though. The other posts this round are two self-declared misses, a still owl and a debug picture of cyan dots."
+  },
+  "camera": {
+   "score": 4,
+   "why": "Follow (watching) cuts to shots half-covered by a dark slab or a beige board (p136/cams/follow-sheet.jpg, frames 2 and 3). Free starts inside the jagged low-poly roof of the hut (free-sheet.jpg). Orbit is the best view but is cluttered with blob trees in front. In the mini games the follow camera sits behind bushes that cover the lower half (games/firefly-06.png)."
+  },
+  "ui": {
+   "score": 5,
+   "why": "The mini-game HUDs are good: count, time, and the nearest target with a direction. The side panel is a static wall of text, the Jump in key strip is about 8 px tall, and the menu takes the name of the picked game, so 'Mini game' disappears as a label."
+  },
+  "style": {
+   "score": 5,
+   "why": "In one shot: Lumi's shaggy feathers, glossy plastic pigs, a folded-paper figure, flat purple boxes and wobbly blob trees. These are five different styles."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame median 3.2 ms, p95 6.7 ms, 30 fps through all four mini games."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Noon looks like dusk: worse than session 20 at the same hour",
+   "todo": null,
+   "what": "At 12:46 to 13:10 the live island is a dim grey-green with a low golden sun, as at sunset. Session 0020 at 11:09 had a blue sky and sunlit grass. The live traced view at 12:51 shows a black sea with specks. A player who opens the game at lunchtime sees evening.",
+   "where": "the live dashboard; sun path / exposure / weather (TimeWeather, Storm, Hail, Haze)",
+   "evidence": "media/progress/session-0020/eye-level.png against media/progress/session-0136/eye-level.png; world/reviews/p136/cams/orbit-sheet.jpg; world/reviews/p136/traced.png",
+   "suggestion": "Find what dims noon (sun elevation curve, exposure, a weather stuck on, the haze) and give midday a high warm sun, a blue sky and crisp short shadows. Save the golden light for the real evening, so the day has a shape.",
+   "done_when": "A live screenshot between 12:00 and 13:00 has a sky mean brightness above 0.6 with a blue hue, short sun shadows under the trees, and the live traced view at noon shows a blue sea."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Purple slabs under Lumi in the games, a beige plank in its legs in films",
+   "todo": 655,
+   "what": "In Berry race and Firefly catch, a column of stacked purple and red boxes stands under and behind Lumi. In the boomerang film a beige box stands between its legs from the first frame to the catch. Purple pillars also stand around in Hide and seek.",
+   "where": "Lumi's body / climbing or PrintSim test bodies / paper figure",
+   "evidence": "world/reviews/p136/games/firefly-end.png, games/berry-sheet.jpg (bottom row), games/hide-sheet.jpg (bottom row), world/reviews/p136/boomerang-sheet.jpg",
+   "suggestion": "Find which plugin draws these boxes (likely a physics test body left visible) and hide it outside its own scene. Then re-render the boomerang film.",
+   "done_when": "Screenshots from Berry race and Firefly catch show Lumi on the grass with no box under it, and a boomerang film frame shows nothing between its legs."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "A yellow chick double follows Lumi; the crab's hat floats off its head",
+   "todo": 614,
+   "what": "A smaller yellow Lumi follows the player into every mini game saying 'peep!', and a yellow paper figure in jeans stands on the pier. A stranger reads them as two Lumis. In the creatures sheet the crab's party hat hovers above its head.",
+   "where": "the follower / PaperMe; outfits on the crab",
+   "evidence": "world/reviews/p136/games/firefly-00.png, games/berry-sheet.jpg ('peep!'), world/reviews/motion/creatures.png (row 3 left, row 5)",
+   "suggestion": "If the chick is meant to be Lumi's chick, give it its own colour, shape and name so it reads as a child, not a clone. Otherwise remove it. Pin hats to the head bone every frame.",
+   "done_when": "No unlabelled yellow Lumi-shaped figure in any mini-game screenshot, and every hat touches its head in all three moments of creatures.png."
+  },
+  {
+   "severity": "high",
+   "category": "animation",
+   "title": "Crabs vibrate at 9 Hz; Pickles' legs snap 0.2 m in one frame",
+   "todo": 637,
+   "what": "live_motion: Hopscotch and Pinchy turn their body and both claws back 9 times a second. Pickles' legs jump 0.17 to 0.21 m in one frame at 2.7 s and swing at up to 7.9 m/s.",
+   "where": "crab gait / pig leg rig",
+   "evidence": "world/reviews/motion/motion.png, live_motion report",
+   "suggestion": "Low-pass the crab's turn and claw targets, and blend the pig's leg phase when its gait changes instead of resetting it.",
+   "done_when": "live_motion lists no creature as vibrating or snapping."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Firefly catch: fireflies are flat lime discs with ring halos",
+   "todo": 643,
+   "what": "The 8 fireflies you chase are big flat lime discs inside concentric halo rings, like target markers, hanging in daylight. Their trails are white dots.",
+   "where": "Firefly catch (firefly_catch plugin)",
+   "evidence": "world/reviews/p136/games/firefly-06.png",
+   "suggestion": "Use small bodies with an emissive abdomen that pulses, a soft additive glow that scales with distance, a real point light each, and a flight path that wanders. Ideally set the game at dusk so they read as lights.",
+   "done_when": "A Firefly catch screenshot shows fireflies under 20 px with a soft glow and no hard rings, and the grass under the nearest one is lit by it."
+  },
+  {
+   "severity": "medium",
+   "category": "wow",
+   "title": "Release the boomerang film once the plank is gone",
+   "todo": 654,
+   "what": "The boomerang film is the first in a while with real physics, a clear story (throw, loop over the sea, catch) and a traced sea. Two problems hold it back: the plank, and the boomerang itself, a dark stick a few pixels wide over the water.",
+   "where": "site/films/a-boomerang-comes-back-2.mp4 (it should live in media/, see #657)",
+   "evidence": "world/reviews/p136/boomerang-sheet.jpg",
+   "suggestion": "Give the boomerang a lacquered painted-wood material with a coat and a bright stripe. Add a closer chase camera and its shadow racing over the water. Then release it under world/releases (goal 2).",
+   "done_when": "The boomerang covers 40 px or more in the chase frames, its painted coat shows a highlight, and a world/releases/<date>-boomerang folder exists."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Every camera mode lands behind a slab or inside a roof",
+   "todo": 615,
+   "what": "Each mode has its own problem:\n- Follow, while watching: cuts to shots where a dark slab or a beige board covers a third of the frame.\n- Free: starts inside the jagged low-poly roof of the hut.\n- Mini games: the follow camera sits behind bushes that cover the lower half.\n- Jump in: the follow camera looks straight down the pier at pig backs.",
+   "where": "camera rig, CamCut, free camera start",
+   "evidence": "world/reviews/p136/cams/follow-sheet.jpg, cams/free-sheet.jpg, games/firefly-06.png, p136/cam-follow.png",
+   "suggestion": "Before every cut and every free-camera start, cast a ray from the camera to its subject and move the camera along its arc until nothing big is in between. Fade occluders near the lens.",
+   "done_when": "In nine screenshots (three per camera mode, 4 s apart) no single object covers more than 15% of the frame and the subject is visible in each."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Mini games have no reason to play twice; Jump in's keys are unreadable",
+   "todo": null,
+   "what": "All three goal games end with a number that disappears. There is no best score, no reward on the island, and the critters' wins have no consequence. Jump in lists 18 keys in a strip about 8 px tall at the bottom of the view.",
+   "where": "minigame HUDs, Jump in key strip",
+   "evidence": "world/reviews/p136/games/berry-sheet.jpg (You 0, Critters 4), games/jumpin-sheet.jpg (key strip)",
+   "suggestion": "Leave a trace of each win on the island: a jar of caught fireflies on the cottage sill, a berry pie on the table, the hiders' ribbons on a post. Show the best score on the start card. In Jump in, show the 4 keys that matter now, large, and rotate the rest in as hints.",
+   "done_when": "After winning a game, a screenshot of the island shows a new object that stays, the start card shows a best score, and Jump in's key hints are at least 16 px tall."
+  }
+ ],
+ "todos": [
+  {
+   "id": 650,
+   "action": "drop",
+   "why": "Duplicate of #656 (the same two pictures that are not traced)."
+  },
+  {
+   "id": 651,
+   "action": "drop",
+   "why": "Lumi's new legs read as two blue-grey legs with clawed feet in the boomerang film; the real problem is the box between them (#655)."
+  },
+  {
+   "id": 657,
+   "action": "keep",
+   "why": "a-boomerang-comes-back-2.mp4 is now a valid 6.6 s film but still sits in site/films."
+  },
+  {
+   "id": 553,
+   "action": "keep",
+   "why": "Lumi's idle was not measured cleanly this time; the crabs still vibrate at 9 Hz (see the animation finding)."
+  },
+  {
+   "id": 545,
+   "action": "keep",
+   "why": "The TV set is still a dark box with antennae (cams/orbit-sheet.jpg)."
+  },
+  {
+   "id": 577,
+   "action": "keep",
+   "why": "The jelly still has no glow or caustics."
+  },
+  {
+   "id": 603,
+   "action": "keep",
+   "why": "Glass rain is still unfilmed."
+  },
+  {
+   "id": 646,
+   "action": "keep",
+   "why": "No new skipping take."
+  },
+  {
+   "id": 647,
+   "action": "keep",
+   "why": "The live traced view still has snow-like specks and a black sea (p136/traced.png)."
+  },
+  {
+   "id": 648,
+   "action": "keep",
+   "why": "The clap was not revisited."
+  },
+  {
+   "id": 636,
+   "action": "keep",
+   "why": "Dawn was not checked this time; noon is now the worse problem (see the lighting finding)."
+  },
+  {
+   "id": 635,
+   "action": "keep",
+   "why": "The owl film is 9 s of a nearly still wide shot; the owl is about 15 px tall and never turns its head on screen (the-owl-listens-overview.jpg).",
+   "title": "Owl: film it close, head turning toward a sound, at least 150 px tall"
+  },
+  {
+   "id": 642,
+   "action": "keep",
+   "why": "The thin-ice film shows white paint blots on dark water, red ropes and two identical blue creatures, not ice (thin-ice-broken-take-overview.jpg)."
+  }
+ ],
+ "engine": [
+  {
+   "what": "The live path traced view in the sandbox stays dark and noisy at noon after 60 s of accumulation, while the worker's traced films of the same island are bright and clean, so the live trace is not a faithful preview.",
+   "evidence": "world/reviews/p136/traced.png against world/reviews/p136/boomerang-sheet.jpg"
+  },
+  {
+   "what": "The mini-game menu takes the name of its current pick, so ui_pos(game, \"Mini game\") fails after the first game is chosen; tests and reviewers have to find the menu by position.",
+   "evidence": "interact! log: no control named \"Mini game\"; there are: \"Firefly catch (WASD)\", ..."
+  }
+ ],
+ "process": "This was a productive session for goal 3 (physics): the boomerang flies on summed blade-element lift with no scripted loop, and the dandelion seeds ride the real breeze. Lumi's redesign as a big shaggy yellow bird moves goal 5's 'Lumi designs itself' further than anything before. Goal 1 is quietly in decent shape: the four games and Jump in respond well. But the pattern from the last three reviews continues: each session starts three or four new toys (climb edges, boomerang, dandelions, owl), the posts are misses, specks or debug views, and nobody looks at the island as a player does. Side by side with session 20, noon has become dusk, and the play area is littered with purple test boxes, a Lumi double and slabs in front of every camera. Lumi is bored by its own measure and answers by starting new things instead of finishing one. Goal 2 has not had a release since 24 Nov, and the boomerang is one fix (the box) away from being the release. Goal 6: the crabs' 9 Hz and the pig's leg snaps are still open. Goal 7: no material or light work; the boomerang is an untextured stick and the fireflies are discs. Next session, before any new toy: fix noon, clear the boxes and the double, give each camera a clear line of sight, then give the boomerang a real material, re-render it and release it.",
+ "addressed": true,
+ "addressed_note": "s137: findings are todos. Fixed: the boxes under/behind Lumi were dayfall tiles (first tile at Lumi's feet; a line laid in every steered game, right where the follow camera sits): now only in Jump in, growing up 3.5-5 m behind (media/s137-berry-notiles.png, media/s137-jumpin-tiles.png); boomerang take 4 without the tile queued to media/s137-boomerang-take4.mp4. Jump in key hints: three lines at 16 px (media/s137-jumpin-hints.png). Open: noon light, chick double, vibrating claws, fireflies, cameras, rewards."
+}

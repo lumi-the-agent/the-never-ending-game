@@ -23,7 +23,7 @@ function floor_at(game, x, y)
 end
 
 function reset!()
-    DF[:base] = Point3f[]; DF[:dir] = Vec2f[]; DF[:th] = Float32[]; DF[:om] = Float32[]
+    DF[:base] = Point3f[]; DF[:dir] = Vec2f[]; DF[:th] = Float32[]; DF[:om] = Float32[]; DF[:start] = nothing
     DF[:state] = Int8[]          # 0 standing, 1 falling, 2 hit the next, 3 lying still
     DF[:thought] = String[]; DF[:running] = false; DF[:sink] = 0f0
     DF[:hops] = Dict{Int,Float64}()
@@ -99,7 +99,7 @@ function daycolour(u)
     RGBf(a.r + (b.r - a.r) * f, a.g + (b.g - a.g) * f, a.b + (b.b - a.b) * f)
 end
 
-function draw!(p)
+function draw!(p, L = nothing)
     B = DF[:base]; n = length(B)
     if n == 0
         Makie.update!(p; arg1 = [Point3f(0, 0, -50)], rotation = [Makie.Quaternionf(0, 0, 0, 1)], color = [RGBf(1, 1, 1)])
@@ -112,7 +112,12 @@ function draw!(p)
                Makie.qrotation(Vec3f(0, 0, 1), atan(d[2], d[1])) * Makie.qrotation(Vec3f(0, 1, 0), DF[:th][i])
            end for i in 1:n]
     col = [daycolour((i - 1) / max(n - 1, 1)) for i in 1:n]
-    Makie.update!(p; arg1 = pos, rotation = rot, color = col)
+    # s137 (review 0136: purple slabs behind me filled the follow camera): while you walk me, a tile grows out of
+    # the ground only once I am 3.5-5 m past it, behind the camera; standing ones I just passed are not there yet
+    grow = L === nothing || DF[:running] ? fill(1f0, n) :
+           [clamp((hypot(B[i][1] - L.pos[1], B[i][2] - L.pos[2]) - 3.5f0) / 1.5f0, 0f0, 1f0) for i in 1:n]
+    DF[:grown] = grow
+    Makie.update!(p; arg1 = pos, rotation = rot, color = col, markersize = [Vec3f(1, 1, max(g, 1f-3)) for g in grow])
 end
 
 function ring!(w, z)
@@ -246,13 +251,24 @@ function NG.step!(::DayFall, game, dt)
         end
         # s125 (reviews 0121, 0124: slabs fenced the meadow all day): only a player's walk lays my day; when
         # nobody plays me, a standing line falls over and sinks, so watchers never find it lying about
-        !L.controlled && length(DF[:base]) > 2 && tip!(game)
-        if L.controlled && floor_at(game, L.pos[1], L.pos[2]) > 0.4f0
+        !(L.controlled && game.minigame isa NG.JumpIn) && length(DF[:base]) > 2 && tip!(game)
+        # s137: only Jump in lays my day (not the goal games, not films that steer me)
+        if L.controlled && game.minigame isa NG.JumpIn && floor_at(game, L.pos[1], L.pos[2]) > 0.4f0
             xy = Vec2f(L.pos[1], L.pos[2])
             B = DF[:base]
             # behind me, not under my feet
-            if isempty(B) || sum(abs2, xy - Vec2f(B[end][1], B[end][2])) >= (SPACING + 0.35f0)^2
-                back = isempty(B) ? xy : xy - (xy - Vec2f(B[end][1], B[end][2])) / sqrt(sum(abs2, xy - Vec2f(B[end][1], B[end][2]))) * 0.35f0
+            if isempty(B)
+                # s137: the first tile stood in my legs (every jump-in, the boomerang films): it waits where I
+                # started and is set down there once I have walked off the spot
+                st = get(DF, :start, nothing)
+                if st === nothing || sum(abs2, xy - st) > 1.5f0^2
+                    DF[:start] = xy
+                elseif sum(abs2, xy - st) >= (SPACING + 0.35f0)^2
+                    lay!(game, st, get(DF, :thought_now, "")) && (DF[:gap] = false)
+                    DF[:start] = nothing
+                end
+            elseif sum(abs2, xy - Vec2f(B[end][1], B[end][2])) >= (SPACING + 0.35f0)^2
+                back = xy - (xy - Vec2f(B[end][1], B[end][2])) / sqrt(sum(abs2, xy - Vec2f(B[end][1], B[end][2]))) * 0.35f0
                 if !isempty(B) && sum(abs2, back - Vec2f(B[end][1], B[end][2])) > 1.5f0^2 &&
                    !(get(DF, :gap, false) && sum(abs2, back - Vec2f(B[end][1], B[end][2])) < 4f0^2)
                     # I jumped (a mini game, a ride): a new line starts where I am, the old one falls first
@@ -289,8 +305,10 @@ function NG.step!(::DayFall, game, dt)
         end
     end
     hops!(game)
-    if DF[:dirty]
-        draw!(p); DF[:dirty] = false
+    Lg = lumi === nothing ? nothing : w.creatures[lumi]
+    growing = Lg !== nothing && Lg.controlled && !DF[:running] && !isempty(DF[:base]) && any(<(1f0), get(DF, :grown, Float32[0]))
+    if DF[:dirty] || growing
+        draw!(p, Lg !== nothing && Lg.controlled ? Lg : nothing); DF[:dirty] = false
     end
     nothing
 end

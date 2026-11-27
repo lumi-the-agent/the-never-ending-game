@@ -1,0 +1,17 @@
+{"posts": [
+ {"post": "ants-on-a-honey-road",
+  "verdict": "redo",
+  "problems": [
+   "Caption says the ants 'wear' a dark straight trail, but the straight trail is already there in the first storyboard frame and looks about the same in the last one. Over 4.3 s nothing gets worn in.",
+   "Caption says the trail is 'underneath' the road. In every frame it runs well below the curve, as a separate line across the grass, and never lies under the road.",
+   "Neither line has a start you can see: the road and the trail both run off the left edge, so a viewer never sees where the ants come from or why there are two routes.",
+   "Large yellow and red leaves fall across the camera and hide the left end of the road (storyboard frames 5-8, 9 and 13-15; the 50% frame has a big yellow leaf over the start of the road).",
+   "The ants are tiny black specks on a dark green ground. At full size (25% and 50% frames) you cannot tell the ants walking the trail from the specks scattered everywhere, or see which way they go.",
+   "The 'biscuit' is a plain flat orange disc that just sits on the grass and doesn't read as food."
+  ],
+  "critique": "The two lines can be seen, but the caption's claim that the ants wear a trail over time isn't shown: the straight trail is complete from the first frame, and it sits beside the road, not underneath it. Falling leaves and specks too small to follow make the film hard to read."},
+ {"post": "dandelion-clocks-a-take-that-misses",
+  "verdict": "ready",
+  "problems": [],
+  "critique": "This reads clearly as a miss, and everything the caption names is in the pictures: the hard white beads spilling from the beak, the bird cut off at the left edge, and the grey square drifting through the sky (storyboard frames 5, 6, 8 and the 50% frame). The caption claims nothing the film doesn't show."}
+]}

@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0133 [creatures, high]: In jump-in a smaller copy of Lumi stands to the left of the player, looking like the same bird. In the creatures sheet Lumi stands inside a translucent green sphere with another small yellow Lumi below it. The journal guesses it is the chick, but it reads as a duplicate.\nWhere: nursery/egg chick body; jelly.jl\nSuggestion: Give the chick its own body: fluffy, round, a quarter of Lumi's height, big eyes, a down texture, toddling after Lumi. Only show the jelly when it is in use, wobbling.\nDone when: The creatures sheet and a jump-in shot show only one bird with Lumi's shape. The chick is clearly a different, much smaller creature, and no green sphere is around Lumi unless the jelly is in use.\nEvidence: world/tests/shots/s133-play-clap.png; world/reviews/motion/creatures.png",
+      "detail": "perfectionist-0136 [creatures, high]: A smaller yellow Lumi follows the player into every mini game saying 'peep!', and a yellow paper figure in jeans stands on the pier. A stranger reads them as two Lumis. In the creatures sheet the crab's party hat hovers above its head.\nWhere: the follower / PaperMe; outfits on the crab\nSuggestion: If the chick is meant to be Lumi's chick, give it its own colour, shape and name so it reads as a child, not a clone. Otherwise remove it. Pin hats to the head bone every frame.\nDone when: No unlabelled yellow Lumi-shaped figure in any mini-game screenshot, and every hat touches its head in all three moments of creatures.png.\nEvidence: world/reviews/p136/games/firefly-00.png, games/berry-sheet.jpg ('peep!'), world/reviews/motion/creatures.png (row 3 left, row 5)",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,22 +8593,22 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A second yellow Lumi stands beside Lumi, and Lumi sits in a green bubble",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "A yellow chick double follows Lumi; the crab's hat floats off its head",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0133 [world, high]: In jump-in, hide and seek and firefly catch, a staircase of plain untextured boxes (blue, maroon, brown, yellow, purple) stands right in front of the camera and fills a third of the picture. They are the leftover 'day falls over' tiles. The author saw this too (journal 03:15) and did not fix it.\nWhere: plugins/dayfall.jl tiles; chase camera of jump-in and the mini games\nSuggestion: Clear the tiles once their event is over, or turn them into a real thing that belongs there (painted stepping stones laid into the ground). The chase camera should also fade or skip anything between it and Lumi.\nDone when: Screenshots of jump-in, hide and seek and firefly catch at night show no untextured box in the frame, and nothing covers more than 5% of the view between the camera and Lumi.\nEvidence: world/tests/shots/s133-play-stone.png, s133-play-clap.png, hideseek-found.png, firefly-wad.png",
+      "detail": "perfectionist-0136 [camera, medium]: Each mode has its own problem:\n- Follow, while watching: cuts to shots where a dark slab or a beige board covers a third of the frame.\n- Free: starts inside the jagged low-poly roof of the hut.\n- Mini games: the follow camera sits behind bushes that cover the lower half.\n- Jump in: the follow camera looks straight down the pier at pig backs.\nWhere: camera rig, CamCut, free camera start\nSuggestion: Before every cut and every free-camera start, cast a ray from the camera to its subject and move the camera along its arc until nothing big is in between. Fade occluders near the lens.\nDone when: In nine screenshots (three per camera mode, 4 s apart) no single object covers more than 15% of the frame and the subject is visible in each.\nEvidence: world/reviews/p136/cams/follow-sheet.jpg, cams/free-sheet.jpg, games/firefly-06.png, p136/cam-follow.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Flat coloured slabs block the view in every game camera",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "Every camera mode lands behind a slab or inside a roof",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8887,8 +8887,8 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Owl: check the generated owl sits on the crown and turns its head",
-      "updated": "2026-11-27T02:50:09.123"
+      "title": "Owl: film it close, head turning toward a sound, at least 150 px tall",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T02:50:09.155",
@@ -8906,17 +8906,17 @@
     },
     {
       "created": "2026-11-27T02:53:32.160",
-      "detail": "perfectionist-0133 [animation, medium]: live_motion: Truffle's tail jumps 0.39 m in one frame and swings at 11.6 m/s, and its body and legs move in uneven steps (47%). Lumi's body, face and beak turn back and forth 9 times a second, and Hopscotch's claws 8.\nWhere: gait.jl, makeover/birdbody idle\nSuggestion: Use a critically damped spring on tails and claws, and a slow breathing idle for Lumi with nothing above 3 Hz.\nDone when: live_motion reports no vibrating, snapping or too-fast parts, with 10 of 10 moving well.\nEvidence: world/reviews/motion/motion.png, motion-strip.png (live_motion at s133)",
+      "detail": "perfectionist-0136 [animation, high]: live_motion: Hopscotch and Pinchy turn their body and both claws back 9 times a second. Pickles' legs jump 0.17 to 0.21 m in one frame at 2.7 s and swing at up to 7.9 m/s.\nWhere: crab gait / pig leg rig\nSuggestion: Low-pass the crab's turn and claw targets, and blend the pig's leg phase when its gait changes instead of resetting it.\nDone when: live_motion lists no creature as vibrating or snapping.\nEvidence: world/reviews/motion/motion.png, live_motion report",
       "est_minutes": 15.0,
       "id": 637,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "s132: part of it was time: sync! posed herds with Float32(w.t) = 1/32 s steps at 425000 s. Wrapped to anim_time (mod 4096 s) + Float64 dt in turn_drawn!: live_motion Moving well 4 -> 7 of 10, Judder gone (two runs), published. Still: Sir Sniffsalot's tail 11.6 m/s and 0.39 m/frame, Hopscotch's claws 6.7 m/s (fast dance swings, not time), Marshmallow's legs 0.18 m snaps.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Truffle's tail snaps 0.39 m; Lumi's body and beak flick 9 times a second",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "Crabs vibrate at 9 Hz; Pickles' legs snap 0.2 m in one frame",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T02:57:20.896",
@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0133 [materials, high]: In the motion strip the fireflies near the camera are flat seven-sided yellow-green polygons, as big as a pig's ear. In the live views they are discs with grey halo rings, and in the posted film they are cold white dots that look like the stars. The beat sync works in numbers, but nobody can see it.\nWhere: plugins/fireflysync.jl, nightglow motes\nSuggestion: Small warm emissive points with additive glow, no rings, lighting the grass under them. In the traced night film, show Lumi with the lantern in frame and the meadow pulsing in step.\nDone when: A traced night film where the flies are warm, below 2.5 m, light the grass, and visibly pulse together on the lantern's beat, with Lumi in frame; live, no firefly draws as a polygon edge or a ring.\nEvidence: world/reviews/motion/motion-strip.png; world/reviews/p133/follow.png; fireflies-at-dusk-overview.jpg",
+      "detail": "perfectionist-0136 [materials, high]: The 8 fireflies you chase are big flat lime discs inside concentric halo rings, like target markers, hanging in daylight. Their trails are white dots.\nWhere: Firefly catch (firefly_catch plugin)\nSuggestion: Use small bodies with an emissive abdomen that pulses, a soft additive glow that scales with distance, a real point light each, and a flight path that wanders. Ideally set the game at dusk so they read as lights.\nDone when: A Firefly catch screenshot shows fireflies under 20 px with a soft glow and no hard rings, and the grass under the nearest one is lit by it.\nEvidence: world/reviews/p136/games/firefly-06.png",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Fireflies are flat polygons and halo discs, not glowing flies",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "Firefly catch: fireflies are flat lime discs with ring halos",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9093,12 +9093,12 @@
       "id": 650,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0136: Duplicate of #656 (the same two pictures that are not traced).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Re-render or take down the two pictures that are not worker traces (climb-edges.png, island-woodcut.png)",
-      "updated": "2026-11-27T05:12:26.412"
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T05:24:48.170",
@@ -9107,12 +9107,12 @@
       "id": 651,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0136: Lumi's new legs read as two blue-grey legs with clawed feet in the boomerang film; the real problem is the box between them (#655).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi's legs read as one grey stick from the side",
-      "updated": "2026-11-27T05:24:48.170"
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T05:56:46.707",
@@ -9144,31 +9144,31 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "Hold O for power, A/D while holding for tilt; Raycore rays along each substep against the island (echo.jl stage_triangles): bounce off trunks, knock a pear down, friends duck. Friends try a throw too.",
+      "detail": "perfectionist-0136 [wow, medium]: The boomerang film is the first in a while with real physics, a clear story (throw, loop over the sea, catch) and a traced sea. Two problems hold it back: the plank, and the boomerang itself, a dark stick a few pixels wide over the water.\nWhere: site/films/a-boomerang-comes-back-2.mp4 (it should live in media/, see #657)\nSuggestion: Give the boomerang a lacquered painted-wood material with a coat and a bright stripe. Add a closer chase camera and its shadow racing over the water. Then release it under world/releases (goal 2).\nDone when: The boomerang covers 40 px or more in the chase frames, its painted coat shows a highlight, and a world/releases/<date>-boomerang folder exists.\nEvidence: world/reviews/p136/boomerang-sheet.jpg",
       "est_minutes": 15.0,
       "id": 654,
-      "kind": "feature",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Boomerang: the player chooses the throw, and it hits things",
-      "updated": "2026-11-27T05:56:46.738"
+      "title": "Release the boomerang film once the plank is gone",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T05:56:46.742",
-      "detail": "Seen in s136 boomerang previews (media/s136-boomerang-raster3-sheet.png) and media/s136-play-boomerang-2.png, and in s133's skipping film ('a wooden post runs through Lumi'). Not a prop (none within 2.5 m), not paperme/dayfall (hidden, still there). Find which plot it is: list plots whose bbox contains Lumi's legs.",
+      "detail": "perfectionist-0136 [creatures, high]: In Berry race and Firefly catch, a column of stacked purple and red boxes stands under and behind Lumi. In the boomerang film a beige box stands between its legs from the first frame to the catch. Purple pillars also stand around in Hide and seek.\nWhere: Lumi's body / climbing or PrintSim test bodies / paper figure\nSuggestion: Find which plugin draws these boxes (likely a physics test body left visible) and hide it outside its own scene. Then re-render the boomerang film.\nDone when: Screenshots from Berry race and Firefly catch show Lumi on the grass with no box under it, and a boomerang film frame shows nothing between its legs.\nEvidence: world/reviews/p136/games/firefly-end.png, games/berry-sheet.jpg (bottom row), games/hide-sheet.jpg (bottom row), world/reviews/p136/boomerang-sheet.jpg",
       "est_minutes": 15.0,
       "id": 655,
-      "kind": "fix",
+      "kind": "review",
       "priority": 1,
       "result": "s136 ruled out: no prop within 2.5 m of (-4,18); hiding :paperme, :paperme_card, :dayfall_tiles, :jelly_coat in the film did not remove it; :builder_planks is parked at z -50, :lumi_shovel at (-8.35, 8.4), :workshop_lumi far away. It follows Lumi in the live game too (media/s136-play-boomerang-2.png), so it is probably part of Lumi's own model or a plugin that attaches to Lumi: next, hide plots one by one around Lumi in a raster shot.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A beige plank stands in Lumi's legs in films and the live game",
-      "updated": "2026-11-27T06:01:34.531"
+      "title": "Purple slabs under Lumi in the games, a beige plank in its legs in films",
+      "updated": "2026-11-27T06:22:49.524"
     },
     {
       "created": "2026-11-27T06:01:08.311",
@@ -9211,6 +9211,76 @@
       "status": "done",
       "title": "Dandelion clocks: I blows one, seeds ride the breeze",
       "updated": "2026-11-27T06:04:05.143"
+    },
+    {
+      "created": "2026-11-27T06:22:49.524",
+      "detail": "perfectionist-0136 [lighting, high]: At 12:46 to 13:10 the live island is a dim grey-green with a low golden sun, as at sunset. Session 0020 at 11:09 had a blue sky and sunlit grass. The live traced view at 12:51 shows a black sea with specks. A player who opens the game at lunchtime sees evening.\nWhere: the live dashboard; sun path / exposure / weather (TimeWeather, Storm, Hail, Haze)\nSuggestion: Find what dims noon (sun elevation curve, exposure, a weather stuck on, the haze) and give midday a high warm sun, a blue sky and crisp short shadows. Save the golden light for the real evening, so the day has a shape.\nDone when: A live screenshot between 12:00 and 13:00 has a sky mean brightness above 0.6 with a blue hue, short sun shadows under the trees, and the live traced view at noon shows a blue sea.\nEvidence: media/progress/session-0020/eye-level.png against media/progress/session-0136/eye-level.png; world/reviews/p136/cams/orbit-sheet.jpg; world/reviews/p136/traced.png",
+      "est_minutes": 30.0,
+      "id": 659,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Noon looks like dusk: worse than session 20 at the same hour",
+      "updated": "2026-11-27T06:22:49.524"
+    },
+    {
+      "created": "2026-11-27T06:22:49.524",
+      "detail": "perfectionist-0136 [fun, medium]: All three goal games end with a number that disappears. There is no best score, no reward on the island, and the critters' wins have no consequence. Jump in lists 18 keys in a strip about 8 px tall at the bottom of the view.\nWhere: minigame HUDs, Jump in key strip\nSuggestion: Leave a trace of each win on the island: a jar of caught fireflies on the cottage sill, a berry pie on the table, the hiders' ribbons on a post. Show the best score on the start card. In Jump in, show the 4 keys that matter now, large, and rotate the rest in as hints.\nDone when: After winning a game, a screenshot of the island shows a new object that stays, the start card shows a best score, and Jump in's key hints are at least 16 px tall.\nEvidence: world/reviews/p136/games/berry-sheet.jpg (You 0, Critters 4), games/jumpin-sheet.jpg (key strip)",
+      "est_minutes": 30.0,
+      "id": 660,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Mini games have no reason to play twice; Jump in's keys are unreadable",
+      "updated": "2026-11-27T06:22:49.524"
+    },
+    {
+      "created": "2026-11-27T06:44:21.638",
+      "detail": "project ant-road (projects/ant-road.md). physics/ants.jl, film movies/ants.jl.",
+      "est_minutes": 15.0,
+      "id": 661,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Ants on a honey road: a colony that follows your honey line and drags a biscuit home",
+      "updated": "2026-11-27T06:44:21.638"
+    },
+    {
+      "created": "2026-11-27T06:44:30.173",
+      "detail": "project ant-road (projects/ant-road.md). physics/ants.jl, film movies/ants.jl.",
+      "est_minutes": 15.0,
+      "id": 662,
+      "kind": "build",
+      "priority": 1,
+      "result": "First step of project ant-road: physics/ants.jl (scents, antennae steering, Gelblum-style pullers vs Coulomb friction), film movies/ants.jl, posted as 'Ants on a honey road' (site/films/ants-on-a-honey-road.mp4, sheet media/s137-ants-take1-sheet.png). The ants wear a straight trail under the curved honey loop (emergent). Trial: biscuit slides 0.39 m in 30 s. Miss: a crab stood over the biscuit in the close shot; take 2 with friends frozen queued as 20261127-070148-648-clip (media/s137-ants-take2.mp4).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Ants on a honey road: a colony that follows your honey line and drags a biscuit home",
+      "updated": "2026-11-27T07:01:48.663"
+    },
+    {
+      "created": "2026-11-27T06:51:24.217",
+      "detail": "project ant-road next step. Port physics/ants.jl to KernelAbstractions on Mantle.Device() (ant step kernel with Atomix adds for scent, blur as a stencil kernel), run it live in a plugin (500 ants, < 1 ms per frame), player draws honey with H in Jump in. Done when: a sandbox screenshot shows ants following a honey line Lumi drew, frame time under 33 ms, and the biscuit moves.",
+      "est_minutes": 15.0,
+      "id": 663,
+      "kind": "build",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Ants in Jump in: H draws honey where Lumi walks, a biscuit by the picnic, the colony on the GPU",
+      "updated": "2026-11-27T06:51:24.217"
     }
   ]
 }

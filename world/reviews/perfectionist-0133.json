@@ -1,100 +1,251 @@
-{"verdict": "needs_work",
- "summary": "The island at night is now a real place to play: you can clap (N), flash a lantern for the fireflies (F), skip stones (Y), and friends turn to the sound. But the clap reads as flat yellow paint splats, the fireflies are flat discs, and every game camera has a stack of plain coloured slabs right in front of it, so the new toys look worse than the ideas behind them. The one film a stranger would share is the clap ring by the pond. The other two posts this session are takes their own captions call misses.",
- "scores": {
-   "lighting":    {"score": 5, "why": "The see-by-clapping film is the best night light the island has made: the ring runs out from the pond and lights the crowns warm gold, against a dark sky. In live raster, dawn (05:00-05:30) is one flat grey-green, and the moon has visible banded rings in its halo (progress eye-level). The traced live still at 05:27 is noisy. The cottage and lantern glows show up there as opaque yellow balls the size of a door, and the clouds are solid black lumps."},
-   "materials":   {"score": 5, "why": "No new showcase material this session. Fireflies are flat polygons (seven-sided discs in the motion strip) with halo rings, not emissive points that light the grass. The jelly bubble is a flat green tint. Lantern glows trace as solid spheres. The pond in the clap film shines nicely, and that is all."},
-   "world":       {"score": 4, "why": "The sky islet and the snowballs are gone from the overview, and the night overview is pleasant. But the dayfall tiles still stand as tall flat-coloured slabs, and they block the view in jump-in, hide and seek and firefly catch. There are no new areas, and the big smooth yellow hill blob is still there."},
-   "props":       {"score": 6, "why": "The easels, cottage, mushrooms and grass tufts hold up. New props are missing or plain: the owl has no body yet, and the skipping stone is invisible in its film. The easel paintings go black at night."},
-   "creatures":   {"score": 5, "why": "The sheep, crab and pig are charming up close. A second small yellow Lumi still stands beside the real one (jump-in shot and the creatures sheet). Lumi sits inside a green jelly bubble with a copy below it. The frog's red balloons float above it in a dark green blob."},
-   "animation":   {"score": 5, "why": "The 64-bit animation clock is a real fix (7 of 10 now move well). Still: Truffle's tail jumps 0.39 m in one frame at 11.6 m/s, Truffle's legs judder (47%), and Lumi's body and beak flick back and forth 9 times a second. In the skipping film Lumi stands with its arms out and a post through its body."},
-   "fun":         {"score": 6, "why": "Up from 5: the player can now clap (N) and friends turn to the sound, the lantern pulls the fireflies into sync, Y skips stones, friends skip stones and count, the owl hunts by ear and the ice cracks. All three mini games pass a first play. But Things to try mentions none of the new keys, and the owl can't be seen."},
-   "wow":         {"score": 3, "why": "Of the last three posts, two are labelled misses (skipping stones: a flower floating in the air, a post through Lumi, no visible stone; fireflies: white dots at dusk). The woodcut is a filter. See by clapping is the one shareable film. The rhythm is still: post the broken first take, then start the next idea."},
-   "camera":      {"score": 4, "why": "Every game camera puts the dayfall slabs in the front third of the frame. The skipping film is framed from behind a post with Lumi cut off at the edge. The orbit and overview shots are fine."},
-   "ui":          {"score": 5, "why": "Messages now end on whole sentences and 'New on the island' is current (shooting stars). But Things to try lists none of the night keys (N clap, F lantern, Y stone, the owl walk), and the jump-in key bar has no Y."},
-   "style":       {"score": 5, "why": "The soft clay look mostly holds. It breaks where flat cut-outs meet it: yellow clap splats, polygon fireflies, saturated slabs, and the woodcut post, which is a different medium altogether."},
-   "performance": {"score": 9, "why": "Frame median 5.0 ms, p95 9.9 ms at 30 fps with all plugins. The fireflies cost 0.2 ms (p95 0.8 ms) and the owl 0.01 ms."}},
- "findings": [
-  {"severity": "high", "category": "world", "title": "Flat coloured slabs block the view in every game camera",
-   "todo": 615,
-   "what": "In jump-in, hide and seek and firefly catch, a staircase of plain untextured boxes (blue, maroon, brown, yellow, purple) stands right in front of the camera and fills a third of the picture. They are the leftover 'day falls over' tiles. The author saw this too (journal 03:15) and did not fix it.",
-   "where": "plugins/dayfall.jl tiles; chase camera of jump-in and the mini games",
-   "evidence": "world/tests/shots/s133-play-stone.png, s133-play-clap.png, hideseek-found.png, firefly-wad.png",
-   "suggestion": "Clear the tiles once their event is over, or turn them into a real thing that belongs there (painted stepping stones laid into the ground). The chase camera should also fade or skip anything between it and Lumi.",
-   "done_when": "Screenshots of jump-in, hide and seek and firefly catch at night show no untextured box in the frame, and nothing covers more than 5% of the view between the camera and Lumi."},
-  {"severity": "high", "category": "materials", "title": "Traced view: glows as opaque yellow balls, black clouds, snow-like fireflies",
-   "todo": null,
-   "what": "With path tracing on at 05:27, the cottage and lantern lights trace as solid yellow spheres the size of the door. The clouds are matte black lumps, and the fireflies are a blizzard of white dots across the whole meadow. It was raining (friends 'splashing in the puddles'), but no rain is visible. This is the showcase view of goal 7, and it looks worse than the raster.",
-   "where": "traced live view; lamplight/lanterns glow spheres, clouds.jl, fireflysync/nightglow",
-   "evidence": "world/reviews/p133/traced.png",
-   "suggestion": "In the tracer, drop the raster glow spheres and let real point or area lights do the work. Make clouds a volume, or a white diffuse with sheen lit by the dawn sky. Fireflies in trace should be small warm emitters below 1.5 m, only at night.",
-   "done_when": "A traced still at night or dawn shows no opaque glowing sphere bigger than a firefly, clouds lighter than the sky behind them, and warm light pools on the ground under the lanterns."},
-  {"severity": "high", "category": "wow", "title": "Skipping stones take 2: a stone you can see skip, framed at the waterline",
-   "todo": 646,
-   "what": "In the posted film a wooden post runs through Lumi's body, a pink flower floats in the air next to it, and no stone can be seen. The rings are thin outlines hovering over the sea. Live, Y is missing from the jump-in key bar, so a player never finds the throw.",
-   "where": "plugins/stoneskip.jl, its film; jump-in key bar",
-   "evidence": "world/reviews/motion/perfectionist-0133/skipping-stones-overview.jpg; world/tests/shots/s133-play-stone.png",
-   "suggestion": "A low camera at the waterline looking along the throw. A real flat stone (generated asset, wet coat) big enough to read. Splash crowns and ripples that deform the water, not outlines. Friends cheering the count. Add Y to the key bar.",
-   "done_when": "In the film's overview the stone is visible in at least 6 of 12 frames, with 4+ skips and a splash at each. No prop crosses Lumi, and the key bar shows 'Y skip'."},
-  {"severity": "high", "category": "materials", "title": "Fireflies are flat polygons and halo discs, not glowing flies",
-   "todo": 643,
-   "what": "In the motion strip the fireflies near the camera are flat seven-sided yellow-green polygons, as big as a pig's ear. In the live views they are discs with grey halo rings, and in the posted film they are cold white dots that look like the stars. The beat sync works in numbers, but nobody can see it.",
-   "where": "plugins/fireflysync.jl, nightglow motes",
-   "evidence": "world/reviews/motion/motion-strip.png; world/reviews/p133/follow.png; fireflies-at-dusk-overview.jpg",
-   "suggestion": "Small warm emissive points with additive glow, no rings, lighting the grass under them. In the traced night film, show Lumi with the lantern in frame and the meadow pulsing in step.",
-   "done_when": "A traced night film where the flies are warm, below 2.5 m, light the grass, and visibly pulse together on the lantern's beat, with Lumi in frame; live, no firefly draws as a polygon edge or a ring."},
-  {"severity": "high", "category": "creatures", "title": "A second yellow Lumi stands beside Lumi, and Lumi sits in a green bubble",
-   "todo": 614,
-   "what": "In jump-in a smaller copy of Lumi stands to the left of the player, looking like the same bird. In the creatures sheet Lumi stands inside a translucent green sphere with another small yellow Lumi below it. The journal guesses it is the chick, but it reads as a duplicate.",
-   "where": "nursery/egg chick body; jelly.jl",
-   "evidence": "world/tests/shots/s133-play-clap.png; world/reviews/motion/creatures.png",
-   "suggestion": "Give the chick its own body: fluffy, round, a quarter of Lumi's height, big eyes, a down texture, toddling after Lumi. Only show the jelly when it is in use, wobbling.",
-   "done_when": "The creatures sheet and a jump-in shot show only one bird with Lumi's shape. The chick is clearly a different, much smaller creature, and no green sphere is around Lumi unless the jelly is in use."},
-  {"severity": "medium", "category": "fun", "title": "The live clap looks like yellow paint splats; let it be light and sound",
-   "todo": null,
-   "what": "Pressing N in jump-in covers the ground with flat opaque yellow cut-out blobs (s133-play-clap.png). They don't glow, fade or spread as a ring, and they look like the paint fight. The traced film shows how good this can look; the live game does not. The owl that should answer by ear has no body, so the sneaking idea is invisible.",
-   "where": "plugins/nightclap.jl hit markers; owlears.jl",
-   "evidence": "world/tests/shots/s133-play-clap.png",
-   "suggestion": "Additive emissive dots that grow and fade along the wavefront, as in the film, plus a soft ring decal. Put the owl's body in the tree, turning its head to the first wavefront.",
-   "done_when": "A live screenshot 0.5 s after N shows a glowing ring of points (no opaque flat blobs). A night screenshot near the cottage shows the owl in its tree, facing the player."},
-  {"severity": "medium", "category": "animation", "title": "Truffle's tail snaps 0.39 m; Lumi's body and beak flick 9 times a second",
-   "todo": 637,
-   "what": "live_motion: Truffle's tail jumps 0.39 m in one frame and swings at 11.6 m/s, and its body and legs move in uneven steps (47%). Lumi's body, face and beak turn back and forth 9 times a second, and Hopscotch's claws 8.",
-   "where": "gait.jl, makeover/birdbody idle",
-   "evidence": "world/reviews/motion/motion.png, motion-strip.png (live_motion at s133)",
-   "suggestion": "Use a critically damped spring on tails and claws, and a slow breathing idle for Lumi with nothing above 3 Hz.",
-   "done_when": "live_motion reports no vibrating, snapping or too-fast parts, with 10 of 10 moving well."},
-  {"severity": "medium", "category": "lighting", "title": "Dawn is one flat grey-green, the moon halo is banded, easels go black",
-   "todo": 636,
-   "what": "At 05:00-05:30 sky, sea and land are all the same murky grey-green, with no dawn colour on the horizon. The moon's glow is a set of visible concentric rings (progress eye-level). The easels' paintings are black rectangles at night (orbit shots).",
-   "where": "scenery.jl sky/sun at dawn, moon.jl halo, gallery easels",
-   "evidence": "world/media/progress/session-0133/eye-level.png; world/reviews/p133/orbit1.png, orbit2.png",
-   "suggestion": "A real dawn gradient (deep blue overhead, pink-orange band at the horizon, sea catching it), a smooth moon halo without banding, and a small lamp or emissive on the gallery paintings at night.",
-   "done_when": "A screenshot at 05:20 shows a warm horizon band distinct from the zenith, the moon halo has no visible rings, and the easel paintings can be read at 23:00."}
- ],
- "todos": [
-  {"id": 528, "action": "done", "why": "The annotation 'resolve offsets' frame error has not appeared in either game's log on 27 Nov."},
-  {"id": 630, "action": "done", "why": "NIGHT_DARK is defined (scenery.jl:175); there are no errors in today's logs. It was a reload race."},
-  {"id": 572, "action": "done", "why": "see-by-clapping.mp4 is now a readable night film with a visible ring into the crowns."},
-  {"id": 622, "action": "done", "why": "N claps in jump-in and friends turn toward it. How it looks is a new finding."},
-  {"id": 625, "action": "drop", "why": "The new clap film is from above and has no plank hide; the old take is retired."},
-  {"id": 626, "action": "done", "why": "Messages end on whole sentences and 'New on the island' is current."},
-  {"id": 510, "action": "done", "why": "With Lumi off to bed, the follow view framed the pig and sheep close up (p133/follow.png)."},
-  {"id": 559, "action": "drop", "why": "Duplicate of #643 and of this review's firefly finding."},
-  {"id": 631, "action": "drop", "why": "Part of #643 (the lantern leads the swarm)."},
-  {"id": 561, "action": "drop", "why": "An old glass sea film; the sea is now ice (#642)."},
-  {"id": 547, "action": "drop", "why": "The berry race first play passes with racing rivals; superseded."},
-  {"id": 518, "action": "drop", "why": "With Camera: free picked, hide and seek still gave a chase view (hideseek-found.png)."},
-  {"id": 517, "action": "done", "why": "The crab's hat sits on top of its shell and the sheep's hat on its head in the creatures sheet."},
-  {"id": 553, "action": "keep", "why": "The talk gesture is smaller now, but Lumi still vibrates at 9 Hz and stands arms-out in the skipping film.", "title": "Lumi's idle: wings folded, a slow breath, no 9 Hz body and beak flicker"},
-  {"id": 545, "action": "keep", "why": "The TV is still a dark box with antennae in the creatures sheet."},
-  {"id": 577, "action": "keep", "why": "The jelly is still a flat green tint around Lumi."},
-  {"id": 603, "action": "keep", "why": "Glass rain is still unfilmed; it is blocked by #617."},
-  {"id": 615, "action": "keep", "why": "The snowballs and sky islet are gone, but the dayfall slabs remain.", "title": "Clear the dayfall slabs that stand in front of every game camera"}
- ],
- "engine": [
-  {"what": "RayMakie traces the raster glow helper spheres (transparent additive halos in GL) as opaque emissive spheres, so every live glow becomes a solid ball in path tracing.",
-   "evidence": "world/reviews/p133/traced.png (cottage and lanterns)"},
-  {"what": "Live path tracing at dawn is still very noisy after 40 s of accumulation while the island runs, so the live traced view never settles into a clean picture.",
-   "evidence": "world/reviews/p133/traced.png"}
- ],
- "process": "Session 133 was busy and mostly aimed at play: a clap key that creatures react to, firefly sync with the lantern, stone skipping for the player and the friends, an owl that hears, thin ice that cracks under friends, and shooting stars. Goals 1 (interactions), 3 (physics: the ice plate and the acoustic rays) and 8 (own ideas) moved. The 64-bit animation clock is the most valuable fix in weeks for goal 6. But the pattern from the last two reviews holds: six new ideas, none brought to a state a player can see well. The clap shows as paint splats, the fireflies as polygons, the stone is invisible, the owl has no body, and two of three posted films are captioned as misses. Goal 2 (a released film to be proud of) has not moved since 24 Nov. See by clapping is the candidate: finish it, add sound, release it. Goal 7 is weakest: the live traced view is worse than the raster. Goal 5: Lumi is bored and says so, yet the session added more sound work. Next session should take one of the new toys (clap plus owl walk, or the fireflies) and finish it to a beautiful, filmed, released state, and clear the slabs out of every game camera first."}
+{
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "world/reviews/p133/traced.png (cottage and lanterns)",
+      "what": "RayMakie traces the raster glow helper spheres (transparent additive halos in GL) as opaque emissive spheres, so every live glow becomes a solid ball in path tracing."
+    },
+    {
+      "evidence": "world/reviews/p133/traced.png",
+      "what": "Live path tracing at dawn is still very noisy after 40 s of accumulation while the island runs, so the live traced view never settles into a clean picture."
+    }
+  ],
+  "findings": [
+    {
+      "category": "world",
+      "done_when": "Screenshots of jump-in, hide and seek and firefly catch at night show no untextured box in the frame, and nothing covers more than 5% of the view between the camera and Lumi.",
+      "evidence": "world/tests/shots/s133-play-stone.png, s133-play-clap.png, hideseek-found.png, firefly-wad.png",
+      "severity": "high",
+      "suggestion": "Clear the tiles once their event is over, or turn them into a real thing that belongs there (painted stepping stones laid into the ground). The chase camera should also fade or skip anything between it and Lumi.",
+      "title": "Flat coloured slabs block the view in every game camera",
+      "todo": 615,
+      "what": "In jump-in, hide and seek and firefly catch, a staircase of plain untextured boxes (blue, maroon, brown, yellow, purple) stands right in front of the camera and fills a third of the picture. They are the leftover 'day falls over' tiles. The author saw this too (journal 03:15) and did not fix it.",
+      "where": "plugins/dayfall.jl tiles; chase camera of jump-in and the mini games"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced still at night or dawn shows no opaque glowing sphere bigger than a firefly, clouds lighter than the sky behind them, and warm light pools on the ground under the lanterns.",
+      "evidence": "world/reviews/p133/traced.png",
+      "severity": "high",
+      "suggestion": "In the tracer, drop the raster glow spheres and let real point or area lights do the work. Make clouds a volume, or a white diffuse with sheen lit by the dawn sky. Fireflies in trace should be small warm emitters below 1.5 m, only at night.",
+      "title": "Traced view: glows as opaque yellow balls, black clouds, snow-like fireflies",
+      "todo": null,
+      "what": "With path tracing on at 05:27, the cottage and lantern lights trace as solid yellow spheres the size of the door. The clouds are matte black lumps, and the fireflies are a blizzard of white dots across the whole meadow. It was raining (friends 'splashing in the puddles'), but no rain is visible. This is the showcase view of goal 7, and it looks worse than the raster.",
+      "where": "traced live view; lamplight/lanterns glow spheres, clouds.jl, fireflysync/nightglow"
+    },
+    {
+      "category": "wow",
+      "done_when": "In the film's overview the stone is visible in at least 6 of 12 frames, with 4+ skips and a splash at each. No prop crosses Lumi, and the key bar shows 'Y skip'.",
+      "evidence": "world/reviews/motion/perfectionist-0133/skipping-stones-overview.jpg; world/tests/shots/s133-play-stone.png",
+      "severity": "high",
+      "suggestion": "A low camera at the waterline looking along the throw. A real flat stone (generated asset, wet coat) big enough to read. Splash crowns and ripples that deform the water, not outlines. Friends cheering the count. Add Y to the key bar.",
+      "title": "Skipping stones take 2: a stone you can see skip, framed at the waterline",
+      "todo": 646,
+      "what": "In the posted film a wooden post runs through Lumi's body, a pink flower floats in the air next to it, and no stone can be seen. The rings are thin outlines hovering over the sea. Live, Y is missing from the jump-in key bar, so a player never finds the throw.",
+      "where": "plugins/stoneskip.jl, its film; jump-in key bar"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced night film where the flies are warm, below 2.5 m, light the grass, and visibly pulse together on the lantern's beat, with Lumi in frame; live, no firefly draws as a polygon edge or a ring.",
+      "evidence": "world/reviews/motion/motion-strip.png; world/reviews/p133/follow.png; fireflies-at-dusk-overview.jpg",
+      "severity": "high",
+      "suggestion": "Small warm emissive points with additive glow, no rings, lighting the grass under them. In the traced night film, show Lumi with the lantern in frame and the meadow pulsing in step.",
+      "title": "Fireflies are flat polygons and halo discs, not glowing flies",
+      "todo": 643,
+      "what": "In the motion strip the fireflies near the camera are flat seven-sided yellow-green polygons, as big as a pig's ear. In the live views they are discs with grey halo rings, and in the posted film they are cold white dots that look like the stars. The beat sync works in numbers, but nobody can see it.",
+      "where": "plugins/fireflysync.jl, nightglow motes"
+    },
+    {
+      "category": "creatures",
+      "done_when": "The creatures sheet and a jump-in shot show only one bird with Lumi's shape. The chick is clearly a different, much smaller creature, and no green sphere is around Lumi unless the jelly is in use.",
+      "evidence": "world/tests/shots/s133-play-clap.png; world/reviews/motion/creatures.png",
+      "severity": "high",
+      "suggestion": "Give the chick its own body: fluffy, round, a quarter of Lumi's height, big eyes, a down texture, toddling after Lumi. Only show the jelly when it is in use, wobbling.",
+      "title": "A second yellow Lumi stands beside Lumi, and Lumi sits in a green bubble",
+      "todo": 614,
+      "what": "In jump-in a smaller copy of Lumi stands to the left of the player, looking like the same bird. In the creatures sheet Lumi stands inside a translucent green sphere with another small yellow Lumi below it. The journal guesses it is the chick, but it reads as a duplicate.",
+      "where": "nursery/egg chick body; jelly.jl"
+    },
+    {
+      "category": "fun",
+      "done_when": "A live screenshot 0.5 s after N shows a glowing ring of points (no opaque flat blobs). A night screenshot near the cottage shows the owl in its tree, facing the player.",
+      "evidence": "world/tests/shots/s133-play-clap.png",
+      "severity": "medium",
+      "suggestion": "Additive emissive dots that grow and fade along the wavefront, as in the film, plus a soft ring decal. Put the owl's body in the tree, turning its head to the first wavefront.",
+      "title": "The live clap looks like yellow paint splats; let it be light and sound",
+      "todo": null,
+      "what": "Pressing N in jump-in covers the ground with flat opaque yellow cut-out blobs (s133-play-clap.png). They don't glow, fade or spread as a ring, and they look like the paint fight. The traced film shows how good this can look; the live game does not. The owl that should answer by ear has no body, so the sneaking idea is invisible.",
+      "where": "plugins/nightclap.jl hit markers; owlears.jl"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion reports no vibrating, snapping or too-fast parts, with 10 of 10 moving well.",
+      "evidence": "world/reviews/motion/motion.png, motion-strip.png (live_motion at s133)",
+      "severity": "medium",
+      "suggestion": "Use a critically damped spring on tails and claws, and a slow breathing idle for Lumi with nothing above 3 Hz.",
+      "title": "Truffle's tail snaps 0.39 m; Lumi's body and beak flick 9 times a second",
+      "todo": 637,
+      "what": "live_motion: Truffle's tail jumps 0.39 m in one frame and swings at 11.6 m/s, and its body and legs move in uneven steps (47%). Lumi's body, face and beak turn back and forth 9 times a second, and Hopscotch's claws 8.",
+      "where": "gait.jl, makeover/birdbody idle"
+    },
+    {
+      "category": "lighting",
+      "done_when": "A screenshot at 05:20 shows a warm horizon band distinct from the zenith, the moon halo has no visible rings, and the easel paintings can be read at 23:00.",
+      "evidence": "world/media/progress/session-0133/eye-level.png; world/reviews/p133/orbit1.png, orbit2.png",
+      "severity": "medium",
+      "suggestion": "A real dawn gradient (deep blue overhead, pink-orange band at the horizon, sea catching it), a smooth moon halo without banding, and a small lamp or emissive on the gallery paintings at night.",
+      "title": "Dawn is one flat grey-green, the moon halo is banded, easels go black",
+      "todo": 636,
+      "what": "At 05:00-05:30 sky, sea and land are all the same murky grey-green, with no dawn colour on the horizon. The moon's glow is a set of visible concentric rings (progress eye-level). The easels' paintings are black rectangles at night (orbit shots).",
+      "where": "scenery.jl sky/sun at dawn, moon.jl halo, gallery easels"
+    }
+  ],
+  "process": "Session 133 was busy and mostly aimed at play: a clap key that creatures react to, firefly sync with the lantern, stone skipping for the player and the friends, an owl that hears, thin ice that cracks under friends, and shooting stars. Goals 1 (interactions), 3 (physics: the ice plate and the acoustic rays) and 8 (own ideas) moved. The 64-bit animation clock is the most valuable fix in weeks for goal 6. But the pattern from the last two reviews holds: six new ideas, none brought to a state a player can see well. The clap shows as paint splats, the fireflies as polygons, the stone is invisible, the owl has no body, and two of three posted films are captioned as misses. Goal 2 (a released film to be proud of) has not moved since 24 Nov. See by clapping is the candidate: finish it, add sound, release it. Goal 7 is weakest: the live traced view is worse than the raster. Goal 5: Lumi is bored and says so, yet the session added more sound work. Next session should take one of the new toys (clap plus owl walk, or the fireflies) and finish it to a beautiful, filmed, released state, and clear the slabs out of every game camera first.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "The 64-bit animation clock is a real fix (7 of 10 now move well). Still: Truffle's tail jumps 0.39 m in one frame at 11.6 m/s, Truffle's legs judder (47%), and Lumi's body and beak flick back and forth 9 times a second. In the skipping film Lumi stands with its arms out and a post through its body."
+    },
+    "camera": {
+      "score": 4,
+      "why": "Every game camera puts the dayfall slabs in the front third of the frame. The skipping film is framed from behind a post with Lumi cut off at the edge. The orbit and overview shots are fine."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "The sheep, crab and pig are charming up close. A second small yellow Lumi still stands beside the real one (jump-in shot and the creatures sheet). Lumi sits inside a green jelly bubble with a copy below it. The frog's red balloons float above it in a dark green blob."
+    },
+    "fun": {
+      "score": 6,
+      "why": "Up from 5: the player can now clap (N) and friends turn to the sound, the lantern pulls the fireflies into sync, Y skips stones, friends skip stones and count, the owl hunts by ear and the ice cracks. All three mini games pass a first play. But Things to try mentions none of the new keys, and the owl can't be seen."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "The see-by-clapping film is the best night light the island has made: the ring runs out from the pond and lights the crowns warm gold, against a dark sky. In live raster, dawn (05:00-05:30) is one flat grey-green, and the moon has visible banded rings in its halo (progress eye-level). The traced live still at 05:27 is noisy. The cottage and lantern glows show up there as opaque yellow balls the size of a door, and the clouds are solid black lumps."
+    },
+    "materials": {
+      "score": 5,
+      "why": "No new showcase material this session. Fireflies are flat polygons (seven-sided discs in the motion strip) with halo rings, not emissive points that light the grass. The jelly bubble is a flat green tint. Lantern glows trace as solid spheres. The pond in the clap film shines nicely, and that is all."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 5.0 ms, p95 9.9 ms at 30 fps with all plugins. The fireflies cost 0.2 ms (p95 0.8 ms) and the owl 0.01 ms."
+    },
+    "props": {
+      "score": 6,
+      "why": "The easels, cottage, mushrooms and grass tufts hold up. New props are missing or plain: the owl has no body yet, and the skipping stone is invisible in its film. The easel paintings go black at night."
+    },
+    "style": {
+      "score": 5,
+      "why": "The soft clay look mostly holds. It breaks where flat cut-outs meet it: yellow clap splats, polygon fireflies, saturated slabs, and the woodcut post, which is a different medium altogether."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Messages now end on whole sentences and 'New on the island' is current (shooting stars). But Things to try lists none of the night keys (N clap, F lantern, Y stone, the owl walk), and the jump-in key bar has no Y."
+    },
+    "world": {
+      "score": 4,
+      "why": "The sky islet and the snowballs are gone from the overview, and the night overview is pleasant. But the dayfall tiles still stand as tall flat-coloured slabs, and they block the view in jump-in, hide and seek and firefly catch. There are no new areas, and the big smooth yellow hill blob is still there."
+    },
+    "wow": {
+      "score": 3,
+      "why": "Of the last three posts, two are labelled misses (skipping stones: a flower floating in the air, a post through Lumi, no visible stone; fireflies: white dots at dusk). The woodcut is a filter. See by clapping is the one shareable film. The rhythm is still: post the broken first take, then start the next idea."
+    }
+  },
+  "summary": "The island at night is now a real place to play: you can clap (N), flash a lantern for the fireflies (F), skip stones (Y), and friends turn to the sound. But the clap reads as flat yellow paint splats, the fireflies are flat discs, and every game camera has a stack of plain coloured slabs right in front of it, so the new toys look worse than the ideas behind them. The one film a stranger would share is the clap ring by the pond. The other two posts this session are takes their own captions call misses.",
+  "superseded_by": "perfectionist-0136.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 528,
+      "why": "The annotation 'resolve offsets' frame error has not appeared in either game's log on 27 Nov."
+    },
+    {
+      "action": "done",
+      "id": 630,
+      "why": "NIGHT_DARK is defined (scenery.jl:175); there are no errors in today's logs. It was a reload race."
+    },
+    {
+      "action": "done",
+      "id": 572,
+      "why": "see-by-clapping.mp4 is now a readable night film with a visible ring into the crowns."
+    },
+    {
+      "action": "done",
+      "id": 622,
+      "why": "N claps in jump-in and friends turn toward it. How it looks is a new finding."
+    },
+    {
+      "action": "drop",
+      "id": 625,
+      "why": "The new clap film is from above and has no plank hide; the old take is retired."
+    },
+    {
+      "action": "done",
+      "id": 626,
+      "why": "Messages end on whole sentences and 'New on the island' is current."
+    },
+    {
+      "action": "done",
+      "id": 510,
+      "why": "With Lumi off to bed, the follow view framed the pig and sheep close up (p133/follow.png)."
+    },
+    {
+      "action": "drop",
+      "id": 559,
+      "why": "Duplicate of #643 and of this review's firefly finding."
+    },
+    {
+      "action": "drop",
+      "id": 631,
+      "why": "Part of #643 (the lantern leads the swarm)."
+    },
+    {
+      "action": "drop",
+      "id": 561,
+      "why": "An old glass sea film; the sea is now ice (#642)."
+    },
+    {
+      "action": "drop",
+      "id": 547,
+      "why": "The berry race first play passes with racing rivals; superseded."
+    },
+    {
+      "action": "drop",
+      "id": 518,
+      "why": "With Camera: free picked, hide and seek still gave a chase view (hideseek-found.png)."
+    },
+    {
+      "action": "done",
+      "id": 517,
+      "why": "The crab's hat sits on top of its shell and the sheep's hat on its head in the creatures sheet."
+    },
+    {
+      "action": "keep",
+      "id": 553,
+      "title": "Lumi's idle: wings folded, a slow breath, no 9 Hz body and beak flicker",
+      "why": "The talk gesture is smaller now, but Lumi still vibrates at 9 Hz and stands arms-out in the skipping film."
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "The TV is still a dark box with antennae in the creatures sheet."
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "The jelly is still a flat green tint around Lumi."
+    },
+    {
+      "action": "keep",
+      "id": 603,
+      "why": "Glass rain is still unfilmed; it is blocked by #617."
+    },
+    {
+      "action": "keep",
+      "id": 615,
+      "title": "Clear the dayfall slabs that stand in front of every game camera",
+      "why": "The snowballs and sky islet are gone, but the dayfall slabs remain."
+    }
+  ],
+  "verdict": "needs_work"
+}

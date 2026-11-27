@@ -1,0 +1,11 @@
+{
+  "created": "2026-11-27T06:56:29.654",
+  "id": "20261127-065629-622-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795758989.png",
+    "script": "movies/ocr.jl"
+  },
+  "status": "queued"
+}

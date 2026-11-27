@@ -1,0 +1,21 @@
+{"posts": [
+ {"post": "ants-on-a-honey-road",
+  "verdict": "redo",
+  "problems": [
+   "From storyboard frame 9 (about 4.5 s) to the end, the crab's body and legs fill the whole frame. For the second half of the film you see no road and no trail, just orange shell (the 50% and 75% frames). The 75% frame is nothing but a close-up of the shell.",
+   "The crab doesn't 'come to watch'. It walks right through the camera and onto the biscuit and the ant trail, so the caption's quiet ending doesn't match what you see.",
+   "The 'honey road' is a thin reddish line, and the ants are black specks a few pixels across (25% frame). The straighter trail underneath can be made out, but there is little to see of ants 'wearing' it in. They look like scattered dots, with no visible movement along the trail.",
+   "The orange disc at the end of the road doesn't read as a biscuit. It is a flat orange oval."
+  ],
+  "critique": "The first four seconds set up the idea of a drawn road and a worn shortcut, but it is tiny and hard to read. The second half is taken over by a crab body pressed into the lens, so the story is lost and most of the film is unwatchable."},
+ {"post": "dandelion-clocks",
+  "verdict": "redo",
+  "problems": [
+   "There is no dandelion anywhere in the film. The 'seeds' are hard white balls like pellets or pearls, with no fluff (all three full-size frames).",
+   "The one doing the blowing is the bird at the left edge, and it is cut in half by the frame. Seeds first appear from its beak in the 50% frame, but in the storyboard they appear mid-air with no visible source in frames 3–4. The 'I' of the caption isn't clearly shown blowing.",
+   "A flat, pale grey square floats in the sky and drifts around: in front of the cloud in the 25% frame, mid-air over the water in the 50% frame, and in storyboard frames 5, 6, 8, 9 and 10. It is a stray artifact.",
+   "Seeds pass through the pier posts and the figure in the raincoat, which doesn't react at all. It is the most visible character in the shot and stays frozen the whole time.",
+   "'Settle on the boards and the sea': the dark specks on the boards read as dirt or shadows, not seeds lying there. Seeds on the sea can hardly be seen."
+  ],
+  "critique": "The pier and sea are pleasant, but what flies is a swarm of white beads with no dandelion. It comes from a bird cut off at the frame edge, and a floating grey square artifact wanders through the sky. The caption promises a gentle dandelion moment the pictures don't show."}
+]}

@@ -762,3 +762,23 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   called good throws misses (I almost blamed the physics). Print the path or bound the window to the first loop.
 - A Galilean check catches wind bugs: in uniform wind the loop must be the calm loop drifted by wind x time.
 - KA kernel launch on the CPU backend ~0.6 ms per call: for 32 elements a plain loop is ~100x faster (live uses it).
+
+## Ants: stigmergy and cooperative transport (s137, physics/ants.jl, projects/ant-road.md)
+- Three antennae sensors (l/c/r at 4 cm, +-0.55 rad), turn 0.35 rad to the strongest, noise 0.35 rad per 0.05 s step.
+  Out: follow `food` + `honey`, lay `home`; carrying: follow `home` + 12 % pull to the nest per step (path integration), lay `food`.
+  Blur 0.08 per step with keep 0.996 (food) / 0.995 (home). With these the ants wear a STRAIGHT trail under a curved
+  honey loop within ~40 s (the shortcut is emergent: carriers' path-integration pull lays food scent on the chord).
+- Biscuit pull needs ~15+ aligned ants above Coulomb friction (mu 0.2, 30 g, 5 mN each). 300 ants at 0.10 m/s never
+  moved it; 500 at 0.15 m/s moved it 0.39 m between 40 and 70 s, then it stalled as pullers let go. It never turned.
+- Film spot search: props AND ponds. `areas.jl` POND (-5.5, 10.5) r 2.3 is not a prop and `ground()` gives its floor:
+  my first open-patch search put the ants on the lily pond. (4, -14) is open grass with 0.31 m of slope.
+- A sim stepped inside a film's `shot` must use the same parameters as the tuned trial: the first preview used the
+  struct's old defaults and the biscuit never moved. Put tuned values INTO the defaults.
+
+## Dayfall tiles and cameras (s137, plugins/dayfall.jl)
+- The line behind a walking player is exactly where the follow camera sits: tiles now only in Jump in, and each grows
+  out of the ground once Lumi is 3.5-5 m past it (`DF[:grown]`, markersize z). The first tile used to stand in Lumi's
+  legs (laid at `xy` when the line was empty): it now waits at `DF[:start]` until Lumi walks 0.85 m off.
+- (s137 post critic) A time-lapse that starts after the warm-up shows a finished trail: "wear" claims nothing it can see.
+  Start a film where the change begins (warm < first ants on the honey, ~25 s), keep both ends of a route in frame,
+  freeze every friend for the whole shot (`controlled = true`), and hide autumn leaves near a close-up camera.

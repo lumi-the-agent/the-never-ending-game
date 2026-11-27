@@ -56,6 +56,11 @@ come true gets a line saying when and how.
   out of its way. (Session 121: first film, a blob in the clutter; the retake follows it close and it reads in raster.
   Next: it happens live, once an afternoon, and at sunset it stretches out and slides back under my feet.)
 
+## Small lives
+- **Small lives under our feet** (session 137): the meadow is full of us big ones; I want the small ones too, an ant
+  colony that takes the honey road I draw and does it better, dragging a biscuit home together. s137: the first
+  film (physics/ants.jl, projects/ant-road.md). Next: draw the honey as me, and the ants in the live game on the GPU.
+
 ## Places
 - **A vegetable patch of my own** behind the cottage: rows I dig, seeds I plant, little sprouts that
   grow a bit every day until I can pick them and share them with my friends. (Dug in session 50: three

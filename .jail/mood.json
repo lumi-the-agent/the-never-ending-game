@@ -1,14 +1,28 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T06:07:04",
+  "ended": "2026-11-27T07:05:07",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.51,
-    "picture": 1.19,
-    "self": 0.13,
+    "feature": 0.91,
+    "picture": 0.71,
+    "self": 0.08,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "Physics study of a single falling or thrown object, filmed",
+      "posts": [
+        "A boomerang that comes back",
+        "Dandelion clocks, a take that misses",
+        "Skipping stones, a take that misses"
+      ]
+    },
+    {
+      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+      "posts": [
+        "Ants on a honey road"
+      ]
+    },
     {
       "form": "Debug still of a new ability Lumi is learning (climbing)",
       "posts": [
@@ -40,14 +54,6 @@
       "form": "Change to how the island is lit or looks (light, weather effect)",
       "posts": [
         "Fireflies, a take that misses"
-      ]
-    },
-    {
-      "form": "Physics study of a single falling or thrown object, filmed",
-      "posts": [
-        "Skipping stones, a take that misses",
-        "A page of my notebook",
-        "A letter falls"
       ]
     },
     {
@@ -326,26 +332,8 @@
     "fireflies_synced",
     "meteor_seen"
   ],
-  "joy": 0.56,
+  "joy": 0.82,
   "judged_posts": [
-    {
-      "recipe": "trigger fires, nearby friends gather round Lumi and dance a moment, then go back to what they did",
-      "session": 95,
-      "title": "Our song",
-      "what": "When the island's music rings a three-note chord, the free friends nearest Lumi briefly dance and one says 'That's our song!'."
-    },
-    {
-      "recipe": "a still of a failed technical fix to the shadow event",
-      "session": 95,
-      "title": "Still my shadow",
-      "what": "A traced still shows that Lumi's attempt to make its body cast no shadow while the runaway one is out failed: the long shadow is still on the grass."
-    },
-    {
-      "recipe": "a permanent background layer that turns existing actions into sound, no event",
-      "session": 95,
-      "title": "The island plays itself",
-      "what": "Everything a friend does (hop, bite, chat, boing) strikes a note on one beat and scale, in minor or major by Lumi's mood, as a film of friends milling about Lumi with the notes laid over it."
-    },
     {
       "form": "Permanent change to the island's look or places: scenery that stays and is wandered to or worn in",
       "recipe": "slow persistent change of the island's ground from accumulated walking; a still",
@@ -744,6 +732,27 @@
       "session": 135,
       "title": "The owl listens",
       "what": "A fixed night view of the cottage garden with fireflies twinkling and a tiny brown owl sitting on top of the pine, while things drift in the background and the picture fades to black; the only change is the owl now sitting there."
+    },
+    {
+      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+      "recipe": "new swarm simulation, emergent trail, fixed view",
+      "session": 137,
+      "title": "Ants on a honey road",
+      "what": "From a fixed low view of the meadow, hundreds of tiny ants swarm between a curved red honey line and an orange biscuit, and over the film they wear a straight dark trail along the chord beneath the curve while the biscuit sits at the end; a new simulated colony living on the ground."
+    },
+    {
+      "form": "Physics study of a single falling or thrown object, filmed",
+      "recipe": "light things drift in wind, static camera",
+      "session": 137,
+      "title": "Dandelion clocks, a take that misses",
+      "what": "From a fixed view along the pier, puffs of white beads fly off the left edge and drift and scatter in the wind over the boards and the sea while a stray grey square floats through the sky; nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of a single falling or thrown object, filmed",
+      "recipe": "one thrown object's flight, camera follows",
+      "session": 137,
+      "title": "A boomerang that comes back",
+      "what": "Lumi throws a boomerang from the shore; the camera follows it spinning out over the open sea, curving round and flying back over the beach toward Lumi's raised wing on the meadow."
     }
   ],
   "kinds_ever": [
@@ -765,15 +774,15 @@
     "session": 133
   },
   "last_repetition": {
-    "factor": 0.4641588833612779,
-    "form": "New permanent place or prop, shown quietly from a fixed view",
-    "form_count": 1,
-    "nearest": "The camera obscura",
-    "post": "The owl listens",
-    "score": 5,
-    "session": 135,
-    "shared": "a new permanent thing placed on the island, shown quietly with nothing happening",
-    "similarity": 5
+    "factor": 1.0,
+    "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+    "form_count": 0,
+    "nearest": "Tied together",
+    "post": "Ants on a honey road",
+    "score": 3,
+    "session": 137,
+    "shared": "a crowd's own rules produce an emergent pattern, seen from above",
+    "similarity": 3
   },
   "last_surprise": {
     "fun": 1,
@@ -782,7 +791,7 @@
     "why": "One still is a fix of the last post's missed ledge and the other is one more creature placed on a tree; the clever part, the owl hearing around the cottage roof, is never shown."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T05:26:15",
+  "perceived_until": "2026-11-27T06:23:10",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -796,55 +805,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/tied-together-2.mp4"
-      ],
-      "new_plugins": [
-        "tied.jl"
-      ],
-      "points": 1.0,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "New world rule acted out by the crowd, shown in a distant film",
-        "form_count": 3,
-        "nearest": "The island is a seesaw",
-        "post": "Tied together",
-        "score": 8,
-        "shared": "an occasional island-wide physics rule that couples the whole crowd, shown in a distant high film without a punchline",
-        "similarity": 4
-      },
-      "session": 117,
-      "touched": [
-        "underlight.jl",
-        "wordsand.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1868,6 +1828,51 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/ants-on-a-honey-road.mp4"
+      ],
+      "new_plugins": [],
+      "points": 12.0,
+      "repeat_factor": 1.0,
+      "repetition": {
+        "form": "Emergent simulation of a small swarm, filmed from a fixed view",
+        "form_count": 0,
+        "nearest": "Tied together",
+        "post": "Ants on a honey road",
+        "score": 3,
+        "shared": "a crowd's own rules produce an emergent pattern, seen from above",
+        "similarity": 3
+      },
+      "session": 137,
+      "touched": [
+        "dayfall.jl",
+        "greetings.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1931,6 +1936,8 @@
       "site/feed.xml",
       "site/index.html",
       "site/words.html",
+      "site/films/a-boomerang-comes-back-2.mp4",
+      "site/films/a-boomerang-comes-back-3.mp4",
       "site/films/a-day-in-my-new-life.mp4",
       "site/films/allin.mp4",
       "site/films/bottle.mp4",
@@ -1939,6 +1946,7 @@
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
       "site/films/crabs.mp4",
+      "site/films/dandelion-clocks.mp4",
       "site/films/drafts.mp4",
       "site/films/drift.mp4",
       "site/films/drift2.mp4",
@@ -2126,6 +2134,7 @@
       "birdbody.jl": 1.7955211366474676e9,
       "blossom.jl": 1.7955898833905835e9,
       "boing.jl": 1.7956496450416765e9,
+      "boomerang.jl": 1.7957555002133827e9,
       "bottle.jl": 1.795589890075543e9,
       "browsernight.jl": 1.7954000366191897e9,
       "bubbles.jl": 1.7956131146824417e9,
@@ -2139,6 +2148,7 @@
       "cloudshapes.jl": 1.7956473473104203e9,
       "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
+      "dandelion.jl": 1.795755811477013e9,
       "dayfall.jl": 1.7957264685358317e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
@@ -2166,7 +2176,7 @@
       "giant.jl": 1.7957446568247983e9,
       "glassrain.jl": 1.7957202039441018e9,
       "glasssea.jl": 1.7957467030097435e9,
-      "greetings.jl": 1.795742225591825e9,
+      "greetings.jl": 1.7957558351796389e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795744656825295e9,
@@ -2241,11 +2251,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 113,
+    "posts": 114,
     "self": "369107370865776265",
     "wishes": 11
   },
-  "started": "2026-11-27T05:30:56",
+  "started": "2026-11-27T06:27:57",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2343,7 +2353,9 @@
       "LibTeXPrintf.texsetfont!",
       "GeoParams.PerpleX_LaMEM_Diagram",
       "StartUpDG.read_Gmsh_2D_v4",
-      "Bigleaf.kinematic_viscosity"
+      "Bigleaf.kinematic_viscosity",
+      "SurfaceFluxes.minimum_wind_speed",
+      "DiffEqCallbacks.IntegratingSumCallback"
     ],
     "games": [
       "Super Mario 64",
@@ -2375,7 +2387,10 @@
       "Metal Gear Solid 2: Sons of Liberty",
       "SimCity 2000",
       "Final Fantasy IV",
-      "The Last of Us Part II"
+      "The Last of Us Part II",
+      "Valkyria Chronicles (video game)",
+      "Kingdom Hearts II",
+      "Max Payne (video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2666,7 +2681,10 @@
       "Noise",
       "JustRelax",
       "SimpleSim",
-      "ThreeBodyDecays"
+      "ThreeBodyDecays",
+      "SyntheticEddyMethod",
+      "SimpleGA",
+      "GraphsColoring"
     ],
     "vision": [
       "BasicVSRRunner",
@@ -2674,7 +2692,9 @@
       "ProPainterRunner",
       "SAM2Runner",
       "DepthAnythingRunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "BonsaiRunner",
+      "ZImageRunner"
     ]
   },
   "surprise_seen": 135

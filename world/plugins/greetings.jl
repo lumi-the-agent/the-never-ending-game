@@ -30,7 +30,10 @@ At night: F flashes your lantern (keep the fireflies' beat), N claps and you see
 Wade into the pond (Q splashes), onto the swing or a leaf pile; Y skips a stone, O boomerang, I blow a dandelion"""
 # after HINT_FULL seconds the card shrinks to one line of keys (perfectionist-0049: the 8 lines covered a third
 # of the view 8 s into Jump in; done when < 10% is covered then)
-const HINT_SHORT = "WASD walk  E wave  Space jump  X sneeze  G fly  C sing  P paint  M grow  T storm  B bubble  J swallow  U throw  V shadow  Z rewind  F lantern  N clap  Y skip  O boomerang  I dandelion"   # (s87: the long line ran off both edges)
+# s87: one long line ran off both edges; s137 (review 0136: 12 px was ~8 px tall): three lines at 16 px
+const HINT_SHORT = "WASD walk   E wave   Space jump   X sneeze   G fly   C sing   P paint\n" *
+                   "M grow   T storm   B bubble   J swallow   U throw   V shadow   Z rewind\n" *
+                   "F lantern   N clap   Y skip   O boomerang   I dandelion"
 const HINT_FULL = 5.0
 const HINT_END = 20.0
 
@@ -408,11 +411,11 @@ function NG.step!(s::Greetings, game, dt)
         jumped_in && 1.5 < s.hint_t < HINT_FULL && me.action in (:walk, :run) && (s.hint_t = HINT_FULL)
         show =jumped_in && s.hint_t < HINT_END
         GP[:hint].visible[] == show || (GP[:hint].visible[] = show)
-        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 12)
+        txt, fs = s.hint_t < HINT_FULL ? (HINT, 19) : (HINT_SHORT, 16)
         if show && GP[:hint].text[] != txt
             # the one-line strip drops to the bottom edge, small, out of the way of Lumi (review: across the middle of the view)
             GP[:hint].text[] = txt; GP[:hint].fontsize[] = fs
-            Makie.update!(GP[:hint]; arg1 = txt === HINT ? Point2f(0.5, 0.2) : Point2f(0.5, 0.105))
+            Makie.update!(GP[:hint]; arg1 = txt === HINT ? Point2f(0.5, 0.2) : Point2f(0.5, 0.12))
         end
     end
     # Jump in's follow camera; orbit and free round Lumi are freecam.jl's (the chase used to take

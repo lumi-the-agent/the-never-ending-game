@@ -1,0 +1,30 @@
+{"posts": [
+  {"post": "Ants on a honey road",
+   "what": "From a fixed low view of the meadow, hundreds of tiny ants swarm between a curved red honey line and an orange biscuit, and over the film they wear a straight dark trail along the chord beneath the curve while the biscuit sits at the end; a new simulated colony living on the ground.",
+   "recipe": "new swarm simulation, emergent trail, fixed view",
+   "nearest": "Tied together",
+   "similarity": 3,
+   "shared": "a crowd's own rules produce an emergent pattern, seen from above"},
+  {"post": "Dandelion clocks, a take that misses",
+   "what": "From a fixed view along the pier, puffs of white beads fly off the left edge and drift and scatter in the wind over the boards and the sea while a stray grey square floats through the sky; nothing else on the island changes.",
+   "recipe": "light things drift in wind, static camera",
+   "nearest": "A letter falls",
+   "similarity": 5,
+   "shared": "a simulated light object drifting through air, fixed view"},
+  {"post": "A boomerang that comes back",
+   "what": "Lumi throws a boomerang from the shore; the camera follows it spinning out over the open sea, curving round and flying back over the beach toward Lumi's raised wing on the meadow.",
+   "recipe": "one thrown object's flight, camera follows",
+   "nearest": "Skipping stones, a take that misses",
+   "similarity": 7,
+   "shared": "one thrown simulated object out over the sea, its physics filmed"}
+ ],
+ "forms": [
+  {"form": "Physics study of a single falling or thrown object, filmed", "posts": ["A boomerang that comes back", "Dandelion clocks, a take that misses", "Skipping stones, a take that misses"]},
+  {"form": "Emergent simulation of a small swarm, filmed from a fixed view", "posts": ["Ants on a honey road"]},
+  {"form": "Debug still of a new ability Lumi is learning (climbing)", "posts": ["Two ledges to hold", "Where my claws could hold"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed view", "posts": ["The owl listens", "The camera obscura"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["Thin ice, a take that misses"]},
+  {"form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)", "posts": ["See by clapping", "The island answers a clap, a broken take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Fireflies, a take that misses"]},
+  {"form": "Artwork of the island, a stylised still, not a film", "posts": ["The island as a woodcut"]}
+ ]}

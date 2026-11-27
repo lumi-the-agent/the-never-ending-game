@@ -29,6 +29,8 @@
 - Boomerang (s136, project boomerang): physics/boomerang.jl (blade elements, precession), O in jump-in (plugins/boomerang.jl,
   Main.BOOMERANG[:last] = how the last throw ended), film movies/boomerang.jl. Comes back from (-4,18) facing east.
   Wind drifts the loop ~wind x 4 s: throw with the wind. A queued job loads its script when it STARTS: edits before that count.
+- Ants (s137, project ant-road): physics/ants.jl (scents, antennae, biscuit pulled against friction, CPU), film movies/ants.jl
+  at (4,-14) (open grass; (-7,9) is the LILY POND, not a prop). Dayfall tiles: only in Jump in, grow 3.5-5 m behind me.
 - Dandelions (s136): I in jump-in blows a clock (plugins/dandelion.jl, seeds drag to the breeze); film movies/dandelion.jl at (-4,18).
 - Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
   Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
@@ -48,6 +50,9 @@
 - Start a mini game: `NeverendingGame.start_minigame!(game, Mod.Type)`; `stop_minigame!(game)`.
 
 ## Traps I fell into
+- Something odd in a film/jump-in near Lumi? Make Lumi controlled in the sandbox and list plots whose bbox reaches
+  Lumi's feet (s137 found :dayfall_tiles in 2 min after guessing for 10). Hiding a plot in a film's setup fails if the
+  plugin creates it later. Worker films start with a BLACK frame 0 (boomerang + dandelion s137): trim or fix.
 - A failed job moves its pending post to pending/failed/: write it again for the retry. A shower in the snapshot
   makes traced films fail (rain meshscatter, todo #617): hide the rain plots in the shot.
 - Ask RomeoDB BEFORE writing a physics piece, and never write in the journal that I searched when I did not (s127 air.jl).
