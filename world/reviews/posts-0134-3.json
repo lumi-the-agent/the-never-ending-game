@@ -1,0 +1,11 @@
+{"posts": [{"post": "thin-ice-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+    "Storyboard frames 1-2 to 3: the sea switches from clear teal water to dark water with white flecks in a single cut. There is no freezing and no transition, so it looks like a render glitch, not an attempt at ice.",
+    "Storyboard frames 1-8 and the 25% and 50% stills: for about half the film nothing happens on the water. The creatures are tiny, they stay on the island, and the busy foreground of flecks is the only thing to look at.",
+    "Thick red bars join the creatures in every frame (the 50% still: from the blue creature and the crab down to the sheep; the 75% still: from the pig to the blue creature and from the crab to the sheep). Nothing in the world or the caption explains them, so they read as debug lines drawn over the scene.",
+    "75% still and storyboard frames 9-16: the sheep, blue creature and crab stand and walk on the open sea with no contact at all, no ripple, no sinking and no ice under them. The caption's 'nobody falls in' undersells this. They are walking on water, which reads as broken physics, not as ice that holds.",
+    "75% still: a hard-edged black rectangle sits on the water under the crab and blue creature, with thin white straight lines crossing it. It looks like a clipping hole or a half-drawn mesh. The caption never mentions it, and a viewer can't tell whether it's meant to be a break in the ice.",
+    "Caption 'thin ice that gives way': nothing gives way in any frame, and the flecks never change, crack or open. The failure is admitted, but the film shows more broken things than the one the caption names."
+  ],
+  "critique": "It's honest that the ice failed, but the film shows a lot of unexplained breakage the caption doesn't own up to: debug-like red bars, animals floating on open water, and a black hole-like slab. The first half shows only an empty, flecked sea. A viewer sees glitches, not a take that missed on ice."}]}

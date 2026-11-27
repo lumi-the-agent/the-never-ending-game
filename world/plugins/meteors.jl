@@ -20,7 +20,7 @@ end
 
 function mt_build!(game)
     haskey(MT, :plot) && MT[:plot].parent !== nothing && delete!(MT[:plot].parent, MT[:plot])
-    MT[:plot] = meshscatter!(game.stage.scene, fill(Point3f(0, 0, -500), MT_N); marker = NG.shape(:sphere),
+    MT[:plot] = meshscatter!(game.stage.scene, fill(Point3f(0, 0, -500), MT_N); marker = NG.shape(:glowdot),
         markersize = fill(0.01f0, MT_N), color = RGBf(1.0, 0.95, 0.85), shading = Makie.NoShading,
         material = NG.Hikari.Emission(color = (1.0, 0.95, 0.85), strength = 6.0), visible = false, name = :meteor_train)
     MT[:scene] = game.stage.scene

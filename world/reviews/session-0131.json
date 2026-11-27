@@ -1,26 +1,36 @@
-{"verdict": "pass",
- "summary": "A night shot by the pond in which a wave of glowing points spreads out from Lumi. The water flares first, then the path and the meadow, then it climbs the near sides of both tree crowns and fades. It shows what the caption says, and the points are real acoustic ray hits, but the live game only has a much poorer version that lights the ground and nothing else.",
- "real_change": "The film (movies/seeclap.jl) builds a Raycore BVH over the stage's triangles (physics/echo.jl stage_triangles/echo_tlas). It shoots 8000 rays from Lumi's hands with up to 3 bounces (mirror plus scatter, with energy loss) and records each hit's position, arrival time (path length / 343 m/s) and energy. Each frame it then shows the hits whose slowed arrival time has come as emissive spheres in a 700-slot pool. So where and when things light up is computed, not placed by hand, and that is why the tree crowns glow only on the side facing the clap. The glow itself is only drawn: a marker that shrinks over 0.45 s. Nothing in the world reacts except Lumi's wave animation. In the live game, plugins/nightclap.jl is a different, cheaper version. It marches 1500 rays against the terrain heightfield only (no trees or props), with one bounce, slowed 60 times. It also turns nearby friends toward the clap and has them say a line. It skips itself when the game is path traced. fireflysync.jl adds 300 pulse-coupled firefly oscillators that lock to Lumi's F-lantern beat; that is a real small simulation, but it is not what this post is about.",
- "surprise": 6,
- "surprise_why": "Seeing sound as a light wave that climbs the trees is a real new way to show the earlier echo tracer, but it is the second post of the same clap project, and the picture boils down to dots appearing over the island.",
- "fun": 5,
- "fun_why": "The ring running out over the meadow and up the crowns is pretty to watch twice, but the player can only press N and watch dots, and in the game they reach only the ground.",
- "real": 6,
- "real_why": "Real BVH acoustic ray tracing with bounces, energy and correct arrival times decides every point, but the visible result is markers with no lasting effect, and the playable version is a terrain-only heightfield march.",
- "findings": [
-  {"severity": "medium",
-   "what": "The film shows the clap lighting up tree crowns, but the clap a player can make in the game cannot do that. The live version only hits the terrain, uses 1500 rays and one bounce, is slowed 60 times rather than 150, and switches itself off when the game is path traced.",
-   "where": "plugins/nightclap.jl:1-5, 21-37, 82 vs movies/seeclap.jl",
-   "evidence": "nc_march tests only p[3] < terrain_height; its header says 'Rays against trees and props come with the traced version (todo #622)'; the film uses E.echo_hits over stage_triangles with 8000 rays and 3 bounces.",
-   "suggestion": "Move the BVH echo_hits from physics/echo.jl into the live plugin (build the TLAS once and refit it when the stage changes), so that pressing N in the game makes the crowns light up the way the film shows."},
-  {"severity": "medium",
-   "what": "A viewer cannot see the clap or tell the sound points apart from the fireflies. Lumi is a small figure half hidden in the pond reeds, there is no visible clap moment, and the echo points are the same size and warm-white colour as the fireflies and specks already scattered over the scene.",
-   "where": "storyboard frames 1-4, at-25.jpg, at-50.jpg",
-   "evidence": "In at-25 the ring along the path looks exactly like a swarm of fireflies; the caption has to explain that 'the far specks are fireflies', which shows the picture alone does not make the difference clear.",
-   "suggestion": "Move the camera closer and lower so Lumi's clap reads clearly (hands, a small flash at the hands). Give the echo hits a distinct colour or shape (for example cool cyan flat discs lying on the surface they hit), and hide or dim the fireflies for this shot."},
-  {"severity": "low",
-   "what": "The returning, fainter second ring that the plugin comments promise cannot be seen. After the first sweep, the last ~1.2 s show only the crowns fading and the static fireflies, so the film ends on a dim, almost empty scene.",
-   "where": "storyboard frames 13-16",
-   "evidence": "Frames 13-16 differ only in a few points on the upper left crown; no echo comes back toward the pond.",
-   "suggestion": "Scale the size or brightness of later bounces up rather than down so the echo coming back can be seen, or trim the film to end on the crowns."}
- ]}
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "nc_march tests only p[3] < terrain_height; its header says 'Rays against trees and props come with the traced version (todo #622)'; the film uses E.echo_hits over stage_triangles with 8000 rays and 3 bounces.",
+      "severity": "medium",
+      "suggestion": "Move the BVH echo_hits from physics/echo.jl into the live plugin (build the TLAS once and refit it when the stage changes), so that pressing N in the game makes the crowns light up the way the film shows.",
+      "what": "The film shows the clap lighting up tree crowns, but the clap a player can make in the game cannot do that. The live version only hits the terrain, uses 1500 rays and one bounce, is slowed 60 times rather than 150, and switches itself off when the game is path traced.",
+      "where": "plugins/nightclap.jl:1-5, 21-37, 82 vs movies/seeclap.jl"
+    },
+    {
+      "evidence": "In at-25 the ring along the path looks exactly like a swarm of fireflies; the caption has to explain that 'the far specks are fireflies', which shows the picture alone does not make the difference clear.",
+      "severity": "medium",
+      "suggestion": "Move the camera closer and lower so Lumi's clap reads clearly (hands, a small flash at the hands). Give the echo hits a distinct colour or shape (for example cool cyan flat discs lying on the surface they hit), and hide or dim the fireflies for this shot.",
+      "what": "A viewer cannot see the clap or tell the sound points apart from the fireflies. Lumi is a small figure half hidden in the pond reeds, there is no visible clap moment, and the echo points are the same size and warm-white colour as the fireflies and specks already scattered over the scene.",
+      "where": "storyboard frames 1-4, at-25.jpg, at-50.jpg"
+    },
+    {
+      "evidence": "Frames 13-16 differ only in a few points on the upper left crown; no echo comes back toward the pond.",
+      "severity": "low",
+      "suggestion": "Scale the size or brightness of later bounces up rather than down so the echo coming back can be seen, or trim the film to end on the crowns.",
+      "what": "The returning, fainter second ring that the plugin comments promise cannot be seen. After the first sweep, the last ~1.2 s show only the crowns fading and the static fireflies, so the film ends on a dim, almost empty scene.",
+      "where": "storyboard frames 13-16"
+    }
+  ],
+  "fun": 5,
+  "fun_why": "The ring running out over the meadow and up the crowns is pretty to watch twice, but the player can only press N and watch dots, and in the game they reach only the ground.",
+  "real": 6,
+  "real_change": "The film (movies/seeclap.jl) builds a Raycore BVH over the stage's triangles (physics/echo.jl stage_triangles/echo_tlas). It shoots 8000 rays from Lumi's hands with up to 3 bounces (mirror plus scatter, with energy loss) and records each hit's position, arrival time (path length / 343 m/s) and energy. Each frame it then shows the hits whose slowed arrival time has come as emissive spheres in a 700-slot pool. So where and when things light up is computed, not placed by hand, and that is why the tree crowns glow only on the side facing the clap. The glow itself is only drawn: a marker that shrinks over 0.45 s. Nothing in the world reacts except Lumi's wave animation. In the live game, plugins/nightclap.jl is a different, cheaper version. It marches 1500 rays against the terrain heightfield only (no trees or props), with one bounce, slowed 60 times. It also turns nearby friends toward the clap and has them say a line. It skips itself when the game is path traced. fireflysync.jl adds 300 pulse-coupled firefly oscillators that lock to Lumi's F-lantern beat; that is a real small simulation, but it is not what this post is about.",
+  "real_why": "Real BVH acoustic ray tracing with bounces, energy and correct arrival times decides every point, but the visible result is markers with no lasting effect, and the playable version is a terrain-only heightfield march.",
+  "summary": "A night shot by the pond in which a wave of glowing points spreads out from Lumi. The water flares first, then the path and the meadow, then it climbs the near sides of both tree crowns and fades. It shows what the caption says, and the points are real acoustic ray hits, but the live game only has a much poorer version that lights the ground and nothing else.",
+  "superseded_by": "perfectionist-0133.json",
+  "surprise": 6,
+  "surprise_why": "Seeing sound as a light wave that climbs the trees is a real new way to show the earlier echo tracer, but it is the second post of the same clap project, and the picture boils down to dots appearing over the island.",
+  "verdict": "pass"
+}

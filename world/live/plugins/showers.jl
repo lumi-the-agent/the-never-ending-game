@@ -162,14 +162,14 @@ function build!(game)
         markersize = fill(Vec3f(0), 2NRINGS), color = fill(RGBAf(0.85, 0.92, 1.0, 0.0), 2NRINGS), transparency = true,
         shading = Makie.NoShading, material = NG.Hikari.Emission(color = (0.85, 0.92, 1.0), strength = 0.5),
         name = :rainrings, visible = false)
-    SH[:drops] = meshscatter!(sc, fill(Point3f(0, 0, -100), NDROPS); marker = NG.shape(:sphere),
+    SH[:drops] = meshscatter!(sc, fill(Point3f(0, 0, -100), NDROPS); marker = NG.shape(:glowdot),
         markersize = Vec3f(0.011, 0.011, 0.17), color = DROP_COLOR, transparency = true, shading = Makie.NoShading,
         material = NG.Hikari.Emission(color = (0.72, 0.8, 0.95), strength = 0.6), name = :rain, visible = false)
     rng = Random.Xoshiro(11)
     SH[:seeds] = [(rand(rng, Float32), rand(rng, Float32), rand(rng, Float32)) for _ in 1:NDROPS]
     SH[:puffs] = [(Vec3f(9f0 * (rand(rng, Float32) - 0.5f0), 6f0 * (rand(rng, Float32) - 0.5f0), rand(rng, Float32)), 2.5f0 + 2rand(rng, Float32)) for _ in 1:14]
     # painted shading like plugins/clouds.jl: the higher a puff, the lighter (one flat grey read as a disc, s38)
-    SH[:cloud] = meshscatter!(sc, fill(Point3f(0, 0, -100), 14); marker = NG.shape(:sphere),
+    SH[:cloud] = meshscatter!(sc, fill(Point3f(0, 0, -100), 14); marker = NG.shape(:glowball),
         markersize = [Vec3f(r, r, 0.7f0r) for (_, r) in SH[:puffs]],
         color = [RGBf(0.5f0 + 0.2f0 * o[3], 0.54f0 + 0.2f0 * o[3], 0.62f0 + 0.18f0 * o[3]) for (o, _) in SH[:puffs]],
         shading = Makie.NoShading, material = NG.Hikari.Emission(color = (0.62, 0.66, 0.74), strength = 1.0),

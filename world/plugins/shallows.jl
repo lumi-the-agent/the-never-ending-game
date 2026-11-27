@@ -95,7 +95,7 @@ function build_shallows!(game)
         push!(gp, Point3f(r * cos(a), r * sin(a), SEA_Z + 0.012f0))
     end
     SHALLOWS[:glint_seeds] = [(rand(rng, Float32), 0.6f0 + 0.8f0 * rand(rng, Float32)) for _ in 1:N_GLINTS]
-    SHALLOWS[:glints] = meshscatter!(sc, gp; marker = NG.shape(:sphere), markersize = fill(Vec3f(0), N_GLINTS),
+    SHALLOWS[:glints] = meshscatter!(sc, gp; marker = NG.shape(:glowdot), markersize = fill(Vec3f(0), N_GLINTS),
         color = RGBf(1.0, 0.98, 0.9), shading = Makie.NoShading,
         material = NG.Hikari.Emission(color = (1.0, 0.98, 0.9), strength = 1.5), name = :glints)
     SHALLOWS[:glint_t] = 0.0

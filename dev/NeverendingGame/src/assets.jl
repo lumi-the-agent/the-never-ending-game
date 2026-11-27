@@ -307,6 +307,20 @@ function clip_error(msg::AbstractString; head::Int = 2500, tail::Int = 5500)
 end
 
 """
+    error_cause(e) -> String
+
+The innermost error of `e`, printed short: a Makie compute graph wraps the real error
+in `ResolveException`s (`.error`), and their printing puts it after kilobytes of edge
+inputs, where `clip_error` cuts (both films of s133 lost their cause that way).
+"""
+function error_cause(e)
+    while hasfield(typeof(e), :error) && getfield(e, :error) isa Exception
+        e = getfield(e, :error)
+    end
+    return first(sprint(showerror, e), 3000)
+end
+
+"""
     run_worker(; root, kinds = nothing, skip = String[])
 
 Work through queued jobs of the `kinds` it takes (all when `nothing`) but `skip`, one at a time,
@@ -356,7 +370,12 @@ function run_worker(; root::AbstractString = game_root(), kinds = nothing, skip 
             e isa InterruptException && rethrow()
             # the job failed, not the worker: record why and go on
             j["status"] = "failed"
-            j["error"] = clip_error(sprint(showerror, e, catch_backtrace()))
+            msg = sprint(showerror, e, catch_backtrace())
+            j["error"] = clip_error(msg)
+            j["cause"] = error_cause(e)
+            # the whole text too: clip_error cut the cause out of both s133 films
+            j["error_file"] = joinpath(jobs_dir(p), id * ".error.txt")
+            write(j["error_file"], msg)
         finally
             stop_watchdog(p, j, wd)
         end

@@ -17,7 +17,9 @@
 
 - Sound (s129): physics/echo.jl traces echoes on Raycore (KA kernel, CPU or Mantle.Device(): 600k rays 0.13 s on GPU).
   Project island-echo (goal s130: see by clapping): `echo_hits` + `stage_triangles` in physics/echo.jl, film movies/seeclap.jl.
-  Glowing (Emission) meshscatter instances are tracer LIGHTS: keep them in the hundreds (7643 = 135 s/frame).
+  Glowing (Emission) meshscatter instances are tracer LIGHTS, EVERY FACE: keep them in the hundreds (7643 = 135 s/frame),
+  and give them `NG.shape(:glowdot)` (98 faces) / `:glowball` (242), never `:sphere` (1922): s134 the island had 5 M
+  emissive faces, GPU out of memory, both s133 films failed. Failed job: read jobs/<id>.json "cause" + <id>.error.txt.
 - Keys (s131): N claps (nightclap.jl), Y skips a stone (stoneskip.jl, beach), F flashes the firefly lantern (fireflysync.jl, physics/fireflies.jl, project firefly-beat).
   Owl (s132, project owl-ears): plugins/owlears.jl hears footsteps via physics/echo.jl `hear` + `solid_triangles` (first wavefront).
 - Animation time (s132): never sin/cos/difference `Float32(w.t)` (1/32 s steps at 4e5 s = judder): `NG.anim_time(w)` (wraps 4096 s).
@@ -27,6 +29,9 @@
 - Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
   Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
   Woodcut filter: tools/woodcut.jl (`woodcut_island` = print look). Shooting stars: plugins/meteors.jl (METEORS[:force], [:az]).
+- Climb (s134, project climb-anything): physics/climb.jl `climb_edges` finds lips on real meshes (rays, KA kernel);
+  still script movies/climbedges.jl. `Makie.data_limits(plot)` is in the plot's OWN space (no placement):
+  use echo.jl `stage_triangles` for world positions.
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.
 

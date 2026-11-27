@@ -75,7 +75,8 @@ function register_shape!(name::Symbol, mesh)
 end
 
 function shape(name::Symbol)
-    isempty(SHAPES) && init_shapes!()
+    # not only when empty: a running game that got a new built-in shape through Revise has the old set
+    haskey(SHAPES, name) || init_shapes!()
     return SHAPES[name]
 end
 
@@ -98,5 +99,10 @@ function init_shapes!()
     register_shape!(:cone, unit_cone())
     register_shape!(:cylinder, unit_cylinder())
     register_shape!(:torus, unit_torus())
+    # Glowing (Emission / NoShading) instances: the tracer makes EVERY face of every instance an area
+    # light, and :sphere's 1922 faces on 2600 glowing dots were 5 M lights: out of GPU memory, both
+    # films of s133 failed. :glowdot (98 faces) for dots of a few cm, :glowball (242) for halos.
+    register_shape!(:glowdot, unit_sphere(8))
+    register_shape!(:glowball, unit_sphere(12))
     return SHAPES
 end

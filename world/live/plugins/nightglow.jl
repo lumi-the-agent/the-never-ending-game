@@ -4,7 +4,7 @@
 isdefined(Main, :NIGHTGLOW) || Core.eval(Main, :(const NIGHTGLOW = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
-const GLOW_VERSION = 9
+const GLOW_VERSION = 10   # s134 low-poly glow markers
 const GLOW_COLOR = (0.45, 1.0, 0.85)
 
 struct NightGlow <: System end
@@ -58,11 +58,11 @@ function build_glow!(game)
     # emissive area light, and ~1000 of them ran a dusk clip out of GPU memory (s41, 191 MB alloc failed)
     quiet = game.dash === nothing
     Main.NIGHTGLOW[:quiet] = quiet
-    marker = quiet ? GeometryBasics.normal_mesh(GeometryBasics.Tessellation(GeometryBasics.Sphere(Point3f(0), 1f0), 8)) : NG.shape(:sphere)
+    marker = NG.shape(:glowdot)   # s134: low-poly in the live game too (5 M emissive faces ran films out of GPU memory)
     Main.NIGHTGLOW[:plot] = meshscatter!(game.stage.scene, pos; marker, markersize = Main.NIGHTGLOW[:sizes],
         color = col, shading = Makie.NoShading, material = NG.Hikari.Emission(color = GLOW_COLOR, strength = 3.0),
         visible = false, name = :nightglow_flowers)
-    Main.NIGHTGLOW[:halo] = meshscatter!(game.stage.scene, pos; marker = NG.shape(:sphere), markersize = HALO .* Main.NIGHTGLOW[:sizes],
+    Main.NIGHTGLOW[:halo] = meshscatter!(game.stage.scene, pos; marker = NG.shape(:glowball), markersize = HALO .* Main.NIGHTGLOW[:sizes],
         color = [RGBAf(c, HALO_ALPHA) for c in col], shading = Makie.NoShading, transparency = true,
         material = NG.Hikari.Emission(color = GLOW_COLOR, strength = 1.0),   # emissive: no shadow blobs on the grass (RayMakie casts_shadow)
         visible = false, name = :nightglow_halos)

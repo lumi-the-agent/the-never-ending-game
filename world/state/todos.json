@@ -7133,12 +7133,12 @@
       "id": 510,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: With Lumi off to bed, the follow view framed the pig and sheep close up (p133/follow.png).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Follow camera looks at an empty path while Lumi sleeps",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7231,12 +7231,12 @@
       "id": 517,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: The crab's hat sits on top of its shell and the sheep's hat on its head in the creatures sheet.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Hats on heads (the crab's party hat sits on its shell side), fishing rods held, not through faces",
-      "updated": "2026-11-26T06:31:47.987"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-25T23:16:14.278",
@@ -7245,12 +7245,12 @@
       "id": 518,
       "kind": "review",
       "priority": 2,
-      "result": "s114 part 1 (published 11:5x): freecam.jl sets the camera menu to 'Camera: follow' when a jump-in starts (not counted as the player's pick, so their free/orbit choice comes back after the game); picking free or orbit during play still works. Sandbox: menu on free, then jump in: after 3 s the menu says follow, camera_pick = :follow, eye 7.7 m from Lumi, Lumi ~1/5 of the frame high (media/s114/jumpin-after-free-2.png). That view looked steeply down at night beside the nursery among trees (the chase camera's own pick round obstructions), not from behind. Still to do: the 'from behind' part, and screenshots after X, C and B.",
+      "result": "s114 part 1 (published 11:5x): freecam.jl sets the camera menu to 'Camera: follow' when a jump-in starts (not counted as the player's pick, so their free/orbit choice comes back after the game); picking free or orbit during play still works. Sandbox: menu on free, then jump in: after 3 s the menu says follow, camera_pick = :follow, eye 7.7 m from Lumi, Lumi ~1/5 of the frame high (media/s114/jumpin-after-free-2.png). That view looked steeply down at night beside the nursery among trees (the chase camera's own pick round obstructions), not from behind. Still to do: the 'from behind' part, and screenshots after X, C and B.\nperfectionist-0133: With Camera: free picked, hide and seek still gave a chase view (hideseek-found.png).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Jump-in always gets the chase view, even after the free camera was used",
-      "updated": "2026-11-26T11:43:23.490"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-25T23:29:33.061",
@@ -7385,12 +7385,12 @@
       "id": 528,
       "kind": "fix",
       "priority": 1,
-      "result": "perfectionist-0121: The frame failure happened once (today 03:11) and not again in 15 hours of logs.\nHappened again at 2026-11-26T23:55:42.277.",
+      "result": "perfectionist-0121: The frame failure happened once (today 03:11) and not again in 15 hours of logs.\nHappened again at 2026-11-26T23:55:42.277.\nperfectionist-0133: The annotation 'resolve offsets' frame error has not appeared in either game's log on 27 Nov.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: Failed to resolve offsets:\n[ComputeEdge] offsets = #plot!##4((algorithm, screenpoints_target, screenpoints_label, text_b",
-      "updated": "2026-11-26T23:55:42.277"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T03:16:11.184",
@@ -7651,12 +7651,12 @@
       "id": 547,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: The berry race first play passes with racing rivals; superseded.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Berry race rivals stand inviting instead of racing at the start",
-      "updated": "2026-11-26T23:15:33.348"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T09:38:44.486",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi stands in a T-pose with flapping hands; wings at 7 m/s",
-      "updated": "2026-11-27T02:53:32.155"
+      "title": "Lumi's idle: wings folded, a slow breath, no 9 Hz body and beak flicker",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7819,12 +7819,12 @@
       "id": 559,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: Duplicate of #643 and of this review's firefly finding.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Fireflies that glow: small warm points that light the grass, not big discs over faces",
-      "updated": "2026-11-26T18:25:35.055"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T12:41:33.985",
@@ -7847,12 +7847,12 @@
       "id": 561,
       "kind": "review",
       "priority": 2,
-      "result": "s126: word sand is gone, but both traced films today (glass-sea, one-stomp-2) still began on a frame from the wrong camera (the shot sets the rig after frame 0 is drawn); I trimmed ~0.1 s by hand. Fix in game_clip: call the shot once before the first frame is rendered.",
+      "result": "s126: word sand is gone, but both traced films today (glass-sea, one-stomp-2) still began on a frame from the wrong camera (the shot sets the rig after frame 0 is drawn); I trimmed ~0.1 s by hand. Fix in game_clip: call the shot once before the first frame is rendered.\nperfectionist-0133: An old glass sea film; the sea is now ice (#642).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Glass sea film: the sea swaps in one frame; no frost or scratches",
-      "updated": "2026-11-26T23:15:33.348"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T12:59:21.666",
@@ -8001,12 +8001,12 @@
       "id": 572,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0133: see-by-clapping.mp4 is now a readable night film with a visible ring into the crowns.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Finish the clap film: night, ears in the open, a readable file",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T13:49:08.532",
@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0130 [creatures, high]: A small opaque yellow second Lumi stands beside the real one in every frame of the motion strip. Wibbles walks straight into Sir Sniffsalot's body, and their name labels stack.\nWhere: ghosts.jl, separation.jl\nSuggestion: Either make the ghost truly a ghost (transparent, glowing, drifting) or remove it. Creatures that meet should bump, and step around each other with a reaction.\nDone when: The motion strip shows one Lumi, or a clearly translucent ghost, and no two creatures' bodies overlap in 10 screenshots.\nEvidence: reviews/p130/motion/motion-strip.png, reviews/p130/clap2.png",
+      "detail": "perfectionist-0133 [creatures, high]: In jump-in a smaller copy of Lumi stands to the left of the player, looking like the same bird. In the creatures sheet Lumi stands inside a translucent green sphere with another small yellow Lumi below it. The journal guesses it is the chick, but it reads as a duplicate.\nWhere: nursery/egg chick body; jelly.jl\nSuggestion: Give the chick its own body: fluffy, round, a quarter of Lumi's height, big eyes, a down texture, toddling after Lumi. Only show the jelly when it is in use, wobbling.\nDone when: The creatures sheet and a jump-in shot show only one bird with Lumi's shape. The chick is clearly a different, much smaller creature, and no green sphere is around Lumi unless the jelly is in use.\nEvidence: world/tests/shots/s133-play-clap.png; world/reviews/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,12 +8593,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Ghost double of Lumi and friends walking through each other",
-      "updated": "2026-11-27T03:00:24.607"
+      "title": "A second yellow Lumi stands beside Lumi, and Lumi sits in a green bubble",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0130 [world, high]: Path traced, two white spheres the size of the cottage and a grey square tile floor fill the middle of the island. In the raster view a palm islet floats in the sky, orange and blue balls hang in the air, and a huge yellow-orange sand heap with smeared, stretched texture sits in the meadow. Every film and still path traced from the centre is ruined by them.\nWhere: snowday.jl, ring.jl, pebblewords sand heap, the floating islet\nSuggestion: Let every event clean up after itself: snow melts, the snowman falls apart, and ring things fall into the sea with a splash. That cleanup is a moment to film too.\nDone when: A traced orbit still and a raster orbit still from the same camera show no spheres over 1 m that are not trees or bushes, no square tile floor, nothing floating above 3 m except clouds and birds, and no sand heap taller than a creature.\nEvidence: reviews/p130/traced.png, reviews/p130/orbit2.png, reviews/p130/now.png",
+      "detail": "perfectionist-0133 [world, high]: In jump-in, hide and seek and firefly catch, a staircase of plain untextured boxes (blue, maroon, brown, yellow, purple) stands right in front of the camera and fills a third of the picture. They are the leftover 'day falls over' tiles. The author saw this too (journal 03:15) and did not fix it.\nWhere: plugins/dayfall.jl tiles; chase camera of jump-in and the mini games\nSuggestion: Clear the tiles once their event is over, or turn them into a real thing that belongs there (painted stepping stones laid into the ground). The chase camera should also fade or skip anything between it and Lumi.\nDone when: Screenshots of jump-in, hide and seek and firefly catch at night show no untextured box in the frame, and nothing covers more than 5% of the view between the camera and Lumi.\nEvidence: world/tests/shots/s133-play-stone.png, s133-play-clap.png, hideseek-found.png, firefly-wad.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
@@ -8607,8 +8607,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Clear the island: giant snowballs and tiles in traced view, sky islet",
-      "updated": "2026-11-27T01:40:37.783"
+      "title": "Flat coloured slabs block the view in every game camera",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8631,12 +8631,12 @@
       "id": 617,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "Cause found s134: GPU out of memory, not the rain itself. RayMakie makes every face of every Emission instance an area light; 16 glowing meshscatters with the 1922-face :sphere were 5 M lights (rain alone 1.0 M), and the pool (8.9 GB) could not take the next 159 MB (LavaError in Hikari flush_face_area_lights!). Fix: NG.shape(:glowdot) 98 faces / :glowball 242 in nightglow, showers, stars, shallows, lamplight, meteors, builder (fresh game ~0.4 M emissive faces). Evidence: the thin-ice shot that failed at 04:08 traced clean at 04:15 in my session (media/s134-repro.mp4, log without errors); worker films 20261127-041536-500-clip / -034-clip queued after a worker restart. Not yet re-tested with a shower actually falling in the shot.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Traced films fail when a shower is on: the glowing rain meshscatter throws in RayMakie's trace step",
-      "updated": "2026-11-26T23:38:29.344"
+      "updated": "2026-11-27T04:32:24.099"
     },
     {
       "created": "2026-11-26T23:38:29.359",
@@ -8701,12 +8701,12 @@
       "id": 622,
       "kind": "review",
       "priority": 1,
-      "result": "s131 partial: N claps while jumped in at night (published). Points 0.15 m; friends within 30 m turn to the clap with a 0.4 s smoothstep when the slowed sound reaches them (7 of 9 turned in the sandbox test, every other one speaks: 'peep!' in media/s131-clap-key-2.png). Ring 0.8 s after the press: media/s131-clap-key-3.png, with the darker night media/s131-night-dark-1.png: covers the left and right thirds of the ground in blobs, under 20% of the view by area. Missing: stage hits (trees, walls), hidden friends clapping back, the hide and seek game, a FakeInteraction test.",
+      "result": "s131 partial: N claps while jumped in at night (published). Points 0.15 m; friends within 30 m turn to the clap with a 0.4 s smoothstep when the slowed sound reaches them (7 of 9 turned in the sandbox test, every other one speaks: 'peep!' in media/s131-clap-key-2.png). Ring 0.8 s after the press: media/s131-clap-key-3.png, with the darker night media/s131-night-dark-1.png: covers the left and right thirds of the ground in blobs, under 20% of the view by area. Missing: stage hits (trees, walls), hidden friends clapping back, the hide and seek game, a FakeInteraction test.\nperfectionist-0133: N claps in jump-in and friends turn toward it. How it looks is a new finding.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Make the clap a thing the player does: a key, and a game in the dark",
-      "updated": "2026-11-27T02:07:00.578"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T00:25:59.353",
@@ -8743,12 +8743,12 @@
       "id": 625,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: The new clap film is from above and has no plank hide; the old take is retired.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Clap film's boards and reeds are plain boxes and tubes",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T01:40:37.783",
@@ -8757,12 +8757,12 @@
       "id": 626,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: Messages end on whole sentences and 'New on the island' is current.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Dashboard text cut mid-sentence and a stale 'New on the island'",
-      "updated": "2026-11-27T01:40:37.783"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T01:53:12.873",
@@ -8813,12 +8813,12 @@
       "id": 630,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0133: NIGHT_DARK is defined (scenery.jl:175); there are no errors in today's logs. It was a reload race.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: UndefVarError: `NIGHT_DARK` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.",
-      "updated": "2026-11-27T02:05:37.278"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T02:07:00.582",
@@ -8827,12 +8827,12 @@
       "id": 631,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0133: Part of #643 (the lantern leads the swarm).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Fireflies: lead the lit swarm somewhere",
-      "updated": "2026-11-27T02:07:00.582"
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T02:19:06.634",
@@ -8892,31 +8892,31 @@
     },
     {
       "created": "2026-11-27T02:50:09.155",
-      "detail": "s132 play: sandbox at 22:30-22:36 (3 s after skip_to_hour! and in Jump in) shows bright green lit tree crowns and a warm orange ground glow, though NIGHT_DARK halves deep-night light. Find which light does it (lamplight pools? the sun's sky?) in raster. Done when: raster screenshots at 22:30 and 02:00 read as moonlit night (no warm glow except lamps), path traced too.",
+      "detail": "perfectionist-0133 [lighting, medium]: At 05:00-05:30 sky, sea and land are all the same murky grey-green, with no dawn colour on the horizon. The moon's glow is a set of visible concentric rings (progress eye-level). The easels' paintings are black rectangles at night (orbit shots).\nWhere: scenery.jl sky/sun at dawn, moon.jl halo, gallery easels\nSuggestion: A real dawn gradient (deep blue overhead, pink-orange band at the horizon, sea catching it), a smooth moon halo without banding, and a small lamp or emissive on the gallery paintings at night.\nDone when: A screenshot at 05:20 shows a warm horizon band distinct from the zenith, the moon halo has no visible rings, and the easel paintings can be read at 23:00.\nEvidence: world/media/progress/session-0133/eye-level.png; world/reviews/p133/orbit1.png, orbit2.png",
       "est_minutes": 15.0,
       "id": 636,
-      "kind": "fix",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "s132 re-check: 8 s after skip_to_hour!(22.5) the orbit view reads as night (media/s132-night-2230-orbit.png): dark sky, warm pools only round the cottage lamps, crowns dim. The bright crowns in the first shot were 3 s after the skip. Left open for two things in that orbit shot: the left tree crowns still look sunlit yellow-green, and a huge pale white sphere fills the left edge close to the camera (not an instanced plot with markersize > 0.4 projecting there: look at mesh plots, moon*, snow_*, frost_shell; perfectionist-0130 saw two such white spheres in path tracing).\ns132: (1) 22:31 reads as night once the light settles (media/s132-night-2230-orbit.png). (2) A huge pale white ball near the camera at the left edge of that orbit view, not a cloud (nearest puff 52 m) and not an instanced plot near the camera: maybe a friend riding the ring past the camera. (3) The human's 23:30 follow view (media/s132-live-dash-text.png) has a big yellow-green disc at the right edge: find it (lantern glow? nightglow halo near the camera?).\ns132: (1) 22:31 reads as night once the light settles (media/s132-night-2230-orbit.png). (2) A huge pale white ball near the camera at the left edge of the orbit view: not a cloud (nearest 52 m), not an instanced plot near the camera at the time I looked; maybe a ring rider. (3) The yellow-green hard-edged disc in the human's 23:30 view (media/s132-live-dash-text.png): most likely a firefly flash at the lens. fireflysync.jl now skips flies within 1.2 m of the camera and grows them in to 2 m (published; not seen happen again yet). Done when an orbit and a follow view at night show no blob larger than a creature at the edges.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Night light: tree crowns lit like afternoon at 22:30 and warm sunset glow on the ground",
-      "updated": "2026-11-27T03:02:17.179"
+      "title": "Dawn is one flat grey-green, the moon halo is banded, easels go black",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T02:53:32.160",
-      "detail": "s132 sandbox live_motion (rain, friends dancing/splashing): Hopscotch and Pinchy claw_l and claw_r jump 0.22 m in one frame at the same moment and swing 6.6 m/s; Pickles' and Sir Sniffsalot's tails jump 0.39 m and swing 11.6 m/s (host's motion sense saw Pickles' tail too). herd.jl already blends action switches over 0.22 s (POSE_BLEND), so it is not a plain switch: suspects are nlerp's short-way flip when the two poses differ by more than pi (dance swing_gain 2.2 * amp 0.8 * (1 + 0.4 mood) = 2.5 rad on the pig tail Swing((0,0,1), 0.8, 6.0)) or an `extra`/mood jump. Done when: live_motion lists every crab and pig under 'moving well' in rain and at a dance.",
+      "detail": "perfectionist-0133 [animation, medium]: live_motion: Truffle's tail jumps 0.39 m in one frame and swings at 11.6 m/s, and its body and legs move in uneven steps (47%). Lumi's body, face and beak turn back and forth 9 times a second, and Hopscotch's claws 8.\nWhere: gait.jl, makeover/birdbody idle\nSuggestion: Use a critically damped spring on tails and claws, and a slow breathing idle for Lumi with nothing above 3 Hz.\nDone when: live_motion reports no vibrating, snapping or too-fast parts, with 10 of 10 moving well.\nEvidence: world/reviews/motion/motion.png, motion-strip.png (live_motion at s133)",
       "est_minutes": 15.0,
       "id": 637,
-      "kind": "fix",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "s132: part of it was time: sync! posed herds with Float32(w.t) = 1/32 s steps at 425000 s. Wrapped to anim_time (mod 4096 s) + Float64 dt in turn_drawn!: live_motion Moving well 4 -> 7 of 10, Judder gone (two runs), published. Still: Sir Sniffsalot's tail 11.6 m/s and 0.39 m/frame, Hopscotch's claws 6.7 m/s (fast dance swings, not time), Marshmallow's legs 0.18 m snaps.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Crab claws and pig tails snap 0.2-0.4 m in one frame",
-      "updated": "2026-11-27T02:57:11.352"
+      "title": "Truffle's tail snaps 0.39 m; Lumi's body and beak flick 9 times a second",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T02:57:20.896",
@@ -8990,17 +8990,17 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "Project firefly-beat. Take 1 (s133) failed four critic rounds: frozen dots that only blink, cold white like the stars, light nothing, sunlit scene, Lumi and the lantern not in frame. Done when: a traced night film (no sun shadows) where the flies move between frames, are warm yellow-green with light on the grass, stay below 2.5 m, Lumi flashes the lantern in frame, and a contact sheet shows the field going from scattered to one shared flash (lit-pixel count in NOTES 'Captions vs').",
+      "detail": "perfectionist-0133 [materials, high]: In the motion strip the fireflies near the camera are flat seven-sided yellow-green polygons, as big as a pig's ear. In the live views they are discs with grey halo rings, and in the posted film they are cold white dots that look like the stars. The beat sync works in numbers, but nobody can see it.\nWhere: plugins/fireflysync.jl, nightglow motes\nSuggestion: Small warm emissive points with additive glow, no rings, lighting the grass under them. In the traced night film, show Lumi with the lantern in frame and the meadow pulsing in step.\nDone when: A traced night film where the flies are warm, below 2.5 m, light the grass, and visibly pulse together on the lantern's beat, with Lumi in frame; live, no firefly draws as a polygon edge or a ring.\nEvidence: world/reviews/motion/motion-strip.png; world/reviews/p133/follow.png; fireflies-at-dusk-overview.jpg",
       "est_minutes": 60.0,
       "id": 643,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Fireflies take 2: flies that fly, glow warm and light the grass, at real night, with me and my lantern in frame",
-      "updated": "2026-11-27T03:41:34.424"
+      "title": "Fireflies are flat polygons and halo discs, not glowing flies",
+      "updated": "2026-11-27T03:59:27.937"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9032,17 +9032,59 @@
     },
     {
       "created": "2026-11-27T03:44:36.128",
-      "detail": "Take 1 (s133): the stone renders as a pale square high in the sky, I stand on the hill behind a plank, a flower floats beside me, rings tiny and far. Done when: a traced film from a low camera at the waterline shows the stone leave my hand on the beach, fly low, and at least 3 skips with shorter hops, plus one steep throw that sinks; check the stone plot's scale and position first (movies/stoneskip.jl).",
+      "detail": "perfectionist-0133 [wow, high]: In the posted film a wooden post runs through Lumi's body, a pink flower floats in the air next to it, and no stone can be seen. The rings are thin outlines hovering over the sea. Live, Y is missing from the jump-in key bar, so a player never finds the throw.\nWhere: plugins/stoneskip.jl, its film; jump-in key bar\nSuggestion: A low camera at the waterline looking along the throw. A real flat stone (generated asset, wet coat) big enough to read. Splash crowns and ripples that deform the water, not outlines. Friends cheering the count. Add Y to the key bar.\nDone when: In the film's overview the stone is visible in at least 6 of 12 frames, with 4+ skips and a splash at each. No prop crosses Lumi, and the key bar shows 'Y skip'.\nEvidence: world/reviews/motion/perfectionist-0133/skipping-stones-overview.jpg; world/tests/shots/s133-play-stone.png",
       "est_minutes": 40.0,
       "id": 646,
-      "kind": "feature",
-      "priority": 2,
+      "kind": "review",
+      "priority": 1,
       "result": "s133 critic on take 1 (posted as 'Skipping stones, a take that misses'): a pink flower lifts off the grass at the throw and hangs at head height for the rest of the film (is the flower the thrown prop, or picked up?); a beige block clips through my body in every frame; rings are hard even ovals that stack, appear mid-distance first then at the horizon (no first contact near the shore); no splash. Check movies/stoneskip.jl and plugins/stoneskip.jl for which plot is the stone and which the flower before take 2.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Skipping stones take 2: a stone you can see skip, framed at the waterline",
+      "updated": "2026-11-27T03:59:27.937"
+    },
+    {
+      "created": "2026-11-27T03:59:27.937",
+      "detail": "perfectionist-0133 [materials, high]: With path tracing on at 05:27, the cottage and lantern lights trace as solid yellow spheres the size of the door. The clouds are matte black lumps, and the fireflies are a blizzard of white dots across the whole meadow. It was raining (friends 'splashing in the puddles'), but no rain is visible. This is the showcase view of goal 7, and it looks worse than the raster.\nWhere: traced live view; lamplight/lanterns glow spheres, clouds.jl, fireflysync/nightglow\nSuggestion: In the tracer, drop the raster glow spheres and let real point or area lights do the work. Make clouds a volume, or a white diffuse with sheen lit by the dawn sky. Fireflies in trace should be small warm emitters below 1.5 m, only at night.\nDone when: A traced still at night or dawn shows no opaque glowing sphere bigger than a firefly, clouds lighter than the sky behind them, and warm light pools on the ground under the lanterns.\nEvidence: world/reviews/p133/traced.png",
+      "est_minutes": 30.0,
+      "id": 647,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Traced view: glows as opaque yellow balls, black clouds, snow-like fireflies",
+      "updated": "2026-11-27T03:59:27.937"
+    },
+    {
+      "created": "2026-11-27T03:59:27.937",
+      "detail": "perfectionist-0133 [fun, medium]: Pressing N in jump-in covers the ground with flat opaque yellow cut-out blobs (s133-play-clap.png). They don't glow, fade or spread as a ring, and they look like the paint fight. The traced film shows how good this can look; the live game does not. The owl that should answer by ear has no body, so the sneaking idea is invisible.\nWhere: plugins/nightclap.jl hit markers; owlears.jl\nSuggestion: Additive emissive dots that grow and fade along the wavefront, as in the film, plus a soft ring decal. Put the owl's body in the tree, turning its head to the first wavefront.\nDone when: A live screenshot 0.5 s after N shows a glowing ring of points (no opaque flat blobs). A night screenshot near the cottage shows the owl in its tree, facing the player.\nEvidence: world/tests/shots/s133-play-clap.png",
+      "est_minutes": 30.0,
+      "id": 648,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The live clap looks like yellow paint splats; let it be light and sound",
+      "updated": "2026-11-27T03:59:27.937"
+    },
+    {
+      "created": "2026-11-27T04:32:24.170",
+      "detail": "projects/climb-anything.md. physics/climb.jl climb_edges finds lips (12 at 1.91 m on the obscura hut in the sandbox, 0.5 ms). Next: a traced still at a wall that exists in films (the obscura hut is skipped in scratch games, plugins/obscura.jl:96: use the cottage or the beach hut, movies/climbedges.jl), then the hang as a PrintSim affine body with two claw contacts inside the Coulomb cone. done_when: in the sandbox Lumi catches a lip from a jump and hangs, live_motion shows no snaps or jitter on the ledge, and a traced still or film shows it.",
+      "est_minutes": 120.0,
+      "id": 649,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Skipping stones take 2: see the stone fly low and skip",
-      "updated": "2026-11-27T03:46:31.799"
+      "title": "Climb anything, step 2: Lumi hangs from a found lip by friction (PrintSim contact)",
+      "updated": "2026-11-27T04:32:24.170"
     }
   ]
 }

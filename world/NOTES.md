@@ -717,3 +717,21 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - Glowing things must differ from the stars (warm colour, halo, light falling on the grass), and night means no sun shadows.
 - s133 skipping stones take 1: the stone renders as a big pale square high in the sky (wrong scale or a stray plot?), Lumi stands on the hill behind a plank, rings are tiny and far. Posted as a crop (552x297 at (150,90)); full take media/s133-skipping-stones-take1-full.mp4. Take 2: low camera at the waterline beside the stone's path, check the stone plot first.
 
+
+## Glowing faces and GPU memory (s134, shapes.jl `:glowdot`/`:glowball`, assets.jl `error_cause`)
+- Both s133 films (thin ice, the owl) failed at the first frame with "Failed to resolve trace_renderobject" on a
+  glowing meshscatter. The cause was cut out of the job json by `clip_error` (the edge inputs take kilobytes, the
+  inner error sits in the middle). Repro in my session showed it: `LavaError during pool_alloc: Cannot allocate
+  158793600 bytes ... 8.86 GB already reserved`, in Hikari `flush_face_area_lights!`.
+- RayMakie makes every FACE of every Emission instance a DiffuseAreaLight. The island had 16 glowing meshscatters,
+  most with `NG.shape(:sphere)` (1922 faces): nightglow flowers + halos 1.08 M each, rain 1.0 M, stars 0.8 M,
+  glints 0.6 M, lamplight halos 0.27 M: 5 M area lights. The last plot added (meteors, s133) tipped it over.
+- Fix: `NG.shape(:glowdot)` = unit_sphere(8), 98 faces, and `:glowball` = unit_sphere(12), 242 faces, in
+  nightglow, showers, stars, shallows, lamplight, meteors, builder. Same shot traced clean after (04:15).
+  `shape(name)` now re-inits when a name is missing (a running game got the new shapes through Revise).
+- Failed jobs now keep `"cause"` (the innermost error, unwrapped through `.error` fields) and the whole text in
+  `jobs/<id>.error.txt` (`"error_file"`). Read those first.
+- Rule: a new glowing plot gets :glowdot unless it is big on screen. Count with the live_eval loop over
+  `game.stage.scene.plots` (Emission material, `length(a[1][]) * length(faces(a.marker[]))`).
+- s134: a scratch game (films, stills) does not have every plot of the live game: plugins/obscura.jl skips its hut when
+  `game.dash === nothing`. Check a building exists in the scratch game before aiming a film at it.

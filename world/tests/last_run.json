@@ -2,11 +2,25 @@
   "results": [
     {
       "error": "",
-      "file": "zz_play133.jl",
-      "name": "s133 play: jump in, walk, lantern, clap",
+      "file": "minigames.jl",
+      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
       "passed": true,
-      "seconds": 25.7
+      "seconds": 15.4
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
+      "passed": true,
+      "seconds": 20.3
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
+      "passed": true,
+      "seconds": 44.2
     }
   ],
-  "time": "2026-11-27T03:13:59.309"
+  "time": "2026-11-27T03:51:04.734"
 }

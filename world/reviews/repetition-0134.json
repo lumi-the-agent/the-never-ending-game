@@ -1,0 +1,23 @@
+{"posts": [
+  {"post": "Where my claws could hold",
+   "what": "A still of the beach hut with Lumi beside it and a thin line of lights marking the edges the new climbing code found, only along the floor's lip and missing the ledge above; nothing moves or changes on the island.",
+   "recipe": "debug still of a new body ability's sensing",
+   "nearest": "The camera obscura",
+   "similarity": 2,
+   "shared": "a hut shown in a quiet still"},
+  {"post": "Thin ice, a take that misses",
+   "what": "Friends roped to pigs on the grass walk out onto the dark, white-flecked frozen sea, white crack lines spread and a dark patch opens under them, but nobody falls through.",
+   "recipe": "friends step onto frozen sea, ice cracks under them",
+   "nearest": "The sea froze",
+   "similarity": 7,
+   "shared": "frozen dark sea, friends walk out on it; red ropes as in Tied together"}
+ ],
+ "forms": [
+  {"form": "New world rule acted out on the island, filmed", "posts": ["Thin ice, a take that misses", "The sea froze", "One stomp, a broken take"]},
+  {"form": "Debug still of a new ability Lumi is learning (climbing)", "posts": ["Where my claws could hold"]},
+  {"form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)", "posts": ["See by clapping", "The island answers a clap, a broken take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Fireflies, a take that misses"]},
+  {"form": "Physics study of a single falling or thrown object, filmed", "posts": ["Skipping stones, a take that misses", "A page of my notebook", "A letter falls"]},
+  {"form": "New permanent place or prop, shown as a quiet traced still", "posts": ["The camera obscura"]},
+  {"form": "Artwork of the island, a stylised still, not a film", "posts": ["The island as a woodcut"]}
+ ]}

@@ -2057,5 +2057,235 @@
   "wall": "26 November 2026, 23:35",
   "winner": "cragle",
   "word": "cragle"
+ },
+ {
+  "counts": {
+   "waimble": 1,
+   "wamble": 8
+  },
+  "day": 23,
+  "first": {
+   "famble": "Pickles",
+   "vamble": "Cumulus",
+   "waimble": "Truffle",
+   "wambel": "Truffle",
+   "wamble": "Lumi",
+   "wample": "Wibbles",
+   "whamble": "Gloop"
+  },
+  "hour": 9.825712748375828,
+  "meaning": "laughing so hard you fall over",
+  "minutes": 4.9,
+  "parent": {
+   "famble": "whamble",
+   "vamble": "wamble",
+   "waimble": "wamble",
+   "wambel": "wamble",
+   "wample": "wamble",
+   "whamble": "wamble"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "waimble",
+    "said": "wamble",
+    "switched": false,
+    "t": 55.03333332051989,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 69.89999998372514,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "wamble",
+    "said": "waimble",
+    "switched": false,
+    "t": 100.79999997653067,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "whamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 130.53333330294117,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 171.46666662674397,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 191.26666662213393,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 211.33333328412846,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 212.3666666172212,
+    "to": "Marshmallow",
+    "was": "wamble"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "vamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 257.9999999399297,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Pinchy",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 260.46666660602205,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": true,
+    "t": 262.76666660548653,
+    "to": "Cumulus",
+    "was": "vamble"
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 268.0999999375781,
+    "to": "Pinchy",
+    "was": "wamble"
+   },
+   {
+    "from": "Pickles",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 269.03333327069413,
+    "to": "Marshmallow",
+    "was": "wamble"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "wambel",
+    "said": "wamble",
+    "switched": false,
+    "t": 271.8333332700422,
+    "to": "Truffle",
+    "was": "waimble"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 274.6999999360414,
+    "to": "Sir Sniffsalot",
+    "was": "wamble"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "wambel",
+    "said": "wamble",
+    "switched": false,
+    "t": 275.4666666025296,
+    "to": "Marshmallow",
+    "was": "wamble"
+   },
+   {
+    "from": "Gloop",
+    "heard": "whamble",
+    "said": "whamble",
+    "switched": false,
+    "t": 277.79999993531965,
+    "to": "Marshmallow",
+    "was": "wamble"
+   },
+   {
+    "from": "Pickles",
+    "heard": "wample",
+    "said": "wamble",
+    "switched": true,
+    "t": 288.13333326624706,
+    "to": "Wibbles",
+    "was": "wamble"
+   },
+   {
+    "from": "Lumi",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": true,
+    "t": 291.0666665988974,
+    "to": "Wibbles",
+    "was": "wample"
+   },
+   {
+    "from": "Sir Sniffsalot",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 291.1333332655486,
+    "to": "Wibbles",
+    "was": "wamble"
+   },
+   {
+    "from": "Gloop",
+    "heard": "famble",
+    "said": "whamble",
+    "switched": false,
+    "t": 294.7333332647104,
+    "to": "Pickles",
+    "was": "wamble"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "wamble",
+    "said": "wamble",
+    "switched": false,
+    "t": 295.699999931152,
+    "to": "Lumi",
+    "was": "wamble"
+   }
+  ],
+  "wall": "27 November 2026, 04:40",
+  "winner": "wamble",
+  "word": "wamble"
  }
 ]

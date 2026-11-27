@@ -1,0 +1,23 @@
+{"posts": [
+ {"post": "where-my-claws-could-hold",
+  "verdict": "redo",
+  "problems": [
+   "The 'lights' are three or four tiny glowing dots at the bottom corners of the hut (one at the lower left, two to three at the lower right behind the hydrangea). They are a few pixels wide, sit at the very bottom of the picture and are partly hidden by the flowers and the hut's own base.",
+   "Nothing makes the dots read as 'where my claws found an edge'. They look like stray marbles or lamps in the grass. No claw, no edge being held and no climbing attempt is visible.",
+   "The yellow straw creature (presumably the one who wants to climb) stands with its back to the hut, beside it rather than at it. The picture doesn't connect it to the lights or to the hut.",
+   "Most of the frame is spent on the hut walls, the tree and the meadow, which are not what the caption is about. The subject of the post takes up maybe 1% of the image."
+  ],
+  "critique": "The caption honestly says 'only its floor so far', but even that small claim barely shows: a viewer sees a hut and a creature with a few specks of light at the hut's base, and would not guess they mark grip points. There is nothing here to show someone."},
+ {"post": "thin-ice",
+  "verdict": "redo",
+  "problems": [
+   "The 'plate that bends' never reads as ice. From storyboard frame 3 on, the sea is dark navy water scattered with white oval blobs, which reads as floating foam or ice floes on open water, not a frozen sheet. No bending is visible anywhere in the film.",
+   "Between storyboard frames 2 and 3 the sea jumps in one cut from open turquoise water to this dark, blob-covered surface, with no freezing in between. It looks like a glitch.",
+   "For the first half (frames 1-8 and the 25% and 50% stills) the friends are a tiny cluster on the grass far up the island. Only around frame 9 does anyone step off the beach, so most of the 11.9 s shows nothing related to the caption.",
+   "Only part of the group 'walked out roped together'. In the 75% still and frames 13-16 the pink pigs stay on the grass while the ropes stretch down to the ones on the ice, so the rope is pulled taut from land rather than strung between walkers.",
+   "'The ice went dark and wet under them': the only change is a hard-edged, roughly rectangular black patch under the crab and the blue creature (75% still, frames 12-16). It looks like a shadow or a rendering hole, not wet ice. The walkers don't sink, tilt or react to it.",
+   "In the 75% still a thin white line runs across the ice from the shore through the group with no visible source.",
+   "The characters stay small in the frame throughout, and the static camera sits far back on open water, so the moment the caption describes takes up only a small part of the image."
+  ],
+  "critique": "The caption promises a frozen sea that bends and darkens under a roped party, but the film shows dark water with white specks, a sudden cut to that surface, and a few creatures on its edge over a black patch that looks like a shadow. Neither the ice nor its weakening reads, and the ropes are anchored to friends who stayed on land."}
+]}

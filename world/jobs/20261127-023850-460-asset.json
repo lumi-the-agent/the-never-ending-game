@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T02:38:50.494",
+  "finished": "2026-11-27T03:55:35.732",
   "id": "20261127-023850-460-asset",
   "kind": "asset",
   "params": {
@@ -10,6 +11,21 @@
       "night"
     ]
   },
+  "result": {
+    "created": "2026-11-27T03:55:35.509",
+    "faces": 39212,
+    "id": "20261127-023850-460-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261127-023850-460-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261127-023850-460-asset/mesh.jls",
+    "prompt": "a round barn owl sitting upright, heart-shaped pale face disc, big dark eyes, golden-buff speckled back and wings folded, white chest, stylized cozy toy look, soft feathers",
+    "seconds": 760.0,
+    "tags": [
+      "creature",
+      "owl",
+      "night"
+    ]
+  },
+  "seconds": 763.2,
   "started": "2026-11-27T03:42:52.486",
-  "status": "running"
+  "status": "done"
 }

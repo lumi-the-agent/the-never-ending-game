@@ -6,7 +6,7 @@
 isdefined(Main, :LAMPLIGHT) || Core.eval(Main, :(const LAMPLIGHT = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
-const LAMP_VERSION = 10
+const LAMP_VERSION = 11   # s134 low-poly glow markers
 const WARM = (1.0f0, 0.68f0, 0.32f0)
 const FLAME = RGBf(1.0, 0.82, 0.45)
 const WINDOW = RGBf(1.0, 0.9, 0.62)
@@ -114,15 +114,15 @@ function build_lamps!(game)
     Main.LAMPLIGHT[:pools] = mesh!(sc, m; color = cols, shading = Makie.NoShading, transparency = true,
         visible = false, name = :lamplight_pools)
     isempty(fpos) && (push!(fpos, Point3f(0, 0, -50)); push!(fsize, Vec3f(0.01)))   # the raster cannot draw an empty meshscatter
-    Main.LAMPLIGHT[:flames] = meshscatter!(sc, fpos; marker = NG.shape(:sphere), markersize = fsize, color = FLAME,
+    Main.LAMPLIGHT[:flames] = meshscatter!(sc, fpos; marker = NG.shape(:glowdot), markersize = fsize, color = FLAME,
         shading = Makie.NoShading, material = NG.Hikari.Emission(color = (1.0, 0.8, 0.45), strength = 6.0),
         visible = false, name = :lamplight_flames)
     isempty(wpos) && (push!(wpos, Point3f(0, 0, -50)); push!(wsize, Vec3f(0.01)); push!(wrot, Makie.Quaternionf(0, 0, 0, 1)); push!(wcol, WINDOW))
-    Main.LAMPLIGHT[:windows] = meshscatter!(sc, wpos; marker = NG.shape(:sphere), markersize = wsize, rotation = wrot, color = wcol,
+    Main.LAMPLIGHT[:windows] = meshscatter!(sc, wpos; marker = NG.shape(:glowball), markersize = wsize, rotation = wrot, color = wcol,
         shading = Makie.NoShading, material = NG.Hikari.Emission(color = (1.0, 0.78, 0.38), strength = 5.0),
         visible = false, name = :lamplight_windows)
     isempty(hpos) && (push!(hpos, Point3f(0, 0, -50)); push!(hsize, Vec3f(0.01)); push!(hcol, RGBAf(1, 1, 1, 0)))
-    Main.LAMPLIGHT[:halos] = meshscatter!(sc, hpos; marker = NG.shape(:sphere), markersize = hsize, color = hcol,
+    Main.LAMPLIGHT[:halos] = meshscatter!(sc, hpos; marker = NG.shape(:glowball), markersize = hsize, color = hcol,
         shading = Makie.NoShading, transparency = true, material = NG.Hikari.Emission(color = (1.0, 0.72, 0.36), strength = 0.4),
         visible = false, name = :lamplight_halos)
     Main.LAMPLIGHT[:key] = lamp_key(game)

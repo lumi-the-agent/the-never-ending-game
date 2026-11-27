@@ -1,0 +1,23 @@
+{"posts": [
+  {"post": "where-my-claws-could-hold",
+   "verdict": "redo",
+   "problems": [
+     "The lights sit at grass level along the bottom of the hut, about where the bird's feet are. An edge at foot height is not something you climb to, so 'I want to climb' and 'where my claws could hold' don't match what the picture shows.",
+     "The lights are big glowing balls packed side by side. They look like a row of lanterns or glowing eggs on the ground, not marks along one edge, and they spill past the hut's left corner over the flower bush.",
+     "The protruding ledge halfway up the hut, the obvious climbable edge in the picture, has no marker. The viewer is left wondering why it wasn't found.",
+     "The bird is cut off by the left frame edge, and its head is cropped at the top. The 'I' of the caption is only a yellow torso and legs.",
+     "Clutter at the frame edges: a dark broken shape floats against the sky at top right, and a half-hidden owl-like stump blocks the right end of the lit row."
+   ],
+   "critique": "The picture shows a row of glowing balls on the ground in front of a hut, with a half-cropped bird beside it. Nothing in it reads as a climbable edge or as an attempt to climb."},
+  {"post": "thin-ice",
+   "verdict": "redo",
+   "problems": [
+     "'The sea froze in one cut': from frame 3 of the storyboard on, the sea is dark open water with scattered white blobs. It reads as foam or floating petals, not as frozen sea. The water between the blobs stays dark and reflective, so there is no ice surface.",
+     "Frames 9-16 and the 75% frame: the friends stand on that same dark, reflective water between the blobs. Nothing shows them standing on ice rather than floating in the sea.",
+     "'it went black under two of them': the black patch under the crab and the blue friend (from the 50% frame on, larger in the 75% frame) looks like a shadow or reflection. It isn't a visible break. Nobody sinks, tilts or drops, and the friends on the grass don't brace or pull on the ropes.",
+     "The ropes are thin red lines in a wide shot, and the friends are tiny in the lower middle of the frame. Who is tied to whom is hard to make out until the last few frames.",
+     "Frames 1-8 (the first half of the film) are an almost static island, with the action a small speck near the trees. Most of the 11.9 s shows nothing happening at the waterline.",
+     "In the 75% frame, a thin white line runs diagonally across the water from the blue friend past the crab. It is unexplained and looks like a stray rendering artifact."
+   ],
+   "critique": "The caption describes a frozen sea, a roped team and ice giving way. The film shows dark water with white specks, small figures standing on it, and a dark smudge, so neither the freeze nor the breaking reads, and the main event is too small and too late in the film."}
+]}

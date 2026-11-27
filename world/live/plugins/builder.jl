@@ -435,7 +435,7 @@ const PUFF_TIME = 1.4
 function puff!(game)
     d = B[:plots]
     if !haskey(d, :puff)
-        d[:puff] = meshscatter!(game.stage.scene, fill(HIDE, N_SPARK); marker = NG.shape(:sphere), markersize = 0.0f0,
+        d[:puff] = meshscatter!(game.stage.scene, fill(HIDE, N_SPARK); marker = NG.shape(:glowdot), markersize = 0.0f0,
                                 color = RGBf(1.0, 0.85, 0.4), shading = Makie.NoShading,
                                 material = NG.Hikari.Emission(color = (1.0, 0.85, 0.4), strength = 2.0), name = :builder_puff)
     end

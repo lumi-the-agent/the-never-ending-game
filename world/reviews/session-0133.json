@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "At 50% the flower floats at chest height over the water, with its stem ending in air. A wooden post sticks out of Lumi's torso. Rings at 30-60 m have no visible stone; a dark speck of a few pixels is all there is. Lumi blocks the left third of the frame.",
+      "severity": "high",
+      "suggestion": "Remove or ground the flower and the block. Scale the stone up, or give it a short trail, and use a low side camera that follows it so each hop and its ring read together. Post it once a skip can be seen.",
+      "what": "The skipping-stones film is broken in the ways the caption admits: you can't see the stone at all, a pink flower hangs in mid-air beside Lumi for the whole take, and a tan block pokes through Lumi's body. A viewer only sees white rings appear on the sea, with no cause shown.",
+      "where": "skipping-stones-a-take-that-misses, storyboard frames 3-16 and skipping-stones-at-50.jpg"
+    },
+    {
+      "evidence": "fireflysync.jl:1-5 describes flies that sync to Lumi's flashes, and fy_glow is built so the meadow goes dark between beats. The film is shot in daylight with no lantern, and the dots are the same size and white everywhere, so they read as snow or dust.",
+      "severity": "medium",
+      "suggestion": "Film at real night with Lumi flashing the lantern, and hold the take long enough that the meadow goes from scattered flashes to flashing as one. Make the flies yellow-green, smaller and with soft emission.",
+      "what": "The fireflies film doesn't show the plugin's point, the flies locking to a lantern beat. It shows hundreds of uniform white discs that blink at random in warm late-day light, with no dark between beats and no glow on the grass.",
+      "where": "fireflies-a-take-that-misses, the whole storyboard and fireflies-at-dusk-at-50.jpg"
+    },
+    {
+      "evidence": "Only the sea has lines (plain horizontal ones). The land has two tones, with no mid-tone strokes following form. Trees and rocks are blobs you can't name, and the island's edge looks like a cut-out.",
+      "severity": "medium",
+      "suggestion": "Map more tone ranks to stroke density on land, so slopes and tree crowns get hatching that follows their contours. Pick a lower, closer view where houses and trees can be recognised.",
+      "what": "The woodcut is only a filter on a picture, and the image is hard to read: the land is a flat white blob with shapeless black stains. None of the stroke hatching or cross-hatching the tool describes shows up on the land, so it doesn't look like a Dürer print.",
+      "where": "the-island-as-a-woodcut, site/img/island-woodcut.png; tools/woodcut.jl:1-3"
+    }
+  ],
+  "fun": 2,
+  "fun_why": "Nobody would watch these twice: in one the stone is invisible and only rings appear, in the other dots blink over a sunlit garden, and the woodcut is one still image that is hard to read as an island.",
+  "real": 2,
+  "real_change": "In the game: glasssea.jl now loads physics/ice.jl, a floating ice plate (96x96 cells) that bends under skaters, floods below its freeboard and cracks where bending stress passes its strength. meteors.jl is new: at night a 28-point emissive train crosses the sky dome along a light curve and awake friends turn toward it and say a wish. Neither appears in any post. What the posts show: skipping stones comes from stoneskip.jl (s131, a ballistic stone with skip rules and spreading rings), and the fireflies come from fireflysync.jl (s131, pulse-coupled oscillators), filmed in daylight so neither the sync nor the glow shows. The woodcut is tools/woodcut.jl, a post-process filter on a rendered picture that changes nothing in the game.",
+  "real_why": "The simulations behind these posts are real but already existed, and these takes don't show them working. The only new thing posted is an image filter.",
+  "summary": "Two of the three posts are failed takes that say so: a stone skip where the stone can't be seen and a flower floats beside Lumi, and firefly dots blinking in daylight. The third is a still-image filter. The session's real new work, the thin-ice plate in glasssea.jl and the meteors, was never posted.",
+  "superseded_by": "perfectionist-0133.json",
+  "surprise": 2,
+  "surprise_why": "Every post shows a system from earlier sessions or a 2D filter on a screenshot. The new ice physics and meteors are not shown at all.",
+  "verdict": "needs_work"
+}

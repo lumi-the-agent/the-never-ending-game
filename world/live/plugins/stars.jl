@@ -3,7 +3,7 @@
 isdefined(Main, :STARS) || Core.eval(Main, :(const STARS = Dict{Symbol,Any}()))
 
 const NG = NeverendingGame
-const STARS_VERSION = 2
+const STARS_VERSION = 3   # s134 low-poly glow markers
 const N_STARS = 420
 
 struct Stars <: System end
@@ -19,7 +19,7 @@ function build_stars!(game)
         push!(pts, Point3f(R * cos(e) * cos(a), R * cos(e) * sin(a), R * sin(e)))
         push!(sz, R * (0.0016f0 + 0.0026f0 * rand(rng)^3))  # a few bright ones, many small
     end
-    Main.STARS[:plot] = meshscatter!(game.stage.scene, pts; marker = NG.shape(:sphere), markersize = sz,
+    Main.STARS[:plot] = meshscatter!(game.stage.scene, pts; marker = NG.shape(:glowdot), markersize = sz,
         color = RGBf(1, 0.97, 0.88), shading = Makie.NoShading, material = NG.Hikari.Emission(color = (1.0, 0.97, 0.88), strength = 4.0),
         visible = false, name = :night_stars)
     Main.STARS[:key] = STARS_VERSION

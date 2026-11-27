@@ -1,6 +1,6 @@
 # The sea freezes into glass
 Goal: on a frozen morning the player skates across the sea ice to a small islet, and the ice is thin in places: it sags, floods and cracks under them, a crack they start stays there, and standing still on the thin vein drops them through. Fun: risk, reading the ice, and a crack running away from your feet.
-Next: look at the traced 'Thin ice' film (job 20261127-032755-451-clip, site/films/thin-ice-broken-take.mp4, pending post 'Thin ice'); then todo #642: cracks as connected lines, the plate on the GPU, the player falls through the vein.
+Next: the thin ice film is posted as a miss (s134, cut to its last 5.5 s and cropped 2x on the shore, full take media/s134-thinice-full.mp4, sheet media/s134-thinice-sheet.png): the sea freezes, friends walk out ROPED TOGETHER (tied.jl's red morning rope still draws in the film: hide it in movies/glasssea.jl) and the ice goes dark and wet under them; cracks are not readable. Then todo #642: cracks as connected lines, the plate on the GPU, the player skating it.
 
 
 The idea (s126, the critic's strongest of three rounds: surprise 6, fun 7, "too expected" but no likeness penalty):
