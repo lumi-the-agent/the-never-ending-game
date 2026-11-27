@@ -22,7 +22,9 @@ struct WireBench <: System end
 wb_new() = Wire(n = 81, ds = 5e-3, d = 6e-3)    # a 40 cm, 6 mm copper rod (Lumi-sized; same physics)
 
 function wb_ensure!(game)
-    get(WB, :version, 0) == WB_VERSION && any(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :wirebench_wire, game.stage.scene.plots) && return
+    # s150: WB lives in Main across reloads, but every reload makes a NEW `Wire` type: an old wire matched no
+    # method (the human's game switched the bench off), so a wire of another type rebuilds the bench too
+    get(WB, :version, 0) == WB_VERSION && get(WB, :w, nothing) isa Wire && any(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :wirebench_wire, game.stage.scene.plots) && return
     WB[:version] = WB_VERSION              # a reload that changes what WB holds rebuilds the bench (s144: :col_obs was missing)
     for p in copy(game.stage.scene.plots)
         haskey(p.attributes, :name) && p.attributes[:name][] in (:wirebench_board, :wirebench_wire, :wirebench_end, :wirebench_pin, :wirebench_scrap) && delete!(game.stage.scene, p)

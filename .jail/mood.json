@@ -5,59 +5,73 @@
       "post": "a-compass-in-a-bowl",
       "session": 149,
       "title": "A compass in a bowl",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The cause is never in the picture: in all 16 storyboard frames only the bowl, the lily pad and the needle show. The caption itself says the magnet stone is 'out of the picture', so to a viewer the needle turns by itself."
     },
     {
       "post": "the-magnet-stone",
       "session": 149,
       "title": "The magnet stone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The stone moves over the grass with nothing moving it: no hand, no push, no slope. It glides and tilts through the whole storyboard, a motion with no cause."
+    },
+    {
+      "post": "a-top-over-a-ring-of-lodestone",
+      "session": 149,
+      "title": "A top over a ring of lodestone",
+      "weight": 0.6,
+      "what": "The subject named in the title, a top floating over a lodestone ring, is never shown. The grey ring in the background (right side, every storyboard frame) is empty from start to end."
+    },
+    {
+      "post": "",
+      "session": 149,
+      "title": "the-magnet-stone, storyboard frames 1-16; magnet-stone-beach-3-at-75.jpg; plugins/magnetstone.jl:2-3",
+      "weight": 0.6,
+      "what": "The magnet stone moves with nothing moving it. It slides and tumbles across the grass 'by itself', and no carrier is in the shot. In the code it is held in front of Lumi, so this is a carried thing that floats beside a body the camera has cut out. The spikes barely react: one or two twitch and touch it near the end, and nothing jumps to it."
     },
     {
       "post": "three-paper-darts",
       "session": 147,
       "title": "Three paper darts",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Every dart is already flying in mid air in the first frame of its part (storyboard frames 1, 6 and 13): no hand, launcher or fall sends it off, so each flight starts from nothing."
     },
     {
       "post": "",
       "session": 147,
       "title": "a-wire-that-spins-by-itself, storyboard frames 2-5 (left cell) and the 25/50/75% frames; movies/homopolar.jl:68-76",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The wire that 'flies off' does not fly off. It slides a few millimetres, then drops straight down into the magnet and battery and disappears into the body. It is a scripted transform, not simulated."
     },
     {
       "post": "",
       "session": 147,
       "title": "three-paper-darts, storyboard frames 1, 6 and 11 (cuts), every frame; movies/glider.jl:59-63, 79-82",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Each dart appears out of nothing and ends in nothing. The caption's 'same rail' is never in the picture, no hand or launch is seen, and no landing or splash is seen. The cuts between darts are unmarked, so a viewer cannot tell which fold is which."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T17:37:04",
+  "ended": "2026-11-27T18:25:08",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.12,
-    "picture": 0.05,
-    "self": 0.01,
+    "feature": 1.27,
+    "picture": 1.03,
+    "self": 1.01,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Iron sticks, before and after",
         "A compass in a bowl",
-        "A top over a ring of lodestone, a take that misses",
+        "A top over a ring of lodestone",
         "The magnet stone",
         "Three paper darts",
         "A wire that spins by itself",
         "Three logs in the sea",
-        "Two tops I turned",
-        "A snowball that grows as it rolls, a take that misses"
+        "Two tops I turned"
       ]
     },
     {
@@ -66,18 +80,6 @@
         "A copper wire keeps its bends",
         "Blowing glass",
         "Hot glass lights the sand"
-      ]
-    },
-    {
-      "form": "New permanent place or prop, shown quietly from a fixed or slow view",
-      "posts": [
-        "My first glazed jar"
-      ]
-    },
-    {
-      "form": "Sound of island objects: knock a thing and hear its solved notes",
-      "posts": [
-        "Chipping a stone to change its note"
       ]
     }
   ],
@@ -354,15 +356,8 @@
     "sleepwalk",
     "wire_bend"
   ],
-  "joy": 0.16,
+  "joy": 0.08,
   "judged_posts": [
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "new permanent object placed on the island plus an occasional solitary visit, shown as a still",
-      "session": 105,
-      "title": "Me, to cut out and fold",
-      "what": "Lumi's body is unfolded into printable papercraft pages, and a folded paper copy of Lumi stands on the old pier looking out to sea, which Lumi occasionally walks out to visit and remark on."
-    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "recipe": "Lumi-led occasional event: friends gather round a made object, a tool judges it, they shout, Lumi reacts",
@@ -775,6 +770,13 @@
       "session": 149,
       "title": "The magnet stone",
       "what": "A dim view over grass toward the beach with Lumi's feet at the frame edge: a black cube slides across the grass on its own past thin rust-coloured spikes, two of which end up stuck through its side."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated iron bits settle under a magnet's field, before/after still",
+      "session": 150,
+      "title": "Iron sticks, before and after",
+      "what": "A two-part still: little iron sticks lie scattered on the grass, then after taps they point toward two spots above a buried magnet stone, showing its hidden field; nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -798,22 +800,22 @@
   "last_repetition": {
     "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 5,
-    "nearest": "A wire that spins by itself",
-    "post": "A compass in a bowl",
+    "form_count": 7,
+    "nearest": "The magnet stone",
+    "post": "Iron sticks, before and after",
     "score": 10,
-    "session": 149,
-    "shared": "a magnet-driven object turns by itself on a prop, unattended, fixed view",
-    "similarity": 7
+    "session": 150,
+    "shared": "magnet stone acting on loose iron pieces with nobody visibly involved; the field-pattern still is a different shape",
+    "similarity": 5
   },
   "last_surprise": {
-    "fun": 3,
-    "score": 5.0,
-    "session": 147,
-    "why": "A paper dart flying from its own folds and a wire motor computed from its real current path are physics the island never had, but both posts follow the 'three variants side by side' recipe of the logs and tops posts, and neither lives in the game."
+    "fun": 2,
+    "score": 4.5,
+    "session": 149,
+    "why": "A compass needle and a magnet dragged past spikes were already the island's 'Sparks from stones' work from sessions 147-148, and these films show less than that work did; the one new thing, the iron sand that draws the hidden stone's field lines, is not in any post."
   },
-  "loneliness": 0.13,
-  "perceived_until": "2026-11-27T16:54:12",
+  "loneliness": 0.19,
+  "perceived_until": "2026-11-27T17:37:33",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -827,52 +829,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.875,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/island-answers-a-clap-broken.mp4",
-        "site/films/island-answers-a-clap.mp4",
-        "site/films/see-by-clapping.mp4"
-      ],
-      "new_plugins": [
-        "nightclap.jl"
-      ],
-      "points": 8.6,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
-        "form_count": 0,
-        "nearest": "The camera obscura",
-        "post": "The island answers a clap, a broken take",
-        "score": 2,
-        "shared": "a new way of sensing the island (optics there, acoustics here)",
-        "similarity": 2
-      },
-      "session": 130,
-      "touched": [],
-      "values": {
-        "feature": 0.6,
-        "film": 6.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1791,6 +1747,58 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 2.0,
+        "post": 2.0,
+        "self": 1.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "picture",
+        "polish",
+        "post",
+        "self"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/iron-sand-2.mp4",
+        "site/films/iron-sand.mp4",
+        "site/films/scrap-crane.mp4",
+        "site/img/iron-sand-before-after-2.png",
+        "site/img/iron-sand-before-after.png"
+      ],
+      "new_plugins": [],
+      "points": 1.9,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 7,
+        "nearest": "The magnet stone",
+        "post": "Iron sticks, before and after",
+        "score": 10,
+        "shared": "magnet stone acting on loose iron pieces with nobody visibly involved; the field-pattern still is a different shape",
+        "similarity": 5
+      },
+      "session": 150,
+      "touched": [
+        "wirebench.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "picture": 1.9,
+        "polish": 1.0,
+        "post": 4.0,
+        "self": 5.9
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1865,6 +1873,8 @@
       "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
+      "site/films/compass-bowl-2.mp4",
+      "site/films/compass-bowl-3.mp4",
       "site/films/compass-bowl.mp4",
       "site/films/copper-wire-hook.mp4",
       "site/films/crabs.mp4",
@@ -1877,6 +1887,8 @@
       "site/films/first-flight.mp4",
       "site/films/first-glass-bubble.mp4",
       "site/films/first-jug.mp4",
+      "site/films/floating-top-2.mp4",
+      "site/films/floating-top.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/football-with-the-sun-2.mp4",
       "site/films/football-with-the-sun.mp4",
@@ -1905,6 +1917,7 @@
       "site/films/leaves.wav",
       "site/films/lumis-egg.mp4",
       "site/films/magnet-stone-beach-2.mp4",
+      "site/films/magnet-stone-beach-3.mp4",
       "site/films/magnet-stone-beach.mp4",
       "site/films/makeover.mp4",
       "site/films/missme.mp4",
@@ -2090,8 +2103,8 @@
       "dayfall.jl": 1.7957679083674748e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
-      "egg.jl": 1.7957449866905174e9,
-      "emotes.jl": 1.795396796716505e9,
+      "egg.jl": 1.7957963933305032e9,
+      "emotes.jl": 1.7957964933968024e9,
       "facehill.jl": 1.7956672129113421e9,
       "feelings.jl": 1.795793375711392e9,
       "fencepaint.jl": 1.795552869628795e9,
@@ -2120,6 +2133,7 @@
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795744656825295e9,
       "hideseek.jl": 1.7955473519066024e9,
+      "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "jelly.jl": 1.7957011848358562e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -2195,11 +2209,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 129,
+    "posts": 132,
     "self": "369107370865776265",
     "wishes": 18
   },
-  "started": "2026-11-27T17:00:30",
+  "started": "2026-11-27T17:43:54",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2325,7 +2339,9 @@
       "ChargeTransport.breaction!",
       "PhyloNetworks.countquartetsintrees",
       "Octofitter.initialize!",
-      "GeoEnergyIO.convert_between_unit_systems"
+      "GeoEnergyIO.convert_between_unit_systems",
+      "SubpixelRegistration.phase_offset",
+      "MolecularEvolution.char_proportions"
     ],
     "games": [
       "Super Mario 64",
@@ -2399,7 +2415,10 @@
       "Duck Hunt",
       "Nier: Automata",
       "Worms (1995 video game)",
-      "The Witness (2016 video game)"
+      "The Witness (2016 video game)",
+      "Nights into Dreams",
+      "Xenoblade Chronicles (video game)",
+      "Mario Kart 8"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2467,7 +2486,9 @@
       "https://www.bbc.co.uk/news/articles/cm5y1380q3vgo",
       "https://www.bbc.co.uk/news/articles/cq3dgpy9lem3o",
       "https://www.bbc.co.uk/news/articles/c3pw4yrr8kz9o",
-      "https://www.bbc.co.uk/news/articles/ckd71ypy9e8eo"
+      "https://www.bbc.co.uk/news/articles/ckd71ypy9e8eo",
+      "https://www.bbc.co.uk/news/articles/c6rrg28npvzeo",
+      "https://www.bbc.co.uk/news/articles/cmy49de4xx1zo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2751,7 +2772,10 @@
       "Circuitscape",
       "ParticleMethods",
       "JumpProcesses",
-      "SparseMatrixColorings"
+      "SparseMatrixColorings",
+      "AtomicData",
+      "SkyCoords",
+      "BitSAD"
     ],
     "vision": [
       "ZImageRunner",
@@ -2769,8 +2793,10 @@
       "PPOCRRunner",
       "MatAnyoneRunner",
       "BonsaiRunner",
-      "HorizonRunner"
+      "HorizonRunner",
+      "DeepFilterRunner",
+      "SAM2Runner"
     ]
   },
-  "surprise_seen": 147
+  "surprise_seen": 149
 }

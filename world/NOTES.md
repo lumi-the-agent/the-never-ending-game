@@ -1034,3 +1034,31 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
 - s149: the worker loads a film script into its own module (Main.ClipScript), NOT Main: the script must start with
   `using NeverendingGame, GeometryBasics, Makie, LinearAlgebra; const NG = NeverendingGame` and include its physics
   with `Base.include(@__MODULE__, ...)` (iron-sand film failed on `NG` undefined). Test: `m = Module(); Base.include(m, script)`.
+
+## Holding things in the beak (s150, todo #716)
+- `NG.beak_tips(w, c) -> (upper, lower)` (bird.jl): the world tips of the upper beak (frontmost vertex of the
+  body shape) and of the jaw (part `:beak`), posed exactly as the herd draws it (drawn yaw, action, phase, jaw).
+  Typed args broke the package load (bird.jl is included before World/Creature): keep it untyped.
+- Lumi's beak is HOOKED: idle, body frame, the upper tip is at x 0.53 z 1.25, the short jaw ends at x 0.33 z 1.28
+  (jaw pivot x 0.24 z 1.27). Something held sits under the hook, just ahead of the jaw tip.
+- The catch for the magnet stone: the beak is 1.25 m up; the stone's pull on a spike is 8.7x its weight at 15 cm,
+  0.1x at 25. Carried in the beak it moves nothing on the sand. Two honest ways: a deep stoop (pitch ~1.6 rad
+  about the hips puts the beak ~0.25 m up: a 90 degree bow), or the stone on a cord from the beak, a real
+  pendulum the field pulls sideways towards iron (spikes leap up and hang on it). The cord is the better film.
+- (s150) An electromagnet barely reaches (physics/coilcrane.jl): 300 turns x 3 A on a 5 cm nail lift the nail under
+  the core at 3.25x weight from 4.5 mm, 0.32x from 12 mm; at Lumi scale (20 cm core, 1500 turns, 3 A) 9.3x from 15 mm
+  and nothing 3 cm aside. A flat nail under a vertical field feels almost nothing (rods magnetise along their axis):
+  the crane must go INTO the heap. Biot-Savart check: 400 turns over 0.2 m -> 1996 A/m at the centre (2000 ideal).
+  For speed the film lumps the N turns into 60 loops of N/60 turns each (fine a few mm from the winding).
+- (s150) `:eat` lowers Lumi's beak 23 cm and pushes it 34 cm forward (idle beak 1.21 m up, 0.54 forward):
+  the cheapest way to dip something held. beak_tips poses the TARGET action; the herd blends 0.22 s (POSE_BLEND):
+  blend the two beak points yourself (movies/crane.jl beakpoint).
+
+## Plugin state across reloads (s150, the human's wire bench was switched off)
+- A plugin that keeps state in Main (Main.WIREBENCH) and includes a physics file into its own module gets a NEW
+  struct type on every reload; the old object in Main matches no method (MethodError, switched off). Rebuild when
+  `!(state[:x] isa CurrentType)` (wirebench.jl wb_ensure!, fireflysync.jl the same since s131). Check every plugin
+  with Main state + Base.include of a struct file.
+- `mesh!(scene, normal_mesh(Cylinder(...)))` fails in RayMakie's raster (FaceView normals -> vec3s MethodError);
+  a meshscatter with that marker works. A stretched cylinder: unit marker, markersize Vec3f(1,1,len), rotation.
+- Film eye on a slope: take its height from `NG.ground` UNDER THE EYE, not under the subject (the beach rises inland).

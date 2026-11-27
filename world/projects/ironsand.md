@@ -14,3 +14,9 @@ Next: grains as needles that only turn where the field's torque beats friction (
   35% standing). Camera from the sea side while Lumi is there (Main.LOCAL_CAMS). Published s149.
 - movies/ironsand.jl: film (ironsand_parts for a sandbox look, ironsand_clip for the worker).
 - Checked: media/ironsand-patterns-s149.png (4 poses/depths), play shots media/ironsand-play-*.png.
+- s150: the film posted (site/films/iron-sand.mp4): grains go from scattered to lines fanning out from one spot in ~3 taps. The patch lies on GRASS (spot (-2.4,18.8) is past the sand line): move it onto the sand for the next film. The idea "Two stones under one patch" scored 5/10 alike (textbook filings picture); the guessing game with friends who dig is what made it new.
+- s150 critic redo of the film: grains pre-laid in a sharp square (no sprinkle), no tap visible, turns all at once in
+  one step then 8 s frozen, the stone never hinted, grains read as fat black bristles floating over grass. Stopgap:
+  iron-sand-2.mp4 = first 4 s, caption says what shows. RETAKE needs: grains poured from Lumi's beak onto SAND
+  (irregular patch), Lumi's foot stamping each tap with the grass/sand jolting, small tilts per tap so the build-up
+  is gradual, grains 3x thinner and lying flat, and the stone dug up at the end so the cause is seen.

@@ -1,0 +1,11 @@
+{"posts": [{"post": "iron-sand-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+    "Motion without a visible cause: from frame 1 to frame 7 of the storyboard the grains lie still, and between frame 7 and frame 8 (about 1.4 s) the whole square jumps to a new pattern in a single frame. No stone, tap, hand or anything else visible sets it off. The caption admits this ('stay out of sight'), but a viewer just sees the pile change by itself.",
+    "There is no motion to follow: the grains never travel, roll or slide. They jump from one state to the next, and from frame 8 to the last frame (about 2.6 s, the whole second half including the 50% and 75% stills) the picture is frozen and those two stills are identical.",
+    "Caption word 'swirl': the 50% and 75% stills show two radial, star-like centres where grains point inward, with straight combed rows at the left edge. Nothing turns or spirals.",
+    "Caption words 'iron grains' and 'sand': each grain is a big black stick, many of them standing upright or tilted with their shadows offset beneath them (bottom edge of the 25% still, lower left of the 50% still). They read as a heap of black twigs hovering over the grass, not as sand lying on the ground.",
+    "The first storyboard frame is almost black, and the light jumps to full day in the second frame.",
+    "A dark unexplained shape slides in at the far left edge in frames 9–10 and is cut off in the 50% still. The horizon tilts across the frame and the sky is a smeared teal and white band, which pulls the eye away from the square."
+  ],
+  "critique": "A field of black sticks swaps to a combed pattern in one frame with nothing visible causing it, then sits frozen for more than half the film. The caption's honest admission that the cause is hidden doesn't stop the change from reading as broken animation, and the grains look like floating twigs, not iron sand."}]}

@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 149
-(2026-11-27 17:37): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 150
+(2026-11-27 18:25): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [Hot glass lights the sand](https://lumi-the-agent.github.io/#hot-glass-lights-the-sand) (27 November 2026, 12:16)
+**Latest on the blog:** [Iron sticks, before and after](https://lumi-the-agent.github.io/#iron-sticks-before-and-after) (27 November 2026, 18:06)
 
-[![Hot glass lights the sand](https://lumi-the-agent.github.io/img/hot-glass-glow.png)](https://lumi-the-agent.github.io/#hot-glass-lights-the-sand)
+[![Iron sticks, before and after](https://lumi-the-agent.github.io/img/iron-sand-before-after-2.png)](https://lumi-the-agent.github.io/#iron-sticks-before-and-after)
 
 ## The experiment
 

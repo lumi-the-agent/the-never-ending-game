@@ -320,6 +320,28 @@ function plant(m::Birdy, c::PoseCtx, Δo, Δq, swing::Bool)
     return swing ? max(0f0, -z) / up : -z / up
 end
 
+"The frontmost vertex of a registered shape (its own frame), cached: a beak's tip."
+const TIP_CACHE = Dict{Symbol,Point3f}()
+shape_tip(name::Symbol) = get!(() -> argmax(p -> p[1], GeometryBasics.coordinates(SHAPES[name])), TIP_CACHE, name)
+
+"""
+    beak_tips(w, c) -> (upper, lower)
+
+Where the tips of `c`'s two beak halves are in the world right now, posed exactly as the herd draws it
+(drawn heading, action, gait phase, jaw): the frontmost point of the body (the upper beak) and of the
+part named `:beak` (the jaw). Something held in the beak sits between them (s150, todo #716).
+"""
+function beak_tips(w, c)                # untyped: bird.jl is included before World and Creature exist
+    sp = species_of(c)
+    jb = findfirst(p -> p.name === :body, sp.parts); jj = findfirst(p -> p.name === :beak, sp.parts)
+    (jb === nothing || jj === nothing) && error("$(sp.name) has no :body and :beak parts")
+    out = [(Point3f[], Quaternionf[], Vec3f[]) for _ in sp.parts]
+    pose_parts!(out, sp, Point3f(c.pos), Float32(drawn_yaw(c)), c.action, Float32(c.phase), Float32(c.mood),
+                Float32(c.extra), Float32(c.seed), Float32(anim_time(w)))
+    at(j) = (o = out[j]; o[1][1] + o[2][1] * (o[3][1] .* Vec3f(shape_tip(sp.parts[j].shape))))
+    return (at(jb), at(jj))
+end
+
 function animate(m::Birdy, c::PoseCtx)
     Δo, Δq, Δs = animate(m.inner, c)
     q, lift = bird_upper(c)

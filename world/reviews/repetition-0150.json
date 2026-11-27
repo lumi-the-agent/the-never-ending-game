@@ -1,0 +1,8 @@
+{"posts": [{"post": "Iron sticks, before and after",
+            "what": "A two-part still: little iron sticks lie scattered on the grass, then after taps they point toward two spots above a buried magnet stone, showing its hidden field; nothing else on the island changes.",
+            "recipe": "simulated iron bits settle under a magnet's field, before/after still",
+            "nearest": "The magnet stone",
+            "similarity": 5,
+            "shared": "magnet stone acting on loose iron pieces with nobody visibly involved; the field-pattern still is a different shape"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed", "posts": ["Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone", "The magnet stone", "Three paper darts", "A wire that spins by itself", "Three logs in the sea", "Two tops I turned"]},
+           {"form": "A material is worked by a tool and its simulated state shown close up", "posts": ["A copper wire keeps its bends", "Blowing glass", "Hot glass lights the sand"]}]}

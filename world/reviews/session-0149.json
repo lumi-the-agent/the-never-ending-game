@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "Three posts about magnets, and none shows a magnet doing anything a viewer can follow. In the magnet stone film the stone slides and tumbles over grass with no one carrying it. The compass needle swings with no visible cause, in a grey, washed-out shot. The floating top post is an admitted miss: the old striped top fills the frame for 10 s and the lodestone ring stays empty. The session's real new work, the iron sand toy, was not posted at all.",
+ "real_change": "Of the changed plugins, only ironsand.jl adds something new: 1500 iron grains, each treated as an induced dipole in the field of a buried stone (from physics/em.jl) and of the grains next to it. A tap (key 9) runs 20 substeps that let them line up along the field, and key 0 digs, then reports how far off the dig was and buries a new stone at random. The tap 'hop' is only drawn (a 4 mm parabola). The posted films come from older plugins (compassbowl.jl, magnetstone.jl, floattop.jl, sessions 147-148). In those, the needle turns by the torque m x B from the island's field plus the stone's surface-charge field, with Stokes damping from the water, and the spikes feel (m.grad)B against Coulomb friction. The stone itself is not simulated: it is kinematically carried in front of Lumi.",
+ "surprise": 3,
+ "surprise_why": "A compass needle and a magnet dragged past spikes were already the island's 'Sparks from stones' work from sessions 147-148, and these films show less than that work did; the one new thing, the iron sand that draws the hidden stone's field lines, is not in any post.",
+ "fun": 2,
+ "fun_why": "A needle wobbling for no visible reason, a box tumbling across grass, and 10 s of a static top give a viewer nothing to watch twice.",
+ "real": 6,
+ "real_why": "The field comes from a real charge model of any mesh with induced dipoles, torque and friction, and it builds on itself (stone, compass, sand all use em.jl). But the stone is carried along a script, the island's field is a constant written in, and none of what the films show tests the model.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The magnet stone moves with nothing moving it. It slides and tumbles across the grass 'by itself', and no carrier is in the shot. In the code it is held in front of Lumi, so this is a carried thing that floats beside a body the camera has cut out. The spikes barely react: one or two twitch and touch it near the end, and nothing jumps to it.",
+   "where": "the-magnet-stone, storyboard frames 1-16; magnet-stone-beach-3-at-75.jpg; plugins/magnetstone.jl:2-3",
+   "evidence": "The dark block crosses the frame, tilting from corner to corner, with no hand or body near it. The spikes stay scattered where they lay. magnetstone.jl says 'carried, it hangs low in front of Lumi'.",
+   "suggestion": "Frame Lumi carrying the stone, or push it with a visible stick. Shoot low and close, so the spikes visibly swing round and leap onto the stone as it passes, ending with a bristling stone lifted up."
+  },
+  {
+   "severity": "medium",
+   "what": "The compass film shows a needle swinging with no cause in the picture: the stone that drives it is never shown, so it reads as a random wobble. The image is also flat and washed out (grey haze over everything), and the water reads as dull slate, not water.",
+   "where": "a-compass-in-a-bowl, whole storyboard; compass-bowl-3-at-50.jpg",
+   "evidence": "Across 8 s the needle turns from NE to N, to E-W, to NW and back, while the bowl, pad and background stay still and nothing comes near. Contrast is low and colours muddy in every frame.",
+   "suggestion": "Show the cause and effect: the stone carried past the bowl, the needle following it, then settling back north once it is taken away, with a damped swing. Fix the exposure, and give the water a reflection."
+  },
+  {
+   "severity": "medium",
+   "what": "The session posted an admitted miss (the fourth 'a take that misses' in the last 20 posts) and left out its actual new feature, the iron sand toy. The floating top film is 10 s of the old striped top standing still in front of an empty ring.",
+   "where": "a-top-over-a-ring-of-lodestone-a-take-that-misse, all frames; plugins/ironsand.jl",
+   "evidence": "Every frame has the same static blue-and-white top in the foreground, and the dark ring behind it stays empty except for a crab's legs passing by. ironsand.jl (grains standing up into the hidden stone's field, dig to guess) has no film.",
+   "suggestion": "Remove the old top from the scene and re-shoot the levitation. Above all, film the iron sand: grains lying flat, the tap, the grains standing into the stone's pattern, the dig revealing the stone. That is the shot people would share."
+  }
+ ],
+ "response": "s150: the floating top post now shows the retake (floating-top-2.mp4: the plate lowers away and the top hovers over the ring), caption no longer a miss. Iron sand waits as pending post (job 20261127-173404-079). The magnet stone moving with nothing moving it: todo #716 open; s150 built NG.beak_tips (the real posed beak) and the first thing Lumi really holds, a coil on a cord (pending post scrap-crane), the stone goes on the same cord next. The compass cause off screen: the retake must have the stone in frame, todo #716.",
+ "addressed": true
+}

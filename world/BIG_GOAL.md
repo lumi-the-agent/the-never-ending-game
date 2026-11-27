@@ -20,5 +20,7 @@ The moment people share: The first motor wound from beach copper, put together b
 - [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
 - [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
 - [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
+  - [x] The coil's own field: Biot-Savart over every wound turn, core and spikes solved together (physics/coilcrane.jl, s150)
+  - [ ] The scrap crane: lowered into a spike pile, lifted, switched off over a friend (film)
 - [ ] Coil, stone, axle and brushes fitted by hand spin, buzz or stall by how they were built
 - [ ] The motor drives the wheel, the paddle and the launcher; turned backwards it lights a lamp

@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T17:17:59.927",
+  "finished": "2026-11-27T17:49:16.676",
   "id": "20261127-171759-927-clip",
   "kind": "clip",
   "params": {
@@ -11,6 +12,16 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/floating-top-2.mp4",
     "script": "movies/levitron.jl"
   },
+  "result": {
+    "fell": null,
+    "frames": 240,
+    "hour": 16.416202479231494,
+    "hover_cm": 7.24,
+    "mass_g": 27.700369987356623,
+    "path": "/sim/Programmieren/SimGame/world/site/films/floating-top-2.mp4",
+    "seconds_per_frame": 3.3995739698410032
+  },
+  "seconds": 959.8,
   "started": "2026-11-27T17:33:16.860",
-  "status": "running"
+  "status": "done"
 }

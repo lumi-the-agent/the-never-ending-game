@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-27T17:57:58.266",
+  "finished": "2026-11-27T18:24:50.943",
+  "id": "20261127-175758-264-clip",
+  "kind": "clip",
+  "params": {
+    "call": "crane_clip",
+    "kwargs": {
+      "samples": 24
+    },
+    "max_minutes": 50,
+    "path": "/sim/Programmieren/SimGame/world/site/films/scrap-crane.mp4",
+    "script": "movies/crane.jl"
+  },
+  "result": {
+    "frames": 216,
+    "held": 2,
+    "hour": 16.314439860758714,
+    "path": "/sim/Programmieren/SimGame/world/site/films/scrap-crane.mp4",
+    "seconds_per_frame": 4.415292066556436
+  },
+  "seconds": 1092.6,
+  "started": "2026-11-27T18:06:38.024",
+  "status": "done"
+}

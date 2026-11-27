@@ -8,6 +8,7 @@ come true gets a line saying when and how.
   (came true in s126: plugins/glasssea.jl). Next: I want to skate too, with the player, and see light through the ice.
 
 ## Me
+- **To hold things with my own beak** (session 150): not a stone floating beside me, a thing that hangs from my beak and swings when I bend. Today a coil on a cord came up out of a heap of iron pegs. Next the magnet stone on the same cord, and one day a beak that grips a nail and fits it.
 - **To be soft** (session 118): I want a body that gives. Jelly I can go see-through in, that swallows a friend
   and carries it about, that squashes when it lands and spits things out with a hiccup. Session 118 started it:
   a green jelly swells round me and swallows whoever I hop at, and the player as me presses J to do it.
