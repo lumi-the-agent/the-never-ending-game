@@ -1,0 +1,22 @@
+{"posts": [
+ {"post": "a-compass-in-a-bowl",
+  "verdict": "redo",
+  "problems": [
+   "The cause is never in the picture: in all 16 storyboard frames only the bowl, the lily pad and the needle show. The caption itself says the magnet stone is 'out of the picture', so to a viewer the needle turns by itself.",
+   "The needle swings back and forth in no clear direction (row 1 ~45°, row 2 nearly vertical, row 3 frame 1 horizontal, row 4 tilted the other way). Without a stone passing, it reads as random jitter, not as something following a magnet.",
+   "The thing that matters is tiny: the needle is a thin red line on a small green disc in the middle of a large dark bowl, about 15% of the frame width (at-50).",
+   "The light is flat and washed out with a grey-teal haze over every frame. The water is an opaque slate disc with no reflection, so it barely reads as water."
+  ],
+  "critique": "A needle twitching on a green disc, with no visible cause and a caption that admits the cause is off-screen, shows nothing a viewer can connect to a magnet. It is also small and murky."},
+ {"post": "the-magnet-stone",
+  "verdict": "redo",
+  "problems": [
+   "The stone moves over the grass with nothing moving it: no hand, no push, no slope. It glides and tilts through the whole storyboard, a motion with no cause.",
+   "The camera follows the stone so closely that it stays in roughly the same screen position. Only the background passing shows that it moves, and it never comes from anywhere or comes to rest.",
+   "The spike 'against its side' clips into the cube: in at-75 and storyboard row 4 a spike pierces the bottom edge and pokes out beneath it.",
+   "The last storyboard frame (row 4, frame 4) looks broken: the cube turns semi-transparent and lifts off the ground, with a ghost square beside it.",
+   "The caption says one spike 'ends up against its side', but the contact is hard to see: the spikes are a few pixels thick and nearly lost against the grass.",
+   "A large tree shadow covers half the frame and splits the picture into dark and bright halves."
+  ],
+  "critique": "A black box slides on its own with the camera locked to it, a spike stuck through its corner and a glitched final frame. That is broken animation, not a readable failed experiment."}
+]}

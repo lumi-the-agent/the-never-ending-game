@@ -1,7 +1,13 @@
 {
   "created": "2026-11-27T16:27:23.713",
+  "finished": "2026-11-27T16:57:34.438",
   "id": "20261127-162723-713-restart",
   "kind": "restart",
   "params": {},
-  "status": "queued"
+  "result": {
+    "restarted": "2026-11-27T16:57:34.420"
+  },
+  "seconds": 0.0,
+  "started": "2026-11-27T16:57:34.416",
+  "status": "done"
 }

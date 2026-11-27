@@ -8435,12 +8435,12 @@
       "id": 603,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0148: superseded by the materials finding (#681); there is no glass rain feature to fix",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Glass rain: drops that land on grass and throw real caustics",
-      "updated": "2026-11-26T20:49:05.993"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-26T21:03:53.669",
@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0145 [creatures, high]: In the live_motion focus on Lumi, it stands among the easels as a dim yellow spiky shape, and a second smaller yellow figure stands right beside it in every frame. You cannot tell which one is Lumi, and from the orbit view Lumi cannot be found at all.\nWhere: plugins/ghosts.jl, Lumi's body/makeover, night lighting\nSuggestion: Remove the always-on double, or make it a rare visible memory event. Give Lumi a light of its own at night (a softly glowing crest or a lantern it carries), so the main character is the brightest thing in its own scene and reads from across the island.\nDone when: live_motion's Lumi strip shows one yellow figure, and an orbit screenshot at 23:00 lets you point at Lumi without labels.\nEvidence: world/reviews/motion/motion-strip.png, creatures.png (top-left)",
+      "detail": "perfectionist-0148 [creatures, high]: A smaller yellow chick with blue legs walks beside Lumi in daylight too, in follow view and in Firefly catch. Players read it as a second Lumi or a rendering bug, and the 'Lumi' label sits between them.\nWhere: follow camera, Firefly catch\nSuggestion: If it is the ghost replay, give it a clear look of its own (translucent and blue-tinted, or a dotted outline) or remove it while the player is Lumi. If it is a chick, give it a different colour and name.\nDone when: a follow screenshot and a firefly-view shot show exactly one yellow bird near the 'Lumi' label\nEvidence: reviews/p148/cam-follow.png, tests/shots/firefly-view-30s.png",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8594,7 +8594,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Lumi is a dark smudge at night with a yellow chick double beside it",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-26T23:15:33.348",
@@ -8603,12 +8603,12 @@
       "id": 615,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0148: merged into the film-camera finding and the Firefly chase-view finding",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Follow camera frames tree crowns and sleeping backs, not Lumi",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0139 [lighting, medium]: At the Firefly catch start (17:21) the fireflies are big flat lime discs with concentric ring halos, as large as the sheep's head. They read as UI targets, not insects that glow, and they light nothing around them.\nWhere: Firefly catch\nSuggestion: Use a tiny body with an emissive abdomen that pulses, a soft bloom, and a real point light that throws warm green light on the grass and on Lumi as it gets close. Shown traced at dusk, this would be the island's best night picture.\nDone when: A Firefly catch screenshot at dusk shows fireflies smaller than Lumi's eye, with a visible glow on the ground under the nearest one and no ring banding.\nEvidence: world/reviews/p139/play/fireflycatch-1.png",
+      "detail": "perfectionist-0148 [fun, medium]: Two of the game's own tests fail now: standing on a firefly scores 0, and Lumi is blocked in 15 of 40 seconds (a big tree fills half the view). The fireflies are still flat lime discs with ring halos.\nWhere: plugins/firefly_catch.jl, its camera\nSuggestion: Fix the catch radius. Have the chase camera pull up and over occluders (or fade the foliage that blocks Lumi). Make the flies small emissive cores whose light falls on the grass, not discs.\nDone when: all Firefly tests pass, and a 30 s shot shows Lumi unblocked with glowing points that light the ground around them\nEvidence: live_tests('Firefly'): 2 of 5 fail; tests/shots/firefly-view-30s.png",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Firefly catch: fireflies are flat lime discs with ring halos",
-      "updated": "2026-11-27T08:55:37.151"
+      "title": "Firefly catch: catching by standing on a fly fails, chase view loses Lumi",
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9037,12 +9037,12 @@
       "id": 646,
       "kind": "review",
       "priority": 1,
-      "result": "s133 critic on take 1 (posted as 'Skipping stones, a take that misses'): a pink flower lifts off the grass at the throw and hangs at head height for the rest of the film (is the flower the thrown prop, or picked up?); a beige block clips through my body in every frame; rings are hard even ovals that stack, appear mid-distance first then at the horizon (no first contact near the shore); no splash. Check movies/stoneskip.jl and plugins/stoneskip.jl for which plot is the stone and which the flower before take 2.",
+      "result": "s133 critic on take 1 (posted as 'Skipping stones, a take that misses'): a pink flower lifts off the grass at the throw and hangs at head height for the rest of the film (is the flower the thrown prop, or picked up?); a beige block clips through my body in every frame; rings are hard even ovals that stack, appear mid-distance first then at the horizon (no first contact near the shore); no splash. Check movies/stoneskip.jl and plugins/stoneskip.jl for which plot is the stone and which the flower before take 2.\nperfectionist-0148: an old retake request superseded by the 'put creatures in the physics films' finding",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Skipping stones take 2: a stone you can see skip, framed at the waterline",
-      "updated": "2026-11-27T03:59:27.937"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T03:59:27.937",
@@ -9219,12 +9219,12 @@
       "id": 659,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0148: superseded; sun football is not in current play",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Sun football at noon reads as broken dusk: the fallen sun is nowhere to see",
-      "updated": "2026-11-27T11:35:32.953"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T06:22:49.524",
@@ -9485,12 +9485,12 @@
       "id": 678,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0148: superseded by #681 materials",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The glazed jar reads as matte plastic, and players can't find or use it",
-      "updated": "2026-11-27T11:35:32.953"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T10:07:59.372",
@@ -9513,16 +9513,16 @@
       "id": 680,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0148: superseded by the film-camera finding",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Snowball take 2: a checked camera, a ball you can see, and push it in the game",
-      "updated": "2026-11-27T11:35:32.953"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T10:50:30.411",
-      "detail": "perfectionist-0145 [materials, high]: copper-wire-hook.mp4: a matte red-orange tube on a plain grey slab, moved by an untextured orange box, with a grey cylinder pin, on flat lime green. There is no metal highlight and no wood grain. The post says 'the copper finally looks like copper', and it does not. The blown-glass films show an opaque emissive yellow or red blob in daylight, with no transmission or refraction and no light thrown on the sand.\nWhere: plugins/wirebench.jl board/lever/pin; movies for copper-wire-hook, first-glass-bubble, glass-glows-by-heat\nSuggestion: Polished copper with a visible environment reflection and a warm patina where it was bent, on an oiled wood bench with a texture (Hikari CoatedDiffuse over a wood node texture). Shoot it in a dim workshop with one lamp, so the wire carries a moving highlight. For glass, show it cooling from emissive orange to clear Dielectric with refraction of the background, at dusk, so the hot gather lights the floor.\nDone when: A traced still of the wire shows a bright specular streak along the copper and wood grain on the bench, and a traced frame of the glass shows the background refracted through a clear cooled bubble.\nEvidence: world/reviews/motion/perfectionist-0145/copper-wire-hook-overview.jpg; world/reviews/p145/glass.jpg, glassheat.jpg",
+      "detail": "perfectionist-0148 [materials, high]: In play the wire bench is a pale pink rod on a flat dark grey slab, with no copper sheen, no wood and no bench at all. The new floating top's glass plate and copper washers get the same treatment.\nWhere: plugins/wirebench.jl, floating top, tops board\nSuggestion: Use a generated wooden workbench asset with a grain texture, Hikari conductor copper for the wire and washers, dielectric glass for the plate, and a clamp lamp that throws a real spot light so the copper glints in the traced view.\nDone when: a traced 64-sample still of the bench shows orange-red specular copper, see-through glass with refraction, and a wood-grained top\nEvidence: tests/shots/magnetstone-sweep.png",
       "est_minutes": 15.0,
       "id": 681,
       "kind": "review",
@@ -9532,7 +9532,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Copper, glass and the benches render as flat plastic primitives",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T10:50:30.419",
@@ -9592,17 +9592,17 @@
     },
     {
       "created": "2026-11-27T12:53:13.776",
-      "detail": "MethodError: no method matching bend!(::Main.Plugin_wirebench.Wire, ::Int64, ::Int64, ::Float64; steps::Int64)\nThe function `bend!` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  bend!(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any, ::Any; steps)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:65\n\nStacktrace:\n  [1] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:142\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: no method matching wire_tube(::Main.Plugin_wirebench.Wire, ::Vector{Float64}, ::GeometryBasics.Point{3, Float32}; cut::Int64)\nThe function `wire_tube` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  wire_tube(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any; r, nr, range, cut)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:101\n\nStacktrace:\n  [1] wb_redraw!(game::Game)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:71\n  [2] wb_visit!(game::Game, w::Main.Plugin_wirebench.Wire, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:192\n  [3] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:124\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 686,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T13:12:58.462.\nClosed at 2026-11-27T13:14:16.914: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T16:39:11.061.\nClosed at 2026-11-27T16:39:24.694: plugin wirebench loaded cleanly.",
+      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T13:12:58.462.\nClosed at 2026-11-27T13:14:16.914: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T16:39:11.061.\nClosed at 2026-11-27T16:39:24.694: plugin wirebench loaded cleanly.\nHappened again at 2026-11-27T17:02:08.221.\nClosed at 2026-11-27T17:15:51.114: plugin wirebench loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:wirebench.WireBench failed in step! and was switched off",
-      "updated": "2026-11-27T16:39:24.694"
+      "updated": "2026-11-27T17:15:51.114"
     },
     {
       "created": "2026-11-27T12:55:03.692",
@@ -9634,31 +9634,31 @@
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0145 [lighting, high]: With live path tracing on at 05:11 in orbit view, every lamp (cottage, path lanterns) renders as an opaque flat cream sphere, bigger than the cottage door, instead of a small bright bulb behind glass. The clouds are pitch-black lumps against a pale horizon. The whole frame is grainy.\nWhere: lamplight/lanterns plugins (emissive sphere sizes), cloud material in traced mode\nSuggestion: Make the light a small bright sphere or area light inside a glass or paper lantern shade (a thin Dielectric or a diffuse transmission shell), so the shade glows and throws a pool. Give the clouds a volume or a diffuse transmission material, so the moon rims them in silver. Denoise the live trace (OIDN).\nDone when: A traced night screenshot from the orbit view shows lantern shades glowing, with no lamp disc wider than a door, and clouds lighter than the sky at their moonlit edges.\nEvidence: world/reviews/p145/traced.png",
+      "detail": "perfectionist-0148 [lighting, medium]: With path tracing on in orbit view, clouds are speckled noise and a row of black flat shapes hangs over the water. The sky's palm islets from the raster view are missing.\nWhere: traced dashboard, sky\nSuggestion: Find the black slabs (cloud shadow cards? cloudshapes?) and hide them from the tracer. Denoise the clouds or give them a volume. Bring the floating islets into the traced scene.\nDone when: a traced orbit screenshot after 50 s shows no dark shapes in the sky, smooth clouds, and the palm islets present\nEvidence: reviews/p148/traced.png vs reviews/p148/cam-orbit.png",
       "est_minutes": 30.0,
       "id": 689,
-      "kind": "review",
-      "priority": 1,
-      "result": "",
-      "source": "review",
-      "spent_minutes": 0.0,
-      "status": "open",
-      "title": "Traced night: lamps are flat cream discs, clouds are black blobs",
-      "updated": "2026-11-27T13:58:00.342"
-    },
-    {
-      "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0145 [wow, medium]: Tops, wire, glaze, glass and logs each came out as an isolated material demo, filmed close on a slab, with no creature, no consequence and no joke. The judge scores them as repeats of each other, and Lumi's mood is bored 1.0.\nWhere: the last 10 posts on world/site\nSuggestion: Combine what exists into one event a friend would forward: the friends bring the hooks Lumi bent to hang lanterns at a night market, the tops spin in a ring with the crab trying to stop them, or the logs become a raft race. Film it with a cut or two, traced.\nDone when: A posted film where at least two creatures react to one of the new physics objects, and the judge does not flag it as a repeat.\nEvidence: mood.json: 'A REPEAT: \"A copper wire keeps its bends\" ... worth x0.22'",
-      "est_minutes": 30.0,
-      "id": 690,
       "kind": "review",
       "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
+      "title": "Traced view: grainy clouds and black slabs floating above the sea",
+      "updated": "2026-11-27T16:53:51.356"
+    },
+    {
+      "created": "2026-11-27T13:58:00.342",
+      "detail": "perfectionist-0148 [wow, high]: Twenty posts of physics experiments (darts, wires, logs, tops, magnets). Every one has a dry caption, the creatures don't care, and the camera is far away. A tiny grey paper triangle over the bay is not a film anyone forwards.\nWhere: world/site posts, films\nSuggestion: Make one event the whole island takes part in: friends gather and cheer, a dart lands on a pig's head, a crab carries away the magnet spike. Film it close at golden hour, path traced, with reactions on faces.\nDone when: one post's film shows at least two creatures reacting on camera to a physics toy, the toy at least 1/5 of the frame height\nEvidence: three-paper-darts-overview.jpg: the dart is ~20 px; magnet-stone film inside a bush",
+      "est_minutes": 30.0,
+      "id": 690,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
       "title": "Stop filming lone physics demos on a board: put the creatures in them",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T14:28:18.115",
@@ -9821,12 +9821,12 @@
       "id": 702,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0148: stale system notice: later publishes in s148 succeeded",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Live command publish failed",
-      "updated": "2026-11-27T15:50:56.530"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T15:53:03.955",
@@ -9835,12 +9835,12 @@
       "id": 703,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0148: s148 journal: physics/softiron.jl holds spikes in a chain offline; the play side is #708",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Iron magnetises iron: spikes hang from each other in chains",
-      "updated": "2026-11-27T15:53:03.955"
+      "updated": "2026-11-27T16:53:51.356"
     },
     {
       "created": "2026-11-27T15:53:03.963",
@@ -9939,6 +9939,90 @@
       "status": "dropped",
       "title": "system:floattop.FloatTop failed in step! and was switched off",
       "updated": "2026-11-27T16:32:54.163"
+    },
+    {
+      "created": "2026-11-27T16:53:51.356",
+      "detail": "perfectionist-0148 [camera, high]: magnet-stone-beach.mp4 spends 9 of 12 overview frames inside green foliage with tree trunks as silhouettes. compass-bowl.mp4 never shows the compass, only a bird's legs walking past a hydrangea. Both were posted.\nWhere: the movie pipeline / film camera placement; world/site posts for magnet stone and compass\nSuggestion: Before a film renders, raycast from the camera to the subject on every keyframe and refuse occluded shots, the way the firefly test checks visibility. Frame the subject at 1/3 of the frame height, and write the overview sheet before posting, so a film that misses is never published.\nDone when: the next three films' overview sheets show the named subject unoccluded and at least 150 px tall in 12 of 12 frames\nEvidence: reviews/motion/perfectionist-0148/magnet-stone-beach-overview.jpg, compass-bowl-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 711,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Films shot from inside a bush and at grass height: check every frame before posting",
+      "updated": "2026-11-27T16:53:51.356"
+    },
+    {
+      "created": "2026-11-27T16:53:51.356",
+      "detail": "perfectionist-0148 [animation, medium]: The crab's body passes through the paddock rails, it jumps 0.30 m and turns 93 degrees in single frames, and moves at 8.9 m/s. Every film also starts with a one-frame pop at 0.04 s.\nWhere: crab movement / separation; film first frame\nSuggestion: Treat the fence as an obstacle in the steering, limit the crab's turn rate, and drop the first frame of films (or warm up the scene one frame before recording).\nDone when: live_motion lists no crab snaps or speeds above 3 m/s, and the next film has no jump at 0.04 s\nEvidence: live_motion: reviews/motion/p148/motion.png; film sheets jump at 0.04 s in all three",
+      "est_minutes": 30.0,
+      "id": 712,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Pinchy walks through the fence and snaps 0.30 m in one frame",
+      "updated": "2026-11-27T16:53:51.356"
+    },
+    {
+      "created": "2026-11-27T16:53:51.356",
+      "detail": "perfectionist-0148 [ui, low]: Lumi shows the Z sleep sign and a 'meeting someone new' thought bubble at the same time. In follow view the name labels 'Pickles' and 'Lumi' stack on one spot.\nWhere: eye-level progress shot, follow camera\nSuggestion: Show one state at a time (asleep means no thought bubble), and spread or fade labels that overlap.\nDone when: progress shots show no Z together with a thought bubble, and no two name labels overlapping\nEvidence: media/progress/session-0148/eye-level.png, reviews/p148/cam-follow.png",
+      "est_minutes": 30.0,
+      "id": 713,
+      "kind": "review",
+      "priority": 3,
+      "result": "s149: the Z (emotes.jl) floated 2.2 s after a friend woke the sleeper (nap_woken, 72 in the human's game since s148), so 'meeting someone new' showed under a Z. Now a creature's z's go the moment it is no longer asleep: sandbox test, Lumi asleep with the camera on it = 1 z live, 0.3 s after waking = 0 (live_eval count of Main.EMOTES[:live]). Published (emotes ok, live frame p95 7.4 ms). The overlapping name labels part is not done.\nHALF (s149): Z over a thought fixed and published (emotes.jl drops a creature's z's when it wakes; sandbox 1 z asleep -> 0 z 0.3 s after waking). Still to do: name labels that stack on one spot in follow view.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Dashboard contradicts itself: Z sleeping over 'meeting someone new'",
+      "updated": "2026-11-27T17:22:09.300"
+    },
+    {
+      "created": "2026-11-27T17:16:10.985",
+      "detail": "Goal: magnet stones lie buried at random under the north beach; sprinkle iron sand, tap, read where/how deep/which way round, dig. physics/ironsand.jl + plugins/ironsand.jl (keys 9/0 at (-2.4,18.8) in Jump in).",
+      "est_minutes": 15.0,
+      "id": 714,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s149 first playable step, published (live plugins all ok, live frame p95 6.9 ms; toy 1.7 ms median / 5 ms p95 in the sandbox while tapping). physics/ironsand.jl: grains = induced dipoles (chi 3) in the stone's field from em.jl + neighbour dipoles (2 Jacobi sweeps), Coulomb friction, a tap = 40 ms flight (gamma = 2m/t). Patterns differ by pose and depth: media/ironsand-patterns-s149.png (standing 6/14 cm: square face / star; side 6/14 cm: two poles + arcs). Play: media/ironsand-play-56.png, -7.png (dig reveals stone), -8.png (camera from the sea side). Film queued: job 20261127-171131-812-clip -> site/films/iron-sand.mp4, pending/iron-sand.json. Sandbox before/after: media/ironsand-before-after-s149.png\nduplicate of the done entry? no\ns149 first playable step, published (live plugins all ok, live frame p95 6.9 ms; toy 1.7 ms median / 5 ms p95 in the sandbox while tapping). physics/ironsand.jl: grains = induced dipoles (chi 3) in the stone's field from em.jl + neighbour dipoles (2 Jacobi sweeps), Coulomb friction, a tap = 40 ms flight (gamma = 2m/t). Patterns differ by pose and depth: media/ironsand-patterns-s149.png (standing 6/14 cm: square face / star; side 6/14 cm: two poles + arcs). Play: media/ironsand-play-56.png, -7.png (dig reveals stone), -8.png (camera from the sea side). Film queued: job 20261127-171131-812-clip -> site/films/iron-sand.mp4, pending/iron-sand.json. Sandbox before/after: media/ironsand-before-after-s149.png\nduplicate of the done entry? no",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Read the sand, find the stone: iron sand shows a buried magnet stone's field, dig to check (passed ideas s149)",
+      "updated": "2026-11-27T17:20:46.313"
+    },
+    {
+      "created": "2026-11-27T17:16:11.272",
+      "detail": "From s149: grains are spheres, so far-field grains still turn to any tiny field (they should only turn where torque beats friction); the pattern for a stone 13 cm down is faint (true, but give the player a 'brush' to clear and resprinkle). Move moments/substep into a Mantle kernel (rule 6). Two stones under one patch for a wall/bridge pattern.",
+      "est_minutes": 15.0,
+      "id": 715,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Iron sand, next: grains chain into standing bristles (needle grains, torque vs friction), a GPU kernel on Mantle, more stones per round, a score for how close the dig was",
+      "updated": "2026-11-27T17:16:11.272"
+    },
+    {
+      "created": "2026-11-27T17:33:31.496",
+      "detail": "Critic s149 redid three posts (now 'a take that misses'): the-magnet-stone, a-compass-in-a-bowl, a-top-over-a-ring-of-lodestone. (1) plugins/magnetstone.jl carries the stone 3 cm above the sand in front of Lumi with nothing holding it: it reads as sliding by itself. Hold it in the beak (head pose down, stone at the beak tip). (2) Spikes end up THROUGH the stone: contact with the block's faces, not its centre. (3) Films: Lumi's head in frame, hour ~10-16 with sun on the subject, subject >= 1/4 frame height; floating-top-2.mp4 (job 20261127-171759-927) still to look at. Then swap src + caption in the same three pieces.",
+      "est_minutes": 15.0,
+      "id": 716,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi really holds the magnet stone (beak, head down), spikes rest on its surface, then retake all three magnet films in good light with Lumi's head in frame",
+      "updated": "2026-11-27T17:33:31.496"
     }
   ]
 }

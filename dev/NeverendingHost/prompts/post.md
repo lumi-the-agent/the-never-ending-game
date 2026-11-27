@@ -20,7 +20,9 @@ For each post:
   landed, at rest)? Does a body move to make what it does (reach, wind up,
   throw, catch)? A thing that appears out of nothing, comes out of or goes
   into a body, or moves while whoever moves it stands still is broken
-  animation.
+  animation. So is a thing carried or held that is not in the hands, beak or
+  feet (it floats or slides beside the body), and a walk whose feet slide,
+  hover or do not step in time with how fast the body goes.
 - Does it look good: is what matters in the picture, big enough and not
   hidden; does the light work; is anything broken, clipping, floating,
   frozen or half drawn?

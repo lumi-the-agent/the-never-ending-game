@@ -1,26 +1,36 @@
-{"verdict": "pass",
- "summary": "The film shows what the caption says, and the physics is right: the wide log stays flat, the square log settles 45 degrees onto its corner (correct for density 500), and the tall log lies down. But it is three plain untextured boxes on flat, opaque water that never reacts to them, filmed from far away. The physics only exists in the film script, not in the game.",
- "real_change": "physics/hull.jl computes the exact underwater volume and centre of buoyancy of any closed mesh: it clips the triangles at the waterline and sums tetrahedra, so there is no sampling. movies/hulls.jl turns that into roll torque for one degree of freedom (rolling only), with damping and +30% added inertia; each step it finds the waterline by bisection so the log always displaces its own weight. All of this runs offline in the movie script, before the film is drawn. In the game, the logs are three Makie mesh plots that are rotated and moved each frame from the precomputed tracks. They are not game bodies, nothing a player can drop in the sea, and the water does not react (no ripples, no waves, no wake). The words.html change is an ordinary text entry and looks fine.",
- "surprise": 5,
- "surprise_why": "Floating bodies that find their own stable orientation from their shape is physics the island has not shown before, and the corner-up square is a nice twist, but it shows up as three boxes and one plot of roll angle.",
- "fun": 3,
- "fun_why": "Interesting to watch once; you cannot throw a log in yourself, and the water around the logs never moves.",
- "real": 5,
- "real_why": "The mesh hydrostatics are exact and general and could carry boats later, but this run only simulates roll and finds the float height without simulating its motion; there are no waves and it is not hooked into the game world.",
- "findings": [
-  {"severity": "medium",
-   "what": "Nothing puts the logs into the sea. They are already floating at the waterline when the fade-in ends, are held upright for 1.2 s, then start to roll. No hand, no drop, no splash, though the caption says they 'go into the sea'.",
-   "where": "three-logs-float storyboard, frames 1-3; movies/hulls.jl:73-78",
-   "evidence": "The shot function only calls rotate!/translate! on the plots using tracks[i][k]. For t < hold, k is clamped to 1, so the logs sit at their floating height from the very first frame.",
-   "suggestion": "Drop them from just above the water, or have Lumi push them in. Simulate heave as well as roll, so they bob and splash before settling."},
-  {"severity": "medium",
-   "what": "The water does not answer the logs, and the logs do not look like wood. The sea is flat, opaque turquoise with no ripples, wet line or refraction where the boxes cut it. They read as untextured cardboard blocks lying on a floor, and you cannot see the underwater part that explains why each one turns.",
-   "where": "three-logs-float-at-50.jpg, three-logs-float-at-75.jpg",
-   "evidence": "Sharp, clean edges where box meets water, no disturbance even while the tall log falls over (storyboard frames 5-7). The material is plain Diffuse in a single colour (hulls.jl:63-65).",
-   "suggestion": "Add ripples or a ring where each log meets the water, give the logs bark and end-grain rings, and add a cut-away or semi-transparent water view so the centre of buoyancy can be seen moving."},
-  {"severity": "low",
-   "what": "The logs are small, and seen end-on from far away the square log at 45 degrees reads as a tent or roof, not a log. About two thirds of the frame is empty sea and sky.",
-   "where": "three-logs-float-at-50.jpg (middle log)",
-   "evidence": "Each log takes up about 80-160 px of a 960 px frame. The camera sits 4 m away (hulls.jl:81-82).",
-   "suggestion": "Move the camera closer and slightly off end-on, so you see some length of each log, or briefly show the logs side-on before cutting to the end-on view."}
- ]}
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "The shot function only calls rotate!/translate! on the plots using tracks[i][k]. For t < hold, k is clamped to 1, so the logs sit at their floating height from the very first frame.",
+      "severity": "medium",
+      "suggestion": "Drop them from just above the water, or have Lumi push them in. Simulate heave as well as roll, so they bob and splash before settling.",
+      "what": "Nothing puts the logs into the sea. They are already floating at the waterline when the fade-in ends, are held upright for 1.2 s, then start to roll. No hand, no drop, no splash, though the caption says they 'go into the sea'.",
+      "where": "three-logs-float storyboard, frames 1-3; movies/hulls.jl:73-78"
+    },
+    {
+      "evidence": "Sharp, clean edges where box meets water, no disturbance even while the tall log falls over (storyboard frames 5-7). The material is plain Diffuse in a single colour (hulls.jl:63-65).",
+      "severity": "medium",
+      "suggestion": "Add ripples or a ring where each log meets the water, give the logs bark and end-grain rings, and add a cut-away or semi-transparent water view so the centre of buoyancy can be seen moving.",
+      "what": "The water does not answer the logs, and the logs do not look like wood. The sea is flat, opaque turquoise with no ripples, wet line or refraction where the boxes cut it. They read as untextured cardboard blocks lying on a floor, and you cannot see the underwater part that explains why each one turns.",
+      "where": "three-logs-float-at-50.jpg, three-logs-float-at-75.jpg"
+    },
+    {
+      "evidence": "Each log takes up about 80-160 px of a 960 px frame. The camera sits 4 m away (hulls.jl:81-82).",
+      "severity": "low",
+      "suggestion": "Move the camera closer and slightly off end-on, so you see some length of each log, or briefly show the logs side-on before cutting to the end-on view.",
+      "what": "The logs are small, and seen end-on from far away the square log at 45 degrees reads as a tent or roof, not a log. About two thirds of the frame is empty sea and sky.",
+      "where": "three-logs-float-at-50.jpg (middle log)"
+    }
+  ],
+  "fun": 3,
+  "fun_why": "Interesting to watch once; you cannot throw a log in yourself, and the water around the logs never moves.",
+  "real": 5,
+  "real_change": "physics/hull.jl computes the exact underwater volume and centre of buoyancy of any closed mesh: it clips the triangles at the waterline and sums tetrahedra, so there is no sampling. movies/hulls.jl turns that into roll torque for one degree of freedom (rolling only), with damping and +30% added inertia; each step it finds the waterline by bisection so the log always displaces its own weight. All of this runs offline in the movie script, before the film is drawn. In the game, the logs are three Makie mesh plots that are rotated and moved each frame from the precomputed tracks. They are not game bodies, nothing a player can drop in the sea, and the water does not react (no ripples, no waves, no wake). The words.html change is an ordinary text entry and looks fine.",
+  "real_why": "The mesh hydrostatics are exact and general and could carry boats later, but this run only simulates roll and finds the float height without simulating its motion; there are no waves and it is not hooked into the game world.",
+  "summary": "The film shows what the caption says, and the physics is right: the wide log stays flat, the square log settles 45 degrees onto its corner (correct for density 500), and the tall log lies down. But it is three plain untextured boxes on flat, opaque water that never reacts to them, filmed from far away. The physics only exists in the film script, not in the game.",
+  "superseded_by": "perfectionist-0148.json",
+  "surprise": 5,
+  "surprise_why": "Floating bodies that find their own stable orientation from their shape is physics the island has not shown before, and the corner-up square is a nice twist, but it shows up as three boxes and one plot of roll angle.",
+  "verdict": "pass"
+}

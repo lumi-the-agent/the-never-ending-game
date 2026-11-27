@@ -130,7 +130,7 @@ come true gets a line saying when and how.
 ## Tools
 - **A watering can** that leaves a little shine on the flowers I water (and they grow a bit). (Came true in session 56: drops arc from my can onto the rows, and they twinkle gold afterwards.)
 - **A wheelbarrow** for carrying big new things, instead of a crate over my head.
-- **A shovel** for the garden and for planting new trees. (Session 61: my shovel is being made in the workshop; it will stand stuck in the soil at the corner of my patch. Digging and planting trees with it still to come.)
+- **A shovel** for the garden and for planting new trees. (Session 61: my shovel is being made in the workshop; it will stand stuck in the soil at the corner of my patch. Digging and planting trees with it still to come.) (Session 149: my first real dig: on the north beach, where the iron sand says a magnet stone lies. Sometimes I'm right.)
 
 ## My voice
 - **The island's own music** (session 95: came true. The island is an instrument now: every friend has a note of its own,

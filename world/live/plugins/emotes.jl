@@ -83,7 +83,10 @@ function NG.step!(::Emotes, game, dt)
             nxt[c.id] = now + every * (0.8 + 0.4rand())
         end
     end
-    filter!(e -> now - e.t0 < KINDS[e.kind][3], EM[:live])
+    # a z floats 2.2 s: when a friend wakes the sleeper (nap_woken), its z's went on floating over the new thought
+    # ("meeting someone new" under a Z, perfectionist-0148). Awake means no z.
+    awake(e) = e.kind === :sleep && (c = NG.creature(w, e.id); c !== nothing && c.action !== :sleep)
+    filter!(e -> now - e.t0 < KINDS[e.kind][3] && !awake(e), EM[:live])
     hp = Point2f[]; hc = RGBAf[]; hs = RGBAf[]
     gp = Point2f[]; gt = String[]; gc = RGBAf[]; gs = RGBAf[]
     for e in EM[:live]

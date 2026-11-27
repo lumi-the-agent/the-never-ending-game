@@ -1,0 +1,22 @@
+{"ideas": [
+{"title": "An iron beard on the magnet stone", "similarity": 5, "nearest": "The magnet stone", "same_form": ["The magnet stone"], "surprise": 6, "fun": 7, "real": 7, "toward": 7,
+ "critique": "It is the last post again with more spikes unless the chain really swings, sheds and answers how the player walks. A field solved together across spikes, with joints that break by force, is a real step and a skill worth coming back to."},
+{"title": "Fishing for iron off the jetty", "similarity": 4, "nearest": "The magnet stone", "same_form": [], "surprise": 6, "fun": 7, "real": 6, "toward": 5,
+ "critique": "Fishing is a familiar game loop, and the magnet only stands in for a hook. Drag, buoyancy, a catch flipping to the field and a rope pendulum stacked together make a playable mixture, but it is a side branch off the road, not a step on it."},
+{"title": "Field lines in iron sand", "similarity": 3, "nearest": "The magnet stone", "same_form": [], "surprise": 7, "fun": 6, "real": 7, "toward": 6,
+ "critique": "Iron filings are a textbook picture everyone has seen, so the image itself will not surprise anyone. Thousands of interacting dipoles on the GPU that chain by themselves, and that flip when a stone turns, is new physics for the island and an honest check of the solver."},
+{"title": "Tug of war with two stones", "similarity": 3, "nearest": "The magnet stone", "same_form": [], "surprise": 6, "fun": 5, "real": 5, "toward": 5,
+ "critique": "Friends falling over is a gag the island could fake, and the player only picks which way round to hand the stones. Forces from the solver actually moving bodies is the strong part, if the lean and the slip are animated rather than played."},
+{"title": "Green rock to a copper bead", "similarity": 5, "nearest": "Blowing glass", "same_form": ["A copper wire keeps its bends", "Blowing glass", "Hot glass lights the sand"], "surprise": 5, "fun": 7, "real": 5, "toward": 8,
+ "critique": "A glowing thing worked by heat, filmed close up, is the third time in this run of posts, and a kiln model built for one ore leans toward fitted numbers. Getting the fire right is a real skill though, and the first island copper is squarely on the road."},
+{"title": "A cell in a shell", "similarity": 4, "nearest": "A wire that spins by itself", "same_form": [], "surprise": 5, "fun": 5, "real": 6, "toward": 8,
+ "critique": "A needle kicking is a small thing to watch, and Oersted's experiment is expected. Reading every pair from one materials table and pushing the current's field through em.jl is the core of the circuit step, and testing pairs gives the player a reason to try again."},
+{"title": "The spike pulled from my beak", "similarity": 4, "nearest": "The magnet stone", "same_form": [], "surprise": 5, "fun": 6, "real": 5, "toward": 5,
+ "critique": "The payoff, a spike flying to the stone, is what the last post already showed; what is new is the grip limit and a head that fights the pull. That only lands if the neck spring and the release are really solved and read in a close film; otherwise it is a reaction animation."},
+{"title": "Sparks from flint and a spike", "similarity": 4, "nearest": "Hot glass lights the sand", "same_form": ["Hot glass lights the sand", "Blowing glass"], "surprise": 6, "fun": 6, "real": 5, "toward": 4,
+ "critique": "Glowing hot material lighting the dark at dusk again, and the sparks of the goal's name only in a pun. Shavings that burn by their size and can light tinder are a new particle system with a use, if the ignition is not a dice roll."},
+{"title": "The anchor chain wakes up", "similarity": 6, "nearest": "The magnet stone", "same_form": ["The magnet stone"], "surprise": 5, "fun": 5, "real": 6, "toward": 6,
+ "critique": "Iron following the stone again, on one prop, and it overlaps the iron beard while doing less. A jointed body link by link in the field is a real road step, but the player only walks past it."},
+{"title": "What the friends do with a magnet", "similarity": 4, "nearest": "The magnet stone", "same_form": [], "surprise": 5, "fun": 4, "real": 3, "toward": 3,
+ "critique": "Each creature gets one scripted personality bit (piling, eating, spinning), and the player mostly watches. Having the physics rather than an animation decide what happens is the right instinct, but the wants as pitched are scenes."}
+]}

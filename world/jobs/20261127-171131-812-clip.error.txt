@@ -1,0 +1,19 @@
+UndefVarError: `NG` not defined in `Main.ClipScript`
+Suggestion: check for spelling errors or missing imports.
+Stacktrace:
+ [1] ironsand_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, depth::Float64, yaw::Float64, standing::Bool, ntaps::Int64, kw::@Kwargs{})
+   @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/ironsand.jl:92
+ [2] invokelatest
+   @ ./Base_compiler.jl:250 [inlined]
+ [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198
+ [4] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366
+ [5] top-level scope
+   @ none:1
+ [6] eval(m::Module, e::Any)
+   @ Core ./boot.jl:489
+ [7] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:283
+ [8] _start()
+   @ Base ./client.jl:550

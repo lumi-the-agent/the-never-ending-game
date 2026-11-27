@@ -1,0 +1,31 @@
+{"posts": [
+ {"post": "a-compass-in-a-bowl-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+   "The whole film is so dark that the bowl, the needle and the stone are hard to make out in every storyboard frame and in all three full-size frames.",
+   "The compass needle is a thin red line, tiny in the middle of the frame (at-50). Its turning can hardly be seen.",
+   "The black stone slides across the grass with nothing pushing it: behind the bowl in frames 1-8, then left of the bush in frames 12-13. It goes out of frame and is gone by the last frames.",
+   "The bird is cut off by the top edge in every frame, so only its legs and a wing show. It drifts sideways across the shot with its feet hanging, never stepping.",
+   "Someone who does not know the island cannot tell which object is the 'magnet stone' or that the needle is reacting to it."
+  ],
+  "critique": "A dark, badly framed shot where the subject is a sliver of red, a stone moves by itself and a half-cropped bird floats past. That is broken animation and framing, not a failed experiment."},
+ {"post": "a-top-over-a-ring-of-lodestone-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+   "A huge striped top fills the left half of every frame and blocks the view. The caption admits this.",
+   "Nothing happens for 10 seconds: the ring on the right stays empty in all 16 storyboard frames, and no top ever floats.",
+   "Orange legs and creatures cross the background at the top edge in frames 11-14, half cut off and doing nothing that matters.",
+   "The post shows a blocked camera, not an experiment, and the caption only describes why there is nothing to see."
+  ],
+  "critique": "This is ten seconds of an obstruction in front of an empty ring. A frame that hides what matters is not a failed experiment, and nobody scrolling would get anything from it."},
+ {"post": "the-magnet-stone-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+   "The stone is a small black cube that slides and turns over the grass across frames 1-16 with nothing pushing or carrying it.",
+   "Spikes clip straight through the stone: two rods pierce the cube in frames 11-16 and at-75. The caption itself admits 'stuck through it'.",
+   "The spikes are thin, barely visible lines, and none of them visibly moves toward the stone, so the pull is never shown.",
+   "A bird's foot and body hang cut off at the top-left in every frame. The feet hover and slide without stepping, and the bird's large shadow covers half the scene.",
+   "A tree trunk pokes in at the top-right corner from frame 12 onward, cut off by the frame edge."
+  ],
+  "critique": "A stone that moves without a cause and spikes that pass through it are broken animation and clipping. Calling it 'a take that misses' does not make it a readable failed experiment."}
+]}

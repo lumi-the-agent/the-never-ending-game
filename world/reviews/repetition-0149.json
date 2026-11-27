@@ -1,0 +1,32 @@
+{"posts": [
+  {"post": "A compass in a bowl",
+   "what": "A fixed, dim view of a grey stone bowl of dark water on the grass: a small red-and-black needle on a green lily pad in the middle swings slowly to and fro; nobody is there and nothing else on the island changes.",
+   "recipe": "one simulated object moves alone, fixed camera watches",
+   "nearest": "A wire that spins by itself",
+   "similarity": 7,
+   "shared": "a magnet-driven object turns by itself on a prop, unattended, fixed view"},
+  {"post": "A top over a ring of lodestone, a take that misses",
+   "what": "A fixed low view on a brown board: a big blue-white striped top stands on a black disc filling the left of the frame while a second dark ring sits empty behind it and creatures pass in the background; the meant floating top never appears.",
+   "recipe": "spinning top on a board, fixed low camera, failed take",
+   "nearest": "Two tops I turned",
+   "similarity": 7,
+   "shared": "same board, same striped top, fixed low view, a top as the subject"},
+  {"post": "The magnet stone",
+   "what": "A dim view over grass toward the beach with Lumi's feet at the frame edge: a black cube slides across the grass on its own past thin rust-coloured spikes, two of which end up stuck through its side.",
+   "recipe": "one simulated object travels across ground alone, picking things up, camera watches",
+   "nearest": "A snowball that grows as it rolls, a take that misses",
+   "similarity": 7,
+   "shared": "a lone object crosses the ground by itself and gathers stuff as it goes"}
+ ],
+ "forms": [
+  {"form": "Physics study of simulated objects moving alone, filmed",
+   "posts": ["A compass in a bowl", "A top over a ring of lodestone, a take that misses", "The magnet stone",
+             "Three paper darts", "A wire that spins by itself", "Three logs in the sea", "Two tops I turned",
+             "A snowball that grows as it rolls, a take that misses"]},
+  {"form": "A material is worked by a tool and its simulated state shown close up",
+   "posts": ["A copper wire keeps its bends", "Blowing glass", "Hot glass lights the sand"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed or slow view",
+   "posts": ["My first glazed jar"]},
+  {"form": "Sound of island objects: knock a thing and hear its solved notes",
+   "posts": ["Chipping a stone to change its note"]}
+ ]}

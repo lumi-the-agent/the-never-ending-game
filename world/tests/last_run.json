@@ -2,11 +2,46 @@
   "results": [
     {
       "error": "",
-      "file": "magnetstone.jl",
-      "name": "magnet stone picks up spikes",
+      "file": "explore45.jl",
+      "name": "Hide and seek and Firefly catch: Play shows the start card, W starts with a HUD, Stop ends each",
       "passed": true,
-      "seconds": 5.7
+      "seconds": 19.9
+    },
+    {
+      "error": "check failed: standing on a firefly did not catch it (score 0)",
+      "file": "minigames.jl",
+      "name": "Firefly catch: start card, W starts, keys light up, a catch counts, R restarts",
+      "passed": false,
+      "seconds": 4.8
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: catching all ends with the end card, the flight to the lantern and cheers",
+      "passed": true,
+      "seconds": 7.8
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
+      "passed": true,
+      "seconds": 13.3
+    },
+    {
+      "error": "check failed: Lumi blocked in 15 of 40 one-second samples",
+      "file": "minigames.jl",
+      "name": "Firefly catch: the chase view keeps Lumi in clear view through a 45 s round (15/30/45 s shots)",
+      "passed": false,
+      "seconds": 52.2
+    },
+    {
+      "error": "",
+      "file": "s56_play.jl",
+      "name": "S56 Firefly catch at noon: every fly has its glow shells on it and they move with it",
+      "passed": true,
+      "seconds": 7.1
     }
   ],
-  "time": "2026-11-27T16:00:23.138"
+  "time": "2026-11-27T16:52:16.556"
 }

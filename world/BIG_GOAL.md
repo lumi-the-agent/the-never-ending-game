@@ -13,6 +13,8 @@ The moment people share: The first motor wound from beach copper, put together b
   - [ ] Iron magnetises iron: spikes hang in chains (physics/softiron.jl solved s148: 2 hold, the 3rd at the edge)
   - [ ] The anchor chain and other iron on the island feel it too
   - [x] A spinning top floats over a ring magnet by the field alone (physics/levitron.jl, s148; playable next)
+  - [x] Iron sand shows any field: tap it and read where a buried stone lies, then dig (s149, plugins/ironsand.jl)
+  - [ ] Sand grains as needles that turn only where the field beats friction; two stones under one patch
 - [ ] One materials table read by every system (copper, iron, magnet stone, wood, brine)
   - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
 - [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends

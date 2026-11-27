@@ -1,0 +1,21 @@
+{
+  "cause": "UndefVarError: `NG` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.",
+  "created": "2026-11-27T17:11:31.862",
+  "error": "UndefVarError: `NG` not defined in `Main.ClipScript`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] ironsand_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, depth::Float64, yaw::Float64, standing::Bool, ntaps::Int64, kw::@Kwargs{})\n   @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/ironsand.jl:92\n [2] invokelatest\n   @ ./Base_compiler.jl:250 [inlined]\n [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [4] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366\n [5] top-level scope\n   @ none:1\n [6] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [7] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [8] _start()\n   @ Base ./client.jl:550",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261127-171131-812-clip.error.txt",
+  "finished": "2026-11-27T17:33:16.852",
+  "id": "20261127-171131-812-clip",
+  "kind": "clip",
+  "params": {
+    "call": "ironsand_clip",
+    "kwargs": {
+      "samples": 24
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/site/films/iron-sand.mp4",
+    "script": "movies/ironsand.jl"
+  },
+  "seconds": 3.5,
+  "started": "2026-11-27T17:33:13.049",
+  "status": "failed"
+}

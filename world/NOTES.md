@@ -1009,3 +1009,28 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
   (s148: the compass film had no stone and no spikes; tops.jl does the same with TopShape).
 - Holding a post: never wrap it in an HTML comment at the top of site/index.html. The host puts new posts before the
   first piece, inside the comment, and the closer then shows the held film (s148). Move the piece out (media/held-posts/).
+
+## Looking at a film's shot in the sandbox before the worker renders it (s149)
+- `NG.live_eval` code runs in module `Main.Live`: no `Makie`/`GeometryBasics` names there, and `Main.X = ...` fails
+  (no new globals). Get the engine with `parentmodule(typeof(game))`. To run a movies/ script's setup and shot in the
+  sandbox, eval a small module (`module ISFilm; using Makie; const GeometryBasics = Makie.GeometryBasics; using
+  Makie.GeometryBasics: Cylinder; const NG = <engine>; end`), `Base.include(Main.ISFilm, script)`, and split the film
+  into `xxx_parts(; ...) -> (setup, shot)` so `invokelatest(setup, game); invokelatest(shot, game, game.rig, t)` then
+  `live_screenshot` shows the exact frame. Delete the test plots by name before the next try. (movies/ironsand.jl)
+- Pressing a key from outside: `push!(game.keys_down, Keyboard._9)`, sleep 0.15 s, `delete!` (two live_evals).
+  `start_minigame!(game, JumpIn)` / `stop_minigame!(game)`.
+- Lumi is about a metre tall: a toy camera (Main.LOCAL_CAMS) put behind Lumi under ~1.5 m ends up inside its head.
+  For a small toy look from the far side of it, high (eye 1.5 m up, 0.75 m beyond the toy).
+- meshscatter updates: `Makie.update!(plot; arg1 = positions, rotation = quaternions)`; `plot[1][] = ...` throws an
+  UndefRefError in the compute pipeline.
+- s149: the floating-top film (s148) filmed the tops board's big striped top instead of the floating top: an edit had
+  put a `# comment` in the middle of the shot's hide line, so `&& (p.visible[] = false)` sat inside the comment and
+  nothing was hidden. Second film in two sessions to miss its subject: run every new film's shot in the sandbox first
+  (xxx_parts, above) and look at the screenshot before queuing it.
+- s149 critic, three magnet films redone at once: a carried thing that does not TOUCH its carrier reads as moving by
+  itself (the magnet stone floats 3 cm up in front of Lumi). The cause must be in the frame: Lumi's head and the hold,
+  not cropped legs. Dark hour + black stone on dark grass = nothing to see. Before queuing: sandbox shot of the
+  middle frame, and ask "can a stranger point at who does it, and how?"
+- s149: the worker loads a film script into its own module (Main.ClipScript), NOT Main: the script must start with
+  `using NeverendingGame, GeometryBasics, Makie, LinearAlgebra; const NG = NeverendingGame` and include its physics
+  with `Base.include(@__MODULE__, ...)` (iron-sand film failed on `NG` undefined). Test: `m = Module(); Base.include(m, script)`.

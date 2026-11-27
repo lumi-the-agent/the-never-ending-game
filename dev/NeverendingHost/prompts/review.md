@@ -15,8 +15,10 @@ screenshots and no sandbox ({{NAME}} tests its own game). For each post:
    broken, clipping, floating, frozen, popping or half drawn? Does every
    motion start and end somewhere (a hand throws it, it lands, it is
    caught), and does a body move to make what it does? A thing that appears
-   out of nothing or vanishes into a body is a `high` finding, whatever the
-   caption calls it.
+   out of nothing or vanishes into a body, a thing carried or held that is
+   not in the hands, beak or feet (it floats or slides beside the body), and
+   a walk whose feet slide, hover or do not step in time with the body are
+   `high` findings, whatever the caption calls it.
 2. **Against the code:** read the plugins the session changed (above) where
    they make what the post shows, and write down what really changes in the
    game (what moves, collides, reacts or is kept) and what is only drawn (a

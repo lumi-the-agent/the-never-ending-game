@@ -80,13 +80,37 @@ function chick_plots!(game)
     sp = me === nothing ? NG.SPECIES["Lumi"] : NG.species_of(me)
     E[:species] = sp
     E[:parts] = Any[]
+    E[:crest] = 0
     for (j, part) in enumerate(sp.parts)
         uv = NG.paints(part.motion) ? (; uv_transform = [Makie.Mat{2,3,Float32}(1, 0, 0, 1, 0, 0)]) : (;)
+        attrs = Dict{Symbol,Any}(pairs(part.attributes))
+        nm = string(part.shape)
+        endswith(nm, "crest") && (E[:crest] = j)
+        # a baby, not a second Lumi (perfectionist-0148: players read the small yellow Lumi as a double or a bug):
+        # pale downy fluff and orange chick legs, no crest yet; its face and beak stay Lumi's
+        if get(attrs, :color, nothing) isa AbstractMatrix
+            if any(k -> endswith(nm, k), ("body", "wing_l", "wing_r", "face"))
+                attrs[:color] = chick_tint.(attrs[:color], 0.99f0, 0.95f0, 0.84f0, :yellow)
+            elseif any(k -> endswith(nm, k), ("leg_l", "leg_r"))
+                attrs[:color] = chick_tint.(attrs[:color], 0.98f0, 0.60f0, 0.30f0, :blue)
+            end
+        end
         push!(E[:parts], meshscatter!(game.stage.scene, [Point3f(0, 0, -50)]; marker = NG.shape(part.shape),
                                       material = part.material, markersize = [Vec3f(0)],
-                                      rotation = [Makie.Quaternionf(0, 0, 0, 1)], uv..., part.attributes...,
+                                      rotation = [Makie.Quaternionf(0, 0, 0, 1)], uv..., attrs...,
                                       name = Symbol(:chick_, j)))
     end
+end
+
+"A texture pixel of Lumi's `from` colour (:yellow feathers, :blue legs) recoloured to (r, g, b), keeping its light and
+shade; eyes, mouth and every other colour stay as they are."
+function chick_tint(px, r, g, b, from)
+    R, G, B = Float32(px.r), Float32(px.g), Float32(px.b)
+    hit = from === :yellow ? (R > 0.45f0 && G > 0.35f0 && B < 0.6f0 * G) : (B > R + 0.05f0)
+    hit || return px
+    L = 0.3f0 * R + 0.59f0 * G + 0.11f0 * B
+    k = 0.55f0 + 0.5f0 * L
+    typeof(px)(min(1f0, r * k), min(1f0, g * k), min(1f0, b * k), px.alpha)
 end
 
 function draw_chick!(w)
@@ -100,7 +124,7 @@ function draw_chick!(w)
     end
     for (j, part) in enumerate(sp.parts)
         o = out[j]
-        if !shown || isempty(o[1])
+        if !shown || isempty(o[1]) || j == get(E, :crest, 0)
             Makie.update!(E[:parts][j]; arg1 = [Point3f(0, 0, -50)], markersize = [Vec3f(0)])
             continue
         end

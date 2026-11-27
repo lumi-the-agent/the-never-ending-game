@@ -1,0 +1,28 @@
+{"posts": [
+ {"post": "a-compass-in-a-bowl",
+  "verdict": "redo",
+  "problems": [
+   "The caption says 'as I carry the magnet stone', but the black stone is never in the bird's beak or feet: in the storyboard (frames 1-12) and the 25% and 75% frames it sits or slides on the grass on its own, apart from the bird's legs. It moves right to left with nothing touching it.",
+   "The bird is cut off by the top edge in every frame, so its head is never seen and a viewer can't tell who is doing anything.",
+   "The whole film is very dark. The bowl, the lily pad and the thin needle are dim and small in the middle of the frame, and the stone is a black block on dark grass that is hard to find (75% frame, left edge).",
+   "The needle does turn (it points a different way at 25%, 50% and 75%), but since the stone slides by on its own, a viewer can't see what makes it turn."
+  ],
+  "critique": "The needle turns, but the stone that should cause it glides across the grass by itself while a bird with no head walks behind. The scene is too dark and too badly framed to follow."},
+ {"post": "a-top-over-a-ring-of-lodestone",
+  "verdict": "redo",
+  "problems": [
+   "The subject named in the title, a top floating over a lodestone ring, is never shown. The grey ring in the background (right side, every storyboard frame) is empty from start to end.",
+   "A big striped top fills the middle of every frame. It stands motionless on a black disc, and its handle is cut off by the top edge of the frame.",
+   "The caption admits the wrong thing is in front, but this is a framing failure, not a failed experiment. Nothing happens for 10 seconds except leaf shadows moving and orange legs passing at the edge (storyboard frames 12-14, 75% frame top right)."
+  ],
+  "critique": "Ten seconds of a still striped top blocking the view, with an empty ring behind it. The post tells you itself that it doesn't show what it is about."},
+ {"post": "the-magnet-stone",
+  "verdict": "redo",
+  "problems": [
+   "'My magnet stone goes past' suggests someone carries it, but the black cube slides across the grass by itself next to the bird's feet (storyboard frames 1-16). It is never in a beak or foot, and nothing pushes it.",
+   "The bird is only ever visible as cropped legs and belly at the top-left edge. Its feet seem to stand still while the cube and the camera drift.",
+   "The 'iron spikes' are thin dark lines barely visible on the grass (25% frame). At the end (75% frame, storyboard frames 13-16) the red sticks go through the cube and stick out both sides instead of clinging to its surface, which is clipping.",
+   "The dark tree shadow covers the first half, which makes the cube and spikes hard to see."
+  ],
+  "critique": "A black box slides along on its own next to a pair of cropped legs, and the spikes that should cling to it end up stuck through it. The cause, the contact and the framing all fail."}
+]}
