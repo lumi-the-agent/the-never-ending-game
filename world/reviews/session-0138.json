@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "An honest 'miss' post: the caption matches the film (ants ring a biscuit that never moves, a pig's hoof stands in it), but it is a second failed take of last session's ant road, and the close half of the film is a frozen pig leg with a torn texture filling the frame.",
+ "real_change": "The film runs on physics/ants.jl from session 137: two pheromone grids that diffuse and evaporate, ants steering by three sensors with a pull home, and a rigid biscuit disc that only slides when the summed pull of the ants on its rim beats Coulomb friction. That is a real agent simulation. In the film the biscuit never moves, so its transport part is never seen working. The film itself (movies/ants.jl) is a camera, a 3x time-lapse and meshes placed where the sim says. The plugins this session changed (knock.jl: modal sound from FinEtools hex FEM and Arpack; greetings.jl: the hint text) play no part in this post, and none of the posts shows the knock.",
+ "surprise": 2,
+ "surprise_why": "It is a retake of last session's ant road that fails the same way. The ants still form a straight line beside the drawn road, and the one new event, carrying the biscuit, never happens.",
+ "fun": 1,
+ "fun_why": "Nothing moves in the second half but specks around a still disc under a pig's leg, so there is nothing to watch twice.",
+ "real": 5,
+ "real_why": "Stigmergy and friction-limited cooperative transport are simulated in physics/ants.jl, but the film only shows the trail-laying part working, and the ants ignore the drawn road.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The close shot (half the film) is blocked by a pig's leg whose hoof sinks through the biscuit, and its skin texture is torn along a jagged seam",
+   "where": "storyboard frames 9-16; at-50 and at-75 frames",
+   "evidence": "A pig stands over the biscuit for the whole close shot. Its hoof cuts into the orange disc, and a zig-zag tear with red edges runs across its upper leg. The pig never moves. movies/ants.jl:39 already marks a creature as controlled because 'Pinchy ... stood over the biscuit' in take 1, and it happened again.",
+   "suggestion": "Before filming, clear every creature from a radius around the film patch, or set the patch somewhere they can't walk. Check the close camera's frame for actors before rendering."
+  },
+  {
+   "severity": "medium",
+   "what": "The ants still don't follow the drawn honey road. They take their own straight line under it, so the post's main idea never shows",
+   "where": "storyboard frames 1-8; at-25 frame",
+   "evidence": "The red curved line arcs up, but the dense black trail runs straight from left to the biscuit beneath it. Only a few ants sit on the drawn curve.",
+   "suggestion": "Let the honey scent win over the ants' pull home near the road (a stronger honey field or a weaker home bias), or draw the road where the straight line isn't shorter. Then the road visibly steers them."
+  },
+  {
+   "severity": "medium",
+   "what": "The ants are featureless black specks and the biscuit is a flat orange disc, so it doesn't read as ants carrying food",
+   "where": "at-50 and at-75 frames",
+   "evidence": "Up close the ants are clusters of black spheres with no legs or bodies. Some yellow-white dots (crumbs?) sit among them. The biscuit has no crumb texture, edge or shading detail.",
+   "suggestion": "Give the ants a simple three-part body pointed along their heading, show the crumbs they carry, and give the biscuit a baked texture and a slightly broken rim. Then shoot a take where the biscuit actually slides."
+  }
+ ],
+ "response": "s139: not fixed in the post itself. The ant film stays up as the miss it is (caption matches). The pig leg, the ants ignoring the drawn road and the specks are in projects/ant-road.md for the next take: the ants must come into the game (plugin, H drags honey) before a third film, and the close shot needs a camera check for creatures within 1.5 m of the lens. This session moved the knock project instead (chip a stone, film 20261127-081627-133-clip).",
+ "addressed": true
+}

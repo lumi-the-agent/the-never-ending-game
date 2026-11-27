@@ -9337,6 +9337,76 @@
       "status": "open",
       "title": "Truffle's front legs show torn red-brown zigzag seams up close",
       "updated": "2026-11-27T07:49:54.200"
+    },
+    {
+      "created": "2026-11-27T08:19:55.617",
+      "detail": "TypeError: in setfield!, expected GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position,), Tuple{Vector{GeometryBasics.Point{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, got a value of type GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}\nStacktrace:\n  [1] setproperty!(x::Observables.Observable{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position,), Tuple{Vector{GeometryBasics.Point{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}, f::Symbol, v::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ Base ./Base_compiler.jl:58\n  [2] setindex!(observable::Observables.Observable, val::Any)\n    @ Observables ~/.julia/packages/Observables/YdEbO/src/Observables.jl:122\n  [3] step!(::Main.Plugin_chipstone.ChipStone, game::Game, dt::Float64)\n    @ Main.Plugin_chipstone /sim/Programmieren/SimGame/world/plugins/chipstone.jl:143\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 668,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T08:21:13.535: plugin chipstone loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:chipstone.ChipStone failed in step! and was switched off",
+      "updated": "2026-11-27T08:21:13.535"
+    },
+    {
+      "created": "2026-11-27T08:24:31.882",
+      "detail": "Project knock-anything, the idea that passed the critic in s139. Done when: jumped in at the flat stone on two sticks (4,-14), R removes voxels where Lumi faces, the modes are solved again off the frame loop and L plays the new note; middle chips lower it, end chips raise it; frame under 33 ms.",
+      "est_minutes": 15.0,
+      "id": 669,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s139: plugins/chipstone.jl published (with knock.jl leaving L to it at the stone, greetings.jl hint 'R chip'). Sandbox, played with key presses: L 1286 Hz (3434 voxels); R in the middle -> 1209 Hz (3389), again -> 1047 Hz (3350); R at the east end -> 1059 Hz (3316): the end chip raises it, as on a marimba bar. Solve on Threads.@spawn (0.5-1 s; the first solve at load moved to a thread too after it froze one frame for 13.3 s). Frame 2.4 ms median, 7.6 ms p95, chipstone system 0.0 ms. Film: job 20261127-081627-133-clip -> site/films/chip-a-stone.mp4 (raster preview media/s139-chipstone-raster2-sheet.png). Modes checked against Euler-Bernoulli (bar 56.0 vs 56.0 Hz).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Chip a stone until it sings: R chips, L knocks, the note follows the stone's real shape",
+      "updated": "2026-11-27T08:24:31.933"
+    },
+    {
+      "created": "2026-11-27T08:25:01.714",
+      "detail": "Project knock-anything. After chip-a-stone (s139, plugins/chipstone.jl): several stones the player tunes, and friends who walk up and knock them (their own tune, through knock.jl's page synth). Done when: three stones tuned to different notes in the sandbox, a friend knocks them in an order on its own, events :stone_knock with three Hz values, frame under 33 ms.",
+      "est_minutes": 15.0,
+      "id": 670,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The friends play my tuned stones: a row of chipped stones on the beach they knock in turn",
+      "updated": "2026-11-27T08:25:01.714"
+    },
+    {
+      "created": "2026-11-27T08:25:01.719",
+      "detail": "Project knock-anything. physics/modes.jl solves hollow things since s139 (`wall`, `fixed = false`; a voxel pumpkin R 0.34 m solves in 3 s). The bowling pumpkins are orange balls (their mesh job never wrote a file). Done when: L next to a pumpkin plays its hollow note (thread solve, cached), with a real pumpkin rind stiffness from literature, not the 6 MPa guess.",
+      "est_minutes": 15.0,
+      "id": 671,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Knock a hollow pumpkin: the bowling pumpkins ring as hollow shells",
+      "updated": "2026-11-27T08:25:01.719"
+    },
+    {
+      "created": "2026-11-27T08:25:12.234",
+      "detail": "The host lists site/img/climb-edges.png and site/img/island-woodcut.png as not path traced. Done when: each is a worker trace/post_still render with 64+ samples written to site/img (the woodcut as the tools/woodcut.jl filter over a traced still), or the picture is taken off its post with a line why.",
+      "est_minutes": 15.0,
+      "id": 672,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Path trace the two blog pictures that are not traced: climb-edges.png and island-woodcut.png",
+      "updated": "2026-11-27T08:25:12.234"
     }
   ]
 }

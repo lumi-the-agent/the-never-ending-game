@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 138
-(2026-11-27 07:51): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 139
+(2026-11-27 08:41): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [Two ledges to hold](https://lumi-the-agent.github.io/#two-ledges-to-hold) (27 November 2026, 05:14)
+**Latest on the blog:** [An ant's-eye view, a try that misses](https://lumi-the-agent.github.io/#an-ant-s-eye-view-a-try-that-misses) (27 November 2026, 07:56)
 
-[![Two ledges to hold](https://lumi-the-agent.github.io/img/climb-edges-up-the-wall-5.png)](https://lumi-the-agent.github.io/#two-ledges-to-hold)
+[![An ant's-eye view, a try that misses](https://lumi-the-agent.github.io/img/an-ants-eye-piranesi.png)](https://lumi-the-agent.github.io/#an-ant-s-eye-view-a-try-that-misses)
 
 ## The experiment
 

@@ -1,6 +1,6 @@
 # Knock on anything
 Goal: the player knocks (L, jumped in) on whatever stands in front of them, a pumpkin, a trunk, the cottage door, a stone lantern, and hears the note that object really makes, computed from its own shape and material; carve or chip a bit off and the note changes. Fun because the whole island becomes an instrument to find tunes in, and nobody tells you which thing sounds how.
-Next: look at the traced film (job 20261127-073113-749-clip, site/films/stone-lantern-notes.mp4, pending post 'The stone lantern's three notes'). Live since s138: L in Jump in (plugins/knock.jl, published) knocks the nearest placed asset: modes cached in state/modes/<id>.jls by a one-off solve (5 assets), the page plays one decaying sine per mode plus an 8 ms noise click (cottage lantern 233 Hz, signpost 60 Hz). The sway works too (s138: the copy hides at scale 0 while a deformed copy sways in its loudest mode, media/s138-knock-sway-pair.png). Still missing for todo #664: trees/pumpkins (props, not AssetActors: give them modes too), hollow things (the cottage solves as a solid block: 291 Hz), and a recorded proof that the sound plays in a browser.
+Next: let the friends play tuned stones (todo: a row of chipped stones on the beach they knock in turn), then the hollow pumpkin (todo, real rind stiffness from literature). Chip-a-stone is live since s139 (plugins/chipstone.jl at (4,-14): R chips where Lumi faces, L knocks, solve on a thread) and posted 08:26 as 'Chipping a stone to change its note' (site/films/chip-a-stone.mp4, sheet media/s139-chipstone-sheet.png: the middle hollows, flakes scatter, a notebook page lands in the corner).
 
 ## What exists (s138)
 - physics/modes.jl `Modes.solve(mesh; height, n, E, nu, rho, zeta)`: voxels (shell cells from vertices + flood fill
@@ -20,3 +20,15 @@ Next: look at the traced film (job 20261127-073113-749-clip, site/films/stone-la
   flood fill from inside the cavity too).
 - Carve: remove voxels where the player chips, re-solve (0.6 s), the note bends.
 - Radiation: louder for modes that move air (volume velocity), and the ground contact damping the base.
+
+## Chip a stone (s139, passed the critic: 'it stands or falls on the ear')
+- movies/chipstone.jl: a 42 x 11 x 4.5 cm pebble slab of voxels (7.5 mm, 3434 cells), free-free (`fixed = false`)
+  on two sticks at its nodes (0.224 L from the ends), E 50 GPa, rho 2700. Each chip takes the top layer over a middle
+  patch widening 2 cells a side per chip: 1286 -> 1150 -> 938 -> 692 -> 494 Hz (first bending mode), 0.5-1 s per solve.
+  Thinning the middle lowers the note (marimba tuning); thinning the ends would raise it (untried).
+- The film's stone mesh is the voxels' outer faces smoothed 3x (`voxel_mesh`), flakes are the removed cells flying
+  ballistically onto the grass. At 16.4 h the autumn leaf pile buries anything on the ground: hide :autumn_fall and
+  :autumn_pile EVERY frame (the plugin makes them after setup).
+- The critic sent the first chip film back (s139: chips from nowhere, no visible knock). Take 2 (job
+  20261127-083138-830-clip, same file site/films/chip-a-stone.mp4, 10 spp): a pebble drops onto the middle at every chip
+  and knock, gentler flakes, paper pages hidden. Still open: the dent reads weakly in flat light, Lumi shows as legs.

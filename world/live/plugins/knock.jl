@@ -182,7 +182,8 @@ function NG.step!(::Knock, game, dt)
     me = NG.creature(w, "Lumi")
     me === nothing && return
     kdown = Makie.Keyboard.l in game.keys_down
-    if kdown && !get(KN, :kdown, false) && me.controlled
+    at_stone = isdefined(Main, :CHIPSTONE) && get(Main.CHIPSTONE, :near, false) === true   # chipstone.jl knocks its stone
+    if kdown && !get(KN, :kdown, false) && me.controlled && !at_stone
         hit = kn_target(game, me)
         if hit === nothing
             NG.say!(w, me, "Nothing to knock on here."; duration = 1.4)

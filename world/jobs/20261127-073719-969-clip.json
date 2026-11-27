@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T07:37:19.971",
+  "finished": "2026-11-27T07:56:36.480",
   "id": "20261127-073719-969-clip",
   "kind": "clip",
   "params": {
@@ -22,5 +23,13 @@
     "path": "/sim/Programmieren/SimGame/world/site/img/an-ants-eye-piranesi.png",
     "script": "movies/piranesi.jl"
   },
-  "status": "queued"
+  "result": {
+    "frames": 6,
+    "hour": 16.500875259676906,
+    "path": "/sim/Programmieren/SimGame/world/site/img/an-ants-eye-piranesi.png",
+    "seconds_per_frame": 11.342949310938517
+  },
+  "seconds": 127.7,
+  "started": "2026-11-27T07:54:28.761",
+  "status": "done"
 }

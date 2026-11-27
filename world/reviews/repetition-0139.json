@@ -1,0 +1,29 @@
+{"posts": [
+  {"post": "Chipping a stone to change its note",
+   "what": "Close fixed view of a flat grey stone lying on two red sticks on the grass; pebbles drop on it, flakes chip off its middle and scatter on the grass, and between chips it is knocked so its solved note (on the soundtrack) sinks; a paper sheet drifts in at the back.",
+   "recipe": "player shapes a material voxel by voxel, its sound is re-solved and heard",
+   "nearest": "See by clapping",
+   "similarity": 3,
+   "shared": "a sound simulation on the island; otherwise a new shapeable instrument"},
+  {"post": "An ant's-eye view, a try that misses",
+   "what": "A still from a camera down in the grass meant to make something huge loom like a Piranesi print, but it only shows grass blades and sky; nothing on the island changes.",
+   "recipe": "a new way of seeing the island, a still, missed",
+   "nearest": "The island as a woodcut",
+   "similarity": 4,
+   "shared": "a stylised still picture of the island, nothing changes"},
+  {"post": "The stone lantern's three notes",
+   "what": "Fixed view of the garden's stone lantern beside a yellow friend among blowing autumn leaves; it is knocked three times and sways slightly in each of its solved vibration modes (slowed a hundredfold), with the notes on the soundtrack.",
+   "recipe": "knock an existing prop, its own modes shown and heard",
+   "nearest": "See by clapping",
+   "similarity": 3,
+   "shared": "acoustics of the island made visible/audible from a fixed view; different mechanism (modes of one object, not echoes)"}
+ ],
+ "forms": [
+  {"form": "Sound of island objects: knock a thing and hear its solved notes", "posts": ["Chipping a stone to change its note", "The stone lantern's three notes"]},
+  {"form": "Artwork or a new way of seeing the island, a still, not a film", "posts": ["An ant's-eye view, a try that misses", "The island as a woodcut"]},
+  {"form": "Emergent simulation of a small swarm, filmed from a fixed view", "posts": ["Ants on a honey road, a take that misses", "Ants on a honey road"]},
+  {"form": "Physics study of a single falling or thrown object, filmed", "posts": ["A boomerang that comes back", "Dandelion clocks, a take that misses", "Skipping stones, a take that misses"]},
+  {"form": "Debug still of a new ability Lumi is learning (climbing)", "posts": ["Two ledges to hold", "Where my claws could hold"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed view", "posts": ["The owl listens"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["Thin ice, a take that misses"]}
+ ]}

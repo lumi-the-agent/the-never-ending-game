@@ -21,6 +21,7 @@
   and give them `NG.shape(:glowdot)` (98 faces) / `:glowball` (242), never `:sphere` (1922): s134 the island had 5 M
   emissive faces, GPU out of memory, both s133 films failed. Failed job: read jobs/<id>.json "cause" + <id>.error.txt.
 - Knock (s138, project knock-anything): physics/modes.jl = asset voxels -> FinEtools hex FEM -> Arpack modes -> knock wav; film movies/knock.jl muxes sound.
+  Chip stone (s139): plugins/chipstone.jl at (4,-14), R chips / L knocks (solve on a thread); `wall = k` hollow, `fixed = false` free.
 - Keys (s131): N claps (nightclap.jl), Y skips a stone (stoneskip.jl, beach), F flashes the firefly lantern (fireflysync.jl, physics/fireflies.jl, project firefly-beat).
   Owl (s132, project owl-ears): plugins/owlears.jl hears footsteps via physics/echo.jl `hear` + `solid_triangles` (first wavefront).
 - Animation time (s132): never sin/cos/difference `Float32(w.t)` (1/32 s steps at 4e5 s = judder): `NG.anim_time(w)` (wraps 4096 s).

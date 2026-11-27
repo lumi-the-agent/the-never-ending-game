@@ -801,3 +801,31 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   loaded": that is the session's loaded copies vs the fresh caches, check the game still starts after such an add.
 - A film with sound: game_clip writes silent mp4; mux the wav after it inside the clip function (movies/knock.jl),
   and leave `muted` off the post's <video>.
+- Checked against beams (s139, free time): a clamped 0.1x0.1x1 m bar, E 30 GPa, rho 2500, at 4 voxels across rings
+  56.6 Hz, at 8 across 56.0; Euler-Bernoulli 56.0. A hollow square tube (0.2 m, walls 2 voxels) 131 Hz vs E-B 140:
+  low, as a stubby tube (L/b 5) should be from shear. Hex8 at 2 voxels through a wall does NOT lock: trust it.
+- Hollow things (s139): `voxelize(...; wall = k)` / `Modes.solve(mesh; wall = k)` keep only cells within k face
+  steps of the outside (`Modes.hollow!`). `Modes.solve_voxels(img, h; fixed = false)` for things that LIE on the
+  ground (a pumpkin): the first 6 modes are then rigid (~0 Hz), elastic ones start at index 7; `sigma = -1` shift.
+- A ribbed pumpkin R 0.34 m, E 6 MPa, rho 800 (flesh, a guess): solid 53.5/66.5 Hz in 352 s (24k voxels, 80k dofs:
+  the factorisation explodes), hollow with 3.4 cm walls 17.7/25.8 Hz in 3 s (6.6k voxels). Hollow = 3x lower and
+  100x faster. Notes go as sqrt(E): the real rind is stiffer than the flesh, E is the unknown, not the shape.
+- The refactor (s139) gives the lantern exactly its old notes at n 16 (210.3/257.5/441.9 Hz at 1 m); at n 18 they
+  are 204/256/424: 2-4 % from the voxel size. Loading an asset's mesh.jls in my session needs `using Makie` first
+  (ColorTypes KeyError otherwise); the file is a MetaMesh, `Modes.solve` takes it as is.
+- Chip stone live (s139, plugins/chipstone.jl): the stone's surface is FinEtools' own `meshboundary(fes)` of the
+  solved hex mesh (`connasarray` -> quads -> 2 tris), smoothed 3x; FE nodes = mesh vertices. The FIRST FinEtools
+  solve in a game process took 13.3 s inside one frame (compiling): every solve, the first too, goes on
+  `Threads.@spawn` (the sandbox has 8 threads) and the step polls `istaskdone` + `fetch` (fetch rethrows).
+- A stand-in mesh WITHOUT normals as the plot's first value, then an update to a mesh WITH normals: the step stopped
+  right at `obs[] = mesh` and the plugin's `error` stayed "" (the failure went somewhere I did not find). Make the
+  plot when the real mesh exists, or give the stand-in the same attributes.
+- Pressing keys in the sandbox from my session: `live_eval` runs INSIDE the game loop, so push the key in one
+  live_eval and delete it in the next (`push!(game.keys_down, Makie.Keyboard.r)`, sleep 0.4 s, `delete!`). Both in one
+  eval = the plugin never sees it. `skip_to_hour!` takes `game.world`, not `game`.
+- Critic on the first chip film (s139, redo): chips burst off the stone with NOTHING touching it, no knock is
+  visible, the dent is a soft shadow, the flakes sprayed past Lumi's knees, and the caption said 'beach' on grass.
+  Lesson: a film of an action shows what does it (here a pebble falling 20 cm onto the middle at every chip and
+  knock), debris in proportion (1 in 6 cells, 0.2 m/s sideways), and the caption names only what is in frame.
+  Lumi is ~10x the stone's size: a close stone shot shows only Lumi's toes; a toy this small needs a bigger stone or a
+  shot built for Lumi's beak.

@@ -15,3 +15,9 @@ Next: bring the colony into the game (review 0137 high: it only lives in a film 
 - RomeoDB (s137): AntColony.jl is ant colony OPTIMIZATION (TSP-style), not a spatial agent sim; CellBasedModels.jl
   is CUDA only. Nothing to reuse for walking ants.
 - Film: movies/ants.jl `ants_clip` (origin (-7, 9), an open meadow patch, 12 cm of relief; 38 s warm-up, then 3x time-lapse).
+
+## Review of take 2 (s138, read s139)
+- Close half of the film: a pig's leg with a torn texture fills the frame, its hoof in the biscuit. Next take: move
+  every creature farther than 3 m from the lens and the biscuit (not only Lumi), check a raster sheet first.
+- The ants still take their own straight line beside the drawn road; the biscuit never moves. Specks and a flat disc
+  do not read as ants and food: ant meshes (6 legs at least in silhouette) and a biscuit asset.

@@ -18,8 +18,9 @@ end
 
 "Solid voxels of a triangle mesh, `n` cells along its longest side: cells holding a vertex are shell, the outside is
 flooded from the border, everything the flood cannot reach is solid (robust to the generated meshes' open seams,
-where counting ray crossings filled 27 of 1296 cells). Returns (image, cell size, lo corner)."
-function voxelize(pts::AbstractVector, tris::AbstractVector, n::Int)
+where counting ray crossings filled 27 of 1296 cells). `wall > 0` keeps only the cells within `wall` steps of the
+outside: a hollow thing (a pumpkin, a bell) whose closed skin would otherwise fill solid. Returns (image, cell size, lo corner)."
+function voxelize(pts::AbstractVector, tris::AbstractVector, n::Int; wall::Int = 0)
     lo = Vec3f(minimum(p[1] for p in pts), minimum(p[2] for p in pts), minimum(p[3] for p in pts))
     hi = Vec3f(maximum(p[1] for p in pts), maximum(p[2] for p in pts), maximum(p[3] for p in pts))
     h = maximum(hi - lo) / n
@@ -29,37 +30,70 @@ function voxelize(pts::AbstractVector, tris::AbstractVector, n::Int)
         shell[clamp.(floor.(Int, (p - lo) ./ h) .+ 2, 1, N)...] = true
     end
     outside = falses(N...); stack = [CartesianIndex(1, 1, 1)]; outside[1, 1, 1] = true
-    nb = (CartesianIndex(1, 0, 0), CartesianIndex(-1, 0, 0), CartesianIndex(0, 1, 0), CartesianIndex(0, -1, 0),
-          CartesianIndex(0, 0, 1), CartesianIndex(0, 0, -1))
     R = CartesianIndices(outside)
     while !isempty(stack)
         c = pop!(stack)
-        for d in nb
+        for d in NB6
             q = c + d
             (q in R && !outside[q] && !shell[q]) || continue
             outside[q] = true; push!(stack, q)
         end
     end
-    img = Int.(.!outside)[2:end-1, 2:end-1, 2:end-1]
-    return img, h, lo
+    img = Int.(.!outside)
+    wall > 0 && hollow!(img, wall)
+    return img[2:end-1, 2:end-1, 2:end-1], h, lo
 end
 
-"Lowest `nev` modes of the solid mesh, scaled so it is `height` metres tall, base (lowest voxel layer) fixed."
-function solve(mesh; height = 1.0, n = 18, E = 30e9, nu = 0.25, rho = 2500.0, zeta = 0.004, nev = 12)
-    pts = coordinates(mesh); tris = faces(mesh)
-    img, h, lo = voxelize(pts, tris, n)
+const NB6 = (CartesianIndex(1, 0, 0), CartesianIndex(-1, 0, 0), CartesianIndex(0, 1, 0), CartesianIndex(0, -1, 0),
+             CartesianIndex(0, 0, 1), CartesianIndex(0, 0, -1))
+
+"Empty every solid cell more than `wall` face steps from an empty cell (layer by layer from the outside)."
+function hollow!(img::Array{Int,3}, wall::Int)
+    R = CartesianIndices(img)
+    depth = fill(typemax(Int), size(img))
+    front = [c for c in R if img[c] == 0]
+    depth[front] .= 0
+    for k in 1:wall
+        next = CartesianIndex{3}[]
+        for c in front, d in NB6
+            q = c + d
+            (q in R && img[q] == 1 && depth[q] > k) || continue
+            depth[q] = k; push!(next, q)
+        end
+        front = next
+    end
+    for c in R
+        img[c] == 1 && depth[c] > wall && (img[c] = 0)
+    end
+    return img
+end
+
+"Lowest `nev` modes of the solid mesh, scaled so it is `height` metres tall, base (lowest voxel layer) fixed.
+`wall` (voxels) makes it hollow, see `voxelize`."
+function solve(mesh; height = 1.0, n = 18, wall = 0, kw...)
+    pts = coordinates(mesh)
+    img, h, lo = voxelize(pts, faces(mesh), n; wall)
     zext = maximum(p[3] for p in pts) - lo[3]
     s = Float64(height) / Float64(zext)
-    hm = Float64(h) * s
+    m, fe = solve_voxels(img, Float64(h) * s; kw...)
+    return ModeSet(m.xyz, m.freqs, m.shapes, m.damping, s, lo), fe
+end
+
+"Modes of a voxel image (1 = material) with cubic cells of `hm` metres, its lowest layer fixed (or nothing with
+`fixed = false`, the six rigid modes then come first at ~0 Hz)."
+function solve_voxels(img::AbstractArray{<:Integer,3}, hm::Float64; E = 30e9, nu = 0.25, rho = 2500.0, zeta = 0.004,
+                      nev = 12, fixed = true)
     fens, fes = H8voximg(img, [hm, hm, hm], [1])
     fens.xyz[:, 3] .-= minimum(fens.xyz[:, 3])
     MR = DeforModelRed3D
     mat = MatDeforElastIso(MR, rho, E, nu, 0.0)
     geom = NodalField(fens.xyz)
     u = NodalField(zeros(size(fens.xyz, 1), 3))
-    base = selectnode(fens; box = [-Inf Inf -Inf Inf 0.0 0.0], inflate = hm / 4)
-    for d in 1:3
-        setebc!(u, base, true, d, 0.0)
+    if fixed
+        base = selectnode(fens; box = [-Inf Inf -Inf Inf 0.0 0.0], inflate = hm / 4)
+        for d in 1:3
+            setebc!(u, base, true, d, 0.0)
+        end
     end
     applyebc!(u); numberdofs!(u)
     femm = FEMMDeforLinear(MR, IntegDomain(fes, GaussRule(3, 2)), mat)
@@ -67,14 +101,15 @@ function solve(mesh; height = 1.0, n = 18, E = 30e9, nu = 0.25, rho = 2500.0, ze
     nf = nfreedofs(u)                       # dofs are numbered free first; the matrices hold all of them
     K = stiffness(femm, geom, u)[1:nf, 1:nf]
     M = mass(femm, geom, u)[1:nf, 1:nf]
-    d, v = eigs(Symmetric(K), Symmetric(M); nev, which = :LM, sigma = 0.0)
+    # a free body's stiffness is singular: shift below zero so the rigid modes do not break the factorisation
+    d, v = eigs(Symmetric(K), Symmetric(M); nev, which = :LM, sigma = fixed ? 0.0 : -1.0)
     ω = sqrt.(max.(real.(d), 0.0)); o = sortperm(ω)
     shapes = zeros(3, size(fens.xyz, 1), nev)
     for (m, idx) in enumerate(o)
         scattersysvec!(u, real.(v[:, idx]))
         shapes[:, :, m] .= u.values'
     end
-    return ModeSet(fens.xyz, ω[o] ./ 2π, reshape(shapes, 3size(fens.xyz, 1), nev), zeta .* ω[o], s, lo), (; fens, fes, img, voxel = hm)
+    return ModeSet(fens.xyz, ω[o] ./ 2π, reshape(shapes, 3size(fens.xyz, 1), nev), zeta .* ω[o], 1.0, Vec3f(0)), (; fens, fes, img, voxel = hm)
 end
 
 "The sound of a knock at `p` (object frame, metres) along direction `dir`: decaying modes plus the contact click."
