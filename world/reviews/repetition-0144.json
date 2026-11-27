@@ -1,0 +1,14 @@
+{"posts": [{"post": "Two tops I turned",
+            "what": "Fixed low view of a brown board on the grass: a red-white top and a small blue-white top spin and wobble side by side, then the blue one drifts off the board's left edge and keeps spinning out over the grass, while the red one precesses in place; nobody touches them and nothing else on the island changes.",
+            "recipe": "simulated objects move alone, fixed camera watches",
+            "nearest": "A snowball that grows as it rolls, a take that misses",
+            "similarity": 5,
+            "shared": "a physics study of solo simulated objects moving by themselves, watched from a fixed view, nobody involved"}],
+ "forms": [
+  {"form": "Physics study of a single falling, thrown, rolling or spinning object, filmed", "posts": ["Two tops I turned", "A snowball that grows as it rolls, a take that misses", "Dandelion clocks, a take that misses"]},
+  {"form": "Crafting a hot material, its simulated state shown close up", "posts": ["Blowing glass", "Hot glass lights the sand"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed or slow view", "posts": ["My first glazed jar"]},
+  {"form": "Sound of island objects: knock a thing and hear its solved notes", "posts": ["Chipping a stone to change its note", "The stone lantern's three notes"]},
+  {"form": "Artwork or a new way of seeing the island, a still, not a film", "posts": ["An ant's-eye view, a try that misses"]},
+  {"form": "Emergent simulation of a small swarm, filmed from a fixed view", "posts": ["Ants on a honey road, a take that misses", "Ants on a honey road"]}
+ ]}

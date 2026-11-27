@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T11:59:31.624",
+  "finished": "2026-11-27T12:31:45.827",
   "id": "20261127-115931-624-clip",
   "kind": "clip",
   "params": {
@@ -12,6 +13,16 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/two-turned-tops.mp4",
     "script": "movies/top.jl"
   },
+  "result": {
+    "cone_tilt_end": 37.04404671234783,
+    "frames": 144,
+    "hour": 16.610154138630516,
+    "path": "/sim/Programmieren/SimGame/world/site/films/two-turned-tops.mp4",
+    "seconds_per_frame": 5.327389568090439,
+    "tippe_alpha": 0.17138888672611208,
+    "tippe_tilt_end": 167.8306832226152
+  },
+  "seconds": 827.5,
   "started": "2026-11-27T12:17:58.320",
-  "status": "running"
+  "status": "done"
 }

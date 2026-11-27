@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T12:48:18.068",
+  "id": "20261127-124818-068-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tops_clip",
+    "kwargs": {
+      "samples": 16,
+      "seconds": 6.0
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/media/s144-tops-retake3.mp4",
+    "script": "movies/top.jl"
+  },
+  "status": "queued"
+}

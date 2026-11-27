@@ -34,7 +34,9 @@ end
 top_world(V, fr, base) = [Point3f(base .+ fr.pos .+ qrot(fr.q) * v) for v in V]
 
 function tops_clip(path; rasterize = false, samples = 16, width = 960, height = 540, fps = 24, seconds = 8.0,
-                   speed = 0.75, hour = 16.6, spot = (6.5f0, -15.0f0))
+                   speed = 0.75, hour = 16.6, spot = (5.6f0, -13.0f0))
+    # spot = the tops plugin's board (TP_SPOT); its big board and top are hidden below. s144: the first spot
+    # (6.5, -15) put the eye inside the swing frame's leg (swing.jl SPOT (6, -15)): the raster check was a beige wall.
     zt, rt = tippe_profile(; cut = 1.6, stem_len = 1.0, stem_r = 0.22)
     rin = [z <= 1.6 * 0.02 ? min(x, 0.9 * r) : 0.0 for (z, x, r) in zip(zt, tippe_hollow(zt; wall = 0.15), rt)]
     tippe = TopShape(zt, rt, rin)
@@ -70,7 +72,7 @@ function tops_clip(path; rasterize = false, samples = 16, width = 960, height = 
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
         end
         st = t * speed
         k(fr) = clamp(round(Int, st / (fr[2].t - fr[1].t)) + 1, 1, length(fr))

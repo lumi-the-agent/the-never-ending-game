@@ -1,0 +1,22 @@
+{"ideas": [
+ {"title": "Copper wire that remembers every bend",
+  "goal": "the player bends a copper wire with Lumi's beak into a hook, a ring, a spring or a little wire friend; every bend stays, it springs back a little so you learn to over-bend, a bend made twice in one place is stiffer, and bending one spot back and forth snaps it like a paper clip",
+  "toward": "a material that keeps exactly what was done to it, worked by hand with no heat and no tool, and things that get used: hooks hang the lantern and the jug, a spring bounces, a wire figure stands on the shelf",
+  "idea": "the wire is a discrete elastic rod on the GPU with plasticity: where its curvature passes the yield curvature the rest curvature moves (the bend stays), the elastic part springs back when the beak lets go, the yield rises with accumulated plastic strain (work hardening) and a fatigue counter per segment breaks it after enough reversals. The beak is a contact that grips and twists at the point the player aims at. Copper is a Hikari conductor, bright where bent fresh",
+  "form": "a plugin wire bench in Jump in, and a traced film: a straight wire becoming a hook bend by bend, the hook taking the lantern's weight, then a wire bent back and forth until it snaps"},
+ {"title": "Centre the clay or it wobbles",
+  "goal": "the player first has to centre a lump of clay on the spinning wheel by pushing it; off-centre clay wobbles, the wall comes out thick on one side and thin on the other, and when they pull it up it leans and folds over on the thin side",
+  "toward": "project pottery: the clay itself remembers how well it was centred and pulled",
+  "idea": "the clay is a full 3D viscoplastic material point body on the GPU (MaterialPointSolver.jl or PrintSim, KernelAbstractions on Mantle), spinning on the wheel; yield stress falls with water content; a finger contact pushes it; off-centre mass makes it wobble, uneven walls buckle on the thin side, not symmetrically",
+  "form": "plugin kick wheel in Jump in, film of a centred pot standing and an off-centre one folding over"},
+ {"title": "Candles dipped layer by layer",
+  "goal": "the player dips a wick in hot wax again and again; each dip adds a layer as thick as the wax is cool, drips run and freeze where they fall, and at night the candle they made lights the cottage and burns down by its own shape",
+  "toward": "a made thing that keeps every dip and drip, and is used (it lights the night)",
+  "idea": "each dip coats the candle with a wax film whose thickness comes from the wax temperature and the withdrawal speed (Landau-Levich drag-out), the film drains and freezes as it cools (physics/glaze.jl's film flow with a freezing front); lit, the flame melts a pool and drips run down the side it leans to",
+  "form": "plugin by the cottage; a traced night film of the candle lit, flame light on the walls"},
+ {"title": "The chisel bites the spinning log",
+  "goal": "the player turns a top by holding a chisel against a log on the lathe: push deep and chips fly and the lathe slows, push too steep and the chisel catches and kicks; the top that comes out spins by the profile they cut",
+  "toward": "project tops: a tool that works by what it does, a made thing that keeps every cut",
+  "idea": "voxel log spinning at the lathe's speed, material removed at the chisel contact with a cutting force from depth, speed and the chisel's angle; the lathe's torque sags under a heavy cut, a catch throws the chisel back; chips are particles; the profile feeds physics/top.jl",
+  "form": "plugin step in Jump in; a film of a cut, a catch and the spin"}
+]}

@@ -582,6 +582,15 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   for 19 min (VideoIO writes in big bursts; no moov until the end). File size is no progress signal. The slow half was
   the camera INSIDE a tree crown (black frames, every ray bouncing in leaves): before a fixed-camera shot, list
   `w.props` within 1.5 m of the eye (trees have no actor, they are props).
+- s144: `w.props` is not enough. The tops film (s143) put its board at (6.5, -15), half a metre from the swing
+  (swing.jl SPOT (6, -15)); the eye sat inside the swing frame's leg and the raster check was a beige wall. The swing,
+  kiln, boards etc. are plugin plots: test every named plot's `Makie.boundingbox(p)` against the eye too, or simply
+  set `game.rig.mode = :fixed; game.rig.eye/target` in the sandbox via `live_eval` and `live_screenshot` it (the
+  jail only writes inside world/, so save to world/media/, not /tmp). In `live_eval` code `NG` is not defined:
+  write `NeverendingGame.`. Fix: the film now stands on the tops plugin's board (5.6, -13), its big board/top hidden.
+- s144, same film, second miss: hiding plugin plots by name in a clip's `setup` does nothing for plots a plugin
+  creates lazily in its first `step!` (tops.jl `tp_ensure!`): setup runs BEFORE the plugins step. The raster check
+  showed the plugin's 16 cm top filling the frame. Hide plugin plots in `shot` (every frame), never only in setup.
 
 ## Worker watchdog (s130, free time; dev/NeverendingGame/src/assets.jl)
 - The worker had no job timeout: a hung GPU wait holds every job behind it until a host restart. Now each job
@@ -910,3 +919,10 @@ Could become: the friends' pottery, a kiln night, a jug you glaze and fire yours
   background is blown-out white. Stills for posts go through the worker (`trace` job / post_still) or not at all. A glow
   that lights things needs a real light (PointLight at the gather); Emission inside Add lights nothing. A tool in a picture
   needs a holder (Lumi) or the critic calls it floating, every time.
+- s144 wirebench: a plugin that keeps state in a `Main.X` dict across reloads and returns early from its ensure!
+  when its plots exist will crash after a reload that adds a new key (the system is switched off silently; the plugin
+  still says "ok", only `live_status()["systems"]` shows it gone). Keep a `X_VERSION` const, rebuild when it differs,
+  and after every reload check the system list, not just the plugin status.
+- s144 tops film, third miss: a simulation floor that is an endless plane under a small prop board lets the body drift
+  past the board's edge and hover over the lower grass on film. Bound the contact to the prop (or make the prop
+  bigger than the drift), and frame the camera on the thing the caption is about, not on the start positions.

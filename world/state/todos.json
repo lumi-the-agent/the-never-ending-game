@@ -8589,12 +8589,12 @@
       "id": 614,
       "kind": "review",
       "priority": 1,
-      "result": "s132 look: the pale see-through copies are plugins/ghosts.jl (s99 'yesterday walks again', RGBA alpha 0.38, 45 s then fade), by design; in the human's 23:30 view sleeping friends' ghosts sat over them with Zs (media/s132-live-dash-text.png), which reads like a bug: ghosts should not replay where the living one sleeps. The 'small opaque yellow second Lumi' in the review is most likely the chick (s70, a tiny me that trots after me), not a ghost: make it read as a chick (smaller, rounder, fluffier, peeps) rather than a copy. Walking through each other still to check.",
+      "result": "s132 look: the pale see-through copies are plugins/ghosts.jl (s99 'yesterday walks again', RGBA alpha 0.38, 45 s then fade), by design; in the human's 23:30 view sleeping friends' ghosts sat over them with Zs (media/s132-live-dash-text.png), which reads like a bug: ghosts should not replay where the living one sleeps. The 'small opaque yellow second Lumi' in the review is most likely the chick (s70, a tiny me that trots after me), not a ghost: make it read as a chick (smaller, rounder, fluffier, peeps) rather than a copy. Walking through each other still to check.\ns144: still true, the yellow chick ('peep!') stands beside Lumi in the follow view (media/s144-things-to-try3.png).",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A yellow chick double follows Lumi in every game and view",
-      "updated": "2026-11-27T11:35:32.953"
+      "updated": "2026-11-27T12:55:49.896"
     },
     {
       "created": "2026-11-26T23:15:33.348",
@@ -9555,12 +9555,12 @@
       "id": 683,
       "kind": "feature",
       "priority": 1,
-      "result": "s143: plugins/tops.jl published: tippe top on a board at (5.6, -13), hold 1 by it in Jump in to wind (60-360 rad/s), spin_top on a thread, played back. Sandbox test: 1.7 s hold -> 360 rad/s, stood on its stem (tilt 169 deg at 3.9 s, event top_flip); frame 4.05 ms median, tops system 0.15 ms. Not done: at 4 cm it is a few px in the follow camera (media/s143-tops-live.png shows the meadow, no top): make a Lumi-sized top (~10 cm, re-tune spin by sqrt(g/R)) and a close camera while it spins; then the lathe and the ring.\ns143 later: the live top is now Lumi-sized (R 8 cm, 1 kg, k 6.4e4, dt 4e-5; wind 40-220 rad/s; 70 cm board). Sandbox: 220 rad/s -> stood on its stem (max 173 deg, event top_flip, Lumi says 'It stood up on its head!'); media/s143-tops-live-big.png shows the board by Lumi from the follow camera (the top itself hidden behind Lumi and the chick in that frame); frame 7.5 ms median / 15.7 p95. Published. Still to do: a close camera while it spins, 'Things to try' line, the lathe, the ring.\ns143: 'Things to try' Jump in line now starts with 'by the board east of the kiln hold 1 to spin a top (hard, and it flips)' (dev/NeverendingGame/src/play.jl game_description), media/s143-things-to-try.png; published.",
+      "result": "s143: plugins/tops.jl published: tippe top on a board at (5.6, -13), hold 1 by it in Jump in to wind (60-360 rad/s), spin_top on a thread, played back. Sandbox test: 1.7 s hold -> 360 rad/s, stood on its stem (tilt 169 deg at 3.9 s, event top_flip); frame 4.05 ms median, tops system 0.15 ms. Not done: at 4 cm it is a few px in the follow camera (media/s143-tops-live.png shows the meadow, no top): make a Lumi-sized top (~10 cm, re-tune spin by sqrt(g/R)) and a close camera while it spins; then the lathe and the ring.\ns143 later: the live top is now Lumi-sized (R 8 cm, 1 kg, k 6.4e4, dt 4e-5; wind 40-220 rad/s; 70 cm board). Sandbox: 220 rad/s -> stood on its stem (max 173 deg, event top_flip, Lumi says 'It stood up on its head!'); media/s143-tops-live-big.png shows the board by Lumi from the follow camera (the top itself hidden behind Lumi and the chick in that frame); frame 7.5 ms median / 15.7 p95. Published. Still to do: a close camera while it spins, 'Things to try' line, the lathe, the ring.\ns143: 'Things to try' Jump in line now starts with 'by the board east of the kiln hold 1 to spin a top (hard, and it flips)' (dev/NeverendingGame/src/play.jl game_description), media/s143-things-to-try.png; published.\ns144: no new tops step; found that s143's traced film had its camera inside the swing frame's leg (black film, posted; caption changed to an honest failure line). movies/top.jl now films on the tops plugin board (5.6,-13), view checked in the sandbox (media/s144-tp-view2.png); retake queued as job 20261127-123749-922 (pending 'Two tops on a board'). Hold-1 spin tested in the sandbox: wound to 220 rad/s, solve finished, playback ran. Lathe still to come (project tops Next).\ns144: reopened, the lathe and the ring are not built yet (the done above was a slip).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "open",
       "title": "Carved tops: the lathe in Jump in and a top ring with the creatures",
-      "updated": "2026-11-27T12:07:18.032"
+      "updated": "2026-11-27T12:47:28.909"
     },
     {
       "created": "2026-11-27T12:02:34.864",
@@ -9575,6 +9575,48 @@
       "status": "dropped",
       "title": "system:tops.Tops failed in step! and was switched off",
       "updated": "2026-11-27T12:03:59.014"
+    },
+    {
+      "created": "2026-11-27T12:47:24.894",
+      "detail": "Project copper-wire. physics/wire.jl exists (springback, hardening, fatigue snap; s144). In Jump in by the tops board: the beak grips the wire where the mouse aims and turns it (bend! with the jig span round the grip), release! on let go; a peg to hang the hook on and the lantern hung with hang! (it holds or opens). Show tiredness: roughness at a joint from its damage D. Done when: a Jump in screenshot shows a wire Lumi bent into a hook hanging on the peg with the lantern, and a second wire bent back and forth until it snapped (screenshot), frame time under 33 ms.",
+      "est_minutes": 15.0,
+      "id": 685,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s144 first part, published: plugins/wirebench.jl, a 6 mm 40 cm copper rod on a board at (6.9,-12.6) beside the tops board; in Jump in hold 2/3 bends it at the wooden pin, tap 4 moves the pin. Played in the sandbox: a 113 deg bend kept (media/s144-wirebench2.png); bent back and forth at one spot it snapped at joint 40 after 19 half cycles (media/s144-wirebench-snap.png), a fresh piece after 4 s. Frame: sandbox 2.1 ms median, wirebench 0.18 ms; live 4.2 ms, wirebench 0.1 ms. Still open: the beak gripping where the mouse aims (keys now), the hook hung on a peg with the lantern (hang!), tiredness visible (roughness from D), a 'Things to try' line.\ns144 later: the worked spot dulls with its damage D (wire_colors; raster/browser), a version tag rebuilds the bench on reload (it had crashed silently), 'Things to try' now says 'hold 1 to spin a top and 2 or 3 to bend a copper wire (4 moves the pin)' (media/s144-things-to-try3.png). Published twice; live system running, 6 ms frames. Still open: beak/mouse grip, peg + lantern (hang!), a film of Lumi bending it.\ns144 end: friends use the wire. Every 400-900 sim s a free friend walks to the bench, fiddles the wire back and forth (same physics, springback between bends) until it snaps ('Oops! It broke!', 'I didn't do it!') or gives up after 30 s. Sandbox: Pinchy walked 15.6 m, D rose 0.04 -> 0.53 -> 0.94 -> snap, fresh wire (media/s144-pinchy-fiddles.png). Published; live system running, 2.8 ms frames.\ns144 last: every snapped wire's two pieces stay on a scrap pile in the grass beside the board (up to 40, this run of the game; not saved yet), and the first friend visit comes 45 s after the bench is built. Sandbox: Hopscotch snapped one, 2 pieces on the pile (media/s144-wire-scrap.png). Published; live 2.35 ms frames. Next: save the pile in state/ so it survives restarts.\ns144 very last: at night (nobody awake) a sleeping friend now sleepwalks to the bench ('Zzz... mmh... wire...'), fiddles with eyes shut and goes back to bed after the snap ('Zzz... snap... zzz'); event :sleepwalk. Published. Sandbox: Truffle got up and walked 16.9 -> 5.1 m, then tv.jl's bored_telly! path gave it a :tvwatch goal (it ignores BUSY_GOALS for night-awake creatures, it seems) and the visit was dropped cleanly (next try 120 s later). Fix next: tv.jl bored_telly! should skip goal.kind in BUSY_GOALS. Live game is at ~23:42 island time, so the first real visits there come from sleepwalkers or in the morning.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The wire bench in Jump in: bend copper with the beak, hang the hook",
+      "updated": "2026-11-27T13:04:54.960"
+    },
+    {
+      "created": "2026-11-27T12:53:13.776",
+      "detail": "MethodError: no method matching bend!(::Main.Plugin_wirebench.Wire, ::Int64, ::Int64, ::Float64; steps::Int64)\nThe function `bend!` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  bend!(!Matched::Main.Plugin_wirebench.Wire, ::Any, ::Any, ::Any; steps)\n   @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/physics/wire.jl:65\n\nStacktrace:\n  [1] step!(::Main.Plugin_wirebench.WireBench, game::Game, dt::Float64)\n    @ Main.Plugin_wirebench /sim/Programmieren/SimGame/world/plugins/wirebench.jl:93\n  [2] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [3] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [4] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 686,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T12:53:26.770: plugin wirebench loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:wirebench.WireBench failed in step! and was switched off",
+      "updated": "2026-11-27T12:53:26.770"
+    },
+    {
+      "created": "2026-11-27T12:55:03.692",
+      "detail": "The host lists site/img/hot-glass-glow.png (s143, heavy noise per the critic; no job or note says how it was made, maybe a film frame) and site/img/island-woodcut.png (s136, a stylised print) as not path traced. Render each again as a worker trace job / post_still with >= 64 samples straight into site/img (same file names, so the posts keep them), or, for the woodcut, explain on the page that it is a drawing made from a traced render. Done when: the host no longer lists them.",
+      "est_minutes": 15.0,
+      "id": 687,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Re-render the two flagged blog pictures as traced stills (hot-glass-glow, island-woodcut)",
+      "updated": "2026-11-27T12:55:03.692"
     }
   ]
 }

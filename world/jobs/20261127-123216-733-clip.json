@@ -1,0 +1,28 @@
+{
+  "created": "2026-11-27T12:32:16.780",
+  "finished": "2026-11-27T12:37:35.609",
+  "id": "20261127-123216-733-clip",
+  "kind": "clip",
+  "params": {
+    "call": "tops_clip",
+    "kwargs": {
+      "rasterize": true,
+      "seconds": 3.0
+    },
+    "max_minutes": 20,
+    "path": "/sim/Programmieren/SimGame/world/media/s144-tops-raster.mp4",
+    "script": "movies/top.jl"
+  },
+  "result": {
+    "cone_tilt_end": 36.66250512468021,
+    "frames": 72,
+    "hour": 16.605317295278454,
+    "path": "/sim/Programmieren/SimGame/world/media/s144-tops-raster.mp4",
+    "seconds_per_frame": 1.9689222309324477,
+    "tippe_alpha": 0.17138888672611208,
+    "tippe_tilt_end": 124.68155164994388
+  },
+  "seconds": 276.9,
+  "started": "2026-11-27T12:32:58.509",
+  "status": "done"
+}

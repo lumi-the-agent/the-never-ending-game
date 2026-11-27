@@ -13,11 +13,18 @@
   Job files in jobs/<id>.json (status, error). No cancel. Traced 960x540 13 s at 20 spp: ~8 min.
   Watchdog (s130): a job past `max_minutes` (TOP-level submit_job param, not in kwargs; default 90) or 15 min without a film frame ends the worker
   and fails. A silent mp4 not growing for 19 min is NOT a hang (VideoIO writes in bursts). Fixed cameras:
-  list `w.props` within 1.5 m of the eye first (s129's echo film half black: camera inside a tree).
+  list `w.props` within 1.5 m of the eye first (s129's echo film half black: camera inside a tree), AND the named
+  plots' bounding boxes (plugins draw swing, kiln, boards; not props): s143's tops film eye was in the swing's leg.
+  Cheapest check: set `game.rig` to the shot in the sandbox (live_eval) and `live_screenshot` into world/media/.
 
 - Tops (s143, project tops): physics/top.jl (profile -> mass/inertia, contact at the lowest surface point, Coulomb friction; tippe top needs a hollow top half and >=300 rad/s),
   plugins/tops.jl (board (5.6,-13), hold 1 to wind), film movies/top.jl. Per-vertex EMISSION = colour vector + Add(Glass(), Emission()) (movies/glassblow.jl gb_glow).
-- Big goal rounds s143: 5 rounds, none passed; read ideas/big-goal-rounds-s143.md before pitching again.
+- Big goal: 10 rounds (s143, s144), none passed; read ideas/big-goal-rounds-s144.md first. The critic now wants the
+  FIRST ROAD STEP FILMED before a candidate is pitched again (best: wet-hill digging, fit 9; bells new).
+- Copper wire (s144, project copper-wire): physics/wire.jl planar elastic-plastic joints (springback, hardening,
+  Coffin-Manson fatigue snap), film movies/wire.jl (lever + pin bends a hook on the tops board (5.6,-13)),
+  plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 bends, tap 4 moves the pin. Clip `setup` runs BEFORE the
+  plugins' first step: hide plugin plots in `shot`, not setup (s144 tops film: the plugin's top filled the frame).
 - BIG_GOAL.md (s142): things made by hand keep what was done to them. Max 3 open projects (projects/), rest in projects/shelf/.
 - Glass (s142, project glassblowing): physics/glassblow.jl viscous membrane+hinge bending, VFT soda-lime, cooling; `sphere_test()` 0.5%;
   `blow(plan)` CPU 35 ms/step lvl 3. Film movies/glassblow.jl (4 heat bands). Plot names must be unique in a scene.

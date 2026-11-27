@@ -1,0 +1,16 @@
+{"goals": [
+  {"title": "Wet the hill and dig",
+   "clear": 6,
+   "memorable": 6,
+   "shareable": 8,
+   "play": 7,
+   "fit": 9,
+   "critique": "This is round 8's 'Burrows in the hill' again. It answers last round's objections: there is a way to read the sand (dark holds, pale trickles, shiny slides), the sun is a clock on every wall, sticks bow and creak before they snap, and a friend moves in only when a room has stood through a night. Water as a second tool on top of the beak does make each wall a choice between wetting it again, shoring it or giving it up. But the one-line pitch is a run-on with three clauses, and digging through sand that caves in is still familiar from falling-sand and mining games, so the game will be remembered only if moisture cohesion reads as clearly in play as it does on paper. A hill-scale MPM solver with moisture and loaded sticks, live on the GPU, is a very large unproven bet, and its first step is still only promised: the damp-stands, dry-trickles, too-wide-caves film has not been made."},
+  {"title": "Stones that stand",
+   "clear": 7,
+   "memorable": 5,
+   "shareable": 7,
+   "play": 6,
+   "fit": 6,
+   "critique": "The loop is tight and honest: lower a stone, feel it rock, turn it, and get an answer within a second. The tower that hangs on a long thin stone while Pinchy sneezes next to it is a clip people would send, and a tower that plays its stones' knocks as it settles is a fine, unusual touch. But stacking by feel is a real-world pastime that already has its own balancing games, and physics stacking in general is a crowded genre, so the novelty rests on scanned one-of-a-kind stones and not on a new verb. Nothing is dug, worked or crafted, and a tower is not used for anything, so the island gets decorated rather than built. Play risks shrinking to the same bet stone after stone once the player has the knack. The road starts in the right place, with one stone on another, but it needs stable GPU contact between rigid bodies with sharp, irregular shapes, and that is not solved yet."}
+]}

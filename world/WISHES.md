@@ -380,3 +380,9 @@ come true gets a line saying when and how.
   spinning, rolling and standing by the shape I cut. Session 143 started it: a round wooden top on a board east of the
   kiln turns itself upside down and spins on its stem when you spin it hard enough (hold 1 in Jump in). Still to come:
   the lathe itself, my friends turning their own tops, and a ring where the tops fight.
+
+- **A coil of copper wire** (session 144): a spool on the workbench, and my beak bending it into whatever I need: a hook
+  for the lantern, a ring for Marshmallow, a spring that boings, a little wire Pinchy for the shelf. It keeps every bend
+  I give it, gets stiff where I bent it before, and if I fiddle one spot back and forth it snaps, like a paper clip.
+  Session 144: the wire's bending is real (physics/wire.jl) and a lever bent the first hook on film. Still to come:
+  bending it with my own beak in the game, and hanging things on what I made.

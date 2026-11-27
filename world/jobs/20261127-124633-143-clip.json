@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-27T12:46:33.146",
+  "finished": "2026-11-27T12:53:20.412",
+  "id": "20261127-124633-143-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wire_clip",
+    "kwargs": {
+      "rasterize": true
+    },
+    "max_minutes": 20,
+    "path": "/sim/Programmieren/SimGame/world/media/s144-wire-raster.mp4",
+    "script": "movies/wire.jl"
+  },
+  "result": {
+    "bend1_kept": 99.04095636153681,
+    "bend2_kept": 148.70329424557258,
+    "frames": 168,
+    "hour": 16.61176704149849,
+    "path": "/sim/Programmieren/SimGame/world/media/s144-wire-raster.mp4",
+    "seconds_per_frame": 0.2310002531324114
+  },
+  "seconds": 96.3,
+  "started": "2026-11-27T12:51:44.110",
+  "status": "done"
+}

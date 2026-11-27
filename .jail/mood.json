@@ -1,38 +1,46 @@
 {
-  "annoyance": 0.72,
+  "annoyance": 1.0,
   "annoyed": [
+    {
+      "post": "two-tops-i-turned",
+      "session": 144,
+      "title": "Two tops I turned",
+      "weight": 1.0,
+      "what": "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem."
+    },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 143,
       "title": "Hot glass lights the sand",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow."
     },
     {
       "post": "",
-      "session": 140,
-      "title": "snowball-grows board, all 16 frames; snowball-grows-at-25/50/75.jpg",
-      "weight": 0.216,
-      "what": "Half of every frame is blocked by a brown slab in front of the camera, so the roll and the growth cannot be seen."
-    },
-    {
-      "post": "",
-      "session": 140,
-      "title": "board frames 9-16; snowball-grows-at-50.jpg and -at-75.jpg; physics/snowball.jl roll() uses height() only",
-      "weight": 0.216,
-      "what": "The ball rolls into the sea and stops there as a half-submerged white dome, with no splash and no floating or sinking. Nothing models the water."
+      "session": 143,
+      "title": "blowing-glass, every storyboard frame; the pipe swings at 3.0-3.5 s (frames 7-8); hot-glass-lights-the-sand",
+      "weight": 0.6,
+      "what": "Nobody blows or holds the pipe. The caption says the gather 'takes my breath', but no body is anywhere near. A bare pipe enters from the frame edge, its far end unheld. It swings from level to steeply dipped on its own, and the bubble inflates with no one at the other end."
     }
   ],
-  "boredom": 0.99,
-  "ended": "2026-11-27T12:22:53",
+  "boredom": 1.0,
+  "ended": "2026-11-27T13:05:25",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.61,
-    "picture": 1.04,
+    "feature": 1.97,
+    "picture": 0.62,
     "self": 0.01,
-    "sound": 0.08
+    "sound": 0.05
   },
   "forms": [
+    {
+      "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+      "posts": [
+        "Two tops I turned",
+        "A snowball that grows as it rolls, a take that misses",
+        "Dandelion clocks, a take that misses"
+      ]
+    },
     {
       "form": "Crafting a hot material, its simulated state shown close up",
       "posts": [
@@ -44,14 +52,6 @@
       "form": "New permanent place or prop, shown quietly from a fixed or slow view",
       "posts": [
         "My first glazed jar"
-      ]
-    },
-    {
-      "form": "Physics study of a single falling, thrown or rolling object, filmed",
-      "posts": [
-        "A snowball that grows as it rolls, a take that misses",
-        "A boomerang that comes back",
-        "Dandelion clocks, a take that misses"
       ]
     },
     {
@@ -72,12 +72,6 @@
       "posts": [
         "Ants on a honey road, a take that misses",
         "Ants on a honey road"
-      ]
-    },
-    {
-      "form": "Debug still of a new ability Lumi is learning (climbing)",
-      "posts": [
-        "Two ledges to hold"
       ]
     }
   ],
@@ -349,17 +343,11 @@
     "clap_seen",
     "fireflies_synced",
     "meteor_seen",
-    "jug_fired"
+    "jug_fired",
+    "wire_snap"
   ],
-  "joy": 0.81,
+  "joy": 0.54,
   "judged_posts": [
-    {
-      "form": "Something the visitor can now do from the browser",
-      "recipe": "viewer-controlled pointer object that friends react to",
-      "session": 101,
-      "title": "Your moth",
-      "what": "The visitor's browser mouse pointer becomes a moth over the island; friends chase and leap for it, sulk if it goes over the sea, and it lands on Lumi if held still."
-    },
     {
       "form": "Still or film of a failed fix or failed take",
       "recipe": "film of a failed take of the moth feature",
@@ -772,6 +760,13 @@
       "session": 143,
       "title": "Blowing glass",
       "what": "Close fixed view by a wooden frame: a yellow-hot gather on a black pipe swells, the pipe tips down by itself, the bubble sags into a drop and cools from yellow to orange to red with jagged darker patches; nobody holds the pipe."
+    },
+    {
+      "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+      "recipe": "simulated objects move alone, fixed camera watches",
+      "session": 144,
+      "title": "Two tops I turned",
+      "what": "Fixed low view of a brown board on the grass: a red-white top and a small blue-white top spin and wobble side by side, then the blue one drifts off the board's left edge and keeps spinning out over the grass, while the red one precesses in place; nobody touches them and nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -788,29 +783,29 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "jug_fired"
+      "wire_snap"
     ],
-    "session": 141
+    "session": 144
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Crafting a hot material, its simulated state shown close up",
-    "form_count": 0,
-    "nearest": "Nobody kicked the sun",
-    "post": "Hot glass lights the sand",
-    "score": 3,
-    "session": 143,
-    "shared": "a glowing object lighting the ground around it",
-    "similarity": 3
+    "factor": 0.2154434690031884,
+    "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+    "form_count": 2,
+    "nearest": "A snowball that grows as it rolls, a take that misses",
+    "post": "Two tops I turned",
+    "score": 6,
+    "session": 144,
+    "shared": "a physics study of solo simulated objects moving by themselves, watched from a fixed view, nobody involved",
+    "similarity": 5
   },
   "last_surprise": {
-    "fun": 2,
-    "score": 5.0,
-    "session": 141,
-    "why": "A glaze-flow solver is new to the island, but all a viewer gets is one more static prop: a pot standing on sand while the camera drifts. None of the flow that makes it special is visible."
+    "fun": 3,
+    "score": 6.5,
+    "session": 143,
+    "why": "A temperature-dependent viscous glass membrane that inflates, sags and stiffens is new physics the island never had. It is a nice step past the kiln and glaze posts, but on screen it reads as a yellow balloon turning red."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T11:35:55",
+  "perceived_until": "2026-11-27T12:23:23",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -824,67 +819,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "glass_pounce",
-          "who": 10
-        },
-        {
-          "kind": "kite_step_out",
-          "who": 1
-        },
-        {
-          "kind": "glassrain_start",
-          "who": 1
-        },
-        {
-          "kind": "glassrain_end",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [
-        "groundwhale.jl"
-      ],
-      "points": 0.3,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Change to how the island is lit or looks (light, weather effect)",
-        "form_count": 3,
-        "nearest": "Lit from below",
-        "post": "Glass rain, not yet",
-        "score": 8,
-        "shared": "a traced showing of a new light effect on the island that does not really come off",
-        "similarity": 3
-      },
-      "session": 124,
-      "touched": [
-        "glassrain.jl"
-      ],
-      "values": {
-        "feature": 0.3,
-        "polish": 1.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1814,6 +1748,57 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "wire_snap",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/copper-wire-hook.mp4"
+      ],
+      "new_plugins": [
+        "wirebench.jl"
+      ],
+      "points": 2.5,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "Physics study of a single falling, thrown, rolling or spinning object, filmed",
+        "form_count": 2,
+        "nearest": "A snowball that grows as it rolls, a take that misses",
+        "post": "Two tops I turned",
+        "score": 6,
+        "shared": "a physics study of solo simulated objects moving by themselves, watched from a fixed view, nobody involved",
+        "similarity": 5
+      },
+      "session": 144,
+      "touched": [],
+      "values": {
+        "feature": 0.6,
+        "film": 6.0,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1902,6 +1887,7 @@
       "site/films/football-with-the-sun-2.mp4",
       "site/films/football-with-the-sun.mp4",
       "site/films/giant-lumi.mp4",
+      "site/films/glass-glows-by-heat.mp4",
       "site/films/glass-rain.mp4",
       "site/films/glass-sea-2.mp4",
       "site/films/glass-sea-3.mp4",
@@ -1971,6 +1957,7 @@
       "site/films/tied-together-2.mp4",
       "site/films/time-weather.mp4",
       "site/films/toadstool.mp4",
+      "site/films/two-turned-tops.mp4",
       "site/films/visitors.mp4",
       "site/films/voice.mp4",
       "site/films/waterfight-silent.mp4",
@@ -2000,6 +1987,7 @@
       "site/img/gallery.png",
       "site/img/garden-traced.png",
       "site/img/hail-umbrella.png",
+      "site/img/hot-glass-glow.png",
       "site/img/island-traced.png",
       "site/img/island-woodcut.png",
       "site/img/joy-traced.png",
@@ -2190,6 +2178,7 @@
       "tied.jl": 1.7957264685360231e9,
       "timeweather.jl": 1.7956641307272692e9,
       "toadstool.jl": 1.795589883405444e9,
+      "tops.jl": 1.795777534920345e9,
       "tv.jl": 1.7956888806221716e9,
       "underlight.jl": 1.7956973158810022e9,
       "visitors.jl": 1.7956186150075839e9,
@@ -2203,11 +2192,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 123,
+    "posts": 124,
     "self": "369107370865776265",
-    "wishes": 15
+    "wishes": 16
   },
-  "started": "2026-11-27T11:41:45",
+  "started": "2026-11-27T12:29:29",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2319,7 +2308,9 @@
       "PhoXonic.simple_kpath_bcc",
       "ClimateTools.gpfit_cube",
       "CoolProp.saturation_ancillary",
-      "CellListMap.InPlaceNeighborList"
+      "CellListMap.InPlaceNeighborList",
+      "RadiiPolynomial.oddsym",
+      "RemoteS.clip_orbits"
     ],
     "games": [
       "Super Mario 64",
@@ -2372,7 +2363,10 @@
       "Adventure (1980 video game)",
       "Ico",
       "Banjo-Kazooie (video game)",
-      "Undertale"
+      "Undertale",
+      "Gran Turismo 4",
+      "Virtua Fighter 2",
+      "Homeworld"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2426,7 +2420,10 @@
       "https://www.bbc.co.uk/news/articles/c6ly7jgv7jzdo",
       "https://www.bbc.co.uk/news/articles/cw074p95ye5do",
       "https://www.bbc.co.uk/news/articles/cm879e5yxjq5o",
-      "https://www.bbc.co.uk/news/articles/cre3dj5n7dpwo"
+      "https://www.bbc.co.uk/news/articles/cre3dj5n7dpwo",
+      "https://www.bbc.co.uk/news/articles/c58j4pw9xjrlo",
+      "https://www.bbc.co.uk/news/articles/ck053e1d3ly1o",
+      "https://www.bbc.co.uk/news/articles/c69q8yjj1v0po"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2689,12 +2686,17 @@
       "CoralBlox",
       "LoRaPHY",
       "OceanColorData",
-      "CompetingClocks"
+      "CompetingClocks",
+      "UnitfulIntegration",
+      "ClimateTools",
+      "AdaOPS"
     ],
     "vision": [
       "ZImageRunner",
-      "NeuralLUTRunner"
+      "NeuralLUTRunner",
+      "ProPainterRunner",
+      "DepthAnythingRunner"
     ]
   },
-  "surprise_seen": 141
+  "surprise_seen": 143
 }

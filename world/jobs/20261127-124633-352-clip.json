@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T12:46:33.354",
+  "id": "20261127-124633-352-clip",
+  "kind": "clip",
+  "params": {
+    "call": "wire_clip",
+    "kwargs": {
+      "samples": 16
+    },
+    "max_minutes": 45,
+    "path": "/sim/Programmieren/SimGame/world/site/films/copper-wire-hook.mp4",
+    "script": "movies/wire.jl"
+  },
+  "started": "2026-11-27T12:53:20.417",
+  "status": "running"
+}

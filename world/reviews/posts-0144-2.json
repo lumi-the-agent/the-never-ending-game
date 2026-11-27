@@ -1,0 +1,10 @@
+{"posts": [{"post": "two-tops-i-turned",
+  "verdict": "redo",
+  "problems": [
+    "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem.",
+    "The blue top drifts off the dirt patch onto the grass and casts no visible contact shadow there. In the 50% frame (ball at x~70, y~220) and the 75% frame (upside down, stem tip at y~237), it looks like it is hovering above the grass instead of spinning on it, while the red top casts a clear shadow on the dirt.",
+    "Storyboard frame 2 has no blue top at all. It is hidden behind the red top or gone, and in frame 3 it is back on the other side, so it seems to jump.",
+    "Both tops are already spinning in the first frame. No hand, string or launch is shown, so the motion has no start. At the end the frame fades to dark (last storyboard frame) while both are still spinning, so it has no end either.",
+    "In the stills, the red top's 'lean' looks like a wobble that tips it on its side (frames 6, 10 and the 50% frame). The pointed tip is never clearly seen standing on the ground."
+  ],
+  "critique": "The interesting part, the round top flipping onto its stem, plays out small, at the edge of the frame and seemingly floating over grass, so the caption claims more than a viewer can see. The tops spin from the first frame with nothing setting them going."}]}
