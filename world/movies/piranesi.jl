@@ -9,7 +9,7 @@ function piranesi_still(path; rasterize = true, samples = 16, width = 720, heigh
     d = Vec2f(from...) / hypot(from...)
     setup = function (g)
         for p in g.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = g.world

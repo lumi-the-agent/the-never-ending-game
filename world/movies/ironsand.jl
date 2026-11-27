@@ -41,7 +41,7 @@ function ironsand_parts(; hold = 1.6, every = 0.85, flight = 0.14, spot = (-2.4f
     S = Dict{Symbol,Any}()
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world
@@ -59,7 +59,7 @@ function ironsand_parts(; hold = 1.6, every = 0.85, flight = 0.14, spot = (-2.4f
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top, :magnetstone_spikes) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top, :magnetstone_spikes)) && (p.visible[] = false)
         end
         C = S[:C]
         # which tap we are in, and how far through its flight

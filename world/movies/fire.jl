@@ -54,7 +54,7 @@ function fire_parts(; minutes = 20, seconds = 12.0, gas = true)
     S = Dict{Symbol,Any}(:bodies => bs, :snaps => snaps, :events => events)
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat, :autumn_fall) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world
@@ -113,7 +113,6 @@ function fire_parts(; minutes = 20, seconds = 12.0, gas = true)
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:autumn_fall, :autumn_pile) && (p.visible[] = false)
         end
         o = S[:o]
         place!(gm, t)

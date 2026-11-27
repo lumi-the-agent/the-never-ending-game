@@ -55,16 +55,13 @@ function boomerang_clip(path; rasterize = false, samples = 16, width = 960, heig
     S = Dict{Symbol,Any}()
     setup = function (g)
         for p in g.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)   # take 2: a beige card stood in Lumi's legs
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)   # take 2: a beige card stood in Lumi's legs
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = g.world; me = NG.creature(w, "Lumi")
         me.pos = NG.ground(w.island, spot); me.controlled = true; me.goal = NG.Goal(); me.action = :idle
         me.yaw = Float32(heading) - NG.species_of(me).heading
         # take 1 (traced): the jelly swallowed a pig on Lumi's spot and a crab and a pig crowded the throw
-        if isdefined(Main, :JELLY)
-            Main.JELLY[:active] = false; Main.JELLY[:last] = time() + 1e6
-        end
         for c in w.creatures
             c === me && continue
             if hypot(c.pos[1] - spot[1], c.pos[2] - spot[2]) < 9

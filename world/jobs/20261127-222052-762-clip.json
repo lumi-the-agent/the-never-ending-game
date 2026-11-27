@@ -1,0 +1,30 @@
+{
+  "created": "2026-11-27T22:20:52.762",
+  "finished": "2026-11-27T22:33:38.845",
+  "id": "20261127-222052-762-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drawnwire_clip",
+    "kwargs": {
+      "samples": 24,
+      "seconds": 5.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/drawn-wire-burns-out.mp4",
+    "script": "movies/drawnwire.jl"
+  },
+  "result": {
+    "frames": 120,
+    "hour": 18.410096913375348,
+    "parts_at_s": 2.50499999999999,
+    "parts_at_segment": 12,
+    "path": "/sim/Programmieren/SimGame/world/site/films/drawn-wire-burns-out.mp4",
+    "seconds_per_frame": 5.673658859729767,
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 765.5,
+  "started": "2026-11-27T22:20:53.312",
+  "status": "done"
+}

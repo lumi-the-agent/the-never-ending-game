@@ -43,7 +43,7 @@ function motor_parts(; seconds = 5.0, hold = 1.0)
     wood = NG.Hikari.Diffuse(color = (0.42, 0.27, 0.15), roughness = 0.8f0)
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world; sc = gm.stage.scene
@@ -110,7 +110,7 @@ function motor_parts(; seconds = 5.0, hold = 1.0)
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top)) && (p.visible[] = false)
         end
         A = S[:A]
         treal = max(t - hold, 0.0)

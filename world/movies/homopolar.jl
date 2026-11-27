@@ -38,7 +38,7 @@ function homopolar_clip(path; rasterize = false, samples = 20, width = 960, heig
     S = Dict{Symbol,Any}()
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world
@@ -68,7 +68,7 @@ function homopolar_clip(path; rasterize = false, samples = 20, width = 960, heig
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top)) && (p.visible[] = false)
         end
         treal = max(t - hold, 0.0) / slow
         for (i, (O, wm)) in enumerate(S[:wires])

@@ -46,7 +46,7 @@ function levitron_clip(path; rasterize = false, samples = 24, width = 960, heigh
     S = Dict{Symbol,Any}()
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world; sc = gm.stage.scene
@@ -77,7 +77,7 @@ function levitron_clip(path; rasterize = false, samples = 24, width = 960, heigh
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top, :tops_board, :wire_bench) || startswith(string(p.attributes[:name][]), "paperpage_") || startswith(string(p.attributes[:name][]), "floattop_")) && (p.visible[] = false)   # s148: the plugin's own ring stands 1 m behind; s149: this && sat inside the comment, so nothing was hidden and the board's top filled the film
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top, :tops_board, :wire_bench) || startswith(string(p.attributes[:name][]), "floattop_")) && (p.visible[] = false)   # s148: the plugin's own ring stands 1 m behind; s149: this && sat inside the comment, so nothing was hidden and the board's top filled the film
         end
         P = S[:P]; zr = S[:zr]
         k = clamp(round(Int, t * fps) + 1, 1, length(run.frames))

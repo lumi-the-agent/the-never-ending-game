@@ -9,10 +9,9 @@ function dandelion_clip(path; rasterize = false, samples = 16, width = 960, heig
     S = Dict{Symbol,Any}()
     setup = function (g)
         for p in g.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
-        isdefined(Main, :JELLY) && (Main.JELLY[:active] = false; Main.JELLY[:last] = time() + 1e6)
         w = g.world; me = NG.creature(w, "Lumi")
         me.pos = NG.ground(w.island, spot); me.controlled = true; me.goal = NG.Goal(); me.action = :idle
         wd = isdefined(Main, :WIND) && haskey(Main.WIND, :now) ? Base.invokelatest(Main.WIND[:now], w.t)[1] : Vec2f(1, 0)

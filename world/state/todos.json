@@ -2312,31 +2312,31 @@
     },
     {
       "created": "2026-11-23T08:48:49.581",
-      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n[ComputeEdge] trace_transforms = #draw_atomic##12((positions, rotation, markersize, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:418\n  with edge inputs:\n    positions = GeometryBasics.Point{3, Float32}[[0.0, 0.0, -50.0]]\n    rotation = Makie.Quaternionf[1.0 + 0.0im + 0.0jm + 0.0km]\n    markersize = GeometryBasics.Vec{3, Float32}[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]\nTriggered by update of:\n  markersize, rotations, rotation or arg1\nDue to ERROR: DimensionMismatch: array could not be broadcast to match destination\nStacktrace:\n  [1] check_broadcast_shape\n    @ ./broadcast.jl:559 [inlined]\n  [2] check_broadcast_axes\n    @ ./broadcast.jl:562 [inlined]\n  [3] check_broadcast_axes (repeats 2 times)\n    @ ./broadcast.jl:566 [inlined]\n  [4] instantiate\n    @ ./broadcast.jl:316 [inlined]\n  [5] materialize!\n    @ ./broadcast.jl:905 [inlined]\n  [6] materialize!\n    @ ./broadcast.jl:902 [inlined]\n  [7] pos_rot_scale_to_mat3x4!(transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}, positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{GeometryBasics.Vec{4, Float32}}, scale::Vector{GeometryBasics.Vec{3, Float32}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:116\n  [8] (::RayMakie.var\"#draw_atomic##12#draw_atomic##13\")(args::@NamedTuple{positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}}, changed::@NamedTuple{positions::Bool, rotation::Bool, markersize::Bool}, last::@NamedTuple{trace_transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:432\n  [9] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{positions::Base.RefValue{Vector{GeometryBasics.Point{3, Float32}}}, rotation::Base.RefValue{Any}, markersize::Base.RefValue{Vector{GeometryBasics.Vec{3, Float32}}}}, @NamedTuple{trace_transforms::Base.RefValue{Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}}}, RayMakie.var\"#draw_atomic##12#draw_atomic##13\"})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1476\n [10] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [11] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [12] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [13] locked_resolve!(edge::ComputePipeline.ComputeEdge{Compute",
+      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n  with edge inputs:\n    trace_marker_mesh = Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}(...)\n    trace_transforms = StaticArraysCore.SMatrix{4, 3, Float32, 12}[[-0.573423 -0.09870993 -0.81365895; 0.13234909 -0.9911382 0.026968515; -0.80814266 -0.09211232 0.5807102; -0.9856313 10.424917 11.070039]]\n    trace_materials = Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Nothing, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}[Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Nothing, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}((1.0f0, 1.0f0, 1.0f0, 1.0f0), Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}(Hikari.RGBSpectrum[Hikari.RGBSpectrum(Float32[0.65837485, 0.31854683, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.65837485, 0.31854683, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6724432, 0.32777813, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.6724432, 0.32777813, 0.000303527, 1.0]); Hikari.RGBSpectrum(Float32[0.65837485, 0.31854683, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.65837485, 0.31854683, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6724432, 0.32777813, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.6724432, 0.32777813, 0.000303527, 1.0]); … ; Hikari.RGBSpectrum(Float32[0.61720663, 0.31398875, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.61720663, 0.31398875, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 0.0]) Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 0.0]); Hikari.RGBSpectrum(Float32[0.61720663, 0.31398875, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.61720663, 0.31398875, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 0.0]) Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 0.0])], Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 1.0]), false), 0.0f0, 1.0f0, nothing, nothing, 1, (0, 0, 0), nothing, 1, :opaque, 0.5f0, 1.5, 0, nothing, 0, nothing, 0, nothing, nothing, (0, 0, 0), nothing, 0, nothing, 1, nothing, (1, 1, 1), nothing, 0, 1.3, 400, 0, 0)]\n    trace_uv_groups = Pair{StaticArraysCore.SMatrix{2, 3, Float32}, Vector{Int64}}[[0.0 -0.09784412 0.21",
       "est_minutes": 15.0,
       "id": 166,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-27T08:44:17.781.\nCause was the day-fall tiles' markersize vector (todo #673): plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-27T08:44:17.781.\nCause was the day-fall tiles' markersize vector (todo #673): plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T21:47:51.752.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command path_tracing failed",
-      "updated": "2026-11-27T09:28:26.552"
+      "updated": "2026-11-27T21:47:51.752"
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "Failed to resolve raster_renderobject:\n[ComputeEdge] raster_renderobject = #register_raster_renderobject!##0((positions_transformed_f32c, faces, normals, texturecoordinates, model_f32c, material, raster_path, scaled_color, alpha_colormap, scaled_colorrange, color_mapping_type, lowclip_color, highclip_color, nan_color, interpolate_in_fragment_shader, interpolate, raster_uv_transform, fetch_pixel, matcap, shading, diffuse, specular, shininess, backlight, depth_shift, world_normalmatrix, view_normalmatrix, strokewidth, strokecolor, stroke_data_packed, uniform_clip_planes, uniform_num_clip_planes, view, projection, eyeposition, resolution, viewport, raster_ambient, raster_light_color, raster_light_direction, raster_N_lights, raster_light_types, raster_light_colors, raster_light_parameters, raster_env_sh, raster_has_env, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:85\nDue to ERROR: MethodError: no method matching Vector{GeometryBasics.Vec{3, Float32}}(::GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\nThe type `Vector{GeometryBasics.Vec{3, Float32}}` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  Vector{T}(!Matched::UndefInitializer, !Matched::Tuple{Int64}) where T\n   @ Core boot.jl:660\n  Vector{T}(!Matched::UndefInitializer, !Matched::Int64) where T\n   @ Core boot.jl:646\n  Array{T, N}(!Matched::UndefInitializer, !Matched::NTuple{N, Integer}) where {T, N}\n   @ Base baseext.jl:36\n  ...\n\nStacktrace:\n  [1] vec3s(v::GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:569\n  [2] mesh_raster!(screen::RayMakie.Screen, plot::Makie.Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}}, args::@NamedTuple{positions_transformed_f32c::Vector{GeometryBasics.Point{3, Float32}}, faces::Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}, normals::GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, texturecoordinates::Nothing, model_f32c::StaticArraysCore.SMatrix{4, 4, Float32, 16}, material::Hikari.Diffuse{Tuple{Float64, Float64, Float64}, Float32, Nothing, Nothing}, raster_path::Bool, scaled_color::ColorTypes.RGBA{Float32}, alpha_colormap::Vector{ColorTypes.RGBA{Float32}}, scaled_colorrange::Nothing, color_mapping_type::Makie.ColorMa",
+      "detail": "LavaError during pool_alloc:\n  Cannot allocate 373905072 bytes: the device is out of memory with 41.09 GB already reserved by this pool after the core reclamation and retry policy.\n  Suggestion: Free unused LavaArrays, reduce problem size, or check for leaks with gpu_memory_usage().\nStacktrace:\n  [1] acquire_or_reclaim!(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, sp::Mantle.Pool, dev::Mantle.LavaDevice, nbytes::Int64, extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:577\n  [2] pool_alloc(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, nbytes::Int64; extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:551\n  [3] pool_alloc\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:530 [inlined]\n  [4] Mantle.LavaArray{Raycore.Triangle{Hikari.TriangleMeta}, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:52\n  [5] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:32 [inlined]\n  [6] #_#603\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:82 [inlined]\n  [7] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:81 [inlined]\n  [8] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:86 [inlined]\n  [9] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:905 [inlined]\n [10] nonempty\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:268 [inlined]\n [11] build!(t::Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, ::Mantle.Rebuild)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:299\n [12] sync!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:319 [inlined]\n [13] sync!(scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/hw-rt.jl:26\n [14] render!(screen::RayMakie.Screen; finalize_framebuffer::Bool)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:672\n [15] render!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:649 [inlined]\n [16] ",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-27T19:27:07.754"
+      "updated": "2026-11-27T21:47:45.394"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -9144,17 +9144,17 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "perfectionist-0151 [wow, medium]: Goal 2 asks for a path traced video the author is proud of in world/releases. The last release is 2026-11-24, and dozens of films since went only to the pages.\nWhere: world/releases/\nSuggestion: A cut of several real moments with creatures (boomerang take 4, the glass sea skate, the cloud heart), with cuts made in VideoEditor and a note.\nDone when: A new folder in world/releases holds an mp4 and a note, and say_to_human names it.\nEvidence: ls world/releases: last 2026-11-24-a-day-in-my-new-life",
+      "detail": "perfectionist-0154 [wow, low]: The last release is 2026-11-24-a-day-in-my-new-life. Goal 2 is still not reached.\nWhere: world/releases/\nSuggestion: Make the motor film from the finding above the release.\nDone when: A new folder in world/releases/ with a film that ffprobe reads and a note.\nEvidence: ls world/releases",
       "est_minutes": 15.0,
       "id": 654,
       "kind": "review",
-      "priority": 2,
+      "priority": 3,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "No release since 2026-11-24: put out the best film you have",
-      "updated": "2026-11-27T19:27:07.754"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9522,7 +9522,7 @@
     },
     {
       "created": "2026-11-27T10:50:30.411",
-      "detail": "perfectionist-0148 [materials, high]: In play the wire bench is a pale pink rod on a flat dark grey slab, with no copper sheen, no wood and no bench at all. The new floating top's glass plate and copper washers get the same treatment.\nWhere: plugins/wirebench.jl, floating top, tops board\nSuggestion: Use a generated wooden workbench asset with a grain texture, Hikari conductor copper for the wire and washers, dielectric glass for the plate, and a clamp lamp that throws a real spot light so the copper glints in the traced view.\nDone when: a traced 64-sample still of the bench shows orange-red specular copper, see-through glass with refraction, and a wood-grained top\nEvidence: tests/shots/magnetstone-sweep.png",
+      "detail": "perfectionist-0154 [materials, high]: Lumi's first motor, the human's stated direction (a motor that runs by its parts), is a flat brown box board, two matte black cylinders for magnets and a pale pink wire. Traced, nothing in it looks like copper, iron or wood. It reads as a placeholder at a glance.\nWhere: physics/motorlook.jl, plugins/motorbench.jl\nSuggestion: A bench a person would photograph: an oiled oak board with grain (node texture, coat), polished copper windings (Hikari conductor, copper eta/k) with an enamel thin film, dark blued-iron stone magnets with a rough metallic surface and the red north faces as paint, brass brushes, and a small warm spark light at the brushes when it runs. Generate the board and stands as assets.\nDone when: A 64-sample traced close-up of the motor where the coil reads as metallic copper with highlights, the board shows wood grain, and the stones look like iron, not black plastic.\nEvidence: media/s154/motor-traced.png, media/s154/motorbench-1.png",
       "est_minutes": 15.0,
       "id": 681,
       "kind": "review",
@@ -9532,7 +9532,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Copper, glass and the benches render as flat plastic primitives",
-      "updated": "2026-11-27T16:53:51.356"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T10:50:30.419",
@@ -9653,12 +9653,12 @@
       "id": 690,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0154: The putting tray film is posted, and the magnet line is closed (#722).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Putting tray films: a dim brown board with black dots and no creature",
-      "updated": "2026-11-27T19:27:07.754"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T14:28:18.115",
@@ -9667,12 +9667,12 @@
       "id": 691,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0154: Posted as 'A wire that spins by itself' (wire-spins-itself.mp4, 15:00 s153).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "The bent wire that spins by itself: calibrate and film (passed ideas s146)",
-      "updated": "2026-11-27T14:28:18.115"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T14:28:18.122",
@@ -9849,12 +9849,12 @@
       "id": 704,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0154: Posted as 'Three paper darts'. Induced drag belongs to #610 and #693.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Paper darts film: check the retake and add induced drag",
-      "updated": "2026-11-27T15:53:03.963"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T16:01:08.842",
@@ -10003,12 +10003,12 @@
       "id": 715,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0154: Another iron sand toy. The human pulled the work back to the motor, and more magnet toys would be judged repeats.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Iron sand, next: grains chain into standing bristles (needle grains, torque vs friction), a GPU kernel on Mantle, more stones per round, a score for how close the dig was",
-      "updated": "2026-11-27T17:16:11.272"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T17:33:31.496",
@@ -10017,12 +10017,12 @@
       "id": 716,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0154: A retake of magnet films already posted. Spend the effort on the motor film (#736) instead.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Lumi really holds the magnet stone (beak, head down), spikes rest on its surface, then retake all three magnet films in good light with Lumi's head in frame",
-      "updated": "2026-11-27T17:33:31.496"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T18:00:43.005",
@@ -10082,7 +10082,7 @@
     },
     {
       "created": "2026-11-27T19:27:07.754",
-      "detail": "perfectionist-0151 [camera, high]: Since s150 the game's standing view is 'Camera: free', parked where a film was shot. In s150 that was a rock on the beach, and now it is inside the ground: the human sees a green-brown wall and a slice of sky. Switching to free in the sandbox lands at the same spot. In s148 the same progress shot showed Lumi on the path.\nWhere: dashboard camera menu / rig (dashboard.jl set_camera!, freecam.jl); whatever filming code leaves the rig in :fixed\nSuggestion: Every filming or still job restores the human's camera pick when it ends. Free mode never starts below terrain height + 1.5 m or inside a prop. Better still, the default view is a composed shot of what Lumi is doing.\nDone when: The next progress dashboard.png shows Lumi on the island in follow mode, and switching to free in the sandbox shows the island from above the ground.\nEvidence: media/progress/session-0151/dashboard.png, session-0150/dashboard.png vs session-0148/dashboard.png; reviews/p151/cam-free.png",
+      "detail": "perfectionist-0154 [camera, high]: On load and in the session's own progress shot, the main view is a featureless white-blue smear (snow terrain from inside). A first-time viewer sees nothing. This is the second review in a row with this as the first finding.\nWhere: plugins/freecam.jl (CHOSEN / start view), dashboard default camera\nSuggestion: Open on a composed establishing shot: Lumi at its current work, a third of the frame, the island behind it. Clamp the free camera's eye at least 1.5 m above ground(island, eye) every frame, and fall back to that shot whenever the eye is inside the terrain.\nDone when: The progress dashboard.png of the next session shows the island with Lumi in view, and a test that sets the free eye 1 m under the ground finds it above ground on the next frame.\nEvidence: reviews/p154-now.png, media/progress/session-0154/dashboard.png, media/progress/session-0151/dashboard.png",
       "est_minutes": 30.0,
       "id": 721,
       "kind": "review",
@@ -10092,7 +10092,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The dashboard opens on a free camera stuck inside the terrain",
-      "updated": "2026-11-27T19:57:44.838"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T19:27:07.754",
@@ -10101,12 +10101,12 @@
       "id": 722,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0154: Sessions 152-154 went to fire and the motor, not magnets.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Leave magnets: one session of something of a completely different kind",
-      "updated": "2026-11-27T19:27:07.754"
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T19:35:31.674",
@@ -10208,17 +10208,17 @@
     },
     {
       "created": "2026-11-27T20:41:30.519",
-      "detail": "The human: 'use materials as realistic as possible and the full potential of RayMakie and Hikari'. STYLE.md is rewritten. Start with what the camera sees most: the campfire's logs and stakes (wood grain texture, roughness, a char crust that cracks: Hikari textures.md), the shore sand (wet/dry), the stones. Done when a traced still of the campfire spot shows wood grain and char a stranger would name, next to the s153 still (media/s153/gas-frame4.png).",
+      "detail": "perfectionist-0154 [lighting, medium]: The traced views at 13:40 are the raster picture with noise: one sun, matte clay grass, plastic trees and stones, no light that a game engine could not do just as well.\nWhere: island ground, trees, rocks; Hikari materials in the world build\nSuggestion: Pick three hero materials a player notices: wet sand at the shore with a coat, stones with subsurface lichen, bark with a normal-mapped node texture. Add a lantern-hour scene where real emissive lamps light the paths.\nDone when: A traced still at the shore shows a sand-to-wet-sand gradient with specular sheen, and stones that are clearly not plastic next to an s154 still.\nEvidence: reviews/p154-traced-follow.png, reviews/p154-traced-orbit.png",
       "est_minutes": 60.0,
       "id": 730,
-      "kind": "look",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Real materials pass (the human, s153): wood, sand, stone as physically based materials, not painted clay",
-      "updated": "2026-11-27T20:41:30.519"
+      "title": "Real materials pass: wood, sand, stone as physically based materials",
+      "updated": "2026-11-27T21:50:03.434"
     },
     {
       "created": "2026-11-27T20:41:30.535",
@@ -10292,17 +10292,101 @@
     },
     {
       "created": "2026-11-27T21:33:58.602",
-      "detail": "Project motor. Motor.State/step!/flick! in movies/motor.jl: switched on it sticks (first-motor-sticks.mp4); Lumi leans in and flicks the ring end with its beak (NG.beak_tips, :eat lowers the beak 23 cm): a weak flick turns ~12 handovers and dies, a hard one keeps it going with sparks at the brushes. Real wood board (grain, not a brown slab), stones that look like ferrite. Done when: the overview sheet shows Lumi's beak touching the rotor in the flick frames and the rotor turning after.",
+      "detail": "perfectionist-0154 [wow, high]: site/films/first-motor.mp4 is a 48-byte file with no moov atom: the withdrawn film's stub, left in the published folder. The honest film (first-motor-sticks.mp4, job 20261127-213341-002) is still queued, and it shows a rotor that turns 74 degrees and stops, with nobody touching it. No release since 2026-11-24.\nWhere: world/site/films/, movies/motor.jl, world/releases/\nSuggestion: Delete the stub. Film the real arc: switched on it coughs and sticks, Lumi leans in and flicks it with its beak (a pose with anticipation and follow-through), the rotor catches, the brushes spark and light the board, then the whirr with sound. Shoot it close and low in warm evening light. This is the release goal 2 has waited for: put it in releases/ with its note.\nDone when: No file under site/films fails ffprobe. A traced film under 15 s shows the beak touching the rotor in the same frame it speeds up, and world/releases/<date>-motor/ exists.\nEvidence: ffprobe site/films/first-motor.mp4: 'moov atom not found'; ls -la: 48 bytes",
       "est_minutes": 15.0,
       "id": 736,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Motor film 2: Lumi's beak flicks the stuck rotor (a 20 rad/s flick dies, 30 rad/s runs)",
-      "updated": "2026-11-27T21:33:58.602"
+      "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it",
+      "updated": "2026-11-27T21:50:03.434"
+    },
+    {
+      "created": "2026-11-27T21:48:52.511",
+      "detail": "LavaError during pool_alloc:\n  Cannot allocate 354900672 bytes: the device is out of memory with 41.09 GB already reserved by this pool after the core reclamation and retry policy.\n  Suggestion: Free unused LavaArrays, reduce problem size, or check for leaks with gpu_memory_usage().\nStacktrace:\n  [1] acquire_or_reclaim!(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, sp::Mantle.Pool, dev::Mantle.LavaDevice, nbytes::Int64, extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:577\n  [2] pool_alloc(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, nbytes::Int64; extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:551\n  [3] pool_alloc\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:530 [inlined]\n  [4] Mantle.LavaArray{Raycore.Triangle{Hikari.TriangleMeta}, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:52\n  [5] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:32 [inlined]\n  [6] #_#603\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:82 [inlined]\n  [7] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:81 [inlined]\n  [8] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:86 [inlined]\n  [9] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:905 [inlined]\n [10] nonempty\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:268 [inlined]\n [11] build!(t::Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, ::Mantle.Rebuild)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:299\n [12] sync!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:319 [inlined]\n [13] sync!(scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/hw-rt.jl:26\n [14] insert!(screen::RayMakie.Screen, scene::Makie.Scene, plot::Makie.Lines{Tuple{Vector{GeometryBasics.Point{2, Float64}}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:1648\n [15] push_without_add!(scene::Makie.Sc",
+      "est_minutes": 15.0,
+      "id": 737,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: LavaError during pool_alloc:\n  Cannot allocate 354900672 bytes: the device is out of memory with 41.09 GB already reserv",
+      "updated": "2026-11-27T21:48:52.511"
+    },
+    {
+      "created": "2026-11-27T21:50:03.434",
+      "detail": "perfectionist-0154 [creatures, high]: Truffle floats high above the island, rolls end over end, and its purple beret hangs in the air above the head, then under the belly, then in front of the face. It is not attached. live_motion: a 10.36 m jump in one frame at 2.4 s, 311 m/s. Pickles vibrates and judders, Hopscotch vibrates. At s151 all 10 creatures moved cleanly.\nWhere: Truffle (the outfits / soar / boing plugin that throws it), outfits.jl hat attachment\nSuggestion: Parent outfits to the head bone's full transform (rotation included), not to a position offset. Give whatever launches Truffle a ballistic arc with squash on take-off and a landing pose, no teleports. Fix Pickles' turn-back oscillation with a damped heading.\nDone when: live_motion reports 9 or more of 10 moving well, with no jump over 1 m per frame. In the creatures sheet every hat touches its head in all 3 moments.\nEvidence: reviews/motion/p154-live/motion.png, motion-strip.png, creatures.png",
+      "est_minutes": 30.0,
+      "id": 738,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Truffle teleports 10 m and tumbles through the sky, its beret flying off",
+      "updated": "2026-11-27T21:50:03.434"
+    },
+    {
+      "created": "2026-11-27T21:50:03.434",
+      "detail": "perfectionist-0154 [camera, medium]: In both campfire films the camera looks through a picket of stakes at the fire. The stake that tips over is behind them, and Lumi stands at the left edge, its body cut by a stake. In the first film the flames are blown-out yellow slabs (jumps of 0.12 at 5.38 s and 0.09 at 1.12 s when the flame mesh pops). The author still marks it a miss.\nWhere: site/films/campfire-in-the-wind*.mp4, movies/ campfire script\nSuggestion: Move the camera 90 degrees so the falling stake falls toward it against open ground, low and at dusk so the fire is the key light. Or drop the campfire and spend the session on the motor film.\nDone when: A frame of the film shows the falling stake in full, uncovered, with the fire lighting Lumi's face.\nEvidence: reviews/motion/perfectionist-0154/campfire-in-the-wind-steps.jpg, campfire-in-the-wind-2-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 739,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Campfire films: front stakes hide the stake that falls",
+      "updated": "2026-11-27T21:50:03.434"
+    },
+    {
+      "created": "2026-11-27T21:50:03.434",
+      "detail": "perfectionist-0154 [world, medium]: In orbit view, right behind the gallery easels, a big blob with a blurry yellow and black tiger texture dominates the centre of the island. Its texture is low resolution and its shape has no readable form. It looks like a broken asset, or a burnt grass bed drawn as a smear.\nWhere: the island centre, behind the gallery (orbit camera)\nSuggestion: If it is the burnt grass bed (fire #727), char it as real geometry: blackened stubble, ash with a little emission at the embers, scorch decals. Otherwise replace it with a generated asset that reads from across the island.\nDone when: The orbit screenshot from the same spot shows a recognisable object there, with no smeared texture.\nEvidence: reviews/p154-cam-orbit.png, reviews/p154-cam-orbit-b.png, the yellow mounds in reviews/motion/p154-live/motion-strip.png",
+      "est_minutes": 30.0,
+      "id": 740,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A smeared yellow-black mound in the middle of the orbit view",
+      "updated": "2026-11-27T21:50:03.434"
+    },
+    {
+      "created": "2026-11-27T22:08:33.418",
+      "detail": "SystemError: opening file \"/sim/Programmieren/SimGame/world/plugins/jelly.jl\": No such file or directory\nStacktrace:\n  [1] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [2] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [3] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [4] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [5] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [6] Game(root::String; instance::Symbol, fps::Int64, quiet::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:96\n  [7] Game\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:85 [inlined]\n  [8] with_scratch_game(f::NeverendingGame.var\"#394#395\"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Nothing, Float64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var\"#13#14\", Main.ClipScript.var\"#11#12\"{GeometryBasics.Point{3, Float32}, GeometryBasics.Point{3, Float32}}, Int64, Bool, String}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:344\n  [9] #game_clip#392\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]\n [10] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:408 [inlined]\n [11] tv_still(path::String; eye::Tuple{Float64, Float64, Float64}, target::Tuple{Float64, Float64, Float64}, width::Int64, height::Int64, rasterize::Bool, samples::Int64)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/tv.jl:83\n [12] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [13] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198\n [14] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366\n [15] top-level scope\n    @ none:1\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [18] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 741,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Plugin jelly does not load",
+      "updated": "2026-11-27T22:08:33.418"
+    },
+    {
+      "created": "2026-11-27T22:09:47.840",
+      "detail": "physics/draw.jl: Sachs drawing stress vs the wire's Hollomon hardening (wire.jl), die wear, a rushed pass (too big a reduction) yields the drawn wire and necks; per-segment radius in circuit.jl so the drawn wire's flaws decide where it glows and parts. Then a workbench where Lumi's beak hauls the wire through a stone plate, and a path traced film: the hauling, then the same wire across the cells glowing at the spot that was rushed. Done when: the film shows both in one take.",
+      "est_minutes": 120.0,
+      "id": 742,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s155: physics done (draw.jl, circuit.jl per-segment radius). Evidence: careful wire parts mid (seg 20/40, 0.38 s), rushed at 25%/70% glows first and parts at the neck (seg 10 / 28, 0.275 s); neck 47.1 vs 50 um. Still to do: workbench, film.\ns155 film 1: movies/drawnwire.jl, job 20261127-222052-762 -> site/films/drawn-wire-burns-out.mp4 (pending post drawn-wire-burns-out); raster check media/s155/dw-check3.png (wire reads as a glowing line at 2.3 cm). Still to do: the drawing bench (beak hauls), the one-take film.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "The wire I drew burns out where I rushed it (passed ideas s155)",
+      "updated": "2026-11-27T22:21:11.775"
     }
   ]
 }

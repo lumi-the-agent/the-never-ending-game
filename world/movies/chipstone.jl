@@ -101,7 +101,7 @@ function chip_clip(path; rasterize = false, samples = 16, width = 960, height = 
     S = Dict{Symbol,Any}()
     setup = function (g)
         for p in g.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = g.world
@@ -142,7 +142,6 @@ function chip_clip(path; rasterize = false, samples = 16, width = 960, height = 
     shot = function (g, rig, t)
         w = g.world; me = NG.creature(w, "Lumi"); me.controlled = true
         for p in g.stage.scene.plots      # the autumn plugin makes its leaves after setup: hide them every frame
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
         end
         k = count(<=(t), chips_at)
         if k != S[:k]

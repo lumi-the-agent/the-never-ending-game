@@ -25,24 +25,8 @@ function lift_plot!(p)
     p.color = lifted
 end
 
-"Lumi's little one (egg.jl) is drawn with Lumi's own parts: the same yellow (looked for every 2 s)."
-function chicks!(game)
-    time() - get(LC, :chicks_at, 0.0) < 2 && return
-    LC[:chicks_at] = time()
-    done = get!(() -> Set{UInt}(), LC, :chicks)
-    for p in game.stage.scene.plots
-        haskey(p.attributes, :name) || continue
-        n = string(p.attributes[:name][])
-        (startswith(n, "chick_") && n != "chick_peep") || continue
-        objectid(p) in done && continue
-        push!(done, objectid(p))
-        lift_plot!(p)
-    end
-end
-
 function NG.step!(::LumiColour, game, dt)
     game.stage === nothing && return
-    chicks!(game)
     h = get(game.stage.herds, "Lumi", nothing)
     h === nothing && return
     key = (objectid(h), GAIN)

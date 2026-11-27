@@ -49,7 +49,7 @@ function tops_clip(path; rasterize = false, samples = 16, width = 960, height = 
     S = Dict{Symbol,Any}()
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world
@@ -72,7 +72,7 @@ function tops_clip(path; rasterize = false, samples = 16, width = 960, height = 
     end
     shot = function (gm, rig, t)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && (p.attributes[:name][] in (:autumn_fall, :autumn_pile, :tops_live_board, :tops_live_top) || startswith(string(p.attributes[:name][]), "paperpage_")) && (p.visible[] = false)
+            haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top)) && (p.visible[] = false)
         end
         st = t * speed
         k(fr) = clamp(round(Int, st / (fr[2].t - fr[1].t)) + 1, 1, length(fr))

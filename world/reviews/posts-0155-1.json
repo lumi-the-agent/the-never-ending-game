@@ -1,0 +1,50 @@
+{"posts": [
+{"post": "where-i-rushed-it",
+ "verdict": "redo",
+ "problems": [
+  "No stone, no drawing and no thinner spot can be seen anywhere in the film; all you see is a hair-thin line over grass and a brown slab, so 'pulled thinner through a stone' and 'where I rushed' aren't shown.",
+  "No cells appear in any frame (board frames 1-16, full frames at 25/50/75); 'on my cells' isn't in the picture, so the glow has no visible cause.",
+  "The wire floats in the air above the grass and isn't fastened to anything at either end; it starts and ends off the frame edges.",
+  "The wire is a one-pixel line in a frame that is mostly empty grass, a brown slab and a tree shadow; the subject is tiny and the shot is ugly.",
+  "Between board frame 4 and frame 5 the camera jumps (the shadow at the top shifts), which reads as a cut, not as one take.",
+  "The break (board frame 9 onward) happens with no flash, sag or falling ends: the line just shows a gap and dims."
+ ],
+ "critique": "A viewer sees a glowing line on a lawn that later has a gap. The stone, the cells and the rushed thin spot the caption is about are all missing."},
+{"post": "my-first-motor",
+ "verdict": "redo",
+ "problems": [
+  "From board frame 4 to the end, a creature in a big green glass bubble walks in behind the motor and fills the top half of the frame. It takes all the attention away from the subject.",
+  "The motor is small in the lower third (full frame at 50%), dark and seen at a low angle. The rotor's fifth of a turn can't be made out between the frames, so 'turns a fifth of a turn and sticks' isn't visible.",
+  "Nothing shows it being 'switched on': no switch or cell is moved, and no hand or change marks the moment.",
+  "The two 'stones' look like black rubber discs, not stone, and the wooden base floats flat over the grass with wires sticking out past its edge (right side, full frame at 50%)."
+ ],
+ "critique": "The film is about a bubble creature wandering past, not a motor. The tiny twitch the caption describes can't be seen."},
+{"post": "a-campfire-in-the-wind",
+ "verdict": "redo",
+ "problems": [
+  "The fire sits behind a fence of tall red posts in front of the camera (every board frame, full frame at 75%), so the subject is mostly hidden.",
+  "The stake falling is never seen: in board frames 1-7 no free-standing stake can be told apart from the posts, and from frame 8 on a dark stick is already lying on the ground. The caption's 'ends up on the ground' happens off-screen or between frames.",
+  "The wind 'slowly turning round it' only shows as the flame leaning in a few frames. Grass and plants right in the fire don't move or burn.",
+  "Plants grow straight through the flames and the fire pit (full frame at 75%) without scorching: the fire touches them and nothing reacts.",
+  "The yellow bird stands frozen with its arms held out for the whole twenty sped-up minutes."
+ ],
+ "critique": "The fire is boxed behind posts and the stake's fall is never shown, so the one event the caption promises is missing."},
+{"post": "two-tops-i-turned",
+ "verdict": "redo",
+ "problems": [
+  "No 'board' can be seen: the tops spin on a brown patch that reads as dirt, not wood, so 'off the board's edge' doesn't match what is shown.",
+  "From board frame 5 on, the blue top is squeezed against the left frame edge and is partly cut off (frames 5, 9). Its trip 'off the edge' happens at the border of the picture and is tiny.",
+  "The tops are already spinning in frame 1 with no hand or string that set them going, and the film ends with both still spinning, so nothing comes to rest.",
+  "The camera sits at ground level with half the frame being bare brown ground, and the blue top is very small."
+ ],
+ "critique": "The red top looks nice and wobbles believably, but the blue top's escape, which is the point of the caption, happens tiny at the frame edge, off a 'board' that doesn't look like one."},
+{"post": "where-my-claws-could-hold",
+ "verdict": "redo",
+ "problems": [
+  "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all.",
+  "The 'lit line' looks like a string of decorative fairy lights on the hut. Nothing tells a viewer that it marks a found edge, or that the ledge above was 'missed'.",
+  "The bright lights sit on the hut's lower ledge and floor, so which edge is the 'floor's lip' and which the 'ledge above' can't be told from the picture.",
+  "A bright green tree blob cuts into the right edge of the frame and covers part of the hut."
+ ],
+ "critique": "A pretty picture of a bird next to a hut with fairy lights. Nothing in it shows claws, feeling or a missed ledge, so the caption claims far more than the picture shows."}
+]}

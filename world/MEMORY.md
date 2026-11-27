@@ -1,15 +1,26 @@
 # What I keep (Lumi, first written s114)
 
 ## Where things are
-- THE HUMAN s152: don't work around a fault, fix its cause (I moved films to 11:00 to dodge the noon sun-ball; the
-  sun-ball's daily trigger is now gone). Clock-scripted daily events (glass sea 7, glass rain 15, underlight 19) next.
+- s155 critic: 'where-i-rushed-it' (drawn wire) REDO, marked miss: needs stone, cells, posts holding the wire, the neck
+  brightest, a flash at the break, no camera jump, the wire bigger in frame. Also my-first-motor + claws marked miss.
+- s155 PASSED IDEA, IN PROGRESS (todo #742, projects/drawn-wire.md): 'The wire I drew burns out where I rushed it'.
+  physics/draw.jl + circuit.jl (radius per segment) WORK. Film 1 queued (job 20261127-222052-762, pending
+  drawn-wire-burns-out, movies/drawnwire.jl): DONE 22:33, parts at the neck at 2.5 s. Weak: glow saturates (neck not
+  hotter-looking; lower the strength 60 in glow_material), bare box slab, Lumi only a shadow. If the critic says redo: fix those.
+  FIRST next session = the drawing bench in Jump in (beak hauls) + a ONE-take film (haul, neck, glow there).
+  Then the crank generator (passed too: Hill muscle vs back-EMF torque). Review s154 high items still open: free eye
+  in snow, Truffle's 311 m/s jump + floating beret, motor in real materials.
+- THE HUMAN s155 REMOVED jelly, glass sea/rain, underlight, sun-ball, the egg/chick and 48 gag plugins (autumn ... xylophone):
+  clock-scripted absurd gags. NEVER that kind again; their movies/ are history, don't reuse. Film hours are free now.
+  s152: don't work around a fault, fix its cause.
 - THE HUMAN s154: "why aren't you following the motor road? you did the simplest thing and dropped it"; they want
   WHOLE MACHINES from my parts, up to an ELECTRIC CAR that drives because every part works. BIG GOAL now (round 27):
   'From beach stones to an electric cart'. MOTOR ROAD FIRST, no side trips (fire + lightning -> projects/shelf/).
   Project motor (projects/motor.md): physics/motor.jl (Motor.Build/spin/motor_cases: misbuilds stall or reverse by
   themselves), film movies/motor.jl. FILM WITHDRAWN: it used a coarse coil (1 field sample per side); with sides
-  subdivided the motors stick short of the dead spot; a 30 rad/s flick runs them. Honest 5 s film queued (job
-  20261127-213341-002, pending my-first-motor: 'turns a fifth of a turn and sticks'): CHECK it went up. Next film: beak flicks. Todos #734 bench plugin (doing), #735 circuit solver + brine cell. NOTES 'The motor'.
+  subdivided the motors stick short of the dead spot; a 30 rad/s flick runs them. Honest film UP s155 (site/films/first-motor-sticks.mp4,
+  post my-first-motor) but weak: motor small in the lower right, a friend in a green glass ball wanders behind it.
+  s155 free time: physics/circuit.jl (road step 1, NOTES 'The circuit solver'; Preece check 10.2 vs 10.0 A). Next film: beak flicks. Todos #734 bench plugin (doing), #735 circuit solver + brine cell. NOTES 'The motor'.
 - Fire (shelved s154): physics/fire.jl, flamevolume.jl (gas flames), plugins/campfire.jl (-3,-16). Post
   a-campfire-in-the-wind now shows -2.mp4 (real flames), still marked miss: front stakes hide the one that falls.
   Lightning (shelved): estatic.jl `leader_eq` (conductor channel) wanders sideways; rod film failed (dup plot name, fixed, not requeued).

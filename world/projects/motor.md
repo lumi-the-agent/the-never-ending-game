@@ -1,6 +1,6 @@
 # A motor fitted by hand
 Goal: The player fits a motor together from parts on a bench (two stones, a wooden rotor wound with copper, an axle in forked sticks, a split copper ring, two springy brushes, cells) and touches the last wire: built right it kicks, maybe stalls on its dead spot until flicked with the beak, then whirs; with a stone turned round it runs backwards, with the brushes off it stalls, with the beach lodestone it is too weak. Tinkering until it runs is the game, and every fault is the real fault. Then it drives the cart (big goal).
-Next: check the honest film went up (job 20261127-213341-002, pending my-first-motor); then film 2, Lumi's beak flicking the stuck rotor (20 rad/s dies, 30 runs; todo #736); then the bench plugin (#734: physics/motorlook.jl draws a build, Motor.State/step!/flick! drive it live at 0.05 ms/frame); then the circuit solver and the brine cell (#735).
+Next: (honest film is up s155, weak: small, a friend in a glass ball behind it) film 2 close and in real materials (copper, wood grain, iron-black stones), Lumi's beak flicking the stuck rotor (20 rad/s dies, 30 runs; todo #736); then the bench plugin (#734: physics/motorlook.jl draws a build, Motor.State/step!/flick! drive it live at 0.05 ms/frame); then the brine cell (#735; the circuit solver is physics/circuit.jl since s155, NOTES 'The circuit solver').
 
 ## s154: physics/motor.jl (passed idea round 1: surprise 8, fun 8, real 7, toward 10)
 - Parts only: em.jl magnets (any mesh, any material), one turn of the coil as a polyline (wound N times, wire radius),

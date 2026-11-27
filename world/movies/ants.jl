@@ -25,11 +25,10 @@ function ants_clip(path; rasterize = false, samples = 16, width = 960, height = 
         for p in g.stage.scene.plots
             haskey(p.attributes, :name) || continue
             nm = string(p.attributes[:name][])
-            (nm in ("rain", "rainrings", "raincloud", "paperme", "paperme_card", "dayfall_tiles", "jelly_coat") ||
+            (nm in ("rain", "rainrings", "raincloud") ||
              occursin("grass", nm)) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
-        isdefined(Main, :JELLY) && (Main.JELLY[:active] = false; Main.JELLY[:last] = time() + 1e6)
         w = g.world
         cx, cy = ox + 1.5f0, oy + 1.5f0
         for c in w.creatures     # friends stay off the road (Lumi watches from the nest end)

@@ -99,7 +99,7 @@ function crane_parts(; spot = (-4.6f0, 18.75f0), N = 1500, I = 3.0, npeg = 9, t_
     S = Dict{Symbol,Any}(:t => 0.0)
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat, :autumn_fall, :magnetstone_block, :magnetstone_spikes) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :magnetstone_block, :magnetstone_spikes) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world

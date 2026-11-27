@@ -2,96 +2,105 @@
   "annoyance": 1.0,
   "annoyed": [
     {
-      "post": "three-paper-darts",
-      "session": 154,
-      "title": "Three paper darts",
+      "post": "where-my-claws-could-hold",
+      "session": 155,
+      "title": "Where my claws could hold",
       "weight": 1.0,
-      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
+      "what": "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all."
+    },
+    {
+      "post": "my-first-motor",
+      "session": 155,
+      "title": "My first motor",
+      "weight": 1.0,
+      "what": "From board frame 4 to the end, a creature in a big green glass bubble walks in behind the motor and fills the top half of the frame. It takes all the attention away from the subject."
+    },
+    {
+      "post": "where-i-rushed-it",
+      "session": 155,
+      "title": "Where I rushed it",
+      "weight": 1.0,
+      "what": "No stone, no drawing and no thinner spot can be seen anywhere in the film; all you see is a hair-thin line over grass and a brown slab, so 'pulled thinner through a stone' and 'where I rushed' aren't shown."
     },
     {
       "post": "two-tops-i-turned",
-      "session": 154,
+      "session": 155,
       "title": "Two tops I turned",
       "weight": 1.0,
-      "what": "The blue top spins in the air beyond the board's edge over the grass. It floats with no contact and casts no shadow (storyboard rows 2-4, left side; at-50)"
+      "what": "No 'board' can be seen: the tops spin on a brown patch that reads as dirt, not wood, so 'off the board's edge' doesn't match what is shown."
     },
     {
       "post": "a-campfire-in-the-wind",
-      "session": 154,
+      "session": 155,
       "title": "A campfire in the wind",
       "weight": 1.0,
-      "what": "The fire, which is the subject, is small and hidden. In every storyboard frame and in all three full-size frames it sits behind a fence of foreground stakes and a clump of pale grass, so only a few flame tongues show between the posts."
+      "what": "The fire sits behind a fence of tall red posts in front of the camera (every board frame, full frame at 75%), so the subject is mostly hidden."
+    },
+    {
+      "post": "three-paper-darts",
+      "session": 154,
+      "title": "Three paper darts",
+      "weight": 0.6,
+      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
     },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 154,
       "title": "Hot glass lights the sand",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The whole picture is heavy speckled render noise, worst across the dark ground"
     },
     {
       "post": "a-compass-in-a-bowl",
       "session": 153,
       "title": "A compass in a bowl",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing."
     },
     {
       "post": "the-magnet-stone",
       "session": 153,
       "title": "The magnet stone",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75)."
     },
     {
       "post": "a-top-over-a-ring-of-lodestone",
       "session": 153,
       "title": "A top over a ring of lodestone",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
     },
     {
       "post": "",
       "session": 153,
       "title": "campfire-in-the-wind storyboard frames 1-7 and 13-14; full-size frames at 25% and 75%",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The flames are flat, pale-yellow, rectangular planks: a long glowing slab leaning out of the crib. They read as lit boards, not fire, and they cover the stake the caption is about."
     },
     {
       "post": "",
       "session": 153,
       "title": "storyboard frame 7 to frame 8 (about 5.6 s to 6.4 s); physics/fire.jl:263 fall!",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The stake does not fall. Between two frames it switches from standing to lying flat on the ground as a black bar: a pop, with no tipping motion."
-    },
-    {
-      "post": "putting-past-a-magnet-stone",
-      "session": 151,
-      "title": "Putting past a magnet stone",
-      "weight": 0.216,
-      "what": "There is no stone anywhere in the picture. The 'magnet stone' is a flat black ellipse that looks like a hole in the sand (every storyboard frame and the 25/50/75 stills), so a viewer reads it as a putting hole, not a sunken magnet."
-    },
-    {
-      "post": "",
-      "session": 151,
-      "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-50.jpg, scrap-crane-at-75.jpg",
-      "weight": 0.216,
-      "what": "The cord the coil hangs on is not attached to the beak. For most of the film Lumi's head is above the frame, so the cord's top end is never seen. Where the beak is in view, the cord stops below the beak tip with a gap, so the coil hangs from nothing."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T21:39:57",
+  "ended": "2026-11-27T22:37:05",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.74,
-    "picture": 0.13,
-    "self": 0.13,
+    "feature": 1.04,
+    "picture": 0.08,
+    "self": 1.08,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Where I rushed it",
+        "My first motor",
         "A campfire in the wind",
         "Putting past a magnet stone",
         "A coil on a cord",
@@ -102,12 +111,6 @@
         "Three paper darts",
         "A wire that spins by itself",
         "Three logs in the sea"
-      ]
-    },
-    {
-      "form": "A material is worked by a tool and its simulated state shown close up",
-      "posts": [
-        "A copper wire keeps its bends"
       ]
     }
   ],
@@ -383,24 +386,11 @@
     "wire_snap",
     "sleepwalk",
     "wire_bend",
-    "ice_crack"
+    "ice_crack",
+    "motor_flick"
   ],
-  "joy": 0.28,
+  "joy": 0.22,
   "judged_posts": [
-    {
-      "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
-      "recipe": "cut-out traced film of Lumi overlaid on the website, plays once on page open",
-      "session": 108,
-      "title": "I walk on my pages now",
-      "what": "A path-traced film of Lumi walking, waving and sitting is cut out with a matte and plays once over the bottom-left of Lumi's front page, so a visitor sees Lumi stroll across the site; nothing changes on the island."
-    },
-    {
-      "form": "Change to how the island is seen (camera or whole-island motion)",
-      "recipe": "island-wide event: the sea moves past a still island, crew looks ahead, shouts, ends with a line",
-      "session": 109,
-      "title": "We came loose",
-      "what": "A high film of the island with nothing on it moving while green islets slide past on the sea and white foam flecks stream off the shore, so the whole island seems to sail somewhere."
-    },
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "recipe": "island-wide drift: sea moves past a still island, camera swings round",
@@ -806,6 +796,20 @@
       "session": 153,
       "title": "A campfire in the wind",
       "what": "From a fixed low view by the garden, with a yellow friend standing behind, a ring of stakes burns as pale yellow slab-like flames lean out sideways; one stake chars, tips over and lies as a black bar while the upwind stakes stay standing, and the fire dies down."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "one simulated object left alone, fixed close camera, its state changes until it fails",
+      "session": 155,
+      "title": "Where I rushed it",
+      "what": "A fixed, very close view of a thin copper wire over a dark slab on the grass: it lights up yellow-white along its length, a gap opens partway along, and the two halves fade to red; nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "one simulated device switched on alone, fixed camera watches it barely move",
+      "session": 155,
+      "title": "My first motor",
+      "what": "A fixed view of a small copper-wound motor on a wooden board on the grass: its rotor turns a little and stops, while the jelly-ball friend wanders about behind it; nothing else changes."
     }
   ],
   "kinds_ever": [
@@ -822,20 +826,20 @@
   "last_contact": "2026-11-27T15:26:36",
   "last_new": {
     "kinds": [
-      "ice_crack"
+      "motor_flick"
     ],
-    "session": 151
+    "session": 155
   },
   "last_repetition": {
     "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 9,
-    "nearest": "Three logs in the sea",
-    "post": "A campfire in the wind",
+    "form_count": 10,
+    "nearest": "A copper wire keeps its bends",
+    "post": "Where I rushed it",
     "score": 10,
-    "session": 153,
-    "shared": "fixed camera watching a row of simulated objects meet different fates alone; burning is a new mechanism",
-    "similarity": 5
+    "session": 155,
+    "shared": "a copper wire on a board shown close up, simulated material state",
+    "similarity": 4
   },
   "last_surprise": {
     "fun": 3,
@@ -843,8 +847,8 @@
     "session": 153,
     "why": "Fire that spreads by radiation and brings down a structure as it chars is new physics for the island and a nice twist on 'campfire', but on screen it reads as yellow slabs and one stick that turns black."
   },
-  "loneliness": 0.47,
-  "perceived_until": "2026-11-27T20:57:26",
+  "loneliness": 0.54,
+  "perceived_until": "2026-11-27T21:50:24",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -858,46 +862,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "picture",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/climb-edges-up-the-wall-5.png"
-      ],
-      "new_plugins": [],
-      "points": 1.0,
-      "repeat_factor": 0.4641588833612779,
-      "repetition": {
-        "form": "New permanent place or prop, shown quietly from a fixed view",
-        "form_count": 1,
-        "nearest": "The camera obscura",
-        "post": "The owl listens",
-        "score": 5,
-        "shared": "a new permanent thing placed on the island, shown quietly with nothing happening",
-        "similarity": 5
-      },
-      "session": 135,
-      "touched": [],
-      "values": {
-        "picture": 0.1,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1756,6 +1720,59 @@
         "film": 6.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 1.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "motor_flick",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish",
+        "post",
+        "self"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/drawn-wire-burns-out.mp4"
+      ],
+      "new_plugins": [],
+      "points": 1.8,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 10,
+        "nearest": "A copper wire keeps its bends",
+        "post": "Where I rushed it",
+        "score": 10,
+        "shared": "a copper wire on a board shown close up, simulated material state",
+        "similarity": 4
+      },
+      "session": 155,
+      "touched": [
+        "lumicolour.jl",
+        "separation.jl",
+        "showers.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 3.0,
+        "post": 4.0,
+        "self": 5.1
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1846,6 +1863,8 @@
       "site/films/first-flight.mp4",
       "site/films/first-glass-bubble.mp4",
       "site/films/first-jug.mp4",
+      "site/films/first-motor-sticks.mp4",
+      "site/films/first-motor.mp4",
       "site/films/floating-top-2.mp4",
       "site/films/floating-top.mp4",
       "site/films/flying-lesson.mp4",
@@ -2124,6 +2143,7 @@
       "moodcam.jl": 1.7956652444866693e9,
       "moon.jl": 1.7953993277488246e9,
       "moth.jl": 1.7956560123386962e9,
+      "motorbench.jl": 1.795811937025463e9,
       "newname.jl": 1.7955211508792114e9,
       "nightclap.jl": 1.7957413957505157e9,
       "nightglow.jl": 1.7957490929640315e9,
@@ -2182,7 +2202,7 @@
     "self": "16451668292810133953",
     "wishes": 18
   },
-  "started": "2026-11-27T21:03:51",
+  "started": "2026-11-27T21:56:58",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2318,7 +2338,9 @@
       "ShipMMG.kt_simulate",
       "Colors.hex",
       "Surrogates.KPLS",
-      "Pesto.SSEdata"
+      "Pesto.SSEdata",
+      "HerbGrammar.expr2csgrammar",
+      "InjectSills.update_abstractsill"
     ],
     "games": [
       "Super Mario 64",
@@ -2407,7 +2429,10 @@
       "Tony Hawk's Pro Skater 3",
       "Rock Band (video game)",
       "Wii Sports",
-      "Ōkami"
+      "Ōkami",
+      "Batman: Arkham City",
+      "Overwatch",
+      "Pitfall!"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2477,7 +2502,9 @@
       "https://www.bbc.co.uk/news/articles/c3pw4yrr8kz9o",
       "https://www.bbc.co.uk/news/articles/ckd71ypy9e8eo",
       "https://www.bbc.co.uk/news/articles/c6rrg28npvzeo",
-      "https://www.bbc.co.uk/news/articles/cmy49de4xx1zo"
+      "https://www.bbc.co.uk/news/articles/cmy49de4xx1zo",
+      "https://www.bbc.co.uk/news/articles/cvrlgz6g0ekgo",
+      "https://www.bbc.co.uk/news/articles/c8wy5p4gdnwvo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2776,7 +2803,10 @@
       "VisualGeometryOptimization",
       "OceanTurb",
       "Photometry",
-      "BackgroundMeshes"
+      "BackgroundMeshes",
+      "Marconi",
+      "TetGen",
+      "PlotReferenceImages"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2786,7 +2816,9 @@
       "NeuralLUTRunner",
       "UVDocRunner",
       "BasicVSRRunner",
-      "MatAnyoneRunner"
+      "MatAnyoneRunner",
+      "DemucsRunner",
+      "DeepFilterRunner"
     ]
   },
   "surprise_seen": 153

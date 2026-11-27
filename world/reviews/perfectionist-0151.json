@@ -1,100 +1,212 @@
 {
-  "verdict": "needs_work",
-  "summary": "In the orbit view at dawn the island is still a lush, warm toy box, and all 10 creatures now move cleanly in live_motion. But since session 150 the dashboard opens on the free camera parked inside the terrain, a green-brown wall, so the human's first view is worse than in session 148. Six sessions in a row went to magnets, three of them judged repeats worth a tenth, and Lumi's measured mood is boredom 1.0, annoyance 1.0. The four mini games are the same 'walk with WASD to the thing the HUD points at' recipe, seen through a camera half-filled by trees and smeared mounds.",
-  "scores": {
-    "lighting": {"score": 4, "why": "Dawn in the raster orbit view is lovely: warm windows, long shadows, lanterns (p151/cam-orbit-2.png). The traced view at 06:46 has warm low light, but lamp glows blow out into flat yellow discs, rain is opaque white rods, and clouds are grainy (p151/traced.png). The putting-tray film is lit so darkly it reads as dusk."},
-    "materials": {"score": 4, "why": "No progress since s148. The putting tray is flat brown with matte black balls and a black disc as the stone. The crane's coil is a brown stick. Traced rain has no water material. The low mounds in the mini games (p151/play/firefly-5.png, hide-10.png) show stretched, smeared yellow-brown textures. There is no transmission, metal or caustic in this session's films."},
-    "world": {"score": 4, "why": "Dense and cozy: pier, cottage, easel gallery, pines, spiral stone path. It is still one round meadow crammed with props, and big smooth mounds with smeared textures fill the chase views."},
-    "props": {"score": 6, "why": "53 generated assets are in use: pigs, mushrooms, easels with real paintings, wheelbarrow, TV, lanterns. The physics toys are still primitives: a box tray, black spheres, rods."},
-    "creatures": {"score": 5, "why": "The pigs with hats, the crab on the pier, Gloop with a bead wreath and the woolly sheep read well up close (motion/p151/creatures.png). Lumi's chick (it says 'peep!') is a grey-white, see-through copy of Lumi's own silhouette, crest included. In every shot it reads as a ghost double, not a baby (p151/play/firefly-start.png, berry-5.png, motion-strip.png)."},
-    "animation": {"score": 6, "why": "Up from 5: live_motion has 10 of 10 moving well, and Pinchy's 0.30 m snap from s148 is gone. The film jumps are only a black first frame plus fade-in and a fade-out. Lumi's walk strip is smooth but its pose barely changes over 2.4 s."},
-    "fun": {"score": 5, "why": "I played all four games through interact!. Jump in is rich: a 25-key card (sneeze, fly, swallow in jelly, rewind, tip my day), and J visibly swallows Lumi in a green jelly. But the card covers the bottom third of the view. Firefly catch, Hide and seek and Berry race are one recipe: WASD toward an arrow in a text HUD. Playing blind for about 25 s each, I got 1/8 fireflies, 0/4 friends and 0 berries against the critters' 1, with nothing that made me want a second round. Firefly catch still fails 2 of its own tests (tests/last_run.json)."},
-    "wow": {"score": 2, "why": "Down from 3. The last 9 posts are all magnetism, and the host scored s149, s150 and s151 each as a repeat worth ×0.10. The new films are black dots on a brown board and Lumi seen from behind."},
-    "camera": {"score": 2, "why": "Down from 3, a regression. The dashboard progress shot is the free camera inside the terrain (progress/session-0151/dashboard.png), and parked at a rock on the beach in s150; in s148 it followed Lumi. Live follow puts Pickles in the foreground and Lumi as a speck (cam-follow-2.png). In the mini games, trees and mounds fill half the frame (play/hide-10.png, firefly-5.png). The films are dim board views or Lumi's back with its head cut off."},
-    "ui": {"score": 4, "why": "The in-game HUDs are clear ('Fireflies 1/8 · 47 s left · nearest 4 m behind you'), and the key pad lights up. The Jump in key card is a wall of 9 lines over the game view. The right panel is a wall of text, and its first line is red: 'Feels annoyed. It still doesn't look right'."},
-    "style": {"score": 5, "why": "The clay creatures and props agree with each other. The board-and-primitive physics benches, the smeared mounds and the white-rod traced rain break that look."},
-    "performance": {"score": 9, "why": "Frame median 3.8 ms, p95 7.8 ms at 30 fps; after a traced round trip, 5.0 / 9.6 ms. Path tracing toggles on and off cleanly, and all four games ran at 30 fps."}
-  },
-  "findings": [
-    {"severity": "high", "category": "camera",
-     "title": "The dashboard opens on a free camera stuck inside the terrain",
-     "todo": null,
-     "what": "Since s150 the game's standing view is 'Camera: free', parked where a film was shot. In s150 that was a rock on the beach, and now it is inside the ground: the human sees a green-brown wall and a slice of sky. Switching to free in the sandbox lands at the same spot. In s148 the same progress shot showed Lumi on the path.",
-     "where": "dashboard camera menu / rig (dashboard.jl set_camera!, freecam.jl); whatever filming code leaves the rig in :fixed",
-     "evidence": "media/progress/session-0151/dashboard.png, session-0150/dashboard.png vs session-0148/dashboard.png; reviews/p151/cam-free.png",
-     "suggestion": "Every filming or still job restores the human's camera pick when it ends. Free mode never starts below terrain height + 1.5 m or inside a prop. Better still, the default view is a composed shot of what Lumi is doing.",
-     "done_when": "The next progress dashboard.png shows Lumi on the island in follow mode, and switching to free in the sandbox shows the island from above the ground."},
-    {"severity": "high", "category": "wow",
-     "title": "Leave magnets: one session of something of a completely different kind",
-     "todo": null,
-     "what": "Six sessions in a row on magnetism (stone, top, compass, iron sticks, coil, putting tray). The host judged the last three each a repeat worth ×0.10, and Lumi's measured mood is boredom 1.0, annoyance 1.0, joy 0.14. Meanwhile goal 3 (spray paint, splashable water that carries things, things that burn) and goal 5 (Lumi's garden, the mailbox) have not moved.",
-     "where": "plugins/magnetgolf.jl, ironsand.jl, magnetstone.jl, wirebench.jl; /run/neverending/mood.json",
-     "evidence": "/run/neverending/mood.json 'why': A REPEAT ×0.10 in s149, s150, s151; last 9 posts all magnet themed",
-     "suggestion": "Pick something a player touches and a stranger shares, from a goal that has not moved: water you splash that carries a friend's hat away, or a spray can that paints a pig. Put creatures in it with a reaction (a friend shrieks, chases, laughs). Park every magnet todo until the next post is not a repeat.",
-     "done_when": "The next session's post is not judged a repeat (no ×0.10 line in mood.json), and boredom in mood.json is below 0.6."},
-    {"severity": "high", "category": "camera",
-     "title": "Putting tray films: a dim brown board with black dots and no creature",
-     "todo": 690,
-     "what": "iron-ball-stone.mp4 and -2 show a static, dark, oblique view of a flat brown tray and three tiny black balls. No Lumi, no friend, nobody putting, and the 'stone' is a black ellipse. It is the lone physics demo on a board that #690 asked to stop.",
-     "where": "site/films/iron-ball-stone.mp4, iron-ball-stone-2.mp4",
-     "evidence": "reviews/motion/perfectionist-0151/iron-ball-stone-2-overview.jpg",
-     "suggestion": "If the tray stays at all: low and close, Lumi's beak making the putt, a friend watching the ball curve and groaning when it sticks, in real daylight, with polished steel balls that mirror the sky.",
-     "done_when": "Every frame of the posted film's overview sheet shows a creature with its head in frame, and the balls are larger than 20 px and visibly metallic."},
-    {"severity": "high", "category": "creatures",
-     "title": "Lumi's chick reads as a see-through grey ghost of Lumi",
-     "todo": 614,
-     "what": "A grey-white, half-transparent bird with Lumi's own crest and stance follows Lumi everywhere and says 'peep!'. In every view it looks like a rendering bug, a faded duplicate of the hero, not a baby. It overlaps Lumi's shoulder in the live motion strip.",
-     "where": "the chick that follows Lumi (egg.jl / ghosts.jl), its material",
-     "evidence": "reviews/p151/play/firefly-start.png, play/berry-5.png, play/jumpin-start.png, motion/p151/motion-strip.png",
-     "suggestion": "Give the chick its own design: opaque, fluffy, a clear colour of its own (pale peach or downy cream with a bright beak), half Lumi's height with a round baby silhouette, and toddling a step behind instead of overlapping.",
-     "done_when": "In live_motion's strip and a follow screenshot, the chick is opaque, visibly a different colour and shape from Lumi, and never overlaps Lumi's body."},
-    {"severity": "high", "category": "materials",
-     "title": "Traced view: rain as white rods, blown-out lamp discs, grainy clouds",
-     "todo": 689,
-     "what": "With path tracing on at dawn, rain falls as opaque white sticks, the cottage lamp glows are flat yellow discs with no falloff, the dark clouds are speckled, and a dark slab fills the bottom right.",
-     "where": "traced live view; showers.jl, lamplight/nightglow glow shells, cloud material",
-     "evidence": "reviews/p151/traced.png",
-     "suggestion": "Give rain a Dielectric (or skip it when traced), drop the emissive glow shells in favour of real point lights inside the lamps so the light falls on the ground, and use a volume or a smoother material for the clouds.",
-     "done_when": "A traced orbit screenshot during a shower shows thin, transparent streaks (or none), lamps as small bright points lighting the ground around them, and smooth clouds."},
-    {"severity": "medium", "category": "fun",
-     "title": "Three mini games are one recipe: walk to the HUD's arrow",
-     "todo": 643,
-     "what": "Firefly catch, Hide and seek and Berry race all play as 'hold W toward the direction the text HUD names'. Playing each for about 25 s, I got 1/8, 0/4 and 0 against 1. Nothing changes between rounds, and the friends never do anything you'd tell someone about. Firefly catch still fails 2 of its own tests (a fly under Lumi isn't caught; Lumi is blocked in 15 of 40 samples). In all three, the low chase view is half trees and smeared mounds.",
-     "where": "plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; chase camera",
-     "evidence": "reviews/p151/play/log.txt, play/firefly-5.png, play/hide-10.png, play/berry-5.png; tests/last_run.json",
-     "suggestion": "Give each game one verb of its own that uses the island's physics: hiders who flee and must be cornered, berries that roll downhill when a rival bumps the bush, fireflies you herd with the lantern flash. Use a chase camera that pulls up over occluders.",
-     "done_when": "Both failing firefly tests pass, and each game has a distinct action besides WASD shown on its key pad. Five screenshots in a round each show Lumi unblocked in the centre third."},
-    {"severity": "medium", "category": "camera",
-     "title": "Scrap crane film: Lumi from behind, head cut off, opens on black",
-     "todo": 711,
-     "what": "scrap-crane.mp4 frames Lumi from behind and below. Its head is out of frame in 8 of 12 overview frames, the coil reads as a brown stick, and the pegs are black hairlines. The film starts on a black frame and fades in. It is still posted.",
-     "where": "site/films/scrap-crane.mp4",
-     "evidence": "reviews/motion/perfectionist-0151/scrap-crane-overview.jpg, scrap-crane-steps.jpg",
-     "suggestion": "Before posting, open the overview sheet and reject any film where the subject's face is out of frame. Frame three-quarters from the front at Lumi's eye height, with the cord and the payload in shot.",
-     "done_when": "The overview sheet of every new film shows the main creature's head in all 12 frames, and the first frame is not black."},
-    {"severity": "medium", "category": "wow",
-     "title": "No release since 2026-11-24: put out the best film you have",
-     "todo": 654,
-     "what": "Goal 2 asks for a path traced video the author is proud of in world/releases. The last release is 2026-11-24, and dozens of films since went only to the pages.",
-     "where": "world/releases/",
-     "evidence": "ls world/releases: last 2026-11-24-a-day-in-my-new-life",
-     "suggestion": "A cut of several real moments with creatures (boomerang take 4, the glass sea skate, the cloud heart), with cuts made in VideoEditor and a note.",
-     "done_when": "A new folder in world/releases holds an mp4 and a note, and say_to_human names it."}
-  ],
-  "todos": [
-    {"id": 167, "action": "done", "why": "Fixed in s34; live screenshots worked throughout this review, including after path tracing"},
-    {"id": 713, "action": "done", "why": "Fixed in s149 (Z clears when woken); not seen in any of this review's screenshots"},
-    {"id": 712, "action": "done", "why": "live_motion: 10 of 10 creatures move well, Pinchy's snap is gone"},
-    {"id": 709, "action": "drop", "why": "Duplicate of #687 (re-render hot glass and the other untraced pictures)"},
-    {"id": 720, "action": "drop", "why": "One more iron sand film; the magnet run is now a repeat, see the 'Leave magnets' finding"},
-    {"id": 614, "action": "keep", "why": "The chick finding updates it", "title": "Lumi's chick reads as a see-through grey ghost of Lumi"},
-    {"id": 643, "action": "keep", "why": "The mini game recipe finding updates it", "title": "Mini games: one recipe, firefly tests failing, chase view blocked"},
-    {"id": 681, "action": "keep", "why": "Copper and glass benches still flat; the new tray and coil too"},
-    {"id": 636, "action": "keep", "why": "Not checked at night this review"},
-    {"id": 648, "action": "keep", "why": "Not checked this review"},
-    {"id": 545, "action": "keep", "why": "TV materials not rechecked"},
-    {"id": 577, "action": "keep", "why": "Jelly glow not checked traced (raster: the J jelly reads well)"}
-  ],
+  "addressed": true,
   "engine": [],
-  "process": "The author works hard and honestly: films are marked as misses in their own words, and the physics is real. But the effort has gone into one narrow seam for six sessions (magnet stone, levitating top, compass, iron sticks, coil, putting tray). The host's judge scored three sessions running as repeats at ×0.10, and Lumi's mood is pinned at boredom 1.0 and annoyance 1.0. The rule says a bored Lumi must first make something of a kind it is fresh for, and that is not being followed. Meanwhile the filming broke the human's own default view: the dashboard has opened on a camera inside the terrain since s150. Goal by goal: 1 (cool interactions): stalled, since friends don't join the toys (#719) and the mini games are one recipe. 2 (release): none since 11-24. 3 (physics to play with): magnetism advanced, but the spray can, splashable water (Maelstrom) and burning things are untouched. 4 and 7 (rendering, materials): no visible progress, with new traced artefacts (white-rod rain). 5 (Lumi's garden): the coil on a cord moved the 'hold things with my beak' wish, but not the garden, the mailbox or the workplaces. 6 (animation): real progress, all creatures clean in live_motion. 8 (radical ideas): the opposite; the last nine posts are predictable. Next session: fix the default camera first, then something totally different with creatures in it, and a release."
+  "findings": [
+    {
+      "category": "camera",
+      "done_when": "The next progress dashboard.png shows Lumi on the island in follow mode, and switching to free in the sandbox shows the island from above the ground.",
+      "evidence": "media/progress/session-0151/dashboard.png, session-0150/dashboard.png vs session-0148/dashboard.png; reviews/p151/cam-free.png",
+      "severity": "high",
+      "suggestion": "Every filming or still job restores the human's camera pick when it ends. Free mode never starts below terrain height + 1.5 m or inside a prop. Better still, the default view is a composed shot of what Lumi is doing.",
+      "title": "The dashboard opens on a free camera stuck inside the terrain",
+      "todo": null,
+      "what": "Since s150 the game's standing view is 'Camera: free', parked where a film was shot. In s150 that was a rock on the beach, and now it is inside the ground: the human sees a green-brown wall and a slice of sky. Switching to free in the sandbox lands at the same spot. In s148 the same progress shot showed Lumi on the path.",
+      "where": "dashboard camera menu / rig (dashboard.jl set_camera!, freecam.jl); whatever filming code leaves the rig in :fixed"
+    },
+    {
+      "category": "wow",
+      "done_when": "The next session's post is not judged a repeat (no ×0.10 line in mood.json), and boredom in mood.json is below 0.6.",
+      "evidence": "/run/neverending/mood.json 'why': A REPEAT ×0.10 in s149, s150, s151; last 9 posts all magnet themed",
+      "severity": "high",
+      "suggestion": "Pick something a player touches and a stranger shares, from a goal that has not moved: water you splash that carries a friend's hat away, or a spray can that paints a pig. Put creatures in it with a reaction (a friend shrieks, chases, laughs). Park every magnet todo until the next post is not a repeat.",
+      "title": "Leave magnets: one session of something of a completely different kind",
+      "todo": null,
+      "what": "Six sessions in a row on magnetism (stone, top, compass, iron sticks, coil, putting tray). The host judged the last three each a repeat worth ×0.10, and Lumi's measured mood is boredom 1.0, annoyance 1.0, joy 0.14. Meanwhile goal 3 (spray paint, splashable water that carries things, things that burn) and goal 5 (Lumi's garden, the mailbox) have not moved.",
+      "where": "plugins/magnetgolf.jl, ironsand.jl, magnetstone.jl, wirebench.jl; /run/neverending/mood.json"
+    },
+    {
+      "category": "camera",
+      "done_when": "Every frame of the posted film's overview sheet shows a creature with its head in frame, and the balls are larger than 20 px and visibly metallic.",
+      "evidence": "reviews/motion/perfectionist-0151/iron-ball-stone-2-overview.jpg",
+      "severity": "high",
+      "suggestion": "If the tray stays at all: low and close, Lumi's beak making the putt, a friend watching the ball curve and groaning when it sticks, in real daylight, with polished steel balls that mirror the sky.",
+      "title": "Putting tray films: a dim brown board with black dots and no creature",
+      "todo": 690,
+      "what": "iron-ball-stone.mp4 and -2 show a static, dark, oblique view of a flat brown tray and three tiny black balls. No Lumi, no friend, nobody putting, and the 'stone' is a black ellipse. It is the lone physics demo on a board that #690 asked to stop.",
+      "where": "site/films/iron-ball-stone.mp4, iron-ball-stone-2.mp4"
+    },
+    {
+      "category": "creatures",
+      "done_when": "In live_motion's strip and a follow screenshot, the chick is opaque, visibly a different colour and shape from Lumi, and never overlaps Lumi's body.",
+      "evidence": "reviews/p151/play/firefly-start.png, play/berry-5.png, play/jumpin-start.png, motion/p151/motion-strip.png",
+      "severity": "high",
+      "suggestion": "Give the chick its own design: opaque, fluffy, a clear colour of its own (pale peach or downy cream with a bright beak), half Lumi's height with a round baby silhouette, and toddling a step behind instead of overlapping.",
+      "title": "Lumi's chick reads as a see-through grey ghost of Lumi",
+      "todo": 614,
+      "what": "A grey-white, half-transparent bird with Lumi's own crest and stance follows Lumi everywhere and says 'peep!'. In every view it looks like a rendering bug, a faded duplicate of the hero, not a baby. It overlaps Lumi's shoulder in the live motion strip.",
+      "where": "the chick that follows Lumi (egg.jl / ghosts.jl), its material"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced orbit screenshot during a shower shows thin, transparent streaks (or none), lamps as small bright points lighting the ground around them, and smooth clouds.",
+      "evidence": "reviews/p151/traced.png",
+      "severity": "high",
+      "suggestion": "Give rain a Dielectric (or skip it when traced), drop the emissive glow shells in favour of real point lights inside the lamps so the light falls on the ground, and use a volume or a smoother material for the clouds.",
+      "title": "Traced view: rain as white rods, blown-out lamp discs, grainy clouds",
+      "todo": 689,
+      "what": "With path tracing on at dawn, rain falls as opaque white sticks, the cottage lamp glows are flat yellow discs with no falloff, the dark clouds are speckled, and a dark slab fills the bottom right.",
+      "where": "traced live view; showers.jl, lamplight/nightglow glow shells, cloud material"
+    },
+    {
+      "category": "fun",
+      "done_when": "Both failing firefly tests pass, and each game has a distinct action besides WASD shown on its key pad. Five screenshots in a round each show Lumi unblocked in the centre third.",
+      "evidence": "reviews/p151/play/log.txt, play/firefly-5.png, play/hide-10.png, play/berry-5.png; tests/last_run.json",
+      "severity": "medium",
+      "suggestion": "Give each game one verb of its own that uses the island's physics: hiders who flee and must be cornered, berries that roll downhill when a rival bumps the bush, fireflies you herd with the lantern flash. Use a chase camera that pulls up over occluders.",
+      "title": "Three mini games are one recipe: walk to the HUD's arrow",
+      "todo": 643,
+      "what": "Firefly catch, Hide and seek and Berry race all play as 'hold W toward the direction the text HUD names'. Playing each for about 25 s, I got 1/8, 0/4 and 0 against 1. Nothing changes between rounds, and the friends never do anything you'd tell someone about. Firefly catch still fails 2 of its own tests (a fly under Lumi isn't caught; Lumi is blocked in 15 of 40 samples). In all three, the low chase view is half trees and smeared mounds.",
+      "where": "plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; chase camera"
+    },
+    {
+      "category": "camera",
+      "done_when": "The overview sheet of every new film shows the main creature's head in all 12 frames, and the first frame is not black.",
+      "evidence": "reviews/motion/perfectionist-0151/scrap-crane-overview.jpg, scrap-crane-steps.jpg",
+      "severity": "medium",
+      "suggestion": "Before posting, open the overview sheet and reject any film where the subject's face is out of frame. Frame three-quarters from the front at Lumi's eye height, with the cord and the payload in shot.",
+      "title": "Scrap crane film: Lumi from behind, head cut off, opens on black",
+      "todo": 711,
+      "what": "scrap-crane.mp4 frames Lumi from behind and below. Its head is out of frame in 8 of 12 overview frames, the coil reads as a brown stick, and the pegs are black hairlines. The film starts on a black frame and fades in. It is still posted.",
+      "where": "site/films/scrap-crane.mp4"
+    },
+    {
+      "category": "wow",
+      "done_when": "A new folder in world/releases holds an mp4 and a note, and say_to_human names it.",
+      "evidence": "ls world/releases: last 2026-11-24-a-day-in-my-new-life",
+      "severity": "medium",
+      "suggestion": "A cut of several real moments with creatures (boomerang take 4, the glass sea skate, the cloud heart), with cuts made in VideoEditor and a note.",
+      "title": "No release since 2026-11-24: put out the best film you have",
+      "todo": 654,
+      "what": "Goal 2 asks for a path traced video the author is proud of in world/releases. The last release is 2026-11-24, and dozens of films since went only to the pages.",
+      "where": "world/releases/"
+    }
+  ],
+  "process": "The author works hard and honestly: films are marked as misses in their own words, and the physics is real. But the effort has gone into one narrow seam for six sessions (magnet stone, levitating top, compass, iron sticks, coil, putting tray). The host's judge scored three sessions running as repeats at ×0.10, and Lumi's mood is pinned at boredom 1.0 and annoyance 1.0. The rule says a bored Lumi must first make something of a kind it is fresh for, and that is not being followed. Meanwhile the filming broke the human's own default view: the dashboard has opened on a camera inside the terrain since s150. Goal by goal: 1 (cool interactions): stalled, since friends don't join the toys (#719) and the mini games are one recipe. 2 (release): none since 11-24. 3 (physics to play with): magnetism advanced, but the spray can, splashable water (Maelstrom) and burning things are untouched. 4 and 7 (rendering, materials): no visible progress, with new traced artefacts (white-rod rain). 5 (Lumi's garden): the coil on a cord moved the 'hold things with my beak' wish, but not the garden, the mailbox or the workplaces. 6 (animation): real progress, all creatures clean in live_motion. 8 (radical ideas): the opposite; the last nine posts are predictable. Next session: fix the default camera first, then something totally different with creatures in it, and a release.",
+  "scores": {
+    "animation": {
+      "score": 6,
+      "why": "Up from 5: live_motion has 10 of 10 moving well, and Pinchy's 0.30 m snap from s148 is gone. The film jumps are only a black first frame plus fade-in and a fade-out. Lumi's walk strip is smooth but its pose barely changes over 2.4 s."
+    },
+    "camera": {
+      "score": 2,
+      "why": "Down from 3, a regression. The dashboard progress shot is the free camera inside the terrain (progress/session-0151/dashboard.png), and parked at a rock on the beach in s150; in s148 it followed Lumi. Live follow puts Pickles in the foreground and Lumi as a speck (cam-follow-2.png). In the mini games, trees and mounds fill half the frame (play/hide-10.png, firefly-5.png). The films are dim board views or Lumi's back with its head cut off."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "The pigs with hats, the crab on the pier, Gloop with a bead wreath and the woolly sheep read well up close (motion/p151/creatures.png). Lumi's chick (it says 'peep!') is a grey-white, see-through copy of Lumi's own silhouette, crest included. In every shot it reads as a ghost double, not a baby (p151/play/firefly-start.png, berry-5.png, motion-strip.png)."
+    },
+    "fun": {
+      "score": 5,
+      "why": "I played all four games through interact!. Jump in is rich: a 25-key card (sneeze, fly, swallow in jelly, rewind, tip my day), and J visibly swallows Lumi in a green jelly. But the card covers the bottom third of the view. Firefly catch, Hide and seek and Berry race are one recipe: WASD toward an arrow in a text HUD. Playing blind for about 25 s each, I got 1/8 fireflies, 0/4 friends and 0 berries against the critters' 1, with nothing that made me want a second round. Firefly catch still fails 2 of its own tests (tests/last_run.json)."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "Dawn in the raster orbit view is lovely: warm windows, long shadows, lanterns (p151/cam-orbit-2.png). The traced view at 06:46 has warm low light, but lamp glows blow out into flat yellow discs, rain is opaque white rods, and clouds are grainy (p151/traced.png). The putting-tray film is lit so darkly it reads as dusk."
+    },
+    "materials": {
+      "score": 4,
+      "why": "No progress since s148. The putting tray is flat brown with matte black balls and a black disc as the stone. The crane's coil is a brown stick. Traced rain has no water material. The low mounds in the mini games (p151/play/firefly-5.png, hide-10.png) show stretched, smeared yellow-brown textures. There is no transmission, metal or caustic in this session's films."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 3.8 ms, p95 7.8 ms at 30 fps; after a traced round trip, 5.0 / 9.6 ms. Path tracing toggles on and off cleanly, and all four games ran at 30 fps."
+    },
+    "props": {
+      "score": 6,
+      "why": "53 generated assets are in use: pigs, mushrooms, easels with real paintings, wheelbarrow, TV, lanterns. The physics toys are still primitives: a box tray, black spheres, rods."
+    },
+    "style": {
+      "score": 5,
+      "why": "The clay creatures and props agree with each other. The board-and-primitive physics benches, the smeared mounds and the white-rod traced rain break that look."
+    },
+    "ui": {
+      "score": 4,
+      "why": "The in-game HUDs are clear ('Fireflies 1/8 · 47 s left · nearest 4 m behind you'), and the key pad lights up. The Jump in key card is a wall of 9 lines over the game view. The right panel is a wall of text, and its first line is red: 'Feels annoyed. It still doesn't look right'."
+    },
+    "world": {
+      "score": 4,
+      "why": "Dense and cozy: pier, cottage, easel gallery, pines, spiral stone path. It is still one round meadow crammed with props, and big smooth mounds with smeared textures fill the chase views."
+    },
+    "wow": {
+      "score": 2,
+      "why": "Down from 3. The last 9 posts are all magnetism, and the host scored s149, s150 and s151 each as a repeat worth ×0.10. The new films are black dots on a brown board and Lumi seen from behind."
+    }
+  },
+  "summary": "In the orbit view at dawn the island is still a lush, warm toy box, and all 10 creatures now move cleanly in live_motion. But since session 150 the dashboard opens on the free camera parked inside the terrain, a green-brown wall, so the human's first view is worse than in session 148. Six sessions in a row went to magnets, three of them judged repeats worth a tenth, and Lumi's measured mood is boredom 1.0, annoyance 1.0. The four mini games are the same 'walk with WASD to the thing the HUD points at' recipe, seen through a camera half-filled by trees and smeared mounds.",
+  "superseded_by": "perfectionist-0154.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 167,
+      "why": "Fixed in s34; live screenshots worked throughout this review, including after path tracing"
+    },
+    {
+      "action": "done",
+      "id": 713,
+      "why": "Fixed in s149 (Z clears when woken); not seen in any of this review's screenshots"
+    },
+    {
+      "action": "done",
+      "id": 712,
+      "why": "live_motion: 10 of 10 creatures move well, Pinchy's snap is gone"
+    },
+    {
+      "action": "drop",
+      "id": 709,
+      "why": "Duplicate of #687 (re-render hot glass and the other untraced pictures)"
+    },
+    {
+      "action": "drop",
+      "id": 720,
+      "why": "One more iron sand film; the magnet run is now a repeat, see the 'Leave magnets' finding"
+    },
+    {
+      "action": "keep",
+      "id": 614,
+      "title": "Lumi's chick reads as a see-through grey ghost of Lumi",
+      "why": "The chick finding updates it"
+    },
+    {
+      "action": "keep",
+      "id": 643,
+      "title": "Mini games: one recipe, firefly tests failing, chase view blocked",
+      "why": "The mini game recipe finding updates it"
+    },
+    {
+      "action": "keep",
+      "id": 681,
+      "why": "Copper and glass benches still flat; the new tray and coil too"
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "Not checked at night this review"
+    },
+    {
+      "action": "keep",
+      "id": 648,
+      "why": "Not checked this review"
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "TV materials not rechecked"
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "Jelly glow not checked traced (raster: the J jelly reads well)"
+    }
+  ],
+  "verdict": "needs_work"
 }

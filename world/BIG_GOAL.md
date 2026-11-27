@@ -10,6 +10,8 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 
 - [x] Done s146-151: any magnet's field (em.jl), the homopolar wire motor, coil Biot-Savart (coilcrane.jl), the beach magnet stone
 - [ ] A circuit solver from what touches what: wires, contacts, resistance from length and section, Joule heat
+  - [x] circuit.jl s155: contacts from geometry, Holm spots, rho(T), heat, glow, melting at one spot (Preece check 10.2 vs 10.0 A)
+  - [ ] motor.jl runs on it (ring segments and brushes as wires), the live bench uses it
 - [ ] A cell from copper and iron in a clam shell of sea water: voltage, internal resistance, polarisation
 - [ ] The coil crane powered by cells: more cells lift more spikes
 - [ ] A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve
@@ -20,3 +22,5 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 - [ ] The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do
 - [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
 - [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island
+  - [x] Drawing physics s155 (draw.jl): Sachs stress, hardening, die wear; a rushed pass necks, and the wire parts there
+  - [ ] The drawing bench: Lumi's beak hauls the wire through a stone plate (todo #742), film

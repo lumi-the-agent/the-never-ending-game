@@ -1152,3 +1152,32 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   over a magnet's face samples the peak field and overestimates torque ~30%: always subdivide paths (rect_turn n = 10)
   and check the answer moves less than a few % when n doubles, BEFORE filming. The first motor film rendered on the
   coarse turn and had to be withdrawn.
+
+## The circuit solver (s155 free time, physics/circuit.jl, big goal road step 1)
+- Netlist rebuilt from geometry every solve: bare wires touch anywhere (segment-segment distance <= r1 + r2), wrapped
+  ones only at their two ends, cell terminals within r_term; Holm constriction per contact (F pressing force, softer
+  metal's hardness). Wire pieces between taps: rho(T) l / A per segment. Nodal analysis, cells as Norton, each loose
+  piece its own reference. Heat: I^2 R per segment, Morgan natural convection + radiation (eps 0.5), conduction along
+  the wire, heat through contact spots (exact pair relaxation: a 0.1 mm segment empties through a spot in ~2.5 ms),
+  latent heat at the melting point (and back on freezing), ONE segment parts per substep (a uniform hot run would
+  otherwise part everywhere at once: the ends' cooling reaches only ~6 mm into a 0.1 mm wire).
+- `Circuit.selftest()`: Ohm and parallel exact; bare wire across the leads shorts (far loop 2.48 -> 0.27 A), wrapped
+  does not; fusing current vs Preece: 0.25 mm 10.2 vs 10.0 A, 0.5 mm 26 vs 28, 1 mm 67 vs 80, 0.1 mm 3.3 vs 2.5 (30% high).
+  Converged in ds (2 -> 1 mm) and dt (0.01 -> 0.0025).
+- What it says for the cart: cells in SERIES don't buy current, each brings its resistance: 0.1 mm wire, 0.2 Ohm cells,
+  6 -> 16 cells: 515 -> 814 C, never melts (the limit is one cell's short-circuit current). 3 Ohm brine cells: 24 C at
+  any count. 8 cells of 0.05 Ohm: 9.3 A, glows at 0.08 s, parts at one spot in the middle at 0.56 s, current stops.
+  So the brine cell (step 2) must be about plate area and spacing, and parallel banks.
+- Not yet: motor.jl still has its own loop (should become a Net: ring segments = arc wires, brushes = short wires, the
+  coil = a wrapped wire), inductance and motional EMF as elements, iron's rho(T) is linear (runs low above 800 K), taps at
+  the same spot are joined by a 1e-9 Ohm piece (leaves ~1e-6 A noise in an open loop: merge them instead), glow colour.
+
+## Drawn wire (s155, physics/draw.jl, projects/drawn-wire.md)
+- Sachs + Ludwik + Archard per pass; a rush necks at the die exit (Considere), `give` = how much load the hand lets go.
+- circuit.jl Wire.r is now a VECTOR (one radius per segment; a number still works in the constructor). area(w, i).
+- Test lesson: put the flaw AWAY from where a uniform wire would fail anyway (the middle), or the test proves nothing.
+- SECOND TIME (s155 drawnwire after the s154 rod film): two plots with the same `name` kill a film. Every mesh! in a
+  loop gets Symbol(prefix, k). And ALWAYS run a rasterize=true game_clip check of one frame before trusting a queued job.
+- Filming thin things (s155 drawnwire): NG.CameraRig has NO zoom and its view is wide (~90 deg): a 0.1 mm wire reads as
+  a line only with the eye ~2 cm away (frame ~4 cm wide, wire ~2 px). Check the spot for plant clumps first (the
+  first try at (6.6,-14.2) sat in one); (5.6,-13.0) by the tops board is open ground.

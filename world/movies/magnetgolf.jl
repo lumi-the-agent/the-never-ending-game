@@ -14,7 +14,7 @@ function golf_parts(; spot = (-4.6f0, 18.75f0), rb = 0.015, stone = (0.08, 0.0),
     S = Dict{Symbol,Any}()
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat, :autumn_fall, :magnetstone_block, :magnetstone_spikes, :crane_pegs, :crane_core, :crane_coil, :crane_cord) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :magnetstone_block, :magnetstone_spikes, :crane_pegs, :crane_core, :crane_coil, :crane_cord) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         w = gm.world

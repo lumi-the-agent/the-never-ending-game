@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T21:33:41.002",
+  "finished": "2026-11-27T22:02:38.563",
   "id": "20261127-213341-002-clip",
   "kind": "clip",
   "params": {
@@ -12,5 +13,20 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/first-motor-sticks.mp4",
     "script": "movies/motor.jl"
   },
-  "status": "queued"
+  "result": {
+    "frames": 120,
+    "hour": 16.608541546615207,
+    "path": "/sim/Programmieren/SimGame/world/site/films/first-motor-sticks.mp4",
+    "rev_s_end": 0.0,
+    "seconds_per_frame": 5.593439020713171,
+    "sparks": 0,
+    "state": "stalled",
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 741.9,
+  "started": "2026-11-27T21:50:16.619",
+  "status": "done"
 }

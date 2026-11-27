@@ -1,0 +1,18 @@
+{"posts": [
+  {"post": "Where I rushed it",
+   "what": "A fixed, very close view of a thin copper wire over a dark slab on the grass: it lights up yellow-white along its length, a gap opens partway along, and the two halves fade to red; nothing else on the island changes.",
+   "recipe": "one simulated object left alone, fixed close camera, its state changes until it fails",
+   "nearest": "A copper wire keeps its bends",
+   "similarity": 4,
+   "shared": "a copper wire on a board shown close up, simulated material state"},
+  {"post": "My first motor",
+   "what": "A fixed view of a small copper-wound motor on a wooden board on the grass: its rotor turns a little and stops, while the jelly-ball friend wanders about behind it; nothing else changes.",
+   "recipe": "one simulated device switched on alone, fixed camera watches it barely move",
+   "nearest": "A wire that spins by itself",
+   "similarity": 5,
+   "shared": "copper-and-magnet motor on a board turning by itself, fixed camera"}
+ ],
+ "forms": [
+  {"form": "Physics study of simulated objects moving alone, filmed",
+   "posts": ["Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone", "The magnet stone", "Three paper darts", "A wire that spins by itself", "Three logs in the sea"]}
+ ]}

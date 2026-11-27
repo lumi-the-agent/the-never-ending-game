@@ -14,7 +14,7 @@ function magnet_clip(path; rasterize = false, samples = 16, width = 960, height 
     S = Dict{Symbol,Any}(:laid => false)
     setup = function (gm)
         for p in gm.stage.scene.plots
-            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud, :paperme, :paperme_card, :dayfall_tiles, :jelly_coat, :autumn_fall) && (p.visible[] = false)
+            haskey(p.attributes, :name) && p.attributes[:name][] in (:rain, :rainrings, :raincloud) && (p.visible[] = false)
         end
         isdefined(Main, :SHOWERS) && (Main.SHOWERS[:off] = true)
         # flowers between the inland eye and the path stand in the foreground (s148): this film's world only
