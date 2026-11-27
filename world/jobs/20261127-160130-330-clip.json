@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-27T16:01:30.330",
+  "id": "20261127-160130-330-clip",
+  "kind": "clip",
+  "params": {
+    "call": "compass_clip",
+    "kwargs": {
+      "samples": 16
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/compass-bowl.mp4",
+    "script": "movies/compass.jl"
+  },
+  "status": "queued"
+}

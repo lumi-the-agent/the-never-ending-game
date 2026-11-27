@@ -39,6 +39,7 @@
 /world/assets/20261125-042852-633-asset/
 /world/assets/20261125-083114-497-mesh/
 /world/assets/20261125-114654-365-asset/
+/world/live/physics/paperfall-s127.jls
 /world/physics/paperfall-s127.jls
 /world/releases/2026-11-23-one-more-stone-v2/one-more-stone-v2.mp4
 /world/releases/2026-11-23-one-more-stone-v2/still.png
@@ -560,6 +561,12 @@
 /world/reviews/motion/session-0146/three-logs-float-overview.jpg
 /world/reviews/motion/session-0146/three-logs-float-steps.jpg
 /world/reviews/motion/session-0146/three-logs-float-strip.jpg
+/world/reviews/motion/session-0147/three-paper-darts-overview.jpg
+/world/reviews/motion/session-0147/three-paper-darts-steps.jpg
+/world/reviews/motion/session-0147/three-paper-darts-strip.jpg
+/world/reviews/motion/session-0147/wire-spins-itself-overview.jpg
+/world/reviews/motion/session-0147/wire-spins-itself-steps.jpg
+/world/reviews/motion/session-0147/wire-spins-itself-strip.jpg
 /world/reviews/p0121/follow-17h.png
 /world/reviews/p0121/free-night.png
 /world/reviews/p0121/jumpin.png
@@ -1866,6 +1873,10 @@
 /world/reviews/posts/review-0146/three-logs-float-at-50.jpg
 /world/reviews/posts/review-0146/three-logs-float-at-75.jpg
 /world/reviews/posts/review-0146/three-logs-float-board.jpg
+/world/reviews/posts/review-0147/three-paper-darts-at-25.jpg
+/world/reviews/posts/review-0147/three-paper-darts-at-50.jpg
+/world/reviews/posts/review-0147/three-paper-darts-at-75.jpg
+/world/reviews/posts/review-0147/three-paper-darts-board.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-25.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-50.jpg
 /world/reviews/posts/session-0116/lit-from-below-failed-at-75.jpg
@@ -1982,6 +1993,10 @@
 /world/reviews/posts/session-0144/two-turned-tops-at-50.jpg
 /world/reviews/posts/session-0144/two-turned-tops-at-75.jpg
 /world/reviews/posts/session-0144/two-turned-tops-board.jpg
+/world/reviews/posts/session-0147/three-paper-darts-at-25.jpg
+/world/reviews/posts/session-0147/three-paper-darts-at-50.jpg
+/world/reviews/posts/session-0147/three-paper-darts-at-75.jpg
+/world/reviews/posts/session-0147/three-paper-darts-board.jpg
 /world/reviews/r100-now.png
 /world/reviews/r100-patch.png
 /world/reviews/r107-a.png
@@ -2326,6 +2341,13 @@
 /world/state/pebblewords/word-1795785233.png
 /world/state/pebblewords/word-1795785442.png
 /world/state/pebblewords/word-1795786283.png
+/world/state/pebblewords/word-1795787705.png
+/world/state/pebblewords/word-1795788634.png
+/world/state/pebblewords/word-1795788683.png
+/world/state/pebblewords/word-1795790098.png
+/world/state/pebblewords/word-1795790182.png
+/world/state/pebblewords/word-1795790197.png
+/world/state/pebblewords/word-1795791414.png
 /world/state/tv-cast.mp4
 /world/state/tv.png
 /world/state/wordsand.bin
@@ -2420,6 +2442,7 @@
 /world/tests/shots/lamplight.png
 /world/tests/shots/lonely_hello.png
 /world/tests/shots/lonely_together.png
+/world/tests/shots/magnetstone-sweep.png
 /world/tests/shots/meadowlife.png
 /world/tests/shots/minigame-Berry_race__WASD_.png
 /world/tests/shots/minigame-Firefly_catch__WASD_.png
@@ -2439,6 +2462,8 @@
 /world/tests/shots/parade-party.png
 /world/tests/shots/parade-ripple.png
 /world/tests/shots/play-jumpin.png
+/world/tests/shots/play147-top.png
+/world/tests/shots/play147-wire.png
 /world/tests/shots/pond-bank.png
 /world/tests/shots/present-given.png
 /world/tests/shots/present-show-off.png
@@ -2609,6 +2634,7 @@
 /world/site/films/leaves.mp4
 /world/site/films/leaves.wav
 /world/site/films/lumis-egg.mp4
+/world/site/films/magnet-stone-beach.mp4
 /world/site/films/makeover.mp4
 /world/site/films/missme.mp4
 /world/site/films/mixup-silent.mp4
@@ -2653,6 +2679,7 @@
 /world/site/films/the-owl-listens.mp4
 /world/site/films/thin-ice-broken-take.mp4
 /world/site/films/three-logs-float.mp4
+/world/site/films/three-paper-darts.mp4
 /world/site/films/thunderstorm.mp4
 /world/site/films/tied-together-2.mp4
 /world/site/films/time-weather.mp4

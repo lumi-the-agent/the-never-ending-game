@@ -1,0 +1,13 @@
+{"posts": [{"post": "three-paper-darts",
+  "verdict": "redo",
+  "problems": [
+    "No throw is shown: in storyboard frames 1, 6 and 13 the dart is already in mid-air over open sea. No hand, no person, no launch point. Each flight starts out of nothing.",
+    "No flight ends anywhere. The dart is never seen landing on the water, gliding down or coming to rest. Frames 4–5 and 16 cut away while it is still in the air, so the outcome of each throw is missing.",
+    "The caption promises three darts that differ only in their bent back edges, but the dart is a tiny white sliver (about 50 px in the full-size frames) and the bend can't be seen in any frame. Nothing in the pictures tells the three darts apart, or tells the viewer which one is 'down', 'a little up' or 'a lot up'.",
+    "'Same throw, slowed down twice' is not shown. The three flights run one after another against a featureless sea and sky, with no reference, no side-by-side and no label, so a viewer can't see one being slower than another.",
+    "The frame 25% in (storyboard frames 4–5) has broken water: a second hard horizon line cuts across the middle of the sea. Below it the water turns flat turquoise and the camera seems to sit at or under the surface. The dart there is a grey, half-dark quad with a black edge.",
+    "Cloud reflections show as dark, blurry blobs floating on the water in every frame, more prominent than the dart. In the 75% frame the dart turns pale green and translucent, and in storyboard frames 13 and 16 it shrinks to a thin green line, so it reads as a different object.",
+    "Storyboard frames 1 and 16 are dimmed grey, which looks like a fade or a darker exposure that does not match the rest."
+  ],
+  "critique": "This is a small white shape drifting over an empty sea. It is never thrown, never lands, and nothing in the pictures shows the three bent tails or the slowdowns the caption describes. The broken water and the camera dipping into the surface at the quarter mark make it look unfinished."
+}]}

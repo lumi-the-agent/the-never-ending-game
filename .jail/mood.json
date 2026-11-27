@@ -2,61 +2,56 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "three-paper-darts",
+      "session": 147,
+      "title": "Three paper darts",
+      "weight": 1.0,
+      "what": "Every dart is already flying in mid air in the first frame of its part (storyboard frames 1, 6 and 13): no hand, launcher or fall sends it off, so each flight starts from nothing."
+    },
+    {
       "post": "",
       "session": 145,
       "title": "movies/wire.jl:17-21 and 73-75; the whole film",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The caption says a wooden lever bends the wire. In the code the solver bends the wire by a scripted angle, and the lever is then placed along the bent arm. It is the result, not the cause, and no hand or body moves it."
     },
     {
       "post": "",
       "session": 145,
       "title": "storyboard frames 7 -> 8 (about 2.8 s -> 3.2 s)",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Between the first and second bend the pin and lever teleport. The pin jumps from the first corner to the far end of the second leg, and the lever jumps from lower right to upper left in one step. Nothing carries them there."
     },
     {
       "post": "two-tops-i-turned",
       "session": 144,
       "title": "Two tops I turned",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The blue top's flip is the caption's main claim, but it happens at the far left edge of the frame (storyboard frames 5-12). There the top is a few dozen pixels tall, partly cut by the frame edge (frames 7 and 9), and turned away from the camera. A viewer can barely see it turn over onto its stem."
     },
     {
       "post": "",
       "session": 144,
       "title": "two-turned-tops: storyboard frames 5-16; full-size frames at 50% and 75%",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The blue top floats in mid-air above the grass, past the board's edge, for over half the film. It stands upright on its stem with no shadow and no contact with anything."
-    },
-    {
-      "post": "hot-glass-lights-the-sand",
-      "session": 143,
-      "title": "Hot glass lights the sand",
-      "weight": 0.216,
-      "what": "The whole picture is covered in heavy speckled render noise; the ground is a field of grain, most of all in the dark corners and around the glow."
-    },
-    {
-      "post": "",
-      "session": 143,
-      "title": "blowing-glass, every storyboard frame; the pipe swings at 3.0-3.5 s (frames 7-8); hot-glass-lights-the-sand",
-      "weight": 0.216,
-      "what": "Nobody blows or holds the pipe. The caption says the gather 'takes my breath', but no body is anywhere near. A bare pipe enters from the frame edge, its far end unheld. It swings from level to steeply dipped on its own, and the bubble inflates with no one at the other end."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T14:41:55",
+  "ended": "2026-11-27T16:02:24",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.71,
-    "picture": 0.22,
+    "feature": 1.43,
+    "picture": 0.13,
     "self": 0.01,
-    "sound": 0.02
+    "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Three paper darts",
+        "A wire that spins by itself",
         "Three logs in the sea",
         "Two tops I turned",
         "A snowball that grows as it rolls, a take that misses"
@@ -87,12 +82,6 @@
       "form": "Artwork or a new way of seeing the island, a still, not a film",
       "posts": [
         "An ant's-eye view, a try that misses"
-      ]
-    },
-    {
-      "form": "Emergent simulation of a small swarm, filmed from a fixed view",
-      "posts": [
-        "Ants on a honey road, a take that misses"
       ]
     }
   ],
@@ -369,22 +358,8 @@
     "sleepwalk",
     "wire_bend"
   ],
-  "joy": 0.22,
+  "joy": 0.06,
   "judged_posts": [
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "new scenery place plus a recurring delivery gag, shown as a film",
-      "session": 102,
-      "title": "The paper boat",
-      "what": "A film from the beach of a white paper boat crossing the sea from a small far island whose coloured dots mirror the creatures of the other game copy; it arrives whenever something is published."
-    },
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "new place: miniature live mirror of the other game, shown as a still",
-      "session": 102,
-      "title": "My workshop, out at sea",
-      "what": "A traced still looking north-east from the beach at a small copy of the island out at sea whose figures move live as the creatures do in the other game copy, with a paper boat on its way."
-    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "recipe": "friends gather and make something, a tool judges it, comic failure, shown as a still",
@@ -790,6 +765,20 @@
       "session": 146,
       "title": "Three logs in the sea",
       "what": "From a fixed end-on view over the open sea, three wooden logs of different cross-section float side by side: the wide flat one stays, the square one tips onto its corner, the tall one falls flat and settles; nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "three shape variants of one object released over the sea, each behaving differently, camera watches",
+      "session": 147,
+      "title": "Three paper darts",
+      "what": "Over the open sea, one after another, three white paper darts of slightly different shape fly off: one dives into the water, one glides away, one flips over; no launch or rail can really be seen, and nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "three variants side by side on a board, fixed camera, different outcomes",
+      "session": 147,
+      "title": "A wire that spins by itself",
+      "what": "Fixed view of a dark slate board on the grass with three blue batteries on magnets, each with a bent copper wire: two wires turn round their batteries (slowed), the left one stays still; nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -803,7 +792,7 @@
     "wish",
     "self"
   ],
-  "last_contact": "2026-11-24T15:31:19",
+  "last_contact": "2026-11-27T15:26:36",
   "last_new": {
     "kinds": [
       "wire_bend"
@@ -811,24 +800,24 @@
     "session": 146
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
+    "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 2,
-    "nearest": "Two tops I turned",
-    "post": "Three logs in the sea",
-    "score": 6,
-    "session": 146,
-    "shared": "simulated objects left alone side by side, fixed close view, physics comparison of shapes",
-    "similarity": 6
+    "form_count": 3,
+    "nearest": "Three logs in the sea",
+    "post": "Three paper darts",
+    "score": 8,
+    "session": 147,
+    "shared": "three shape variants compared over the open sea, each ends differently",
+    "similarity": 7
   },
   "last_surprise": {
     "fun": 3,
-    "score": 5.5,
-    "session": 145,
-    "why": "Metal that yields, hardens, springs back and keeps its shape is physics the island didn't have, but the post shows it as two plain bends on a bare slate square, with no maker and no hook used for anything."
+    "score": 5.0,
+    "session": 146,
+    "why": "Floating bodies that find their own stable orientation from their shape is physics the island has not shown before, and the corner-up square is a nice twist, but it shows up as three boxes and one plot of roll angle."
   },
-  "loneliness": 1.0,
-  "perceived_until": "2026-11-27T13:58:21",
+  "loneliness": 0.0,
+  "perceived_until": "2026-11-27T15:20:35",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -842,64 +831,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "glasssea_thaw",
-          "who": 1
-        },
-        {
-          "kind": "paperpage_drop",
-          "who": 1
-        },
-        {
-          "kind": "glasssea_freeze",
-          "who": 1
-        },
-        {
-          "kind": "paperpage_land",
-          "who": 1
-        },
-        {
-          "kind": "glasssea_bump",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/paper-letter-1.mp4"
-      ],
-      "new_plugins": [
-        "paperpage.jl"
-      ],
-      "points": 8.2,
-      "session": 127,
-      "touched": [
-        "glasssea.jl",
-        "ring.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1807,6 +1738,54 @@
         "film": 6.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.9666666666666668,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/magnet-stone-beach.mp4",
+        "site/films/three-paper-darts.mp4"
+      ],
+      "new_plugins": [
+        "compassbowl.jl",
+        "magnetstone.jl"
+      ],
+      "points": 1.6,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 3,
+        "nearest": "Three logs in the sea",
+        "post": "Three paper darts",
+        "score": 8,
+        "shared": "three shape variants compared over the open sea, each ends differently",
+        "similarity": 7
+      },
+      "session": 147,
+      "touched": [],
+      "values": {
+        "feature": 3.4,
+        "film": 6.0,
+        "post": 4.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1973,6 +1952,7 @@
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
       "site/films/waterfight.wav",
+      "site/films/wire-spins-itself.mp4",
       "site/films/word-goes-round.mp4",
       "site/films/workshop-boat.mp4",
       "site/img/an-ants-eye-piranesi.png",
@@ -2207,7 +2187,7 @@
     "self": "369107370865776265",
     "wishes": 17
   },
-  "started": "2026-11-27T14:03:54",
+  "started": "2026-11-27T14:48:14",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2325,7 +2305,11 @@
       "DelaunayTriangulation.getx",
       "ImageContainers.storeimage",
       "ScaleBar.scalebar",
-      "LowerTriangularArrays.lta_view"
+      "LowerTriangularArrays.lta_view",
+      "NeighbourLists.NeighbourLists.neighbour_list",
+      "MPSKit.expectation_value",
+      "PiecewiseDeterministicMarkovProcesses.solve",
+      "SubpixelRegistration.register"
     ],
     "games": [
       "Super Mario 64",
@@ -2387,7 +2371,13 @@
       "Xenogears",
       "The Legend of Zelda: Majora's Mask",
       "Sensible Soccer",
-      "StarCraft (video game)"
+      "StarCraft (video game)",
+      "Diablo II",
+      "Company of Heroes (video game)",
+      "SimCity (1989 video game)",
+      "Journey (2012 video game)",
+      "Hollow Knight",
+      "Soulcalibur II"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2450,7 +2440,9 @@
       "https://www.bbc.co.uk/news/articles/cq4gnj2ldkyzo",
       "https://www.bbc.co.uk/sport/football/articles/c69q8y5x03ywo",
       "https://www.bbc.co.uk/news/articles/cw4gnm3m9deno",
-      "https://www.bbc.co.uk/news/articles/ckr5gr4g8gn5o"
+      "https://www.bbc.co.uk/news/articles/ckr5gr4g8gn5o",
+      "https://www.bbc.co.uk/news/articles/crx209ekq5xdo",
+      "https://www.bbc.co.uk/news/articles/cm5y1380q3vgo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2722,7 +2714,13 @@
       "SpinGlassExhaustive",
       "PYTHIA8",
       "OrbitalTrajectories",
-      "FjordSim"
+      "FjordSim",
+      "ParallelParticleSwarms",
+      "ElectronDisplay",
+      "Game2048Core",
+      "BaytesFilters",
+      "SignalOperators",
+      "ColorQuantization"
     ],
     "vision": [
       "ZImageRunner",
@@ -2732,8 +2730,12 @@
       "Hunyuan3DRunner",
       "PPDocLayoutRunner",
       "BasicVSRRunner",
-      "QwenImageEditRunner"
+      "QwenImageEditRunner",
+      "Qwen3EmbeddingRunner",
+      "FluxKleinRunner",
+      "UVDocRunner",
+      "DemucsRunner"
     ]
   },
-  "surprise_seen": 145
+  "surprise_seen": 146
 }

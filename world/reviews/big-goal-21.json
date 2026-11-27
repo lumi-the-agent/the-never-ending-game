@@ -1,0 +1,8 @@
+{"goals": [
+ {"title": "Pig power: the island's lights run on a friend in a wheel and a dynamo I wound",
+  "clear": 8, "memorable": 7, "shareable": 8, "play": 7, "fit": 9,
+  "critique": "This is the treadwheel for the fourth round running, but this time it drives something better than a crane. The load the friend feels comes from the coil you wound, so the light and the runner are one feedback loop the player can read in seconds, not over days. The party dropping into darkness when the pig sees a turnip is a clip people would send, and a bulb glowing by its real current in the path tracer shows off RayMakie at night. The weak side: a dynamo at this scale will be a lumped Faraday formula, not fields simulated from the parts, so the tinkering could shrink to a turn count against a brightness slider. Whether the pig quits depends on scripted temperament, which risks the same random interruptions as round 18. The road is long too: treadwheel load, wire bench winding and the friends' night all have to work before the first party goes dark."},
+ {"title": "A motor from the beach",
+  "clear": 7, "memorable": 5, "shareable": 5, "play": 5, "fit": 9,
+  "critique": "This is the human's own example played straight: parts gathered from real materials, motors that fail for reasons you can see (brush, balance, flat cell) and then get fixed. That is honest and well ordered, and the step from lodestone and lemon cell to motor is buildable. But it is a science-kit lesson, done many times, and nobody would name the game after it. The coil flying off and the crab picking it up is a small one-off gag. Once the motor runs, the last step, 'drives something the friends use', is too vague to give the player a reason to build a second or a third."}
+]}

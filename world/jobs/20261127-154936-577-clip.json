@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T15:49:36.577",
+  "id": "20261127-154936-577-clip",
+  "kind": "clip",
+  "params": {
+    "call": "magnet_clip",
+    "kwargs": {
+      "samples": 16
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/magnet-stone-beach.mp4",
+    "script": "movies/magnetstone.jl"
+  },
+  "started": "2026-11-27T15:54:03.117",
+  "status": "running"
+}

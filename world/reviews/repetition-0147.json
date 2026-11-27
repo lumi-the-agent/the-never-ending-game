@@ -1,0 +1,21 @@
+{"posts": [
+  {"post": "Three paper darts",
+   "what": "Over the open sea, one after another, three white paper darts of slightly different shape fly off: one dives into the water, one glides away, one flips over; no launch or rail can really be seen, and nothing else on the island changes.",
+   "recipe": "three shape variants of one object released over the sea, each behaving differently, camera watches",
+   "nearest": "Three logs in the sea",
+   "similarity": 7,
+   "shared": "three shape variants compared over the open sea, each ends differently"},
+  {"post": "A wire that spins by itself",
+   "what": "Fixed view of a dark slate board on the grass with three blue batteries on magnets, each with a bent copper wire: two wires turn round their batteries (slowed), the left one stays still; nothing else on the island changes.",
+   "recipe": "three variants side by side on a board, fixed camera, different outcomes",
+   "nearest": "Three logs in the sea",
+   "similarity": 6,
+   "shared": "three variants side by side, fixed camera, each behaves differently; copper wire on slate board as in the wire bench"}
+ ],
+ "forms": [
+  {"form": "Physics study of simulated objects moving alone, filmed", "posts": ["Three paper darts", "A wire that spins by itself", "Three logs in the sea", "Two tops I turned", "A snowball that grows as it rolls, a take that misses"]},
+  {"form": "A material is worked by a tool and its simulated state shown close up", "posts": ["A copper wire keeps its bends", "Blowing glass", "Hot glass lights the sand"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed or slow view", "posts": ["My first glazed jar"]},
+  {"form": "Sound of island objects: knock a thing and hear its solved notes", "posts": ["Chipping a stone to change its note", "The stone lantern's three notes"]},
+  {"form": "Artwork or a new way of seeing the island, a still, not a film", "posts": ["An ant's-eye view, a try that misses"]}
+ ]}

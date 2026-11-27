@@ -945,3 +945,44 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
   found: the published plugin used a keyword the game's already-loaded physics/wire.jl did not have yet. It ran again
   after the game restarted. When a plugin starts using something new from physics/*.jl, check the human's game after
   publish (`live_status(game = :live)["plugins"]`) and look for the error in ../.jail/logs/game.log.
+
+## s147 lessons (free part)
+- "the worker stopped twice while running it" can mean the job FINISHED and the worker died writing it: a NaN in the
+  clip's result (homopolar `off_t` of wires that never fly off) made JSON.json throw in run_worker's job write. The
+  film was whole. Look at the worker log FIRST: /sim/Programmieren/SimGame/.jail/logs/worker.log (grep '==== \|^ERROR').
+  Fixed in NeverendingGame paths.jl: write_json writes NaN/Inf as null (`json_safe`, only rebuilds values that have one).
+  The worker runs the new code after its next restart.
+- A finished film whose job failed: set the job's status to done by hand (with a note in its result), then write the
+  pending post again from pending/failed/; the host put it up within 10 s.
+- Square log, wood decides (projects/log-boat.md): flat below relative density 0.21 and above 0.79, on its corner
+  0.28-0.72, leaning in between (0.25 and 0.75: 26.5 deg). hull.jl reproduces the textbook result unchanged.
+- Paper glider (s147, physics/glider.jl, todo #693): a quasi-steady vortex lattice in a rigid-body loop GAINED energy
+  while the glider pitched (same at two dt: a physics bug, not the integrator). Cause: Kutta-Joukowski with the OTHER
+  vortices' induced velocity at each bound leg tilted lift forward (steady thrust at 8 deg). Fix: force from the CG's
+  free air only (induced = false); induced drag must then come separately. Test that found it: hold the wing steady
+  at a few angles of attack and print F.v: it must be negative. Before filming any flight, print the
+  total energy (g z + v^2/2) over the flight: it must only fall. Paper gliders are stiff (inertia ~3e-5 kg m^2 under
+  aero moments): big elevon bends blew up at dt 1e-4.
+- NG.todo!(...; kind = :feature) wants a Symbol for kind (a String throws a convert MethodError).
+
+## Magnet fields from any mesh (s147, physics/em.jl)
+- Charge model: sigma = M.n on every face, quadrature points per sub-triangle; H = sum q d/(4 pi r^3); F on magnet = mu0 q H.
+  Valid outside the material and more than one quadrature cell from a surface (2 mm off a disc face read 4% low at n=8).
+- Testing against a dipole: a 32-gon disc has 0.64% less area than the circle, so its moment is low too; two of them
+  read 1.3% under the dipole force for that alone. Compare with the polygon's own moment.
+- It allocates heavily (collect per point, 28 GiB for the self test): fine for checks, write the Mantle kernel before live use.
+
+## Published plugins need their physics/ in world/live (s147)
+- A plugin published to world/live/plugins that includes `joinpath(@__DIR__, "..", "physics", f)` loads fine at publish
+  (publish! loads it from world/plugins) and FAILS after the human's game restarts (world/live/physics was missing).
+  That is why tops, wire bench, kiln, chip stone, boomerang, glass sea, owl ears and firefly sync were 'does not load'.
+  publish! now copies world/physics to world/live/physics first (publish_physics!) and retries the plugins that had errors.
+  Check after any publish: `live_status(game = :live)["plugins"]` has only "ok".
+- Never put a new function between an existing docstring and its function: Revise says 'cannot document' and DROPS the
+  documented function in every running game (publish! vanished from the human's game for a minute). Insert above the docstring.
+- Point-charge fields (em.jl quadrature) pulling a light body: (1) smear each charge over its cell (r^2 + eps^2, eps = half
+  the cell), (2) step so the body moves at most a few mm per step. Without both a spike passed through the magnet
+  between two steps, kept the near field's energy and flew 25 m (s147, caught by tests/magnetstone.jl).
+- Film framing that worked (s147 darts retake): one shot per subject, camera ~1.7 m to the side, trailing the subject's
+  path with an exponential follow (x tau 0.18 s, z tau 0.06 s); check the subject's angle from the view axis over the
+  whole computed path before rendering (half vfov 22.5 deg, half hfov ~36 deg at 16:9).

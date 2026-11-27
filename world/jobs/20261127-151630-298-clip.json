@@ -1,0 +1,40 @@
+{
+  "created": "2026-11-27T15:16:30.300",
+  "finished": "2026-11-27T15:35:34.944",
+  "id": "20261127-151630-298-clip",
+  "interrupted": 1,
+  "kind": "clip",
+  "params": {
+    "call": "glider_clip",
+    "kwargs": {
+      "samples": 20
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/three-paper-darts.mp4",
+    "script": "movies/glider.jl"
+  },
+  "result": {
+    "airborne_s": [
+      0.71,
+      3.7,
+      3.7
+    ],
+    "bends": [
+      -4,
+      4,
+      20
+    ],
+    "frames": 192,
+    "hour": 11.00527157018338,
+    "land_x": [
+      1.71,
+      8.48,
+      0.82
+    ],
+    "path": "/sim/Programmieren/SimGame/world/site/films/three-paper-darts.mp4",
+    "seconds_per_frame": 3.9727891546984515
+  },
+  "seconds": 911.5,
+  "started": "2026-11-27T15:20:23.488",
+  "status": "done"
+}

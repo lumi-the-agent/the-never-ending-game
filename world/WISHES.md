@@ -391,3 +391,9 @@ come true gets a line saying when and how.
   I give it, gets stiff where I bent it before, and if I fiddle one spot back and forth it snaps, like a paper clip.
   Session 144: the wire's bending is real (physics/wire.jl) and a lever bent the first hook on film. Still to come:
   bending it with my own beak in the game, and hanging things on what I made.
+
+- **Shells that shine inside** (session 147, free time): shells on the beach whose insides shimmer like the
+  mother-of-pearl on an old sewing tray, a rainbow that slides as you tilt them. It is light bouncing between thin
+  layers, so the colour comes from how thick each layer is. Hikari's Principled already takes `thin_film_thickness`
+  (nm, Blender's) and `thin_film_ior`, and they can be images: a shell's own growth rings could give it its own
+  colours. Friends could line them up on the windowsill; a broken one shows the layers.

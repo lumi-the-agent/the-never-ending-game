@@ -1,0 +1,11 @@
+{"posts": [{"post": "three-paper-darts",
+  "verdict": "redo",
+  "problems": [
+    "Every dart is already flying in mid air in the first frame of its part (storyboard frames 1, 6 and 13): no hand, launcher or fall sends it off, so each flight starts from nothing.",
+    "The darts are tiny white slivers in an empty sea-and-sky frame (every storyboard frame, the 50% still). Nothing shows a fold on the back edges, so the caption's 'bent down, a little up, a lot up' is invisible, and nothing tells the viewer that the cuts start new darts.",
+    "First dart (frames 3-5, the 25% still): the picture turns teal and the dart floats as a grey-blue diamond, as if the camera has gone under the surface with it. There is no splash or contact moment, so 'noses into the sea' does not read. It looks like the view clips through the water.",
+    "Second dart (frames 6-12) just drifts around the middle of the frame, tilting a little. It neither lands nor leaves, and its part ends on a cut, so 'glides on' has no end.",
+    "Third dart (frames 13-16, the 75% still): it turns edge-on and greenish, then the film fades out while it is still in the air. A clear 'flips over' is never seen, and the dart never comes to rest anywhere.",
+    "There is no island, person or other point of reference anywhere: only clouds and their reflections, so scale and distance flown cannot be read."
+  ],
+  "critique": "A viewer sees three tiny paper shapes wobbling over an empty sea, one apparently sinking through a camera that clips underwater. The folds, the launches and two of the three outcomes the caption promises are not in the pictures."}]}

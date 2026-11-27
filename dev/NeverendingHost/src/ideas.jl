@@ -82,7 +82,7 @@ function critic_prompt(jp::JailPaths, n::Int, round::Int, pitched, rounds, earli
                          isempty(i["goal"]) ? " Goal: none given." : " Goal: " * i["goal"],
                          isempty(i["toward"]) ? " Toward the big goal: nothing said." : " Toward the big goal: " * i["toward"]), pitched)
     println(io)
-    println(io, big_goal_lines(jp; whose = character_name(jp) * "'s"), "\n")
+    println(io, big_goal_lines(jp; whose = character_name(jp) * "'s", own = false), "\n")
     if !isempty(rounds)
         println(io, "## Earlier rounds, and what the critic said")
         for (r, rd) in enumerate(rounds), i in rd["ideas"]

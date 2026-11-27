@@ -1,14 +1,38 @@
 {"goals": [
-  {
-    "title": "Lift the boulder off the cave with a crane your friends run",
-    "pitch": "Build a crane your friends run like a hamster wheel and lift the boulder that blocks the cave.",
-    "play": "A boulder far too heavy for anyone sits in the mouth of the cliff cave. You build a crane from wood and rope, a big wheel on an axle and a rope over pulleys, and the friends are its engine: each runs the wheel towards the food you hang in front of it (fish for Pinchy, berries for Truffle), a heavy friend turns it harder, a fed one stops, and every pulley you add makes the load lighter to pull but slower to come up. The boulder rises a hand's width at a time, the frame creaks and bends under it, and when a friend stops the load runs back and spins the wheel backwards unless you built a ratchet. You learn the numbers by feel: which friends together, how many pulleys, how thick a beam. Behind the cave are heavier things: the boat to lower into the bay, the bell to raise into its frame, each needing a bigger crane or a cleverer one.",
-    "moment": "The boulder is a metre up when Truffle spots a beetle and hops out; the boulder drops, the wheel whips backwards with Pinchy still sprinting inside it, and Pinchy shoots out of the wheel into the sand.",
-    "road": [
-      "a stone on a rope over one, two and four pulleys, raised by a hand crank: the pull and the speed follow from the pulleys (rigid bodies and rope in PrintSim), filmed",
-      "the treadwheel: a friend runs it towards its food, by its own weight; fed, it stops; the load runs back and spins the wheel, or a ratchet holds it (film)",
-      "the boulder at the cave: the crane's beams bend under the load, pulleys and friends chosen in Jump in",
-      "the cave opens; the next loads (the boat, the bell) ask for bigger cranes"
-    ]
-  }
+ {"title": "Sparks from stones",
+  "pitch": "Lumi finds a magnet stone on the beach and green rock in the cliff, and from them builds electricity by hand: copper smelted and drawn into wire, a coil wound turn by turn, a battery from two metals in brine, and whatever you put together pulls, spins, buzzes or burns by the real fields it makes, nothing scripted.",
+  "play": "Tinkering that never runs out: gather, smelt, draw, wind, connect, switch on, and the island's one field solver decides what happens. More turns pull harder, thin wire glows and melts, a magnet the wrong way round kicks the rotor backwards, a nail by the stone flies to it. Every build is different because the player chooses the parts, their materials and where they sit, and builds nobody planned work too (a compass from a needle, a coil that throws a nail, a wire that spins on a cell). Then the parts drive what was made before: the potter's wheel, the log boat's paddle, the paper glider's launcher.",
+  "moment": "The first motor wound from beach copper, put together by Lumi's beak part by part, coughs, stalls, then whirs and pushes the log boat out across the bay, or a misbuilt one wrenches itself off the bench and the friends scatter.",
+  "road": [
+   "A magnet stone with a real field: carry it and every iron thing on the island (nails, the anchor chain) feels it by distance and pose, and jumps to it",
+   "One materials table on the island (copper, iron, magnet stone, wood, brine): conductivity, permeability, magnetisation, density, melting point, read by every system",
+   "Copper from green rock: smelt it in the kiln and draw it through a stone die into wire that keeps every bend (wire.jl)",
+   "A circuit from what touches what: two metals in brine make a cell, current flows through whatever wire connects them, thin wire heats and melts",
+   "A coil wound by turning a spindle with the beak: its field from its own turns lifts nails, it is an electromagnet",
+   "Coil, magnet stone, axle and brushes fitted by hand: the push on every bit of wire turns real bodies, and it spins, buzzes or stalls by how it was built",
+   "The motor drives the wheel, the paddle and the launcher; turned backwards by the treadwheel it lights a lamp (induction from the same fields)"
+  ]},
+ {"title": "Every wing is answered by its sky",
+  "pitch": "Lumi can't fly, so it builds wings from cane and paper, and every island in the archipelago has its own sky (a gusty cliff, a long calm reach, a thermal over black rock): each crash shows on the replay where the air beat the wing, and the player chooses how to answer: a splint, a thicker spar, more camber folded in, a shorter span, the ballast stone moved.",
+  "play": "Build, jump, crash, read the replay, choose a trade, jump again. No fix is free (a splint is weight, camber is drag, a short span sinks), and no wing flies every sky, so the shelf fills with wings, each named by its crashes, and the player picks one for the day's wind or builds a new one. The friends ride along and each weighs what it weighs, so a wing for Pinchy is not a wing for Truffle.",
+  "moment": "The slow-motion replay of a soft tip curling up in the thermal a second before the dive, then the same wing, splinted where it broke, riding that thermal over the black rock with Pinchy holding on.",
+  "road": [
+   "The paper dart that flies by its folds (physics/glider.jl), with induced drag, thrown by Lumi",
+   "A cane and paper wing whose spars bend under the air load, fed back through the vortex lattice of the bent shape (checked against a cantilever)",
+   "Lumi jumps off the dune with it and the spar breaks where the stress beat the cane; the replay shows where",
+   "The player's answers: splint, thicker spar, fold, trim, ballast, each changing mass, stiffness and shape",
+   "Three skies with their own wind fields; the wing shelf",
+   "A friend as a passenger, its mass on the wing"
+  ]},
+ {"title": "Toys the friends wear out",
+  "pitch": "The friends ask Lumi for toys (a top that beats Truffle's, a boat that carries Pinchy, a kite for the cliff wind) and Lumi builds each one from real materials, part by part; then the friends really play with them, by physics, until they chip, bend, sink or snap, and come back asking for a better one.",
+  "play": "Read what a friend wants, choose materials and shape, build it at the bench, hand it over and watch them play: the toy's life is the test. A friend that plays rough breaks toys at their weak spot, so the next one is built tougher, lighter or stranger, and each friend's playroom fills with the history of what Lumi made them.",
+  "moment": "Truffle's tenth top, turned from oak with a copper tip after nine split or wobbled, wins the spinning ring against Cumulus's, and the whole island cheers on the board.",
+  "road": [
+   "A friend asks, and plays with a top from the tops board until it falls",
+   "Toys wear: chips, bends and cracks stay on them",
+   "A boat for Pinchy from the log boat's hull code; it floats or sinks by its own shape",
+   "A spinning ring where two friends' tops fight by contact physics",
+   "A playroom shelf per friend with every toy they wore out"
+  ]}
 ]}

@@ -48,7 +48,10 @@ For each idea of this round:
   simulated), 4 a simple
   simulation of one effect, 7 a simulation that holds up wherever you look
   and that more can be built on, 10 an engineered system that works like the
-  real thing.
+  real thing for any setup and combination of materials. A rig made for one
+  case (one axis or one setup, one material's numbers written in, shapes
+  typed in, a number fitted to land on the wanted result) is at most 5,
+  however exact its law.
 - `toward` (0-10): how much closer it brings {{NAME}}'s big goal (above):
   0 nothing to do with it, 3 it only shares a theme or a place, 6 it builds
   a part of it or finds out something it needs, 8 a part a player will use

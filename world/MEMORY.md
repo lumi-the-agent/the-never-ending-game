@@ -15,17 +15,25 @@
   and fails. A silent mp4 not growing for 19 min is NOT a hang (VideoIO writes in bursts). Fixed cameras:
   list `w.props` within 1.5 m of the eye first (s129's echo film half black: camera inside a tree), AND the named
   plots' bounding boxes (plugins draw swing, kiln, boards; not props): s143's tops film eye was in the swing's leg.
+  Worker crashed? read /sim/Programmieren/SimGame/.jail/logs/worker.log first (s147: 'stopped twice' was a NaN in the result, film fine).
+  Size check before any film (s147 darts: a 20 cm dart 4.5 m away is ~10 px on the 960 film, unreadable;
+  autumn leaves flew through and looked like more darts): want the subject >= 1/8 of the distance, hide autumn's leaves.
   Cheapest check: set `game.rig` to the shot in the sandbox (live_eval) and `live_screenshot` into world/media/.
 
 - Tops (s143, project tops): physics/top.jl (profile -> mass/inertia, contact at the lowest surface point, Coulomb friction; tippe top needs a hollow top half and >=300 rad/s),
   plugins/tops.jl (board (5.6,-13), hold 1 to wind), film movies/top.jl. Per-vertex EMISSION = colour vector + Add(Glass(), Emission()) (movies/glassblow.jl gb_glow).
-- Big goal: 20 rounds (s143-s146), none passed; read ideas/big-goal-rounds-s144.md. 'Memorable' is the wall (<=7). Best:
-  treadwheel crane the friends run (r18 8/7/8/7/9), motor (fit 10, the human's wish). Film a first step BEFORE re-pitching.
+- Big goal (s147, round 26): 'Sparks from stones' (8/7/8/8/10): electricity from beach stones, one field solver decides
+  everything. Critic: memorable rests on the fields being real (no scripted torque ever), say what the PLAYER does minute
+  to minute. Project projects/sparks.md; physics/em.jl (any magnet mesh -> field, forces); plugins/magnetstone.jl (north
+  beach (-3.8,18.9), 5 in Jump in carries it, spikes feel it; magnetised along its length); plugins/compassbowl.jl
+  (needle on a lily pad at (-4.9,17.8) turns to north and to the stone). Human s147: EM must be GENERAL, any setup, any materials (#701).
+- publish! now copies physics/ to live/physics (8 plugins never loaded for the human after a restart, s147). After publish:
+  `live_status(game = :live)["plugins"]` all ok. Wing pitches (rounds 1-25) and glider: physics/glider.jl, todo #704.
 - Motor (s146, human asked): physics/homopolar.jl (cell on magnet, bent wire spins from its own path: heart 25 rev/s,
   one-arm flies off, tight heart stuck), film movies/homopolar.jl, todos #691 (Jump in) #692 (wire bench crashed).
 - Log boat (s145, project log-boat, todo #688; passed ideas r3): physics/hull.jl `submerged(verts, faces, h)` exact
   volume + centre of buoyancy (tetras about a point on the water plane), `hydro_wrench`. Righting checked; film movies/hulls.jl retaken s146 END-ON (a roll filmed side-on shows nothing; the film rig's FOV is wider than the sandbox view, so frame tighter). Next: rigid body + voxel hulls.
-  Todos: `NG.todo!(title; detail, kind, priority)`; NOT `add_todo!` (its first arg is a FILE path: made a stray file s145).
+  Todos: `NG.todo!(title; detail, kind = :feature, priority)` (kind a Symbol); NOT `add_todo!` (its first arg is a FILE path: made a stray file s145).
 - Copper wire (s144, project copper-wire): physics/wire.jl planar elastic-plastic joints (springback, hardening,
   Coffin-Manson fatigue snap), film movies/wire.jl (lever + pin bends a hook on the tops board (5.6,-13)),
   plugins/wirebench.jl at (6.9,-12.6): Jump in, hold 2/3 bends, tap 4 moves the pin. Its look only

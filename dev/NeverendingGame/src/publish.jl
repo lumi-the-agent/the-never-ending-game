@@ -40,6 +40,28 @@ reload_waits(::Val{:live}, g::Game, name::AbstractString) = plays(g, name)
 reload_waits(::Val{:sandbox}, g::Game, name::AbstractString) = false
 
 """
+    publish_physics!(src, dst) -> copied
+
+The physics the plugins include (`joinpath(@__DIR__, "..", "physics", ...)`) goes along with them: a published
+plugin lives in `world/live/plugins`, so after the human's game restarts it looks in `world/live/physics`. Without
+this copy every such plugin failed there after a restart (s147: tops, wire bench, kiln, chip stone, boomerang,
+glass sea, owl ears, firefly sync).
+"""
+function publish_physics!(src::AbstractString, dst::AbstractString)
+    copied = String[]
+    isdir(src) || return copied
+    for (root, _, files) in walkdir(src), f in files
+        from = joinpath(root, f)
+        to = joinpath(dst, relpath(from, src))
+        isfile(to) && read(to) == read(from) && continue
+        mkpath(dirname(to))
+        cp(from, to; force = true)
+        push!(copied, relpath(from, src))
+    end
+    return copied
+end
+
+"""
     publish!(game, why) -> (; published, removed, waiting, refused)
 
 Swap the changed plugins of `world/plugins` into the human's game (see the
@@ -47,6 +69,12 @@ top of this file). Call it in the world after the engine edits (`revise`).
 """
 function publish!(g::Game, why::AbstractString)
     src = working_plugins(g.paths)
+    copied = publish_physics!(joinpath(dirname(src), "physics"), joinpath(dirname(g.paths.plugins), "physics"))
+    if !isempty(copied)                   # plugins that failed for want of these files get another try
+        for (name, p) in collect(g.plugins)
+            isempty(p.error) || reload_waits(Val(g.paths.instance), g, name) || load!(g, name * ".jl")
+        end
+    end
     published, removed, waiting = String[], String[], String[]
     refused = Dict{String,String}()
     for f in plugin_files(src)

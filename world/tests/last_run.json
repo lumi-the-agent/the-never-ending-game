@@ -2,11 +2,11 @@
   "results": [
     {
       "error": "",
-      "file": "zz_play141.jl",
-      "name": "s141 play: walk in Jump in, knock, look",
+      "file": "magnetstone.jl",
+      "name": "magnet stone picks up spikes",
       "passed": true,
-      "seconds": 16.9
+      "seconds": 5.7
     }
   ],
-  "time": "2026-11-27T09:55:02.088"
+  "time": "2026-11-27T16:00:23.138"
 }

@@ -78,5 +78,16 @@ function atomic_write(path::AbstractString, content::AbstractString)
     return path
 end
 
-write_json(path::AbstractString, x) = atomic_write(path, JSON.json(x; pretty = true))
+# NaN and Inf have no JSON form and JSON.json throws on them. Written as null instead (s147: a NaN in a film's
+# result threw in the worker's job write, after a finished 10 minute render, and took the worker down twice).
+# Only a value that has one is rebuilt, so every other write is exactly what it was.
+nonfinite(x::AbstractFloat) = !isfinite(x)
+nonfinite(x::Union{AbstractDict,AbstractVector,Tuple,NamedTuple}) = any(nonfinite, values(x))
+nonfinite(x) = false
+json_safe(x::AbstractFloat) = isfinite(x) ? x : nothing
+json_safe(x::AbstractDict) = nonfinite(x) ? Dict(k => json_safe(v) for (k, v) in x) : x
+json_safe(x::Union{AbstractVector,Tuple,NamedTuple}) = nonfinite(x) ? map(json_safe, x) : x
+json_safe(x) = x
+
+write_json(path::AbstractString, x) = atomic_write(path, JSON.json(json_safe(x); pretty = true))
 read_json(path::AbstractString) = JSON.parsefile(path; dicttype = Dict{String,Any})

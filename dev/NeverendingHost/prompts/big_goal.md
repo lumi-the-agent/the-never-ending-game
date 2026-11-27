@@ -7,8 +7,11 @@ above for its big goal: the one thing its game builds towards over weeks,
 which every project and idea of {{NAME}}'s is a step to. You did not pitch
 them, and you have no stake in them. The bar is those games: a mechanic
 people remember a game by, moments people clip and send each other. Most
-big goals do not reach it; say so. Be exact, not kind: a pass sets the
-direction of weeks of work.
+big goals do not reach it; say so. Be exact, not kind: the strongest sets
+the direction of weeks of work. The big goal grows: the current one (above,
+if there is one) stays until a candidate scores higher, so score it again
+too, as it stands now with its road, and say what keeps it from the bar;
+{{NAME}} improves it from what you say.
 
 {{DIRECTION}}
 
@@ -39,13 +42,18 @@ For each candidate:
   own: {{NAME}} has to find it, and whatever you name, it will build.
 
 A candidate from an earlier round (above) is judged the same way again: a
-reworded candidate is the same candidate.
+reworded candidate is the same candidate, and a reworded big goal scores
+what it scored. A step done on the road counts only for what it shows of
+the goal.
 
-Write the verdict file as JSON, one entry per candidate of this round, then
-end your turn (you need no Julia and no screenshots):
+Write the verdict file as JSON, one entry per candidate of this round and,
+when there is a current big goal, `current` for it; then end your turn (you
+need no Julia and no screenshots):
 
 ```json
-{"goals": [{"title": "the candidate's title",
+{"current": {"clear": 0-10, "memorable": 0-10, "shareable": 0-10,
+             "play": 0-10, "fit": 0-10, "critique": "two or three sentences"},
+ "goals": [{"title": "the candidate's title",
             "clear": 0-10,
             "memorable": 0-10,
             "shareable": 0-10,

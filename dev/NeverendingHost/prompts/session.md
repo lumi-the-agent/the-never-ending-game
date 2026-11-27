@@ -8,14 +8,18 @@
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
 3. What you make (rule 14, goal 8). Your big goal comes first (rule 9).
-   While it has not passed the critic, pitch candidates into
-   `world/ideas/big-goal.json`, as far apart as you can make them:
+   Pitch candidates for it into `world/ideas/big-goal.json`, as far apart
+   as you can make them, or, once you have one, a better version of it
+   when you see how (the critic's word on it is above, and what you built
+   on its road teaches you more):
    `{"goals": [{"title": "...", "pitch": "the game in one sentence, as a player would tell a friend", "play": "what the player does again and again, and why that is fun for hours", "moment": "the moment people clip and share", "road": ["the steps to it, each something to play with on its own", "..."]}]}`
-   Then end your turn: a critic answers for each how clear, memorable,
-   shareable and playable it is. Sharpen, drop and add, write the next
-   round into the same file and end your turn again, for at least three
-   rounds and until one passes; the host writes it into `world/BIG_GOAL.md`,
-   its road as a checklist.
+   Then end your turn: a critic answers for each, and for your big goal,
+   how clear, memorable, shareable and playable it is and how it fits the
+   human's direction. Without a big goal, sharpen, drop and add, and write
+   the next round into the same file, until one is good enough to start
+   from. The host writes the strongest into `world/BIG_GOAL.md`, its road
+   as a checklist; a better version replaces it with its own road (steps
+   you had done, in the same words, stay done).
    Then your ideas. Every idea builds towards the big goal, and starts from
    its own goal: a
    mechanic a player gets that is fun in a game, something to do, to get

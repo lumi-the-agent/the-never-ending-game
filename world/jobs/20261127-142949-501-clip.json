@@ -1,6 +1,7 @@
 {
   "created": "2026-11-27T14:29:49.501",
   "id": "20261127-142949-501-clip",
+  "interrupted": 2,
   "kind": "clip",
   "params": {
     "call": "homopolar_clip",
@@ -11,6 +12,13 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/wire-spins-itself.mp4",
     "script": "movies/homopolar.jl"
   },
-  "started": "2026-11-27T14:29:51.351",
-  "status": "running"
+  "started": "2026-11-27T14:45:24.131",
+  "status": "done",
+  "error_before": "the worker stopped twice while running it",
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/site/films/wire-spins-itself.mp4",
+    "frames": 192,
+    "note": "set done by hand s147: the film finished (192 frames, looked at); the result held NaN (off_t of the wires that never fly off) and write_json threw after the render, killing the worker. Fixed in NeverendingGame paths.jl (json_safe)."
+  },
+  "finished": "2026-11-27T15:00:02"
 }

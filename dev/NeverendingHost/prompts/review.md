@@ -53,7 +53,10 @@ back to it, 10 they cannot stop. It moves the author's joy.
 `real`: how real it is, from the code: 0 a scripted scene or only a look
 (the picture moves, nothing is simulated), 4 a simple simulation of one
 effect, 7 a simulation that holds up wherever you look and that more can be
-built on, 10 an engineered system that works like the real thing. With
+built on, 10 an engineered system that works like the real thing for any
+setup and combination of materials. A rig made for one case (one axis or one
+setup, one material's numbers written in, shapes typed in, a number fitted
+to land on the wanted result) is at most 5, however exact its law. With
 `surprise` it moves the author's boredom.
 
 Write the verdict file as JSON, then end your turn:
