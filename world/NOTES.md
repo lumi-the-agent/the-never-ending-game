@@ -695,3 +695,25 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   nursery: `NG.pose_parts!(..., t)`) MUST use the same clock as the herd (`NG.anim_time(w)`), or hats and paint
   posed on the raw time no longer match the body they sit on. Switched and published. choir.jl: `ids[rand(1:n)]` with
   n = 0 (all singers asleep after a time jump) killed it; guarded.
+
+## Thin ice / plate fracture on a grid (s133, physics/ice.jl)
+- A patch of plate that stands for a larger sheet needs its rim HELD (v = 0 on the 2-cell rim) and no loads near it:
+  a free rim made a kink under any skater near it (47 MPa at 4 m/s) and shattered the whole sea.
+- A local "stress > strength" test on a grid cascades: a crack tip is a singularity, the next cell always fails.
+  Average the stress over the intact cells within ~2 cells first (nonlocal damage, Pijaudier-Cabot & Bazant 1987),
+  and read no curvature across a cracked neighbour (a crack is a free edge).
+- Cracked cells must keep some stiffness (15 %): at 2 % broken ice is slush, the load sinks it and the ring round it
+  breaks, for ever. Test with several moving loads for 25 s, not one walk: one skater at 1.8 m/s hid all of this.
+- live_reload() reloads only plugin files that changed: after editing a physics/ file a plugin includes, `touch` the plugin.
+  The plugin re-includes physics/ice.jl when its mtime changed (ICE_MTIME), so struct changes need a fresh freeze.
+- Explicit plate step: substep dt < dx² / (4 sqrt(D/m)); with the water's added mass ρ_w ℓ, 96x96 at dx 0.2 m is
+  15-50 substeps per frame, 1-1.8 ms on CPU threads.
+
+## Captions vs what the picture shows (s133, three redos in one session)
+- The critic judges a film from a storyboard of ~16 stills: a rhythm faster than ~1 s (the firefly beat, 0.55 s) aliases
+  and cannot be seen. Show change over time with something a still can read (lit area, a moving subject, a slow build).
+- Write the caption AFTER looking at the contact sheet, and only claim what a stranger can point at in it. A cause
+  ('when I flash my lantern') needs the cause in frame. If it is not there, post it as a take that misses, honestly.
+- Glowing things must differ from the stars (warm colour, halo, light falling on the grass), and night means no sun shadows.
+- s133 skipping stones take 1: the stone renders as a big pale square high in the sky (wrong scale or a stray plot?), Lumi stands on the hill behind a plank, rings are tiny and far. Posted as a crop (552x297 at (150,90)); full take media/s133-skipping-stones-take1-full.mp4. Take 2: low camera at the waterline beside the stone's path, check the stone plot first.
+

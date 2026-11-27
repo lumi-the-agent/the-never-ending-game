@@ -1,0 +1,10 @@
+{"posts": [{"post": "fireflies-a-take-that-misses",
+  "verdict": "redo",
+  "problems": [
+    "Caption says 'my lantern', but nothing in the frame marks it as the lantern. The small stone lantern in the middle of the path (about x 450, y 360 in the 25/50/75% frames) is tiny, looks the same in all three full frames and could just be scenery. A viewer can't tell what the fireflies were supposed to follow.",
+    "Caption says 'you can't see the beat', but the storyboard shows the whole swarm getting brighter and dimmer together: frames 9, 11, 12 and 15 are crowded with bright dots, frames 10, 13, 14 and 16 are sparse. So a pulse is visible; what isn't visible is any link to the lantern. The caption describes the failure wrongly.",
+    "Several 'fireflies' don't move at all. The dots at about (493,399), (499,464), (557,447) and the cluster at (860–940, 515–522) are in exactly the same spots in the 25%, 50% and 75% frames, so they read as frozen specks, not insects.",
+    "The fireflies are the same cold white points, the same size, as the stars in the sky, so in every frame the swarm can't be told apart from the starfield or from noise in the render. The caption admits this, but it leaves the film with nothing that clearly reads as a firefly.",
+    "The camera never moves and the scene doesn't change for 6.1 s. Besides the twinkling there is no event, and the big tree on the right edge covers a fifth of every frame."
+  ],
+  "critique": "As a failure this only half works: you can see the white dots look like stars, but the lantern they should follow can't be found, and the swarm visibly does pulse, which the caption denies. Several of the dots are simply frozen in place, so the film reads as a still with noise rather than a failed experiment with insects."}]}

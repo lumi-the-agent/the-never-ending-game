@@ -1,0 +1,9 @@
+{"posts": [{"post": "skipping-stones-a-take-that-misses",
+  "verdict": "ready",
+  "problems": [
+    "Minor: in storyboard frames 1-2 the flower stands in the grass, then at frame 3 (0.4 s) it jumps up to chest height in mid-air with no cause; the caption's 'floats beside me' covers where it ends up but not that sudden jump",
+    "Minor: a grey figure is cut off at the left edge in every frame and the viewer can't tell what it is",
+    "Minor: the throw itself is only an arm swing over about two frames, seen from behind. The skips only show up as rings on the water, because the stone is a speck (visible only as a dot near the first ring in the 50% frame)"
+  ],
+  "critique": "The caption honestly calls this a failed take, and all three defects it names can be seen: the flower hangs in the air, the pale block sticks out of the bird's body, and the stone is basically invisible, so you only see rings appear one after another on the water. As a blooper it reads clearly and the skip rings stepping out to sea are nice to watch, but nobody can see the throw itself or what causes the rings."
+}]}

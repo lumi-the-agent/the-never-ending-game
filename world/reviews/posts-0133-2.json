@@ -1,0 +1,23 @@
+{"posts": [
+ {"post": "the-island-as-a-woodcut",
+  "verdict": "redo",
+  "problems": [
+   "Caption says 'the land left white', but the land is not white: horizontal hatch streaks run across it in the lower left, the bottom middle and along the right shore, so land and sea run into each other at the bottom of the picture.",
+   "At the left edge, halfway down, a large solid black blob cuts into the picture. It reads as a broken fill, not as a carved shape.",
+   "The camera looks across the island at a low angle, so the sea only shows at the top and the sides. The picture does not read as an island.",
+   "Most objects can't be identified. The trees and houses are soft white lumps with black shadow pools, and the land is covered in dozens of small black rings (around the middle and right) that look like bubbles or noise.",
+   "Caption word 'woodcut': the marks are thin, scratchy, filter-like lines with no bold carved black-and-white masses, so the picture looks more like an edge-detected render than a woodcut."
+  ],
+  "critique": "The paper-and-ink look is appealing at first glance, but the land is not left white as the caption says, a black blob breaks the left edge, and the island and the things on it are hard to make out."},
+ {"post": "fireflies-learn-my-beat",
+  "verdict": "redo",
+  "problems": [
+   "Caption says 'Night', but the scene is lit like late afternoon. The path and grass are sunlit, the trees cast long hard shadows across the path in every frame, and the sky is a bright dusk blue.",
+   "The fireflies are plain white dots of the same size and colour as the stars, so in the sky and near the horizon you can't tell fireflies from stars (at-25, at-75).",
+   "Title 'learn my beat' promises learning and a beat from someone. Nothing in the film shows a beat, a person or any change over time. Storyboard frames 9–11 have a burst of many lights and the other frames look scattered, so there is no visible learning or growing synchrony from start to end.",
+   "The lit-together moments are weak. Even in the busiest frames (storyboard 9–11, at-75) the dots look like a denser scatter, not a shared flash, and the white dots never glow on or light up the scene around them.",
+   "The camera and scene are completely static for 7.5 s, and the two dark cloud blobs hang in the same place in every frame.",
+   "Storyboard frames 13–16: a yellow fence plank appears tilted or falling by the path to the right of the lantern, with no visible cause."
+  ],
+  "critique": "This is not a night scene: it is a sunlit village with white specks that look like the stars. The synchronous flashing the caption describes, and the learning the title promises, can't really be seen."}
+]}

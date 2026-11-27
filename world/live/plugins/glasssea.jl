@@ -8,6 +8,22 @@
 const NG = NeverendingGame
 isdefined(Main, :GLASSSEA) || Core.eval(Main, :(const GLASSSEA = Dict{Symbol,Any}()))
 const GS = Main.GLASSSEA
+# Thin ice (s133): the ice is a floating plate that bends under the skaters, floods where it sinks below its freeboard
+# and cracks where the bending stress passes its strength (physics/ice.jl). Thin where a current runs under it.
+isdefined(Main, :IcePlate) || Core.eval(Main, :(module IcePlate end))
+let f = joinpath(@__DIR__, "..", "physics", "ice.jl")       # (re)load the solver when physics/ice.jl changed
+    if !isdefined(Main.IcePlate, :ICE_MTIME) || Main.IcePlate.ICE_MTIME[] != mtime(f)
+        Base.include(Main.IcePlate, f)
+        isdefined(Main.IcePlate, :ICE_MTIME) || Core.eval(Main.IcePlate, :(const ICE_MTIME = Ref(0.0)))
+        Main.IcePlate.ICE_MTIME[] = mtime(f)
+    end
+end
+const IP = Main.IcePlate
+const SEA_PLATE_N = 96          # cells a side
+const SEA_PLATE_DX = 0.2f0      # m (19.2 m of plate round the skating ground)
+const SEA_BODY_KG = 30f0        # a friend's weight on the ice
+const SEA_CRACKS = 2500         # crack slots
+const SEA_WET = 600             # flooded-cell slots
 
 const SEA_FROM_H = 7.0
 const SEA_TO_H = 7.5
@@ -44,7 +60,7 @@ gs_find(sc, name) = (i = findfirst(p -> haskey(p.attributes, :name) && p.attribu
 
 function gs_setup!(game)
     sc = game.stage.scene
-    for name in (:glasssea_ice, :glasssea_fish, :glasssea_frost, :glasssea_marks)   # plot names are unique: drop a crashed run's plots
+    for name in (:glasssea_ice, :glasssea_fish, :glasssea_frost, :glasssea_marks, :glasssea_cracks, :glasssea_wet)   # plot names are unique: drop a crashed run's plots
         p = gs_find(sc, name)
         p === nothing || delete!(sc, p)
     end
@@ -63,7 +79,88 @@ function gs_setup!(game)
     GS[:marks] = meshscatter!(sc, fill(Point3f(0, 0, -50), SEA_MARKS); marker = disc, markersize = Vec3f(0.16, 0.025, 0.003),
                               rotation = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_MARKS), color = RGBf(SEA_FROST_RGB...),
                               material = frost, name = :glasssea_marks, visible = false)
+    # cracks: thin white cuts in the ice, along the direction each cell broke
+    GS[:cracks] = meshscatter!(sc, fill(Point3f(0, 0, -50), SEA_CRACKS); marker = Rect3f(Vec3f(-0.5, -0.5, 0), Vec3f(1)),
+                               markersize = Vec3f(SEA_PLATE_DX * 1.25f0, 0.018, 0.004), rotation = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_CRACKS),
+                               color = RGBf(0.97, 0.99, 1.0), material = NG.Hikari.Diffuse(color = (0.97, 0.99, 1.0)),
+                               name = :glasssea_cracks, visible = false)
+    # water pushed up through the ice where it sank below its freeboard: dark wet patches
+    GS[:wet] = meshscatter!(sc, fill(Point3f(0, 0, -50), SEA_WET); marker = disc, markersize = Vec3f(SEA_PLATE_DX * 0.75f0, SEA_PLATE_DX * 0.75f0, 0.003),
+                            color = RGBf(0.10, 0.22, 0.32), material = NG.Hikari.Glass(color = (0.55, 0.75, 0.85), ior = 1.33, roughness = 0.02),
+                            name = :glasssea_wet, visible = false)
     GS[:scene] = sc
+end
+
+"The plate round `c`: 6.5 cm of ice (5.7 over deep water), a 2 cm vein where a current runs under it (through a point 2-4 m from the middle,
+in a random direction), a little thinner over deep water."
+function gs_plate!(is, c)
+    a = Float32(pi * rand()); off = 2f0 + 2f0 * rand(Float32); b = a + Float32(pi) / 2
+    px, py = c[1] + off * cos(b), c[2] + off * sin(b)
+    GS[:vein] = (Point2f(px, py), a)
+    thick(x, y) = begin
+        d = abs(-(x - px) * sin(a) + (y - py) * cos(a))
+        deep = clamp((SEA_ICE - NG.terrain_height(is, x, y)) / 4f0, 0f0, 1f0)
+        0.02f0 + (0.045f0 - 0.008f0 * deep) * clamp((d - 0.5f0) / 1.5f0, 0f0, 1f0)
+    end
+    h0 = SEA_PLATE_N * SEA_PLATE_DX / 2
+    GS[:plate] = IP.ice_sheet(SEA_PLATE_N, SEA_PLATE_DX, c[1] - h0, c[2] - h0, thick; seed = rand(1:10^6))
+    GS[:ncrack] = 0
+    GS[:cracks].visible = true; GS[:wet].visible = true
+    Makie.update!(GS[:cracks]; arg1 = fill(Point3f(0, 0, -50), SEA_CRACKS))
+    Makie.update!(GS[:wet]; arg1 = fill(Point3f(0, 0, -50), SEA_WET))
+end
+
+"Load the plate with everyone on it, step it, draw new cracks and the water; a skater on a fresh crack yelps."
+function gs_plate_step!(sys::GlassSea, w, dt)
+    get(GS, :thinice, true) || return
+    pl = get(GS, :plate, nothing)
+    pl === nothing && return
+    pl.q .= 0f0
+    on = Tuple{Any,Point2f}[]
+    for c in w.creatures
+        (haskey(sys.sk, c.id) || c.controlled) || continue
+        gs_on_ice(w.island, c.pos[1], c.pos[2]) || continue
+        IP.ice_load!(pl, c.pos[1], c.pos[2], SEA_BODY_KG; r = 0.15f0) > 0 && push!(on, (c, Point2f(c.pos[1], c.pos[2])))
+    end
+    t0 = time_ns()
+    IP.ice_step!(pl, dt)
+    GS[:plate_ms] = (time_ns() - t0) / 1e6
+    cr = pl.crack; n = pl.n
+    total = Int(sum(cr))
+    if total > GS[:ncrack]
+        pos = fill(Point3f(0, 0, -50), SEA_CRACKS); rot = fill(Makie.Quaternionf(0, 0, 0, 1), SEA_CRACKS)
+        k = 0
+        for j in 1:n, i in 1:n
+            cr[i, j] > 0 || continue
+            k += 1; k > SEA_CRACKS && break
+            pos[k] = Point3f(pl.x0 + (i - 1) * pl.dx, pl.y0 + (j - 1) * pl.dx, SEA_ICE + 0.004f0)
+            rot[k] = Makie.qrotation(Vec3f(0, 0, 1), pl.angle[i, j])
+        end
+        Makie.update!(GS[:cracks]; arg1 = pos, rotation = rot)
+        fresh = total - GS[:ncrack]
+        GS[:ncrack] = total
+        for (c, p) in on                      # whoever stands where it broke hears it go
+            i = clamp(round(Int, (p[1] - pl.x0) / pl.dx) + 1, 1, n); j = clamp(round(Int, (p[2] - pl.y0) / pl.dx) + 1, 1, n)
+            any(cr[clamp(i + di, 1, n), clamp(j + dj, 1, n)] > 0 for di in -3:3, dj in -3:3) || continue
+            s = get(sys.sk, c.id, nothing)
+            if s !== nothing && w.t - s.said_at > 2
+                s.said_at = w.t
+                NG.say!(w, c, rand(("Crack!", "The ice!", "Eek, it's giving!", "Don't move!")))
+            end
+        end
+        NG.emit!(w, :ice_crack; cells = fresh, total)
+    end
+    wet = IP.ice_flooded(pl)
+    wp = fill(Point3f(0, 0, -50), SEA_WET); k = 0
+    for j in 1:n, i in 1:n
+        wet[i, j] || continue
+        k += 1; k > SEA_WET && break
+        wp[k] = Point3f(pl.x0 + (i - 1) * pl.dx, pl.y0 + (j - 1) * pl.dx, SEA_ICE + 0.002f0)
+    end
+    if k > 0 || get(GS, :wetshown, false)
+        Makie.update!(GS[:wet]; arg1 = wp)
+        GS[:wetshown] = k > 0
+    end
 end
 
 "Frost in patches round `c`: cluster seeds, flakes round each, kept where the water under the ice is shallow (white
@@ -82,6 +179,7 @@ function gs_frost!(is, c)
             length(fp) >= SEA_FROST && break
             x, y = sx + 1.1 * randn(), sy + 1.1 * randn()
             gs_on_ice(is, x, y) || continue
+            gs_thin(x, y) && continue              # the thin vein stays black ice
             big = 0.05f0 + 0.3f0 * rand(Float32)^2 * Float32(exp(-(SEA_ICE - NG.terrain_height(is, x, y)) / 2.5))
             push!(fp, Point3f(x, y, SEA_ICE + 0.002f0 + 0.002f0 * rand(Float32)))
             push!(fs, Vec3f(big, big * (0.35f0 + 0.5f0 * rand(Float32)), 0.004f0))
@@ -135,6 +233,15 @@ end
 
 gs_on_ice(is, x, y) = NG.terrain_height(is, x, y) < SEA_ICE
 
+"Thinner than 3.5 cm here (the plate's vein): frost does not form on it, so it shows as a dark band in the white."
+function gs_thin(x, y)
+    pl = get(GS, :plate, nothing)
+    pl === nothing && return false
+    i = round(Int, (x - pl.x0) / pl.dx) + 1; j = round(Int, (y - pl.y0) / pl.dx) + 1
+    (1 <= i <= pl.n && 1 <= j <= pl.n) || return false
+    return pl.h[i, j] < 0.035f0
+end
+
 function gs_freeze!(sys::GlassSea, game; forced = false)
     w = game.world
     is = w.island
@@ -170,7 +277,9 @@ function gs_freeze!(sys::GlassSea, game; forced = false)
     end
     Makie.update!(GS[:fish]; arg1 = fp, rotation = fr)
     GS[:fish].visible = true
-    gs_frost!(is, sys.center)
+    GS[:plate] = nothing
+    get(GS, :thinice, true) && gs_plate!(is, sys.center)    # Main.GLASSSEA[:thinice] = false turns the plate off
+    gs_frost!(is, sys.center)                               # after the plate: no frost on the thin vein
     me = findfirst(c -> c.name == "Lumi", w.creatures)
     me === nothing || NG.say!(w, w.creatures[me], "The sea froze! Everyone out!")
     NG.emit!(w, :glasssea_freeze; skaters = length(sys.sk))
@@ -189,6 +298,8 @@ function gs_thaw!(sys::GlassSea, game)
     sys.on = false
     GS[:ice].visible = false; GS[:fish].visible = false
     GS[:frost].visible = false; GS[:marks].visible = false
+    GS[:cracks].visible = false; GS[:wet].visible = false
+    GS[:plate] = nothing
     NG.emit!(w, :glasssea_thaw)
 end
 
@@ -276,7 +387,7 @@ end
 
 function NG.step!(sys::GlassSea, game, dt)
     game.stage === nothing && return
-    (get(GS, :scene, nothing) === game.stage.scene && haskey(GS, :marks)) || gs_setup!(game)
+    (get(GS, :scene, nothing) === game.stage.scene && haskey(GS, :cracks)) || gs_setup!(game)
     w = game.world
     GS[:sys] = sys
     hour = 24 * NG.daytime(w)
@@ -300,6 +411,7 @@ function NG.step!(sys::GlassSea, game, dt)
         gs_skate!(sys, w, c, s, dt)
     end
     gs_bumps!(sys, w)
+    gs_plate_step!(sys, w, dt)
     gs_marks_draw!()
 end
 

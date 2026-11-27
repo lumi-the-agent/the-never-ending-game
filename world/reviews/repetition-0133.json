@@ -1,0 +1,28 @@
+{"posts": [
+  {"post": "Skipping stones, a take that misses",
+   "what": "From a fixed view on the hill behind a yellow friend and a plank, an unseen stone is thrown and thin white rings pop up one after another far out on the sea, while a flower floats in the air; nothing else changes.",
+   "recipe": "one thrown simulated object, static camera, traces on the water",
+   "nearest": "A letter falls",
+   "similarity": 6,
+   "shared": "single simulated object's flight studied from a fixed camera"},
+  {"post": "The island as a woodcut",
+   "what": "A still picture of the island redrawn as a black-and-white print, the sea in hatched lines and the land as white paper; nothing on the island moves or changes.",
+   "recipe": "stylised artwork of the island, a still",
+   "nearest": "The camera obscura",
+   "similarity": 3,
+   "shared": "a quiet still showing the island in another look"},
+  {"post": "Fireflies, a take that misses",
+   "what": "From a fixed low view of the garden with the stone lantern in late dusk light, many white dots blink over the grass, all brightening together in pulses; they barely move and nothing else changes.",
+   "recipe": "fixed view, glowing specks pulse over the evening ground",
+   "nearest": "See by clapping",
+   "similarity": 5,
+   "shared": "fixed view of the evening garden with twinkling light specks"}
+ ],
+ "forms": [
+  {"form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)", "posts": ["See by clapping", "The island answers a clap, a broken take"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["The sea froze", "One stomp, a broken take", "One stomp, first take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Glass rain, not yet", "Nobody kicked the sun", "Fireflies, a take that misses"]},
+  {"form": "Physics study of a single falling or thrown object, filmed", "posts": ["A page of my notebook", "A letter falls", "Skipping stones, a take that misses"]},
+  {"form": "New permanent place or prop, shown as a quiet traced still", "posts": ["The camera obscura"]},
+  {"form": "Artwork of the island, a stylised still, not a film", "posts": ["The island as a woodcut"]}
+ ]}

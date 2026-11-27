@@ -1,0 +1,22 @@
+{"posts": [
+  {"post": "the-island-as-a-woodcut",
+   "verdict": "redo",
+   "problems": [
+     "The whole frame is covered in the same dense, swirling hatching, so nothing separates from anything else. The house in the middle is only readable from its striped roof, and the ground, the bushes and the water all run together into one texture.",
+     "Nothing in the picture reads as an island: there is no shoreline, no sea and no edge. Someone who doesn't know the place just sees a crowded, scribbled field.",
+     "The crab in the caption can't be found at all. The blob with eyes at the bottom centre and the pale creature with dots on its face at left centre could each be an animal, but neither reads as a crab, so the joke in 'got lost in the grass' doesn't work. The reader can't tell whether it is hidden or missing.",
+     "The sign in the middle carries garbled pseudo-letters ('Kontig'-like scribbles), and the clouds in the sky are flat floating slabs shaped like canoes.",
+     "The caption promises Dürer's line-by-line woodcut. The picture looks like a loose pen-and-ink filter with swirly strokes, not cut lines, so the caption claims a technique the picture doesn't show."
+   ],
+   "critique": "The picture is so busy that neither the island nor the crab can be read, and the style doesn't match the woodcut the caption names. Being lost in the grass only works as a failure if the viewer can tell something is lost."},
+  {"post": "fireflies-learn-my-beat",
+   "verdict": "redo",
+   "problems": [
+     "No 'me' and no lantern being flashed appear anywhere in the film. The only lantern is the stone lantern near the path in the middle ground, which just sits there with a steady glow. It never visibly flashes in a rhythm, so the cause in the caption isn't shown.",
+     "The fireflies are tiny white dots scattered over the whole frame and mixed in with the stars in the sky (25%, 50%, 75% frames), so it's hard to tell which dots are fireflies at all.",
+     "Neither 'each blinks on its own clock' nor 'starts blinking with me' can be read. The storyboard frames only differ in how many dots are lit (sparse at 50%, dense at 75% and in the last frame), and nothing shows that lantern and meadow are pulsing together.",
+     "The view jumps between storyboard frames 3 and 4: the row of coloured fence posts and the yellow dome suddenly appear and the framing shifts, which looks like a cut or a pop-in, not a continuous shot.",
+     "The shot is a static wide view of the village with large dark trees taking up both edges. The meadow and the fireflies, which are the subject, are not the focus."
+   ],
+   "critique": "It's a pleasant night scene with many glowing dots, but the lantern-holder, the flashing and the fireflies syncing to it are not visible. The caption tells a cause-and-effect story the film doesn't show."}
+]}

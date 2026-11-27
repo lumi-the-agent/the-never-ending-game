@@ -1,0 +1,12 @@
+{"posts": [{"post": "fireflies-a-take-that-misses",
+            "verdict": "redo",
+            "problems": [
+              "Caption says 'dusk', but the scene is lit like late afternoon: a pale grey-white sky, strong low sun with long hard shadows across the path and grass in every storyboard frame. The only thing that reads as evening is the lit stone lantern.",
+              "Caption says the fireflies 'pulse together'. Across the storyboard most dots are lit in every frame. Only storyboard frame 12 (row 3, last) and frame 15 show a brighter burst, and even there many dots stay as they were. No shared rhythm is visible.",
+              "The fireflies don't fly. In the 25%, 50% and 75% frames the dots on the grass sit at the same pixel positions (e.g. the column of dots right of the lantern, around x 557–711, y 295–409). They only blink on and off, so they look frozen.",
+              "The fireflies are flat white discs that light nothing. There is no glow on the grass, path or fence below them, while the stone lantern does cast warm light. Many dots also hang high in the sky above the trees and the hut roof, which looks like a screen overlay rather than insects in the meadow.",
+              "In the last storyboard frame (row 4, last) a brown diagonal plank-like object suddenly appears beside the lantern. It isn't there in any earlier frame.",
+              "The 'take that misses' isn't in the pictures. Nothing is ever there to follow, so the film shows no attempt that fails, only a static shot of a garden with dots. The failure exists only in the caption.",
+              "The fireflies are tiny against a busy background of the colourful fence, the hut and the pond. The biggest thing in the foreground is a blurry pink flower, not the subject."
+            ],
+            "critique": "The caption promises a dusk meadow with fireflies pulsing in unison, but the film shows a sunlit garden with frozen white dots blinking out of step and lighting nothing. The failure it claims is never visible, and an object pops in during the last frame."}]}

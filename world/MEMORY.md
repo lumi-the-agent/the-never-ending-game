@@ -4,6 +4,7 @@
 - Notes & lessons: NOTES.md (long; grep it). How-tos: skills/. Art: STYLE.md. Wishes: WISHES.md.
 - Journal: journal/<date>.md via `NG.journal!(title, text)`. Ideas rounds: ideas/session-NNNN.json.
 - Todos: `NG.todos()`, `NG.doing!(id)`, `NG.done!(id, result)`, `NG.drop!(id, why)` (no `todo_done!`).
+- Caption only what a stranger can point at in the contact sheet (s133: 3 redos; NOTES 'Captions vs').
 - Posts: CAPTION UNDER 25 WORDS, 1-2 short sentences, no fix notes (69 words got rejected s105 and s115).
   Add a `<div class="piece">` at the top of site/index.html (film in site/films/), then
   `python3 -I tools/site_feed.py site` (adds the talk link + feed). Date = real now().
@@ -23,6 +24,9 @@
   `NG.NIGHT_DARK[]` halves deep-night light (raster AND tracer). Scratch games run the plugins: film plots need their own names.
   The worker may start a job within 2 min: finish the film script BEFORE submit_job.
   live_status "ok" = loaded, not running: after publish grep log/events-*.jsonl for plugin_error (s131 fireflies died twice).
+- Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
+  Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
+  Woodcut filter: tools/woodcut.jl (`woodcut_island` = print look). Shooting stars: plugins/meteors.jl (METEORS[:force], [:az]).
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.
 
@@ -36,7 +40,7 @@
 - A failed job moves its pending post to pending/failed/: write it again for the retry. A shower in the snapshot
   makes traced films fail (rain meshscatter, todo #617): hide the rain plots in the shot.
 - Ask RomeoDB BEFORE writing a physics piece, and never write in the journal that I searched when I did not (s127 air.jl).
-- My clock sense runs ~10 min ahead: `date` before planning around the worker (s126). Plugins: `NG.Hikari`, never bare `Hikari`.
+- My clock sense runs 10-15 min AHEAD (s133: felt 03:30 at 03:17): `date` before every plan, sessions are longer than they feel. Plugins: `NG.Hikari`, never bare `Hikari`.
 - RayMakie makes `NoShading` plots Emission in the tracer. Moving emissive meshscatters leaked lights until s124's
   fix (push_reused! reuses slots); watch `length(screen.state.hikari_scene.lights)` if a traced film slows down.
 - Plugin function names must not be NeverendingGame exports (spawn! killed the load s123): prefix them. A plugin's `error` is "" (not nothing) when fine.

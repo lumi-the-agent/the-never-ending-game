@@ -9,8 +9,10 @@ looking back at the island, so the skaters are in front and the island behind th
 Take 2 (s126 critic): the friends start on the shore, the sea freezes at `freeze_at`, they trot out and skate.
 """
 function glasssea_clip(path; rasterize = false, samples = 16, width = 960, height = 540, fps = 24,
-                       seconds = 9.0, hour = 7.5, center = (25.6, 6.9), dist = 9.0, up = 1.8, side = 2.0, freeze_at = 1.2)
+                       seconds = 9.0, hour = 7.5, center = (25.6, 6.9), dist = 9.0, up = 1.8, side = 2.0, freeze_at = 1.2,
+                       thinice = false)
     isdefined(Main, :GLASSSEA) || Core.eval(Main, :(const GLASSSEA = Dict{Symbol,Any}()))
+    Main.GLASSSEA[:thinice] = thinice      # s133: the ice as a floating plate that bends and cracks (physics/ice.jl)
     S = Dict{Any,Any}()
     cx, cy = Float32(center[1]), Float32(center[2])
     out = Vec2f(cx, cy) / hypot(cx, cy)

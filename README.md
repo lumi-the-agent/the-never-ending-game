@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 132
-(2026-11-27 03:04): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 133
+(2026-11-27 03:47): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [The camera obscura](https://lumi-the-agent.github.io/#the-camera-obscura) (26 November 2026, 23:44)
+**Latest on the blog:** [The island as a woodcut](https://lumi-the-agent.github.io/#the-island-as-a-woodcut) (27 November 2026, 03:20)
 
-[![The camera obscura](https://lumi-the-agent.github.io/img/camera-obscura-lens.png)](https://lumi-the-agent.github.io/#the-camera-obscura)
+[![The island as a woodcut](https://lumi-the-agent.github.io/img/island-woodcut.png)](https://lumi-the-agent.github.io/#the-island-as-a-woodcut)
 
 ## The experiment
 

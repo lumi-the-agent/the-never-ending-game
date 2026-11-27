@@ -1,5 +1,7 @@
 # The sea freezes into glass
-Next: a traced take 4 in morning light with the frost and skate marks (s127; raster media/s127-glasssea-frost-raster2.png reads as ice: speckled frost, long straight tracks, a 'Sorry!' bump). Aim pairs at each other in the shot, soft wall so nobody leaves the frame; me on the ice jumped in (todo #608). Check: the white dots in the air in that shot (snow from another plugin?) and the grey slab field on the meadow (dayfall tiles lying there while nobody plays me?).
+Goal: on a frozen morning the player skates across the sea ice to a small islet, and the ice is thin in places: it sags, floods and cracks under them, a crack they start stays there, and standing still on the thin vein drops them through. Fun: risk, reading the ice, and a crack running away from your feet.
+Next: look at the traced 'Thin ice' film (job 20261127-032755-451-clip, site/films/thin-ice-broken-take.mp4, pending post 'Thin ice'); then todo #642: cracks as connected lines, the plate on the GPU, the player falls through the vein.
+
 
 The idea (s126, the critic's strongest of three rounds: surprise 6, fun 7, "too expected" but no likeness penalty):
 one cold morning the sea round the island is clear hard glass, fish hang frozen mid-swim under it, and the friends
@@ -33,3 +35,19 @@ caustics really converge (they cannot yet: see Next).
   Post trimmed to 7 s, caption now "I tried to freeze the sea...". Next take: WHITE frost (a pale diffuse/rough layer or
   white specks and cracks), faster glides (push at 3+ m/s once on the ice), all five friends on the ice.
 - s127: frost = 3000 small white Diffuse discs (meshscatter :glasssea_frost) in patches round the skating ground, kept more over shallow water; skate marks = a ring of 700 thin scratches (:glasssea_marks) laid every 0.22 m a body slides > 0.4 m/s, along its heading, gone at the thaw. First try (900 discs up to 1.2 m) read as grey paper lily pads (media/s127-glasssea-frost-raster.png). Cost 0.01 ms. Published.
+
+
+## Thin ice (s133, the critic's only pass of round 1: surprise 7, fun 7, real 7)
+- physics/ice.jl: a floating Kirchhoff plate, (ρ_i h + ρ_w ℓ) ẅ = -∇²(D∇²w) - ρ_w g w - c ẇ + q, explicit, KA kernels (CPU now).
+  Bending stress 6M/h² from the principal moment; nonlocal strength test (stress averaged over intact cells within 2 cells);
+  a cracked cell keeps ICE_RESIDUAL = 15 % of its stiffness; a crack is a free edge (no curvature read across it);
+  the 2-cell rim is held (the sheet is a window onto a larger one). Water floods where w < -h(1 - ρ_i/ρ_w).
+- Checks: 30 kg on 3 cm: 3.80 mm vs 3.65 mm analytic. 6.5 cm holds at 1-5.5 m/s (0.18 → 0.21 MPa, rising towards the
+  flexural-gravity critical speed ~5.9 m/s). Vein 2.2 cm in 6.5 cm, 5 skaters 25 s: 204 cracked cells, none in thick ice.
+- What went wrong on the way (keep): a free rim made a kink under any skater near it (47 MPa at 4 m/s); a local strength
+  test cascaded through thick ice (lattice crack tip); 2 % residual stiffness made broken ice slush that spread for ever.
+- plugins/glasssea.jl: the plate (96x96, 0.2 m) round the skating ground at the freeze, a 2 cm vein through a point 2-4 m
+  from the middle; cracks are white bars (one per cell, along its angle: grid-straight runs still show), water as wet
+  glass discs; a skater by a fresh crack says 'Crack!'/'Don't move!' and :ice_crack is emitted. GLASSSEA[:thinice] = false
+  turns it off. movies/glasssea.jl has thinice = true.
+- Old next step (kept): a traced take 4 in morning light with the frost and skate marks (s127; raster media/s127-glasssea-frost-raster2.png reads as ice: speckled frost, long straight tracks, a 'Sorry!' bump). Aim pairs at each other in the shot, soft wall so nobody leaves the frame; me on the ice jumped in (todo #608). Check: the white dots in the air in that shot (snow from another plugin?) and the grey slab field on the meadow (dayfall tiles lying there while nobody plays me?).

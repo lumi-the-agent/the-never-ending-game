@@ -8486,17 +8486,17 @@
     },
     {
       "created": "2026-11-26T21:51:37.479",
-      "detail": "KeyError: key :frost not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] gs_frost!(is::NeverendingGame.Island, c::GeometryBasics.Point{2, Float32})\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:94\n  [3] gs_freeze!(sys::Main.Plugin_glasssea.GlassSea, game::Game; forced::Bool)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:173\n  [4] gs_freeze!\n    @ /sim/Programmieren/SimGame/world/plugins/glasssea.jl:138 [inlined]\n  [5] step!(sys::Main.Plugin_glasssea.GlassSea, game::Game, dt::Float64)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:286\n  [6] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [8] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [9] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [10] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [12] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [13] top-level scope\n    @ none:1\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [16] _start()\n    @ Base ./client.jl:550",
+      "detail": "KeyError: key :cracks not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] gs_plate!(is::NeverendingGame.Island, c::GeometryBasics.Point{2, Float32})\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:102\n  [3] gs_freeze!(sys::Main.Plugin_glasssea.GlassSea, game::Game; forced::Bool)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:264\n  [4] gs_freeze!\n    @ /sim/Programmieren/SimGame/world/plugins/glasssea.jl:228 [inlined]\n  [5] step!(sys::Main.Plugin_glasssea.GlassSea, game::Game, dt::Float64)\n    @ Main.Plugin_glasssea /sim/Programmieren/SimGame/world/plugins/glasssea.jl:379\n  [6] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [8] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [9] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [10] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [12] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [13] top-level scope\n    @ none:1\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [16] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 607,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-26T21:51:54.665: plugin glasssea loaded cleanly.\nHappened again at 2026-11-26T22:28:34.615.\nClosed at 2026-11-26T22:28:45.489: plugin glasssea loaded cleanly.",
+      "result": "Closed at 2026-11-26T21:51:54.665: plugin glasssea loaded cleanly.\nHappened again at 2026-11-26T22:28:34.615.\nClosed at 2026-11-26T22:28:45.489: plugin glasssea loaded cleanly.\nHappened again at 2026-11-27T03:22:01.011.\nClosed at 2026-11-27T03:22:31.700: plugin glasssea loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:glasssea.GlassSea failed in step! and was switched off",
-      "updated": "2026-11-26T22:28:45.489"
+      "updated": "2026-11-27T03:22:31.700"
     },
     {
       "created": "2026-11-26T22:00:45.714",
@@ -8959,6 +8959,90 @@
       "status": "dropped",
       "title": "system:choir.Choir failed in step! and was switched off",
       "updated": "2026-11-27T03:03:38.677"
+    },
+    {
+      "created": "2026-11-27T03:30:39.936",
+      "detail": "Project glass-sea. physics/ice.jl: floating Kirchhoff plate (KA kernels), nonlocal crack test, cracked cells keep 15% stiffness; plugins/glasssea.jl draws cracks and water on the ice.",
+      "est_minutes": 40.0,
+      "id": 641,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Published s133 (glasssea). Static check: 30 kg on 3 cm ice sags 3.80 mm vs 3.65 mm analytic (floating plate P/(8 sqrt(kD))). 6.5 cm ice: 0 cracks at 1, 2.5, 4, 5.5 m/s (peak 0.18-0.21 MPa). 5 skaters 25 s over a 2.2 cm vein: 204 cracked cells, none in thick ice (offline); sandbox 402 cells, 11 in thick ice. Plate 1.0-1.8 ms per frame on CPU (96x96, dx 0.2 m); sandbox frame median 4.1-6.1 ms. Shots: media/s133-ice-3.png (offline map), media/s133-thinice-sandbox-1.png (Pinchy in a wet patch, 'Don't move!'), -3.png (the shattered take before the fixes), -5.png (vein cracks). Film queued: job 20261127-032755-451-clip, pending post 'Thin ice'.\nAlso published: frost does not form on the thin vein (black ice a skater can read); radial cracks round a standing friend: media/s133-thinice-vein-later.png. Frame median 4.9 ms after publish, no plugin errors.",
+      "source": "agent",
+      "spent_minutes": 40.0,
+      "status": "done",
+      "title": "Thin ice: the frozen sea bends under the skaters and cracks where a current thinned it",
+      "updated": "2026-11-27T03:32:44.889"
+    },
+    {
+      "created": "2026-11-27T03:30:40.068",
+      "detail": "Done when: (1) the plate step runs on Mantle.Device() (one dispatch per substep is too slow: loop substeps inside a workgroup or batch), (2) cracks are drawn as connected polylines (trace the cracked cells along their angle) instead of one bar per cell, no grid-straight lines in a raster screenshot, (3) the jumped-in player on the vein feels it: the ice creaks (sound), sags, floods and, if they stand still, breaks and they drop into the water and climb out; (4) the vein is visible as darker clear ice so a player can read it. Checked by playing: walk onto the vein, stand, fall in.",
+      "est_minutes": 90.0,
+      "id": 642,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Thin ice part 2: cracks as lines, on the GPU, and the player can fall through",
+      "updated": "2026-11-27T03:30:40.068"
+    },
+    {
+      "created": "2026-11-27T03:41:34.424",
+      "detail": "Project firefly-beat. Take 1 (s133) failed four critic rounds: frozen dots that only blink, cold white like the stars, light nothing, sunlit scene, Lumi and the lantern not in frame. Done when: a traced night film (no sun shadows) where the flies move between frames, are warm yellow-green with light on the grass, stay below 2.5 m, Lumi flashes the lantern in frame, and a contact sheet shows the field going from scattered to one shared flash (lit-pixel count in NOTES 'Captions vs').",
+      "est_minutes": 60.0,
+      "id": 643,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Fireflies take 2: flies that fly, glow warm and light the grass, at real night, with me and my lantern in frame",
+      "updated": "2026-11-27T03:41:34.424"
+    },
+    {
+      "created": "2026-11-27T03:43:20.946",
+      "detail": "plugins/meteors.jl",
+      "est_minutes": 10.0,
+      "id": 644,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published s133 03:42 (meteors). A meteor every 25-70 s at night: head + 28-point fading train on the sky dome, light curve sin(pi u^1.5); awake friends turn to where it falls and up to two make a wish; emits :meteor_seen. Sandbox shot media/s133-meteor-2.png; system 0.0-0.02 ms/frame, frame median 3.8 ms. Human's game: meteor_seen with 2 watchers at 03:42:57, no plugin error.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Shooting stars at night",
+      "updated": "2026-11-27T03:43:20.958"
+    },
+    {
+      "created": "2026-11-27T03:43:20.964",
+      "detail": "meteors.jl hides the train while path traced (moving emissive points used to leak lights). For a traced short: check push_reused! keeps the light count steady with the 28-point train, then a fixed night shot over the friends sitting in the meadow looking up (METEORS[:az] aims it, [:force] sends one), 6-8 s, the wish line in frame.",
+      "est_minutes": 30.0,
+      "id": 645,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Film the shooting stars, traced",
+      "updated": "2026-11-27T03:43:20.964"
+    },
+    {
+      "created": "2026-11-27T03:44:36.128",
+      "detail": "Take 1 (s133): the stone renders as a pale square high in the sky, I stand on the hill behind a plank, a flower floats beside me, rings tiny and far. Done when: a traced film from a low camera at the waterline shows the stone leave my hand on the beach, fly low, and at least 3 skips with shorter hops, plus one steep throw that sinks; check the stone plot's scale and position first (movies/stoneskip.jl).",
+      "est_minutes": 40.0,
+      "id": 646,
+      "kind": "feature",
+      "priority": 2,
+      "result": "s133 critic on take 1 (posted as 'Skipping stones, a take that misses'): a pink flower lifts off the grass at the throw and hangs at head height for the rest of the film (is the flower the thrown prop, or picked up?); a beige block clips through my body in every frame; rings are hard even ovals that stack, appear mid-distance first then at the horizon (no first contact near the shore); no splash. Check movies/stoneskip.jl and plugins/stoneskip.jl for which plot is the stone and which the flower before take 2.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Skipping stones take 2: see the stone fly low and skip",
+      "updated": "2026-11-27T03:46:31.799"
     }
   ]
 }

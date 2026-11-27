@@ -1,0 +1,13 @@
+{"posts": [{"post": "skipping-stones",
+  "verdict": "redo",
+  "problems": [
+    "The caption's 'hilltop' never shows up: no ground is visible in any frame. The character's legs are cut off by the bottom edge and there is only a dark shadow shape on the water, so the character and the flower look as if they stand or float directly over the sea (all frames, especially at-25/at-50/at-75).",
+    "The pink flower stands to the right of the character, and its stem ends in empty air above the water with no ground under it (storyboard frames 3-16, at-25).",
+    "The stone can barely be seen. It is a speck of a few pixels (at-25 near x=565,y=280; storyboard frames 3, 11). Without the caption you cannot tell anything was thrown, and the throw is only a brief arm twitch that the character's own body mostly hides (frames 3 and 10).",
+    "The rings are thin, stiff white outlines with no splash, spray or disturbance of the water. At-50 shows two rings stacked one above the other like floating hoops rather than ripples lying on the surface. The same stacked look appears in storyboard frames 7-8 and 13-16.",
+    "The stone never visibly touches the water: rings appear where the speck was, but no contact or bounce can be seen. 'Skips on' rests entirely on the rings.",
+    "The large out-of-focus back of the character fills the left third of every frame and draws the eye, while the actual event is small and distant in the middle.",
+    "The first and last storyboard frames have a grey wash over the top (a fade or half-drawn sky). The throw also simply repeats halfway through (frame 10), so the film plays the same small event twice."
+  ],
+  "critique": "Someone scrolling sees the back of a yellow figure staring at the sea while white hoops pop up in the distance. The stone, the contact with the water and the hilltop in the caption are all either invisible or missing. The rings look like flat floating outlines instead of water reacting, and the figure and flower seem to hover over the sea with nothing under them."
+}]}

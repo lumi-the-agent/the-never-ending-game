@@ -1,6 +1,7 @@
 # Fireflies that learn your beat
 Goal: at night the player flashes a lantern (F, jumped in) and teaches the meadow's fireflies a rhythm: on their beat and steady, the flies near them lock, their neighbours follow, and the whole field flashes as one wave the player can lead across the island (to the cottage, over the pond, to a sleeping friend). Fun: a living thing you can teach, a skill (keep the beat, drift it slowly to lead them), and a field-wide flash you made.
-Next: look at the traced film (job 20261127-015826-121-clip, site/films/fireflies-learn-my-beat.mp4, pending post fireflies-learn-my-beat; it was traced with the OLD 0.3 s glow, so the synced field stays lit half the time). Then the lead: flies drift toward a lantern that keeps their beat, so the player can walk the lit swarm somewhere; a beat meter in the hint (how many are with you); sound (a soft click per flash).
+Next: take 2 of the film. Take 1 (posted s133 03:19 as 'Fireflies learn my beat', sheet media/s133-fireflies-sheet.png): dusk-blue sky, not night; the flies are hundreds of white specks and I am a tiny figure in the middle distance, so the sync does not read in single frames. Take 2: deeper night (NIGHT_DARK), warm yellow-green glow with the new short pulse, camera close behind me with the lantern in frame, the field in front. Then the lead: flies drift toward a lantern that keeps their beat, so the player can walk the lit swarm somewhere; a beat meter in the hint (how many are with you); sound (a soft click per flash).
+Old next (s132): look at the traced film (job 20261127-015826-121-clip, site/films/fireflies-learn-my-beat.mp4, pending post fireflies-learn-my-beat; it was traced with the OLD 0.3 s glow, so the synced field stays lit half the time). 
 
 ## What it is (s131)
 - physics/fireflies.jl: each fly is a pulse-coupled oscillator (phase 0..1, own period 0.55 s ± 8%). A flash it sees
@@ -25,3 +26,16 @@ Next: look at the traced film (job 20261127-015826-121-clip, site/films/fireflie
   on beat: 0.20 -> 0.61 in 2 s -> 0.89 in 9 s. From (-4,7.5), 5.5 m off the swarm's centre: only 0.6 (far flies
   do not see the lantern): walking into the meadow is part of it.
 - Two silent switch-offs on the first day (see NOTES "plugin_error"): stale Swarm type after reload; KeyError by day.
+
+## Take 1 measured (s133)
+Bright pixels in the lower 60 % of the frame, 8 fps: they pulse every ~0.55 s (the lantern beat); peaks rise 1266 -> 2618
+and the troughs fall ~600 -> ~200 over the film, so the sync IS in it, but a storyboard of stills aliases the beat and the
+critic could not see it. Posted cut: site/films/fireflies-at-dusk.mp4 (0-6.1 s, ends on the strongest flash), title
+'Fireflies at dusk'. Take 2 must show it to the eye: night lighting (no sun shadows), warm yellow-green flies that
+light the grass (emissive, not white specks like the stars), the lantern and me in frame, and end on the shared flash.
+s133 critic, third look: the grass and path jump brighter on the big flashes (the glowing flies light the whole frame at
+once, so it reads as a lighting flicker, not insects); the dark cartoon clouds pull the eye more than the flies. Posted as
+'Fireflies, a take that misses'. Take 2: close shot of the meadow at real night, few hundred warm flies, glow that
+falls off within a metre, no clouds in frame.
+s133 last fix: the posted film is a crop onto the meadow (552x310 at (174,230) scaled up; the wide cut is media/s133-fireflies-at-dusk-wide.mp4). Lumi and the flashing lantern are NOT in take 1's frame: take 2 must put me and the lantern in the shot.
+s133 final critic: in take 1 the flies do NOT fly: the same dots sit at the same pixels at 25/50/75 % (they only blink), many hang high above the trees and roofs, they light nothing, and the scene is late sunlight, not dusk. Post now 'Fireflies, a take that misses' (5.5 s crop). Before take 2: check that the film's swarm moves (ff_step! positions in movies/fireflysync.jl), keep flies below ~2.5 m, and give each a warm emissive glow that lights the grass.
