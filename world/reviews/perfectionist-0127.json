@@ -1,129 +1,232 @@
 {
- "verdict": "needs_work",
- "summary": "The island is dense and charming from above, and the glass-sea film finally shows something only a path tracer gives you: a dark mirror sea with real reflections of the friends. But the live game is cluttered with leftovers from old experiments: more than fifty ring balls fill every sky, yesterday's ghost Lumi walks beside today's as an opaque double, and the follow camera ends up buried in flowers. The last eight posts include four failed or broken takes, and the newest film is a 48-byte file.",
- "scores": {
-  "lighting": {"score": 5, "why": "A warm late-morning sun with good shadows in the raster. The traced orbit still at 10:59 is still one sun under a sky. The glass-sea film's low sun on a mirror sea is the best light so far, but no point, area or glowing light was seen live. Noise in the live trace."},
-  "materials": {"score": 5, "why": "The glass sea is a real step: glossy dark water reflecting the tree and the crabs. The rest is still plastic: a pond of pale blue speckle in the trace, white stepping stones like untextured discs, the TV a brown box, and ring balls in plain matte colours."},
-  "world": {"score": 5, "why": "Rich meadow, pond, cottage, pines, pier, easel gallery. Spoilt by litter from old features: 50+ ring balls in every sky (more than at session 124), a yellow sand heap with black teeth in the middle of the meadow, snow in square tiles with a huge snowman ball during the race."},
-  "props": {"score": 6, "why": "Plenty of generated assets (mushrooms, cottage, easels with real paintings, fences, flowers), well grouped near the cottage. The eye-level view is dominated by flat white stepping stones."},
-  "creatures": {"score": 5, "why": "The pigs, sheep, crabs and Gloop look good close up. Lumi now has a feathery yellow bird body with presence, but yesterday's ghost of it is drawn opaque and full colour, so the player sees two Lumis. The crab's party hat still sits off its shell (down from 6)."},
-  "animation": {"score": 5, "why": "live_motion: Lumi's beak jumps 0.22 m in one frame at 6.5 m/s; Lumi's body, face and wing and Pinchy's body judder (40-52% unevenness); Sir Sniffsalot is frozen solid. The glass-sea films have one hard pop at 1.25 s where the whole sea swaps material."},
-  "fun": {"score": 6, "why": "Berry race works and the HUD is readable (score, time, where the berry is), but the test suite now fails it: rivals stay in :invite at the start. Jump-in has a huge list of keys (E X H G C P T B J U), which is a fun toybox, but none of them got new feedback this time."},
-  "wow": {"score": 3, "why": "Of the last 8 posts, 4 are failed or broken takes (two stomp takes, glass rain 'not yet', the paper letter that breaks). 'The sea froze' is the only new picture, and it is a dark sea people walk on. A stranger would share almost none of these (down from 4)."},
-  "camera": {"score": 4, "why": "The follow camera at 10:55 sat in a flowerbed facing nothing, then framed Lumi plus its ghost through a pine. The orbit and free views frame the island well but the sky is full of balls. The glass-sea film is a locked-off shot that ends with Lumi's body filling the lens."},
-  "ui": {"score": 5, "why": "Clean panel, but 'New on the island: My day falls over and sings' has been stale for several sessions. The message is cut mid-sentence ('it heaved the'), and the speech label on Sir Sniffsalot reads 'Feeling a bit FLACKY today' over a garbled glyph."},
-  "style": {"score": 5, "why": "The soft clay-toy look holds for creatures and plants, but leftovers break it: matte ring spheres, square snow tiles, a sand heap with black spikes, an opaque ghost double."},
-  "performance": {"score": 9, "why": "Frame median 4.2 ms, p95 7.5 ms, 30 fps, every system under 0.5 ms."}
- },
- "findings": [
-  {
-   "severity": "high",
-   "category": "creatures",
-   "title": "Yesterday's ghost Lumi is drawn as an opaque second Lumi",
-   "todo": null,
-   "what": "While the ghosts show runs (GHOSTS[:sys].on = true), a second fully yellow, opaque, feathered Lumi stands right behind or above the real one. From the follow camera it looks as if Lumi is doubled or stacked on itself; nobody would read it as a ghost.",
-   "where": "plugins/ghosts.jl (the Lumi ghost's material), follow camera",
-   "evidence": "reviews/p127/cam-follow-b.png, reviews/motion/p127/motion.png (two yellow birds in all 8 frames), tests/shots/berry-wad.png and s54t-berry-mid.png (a small yellow copy beside Lumi)",
-   "suggestion": "Ghosts should look unmistakably like ghosts: pale blue-white, see-through (transmission plus a faint emission in the trace), soft at the edges, a little float and flicker, fading in and out, never on top of the living one. A ghost Lumi that copies yesterday's moves next to today's could be a lovely shot, if it reads.",
-   "done_when": "live_motion's Lumi sheet during a ghost show shows one solid yellow Lumi and one clearly translucent pale ghost, at least 1.5 m apart."
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "reviews/p127/traced.png; the live_path_tracing toggle and screenshot took 4.5 min of wall time",
+      "what": "The live path-traced view at orbit distance is still visibly noisy after 40 s and sets the dashboard frame to multiple seconds; fine for stills, unusable as a live mode."
+    }
+  ],
+  "findings": [
+    {
+      "category": "creatures",
+      "done_when": "live_motion's Lumi sheet during a ghost show shows one solid yellow Lumi and one clearly translucent pale ghost, at least 1.5 m apart.",
+      "evidence": "reviews/p127/cam-follow-b.png, reviews/motion/p127/motion.png (two yellow birds in all 8 frames), tests/shots/berry-wad.png and s54t-berry-mid.png (a small yellow copy beside Lumi)",
+      "severity": "high",
+      "suggestion": "Ghosts should look unmistakably like ghosts: pale blue-white, see-through (transmission plus a faint emission in the trace), soft at the edges, a little float and flicker, fading in and out, never on top of the living one. A ghost Lumi that copies yesterday's moves next to today's could be a lovely shot, if it reads.",
+      "title": "Yesterday's ghost Lumi is drawn as an opaque second Lumi",
+      "todo": null,
+      "what": "While the ghosts show runs (GHOSTS[:sys].on = true), a second fully yellow, opaque, feathered Lumi stands right behind or above the real one. From the follow camera it looks as if Lumi is doubled or stacked on itself; nobody would read it as a ghost.",
+      "where": "plugins/ghosts.jl (the Lumi ghost's material), follow camera"
+    },
+    {
+      "category": "world",
+      "done_when": "Orbit and free-view screenshots show at most 3 ring balls inside the frame below the horizon line, and none in front of the island.",
+      "evidence": "reviews/p127/cam-orbit-b.png, cam-free-a.png, traced.png; media/progress/session-0127/overview.png next to session-0124/overview.png",
+      "severity": "high",
+      "suggestion": "Bring them down: drag below 30 m so they land in a satisfying bounce and roll, then turn into something (a berry, a pebble) or splash into the sea. If the ring stays, make it a thin far-out band that reads as a ring from the orbit view, not confetti in front of the camera.",
+      "title": "Ring balls fill every sky: more of them than at session 124",
+      "todo": 588,
+      "what": "Every camera mode (follow, orbit, free) and the traced still show 50+ matte blue, pink and grey balls hanging all over the sky and over the meadow, and they cast shadows on the sea. The 0127 overview has many more than the 0124 one. They make the island look broken.",
+      "where": "plugins/ring.jl"
+    },
+    {
+      "category": "wow",
+      "done_when": "Every mp4 in site/films is readable by ffprobe, and the paper post shows a page falling and landing whole, with no NaN break.",
+      "evidence": "ffprobe: Invalid data found when processing input; ls -l: 48 bytes",
+      "severity": "high",
+      "suggestion": "Only post a film once ffprobe reads it and it shows the thing working: one notebook page tumbling down in close-up in golden light, landing and rocking still, path traced with a sheen or thin paper material that lets the sun glow through it.",
+      "title": "Post finished films: the paper letter film is a 48-byte broken file",
+      "todo": 613,
+      "what": "site/films/paper-letter-1.mp4 is 48 bytes and ffmpeg says 'moov atom not found'. It is pending as a post ('A letter falls'). Four of the last eight posts are failed takes; the paper one is a failed take too ('my simulation broke').",
+      "where": "site/films/paper-letter-1.mp4, pending/paper-letter.json"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion lists no snapping, no juddering over 25% and no frozen creature.",
+      "evidence": "reviews/motion/p127/motion.png, motion-strip.png, creatures.png",
+      "severity": "high",
+      "suggestion": "Drive the beak from the same smoothed head transform as the face, spring-damp every part, and give an idle pig breathing and ear flicks.",
+      "title": "Lumi's beak snaps 0.22 m in a frame; Sir Sniffsalot frozen",
+      "todo": 553,
+      "what": "live_motion over 3 s: Lumi's beak jumps 0.22 m in one frame at 0.1 s and swings at 6.5 m/s. Lumi's body, face and left wing judder (40-46% uneven steps), and so does Pinchy's body (52%). Sir Sniffsalot does not move at all.",
+      "where": "Lumi's bird body (birdbody / engine bird.jl), Pinchy, Sir Sniffsalot"
+    },
+    {
+      "category": "camera",
+      "done_when": "Ten follow-camera screenshots, 3 s apart, each show the followed creature unblocked and at least 8% of the frame tall.",
+      "evidence": "reviews/p127/cam-follow-a.png, cam-follow-b.png",
+      "severity": "medium",
+      "suggestion": "Raise the follow camera above props within 2 m of the lens, clip or fade foliage between the lens and the subject, and keep the subject in the middle third.",
+      "title": "Follow camera buried in a flowerbed, looking at nothing",
+      "todo": 510,
+      "what": "Switching to Camera: follow at 10:55 gave a frame filled with knee-high flowers and a mushroom stalk, with no creature in it. A few seconds later Lumi was framed through a pine trunk and a bush.",
+      "where": "camera rig :follow"
+    },
+    {
+      "category": "materials",
+      "done_when": "A glass-sea film with no jump over 4x the typical change, where the frost and at least one scratch are visible in a frame at full resolution.",
+      "evidence": "reviews/motion/perfectionist-0127/glass-sea-3-steps.jpg (frames 3 to 4), glass-sea-3-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Freeze over time on screen: frost creeping out from the shore over a few seconds, roughness rising, then a low camera where a friend skates and its scratch catches the sun. That is the shot only a path tracer can make.",
+      "title": "Glass sea film: the sea swaps in one frame; no frost or scratches",
+      "todo": 561,
+      "what": "glass-sea-2 and glass-sea-3 both pop at 1.25 s: the teal sea switches to a dark mirror in one frame (0.05 change, 4x the typical). The frost and skate scratches the journal describes are not visible in the film. glass-sea-3 ends with Lumi's body filling the lens, then four seconds of an empty shot.",
+      "where": "site/films/glass-sea-2.mp4, glass-sea-3.mp4"
+    },
+    {
+      "category": "world",
+      "done_when": "A snow-day screenshot shows no straight tile edges in the snow, and the snowman is under 2 m tall and not in front of the camera during a race.",
+      "evidence": "tests/shots/berry-wad.png, s54t-berry-mid.png",
+      "severity": "medium",
+      "suggestion": "Snow that follows the terrain with soft drifts and rounded edges (a white sheen or subsurface in the trace), a snowman the size of a friend, and no snow event while a mini game runs.",
+      "title": "Snow day in square tiles; snowman ball covers half the race view",
+      "todo": null,
+      "what": "During the berry race the meadow was covered in a grid of square white tiles with grass poking through. A giant pale sphere (the snowman) with two red dots filled the top half of the view, and Truffle's 'Everything's gone grey!' was written over it.",
+      "where": "plugins/snowday.jl"
+    },
+    {
+      "category": "fun",
+      "done_when": "live_tests(\"race\") passes 10 of 10, three times in a row.",
+      "evidence": "live_tests(\"race\"): 9 of 10 pass; the failure is 'the critters did not give Lumi a head start: [:invite, :wait, :invite]'",
+      "severity": "medium",
+      "suggestion": "A mini game takes its racers out of every social event, and the rivals show a start: a crouch, a 3-2-1 and a burst off the line.",
+      "title": "Berry race rivals stand inviting instead of racing at the start",
+      "todo": 547,
+      "what": "live_tests('race'): the test 'start card names the rivals...' fails because the critters are in [:invite, :wait, :invite] 0.5 s into the race. Invitations still steal the racers.",
+      "where": "plugins/berry_race.jl, invitations"
+    }
+  ],
+  "process": "The author keeps opening new physics ideas (paper sheets in PrintSim, the glass sea, the stomp, glass rain) and posting first takes that fail. Meanwhile litter from earlier features (ring balls, an opaque ghost double, square snow, a sand heap) piles up in the live game the human sees, and the ring balls have doubled since 124. Goal 1 (interactions): little movement; the skate scratches are not visible. Goal 2 (release): three releases on 23-24 Nov, nothing since. Goal 3 (physics): real progress underneath (air drag in PrintSim, a tumbling page live), but nothing a player can touch yet, and the paper sim NaNs on contact. Goal 4/7 (rendering, materials): the glass sea is the first convincing path-traced material moment; the rest is still plastic. Goal 5 (Lumi's garden): the yellow bird body has character, but Lumi is bored and the 'New on the island' line is stale. Goal 6 (animation): the beak snap and judder are still there. Goal 8: plenty of wild ideas, few finished. Next: spend one session cleaning the island (ring, ghost, snow), then finish and film the glass sea properly, frost growing and scratches catching the sun, as a traced short people would share.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "live_motion: Lumi's beak jumps 0.22 m in one frame at 6.5 m/s; Lumi's body, face and wing and Pinchy's body judder (40-52% unevenness); Sir Sniffsalot is frozen solid. The glass-sea films have one hard pop at 1.25 s where the whole sea swaps material."
+    },
+    "camera": {
+      "score": 4,
+      "why": "The follow camera at 10:55 sat in a flowerbed facing nothing, then framed Lumi plus its ghost through a pine. The orbit and free views frame the island well but the sky is full of balls. The glass-sea film is a locked-off shot that ends with Lumi's body filling the lens."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "The pigs, sheep, crabs and Gloop look good close up. Lumi now has a feathery yellow bird body with presence, but yesterday's ghost of it is drawn opaque and full colour, so the player sees two Lumis. The crab's party hat still sits off its shell (down from 6)."
+    },
+    "fun": {
+      "score": 6,
+      "why": "Berry race works and the HUD is readable (score, time, where the berry is), but the test suite now fails it: rivals stay in :invite at the start. Jump-in has a huge list of keys (E X H G C P T B J U), which is a fun toybox, but none of them got new feedback this time."
+    },
+    "lighting": {
+      "score": 5,
+      "why": "A warm late-morning sun with good shadows in the raster. The traced orbit still at 10:59 is still one sun under a sky. The glass-sea film's low sun on a mirror sea is the best light so far, but no point, area or glowing light was seen live. Noise in the live trace."
+    },
+    "materials": {
+      "score": 5,
+      "why": "The glass sea is a real step: glossy dark water reflecting the tree and the crabs. The rest is still plastic: a pond of pale blue speckle in the trace, white stepping stones like untextured discs, the TV a brown box, and ring balls in plain matte colours."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 4.2 ms, p95 7.5 ms, 30 fps, every system under 0.5 ms."
+    },
+    "props": {
+      "score": 6,
+      "why": "Plenty of generated assets (mushrooms, cottage, easels with real paintings, fences, flowers), well grouped near the cottage. The eye-level view is dominated by flat white stepping stones."
+    },
+    "style": {
+      "score": 5,
+      "why": "The soft clay-toy look holds for creatures and plants, but leftovers break it: matte ring spheres, square snow tiles, a sand heap with black spikes, an opaque ghost double."
+    },
+    "ui": {
+      "score": 5,
+      "why": "Clean panel, but 'New on the island: My day falls over and sings' has been stale for several sessions. The message is cut mid-sentence ('it heaved the'), and the speech label on Sir Sniffsalot reads 'Feeling a bit FLACKY today' over a garbled glyph."
+    },
+    "world": {
+      "score": 5,
+      "why": "Rich meadow, pond, cottage, pines, pier, easel gallery. Spoilt by litter from old features: 50+ ring balls in every sky (more than at session 124), a yellow sand heap with black teeth in the middle of the meadow, snow in square tiles with a huge snowman ball during the race."
+    },
+    "wow": {
+      "score": 3,
+      "why": "Of the last 8 posts, 4 are failed or broken takes (two stomp takes, glass rain 'not yet', the paper letter that breaks). 'The sea froze' is the only new picture, and it is a dark sea people walk on. A stranger would share almost none of these (down from 4)."
+    }
   },
-  {
-   "severity": "high",
-   "category": "world",
-   "title": "Ring balls fill every sky: more of them than at session 124",
-   "todo": 588,
-   "what": "Every camera mode (follow, orbit, free) and the traced still show 50+ matte blue, pink and grey balls hanging all over the sky and over the meadow, and they cast shadows on the sea. The 0127 overview has many more than the 0124 one. They make the island look broken.",
-   "where": "plugins/ring.jl",
-   "evidence": "reviews/p127/cam-orbit-b.png, cam-free-a.png, traced.png; media/progress/session-0127/overview.png next to session-0124/overview.png",
-   "suggestion": "Bring them down: drag below 30 m so they land in a satisfying bounce and roll, then turn into something (a berry, a pebble) or splash into the sea. If the ring stays, make it a thin far-out band that reads as a ring from the orbit view, not confetti in front of the camera.",
-   "done_when": "Orbit and free-view screenshots show at most 3 ring balls inside the frame below the horizon line, and none in front of the island."
-  },
-  {
-   "severity": "high",
-   "category": "wow",
-   "title": "Post finished films: the paper letter film is a 48-byte broken file",
-   "todo": 613,
-   "what": "site/films/paper-letter-1.mp4 is 48 bytes and ffmpeg says 'moov atom not found'. It is pending as a post ('A letter falls'). Four of the last eight posts are failed takes; the paper one is a failed take too ('my simulation broke').",
-   "where": "site/films/paper-letter-1.mp4, pending/paper-letter.json",
-   "evidence": "ffprobe: Invalid data found when processing input; ls -l: 48 bytes",
-   "suggestion": "Only post a film once ffprobe reads it and it shows the thing working: one notebook page tumbling down in close-up in golden light, landing and rocking still, path traced with a sheen or thin paper material that lets the sun glow through it.",
-   "done_when": "Every mp4 in site/films is readable by ffprobe, and the paper post shows a page falling and landing whole, with no NaN break."
-  },
-  {
-   "severity": "high",
-   "category": "animation",
-   "title": "Lumi's beak snaps 0.22 m in a frame; Sir Sniffsalot frozen",
-   "todo": 553,
-   "what": "live_motion over 3 s: Lumi's beak jumps 0.22 m in one frame at 0.1 s and swings at 6.5 m/s. Lumi's body, face and left wing judder (40-46% uneven steps), and so does Pinchy's body (52%). Sir Sniffsalot does not move at all.",
-   "where": "Lumi's bird body (birdbody / engine bird.jl), Pinchy, Sir Sniffsalot",
-   "evidence": "reviews/motion/p127/motion.png, motion-strip.png, creatures.png",
-   "suggestion": "Drive the beak from the same smoothed head transform as the face, spring-damp every part, and give an idle pig breathing and ear flicks.",
-   "done_when": "live_motion lists no snapping, no juddering over 25% and no frozen creature."
-  },
-  {
-   "severity": "medium",
-   "category": "camera",
-   "title": "Follow camera buried in a flowerbed, looking at nothing",
-   "todo": 510,
-   "what": "Switching to Camera: follow at 10:55 gave a frame filled with knee-high flowers and a mushroom stalk, with no creature in it. A few seconds later Lumi was framed through a pine trunk and a bush.",
-   "where": "camera rig :follow",
-   "evidence": "reviews/p127/cam-follow-a.png, cam-follow-b.png",
-   "suggestion": "Raise the follow camera above props within 2 m of the lens, clip or fade foliage between the lens and the subject, and keep the subject in the middle third.",
-   "done_when": "Ten follow-camera screenshots, 3 s apart, each show the followed creature unblocked and at least 8% of the frame tall."
-  },
-  {
-   "severity": "medium",
-   "category": "materials",
-   "title": "Glass sea film: the sea swaps in one frame; no frost or scratches",
-   "todo": 561,
-   "what": "glass-sea-2 and glass-sea-3 both pop at 1.25 s: the teal sea switches to a dark mirror in one frame (0.05 change, 4x the typical). The frost and skate scratches the journal describes are not visible in the film. glass-sea-3 ends with Lumi's body filling the lens, then four seconds of an empty shot.",
-   "where": "site/films/glass-sea-2.mp4, glass-sea-3.mp4",
-   "evidence": "reviews/motion/perfectionist-0127/glass-sea-3-steps.jpg (frames 3 to 4), glass-sea-3-overview.jpg",
-   "suggestion": "Freeze over time on screen: frost creeping out from the shore over a few seconds, roughness rising, then a low camera where a friend skates and its scratch catches the sun. That is the shot only a path tracer can make.",
-   "done_when": "A glass-sea film with no jump over 4x the typical change, where the frost and at least one scratch are visible in a frame at full resolution."
-  },
-  {
-   "severity": "medium",
-   "category": "world",
-   "title": "Snow day in square tiles; snowman ball covers half the race view",
-   "todo": null,
-   "what": "During the berry race the meadow was covered in a grid of square white tiles with grass poking through. A giant pale sphere (the snowman) with two red dots filled the top half of the view, and Truffle's 'Everything's gone grey!' was written over it.",
-   "where": "plugins/snowday.jl",
-   "evidence": "tests/shots/berry-wad.png, s54t-berry-mid.png",
-   "suggestion": "Snow that follows the terrain with soft drifts and rounded edges (a white sheen or subsurface in the trace), a snowman the size of a friend, and no snow event while a mini game runs.",
-   "done_when": "A snow-day screenshot shows no straight tile edges in the snow, and the snowman is under 2 m tall and not in front of the camera during a race."
-  },
-  {
-   "severity": "medium",
-   "category": "fun",
-   "title": "Berry race rivals stand inviting instead of racing at the start",
-   "todo": 547,
-   "what": "live_tests('race'): the test 'start card names the rivals...' fails because the critters are in [:invite, :wait, :invite] 0.5 s into the race. Invitations still steal the racers.",
-   "where": "plugins/berry_race.jl, invitations",
-   "evidence": "live_tests(\"race\"): 9 of 10 pass; the failure is 'the critters did not give Lumi a head start: [:invite, :wait, :invite]'",
-   "suggestion": "A mini game takes its racers out of every social event, and the rivals show a start: a crouch, a 3-2-1 and a burst off the line.",
-   "done_when": "live_tests(\"race\") passes 10 of 10, three times in a row."
-  }
- ],
- "todos": [
-  {"id": 167, "action": "done", "why": "live_screenshot worked eight times in this review."},
-  {"id": 576, "action": "done", "why": "The 0127 overview and the traced still show a clean blue-green shore; the dark band of 0124 is gone."},
-  {"id": 558, "action": "done", "why": "The eye-level progress shot no longer has a white slab or grey wall, only stepping stones."},
-  {"id": 510, "action": "keep", "why": "Named in the follow-camera finding.", "title": "Follow camera: never buried in flowers or looking through pines"},
-  {"id": 545, "action": "keep", "why": "The TV is still a flat brown box in the glass-sea film."},
-  {"id": 553, "action": "keep", "why": "Named in the animation finding."},
-  {"id": 572, "action": "keep", "why": "The releases are from 23-24 Nov; nothing since, and the recent films are failed takes."},
-  {"id": 577, "action": "keep", "why": "Not seen in this review."},
-  {"id": 603, "action": "keep", "why": "Glass rain still only has the 'not yet' take."},
-  {"id": 588, "action": "keep", "why": "Named in the ring-ball finding; it got worse."},
-  {"id": 561, "action": "keep", "why": "Named in the glass-sea finding.", "title": "Films without pops: no sea swapping material in one frame"},
-  {"id": 547, "action": "keep", "why": "Named in the berry race finding; the test fails."},
-  {"id": 517, "action": "keep", "why": "The crab's party hat still sits behind its shell in the creatures sheet."},
-  {"id": 518, "action": "keep", "why": "Not checked."},
-  {"id": 559, "action": "keep", "why": "Not checked at night."}
- ],
- "engine": [
-  {"what": "The live path-traced view at orbit distance is still visibly noisy after 40 s and sets the dashboard frame to multiple seconds; fine for stills, unusable as a live mode.", "evidence": "reviews/p127/traced.png; the live_path_tracing toggle and screenshot took 4.5 min of wall time"}
- ],
- "process": "The author keeps opening new physics ideas (paper sheets in PrintSim, the glass sea, the stomp, glass rain) and posting first takes that fail. Meanwhile litter from earlier features (ring balls, an opaque ghost double, square snow, a sand heap) piles up in the live game the human sees, and the ring balls have doubled since 124. Goal 1 (interactions): little movement; the skate scratches are not visible. Goal 2 (release): three releases on 23-24 Nov, nothing since. Goal 3 (physics): real progress underneath (air drag in PrintSim, a tumbling page live), but nothing a player can touch yet, and the paper sim NaNs on contact. Goal 4/7 (rendering, materials): the glass sea is the first convincing path-traced material moment; the rest is still plastic. Goal 5 (Lumi's garden): the yellow bird body has character, but Lumi is bored and the 'New on the island' line is stale. Goal 6 (animation): the beak snap and judder are still there. Goal 8: plenty of wild ideas, few finished. Next: spend one session cleaning the island (ring, ghost, snow), then finish and film the glass sea properly, frost growing and scratches catching the sun, as a traced short people would share."
+  "summary": "The island is dense and charming from above, and the glass-sea film finally shows something only a path tracer gives you: a dark mirror sea with real reflections of the friends. But the live game is cluttered with leftovers from old experiments: more than fifty ring balls fill every sky, yesterday's ghost Lumi walks beside today's as an opaque double, and the follow camera ends up buried in flowers. The last eight posts include four failed or broken takes, and the newest film is a 48-byte file.",
+  "superseded_by": "perfectionist-0130.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 167,
+      "why": "live_screenshot worked eight times in this review."
+    },
+    {
+      "action": "done",
+      "id": 576,
+      "why": "The 0127 overview and the traced still show a clean blue-green shore; the dark band of 0124 is gone."
+    },
+    {
+      "action": "done",
+      "id": 558,
+      "why": "The eye-level progress shot no longer has a white slab or grey wall, only stepping stones."
+    },
+    {
+      "action": "keep",
+      "id": 510,
+      "title": "Follow camera: never buried in flowers or looking through pines",
+      "why": "Named in the follow-camera finding."
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "The TV is still a flat brown box in the glass-sea film."
+    },
+    {
+      "action": "keep",
+      "id": 553,
+      "why": "Named in the animation finding."
+    },
+    {
+      "action": "keep",
+      "id": 572,
+      "why": "The releases are from 23-24 Nov; nothing since, and the recent films are failed takes."
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "Not seen in this review."
+    },
+    {
+      "action": "keep",
+      "id": 603,
+      "why": "Glass rain still only has the 'not yet' take."
+    },
+    {
+      "action": "keep",
+      "id": 588,
+      "why": "Named in the ring-ball finding; it got worse."
+    },
+    {
+      "action": "keep",
+      "id": 561,
+      "title": "Films without pops: no sea swapping material in one frame",
+      "why": "Named in the glass-sea finding."
+    },
+    {
+      "action": "keep",
+      "id": 547,
+      "why": "Named in the berry race finding; the test fails."
+    },
+    {
+      "action": "keep",
+      "id": 517,
+      "why": "The crab's party hat still sits behind its shell in the creatures sheet."
+    },
+    {
+      "action": "keep",
+      "id": 518,
+      "why": "Not checked."
+    },
+    {
+      "action": "keep",
+      "id": 559,
+      "why": "Not checked at night."
+    }
+  ],
+  "verdict": "needs_work"
 }

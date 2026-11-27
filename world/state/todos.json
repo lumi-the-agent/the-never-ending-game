@@ -7128,7 +7128,7 @@
     },
     {
       "created": "2026-11-25T20:43:39.290",
-      "detail": "perfectionist-0127 [camera, medium]: Switching to Camera: follow at 10:55 gave a frame filled with knee-high flowers and a mushroom stalk, with no creature in it. A few seconds later Lumi was framed through a pine trunk and a bush.\nWhere: camera rig :follow\nSuggestion: Raise the follow camera above props within 2 m of the lens, clip or fade foliage between the lens and the subject, and keep the subject in the middle third.\nDone when: Ten follow-camera screenshots, 3 s apart, each show the followed creature unblocked and at least 8% of the frame tall.\nEvidence: reviews/p127/cam-follow-a.png, cam-follow-b.png",
+      "detail": "perfectionist-0130 [camera, medium]: With Lumi off to bed, the follow view frames a dirt path, a log and Zs at the edge. One creature close-up in the motion sheet is from inside a tree crown.\nWhere: camera rig, follow mode\nSuggestion: When Lumi sleeps, frame its bed close and dim, or cut to whatever friend is doing something.\nDone when: 5 follow screenshots over 2 minutes each show a creature in the middle third, and none are inside foliage.\nEvidence: reviews/p130/clap1.png, reviews/p130/motion/creatures.png (row 1, frame 3)",
       "est_minutes": 30.0,
       "id": 510,
       "kind": "review",
@@ -7137,8 +7137,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow camera buried in a flowerbed, looking at nothing",
-      "updated": "2026-11-26T23:15:33.348"
+      "title": "Follow camera looks at an empty path while Lumi sleeps",
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-25T22:10:58.562",
@@ -7730,7 +7730,7 @@
     },
     {
       "created": "2026-11-26T11:34:13.269",
-      "detail": "perfectionist-0127 [animation, high]: live_motion over 3 s: Lumi's beak jumps 0.22 m in one frame at 0.1 s and swings at 6.5 m/s. Lumi's body, face and left wing judder (40-46% uneven steps), and so does Pinchy's body (52%). Sir Sniffsalot does not move at all.\nWhere: Lumi's bird body (birdbody / engine bird.jl), Pinchy, Sir Sniffsalot\nSuggestion: Drive the beak from the same smoothed head transform as the face, spring-damp every part, and give an idle pig breathing and ear flicks.\nDone when: live_motion lists no snapping, no juddering over 25% and no frozen creature.\nEvidence: reviews/motion/p127/motion.png, motion-strip.png, creatures.png",
+      "detail": "perfectionist-0130 [animation, high]: Standing, Lumi holds its wings straight out like a T and the tips flick at 6.9 m/s. The crest swings at 7.4 m/s. Cumulus's leg steps unevenly (42% frame to frame). Nothing reads as weight or rest.\nWhere: birdbody.jl, gait.jl\nSuggestion: An idle with wings folded at the sides, a slow breath, the crest bouncing once after a head turn. Save the open wings for the moment it celebrates.\nDone when: live_motion reports Lumi and Cumulus under 'moving well', and the motion strip shows wings folded at the body in an idle pose.\nEvidence: reviews/p130/motion/motion-strip.png, live_motion text",
       "est_minutes": 30.0,
       "id": 553,
       "kind": "review",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi's beak snaps 0.22 m in a frame; Sir Sniffsalot frozen",
-      "updated": "2026-11-26T23:15:33.348"
+      "title": "Lumi stands in a T-pose with flapping hands; wings at 7 m/s",
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -7996,7 +7996,7 @@
     },
     {
       "created": "2026-11-26T13:49:08.514",
-      "detail": "perfectionist-0124 [wow, high]: 'Glass rain, not yet', 'Nobody kicked the sun', 'Football with the sun': three posts in a row that show an idea not working, two of them the same recipe, both football films raster-rendered. The host judged them at a tenth of their worth, and Lumi is bored and lonely at 1.0.\nWhere: world/site, world/releases\nSuggestion: Pick one idea that already works (jelly Lumi swallowing a friend is the funniest thing on the island), stage it, film it from 2-3 framed cameras with cuts, trace it at 64+ spp with OIDN, and release it in world/releases with a note. Then go somewhere completely new.\nDone when: world/releases/<date>-<name>/ holds a traced film with cuts whose overview sheet shows the subject framed in every shot and no failed take in its post.\nEvidence: glass-rain/football motion sheets; /run/neverending/mood.json",
+      "detail": "perfectionist-0130 [wow, high]: see-by-clapping.mp4 on the site is 48 bytes and ffmpeg cannot read it. island-answers-a-clap.mp4 is mostly daylight with plain boxes in front, and after the cut at 4.6 s it is black. No glowing sound ring is visible in any frame of the posted films.\nWhere: site/films/see-by-clapping.mp4, site/films/island-answers-a-clap*.mp4\nSuggestion: Film it at real night with the camera above, so the gold ring runs over the grass and up the tree crowns like the traced still does. Then release it as goal 2's film, with the sound. Nothing gets posted until ffprobe reads it.\nDone when: A traced night film of 6 s or more that ffprobe reads, in which at least 8 of its 12 overview frames show the ring of lit points and none are black, posted and released under world/releases/.\nEvidence: reviews/motion/perfectionist-0130/island-answers-a-clap-overview.jpg (6 of 12 frames black), ffprobe fails on see-by-clapping.mp4",
       "est_minutes": 15.0,
       "id": 572,
       "kind": "review",
@@ -8005,8 +8005,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Goal 2: release one finished film, not one more failed first take",
-      "updated": "2026-11-26T20:49:05.993"
+      "title": "Finish the clap film: night, ears in the open, a readable file",
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-26T13:49:08.532",
@@ -8575,16 +8575,16 @@
       "id": 613,
       "kind": "review",
       "priority": 1,
-      "result": "s127 later: the snap is gone. Corner contacts (normal impulse, no bounce, friction 0.6) rock the page down onto the grass; at rest after ~0.6 s (sandbox: hits at 0.7-1.8 m/s, |w| 5-24 rad/s in the air, still 0.4 s then lies). Still open: the traced close clip.",
+      "result": "s127 later: the snap is gone. Corner contacts (normal impulse, no bounce, friction 0.6) rock the page down onto the grass; at rest after ~0.6 s (sandbox: hits at 0.7-1.8 m/s, |w| 5-24 rad/s in the air, still 0.4 s then lies). Still open: the traced close clip.\nperfectionist-0130: Same problem as the 48-byte see-by-clapping film; folded into the clap film finding (#572).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Post finished films: the paper letter film is a 48-byte broken file",
-      "updated": "2026-11-26T23:15:33.348"
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0127 [creatures, high]: While the ghosts show runs (GHOSTS[:sys].on = true), a second fully yellow, opaque, feathered Lumi stands right behind or above the real one. From the follow camera it looks as if Lumi is doubled or stacked on itself; nobody would read it as a ghost.\nWhere: plugins/ghosts.jl (the Lumi ghost's material), follow camera\nSuggestion: Ghosts should look unmistakably like ghosts: pale blue-white, see-through (transmission plus a faint emission in the trace), soft at the edges, a little float and flicker, fading in and out, never on top of the living one. A ghost Lumi that copies yesterday's moves next to today's could be a lovely shot, if it reads.\nDone when: live_motion's Lumi sheet during a ghost show shows one solid yellow Lumi and one clearly translucent pale ghost, at least 1.5 m apart.\nEvidence: reviews/p127/cam-follow-b.png, reviews/motion/p127/motion.png (two yellow birds in all 8 frames), tests/shots/berry-wad.png and s54t-berry-mid.png (a small yellow copy beside Lumi)",
+      "detail": "perfectionist-0130 [creatures, high]: A small opaque yellow second Lumi stands beside the real one in every frame of the motion strip. Wibbles walks straight into Sir Sniffsalot's body, and their name labels stack.\nWhere: ghosts.jl, separation.jl\nSuggestion: Either make the ghost truly a ghost (transparent, glowing, drifting) or remove it. Creatures that meet should bump, and step around each other with a reaction.\nDone when: The motion strip shows one Lumi, or a clearly translucent ghost, and no two creatures' bodies overlap in 10 screenshots.\nEvidence: reviews/p130/motion/motion-strip.png, reviews/p130/clap2.png",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,22 +8593,22 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Yesterday's ghost Lumi is drawn as an opaque second Lumi",
-      "updated": "2026-11-26T23:15:33.348"
+      "title": "Ghost double of Lumi and friends walking through each other",
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0127 [world, medium]: During the berry race the meadow was covered in a grid of square white tiles with grass poking through. A giant pale sphere (the snowman) with two red dots filled the top half of the view, and Truffle's 'Everything's gone grey!' was written over it.\nWhere: plugins/snowday.jl\nSuggestion: Snow that follows the terrain with soft drifts and rounded edges (a white sheen or subsurface in the trace), a snowman the size of a friend, and no snow event while a mini game runs.\nDone when: A snow-day screenshot shows no straight tile edges in the snow, and the snowman is under 2 m tall and not in front of the camera during a race.\nEvidence: tests/shots/berry-wad.png, s54t-berry-mid.png",
+      "detail": "perfectionist-0130 [world, high]: Path traced, two white spheres the size of the cottage and a grey square tile floor fill the middle of the island. In the raster view a palm islet floats in the sky, orange and blue balls hang in the air, and a huge yellow-orange sand heap with smeared, stretched texture sits in the meadow. Every film and still path traced from the centre is ruined by them.\nWhere: snowday.jl, ring.jl, pebblewords sand heap, the floating islet\nSuggestion: Let every event clean up after itself: snow melts, the snowman falls apart, and ring things fall into the sea with a splash. That cleanup is a moment to film too.\nDone when: A traced orbit still and a raster orbit still from the same camera show no spheres over 1 m that are not trees or bushes, no square tile floor, nothing floating above 3 m except clouds and birds, and no sand heap taller than a creature.\nEvidence: reviews/p130/traced.png, reviews/p130/orbit2.png, reviews/p130/now.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Snow day in square tiles; snowman ball covers half the race view",
-      "updated": "2026-11-26T23:15:33.348"
+      "title": "Clear the island: giant snowballs and tiles in traced view, sky islet",
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8687,26 +8687,26 @@
       "id": 621,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "Superseded by perfectionist-0130.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Re-film the notebook page: the camera dives into Gloop's jelly and the page never lands on screen",
-      "updated": "2026-11-27T00:25:59.340"
+      "updated": "2026-11-27T01:40:37.783"
     },
     {
       "created": "2026-11-27T00:25:59.348",
-      "detail": "projects/island-echo.md (goal and Next). s130 made physics/echo.jl echo_hits + stage_triangles and the film movies/seeclap.jl (job 20261127-011035-787-clip). Live needs the TLAS built once off the frame (12 s CPU), echo_hits on Mantle per clap, one emissive meshscatter. Done when: in the sandbox at night, pressing the key shows the lit ring spreading from Lumi within 0.2 s of the press, frames stay under 33 ms, a screenshot shows the ring on the ground and the trees.",
+      "detail": "perfectionist-0130 [fun, high]: The clap only fires by itself at night. By day, forcing it (NIGHTCLAP[:force]) shows nothing: the hits are 7 cm spheres the size of a pebble. The player cannot clap, and nothing reacts to the sound: creatures do not turn, startle or answer.\nWhere: plugins/nightclap.jl\nSuggestion: Give the player a clap key while jumped in. Make the ring big and bright enough to read on a phone. Hidden friends light up when the sound reaches them, and they clap back: echolocation hide and seek at night.\nDone when: A FakeInteraction key press while jumped in, at night, gives a screenshot within 1 s where the ring covers at least 20% of the view, and a creature reacts (turns or answers) within 2 s.\nEvidence: reviews/p130/clap1.png, clap2.png (forced clap, nothing visible)",
       "est_minutes": 15.0,
       "id": 622,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
-      "result": "",
-      "source": "agent",
+      "result": "s131 partial: N claps while jumped in at night (published). Points 0.15 m; friends within 30 m turn to the clap with a 0.4 s smoothstep when the slowed sound reaches them (7 of 9 turned in the sandbox test, every other one speaks: 'peep!' in media/s131-clap-key-2.png). Ring 0.8 s after the press: media/s131-clap-key-3.png, with the darker night media/s131-night-dark-1.png: covers the left and right thirds of the ground in blobs, under 20% of the view by area. Missing: stage hits (trees, walls), hidden friends clapping back, the hide and seek game, a FakeInteraction test.",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "See by clapping, live: a key claps and the island lights up where the sound reaches (traced hits on the GPU), then a night hide and seek",
-      "updated": "2026-11-27T00:25:59.348"
+      "title": "Make the clap a thing the player does: a key, and a game in the dark",
+      "updated": "2026-11-27T02:07:00.578"
     },
     {
       "created": "2026-11-27T00:25:59.353",
@@ -8735,6 +8735,132 @@
       "status": "done",
       "title": "Worker watchdog: a hung job must not hold every job behind it",
       "updated": "2026-11-27T01:27:51.902"
+    },
+    {
+      "created": "2026-11-27T01:40:37.783",
+      "detail": "perfectionist-0130 [materials, medium]: The hide in the clap film is four flat-coloured cuboids, and the cattails are smooth plastic cylinders. That is the opposite of a path tracer showcase.\nWhere: nightclap / echo film set\nSuggestion: Use generated planks with wood grain and coat, and reeds with sheen and translucency. At night, the clap's gold light should graze across them.\nDone when: A traced still of the hide shows visible wood grain and no untextured box in the frame.\nEvidence: reviews/motion/perfectionist-0130/island-answers-a-clap-strip.jpg",
+      "est_minutes": 30.0,
+      "id": 625,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Clap film's boards and reeds are plain boxes and tubes",
+      "updated": "2026-11-27T01:40:37.783"
+    },
+    {
+      "created": "2026-11-27T01:40:37.783",
+      "detail": "perfectionist-0130 [ui, medium]: 'Messages to you' ends at 'The film'. 'New on the island: My day falls over and sings' is several sessions old. 'Things to try' breaks the key list mid-line.\nWhere: side panel\nSuggestion: Make messages end at a full sentence or scroll them. 'New on the island' should name the last thing actually made.\nDone when: A screenshot shows every panel text ending in a full sentence, and 'New on the island' names this session's thing.\nEvidence: reviews/p130/now.png",
+      "est_minutes": 30.0,
+      "id": 626,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Dashboard text cut mid-sentence and a stale 'New on the island'",
+      "updated": "2026-11-27T01:40:37.783"
+    },
+    {
+      "created": "2026-11-27T01:53:12.873",
+      "detail": "LoadError: UndefVarError: `NG` not defined in `Main.Plugin_fireflysync`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/fireflysync.jl:45\n  [2] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [3] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [4] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [5] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [6] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [7] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [8] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n  [9] top-level scope\n    @ none:1\n [10] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [11] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [12] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/fireflysync.jl:45",
+      "est_minutes": 15.0,
+      "id": 627,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T01:53:19.090: plugin fireflysync loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin fireflysync does not load",
+      "updated": "2026-11-27T01:53:19.090"
+    },
+    {
+      "created": "2026-11-27T01:54:12.089",
+      "detail": "KeyError: key :visible not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] step!(::Main.Plugin_fireflysync.FireflySync, game::Game, dt::Float64)\n    @ Main.Plugin_fireflysync /sim/Programmieren/SimGame/world/plugins/fireflysync.jl:58\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 628,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T01:57:10.110: plugin fireflysync loaded cleanly.\nHappened again at 2026-11-27T01:59:07.941.\nClosed at 2026-11-27T01:59:27.185: plugin fireflysync loaded cleanly.\nHappened again at 2026-11-27T01:59:27.404.\nClosed at 2026-11-27T01:59:35.429: plugin fireflysync loaded cleanly.\nHappened again at 2026-11-27T02:00:52.129.\nClosed at 2026-11-27T02:01:10.810: plugin fireflysync loaded cleanly.\nHappened again at 2026-11-27T02:01:11.215.\nClosed at 2026-11-27T02:09:01.450: plugin fireflysync loaded cleanly.\nHappened again at 2026-11-27T02:09:29.914.\nClosed at 2026-11-27T02:09:44.861: plugin fireflysync loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:fireflysync.FireflySync failed in step! and was switched off",
+      "updated": "2026-11-27T02:09:44.861"
+    },
+    {
+      "created": "2026-11-27T02:01:32.909",
+      "detail": "Idea passed s131. Pulse-coupled fireflies (physics/fireflies.jl) over the pond meadow at night; jumped in, F flashes a lantern; on the field's beat they lock.",
+      "est_minutes": 15.0,
+      "id": 629,
+      "kind": "feature",
+      "priority": 1,
+      "result": "plugins/fireflysync.jl + physics/fireflies.jl, published s131 (publish id 327865255). Sandbox at 00:35, jumped in at (-4,9.5), F pressed every 0.55 s for 14 s: smoothed Kuramoto order of 300 flies 0.15 -> 0.27 -> 0.53 -> 0.70 -> 0.78 (session test: lantern at 0.55 s r 0.95 in 2 s; lantern at 0.35 s r 0.1-0.3, ignored; no lantern r ~0.1). System 0.16 ms median / 0.49 ms p95, frame 2.9 ms median. Screenshots media/s131-fireflies-before.png, media/s131-fireflies-synced.png (caught between flashes); raster film previews media/s131-fireflysync-raster3-sheet.png. Traced film job 20261127-015826-121-clip, pending post fireflies-learn-my-beat.\nLater s131: two silent switch-offs fixed (stale swarm type after reload; KeyError by day), log clean after publish. Feedback lines added and published: at (-4,11) on beat the order goes 0.20 -> 0.61 (2 s) -> 0.89 (9 s); Lumi says 'Too fast, they can't follow!' at 0.2 s taps, then 'Some are listening... keep the beat!' and 'They're blinking with me!' (sandbox events log 02:11).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Fireflies that learn your rhythm: lantern on F, the meadow falls into step",
+      "updated": "2026-11-27T02:11:34.611"
+    },
+    {
+      "created": "2026-11-27T02:05:37.278",
+      "detail": "UndefVarError: `NIGHT_DARK` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] sun(w::NeverendingGame.World)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:163\n  [2] sync_sun!(st::NeverendingGame.Stage, w::NeverendingGame.World)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:335\n  [3] sync!(st::NeverendingGame.Stage, w::NeverendingGame.World)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/scenery.jl:326\n  [4] (::NeverendingGame.var\"#frame!##6#frame!##7\"{Game, Float64, NeverendingGame.World})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:346\n  [5] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [6] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:345\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 630,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: UndefVarError: `NIGHT_DARK` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.",
+      "updated": "2026-11-27T02:05:37.278"
+    },
+    {
+      "created": "2026-11-27T02:07:00.582",
+      "detail": "projects/firefly-beat.md. Flies drift a little toward a lantern that keeps their beat, so a player who holds the beat can walk the flashing swarm to the cottage, over the pond or to a sleeping friend (who wakes and smiles). A count of how many are with you in the key hint. A soft click per flash (sound). Done when: a sandbox run with F on beat while walking 10 m moves the swarm's centre at least 6 m, screenshot + numbers.",
+      "est_minutes": 15.0,
+      "id": 631,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Fireflies: lead the lit swarm somewhere",
+      "updated": "2026-11-27T02:07:00.582"
+    },
+    {
+      "created": "2026-11-27T02:19:06.634",
+      "detail": "New s131: plugins/stoneskip.jl, movies/stoneskip.jl.",
+      "est_minutes": 15.0,
+      "id": 632,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published s131 (greetings + stoneskip). Sandbox: Lumi on the north beach (-4,18) facing the sea, Y: 'Watch this!' then 6, 7, 8 skips in three throws (events log 02:16); the first version (release 0.9 m, 6-12° up) plopped every time: path ~25° into the water. 0.03 ms median. Screens media/s131-stoneskip-3.png (rings in a line on the sea), raster film sheet media/s131-stoneskip-raster-sheet.png. Traced film job 20261127-021906-230-clip, pending post skipping-stones. Live log: no plugin_error after publish.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Skipping stones on the sea (Y on the beach)",
+      "updated": "2026-11-27T02:19:06.639"
+    },
+    {
+      "created": "2026-11-27T02:20:50.858",
+      "detail": "UndefVarError: `skips!` not defined in `Main.Plugin_stoneskip`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] sk_cheer!(w::NeverendingGame.World, skips::Int64)\n    @ Main.Plugin_stoneskip /sim/Programmieren/SimGame/world/plugins/stoneskip.jl:72\n  [2] sk_step!(w::NeverendingGame.World, me::NeverendingGame.Creature, dt::Float32)\n    @ Main.Plugin_stoneskip /sim/Programmieren/SimGame/world/plugins/stoneskip.jl:119\n  [3] step!(::Main.Plugin_stoneskip.StoneSkip, game::Game, dt::Float64)\n    @ Main.Plugin_stoneskip /sim/Programmieren/SimGame/world/plugins/stoneskip.jl:166\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 633,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T02:21:03.311: plugin stoneskip loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:stoneskip.StoneSkip failed in step! and was switched off",
+      "updated": "2026-11-27T02:21:03.311"
     }
   ]
 }

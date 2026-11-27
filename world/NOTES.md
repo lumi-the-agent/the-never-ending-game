@@ -505,7 +505,7 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   `gw_path()` cost 11 ms a frame until typed (`::NTuple{2,NTuple{2,Float32}}`): 1.6 ms.
 - `c.goal = nothing` throws (the field is `Goal`): clear a goal with `NG.Goal()`.
 - Timing plugin functions with live_eval: pass the frame's argument types (Float32 dt), or @elapsed measures compilation.
-- Jump-in keys taken: WASD, E X H G C P M T B J U K V Z Q L(stomp). Free: I O N Y F. Add new keys to greetings.jl HINT and play.jl game_description.
+- Jump-in keys taken: WASD, E X H G C P M T B J U K V Z Q L(stomp). Free: I O (F = firefly lantern, N = clap, Y = skip a stone, since s131). Add new keys to greetings.jl HINT and play.jl game_description.
 - stomp.jl: a 2D wave equation (Float32 grid 131x131, 3 substeps) is 0.06 ms; landings as new sources give an emergent
   chain; SP_FADE^thumps keeps it from running away. Main.STOMP[:force] = true, [:at] = (x, y).
 - A traced 10 s film of a DEFORMING terrain (stomp.jl lifts the 48k terrain + 40k wordsand meshes every frame) was
@@ -602,3 +602,41 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - game_clip's `fade` darkens BOTH ends: the first and last frame of a 3-frame test are black (YMAX 16), look at the middle.
 - `submit_job(:clip; ..., max_minutes = 150)` at the TOP level: inside `kwargs` it reaches the film function and the
   job fails at once with a MethodError (s130 lost a pending post to pending/failed that way).
+- s131 first look at plugins/nightclap.jl at night (sandbox, `skip_to_hour!(game.world, 23.0)`, then
+  `Main.NIGHTCLAP[:force] = true`; screenshot within ~2 s, the whole show is over in ~7 s): it fires (662 hits,
+  last arrival 129 ms) and the warm dots march outward between two shots (media/s131-nightclap-2.png, -3.png).
+  But the raster night at 23:00-23:08 is NOT dark: green lit grass, hard shadows, and the 0.07 m dots read as
+  fireflies among the real fireflies. To be a sense, the night around the clap must be darker and the dots bigger/denser.
+- Owl (s131 free time, the Athenian owl coin): the island has no night listener. Barn owls find mice in the dark by
+  ear alone (asymmetric ears). An owl that turns its head to every clap could be part of the night hide and seek.
+
+## Fireflies in step (s131, projects/firefly-beat.md)
+- physics/fireflies.jl: pulse-coupled oscillators in two KA kernels (CPU now; 300 flies, plugin 0.16 ms median).
+  Tuning numbers are in the project file. Neighbour coupling that is too strong syncs the field by itself in 1 s:
+  then there is no game. Keep "no lantern" at r ~0.1 and measure r (`ff_order`) for: no lantern, on beat, off beat.
+- Scratch games (game_clip, film previews, worker films) RUN THE PLUGINS: a film's plot named like a plugin's plot
+  (:fireflysync) switched the plugin off with "a plot named ... is already in this scene". Give film plots their own
+  names and switch the live plugin off in setup (FIREFLYSYNC[:off]) when the film draws its own copy.
+- `Hikari.Emission(color = c, strength)` passes `strength` POSITIONALLY (MethodError): write `strength = strength`.
+- A plugin whose stop! sets `plot.visible[] = false` must set it true again in start!: a reload calls stop! on the
+  old instance, and start! finds the plot still in the scene and keeps it hidden (the clap ring was invisible
+  from s130's last reload until s131).
+- The jump-in short hint line (greetings.jl HINT_SHORT) holds ~150 characters at 2 spaces apart; check a screenshot
+  7 s after starting Jump in whenever a key is added (s131 dropped "Q splash" from it; it stays in the full card).
+- The worker took my firefly job ahead of older queued jobs, 2 minutes after submit: edits to the script after
+  that (the shorter glow) did NOT make it into the film. Finish the script before submitting.
+- Night light (s131, scenery.jl `sun`): `NG.NIGHT_DARK[]` (0.5) halves the moonlight in deep night (sun > 3° under the
+  horizon, ~20:50-05:10; sunset/golden hour untouched). Intensity: 17:00 1.2, 19:30 0.83, 20:00 0.57, 20:30 0.41,
+  21:00-05:00 0.28. Traced night films get darker too: a film that needs the scenery lit at night sets
+  `NG.NIGHT_DARK[] = 0f0` in its setup (the worker only sees it after a :restart).
+- live_status()["plugins"] "ok" only means the plugin LOADED. A system that throws in step! is switched off silently
+  (an event `plugin_error` "failed in step! and was switched off"): after every publish grep
+  log/events-<date>.jsonl (human's game) and sandbox/log/events-<date>.jsonl for plugin_error. s131 fireflysync
+  died twice that way: (1) after a reload, a struct kept in a Main dict (Main.FIREFLYSYNC[:sw]) belongs to the OLD
+  included module and the new methods do not match it: check `isa NewModule.Type` and rebuild; (2) the first build
+  by day read a dict key only set at night (KeyError). Test a plugin at BOTH day and night before publishing.
+- Julia string trap (s131 stoneskip): "WOW! $skips!" interpolates the identifier `skips!` (a `!` is part of a name)
+  and threw UndefVarError in step!, switching the system off. Write "$(skips)!".
+- Friends skipping stones (s131): stoneskip.jl walks a random awake friend to the nearest shore (16 directions,
+  marching 1 m steps to the first sea point, a spot 1.5 m before it) with Goal(:skipstones, ...), throws on arrival;
+  every 75 s by day. Sandbox: Gloop 9 skips, Marshmallow 6 (events stone_throw / stone_skipped).

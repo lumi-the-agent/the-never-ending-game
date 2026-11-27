@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "Line 80 has `NG.path_traced(game) && return`, and line 82 requires night_factor > 0.35. All 16 frames are broad daylight with no glowing points anywhere.",
+      "severity": "high",
+      "suggestion": "Film the ring in the raster view at night from above, so the wave front and its echo run over the grass. Or let the ring work in the tracer, using small non-emissive markers instead of area lights.",
+      "what": "The session's plugin is not in the post. The caption and film show a daytime traced take, but the NightClap glow ring only runs at night and switches itself off under path tracing, so the film shows nothing this session built.",
+      "where": "plugins/nightclap.jl:80-82; the whole storyboard"
+    },
+    {
+      "evidence": "Peak levels per 0.1 s: -inf until 0.4 s, -4 dB at 0.5 s, then -44, -67, -74 … -90 dB, then silence. The frames at 25, 50 and 75 percent are the same view, with only the sheep and the friends on the jetty shifting a little.",
+      "severity": "high",
+      "suggestion": "Show the cause and the effect: Lumi clapping in frame, with a clearly late echo off a cliff or the cottage, perhaps split-screen with the glow ring, and cut the dead seconds.",
+      "what": "Nothing visible goes with 'I clap hidden behind these planks'. Lumi is never seen, nothing moves when the clap sounds, and the island's 'answer' is a tail of about 0.3 s. A viewer sees a still landscape and hears one click.",
+      "where": "whole film; audio peak at 0.5 s, below -60 dB by 0.8 s, silent from 1.3 s to 3.5 s"
+    },
+    {
+      "evidence": "In the 25 percent frame a white quad sits on the foliage, and in the 50 percent frame it is next to the sheep's head. Frame 16 is the same view at about a third of the brightness.",
+      "severity": "medium",
+      "suggestion": "Remove the leftover paper/card actor from the scene before filming, and trim the clip before the black take starts instead of posting it.",
+      "what": "A flat white rectangle slides across the tree canopy and comes to rest by the sheep. It looks like a stray card or texture chip floating in mid-air. The last frame also dips to dark, which is the half-made 'inside a tree' take the caption mentions, not a shot anyone can read.",
+      "where": "storyboard frames 4-8 (0.6-1.4 s); the 25 percent frame shows the chip on the canopy; frame 16"
+    }
+  ],
+  "fun": 1,
+  "fun_why": "Three seconds of a still view with one clap: nothing to see or replay, and the 'answer' from the island is a reverb tail of about 0.3 s that is hard to tell apart from a dry sample.",
+  "real": 5,
+  "real_change": "nightclap.jl (identical in live/ and plugins/) adds a NightClap system. At night, every 45 s, it casts 1500 random rays from Lumi's head and marches them against the terrain heightfield only: the first ground hit plus one mirror bounce. It keeps the arrival time of each hit and draws up to 400 small emissive spheres that light up at 60x slowed sound speed, so a ring spreads over the grass. That is a visualisation: nothing moves, collides or reacts to it, and it skips trees and props (left for todo #622). It also returns early when path tracing is on, so it can never appear in a traced film like this one. The audio comes from physics/echo.jl, which is from session 129 and unchanged here. That file does real BVH acoustic ray tracing with a convolved synthetic clap, so the sound is simulated. The picture is only a fixed camera.",
+  "real_why": "The sound behind the film is real geometric acoustics (BVH rays, the listener's line of sight, travel time at 343 m/s). This session's code adds only a terrain-only ray march that drives glowing dots, a picture of the sound rather than more simulation.",
+  "summary": "A 3.5 s static daytime shot of yellow planks, cattails and a tree, with a single clap at about 0.5 s and then 2.8 s of silence. Nobody is seen clapping, nothing in the picture answers the sound, and the session's own plugin (a night-time glow ring) is not in the film at all.",
+  "superseded_by": "perfectionist-0130.json",
+  "surprise": 3,
+  "surprise_why": "The acoustic tracer was already shown last session. Here it comes out as one short dry clap over a still shot of planks, and the new glow ring, which would have been the twist, never appears.",
+  "verdict": "needs_work"
+}

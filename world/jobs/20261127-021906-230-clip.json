@@ -1,0 +1,17 @@
+{
+  "created": "2026-11-27T02:19:06.233",
+  "id": "20261127-021906-230-clip",
+  "kind": "clip",
+  "params": {
+    "call": "stoneskip_clip",
+    "kwargs": {
+      "hour": 16.5,
+      "samples": 16,
+      "seconds": 8.0
+    },
+    "max_minutes": 120,
+    "path": "/sim/Programmieren/SimGame/world/site/films/skipping-stones.mp4",
+    "script": "movies/stoneskip.jl"
+  },
+  "status": "queued"
+}

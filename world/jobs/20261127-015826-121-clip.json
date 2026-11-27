@@ -1,0 +1,25 @@
+{
+  "created": "2026-11-27T01:58:26.157",
+  "id": "20261127-015826-121-clip",
+  "kind": "clip",
+  "params": {
+    "call": "fireflysync_clip",
+    "kwargs": {
+      "beat": 0.55,
+      "eye": [
+        0.0,
+        11.0,
+        1.2
+      ],
+      "hour": 22.5,
+      "samples": 16,
+      "seconds": 10.0,
+      "start": 3.0
+    },
+    "max_minutes": 120,
+    "path": "/sim/Programmieren/SimGame/world/site/films/fireflies-learn-my-beat.mp4",
+    "script": "movies/fireflysync.jl"
+  },
+  "started": "2026-11-27T02:00:27.521",
+  "status": "running"
+}

@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T01:28:35.449",
+  "finished": "2026-11-27T01:59:26.173",
   "id": "20261127-012835-418-clip",
   "kind": "clip",
   "params": {
@@ -7,5 +8,11 @@
     "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795739315.png",
     "script": "movies/ocr.jl"
   },
-  "status": "queued"
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795739315.png",
+    "text": "PYs"
+  },
+  "seconds": 34.6,
+  "started": "2026-11-27T01:58:51.315",
+  "status": "done"
 }

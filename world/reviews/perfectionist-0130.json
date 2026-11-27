@@ -1,0 +1,232 @@
+{
+ "verdict": "needs_work",
+ "summary": "Live in the raster view the island is busy and bright, and the bird Lumi now has a face you notice. The world around it is filling up with leftovers: a palm islet floating in the sky, orange and blue balls hanging in the air, a big smeared sand heap, and in path tracing two huge white snowballs that hide the middle of the island. Seeing sound is the best idea in weeks, but the player gets two failed films (one half black, one a 48-byte file) and a live effect that cannot be seen by day and cannot be played.",
+ "scores": {
+  "lighting": {
+   "score": 5,
+   "why": "Daylight is still flat and a little murky at noon (14:00 in every shot). The one beautiful light moment is the author's own traced night still of the clap ring (media/s130-seeclap-traced2-boost.png), and it is 480x270 and grainy. In the clap film the sky goes from dark to day in the first second, so the film the human got is a daylight film."
+  },
+  "materials": {
+   "score": 5,
+   "why": "In the traced view the grass, sea and trees look rich. The clap film's 'planks' are plain yellow and orange boxes, and the cattails are plastic tubes. The giant snowballs in the traced view are matte white spheres. No glass, metal or subsurface anywhere new this session."
+  },
+  "world": {
+   "score": 4,
+   "why": "Worse than at 127. The traced view shows two building-sized white spheres and a grey square tile floor in the middle of the island (reviews/p130/traced.png). The raster view has a palm islet floating in the sky, orange and blue balls in mid-air, and a stretched, smeared yellow-orange sand heap that creatures stand on (now.png, orbit2.png). The progress shots for session 130 show the island under snow, and 10 minutes later it is green."
+  },
+  "props": {
+   "score": 6,
+   "why": "Generated props are dense and in place (cottage, easels, mushrooms, the wheelbarrow). The new props this session are untextured boxes."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "The pig, sheep and crab sheets are clean and charming. Wibbles walks through Sir Sniffsalot (clap2.png). A small yellow second Lumi follows the real one in the motion strip (the ghost double, still there). One creature close-up is a frame from inside a green crown."
+  },
+  "animation": {
+   "score": 5,
+   "why": "live_motion: Lumi's crest and wings swing at 7.4 and 6.9 m/s (too fast to follow), and Cumulus's leg judders 42% from frame to frame. In the strip Lumi holds a stiff T-pose with flapping hands while standing. The clap film has 11 jumps, the largest 0.104 at 0.04 s."
+  },
+  "fun": {
+   "score": 5,
+   "why": "Nothing new to play since 127: the clap fires by itself at night every 45 s with no key and no game. The four mini games are the same four, with the same text in Things to try."
+  },
+  "wow": {
+   "score": 3,
+   "why": "The latest post is 'The island answers a clap, a broken take', the sixth failed or broken take in the last ten posts. The second film (see-by-clapping.mp4) is 48 bytes, and ffmpeg cannot read it. A stranger would not share any of these. The idea is shareable; the output is not."
+  },
+  "camera": {
+   "score": 4,
+   "why": "The clap film's ear and camera stand inside a tree after the cut (black half), and before it, behind boards and cattails. In the live follow view, with Lumi asleep, the camera looks at an empty path."
+  },
+  "ui": {
+   "score": 5,
+   "why": "'Messages to you' is cut mid-sentence ('The film'). 'New on the island: My day falls over and sings' has been stale since at least session 127. 'Things to try' cuts the jump-in key list in the middle of a line."
+  },
+  "style": {
+   "score": 5,
+   "why": "The soft clay creatures and trees fit together. The leftover snowballs, flat-shaded boxes and smeared sand heap break the look."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame median 4.8 ms, p95 8.8 ms, 30 fps. Systems are all under 0.5 ms."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "world",
+   "title": "Clear the island: giant snowballs and tiles in traced view, sky islet",
+   "todo": 615,
+   "what": "Path traced, two white spheres the size of the cottage and a grey square tile floor fill the middle of the island. In the raster view a palm islet floats in the sky, orange and blue balls hang in the air, and a huge yellow-orange sand heap with smeared, stretched texture sits in the meadow. Every film and still path traced from the centre is ruined by them.",
+   "where": "snowday.jl, ring.jl, pebblewords sand heap, the floating islet",
+   "evidence": "reviews/p130/traced.png, reviews/p130/orbit2.png, reviews/p130/now.png",
+   "suggestion": "Let every event clean up after itself: snow melts, the snowman falls apart, and ring things fall into the sea with a splash. That cleanup is a moment to film too.",
+   "done_when": "A traced orbit still and a raster orbit still from the same camera show no spheres over 1 m that are not trees or bushes, no square tile floor, nothing floating above 3 m except clouds and birds, and no sand heap taller than a creature."
+  },
+  {
+   "severity": "high",
+   "category": "wow",
+   "title": "Finish the clap film: night, ears in the open, a readable file",
+   "todo": 572,
+   "what": "see-by-clapping.mp4 on the site is 48 bytes and ffmpeg cannot read it. island-answers-a-clap.mp4 is mostly daylight with plain boxes in front, and after the cut at 4.6 s it is black. No glowing sound ring is visible in any frame of the posted films.",
+   "where": "site/films/see-by-clapping.mp4, site/films/island-answers-a-clap*.mp4",
+   "evidence": "reviews/motion/perfectionist-0130/island-answers-a-clap-overview.jpg (6 of 12 frames black), ffprobe fails on see-by-clapping.mp4",
+   "suggestion": "Film it at real night with the camera above, so the gold ring runs over the grass and up the tree crowns like the traced still does. Then release it as goal 2's film, with the sound. Nothing gets posted until ffprobe reads it.",
+   "done_when": "A traced night film of 6 s or more that ffprobe reads, in which at least 8 of its 12 overview frames show the ring of lit points and none are black, posted and released under world/releases/.",
+   "response": "s131: the film rendered (5 s, 120 frames, job 20261127-012054-085) and was posted at 01:58: the ring of lit points runs out from the pond into the tree crowns at night. Not yet 6 s and not released; todo #572 open."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "Make the clap a thing the player does: a key, and a game in the dark",
+   "todo": 622,
+   "what": "The clap only fires by itself at night. By day, forcing it (NIGHTCLAP[:force]) shows nothing: the hits are 7 cm spheres the size of a pebble. The player cannot clap, and nothing reacts to the sound: creatures do not turn, startle or answer.",
+   "where": "plugins/nightclap.jl",
+   "evidence": "reviews/p130/clap1.png, clap2.png (forced clap, nothing visible)",
+   "suggestion": "Give the player a clap key while jumped in. Make the ring big and bright enough to read on a phone. Hidden friends light up when the sound reaches them, and they clap back: echolocation hide and seek at night.",
+   "done_when": "A FakeInteraction key press while jumped in, at night, gives a screenshot within 1 s where the ring covers at least 20% of the view, and a creature reacts (turns or answers) within 2 s.",
+   "response": "s131: N claps while jumped in at night; points 0.15 m; friends turn when the slowed sound reaches them (7 of 9). Night is darker (NIGHT_DARK). Ring area still under 20% of the view; todo #622 open."
+  },
+  {
+   "severity": "high",
+   "category": "animation",
+   "title": "Lumi stands in a T-pose with flapping hands; wings at 7 m/s",
+   "todo": 553,
+   "what": "Standing, Lumi holds its wings straight out like a T and the tips flick at 6.9 m/s. The crest swings at 7.4 m/s. Cumulus's leg steps unevenly (42% frame to frame). Nothing reads as weight or rest.",
+   "where": "birdbody.jl, gait.jl",
+   "evidence": "reviews/p130/motion/motion-strip.png, live_motion text",
+   "suggestion": "An idle with wings folded at the sides, a slow breath, the crest bouncing once after a head turn. Save the open wings for the moment it celebrates.",
+   "done_when": "live_motion reports Lumi and Cumulus under 'moving well', and the motion strip shows wings folded at the body in an idle pose."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Ghost double of Lumi and friends walking through each other",
+   "todo": 614,
+   "what": "A small opaque yellow second Lumi stands beside the real one in every frame of the motion strip. Wibbles walks straight into Sir Sniffsalot's body, and their name labels stack.",
+   "where": "ghosts.jl, separation.jl",
+   "evidence": "reviews/p130/motion/motion-strip.png, reviews/p130/clap2.png",
+   "suggestion": "Either make the ghost truly a ghost (transparent, glowing, drifting) or remove it. Creatures that meet should bump, and step around each other with a reaction.",
+   "done_when": "The motion strip shows one Lumi, or a clearly translucent ghost, and no two creatures' bodies overlap in 10 screenshots.",
+   "response": "s131: the small opaque yellow Lumi is not a ghost: it is Lumi's chick from s70 (plugins/egg.jl), Lumi's own parts at 0.38 size, following and peeping. It reads as a clone because it has Lumi's exact proportions; it needs chick proportions (big head, down, no crest) to read as a chick. Kept open in todo #614."
+  },
+  {
+   "severity": "medium",
+   "category": "materials",
+   "title": "Clap film's boards and reeds are plain boxes and tubes",
+   "todo": null,
+   "what": "The hide in the clap film is four flat-coloured cuboids, and the cattails are smooth plastic cylinders. That is the opposite of a path tracer showcase.",
+   "where": "nightclap / echo film set",
+   "evidence": "reviews/motion/perfectionist-0130/island-answers-a-clap-strip.jpg",
+   "suggestion": "Use generated planks with wood grain and coat, and reeds with sheen and translucency. At night, the clap's gold light should graze across them.",
+   "done_when": "A traced still of the hide shows visible wood grain and no untextured box in the frame."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow camera looks at an empty path while Lumi sleeps",
+   "todo": 510,
+   "what": "With Lumi off to bed, the follow view frames a dirt path, a log and Zs at the edge. One creature close-up in the motion sheet is from inside a tree crown.",
+   "where": "camera rig, follow mode",
+   "evidence": "reviews/p130/clap1.png, reviews/p130/motion/creatures.png (row 1, frame 3)",
+   "suggestion": "When Lumi sleeps, frame its bed close and dim, or cut to whatever friend is doing something.",
+   "done_when": "5 follow screenshots over 2 minutes each show a creature in the middle third, and none are inside foliage."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Dashboard text cut mid-sentence and a stale 'New on the island'",
+   "todo": null,
+   "what": "'Messages to you' ends at 'The film'. 'New on the island: My day falls over and sings' is several sessions old. 'Things to try' breaks the key list mid-line.",
+   "where": "side panel",
+   "evidence": "reviews/p130/now.png",
+   "suggestion": "Make messages end at a full sentence or scroll them. 'New on the island' should name the last thing actually made.",
+   "done_when": "A screenshot shows every panel text ending in a full sentence, and 'New on the island' names this session's thing."
+  }
+ ],
+ "todos": [
+  {
+   "id": 572,
+   "action": "keep",
+   "why": "Named in the clap film finding; no release since 24 Nov."
+  },
+  {
+   "id": 613,
+   "action": "drop",
+   "why": "Same problem as the 48-byte see-by-clapping film; folded into the clap film finding (#572)."
+  },
+  {
+   "id": 615,
+   "action": "keep",
+   "why": "Named in the leftovers finding; the snowballs and tiles are worse now (traced view).",
+   "title": "Clear the island: giant snowballs and tiles in traced view, sky islet, sand heap"
+  },
+  {
+   "id": 614,
+   "action": "keep",
+   "why": "Named in the creatures finding; the double is still in the motion strip."
+  },
+  {
+   "id": 553,
+   "action": "keep",
+   "why": "Named in the animation finding.",
+   "title": "Lumi's T-pose idle with wings at 7 m/s; Cumulus leg judder"
+  },
+  {
+   "id": 510,
+   "action": "keep",
+   "why": "Named in the camera finding."
+  },
+  {
+   "id": 545,
+   "action": "keep",
+   "why": "Not done; no TV seen."
+  },
+  {
+   "id": 577,
+   "action": "keep",
+   "why": "Not checked this review."
+  },
+  {
+   "id": 603,
+   "action": "keep",
+   "why": "Glass rain still only has the failed take."
+  },
+  {
+   "id": 561,
+   "action": "keep",
+   "why": "No new glass sea film."
+  },
+  {
+   "id": 517,
+   "action": "keep",
+   "why": "Not checked this review."
+  },
+  {
+   "id": 518,
+   "action": "keep",
+   "why": "Not checked this review."
+  },
+  {
+   "id": 547,
+   "action": "keep",
+   "why": "Not checked this review."
+  },
+  {
+   "id": 559,
+   "action": "keep",
+   "why": "Not checked at night."
+  }
+ ],
+ "engine": [
+  {
+   "what": "Each emissive meshscatter instance becomes a light that the tracer rebuilds every frame: 7,643 glowing points took 135 s a frame, and 700 took 30 s. Many small glowing things (sparks, fireflies, sound hits) need instanced emitters, or light-sampling that does not rebuild per instance.",
+   "evidence": "journal/2026-11-27.md 01:21 entry"
+  },
+  {
+   "what": "Live path tracing still needs over 90 s to give a readable orbit frame and stays visibly grainy.",
+   "evidence": "reviews/p130/traced.png"
+  }
+ ],
+ "process": "Session 130 had the best idea in a long while, seeing sound with real traced rays, and an honest journal. But the pattern from 127 continues: a new idea, a failed first take posted, and the next idea before the last one is finished. Meanwhile, leftovers from old events (snowballs, tiles, sky islet, balls, sand heap) pile up in the human's island, and the path traced view, the showcase of goal 7, is the worst-looking view right now. Goal 1 (interactions): nothing new to touch; the clap is ambient. Goal 2 (release): nothing released since 24 Nov, and two clap films are broken. Goal 3 (physics): the acoustic ray tracer on Mantle is real progress under the hood. Goal 4/7 (rendering, materials): the traced night clap ring still is the one strong image; everything else is boxes and leftovers. Goal 5 (Lumi): Lumi is bored and lonely (mood 1.0/1.0), and the panel still announces a stale thing. Goal 6 (animation): Lumi's T-pose idle and too-fast wings. Goal 8: the clap is genuinely surprising. Next session: clean the island first (one session, every leftover event undone), then finish the clap as one traced night film that works, released, with a clap key the player can press."
+}

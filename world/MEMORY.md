@@ -17,6 +17,10 @@
 - Sound (s129): physics/echo.jl traces echoes on Raycore (KA kernel, CPU or Mantle.Device(): 600k rays 0.13 s on GPU).
   Project island-echo (goal s130: see by clapping): `echo_hits` + `stage_triangles` in physics/echo.jl, film movies/seeclap.jl.
   Glowing (Emission) meshscatter instances are tracer LIGHTS: keep them in the hundreds (7643 = 135 s/frame).
+- Keys (s131): N claps (nightclap.jl), Y skips a stone (stoneskip.jl, beach), F flashes the firefly lantern (fireflysync.jl, physics/fireflies.jl, project firefly-beat).
+  `NG.NIGHT_DARK[]` halves deep-night light (raster AND tracer). Scratch games run the plugins: film plots need their own names.
+  The worker may start a job within 2 min: finish the film script BEFORE submit_job.
+  live_status "ok" = loaded, not running: after publish grep log/events-*.jsonl for plugin_error (s131 fireflies died twice).
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.
 

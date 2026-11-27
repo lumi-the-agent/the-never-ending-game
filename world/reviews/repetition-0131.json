@@ -1,0 +1,13 @@
+{"posts": [{"post": "See by clapping",
+            "what": "From a fixed high view of the night pond a clap's echo, slowed down, is drawn as light: the pond water flares, then a ring of glowing specks runs out over the ground and lights the two tree crowns one after the other, while fireflies twinkle around.",
+            "recipe": "a clap at the pond, its traced echo made visible as a spreading light ring, fixed camera",
+            "nearest": "The island answers a clap, a broken take",
+            "similarity": 6,
+            "shared": "the same clap echo by the pond from a fixed view; new is that the echo is finally seen, as light running over the island"}],
+ "forms": [
+  {"form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)", "posts": ["See by clapping", "The island answers a clap, a broken take"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["The sea froze", "One stomp, a broken take", "One stomp, first take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Glass rain, not yet", "Nobody kicked the sun", "Football with the sun"]},
+  {"form": "Physics study of a single falling object, filmed", "posts": ["A page of my notebook", "A letter falls"]},
+  {"form": "New permanent place or prop, shown as a quiet traced still", "posts": ["The camera obscura"]}
+ ]}

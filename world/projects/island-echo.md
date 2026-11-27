@@ -1,6 +1,6 @@
 # The island answers a clap
 Goal: on a dark night the player claps (a key) and sees the island the way the sound found it: every place the clap touches lights up as the sound gets there and fades, and they find their hidden friends by clapping through the dark (a night hide and seek). Fun: a new sense with a use, and every spot answers differently.
-Next: make it live. Film 1 (job 20261127-011035-787-clip, movies/seeclap.jl, pending post see-by-clapping) shows the traced hits at night, slowed 60x. For the game: build the TLAS ONCE off the frame (12 s on the CPU: gather 5.7 s + build 6.5 s; on Mantle.Device() ~4 s) in a task or a :run job, a key (I O N Y F free) claps, echo_hits on the GPU (10k rays, ms), and the glowing points as one emissive meshscatter (fixed length, hidden at z=-50, Makie.update!(p; arg1, markersize) together). Then the night hide and seek. The old take 1 of the two-place echo film is broken (camera inside a tree, s130): see below.
+Next: the night hide and seek. Since s131 the player claps with N (jumped in, at night): the terrain ring (1500 rays, one mirror bounce, 0.15 m points) runs out and friends within 30 m turn to the clap when the slowed sound reaches them (7 of 9 turned, smoothstep over 0.4 s; two busy chatting ones did not). Still: the raster night is not dark (grass lit yellow at 01:00), so the ring reads as orange chips; swap the terrain march for echo_hits on the whole stage (trees, walls), hidden friends lit only where the sound reaches them and clapping back, and a score. Film 1 (see-by-clapping.mp4, 5 s, 18 s/frame) was posted 01:58 s131: the ring is readable at night.
 
 ## What it is (s129)
 - physics/echo.jl: acoustic ray tracing on Raycore's BVH. Rays leave the clap in every direction and bounce
@@ -44,3 +44,20 @@ Next: make it live. Film 1 (job 20261127-011035-787-clip, movies/seeclap.jl, pen
   slots, raster only; held while path tracing). Sandbox: 671 hits per clap, arrivals up to 115 ms, system p95 0.08 ms.
   NOT yet seen at night: check a night screenshot first thing (`Main.NIGHTCLAP[:force] = true` forces a clap), then
   swap the terrain march for echo_hits on the whole stage (trees, props) and add the key (todo #622).
+
+## Playable clap (s131)
+- N while jumped in at night claps (by day Lumi says it is too bright). `NC[:ears]` = (id, arrival s slowed 60x,
+  yaw at the clap, spoke); `nc_turn!` turns each friend with a smoothstep over 0.4 s once the ring reaches it, then
+  lets go after 1.5 s; every other one says "Huh?"/"Who's there?". Screens: media/s131-clap-key-3.png (ring 0.8 s
+  after the press), -2.png ("peep!"). Bug fixed: stop! (any reload) hid the plot and start! kept the hidden one,
+  so the ring was invisible after s130's last reload.
+- s131 critic said redo on see-by-clapping (no visible clap, dots like fireflies, 'every place' overclaimed, 3 s of
+  dead night, murky). Re-cut in place: 0.6-2.8 s of the traced film, cropped 720x405 at (150,40) to cut the red blob,
+  gamma 1.35, slowed 2.5x more (150x in all), 5.3 s; caption now says only the ground and the two crowns light up.
+  Original kept in media/s131-see-by-clapping-orig.mp4. A real take 2 needs: Lumi bigger in frame with a visible clap
+  pose, the stage hits (rocks, hut, beds) not just terrain + crowns, and no other glowing points in the shot
+  (switch nightglow/fireflies off in setup).
+- Second critic redo (s131): it counted three lit crowns, saw the pond flare as a wash (not points), green-yellow points
+  on the left crown, crowns cut at the frame edges, and the clap itself still invisible. Re-cropped 864x486 at (96,0)
+  (both crowns in), caption names no count or colour and says the far specks are fireflies. Take 2 must show the clap
+  (Lumi close, hands together) and keep other glowing things out of the shot.

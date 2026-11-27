@@ -1,17 +1,18 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T01:32:03",
+  "ended": "2026-11-27T02:22:30",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.89,
-    "picture": 0.37,
+    "feature": 2.13,
+    "picture": 0.22,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
+      "form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)",
       "posts": [
+        "See by clapping",
         "The island answers a clap, a broken take"
       ]
     },
@@ -29,12 +30,6 @@
         "Glass rain, not yet",
         "Nobody kicked the sun",
         "Football with the sun"
-      ]
-    },
-    {
-      "form": "Lumi-led set-piece gag film, close up",
-      "posts": [
-        "My shadow quits (second try)"
       ]
     },
     {
@@ -313,9 +308,11 @@
     "paperpage_drop",
     "glasssea_freeze",
     "paperpage_land",
-    "glasssea_bump"
+    "glasssea_bump",
+    "stone_throw",
+    "stone_skipped"
   ],
-  "joy": 0.74,
+  "joy": 0.54,
   "judged_posts": [
     {
       "recipe": "Lumi finds a gadget, uses it on the whole island, everyone is affected for a few seconds, then it undoes itself and the day goes on",
@@ -713,6 +710,13 @@
       "session": 130,
       "title": "The island answers a clap, a broken take",
       "what": "A fixed low view from behind wooden planks and cattails at the pond: the friends stand far off by the shore, a sheep shifts and a scrap of paper flutters in the tree, then the picture fades to black; nothing visible answers a clap, and the meant change (the island's traced echo, heard from that spot) can only be carried by the soundtrack."
+    },
+    {
+      "form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)",
+      "recipe": "a clap at the pond, its traced echo made visible as a spreading light ring, fixed camera",
+      "session": 131,
+      "title": "See by clapping",
+      "what": "From a fixed high view of the night pond a clap's echo, slowed down, is drawn as light: the pond water flares, then a ring of glowing specks runs out over the ground and lights the two tree crowns one after the other, while fireflies twinkle around."
     }
   ],
   "kinds_ever": [
@@ -729,33 +733,30 @@
   "last_contact": "2026-11-24T15:31:19",
   "last_new": {
     "kinds": [
-      "glasssea_thaw",
-      "paperpage_drop",
-      "glasssea_freeze",
-      "paperpage_land",
-      "glasssea_bump"
+      "stone_throw",
+      "stone_skipped"
     ],
-    "session": 127
+    "session": 131
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Change to how the island sounds, heard from a fixed spot (acoustic film)",
-    "form_count": 0,
-    "nearest": "The camera obscura",
-    "post": "The island answers a clap, a broken take",
-    "score": 2,
-    "session": 130,
-    "shared": "a new way of sensing the island (optics there, acoustics here)",
-    "similarity": 2
+    "factor": 0.2154434690031884,
+    "form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)",
+    "form_count": 1,
+    "nearest": "The island answers a clap, a broken take",
+    "post": "See by clapping",
+    "score": 6,
+    "session": 131,
+    "shared": "the same clap echo by the pond from a fixed view; new is that the echo is finally seen, as light running over the island",
+    "similarity": 6
   },
   "last_surprise": {
-    "fun": 4,
-    "score": 6.5,
-    "session": 128,
-    "why": "A working pinhole/lens camera made of real light transport is something the island has never done, and the upside-down friends with the sky beneath them are a nice twist, but the two paper films repeat the s127 paper work."
+    "fun": 1,
+    "score": 4.0,
+    "session": 130,
+    "why": "The acoustic tracer was already shown last session. Here it comes out as one short dry clap over a still shot of planks, and the new glow ring, which would have been the twist, never appears."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T00:50:35",
+  "perceived_until": "2026-11-27T01:40:58",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -769,69 +770,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "word_told",
-          "who": 10
-        },
-        {
-          "kind": "word_misheard",
-          "who": 8
-        },
-        {
-          "kind": "word_end",
-          "who": 1
-        },
-        {
-          "kind": "word_coined",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/words.html",
-        "site/films/word-goes-round.mp4"
-      ],
-      "new_plugins": [
-        "wordround.jl"
-      ],
-      "points": 3.9,
-      "repeat_factor": 0.4641588833612779,
-      "repeats": [],
-      "repetition": {
-        "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-        "form_count": 1,
-        "nearest": "We wrote PIE",
-        "post": "A word goes round",
-        "score": 5,
-        "shared": "friends gather round a made thing, a garbled result is the comic payoff, shown with text lines",
-        "similarity": 5
-      },
-      "session": 111,
-      "touched": [],
-      "values": {
-        "feature": 0.3,
-        "film": 6.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1909,6 +1847,65 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 2.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "stone_throw",
+          "who": 1
+        },
+        {
+          "kind": "stone_skipped",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "film",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/fireflies-learn-my-beat.mp4"
+      ],
+      "new_plugins": [
+        "fireflysync.jl",
+        "stoneskip.jl"
+      ],
+      "points": 2.3,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)",
+        "form_count": 1,
+        "nearest": "The island answers a clap, a broken take",
+        "post": "See by clapping",
+        "score": 6,
+        "shared": "the same clap echo by the pond from a fixed view; new is that the echo is finally seen, as light running over the island",
+        "similarity": 6
+      },
+      "session": 131,
+      "touched": [
+        "greetings.jl",
+        "nightclap.jl"
+      ],
+      "values": {
+        "feature": 0.8,
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1998,7 +1995,9 @@
       "site/films/hiccups-2.mp4",
       "site/films/i-swallow-what-i-hit-2.mp4",
       "site/films/i-swallow-what-i-hit.mp4",
+      "site/films/island-answers-a-clap-broken.mp4",
       "site/films/island-answers-a-clap-silent.mp4",
+      "site/films/island-answers-a-clap.mp4",
       "site/films/island-choir.mp4",
       "site/films/island-on-tv.mp4",
       "site/films/island-song.mp4",
@@ -2034,6 +2033,7 @@
       "site/films/rewind.mp4",
       "site/films/ring-3.mp4",
       "site/films/sand-sledding.mp4",
+      "site/films/see-by-clapping.mp4",
       "site/films/shadow.mp4",
       "site/films/shell-ashore.mp4",
       "site/films/snow-day.mp4",
@@ -2218,6 +2218,7 @@
       "moon.jl": 1.7953993277488246e9,
       "moth.jl": 1.7956560123386962e9,
       "newname.jl": 1.7955211508792114e9,
+      "nightclap.jl": 1.795739474005941e9,
       "nightglow.jl": 1.795443013044419e9,
       "nightshots.jl": 1.7955211366508613e9,
       "nursery.jl": 1.7956828587550077e9,
@@ -2266,11 +2267,11 @@
       "workshopisle.jl": 1.795652246934024e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 104,
+    "posts": 105,
     "self": "17087086040623195645",
     "wishes": 10
   },
-  "started": "2026-11-27T00:55:26",
+  "started": "2026-11-27T01:45:42",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2356,7 +2357,9 @@
       "FlyThroughPaths.BezierMove",
       "LatticeCore.shortest_path",
       "WordCloud.shape",
-      "KissABC.smc"
+      "KissABC.smc",
+      "DynACof.GetWind",
+      "MiniLoggers.JsonLogger"
     ],
     "games": [
       "Super Mario 64",
@@ -2370,7 +2373,10 @@
       "Defender (video game)",
       "Lumines: Puzzle Fusion",
       "Pac-Man Championship Edition",
-      "Dragon Quest VIII"
+      "Dragon Quest VIII",
+      "Shenmue (video game)",
+      "Arkanoid",
+      "Tetris (franchise)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2640,7 +2646,10 @@
       "StaticCompiler",
       "LongwaveModePropagator",
       "Evolutionary",
-      "VSPGeom"
+      "VSPGeom",
+      "MeshGraphNets",
+      "BehaviorTree",
+      "GeometricalOptics"
     ],
     "vision": [
       "ZImageRunner",
@@ -2654,8 +2663,10 @@
       "DemucsRunner",
       "FluxKleinRunner",
       "ProPainterRunner",
-      "Qwen3EmbeddingRunner"
+      "Qwen3EmbeddingRunner",
+      "Hunyuan3DRunner",
+      "DeepFilterRunner"
     ]
   },
-  "surprise_seen": 128
+  "surprise_seen": 130
 }

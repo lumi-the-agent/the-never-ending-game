@@ -7,7 +7,9 @@ isdefined(Main, :NIGHTCLAP) || Core.eval(Main, :(const NIGHTCLAP = Dict{Symbol,A
 const NG = NeverendingGame
 const NC = Main.NIGHTCLAP
 const NC_RAYS = 1500
-const NC_SLOTS = 400
+const NC_SLOTS = 500
+const NC_SIZE = 0.15f0        # m: 7 cm points read as pebbles/fireflies (perfectionist-0130)
+const NC_HEAR = 30f0          # m: friends this close turn to the clap when the slowed sound reaches them
 const NC_SLOW = 60f0          # the sound slowed 60 times
 const NC_FADE = 0.35f0        # s a lit point glows
 const NC_EVERY = 45.0         # real seconds between claps at night
@@ -71,6 +73,7 @@ end
 function NG.start!(::NightClap, game)
     game.stage === nothing && return
     (haskey(NC, :plot) && NC[:plot].parent === game.stage.scene) || nc_build!(game)
+    NC[:plot].visible[] = true          # stop! (a reload) hid it; the old plot is kept (s131: the ring was invisible)
     return
 end
 
@@ -79,12 +82,24 @@ function NG.step!(::NightClap, game, dt)
     (haskey(NC, :plot) && NC[:plot].parent === game.stage.scene) || nc_build!(game)
     NG.path_traced(game) && return        # moving glowing points leak area lights in the tracer
     w = game.world; now = time()
-    if NC[:hits] === nothing && ((NG.night_factor(w) > 0.35f0 && now - NC[:last] > NC_EVERY) || get(NC, :force, false))
-        me = NG.creature(w, "Lumi")
-        me === nothing && return
+    me = NG.creature(w, "Lumi")
+    me === nothing && return
+    # the player claps with N (jumped in, at night)
+    ndown = Makie.Keyboard.n in game.keys_down
+    pressed = ndown && !get(NC, :ndown, false) && me.controlled
+    NC[:ndown] = ndown
+    dark = NG.night_factor(w) > 0.35f0
+    pressed && !dark && NG.say!(w, me, "Too bright to see a sound. Wait for the night!"; duration = 2.5)
+    if NC[:hits] === nothing && ((dark && (pressed || (!me.controlled && now - NC[:last] > NC_EVERY))) || get(NC, :force, false))
         NC[:force] = false
-        P, T = nc_hits(w.island, Point3f(me.pos) + Point3f(0, 0, 1.2f0))
+        src = Point3f(me.pos) + Point3f(0, 0, 1.2f0)
+        P, T = nc_hits(w.island, src)
         NC[:hits] = (P, T, now); NC[:last] = now
+        # who hears it: each friend turns when the (slowed) sound reaches it, the way the ring does
+        NC[:ears] = [(c.id, NC_SLOW * hypot(c.pos[1] - src[1], c.pos[2] - src[2]) / NC_C, Float32(c.yaw), false)
+                     for c in w.creatures if c !== me && hypot(c.pos[1] - src[1], c.pos[2] - src[2]) < NC_HEAR]
+        NC[:src] = src
+        NG.emit!(w, :clap_seen)
     end
     NC[:hits] === nothing && return
     P, T, t0 = NC[:hits]
@@ -93,11 +108,36 @@ function NG.step!(::NightClap, game, dt)
     for k in eachindex(P)
         age = t - NC_SLOW * T[k]
         (0f0 <= age < NC_FADE && n < NC_SLOTS) || continue
-        n += 1; pos[n] = P[k]; ms[n] = 0.07f0 * sqrt(1f0 - age / NC_FADE)
+        n += 1; pos[n] = P[k]; ms[n] = NC_SIZE * sqrt(1f0 - age / NC_FADE)
     end
     Makie.update!(NC[:plot]; arg1 = pos, markersize = ms)
+    nc_turn!(w, t)
     t > NC_SLOW * maximum(T; init = 0f0) + NC_FADE && (NC[:hits] = nothing)
     return
+end
+
+const NC_HUH = ("Huh?", "Who's there?", "!", "Was that a clap?", "Over here!")
+
+"Friends turn their heads to the clap over 0.4 s once its (slowed) sound reaches them, and some answer."
+function nc_turn!(w, t)
+    ears = get(NC, :ears, nothing)
+    ears === nothing && return
+    src = NC[:src]
+    for (k, (id, ta, yaw0, said)) in enumerate(ears)
+        t < ta && continue
+        c = findfirst(x -> x.id == id, w.creatures)
+        c === nothing && continue
+        c = w.creatures[c]
+        u = min(1f0, (t - ta) / 0.4f0)
+        u >= 1f0 && t - ta > 1.5f0 && continue
+        want = atan(src[2] - c.pos[2], src[1] - c.pos[1]) - NG.species_of(c).heading
+        dy = rem2pi(want - yaw0, RoundNearest)
+        c.yaw = yaw0 + dy * (3u^2 - 2u^3)               # smooth turn, no one-frame snap
+        if !said && k % 2 == 1
+            NG.say!(w, c, NC_HUH[mod1(k, length(NC_HUH))]; duration = 1.8)
+            ears[k] = (id, ta, yaw0, true)
+        end
+    end
 end
 
 NG.stop!(::NightClap, game) = haskey(NC, :plot) && (NC[:plot].visible[] = false)

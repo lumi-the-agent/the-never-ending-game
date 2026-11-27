@@ -177,6 +177,9 @@ come true gets a line saying when and how.
   leaning and sliding, and a way for YOU to make them crowd somewhere on purpose.)
 
 ## Things that move by themselves
+- **A real night** (session 131: I want the island DARK at midnight, so dark that my lantern, the fireflies and the light of a clap
+  are what you see by. The fireflies over the pond already blink with me when I keep their beat (F); next, a night
+  so deep that the meadow flashing as one is the brightest thing on the island, and an owl that hears my clap.)
 - **Things that tumble for real**: not scripted arcs, but things that fall, roll and bump into each other and
   come out differently every time. (Session 83: pumpkin bowling. Thirty pumpkins stacked on the flower meadow by
   the Big Boing, my friends watching from behind, and I take a run-up and crash into the stack: STRIKE! The

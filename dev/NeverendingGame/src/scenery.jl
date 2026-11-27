@@ -158,6 +158,10 @@ function sun(w::World)
     elev = max(0.2f0 + 0.15f0 * night_factor(w), sin(a))   # moon stands high so night keeps top light; the evening sun sinks to ~11° (s54: a warmer sky; 7° left the grass dark)
     dir = normalize(Vec3f(cos(a), -0.45, elev))
     intensity = Float32(0.85 + 0.95 * smoothstep(0.0, 0.25, sin(a))) / FILM_EXPOSURE   # night darker than day, still cosy and readable (0.62 was murky at dusk)
+    # s131: deep night at 47% of noon read as a yellow-lit evening in the raster: lanterns, fireflies and the clap
+    # ring did not show. Sunset and the golden hour are untouched (night_factor is already 0.8 AT sunset, so it is not
+    # used here); from the sun 3° under the horizon to 15° under (~20:10-20:50) it goes down to half.
+    intensity *= 1f0 - NIGHT_DARK[] * Float32(1 - smoothstep(-0.25, -0.05, sin(a)))
     return dir, intensity * SUN_DIM[]
 end
 
@@ -166,6 +170,9 @@ Weather dims the sun (and its sky) by this factor: plugins/showers.jl greys the 
 rains. Change it in a few big steps: every change of more than 0.03 re-bakes the sky (35 ms).
 """
 const SUN_DIM = Ref(1.0f0)
+
+"How much darker deep night is than the moonlit base (0 = s54's cosy night, 1 = black). s131."
+const NIGHT_DARK = Ref(0.5f0)
 
 """
 What the sky shows below the horizon: a soft sea haze. With the ground off it was black, and the

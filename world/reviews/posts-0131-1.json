@@ -1,0 +1,11 @@
+{"posts": [{"post": "see-by-clapping",
+  "verdict": "redo",
+  "problems": [
+    "The clap itself is never seen: the small figure by the pond stands the same way in every storyboard frame, so nothing marks when or where the sound starts. The pond simply brightens in frame 4 with no visible cause.",
+    "The sound shows up as scattered glowing dots (frames 4-7, at-25), and these look exactly like the fireflies that sit all over the scene before and after (frames 1-3, 9-15, at-50, at-75). A viewer cannot tell 'places the sound reached' apart from ordinary fireflies.",
+    "'Every place the sound reached lights up' claims more than the film shows. Only a sparse band of dots on the ground and a few patches on the two tree crowns light up. The rocks, the hut, the garden beds and the hill behind stay dark, and nothing that blocks the sound or casts a sound shadow is visible.",
+    "The event takes about 1.2 s (frames 4-8) of a 5 s film. Roughly 3 s afterwards (frames 9-15) is the same dim, unchanged night scene, and frame 16 fades almost to black.",
+    "The whole image is very dark and murky. A dark translucent vertical smear in the middle of the frame (centre of at-50 and at-75, running from the path up to the ramp) looks like a rendering artefact. A large dark reddish blob fills the lower-left foreground in every frame.",
+    "The figure, the one thing that should anchor the story, is tiny and orange-on-dark in the middle distance and is hard to find."
+  ],
+  "critique": "The ring of light spreading out from the pond in frames 4-7 is a lovely idea and briefly readable. But there is no visible clap, the wave is made of the same dots as the fireflies, and it covers far less than 'every place', so the caption promises more than the dark, mostly static film delivers."}]}
