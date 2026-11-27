@@ -9,7 +9,9 @@ Climb anything, step 1 (s134, projects/climb-anything.md): Lumi stands at the ea
 and every lip its claws could hold (physics/climb.jl `climb_edges`, rays against the real meshes) glows as a small
 amber point. Path traced still, nothing placed by hand but Lumi and the lens.
 """
-function climbedges_still(path; samples = 96, width = 960, height = 540, gap = 0.7f0, facing = (-1.0, 0.0), building = "obscura_hut_")
+function climbedges_still(path; samples = 96, width = 960, height = 540, gap = 0.7f0, facing = (-1.0, 0.0), building = "obscura_hut_",
+                          back = 2.9f0, camside = 1.3f0, lift = 1.0f0, lumiside = -1.3f0, lumi_faces_wall = false,
+                          lipcolor = (1.0, 0.7, 0.3), lipsize = 0.022)
     size = (width, height)
     NG.with_scratch_game(NG.game_root(), size) do g, root_scene
         w = g.world
@@ -55,14 +57,15 @@ function climbedges_still(path; samples = 96, width = 960, height = 540, gap = 0
         if !isempty(pts)      # frame the lip itself: close, low, from the side (s134 critic: the dots were 1% of the picture)
             m = sum(pts) / length(pts); nrm = normalize(sum(l[2] for l in lips))
             sd = Vec3f(-nrm[2], nrm[1], 0)
-            eye = Tuple(m + 2.9f0 * nrm + 1.3f0 * sd + Vec3f(0, 0, 1.0))
+            eye = Tuple(m + Float32(back) * nrm + Float32(camside) * sd + Vec3f(0, 0, lift))
             target = Tuple(m - 0.4f0 * sd + Vec3f(0, 0, 0.8))
-            lumi.pos = NG.ground(w.island, (m[1] + 0.6f0 * nrm[1] - 1.3f0 * sd[1], m[2] + 0.6f0 * nrm[2] - 1.3f0 * sd[2]))
-            lumi.yaw = Float32(atan(nrm[2], nrm[1]))     # s134: atan(facing) stood it with its back to the wall
+            lumi.pos = NG.ground(w.island, (m[1] + 0.6f0 * nrm[1] + Float32(lumiside) * sd[1], m[2] + 0.6f0 * nrm[2] + Float32(lumiside) * sd[2]))
+            lumi.yaw = lumi_faces_wall ? Float32(atan(m[2] - lumi.pos[2], m[1] - lumi.pos[1])) :    # s135: looking at the ledges
+                       Float32(atan(nrm[2], nrm[1]))     # s134: atan(facing) stood it with its back to the wall
             NG.sync!(g.stage, w); NG.sync_actors!(g)
         end
-        isempty(pts) || meshscatter!(scene, pts; marker = NG.shape(:glowdot), markersize = 0.022f0, color = RGBf(1.0, 0.7, 0.3),
-                                     shading = Makie.NoShading, material = NG.Hikari.Emission(color = (1.0, 0.7, 0.3), strength = 8.0),
+        isempty(pts) || meshscatter!(scene, pts; marker = NG.shape(:glowdot), markersize = Float32(lipsize), color = RGBf(lipcolor...),
+                                     shading = Makie.NoShading, material = NG.Hikari.Emission(color = Tuple(lipcolor), strength = 8.0),
                                      name = :climb_lips)
         foreach(p -> (p.visible[] = false), g.stage.overlay.plots)
         NG.sync_sun!(g.stage, w)

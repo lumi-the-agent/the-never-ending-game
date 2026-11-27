@@ -1,0 +1,39 @@
+{
+  "created": "2026-11-27T05:20:56.538",
+  "finished": "2026-11-27T05:22:13.490",
+  "id": "20261127-052056-537-clip",
+  "kind": "clip",
+  "params": {
+    "call": "climbedges_still",
+    "kwargs": {
+      "back": 4.4,
+      "building": "beachhut",
+      "camside": 0.2,
+      "facing": [
+        -1.0,
+        0.0
+      ],
+      "lift": 0.5,
+      "lipcolor": [
+        0.25,
+        0.95,
+        1.0
+      ],
+      "lipsize": 0.03,
+      "lumi_faces_wall": true,
+      "lumiside": -1.7,
+      "samples": 96
+    },
+    "max_minutes": 15,
+    "path": "/sim/Programmieren/SimGame/world/site/img/climb-edges-up-the-wall-4.png",
+    "script": "movies/climbedges.jl"
+  },
+  "result": {
+    "hour": 11.531522556593512,
+    "lips": 37,
+    "path": "/sim/Programmieren/SimGame/world/site/img/climb-edges-up-the-wall-4.png"
+  },
+  "seconds": 76.0,
+  "started": "2026-11-27T05:20:57.477",
+  "status": "done"
+}

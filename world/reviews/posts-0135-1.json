@@ -1,0 +1,21 @@
+{"posts": [
+  {"post": "ledges-up-the-wall",
+   "verdict": "redo",
+   "problems": [
+     "The lights do not read as ledges someone found: they look like warm fairy-light strings hung on the hut as decoration, with nothing that says they are markers or what they are for.",
+     "Caption says 'up the wall', but the picture shows only two rows: one on the middle plank ledge and one along the bottom edge at ground level, partly hidden behind the flower bush. The roof edge, the round window rim and the side boards have no markers, so it doesn't show a climb up the wall.",
+     "'Second try' refers to an earlier attempt the reader never sees on this page, so on its own it means nothing.",
+     "The big flat-green tree on the right cuts off the hut's right side and the blobs on it, and takes up about a fifth of the frame.",
+     "The yellow bird in the left foreground takes as much space as the hut but has nothing to do with the ledges, and 'my claws' never makes clear whether it is the one meant to climb. It stands on a grey shape that looks like a broken ladder.",
+     "Bottom row of lights runs along the base hidden behind the hydrangea and goes past the bottom edge of the frame."
+   ],
+   "critique": "A nice sunny hut picture, but the 'ledges' look like party lights and there are only two rows, one at ground level, so the caption's climb up the wall isn't there. The tree and the unrelated bird crowd the subject."},
+  {"post": "looking-further-up-the-wall",
+   "verdict": "redo",
+   "problems": [
+     "The whole picture is almost black, with only a few faint green leaf edges. There is no hut, no wall, no ledge and no light to see.",
+     "Caption says it 'tried to show every ledge', but not one ledge is visible. Even the bush is only recognisable because the caption says so.",
+     "As a failure post there is nothing to look at: the failure does not show in the picture, only in the caption."
+   ],
+   "critique": "This is a black frame with a caption apologising for it. Someone scrolling would see a broken image, not a funny mishap, and it shows nothing the caption talks about."}
+]}

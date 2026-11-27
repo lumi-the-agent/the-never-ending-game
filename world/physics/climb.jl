@@ -11,14 +11,18 @@ const CLIMB_Adapt = Raycore.Adapt
 const CLIMB_WALL_NZ = 0.342f0    # |n_z| below this: a face steeper than 70 degrees
 const CLIMB_TOP_NZ = 0.866f0     # n_z above this: a top flatter than 30 degrees
 
-# out[1:3, c] = lip point (on the top, at the wall's face), out[4:6, c] = wall normal (outwards), out[7, c] = top n_z,
-# out[8, c] = 1 when column c found a lip, else 0.
+# out[1:3, m, c] = lip point (on the top, at the wall's face), out[4:6, m, c] = wall normal (outwards),
+# out[7, m, c] = top n_z, out[8, m, c] = 1 when column c found its m-th lip (lowest first), else 0.
+# s135: a column keeps scanning past a lip (up to size(out, 2) of them); until then the floor lip at 0.28 m of the
+# beach hut hid every lip above it (the shelf at 1.2 m was never scanned).
 CLIMB_KA.@kernel function climb_edges_kernel!(out, tlas, base, fwd, side, offs, h0, dh, nh, reach)
     c = CLIMB_KA.@index(Global)
     @inbounds begin
-        for k in 1:8
-            out[k, c] = 0f0
+        maxlips = size(out, 2)
+        for m in 1:maxlips, k in 1:8
+            out[k, m, c] = 0f0
         end
+        nl = 0
         o0 = base + offs[c] * side
         prev_hit = false; prev_t = 0f0; prev_n = Vec3f(0, 0, 0); prev_x = Point3f(0, 0, 0)
         for j in 0:(nh - 1)
@@ -44,10 +48,11 @@ CLIMB_KA.@kernel function climb_edges_kernel!(out, tlas, base, fwd, side, offs, 
                     n2[3] < 0 && (n2 = -n2)
                     if n2[3] > CLIMB_TOP_NZ
                         x = p + t2 * dn
-                        out[1, c] = x[1]; out[2, c] = x[2]; out[3, c] = x[3]
-                        out[4, c] = prev_n[1]; out[5, c] = prev_n[2]; out[6, c] = prev_n[3]
-                        out[7, c] = n2[3]; out[8, c] = 1f0
-                        break
+                        nl += 1
+                        out[1, nl, c] = x[1]; out[2, nl, c] = x[2]; out[3, nl, c] = x[3]
+                        out[4, nl, c] = prev_n[1]; out[5, nl, c] = prev_n[2]; out[6, nl, c] = prev_n[3]
+                        out[7, nl, c] = n2[3]; out[8, nl, c] = 1f0
+                        nl == maxlips && break
                     end
                 end
             end
@@ -57,23 +62,26 @@ CLIMB_KA.@kernel function climb_edges_kernel!(out, tlas, base, fwd, side, offs, 
 end
 
 """
-    climb_edges(tlas, backend, feet, facing; width = 1.2, columns = 25, h0 = 0.15, top = 3.0, dh = 0.05, reach = 1.0)
+    climb_edges(tlas, backend, feet, facing; width = 1.2, columns = 25, h0 = 0.15, top = 3.0, dh = 0.05, reach = 1.0, maxlips = 4)
 
 The lips Lumi could grab in front of it: a fan of `columns` probe columns over `width` metres across `facing`
 (a horizontal direction), each scanning heights `h0:dh:top` above `feet` for a wall within `reach` that ends in a
-flat top. Returns a vector of `(point, wall_normal, top_nz, column_offset)`, lowest first per column.
+flat top, keeping up to `maxlips` lips per column. Returns a vector of `(point, wall_normal, top_nz, column_offset)`,
+column by column, lowest first within a column.
 """
-function climb_edges(tlas, backend, feet, facing; width = 1.2, columns = 25, h0 = 0.15, top = 3.0, dh = 0.05, reach = 1.0)
+function climb_edges(tlas, backend, feet, facing; width = 1.2, columns = 25, h0 = 0.15, top = 3.0, dh = 0.05, reach = 1.0,
+                     maxlips = 4)
     f = normalize(Vec3f(facing[1], facing[2], 0))
     s = Vec3f(-f[2], f[1], 0)
     offs = collect(Float32, range(-width / 2, width / 2; length = columns))
     st = CLIMB_Adapt.adapt(backend, tlas)
     doffs = CLIMB_KA.allocate(backend, Float32, columns); copyto!(doffs, offs)
-    out = CLIMB_KA.zeros(backend, Float32, 8, columns)
+    out = CLIMB_KA.zeros(backend, Float32, 8, maxlips, columns)
     nh = floor(Int, (top - h0) / dh) + 1
     climb_edges_kernel!(backend)(out, st, Point3f(feet), f, s, doffs, Float32(h0), Float32(dh), nh, Float32(reach);
                                  ndrange = columns)
     CLIMB_KA.synchronize(backend)
     O = Array(out)
-    [(Point3f(O[1, c], O[2, c], O[3, c]), Vec3f(O[4, c], O[5, c], O[6, c]), O[7, c], offs[c]) for c in 1:columns if O[8, c] > 0.5f0]
+    [(Point3f(O[1, m, c], O[2, m, c], O[3, m, c]), Vec3f(O[4, m, c], O[5, m, c], O[6, m, c]), O[7, m, c], offs[c])
+     for c in 1:columns for m in 1:maxlips if O[8, m, c] > 0.5f0]
 end

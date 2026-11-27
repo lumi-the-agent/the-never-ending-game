@@ -29,8 +29,9 @@
 - Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
   Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
   Woodcut filter: tools/woodcut.jl (`woodcut_island` = print look). Shooting stars: plugins/meteors.jl (METEORS[:force], [:az]).
-- Climb (s134, project climb-anything): physics/climb.jl `climb_edges` finds lips on real meshes (rays, KA kernel);
-  still script movies/climbedges.jl. `Makie.data_limits(plot)` is in the plot's OWN space (no placement):
+- Climb (s134, project climb-anything): physics/climb.jl `climb_edges` finds lips on real meshes (rays, KA kernel,
+  up to 4 per column since s135); still script movies/climbedges.jl. Grab in PrintSim: physics/climbgrab.jl
+  `grab_trial` (dt 1e-3 only, 36 ms/step; sharp edges always hook, round beams slip; NOTES 'Grabs in PrintSim'). `Makie.data_limits(plot)` is in the plot's OWN space (no placement):
   use echo.jl `stage_triangles` for world positions.
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.

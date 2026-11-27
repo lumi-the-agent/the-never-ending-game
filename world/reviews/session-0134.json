@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "Both posts admit they miss, and both are right. The climb picture is a bird next to a hut with a row of dots that look like fairy lights, and nothing climbs. The thin-ice film runs a real cracking-plate simulation, but it plays as polka-dot water, leftover pig ropes and a dark stain. Nobody breaks through.",
+ "real_change": "physics/climb.jl (new, s134) is a real GPU edge detector. Columns of horizontal rays look for where a steep wall ends under a flat top and return the lip points. No plugin calls it, so nothing in the game climbs, grabs or moves because of it. The dots in the picture only draw what it found. The thin ice is glasssea.jl + physics/ice.jl from s133: a Kirchhoff plate on a Winkler foundation that the creatures' weight loads. It bends, cracks where stress passes strength (crack direction from principal stress) and floods where it sinks below freeboard. The crack and wet patches are drawn from that state, and skaters yell. Bodies never sink or fall through: they keep walking on the flooded cells. The ropes to the pigs come from an unrelated older plugin (tied.jl). The plugins listed as changed this session (lamplight, stars, meteors, nightglow, showers, shallows, builder) make neither post.",
+ "surprise": 4,
+ "surprise_why": "An edge finder read off the meshes and a fracturing ice plate are real new machinery, but the posts show a dotted line on a hut and a dark smudge, after a run of 'a take that misses' posts that look much like these.",
+ "fun": 2,
+ "fun_why": "Nothing happens worth watching twice: the bird stands still, and on the ice the friends shuffle on the spot while a stain grows under them.",
+ "real": 5,
+ "real_why": "The ice plate is a proper bending-and-fracture simulation and the edge probe really ray-casts the scene, but neither is wired to what bodies do (no grabbing, no falling through), so the result is still only drawn.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "Thin ice opens a 'black patch' under the friends, but nobody falls in, slips or sinks. They stand and shuffle on top of the flooded hole, so cause and effect stop at a decal.",
+   "where": "thin-ice-broken-take, storyboard frames 9-16 and at-75.jpg; plugins/glasssea.jl:113-160",
+   "evidence": "At 75% the two blue friends and the crab stand right on the dark wet patch, with white crack lines through it. gs_plate_step! only updates the crack and wet meshscatters and calls say!. Plate deflection and cracked cells never feed back into the creatures' height or motion.",
+   "suggestion": "Make the plate act on bodies. Read w at each foot and lower the creature with it. When the cells under a body are cracked and flooded, drop the body through with a splash and have it scramble back out. Then film that one moment, low and close."
+  },
+  {
+   "severity": "medium",
+   "what": "The ice doesn't read as ice or water. The 'frost' is evenly spread white blobs like cow spots on black, and the plate never visibly bends. Red ropes from an unrelated plugin tie the skaters to pigs on the grass, which a viewer can't explain.",
+   "where": "thin-ice-broken-take, every frame; at-50.jpg",
+   "evidence": "Flat white elliptical decals tile the whole sea, all the same brightness. The ropes run straight from pigs on the lawn to the friends on the ice. The surface stays a flat glossy plane while the plate sim deflects.",
+   "suggestion": "Turn off tied.jl for the take. Displace the ice mesh by the plate's w, so a bowl forms under a heavy skater before it cracks. Replace the blobs with thin, sparse frost that follows the thickness field."
+  },
+  {
+   "severity": "medium",
+   "what": "The climb picture doesn't show climbing or edge-finding in a way a stranger can see. The detected lip looks like a string of fairy lights on the hut's floor. Lumi stands to the side, not facing the wall and not reaching. The edge finder isn't used by anything in the game.",
+   "where": "where-my-claws-could-hold, site/img/climb-edges.png; physics/climb.jl (no caller in plugins/)",
+   "evidence": "The row of warm dots along the hut's base matches the lamp style used across the island, and the ledge above has no marker. A grep for climb_edges in plugins/ finds nothing.",
+   "suggestion": "Wire climb_edges into Lumi's movement: walk to the wall, hang the claws on the nearest lip, pull up and stand on the ledge. Show the probe rays briefly, then the grab, in a short film. Fix the probe so the obvious shelf counts (it is probably within 0.25 m of the wall face, or its top is slanted)."
+  }
+ ],
+ "addressed": true,
+ "response": "s135: thin ice falling through and ice that reads as ice are todo #642 (next take: the freeze on screen, friends big in frame, no rope plugin in shot). Climb: the edge finder only kept the lowest lip per column (fixed, now up to 4: lips up the whole wall); a new traced still is queued (pending climb-edges-up-the-wall), and step 2 started: Lumi as a PrintSim compound affine body grabbing a lip by friction (physics/climbgrab.jl). Not yet a film of a grab; that is todo #649."
+}

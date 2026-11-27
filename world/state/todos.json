@@ -4090,17 +4090,17 @@
     },
     {
       "created": "2026-11-24T04:08:07.502",
-      "detail": "LoadError: UndefVarError: `NeverendingGame` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nHint: NeverendingGame is loaded but not imported in the active module Main.\nStacktrace:\n  [1] top-level scope\n    @ none:1\n  [2] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [3] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/workshop.jl:7\n  [4] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [5] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [6] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [7] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [8] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [9] NeverendingGame.Game(root::String; instance::Symbol, fps::Int64, quiet::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:96\n [10] Game\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:85 [inlined]\n [11] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main.Stills /sim/Programmieren/SimGame/world/movies/post_stills.jl:157\n [12] top-level scope\n    @ bt_julia_eval:4\n [13] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [14] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [15] repl_eval\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:62 [inlined]\n [16] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper ~/.julia/packages/BonitoMCP/UC6KG/src/helper_payload.jl:98\n [17] top-level scope\n    @ ~/.julia/packages/BonitoMCP/UC6KG/src/session.jl:561\n [18] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [19] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120\nin expression starting at /sim/Programmieren/SimGame/world/plugins/workshop.jl:7",
+      "detail": "LoadError: UndefVarError: `NeverendingGame` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nHint: NeverendingGame is loaded but not imported in the active module Main.\nStacktrace:\n  [1] top-level scope\n    @ none:1\n  [2] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n  [3] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/workshop.jl:7\n  [4] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [5] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [6] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [7] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [8] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [9] NeverendingGame.Game(root::String; instance::Symbol, fps::Int64, quiet::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:96\n [10] Game\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:85 [inlined]\n [11] with_scratch_game(f::Main.CP.var\"#10#11\"{String, Float32, Dict{Any, Any}}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:344\n [12] probe(; building::String, gap::Float32)\n    @ Main.CP ./bt_julia_eval:9\n [13] probe()\n    @ Main.CP ./bt_julia_eval:7\n [14] macro expansion\n    @ ./timing.jl:697 [inlined]\n [15] top-level scope\n    @ ./bt_julia_eval:40\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [18] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [19] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [20] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [21] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [22] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120\nin expression starting at /sim/Programmieren/SimGame/world/plugins/workshop.jl:7",
       "est_minutes": 15.0,
       "id": 293,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-24T04:08:57.935: plugin workshop loaded cleanly.\nHappened again at 2026-11-24T08:02:13.893.\nClosed at 2026-11-24T08:03:50.088: plugin workshop loaded cleanly.",
+      "result": "Closed at 2026-11-24T04:08:57.935: plugin workshop loaded cleanly.\nHappened again at 2026-11-24T08:02:13.893.\nClosed at 2026-11-24T08:03:50.088: plugin workshop loaded cleanly.\nHappened again at 2026-11-27T04:52:01.052.\nClosed at 2026-11-27T05:05:19.301: plugin workshop loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "Plugin workshop does not load",
-      "updated": "2026-11-24T08:03:50.088"
+      "updated": "2026-11-27T05:05:19.301"
     },
     {
       "created": "2026-11-24T04:09:45.690",
@@ -7016,17 +7016,17 @@
     },
     {
       "created": "2026-11-25T16:41:36.379",
-      "detail": "MethodError: no method matching iterate(::GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\nThe function `iterate` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  iterate(!Matched::LLVM.MaterializationResponsibilityRequestedSymbolSet)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/orc.jl:1197\n  iterate(!Matched::LLVM.MaterializationResponsibilityRequestedSymbolSet, !Matched::Any)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/orc.jl:1197\n  iterate(!Matched::LLVM.GlobalMetadataDict)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:655\n  ...\n\nStacktrace:\n  [1] iterate\n    @ ./generator.jl:45 [inlined]\n  [2] collect(itr::Base.Generator{GeometryBasics.FaceView{GeometryBasics.Vec{3, Float32}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, Main.Plugin_gallery.var\"#box_at##2#box_at##3\"{Float32}})\n    @ Base ./array.jl:790\n  [3] box_at(c::GeometryBasics.Point{3, Float32}, s::Tuple{Float32, Float32, Float32}, yaw::Float32)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:83\n  [4] wood_mesh(game::Game)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:96\n  [5] build!(game::Game)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:123\n  [6] step!(::Main.Plugin_gallery.Gallery, game::Game, dt::Float64)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:149\n  [7] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [9] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [10] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [11] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [12] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [13] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+      "detail": "KeyError: key :carry_from not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] step_opening!(game::Game)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:217\n  [3] step!(::Main.Plugin_gallery.Gallery, game::Game, dt::Float64)\n    @ Main.Plugin_gallery /sim/Programmieren/SimGame/world/plugins/gallery.jl:267\n  [4] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [7] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [8] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [9] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [10] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [11] top-level scope\n    @ none:1\n [12] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [13] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [14] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 502,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T16:42:06.764: plugin gallery loaded cleanly.",
+      "result": "Closed at 2026-11-25T16:42:06.764: plugin gallery loaded cleanly.\nHappened again at 2026-11-27T05:24:27.122.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "dropped",
+      "status": "open",
       "title": "system:gallery.Gallery failed in step! and was switched off",
-      "updated": "2026-11-25T16:42:06.764"
+      "updated": "2026-11-27T05:24:27.122"
     },
     {
       "created": "2026-11-25T16:57:05.120",
@@ -9074,7 +9074,7 @@
     },
     {
       "created": "2026-11-27T04:32:24.170",
-      "detail": "projects/climb-anything.md. physics/climb.jl climb_edges finds lips (12 at 1.91 m on the obscura hut in the sandbox, 0.5 ms). Next: a traced still at a wall that exists in films (the obscura hut is skipped in scratch games, plugins/obscura.jl:96: use the cottage or the beach hut, movies/climbedges.jl), then the hang as a PrintSim affine body with two claw contacts inside the Coulomb cone. done_when: in the sandbox Lumi catches a lip from a jump and hangs, live_motion shows no snaps or jitter on the ledge, and a traced still or film shows it.",
+      "detail": "projects/climb-anything.md. physics/climb.jl climb_edges finds lips (12 at 1.91 m on the obscura hut in the sandbox, 0.5 ms). Next: a traced still at a wall that exists in films (the obscura hut is skipped in scratch games, plugins/obscura.jl:96: use the cottage or the beach hut, movies/climbedges.jl), then the hang as a PrintSim affine body with two claw contacts inside the Coulomb cone. done_when: in the sandbox Lumi catches a lip from a jump and hangs, live_motion shows no snaps or jitter on the ledge, and a traced still or film shows it.\n\ns135 progress: physics/climbgrab.jl `grab_trial` (PrintSim affine bodies, hinge at the shoulder). Sharp lip holds at 1-3 m/s and any top slope (the pad hooks the corner); round beam r 0.12 m: the claw slides 10 cm down its front (1.2 -> 1.10 m) and stops at the beam's equator; it stays there to 3 decimals with a slimmer body, the corner tucked away and the wall 20 cm back, so it is the beam mesh itself (suspect GeometryBasics Cylinder winding/caps). Next: check that mesh, try PrintSim's torus_mesh as a beam, log contact forces; then a film with Lumi's model on the PrintSim pose. 36 ms/step at dt 1e-3 (dt 2e-3 tunnels).",
       "est_minutes": 120.0,
       "id": 649,
       "kind": "feature",
@@ -9082,9 +9082,37 @@
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "doing",
       "title": "Climb anything, step 2: Lumi hangs from a found lip by friction (PrintSim contact)",
-      "updated": "2026-11-27T04:32:24.170"
+      "updated": "2026-11-27T05:12:12.893"
+    },
+    {
+      "created": "2026-11-27T05:12:26.412",
+      "detail": "The host lists site/img/climb-edges.png (traced in my session, not by the worker) and site/img/island-woodcut.png (a filter over a traced overview) as not path traced. Re-render climb-edges.png with a worker :clip job (movies/climbedges.jl) and decide for the woodcut: re-make it from a worker trace or take it off with a note. Done when: the host's list is empty.",
+      "est_minutes": 15.0,
+      "id": 650,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Re-render or take down the two pictures that are not worker traces (climb-edges.png, island-woodcut.png)",
+      "updated": "2026-11-27T05:12:26.412"
+    },
+    {
+      "created": "2026-11-27T05:24:48.170",
+      "detail": "s135 critic on 'Two ledges to hold' (site/img/climb-edges-up-the-wall-5.png): under the feathers a thin grey post shows instead of two legs, so Lumi looks propped on a stick. Done when: a side-on traced still shows two legs with visible feet and a colour of their own.",
+      "est_minutes": 15.0,
+      "id": 651,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi's legs read as one grey stick from the side",
+      "updated": "2026-11-27T05:24:48.170"
     }
   ]
 }

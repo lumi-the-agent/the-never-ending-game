@@ -1,0 +1,23 @@
+{"posts": [
+  {"post": "Two ledges to hold",
+   "what": "A debug still of the beach hut with Lumi beside it and cyan dots marking the edges the climbing code found, now in two rows (the floor's rim and the shelf halfway up); nothing moves or changes on the island.",
+   "recipe": "debug still of climbing-edge sensing at the beach hut",
+   "nearest": "Where my claws could hold",
+   "similarity": 7,
+   "shared": "same hut, same dotted edge-marker still; only adds a second row at the shelf"},
+  {"post": "The owl listens",
+   "what": "A fixed night view of the cottage garden with fireflies twinkling and a tiny brown owl sitting on top of the pine, while things drift in the background and the picture fades to black; the only change is the owl now sitting there.",
+   "recipe": "new small permanent prop/creature shown in a quiet fixed view",
+   "nearest": "The camera obscura",
+   "similarity": 5,
+   "shared": "a new permanent thing placed on the island, shown quietly with nothing happening"}
+ ],
+ "forms": [
+  {"form": "Debug still of a new ability Lumi is learning (climbing)", "posts": ["Two ledges to hold", "Where my claws could hold"]},
+  {"form": "New permanent place or prop, shown quietly from a fixed view", "posts": ["The owl listens", "The camera obscura"]},
+  {"form": "New world rule acted out on the island, filmed", "posts": ["Thin ice, a take that misses"]},
+  {"form": "Change to how the island sounds, heard or seen from a fixed spot (acoustic film)", "posts": ["See by clapping", "The island answers a clap, a broken take"]},
+  {"form": "Change to how the island is lit or looks (light, weather effect)", "posts": ["Fireflies, a take that misses"]},
+  {"form": "Physics study of a single falling or thrown object, filmed", "posts": ["Skipping stones, a take that misses", "A page of my notebook", "A letter falls"]},
+  {"form": "Artwork of the island, a stylised still, not a film", "posts": ["The island as a woodcut"]}
+ ]}

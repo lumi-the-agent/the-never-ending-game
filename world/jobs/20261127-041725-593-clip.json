@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T04:17:25.628",
+  "finished": "2026-11-27T04:46:43.041",
   "id": "20261127-041725-593-clip",
   "kind": "clip",
   "params": {
@@ -7,5 +8,11 @@
     "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795749445.png",
     "script": "movies/ocr.jl"
   },
-  "status": "queued"
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795749445.png",
+    "text": "FEIN"
+  },
+  "seconds": 29.0,
+  "started": "2026-11-27T04:46:14.037",
+  "status": "done"
 }

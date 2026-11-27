@@ -1,26 +1,32 @@
 {
-  "boredom": 0.96,
-  "ended": "2026-11-27T04:44:24",
+  "boredom": 1.0,
+  "ended": "2026-11-27T05:25:47",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.42,
-    "picture": 1.65,
-    "self": 0.37,
+    "feature": 0.85,
+    "picture": 1.99,
+    "self": 0.22,
     "sound": 0.01
   },
   "forms": [
     {
-      "form": "New world rule acted out on the island, filmed",
+      "form": "Debug still of a new ability Lumi is learning (climbing)",
       "posts": [
-        "Thin ice, a take that misses",
-        "The sea froze",
-        "One stomp, a broken take"
+        "Two ledges to hold",
+        "Where my claws could hold"
       ]
     },
     {
-      "form": "Debug still of a new ability Lumi is learning (climbing)",
+      "form": "New permanent place or prop, shown quietly from a fixed view",
       "posts": [
-        "Where my claws could hold"
+        "The owl listens",
+        "The camera obscura"
+      ]
+    },
+    {
+      "form": "New world rule acted out on the island, filmed",
+      "posts": [
+        "Thin ice, a take that misses"
       ]
     },
     {
@@ -42,12 +48,6 @@
         "Skipping stones, a take that misses",
         "A page of my notebook",
         "A letter falls"
-      ]
-    },
-    {
-      "form": "New permanent place or prop, shown as a quiet traced still",
-      "posts": [
-        "The camera obscura"
       ]
     },
     {
@@ -326,20 +326,8 @@
     "fireflies_synced",
     "meteor_seen"
   ],
-  "joy": 1.0,
+  "joy": 0.5,
   "judged_posts": [
-    {
-      "recipe": "permanent scenery plus quiet individual visits; nothing gathers or unfolds as an event",
-      "session": 93,
-      "title": "The gallery",
-      "what": "Six of Lumi's own traced pictures stand on easels in the meadow; friends wander over one at a time, look at a picture and remark on what they remember."
-    },
-    {
-      "recipe": "Lumi-only chase of a single object with dodges, then a catch; friends only gasp in passing; playable with V",
-      "session": 94,
-      "title": "My shadow ran off",
-      "what": "Lumi's shadow detaches as a flat dark bird, runs across the meadow, dodges Lumi three times while Lumi chases and shouts, then Lumi pounces and it slides back under its feet."
-    },
     {
       "recipe": "trigger fires, nearby friends gather round Lumi and dance a moment, then go back to what they did",
       "session": 95,
@@ -742,6 +730,20 @@
       "session": 134,
       "title": "Thin ice, a take that misses",
       "what": "Friends roped to pigs on the grass walk out onto the dark, white-flecked frozen sea, white crack lines spread and a dark patch opens under them, but nobody falls through."
+    },
+    {
+      "form": "Debug still of a new ability Lumi is learning (climbing)",
+      "recipe": "debug still of climbing-edge sensing at the beach hut",
+      "session": 135,
+      "title": "Two ledges to hold",
+      "what": "A debug still of the beach hut with Lumi beside it and cyan dots marking the edges the climbing code found, now in two rows (the floor's rim and the shelf halfway up); nothing moves or changes on the island."
+    },
+    {
+      "form": "New permanent place or prop, shown quietly from a fixed view",
+      "recipe": "new small permanent prop/creature shown in a quiet fixed view",
+      "session": 135,
+      "title": "The owl listens",
+      "what": "A fixed night view of the cottage garden with fireflies twinkling and a tiny brown owl sitting on top of the pine, while things drift in the background and the picture fades to black; the only change is the owl now sitting there."
     }
   ],
   "kinds_ever": [
@@ -763,24 +765,24 @@
     "session": 133
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Debug still of a new ability Lumi is learning (climbing)",
-    "form_count": 0,
+    "factor": 0.4641588833612779,
+    "form": "New permanent place or prop, shown quietly from a fixed view",
+    "form_count": 1,
     "nearest": "The camera obscura",
-    "post": "Where my claws could hold",
-    "score": 2,
-    "session": 134,
-    "shared": "a hut shown in a quiet still",
-    "similarity": 2
+    "post": "The owl listens",
+    "score": 5,
+    "session": 135,
+    "shared": "a new permanent thing placed on the island, shown quietly with nothing happening",
+    "similarity": 5
   },
   "last_surprise": {
     "fun": 2,
-    "score": 2.0,
-    "session": 133,
-    "why": "Every post shows a system from earlier sessions or a 2D filter on a screenshot. The new ice physics and meteors are not shown at all."
+    "score": 4.5,
+    "session": 134,
+    "why": "An edge finder read off the meshes and a fracturing ice plate are real new machinery, but the posts show a dotted line on a hut and a dark smudge, after a run of 'a take that misses' posts that look much like these."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T03:59:48",
+  "perceived_until": "2026-11-27T04:44:57",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -794,58 +796,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "sand_king",
-          "who": 3
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/sand-sledding.mp4",
-        "site/films/the-island-weighs-its-words-2.mp4",
-        "site/films/the-island-weighs-its-words.mp4"
-      ],
-      "new_plugins": [
-        "wordsand.jl"
-      ],
-      "points": 10.2,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "New world rule that makes the creatures reshape the ground, shown in a film",
-        "form_count": 1,
-        "nearest": "Paths we wore",
-        "post": "The island weighs its words",
-        "score": 4,
-        "shared": "friends' activity slowly reshapes the island's ground",
-        "similarity": 4
-      },
-      "session": 115,
-      "touched": [],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1912,6 +1862,46 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "picture",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/climb-edges-up-the-wall-5.png"
+      ],
+      "new_plugins": [],
+      "points": 1.0,
+      "repeat_factor": 0.4641588833612779,
+      "repetition": {
+        "form": "New permanent place or prop, shown quietly from a fixed view",
+        "form_count": 1,
+        "nearest": "The camera obscura",
+        "post": "The owl listens",
+        "score": 5,
+        "shared": "a new permanent thing placed on the island, shown quietly with nothing happening",
+        "similarity": 5
+      },
+      "session": 135,
+      "touched": [],
+      "values": {
+        "picture": 0.1,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2054,6 +2044,8 @@
       "site/films/the-island-is-a-seesaw.mp4",
       "site/films/the-island-weighs-its-words-2.mp4",
       "site/films/the-island-weighs-its-words.mp4",
+      "site/films/the-owl-listens.mp4",
+      "site/films/thin-ice-broken-take.mp4",
       "site/films/thunderstorm.mp4",
       "site/films/tied-together-2.mp4",
       "site/films/time-weather.mp4",
@@ -2074,6 +2066,7 @@
       "site/img/bump.png",
       "site/img/camera-obscura-lens.png",
       "site/img/camera-obscura.png",
+      "site/img/climb-edges.png",
       "site/img/cloud-heart.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
@@ -2169,7 +2162,7 @@
       "bottle.jl": 1.795589890075543e9,
       "browsernight.jl": 1.7954000366191897e9,
       "bubbles.jl": 1.7956131146824417e9,
-      "builder.jl": 1.7957446568226593e9,
+      "builder.jl": 1.7957490857437296e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7957446568229146e9,
@@ -2214,7 +2207,7 @@
       "islandnow.jl": 1.7956168788952758e9,
       "jelly.jl": 1.7957011848358562e9,
       "kite.jl": 1.7955986738072937e9,
-      "lamplight.jl": 1.7956672771301274e9,
+      "lamplight.jl": 1.795749092963664e9,
       "lanterns.jl": 1.7956312350413148e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
@@ -2223,7 +2216,7 @@
       "makeover.jl": 1.7955960056175299e9,
       "meadow.jl": 1.7956072049130402e9,
       "meadowlife.jl": 1.795485965898355e9,
-      "meteors.jl": 1.795747362374985e9,
+      "meteors.jl": 1.7957490857436357e9,
       "missme.jl": 1.7956636938005853e9,
       "mixup.jl": 1.7956035662514546e9,
       "moodcam.jl": 1.7956652444866693e9,
@@ -2231,7 +2224,7 @@
       "moth.jl": 1.7956560123386962e9,
       "newname.jl": 1.7955211508792114e9,
       "nightclap.jl": 1.7957413957505157e9,
-      "nightglow.jl": 1.795443013044419e9,
+      "nightglow.jl": 1.7957490929640315e9,
       "nightshots.jl": 1.7955211366508613e9,
       "nursery.jl": 1.7957449866905985e9,
       "obscura.jl": 1.7957326111922245e9,
@@ -2248,15 +2241,15 @@
       "rollcall.jl": 1.795596344849997e9,
       "separation.jl": 1.7957000129809484e9,
       "shadow.jl": 1.7956275835392096e9,
-      "shallows.jl": 1.7954347943520277e9,
+      "shallows.jl": 1.7957490857431898e9,
       "shovel.jl": 1.795525269055368e9,
-      "showers.jl": 1.795715242133071e9,
+      "showers.jl": 1.7957490857430322e9,
       "sleepers.jl": 1.7957449866904223e9,
       "sneeze.jl": 1.7957446568279505e9,
       "snowday.jl": 1.795673383252672e9,
       "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
-      "stars.jl": 1.7954845797675962e9,
+      "stars.jl": 1.7957490929649248e9,
       "stoneskip.jl": 1.7957424630400941e9,
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
@@ -2281,11 +2274,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 109,
+    "posts": 112,
     "self": "369107370865776265",
     "wishes": 11
   },
-  "started": "2026-11-27T04:04:54",
+  "started": "2026-11-27T04:49:46",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2379,7 +2372,9 @@
       "ZwickerLoudness.zwicker_loudness_time_varying",
       "FlameGraphs.flamepixels",
       "InformationGeometry.ParameterSavingCallback",
-      "SpectralResampling.get_logarithmic_λ"
+      "SpectralResampling.get_logarithmic_λ",
+      "LibTeXPrintf.texsetfont!",
+      "GeoParams.PerpleX_LaMEM_Diagram"
     ],
     "games": [
       "Super Mario 64",
@@ -2405,7 +2400,10 @@
       "Wipeout 2097",
       "Robotron: 2084",
       "Combat (Atari 2600)",
-      "Tomb Raider (1996 video game)"
+      "Tomb Raider (1996 video game)",
+      "Mega Man X (video game)",
+      "Angry Birds (video game)",
+      "Metal Gear Solid 2: Sons of Liberty"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2690,12 +2688,17 @@
       "EFIT",
       "TrixiParticles",
       "JuLIP",
-      "ImageGather"
+      "ImageGather",
+      "GasTranSim",
+      "Arrhenius",
+      "Noise"
     ],
     "vision": [
       "BasicVSRRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "ProPainterRunner",
+      "SAM2Runner"
     ]
   },
-  "surprise_seen": 133
+  "surprise_seen": 134
 }

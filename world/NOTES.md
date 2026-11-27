@@ -735,3 +735,17 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   `game.stage.scene.plots` (Emission material, `length(a[1][]) * length(faces(a.marker[]))`).
 - s134: a scratch game (films, stills) does not have every plot of the live game: plugins/obscura.jl skips its hut when
   `game.dash === nothing`. Check a building exists in the scratch game before aiming a film at it.
+
+## Grabs in PrintSim (s135, physics/climbgrab.jl)
+- Lumi as a PrintSim compound affine body (torso box + claw pad, `add_body!(dev, b, [(; mesh, density, static, kinetic), ...]; mass, velocity)`),
+  static lips via `add_mesh!`. Template: dev/PrintSim/test/bodies.jl `body_on_slope`. Device: `Mantle.Device()`.
+- Cost: ~36 ms per step for 3-4 meshes at dt 1e-3 (0.8 s simulated = 29 s), first call 55 s compile. Not live yet.
+- dt 2e-3 TUNNELS: the claw ended under the wall block (z = -0.015). Use 1e-3 until contact stiffness is tuned.
+- A SHARP edge always holds (every slope 0-50 deg at mu 0.6): the claw pad hooks the corner, where the contact normal
+  can point any way. Only a rounded lip (a beam with a smooth normal) can test friction. Tipping a whole block to
+  make a 'sloped lip' also leans its face back, so the body lies on it: tip only a top slab.
+- When a PrintSim result stays the same to 3 decimals while I change the geometry around it, the thing I changed is
+  not in contact: find what IS (log contact forces per mesh) before tuning more geometry (s135 lost 4 runs that way).
+- Markers in a still (s135, 3 redos of the ledge still): warm, evenly spaced glow dots read as string lights on a
+  house. Cool cyan (0.25, 0.95, 1.0), size 0.03, reads as a marker. Camera lift 1.3 m sees over foreground flowers;
+  stand Lumi 1.5 m beside the subject, facing it (movies/climbedges.jl knobs back/camside/lift/lumiside/lumi_faces_wall).
