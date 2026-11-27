@@ -1,0 +1,20 @@
+{"posts": [
+  {"post": "Putting past a magnet stone",
+   "what": "Fixed view of a half-shaded sand tray with a dark round patch: three dark balls roll across one after another, one ends near the far side, one ends beside the patch, one stops at its edge; nothing else on the island changes and no one is seen putting.",
+   "recipe": "three variants of one object released side by side, fixed camera, different outcomes, magnet field hidden",
+   "nearest": "Three paper darts",
+   "similarity": 8,
+   "shared": "three releases of one simulated object, each ending differently, watched by a fixed camera; again a buried magnet stone acting on iron as in The magnet stone and Iron sticks"},
+  {"post": "A coil on a cord",
+   "what": "Lumi stands on the grass by the sea with a cord from the beak; a small copper coil on it dips into a heap of black iron pegs, some pegs jerk up and stand leaning, and the coil hangs back up empty.",
+   "recipe": "magnet dipped into iron bits, pegs stir, nothing picked up",
+   "nearest": "The magnet stone",
+   "similarity": 6,
+   "shared": "a magnet near scattered iron spikes/pegs on the grass, iron bits pulled and standing; here Lumi holds it on a cord and nothing sticks"}
+ ],
+ "forms": [
+  {"form": "Physics study of simulated objects moving alone, filmed",
+   "posts": ["Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone", "The magnet stone", "Three paper darts", "A wire that spins by itself", "Three logs in the sea", "Two tops I turned"]},
+  {"form": "A material is worked by a tool and its simulated state shown close up",
+   "posts": ["A copper wire keeps its bends", "Hot glass lights the sand"]}
+ ]}

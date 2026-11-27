@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-27T19:00:22.420",
+  "id": "20261127-190022-418-clip",
+  "kind": "clip",
+  "params": {
+    "call": "golf_still",
+    "kwargs": {
+      "samples": 96
+    },
+    "max_minutes": 20,
+    "path": "/sim/Programmieren/SimGame/world/site/img/putting-grooves.png",
+    "script": "movies/magnetgolf.jl"
+  },
+  "started": "2026-11-27T19:11:22.886",
+  "status": "running"
+}

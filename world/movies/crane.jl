@@ -12,6 +12,30 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "coilcrane.jl"))
 const CR_L = 0.2; const CR_A = 0.006                     # pegs and core: 20 cm iron, 6 mm radius
 const CR_M = 7870.0 * pi * CR_A^2 * CR_L
 const CR_MU = 0.5                                        # iron on sand / iron on iron
+const CR_WOUND = 0.014 + 0.0028                          # the winding's outer radius (helix R + wire radius, as drawn)
+
+"""One step of a free peg: field force F and torque T, gravity, and the sand. A peg with an end on the sand turns by
+its weight about that end (s151: before, a peg the field stood up stayed leaning in the air when the field left)."""
+function fall!(q, F, T, gz, m, Iperp; dt = 5e-4)
+    e1, e2 = ends(q.p, q.u); lowe = e1[3] < e2[3] ? e1 : e2
+    onsand = lowe[3] - CR_A < gz + 1e-3
+    Tg = onsand ? vcross(vsub(q.p, lowe), (0.0, 0.0, -9.81 * m)) : (0.0, 0.0, 0.0)
+    q.v = vadd(q.v, vmul(dt / m, vadd(F, (0.0, 0.0, -9.81 * m))))
+    # about the end on the sand the peg's inertia is m L^2 / 3, four times Iperp about its middle
+    q.w = vadd(vmul(0.995, q.w), vadd(vmul(dt / Iperp, T), vmul(dt / (4Iperp), Tg)))
+    q.p = vadd(q.p, vmul(dt, q.v))
+    q.u = vunit(vadd(q.u, vmul(dt, vcross(q.w, q.u))))
+    # the sand: the lowest end stays on it; friction stops a slide the field cannot push
+    e1, e2 = ends(q.p, q.u); low = min(e1[3], e2[3]) - CR_A
+    if low < gz
+        q.p = vadd(q.p, (0.0, 0.0, gz - low))
+        Fh = hypot(F[1], F[2]); Nn = max(m * 9.81 - F[3], 0.0)
+        q.v = Fh < CR_MU * Nn ? (0.0, 0.0, max(q.v[3], 0.0)) : (q.v[1] * 0.9, q.v[2] * 0.9, max(q.v[3], 0.0))
+        # lying flat it stops turning about its long axis' cross (the sand holds it)
+        abs(q.u[3]) < 0.02 && (q.w = vmul(0.5, q.w); q.u = vunit((q.u[1], q.u[2], 0.0)))
+    end
+    return q
+end
 
 mutable struct Peg
     p::NTuple{3,Float64}; v::NTuple{3,Float64}; u::NTuple{3,Float64}; w::NTuple{3,Float64}
@@ -146,12 +170,17 @@ function crane_parts(; spot = (-4.6f0, 18.75f0), N = 1500, I = 3.0, npeg = 9, t_
         cu = (0.0, 0.0, 1.0)
         pegs = S[:pegs]
         near = [k for (k, q) in enumerate(pegs) if q.held || vnorm(vsub(q.p, c)) < 0.35]
+        # s151: pegs far from the coil still fall (weight torque about the end on the sand); they used to freeze tilted
+        Iperp = m * CR_L^2 / 12
+        for q in pegs
+            (q.held || any(k -> pegs[k] === q, near)) && continue
+            fall!(q, (0.0, 0.0, 0.0), (0.0, 0.0, 0.0), gz, m, Iperp; dt)
+        end
         isempty(near) && return
         cc = CoilCrane.Coil(; N = 60, I = N * I / 60, R = 0.014, len = 0.8CR_L, centre = c, per = 12)   # 60 loops of N/60 turns
         Hext = p -> CoilCrane.Hcoil(cc, p)
         R = CoilCrane.SoftIron.Rods(vcat([c], [pegs[k].p for k in near]), vcat([cu], [pegs[k].u for k in near]); L = CR_L, a = CR_A, K = 8)
         CoilCrane.SoftIron.solve!(R, Hext)
-        Iperp = m * CR_L^2 / 12
         for (j, k) in enumerate(near)
             q = pegs[k]
             F, T = CoilCrane.SoftIron.force_torque(R, j + 1, Hext)
@@ -165,22 +194,22 @@ function crane_parts(; spot = (-4.6f0, 18.75f0), N = 1500, I = 3.0, npeg = 9, t_
                 end
                 q.held = false
             end
-            q.v = vadd(q.v, vmul(dt / m, vadd(F, (0.0, 0.0, -9.81 * m))))
-            q.w = vadd(vmul(0.995, q.w), vmul(dt / Iperp, T))
-            q.p = vadd(q.p, vmul(dt, q.v))
-            q.u = vunit(vadd(q.u, vmul(dt, vcross(q.w, q.u))))
-            # the sand: the lowest end stays on it; friction stops a slide the field cannot push
-            e1, e2 = ends(q.p, q.u); low = min(e1[3], e2[3]) - CR_A
-            if low < gz
-                q.p = vadd(q.p, (0.0, 0.0, gz - low))
-                Fh = hypot(F[1], F[2]); Nn = max(m * 9.81 - F[3], 0.0)
-                q.v = Fh < CR_MU * Nn ? (0.0, 0.0, max(q.v[3], 0.0)) : (q.v[1] * 0.9, q.v[2] * 0.9, max(q.v[3], 0.0))
-                q.u[3] < 0 && low < gz - 1e-4 && (q.w = vmul(0.9, q.w))
-            end
-            # touching the core, or a held peg: it holds on from now on
+            fall!(q, F, T, gz, m, Iperp; dt)
+            # s151: the winding is solid. Along the wound part (0.8 L) a peg's axis cannot come nearer the core's axis
+            # than the winding's outside + the peg's radius; only the core's bare ends let a peg touch the iron. (The
+            # s150 film's two held pegs had snapped INSIDE the winding: held, and hidden in the copper.)
             a1, a2 = ends(c, cu); b1, b2 = ends(q.p, q.u)
             x1, x2 = segseg(a1, a2, b1, b2)
-            touch = vnorm(vsub(x1, x2)) < 2.05CR_A
+            dv = vsub(x2, x1); dd = vnorm(dv)
+            onwound = abs(x1[3] - c[3]) < 0.4CR_L
+            reach = onwound ? CR_WOUND + CR_A : 2CR_A
+            if dd < reach
+                n = dd > 1e-9 ? vmul(1 / dd, dv) : (1.0, 0.0, 0.0)
+                q.p = vadd(q.p, vmul(reach - dd, n))
+                vn = vdot(q.v, n); vn < 0 && (q.v = vsub(q.v, vmul(vn, n)))
+                b1, b2 = ends(q.p, q.u); x1, x2 = segseg(a1, a2, b1, b2); dd = vnorm(vsub(x2, x1))
+            end
+            touch = dd < reach + 0.05CR_A
             if !touch
                 for o in pegs
                     (!o.held || o === q) && continue

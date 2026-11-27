@@ -363,6 +363,8 @@ function opening_prompt(host::Host, n::Int, seen::AbstractDict)
     println(io, big_goal_lines(jp), "\n")
     pj = project_lines(jp)
     isempty(pj) || println(io, pj, "\n")
+    ms = missed_lines(jp)
+    isempty(ms) || println(io, ms, "\n")
     print(io, stumble_lines(seen["finds"], seen["name"]))
     return String(take!(io))
 end

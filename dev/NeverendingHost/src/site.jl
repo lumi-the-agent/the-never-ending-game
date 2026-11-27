@@ -103,9 +103,19 @@ post_media(html::AbstractString) =
 "What a post shows that is not there yet (a render still in the worker)."
 missing_media(jp::JailPaths, html::AbstractString) = filter(f -> !isfile(joinpath(site_dir(jp), f)), post_media(html))
 
-"A post's words, its date and the reply link aside."
+"""
+The note a post that missed carries (`<p class="miss">…</p>`): in the character's own words, what went wrong
+and what it wants to improve. The blog marks such a post (`site/header.html`); it is no part of the caption.
+"""
+const MISS_NOTE = r"<p class=\"miss\">(.*?)</p>"s
+
+"A post's miss note as plain text, or `nothing`."
+miss_note(piece::AbstractString) =
+    (m = match(MISS_NOTE, piece); m === nothing ? nothing : String(strip(replace(m[1], r"<[^>]+>" => "", r"\s+" => " "))))
+
+"A post's words, its date, the reply link and the miss note aside."
 caption_words(piece::AbstractString) =
-    length(split(replace(piece, r"<span class=\"date\">[^<]*</span>" => " ", r"<a [^>]*>[^<]*</a>" => " ", r"<[^>]+>" => " ")))
+    length(split(replace(piece, MISS_NOTE => " ", r"<span class=\"date\">[^<]*</span>" => " ", r"<a [^>]*>[^<]*</a>" => " ", r"<[^>]+>" => " ")))
 
 "How long a caption may be."
 const CAPTION_WORDS = 60
@@ -174,6 +184,12 @@ function post_problems(jp::JailPaths, run)
     early = [p for p in posts if !isempty(p.missing)]
     isempty(early) || return "Your post(s) " * join(("$(p.id) (shows $(join(p.missing, ", ")), not rendered yet)" for p in early), ", ") *
                              ": write a post only once its pictures exist; until then they show as broken images."
+    looks = post_looks(jp)
+    unmarked = [id for (id, html) in session_pieces(jp, run.started) if miss_note(html) === nothing &&
+                (v = last_verdict(looks, id); v !== nothing && last(v)["verdict"] == "redo")]
+    isempty(unmarked) || return "Your post(s) $(join(unmarked, ", ")) missed (the critic said `redo`): retake it in the same post, " *
+                                "or mark it as a miss (rule 14): `<p class=\"miss\">…</p>`, one or two sentences in your own words " *
+                                "on what went wrong and what you want to improve."
     long = [p for p in posts if p.words > CAPTION_WORDS]
     isempty(long) || return "Your post(s) " * join(("$(p.id) ($(p.words) words)" for p in long), ", ") *
                             " are too long: a caption is one to three sentences, no verdict; let the pictures tell it."

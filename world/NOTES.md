@@ -1062,3 +1062,31 @@ camera at the thing's own bounding box, not the board's centre (the hook sat 4 c
 - `mesh!(scene, normal_mesh(Cylinder(...)))` fails in RayMakie's raster (FaceView normals -> vec3s MethodError);
   a meshscatter with that marker works. A stretched cylinder: unit marker, markersize Vec3f(1,1,len), rotation.
 - Film eye on a slope: take its height from `NG.ground` UNDER THE EYE, not under the subject (the beach rises inland).
+
+## The crane film came up empty (s151, movies/crane.jl, site/films/scrap-crane.mp4)
+- Contact sheet: the coil dips into the heap and rises with NOTHING visible on it, though the job said held = 2.
+  Caption changed to "...and it comes back up empty" (true to the film).
+- Fault 1 (code reading): the touch test is core-axis to peg-axis < 2.05*CR_A = 12 mm, but the copper winding
+  sits at R 14 mm + wire 2.8 mm. Pegs the field turns parallel to the core snap INSIDE the winding: held, hidden
+  (only their ends poke out like the core's dark stubs). Real contact: along the wound part the peg's axis can't
+  come nearer than R + rw + CR_A ~ 23 mm; only the core's bare 2 cm ends allow 12 mm. Pegs held there hang BELOW.
+- Fault 2: pegs stepped only when within 0.35 m of the coil (`isempty(near) && return`), and nothing gives a peg
+  gravity TORQUE about its resting end, so a peg the field stood up stays leaning in the air forever.
+  Fix: step every peg every substep (field only for near ones), torque of weight about the lowest end, a floor.
+- The sandbox replay of the shot (live_eval, loop over t) does NOT reproduce the worker: `beak_tips` follows the
+  drawn pose, and with no game frames between shots the beak never moves (coil stayed 0.9 m off the heap).
+  To replay: let frames run (one live_eval per few frames) or compute the beak without the drawn pose.
+
+## Putting tray (s151, physics/magnetgolf.jl, plugins/magnetgolf.jl, movies/magnetgolf.jl)
+- Honest numbers first (projects/ironsand.md): a lodestone (Br 0.06) pulls a rolling iron ball sideways at most
+  ~0.36 m/s^2 when 1 cm down, ~like a 2 degree dimple 15 cm wide; the same for any ball size (m = 3V H). So: a tray,
+  slow putts (0.25..1 m/s), rolling resistance Crr 0.06. A 3 cm ball at 0.75 m/s passing 5 cm from a flush stone
+  swings 9 cm across; at 0.6 m/s it is caught and stops on it.
+- Cost: EM stone from cylinder_mesh(n=48) + quad 6 = 3456 charges, 2.7 ms per ballforce; sides 16 + quad 3 = 288
+  charges, 0.16 ms, forces within 10%. Rolling in the game: ~1.7 ms a frame; iron-sand tap frames ~3 ms.
+- To share stones between MagnetGolf and IronSand, include em.jl in the plugin FIRST: magnetgolf.jl imports the
+  parent's EM when there is one (else two different EM.Magnet types).
+- GeometryBasics: `normal_mesh(Sphere(...), 32)` has no method: `normal_mesh(Tessellation(Sphere(...), 32))`.
+  Hikari.Conductor keywords are `ior` and `extinction` (not eta/k).
+- The sandbox clock (`Libc.strftime`) is the real time; trust it over my guess (s151 I thought I had 13 minutes left
+  and had 35).

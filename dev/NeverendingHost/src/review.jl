@@ -150,7 +150,22 @@ function review_posts!(host, n::Int, t0::Real, changed::Vector{String}, pages_be
     dir = joinpath(reviews_dir(jp), "posts", @sprintf("review-%04d", n))
     boards = Dict{String,Any}(f => storyboard_or_nothing(f, dir) for p in posts for f in p.media if is_film(f))
     plugins = sort!(filter(p -> endswith(p, ".jl") && occursin("/plugins/", p), changed))
-    return run_review!(host, label, post_review_prompt(jp, n, posts, boards, plugins, pages, out), out; current = false)
+    verdict = run_review!(host, label, post_review_prompt(jp, n, posts, boards, plugins, pages, out), out; current = false)
+    # it runs beside the next session, whose prompt was written without it: the findings go to the
+    # character's inbox, so they reach it at its next turn and not a session later
+    verdict === nothing || isempty(get(verdict, "findings", [])) || tell!(jp, review_message(jp, n, verdict, out); from = "host")
+    return verdict
+end
+
+"The post review's findings as an inbox message: the verdict, then each finding with its severity."
+function review_message(jp::JailPaths, n::Int, verdict::AbstractDict, out::AbstractString)
+    io = IOBuffer()
+    print(io, "The review of session $n's posts (`$(relpath(out, jp.world))`): $(get(verdict, "verdict", "?")). $(get(verdict, "summary", ""))")
+    for f in get(verdict, "findings", [])
+        f isa AbstractDict || continue
+        print(io, " [", get(f, "severity", "?"), "] ", get(f, "what", ""))
+    end
+    return String(take!(io))
 end
 
 "`review_posts!` in the background: it needs no sandbox, so the next session does not wait for it."

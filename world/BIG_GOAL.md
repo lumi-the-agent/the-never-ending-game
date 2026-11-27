@@ -15,12 +15,14 @@ The moment people share: The first motor wound from beach copper, put together b
   - [x] A spinning top floats over a ring magnet by the field alone (physics/levitron.jl, s148; playable next)
   - [x] Iron sand shows any field: tap it and read where a buried stone lies, then dig (s149, plugins/ironsand.jl)
   - [ ] Sand grains as needles that turn only where the field beats friction; two stones under one patch
+  - [x] Putting over a hidden stone: an iron ball bends round it on a sand tray, groove shows the bend (s151, plugins/magnetgolf.jl)
+  - [ ] Sprinkle iron sand on the tray to read the break before the putt; friends take turns
 - [ ] One materials table read by every system (copper, iron, magnet stone, wood, brine)
   - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
 - [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
 - [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
 - [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
   - [x] The coil's own field: Biot-Savart over every wound turn, core and spikes solved together (physics/coilcrane.jl, s150)
-  - [ ] The scrap crane: lowered into a spike pile, lifted, switched off over a friend (film)
+  - [ ] The scrap crane: lowered into a spike pile, lifted, switched off over a friend (film; s150 take came up empty: contact inside the winding, NOTES)
 - [ ] Coil, stone, axle and brushes fitted by hand spin, buzz or stall by how they were built
 - [ ] The motor drives the wheel, the paddle and the launcher; turned backwards it lights a lamp

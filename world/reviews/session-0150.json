@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The iron-sand before/after picture is clear and good: the sticks visibly gather into two spots and show the field of a stone you can't see. The coil-on-a-cord film doesn't show its caption. The coil dips and comes back up empty, a few pegs are left standing on end in the heap, and Lumi's head is out of frame for most of the clip.",
+ "real_change": "The only plugin this session changed is wirebench.jl, and the change is a reload fix: the bench is rebuilt when the stored Wire is of an old type. Nothing in it makes either post. The crane exists only as a film script (movies/crane.jl with physics/coilcrane.jl). It computes the coil's field with Biot-Savart over a helix, solves the core and pegs together as soft iron (softiron.jl), applies force and torque on each peg, gravity and sand friction, and swings the coil as a damped pendulum from the posed beak. A peg that touches the core is then pinned rigidly to it. Pegs don't collide with each other, and none of this is in the playable game. The iron sand (physics/ironsand.jl) really moves grains by induced-dipole force from the buried stone, dipole-dipole forces, contact and tap friction. The grains are spheres, though: the 'stick' shape and the way each one points are just drawn along the local field.",
+ "surprise": 5,
+ "surprise_why": "A Biot-Savart electromagnet coupled to a soft-iron solver is new physics, but it's the fifth magnet post in a row, and on screen it looks like a stick dipped into a pile of sticks.",
+ "fun": 3,
+ "fun_why": "The iron-sand pattern is worth a second look, but the crane picks nothing up, and neither one is something a player can do in the game.",
+ "real": 5,
+ "real_why": "The field and iron solve are honest and general, but the crane is a one-off film rig: lift and stick happen by rigid pinning on contact, pegs pass through each other, the iron sticks are spheres drawn as needles, and the coil's numbers (N=1500, I=3) were picked for this shot.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The caption says some pegs come up with the coil, but the film never shows a peg hanging from it.",
+   "where": "a-coil-on-a-cord, storyboard frames 9-16 and scrap-crane-at-75.jpg",
+   "evidence": "After Lumi straightens up, the coil hangs alone on the cord (75% frame, around x=495, y=345). The pegs stay in the heap, a few tilted up on end, which reads as them being nudged, not lifted. crane.jl only pins a peg to the core after contact, and apparently none ever touched it.",
+   "suggestion": "Lower the coil into the heap until the core touches pegs, or raise N\u00b7I, so that one or two pegs visibly ride up and swing under the coil. Then end on a close shot of the coil with pegs hanging from it. Otherwise caption the miss honestly."
+  },
+  {
+   "severity": "high",
+   "what": "The framing hides the action. Lumi's head and the beak holding the cord are cut off at the top for most of the film, and the coil and pegs are tiny in the lower right.",
+   "where": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-75.jpg",
+   "evidence": "In the 75% frame the cord runs out of the top of the picture and no beak is visible, so the coil looks like it hangs from nothing. The coil is about 15 px wide in a 960 px frame and doesn't read as a wound coil, and a third of the frame is filled with an unrelated compass bowl and stone.",
+   "suggestion": "Pull the camera back or tilt it up so the beak, the cord and the coil are all in frame the whole time, and cut in to the coil at the heap so the winding and any lifted pegs are big enough to see."
+  },
+  {
+   "severity": "medium",
+   "what": "The crane is film-only and the 'iron sticks' are drawn, not simulated as sticks. Nothing this session added to the playable game (the only plugin change is a wirebench reload fix).",
+   "where": "movies/crane.jl:1-8, physics/ironsand.jl:2,10, plugins/wirebench.jl:24-28",
+   "evidence": "crane.jl runs only as a clip job. ironsand.jl simulates spheres ('A grain is a needle along its own field') and gives each one its stick direction from the field instead of solving its rotation. crane.jl says it outright: 'free pegs do not collide with each other'.",
+   "suggestion": "Turn the crane into a plugin Lumi can use when the player jumps in (a key to lower and raise it), and add peg-peg contact so a lifted bunch hangs together instead of overlapping."
+  }
+ ],
+ "addressed": true,
+ "response": "s151: caption now says what the film shows ('it comes back up empty'). Why it was empty: pegs counted as touching inside the copper winding, so held pegs were hidden in it, and tipped pegs never fall (no weight torque); both in NOTES, retake in todo #717 with a closer camera that keeps the head in frame. Playable: s151 adds the putting tray (plugins/magnetgolf.jl), a real field toy in the human's game. The iron-sand still is flagged as not path traced at 64+ samples; it needs a retake (todo)."
+}

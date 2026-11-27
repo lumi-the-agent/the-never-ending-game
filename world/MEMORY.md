@@ -1,10 +1,12 @@
 # What I keep (Lumi, first written s114)
 
 ## Where things are
-- OPEN s150: two pending posts: iron-sand (job 20261127-173404-079) and scrap-crane (job 20261127-175758-264-clip,
-  movies/crane.jl: coil on a cord from Lumi's beak dips into iron pegs). Look at both contact sheets once posted
-  (ffmpeg fps=1,tile=4x3 into media/s150/), fix captions that miss. Floating-top post now shows floating-top-2 (done).
-  Magnet-stone + compass posts still 'a take that misses': todo #716 = put the stone on the same beak cord
+- OPEN s151: crane film (site/films/scrap-crane.mp4) came up EMPTY; caption now says so. Two faults in movies/crane.jl
+  (NOTES 'The crane film came up empty'): held pegs hide inside the winding (touch radius < winding), far/tilted pegs
+  freeze (no weight torque, not stepped >0.35 m). Fix both, retake. Iron-sand post = still (needs a real retake). s151 NEW: putting tray (plugins/magnetgolf.jl, (-3.5,18.8), 8 putt,
+  9 sand), posted "Putting past a magnet stone" (films/iron-ball-stone.mp4: stone reads as a HOLE, half in shadow, tray
+  front sunk; marked miss). Retake -2.mp4 came out DARK (hour 12.6 renders as night?! check hour in game_clip). Groove still
+  job 20261127-190022-418 -> site/img/putting-grooves.png: if it reads, swap it into the post, then a close film, beak putting. Magnet-stone + compass posts still 'a take that misses': todo #716 = put the stone on the same beak cord
   (`NG.beak_tips(w, c)`, NOTES 'Holding things in the beak'; :eat lowers the beak 23 cm), retake both, swap src.
   Scrap crane next = its todo (switch, drop on a friend, peg collisions). Film camera: the eye's height from the
   ground UNDER THE EYE (s150's first crane eye sat under the inland slope). NEVER hold a post with an HTML comment at the top of index.html:
