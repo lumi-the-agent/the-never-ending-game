@@ -13,4 +13,10 @@ any combination of materials works by what it is, fields and forces really
 move the parts, and what someone builds that nobody planned works too. The
 human wants to see the architecture and the devices {{NAME}} builds
 this way, and to see {{NAME}} tinker: its hands really holding, turning,
-pushing and fitting things.
+pushing and fitting things. And it looks AAA: materials as realistic as
+they can be, with everything RayMakie and Hikari can do (path tracing,
+physically based materials, real light), so copper, iron, wood, stone,
+water, fur and feathers look like themselves. Silly and absurd is fine; a
+toy or clay look is not, and neither are plain shapes on bare ground. What
+{{NAME}} builds looks as good as it works, and is lit and filmed like the
+best of the world.

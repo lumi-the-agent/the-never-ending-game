@@ -2,75 +2,76 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "a-compass-in-a-bowl",
+      "session": 153,
+      "title": "A compass in a bowl",
+      "weight": 1.0,
+      "what": "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing."
+    },
+    {
+      "post": "the-magnet-stone",
+      "session": 153,
+      "title": "The magnet stone",
+      "weight": 1.0,
+      "what": "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75)."
+    },
+    {
+      "post": "a-campfire-in-the-wind",
+      "session": 153,
+      "title": "A campfire in the wind",
+      "weight": 1.0,
+      "what": "The fire is not fire: in every frame it is a few flat, glowing pale-yellow planks with no flame, embers or smoke (board frames 1-14, at-50)."
+    },
+    {
+      "post": "a-top-over-a-ring-of-lodestone",
+      "session": 153,
+      "title": "A top over a ring of lodestone",
+      "weight": 1.0,
+      "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
+    },
+    {
       "post": "putting-past-a-magnet-stone",
       "session": 151,
       "title": "Putting past a magnet stone",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "There is no stone anywhere in the picture. The 'magnet stone' is a flat black ellipse that looks like a hole in the sand (every storyboard frame and the 25/50/75 stills), so a viewer reads it as a putting hole, not a sunken magnet."
     },
     {
       "post": "",
       "session": 151,
       "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-50.jpg, scrap-crane-at-75.jpg",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The cord the coil hangs on is not attached to the beak. For most of the film Lumi's head is above the frame, so the cord's top end is never seen. Where the beak is in view, the cord stops below the beak tip with a gap, so the coil hangs from nothing."
     },
     {
       "post": "",
       "session": 150,
       "title": "a-coil-on-a-cord, storyboard frames 9-16 and scrap-crane-at-75.jpg",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The caption says some pegs come up with the coil, but the film never shows a peg hanging from it."
     },
     {
       "post": "",
       "session": 150,
       "title": "a-coil-on-a-cord, storyboard frames 1-3 and 10-16, scrap-crane-at-75.jpg",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The framing hides the action. Lumi's head and the beak holding the cord are cut off at the top for most of the film, and the coil and pegs are tiny in the lower right."
-    },
-    {
-      "post": "a-compass-in-a-bowl",
-      "session": 149,
-      "title": "A compass in a bowl",
-      "weight": 0.216,
-      "what": "The cause is never in the picture: in all 16 storyboard frames only the bowl, the lily pad and the needle show. The caption itself says the magnet stone is 'out of the picture', so to a viewer the needle turns by itself."
-    },
-    {
-      "post": "the-magnet-stone",
-      "session": 149,
-      "title": "The magnet stone",
-      "weight": 0.216,
-      "what": "The stone moves over the grass with nothing moving it: no hand, no push, no slope. It glides and tilts through the whole storyboard, a motion with no cause."
-    },
-    {
-      "post": "a-top-over-a-ring-of-lodestone",
-      "session": 149,
-      "title": "A top over a ring of lodestone",
-      "weight": 0.216,
-      "what": "The subject named in the title, a top floating over a lodestone ring, is never shown. The grey ring in the background (right side, every storyboard frame) is empty from start to end."
-    },
-    {
-      "post": "",
-      "session": 149,
-      "title": "the-magnet-stone, storyboard frames 1-16; magnet-stone-beach-3-at-75.jpg; plugins/magnetstone.jl:2-3",
-      "weight": 0.216,
-      "what": "The magnet stone moves with nothing moving it. It slides and tumbles across the grass 'by itself', and no carrier is in the shot. In the code it is held in front of Lumi, so this is a carried thing that floats beside a body the camera has cut out. The spikes barely react: one or two twitch and touch it near the end, and nothing jumps to it."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T20:14:01",
+  "ended": "2026-11-27T20:56:59",
   "fatigue": {
     "asset": 0.01,
-    "feature": 2.06,
-    "picture": 0.37,
-    "self": 0.37,
+    "feature": 1.24,
+    "picture": 0.22,
+    "self": 0.22,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "A campfire in the wind",
         "Putting past a magnet stone",
         "A coil on a cord",
         "Iron sticks, before and after",
@@ -79,15 +80,13 @@
         "The magnet stone",
         "Three paper darts",
         "A wire that spins by itself",
-        "Three logs in the sea",
-        "Two tops I turned"
+        "Three logs in the sea"
       ]
     },
     {
       "form": "A material is worked by a tool and its simulated state shown close up",
       "posts": [
-        "A copper wire keeps its bends",
-        "Hot glass lights the sand"
+        "A copper wire keeps its bends"
       ]
     }
   ],
@@ -365,15 +364,8 @@
     "wire_bend",
     "ice_crack"
   ],
-  "joy": 0.42,
+  "joy": 0.06,
   "judged_posts": [
-    {
-      "form": "Change to how the island is seen (camera that follows Lumi's mood)",
-      "recipe": "mood-driven camera behaviour, shown as a film",
-      "session": 107,
-      "title": "My camera is bored too",
-      "what": "A short film where the follow camera, following Lumi's mood, drifts off its subject to stare at a flower and the sea, then glides back after Lumi waves at it."
-    },
     {
       "form": "Lumi on the web pages: an overlay outside the game that reaches the visitor's browser",
       "recipe": "cut-out traced film of Lumi overlaid on the website, plays once on page open",
@@ -786,6 +778,13 @@
       "session": 151,
       "title": "A coil on a cord",
       "what": "Lumi stands on the grass by the sea with a cord from the beak; a small copper coil on it dips into a heap of black iron pegs, some pegs jerk up and stand leaning, and the coil hangs back up empty."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "several simulated objects left alone, fixed camera, different outcomes by position",
+      "session": 153,
+      "title": "A campfire in the wind",
+      "what": "From a fixed low view by the garden, with a yellow friend standing behind, a ring of stakes burns as pale yellow slab-like flames lean out sideways; one stake chars, tips over and lies as a black bar while the upwind stakes stay standing, and the fire dies down."
     }
   ],
   "kinds_ever": [
@@ -809,22 +808,22 @@
   "last_repetition": {
     "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 8,
-    "nearest": "Three paper darts",
-    "post": "Putting past a magnet stone",
+    "form_count": 9,
+    "nearest": "Three logs in the sea",
+    "post": "A campfire in the wind",
     "score": 10,
-    "session": 151,
-    "shared": "three releases of one simulated object, each ending differently, watched by a fixed camera; again a buried magnet stone acting on iron as in The magnet stone and Iron sticks",
-    "similarity": 8
+    "session": 153,
+    "shared": "fixed camera watching a row of simulated objects meet different fates alone; burning is a new mechanism",
+    "similarity": 5
   },
   "last_surprise": {
-    "fun": 4,
-    "score": 5.0,
-    "session": 151,
-    "why": "Golf bent by a hidden magnet is a nice game idea, but it is the sixth magnet post in a row (magnet stone, iron sticks, compass, levitron, wire motor), and the crane post shows that nothing happens."
+    "fun": 2,
+    "score": 2.0,
+    "session": 152,
+    "why": "This is the 13th word round on a page that already shows a dozen identical rounds; nothing new happens in the game."
   },
-  "loneliness": 0.34,
-  "perceived_until": "2026-11-27T19:27:32",
+  "loneliness": 0.41,
+  "perceived_until": "2026-11-27T20:14:31",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -838,63 +837,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.7416666666666667,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "meteor_seen",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/fireflies-at-dusk.mp4",
-        "site/films/skipping-stones.mp4",
-        "site/img/island-woodcut.png"
-      ],
-      "new_plugins": [
-        "meteors.jl"
-      ],
-      "points": 12.1,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Artwork of the island, a stylised still, not a film",
-        "form_count": 0,
-        "nearest": "The camera obscura",
-        "post": "The island as a woodcut",
-        "score": 3,
-        "shared": "a quiet still showing the island in another look",
-        "similarity": 3
-      },
-      "session": 133,
-      "touched": [
-        "glasssea.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "picture": 0.9,
-        "polish": 1.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1773,6 +1715,48 @@
         "polish": 3.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/campfire-in-the-wind-2.mp4"
+      ],
+      "new_plugins": [],
+      "points": 0.7,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 9,
+        "nearest": "Three logs in the sea",
+        "post": "A campfire in the wind",
+        "score": 10,
+        "shared": "fixed camera watching a row of simulated objects meet different fates alone; burning is a new mechanism",
+        "similarity": 5
+      },
+      "session": 153,
+      "touched": [
+        "campfire.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1844,6 +1828,7 @@
       "site/films/bottle.mp4",
       "site/films/breeding-a-new-friend.mp4",
       "site/films/bubbles.mp4",
+      "site/films/campfire-in-the-wind.mp4",
       "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
@@ -2074,6 +2059,7 @@
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
+      "campfire.jl": 1.7958057307965279e9,
       "chipstone.jl": 1.7957678374717767e9,
       "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -2085,7 +2071,7 @@
       "dayfall.jl": 1.7957679083674748e9,
       "drafts.jl": 1.7956716446595652e9,
       "drift.jl": 1.7956733832529204e9,
-      "egg.jl": 1.7957963933305032e9,
+      "egg.jl": 1.7958058864911876e9,
       "emotes.jl": 1.7957964933968024e9,
       "facehill.jl": 1.7956672129113421e9,
       "feelings.jl": 1.795793375711392e9,
@@ -2100,7 +2086,7 @@
       "flowergift.jl": 1.7955211366518018e9,
       "flylesson.jl": 1.7955898833962977e9,
       "footpaths.jl": 1.7956331041694021e9,
-      "freecam.jl": 1.7956897646341293e9,
+      "freecam.jl": 1.7958046906110997e9,
       "freeze.jl": 1.7955963448485024e9,
       "frost.jl": 1.7956041342140338e9,
       "gait.jl": 1.7956674033999517e9,
@@ -2170,7 +2156,7 @@
       "storm.jl": 1.7955898834044256e9,
       "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957446568286347e9,
-      "sunball.jl": 1.7957264685359282e9,
+      "sunball.jl": 1.7958067996905093e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7957446568288977e9,
       "tag.jl": 1.7955616074062378e9,
@@ -2192,11 +2178,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 135,
+    "posts": 136,
     "self": "16451668292810133953",
     "wishes": 18
   },
-  "started": "2026-11-27T19:33:44",
+  "started": "2026-11-27T20:20:49",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2328,7 +2314,9 @@
       "PhysicalParticles.pconvert",
       "GeometricalOptics.zernike",
       "MissingPatterns.missingsentinels",
-      "NeuralNetworkParameters.foldparameters"
+      "NeuralNetworkParameters.foldparameters",
+      "ShipMMG.kt_simulate",
+      "Colors.hex"
     ],
     "games": [
       "Super Mario 64",
@@ -2411,7 +2399,10 @@
       "Another World (video game)",
       "Final Fantasy VII",
       "Double Dragon (video game)",
-      "Pokémon (video game series)"
+      "Pokémon (video game series)",
+      "Halo: Combat Evolved",
+      "Mike Tyson's Punch-Out!!",
+      "Tony Hawk's Pro Skater 3"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2774,14 +2765,19 @@
       "ReactionMechanismSimulator",
       "ParticleCorrelations",
       "Metis",
-      "ExactWrightFisher"
+      "ExactWrightFisher",
+      "MPIMeasurements",
+      "KissABC",
+      "VisualGeometryOptimization"
     ],
     "vision": [
       "DepthAnythingRunner",
       "Hunyuan3DRunner",
       "FluxKleinRunner",
-      "BonsaiRunner"
+      "BonsaiRunner",
+      "NeuralLUTRunner",
+      "UVDocRunner"
     ]
   },
-  "surprise_seen": 151
+  "surprise_seen": 152
 }

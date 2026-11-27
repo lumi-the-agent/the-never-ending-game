@@ -1,5 +1,6 @@
 {
   "created": "2026-11-27T19:49:05.909",
+  "finished": "2026-11-27T20:19:30.321",
   "id": "20261127-194905-909-clip",
   "kind": "clip",
   "params": {
@@ -9,6 +10,18 @@
     "path": "/sim/Programmieren/SimGame/world/site/films/campfire-in-the-wind.mp4",
     "script": "movies/fire.jl"
   },
+  "result": {
+    "events": "Tuple{Int64, String, Float32}[(12, \"ignite\", 1.8), (12, \"break\", 8.9), (12, \"out\", 15.0), (1, \"out\", 17.8), (2, \"out\", 17.8), (3, \"out\", 17.8), (4, \"out\", 17.8)]",
+    "frames": 288,
+    "hour": 18.32327559441941,
+    "path": "/sim/Programmieren/SimGame/world/site/films/campfire-in-the-wind.mp4",
+    "seconds_per_frame": 5.413170292145676,
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 1627.4,
   "started": "2026-11-27T19:52:22.900",
-  "status": "running"
+  "status": "done"
 }

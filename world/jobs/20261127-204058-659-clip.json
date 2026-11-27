@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-27T20:40:58.659",
+  "finished": "2026-11-27T20:47:39.586",
+  "id": "20261127-204058-659-clip",
+  "kind": "clip",
+  "params": {
+    "call": "fire_clip",
+    "kwargs": {
+      "fps": 1,
+      "gas": true,
+      "samples": 16,
+      "seconds": 4.0
+    },
+    "max_minutes": 15,
+    "path": "/sim/Programmieren/SimGame/world/media/s153/fire-gas-test2.mp4",
+    "script": "movies/fire.jl"
+  },
+  "result": {
+    "events": "Tuple{Int64, String, Float32}[(12, \"ignite\", 1.9), (12, \"break\", 8.9), (12, \"out\", 12.7), (1, \"out\", 17.4), (2, \"out\", 17.4), (3, \"out\", 17.4), (4, \"out\", 17.4)]",
+    "frames": 4,
+    "hour": 18.308132508229082,
+    "path": "/sim/Programmieren/SimGame/world/media/s153/fire-gas-test2.mp4",
+    "seconds_per_frame": 63.9979864358902,
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 398.5,
+  "started": "2026-11-27T20:41:00.433",
+  "status": "done"
+}

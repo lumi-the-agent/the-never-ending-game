@@ -1,6 +1,6 @@
 # Fire that spreads through whatever it touches
 Goal: The player lights fires on purpose (a campfire to cook fish, coals for the kiln, a hot wire in dry grass) and has to keep them from spreading: dig sand into a firebreak, wet the grass from the pond, drag the stool away. Wind shifts, a spark jumps, a wooden fence catches and sags. Every fire is a small fight you can win or lose, and the island remembers it (char, ash, a burnt stump).
-Next: (the campfire plugin is in the game, s152) Lumi fights it with its beak for real: carries sea water to it, kicks sand on embers (todo #726); then the island's wood props burn by what they are, and the grass bed (todo #727); then a hot wire as the igniter.
+Next: (s153: flames are hot gas with Planck emission in the tracer, physics/flamevolume.jl; film retake site/films/campfire-in-the-wind-2.mp4 -> swap into the post) the live campfire plugin draws the gas flame when path traced, and real wood (grain, char crust) for the logs; then Lumi fights it with its beak for real: carries sea water to it, kicks sand on embers (todo #726); then the island's wood props burn by what they are, and the grass bed (todo #727); then a hot wire as the igniter.
 
 ## Where it is (s152, passed idea round 2)
 - physics/fire.jl: FireBody (lumped heated skin, moisture boils first, piloted ignition, burning flux G, char rate
@@ -18,3 +18,9 @@ Next: (the campfire plugin is in the game, s152) Lumi fights it with its beak fo
 - Contact zone = a cylinder round the leaning flame axis, not the flame's real shape.
 - Flames in the film are emissive cylinders (tongues), no smoke yet; no embers, no ash.
 - CPU loop over pairs: fine for tens of bodies; hundreds (grass) need the Mantle kernel and Raycore queries.
+
+## s153: flames as hot gas
+- The human (s153): real materials, not painted clay. The flame is now a temperature field round the merged flame's
+  leaning axis (1400 K core, cooling with height), soot absorption 7/m, emission sigma_a * B(T) at 610/550/465 nm
+  (Hikari RGBGridMedium). Looks like a real campfire (media/s153/gas-frame4.png). The banded tubes
+  (flamelook.jl) stay only for the live raster.

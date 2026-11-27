@@ -8,6 +8,10 @@ cozy sameness is a finding, not a virtue. Judge the game as it is now against th
 politeness; a score of 10 means it could ship in a commercial game, 5 means
 an average hobby project, 2 means placeholder art.
 
+Judge it against the human's direction too:
+
+{{DIRECTION}}
+
 ### Look and play with your own eyes
 
 - Screenshots of the dashboard now, in every camera mode (`set_camera!`),
@@ -44,7 +48,7 @@ an average hobby project, 2 means placeholder art.
 - `world/assets/catalog.json`: are generated assets made and used, or is
   everything built from primitives?
 - `world/STYLE.md`, if the author keeps one: does the game follow it, and is
-  it a good direction?
+  it a good direction for the human's above?
 - The previous perfectionist reviews (`world/reviews/perfectionist-*.json`):
   what moved since then? A category that got worse is a high finding.
 - The journal and the todo list: is the author spending sessions on what a

@@ -1,0 +1,29 @@
+{
+ "verdict": "pass",
+ "summary": "Session 152 put up no new piece on the garden page or feed (the newest piece is still 'Putting past a magnet stone' from 18:57, already reviewed). The only thing that went up is a routine dictionary entry, 'waindet', on words.html, made by the existing wordround plugin. It is the 13th entry of the same kind and reads correctly, though the tree and the tally disagree about Pickles without saying why.",
+ "real_change": "On the page: wordround.jl wrote one more word entry. In the game a word goes from friend to friend along who talks to whom, sometimes misheard (Pickles heard 'weendet'), and the final counts per variant are kept. The tree shows who first told whom; the tally shows what everyone says at the end. The session also changed campfire.jl, egg.jl, freecam.jl and sunball.jl, and rendered films/campfire-in-the-wind.mp4 at 20:13, but no post shows any of it, so none of it is judged here.",
+ "surprise": 1,
+ "surprise_why": "This is the 13th word round on a page that already shows a dozen identical rounds; nothing new happens in the game.",
+ "fun": 2,
+ "fun_why": "A made-up word and a little tree of who misheard it is mildly charming once, but this one has no surviving variant, so there is even less to read than in earlier entries.",
+ "real": 3,
+ "real_why": "The word does spread by a real rule along the friends' talk graph, with random mishearings that compete. But it is a simple one-effect spread model, and this entry shows nothing beyond what it showed before.",
+ "findings": [
+  {
+   "severity": "low",
+   "what": "The tree shows Pickles hearing 'weendet', but the tally says 'waindet 9' with no 'weendet' at all, and the entry never says Pickles was set right later. A visitor who opens the tree sees a contradiction.",
+   "where": "site/words.html, the 'waindet' entry (27 November 2026, 19:48); plugins/wordround.jl:347-353",
+   "evidence": "The tree marks <span class=\"heard\">weendet</span> under Truffle, and the vs line reads 'I said waindet. After 3.4 minutes: waindet 9.' The heard-line loop only names variants that are still in the final counts, so a mishearing that later died out is never mentioned.",
+   "suggestion": "When a first-hearing variant is missing from the final counts, add a line such as 'Pickles heard weendet at first, then took waindet from Wibbles', or mark corrected nodes in the tree."
+  },
+  {
+   "severity": "low",
+   "what": "The word page keeps growing with near-identical entries. It has had three in the last ten hours, and most end with one variant and nothing to read. The feature has stopped being news but still gets posted as a result.",
+   "where": "site/words.html",
+   "evidence": "Of the 13 entries, recent ones like spople, cragle, spickle and waindet all end as '<word> 9' or '<word> 7' with one mishearing that dies out.",
+   "suggestion": "Only add an entry when something different happens, such as two variants splitting the island or a word that drifts over several hops. Or make the round itself change, for example words that last across days and get reused in friends' speech."
+  }
+ ],
+ "addressed": true,
+ "answer": "Not fixed in s153 (the session went to the human's message and the fire). The word page's repeats and the Pickles tree/tally mismatch belong to the wordround plugin; noted for a later session."
+}

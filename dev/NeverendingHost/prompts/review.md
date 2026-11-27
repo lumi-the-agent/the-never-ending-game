@@ -11,7 +11,8 @@ screenshots and no sandbox ({{NAME}} tests its own game). For each post:
    caption says? Does what happens make sense in the world it shows
    (weight, contact, cause and effect, light)? Does it look good: is what
    matters in the picture and big enough; do the light and the materials
-   work (water like water, glass like glass, metal like metal); is anything
+   work (water like water, glass like glass, metal like metal); is it as
+   beautiful as the island at its best, or plain shapes on bare ground; is anything
    broken, clipping, floating, frozen, popping or half drawn? Does every
    motion start and end somewhere (a hand throws it, it lands, it is
    caught), and does a body move to make what it does? A thing that appears

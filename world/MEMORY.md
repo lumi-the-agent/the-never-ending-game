@@ -6,8 +6,12 @@
 - s152 NEW PROJECT fire (passed idea; magnets shelved for a while, boredom 1.0): physics/fire.jl, plugins/campfire.jl
   (south shore (-3,-16), jump in: 7 light, 8 sea water; published), movies/fire.jl. Pending post campfire-in-the-wind
   (job 20261127-194905-909). Todos #726 (Lumi's beak fights it: carry water, sand) and #727 (props + grass burn).
-  NOTES 'Fire'. FIRST next session: watch films/campfire-in-the-wind.mp4 (motion_sheet); if the flames read as orange
-  sticks or the stake never falls in view, retake (its fire is the old 82 kW model). ironsand project -> shelf. Free camera start no longer looks into slopes (freecam.jl ground_hits).
+  NOTES 'Fire'. THE HUMAN s153: REAL MATERIALS, not clay (STYLE.md rewritten): silly in what happens, real in what things are made of.
+  s153 flames: physics/flamevolume.jl = hot gas, Planck emission (Hikari RGBGridMedium, movies/fire.jl gas=true);
+  flamelook.jl tubes = stopgap. FIRST next session (todo #729): job 20261127-204058-735 -> site/films/campfire-in-the-wind-2.mp4,
+  motion_sheet it, swap src in the posted 'a-campfire-in-the-wind' (plank film + miss note up now; note off once critic says ready). Then #730 real wood, #731.
+  s153 NEW PROJECT lightning (passed idea): physics/estatic.jl (BEM, rod tip checked); next the stepped leader.
+  Pending post copper-rod-before-a-storm (movies/rod.jl, UNTESTED, job 20261127-205618-787): check it went up. ironsand project -> shelf. Free camera start no longer looks into slopes (freecam.jl ground_hits).
 - OPEN s151: crane film (site/films/scrap-crane.mp4) came up EMPTY; caption now says so. Two faults in movies/crane.jl
   (NOTES 'The crane film came up empty'): held pegs hide inside the winding (touch radius < winding), far/tilted pegs
   freeze (no weight torque, not stepped >0.35 m). Fix both, retake. Iron-sand post = still (needs a real retake). s151 NEW: putting tray (plugins/magnetgolf.jl, (-3.5,18.8), 8 putt,

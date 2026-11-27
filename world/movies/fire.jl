@@ -5,6 +5,8 @@
 using NeverendingGame, GeometryBasics, Makie, LinearAlgebra
 const NG = NeverendingGame
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "fire.jl"))   # the worker's script module has no `include`
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "flamelook.jl"))   # s153: tapered tongues in three colour bands
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "flamevolume.jl"))   # s153: hot gas, Planck emission
 
 const FIRE_SPOT = (-3.0f0, -16.0f0)      # s152: 1.4 m clear of every prop AND plotted thing round the fire, the camera and Lumi (the clearest on the island; -9.5,-0.5 had a mushroom in front, -7,6 a house round the camera)
 
@@ -40,36 +42,13 @@ function fire_run(; minutes = 20, dt = 0.5, every = 4.0, wind = (2f0, 0f0))
     return bs, snaps, events
 end
 
-function flame_mesh(flames, t, origin, byid)
-    ms = GeometryBasics.Mesh[]
-    for (c, L, Q, ids) in flames
-        L < 0.03f0 && continue
-        g = [byid[i] for i in ids]
-        w = ones(Float32, length(g)); W = Float32(length(g))   # the snapshot keeps ids only: the plain centroid
-        bx = sum(w[i] * g[i].pos[1] for i in eachindex(g)) / W
-        by = sum(w[i] * g[i].pos[2] for i in eachindex(g)) / W
-        bz = minimum(b -> b.pos[3] + 0.5f0 * b.size[3], g)   # from the lowest fuel top: the log pile, not a stake top
-        base = Point3f(origin[1] + bx, origin[2] + by, origin[3] + bz)
-        axis = Vec3f(origin[1] + c[1], origin[2] + c[2], origin[3] + c[3]) - base     # base -> centre: half the flame
-        D = clamp(0.1f0 * L, 0.03f0, 0.09f0)
-        sp = clamp(0.5f0 * maximum(b -> max(b.size[1], b.size[2]), g), 0.05f0, 0.4f0)   # tongues spread over the fuel
-        for j in 1:7                      # tongues, each flickering in height
-            a = 2f0 * Float32(pi) * j / 7 + 0.7f0 * t
-            off = j == 1 ? Vec3f(0) : Vec3f(0.6f0 * sp * cos(a), 0.4f0 * sp * sin(a), 0)
-            h = 1f0 + 0.2f0 * sin(9f0 * t + 2.1f0 * j) + 0.1f0 * sin(23f0 * t + j)
-            b0 = base + off - Vec3f(0, 0, 0.05f0)
-            push!(ms, GeometryBasics.normal_mesh(Cylinder(b0, b0 + (j == 1 ? 1.8f0 : 1.4f0 * h) * axis, (j == 1 ? 1f0 : 0.6f0) * D)))
-        end
-    end
-    isempty(ms) && return GeometryBasics.normal_mesh(Cylinder(Point3f(origin[1], origin[2], origin[3] - 2), Point3f(origin[1], origin[2], origin[3] - 1.9f0), 0.01f0))
-    return GeometryBasics.expand_faceviews(merge(ms))
-end
+flame_mesh(flames, t, origin, byid) = flame_tongues(flames, t, origin, byid)   # (root, body, tips)
 
 const WOOD = RGBf(0.55, 0.36, 0.2)
 const CHAR = RGBf(0.07, 0.05, 0.04)
 char_color(char, left) = (s = clamp(char / 0.008f0 + (1 - left), 0, 1); RGBf((1 - s) * WOOD.r + s * CHAR.r, (1 - s) * WOOD.g + s * CHAR.g, (1 - s) * WOOD.b + s * CHAR.b))
 
-function fire_parts(; minutes = 20, seconds = 12.0)
+function fire_parts(; minutes = 20, seconds = 12.0, gas = true)
     _, snaps, events = fire_run(; minutes)
     bs = fire_bodies()                    # the bodies as they stood at the start: the visuals move them by the snapshots
     S = Dict{Symbol,Any}(:bodies => bs, :snaps => snaps, :events => events)
@@ -92,8 +71,10 @@ function fire_parts(; minutes = 20, seconds = 12.0)
             p = mesh!(gm.stage.scene, m; color = WOOD, material = NG.Hikari.Diffuse(color = (0.55, 0.36, 0.2), roughness = 0.9f0), name = Symbol("fire_body_", b.id))
             S[:plots][b.id] = p
         end
-        S[:flame] = mesh!(gm.stage.scene, flame_mesh(snaps[1].flames, 0f0, o, snaps[1].bodies); color = RGBf(1.0, 0.55, 0.15),
-                          material = NG.Hikari.Emission(color = (1.0, 0.52, 0.14), strength = 6.0), name = :fire_flame)
+        gas && (S[:flame] = []; return)
+        S[:flame] = [mesh!(gm.stage.scene, m; color = RGBf(col...), material = NG.Hikari.Emission(color = col, strength = k),
+                           name = Symbol("fire_flame_", i))
+                     for (i, (m, (col, k))) in enumerate(zip(flame_mesh(snaps[1].flames, 0f0, o, snaps[1].bodies), FLAME_BANDS))]
     end
     place! = function (gm, t)
         o = S[:o]
@@ -119,7 +100,15 @@ function fire_parts(; minutes = 20, seconds = 12.0)
             end
             p.color[] = char_color(st.char, st.left)
         end
-        S[:flame][1][] = flame_mesh(sn.flames, Float32(t), o, sn.bodies)
+        if gas      # the hot gas: a new medium every frame (the old box plot goes)
+            haskey(S, :gas) && delete!(gm.stage.scene, S[:gas])
+            delete!(S, :gas)
+            v = flame_volume(sn.flames, Float32(t), o, sn.bodies)
+            v === nothing || (S[:gas] = mesh!(gm.stage.scene, v[1]; color = RGBAf(1, 0.6, 0.2, 0.0), name = :fire_gas,
+                                              material = NG.Hikari.MediumInterface(NG.Hikari.NullMaterial(); inside = v[2])))
+        else
+            for (p, m) in zip(S[:flame], flame_mesh(sn.flames, Float32(t), o, sn.bodies)); p[1][] = m; end
+        end
         return sn
     end
     shot = function (gm, rig, t)
@@ -140,8 +129,8 @@ function fire_parts(; minutes = 20, seconds = 12.0)
     setup, shot, S
 end
 
-function fire_clip(path; rasterize = false, samples = 20, width = 960, height = 540, fps = 24, seconds = 12.0, hour = 18.3, minutes = 20)
-    setup, shot, S = fire_parts(; minutes, seconds)
+function fire_clip(path; rasterize = false, samples = 20, width = 960, height = 540, fps = 24, seconds = 12.0, hour = 18.3, minutes = 20, gas = true)
+    setup, shot, S = fire_parts(; minutes, seconds, gas)
     res = NG.game_clip(path; size = (width, height), seconds, fps, samples, hour, warmup = 0.3, rasterize,
                        rig = NG.CameraRig(; mode = :fixed), setup, shot, fade = 0)
     ev = [(id, string(e), round(t / 60; digits = 1)) for (id, e, t) in S[:events]]

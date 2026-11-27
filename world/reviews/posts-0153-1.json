@@ -1,0 +1,43 @@
+{"posts": [
+ {"post": "a-campfire-in-the-wind",
+  "verdict": "redo",
+  "problems": [
+   "The fire is not fire: in every frame it is a few flat, glowing pale-yellow planks with no flame, embers or smoke (board frames 1-14, at-50).",
+   "There is no sign of wind anywhere: no smoke drift, no flame lean, no grass or leaves moving, so 'steady wind', 'downwind' and 'upwind' cannot be read from the film.",
+   "The glowing planks jump in size and angle from frame to frame (board frames 1-7 grow into a long diagonal beam, frame 8 suddenly collapses) instead of burning.",
+   "The 'stake that catches, chars and falls' cannot be followed: a black stick appears lying on the ground by frame 8 with no fall seen, and it is not clear which stake it was.",
+   "At the end the whole fire vanishes between board frames 14 and 15 instead of dying down; the stakes in the foreground look unchanged, so 'the ones upwind stay standing' shows nothing happening to them.",
+   "Grass blades and a pink ring-shaped object sit inside the glowing planks (at-50), clipping through the fire; the foreground stakes cover part of the fire.",
+   "The yellow bird stands in the background in every frame, frozen and taking no part."
+  ],
+  "critique": "A viewer sees glowing yellow boards flickering behind some posts and then blinking out; neither the wind nor a stake catching and falling can be seen, so the caption claims a story the film does not show."},
+ {"post": "a-top-over-a-ring-of-lodestone",
+  "verdict": "redo",
+  "problems": [
+   "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6).",
+   "The glass plate sinks into the lodestone ring and disappears inside it (board frames 5-7) instead of being taken away: a clipping.",
+   "The top hangs perfectly still at one spot for the whole second half, with no wobble or visible spin (board frames 7-16, at-50), so 'spinning' is not visible and it reads as a frozen object floating.",
+   "The setup is plain shapes: a flat dark-grey polygon disc and a matte black ring on bare grass; the 'lodestone' looks like neither stone nor ore.",
+   "Half-seen creatures cut into the frame edges (a pink leg at top left, a grey leg at right in frames 9-15) and draw the eye away from the tiny top."
+  ],
+  "critique": "The plate melts into the ring with no one moving it, and the top then hangs motionless like a frozen model, so it reads as broken animation rather than a levitating spinning top."},
+ {"post": "the-magnet-stone",
+  "verdict": "redo",
+  "problems": [
+   "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75).",
+   "It barely moves in 4.4 s and turns slightly with no visible cause; nothing shows it gliding 'by itself' as a deliberate motion.",
+   "The 'thin iron spikes' are short brown sticks lying flat on the grass; they look like twigs, not standing iron spikes.",
+   "A spike pokes through the cube (board frames 11-16, at-75): a clipping.",
+   "The first frame is a dark fade; the whole film is washed out and hazy, with a huge shadow covering most of the ground and a grey-blue tree root cut off at the left edge."
+  ],
+  "critique": "A dark box nudging slightly among scattered twigs on a hazy, flat field: there is nothing to follow, the stone and spikes don't look like what the caption names, and the spike clips through the cube."},
+ {"post": "a-compass-in-a-bowl",
+  "verdict": "redo",
+  "problems": [
+   "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing.",
+   "The whole film is covered by a grey-green haze; colors are washed out and the light is flat (board, at-50).",
+   "The 'bowl' is a plain grey polygon ring with a flat blue disc for water, and the 'lily pad' is a flat green ellipse with no shape; nothing looks like stone, water or a leaf.",
+   "The needle is a thin stick, small in the middle of the frame; the subject is tiny while a blurry flower bush fills the top left."
+  ],
+  "critique": "A flat, foggy disk with a small red stick that snaps between angles; it does not look like a compass bowl or a swinging needle, and it is not something to show anyone."}
+]}

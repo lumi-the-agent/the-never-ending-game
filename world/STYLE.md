@@ -1,18 +1,23 @@
 # Art direction: The Neverending Game
 
-A small round island in a calm sea, seen like a toy diorama. Cozy, soft, readable
-at a glance. Everything looks like it could be picked up and squeezed.
+THE HUMAN, s153: "I never wanted matte painted clay. I keep saying AAA: a bit silly and absurd is ok, but use
+materials as realistic as possible and the full potential of RayMakie and Hikari." That line overrules everything
+below that still says clay, matte or "no realistic detail".
+
+A small round island in a calm sea, made of real stuff under real light. What HAPPENS here may be silly and
+absurd (a bird winding a coil, a pig in a beret); what things are MADE of is real: you can tell oak from pine,
+wet sand from dry, copper from brass, a char crust from bark, by how they take the light.
 
 ## Shapes
-- Chunky and rounded: domes, blobs, thick stems, soft bevels. No thin spikes, no hard
-  corners, no realistic detail (generated assets: say "chunky, stylized, soft rounded shapes").
-- Creatures are sculpted clay toys (since s74-85 every friend is a generated, cut body: plush piglets, jelly
-  blobs, cotton sheep, clay crabs with bunny ears; Lumi a big shaggy golden bird), big eyes and soft rounded
-  limbs; read the species from the silhouette. No body is built from primitive spheres and sticks any more,
-  and a new creature starts from a generated mesh, cut into moving parts, its face checked from the front.
+- Readable silhouettes, but real surface detail: grain, cracks, bark, pores, worn edges, dents. Generated assets:
+  ask for "realistic materials, physically based textures", not "chunky stylized clay".
+- Creatures: characters may be cartoon-shaped (big eyes, a crest, a beret), but their stuff is real: feathers that
+  are feathers (layered, a sheen, fine fibres), wool that scatters light, a crab's wet chitin, skin with
+  subsurface. No body is built from primitive spheres and sticks; a new creature starts from a generated mesh,
+  cut into moving parts, its face checked from the front.
 - Every species needs one shape that sticks OUT of its round body and reads from behind and from the
   side at 8 m: pig floppy ears and curly tail, sheep's dark face out of the wool, crab bunny ears and two big
-  waving claws, Lumi's spiky crest and long grey legs. Back pieces stay flat and light: a dark round bag read as a face.
+  waving claws, Lumi's spiky crest and long grey legs.
 - Props sit on the ground, seen from the side (never a flat disc on a pedestal).
 - Small things come in groups (flowers, stones, mushrooms), big things alone (trees).
 
@@ -24,9 +29,15 @@ at a glance. Everything looks like it could be picked up and squeezed.
 - Night lights: cool bioluminescent cyan, sky blue, lavender and mint, around a warm
   pale-yellow core; fireflies and lanterns warm yellow. Never one flat colour for all.
 
-## Materials
-- Matte and soft (painted clay / vinyl toy), little gloss. Wood warm and slightly rough.
-- Things that glow: `shading = NoShading` in the raster plus a Hikari `Emission` for
+## Materials (physically based, Hikari's whole range: dev/Hikari/docs/src/materials.md)
+- Every material has the properties of what it is: wood is rough with grain and turns to black cracked char when
+  it burns; wet sand is darker and glossier than dry; metals are Conductor with their measured eta/k (copper,
+  iron rust, brass); glass and water are dielectrics with their ior; wax, leaves, jelly and skin scatter light
+  under their surface; wool and feathers have sheen.
+- Hot things glow by their temperature, not by a painted colour: fire, embers, a glowing wire are blackbody
+  emitters (Hikari NanoGridMedium with a temperature field for flames and smoke, Planck's law), so a 900 K ember is
+  dull red and a 1400 K flame core yellow-white. Never a flame as banded tubes (s153's stopgap).
+- Things that glow live: `shading = NoShading` in the raster plus a Hikari `Emission` for
   path tracing (Emission alone is a grey pebble in the raster).
 
 ## Light and mood
@@ -65,8 +76,8 @@ at a glance. Everything looks like it could be picked up and squeezed.
 - The meadow is never a bare carpet: little clusters (mossy stones, daisies, toadstools, stumps, logs) every few metres, kept out of paths and away from trunks.
 
 ## Weather (session 76)
-- Clouds are clay too: plain lit spheres in clusters (bright tops, grey-blue bellies), never unlit glowing discs or
-  rim shells. Many small lumps beat a few big ones; beaded strings of equal balls read as pearls, not cloud.
+- Clouds are volumes where the tracer can (Hikari GridMedium cloud density); live, lit lumps in clusters
+  (bright tops, grey-blue bellies), never unlit glowing discs or rim shells. Many small lumps beat a few big ones; beaded strings of equal balls read as pearls, not cloud.
 - A storm cloud is the same clay in slate (RGB ~0.30-0.50, a lighter lump every third), low enough (~8 m) that it
   fills the top of an eye-level frame. Cameras for weather tilt up a little so the sky event is in the picture.
 - Lightning is a thin jagged white-blue line (0.86, 0.91, 1.0) that flickers on-off-on for a third of a second; in
@@ -77,5 +88,5 @@ at a glance. Everything looks like it could be picked up and squeezed.
 ## Real light and real materials (sessions 89-91, goal 7)
 - Water is clear glass (ior 1.33) over a pale sandy floor that the sun reaches (`MediumInterface(...; shadows = 1.33)`): you see the floor, the stems and the pads' shadows through it. Never an opaque disc.
 - Glowing things are real lights in traced pictures (Hikari `Emission`, warm (1.0, 0.68, 0.32)): a lantern lights the water, the reeds and the faces near it, and is mirrored in the pond (site/img/lanterns.png). Live they are unlit warm globes with a soft pool under them, never a bare ball.
-- Each body has a finish over its clay colours: wool sheen on the sheep, a wet clear coat on the jelly blobs, a lacquered crab shell, a faint fuzz on the piglets (finishes.jl). Soap bubbles are thin films (thin_wall glass with a 450 nm film), see-through, with the friend inside lit.
+- Each body has a finish over its base colours: wool sheen on the sheep, a wet clear coat on the jelly blobs, a lacquered crab shell, a faint fuzz on the piglets (finishes.jl). Soap bubbles are thin films (thin_wall glass with a 450 nm film), see-through, with the friend inside lit.
 - Dusk (about 19:30-20:00) is the hour for light pictures: the sky still blue-gold, the lanterns already doing the lighting.

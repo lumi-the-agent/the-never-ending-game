@@ -9,6 +9,7 @@ isdefined(Main, :CAMPFIRE) || Core.eval(Main, :(const CAMPFIRE = Dict{Symbol,Any
 const NG = NeverendingGame
 const CF = Main.CAMPFIRE
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "fire.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "flamelook.jl"))   # s153: tapered tongues, three colour bands
 
 const CF_SPOT = (-3.0f0, -16.0f0)     # the clearest place on the island (NOTES 'Fire'): sand, 1.4 m from anything
 const CF_NEAR = 2.2f0
@@ -56,30 +57,8 @@ function cf_wood_mesh(bs, fuel0, o)
     return m, cols
 end
 
-"The flames: per merged flame, tongues from the fuel up along its lean (Heskestad height, Thomas lean)."
-function cf_flame_mesh(bs, flames, t, o)
-    ms = GeometryBasics.Mesh[]
-    byid = Dict(b.id => b for b in bs)
-    for (c, L, Q, ids) in flames
-        L < 0.03f0 && continue
-        g = [byid[i] for i in ids]
-        bx = sum(b -> b.pos[1], g) / length(g); by = sum(b -> b.pos[2], g) / length(g)
-        bz = minimum(b -> b.pos[3] + 0.5f0 * b.size[3], g)
-        base = Point3f(o[1] + bx, o[2] + by, o[3] + bz)
-        axis = Vec3f(o[1] + c[1], o[2] + c[2], o[3] + c[3]) - base
-        D = clamp(0.1f0 * L, 0.03f0, 0.09f0)
-        sp = clamp(0.5f0 * maximum(b -> max(b.size[1], b.size[2]), g), 0.05f0, 0.4f0)
-        for j in 1:7
-            a = 2f0 * Float32(pi) * j / 7 + 0.7f0 * t
-            off = j == 1 ? Vec3f(0) : Vec3f(0.6f0 * sp * cos(a), 0.4f0 * sp * sin(a), 0)
-            h = 1f0 + 0.2f0 * sin(9f0 * t + 2.1f0 * j) + 0.1f0 * sin(23f0 * t + j)
-            b0 = base + off - Vec3f(0, 0, 0.05f0)
-            push!(ms, GeometryBasics.normal_mesh(Cylinder(b0, b0 + (j == 1 ? 1.8f0 : 1.4f0 * h) * axis, (j == 1 ? 1f0 : 0.6f0) * D)))
-        end
-    end
-    isempty(ms) && return GeometryBasics.expand_faceviews(GeometryBasics.normal_mesh(Cylinder(Point3f(o[1], o[2], o[3] - 3), Point3f(o[1], o[2], o[3] - 2.9f0), 0.01f0)))
-    return GeometryBasics.expand_faceviews(merge(ms))
-end
+"The flames (root, body, tips meshes): tongues from the fuel up along its lean (physics/flamelook.jl)."
+cf_flame_mesh(bs, flames, t, o) = flame_tongues(flames, t, o, Dict(b.id => b for b in bs))
 
 function cf_ensure!(game)
     haskey(CF, :wood) && CF[:wood].parent === game.stage.scene && return
@@ -93,8 +72,9 @@ function cf_ensure!(game)
     get(CF, :bodies, nothing) isa Vector{FireBody} || cf_reset!(false)
     m, cols = cf_wood_mesh(CF[:bodies], CF[:fuel0], CF[:o])
     CF[:wood] = mesh!(sc, m; color = cols, material = NG.Hikari.Diffuse(color = CF_WOOD, roughness = 0.9f0), name = :campfire_wood)
-    CF[:flame] = mesh!(sc, cf_flame_mesh(CF[:bodies], [], 0f0, CF[:o]); color = RGBf(1.0, 0.55, 0.15),
-                       material = NG.Hikari.Emission(color = (1.0, 0.52, 0.14), strength = 6.0), name = :campfire_flame)
+    CF[:flame] = [mesh!(sc, m; color = RGBf(col...), material = NG.Hikari.Emission(color = col, strength = k),
+                        name = Symbol("campfire_flame_", i))
+                  for (i, (m, (col, k))) in enumerate(zip(cf_flame_mesh(CF[:bodies], [], 0f0, CF[:o]), FLAME_BANDS))]
     CF[:drawn] = 0.0
     # the chase view stood behind Lumi, its body hid the fire (s152): from the sea side, Lumi and the ring both in view
     isdefined(Main, :LOCAL_CAMS) || Core.eval(Main, :(const LOCAL_CAMS = Dict{String,Any}()))
@@ -164,7 +144,7 @@ function NG.step!(::Campfire, game, dt)
         m, cols = cf_wood_mesh(bs, CF[:fuel0], o)
         CF[:wood][1][] = m; CF[:wood].color[] = cols
         if !NG.path_traced(game)
-            CF[:flame][1][] = cf_flame_mesh(bs, merged_flames(bs, wind), Float32(time() % 1000), o)
+            for (p, m) in zip(CF[:flame], cf_flame_mesh(bs, merged_flames(bs, wind), Float32(time() % 1000), o)); p[1][] = m; end
         end
     end
     CF[:ms] = (time_ns() - t0) / 1e6

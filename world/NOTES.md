@@ -1118,5 +1118,21 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   can't take a Keyboard.Button key (use Symbol("key_", Int(k))).
 - Burning rate = surface heat balance (Drysdale ch. 5): (own merged flame's eps(1-exp(-0.8 D)) sigma T_f^4 + 8 kW/m^2
   + other flames - char re-radiation at 500 C) / 1.8 MJ/kg; flame-out under 3 g/m^2s. A lone stake dies, a crib holds.
+- Flame look (s153, physics/flamelook.jl, used by the film AND the plugin): s152's one-emission cylinders at strength 6
+  traced as pale planks. Now tongues = curved tapered tubes in three meshes (root yellow 2.2, body orange 2.2, tips red
+  1.3); reads as fire in the trace (media/s153/fire-look-test-overview.jpg). Tongue length = the model's L along
+  base->centre: 2x base->centre drew a 2 m streak once a burning stake joined the pile's flame. Test a look with
+  fire_clip at fps 1 (12 frames, ~6 min) before a full take.
+- Flames as GAS (s153, physics/flamevolume.jl, movies/fire.jl gas=true): Hikari RGBGridMedium on a box mesh with
+  `MediumInterface(NullMaterial(); inside = med)`; sigma_a = soot, Le = Planck(T) at 610/550/465 nm over B(550, 1400 K),
+  Le_scale 1.5 reads right at 18:20 light. GIVE sigma_s_grid: a missing grid is 1/m everywhere (pbrt semantics) and
+  the whole box went milky. Each film frame deletes the old box plot and adds a new one (~6 s/frame at 20 spp).
+  Hikari also has NanoGridMedium(density; temperature) (Planck built in, NanoVDB trees) for bigger fires/smoke.
 - Jump-in in a live_eval test: `start_minigame!(game, JumpIn)` moves Lumi to its start AFTER your placement; place
   Lumi in a second eval, and press keys only once `near` is true (a press while not near is used up).
+
+## Electrostatics (s153, physics/estatic.jl, project lightning)
+- BEM: flat panels, constant charge each, collocation at centroids, self term = disc of the panel's area
+  (q / (2 pi eps0 r)), earthed plane z = 0 by mirror charges. Storm field E0 down: phi0 = E0 z, solve P q = V - phi0.
+- Checked against Forbes' capped-rod enhancement within 10% (projects/lightning.md). Measure the field a couple of
+  radii OFF the surface: on a panel centroid the field of the panel itself is singular.

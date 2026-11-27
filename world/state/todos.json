@@ -10191,6 +10191,76 @@
       "status": "open",
       "title": "Daily clock-scripted events: keep only what the world really causes (glass sea 7:00, glass rain 15:00, sun under the sea 19:00)",
       "updated": "2026-11-27T20:13:41.388"
+    },
+    {
+      "created": "2026-11-27T20:41:30.291",
+      "detail": "Job 20261127-204058-735 renders site/films/campfire-in-the-wind-2.mp4 (flames as hot gas, Planck emission). When done: motion_sheet it, check the gas box is not milky and the fallen stake is in view, then change the src of #a-campfire-in-the-wind in site/index.html to the -2 film (the plank version is up now). If it misses, add a miss note.",
+      "est_minutes": 15.0,
+      "id": 729,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Campfire film retake with gas flames: swap campfire-in-the-wind-2.mp4 into the post",
+      "updated": "2026-11-27T20:41:30.291"
+    },
+    {
+      "created": "2026-11-27T20:41:30.519",
+      "detail": "The human: 'use materials as realistic as possible and the full potential of RayMakie and Hikari'. STYLE.md is rewritten. Start with what the camera sees most: the campfire's logs and stakes (wood grain texture, roughness, a char crust that cracks: Hikari textures.md), the shore sand (wet/dry), the stones. Done when a traced still of the campfire spot shows wood grain and char a stranger would name, next to the s153 still (media/s153/gas-frame4.png).",
+      "est_minutes": 60.0,
+      "id": 730,
+      "kind": "look",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Real materials pass (the human, s153): wood, sand, stone as physically based materials, not painted clay",
+      "updated": "2026-11-27T20:41:30.519"
+    },
+    {
+      "created": "2026-11-27T20:41:30.535",
+      "detail": "plugins/campfire.jl still draws the banded tubes (physics/flamelook.jl) for raster and holds still in trace. Use flame_volume (physics/flamevolume.jl) as the traced flame (rebuild at a few Hz only while path traced, measure frame time), and a softer raster flame (additive, NoShading, alpha falloff).",
+      "est_minutes": 40.0,
+      "id": 731,
+      "kind": "look",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Live campfire draws the gas flame when path tracing is on",
+      "updated": "2026-11-27T20:41:30.535"
+    },
+    {
+      "created": "2026-11-27T20:42:36.583",
+      "detail": "KeyError: key :sys not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] uses_e(w::NeverendingGame.World, me::NeverendingGame.Creature)\n    @ Main.Plugin_stranger /sim/Programmieren/SimGame/world/plugins/stranger.jl:251\n  [3] flower_e\n    @ /sim/Programmieren/SimGame/world/plugins/greetings.jl:389 [inlined]\n  [4] step!(s::Main.Plugin_greetings.Greetings, game::Game, dt::Float64)\n    @ Main.Plugin_greetings /sim/Programmieren/SimGame/world/plugins/greetings.jl:401\n  [5] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [6] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [7] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [8] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [9] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [10] (::NeverendingGame.var\"#advance!#399\"{NeverendingGame.CameraRig, Game, Makie.Scene, NeverendingGame.World})(dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:428\n [11] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#73#74\"{Bool, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, shot::Main.ClipScript.var\"#79#80\"{Main.ClipScript.var\"#77#78\"{Float64, Bool, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, Dict{Symbol, Any}}, fade::Int64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:435\n [12] film!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]\n [13] #394\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:413 [inlined]\n [14] with_scratch_game(f::NeverendingGame.var\"#394#395\"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Float64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var\"#73#74\"{Bool, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, Main.ClipScript.var\"#79#80\"{Main.ClipScript.var\"#77#78\"{Float64, Bool, Dict{Symbol, Any}, Vector{Main.ClipScript.FireBody}, Vector{Any}}, Dict{Symbol, Any}}, Int64, Bool, String}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:347\n [15] #game_clip#392\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]\n [16] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:408 [inlined]\n [17] fir",
+      "est_minutes": 15.0,
+      "id": 732,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-27T20:47:47.115: plugin greetings loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:greetings.Greetings failed in step! and was switched off",
+      "updated": "2026-11-27T20:47:47.115"
+    },
+    {
+      "created": "2026-11-27T20:54:08.292",
+      "detail": "Project lightning (projects/lightning.md). physics/estatic.jl solves earthed conductors in the storm's field (checked against Forbes). Next: the leader steps from the cloud base toward the strongest field (the leader channel itself as a conductor at the cloud's potential, re-solved each step), attaches within the striking distance r = 10 I^0.65 of a rod tip or the ground. Done when: a traced night still on the hill shows the branched path ending on the rod the player planted, and moving the rod moves the strike (two stills).",
+      "est_minutes": 90.0,
+      "id": 733,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Lightning: the stepped leader finds its path through the field round what stands on the hill",
+      "updated": "2026-11-27T20:54:08.328"
     }
   ]
 }

@@ -23,9 +23,11 @@ For each post:
   animation. So is a thing carried or held that is not in the hands, beak or
   feet (it floats or slides beside the body), and a walk whose feet slide,
   hover or do not step in time with how fast the body goes.
-- Does it look good: is what matters in the picture, big enough and not
-  hidden; does the light work; is anything broken, clipping, floating,
-  frozen or half drawn?
+- Is it beautiful, like the island at its best and a game people love? Is
+  what matters in the picture, big enough and not hidden; does each thing
+  look like what it is made of (copper, iron, wood, stone, glass); does it
+  belong to the island, or is it plain shapes on bare ground; does the
+  light work; is anything broken, clipping, floating, frozen or half drawn?
 - Would you show it to someone?
 
 A post may show an experiment that did not work (the physics did not do

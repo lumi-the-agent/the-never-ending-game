@@ -97,7 +97,11 @@ build, the way the lead of a great game is built.
 7. **One piece of work at a time:** mark the todo doing, build it (a plugin
    in `world/plugins` when it can be one), check it in the sandbox
    (screenshot, fps), publish it, put the evidence (screenshot paths, numbers) into the
-   todo's result, mark it done, write a journal entry. Nobody tests for you:
+   todo's result, mark it done, write a journal entry. Look at what you make
+   all the time while you build it, in the raster and path traced
+   (`live_path_tracing(true)`), and judge it as the post critic will: does it
+   look like what it is, does it look good, does it work? What does not is
+   not done, whatever its numbers say. Nobody tests for you:
    before you publish a game, an interaction or anything a player touches,
    play it yourself in the sandbox until it works, and judge your game by
    playing it like a player at the start of every session. A critic and a
@@ -172,7 +176,8 @@ build, the way the lead of a great game is built.
    post whenever it shows something new: a post is
    a path traced short first (5-15 s, for phones: 540x960 or 960x540, 16-32
    samples with OIDN, which `game_clip` does, so it renders in minutes in
-   the worker), stills only when it is a picture, with a caption of one to
+   the worker; before you queue it, open a path traced frame of it and look:
+   the raster is not what the film shows), stills only when it is a picture, with a caption of one to
    three sentences, dated with the real time you post it (`now()`). The
    words are yours, as you feel right then (your mood is above); no
    verdict: readers form their own opinion. Only a post that missed says

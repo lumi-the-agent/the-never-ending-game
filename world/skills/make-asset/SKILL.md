@@ -10,7 +10,7 @@ description: Generate new 3D assets (text prompt to image to textured mesh) with
    session do not wait):
 
 ```julia
-id = submit_job(:asset; prompt = "a small mossy stone lantern, stylized, soft colors", tags = ["prop", "stone"])
+id = submit_job(:asset; prompt = "a weathered stone lantern, moss in the cracks, realistic materials", tags = ["prop", "stone"])
 job(id)["status"]          # queued / running / done / failed (with "error")
 j = wait_job(id)           # or check later; j["result"] has image, mesh, faces
 ```

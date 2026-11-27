@@ -108,7 +108,7 @@ function perfectionist_prompt(jp::JailPaths, n::Int, out::AbstractString)
     ph = post_history_lines(jp)
     isempty(ph) || println(io, ph, "\n")
     print(io, film_lines(newest_films(jp, 3), joinpath(reviews_dir(jp), "motion", @sprintf("perfectionist-%04d", n))))
-    print(io, prompt_file("reviewer.md"), "\n", prompt_file("perfectionist.md"))
+    print(io, prompt_file("reviewer.md"), "\n", named(prompt_file("perfectionist.md"), jp))
     return String(take!(io))
 end
 

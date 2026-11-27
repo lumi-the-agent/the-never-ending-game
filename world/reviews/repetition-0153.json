@@ -1,0 +1,10 @@
+{"posts": [{"post": "A campfire in the wind",
+            "what": "From a fixed low view by the garden, with a yellow friend standing behind, a ring of stakes burns as pale yellow slab-like flames lean out sideways; one stake chars, tips over and lies as a black bar while the upwind stakes stay standing, and the fire dies down.",
+            "recipe": "several simulated objects left alone, fixed camera, different outcomes by position",
+            "nearest": "Three logs in the sea",
+            "similarity": 5,
+            "shared": "fixed camera watching a row of simulated objects meet different fates alone; burning is a new mechanism"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed",
+            "posts": ["A campfire in the wind", "Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone", "The magnet stone", "Three paper darts", "A wire that spins by itself", "Three logs in the sea"]},
+           {"form": "A material is worked by a tool and its simulated state shown close up",
+            "posts": ["A copper wire keeps its bends"]}]}

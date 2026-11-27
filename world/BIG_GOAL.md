@@ -10,6 +10,7 @@ The moment people share: The first motor wound from beach copper, put together b
 
 - [ ] A magnet stone every iron thing feels by distance and pose, and jumps to
   - [x] Done s147: field of any magnet mesh (physics/em.jl), the stone on the north beach (5 in Jump in), the compass bowl
+  - [ ] Lightning makes a lodestone: the strike finds its path by the field round what the player put up (project lightning; physics/estatic.jl s153, rod tip field within 10% of theory)
   - [ ] Iron magnetises iron: spikes hang in chains (physics/softiron.jl solved s148: 2 hold, the 3rd at the edge)
   - [ ] The anchor chain and other iron on the island feel it too
   - [x] A spinning top floats over a ring magnet by the field alone (physics/levitron.jl, s148; playable next)
@@ -21,7 +22,7 @@ The moment people share: The first motor wound from beach copper, put together b
   - [x] First table in EM.MATERIALS (s147); melting point and brine still missing
 - [ ] Copper from green rock: smelted in the kiln, drawn into wire that keeps its bends
 - [ ] A circuit from what touches what: two metals in brine make a cell, thin wire heats and melts
-  - [ ] Heat and fire in real things: wood heats, dries, catches, chars and breaks; wind leans the flames (physics/fire.jl s152, project fire)
+  - [ ] Heat and fire in real things: wood heats, dries, catches, chars and breaks; wind leans the flames (physics/fire.jl s152; flames as hot gas glowing by Planck s153)
   - [ ] A fire the player lights and fights: campfire, stakes, pond water (next)
 - [ ] A coil wound by turning a spindle with the beak lifts nails: an electromagnet
   - [x] The coil's own field: Biot-Savart over every wound turn, core and spikes solved together (physics/coilcrane.jl, s150)
