@@ -149,7 +149,9 @@ function NG.step!(::ChipStone, game, dt)
         end
         pop!(CST, :quiet, false) || cs_knock!(game, me)    # the new note right after a chip (not after the first solve)
     end
-    aim = me.controlled && game.minigame === nothing ? cs_aim(game, me) : nothing
+    # the menu's Jump in runs as a mini game (game.minigame isa JumpIn): the stone must answer there too (review 0139)
+    free = game.minigame === nothing || game.minigame isa NG.JumpIn
+    aim = me.controlled && free ? cs_aim(game, me) : nothing
     CST[:near] = aim !== nothing              # knock.jl leaves L to us while Lumi is at the stone
     rdown = Makie.Keyboard.r in game.keys_down
     ldown = Makie.Keyboard.l in game.keys_down

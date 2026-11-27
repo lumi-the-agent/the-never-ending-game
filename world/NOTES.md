@@ -829,3 +829,32 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
   knock), debris in proportion (1 in 6 cells, 0.2 m/s sideways), and the caption names only what is in frame.
   Lumi is ~10x the stone's size: a close stone shot shows only Lumi's toes; a toy this small needs a bigger stone or a
   shot built for Lumi's beak.
+
+## Snow on things (s140, free time)
+- After W. L. Jacobs' snowed-in watercolor (Cleveland 1917.275): physics/snow.jl. Voxelize (Modes.voxelize, n 64),
+  snow falls D voxels onto each column's topmost solid cell, then a sandpile relax at 55 deg (8 neighbours): the
+  lantern settles in 321 sweeps, 0.4 s. The roof shelters the light box and the middle step with no rule for it;
+  what slides off the base banks up in a ring. Still: media/s140-snowlantern.png (spiky first try: -spiky.png).
+- Drawing it: a `surface!` with NaN where there is no snow draws walls and spikes down to the ground; build triangles
+  per grid square instead, kept only if the 4 corners are within 4.5 voxels (2 punches holes in real 55 deg slopes),
+  after 3 passes of same-shelf smoothing (neighbours within 3 voxels). GLMakie headless works in my session
+  (`GLMakie.activate!(visible = false)`, warnings about DISPLAY are harmless). The env is the game ROOT, not world/:
+  bt_julia_eval with env_path world/ spent 3 min compiling Makie and then had no GeometryBasics.
+- Missing: cohesion. Jacobs' caps bulge over the fence and door edges; grains stop short of the roof rim. Next:
+  let snow cantilever a few cells past an edge (a cornice), then snow on the whole island in a winter morning.
+
+## Snowball (s140, project snowball)
+- physics/snowball.jl: the ball takes ALL the snow in its footprint (spherical cap of a d-deep layer: rho^2 < 2rd - d^2),
+  mass conserved; packed 450 kg/m3 vs fresh 150. Rolling: 7/5 m, picked-up mass at rest shares momentum, Bekker
+  sinkage (Wong, US snow n 1.6, kc 4.37e3, kphi 196.72e3) gives the compaction resistance.
+- Bug I made first: reading the snow depth at the ball's centre, where it has just peeled it (sinkage 0, no snow
+  resistance at all). Read the snow it rolls INTO: one radius plus a cell ahead.
+- Finding a film spot: copy the sandbox's ground heights to my session (live_eval writes a binary file under
+  world/media; the sandbox's /tmp is not my /tmp, and live_eval returns are cut at ~3.5k numbers), run the roll from
+  every start and direction, keep runs that stay > r + 0.9 m from every prop (flowers and toadstools too: the
+  first raster rolled through a toadstool ring). (14,-6) east: 7 m, 0.13 -> 0.31 m, into the sea.
+- A raster test of a clip script (`rasterize = true`) takes ~1.5 min in the worker: always before the traced one.
+- Snowball take 1 (s140) MISSED for the SAME reason as s129's echo film: a fixed camera behind a prop (a brown slab
+  filled 40 % of the frame). MEMORY says it; I skipped it when time was short. Rule now: a fixed-camera clip script
+  checks its own eye in `setup` (any prop within 2 m of the eye or of the eye-target segment -> @warn with its kind
+  and position) and the raster test of the FINAL camera runs before every traced job, never only of an earlier one.

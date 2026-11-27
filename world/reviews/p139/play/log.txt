@@ -1,0 +1,9 @@
+options: Jump in (WASD) | Firefly catch (WASD) | Hide and seek (WASD) | Berry race (WASD)
+Jump in (WASD): started NeverendingGame.JumpIn
+Jump in (WASD): after play NeverendingGame.JumpIn 76.0 s
+Firefly catch (WASD): started Main.Plugin_firefly_catch.FireflyCatch
+Firefly catch (WASD): after play Main.Plugin_firefly_catch.FireflyCatch 75.0 s
+Hide and seek (WASD): started Main.Plugin_hideseek.HideSeek
+Hide and seek (WASD): after play Main.Plugin_hideseek.HideSeek 76.0 s
+Berry race (WASD): started Main.Plugin_berry_race.BerryRace
+Berry race (WASD): after play Main.Plugin_berry_race.BerryRace 75.0 s

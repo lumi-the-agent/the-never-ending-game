@@ -1,14 +1,22 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T08:40:57",
+  "ended": "2026-11-27T09:43:52",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.93,
-    "picture": 0.26,
-    "self": 0.03,
-    "sound": 0.61
+    "feature": 1.16,
+    "picture": 0.16,
+    "self": 0.02,
+    "sound": 0.37
   },
   "forms": [
+    {
+      "form": "Physics study of a single falling, thrown or rolling object, filmed",
+      "posts": [
+        "A snowball that grows as it rolls, a take that misses",
+        "A boomerang that comes back",
+        "Dandelion clocks, a take that misses"
+      ]
+    },
     {
       "form": "Sound of island objects: knock a thing and hear its solved notes",
       "posts": [
@@ -19,8 +27,7 @@
     {
       "form": "Artwork or a new way of seeing the island, a still, not a film",
       "posts": [
-        "An ant's-eye view, a try that misses",
-        "The island as a woodcut"
+        "An ant's-eye view, a try that misses"
       ]
     },
     {
@@ -28,14 +35,6 @@
       "posts": [
         "Ants on a honey road, a take that misses",
         "Ants on a honey road"
-      ]
-    },
-    {
-      "form": "Physics study of a single falling or thrown object, filmed",
-      "posts": [
-        "A boomerang that comes back",
-        "Dandelion clocks, a take that misses",
-        "Skipping stones, a take that misses"
       ]
     },
     {
@@ -49,12 +48,6 @@
       "form": "New permanent place or prop, shown quietly from a fixed view",
       "posts": [
         "The owl listens"
-      ]
-    },
-    {
-      "form": "New world rule acted out on the island, filmed",
-      "posts": [
-        "Thin ice, a take that misses"
       ]
     }
   ],
@@ -327,15 +320,8 @@
     "fireflies_synced",
     "meteor_seen"
   ],
-  "joy": 0.53,
+  "joy": 0.3,
   "judged_posts": [
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "promised permanent building appears at a place; friends occasionally sit there",
-      "session": 99,
-      "title": "The beach hut",
-      "what": "A new little plank hut with a striped roof is built on the south beach (Lumi carries a crate) after the friends' vote chose it; Pinchy claims the doorway."
-    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "recipe": "recurring island-wide replay event with a small reaction gag",
@@ -748,6 +734,13 @@
       "session": 139,
       "title": "The stone lantern's three notes",
       "what": "Fixed view of the garden's stone lantern beside a yellow friend among blowing autumn leaves; it is knocked three times and sways slightly in each of its solved vibration modes (slowed a hundredfold), with the notes on the soundtrack."
+    },
+    {
+      "form": "Physics study of a single falling, thrown or rolling object, filmed",
+      "recipe": "one simulated object rolls downhill alone, camera watches from afar",
+      "session": 140,
+      "title": "A snowball that grows as it rolls, a take that misses",
+      "what": "On a snow-covered shore a small white ball rolls downhill, leaving a darker stripe in the snow, and ends in the sea while the camera pans a little behind a brown slab that covers almost half the frame."
     }
   ],
   "kinds_ever": [
@@ -769,24 +762,24 @@
     "session": 133
   },
   "last_repetition": {
-    "factor": 1.0,
-    "form": "Sound of island objects: knock a thing and hear its solved notes",
-    "form_count": 0,
-    "nearest": "See by clapping",
-    "post": "Chipping a stone to change its note",
-    "score": 3,
-    "session": 139,
-    "shared": "a sound simulation on the island; otherwise a new shapeable instrument",
-    "similarity": 3
+    "factor": 0.2154434690031884,
+    "form": "Physics study of a single falling, thrown or rolling object, filmed",
+    "form_count": 2,
+    "nearest": "Nobody kicked the sun",
+    "post": "A snowball that grows as it rolls, a take that misses",
+    "score": 6,
+    "session": 140,
+    "shared": "a lone ball rolling downhill toward the shore unprompted, filmed; new here is the snow it eats and the trail it leaves",
+    "similarity": 5
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 3.5,
-    "session": 138,
-    "why": "It is a retake of last session's ant road that fails the same way. The ants still form a straight line beside the drawn road, and the one new event, carrying the biscuit, never happens."
+    "fun": 4,
+    "score": 6.5,
+    "session": 139,
+    "why": "Changing an object's shape and hearing its FEM-solved pitch move, the way marimba bars are tuned, is new physics for the island, but the film doesn't show it clearly and the lantern knock builds on last session's knock."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T07:51:38",
+  "perceived_until": "2026-11-27T08:55:57",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -800,64 +793,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "ring_landed",
-          "who": 2
-        },
-        {
-          "kind": "ring_ride",
-          "who": 2
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/ring-3.mp4"
-      ],
-      "new_plugins": [
-        "ring.jl"
-      ],
-      "points": 1.0,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "New world rule acted out on the island, shown in a distant film",
-        "form_count": 4,
-        "nearest": "The island is a seesaw",
-        "post": "The island has a ring",
-        "score": 10,
-        "shared": "an island-wide physics rule shown in a distant film",
-        "similarity": 3
-      },
-      "session": 120,
-      "touched": [
-        "dayfall.jl",
-        "greetings.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1862,6 +1797,53 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "polish",
+        "post",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/snowball-grows.mp4"
+      ],
+      "new_plugins": [],
+      "points": 2.8,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "Physics study of a single falling, thrown or rolling object, filmed",
+        "form_count": 2,
+        "nearest": "Nobody kicked the sun",
+        "post": "A snowball that grows as it rolls, a take that misses",
+        "score": 6,
+        "shared": "a lone ball rolling downhill toward the shore unprompted, filmed; new here is the snow it eats and the trail it leaves",
+        "similarity": 5
+      },
+      "session": 140,
+      "touched": [
+        "chipstone.jl",
+        "dayfall.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 2.0,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1933,6 +1915,7 @@
       "site/films/bottle.mp4",
       "site/films/breeding-a-new-friend.mp4",
       "site/films/bubbles.mp4",
+      "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
       "site/films/crabs.mp4",
@@ -2136,6 +2119,7 @@
       "butterflies.jl": 1.7955211366525671e9,
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
+      "chipstone.jl": 1.7957640729586387e9,
       "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
       "cloudshapes.jl": 1.7956473473104203e9,
@@ -2169,7 +2153,7 @@
       "giant.jl": 1.7957446568247983e9,
       "glassrain.jl": 1.7957202039441018e9,
       "glasssea.jl": 1.7957467030097435e9,
-      "greetings.jl": 1.795761225911171e9,
+      "greetings.jl": 1.7957641749170856e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hiccups.jl": 1.795744656825295e9,
@@ -2177,7 +2161,7 @@
       "islandnow.jl": 1.7956168788952758e9,
       "jelly.jl": 1.7957011848358562e9,
       "kite.jl": 1.7955986738072937e9,
-      "knock.jl": 1.795761380395259e9,
+      "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
       "lanterns.jl": 1.7956312350413148e9,
       "lensclear.jl": 1.7956676147046635e9,
@@ -2245,11 +2229,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 119,
+    "posts": 120,
     "self": "369107370865776265",
     "wishes": 12
   },
-  "started": "2026-11-27T07:57:07",
+  "started": "2026-11-27T09:01:48",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2353,7 +2337,9 @@
       "Jutul.vectorize_variables",
       "MuTuner.MuTunerLogger",
       "WavesAndEigenvalues.discretize",
-      "MCMCChains.hpd"
+      "MCMCChains.hpd",
+      "Caesar.fetchDataImage",
+      "MetopDatasets.scale_iasi_spectrum"
     ],
     "games": [
       "Super Mario 64",
@@ -2394,7 +2380,10 @@
       "Call of Duty: Black Ops",
       "BioShock",
       "Nights into Dreams...",
-      "PUBG Universe"
+      "PUBG Universe",
+      "Terraria",
+      "Half-Life 2",
+      "Bloodborne"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2695,7 +2684,10 @@
       "ImageDistances",
       "PICDataStructures",
       "SolidStateDetectors",
-      "FractionalGaussianFields"
+      "FractionalGaussianFields",
+      "PartialWaveFunctions",
+      "GeoParams",
+      "AsteroidShapeModels"
     ],
     "vision": [
       "BasicVSRRunner",
@@ -2709,8 +2701,10 @@
       "Qwen3EmbeddingRunner",
       "DemucsRunner",
       "PPOCRRunner",
-      "QwenImageEditRunner"
+      "QwenImageEditRunner",
+      "UVDocRunner",
+      "MatAnyoneRunner"
     ]
   },
-  "surprise_seen": 138
+  "surprise_seen": 139
 }

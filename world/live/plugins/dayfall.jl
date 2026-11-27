@@ -102,7 +102,10 @@ end
 function draw!(p, L = nothing)
     B = DF[:base]; n = length(B)
     if n == 0
-        Makie.update!(p; arg1 = [Point3f(0, 0, -50)], rotation = [Makie.Quaternionf(0, 0, 0, 1)], color = [RGBf(1, 1, 1)])
+        # every per-instance attribute goes back to length 1 together: a markersize vector left at the old length
+        # broke RayMakie's meshscatter (DimensionMismatch) on the next Path tracing switch (review 0139)
+        Makie.update!(p; arg1 = [Point3f(0, 0, -50)], rotation = [Makie.Quaternionf(0, 0, 0, 1)], color = [RGBf(1, 1, 1)],
+                      markersize = [Vec3f(1, 1, 1)])
         return
     end
     sink = DF[:sink]

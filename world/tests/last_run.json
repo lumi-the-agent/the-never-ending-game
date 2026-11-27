@@ -1,26 +1,12 @@
 {
   "results": [
     {
-      "error": "",
+      "error": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n[ComputeEdge] trace_transforms = #draw_atomic##12((positions, rotation, markersize, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:418\n  with edge inputs:\n    positions = GeometryBasics.Point{3, Float32}[[0.0, 0.0, -50.0]]\n    rotation = Makie.Quaternionf[1.0 + 0.0im + 0.0jm + 0.0km]\n    markersize = GeometryBasics.Vec{3, Float32}[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]\nTriggered by update of:\n  markersize, rotations, rotation or arg1\nDue to ERROR: DimensionMismatch: array could not be broadcast to match destination\nStacktrace:\n  [1] check_broadcast_shape\n    @ ./broadcast.jl:559 [inlined]\n  [2] check_broadcast_axes\n    @ ./broadcast.jl:562 [inlined]\n  [3] check_broadcast_axes (repeats 2 times)\n    @ ./broadcast.jl:566 [inlined]\n  [4] instantiate\n    @ ./broadcast.jl:316 [inlined]\n  [5] materialize!\n    @ ./broadcast.jl:905 [inlined]\n  [6] materialize!\n    @ ./broadcast.jl:902 [inlined]\n  [7] pos_rot_scale_to_mat3x4!(transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}, positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{GeometryBasics.Vec{4, Float32}}, scale::Vector{GeometryBasics.Vec{3, Float32}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:116\n  [8] (::RayMakie.var\"#draw_atomic##12#draw_atomic##13\")(args::@NamedTuple{positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}}, changed::@NamedTuple{positions::Bool, rotation::Bool, markersize::Bool}, last::@NamedTuple{trace_transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:432\n  [9] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{positions::Base.RefValue{Vector{GeometryBasics.Point{3, Float32}}}, rotation::Base.RefValue{Any}, markersize::Base.RefValue{Vector{GeometryBasics.Vec{3, Float32}}}}, @NamedTuple{trace_transforms::Base.RefValue{Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}}}, RayMakie.var\"#draw_atomic##12#draw_atomic##13\"})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1476\n [10] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [11] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [12] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [13] locked_resolve!(edge::ComputePipeline.ComputeEdge{Compute",
       "file": "minigames.jl",
-      "name": "Berry race: a first play with only W/A/D picks 3 berries in 20 s from a meadow start line",
-      "passed": true,
-      "seconds": 15.4
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Firefly catch: a first play with only W/A/D catches 3 flies in 20 s, never from the pier",
-      "passed": true,
-      "seconds": 20.3
-    },
-    {
-      "error": "",
-      "file": "minigames.jl",
-      "name": "Hide and seek: friends hide behind trees, a first play with only W/A/D finds 2 by their giggles, they follow, end card",
-      "passed": true,
-      "seconds": 44.2
+      "name": "Berry race: start card names the rivals, a pick counts, critters race and eat, the basket fills",
+      "passed": false,
+      "seconds": 13.2
     }
   ],
-  "time": "2026-11-27T03:51:04.734"
+  "time": "2026-11-27T08:44:05.330"
 }

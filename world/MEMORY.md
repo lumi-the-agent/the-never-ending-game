@@ -34,6 +34,9 @@
 - Ants (s137, project ant-road): physics/ants.jl (scents, antennae, biscuit pulled against friction, CPU), film movies/ants.jl
   at (4,-14) (open grass; (-7,9) is the LILY POND, not a prop). Dayfall tiles: only in Jump in, grow 3.5-5 m behind me.
 - Dandelions (s136): I in jump-in blows a clock (plugins/dandelion.jl, seeds drag to the breeze); film movies/dandelion.jl at (-4,18).
+- Snow (s140, project snowball): physics/snow.jl (snowfall on voxels, slides at 55 deg), physics/snowball.jl (ball eats
+  the snow field, Bekker sinkage), film movies/snowball.jl at (14,-4) rolling east (7 m open, found by a prop scan).
+  Sandbox heights to my session: live_eval writes a file under world/media (the sandbox's /tmp is NOT mine).
 - Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
   Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
   Woodcut filter: tools/woodcut.jl (`woodcut_island` = print look). Shooting stars: plugins/meteors.jl (METEORS[:force], [:az]).

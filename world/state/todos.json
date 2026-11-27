@@ -2312,31 +2312,31 @@
     },
     {
       "created": "2026-11-23T08:48:49.581",
-      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##16((trace_marker_mesh, trace_transforms, trace_materials, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:379\n  with edge inputs:\n    trace_marker_mesh = Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}(...)\n    trace_transforms = StaticArraysCore.SMatrix{4, 3, Float32, 12}[[0.030645048 0.0 0.0; 0.0 0.030645048 0.0; 0.0 0.0 0.030645048; -13.368489 -5.915427 2.2433925], [0.024078252 0.0 0.0; 0.0 0.024078252 0.0; 0.0 0.0 0.024078252; -12.970478 -6.1299973 2.2762196], [0.030645048 0.0 0.0; 0.0 0.030645048 0.0; 0.0 0.0 0.030645048; -13.159584 -5.531159 2.5041583], [0.02472876 0.0 0.0; 0.0 0.02472876 0.0; 0.0 0.0 0.02472876; -15.76694 -7.542158 1.4812323], [0.01942974 0.0 0.0; 0.0 0.01942974 0.0; 0.0 0.0 0.01942974; -15.7546425 -7.2127824 1.5426239], [0.02472876 0.0 0.0; 0.0 0.02472876 0.0; 0.0 0.0 0.02472876; -16.177452 -7.323673 1.7877582], [0.023185208 0.0 0.0; 0.0 0.023185208 0.0; 0.0 0.0 0.023185208; 0.48405963 -4.311324 2.605559], [0.018216949 0.0 0.0; 0.0 0.018216949 0.0; 0.0 0.0 0.018216949; 0.09602859 -4.193962 2.7645113], [0.023185208 0.0 0.0; 0.0 0.023185208 0.0; 0.0 0.0 0.023185208; 0.31350905 -4.6173024 2.95679], [0.036015358 0.0 0.0; 0.0 0.036015358 0.0; 0.0 0.0 0.036015358; -10.305013 10.995779 2.7117243]  …  [0.022344798 0.0 0.0; 0.0 0.022344798 0.0; 0.0 0.0 0.022344798; -2.3370407 -11.523225 1.9058638], [0.031686172 0.0 0.0; 0.0 0.031686172 0.0; 0.0 0.0 0.031686172; 2.591199 -6.013742 2.4917624], [0.024896279 0.0 0.0; 0.0 0.024896279 0.0; 0.0 0.0 0.024896279; 2.7721262 -6.4353333 2.5419111], [0.031686172 0.0 0.0; 0.0 0.031686172 0.0; 0.0 0.0 0.031686172; 2.9803154 -5.9014297 2.8024282], [0.026783612 0.0 0.0; 0.0 0.026783612 0.0; 0.0 0.0 0.026783612; 6.4769964 7.398243 3.1066473], [0.021044265 0.0 0.0; 0.0 0.021044265 0.0; 0.0 0.0 0.021044265; 6.691277 7.650465 3.2162292], [0.026783612 0.0 0.0; 0.0 0.026783612 0.0; 0.0 0.0 0.026783612; 6.278748 7.8183722 3.4651208], [0.034357652 0.0 0.0; 0.0 0.034357652 0.0; 0.0 0.0 0.034357652; 15.497654 -0.98831505 2.145439], [0.026995298 0.0 0.0; 0.0 0.026995298 0.0; 0.0 0.0 0.026995298; 15.115338 -0.5596514 2.3952887], [0.034357652 0.0 0.0; 0.0 0.034357652 0.0; 0.0 0.0 0.034357652; 15.013879 -1.2051361 2.6079676]]\n    trace_materials = Hikari.Emission{Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}, Float64}[Hikari.Emission{Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}, Float64}(Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}(fill(Hikari.RGBSpectrum(Float32[1.0, 0.78741235, 0.26327342, 1.0])), Hikari.RGBSpectrum(Float32[1.0, 0.78741235, 0.26327342, 1.0]), true), 3.0, false), Hikari.Emission{Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}, Float64}(Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}(fill(Hikari.R",
+      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n[ComputeEdge] trace_transforms = #draw_atomic##12((positions, rotation, markersize, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:418\n  with edge inputs:\n    positions = GeometryBasics.Point{3, Float32}[[0.0, 0.0, -50.0]]\n    rotation = Makie.Quaternionf[1.0 + 0.0im + 0.0jm + 0.0km]\n    markersize = GeometryBasics.Vec{3, Float32}[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]\nTriggered by update of:\n  markersize, rotations, rotation or arg1\nDue to ERROR: DimensionMismatch: array could not be broadcast to match destination\nStacktrace:\n  [1] check_broadcast_shape\n    @ ./broadcast.jl:559 [inlined]\n  [2] check_broadcast_axes\n    @ ./broadcast.jl:562 [inlined]\n  [3] check_broadcast_axes (repeats 2 times)\n    @ ./broadcast.jl:566 [inlined]\n  [4] instantiate\n    @ ./broadcast.jl:316 [inlined]\n  [5] materialize!\n    @ ./broadcast.jl:905 [inlined]\n  [6] materialize!\n    @ ./broadcast.jl:902 [inlined]\n  [7] pos_rot_scale_to_mat3x4!(transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}, positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{GeometryBasics.Vec{4, Float32}}, scale::Vector{GeometryBasics.Vec{3, Float32}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:116\n  [8] (::RayMakie.var\"#draw_atomic##12#draw_atomic##13\")(args::@NamedTuple{positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}}, changed::@NamedTuple{positions::Bool, rotation::Bool, markersize::Bool}, last::@NamedTuple{trace_transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:432\n  [9] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{positions::Base.RefValue{Vector{GeometryBasics.Point{3, Float32}}}, rotation::Base.RefValue{Any}, markersize::Base.RefValue{Vector{GeometryBasics.Vec{3, Float32}}}}, @NamedTuple{trace_transforms::Base.RefValue{Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}}}, RayMakie.var\"#draw_atomic##12#draw_atomic##13\"})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1476\n [10] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [11] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [12] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [13] locked_resolve!(edge::ComputePipeline.ComputeEdge{Compute",
       "est_minutes": 15.0,
       "id": 166,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-27T08:44:17.781.\nCause was the day-fall tiles' markersize vector (todo #673): plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "done",
       "title": "Live command path_tracing failed",
-      "updated": "2026-11-23T09:12:37.463"
+      "updated": "2026-11-27T09:28:26.552"
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "IOError: mkdir(\"/sim/Programmieren/SimGame/media\"; mode=0o777): read-only file system (EROFS)\nStacktrace:\n  [1] _uv_error(prefix::String, c::Int32)\n    @ Base ./libuv.jl:114\n  [2] uv_error\n    @ ./libuv.jl:113 [inlined]\n  [3] mkdir(path::String; mode::UInt16)\n    @ Base.Filesystem ./file.jl:185\n  [4] mkdir\n    @ ./file.jl:177 [inlined]\n  [5] mkpath(path::String; mode::UInt16)\n    @ Base.Filesystem ./file.jl:245\n  [6] mkpath\n    @ ./file.jl:237 [inlined]\n  [7] live_command(g::Game, ::Val{:screenshot}, msg::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:140\n  [8] handle_live_commands!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/live.jl:89\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:391\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n[ComputeEdge] trace_transforms = #draw_atomic##12((positions, rotation, markersize, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:418\n  with edge inputs:\n    positions = GeometryBasics.Point{3, Float32}[[0.0, 0.0, -50.0]]\n    rotation = Makie.Quaternionf[1.0 + 0.0im + 0.0jm + 0.0km]\n    markersize = GeometryBasics.Vec{3, Float32}[[1.0, 1.0, 1.0], [1.0, 1.0, 1.0], [1.0, 1.0, 1.0]]\nTriggered by update of:\n  markersize, rotations, rotation or arg1\nDue to ERROR: DimensionMismatch: array could not be broadcast to match destination\nStacktrace:\n  [1] check_broadcast_shape\n    @ ./broadcast.jl:559 [inlined]\n  [2] check_broadcast_axes\n    @ ./broadcast.jl:562 [inlined]\n  [3] check_broadcast_axes (repeats 2 times)\n    @ ./broadcast.jl:566 [inlined]\n  [4] instantiate\n    @ ./broadcast.jl:316 [inlined]\n  [5] materialize!\n    @ ./broadcast.jl:905 [inlined]\n  [6] materialize!\n    @ ./broadcast.jl:902 [inlined]\n  [7] pos_rot_scale_to_mat3x4!(transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}, positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{GeometryBasics.Vec{4, Float32}}, scale::Vector{GeometryBasics.Vec{3, Float32}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:116\n  [8] (::RayMakie.var\"#draw_atomic##12#draw_atomic##13\")(args::@NamedTuple{positions::Vector{GeometryBasics.Point{3, Float32}}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}}, changed::@NamedTuple{positions::Bool, rotation::Bool, markersize::Bool}, last::@NamedTuple{trace_transforms::Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}})\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:432\n  [9] locked_resolve!(edge::ComputePipeline.TypedEdge{@NamedTuple{positions::Base.RefValue{Vector{GeometryBasics.Point{3, Float32}}}, rotation::Base.RefValue{Any}, markersize::Base.RefValue{Vector{GeometryBasics.Vec{3, Float32}}}}, @NamedTuple{trace_transforms::Base.RefValue{Vector{StaticArraysCore.SMatrix{4, 3, Float32, 12}}}}, RayMakie.var\"#draw_atomic##12#draw_atomic##13\"})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1476\n [10] locked_resolve!(edge::ComputePipeline.ComputeEdge{ComputePipeline.ComputeGraph})\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1576\n [11] locked_resolve!(computed::ComputePipeline.Computed)\n    @ ComputePipeline /sim/Programmieren/SimGame/dev/Makie/ComputePipeline/src/ComputePipeline.jl:1501\n [12] foreach\n    @ ./abstractarray.jl:3191 [inlined]\n [13] locked_resolve!(edge::ComputePipeline.ComputeEdge{Compute",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "done",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-26T23:15:33.348"
+      "updated": "2026-11-27T09:28:26.584"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7739,8 +7739,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Lumi's idle: wings folded, a slow breath, no 9 Hz body and beak flicker",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "Lumi's idle: wings folded, slow breath, no beak/crest snap (0.25 m/frame now)",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-26T11:56:37.209",
@@ -8584,7 +8584,7 @@
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0136 [creatures, high]: A smaller yellow Lumi follows the player into every mini game saying 'peep!', and a yellow paper figure in jeans stands on the pier. A stranger reads them as two Lumis. In the creatures sheet the crab's party hat hovers above its head.\nWhere: the follower / PaperMe; outfits on the crab\nSuggestion: If the chick is meant to be Lumi's chick, give it its own colour, shape and name so it reads as a child, not a clone. Otherwise remove it. Pin hats to the head bone every frame.\nDone when: No unlabelled yellow Lumi-shaped figure in any mini-game screenshot, and every hat touches its head in all three moments of creatures.png.\nEvidence: world/reviews/p136/games/firefly-00.png, games/berry-sheet.jpg ('peep!'), world/reviews/motion/creatures.png (row 3 left, row 5)",
+      "detail": "perfectionist-0139 [creatures, high]: A second, smaller yellow Lumi with dark bands across its face stood right beside Lumi in every mini game I played: Jump in, Firefly catch, Berry race and Hide and seek. It is also in the follow view and the motion sheet. To a player it reads as a duplicated or glitched main character, not a chick. A flat paper Lumi stands on the pier too.\nWhere: next to Lumi everywhere; the pier\nSuggestion: Make the chick unmistakably a chick: a third of Lumi's size, round and fluffy, a different shade, with a peep and a hop. Or let it leave Lumi's side most of the time. Retire the paper cut-out, or give it a clear reason to be there (a scarecrow in the garden).\nDone when: In a Jump in screenshot and the live_motion creature sheet, no second figure with Lumi's silhouette and more than half its height stands within 3 m of Lumi.\nEvidence: world/reviews/p139/play/jumpin-0-start.png, jumpin-2.png, sheet-fireflycatch.png, motion/motion.png, motion/creatures.png (bottom left)",
       "est_minutes": 30.0,
       "id": 614,
       "kind": "review",
@@ -8593,12 +8593,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A yellow chick double follows Lumi; the crab's hat floats off its head",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "A yellow chick double follows Lumi; a paper Lumi stands on the pier",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-26T23:15:33.348",
-      "detail": "perfectionist-0136 [camera, medium]: Each mode has its own problem:\n- Follow, while watching: cuts to shots where a dark slab or a beige board covers a third of the frame.\n- Free: starts inside the jagged low-poly roof of the hut.\n- Mini games: the follow camera sits behind bushes that cover the lower half.\n- Jump in: the follow camera looks straight down the pier at pig backs.\nWhere: camera rig, CamCut, free camera start\nSuggestion: Before every cut and every free-camera start, cast a ray from the camera to its subject and move the camera along its arc until nothing big is in between. Fade occluders near the lens.\nDone when: In nine screenshots (three per camera mode, 4 s apart) no single object covers more than 15% of the frame and the subject is visible in each.\nEvidence: world/reviews/p136/cams/follow-sheet.jpg, cams/free-sheet.jpg, games/firefly-06.png, p136/cam-follow.png",
+      "detail": "perfectionist-0139 [camera, medium]: Orbit: a shed roof, a black slab and a workbench fill the bottom third. Firefly catch start: the camera stands inside the garden fence. Follow on the beach: a tree crown fills the left third. Hide and seek: the giant yellow face-hill fills half the frame. Follow: the pink crown sits above Lumi with the speech line across it.\nWhere: orbit, follow and the mini game cameras\nSuggestion: Raycast from the target to the eye and pull the camera in front of the first hit, or fade the occluder. Keep the eye out of a 2 m sphere around any prop bigger than 1 m.\nDone when: Five orbit, five follow and one screenshot per mini game, 5 s apart, show no object covering more than 10% of the frame in front of the subject.\nEvidence: world/reviews/p139/raster-after.png, play/jumpin-2.png, play/sheet-fireflycatch.png, play/sheet-hideandseek.png, cam-follow.png",
       "est_minutes": 30.0,
       "id": 615,
       "kind": "review",
@@ -8607,8 +8607,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Every camera mode lands behind a slab or inside a roof",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "Every camera mode lands behind a slab, a fence or inside a crown",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-26T23:36:21.936",
@@ -8915,8 +8915,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Crabs vibrate at 9 Hz; Pickles' legs snap 0.2 m in one frame",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "Sniffsalot tail and Marshmallow leg snaps: re-measure with live_motion, close at 10/10",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T02:57:20.896",
@@ -8990,17 +8990,17 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0136 [materials, high]: The 8 fireflies you chase are big flat lime discs inside concentric halo rings, like target markers, hanging in daylight. Their trails are white dots.\nWhere: Firefly catch (firefly_catch plugin)\nSuggestion: Use small bodies with an emissive abdomen that pulses, a soft additive glow that scales with distance, a real point light each, and a flight path that wanders. Ideally set the game at dusk so they read as lights.\nDone when: A Firefly catch screenshot shows fireflies under 20 px with a soft glow and no hard rings, and the grass under the nearest one is lit by it.\nEvidence: world/reviews/p136/games/firefly-06.png",
+      "detail": "perfectionist-0139 [lighting, medium]: At the Firefly catch start (17:21) the fireflies are big flat lime discs with concentric ring halos, as large as the sheep's head. They read as UI targets, not insects that glow, and they light nothing around them.\nWhere: Firefly catch\nSuggestion: Use a tiny body with an emissive abdomen that pulses, a soft bloom, and a real point light that throws warm green light on the grass and on Lumi as it gets close. Shown traced at dusk, this would be the island's best night picture.\nDone when: A Firefly catch screenshot at dusk shows fireflies smaller than Lumi's eye, with a visible glow on the ground under the nearest one and no ring banding.\nEvidence: world/reviews/p139/play/fireflycatch-1.png",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Firefly catch: fireflies are flat lime discs with ring halos",
-      "updated": "2026-11-27T06:22:49.524"
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9046,7 +9046,7 @@
     },
     {
       "created": "2026-11-27T03:59:27.937",
-      "detail": "perfectionist-0133 [materials, high]: With path tracing on at 05:27, the cottage and lantern lights trace as solid yellow spheres the size of the door. The clouds are matte black lumps, and the fireflies are a blizzard of white dots across the whole meadow. It was raining (friends 'splashing in the puddles'), but no rain is visible. This is the showcase view of goal 7, and it looks worse than the raster.\nWhere: traced live view; lamplight/lanterns glow spheres, clouds.jl, fireflysync/nightglow\nSuggestion: In the tracer, drop the raster glow spheres and let real point or area lights do the work. Make clouds a volume, or a white diffuse with sheen lit by the dawn sky. Fireflies in trace should be small warm emitters below 1.5 m, only at night.\nDone when: A traced still at night or dawn shows no opaque glowing sphere bigger than a firefly, clouds lighter than the sky behind them, and warm light pools on the ground under the lanterns.\nEvidence: world/reviews/p133/traced.png",
+      "detail": "perfectionist-0139 [materials, high]: In the raster, about 20 flat, unlit white ovals lie in the meadow (eye-level progress shot, Jump in start). With Path tracing on, the whole terrain is near-white with green tufts on it and the sky is white, while the raster of the same view in the same minute is green. The likely cause is the snow-day blanket mesh (snowday.jl:69), kept just under the ground when there is no snow: it pokes through in patches in the raster and covers the land in the trace.\nWhere: world/plugins/snowday.jl:69-80 (blanket lift); the game view with Path tracing on\nSuggestion: When there is no snow, set the blanket to visible = false (or delete it) instead of sinking it. When there is snow, give it a real snow material: a bright diffuse base with subsurface and a faint sparkle. Then make the trace better than the raster: grass with sheen, the sea with transmission, lit lanterns.\nDone when: With no snow falling, an eye-level screenshot has no white discs on the grass, and a traced orbit screenshot has green grass whose mean hue is within 15% of the raster frame's, under a blue sky.\nEvidence: world/reviews/p139/traced.png against raster-after.png (same camera, 16:57); world/media/progress/session-0139/eye-level.png; world/reviews/p139/play/jumpin-0-start.png",
       "est_minutes": 30.0,
       "id": 647,
       "kind": "review",
@@ -9055,8 +9055,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Traced view: glows as opaque yellow balls, black clouds, snow-like fireflies",
-      "updated": "2026-11-27T03:59:27.937"
+      "title": "Snow blanket shows as white paper discs, and the traced land turns white",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T03:59:27.937",
@@ -9153,8 +9153,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Release the boomerang film once the plank is gone",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "Release the boomerang film (take 4) in world/releases with a note",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9177,12 +9177,12 @@
       "id": 656,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0139: Duplicate of #672 (the same two untraced pictures)",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Two pictures on my pages are not path traced: climb-edges.png and island-woodcut.png",
-      "updated": "2026-11-27T06:01:08.311"
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T06:01:08.343",
@@ -9191,12 +9191,12 @@
       "id": 657,
       "kind": "fix",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0139: site/films has only a-boomerang-comes-back-3.mp4; the -2 file is gone",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Boomerang take 2 leftover: move site/films/a-boomerang-comes-back-2.mp4 to media/",
-      "updated": "2026-11-27T06:01:08.343"
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T06:04:05.133",
@@ -9228,7 +9228,7 @@
     },
     {
       "created": "2026-11-27T06:22:49.524",
-      "detail": "perfectionist-0136 [fun, medium]: All three goal games end with a number that disappears. There is no best score, no reward on the island, and the critters' wins have no consequence. Jump in lists 18 keys in a strip about 8 px tall at the bottom of the view.\nWhere: minigame HUDs, Jump in key strip\nSuggestion: Leave a trace of each win on the island: a jar of caught fireflies on the cottage sill, a berry pie on the table, the hiders' ribbons on a post. Show the best score on the start card. In Jump in, show the 4 keys that matter now, large, and rotate the rest in as hints.\nDone when: After winning a game, a screenshot of the island shows a new object that stays, the start card shows a best score, and Jump in's key hints are at least 16 px tall.\nEvidence: world/reviews/p136/games/berry-sheet.jpg (You 0, Critters 4), games/jumpin-sheet.jpg (key strip)",
+      "detail": "perfectionist-0139 [ui, medium]: Jump in's start card is 7 lines over the bottom third of the view, and two lines are cut at both edges ('splashes), onto the swing or a leaf pile; ...', '... L knocks o'). After it fades, a 3-line box with 22 keys stays. Things to try in the side panel names none of the boomerang, knock, chip or dandelion toys.\nWhere: Jump in HUD; side panel 'Things to try'\nSuggestion: Show context keys: 'L knock' and 'R chip' appear only by something knockable, 'F lantern' only at night, 'O boomerang' only on a beach. Keep the global box to 6 keys and let Things to try list the 3 newest toys with their places.\nDone when: In a Jump in screenshot at 1280x720 no HUD text is clipped by the view's edges, the global key box has at most 8 entries, and standing by the chip stone shows its keys there.\nEvidence: world/reviews/p139/play/jumpin-0-start.png, sheet-chip.png (top row)",
       "est_minutes": 30.0,
       "id": 660,
       "kind": "review",
@@ -9237,8 +9237,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Mini games have no reason to play twice; Jump in's keys are unreadable",
-      "updated": "2026-11-27T06:22:49.524"
+      "title": "Jump in's key card runs off the screen; show keys where they apply",
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T06:44:21.638",
@@ -9303,12 +9303,12 @@
       "id": 665,
       "kind": "fix",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0139: Duplicate of #672",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Take the two non-traced pictures off the page or trace them again",
-      "updated": "2026-11-27T07:30:38.385"
+      "updated": "2026-11-27T08:55:37.151"
     },
     {
       "created": "2026-11-27T07:33:01.823",
@@ -9368,17 +9368,17 @@
     },
     {
       "created": "2026-11-27T08:25:01.714",
-      "detail": "Project knock-anything. After chip-a-stone (s139, plugins/chipstone.jl): several stones the player tunes, and friends who walk up and knock them (their own tune, through knock.jl's page synth). Done when: three stones tuned to different notes in the sandbox, a friend knocks them in an order on its own, events :stone_knock with three Hz values, frame under 33 ms.",
+      "detail": "perfectionist-0139 [fun, high]: I chose Jump in from the menu, pressed Play, stood Lumi 0.9 m from the stone at (3.85,-14.91) and pressed R and L four times each. No chip, no note, no stone in any frame, and Lumi said 'Nothing to knock on here.' four times. chipstone.jl:151 only aims while game.minigame === nothing, but Play sets game.minigame to JumpIn (my log: 'started NeverendingGame.JumpIn'), so the plugin never sets :near and knock.jl takes L. The flagship toy of the session cannot be reached the way the dashboard tells the human to reach it.\nWhere: world/plugins/chipstone.jl:151; the stone at (4,-14)\nSuggestion: Allow the aim when game.minigame isa JumpIn. Turn Lumi to face the stone when R or L is pressed within reach, so the player does not have to aim the beak. Put a small sign or a tuning fork by the stone, show 'R chip · L knock' only while Lumi is in reach, and give it a goal: a friend hums a note, you chip until the stone matches it, and a meter shows how close you are. Tuned stones then join a row the friends play (#670).\nDone when: A UI test chooses Jump in from the menu, walks to the stone, presses R and then L, and sees the stone's voxel count drop and a stone_chip event logged; a screenshot shows the stone, Lumi and the key prompt in one frame.\nEvidence: world/reviews/p139/play/sheet-chip.png, chip-r1..r4.png; Lumi's says in the sandbox log at t=423623-423634; Main.CHIPSTONE[:near] == false",
       "est_minutes": 15.0,
       "id": 670,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
-      "result": "",
-      "source": "agent",
+      "result": "plugins/chipstone.jl: the aim now runs while game.minigame === nothing OR isa NG.JumpIn (it was nothing only, and the menu's Jump in sets a JumpIn). Sandbox, s140: started JumpIn, Lumi at (3.85,-14.95) facing the stone: CHIPSTONE[:near] = true, R took the stone from 3434 to 3389 voxels (a re-solve ran), L said 'Tink! 1243 Hz.' (media/s140-chipstone-jumpin.png; the follow camera stands behind Lumi so the stone is hidden by Lumi's body there, the key-prompt part of done_when is not met). Published s140, no plugin_error in the live log.",
+      "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
-      "title": "The friends play my tuned stones: a row of chipped stones on the beach they knock in turn",
-      "updated": "2026-11-27T08:25:01.714"
+      "status": "done",
+      "title": "The chip stone can't be played: R/L do nothing in the menu's Jump in",
+      "updated": "2026-11-27T09:24:42.125"
     },
     {
       "created": "2026-11-27T08:25:01.719",
@@ -9407,6 +9407,62 @@
       "status": "open",
       "title": "Path trace the two blog pictures that are not traced: climb-edges.png and island-woodcut.png",
       "updated": "2026-11-27T08:25:12.234"
+    },
+    {
+      "created": "2026-11-27T08:55:37.151",
+      "detail": "perfectionist-0139 [performance, high]: Once the day-fall line has had tiles and is reset, plugins/dayfall.jl:105 updates the plot to one hidden position at (0,0,-50) but leaves the per-tile markersize vector at its old length (3). The Path tracing button then throws 'DimensionMismatch' in RayMakie meshscatter.jl:116 halfway through the switch, every live_screenshot after it throws the same, and the berry race UI test failed with it. The human's dashboard would hit this the first time they press Path tracing after a Jump in walk.\nWhere: world/plugins/dayfall.jl:105 (and :120); dev/Makie/RayMakie/src/plots/meshscatter.jl:116\nSuggestion: Pass markersize in the same update! as arg1 every time (fill(Vec3f(1), n)). In RayMakie, raise a clear error naming the plot when a markersize vector does not match the positions, or skip that plot instead of killing the whole render. Add a UI test that walks Jump in for 6 s, stops, and toggles Path tracing on and off.\nDone when: A UI test walks Jump in, stops, toggles Path tracing on and off and takes a screenshot without error, and live_tests('Berry race') passes.\nEvidence: live_path_tracing(true) -> 'Failed to resolve trace_renderobject ... positions=[[0,0,-50]] markersize=[3 x Vec3f]'. live_tests('Berry race: start card names') failed with the same error. Making markersize match the positions in the live sandbox brought the screen back; my play script had to repeat that after every game (reviews/p139/play.jl fix_dayfall!).",
+      "est_minutes": 30.0,
+      "id": 673,
+      "kind": "review",
+      "priority": 1,
+      "result": "plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Day-fall tiles crash path tracing and screenshots (markersize length)",
+      "updated": "2026-11-27T09:28:26.547"
+    },
+    {
+      "created": "2026-11-27T08:55:37.151",
+      "detail": "perfectionist-0139 [wow, high]: The FEM idea is the best one in weeks, but both films bury it. Chip film: top-down on a grey sausage, no pebble or strike can be seen (the take 2 caption promises one), chips just pop out of the top, a white paper sheet drifts in at 2.5 s, and Lumi is two feet at the top edge. Lantern film: a trunk covers the right fifth of the frame and a leaf pile the bottom third, the sway is invisible, and Lumi jumps up into the sky in the last frame.\nWhere: site/films/chip-a-stone.mp4, stone-lantern-notes.mp4\nSuggestion: Shoot it at eye level, low and close: Lumi's beak strikes, the stone rings, its mode shape shows on the stone (sand gathering on the nodal lines, Chladni-style) and the pitch shows as rings in the air. Make the stone dark wet basalt with a clear coat and a lighter, glittering inside where it was chipped, so the material changes visibly with each chip.\nDone when: A film's motion sheet shows the striker touching the stone in the frame where chips fly, Lumi's full body in frame, and nothing occluding more than 10% of the frame. A traced still shows a coat highlight and a lighter colour where the stone was chipped.\nEvidence: world/reviews/motion/perfectionist-0139/chip-a-stone-overview.jpg and -strip.jpg; stone-lantern-notes-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 674,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Film the knock and the chip so a stranger hears and sees them",
+      "updated": "2026-11-27T08:55:37.151"
+    },
+    {
+      "created": "2026-11-27T09:23:25.778",
+      "detail": "Project snowball. physics/snowball.jl (pick-up, Bekker sinkage, 7/5 m) works in a film (movies/snowball.jl). Make it a plugin: after a snow night a snow field over the meadow (physics/snow.jl sheltering), a push key that applies Lumi's force, the ball drawn growing with its grass trail, the pick-up as a Mantle kernel. Done when: a Jump in screenshot shows Lumi behind a ball that grew from 0.13 m with a bare trail behind it, frame time under 33 ms.",
+      "est_minutes": 60.0,
+      "id": 675,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Push a snowball in Jump in: the snow field and the growing ball live in the game",
+      "updated": "2026-11-27T09:23:25.778"
+    },
+    {
+      "created": "2026-11-27T09:23:25.793",
+      "detail": "Rolled straight, real snowballs grow in a band across the spin axis (a wheel); turning spreads it. Track two semi-axes or a voxel ball in physics/snowball.jl, roll crooked when lopsided, and make the ball a PrintSim affine body so a stacked head stays or rolls off by IPC contact. The critic's warning: no radius counter.",
+      "est_minutes": 60.0,
+      "id": 676,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Snowballs grow into barrels: track the shape, not a radius",
+      "updated": "2026-11-27T09:23:25.793"
     }
   ]
 }

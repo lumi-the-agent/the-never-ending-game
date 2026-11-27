@@ -2287,5 +2287,266 @@
   "wall": "27 November 2026, 04:40",
   "winner": "wamble",
   "word": "wamble"
+ },
+ {
+  "counts": {
+   "spople": 9
+  },
+  "day": 24,
+  "first": {
+   "spoble": "Marshmallow",
+   "spomle": "Wibbles",
+   "spoople": "Hopscotch",
+   "spopel": "Pinchy",
+   "spople": "Lumi"
+  },
+  "hour": 9.92551124546355,
+  "meaning": "the meadow after rain",
+  "minutes": 3.0,
+  "parent": {
+   "spoble": "spople",
+   "spomle": "spoble",
+   "spoople": "spople",
+   "spopel": "spople"
+  },
+  "tree": [
+   {
+    "from": "Lumi",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 2.233333332813345,
+    "to": "Hopscotch",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "spoble",
+    "said": "spople",
+    "switched": false,
+    "t": 31.833333325921558,
+    "to": "Marshmallow",
+    "was": ""
+   },
+   {
+    "from": "Marshmallow",
+    "heard": "spoble",
+    "said": "spoble",
+    "switched": false,
+    "t": 51.73333332128823,
+    "to": "Truffle",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 63.99999998509884,
+    "to": "Wibbles",
+    "was": ""
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 82.79999998072162,
+    "to": "Pinchy",
+    "was": ""
+   },
+   {
+    "from": "Wibbles",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 83.13333331397735,
+    "to": "Cumulus",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 106.73333330848254,
+    "to": "Gloop",
+    "was": ""
+   },
+   {
+    "from": "Lumi",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 113.59999997355044,
+    "to": "Gloop",
+    "was": "spople"
+   },
+   {
+    "from": "Gloop",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 114.1333333067596,
+    "to": "Cumulus",
+    "was": "spople"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 116.5333333062008,
+    "to": "Gloop",
+    "was": "spople"
+   },
+   {
+    "from": "Gloop",
+    "heard": "spople",
+    "said": "spople",
+    "switched": true,
+    "t": 123.19999997131526,
+    "to": "Marshmallow",
+    "was": "spoble"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "spoble",
+    "said": "spople",
+    "switched": false,
+    "t": 123.33333330461755,
+    "to": "Hopscotch",
+    "was": "spople"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 126.09999997064006,
+    "to": "Pinchy",
+    "was": "spople"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 128.06666663684882,
+    "to": "Marshmallow",
+    "was": "spople"
+   },
+   {
+    "from": "Lumi",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 129.73333330312744,
+    "to": "Hopscotch",
+    "was": "spople"
+   },
+   {
+    "from": "Gloop",
+    "heard": "spoople",
+    "said": "spople",
+    "switched": false,
+    "t": 132.36666663584765,
+    "to": "Hopscotch",
+    "was": "spople"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 137.43333330133464,
+    "to": "Gloop",
+    "was": "spople"
+   },
+   {
+    "from": "Pinchy",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 145.73333329940215,
+    "to": "Lumi",
+    "was": "spople"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 149.6333332984941,
+    "to": "Marshmallow",
+    "was": "spople"
+   },
+   {
+    "from": "Truffle",
+    "heard": "spomle",
+    "said": "spoble",
+    "switched": false,
+    "t": 153.33333329763263,
+    "to": "Wibbles",
+    "was": "spople"
+   },
+   {
+    "from": "Hopscotch",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 161.86666662897915,
+    "to": "Pickles",
+    "was": ""
+   },
+   {
+    "from": "Truffle",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 164.1999999617692,
+    "to": "Gloop",
+    "was": "spople"
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spopel",
+    "said": "spople",
+    "switched": false,
+    "t": 168.56666662741918,
+    "to": "Pinchy",
+    "was": "spople"
+   },
+   {
+    "from": "Wibbles",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 168.96666662732605,
+    "to": "Pinchy",
+    "was": "spople"
+   },
+   {
+    "from": "Gloop",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 173.2333332929993,
+    "to": "Sir Sniffsalot",
+    "was": ""
+   },
+   {
+    "from": "Cumulus",
+    "heard": "spople",
+    "said": "spople",
+    "switched": false,
+    "t": 178.59999995841645,
+    "to": "Wibbles",
+    "was": "spople"
+   }
+  ],
+  "wall": "27 November 2026, 09:41",
+  "winner": "spople",
+  "word": "spople"
  }
 ]

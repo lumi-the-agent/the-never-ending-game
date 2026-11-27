@@ -201,27 +201,41 @@
         "a treehouse": 1
       },
       "winner": "a greenhouse"
+    },
+    {
+      "island_t": 414030.0999568794,
+      "key": "beachhut",
+      "time": "2026-11-27T09:35:30",
+      "voters": {
+        "Gloop": "a beach hut",
+        "Hopscotch": "a little boat",
+        "Marshmallow": "a beach hut",
+        "Sir Sniffsalot": "a beach hut"
+      },
+      "votes": {
+        "a beach hut": 3,
+        "a greenhouse": 0,
+        "a little boat": 1
+      },
+      "winner": "a beach hut"
     }
   ],
   "latest": {
-    "island_t": 396040.13329440134,
-    "key": "greenhouse",
-    "time": "2026-11-27T04:34:39",
+    "island_t": 414030.0999568794,
+    "key": "beachhut",
+    "time": "2026-11-27T09:35:30",
     "voters": {
-      "Cumulus": "a greenhouse",
-      "Hopscotch": "a greenhouse",
-      "Marshmallow": "a greenhouse",
-      "Pinchy": "a greenhouse",
-      "Sir Sniffsalot": "a treehouse",
-      "Truffle": "a little boat",
-      "Wibbles": "a little boat"
+      "Gloop": "a beach hut",
+      "Hopscotch": "a little boat",
+      "Marshmallow": "a beach hut",
+      "Sir Sniffsalot": "a beach hut"
     },
     "votes": {
-      "a greenhouse": 4,
-      "a little boat": 2,
-      "a treehouse": 1
+      "a beach hut": 3,
+      "a greenhouse": 0,
+      "a little boat": 1
     },
-    "winner": "a greenhouse"
+    "winner": "a beach hut"
   },
   "won": [
     "beachhut",
@@ -234,6 +248,7 @@
     "boat",
     "beachhut",
     "boat",
-    "greenhouse"
+    "greenhouse",
+    "beachhut"
   ]
 }

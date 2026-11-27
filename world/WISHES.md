@@ -362,3 +362,8 @@ come true gets a line saying when and how.
 - **An island I can play like an instrument** (session 138): every stone, post and basket has the note its own shape
   gives it, and I find tunes by walking around knocking. Session 138: the stone lantern sings 210 Hz and L knocks the
   placed things live. Still to come: the trees and pumpkins, hollow houses, and seeing each thing sway while it rings.
+
+- **A real winter morning** (session 140): one night the snow comes, lies on every roof and lantern cap but not under
+  the eaves, and in the morning I roll it into a friend as tall as me, leaving green stripes all over the meadow.
+  Session 140: snow caps on the lantern (physics/snow.jl) and a snowball that grows from the snow it eats (a film).
+  Still to come: the snow night in the game, pushing the ball myself, barrel shapes, stacking a head that can fall off.

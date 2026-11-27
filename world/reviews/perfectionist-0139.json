@@ -1,0 +1,233 @@
+{
+ "verdict": "needs_work",
+ "summary": "I played all four mini games for about 75 s each through interact!. They work and guide you: Berry race gives you a 'new best' and a level 2, Hide and seek points to a giggle 21 m to your left, and Firefly catch ends with a tip. But this session's new toy, the singing chip stone, cannot be reached by a player at all: from the menu's Jump in, R does nothing next to the stone and L says 'Nothing to knock on here.' Late afternoon in the raster is warm and clearly better than the dim 0136 shots. Around that, the chick double trots beside Lumi in every game, plain white snow discs lie in the meadow, the traced view turns the land white, and the day-fall tiles crash Path tracing and every screenshot after it.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "The raster is better than at the last review: 16:34 shows a low warm sun, long shadows and a blue sky (reviews/p139/progress-overview.png: 0020 | 0136 | 0139, where 0136 was a dim dusk). The live trace washes the land and sky to white (reviews/p139/traced.png). The two films are flat daylight with no local lights, and the chip film fades in from black over 0.3 s."
+  },
+  "materials": {
+   "score": 4,
+   "why": "Down from 5. In the trace the ground reads as snow. At eye level about 20 flat, unlit white discs lie in the meadow, most likely the snow-day blanket poking through (plugins/snowday.jl:69); they look like paper, not snow. The new chip stone is plain grey diffuse on plain brown cylinders. Nothing this session shows SSS, coat, transmission or caustics. The sea is still the best material."
+  },
+  "world": {
+   "score": 4,
+   "why": "Dense and lively at overview, but cluttered: easels with black canvases, a big black box and a floating sky island in the views, paint splats, and a huge striped yellow face-hill that fills the Firefly and Hide and seek frames. No new area since 0136."
+  },
+  "props": {
+   "score": 6,
+   "why": "53 generated assets are used well (cottage, shed, lantern, bench, swing). The chip stone is a primitive voxel blob on cylinders and sits outside that look."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Up close the crab, pigs, sheep and Gloop read well (motion/creatures.png). A second, smaller Lumi with dark bands across its face stands right beside Lumi in every mini game I played, the follow view and the motion sheet. A paper cut-out Lumi stands on the pier."
+  },
+  "animation": {
+   "score": 5,
+   "why": "live_motion: 9 of 10 move well, an improvement. Lumi's beak jumps 0.25 m and its crest 0.22 m in one frame, at 7.4 m/s. In the lantern film the sway cannot be seen at film speed."
+  },
+  "fun": {
+   "score": 6,
+   "why": "Played for 75 s each. Firefly catch: 1 of 8, then 'Time's up' with a tip and R to retry. Hide and seek: 2 of 4 found with giggle directions. Berry race: won 3 to 2, 'A new best', level 2, so there is a reason to play twice. Jump in: 22 keys. The new chip and knock toys did not answer at the stone (chipstone.jl:151 is off during Jump in), and nothing in the world invites you to them."
+  },
+  "wow": {
+   "score": 4,
+   "why": "FEM notes from an asset's real shape is a surprising idea, but the films don't sell it: a top-down grey bar with chips popping off and no visible strike, and a lantern behind a trunk with a leaf pile in front. Two self-declared misses (Piranesi, ants) in the same stretch. A stranger would not share these."
+  },
+  "camera": {
+   "score": 4,
+   "why": "Orbit: a shed roof and a workbench fill the bottom third. Follow on the beach: a tree crown fills the left third. Firefly catch start: the camera is inside the garden fence. Hide and seek: the giant yellow face-hill fills half the frame. Chip film: Lumi is two feet at the top edge."
+  },
+  "ui": {
+   "score": 4,
+   "why": "Down from 5. Jump in's start card is now 7 lines over the bottom third of the view, and two lines run off both edges ('splashes), onto the swing...', '...L knocks or'). Things to try still lists none of the new toys. The mini game HUDs (counter, time, direction) are clear and good. After the path tracing switch failed, the button stayed at 'Path tracing: off' while the screen traced."
+  },
+  "style": {
+   "score": 5,
+   "why": "The raster has a coherent toy look. The traced white ground, the paper-white snow discs and the primitive grey-on-red stone break it."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame median 3.65 ms, p95 7.6 ms, a steady 30 fps through all four games. Every system is under 0.6 ms."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "performance",
+   "title": "Day-fall tiles crash path tracing and screenshots (markersize length)",
+   "todo": null,
+   "what": "Once the day-fall line has had tiles and is reset, plugins/dayfall.jl:105 updates the plot to one hidden position at (0,0,-50) but leaves the per-tile markersize vector at its old length (3). The Path tracing button then throws 'DimensionMismatch' in RayMakie meshscatter.jl:116 halfway through the switch, every live_screenshot after it throws the same, and the berry race UI test failed with it. The human's dashboard would hit this the first time they press Path tracing after a Jump in walk.",
+   "where": "world/plugins/dayfall.jl:105 (and :120); dev/Makie/RayMakie/src/plots/meshscatter.jl:116",
+   "evidence": "live_path_tracing(true) -> 'Failed to resolve trace_renderobject ... positions=[[0,0,-50]] markersize=[3 x Vec3f]'. live_tests('Berry race: start card names') failed with the same error. Making markersize match the positions in the live sandbox brought the screen back; my play script had to repeat that after every game (reviews/p139/play.jl fix_dayfall!).",
+   "suggestion": "Pass markersize in the same update! as arg1 every time (fill(Vec3f(1), n)). In RayMakie, raise a clear error naming the plot when a markersize vector does not match the positions, or skip that plot instead of killing the whole render. Add a UI test that walks Jump in for 6 s, stops, and toggles Path tracing on and off.",
+   "done_when": "A UI test walks Jump in, stops, toggles Path tracing on and off and takes a screenshot without error, and live_tests('Berry race') passes."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "The chip stone can't be played: R/L do nothing in the menu's Jump in",
+   "todo": 670,
+   "what": "I chose Jump in from the menu, pressed Play, stood Lumi 0.9 m from the stone at (3.85,-14.91) and pressed R and L four times each. No chip, no note, no stone in any frame, and Lumi said 'Nothing to knock on here.' four times. chipstone.jl:151 only aims while game.minigame === nothing, but Play sets game.minigame to JumpIn (my log: 'started NeverendingGame.JumpIn'), so the plugin never sets :near and knock.jl takes L. The flagship toy of the session cannot be reached the way the dashboard tells the human to reach it.",
+   "where": "world/plugins/chipstone.jl:151; the stone at (4,-14)",
+   "evidence": "world/reviews/p139/play/sheet-chip.png, chip-r1..r4.png; Lumi's says in the sandbox log at t=423623-423634; Main.CHIPSTONE[:near] == false",
+   "suggestion": "Allow the aim when game.minigame isa JumpIn. Turn Lumi to face the stone when R or L is pressed within reach, so the player does not have to aim the beak. Put a small sign or a tuning fork by the stone, show 'R chip \u00b7 L knock' only while Lumi is in reach, and give it a goal: a friend hums a note, you chip until the stone matches it, and a meter shows how close you are. Tuned stones then join a row the friends play (#670).",
+   "done_when": "A UI test chooses Jump in from the menu, walks to the stone, presses R and then L, and sees the stone's voxel count drop and a stone_chip event logged; a screenshot shows the stone, Lumi and the key prompt in one frame."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Snow blanket shows as white paper discs, and the traced land turns white",
+   "todo": 647,
+   "what": "In the raster, about 20 flat, unlit white ovals lie in the meadow (eye-level progress shot, Jump in start). With Path tracing on, the whole terrain is near-white with green tufts on it and the sky is white, while the raster of the same view in the same minute is green. The likely cause is the snow-day blanket mesh (snowday.jl:69), kept just under the ground when there is no snow: it pokes through in patches in the raster and covers the land in the trace.",
+   "where": "world/plugins/snowday.jl:69-80 (blanket lift); the game view with Path tracing on",
+   "evidence": "world/reviews/p139/traced.png against raster-after.png (same camera, 16:57); world/media/progress/session-0139/eye-level.png; world/reviews/p139/play/jumpin-0-start.png",
+   "suggestion": "When there is no snow, set the blanket to visible = false (or delete it) instead of sinking it. When there is snow, give it a real snow material: a bright diffuse base with subsurface and a faint sparkle. Then make the trace better than the raster: grass with sheen, the sea with transmission, lit lanterns.",
+   "done_when": "With no snow falling, an eye-level screenshot has no white discs on the grass, and a traced orbit screenshot has green grass whose mean hue is within 15% of the raster frame's, under a blue sky."
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "A yellow chick double follows Lumi; a paper Lumi stands on the pier",
+   "todo": 614,
+   "what": "A second, smaller yellow Lumi with dark bands across its face stood right beside Lumi in every mini game I played: Jump in, Firefly catch, Berry race and Hide and seek. It is also in the follow view and the motion sheet. To a player it reads as a duplicated or glitched main character, not a chick. A flat paper Lumi stands on the pier too.",
+   "where": "next to Lumi everywhere; the pier",
+   "evidence": "world/reviews/p139/play/jumpin-0-start.png, jumpin-2.png, sheet-fireflycatch.png, motion/motion.png, motion/creatures.png (bottom left)",
+   "suggestion": "Make the chick unmistakably a chick: a third of Lumi's size, round and fluffy, a different shade, with a peep and a hop. Or let it leave Lumi's side most of the time. Retire the paper cut-out, or give it a clear reason to be there (a scarecrow in the garden).",
+   "done_when": "In a Jump in screenshot and the live_motion creature sheet, no second figure with Lumi's silhouette and more than half its height stands within 3 m of Lumi."
+  },
+  {
+   "severity": "high",
+   "category": "wow",
+   "title": "Film the knock and the chip so a stranger hears and sees them",
+   "todo": null,
+   "what": "The FEM idea is the best one in weeks, but both films bury it. Chip film: top-down on a grey sausage, no pebble or strike can be seen (the take 2 caption promises one), chips just pop out of the top, a white paper sheet drifts in at 2.5 s, and Lumi is two feet at the top edge. Lantern film: a trunk covers the right fifth of the frame and a leaf pile the bottom third, the sway is invisible, and Lumi jumps up into the sky in the last frame.",
+   "where": "site/films/chip-a-stone.mp4, stone-lantern-notes.mp4",
+   "evidence": "world/reviews/motion/perfectionist-0139/chip-a-stone-overview.jpg and -strip.jpg; stone-lantern-notes-overview.jpg",
+   "suggestion": "Shoot it at eye level, low and close: Lumi's beak strikes, the stone rings, its mode shape shows on the stone (sand gathering on the nodal lines, Chladni-style) and the pitch shows as rings in the air. Make the stone dark wet basalt with a clear coat and a lighter, glittering inside where it was chipped, so the material changes visibly with each chip.",
+   "done_when": "A film's motion sheet shows the striker touching the stone in the frame where chips fly, Lumi's full body in frame, and nothing occluding more than 10% of the frame. A traced still shows a coat highlight and a lighter colour where the stone was chipped."
+  },
+  {
+   "severity": "medium",
+   "category": "ui",
+   "title": "Jump in's key card runs off the screen; show keys where they apply",
+   "todo": 660,
+   "what": "Jump in's start card is 7 lines over the bottom third of the view, and two lines are cut at both edges ('splashes), onto the swing or a leaf pile; ...', '... L knocks o'). After it fades, a 3-line box with 22 keys stays. Things to try in the side panel names none of the boomerang, knock, chip or dandelion toys.",
+   "where": "Jump in HUD; side panel 'Things to try'",
+   "evidence": "world/reviews/p139/play/jumpin-0-start.png, sheet-chip.png (top row)",
+   "suggestion": "Show context keys: 'L knock' and 'R chip' appear only by something knockable, 'F lantern' only at night, 'O boomerang' only on a beach. Keep the global box to 6 keys and let Things to try list the 3 newest toys with their places.",
+   "done_when": "In a Jump in screenshot at 1280x720 no HUD text is clipped by the view's edges, the global key box has at most 8 entries, and standing by the chip stone shows its keys there."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Every camera mode lands behind a slab, a fence or inside a crown",
+   "todo": 615,
+   "what": "Orbit: a shed roof, a black slab and a workbench fill the bottom third. Firefly catch start: the camera stands inside the garden fence. Follow on the beach: a tree crown fills the left third. Hide and seek: the giant yellow face-hill fills half the frame. Follow: the pink crown sits above Lumi with the speech line across it.",
+   "where": "orbit, follow and the mini game cameras",
+   "evidence": "world/reviews/p139/raster-after.png, play/jumpin-2.png, play/sheet-fireflycatch.png, play/sheet-hideandseek.png, cam-follow.png",
+   "suggestion": "Raycast from the target to the eye and pull the camera in front of the first hit, or fade the occluder. Keep the eye out of a 2 m sphere around any prop bigger than 1 m.",
+   "done_when": "Five orbit, five follow and one screenshot per mini game, 5 s apart, show no object covering more than 10% of the frame in front of the subject."
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "title": "Firefly catch: fireflies are flat lime discs with ring halos",
+   "todo": 643,
+   "what": "At the Firefly catch start (17:21) the fireflies are big flat lime discs with concentric ring halos, as large as the sheep's head. They read as UI targets, not insects that glow, and they light nothing around them.",
+   "where": "Firefly catch",
+   "evidence": "world/reviews/p139/play/fireflycatch-1.png",
+   "suggestion": "Use a tiny body with an emissive abdomen that pulses, a soft bloom, and a real point light that throws warm green light on the grass and on Lumi as it gets close. Shown traced at dusk, this would be the island's best night picture.",
+   "done_when": "A Firefly catch screenshot at dusk shows fireflies smaller than Lumi's eye, with a visible glow on the ground under the nearest one and no ring banding."
+  }
+ ],
+ "todos": [
+  {
+   "id": 656,
+   "action": "drop",
+   "why": "Duplicate of #672 (the same two untraced pictures)"
+  },
+  {
+   "id": 665,
+   "action": "drop",
+   "why": "Duplicate of #672"
+  },
+  {
+   "id": 672,
+   "action": "keep",
+   "why": "climb-edges.png and island-woodcut.png are still in site/img and linked from index.html"
+  },
+  {
+   "id": 657,
+   "action": "done",
+   "why": "site/films has only a-boomerang-comes-back-3.mp4; the -2 file is gone"
+  },
+  {
+   "id": 654,
+   "action": "keep",
+   "why": "Take 4 is clean, but world/releases has no boomerang release yet",
+   "title": "Release the boomerang film (take 4) in world/releases with a note"
+  },
+  {
+   "id": 659,
+   "action": "keep",
+   "why": "Late afternoon looks good now (16:34 progress shots); noon itself was not checked this review"
+  },
+  {
+   "id": 637,
+   "action": "keep",
+   "why": "Crabs now pass live_motion (9 of 10 move well); re-measure the tail and leg snaps and close if 10 of 10",
+   "title": "Sniffsalot tail and Marshmallow leg snaps: re-measure with live_motion, close at 10/10"
+  },
+  {
+   "id": 553,
+   "action": "keep",
+   "why": "Lumi's beak and crest still snap 0.25 m in one frame at 7.4 m/s",
+   "title": "Lumi's idle: wings folded, slow breath, no beak/crest snap (0.25 m/frame now)"
+  },
+  {
+   "id": 636,
+   "action": "keep",
+   "why": "Dawn not seen this review"
+  },
+  {
+   "id": 648,
+   "action": "keep",
+   "why": "Not checked this time"
+  },
+  {
+   "id": 545,
+   "action": "keep",
+   "why": "TV still raster-only"
+  },
+  {
+   "id": 577,
+   "action": "keep",
+   "why": "Not seen this review"
+  },
+  {
+   "id": 603,
+   "action": "keep",
+   "why": "Not seen this review"
+  },
+  {
+   "id": 646,
+   "action": "keep",
+   "why": "No take 2 yet"
+  },
+  {
+   "id": 667,
+   "action": "keep",
+   "why": "Not checked up close this time"
+  }
+ ],
+ "engine": [
+  {
+   "what": "RayMakie meshscatter: a markersize vector whose length does not match the positions throws inside the compute graph and takes down the whole render (screenshot, path tracing toggle), instead of failing only that plot. setrasterize! also leaves the dashboard button out of sync when it throws.",
+   "evidence": "dev/Makie/RayMakie/src/plots/meshscatter.jl:116 (pos_rot_scale_to_mat3x4!), via RayMakie.jl:906 setrasterize! and :860 poll_all_plots"
+  }
+ ],
+ "process": "The author follows goals 3 and 8 with real substance: boomerang aerodynamics, FinEtools modal solves of real asset shapes, and hollow walls checked against beam theory. That is the 'not one more label' depth the human asked for, and choosing a solver through RomeoDB is good practice. But the work stops at the physics and is never played the way a player plays it. The chip stone does not answer in the menu's Jump in, each new toy becomes one more key in a card that now runs off the screen, the films are shot from wherever the preview camera happened to be, and two of the last six posts are self-declared misses. Goal 7 (materials and light) did not move, and the trace got worse (white ground). Goal 6 moved a little (9 of 10 creatures move well, and the afternoon raster is warmer than at 0136). Goal 2 has no release since 11-24, and the boomerang take 4 sits unreleased. Goal 5: Lumi's body gets attention, but the chick double undoes its silhouette. The s137 day-fall change broke path tracing without any test catching it. After every change to a plugin's plots, toggle Path tracing once, and after every new toy play it from the menu. Next sessions: fix the crash and the chip aim first, then turn one toy (knock and chip) into a place with a goal and a film shot like a film, before starting a new idea.",
+ "addressed": true,
+ "addressed_note": "s140: chip stone reachable in Jump in (#670 done) and day-fall markersize crash (#673, #166, #167 done), both published. The rest stay open as the host's todos (#614 chick double, snow discs, films, HUD, cameras, fireflies)."
+}

@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "ffprobe: profile 'High 4:4:4 Predictive', pix_fmt yuv444p (ants-honey-road films are yuv420p High, so the pipeline can do it)",
+      "severity": "high",
+      "suggestion": "Re-encode with -pix_fmt yuv420p -profile:v high (and +faststart), and make that the default in the export.",
+      "what": "Both new films are encoded H.264 High 4:4:4 Predictive (yuv444p), which Firefox and Safari/iOS do not decode. Many visitors get a blank or broken video.",
+      "where": "site/films/chip-a-stone.mp4, site/films/stone-lantern-notes.mp4"
+    },
+    {
+      "evidence": "Specks appear from nowhere on the stone top; cs_chip! only zeroes voxels; nothing in the plugin spawns a falling body",
+      "severity": "high",
+      "suggestion": "Either really drop a pebble, a rigid body whose impact point chooses the chipped column, or caption what happens. Light the stone low and from the side, or show a before/after cross-section, so the thinning middle is visible.",
+      "what": "The caption says 'A pebble drops onto a flat stone', but no pebble appears in any frame. The chips show up as a sudden burst of grey specks, and the code has no pebble or debris at all (R deletes voxels instantly). The dents are also hard to see: frame 1 and frame 16 look almost the same.",
+      "where": "chip-a-stone storyboard frames 4, 7, 10, 13; plugins/chipstone.jl:140-150"
+    },
+    {
+      "evidence": "A white quad at the top left near the claws from 4.0 s; a white card at the bottom right of the lantern frames; a yellow bird floating mid-air in the last lantern frame",
+      "severity": "medium",
+      "suggestion": "Remove the stray paper actor from the shot, cut before the end-of-take reset, frame the lantern closer against a calm background, and pick a sway amplitude that reads at 960x540.",
+      "what": "Stray objects and pops: a white paper sheet appears out of nowhere behind the stone halfway through the chip film, and the last frame jumps (Lumi's foot shifts). In the lantern film a white card blinks in at the bottom right, and in the last frame Lumi pops up into the sky above the lantern. The lantern's sway, the point of the post, is too small to see at film size among the falling leaves.",
+      "where": "chip-a-stone board frame 8 onward and frame 16; stone-lantern-notes board frames 8 and 16 and the 50% still"
+    }
+  ],
+  "fun": 4,
+  "fun_why": "Chipping and listening is a nice toy to play with, but as filmed it is a still grey lump with specks and an audio change; you have to read the caption to know what to listen for.",
+  "real": 7,
+  "real_change": "chipstone.jl: a 42 cm voxel stone on two sticks. R takes the top voxel layer off three columns where Lumi faces. A background thread re-solves the free-free modes (FinEtools hex FEM + Arpack), the mesh is rebuilt from the solved boundary, and the new partials play as decaying sines in the page. So the note and the shape really change and are kept. Only drawn or only in the film: the falling chip specks and the 'pebble' the caption mentions; the plugin has no pebble and no debris. knock.jl's lantern sway shows a real mode shape on a stand-in mesh, slowed and scaled up to 4% of the height, so the motion's form is real but its timing and size are drawn. The ant's-eye picture is only a camera.",
+  "real_why": "Real voxel removal and a real modal solve per chip drive the sound; the debris is cosmetic and the sway is slowed down and exaggerated.",
+  "summary": "Chipping is a real idea: every chip removes voxels and the stone's modes are solved again with FEM, so the pitch really follows its shape. But the chip film never shows the 'pebble drops' its caption opens with, the dents are barely visible, and a stray white sheet appears. Both new films are H.264 High 4:4:4 (yuv444p), which Firefox and Safari/iOS will not play.",
+  "superseded_by": "perfectionist-0139.json",
+  "surprise": 6,
+  "surprise_why": "Changing an object's shape and hearing its FEM-solved pitch move, the way marimba bars are tuned, is new physics for the island, but the film doesn't show it clearly and the lantern knock builds on last session's knock.",
+  "verdict": "needs_work"
+}
