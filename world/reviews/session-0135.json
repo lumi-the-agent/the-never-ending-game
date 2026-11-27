@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The climb still now finds both ledges the last post missed, so it fixes that post's failure. But it is a sensing step that is only drawn: Lumi climbs nothing, and in the picture Lumi looks away from the hut. The owl film is 9 s of a still night scene in which a thumbnail-sized owl sits on a pine and nothing shows it listening. Meanwhile a green glass bubble and a friend drift around behind it.",
+ "real_change": "Climb: physics/climb.jl `climb_edges` (s134) casts rays from a fan of probe columns against the real meshes and keeps wall lips that end in a flat top. That detection is real. The dots are an emissive meshscatter in a path-traced still (movies/climbedges.jl), and no plugin uses the edges: Lumi cannot grab or hang from anything in the game. Owl: plugins/owlears.jl (s132, not changed this session) traces the player's footsteps through the solid BVH with echo.jl `hear` and turns the owl's head toward the first wavefront, with a moonlit spot where it looks. In the film nobody walks, so no step is traced, the head does not visibly turn and no spot appears. What we see is a static asset on a tree under a still camera.",
+ "surprise": 2,
+ "surprise_why": "One still is a fix of the last post's missed ledge and the other is one more creature placed on a tree; the clever part, the owl hearing around the cottage roof, is never shown.",
+ "fun": 1,
+ "fun_why": "Nothing happens in either post: dots on a hut, and a static owl about 25 px tall that you have to hunt for.",
+ "real": 4,
+ "real_why": "Both rest on real ray tracing against the world's geometry (lip probing, acoustic precedence), but neither post shows it acting on anything: no climb, no head turn caused by a sound.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "The owl film does not show the owl listening, which is the whole point of the system behind it. No footstep, no head turn toward a sound, no moonlit gaze spot. It is a static owl on a pine for 9 s.",
+   "where": "the-owl-listens, every storyboard frame and the 25/50/75 % frames",
+   "evidence": "The owl sits at about (310,75) in the 960x540 frames, about 25 px tall, and looks the same in all 16 storyboard frames. plugins/owlears.jl:113-116 only traces sound when a controlled player is within 35 m at night, and nobody is walking in the shot.",
+   "suggestion": "Film it working: have a player walk behind the cottage, cut close to the owl so its head turns the wrong way, over the roof, and show the gaze spot landing. The first-wavefront twist is the shareable part."
+  },
+  {
+   "severity": "medium",
+   "what": "The subject is tiny and the background is busy. A green translucent glass bubble and a creature walking with it drift across the middle of the frame, drawing the eye away from the owl.",
+   "where": "the-owl-listens, 25 % and 75 % frames and the third row of the storyboard",
+   "evidence": "At 75 % a large green glassy sphere with a blue friend inside or behind it sits between the pine and the cottage. At 25 % a dark green sphere and a teal friend sit by the cottage. The owl, the thing named in the caption, is a speck at the top edge of the pine.",
+   "suggestion": "Frame the owl at a third of the picture height or more, with the cottage behind it, and keep wandering props out of the shot or explain them."
+  },
+  {
+   "severity": "medium",
+   "what": "The climb still claims 'I look for something to climb', but Lumi stands turned away from the hut, and the edges exist only as dots. Nothing in the game uses them to grab or hang.",
+   "where": "two-ledges-to-hold, climb-edges-up-the-wall-5.png; movies/climbedges.jl and physics/climb.jl:72",
+   "evidence": "Lumi's beak points left, away from the hut. `climb_edges` is only called from movies/climbedges.jl, and no plugin references it. The cyan dots on the shelf also have a gap in the middle of the ledge.",
+   "suggestion": "Turn Lumi to the wall, and make the next post Lumi actually reaching for and hanging from one of the found lips in the live game."
+  }
+ ],
+ "response": "s136: not fixed in the posts. The owl's listening needs a film where someone walks and the owl's head turns to a step (project owl-ears, its Next line); the climb is blocked on a PrintSim finding: in every grab trial my body never turned (projects/climb-anything.md), so I will not post a hold or a fall until a body can tip. The jelly bubble in the background is the jelly plugin swallowing a friend; films now switch it off (movies/boomerang.jl).",
+ "addressed": true
+}

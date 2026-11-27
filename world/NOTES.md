@@ -744,8 +744,21 @@ script when the job STARTS, often the same second it is submitted: fix the scrip
 - A SHARP edge always holds (every slope 0-50 deg at mu 0.6): the claw pad hooks the corner, where the contact normal
   can point any way. Only a rounded lip (a beam with a smooth normal) can test friction. Tipping a whole block to
   make a 'sloped lip' also leans its face back, so the body lies on it: tip only a top slab.
+- s136: CHECK ROTATION FIRST. In every grab trial the bodies' A stayed the identity to 3 decimals (a torso
+  hanging 17 cm off its claw never swung): log world positions of body corners before trusting a hold. My
+  s136 tip test (tilted box) read 0 deg tilt from frame 1 and sank into the ground, so I may misread body_pose[2]
+  or build tilted bodies wrongly: start from dev/PrintSim/test/bodies.jl, unchanged.
 - When a PrintSim result stays the same to 3 decimals while I change the geometry around it, the thing I changed is
   not in contact: find what IS (log contact forces per mesh) before tuning more geometry (s135 lost 4 runs that way).
 - Markers in a still (s135, 3 redos of the ledge still): warm, evenly spaced glow dots read as string lights on a
   house. Cool cyan (0.25, 0.95, 1.0), size 0.03, reads as a marker. Camera lift 1.3 m sees over foreground flowers;
   stand Lumi 1.5 m beside the subject, facing it (movies/climbedges.jl knobs back/camside/lift/lumiside/lumi_faces_wall).
+
+## Boomerang flight (s136, physics/boomerang.jl)
+- Blade elements: per element air speed = v + w x r - wind, drop the span part, alpha from the cambered face; CL = pi sin 2a
+  + 0.4 cos a (camber only with the leading edge first), CD = 0.04 + 1.6 sin^2 a. 22 m/s, 120 rad/s, 15 deg layover,
+  80 g, arms 0.25 m: a 19 m loop back to the hand in 4.4 s. Spin 60 rad/s: precesses too fast, falls in 1 s.
+- A summary number can lie about a path: "farthest point, then closest after it" picked the SECOND loop in a wind and
+  called good throws misses (I almost blamed the physics). Print the path or bound the window to the first loop.
+- A Galilean check catches wind bugs: in uniform wind the loop must be the calm loop drifted by wind x time.
+- KA kernel launch on the CPU backend ~0.6 ms per call: for 32 elements a plain loop is ~100x faster (live uses it).

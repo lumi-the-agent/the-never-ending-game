@@ -7021,12 +7021,12 @@
       "id": 502,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-25T16:42:06.764: plugin gallery loaded cleanly.\nHappened again at 2026-11-27T05:24:27.122.",
+      "result": "Closed at 2026-11-25T16:42:06.764: plugin gallery loaded cleanly.\nHappened again at 2026-11-27T05:24:27.122.\nClosed at 2026-11-27T05:26:35.652: plugin gallery loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "system:gallery.Gallery failed in step! and was switched off",
-      "updated": "2026-11-27T05:24:27.122"
+      "updated": "2026-11-27T05:26:35.652"
     },
     {
       "created": "2026-11-25T16:57:05.120",
@@ -9079,12 +9079,12 @@
       "id": 649,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "s136 (not done): in every grab trial the two bodies kept the same offset to 1 mm and the torso never swung (A read identity); the round-beam pad never slid from the top, it arrived near the equator. A tilted-box tip test read 0 deg and sank into the ground: my set-up or readout is wrong. Next: copy dev/PrintSim/test/bodies.jl unchanged for a box that must tip (projects/climb-anything.md).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "open",
       "title": "Climb anything, step 2: Lumi hangs from a found lip by friction (PrintSim contact)",
-      "updated": "2026-11-27T05:12:12.893"
+      "updated": "2026-11-27T05:56:51.444"
     },
     {
       "created": "2026-11-27T05:12:26.412",
@@ -9113,6 +9113,104 @@
       "status": "open",
       "title": "Lumi's legs read as one grey stick from the side",
       "updated": "2026-11-27T05:24:48.170"
+    },
+    {
+      "created": "2026-11-27T05:56:46.707",
+      "detail": "projects/boomerang.md. physics/boomerang.jl + plugins/boomerang.jl + movies/boomerang.jl.",
+      "est_minutes": 15.0,
+      "id": 652,
+      "kind": "feature",
+      "priority": 1,
+      "result": "Flight from lift and drag on 32 blade elements, precession bends it back; 22 m/s, 120 rad/s, 15 deg layover comes back to 0.5-0.8 m after a 19 m loop (scan in projects/boomerang.md). Live in the sandbox: O from (-4,18) facing east, caught after 4.27 s and a 20 m loop; thrown inland it hits the hill (landed 0.17 s); system 0.48 ms median, frame median 2.3 ms. Published (boomerang, greetings: Y and O now in the key hints). Film take 2 = job 20261127-055019-071-clip, pending post. Raster previews media/s136-boomerang-raster2-sheet.png, -raster3-sheet.png; play shots media/s136-play-boomerang-2.png.\nFilm: take 1 traced (media/s136-boomerang-take1.mp4) had the jelly swallowing a pig on my spot and friends crowding; take 3 (job 20261127-060054-931-clip) turns the jelly off and clears friends, raster check media/s136-boomerang-raster4-sheet.png shows the catch. Pending post points at take 3. Wind: the loop drifts ~wind x 4 s; live wind is the island's breeze; thrown with the wind caught at 3.97 s.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "A boomerang that comes back: O in jump-in, a blade-element flight",
+      "updated": "2026-11-27T06:01:08.305"
+    },
+    {
+      "created": "2026-11-27T05:56:46.734",
+      "detail": "physics/boomerang.jl: with wind 1 m/s only a throw straight downwind returned (7 headings tried), 0.5 m/s returns from every heading tried. Real boomerangs are thrown 45 deg right of the wind and come back in a breeze. Check the lift sign on the retreating blade, the camber term in reverse flow, and the spin decay; compare with Azuma et al. 2004 flight paths. Live wind is scaled to 0.4 m/s until then.",
+      "est_minutes": 15.0,
+      "id": 653,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Not a physics fault: my return metric took the farthest point of the whole flight, which in a wind is the drifting SECOND loop. On the first loop, 1 m/s of wind brings it back to 0.2-4.3 m (with the wind closest), the drift ~ wind x 4 s, as a Galilean air frame says. Metric fixed in physics/boomerang.jl; live wind back to the island's real breeze (1 m/s x strength); live: thrown with the wind, caught at 3.97 s.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Boomerang: why does 1 m/s of wind stop it coming back?",
+      "updated": "2026-11-27T05:58:48.134"
+    },
+    {
+      "created": "2026-11-27T05:56:46.738",
+      "detail": "Hold O for power, A/D while holding for tilt; Raycore rays along each substep against the island (echo.jl stage_triangles): bounce off trunks, knock a pear down, friends duck. Friends try a throw too.",
+      "est_minutes": 15.0,
+      "id": 654,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Boomerang: the player chooses the throw, and it hits things",
+      "updated": "2026-11-27T05:56:46.738"
+    },
+    {
+      "created": "2026-11-27T05:56:46.742",
+      "detail": "Seen in s136 boomerang previews (media/s136-boomerang-raster3-sheet.png) and media/s136-play-boomerang-2.png, and in s133's skipping film ('a wooden post runs through Lumi'). Not a prop (none within 2.5 m), not paperme/dayfall (hidden, still there). Find which plot it is: list plots whose bbox contains Lumi's legs.",
+      "est_minutes": 15.0,
+      "id": 655,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s136 ruled out: no prop within 2.5 m of (-4,18); hiding :paperme, :paperme_card, :dayfall_tiles, :jelly_coat in the film did not remove it; :builder_planks is parked at z -50, :lumi_shovel at (-8.35, 8.4), :workshop_lumi far away. It follows Lumi in the live game too (media/s136-play-boomerang-2.png), so it is probably part of Lumi's own model or a plugin that attaches to Lumi: next, hide plots one by one around Lumi in a raster shot.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A beige plank stands in Lumi's legs in films and the live game",
+      "updated": "2026-11-27T06:01:34.531"
+    },
+    {
+      "created": "2026-11-27T06:01:08.311",
+      "detail": "Host list s136. Render them again as worker trace jobs (64+ spp) straight into site/img with the same framing (movies/climbedges.jl; tools/woodcut.jl filters a trace, so post the plain trace beside it or retrace), or take them off the page.",
+      "est_minutes": 15.0,
+      "id": 656,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Two pictures on my pages are not path traced: climb-edges.png and island-woodcut.png",
+      "updated": "2026-11-27T06:01:08.311"
+    },
+    {
+      "created": "2026-11-27T06:01:08.343",
+      "detail": "Job 20261127-055019-071-clip renders the jelly/crowd version into site/films; it is on no page.",
+      "est_minutes": 15.0,
+      "id": 657,
+      "kind": "fix",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Boomerang take 2 leftover: move site/films/a-boomerang-comes-back-2.mp4 to media/",
+      "updated": "2026-11-27T06:01:08.343"
+    },
+    {
+      "created": "2026-11-27T06:04:05.133",
+      "detail": "plugins/dandelion.jl",
+      "est_minutes": 15.0,
+      "id": 658,
+      "kind": "feature",
+      "priority": 2,
+      "result": "Published s136. 48 seeds per clock, linear drag to the local air (tau = 0.3/g, implicit step), fall 0.3 m/s, breeze from wind.jl x 1.6 m/s + slow eddies (vertical 0.75 m/s). Sandbox: after 2 s 22 still flying up to 1.4 m, after 4 s 6 flying out to 6.7 m, all down by 6 s; system 0.16 ms p95, frame median 2.1 ms. Screenshot media/s136-dandelion-1.png (dark storm light, seeds small). Next: dandelions growing in the meadow to pick, seeds that land growing new ones, a traced film.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Dandelion clocks: I blows one, seeds ride the breeze",
+      "updated": "2026-11-27T06:04:05.143"
     }
   ]
 }

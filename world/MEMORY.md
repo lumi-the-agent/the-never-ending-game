@@ -26,12 +26,17 @@
   `NG.NIGHT_DARK[]` halves deep-night light (raster AND tracer). Scratch games run the plugins: film plots need their own names.
   The worker may start a job within 2 min: finish the film script BEFORE submit_job.
   live_status "ok" = loaded, not running: after publish grep log/events-*.jsonl for plugin_error (s131 fireflies died twice).
+- Boomerang (s136, project boomerang): physics/boomerang.jl (blade elements, precession), O in jump-in (plugins/boomerang.jl,
+  Main.BOOMERANG[:last] = how the last throw ended), film movies/boomerang.jl. Comes back from (-4,18) facing east.
+  Wind drifts the loop ~wind x 4 s: throw with the wind. A queued job loads its script when it STARTS: edits before that count.
+- Dandelions (s136): I in jump-in blows a clock (plugins/dandelion.jl, seeds drag to the breeze); film movies/dandelion.jl at (-4,18).
 - Thin ice (s133, project glass-sea): physics/ice.jl floating plate + cracks, in plugins/glasssea.jl (GLASSSEA[:thinice]).
   Fracture on a grid: hold the rim, nonlocal stress, 15 % residual stiffness (NOTES 'Thin ice'). Next: todo #642.
   Woodcut filter: tools/woodcut.jl (`woodcut_island` = print look). Shooting stars: plugins/meteors.jl (METEORS[:force], [:az]).
 - Climb (s134, project climb-anything): physics/climb.jl `climb_edges` finds lips on real meshes (rays, KA kernel,
   up to 4 per column since s135); still script movies/climbedges.jl. Grab in PrintSim: physics/climbgrab.jl
-  `grab_trial` (dt 1e-3 only, 36 ms/step; sharp edges always hook, round beams slip; NOTES 'Grabs in PrintSim'). `Makie.data_limits(plot)` is in the plot's OWN space (no placement):
+  `grab_trial` (dt 1e-3 only, 36 ms/step; NOTES 'Grabs in PrintSim'). s136: in EVERY trial the body never turned
+  (claw-torso offset fixed to 1 mm, no swing): the s135 holds are unproven until a tilted box tips (projects/climb-anything.md). `Makie.data_limits(plot)` is in the plot's OWN space (no placement):
   use echo.jl `stage_triangles` for world positions.
 - Real physics (rules from s127): PrintSim (dev/PrintSim) is in the env; my air drag `air!` there; NOTES.md "PrintSim sheets":
   0.5 s/step and NaN on contact at big dt (todos #610-612). Project paper-letters. Retired things: retired/.

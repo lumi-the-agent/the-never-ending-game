@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-27T06:00:54.931",
+  "id": "20261127-060054-931-clip",
+  "kind": "clip",
+  "params": {
+    "call": "boomerang_clip",
+    "kwargs": {
+      "samples": 16
+    },
+    "max_minutes": 40,
+    "path": "/sim/Programmieren/SimGame/world/site/films/a-boomerang-comes-back-3.mp4",
+    "script": "movies/boomerang.jl"
+  },
+  "status": "queued"
+}

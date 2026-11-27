@@ -1,11 +1,11 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T05:25:47",
+  "ended": "2026-11-27T06:07:04",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.85,
-    "picture": 1.99,
-    "self": 0.22,
+    "feature": 1.51,
+    "picture": 1.19,
+    "self": 0.13,
     "sound": 0.01
   },
   "forms": [
@@ -326,7 +326,7 @@
     "fireflies_synced",
     "meteor_seen"
   ],
-  "joy": 0.5,
+  "joy": 0.56,
   "judged_posts": [
     {
       "recipe": "trigger fires, nearby friends gather round Lumi and dance a moment, then go back to what they did",
@@ -776,13 +776,13 @@
     "similarity": 5
   },
   "last_surprise": {
-    "fun": 2,
-    "score": 4.5,
-    "session": 134,
-    "why": "An edge finder read off the meshes and a fracturing ice plate are real new machinery, but the posts show a dotted line on a hut and a dark smudge, after a run of 'a take that misses' posts that look much like these."
+    "fun": 1,
+    "score": 3.0,
+    "session": 135,
+    "why": "One still is a fix of the last post's missed ledge and the other is one more creature placed on a tree; the clever part, the owl hearing around the cottage roof, is never shown."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T04:44:57",
+  "perceived_until": "2026-11-27T05:26:15",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -796,77 +796,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "sand_slide",
-          "who": 10
-        },
-        {
-          "kind": "sand_avalanche",
-          "who": 7
-        },
-        {
-          "kind": "seesaw_gather",
-          "who": 2
-        },
-        {
-          "kind": "seesaw_calm",
-          "who": 1
-        },
-        {
-          "kind": "seesaw_tip",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "picture",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/img/lit-from-below.png"
-      ],
-      "new_plugins": [
-        "underlight.jl"
-      ],
-      "points": 3.6,
-      "repeat_factor": 1.0,
-      "repeats": [],
-      "repetition": {
-        "form": "Change to how the island is lit: a quiet still of new light",
-        "form_count": 0,
-        "nearest": "Lamps on",
-        "post": "Lit from below",
-        "score": 4,
-        "shared": "a quiet picture of a new evening light on the island, nobody acts",
-        "similarity": 4
-      },
-      "session": 116,
-      "touched": [
-        "balance.jl",
-        "showers.jl"
-      ],
-      "values": {
-        "feature": 0.2,
-        "picture": 1.0,
-        "polish": 0.4,
-        "post": 2.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1902,6 +1831,43 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.8,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "feature",
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/a-boomerang-comes-back-2.mp4"
+      ],
+      "new_plugins": [
+        "boomerang.jl",
+        "dandelion.jl"
+      ],
+      "points": 9.6,
+      "session": 136,
+      "touched": [
+        "greetings.jl"
+      ],
+      "values": {
+        "feature": 2.6,
+        "film": 6.0,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2066,6 +2032,7 @@
       "site/img/bump.png",
       "site/img/camera-obscura-lens.png",
       "site/img/camera-obscura.png",
+      "site/img/climb-edges-up-the-wall-5.png",
       "site/img/climb-edges.png",
       "site/img/cloud-heart.png",
       "site/img/conga.png",
@@ -2274,11 +2241,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 112,
+    "posts": 113,
     "self": "369107370865776265",
     "wishes": 11
   },
-  "started": "2026-11-27T04:49:46",
+  "started": "2026-11-27T05:30:56",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2374,7 +2341,9 @@
       "InformationGeometry.ParameterSavingCallback",
       "SpectralResampling.get_logarithmic_λ",
       "LibTeXPrintf.texsetfont!",
-      "GeoParams.PerpleX_LaMEM_Diagram"
+      "GeoParams.PerpleX_LaMEM_Diagram",
+      "StartUpDG.read_Gmsh_2D_v4",
+      "Bigleaf.kinematic_viscosity"
     ],
     "games": [
       "Super Mario 64",
@@ -2403,7 +2372,10 @@
       "Tomb Raider (1996 video game)",
       "Mega Man X (video game)",
       "Angry Birds (video game)",
-      "Metal Gear Solid 2: Sons of Liberty"
+      "Metal Gear Solid 2: Sons of Liberty",
+      "SimCity 2000",
+      "Final Fantasy IV",
+      "The Last of Us Part II"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2691,14 +2663,19 @@
       "ImageGather",
       "GasTranSim",
       "Arrhenius",
-      "Noise"
+      "Noise",
+      "JustRelax",
+      "SimpleSim",
+      "ThreeBodyDecays"
     ],
     "vision": [
       "BasicVSRRunner",
       "PPDocLayoutRunner",
       "ProPainterRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "DepthAnythingRunner",
+      "NeuralLUTRunner"
     ]
   },
-  "surprise_seen": 134
+  "surprise_seen": 135
 }

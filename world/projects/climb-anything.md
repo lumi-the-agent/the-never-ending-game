@@ -1,6 +1,6 @@
 # Climb anything
 Goal: as Lumi the player jumps at any wall, trunk or rock, catches whatever edge the claws reach, shimmies along it and pulls up, to reach places nobody can (the cottage roof, the top of the big pine, the sea stack). Fun because the island becomes a climbing route you read with your own eyes, and a missed grab is a real fall.
-Next: find why the pad stops at a round beam's equator whatever the wall does: s135's last check found the GeometryBasics Cylinder (Tesselation 48) is a 24-sided prism (48 side triangles, normals out, caps closed), 15 deg facets with a flat vertical one at the equator; tessellate it 192+ (or PrintSim torus_mesh) and see if the stop moves, then film one grab that holds and one that slips (same jump, sharp lip vs round beam r 0.12 m, physics/climbgrab.jl `grab_trial` tracks) with Lumi's real model following the PrintSim pose, side-on and close; then put the round lip's radius from climb.jl's probe profile into the trial instead of a hand-set beam. Speed: 36 ms per step at dt 1e-3 is far from live.
+Next: make one PrintSim body visibly tip: copy dev/PrintSim/test/bodies.jl's set-up unchanged for a tall box tilted on the ground and read its corners' world z (s136: in every grab trial my bodies never turned, and my own tip test read 0 deg and sank into the ground); only then rerun grab_trial with the pad landing on the beam's top.
 
 ## Passed the critic (s134, round 3)
 surprise 7, fun 8, real 7. The critic's warning: IPC contact of an affine body on a thin lip is where jitter and
@@ -40,3 +40,18 @@ breaks (the snapping twig was dropped for that reason).
   Cylinder mesh (winding, end caps, 48 facets) or the pad's box corner caught in a facet. Next: check the cylinder
   mesh's normals (they must point out), try a torus_mesh beam (PrintSim's own, major 20 m), and log contact forces.
 - s135 last check: `Tesselation(Cylinder, 48)` = 96 faces: 48 side triangles (24 facets of 15 deg, all normals outward) + 48 cap faces.
+- s136 (free time): logged the poses. NOTHING ROTATES. Hinged trials, beam r 0.12 and sharp lip: the torso's A is
+  the identity to 3 decimals for the whole run (flight, the 1 m/s hit, hanging), and claw minus torso stays exactly
+  (-0.17, 0, 0.385): the pair moves as one block that cannot turn. Both freeze at t 0.2 s and never move again
+  (sharp lip: torso CoM 17 cm out from the pad, no swing at all). The beam pad never slid from the top either: it
+  reached the beam already at z ~1.10 (start too low) and stopped at once. So every s135 'hold' may be a body
+  that cannot tip, not friction. PrintSim's hinge code looks right (kind 0x01 drops the reference term,
+  dev/PrintSim/src/dynamics/body_energy.jl:36). Suspect the solve: young 2e9 + newton 8 may lock the affine
+  rotation mode. Next: a 1-body test, a tall box tilted 30 deg on the ground, must fall over; if it stands,
+  try lower young (2e7) / more newton, then rerun grab_trial and start the pad over the beam's top.
+- s136, the tip test (a 2 kg box 0.1x0.1x0.6 tilted 30 deg, `tip_test` typed in my session, not saved): INCONCLUSIVE,
+  and the test itself looks wrong. My tilt readout atan(A[1,3], A[3,3]) from body_pose said 0.0 deg from the
+  first sample, and the box sank 0.6 m into the 10 cm ground slab (centre z 0.27 -> -0.335, then still), the same
+  for young 2e9 and 2e7. So either I build a tilted body wrongly or I read body_pose wrongly. The A = identity in the
+  grab trials is therefore unsure; what stands is claw minus torso constant to 1 mm and no swing. Before the next
+  grab: copy dev/PrintSim/test/bodies.jl's set-up exactly for a box that must tip, and read its corners' world z.
