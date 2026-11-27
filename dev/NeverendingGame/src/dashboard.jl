@@ -311,6 +311,7 @@ first_line(s::AbstractString) = strip(first(split(strip(s), '\n')))
 "How Lumi feels (the host's measure, `mood.json`), in its words and a colour of its own."
 const FEELINGS = Dict(
     "lonely"  => ("Nobody has come to play with me for a while. Jump in?", RGBf(0.74, 0.68, 0.98)),
+    "annoyed" => ("It still doesn't look right, and it bugs me.", RGBf(0.95, 0.52, 0.4)),
     "bored"   => ("Same old, same old. I need something new to make.", RGBf(0.72, 0.74, 0.78)),
     "proud"   => ("I made something new, and I like it!", RGBf(0.98, 0.78, 0.35)),
     "curious" => ("So much to find out today.", RGBf(0.5, 0.82, 0.98)),
@@ -356,6 +357,23 @@ end
 activity_line(a::AbstractDict) =
     a["kind"] == "say" ? plain_text(first_line(a["text"])) :
     nothing
+
+"""
+What Lumi works towards, for the side panel: the big goal's title, how many steps of its road are
+done, and the next open one; empty while there is no big goal with a road (`world/BIG_GOAL.md`,
+written by the host once a critic passed it).
+"""
+function big_goal_line(p::GamePaths)
+    path = joinpath(p.world, "BIG_GOAL.md")
+    isfile(path) || return ""
+    text = read(path, String)
+    title = match(r"^# (.+)$"m, text)
+    steps = [(m[1] != " ", strip(m[2])) for m in eachmatch(r"^\s*[-*] \[([ xX])\] (.+)$"m, text)]
+    (title === nothing || isempty(steps)) && return ""
+    next = findfirst(s -> !first(s), steps)
+    return "Working towards: $(strip(title[1])) ($(count(first, steps)) of $(length(steps)) steps)" *
+           (next === nothing ? "" : "\nNext: " * last(steps[next]))
+end
 
 "A todo's title as a player reads it: the part before the first colon or parenthesis."
 player_title(s::AbstractString) = strip(first(split(s, r"[:(]"; limit = 2)))
@@ -418,7 +436,9 @@ function update_dashboard!(g::Game)
     d.messages.color[] = st === nothing || isempty(st["outbox"]) ? UI_DIM : UI_TEXT
     # the agent's running commentary is developer talk: the player sees what was last built
     built = last_built(p)
-    d.activity.text[] = isempty(built) ? "" : wrap_text("New on the island: " * built, 52; maxlines = 2)
+    goal = big_goal_line(p)
+    d.activity.text[] = join(filter(!isempty, [isempty(goal) ? "" : wrap_text(goal, 52; maxlines = 4),
+                                               isempty(built) ? "" : wrap_text("New on the island: " * built, 52; maxlines = 2)]), "\n")
     d.todos.text[] = things_to_try(g)     # the agent's todo list is dev talk (perfectionist-0027): the player sees what to play
     d.todos.color[] = UI_TEXT
     for panel in copy(d.plugin_panels)

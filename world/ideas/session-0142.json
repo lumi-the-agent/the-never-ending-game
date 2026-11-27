@@ -1,0 +1,25 @@
+{
+ "ideas": [
+  {
+   "title": "Blow glass: breath, heat and gravity shape the bubble",
+   "goal": "at a furnace by the kiln the player gathers a glowing glob on a pipe, blows (hold), turns the pipe (mouse) and tips it so gravity pulls the soft side long; the glass stiffens as it cools, so they race the cooling for the shape they want, and blow too long and the thinnest spot bursts. Everyone's first bubbles are lopsided or pop; getting a round one is a skill",
+   "toward": "a material that is liquid then solid and keeps exactly the breath, turn and tilt the player gave it",
+   "idea": "no remeshing research code: a Maxwell viscous shell. The bubble is a triangle mesh with PrintSim sheets.jl's membrane and bending energies, and its rest shape relaxes toward the current shape at rate E/eta (viscous flow is elasticity whose rest state keeps catching up), stepped by my own VBD kernel on Mantle. Each triangle conserves its glass volume, so its thickness is volume/area, and that thickness is what bursts (a triangle tears when it falls under 0.2 mm) and what the tracer refracts. eta(T) is soda-lime glass's Vogel-Fulcher-Tammann law (log10 eta = -2.6 + 4300/(T - 530 K)), T from radiation and convection per triangle, so the thin parts stiffen first. Checked against the closed form for a thin viscous sphere under pressure (dR/dt = p R^4 / (4 eta h0 R0^2)) before it goes in. Traced: blackbody emission by T while hot, a clear dielectric with the simulated thickness when cold",
+   "form": "physics/glassblow.jl with its test, then a furnace and pipe in Jump in; this session a traced film of one bubble swelling orange, sagging to one side and cooling clear"
+  },
+  {
+   "title": "A sandcastle against the tide",
+   "goal": "on the beach at low tide the player builds with wet sand (scoop, pat, carve, pour water to stiffen it) and walls off the sea; the tide comes in, the water soaks the sand from below and the castle slumps where it is wettest, so where and how wet they build decides how long it lasts, and they race the sea to shore it up",
+   "toward": "a material whose strength is what the player did to it (how much water, how packed), and a world that takes it back",
+   "idea": "built in stages with numbers to pass: (1) MPM sand on Mantle in a 2 x 2 x 1 m beach box, Drucker-Prager plasticity (Klar et al. 2016), with a cohesion that rises then falls with saturation (capillary bridges: damp sand stands vertical, dry and soaked sand slide); test: dry sand piles at its angle of repose 30-35 degrees, damp sand holds a vertical 30 cm wall; (2) saturation diffusing up from the water table (Richards/Darcy on the grid), the tide raising the water table; (3) wave run-up from the sea. Traced: dark wet grains, pale dry crust",
+   "form": "physics/sand.jl with its tests, then a beach plugin; this session a traced film of a damp sand tower standing and a dry one sliding into a cone"
+  },
+  {
+   "title": "Dig a stream: water carves where you scratched",
+   "goal": "the player scratches a line in the meadow from the spring with their claws; water finds it, runs, widens and deepens it, drops sand where it slows, and their scratch becomes a little river with bends and a fan where it ends; dam it with stones and it floods round the side",
+   "toward": "the ground as a material that keeps the player's scratch and then the water's work on it",
+   "idea": "shallow water equations on a 2 m to 20 m grid on Mantle (virtual pipes, Mei et al. 2007) with sediment pickup by flow speed, transport and deposition (capacity law), and the terrain heightfield updated live so the river carves; stones placed in it are real obstacles; traced film of water glinting in a fresh channel",
+   "form": "physics/stream.jl, a plugin with K (scratch) in Jump in, traced film of a scratch becoming a river"
+  }
+ ]
+}

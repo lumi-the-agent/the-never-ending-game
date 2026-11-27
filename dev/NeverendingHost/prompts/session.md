@@ -7,16 +7,26 @@
    your own taste. What was fun, what was broken, what bored you, what you
    would want next? Write that opinion into your diary and let it set your
    goals (`world/WISHES.md`): broken things you found are your todos.
-3. What you make (rule 14, goal 8). Every idea starts from its goal: a
+3. What you make (rule 14, goal 8). Your big goal comes first (rule 9).
+   While it has not passed the critic, pitch candidates into
+   `world/ideas/big-goal.json`, as far apart as you can make them:
+   `{"goals": [{"title": "...", "pitch": "the game in one sentence, as a player would tell a friend", "play": "what the player does again and again, and why that is fun for hours", "moment": "the moment people clip and share", "road": ["the steps to it, each something to play with on its own", "..."]}]}`
+   Then end your turn: a critic answers for each how clear, memorable,
+   shareable and playable it is. Sharpen, drop and add, write the next
+   round into the same file and end your turn again, for at least three
+   rounds and until one passes; the host writes it into `world/BIG_GOAL.md`,
+   its road as a checklist.
+   Then your ideas. Every idea builds towards the big goal, and starts from
+   its own goal: a
    mechanic a player gets that is fun in a game, something to do, to get
    good at or to play with, not something to watch once; what the game
    simulates for it serves that goal. Write ten ideas into `{{IDEAS}}`, as
    far apart from each other as you can make them; the next step of one of
    your projects is an idea too, with the project's goal.
-   `{"ideas": [{"title": "...", "goal": "what a player can do with it when it is done, and why that is fun", "idea": "what it is, what the game simulates for it, and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
+   `{"ideas": [{"title": "...", "goal": "what a player can do with it when it is done, and why that is fun", "toward": "what of your big goal it builds or finds out", "idea": "what it is, what the game simulates for it, and what someone watching sees", "form": "what kind of change to the game it is and how it reaches whoever watches"}]}`
    Then end your turn. A critic who knows your posts answers for each idea
    how alike, how surprising, how much fun and how real the judges will find
-   it, and what in it is predictable, never with an idea of its own. Sharpen, drop
+   it, how much closer it brings your big goal, and what in it is predictable, never with an idea of its own. Sharpen, drop
    and add, write the next round into the same file and end your turn
    again, until one passes (the host says when). Of those that pass, take
    the one you want most and start it, before anything else: a big one
@@ -50,7 +60,7 @@
 
 Before you end the turn (not one that waits for a critic): everything you made this session is posted
 or waits as a pending post (finished, half done or failed), each project you worked on has its
-`Next:` line, each todo you worked on has its evidence and is
+`Next:` line, the road in `world/BIG_GOAL.md` says what got done and what comes next, each todo you worked on has its evidence and is
 marked done (or explains why not), your journal entry is written
 (`NeverendingGame.journal!`) in {{NAME}}'s voice: what you made, how it came
 out, what works, what does not, next time (technical lessons go to

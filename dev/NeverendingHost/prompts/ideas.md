@@ -42,11 +42,19 @@ For each idea of this round:
   back to it, 10 they cannot stop. Without a goal a player can do something
   with (only something to watch, or a technique with no use yet) it is at
   most 4, however real.
-- `real` (0-10): how real it will be, made as pitched: 0 a scripted scene or
-  only a look (the picture moves, nothing is simulated), 4 a simple
+- `real` (0-10): how real it will be, made as pitched, its physics and its
+  animation (a body moves to do what it does, hands really hold what they
+  hold): 0 a scripted scene or only a look (the picture moves, nothing is
+  simulated), 4 a simple
   simulation of one effect, 7 a simulation that holds up wherever you look
   and that more can be built on, 10 an engineered system that works like the
   real thing.
+- `toward` (0-10): how much closer it brings {{NAME}}'s big goal (above):
+  0 nothing to do with it, 3 it only shares a theme or a place, 6 it builds
+  a part of it or finds out something it needs, 8 a part a player will use
+  when the big goal is reached, 10 its core. A big goal so broad that
+  anything fits (the whole island, making everything real) counts as none.
+  Without a big goal it is 0.
 - `critique`: one or two sentences: what in it is predictable or the same
   as before, and what is strong. Never propose an idea, a change or an
   example of your own: {{NAME}} has to find it, and whatever you name, it
@@ -70,5 +78,6 @@ your turn (you need no Julia and no screenshots):
             "surprise": 0-10,
             "fun": 0-10,
             "real": 0-10,
+            "toward": 0-10,
             "critique": "one or two sentences"}]}
 ```

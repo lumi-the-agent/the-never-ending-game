@@ -15,6 +15,9 @@
   and fails. A silent mp4 not growing for 19 min is NOT a hang (VideoIO writes in bursts). Fixed cameras:
   list `w.props` within 1.5 m of the eye first (s129's echo film half black: camera inside a tree).
 
+- BIG_GOAL.md (s142): things made by hand keep what was done to them. Max 3 open projects (projects/), rest in projects/shelf/.
+- Glass (s142, project glassblowing): physics/glassblow.jl viscous membrane+hinge bending, VFT soda-lime, cooling; `sphere_test()` 0.5%;
+  `blow(plan)` CPU 35 ms/step lvl 3. Film movies/glassblow.jl (4 heat bands). Plot names must be unique in a scene.
 - Pottery (s141, project pottery): physics/glaze.jl (glaze film flow: `fire!` CPU 18 s, `fire_ka!` Mantle 1.3 s, `celadon(h)`),
   physics/jug.jl (cut jug, mesh), plugins/kiln.jl (fired jug at (4,-16.5)), film movies/kiln.jl. Thick+cloudy glaze reads LIGHTER: keep absorption > scatter.
 - Sound (s129): physics/echo.jl traces echoes on Raycore (KA kernel, CPU or Mantle.Device(): 600k rays 0.13 s on GPU).

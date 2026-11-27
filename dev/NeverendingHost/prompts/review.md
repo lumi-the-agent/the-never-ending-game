@@ -12,7 +12,11 @@ screenshots and no sandbox ({{NAME}} tests its own game). For each post:
    (weight, contact, cause and effect, light)? Does it look good: is what
    matters in the picture and big enough; do the light and the materials
    work (water like water, glass like glass, metal like metal); is anything
-   broken, clipping, floating, frozen, popping or half drawn?
+   broken, clipping, floating, frozen, popping or half drawn? Does every
+   motion start and end somewhere (a hand throws it, it lands, it is
+   caught), and does a body move to make what it does? A thing that appears
+   out of nothing or vanishes into a body is a `high` finding, whatever the
+   caption calls it.
 2. **Against the code:** read the plugins the session changed (above) where
    they make what the post shows, and write down what really changes in the
    game (what moves, collides, reacts or is kept) and what is only drawn (a

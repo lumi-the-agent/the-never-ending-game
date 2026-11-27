@@ -1,0 +1,50 @@
+a plot named :glassblow is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:44
+  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703
+  [3] push!(scene::Makie.Scene, plot::Makie.Plot)
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713
+  [4] plot!(scene::Makie.Scene, plot::Makie.Mesh{Tuple{GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228
+  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575
+  [6] mesh!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{color::ColorTypes.RGB{Float32}, material::Hikari.Add{Hikari.Principled{Tuple{Int64, Int64, Int64}, Int64, Int64, Float64, Int64, Nothing, Int64, Int64, Tuple{Int64, Float64, Float64}, Float64, Float64, Int64, Float64, Tuple{Int64, Int64, Int64}, Int64, Int64, Nothing, Int64, Int64, Int64, Int64, Float64, Float64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Tuple{Int64, Int64, Int64}, Tuple{Int64, Int64, Int64}, Int64, Int64, Float64, Bool, Symbol}, Hikari.Emission{Tuple{Float64, Float64, Float64}, Float64}}, name::Symbol})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465
+  [7] (::Main.ClipScript.var"#32#33"{Game, Vector{GeometryBasics.Point{3, Float32}}, GeometryBasics.Point{3, Float32}, Main.ClipScript.Gather, Vector{NamedTuple}})(::Tuple{Float64, Float64, Tuple{Float64, Float64, Float64}, Float64})
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/glassblow.jl:45
+  [8] map(f::Main.ClipScript.var"#32#33"{Game, Vector{GeometryBasics.Point{3, Float32}}, GeometryBasics.Point{3, Float32}, Main.ClipScript.Gather, Vector{NamedTuple}}, t::Tuple{Tuple{Float64, Float64, Tuple{Float64, Float64, Float64}, Float64}, Tuple{Float64, Float64, Tuple{Float64, Float64, Float64}, Float64}, Tuple{Float64, Float64, Tuple{Float64, Float64, Float64}, Float64}})
+    @ Base ./tuple.jl:360
+  [9] map
+    @ ./tuple.jl:361 [inlined]
+ [10] (::Main.ClipScript.var"#30#31"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Main.ClipScript.Gather, Vector{NamedTuple}})(gm::Game)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/glassblow.jl:43
+ [11] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Float64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var"#30#31"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Main.ClipScript.Gather, Vector{NamedTuple}}, shot::Main.ClipScript.var"#34#35"{Dict{Symbol, Any}, Main.ClipScript.Gather, Vector{NamedTuple}}, fade::Float64, denoise::Bool)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:424
+ [12] film!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]
+ [13] #388
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:413 [inlined]
+ [14] with_scratch_game(f::NeverendingGame.var"#388#389"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Float64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var"#30#31"{Tuple{Float32, Float32}, Dict{Symbol, Any}, Main.ClipScript.Gather, Vector{NamedTuple}}, Main.ClipScript.var"#34#35"{Dict{Symbol, Any}, Main.ClipScript.Gather, Vector{NamedTuple}}, Float64, Bool, String}, root::String, size::Tuple{Int64, Int64})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:347
+ [15] #game_clip#386
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]
+ [16] game_clip
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:408 [inlined]
+ [17] glassblow_clip(path::String; rasterize::Bool, samples::Int64, width::Int64, height::Int64, fps::Int64, seconds::Float64, hour::Float64, spot::Tuple{Float32, Float32}, level::Int64)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/glassblow.jl:74
+ [18] invokelatest
+    @ ./Base_compiler.jl:250 [inlined]
+ [19] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:198
+ [20] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366
+ [21] top-level scope
+    @ none:1
+ [22] eval(m::Module, e::Any)
+    @ Core ./boot.jl:489
+ [23] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:283
+ [24] _start()
+    @ Base ./client.jl:550

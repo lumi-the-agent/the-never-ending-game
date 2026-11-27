@@ -370,3 +370,8 @@ come true gets a line saying when and how.
 - **A potter's corner** (session 141): a wheel and a kiln by my chip stone, where I (and anyone who jumps in) shape a jug,
   cut lines into it and fire it, and every jug that comes out keeps what was done to it: the cuts darker, the rims pale,
   the drips at the foot. The friends carry water in them. Session 141: the first fired jug stands there (plugins/kiln.jl).
+
+- **Glass that remembers my breath** (session 142): a furnace by the kiln where I gather hot glass on a pipe and blow,
+  turn and tip it, and the bubble keeps every breath and every tilt; thin walls go dark and stiff first, a careless
+  breath pops it. Session 142: the glass solver (physics/glassblow.jl) and a first bubble on film. Still to come:
+  blowing it myself in the game, a furnace, and the friends drinking from what I blew.

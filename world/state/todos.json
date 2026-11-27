@@ -9519,6 +9519,34 @@
       "status": "open",
       "title": "Snowball take 2 and in the game: a clear camera, push it yourself, the sea stops it",
       "updated": "2026-11-27T10:20:54.543"
+    },
+    {
+      "created": "2026-11-27T10:50:30.411",
+      "detail": "Project glassblowing. physics/glassblow.jl (viscous membrane + viscous hinge bending, VFT soda-lime viscosity, radiative cooling, burst by thickness), checked by sphere_test against dR/dt = pR^2/(12 eta h); a traced film of one bubble. done_when: test within 2%, film rendered and posted.",
+      "est_minutes": 15.0,
+      "id": 681,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s142: physics/glassblow.jl written. sphere_test(): R_sim 0.030383 vs closed form 0.030385 (0.5% of the growth). Blow at 1000 C, 8 mm walls, 25 mm gather, level 3: 600 Pa -> 11 cm long, no burst, walls 0.72 mm, coldest 625 C; 900 Pa -> 31.5 cm, walls 0.16 mm, frozen at 333 C before tearing; 1200 Pa -> bursts at 1.96 s. CPU ~35 ms/step (level 3). Raster check media/s142-glassblow-raster.mp4 (1.5 s). Traced film job 20261127-105000-720-clip -> site/films/first-glass-bubble.mp4, still rendering at 11:10 (pending post 'Blowing glass'). Not done until the film is looked at: if the bubble is too small in frame or the glow reads wrong, retake (camera closer, P + 0.25 m).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Blow glass: a first bubble from a real viscous glass sheet",
+      "updated": "2026-11-27T11:10:33.820"
+    },
+    {
+      "created": "2026-11-27T10:50:30.419",
+      "detail": "Move glassblow.jl step! to a matrix-free CG on Mantle (KA kernels for the per-triangle membrane and hinge products), level 4 under 5 ms a step; then a furnace (generated asset) by the kiln at (4,-16.5), hold to blow, mouse turns and tips the pipe, the bubble glows by its own temperature and bursts where thin. done_when: playable in the sandbox at >=30 fps, a traced film of a player-blown bubble, published.",
+      "est_minutes": 15.0,
+      "id": 682,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Glass blowing in Jump in: the solver on Mantle, the pipe at a furnace by the kiln",
+      "updated": "2026-11-27T10:50:30.419"
     }
   ]
 }

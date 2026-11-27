@@ -101,19 +101,74 @@ function feel_surprise!(jp::JailPaths, m::AbstractDict)
     return m
 end
 
+# ── annoyance: what it made that does not look right ────────────────────────
+#
+# Session 133's stone skipping went out with a throw nobody could see and a flower hanging in the
+# air; after two redos the post was renamed "a take that misses" and passed as an honest failure.
+# Session 137's boomerang flew out of Lumi's head and back into it. Nothing in the character minded.
+# Now what the critics find wrong in its posts bugs it: each post whose latest look by the post
+# critic was `redo`, and each `high` finding of a session's post review, until a later look at that
+# post says it is ready. Left alone it fades (`ANNOY_KEEP` a session). It is read from the critics'
+# files whenever the mood is (no state of its own, so a review finishing during a session loses nothing).
+
+"How much of a thing still bugs the character a session later."
+const ANNOY_KEEP = 0.6
+"How annoyed one fresh thing makes the character (annoyance = this × the things' weights, at most 1)."
+const ANNOY_EACH = 0.5
+"How many sessions back the critics' words still bug it (0.6^3 ≈ 0.2)."
+const ANNOY_SESSIONS = 4
+
+"""
+    annoyances(jp, n) -> Vector{Dict}
+
+What bugs the character after session `n`, most first: each post on its pages whose latest look by
+the post critic (sessions `n - ANNOY_SESSIONS + 1` to `n`) was `redo` (a post replaced by one with a
+new id is judged by the new one's looks), and each `high` finding of those
+sessions' post reviews, with the session, what is wrong and its weight (`ANNOY_KEEP` per session since).
+"""
+function annoyances(jp::JailPaths, n::Int)
+    sessions = max(1, n - ANNOY_SESSIONS + 1):n
+    last_look = Dict{String,Tuple{Int,Dict{String,Any}}}()
+    on_pages = Set(first.(session_pieces(jp, 0)))
+    for s in sessions, (id, looks) in get(read_json_or_empty(post_log_path(jp, s)), "posts", Dict())
+        isempty(looks) || !(id in on_pages) || (last_look[id] = (s, last(looks)))
+    end
+    things = [Dict{String,Any}("session" => s, "post" => id, "title" => first(split(look["key"], "|")),
+                               "what" => string(first(look["problems"])), "weight" => ANNOY_KEEP^(n - s))
+              for (id, (s, look)) in last_look if look["verdict"] == "redo" && !isempty(look["problems"])]
+    for s in sessions, f in get(read_json_or_empty(review_path(jp, @sprintf("session-%04d", s))), "findings", Any[])
+        f isa AbstractDict && get(f, "severity", "") == "high" || continue
+        push!(things, Dict{String,Any}("session" => s, "post" => "", "title" => string(get(f, "where", "")),
+                                       "what" => string(get(f, "what", "")), "weight" => ANNOY_KEEP^(n - s)))
+    end
+    return sort!(things; by = t -> -t["weight"])
+end
+
+read_json_or_empty(path::AbstractString) = isfile(path) ? read_json(path) : Dict{String,Any}()
+
+"Read what bugs the character after session `n` into the mood: `annoyed` (the things) and `annoyance` (0-1)."
+function feel_annoyed!(jp::JailPaths, m::AbstractDict, n::Int)
+    m["annoyed"] = annoyances(jp, n)
+    m["annoyance"] = round(clamp(ANNOY_EACH * sum(t -> t["weight"], m["annoyed"]; init = 0.0), 0, 1); digits = 2)
+    return m
+end
+
 mood_path(jp::JailPaths) = joinpath(jp.state, "mood.json")
 
 function load_mood(jp::JailPaths)
-    isfile(mood_path(jp)) && return read_json(mood_path(jp))
-    return Dict{String,Any}("boredom" => 0.3, "joy" => 0.5, "loneliness" => 0.0, "last_contact" => now_string(),
-                            "sessions" => Any[], "start" => garden_snapshot(jp),
-                            "perceived_until" => Dates.format(Dates.now() - Hour(3), "yyyy-mm-ddTHH:MM:SS"))
+    m = isfile(mood_path(jp)) ? read_json(mood_path(jp)) :
+        Dict{String,Any}("boredom" => 0.3, "joy" => 0.5, "loneliness" => 0.0, "last_contact" => now_string(),
+                         "sessions" => Any[], "start" => garden_snapshot(jp),
+                         "perceived_until" => Dates.format(Dates.now() - Hour(3), "yyyy-mm-ddTHH:MM:SS"))
+    # a mood from before Nov 27 has no annoyance: what bugs it after its last session
+    haskey(m, "annoyance") || feel_annoyed!(jp, m, isempty(m["sessions"]) ? 0 : last(m["sessions"])["session"])
+    return m
 end
 
 "Save the mood and its read only copy for the game and the agents (with the feeling word)."
 function save_mood!(jp::JailPaths, m::AbstractDict)
     write_json(mood_path(jp), m)
-    view = Dict{String,Any}(k => m[k] for k in ("boredom", "joy", "loneliness"))
+    view = Dict{String,Any}(k => m[k] for k in ("boredom", "joy", "loneliness", "annoyance"))
     view["feeling"] = feeling(m)
     view["why"] = mood_reason(m)
     view["updated"] = now_string()
@@ -122,6 +177,7 @@ function save_mood!(jp::JailPaths, m::AbstractDict)
 end
 
 function feeling(m::AbstractDict)
+    m["annoyance"] >= 0.5 && return "annoyed"
     m["boredom"] >= 0.6 && return "bored"
     m["loneliness"] >= 0.7 && return "lonely"
     m["joy"] >= 0.65 && return "proud"
@@ -376,6 +432,7 @@ function mood_session_start!(jp::JailPaths, contact::Bool)
     end
     happened_ever!(jp, m, DateTime(m["started"]))       # the history, before this session's events
     feel_surprise!(jp, m)
+    feel_annoyed!(jp, m, isempty(m["sessions"]) ? 0 : last(m["sessions"])["session"])
     return save_mood!(jp, m)
 end
 
@@ -394,6 +451,7 @@ function mood_session_end!(jp::JailPaths, n::Int, contact::Bool; repetition::Uni
     repetition === nothing || feel_repetition!(m, r, repetition)
     feel_session!(m, r, contact)
     contact && (m["last_contact"] = now_string(); m["loneliness"] = 0.0)
+    feel_annoyed!(jp, m, n)
     tire!(m, r)
     push!(m["sessions"], r)
     length(m["sessions"]) > 20 && popfirst!(m["sessions"])
@@ -436,8 +494,14 @@ function mood_lines(jp::JailPaths)
     m = load_mood(jp)
     name = character_name(jp)
     io = IOBuffer()
-    @printf(io, "## How %s feels (the host's measure; read only at /run/neverending/mood.json)\n%s feels **%s** (boredom %.2f, joy %.2f, loneliness %.2f).\n",
-            name, name, feeling(m), m["boredom"], m["joy"], m["loneliness"])
+    @printf(io, "## How %s feels (the host's measure; read only at /run/neverending/mood.json)\n%s feels **%s** (boredom %.2f, joy %.2f, loneliness %.2f, annoyance %.2f).\n",
+            name, name, feeling(m), m["boredom"], m["joy"], m["loneliness"], m["annoyance"])
+    bugs = filter(t -> t["weight"] >= 0.5, m["annoyed"])
+    if !isempty(bugs)
+        println(io, "What still bugs $name, in the critics' words (until a later look at the post finds it right):")
+        foreach(t -> println(io, "- session $(t["session"]), ", isempty(t["post"]) ? "" : "`$(t["post"])` ",
+                             "\"$(first(t["title"], 80))\": ", first(t["what"], 300)), first(bugs, 4))
+    end
     m["loneliness"] >= 0.7 && println(io, "$name misses the human: make something for them (a page, a film, a note) and tell them with say_to_human.")
     print(io, "Show it in the world: how $name looks and behaves follows its `feeling` in /run/neverending/mood.json, so the human sees how $name is.")
     return String(take!(io))

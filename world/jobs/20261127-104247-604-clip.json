@@ -1,0 +1,18 @@
+{
+  "created": "2026-11-27T10:42:47.650",
+  "finished": "2026-11-27T10:43:25.674",
+  "id": "20261127-104247-604-clip",
+  "kind": "clip",
+  "params": {
+    "call": "read_pebbles",
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795772567.png",
+    "script": "movies/ocr.jl"
+  },
+  "result": {
+    "path": "/sim/Programmieren/SimGame/world/sandbox/state/pebblewords/word-1795772567.png",
+    "text": "HX"
+  },
+  "seconds": 35.9,
+  "started": "2026-11-27T10:42:49.410",
+  "status": "done"
+}

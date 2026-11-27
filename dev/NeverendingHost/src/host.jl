@@ -360,13 +360,17 @@ function opening_prompt(host::Host, n::Int, seen::AbstractDict)
     println(io, replace(named(prompt_file("opening.md"), jp), "{{MINUTES}}" => @sprintf("%.0f", cfg.agent.session_minutes),
                         "{{OPENING}}" => string(OPENING_MINUTES)))
     println(io, memory_lines(jp), "\n")
+    println(io, big_goal_lines(jp), "\n")
     pj = project_lines(jp)
     isempty(pj) || println(io, pj, "\n")
     print(io, stumble_lines(seen["finds"], seen["name"]))
     return String(take!(io))
 end
 
-"The projects the character keeps (`world/projects/*.md`): each one's title and next step."
+"How many projects are open at a time (rule 9); the others wait in `world/projects/shelf/`, which the host does not list."
+const OPEN_PROJECTS = 3
+
+"The projects the character keeps open (`world/projects/*.md`): each one's title, goal and next step."
 function project_lines(jp::JailPaths)
     dir = joinpath(jp.world, "projects")
     files = isdir(dir) ? sort!(filter(endswith(".md"), readdir(dir))) : String[]
@@ -382,6 +386,9 @@ function project_lines(jp::JailPaths)
                 goal === nothing ? "no goal yet" : "goal, " * first(strip(goal[1]), 200),
                 next === nothing ? "" : "; next, " * first(strip(next[1]), 200))
     end
+    length(files) > OPEN_PROJECTS &&
+        print(io, "\nThese are $(length(files)) open projects; at most $OPEN_PROJECTS stay open (rule 9), the ones that build your big goal: ",
+              "move the others to `projects/shelf/`.")
     return String(take!(io))
 end
 
@@ -593,7 +600,8 @@ function one_session!(host::Host)
     atomic_write(joinpath(jp.run, "last_prompt.md"), opening * "\n\n---\n\n" * rest[])
     host.agent_state, host.agent_detail = "working", ""
     take_rest!() = (p = rest[]; rest[] = nothing; p)
-    followups = r -> first_of(take_rest!, () -> human_followup(host), () -> ideas_followup(host, n, r),
+    followups = r -> first_of(take_rest!, () -> human_followup(host), () -> big_goal_followup(host, n, r),
+                              () -> ideas_followup(host, n, r),
                               () -> post_critic_followup(host, n, r), () -> continue_session(host, r))
     nudged = Ref(false)
     timed = r -> (rest[] !== nothing && !nudged[] && time() - r.started > 60OPENING_MINUTES) ?

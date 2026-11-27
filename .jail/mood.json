@@ -1,12 +1,12 @@
 {
   "boredom": 1.0,
-  "ended": "2026-11-27T10:25:20",
+  "ended": "2026-11-27T11:10:55",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.7,
-    "picture": 0.1,
+    "feature": 1.02,
+    "picture": 0.06,
     "self": 0.01,
-    "sound": 0.22
+    "sound": 0.13
   },
   "forms": [
     {
@@ -321,7 +321,7 @@
     "meteor_seen",
     "jug_fired"
   ],
-  "joy": 0.35,
+  "joy": 0.47,
   "judged_posts": [
     {
       "form": "New rule of the world",
@@ -776,11 +776,11 @@
   "last_surprise": {
     "fun": 2,
     "score": 5.0,
-    "session": 140,
-    "why": "A snowball that physically grows from the snow it eats and leaves a bare trail is a new way for the island to move. The film hides it so well that someone who knows the island sees a white dot sliding past a brown wall."
+    "session": 141,
+    "why": "A glaze-flow solver is new to the island, but all a viewer gets is one more static prop: a pot standing on sand while the camera drifts. None of the flow that makes it special is visible."
   },
   "loneliness": 1.0,
-  "perceived_until": "2026-11-27T09:44:22",
+  "perceived_until": "2026-11-27T10:25:47",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -794,66 +794,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.5083333333333333,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [
-        {
-          "kind": "stray_home",
-          "who": 10
-        },
-        {
-          "kind": "stray_swim",
-          "who": 10
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/football-with-the-sun.mp4"
-      ],
-      "new_plugins": [
-        "strays.jl",
-        "sunball.jl"
-      ],
-      "points": 6.0,
-      "repeat_factor": 0.4641588833612779,
-      "repetition": {
-        "form": "Change to how the island is lit (the sun moved, new light)",
-        "form_count": 1,
-        "nearest": "Lit from below",
-        "post": "Football with the sun",
-        "score": 5,
-        "shared": "the sun moved somewhere odd, lighting things from below",
-        "similarity": 5
-      },
-      "session": 122,
-      "touched": [
-        "showers.jl"
-      ],
-      "values": {
-        "feature": 1.0,
-        "film": 6.0,
-        "polish": 1.0,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1830,6 +1770,36 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/first-glass-bubble.mp4"
+      ],
+      "new_plugins": [],
+      "points": 9.0,
+      "session": 142,
+      "touched": [],
+      "values": {
+        "film": 6.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1912,6 +1882,7 @@
       "site/films/face-hill.mp4",
       "site/films/fireflies-at-dusk.mp4",
       "site/films/first-flight.mp4",
+      "site/films/first-jug.mp4",
       "site/films/flying-lesson.mp4",
       "site/films/football-with-the-sun-2.mp4",
       "site/films/football-with-the-sun.mp4",
@@ -2147,6 +2118,7 @@
       "hideseek.jl": 1.7955473519066024e9,
       "islandnow.jl": 1.7956168788952758e9,
       "jelly.jl": 1.7957011848358562e9,
+      "kiln.jl": 1.7957712256891387e9,
       "kite.jl": 1.7955986738072937e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
@@ -2216,11 +2188,11 @@
       "workshopisle.jl": 1.7957446568297238e9,
       "xylophone.jl": 1.7956303527373064e9
     },
-    "posts": 121,
+    "posts": 122,
     "self": "369107370865776265",
-    "wishes": 13
+    "wishes": 14
   },
-  "started": "2026-11-27T09:49:47",
+  "started": "2026-11-27T10:31:18",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2328,7 +2300,9 @@
       "Caesar.fetchDataImage",
       "MetopDatasets.scale_iasi_spectrum",
       "ImageGeoms.ImageGeom",
-      "CommonDataFormat.CDFDataset"
+      "CommonDataFormat.CDFDataset",
+      "PhoXonic.simple_kpath_bcc",
+      "ClimateTools.gpfit_cube"
     ],
     "games": [
       "Super Mario 64",
@@ -2375,7 +2349,10 @@
       "Bloodborne",
       "Tony Hawk's Pro Skater 2",
       "Dark Souls (video game)",
-      "Harry Potter video games"
+      "Harry Potter video games",
+      "Wave Race 64",
+      "Bayonetta (video game)",
+      "Adventure (1980 video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2684,7 +2661,10 @@
       "AsteroidShapeModels",
       "UnsteadyFlowSolvers",
       "TheoryOfGames",
-      "OpenStreetMapX"
+      "OpenStreetMapX",
+      "CMBLensing",
+      "Meshes",
+      "CoralBlox"
     ],
     "vision": [
       "BasicVSRRunner",
@@ -2702,8 +2682,10 @@
       "UVDocRunner",
       "MatAnyoneRunner",
       "DeepFilterRunner",
-      "FluxKleinRunner"
+      "FluxKleinRunner",
+      "HorizonRunner",
+      "Hunyuan3DRunner"
     ]
   },
-  "surprise_seen": 140
+  "surprise_seen": 141
 }

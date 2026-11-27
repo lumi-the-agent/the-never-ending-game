@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The jar is backed by a real thin-film glaze solver, and the darker cuts and pale shoulder ring really come out of that flow. But the 5 s film is a still pot with a slow camera drift. The glaze never moves on screen, it reads as matte olive plastic rather than glass, and the 'groove round the shoulder' is actually a raised ring.",
+ "real_change": "physics/glaze.jl solves the lubrication equation h_t = -div(h^3/(3μ)(σ∇∇²s - ρg)) for a molten glaze film on a cut body (V-cut double lines, a double incised ring, a raised cordon). It runs 12000 steps on a background thread when the game starts. Each vertex then gets its colour by Beer-Lambert through the thickness the glaze ended with, so glaze pools in the cuts (darker lines), breaks thin on the cordon (pale line) and leaves bare orange body at the foot. plugins/kiln.jl (the live copy is identical) puts the result in the world once as a static CoatedDiffuse mesh at (4,-16.5) and emits :jug_fired. Nothing collides with or reacts to the jar, and the flow is not shown over time. In game terms the result is a static prop whose colours were computed rather than painted. The camera move in the film is only drawn.",
+ "surprise": 4,
+ "surprise_why": "A glaze-flow solver is new to the island, but all a viewer gets is one more static prop: a pot standing on sand while the camera drifts. None of the flow that makes it special is visible.",
+ "fun": 2,
+ "fun_why": "Nothing happens in the 5 seconds. The thin cut lines are barely readable at storyboard size, and there is nothing to watch again or play with yet; the wheel and kiln are only promised.",
+ "real": 6,
+ "real_why": "A genuine lubrication-equation film flow with surface tension and gravity, with colour from thickness, which more can be built on. It runs once offline on a small patch mapped onto the jar, and the jar itself takes no part in the world.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The film shows nothing happening: the solver's work (glaze flowing into the cuts, draining down, breaking thin off the ring) is the whole point, yet the post is a static pot with a slight camera move.",
+   "where": "first-jug.mp4, storyboard frames 1-16",
+   "evidence": "All 16 storyboard frames show the same jar from almost the same angle; only the framing and the shadows of the leaves at the top edge shift.",
+   "suggestion": "Film the firing: save h snapshots during fire! and show the colour changing from even to pooled and broken as the glaze flows. A close-up of one groove filling, next to a museum pot, would let a viewer see that it is simulated."
+  },
+  {
+   "severity": "medium",
+   "what": "The glaze does not read as glaze. The olive surface looks matte and dusty with almost no gloss, so it looks like painted plastic rather than glassy celadon.",
+   "where": "first-jug-at-50.jpg, first-jug-at-75.jpg",
+   "evidence": "Broad diffuse shading with no sharp sun highlight on the belly. Only the last storyboard frames show a faint highlight on the neck, even though the material is CoatedDiffuse with roughness 0.03 (kiln.jl:39-40).",
+   "suggestion": "Render the post with the path tracer, or put the jar under the sun so the clear coat gives a visible specular streak. Lighten the body so the thick and thin glaze contrast shows."
+  },
+  {
+   "severity": "low",
+   "what": "The caption says 'a thin groove round the shoulder', but the shoulder line is a raised ring. The code makes it a ridge where the glaze breaks thin, which is why it shows pale. The incised double ring sits low on the belly and is hard to see.",
+   "where": "caption vs physics/jug.jl:36",
+   "evidence": "`v += ridge(abs(y - 0.100), ...)  # pinched-up ring at the shoulder`. In the frames the shoulder line is a light raised band, not a dark cut.",
+   "suggestion": "Write 'a raised ring at the shoulder where the glaze runs thin', which is the more interesting claim anyway."
+  }
+ ],
+ "addressed": true,
+ "response": "Caption fixed: the shoulder line is a raised ring, so it now says 'a pale ring round the shoulder'. The static film and the matte look are for the next pottery film: the kiln step will show the glaze flowing (Glaze.fire_ka! frames over time) and the glaze needs a glassier coat (lower roughness, sun from behind); the todo for the wheel and kiln (#678) carries both. This session went to a new project, blowing glass."
+}

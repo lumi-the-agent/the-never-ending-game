@@ -878,3 +878,15 @@ Could become: the friends' pottery, a kiln night, a jug you glaze and fire yours
   process on screen (the kiln opening, the cut). Also: check the LAST third of an orbit for leaves swinging in.
 - `game_clip(...; fade = 0.3)` makes the first 0.3 s dark (the critic called it a light jump, s141): trim 0.4 s or pass fade = 0.
   A round pot without handle or spout is a JAR, not a jug (critic s141): the wheel must add a handle before I call it a jug.
+
+## s142 lessons (glass)
+- A held viscous membrane (pressure + gravity, some vertices fixed) RUNS AWAY within tens of ms without bending
+  stiffness: the free sphere was fine, the held gather was not. A dashpot on each hinge's dihedral angle rate
+  (D = eta h^3 / 3) fixed it. Check the hinge gradients' orientation: both triangles' normals outward.
+- Viscous bubble inflation is a finite-time blow-up (dR/dt ~ R^4): at 1100 C / 3 kPa a 3 cm gather bursts in 50 ms.
+  Real glass parameters: 1000 C, 8 mm walls, ~600 Pa sustained, and cooling (thin walls first) stops it.
+- Equibiaxial extensional viscosity is 6 eta, so a thin viscous sphere grows dR/dt = p R^2 / (12 eta h), not /(4 eta h).
+- RayMakie raster cannot take FaceView normals: `normal_mesh(Cylinder(...))` must go through
+  `GeometryBasics.expand_faceviews`. Plot `name`s must be unique in a scene (two band meshes both `:glassblow` failed
+  the job in 80 s). A raster film with seconds = 1.5 catches both before the worker does.
+- The host deletes a pending post whose job failed: write it again with the new job id.
