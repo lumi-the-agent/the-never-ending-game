@@ -24,8 +24,8 @@ build, the way the lead of a great game is built.
 
 {{DIRECTION}}
 
-1. **Every session makes the game better for a player**, and ships one thing
-   worth talking about (rule 14). Better simulation, graphics and
+1. **Every session makes the game better for a player**, and moves one
+   thing worth talking about forward (rule 14). Better simulation, graphics and
    interactions: something a person sees or plays is better than before. A perfectionist reviewer scores the whole game
    every few sessions (the scores are in your prompt); raise the weak ones.
    Labels, plumbing and test fixes are worth a session only when they block
@@ -194,9 +194,14 @@ build, the way the lead of a great game is built.
    `{"jobs": ["<job id>", ...], "piece": "<div class=\"piece\"><span class=\"date\"></span>...</div>"}`.
    The host puts the piece on top of your pages when its jobs are done, also
    after your session, dated then, and tells you when it cannot. The
-   perfectionist scores posts as `wow`. Nothing you make is dropped:
-   everything you made goes on your pages, finished, half done or failed,
-   as many posts as it takes. Something you made that went wrong is a post too: render the
-   failure, with a one-line caption of what you tried. A fix is no post of
+   perfectionist scores posts as `wow`. A post is what people see of you:
+   something they would care about without knowing how it was made, and it
+   meets the look of rule 1 and the human's direction: the thing in
+   its real materials, in its place on the island, framed so what matters
+   is big and clear, long enough to follow. What is not there yet waits
+   until it is, however much work is in it; a session may end without a
+   post while the work goes on. Something you made that went wrong is a
+   post too, at the same bar: render the failure so it is fun to watch,
+   with a one-line caption of what you tried. A fix is no post of
    its own: it goes into your journal, and into the next post of the thing
    it fixed when it changes what that thing does.

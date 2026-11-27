@@ -1,0 +1,39 @@
+{"posts": [
+{"post": "where-i-rushed-it",
+ "verdict": "redo",
+ "problems": [
+  "Caption claims the wire was pulled through a stone and strung between posts 'on my cells': no stone, no drawing and no cells appear anywhere; the film is two copper sticks on a bare brown slab on flat green ground.",
+  "Storyboard frames 5-7: the glowing wire starts a visible gap to the right of the left post and ends short of the right post; it is not attached to either post, it floats between them.",
+  "Storyboard frames 6-8: the camera dives so close that the right post leaves the frame and the left post is cut to a sliver at the edge, so from frame 8 on neither end of the wire is shown.",
+  "Frame at 75% and storyboard frames 9-16: after it parts, the two halves stay perfectly straight and level in mid-air with only a clean gap between them; nothing sags, falls or swings, and the last half of the film is one frozen picture.",
+  "Where it breaks is never tied to a 'rushed' spot: the glowing wire looks uniform in the 50% frame, so nothing shows the thin place before it parts.",
+  "Plain primitives (cylinders, a box, a line) on empty ground with no island around them; the copper posts read as orange plastic."
+ ],
+ "critique": "The wire hangs unattached between the posts, then parts into two rigid halves that hang in the air for the rest of the film. The stone and the cells the caption describes are never shown."},
+{"post": "chipping-a-stone-to-change-its-note",
+ "verdict": "redo",
+ "problems": [
+  "Storyboard frames 1, 6, 9, 15, 16: the pebble hangs in the air above the slab or appears there with no hand, beak or fall bringing it in; nothing is seen releasing it.",
+  "Storyboard frames 2, 5, 7, 8 and the 25% frame: the pebble sits among or passes through the bird's toes, while the bird stands completely still and never reaches, picks up or drops anything.",
+  "The chips are never seen coming off: grit just appears under the slab between frames 3 and 4 and grows from there, while the slab's middle shows only faint dents (50% frame).",
+  "Huge grey bird feet stand in the upper half of every frame until frame 12 and then vanish between cuts, taking up the picture with nothing to do in the action.",
+  "Storyboard frames 13-14: the pebble rests on the slab, then in frame 15 it is back in the air with no bounce or lift seen."
+ ],
+ "critique": "The pebble pops in and out of the air beside a bird that never moves, and the chips just appear under the slab without ever being knocked off. Cause and effect are missing all the way through, and the sound can't make up for it."},
+{"post": "ants-on-a-honey-road-a-take-that-misses",
+ "verdict": "redo",
+ "problems": [
+  "Storyboard frames 9-16, 50% and 75% frames: the pig's hoof sinks into and through the biscuit. The caption admits it, but it is clipping, not a failed experiment.",
+  "50% and 75% frames: the pig's leg has a jagged torn texture seam across it, like a broken mesh.",
+  "Storyboard frames 8 to 9: it cuts from a wide shot with the pig far away to the hoof already inside the biscuit, so you never see the pig walk up or step.",
+  "The close shot is filled by the pig's belly and legs, and the ants, which are the subject, are small specks along the bottom edge."
+ ],
+ "critique": "The caption's own description of the hoof sinking in is the problem: the pig's leg passes through the biscuit, and the mesh is visibly torn. Calling it a miss doesn't turn broken animation into a result."},
+{"post": "ants-on-a-honey-road",
+ "verdict": "ready",
+ "problems": [
+  "The ants are dark specks, hard to tell from dirt on the grass; only the 50% frame shows them clearly enough to read as a line.",
+  "The biscuit is a plain flat orange disc that does not look like baked food."
+ ],
+ "critique": "It does what the caption says: a curved red road to the biscuit, and a dense straight trail of ants underneath it, readable as a failed experiment in a lively island setting. The subject is small and the biscuit is plain, but nothing is broken."}
+]}

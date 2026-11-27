@@ -9,6 +9,7 @@ using NeverendingGame, GeometryBasics, Makie, LinearAlgebra
 const NG = NeverendingGame
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "draw.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "circuit.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "hotrod.jl"))     # s156: the hot wire bows, the parted halves droop
 
 function dtube(pts, rad; nring = 8)
     P = [Point3f(p...) for p in pts]
@@ -62,6 +63,7 @@ function burn_frames(rod; Rcell = 0.105, ncell = 8, dt = 0.005, seconds = 5.0, f
     net = C.Net(wires = [lead1, C.Wire(lp; r = 0.5e-3), wire], cells = cells)
     nf = round(Int, seconds * fps)
     T = [fill(C.T_AMB, length(wire.T)) for _ in 1:nf]; P = [falses(length(wire.T)) for _ in 1:nf]
+    hot = HotRod.Rod(rod.l, rod.r); shape = Vector{Vector{NTuple{2,Float64}}}(undef, nf)
     t = 0.0; tpart = NaN
     for f in 1:nf
         tf = (f - 1) / fps
@@ -70,8 +72,10 @@ function burn_frames(rod; Rcell = 0.105, ncell = 8, dt = 0.005, seconds = 5.0, f
             isnan(tpart) && any(>=(1.0), wire.melt) && (tpart = t + on)
         end
         T[f] = copy(wire.T); P[f] = wire.melt .>= 1.0
+        HotRod.settle!(hot, T[f], P[f]; seconds = 1 / fps)
+        shape[f] = copy(hot.p)
     end
-    (; T, P, tpart, L, at = findfirst(>=(1.0), wire.melt))
+    (; T, P, shape, tpart, L, at = findfirst(>=(1.0), wire.melt), sag_max_mm = 1000 * maximum(s -> -minimum(last, s), shape))
 end
 
 planck(lam, T) = 1 / (exp(0.014388 / (lam * T)) - 1)
@@ -80,7 +84,10 @@ const BINS = collect(range(800.0, 1358.0; length = 9))          # glow levels (K
 function glow_material(T)
     rgb = (planck(650e-9, T), planck(550e-9, T), planck(450e-9, T))
     m = maximum(rgb)
-    s = 60 * sqrt(planck(600e-9, T) / planck(600e-9, 1358.0))
+    # s155 used 60: every level from 1100 K up clipped to the same yellow, so the neck did not look hotter (its true
+    # colour at 1358 K is (1, 0.05, 0.001): deep orange, only overexposure makes it yellow). 8 keeps the top level just
+    # clipping and the wire around it (1200 K: 2.5) visibly darker.
+    s = 8 * sqrt(planck(600e-9, T) / planck(600e-9, 1358.0))
     NG.Hikari.Emission(color = Float32.(rgb ./ m), strength = Float32(s), two_sided = true)
 end
 
@@ -112,12 +119,13 @@ function drawnwire_parts(; seconds = 5.0, fps = 24, on = 1.0)
         end
         pts = [O + Point3f(Float32(sum(rod.l[1:i])), 0, 0) for i in 0:length(rod.l)]
         segs = Vector{Any}(undef, length(rod.r)); glows = [Any[] for _ in rod.r]
-        for i in eachindex(rod.r)
-            m = dtube([pts[i], pts[i+1]], Float32(rod.r[i]))
+        for i in eachindex(rod.r)                               # each segment a tube along +x from the origin, placed per frame
+            seg0 = [Point3f(0), Point3f(Float32(rod.l[i]), 0, 0)]
+            m = dtube(seg0, Float32(rod.r[i]))
             segs[i] = mesh!(sc, m; color = RGBf(0.85, 0.45, 0.3), material = copper, name = Symbol("dw_seg", i))
             for b in 1:length(BINS)-1
                 Tm = (BINS[b] + BINS[b+1]) / 2
-                gp = mesh!(sc, dtube([pts[i], pts[i+1]], Float32(rod.r[i]) * 1.02f0); color = RGBf(1, 0.4, 0.1),
+                gp = mesh!(sc, dtube(seg0, Float32(rod.r[i]) * 1.02f0); color = RGBf(1, 0.4, 0.1),
                            material = glow_material(Tm), name = Symbol("dw_glow", i, "_", b))
                 gp.visible[] = false
                 push!(glows[i], gp)
@@ -135,22 +143,43 @@ function drawnwire_parts(; seconds = 5.0, fps = 24, on = 1.0)
             haskey(p.attributes, :name) && (p.attributes[:name][] in (:tops_live_board, :tops_live_top)) && (p.visible[] = false)
         end
         f = clamp(round(Int, t * fps) + 1, 1, length(run.T))
-        T = run.T[f]; P = run.P[f]
+        T = run.T[f]; P = run.P[f]; sh = run.shape[f]
+        place(i) = (a = sh[i]; b = sh[i+1]; d = (b[1] - a[1], b[2] - a[2]);
+                    (S[:O] + Point3f(Float32(a[1]), 0, Float32(a[2])), Float32(-atan(d[2], d[1])), Float32(hypot(d...) / rod.l[i])))
+        placed = get!(S, :placed, Dict{Any,Any}())
         for i in eachindex(T)
+            pos, ang, k = place(i)
+            b = min(searchsortedlast(BINS, T[i]), length(BINS) - 1)
+            # only the plots seen this frame, and only when they moved: s156's first try moved all 360 every frame
+            # and the raster check hung for 20 min (11.9e9 allocations) before it segfaulted
+            for p in (S[:segs][i], (b >= 1 ? (S[:glows][i][b],) : ())...)
+                prev = get(placed, p, nothing)
+                prev !== nothing && norm(prev[1] - pos) < 2f-5 && abs(prev[2] - ang) < 2f-3 && continue
+                Makie.translate!(p, pos); Makie.rotate!(p, Vec3f(0, 1, 0), ang); Makie.scale!(p, Vec3f(k, 1, 1))
+                placed[p] = (pos, ang)
+            end
             S[:segs][i].visible[] = !P[i]
             b = min(searchsortedlast(BINS, T[i]), length(BINS) - 1)   # at the melting point: the brightest level
             for (k, gp) in enumerate(S[:glows][i])
                 gp.visible[] = !P[i] && k == b
             end
         end
-        neck = S[:pts][run.at === nothing ? 12 : run.at]
+        na = run.at === nothing ? 12 : run.at
+        neck = S[:O] + Point3f(Float32(sh[na][1]), 0, Float32(sh[na][2]))    # where the neck really is (it bows down)
         me = NG.creature(gm.world, "Lumi")
         if me !== nothing                                       # Lumi behind the slab, watching its wire
             me.pos = NG.ground(gm.world.island, (neck[1] + 0.15f0, neck[2] + 0.75f0)); me.yaw = -1.75f0
         end
+        # one take, no cut: 32 cm off, a slow zoom (the camera's own fov, which RayMakie reads) from the slab and both
+        # posts (28 deg) down to the neck (5 deg) between the glow starting and the wire parting (s156; s155 put the eye
+        # 2.3 cm from the wire at the default 45 deg and called it 'no zoom')
         rig.mode = :fixed
-        rig.eye = neck + Point3f(-0.006f0, -0.02f0, 0.009f0)    # 2.3 cm from the neck (the rig has no zoom; its view is wide)
-        rig.target = neck + Point3f(0.003f0, 0.004f0, -0.002f0)
+        mid = (S[:pts][1] + S[:pts][end]) / 2
+        z = clamp((t - 0.9) / 1.4, 0.0, 1.0); z = z * z * (3 - 2z)
+        aim = mid + Float32(z) * (neck - mid)
+        rig.eye = aim + Point3f(0.05f0, -0.29f0, 0.12f0)
+        rig.target = aim
+        Makie.cameracontrols(gm.stage.scene).fov[] = 28.0 + z * (5.0 - 28.0)
         return nothing
     end
     return setup, shot, S, run

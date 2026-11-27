@@ -2,97 +2,132 @@
   "annoyance": 1.0,
   "annoyed": [
     {
-      "post": "where-my-claws-could-hold",
-      "session": 155,
-      "title": "Where my claws could hold",
+      "post": "thin-ice-a-take-that-misses",
+      "session": 156,
+      "title": "Thin ice, a take that misses",
       "weight": 1.0,
-      "what": "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all."
+      "what": "Caption says 'a black patch opens under them', but nobody goes through it: the dark patch is already there under the sheep in frame 1, and it only spreads into a flat dark stain with white crack lines. Sheep, crab and blue creatures all stay on top of it, so it reads as a shadow or paint, not a hole or broken ice."
+    },
+    {
+      "post": "chipping-a-stone-to-change-its-note",
+      "session": 156,
+      "title": "Chipping a stone to change its note",
+      "weight": 1.0,
+      "what": "Storyboard frames 1, 6, 9, 15, 16: the pebble hangs in the air above the slab or appears there with no hand, beak or fall bringing it in; nothing is seen releasing it."
+    },
+    {
+      "post": "where-i-rushed-it",
+      "session": 156,
+      "title": "Where I rushed it",
+      "weight": 1.0,
+      "what": "Caption claims the wire was pulled through a stone and strung between posts 'on my cells': no stone, no drawing and no cells appear anywhere; the film is two copper sticks on a bare brown slab on flat green ground."
+    },
+    {
+      "post": "ants-on-a-honey-road-a-take-that-misses",
+      "session": 156,
+      "title": "Ants on a honey road, a take that misses",
+      "weight": 1.0,
+      "what": "Storyboard frames 9-16, 50% and 75% frames: the pig's hoof sinks into and through the biscuit. The caption admits it, but it is clipping, not a failed experiment."
     },
     {
       "post": "my-first-motor",
       "session": 155,
       "title": "My first motor",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "From board frame 4 to the end, a creature in a big green glass bubble walks in behind the motor and fills the top half of the frame. It takes all the attention away from the subject."
-    },
-    {
-      "post": "where-i-rushed-it",
-      "session": 155,
-      "title": "Where I rushed it",
-      "weight": 1.0,
-      "what": "No stone, no drawing and no thinner spot can be seen anywhere in the film; all you see is a hair-thin line over grass and a brown slab, so 'pulled thinner through a stone' and 'where I rushed' aren't shown."
     },
     {
       "post": "two-tops-i-turned",
       "session": 155,
       "title": "Two tops I turned",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "No 'board' can be seen: the tops spin on a brown patch that reads as dirt, not wood, so 'off the board's edge' doesn't match what is shown."
     },
     {
       "post": "a-campfire-in-the-wind",
       "session": 155,
       "title": "A campfire in the wind",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The fire sits behind a fence of tall red posts in front of the camera (every board frame, full frame at 75%), so the subject is mostly hidden."
+    },
+    {
+      "post": "where-my-claws-could-hold",
+      "session": 155,
+      "title": "Where my claws could hold",
+      "weight": 0.6,
+      "what": "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all."
+    },
+    {
+      "post": "",
+      "session": 155,
+      "title": "my-first-motor, every storyboard frame from 4 on; at-25/50/75",
+      "weight": 0.6,
+      "what": "A giant green glass bubble with Lumi inside fills the middle of the motor film. It has nothing to do with the motor, and Lumi turns around inside it, looking away."
+    },
+    {
+      "post": "",
+      "session": 155,
+      "title": "where-i-rushed-it, the whole storyboard; at-50",
+      "weight": 0.6,
+      "what": "The wire film shows none of what the caption names: no stone plate, no pull, no cells, no posts and no Lumi. A viewer sees a thin line over grass that turns yellow, splits and goes dark. The line seems to float over the grass beyond the slab."
     },
     {
       "post": "three-paper-darts",
       "session": 154,
       "title": "Three paper darts",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
     },
     {
       "post": "hot-glass-lights-the-sand",
       "session": 154,
       "title": "Hot glass lights the sand",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The whole picture is heavy speckled render noise, worst across the dark ground"
+    },
+    {
+      "post": "a-top-over-a-ring-of-lodestone",
+      "session": 153,
+      "title": "A top over a ring of lodestone",
+      "weight": 0.216,
+      "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
     },
     {
       "post": "a-compass-in-a-bowl",
       "session": 153,
       "title": "A compass in a bowl",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The needle jumps to unrelated angles from one frame to the next (board frames 4-12) rather than swinging back and forth smoothly about one direction, so it reads as jitter, not a swing."
     },
     {
       "post": "the-magnet-stone",
       "session": 153,
       "title": "The magnet stone",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The 'magnet stone' is a plain black cube with no stone texture, lit flat and dull (board, at-75)."
-    },
-    {
-      "post": "a-top-over-a-ring-of-lodestone",
-      "session": 153,
-      "title": "A top over a ring of lodestone",
-      "weight": 0.36,
-      "what": "Nobody spins the top or lowers the plate: no hand or creature acts, yet the caption says 'I spun' and 'lowered'; the plate just sinks by itself (board frames 1-6)."
     },
     {
       "post": "",
       "session": 153,
       "title": "campfire-in-the-wind storyboard frames 1-7 and 13-14; full-size frames at 25% and 75%",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The flames are flat, pale-yellow, rectangular planks: a long glowing slab leaning out of the crib. They read as lit boards, not fire, and they cover the stake the caption is about."
     },
     {
       "post": "",
       "session": 153,
       "title": "storyboard frame 7 to frame 8 (about 5.6 s to 6.4 s); physics/fire.jl:263 fall!",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The stake does not fall. Between two frames it switches from standing to lying flat on the ground as a black bar: a pop, with no tipping motion."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-27T22:37:05",
+  "ended": "2026-11-27T23:21:32",
   "fatigue": {
-    "asset": 0.01,
-    "feature": 1.04,
-    "picture": 0.08,
-    "self": 1.08,
+    "asset": 1.01,
+    "feature": 0.62,
+    "picture": 0.05,
+    "self": 0.65,
     "sound": 0.01
   },
   "forms": [
@@ -389,7 +424,7 @@
     "ice_crack",
     "motor_flick"
   ],
-  "joy": 0.22,
+  "joy": 0.0,
   "judged_posts": [
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
@@ -832,23 +867,23 @@
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 10,
-    "nearest": "A copper wire keeps its bends",
-    "post": "Where I rushed it",
+    "form": "",
+    "form_count": 0,
+    "nearest": "",
+    "post": "",
     "score": 10,
-    "session": 155,
-    "shared": "a copper wire on a board shown close up, simulated material state",
-    "similarity": 4
+    "session": 156,
+    "shared": "nothing posted",
+    "similarity": 10
   },
   "last_surprise": {
     "fun": 3,
-    "score": 5.0,
-    "session": 153,
-    "why": "Fire that spreads by radiation and brings down a structure as it chars is new physics for the island and a nice twist on 'campfire', but on screen it reads as yellow slabs and one stick that turns black."
+    "score": 6.0,
+    "session": 155,
+    "why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves."
   },
-  "loneliness": 0.54,
-  "perceived_until": "2026-11-27T21:50:24",
+  "loneliness": 0.61,
+  "perceived_until": "2026-11-27T22:37:35",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -862,43 +897,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.8,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/a-boomerang-comes-back-2.mp4"
-      ],
-      "new_plugins": [
-        "boomerang.jl",
-        "dandelion.jl"
-      ],
-      "points": 9.6,
-      "session": 136,
-      "touched": [
-        "greetings.jl"
-      ],
-      "values": {
-        "feature": 2.6,
-        "film": 6.0,
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1773,6 +1771,42 @@
         "self": 5.1
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "asset"
+      ],
+      "new_assets": 1,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.1,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "",
+        "form_count": 0,
+        "nearest": "",
+        "post": "",
+        "score": 10,
+        "shared": "nothing posted",
+        "similarity": 10
+      },
+      "session": 156,
+      "touched": [],
+      "values": {
+        "asset": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1856,6 +1890,7 @@
       "site/films/crabs.mp4",
       "site/films/dandelion-clocks.mp4",
       "site/films/drafts.mp4",
+      "site/films/drawn-wire-burns-out.mp4",
       "site/films/drift.mp4",
       "site/films/drift2.mp4",
       "site/films/face-hill.mp4",
@@ -2060,19 +2095,14 @@
     ],
     "plugins": {
       "areas.jl": 1.7956727950725677e9,
-      "autumn.jl": 1.7955963839122903e9,
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
       "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.795744656821812e9,
       "birdbody.jl": 1.7955211366474676e9,
-      "blossom.jl": 1.7955898833905835e9,
-      "boing.jl": 1.7956496450416765e9,
       "boomerang.jl": 1.7957555002133827e9,
-      "bottle.jl": 1.795589890075543e9,
       "browsernight.jl": 1.7954000366191897e9,
-      "bubbles.jl": 1.7956131146824417e9,
       "builder.jl": 1.7957490857437296e9,
       "bumpcue.jl": 1.7955534233863404e9,
       "butterflies.jl": 1.7955211366525671e9,
@@ -2080,129 +2110,80 @@
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
       "chipstone.jl": 1.7957678374717767e9,
-      "choir.jl": 1.7957450176079497e9,
       "clouds.jl": 1.7955674185574198e9,
-      "cloudshapes.jl": 1.7956473473104203e9,
       "compassbowl.jl": 1.7957915761567702e9,
-      "conga.jl": 1.7955963448485634e9,
       "dancecircle.jl": 1.79565200797462e9,
       "dandelion.jl": 1.795755811477013e9,
-      "dayfall.jl": 1.7957679083674748e9,
-      "drafts.jl": 1.7956716446595652e9,
-      "drift.jl": 1.7956733832529204e9,
-      "egg.jl": 1.7958058864911876e9,
       "emotes.jl": 1.7957964933968024e9,
-      "facehill.jl": 1.7956672129113421e9,
       "feelings.jl": 1.795793375711392e9,
-      "fencepaint.jl": 1.795552869628795e9,
       "finishes.jl": 1.7956074560819604e9,
       "firefly_catch.jl": 1.7956556345354118e9,
       "fireflysync.jl": 1.7957449108654203e9,
-      "flight.jl": 1.7957446568240552e9,
       "floattop.jl": 1.795793874707898e9,
       "flora.jl": 1.7955211366486444e9,
       "flowerfield.jl": 1.7955211366509712e9,
       "flowergift.jl": 1.7955211366518018e9,
-      "flylesson.jl": 1.7955898833962977e9,
       "footpaths.jl": 1.7956331041694021e9,
       "freecam.jl": 1.7958046906110997e9,
-      "freeze.jl": 1.7955963448485024e9,
-      "frost.jl": 1.7956041342140338e9,
       "gait.jl": 1.7956674033999517e9,
-      "gallery.jl": 1.79562471854939e9,
       "garden.jl": 1.7955517980775137e9,
-      "ghosts.jl": 1.795744844041959e9,
-      "giant.jl": 1.7957446568247983e9,
-      "glassrain.jl": 1.7957202039441018e9,
-      "glasssea.jl": 1.7957467030097435e9,
       "greetings.jl": 1.7957940111252136e9,
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
-      "hiccups.jl": 1.795744656825295e9,
       "hideseek.jl": 1.7955473519066024e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
-      "jelly.jl": 1.7957011848358562e9,
       "kiln.jl": 1.7957712256891387e9,
-      "kite.jl": 1.7955986738072937e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "lanterns.jl": 1.7956312350413148e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
-      "lumicolour.jl": 1.7955925803555496e9,
+      "lumicolour.jl": 1.795814890401208e9,
       "magnetgolf.jl": 1.7958016067549756e9,
       "magnetstone.jl": 1.7957941185968773e9,
       "makeover.jl": 1.7955960056175299e9,
       "meadow.jl": 1.7956072049130402e9,
       "meadowlife.jl": 1.795485965898355e9,
       "meteors.jl": 1.7957490857436357e9,
-      "missme.jl": 1.7956636938005853e9,
-      "mixup.jl": 1.7956035662514546e9,
-      "moodcam.jl": 1.7956652444866693e9,
       "moon.jl": 1.7953993277488246e9,
-      "moth.jl": 1.7956560123386962e9,
       "motorbench.jl": 1.795811937025463e9,
       "newname.jl": 1.7955211508792114e9,
       "nightclap.jl": 1.7957413957505157e9,
       "nightglow.jl": 1.7957490929640315e9,
       "nightshots.jl": 1.7955211366508613e9,
-      "nursery.jl": 1.7957449866905985e9,
       "obscura.jl": 1.7957326111922245e9,
       "outfits.jl": 1.795744986690093e9,
       "owlears.jl": 1.7957441703489685e9,
-      "paintfight.jl": 1.7957449866903298e9,
-      "paperme.jl": 1.7956604006878855e9,
       "paperpage.jl": 1.7957303660171092e9,
-      "pebblewords.jl": 1.795655041782873e9,
       "presents.jl": 1.7957446568271725e9,
-      "pumpkins.jl": 1.7955999642793732e9,
-      "rewind.jl": 1.795616824451536e9,
-      "ring.jl": 1.7957432236469924e9,
-      "rollcall.jl": 1.795596344849997e9,
-      "separation.jl": 1.7957000129809484e9,
-      "shadow.jl": 1.7956275835392096e9,
+      "separation.jl": 1.795815316061439e9,
       "shallows.jl": 1.7957490857431898e9,
       "shovel.jl": 1.795525269055368e9,
-      "showers.jl": 1.7957490857430322e9,
+      "showers.jl": 1.7958138192224991e9,
       "sleepers.jl": 1.7957449866904223e9,
-      "sneeze.jl": 1.7957446568279505e9,
-      "snowday.jl": 1.795673383252672e9,
-      "soar.jl": 1.7955898834039822e9,
       "splash.jl": 1.7956070278720696e9,
       "stars.jl": 1.7957490929649248e9,
       "stoneskip.jl": 1.7957424630400941e9,
       "storm.jl": 1.7955898834044256e9,
-      "stranger.jl": 1.79563814641218e9,
       "strays.jl": 1.7957446568286347e9,
-      "sunball.jl": 1.7958067996905093e9,
       "sunset.jl": 1.7954781267170784e9,
       "swing.jl": 1.7957446568288977e9,
       "tag.jl": 1.7955616074062378e9,
-      "tied.jl": 1.7957264685360231e9,
-      "timeweather.jl": 1.7956641307272692e9,
-      "toadstool.jl": 1.795589883405444e9,
       "tops.jl": 1.7957940403974535e9,
-      "tv.jl": 1.7956888806221716e9,
-      "underlight.jl": 1.7956973158810022e9,
-      "visitors.jl": 1.7956186150075839e9,
       "voice.jl": 1.7955871142944932e9,
-      "vote.jl": 1.7956393694791632e9,
       "watering.jl": 1.7955211366530466e9,
       "wheelbarrow.jl": 1.7955215618555155e9,
       "wind.jl": 1.795561030609729e9,
       "wirebench.jl": 1.795798090620832e9,
-      "wordround.jl": 1.7956785473043392e9,
       "workshop.jl": 1.7955211366517444e9,
-      "workshopisle.jl": 1.7957446568297238e9,
-      "xylophone.jl": 1.7956303527373064e9
+      "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 136,
-    "self": "16451668292810133953",
+    "posts": 138,
+    "self": "1523826980317287528",
     "wishes": 18
   },
-  "started": "2026-11-27T21:56:58",
+  "started": "2026-11-27T22:42:47",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2340,7 +2321,9 @@
       "Surrogates.KPLS",
       "Pesto.SSEdata",
       "HerbGrammar.expr2csgrammar",
-      "InjectSills.update_abstractsill"
+      "InjectSills.update_abstractsill",
+      "FourierSeries.fourierSeriesStepReal",
+      "Drifters.random_flow_field"
     ],
     "games": [
       "Super Mario 64",
@@ -2432,7 +2415,10 @@
       "Ōkami",
       "Batman: Arkham City",
       "Overwatch",
-      "Pitfall!"
+      "Pitfall!",
+      "Wii Sports Resort",
+      "Quake (video game)",
+      "Resident Evil (1996 video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2806,7 +2792,10 @@
       "BackgroundMeshes",
       "Marconi",
       "TetGen",
-      "PlotReferenceImages"
+      "PlotReferenceImages",
+      "SlimPlotting",
+      "PlotGraphviz",
+      "ARFIMA"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2818,8 +2807,10 @@
       "BasicVSRRunner",
       "MatAnyoneRunner",
       "DemucsRunner",
-      "DeepFilterRunner"
+      "DeepFilterRunner",
+      "HorizonRunner",
+      "QwenImageEditRunner"
     ]
   },
-  "surprise_seen": 153
+  "surprise_seen": 155
 }

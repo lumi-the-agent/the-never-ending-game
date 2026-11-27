@@ -1178,6 +1178,24 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - Test lesson: put the flaw AWAY from where a uniform wire would fail anyway (the middle), or the test proves nothing.
 - SECOND TIME (s155 drawnwire after the s154 rod film): two plots with the same `name` kill a film. Every mesh! in a
   loop gets Symbol(prefix, k). And ALWAYS run a rasterize=true game_clip check of one frame before trusting a queued job.
-- Filming thin things (s155 drawnwire): NG.CameraRig has NO zoom and its view is wide (~90 deg): a 0.1 mm wire reads as
-  a line only with the eye ~2 cm away (frame ~4 cm wide, wire ~2 px). Check the spot for plant clumps first (the
-  first try at (6.6,-14.2) sat in one); (5.6,-13.0) by the tops board is open ground.
+- Filming thin things: s155 wrote "the rig has NO zoom" and filmed from 2 cm away: WRONG. The camera has a zoom:
+  `Makie.cameracontrols(gm.stage.scene).fov[] = deg` in a clip's `shot` (vertical fov, default 45; RayMakie lifts on
+  cc.fov, and also on cc.lens_radius / cc.focal_distance = depth of field). s156: eye 32 cm off, fov 28 -> 5 deg with a
+  smoothstep = one continuous zoom from slab + posts to the neck (raster check media/s156/dw-zoom-sheet.png). Check the
+  spot for plant clumps first; (5.6,-13.0) by the tops board is open ground.
+- Glow strength: Planck's colour at 1358 K is (1, 0.05, 0.001), deep orange. s155's strength 60 clipped every level
+  above ~1100 K to one yellow (the neck looked no hotter); s156 uses 8 * sqrt(B600(T)/B600(1358)).
+- No arc at the break: 8 clam cells give ~6 V, below the ~12 V a copper arc in air needs. What is real at the parting:
+  the two ends ball up into glowing beads (surface tension) that cool. That, not a flash, is the honest break.
+  Bead sizes (s156 estimate): half a parted 2.5 mm segment of 47 um wire = a sphere of r 0.13 mm (wire r 0.05: visible).
+  Its heat leaves mostly BY CONDUCTION into the wire (~0.5 W over 1 mm at 200 K) not by radiation (~0.02 W), and it
+  first freezes at 1358 K (latent heat 2.05e5 J/kg). So model it in circuit.jl as extra mass + latent heat on the end
+  segment next to the parted one (the wire and bead cool together), not as a separate sphere with its own cooling.
+- Thermal bow: physics/hotrod.jl (HotRod.Rod(l, r; bow), settle!(rod, T, parted; seconds)), XPBD, clamped ends.
+  A PERFECTLY straight column never buckles in Gauss-Seidel: start it with a small crook (0.2 mm).
+- Moving many plots per frame in a clip: s156's shot did translate!/rotate!/scale! on 360 plots (40 tubes + 320
+  hidden glow tubes) every frame; the raster check in the agent session hung 20 min (11.9e9 allocations) and
+  segfaulted. Move only what is visible, only when it moved (drawnwire.jl `placed`). Better still: one mesh per
+  material whose geometry is rebuilt per frame. And a game_clip in the agent session competes with the worker's
+  trace for the GPU: queue raster checks to the worker instead.
+- Never let a job write into site/films: the mp4 is a 48-byte stub until it finishes (perfectionist s154 found one).

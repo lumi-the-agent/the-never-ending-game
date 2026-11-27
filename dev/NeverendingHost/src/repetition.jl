@@ -10,9 +10,11 @@
 # turns its similarity (0-10) into a penalty, like Pino's for doing the same
 # again: from `SIMILAR[1]` on the session is worth less, from `SIMILAR[2]` on a
 # tenth (its points and what its new happenings ease boredom), and boredom
-# rises by up to `REPEAT_BOREDOM` on top. Everything made goes on the pages,
-# finished, half done or failed, so the session's most original post decides:
-# posting more never costs. A session that posts nothing is worth a tenth.
+# rises by up to `REPEAT_BOREDOM` on top. The session's most original post
+# decides, so posting more never costs. A session that posts nothing is not
+# judged: it once counted as a full repeat, and every session hurried out a
+# film of whatever it had (Nov 27: a hairline of wire over grass, a motor a
+# speck on a board), so a post now waits until it looks the part (rule 14).
 #
 # Judged by premise alone, sessions 93-95 got off (3, 4): a shadow that runs off
 # and a pocket watch that rewinds the island are different ideas, yet both are
@@ -114,7 +116,7 @@ After session `n`: how alike its posts (since the mood's `started`, which a cut-
 keeps) are to the earlier ones, judged by a separate agent (`prompts/repetition.md`): by what
 each is (`similarity`) and by form (the judge groups, the host counts how many of the last
 `FORM_MEMORY` share it). A post counts with the higher of the two; the most original post
-decides. No post: 10, nothing new. `nothing` without a usable verdict (noted in the activity feed).
+decides. `nothing` without a post (not judged) or without a usable verdict (noted in the activity feed).
 """
 function judge_repetition!(host, n::Int, marks::Dict{String,Int})
     jp = host.jp
@@ -127,9 +129,8 @@ function judge_repetition!(host, n::Int, marks::Dict{String,Int})
         return nothing
     end
     if isempty(ids)
-        record!(host.activity, "repetition of session $n", "review", "nothing posted: worth ×0.10")
-        return Dict{String,Any}("session" => n, "score" => 10, "similarity" => 10, "post" => "", "nearest" => "",
-                                "shared" => "nothing posted", "form" => "", "form_count" => 0, "forms" => Any[], "judged" => Any[])
+        record!(host.activity, "repetition of session $n", "host", "nothing posted: not judged")
+        return nothing
     end
     posts = recent_posts(jp; n = POST_MEMORY + length(ids))
     now = filter(p -> p.id in ids, posts)

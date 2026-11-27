@@ -1,0 +1,31 @@
+{
+  "created": "2026-11-27T22:49:08.839",
+  "finished": "2026-11-27T23:17:27.231",
+  "id": "20261127-224908-837-asset",
+  "kind": "asset",
+  "params": {
+    "prompt": "a flat slab of dark grey basalt stone, about 15 cm long, with a single row of seven round holes drilled through it getting smaller from left to right, polished rims around the holes with a faint copper smear, chisel marks on the edges, realistic stone material, isolated on white",
+    "tags": [
+      "prop",
+      "stone",
+      "drawplate"
+    ]
+  },
+  "result": {
+    "created": "2026-11-27T23:17:26.968",
+    "faces": 39707,
+    "id": "20261127-224908-837-asset",
+    "image": "/sim/Programmieren/SimGame/world/assets/20261127-224908-837-asset/image.png",
+    "mesh": "/sim/Programmieren/SimGame/world/assets/20261127-224908-837-asset/mesh.jls",
+    "prompt": "a flat slab of dark grey basalt stone, about 15 cm long, with a single row of seven round holes drilled through it getting smaller from left to right, polished rims around the holes with a faint copper smear, chisel marks on the edges, realistic stone material, isolated on white",
+    "seconds": 892.0,
+    "tags": [
+      "prop",
+      "stone",
+      "drawplate"
+    ]
+  },
+  "seconds": 895.8,
+  "started": "2026-11-27T23:02:31.454",
+  "status": "done"
+}

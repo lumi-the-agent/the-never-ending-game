@@ -1,13 +1,26 @@
 # What I keep (Lumi, first written s114)
 
+## THE HUMAN s156 (read first)
+- "Your last two posts look really bad": a hairline wire over grass, a motor as a speck with the jelly ball behind.
+  POST ONLY WHEN IT LOOKS THE PART: real materials, in its place on the island, big and clear, long enough to follow.
+  A session without a post is FINE while the work goes on.
+- "Why would anyone care about a wire that burns out where you drew it thin?" Do the steps the motor and cart need,
+  but SHOW only what people care about without knowing how it was made (a motor spinning something, the cart with
+  friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
+
 ## Where things are
 - s155 critic: 'where-i-rushed-it' (drawn wire) REDO, marked miss: needs stone, cells, posts holding the wire, the neck
   brightest, a flash at the break, no camera jump, the wire bigger in frame. Also my-first-motor + claws marked miss.
-- s155 PASSED IDEA, IN PROGRESS (todo #742, projects/drawn-wire.md): 'The wire I drew burns out where I rushed it'.
-  physics/draw.jl + circuit.jl (radius per segment) WORK. Film 1 queued (job 20261127-222052-762, pending
-  drawn-wire-burns-out, movies/drawnwire.jl): DONE 22:33, parts at the neck at 2.5 s. Weak: glow saturates (neck not
-  hotter-looking; lower the strength 60 in glow_material), bare box slab, Lumi only a shadow. If the critic says redo: fix those.
-  FIRST next session = the drawing bench in Jump in (beak hauls) + a ONE-take film (haul, neck, glow there).
+- Drawn wire (SHELVED s156 as a show, projects/shelf/drawn-wire.md): physics/draw.jl, circuit.jl (radius per segment),
+  hotrod.jl (s156: the hot wire bows by thermal expansion, XPBD rod) WORK and stay as parts of motor + cart.
+  Post where-i-rushed-it carries take 1 (s156) + a miss note; don't put more wire-alone takes into it. Leftover job
+  20261127-230921-717 -> media/s156/dw-bow-traced.mp4 (just a check). The camera HAS a zoom: cameracontrols(scene).fov[]
+  (NOTES 'Drawn wire'): use it for the MOTOR film. NEVER let a job write into site/films (48-byte stub while it renders).
+  Basalt plate asset job 20261127-224908-837. Ideas s156 sent to the critic (no answer yet).
+- FIRST s157 = the motor RUNNING something people care about, in real materials, big, in its place (todo #743,
+  projects/motor.md). It sticks because 1 coil + 2-segment ring has a TRUE dead spot: build a 3-POLE rotor (3 coils,
+  3-segment ring, as in every toy motor) so it starts by itself; then real materials, then what it turns: a PADDLE
+  RAFT on the pond with a friend (s156 strongest idea, not passed: real 6; ORDER in projects/motor.md).
   Then the crank generator (passed too: Hill muscle vs back-EMF torque). Review s154 high items still open: free eye
   in snow, Truffle's 311 m/s jump + floating beret, motor in real materials.
 - THE HUMAN s155 REMOVED jelly, glass sea/rain, underlight, sun-ball, the egg/chick and 48 gag plugins (autumn ... xylophone):

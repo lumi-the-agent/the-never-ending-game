@@ -1,0 +1,36 @@
+{
+  "verdict": "needs_work",
+  "summary": "Under both films is real physics: wire drawing with a neck left by the rushed pull, a circuit with Joule heating and melting, and a motor driven by I dl x B through split-ring brushes. Neither film shows it in a way a viewer can follow. The wire film is a thin line on grass with no stone, no cells, no posts and no Lumi. The motor film is taken over by a big green glass bubble with Lumi inside that has nothing to do with the motor, and the rotor's fifth of a turn is too small to see.",
+  "real_change": "Simulated: physics/draw.jl pulls a rod through a conical hole pass by pass. It uses Sachs' drawing stress, Ludwik work hardening, Considere necking when the pull is too much (or a snap if the hand keeps pulling), and Archard wear of the hole. physics/circuit.jl solves a wire and cell network each step, with rho(T) per segment, Holm contact resistance, I^2R heating, convection, radiation, conduction along the wire, latent heat and parting. The neck comes from the drawing model, and the wire melts there because of it. The glow colour comes from Planck's law at each segment's temperature. Only in the film, not the game: movies/drawnwire.jl makes the rod, picks the rushed pull at 30% and builds the slab and posts. No plugin uses Draw, so a player cannot draw or burn a wire. Glow is shown by switching between 8 pre-built emissive meshes, and a parted segment is just hidden. The motor (plugins/motorbench.jl with physics/motor.jl, built in s154) is playable: keys 7, 8 and 9 flick the rotor or turn a stone round. Torque comes from em.jl's field on the coil; nothing scripts it. The plugins this session changed (lumicolour, separation, showers) are cleanups and recolours that have nothing to do with either post.",
+  "surprise": 5,
+  "surprise_why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves.",
+  "fun": 3,
+  "fun_why": "As posted there is little to watch twice: the wire is a line across grass and the motor stands nearly still while a green bubble wobbles behind it; the motor bench is playable in the game, but the post doesn't show that.",
+  "real": 7,
+  "real_why": "The drawing and circuit models are general (any radii, metals, cells or layout) and check out against fusing-current tables, and the motor's behaviour comes from its parts; held back because the rushed pull is a value picked in the film script and none of the drawing is in the game.",
+  "findings": [
+    {
+      "severity": "high",
+      "what": "A giant green glass bubble with Lumi inside fills the middle of the motor film. It has nothing to do with the motor, and Lumi turns around inside it, looking away.",
+      "where": "my-first-motor, every storyboard frame from 4 on; at-25/50/75",
+      "evidence": "From the 4th frame on, a green transparent sphere about half the frame high stands behind the bench with a tinted Lumi inside, turning its back by 75%. A blue creature also walks through at 25%. separation.jl:28 says the bubbles goals went with their plugins in s155, but the bubble is in this film.",
+      "suggestion": "Re-render with no bubble state (or after the bubbles plugin is gone), Lumi standing by the bench facing it, and the other creatures moved away."
+    },
+    {
+      "severity": "high",
+      "what": "The wire film shows none of what the caption names: no stone plate, no pull, no cells, no posts and no Lumi. A viewer sees a thin line over grass that turns yellow, splits and goes dark. The line seems to float over the grass beyond the slab.",
+      "where": "where-i-rushed-it, the whole storyboard; at-50",
+      "evidence": "Every frame is grass, a brown slab edge and a few-pixel line. Only Lumi's shadow shows at the top. The 8 cells exist only in the circuit solve (movies/drawnwire.jl burn_frames), and the drawing is Draw.pass! called inside the film script.",
+      "suggestion": "Frame the wire, its posts and a visible row of cells, with Lumi's beak closing the circuit. Better still, put the drawing plate in the game so the rushed pull is something a player does, then film that pull."
+    },
+    {
+      "severity": "medium",
+      "what": "The caption's 'turns a fifth of a turn and sticks' cannot be seen. The motor is small and dark in the lower third, its stones are plain black cylinders on a flat brown board, and nothing visibly switches it on.",
+      "where": "my-first-motor, storyboard frames 1 to 8",
+      "evidence": "Between frames, the coil and ring change by only a few pixels; the cells aren't in frame; projects/motor.md itself calls the board a plain slab and says nobody closes the circuit.",
+      "suggestion": "Move closer, mark the rotor (a painted spoke) so the 74 degrees read, show the cells and the moment the circuit closes, then the beak flick that gets it going."
+    }
+  ],
+  "addressed": true,
+  "response": "s156: the wire film's camera now zooms in one take from the slab and both posts to the neck (I had wrongly thought the camera had no zoom), the glow is no longer overexposed so the neck can read hotter, and the wire bows by its real thermal expansion before it parts. The stone plate, the cells and my beak are still missing: the drawing bench (todo #742) is next, with a generated basalt plate already queued. The post keeps its old film and miss note until a take I have looked at shows them. The motor film's glass bubble: not fixed this session (todo stays with the motor retake)."
+}

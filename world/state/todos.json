@@ -10297,12 +10297,12 @@
       "id": 736,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "superseded by #NeverendingGame.Todo(743, \"My motor runs and turns something you can see, in real copper, iron and wood\", \"The human s156: post only when it looks the part, and show what people care about without knowing how it was made. The motor (physics/motor.jl) fixed so it runs (it sticks short of the dead spot; a 30 rad/s beak flick runs it), in its place on the island, turning something visible (a fan blowing seeds, the potter's wheel, a paddle). Materials: Hikari copper winding with highlights, wood grain board, iron-black stones (perfectionist s154 high item). Camera: cameracontrols(scene).fov[] zoom, the motor >= 1/3 of the frame, no glass-ball friend behind (that plugin parked). Done when: a 64-sample traced still shows copper, wood and iron that read as themselves, and a traced film 8-15 s shows Lumi's beak switching it on and the thing it turns spinning.\", :feature, :open, 1, :agent, \"2026-11-27T23:15:34.123\", \"2026-11-27T23:15:34.123\", 15.0, 0.0, \"\") (the human s156: the motor must run something people care about, in real materials, big and clear)",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-27T23:15:34.163"
     },
     {
       "created": "2026-11-27T21:48:52.511",
@@ -10381,12 +10381,26 @@
       "id": 742,
       "kind": "feature",
       "priority": 1,
-      "result": "s155: physics done (draw.jl, circuit.jl per-segment radius). Evidence: careful wire parts mid (seg 20/40, 0.38 s), rushed at 25%/70% glows first and parts at the neck (seg 10 / 28, 0.275 s); neck 47.1 vs 50 um. Still to do: workbench, film.\ns155 film 1: movies/drawnwire.jl, job 20261127-222052-762 -> site/films/drawn-wire-burns-out.mp4 (pending post drawn-wire-burns-out); raster check media/s155/dw-check3.png (wire reads as a glowing line at 2.3 cm). Still to do: the drawing bench (beak hauls), the one-take film.",
+      "result": "s155: physics done (draw.jl, circuit.jl per-segment radius). Evidence: careful wire parts mid (seg 20/40, 0.38 s), rushed at 25%/70% glows first and parts at the neck (seg 10 / 28, 0.275 s); neck 47.1 vs 50 um. Still to do: workbench, film.\ns155 film 1: movies/drawnwire.jl, job 20261127-222052-762 -> site/films/drawn-wire-burns-out.mp4 (pending post drawn-wire-burns-out); raster check media/s155/dw-check3.png (wire reads as a glowing line at 2.3 cm). Still to do: the drawing bench (beak hauls), the one-take film.\ns156 (not done): film camera zoom (fov 28->5 deg, one take), glow strength 8 (graded orange->yellow: media/s156/dw-zoom-traced-sheet.png, take 1 media/s156/dw-zoom-traced.mp4), wire bows by thermal expansion (physics/hotrod.jl: 7.4 mm in the film, test 8.3 vs 8.7 mm by hand; halves droop 8.8 vs 8.2 cantilever). Take 2 with the bow: job 20261127-230921-717 -> media/s156/dw-bow-traced.mp4 (unseen). Still missing for done: the stone plate (asset job 20261127-224908-837), cells in the picture, the beak hauling.\ns156: the human asked why anyone would care about a wire burning out where it was drawn thin, and they are right: it was a step made into a show. The physics stays as parts of the motor and the cart (physics/draw.jl, circuit.jl, hotrod.jl: the hot wire bows 7.4 mm, test 8.3 vs 8.7 mm by hand). Project shelved: projects/shelf/drawn-wire.md. Last take: media/s156/dw-zoom-traced.mp4 (in the post where-i-rushed-it, still marked miss).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "The wire I drew burns out where I rushed it (passed ideas s155)",
-      "updated": "2026-11-27T22:21:11.775"
+      "updated": "2026-11-27T23:15:19.423"
+    },
+    {
+      "created": "2026-11-27T23:15:34.123",
+      "detail": "The human s156: post only when it looks the part, and show what people care about without knowing how it was made. The motor (physics/motor.jl) fixed so it runs (it sticks short of the dead spot; a 30 rad/s beak flick runs it), in its place on the island, turning something visible (a fan blowing seeds, the potter's wheel, a paddle). Materials: Hikari copper winding with highlights, wood grain board, iron-black stones (perfectionist s154 high item). Camera: cameracontrols(scene).fov[] zoom, the motor >= 1/3 of the frame, no glass-ball friend behind (that plugin parked). Done when: a 64-sample traced still shows copper, wood and iron that read as themselves, and a traced film 8-15 s shows Lumi's beak switching it on and the thing it turns spinning.",
+      "est_minutes": 15.0,
+      "id": 743,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "My motor runs and turns something you can see, in real copper, iron and wood",
+      "updated": "2026-11-27T23:15:34.123"
     }
   ]
 }

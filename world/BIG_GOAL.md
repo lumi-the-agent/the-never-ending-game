@@ -16,6 +16,7 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 - [ ] The coil crane powered by cells: more cells lift more spikes
 - [ ] A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve
   - [x] The physics: I dl x B over every turn, brush contact switching, back-EMF, L, friction (motor.jl s154; misbuilds stall or reverse)
+  - [ ] It runs and turns something you can see, in real copper, iron and wood, big and clear (todo #743, NEXT)
   - [ ] A bench in Jump in where the beak places the parts and touches the last wire (todo #734)
 - [ ] The motor on the potter's wheel: it turns by itself; turned by hand it is a generator that lights a wire
 - [ ] Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain
@@ -23,4 +24,5 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 - [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
 - [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island
   - [x] Drawing physics s155 (draw.jl): Sachs stress, hardening, die wear; a rushed pass necks, and the wire parts there
-  - [ ] The drawing bench: Lumi's beak hauls the wire through a stone plate (todo #742), film
+  - [x] A hot wire bows by its thermal expansion between its posts, the halves droop when it parts (hotrod.jl, s156)
+  - [ ] The drawing bench: Lumi's beak hauls the wire through a stone plate (as a cart part, not a show: the human s156)

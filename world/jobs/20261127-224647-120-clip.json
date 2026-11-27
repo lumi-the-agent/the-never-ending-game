@@ -1,0 +1,32 @@
+{
+  "created": "2026-11-27T22:46:47.120",
+  "finished": "2026-11-27T23:02:31.349",
+  "id": "20261127-224647-120-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drawnwire_clip",
+    "kwargs": {
+      "height": 720,
+      "hour": 18.4,
+      "samples": 32,
+      "width": 1280
+    },
+    "path": "/sim/Programmieren/SimGame/world/media/s156/dw-zoom-traced.mp4",
+    "script": "movies/drawnwire.jl"
+  },
+  "result": {
+    "frames": 120,
+    "hour": 18.410096913375227,
+    "parts_at_s": 2.50499999999999,
+    "parts_at_segment": 12,
+    "path": "/sim/Programmieren/SimGame/world/media/s156/dw-zoom-traced.mp4",
+    "seconds_per_frame": 6.8264137009779615,
+    "sun_dim": [
+      1.0,
+      1.0
+    ]
+  },
+  "seconds": 930.7,
+  "started": "2026-11-27T22:47:00.355",
+  "status": "done"
+}

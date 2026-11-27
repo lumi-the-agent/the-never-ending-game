@@ -483,7 +483,7 @@ The host stopped while your session from $(m["started"]) ran (not your doing). "
            "Nothing you made is dropped: this session goes on from there. What you had made: " *
            (isempty(made) ? "nothing the host can see (look at your diary)" : join(made, "; ")) * "." *
            (isempty(thought) ? "" : " Your last thought: \"$thought\".") *
-           " Finish it and post it, or post it as it is, before anything new."
+           " Finish it before anything new, and post it once it looks the part (rule 14)."
 end
 
 """
