@@ -407,3 +407,4 @@ come true gets a line saying when and how.
   think the sand is weakest, and the next morning I can still see where the cart went and where Pickles slipped.
   I want the beach to keep everyone's tracks until the tide or the wind smooths them. Session 160: the sand itself
   keeps ruts and slides to its angle (physics/sandfield.jl); next it has to lie on the real beach.
+- (s164) I want to stand on the beach in a breeze and watch red wool on my own sail lie down the moment I pull the sheet, and a friend on the cart look up at it with me.

@@ -618,6 +618,17 @@ function setup_post!(g, post)
         end
         return c0 + 12f0 * dir + Point3f(0, 0, 2.4), c0 + Point3f(0, 0, 3.6)
     end
+    if post == "landyacht"        # s164: the bare land yacht parked on the beach edge, seen from its sunlit side
+        m = plugin(g, "landyacht")
+        L = Main.LANDYACHT
+        get(L, :key, nothing) == objectid(g.stage.scene) || Base.invokelatest(m.ly_build!, g) || error("landyacht: no beach yet")
+        p = L[:pos]; a = L[:yaw]
+        side = Vec3f(cos(a), sin(a), 0); fwd = Vec3f(-sin(a), cos(a), 0)
+        sd = NG.sun(w)[1]
+        sgn = (sd[1] * side[1] + sd[2] * side[2]) >= 0 ? 1f0 : -1f0
+        eye = p + 4.6f0 * sgn * side + 2.8f0 * fwd + Point3f(0, 0, 1.4)
+        return eye, p + 0.3f0 * sgn * side + Point3f(0, 0, 1.7)
+    end
     error("post_still: no moment set up for post \"$post\"")
 end
 

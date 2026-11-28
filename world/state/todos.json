@@ -8892,7 +8892,7 @@
     },
     {
       "created": "2026-11-27T02:50:09.155",
-      "detail": "perfectionist-0145 [lighting, medium]: The moon has a halo of three or four sharp stepped rings, like a target, in the eye-level view.\nWhere: moon plugin halo\nSuggestion: Make the halo a smooth radial falloff (one textured billboard with a gaussian, or many layers at very low alpha), plus a faint moonlit sheen on the cloud edges near it.\nDone when: A crop of the moon at night shows no visible step between halo rings.\nEvidence: world/media/progress/session-0145/eye-level.png",
+      "detail": "perfectionist-0163 [lighting, medium]: The moon sits inside 3-4 hard concentric bands, which looks like a placeholder.\nWhere: progress/session-0163/eye-level.png, top left\nSuggestion: A smooth radial falloff (or atmospheric scattering in the traced view), with the moon lighting thin cloud edges.\nDone when: Eye-level night screenshot: the halo has no visible band edges when zoomed 4x.\nEvidence: media/progress/session-0163/eye-level.png",
       "est_minutes": 15.0,
       "id": 636,
       "kind": "review",
@@ -8902,7 +8902,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The moon halo is drawn as visible concentric rings",
-      "updated": "2026-11-27T13:58:00.342"
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T02:53:32.160",
@@ -9065,12 +9065,12 @@
       "id": 648,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "Superseded by perfectionist-0163.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The live clap looks like yellow paint splats; let it be light and sound",
-      "updated": "2026-11-27T03:59:27.937"
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T04:32:24.170",
@@ -9144,7 +9144,7 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "perfectionist-0160 [wow, high]: Every post since 'Chipping a stone' is a small rig on grass, a static camera and a caption about the outcome. The judge already scored Six clay pots a repeat (x0.10). Lumi's mood is boredom 1.0, annoyance 1.0. No release since 2026-11-24.\nWhere: world/site, world/releases\nSuggestion: Make the next post a moment with the creatures in it: friends dragging something through the new sand and leaving ruts, filmed low at golden hour with a moving camera. Or a night piece where the copper wire's glow is the only light. Release one device film people would share.\nDone when: A post whose subject is not a static apparatus, and which the judge does not mark as a repeat; and a new folder in world/releases/.\nEvidence: Mood file 'A REPEAT: Six clay pots 6/10 like My first motor, its form in 10 of the last 10'; the last-20-posts list",
+      "detail": "perfectionist-0163 [wow, high]: Sessions 161-163 produced zero posts and nothing visible. The wind and sail work is real but is shown to nobody. Goal 8 says a big idea posts what it does so far every session.\nWhere: world/site/index.html, journal 2026-11-28\nSuggestion: A path-traced short on the real beach: the patched sail on its mast, a wool telltale streaming, friends leaning on the hull as a gust hits, the yacht lurching forward or luffing and stalling. Real light: low sun through the canvas (transmission or thin cloth).\nDone when: A new post in world/site with a traced film of at least 3 s where a sail or a fence on the island visibly moves in the solved wind.\nEvidence: Newest post is still 'Six clay pots' (s160). The site/films newest are re-encodes. Progress overview 0160 and 0163 are identical.",
       "est_minutes": 15.0,
       "id": 654,
       "kind": "review",
@@ -9153,8 +9153,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Ten bench-experiment posts in a row: post something of a different form",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "Three sessions, no post: put the sail on the beach and film it, even half working",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9634,7 +9634,7 @@
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0157 [lighting, high]: With path tracing on in the orbit view at 05:47, the cottage lamps are flat saturated yellow discs larger than the windows. The two clouds are solid black blobs against a pale dawn sky. The meadow and sea are full of salt-and-pepper noise.\nWhere: live path tracing; lamplight/clouds materials\nSuggestion: Make lamp globes small emitters inside frosted glass (a diffuse transmission shell), so the glow falls on the walls rather than drawing a disc. Give the clouds a volume or a bright scattering material with sky light. Turn on denoising (OIDN) for the live traced view.\nDone when: A live traced screenshot at dawn shows lamps as small bright points with a glow on the cottage wall, clouds lighter than or close to the sky's brightness, and no visible per-pixel noise at 45 s.\nEvidence: reviews/p0157/traced.png",
+      "detail": "perfectionist-0163 [lighting, high]: With path tracing on, the night view is noise and mud. Fireflies render as big white discs with no glow on the grass around them, the sheep is speckled with colour noise, and the overall exposure is too low.\nWhere: live path tracing\nSuggestion: Fireflies as small emissive spheres or point lights that cast a soft green pool on the grass, OIDN denoising on the live view, exposure and tone mapping tuned for night, and the moon as a real light with a soft sky glow.\nDone when: A traced night screenshot with no visible per-pixel colour noise on creatures, where at least one firefly visibly lights the grass beneath it.\nEvidence: reviews/p0163/traced.png",
       "est_minutes": 30.0,
       "id": 689,
       "kind": "review",
@@ -9643,8 +9643,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Traced view: blown-out lamp discs, pitch-black clouds, heavy grain",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "Traced view: grainy, murky, fireflies are flat discs that light nothing",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T13:58:00.342",
@@ -10399,8 +10399,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "The motor is still two black cans on a plain box table, too small to find",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "The motor/dynamo on the land yacht's axle: real copper, iron and wood, findable",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10409,12 +10409,12 @@
       "id": 744,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0163: The cart-up-the-dune plan was replaced by the land yacht (#763) and sand fences (#760) per the journal.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "The friends pull my first cart up the dune (projects/cart.md)",
-      "updated": "2026-11-28T00:43:20.614"
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-27T23:41:03.588",
@@ -10446,17 +10446,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0160 [camera, high]: In six-clay-pots, for 0-4.5 s the frame shows table legs, agave leaves and pot tops, and the motor is cut off by the top edge. After the cut, a near-black slab fills the lower third and the rotor is a small tangle behind a black can. drawn-wire-burns-out is a hairline on flat green for most of its 5 s.\nWhere: world/site/films/six-clay-pots.mp4, drawn-wire-burns-out.mp4\nSuggestion: Before any render, frame-check the subject's screen bounding box: it should fill 30-60% of the height, with the frame edges clear of it. Use one slow push-in or orbit instead of two static cuts.\nDone when: In the next device film's overview, the subject fills 30-60% of the frame height in every frame and is never cut by a frame edge.\nEvidence: reviews/motion/perfectionist-0160/six-clay-pots-overview.jpg, drawn-wire-burns-out-overview.jpg",
+      "detail": "perfectionist-0163 [props, medium]: workshop-boat is 10 s of a white untextured block drifting in an empty sea. wire-spins-itself is three blue cylinders on a grey box that fades in from black, with the wires barely visible.\nWhere: world/site/films/workshop-boat.mp4, wire-spins-itself.mp4\nSuggestion: Re-shoot or retire them. A boat built from the generated planks with a wake, close enough to read. Wires in glowing copper, framed so the wire fills a third of the frame.\nDone when: No film on the site whose main subject is an untextured primitive. In the boat film, the boat covers at least 10% of the frame.\nEvidence: reviews/motion/perfectionist-0163/workshop-boat-overview.jpg, wire-spins-itself-steps.jpg",
       "est_minutes": 30.0,
       "id": 747,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films don't frame the work: six-clay-pots crops the motor, then shows a black slab",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "Blog films are primitives: a white L-block boat, cans on a grey slab",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10474,17 +10474,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0160 [camera, medium]: Free camera at the pier: Lumi's yellow feathers fill the left quarter. Follow camera on Pinchy: a huge pale green egg shape sits behind and over the crab and covers half the frame.\nWhere: plugins/freecam.jl, follow rig\nSuggestion: Use a near-clip sphere round the eye that hides or fades any creature or prop within 0.8 m of the lens.\nDone when: Three screenshots in each mode, 5 s apart, with no body part or prop within 1 m of the lens covering more than 5% of the frame.\nEvidence: reviews/p0160/cam-free-b.png, cam-follow-b.png",
+      "detail": "perfectionist-0163 [camera, high]: The follow camera shows half a frame of dark leaves (now.png) or a sheep's back (traced.png). In the creatures sheet the blue friend is hidden behind orange blobs a few cm from the lens.\nWhere: follow camera, live_motion creatures sheet\nSuggestion: Before each frame, raycast from the target to the camera and pull in or lift the camera past any prop or body within 1.5 m. Frame the subject by thirds with sky or ground behind it.\nDone when: Ten follow-camera screenshots, 5 s apart: none has a foreground object covering more than 15% of the frame, and the creatures sheet shows every face unobstructed.\nEvidence: reviews/p0163/now.png, reviews/p0163/traced.png, reviews/motion/creatures.png (row 2 left)",
       "est_minutes": 30.0,
       "id": 749,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Free and follow cameras: Lumi's feathers fill the frame, a green egg hides the crab",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "Follow and close-up cameras sit inside bushes and bodies",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10544,7 +10544,7 @@
     },
     {
       "created": "2026-11-28T01:27:09.944",
-      "detail": "perfectionist-0160 [fun, medium]: The friends dance, fish and eat berries around the motor, crane, pots and wire bench, and never look at them, touch them or react to them. Goal 1 (interactions) has not moved since s157.\nWhere: plugins/motorbench.jl, behaviour\nSuggestion: Finish #754: a friend carries a pot, clips it into the chain, and the motor speeds up while it cheers. Or a friend licks the chain, Volta-style (the taste_cell already exists), and reacts with its face.\nDone when: A screenshot or film where a creature holds or carries a pot or cord and the motor's speed visibly changes because of it.\nEvidence: cam-orbit-b.png and motor-raster.png: friends elsewhere; the 'On the island now' list has no machine activity",
+      "detail": "perfectionist-0163 [fun, medium]: The friends fish and stack cairns all night (author's own journal). None of them ever uses anything Lumi built.\nWhere: island behaviour\nSuggestion: Friends push the cart, plant fences, or ride aboard, and react when it lurches.\nDone when: A screenshot of a friend pushing, riding or working on a Lumi-built machine, with the event logged.\nEvidence: journal 2026-11-28 03:11 and 04:02",
       "est_minutes": 15.0,
       "id": 754,
       "kind": "review",
@@ -10553,8 +10553,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "No friend ever touches Lumi's machines: give them a real job with the pots",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "Friends never touch Lumi's machines: give them a real job on the cart",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-28T02:10:01.789",
@@ -10563,12 +10563,12 @@
       "id": 755,
       "kind": "feature",
       "priority": 1,
-      "result": "s160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll). Wheel rut 22 mm + 11 mm berms; 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank tips 1.7 deg at its quarter, kicks up 26 deg 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png. Next: dune plugin with a traced sand mesh, planks in Jump in.\ns160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll); physics/sandfield_check.jl passes (rut -21.6 mm, berm 10.9 mm, max slope 33.0 deg, sand lost == compacted 482 cm3, plank pitch 1.4 deg toward a quarter load). 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank kicks up 26 deg with the load 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png, sandtest-hillshade-c.png. Look test queued: job 20261128-021257-634-clip -> media/s160/sandtest-a.mp4 (movies/sandtest.jl). Assets queued: plank 20261128-021035-918-asset, board wheel 20261128-021036-051-asset. Not yet in the game: next a dune plugin.\ns160: physics/sandfield.jl + check (rut -21.6 mm, berm 10.9 mm, slope 33.0, sand conserved; plank tips toward the load, kicks up 26 deg 5 cm from its end; a 1470 N wheel bogs alone, a plank holds it at 8 mm). FIRST IN THE GAME: plugins/beachprints.jl published: a 3x3 m sand patch on the dune keeps everyone's footprints (Bekker for 150 kg, rims slump to repose), 30 fps while pressing, raster media/s160/prints-raster-a.png. Queued: look test 20261128-021257-634-clip (media/s160/sandtest-a.mp4), plank + wheel assets. Next: traced look, planks picked up/dropped in Jump in, wheels.",
+      "result": "s160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll). Wheel rut 22 mm + 11 mm berms; 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank tips 1.7 deg at its quarter, kicks up 26 deg 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png. Next: dune plugin with a traced sand mesh, planks in Jump in.\ns160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll); physics/sandfield_check.jl passes (rut -21.6 mm, berm 10.9 mm, max slope 33.0 deg, sand lost == compacted 482 cm3, plank pitch 1.4 deg toward a quarter load). 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank kicks up 26 deg with the load 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png, sandtest-hillshade-c.png. Look test queued: job 20261128-021257-634-clip -> media/s160/sandtest-a.mp4 (movies/sandtest.jl). Assets queued: plank 20261128-021035-918-asset, board wheel 20261128-021036-051-asset. Not yet in the game: next a dune plugin.\ns160: physics/sandfield.jl + check (rut -21.6 mm, berm 10.9 mm, slope 33.0, sand conserved; plank tips toward the load, kicks up 26 deg 5 cm from its end; a 1470 N wheel bogs alone, a plank holds it at 8 mm). FIRST IN THE GAME: plugins/beachprints.jl published: a 3x3 m sand patch on the dune keeps everyone's footprints (Bekker for 150 kg, rims slump to repose), 30 fps while pressing, raster media/s160/prints-raster-a.png. Queued: look test 20261128-021257-634-clip (media/s160/sandtest-a.mp4), plank + wheel assets. Next: traced look, planks picked up/dropped in Jump in, wheels.\nperfectionist-0163: The plank road is superseded by the sand fence ramp (#760). The critic passed fences as the ramp.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Lay the plank road on sand that really moves (passed ideas s160, projects/cart.md)",
-      "updated": "2026-11-28T02:24:35.511"
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-28T02:11:33.141",
@@ -10614,7 +10614,7 @@
     },
     {
       "created": "2026-11-28T02:40:47.220",
-      "detail": "perfectionist-0160 [creatures, medium]: In the live creature sheet a pig fishing off the pier has its rod passing straight through its head and green hat. At the vegetable patch Lumi and the blue friend overlap, one body inside the other.\nWhere: fishing behaviour, separation plugin\nSuggestion: Hold the rod in front of the snout, raised from the forepaws. Have the separation system push apart creatures doing a shared activity at the patch.\nDone when: live_motion creatures sheet: no rod or tool intersects a head, and no two creatures overlap.\nEvidence: reviews/p0160/motion/creatures.png (bottom left; top left), motion-strip.png",
+      "detail": "perfectionist-0163 [creatures, medium]: The creatures sheet shows the green-hat pig with the red crab's eyes poking out of its head, and the orange body overlapping the blue friend.\nWhere: reviews/motion/creatures.png rows 2 and 5\nSuggestion: Use body radii from the real meshes in separation, and push creatures apart before they come within contact distance.\nDone when: Three creatures sheets taken 10 minutes apart show no two creatures interpenetrating.\nEvidence: reviews/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 759,
       "kind": "review",
@@ -10623,8 +10623,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Clipping: fishing rod through a pig's head, Lumi inside the blue friend",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "Clipping: a crab inside the pig's head, Lumi inside the blue friend",
+      "updated": "2026-11-28T05:07:57.196"
     },
     {
       "created": "2026-11-28T03:02:55.288",
@@ -10670,17 +10670,17 @@
     },
     {
       "created": "2026-11-28T03:50:10.853",
-      "detail": "Strongest idea s162. Step 1: the sail's force from the solved flow (no lift curve): plate in a GPU WaterLily box swept through angle of attack, lift must rise, peak and stall by itself. Then cloth sail <-> flow, box riding the cart, wheels in sand, axle dynamo into pot cells.",
+      "detail": "perfectionist-0163 [world, high]: A player sees no cart, no fence, no drift and no sail. The plank and wheel assets were generated but are not placed anywhere.\nWhere: plugins (no cart or fence plugin in the island), projects/landyacht.md, projects/wind.md\nSuggestion: Place the hull from the generated planks and wheels on the dune, with fences the player can plant (key or click). The drift should grow visibly over minutes, and friends should climb aboard.\nDone when: A sandbox screenshot from the overview camera shows the cart and at least one planted fence with a sand drift behind it that differs from 10 minutes earlier.\nEvidence: reviews/p0163/now.png and progress/session-0163/overview.png show no cart or fence.",
       "est_minutes": 15.0,
       "id": 763,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
-      "result": "s162 step 1 (not done): physics/sailflow.jl, the sail as an immersed body in a GPU WaterLily box, force = -pressure_force, no lift curve. Flat plate AR 2 (chord 16): CL 0/5/10/15/20/30/40/60/75/90 = 0.00/0.13/0.23/0.30/0.53/0.68/0.73/0.78/0.49/0.00, CD 0.12 -> 1.77: stall emerges from the flow (chord 24: CL 40 deg 0.89, near measured AR-2 plates). GPU == CPU (0.31294 vs 0.31293). Cambered 10% arc NOT converged (16/32/48 cells per chord: CL(-5) -0.12/+0.01/-0.10): averages too short. Long runs queued: job 20261128-040046-984-run (tools/sail_converge.jl). Numbers in projects/landyacht.md.\nThe first long-run job failed: the :run runner is a separate process, 12 h old, without `include` in its script module and without the Lava fixes. Re-queued on the CPU as 20261128-040140-400-run (running).\ns163 (not done): the cambered sail LUFFS by itself in the solved flow. 2D Re 2000, 10% arc: chord 128 CL -10/-5/0/5/10 = -0.53/-0.38/-0.09/0.96/1.38 (flat 10 deg 0.54); chord 32 0/5/10 = -0.21/0.60/1.27; chord 64 -0.19/0.95/1.32: a jump between 0 and 5 deg, the flow tearing off inside the curve when the wind meets the luff from the lee side. 3D AR 2 chord 32: smooth 0.14@5 -> 0.52@30 (no jump); 3D AR 4 chord 32: -0.002/0.225/0.325/0.472 at 0/5/10/15 (a hint: 0->5 twice as steep as 5->10). Plate thickness 2/3/4 cells changes nothing (not leakage). Passed idea s163: 'Telltales: trim a tall sail whose flow is solved in 3D every frame'. Open: the 3D luff is weak; 6.3M cells run ~10x slower than real time (NOTES s163). Numbers: projects/landyacht.md, media/s163/tall-sail-3d.txt.",
-      "source": "agent",
+      "result": "s162 step 1 (not done): physics/sailflow.jl, the sail as an immersed body in a GPU WaterLily box, force = -pressure_force, no lift curve. Flat plate AR 2 (chord 16): CL 0/5/10/15/20/30/40/60/75/90 = 0.00/0.13/0.23/0.30/0.53/0.68/0.73/0.78/0.49/0.00, CD 0.12 -> 1.77: stall emerges from the flow (chord 24: CL 40 deg 0.89, near measured AR-2 plates). GPU == CPU (0.31294 vs 0.31293). Cambered 10% arc NOT converged (16/32/48 cells per chord: CL(-5) -0.12/+0.01/-0.10): averages too short. Long runs queued: job 20261128-040046-984-run (tools/sail_converge.jl). Numbers in projects/landyacht.md.\nThe first long-run job failed: the :run runner is a separate process, 12 h old, without `include` in its script module and without the Lava fixes. Re-queued on the CPU as 20261128-040140-400-run (running).\ns163 (not done): the cambered sail LUFFS by itself in the solved flow. 2D Re 2000, 10% arc: chord 128 CL -10/-5/0/5/10 = -0.53/-0.38/-0.09/0.96/1.38 (flat 10 deg 0.54); chord 32 0/5/10 = -0.21/0.60/1.27; chord 64 -0.19/0.95/1.32: a jump between 0 and 5 deg, the flow tearing off inside the curve when the wind meets the luff from the lee side. 3D AR 2 chord 32: smooth 0.14@5 -> 0.52@30 (no jump); 3D AR 4 chord 32: -0.002/0.225/0.325/0.472 at 0/5/10/15 (a hint: 0->5 twice as steep as 5->10). Plate thickness 2/3/4 cells changes nothing (not leakage). Passed idea s163: 'Telltales: trim a tall sail whose flow is solved in 3D every frame'. Open: the 3D luff is weak; 6.3M cells run ~10x slower than real time (NOTES s163). Numbers: projects/landyacht.md, media/s163/tall-sail-3d.txt.\ns164: telltales work in the solved flow (physics/sailflow.jl `telltales`): windward luff yarn stands off 25-60 deg at 0-2.5 deg, both lie down at 5-10, lee lifts 14/28/40 deg at 20/30/40 (reversed flow at 30, unsteady at 40). Trim response: yarn settles within 0.5 chord of wind after sheeting in. 3D box 4.5x slower than real time; 2D slice 1 ms/step on CPU (10x real time): next = 3 coupled 2D slices + yarn rods + the cart on the beach (projects/landyacht.md s164). Not on the island yet, so not done.\ns164 late: sail_slices (3 2D slices + lifting line, CPU real time x10) built; disagrees with the 3D box by 2.5x in lift slope with camber (1.4x flat): job 20261128-053315-216-run (chord 48 AR 4) decides. physics/telltale.jl yarn rod built, first frozen-snapshot test inconclusive (projects/landyacht.md s164). Next: settle slices vs box, yarn stepping with the flow at 0.1 g, then the cart + mast + arc sail + wool on the beach, path traced.\ns164 end: plugins/landyacht.jl PUBLISHED, the bare cart on the beach edge by the beach hut (5 driftwood planks, 4 oak board wheels, plank mast, the solved 10% arc sail in canvas), static, 0.0 ms/frame, frame median 4.3 ms; media/s164/yacht-raster-2.png. Still to do for done_when: the sail moving by its solved force, telltales stepping in the flow, a traced film; and the sail look (seams, belly).",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle (projects/landyacht.md)",
-      "updated": "2026-11-28T04:48:14.395"
+      "title": "The land yacht and sand fences exist only in solver boxes: build them on the dune",
+      "updated": "2026-11-28T05:40:10.392"
     },
     {
       "created": "2026-11-28T04:48:14.957",
@@ -10695,6 +10695,20 @@
       "status": "open",
       "title": "Sir Sniffsalot turns 175 deg in one frame (host motion s163)",
       "updated": "2026-11-28T04:50:15.181"
+    },
+    {
+      "created": "2026-11-28T05:30:11.983",
+      "detail": "s164 repro: WaterLily AutoBody sdf(x,t) with `a = t < ts ? r1 : r2` (r1, r2 captured Float32) -> measure! kernel fails in Lava emit.jl:3516 emit_byte_offset_gep! 'Cannot lower a byte offset off a pointer to float ... getelementptr i8, ptr %typed_gep, i64 %value_phi'. LLVM turned load(select(&r1,&r2)) into a phi of byte offsets. `r1 + dr*(t >= ts)` compiles. Fix in Lava's GEP lowering (fold the phi'd constant offsets into a select of field indices), like #761. Code: projects/landyacht.md s164.",
+      "est_minutes": 15.0,
+      "id": 765,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lava: sdf closure with `t < ts ? r1 : r2` on captured Float32 fields fails to lower (byte-offset GEP off a phi of field addresses)",
+      "updated": "2026-11-28T05:30:11.983"
     }
   ]
 }

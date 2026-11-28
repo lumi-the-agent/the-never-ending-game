@@ -1,0 +1,38 @@
+a plot named :landyacht_deck is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.
+Stacktrace:
+  [1] error(s::String)
+    @ Base ./error.jl:44
+  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703
+  [3] push!(scene::Makie.Scene, plot::Makie.Plot)
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713
+  [4] plot!(scene::Makie.Scene, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228
+  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::Vector{GeometryBasics.Point{3, Float32}})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575
+  [6] meshscatter!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{marker::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal, :uv), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.Vec{2, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, color::Matrix{ColorTypes.RGBA{FixedPointNumbers.N0f8}}, material::Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, name::Symbol})
+    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465
+  [7] asset_instances!(scene::Makie.Scene, model::NeverendingGame.AssetModel, positions::Vector{GeometryBasics.Point{3, Float32}}; kw::@Kwargs{rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, name::Symbol})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:482
+  [8] asset_instances!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:482 [inlined]
+  [9] ly_build!(game::Game)
+    @ Main.Plugin_landyacht /sim/Programmieren/SimGame/world/plugins/landyacht.jl:102
+ [10] setup_post!(g::Game, post::String)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:623
+ [11] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:645
+ [12] invokelatest
+    @ ./Base_compiler.jl:250 [inlined]
+ [13] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210
+ [14] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378
+ [15] top-level scope
+    @ none:1
+ [16] eval(m::Module, e::Any)
+    @ Core ./boot.jl:489
+ [17] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:283
+ [18] _start()
+    @ Base ./client.jl:550

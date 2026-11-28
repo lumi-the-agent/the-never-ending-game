@@ -1437,3 +1437,13 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   2D needs 32 cells/chord for it; 3D AR 2 at 32 cells loses it (smooth rise): test the 3D aspect ratio too.
 - s163: cell counts: chord 32 at AR 4 is ~6.3M cells, not the 262k of the 5 ms/step figure: time a box before
   promising frame rates from it.
+
+## WaterLily sdf closures and re-trimming (s164)
+- The CPU backend of WaterLily here is KernelAbstractions POCL: kernels are compiled like GPU ones, so an sdf closure
+  must be isbits EVEN ON THE CPU (a captured Ref fails: 'passing non-bitstype argument'). To re-trim a running flow,
+  build a new sdf of the same closure type and swap it in: `sim.body = AutoBody(sdf_at(a)); measure!(sim, sum(sim.flow.Δt))`
+  (Simulation is mutable; physics/sailflow.jl `retrim!`). measure! is cheap: 4.5 ms for 3.5M cells on Mantle.
+- On Mantle/Lava: `t < ts ? r1 : r2` on two captured Float32 fields fails to lower (byte-offset GEP off a phi of
+  field addresses, Lava emit.jl:3516; todo #765). `r1 + dr * (t >= ts)` compiles.
+- Cost: 3D 3.5M cells 39 ms/step on Mantle, 57 steps per chord at chord 32 (CFL); 2D 33k cells 1.0 ms/step on CPU,
+  2.5 ms on Mantle (launch overhead dominates small boxes: run small flows on the CPU).

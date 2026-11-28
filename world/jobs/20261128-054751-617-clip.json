@@ -1,0 +1,26 @@
+{
+  "cause": "a plot named :landyacht_deck is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.",
+  "created": "2026-11-28T05:47:51.617",
+  "error": "a plot named :landyacht_deck is already in this scene. Names identify plots, so they must be unique; `label` is the one that may repeat.\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] assign_name!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:703\n  [3] push!(scene::Makie.Scene, plot::Makie.Plot)\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/scenes.jl:713\n  [4] plot!(scene::Makie.Scene, plot::Makie.MeshScatter{Tuple{Vector{GeometryBasics.Point{3, Float32}}}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/interfaces.jl:228\n  [5] _create_plot!(F::Function, attributes::Dict{Symbol, Any}, scene::Makie.Scene, args::Vector{GeometryBasics.Point{3, Float32}})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/figureplotting.jl:575\n  [6] meshscatter!(::Makie.Scene, ::Vararg{Any}; kw::@Kwargs{marker::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal, :uv), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}, Vector{GeometryBasics.Vec{2, Float32}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}, color::Matrix{ColorTypes.RGBA{FixedPointNumbers.N0f8}}, material::Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}, rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, name::Symbol})\n    @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/recipes.jl:465\n  [7] asset_instances!(scene::Makie.Scene, model::NeverendingGame.AssetModel, positions::Vector{GeometryBasics.Point{3, Float32}}; kw::@Kwargs{rotation::Vector{Makie.Quaternionf}, markersize::Vector{GeometryBasics.Vec{3, Float32}}, name::Symbol})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:482\n  [8] asset_instances!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:482 [inlined]\n  [9] ly_build!(game::Game)\n    @ Main.Plugin_landyacht /sim/Programmieren/SimGame/world/plugins/landyacht.jl:102\n [10] setup_post!(g::Game, post::String)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:623\n [11] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/post_stills.jl:645\n [12] invokelatest\n    @ ./Base_compiler.jl:250 [inlined]\n [13] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210\n [14] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378\n [15] top-level scope\n    @ none:1\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [18] _start()\n    @ Base ./client.jl:550",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261128-054751-617-clip.error.txt",
+  "finished": "2026-11-28T05:51:08.245",
+  "id": "20261128-054751-617-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 11.0,
+      "post": "landyacht",
+      "samples": 128,
+      "size": [
+        1280,
+        720
+      ]
+    },
+    "path": "site/img/land-yacht-on-the-beach.png",
+    "script": "movies/post_stills.jl"
+  },
+  "seconds": 194.4,
+  "started": "2026-11-28T05:47:53.331",
+  "status": "failed"
+}

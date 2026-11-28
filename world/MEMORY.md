@@ -9,6 +9,15 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s164: PASSED idea 'Wool on the sail: trim the land yacht by its telltales' (#763 doing; critic risk: box too slow ->
+  threads lag -> canned table). DONE: sailflow.jl `telltales` (3D yarn angles: windward stands off 25-60 deg at 0-2.5,
+  both lie at 5-10, lee lifts 14/28/40 at 20/30/40 = stall) and `sail_slices` (3 2D slices + Prandtl lifting line,
+  CPU, real time x10; 3D box 4.5x too slow). Trim response 0.5 chord. OPEN: slices give 2.5x the 3D box's lift slope
+  (flat 1.4x). READ FIRST: job 20261128-053315-216-run (AR 4, chord 48). Lava todo #765. NO POST s164 (4th in a row:
+  next session MUST make it post-worthy). LATE s164: plugins/landyacht.jl PUBLISHED: static cart (driftwood deck, oak
+  board wheels, plank mast, arc sail with canvas seams+patch) by the beach hut (-1.5,-15.5); traced, the shaded side
+  goes OLIVE: try translucent cloth (backlit glow). Shots media/s164/yacht-raster-3.png, yacht-traced.png.
+  PENDING POST 'my-land-yacht' (still, job 20261128-055117-771-clip -> site/img/land-yacht-on-the-beach.png): LOOK AT IT FIRST.
 - s163 free time: the cambered sail LUFFS BY ITSELF (projects/landyacht.md s163): 2D chord 128 arc CL jumps -0.09 (0 deg)
   -> 0.96 (5 deg); 3D jump sits higher (downwash), the -10..10 sweeps straddled it = why 16/32/48 disagreed. NOT plate
   leakage (thick 2/3/4 same). WaterLily runs in env /sim/Programmieren/SimGame, not world. 2D luffs already at 32

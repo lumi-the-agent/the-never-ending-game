@@ -1,132 +1,214 @@
 {
- "verdict": "needs_work",
- "summary": "To a player the island looks the same as it did at session 157: a sunny toy meadow with friendly creatures that now move cleanly, and a scatter of bench experiments nobody but Lumi touches. This session's new things are a sand solver and footprints on the dune. They are real physics, but from any normal camera they show as a faint square of different sand. The motor, three sessions into its makeover, is still two black cans on a plain box table, too small to find. The six-clay-pots film is the tenth bench-experiment post in a row, and the host's judge already scored it as a repeat (x0.10).",
- "scores": {
-  "lighting": {"score": 4, "why": "A single noon sun on everything. In the traced motor still (reviews/p0160/motor-traced.png) the light is flat and there are no real lights. The drawn-wire film is a near-black box on unlit green, and its glowing wire lights nothing. Night in the browser (progress s157 eye-level) is the only mood the island has."},
-  "materials": {"score": 4, "why": "Copper finally reads as copper in six-clay-pots, and the table has wood grain when traced. But the stones are matte black cans with a red band, the 'brine' is a flat opaque blue disc in every pot, the pots are plain lathed cylinders, and the grass is one flat green. None of it shows what a path tracer can do: no transmission, no caustics, no subsurface, no wet sheen."},
-  "world": {"score": 4, "why": "No new area. The dune patch is a visible 3x3 m square with a seam (reviews/p0160/prints-raster.png). The area round the motor is crowded with crane poles, a floating orange disc board, a ball and a swing (motor-raster.png), and reads as clutter, not a workshop."},
-  "props": {"score": 5, "why": "The creatures' set dressing (mushrooms, flowers, cottage) is still charming. Everything Lumi has built lately is primitives: pots, posts, a box table, a slab board. Two new assets were queued (a plank and a board wheel) but are not placed yet."},
-  "creatures": {"score": 5, "why": "Faces and silhouettes still carry the game (creatures.png). There are clips: a fishing rod runs straight through a pig's head and hat, and at the vegetable patch Lumi and the blue friend stand inside each other. No creature looks at, touches or reacts to any of Lumi's machines."},
-  "animation": {"score": 6, "why": "live_motion: 10 of 10 moving well, and the strip of Lumi watering flows. The wing whip and the one-frame turns were fixed this session. The films are mostly static rigs, so there is little body motion to judge in them."},
-  "fun": {"score": 5, "why": "Nothing new to play for a person. The footprints are a nice idea, but nobody can see them happen. Most of the Jump in keys still do nothing visible, and the three mini games are unchanged (not replayed this review; #643 stands)."},
-  "wow": {"score": 2, "why": "The last 10 posts are one recipe: a small apparatus on grass, a static camera, a caption about what happened. The judge scored Six clay pots a repeat (x0.10). No release since 11-24. A stranger would not share any of the last ten."},
-  "camera": {"score": 3, "why": "six-clay-pots: for the first 4.5 s the frame shows table legs and pot tops, with the motor cut off by the top edge. Then it cuts to a close-up where a near-black slab fills the lower third. In the live game the free camera at the pier has Lumi's yellow feathers filling the left quarter (cam-free-b.png)."},
-  "ui": {"score": 4, "why": "Unchanged. Lumi's mood is still red text ('Feels annoyed. It still doesn't look right, and it bugs me.') instead of something you see on Lumi. The sidebar status ('Next: A circuit solver...') is stale against what the session actually did."},
-  "style": {"score": 4, "why": "Two looks fight each other: soft clay-toy creatures and flora against grey-box engineering rigs (black cans, box tables, sticks), set down on the same meadow."},
-  "performance": {"score": 9, "why": "30 fps; frame median 3.3 ms, p95 7.1 ms; the sand patch costs 0.02 ms."}
- },
- "findings": [
-  {
-   "severity": "high",
-   "category": "materials",
-   "title": "The motor is still two black cans on a plain box table, too small to find",
-   "todo": 743,
-   "what": "After three sessions of material work the motor, seen live and traced, is two matte black blocks with a red band, a small copper cage between them, on a slab on a four-legged box. From normal play distance it is a dark speck. The pots are plain cylinders with an opaque blue disc for the brine.",
-   "where": "plugins/motorbench.jl (5.6, -14.3)",
-   "evidence": "reviews/p0160/motor-traced.png, reviews/p0160/motor-raster.png, six-clay-pots-overview.jpg frames 7-12",
-   "suggestion": "Use the generated basalt-slab and driftwood assets, or rough lodestone meshes with a dark metallic-flake coat, for the stones. Make the brine Hikari dielectric water with a copper-sulphate absorption tint so the light through it goes blue, and give the pots glazed clay with a wet rim. Scale the whole rig so it reads at 3 m, and stand it on a proper workbench with tools on it.",
-   "done_when": "A traced still from 2 m shows stones that read as rock (no flat black faces), translucent blue brine with visible depth, and the motor filling at least a quarter of the frame height."
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "bt run r7: live_path_tracing(true) + 45 s + live_screenshot + off = 457 s",
+      "what": "The live path-traced view took over 7 minutes to give one screenshot (live:screenshot p95 4.2 s raster, but the traced toggle blocked the eval for 7m37s), so a reviewer or player can barely use it."
+    },
+    {
+      "evidence": "UndefVarError: BeachPrints not defined in Main",
+      "what": "Plugin state is reachable from live_eval only through Main globals (Main.BEACHPRINTS), not by plugin module name, which makes checking a plugin awkward."
+    }
+  ],
+  "findings": [
+    {
+      "category": "materials",
+      "done_when": "A traced still from 2 m shows stones that read as rock (no flat black faces), translucent blue brine with visible depth, and the motor filling at least a quarter of the frame height.",
+      "evidence": "reviews/p0160/motor-traced.png, reviews/p0160/motor-raster.png, six-clay-pots-overview.jpg frames 7-12",
+      "severity": "high",
+      "suggestion": "Use the generated basalt-slab and driftwood assets, or rough lodestone meshes with a dark metallic-flake coat, for the stones. Make the brine Hikari dielectric water with a copper-sulphate absorption tint so the light through it goes blue, and give the pots glazed clay with a wet rim. Scale the whole rig so it reads at 3 m, and stand it on a proper workbench with tools on it.",
+      "title": "The motor is still two black cans on a plain box table, too small to find",
+      "todo": 743,
+      "what": "After three sessions of material work the motor, seen live and traced, is two matte black blocks with a red band, a small copper cage between them, on a slab on a four-legged box. From normal play distance it is a dark speck. The pots are plain cylinders with an opaque blue disc for the brine.",
+      "where": "plugins/motorbench.jl (5.6, -14.3)"
+    },
+    {
+      "category": "wow",
+      "done_when": "A post whose subject is not a static apparatus, and which the judge does not mark as a repeat; and a new folder in world/releases/.",
+      "evidence": "Mood file 'A REPEAT: Six clay pots 6/10 like My first motor, its form in 10 of the last 10'; the last-20-posts list",
+      "severity": "high",
+      "suggestion": "Make the next post a moment with the creatures in it: friends dragging something through the new sand and leaving ruts, filmed low at golden hour with a moving camera. Or a night piece where the copper wire's glow is the only light. Release one device film people would share.",
+      "title": "Ten bench-experiment posts in a row: post something of a different form",
+      "todo": 654,
+      "what": "Every post since 'Chipping a stone' is a small rig on grass, a static camera and a caption about the outcome. The judge already scored Six clay pots a repeat (x0.10). Lumi's mood is boredom 1.0, annoyance 1.0. No release since 2026-11-24.",
+      "where": "world/site, world/releases"
+    },
+    {
+      "category": "world",
+      "done_when": "A screenshot from 3 m shows no patch edge, and a clear trail of at least 6 prints in a line.",
+      "evidence": "reviews/p0160/prints-raster.png",
+      "severity": "high",
+      "suggestion": "Feather the patch's colour and height into the terrain over its last 20 cm. Darken pressed (packed, damp) sand so the prints read by colour as well as by shading. Put the patch on the path the friends actually walk, so a trail builds up over a day. Film a friend crossing it with a low raking sun.",
+      "title": "The footprint sand is a visible square and the prints don't read from play distance",
+      "todo": null,
+      "what": "The new beachprints patch shows as a 3x3 m square of slightly different sand with straight edges on the dune. From a 3 m camera the footprints are a few faint dots. Nobody would notice that the sand remembers anything.",
+      "where": "plugins/beachprints.jl, dune at about (5.1, -15.9)"
+    },
+    {
+      "category": "camera",
+      "done_when": "In the next device film's overview, the subject fills 30-60% of the frame height in every frame and is never cut by a frame edge.",
+      "evidence": "reviews/motion/perfectionist-0160/six-clay-pots-overview.jpg, drawn-wire-burns-out-overview.jpg",
+      "severity": "high",
+      "suggestion": "Before any render, frame-check the subject's screen bounding box: it should fill 30-60% of the height, with the frame edges clear of it. Use one slow push-in or orbit instead of two static cuts.",
+      "title": "Films don't frame the work: six-clay-pots crops the motor, then shows a black slab",
+      "todo": 747,
+      "what": "In six-clay-pots, for 0-4.5 s the frame shows table legs, agave leaves and pot tops, and the motor is cut off by the top edge. After the cut, a near-black slab fills the lower third and the rotor is a small tangle behind a black can. drawn-wire-burns-out is a hairline on flat green for most of its 5 s.",
+      "where": "world/site/films/six-clay-pots.mp4, drawn-wire-burns-out.mp4"
+    },
+    {
+      "category": "fun",
+      "done_when": "A screenshot or film where a creature holds or carries a pot or cord and the motor's speed visibly changes because of it.",
+      "evidence": "cam-orbit-b.png and motor-raster.png: friends elsewhere; the 'On the island now' list has no machine activity",
+      "severity": "medium",
+      "suggestion": "Finish #754: a friend carries a pot, clips it into the chain, and the motor speeds up while it cheers. Or a friend licks the chain, Volta-style (the taste_cell already exists), and reacts with its face.",
+      "title": "No friend ever touches Lumi's machines: give them a real job with the pots",
+      "todo": 754,
+      "what": "The friends dance, fish and eat berries around the motor, crane, pots and wire bench, and never look at them, touch them or react to them. Goal 1 (interactions) has not moved since s157.",
+      "where": "plugins/motorbench.jl, behaviour"
+    },
+    {
+      "category": "creatures",
+      "done_when": "live_motion creatures sheet: no rod or tool intersects a head, and no two creatures overlap.",
+      "evidence": "reviews/p0160/motion/creatures.png (bottom left; top left), motion-strip.png",
+      "severity": "medium",
+      "suggestion": "Hold the rod in front of the snout, raised from the forepaws. Have the separation system push apart creatures doing a shared activity at the patch.",
+      "title": "Clipping: fishing rod through a pig's head, Lumi inside the blue friend",
+      "todo": null,
+      "what": "In the live creature sheet a pig fishing off the pier has its rod passing straight through its head and green hat. At the vegetable patch Lumi and the blue friend overlap, one body inside the other.",
+      "where": "fishing behaviour, separation plugin"
+    },
+    {
+      "category": "camera",
+      "done_when": "Three screenshots in each mode, 5 s apart, with no body part or prop within 1 m of the lens covering more than 5% of the frame.",
+      "evidence": "reviews/p0160/cam-free-b.png, cam-follow-b.png",
+      "severity": "medium",
+      "suggestion": "Use a near-clip sphere round the eye that hides or fades any creature or prop within 0.8 m of the lens.",
+      "title": "Free and follow cameras: Lumi's feathers fill the frame, a green egg hides the crab",
+      "todo": 749,
+      "what": "Free camera at the pier: Lumi's yellow feathers fill the left quarter. Follow camera on Pinchy: a huge pale green egg shape sits behind and over the crab and covers half the frame.",
+      "where": "plugins/freecam.jl, follow rig"
+    },
+    {
+      "category": "lighting",
+      "done_when": "A traced still at dusk where the ground and posts within 20 cm of the wire are visibly lit orange by it.",
+      "evidence": "reviews/motion/perfectionist-0160/drawn-wire-burns-out-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Make the wire an emissive area light whose radiance follows its temperature (blackbody). Film it at dusk so its glow is the key light on the posts and the sand.",
+      "title": "Hot wire and glowing things light nothing: make heat real light",
+      "todo": 750,
+      "what": "The drawn wire glows orange, but the ground and posts under it stay unlit. The film is a near-black box on flat green.",
+      "where": "plugins/wirebench.jl, world/site/films/drawn-wire-burns-out.mp4"
+    }
+  ],
+  "process": "The author's physics is honest and getting deep: a Mantle sand field with Bekker compaction, feet on sand, cell chemistry, a heading smoother fix. They also fixed real motion bugs (wing whip, one-frame turns), and those show. But for the fourth review in a row almost no time goes to what a player sees. The motor's look, asked for as the top item at s157, is unchanged to the eye. The new sand is invisible at play distance. The one post repeats the same form for the tenth time. By goal: 1 (interactions) stalled, no friend touches any machine. 2 (release) stalled since 11-24. 3 (physics) moving well. 4 and 7 (rendering, materials) stalled: copper reads, nothing else does. 5 (Lumi's garden) moving in its own projects; its mood is maxed bored and annoyed and shows only as red text. 6 (animation) good, 10/10. 8 (radical) is weak: the cart arc is a good long idea but every visible step looks alike. Next session: no new solver. Put the friends into the pot chain on camera (#754), make the pots and stones real materials (#743), and post that as a film framed on the friend, not the rig.",
+  "scores": {
+    "animation": {
+      "score": 6,
+      "why": "live_motion: 10 of 10 moving well, and the strip of Lumi watering flows. The wing whip and the one-frame turns were fixed this session. The films are mostly static rigs, so there is little body motion to judge in them."
+    },
+    "camera": {
+      "score": 3,
+      "why": "six-clay-pots: for the first 4.5 s the frame shows table legs and pot tops, with the motor cut off by the top edge. Then it cuts to a close-up where a near-black slab fills the lower third. In the live game the free camera at the pier has Lumi's yellow feathers filling the left quarter (cam-free-b.png)."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "Faces and silhouettes still carry the game (creatures.png). There are clips: a fishing rod runs straight through a pig's head and hat, and at the vegetable patch Lumi and the blue friend stand inside each other. No creature looks at, touches or reacts to any of Lumi's machines."
+    },
+    "fun": {
+      "score": 5,
+      "why": "Nothing new to play for a person. The footprints are a nice idea, but nobody can see them happen. Most of the Jump in keys still do nothing visible, and the three mini games are unchanged (not replayed this review; #643 stands)."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "A single noon sun on everything. In the traced motor still (reviews/p0160/motor-traced.png) the light is flat and there are no real lights. The drawn-wire film is a near-black box on unlit green, and its glowing wire lights nothing. Night in the browser (progress s157 eye-level) is the only mood the island has."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Copper finally reads as copper in six-clay-pots, and the table has wood grain when traced. But the stones are matte black cans with a red band, the 'brine' is a flat opaque blue disc in every pot, the pots are plain lathed cylinders, and the grass is one flat green. None of it shows what a path tracer can do: no transmission, no caustics, no subsurface, no wet sheen."
+    },
+    "performance": {
+      "score": 9,
+      "why": "30 fps; frame median 3.3 ms, p95 7.1 ms; the sand patch costs 0.02 ms."
+    },
+    "props": {
+      "score": 5,
+      "why": "The creatures' set dressing (mushrooms, flowers, cottage) is still charming. Everything Lumi has built lately is primitives: pots, posts, a box table, a slab board. Two new assets were queued (a plank and a board wheel) but are not placed yet."
+    },
+    "style": {
+      "score": 4,
+      "why": "Two looks fight each other: soft clay-toy creatures and flora against grey-box engineering rigs (black cans, box tables, sticks), set down on the same meadow."
+    },
+    "ui": {
+      "score": 4,
+      "why": "Unchanged. Lumi's mood is still red text ('Feels annoyed. It still doesn't look right, and it bugs me.') instead of something you see on Lumi. The sidebar status ('Next: A circuit solver...') is stale against what the session actually did."
+    },
+    "world": {
+      "score": 4,
+      "why": "No new area. The dune patch is a visible 3x3 m square with a seam (reviews/p0160/prints-raster.png). The area round the motor is crowded with crane poles, a floating orange disc board, a ball and a swing (motor-raster.png), and reads as clutter, not a workshop."
+    },
+    "wow": {
+      "score": 2,
+      "why": "The last 10 posts are one recipe: a small apparatus on grass, a static camera, a caption about what happened. The judge scored Six clay pots a repeat (x0.10). No release since 11-24. A stranger would not share any of the last ten."
+    }
   },
-  {
-   "severity": "high",
-   "category": "wow",
-   "title": "Ten bench-experiment posts in a row: post something of a different form",
-   "todo": 654,
-   "what": "Every post since 'Chipping a stone' is a small rig on grass, a static camera and a caption about the outcome. The judge already scored Six clay pots a repeat (x0.10). Lumi's mood is boredom 1.0, annoyance 1.0. No release since 2026-11-24.",
-   "where": "world/site, world/releases",
-   "evidence": "Mood file 'A REPEAT: Six clay pots 6/10 like My first motor, its form in 10 of the last 10'; the last-20-posts list",
-   "suggestion": "Make the next post a moment with the creatures in it: friends dragging something through the new sand and leaving ruts, filmed low at golden hour with a moving camera. Or a night piece where the copper wire's glow is the only light. Release one device film people would share.",
-   "done_when": "A post whose subject is not a static apparatus, and which the judge does not mark as a repeat; and a new folder in world/releases/."
-  },
-  {
-   "severity": "high",
-   "category": "world",
-   "title": "The footprint sand is a visible square and the prints don't read from play distance",
-   "todo": null,
-   "what": "The new beachprints patch shows as a 3x3 m square of slightly different sand with straight edges on the dune. From a 3 m camera the footprints are a few faint dots. Nobody would notice that the sand remembers anything.",
-   "where": "plugins/beachprints.jl, dune at about (5.1, -15.9)",
-   "evidence": "reviews/p0160/prints-raster.png",
-   "suggestion": "Feather the patch's colour and height into the terrain over its last 20 cm. Darken pressed (packed, damp) sand so the prints read by colour as well as by shading. Put the patch on the path the friends actually walk, so a trail builds up over a day. Film a friend crossing it with a low raking sun.",
-   "done_when": "A screenshot from 3 m shows no patch edge, and a clear trail of at least 6 prints in a line."
-  },
-  {
-   "severity": "high",
-   "category": "camera",
-   "title": "Films don't frame the work: six-clay-pots crops the motor, then shows a black slab",
-   "todo": 747,
-   "what": "In six-clay-pots, for 0-4.5 s the frame shows table legs, agave leaves and pot tops, and the motor is cut off by the top edge. After the cut, a near-black slab fills the lower third and the rotor is a small tangle behind a black can. drawn-wire-burns-out is a hairline on flat green for most of its 5 s.",
-   "where": "world/site/films/six-clay-pots.mp4, drawn-wire-burns-out.mp4",
-   "evidence": "reviews/motion/perfectionist-0160/six-clay-pots-overview.jpg, drawn-wire-burns-out-overview.jpg",
-   "suggestion": "Before any render, frame-check the subject's screen bounding box: it should fill 30-60% of the height, with the frame edges clear of it. Use one slow push-in or orbit instead of two static cuts.",
-   "done_when": "In the next device film's overview, the subject fills 30-60% of the frame height in every frame and is never cut by a frame edge."
-  },
-  {
-   "severity": "medium",
-   "category": "fun",
-   "title": "No friend ever touches Lumi's machines: give them a real job with the pots",
-   "todo": 754,
-   "what": "The friends dance, fish and eat berries around the motor, crane, pots and wire bench, and never look at them, touch them or react to them. Goal 1 (interactions) has not moved since s157.",
-   "where": "plugins/motorbench.jl, behaviour",
-   "evidence": "cam-orbit-b.png and motor-raster.png: friends elsewhere; the 'On the island now' list has no machine activity",
-   "suggestion": "Finish #754: a friend carries a pot, clips it into the chain, and the motor speeds up while it cheers. Or a friend licks the chain, Volta-style (the taste_cell already exists), and reacts with its face.",
-   "done_when": "A screenshot or film where a creature holds or carries a pot or cord and the motor's speed visibly changes because of it."
-  },
-  {
-   "severity": "medium",
-   "category": "creatures",
-   "title": "Clipping: fishing rod through a pig's head, Lumi inside the blue friend",
-   "todo": null,
-   "what": "In the live creature sheet a pig fishing off the pier has its rod passing straight through its head and green hat. At the vegetable patch Lumi and the blue friend overlap, one body inside the other.",
-   "where": "fishing behaviour, separation plugin",
-   "evidence": "reviews/p0160/motion/creatures.png (bottom left; top left), motion-strip.png",
-   "suggestion": "Hold the rod in front of the snout, raised from the forepaws. Have the separation system push apart creatures doing a shared activity at the patch.",
-   "done_when": "live_motion creatures sheet: no rod or tool intersects a head, and no two creatures overlap."
-  },
-  {
-   "severity": "medium",
-   "category": "camera",
-   "title": "Free and follow cameras: Lumi's feathers fill the frame, a green egg hides the crab",
-   "todo": 749,
-   "what": "Free camera at the pier: Lumi's yellow feathers fill the left quarter. Follow camera on Pinchy: a huge pale green egg shape sits behind and over the crab and covers half the frame.",
-   "where": "plugins/freecam.jl, follow rig",
-   "evidence": "reviews/p0160/cam-free-b.png, cam-follow-b.png",
-   "suggestion": "Use a near-clip sphere round the eye that hides or fades any creature or prop within 0.8 m of the lens.",
-   "done_when": "Three screenshots in each mode, 5 s apart, with no body part or prop within 1 m of the lens covering more than 5% of the frame."
-  },
-  {
-   "severity": "medium",
-   "category": "lighting",
-   "title": "Hot wire and glowing things light nothing: make heat real light",
-   "todo": 750,
-   "what": "The drawn wire glows orange, but the ground and posts under it stay unlit. The film is a near-black box on flat green.",
-   "where": "plugins/wirebench.jl, world/site/films/drawn-wire-burns-out.mp4",
-   "evidence": "reviews/motion/perfectionist-0160/drawn-wire-burns-out-overview.jpg",
-   "suggestion": "Make the wire an emissive area light whose radiance follows its temperature (blackbody). Film it at dusk so its glow is the key light on the posts and the sand.",
-   "done_when": "A traced still at dusk where the ground and posts within 20 cm of the wire are visibly lit orange by it."
-  }
- ],
- "todos": [
-  {"id": 693, "action": "done", "why": "Done: 'Three paper darts' shows one dart folded three ways diving, gliding and rearing, flying by its own folds."},
-  {"id": 751, "action": "drop", "why": "Duplicate of #744; the sand law for feet is built (s157) and the pull itself is #744."},
-  {"id": 681, "action": "keep", "why": "Glass, wire bench and kiln are still primitives; the motor half is #743."},
-  {"id": 689, "action": "keep", "why": "Not re-checked at night this review; the traced day still has moderate grain."},
-  {"id": 643, "action": "keep", "why": "Mini games unchanged since s157; not replayed this review."},
-  {"id": 614, "action": "keep", "why": "Not checked this review."},
-  {"id": 636, "action": "keep", "why": "Visible ring halo still in the s157 night progress shot."},
-  {"id": 648, "action": "keep", "why": "Not checked at night this review."},
-  {"id": 748, "action": "keep", "why": "Jump-in keys not changed this session."},
-  {"id": 757, "action": "keep", "why": "My one live_motion sample found 10/10 fine, but one 3 s sample can't clear a flick the host saw."},
-  {"id": 745, "action": "keep", "why": "beachprints still presses every creature as 150 kg."}
- ],
- "engine": [
-  {
-   "what": "The live path-traced view took over 7 minutes to give one screenshot (live:screenshot p95 4.2 s raster, but the traced toggle blocked the eval for 7m37s), so a reviewer or player can barely use it.",
-   "evidence": "bt run r7: live_path_tracing(true) + 45 s + live_screenshot + off = 457 s"
-  },
-  {
-   "what": "Plugin state is reachable from live_eval only through Main globals (Main.BEACHPRINTS), not by plugin module name, which makes checking a plugin awkward.",
-   "evidence": "UndefVarError: BeachPrints not defined in Main"
-  }
- ],
- "process": "The author's physics is honest and getting deep: a Mantle sand field with Bekker compaction, feet on sand, cell chemistry, a heading smoother fix. They also fixed real motion bugs (wing whip, one-frame turns), and those show. But for the fourth review in a row almost no time goes to what a player sees. The motor's look, asked for as the top item at s157, is unchanged to the eye. The new sand is invisible at play distance. The one post repeats the same form for the tenth time. By goal: 1 (interactions) stalled, no friend touches any machine. 2 (release) stalled since 11-24. 3 (physics) moving well. 4 and 7 (rendering, materials) stalled: copper reads, nothing else does. 5 (Lumi's garden) moving in its own projects; its mood is maxed bored and annoyed and shows only as red text. 6 (animation) good, 10/10. 8 (radical) is weak: the cart arc is a good long idea but every visible step looks alike. Next session: no new solver. Put the friends into the pot chain on camera (#754), make the pots and stones real materials (#743), and post that as a film framed on the friend, not the rig."
+  "summary": "To a player the island looks the same as it did at session 157: a sunny toy meadow with friendly creatures that now move cleanly, and a scatter of bench experiments nobody but Lumi touches. This session's new things are a sand solver and footprints on the dune. They are real physics, but from any normal camera they show as a faint square of different sand. The motor, three sessions into its makeover, is still two black cans on a plain box table, too small to find. The six-clay-pots film is the tenth bench-experiment post in a row, and the host's judge already scored it as a repeat (x0.10).",
+  "superseded_by": "perfectionist-0163.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 693,
+      "why": "Done: 'Three paper darts' shows one dart folded three ways diving, gliding and rearing, flying by its own folds."
+    },
+    {
+      "action": "drop",
+      "id": 751,
+      "why": "Duplicate of #744; the sand law for feet is built (s157) and the pull itself is #744."
+    },
+    {
+      "action": "keep",
+      "id": 681,
+      "why": "Glass, wire bench and kiln are still primitives; the motor half is #743."
+    },
+    {
+      "action": "keep",
+      "id": 689,
+      "why": "Not re-checked at night this review; the traced day still has moderate grain."
+    },
+    {
+      "action": "keep",
+      "id": 643,
+      "why": "Mini games unchanged since s157; not replayed this review."
+    },
+    {
+      "action": "keep",
+      "id": 614,
+      "why": "Not checked this review."
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "Visible ring halo still in the s157 night progress shot."
+    },
+    {
+      "action": "keep",
+      "id": 648,
+      "why": "Not checked at night this review."
+    },
+    {
+      "action": "keep",
+      "id": 748,
+      "why": "Jump-in keys not changed this session."
+    },
+    {
+      "action": "keep",
+      "id": 757,
+      "why": "My one live_motion sample found 10/10 fine, but one 3 s sample can't clear a flick the host saw."
+    },
+    {
+      "action": "keep",
+      "id": 745,
+      "why": "beachprints still presses every creature as 150 kg."
+    }
+  ],
+  "verdict": "needs_work"
 }

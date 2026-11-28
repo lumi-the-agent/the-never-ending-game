@@ -19,7 +19,8 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
     - [x] Sail force from the solved flow, no lift curve: a plate swept through angle of attack stalls by itself (physics/sailflow.jl)
     - [x] A cambered sail luffs by itself in the solved flow (2D: lift -0.2 at 0 deg, 0.6-0.95 at 5 deg, s163)
-    - [ ] Telltales: a tall sail's 3D flow steps every frame with the cart, threads stream in it, the player trims by them
+    - [ ] Telltales: the sail's flow solved live with the cart (3 coupled 2D slices), threads stream in it, the player trims by them
+      - [x] The threads read the trim in the solved 3D flow: windward lifts when it luffs, lee when it stalls (s164)
 - [ ] Lead plates in acid that store what the windmill makes (Plante's accumulator: charge, fizz, discharge)
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)

@@ -1,6 +1,6 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: (s163 PASSED idea 'Telltales: trim a tall sail whose flow is solved in 3D every frame') read media/s163/tall-sail-3d.txt (AR 4, chord 32, 0/5/10/15 deg): if the luff shows in 3D, put the sail box on the cart and step it EVERY frame (2.5 m chord, 4-6 m/s breeze, 2-3 steps of 5 ms a frame, time it with the friends on screen), apparent wind as the inflow, sheet angle turns the body; wool threads advected in the 3D field at the luff; sheet in/out in Jump in. If AR 4 also loses the luff, find why (Taira & Colonius 2009 AR-2 flat plate as the 3D check) before building on it.
+Next: (s164, todo #763) READ job 20261128-053315-216-run (3D AR 4 chord 48) and settle sail_slices vs the 3D box; the cart is ON THE BEACH now (plugins/landyacht.jl, static): translucent canvas so it glows backlit, then yarns (physics/telltale.jl, 0.1 g, stepping with the slices' flow) tied at 3 heights, the sail's solved force pushing the cart over the sand (wheelsand.jl), sheet keys in Jump in; traced film from leeward for the post.
 
 ## The critic's risks (s162)
 - A frozen lookup for the sail, or a dynamo that is only a drag number with a charge bar: then it is a rig.
@@ -75,3 +75,80 @@ reads whether the tall sail's weak 3D luff holds at two grids. converge() has as
 OLD NEXT: 3D sweep 5..30 deg at chord 32 (done above); hysteresis (ramp alpha up vs down: does a drawing
 sail stay drawing below the jump?); TELLTALES: threads at the luff from the solved flow, streaming on both sides
 when trimmed right, the lee one lifting when it luffs: how the player reads the trim without a gauge.
+s164 READ job 20261128-045120-189-run (CPU, AR 4, 20 chords avg last 10, spread between 2-chord windows < 0.01):
+  chord 24: 0/2.5/5/7.5 deg CL 0.060/0.109/0.190/0.211 (CD .082/.068/.094/.107)  smooth, no knee
+  chord 32: 0/2.5/5/7.5 deg CL -0.002/0.061/0.229/0.280 (CD .051/.051/.066/.065)  KNEE between 2.5 and 5:
+  0.025/deg below, 0.067/deg across, 0.020/deg above. THE TALL SAIL LUFFS IN 3D at 32 cells per chord (24 smears it,
+  as 2D needs ~32 too). Smaller than 2D's jump (0.17 vs ~1.0): downwash + Re 2000, but it is a knee, not a slope.
+And job 20261128-040140-400-run (AR 2, 24 chords avg last 10): chord 32 -10/-5/0/5/10: -0.113/0.015/0.004/0.151/0.233;
+  chord 48: -0.147/-0.096/-0.030/0.165/0.343. Long averages: 32 vs 48 agree within 0.04 at 0 and 5, not at 10 deg.
+SO: the trim window of a tall cambered sail at this Re is ~3-4 deg wide in the flow itself. Box must be >= 32/chord.
+s164 TELLTALE PROBE (GPU, AR 4, chord 32, 14 chords, sample last 4; velocity 2.5 cells off each face, mid-span and
+half-span alike; code in the s164 eval, to become physics/sailflow.jl `telltales`):
+  2.5 deg (CL 0.06, luffing): LEE streams at all stations (ut 1.04-1.16, yarn -4..0 deg); WINDWARD at 5% chord
+  ut 0.02, un 0.04: the yarn STANDS OFF the cloth at 60 deg; from 15% back the windward flow is reversed (a slow
+  bubble inside the curve, ut -0.06).
+  5 deg (CL 0.23, drawing): lee streams; windward 5% ut 0.25, yarn LIES DOWN to 16 deg; 15%+ still reversed (weak).
+THE WINDWARD LUFF TELLTALE LIFTS WHEN THE SAIL LUFFS, by itself, as sailors read it (pinching = windward one lifts).
+Steady flow at Re 2000 (min ~ mean): threads point, they don't flutter. Put the telltales at <= 5% chord.
+  More angles (yarn angle off the cloth at 3% chord, mid-span; + = standing off):
+    alpha   0     2.5(5%)  5(5%)   10     20     30     40
+    wind   +29    +60      +16     +15    +5     +6     -1
+    lee     -7     -5       -3     +1     +14    +28    +40
+  At 30 deg the lee flow is REVERSED at 30% chord (a bubble under the lifting yarn); at 40 it is unsteady there
+  (27% of samples reversed): the stall, and the first flutter in the whole sweep. Tips (80% half-span) lift less.
+  THE TRIM GAME IS IN THE FLOW: too loose = windward yarn stands off, right (5-10) = both lie down, too tight = the
+  lee yarn lifts, then flutters. physics/sailflow.jl `telltales` (s164). NEXT: yarns as rods (drag ~ |u|^2 from
+  the sampled flow + gravity: limp in the slow bubble, streaming in the fast side), then the sail box on the cart.
+s164 PASSED idea 'Wool on the sail: trim the land yacht by its telltales' (critic: surprise 7, fun 7, real 7, toward 8;
+risk: the box not keeping up -> threads lag -> canned table). MEASURED the lag the same session:
+  TRIM RESPONSE (box 192x96x192 = 3.5M cells, AR 4, chord 32): sheeted 2.5 -> 7.5 deg at 8 chords (body re-measured,
+  4.5 ms): windward luff yarn 60 deg -> 31 (0.12 chord) -> 11 (0.23) -> 4 (0.34, overshoot) -> settles ~12 by 0.6 chord.
+  The threads answer the sheet within HALF A CHORD of wind: 0.25 s for a 2.5 m chord in 5 m/s. Fast enough to play.
+  COST: 39 ms/step, 57 steps per chord = 2.24 s GPU per chord: 4.5x SLOWER than real time (needs ~0.8M cells).
+  2D SLICE at chord 32 (256x128 = 33k cells): CPU 1.0 ms/step = 0.053 s per chord (10x FASTER than real time);
+  GPU 2.5 ms/step (launch overhead dominates tiny boxes). 2D at 32 already luffs (s163).
+  => PLAN: three 2D slices of solved flow (foot / middle / head) on CPU threads, each with its own apparent wind
+  (wind grows with height over the sand = real twist; cart speed subtracted), coupled by lifting-line downwash from
+  their own solved lift (Prandtl: the slices' CL sets the induced angle each sees). A row of telltales at each
+  height, as sailors rig them. Check the coupled slices against the 3D AR-4 numbers (knee 2.5->5, CL 0.23 @ 5).
+Lava bug found s164 (todo filed): an sdf closure doing `t < ts ? r1 : r2` on two captured Float32 fields fails to
+  compile (byte-offset GEP on a phi of field addresses, emit.jl:3516); `r1 + dr * (t >= ts)` compiles.
+s164 BUILT physics/sailflow.jl `sail_slices` (+ arc2d_sim, retrim!, slice_cl!): N 2D slices of solved flow (CPU, chord 32,
+  256x128, thick 3) joined by Prandtl's lifting line (Glauert series, all N terms), relaxed 12 rounds x 1.5 chords,
+  each slice re-trimmed in its running flow to alpha_geo - alpha_induced. ~6 s for a whole sweep point incl. warm-up.
+  alpha 0/2.5/5/7.5/10:  3 slices CL -0.121/0.136/0.380/0.558/0.806 (mid induced -0.8/0.75/1.25/2.2/3.2 deg)
+                         5 slices CL -0.124/0.126/0.376/0.560/0.832   -> converged in N
+                         3D AR-4 box -0.002/0.061/0.229/0.280/0.325
+  DISAGREE by ~2.5x in slope: slices ~0.10/deg, 3D box 0.033/deg, lifting-line theory for AR 4 ~0.073/deg.
+  The 3D box has given about HALF of theory before too (flat AR 2: 1.45/rad vs Helmbold 2.6). 2D at chord 32 flat
+  10 deg 0.35 vs 0.54 at chord 128 (s163): 2D at 32 is low too, yet the slices come out ABOVE theory (camber).
+  OPEN: which is right at Re 2000? Next check: the flat plate through sail_slices vs the 3D flat AR-4 box vs
+  Helmbold; the 3D box at chord 48 for AR 4 at 5 deg (one case, :run job); the 3D box's tip gap (32 cells) and
+  blockage (y 128 = 4 chords). Don't put either number on the cart until they agree within ~20%.
+  FLAT PLATE both ways (s164): slices (3, flat 2D sections, round ends) CL 5/10 deg = 0.266/0.534; 3D flat AR-4 box
+  (256x128x192, thick 2, 14 chords avg 6, GPU 2.2 min) 0.200/0.362. Box/slices = 0.75/0.68 flat, 0.60/0.40 cambered.
+  The 3D box is lower in both; the gap is bigger with camber (the 3D knee is weaker than the 2D one). Classical AR 4
+  with the slices' own 2D slope (~0.06/deg) would give ~0.05/deg: the slices sit near theory, the box below it.
+  QUEUED: job 20261128-053315-216-run (CPU, AR 4 arc, chord 48, 2.5/5/10 deg, 20 chords avg 10): if the box CL rises
+  towards the slices at 48 cells, the 3D box was under-resolved and the slices are the game's sail; if it stays, the
+  missing lift is real 3D low-Re physics and the slices need it (then: why). READ IT FIRST next session.
+s164 late: physics/telltale.jl (module Telltale: Yarn, hang, step!, lift_deg): a wool yarn as an 8-segment Verlet
+  chain, gravity + cylinder drag across (Cd 1.2) and along (0.06) from a flow function, inextensible. FIRST TEST
+  (2D slice snapshot frozen after 10 chords, 2.5 m chord, 5 m/s, yarn 15 cm / 2 mm / 0.3 g tied 4 cm off the cloth
+  at 5% chord; lift_deg 0 = hanging, 90 = level):  0 deg lee 99 / wind 5;  2.5 lee 19 / wind 0;  7.5 lee 73 / wind 3.
+  NOT YET A RESULT: (1) the 2D slice sheds, a frozen snapshot can catch it mid-cycle: step the yarn WITH the flow;
+  (2) at 0.3 g the windward yarn hangs at every trim (its air is 0.05-0.44 U in the curve: drag/weight < 0.4);
+  real telltales are lighter (0.05-0.1 g, or cassette tape): try 0.1 g; (3) no collision with the cloth yet.
+  In 5 m/s full stream: drag/weight ~1.9 at 0.3 g -> ~62 deg, so the lee yarn streaming 73-99 deg is plausible.
+s164 END: plugins/landyacht.jl PUBLISHED: the bare cart parked on the beach edge by the beach hut (first dune grass +
+  (-5, 0.4), ~(-1.5, -15.5)): 5 driftwood planks (asset 918) as a 2.4 x 1.25 m deck, 4 oak board wheels (asset 051,
+  0.7 m), a plank mast, the 10% arc sail (chord 1.2, 2.8 m tall, sheeted 18 deg) in canvas Diffuse. Static. 0.0 ms/frame.
+  Raster: media/s164/yacht-raster-2.png. LOOKS: wheels + deck read well; the SAIL reads as a flat grey slab (no
+  seams, curve invisible side-on), ground still grassy there. NOT TRACED YET. Before any post: canvas texture with
+  panel seams + a darker luff tape, a 3/4 view from leeward that shows the belly, check on sand, traced still.
+s164 LAST: the sail got a canvas texture (plugins/landyacht.jl ly_canvas: 5 crosscut panels with double seams, brown
+  tapes on all edges, one patch over a tear), uv on the arc mesh; published. Raster 3/4 from leeward:
+  media/s164/yacht-raster-3.png (reads as sailcloth, the belly shows). TRACED (sandbox, 25 s):
+  media/s164/yacht-traced.png: the shaded side comes out OLIVE (sky + grass bounce on a Diffuse sheet facing away from
+  the sun). Try a thin translucent cloth (diffuse transmission) so a backlit sail glows with its seams dark: goal 7.

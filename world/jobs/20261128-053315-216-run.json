@@ -1,0 +1,26 @@
+{
+  "created": "2026-11-28T05:33:15.282",
+  "id": "20261128-053315-216-run",
+  "kind": "run",
+  "params": {
+    "call": "sail_converge",
+    "kwargs": {
+      "alphas": [
+        2.5,
+        5.0,
+        10.0
+      ],
+      "aspect": 4,
+      "chords": [
+        48
+      ],
+      "gpu": false,
+      "t_avg": 10,
+      "t_end": 20
+    },
+    "max_minutes": 400,
+    "script": "tools/sail_converge.jl"
+  },
+  "started": "2026-11-28T05:33:16.448",
+  "status": "running"
+}
