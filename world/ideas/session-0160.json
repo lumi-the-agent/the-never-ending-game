@@ -1,0 +1,22 @@
+{"ideas": [
+{"title": "Lay the plank road on sand that really moves",
+ "goal": "The player has twelve planks and a dune: lay them where the sand is softest, then three friends push the empty cart up. Where you left gaps the wheels dig ruts, plank ends sink and see-saw as a wheel crosses, the friends' feet slip and they lean harder. Getting the cart to the top with the fewest planks is a puzzle that changes with the dune, the tide line and how wet the sand is.",
+ "toward": "The plank track and the wheels-in-sand step of the road: the same sand and planks the loaded cart will fight on its last evening.",
+ "idea": "The sand is a GPU height field that is really displaced: wheel, foot and plank pressure sinks it by Bekker's pressure-sinkage law (wheelsand.jl), the pushed sand piles up beside the rut, and any slope steeper than its angle of repose (dry ~33 deg, damp steeper) flows down until it holds. Planks are rigid bodies resting on that field, so they tilt, bed in and rock. Ruts and footprints stay where they were made. Someone watching sees ruts open behind the wheels, berms of sand at their sides, planks rocking, friends straining.",
+ "form": "A dune plugin with a Mantle kernel for the sand field, playable in Jump in (pick up and drop planks), friends as the pushers; a traced film of the first push up the dune."},
+{"title": "Yesterday's gale buried my road",
+ "goal": "The same wind that charges the cart blows the dune over the plank road at night. Each morning the player finds planks buried, undermined or left on a ridge, digs them out and plants reed fences that make the moving sand drop where they want it. A windy night gives charge AND work: the player learns to read the wind and fence the road before it.",
+ "toward": "Ties the weather loop of the big goal to the build loop: what the wind gives (charge) and what it takes (the road) in one place, so waiting for wind is never watching a gauge.",
+ "idea": "Wind-blown sand on the same height field: Bagnold's saltation flux q ~ (u* - u*t)^3 from the island's real wind, a wind shadow behind every crest, fence and plank (sand drops in the lee), avalanching at the angle of repose. Dunes really migrate; fences really trap sand. Watching: a time-lapse of the dune creeping over the planks, ripples forming, sand piling behind a fence.",
+ "form": "A sand-transport system in the engine on the GPU, driven by the wind the game already has; a night time-lapse film."},
+{"title": "Build the kiln, stone by stone",
+ "goal": "The player stacks stones into a kiln: firebox, chamber, chimney. A taller chimney draws harder and the fire roars, gaps leak heat, a thin wall cracks. The pots inside come out good or bad by the heat the build reached, and every pot's quality carries on into how fast the motor runs and how far the cart goes.",
+ "toward": "The clay-pot cells the cart runs on, made by the player's own build instead of handed out (potcell.jl already turns firing temperature into each pot's wall resistance).",
+ "idea": "Draft by the stack effect (pressure = g h (rho_out - rho_in)) sets the air the fire gets, burning rate from that air, heat through each wall stone by conduction, loss through gaps; stones are rigid bodies the player places, so a bad stack can topple. Watching: smoke pulled up the chimney, the fire drawn in through the mouth, the stones warming.",
+ "form": "A kiln plugin: stones placed in Jump in, a firing that runs live; pots it makes go into the bench row."},
+{"title": "Carve a wheel that cracks if you hurry",
+ "goal": "The player cuts a cart wheel from a log: fresh green wood carves easily but checks and splits as it dries; dried wood holds but is hard work. Solid disc or spokes, how wide the rim: the wheel is then rolled down the dune with a stone on it, and a bad one splits or sinks.",
+ "toward": "The wheels of the cart, made with the player's own choices, tested on the same sand the cart will cross.",
+ "idea": "Wood dries from the outside in; tangential shrinkage is about twice radial, so a disc cut across the grain builds hoop stress and opens radial checks where the stress beats the wood's strength (real anisotropic drying). The wheel is then a rigid body on the sand. Watching: a disc slowly opening a crack from rim to hub on the bench over a day.",
+ "form": "A woodworking stage at the workshop plugin, wheels kept as parts for the cart."}
+]}

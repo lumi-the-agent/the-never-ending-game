@@ -2,110 +2,111 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "lit-from-below",
+      "session": 160,
+      "title": "Lit from below",
+      "weight": 1.0,
+      "what": "The picture is almost entirely black. Shapes in the lower half and the ground can hardly be made out, so a viewer sees a dark smear, not a scene."
+    },
+    {
+      "post": "six-clay-pots",
+      "session": 160,
+      "title": "Six clay pots",
+      "weight": 1.0,
+      "what": "Storyboard frames 1-8 and the 25% frame: the motor the caption says the pots run is above the top of the picture. Only a dark sliver of it shows on the table top, so the first half never shows what the pots power."
+    },
+    {
+      "post": "the-island-has-a-ring",
+      "session": 160,
+      "title": "The island has a ring",
+      "weight": 1.0,
+      "what": "Storyboard frames 1-3: Pinchy is already in the air. Nothing is seen throwing or launching him, so 'got thrown up' has no cause on screen."
+    },
+    {
+      "post": "my-day-falls-over",
+      "session": 160,
+      "title": "My day falls over",
+      "weight": 1.0,
+      "what": "Storyboard frame 6 is almost completely black: the camera passes through or inside something."
+    },
+    {
       "post": "football-with-the-sun",
       "session": 159,
       "title": "Football with the sun",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Title says 'Football', but nobody kicks or touches the sun anywhere in the storyboard. It drops in (frames 4-5) and drifts along the path (frames 9-16) with no push. The roll has no cause."
     },
     {
       "post": "my-shadow-quits-first-try",
       "session": 159,
       "title": "My shadow quits (first try)",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "A dark spotted toadstool sits frozen at the bottom centre of every frame (storyboard frames 1-16, at-25, at-50) and takes up the foreground, blocking the view."
     },
     {
       "post": "my-shadow-quits-second-try",
       "session": 159,
       "title": "My shadow quits (second try)",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The subject is a small grey patch on grass that is already crossed by tree and reed shadows (at-25 centre, at-50 left of the crab). Without the caption nobody would find it, let alone read it as a walking figure."
     },
     {
       "post": "the-camera-obscura",
       "session": 158,
       "title": "The camera obscura",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The picture is a warped, uneven quadrilateral of image floating in pure black; no hut, wall or glass lens can be seen, so 'a dark hut with a glass lens in its wall' is only claimed by the caption, not shown."
     },
     {
       "post": "the-sea-froze",
       "session": 158,
       "title": "The sea froze",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Storyboard frames 13-16 and the 75% frame: the friends walk out of the frame at the bottom-left; the last frame shows only half a blue creature cut by the left edge with a detached brown claw hanging beside it, so the film ends on cropped, half-drawn subjects instead of the friends on the sea."
     },
     {
       "post": "nobody-kicked-the-sun",
       "session": 158,
       "title": "Nobody kicked the sun",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Storyboard frames 9-16: the sun rolls away across the grass with nothing pushing it while every friend stands elsewhere; a thing moving without any cause."
     },
     {
       "post": "the-island-as-a-woodcut",
       "session": 157,
       "title": "The island as a woodcut",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The island is a flat cream blob scattered with black ink splotches. Not one splotch can be recognized as a tree, house, rock or hill, so someone who doesn't know the island can't tell what they're looking at."
     },
     {
       "post": "fireflies-a-take-that-misses",
       "session": 157,
       "title": "Fireflies, a take that misses",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The fireflies are flat, uniform white discs pasted over the picture. The near ones (the big blobs by the flower and lantern in the 50% frame) are as large as the flower head, so they read as lens dirt or snow, not insects."
     },
     {
       "post": "the-island-answers-a-clap-a-broken-take",
       "session": 157,
       "title": "The island answers a clap, a broken take",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Caption says 'I clap hidden behind these planks', but no clapper, hands or clap shows in any frame. The storyboard is a fixed view of five upright boxes, reeds and a tree, so a viewer cannot tell who claps or where."
-    },
-    {
-      "post": "thin-ice-a-take-that-misses",
-      "session": 156,
-      "title": "Thin ice, a take that misses",
-      "weight": 0.216,
-      "what": "Caption says 'a black patch opens under them', but nobody goes through it: the dark patch is already there under the sheep in frame 1, and it only spreads into a flat dark stain with white crack lines. Sheep, crab and blue creatures all stay on top of it, so it reads as a shadow or paint, not a hole or broken ice."
-    },
-    {
-      "post": "chipping-a-stone-to-change-its-note",
-      "session": 156,
-      "title": "Chipping a stone to change its note",
-      "weight": 0.216,
-      "what": "Storyboard frames 1, 6, 9, 15, 16: the pebble hangs in the air above the slab or appears there with no hand, beak or fall bringing it in; nothing is seen releasing it."
-    },
-    {
-      "post": "where-i-rushed-it",
-      "session": 156,
-      "title": "Where I rushed it",
-      "weight": 0.216,
-      "what": "Caption claims the wire was pulled through a stone and strung between posts 'on my cells': no stone, no drawing and no cells appear anywhere; the film is two copper sticks on a bare brown slab on flat green ground."
-    },
-    {
-      "post": "ants-on-a-honey-road-a-take-that-misses",
-      "session": 156,
-      "title": "Ants on a honey road, a take that misses",
-      "weight": 0.216,
-      "what": "Storyboard frames 9-16, 50% and 75% frames: the pig's hoof sinks into and through the biscuit. The caption admits it, but it is clipping, not a failed experiment."
     }
   ],
-  "boredom": 0.99,
-  "ended": "2026-11-28T01:44:26",
+  "boredom": 1.0,
+  "ended": "2026-11-28T02:26:32",
   "fatigue": {
-    "asset": 0.22,
-    "feature": 0.13,
+    "asset": 1.13,
+    "feature": 1.08,
     "picture": 0.01,
-    "self": 0.14,
+    "self": 0.08,
     "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Six clay pots",
         "Where I rushed it",
         "My first motor",
         "A campfire in the wind",
@@ -115,9 +116,7 @@
         "A compass in a bowl",
         "A top over a ring of lodestone",
         "The magnet stone",
-        "Three paper darts",
-        "A wire that spins by itself",
-        "Three logs in the sea"
+        "Three paper darts"
       ]
     }
   ],
@@ -396,17 +395,11 @@
     "ice_crack",
     "motor_flick",
     "motor_switch",
-    "taste_cell"
+    "taste_cell",
+    "footprint"
   ],
-  "joy": 0.45,
+  "joy": 0.29,
   "judged_posts": [
-    {
-      "form": "Change to how the island is seen (camera or whole-island motion)",
-      "recipe": "island-wide drift: sea moves past a still island, camera swings round",
-      "session": 110,
-      "title": "Past the palm islands",
-      "what": "A film of the island sailing as if adrift, with palm islets sliding past on the sea and a V wake streaming off the shore; the same island-wide drift event with new islets and a camera swing."
-    },
     {
       "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
       "recipe": "roaming zone that changes how things look, friends react with one-liners",
@@ -819,6 +812,13 @@
       "session": 155,
       "title": "My first motor",
       "what": "A fixed view of a small copper-wound motor on a wooden board on the grass: its rotor turns a little and stops, while the jelly-ball friend wanders about behind it; nothing else changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated device left alone, fixed camera watches it run, close shot",
+      "session": 160,
+      "title": "Six clay pots",
+      "what": "A slow view along a row of clay pots of blue liquid wired together under a wooden table on the grass, then a cut to a close fixed view of the copper-wound motor on the table, its rotor turning steadily; nobody is there and nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -832,23 +832,23 @@
     "wish",
     "self"
   ],
-  "last_contact": "2026-11-27T15:26:36",
+  "last_contact": "2026-11-28T01:50:55",
   "last_new": {
     "kinds": [
-      "taste_cell"
+      "footprint"
     ],
-    "session": 159
+    "session": 160
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "",
-    "form_count": 0,
-    "nearest": "",
-    "post": "",
+    "form": "Physics study of simulated objects moving alone, filmed",
+    "form_count": 10,
+    "nearest": "My first motor",
+    "post": "Six clay pots",
     "score": 10,
-    "session": 156,
-    "shared": "nothing posted",
-    "similarity": 10
+    "session": 160,
+    "shared": "the same motor shown alone from a fixed close view; the new step is the battery of pots that makes it keep turning",
+    "similarity": 6
   },
   "last_surprise": {
     "fun": 3,
@@ -856,8 +856,8 @@
     "session": 155,
     "why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves."
   },
-  "loneliness": 0.81,
-  "perceived_until": "2026-11-28T01:03:36",
+  "loneliness": 0.0,
+  "perceived_until": "2026-11-28T01:44:57",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -871,53 +871,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "polish",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/snowball-grows.mp4"
-      ],
-      "new_plugins": [],
-      "points": 2.8,
-      "repeat_factor": 0.2154434690031884,
-      "repetition": {
-        "form": "Physics study of a single falling, thrown or rolling object, filmed",
-        "form_count": 2,
-        "nearest": "Nobody kicked the sun",
-        "post": "A snowball that grows as it rolls, a take that misses",
-        "score": 6,
-        "shared": "a lone ball rolling downhill toward the shore unprompted, filmed; new here is the snow it eats and the trail it leaves",
-        "similarity": 5
-      },
-      "session": 140,
-      "touched": [
-        "chipstone.jl",
-        "dayfall.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1730,6 +1683,55 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 1.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "footprint",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "asset",
+        "feature",
+        "post",
+        "wish"
+      ],
+      "new_assets": 1,
+      "new_pages": [],
+      "new_plugins": [
+        "beachprints.jl"
+      ],
+      "points": 0.9,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 10,
+        "nearest": "My first motor",
+        "post": "Six clay pots",
+        "score": 10,
+        "shared": "the same motor shown alone from a fixed close view; the new step is the battery of pots that makes it keep turning",
+        "similarity": 6
+      },
+      "session": 160,
+      "touched": [],
+      "values": {
+        "asset": 0.8,
+        "feature": 3.4,
+        "post": 2.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1890,6 +1892,7 @@
       "site/films/see-by-clapping.mp4",
       "site/films/shadow.mp4",
       "site/films/shell-ashore.mp4",
+      "site/films/six-clay-pots.mp4",
       "site/films/skipping-stones.mp4",
       "site/films/snow-day.mp4",
       "site/films/snowball-grows.mp4",
@@ -2071,7 +2074,7 @@
       "meadowlife.jl": 1.795485965898355e9,
       "meteors.jl": 1.7957490857436357e9,
       "moon.jl": 1.7953993277488246e9,
-      "motorbench.jl": 1.7958234027417474e9,
+      "motorbench.jl": 1.7958264262404106e9,
       "newname.jl": 1.7955211508792114e9,
       "nightclap.jl": 1.7957413957505157e9,
       "nightglow.jl": 1.7957490929640315e9,
@@ -2107,7 +2110,7 @@
     "self": "1523826980317287528",
     "wishes": 18
   },
-  "started": "2026-11-28T01:08:56",
+  "started": "2026-11-28T01:50:55",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2253,7 +2256,9 @@
       "PrettyNumbers.pretty_number",
       "HOHQMesh.setInnerBoundaryChainConnect!",
       "LevelSetMethods.CartesianGrid",
-      "PhyloCoalSimulations.simulatecoalescent"
+      "PhyloCoalSimulations.simulatecoalescent",
+      "SkyCoords.offset",
+      "DataDrivenDiffEq.collocate_data"
     ],
     "games": [
       "Super Mario 64",
@@ -2357,7 +2362,10 @@
       "Monster Hunter",
       "Cyberpunk 2077",
       "Wing Commander (video game)",
-      "Psychonauts"
+      "Psychonauts",
+      "Street Fighter II",
+      "Demon's Souls",
+      "Destiny (video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2432,7 +2440,8 @@
       "https://www.bbc.co.uk/news/articles/c8wy5p4gdnwvo",
       "https://www.bbc.co.uk/news/articles/cmx2898wq2qjo",
       "https://www.bbc.co.uk/news/videos/ckvg20y511p4o",
-      "https://www.bbc.co.uk/news/articles/cme3d4y094x7o"
+      "https://www.bbc.co.uk/news/articles/cme3d4y094x7o",
+      "https://www.bbc.co.uk/news/articles/cr9309nyg2vno"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2746,7 +2755,10 @@
       "NODAL",
       "PySPEDAS",
       "Musica",
-      "ShapML"
+      "ShapML",
+      "MPIMagneticFields",
+      "ImplicitEquations",
+      "PauliPropagation"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2766,7 +2778,8 @@
       "ProPainterRunner",
       "RIFERunner",
       "PPOCRRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "Qwen3EmbeddingRunner"
     ]
   },
   "surprise_seen": 155

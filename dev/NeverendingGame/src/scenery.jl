@@ -273,8 +273,11 @@ const DRAWN_T = WeakKeyDict{World,Float64}()   # s132: Float64, a Float32 sim ti
 steps 1/32 s, so every swing, bob and fidget moved in uneven 1-or-2-quantum steps each frame (live_motion 'judder');
 at 4096 s it is exact to 0.5 ms. The cost: every periodic motion jumps once per 68 minutes of island time."
 anim_time(w::World) = Float32(mod(w.t, 4096.0))
-const DRAWN_TURN = 12.0f0
-const DRAWN_FREE = 0.25f0             # rad per frame that pass straight through (a walk turns at most 5 rad/s)
+# s160: 12 rad/s (0.4 rad a frame at 30 fps) swung Lumi's wings, ~0.6 m out from its axis, 0.24 m in one frame and
+# at 7 m/s whenever it turned (host motion 'snapping' + 'too fast', both wings at once, body still); 4.5 rad/s turns
+# an about-face in 0.7 s, like a walking bird, and keeps a wing tip under ~0.1 m a frame
+const DRAWN_TURN = 4.5f0
+const DRAWN_FREE = 0.08f0             # rad per frame that pass straight through
 const DRAWN_ON = Ref(true)            # false: drawn = real heading (to compare)
 
 "The heading `c` is drawn with (see `DRAWN_YAW`)."

@@ -1,0 +1,15 @@
+{
+  "created": "2026-11-28T02:12:57.641",
+  "id": "20261128-021257-634-clip",
+  "kind": "clip",
+  "params": {
+    "call": "sandtest",
+    "kwargs": {
+      "samples": 32
+    },
+    "max_minutes": 20,
+    "path": "/sim/Programmieren/SimGame/world/media/s160/sandtest-a.mp4",
+    "script": "movies/sandtest.jl"
+  },
+  "status": "queued"
+}

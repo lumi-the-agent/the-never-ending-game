@@ -1,0 +1,39 @@
+{"posts": [
+  {"post": "six-clay-pots",
+   "verdict": "redo",
+   "problems": [
+     "Storyboard frames 1-8 and the 25% frame: the motor the caption says the pots run is above the top of the picture. Only a dark sliver of it shows on the table top, so the first half never shows what the pots power.",
+     "Storyboard frames 9-16 and the 50% frame: the 'new oak table' under the motor has a rippled, sandy surface. It reads as a dune, not as oak planks, and a large black slab beside the magnet has no clear purpose.",
+     "No frame shows the wire from the pots reaching the motor. The film cuts from pots to motor, so 'six of them run my motor' is never shown as one connected thing.",
+     "Storyboard frames 9-16: the motor barely changes from frame to frame. Nothing clearly shows it turning, so the motor never visibly 'runs'.",
+     "25% frame: the pots look like wooden barrels or mugs more than clay. The iron bars are thin black sticks that are hard to make out."
+   ],
+   "critique": "The pots and the motor sit in two separate shots, and neither ties them together: the motor is cut off in the first shot and hardly seems to move in the second. The 'oak' table looks like rippled sand."},
+  {"post": "lit-from-below",
+   "verdict": "redo",
+   "problems": [
+     "The picture is almost entirely black. Shapes in the lower half and the ground can hardly be made out, so a viewer sees a dark smear, not a scene.",
+     "Caption 'a faint glow on the tree bellies': the light falls on the tops and upper sides of the tree crowns, which are yellow-green. The undersides are the darkest part, so the picture shows the opposite of the caption.",
+     "The one bright spot is a small yellow light left of centre. Nothing shows where it comes from or why it is there, and there is no sign of the sun or the sea from the caption."
+   ],
+   "critique": "The picture is too dark to read, and what light there is hits the tops of the trees, not the 'bellies' the caption describes."},
+  {"post": "the-island-has-a-ring",
+   "verdict": "redo",
+   "problems": [
+     "Storyboard frames 1-3: Pinchy is already in the air. Nothing is seen throwing or launching him, so 'got thrown up' has no cause on screen.",
+     "Storyboard frames 4-6 and the 25% frame: the orange 'pumpkin' and the blue and red balls are plain smooth spheres. They come in from off screen, with nothing shown throwing them.",
+     "Storyboard frames 7-12: a large white dome blocks the bottom of the frame in the far view, an unexplained object right in front of the camera.",
+     "The 75% frame and frames 7-16: the 'ring of everything' is made only of coloured balls. No recognisable things (a crab, tools, fruit) can be told apart, and it starts as a stream that only closes into a loop near the end."
+   ],
+   "critique": "The launch that starts it all is never shown, and the ring is a cloud of featureless balls, not 'everything that went up'. A white blob covers the bottom of the frame for half the film."},
+  {"post": "my-day-falls-over",
+   "verdict": "redo",
+   "problems": [
+     "Storyboard frame 6 is almost completely black: the camera passes through or inside something.",
+     "Storyboard frames 1-5, 13 and the 25% frame: several flat white discs float in the sky and on the lower left of the picture. Two 'suns' sit one above the other at the right edge.",
+     "Storyboard frames 11-12 and the 75% frame: a big green bush and the purple tiles fill the frame. The 'coils up behind a bush' part is hidden by the bush itself while it happens.",
+     "Caption 'evening meadow': most frames show bright daytime light with a pale sky. Only the last frames look like evening.",
+     "75% frame: purple tiles stand among fallen red tiles and animals. The chain looks broken or stalled there, with no clear contact carrying it on."
+   ],
+   "critique": "The falling line is fun to follow along the shore, but a black frame, floating white discs and a bush that hides the coil break the film right where it matters."}
+]}

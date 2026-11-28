@@ -42,3 +42,9 @@ Next: (s159: the bench stands on an oak table and runs on six clay-pot cells, pu
   reads, stones dark rock, copper dull red-brown (no highlight in this light); RASTER copper reads pale beige-pink, not
   orange (the metallic Principled's raster colour): #743's 'raster shows orange copper' still fails. Try a lamp near
   the bench for highlights and check what colour RayMakie's raster takes from a metallic Principled.
+
+## s160: six-clay-pots marked miss
+- Critic: pots and motor never share a frame, no cord seen reaching the motor, the motor's turn too small to see,
+  the oak table's grain (motorlook.jl mo_wood) reads as rippled sand, pots look like barrels, iron bars too thin.
+- Retake into the same post (films/six-clay-pots.mp4 via a media/ path, never rendering into site/films): one moving
+  shot from the pots along a cord up to the motor, a marker on the rotor so the turn reads, a real oak texture.

@@ -1312,3 +1312,44 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   the `10 rad` branch, so any heading change passed in ONE frame (host motion: Pickles 131 deg in one frame). Now dt <= 0
   gives DRAWN_FREE (0.25 rad). Sandbox live_motion after: 10 of 10 moving well (one 3 s sample; vibration items
   (Sir Sniffsalot 10/s, Hopscotch 9/s) were not seen in that sample either, so not proven fixed). Published.
+- s160 (free part, idea only): the museum's bone SPINDLE WHORL (700-900 AD) is a flywheel. A fired-clay whorl on the
+  drum motor's axle (~4 rev/s at 24 rad/s) would (1) smooth the 3-segment commutator ripple, (2) keep turning after
+  the switch is pulled (a visible coast-down), (3) twist grass/palm fibre into cord: twist per metre = revs / metres
+  drawn, so at 4 rev/s and 10 cm/s drawn, 40 turns/m. That cord could BE the winch rope for the friends' berry basket:
+  the motor spins the thread that later hauls the basket. Not started; the cart road comes first.
+## Sand that keeps what pressed it (s160, physics/sandfield.jl, module SandField)
+- Field(nx, ny, dx; depth, repose = 33, e = 0.12, backend) : h (surface), bed, comp (compaction taken), under (body
+  underside, Inf = free). press!(f, under; bulb) : covered cells drop to the underside; up to e*bulb per cell compacts
+  (loose 1500 -> dense 1700 kg/m3 in a pressure bulb one footprint wide), ONCE (comp remembers); the rest goes to the
+  nearest free cell along 8 rays (ties share), gathered without atomics. slump!(f, n): pairwise flow k*max(0, dh -
+  tan(repose) L), k = 1/16, limited by depth/8; no flow into or out of covered cells. Sand volume lost == compaction
+  (checked to Float32 rounding). After the body leaves: fill!(f.under, Inf32) then slump.
+- plank_rest(f, href, P, loads; soil, bekker = WheelSand.bekker): quasi-static heave/pitch/roll, Bekker per cell with
+  plate width bp, sand cannot pull. 200 slump sweeps leave max slope ~33-36 deg (converges slowly: more sweeps or a
+  bigger k with a stability check).
+- Works on Mantle.Device() unchanged (S2.Field(...; backend = Mantle.Device()); `under` must be a device array:
+  KA.allocate(dev, Float32, size) + copyto!). First call compiles ~8 s, then 3 ms for 400x120.
+- Re-including the file makes a NEW module: `const SF = SandField` keeps the old one (UndefVarError for new functions).
+- s160 lead for Lumi's wing snaps (host motion: wing_l 0.24 m in one frame, 7.2 m/s): herd.jl pose_herd blends 0.22 s
+  from the LAST ACTION CODE, not from the pose actually drawn. If the action changes again inside a blend (proud ->
+  idle -> talk within 0.22 s) the new blend starts from pose(idle), so the half-blended wing jumps. Fix idea: on a
+  switch, snapshot the drawn part transforms relative to the creature (pos - p, rot * inv(yaw)) and blend from the
+  snapshot. Not tried yet; test with live_motion() before publishing (engine edit hits both games).
+  Checked s160 (late): live_motion in the sandbox flagged BOTH wings (0.23/0.26 m in one frame, 7-7.7 m/s) while
+  Lumi SAT sunbathing (POSE_MEMORY code steady, no switch inside a blend), so neither the re-triggered blend nor the
+  :wave speed (tried 0.25 sin 6t, no change, reverted) is it. In :sit, Wing gives up = max(0 - 0.06 if mood < -0.1,
+  -0.06): look next at what moves both wings together while sitting (sunbathe plugin? body_pose(:sit)? scale?), by
+  logging the wing part transforms frame by frame (pose_herd output) instead of guessing.
+  SOLVED s160: it was the DRAWN HEADING (scenery.jl turn_drawn!): max(0.25 rad, 12 rad/s * dt) a frame let a turn
+  fling parts far off the axis (Lumi's wings ~0.6 m) 0.24 m a frame. DRAWN_TURN 4.5 rad/s, DRAWN_FREE 0.08: Lumi clean
+  in 3 of 3 live_motion samples, published. LESSON: when every part far from the axis snaps together while the body
+  stays put, it is the heading, not the part's own animation. Next: Truffle's tail (0.39 m one frame, 11.6 m/s).
+- s160 plugins/beachprints.jl (published): 150x150 SandField at 2 cm on the dune (first BEACH dunegrass + 1.6 m x),
+  mesh = terrain + 12 mm loose layer + h, fading to 1 cm under the terrain over 15 cm at the edge (no seam seen in
+  raster). A creature inside presses an ellipse 13x9 cm every 0.3 m, alternating sides, sinkage = Bekker plate for
+  BP_MASS 150 kg on one foot (~43 mm), then 6 frames of 6 slump sweeps + mesh rebuild. 30 fps held in the sandbox.
+  A plugin system needs `register!(X())` at the end of its file (forgot it: loaded with no error and never ran).
+  s160 later: beachprints emits :footprint (who, depth_mm; the first print of each crossing) and Lumi, when not played
+  and not busy, walks into the patch every 180 s (goal :prints) and says "Squish!". Sandbox events: Pinchy and Lumi
+  footprints at 02:25. LESSON: the host's 'new on the island' counts NEW EVENT KINDS in the human's game; a plugin
+  that only draws is invisible to it. Emit an event for the thing that happens.

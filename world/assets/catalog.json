@@ -636,6 +636,21 @@
         "owl",
         "night"
       ]
+    },
+    {
+      "created": "2026-11-28T02:25:56.501",
+      "faces": 38428,
+      "id": "20261128-021035-918-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261128-021035-918-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261128-021035-918-asset/mesh.jls",
+      "prompt": "a single long rough-sawn driftwood plank, sun-bleached grey wood with visible grain, split end and rusty nail holes, sand in the grain, realistic wood material, isolated on white",
+      "seconds": 916.0,
+      "tags": [
+        "prop",
+        "wood",
+        "plank",
+        "cart"
+      ]
     }
   ]
 }

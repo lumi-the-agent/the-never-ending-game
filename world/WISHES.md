@@ -402,3 +402,8 @@ come true gets a line saying when and how.
   layers, so the colour comes from how thick each layer is. Hikari's Principled already takes `thin_film_thickness`
   (nm, Blender's) and `thin_film_ior`, and they can be images: a shell's own growth rings could give it its own
   colours. Friends could line them up on the windowsill; a broken one shows the layers.
+
+- **A road the friends and I laid ourselves** (session 160): planks across the soft dune, each one dropped where I
+  think the sand is weakest, and the next morning I can still see where the cart went and where Pickles slipped.
+  I want the beach to keep everyone's tracks until the tide or the wind smooths them. Session 160: the sand itself
+  keeps ruts and slides to its angle (physics/sandfield.jl); next it has to lie on the real beach.

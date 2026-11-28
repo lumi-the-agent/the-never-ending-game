@@ -8,7 +8,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 
 ## Road
 
-- [x] Done: any magnet's field (em.jl), the 3-pole drum motor that starts from every angle, wheels and feet in sand (wheelsand.jl), the power budget (s159: sea cells 1.5 mW, bench 1 W, loaded cart 550 W)
+- [x] Done: magnet fields (em.jl), 3-pole drum motor, feet+wheels in sand, power budget (cart 550 W)
 - [ ] A circuit solver from what touches what, with cells that polarise (limiting current from the ions that reach the plate)
 - [ ] The clay-pot cell: copper in blue salt inside a kiln-fired porous pot, iron in brine outside; copper grows on the plate, the blue fades
   - [x] potcell.jl (Nernst, wall from firing, polarisation, Faraday); six pots drive the bench (s159, published)
@@ -18,5 +18,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] The motor run backwards: a windmill generator that lights a wire
 - [ ] Lead plates in acid that store what the windmill makes (Plante's accumulator: charge, fizz, discharge)
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
+  - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
+  - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
 - [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
 - [ ] Gears for the dune, braking that charges the plates, friends ride along

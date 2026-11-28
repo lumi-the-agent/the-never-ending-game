@@ -10555,6 +10555,48 @@
       "status": "doing",
       "title": "The friends are the battery: friends carry clay-pot cells, cords clip by contact, the motor winds their berry basket",
       "updated": "2026-11-28T01:27:10.231"
+    },
+    {
+      "created": "2026-11-28T02:10:01.789",
+      "detail": "12 planks and a dune: lay them where the sand is softest, three friends push the empty cart up; ruts where you left gaps, plank ends sink and see-saw as a wheel crosses. Critic's risk: planks must rock as rigid bodies, the dune must change day to day. Done when: in the sandbox, a traced clip on the real dune shows a wheel crossing a plank that tips and beds in, ruts and berms staying behind, at >= 30 fps; published.",
+      "est_minutes": 240.0,
+      "id": 755,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll). Wheel rut 22 mm + 11 mm berms; 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank tips 1.7 deg at its quarter, kicks up 26 deg 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png. Next: dune plugin with a traced sand mesh, planks in Jump in.\ns160: physics/sandfield.jl (GPU sand field: compaction once per cell, displaced sand to berms, mass-exact repose slumping; plank_rest quasi-static heave/pitch/roll); physics/sandfield_check.jl passes (rut -21.6 mm, berm 10.9 mm, max slope 33.0 deg, sand lost == compacted 482 cm3, plank pitch 1.4 deg toward a quarter load). 1470 N wheel bogs alone on a 5 cm rim but sinks a 1 m plank 8 mm; plank kicks up 26 deg with the load 5 cm from its end. Mantle GPU 3 ms per press + 8 sweeps (400x120). media/s160/rut-hillshade-a.png, plank-bed-hillshade-b.png, sandtest-hillshade-c.png. Look test queued: job 20261128-021257-634-clip -> media/s160/sandtest-a.mp4 (movies/sandtest.jl). Assets queued: plank 20261128-021035-918-asset, board wheel 20261128-021036-051-asset. Not yet in the game: next a dune plugin.\ns160: physics/sandfield.jl + check (rut -21.6 mm, berm 10.9 mm, slope 33.0, sand conserved; plank tips toward the load, kicks up 26 deg 5 cm from its end; a 1470 N wheel bogs alone, a plank holds it at 8 mm). FIRST IN THE GAME: plugins/beachprints.jl published: a 3x3 m sand patch on the dune keeps everyone's footprints (Bekker for 150 kg, rims slump to repose), 30 fps while pressing, raster media/s160/prints-raster-a.png. Queued: look test 20261128-021257-634-clip (media/s160/sandtest-a.mp4), plank + wheel assets. Next: traced look, planks picked up/dropped in Jump in, wheels.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Lay the plank road on sand that really moves (passed ideas s160, projects/cart.md)",
+      "updated": "2026-11-28T02:24:35.511"
+    },
+    {
+      "created": "2026-11-28T02:11:33.141",
+      "detail": "Host motion report s160: Lumi wing_l/wing_r jump 0.24-0.25 m in one frame and swing at 7.2-7.4 m/s; Pickles' tail 0.16 m, Truffle's tail 0.15 m, Cumulus 0.22 m in one frame. Find which pose change (fidget, annoyed mood pose, flap) switches without blending in engine bird.jl. Done when: live_motion() in the sandbox reports no snapping for Lumi over 10 s while it idles, walks and is annoyed.",
+      "est_minutes": 60.0,
+      "id": 756,
+      "kind": "motion",
+      "priority": 1,
+      "result": "s160: cause found: the drawn heading turned up to max(0.25 rad, 12 rad/s * dt) a frame (0.4 rad at 30 fps); Lumi's wings stand ~0.6 m off its axis, so every turn swung them 0.24 m a frame at 7 m/s (both wings at once, body still). Engine scenery.jl DRAWN_TURN 12 -> 4.5 rad/s, DRAWN_FREE 0.25 -> 0.08 rad (an about-face in 0.7 s). Sandbox live_motion after: Lumi not flagged in 3 of 3 samples (9 of 10 moving well in the last; Truffle's tail 0.39 m one-frame snap remains, a different thing). Published (publish id 193515550). A cap can only shrink a heading vibration, never make one.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Lumi's wings snap and whip: 0.24 m in one frame at 1.9 s, 7.2 m/s swings (host motion s160)",
+      "updated": "2026-11-28T02:20:34.917"
+    },
+    {
+      "created": "2026-11-28T02:20:45.920",
+      "detail": "After the drawn-heading fix (s160) Lumi is clean, but sandbox live_motion still flags Truffle's tail (0.39 m in one frame, 11.6 m/s) and the host saw Pickles' tail 0.16 m. Find the tail motion (species.jl tail wag / action switch) that jumps. Done when: three 3 s live_motion samples in the sandbox flag no tail snap.",
+      "est_minutes": 45.0,
+      "id": 757,
+      "kind": "motion",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Truffle's tail flicks 0.39 m in one frame (11.6 m/s), Pickles' tail 0.16 m (live_motion s160)",
+      "updated": "2026-11-28T02:20:45.920"
     }
   ]
 }
