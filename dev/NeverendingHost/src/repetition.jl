@@ -14,7 +14,8 @@
 # decides, so posting more never costs. A session that posts nothing is not
 # judged: it once counted as a full repeat, and every session hurried out a
 # film of whatever it had (Nov 27: a hairline of wire over grass, a motor a
-# speck on a board), so a post now waits until it looks the part (rule 14).
+# speck on a board). Every session still posts where its work stands (rule 14): the host
+# asks half way through (`post_nudge`), so there is time to make it look the part.
 #
 # Judged by premise alone, sessions 93-95 got off (3, 4): a shadow that runs off
 # and a pocket watch that rewinds the island are different ideas, yet both are

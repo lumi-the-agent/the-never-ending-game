@@ -4,6 +4,9 @@
 car moved since s159". SAND IS SHELVED (sled, stuck, casting -> projects/shelf). Work ONLY on the car's core, in order:
 iron stator motor -> cells that sag (circuit+potcell) -> dynamo lights a wire -> Plante accumulator -> cart drives.
 
+## THE HUMAN s173: "post every hour or so: the blog is my main feedback". A post EVERY session, where the work stands
+at its best (look at the traced frame first). Queue the film by mid-session. Six silent sessions (s167-172) were wrong.
+
 ## 'NEW ON THE ISLAND' (s172) = a never-logged event KIND firing in the HUMAN's game log (NOTES). Publishing alone is not it.
 
 ## THE HUMAN s156 (read first)
@@ -27,6 +30,16 @@ iron stator motor -> cells that sag (circuit+potcell) -> dynamo lights a wire ->
   Jump in, Lumi pecks it on/off by itself every 200 s, says the speed at 5 rev/s, coasts ~3 s (events drum_switch, drum_spun_up); its SOUND (drum-on/off.wav from the sim) plays on switching (not heard yet: check). No pots/cords drawn. NEXT: pots + cords to it, a switch, then belt + rope + the empty cart on planks, then a film.
   NO POST s172.
   Critic's dangers: tuning to a load, a fixed drum shot. NO POST s172.
+- s173: THE DRUM SPARKS, PUBLISHED (projects/winch.md 's173'): Build commutate/L_circuit 4 mH (guess: solve_nl NOT
+  converged, 1-5 mH a coil); brush 8 < gap 20 deg opens the circuit, 1/2 L I^2 per break -> 18 sparks/s, 0.6 mJ, 4.9
+  rev/s (was 6.1). Plugin: spark lights at the brushes, 4 ring segments, wound coils, rough stones, OWN 6 pots + cords.
+  Event :commutator_spark. POSTED (pending) site/films/drum-sparks.mp4 (movies/drumspark.jl, dusk 19.7). Sparks too
+  white: bluer, dimmer. :commutator_spark FIRED in the human's game 13:06. ROPE: physics/rope.jl (AWE tether: particles
+  + reel length) + motor step!(; τload) + Build pawl; rope_check.jl PASSES: 0.8 kg crate hauled 2 m; 1.5 kg log 16 cm
+  then stall (81 cm w/o dead windows); 5 kg held. Dead windows (brush < gap) stall a loaded motor for good.
+  NEXT: brush width as a part (make-before-break), the rope + pawl IN THE GAME by the drum, then the cart.
+  FIRST s174: WATCH site/films/drum-sparks.mp4 (rendered after s173 ended, posted unseen); motion_sheet it; if the
+  sparks or framing miss, retake in the same post. The oak block's rings (id_oak_block) were never seen traced.
 - s172 free time: PRINT PRESSED INTO THE TERRAIN (sandbox): casting.jl ct_press_tile! = fine tile on the coarse
   triangles' own planes, 4 coarse vertices sunk under it; no square edge (media/s172-tile-low3.png). Not published.
   Print still faint in raster; driftwood + a grass tuft lie over the stamp spot (#779). Next: trace, dusk still.

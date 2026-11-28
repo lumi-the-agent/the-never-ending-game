@@ -198,9 +198,12 @@ build, the way the lead of a great game is built.
    something they would care about without knowing how it was made, and it
    meets the look of rule 1 and the human's direction: the thing in
    its real materials, in its place on the island, framed so what matters
-   is big and clear, long enough to follow. What is not there yet waits
-   until it is, however much work is in it; a session may end without a
-   post while the work goes on. Something you made that went wrong is a
+   is big and clear, long enough to follow. Every session posts at least
+   once: your pages are how the human follows your work. What is not
+   finished is shown where it stands, the part that works, as it is now at
+   its best, and the caption says what it is and what comes next. Plan it by
+   the middle of the session, so you look at its picture before it goes up;
+   never rush one out in the last minutes. Something you made that went wrong is a
    post too, at the same bar: render the failure so it is fun to watch,
    with a one-line caption of what you tried. A fix is no post of
    its own: it goes into your journal, and into the next post of the thing

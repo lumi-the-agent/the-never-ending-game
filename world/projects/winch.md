@@ -1,6 +1,6 @@
 # The cart's motor on a rope: winch anything up the beach
-Goal: The player stakes the new iron-stator motor in the sand, hooks its rope to anything (a log, a boulder, the empty cart, the cart with friends aboard) and the motor hauls it or stalls by its own solved torque; the player rebuilds it (turns on the iron, how many pots, drum diameter as the gear) until it drags the cart onto the plank track. The motor that wins goes onto the cart unchanged. Fun: a test bench for anything on the island, and the cart's drive designed by hauling real things.
-Next: the winch IN THE GAME: the motor bench rebuilt as the iron drum motor (Motor.iron_drum_bench: real iron drum, two varnished copper coils, 4-segment commutator, oak frame), a pulley + hemp belt to an oak rope drum (ratio and grease as the player's choices), a rope (PrintSim rods) to the empty cart on the planks; it hauls at what physics/drummotor.jl says (dry 6:1 4.4 cm/s, greased 4:1 9.5 cm/s); a traced film following the rope.
+Goal: (passed s173, round 2: surprise 6 fun 8 real 7 toward 9) The player hooks the drum motor's rope to anything on the island (a log, a crate, the empty cart, a friend on the cart) and picks a pulley; the motor hauls it or stalls by what it weighs and how it rolls, and the stall shows: rope taut, drum stopped, the brushes sparking bright on the stall current. Nothing quoted or fitted: rope, cart mass (mesh volume x density) and rolling by contact, torque from the circuit each step.
+Next: physics/rope.jl, the TETHER the airborne-wind people use (KiteModels.jl / SymbolicAWEModels.jl: point masses joined by spring-dampers, hemp's real E*A and damping; WinchModels.jl: motor + gearbox + drum, reel-in = the unstretched length shrinks by drum angle x radius) with ground/plank contact for its particles; check: a block on sand with Coulomb friction hauled by the drum motor's circuit (motor.jl step! with a load torque = rope tension x drum radius / ratio), stall when tension x r > stall torque. THEN the cart (its mass from the mesh) on the planks, the rope drawn as a tube through its particles and coiling on the oak drum, a pulley choice in Jump in; film. (s173 done: the drum sparks, own pots, cords, windings, rough stones; the spark film site/films/drum-sparks.mp4.)
 
 Passed s172 (round 3 of 3, the critic's pick of a non-pass: surprise 6 fun 7 real 6 toward 8). The human s172: "back to
 kindergarten times? ... nothing of the electric car itself moved since s159". This project IS the car's motor.
@@ -71,3 +71,58 @@ Critic's dangers: (1) softiron saturation and the rope tuned until the loaded ca
   from Motor.step! at 22 kHz: a click at each commutator handover (4 a turn) as loud as the current it breaks, the
   torque ripple's hum (12 harmonics of 4 x rev/s), brush hiss with speed. Played in every open page on switching
   (irondrum.jl id_sound!, via the voice plugin's sessions). Not heard by me: no page open in the sandbox; check in a browser.
+
+## s173 free time: DOES THE DRUM MOTOR SPARK BLUE IN THE DARK? (rough, honest)
+- motor.jl's drum Build records NO sparks: the drum path treats the circuit as always closed (the 2D table holds the
+  commutation). But the Build's own geometry is brush_w 8 deg < gap 20 deg (iron_drum_bench keeps the defaults):
+  BREAK-BEFORE-MAKE, the brush leaves a segment with the full ~0.64 A running. The table and the parts disagree.
+- Coil inductance with the iron drum (Motor2D, magnet2d env, flux from A_x at the side centres, N 80, 9 cm):
+  air core 0.75 mH; linear iron 64 mH (mu_r 300) to 422 mH (2000), scaling with mu_r = flux closing round each slot
+  through the 2 mm iron bridge, which saturates at a few A-turns. Saturating solve with the stones on, -26..+26 A-turns:
+  ~3 mH large-signal, BUT lambda(NI) came out non-monotone (Picard 16 passes not converged): treat 1-5 mH as the range.
+  The drum is SOLID iron: skin depth ~0.7 mm at the commutation time scale (~8 ms) -> eddies lower L further.
+- So per break ~1/2 L I^2 = 0.2-1 mJ (0.6 at 3 mH), ~4 breaks a rev x 6 rev/s. 0.64 A is above copper's minimum arc
+  current (~0.43 A, min arc voltage ~13 V), and a micrometre gap opening at 0.7 m/s sees L dI/dt >> 330 V (Paschen): a
+  real small arc, visible in the dark (ESD sparks of 10 uJ show). Colour: air N2 lines 337-400 nm = violet-blue;
+  copper vapour (an arc above min current) adds green 510-521 nm. On pots: a faint blue-violet/green flicker at the
+  brushes, only in real dark. On the accumulator (amps): bright, eroding.
+- TO DO if it goes in: Build drum path logs a spark per brush break (gap > brush_w) and drops the drive for those
+  12 deg of each 90 (or widen brushes > gap: then the shorted coil decays with tau = L/R ~3 ms over the bridge time and
+  sparks smaller). Converge solve_nl (more passes, smaller relax) before trusting L.
+
+- s173 IN THE GAME (published): Motor.Build commutate = true, L_circuit = 4e-3 (iron_drum_bench): the circuit opens
+  for 12 deg of each 90 (drum_open), 1/2 L I^2 logged per break: 18 sparks/s at 4.9 rev/s free, 0.62 mJ mean, 1.4 at
+  start. plugins/irondrum.jl: 4 copper segments with 20 deg gaps on an oak hub, a spark light (Hikari.Emission
+  strength 60, r 2.2 mm) at each brush's trailing edge in every frame with a break, sized by sqrt(E / 0.6 mJ); event
+  kind :commutator_spark (once per run). Coils drawn as 4 x 3 turns of 1 mm wire; the stones are Motor.rough_stone
+  with mo_stone; six pots of its own on the sand 0.4 m south + cords to the brushes. drum_spun_up now at > 4.5 rev/s.
+  Traced at 19:45 (media/s173-spark-traced.png): both brushes flash and light the ring orange. Film:
+  site/films/drum-sparks.mp4 (movies/drumspark.jl). Sparks are white-orange on camera, not violet: emission
+  (0.62,0.74,1) at 60 saturates; try ~20 and bluer.
+
+- s173 PASSED (critic round 2) also 'Set the brushes for the load' (surprise 8 fun 7 real 7 toward 8): per-coil
+  commutation with L(θ, I1, I2) from saturating solves over angle AND both currents (armature reaction from the solve),
+  brush contact resistance from patch overlap, Lumi's hand turns the rocker in Jump in; needs THIS winch's real load
+  first (todo #785). Critic's warnings for the winch: a rod chain wrapped round a drum under IPC is where it breaks or
+  gets swapped for a spring -> use the tether + reel-length model (above), honest and the field's own method; a cart
+  creeping on planks is slow to watch: film the stall and the choice (pulley), not the creep.
+- LOOKED (rule 6, s173): no rope/rod type in PrintSim (sheets, affine bodies, FE solids, joints, steppers). RomeoDB:
+  KiteModels (tether particles + reel-out), SymbolicAWEModels (pulley_rope_mass, Pulley), WinchModels (motor/gearbox/
+  drum, TorqueControlledMachine), WinchControllers. Their tethers are tied to kite models; the equations are a few
+  lines, so rope.jl writes the same model for our drum (cite them), WinchModels for the drum/gear inertia if it fits.
+- s173 FIRST HAUL (physics/rope.jl, module Rope: tether particles + reel length, Coulomb ground friction; motor.jl
+  step!(...; τload) = rope tension x drum r / ratio; drum r 3 cm, 6:1, greased bearing, 12 segments of hemp EA 25 kN):
+  a 1.5 kg log on sand (needs 7.36 N) moves 16 cm, then STALLS FOR GOOD at T 7.3 N; a 5 kg crate moves 2.4 cm and the
+  taut rope then drives the drum BACKWARDS (-0.8 rev/s). Both from the s173 break-before-make brushes: 12 deg of every
+  90 is a DEAD WINDOW (circuit open, no torque); a loaded motor that stops in one never restarts, and with no torque the
+  rope's stretch unwinds the drum. Real winches have a PAWL (ratchet) and real motors brushes WIDER than the gaps
+  (make-before-break, the brushes project). Those are the player's first two choices. Next: a pawl on the rope drum,
+  brush width as a Build part (wide = no dead window, the shorted coil's L/R decides the spark), then the cart.
+  rope.jl now SVector-based: 3 x 15 s hauls in 0.17 s (~0.13 ms a frame), game-ready; needs the GAME env (StaticArrays).
+- s173 WITH A PAWL (Build pawl = true: the shaft turns forward only) and a stable rope (substep follows the segment's
+  omega = sqrt(EA/lin_mass)/L0; NaN before when the rope reeled short), 15 s, r 3 cm, 6:1, greased: 0.8 kg crate on
+  sand HAULED 2.06 m at 5.1 rev/s (T 4 N); 1.5 kg log (needs 7.36 N) jerks 16 cm on the SNATCH (slack rope snaps taut:
+  Tmax 18.5 N = 2.5x steady) then stalls, held 7.2 N; the same log with NO dead windows (commutate = false, i.e. what
+  make-before-break brushes would give) moves 81 cm, still 1.5 rev/s; 5 kg crate 1.9 cm, held at 16 N by the pawl.
+  Six pots are AT THE EDGE for a 1.5 kg log on sand: brush width decides it. The snatch is worth showing (rope jumps).
+  Test code: the haul2 function in this note's session (motor.jl step!(st, b, dt; τload) + Rope.step!(r, load, dt; reel)).

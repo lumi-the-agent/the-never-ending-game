@@ -1,14 +1,14 @@
 {
   "annoyance": 0.0,
   "annoyed": [],
-  "boredom": 0.86,
-  "ended": "2026-11-28T12:29:14",
+  "boredom": 0.85,
+  "ended": "2026-11-28T13:26:55",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.38,
+    "feature": 0.83,
     "picture": 0.01,
     "self": 0.01,
-    "sound": 1.01
+    "sound": 0.61
   },
   "forms": [
     {
@@ -314,9 +314,10 @@
     "top_flip",
     "top_spin",
     "drum_spun_up",
-    "drum_switch"
+    "drum_switch",
+    "commutator_spark"
   ],
-  "joy": 0.81,
+  "joy": 0.87,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -750,13 +751,12 @@
     "wish",
     "self"
   ],
-  "last_contact": "2026-11-28T11:04:06",
+  "last_contact": "2026-11-28T12:49:12",
   "last_new": {
     "kinds": [
-      "drum_spun_up",
-      "drum_switch"
+      "commutator_spark"
     ],
-    "session": 172
+    "session": 173
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
@@ -775,8 +775,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.07,
-  "perceived_until": "2026-11-28T11:43:06",
+  "loneliness": 0.0,
+  "perceived_until": "2026-11-28T12:43:31",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -790,48 +790,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/campfire-in-the-wind-2.mp4"
-      ],
-      "new_plugins": [],
-      "points": 0.7,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 9,
-        "nearest": "Three logs in the sea",
-        "post": "A campfire in the wind",
-        "score": 10,
-        "shared": "fixed camera watching a row of simulated objects meet different fates alone; burning is a new mechanism",
-        "similarity": 5
-      },
-      "session": 153,
-      "touched": [
-        "campfire.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1460,6 +1418,43 @@
         "sound": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "commutator_spark",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/drum-sparks.mp4"
+      ],
+      "new_plugins": [],
+      "points": 7.0,
+      "session": 173,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1726,6 +1721,8 @@
       "site/voice/hello.ogg",
       "site/voice/my-new-moves.mp3",
       "site/voice/my-new-moves.ogg",
+      "site/voice/game/drum-off.wav",
+      "site/voice/game/drum-on.wav",
       "site/voice/game/haha.mp3",
       "site/voice/game/hello.mp3",
       "site/voice/game/hm.mp3",
@@ -1768,7 +1765,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
-      "casting.jl": 1.795861895322412e9,
+      "casting.jl": 1.7958634555316293e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
       "compassbowl.jl": 1.7957915761567702e9,
@@ -1791,6 +1788,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
+      "irondrum.jl": 1.7958652601688304e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1844,7 +1842,7 @@
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T11:52:36",
+  "started": "2026-11-28T12:49:12",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2016,7 +2014,9 @@
       "HerbCore.have_same_shape",
       "ImageSegmentation.fast_scanning",
       "CVortex.particle_pedrizzetti_relaxation",
-      "PhyloNetworks.vcv"
+      "PhyloNetworks.vcv",
+      "MESTI.mesti_build_channels",
+      "FITSIO.copy_section"
     ],
     "games": [
       "Super Mario 64",
@@ -2159,7 +2159,10 @@
       "Super Metroid",
       "Virtua Racing",
       "Beyond Good & Evil",
-      "Hearthstone"
+      "Hearthstone",
+      "Shadow of the Colossus",
+      "Resident Evil 4",
+      "Thief: The Dark Project"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2595,13 +2598,18 @@
       "BifrostTools",
       "WaveFD",
       "FunctionalModels",
-      "InPartSObstacles"
+      "InPartSObstacles",
+      "LessUnitful",
+      "MCIntegration",
+      "Octofitter"
     ],
     "vision": [
       "MatAnyoneRunner",
       "DemucsRunner",
       "UVDocRunner",
-      "FluxKleinRunner"
+      "FluxKleinRunner",
+      "DeepFilterRunner",
+      "PPDocLayoutRunner"
     ]
   },
   "surprise_seen": 165

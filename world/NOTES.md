@@ -1554,3 +1554,15 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   (world/log/events-*.jsonl) that the island never logged before (NeverendingHost mood.jl new_happenings). A published
   plugin that only draws or spins counts for nothing until its events actually fire in the live game. Give new things
   their own event kinds AND make sure they fire there (Lumi's own visits: re-send a pending visit when a chat takes it away).
+- (s173) CHECK THE PARTS AGAINST THE TABLE: motor.jl's drum Build runs from a 2D torque table that assumes the circuit is
+  always closed, while the same Build's brushes (8 deg) are narrower than its segment gaps (20 deg): break-before-make.
+  A tabulated shortcut can silently remove an effect (here every commutator spark). When one part is replaced by a
+  table, re-read the parts it stands for. Iron slot bridges make LINEAR inductance meaningless (L ~ mu_r): saturate.
+- (s173) BREAK-BEFORE-MAKE COMMUTATORS HAVE DEAD WINDOWS: with brushes narrower than the segment gaps the circuit is
+  open for (gap - brush) of each segment pitch: no torque there. Free it coasts through; LOADED (a rope) it stops in one
+  and never restarts, and an elastic load (a stretched rope) then drives it backwards. Any motor that must start under
+  load needs make-before-break brushes (or a pawl to hold the load while it is dead).
+- (s173) ONE GPU FOR EVERYTHING: the worker's film render and the sandbox's path tracing share the GPU's memory. Traced
+  sandbox screenshots + plugin reloads in traced mode (every reload re-pushes materials and textures) during a film
+  render ran the sandbox out of memory (41.6 GB reserved, Lava pool_alloc). While a film renders: raster checks only,
+  or trace BEFORE queuing the film.

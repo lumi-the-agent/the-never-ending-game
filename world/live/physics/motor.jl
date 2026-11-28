@@ -54,6 +54,11 @@ Base.@kwdef mutable struct Build
     mu_brush::Float64 = 0.3
     drum::Bool = false             # s172: a round iron drum rotor with two coils and 4 segments (physics/motor2d.jl table)
     coils::Int = 1                 # coils in series on the rotor (wire resistance and copper count them)
+    # s173: the drum's brushes really leave the segments. brush_w < gap = break-before-make: for (gap - brush_w) of each
+    # quarter turn the circuit is OPEN and the current it carried goes into a spark (1/2 L I^2, logged in st.sparks).
+    commutate::Bool = false
+    L_circuit::Float64 = 0.0       # > 0: the circuit's inductance (H) instead of the air-core Neumann one (iron cores)
+    pawl::Bool = false             # s173: a ratchet on the shaft: it turns forward only (a winch holding its load)
 end
 
 perimeter(t) = sum(norm(collect(t[k+1]) .- t[k]) for k in 1:length(t)-1)
@@ -152,6 +157,12 @@ function drum_kt(b::Build, θ)
     DRUM_END3D * b.N * ((1 - f) * kt[i] + f * kt[i+1])
 end
 
+"""
+Both brushes in a gap of the drum's 4-segment ring (the gaps sit at the coils' neutral, every quarter turn of the table's
+angle; the brushes are 180 deg apart, so both leave together): the circuit is open.
+"""
+drum_open(b::Build, θ) = b.commutate && abs(mod(θ + pi / 4, pi / 2) - pi / 4) < (b.gap - b.brush_w) / 2
+
 function State(b::Build; θ0 = 0.3, ω0 = 0.0, nθ = 180, on = true)
     θs = range(0, 2pi; length = nθ + 1)[1:end-1]
     kt = zeros(nθ); ke = zeros(nθ)
@@ -162,7 +173,8 @@ function State(b::Build; θ0 = 0.3, ω0 = 0.0, nθ = 180, on = true)
     E = sum(first, b.cells; init = 0.0); Rc = sum(last, b.cells; init = 0.0)
     m = b.m_rotor + copper_mass(b)
     τfric = b.mu_bearing * m * 9.81 * b.r_axle + 2 * b.mu_brush * b.brush_F * b.ring_r
-    State(θ0, ω0, 0.0, 0.0, 0, 0.0, on, kt, ke, inertia(b), inductance(b), Rw, Rc + Rw + 2b.R_contact, E, τfric,
+    L = b.L_circuit > 0 ? b.L_circuit : inductance(b)
+    State(θ0, ω0, 0.0, 0.0, 0, 0.0, on, kt, ke, inertia(b), L, Rw, Rc + Rw + 2b.R_contact, E, τfric,
           Tuple{Float64,Float64}[], 0)
 end
 
@@ -180,10 +192,10 @@ flick!(st::State, Δω) = (st.ω += Δω; st)
 Advance the rotor by `dt` seconds in substeps of at most `h`: contact -> circuit (L dI/dt = s E + emf - R I) ->
 torque -> Coulomb friction -> θ.
 """
-function step!(st::State, b::Build, dt; h = 2e-4)
+function step!(st::State, b::Build, dt; h = 2e-4, τload = 0.0)
     n = max(1, ceil(Int, dt / h)); h = dt / n
     for _ in 1:n
-        s, kind = st.on ? (b.drum ? (1, :closed) : circuit_sign(b, st.θ)) : (0, :open)
+        s, kind = st.on ? (b.drum ? (drum_open(b, st.θ) ? (0, :open) : (1, :closed)) : circuit_sign(b, st.θ)) : (0, :open)
         kind == :short && (st.shorts += 1)
         if s == 0
             st.I != 0 && push!(st.sparks, (st.t, 0.5 * st.L * st.I^2))   # the coil's energy goes into a spark
@@ -197,9 +209,11 @@ function step!(st::State, b::Build, dt; h = 2e-4)
         st.s_prev = s
         st.τ = interp(st.kt, st.θ) * st.I
         ω = st.ω
-        α = (ω == 0.0 && abs(st.τ) <= st.τfric) ? 0.0 : (st.τ - st.τfric * sign(ω == 0 ? st.τ : ω)) / st.J
+        τn = st.τ - τload                                  # s173: a load on the shaft (a rope's pull x drum radius / ratio)
+        α = (ω == 0.0 && abs(τn) <= st.τfric) ? 0.0 : (τn - st.τfric * sign(ω == 0 ? τn : ω)) / st.J
         ωn = ω + α * h
         (ω != 0 && sign(ωn) != sign(ω)) && (ωn = 0.0)        # friction stops, never reverses
+        b.pawl && ωn < 0 && (ωn = 0.0)                      # the pawl catches a tooth: no turning back
         st.ω = ωn; st.θ += ωn * h; st.t += h
     end
     st
@@ -340,7 +354,10 @@ function iron_drum_bench(; N = 80, cells = 6, mu_bearing = 0.25)
     m_fe = 7870 * pi * 0.032^2 * 0.09
     Build(; magnets = stator(; R = 0.036, H = 0.036, gap = 0.072, rough = false), turn = rect_turn(; l = 0.09, a = 0.027),
         N, coils = 2, drum = true, rw = 0.35e-3, ring_r = 0.018, brush_F = 0.06, m_rotor = m_fe, J_extra = 0.5 * m_fe * 0.032^2,
-        r_axle = 0.003, mu_bearing, cells = [(0.78, 0.5) for _ in 1:cells])
+        r_axle = 0.003, mu_bearing, cells = [(0.78, 0.5) for _ in 1:cells],
+        # s173: brush 8 deg on 20 deg gaps = break-before-make; both coils in series, ~2 mH each with the iron drum
+        # (motor2d.jl saturating solve, NOT converged: 1-5 mH a coil; projects/winch.md 's173')
+        commutate = true, L_circuit = 4e-3)
 end
 
 "A bench build with sensible parts; keywords change any of them."

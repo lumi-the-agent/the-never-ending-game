@@ -89,8 +89,8 @@ end
 # ── posts: pictures first ───────────────────────────────────────────────────
 #
 # A post is pictures or a film with a caption of one to three sentences, no
-# verdict (RULES 14): readers form their own opinion. A post goes up once what it
-# shows looks the part; one without a picture or a film, or a long one, is sent back
+# verdict (RULES 14): readers form their own opinion. Every session posts where its
+# work stands, at its best; one without a picture or a film, or a long one, is sent back
 # to the character while the session runs (`post_problems`), so it never goes out so.
 
 "A post on the character's front page: `<div class=\"piece\" id=\"...\">`, with no divs inside."
@@ -172,14 +172,20 @@ function session_pieces(jp::JailPaths, since::Real)
     return pieces
 end
 
+"The human follows the character's work by its pages: every session posts at least once (rule 14)."
+const NO_POST = "Nothing of this session is on your pages yet, and they are how the human follows your work (rule 14): " *
+                "post where it stands, the part that works as it is now at its best (path traced, in its place, framed so " *
+                "what matters is big and clear), with a caption of what it is and what comes next. Look at its picture " *
+                "before it goes up."
+
 """
-What is wrong with this session's posts, or `nothing`: one without a picture or film, one too long. A
-session without a post is fine (rule 14: what is not there yet waits); until Nov 28 the host asked for one
-every few minutes, and the character, refusing to post what did not look the part, ended its turns in a loop.
+What is wrong with this session's posts, or `nothing`: none yet (and none rendering), one without a picture or
+film, one too long.
 """
 function post_problems(jp::JailPaths, run)
     posts = session_posts(jp, run.started)
-    isempty(posts) && return nothing
+    isempty(posts) && has_pending(jp) && return nothing          # it goes up when its render is done
+    isempty(posts) && return NO_POST
     bare =[p.id for p in posts if !p.media]
     isempty(bare) || return "Your post(s) $(join(bare, ", ")) have no picture or film that exists, and a post never goes out " *
                             "without one. Render it first (path traced stills or a film), then write the post."
@@ -196,6 +202,17 @@ function post_problems(jp::JailPaths, run)
     isempty(long) || return "Your post(s) " * join(("$(p.id) ($(p.words) words)" for p in long), ", ") *
                             " are too long: a caption is one to three sentences, no verdict; let the pictures tell it."
     return nothing
+end
+
+"""
+Half way through a session with nothing on the pages and nothing rendering for them: the one reminder in
+the turn, so there is time to look at the post before it goes up. Asked only near the end (until Nov 28),
+posts were rushed out and went up unseen (s164: a land yacht of loose parts, queued with 12 minutes left).
+"""
+function post_nudge(jp::JailPaths, run)
+    time() - run.started > (run.deadline - run.started) / 2 || return nothing
+    (isempty(session_posts(jp, run.started)) && !has_pending(jp)) || return nothing
+    return "Host: half of this session has gone. " * NO_POST
 end
 
 "Sent instead of `keep_going` while this session's posts are missing or not right yet."

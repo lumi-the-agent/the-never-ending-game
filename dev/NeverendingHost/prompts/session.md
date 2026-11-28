@@ -37,8 +37,9 @@
    becomes a project (rule 9) with that goal, and takes as many sessions as
    it needs. Tell
    the human's game what you are up to with `NeverendingGame.think!`. Post
-   when it shows something new and looks the part (a pending post while it
-   still renders, rule 14), and work on while the worker renders. When a post of yours is
+   at least once this session, where your work stands (rule 14), planned by
+   the middle of the session so you look at its picture before it goes up (a
+   pending post while it still renders), and work on while the worker renders. When a post of yours is
    on your pages, end your turn at a good point: a critic who has not seen
    it looks at the post the way someone scrolling your pages does, and
    answers. Fix what it finds in the post itself, then end your turn again.
@@ -62,7 +63,7 @@
    (it does before the session's time or the budget runs out). End earlier
    only when nothing worthwhile is left; never to wait for a job.
 
-Before you end the turn (not one that waits for a critic): what is ready to show (rule 14) is posted
+Before you end the turn (not one that waits for a critic): this session's post (rule 14) is up
 or waits as a pending post, each project you worked on has its
 `Next:` line, the road in `world/BIG_GOAL.md` says what got done and what comes next, each todo you worked on has its evidence and is
 marked done (or explains why not), your journal entry is written

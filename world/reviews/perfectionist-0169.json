@@ -1,184 +1,186 @@
 {
- "verdict": "needs_work",
- "summary": "Seen from the same cameras, the island is the same as at session 166. The progress shots differ only in the hour (13:02 then, 04:05 now), and nothing new shows from above or at eye level. In my own play, the naive bot won all three mini games again: fireflies 8/8 in 47.5 s, berries 8 to 6, hide and seek 4/4 in 38.7 s with 80 s to spare, because every HUD points at the target. The yacht's new verbs don't survive a player: Q sent Pinchy to push, but it gave up 2 m from the stern and the cart never moved; R dug (the sand's hold fell from 133 N to 90 N) with no pose and no visible hole, under a follow camera half covered by a black slab. No post in three sessions, and Lumi's boredom is at 1.0.",
- "scores": {
-  "lighting": {
-   "score": 4,
-   "why": "Night from 04:05 to 05:22, the whole session's look. The raster is murky green-black, and the lanterns' warm pools are the best part. Fireflies are flat lime discs as big as a crab's head floating in front of the camera (cam2-follow-2.png, play-03.png). Traced, the lamp glows are flat opaque cream discs over the cottage, and fireflies light nothing. The moon halo still shows stepped rings."
+  "addressed": true,
+  "engine": [],
+  "findings": [
+    {
+      "category": "fun",
+      "done_when": "A uitest presses Q by the parked yacht in Jump in from 3 different stand points. Each time a friend leans on the stern within 10 s and the cart moves at least 3 m, shown in a screenshot of the friend leaning.",
+      "evidence": "reviews/p169/yacht-push-a/b/c.png; LANDYACHT[:pusher] tries=2 then nothing; st.P unchanged",
+      "severity": "high",
+      "suggestion": "Call a friend that can actually reach the stern: pick by path, not by distance, or let it walk round the cart through its own solid disc. When one can't, have Lumi call the next. Give the friend a leaning pose with its head down and legs braced, and a small cheer when the wheels come free. This is the moment the human wants to show someone.",
+      "title": "Q by the yacht: the friend gives up 2 m from the stern and the cart never moves",
+      "todo": 754,
+      "what": "In Jump in at 04:21, standing at the yacht's bow, I pressed Q. Pinchy (the nearest, id 4) set off, detoured twice, then stopped 2 m from the stern saying 'I can't get round to it!'. The cart stayed at (-8.24, -12.87) and :pusher was cleared. The 'Gloop pushed it 8 m' from the journal did not happen for a player.",
+      "where": "plugins/landyacht.jl ly_pusher! / ly_call_friend!"
+    },
+    {
+      "category": "fun",
+      "done_when": "A screenshot after 3 R presses shows a hole and a heap by the wheel at least 20 px across, with Lumi mid-scoop. The Jump in panel near the yacht shows E board / Q call a friend / R dig.",
+      "evidence": "reviews/p169/yacht-dig.png; sandR 133.0 -> 90.0",
+      "severity": "high",
+      "suggestion": "A real scoop: beak down, a flick, sand thrown as particles that land on the heap, and a hole that reads as a hole (darker damp sand, a crisp rim, a shadow). Show the hold as something you can see, like wheels that visibly sink, rather than as newtons. Add the yacht keys to the panel when Lumi is near the cart.",
+      "title": "Digging the yacht free shows nothing: no scoop pose, no visible hole, keys hidden",
+      "todo": 773,
+      "what": "Three presses of R lowered LANDYACHT[:sandR] from 133 N to 90 N, yet nothing on screen changed. Lumi stood idle with no head dip, no flying sand, and no hole or heap you can see at night in the raster. Jump in's key panel lists 'R chip' and 'E wave', and doesn't mention boarding, Q or digging at all.",
+      "where": "plugins/landyacht.jl ly_dig!, the Jump in help panel"
+    },
+    {
+      "category": "fun",
+      "done_when": "The same naive steer-at-target bot loses at least two of the three games at level 1, while a test that plays with the new skill (standing still, cutting off, listening) wins.",
+      "evidence": "reviews/p169/play-03.png, play-09.png, play-13.png, play-19.png, play-23.png, play-27.png; scores logged in reviews/p169/play.jl run (REVIEW_PLAY)",
+      "severity": "high",
+      "suggestion": "Make each one a game of skill or wit. Fireflies dodge when you run straight at them and come to you when you stand still with the lantern (F). Critters in the berry race cut you off, steal from your basket, and take shortcuts you can learn. Hiders move when you aren't looking, and a giggle gives a direction from sound, not a distance. Then a second play is worth it.",
+      "title": "The mini games are no contest: a naive bot wins all three on the first try",
+      "todo": 643,
+      "what": "I played each for a minute, steering W/A/D straight at the target the HUD names. Firefly catch: 8/8 in 47.5 s. Berry race: 8 to 6 (the critters stopped scoring after 35 s). Hide and seek: 4/4 in 38.7 s of 120. Every HUD says where the target is ('nearest 7 m ahead', 'a giggle 5 m ahead'), so there is nothing to master, and level 2 only shortens the clock.",
+      "where": "plugins/firefly_catch, berry_race, hideseek"
+    },
+    {
+      "category": "camera",
+      "done_when": "Screenshots by the yacht, by the hut and in the pine grove show no occluder over more than 5% of the frame, and Lumi is fully visible.",
+      "evidence": "reviews/p169/yacht-0.png, yacht-push-c.png, yacht-dig.png, cam-follow.png, motion/creatures.png row 1, cam2-follow-2.png, play-03.png",
+      "severity": "high",
+      "suggestion": "Ray-test camera to target and pull in or rise over anything in between. Frame the yacht and the helper together when the player is working on the cart.",
+      "title": "Follow camera in Jump in: a black slab hides the lower half of the frame at the yacht",
+      "todo": 749,
+      "what": "In all four screenshots by the yacht, a dark wedge covers roughly 45% of the view, so the cart, the sand and Lumi's feet are all hidden. Outside games, the follow camera frames Cumulus through a fence post, and the creatures sheet has one creature shot from inside a bush.",
+      "where": "the follow rig (game.rig :follow) near the beach hut and yacht"
+    },
+    {
+      "category": "wow",
+      "done_when": "A new post with a traced clip of at least 6 s where the cart visibly moves out of its own holes, with the helper and Lumi both in frame.",
+      "evidence": "/run/neverending/mood.json; site/img newest = land-yacht-on-the-beach.png",
+      "severity": "high",
+      "suggestion": "Make a short traced film at low sun: the yacht bogged down, Lumi scooping, a friend straining at the stern, the wheels climbing out, ruts glinting behind. Then do something of a different kind next session; Lumi is bored for a reason.",
+      "title": "Three sessions, no post: film the dig-and-shove at low sun, traced",
+      "todo": 747,
+      "what": "The last post is from s166. The mood file says boredom 1.0 and loneliness 0.62, after three sessions of numbers on one cart. The goals ask for a post every session and a film for every finished thing. The physics is the most player-shaped idea in a while, and nobody has seen it.",
+      "where": "world/site, movies/"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced still with the sun behind the sail shows light coming through the canvas, a curved belly in silhouette, and wheels with spokes that are actual geometry.",
+      "evidence": "site/img/land-yacht-on-the-beach.png",
+      "severity": "high",
+      "suggestion": "Give the canvas a visible belly in the mesh even if the physics ignores it. Use Hikari's diffuse transmission so the sun glows through the cloth and shows seams and the patch. Add weathered wood with a coat, rope, and real spokes.",
+      "title": "The land yacht's sail is a white board: belly, light through canvas, spoked wheels",
+      "todo": 770,
+      "what": "The sail in its only traced picture is a flat beige rectangle with a dark frame and a grey square for a patch, the deck is plain brown planks, and the wheels are discs with painted spokes. It reads as a placeholder next to the sea.",
+      "where": "plugins/landyacht.jl ly_sail_mesh / ly_canvas"
+    },
+    {
+      "category": "lighting",
+      "done_when": "The traced still at night has no flat discs. At least three fireflies light the grass visibly around them, and the cottage reads with warm light spilling from its window.",
+      "evidence": "reviews/p169/traced.png, cam-orbit.png, cam2-follow-2.png, play-03.png",
+      "severity": "high",
+      "suggestion": "Under tracing, drop the glow billboards and use real small point or sphere lights with emissive cores. Fireflies become tiny emitters that leave pools of light on leaves. Raise the moonlight to a cool key light so silhouettes read.",
+      "title": "Night lights: flat lime firefly discs in raster, flat cream discs when traced",
+      "todo": 689,
+      "what": "With path tracing on at 04:33, the cottage is covered by two big opaque pale discs, a third sits in the middle of the meadow, and the fireflies are flat white dots with no light on the grass. The raster night is a murky green-black where the only readable things are labels. In the raster, fireflies near the camera are flat lime discs up to 60 px across that cover faces and the ground (cam2-follow-2.png, play-03.png).",
+      "where": "nightglow / lamplight / fireflies billboards under path tracing"
+    },
+    {
+      "category": "world",
+      "done_when": "Orbit screenshots at noon, dusk and night show no horizontal edge at the horizon.",
+      "evidence": "reviews/p169/cam-orbit.png, cam2-free-2.png (05:22)",
+      "severity": "medium",
+      "suggestion": "Blend the sea's far edge into the sky's horizon colour with distance fog, and add a soft moonlit glint path.",
+      "title": "A hard seam where the sea meets the sky in orbit and free views",
+      "todo": 771,
+      "what": "In the orbit and free cameras, a flat grey-blue band sits above the dark sea with a straight edge, as if the sky ended there.",
+      "where": "sky/haze at the horizon"
+    }
+  ],
+  "process": "The author is doing serious, honest physics: Wong-Reece wheels on a sand field with load history, solver bugs chased to their cause. The journal admits the gaps. But three sessions went into one cart with no post, Lumi's boredom is at 1.0, and the payoff doesn't survive a player trying it: the friend-push fails, the dig is invisible, the keys are hidden and clash with the gags, and the camera is blocked. Goals: 1 (interactions) moved a little but doesn't play yet, and the three mini games are still beaten by a naive bot (#643, open since s166). 2 (a video to be proud of) hasn't moved; nothing has been released since 11-24. 3 (physics to play with) moved the most, off screen. 4 and 7 (rendering, showing off materials and light) are stalled: the sail is still a board and the traced night still has flat discs. 5 (Lumi's garden and posts): no post in three sessions. 6 (animation) gets no poses for the new verbs. 8 (radical ideas) is losing to one long polish thread. Next session: make the push and the dig work and show on screen, film them traced at low sun and post the clip, then move to a fresh kind of work.",
+  "scores": {
+    "animation": {
+      "score": 6,
+      "why": "live_motion: 10 of 10 moving well, but at night almost everyone is asleep, so it measured very little. The yacht's new verbs have no poses: digging sets action :eat for half a second (and was :idle when I checked), and the pusher is moved by setting c.pos straight onto the stern rather than walking there."
+    },
+    "camera": {
+      "score": 3,
+      "why": "Follow camera: by the yacht in Jump in, a black wedge covers about 45% of every frame (yacht-0/push/dig.png). Outside games it frames Cumulus through a fence post, and at 05:19 it tilts down so the sandy ground fills the lower half (cam2-follow-2.png). In the firefly catch a crab and a sheep block the bottom third (play-03.png). The creatures sheet has one creature shot from inside a bush. Orbit and free composition is fine but dark."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "The creatures sheet shows no broken or detached parts. Pinchy pushes its face into the cart's wheel (yacht-push-c.png), and flat firefly discs sit in front of Cumulus's face."
+    },
+    "fun": {
+      "score": 4,
+      "why": "I played every mini game for a minute through interact! with a naive steer-at-the-target bot, and it won all three on the first try. Firefly catch: 8/8 in 47.5 s, 12 s left, with the HUD saying 'nearest 7 m ahead'. Berry race: 8 to 6 (critters 2/2/2), and the critters stopped scoring after 35 s. Hide and seek: 4/4 in 38.7 s of 120, with the HUD saying 'a giggle 5 m ahead'. The end cards and level-ups are nice (a new best, fireflies fly to the lantern, berries go to the basket), but there is no contest. The yacht's Q push failed and R digs invisibly. Jump in's key panel lists no yacht keys and says R is 'chip' and E is 'wave'."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "Night from 04:05 to 05:22, the whole session's look. The raster is murky green-black, and the lanterns' warm pools are the best part. Fireflies are flat lime discs as big as a crab's head floating in front of the camera (cam2-follow-2.png, play-03.png). Traced, the lamp glows are flat opaque cream discs over the cottage, and fireflies light nothing. The moon halo still shows stepped rings."
+    },
+    "materials": {
+      "score": 4,
+      "why": "The yacht's sail is still a flat beige board with a dark frame (site/img/land-yacht-on-the-beach.png): no belly, no translucency, nothing traced. Deck and wheels are plain brown. The sand in the raster is flat orange with no grain, and the ruts don't show. The sea is still the only material that looks like itself."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame p95 8.4 ms, median 3.7 ms. MotorBench and FireflySync are the heaviest systems, at under 1 ms each."
+    },
+    "props": {
+      "score": 5,
+      "why": "56 catalogued assets, used well around the cottage and the hut. The yacht is planks and discs, and its wheels have spokes only as painted lines."
+    },
+    "style": {
+      "score": 4,
+      "why": "Glossy toy creatures, a woodcut hut, plain-primitive physics benches and a flat-board sail: four looks in one frame, as before."
+    },
+    "ui": {
+      "score": 4,
+      "why": "The side panel is readable, but 'Messages to you' talks in newtons ('about 136 N, not 194'), which means nothing to a player. Jump in's help panel is missing every yacht key and contradicts two of them."
+    },
+    "world": {
+      "score": 4,
+      "why": "Dense flora and a pleasant layout, but nothing new to see since s166. In the orbit view there is still a hard grey band where the sea meets the sky (p169/cam-orbit.png)."
+    },
+    "wow": {
+      "score": 2,
+      "why": "No post since 'My land yacht' (s166), so there is nothing new a stranger could share. The last 20 posts are almost all bench experiments on slabs. The waterfight film is the only lively thing in the reel."
+    }
   },
-  "materials": {
-   "score": 4,
-   "why": "The yacht's sail is still a flat beige board with a dark frame (site/img/land-yacht-on-the-beach.png): no belly, no translucency, nothing traced. Deck and wheels are plain brown. The sand in the raster is flat orange with no grain, and the ruts don't show. The sea is still the only material that looks like itself."
-  },
-  "world": {
-   "score": 4,
-   "why": "Dense flora and a pleasant layout, but nothing new to see since s166. In the orbit view there is still a hard grey band where the sea meets the sky (p169/cam-orbit.png)."
-  },
-  "props": {
-   "score": 5,
-   "why": "56 catalogued assets, used well around the cottage and the hut. The yacht is planks and discs, and its wheels have spokes only as painted lines."
-  },
-  "creatures": {
-   "score": 5,
-   "why": "The creatures sheet shows no broken or detached parts. Pinchy pushes its face into the cart's wheel (yacht-push-c.png), and flat firefly discs sit in front of Cumulus's face."
-  },
-  "animation": {
-   "score": 6,
-   "why": "live_motion: 10 of 10 moving well, but at night almost everyone is asleep, so it measured very little. The yacht's new verbs have no poses: digging sets action :eat for half a second (and was :idle when I checked), and the pusher is moved by setting c.pos straight onto the stern rather than walking there."
-  },
-  "fun": {
-   "score": 4,
-   "why": "I played every mini game for a minute through interact! with a naive steer-at-the-target bot, and it won all three on the first try. Firefly catch: 8/8 in 47.5 s, 12 s left, with the HUD saying 'nearest 7 m ahead'. Berry race: 8 to 6 (critters 2/2/2), and the critters stopped scoring after 35 s. Hide and seek: 4/4 in 38.7 s of 120, with the HUD saying 'a giggle 5 m ahead'. The end cards and level-ups are nice (a new best, fireflies fly to the lantern, berries go to the basket), but there is no contest. The yacht's Q push failed and R digs invisibly. Jump in's key panel lists no yacht keys and says R is 'chip' and E is 'wave'."
-  },
-  "wow": {
-   "score": 2,
-   "why": "No post since 'My land yacht' (s166), so there is nothing new a stranger could share. The last 20 posts are almost all bench experiments on slabs. The waterfight film is the only lively thing in the reel."
-  },
-  "camera": {
-   "score": 3,
-   "why": "Follow camera: by the yacht in Jump in, a black wedge covers about 45% of every frame (yacht-0/push/dig.png). Outside games it frames Cumulus through a fence post, and at 05:19 it tilts down so the sandy ground fills the lower half (cam2-follow-2.png). In the firefly catch a crab and a sheep block the bottom third (play-03.png). The creatures sheet has one creature shot from inside a bush. Orbit and free composition is fine but dark."
-  },
-  "ui": {
-   "score": 4,
-   "why": "The side panel is readable, but 'Messages to you' talks in newtons ('about 136 N, not 194'), which means nothing to a player. Jump in's help panel is missing every yacht key and contradicts two of them."
-  },
-  "style": {
-   "score": 4,
-   "why": "Glossy toy creatures, a woodcut hut, plain-primitive physics benches and a flat-board sail: four looks in one frame, as before."
-  },
-  "performance": {
-   "score": 9,
-   "why": "Frame p95 8.4 ms, median 3.7 ms. MotorBench and FireflySync are the heaviest systems, at under 1 ms each."
-  }
- },
- "findings": [
-  {
-   "severity": "high",
-   "category": "fun",
-   "title": "Q by the yacht: the friend gives up 2 m from the stern and the cart never moves",
-   "todo": 754,
-   "what": "In Jump in at 04:21, standing at the yacht's bow, I pressed Q. Pinchy (the nearest, id 4) set off, detoured twice, then stopped 2 m from the stern saying 'I can't get round to it!'. The cart stayed at (-8.24, -12.87) and :pusher was cleared. The 'Gloop pushed it 8 m' from the journal did not happen for a player.",
-   "where": "plugins/landyacht.jl ly_pusher! / ly_call_friend!",
-   "evidence": "reviews/p169/yacht-push-a/b/c.png; LANDYACHT[:pusher] tries=2 then nothing; st.P unchanged",
-   "suggestion": "Call a friend that can actually reach the stern: pick by path, not by distance, or let it walk round the cart through its own solid disc. When one can't, have Lumi call the next. Give the friend a leaning pose with its head down and legs braced, and a small cheer when the wheels come free. This is the moment the human wants to show someone.",
-   "done_when": "A uitest presses Q by the parked yacht in Jump in from 3 different stand points. Each time a friend leans on the stern within 10 s and the cart moves at least 3 m, shown in a screenshot of the friend leaning."
-  },
-  {
-   "severity": "high",
-   "category": "fun",
-   "title": "Digging the yacht free shows nothing: no scoop pose, no visible hole, keys hidden",
-   "todo": 773,
-   "what": "Three presses of R lowered LANDYACHT[:sandR] from 133 N to 90 N, yet nothing on screen changed. Lumi stood idle with no head dip, no flying sand, and no hole or heap you can see at night in the raster. Jump in's key panel lists 'R chip' and 'E wave', and doesn't mention boarding, Q or digging at all.",
-   "where": "plugins/landyacht.jl ly_dig!, the Jump in help panel",
-   "evidence": "reviews/p169/yacht-dig.png; sandR 133.0 -> 90.0",
-   "suggestion": "A real scoop: beak down, a flick, sand thrown as particles that land on the heap, and a hole that reads as a hole (darker damp sand, a crisp rim, a shadow). Show the hold as something you can see, like wheels that visibly sink, rather than as newtons. Add the yacht keys to the panel when Lumi is near the cart.",
-   "done_when": "A screenshot after 3 R presses shows a hole and a heap by the wheel at least 20 px across, with Lumi mid-scoop. The Jump in panel near the yacht shows E board / Q call a friend / R dig."
-  },
-  {
-   "severity": "high",
-   "category": "fun",
-   "title": "The mini games are no contest: a naive bot wins all three on the first try",
-   "todo": 643,
-   "what": "I played each for a minute, steering W/A/D straight at the target the HUD names. Firefly catch: 8/8 in 47.5 s. Berry race: 8 to 6 (the critters stopped scoring after 35 s). Hide and seek: 4/4 in 38.7 s of 120. Every HUD says where the target is ('nearest 7 m ahead', 'a giggle 5 m ahead'), so there is nothing to master, and level 2 only shortens the clock.",
-   "where": "plugins/firefly_catch, berry_race, hideseek",
-   "evidence": "reviews/p169/play-03.png, play-09.png, play-13.png, play-19.png, play-23.png, play-27.png; scores logged in reviews/p169/play.jl run (REVIEW_PLAY)",
-   "suggestion": "Make each one a game of skill or wit. Fireflies dodge when you run straight at them and come to you when you stand still with the lantern (F). Critters in the berry race cut you off, steal from your basket, and take shortcuts you can learn. Hiders move when you aren't looking, and a giggle gives a direction from sound, not a distance. Then a second play is worth it.",
-   "done_when": "The same naive steer-at-target bot loses at least two of the three games at level 1, while a test that plays with the new skill (standing still, cutting off, listening) wins."
-  },
-  {
-   "severity": "high",
-   "category": "camera",
-   "title": "Follow camera in Jump in: a black slab hides the lower half of the frame at the yacht",
-   "todo": 749,
-   "what": "In all four screenshots by the yacht, a dark wedge covers roughly 45% of the view, so the cart, the sand and Lumi's feet are all hidden. Outside games, the follow camera frames Cumulus through a fence post, and the creatures sheet has one creature shot from inside a bush.",
-   "where": "the follow rig (game.rig :follow) near the beach hut and yacht",
-   "evidence": "reviews/p169/yacht-0.png, yacht-push-c.png, yacht-dig.png, cam-follow.png, motion/creatures.png row 1, cam2-follow-2.png, play-03.png",
-   "suggestion": "Ray-test camera to target and pull in or rise over anything in between. Frame the yacht and the helper together when the player is working on the cart.",
-   "done_when": "Screenshots by the yacht, by the hut and in the pine grove show no occluder over more than 5% of the frame, and Lumi is fully visible."
-  },
-  {
-   "severity": "high",
-   "category": "wow",
-   "title": "Three sessions, no post: film the dig-and-shove at low sun, traced",
-   "todo": 747,
-   "what": "The last post is from s166. The mood file says boredom 1.0 and loneliness 0.62, after three sessions of numbers on one cart. The goals ask for a post every session and a film for every finished thing. The physics is the most player-shaped idea in a while, and nobody has seen it.",
-   "where": "world/site, movies/",
-   "evidence": "/run/neverending/mood.json; site/img newest = land-yacht-on-the-beach.png",
-   "suggestion": "Make a short traced film at low sun: the yacht bogged down, Lumi scooping, a friend straining at the stern, the wheels climbing out, ruts glinting behind. Then do something of a different kind next session; Lumi is bored for a reason.",
-   "done_when": "A new post with a traced clip of at least 6 s where the cart visibly moves out of its own holes, with the helper and Lumi both in frame."
-  },
-  {
-   "severity": "high",
-   "category": "materials",
-   "title": "The land yacht's sail is a white board: belly, light through canvas, spoked wheels",
-   "todo": 770,
-   "what": "The sail in its only traced picture is a flat beige rectangle with a dark frame and a grey square for a patch, the deck is plain brown planks, and the wheels are discs with painted spokes. It reads as a placeholder next to the sea.",
-   "where": "plugins/landyacht.jl ly_sail_mesh / ly_canvas",
-   "evidence": "site/img/land-yacht-on-the-beach.png",
-   "suggestion": "Give the canvas a visible belly in the mesh even if the physics ignores it. Use Hikari's diffuse transmission so the sun glows through the cloth and shows seams and the patch. Add weathered wood with a coat, rope, and real spokes.",
-   "done_when": "A traced still with the sun behind the sail shows light coming through the canvas, a curved belly in silhouette, and wheels with spokes that are actual geometry."
-  },
-  {
-   "severity": "high",
-   "category": "lighting",
-   "title": "Night lights: flat lime firefly discs in raster, flat cream discs when traced",
-   "todo": 689,
-   "what": "With path tracing on at 04:33, the cottage is covered by two big opaque pale discs, a third sits in the middle of the meadow, and the fireflies are flat white dots with no light on the grass. The raster night is a murky green-black where the only readable things are labels. In the raster, fireflies near the camera are flat lime discs up to 60 px across that cover faces and the ground (cam2-follow-2.png, play-03.png).",
-   "where": "nightglow / lamplight / fireflies billboards under path tracing",
-   "evidence": "reviews/p169/traced.png, cam-orbit.png, cam2-follow-2.png, play-03.png",
-   "suggestion": "Under tracing, drop the glow billboards and use real small point or sphere lights with emissive cores. Fireflies become tiny emitters that leave pools of light on leaves. Raise the moonlight to a cool key light so silhouettes read.",
-   "done_when": "The traced still at night has no flat discs. At least three fireflies light the grass visibly around them, and the cottage reads with warm light spilling from its window."
-  },
-  {
-   "severity": "medium",
-   "category": "world",
-   "title": "A hard seam where the sea meets the sky in orbit and free views",
-   "todo": 771,
-   "what": "In the orbit and free cameras, a flat grey-blue band sits above the dark sea with a straight edge, as if the sky ended there.",
-   "where": "sky/haze at the horizon",
-   "evidence": "reviews/p169/cam-orbit.png, cam2-free-2.png (05:22)",
-   "suggestion": "Blend the sea's far edge into the sky's horizon colour with distance fog, and add a soft moonlit glint path.",
-   "done_when": "Orbit screenshots at noon, dusk and night show no horizontal edge at the horizon."
-  }
- ],
- "todos": [
-  {
-   "id": 767,
-   "action": "done",
-   "why": "Boarding and sailing exist since s167 and have a play test. Pushing, digging and friends aboard are covered by #754, #773 and #772."
-  },
-  {
-   "id": 681,
-   "action": "keep",
-   "why": "The benches are still plain primitives (wire-spins-itself film)."
-  },
-  {
-   "id": 748,
-   "action": "keep",
-   "why": "The gag keys are unchanged, and now R and E also clash with the yacht's keys."
-  },
-  {
-   "id": 750,
-   "action": "keep",
-   "why": "Hot things still light nothing."
-  },
-  {
-   "id": 759,
-   "action": "keep",
-   "title": "Clipping: a crab inside the pig's head, Pinchy's face inside the yacht's wheel",
-   "why": "There is a new instance at the yacht (yacht-push-c.png)."
-  },
-  {
-   "id": 772,
-   "action": "keep",
-   "why": "Lumi doesn't sit holding the sheet and no friends are aboard."
-  },
-  {
-   "id": 636,
-   "action": "keep",
-   "why": "The moon halo still shows stepped rings in the s169 eye-level progress shot."
-  }
- ],
- "engine": [],
- "process": "The author is doing serious, honest physics: Wong-Reece wheels on a sand field with load history, solver bugs chased to their cause. The journal admits the gaps. But three sessions went into one cart with no post, Lumi's boredom is at 1.0, and the payoff doesn't survive a player trying it: the friend-push fails, the dig is invisible, the keys are hidden and clash with the gags, and the camera is blocked. Goals: 1 (interactions) moved a little but doesn't play yet, and the three mini games are still beaten by a naive bot (#643, open since s166). 2 (a video to be proud of) hasn't moved; nothing has been released since 11-24. 3 (physics to play with) moved the most, off screen. 4 and 7 (rendering, showing off materials and light) are stalled: the sail is still a board and the traced night still has flat discs. 5 (Lumi's garden and posts): no post in three sessions. 6 (animation) gets no poses for the new verbs. 8 (radical ideas) is losing to one long polish thread. Next session: make the push and the dig work and show on screen, film them traced at low sun and post the clip, then move to a fresh kind of work."
+  "summary": "Seen from the same cameras, the island is the same as at session 166. The progress shots differ only in the hour (13:02 then, 04:05 now), and nothing new shows from above or at eye level. In my own play, the naive bot won all three mini games again: fireflies 8/8 in 47.5 s, berries 8 to 6, hide and seek 4/4 in 38.7 s with 80 s to spare, because every HUD points at the target. The yacht's new verbs don't survive a player: Q sent Pinchy to push, but it gave up 2 m from the stern and the cart never moved; R dug (the sand's hold fell from 133 N to 90 N) with no pose and no visible hole, under a follow camera half covered by a black slab. No post in three sessions, and Lumi's boredom is at 1.0.",
+  "superseded_by": "perfectionist-0172.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 767,
+      "why": "Boarding and sailing exist since s167 and have a play test. Pushing, digging and friends aboard are covered by #754, #773 and #772."
+    },
+    {
+      "action": "keep",
+      "id": 681,
+      "why": "The benches are still plain primitives (wire-spins-itself film)."
+    },
+    {
+      "action": "keep",
+      "id": 748,
+      "why": "The gag keys are unchanged, and now R and E also clash with the yacht's keys."
+    },
+    {
+      "action": "keep",
+      "id": 750,
+      "why": "Hot things still light nothing."
+    },
+    {
+      "action": "keep",
+      "id": 759,
+      "title": "Clipping: a crab inside the pig's head, Pinchy's face inside the yacht's wheel",
+      "why": "There is a new instance at the yacht (yacht-push-c.png)."
+    },
+    {
+      "action": "keep",
+      "id": 772,
+      "why": "Lumi doesn't sit holding the sheet and no friends are aboard."
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "The moon halo still shows stepped rings in the s169 eye-level progress shot."
+    }
+  ],
+  "verdict": "needs_work"
 }

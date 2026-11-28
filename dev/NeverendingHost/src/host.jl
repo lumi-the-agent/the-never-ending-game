@@ -605,10 +605,17 @@ function one_session!(host::Host)
     followups = r -> first_of(take_rest!, () -> human_followup(host), () -> big_goal_followup(host, n, r),
                               () -> ideas_followup(host, n, r),
                               () -> post_critic_followup(host, n, r), () -> continue_session(host, r))
-    nudged = Ref(false)
-    timed = r -> (rest[] !== nothing && !nudged[] && time() - r.started > 60OPENING_MINUTES) ?
-                 (nudged[] = true; "Host: $OPENING_MINUTES minutes have gone by. End this turn when you are at a good point, and the rest of the session comes.") :
-                 nothing
+    nudged, post_nudged = Ref(false), Ref(false)
+    function timed(r)
+        if rest[] !== nothing && !nudged[] && time() - r.started > 60OPENING_MINUTES
+            nudged[] = true
+            return "Host: $OPENING_MINUTES minutes have gone by. End this turn when you are at a good point, and the rest of the session comes."
+        end
+        post_nudged[] && return nothing
+        note = post_nudge(jp, r)
+        note === nothing || (post_nudged[] = true)
+        return note
+    end
     run = if host.cfg.agent_chat && host.dashboard !== nothing
         run_chat_session!(host, "session $n", host.cfg.agent, opening; followups, timed)
     else

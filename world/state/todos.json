@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "LavaError during pool_alloc:\n  Cannot allocate 373905072 bytes: the device is out of memory with 41.09 GB already reserved by this pool after the core reclamation and retry policy.\n  Suggestion: Free unused LavaArrays, reduce problem size, or check for leaks with gpu_memory_usage().\nStacktrace:\n  [1] acquire_or_reclaim!(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, sp::Mantle.Pool, dev::Mantle.LavaDevice, nbytes::Int64, extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:577\n  [2] pool_alloc(bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, nbytes::Int64; extra_usage::UInt32)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:551\n  [3] pool_alloc\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/runtime/memory.jl:530 [inlined]\n  [4] Mantle.LavaArray{Raycore.Triangle{Hikari.TriangleMeta}, 1}(::UndefInitializer, dims::Tuple{Int64}; bq::Mantle.SubmitChannel{Mantle.VulkanQueue{Mantle.LavaDevice}, Mantle.OneShot, UInt64, Mantle.Submission{Union{Nothing, Mantle.OneShot}}}, extra_usage::UInt32, scratch::Bool, unified::Bool)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:52\n  [5] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:32 [inlined]\n  [6] #_#603\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:82 [inlined]\n  [7] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:81 [inlined]\n  [8] LavaArray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/array/lavaarray.jl:86 [inlined]\n  [9] devicearray\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/vulkan/graph.jl:905 [inlined]\n [10] nonempty\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:268 [inlined]\n [11] build!(t::Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, ::Mantle.Rebuild)\n    @ Mantle /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:299\n [12] sync!\n    @ /sim/Programmieren/SimGame/dev/Mantle/src/raytracing/mutation.jl:319 [inlined]\n [13] sync!(scene::Hikari.Scene{Mantle.BatchedTLAS{Raycore.Triangle{Hikari.TriangleMeta}, Mantle.LavaDevice, Mantle.LavaBLAS}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Raycore.MultiTypeSet{Mantle.LavaDevice}, Mantle.LavaArray{Hikari.MediumInterfaceIdx, 1}, Base.RefValue{Tuple{Raycore.Bounds3, GeometryBasics.Sphere{Float32}}}})\n    @ Hikari /sim/Programmieren/SimGame/dev/Hikari/src/integrators/volpath/hw-rt.jl:26\n [14] render!(screen::RayMakie.Screen; finalize_framebuffer::Bool)\n    @ RayMakie /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:672\n [15] render!\n    @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/screen.jl:649 [inlined]\n [16] ",
+      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n  with edge inputs:\n    trace_marker_mesh = Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}(...)\n    trace_transforms = StaticArraysCore.SMatrix{4, 3, Float32, 12}[[1.2718166 0.9469233 0.0; -0.9469233 1.2718166 0.0; 0.0 0.0 1.585617; -1.6675594 2.6824572 2.2426062]]\n    trace_materials = Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}[Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}((1.0f0, 1.0f0, 1.0f0, 1.0f0), Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}(Hikari.RGBSpectrum[Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]) Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]); Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]) Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]); … ; Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) … Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]); Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) … Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0])], Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 1.0]), false), 1.0f0, 1.0f0, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}(Hikari.RGBSpectrum[Hikari.RGBSpectrum(Float32[0.0, 0.34509805, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.34509805, 0.0, 1.0]) … Hikari.RGBSpectrum(Fl",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.\nperfectionist-0157: Fixed s34; screenshots work, several taken this review.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.\nperfectionist-0157: Fixed s34; screenshots work, several taken this review.\nHappened again at 2026-11-28T13:17:20.205.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-28T00:18:30.351"
+      "updated": "2026-11-28T13:17:20.205"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0169 [fun, high]: I played each for a minute, steering W/A/D straight at the target the HUD names. Firefly catch: 8/8 in 47.5 s. Berry race: 8 to 6 (the critters stopped scoring after 35 s). Hide and seek: 4/4 in 38.7 s of 120. Every HUD says where the target is ('nearest 7 m ahead', 'a giggle 5 m ahead'), so there is nothing to master, and level 2 only shortens the clock.\nWhere: plugins/firefly_catch, berry_race, hideseek\nSuggestion: Make each one a game of skill or wit. Fireflies dodge when you run straight at them and come to you when you stand still with the lantern (F). Critters in the berry race cut you off, steal from your basket, and take shortcuts you can learn. Hiders move when you aren't looking, and a giggle gives a direction from sound, not a distance. Then a second play is worth it.\nDone when: The same naive steer-at-target bot loses at least two of the three games at level 1, while a test that plays with the new skill (standing still, cutting off, listening) wins.\nEvidence: reviews/p169/play-03.png, play-09.png, play-13.png, play-19.png, play-23.png, play-27.png; scores logged in reviews/p169/play.jl run (REVIEW_PLAY)",
+      "detail": "perfectionist-0172 [fun, high]: A bot that only turns toward the nearest target and walks wins every mini game. The HUD names the direction and distance of the next target, the rivals barely compete, and nothing changes on a second play except a shorter timer.\nWhere: plugins/firefly_catch.jl, hideseek.jl, berry_race.jl\nSuggestion: Give each game one thing to read or outwit. Fireflies that flee along the wind field you already solved and blink in sync (fireflysync exists), so you must predict them. Hiders who move when they hear your steps (owlears has hearing). Rivals who take the berries you are heading for and block you with their bodies. Drop the 'nearest N m ahead' pointer after the first round.\nDone when: The same naive bot (reviews/p172/tests/play.jl) loses at least two of the three games, while a scripted smarter strategy still wins them.\nEvidence: reviews/p172/play/log.txt: firefly 7/8 in 57.7 s; hide 4/4 in 32.7 s; berry 10 vs [2, 0, 2] in 45 s; shots in reviews/p172/play/",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The mini games are no contest: a naive bot wins all three on the first try",
-      "updated": "2026-11-28T10:12:39.204"
+      "title": "Mini games are no contest: a nearest-target bot wins all three, first try",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -10031,12 +10031,12 @@
       "id": 717,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0172: The scrap crane has been 'doing' for sessions with nothing on the island; the winch (#780) is the motor's real job now",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "The scrap crane: switch it off over a friend, cells for its current, friends react",
-      "updated": "2026-11-27T18:00:43.262"
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-27T18:39:14.435",
@@ -10390,7 +10390,7 @@
     },
     {
       "created": "2026-11-27T23:15:34.123",
-      "detail": "perfectionist-0160 [materials, high]: After three sessions of material work the motor, seen live and traced, is two matte black blocks with a red band, a small copper cage between them, on a slab on a four-legged box. From normal play distance it is a dark speck. The pots are plain cylinders with an opaque blue disc for the brine.\nWhere: plugins/motorbench.jl (5.6, -14.3)\nSuggestion: Use the generated basalt-slab and driftwood assets, or rough lodestone meshes with a dark metallic-flake coat, for the stones. Make the brine Hikari dielectric water with a copper-sulphate absorption tint so the light through it goes blue, and give the pots glazed clay with a wet rim. Scale the whole rig so it reads at 3 m, and stand it on a proper workbench with tools on it.\nDone when: A traced still from 2 m shows stones that read as rock (no flat black faces), translucent blue brine with visible depth, and the motor filling at least a quarter of the frame height.\nEvidence: reviews/p0160/motor-traced.png, reviews/p0160/motor-raster.png, six-clay-pots-overview.jpg frames 7-12",
+      "detail": "perfectionist-0172 [props, high]: Up close the new motor is two flat black discs, a grey can, a thin rectangular copper frame, a cross of copper bars and a brown slab, about 25 cm long on a stand about 70 cm wide. There are no visible windings, no wires to the pots, no bearings. The 'oak' stand is a plain cylinder: brown in raster, and with the sand-ripple texture when traced.\nWhere: plugins/irondrum.jl (ID_SPOT 4.85,-14.3; plots irondrum_*)\nSuggestion: Wind the coils as many turns of enamelled copper (a helix tube with a coat over copper), use real end grain and plank wood for the stand (a node texture of growth rings, not ripples), make the ferrite matte charcoal with chipped edges, and run two visible cords to the clay pots. Raise it to a workbench height a camera can frame next to Lumi.\nDone when: A traced still at 64+ spp, framed on the motor, shows visible coil windings, wood grain on the stand and cords leading to the pots, in one frame.\nEvidence: reviews/p172/drum_close.png (raster), reviews/p172/drum_traced.png (traced), reviews/p172/drum.png (from 1.5 m)",
       "est_minutes": 15.0,
       "id": 743,
       "kind": "review",
@@ -10399,8 +10399,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "The motor/dynamo on the land yacht's axle: real copper, iron and wood, findable",
-      "updated": "2026-11-28T05:07:57.196"
+      "title": "The iron drum motor is a tiny primitive model on a sand-textured brown cylinder",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10427,8 +10427,8 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "Give every creature a real mass (mesh volume x density)",
-      "updated": "2026-11-28T00:47:48.706"
+      "title": "Give every creature a real mass (mesh volume x density): the loaded cart needs it",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-27T23:45:08.288",
@@ -10451,16 +10451,16 @@
       "id": 747,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0172: Superseded by the finding on #780: the dig-and-shove was shelved; film the winch instead",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Three sessions, no post: film the dig-and-shove at low sun, traced",
-      "updated": "2026-11-28T10:12:39.204"
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0166 [fun, medium]: The key strip lists 24 gags. P paint showed nothing on screen. Hold-6 ('float a magnet top by the boards east of the kiln') ended with Lumi standing inside a pine with no top in sight.\nWhere: Jump in, plugins with gag keys\nSuggestion: Cut the strip to the 6 gags that make something you see within 1 s. Make each leave a mark the world keeps (paint on what it hits, stomped sand), and walk Lumi to the station when its key is held.\nDone when: A screenshot after each listed key shows its effect within 1 s, and hold-6 shows the top floating in frame.\nEvidence: reviews/p166/play/jump-paint.png, jump-6.png",
+      "detail": "perfectionist-0172 [fun, medium]: In Jump in, pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi's action 'idle' each time. The card lists 23 keys but none for the drum motor, the pots or the yacht. Walking D+W for 7 s put Lumi half inside a bush.\nWhere: Jump in (NeverendingGame.JumpIn), the key card\nSuggestion: Cut the card to the keys that do something wherever you stand, and make one key the workshop verb: near the drum, Lumi pushes a knife switch with its beak and the drum spins up with the drum-on sound; near the pots, it tops them up with sea water. Bushes should push Lumi aside.\nDone when: A FakeInteraction test in Jump in walks to the drum, presses the key, sees Lumi's action change and the drum above 3 rev/s within 5 s, with no key on the card that leaves Lumi idle.\nEvidence: reviews/p172/play/log.txt ('jump key …: Lumi action idle' x9), play/jump-key-f.png, play/jump-key-space.png",
       "est_minutes": 30.0,
       "id": 748,
       "kind": "review",
@@ -10469,8 +10469,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump in: most gag keys show nothing; the motor can't be found or flicked",
-      "updated": "2026-11-28T07:44:30.099"
+      "title": "Jump in: nine keys pressed, Lumi stays idle; the motor is out of reach",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10549,12 +10549,12 @@
       "id": 754,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0172: Shelved with the sand work; the winch replaces the friend's shove as the way the cart moves",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Q by the yacht: the friend gives up 2 m from the stern and the cart never moves",
-      "updated": "2026-11-28T10:12:39.204"
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T02:10:01.789",
@@ -10614,7 +10614,7 @@
     },
     {
       "created": "2026-11-28T02:40:47.220",
-      "detail": "perfectionist-0163 [creatures, medium]: The creatures sheet shows the green-hat pig with the red crab's eyes poking out of its head, and the orange body overlapping the blue friend.\nWhere: reviews/motion/creatures.png rows 2 and 5\nSuggestion: Use body radii from the real meshes in separation, and push creatures apart before they come within contact distance.\nDone when: Three creatures sheets taken 10 minutes apart show no two creatures interpenetrating.\nEvidence: reviews/motion/creatures.png",
+      "detail": "perfectionist-0172 [creatures, medium]: In the creatures sheet the sheep stands with its head through the pig's flank. Earlier reviews saw a crab inside the pig's head. Separation lets bodies interpenetrate when they chat or meet.\nWhere: system separation.jl / greetings\nSuggestion: Use each creature's real footprint (mesh hull or capsule) in separation, and make chatting partners stop at hull distance plus a step.\nDone when: Three creatures.png sheets taken a minute apart show no creature mesh intersecting another.\nEvidence: reviews/p172/motion/creatures.png row 4, left three",
       "est_minutes": 30.0,
       "id": 759,
       "kind": "review",
@@ -10623,8 +10623,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Clipping: a crab inside the pig's head, Pinchy's face inside the yacht's wheel",
-      "updated": "2026-11-28T10:12:39.204"
+      "title": "Creatures overlap: the sheep's head inside the pig, a crab inside a head",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T03:02:55.288",
@@ -10782,7 +10782,7 @@
     },
     {
       "created": "2026-11-28T07:44:30.099",
-      "detail": "perfectionist-0169 [world, medium]: In the orbit and free cameras, a flat grey-blue band sits above the dark sea with a straight edge, as if the sky ended there.\nWhere: sky/haze at the horizon\nSuggestion: Blend the sea's far edge into the sky's horizon colour with distance fog, and add a soft moonlit glint path.\nDone when: Orbit screenshots at noon, dusk and night show no horizontal edge at the horizon.\nEvidence: reviews/p169/cam-orbit.png, cam2-free-2.png (05:22)",
+      "detail": "perfectionist-0172 [camera, medium]: A straight, sharp horizontal line cuts the frame where the sea plane ends and the sky starts, with a lighter band above it. It is the first thing the eye catches in orbit.\nWhere: orbit camera, horizon\nSuggestion: Extend the sea to the horizon or fade it into the sky with distance fog in both RayMakie and WebGL, and keep a soft aerial haze.\nDone when: An orbit screenshot shows no row of pixels with a contrast step above 10% along the horizon.\nEvidence: reviews/p172/orbit.png",
       "est_minutes": 30.0,
       "id": 771,
       "kind": "review",
@@ -10791,8 +10791,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "A hard seam where the sea meets the sky in orbit and free views",
-      "updated": "2026-11-28T10:12:39.204"
+      "title": "A hard seam where the sea meets the sky in orbit view",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T08:12:36.619",
@@ -10815,12 +10815,12 @@
       "id": 773,
       "kind": "review",
       "priority": 1,
-      "result": "s168 physics: physics/stuck.jl (rim on real ground: main contact patch + patches ahead, load history, rolling presses only behind its bottom; settle + warm-started settle_from 4x faster), check physics/stuck_check.jl passes: flat 194.15 = towed 194.15 N, rolling in the sand field 193.1 N, friends' 6.3 cm holes -> breakout 297 N, dug ramp 42 N; pony push ~357 N, Lumi ~52 N. Not in the game yet (no publish): per-wheel soil must come with dig/push in one publish.\ns168 end: Stuck.CartSand + cart_step! (8x8 m field at 4 cm under the cart, 4 wheels at any heading, one press): median 0.83 ms a frame, p95 19 ms from 12% fallbacks to the full settle (start of rolling; rear wheels in the front wheels' ruts): fix before the plugin uses it (projects/stuck.md 'WHERE THE FALLBACKS ARE').\ns169 PART 1 PUBLISHED (plugins/landyacht.jl): the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight (wet band firm, cove dry): parked in the cove the wheels sit 32.5 mm deep, 194 N holds them (the sail's ~92 N cannot). Q by the cart calls the nearest friend: it runs over (steps round blocks), leans on the stern, pushes with its hooves' grip in the sand (357 N dry, tapered to 0 at 2.5 m/s): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn behind. Yacht system 2.1 ms median/2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png. Also fixed physics/stuck.jl settle_at's bracket (returned 426 N of 233 in ruts) and bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: E digs, a plank under a wheel, soil per wheel, the sand square following the cart, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight: parked in the dry cove 32.5 mm deep, 194 N (the sail's ~92 N cannot move it). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump): three scoops ahead of each wheel took the hold 194 -> 118 N (uneven: wheel 1 -60 N, the others 0.4-8 N, to find out). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: why wheels 2-4 gain little from digging, plank under a wheel, soil per wheel, sand square that moves with the cart, lean/dig poses, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight, settled twice so it stands in its own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot, strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump to repose): close to a tyre -8 to -26 N a wheel, but a hole (not a ramp) drops the wheel against the far wall (+100 N): digging is a skill. Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; numbers in projects/stuck.md s169. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: heap thrown to the side, dig and lean poses, plank under a wheel, soil per wheel, sand square moving with the cart, the traced film at low sun.\ns169 PUBLISHED (4 publishes): (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), each wheel's own soil from beach_weight, settled in their own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot; strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks, gives up aloud), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2-8.5 m in ~9 s at ~1 m/s. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped to Lumi's right, slump to repose): close to a tyre -8 to -26 N a wheel, a hole instead of a ramp +100 N: a skill. Six close scoops at the front wheels 136 -> 110 N. (4) The sand square moves with the cart, ruts kept (-19..-27 mm 1-2.75 m behind after a re-centre). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; all numbers in projects/stuck.md s169. physics/stuck.jl: settle_at bracket bug fixed, bracketed Newton, soils per wheel; stuck_check passes. STILL TO DO: plank under a wheel, scoop and lean poses, beach-wide ruts, the traced film at low sun (the post).",
+      "result": "s168 physics: physics/stuck.jl (rim on real ground: main contact patch + patches ahead, load history, rolling presses only behind its bottom; settle + warm-started settle_from 4x faster), check physics/stuck_check.jl passes: flat 194.15 = towed 194.15 N, rolling in the sand field 193.1 N, friends' 6.3 cm holes -> breakout 297 N, dug ramp 42 N; pony push ~357 N, Lumi ~52 N. Not in the game yet (no publish): per-wheel soil must come with dig/push in one publish.\ns168 end: Stuck.CartSand + cart_step! (8x8 m field at 4 cm under the cart, 4 wheels at any heading, one press): median 0.83 ms a frame, p95 19 ms from 12% fallbacks to the full settle (start of rolling; rear wheels in the front wheels' ruts): fix before the plugin uses it (projects/stuck.md 'WHERE THE FALLBACKS ARE').\ns169 PART 1 PUBLISHED (plugins/landyacht.jl): the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight (wet band firm, cove dry): parked in the cove the wheels sit 32.5 mm deep, 194 N holds them (the sail's ~92 N cannot). Q by the cart calls the nearest friend: it runs over (steps round blocks), leans on the stern, pushes with its hooves' grip in the sand (357 N dry, tapered to 0 at 2.5 m/s): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn behind. Yacht system 2.1 ms median/2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png. Also fixed physics/stuck.jl settle_at's bracket (returned 426 N of 233 in ruts) and bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: E digs, a plank under a wheel, soil per wheel, the sand square following the cart, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight: parked in the dry cove 32.5 mm deep, 194 N (the sail's ~92 N cannot move it). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump): three scoops ahead of each wheel took the hold 194 -> 118 N (uneven: wheel 1 -60 N, the others 0.4-8 N, to find out). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: why wheels 2-4 gain little from digging, plank under a wheel, soil per wheel, sand square that moves with the cart, lean/dig poses, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight, settled twice so it stands in its own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot, strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump to repose): close to a tyre -8 to -26 N a wheel, but a hole (not a ramp) drops the wheel against the far wall (+100 N): digging is a skill. Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; numbers in projects/stuck.md s169. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: heap thrown to the side, dig and lean poses, plank under a wheel, soil per wheel, sand square moving with the cart, the traced film at low sun.\ns169 PUBLISHED (4 publishes): (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), each wheel's own soil from beach_weight, settled in their own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot; strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks, gives up aloud), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2-8.5 m in ~9 s at ~1 m/s. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped to Lumi's right, slump to repose): close to a tyre -8 to -26 N a wheel, a hole instead of a ramp +100 N: a skill. Six close scoops at the front wheels 136 -> 110 N. (4) The sand square moves with the cart, ruts kept (-19..-27 mm 1-2.75 m behind after a re-centre). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; all numbers in projects/stuck.md s169. physics/stuck.jl: settle_at bracket bug fixed, bracketed Newton, soils per wheel; stuck_check passes. STILL TO DO: plank under a wheel, scoop and lean poses, beach-wide ruts, the traced film at low sun (the post).\nperfectionist-0172: The author shelved digging (s172 'put the sand away'); reopen only if the yacht's dig comes back",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Digging the yacht free shows nothing: no scoop pose, no visible hole, keys hidden",
-      "updated": "2026-11-28T10:12:39.204"
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T10:30:18.119",
@@ -10871,12 +10871,12 @@
       "id": 777,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0172: measured_fps is defined in dashboard.jl:418 and the top bar shows 30 fps; all plugins load ok",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "A frame failed: UndefVarError: `measured_fps` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.",
-      "updated": "2026-11-28T10:51:19.370"
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T11:19:19.091",
@@ -10908,17 +10908,17 @@
     },
     {
       "created": "2026-11-28T12:04:21.859",
-      "detail": "Iron-stator motor staked in the sand, rope to anything (log, boulder, empty cart); hauls or stalls by its solved torque (softiron.jl core + em.jl + motor.jl + circuit.jl, rope in PrintSim). Done when: in Jump in the player hooks the empty cart and the motor on six pots drags it up the plank track at a speed the power budget allows (~0.1 m/s), a log in sand crawls, the loaded cart stalls; nothing tuned to a load; published; a traced film following the rope.",
+      "detail": "perfectionist-0172 [wow, high]: The site's last piece is from 05:59 (session ~166). Sessions 167–172 produced torque tables, a sled that won't roll, a shelved lead cast and a motor that spins on its own stand. A visitor to /sprout/ sees nothing new for a whole day.\nWhere: world/site/index.html; plugins/irondrum.jl\nSuggestion: Ship the winch this session as a picture, not a number: the six pots, the drum, a 4:1 belt and a rope going taut, with the empty cart creeping 4 cm/s up the planks at low sun. Make it a traced short with one cut from the spinning commutator sparks to the rope. Show grease against no grease side by side; that is the nerdy joke the numbers already contain.\nDone when: A new piece in site/index.html with a traced film under site/films where the cart visibly moves at least 30 cm along the planks, pulled by a rope from a drum that is visibly turning.\nEvidence: site/index.html line 24 (newest piece, 28 Nov 05:59); journal s171 'no post' twice, s172 'No post: nothing to look at yet'",
       "est_minutes": 300.0,
       "id": 780,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 35.0,
       "status": "doing",
-      "title": "The cart's motor on a rope: winch anything up the beach (projects/winch.md)",
-      "updated": "2026-11-28T12:24:09.402"
+      "title": "Six sessions without a post: film the drum motor hauling the empty cart up the planks",
+      "updated": "2026-11-28T12:43:09.999"
     },
     {
       "created": "2026-11-28T12:16:13.248",
@@ -10933,6 +10933,76 @@
       "status": "open",
       "title": "Planté's lead accumulator: the only way the LOADED cart moves (after the winch)",
       "updated": "2026-11-28T12:16:13.248"
+    },
+    {
+      "created": "2026-11-28T12:43:09.999",
+      "detail": "perfectionist-0172 [animation, high]: Pinchy jitters left and right while scuttling, and in the pond its body flickers between sunk and surfaced: in the strip only its eye stalks and hat stay above the opaque water. Wibbles moves in uneven steps. This category was 6 at s169 and is worse now.\nWhere: crab gait / Pinchy (plugins/gait.jl, makeover.jl crabby)\nSuggestion: Low-pass the crab's heading and the claws' target with a critically damped spring, and make the scuttle a sideways gait with alternating leg tetrapods instead of a yaw wobble. In water, float the crab or let it walk the bottom visibly through clear water.\nDone when: live_motion lists Pinchy and Wibbles under 'Moving well' (no creature vibrating or juddering) in two runs in a row.\nEvidence: live_motion: reviews/p172/motion/motion.png and motion-strip.png ('Pinchy: body turns back 9 times a second, claw_l and claw_r too'; 'Wibbles: body moves in uneven steps 44%')",
+      "est_minutes": 30.0,
+      "id": 782,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Pinchy vibrates: body and claws turn back 9 times a second",
+      "updated": "2026-11-28T12:43:09.999"
+    },
+    {
+      "created": "2026-11-28T12:43:09.999",
+      "detail": "perfectionist-0172 [materials, high]: The village pond renders as a flat dark blue-grey plane. A crab that walks in disappears except for its eyes and hat, with no refraction, no depth darkening and no caustics. The sea already proves the engine can do water. In the waterfight film the same pond is a flat painted disc with lily pads stuck on it.\nWhere: the pond by the cottage (and its film waterfight.mp4)\nSuggestion: Give the pond the sea's dielectric water material with a shallow bed mesh under it (pebbles, mud, weed), an absorbing medium so the middle goes darker (#542), and ripples where creatures enter. Splash already exists as a system: drive the surface from it.\nDone when: A traced still at the pond shows a submerged crab's legs refracted through the surface and the bed visibly darker toward the middle.\nEvidence: reviews/p172/motion/motion-strip.png row 1; reviews/motion/perfectionist-0172/waterfight-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 783,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The pond is an opaque slate sheet: creatures vanish into it",
+      "updated": "2026-11-28T12:43:09.999"
+    },
+    {
+      "created": "2026-11-28T12:57:13.806",
+      "detail": "MethodError: no method matching Int64(::GeometryBasics.OffsetInteger{-1, UInt32})\nThe type `Int64` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  (::Type{T})(::T) where T<:Number\n   @ Core boot.jl:965\n  Int64(!Matched::Float64)\n   @ Base float.jl:919\n  Int64(!Matched::Float32)\n   @ Base float.jl:919\n  ...\n\nStacktrace:\n  [1] _broadcast_getindex_evalf\n    @ ./broadcast.jl:699 [inlined]\n  [2] _broadcast_getindex\n    @ ./broadcast.jl:672 [inlined]\n  [3] _getindex\n    @ ./broadcast.jl:695 [inlined]\n  [4] _broadcast_getindex\n    @ ./broadcast.jl:671 [inlined]\n  [5] (::Base.Broadcast.var\"#copy##0#copy##1\"{Base.Broadcast.Broadcasted{Base.Broadcast.Style{Tuple}, Nothing, typeof(+), Tuple{Base.Broadcast.Broadcasted{Base.Broadcast.Style{Tuple}, Nothing, Type{Int64}, Tuple{Tuple{GeometryBasics.OffsetInteger{-1, UInt32}, GeometryBasics.OffsetInteger{-1, UInt32}, GeometryBasics.OffsetInteger{-1, UInt32}}}}, Int64}}})(k::Int64)\n    @ Base.Broadcast ./broadcast.jl:1124\n  [6] ntuple\n    @ ./ntuple.jl:52 [inlined]\n  [7] copy\n    @ ./broadcast.jl:1124 [inlined]\n  [8] materialize\n    @ ./broadcast.jl:894 [inlined]\n  [9] (::Main.Plugin_irondrum.var\"#id_merge##0#id_merge##1\"{Int64})(f::GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}})\n    @ Main.Plugin_irondrum ./none:-1\n [10] iterate\n    @ ./generator.jl:48 [inlined]\n [11] collect(itr::Base.Generator{Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}, Main.Plugin_irondrum.var\"#id_merge##0#id_merge##1\"{Int64}})\n    @ Base ./array.jl:790\n [12] id_merge(ms::Vector{Any})\n    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:36\n [13] id_coil(k::Int64)\n    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:58\n [14] id_ensure!(game::Game)\n    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:128\n [15] step!(::Main.Plugin_irondrum.IronDrum, game::Game, dt::Float64)\n    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:151\n [16] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [17] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n [18] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n [19] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [20] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [21] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [22] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::In",
+      "est_minutes": 15.0,
+      "id": 784,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T12:57:15.038: plugin irondrum loaded cleanly.\nHappened again at 2026-11-28T12:57:16.794.\nClosed at 2026-11-28T12:57:33.889: plugin irondrum loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:irondrum.IronDrum failed in step! and was switched off",
+      "updated": "2026-11-28T12:57:33.889"
+    },
+    {
+      "created": "2026-11-28T13:04:16.937",
+      "detail": "s173 the drum sparks from break-before-make (brush 8 < gap 20 deg). Next: brush width/angle as parts the player sets in Jump in; a brush wider than the gap shorts the coil (its current decays with tau = L/R over the bridge time, the spark is 1/2 L of what is left); the neutral shifts with load. Sparks bluer and dimmer (Emission (0.62,0.74,1) x60 saturates white). Done when: in Jump in a key turns the brush holder, the sparks per second and the speed change by the physics, and a traced dusk still shows violet sparks.",
+      "est_minutes": 15.0,
+      "id": 785,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Rock the brushes: the brush holder turns, wide brushes short the coil, sparks fade at the neutral",
+      "updated": "2026-11-28T13:04:16.937"
+    },
+    {
+      "created": "2026-11-28T13:04:17.160",
+      "detail": "physics/motor2d.jl solve_nl at 16 Picard passes relax 0.5 gives flux linkage -26..+26 A-turns that is not monotone: not converged (slot bridges saturating). More passes, smaller relax or Newton; then replace the guessed L_circuit = 4 mH in Motor.iron_drum_bench. Also the solid drum's eddies (skin depth ~0.7 mm at 8 ms). Done when: lambda(NI) monotone and two settings agree within 5%.",
+      "est_minutes": 15.0,
+      "id": 786,
+      "kind": "fix",
+      "priority": 3,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Converge Motor2D.solve_nl for the drum coil's inductance (lambda(NI) came out non-monotone)",
+      "updated": "2026-11-28T13:04:17.160"
     }
   ]
 }

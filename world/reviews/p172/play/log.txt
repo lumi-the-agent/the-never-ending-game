@@ -1,0 +1,19 @@
+firefly after 60.2 s: state=playing score=7 t=57.666666666665954
+firefly caught 7 of 8
+hide: over at 33.9 s
+hide after 34.7 s: state=over t=32.700000000000706
+hide found 4 of 4
+berry: over at 46.1 s
+berry after 46.9 s: state=over score=10 t=44.966666666666676
+berry me 10 vs rivals [2, 0, 2]
+jump in: NeverendingGame.JumpIn
+jump in walked 3.47 m in 3 s
+jump key e: Lumi action idle, goal idle
+jump key q: Lumi action idle, goal idle
+jump key r: Lumi action idle, goal idle
+jump key f: Lumi action idle, goal idle
+jump key g: Lumi action idle, goal idle
+jump key h: Lumi action idle, goal idle
+jump key _1: Lumi action idle, goal idle
+jump key _6: Lumi action idle, goal idle
+jump key space: Lumi action idle, goal idle
