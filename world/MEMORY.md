@@ -18,10 +18,19 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s182 NEW PROJECT projects/plante.md 'Form the plates the way Plante did' (passed, todo #812; fieldcoil.md SHELVED).
+  physics/plante.jl: Tafel split solid vs gas per plate; 6 h from the pots: left on 0 Ah, swapped hourly 0.25 Ah.
+  Film movies/plante.jl (jar beside the pots, swap at 2.5 s, quiet while the lead drinks the current). Post
+  'Swap the leads' = pending/plante-swaps-the-leads.json, waits on 203732-233-clip + 203732-631-run (lands ~23:00):
+  WATCH it. An old unreadable take (202255-902) is copied to the same path first (202255-930); the new one overwrites. Plugin draft projects/plante/plugin-draft.jl is 430 ms/frame: fix before it goes in plugins/.
+  s182: copper-on-iron still REPLACED by a noon still from the open side (drum_still eye (-0.30,-0.26,0.24)): still
+  redo (the arch hides the coils from above and is a flat box, pots off frame). All three misses stand.
 - s181 NEW PROJECT projects/planks.md 'Lay the plank road yourself' (passed, todo #807; dune.md SHELVED). physics/plankdrop.jl
   drops oak planks on the road's real sand (PrintSim bodies). FOUND: BodySolver's step bound is GLOBAL, one resting plank
   froze the others mid-air (todo #808: per-body bounds in dev/PrintSim affine.jl). Post 'Planks that stop in the air'
-  PENDING (job 20261128-193459-355-clip -> site/films/planks-that-stop-in-the-air.mp4): WATCH it first next session.
+  POSTED 20:00 (s182 watched it): 7 s, NOTHING MOVES: fixed camera, planks already hanging from frame 1, lower half
+  of the frame dark shadow. A still, not a drop. Expect a redo; the retake = the per-body fix, then the planks FALL
+  and settle in good light, camera low on the sand.
   The cart retake (s180) LANDED 19:26 in site/films/cart-on-a-cord.mp4 (cart drives through the frame; clip pop unclear).
 - s179 NEW PROJECT projects/fieldcoil.md 'Wind the field coil yourself' (critic passed, todo #798; winch.md SHELVED).
   Solved in physics/motor2d.jl Geo(field = true, NIf) (tools/magnet2d env): stones = ~550 A-turns/pole; on six pots the

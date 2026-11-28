@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "The id_wound_field! docstring says 'the motor still runs on the stones' table until the wound table drives it'. ID[:b] = Motor.iron_drum_bench() is unchanged and goes into Motor.step!. A grep finds no FieldCoil.stall or FieldCoil.drive call in any plugin, so ID[:field] = :wound only changes which meshes are drawn.",
+      "severity": "high",
+      "suggestion": "Make a Motor build whose drum torque/EMF table comes from FieldCoil.drive(turns*I) with the field in series (current-dependent, through the field coils' resistance and inductance). Then show it running visibly slower or stalling under the rope load next to the stones' run.",
+      "what": "The caption says 'this coil makes about a ninth of the stones' pull', but the motor in the game still runs on the stones' field. With the wound field drawn, a switched-on drum would turn exactly as strongly as it did with the lodestones.",
+      "where": "plugins/irondrum.jl:234, :322, :370; physics/fieldcoil.jl stall()"
+    },
+    {
+      "evidence": "The copper cylinder right of the drum shows no visible turn or layer texture. The second pole's coil is out of view. The yoke is an untextured dark rectangle that takes up the middle of the frame.",
+      "severity": "medium",
+      "suggestion": "Frame the shot along the axle or from the side so both poles and their windings fill the picture. Light it so individual turns catch highlights (raking light on the 0.8 mm tube). Put a before/after with the lodestones next to it.",
+      "what": "The subject of the post is hard to find. You see the armature's rectangular copper loop, but only one field coil, half hidden behind it. That coil reads as a solid copper drum, not 200 laid turns. The 'arch' is a flat black box.",
+      "where": "copper-on-iron.png, centre and right"
+    },
+    {
+      "evidence": "The flame is clipped to pure white with no gradient. The lamp's saucer takes up about a fifth of the frame. The cores and coils are mostly in shadow.",
+      "severity": "medium",
+      "suggestion": "Move the lamp behind or beside the motor as a rim or key light (or drop the exposure on the flame), and fill in the shadows on the coils.",
+      "what": "The lamp in the foreground is a blown-out white blob on a large orange disc. It is the brightest, biggest and sharpest thing in the picture and pulls the eye away from the motor, which sits in near-darkness.",
+      "where": "copper-on-iron.png, bottom left"
+    }
+  ],
+  "fun": 2,
+  "fun_why": "Nothing moves or answers the player: a weaker motor you can only read about, in a dark still where the new coil is half hidden.",
+  "real": 4,
+  "real_change": "Kept in the game: physics/fieldcoil.jl lays the 200 turns layer by layer. That gives the wire length, resistance and mass, and the same polyline is drawn as one copper tube, so the drawn turns are the counted turns. FieldCoil.stall works out the series-wound current on six pots and looks up the drive torque in a 2D FEM table (motor2d.jl Geo(field=true, arch=true), saved in data/fieldcoil-torque.csv). That calculation is where 'about a ninth' comes from. In irondrum.jl, ID[:field] = :wound only swaps the meshes (cores, coils, arch, chocks; irondrum.jl:236-252). Its own docstring says 'the motor still runs on the stones' table until the wound table drives it' (irondrum.jl:234), and Motor.step! still uses Motor.iron_drum_bench(), the stones' build (irondrum.jl:322,370). FieldCoil.stall/drive is never called from any plugin. So the running motor does not feel the coil at all. The ninth is an offline number and only the look changed.",
+  "real_why": "The winding model and the saturating FEM table are good engineering, but they are one hard-coded geometry and pot set, and they don't drive the motor in the game yet.",
+  "summary": "A moody dusk still of the drum motor with a cast-iron arch and a copper field coil. The coil geometry really comes from the winding model, but the drum motor in the game still runs on the lodestones' torque table, and the picture barely shows the coil the caption is about.",
+  "superseded_by": "perfectionist-0181.json",
+  "surprise": 3,
+  "surprise_why": "Swapping permanent magnets for a wound field is the expected next step in a motor series the island has posted about for ten sessions, and the post shows a still of new parts, not new behaviour.",
+  "verdict": "needs_work"
+}

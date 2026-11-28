@@ -1693,3 +1693,23 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   `mv` the partial file to media/ while it renders: VideoIO keeps writing through its open handle (same inode).
   The writer opens at the FIRST frame (render.jl ~474): a 48-byte file (ftyp + mdat header) means it is open and
   rendering; x264's lookahead (~40 frames, preset slow) keeps the size at 48 bytes for minutes. mv it once it exists.
+
+## Plante's jar (s182, physics/plante.jl, movies/plante.jl, project plante)
+- `include`d files (physics/*.jl into my session, or Base.include into a plugin) are NOT tracked by Revise: after
+  editing physics/plante.jl my session kept the old `form` (no `plates` kwarg) until I included it again.
+- A mesh whose points are all equal ("nothing grown yet") breaks path tracing for the WHOLE screen ("Geometry has
+  no valid triangles", RayMakie mesh.jl:63, every later screenshot fails). Use a tiny real triangle hidden inside.
+- A flat Glass disc from a lathe profile (0,0)->(r,0) faces DOWN (tangent x radial = -z): for a liquid surface
+  seen from above give the profile (r,0)->(0,0) so its normal points up.
+- A glass jar at 24 spp: 22 s a frame in the worker (a 9 s film = 80 min). Glass costs; plan 16 spp and short.
+- The plugin draft (projects/plante/plugin-draft.jl) cost 430 ms a frame median in the sandbox and its meshes did not
+  rebuild after a reload; one Plante.form step costs 0.3 ms and the 3 h pre-run 0.27 s, so something re-ran the
+  pre-run (ensure!) every frame. Find it with live_status's plugin errors before publishing.
+- Worker clips cannot be cancelled: a test frame queued right before the film is useless for the film's framing. Look
+  at the test frame FIRST (own session: include the movie script, call it with seconds = 0.05), then queue the film.
+- A glass JAR: NG.Hikari.ThinDielectric(ior = 1.5f0) reads as thin glass you look through (s182 frame 4); Glass() on
+  a lathe-made jar with a Glass acid disc made a murky lens and hid everything inside (frames 1-2). ThinDielectric
+  takes no colour (warning, harmless).
+- Test frame in my own session: CT = Module(:X); Core.eval(CT, :(include(p) = Base.include($CT, p)));
+  Base.include(CT, "movies/....jl"); Base.invokelatest(CT.f, path; seconds = 0.05, fade = 0.0). First call 5.5 min
+  (compile), then 1.5-3.5 min. `include` the movie into Main fails when Main already has `const NG`.

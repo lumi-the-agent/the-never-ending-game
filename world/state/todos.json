@@ -2326,17 +2326,17 @@
     },
     {
       "created": "2026-11-23T08:49:12.836",
-      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##18((trace_marker_mesh, trace_transforms, trace_materials, trace_uv_groups, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/meshscatter.jl:464\n  with edge inputs:\n    trace_marker_mesh = Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}(...)\n    trace_transforms = StaticArraysCore.SMatrix{4, 3, Float32, 12}[[1.2718166 0.9469233 0.0; -0.9469233 1.2718166 0.0; 0.0 0.0 1.585617; -1.6675594 2.6824572 2.2426062]]\n    trace_materials = Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}[Hikari.GLTF{NTuple{4, Float32}, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Float32, Float32, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}, Nothing, Int64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Symbol, Float32, Float64, Int64, Nothing, Int64, Nothing, Int64, Nothing, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Nothing, Int64, Nothing, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Int64, Int64, Int64}((1.0f0, 1.0f0, 1.0f0, 1.0f0), Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}(Hikari.RGBSpectrum[Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]) Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]); Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) Hikari.RGBSpectrum(Float32[0.12477184, 0.000303527, 0.000303527, 1.0]) … Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]) Hikari.RGBSpectrum(Float32[0.6038274, 0.42869055, 0.27889434, 1.0]); … ; Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) … Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]); Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.034339808, 0.008568125, 1.0]) … Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.1221388, 0.0, 0.0, 1.0])], Hikari.RGBSpectrum(Float32[0.0, 0.0, 0.0, 1.0]), false), 1.0f0, 1.0f0, Hikari.Texture{Hikari.RGBSpectrum, 2, Matrix{Hikari.RGBSpectrum}}(Hikari.RGBSpectrum[Hikari.RGBSpectrum(Float32[0.0, 0.34509805, 0.0, 1.0]) Hikari.RGBSpectrum(Float32[0.0, 0.34509805, 0.0, 1.0]) … Hikari.RGBSpectrum(Fl",
+      "detail": "Failed to resolve trace_renderobject:\n[ComputeEdge] trace_renderobject = #draw_atomic##2((mesh, positions_transformed_f32c, faces, normals, texturecoordinates, uv_transform, trace_color_tex, model_f32c, material, material_fields, raster_path, visible, ), changed, cached)\n  @ /sim/Programmieren/SimGame/dev/Makie/RayMakie/src/plots/mesh.jl:63\n  with edge inputs:\n    mesh = Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}(...)\n    positions_transformed_f32c = GeometryBasics.Point{3, Float32}[[4.62, -15.092, 0.9467138], [4.62, -15.092, 0.9467138], [4.62, -15.092, 0.9467138]]\n    faces = GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}[GLTriangleFace(1, 2, 3)]\n    normals = GeometryBasics.Vec{3, Float32}[[NaN, NaN, NaN], [NaN, NaN, NaN], [NaN, NaN, NaN]]\n    texturecoordinates = nothing\n    uv_transform = Float32[0.0 -1.0 1.0; 1.0 0.0 0.0]\n    trace_color_tex = Hikari.Texture{Hikari.RGBSpectrum, 0, Array{Hikari.RGBSpectrum, 0}}(fill(Hikari.RGBSpectrum(Float32[0.07323897, 0.078288324, 0.08898155, 1.0])), Hikari.RGBSpectrum(Float32[0.07323897, 0.078288324, 0.08898155, 1.0]), true)\n    model_f32c = Float32[1.0 0.0 0.0 0.0; 0.0 1.0 0.0 0.0; 0.0 0.0 1.0 0.0; 0.0 0.0 0.0 1.0]\n    material = Hikari.Principled{Tuple{Float64, Float64, Float64}, Float64, Float64, Float64, Int64, Nothing, Int64, Int64, Tuple{Int64, Float64, Float64}, Float64, Float64, Int64, Float64, Tuple{Int64, Int64, Int64}, Int64, Int64, Nothing, Int64, Int64, Int64, Int64, Float64, Float64, Tuple{Int64, Int64, Int64}, Nothing, Int64, Float64, Tuple{Int64, Int64, Int64}, Tuple{Int64, Int64, Int64}, Int64, Int64, Float64, Bool, Symbol}((0.3, 0.31, 0.33), 0.2, 0.95, 1.5, 1, nothing, 0, 0, (1, 0.2, 0.1), 0.05, 1.4, 0, 0.5, (1, 1, 1), 0, 0, nothing, 0, 0, 20, 0, 0.03, 1.5, (1, 1, 1), nothing, 0, 0.5, (1, 1, 1), (1, 1, 1), 0, 0, 1.33, false, :multi_ggx)\n    material_fields = ComputePipeline.FieldVersions(:subsurface_radius => 1, :alpha => 1, :sheen_weight => 1, :specular_ior_level => 1, :tangent => 1, :transmission_dispersion_abbe_number => 1, :metallic => 1, :anisotropic_rotation => 1, :diffuse_roughness => 1, :subsurface_anisotropy => 1…)\n    raster_path = false\n    visible = true\nTriggered by update of:\n  visible, space, uv_transform, raster_path, arg1, f32c, material_fields, model, color, transform_func or material\nDue to ERROR: Geometry has no valid triangles\nStacktrace:\n  [1] error(s::String)\n    @ Base ./error.jl:44\n  [2] meshtriangles(mesh::GeometryBasics.Mesh{3, Float32, GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}, (:position, :normal, :face_meta), Tuple{Vector{GeometryBasics.Point{3, Float32}}, Vector{GeometryBasics.Vec{3, Float32}}, GeometryBasics.FaceView{Hikari.TriangleMeta, Vector{Hikari.TriangleMeta}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}}}, Vector{GeometryBasics.NgonFace{3, GeometryBasics.OffsetInteger{-1, UInt32}}}})\n    @ Raycore /sim/Programmieren/SimGame/de",
       "est_minutes": 15.0,
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.\nperfectionist-0157: Fixed s34; screenshots work, several taken this review.\nHappened again at 2026-11-28T13:17:20.205.\nperfectionist-0175: live_screenshot works repeatedly this review",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.\nperfectionist-0157: Fixed s34; screenshots work, several taken this review.\nHappened again at 2026-11-28T13:17:20.205.\nperfectionist-0175: live_screenshot works repeatedly this review\nHappened again at 2026-11-28T20:17:45.544.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "done",
+      "status": "open",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-28T15:16:32.381"
+      "updated": "2026-11-28T20:17:45.544"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -6671,12 +6671,12 @@
       "id": 477,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: Depends on FLIGHT (flight plugin removed in s177).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A nest on the cottage roof: look at the generated nest (asset 20261125-114654-365, its bird and eggs cut away at NEST_CUT 0.62 of its height) with FLIGHT[:try_nest] in the sandbox, then set NEST_OK in flight.jl so one flight in three ends there",
-      "updated": "2026-11-25T12:11:32.291"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-25T12:17:57.921",
@@ -7413,12 +7413,12 @@
       "id": 530,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: missme plugin removed; only a camera-blocker reference remains.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Did they miss me: the first real answer, filmed on faces and a board you can read",
-      "updated": "2026-11-26T04:14:32.999"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-26T04:00:46.124",
@@ -7609,12 +7609,12 @@
       "id": 544,
       "kind": "feature",
       "priority": 3,
-      "result": "",
+      "result": "perfectionist-0181: One more label gag; the human's goal 1 says explicitly 'not one more label'.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Words you can see: the word floats from one beak to the next",
-      "updated": "2026-11-26T09:10:14.547"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-26T08:33:47.317",
@@ -7959,12 +7959,12 @@
       "id": 569,
       "kind": "build",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: Sun under the sea was removed in the s177 cull.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Sun under the sea in films: light through the water without losing the GPU",
-      "updated": "2026-11-26T13:17:00.766"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-26T13:24:23.802",
@@ -8113,12 +8113,12 @@
       "id": 580,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: The falling-day (dayfall) plugin no longer exists.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Film the falling day as it really goes: me walking and laying it, tipping it at dusk, the whole spiral down",
-      "updated": "2026-11-26T15:46:27.116"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-26T16:32:33.886",
@@ -8505,12 +8505,12 @@
       "id": 608,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: The glass sea was removed by the human in s177.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Skate on the glass sea myself: the player slides too",
-      "updated": "2026-11-26T22:00:45.714"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-26T22:00:45.721",
@@ -8981,16 +8981,16 @@
       "id": 642,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0181: There is no ice plugin left on the island to crack.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Thin ice part 2: cracks as lines, on the GPU, and the player can fall through",
-      "updated": "2026-11-27T03:30:40.068"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0178 [fun, high]: The physics the author built is real and surprising: rope piling up changes the pull, the gear ratio decides stall or haul, downhill turns the motor into a brake that charges the pots. A player can do none of it. The mini game menu is still Jump in, Firefly catch, Hide and seek and Berry race, the same as at s172.\nWhere: Mini game menu; plugins irondrum, cartcord\nSuggestion: Add a 'Haul' game: the player picks the gear (3:1, 6:1, 15:1), a drum diameter and how many pots, then switches on. The goal is to get the cart or a heavier log up the planks. The player watches it stall as the rope fattens, or brake down the dune, and a counter shows the charge won back. A nerd joke goes on the result card ('15:1: slow but it got there').\nDone when: The mini game list has the winch/cart game, and with FakeInteraction choosing two different gears, two runs end differently (one stalls, one arrives), shown in two screenshots\nEvidence: dashboard 'Things to try' list, reviews/p178/follow.png",
+      "detail": "perfectionist-0181 [fun, high]: Ten sessions built pots, a drum motor, a winch, a gear and a cart, and the player can do nothing with any of it. Seven posts in a row show it from outside. Meanwhile the s177 cull took flight, sneeze, giant and kite out of Jump in, so the player now has fewer verbs than before.\nWhere: plugins/irondrum.jl, cartcord.jl, motorbench.jl; Jump in\nSuggestion: Make it a toy with a programmer's joke in it: Lumi walks to the pots and pulls a plug out of the brine (the cart stops, the volts on a little dial drop), throws the knife switch, puts a stone in the cart and watches it stall on the rise, or swaps stones for the wound field and sees it crawl at 1/9 the pull. Each action changes the real circuit, and the failure is the punchline.\nDone when: A FakeInteraction test in Jump in: walk to the switch, press E, the cart moves (position changes > 0.5 m within 10 s); add a load, it stalls. A screenshot shows Lumi's beak on the switch.\nEvidence: NG.live_tests(\"jump\"): 7 of 24 fail (KITE, SNEEZE, GIANT, FLIGHT, STRANGER undefined; 'T did not start a storm'); site posts s174-s181 all drum motor",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The player can't touch the winch or cart: make the machine a mini game",
-      "updated": "2026-11-28T17:39:23.559"
+      "title": "Hand the machine to the player: crank, switch, load the cart in Jump in",
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9387,12 +9387,12 @@
       "id": 671,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: The bowling pumpkins are gone with the cull.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Knock a hollow pumpkin: the bowling pumpkins ring as hollow shells",
-      "updated": "2026-11-27T08:25:01.719"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T08:25:12.234",
@@ -9457,12 +9457,12 @@
       "id": 676,
       "kind": "feature",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0181: Snow days were removed; no snowball plugin is left.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Snowballs grow into barrels: track the shape, not a radius",
-      "updated": "2026-11-27T09:23:25.793"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T10:07:59.309",
@@ -10185,12 +10185,12 @@
       "id": 728,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0181: The human removed the clock-scripted plugins (glass sea, glass rain, sun under the sea) in s177; none are in plugins/.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Daily clock-scripted events: keep only what the world really causes (glass sea 7:00, glass rain 15:00, sun under the sea 19:00)",
-      "updated": "2026-11-27T20:13:41.388"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T20:41:30.291",
@@ -10390,7 +10390,7 @@
     },
     {
       "created": "2026-11-27T23:15:34.123",
-      "detail": "perfectionist-0178 [materials, high]: Everything on the winch sits on a 1.5 m tall, perfectly round brown cylinder whose texture reads as sandpaper when traced. The motor's field stones are matte black boxes and the rope drum is a black cylinder. This is the 'plain shapes on bare ground' the human ruled out, filmed six times.\nWhere: irondrum/winch block on the beach (reviews/p178/traced.png, follow.png)\nSuggestion: Make it a real oak trestle or a split stump with bark, end grain and checks. Give the stones lodestone's dark metallic sheen with rough rust (a Hikari metal mixed with a rough dielectric), the windings polished copper conductor, and the iron drum brushed iron with a coat. A generated asset for the stump is fine.\nDone when: A traced close-up still shows bark or plank wood under the motor, the stones with a visible specular highlight, and copper that reads as metal; no cylinder with a uniform side remains\nEvidence: reviews/p178/traced.png; site/img/oak-gear-wheel.png",
+      "detail": "perfectionist-0181 [props, high]: Seventh review in a row: the drum motor stands on a fat brown-sand cylinder, the new 'cast iron' arch is a flat black box, the stones are black cubes. In every post this lump is the hero.\nWhere: plugins/irondrum.jl (block, yoke, stones)\nSuggestion: Build the block as what a millwright would: a squared oak bed with bolted cheeks, the arch as a cast-iron frame with a fillet, a parting line and a rough sand-cast surface (Hikari conductor with roughness map plus a rust-brown mix at the edges), lodestones as rough faceted magnetite with metallic glints.\nDone when: A traced close still at 64+ spp in which a stranger would name the block 'oak' and the arch 'cast iron' without being told; no surface in frame is a primitive with a single flat colour.\nEvidence: site/img/copper-on-iron.png; reviews/motion/perfectionist-0181/drum-sparks-overview.jpg; reviews/p181/drum-raster.png",
       "est_minutes": 15.0,
       "id": 743,
       "kind": "review",
@@ -10400,7 +10400,7 @@
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "Winch block, stones and drum still a sand-textured cylinder and black boxes",
-      "updated": "2026-11-28T17:39:23.559"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10460,17 +10460,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0172 [fun, medium]: In Jump in, pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi's action 'idle' each time. The card lists 23 keys but none for the drum motor, the pots or the yacht. Walking D+W for 7 s put Lumi half inside a bush.\nWhere: Jump in (NeverendingGame.JumpIn), the key card\nSuggestion: Cut the card to the keys that do something wherever you stand, and make one key the workshop verb: near the drum, Lumi pushes a knife switch with its beak and the drum spins up with the drum-on sound; near the pots, it tops them up with sea water. Bushes should push Lumi aside.\nDone when: A FakeInteraction test in Jump in walks to the drum, presses the key, sees Lumi's action change and the drum above 3 rev/s within 5 s, with no key on the card that leaves Lumi idle.\nEvidence: reviews/p172/play/log.txt ('jump key …: Lumi action idle' x9), play/jump-key-f.png, play/jump-key-space.png",
+      "detail": "perfectionist-0181 [fun, low]: After the human removed 50 plugins in s177, the tests for kite, flight, sneeze, giant and stranger still run and fail, and T is still in the tests but no storm comes. The suite's failures are noise that hides real breakage.\nWhere: world/tests/minigames.jl:1477-1533, kite_play.jl, s58_play.jl\nSuggestion: Retire the tests of removed plugins with them, and check that every key named on the Jump in card does something.\nDone when: live_tests(\"jump\") passes everything that remains; every key on the Jump in card changes the game state within 2 s in a test.\nEvidence: NG.live_tests(\"jump\"): 7 of 24 fail, 5 of them UndefVarError on removed plugins",
       "est_minutes": 30.0,
       "id": 748,
       "kind": "review",
-      "priority": 2,
+      "priority": 3,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Jump in: nine keys pressed, Lumi stays idle; the motor is out of reach",
-      "updated": "2026-11-28T12:43:09.999"
+      "title": "Jump in: tests and the key card still name the culled plugins",
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10488,17 +10488,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0178 [lighting, high]: Traced at 12:38, the clay oil lamp on the block is a white dot on an orange disc, with no warm pool on the copper, the cogs or the block. The whole island at noon has one sun overhead and short, hard shadows.\nWhere: irondrum lamp; daylight\nSuggestion: Make the flame a small emissive point or sphere light with a real inverse-square falloff, bright enough to throw warm light on the windings at dusk. For day, give noon some character: softer sky fill, a haze toward the sea, and cloud shadows drifting across the meadow.\nDone when: A traced still at dusk shows a visible warm falloff from the lamp onto the copper windings, and a noon eye-level shot shows at least one cloud shadow or haze gradient\nEvidence: reviews/p178/traced.png, media/progress/session-0178/eye-level.png",
+      "detail": "perfectionist-0181 [lighting, medium]: At night the raster is now good: the stone lantern throws a warm pool and the windows glow. At noon the whole workshop corner sits under one flat sun with no contrast, and the clay lamp lights only its saucer, even in the dusk still.\nWhere: lamplight.jl, irondrum.jl lamp; sun/sky\nSuggestion: Give the clay lamp a real point light strong enough to put warm light on the copper and long shadows behind the arch at dusk. At noon, use sky light, contact shadows and a warmer bounce off the sand so the corner gets form.\nDone when: In a traced dusk still the copper coil facing the lamp is measurably brighter (mean luminance +30%) than the side facing away; in a noon still the shaded side of the drum block is under 50% of the lit side.\nEvidence: reviews/p181/drum-traced.png (11:05, flat), reviews/p181/cam-follow-a.png (night, good), site/img/copper-on-iron.png (lamp pool barely reaches the coil)",
       "est_minutes": 30.0,
       "id": 750,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The lamp and glowing things light nothing: midday is flat",
-      "updated": "2026-11-28T17:39:23.559"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-28T00:43:20.946",
@@ -10614,7 +10614,7 @@
     },
     {
       "created": "2026-11-28T02:40:47.220",
-      "detail": "perfectionist-0178 [creatures, high]: The creatures sheet shows the bow-tied sheep's body inside the top-hat pig's head in two separate moments, and a white pier pole running straight through the party-hat crab. Two other creatures are shot from inside tree crowns.\nWhere: Separation system and pier props; reviews/motion/creatures.png rows 4-5\nSuggestion: Use body-volume separation with each species' real radius (not a point). Keep creatures off prop colliders such as poles and posts. For close-ups, move the camera out of tree crowns.\nDone when: Three creatures sheets taken a minute apart show no creature intersecting another creature or a prop\nEvidence: /sim/Programmieren/SimGame/world/reviews/motion/creatures.png",
+      "detail": "perfectionist-0181 [creatures, high]: In the traced still Pickles the pig stands inside the motor bench: its legs among the clay pots, the table's legs through its body. On the creature sheet the sheep at the workbench has a shovel handle through its face.\nWhere: separation.jl / avoidance of props in the workshop corner\nSuggestion: Make the workshop corner's tables, pots, drum and cart road obstacles every creature walks around, and park tools so they don't sit inside a creature at the bench. Better still, let a creature that bumps a pot knock it, so the circuit notices.\nDone when: Over 10 min of sandbox time, sampled every second, no creature's bounding sphere overlaps the motor bench, pots, drum block or a held tool by more than 5 cm; a traced still of the corner with creatures around it shows none inside anything.\nEvidence: reviews/p181/drum-traced.png; reviews/p181/motion/creatures.png (row 4, left)",
       "est_minutes": 30.0,
       "id": 759,
       "kind": "review",
@@ -10623,8 +10623,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Creatures overlap: sheep inside a pig, a pier pole through the crab",
-      "updated": "2026-11-28T17:39:23.559"
+      "title": "Creatures overlap: Pickles inside the motor bench, a shovel through the sheep",
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-28T03:02:55.288",
@@ -10768,17 +10768,17 @@
     },
     {
       "created": "2026-11-28T07:22:46.254",
-      "detail": "perfectionist-0169 [materials, high]: The sail in its only traced picture is a flat beige rectangle with a dark frame and a grey square for a patch, the deck is plain brown planks, and the wheels are discs with painted spokes. It reads as a placeholder next to the sea.\nWhere: plugins/landyacht.jl ly_sail_mesh / ly_canvas\nSuggestion: Give the canvas a visible belly in the mesh even if the physics ignores it. Use Hikari's diffuse transmission so the sun glows through the cloth and shows seams and the patch. Add weathered wood with a coat, rope, and real spokes.\nDone when: A traced still with the sun behind the sail shows light coming through the canvas, a curved belly in silhouette, and wheels with spokes that are actual geometry.\nEvidence: site/img/land-yacht-on-the-beach.png",
+      "detail": "perfectionist-0181 [materials, medium]: From the workshop corner the sail is a huge flat beige slab with hard edges that fills a third of the frame. It reads as a wall, not a sail.\nWhere: plugins/landyacht.jl\nSuggestion: Model a cambered sail with a belly and a curved leech, and use a thin diffuse-transmission canvas so the sun glows through it, with darker seams and the patch showing as a shadow.\nDone when: A traced still against the sun shows the sail lit from behind, with the patch and seams visible as darker shapes, and the outline is curved.\nEvidence: reviews/p181/drum-traced.png (centre-top)",
       "est_minutes": 15.0,
       "id": 770,
       "kind": "review",
-      "priority": 1,
+      "priority": 2,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The land yacht's sail is a white board: belly, light through canvas, spoked wheels",
-      "updated": "2026-11-28T10:12:39.204"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-28T07:44:30.099",
@@ -11006,7 +11006,7 @@
     },
     {
       "created": "2026-11-28T13:55:51.807",
-      "detail": "perfectionist-0178 [camera, medium]: winch-first-haul has the camera at grass height, with two thirds of the frame flat green and the motor far away. In drum-sparks the lamp blob fills the bottom of the frame and the drum's turn never reads.\nWhere: movies for the winch and drum\nSuggestion: Frame the mechanism at 1/3 to 1/2 of the frame height, side-on where the pinion meets the wheel, with the rope coil fattening in focus. Rack focus to the log arriving. Trace it at golden hour.\nDone when: In a machine film's overview sheet, the gear or motor fills at least a third of the frame in 8 of 12 frames, with the turning visible between frames\nEvidence: reviews/motion/perfectionist-0178/winch-first-haul-overview.jpg, drum-sparks-overview.jpg",
+      "detail": "perfectionist-0181 [camera, medium]: winch-first-haul.mp4 is 10 s of a flat green lawn and a log crawling towards a motor that is a speck at the horizon. The cart film is better (the camera rides along), but every film starts with a camera pop (0.09 change at 0.04 s).\nWhere: movies/ (winch, cart, drum films)\nSuggestion: Shoot it like a machine film: a low close start on the drum as the rope winds, a pull focus down the taut rope to the log, a cut to the log's end at grass height. Drop the first frame of each render.\nDone when: In the overview sheet the motor or the log fills at least a quarter of the frame in 10 of 12 frames; motion_sheet shows no jump above 4x typical in the first 0.5 s.\nEvidence: reviews/motion/perfectionist-0181/winch-first-haul-overview.jpg; jumps at 0.04 s in all three films",
       "est_minutes": 15.0,
       "id": 787,
       "kind": "review",
@@ -11016,7 +11016,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Machine films: shot from the grass with the motor a speck",
-      "updated": "2026-11-28T17:39:23.559"
+      "updated": "2026-11-28T20:01:33.962"
     },
     {
       "created": "2026-11-28T13:55:52.049",
@@ -11325,6 +11325,48 @@
       "status": "open",
       "title": "Lumi's beak and crest snap 0.24 m in one frame and swing at 7 m/s (host motion measure s181)",
       "updated": "2026-11-28T19:38:15.433"
+    },
+    {
+      "created": "2026-11-28T20:01:33.962",
+      "detail": "perfectionist-0181 [props, medium]: Right beside the machine, the top arena is a 1.4 m flat brown 12-sided disc lying on the lawn, and the float-top plinth is two flat slate discs. From the dashboard camera they are the largest surfaces in frame.\nWhere: plugins/tops.jl:75 (board Cylinder r 0.7), plugins/floattop.jl:69 (slate)\nSuggestion: Give the tops a real place: a shallow turned bowl of end-grain wood with a lacquer coat (Hikari CoatedDiffuse), worn where tops spin, its rim catching the sun; the magnet plinth as a polished dark stone with a clear coat and a soft reflection of the floating top.\nDone when: A traced still of the board shows a dished bowl with a visible specular coat and grain; the outline is round, not a polygon, at 1080p.\nEvidence: reviews/p181/drum-raster.png and drum-traced.png (centre and bottom right)",
+      "est_minutes": 30.0,
+      "id": 810,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Tops board and float-top plinth are bare flat cylinders on the grass",
+      "updated": "2026-11-28T20:01:33.962"
+    },
+    {
+      "created": "2026-11-28T20:15:45.676",
+      "detail": "MethodError: no method matching anodic(::Main.Plugin_plante.Plante.Plate, ::Float64, ::Main.Plugin_plante.Plante.Kin)\nThe function `anodic` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  anodic(!Matched::Main.Plugin_plante.Plante.Plate, ::Any, ::Main.Plugin_plante.Plante.Kin)\n   @ Main.Plugin_plante /sim/Programmieren/SimGame/world/physics/plante.jl:43\n\nStacktrace:\n  [1] potential(f::typeof(Main.Plugin_plante.Plante.anodic), p::Main.Plugin_plante.Plante.Plate, j::Float64, k::Main.Plugin_plante.Plante.Kin; lo::Float64, hi::Float64, up::Bool)\n    @ Main.Plugin_plante.Plante /sim/Programmieren/SimGame/world/physics/plante.jl:57\n  [2] E_pos(p::Main.Plugin_plante.Plante.Plate, j::Float64, k::Main.Plugin_plante.Plante.Kin)\n    @ Main.Plugin_plante.Plante /sim/Programmieren/SimGame/world/physics/plante.jl:62\n  [3] form(; schedule::Vector{Tuple{Float64, Int64}}, E_src::Float64, R_src::Float64, area::Float64, R_acid::Float64, dt::Float64, k::Main.Plugin_plante.Plante.Kin, plates::Tuple{Main.Plugin_plante.Plante.Plate, Main.Plugin_plante.Plante.Plate})\n    @ Main.Plugin_plante.Plante /sim/Programmieren/SimGame/world/physics/plante.jl:86\n  [4] pl_chem!(secs::Float64)\n    @ Main.Plugin_plante /sim/Programmieren/SimGame/world/plugins/plante.jl:153\n  [5] step!(::Main.Plugin_plante.PlanteJar, game::Game, dt::Float64)\n    @ Main.Plugin_plante /sim/Programmieren/SimGame/world/plugins/plante.jl:180\n  [6] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [7] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [8] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [9] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [10] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n [11] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n [12] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:409\n [13] top-level scope\n    @ none:1\n [14] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [15] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [16] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 811,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T20:15:58.721: plugin plante loaded cleanly.\nHappened again at 2026-11-28T20:15:59.263.\nClosed at 2026-11-28T20:17:50.810: plugin plante loaded cleanly.\nHappened again at 2026-11-28T20:17:51.712.\nClosed at 2026-11-28T20:18:44.842: plugin plante loaded cleanly.\nHappened again at 2026-11-28T20:18:45.458.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "system:plante.PlanteJar failed in step! and was switched off",
+      "updated": "2026-11-28T20:18:45.458"
+    },
+    {
+      "created": "2026-11-28T20:23:51.657",
+      "detail": "s182: physics/plante.jl solves forming (Tafel split solid vs gas per plate; hourly swaps 0.25 Ah, left on 0 Ah). Film queued (movies/plante.jl). Plugin draft projects/plante/plugin-draft.jl cost 430 ms/frame (stale Base.include of plante.jl without `plates`): make it a plugin under 1 ms/frame, J swaps in Jump in, Lumi swaps by hand, publish. Done when: the jar is in the human's game, frame time of plante < 1 ms, a FakeInteraction test presses J by the jar and the cords cross and the gas rate drops within 2 s.",
+      "est_minutes": 60.0,
+      "id": 812,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Form the plates the way Plante did: the jar in the game, fast, swapped by Lumi's hand (projects/plante.md)",
+      "updated": "2026-11-28T20:23:51.944"
     }
   ]
 }

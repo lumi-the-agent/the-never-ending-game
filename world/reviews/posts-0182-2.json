@@ -1,0 +1,23 @@
+{"posts": [
+ {"post": "planks-that-stop-in-the-air",
+  "verdict": "redo",
+  "problems": [
+   "Nothing moves in the whole 7 s film: all 16 storyboard frames and the 25/50/75 % frames are the same picture. No plank is dropped, falls, lands or stops; the caption's 'dropped three oak planks' and 'after the first one landed' are never shown.",
+   "You can't tell which plank landed and which are frozen. In the 25 % frame the middle plank and the one at the back both hang above their shadows, the one on the left is cut off by the frame edge, and none of the three is clearly lying on the ground.",
+   "The camera is almost at ground level and a huge dark shadow fills the lower half of every frame. The planks are thin strips in the middle band, small next to the mushrooms and the stump.",
+   "The 'cart road' in the caption doesn't show up as a road. There's a sandy patch on the right and a thin line on the grass, and no cart is in view.",
+   "A cart on log wheels (the grey slab on two logs) stands in the middle, but the caption never mentions it, so it's just one more thing on the grass."
+  ],
+  "critique": "This is a seven-second still of boards hovering over the grass. The bug the caption describes (one plank resting freezes the others in mid-fall) needs the fall to be seen, and the film has no motion at all. Half the frame is shadow, so a viewer can't even tell which plank is the one that landed."},
+ {"post": "copper-on-iron",
+  "verdict": "redo",
+  "problems": [
+   "The coils the caption is about are mostly hidden. The black arch covers them from above and you see them only through a dark gap, as orange blobs with a few loose copper loops. You can't make out 'two hundred turns a side, every one laid in the place it would really take'.",
+   "The two iron cores can't be seen. The only grey part between the coils is a block in the middle, and nothing shows that the coils are wound round cores.",
+   "The 'cast-iron arch' is a flat black box with sharp edges. It reads as a plain shape, not cast iron.",
+   "No wire runs from the six clay pots to the coil. The pots are cut off in the bottom-right corner and under the table, so a viewer can't link the 'battery' to the motor, and nothing explains why it is weak.",
+   "The 'about a ninth of the stones' pull' figure is only in the caption. Nothing in the picture compares the coil with the lodestones or shows any pull.",
+   "The drum stump fills the bottom third of the picture as a bare brown cylinder with no wood grain, and the motor sits small on top of it."
+  ],
+  "critique": "The gear wheel and the wooden bearing blocks look good, but the copper and iron the post is named after sit under a black box where nobody can see them. The caption describes a carefully wound electromagnet that the picture keeps covered."}
+]}

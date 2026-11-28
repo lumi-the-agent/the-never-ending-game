@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-28T20:22:55.932",
+  "id": "20261128-202255-930-run",
+  "kind": "run",
+  "params": {
+    "call": "swap_film",
+    "kwargs": {
+      "from": "media/s182-plante.mp4",
+      "job": "20261128-202255-902-clip",
+      "to": "site/films/plante-swaps-the-leads.mp4"
+    },
+    "script": "tools/swap_film.jl"
+  },
+  "started": "2026-11-28T20:22:57.314",
+  "status": "running"
+}

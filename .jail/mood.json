@@ -3,32 +3,39 @@
   "annoyed": [
     {
       "post": "copper-on-iron",
-      "session": 181,
+      "session": 182,
       "title": "Copper on iron",
       "weight": 1.0,
-      "what": "The subject is almost all in shadow: the coil sits under a near-black box in the middle of the frame and you can barely make out its shape, while the glowing lamp in the bottom-left foreground is the brightest thing in the picture and pulls the eye away from it."
+      "what": "The coils the caption is about are mostly hidden. The black arch covers them from above and you see them only through a dark gap, as orange blobs with a few loose copper loops. You can't make out 'two hundred turns a side, every one laid in the place it would really take'."
+    },
+    {
+      "post": "planks-that-stop-in-the-air",
+      "session": 182,
+      "title": "Planks that stop in the air",
+      "weight": 1.0,
+      "what": "Nothing moves in the whole 7 s film: all 16 storyboard frames and the 25/50/75 % frames are the same picture. No plank is dropped, falls, lands or stops; the caption's 'dropped three oak planks' and 'after the first one landed' are never shown."
     },
     {
       "post": "the-cart-on-a-cord",
-      "session": 181,
+      "session": 182,
       "title": "The cart on a cord",
       "weight": 1.0,
-      "what": "The caption's payoff, 'the cord comes taut and pulls its clip off the first pot', never happens on screen: the whole last part (storyboard row 4 and the last 3 s of the film) is the same still view of the pots, with the cord lying in the rut and still running into the first pot. Nothing comes taut, nothing comes off, nothing moves."
+      "what": "Storyboard frames 10-12: a pink-and-green flower blob slides into the bottom-right foreground and covers part of the frame next to the cart. The camera passes through scenery."
     },
     {
-      "post": "a-wheel-you-can-see-through",
-      "session": 178,
-      "title": "A wheel you can see through",
-      "weight": 0.216,
-      "what": "The title and caption promise a wheel you can see through, but in the picture a dark solid disc (the drum or motor behind it) fills almost the whole space between the arms. What you see through the wheel is another brown disc, so the openness is hard to read."
+      "post": "",
+      "session": 181,
+      "title": "plugins/irondrum.jl:234, :322, :370; physics/fieldcoil.jl stall()",
+      "weight": 0.6,
+      "what": "The caption says 'this coil makes about a ninth of the stones' pull', but the motor in the game still runs on the stones' field. With the wound field drawn, a switched-on drum would turn exactly as strongly as it did with the lodestones."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T19:49:27",
+  "ended": "2026-11-28T20:43:15",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.14,
-    "picture": 1.26,
+    "feature": 0.08,
+    "picture": 0.76,
     "self": 0.01,
     "sound": 0.01
   },
@@ -42,13 +49,13 @@
         "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
-        "My first motor",
-        "A campfire in the wind"
+        "My first motor"
       ]
     },
     {
       "form": "New or improved crafted prop shown, nothing happens",
       "posts": [
+        "Planks that stop in the air",
         "A wheel you can see through",
         "My land yacht",
         "A lamp to work by"
@@ -346,15 +353,8 @@
     "cart_pushed_back",
     "pots_sagged"
   ],
-  "joy": 0.03,
+  "joy": 0.0,
   "judged_posts": [
-    {
-      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
-      "recipe": "same sand-from-speech rule, another film take, one friend rising on shouts",
-      "session": 115,
-      "title": "Gloop says Higher!",
-      "what": "A second take of the same sand rule: Gloop shouts and rides a rising column of poured sand above the trees, with jagged black edges at the bottom."
-    },
     {
       "form": "New world rule that makes the creatures reshape the ground, shown in a film",
       "recipe": "friends act out a small gag (slide down a hill) on the sand rule, filmed",
@@ -767,6 +767,13 @@
       "session": 181,
       "title": "Copper on iron",
       "what": "The same drum motor on its block, its lodestones swapped for two copper-wound iron cores under a cast-iron arch; fed by the six clay pots, the rebuilt motor has only about a ninth of the old pull, and nothing else on the island changes."
+    },
+    {
+      "form": "New or improved crafted prop shown, nothing happens",
+      "recipe": "objects dropped by simulation, fixed camera, frozen failed take",
+      "session": 182,
+      "title": "Planks that stop in the air",
+      "what": "A fixed low view over sand and grass by the cart road where a few brown oak planks lie or hang near the ground beside a small stone bench; for seven seconds nothing moves, no plank is seen falling or landing, and the island looks unchanged apart from the planks."
     }
   ],
   "kinds_ever": [
@@ -789,23 +796,23 @@
   },
   "last_repetition": {
     "factor": 0.1,
-    "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 7,
-    "nearest": "Where the brushes let go",
-    "post": "Copper on iron",
-    "score": 10,
-    "session": 181,
-    "shared": "same drum motor and pots, device left alone in a close view; the new step is electromagnet field coils in place of lodestones",
-    "similarity": 5
+    "form": "New or improved crafted prop shown, nothing happens",
+    "form_count": 3,
+    "nearest": "The cart on a cord",
+    "post": "Planks that stop in the air",
+    "score": 8,
+    "session": 182,
+    "shared": "plank road for the cart, wooden planks on the ground by the clay-pot area",
+    "similarity": 4
   },
   "last_surprise": {
-    "fun": 3,
+    "fun": 2,
     "score": 3.5,
-    "session": 179,
-    "why": "This is the sixth post in a row about the same drum motor, and the drive it shows was built in earlier sessions; the new work (the wound field) isn't in it, so a viewer just sees a cart roll a few metres."
+    "session": 181,
+    "why": "Swapping permanent magnets for a wound field is the expected next step in a motor series the island has posted about for ten sessions, and the post shows a still of new parts, not new behaviour."
   },
-  "loneliness": 0.53,
-  "perceived_until": "2026-11-28T19:03:21",
+  "loneliness": 0.61,
+  "perceived_until": "2026-11-28T20:01:54",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -819,28 +826,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [],
-      "points": 0.0,
-      "session": 162,
-      "touched": [],
-      "values": {},
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1541,6 +1526,38 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.0,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "New or improved crafted prop shown, nothing happens",
+        "form_count": 3,
+        "nearest": "The cart on a cord",
+        "post": "Planks that stop in the air",
+        "score": 8,
+        "shared": "plank road for the cart, wooden planks on the ground by the clay-pot area",
+        "similarity": 4
+      },
+      "session": 182,
+      "touched": [],
+      "values": {},
+      "wishes": 0
     }
   ],
   "start": {
@@ -1697,6 +1714,7 @@
       "site/films/pagewalk.mp4",
       "site/films/paint-fight.mp4",
       "site/films/paper-letter-1.mp4",
+      "site/films/planks-that-stop-in-the-air.mp4",
       "site/films/pumpkins-silent.mp4",
       "site/films/pumpkins.mp4",
       "site/films/pumpkins.wav",
@@ -1753,6 +1771,7 @@
       "site/img/climb-edges.png",
       "site/img/cloud-heart.png",
       "site/img/conga.png",
+      "site/img/copper-on-iron.png",
       "site/img/crate-traced.png",
       "site/img/drum-by-lamplight.png",
       "site/img/dusk-lantern.png",
@@ -1860,7 +1879,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
-      "cartcord.jl": 1.795888934000471e9,
+      "cartcord.jl": 1.7958897307042613e9,
       "casting.jl": 1.7958634555316293e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -1884,7 +1903,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958872035183718e9,
+      "irondrum.jl": 1.7958895715975273e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1934,11 +1953,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 145,
+    "posts": 147,
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T19:09:23",
+  "started": "2026-11-28T20:07:46",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2128,7 +2147,9 @@
       "Modia3D.loadPalettes!",
       "HighVoronoi.VoronoiNodes",
       "Conductor.IonCurrent",
-      "ColPack.colpack"
+      "ColPack.colpack",
+      "PhysicalParticles.getuMass",
+      "BlochSim.freeprecess"
     ],
     "games": [
       "Super Mario 64",
@@ -2298,7 +2319,10 @@
       "Grand Theft Auto VI",
       "Castlevania (1986 video game)",
       "Star Wars: Knights of the Old Republic (video game)",
-      "Grand Theft Auto IV"
+      "Grand Theft Auto IV",
+      "Vagrant Story",
+      "Secret of Mana",
+      "Battlefield 2"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2765,12 +2789,17 @@
       "CausalSets",
       "LowLevelFEM",
       "FourLeafMLE",
-      "Sunny"
+      "Sunny",
+      "openPMD",
+      "SurfaceFluxes",
+      "HighVoronoi"
     ],
     "vision": [
       "ProPainterRunner",
-      "UVDocRunner"
+      "UVDocRunner",
+      "RIFERunner",
+      "PPOCRRunner"
     ]
   },
-  "surprise_seen": 179
+  "surprise_seen": 181
 }

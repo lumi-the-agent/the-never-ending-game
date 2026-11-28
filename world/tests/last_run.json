@@ -2,11 +2,172 @@
   "results": [
     {
       "error": "",
-      "file": "casting.jl",
-      "name": "cast a lead foot in the sand",
+      "file": "birdplay.jl",
+      "name": "Jump in as the bird: W walks, Shift runs faster, the tag stays above Lumi",
       "passed": true,
-      "seconds": 98.0
+      "seconds": 18.0
+    },
+    {
+      "error": "",
+      "file": "birdplay.jl",
+      "name": "Jump in: the controls card shrinks to one line as soon as Lumi walks off",
+      "passed": true,
+      "seconds": 5.5
+    },
+    {
+      "error": "",
+      "file": "birdplay.jl",
+      "name": "Jump in: a friend just behind Lumi does not take Lumi's name tag",
+      "passed": true,
+      "seconds": 4.2
+    },
+    {
+      "error": "",
+      "file": "dashboard.jl",
+      "name": "Play with nothing chosen starts Jump in, Stop ends it",
+      "passed": true,
+      "seconds": 3.8
+    },
+    {
+      "error": "",
+      "file": "dashboard.jl",
+      "name": "W walks Lumi while jumped in",
+      "passed": true,
+      "seconds": 3.1
+    },
+    {
+      "error": "no control named \"Camera: orbit\"; there are: \"Mini game\", \"Stop\", \"Camera: follow\", \"Wish…\", \"Send\", \"Path tracing: off\"\nStacktrace:\n [1] error(s::String)\n   @ Base ./error.jl:44\n [2] ui_find(g::Game, name::String)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uidriver.jl:63\n [3] ui_option_pos(g::Game, menu::String, option::String)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uidriver.jl:72\n [4] (::Main.Tests_dashboard.var\"#choose##0#choose##1\"{Game, String, String})(::Makie.Figure)\n   @ Main.Tests_dashboard /sim/Programmieren/SimGame/world/tests/dashboard.jl:16\n [5] drive!(g::Game, events::Vector{Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uidriver.jl:118\n [6] interact!(g::Game, events::Vector{Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uidriver.jl:99\n [7] choose(game::Game, menu::String, option::String)\n   @ Main.Tests_dashboard /sim/Programmieren/SimGame/world/tests/dashboard.jl:15\n [8] (::Main.Tests_dashboard.var\"#21#22\")(game::Game)\n   @ Main.Tests_dashboard /sim/Programmieren/SimGame/world/tests/dashboard.jl:72\n [9] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "dashboard.jl",
+      "name": "While jumped in, the camera menu still counts: follow chases, orbit circles Lumi, free turns with the mouse",
+      "passed": false,
+      "seconds": 1.5
+    },
+    {
+      "error": "",
+      "file": "explore50.jl",
+      "name": "Jump in: the key card is big at 2 s and shrinks to one line of keys by 8 s",
+      "passed": true,
+      "seconds": 12.6
+    },
+    {
+      "error": "UndefVarError: `KITE` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] (::Main.Tests_kite_play.var\"#2#3\")(game::Game)\n   @ Main.Tests_kite_play /sim/Programmieren/SimGame/world/tests/kite_play.jl:21\n [3] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "kite_play.jl",
+      "name": "Jumping in with Play while the kite flies makes the player the holder; standing lets it sink; Stop frees Lumi",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Jump in: E waves and a creature answers, a second wave makes it follow",
+      "passed": true,
+      "seconds": 4.4
+    },
+    {
+      "error": "UndefVarError: `SNEEZE` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] (::Main.Tests_minigames.var\"#690#691\")(game::Game)\n   @ Main.Tests_minigames /sim/Programmieren/SimGame/world/tests/minigames.jl:1477\n [3] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "minigames.jl",
+      "name": "Sneeze: jumped in as Lumi, X sneezes and blows the friends nearby off their feet",
+      "passed": false,
+      "seconds": 1.1
+    },
+    {
+      "error": "UndefVarError: `GIANT` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] (::Main.Tests_minigames.var\"#711#712\")(game::Game)\n   @ Main.Tests_minigames /sim/Programmieren/SimGame/world/tests/minigames.jl:1494\n [3] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "minigames.jl",
+      "name": "Giant Lumi: M while jumped in grows Lumi 5x, W walks the giant, then it shrinks back",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "UndefVarError: `FLIGHT` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] (::Main.Tests_minigames.var\"#716#717\")(game::Game)\n   @ Main.Tests_minigames /sim/Programmieren/SimGame/world/tests/minigames.jl:1533\n [3] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "minigames.jl",
+      "name": "Flight: jumped in, G takes off and the camera keeps the flying Lumi in view every second",
+      "passed": false,
+      "seconds": 1.3
+    },
+    {
+      "error": "check failed: T did not start a storm: state idle",
+      "file": "minigames.jl",
+      "name": "Storm: jumped in as Lumi, T calls a thunderstorm on you and a bolt strikes within 20 s, Lumi stays yours",
+      "passed": false,
+      "seconds": 1.3
+    },
+    {
+      "error": "",
+      "file": "minigames.jl",
+      "name": "Swing: jumped in as Lumi, walking onto the swing starts the ride, it loops over the top and Lumi flies and lands, still yours",
+      "passed": true,
+      "seconds": 18.5
+    },
+    {
+      "error": "",
+      "file": "presents.jl",
+      "name": "Presents: jumping into Lumi while it carries a present drops the job and Lumi answers the keys",
+      "passed": true,
+      "seconds": 28.1
+    },
+    {
+      "error": "",
+      "file": "s129_play.jl",
+      "name": "s129 play: jump in, walk, fly, paint",
+      "passed": true,
+      "seconds": 17.4
+    },
+    {
+      "error": "",
+      "file": "s51_play.jl",
+      "name": "Jumped in: the camera menu switches orbit and follow, and follow keeps Lumi in view",
+      "passed": true,
+      "seconds": 16.3
+    },
+    {
+      "error": "",
+      "file": "s53_play.jl",
+      "name": "Menu: choosing Jump in (WASD) and pressing Play jumps in, with a chase camera that keeps Lumi in view",
+      "passed": true,
+      "seconds": 9.2
+    },
+    {
+      "error": "",
+      "file": "s54_evening.jl",
+      "name": "A friend left on the sunset bench gets up when the clock jumps to the morning: the panel never says 'watches the sunset' at 11:00",
+      "passed": true,
+      "seconds": 1.1
+    },
+    {
+      "error": "UndefVarError: `KITE` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] play_kite!(game::Game)\n   @ Main.Tests_s58_play /sim/Programmieren/SimGame/world/tests/s58_play.jl:44\n [3] (::Main.Tests_s58_play.var\"#11#12\")(game::Game)\n   @ Main.Tests_s58_play /sim/Programmieren/SimGame/world/tests/s58_play.jl:93\n [4] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "s58_play.jl",
+      "name": "Kite player (s58): Lumi is in view right after jumping in, not hidden behind a house or a friend",
+      "passed": false,
+      "seconds": 0.1
+    },
+    {
+      "error": "",
+      "file": "s58_play.jl",
+      "name": "Pond (s87): jumped in as Lumi, walking into the lily pond sends ripples out",
+      "passed": true,
+      "seconds": 6.0
+    },
+    {
+      "error": "",
+      "file": "s58_play.jl",
+      "name": "Cannonball contest (s89): Lumi's big one gets a TEN, then everybody jumps into the pond at once",
+      "passed": true,
+      "seconds": 37.1
+    },
+    {
+      "error": "check failed: strip at Float32[0.5, 0.12], font 16, visible true",
+      "file": "s58_play.jl",
+      "name": "Jump in (s97): after the first seconds the key strip sits small at the bottom edge, out of Lumi's way",
+      "passed": false,
+      "seconds": 9.7
+    },
+    {
+      "error": "UndefVarError: `STRANGER` not defined in `Main`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] getproperty\n   @ ./Base_compiler.jl:47 [inlined]\n [2] (::Main.Tests_s58_play.var\"#192#193\")(game::Game)\n   @ Main.Tests_s58_play /sim/Programmieren/SimGame/world/tests/s58_play.jl:539\n [3] (::NeverendingGame.var\"#580#581\"{Game, NeverendingGame.TestRun})()\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/uitests.jl:115",
+      "file": "s58_play.jl",
+      "name": "Shell and you (s98): jumped in as Lumi, E by Shell three times and it follows you",
+      "passed": false,
+      "seconds": 0.0
     }
   ],
-  "time": "2026-11-28T10:51:03.182"
+  "time": "2026-11-28T19:55:04.557"
 }

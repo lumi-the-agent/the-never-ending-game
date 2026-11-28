@@ -1,0 +1,32 @@
+{"posts": [
+ {"post": "planks-that-stop-in-the-air",
+  "verdict": "redo",
+  "problems": [
+   "All 16 storyboard frames are the same picture: nothing falls, lands or stops during the 7 s. The caption's 'dropped three oak planks', 'the first one landed' and 'in that instant the other two stopped' all happen before the film starts, so a viewer only sees planks already hanging there.",
+   "Caption says the planks were dropped 'on the sand', but in every frame (at-25, at-50) they hang over the grass. The sand is a patch in the foreground with nothing on it.",
+   "You can't tell which plank is the one that 'landed fine': the far right plank and the two-part plank on the left all look like they hover at about the same height. Only the shadows hint that the near ones are in the air, and the camera never shows a side view of the gap.",
+   "Half of every frame is a big dark shadow and empty ground in the foreground, a brown sliver cuts into the right edge, and the planks are thin strips in the middle distance. The subject is small and squeezed into the middle third.",
+   "The film stays frozen to its last frame, so it reads as a still image, or as a stalled video, rather than a physics test."
+  ],
+  "critique": "A film about planks freezing mid-fall where the fall is never shown is a still of three floating boards, and the caption carries the whole story. It also puts them on grass while the caption says sand."},
+ {"post": "copper-on-iron",
+  "verdict": "redo",
+  "problems": [
+   "The picture is dusk-dark. The coil, cores and arch are mostly near-black shapes, and the brightest thing in the frame is an unexplained glowing bulb or candle in the bottom-left foreground that pulls the eye off the motor.",
+   "'Two hundred turns a side, every one laid in the place it would really take' isn't visible: the winding reads as a few flat copper ribbons around a dark box, and you can't make out two separate iron cores with their own coils.",
+   "The 'cast-iron arch' is a flat dark-grey square frame with no cast-iron texture or form. It reads as a plain box.",
+   "A small blue glowing light sits under the coil with no cause given, and the wooden gear wheel on the right is cut off and hides part of the rig.",
+   "The caption's main claim (about a ninth of the stones' pull, and the drum still running on the stones' numbers) has nothing in the picture that shows it."
+  ],
+  "critique": "The caption promises a carefully wound copper-on-iron electromagnet, but the picture shows a murky silhouette lit mostly by a stray lamp. The 200 turns, the two cores and the cast iron are all claims you have to take on faith."},
+ {"post": "the-cart-on-a-cord",
+  "verdict": "redo",
+  "problems": [
+   "Storyboard frames 10-12: a pink-and-green flower blob slides into the bottom-right foreground and covers part of the frame next to the cart. The camera passes through scenery.",
+   "The drive never starts or ends: the cart is already rolling in frame 1 and is still mid-road when the film cuts to the pots at frame 13. There's no start from rest and no stop.",
+   "The cord changes look between shots. Next to the cart (at-50) it's a thin straight grey rod held stiff above the boards, while at the pots (at-75) it's a thick pale rope lying across the plank tops. Neither shot shows it slack or trailing behind the cart.",
+   "The drum motor on the deck is a dark lump in the cart's shadow (at-50). The thing the caption names first is the hardest part of the picture to read.",
+   "You can't see whether the wheels turn with the ground speed from the frames given. The spokes look the same in every cart frame."
+  ],
+  "critique": "The cart on the plank road and the row of clay pots by the sea are lovely and readable. But the camera clips through a flower, the drive has no start or end, and the cord looks like two different objects in the two shots."}
+]}

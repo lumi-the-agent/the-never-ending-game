@@ -1,0 +1,17 @@
+{"ideas": [
+{"title": "Form the plates the way Plante did",
+ "goal": "The player hangs two cast lead sheets in a jar of dilute acid, wires them to the pots and forms them: charge until they fizz, reverse the leads, charge again. Every reversal eats deeper into the lead and the jar holds more charge, but a lazy player who just leaves them on gets mostly bubbles. How much the cart can carry tomorrow is how well you formed tonight.",
+ "toward": "Plante's accumulator, the big goal's missing core: the store for a windy day, sized by the player's own work.",
+ "idea": "physics/plante.jl solves each plate as an electrode: the pots' current splits between the solid reactions (Pb -> PbSO4 -> PbO2 on the positive, PbSO4 -> spongy Pb on the negative) and water splitting by their own Butler-Volmer/Tafel kinetics against the plate's potential (literature exchange currents and equilibrium potentials, no efficiency written in). The oxide only grows where sulfate is left to convert, so as the surface fills the potential climbs and the current goes to gas: the fizz is Faraday's law on the gas share, bubbles in the jar at that rate. The formed depth (charge into the solid / (2F) x molar volume) sets the colour (grey lead -> chocolate PbO2 on the positive) and the capacity the cart later draws. Someone watching sees a plate go brown in patches while a column of bubbles thickens, then the leads swap and the other plate starts.",
+ "form": "A new physics module and a new prop on the workbench (jar, two plates, cords to the pots), published in the game; a traced film of one forming cycle, bubbles rising, the positive plate browning, the reversal."},
+{"title": "Stir the jar, the cart goes further",
+ "goal": "Between runs the player stirs the pots' brine with a stick: the green iron cloud at the bars swirls away, the voltage comes back, and the cart makes it further up the road. Knowing when to stir and when to rest the pots is the skill.",
+ "toward": "Cells that sag: the cart's range is decided by the player's care of the cells, not a battery bar.",
+ "idea": "potcell.jl already diffuses Fe2+ away from the bar (diffuse!, emf_surface); stirring adds a real advection term (the stick's swirl as a 2D vortex in the jar) to that same field, and the jar's brine is a Hikari participating medium whose density is the solved Fe2+ concentration, so the green cloud is the field itself.",
+ "form": "Physics change in potcell.jl, the pots drawn with a medium, a stir verb near the pots, a traced film of a jar clouding during a run and clearing when stirred."},
+{"title": "The cart runs on the formed plates",
+ "goal": "The player unplugs the pots and plugs in the jar they formed: the cart sets off far faster than on pots (an accumulator gives amps, not milliamps) and runs as far as the formed lead lets it, then stops dead on the road where the charge ends.",
+ "toward": "The cart drives on stored charge: the big goal's evening run.",
+ "idea": "The cart's circuit gets a Plante cell (from the forming model) as its source: open-circuit voltage from acid strength, internal resistance from plate area and acid, capacity from the formed depth; the cart's distance is the charge divided by the motor's draw on the planks.",
+ "form": "Change to the cart plugin and a new cell type in the circuit; a film following the cart to where it stops."}
+]}
