@@ -91,19 +91,35 @@ function serialize_three(fta::NoDataTextureAtlas)
     return tex
 end
 
+"""
+    texture_data(data) -> (serialized, T)
+
+A texture's data as sent to the browser, and the element type it is sent as. Keeps
+Samplers at a minimum size of 1 so backend textures are valid.
+"""
+function texture_data(data::AbstractArray{T}) where {T}
+    return serialize_three(isempty(data) ? Vector{T}(undef, 1) : data), T
+end
+
+"""
+A Float32 colour texture whose every channel is in 0-1 goes as 8 bits a channel, which is all
+a display shows, at a quarter of the bytes: in a game scene, Float32 textures were 169 of the
+264 MB a page loaded. RGBA also for RGB, so rows stay 4-byte aligned for WebGL.
+"""
+function texture_data(data::AbstractArray{T}) where {T <: Union{RGB{Float32}, RGBA{Float32}}}
+    unit(c) = 0.0f0 <= red(c) <= 1.0f0 && 0.0f0 <= green(c) <= 1.0f0 && 0.0f0 <= blue(c) <= 1.0f0 && 0.0f0 <= alpha(c) <= 1.0f0
+    (isempty(data) || !all(unit, data)) && return invoke(texture_data, Tuple{AbstractArray}, data)
+    return serialize_three(map(RGBA{N0f8}, data)), RGBA{N0f8}
+end
+
 function serialize_three(color::Sampler{T, N}) where {T, N}
-    # Keep Samplers at a minimum size of 1 so backend textures are valid
-    data = if isempty(color.data)
-        serialize_three(Vector{T}(undef, 1)) # risky?
-    else
-        serialize_three(color.data)
-    end
+    data, S = texture_data(color.data)
     tex = Dict{Symbol, Any}(
         :type => "Sampler",
         :data => data,
         :size => Int32[max.(1, size(color.data))...],
-        :three_format => three_format(T),
-        :three_type => three_type(eltype(T)),
+        :three_format => three_format(S),
+        :three_type => three_type(eltype(S)),
         :minFilter => three_filter(color.minfilter),
         :magFilter => three_filter(color.magfilter),
         :wrapS => three_repeat(color.repeat[1]),

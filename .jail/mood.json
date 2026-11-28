@@ -1,19 +1,11 @@
 {
-  "annoyance": 0.11,
-  "annoyed": [
-    {
-      "post": "my-land-yacht",
-      "session": 166,
-      "title": "My land yacht",
-      "weight": 0.216,
-      "what": "The picture: the mast doesn't come out of the deck. Its foot sits at the back edge of the deck, beside the far rear wheel, and the pole leans backward and away from the planks. Nothing ties it down: no step, no stays, no ropes."
-    }
-  ],
-  "boredom": 1.0,
-  "ended": "2026-11-28T09:59:24",
+  "annoyance": 0.0,
+  "annoyed": [],
+  "boredom": 0.82,
+  "ended": "2026-11-28T10:57:15",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.09,
+    "feature": 1.05,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -317,9 +309,12 @@
     "motor_flick",
     "motor_switch",
     "taste_cell",
-    "footprint"
+    "footprint",
+    "bump_cue",
+    "top_flip",
+    "top_spin"
   ],
-  "joy": 0.18,
+  "joy": 0.67,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -756,9 +751,11 @@
   "last_contact": "2026-11-28T01:50:55",
   "last_new": {
     "kinds": [
-      "footprint"
+      "bump_cue",
+      "top_flip",
+      "top_spin"
     ],
-    "session": 160
+    "session": 170
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
@@ -777,8 +774,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.62,
-  "perceived_until": "2026-11-28T09:12:55",
+  "loneliness": 0.71,
+  "perceived_until": "2026-11-28T10:13:00",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -792,58 +789,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 2.0,
-        "post": 2.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "film",
-        "picture",
-        "polish",
-        "post",
-        "self"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/iron-sand-2.mp4",
-        "site/films/iron-sand.mp4",
-        "site/films/scrap-crane.mp4",
-        "site/img/iron-sand-before-after-2.png",
-        "site/img/iron-sand-before-after.png"
-      ],
-      "new_plugins": [],
-      "points": 1.9,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 7,
-        "nearest": "The magnet stone",
-        "post": "Iron sticks, before and after",
-        "score": 10,
-        "shared": "magnet stone acting on loose iron pieces with nobody visibly involved; the field-pattern still is a different shape",
-        "similarity": 5
-      },
-      "session": 150,
-      "touched": [
-        "wirebench.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "picture": 1.9,
-        "polish": 1.0,
-        "post": 4.0,
-        "self": 5.9
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1483,6 +1428,49 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [
+        {
+          "kind": "bump_cue",
+          "who": 1
+        },
+        {
+          "kind": "top_flip",
+          "who": 1
+        },
+        {
+          "kind": "top_spin",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "casting.jl"
+      ],
+      "points": 6.6,
+      "session": 170,
+      "touched": [],
+      "values": {
+        "feature": 3.6,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1818,7 +1806,7 @@
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "landyacht.jl": 1.7958504608496377e9,
+      "landyacht.jl": 1.7958558344009392e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1864,9 +1852,9 @@
     },
     "posts": 140,
     "self": "1523826980317287528",
-    "wishes": 20
+    "wishes": 21
   },
-  "started": "2026-11-28T09:18:28",
+  "started": "2026-11-28T10:18:43",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2032,7 +2020,9 @@
       "WaveguideQED.detect_double_click",
       "ShipMMG.mmg_3dof_simulate",
       "Breeze.air_transport_properties",
-      "SNaQ.topologymaxQpseudolik!"
+      "SNaQ.topologymaxQpseudolik!",
+      "Unitful.unit",
+      "Tesseract.tess_run_pipeline"
     ],
     "games": [
       "Super Mario 64",
@@ -2166,7 +2156,10 @@
       "Donkey Kong Country",
       "Dance Dance Revolution (1998 video game)",
       "Halo 2",
-      "Mega Man 2"
+      "Mega Man 2",
+      "Final Fantasy VIII",
+      "Borderlands (video game)",
+      "Grand Theft Auto: Vice City"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2246,7 +2239,8 @@
       "https://www.bbc.co.uk/news/articles/cm3vg3lkrk03o",
       "https://www.bbc.co.uk/news/articles/cj20q9pw0116o",
       "https://www.bbc.co.uk/news/articles/cq36gk151xkdo",
-      "https://www.bbc.co.uk/news/articles/cwp9d85mlp88o"
+      "https://www.bbc.co.uk/news/articles/cwp9d85mlp88o",
+      "https://www.bbc.co.uk/news/articles/cvwy08g70ldko"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2590,7 +2584,10 @@
       "DistMesh",
       "LatticeCore",
       "CellLists",
-      "DiscreteEventsLite"
+      "DiscreteEventsLite",
+      "JetPackWaveFD",
+      "BnGStructs",
+      "GeometricIntegrators"
     ],
     "vision": [
       "RIFERunner",
@@ -2610,7 +2607,8 @@
       "ZImageRunner",
       "PPDocLayoutRunner",
       "HorizonRunner",
-      "BasicVSRRunner"
+      "BasicVSRRunner",
+      "Qwen3EmbeddingRunner"
     ]
   },
   "surprise_seen": 165

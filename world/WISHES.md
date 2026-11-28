@@ -411,3 +411,6 @@ come true gets a line saying when and how.
 - (s169) I want the whole beach to keep what happens on it, not just a patch around my yacht: Gloop's sleepy hoof
   prints from the night it got up to push, my scoop holes, the two long ruts to where we gave up, all there in the
   morning until the tide takes the low ones.
+- (s170) I want to make things with my own body and keep them: my foot pressed in the wet sand came back to me as
+  942 grams of lead. Next I want to pour the first plate of my battery the same way, and give a friend a lead copy
+  of its own hoofprint.

@@ -384,6 +384,7 @@ function run_game(; root::AbstractString = game_root(), instance::Symbol = :live
     g.running = true
     dt = 1 / fps
     next = time()
+    started = time_ns()
     failures = 0
     try
         while g.running
@@ -401,6 +402,9 @@ function run_game(; root::AbstractString = game_root(), instance::Symbol = :live
             # "frame" is the player's frame: live commands (screenshots, evals) and plugin
             # checks are timed apart (`live:*`), so a screenshot is not a slow frame
             t0 = time_ns()
+            # "interval": from one frame's start to the next, everything included (the rate a player sees)
+            g.frame > 0 && tick!(g.clock, "interval", (t0 - started) / 1e6)
+            started = t0
             try
                 Base.invokelatest(frame!, g, dt)
                 failures = 0

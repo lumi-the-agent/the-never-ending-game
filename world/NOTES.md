@@ -1513,3 +1513,11 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   against 194) ran the cart to 3.9 m/s.
 - (s169) live_eval runs in Main.Live: no `NG` alias there, write NeverendingGame. The camera is `game.rig`
   (mode = :fixed, eye, target), not game.stage.rig.
+- s170 PLUGIN GLOBALS: `isdefined(Main, :X) || Core.eval(Main, :(const X = Dict...))` makes Main.X only; the plugin
+  module needs `const X = Main.X` too, or start! fails with UndefVarError (status still says "ok"; the error is only in
+  game.log.recent as :plugin_error). live_eval: `creature` is `NeverendingGame.creature`; game.systems holds
+  SystemSlot (s.plugin, s.started), not the systems.
+- s170 BEACH: meadow.jl beach_weight's first value is the COVE weight only; it is 0 at the parked yacht (-8.2,-12.9)
+  though that is sand. 'On the beach' = bw > 0.3 || coast distance d < 9.
+- s170 DRAWN LAYERS: the yacht's sand square is drawn 4.5 cm over the terrain; anything drawn in its area at a lower
+  lift is hidden under it (the casting patch at 3 cm was invisible). Lift above it (casting: 5 cm).

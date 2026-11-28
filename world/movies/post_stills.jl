@@ -627,6 +627,24 @@ function setup_post!(g, post)
         p = L[:pos]
         return p + Point3f(4.2f0, 4.6f0, 2.4f0), p + Point3f(-0.2f0, 0f0, 1.75f0)
     end
+    if post == "castfoot"         # s170: my own footprint in the wet sand of the beach, filled with molten lead
+        M = plugin(g, "casting")
+        lumi = w.creatures[findfirst(c -> c.name == "Lumi", w.creatures)]
+        u = Vec2f(-0.536f0, -0.844f0)                      # seaward from the yacht's spot; 2 m from the water line
+        spot = (-10.1f0, -15.9f0)
+        pose!(w, lumi, spot, 2.6f0, :idle)
+        Base.invokelatest(M.ct_stamp!, g, lumi)
+        C = Main.CAST
+        Base.invokelatest(M.Casting.pour!, C[:pour]; src = M.ct_src(), volume = C[:volume], rate = M.CT_RATE, tmax = 40.0)
+        C[:stage] = :pouring
+        Base.invokelatest(M.ct_pour_step!, g, 0.001)
+        o = C[:o]
+        side = Vec2f(-u[2], u[1])
+        pose!(w, lumi, (o[1] + 0.5f0 * u[1] + 0.7f0 * side[1], o[2] + 0.5f0 * u[2] + 0.7f0 * side[2]), atan(-u[2], -u[1]), :idle)
+        z = NG.terrain_height(w.island, Float32(o[1]), Float32(o[2]))
+        c = Point3f(o[1], o[2], z + 0.04f0)
+        return c - 0.6f0 * Point3f(u[1], u[2], 0) + Point3f(0, 0, 0.38f0), c + 0.12f0 * Point3f(u[1], u[2], 0)
+    end
     error("post_still: no moment set up for post \"$post\"")
 end
 

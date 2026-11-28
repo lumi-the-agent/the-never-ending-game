@@ -23,6 +23,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
     - [ ] Telltales: threads stream in the sail's solved flow, the player trims by them
       - [x] The threads read the trim in the solved 3D flow: windward lifts when it luffs, lee when it stalls (s164)
 - [ ] Lead plates in acid that store what the windmill makes (Plante's accumulator: charge, fizz, discharge)
+  - [ ] Cast the plates in beach sand: stamp a mould, pour lead, it freezes, dig it out (projects/casting.md; s170 in game: Lumi's foot, 942 g; next: the look, a plate mould)
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)

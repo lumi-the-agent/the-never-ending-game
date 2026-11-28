@@ -9,10 +9,17 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s170: PASSED idea 'Cast your own lead plates in the beach' -> projects/casting.md, todo #775; landyacht.md SHELVED.
+  physics/casting.jl (virtual-pipe lead flow, surface-tension front 4 mm, contact conduction, latent heat, choke at half
+  frozen; check passes: plate 0.77 kg in 73 s, puddle 3.7 mm, fluidity 25 cm/4 mm channel). plugins/casting.jl PUBLISHED:
+  Jump in on the beach, H stamps Lumi's foot, H pours, freezes ~4 min, H lifts a 942 g lead foot. NOT POST-READY: traced, the lifted
+  foot was a dark lump (fixed toes-up + patch seated on the yacht's sand after; re-trace it: media/s170-cast-lifted2.png). Lead at 400 C does NOT glow: mirror
+  silver. Free time: stuck's 136 N hold is a contact artifact (todo #776). NO POST s170: the 'castfoot' still
+  put the print on GRASS (the yacht spot is grass under a drawn sand square), Lumi stood on it; see projects/casting.md.
 - s169: PASSED 'Bogged' (todo #773 part 1 PUBLISHED): the yacht's wheels in the real sand field (CartSand 6 m around
   it, soil by beach_weight): parked in the dry cove 32 mm deep; the SAIL ALONE barely moves it now (8 m/s ~92 N). Q by it
   calls the nearest friend: runs over, steps round blocks, pushes 357 N x (1 - v/2.5): 8.2 m in 9 s. R DIGS (published). Parked
-  hold is 136 N (settled twice: own holes); digging close to a tyre is a SKILL (-26 N, or +100 if it drops into a hole). Soil per wheel, heap to the side, square MOVES with the cart: done. NEXT: plank under a wheel,
+  hold is 136 N (settled twice: own holes) BUT s170: that is a CONTACT ARTIFACT (rim meets its own cast in 15 patches; real ~194; fix in projects/stuck.md 's170'); digging close to a tyre is a SKILL (-26 N, or +100 if it drops into a hole). Soil per wheel, heap to the side, square MOVES with the cart: done. NEXT: plank under a wheel,
   dig/lean poses; then the dusk film (stuck, dig, shove, out) = the post. NO POST s169.
   Free time: cart_step! slow frames only on DIAGONAL ruts; fixed settle_at's bracket BUG (426 N of 233) + bracketed
   Newton: 40 -> 18-23 of 360; the rest are stiff-reload steps (projects/stuck.md 's169').

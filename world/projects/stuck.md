@@ -149,3 +149,18 @@ Next: (s169 PUBLISHED: wheels in the sand field, soil per wheel, settled in thei
 - s169 (last, published): the drawn sand goes through a 3x3 binomial blur (physics untouched): the dashed diagonal
   rut is gone in the raster (media/s169-yacht-smooth.png, Gloop at the stern saying 'Phew!'); grooves now soft and
   faint at night. Still check it path traced at low sun before the film.
+- s170 FREE TIME, 'is 34 < 48.5 right?' ANSWERED: NO, it is a contact artifact, not physics. One wheel (dry, 233 N)
+  standing in a CartSand, settled 4 times: fresh 48.5 N, then 37.5-39.3 (dx 4 cm), 38.4 (2 cm), 38.5 (1 cm): it does
+  NOT go away with a finer grid. The hole is a perfect cast (rim = surface = pressed depth to 0.1 mm along the whole
+  line, no berm ahead) and the wheel sits 0.02 mm above it at the same height as fresh. But bilinear chords of the cast
+  sit 0.02-0.04 mm above the rim between nodes, so zat > 0 comes and goes: the rim meets its own hole in 15 SEPARATE
+  patches; the main patch ends at θ = 0.009 rad and the other 14 are 'patches ahead' (no Wong-Reece mirror, shear
+  building from each patch's own entry). The same stresses, summed under the other model: R 38.5, slip -0.027 vs
+  -0.051. The physics says a towed wheel re-sat in its exact rolling cast meets the same stresses (stiff reload =
+  what it carried) and restarts at the rolling R, ~48.5, not lower. So the published 136 N parked hold should be ~194,
+  and the s169 'digging is a skill' numbers (-2 / -8..-26 / +100) were measured against the artifact.
+  FIX (not made, the solver is touchy): in rim's main-patch scan, bridge gaps shallower than ~0.2 mm (sand grain;
+  every gap inside the hole is < 0.1 mm, only the edge's last cell opens 0.76 mm). Then CHECK: stuck_check, the berm
+  jump s168 fixed (a berm ahead must still not jump θ1: bridge only gaps INSIDE the run from the bottom, never into a
+  patch ahead), the fallback count, and redo the dig numbers. 194 N > the sail's 155 N gust: the parked yacht would
+  again need a friend or a dig, which is what the story wants anyway.

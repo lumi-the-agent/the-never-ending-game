@@ -1,12 +1,12 @@
 {
   "results": [
     {
-      "error": "check failed: let out, it rolled only 0.1 m in 15 s: (t = 494654.5332714409, v = 0.000655355734835039, U = 8.800251531920292, beta = 67.45864655737586, alpha = 30.360052885452788, drive = 89.75403123002447, aback = false, CL = 0.5042301058769226, CD = 0.3400673151016235, d = 3.2677840307214314)",
-      "file": "landyacht.jl",
-      "name": "land yacht sails on its solved wind",
-      "passed": false,
-      "seconds": 55.1
+      "error": "",
+      "file": "casting.jl",
+      "name": "cast a lead foot in the sand",
+      "passed": true,
+      "seconds": 98.0
     }
   ],
-  "time": "2026-11-28T08:23:48.195"
+  "time": "2026-11-28T10:51:03.182"
 }

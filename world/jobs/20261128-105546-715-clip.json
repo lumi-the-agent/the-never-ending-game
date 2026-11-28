@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-28T10:55:46.715",
+  "finished": "2026-11-28T10:56:57.684",
+  "id": "20261128-105546-715-clip",
+  "kind": "clip",
+  "params": {
+    "call": "post_still",
+    "kwargs": {
+      "hour": 17.0,
+      "post": "castfoot",
+      "samples": 64,
+      "size": [
+        960,
+        540
+      ]
+    },
+    "path": "site/img/lead-in-my-footprint.png",
+    "script": "movies/post_stills.jl"
+  },
+  "result": {
+    "path": "site/img/lead-in-my-footprint.png",
+    "post": "castfoot"
+  },
+  "seconds": 70.4,
+  "started": "2026-11-28T10:55:47.290",
+  "status": "done"
+}

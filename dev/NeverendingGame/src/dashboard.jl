@@ -410,15 +410,25 @@ function things_to_try(g::Game)
     return join(lines, "\n")
 end
 
+"""
+The frames the game really ran in its last second or so (the last 30 frame starts, "interval" of the
+game loop), or "–" before there are any. Until Nov 28 the dashboard showed the target rate capped by the
+frame's work alone, which was 30 whatever happened between frames.
+"""
+function measured_fps(c::FrameClock; n::Int = 30)
+    iv = get(c.parts, "interval", Float64[])
+    isempty(iv) && return "–"
+    last_n = @view iv[max(1, end - n + 1):end]
+    return @sprintf("%.0f", 1000 * length(last_n) / sum(last_n))
+end
+
 function update_dashboard!(g::Game)
     d = g.dash
     p = g.paths
     w = g.world
-    frame_ms = pctl(get(g.clock.parts, "frame", Float64[]), 0.5)
-    fps = frame_ms > 0 ? min(g.fps, 1000 / frame_ms) : 0.0
     hour = floor(Int, 24daytime(w))
-    d.status.text[] = @sprintf("%02d:%02d on the island   ·   %d creatures   ·   %.0f fps   ·   %s",
-                               hour, floor(Int, 60(24daytime(w) - hour)), length(w.creatures), fps,
+    d.status.text[] = @sprintf("%02d:%02d on the island   ·   %d creatures   ·   %s fps   ·   %s",
+                               hour, floor(Int, 60(24daytime(w) - hour)), length(w.creatures), measured_fps(g.clock),
                                g.minigame === nothing ? "watching" : "playing: " * game_title(typeof(g.minigame)))
     words, color = mood_text(host_json(p, "mood.json"))
     d.mood.text[] = wrap_text(words, 46; maxlines = 3)

@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0166 [fun, high]: A bot that walks straight at the nearest target wins every game in under 40 s: fireflies 8/8 in 33 s, berries 12 vs rivals 1/0/1, hide and seek 4/4 in 21 s. There is no skill, no risk and no reason to play twice. None of them uses the island's wind, sand, magnets or the yacht.\nWhere: plugins firefly_catch, berry_race, hideseek\nSuggestion: Replace one with a yacht race against a friend on a wind that turns: lose by over-sheeting, win by trimming. Make the berry rivals path-plan and steal from your bush, and have the hide and seek friends move when you look away.\nDone when: The same naive bot (reviews/p166/play.jl) loses at least one of three runs in at least two games, and one game uses the solved sail or the sand.\nEvidence: reviews/p166/play/log.txt, play/firefly-over.png, berry-end.png, hide-end.png",
+      "detail": "perfectionist-0169 [fun, high]: I played each for a minute, steering W/A/D straight at the target the HUD names. Firefly catch: 8/8 in 47.5 s. Berry race: 8 to 6 (the critters stopped scoring after 35 s). Hide and seek: 4/4 in 38.7 s of 120. Every HUD says where the target is ('nearest 7 m ahead', 'a giggle 5 m ahead'), so there is nothing to master, and level 2 only shortens the clock.\nWhere: plugins/firefly_catch, berry_race, hideseek\nSuggestion: Make each one a game of skill or wit. Fireflies dodge when you run straight at them and come to you when you stand still with the lantern (F). Critters in the berry race cut you off, steal from your basket, and take shortcuts you can learn. Hiders move when you aren't looking, and a giggle gives a direction from sound, not a distance. Then a second play is worth it.\nDone when: The same naive steer-at-target bot loses at least two of the three games at level 1, while a test that plays with the new skill (standing still, cutting off, listening) wins.\nEvidence: reviews/p169/play-03.png, play-09.png, play-13.png, play-19.png, play-23.png, play-27.png; scores logged in reviews/p169/play.jl run (REVIEW_PLAY)",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -9000,7 +9000,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The mini games are no contest: a naive bot wins all three on the first try",
-      "updated": "2026-11-28T07:44:30.099"
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9634,7 +9634,7 @@
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0166 [lighting, high]: Path tracing on in orbit at 13:08 after 25 s: visible grain everywhere, navy noisy cloud undersides, flat dark ellipses for cloud shadows on the sea, and grey-green crowns. It looks worse than the raster.\nWhere: live path tracing (RayMakie/Hikari settings, denoise)\nSuggestion: Denoise (OIDN) the accumulated frame. Make clouds a volume or a white two-sided diffuse with sky fill so their undersides aren't navy. Use a sky light from the same model as the raster.\nDone when: A traced screenshot of the orbit view after 25 s with no visible per-pixel grain at 100% and cloud undersides lighter than the sea.\nEvidence: reviews/p166/traced.png",
+      "detail": "perfectionist-0169 [lighting, high]: With path tracing on at 04:33, the cottage is covered by two big opaque pale discs, a third sits in the middle of the meadow, and the fireflies are flat white dots with no light on the grass. The raster night is a murky green-black where the only readable things are labels. In the raster, fireflies near the camera are flat lime discs up to 60 px across that cover faces and the ground (cam2-follow-2.png, play-03.png).\nWhere: nightglow / lamplight / fireflies billboards under path tracing\nSuggestion: Under tracing, drop the glow billboards and use real small point or sphere lights with emissive cores. Fireflies become tiny emitters that leave pools of light on leaves. Raise the moonlight to a cool key light so silhouettes read.\nDone when: The traced still at night has no flat discs. At least three fireflies light the grass visibly around them, and the cottage reads with warm light spilling from its window.\nEvidence: reviews/p169/traced.png, cam-orbit.png, cam2-follow-2.png, play-03.png",
       "est_minutes": 30.0,
       "id": 689,
       "kind": "review",
@@ -9643,8 +9643,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Traced view: grainy, murky, fireflies are flat discs that light nothing",
-      "updated": "2026-11-28T07:44:30.099"
+      "title": "Night lights: flat lime firefly discs in raster, flat cream discs when traced",
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-27T13:58:00.342",
@@ -10446,17 +10446,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0166 [wow, medium]: The last eight posts are copper, iron, wire, a coil and pots, mostly stills or films of small objects on grey or green slabs. The newest was judged a repeat. Films still show a white L-block boat and blue cylinders on a slate slab that starts on a black frame.\nWhere: world/site, films\nSuggestion: Leave the bench once. Film a moment with creatures, consequence and a joke: the yacht dragging a squealing pig across the sand, sail backlit at sunset, a crash into the cairns. Cut it like a short, not a lab record. Re-shoot or retire the primitive films.\nDone when: A post whose film has at least two creatures reacting on screen, no black or bare-slab frame, and a traced sunset or lamp-lit shot. The white L-block and slab films are replaced.\nEvidence: reviews/motion/perfectionist-0166/wire-spins-itself-steps.jpg, workshop-boat-overview.jpg; host judge ×0.22 on 'My land yacht'",
+      "detail": "perfectionist-0169 [wow, high]: The last post is from s166. The mood file says boredom 1.0 and loneliness 0.62, after three sessions of numbers on one cart. The goals ask for a post every session and a film for every finished thing. The physics is the most player-shaped idea in a while, and nobody has seen it.\nWhere: world/site, movies/\nSuggestion: Make a short traced film at low sun: the yacht bogged down, Lumi scooping, a friend straining at the stern, the wheels climbing out, ruts glinting behind. Then do something of a different kind next session; Lumi is bored for a reason.\nDone when: A new post with a traced clip of at least 6 s where the cart visibly moves out of its own holes, with the helper and Lumi both in frame.\nEvidence: /run/neverending/mood.json; site/img newest = land-yacht-on-the-beach.png",
       "est_minutes": 30.0,
       "id": 747,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Posts are bench experiments on slabs: make one a player would share",
-      "updated": "2026-11-28T07:44:30.099"
+      "title": "Three sessions, no post: film the dig-and-shove at low sun, traced",
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10474,7 +10474,7 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0166 [camera, high]: In 3 of 6 follow shots, plus the firefly win screen, the subject is hidden: by a pine (13:05), by the yacht's sail filling a third of the frame and a swing post over Lumi (13:23), and by the hut roof at 'All caught!'. Two of ten creature close-ups are only the green inside of a tree crown.\nWhere: camera rig (follow), live_motion creature framing, mini game end shots\nSuggestion: Cast a ray from target to camera against tree crown and trunk bounds, props and creature capsules each frame. Pull in or swing round with a smoothed spring, and fade the occluder if that fails. Frame the win moment on Lumi, not the map. Hide name labels whose owner is occluded.\nDone when: Ten follow screenshots 5 s apart and one per mini game win screen, with no frame where a prop, foliage or a body covers the subject or more than 25% of the view.\nEvidence: reviews/p166/follow.png, follow-2.png, play/firefly-over.png, motion/p166live/creatures.png rows 3-4",
+      "detail": "perfectionist-0169 [camera, high]: In all four screenshots by the yacht, a dark wedge covers roughly 45% of the view, so the cart, the sand and Lumi's feet are all hidden. Outside games, the follow camera frames Cumulus through a fence post, and the creatures sheet has one creature shot from inside a bush.\nWhere: the follow rig (game.rig :follow) near the beach hut and yacht\nSuggestion: Ray-test camera to target and pull in or rise over anything in between. Frame the yacht and the helper together when the player is working on the cart.\nDone when: Screenshots by the yacht, by the hut and in the pine grove show no occluder over more than 5% of the frame, and Lumi is fully visible.\nEvidence: reviews/p169/yacht-0.png, yacht-push-c.png, yacht-dig.png, cam-follow.png, motion/creatures.png row 1, cam2-follow-2.png, play-03.png",
       "est_minutes": 30.0,
       "id": 749,
       "kind": "review",
@@ -10483,8 +10483,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Follow and close-up cameras sit inside trees, the sail and bodies",
-      "updated": "2026-11-28T07:44:30.099"
+      "title": "Follow camera in Jump in: a black slab hides the lower half of the frame at the yacht",
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10544,17 +10544,17 @@
     },
     {
       "created": "2026-11-28T01:27:09.944",
-      "detail": "perfectionist-0163 [fun, medium]: The friends fish and stack cairns all night (author's own journal). None of them ever uses anything Lumi built.\nWhere: island behaviour\nSuggestion: Friends push the cart, plant fences, or ride aboard, and react when it lurches.\nDone when: A screenshot of a friend pushing, riding or working on a Lumi-built machine, with the event logged.\nEvidence: journal 2026-11-28 03:11 and 04:02",
+      "detail": "perfectionist-0169 [fun, high]: In Jump in at 04:21, standing at the yacht's bow, I pressed Q. Pinchy (the nearest, id 4) set off, detoured twice, then stopped 2 m from the stern saying 'I can't get round to it!'. The cart stayed at (-8.24, -12.87) and :pusher was cleared. The 'Gloop pushed it 8 m' from the journal did not happen for a player.\nWhere: plugins/landyacht.jl ly_pusher! / ly_call_friend!\nSuggestion: Call a friend that can actually reach the stern: pick by path, not by distance, or let it walk round the cart through its own solid disc. When one can't, have Lumi call the next. Give the friend a leaning pose with its head down and legs braced, and a small cheer when the wheels come free. This is the moment the human wants to show someone.\nDone when: A uitest presses Q by the parked yacht in Jump in from 3 different stand points. Each time a friend leans on the stern within 10 s and the cart moves at least 3 m, shown in a screenshot of the friend leaning.\nEvidence: reviews/p169/yacht-push-a/b/c.png; LANDYACHT[:pusher] tries=2 then nothing; st.P unchanged",
       "est_minutes": 15.0,
       "id": 754,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "Friends never touch Lumi's machines: give them a real job on the cart",
-      "updated": "2026-11-28T05:07:57.196"
+      "title": "Q by the yacht: the friend gives up 2 m from the stern and the cart never moves",
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T02:10:01.789",
@@ -10623,8 +10623,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Clipping: a crab inside the pig's head, Lumi inside the blue friend",
-      "updated": "2026-11-28T05:07:57.196"
+      "title": "Clipping: a crab inside the pig's head, Pinchy's face inside the yacht's wheel",
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T03:02:55.288",
@@ -10731,12 +10731,12 @@
       "id": 767,
       "kind": "review",
       "priority": 1,
-      "result": "s165: physics/yachtrun.jl (cart on the live sail vs WheelSand.towed, firm sand 69 N). 2D slices stall backwards (media/s165/yachtrun.txt, sail-re.txt). 3D GPU box stalls right: AR 4 chord 24, alpha 15 CL .46 CD .14, alpha 50 CL .54 CD .68 (media/s165/sail-3d-gpu.txt): moving, right trim drives 2.5x more. Box chord 16 786k cells: 9.9 ms/step on the GPU = 0.7x real time. Next: a 3D box hugging the sail, live, feeding the cart.\ns167: SAILS IN JUMP IN, published (plugins/landyacht.jl ly_sail!, engine play.jl Jump in text names the keys). E by the cart climbs aboard and starts the 3D sail box (sailflow.jl serve!) in its own Distributed process; first force after 27 s, 5.8 ms/step, frames 4.5 ms median / 9.3 p95 with it running. W/S sheet, A/D steer, Space hops off (process removed, solid back). Drive = q*A*(CL sin b - CD cos b) from the box at the apparent wind vs 69 N firm-sand rolling resistance and the wheelbase grade. Sandbox run: wind 8.9 m/s, sheet hauled tight (alpha 61, stalled CL .56 CD 1.16): 61 N, does not move; let out to alpha 29: 133-144 N, rolled 17.1 m in ~12 s at up to 1.6 m/s, alpha fell 29->19 as the apparent wind swung forward, stopped where the beach climbs. Screenshot media/s167/yacht-sailing-1.png (Lumi on the deck). NOT YET: wheels don't spin, Lumi stands instead of sitting, the cart climbs off the sand onto grass, a play script in world/tests, a traced chase film.\ns167: SAILS IN JUMP IN, published (plugins/landyacht.jl ly_sail!; Jump in text names the keys). E aboard starts the 3D sail box (sailflow.jl serve!) in a Distributed worker AT THE SAIL'S REAL ANGLE; first force ~30 s; frames 4.5 ms median / 9.3 p95 with it running. S lets out / W hauls in (14 deg/s), A/D steer, Space hops off (process removed, solid back). Wheels spin by distance. Drive from the box's CL/CD at the apparent wind vs 69 N firm-sand rolling resistance + the wheelbase grade. First sandbox run (8.9 m/s): stalled 61 N stays; let out to alpha 29, 133-144 N, 17.1 m in ~12 s, alpha 29->19 as the apparent wind swung forward (media/s167/yacht-sailing-1.png, -2.png). TEST tests/landyacht.jl FAILS honestly: 3-5 m ahead of the spot the beach rises 9%; trimmed (alpha 30, 90-110 N) from low speed it cannot climb (69 + 85 N). Next: park where the beach runs flat along the water (look at the terrain over 20 m), warm the box 8 chords (2 gives a surge: 'stalled' crept 2-5 m in 3 s at 8.8 m/s), then the test must pass.\ns168: no flat 20 m of beach exists on this island (scan: projects/landyacht.md 'NO SAILING BEACH'); the cove above the swash is DRY sand: honest rolling resistance 194 N there, more than the sail gives at 8.8 m/s (the published 69 N is firm sand). The way the player moves it now comes from todo #773 (dig, push, plank), the course from a tide flat or planks to the wet band.\ns169: the yacht is no longer a wall: Q by it calls a friend who pushes it along the beach (8.2 m in 9 s measured in the sandbox, published). Sailing alone: the honest dry cove sand (194 N) is more than the sail gives; needs the wet band or a friend pushing (projects/landyacht.md Next).",
+      "result": "s165: physics/yachtrun.jl (cart on the live sail vs WheelSand.towed, firm sand 69 N). 2D slices stall backwards (media/s165/yachtrun.txt, sail-re.txt). 3D GPU box stalls right: AR 4 chord 24, alpha 15 CL .46 CD .14, alpha 50 CL .54 CD .68 (media/s165/sail-3d-gpu.txt): moving, right trim drives 2.5x more. Box chord 16 786k cells: 9.9 ms/step on the GPU = 0.7x real time. Next: a 3D box hugging the sail, live, feeding the cart.\ns167: SAILS IN JUMP IN, published (plugins/landyacht.jl ly_sail!, engine play.jl Jump in text names the keys). E by the cart climbs aboard and starts the 3D sail box (sailflow.jl serve!) in its own Distributed process; first force after 27 s, 5.8 ms/step, frames 4.5 ms median / 9.3 p95 with it running. W/S sheet, A/D steer, Space hops off (process removed, solid back). Drive = q*A*(CL sin b - CD cos b) from the box at the apparent wind vs 69 N firm-sand rolling resistance and the wheelbase grade. Sandbox run: wind 8.9 m/s, sheet hauled tight (alpha 61, stalled CL .56 CD 1.16): 61 N, does not move; let out to alpha 29: 133-144 N, rolled 17.1 m in ~12 s at up to 1.6 m/s, alpha fell 29->19 as the apparent wind swung forward, stopped where the beach climbs. Screenshot media/s167/yacht-sailing-1.png (Lumi on the deck). NOT YET: wheels don't spin, Lumi stands instead of sitting, the cart climbs off the sand onto grass, a play script in world/tests, a traced chase film.\ns167: SAILS IN JUMP IN, published (plugins/landyacht.jl ly_sail!; Jump in text names the keys). E aboard starts the 3D sail box (sailflow.jl serve!) in a Distributed worker AT THE SAIL'S REAL ANGLE; first force ~30 s; frames 4.5 ms median / 9.3 p95 with it running. S lets out / W hauls in (14 deg/s), A/D steer, Space hops off (process removed, solid back). Wheels spin by distance. Drive from the box's CL/CD at the apparent wind vs 69 N firm-sand rolling resistance + the wheelbase grade. First sandbox run (8.9 m/s): stalled 61 N stays; let out to alpha 29, 133-144 N, 17.1 m in ~12 s, alpha 29->19 as the apparent wind swung forward (media/s167/yacht-sailing-1.png, -2.png). TEST tests/landyacht.jl FAILS honestly: 3-5 m ahead of the spot the beach rises 9%; trimmed (alpha 30, 90-110 N) from low speed it cannot climb (69 + 85 N). Next: park where the beach runs flat along the water (look at the terrain over 20 m), warm the box 8 chords (2 gives a surge: 'stalled' crept 2-5 m in 3 s at 8.8 m/s), then the test must pass.\ns168: no flat 20 m of beach exists on this island (scan: projects/landyacht.md 'NO SAILING BEACH'); the cove above the swash is DRY sand: honest rolling resistance 194 N there, more than the sail gives at 8.8 m/s (the published 69 N is firm sand). The way the player moves it now comes from todo #773 (dig, push, plank), the course from a tide flat or planks to the wet band.\ns169: the yacht is no longer a wall: Q by it calls a friend who pushes it along the beach (8.2 m in 9 s measured in the sandbox, published). Sailing alone: the honest dry cove sand (194 N) is more than the sail gives; needs the wet band or a friend pushing (projects/landyacht.md Next).\nperfectionist-0169: Boarding and sailing exist since s167 and have a play test. Pushing, digging and friends aboard are covered by #754, #773 and #772.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "done",
       "title": "The yacht on the beach is a wall: board it, push it, sail it, friends aboard",
-      "updated": "2026-11-28T09:37:40.637"
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T07:00:17.001",
@@ -10768,7 +10768,7 @@
     },
     {
       "created": "2026-11-28T07:22:46.254",
-      "detail": "perfectionist-0166 [materials, high]: Up close in the raster and in the post still, the sail is a flat, evenly lit white panel, and the wheels are solid brown discs. Nothing in it says canvas, rope or turned wood, and nothing shows what a path tracer can do with cloth backlit by the sun. In the traced overview it is a white card on the horizon.\nWhere: plugins/landyacht.jl mesh and materials\nSuggestion: Give the sail the camber the solver uses as real geometry. Use Hikari thin translucent diffuse transmission with a woven-normal texture and visible seams, so a low sun glows through it and the patch and tear show in silhouette. Add spoked wheels with iron tyres (real metal) and rope sheets. Take a traced still at 64+ spp against the evening sun.\nDone when: A traced still where the sail is visibly brighter on the shaded side from transmitted sun, has a curved belly in silhouette, and the wheels show spokes.\nEvidence: reviews/p166/play/jump-yacht-2.png, site/img/land-yacht-on-the-beach.png, reviews/p166/traced.png",
+      "detail": "perfectionist-0169 [materials, high]: The sail in its only traced picture is a flat beige rectangle with a dark frame and a grey square for a patch, the deck is plain brown planks, and the wheels are discs with painted spokes. It reads as a placeholder next to the sea.\nWhere: plugins/landyacht.jl ly_sail_mesh / ly_canvas\nSuggestion: Give the canvas a visible belly in the mesh even if the physics ignores it. Use Hikari's diffuse transmission so the sun glows through the cloth and shows seams and the patch. Add weathered wood with a coat, rope, and real spokes.\nDone when: A traced still with the sun behind the sail shows light coming through the canvas, a curved belly in silhouette, and wheels with spokes that are actual geometry.\nEvidence: site/img/land-yacht-on-the-beach.png",
       "est_minutes": 15.0,
       "id": 770,
       "kind": "review",
@@ -10778,11 +10778,11 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "The land yacht's sail is a white board: belly, light through canvas, spoked wheels",
-      "updated": "2026-11-28T07:44:30.099"
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T07:44:30.099",
-      "detail": "perfectionist-0166 [world, medium]: In orbit and free views the sea ends in a ruler-straight edge against a flat pale band, with no haze blend. It reads like a backdrop card behind the island.\nWhere: sky/sea horizon, haze plugin\nSuggestion: Blend the far sea into the sky with distance fog in the sea's colour and a brighter horizon band. Add a distant island or sail on the horizon for depth.\nDone when: An orbit screenshot where a column of pixels through the horizon changes brightness smoothly over ≥10 px, with no step larger than 15/255.\nEvidence: reviews/p166/orbit.png (y≈200), orbit-2.png and free-1.png (y≈118)",
+      "detail": "perfectionist-0169 [world, medium]: In the orbit and free cameras, a flat grey-blue band sits above the dark sea with a straight edge, as if the sky ended there.\nWhere: sky/haze at the horizon\nSuggestion: Blend the sea's far edge into the sky's horizon colour with distance fog, and add a soft moonlit glint path.\nDone when: Orbit screenshots at noon, dusk and night show no horizontal edge at the horizon.\nEvidence: reviews/p169/cam-orbit.png, cam2-free-2.png (05:22)",
       "est_minutes": 30.0,
       "id": 771,
       "kind": "review",
@@ -10792,7 +10792,7 @@
       "spent_minutes": 0.0,
       "status": "open",
       "title": "A hard seam where the sea meets the sky in orbit and free views",
-      "updated": "2026-11-28T07:44:30.099"
+      "updated": "2026-11-28T10:12:39.204"
     },
     {
       "created": "2026-11-28T08:12:36.619",
@@ -10810,17 +10810,73 @@
     },
     {
       "created": "2026-11-28T08:47:11.476",
-      "detail": "Project projects/stuck.md (passed s168). Physics done s168: physics/stuck.jl (wheel on real ground + load history), check physics/stuck_check.jl. done_when: in Jump in the cart rolls with each wheel's soil from where it stands (dry cove 194 N, firm wet band 69 N), the friends' ride sinks it (6 cm holes), E by a wheel digs a ramp in the sand field (visible, slumps to repose), a called friend pushes with its foot traction, and a play script logs: stuck after the friends get off (267 N), Lumi alone cannot move it, after digging Lumi moves it 0.5 m, a friend pushes it onto firm sand; frame time stays < 33 ms; a traced still of the dug wheel.",
+      "detail": "perfectionist-0169 [fun, high]: Three presses of R lowered LANDYACHT[:sandR] from 133 N to 90 N, yet nothing on screen changed. Lumi stood idle with no head dip, no flying sand, and no hole or heap you can see at night in the raster. Jump in's key panel lists 'R chip' and 'E wave', and doesn't mention boarding, Q or digging at all.\nWhere: plugins/landyacht.jl ly_dig!, the Jump in help panel\nSuggestion: A real scoop: beak down, a flick, sand thrown as particles that land on the heap, and a hole that reads as a hole (darker damp sand, a crisp rim, a shadow). Show the hold as something you can see, like wheels that visibly sink, rather than as newtons. Add the yacht keys to the panel when Lumi is near the cart.\nDone when: A screenshot after 3 R presses shows a hole and a heap by the wheel at least 20 px across, with Lumi mid-scoop. The Jump in panel near the yacht shows E board / Q call a friend / R dig.\nEvidence: reviews/p169/yacht-dig.png; sandR 133.0 -> 90.0",
       "est_minutes": 180.0,
       "id": 773,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "s168 physics: physics/stuck.jl (rim on real ground: main contact patch + patches ahead, load history, rolling presses only behind its bottom; settle + warm-started settle_from 4x faster), check physics/stuck_check.jl passes: flat 194.15 = towed 194.15 N, rolling in the sand field 193.1 N, friends' 6.3 cm holes -> breakout 297 N, dug ramp 42 N; pony push ~357 N, Lumi ~52 N. Not in the game yet (no publish): per-wheel soil must come with dig/push in one publish.\ns168 end: Stuck.CartSand + cart_step! (8x8 m field at 4 cm under the cart, 4 wheels at any heading, one press): median 0.83 ms a frame, p95 19 ms from 12% fallbacks to the full settle (start of rolling; rear wheels in the front wheels' ruts): fix before the plugin uses it (projects/stuck.md 'WHERE THE FALLBACKS ARE').\ns169 PART 1 PUBLISHED (plugins/landyacht.jl): the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight (wet band firm, cove dry): parked in the cove the wheels sit 32.5 mm deep, 194 N holds them (the sail's ~92 N cannot). Q by the cart calls the nearest friend: it runs over (steps round blocks), leans on the stern, pushes with its hooves' grip in the sand (357 N dry, tapered to 0 at 2.5 m/s): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn behind. Yacht system 2.1 ms median/2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png. Also fixed physics/stuck.jl settle_at's bracket (returned 426 N of 233 in ruts) and bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: E digs, a plank under a wheel, soil per wheel, the sand square following the cart, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight: parked in the dry cove 32.5 mm deep, 194 N (the sail's ~92 N cannot move it). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump): three scoops ahead of each wheel took the hold 194 -> 118 N (uneven: wheel 1 -60 N, the others 0.4-8 N, to find out). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: why wheels 2-4 gain little from digging, plank under a wheel, soil per wheel, sand square that moves with the cart, lean/dig poses, the traced film.\ns169 PUBLISHED: (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), soil from beach_weight, settled twice so it stands in its own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot, strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2 m in 9 s at ~1 m/s, ruts and berms drawn. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped behind Lumi, slump to repose): close to a tyre -8 to -26 N a wheel, but a hole (not a ramp) drops the wheel against the far wall (+100 N): digging is a skill. Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; numbers in projects/stuck.md s169. Also physics/stuck.jl: settle_at bracket bug fixed (returned 426 N of 233 in ruts), bracketed Newton (fallbacks 40 -> 18-23 on diagonals). STILL TO DO: heap thrown to the side, dig and lean poses, plank under a wheel, soil per wheel, sand square moving with the cart, the traced film at low sun.\ns169 PUBLISHED (4 publishes): (1) the yacht's four wheels settle in a 6x6 m sand field (physics/stuck.jl cart_step!, Bekker + load history), each wheel's own soil from beach_weight, settled in their own holes: parked in the dry cove 32 mm deep, hold 136 N (the sail's ~92 N at 8 m/s cannot; strong gusts ~155 N just can). (2) Q by the cart: the nearest friend runs over (steps round blocks, gives up aloud), leans on the stern, pushes with its hooves' grip (357 N dry, x (1 - v/2.5 m/s)): Gloop pushed it 8.2-8.5 m in ~9 s at ~1 m/s. (3) R by the cart: one beak scoop (13 cm, <= 4 cm, same volume heaped to Lumi's right, slump to repose): close to a tyre -8 to -26 N a wheel, a hole instead of a ramp +100 N: a skill. Six close scoops at the front wheels 136 -> 110 N. (4) The sand square moves with the cart, ruts kept (-19..-27 mm 1-2.75 m behind after a re-centre). Yacht system 2.1 ms median / 2.7 p95, frame 7.4/12.2 ms. Evidence: media/s169-yacht-ruts.png, media/s169-yacht-ruts2.png, media/s169-yacht-dug.png; all numbers in projects/stuck.md s169. physics/stuck.jl: settle_at bracket bug fixed, bracketed Newton, soils per wheel; stuck_check passes. STILL TO DO: plank under a wheel, scoop and lean poses, beach-wide ruts, the traced film at low sun (the post).",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Digging the yacht free shows nothing: no scoop pose, no visible hole, keys hidden",
+      "updated": "2026-11-28T10:12:39.204"
+    },
+    {
+      "created": "2026-11-28T10:30:18.119",
+      "detail": "UndefVarError: `CAST` not defined in `Main.Plugin_casting`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] ct_clear!()\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:23\n  [2] start!(::Main.Plugin_casting.CastingSys, game::Game)\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:139\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 774,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T10:30:32.518: plugin casting loaded cleanly.\nHappened again at 2026-11-28T10:30:32.557.\nClosed at 2026-11-28T10:31:30.155: plugin casting loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:casting.CastingSys failed in start! and was switched off",
+      "updated": "2026-11-28T10:31:30.155"
+    },
+    {
+      "created": "2026-11-28T10:40:51.576",
+      "detail": "s170: H stamps / pours / lifts in Jump in on the beach, published (942 g foot, frozen in 261 s, 1.4 ms/frame while pouring). Path traced (media/s170-cast-traced.png): the print reads well, the lifted foot is a dark lump and the 70 cm patch shows a raised slab edge over the yacht's sand. Done when: a traced dusk still/short shows the liquid's mirror shine in the print, the frozen grey skin, and the lifted foot with toes up and real sides, Lumi holding a ladle, no patch edge; then post it.",
+      "est_minutes": 15.0,
+      "id": 775,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s170 published twice: plugins/casting.jl + physics/casting.jl (check passes), uitest tests/casting.jl passes (stamp, pour all 94.7 cm3, lead conserved, >30% frozen in 90 s). Patch now sits on the yacht's sand at its height and colour; the lifted foot reads as silver toes (media/s170-cast-lifted2.png raster; traced media/s170-cast-traced.png before the fix: dark lump). Still to do for done_when: traced dusk film, ladle, sides on the piece.",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "Stuck in the sand: the yacht's wheels sit in the real sand field; dig, push, plank it free",
-      "updated": "2026-11-28T09:46:12.628"
+      "title": "Cast a lead foot: make it look the part, then a post (projects/casting.md)",
+      "updated": "2026-11-28T10:44:17.016"
+    },
+    {
+      "created": "2026-11-28T10:40:51.800",
+      "detail": "s170 free time (projects/stuck.md 's170'): bilinear chords of the wheel's own pressed hole sit 0.02-0.04 mm above the rim, so rim() splits the contact into 15 patches and drops the Wong-Reece shape: 38.5 N a wheel instead of 48.5 at every dx. Fix: bridge gaps < ~0.2 mm inside the main run from the bottom (never into a patch ahead). Done when: re-settle in own hole = fresh within 3%, stuck_check passes, fallbacks not worse, dig numbers re-measured.",
+      "est_minutes": 15.0,
+      "id": 776,
+      "kind": "fix",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Stuck: a wheel in its own cast meets 15 contact patches (parked hold 136 N should be ~194)",
+      "updated": "2026-11-28T10:40:51.800"
+    },
+    {
+      "created": "2026-11-28T10:51:19.370",
+      "detail": "UndefVarError: `measured_fps` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] update_dashboard!(g::Game)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/dashboard.jl:418\n [2] #frame!##8\n   @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:352 [inlined]\n [3] timed_ms\n   @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n [4] frame!(g::Game, dt::Float64)\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:352\n [5] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 777,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "A frame failed: UndefVarError: `measured_fps` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.",
+      "updated": "2026-11-28T10:51:19.370"
     }
   ]
 }
