@@ -220,17 +220,82 @@ end
 
 # ---- the parts as built on the bench (a two-stone stator, a rectangular coil, a split ring) ----
 
+"""
+A magnet stone (s158): a lump about a cylinder (radius R, height H, axis z) with one face dressed flat and round at
+z = `face` (the pole face toward the rotor) and everything else bulging 0..`bump` R outward, smooth, seeded. Closed and
+outward-wound, so em.jl magnetises exactly the shape that is drawn (motorlook.jl draws these same triangles).
+"""
+function rough_stone(R, H; face = 0.0, seed = 1, bump = 0.12, n = 64, nz = 10)
+    rng = UInt64(seed) * 0x9E3779B97F4A7C15
+    rnd() = (rng = rng * 6364136223846793005 + 1442695040888963407; Float64(rng >> 11) / 2.0^53)
+    # lumps that are not round about the axis: cosines along random 3D directions (a blobby, rock-like field), two
+    # octaves; a stone is wider one way than the other (aspect) and leans a little
+    dirs = [(begin u = (2rnd() - 1, 2rnd() - 1, 2rnd() - 1); u ./ sqrt(sum(u .^ 2)) end, 2 + 7rnd(), 2pi * rnd(), 0.4 + 0.6rnd())
+            for _ in 1:10]
+    asp = 0.82 + 0.18rnd(); tilt = 0.12 * (2rnd() - 1)
+    function grow(θ, z)                              # small at the dressed face, up to `bump` far from it
+        d = abs(z - face) / H
+        p = (cos(θ), sin(θ), (z - H / 2) / R)
+        s = sum(a * cos(f * sum(p .* u) + ph) for (u, f, ph, a) in dirs) / sum(dv[4] for dv in dirs)
+        bump * R * (0.25 + 0.75 * min(1.0, 2.5d)) * (0.5 + 1.2 * s)
+    end
+    # chipped faces (s158: smooth lumps of +-4 mm drew as a plain can): the stone starts wider and is cut by random
+    # planes, flat facets like a broken beach stone; the dressed face stays flat (cuts only reach the far part fully)
+    cuts = [(2pi * rnd(), 0.35 * (2rnd() - 1), 0.84 + 0.2rnd()) for _ in 1:8]     # (azimuth, z-slope, distance / R)
+    function radius(θ, z)
+        r = 1.18R * (1 + (asp - 1) * cos(θ)^2) + tilt * R * cos(θ) * abs(z - face) / H + grow(θ, z)
+        d = abs(z - face) / H
+        for (ψ, kz, dk) in cuts
+            c = cos(θ - ψ)
+            c > 0.05 || continue
+            lim = (dk * R - kz * R * (d - 0.5)) / c                    # a plane, a little slanted along the stone
+            r = min(r, lim)
+        end
+        r
+    end
+    v = V3[]; zs = range(0.0, H; length = nz + 1)
+    far = face == 0 ? H : 0.0
+    push!(v, (0.0, 0.0, 0.0 + (far == 0 ? -0.7bump * R : 0.0)))            # cap centres (the far one domed out)
+    push!(v, (0.0, 0.0, H + (far == H ? 0.7bump * R : 0.0)))
+    for z in zs, i in 0:n-1
+        θ = 2pi * i / n; r = max(0.6R, radius(θ, z))
+        dz = abs(z - far) < 1e-12 ? (far == 0 ? -1 : 1) * 0.5 * grow(θ, z) : 0.0   # the far rim lumps outward too
+        push!(v, (r * cos(θ), r * sin(θ), z + dz))
+    end
+    idx(j, i) = 2 + j * n + mod(i, n) + 1
+    f = NTuple{3,Int}[]
+    for i in 0:n-1
+        push!(f, (1, idx(0, i + 1), idx(0, i)))                 # bottom (normal -z)
+        push!(f, (2, idx(nz, i), idx(nz, i + 1)))               # top (+z)
+        for j in 0:nz-1
+            b0, b1, t0, t1 = idx(j, i), idx(j, i + 1), idx(j + 1, i), idx(j + 1, i + 1)
+            push!(f, (b0, b1, t1)); push!(f, (b0, t1, t0))
+        end
+    end
+    v, f
+end
+
+"""
+The two stator stones in body coordinates with where they sit: [(v, f, pos, Rm)], cylinder axis z turned to +y, the
+near (dressed) face `gap/2` from the axle. `rough = false`: plain cylinders (as before s158).
+"""
+function stator_shapes(; R = 0.012, H = 0.012, gap = 0.024, rough = true)
+    Rm = [1.0 0 0; 0 0 1; 0 -1 0]                 # body z -> world y
+    map(enumerate((-1.0, 1.0))) do (k, side)
+        y0 = side < 0 ? -gap / 2 - H : gap / 2
+        v, f = rough ? rough_stone(R, H; face = side < 0 ? H : 0.0, seed = 7 + k) : EM.cylinder_mesh(R, H)
+        (; v, f, pos = (0.0, y0, 0.0), Rm)
+    end
+end
+
 "Two stones either side of the rotor along y, magnetised along +y (`flip` turns one or both round)."
-function stator(; material = :ferrite, R = 0.012, H = 0.012, gap = 0.024, flip = (false, false))
-    v, f = EM.cylinder_mesh(R, H)
+function stator(; material = :ferrite, R = 0.012, H = 0.012, gap = 0.024, flip = (false, false), rough = true)
     Br = EM.MATERIALS[material].Br
     ms = EM.Magnet[]
-    for (k, side) in enumerate((-1.0, 1.0))
-        # cylinder axis along +y: rotate z -> y; its near face sits `gap/2` from the axle
-        Rm = [1.0 0 0; 0 0 1; 0 -1 0]             # body z -> world y
-        y0 = side < 0 ? -gap / 2 - H : gap / 2
+    for (k, sh) in enumerate(stator_shapes(; R, H, gap, rough))
         M = (flip[k] ? -1 : 1) * Br / EM.MU0
-        push!(ms, EM.magnet(v, f, (0.0, 0.0, M); pos = (0.0, y0, 0.0), R = Rm))
+        # the rough stone has 1056 small faces: 3x3 samples each are within 1% of 6x6 (5.13 vs 5.10 mN m) at 1/4 the cost
+        push!(ms, EM.magnet(sh.v, sh.f, (0.0, 0.0, M); n = rough ? 3 : 6, pos = sh.pos, R = sh.Rm))
     end
     ms
 end

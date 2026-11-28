@@ -81,17 +81,70 @@ end
     cart_climb(; soil, mass, wheels = 4, r, b, slope_deg, pullers_N)
 
 Pulling a cart up a slope: each towed wheel's resistance at its share of the weight plus the weight's component down
-the slope, against what the pullers can give (each: its own weight times its feet's friction on that ground).
+the slope, against what the pullers can give (each: two feet `foot_ab` on the same soil, `foot`'s full grip + ridge).
 """
 function cart_climb(; soil = SOILS[:dry_sand], mass = 35.0, wheels = 4, r = 0.2, b = 0.03, slope_deg = 15.0,
-                    pullers = Float64[])
+                    pullers = Float64[], foot_ab = (0.04, 0.03))
     α = deg2rad(slope_deg); W = mass * 9.81 * cos(α) / wheels
     t = towed(soil, W, r, b)
     need = wheels * t.resistance + mass * 9.81 * sin(α)
-    can = sum(m * 9.81 * tan(soil.phi) * 0.8 for m in pullers; init = 0.0)   # feet slip short of the full angle
+    # each puller on two feet (foot = length, width) on the same soil (s158: was m g tan(phi) 0.8, a guess)
+    can = sum(2 * foot(soil, m * 9.81 / 2, foot_ab[1], foot_ab[2], Inf).Fmax for m in pullers; init = 0.0)
     (; sinkage_cm = round(100t.z, digits = 2), roll_N = round(wheels * t.resistance, digits = 1),
        grade_N = round(mass * 9.81 * sin(α), digits = 1), need_N = round(need, digits = 1), can_N = round(can, digits = 1),
        climbs = can > need)
+end
+
+# ---- Feet on the same ground (s158, project cart: one sand law for feet and wheels) ------------------------------
+# A foot is a small flat plate (length a along the pull, width b) pressed in by its share of the body's weight. The
+# SAME soil constants decide: Bekker's law gives how deep it sinks; Janosi-Hanamoto gives how its grip builds as the
+# sand under it shears by j (a plate slid rigidly shears every point by j: F = (A c + W tan phi)(1 - exp(-j / K)));
+# and once sunk, the sand ahead of its back face (the face the pull drives into the ground) is pushed up as a ridge
+# and resists by Rankine's passive earth pressure, Kp = tan^2(45 deg + phi / 2) (Terzaghi; Bekker's bulldozing).
+# So a heavy friend sinks deeper and digs in harder, a light one creeps, and on snow or clay the same code answers.
+
+const SAND_GAMMA = Dict(:dry_sand => 1600 * 9.81, :sandy_loam => 1700 * 9.81, :snow => 400 * 9.81, :clay => 1800 * 9.81)
+
+"How deep a plate a x b carrying W newtons sinks (Bekker; b the smaller side)."
+plate_sinkage(s, W, a, b) = (W / (a * b * (s.kc / min(a, b) + s.kphi)))^(1 / s.n)
+
+"""
+    foot(s, W, a, b, j; γ = 1600 * 9.81) -> (; z, shear, ridge, F, Fmax)
+
+One foot carrying `W` newtons, its sand sheared by `j` metres in the pull's direction. `shear`: the plate's grip
+(Janosi-Hanamoto); `ridge`: the passive resistance of the sand heaped against its back face once sunk z (Rankine,
+width b, mobilised with the same shear curve); `F` the total it holds at `j`, `Fmax` at full shear.
+"""
+function foot(s, W, a, b, j; γ = SAND_GAMMA[:dry_sand])
+    z = plate_sinkage(s, W, a, b)
+    Kp = tan(pi / 4 + s.phi / 2)^2
+    ridge_full = b * (0.5 * γ * z^2 * Kp + 2 * s.c * z * sqrt(Kp))
+    shear_full = a * b * s.c + W * tan(s.phi)
+    m = 1 - exp(-max(j, 0.0) / s.K)
+    (; z, shear = shear_full * m, ridge = ridge_full * m, F = (shear_full + ridge_full) * m, Fmax = shear_full + ridge_full)
+end
+
+"""
+    foot_creep(s, W, a, b, F) -> j or Inf
+
+How far a foot's sand shears (the foot creeps back and scrapes) while it holds a pull `F`: the j where the grip
+equals F. Inf when F is past what the foot can ever hold: it slides.
+"""
+function foot_creep(s, W, a, b, F; γ = SAND_GAMMA[:dry_sand])
+    Fm = foot(s, W, a, b, Inf; γ).Fmax
+    F >= Fm && return Inf
+    -s.K * log(1 - F / Fm)
+end
+
+"""
+    lean(m, h, T; rope_h = h, rope_up = 0.0) -> angle (rad)
+
+How far a puller of mass `m` (centre of mass `h` above its feet) leans into a rope pulling it back with tension `T`
+at height `rope_h`, rising at `rope_up` rad: statics about its feet, the weight's moment balances the rope's.
+"""
+function lean(m, h, T; rope_h = h, rope_up = 0.0)
+    W = m * 9.81 + T * sin(rope_up)                     # the rope pulling down adds to the load on the feet
+    atan(T * cos(rope_up) * rope_h / (W * h))
 end
 
 end # module

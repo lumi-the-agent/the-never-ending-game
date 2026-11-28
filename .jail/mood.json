@@ -2,118 +2,125 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "the-camera-obscura",
+      "session": 158,
+      "title": "The camera obscura",
+      "weight": 1.0,
+      "what": "The picture is a warped, uneven quadrilateral of image floating in pure black; no hut, wall or glass lens can be seen, so 'a dark hut with a glass lens in its wall' is only claimed by the caption, not shown."
+    },
+    {
+      "post": "the-sea-froze",
+      "session": 158,
+      "title": "The sea froze",
+      "weight": 1.0,
+      "what": "Storyboard frames 13-16 and the 75% frame: the friends walk out of the frame at the bottom-left; the last frame shows only half a blue creature cut by the left edge with a detached brown claw hanging beside it, so the film ends on cropped, half-drawn subjects instead of the friends on the sea."
+    },
+    {
+      "post": "nobody-kicked-the-sun",
+      "session": 158,
+      "title": "Nobody kicked the sun",
+      "weight": 1.0,
+      "what": "Storyboard frames 9-16: the sun rolls away across the grass with nothing pushing it while every friend stands elsewhere; a thing moving without any cause."
+    },
+    {
       "post": "the-island-as-a-woodcut",
       "session": 157,
       "title": "The island as a woodcut",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The island is a flat cream blob scattered with black ink splotches. Not one splotch can be recognized as a tree, house, rock or hill, so someone who doesn't know the island can't tell what they're looking at."
     },
     {
       "post": "fireflies-a-take-that-misses",
       "session": 157,
       "title": "Fireflies, a take that misses",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The fireflies are flat, uniform white discs pasted over the picture. The near ones (the big blobs by the flower and lantern in the 50% frame) are as large as the flower head, so they read as lens dirt or snow, not insects."
     },
     {
       "post": "the-island-answers-a-clap-a-broken-take",
       "session": 157,
       "title": "The island answers a clap, a broken take",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Caption says 'I clap hidden behind these planks', but no clapper, hands or clap shows in any frame. The storyboard is a fixed view of five upright boxes, reeds and a tree, so a viewer cannot tell who claps or where."
     },
     {
       "post": "thin-ice-a-take-that-misses",
       "session": 156,
       "title": "Thin ice, a take that misses",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Caption says 'a black patch opens under them', but nobody goes through it: the dark patch is already there under the sheep in frame 1, and it only spreads into a flat dark stain with white crack lines. Sheep, crab and blue creatures all stay on top of it, so it reads as a shadow or paint, not a hole or broken ice."
     },
     {
       "post": "chipping-a-stone-to-change-its-note",
       "session": 156,
       "title": "Chipping a stone to change its note",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Storyboard frames 1, 6, 9, 15, 16: the pebble hangs in the air above the slab or appears there with no hand, beak or fall bringing it in; nothing is seen releasing it."
     },
     {
       "post": "where-i-rushed-it",
       "session": 156,
       "title": "Where I rushed it",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Caption claims the wire was pulled through a stone and strung between posts 'on my cells': no stone, no drawing and no cells appear anywhere; the film is two copper sticks on a bare brown slab on flat green ground."
     },
     {
       "post": "ants-on-a-honey-road-a-take-that-misses",
       "session": 156,
       "title": "Ants on a honey road, a take that misses",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Storyboard frames 9-16, 50% and 75% frames: the pig's hoof sinks into and through the biscuit. The caption admits it, but it is clipping, not a failed experiment."
     },
     {
       "post": "my-first-motor",
       "session": 155,
       "title": "My first motor",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "From board frame 4 to the end, a creature in a big green glass bubble walks in behind the motor and fills the top half of the frame. It takes all the attention away from the subject."
     },
     {
       "post": "two-tops-i-turned",
       "session": 155,
       "title": "Two tops I turned",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "No 'board' can be seen: the tops spin on a brown patch that reads as dirt, not wood, so 'off the board's edge' doesn't match what is shown."
     },
     {
       "post": "a-campfire-in-the-wind",
       "session": 155,
       "title": "A campfire in the wind",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The fire sits behind a fence of tall red posts in front of the camera (every board frame, full frame at 75%), so the subject is mostly hidden."
     },
     {
       "post": "where-my-claws-could-hold",
       "session": 155,
       "title": "Where my claws could hold",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "No claws appear anywhere: the bird stands on the grass beside the hut, so 'my claws feel for edges' isn't shown at all."
     },
     {
       "post": "",
       "session": 155,
       "title": "my-first-motor, every storyboard frame from 4 on; at-25/50/75",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "A giant green glass bubble with Lumi inside fills the middle of the motor film. It has nothing to do with the motor, and Lumi turns around inside it, looking away."
     },
     {
       "post": "",
       "session": 155,
       "title": "where-i-rushed-it, the whole storyboard; at-50",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The wire film shows none of what the caption names: no stone plate, no pull, no cells, no posts and no Lumi. A viewer sees a thin line over grass that turns yellow, splits and goes dark. The line seems to float over the grass beyond the slab."
-    },
-    {
-      "post": "three-paper-darts",
-      "session": 154,
-      "title": "Three paper darts",
-      "weight": 0.216,
-      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, at-50), and is lost against the grass and water"
-    },
-    {
-      "post": "hot-glass-lights-the-sand",
-      "session": 154,
-      "title": "Hot glass lights the sand",
-      "weight": 0.216,
-      "what": "The whole picture is heavy speckled render noise, worst across the dark ground"
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T00:05:03",
+  "ended": "2026-11-28T01:03:09",
   "fatigue": {
-    "asset": 0.61,
-    "feature": 0.37,
-    "picture": 0.03,
-    "self": 0.39,
+    "asset": 0.37,
+    "feature": 0.22,
+    "picture": 0.02,
+    "self": 0.23,
     "sound": 0.01
   },
   "forms": [
@@ -411,7 +418,7 @@
     "motor_flick",
     "motor_switch"
   ],
-  "joy": 0.14,
+  "joy": 0.12,
   "judged_posts": [
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
@@ -869,8 +876,8 @@
     "session": 155,
     "why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves."
   },
-  "loneliness": 0.67,
-  "perceived_until": "2026-11-27T23:22:02",
+  "loneliness": 0.75,
+  "perceived_until": "2026-11-28T00:18:51",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -884,60 +891,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 1.0,
-        "wish": 1.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post",
-        "sound",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/ants-honey-road-2.mp4",
-        "site/films/stone-lantern-notes.mp4.silent.mp4",
-        "site/sounds/stone-lantern-knocks.wav"
-      ],
-      "new_plugins": [
-        "knock.jl"
-      ],
-      "points": 1.7,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Emergent simulation of a small swarm, filmed from a fixed view",
-        "form_count": 1,
-        "nearest": "Ants on a honey road",
-        "post": "Ants on a honey road, a take that misses",
-        "score": 9,
-        "shared": "same ant colony, honey line, biscuit and fixed low view; only a close shot added, no new step shown",
-        "similarity": 9
-      },
-      "session": 138,
-      "touched": [
-        "greetings.jl"
-      ],
-      "values": {
-        "feature": 1.3,
-        "film": 6.0,
-        "polish": 1.0,
-        "post": 2.0,
-        "sound": 4.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1782,6 +1735,34 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 1.0,
+      "session": 158,
+      "touched": [
+        "motorbench.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -2123,7 +2104,7 @@
       "meadowlife.jl": 1.795485965898355e9,
       "meteors.jl": 1.7957490857436357e9,
       "moon.jl": 1.7953993277488246e9,
-      "motorbench.jl": 1.795811937025463e9,
+      "motorbench.jl": 1.7958195752345417e9,
       "newname.jl": 1.7955211508792114e9,
       "nightclap.jl": 1.7957413957505157e9,
       "nightglow.jl": 1.7957490929640315e9,
@@ -2159,7 +2140,7 @@
     "self": "1523826980317287528",
     "wishes": 18
   },
-  "started": "2026-11-27T23:27:35",
+  "started": "2026-11-28T00:24:08",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2301,7 +2282,9 @@
       "FourierSeries.fourierSeriesStepReal",
       "Drifters.random_flow_field",
       "Beamlines.findelements",
-      "VLBIImagePriors.to_real"
+      "VLBIImagePriors.to_real",
+      "PrettyNumbers.pretty_number",
+      "HOHQMesh.setInnerBoundaryChainConnect!"
     ],
     "games": [
       "Super Mario 64",
@@ -2399,7 +2382,10 @@
       "Resident Evil (1996 video game)",
       "Day of the Tentacle",
       "Katamari Damacy",
-      "Metal Gear Solid 4: Guns of the Patriots"
+      "Metal Gear Solid 4: Guns of the Patriots",
+      "Burnout Paradise",
+      "M.U.L.E.",
+      "Monster Hunter"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2473,7 +2459,8 @@
       "https://www.bbc.co.uk/news/articles/cvrlgz6g0ekgo",
       "https://www.bbc.co.uk/news/articles/c8wy5p4gdnwvo",
       "https://www.bbc.co.uk/news/articles/cmx2898wq2qjo",
-      "https://www.bbc.co.uk/news/videos/ckvg20y511p4o"
+      "https://www.bbc.co.uk/news/videos/ckvg20y511p4o",
+      "https://www.bbc.co.uk/news/articles/cme3d4y094x7o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2781,7 +2768,10 @@
       "ARFIMA",
       "Wavelets",
       "PyDSTool",
-      "Pesto"
+      "Pesto",
+      "WaveOpticsPropagation",
+      "PhyloClustering",
+      "NODAL"
     ],
     "vision": [
       "DepthAnythingRunner",
@@ -2797,7 +2787,9 @@
       "HorizonRunner",
       "QwenImageEditRunner",
       "SAM2Runner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "ProPainterRunner",
+      "RIFERunner"
     ]
   },
   "surprise_seen": 155

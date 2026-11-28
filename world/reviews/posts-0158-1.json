@@ -1,0 +1,29 @@
+{"posts": [
+ {"post": "the-camera-obscura",
+  "verdict": "redo",
+  "problems": [
+   "The picture is a warped, uneven quadrilateral of image floating in pure black; no hut, wall or glass lens can be seen, so 'a dark hut with a glass lens in its wall' is only claimed by the caption, not shown.",
+   "The friends are squeezed into a thin strip along the top edge of the image and are small; most of the picture is empty blue sky, so what matters is not big enough.",
+   "The figure at the right edge (pig/creature) is cut off and smeared by the fisheye distortion, and the right and bottom borders of the image bleed green and bend unevenly, which reads as a rendering artefact rather than glass."
+  ],
+  "critique": "The upside-down world is a lovely idea and it does read as inverted, but the picture shows only a distorted image in black with the friends crammed and cut at the top edge; the hut and lens the caption names are not there."},
+ {"post": "the-sea-froze",
+  "verdict": "redo",
+  "problems": [
+   "Storyboard frames 13-16 and the 75% frame: the friends walk out of the frame at the bottom-left; the last frame shows only half a blue creature cut by the left edge with a detached brown claw hanging beside it, so the film ends on cropped, half-drawn subjects instead of the friends on the sea.",
+   "A grey shape is clipped into the top-left corner in every frame of the film.",
+   "Frames 1-3 to 4: the sea switches from blue water to dark gloss in a single cut with no visible change happening, and the shore foam just vanishes; nothing shows an attempt to freeze it.",
+   "The sheep stays on the shore throughout and the walkers are small and far away for the first half of the film."
+  ],
+  "critique": "The mirror-dark sea with the island reflected in it looks good and the caption is honest about it, but the friends walk out of the shot and the film ends on cropped body parts at the frame edge, with a stray shape clipped into the corner."},
+ {"post": "nobody-kicked-the-sun",
+  "verdict": "redo",
+  "problems": [
+   "Storyboard frames 9-16: the sun rolls away across the grass with nothing pushing it while every friend stands elsewhere; a thing moving without any cause.",
+   "Frames 13-15 and the 75% frame: the sun passes straight through the bush, the leaves clipping into the glowing ball without the bush moving.",
+   "The sun is a flat white featureless disc with no shading or surface; it looks like a plain shape pasted on the scene rather than a glowing ball lying in the grass.",
+   "Last frame: a large blurred green shape covers the right side of the picture, and the camera has drifted away from the friends so they are tiny in the background.",
+   "The 50% frame: the crab carries an orange cluster on its back and the sheep is a blurred smudge, half hidden behind other things."
+  ],
+  "critique": "The yellow light spilling on the grass at night is the best thing here, but the sun slides off on its own, passes through a bush, and the film ends with a blurred blob covering the frame, which is broken animation rather than an experiment that failed."}
+]}

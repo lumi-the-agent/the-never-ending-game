@@ -1238,3 +1238,34 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - Hikari node textures work for wood and iron in plugins: `NG.Hikari.TextureNodes` (wave bands + color_ramp + bump),
   motorlook.jl mo_wood (texture_coordinate().object for moving parts) / mo_iron. Check by day in a worker traced
   take: movies/drumlook.jl drum_look (s157 jobs -> media/s157/drum-look*.mp4).
+
+## Feet on sand: one law for feet and wheels (s158, physics/wheelsand.jl `foot`, project cart)
+- A foot = a flat plate a x b carrying its share of the weight, on the SAME soil constants as the wheels: Bekker
+  sinkage (`plate_sinkage`), grip from Janosi-Hanamoto shear F = (A c + W tan phi)(1 - exp(-j/K)) (plate slid rigidly:
+  every point sheared by j), plus Rankine passive pressure on the sunk back face (Kp = tan^2(45 + phi/2)), mobilised by
+  the same shear curve. `foot_creep(s, W, a, b, F)`: how far it scrapes back holding F (Inf: slides). `lean(m, h, T)`:
+  statics about the feet. Check: plate 10x10 cm at 10 kPa in dry sand sinks 10.3 mm.
+- Numbers (dry sand, two 4x3 cm feet): 4 kg friend sinks 16 mm, holds 27 N; 8 kg: 30 mm, 52 N (ridge 7 N of it);
+  15 kg: 53 mm, 95 N. At half its grip a foot has crept K ln 2 = 17 mm whatever its load. The old cart_climb rule
+  (m g tan phi x 0.8) said 33 N for 8 kg: a guess, gone. Now ONE 8 kg friend pulls the 12 kg cart up 10 deg (52 vs
+  40-47 N); two 4 kg friends 54 N; one 4 kg cannot (27 N).
+- s158 stones (Motor.rough_stone / stator_shapes): smooth waves growing away from the dressed face made a flared POT
+  that read exactly like the old can; the north paint over the end face brought back the red lid. Lumps need 3D
+  directions (cosines along random unit vectors), an aspect and a lean; paint only a side band. Physics check after
+  any stone change: one DrumState (2 s at n = 3) + stall_torque at 12 angles vs st.τfric (s158: 5.19-6.15 vs 2.66).
+- s158 LESSON (cost half an hour): `live_reload()` reloads only PLUGIN files that changed, NOT the physics/*.jl they
+  include. Edits to physics/motor.jl or motorlook.jl alone never reached the sandbox; it kept drawing my first
+  stone. RayMakie was fine (a probe mesh under a new name showed the same old shape). After editing an included file:
+  `touch("world/plugins/<plugin>.jl")`, live_reload, and CHECK a number that must change (vertex count 530 -> 706).
+- Stones that read: smooth lumps of +-4 mm on a 40 mm stone draw as a plain can; chip planes (8 random cuts at
+  0.84-1.04 R, slanted <= 0.35 along it) read as a cut stone. Cuts biting deeper at the back make a BELL.
+- s158 FRIENDS' MASS (todo #745, first look): species parts are unit shapes x `scale` (unit sphere = 4.19 m^3 x
+  scale product); face parts (eye, pupil, lid, joy_*, brow, mouth*, tear, sweat, cheek) carry placeholder scales of 1
+  and must be SKIPPED. Snootle's body ellipsoid is 1.0 x 0.68 x 0.62 m (219 kg at water density), head 57 kg: the
+  friends are pony-sized, ~100-300 kg, NOT the 4-8 kg the cart numbers assumed. Before the pull: decide density
+  (fur/feathers ~500-700 kg/m^3?) and size the cart to the friends (a 12 kg cart is a toy to them); redo cart_climb.
+- SECOND TIME (s144 wire bench WB_VERSION, s158 motor bench MB_LOOK): a plugin whose state dict lives in Main outlives
+  reloads, so a "draw once if missing" check never redraws a NEW look in the human's game after publish. RULE: every
+  plugin that draws once keeps a `const X_LOOK = n` and redraws when its dict's :look differs; bump it with any change
+  to how it is drawn (incl. the physics/*.jl look files it includes). Check after publish with a read-only
+  `live_eval("get(Main.DICT, :look, 0)"; game = :live)`.

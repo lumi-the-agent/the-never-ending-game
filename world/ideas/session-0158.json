@@ -1,0 +1,18 @@
+{
+ "ideas": [
+  {
+   "title": "The friends pull my first cart up the dune: one sand law for feet and wheels",
+   "goal": "Before it has a motor, the friends haul Lumi's wooden cart up the dune on a rope. The player picks the rims and who pulls in which order; light friends slip, heavy ones dig in, narrow rims bog. Fun because the friends are the engine, the plan shows in their feet and the ruts, and getting over the crest is a win you planned for.",
+   "toward": "Road step 'wheels, axle and frame with rolling contact on the terrain': the frame and wheels the motor goes on next, and friends with mass, the riders the cart must carry.",
+   "idea": "Built so nothing is fitted for this dune: ONE sand model (Bekker pressure-sinkage plus Janosi-Hanamoto shear, Wong's measured constants for dry sand, phi = 28-30 deg, already in physics/wheelsand.jl) serves the wheels AND the feet: a foot is a small plate on the sand, its grip builds with how far it shears the sand, so a hard-pulling foot creeps back and digs a scrape, and a light friend's foot (less load, less shear strength) creeps faster: slipping is the same law, not an animation. Sinkage from the same law writes footprints and ruts into the terrain heightfield. Each friend's mass from its mesh volume; the rope a PrintSim rod; a puller's lean is solved from statics (rope tension and weight balanced about its planted feet) and it steps when a foot's shear displacement passes the sand's limit. The same code then works on any ground with other constants (wet sand, snow, loam) and for any creature. Watching: friends leaning low, feet pushing back little ridges of sand, a heel creeping, ruts filling in, the light friend sliding until another takes the strain.",
+   "form": "Plugin on the dune with a choice of rims and pullers in Jump in; a traced film low beside the rope, the friends big in frame."
+  },
+  {
+   "title": "First ride: three friends hold on as the cart runs away down the dune",
+   "goal": "The player loads friends into the cart at the crest and lets go. Each friend holds the side with a grip it can really lose: on a bump the bed jerks under them, a grip that can't take the jerk lets go, and a friend tumbles out into the sand. Where they sit and how fast the player lets it go decide who stays in. Fun because the player sets up a roller-coaster and every run spills differently.",
+   "toward": "The big goal's shared moment ('runs away down the other side with three friends aboard'), and loads that shift, which the powered cart must carry.",
+   "idea": "Riders are bodies with mass from their mesh volume, seated by friction on the bed, holding the side with the PrintSim grab joint from physics/climbgrab.jl (s135): a grip that holds up to a force limit from the friend's size and breaks past it. The bump's jerk comes from the cart's wheels on the real dune ripples through wheelsand.jl; the break is the grab's force limit, the tumble is Newton. A friend that lets go reaches again for the side (the same grab, aimed at the nearest edge in reach) and sometimes catches it. Watching: the cart gathers speed, a ripple kicks the front, Truffle's grip breaks, it slides back, grabs the tail board, dangles, and drops rolling into the sand.",
+   "form": "Plugin on the dune's far side, after the pull; traced film from the bottom looking up as the cart comes down."
+  }
+ ]
+}

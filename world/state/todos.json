@@ -2317,12 +2317,12 @@
       "id": 166,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-27T08:44:17.781.\nCause was the day-fall tiles' markersize vector (todo #673): plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T21:47:51.752.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-27T08:44:17.781.\nCause was the day-fall tiles' markersize vector (todo #673): plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T21:47:51.752.\nperfectionist-0157: Fixed s34; live path tracing on and off worked today (reviews/p0157/traced.png).",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Live command path_tracing failed",
-      "updated": "2026-11-27T21:47:51.752"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-23T08:49:12.836",
@@ -2331,12 +2331,12 @@
       "id": 167,
       "kind": "fix",
       "priority": 1,
-      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.",
+      "result": "Fixed s34: media/s34/traced-night-live.png (live path tracing at 02:13, 20 s on) then media/s34/raster-after-trace.png (switched off, screenshot works). Cause: moving emissive meshscatters (nightglow 858 motes) re-pushed as Hikari area lights every frame, never freed -> 549 MB light array OOM; setrasterize! then failed half way and returned early forever. Fix: NG.path_traced(game) holds glowing plots still (nightglow, clouds, firefly home); set_path_tracing!(g,false) forces the full rebuild. Patch for the human: patches/raymakie-emissive-meshscatter-leak.md.\nHappened again at 2026-11-23T20:17:07.397.\nperfectionist-0049: Duplicate of #175: the screenshot fails only after night path tracing runs out of memory. Daytime trace on/off and screenshots worked in this review.\nHappened again at 2026-11-24T08:38:04.812.\nperfectionist-0058: Duplicate of #175 (path tracing out of GPU memory makes screenshots fail).\nHappened again at 2026-11-25T22:28:50.481.\nperfectionist-0100: Screenshots work: about 20 sandbox screenshots this review, plus a live path-traced one.\nHappened again at 2026-11-26T11:18:38.986.\nperfectionist-0118: live_screenshot worked over a dozen times this review, including with path tracing on.\nHappened again at 2026-11-26T18:46:53.726.\nperfectionist-0124: live_screenshot worked eight times this review.\nHappened again at 2026-11-26T21:05:15.107.\nperfectionist-0127: live_screenshot worked eight times in this review.\nHappened again at 2026-11-27T08:44:28.921.\nSame cause as #166/#673: plugins/dayfall.jl draw!: the empty-line update now resets markersize to one Vec3f together with arg1/rotation/color (it kept the old per-tile vector, RayMakie meshscatter threw DimensionMismatch). Sandbox s140: Jump in walked 6 s (10 tiles), then the line reset (DAYFALL base emptied, markersize length 1), Path tracing on, screenshot media/s140-dayfall-trace2.png (green grass, blue sea), Path tracing off, screenshot media/s140-dayfall-raster2.png: no error. Published s140.\nHappened again at 2026-11-27T17:57:06.119.\nperfectionist-0151: Fixed in s34; live screenshots worked throughout this review, including after path tracing\nHappened again at 2026-11-27T21:47:45.394.\nperfectionist-0157: Fixed s34; screenshots work, several taken this review.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Live command screenshot failed",
-      "updated": "2026-11-27T21:47:45.394"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-23T08:54:31.486",
@@ -7623,12 +7623,12 @@
       "id": 545,
       "kind": "review",
       "priority": 1,
-      "result": "s114 part 1 (published 11:29): traced materials on the old boxes: CoatedDiffuse lacquered wood (roughness 0.04), dark coated bezel, Hikari.Brass(roughness 0.12) knobs, Aluminum ears; traced sandbox view media/s114/tv-traced.png shows gold knobs and metal ears. Tried a Glass pane 7 cm in front of the screen: it blocks the sun's direct light to the screen, so the traced picture came out dark and speckled; removed. Still to do: the generated mesh (assets/20261126-083347-183-asset: x = width ±0.354, y = depth ±0.237 with the FRONT at -y, z = height ±0.5 incl. legs and antennae; front-face grey (screen) vertices roughly x -0.20..0.06, z -0.21..0.09, screen surface at y ≈ -0.21; placed with no rotation its front faces world -y like tv.jl's YAW), a coat on the screen quad itself (not a separate glass), raster gold for the knobs (RayMakie raster draws Brass pale grey).",
+      "result": "s114 part 1 (published 11:29): traced materials on the old boxes: CoatedDiffuse lacquered wood (roughness 0.04), dark coated bezel, Hikari.Brass(roughness 0.12) knobs, Aluminum ears; traced sandbox view media/s114/tv-traced.png shows gold knobs and metal ears. Tried a Glass pane 7 cm in front of the screen: it blocks the sun's direct light to the screen, so the traced picture came out dark and speckled; removed. Still to do: the generated mesh (assets/20261126-083347-183-asset: x = width ±0.354, y = depth ±0.237 with the FRONT at -y, z = height ±0.5 incl. legs and antennae; front-face grey (screen) vertices roughly x -0.20..0.06, z -0.21..0.09, screen surface at y ≈ -0.21; placed with no rotation its front faces world -y like tv.jl's YAW), a coat on the screen quad itself (not a separate glass), raster gold for the knobs (RayMakie raster draws Brass pale grey).\nperfectionist-0157: Old TV task superseded by the device-materials work (#743, #681).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Real television: the generated TV set with glass, wood coat and brass",
-      "updated": "2026-11-26T12:41:33.985"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-26T09:10:14.547",
@@ -8071,12 +8071,12 @@
       "id": 577,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0157: The jelly plugin is gone.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "The jelly should glow like jelly: bright, wobbling, casting green caustics",
-      "updated": "2026-11-26T15:15:55.042"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-26T15:15:55.042",
@@ -8990,17 +8990,17 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0151 [fun, medium]: Firefly catch, Hide and seek and Berry race all play as 'hold W toward the direction the text HUD names'. Playing each for about 25 s, I got 1/8, 0/4 and 0 against 1. Nothing changes between rounds, and the friends never do anything you'd tell someone about. Firefly catch still fails 2 of its own tests (a fly under Lumi isn't caught; Lumi is blocked in 15 of 40 samples). In all three, the low chase view is half trees and smeared mounds.\nWhere: plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; chase camera\nSuggestion: Give each game one verb of its own that uses the island's physics: hiders who flee and must be cornered, berries that roll downhill when a rival bumps the bush, fireflies you herd with the lantern flash. Use a chase camera that pulls up over occluders.\nDone when: Both failing firefly tests pass, and each game has a distinct action besides WASD shown on its key pad. Five screenshots in a round each show Lumi unblocked in the centre third.\nEvidence: reviews/p151/play/log.txt, play/firefly-5.png, play/hide-10.png, play/berry-5.png; tests/last_run.json",
+      "detail": "perfectionist-0157 [fun, high]: A bot that only turns toward the nearest target and runs caught all 8 fireflies in 23.4 s of the 60, won the berry race 11 to 3 (the three critters took 3 between them), and found all 4 hiders in 17 s of 120. All three are the same game: follow the HUD's arrow. There is no skill to learn, no risk and no surprise.\nWhere: plugins/firefly_catch.jl, berry_race.jl, hideseek.jl\nSuggestion: Replace one of them with a game built on the physics Lumi made. Examples: steer an iron ball through the magnet-stone putting tray; a motor-cart race where the friends push the rival carts; a hide and seek where the hiders really move when you get close and the giggle comes as sound from where they are. Make the rivals actually compete (the critters in the berry race should win when you dawdle).\nDone when: The same steering bot (reviews/p0157/play.jl) no longer wins every game on the first try, and at least one game uses a physics toy (magnet, motor or wire) as its core.\nEvidence: reviews/p0157/play/log.txt, play/firefly-sheet.jpg, play/berryhide.jpg",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Three mini games are one recipe: walk to the HUD's arrow",
-      "updated": "2026-11-27T19:27:07.754"
+      "title": "The three mini games are no contest: a bot wins each on the first try",
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -9144,17 +9144,17 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "perfectionist-0154 [wow, low]: The last release is 2026-11-24-a-day-in-my-new-life. Goal 2 is still not reached.\nWhere: world/releases/\nSuggestion: Make the motor film from the finding above the release.\nDone when: A new folder in world/releases/ with a film that ffprobe reads and a note.\nEvidence: ls world/releases",
+      "detail": "perfectionist-0157 [wow, high]: Goal 2 has been stalled since 11-24. The physics under the motor and wire is real, but every post about them looks like placeholder art. The s157 traced take media/s157/drum-look2.mp4 is a 48-byte empty file, so the session ended with nothing to look at.\nWhere: world/releases/, site/films/\nSuggestion: Use the moment that already works: Lumi's beak flicks the stuck rotor and it spins up. Shoot it at dusk on a real bench, with the wire glowing and lighting the copper, and a friend leaning in. Trace it at a quality worth a release, with a note in Lumi's words. Check every job's output size before ending a session.\nDone when: A new world/releases/<date>-<name>/ folder whose mp4 ffprobe reads, at least 5 s, traced, with the device as the subject, plus a note.\nEvidence: ls -la media/s157/drum-look2.mp4 → 48 bytes; releases/ last 2026-11-24",
       "est_minutes": 15.0,
       "id": 654,
       "kind": "review",
-      "priority": 3,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "No release since 2026-11-24: put out the best film you have",
-      "updated": "2026-11-27T21:50:03.434"
+      "title": "Make one device film people would share, and release it",
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9531,8 +9531,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Copper, glass and the benches render as flat plastic primitives",
-      "updated": "2026-11-27T21:50:03.434"
+      "title": "Glass, wire benches and kiln render as flat plastic primitives",
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T10:50:30.419",
@@ -9634,7 +9634,7 @@
     },
     {
       "created": "2026-11-27T13:58:00.342",
-      "detail": "perfectionist-0151 [materials, high]: With path tracing on at dawn, rain falls as opaque white sticks, the cottage lamp glows are flat yellow discs with no falloff, the dark clouds are speckled, and a dark slab fills the bottom right.\nWhere: traced live view; showers.jl, lamplight/nightglow glow shells, cloud material\nSuggestion: Give rain a Dielectric (or skip it when traced), drop the emissive glow shells in favour of real point lights inside the lamps so the light falls on the ground, and use a volume or a smoother material for the clouds.\nDone when: A traced orbit screenshot during a shower shows thin, transparent streaks (or none), lamps as small bright points lighting the ground around them, and smooth clouds.\nEvidence: reviews/p151/traced.png",
+      "detail": "perfectionist-0157 [lighting, high]: With path tracing on in the orbit view at 05:47, the cottage lamps are flat saturated yellow discs larger than the windows. The two clouds are solid black blobs against a pale dawn sky. The meadow and sea are full of salt-and-pepper noise.\nWhere: live path tracing; lamplight/clouds materials\nSuggestion: Make lamp globes small emitters inside frosted glass (a diffuse transmission shell), so the glow falls on the walls rather than drawing a disc. Give the clouds a volume or a bright scattering material with sky light. Turn on denoising (OIDN) for the live traced view.\nDone when: A live traced screenshot at dawn shows lamps as small bright points with a glow on the cottage wall, clouds lighter than or close to the sky's brightness, and no visible per-pixel noise at 45 s.\nEvidence: reviews/p0157/traced.png",
       "est_minutes": 30.0,
       "id": 689,
       "kind": "review",
@@ -9643,8 +9643,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Traced view: rain as white rods, blown-out lamp discs, grainy clouds",
-      "updated": "2026-11-27T19:27:07.754"
+      "title": "Traced view: blown-out lamp discs, pitch-black clouds, heavy grain",
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T13:58:00.342",
@@ -9947,12 +9947,12 @@
       "id": 711,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0157: The crane film was set aside; the film-framing finding covers it.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Scrap crane film: Lumi from behind, head cut off, opens on black",
-      "updated": "2026-11-27T19:27:07.754"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T16:53:51.356",
@@ -10087,12 +10087,12 @@
       "id": 721,
       "kind": "review",
       "priority": 1,
-      "result": "s152: free_start! (plugins/freecam.jl) now scores each candidate view by the ground along the line of sight (ground_hits, 16 samples to 4x the target distance) besides props; target z lifted over the ground ahead. From the north beach it used to look uphill into the slope. Sandbox: picking 'Camera: free' shows Lumi, the island and the sea (media/s152/freecam-pick.png). Published. The human's game was in :follow at 19:4x (live_eval game.rig.mode). Still open: find what leaves the rig :fixed for the progress shot.",
+      "result": "s152: free_start! (plugins/freecam.jl) now scores each candidate view by the ground along the line of sight (ground_hits, 16 samples to 4x the target distance) besides props; target z lifted over the ground ahead. From the north beach it used to look uphill into the slope. Sandbox: picking 'Camera: free' shows Lumi, the island and the sea (media/s152/freecam-pick.png). Published. The human's game was in :follow at 19:4x (live_eval game.rig.mode). Still open: find what leaves the rig :fixed for the progress shot.\nperfectionist-0157: Follow opens on a garden bed and orbit/free show the island (reviews/p0157/open.png, cam-1/2).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "The dashboard opens on a free camera stuck inside the terrain",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T19:27:07.754",
@@ -10213,12 +10213,12 @@
       "id": 730,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0157: Duplicate of #681/#743 (real materials on what Lumi builds).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Real materials pass: wood, sand, stone as physically based materials",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T20:41:30.535",
@@ -10311,12 +10311,12 @@
       "id": 737,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0157: 45 s of live path tracing ran without OOM today; a one-off error report from s154.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A frame failed: LavaError during pool_alloc:\n  Cannot allocate 354900672 bytes: the device is out of memory with 41.09 GB already reserv",
-      "updated": "2026-11-27T21:48:52.511"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T21:50:03.434",
@@ -10325,12 +10325,12 @@
       "id": 738,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0157: No teleport in live_motion (9/10 clean); Truffle's beret sits on its head in the creatures sheet.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "done",
       "title": "Truffle teleports 10 m and tumbles through the sky, its beret flying off",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T21:50:03.434",
@@ -10339,12 +10339,12 @@
       "id": 739,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0157: The campfire arc is posted and finished; covered by the framing finding.",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Campfire films: front stakes hide the stake that falls",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T21:50:03.434",
@@ -10353,12 +10353,12 @@
       "id": 740,
       "kind": "review",
       "priority": 2,
-      "result": "",
+      "result": "perfectionist-0157: No smeared mound in the orbit view at s157 (cam-1.png).",
       "source": "review",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "A smeared yellow-black mound in the middle of the orbit view",
-      "updated": "2026-11-27T21:50:03.434"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T22:08:33.418",
@@ -10367,12 +10367,12 @@
       "id": 741,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0157: The jelly plugin was removed (the human cleared the gags); it is no longer in the plugin list.",
       "source": "system",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "Plugin jelly does not load",
-      "updated": "2026-11-27T22:08:33.418"
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T22:09:47.840",
@@ -10390,17 +10390,17 @@
     },
     {
       "created": "2026-11-27T23:15:34.123",
-      "detail": "The human s156: post only when it looks the part, and show what people care about without knowing how it was made. The motor (physics/motor.jl) fixed so it runs (it sticks short of the dead spot; a 30 rad/s beak flick runs it), in its place on the island, turning something visible (a fan blowing seeds, the potter's wheel, a paddle). Materials: Hikari copper winding with highlights, wood grain board, iron-black stones (perfectionist s154 high item). Camera: cameracontrols(scene).fov[] zoom, the motor >= 1/3 of the frame, no glass-ball friend behind (that plugin parked). Done when: a 64-sample traced still shows copper, wood and iron that read as themselves, and a traced film 8-15 s shows Lumi's beak switching it on and the thing it turns spinning.",
+      "detail": "perfectionist-0157 [materials, high]: The motor bench, the centre of the electric-cart arc, is two matte black cylinders with flat red end discs on brown blocks, on a plank lying on bare sand. In the traced take the copper windings are dull brown with no specular, and in the raster they read pink-silver. It looks like a debug rig, not a device someone made.\nWhere: plugins/motorbench.jl, physics/motor.jl; media/s157/drum-look.mp4, raster2-last.png\nSuggestion: Model it like a real hand-built motor. Make the lodestones rough dark iron-oxide stone (a generated rock asset, not cylinders). Give the windings many tight turns of polished copper (Hikari conductor, low roughness) with enamel thin-film colour. Use a brass or steel shaft and an oak base with chamfers and screws, set on a workbench in a corner with tools, shavings and a lamp. Keep a matching raster colour (copper orange, not pink).\nDone when: A 64+ spp traced still of the motor filling at least 40% of the frame shows copper reflecting the bench and lamp, stones that read as rock, and an oak base on a bench (not on sand). The same view in raster shows orange copper.\nEvidence: reviews/p0157/drum-look-last.png, world/media/s157/raster2-last.png",
       "est_minutes": 15.0,
       "id": 743,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "My motor runs and turns something you can see, in real copper, iron and wood",
-      "updated": "2026-11-27T23:41:03.287"
+      "title": "The motor is grey-box geometry: black drums, dull copper, a slab on bare sand",
+      "updated": "2026-11-28T00:18:30.351"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10412,9 +10412,9 @@
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "doing",
       "title": "The friends pull my first cart up the dune (projects/cart.md)",
-      "updated": "2026-11-27T23:41:03.582"
+      "updated": "2026-11-28T00:43:20.614"
     },
     {
       "created": "2026-11-27T23:41:03.588",
@@ -10426,9 +10426,9 @@
       "result": "",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "doing",
       "title": "Give every creature a real mass (mesh volume x density)",
-      "updated": "2026-11-27T23:41:03.588"
+      "updated": "2026-11-28T00:47:48.706"
     },
     {
       "created": "2026-11-27T23:45:08.288",
@@ -10443,6 +10443,90 @@
       "status": "dropped",
       "title": "Plugin motorbench does not load",
       "updated": "2026-11-27T23:45:43.615"
+    },
+    {
+      "created": "2026-11-28T00:18:30.351",
+      "detail": "perfectionist-0157 [camera, high]: first-motor and first-motor-sticks put the motor in the lower-right sixth of the frame from a low, fixed angle. The trees and sky fill the rest, and a creature in a green jelly bubble walks in front and becomes the subject. drawn-wire-burns-out starts on a box and two sticks, then cuts so close that the glowing wire is a 1 px line across flat green grass.\nWhere: movies/ (motor and wire film scripts); site/films/first-motor*.mp4, drawn-wire-burns-out.mp4\nSuggestion: Shoot like a product or macro film. Use a slow push-in or orbit over the rotor at its own height, a shallow depth of field, the subject filling the frame's middle third, and a clean background (a bench, a dark workshop, dusk light). Clear creatures out of the shot's path, or stage one friend to react on purpose. Show the wire glowing big enough to see its colour shift from orange to white.\nDone when: The overview sheet of the next device film shows the device covering at least a third of every frame, with no unplanned creature crossing in front of it.\nEvidence: reviews/motion/perfectionist-0157/first-motor-overview.jpg, first-motor-steps.jpg (7.21-7.5 s), drawn-wire-burns-out-overview.jpg",
+      "est_minutes": 30.0,
+      "id": 747,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Films don't frame the work: the subject is a corner or a hairline",
+      "updated": "2026-11-28T00:18:30.351"
+    },
+    {
+      "created": "2026-11-28T00:18:30.351",
+      "detail": "perfectionist-0157 [fun, medium]: In Jump in I walked a second, then pressed E, P, B, X, G, U, L and O. Screenshots 2.5 s after each show Lumi standing still with nothing new around it for paint, bubble, sneeze, fly, throw-up and stomp. Boomerang only gives a caption. Holding 6 (magnet top) and 2 (bend wire) did nothing away from the boards, and nothing says where the boards are. The new physics toys can't be found by a player.\nWhere: src/play.jl (JumpIn keys), plugins/motorbench.jl, wirebench.jl\nSuggestion: Cut the list to the 5 keys that make something big and lasting happen, and make each visible within half a second. Put a glowing marker or a path to the workbench, and let the player walk up to the motor and flick it with the beak: it spins up, drives something visible, and the friends nearby come over and react (goal 1).\nDone when: A sandbox clip where every listed key changes the picture within 1 s, and the player flicks the motor and a creature reacts within 3 s.\nEvidence: reviews/p0157/play/jump1.jpg, play/jump2.jpg",
+      "est_minutes": 30.0,
+      "id": 748,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Jump in: most gag keys show nothing; the motor can't be found or flicked",
+      "updated": "2026-11-28T00:18:30.351"
+    },
+    {
+      "created": "2026-11-28T00:18:30.351",
+      "detail": "perfectionist-0157 [camera, medium]: While playing Jump in, the hut's roof filled half the frame or more in four shots in a row as Lumi walked past it. The win cards of Firefly catch sit over an extreme close-up of Lumi's body filling the view. In follow mode at sunrise, Lumi stands half hidden under pines with a red ball in the foreground.\nWhere: camera rig (CAMERA_BLOCKERS / update_camera!), minigame end cards\nSuggestion: Treat roofs and canopies as camera blockers: pull in, raise the camera, or fade what's in the way. On the end card, cut to a framed hero shot of Lumi celebrating at 3-4 m.\nDone when: Over 60 s of Jump in walking around the hut, no screenshot has a prop covering more than 20% of the view, and the win card shows Lumi whole.\nEvidence: reviews/p0157/play/jump2.jpg, play/firefly-sheet.jpg, cam2-sheet.jpg (bottom middle)",
+      "est_minutes": 30.0,
+      "id": 749,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Live follow camera: buried in the hut's roof and in Lumi's feathers",
+      "updated": "2026-11-28T00:18:30.351"
+    },
+    {
+      "created": "2026-11-28T00:18:30.351",
+      "detail": "perfectionist-0157 [lighting, medium]: In drawn-wire-burns-out the hot wire is an orange-yellow hairline. The copper posts, the slab and the grass around it get no light from it, so it reads as a drawn line, not a glowing filament.\nWhere: site/films/drawn-wire-burns-out.mp4; wirebench plugin\nSuggestion: Make the wire's emission come from its simulated temperature (blackbody), as an emissive tube that the tracer uses as a light. Shoot at dusk so the glow warms the posts and throws a soft shadow, as hot glass did in 'Hot glass lights the sand'.\nDone when: A traced frame of the hot wire shows a visible warm light gradient on the posts and base within 5 cm of the wire.\nEvidence: reviews/motion/perfectionist-0157/drawn-wire-burns-out-overview.jpg (frames 4-6)",
+      "est_minutes": 30.0,
+      "id": 750,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The glowing drawn wire lights nothing: make heat real light",
+      "updated": "2026-11-28T00:18:30.351"
+    },
+    {
+      "created": "2026-11-28T00:43:20.946",
+      "detail": "After #745 (masses). physics/wheelsand.jl foot/foot_creep/lean (s158): the friend's feet hold by Bekker+Janosi+Rankine, creep and step when the shear passes the sand's limit, lean from statics; footprints written into the terrain. Critic's risk: must look like a character putting its weight into the rope, not a puppet sliding. Done when: a traced film of one friend leaning into a rope tied to a stake, feet scraping back little ridges, nothing posed.",
+      "est_minutes": 15.0,
+      "id": 751,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "One friend pulls a rope on the dune with feet planted by the sand law",
+      "updated": "2026-11-28T00:43:20.946"
+    },
+    {
+      "created": "2026-11-28T00:43:20.953",
+      "detail": "s158: Motor.rough_stone (same mesh em.jl magnetises), motorlook mo_stone/mo_paint/mo_bundle. The sandbox raster still drew cans with a red disc although the plots hold the new meshes: find out if RayMakie draws stale geometry for a plot re-added under an old name (job 20261128-004041-618 = fresh worker take decides). Then the review's done_when (#743).",
+      "est_minutes": 15.0,
+      "id": 752,
+      "kind": "feature",
+      "priority": 1,
+      "result": "duplicate of #743 (the review's motor-look todo); s158 progress is in NOTES 'Feet on sand' (stones + sandbox puzzle) and MEMORY",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Motor bench look: stones read as rock, coils as wound copper, bench on an oak table",
+      "updated": "2026-11-28T00:43:25.663"
     }
   ]
 }

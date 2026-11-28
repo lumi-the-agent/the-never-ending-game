@@ -23,6 +23,8 @@ The moment people share: The first cart, all wooden frame and copper coils, coug
 - [ ] Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain
   - [x] A wheel in sand: sinkage, rolling resistance, drive from slip (s157, physics/wheelsand.jl)
   - [ ] The friends pull the cart up the dune (projects/cart.md)
+    - [x] Feet on the same sand law as the wheels: grip, creep, footprint depth, lean (wheelsand.jl foot, s158)
+    - [ ] Friends get a mass from their mesh volume, then one friend pulls a rope on the dune
 - [ ] The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do
 - [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
 - [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island

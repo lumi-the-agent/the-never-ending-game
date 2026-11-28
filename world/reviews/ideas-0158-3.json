@@ -1,0 +1,20 @@
+{"ideas": [
+  {"title": "The friends pull my first cart up the dune: one sand law for feet and wheels",
+   "similarity": 2,
+   "nearest": "My first motor",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 7,
+   "real": 7,
+   "toward": 8,
+   "critique": "This is the third time this pull has been pitched. What is new is one answer to round 2's worry about a fitted mu: feet and wheels share one Bekker/Janosi sand law with measured constants, so slip, footprints and ruts come from the same physics, and it carries over to other ground. The risk is still the bodies. A lean solved from statics plus a step trigger can easily look like a stiff puppet sliding forward, and if the friends don't move like characters putting their weight into the rope, the good sand law will only show up as scrapes under a pose."},
+  {"title": "First ride: three friends hold on as the cart runs away down the dune",
+   "similarity": 3,
+   "nearest": "A campfire in the wind",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 7,
+   "real": 6,
+   "toward": 7,
+   "critique": "Reusing the climbgrab force-limited grip answers round 2's objection that the grab at the side would be added on top: losing your hold is now a simulated break, and a friend reaching to grab again gives it character. But it is the second half of the dune project. Without the cart from the pull it has nothing to roll on, and a re-grab aimed at the nearest edge with a grip limit set by size is the kind of number that gets tuned until the spill looks good."}
+]}

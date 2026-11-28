@@ -1,0 +1,243 @@
+{
+ "verdict": "needs_work",
+ "summary": "At dawn the island looks like a warm, firefly-lit toy village, and the dashboard finally opens on something you can see. Truffle stays on the ground and 9 of 10 creatures move cleanly. Played for real, the three mini games have clear goals and a polished HUD, but a simple steering bot beat all three on the first try. In Jump in, most of its 20-odd keys showed nothing on screen 2.5 s later. Everything Lumi has made lately is still placeholder art: the motor is two black drums on a brown slab on bare sand, and the 'drawn wire' film is two orange sticks and a hairline. A stranger would not share any of the last five posts.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "The raster at dawn has a nice mood: warm cottage pools, firefly motes, a cool sea (cam-1.png). The traced live view (traced.png) undoes it: the cottage lamps are blown-out flat yellow discs, the clouds are pitch-black soot blobs against a dawn sky, and the image is full of grain. The glowing drawn wire in its film lights nothing around it. No spot or area light is used to shape anything Lumi builds. At sunrise (06:20, cam2-sheet.jpg) the raster sky is a flat beige band and the clouds are flat grey lumps with no sunlit rim."
+  },
+  "materials": {
+   "score": 4,
+   "why": "s157 gave the motor board a traced wood grain (drum-look.mp4), the first small step. But the lodestones are matte black cylinders with flat red faces. In the traced take the copper is a dull brown with no reflection, and in the raster it reads pink-silver (raster2-last.png). Nothing shows what a path tracer can do: no metal reflecting its surroundings, no hot wire glowing on wood, no glass."
+  },
+  "world": {
+   "score": 4,
+   "why": "The progress shots are hard to compare because of the time of day (s154 at 13:31 in snow, s157 at 05:30 at night), but nothing new was added to the island between them. The night overview is dense and warm, but the meadow is a field of identical speckles. Every new physics toy is placed on bare sand or grass with no setting: no workshop, bench, tools or shelter."
+  },
+  "props": {
+   "score": 5,
+   "why": "The island props (cottage, fences, flower beds, stone stacks) hold together. Lumi's own devices are raw primitives (boxes, cylinders, line segments) and look out of place next to the generated assets."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Truffle's teleport and loose beret are gone; in the creatures sheet every hat sits on its head and every foot is on the ground. Lumi is still a yellow bird on stick legs that is hard to pick out of a crowd; in follow view it sits small behind Wibbles and the turtle."
+  },
+  "animation": {
+   "score": 6,
+   "why": "live_motion: 9 of 10 moving well, up from 5 of 10 at s154. The one snap is Pinchy's left claw, 0.16 m in one frame at 1.0 s. The films are mostly static shots of a rotor that turns a fifth of a turn. Their biggest jumps (first-motor 7.33 s, 0.080) are creatures entering the frame, not the subject moving. Lumi's walk in the Jump in shots is upright and stiff, the same pose in every frame."
+  },
+  "fun": {
+   "score": 5,
+   "why": "Played each for a minute through interact!, with a bot that turns toward the nearest target and runs. Firefly catch: all 8 in 23.4 s of the 60. Berry race: won 11 to 3, and the three critters together took 3 berries. Hide and seek: all 4 found in 17 s of 120. The start cards, HUD ('nearest 3 m ahead', 'a giggle 7 m to your left') and end cards are clear. Level 2 and the fireflies and berries carried to the cottage are a small reason to play again. But none of the three is a contest, and all three are the same game: walk to the HUD's arrow. Jump in lists more than 20 gag keys. Of the 8 I pressed, the screenshot 2.5 s later shows nothing for paint, bubble, sneeze, fly, throw-up and stomp; boomerang only gave a caption ('The breeze pushed it 22 m off'). Hold 6 and hold 2 did nothing away from the boards, with no hint where to go."
+  },
+  "wow": {
+   "score": 2,
+   "why": "The last posts are a motor that sticks, a wire that parts, and before that a campfire, iron sticks and a compass: honest physics shown as primitives on grass, in films where the subject fills a sixth of the frame. The s157 traced take (drum-look2.mp4) is a 48-byte empty file. Still no release since 11-24."
+  },
+  "camera": {
+   "score": 3,
+   "why": "The opening view is fixed: follow mode opens on a garden bed, and orbit and free show the whole island (cam-1/2, cam2-sheet). Live follow during play is poor. In Jump in, the hut's roof filled half the frame or more in four shots in a row (play/jump2.jpg), and both win cards sit on a close-up of Lumi's feathers filling the screen (play/firefly-sheet.jpg). Film cameras put the motor in the lower-right sixth of the frame, and in the wire film the subject is a 1 px line."
+  },
+  "ui": {
+   "score": 4,
+   "why": "The right panel is a wall of text. Lumi's mood is shown as a red sentence ('Feels annoyed. It still doesn't look right') rather than on Lumi. 'Messages to you' is an apology note. The free-camera hint covers the bottom of the view."
+  },
+  "style": {
+   "score": 4,
+   "why": "Two looks clash: soft, saturated, generated creatures and island props next to grey-box physics rigs (brown slabs, black drums, orange sticks). The human asked for AAA materials on what Lumi builds; it currently looks like debug geometry."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame median 5.0 ms, p95 10.3 ms at 30 fps with 10 creatures and 252 props. Live path tracing ran 45 s without the OOM from #737."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "The motor is grey-box geometry: black drums, dull copper, a slab on bare sand",
+   "todo": 743,
+   "what": "The motor bench, the centre of the electric-cart arc, is two matte black cylinders with flat red end discs on brown blocks, on a plank lying on bare sand. In the traced take the copper windings are dull brown with no specular, and in the raster they read pink-silver. It looks like a debug rig, not a device someone made.",
+   "where": "plugins/motorbench.jl, physics/motor.jl; media/s157/drum-look.mp4, raster2-last.png",
+   "evidence": "reviews/p0157/drum-look-last.png, world/media/s157/raster2-last.png",
+   "suggestion": "Model it like a real hand-built motor. Make the lodestones rough dark iron-oxide stone (a generated rock asset, not cylinders). Give the windings many tight turns of polished copper (Hikari conductor, low roughness) with enamel thin-film colour. Use a brass or steel shaft and an oak base with chamfers and screws, set on a workbench in a corner with tools, shavings and a lamp. Keep a matching raster colour (copper orange, not pink).",
+   "done_when": "A 64+ spp traced still of the motor filling at least 40% of the frame shows copper reflecting the bench and lamp, stones that read as rock, and an oak base on a bench (not on sand). The same view in raster shows orange copper."
+  },
+  {
+   "severity": "high",
+   "category": "camera",
+   "title": "Films don't frame the work: the subject is a corner or a hairline",
+   "todo": null,
+   "what": "first-motor and first-motor-sticks put the motor in the lower-right sixth of the frame from a low, fixed angle. The trees and sky fill the rest, and a creature in a green jelly bubble walks in front and becomes the subject. drawn-wire-burns-out starts on a box and two sticks, then cuts so close that the glowing wire is a 1 px line across flat green grass.",
+   "where": "movies/ (motor and wire film scripts); site/films/first-motor*.mp4, drawn-wire-burns-out.mp4",
+   "evidence": "reviews/motion/perfectionist-0157/first-motor-overview.jpg, first-motor-steps.jpg (7.21-7.5 s), drawn-wire-burns-out-overview.jpg",
+   "suggestion": "Shoot like a product or macro film. Use a slow push-in or orbit over the rotor at its own height, a shallow depth of field, the subject filling the frame's middle third, and a clean background (a bench, a dark workshop, dusk light). Clear creatures out of the shot's path, or stage one friend to react on purpose. Show the wire glowing big enough to see its colour shift from orange to white.",
+   "done_when": "The overview sheet of the next device film shows the device covering at least a third of every frame, with no unplanned creature crossing in front of it."
+  },
+  {
+   "severity": "high",
+   "category": "wow",
+   "title": "Make one device film people would share, and release it",
+   "todo": 654,
+   "what": "Goal 2 has been stalled since 11-24. The physics under the motor and wire is real, but every post about them looks like placeholder art. The s157 traced take media/s157/drum-look2.mp4 is a 48-byte empty file, so the session ended with nothing to look at.",
+   "where": "world/releases/, site/films/",
+   "evidence": "ls -la media/s157/drum-look2.mp4 → 48 bytes; releases/ last 2026-11-24",
+   "suggestion": "Use the moment that already works: Lumi's beak flicks the stuck rotor and it spins up. Shoot it at dusk on a real bench, with the wire glowing and lighting the copper, and a friend leaning in. Trace it at a quality worth a release, with a note in Lumi's words. Check every job's output size before ending a session.",
+   "done_when": "A new world/releases/<date>-<name>/ folder whose mp4 ffprobe reads, at least 5 s, traced, with the device as the subject, plus a note."
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "Traced view: blown-out lamp discs, pitch-black clouds, heavy grain",
+   "todo": 689,
+   "what": "With path tracing on in the orbit view at 05:47, the cottage lamps are flat saturated yellow discs larger than the windows. The two clouds are solid black blobs against a pale dawn sky. The meadow and sea are full of salt-and-pepper noise.",
+   "where": "live path tracing; lamplight/clouds materials",
+   "evidence": "reviews/p0157/traced.png",
+   "suggestion": "Make lamp globes small emitters inside frosted glass (a diffuse transmission shell), so the glow falls on the walls rather than drawing a disc. Give the clouds a volume or a bright scattering material with sky light. Turn on denoising (OIDN) for the live traced view.",
+   "done_when": "A live traced screenshot at dawn shows lamps as small bright points with a glow on the cottage wall, clouds lighter than or close to the sky's brightness, and no visible per-pixel noise at 45 s."
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "The three mini games are no contest: a bot wins each on the first try",
+   "todo": 643,
+   "what": "A bot that only turns toward the nearest target and runs caught all 8 fireflies in 23.4 s of the 60, won the berry race 11 to 3 (the three critters took 3 between them), and found all 4 hiders in 17 s of 120. All three are the same game: follow the HUD's arrow. There is no skill to learn, no risk and no surprise.",
+   "where": "plugins/firefly_catch.jl, berry_race.jl, hideseek.jl",
+   "evidence": "reviews/p0157/play/log.txt, play/firefly-sheet.jpg, play/berryhide.jpg",
+   "suggestion": "Replace one of them with a game built on the physics Lumi made. Examples: steer an iron ball through the magnet-stone putting tray; a motor-cart race where the friends push the rival carts; a hide and seek where the hiders really move when you get close and the giggle comes as sound from where they are. Make the rivals actually compete (the critters in the berry race should win when you dawdle).",
+   "done_when": "The same steering bot (reviews/p0157/play.jl) no longer wins every game on the first try, and at least one game uses a physics toy (magnet, motor or wire) as its core."
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Jump in: most gag keys show nothing; the motor can't be found or flicked",
+   "todo": null,
+   "what": "In Jump in I walked a second, then pressed E, P, B, X, G, U, L and O. Screenshots 2.5 s after each show Lumi standing still with nothing new around it for paint, bubble, sneeze, fly, throw-up and stomp. Boomerang only gives a caption. Holding 6 (magnet top) and 2 (bend wire) did nothing away from the boards, and nothing says where the boards are. The new physics toys can't be found by a player.",
+   "where": "src/play.jl (JumpIn keys), plugins/motorbench.jl, wirebench.jl",
+   "evidence": "reviews/p0157/play/jump1.jpg, play/jump2.jpg",
+   "suggestion": "Cut the list to the 5 keys that make something big and lasting happen, and make each visible within half a second. Put a glowing marker or a path to the workbench, and let the player walk up to the motor and flick it with the beak: it spins up, drives something visible, and the friends nearby come over and react (goal 1).",
+   "done_when": "A sandbox clip where every listed key changes the picture within 1 s, and the player flicks the motor and a creature reacts within 3 s."
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Live follow camera: buried in the hut's roof and in Lumi's feathers",
+   "todo": null,
+   "what": "While playing Jump in, the hut's roof filled half the frame or more in four shots in a row as Lumi walked past it. The win cards of Firefly catch sit over an extreme close-up of Lumi's body filling the view. In follow mode at sunrise, Lumi stands half hidden under pines with a red ball in the foreground.",
+   "where": "camera rig (CAMERA_BLOCKERS / update_camera!), minigame end cards",
+   "evidence": "reviews/p0157/play/jump2.jpg, play/firefly-sheet.jpg, cam2-sheet.jpg (bottom middle)",
+   "suggestion": "Treat roofs and canopies as camera blockers: pull in, raise the camera, or fade what's in the way. On the end card, cut to a framed hero shot of Lumi celebrating at 3-4 m.",
+   "done_when": "Over 60 s of Jump in walking around the hut, no screenshot has a prop covering more than 20% of the view, and the win card shows Lumi whole."
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "title": "The glowing drawn wire lights nothing: make heat real light",
+   "todo": null,
+   "what": "In drawn-wire-burns-out the hot wire is an orange-yellow hairline. The copper posts, the slab and the grass around it get no light from it, so it reads as a drawn line, not a glowing filament.",
+   "where": "site/films/drawn-wire-burns-out.mp4; wirebench plugin",
+   "evidence": "reviews/motion/perfectionist-0157/drawn-wire-burns-out-overview.jpg (frames 4-6)",
+   "suggestion": "Make the wire's emission come from its simulated temperature (blackbody), as an emissive tube that the tracer uses as a light. Shoot at dusk so the glow warms the posts and throws a soft shadow, as hot glass did in 'Hot glass lights the sand'.",
+   "done_when": "A traced frame of the hot wire shows a visible warm light gradient on the posts and base within 5 cm of the wire."
+  }
+ ],
+ "todos": [
+  {
+   "id": 721,
+   "action": "done",
+   "why": "Follow opens on a garden bed and orbit/free show the island (reviews/p0157/open.png, cam-1/2)."
+  },
+  {
+   "id": 738,
+   "action": "done",
+   "why": "No teleport in live_motion (9/10 clean); Truffle's beret sits on its head in the creatures sheet."
+  },
+  {
+   "id": 166,
+   "action": "done",
+   "why": "Fixed s34; live path tracing on and off worked today (reviews/p0157/traced.png)."
+  },
+  {
+   "id": 167,
+   "action": "done",
+   "why": "Fixed s34; screenshots work, several taken this review."
+  },
+  {
+   "id": 737,
+   "action": "drop",
+   "why": "45 s of live path tracing ran without OOM today; a one-off error report from s154."
+  },
+  {
+   "id": 741,
+   "action": "drop",
+   "why": "The jelly plugin was removed (the human cleared the gags); it is no longer in the plugin list."
+  },
+  {
+   "id": 577,
+   "action": "drop",
+   "why": "The jelly plugin is gone."
+  },
+  {
+   "id": 730,
+   "action": "drop",
+   "why": "Duplicate of #681/#743 (real materials on what Lumi builds)."
+  },
+  {
+   "id": 681,
+   "action": "keep",
+   "why": "Glass and benches are still primitive; the motor half is in #743.",
+   "title": "Glass, wire benches and kiln render as flat plastic primitives"
+  },
+  {
+   "id": 545,
+   "action": "drop",
+   "why": "Old TV task superseded by the device-materials work (#743, #681)."
+  },
+  {
+   "id": 711,
+   "action": "drop",
+   "why": "The crane film was set aside; the film-framing finding covers it."
+  },
+  {
+   "id": 739,
+   "action": "drop",
+   "why": "The campfire arc is posted and finished; covered by the framing finding."
+  },
+  {
+   "id": 740,
+   "action": "drop",
+   "why": "No smeared mound in the orbit view at s157 (cam-1.png)."
+  },
+  {
+   "id": 636,
+   "action": "keep",
+   "why": "Not checked at night this review."
+  },
+  {
+   "id": 614,
+   "action": "keep",
+   "why": "Not checked this review."
+  },
+  {
+   "id": 687,
+   "action": "keep",
+   "why": "Host still lists the untraced pictures."
+  },
+  {
+   "id": 648,
+   "action": "keep",
+   "why": "Yellow splats still at the dance circle (cam-1.png)."
+  }
+ ],
+ "engine": [
+  {
+   "what": "A worker trace job wrote a 48-byte mp4 (header only, no frames) without failing loudly, so the session ended thinking a traced take was on its way.",
+   "evidence": "world/media/s157/drum-look2.mp4 (48 bytes), job 20261127-234700-608"
+  },
+  {
+   "what": "The live path-traced view has no denoiser, and small emissive spheres (lamp globes) render as large flat discs.",
+   "evidence": "reviews/p0157/traced.png"
+  }
+ ],
+ "process": "The author is doing real, honest physics: circuits, motor torque, wire drawing, and sand under wheels for the cart. They are right to hold back posts that don't look the part. But three sessions in a row have spent nearly all their time on solvers, and almost none on what anyone sees. The visible result is grey-box rigs filmed from bad angles, plus an empty traced file. The two fixes asked for last time (the opening camera and Truffle) were done and they show: camera and animation are up. Goals: 1 (interactions) has not moved. I played every mini game: they work but are no contest, most Jump in keys show nothing, and no creature reacts to a machine. 2 (release) has been stalled since 11-24. 3 (physics) is moving well (motor, wire, wheels in sand). 4 and 7 (rendering, materials) took the first small step (wood grain on the base) but no metal, glass or light yet. 5 (Lumi): its mood reads annoyed and the panel says so in red text rather than on its body. 6 (animation) improved to 9/10 clean. 8 (radical ideas): the stones-to-cart arc is a good long idea, and it stays invisible until each step is dressed and shot well. Next session: stop adding solvers. Spend it on the motor's look (copper, rock, oak, a workbench, a lamp) and one well-framed traced film of the beak flick spinning it up, released."
+}

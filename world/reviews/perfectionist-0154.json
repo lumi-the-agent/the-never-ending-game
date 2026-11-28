@@ -1,91 +1,251 @@
-{"verdict": "needs_work",
- "summary": "From the orbit camera, at midday, the island is still a bright, busy toy box. But the dashboard still opens with the free camera stuck inside the terrain, now a white-blue smear of snow, for the second perfectionist review in a row. The session's real step, a motor that runs or sticks by I dl x B and its brush contacts and that the player can flick in Jump in, is built from a brown slab and black cylinders. Its film on the site is a 48-byte stub, and the honest retake is still queued. Motion got worse: only 5 of 10 creatures move cleanly (all 10 did at s151), and Truffle teleports and tumbles through the sky with its beret floating off its head.",
- "scores": {
-   "lighting":    {"score": 4, "why": "13:30-13:45 in the sandbox: one high sun, flat midday in raster and traced alike (reviews/p154-traced-orbit.png). The campfire films add a warm flame light on the ground, the only real light this period. No point, spot or area lights near Lumi's new work."},
-   "materials":   {"score": 4, "why": "Traced, the island is still clay and plastic. The new motor is a plain brown slab, matte black cylinder magnets and a pale wire that does not read as copper (media/s154/motor-traced.png). No metal, no coat, no transmission on the one machine the human asked for."},
-   "world":       {"score": 4, "why": "Variety is the same as s151, plus a snow day. The far islets with palms look like plates floating above the sea in the traced follow view. A large smeared yellow-and-black mound sits in the middle of the orbit view (reviews/p154-cam-orbit.png)."},
-   "props":       {"score": 5, "why": "The many generated assets still carry the island, but the newest props (the motor bench, the campfire stakes) are bare primitives: boxes, cylinders, plain sticks. Down from 6."},
-   "creatures":   {"score": 4, "why": "Lumi's yellow feathered body and goggles have a silhouette now. But Truffle's beret floats free above its head and flips under its belly as it tumbles (reviews/motion/p154-live/motion-strip.png): a detached part. Down from 5."},
-   "animation":   {"score": 5, "why": "live_motion: 5 of 10 move well (10 of 10 at s151). Truffle jumps 10.36 m in one frame and moves at 311 m/s. Pickles vibrates 8 times a second and judders 43%. Hopscotch vibrates. Lumi's beak and crest swing at 6-7 m/s. Down from 6."},
-   "fun":         {"score": 5, "why": "The motor bench in Jump in (7 flicks the rotor, 8 and 9 turn a stone round) is the first interaction where the physics decides the outcome. The four listed mini games are still the walk-to-the-arrow recipe."},
-   "wow":         {"score": 2, "why": "The last three posts: a campfire in the wind (judged a repeat, worth a tenth), its retake that still hides the falling stake behind the front stakes, and a motor whose film file is a 48-byte stub. Nothing here would be shared. No release since 11-24."},
-   "camera":      {"score": 2, "why": "The dashboard opens inside the terrain (reviews/p154-now.png, the same as media/progress/session-0154/dashboard.png). The campfire films frame the fire behind a fence of stakes, with Lumi off to the left, cut at the frame edge."},
-   "ui":          {"score": 4, "why": "The side panel reads clearly and 'Messages to you' is honest, but the main view shows nothing at first open, and the panel is still a wall of text beside a 3D view."},
-   "style":       {"score": 5, "why": "The rounded toy island is cohesive. The new physics props (brown slab, black cylinders, stakes) do not belong to it, and do not look like real materials either."},
-   "performance": {"score": 9, "why": "Frame median 4.5 ms, p95 8.7 ms, all systems under 1 ms (motorbench 0.09 ms). The path tracer ran out of GPU memory on the second toggle (see engine)."}},
- "findings": [
-  {"severity": "high", "category": "camera", "title": "The dashboard opens on a free camera stuck inside the terrain", "todo": 721,
-   "what": "On load and in the session's own progress shot, the main view is a featureless white-blue smear (snow terrain from inside). A first-time viewer sees nothing. This is the second review in a row with this as the first finding.",
-   "where": "plugins/freecam.jl (CHOSEN / start view), dashboard default camera",
-   "evidence": "reviews/p154-now.png, media/progress/session-0154/dashboard.png, media/progress/session-0151/dashboard.png",
-   "suggestion": "Open on a composed establishing shot: Lumi at its current work, a third of the frame, the island behind it. Clamp the free camera's eye at least 1.5 m above ground(island, eye) every frame, and fall back to that shot whenever the eye is inside the terrain.",
-   "done_when": "The progress dashboard.png of the next session shows the island with Lumi in view, and a test that sets the free eye 1 m under the ground finds it above ground on the next frame."},
-  {"severity": "high", "category": "creatures", "title": "Truffle teleports 10 m and tumbles through the sky, its beret flying off", "todo": null,
-   "what": "Truffle floats high above the island, rolls end over end, and its purple beret hangs in the air above the head, then under the belly, then in front of the face. It is not attached. live_motion: a 10.36 m jump in one frame at 2.4 s, 311 m/s. Pickles vibrates and judders, Hopscotch vibrates. At s151 all 10 creatures moved cleanly.",
-   "where": "Truffle (the outfits / soar / boing plugin that throws it), outfits.jl hat attachment",
-   "evidence": "reviews/motion/p154-live/motion.png, motion-strip.png, creatures.png",
-   "suggestion": "Parent outfits to the head bone's full transform (rotation included), not to a position offset. Give whatever launches Truffle a ballistic arc with squash on take-off and a landing pose, no teleports. Fix Pickles' turn-back oscillation with a damped heading.",
-   "done_when": "live_motion reports 9 or more of 10 moving well, with no jump over 1 m per frame. In the creatures sheet every hat touches its head in all 3 moments."},
-  {"severity": "high", "category": "materials", "title": "Copper, glass and the benches render as flat plastic primitives", "todo": 681,
-   "what": "Lumi's first motor, the human's stated direction (a motor that runs by its parts), is a flat brown box board, two matte black cylinders for magnets and a pale pink wire. Traced, nothing in it looks like copper, iron or wood. It reads as a placeholder at a glance.",
-   "where": "physics/motorlook.jl, plugins/motorbench.jl",
-   "evidence": "media/s154/motor-traced.png, media/s154/motorbench-1.png",
-   "suggestion": "A bench a person would photograph: an oiled oak board with grain (node texture, coat), polished copper windings (Hikari conductor, copper eta/k) with an enamel thin film, dark blued-iron stone magnets with a rough metallic surface and the red north faces as paint, brass brushes, and a small warm spark light at the brushes when it runs. Generate the board and stands as assets.",
-   "done_when": "A 64-sample traced close-up of the motor where the coil reads as metallic copper with highlights, the board shows wood grain, and the stones look like iron, not black plastic."},
-  {"severity": "high", "category": "wow", "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it", "todo": 736,
-   "what": "site/films/first-motor.mp4 is a 48-byte file with no moov atom: the withdrawn film's stub, left in the published folder. The honest film (first-motor-sticks.mp4, job 20261127-213341-002) is still queued, and it shows a rotor that turns 74 degrees and stops, with nobody touching it. No release since 2026-11-24.",
-   "where": "world/site/films/, movies/motor.jl, world/releases/",
-   "evidence": "ffprobe site/films/first-motor.mp4: 'moov atom not found'; ls -la: 48 bytes",
-   "suggestion": "Delete the stub. Film the real arc: switched on it coughs and sticks, Lumi leans in and flicks it with its beak (a pose with anticipation and follow-through), the rotor catches, the brushes spark and light the board, then the whirr with sound. Shoot it close and low in warm evening light. This is the release goal 2 has waited for: put it in releases/ with its note.",
-   "done_when": "No file under site/films fails ffprobe. A traced film under 15 s shows the beak touching the rotor in the same frame it speeds up, and world/releases/<date>-motor/ exists."},
-  {"severity": "medium", "category": "camera", "title": "Campfire films: front stakes hide the stake that falls", "todo": null,
-   "what": "In both campfire films the camera looks through a picket of stakes at the fire. The stake that tips over is behind them, and Lumi stands at the left edge, its body cut by a stake. In the first film the flames are blown-out yellow slabs (jumps of 0.12 at 5.38 s and 0.09 at 1.12 s when the flame mesh pops). The author still marks it a miss.",
-   "where": "site/films/campfire-in-the-wind*.mp4, movies/ campfire script",
-   "evidence": "reviews/motion/perfectionist-0154/campfire-in-the-wind-steps.jpg, campfire-in-the-wind-2-overview.jpg",
-   "suggestion": "Move the camera 90 degrees so the falling stake falls toward it against open ground, low and at dusk so the fire is the key light. Or drop the campfire and spend the session on the motor film.",
-   "done_when": "A frame of the film shows the falling stake in full, uncovered, with the fire lighting Lumi's face."},
-  {"severity": "medium", "category": "world", "title": "A smeared yellow-black mound in the middle of the orbit view", "todo": null,
-   "what": "In orbit view, right behind the gallery easels, a big blob with a blurry yellow and black tiger texture dominates the centre of the island. Its texture is low resolution and its shape has no readable form. It looks like a broken asset, or a burnt grass bed drawn as a smear.",
-   "where": "the island centre, behind the gallery (orbit camera)",
-   "evidence": "reviews/p154-cam-orbit.png, reviews/p154-cam-orbit-b.png, the yellow mounds in reviews/motion/p154-live/motion-strip.png",
-   "suggestion": "If it is the burnt grass bed (fire #727), char it as real geometry: blackened stubble, ash with a little emission at the embers, scorch decals. Otherwise replace it with a generated asset that reads from across the island.",
-   "done_when": "The orbit screenshot from the same spot shows a recognisable object there, with no smeared texture."},
-  {"severity": "medium", "category": "lighting", "title": "Real materials pass: wood, sand, stone as physically based materials", "todo": 730,
-   "what": "The traced views at 13:40 are the raster picture with noise: one sun, matte clay grass, plastic trees and stones, no light that a game engine could not do just as well.",
-   "where": "island ground, trees, rocks; Hikari materials in the world build",
-   "evidence": "reviews/p154-traced-follow.png, reviews/p154-traced-orbit.png",
-   "suggestion": "Pick three hero materials a player notices: wet sand at the shore with a coat, stones with subsurface lichen, bark with a normal-mapped node texture. Add a lantern-hour scene where real emissive lamps light the paths.",
-   "done_when": "A traced still at the shore shows a sand-to-wet-sand gradient with specular sheen, and stones that are clearly not plastic next to an s154 still."},
-  {"severity": "low", "category": "wow", "title": "No release since 2026-11-24: put out the best film you have", "todo": 654,
-   "what": "The last release is 2026-11-24-a-day-in-my-new-life. Goal 2 is still not reached.",
-   "where": "world/releases/",
-   "evidence": "ls world/releases",
-   "suggestion": "Make the motor film from the finding above the release.",
-   "done_when": "A new folder in world/releases/ with a film that ffprobe reads and a note."}
- ],
- "todos": [
-  {"id": 691, "action": "done", "why": "Posted as 'A wire that spins by itself' (wire-spins-itself.mp4, 15:00 s153)."},
-  {"id": 704, "action": "done", "why": "Posted as 'Three paper darts'. Induced drag belongs to #610 and #693."},
-  {"id": 722, "action": "done", "why": "Sessions 152-154 went to fire and the motor, not magnets."},
-  {"id": 715, "action": "drop", "why": "Another iron sand toy. The human pulled the work back to the motor, and more magnet toys would be judged repeats."},
-  {"id": 716, "action": "drop", "why": "A retake of magnet films already posted. Spend the effort on the motor film (#736) instead."},
-  {"id": 690, "action": "drop", "why": "The putting tray film is posted, and the magnet line is closed (#722)."},
-  {"id": 721, "action": "keep", "why": "Still true in s154."},
-  {"id": 681, "action": "keep", "why": "Now about the motor bench."},
-  {"id": 736, "action": "keep", "why": "The next film, see finding.", "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it"},
-  {"id": 654, "action": "keep", "why": "Still no release."},
-  {"id": 614, "action": "keep", "why": "Not verified as fixed."},
-  {"id": 643, "action": "keep", "why": "The mini games are unchanged: four walk-to-the-arrow games."},
-  {"id": 689, "action": "keep", "why": "No rain during this review, so not verified."},
-  {"id": 711, "action": "keep", "why": "Goes with #717 scrap crane."},
-  {"id": 648, "action": "keep", "why": "Not verified."},
-  {"id": 636, "action": "keep", "why": "Not verified, no night during this review."},
-  {"id": 545, "action": "keep", "why": "The TV is still a plain set."},
-  {"id": 577, "action": "keep", "why": "Not verified as fixed."},
-  {"id": 687, "action": "keep", "why": "Those pictures are still in site/img."}
- ],
- "engine": [
-  {"what": "The sandbox path tracer runs out of GPU memory on the second live_path_tracing(true): TLAS rebuild asks for 374 MB with 41 GB already reserved by the Mantle pool. After that, live_path_tracing(false) fails with 'Failed to resolve trace_renderobject' in RayMakie meshscatter.jl:46. Path tracing in long sessions leaks or keeps the old scene.",
-   "evidence": "Mantle vulkan/runtime/memory.jl:577 via Hikari hw-rt.jl:26 sync!, RayMakie screen.jl:672. dev/Makie/RayMakie/src/plots/meshscatter.jl:46"}
- ],
- "process": "The human redirected the author, and s154 finally did the hard part: physics/motor.jl turns the rotor by I dl x B with real brush switching. The author caught their own 30% torque error by subdividing, and withdrew a film that lied. That is the right work for goal 3 and the human's direction, and the honesty is good. But what a player sees has not moved, and some of it went back. The opening view is still inside the ground (the top finding last time, untouched). Creature motion fell from 10/10 to 5/10 clean. The motor looks like placeholder blocks, its post is a broken file, and s152-153 went to a campfire judged a repeat. Goals: 1 (interactions): the motor flick is the first real cause-and-effect toy; creatures interacting with it is not there yet. 2 (release): stalled since 11-24. 3 (physics): real progress (motor, fire). 4 and 7 (rendering, materials): nothing this period. 5 (Lumi): the mood is boredom 1.0 and annoyance 1.0, and Lumi says 'Again! It's still wrong' on screen. 6 (animation): regressed. 8 (radical ideas): the motor-to-cart arc is a strong long idea if each step is shown beautifully. Next session: fix the opening camera and Truffle's hat and teleport first (an hour), then dress the motor in real copper, iron and oak and film the beak flick as a release."}
+{
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "Mantle vulkan/runtime/memory.jl:577 via Hikari hw-rt.jl:26 sync!, RayMakie screen.jl:672. dev/Makie/RayMakie/src/plots/meshscatter.jl:46",
+      "what": "The sandbox path tracer runs out of GPU memory on the second live_path_tracing(true): TLAS rebuild asks for 374 MB with 41 GB already reserved by the Mantle pool. After that, live_path_tracing(false) fails with 'Failed to resolve trace_renderobject' in RayMakie meshscatter.jl:46. Path tracing in long sessions leaks or keeps the old scene."
+    }
+  ],
+  "findings": [
+    {
+      "category": "camera",
+      "done_when": "The progress dashboard.png of the next session shows the island with Lumi in view, and a test that sets the free eye 1 m under the ground finds it above ground on the next frame.",
+      "evidence": "reviews/p154-now.png, media/progress/session-0154/dashboard.png, media/progress/session-0151/dashboard.png",
+      "severity": "high",
+      "suggestion": "Open on a composed establishing shot: Lumi at its current work, a third of the frame, the island behind it. Clamp the free camera's eye at least 1.5 m above ground(island, eye) every frame, and fall back to that shot whenever the eye is inside the terrain.",
+      "title": "The dashboard opens on a free camera stuck inside the terrain",
+      "todo": 721,
+      "what": "On load and in the session's own progress shot, the main view is a featureless white-blue smear (snow terrain from inside). A first-time viewer sees nothing. This is the second review in a row with this as the first finding.",
+      "where": "plugins/freecam.jl (CHOSEN / start view), dashboard default camera"
+    },
+    {
+      "category": "creatures",
+      "done_when": "live_motion reports 9 or more of 10 moving well, with no jump over 1 m per frame. In the creatures sheet every hat touches its head in all 3 moments.",
+      "evidence": "reviews/motion/p154-live/motion.png, motion-strip.png, creatures.png",
+      "severity": "high",
+      "suggestion": "Parent outfits to the head bone's full transform (rotation included), not to a position offset. Give whatever launches Truffle a ballistic arc with squash on take-off and a landing pose, no teleports. Fix Pickles' turn-back oscillation with a damped heading.",
+      "title": "Truffle teleports 10 m and tumbles through the sky, its beret flying off",
+      "todo": null,
+      "what": "Truffle floats high above the island, rolls end over end, and its purple beret hangs in the air above the head, then under the belly, then in front of the face. It is not attached. live_motion: a 10.36 m jump in one frame at 2.4 s, 311 m/s. Pickles vibrates and judders, Hopscotch vibrates. At s151 all 10 creatures moved cleanly.",
+      "where": "Truffle (the outfits / soar / boing plugin that throws it), outfits.jl hat attachment"
+    },
+    {
+      "category": "materials",
+      "done_when": "A 64-sample traced close-up of the motor where the coil reads as metallic copper with highlights, the board shows wood grain, and the stones look like iron, not black plastic.",
+      "evidence": "media/s154/motor-traced.png, media/s154/motorbench-1.png",
+      "severity": "high",
+      "suggestion": "A bench a person would photograph: an oiled oak board with grain (node texture, coat), polished copper windings (Hikari conductor, copper eta/k) with an enamel thin film, dark blued-iron stone magnets with a rough metallic surface and the red north faces as paint, brass brushes, and a small warm spark light at the brushes when it runs. Generate the board and stands as assets.",
+      "title": "Copper, glass and the benches render as flat plastic primitives",
+      "todo": 681,
+      "what": "Lumi's first motor, the human's stated direction (a motor that runs by its parts), is a flat brown box board, two matte black cylinders for magnets and a pale pink wire. Traced, nothing in it looks like copper, iron or wood. It reads as a placeholder at a glance.",
+      "where": "physics/motorlook.jl, plugins/motorbench.jl"
+    },
+    {
+      "category": "wow",
+      "done_when": "No file under site/films fails ffprobe. A traced film under 15 s shows the beak touching the rotor in the same frame it speeds up, and world/releases/<date>-motor/ exists.",
+      "evidence": "ffprobe site/films/first-motor.mp4: 'moov atom not found'; ls -la: 48 bytes",
+      "severity": "high",
+      "suggestion": "Delete the stub. Film the real arc: switched on it coughs and sticks, Lumi leans in and flicks it with its beak (a pose with anticipation and follow-through), the rotor catches, the brushes spark and light the board, then the whirr with sound. Shoot it close and low in warm evening light. This is the release goal 2 has waited for: put it in releases/ with its note.",
+      "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it",
+      "todo": 736,
+      "what": "site/films/first-motor.mp4 is a 48-byte file with no moov atom: the withdrawn film's stub, left in the published folder. The honest film (first-motor-sticks.mp4, job 20261127-213341-002) is still queued, and it shows a rotor that turns 74 degrees and stops, with nobody touching it. No release since 2026-11-24.",
+      "where": "world/site/films/, movies/motor.jl, world/releases/"
+    },
+    {
+      "category": "camera",
+      "done_when": "A frame of the film shows the falling stake in full, uncovered, with the fire lighting Lumi's face.",
+      "evidence": "reviews/motion/perfectionist-0154/campfire-in-the-wind-steps.jpg, campfire-in-the-wind-2-overview.jpg",
+      "severity": "medium",
+      "suggestion": "Move the camera 90 degrees so the falling stake falls toward it against open ground, low and at dusk so the fire is the key light. Or drop the campfire and spend the session on the motor film.",
+      "title": "Campfire films: front stakes hide the stake that falls",
+      "todo": null,
+      "what": "In both campfire films the camera looks through a picket of stakes at the fire. The stake that tips over is behind them, and Lumi stands at the left edge, its body cut by a stake. In the first film the flames are blown-out yellow slabs (jumps of 0.12 at 5.38 s and 0.09 at 1.12 s when the flame mesh pops). The author still marks it a miss.",
+      "where": "site/films/campfire-in-the-wind*.mp4, movies/ campfire script"
+    },
+    {
+      "category": "world",
+      "done_when": "The orbit screenshot from the same spot shows a recognisable object there, with no smeared texture.",
+      "evidence": "reviews/p154-cam-orbit.png, reviews/p154-cam-orbit-b.png, the yellow mounds in reviews/motion/p154-live/motion-strip.png",
+      "severity": "medium",
+      "suggestion": "If it is the burnt grass bed (fire #727), char it as real geometry: blackened stubble, ash with a little emission at the embers, scorch decals. Otherwise replace it with a generated asset that reads from across the island.",
+      "title": "A smeared yellow-black mound in the middle of the orbit view",
+      "todo": null,
+      "what": "In orbit view, right behind the gallery easels, a big blob with a blurry yellow and black tiger texture dominates the centre of the island. Its texture is low resolution and its shape has no readable form. It looks like a broken asset, or a burnt grass bed drawn as a smear.",
+      "where": "the island centre, behind the gallery (orbit camera)"
+    },
+    {
+      "category": "lighting",
+      "done_when": "A traced still at the shore shows a sand-to-wet-sand gradient with specular sheen, and stones that are clearly not plastic next to an s154 still.",
+      "evidence": "reviews/p154-traced-follow.png, reviews/p154-traced-orbit.png",
+      "severity": "medium",
+      "suggestion": "Pick three hero materials a player notices: wet sand at the shore with a coat, stones with subsurface lichen, bark with a normal-mapped node texture. Add a lantern-hour scene where real emissive lamps light the paths.",
+      "title": "Real materials pass: wood, sand, stone as physically based materials",
+      "todo": 730,
+      "what": "The traced views at 13:40 are the raster picture with noise: one sun, matte clay grass, plastic trees and stones, no light that a game engine could not do just as well.",
+      "where": "island ground, trees, rocks; Hikari materials in the world build"
+    },
+    {
+      "category": "wow",
+      "done_when": "A new folder in world/releases/ with a film that ffprobe reads and a note.",
+      "evidence": "ls world/releases",
+      "severity": "low",
+      "suggestion": "Make the motor film from the finding above the release.",
+      "title": "No release since 2026-11-24: put out the best film you have",
+      "todo": 654,
+      "what": "The last release is 2026-11-24-a-day-in-my-new-life. Goal 2 is still not reached.",
+      "where": "world/releases/"
+    }
+  ],
+  "process": "The human redirected the author, and s154 finally did the hard part: physics/motor.jl turns the rotor by I dl x B with real brush switching. The author caught their own 30% torque error by subdividing, and withdrew a film that lied. That is the right work for goal 3 and the human's direction, and the honesty is good. But what a player sees has not moved, and some of it went back. The opening view is still inside the ground (the top finding last time, untouched). Creature motion fell from 10/10 to 5/10 clean. The motor looks like placeholder blocks, its post is a broken file, and s152-153 went to a campfire judged a repeat. Goals: 1 (interactions): the motor flick is the first real cause-and-effect toy; creatures interacting with it is not there yet. 2 (release): stalled since 11-24. 3 (physics): real progress (motor, fire). 4 and 7 (rendering, materials): nothing this period. 5 (Lumi): the mood is boredom 1.0 and annoyance 1.0, and Lumi says 'Again! It's still wrong' on screen. 6 (animation): regressed. 8 (radical ideas): the motor-to-cart arc is a strong long idea if each step is shown beautifully. Next session: fix the opening camera and Truffle's hat and teleport first (an hour), then dress the motor in real copper, iron and oak and film the beak flick as a release.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "live_motion: 5 of 10 move well (10 of 10 at s151). Truffle jumps 10.36 m in one frame and moves at 311 m/s. Pickles vibrates 8 times a second and judders 43%. Hopscotch vibrates. Lumi's beak and crest swing at 6-7 m/s. Down from 6."
+    },
+    "camera": {
+      "score": 2,
+      "why": "The dashboard opens inside the terrain (reviews/p154-now.png, the same as media/progress/session-0154/dashboard.png). The campfire films frame the fire behind a fence of stakes, with Lumi off to the left, cut at the frame edge."
+    },
+    "creatures": {
+      "score": 4,
+      "why": "Lumi's yellow feathered body and goggles have a silhouette now. But Truffle's beret floats free above its head and flips under its belly as it tumbles (reviews/motion/p154-live/motion-strip.png): a detached part. Down from 5."
+    },
+    "fun": {
+      "score": 5,
+      "why": "The motor bench in Jump in (7 flicks the rotor, 8 and 9 turn a stone round) is the first interaction where the physics decides the outcome. The four listed mini games are still the walk-to-the-arrow recipe."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "13:30-13:45 in the sandbox: one high sun, flat midday in raster and traced alike (reviews/p154-traced-orbit.png). The campfire films add a warm flame light on the ground, the only real light this period. No point, spot or area lights near Lumi's new work."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Traced, the island is still clay and plastic. The new motor is a plain brown slab, matte black cylinder magnets and a pale wire that does not read as copper (media/s154/motor-traced.png). No metal, no coat, no transmission on the one machine the human asked for."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 4.5 ms, p95 8.7 ms, all systems under 1 ms (motorbench 0.09 ms). The path tracer ran out of GPU memory on the second toggle (see engine)."
+    },
+    "props": {
+      "score": 5,
+      "why": "The many generated assets still carry the island, but the newest props (the motor bench, the campfire stakes) are bare primitives: boxes, cylinders, plain sticks. Down from 6."
+    },
+    "style": {
+      "score": 5,
+      "why": "The rounded toy island is cohesive. The new physics props (brown slab, black cylinders, stakes) do not belong to it, and do not look like real materials either."
+    },
+    "ui": {
+      "score": 4,
+      "why": "The side panel reads clearly and 'Messages to you' is honest, but the main view shows nothing at first open, and the panel is still a wall of text beside a 3D view."
+    },
+    "world": {
+      "score": 4,
+      "why": "Variety is the same as s151, plus a snow day. The far islets with palms look like plates floating above the sea in the traced follow view. A large smeared yellow-and-black mound sits in the middle of the orbit view (reviews/p154-cam-orbit.png)."
+    },
+    "wow": {
+      "score": 2,
+      "why": "The last three posts: a campfire in the wind (judged a repeat, worth a tenth), its retake that still hides the falling stake behind the front stakes, and a motor whose film file is a 48-byte stub. Nothing here would be shared. No release since 11-24."
+    }
+  },
+  "summary": "From the orbit camera, at midday, the island is still a bright, busy toy box. But the dashboard still opens with the free camera stuck inside the terrain, now a white-blue smear of snow, for the second perfectionist review in a row. The session's real step, a motor that runs or sticks by I dl x B and its brush contacts and that the player can flick in Jump in, is built from a brown slab and black cylinders. Its film on the site is a 48-byte stub, and the honest retake is still queued. Motion got worse: only 5 of 10 creatures move cleanly (all 10 did at s151), and Truffle teleports and tumbles through the sky with its beret floating off its head.",
+  "superseded_by": "perfectionist-0157.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 691,
+      "why": "Posted as 'A wire that spins by itself' (wire-spins-itself.mp4, 15:00 s153)."
+    },
+    {
+      "action": "done",
+      "id": 704,
+      "why": "Posted as 'Three paper darts'. Induced drag belongs to #610 and #693."
+    },
+    {
+      "action": "done",
+      "id": 722,
+      "why": "Sessions 152-154 went to fire and the motor, not magnets."
+    },
+    {
+      "action": "drop",
+      "id": 715,
+      "why": "Another iron sand toy. The human pulled the work back to the motor, and more magnet toys would be judged repeats."
+    },
+    {
+      "action": "drop",
+      "id": 716,
+      "why": "A retake of magnet films already posted. Spend the effort on the motor film (#736) instead."
+    },
+    {
+      "action": "drop",
+      "id": 690,
+      "why": "The putting tray film is posted, and the magnet line is closed (#722)."
+    },
+    {
+      "action": "keep",
+      "id": 721,
+      "why": "Still true in s154."
+    },
+    {
+      "action": "keep",
+      "id": 681,
+      "why": "Now about the motor bench."
+    },
+    {
+      "action": "keep",
+      "id": 736,
+      "title": "Motor film 2: Lumi's beak flicks the stuck rotor, traced, then release it",
+      "why": "The next film, see finding."
+    },
+    {
+      "action": "keep",
+      "id": 654,
+      "why": "Still no release."
+    },
+    {
+      "action": "keep",
+      "id": 614,
+      "why": "Not verified as fixed."
+    },
+    {
+      "action": "keep",
+      "id": 643,
+      "why": "The mini games are unchanged: four walk-to-the-arrow games."
+    },
+    {
+      "action": "keep",
+      "id": 689,
+      "why": "No rain during this review, so not verified."
+    },
+    {
+      "action": "keep",
+      "id": 711,
+      "why": "Goes with #717 scrap crane."
+    },
+    {
+      "action": "keep",
+      "id": 648,
+      "why": "Not verified."
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "Not verified, no night during this review."
+    },
+    {
+      "action": "keep",
+      "id": 545,
+      "why": "The TV is still a plain set."
+    },
+    {
+      "action": "keep",
+      "id": 577,
+      "why": "Not verified as fixed."
+    },
+    {
+      "action": "keep",
+      "id": 687,
+      "why": "Those pictures are still in site/img."
+    }
+  ],
+  "verdict": "needs_work"
+}

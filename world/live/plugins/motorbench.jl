@@ -4,7 +4,9 @@
 # the last wire (the switch), 8 and 9 turn the first or the second stone round (both round: it runs backwards; one:
 # the fields cancel and it stops). Nothing here sets a torque: Motor.step! solves the coils' circuit (which segments
 # the brushes touch, each coil's resistance, inductance and back-EMF) and turns the rotor by I dl x B in the stones' field.
-# s157: wood with grain, iron-grey stones, copper (physics/motorlook.jl mo_wood, mo_iron).
+# s157: wood with grain, copper (physics/motorlook.jl mo_wood). s158: lumpy magnet stones (the same mesh em.jl
+# magnetises, Motor.stator_shapes) painted red on the north end, each coil one wound bundle bending round the axle;
+# copper with a cuprite skin (motorlook.jl mo_copper). Editing only physics/*.jl does not reload this plugin: touch it.
 using GeometryBasics, Makie, LinearAlgebra
 isdefined(Main, :LOCAL_KEYS) || Core.eval(Main, :(const LOCAL_KEYS = Dict{String,Any}()))
 isdefined(Main, :MOTORBENCH) || Core.eval(Main, :(const MOTORBENCH = Dict{Symbol,Any}()))
@@ -15,6 +17,7 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motorlook.jl"))
 
 const MB_SPOT = (5.6f0, -14.3f0)
 const MB_NEAR = 1.8f0
+const MB_LOOK = 2      # bump when the drawing changes (s158: chipped stones, bundles, cuprite copper)
 const MB_SWITCH = Makie.Keyboard._7
 const MB_STONE1 = Makie.Keyboard._8
 const MB_STONE2 = Makie.Keyboard._9
@@ -35,16 +38,15 @@ function mb_marks!(sc)
         haskey(p.attributes, :name) && startswith(string(p.attributes[:name][]), "motorbench_mark") && delete!(sc, p)
     end
     A = MB[:A]
-    for (k, m) in enumerate(MB[:b].magnets)          # a red north face on each stone, where its magnetisation points
-        y0 = Float32(m.pos[2]); north = MB[:flip][k] ? y0 - 0.001f0 : y0 + 0.036f0
-        c = A + Point3f(0, north, 0)
-        mesh!(sc, GeometryBasics.normal_mesh(Cylinder(c, c + Point3f(0, 0.002f0, 0), 0.034f0)); color = RGBf(0.7, 0.12, 0.1),
-              name = Symbol("motorbench_mark", k), material = NG.Hikari.Diffuse(color = (0.7, 0.12, 0.1), roughness = 0.6f0))
+    for (k, (_, sh)) in enumerate(mo_stones(MB[:b], A))   # red ochre on each stone's north end (where it is magnetised to)
+        mesh!(sc, mo_paint(sh, A, !MB[:flip][k]); color = RGBf(0.62, 0.14, 0.08),
+              name = Symbol("motorbench_mark", k), material = NG.Hikari.Diffuse(color = (0.62, 0.14, 0.08), roughness = 0.8f0))
     end
 end
 
 function mb_ensure!(game)
-    haskey(MB, :rot) && MB[:rot][1].parent === game.stage.scene && MB[:st] isa Motor.DrumState && return
+    haskey(MB, :rot) && MB[:rot][1].parent === game.stage.scene && MB[:st] isa Motor.DrumState &&
+        get(MB, :look, 0) == MB_LOOK && return      # MB outlives reloads: a new look needs MB_LOOK bumped
     sc = game.stage.scene
     for p in copy(sc.plots)
         haskey(p.attributes, :name) && startswith(string(p.attributes[:name][]), "motorbench_") && delete!(sc, p)
@@ -53,7 +55,7 @@ function mb_ensure!(game)
     mb_build!(get(MB, :flip, (false, false)))
     g = NG.ground(game.world.island, MB_SPOT)
     look = motor_plots!(sc, MB[:b], Point3f(g[1], g[2], g[3] + 0.03f0); prefix = "motorbench_")
-    MB[:A] = look.A; MB[:rot] = look.rot
+    MB[:A] = look.A; MB[:rot] = look.rot; MB[:look] = MB_LOOK
     mb_marks!(sc)
     Main.LOCAL_KEYS["motorbench"] = gm -> get(MB, :near, false) ? "7 touch / lift the last wire   8 / 9 turn a stone round" : nothing
     return

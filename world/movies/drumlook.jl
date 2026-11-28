@@ -11,7 +11,8 @@ function drum_look(path; hour = 10.5, seconds = 3.0, samples = 32, rasterize = f
         if MB !== nothing && haskey(MB, :A) && haskey(MB, :st)
             MB[:st].on = true
             A = MB[:A]
-            rig.eye = A + Point3f(0.36, 0.26, 0.16); rig.target = A + Point3f(0, 0, -0.02)
+            # s158: 0.36/0.26/0.16 was ~0.47 m off, the default eye: the motor came out ~1/4 of the frame. ~0.25 m now.
+            rig.eye = A + Point3f(0.19, 0.15, 0.08); rig.target = A + Point3f(0.01, 0, -0.005)
         end
         nothing
     end
