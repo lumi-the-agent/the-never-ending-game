@@ -1,0 +1,20 @@
+KeyError: key :st not found
+Stacktrace:
+ [1] getindex(h::Dict{Symbol, Any}, key::Symbol)
+   @ Base ./dict.jl:477
+ [2] drum_still(path::String; hour::Float64, samples::Int64, size::Tuple{Int64, Int64}, spin::Float64, eye::Tuple{Float64, Float64, Float64}, target::Tuple{Float64, Float64, Float64}, field::String)
+   @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/drumspark.jl:74
+ [3] invokelatest
+   @ ./Base_compiler.jl:250 [inlined]
+ [4] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210
+ [5] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378
+ [6] top-level scope
+   @ none:1
+ [7] eval(m::Module, e::Any)
+   @ Core ./boot.jl:489
+ [8] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:283
+ [9] _start()
+   @ Base ./client.jl:550

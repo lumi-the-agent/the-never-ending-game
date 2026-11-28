@@ -1,0 +1,248 @@
+{
+ "verdict": "needs_work",
+ "summary": "Played for a minute each, the four mini games are tidy kids' games that have not changed since s172: Hide and seek (I found 2 of 4 by their giggles), Berry race (I lost 3 to 4) and Jump in, with about 25 single-key gags. Firefly catch is offered at noon, when not one firefly can be seen, and I caught 1 of 8. All the new work since s175 sits on one beach block that the player cannot touch: the winch hauls a log by rope with honest physics, the gear wheel is real carpentry, and a cart drives on a cord. All of it stands on a sand-textured brown cylinder with black-box stones. Its film cart-on-a-cord.mp4 is unreadable, and the posts are six in a row about the same drum motor.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "At 12:34 the island has one flat overhead sun and no shaping light. Traced (reviews/p178/traced.png), the clay lamp on the winch block is a bright dot that lights none of the copper or wood around it. Dusk and night remain the only times with mood."
+  },
+  "materials": {
+   "score": 4,
+   "why": "The new gear wheel gets real wood grain when traced, and the cogs are now paler than the rim. The motor's stones are still matte black boxes and the rope drum is a black cylinder. The block they stand on is a 1.5 m sand-textured cylinder that looks like sandpaper when traced. The copper windings barely read. There is no metal, glass or transmission anywhere in the new work."
+  },
+  "world": {
+   "score": 4,
+   "why": "Next to s20 (spheres and cones on bare green) the overview has climbed a long way: a dense meadow of flowers, a cottage, a pond, generated trees. Next to s175 nothing changed but the hour. The beach workshop adds a block, pots, planks and a sail board without any landscaping that ties them together."
+  },
+  "props": {
+   "score": 4,
+   "why": "The gear wheel is the first machine part built like a real one (rim, arms, hub, cogs). Everything under it is primitives: the cylinder block, box stones, the log as a plain capped cylinder, and pots as tinted cylinders with a flat blue disc of 'salt water'."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "The faces are still charming. On the creatures sheet a sheep stands inside a pig's head (twice), a white pier pole passes through the party-hat crab, and two creatures are hidden inside tree crowns. Lumi, the main character, does not show up on screen at all during the review."
+  },
+  "animation": {
+   "score": 5,
+   "why": "live_motion: 9 of 10 move well, but Truffle vibrates (body turns back 9 times a second, tail 10). The winch film moves smoothly; its only 'jumps' are the fade in from black. No one is seen handling the machine: the friend who 'pulls the switch' and Lumi pushing the cart back were not filmed or seen."
+  },
+  "fun": {
+   "score": 3,
+   "why": "I played each game for about 60 s through interact!. Jump in: E made Lumi heave a stone onto its head ('Heave... got it!'), and 6, 7 and 8 do nothing away from the kiln; it is still a list of about 25 one-key gags, and none of them is the motor, the winch or the cart. Firefly catch at 12:45: 1 of 8, with no firefly visible in any frame even when the HUD says 'nearest 5 m'. Hide and seek: 2 of 4 found by wandering, and the found friends follow, which works and is the best of the four. Berry race: 3 to 4 against the critters, a clear goal, but only a collect-a-thon. R restarts every game. None uses the island's real physics (magnets, fire, motor). There is a reason to play twice only for the level-up in Hide and seek."
+  },
+  "wow": {
+   "score": 2,
+   "why": "These are the sixth, seventh and eighth drum-motor items in a row ('Sparks at dusk', 'A lamp to work by', 'Where the brushes let go', 'A wheel you can see through', plus the winch and cart films). The one new film is broken and the other was pulled as bad. A stranger would see a brown cylinder with a wheel on it."
+  },
+  "camera": {
+   "score": 3,
+   "why": "Follow (cam-1-*) frames one creature at a time and works, though cam-1-3 cuts Lumi in half at the left edge. Orbit (cam-2-*) is a pleasant high circle. Free is parked on the drum block, and that is what the progress 'dashboard' shot shows. Films: the winch film is shot from grass level with the motor a speck; in drum-sparks the lamp blob fills the bottom of the frame."
+  },
+  "ui": {
+   "score": 4,
+   "why": "The Jump in key card first covers the bottom third of the view, then shrinks to a compact strip, which is good. The game HUDs ('Fireflies 1/8 · 40 s left · nearest 5 m to your right') are clear. The side panel is stale: 'New on the island: A paper glider' and 'Next: A circuit solver' have read the same since s175, while the winch and cart are not mentioned. 'Working towards ... 9 of 30 steps' went backwards from 10 of 29. 'Messages to you' is an apology about a render queue."
+  },
+  "style": {
+   "score": 4,
+   "why": "The beach workshop (sand-textured cylinders, black boxes, a thin rope) does not match the glossy toy meadow, and neither reaches the 'real materials' direction."
+  },
+  "performance": {
+   "score": 9,
+   "why": "The sandbox runs a 3.8 ms median and 7.5 ms p95 frame at 30 fps. IronDrum costs 0.6 ms."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "wow",
+   "title": "cart-on-a-cord.mp4 is a broken file: the cart has never been seen moving",
+   "todo": 791,
+   "what": "The cart that drives itself on a cord is the most interesting machine on the island, but its only film cannot be opened (ffmpeg: 'moov atom not found', 262 KB, written 17:22). It sits in site/films/, where the blog serves it.",
+   "where": "world/site/films/cart-on-a-cord.mp4",
+   "evidence": "ffprobe site/films/cart-on-a-cord.mp4 -> Invalid data found when processing input",
+   "suggestion": "Write films to a temporary name and move them into site/films only once they are complete. Then make the cart film a real film: a low tracking shot beside the cart as it rolls off, a cut to the cord going taut and the clip flying off the pot, then Lumi walking over to push it back. Trace it.",
+   "done_when": "ffprobe reads the file, the motion sheet shows the cart moving more than 2 m and the clip leaving the pot in frame, and no unreadable .mp4 sits in site/films"
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Winch block, stones and drum still a sand-textured cylinder and black boxes",
+   "todo": 743,
+   "what": "Everything on the winch sits on a 1.5 m tall, perfectly round brown cylinder whose texture reads as sandpaper when traced. The motor's field stones are matte black boxes and the rope drum is a black cylinder. This is the 'plain shapes on bare ground' the human ruled out, filmed six times.",
+   "where": "irondrum/winch block on the beach (reviews/p178/traced.png, follow.png)",
+   "evidence": "reviews/p178/traced.png; site/img/oak-gear-wheel.png",
+   "suggestion": "Make it a real oak trestle or a split stump with bark, end grain and checks. Give the stones lodestone's dark metallic sheen with rough rust (a Hikari metal mixed with a rough dielectric), the windings polished copper conductor, and the iron drum brushed iron with a coat. A generated asset for the stump is fine.",
+   "done_when": "A traced close-up still shows bark or plank wood under the motor, the stones with a visible specular highlight, and copper that reads as metal; no cylinder with a uniform side remains"
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "The player can't touch the winch or cart: make the machine a mini game",
+   "todo": 643,
+   "what": "The physics the author built is real and surprising: rope piling up changes the pull, the gear ratio decides stall or haul, downhill turns the motor into a brake that charges the pots. A player can do none of it. The mini game menu is still Jump in, Firefly catch, Hide and seek and Berry race, the same as at s172.",
+   "where": "Mini game menu; plugins irondrum, cartcord",
+   "evidence": "dashboard 'Things to try' list, reviews/p178/follow.png",
+   "suggestion": "Add a 'Haul' game: the player picks the gear (3:1, 6:1, 15:1), a drum diameter and how many pots, then switches on. The goal is to get the cart or a heavier log up the planks. The player watches it stall as the rope fattens, or brake down the dune, and a counter shows the charge won back. A nerd joke goes on the result card ('15:1: slow but it got there').",
+   "done_when": "The mini game list has the winch/cart game, and with FakeInteraction choosing two different gears, two runs end differently (one stalls, one arrives), shown in two screenshots"
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Creatures overlap: sheep inside a pig, a pier pole through the crab",
+   "todo": 759,
+   "what": "The creatures sheet shows the bow-tied sheep's body inside the top-hat pig's head in two separate moments, and a white pier pole running straight through the party-hat crab. Two other creatures are shot from inside tree crowns.",
+   "where": "Separation system and pier props; reviews/motion/creatures.png rows 4-5",
+   "evidence": "/sim/Programmieren/SimGame/world/reviews/motion/creatures.png",
+   "suggestion": "Use body-volume separation with each species' real radius (not a point). Keep creatures off prop colliders such as poles and posts. For close-ups, move the camera out of tree crowns.",
+   "done_when": "Three creatures sheets taken a minute apart show no creature intersecting another creature or a prop"
+  },
+  {
+   "severity": "high",
+   "category": "lighting",
+   "title": "The lamp and glowing things light nothing: midday is flat",
+   "todo": 750,
+   "what": "Traced at 12:38, the clay oil lamp on the block is a white dot on an orange disc, with no warm pool on the copper, the cogs or the block. The whole island at noon has one sun overhead and short, hard shadows.",
+   "where": "irondrum lamp; daylight",
+   "evidence": "reviews/p178/traced.png, media/progress/session-0178/eye-level.png",
+   "suggestion": "Make the flame a small emissive point or sphere light with a real inverse-square falloff, bright enough to throw warm light on the windings at dusk. For day, give noon some character: softer sky fill, a haze toward the sea, and cloud shadows drifting across the meadow.",
+   "done_when": "A traced still at dusk shows a visible warm falloff from the lamp onto the copper windings, and a noon eye-level shot shows at least one cloud shadow or haze gradient"
+  },
+  {
+   "severity": "medium",
+   "category": "fun",
+   "title": "Firefly catch at noon: no firefly can be seen, the game is a blind walk",
+   "todo": null,
+   "what": "The mini game menu offers Firefly catch at any hour. At 12:45 not one firefly was visible in any of six screenshots over 60 s, even when the HUD said 'nearest 5 m to your right'. I caught 1 of 8 by luck.",
+   "where": "plugins firefly_catch; reviews/p178/firefly-*.png",
+   "evidence": "reviews/p178/sheet-jump-fire.jpg (middle and bottom rows); play-log.txt: score 1 after 60 s",
+   "suggestion": "Make it a game that belongs to the time of day: offered only from dusk on, and in daylight swapped for a day game. Better still, make the day game a physics toy, such as 'Haul' at the winch. Or let the light beams the start card promises show in daylight too.",
+   "done_when": "At noon, either Firefly catch is not in the menu, or a screenshot during play shows at least one firefly or its beam within 5 m clearly visible"
+  },
+  {
+   "severity": "medium",
+   "category": "animation",
+   "title": "Truffle vibrates: body turns back 9 times a second, tail 10",
+   "todo": null,
+   "what": "live_motion flags Truffle as the one creature out of ten that jitters. Its body and tail flick back and forth faster than an animated character ever would.",
+   "where": "Truffle's gait or turn control",
+   "evidence": "/sim/Programmieren/SimGame/world/reviews/motion/motion.png, motion-strip.png",
+   "suggestion": "Damp the heading (a critically damped spring on yaw) and drive the tail by the heading's rate, not its noise.",
+   "done_when": "live_motion reports 'Moving well: 10 of 10' twice in a row"
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Machine films: shot from the grass with the motor a speck",
+   "todo": 787,
+   "what": "winch-first-haul has the camera at grass height, with two thirds of the frame flat green and the motor far away. In drum-sparks the lamp blob fills the bottom of the frame and the drum's turn never reads.",
+   "where": "movies for the winch and drum",
+   "evidence": "reviews/motion/perfectionist-0178/winch-first-haul-overview.jpg, drum-sparks-overview.jpg",
+   "suggestion": "Frame the mechanism at 1/3 to 1/2 of the frame height, side-on where the pinion meets the wheel, with the rope coil fattening in focus. Rack focus to the log arriving. Trace it at golden hour.",
+   "done_when": "In a machine film's overview sheet, the gear or motor fills at least a third of the frame in 8 of 12 frames, with the turning visible between frames"
+  }
+ ],
+ "todos": [
+  {
+   "id": 780,
+   "action": "done",
+   "why": "The drum hauls a log by rope in the game through a 6:1 gear (winch-first-haul.mp4 shows it)."
+  },
+  {
+   "id": 790,
+   "action": "keep",
+   "why": "Rope pile-up and the gear are in; only the pulley block for the cart remains.",
+   "title": "Winch: a pulley block so the drum can haul the cart up the planks"
+  },
+  {
+   "id": 793,
+   "action": "done",
+   "why": "s177: Lumi pushes the cart back by the same physics, with no pop; the clip in frame is covered by the cart film finding (#791)."
+  },
+  {
+   "id": 743,
+   "action": "keep",
+   "why": "Still a sand-textured cylinder and black boxes (finding)."
+  },
+  {
+   "id": 791,
+   "action": "keep",
+   "why": "The cart drives, but its film is broken (finding)."
+  },
+  {
+   "id": 794,
+   "action": "keep",
+   "why": "The dune road is not in the game yet."
+  },
+  {
+   "id": 643,
+   "action": "keep",
+   "why": "No physics mini game yet (finding)."
+  },
+  {
+   "id": 759,
+   "action": "keep",
+   "why": "Overlaps still visible (finding)."
+  },
+  {
+   "id": 750,
+   "action": "keep",
+   "why": "The lamp lights nothing (finding)."
+  },
+  {
+   "id": 787,
+   "action": "keep",
+   "why": "Machine framing still poor (finding)."
+  },
+  {
+   "id": 689,
+   "action": "keep",
+   "why": "Not rechecked at night this review; it was still flat at s175."
+  },
+  {
+   "id": 779,
+   "action": "keep",
+   "why": "The creatures sheet still shoots from inside tree crowns."
+  },
+  {
+   "id": 636,
+   "action": "keep",
+   "why": "The moon halo rings were visible at s175; unchanged."
+  },
+  {
+   "id": 783,
+   "action": "keep",
+   "why": "Pond not reworked."
+  },
+  {
+   "id": 681,
+   "action": "keep",
+   "why": "Glass, wire benches and kiln not reworked."
+  },
+  {
+   "id": 770,
+   "action": "keep",
+   "why": "Yacht sail still a board."
+  },
+  {
+   "id": 749,
+   "action": "keep",
+   "why": "Not rechecked; no change recorded."
+  },
+  {
+   "id": 748,
+   "action": "keep",
+   "why": "Not rechecked; no change recorded."
+  }
+ ],
+ "engine": [
+  {
+   "what": "set_camera!(game, choice) silently turns any name except the exact menu labels ('Camera: follow', 'Camera: orbit') into the fixed camera, so set_camera!(game, \"follow\") quietly parks the camera instead of failing. Through the menu (interact!) all three modes work.",
+   "evidence": "dev/NeverendingGame/src/dashboard.jl:188-190; reviews/p178/follow.png vs cam-1-1.png"
+  },
+  {
+   "what": "Films are written in place into site/films, so a render that is cut off leaves a broken mp4 where the blog serves it.",
+   "evidence": "site/films/cart-on-a-cord.mp4: moov atom not found"
+  }
+ ],
+ "process": "The author does honest, deep physics: rope piling up on the drum, belt slip, regenerative braking that falls out of the motor model. That is goal 3 and the car direction in earnest. But for three reviews the work has narrowed to one machine on one block, and almost none of it reaches a player. Nothing new can be played, the block still looks like placeholder art, and one film is broken while the other was pulled. Goal 1 (interactions) moved a little: friends may run the winch, but nobody saw it. Goal 2 (a released video) has not moved, since no film is good enough yet. Goals 4, 6 and 7 (rendering, light, materials) are stalled: the lamp lights nothing and the materials are black boxes and sandpaper. Goal 5 (Lumi's garden) is weak: Lumi was never on screen, and the 'Messages to you' panel is apologies about a render queue. Goal 8 (variety) is failing: eight drum items in a row. The player-facing side has stood still: the four mini games, the side panel's 'New on the island' and the world itself are as at s172-s175. Six posts in a row are the same drum, which the sameness judge will punish. Next sessions: make the winch and cart a game the player drives, rebuild the block and motor in real materials with a lamp that really lights them, and post one thing that is not the drum."
+}

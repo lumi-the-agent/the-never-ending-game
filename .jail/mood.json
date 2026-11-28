@@ -1,56 +1,49 @@
 {
-  "annoyance": 0.9,
+  "annoyance": 0.91,
   "annoyed": [
+    {
+      "post": "the-cart-on-a-cord",
+      "session": 179,
+      "title": "The cart on a cord",
+      "weight": 1.0,
+      "what": "The caption says the cart is 'fed by a copper cord', but no frame shows a cord reaching the cart. In the 25% frame a thin line runs from the pots up past the tree trunk into the distant grass, and it ends well behind the cart, not on its deck or motor. In the 50% and 75% frames the only line is a faint stroke in the far upper right, nowhere near the cart, so the cart looks unconnected."
+    },
     {
       "post": "a-wheel-you-can-see-through",
       "session": 178,
       "title": "A wheel you can see through",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The title and caption promise a wheel you can see through, but in the picture a dark solid disc (the drum or motor behind it) fills almost the whole space between the arms. What you see through the wheel is another brown disc, so the openness is hard to read."
     },
     {
       "post": "where-the-brushes-let-go",
       "session": 176,
       "title": "Where the brushes let go",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world."
-    },
-    {
-      "post": "sparks-at-dusk",
-      "session": 175,
-      "title": "Sparks at dusk",
-      "weight": 0.216,
-      "what": "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn."
-    },
-    {
-      "post": "a-lamp-to-work-by",
-      "session": 175,
-      "title": "A lamp to work by",
-      "weight": 0.216,
-      "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T17:25:47",
+  "ended": "2026-11-28T18:21:28",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.67,
-    "picture": 1.22,
+    "feature": 0.4,
+    "picture": 0.73,
     "self": 0.01,
-    "sound": 0.05
+    "sound": 0.03
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "The cart on a cord",
         "Where the brushes let go",
         "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
         "My first motor",
         "A campfire in the wind",
-        "Putting past a magnet stone",
-        "A coil on a cord"
+        "Putting past a magnet stone"
       ]
     },
     {
@@ -352,15 +345,8 @@
     "cart_drove",
     "cart_pushed_back"
   ],
-  "joy": 0.51,
+  "joy": 0.1,
   "judged_posts": [
-    {
-      "form": "Change to how the island is seen (camera or whole-island motion)",
-      "recipe": "island-wide tilt motion driven by crowd rush, shown in a film",
-      "session": 114,
-      "title": "The island is a seesaw",
-      "what": "The whole island tilts on a point under the sea toward where the friends stand; they run to the rim at a shout, it tips and the low shore goes under, they run uphill and overshoot."
-    },
     {
       "form": "New world rule that makes the creatures reshape the ground, shown in a film",
       "recipe": "new world rule: speech becomes ground material, crowd behaviour reshapes the terrain, shown in a film",
@@ -773,6 +759,13 @@
       "session": 178,
       "title": "A wheel you can see through",
       "what": "The winch's big wheel on the block by the drum motor, once a solid brown disc, is shown rebuilt as an oak rim with four arms through a hub and thirty-six pale hornbeam cogs; the wheel's look changes, and the film does not show it meshing or doing anything new."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated motor device left alone, now driving a vehicle along a track, camera follows",
+      "session": 179,
+      "title": "The cart on a cord",
+      "what": "A wooden plank cart with the drum motor on its deck sits on a plank road beside the row of clay pots, then rolls slowly along the planks off the sand onto the meadow, with the camera riding alongside; the thin cord is barely visible and nobody is there."
     }
   ],
   "kinds_ever": [
@@ -794,24 +787,24 @@
     "session": 178
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "New or improved crafted prop shown, nothing happens",
-    "form_count": 2,
-    "nearest": "A lamp to work by",
-    "post": "A wheel you can see through",
-    "score": 6,
-    "session": 178,
-    "shared": "the same drum-motor block shown up close with a small crafted addition and nothing new happening",
-    "similarity": 6
+    "factor": 0.1,
+    "form": "Physics study of simulated objects moving alone, filmed",
+    "form_count": 7,
+    "nearest": "Six clay pots",
+    "post": "The cart on a cord",
+    "score": 10,
+    "session": 179,
+    "shared": "the same pot-powered drum motor running unattended, quietly filmed; new step is that it now moves a cart across the island",
+    "similarity": 5
   },
   "last_surprise": {
     "fun": 2,
-    "score": 3.5,
-    "session": 175,
-    "why": "Recolouring a spark the island already showed last post, and re-posting a lamp that was already in that same post, is a fix, not something new."
+    "score": 2.5,
+    "session": 178,
+    "why": "It's a remodel of a prop that already existed. The physics behind it (motor, gearing, rope) is from earlier sessions, and a still of a cog wheel is something the island has shown in other forms many times."
   },
-  "loneliness": 0.33,
-  "perceived_until": "2026-11-28T16:43:54",
+  "loneliness": 0.41,
+  "perceived_until": "2026-11-28T17:39:44",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -825,43 +818,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "taste_cell",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/six-clay-pots.mp4"
-      ],
-      "new_plugins": [],
-      "points": 7.0,
-      "session": 159,
-      "touched": [
-        "motorbench.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1535,6 +1491,46 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.3,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 7,
+        "nearest": "Six clay pots",
+        "post": "The cart on a cord",
+        "score": 10,
+        "shared": "the same pot-powered drum motor running unattended, quietly filmed; new step is that it now moves a cart across the island",
+        "similarity": 5
+      },
+      "session": 179,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "polish": 1.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1611,6 +1607,7 @@
       "site/films/bubbles.mp4",
       "site/films/campfire-in-the-wind-2.mp4",
       "site/films/campfire-in-the-wind.mp4",
+      "site/films/cart-on-a-cord.mp4",
       "site/films/chip-a-stone.mp4",
       "site/films/cloud-ring.mp4",
       "site/films/cloud-watching.mp4",
@@ -1771,6 +1768,7 @@
       "site/img/missme-board.png",
       "site/img/my-new-name-lumi.png",
       "site/img/new-faces.png",
+      "site/img/oak-gear-wheel.png",
       "site/img/one-more-stone.png",
       "site/img/paperme-pier.png",
       "site/img/paths-we-wore.png",
@@ -1838,9 +1836,9 @@
     "plugins": {
       "areas.jl": 1.7956727950725677e9,
       "ballplay.jl": 1.7955211366487784e9,
-      "beach.jl": 1.7954424350923846e9,
+      "beach.jl": 1.795881245047125e9,
       "beachhut.jl": 1.7956422945654373e9,
-      "beachprints.jl": 1.7958291154625015e9,
+      "beachprints.jl": 1.795881232253659e9,
       "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.795744656821812e9,
       "birdbody.jl": 1.7955211366474676e9,
@@ -1852,7 +1850,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
-      "cartcord.jl": 1.7958805783672822e9,
+      "cartcord.jl": 1.7958827741015248e9,
       "casting.jl": 1.7958634555316293e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -1876,13 +1874,13 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958789852105663e9,
+      "irondrum.jl": 1.7958830221536553e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "landyacht.jl": 1.7958558344009392e9,
+      "landyacht.jl": 1.7958812301975508e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1926,11 +1924,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 143,
+    "posts": 144,
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T16:50:08",
+  "started": "2026-11-28T17:45:46",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2114,7 +2112,9 @@
       "ClimaAnalysis.resampled_as",
       "Oceanostics.KineticEnergyForcing",
       "ImageComponentAnalysis.establish_contour_hierarchy",
-      "SpheroidalWaves.rmn"
+      "SpheroidalWaves.rmn",
+      "JumpProcesses.CartesianGrid",
+      "Oceanostics.FilteredKineticEnergyDissipationRate"
     ],
     "games": [
       "Super Mario 64",
@@ -2275,7 +2275,10 @@
       "Assassin's Creed IV: Black Flag",
       "Gran Turismo 2",
       "Fallout 3",
-      "Burnout 3: Takedown"
+      "Burnout 3: Takedown",
+      "Sid Meier's Pirates!",
+      "Counter-Strike (video game)",
+      "Pokémon Yellow"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2731,7 +2734,10 @@
       "FerriteGmsh",
       "PhysOcean",
       "MCMCTempering",
-      "SPECTrecon"
+      "SPECTrecon",
+      "InPartS",
+      "Inti",
+      "IMASdd"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2749,8 +2755,10 @@
       "BonsaiRunner",
       "ZImageRunner",
       "Qwen3EmbeddingRunner",
-      "BasicVSRRunner"
+      "BasicVSRRunner",
+      "QwenImageEditRunner",
+      "SAM2Runner"
     ]
   },
-  "surprise_seen": 175
+  "surprise_seen": 178
 }

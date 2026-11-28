@@ -1,0 +1,36 @@
+{
+  "cause": "KeyError: key :st not found",
+  "created": "2026-11-28T18:15:48.740",
+  "error": "KeyError: key :st not found\nStacktrace:\n [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n   @ Base ./dict.jl:477\n [2] drum_still(path::String; hour::Float64, samples::Int64, size::Tuple{Int64, Int64}, spin::Float64, eye::Tuple{Float64, Float64, Float64}, target::Tuple{Float64, Float64, Float64}, field::String)\n   @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/drumspark.jl:74\n [3] invokelatest\n   @ ./Base_compiler.jl:250 [inlined]\n [4] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210\n [5] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378\n [6] top-level scope\n   @ none:1\n [7] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [8] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [9] _start()\n   @ Base ./client.jl:550",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261128-181548-740-clip.error.txt",
+  "finished": "2026-11-28T18:17:51.140",
+  "id": "20261128-181548-740-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_still",
+    "kwargs": {
+      "eye": [
+        0.13,
+        0.13,
+        0.03
+      ],
+      "field": "wound",
+      "hour": 15.5,
+      "samples": 32,
+      "size": [
+        960,
+        540
+      ],
+      "target": [
+        0.0,
+        0.055,
+        -0.005
+      ]
+    },
+    "path": "media/s179-wound-field-e.png",
+    "script": "movies/drumspark.jl"
+  },
+  "seconds": 121.0,
+  "started": "2026-11-28T18:15:49.746",
+  "status": "failed"
+}

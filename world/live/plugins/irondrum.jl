@@ -13,6 +13,7 @@ const ID = Main.IRONDRUM
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motor.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motorlook.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "rope.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "fieldcoil.jl"))   # s179: the wound field (project fieldcoil)
 
 const ID_SPOT = (4.85f0, -14.3f0)     # 0.6 m west of the motor bench's table
 const ID_H = 0.62f0                   # the stand's top, the bench table's height
@@ -198,11 +199,46 @@ function id_pots!(sc, c)
     end
 end
 
+"Cast iron as a smith leaves it (s179): blue-grey metal under a dark mill scale, mottled where it was filed, a fine
+sand-cast pitting in the bump; rougher than the filed drum (ID_IRON), so the big flat yoke faces catch a soft sheen."
+function id_cast_iron()
+    TN = NG.Hikari.TextureNodes
+    big = TN.noise(TN.xyz(); scale = 45, detail = 4).fac
+    fine = TN.noise(TN.xyz(); scale = 700, detail = 2).fac
+    col = TN.color_ramp(big, 0.0 => (0.16, 0.16, 0.17), 0.55 => (0.27, 0.27, 0.29), 1.0 => (0.44, 0.44, 0.46))
+    NG.Hikari.Principled(base_color = col, metallic = 0.8, roughness = 0.38 + 0.3 * fine,
+                         normal = TN.bump(0.6 * fine + 0.4 * big; distance = 0.0008))
+end
+
+"""
+s179 (project fieldcoil): the stones' place taken by a WOUND field, as motor2d.jl Geo(field = true, arch = true) solved
+it: a soft-iron core (r 26 mm) either side along y from 36 to 72 mm off the axle, the copper laid turn by turn round it
+(FieldCoil.path: the turns drawn are the turns in the physics), and an iron arch over the top closing the flux.
+Off unless ID[:field] = :wound (the motor still runs on the stones' table until the wound table drives it).
+"""
+function id_wound_field!(sc, c, oak; w = FieldCoil.winding(turns = get(ID, :field_turns, 200), d = get(ID, :field_d, 0.8e-3)))
+    iron = ID_IRON; cu = mo_copper()      # id_cast_iron() (above) not yet seen traced: NOTES s179 OPEN
+    pts = FieldCoil.path(w; seg = 16)
+    for (k, sgn) in enumerate((1f0, -1f0))
+        mesh!(sc, cyl((0, sgn * 0.036, 0), (0, sgn * 0.072, 0), 0.026, 48); color = RGBf(0.40, 0.40, 0.42), material = iron,
+              name = Symbol("irondrum_core", k)) |> p -> Makie.translate!(p, c)
+        P = [c + Point3f(q[2], sgn * (0.036 + q[1]), q[3]) for q in pts]
+        mesh!(sc, mtube(P, Float32(w.d / 2); nring = 6); color = RGBf(0.78, 0.42, 0.22), material = cu, name = Symbol("irondrum_field", k))
+        mesh!(sc, GeometryBasics.normal_mesh(Rect3f(c + Point3f(-0.026f0, sgn > 0 ? 0.072f0 : -0.084f0, -0.045f0), Vec3f(0.052f0, 0.012f0, 0.119f0)));
+              color = RGBf(0.40, 0.40, 0.42), material = iron, name = Symbol("irondrum_yokeleg", k))
+        mesh!(sc, GeometryBasics.normal_mesh(Rect3f(c + Point3f(-0.04f0, sgn > 0 ? 0.044f0 : -0.074f0, -0.045f0), Vec3f(0.08f0, 0.03f0, 0.019f0 - w.outer + 0.026f0)));
+              color = RGBf(0.5, 0.35, 0.2), material = oak, name = Symbol("irondrum_fchock", k))
+    end
+    mesh!(sc, GeometryBasics.normal_mesh(Rect3f(c + Point3f(-0.026f0, -0.084f0, 0.05f0), Vec3f(0.052f0, 0.168f0, 0.024f0)));
+          color = RGBf(0.40, 0.40, 0.42), material = iron, name = :irondrum_yoketop)
+    return w
+end
+
 function id_ensure!(game)
     sc = game.stage.scene
     # (a reload re-includes motor.jl: a build and state of the old module's types are made again)
     haskey(ID, :rot) && ID[:rot][1].parent === sc && get(ID, :look, 0) == ID_LOOK && get(ID, :b, nothing) isa Motor.Build &&
-        get(ID, :st, nothing) isa Motor.State && return
+        get(ID, :st, nothing) isa Motor.State && get(ID, :drawn_field, :stones) === get(ID, :field, :stones) && return
     for p in copy(sc.plots)
         haskey(p.attributes, :name) && startswith(string(p.attributes[:name][]), "irondrum_") && delete!(sc, p)
     end
@@ -214,7 +250,10 @@ function id_ensure!(game)
                   name = :irondrum_stand)               # a round oak chopping block, drawn about its own axis (its rings)
     Makie.translate!(stand, Point3f(g[1], g[2], top))
     c = Point3f(g[1], g[2], top + 0.045f0)              # the axle's middle
+    ID[:drawn_field] = get(ID, :field, :stones)
+    ID[:drawn_field] === :wound && id_wound_field!(sc, c, oak)
     for (k, sgn) in enumerate((1f0, -1f0))              # the two ferrite stones either side, magnetised along y
+        ID[:drawn_field] === :wound && break
         # s173: the stones as the chipped beach stones the field was solved for (Motor.rough_stone), not flat discs
         sh = Motor.stator_shapes(; R = 0.036, H = 0.036, gap = 0.072, rough = true)[sgn > 0 ? 2 : 1]
         vs = [c + Point3f((sh.Rm * collect(v) .+ collect(sh.pos))...) for v in sh.v]

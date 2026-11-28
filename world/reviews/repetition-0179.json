@@ -1,0 +1,10 @@
+{"posts": [{"post": "The cart on a cord",
+            "what": "A wooden plank cart with the drum motor on its deck sits on a plank road beside the row of clay pots, then rolls slowly along the planks off the sand onto the meadow, with the camera riding alongside; the thin cord is barely visible and nobody is there.",
+            "recipe": "simulated motor device left alone, now driving a vehicle along a track, camera follows",
+            "nearest": "Six clay pots",
+            "similarity": 5,
+            "shared": "the same pot-powered drum motor running unattended, quietly filmed; new step is that it now moves a cart across the island"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed",
+            "posts": ["The cart on a cord", "Where the brushes let go", "Sparks at dusk", "Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone"]},
+           {"form": "New or improved crafted prop shown, nothing happens",
+            "posts": ["A wheel you can see through", "My land yacht", "A lamp to work by"]}]}

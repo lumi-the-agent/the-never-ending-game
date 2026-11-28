@@ -1,0 +1,36 @@
+{
+  "addressed": true,
+  "findings": [
+    {
+      "evidence": "A single 1280x720 PNG. No film, no before/after, and no pinion in mesh you can clearly pick out.",
+      "severity": "medium",
+      "suggestion": "Post a short film from the same angle: switch the motor on, show the pinion blurring while the big wheel creeps round, and show the rope coiling onto the drum.",
+      "what": "The caption sells the wheel as see-through ('you see THROUGH it, so its turn shows', per the code comment), but the post is a still, so the one reason for the rebuild, watching the slow 6:1 turn against the fast pinion, never shows.",
+      "where": "post a-wheel-you-can-see-through, oak-gear-wheel.png"
+    },
+    {
+      "evidence": "Only a small dark toothed shape shows at the rim's right edge. The 6-cog oak pinion (irondrum.jl:238) can't be read as the driver.",
+      "severity": "low",
+      "suggestion": "Frame it from the west or slightly below the axle line so the pinion and its contact with the big wheel's cogs are in view.",
+      "what": "The pinion driving the wheel is nearly hidden. The meshing point is behind the rim and the dark motor body, so a viewer sees one big gear with nothing obvious turning it.",
+      "where": "oak-gear-wheel.png, upper right of the wheel (around x=750, y=390)"
+    },
+    {
+      "evidence": "The cogs in the lit upper half read greenish-tan, and those in the lower shadowed half nearly merge with the dark rim.",
+      "severity": "low",
+      "suggestion": "Give the cogs a little more light or a warmer base, or catch them in low sun so the pale wood against the oak rim actually reads.",
+      "what": "The 'pale hornbeam' cogs come out a dull olive-khaki, not the cream the caption and the code comment aim for. They do stand apart from the rim now, but only just in shadow.",
+      "where": "oak-gear-wheel.png, the cogs; irondrum.jl:478"
+    }
+  ],
+  "fun": 2,
+  "fun_why": "There's nothing to do or watch again here: a still of a wheel. The fun part, the 6:1 reduction slowly hauling a log, isn't in the post.",
+  "real": 4,
+  "real_change": "Really changed: irondrum.jl:432 id_spurwheel replaces the solid disc with a geometry ring (id_ring), four arm boxes, a hub ring and 36 cog boxes in their own pale wood material. The turning parts now use object-space grain (moving = true), so the grain turns with the wheel. The wheel's turn is still driven by the simulated motor: Motor.step! at :314 gets the rope tension back through ID_GEAR = 6 and the wound drum radius, and the wheel is rotated by -θ/6 at :320. The gear ratio and the rope are simulated, but the teeth themselves are drawn: they never touch or push each other, and the 6:1 ratio is a constant. I checked the numbers and they hold up: pitch radii 0.012 + 0.072 = 0.084, the shaft spacing is hypot(0.075, 0.038) = 0.084, and the tooth phase at the contact angle (about 27°) puts a pinion gap opposite a wheel cog. Nothing new moves, collides or is stored. This post changes only the look.",
+  "real_why": "The wheel turns from a real motor simulation, with the load torque fed back through the ratio and a rope whose drum radius grows as it fills, but the gearing is one ratio typed in with no tooth contact, and the post itself only shows modelling.",
+  "summary": "One still of the winch's rebuilt spur wheel: a real see-through oak rim with four arms, a hub and 36 paler cogs, big and in the middle of a sunny beach frame. It shows what the caption says. But it's a new mesh for an existing part, shown in a photo when its whole point is that you can see it turn.",
+  "superseded_by": "perfectionist-0178.json",
+  "surprise": 1,
+  "surprise_why": "It's a remodel of a prop that already existed. The physics behind it (motor, gearing, rope) is from earlier sessions, and a still of a cog wheel is something the island has shown in other forms many times.",
+  "verdict": "pass"
+}

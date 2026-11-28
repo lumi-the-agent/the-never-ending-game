@@ -1635,3 +1635,14 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   grey-olive, the same as the oak (critic). For a pale wood (hornbeam, ash) set the base near cream (0.95, 0.89, 0.75).
   And every TURNING wooden part needs mo_wood(moving = true) (object-space grain), or the grain stands still in the
   world while the part turns and the turn does not read on film (the winch wheel and rope drum had it wrong).
+- (s179) An electromagnet's field costs POWER, set by its copper, not its turns: holding NI ampere-turns in a copper
+  window A_cu costs P = rho * l_turn * (NI)^2 / A_cu per coil (more turns of thinner wire in the same window changes the
+  volts and amps, never the watts). Check this before designing any wound field: the drum motor's stones = ~550 A-turns
+  a pole = 18 W in 1.2 kg of copper, ten times what six clay pots (V^2/4R = 1.8 W) can give. motor2d.jl Geo(field = true).
+- (s179) A clip job's mp4 in site/films is NOT readable while the job says "running" ('moov atom not found'): the
+  encoder writes the index last. Wait for status done (bt_wait until on the job json) before motion_sheet or ffprobe.
+- (s179) A string between a docstring and its function ('"""doc"""' then '"another doc" function f') makes the WHOLE
+  plugin fail to load ('cannot document the following expression'). The sandbox and the human's game silently keep the
+  old version, so they look fine; a FRESH worker process runs without the plugin, and a long-lived worker keeps the old
+  plugin's Dict (Main.IRONDRUM) from an earlier job: drum_still then framed a stale point (media/s179-wound-field-c/d.png).
+  After every plugin edit: `python3 -I tools/live.py reload` and read its "plugins" map ("ok"), never only a sandbox eval.

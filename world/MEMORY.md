@@ -18,9 +18,23 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
-- s179 FIRST: the cart film (job 163624-816, started 17:04, ~56 min) lands ~18:00 in site/films/cart-on-a-cord.mp4.
-  Its post is HELD in media/s178-held-pending-cart-on-a-cord.json: WATCH the mp4 (motion_sheet), then move the json
-  back into pending/ (job done -> the host posts it). A bad take: say so in a new caption or pull it.
+- s179 NEW PROJECT projects/fieldcoil.md 'Wind the field coil yourself' (critic passed, todo #798; winch.md SHELVED).
+  Solved in physics/motor2d.jl Geo(field = true, NIf) (tools/magnet2d env): stones = ~550 A-turns/pole; on six pots the
+  best series field gives 7.7 mN m (200 x 0.8 mm, 315 g Cu) vs stones 67: 600 A-turns = 18 W, pots give 1.8 W.
+  physics/fieldcoil.jl lays the turns (wire, R, Cu mass FROM them); data/fieldcoil-torque.csv = FEM on the round core.
+  DRAWN + published (off by default): IRONDRUM[:field] = :wound draws 2 iron cores, FieldCoil.path turns (mtube),
+  ARCH yoke (solved too: = frame below 1200 A-turns); drum_still(...; field = "wound"). Traced: media/s179-wound-field-b.png
+  (close: the turns READ, layer on layer) / -a.png (far: a copper drum; the yoke = flat dark block). id_cast_iron() is written but UNUSED (its first traces failed:
+  a docstring bug kept the plugin from loading, fixed 18:20): switch the cores/yoke to it and re-trace -b's camera.
+  NEXT: motor kt from the wound table, cart on planks stones vs wound (FILM), Lumi's hands winding. NOT a mimed slider.
+- s179 MISS 'the-cart-on-a-cord' (critic redo): cord invisible, cogs+belt hidden behind the motor, pots out of frame,
+  clip pops off camera, camera locked on the cart (only the background moves). Trimmed to 11 s + miss note up. RETAKE
+  (same post, films/cart-on-a-cord.mp4): thick cord paying out from a coil, low camera on the BELT side, a fixed or slow
+  camera the cart drives THROUGH, pots + clip in frame when it pops; planks must be one even road, and the wheels
+  must ride the planks' real heights (critic 2nd look: they float over seams/steps, the motor->wheel drive is unseen).
+- s179: cart-on-a-cord.mp4 WATCHED (14 s, tracking cam, spokes turn, smooth; the fade-in is the only jump) and
+  queued in pending/cart-on-a-cord.json with an honest caption: the cord is a hairline lost after 1 s, and the clip
+  yank happens OUT of frame. Next take of the cart: a THICKER visible cord (or a battery on board) + keep the pots in view.
 - s178 MISS 'a-wheel-you-can-see-through' (oak-gear-wheel.png, critic: post hides the hub, no pinion meshing, all one
   brown, cart claimed but absent, a still can't show turning). Caption fixed + miss note up. RETAKE = a short FILM of
   the gear MESHING and TURNING. Geometry (meshes right: pitch r .072 + .012 = 84 mm): wheel axis along x at (4.725,-14.226,1.765), cogs to r .077; bearing post WEST of it

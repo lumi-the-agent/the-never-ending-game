@@ -58,8 +58,9 @@ end
 # game, all plugins), the drum switched on and spun up by its own Motor.step! before the picture.
 #   submit_job(:clip; path = "site/img/drum-by-lamplight.png", script = "movies/drumspark.jl", call = "drum_still")
 function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin = 1.5,
-                    eye = Point3f(0.40, -0.02, 0.27), target = Point3f(-0.01, -0.14, -0.09))
+                    eye = Point3f(0.40, -0.02, 0.27), target = Point3f(-0.01, -0.14, -0.09), field = :stones)
     g = NG.Game(NG.game_root(); quiet = true)
+    Main.IRONDRUM[:field] = Symbol(field)                # s179: :wound draws the field coils (project fieldcoil)
     w = g.world
     NG.skip_to_hour!(w, hour)
     root_scene = Scene(; size)
@@ -85,7 +86,7 @@ function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin 
     foreach(p -> (p.visible[] = false), g.stage.overlay.plots)
     NG.sync_sun!(g.stage, w)
     rig = NG.CameraRig(; mode = :fixed)
-    rig.eye = c + eye; rig.target = c + target
+    rig.eye = c + Point3f(eye...); rig.target = c + Point3f(target...)
     NG.update_camera!(rig, w, scene, 0.0; snap = true)
     screen, oidn = NG.traced_screen(root_scene; denoise = true, max_depth = 8)
     img = Makie.colorbuffer(screen; samples)

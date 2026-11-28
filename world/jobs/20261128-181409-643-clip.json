@@ -1,0 +1,39 @@
+{
+  "created": "2026-11-28T18:14:09.643",
+  "finished": "2026-11-28T18:15:23.790",
+  "id": "20261128-181409-643-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_still",
+    "kwargs": {
+      "eye": [
+        0.13,
+        0.13,
+        0.03
+      ],
+      "field": "wound",
+      "hour": 15.5,
+      "samples": 64,
+      "size": [
+        960,
+        540
+      ],
+      "target": [
+        0.0,
+        0.055,
+        -0.005
+      ]
+    },
+    "path": "media/s179-wound-field-d.png",
+    "script": "movies/drumspark.jl"
+  },
+  "result": {
+    "hour": 15.5,
+    "path": "media/s179-wound-field-d.png",
+    "rev_s": 4.028466766598447,
+    "spark": true
+  },
+  "seconds": 74.1,
+  "started": "2026-11-28T18:14:09.737",
+  "status": "done"
+}

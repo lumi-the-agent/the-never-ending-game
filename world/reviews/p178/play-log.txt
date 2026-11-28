@@ -1,0 +1,32 @@
+JumpIn started: NeverendingGame.JumpIn state=- score=-
+jumpin t=14 NeverendingGame.JumpIn state=- score=-
+jumpin t=24 NeverendingGame.JumpIn state=- score=-
+jumpin t=34 NeverendingGame.JumpIn state=- score=-
+JumpIn Lumi moved 14.3 m
+firefly started: Main.Plugin_firefly_catch.FireflyCatch state=ready score=0
+firefly t=13 Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly t=23 Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly t=34 Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly t=45 Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly t=59 Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly end: Main.Plugin_firefly_catch.FireflyCatch state=playing score=1
+firefly after R: Main.Plugin_firefly_catch.FireflyCatch state=ready score=0
+hide started: Main.Plugin_hideseek.HideSeek state=ready score=-
+hide t=13 Main.Plugin_hideseek.HideSeek state=playing score=-
+hide t=22 Main.Plugin_hideseek.HideSeek state=playing score=-
+hide t=32 Main.Plugin_hideseek.HideSeek state=playing score=-
+hide t=43 Main.Plugin_hideseek.HideSeek state=playing score=-
+hide t=56 Main.Plugin_hideseek.HideSeek state=playing score=-
+hide end: Main.Plugin_hideseek.HideSeek state=playing score=-
+hide after R: Main.Plugin_hideseek.HideSeek state=ready score=-
+berry started: Main.Plugin_berry_race.BerryRace state=ready score=0
+berry t=13 Main.Plugin_berry_race.BerryRace state=playing score=0
+berry t=22 Main.Plugin_berry_race.BerryRace state=playing score=0
+berry t=33 Main.Plugin_berry_race.BerryRace state=playing score=0
+berry t=44 Main.Plugin_berry_race.BerryRace state=playing score=3
+berry t=57 Main.Plugin_berry_race.BerryRace state=playing score=3
+berry end: Main.Plugin_berry_race.BerryRace state=playing score=3
+berry after R: Main.Plugin_berry_race.BerryRace state=ready score=0
+camera Camera: follow -> rig follow
+camera Camera: orbit -> rig orbit
+camera Camera: free -> rig fixed

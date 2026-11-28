@@ -8990,7 +8990,7 @@
     },
     {
       "created": "2026-11-27T03:41:34.424",
-      "detail": "perfectionist-0175 [fun, high]: All three mini games are 'walk to the nearest marked thing' with a timer. In a minute of WASD each: Firefly 1/8, Hide and seek 0/4, Berry race behind 0-2. In Firefly catch, the targets are lime discs among hundreds of ambient fireflies. Nothing in them uses the electromagnetism, fire, paper flight or yacht that took the last 40 sessions, and nothing differs from the s169 review where a nearest-target bot won all three.\nWhere: world/plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; Mini game menu\nSuggestion: Make one new contest out of the physics: steer the magnet stone to herd iron sand into a hole, race the land yacht against a friend in real wind, or wind and run the motor against the clock to winch the cart. The world's own rules should decide who wins, and a nearest-target bot should lose.\nDone when: The Mini game menu has a game whose win depends on a physics system (magnet/motor/wind). A scripted nearest-target bot scores below half in it, and a screenshot shows the physical object as the HUD's subject.\nEvidence: world/reviews/p175/play_02.png, play_04.png, play2_02.png, play2_06.png; REVIEW_LOG scores",
+      "detail": "perfectionist-0178 [fun, high]: The physics the author built is real and surprising: rope piling up changes the pull, the gear ratio decides stall or haul, downhill turns the motor into a brake that charges the pots. A player can do none of it. The mini game menu is still Jump in, Firefly catch, Hide and seek and Berry race, the same as at s172.\nWhere: Mini game menu; plugins irondrum, cartcord\nSuggestion: Add a 'Haul' game: the player picks the gear (3:1, 6:1, 15:1), a drum diameter and how many pots, then switches on. The goal is to get the cart or a heavier log up the planks. The player watches it stall as the rope fattens, or brake down the dune, and a counter shows the charge won back. A nerd joke goes on the result card ('15:1: slow but it got there').\nDone when: The mini game list has the winch/cart game, and with FakeInteraction choosing two different gears, two runs end differently (one stalls, one arrives), shown in two screenshots\nEvidence: dashboard 'Things to try' list, reviews/p178/follow.png",
       "est_minutes": 60.0,
       "id": 643,
       "kind": "review",
@@ -8999,8 +8999,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Mini games ignore the physics: one game where the motor, magnet or fire is the toy",
-      "updated": "2026-11-28T17:25:10.504"
+      "title": "The player can't touch the winch or cart: make the machine a mini game",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -10390,7 +10390,7 @@
     },
     {
       "created": "2026-11-27T23:15:34.123",
-      "detail": "perfectionist-0175 [props, high]: Up close and in every film the machine is matte black cuboid pole shoes, a brown octagonal 'oak' cylinder with sand ripples, and box brushes. It reads as placeholder art, not something Lumi built from iron, oak and copper.\nWhere: irondrum.jl, the drum stand\nSuggestion: A wood-grain oak bench with legs and pegs, laminated iron with a brushed-metal roughness and rust edges, rounded shoes, copper commutator bars with gaps that catch the light, and carbon brushes in brass holders. Use Hikari's metal/coat materials so the iron and copper read differently.\nDone when: A traced close-up shows visible wood grain on the stand, distinguishable iron vs copper metal highlights, and no sand-ripple texture on any part of the machine\nEvidence: world/site/img/drum-by-lamplight.png, world/site/img/the-brushes-break.png, drum-sparks overview",
+      "detail": "perfectionist-0178 [materials, high]: Everything on the winch sits on a 1.5 m tall, perfectly round brown cylinder whose texture reads as sandpaper when traced. The motor's field stones are matte black boxes and the rope drum is a black cylinder. This is the 'plain shapes on bare ground' the human ruled out, filmed six times.\nWhere: irondrum/winch block on the beach (reviews/p178/traced.png, follow.png)\nSuggestion: Make it a real oak trestle or a split stump with bark, end grain and checks. Give the stones lodestone's dark metallic sheen with rough rust (a Hikari metal mixed with a rough dielectric), the windings polished copper conductor, and the iron drum brushed iron with a coat. A generated asset for the stump is fine.\nDone when: A traced close-up still shows bark or plank wood under the motor, the stones with a visible specular highlight, and copper that reads as metal; no cylinder with a uniform side remains\nEvidence: reviews/p178/traced.png; site/img/oak-gear-wheel.png",
       "est_minutes": 15.0,
       "id": 743,
       "kind": "review",
@@ -10399,8 +10399,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "Iron drum motor is black boxes on a sand-textured brown cylinder",
-      "updated": "2026-11-28T17:24:06.072"
+      "title": "Winch block, stones and drum still a sand-textured cylinder and black boxes",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10488,17 +10488,17 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0160 [lighting, medium]: The drawn wire glows orange, but the ground and posts under it stay unlit. The film is a near-black box on flat green.\nWhere: plugins/wirebench.jl, world/site/films/drawn-wire-burns-out.mp4\nSuggestion: Make the wire an emissive area light whose radiance follows its temperature (blackbody). Film it at dusk so its glow is the key light on the posts and the sand.\nDone when: A traced still at dusk where the ground and posts within 20 cm of the wire are visibly lit orange by it.\nEvidence: reviews/motion/perfectionist-0160/drawn-wire-burns-out-overview.jpg",
+      "detail": "perfectionist-0178 [lighting, high]: Traced at 12:38, the clay oil lamp on the block is a white dot on an orange disc, with no warm pool on the copper, the cogs or the block. The whole island at noon has one sun overhead and short, hard shadows.\nWhere: irondrum lamp; daylight\nSuggestion: Make the flame a small emissive point or sphere light with a real inverse-square falloff, bright enough to throw warm light on the windings at dusk. For day, give noon some character: softer sky fill, a haze toward the sea, and cloud shadows drifting across the meadow.\nDone when: A traced still at dusk shows a visible warm falloff from the lamp onto the copper windings, and a noon eye-level shot shows at least one cloud shadow or haze gradient\nEvidence: reviews/p178/traced.png, media/progress/session-0178/eye-level.png",
       "est_minutes": 30.0,
       "id": 750,
       "kind": "review",
-      "priority": 2,
+      "priority": 1,
       "result": "",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Hot wire and glowing things light nothing: make heat real light",
-      "updated": "2026-11-28T02:40:47.220"
+      "title": "The lamp and glowing things light nothing: midday is flat",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T00:43:20.946",
@@ -10614,7 +10614,7 @@
     },
     {
       "created": "2026-11-28T02:40:47.220",
-      "detail": "perfectionist-0175 [creatures, high]: In the creatures sheet a crab's claw is pressed into the blue creature's head, two pigs share one space, and the crab's party hat sinks into its shell.\nWhere: separation.jl / makeover hats\nSuggestion: Separate by each body's real hull, not its centre radius, and seat hats on the shell's top vertex.\nDone when: live_motion creatures.png shows no two creatures' meshes intersecting over three sheets\nEvidence: world/reviews/p175/motion/creatures.png",
+      "detail": "perfectionist-0178 [creatures, high]: The creatures sheet shows the bow-tied sheep's body inside the top-hat pig's head in two separate moments, and a white pier pole running straight through the party-hat crab. Two other creatures are shot from inside tree crowns.\nWhere: Separation system and pier props; reviews/motion/creatures.png rows 4-5\nSuggestion: Use body-volume separation with each species' real radius (not a point). Keep creatures off prop colliders such as poles and posts. For close-ups, move the camera out of tree crowns.\nDone when: Three creatures sheets taken a minute apart show no creature intersecting another creature or a prop\nEvidence: /sim/Programmieren/SimGame/world/reviews/motion/creatures.png",
       "est_minutes": 30.0,
       "id": 759,
       "kind": "review",
@@ -10623,8 +10623,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Creatures overlap: a crab claw in a head, two pigs inside each other",
-      "updated": "2026-11-28T15:16:32.381"
+      "title": "Creatures overlap: sheep inside a pig, a pier pole through the crab",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T03:02:55.288",
@@ -10913,12 +10913,12 @@
       "id": 780,
       "kind": "review",
       "priority": 1,
-      "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.\ns177: the motor now drives the cart ITSELF instead (todo #791, cartcord.jl): 6:1 cannot move the cart at all (1.9 N < 2.1 N rolling), a 3% rise stalls it; the winch hauling the cart up the planks stays open.",
+      "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.\ns177: the motor now drives the cart ITSELF instead (todo #791, cartcord.jl): 6:1 cannot move the cart at all (1.9 N < 2.1 N rolling), a 3% rise stalls it; the winch hauling the cart up the planks stays open.\nperfectionist-0178: The drum hauls a log by rope in the game through a 6:1 gear (winch-first-haul.mp4 shows it).",
       "source": "review",
       "spent_minutes": 35.0,
-      "status": "doing",
+      "status": "done",
       "title": "The drum motor must pull something in the game: rope, winch, cart up the planks",
-      "updated": "2026-11-28T16:37:01.605"
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T12:16:13.248",
@@ -11006,7 +11006,7 @@
     },
     {
       "created": "2026-11-28T13:55:51.807",
-      "detail": "perfectionist-0175 [camera, medium]: drum-sparks.mp4 opens on black and descends top-down. The lamp disc is the brightest and biggest object. The drum is half cropped, and its rotation is invisible at 24 fps.\nWhere: movies for drum-sparks\nSuggestion: Eye at commutator height, a marked stripe on the drum, a slow-motion segment and a cut to the brushes. Lamp off-frame as a key light, not in the frame.\nDone when: A motion sheet of the drum film shows a marking on the drum at clearly different angles across 8 consecutive frames, and the lamp covers under 2% of every frame\nEvidence: world/reviews/motion/perfectionist-0175/drum-sparks-overview.jpg, drum-sparks-steps.jpg",
+      "detail": "perfectionist-0178 [camera, medium]: winch-first-haul has the camera at grass height, with two thirds of the frame flat green and the motor far away. In drum-sparks the lamp blob fills the bottom of the frame and the drum's turn never reads.\nWhere: movies for the winch and drum\nSuggestion: Frame the mechanism at 1/3 to 1/2 of the frame height, side-on where the pinion meets the wheel, with the rope coil fattening in focus. Rack focus to the log arriving. Trace it at golden hour.\nDone when: In a machine film's overview sheet, the gear or motor fills at least a third of the frame in 8 of 12 frames, with the turning visible between frames\nEvidence: reviews/motion/perfectionist-0178/winch-first-haul-overview.jpg, drum-sparks-overview.jpg",
       "est_minutes": 15.0,
       "id": 787,
       "kind": "review",
@@ -11015,8 +11015,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Drum films: the lamp eats the frame and the drum's turn never reads",
-      "updated": "2026-11-28T15:16:32.381"
+      "title": "Machine films: shot from the grass with the motor a speck",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T13:55:52.049",
@@ -11057,22 +11057,22 @@
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Winch: the rope piles up on the spindle (pull falls as it fills), then a gear and a pulley block for the cart",
-      "updated": "2026-11-28T15:45:49.909"
+      "title": "Winch: a pulley block so the drum can haul the cart up the planks",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T16:24:12.118",
-      "detail": "Passed s177 round 2. Motor on the cart, belt to the rear axle, twin copper cord to the pots; the cord runs out and yanks its clip off the pot. Done when: in the human's game the cart drives >= 2 m along the planks on its own motor, the cord drawn from its tether, the clip pulls off (event :cord_yanked fires), and a path traced film shows it.",
+      "detail": "perfectionist-0178 [wow, high]: The cart that drives itself on a cord is the most interesting machine on the island, but its only film cannot be opened (ffmpeg: 'moov atom not found', 262 KB, written 17:22). It sits in site/films/, where the blog serves it.\nWhere: world/site/films/cart-on-a-cord.mp4\nSuggestion: Write films to a temporary name and move them into site/films only once they are complete. Then make the cart film a real film: a low tracking shot beside the cart as it rolls off, a cut to the cord going taut and the clip flying off the pot, then Lumi walking over to push it back. Trace it.\nDone when: ffprobe reads the file, the motion sheet shows the cart moving more than 2 m and the clip leaving the pot in frame, and no unreadable .mp4 sits in site/films\nEvidence: ffprobe site/films/cart-on-a-cord.mp4 -> Invalid data found when processing input",
       "est_minutes": 120.0,
       "id": 791,
-      "kind": "feature",
+      "kind": "review",
       "priority": 1,
       "result": "s177: physics/cartcord.jl checked out of the game: 6:1 and 12:1 stall (1.9 N < 2.1 N rolling), 15:1 (8/120 mm) drives 15.9 cm/s, 3 m cord taut, clip off at 20.4 s, stops at 3.1 m. Not in the game yet.\ns177 IN THE GAME (plugins/cartcord.jl, published 16:32): cart (oak frame, deck, 4 spoked wheels, drum motor between two stones, 6-peg pinion -> 36-cog oak wheel, 15 mm pulley, leather belt -> 40 mm axle pulley) on a LEVEL plank road on sleepers west of the pots; copper cord drawn from the tether. Human's game: :cart_switched_on 16:33:03, :cart_drove (1 m, 13.6 cm/s) 16:33:14, :cord_yanked (2.70 m) 16:33:26. Sandbox: 14.2 cm/s, clip off at 22.3 s, 3.08 m; system 0.17 ms median. Shots: media/s177-cart-2.png, s177-cart-end.png, s177-cart-filmcam2.png. Film queued: job 20261128-163624-816-clip -> site/films/cart-on-a-cord.mp4 (pending post). Not done: the film not seen yet; the cart pops back to the start for the next run; the clip is not seen flying off (out of frame).\ns177 16:44: P in Jump in by the cart picks the axle pulley (60/80/120 mm diameter = 12/16/24:1 after the cogs), event :cart_pulley; sandbox: 12:1 drives 10.6 cm/s with the motor bogged at 2.15 rev/s vs 14.2 cm/s at 16:1. Published.\ns177 16:43: keys moved to M (drive) and Q (pulley): B and P were bubbles and paint in Jump in; the Jump in hint (play.jl) names the cart. Published. Still open: watch the film cart-on-a-cord.mp4, the clip springing off in frame.\ns177: in the game (cart_drove fired in the human's game). s178: dune grass cleared off the road and the film camera (beach.jl CLEARED, published 16:54, media/s178-cartcam-end-traced.png); cord copper double count fixed (clip off 21.0 s, 3.09 m, published 17:09). Film cart-on-a-cord rendering (job 163624-816, started 17:04), post held in media/s178-held-pending-cart-on-a-cord.json until watched. Open until the film is watched and posted.",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "The cart drives itself on a long cord (projects/cartcord.md)",
-      "updated": "2026-11-28T17:11:00.795"
+      "title": "cart-on-a-cord.mp4 is a broken file: the cart has never been seen moving",
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T16:29:09.412",
@@ -11095,12 +11095,12 @@
       "id": 793,
       "kind": "motion",
       "priority": 2,
-      "result": "s177 half: PUSH BACK DONE and published 16:40: after the yank Lumi walks to the cart's front (goal :cart, in NG.BUSY_GOALS), pushes it back along the planks through the same physics (F_ext held to a walking pace, ~16 cm/s, -5.5 N), clips the cord on and coils it by the pot; event :cart_pushed_back fired in the sandbox (16:39). Sandbox runs: 3.08 m out, back to 0.26 m, clip on, ready. NOT YET: the clip springing off the copper strip in a film frame; Lumi's pose is her walk, not a push.",
+      "result": "s177 half: PUSH BACK DONE and published 16:40: after the yank Lumi walks to the cart's front (goal :cart, in NG.BUSY_GOALS), pushes it back along the planks through the same physics (F_ext held to a walking pace, ~16 cm/s, -5.5 N), clips the cord on and coils it by the pot; event :cart_pushed_back fired in the sandbox (16:39). Sandbox runs: 3.08 m out, back to 0.26 m, clip on, ready. NOT YET: the clip springing off the copper strip in a film frame; Lumi's pose is her walk, not a push.\nperfectionist-0178: s177: Lumi pushes the cart back by the same physics, with no pop; the clip in frame is covered by the cart film finding (#791).",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "done",
       "title": "The cart on a cord: walk it back instead of the pop, the clip flying off in frame",
-      "updated": "2026-11-28T16:40:59.627"
+      "updated": "2026-11-28T17:39:23.559"
     },
     {
       "created": "2026-11-28T17:11:00.750",
@@ -11129,6 +11129,62 @@
       "status": "open",
       "title": "Lumi's crest/wings jump 0.3 m in one frame once, 0.1-0.2 s into every motion measure",
       "updated": "2026-11-28T17:14:37.489"
+    },
+    {
+      "created": "2026-11-28T17:39:23.559",
+      "detail": "perfectionist-0178 [fun, medium]: The mini game menu offers Firefly catch at any hour. At 12:45 not one firefly was visible in any of six screenshots over 60 s, even when the HUD said 'nearest 5 m to your right'. I caught 1 of 8 by luck.\nWhere: plugins firefly_catch; reviews/p178/firefly-*.png\nSuggestion: Make it a game that belongs to the time of day: offered only from dusk on, and in daylight swapped for a day game. Better still, make the day game a physics toy, such as 'Haul' at the winch. Or let the light beams the start card promises show in daylight too.\nDone when: At noon, either Firefly catch is not in the menu, or a screenshot during play shows at least one firefly or its beam within 5 m clearly visible\nEvidence: reviews/p178/sheet-jump-fire.jpg (middle and bottom rows); play-log.txt: score 1 after 60 s",
+      "est_minutes": 30.0,
+      "id": 796,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Firefly catch at noon: no firefly can be seen, the game is a blind walk",
+      "updated": "2026-11-28T17:39:23.559"
+    },
+    {
+      "created": "2026-11-28T17:39:23.559",
+      "detail": "perfectionist-0178 [animation, medium]: live_motion flags Truffle as the one creature out of ten that jitters. Its body and tail flick back and forth faster than an animated character ever would.\nWhere: Truffle's gait or turn control\nSuggestion: Damp the heading (a critically damped spring on yaw) and drive the tail by the heading's rate, not its noise.\nDone when: live_motion reports 'Moving well: 10 of 10' twice in a row\nEvidence: /sim/Programmieren/SimGame/world/reviews/motion/motion.png, motion-strip.png",
+      "est_minutes": 30.0,
+      "id": 797,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Truffle vibrates: body turns back 9 times a second, tail 10",
+      "updated": "2026-11-28T17:39:23.559"
+    },
+    {
+      "created": "2026-11-28T18:01:47.544",
+      "detail": "s179: field solved in physics/motor2d.jl (Geo(field = true, NIf)): stones = ~550 A-turns/pole, iron knee ~1500. On six pots a series field peaks at 200 turns/pole with 6.7 mN m stall vs the stones' 67: holding 600 A-turns in 1.2 kg of copper costs 18 W, the pots give 1.8 W. Next: the 3D coil on the motor (iron pole pieces, yoke, copper wound layer by layer by Lumi's hands), stones vs wound field on the planks, then more copper / the accumulator as the source. done_when: a traced film where the wound motor drives the cart on the planks and the winding chosen changes how far/fast.",
+      "est_minutes": 15.0,
+      "id": 798,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Wind the field coil yourself: copper on iron pole pieces replaces the drum motor's stones (projects/fieldcoil.md)",
+      "updated": "2026-11-28T18:01:47.798"
+    },
+    {
+      "created": "2026-11-28T18:11:04.424",
+      "detail": "LoadError: cannot document the following expression:\n\n\"Cast iron as a smith leaves it (s179): blue-grey metal under a dark mill scale, mottled where it was filed, a fine\\nsand-cast pitting in the bump; rougher than the filed drum (ID_IRON), so the big flat yoke faces catch a soft sheen.\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/irondrum.jl:202\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [5] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [6] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [7] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [8] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:397\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/irondrum.jl:202",
+      "est_minutes": 15.0,
+      "id": 799,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T18:18:37.937: plugin irondrum loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin irondrum does not load",
+      "updated": "2026-11-28T18:18:37.937"
     }
   ]
 }

@@ -16,8 +16,8 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] The bench motor runs on four clay pots, turning the potter's wheel
 - [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
   - [x] Round iron drum rotor: 2 coils, no cogging, its brushes SPARK (s172-173); field solved by Newton, L 8 mH (s175)
-  - [ ] The winch: the drum on a rope hauls the empty cart up the planks (#780; oak 6:1 gear, filling drum, friends run it)
-    - [ ] Set the brushes for the load: Lumi's hand on the rocker (projects/brushes.md, #785)
+  - [x] The winch: the drum on a rope hauls a log through 6:1 oak cogs (s176; shelved, its gear went to the cart)
+  - [ ] Wind the field coil yourself: copper on iron poles replaces the stones (projects/fieldcoil.md; s179: solved, 6 pots starve it)
 - [ ] The motor run backwards: a windmill generator that lights a wire
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
     - [x] Sail force from the solved flow, no lift curve: a plate swept through angle of attack stalls by itself (physics/sailflow.jl)
@@ -30,11 +30,11 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
-  - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (#773; s169 in game: sinks, Q a friend pushes, R digs; next: planks, film)
+  - [ ] Stuck in the sand: dig/plank/push it free (#773; s169 in game: sinks, Q push, R dig; next: planks, film)
     - [x] Stick force in sand + damp sand from the water table, checked (soiltool.jl, sandwater.jl, s171)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)
     - [x] The wind over a fence solved in 3D (WaterLily, on the GPU since s162): wake, corner jets, lee eddy; sand blown by it (s161)
 - [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
-  - [ ] The cart drives itself on a long cord (projects/cartcord.md; s177 IN THE GAME: 16:1 cogs+belt, level planks; next: push back, film)
+  - [ ] The cart drives itself on a long cord (projects/cartcord.md; in game s177, film s179; next: a cord you can see)
 - [ ] Gears for the dune, braking that charges the plates, friends ride along
-  - [ ] The cart takes the dune (projects/dune.md; s178: downhill the motor charges the pots by itself, 8% = -0.27 A; the real beach face slips the belt: road diagonal + tensioner next)
+  - [ ] The cart takes the dune (projects/dune.md; s178: downhill charges the pots, -0.27 A at 8%; belt slips on the face)

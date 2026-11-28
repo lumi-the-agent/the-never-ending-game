@@ -33,6 +33,16 @@ Base.@kwdef struct Geo
     mur::Float64 = 2000.0        # soft iron
     L::Float64 = 0.072           # axial length the torque is counted over (the stones' depth along x)
     coils::Int = 1               # coils on the rotor, spread evenly over a half turn (2 = Siemens' drum, 4 segments)
+    # s179 (project fieldcoil): a WOUND field instead of the stones. field = true: the stones' blocks are soft-iron
+    # pole pieces, a soft-iron yoke frame closes them (thickness `yoke`, outer half-width `yz` in z), and a field coil
+    # on each pole (copper `wc` thick beside the pole's flanks) carries NIf ampere-turns per pole, axis along +y.
+    field::Bool = false
+    NIf::Float64 = 0.0
+    wc::Float64 = 0.010
+    yoke::Float64 = 0.012
+    yz::Float64 = 0.075
+    arch::Bool = false           # s179: the yoke as an ARCH over the top (fits the bench): back bars behind the poles from
+    ztop::Float64 = 0.05         # z = -stone_w up to ztop, one top bar ztop..ztop + 2 yoke (all the flux, so twice as thick)
 end
 
 """
@@ -53,7 +63,23 @@ end
 "Material at a cell centre: (nu, which copper side 0/1.., M vector)."
 function material(g, x, θ, rotor)
     y, z = x
-    if abs(z) <= g.stone_w && g.pole <= abs(y) <= g.pole + g.stone_t
+    top = g.pole + g.stone_t
+    if g.field
+        if abs(z) <= g.stone_w && g.pole <= abs(y) <= top
+            return (NU0 / g.mur, 0, (0.0, 0.0))                 # soft-iron pole piece
+        end
+        if g.stone_w < abs(z) <= g.stone_w + g.wc && g.pole <= abs(y) <= top
+            return (NU0, z > 0 ? -1 : -2, (0.0, 0.0))           # the field coils' copper (-1: current +x, -2: -x)
+        end
+        if g.arch
+            if (top <= abs(y) <= top + g.yoke && -g.stone_w <= z <= g.ztop + 2g.yoke) ||
+               (g.ztop <= z <= g.ztop + 2g.yoke && abs(y) <= top + g.yoke)
+                return (NU0 / g.mur, 0, (0.0, 0.0))             # the arch: back bars and one top bar
+            end
+        elseif (top <= abs(y) <= top + g.yoke && abs(z) <= g.yz) || (g.yz - g.yoke <= abs(z) <= g.yz && abs(y) <= top + g.yoke)
+            return (NU0 / g.mur, 0, (0.0, 0.0))                 # the yoke frame closing the flux path
+        end
+    elseif abs(z) <= g.stone_w && g.pole <= abs(y) <= top
         return (NU0, 0, (g.Br / MU0, 0.0))                      # both stones magnetised along +y
     end
     for (k, (p, _)) in enumerate(sides(g, θ))
@@ -62,6 +88,9 @@ function material(g, x, θ, rotor)
     rotor === :drum && hypot(y, z) <= g.rd && return (NU0 / g.mur, 0, (0.0, 0.0))
     return (NU0, 0, (0.0, 0.0))
 end
+
+"The field coils' current density: each flank's copper carries both poles' NIf (2 NIf), +x on the z > 0 flank."
+fieldJ(g, side, nfc, h) = (side == -1 ? 1.0 : -1.0) * 2g.NIf / (nfc * h^2)
 
 "Soft iron's B(H) (T from A/m): mu0 H + Js tanh(mu0 (mu_r - 1) H / Js), Js = 1.7 T: linear at first, saturating."
 B_of_H(H, mur; Js = 1.7) = MU0 * H + Js * tanh(MU0 * (mur - 1) * H / Js)
@@ -116,13 +145,14 @@ function solve(g::Geo; θ = pi / 2, NI = 80.0, rotor = :drum, nu = nothing)
     h = 2g.W / g.n
     sd = sides(g, θ)
     ncu = [count(m -> m[2] == k, mats) for k in eachindex(sd)]
+    nfc = count(m -> m[2] == -1, mats)                  # field copper cells on each flank (both poles' coils)
     K = allocate_matrix(dh); f = zeros(ndofs(dh))
     asm = start_assemble(K, f)
     nb = getnbasefunctions(cv); ke = zeros(nb, nb); fe = zeros(nb)
     for cell in CellIterator(dh)
         reinit!(cv, cell)
         nu, side, M = mats[cellid(cell)]
-        J = side == 0 ? 0.0 : sd[side][2] * NI / (ncu[side] * h^2)
+        J = side == 0 ? 0.0 : side < 0 ? fieldJ(g, side, nfc, h) : sd[side][2] * NI / (ncu[side] * h^2)
         fill!(ke, 0); fill!(fe, 0)
         for q in 1:getnquadpoints(cv)
             dΩ = getdetJdV(cv, q)
@@ -172,6 +202,7 @@ function solve_newton(g::Geo; θ = pi / 2, NI = 80.0, rotor = :drum, tol = 1e-9,
     h = 2g.W / g.n
     sd = sides(g, θ)
     ncu = [count(m -> m[2] == k, mats) for k in eachindex(sd)]
+    nfc = count(m -> m[2] == -1, mats)
     isiron = [rotor === :drum && m[2] == 0 && m[1] < NU0 / 2 for m in mats]
     # the linear solve marked iron with nu0/mur; a cell is iron by its material, keep that mask fixed
     A = copy(s.A)
@@ -185,7 +216,7 @@ function solve_newton(g::Geo; θ = pi / 2, NI = 80.0, rotor = :drum, tol = 1e-9,
             c = cellid(cell)
             reinit!(cv, cell)
             _, side, M = mats[c]
-            J = side == 0 ? 0.0 : sd[side][2] * NI / (ncu[side] * h^2)
+            J = side == 0 ? 0.0 : side < 0 ? fieldJ(g, side, nfc, h) : sd[side][2] * NI / (ncu[side] * h^2)
             ae = A[celldofs(cell)]
             fill!(ke, 0); fill!(re, 0); fill!(fe, 0)
             for q in 1:nq
