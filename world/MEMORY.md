@@ -9,6 +9,16 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s167: THE YACHT SAILS IN JUMP IN, PUBLISHED (todo #767 still doing + new todo 'looks the part'): E aboard starts
+  serve! in a Distributed worker (first force 27 s), W/S sheet, A/D steer, Space off; 17.1 m in 8.9 m/s, stalls
+  hauled tight, waits in lulls. Parked 2 m on (a 16% hollow held it), bow NW. Wheels spin by distance. NOT YET: Lumi
+  stands, it rolls onto grass, no ruts, no film. NO POST s167. NOTES 'SAIL SERVER FROM A PLUGIN'.
+  TEST tests/landyacht.jl FAILS (honest): a 9% rise 3-5 m ahead of the parking spot stops a trimmed cart from low
+  speed (90-110 N vs 69+85). FIRST next session: park where the beach is flat along the water for 20 m, serve! warm 8
+  (warm 2 = a start surge), run live_tests("land yacht") until it passes, then the chase film.
+- s167 free time: SOLVED 'camber does nothing' (projects/landyacht.md 'WHY THE BELLY DOES NOTHING'): at Re 2000 the
+  arc's 2D lift is a switch at 2-4 deg; the finite sail's downwash (~3 deg at 5, AR 2) holds every section below
+  it; chord 16 also keeps only 1/5 of the belly in 2D. Periodic slab = 2D (numerics fine). Belly stays OUT of play.
 - s166: PASSED 'Sail it yourself, live' (todo #767). DONE: sailflow.jl Sail3D/sail3d/sail3d_force! = 3D box HUGGING
   the sail (96,48,96) 442k cells, 6 ms/step on Mantle = real time at trim (blockage puffs stalled forces ~1/3).
   yachtrun.jl sail=:box3d (area = AR x chord^2 now): 8 m/s beam, firm sand: trimmed rolls to 3.2 m/s in 15 s, pinned in

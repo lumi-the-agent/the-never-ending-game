@@ -1467,6 +1467,8 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   :926). A box on its own thread needs a LavaDevice VIEW whose default_bq is a channel from allocate_batch_queue!
   (an engine change in Mantle), OR the box in its own process (own Vulkan device on the same GPU) trading the sail
   angle and the force with the game: simplest robust path for the live yacht (s166 plan).
+- A TEST THAT OVERRIDES A GLOBAL (s167, Main.WIND[:now]) must put it back in `finally`: a failed check skipped the restore and three runs stacked their overrides (unwrap closures by their captured field). Also look at the terrain over the whole course before blaming the physics: a 9% rise stopped the yacht, not the flow.
+- SAIL SERVER FROM A PLUGIN (s167): Distributed cannot rebuild a closure or a module of a plugin (Plugin_<name>) on the worker: create RemoteChannels with remotecall_eval(Main, pid, quote using Distributed; (RemoteChannel(() -> Channel{Any}(64)), ...) end), start loops with remotecall(Core.eval, pid, Main, :(... $cmd ...; nothing)), and end every remote include with `; nothing` (a module coming back fails to deserialize).
 - SAIL SERVER (s166): physics/sailflow.jl `serve!(cmd, out)` in a Distributed worker (`addprocs(1; exeflags =
   "--project=/sim/Programmieren/SimGame")`, `remotecall_eval(Main, pid, :(include(...)))`, RemoteChannels created ON
   the worker, the loop called through `Base.invokelatest`): own Vulkan device, 5.5 ms/step, 4.8 chords/s, first force

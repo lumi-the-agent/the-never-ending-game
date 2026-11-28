@@ -1,0 +1,30 @@
+firefly: started Main.Plugin_firefly_catch.FireflyCatch
+firefly t=2.0 state=ready score=0
+firefly t=16.0 state=playing score=4
+firefly t=31.0 state=playing score=6
+firefly over at 37.0 s
+firefly final state=over score=8
+berry: started Main.Plugin_berry_race.BerryRace
+berry t=3.0 state=ready score=0
+berry t=16.0 state=playing score=7
+berry over at 27.0 s
+berry final state=over score=12 rivals=[1, 0, 1]
+hide: started Main.Plugin_hideseek.HideSeek
+hide t=2.0 state=ready score=0
+hide t=16.0 state=playing score=3
+hide over at 21.0 s
+hide final state=over score=4
+jumpin: started NeverendingGame.JumpIn
+jumpin pressed parade
+jumpin pressed paint
+jumpin pressed bubble
+jumpin pressed sneeze
+jumpin pressed fly
+jumpin pressed throwup
+jumpin pressed stomp
+jumpin pressed boomerang
+yacht key e: yacht pos Float32[0.88655734, -18.103628, 0.8351892] lumi Float32[0.5026169, -16.488613, 1.007387]
+yacht key f: yacht pos Float32[0.88655734, -18.103628, 0.8351892] lumi Float32[0.5026169, -16.488613, 1.007387]
+yacht key space: yacht pos Float32[0.88655734, -18.103628, 0.8351892] lumi Float32[0.5026169, -16.488613, 1.007387]
+yacht key q: yacht pos Float32[0.88655734, -18.103628, 0.8351892] lumi Float32[0.5026169, -16.488613, 1.007387]
+yacht after pushing into it: Float32[0.88655734, -18.103628, 0.8351892]

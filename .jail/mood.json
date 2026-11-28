@@ -1,47 +1,26 @@
 {
-  "annoyance": 1.0,
+  "annoyance": 0.41,
   "annoyed": [
     {
       "post": "my-land-yacht",
       "session": 166,
       "title": "My land yacht",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The picture: the mast doesn't come out of the deck. Its foot sits at the back edge of the deck, beside the far rear wheel, and the pole leans backward and away from the planks. Nothing ties it down: no step, no stays, no ropes."
     },
     {
       "post": "a-campfire-in-the-wind",
       "session": 164,
       "title": "A campfire in the wind",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The campfire, which is the subject, is small and hidden behind a cluster of tall upright brown planks and a grass tuft in the foreground in every frame (storyboard all 16 frames; at-25, at-50, at-75). You only see the flame through the gaps between the boards."
-    },
-    {
-      "post": "my-first-motor",
-      "session": 163,
-      "title": "My first motor",
-      "weight": 0.216,
-      "what": "Caption says 'two stones', but the two big parts on the axle are flat black discs that look like rubber wheels, not stone (all frames, at-25, at-50)."
-    },
-    {
-      "post": "where-i-rushed-it",
-      "session": 163,
-      "title": "Where I rushed it",
-      "weight": 0.216,
-      "what": "Plain shapes on bare ground: a dark brown box with two orange sticks on flat green, with nothing of the island around it (frames 1-5)."
-    },
-    {
-      "post": "chipping-a-stone-to-change-its-note",
-      "session": 163,
-      "title": "Chipping a stone to change its note",
-      "weight": 0.216,
-      "what": "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T07:31:05",
+  "ended": "2026-11-28T08:28:52",
   "fatigue": {
-    "asset": 0.05,
-    "feature": 0.41,
+    "asset": 0.03,
+    "feature": 0.25,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -347,7 +326,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.04,
+  "joy": 0.06,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -805,8 +784,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.42,
-  "perceived_until": "2026-11-28T06:47:36",
+  "loneliness": 0.5,
+  "perceived_until": "2026-11-28T07:44:51",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -820,54 +799,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.9666666666666668,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/magnet-stone-beach.mp4",
-        "site/films/three-paper-darts.mp4"
-      ],
-      "new_plugins": [
-        "compassbowl.jl",
-        "magnetstone.jl"
-      ],
-      "points": 1.6,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 3,
-        "nearest": "Three logs in the sea",
-        "post": "Three paper darts",
-        "score": 8,
-        "shared": "three shape variants compared over the open sea, each ends differently",
-        "similarity": 7
-      },
-      "session": 147,
-      "touched": [],
-      "values": {
-        "feature": 3.4,
-        "film": 6.0,
-        "post": 4.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1571,6 +1502,34 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 1.0,
+      "session": 167,
+      "touched": [
+        "landyacht.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1906,7 +1865,7 @@
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "landyacht.jl": 1.7958443338491366e9,
+      "landyacht.jl": 1.795846835660449e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1954,7 +1913,7 @@
     "self": "1523826980317287528",
     "wishes": 20
   },
-  "started": "2026-11-28T06:53:02",
+  "started": "2026-11-28T07:50:17",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2114,7 +2073,9 @@
       "MissingPatterns.missingpairstats",
       "LatinHypercubeSampling.scaleLHC",
       "MeshSteward.renumbered",
-      "BinningAnalysis.jackknife_full"
+      "BinningAnalysis.jackknife_full",
+      "TrixiParticles.RectangularShape",
+      "CellularSheaves.lower_tracking_program"
     ],
     "games": [
       "Super Mario 64",
@@ -2239,7 +2200,10 @@
       "Street Fighter III: 3rd Strike",
       "Adventure (Atari 2600)",
       "Metroid Prime",
-      "Mass Effect (video game)"
+      "Mass Effect (video game)",
+      "Super Smash Bros.",
+      "The Secret of Monkey Island",
+      "Super Castlevania IV"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2654,7 +2618,10 @@
       "Molecules",
       "CVortex",
       "PowerLawNoise",
-      "SupplyChainSimulation"
+      "SupplyChainSimulation",
+      "TensorNetworkQuantumSimulator",
+      "Surrogates",
+      "ColorSchemeTools"
     ],
     "vision": [
       "RIFERunner",
@@ -2668,7 +2635,9 @@
       "MatAnyoneRunner",
       "SAM2Runner",
       "FluxKleinRunner",
-      "DemucsRunner"
+      "DemucsRunner",
+      "BonsaiRunner",
+      "PPOCRRunner"
     ]
   },
   "surprise_seen": 165

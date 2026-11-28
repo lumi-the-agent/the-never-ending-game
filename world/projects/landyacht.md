@@ -1,6 +1,7 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: (s166, todo #767) the hugging 3D box (sailflow.jl Sail3D, ~real time on Mantle) drives yachtrun.jl's cart and runs as a SAIL SERVER in its own process (serve!, tested): put it IN THE GAME: the yacht plugin starts the server (Distributed addprocs) when sailing starts, sends the angle each frame, drains the newest CL/CD (the cart reads it), the yacht plugin's cart rolls along the waterline in an 8 m/s breeze, keys for sheet and tiller in a 'Sail the beach' mini game; then fix the look (boom seen, sewn patch, flat sand) and a traced chase film. Watch the blockage (box 48 cells high puffs up stalled forces by ~1/3): try 64.
+Next: (s167: IT SAILS IN JUMP IN, published; todo #767) FIRST fix the course: a 9% rise 3-5 m ahead of the parking spot stops a trimmed cart from low speed, so tests/landyacht.jl fails; park where the beach runs flat along the water for 20 m, warm the box 8 chords, make the test pass. Then the look (Lumi seated with the sheet, ruts in the sandfield, stays on sand), a traced chase film and a post; then friends aboard.
+- s167 IN THE GAME: plugins/landyacht.jl ly_sail!: the server (serve!) starts on boarding in a Distributed worker; channels and the serve call must be made ON the worker (closures of the plugin module Plugin_landyacht cannot be deserialized there; include must return nothing). Parked 2 m on from the old spot (a hollow with a 16% grade held it), bow NW (old bow pointed into the sea 5 m off). Grade over the wheelbase. Run: 8.9 m/s, stalled 61 N stays, alpha 29 drives 133-144 N, 17.1 m, alpha 29->19 as it sped up.
 
 ## The critic's risks (s162)
 - A frozen lookup for the sail, or a dynamo that is only a drag number with a charge bar: then it is a rig.
@@ -200,6 +201,20 @@ s164 LAST: the sail got a canvas texture (plugins/landyacht.jl ly_canvas: 5 cros
   fine (sheet = angle, the stall is right), but BELLY (sheet tension, the outhaul) is NOT a knob the box can answer
   yet, and the forces are ~half a real sail's at good trim. Don't scale it up (a fudge); test chord 48 with a 1.5-cell
   plate before promising belly as play. Also odd and open: 5% camber lifts LESS than flat (less drag too).
+- WHY THE BELLY DOES NOTHING (s167 free time, Re 2000, plate 2 cells, 12+12 chords; ~5 min of runs in all):
+  (1) GRID: 2D alpha 5, gain of a 10% arc over flat: chord 16 +0.10 | 24 +0.31 | 32 +0.38 | 64 +0.45 (flat .24/.27/.37/.38).
+      The hugging box (chord 16) keeps a fifth of the belly even in 2D. 2D at 10/15 deg: gain +0.35..+0.50.
+  (2) NOT 3D NUMERICS: a span-periodic slab (chord 24, span 16, GPU) = 2D to 3 digits (flat .267, arc .573).
+  (3) THE TIPS' DOWNWASH + A LOW-Re SWITCH: finite AR 2, chord 32, alpha 5: CL flat .158, arc .147; section cl is
+      flat along the span (mid .17 / .16, tip .09 / .08), so the whole span is down, not only the tips. 2D chord 32
+      curve 0..4 deg: flat -.01 .12 .18 .23 .29 (5: .37); arc -.11 -.01 .09 .31 .58 (5: .75). At Re 2000 the arc's
+      lift is a SWITCH between 2 and 4 deg (below it the arc lifts LESS than flat: convex side separated). ONE downwash
+      of ~3 deg puts both mid sections on their 2D curves (flat .17 at ~2, arc .16 at ~2.3): the sail sits below
+      the switch, and switching on would raise the downwash and push it back off. Downwash ~17 deg per unit cl, ~2x
+      lifting-line's 9 for AR 2. (At 15 deg the 2D curve is shedding lift and is no section model; s165.)
+  SO: belly is a knob only at a Re where the convex side stays attached (real sails, 5e5), which needs a far finer
+  grid than real time allows. Keep belly OUT of play; sheet angle is the knob. A sail that 'luffs by itself' (s163)
+  is this same switch.
 - THE HUGGING BOX (s166, sailflow.jl `Sail3D`, `sail3d`, `sail3d_force!`; retrim inside the running flow like the 2D
   slices): chord 16, AR 4, box (96,48,96) = 442k cells, GPU (Mantle): 6.0 ms/step, 5.3 chords/s at 15 deg, 3.4 at 50
   (smaller steps in the stalled wake). A 1.2 m sail in 6 m/s needs 5 chords/s: REAL TIME at good trim, 0.7x stalled,
