@@ -1,6 +1,6 @@
 # Casting lead in the beach sand
 Goal: press anything into damp sand (a foot, a plank end, a wheel, a stone), melt lead from the scrap heap over the fire, pour it in and dig out a metal copy of exactly the hole you made: the accumulator's lead plates, a weight, a medal for a friend. A sloppy mould or a slow pour gives a sloppy casting (it freezes on the way), so pouring is a skill.
-Next: (s170 in the game, published: Jump in on the beach, H stamps Lumi's foot, H pours, it freezes ~4 min, H lifts a 942 g lead foot laid toes-up beside the hole; the patch sits on the yacht's sand at its height and colour) the LOOK for a post: path trace the lifted foot again (it was a dark lump before the toes-up fix: check the conductor's brightness), a ladle in Lumi's beak instead of a bare silver stream, Lumi's stamp/pour/lift poses, the liquid's mirror shine filmed at dusk; then a plate mould (a plank end pressed twice) for the accumulator, and the casting as a real body (PrintSim affine body, mass from its cells).
+Next: (s171: lead look fixed + published, real cove sand at (6..7.5,-16), stamp only on sand, a cast camera, Lumi steps back off the print) press the print INTO the beach's own terrain mesh (no patch square: two s171 previews showed it), then the close dusk still; the cast camera must see past driftwood and grass (#779), then trace the cast in the south cove at dusk (the sky in the liquid footprint) and post; then a plate mould.
 
 ## Physics (physics/casting.jl, check physics/casting_check.jl passes)
 - Virtual-pipe flow on the mould's height field (cross-section = upwind depth: shallow-water speed), lead's surface
@@ -38,3 +38,41 @@ Next: (s170 in the game, published: Jump in on the beach, H stamps Lumi's foot, 
   is only feet. The lead in the print DOES mirror the sky blue (good). Next take: find the spot by sampling
   NG.terrain colour / beach band in the quiet game first (look at a raster preview, rasterize = true, before the
   trace), draw the patch in the beach's own sand colour, camera 0.4 m from the print.
+- s171 FREE TIME, the look: tools/leadlook.jl traces 5 lead materials side by side on sand at 11:00
+  (media/s171-leadlook.png, -crop.png). Flat slab luminance: metallic 1 rough .5 (s170's) = 0.21, rough .8 = 0.30,
+  metallic .5 rough .7 = 0.39, metallic .25 = 0.46, grey card .5 = 0.49. A fully metallic FLAT face mirrors the sky
+  dome, darker than sunlit sand, at any roughness: that was the 'dark lump'. LEAD_SOL is now metallic .5, base .52,
+  rough .7 (grain-rough sand-cast surface with an oxide skin): dull grey with a sheen. Not yet re-traced in the patch.
+- s171 FREE TIME, the spot: real cove sand (beach_weight 1.0, 1.6-3 m from the water, 4+ m from any prop, slope ~11%,
+  the patch follows the terrain) at (6.0..7.5, -16.0..-15.5), the SOUTH cove. Film the cast THERE, not by the yacht.
+  The stamp's sand test was 'bw > 0.3 || dc < 9' (lawn up to 9 m inland passed): now bw > 0.5, or the yacht's sand
+  square, or ground below 0.36 m (where meadow.jl draws the engine's beach). Sandbox only, publish with the next change.
+- s171 PLAYED in the sandbox: Jump in, Lumi put at (6.6,-15.6), H stamped (patch o = (5.36,-14.36), accepted as sand), H
+  poured. The FOLLOW CAMERA framed the swing frame and the motor bench (media/s171-play-pour.png): the casting was not in
+  view at all. The cast needs its own CAMERA_GROUPS view (low across the print) while stage != :none.
+- s171 CAMERA: ct_view (CAMERA_GROUPS 'casting') picks among 12 eyes round the print at 2.2 m, 1.4 m up, by
+  NG.obstruction + drawn plots' bounding boxes on the line (ct_boxes_in_view) + Lumi's body (species height: TOO
+  SMALL, the drawn Lumi is far bigger). media/s171-castcam-pour{,2..6}.png: from the swing/bench to the cast; still
+  Lumi's feathers over the print.
+- s171 WHY THE PRINT HIDES: Lumi is drawn 1.8 m tall, its herd plots' box from above 1.05 x 1.32 m (x 6.26-7.31,
+  y -16.83..-15.50 standing at (6.8,-16.2)); the print 0.35 m ahead of its feet (6.69,-15.87) is INSIDE that box, under
+  its belly and beak. No eye sees it while Lumi stands there. species.height (1.7) is fine; the overhang is the issue.
+- s171 BACK-STEP DONE (ct_backstep!): after the stamp Lumi walks backwards off its print, facing it, gait phase run in
+  reverse, keys held (NG.HELD), to 1.0 m in ~0.6 s. With it the cast camera shows ALL of Lumi with the sea behind
+  (media/s171-castcam-pour7.png), but the print is behind driftwood and beach-grass tufts in front of the eye: those
+  are scattered props no camera check knows (todo #779). Next: the view check per instance (grass, driftwood), then
+  the traced dusk take. TEST NOTE: H does nothing while a pour is still running (stage :pouring): clear before a test.
+- s171 POST TRY (movies/post_stills.jl 'castfoot' moved to the south cove (6.8,-16.2), raster preview
+media/s171-castfoot-raster.png at 16:30): NOT POSTED. The patch reads as a RAISED SLAB with an edge and its own shadow
+(drawn 3 cm up, edge -1 cm: blend it INTO the terrain, lift 0 + depth only); the lead footprint is a small grey spot
+in the middle (camera 1.2 m back: go 0.6 m, lower); a beach-grass leaf in front of the lens; Lumi's head cut off.
+Main.CAST clashed with post_stills.jl's CAST of characters: the plugin's state is Main.CASTING now (published).
+- s171 SECOND PREVIEW (media/s171-castfoot-raster2.png, patch lift 1.2 cm, edge -2.5 cm, the meadow's SAND colour,
+  camera 0.6 m back): STILL a raised square with a bevel, a shade lighter than the beach; the lead a small sky-blue
+  blob. A patch laid over the coarse terrain mesh will always show its square. REAL FIX: press the print INTO the
+  terrain plot itself (lower its vertices like areas.jl dig_pond!, or a fine terrain tile there with the beach's own
+  vertex colours), so there is no patch edge at all. Then the close dusk still. Still NO POST.
+- s171 TERRAIN MESH: 48400 vertices, 0.48 m spacing at the cove (32 vertices within 1.5 m of the print): a 25 cm
+  footprint cannot be pressed into it. The fix: cut the terrain triangles in the cells around the print and draw a FINE
+  tile there whose border vertices lie exactly on the coarse triangles (sample the coarse mesh's own planes, not
+  terrain_height, so no seam), coloured by meadow.jl's meadow_color per vertex; the print and the lead live in that tile.

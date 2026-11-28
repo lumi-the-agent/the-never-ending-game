@@ -10824,17 +10824,17 @@
     },
     {
       "created": "2026-11-28T10:30:18.119",
-      "detail": "UndefVarError: `CAST` not defined in `Main.Plugin_casting`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] ct_clear!()\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:23\n  [2] start!(::Main.Plugin_casting.CastingSys, game::Game)\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:139\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
+      "detail": "MethodError: Cannot `convert` an object of type Symbol to an object of type String\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  String(::Symbol)\n   @ Base strings/string.jl:118\n  convert(::Type{String}, !Matched::LLVM.MDString)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:195\n  convert(::Type{String}, !Matched::String)\n   @ Base essentials.jl:461\n  ...\n\nStacktrace:\n  [1] setindex!(h::Dict{String, Tuple{String, Vararg{String}}}, v0::Symbol, key0::Symbol)\n    @ Base ./dict.jl:346\n  [2] ct_clear!()\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:33\n  [3] start!(::Main.Plugin_casting.CastingSys, game::Game)\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:243\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main /sim/Programmieren/SimGame/world/movies/post_stills.jl:666\n  [8] post_still\n    @ /sim/Programmieren/SimGame/world/movies/post_stills.jl:657 [inlined]\n  [9] macro expansion\n    @ ./timing.jl:697 [inlined]\n [10] top-level scope\n    @ ./bt_julia_eval:2\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [13] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [14] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [15] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
       "est_minutes": 15.0,
       "id": 774,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-28T10:30:32.518: plugin casting loaded cleanly.\nHappened again at 2026-11-28T10:30:32.557.\nClosed at 2026-11-28T10:31:30.155: plugin casting loaded cleanly.",
+      "result": "Closed at 2026-11-28T10:30:32.518: plugin casting loaded cleanly.\nHappened again at 2026-11-28T10:30:32.557.\nClosed at 2026-11-28T10:31:30.155: plugin casting loaded cleanly.\nHappened again at 2026-11-28T11:30:16.722.\nClosed at 2026-11-28T11:31:35.723: plugin casting loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:casting.CastingSys failed in start! and was switched off",
-      "updated": "2026-11-28T10:31:30.155"
+      "updated": "2026-11-28T11:31:35.723"
     },
     {
       "created": "2026-11-28T10:40:51.576",
@@ -10843,12 +10843,12 @@
       "id": 775,
       "kind": "feature",
       "priority": 1,
-      "result": "s170 published twice: plugins/casting.jl + physics/casting.jl (check passes), uitest tests/casting.jl passes (stamp, pour all 94.7 cm3, lead conserved, >30% frozen in 90 s). Patch now sits on the yacht's sand at its height and colour; the lifted foot reads as silver toes (media/s170-cast-lifted2.png raster; traced media/s170-cast-traced.png before the fix: dark lump). Still to do for done_when: traced dusk film, ladle, sides on the piece.",
+      "result": "s170 published twice: plugins/casting.jl + physics/casting.jl (check passes), uitest tests/casting.jl passes (stamp, pour all 94.7 cm3, lead conserved, >30% frozen in 90 s). Patch now sits on the yacht's sand at its height and colour; the lifted foot reads as silver toes (media/s170-cast-lifted2.png raster; traced media/s170-cast-traced.png before the fix: dark lump). Still to do for done_when: traced dusk film, ladle, sides on the piece.\ns171: lead look fixed in the sandbox (LEAD_SOL metallic .5 rough .7; tools/leadlook.jl slab luminance 0.21 -> 0.39, grey card 0.49; media/s171-leadlook-crop.png); real cove sand at (6..7.5,-16); stamp test no longer passes lawn (bw > 0.5 or yacht square or z < 0.36). Played: stamp+pour work in the cove, but the Jump in follow camera framed the swing and the motor bench, not the cast (media/s171-play-pour.png): needs its own camera. Not published, no post yet.\ns171 camera: plugins/casting.jl ct_view (CAMERA_GROUPS 'casting', Jump in's plugin view while a cast is under way): 12 eyes round the print at 2.2 m, scored by NG.obstruction + every drawn plot's bounding box on the line (ct_boxes_in_view, catches plugin scenery like the board on a post) + Lumi's body. Better than the chase view (media/s171-castcam-pour6.png: at the cast, sea behind) but NOT done: Lumi's drawn body is far bigger than species.height and still hides the print. Next: Lumi's real drawn size (herd scale / mesh bbox) in the body test, or stand Lumi back 0.6 m to pour.\ns171 found: the print (0.35 m ahead of Lumi's feet) lies UNDER Lumi's drawn body (herd box 1.05 x 1.32 m from above, 1.8 m tall): no camera can see it while Lumi stands; Lumi must step back after the stamp (a gait step). Camera code in the sandbox, not yet published by me.\ns171 back-step: Lumi walks backwards off the print (gait reversed, keys held) to 1.0 m; the cast camera now frames all of Lumi with the sea (media/s171-castcam-pour7.png) but driftwood + beach grass hide the print (todo #779). Sandbox; frame 9.4 ms median.\ns171 post previews (media/s171-castfoot-raster.png, -raster2.png in the south cove): not post-ready, the sand patch shows as a square over the beach at any lift; next: press the print into the terrain mesh itself. movies/post_stills.jl 'castfoot' now sets up the south cove.",
       "source": "agent",
-      "spent_minutes": 0.0,
+      "spent_minutes": 45.0,
       "status": "doing",
       "title": "Cast a lead foot: make it look the part, then a post (projects/casting.md)",
-      "updated": "2026-11-28T10:44:17.016"
+      "updated": "2026-11-28T11:36:35.295"
     },
     {
       "created": "2026-11-28T10:40:51.800",
@@ -10877,6 +10877,34 @@
       "status": "open",
       "title": "A frame failed: UndefVarError: `measured_fps` not defined in `NeverendingGame`\nSuggestion: check for spelling errors or missing imports.",
       "updated": "2026-11-28T10:51:19.370"
+    },
+    {
+      "created": "2026-11-28T11:19:19.091",
+      "detail": "Passed the idea critic s171 (surprise 8, fun 8, real 7). Done when: in Jump in, three friends aboard the cart at the top of a real dune, it runs down by gravity on 4 Bekker-Wong wheels with soil per cell (moisture from the water table, compaction from earlier runs), the player brakes with a stick (SoilTool blade) and calls a lean; a wrong lean on a side slope tips it (rigid body reactions, no threshold); traced 10 s short posted.",
+      "est_minutes": 600.0,
+      "id": 778,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s171: physics/soiltool.jl + sandwater.jl, check physics/soiltool_check.jl PASSES (wide blade = Rankine to 1e-9; 3 cm stick 50 N at 10 cm, 90 N at 15 cm dry; apparent cohesion 0 at the waterline, 0.8 kPa 20 cm up). Cove too gentle: loaded cart 0.29 resistance/weight > 0.23 slope -> needs a real dune. Not in the game yet.",
+      "source": "agent",
+      "spent_minutes": 20.0,
+      "status": "doing",
+      "title": "Sled the cart down the dune: stick brake, friends lean, it can tip (projects/sled.md)",
+      "updated": "2026-11-28T11:19:19.143"
+    },
+    {
+      "created": "2026-11-28T11:25:13.329",
+      "detail": "s171: obstruction() + lensclear's per-object blockers miss new plugin scenery (a board on a post near (5.5,-14.8) and beach-grass tufts filled the cast view: media/s171-castcam-pour3.png, -pour4.png). casting.jl ct_boxes_in_view tests plot bounding boxes (once per view choice); move that into the engine's obstruction for all cameras, with instanced plots tested per instance (grass, herds) and Lumi's drawn size. Done when: screenshots by the yacht, the hut, the pine grove and the cast show no occluder over 5% of the frame (perfectionist-0169 camera finding).",
+      "est_minutes": 90.0,
+      "id": 779,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Cameras see every plugin's scenery: test the view line against the drawn plots, not hand-made blockers",
+      "updated": "2026-11-28T11:25:13.329"
     }
   ]
 }

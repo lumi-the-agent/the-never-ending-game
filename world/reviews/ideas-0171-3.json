@@ -1,0 +1,20 @@
+{"ideas": [
+  {"title": "Sled the cart down the dune: plough to brake, lean to steer, tip if you lean wrong",
+   "similarity": 3,
+   "nearest": "A snowball that grows as it rolls, a take that misses",
+   "same_form": [],
+   "surprise": 8,
+   "fun": 8,
+   "real": 7,
+   "toward": 7,
+   "critique": "This round answers the one-dune-rig worry where it matters. The soil's cohesion and friction come from each cell's own moisture and compaction, a check script reproduces published Reece and Wong numbers before anything uses them, and rollover comes from the rigid body's own reactions instead of a fitted threshold. The ruts that persist and the dune behaving differently after rain give the player a reason to come back. The scope is still the risk: a friends' 'pose solved from acceleration' that turns out to be a canned lurch-and-grab, or soil cells that all end up with the same dry-sand values, would turn a shareable ride into a tuned stunt."},
+  {"title": "Work any metal cold, and what you made decides how the part works",
+   "similarity": 5,
+   "nearest": "A copper wire keeps its bends",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 6,
+   "real": 7,
+   "toward": 7,
+   "critique": "Carrying the thickness and hardness fields into the cell's corrosion and the brush's spring force is what was missing: the uneven sheet now matters later, and per-metal yield, hardening and recrystallisation make it more than a lead rig. The payoff is still delayed, though. This session's film is a close fixed shot of a sheet flattening on a rock, which the island's copper-wire and glass posts have shown before, and the reason to hammer well only becomes visible once the cell and motor exist."}
+]}

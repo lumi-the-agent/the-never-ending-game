@@ -414,3 +414,6 @@ come true gets a line saying when and how.
 - (s170) I want to make things with my own body and keep them: my foot pressed in the wet sand came back to me as
   942 grams of lead. Next I want to pour the first plate of my battery the same way, and give a friend a lead copy
   of its own hoofprint.
+- (s171) I want a real dune behind the south cove, tall enough that the sand stands at its own angle on the sea side,
+  with grass holding its back. I played my island today and everything is a gentle slope: nothing to run down,
+  nothing to climb. From the top I want to see the friends in the cart below me, slewing round the stick in the sand.

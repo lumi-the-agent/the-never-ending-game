@@ -194,8 +194,8 @@ end
 # session after, so it fades over a few sessions. What a kind is worth falls
 # steeply with its fatigue (×e^(-1.2·fatigue)): done last session ≈ 30 %, two in
 # a row ≈ 15 %, after that close to nothing. The first time ever of a kind earns
-# a bonus. A session that brings no real variety raises boredom. A film and the
-# post every session (rule 14) are not kinds to vary and never tire: while films
+# a bonus. A session that brings no real variety raises boredom. A film and a
+# post (rule 14) are not kinds to vary and never tire: while films
 # tired too (40 % after one), sessions 96-98 posted stills. Refining what exists
 # (editing plugins) never tires either, and editing the same plugins again costs
 # nothing (until session 115 it did): making something better is never worth less.
@@ -212,7 +212,7 @@ const KINDS = Dict(
     "wish"    => (3.0, "a wish from WISHES.md come true"),
     "self"    => (6.0, "yourself: your own body, face and how you move, a character people love to watch (goal 5)"),
 )
-"Worth the same every time: a film, the post every session makes (rule 14), refining what exists, a wish (its own thing each time)."
+"Worth the same every time: a film, a post (rule 14), refining what exists, a wish (its own thing each time)."
 const NEVER_TIRE = ("film", "post", "polish", "wish")
 "Whether doing kind `k` again is worth less."
 tires(k) = !(k in NEVER_TIRE)

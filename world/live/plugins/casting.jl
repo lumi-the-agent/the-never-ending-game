@@ -4,8 +4,8 @@
 # (physics/casting.jl: virtual-pipe flow, lead's surface tension front, contact conduction, latent heat); the bright
 # liquid dulls to grey where it has frozen. H once it has all frozen lifts the casting out and lays it beside the hole
 # upside down: a lead copy of exactly the print, as far as the lead got before it froze.
-isdefined(Main, :CAST) || Core.eval(Main, :(const CAST = Dict{Symbol,Any}()))
-const CAST = Main.CAST
+isdefined(Main, :CASTING) || Core.eval(Main, :(const CASTING = Dict{Symbol,Any}()))   # not CAST: post_stills.jl has a CAST of characters (s171)
+const CAST = Main.CASTING
 const NG = NeverendingGame
 using GeometryBasics, Makie
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "casting.jl"))
@@ -16,10 +16,11 @@ const CT_N, CT_DX = 70, 0.01           # a 70 cm square of sand, 1 cm cells
 ct_lift() = Float32(get(CAST, :lift, 0.03))
 const CT_STAMP = 0.022                 # how deep a stamping foot goes in damp sand (m)
 const CT_RATE = 25e-6                  # the ladle's stream (m3/s)
-# lead is a bright mirror while liquid and skins dull mid-grey when it freezes (s170: a Conductor at roughness 0.45
-# traced nearly black on bright sand; Principled metallic by its colour reads as real lead)
+# lead is a bright mirror while liquid and skins dull mid-grey when it freezes. A fully metallic flat casting mirrors the
+# sky dome, darker than sunlit sand (s171 tools/leadlook.jl, traced slab luminance: metal 1 rough .5 = 0.21, rough .8 =
+# 0.30, grey card = 0.49); sand-cast lead is grain-rough with an oxide skin, so half metal half diffuse grey: 0.39 with a sheen
 const LEAD_LIQ = NG.Hikari.Principled(base_color = (0.86f0, 0.87f0, 0.89f0), metallic = 1f0, roughness = 0.02f0)
-const LEAD_SOL = NG.Hikari.Principled(base_color = (0.58f0, 0.59f0, 0.61f0), metallic = 1f0, roughness = 0.5f0)
+const LEAD_SOL = NG.Hikari.Principled(base_color = (0.52f0, 0.53f0, 0.55f0), metallic = 0.5f0, roughness = 0.7f0)
 
 struct CastingSys <: System end
 
@@ -29,7 +30,7 @@ function ct_clear!()
         p !== nothing && p.parent !== nothing && delete!(p.parent, p)
         delete!(CAST, k)
     end
-    delete!(CAST, :pour); CAST[:stage] = :none
+    delete!(CAST, :pour); delete!(CAST, :viewkey); delete!(CAST, :backstep); CAST[:stage] = :none   # a new stamp: its own view
 end
 
 "Lumi's foot as a depth map (m) in the patch's cells: three toes forward, one back, a pad; `yaw` = which way it points."
@@ -76,6 +77,7 @@ ct_liquid_z(p) = (i, j) -> p.dl[i, j] > 2e-4 ? p.ground[i, j] + p.ds[i, j] + p.d
 function ct_stamp!(game, lumi)
     ct_clear!()
     is = game.world.island; sc = game.stage.scene
+    CAST[:scene] = sc                                             # the view looks through its plots (ct_boxes_in_view)
     yaw = lumi.yaw + NG.species_of(lumi).heading
     o = (lumi.pos[1] + 0.35 * cos(yaw), lumi.pos[2] + 0.35 * sin(yaw))
     ter = [NG.terrain_height(is, Float32(o[1] + (i - (CT_N + 1) / 2) * CT_DX), Float32(o[2] + (j - (CT_N + 1) / 2) * CT_DX)) for i in 1:CT_N, j in 1:CT_N]
@@ -86,6 +88,7 @@ function ct_stamp!(game, lumi)
     CAST[:lift], CAST[:edge] = on_yacht_sand ? (0.046, 0.046) : (0.03, -0.01)
     p = Casting.Pour(ground, CT_DX)
     CAST[:pour] = p; CAST[:o] = o; CAST[:ter] = ter; CAST[:yaw] = yaw
+    CAST[:backstep] = game.world.t + 3.0                          # step back off the print (ct_backstep!)
     CAST[:volume] = -sum(ground) * CT_DX^2 * 1.03                    # the print's volume, and a little over
     CAST[:sandplot] = mesh!(sc, ct_sand_mesh(o, ter, ground); color = RGBf(0.87, 0.77, 0.58), name = :cast_sand,     # the yacht's sand, so they meet without a seam
                             material = NG.Hikari.Diffuse(color = (0.87, 0.77, 0.58), roughness = 1f0))
@@ -94,6 +97,30 @@ function ct_stamp!(game, lumi)
     CAST[:stage] = :print
     NG.say!(game.world, lumi, "Stamp! Now H to pour the lead in"; duration = 4.0)
     NG.log_event!(game.log, game.world.t, :cast_stamp; cm3 = round(1e6 * CAST[:volume], digits = 1))
+end
+
+"""
+After the stamp Lumi steps BACK off its print, still facing it (s171: drawn 1.8 m tall and 1.3 m long, its belly and
+beak hung over the print, no camera could see it): it walks backwards at a slow step with its gait run in reverse (legs
+step back, no slide), the player's keys held off (NG.HELD) until it stands 1 m from the print or 3 s pass.
+"""
+function ct_backstep!(game, lumi, dt)
+    st = get(CAST, :backstep, nothing)
+    st === nothing && return
+    w = game.world; o = CAST[:o]
+    if hypot(lumi.pos[1] - o[1], lumi.pos[2] - o[2]) >= 1.0 || w.t > st
+        delete!(CAST, :backstep); lumi.action = :idle
+        return
+    end
+    NG.HELD[Int(lumi.id)] = w.t + 0.15
+    sp = NG.species_of(lumi)
+    step = Float32(0.45 * sp.speed * dt)                          # a careful backward step: under half its walk
+    dx, dy = lumi.pos[1] - o[1], lumi.pos[2] - o[2]; L = max(hypot(dx, dy), 1e-3)
+    nx, ny = lumi.pos[1] + step * dx / L, lumi.pos[2] + step * dy / L   # straight away from the print, facing it
+    NG.on_land(w.island, nx, ny; margin = 0.1f0) || (delete!(CAST, :backstep); return)
+    lumi.pos = NG.ground(w.island, (nx, ny))
+    lumi.phase -= min(sp.stride * max(step, 0.15f0 * Float32(dt)), NG.GAIT_MAX * Float32(dt))
+    lumi.action = :walk; lumi.extra = 0f0
 end
 
 "The pour's cell: the print's heel pad (the deepest point, the middle of the patch)."
@@ -145,8 +172,76 @@ function ct_lift!(game, lumi)
     CAST[:stage] = :lifted
 end
 
+"""
+Anything DRAWN between the eye and 80% of the way to the target: every plot of the stage's scene whose world bounding
+box the line passes through (plugin scenery the engine's `obstruction` does not know: s171 a board on a post in front
+of the cast). Plots wider than 6 m (terrain, sea, scattered grass) and the cast's own are skipped.
+"""
+function ct_boxes_in_view(eye, target)
+    sc = get(CAST, :scene, nothing)
+    sc === nothing && return 0f0
+    own = Set(objectid(CAST[k]) for k in (:sandplot, :solidplot, :liquidplot, :streamplot, :castplot) if haskey(CAST, k))
+    o = 0f0
+    for p in sc.plots
+        objectid(p) in own && continue
+        bb = Makie.boundingbox(p)
+        (all(isfinite, minimum(bb)) && all(isfinite, maximum(bb))) || continue
+        wd = widths(bb)
+        max(wd[1], wd[2]) > 6 && continue
+        lo = minimum(bb) .- 0.05f0; hi = maximum(bb) .+ 0.05f0
+        for s in 0.05f0:0.075f0:0.8f0
+            q = eye + s * (target - eye)
+            all(lo .<= q .<= hi) && (o += 1f0; break)
+        end
+    end
+    return o
+end
+
+"""
+Jump in's view while Lumi casts (s171: the chase camera framed the swing and the motor bench, the print was not in
+the picture): low from the side across the print, Lumi at the edge, from the side with more open ground around the eye.
+"""
+function ct_view(w)
+    (get(CAST, :stage, :none) == :none || !haskey(CAST, :o)) && return nothing
+    me = findfirst(c -> c.controlled, w.creatures)
+    me === nothing && return nothing
+    lumi = w.creatures[me]; o = CAST[:o]
+    dx, dy = o[1] - lumi.pos[1], o[2] - lumi.pos[2]; L = hypot(dx, dy)
+    L > 2.5 && return nothing                                    # walked off: the chase camera again
+    ux, uy = L > 1e-3 ? (dx / L, dy / L) : (1.0, 0.0)
+    gz = NG.ground(w.island, (Float32(o[1]), Float32(o[2])))[3]
+    # from beyond the print and to the side, looking back across it at Lumi: the print in front, Lumi's face behind
+    # (s171 first try from Lumi's side: its legs filled the frame and hid the print)
+    tx, ty = o[1] - 0.3dx, o[2] - 0.3dy
+    target = Point3f(tx, ty, gz + 0.3f0)
+    # the eye: 12 directions round the print, the least obstructed by anything the cameras know (terrain, trees,
+    # bushes, creatures, plugin scenery: the second s171 try had a plank and a post in front), ties to 'beyond the
+    # print, looking back at Lumi'; found once per stamp and Lumi position, not every frame
+    key = (o, round(lumi.pos[1], digits = 1), round(lumi.pos[2], digits = 1))
+    if get(CAST, :viewkey, nothing) != key
+        base = atan(uy, ux); best = nothing; bo = Inf32
+        for k in 0:11
+            a = base + 2pi * k / 12
+            ex, ey = o[1] + 2.2cos(a), o[2] + 2.2sin(a)
+            ez = max(gz + 1.4f0, NG.ground(w.island, (Float32(ex), Float32(ey)))[3] + 1.0f0)   # over grass tufts and boards the cameras do not know (s171)
+            eye = Point3f(ex, ey, ez)
+            # Lumi itself stands 35 cm from the print and hid it from the sea side (s171): its body counts too
+            m = lumi.pos + Point3f(0, 0, 0.5f0 * NG.species_of(lumi).height)
+            pz = Point3f(o[1], o[2], gz)
+            lb = 4f0 * max(0f0, 0.45f0 - NG.segment_distance(eye, pz, m))
+            ob = Float32(NG.obstruction(w, eye, target)) + ct_boxes_in_view(eye, target) + lb +
+                 0.05f0 * abs(Float32(mod(a - base - 0.7 + pi, 2pi) - pi))
+            ob < bo && (bo = ob; best = eye)
+        end
+        CAST[:viewkey] = key; CAST[:vieweye] = best
+    end
+    pts = [lumi.pos, Point3f(o[1], o[2], gz)]
+    return (lumi.id, pts, (CAST[:vieweye], target))
+end
+
 function NG.start!(::CastingSys, game)
     ct_clear!()
+    NG.CAMERA_GROUPS["casting"] = ct_view
     nothing
 end
 
@@ -161,7 +256,11 @@ function NG.step!(::CastingSys, game, dt)
         st = get(CAST, :stage, :none)
         near = haskey(CAST, :o) && hypot(lumi.pos[1] - CAST[:o][1], lumi.pos[2] - CAST[:o][2]) < 1.5
         bw, dc = Base.invokelatest(game.plugins["meadow"].mod.beach_weight, w.island, lumi.pos[1], lumi.pos[2])
-        sandy = bw > 0.3 || dc < 9                                 # the cove, or the beach band along the water
+        # sand where meadow.jl DRAWS sand: the cove, or the engine's beach band below 0.36 m (s171: 'dc < 9' let Lumi
+        # stamp on lawn up to 9 m inland; both s170 post takes put the print on grass)
+        ys = isdefined(Main, :LANDYACHT) ? get(Main.LANDYACHT, :sand, nothing) : nothing   # the yacht's drawn sand square
+        on_ys = ys !== nothing && ys.x0 < lumi.pos[1] < ys.x0 + 6.0 && ys.y0 < lumi.pos[2] < ys.y0 + 6.0
+        sandy = bw > 0.5 || on_ys || NG.ground(w.island, (lumi.pos[1], lumi.pos[2]))[3] < 0.36f0
         if (st == :none || st == :lifted || !near) && st != :pouring
             sandy ? ct_stamp!(game, lumi) : NG.say!(w, lumi, "I need sand for a mould (the beach)"; duration = 3.0)
         elseif st == :print
@@ -172,10 +271,11 @@ function NG.step!(::CastingSys, game, dt)
         end
     end
     CAST[:h_was] = h_now
+    playing && ct_backstep!(game, lumi, dt)
     get(CAST, :stage, :none) == :pouring && ct_pour_step!(game, dt)
     return
 end
 
-NG.stop!(::CastingSys, game) = (ct_clear!(); nothing)
+NG.stop!(::CastingSys, game) = (ct_clear!(); delete!(NG.CAMERA_GROUPS, "casting"); nothing)
 
 register!(CastingSys())

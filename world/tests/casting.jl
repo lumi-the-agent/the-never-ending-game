@@ -1,7 +1,7 @@
 # Casting lead in the sand (s170): in Jump in on the beach, H stamps Lumi's foot, H pours lead into the print, it
 # freezes, H lifts out a lead foot of about the print's volume.
 uitest("cast a lead foot in the sand") do game
-    C = Main.CAST
+    C = Main.CASTING
     interact!(game, [MouseTo(ui_pos(game, "Play")), LeftClick(), Wait(0.5)])
     me = creature(game.world, "Lumi")
     spot = (-6.8f0, -12.2f0)                                   # open beach by the parked yacht

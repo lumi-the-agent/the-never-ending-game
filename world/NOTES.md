@@ -1521,3 +1521,11 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   though that is sand. 'On the beach' = bw > 0.3 || coast distance d < 9.
 - s170 DRAWN LAYERS: the yacht's sand square is drawn 4.5 cm over the terrain; anything drawn in its area at a lower
   lift is hidden under it (the casting patch at 3 cm was invisible). Lift above it (casting: 5 cm).
+- s171 METAL LOOK: a fully metallic (Principled metallic 1) FLAT face traced in daylight mirrors the sky dome and reads
+  DARKER than sunlit sand at any roughness (slab luminance 0.21-0.30 vs a 0.5 grey card's 0.49). Dull, oxidised or
+  sand-cast metal (lead, iron, old copper) = metallic ~0.5, rough ~0.7: grey with a sheen. Check a material with
+  tools/leadlook.jl (candidates side by side on sand, one trace, ~2.5 min cold) before tracing the scene.
+- s171 SEA LEVEL is terrain z = 0 (the coast is where NG.terrain_height crosses 0; the south cove runs from z 1.17 at
+  14 m out to the water at 20.3 m along bearing -1.2 rad). Before designing anything that rolls or slides down the
+  island, compare its resistance/weight with the slope's tan: WheelSand.towed gives a loaded cart 0.29 in dry sand,
+  more than any sandy slope the island has (cove max 0.23). physics/sandwater.jl: damp sand by height above z = 0.

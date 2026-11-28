@@ -9,12 +9,16 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s171: PASSED 'Sled the cart down the dune' -> projects/sled.md, todo #778 (cart.md SHELVED). physics/soiltool.jl
+  (stick/blade in sand) + sandwater.jl (damp sand from the water table, sea level z = 0), check soiltool_check.jl
+  PASSES. THE COVE IS TOO GENTLE: loaded cart rolls at 0.29 of weight > 0.23 slope. NEXT: a real dune (slip face at
+  repose), cart as PrintSim body. Casting look + sand test PUBLISHED; cast camera + Lumi's back-step in sandbox, driftwood/grass still hide the print (#779). NO POST s171: the cast's sand patch shows as a square at any lift -> press the print INTO the terrain mesh. Plugin state is Main.CASTING (CAST clashed with post_stills).
 - s170: PASSED idea 'Cast your own lead plates in the beach' -> projects/casting.md, todo #775; landyacht.md SHELVED.
   physics/casting.jl (virtual-pipe lead flow, surface-tension front 4 mm, contact conduction, latent heat, choke at half
   frozen; check passes: plate 0.77 kg in 73 s, puddle 3.7 mm, fluidity 25 cm/4 mm channel). plugins/casting.jl PUBLISHED:
-  Jump in on the beach, H stamps Lumi's foot, H pours, freezes ~4 min, H lifts a 942 g lead foot. NOT POST-READY: traced, the lifted
-  foot was a dark lump (fixed toes-up + patch seated on the yacht's sand after; re-trace it: media/s170-cast-lifted2.png). Lead at 400 C does NOT glow: mirror
-  silver. Free time: stuck's 136 N hold is a contact artifact (todo #776). NO POST s170: the 'castfoot' still
+  Jump in on the beach, H stamps Lumi's foot, H pours, freezes ~4 min, H lifts a 942 g lead foot. Lead at 400 C does NOT glow: mirror
+  silver. s171 free time: the dark lump = metallic 1 mirrors the sky; LEAD_SOL now metallic .5 rough .7 (leadlook.jl);
+  REAL cove sand for the film at (6..7.5,-16) south cove; stamp test fixed (lawn passed). Sandbox only, not published. Free time: stuck's 136 N hold is a contact artifact (todo #776). NO POST s170: the 'castfoot' still
   put the print on GRASS (the yacht spot is grass under a drawn sand square), Lumi stood on it; see projects/casting.md.
 - s169: PASSED 'Bogged' (todo #773 part 1 PUBLISHED): the yacht's wheels in the real sand field (CartSand 6 m around
   it, soil by beach_weight): parked in the dry cove 32 mm deep; the SAIL ALONE barely moves it now (8 m/s ~92 N). Q by it

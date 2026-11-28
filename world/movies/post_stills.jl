@@ -630,20 +630,32 @@ function setup_post!(g, post)
     if post == "castfoot"         # s170: my own footprint in the wet sand of the beach, filled with molten lead
         M = plugin(g, "casting")
         lumi = w.creatures[findfirst(c -> c.name == "Lumi", w.creatures)]
-        u = Vec2f(-0.536f0, -0.844f0)                      # seaward from the yacht's spot; 2 m from the water line
-        spot = (-10.1f0, -15.9f0)
-        pose!(w, lumi, spot, 2.6f0, :idle)
+        # s171: the s170 spots were lawn; the SOUTH COVE is real sand (beach_weight 1, 1.6-3 m from the water)
+        u = Vec2f(cos(-1.2f0), sin(-1.2f0))                # seaward in the south cove
+        spot = (6.8f0, -16.2f0)
+        pose!(w, lumi, spot, atan(u[2], u[1]) - NG.species_of(lumi).heading, :idle)
         Base.invokelatest(M.ct_stamp!, g, lumi)
-        C = Main.CAST
+        C = Main.CASTING
+        # s171 preview: the patch read as a slab (3 cm up, its own colour): lower it into the beach, in the beach's colour
+        C[:lift] = 0.012; C[:edge] = -0.025
+        sandc = plugin(g, "meadow").SAND
+        sp = C[:sandplot]; delete!(sp.parent, sp)
+        C[:sandplot] = mesh!(g.stage.scene, Base.invokelatest(M.ct_sand_mesh, C[:o], C[:ter], C[:pour].ground); color = sandc,
+                             material = NG.Hikari.Diffuse(color = (Float64(sandc.r), Float64(sandc.g), Float64(sandc.b)), roughness = 1f0))
         Base.invokelatest(M.Casting.pour!, C[:pour]; src = M.ct_src(), volume = C[:volume], rate = M.CT_RATE, tmax = 40.0)
         C[:stage] = :pouring
         Base.invokelatest(M.ct_pour_step!, g, 0.001)
+        delete!(C, :backstep)
         o = C[:o]
         side = Vec2f(-u[2], u[1])
-        pose!(w, lumi, (o[1] + 0.5f0 * u[1] + 0.7f0 * side[1], o[2] + 0.5f0 * u[2] + 0.7f0 * side[2]), atan(-u[2], -u[1]), :idle)
+        # Lumi stepped back and to the side (its body hung over the print, s171), looking at its lead footprint
+        lp = (o[1] + 0.25f0 * u[1] + 0.95f0 * side[1], o[2] + 0.25f0 * u[2] + 0.95f0 * side[2])
+        pose!(w, lumi, lp, atan(o[2] - lp[2], o[1] - lp[1]) - NG.species_of(lumi).heading, :idle)
         z = NG.terrain_height(w.island, Float32(o[1]), Float32(o[2]))
         c = Point3f(o[1], o[2], z + 0.04f0)
-        return c - 0.6f0 * Point3f(u[1], u[2], 0) + Point3f(0, 0, 0.38f0), c + 0.12f0 * Point3f(u[1], u[2], 0)
+        # from inland, low, across the print toward the sea: the liquid lead mirrors the sky, Lumi beside it
+        return c - 0.62f0 * Point3f(u[1], u[2], 0) - 0.15f0 * Point3f(side[1], side[2], 0) + Point3f(0, 0, 0.36f0),
+               c + 0.12f0 * Point3f(u[1], u[2], 0) + 0.12f0 * Point3f(side[1], side[2], 0) + Point3f(0, 0, 0.02f0)
     end
     error("post_still: no moment set up for post \"$post\"")
 end

@@ -89,9 +89,9 @@ end
 # ── posts: pictures first ───────────────────────────────────────────────────
 #
 # A post is pictures or a film with a caption of one to three sentences, no
-# verdict (RULES 14): readers form their own opinion. Every session posts what
-# it made; a post without a picture or a film, or a long one, is sent back to the
-# character while the session runs (`post_problems`), so it never goes out so.
+# verdict (RULES 14): readers form their own opinion. A post goes up once what it
+# shows looks the part; one without a picture or a film, or a long one, is sent back
+# to the character while the session runs (`post_problems`), so it never goes out so.
 
 "A post on the character's front page: `<div class=\"piece\" id=\"...\">`, with no divs inside."
 const PIECE = r"<div class=\"piece\" id=\"([^\"]+)\">(.*?)</div>\s*"s
@@ -172,13 +172,15 @@ function session_pieces(jp::JailPaths, since::Real)
     return pieces
 end
 
-"What is wrong with this session's posts, or `nothing`: none yet, one without a picture or film, one too long."
+"""
+What is wrong with this session's posts, or `nothing`: one without a picture or film, one too long. A
+session without a post is fine (rule 14: what is not there yet waits); until Nov 28 the host asked for one
+every few minutes, and the character, refusing to post what did not look the part, ended its turns in a loop.
+"""
 function post_problems(jp::JailPaths, run)
     posts = session_posts(jp, run.started)
-    isempty(posts) && has_pending(jp) && return nothing          # it goes up when its render is done
-    isempty(posts) && return "Nothing new on your pages this session yet: what you make (rule 14) goes out as a post, " *
-                             "path traced pictures or a short film with a caption of one to three sentences, dated with the real time."
-    bare = [p.id for p in posts if !p.media]
+    isempty(posts) && return nothing
+    bare =[p.id for p in posts if !p.media]
     isempty(bare) || return "Your post(s) $(join(bare, ", ")) have no picture or film that exists, and a post never goes out " *
                             "without one. Render it first (path traced stills or a film), then write the post."
     early = [p for p in posts if !isempty(p.missing)]
