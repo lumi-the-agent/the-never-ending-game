@@ -1,6 +1,6 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: converge the cambered sail with LONG runs (20+ chords, average the last 10, report the spread; a :run job) at chords 32 and 48, against Pelletier & Mueller 2000 cambered-plate data, until zero lift and slope agree; then a cloth sail (VBD) whose shape is the next body in the flow, and the box riding with the cart.
+Next: (s163 PASSED idea 'Telltales: trim a tall sail whose flow is solved in 3D every frame') read media/s163/tall-sail-3d.txt (AR 4, chord 32, 0/5/10/15 deg): if the luff shows in 3D, put the sail box on the cart and step it EVERY frame (2.5 m chord, 4-6 m/s breeze, 2-3 steps of 5 ms a frame, time it with the friends on screen), apparent wind as the inflow, sheet angle turns the body; wool threads advected in the 3D field at the luff; sheet in/out in Jump in. If AR 4 also loses the luff, find why (Taira & Colonius 2009 AR-2 flat plate as the 3D check) before building on it.
 
 ## The critic's risks (s162)
 - A frozen lookup for the sail, or a dynamo that is only a drag number with a charge bar: then it is a rig.
@@ -41,3 +41,37 @@ chords long and start at 3-7 chords: the starting vortex and the unsteady separa
 The camber result is NOT trustworthy yet; the flat plate's broad stall is. Long runs first (20+ chords, average
 the last 10, report the spread), as a :run job on the worker.
 QUEUED s162: job 20261128-040140-400-run (tools/sail_converge.jl, CPU, chords 32+48, -10..10 deg, 24 chords, ~2 h): read its result first.
+s163 free time, NOT LEAKAGE: WaterLily's kernel is 1 cell wide (eps = 1) and its own test plate is 4 cells thick, so
+a 2-cell plate might be a sieve. Tested at chord 32 (GPU, game env /sim/Programmieren/SimGame, 10 chords, avg last 4):
+  thick 2 / 3 / 4: flat 10 deg CL 0.29 / 0.32 / 0.26 (CD 0.11/0.16/0.17); arc 0 deg CL 0.009 / -0.031 / 0.025.
+Thickness does not move it: the arc at 0 deg gives NO lift at any thickness. (Theory for AR 2 inviscid: ~0.5.)
+So the s162 job (thick 2) still answers the grid question. Next check: 2D at chord 128 (below).
+2D, chord 128, box 1024x512, thick 3, Re 2000, 20 chords avg last 10 (GPU, 4.5 min for 7 cases):
+  flat 0/10: CL 0.00/0.54 (CD 0.008/0.113).  10% arc -10/-5/0/5/10: CL -0.53/-0.38/-0.09/0.96/1.38 (CD .18/.11/.06/.07/.16)
+THE SAIL LUFFS BY ITSELF: between 0 and 5 deg the arc JUMPS from no lift to 0.96 (1.8x the flat plate). At <= 0 the
+wind meets the sharp luff from the lee side and the flow tears off INSIDE the curve (a luffing, backwinded sail);
+a few degrees more and it attaches. That is the trim game ("too loose: it luffs") from the flow, nothing fitted.
+WHY 3D DID NOT CONVERGE: the AR-2 sail's downwash takes a few degrees off (alpha_i ~ CL/(pi A)), so in 3D the jump
+sits higher, and the -10..10 sweeps straddled the knife edge; tiny grid changes flip luffing/drawing.
+2D resolution: chord 32 already luffs (arc 0/5/10: -0.21/0.60/1.27; flat 10: 0.35), chord 64 (-0.19/0.95/1.32; flat
+0.50). So 32 cells per chord resolves the luff in 2D.
+3D, chord 32, AR 2 (span 2 chords), thick 2, 14 chords avg last 6 (5 min on the GPU): arc 5/10/15/20/25/30:
+CL 0.14/0.23/0.38/0.45/0.48/0.52 (CD .06/.07/.11/.19/.25/.29). NO JUMP, and at 10 deg less than the flat plate (0.29).
+The short AR-2 sail loses the camber's gain: its tip vortices' downwash differs along the span, so sections attach
+at different angles and the jump smears out. Physics or numerics: not known yet (Taira & Colonius 2009 for flat AR 2).
+NEXT: a TALL sail (AR 4, like a real land yacht's; span 128 at chord 32, box z 256) at 0/5/10/15: does the luff come
+back in 3D? Then the sail stepping EVERY frame in a box riding with the cart (no background refresh, the critic's lag
+worry): at 5 ms/step for 262k cells, a 2.5 m chord in a 4-6 m/s breeze keeps real time at 2-3 steps a frame.
+TALL SAIL AR 4 in 3D (chord 32, span 128, box 256x128x192 = 6.3M cells, 14 chords avg last 6, 4.5 min for 4 angles
+= ~4.8 s of GPU per chord of wind): arc 0/5/10/15: CL -0.002/0.225/0.325/0.472 (CD .051/.066/.084/.135).
+Better than AR 2 (0.14/0.23/0.38) and a HINT of the luff (0->5 rises 0.045/deg, 5->10 only 0.020/deg), but far from
+2D's jump to 0.6-0.95. Still open: physics (3D, Re 2000) or numerics. Try next: longer average + 2 resolutions of the
+AR-4 sail at 0/2.5/5/7.5; span-wise CL (does the middle luff and attach like 2D while the tips smear it?).
+REAL TIME IS NOT THERE YET: 6.3M cells cost ~4.8 s of GPU per chord of wind; a 2.5 m chord in 5 m/s wind passes in
+0.5 s, so this box runs ~10x slower than real time. Options: 2D at 16/24 cells (does it still luff?), a box hugging
+the sail, coarser away from it. Measure before promising a frame rate (NOTES s163).
+QUEUED s163 end: job 20261128-045120-189-run (CPU, AR 4, chords 24+32, 0/2.5/5/7.5 deg, 20 chords avg last 10):
+reads whether the tall sail's weak 3D luff holds at two grids. converge() has aspect = 4 now.
+OLD NEXT: 3D sweep 5..30 deg at chord 32 (done above); hysteresis (ramp alpha up vs down: does a drawing
+sail stay drawing below the jump?); TELLTALES: threads at the luff from the solved flow, streaming on both sides
+when trimmed right, the lee one lifting when it luffs: how the player reads the trim without a gauge.

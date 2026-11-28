@@ -159,36 +159,36 @@
   ],
   "creatures": [
     {
-      "action": "eat",
-      "extra": 0.0,
+      "action": "sleep",
+      "extra": 1.0,
       "id": 1,
       "memory": [
-        "[478610] splashed in the pond",
-        "[478626] chatted with Truffle",
-        "[478668] got a flower from Pinchy",
-        "[478692] got a flower from Truffle",
-        "[478776] got booped by Pickles",
-        "[478794] got a flower from Pickles",
-        "[478863] found treasures on the beach",
-        "[479241] had a nap",
-        "[479306] ate berries",
-        "[479701] ate berries",
-        "[480071] had a nap",
-        "[480116] chatted with Wibbles"
+        "[480116] chatted with Wibbles",
+        "[480128] ate berries",
+        "[480431] had a nap",
+        "[480797] had a nap",
+        "[480840] ate berries",
+        "[480952] booped Cumulus",
+        "[481340] had a nap",
+        "[481375] ate berries",
+        "[481910] had a nap",
+        "[481922] ate berries",
+        "[482276] had a nap",
+        "[482628] had a nap"
       ],
-      "mood": -0.24948634,
+      "mood": -0.37573805,
       "name": "Lumi",
       "needs": [
-        0.7279353,
-        0.95978546,
         0.0,
-        0.4890679
+        1.0,
+        0.0,
+        0.0
       ],
-      "phase": 1.5151116e6,
+      "phase": 1.5187518e6,
       "pos": [
-        -7.2381363,
-        -6.898851,
-        1.8336896
+        9.425184,
+        -11.979061,
+        1.3409572
       ],
       "seed": 0.19280809,
       "species": "Lumi",
@@ -198,39 +198,39 @@
         0.6988267,
         0.6282647
       ],
-      "yaw": 1.2539912
+      "yaw": 0.09848492
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "run",
+      "extra": 0.0,
       "id": 2,
       "memory": [
-        "[478730] danced in a ring by the lantern",
-        "[478756] put a stone on the cairn",
-        "[478787] put a stone on the cairn",
-        "[478798] ate berries",
-        "[478822] gave Pickles a flower",
-        "[478876] put a stone on the cairn",
-        "[478879] gave Hopscotch a flower",
-        "[478902] danced",
-        "[479002] played in the rain",
-        "[479525] had a nap",
-        "[479532] ate berries",
-        "[479896] had a nap"
+        "[480686] had a nap",
+        "[480969] had a nap",
+        "[481221] had a nap",
+        "[481228] ate berries",
+        "[481493] had a nap",
+        "[481756] had a nap",
+        "[481764] ate berries",
+        "[482030] had a nap",
+        "[482293] had a nap",
+        "[482597] had a nap",
+        "[482607] ate berries",
+        "[482914] had a nap"
       ],
-      "mood": -0.47768933,
+      "mood": -0.3114582,
       "name": "Gloop",
       "needs": [
-        0.0,
-        1.0,
+        0.30628526,
+        0.9940909,
         0.0,
         0.0
       ],
-      "phase": 70365.336,
+      "phase": 70533.195,
       "pos": [
-        1.9061939,
-        6.7511053,
-        2.0394468
+        0.8610559,
+        -4.182038,
+        2.2324178
       ],
       "seed": 0.001350224,
       "species": "Blorbo",
@@ -240,39 +240,39 @@
         0.5710874,
         0.45280856
       ],
-      "yaw": 4.157145
+      "yaw": -2.1830878
     },
     {
-      "action": "walk",
-      "extra": 0.0,
+      "action": "sleep",
+      "extra": 1.0,
       "id": 3,
       "memory": [
-        "[478624] danced in a ring by the lantern",
-        "[478633] danced",
-        "[478730] danced in a ring by the lantern",
-        "[478740] got a flower from Marshmallow",
-        "[478783] found treasures on the beach",
-        "[478899] danced in a ring by the lantern",
-        "[478998] had a nap",
-        "[479344] had a nap",
-        "[479388] danced in a ring by the lantern",
-        "[479680] had a nap",
-        "[479999] had a nap",
-        "[480116] chatted with Lumi"
+        "[480568] got booped by Pinchy",
+        "[480662] danced in a ring by the lantern",
+        "[481045] had a nap",
+        "[481402] had a nap",
+        "[481670] had a nap",
+        "[481731] danced in a ring by the lantern",
+        "[481748] ate berries",
+        "[481794] chatted with Cumulus",
+        "[482083] had a nap",
+        "[482364] had a nap",
+        "[482420] ate berries",
+        "[482606] ate berries"
       ],
-      "mood": -0.5109128,
+      "mood": -0.26402852,
       "name": "Wibbles",
       "needs": [
+        0.55623853,
+        1.0,
         0.0,
-        0.9077754,
-        0.0,
-        0.31607753
+        0.0
       ],
-      "phase": 68597.2,
+      "phase": 71256.56,
       "pos": [
-        -7.9903946,
-        -7.8732595,
-        1.7780168
+        -4.152727,
+        -3.4300475,
+        2.4500153
       ],
       "seed": 0.6232151,
       "species": "Blorbo",
@@ -282,39 +282,39 @@
         0.31199235,
         0.11479914
       ],
-      "yaw": 1.1124532
+      "yaw": -0.56191933
     },
     {
       "action": "sleep",
       "extra": 1.0,
       "id": 4,
       "memory": [
-        "[478892] caught a fish at the pier",
-        "[478926] put a stone on the cairn",
-        "[478956] put a stone on the cairn",
-        "[479002] played in the rain",
-        "[479035] danced in a ring by the lantern",
-        "[479351] had a nap",
-        "[479388] danced in a ring by the lantern",
-        "[479692] had a nap",
-        "[479977] had a nap",
-        "[479984] ate berries",
-        "[480010] had a dance-off with Sir Sniffsalot",
-        "[480024] chatted with Sir Sniffsalot"
+        "[480568] booped Wibbles",
+        "[480874] had a nap",
+        "[481199] had a nap",
+        "[481259] ate berries",
+        "[481532] had a nap",
+        "[481549] ate berries",
+        "[481894] had a nap",
+        "[481902] ate berries",
+        "[482159] had a nap",
+        "[482540] had a nap",
+        "[482559] ate berries",
+        "[482899] had a nap"
       ],
-      "mood": 0.03571363,
+      "mood": -0.3701302,
       "name": "Pinchy",
       "needs": [
-        0.5481205,
+        0.30814004,
         1.0,
-        0.3472088,
-        0.14813031
+        0.0,
+        0.0
       ],
-      "phase": 64169.66,
+      "phase": 65167.32,
       "pos": [
-        -5.4186926,
-        -4.631562,
-        2.229451
+        -2.285454,
+        -3.5424323,
+        2.2879286
       ],
       "seed": 0.7305508,
       "species": "Crabbit",
@@ -324,39 +324,39 @@
         0.37215954,
         0.86869425
       ],
-      "yaw": -3.655177
+      "yaw": -2.1950989
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "walk",
+      "extra": 0.0,
       "id": 5,
       "memory": [
-        "[478764] had a nap",
-        "[478808] caught a fish at the pier",
-        "[478840] caught a fish at the pier",
-        "[478879] got a flower from Gloop",
-        "[478942] gave Cumulus a flower",
-        "[479002] hid from the rain under a tree",
-        "[479035] danced in a ring by the lantern",
-        "[479050] chatted with Sir Sniffsalot",
-        "[479340] had a nap",
-        "[479691] had a nap",
-        "[479961] had a nap",
-        "[479969] ate berries"
+        "[480995] had a nap",
+        "[481002] ate berries",
+        "[481045] danced in a ring by the lantern",
+        "[481328] had a nap",
+        "[481630] had a nap",
+        "[481642] ate berries",
+        "[481937] had a nap",
+        "[481950] ate berries",
+        "[482272] had a nap",
+        "[482552] had a nap",
+        "[482837] had a nap",
+        "[482899] ate berries"
       ],
-      "mood": -0.2681341,
+      "mood": -0.33403724,
       "name": "Hopscotch",
       "needs": [
-        0.5269754,
-        1.0,
+        0.7239487,
+        0.9271786,
         0.0,
         0.0
       ],
-      "phase": 63594.137,
+      "phase": 64236.156,
       "pos": [
-        4.540948,
-        2.4371898,
-        1.951667
+        -0.18533549,
+        -4.766122,
+        2.1357927
       ],
       "seed": 0.43805802,
       "species": "Crabbit",
@@ -366,39 +366,39 @@
         0.34751338,
         0.7781487
       ],
-      "yaw": -3.9617834
+      "yaw": -2.4439392
     },
     {
       "action": "sleep",
       "extra": 1.0,
       "id": 6,
       "memory": [
-        "[478730] danced in a ring by the lantern",
-        "[478820] had a nap",
-        "[478899] danced in a ring by the lantern",
-        "[478919] gave Marshmallow a flower",
-        "[478942] got a flower from Hopscotch",
-        "[479002] played in the rain",
-        "[479035] danced in a ring by the lantern",
-        "[479283] ate berries",
-        "[479388] danced in a ring by the lantern",
-        "[479669] had a nap",
-        "[479945] had a nap",
-        "[479953] ate berries"
+        "[480952] got booped by Lumi",
+        "[481045] danced in a ring by the lantern",
+        "[481364] had a nap",
+        "[481374] ate berries",
+        "[481643] had a nap",
+        "[481731] danced in a ring by the lantern",
+        "[481794] chatted with Wibbles",
+        "[482123] had a nap",
+        "[482141] ate berries",
+        "[482446] had a nap",
+        "[482465] ate berries",
+        "[482807] had a nap"
       ],
-      "mood": -0.22689614,
+      "mood": -0.31847137,
       "name": "Cumulus",
       "needs": [
-        0.5555017,
+        0.35459805,
         1.0,
         0.0,
         0.0
       ],
-      "phase": 55681.51,
+      "phase": 57491.176,
       "pos": [
-        2.455464,
-        1.438911,
-        2.1058779
+        1.8101267,
+        6.924397,
+        1.7676661
       ],
       "seed": 0.9687723,
       "species": "Fluffkin",
@@ -408,39 +408,39 @@
         0.43716514,
         0.11403692
       ],
-      "yaw": -2.3449442
+      "yaw": 5.0953407
     },
     {
       "action": "sleep",
       "extra": 1.0,
       "id": 7,
       "memory": [
-        "[478763] got booped by Pinchy",
-        "[478773] put a stone on the cairn",
-        "[478826] put a stone on the cairn",
-        "[478858] found treasures on the beach",
-        "[478899] danced in a ring by the lantern",
-        "[478919] got a flower from Cumulus",
-        "[479013] had a nap",
-        "[479272] had a nap",
-        "[479626] had a nap",
-        "[479636] ate berries",
-        "[479919] had a nap",
-        "[479929] ate berries"
+        "[479929] ate berries",
+        "[480566] had a nap",
+        "[480887] had a nap",
+        "[480896] ate berries",
+        "[481206] had a nap",
+        "[481213] ate berries",
+        "[481476] had a nap",
+        "[481974] had a nap",
+        "[481982] ate berries",
+        "[482251] had a nap",
+        "[482457] ate berries",
+        "[482792] had a nap"
       ],
-      "mood": -0.11019961,
+      "mood": -0.3840555,
       "name": "Marshmallow",
       "needs": [
-        0.7201131,
+        0.17238766,
         1.0,
         0.0,
         0.0
       ],
-      "phase": 56894.277,
+      "phase": 57464.492,
       "pos": [
-        2.0861835,
-        0.24054804,
-        2.087856
+        -2.1109917,
+        -1.5429537,
+        2.4415486
       ],
       "seed": 0.7753243,
       "species": "Fluffkin",
@@ -450,39 +450,39 @@
         0.5516538,
         0.1397909
       ],
-      "yaw": 3.8970754
+      "yaw": -0.73537374
     },
     {
       "action": "sleep",
       "extra": 1.0,
       "id": 8,
       "memory": [
-        "[478644] got a flower from Pickles",
-        "[478657] danced",
-        "[478692] gave Lumi a flower",
-        "[478709] chatted with Pinchy",
-        "[478848] gave Pickles a flower",
-        "[478982] caught a fish at the pier",
-        "[479003] got booped by Pickles",
-        "[479297] had a nap",
-        "[479306] ate berries",
-        "[479838] had a nap",
-        "[479844] ate berries",
-        "[480107] had a nap"
+        "[481045] danced in a ring by the lantern",
+        "[481372] had a nap",
+        "[481671] had a nap",
+        "[481679] ate berries",
+        "[481731] danced in a ring by the lantern",
+        "[482004] had a nap",
+        "[482249] had a nap",
+        "[482257] ate berries",
+        "[482549] had a nap",
+        "[482864] had a nap",
+        "[482871] ate berries",
+        "[482899] chatted with Pickles"
       ],
-      "mood": -0.10757907,
+      "mood": 0.06867369,
       "name": "Truffle",
       "needs": [
-        0.58816063,
+        0.6844683,
         1.0,
         0.0,
-        0.0
+        0.47233737
       ],
-      "phase": 64229.43,
+      "phase": 65157.098,
       "pos": [
-        -1.4802144,
-        -3.3493454,
-        2.2182908
+        -5.0818267,
+        -5.0139384,
+        2.126525
       ],
       "seed": 0.40419817,
       "species": "Snootle",
@@ -492,39 +492,39 @@
         0.7798429,
         0.6361173
       ],
-      "yaw": 3.8781714
+      "yaw": 2.497667
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "eat",
+      "extra": 0.0,
       "id": 9,
       "memory": [
-        "[478794] gave Lumi a flower",
-        "[478822] got a flower from Gloop",
-        "[478848] got a flower from Truffle",
-        "[478914] caught a fish at the pier",
-        "[478963] caught a fish at the pier",
-        "[478998] caught a fish at the pier",
-        "[479003] booped Truffle",
-        "[479289] had a nap",
-        "[479568] had a nap",
-        "[479582] ate berries",
-        "[479902] had a nap",
-        "[479909] ate berries"
+        "[480792] had a nap",
+        "[481067] had a nap",
+        "[481081] ate berries",
+        "[481096] chatted with Sir Sniffsalot",
+        "[481469] had a nap",
+        "[481476] ate berries",
+        "[481804] had a nap",
+        "[482076] had a nap",
+        "[482377] had a nap",
+        "[482693] had a nap",
+        "[482700] ate berries",
+        "[482899] chatted with Truffle"
       ],
-      "mood": -0.20368989,
+      "mood": -0.25201383,
       "name": "Pickles",
       "needs": [
-        0.69215775,
-        1.0,
-        0.0,
-        0.0
+        0.9566323,
+        0.7700421,
+        0.16511095,
+        0.29934698
       ],
-      "phase": 62382.434,
+      "phase": 64189.727,
       "pos": [
-        -2.411202,
-        -4.8051515,
-        2.0405915
+        -2.985488,
+        -8.363013,
+        1.7224482
       ],
       "seed": 0.7968313,
       "species": "Snootle",
@@ -534,39 +534,39 @@
         0.28658164,
         0.91891617
       ],
-      "yaw": -2.4676952
+      "yaw": 0.67072946
     },
     {
-      "action": "sleep",
-      "extra": 1.0,
+      "action": "run",
+      "extra": 0.0,
       "id": 10,
       "memory": [
-        "[478832] put a stone on the cairn",
-        "[478904] put a stone on the cairn",
-        "[478944] put a stone on the cairn",
-        "[479002] played in the rain",
-        "[479035] danced in a ring by the lantern",
-        "[479050] chatted with Hopscotch",
-        "[479317] had a nap",
-        "[479388] danced in a ring by the lantern",
-        "[479672] had a nap",
-        "[479960] had a nap",
-        "[480010] had a dance-off with Pinchy",
-        "[480024] chatted with Pinchy"
+        "[480662] danced in a ring by the lantern",
+        "[480672] ate berries",
+        "[481071] had a nap",
+        "[481096] chatted with Pickles",
+        "[481424] had a nap",
+        "[481476] ate berries",
+        "[481843] had a nap",
+        "[481857] ate berries",
+        "[482267] had a nap",
+        "[482273] ate berries",
+        "[482572] had a nap",
+        "[482878] had a nap"
       ],
-      "mood": 0.22203994,
+      "mood": -0.24759443,
       "name": "Sir Sniffsalot",
       "needs": [
-        0.3820228,
-        1.0,
-        0.3472088,
-        0.32109565
+        0.07971876,
+        0.98764646,
+        0.119703785,
+        0.0
       ],
-      "phase": 71952.82,
+      "phase": 73972.375,
       "pos": [
-        -0.7875035,
-        -2.0521557,
-        2.3225768
+        -8.8117695,
+        -12.015195,
+        1.2523073
       ],
       "seed": 0.48208588,
       "species": "Snootle",
@@ -576,7 +576,7 @@
         0.98260796,
         0.79842675
       ],
-      "yaw": 3.9263897
+      "yaw": 0.55520916
     }
   ],
   "day_length": 18000.0,
@@ -1035,7 +1035,7 @@
     },
     {
       "data": {
-        "berries": 6
+        "berries": 5
       },
       "id": 61,
       "kind": "bush",
@@ -4076,5 +4076,5 @@
     }
   ],
   "seed": 1,
-  "t": 480124.7666081572
+  "t": 482916.93327417376
 }

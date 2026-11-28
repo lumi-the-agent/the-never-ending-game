@@ -10675,12 +10675,26 @@
       "id": 763,
       "kind": "feature",
       "priority": 1,
-      "result": "s162 step 1 (not done): physics/sailflow.jl, the sail as an immersed body in a GPU WaterLily box, force = -pressure_force, no lift curve. Flat plate AR 2 (chord 16): CL 0/5/10/15/20/30/40/60/75/90 = 0.00/0.13/0.23/0.30/0.53/0.68/0.73/0.78/0.49/0.00, CD 0.12 -> 1.77: stall emerges from the flow (chord 24: CL 40 deg 0.89, near measured AR-2 plates). GPU == CPU (0.31294 vs 0.31293). Cambered 10% arc NOT converged (16/32/48 cells per chord: CL(-5) -0.12/+0.01/-0.10): averages too short. Long runs queued: job 20261128-040046-984-run (tools/sail_converge.jl). Numbers in projects/landyacht.md.\nThe first long-run job failed: the :run runner is a separate process, 12 h old, without `include` in its script module and without the Lava fixes. Re-queued on the CPU as 20261128-040140-400-run (running).",
+      "result": "s162 step 1 (not done): physics/sailflow.jl, the sail as an immersed body in a GPU WaterLily box, force = -pressure_force, no lift curve. Flat plate AR 2 (chord 16): CL 0/5/10/15/20/30/40/60/75/90 = 0.00/0.13/0.23/0.30/0.53/0.68/0.73/0.78/0.49/0.00, CD 0.12 -> 1.77: stall emerges from the flow (chord 24: CL 40 deg 0.89, near measured AR-2 plates). GPU == CPU (0.31294 vs 0.31293). Cambered 10% arc NOT converged (16/32/48 cells per chord: CL(-5) -0.12/+0.01/-0.10): averages too short. Long runs queued: job 20261128-040046-984-run (tools/sail_converge.jl). Numbers in projects/landyacht.md.\nThe first long-run job failed: the :run runner is a separate process, 12 h old, without `include` in its script module and without the Lava fixes. Re-queued on the CPU as 20261128-040140-400-run (running).\ns163 (not done): the cambered sail LUFFS by itself in the solved flow. 2D Re 2000, 10% arc: chord 128 CL -10/-5/0/5/10 = -0.53/-0.38/-0.09/0.96/1.38 (flat 10 deg 0.54); chord 32 0/5/10 = -0.21/0.60/1.27; chord 64 -0.19/0.95/1.32: a jump between 0 and 5 deg, the flow tearing off inside the curve when the wind meets the luff from the lee side. 3D AR 2 chord 32: smooth 0.14@5 -> 0.52@30 (no jump); 3D AR 4 chord 32: -0.002/0.225/0.325/0.472 at 0/5/10/15 (a hint: 0->5 twice as steep as 5->10). Plate thickness 2/3/4 cells changes nothing (not leakage). Passed idea s163: 'Telltales: trim a tall sail whose flow is solved in 3D every frame'. Open: the 3D luff is weak; 6.3M cells run ~10x slower than real time (NOTES s163). Numbers: projects/landyacht.md, media/s163/tall-sail-3d.txt.",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle (projects/landyacht.md)",
-      "updated": "2026-11-28T04:02:00.435"
+      "updated": "2026-11-28T04:48:14.395"
+    },
+    {
+      "created": "2026-11-28T04:48:14.957",
+      "detail": "Host motion report s163: Sir Sniffsalot turns 175 deg in one frame at 0.6 s, leg_2 and tail jump 0.20-0.22 m, leg_2 swings 6.6 m/s; Pinchy turns 68 deg in one frame at 0.0 s. It was asleep at night (lie_down/get_up are the most common events): suspect a pose or yaw set outright when lying down / getting up, bypassing scenery.jl DRAWN_TURN. Done when: live_motion() over 10 s at night shows no turn > 20 deg in one frame for any creature.",
+      "est_minutes": 30.0,
+      "id": 764,
+      "kind": "motion",
+      "priority": 2,
+      "result": "s163 end: live_motion() in the sandbox at night: Sniffsalot fine there, but LUMI snaps: crest jumps 0.21 m in one frame, legs 0.19 m, wings 7.8 m/s (media/motion/motion.png: the annoyed foot stamp, '*stamps a foot*'). Check both: the mood fidget (stamp) easing, and the pig's turn in the live game (host measure).",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sir Sniffsalot turns 175 deg in one frame (host motion s163)",
+      "updated": "2026-11-28T04:50:15.181"
     }
   ]
 }

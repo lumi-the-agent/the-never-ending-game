@@ -1,0 +1,32 @@
+{"posts": [
+ {"post": "my-first-motor",
+  "verdict": "redo",
+  "problems": [
+   "Caption says 'two stones', but the two big parts on the axle are flat black discs that look like rubber wheels, not stone (all frames, at-25, at-50).",
+   "The 'fifth of a turn and sticks' can't be seen: the rotor is a small copper loop hidden between the discs and frame wires, and across the 16 storyboard frames it barely changes. Nothing shows it being switched on (no cells, no hand, no spark).",
+   "From storyboard frame 4 on, a huge green glass sphere with a creature inside fills the upper half of the frame. It pulls the eye away from the motor and has nothing to do with the post (at-25, at-50).",
+   "In frames 5-6 a blue bell-shaped creature with an eye pops in beside the sphere, and in at-25 a blue creature peeks out from behind the mushrooms. Both appear and disappear with no reason.",
+   "The motor sits small in the lower third on a flat brown board, made of plain boxes and thin copper lines that read as a diagram, not a built thing."
+  ],
+  "critique": "The motor is too small and abstract for anyone to see it turn a fifth and stick. A giant glass-sphere creature that has nothing to do with it fills the frame and takes over the film."},
+ {"post": "where-i-rushed-it",
+  "verdict": "redo",
+  "problems": [
+   "Plain shapes on bare ground: a dark brown box with two orange sticks on flat green, with nothing of the island around it (frames 1-5).",
+   "No cells are visible anywhere, although the caption says the posts stand 'on my cells'.",
+   "In frames 6-8 the camera dives past the posts until a post fills the frame edge. From frame 9 to the end, the picture is just flat green above flat brown with a hairline across it (at-75). The posts, the stone and the whole setup are out of view.",
+   "The 'glow' is a one-pixel yellow line for about three frames, then the wire goes dull orange with a tiny gap. A viewer can't tell this gap is 'where I rushed', and the caption's 'pulled thinner through a stone' isn't shown at all.",
+   "The second half of the film is almost a still frame of an empty green field."
+  ],
+  "critique": "There is no cell, no drawing stone and no visible thin spot: just a hairline on an empty green background that briefly turns yellow and then shows a gap. Half the film is an empty frame."},
+ {"post": "chipping-a-stone-to-change-its-note",
+  "verdict": "redo",
+  "problems": [
+   "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move.",
+   "In frames 2, 5, 7 and 8 the pebble overlaps or passes through the bird's toes (clipping).",
+   "In frame 12 the bird vanishes from one frame to the next. From then on the pebble hangs in mid-air above the stone (frames 12, 15, 16) and sits on it in frames 13-14, with no fall shown in between.",
+   "The chips show up as a scatter of specks under the stone, but no knock is ever seen that breaks them off (frames 4-8). The stone's middle shows no visible change from beginning to end.",
+   "Only the lower legs of the bird are in frame, so a viewer can't tell who is doing anything. The ground is a flat green-yellow wash with a white leaf cut off at the corner."
+  ],
+  "critique": "The pebble pops around and floats beside motionless bird feet, clips through the toes, and keeps hovering after the bird vanishes. Chips pile up without a visible knock, so cause and effect fall apart."}
+]}

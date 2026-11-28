@@ -90,15 +90,17 @@ Long runs of the cambered sail: for each chord (cells) and angle, the mean CL an
 of wind and their spread between 2-chord windows (min, max), so a short noisy average cannot pass for a result.
 Runs on Mantle when `gpu`. Meant for a worker :run job (minutes per case at chord 48).
 """
-function converge(; chords = (32, 48), alphas = (-10, -5, 0, 5, 10), camber = 0.1, t_end = 24, t_avg = 10, gpu = true)
+function converge(; chords = (32, 48), alphas = (-10, -5, 0, 5, 10), camber = 0.1, t_end = 24, t_avg = 10, gpu = true,
+                   aspect = 2)
     mem = gpu ? gpu_mem() : Array
     out = NamedTuple[]
     for ch in chords, a in alphas
-        # the boxes run s162 (multigrid wants sizes a * 2^n, n > 2)
-        n = Dict(16 => (128, 64, 64), 24 => (192, 128, 96), 32 => (256, 128, 128), 48 => (320, 160, 160))[ch]
-        sim = arc_sail_sim(deg2rad(a); camber = Float32(camber), n, chord = ch, span = 2ch, thick = 2, mem)
+        # the boxes run s162 (AR 2) and s163 (AR 4, tall sail); multigrid wants sizes a * 2^n, n > 2
+        n = aspect == 2 ? Dict(16 => (128, 64, 64), 24 => (192, 128, 96), 32 => (256, 128, 128), 48 => (320, 160, 160))[ch] :
+            aspect == 4 ? Dict(24 => (192, 96, 160), 32 => (256, 128, 192))[ch] : error("no box for aspect $aspect")
+        sim = arc_sail_sim(deg2rad(a); camber = Float32(camber), n, chord = ch, span = aspect * ch, thick = 2, mem)
         sim_step!(sim, Float32(t_end - t_avg); remeasure = false)
-        q = 0.5 * ch * 2ch
+        q = 0.5 * ch * aspect * ch
         bins = Dict{Int,Vector{NTuple{2,Float64}}}()
         while sim_time(sim) < t_end
             sim_step!(sim; remeasure = false)

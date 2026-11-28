@@ -5,8 +5,8 @@
 # gpu = false by default: a runner that started before the s161/s162 Lava fixes gets WaterLily on Mantle wrong.
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "sailflow.jl"))
 
-function sail_converge(; chords = [32, 48], alphas = [-10, -5, 0, 5, 10], t_end = 24, t_avg = 10, gpu = false)
-    rs = SailFlow.converge(; chords = Tuple(chords), alphas = Tuple(alphas), t_end, t_avg, gpu)
+function sail_converge(; chords = [32, 48], alphas = [-10, -5, 0, 5, 10], t_end = 24, t_avg = 10, gpu = false, aspect = 2)
+    rs = SailFlow.converge(; chords = Tuple(chords), alphas = Tuple(alphas), t_end, t_avg, gpu, aspect)
     Dict("cases" => [Dict("chord" => r.chord, "alpha" => r.alpha, "CL" => r.CL, "CD" => r.CD,
                           "CL_spread" => collect(r.CL_spread), "CD_spread" => collect(r.CD_spread)) for r in rs])
 end

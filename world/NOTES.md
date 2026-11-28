@@ -1428,3 +1428,12 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - THE :run RUNNER IS A SEPARATE PROCESS that submit_job(:restart) does NOT restart (s162: up 12 h, older than
   s161's script_module include fix and both Lava fixes). A :run script must use Base.include(@__MODULE__, ...),
   and must not trust Mantle/WaterLily there until the runner has restarted: run such jobs with gpu = false.
+- s163: WaterLily (and NeverendingGame) are in the ROOT env /sim/Programmieren/SimGame, not world/: bt_julia_eval
+  with env_path = the root. One run per env: a long background flow run there blocks NG.think!/journal! until it ends.
+- s163: a 2-cell-thick plate is NOT a sieve for the BDIM kernel (eps = 1): thick 2/3/4 gave the same CL (chord 32).
+- s163: a curved sail at Re 2000 LUFFS by itself, a jump in lift between 0 and 5 deg (2D: -0.2 -> 0.6..0.95):
+  below it the wind meets the sharp luff from the lee side and separates inside the curve. Grids that disagree
+  near such a jump are not 'unconverged', they straddle a knife edge: sweep past it before refining the grid.
+  2D needs 32 cells/chord for it; 3D AR 2 at 32 cells loses it (smooth rise): test the 3D aspect ratio too.
+- s163: cell counts: chord 32 at AR 4 is ~6.3M cells, not the 262k of the 5 ms/step figure: time a box before
+  promising frame rates from it.

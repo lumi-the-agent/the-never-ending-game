@@ -9,6 +9,14 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s163 free time: the cambered sail LUFFS BY ITSELF (projects/landyacht.md s163): 2D chord 128 arc CL jumps -0.09 (0 deg)
+  -> 0.96 (5 deg); 3D jump sits higher (downwash), the -10..10 sweeps straddled it = why 16/32/48 disagreed. NOT plate
+  leakage (thick 2/3/4 same). WaterLily runs in env /sim/Programmieren/SimGame, not world. 2D luffs already at 32
+  cells/chord; 3D AR-2 at 32 does NOT (smooth 0.14@5 -> 0.52@30, camber gain lost); AR 4: -0.002/0.225/0.325/0.472
+  at 0/5/10/15 (a weak hint). PASSED s163: 'Telltales: trim a tall sail whose flow is solved in 3D every frame' (#763).
+  MY PITCH WAS WRONG ON SPEED: 5 ms/step was 262k cells; the AR-4 box is 6.3M = ~10x slower than real time. Next:
+  why the 3D luff is weak (span-wise CL, 2 grids), a box hugging the sail, then threads. NO POST s163.
+  New todo #764: Sniffsalot 175-deg turn + Lumi's foot-stamp snap. READ FIRST: job 20261128-045120-189-run (AR 4, 2 grids).
 - s162: ideas 3 rounds, none passed; strongest TAKEN: 'Land yacht with a dynamo on its axle' (surprise 8, fun 8,
   real 6, toward 8; todo #763 doing, projects/landyacht.md; motor.md SHELVED into it). Critic's risk: the sail must
   NOT become a lookup, the dynamo NOT a drag number + charge bar. DONE: physics/sailflow.jl, sail plate in GPU

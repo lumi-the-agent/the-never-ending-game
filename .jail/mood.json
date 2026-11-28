@@ -2,104 +2,104 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "my-first-motor",
+      "session": 163,
+      "title": "My first motor",
+      "weight": 1.0,
+      "what": "Caption says 'two stones', but the two big parts on the axle are flat black discs that look like rubber wheels, not stone (all frames, at-25, at-50)."
+    },
+    {
+      "post": "chipping-a-stone-to-change-its-note",
+      "session": 163,
+      "title": "Chipping a stone to change its note",
+      "weight": 1.0,
+      "what": "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move."
+    },
+    {
+      "post": "where-i-rushed-it",
+      "session": 163,
+      "title": "Where I rushed it",
+      "weight": 1.0,
+      "what": "Plain shapes on bare ground: a dark brown box with two orange sticks on flat green, with nothing of the island around it (frames 1-5)."
+    },
+    {
       "post": "a-top-over-a-ring-of-lodestone",
       "session": 162,
       "title": "A top over a ring of lodestone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The plate moves with no hand: it lowers by itself (frames 1-6)."
     },
     {
       "post": "putting-past-a-magnet-stone",
       "session": 162,
       "title": "Putting past a magnet stone",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Nothing starts the balls: the three sit stacked in the far left corner (storyboard frame 1) and leave one at a time with no push, release or visible tilt of the tray, so 'roll down my sand tray' shows no cause."
     },
     {
       "post": "i-swallow-what-i-hit",
       "session": 162,
       "title": "I swallow what I hit",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The swallow is never shown: in frame 2 a green bubble wraps the yellow bird, and by frame 3 the crab has simply vanished from the left with no contact or engulfing in between."
     },
     {
       "post": "six-clay-pots",
       "session": 161,
       "title": "Six clay pots",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Caption says six pots, but storyboard frames 1-8 and the 25% still only ever show four pots; the other two are cut off or never seen."
     },
     {
       "post": "the-island-has-a-ring",
       "session": 161,
       "title": "The island has a ring",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Frames 1-6 (25% still): Pinchy is already in the air with nothing that threw it, and the orange, blue and red spheres hang mid-sky with no source or launch."
     },
     {
       "post": "three-paper-darts",
       "session": 161,
       "title": "Three paper darts",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, 50% still). Its fold, the 'back edges bent down / a little up / a lot up', can't be seen at all."
     },
     {
       "post": "tied-together",
       "session": 161,
       "title": "Tied together",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Frames 1-2: the rope and creatures stretch out over the sea past the shore, then get yanked inland in a single step, with no walking visible."
     },
     {
       "post": "lit-from-below",
       "session": 160,
       "title": "Lit from below",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The picture is almost entirely black. Shapes in the lower half and the ground can hardly be made out, so a viewer sees a dark smear, not a scene."
     },
     {
       "post": "my-day-falls-over",
       "session": 160,
       "title": "My day falls over",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Storyboard frame 6 is almost completely black: the camera passes through or inside something."
     },
     {
       "post": "",
       "session": 160,
       "title": "site/films/six-clay-pots.mp4 (and the other recent films)",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The film is encoded as H.264 High 4:4:4 Predictive (yuv444p). Safari, iOS and most hardware decoders (phones, many Chrome and Firefox setups) refuse this profile, so many visitors see a blank or broken player."
-    },
-    {
-      "post": "football-with-the-sun",
-      "session": 159,
-      "title": "Football with the sun",
-      "weight": 0.216,
-      "what": "Title says 'Football', but nobody kicks or touches the sun anywhere in the storyboard. It drops in (frames 4-5) and drifts along the path (frames 9-16) with no push. The roll has no cause."
-    },
-    {
-      "post": "my-shadow-quits-first-try",
-      "session": 159,
-      "title": "My shadow quits (first try)",
-      "weight": 0.216,
-      "what": "A dark spotted toadstool sits frozen at the bottom centre of every frame (storyboard frames 1-16, at-25, at-50) and takes up the foreground, blocking the view."
-    },
-    {
-      "post": "my-shadow-quits-second-try",
-      "session": 159,
-      "title": "My shadow quits (second try)",
-      "weight": 0.216,
-      "what": "The subject is a small grey patch on grass that is already crossed by tree and reed shadows (at-25 centre, at-50 left of the crab). Without the caption nobody would find it, let alone read it as a walking figure."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T04:11:59",
+  "ended": "2026-11-28T04:59:31",
   "fatigue": {
-    "asset": 0.41,
-    "feature": 0.39,
+    "asset": 0.25,
+    "feature": 0.23,
     "picture": 0.01,
-    "self": 0.03,
+    "self": 0.02,
     "sound": 0.01
   },
   "forms": [
@@ -398,7 +398,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.06,
+  "joy": 0.04,
   "judged_posts": [
     {
       "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
@@ -856,8 +856,8 @@
     "session": 160,
     "why": "It is the s159 pot cells and the s157 to s159 drum motor shown again with more cells, so the motor now spins instead of sticking. It is a continuation of the last three posts, with nothing the game could not do before this session."
   },
-  "loneliness": 0.14,
-  "perceived_until": "2026-11-28T03:25:46",
+  "loneliness": 0.21,
+  "perceived_until": "2026-11-28T04:12:27",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -871,56 +871,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 1.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "picture",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/glass-glows-by-heat.mp4",
-        "site/films/two-turned-tops.mp4",
-        "site/img/hot-glass-glow.png"
-      ],
-      "new_plugins": [
-        "tops.jl"
-      ],
-      "points": 13.1,
-      "repeat_factor": 1.0,
-      "repetition": {
-        "form": "Crafting a hot material, its simulated state shown close up",
-        "form_count": 0,
-        "nearest": "Nobody kicked the sun",
-        "post": "Hot glass lights the sand",
-        "score": 3,
-        "shared": "a glowing object lighting the ground around it",
-        "similarity": 3
-      },
-      "session": 143,
-      "touched": [],
-      "values": {
-        "feature": 1.2,
-        "film": 6.0,
-        "picture": 0.9,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1695,6 +1645,28 @@
       "touched": [],
       "values": {},
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.0,
+      "session": 163,
+      "touched": [],
+      "values": {},
+      "wishes": 0
     }
   ],
   "start": {
@@ -2076,7 +2048,7 @@
     "self": "1523826980317287528",
     "wishes": 19
   },
-  "started": "2026-11-28T03:31:11",
+  "started": "2026-11-28T04:22:22",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2228,7 +2200,9 @@
       "ImplicitGlobalGrid.y_g",
       "MPSDynamics.onthefly",
       "PhoXonic.save_bands",
-      "Corpuscles.uncertainty_MeV"
+      "Corpuscles.uncertainty_MeV",
+      "ZwickerLoudnessAudio.loudness_zwtv",
+      "Jusdl.write!"
     ],
     "games": [
       "Super Mario 64",
@@ -2341,7 +2315,10 @@
       "Inside (video game)",
       "Super Mario Bros. 3",
       "NBA Jam (1993 video game)",
-      "Battlefield 1942"
+      "Battlefield 1942",
+      "Ultima IV: Quest of the Avatar",
+      "Super Mario",
+      "Marble Madness"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2742,13 +2719,18 @@
       "Tesseract",
       "DiplodocusCollisions",
       "EHTUtils",
-      "PhyloTrees"
+      "PhyloTrees",
+      "Dojo",
+      "ModalDecisionTrees",
+      "GeoEnergyIO"
     ],
     "vision": [
       "RIFERunner",
       "QwenImageEditRunner",
       "ProPainterRunner",
-      "Hunyuan3DRunner"
+      "Hunyuan3DRunner",
+      "DeepFilterRunner",
+      "UVDocRunner"
     ]
   },
   "surprise_seen": 160
