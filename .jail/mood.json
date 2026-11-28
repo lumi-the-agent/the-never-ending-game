@@ -1,19 +1,50 @@
 {
-  "annoyance": 0.0,
-  "annoyed": [],
+  "annoyance": 1.0,
+  "annoyed": [
+    {
+      "post": "sparks-at-dusk",
+      "session": 175,
+      "title": "Sparks at dusk",
+      "weight": 1.0,
+      "what": "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn."
+    },
+    {
+      "post": "a-lamp-to-work-by",
+      "session": 175,
+      "title": "A lamp to work by",
+      "weight": 1.0,
+      "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
+    },
+    {
+      "post": "where-the-brushes-let-go",
+      "session": 175,
+      "title": "Where the brushes let go",
+      "weight": 1.0,
+      "what": "The 'current jumps the gap' is a flat, opaque, saturated blue half-disc stuck under the commutator. It looks like a plastic cap or a sticker, not a spark: it has no glow, no thinness and casts no light on the copper or the brush around it."
+    },
+    {
+      "post": "",
+      "session": 174,
+      "title": "drum-sparks storyboard, frames 1-5 and 16; drum-sparks-at-50.jpg",
+      "weight": 0.6,
+      "what": "You can't read the film. Frames are almost black, the drum never visibly turns, and the last frame fades to black, so a viewer can't tell that a motor is running, let alone that the brushes break the circuit."
+    }
+  ],
   "boredom": 1.0,
-  "ended": "2026-11-28T14:18:34",
+  "ended": "2026-11-28T15:02:03",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.5,
-    "picture": 0.01,
+    "feature": 0.3,
+    "picture": 1.01,
     "self": 0.01,
-    "sound": 0.37
+    "sound": 0.22
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Where the brushes let go",
+        "A lamp to work by",
         "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
@@ -22,8 +53,7 @@
         "Putting past a magnet stone",
         "A coil on a cord",
         "Iron sticks, before and after",
-        "A compass in a bowl",
-        "A top over a ring of lodestone"
+        "A compass in a bowl"
       ]
     },
     {
@@ -317,22 +347,8 @@
     "drum_switch",
     "commutator_spark"
   ],
-  "joy": 0.41,
+  "joy": 0.09,
   "judged_posts": [
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "new permanent prop plus film shot with video feedback and a camera push-in",
-      "session": 112,
-      "title": "The island on TV",
-      "what": "A television stands on the meadow showing the film's own previous frame, so the camera pushes into a television-in-a-television tunnel while three friends watch and Lumi strolls past; the set also shows periodic pictures of the island in the live game."
-    },
-    {
-      "form": "Permanent change to the island's look or places",
-      "recipe": "new permanent place with a slow friend-driven selection rule; friends visit one by one and the population changes",
-      "session": 113,
-      "title": "Breeding a new friend",
-      "what": "A fenced pen holds little ones built from mixed body parts of the friends' kinds; friends visit and hug their favourite, and every few minutes the two most hugged parents produce the next generation with some mutation, shown in a film at the fence."
-    },
     {
       "form": "Something the player can now do (mini game)",
       "recipe": "player-controlled WASD balancing game against a running crowd",
@@ -738,6 +754,20 @@
       "session": 174,
       "title": "Sparks at dusk",
       "what": "A dark, slowly drifting view of the iron drum motor on a wooden block on the grass at dusk: the coils turn a little and small orange-white sparks flicker at the commutator end; nobody is there and nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated device left alone, close fixed camera on its sparking commutator at dusk",
+      "session": 175,
+      "title": "Where the brushes let go",
+      "what": "A close side view at dusk of the drum motor's copper commutator, with one brush above and one below and a small blue-violet glow where the lower brush breaks contact; the motor runs on its own and nothing else on the island changes."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated device left alone, close camera, a new small prop lighting it",
+      "session": 175,
+      "title": "A lamp to work by",
+      "what": "A dusk view of the same drum motor on its oak block, now lit by a small clay oil lamp, showing the copper windings, the brushes and the cords up from the six pots; the motor turns and nothing else changes except that a lamp now stands there."
     }
   ],
   "kinds_ever": [
@@ -762,21 +792,21 @@
     "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
     "form_count": 9,
-    "nearest": "Six clay pots",
-    "post": "Sparks at dusk",
+    "nearest": "Sparks at dusk",
+    "post": "Where the brushes let go",
     "score": 10,
-    "session": 174,
-    "shared": "the same pot-powered copper motor running alone on a block, watched close; only the commutator sparks are new",
-    "similarity": 7
+    "session": 175,
+    "shared": "same drum motor at dusk, close camera, sparks at the commutator; only the spark colour and size are new",
+    "similarity": 9
   },
   "last_surprise": {
-    "fun": 1,
-    "score": 1.5,
-    "session": 165,
-    "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
+    "fun": 3,
+    "score": 5.0,
+    "session": 174,
+    "why": "Break-before-make sparks that come from stored coil energy are a real step for the motor line, but what the film shows is two glowing dots on a motor the island has already posted three times."
   },
-  "loneliness": 0.06,
-  "perceived_until": "2026-11-28T13:27:28",
+  "loneliness": 0.13,
+  "perceived_until": "2026-11-28T14:19:02",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -790,59 +820,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 1.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "motor_flick",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish",
-        "post",
-        "self"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/drawn-wire-burns-out.mp4"
-      ],
-      "new_plugins": [],
-      "points": 1.8,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 10,
-        "nearest": "A copper wire keeps its bends",
-        "post": "Where I rushed it",
-        "score": 10,
-        "shared": "a copper wire on a board shown close up, simulated material state",
-        "similarity": 4
-      },
-      "session": 155,
-      "touched": [
-        "lumicolour.jl",
-        "separation.jl",
-        "showers.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 3.0,
-        "post": 4.0,
-        "self": 5.1
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 1.0,
@@ -1461,6 +1438,54 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 3.0,
+        "post": 2.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/drum-sparks-overview.jpg",
+        "site/films/drum-sparks-steps.jpg",
+        "site/films/drum-sparks-strip.jpg",
+        "site/img/drum-by-lamplight.png",
+        "site/img/the-brushes-break.png"
+      ],
+      "new_plugins": [],
+      "points": 0.8,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 9,
+        "nearest": "Sparks at dusk",
+        "post": "Where the brushes let go",
+        "score": 10,
+        "shared": "same drum motor at dusk, close camera, sparks at the commutator; only the spark colour and size are new",
+        "similarity": 9
+      },
+      "session": 175,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "picture": 3.0,
+        "polish": 1.0,
+        "post": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1795,7 +1820,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.795867947857752e9,
+      "irondrum.jl": 1.795870581012196e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1849,7 +1874,7 @@
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T13:33:13",
+  "started": "2026-11-28T14:24:58",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2025,7 +2050,9 @@
       "MESTI.mesti_build_channels",
       "FITSIO.copy_section",
       "SkyCoords.position_angle",
-      "ABCDMatrixOptics.GaussianBeam"
+      "ABCDMatrixOptics.GaussianBeam",
+      "Oceananigans.conformal_conic_scale_factor",
+      "GeometryBasics.MetaMesh"
     ],
     "games": [
       "Super Mario 64",
@@ -2174,7 +2201,10 @@
       "Thief: The Dark Project",
       "Tom Clancy's Splinter Cell (video game)",
       "The Legend of Zelda: The Wind Waker",
-      "Star Fox 64"
+      "Star Fox 64",
+      "Chrono Trigger",
+      "God of War (2005 video game)",
+      "Eternal Darkness: Sanity's Requiem"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2618,7 +2648,10 @@
       "Octofitter",
       "SpacePhysicsMakie",
       "ReverseDiffSparse",
-      "Basins"
+      "Basins",
+      "NeuralPDE",
+      "BinningAnalysis",
+      "LevelSetMethods"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2628,8 +2661,10 @@
       "DeepFilterRunner",
       "PPDocLayoutRunner",
       "NeuralLUTRunner",
-      "ProPainterRunner"
+      "ProPainterRunner",
+      "RIFERunner",
+      "Hunyuan3DRunner"
     ]
   },
-  "surprise_seen": 165
+  "surprise_seen": 174
 }

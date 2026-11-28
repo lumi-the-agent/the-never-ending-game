@@ -1,0 +1,37 @@
+{
+  "created": "2026-11-28T14:35:12.175",
+  "finished": "2026-11-28T14:36:27.842",
+  "id": "20261128-143512-112-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_macro",
+    "kwargs": {
+      "eye": [
+        0.13,
+        0.07,
+        0.045
+      ],
+      "samples": 32,
+      "size": [
+        960,
+        540
+      ],
+      "target": [
+        0.07,
+        0.0,
+        0.0
+      ]
+    },
+    "path": "media/s175-macro-test.png",
+    "script": "movies/drumspark.jl"
+  },
+  "result": {
+    "hour": 19.55,
+    "path": "media/s175-macro-test.png",
+    "rev_s": 3.1463632130451242,
+    "spark": true
+  },
+  "seconds": 74.5,
+  "started": "2026-11-28T14:35:13.318",
+  "status": "done"
+}

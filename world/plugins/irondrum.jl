@@ -21,7 +21,14 @@ const ID_FERRITE = NG.Hikari.Principled(base_color = (0.09f0, 0.09f0, 0.10f0), m
 # s173: the commutator spark: air breaking down at the brush's trailing edge (N2 lines, violet-blue) with a little
 # copper vapour (green) once the break carries more than copper's minimum arc current (~0.43 A; the drum breaks ~0.6 A)
 # s174: strength 22 clipped the core to white in the traced film and lit the copper round it orange; 6 keeps it blue
-const ID_SPARK = NG.Hikari.Emission(color = (0.36f0, 0.50f0, 1.0f0), strength = 6f0, two_sided = true)
+# s175: at strength 6 every channel clipped and the tone mapper drew the spark WHITE; air breaking down glows violet-blue
+# (N2 second positive lines 337-400 nm). (0.42, 0.36, 1) x 2.6 still went white at dusk exposure (every channel clips):
+# nearly pure blue-violet, so only blue clips and red/green stay under it (media/s175-spark-blue-test.png was white)
+# x 3 STILL white (the dusk exposure multiplies several-fold: media/s175-brushes-blue2.png): dim at the source
+# x 0.6 came out pale blue-WHITE = the plot's own color (0.8, 0.88, 1): the traced spark takes the PLOT colour. Both now
+# blue-violet (ID_SPARK_RGB)
+const ID_SPARK = NG.Hikari.Emission(color = (0.18f0, 0.14f0, 1.0f0), strength = 1.5f0, two_sided = true)
+const ID_SPARK_RGB = RGBf(0.18, 0.14, 1.0)
 const ID_HIDE = Point3f(0, 0, -0.35)       # a spark not burning sits inside the oak block
 
 struct IronDrum <: System end
@@ -238,7 +245,7 @@ function id_ensure!(game)
     for p in rot
         Makie.translate!(p, c)
     end
-    ID[:sparks] = [mesh!(sc, GeometryBasics.normal_mesh(Sphere(Point3f(0), 0.0022f0)); color = RGBf(0.8, 0.88, 1.0),
+    ID[:sparks] = [mesh!(sc, GeometryBasics.normal_mesh(Sphere(Point3f(0), 0.0022f0)); color = ID_SPARK_RGB,
                          material = ID_SPARK, name = Symbol("irondrum_spark", k)) for k in 1:2]
     for p in ID[:sparks]
         Makie.translate!(p, c + ID_HIDE)
@@ -320,7 +327,8 @@ end
 
 """
 The sparks of this frame: every break the motor logged since the last frame (st.sparks, 1/2 L I^2 each) lights a
-spark at each brush's trailing edge, sized by its energy; a frame without a break leaves them dark. The log is emptied
+spark at each brush's trailing edge, sized by its energy (s175: L_circuit 8 mH from the converged field solve ->
+~1.3 mJ a break, was 0.6 at the 4 mH guess); a frame without a break leaves them dark. The log is emptied
 here, so it never grows.
 """
 function id_sparks!(w, st)

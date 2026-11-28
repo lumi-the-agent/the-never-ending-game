@@ -1,0 +1,37 @@
+{
+  "created": "2026-11-28T14:37:13.037",
+  "finished": "2026-11-28T14:38:33.804",
+  "id": "20261128-143713-037-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_macro",
+    "kwargs": {
+      "eye": [
+        0.125,
+        0.055,
+        0.07
+      ],
+      "samples": 128,
+      "size": [
+        1280,
+        720
+      ],
+      "target": [
+        0.075,
+        0.0,
+        -0.002
+      ]
+    },
+    "path": "site/img/the-brushes-break.png",
+    "script": "movies/drumspark.jl"
+  },
+  "result": {
+    "hour": 19.55,
+    "path": "site/img/the-brushes-break.png",
+    "rev_s": 3.1371109855331016,
+    "spark": true
+  },
+  "seconds": 79.7,
+  "started": "2026-11-28T14:37:14.118",
+  "status": "done"
+}

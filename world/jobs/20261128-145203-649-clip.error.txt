@@ -1,0 +1,91 @@
+ArgumentError: invalid JSON at byte position 271584 (line 2530) parsing type object: UnexpectedEOF
+ 2.9 ms." <EOF>
+         ^
+
+Stacktrace:
+  [1] _invalid(error::JSON.Error, buf::Vector{UInt8}, pos::Int64, typename::String)
+    @ JSON ~/.julia/packages/JSON/45LIG/src/JSON.jl:106
+  [2] invalid(error::JSON.Error, buf::Vector{UInt8}, pos::Int64, typename::String)
+    @ JSON ~/.julia/packages/JSON/45LIG/src/JSON.jl:70
+  [3] applyobject(keyvalfunc::JSON.var"#92#93"{JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, Dict{String, Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/lazy.jl:350
+  [4] make(st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, ::Type{Dict{String, Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:765
+  [5] applyvalue(f::JSON.var"#88#89"{Vector{Any}}, x::JSON.LazyValue{Vector{UInt8}}, st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:644
+  [6] #86
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:736 [inlined]
+  [7] applyarray(keyvalfunc::JSON.var"#86#87"{JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, Vector{Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/lazy.jl:429
+  [8] make(st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, ::Type{Vector{Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:736
+  [9] applyvalue(f::JSON.var"#94#95"{JSON.PtrString, JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, Dict{String, Any}}, x::JSON.LazyValue{Vector{UInt8}}, st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:648
+ [10] #92
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:765 [inlined]
+ [11] applyobject(keyvalfunc::JSON.var"#92#93"{JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, Dict{String, Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/lazy.jl:329
+ [12] make(st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing}, ::Type{Dict{String, Any}}, x::JSON.LazyValue{Vector{UInt8}})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:765
+ [13] applyvalue(f::JSON.var"#82#83"{Base.RefValue{Any}}, x::JSON.LazyValue{Vector{UInt8}}, st::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:644
+ [14] make
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:728 [inlined]
+ [15] _parse(x::JSON.LazyValue{Vector{UInt8}}, ::Type{Any}, dicttype::Type{Dict{String, Any}}, null::Nothing, style::JSON.JSONReadStyle{Dict{String, Any}, Nothing, StructUtils.DefaultStyle, Nothing})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:427
+ [16] parse(buf::Vector{UInt8}, ::Type{Any}; dicttype::Type{Dict{String, Any}}, null::Nothing, style::StructUtils.DefaultStyle, unknown_fields::Symbol, kw::@Kwargs{jsonlines::Bool})
+    @ JSON ~/.julia/packages/JSON/45LIG/src/parse.jl:405
+ [17] parse (repeats 2 times)
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:382 [inlined]
+ [18] #60
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:378 [inlined]
+ [19] open(f::JSON.var"#60#61"{Nothing, @Kwargs{dicttype::DataType}, String}, args::String; kwargs::@Kwargs{})
+    @ Base ./io.jl:412
+ [20] open
+    @ ./io.jl:409 [inlined]
+ [21] parsefile
+    @ ~/.julia/packages/JSON/45LIG/src/parse.jl:378 [inlined]
+ [22] read_json
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/paths.jl:93 [inlined]
+ [23] load_todos(path::String)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/todos.jl:40
+ [24] (::NeverendingGame.var"#update_todos!##0#update_todos!##1"{NeverendingGame.var"#close_problems!##0#close_problems!##1"{Vector{String}, String}, String})()
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/todos.jl:54
+ [25] mkpidlock(f::NeverendingGame.var"#update_todos!##0#update_todos!##1"{NeverendingGame.var"#close_problems!##0#close_problems!##1"{Vector{String}, String}, String}, at::String, pid::Int32; kwopts::@Kwargs{stale_age::Int64})
+    @ FileWatching.Pidfile ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/FileWatching/src/pidfile.jl:96
+ [26] mkpidlock
+    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/FileWatching/src/pidfile.jl:93 [inlined]
+ [27] mkpidlock
+    @ ~/.julia/juliaup/julia-1.12.7+0.x64.linux.gnu/share/julia/stdlib/v1.12/FileWatching/src/pidfile.jl:91 [inlined]
+ [28] update_todos!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/todos.jl:53 [inlined]
+ [29] close_problems!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/todos.jl:115 [inlined]
+ [30] install!(g::Game, p::NeverendingGame.Plugin)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:139
+ [31] load!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]
+ [32] Game(root::String; instance::Symbol, fps::Int64, quiet::Bool)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:96
+ [33] Game
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:85 [inlined]
+ [34] drum_still(path::String; hour::Float64, samples::Int64, size::Tuple{Int64, Int64}, spin::Float64, eye::GeometryBasics.Point{3, Float32}, target::GeometryBasics.Point{3, Float32})
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/drumspark.jl:62
+ [35] drum_still
+    @ /sim/Programmieren/SimGame/world/movies/drumspark.jl:60 [inlined]
+ [36] #drum_macro#20
+    @ /sim/Programmieren/SimGame/world/movies/drumspark.jl:103 [inlined]
+ [37] invokelatest
+    @ ./Base_compiler.jl:250 [inlined]
+ [38] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210
+ [39] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378
+ [40] top-level scope
+    @ none:1
+ [41] eval(m::Module, e::Any)
+    @ Core ./boot.jl:489
+ [42] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:283
+ [43] _start()
+    @ Base ./client.jl:550

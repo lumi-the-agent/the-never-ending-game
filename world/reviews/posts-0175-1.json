@@ -1,0 +1,31 @@
+{"posts": [
+  {"post": "where-the-brushes-let-go",
+   "verdict": "redo",
+   "problems": [
+     "The 'spark' at the lower brush is a flat, evenly lit blue ellipse with a hard edge. It reads as a blue plastic button stuck under the commutator, not as current jumping a gap.",
+     "The caption says each brush lets go ('a copper brush above, one below'), but only the lower brush shows anything. The upper brush has at most a faint blue line where it meets the commutator.",
+     "The lower brush block stands clear of the commutator, with the blue disc filling the gap. The brush does not look like it touches the segment it is supposed to slip off.",
+     "The caption says the sparks 'grew' because of the 1.3 mJ figure, 'twice what I had guessed', but the picture has nothing to compare against, so the claim cannot be seen.",
+     "A huge black disc (the drum or a stone) fills the right third of the frame in near-total darkness, and the windings behind it are barely visible. The brushes look like stained wood blocks, not copper."
+   ],
+   "critique": "The one thing the post is about, the break at the brushes, is a blue disc that looks glued on, and only one of the two brushes shows it. The rest of the frame is a dark blob and a wooden post."},
+  {"post": "a-lamp-to-work-by",
+   "verdict": "redo",
+   "problems": [
+     "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it.",
+     "The caption says 'six pots', but only three are in the picture, cut off at the bottom-left edge.",
+     "The drum motor, which the caption lists first ('copper windings on the iron drum'), is a small dark lump at the top of the block. The windings are thin lines you have to search for, and the drum reads as a black cylinder.",
+     "The pots' cords run off the bottom of the frame, while the cords on the block come down its front face, so you cannot see the two connect. The 'oak block' is a smooth brown octagonal prism with no wood grain."
+   ],
+   "critique": "The lamp is the brightest thing in the frame but looks like a glowing plastic disc. The motor it is supposed to light stays a dark silhouette, and half the pots the caption counts are missing."},
+  {"post": "sparks-at-dusk",
+   "verdict": "redo",
+   "problems": [
+     "The 'white flicks at the brushes' are a single tiny white dot near the commutator at 50% and 75% and in board frames 7–16. At film size you cannot read them as sparks, let alone four breaks a turn.",
+     "Nothing in the film shows the drum turning. The drum stays hidden between the two black stones throughout, so a running motor cannot be seen.",
+     "From about the middle of the film the lamp is cut off at the bottom edge and becomes the biggest, brightest thing in frame (75% frame, last row of the board). It pulls the eye away from the brushes.",
+     "The caption says the camera 'comes down the copper cords from the pots to the coils', but the pots leave the frame by the third row of the board. The camera simply drops from overhead onto the block.",
+     "The first board frame is visibly darker than the second, an exposure jump at the start. In the 25% frame a pale leaf blade cuts across the front of the block, and a stray white fleck sits on the block's side."
+   ],
+   "critique": "A film titled after the sparks shows them as a dot a few pixels wide on a motor that never visibly turns. The lamp ends up as the star of the shot."}
+]}

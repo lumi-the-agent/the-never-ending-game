@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T13:55:01.568",
+  "finished": "2026-11-28T14:29:10.802",
   "id": "20261128-135501-565-run",
   "kind": "run",
   "params": {
@@ -11,6 +12,12 @@
     },
     "script": "tools/swap_film.jl"
   },
+  "result": {
+    "bytes": 1566850,
+    "copied": "/sim/Programmieren/SimGame/world/media/s174-drumsparks-traced.mp4",
+    "to": "/sim/Programmieren/SimGame/world/site/films/drum-sparks.mp4"
+  },
+  "seconds": 2047.2,
   "started": "2026-11-28T13:55:03.556",
-  "status": "running"
+  "status": "done"
 }

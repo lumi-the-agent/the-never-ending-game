@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T13:58:02.278",
+  "finished": "2026-11-28T14:30:30.589",
   "id": "20261128-135802-274-trace",
   "kind": "trace",
   "params": {
@@ -20,5 +21,10 @@
       1.6275
     ]
   },
-  "status": "queued"
+  "result": {
+    "path": "media/s174-drum-still.png"
+  },
+  "seconds": 81.1,
+  "started": "2026-11-28T14:29:09.524",
+  "status": "done"
 }

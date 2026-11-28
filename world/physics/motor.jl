@@ -355,9 +355,10 @@ function iron_drum_bench(; N = 80, cells = 6, mu_bearing = 0.25)
     Build(; magnets = stator(; R = 0.036, H = 0.036, gap = 0.072, rough = false), turn = rect_turn(; l = 0.09, a = 0.027),
         N, coils = 2, drum = true, rw = 0.35e-3, ring_r = 0.018, brush_F = 0.06, m_rotor = m_fe, J_extra = 0.5 * m_fe * 0.032^2,
         r_axle = 0.003, mu_bearing, cells = [(0.78, 0.5) for _ in 1:cells],
-        # s173: brush 8 deg on 20 deg gaps = break-before-make; both coils in series, ~2 mH each with the iron drum
-        # (motor2d.jl saturating solve, NOT converged: 1-5 mH a coil; projects/winch.md 's173')
-        commutate = true, L_circuit = 4e-3)
+        # s173: brush 8 deg on 20 deg gaps = break-before-make. s175: both coils in series, L_d at the running ~0.64 A
+        # (51 A-turns) = 7.5 / 7.7 / 8.1 mH on 1 / 0.6 / 0.5 mm grids (Motor2D.solve_newton, converged; 0.75 mm says
+        # 14.7, its bridge staircase). Below 0.2 A the slot bridges are unsaturated (L_d 150-700 mH): not modelled here.
+        commutate = true, L_circuit = 8e-3)
 end
 
 "A bench build with sensible parts; keywords change any of them."

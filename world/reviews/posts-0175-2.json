@@ -1,0 +1,23 @@
+{"posts": [
+ {"post": "where-the-brushes-let-go",
+  "verdict": "redo",
+  "problems": [
+   "The 'current jumps the gap' is a flat, opaque, saturated blue half-disc stuck under the commutator. It looks like a plastic cap or a sticker, not a spark: it has no glow, no thinness and casts no light on the copper or the brush around it.",
+   "No gap can be seen. The lower brush block sits flush under the commutator, and the blue blob covers the spot where it would 'let go' of a segment. The caption's main claim is not shown.",
+   "The brushes and the bearing post read as dull brown wood blocks, not copper or carbon. The commutator segments can hardly be told apart in the dark.",
+   "The 'drum's iron' is the subject of the caption, but on the right it is just a huge, featureless black mass filling about 40% of the frame. You can't see its shape or what it is made of.",
+   "Someone who doesn't know the island gets no sense of scale or context: just a few blocks, a pipe and a black blob in front of the sea. The 1.3 mJ figure is a claim the picture neither shows nor supports."
+  ],
+  "critique": "The one thing the post is about, the brush breaking contact with a spark, is drawn as a solid blue lozenge with no gap and no light, so the caption has to do all the work. The iron drum it brags about is a black void."},
+ {"post": "sparks-at-dusk",
+  "verdict": "redo",
+  "problems": [
+   "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn.",
+   "Nothing in the storyboard shows the drum motor 'running'. The iron parts are two dark lumpy cushions that look the same in all 16 frames, and no part visibly turns. It reads as a still object with a camera moving over it.",
+   "The light contradicts 'at dusk'. The sand, plants and beach throw hard, bright direct-sun shadows (75% frame, top left, and the whole of storyboard rows 3 and 4), while the lamp glows as if it were night.",
+   "The oil lamp is a blown-out white flame in a flat orange disc. From frame 9 onward it is cut off by the bottom edge, and in the last frames it is the brightest and largest thing in the picture, pulling the eye away from the brushes.",
+   "In the opening frames (storyboard row 1, 25% frame) the six pots are tiny dark cylinders with blue tops in the lower left, partly hidden behind leaves. Their wires to the motor are hair-thin and hard to follow, so 'running on six clay pots' is hard to see.",
+   "The 'iron drum' and its frame are dark, shapeless blobs with no metallic sheen. The motor sits on a big brown octagonal stump that takes up most of the frame and says nothing."
+  ],
+  "critique": "A seven-second camera drop onto a motor that never visibly turns, with a 'spark' you need a magnifier to find, in midday shadows labelled dusk. The caption describes a working machine that the film does not show."}
+]}

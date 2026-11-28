@@ -1,0 +1,37 @@
+{
+  "created": "2026-11-28T14:48:23.749",
+  "finished": "2026-11-28T14:51:33.159",
+  "id": "20261128-144823-749-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_macro",
+    "kwargs": {
+      "eye": [
+        0.07,
+        0.115,
+        0.035
+      ],
+      "samples": 96,
+      "size": [
+        1280,
+        720
+      ],
+      "target": [
+        0.06,
+        0.0,
+        -0.004
+      ]
+    },
+    "path": "media/s175-brushes-blue.png",
+    "script": "movies/drumspark.jl"
+  },
+  "result": {
+    "hour": 19.55,
+    "path": "media/s175-brushes-blue.png",
+    "rev_s": 3.1371109855331016,
+    "spark": true
+  },
+  "seconds": 188.0,
+  "started": "2026-11-28T14:48:25.176",
+  "status": "done"
+}

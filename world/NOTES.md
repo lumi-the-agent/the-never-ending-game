@@ -1572,3 +1572,25 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   sandbox frame (`live_path_tracing(true)`, ~3 min; switch moving Emission plots like the drum's sparks OFF first).
   A take that lands after the session goes into its post with tools/swap_film.jl (a :run job that waits for the
   clip job and copies the film over the posted one); watch it first thing next session.
+- (s175) NONLINEAR MAGNETOSTATICS: Picard on the reluctivity (motor2d.jl solve_nl, relax 0.5, 16 passes) DOES NOT CONVERGE
+  where thin iron (the drum's 2 mm slot bridges) sits at the saturation knee: it returned flux linkages that jump around
+  (4030 / 530 / 117 uWb/m at 6 / 12 / 30 A-turns) and torques ~7% low, and nothing in it said so. Use Motor2D.solve_newton
+  (Newton-Raphson with the differential reluctivity per quadrature point, damped; |r|/|f| to 1e-9 in ~16 passes) and
+  ALWAYS print the residual history. Check lambda(NI) is monotone before trusting an inductance. A small difference of
+  big linkages (incremental L) is grid-sensitive: a 2 mm bridge on a 0.75 mm staircase grid gave 14.7 mH where 1 / 0.6 /
+  0.5 mm gave 7.5 / 7.7 / 8.1: compare 3+ grids, not 2.
+- (s175) publish() swaps only plugins whose CONTENT changed: a physics/*.jl edit alone (copied to live/physics) does not
+  reach the human's running game until its plugin reloads. Change the plugin too (a true comment is enough), check with
+  live_eval(...; game = :live) read-only.
+- (s175) A COLOURED GLOW RENDERS WHITE when color x strength (x the scene's exposure, high at dusk) passes 1 in every
+  channel: the spark's (0.36, 0.5, 1) x 6 and (0.42, 0.36, 1) x 2.6 both came out white in traced stills. For a coloured
+  light keep the other channels near zero ((0.10, 0.07, 1) x 3) so only the main one clips; the light it throws keeps its hue.
+- (s175) WORKER clip/trace jobs build their game as instance :live (paths.jl GamePaths default): they load the PUBLISHED
+  plugins (world/live/plugins), not world/plugins. A look change tested in a worker still shows only after publish().
+  Two s175 spark-colour tests rendered the old material for this reason.
+- (s175) A TRACED Emission takes the mesh's PLOT `color`, not the Emission's own colour: the drum's sparks had
+  color = RGBf(0.8, 0.88, 1) on the mesh and drew pale white whatever ID_SPARK said. Give an emissive mesh the colour you
+  want it to glow in (irondrum.jl ID_SPARK_RGB). Look at it in a worker still after publish (worker loads live plugins).
+- (s175 post critic) A SPARK DRAWN AS A SPHERE reads as a plastic button, whatever its colour; an emissive bowl reads as a
+  puck, not clay lit by a flame. Draw light sources as what emits: a thin arc at the brush's trailing edge, a small flame
+  above a clay bowl whose clay is lit (not emissive). And parts that touch must touch on screen (brush ON its segment).

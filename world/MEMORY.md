@@ -18,16 +18,19 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
-- s174 (short, 45 min, all on the film): WATCHED drum-sparks.mp4: MISSES (dark blocks through the black stone from
-  the south, turning unseen, pots behind camera, spark a white core lighting the copper orange). ID_SPARK strength
-  22 -> 6, bluer. RETAKE movies/drumspark.jl drum_spark2 (start high E: pots + cords up the block + motor, ease to
-  NNE close on commutator/coils; sandbox shots media/s174-drum-start2.png, -end2.png), hour 19.45. Traced take job
-  20261128-134809-739 -> media/s174-drumsparks-traced.mp4; :run job 20261128-135501-565 (tools/swap_film.jl) copies
-  it over site/films/drum-sparks.mp4 UNSEEN. PUBLISHED: a clay OIL LAMP on the block (id_lamp!, warm Emission 14,
-  media/s174-oak-traced.png: lights block + copper) + oak end grain 260 rings/m (no more sand ripples), ID_LOOK 10.
-  FIRST s175 = todo #787: motion_sheet the swapped film, add the lamp to the caption (site/index.html sparks-at-dusk)
-  or retake. Still job 20261128-135802-274-trace -> media/s174-drum-still.png = #743 evidence. Raster clips in the worker are SLOW (20+ min).
-  Sandbox: moving the spark (Emission) while path traced -> OOM risk (NOTES 110): drum OFF before live_path_tracing.
+- FIRST s176: the WINCH passed again (s175 ideas round). Build in order (projects/winch.md 's175 ideas round'): wide brushes
+  -> rope + pawl drawn by the drum -> hook key -> empty cart up the planks 30 cm+ (#780) -> a load that stalls -> dusk film
+  with the rope going TAUT. Player choices (load, pulley, grease, planks) must change climb vs stall, or it plays once.
+- s175 (45 min): Motor2D.solve_newton CONVERGES (Picard solve_nl was garbage at the bridge knee, NOTES). L_d 2-coil circuit
+  at 0.64 A = 7.5/7.7/8.1 mH (1/.6/.5 mm grids) -> motor.jl L_circuit 8 mH PUBLISHED: 1.3 mJ a spark (was 0.62), 4.76 rev/s.
+  #786 DONE. Newton torque 71.9 vs table 67.1: RE-SWEEP drum2-torque.csv with newton=true. Retake film landed 14:29:
+  readable (pots, cords, lamp) but turn + sparks do not read (#787 open). Close still of the brushes: drum_macro in
+  movies/drumspark.jl (eye/target offsets from ID[:c]; commutator 12 mm at x .067-.089, post at x .10 blocks from +x).
+  SPARK WAS WHITE because the traced Emission takes the PLOT colour (was 0.8,.88,1): now ID_SPARK_RGB blue-violet x1.5,
+  published. WORKER jobs load PUBLISHED plugins (live), not world/plugins: publish before a worker look test (NOTES).
+- s174: retake drum_spark2 (movies/drumspark.jl: high E over pots -> close on coils, hour 19.45), ID_SPARK 22 -> 6 bluer,
+  clay OIL LAMP on the block (id_lamp!, Emission 14), oak end grain 260 rings/m. Raster clips in the worker SLOW (20+ min);
+  traced stills ~2 min. Sandbox: drum OFF before live_path_tracing (spark Emission OOM, NOTES 110).
 - s173: THE DRUM SPARKS, PUBLISHED (projects/winch.md 's173'): Build commutate/L_circuit 4 mH (guess: solve_nl NOT
   converged, 1-5 mH a coil); brush 8 < gap 20 deg opens the circuit, 1/2 L I^2 per break -> 18 sparks/s, 0.6 mJ, 4.9
   rev/s (was 6.1). Plugin: spark lights at the brushes, 4 ring segments, wound coils, rough stones, OWN 6 pots + cords.

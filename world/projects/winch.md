@@ -1,6 +1,6 @@
 # The cart's motor on a rope: winch anything up the beach
 Goal: (passed s173, round 2: surprise 6 fun 8 real 7 toward 9) The player hooks the drum motor's rope to anything on the island (a log, a crate, the empty cart, a friend on the cart) and picks a pulley; the motor hauls it or stalls by what it weighs and how it rolls, and the stall shows: rope taut, drum stopped, the brushes sparking bright on the stall current. Nothing quoted or fitted: rope, cart mass (mesh volume x density) and rolling by contact, torque from the circuit each step.
-Next: (s173 done: physics/rope.jl hauls a 0.8 kg crate 2 m, the 1.5 kg log stalls in the brushes' dead windows; s174: the s173 spark film was dark blocks behind the stone, retake drum_spark2 queued, sparks dimmer/bluer.) 1) brush width as a part: make-before-break (brush wider than the gap) so a loaded motor never sits in a dead window; 2) the rope + pawl IN THE GAME by the drum, drawn as a tube through rope.jl's particles, coiling on an oak drum; 3) the empty cart (mass from its mesh) on the planks hauled 30 cm+ = the perfectionist's done_when for #780; film it.
+Next: (s175: field solve CONVERGED by Newton, L_circuit 8 mH in the game, ~1.3 mJ a spark; retake film swapped in.) 1) brush width as a part: make-before-break (brush wider than the gap; the shorted coil decays with L/R ~3-4 ms) so a loaded motor never sits in a dead window; 2) the rope + pawl IN THE GAME by the drum, drawn as a tube through rope.jl's particles, coiling on an oak drum; 3) the empty cart (mass from its mesh) on the planks hauled 30 cm+ = #780's done_when; film it. Also: re-sweep physics/data/drum2-torque.csv with torque(...; newton = true) (Picard tables ~7% low).
 
 Passed s172 (round 3 of 3, the critic's pick of a non-pass: surprise 6 fun 7 real 6 toward 8). The human s172: "back to
 kindergarten times? ... nothing of the electric car itself moved since s159". This project IS the car's motor.
@@ -126,3 +126,34 @@ Critic's dangers: (1) softiron saturation and the rope tuned until the loaded ca
   make-before-break brushes would give) moves 81 cm, still 1.5 rev/s; 5 kg crate 1.9 cm, held at 16 N by the pawl.
   Six pots are AT THE EDGE for a 1.5 kg log on sand: brush width decides it. The snatch is worth showing (rope jumps).
   Test code: the haul2 function in this note's session (motor.jl step!(st, b, dt; τload) + Rope.step!(r, load, dt; reel)).
+
+## s175 free time: solve_nl NEVER converged; NEWTON does (todo #786)
+- physics/motor2d.jl solve_newton: Newton-Raphson with the differential reluctivity (2 dnu/d(b^2) (gradA.gradv)(gradA.gradw)
+  per quadrature point), own nu at each point, damped steps. |r|/|f| 1.9 -> 4e-12 in 16 passes (quadratic at the end),
+  ~4 s a solve. Motor2D.linkage(s, g, θ; k) = mean A over each copper side (flux per turn per m). torque(...; newton = true).
+- PICARD WAS GARBAGE near the bridges' knee: coil-1 linkage at 90 deg, -30..30 A-turns, Newton 4017 / 6025 / 6434 uWb/m at
+  6 / 12 / 30 A-turns (monotone, odd); Picard-16 4030 / 530 / 117 (jumps around). The s173 'non-monotone lambda' was the solver.
+- Torque, one coil, 90 deg, 80 A-turns: Newton 71.9 mN m (iron peak 1.8 T), Picard-16 65.4, table said 67.1: the published
+  drum tables (physics/data/drum2-torque.csv) are ~7-10% LOW. Re-sweep with newton = true before the brushes work.
+- THE CIRCUIT (2 coils in series, N 80 each, axial 7.2 cm), at the break (θ 1 deg) and mid (45 deg):
+  L_d ~715 / 644 mH below 0.1 A (2 mm bridges unsaturated), 152 / 48 mH to 0.2 A, then 10 -> 7.4 / 9.3 mH up to 0.7 A.
+  Energy the current stores up to 0.64 A (51 A-turns): 5.9 mJ at the break (4.6 at 45 deg); 4.4 of it below 0.22 A IN THE
+  BRIDGES (solid iron: on a spark's us scale eddies hold that flux and burn it in the iron, not the arc). The AIR part above
+  saturation: ~1.4 mJ. So a spark gets ~1.4 mJ (up to 5.9 if the bridges let go): 2-10x the s173 guess (0.6 mJ at '3 mH').
+- motor.jl Build L_circuit 4 mH (guess) -> 7.5 mH is the converged L_d at the running current (L/R ~3.7 ms with 2 Ohm:
+  matters for make-before-break, the shorted coil's decay over a 12 deg bridge = 6.8 ms at 4.9 rev/s).
+  NOT YET CHANGED in motor.jl (that changes the published drum's sparks: do it with the brushes work, #785).
+- GRID CHECK (n 300 = 1 mm vs n 400 = 0.75 mm, θ 1 deg, both coils): the LINKAGE agrees within 3.6% (9, 18 A-turns: -3.6/-3.4%;
+  48, 54: +0.2/+0.9%), so the stored energy (~6 mJ, ~1.4 mJ air part) holds. BUT L_d at 48-54 A-turns, a small difference of
+  big linkages, is 7.5 mH at 1 mm and 14.7 at 0.75 mm: NOT grid-converged (the 2 mm bridge is 2 cells at 1 mm). Next: a
+  finer mesh only near the slots (Ferrite on a gmsh/FerriteGmsh mesh), or the frozen-permeability incremental L at the
+  operating point (one linear solve with the converged nu_d), on n 400 / 600. Range for now: L_d 7-15 mH at 0.64 A.
+
+## s175 ideas round: PASSED again (similar 4, surprise 6, fun 7, real 7, toward 8)
+- The critic's risks, to build against: it must NOT shrink to one winch pulling the same cart up one fixed slope (plays
+  once). The player's choices have to change the outcome: what is hooked (crate, log, empty cart, cart + a friend), the
+  pulley (1:1 / 2:1 block), grease on the cart's axles and the drum's bearings, where the planks go; climb or stall falls
+  out of rope + contact + mesh mass + motor torque each step. The FILM must show the rope going TAUT (sag -> straight,
+  the cart's first jerk), not a cart sliding along a rail.
+- Order next session: wide brushes (make-before-break) -> rope + pawl drawn in the game by the drum -> hook key in Jump
+  in -> the empty cart on the planks hauled 30 cm+ (#780) -> a second load that stalls -> traced dusk film.

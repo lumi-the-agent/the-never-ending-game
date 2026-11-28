@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T14:04:30.116",
+  "finished": "2026-11-28T14:31:50.165",
   "id": "20261128-140430-113-clip",
   "kind": "clip",
   "params": {
@@ -10,5 +11,13 @@
     "path": "site/img/drum-by-lamplight.png",
     "script": "movies/drumspark.jl"
   },
-  "status": "queued"
+  "result": {
+    "hour": 19.55,
+    "path": "site/img/drum-by-lamplight.png",
+    "rev_s": 3.1463632130451242,
+    "spark": true
+  },
+  "seconds": 79.6,
+  "started": "2026-11-28T14:30:30.597",
+  "status": "done"
 }

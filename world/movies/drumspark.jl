@@ -57,7 +57,8 @@ end
 # at the brushes when a break falls on the rendered step. Built as post_stills.jl's post_still (a quiet copy of the
 # game, all plugins), the drum switched on and spun up by its own Motor.step! before the picture.
 #   submit_job(:clip; path = "site/img/drum-by-lamplight.png", script = "movies/drumspark.jl", call = "drum_still")
-function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin = 1.5)
+function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin = 1.5,
+                    eye = Point3f(0.40, -0.02, 0.27), target = Point3f(-0.01, -0.14, -0.09))
     g = NG.Game(NG.game_root(); quiet = true)
     w = g.world
     NG.skip_to_hour!(w, hour)
@@ -84,7 +85,7 @@ function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin 
     foreach(p -> (p.visible[] = false), g.stage.overlay.plots)
     NG.sync_sun!(g.stage, w)
     rig = NG.CameraRig(; mode = :fixed)
-    rig.eye = c + Point3f(0.40f0, -0.02f0, 0.27f0); rig.target = c + Point3f(-0.01f0, -0.14f0, -0.09f0)
+    rig.eye = c + eye; rig.target = c + target
     NG.update_camera!(rig, w, scene, 0.0; snap = true)
     screen, oidn = NG.traced_screen(root_scene; denoise = true, max_depth = 8)
     img = Makie.colorbuffer(screen; samples)
@@ -95,3 +96,9 @@ function drum_still(path; hour = 19.55, samples = 128, size = (1280, 720), spin 
     isdefined(Main, :BUILDER) && (Main.BUILDER[:job] = nothing)
     Dict("path" => path, "hour" => hour, "rev_s" => ID[:st].ω / 2pi, "spark" => lit())
 end
+
+# s175 post still: CLOSE on the commutator, the brushes and the coils' copper, a spark at the brushes. The drum's own
+# Motor.step! spins it up first (drum_still). Offsets from the drum centre; the commutator sits at +x 0.055.
+#   submit_job(:clip; path = "site/img/the-brushes-break.png", script = "movies/drumspark.jl", call = "drum_macro")
+drum_macro(path; samples = 128, size = (1280, 720), hour = 19.55, eye = (0.17, 0.12, 0.07), target = (0.05, 0.0, -0.005)) =
+    drum_still(path; samples, size, hour, eye = Point3f(eye...), target = Point3f(target...))

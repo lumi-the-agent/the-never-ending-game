@@ -141,10 +141,127 @@ function solve(g::Geo; θ = pi / 2, NI = 80.0, rotor = :drum, nu = nothing)
     return (; dh, cv, A, mats)
 end
 
+"""
+Soft iron's reluctivity at |B| = b: nu = H(b) / b, and its slope dnu/d(b^2) (what Newton's Jacobian needs).
+Newton on H for H(b) (B_of_H is monotone and concave), bisection as the safe start.
+"""
+function nu_iron(b, mur)
+    Js = 1.7                                                            # as B_of_H
+    b = max(b, 1e-7)
+    H = H_of_B(b, mur)
+    dB = MU0 + MU0 * (mur - 1) * sech(MU0 * (mur - 1) * H / Js)^2      # dB/dH at H
+    nu = H / b
+    dnu_db = (b / dB - H) / b^2
+    return nu, dnu_db / (2b)
+end
+
+"""
+Solve with SATURATING iron by NEWTON-RAPHSON (s175, todo #786): the residual r(A) = int nu(|grad A|^2) grad A . grad v
+- int (J v + M x grad v), its Jacobian adds 2 dnu/d(b^2) (grad A . grad v_i)(grad A . grad v_j) per quadrature point,
+so each iron point carries its OWN nu (not one per cell from its first point, as solve_nl). Starts from the linear
+solve, damps a step that does not lower the residual. Returns (; dh, cv, A, mats, nuq, its, res) with res the
+history of |r| / |f| per pass.
+"""
+function solve_newton(g::Geo; θ = pi / 2, NI = 80.0, rotor = :drum, tol = 1e-9, maxit = 40, A0 = nothing)
+    s = A0 === nothing ? solve(g; θ, NI, rotor) : A0
+    dh, cv, mats = s.dh, s.cv, s.mats
+    grid = dh.grid
+    ch = ConstraintHandler(dh)
+    edge = union(getfacetset(grid, "left"), getfacetset(grid, "right"), getfacetset(grid, "top"), getfacetset(grid, "bottom"))
+    add!(ch, Dirichlet(:A, edge, (x, t) -> 0.0)); close!(ch)
+    h = 2g.W / g.n
+    sd = sides(g, θ)
+    ncu = [count(m -> m[2] == k, mats) for k in eachindex(sd)]
+    isiron = [rotor === :drum && m[2] == 0 && m[1] < NU0 / 2 for m in mats]
+    # the linear solve marked iron with nu0/mur; a cell is iron by its material, keep that mask fixed
+    A = copy(s.A)
+    nb = getnbasefunctions(cv); nq = getnquadpoints(cv)
+    nuq = zeros(getncells(grid), nq)
+    function assemble_at(A; jac = true)
+        K = allocate_matrix(dh); r = zeros(ndofs(dh)); fnorm = zeros(ndofs(dh))
+        asm = start_assemble(K, r)
+        ke = zeros(nb, nb); re = zeros(nb); fe = zeros(nb)
+        for cell in CellIterator(dh)
+            c = cellid(cell)
+            reinit!(cv, cell)
+            _, side, M = mats[c]
+            J = side == 0 ? 0.0 : sd[side][2] * NI / (ncu[side] * h^2)
+            ae = A[celldofs(cell)]
+            fill!(ke, 0); fill!(re, 0); fill!(fe, 0)
+            for q in 1:nq
+                dΩ = getdetJdV(cv, q)
+                ∇A = function_gradient(cv, q, ae)
+                if isiron[c]
+                    nu, dnu = nu_iron(norm(∇A), g.mur)
+                else
+                    nu, dnu = NU0, 0.0
+                end
+                nuq[c, q] = nu
+                for i in 1:nb
+                    ∇v = shape_gradient(cv, q, i); v = shape_value(cv, q, i)
+                    src = (J * v + M[1] * ∇v[2] - M[2] * ∇v[1]) * dΩ
+                    re[i] += nu * (∇A ⋅ ∇v) * dΩ - src
+                    fe[i] += src
+                    jac || continue
+                    for j in 1:nb
+                        ∇w = shape_gradient(cv, q, j)
+                        ke[i, j] += (nu * (∇v ⋅ ∇w) + 2dnu * (∇A ⋅ ∇v) * (∇A ⋅ ∇w)) * dΩ
+                    end
+                end
+            end
+            assemble!(asm, celldofs(cell), ke, re)
+            fnorm[celldofs(cell)] .+= abs.(fe)
+        end
+        apply_zero!(K, r, ch)
+        return K, r, norm(fnorm)
+    end
+    res = Float64[]; its = 0
+    K, r, fn = assemble_at(A)
+    push!(res, norm(r) / fn)
+    for it in 1:maxit
+        its = it
+        dA = -(K \ r)
+        α = 1.0; Anew = A .+ dA
+        Kn, rn, _ = assemble_at(Anew)
+        while norm(rn) > norm(r) && α > 1 / 64            # damp a step that overshoots the knee
+            α /= 2; Anew = A .+ α .* dA
+            Kn, rn, _ = assemble_at(Anew)
+        end
+        A, K, r = Anew, Kn, rn
+        push!(res, norm(r) / fn)
+        res[end] < tol && break
+    end
+    return (; dh, cv, A, mats, nuq, its, res)
+end
+
+"""
+Flux linkage per turn per metre of the coil k (Wb/m): the mean of A_x over side 1's copper minus over side 2's (the
+bundle's own average, so the winding's spread counts). lambda = N * L_axial * this.
+"""
+function linkage(s, g::Geo, θ; k = 1)
+    acc = zeros(2); area = zeros(2)
+    for cell in CellIterator(s.dh)
+        side = s.mats[cellid(cell)][2]
+        (side == 2k - 1 || side == 2k) || continue
+        reinit!(s.cv, cell)
+        ae = s.A[celldofs(cell)]
+        j = side == 2k - 1 ? 1 : 2
+        for q in 1:getnquadpoints(s.cv)
+            dΩ = getdetJdV(s.cv, q)
+            acc[j] += function_value(s.cv, q, ae) * dΩ; area[j] += dΩ
+        end
+    end
+    sg = sides(g, θ)[2k - 1][2]                           # the commutated sign: the linkage the circuit sees
+    return sg * (acc[1] / area[1] - acc[2] / area[2])
+end
+
 "Torque (N m, about +x) by Arkkio's Maxwell stress over the gap annulus r1..r2, and the peak |B| in the iron (T).
-The iron saturates (solve_nl, `iters` Picard passes; 0 = linear iron)."
-function torque(g::Geo = Geo(); θ = pi / 2, NI = 80.0, rotor = :drum, r1 = 0.0325, r2 = 0.0355, iters = 12)
-    s = rotor === :air || iters == 0 ? solve(g; θ, NI, rotor) : solve_nl(g; θ, NI, rotor, iters)
+The iron saturates (solve_nl, `iters` Picard passes; 0 = linear iron; `newton = true`: solve_newton, s175: Picard does
+NOT converge near the slot bridges' knee; `s`: a solution already made)."
+function torque(g::Geo = Geo(); θ = pi / 2, NI = 80.0, rotor = :drum, r1 = 0.0325, r2 = 0.0355, iters = 12,
+                newton = false, s = nothing)
+    s = s !== nothing ? s : rotor === :air || iters == 0 ? solve(g; θ, NI, rotor) :
+        newton ? solve_newton(g; θ, NI, rotor) : solve_nl(g; θ, NI, rotor, iters)
     acc = 0.0; Bfe = 0.0
     for cell in CellIterator(s.dh)
         xs = getcoordinates(cell); c = sum(xs) / 4; r = norm(c)

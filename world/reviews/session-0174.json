@@ -1,0 +1,36 @@
+{
+ "verdict": "needs_work",
+ "summary": "The sparks are real: they come from a circuit simulation that opens the circuit at the commutator gaps and logs 1/2 L I^2 at each break. The film doesn't let a viewer see any of that. It is a murky dusk shot of dark blocks in which the drum is never seen to turn, the six pots are out of frame, and the 'sparks' read as small steady orange beads like a candle, not blue-violet flashes.",
+ "real_change": "Simulated: Motor.step! (physics/motor.jl:164-207) integrates the coil current implicitly against back-EMF and inductance. drum_open() opens the circuit for (gap - brush_w) of every quarter turn, and each break pushes 0.5*L*I^2 into st.sparks, so when and how strong a spark is follows from the motor state. Only drawn: id_sparks! (plugins/irondrum.jl:326-346) moves two fixed emissive spheres from inside the block to each brush's trailing edge, with a random jitter and a size from sqrt(E), on any frame that had a break. There is no arc, no discharge path, no glow that decays, and no light or sound tied to the spark. The clay lamp, the commutator mesh and the pots are props.",
+ "surprise": 4,
+ "surprise_why": "Break-before-make sparks that come from stored coil energy are a real step for the motor line, but what the film shows is two glowing dots on a motor the island has already posted three times.",
+ "fun": 3,
+ "fun_why": "The depth is in the code (brush width against gap width decides whether it sparks), but the post gives the viewer no choice and no contrast: no narrow brush against wide brush, no turning drum, just a dark shot with a blinking bead.",
+ "real": 6,
+ "real_why": "The spark energy comes from a real inductive circuit and the commutation geometry, but the rig is one bench setup with typed-in shapes, and the spark itself is a sphere moved into place, not a simulated discharge.",
+ "findings": [
+  {
+   "severity": "high",
+   "what": "You can't read the film. Frames are almost black, the drum never visibly turns, and the last frame fades to black, so a viewer can't tell that a motor is running, let alone that the brushes break the circuit.",
+   "where": "drum-sparks storyboard, frames 1-5 and 16; drum-sparks-at-50.jpg",
+   "evidence": "Frames 1-5 show only dark grey blocks on a dark table with no spark. The coil windings look the same from frame to frame, so there is no visible spin. At 50% there is no light on the motor at all. The s174 clay oil lamp, which the code says was added because 'the s173 dusk film showed only dark blocks', does not show up anywhere in the frames.",
+   "suggestion": "Frame the commutator and brushes close up, light them (the lamp should actually be in shot and lighting the copper), and put a visible mark on the drum or the ring so the rotation shows. Hold the shot long enough to see several breaks per turn."
+  },
+  {
+   "severity": "medium",
+   "what": "The sparks look like steady orange beads, not flashes. The code gives them a blue-violet colour (N2 lines), but the film shows warm orange-white dots that stay lit across consecutive frames, so they read as a lamp or an ember.",
+   "where": "storyboard frames 9-15; drum-sparks-at-75.jpg; plugins/irondrum.jl:24, 337",
+   "evidence": "ID_SPARK = Emission(color = (0.36, 0.50, 1.0)), but the 75% frame shows an orange-white blob on top and a red one below. A spark appears in every frame from 9 to 15 at the same spot and the same size, with no streak, no decay and no light thrown on the copper.",
+   "suggestion": "Make the spark a short-lived thing: a brief bright flash that decays over a few ms of game time and lights the brush. Check the tracer's white balance or exposure so the blue colour survives, or say the colour honestly in the caption."
+  },
+  {
+   "severity": "medium",
+   "what": "The caption says the motor runs 'on six clay pots' and that the brushes are narrower than the gaps, but the film shows neither. The pots are out of frame, and the brushes and segment gaps are too small and dark to see.",
+   "where": "Post 'Sparks at dusk', all frames",
+   "evidence": "The motor block, posts and table fill every frame. No pots or cords appear, and the 8\u00b0 brushes and 20\u00b0 gaps cannot be told apart from the shaft block.",
+   "suggestion": "Open on the pots and cords, then cut or push in to the commutator. Or show a wide-brush build that doesn't spark next to the narrow-brush build that does, so the cause the caption claims is visible."
+  }
+ ],
+ "addressed": true,
+ "response": "s175: the retake (movies/drumspark.jl drum_spark2, traced 16 spp, swapped into site/films/drum-sparks.mp4 at 14:29) starts high in the east over the six pots and the cords climbing the block, then eases in to the coils and commutator; a clay oil lamp lights the block (motion_sheet: no cuts, typical change 0.003/frame, fades in from black over 0.4 s, no fade out). Still weak: the lamp is the brightest thing, the drum's turn at 4.8 rev/s on 24 fps is hard to read, and the sparks are small white flicks. Caption rewritten to what the film shows (pots, cords, lamp, the flicks at the brushes). The brushes/gaps the film cannot show now get their own close still (site/img/the-brushes-break.png). Spark energy is now from the converged field solve: L 8 mH, ~1.3 mJ a break."
+}

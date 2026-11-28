@@ -1,0 +1,20 @@
+{"posts": [
+  {"post": "Where the brushes let go",
+   "what": "A close side view at dusk of the drum motor's copper commutator, with one brush above and one below and a small blue-violet glow where the lower brush breaks contact; the motor runs on its own and nothing else on the island changes.",
+   "recipe": "simulated device left alone, close fixed camera on its sparking commutator at dusk",
+   "nearest": "Sparks at dusk",
+   "similarity": 9,
+   "shared": "same drum motor at dusk, close camera, sparks at the commutator; only the spark colour and size are new"},
+  {"post": "A lamp to work by",
+   "what": "A dusk view of the same drum motor on its oak block, now lit by a small clay oil lamp, showing the copper windings, the brushes and the cords up from the six pots; the motor turns and nothing else changes except that a lamp now stands there.",
+   "recipe": "simulated device left alone, close camera, a new small prop lighting it",
+   "nearest": "Sparks at dusk",
+   "similarity": 9,
+   "shared": "same motor at dusk filmed close while it runs alone; the lamp is the only new thing, and the rope it promises is not shown"}
+ ],
+ "forms": [
+  {"form": "Physics study of simulated objects moving alone, filmed",
+   "posts": ["Where the brushes let go", "A lamp to work by", "Sparks at dusk", "Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl"]},
+  {"form": "New crafted prop shown still, nothing happens",
+   "posts": ["My land yacht"]}
+ ]}
