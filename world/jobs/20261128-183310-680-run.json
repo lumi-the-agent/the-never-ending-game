@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-28T18:33:10.683",
+  "id": "20261128-183310-680-run",
+  "kind": "run",
+  "params": {
+    "call": "swap_film",
+    "kwargs": {
+      "from": "media/s180-cart-on-a-cord.mp4",
+      "job": "20261128-183310-572-clip",
+      "to": "site/films/cart-on-a-cord.mp4"
+    },
+    "script": "tools/swap_film.jl"
+  },
+  "started": "2026-11-28T18:33:11.318",
+  "status": "running"
+}

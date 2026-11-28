@@ -24,17 +24,18 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   physics/fieldcoil.jl lays the turns (wire, R, Cu mass FROM them); data/fieldcoil-torque.csv = FEM on the round core.
   DRAWN + published (off by default): IRONDRUM[:field] = :wound draws 2 iron cores, FieldCoil.path turns (mtube),
   ARCH yoke (solved too: = frame below 1200 A-turns); drum_still(...; field = "wound"). Traced: media/s179-wound-field-b.png
-  (close: the turns READ, layer on layer) / -a.png (far: a copper drum; the yoke = flat dark block). id_cast_iron() is written but UNUSED (its first traces failed:
-  a docstring bug kept the plugin from loading, fixed 18:20): switch the cores/yoke to it and re-trace -b's camera.
+  (close: the turns READ). s180: cores + arch now id_cast_iron() (published).
   NEXT: motor kt from the wound table, cart on planks stones vs wound (FILM), Lumi's hands winding. NOT a mimed slider.
-- s179 MISS 'the-cart-on-a-cord' (critic redo): cord invisible, cogs+belt hidden behind the motor, pots out of frame,
-  clip pops off camera, camera locked on the cart (only the background moves). Trimmed to 11 s + miss note up. RETAKE
-  (same post, films/cart-on-a-cord.mp4): thick cord paying out from a coil, low camera on the BELT side, a fixed or slow
-  camera the cart drives THROUGH, pots + clip in frame when it pops; planks must be one even road, and the wheels
-  must ride the planks' real heights (critic 2nd look: they float over seams/steps, the motor->wheel drive is unseen).
-- s179: cart-on-a-cord.mp4 WATCHED (14 s, tracking cam, spokes turn, smooth; the fade-in is the only jump) and
-  queued in pending/cart-on-a-cord.json with an honest caption: the cord is a hairline lost after 1 s, and the clip
-  yank happens OUT of frame. Next take of the cart: a THICKER visible cord (or a battery on board) + keep the pots in view.
+- s180 FIRST THING: WATCH the cart retake (job 20261128-183310-572-clip -> media/s180-cart-on-a-cord.mp4, swapped over
+  site/films/cart-on-a-cord.mp4 by run job 20261128-183310-680-run): pale 11 mm cord, belt-side camera sliding at 3/4
+  of the cart's pace, CUT to pot 1 at x > 2.8 m so the clip pops in frame. NOT fixed yet: the wheels float over plank
+  seams (critic). If the miss is cured, take the miss note off; caption may need the cord + clip named.
+  And LOOK at the pending still 'Copper on iron' (job 20261128-183358-982-clip, site/img/copper-on-iron.png, wound field in
+  id_cast_iron at 19.4 h). If it looks bad, fix the post (it is up once the job is done).
+- s180 PASSED IDEA 'the pots sag' (todo #800 done): physics/potcell.jl diffuse!/emf_surface, the cart's Sim.pots, battery!
+  (Motor.State CACHES E and Rloop!). 5.22 -> 4.90 V a run, 5.08 after 4 min rest. HONEST GAP (#802, p1): the drawn pots
+  (r 5.5 cm, 3 cm brine) would be ~3 Ohm each; the circuit uses r 9 x 16 cm pots. Redraw them to the circuit's size.
+  Then #801: the green Fe2+ cloud at the iron bars (makes the sag SEEN) -> a film of two runs = the sag's post.
 - s178 MISS 'a-wheel-you-can-see-through' (oak-gear-wheel.png, critic: post hides the hub, no pinion meshing, all one
   brown, cart claimed but absent, a still can't show turning). Caption fixed + miss note up. RETAKE = a short FILM of
   the gear MESHING and TURNING. Geometry (meshes right: pitch r .072 + .012 = 84 mm): wheel axis along x at (4.725,-14.226,1.765), cogs to r .077; bearing post WEST of it

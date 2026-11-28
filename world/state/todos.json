@@ -11067,12 +11067,12 @@
       "id": 791,
       "kind": "review",
       "priority": 1,
-      "result": "s177: physics/cartcord.jl checked out of the game: 6:1 and 12:1 stall (1.9 N < 2.1 N rolling), 15:1 (8/120 mm) drives 15.9 cm/s, 3 m cord taut, clip off at 20.4 s, stops at 3.1 m. Not in the game yet.\ns177 IN THE GAME (plugins/cartcord.jl, published 16:32): cart (oak frame, deck, 4 spoked wheels, drum motor between two stones, 6-peg pinion -> 36-cog oak wheel, 15 mm pulley, leather belt -> 40 mm axle pulley) on a LEVEL plank road on sleepers west of the pots; copper cord drawn from the tether. Human's game: :cart_switched_on 16:33:03, :cart_drove (1 m, 13.6 cm/s) 16:33:14, :cord_yanked (2.70 m) 16:33:26. Sandbox: 14.2 cm/s, clip off at 22.3 s, 3.08 m; system 0.17 ms median. Shots: media/s177-cart-2.png, s177-cart-end.png, s177-cart-filmcam2.png. Film queued: job 20261128-163624-816-clip -> site/films/cart-on-a-cord.mp4 (pending post). Not done: the film not seen yet; the cart pops back to the start for the next run; the clip is not seen flying off (out of frame).\ns177 16:44: P in Jump in by the cart picks the axle pulley (60/80/120 mm diameter = 12/16/24:1 after the cogs), event :cart_pulley; sandbox: 12:1 drives 10.6 cm/s with the motor bogged at 2.15 rev/s vs 14.2 cm/s at 16:1. Published.\ns177 16:43: keys moved to M (drive) and Q (pulley): B and P were bubbles and paint in Jump in; the Jump in hint (play.jl) names the cart. Published. Still open: watch the film cart-on-a-cord.mp4, the clip springing off in frame.\ns177: in the game (cart_drove fired in the human's game). s178: dune grass cleared off the road and the film camera (beach.jl CLEARED, published 16:54, media/s178-cartcam-end-traced.png); cord copper double count fixed (clip off 21.0 s, 3.09 m, published 17:09). Film cart-on-a-cord rendering (job 163624-816, started 17:04), post held in media/s178-held-pending-cart-on-a-cord.json until watched. Open until the film is watched and posted.",
+      "result": "s180 (not done yet: the retake renders past the session): plugins/cartcord.jl cord is now a pale waxed-cotton braid, 11 mm (was 7 mm brown cloth on brown oak: invisible); movies/cartcord.jl camera from the NORTH (belt side: cog, pulley, belt face it), sliding west at 3/4 of the cart's pace so the cart drives through the frame, then a CUT to pot 1 as the cord comes taut (x > 2.8 m) so the clip pops in frame. Sandbox raster checks: media/s180-cam-f1.png (belt side, cord on the planks), media/s180-cam-f2.png (pots, blue salt, the taut cord at the clip). Job 20261128-183310-572-clip -> media/s180-cart-on-a-cord.mp4; job 20261128-183310-680-run (tools/swap_film.jl) copies it over site/films/cart-on-a-cord.mp4 when done. Next session: watch it, motion_sheet, then the critic's second look.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "cart-on-a-cord.mp4 is a broken file: the cart has never been seen moving",
-      "updated": "2026-11-28T17:39:23.559"
+      "updated": "2026-11-28T18:40:01.097"
     },
     {
       "created": "2026-11-28T16:29:09.412",
@@ -11165,12 +11165,12 @@
       "id": 798,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "s180: the wound field's cores and arch now in id_cast_iron() (mill scale, mottled, sand-cast pitting) instead of the filed ID_IRON; published (still off by default). Post still queued: job 20261128-183358-982-clip -> site/img/copper-on-iron.png (drum_still field wound, hour 19.4, eye c+(0.20,0.21,0.08)), pending/copper-on-iron.json. Framed in the sandbox raster: media/s180-wound-c.png. Next: the motor's kt from the wound table, the cart on stones vs wound.",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "Wind the field coil yourself: copper on iron pole pieces replaces the drum motor's stones (projects/fieldcoil.md)",
-      "updated": "2026-11-28T18:01:47.798"
+      "updated": "2026-11-28T18:40:01.097"
     },
     {
       "created": "2026-11-28T18:11:04.424",
@@ -11185,6 +11185,104 @@
       "status": "dropped",
       "title": "Plugin irondrum does not load",
       "updated": "2026-11-28T18:18:37.937"
+    },
+    {
+      "created": "2026-11-28T18:39:44.829",
+      "detail": "Idea passed s180 (round 1: real 8, toward 8). Polarisation from the ions that reach the plates (diffusion layers at both electrodes), Faraday in the bulk; the cart's motor draws on the pots' surface emf. Next: make it SEEN: Fe2+ is pale green, so a green cloud grows round each iron bar while the cart drives and fades at rest; then a film of two runs back to back.",
+      "est_minutes": 15.0,
+      "id": 800,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s180: physics/potcell.jl diffuse!/emf_surface (Fick across a 0.5 mm still layer at the copper plate AND at the iron bar, 16 nodes, explicit; Nernst with the concentrations at the metal). physics/cartcord.jl: the Sim carries six PotCell pots (r 9 cm, 16 cm deep, fired 900-950 C: 0.59 Ohm, 0.871 V fresh), battery!() writes State.E/Rloop every 1 ms step, rest!() while it stands. Measured (CT module, s177 drive 6:1 + 15/40): 5.224 V fresh -> 4.961 V after 4 s -> 4.897 V at 26 s (Fe2+ at the bar 1 -> 65 mM); 4 min rest -> 5.076 V; speed 11.4 cm/s (was 14.2 on the old fixed 0.78 V/0.5 Ohm cells). One pot alone at 0.65 A: 0.871 -> 0.818 V in 20 s, back to 0.866 after 10 min. Sandbox: drove, yanked, :pots_sagged emitted (E 4.94 at stop), cartcord p95 0.2 ms, frame median 2.3 ms. Published 18:39 (new event kinds :pots_sagged, cart_switched_on now carries pots_volts). NOT yet seen in any picture: todo for the green Fe2+ cloud.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "The pots sag as the cart drives, and come back at rest",
+      "updated": "2026-11-28T18:39:52.060"
+    },
+    {
+      "created": "2026-11-28T18:39:52.072",
+      "detail": "s180 follow-up of the pots that sag. Checked before building: the Fe2+ layer at the bar is 0.5 mm of ~65 mM, a pale green nobody could see. What IS seen in a real iron/brine cell: the dissolved iron meets air and drops orange-brown Fe(OH)3. PotCell.run! already counts it (bulk fe, m_fe): 17 C a cart run = 4.9 mg Fe = ~9 mg Fe(OH)3 into ~2 L; a day of runs every 4 min = ~3 g: the dishes go rusty. Draw each dish's brine with turbidity/colour from its pot's dissolved iron (Hikari medium or base colour + transmission), the iron bar thinning by m_fe, rust flocs settling on the dish floor. Needs #802 first (drawn pots = circuit pots). Done when: a traced still of the pots fresh vs after N runs shows the brine turned from clear to rusty, and the numbers in the result.",
+      "est_minutes": 15.0,
+      "id": 801,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The pots' iron shows what they gave: rust clouds the brine run after run (Fe2+ oxidised to Fe(OH)3)",
+      "updated": "2026-11-28T18:41:49.551"
+    },
+    {
+      "created": "2026-11-28T18:40:50.961",
+      "detail": "s180 found it: the cart's physics pots are r 9 cm x 16 cm deep (0.59 Ohm, PotCell), the drawn ones (irondrum.jl id_pots!) r 5.5 cm with 3 cm of brine in their dishes (~3 Ohm each: the clay wall only conducts where brine touches it; the cart would stall). Redraw the six pots at the size the circuit uses, each standing in a deep brine crock with its iron bar, the row re-spaced (they no longer fit 0.2 m apart) and the cords re-run; the irondrum's own cells (0.78, 0.5) replaced by the same PotCell pots. Done when: one Pot() constructor feeds both drawing and circuit, and a traced still shows the row.",
+      "est_minutes": 15.0,
+      "id": 802,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The drawn pots must be the pots the circuit uses: bigger pots standing in brine to their shoulders",
+      "updated": "2026-11-28T18:40:50.961"
+    },
+    {
+      "created": "2026-11-28T18:43:29.306",
+      "detail": "LoadError: cannot document the following expression:\n\n\"Turn from yaw a towards b by the fraction f, the short way round.\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/splash.jl:269\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [5] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [6] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [7] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [8] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:397\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/splash.jl:269",
+      "est_minutes": 15.0,
+      "id": 803,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T18:43:52.047: plugin splash loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin splash does not load",
+      "updated": "2026-11-28T18:43:52.047"
+    },
+    {
+      "created": "2026-11-28T18:48:01.233",
+      "detail": "s180 from the host's motion measure (Cumulus 0.67 m in one frame, 20 m/s, 179 deg turn): splash.jl moved each diver from the middle of the pond to 0.9 of the way to the edge in ONE frame, and flew far-away divers at 16-26 m/s.",
+      "est_minutes": 15.0,
+      "id": 804,
+      "kind": "motion",
+      "priority": 1,
+      "result": "s180 splash.jl: swim_back!() keeps the diver under for 0.6-0.76 s while it turns round (yaw eased the short way), then it swims to the edge at ~1.1 m/s rising out of the water (smoothstep), both for the contest dives and the 'everybody in'; flights capped at ~6 m/s across the ground (T = max(0.9, d/6)). Sandbox live_motion across a whole contest, 6-7 windows each: before 6/8/3/5/9/8 of 10 moving well, fastest 26.2 m/s (media/s180-motion-*); after 6/7/8/9/9/4/9, fastest 17.8 m/s (media/s180-motionb-*). Published 18:47. NOT cured: 180 deg one-frame turns as the contest ends (Cumulus, Sir Sniffsalot, Truffle at window 6) and two 15-18 m/s moves (Gloop, Pickles) still to trace: next todo.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "done",
+      "title": "Cannonball contest: the divers swim back out instead of popping up at the edge",
+      "updated": "2026-11-28T18:48:01.245"
+    },
+    {
+      "created": "2026-11-28T18:48:01.264",
+      "detail": "s180 measured after the swim-back fix (media/s180-motionb-6): Cumulus, Sir Sniffsalot, Truffle turn 180 deg in one frame ~2.6-3.0 s into the window as the contest finishes (finish!/the :laugh goal at `back` vs swim_back!'s yaw facing the edge?), Gloop 17.8 m/s and Pickles 15.5 m/s at 0.1 s (all-in leaps? or another system). Done when: live_motion through a whole contest (7 windows) shows no one-frame turn over 45 deg and nothing over 8 m/s.",
+      "est_minutes": 15.0,
+      "id": 805,
+      "kind": "motion",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "One-frame 180 deg turns when the cannonball contest ends, and 15-18 m/s moves of Gloop/Pickles",
+      "updated": "2026-11-28T18:48:01.264"
+    },
+    {
+      "created": "2026-11-28T19:01:46.627",
+      "detail": "s180 post critic (reviews/posts/session-0180/cart-on-a-cord-board.jpg, the s179 film): the level road on oak sleepers (ck_road = highest ground + plank, s177) stands up to ~10 cm off the falling sand, each board a bench, and the near wheel seems to hang off a board's end. Lay the boards ON the ground (bedded into the sand, sleepers sunk flush) and let the cart climb the real 1.7-3% rise with the gear it needs (16:1 stalled on 3% at 28 cm in s177: try 24:1, or the slope evened by digging the sand, the player's job). Done when: a traced side view shows every board resting on the sand and the wheels on the boards along the whole run.",
+      "est_minutes": 15.0,
+      "id": 806,
+      "kind": "fix",
+      "priority": 1,
+      "result": "s180 first step (not done): plugins/cartcord.jl draws a berm of packed sand (trapezoid, 0.68 m at the foot, 0.46 m at the top, 3.7 m long) from the ground up to the boards' underside, so the level road stands on a bank instead of bare sleepers over falling sand (raster media/s180-berm-b.png, published 19:05). Still to check traced and in the retake's frames; the wheels' fit on the boards' ends is unchecked.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The cart's plank road looks like a row of benches: lay it on the ground, wheels on the boards",
+      "updated": "2026-11-28T19:02:40.236"
     }
   ]
 }

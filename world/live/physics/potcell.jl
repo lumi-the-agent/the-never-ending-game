@@ -45,9 +45,17 @@ Base.@kwdef mutable struct Pot
     V_out::Float64 = 2e-3         # brine outside (m3)
     m_fe::Float64 = 0.08          # iron bar left (kg)
     m_cu::Float64 = 0.0           # copper plated so far (kg)
+    bar::Float64 = 0.01           # wetted iron bar area (m2)
+    # s180 'cells that sag': concentration across the still layer at each electrode, [1] at the metal, [end] the bulk
+    # (empty = not followed: voltage() then takes the old steady polarisation term, the motor bench's pots)
+    cu_x::Vector{Float64} = Float64[]
+    fe_x::Vector{Float64} = Float64[]
+    tmp::Vector{Float64} = Float64[]
 end
 
 emf(p::Pot) = E0 + Rg * T / (2F) * log(p.cu / p.fe)
+"The emf the plates see: Nernst with the concentrations AT the metal (the layers' first nodes), the bulk if not followed."
+emf_surface(p::Pot) = isempty(p.cu_x) ? emf(p) : E0 + Rg * T / (2F) * log(p.cu_x[1] / p.fe_x[1])
 wall_R(p::Pot) = RHO_W * porosity(p.Tfire)^-2 * p.wall / (2pi * p.r * p.h)
 "Liquid paths to and from the wall (inside to the plate, outside to the bar), ~r / (sigma A)."
 liquid_R(p::Pot) = 2 * RHO_W * p.r / (2pi * p.r * p.h)
@@ -56,6 +64,7 @@ I_lim(p::Pot) = 2F * D_CU * p.cu * p.plate / DELTA
 
 "Terminal voltage at current I (A): emf - I R + the copper plate's concentration overpotential (-Inf past the limit)."
 function voltage(p::Pot, I)
+    isempty(p.cu_x) || return emf_surface(p) - I * R(p)   # s180: the layers carry the polarisation themselves
     I >= I_lim(p) && return -Inf
     emf(p) - I * R(p) + Rg * T / (2F) * log(1 - max(I, 0.0) / I_lim(p))
 end
@@ -72,6 +81,48 @@ function run!(p::Pot, I, dt)
     n = I * dt / (2F)
     p.cu = max(p.cu - n / p.V_in, 1e-6); p.m_cu += n * M_CU
     p.fe += n / p.V_out; p.m_fe = max(p.m_fe - n * M_FE, 0.0)
+    p
+end
+
+const NL = 16                     # nodes across a still layer (s180)
+
+"Start following the layers (s180): flat at the bulk concentrations."
+function layers!(p::Pot)
+    length(p.cu_x) == NL + 1 || (p.cu_x = fill(p.cu, NL + 1); p.fe_x = fill(p.fe, NL + 1); p.tmp = zeros(NL + 1))
+    p
+end
+
+"One explicit Fick step across a layer: `j` mol/m2/s enters at the metal face (node 1, a half cell), the far node is held
+at the bulk `cb`. Stable for D h / dx^2 < 0.5."
+function fick!(c, tmp, j, h, dx, cb)
+    k = D_CU * h / dx^2
+    copyto!(tmp, c)
+    c[1] = max(tmp[1] + 2k * (tmp[2] - tmp[1]) + 2h * j / dx, 1e-6)
+    for i in 2:length(c)-1
+        c[i] = max(tmp[i] + k * (tmp[i-1] - 2tmp[i] + tmp[i+1]), 1e-6)
+    end
+    c[end] = cb
+    c
+end
+
+"""
+    diffuse!(pot, I, dt)
+
+s180, the cells that sag: drawing I amperes for dt seconds takes Cu2+ out of the still layer at the copper plate and
+puts Fe2+ into the one at the iron bar; diffusion from (and to) the bulk DELTA away is all that refills and drains them
+(Fick, explicit). Fe2+ starts near nothing in fresh brine (1 mM), so its pile-up at the bar moves the bar's Nernst
+potential fast (~50 mV a pot in the first 20 s at 0.6 A): the cell SAGS while it works and comes back over
+~DELTA^2/D (about six minutes) when it rests, while the bulk change (`run!`, Faraday) stays. Call with I = 0 to rest.
+"""
+function diffuse!(p::Pot, I, dt)
+    layers!(p)
+    dx = DELTA / NL
+    n = max(1, ceil(Int, dt / (0.4 * dx^2 / D_CU))); h = dt / n
+    jcu = -I / (2F * p.plate); jfe = I / (2F * p.bar)
+    for _ in 1:n
+        fick!(p.cu_x, p.tmp, jcu, h, dx, p.cu)
+        fick!(p.fe_x, p.tmp, jfe, h, dx, p.fe)
+    end
     p
 end
 

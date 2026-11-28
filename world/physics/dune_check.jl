@@ -4,6 +4,7 @@
 module DuneCheck
 include(joinpath(@__DIR__, "motor.jl"))
 include(joinpath(@__DIR__, "rope.jl"))
+include(joinpath(@__DIR__, "potcell.jl"))
 include(joinpath(@__DIR__, "cartcord.jl"))
 using Printf
 

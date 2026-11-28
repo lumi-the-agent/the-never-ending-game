@@ -28,11 +28,22 @@ function cart_drive(path; hour = 16.8, seconds = 14.0, samples = 24, rasterize =
             end
         end
         x = Float32(CK[:sim].cart.x)
-        cx = 4.35f0 - x                       # the cart's middle (world x), it drives west
-        # side-on from the south, 1.1 m off: the whole cart, the road on its sleepers, the cord trailing east
-        # (s177 sandbox: media/s177-cart-filmcam2.png; a rear-quarter camera 0.6 m off cut the cart in half)
-        rig.eye = Point3f(cx + 0.35f0, -15.85f0, 1.62f0)
-        rig.target = Point3f(cx + 0.20f0, -14.72f0, 1.12f0)
+        z = Float32(get(CK, :roadz, 1.09))
+        if x < 2.8f0
+            # s180 retake: from the NORTH, the belt side (the motor's cog, pulley and belt face the camera), the camera
+            # sliding west at 3/4 of the cart's pace, so the cart drives through the frame from left to right with the
+            # pale cord paying out behind it on the planks (s179's camera was locked to the cart: it looked parked)
+            d = x - 0.30f0
+            tx = 3.75f0 - 0.75f0 * d
+            rig.eye = Point3f(tx + 0.05f0, -13.80f0, z + 0.85f0)
+            rig.target = Point3f(tx, -14.72f0, z + 0.05f0)
+        else
+            # cut to the pots as the cord comes taut: the clip on pot 1's copper strip, the cord running off west,
+            # the yank happens HERE in frame (s179's happened off camera)
+            g0 = NG.ground(g.world.island, (4.35f0, -14.72f0))[3]
+            rig.eye = Point3f(3.80f0, -14.30f0, g0 + 0.42f0)
+            rig.target = Point3f(4.30f0, -14.70f0, g0 + 0.12f0)
+        end
         nothing
     end
     setup = function (g)

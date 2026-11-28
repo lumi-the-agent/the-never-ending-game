@@ -217,7 +217,7 @@ it: a soft-iron core (r 26 mm) either side along y from 36 to 72 mm off the axle
 Off unless ID[:field] = :wound (the motor still runs on the stones' table until the wound table drives it).
 """
 function id_wound_field!(sc, c, oak; w = FieldCoil.winding(turns = get(ID, :field_turns, 200), d = get(ID, :field_d, 0.8e-3)))
-    iron = ID_IRON; cu = mo_copper()      # id_cast_iron() (above) not yet seen traced: NOTES s179 OPEN
+    iron = id_cast_iron(); cu = mo_copper()   # s180: the cores and the arch as cast iron with its mill scale (was ID_IRON)
     pts = FieldCoil.path(w; seg = 16)
     for (k, sgn) in enumerate((1f0, -1f0))
         mesh!(sc, cyl((0, sgn * 0.036, 0), (0, sgn * 0.072, 0), 0.026, 48); color = RGBf(0.40, 0.40, 0.42), material = iron,

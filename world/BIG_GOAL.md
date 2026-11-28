@@ -10,6 +10,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 
 - [x] Done: magnet fields (em.jl), 3-pole drum motor, feet+wheels in sand, power budget (cart 550 W)
 - [ ] A circuit solver from what touches what, with cells that polarise (limiting current from the ions that reach the plate)
+  - [x] The pots sag as the cart drives and come back at rest (s180: Fe2+ piles at the bar; 5.22 -> 4.90 V a run, 5.08 after 4 min)
 - [ ] The clay-pot cell: copper in blue salt inside a kiln-fired porous pot, iron in brine outside; copper grows on the plate, the blue fades
   - [x] potcell.jl (Nernst, wall from firing, polarisation, Faraday); six pots drive the bench (s159, published)
   - [ ] The friends carry the pots, cords clip by contact, the motor winds their berry basket (projects/friends-battery.md)
@@ -17,11 +18,10 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
   - [x] Round iron drum rotor: 2 coils, no cogging, its brushes SPARK (s172-173); field solved by Newton, L 8 mH (s175)
   - [x] The winch: the drum on a rope hauls a log through 6:1 oak cogs (s176; shelved, its gear went to the cart)
-  - [ ] Wind the field coil yourself: copper on iron poles replaces the stones (projects/fieldcoil.md; s179: solved, 6 pots starve it)
+  - [ ] Wind the field coil yourself: copper on iron poles replaces the stones (projects/fieldcoil.md; s180: cast-iron look, post still)
 - [ ] The motor run backwards: a windmill generator that lights a wire
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
-    - [x] Sail force from the solved flow, no lift curve: a plate swept through angle of attack stalls by itself (physics/sailflow.jl)
-    - [x] A cambered sail luffs by itself in the solved flow (2D: lift -0.2 at 0 deg, 0.6-0.95 at 5 deg, s163)
+    - [x] Sail force from the solved flow, no lift curve: plates stall and cambered sails luff by themselves (sailflow.jl, s163)
     - [ ] Sail it yourself: sheet, tiller, friends leaning out, over-sheeting stalls (sails in Jump in s167; next: Lumi seated, ruts, film)
     - [ ] Telltales: threads stream in the sail's solved flow, the player trims by them
       - [x] The threads read the trim in the solved 3D flow: windward lifts when it luffs, lee when it stalls (s164)
@@ -35,6 +35,6 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)
     - [x] The wind over a fence solved in 3D (WaterLily, on the GPU since s162): wake, corner jets, lee eddy; sand blown by it (s161)
 - [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
-  - [ ] The cart drives itself on a long cord (projects/cartcord.md; in game s177, film s179; next: a cord you can see)
+  - [ ] The cart drives itself on a long cord (projects/cartcord.md; s180: pale thick cord, retake renders; next: drawn pots = real pots)
 - [ ] Gears for the dune, braking that charges the plates, friends ride along
   - [ ] The cart takes the dune (projects/dune.md; s178: downhill charges the pots, -0.27 A at 8%; belt slips on the face)

@@ -1,36 +1,29 @@
 {
-  "annoyance": 0.91,
+  "annoyance": 0.68,
   "annoyed": [
     {
       "post": "the-cart-on-a-cord",
-      "session": 179,
+      "session": 180,
       "title": "The cart on a cord",
       "weight": 1.0,
-      "what": "The caption says the cart is 'fed by a copper cord', but no frame shows a cord reaching the cart. In the 25% frame a thin line runs from the pots up past the tree trunk into the distant grass, and it ends well behind the cart, not on its deck or motor. In the 50% and 75% frames the only line is a faint stroke in the far upper right, nowhere near the cart, so the cart looks unconnected."
+      "what": "The title and the 'cord' never show up as a cord on the cart. In storyboard frames 1-6 and the 25% still, a thin line runs from the clay pots toward the tree and maybe to the back of the cart, but you can't tell where it attaches. From frame 7 on, and in the 50% and 75% stills, no cord trails behind the cart at all, so whatever powered it is either cut or was never connected."
     },
     {
       "post": "a-wheel-you-can-see-through",
       "session": 178,
       "title": "A wheel you can see through",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The title and caption promise a wheel you can see through, but in the picture a dark solid disc (the drum or motor behind it) fills almost the whole space between the arms. What you see through the wheel is another brown disc, so the openness is hard to read."
-    },
-    {
-      "post": "where-the-brushes-let-go",
-      "session": 176,
-      "title": "Where the brushes let go",
-      "weight": 0.216,
-      "what": "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T18:21:28",
+  "ended": "2026-11-28T19:02:52",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.4,
-    "picture": 0.73,
+    "feature": 0.24,
+    "picture": 0.44,
     "self": 0.01,
-    "sound": 0.03
+    "sound": 0.02
   },
   "forms": [
     {
@@ -343,9 +336,10 @@
     "winch_haul",
     "cord_yanked",
     "cart_drove",
-    "cart_pushed_back"
+    "cart_pushed_back",
+    "pots_sagged"
   ],
-  "joy": 0.1,
+  "joy": 0.22,
   "judged_posts": [
     {
       "form": "New world rule that makes the creatures reshape the ground, shown in a film",
@@ -782,9 +776,9 @@
   "last_contact": "2026-11-28T12:49:12",
   "last_new": {
     "kinds": [
-      "cart_pushed_back"
+      "pots_sagged"
     ],
-    "session": 178
+    "session": 180
   },
   "last_repetition": {
     "factor": 0.1,
@@ -798,13 +792,13 @@
     "similarity": 5
   },
   "last_surprise": {
-    "fun": 2,
-    "score": 2.5,
-    "session": 178,
-    "why": "It's a remodel of a prop that already existed. The physics behind it (motor, gearing, rope) is from earlier sessions, and a still of a cog wheel is something the island has shown in other forms many times."
+    "fun": 3,
+    "score": 3.5,
+    "session": 179,
+    "why": "This is the sixth post in a row about the same drum motor, and the drive it shows was built in earlier sessions; the new work (the wound field) isn't in it, so a viewer just sees a cart roll a few metres."
   },
-  "loneliness": 0.41,
-  "perceived_until": "2026-11-28T17:39:44",
+  "loneliness": 0.47,
+  "perceived_until": "2026-11-28T18:21:59",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -818,55 +812,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 1.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [
-        {
-          "kind": "footprint",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "asset",
-        "feature",
-        "post",
-        "wish"
-      ],
-      "new_assets": 1,
-      "new_pages": [],
-      "new_plugins": [
-        "beachprints.jl"
-      ],
-      "points": 0.9,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 10,
-        "nearest": "My first motor",
-        "post": "Six clay pots",
-        "score": 10,
-        "shared": "the same motor shown alone from a fixed close view; the new step is the battery of pots that makes it keep turning",
-        "similarity": 6
-      },
-      "session": 160,
-      "touched": [],
-      "values": {
-        "asset": 0.8,
-        "feature": 3.4,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1531,6 +1476,41 @@
         "post": 2.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "pots_sagged",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 3.0,
+      "session": 180,
+      "touched": [
+        "cartcord.jl",
+        "irondrum.jl",
+        "splash.jl"
+      ],
+      "values": {
+        "polish": 3.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1874,7 +1854,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958830221536553e9,
+      "irondrum.jl": 1.7958863169710977e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1924,11 +1904,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 144,
+    "posts": 145,
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T17:45:46",
+  "started": "2026-11-28T18:27:40",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2114,7 +2094,9 @@
       "ImageComponentAnalysis.establish_contour_hierarchy",
       "SpheroidalWaves.rmn",
       "JumpProcesses.CartesianGrid",
-      "Oceanostics.FilteredKineticEnergyDissipationRate"
+      "Oceanostics.FilteredKineticEnergyDissipationRate",
+      "Modia3D.loadPalettes!",
+      "HighVoronoi.VoronoiNodes"
     ],
     "games": [
       "Super Mario 64",
@@ -2278,7 +2260,10 @@
       "Burnout 3: Takedown",
       "Sid Meier's Pirates!",
       "Counter-Strike (video game)",
-      "Pokémon Yellow"
+      "Pokémon Yellow",
+      "Animal Crossing: New Horizons",
+      "Total Annihilation",
+      "Grand Theft Auto VI"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2363,7 +2348,9 @@
       "https://www.bbc.co.uk/news/articles/cm5y10yydln3o",
       "https://www.bbc.co.uk/news/articles/ckp80jyz6dl8o",
       "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo",
-      "https://www.bbc.co.uk/news/articles/c84gnq3qq9rno"
+      "https://www.bbc.co.uk/news/articles/c84gnq3qq9rno",
+      "https://www.bbc.co.uk/news/articles/cqkgr4g5nrnlo",
+      "https://www.bbc.co.uk/news/articles/cm752q30q5leo"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2737,7 +2724,10 @@
       "SPECTrecon",
       "InPartS",
       "Inti",
-      "IMASdd"
+      "IMASdd",
+      "MNPDynamics",
+      "LatticeModels",
+      "CausalSets"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2757,8 +2747,9 @@
       "Qwen3EmbeddingRunner",
       "BasicVSRRunner",
       "QwenImageEditRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "PPOCRRunner"
     ]
   },
-  "surprise_seen": 178
+  "surprise_seen": 179
 }

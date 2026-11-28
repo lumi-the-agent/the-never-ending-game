@@ -266,6 +266,30 @@ end
 
 const ALLIN = ("Wheee!", "Me too!", "Wait for me!", "Coming in!", "Clackety SPLASH!", "Geronimooo!")
 
+"Turn from yaw a towards b by the fraction f, the short way round."
+yaw_toward(a, b, f) = a + f * (mod(b - a + Float32(pi), 2.0f0 * Float32(pi)) - Float32(pi))
+
+"""
+s180: after a jump into the pond at `at` (from `from`): `under` seconds under water while it turns round to face the
+`edge`, then it swims there at ~1.1 m/s, rising as it goes. `t` = seconds since it hit the water. True when it is out.
+"""
+function swim_back!(x, from, at, edge, t, under)
+    hd = NG.species_of(x).heading
+    ya = atan(at[2] - from[2], at[1] - from[1]) - hd           # the way it flew in
+    yb = atan(edge[2] - at[2], edge[1] - at[1]) - hd           # the way out
+    if t < under
+        x.pos = at - Point3f(0, 0, 0.4f0)
+        x.yaw = yaw_toward(ya, yb, clamp(t / under, 0.0f0, 1.0f0))
+        return false
+    end
+    dur = max(hypot(edge[1] - at[1], edge[2] - at[2]) / 1.1f0, 0.5f0)
+    e = clamp((t - under) / dur, 0.0f0, 1.0f0); e = e * e * (3 - 2e)
+    x.pos = at + (edge - at) * e - Point3f(0, 0, 0.4f0 * (1 - e))
+    x.yaw = yb
+    e < 1 && (x.action = :walk; x.goal.action = :walk)
+    return e >= 1
+end
+
 """
 Everybody in (s89): after Lumi's big one the judges and all the divers jump in at once from round the pond,
 each to its own spot in the water, a dozen rings crossing on the real water, and they come up laughing.
@@ -288,21 +312,24 @@ function all_in!(s::Splash, game, el)
     L = SP[:allin_landed]::Set{Int32}
     for (id, (from, land, since)) in collect(A)
         x = NG.creature(w, id); x === nothing && (delete!(A, id); continue)
-        u = Float32((w.t - since) / 0.95)
+        Ta = max(0.95f0, hypot(land[1] - from[1], land[2] - from[2]) / 6.0f0)   # s180: <= ~6 m/s across
+        u = Float32((w.t - since) / Ta)
         u < 0 && continue
         if u < 1
             x.pos = from + (land - from) * u + Point3f(0, 0, 2.0f0 * 4u * (1 - u))
             x.action = :jump; x.goal.action = :jump
             x.yaw = atan(land[2] - from[2], land[1] - from[1]) - NG.species_of(x).heading
-        elseif u < 1.8f0
-            id in L || (push!(L, id); splash!(s, w, land, 1.15f0; log = true))
-            x.pos = land - Point3f(0, 0, 0.4f0)           # under for a moment
         else
-            delete!(A, id)
+            # s180: under for a moment, turning round down there, then it SWIMS to the edge (it used to pop up at the edge
+            # in one frame: live_motion saw 0.67 m jumps, 20 m/s and 179 deg turns in one frame)
             back = NG.ground(w.island, (from[1], from[2]))
             c = Point3f(P[1], P[2], lvl)
-            x.pos = c + 0.9f0 * (back - c)                # up at the edge, dripping
-            x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
+            edge = c + 0.9f0 * (back - c)
+            u < 1.8f0 && (id in L || (push!(L, id); splash!(s, w, land, 1.15f0; log = true)))
+            if swim_back!(x, from, land, edge, Float32(w.t - since) - Ta, 0.76f0)
+                delete!(A, id)
+                x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
+            end
         end
     end
 end
@@ -535,7 +562,8 @@ function NG.step!(s::Splash, game, dt)
                 x = NG.creature(w, id)
                 x === nothing && (delete!(s.flights, id); continue)
                 big = x.name == "Lumi"
-                T = big ? 1.3 : 0.9
+                # s180: no faster than ~6 m/s across the ground (a creature still far from the edge flew at 16-26 m/s)
+                T = max(big ? 1.3 : 0.9, hypot(c[1] - from[1], c[2] - from[2]) / 6.0)
                 u = Float32((w.t - since) / T)
                 if u < 1
                     h = big ? 3.4f0 : 1.8f0
@@ -547,13 +575,13 @@ function NG.step!(s::Splash, game, dt)
                     x.pos = c - Point3f(0, 0, 0.4f0)
                     splash!(s, w, c, big ? 2.0f0 : 1.0f0; log = true)
                     SP[:score_at] = (w.t + 0.7, big)
-                elseif u < 1 + 0.6f0 / Float32(T)
-                    x.pos = c - Point3f(0, 0, 0.4f0)       # under the water for a moment
                 else
-                    delete!(s.flights, id)
+                    # s180: under the water for a moment (turning round), then it swims back to the edge (was a pop)
                     back = NG.ground(w.island, (from[1], from[2]))
-                    x.pos = c + 0.92f0 * (back - c) + Point3f(0, 0, 0)      # pops up at the edge, dripping
-                    x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
+                    if swim_back!(x, from, c, c + 0.92f0 * (back - c), Float32(w.t - since) - Float32(T), 0.6f0)
+                        delete!(s.flights, id)
+                        x.goal = NG.Goal(:cannonball, back, :laugh, 60.0, w.t + 60, false, 0, false); x.action = :laugh
+                    end
                 end
             end
             scores!(s, w)

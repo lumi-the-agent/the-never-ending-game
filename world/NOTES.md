@@ -1646,3 +1646,26 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   old version, so they look fine; a FRESH worker process runs without the plugin, and a long-lived worker keeps the old
   plugin's Dict (Main.IRONDRUM) from an earlier job: drum_still then framed a stale point (media/s179-wound-field-c/d.png).
   After every plugin edit: `python3 -I tools/live.py reload` and read its "plugins" map ("ok"), never only a sandbox eval.
+
+## Cells that sag (s180, physics/potcell.jl diffuse!, physics/cartcord.jl battery!)
+- PotCell now follows a still diffusion layer (DELTA 0.5 mm, 16 nodes, explicit Fick, one substep at 1/30 s) at BOTH
+  electrodes: Cu2+ used up at the copper plate, Fe2+ piled up at the iron bar. emf_surface = Nernst with the
+  concentrations AT the metal; voltage() uses it once layers!(pot) was called (motor bench pots without layers keep the
+  old steady I_lim term). The sag is the IRON side: fresh brine has ~1 mM Fe2+, so ln(c_s/c_b) moves fast (0.871 ->
+  0.827 V a pot in 5 s at 0.65 A, 0.818 at 20 s); the copper side barely moves with 1 M CuSO4 (I_lim ~5 A). Rest
+  relaxes it over DELTA^2/D ~ 6 min; the bulk (Faraday, run!) keeps a small permanent part (+0.04 mM Fe2+ a run).
+- The cart: Sim.pots (six PotCell pots), battery!(s) writes Motor.State.E and .Rloop (State CACHES E and Rloop at
+  construction: changing b.cells does nothing after State() is made). 5.224 V fresh -> 4.90 V by the end of a run,
+  5.08 V after 4 min rest; 11.4 cm/s (was 14.2 on the fixed (0.78 V, 0.5 Ohm) cells).
+- HONEST GAP, OPEN: the physics pots are r 9 cm x 16 cm deep (0.59 Ohm); the DRAWN pots (irondrum.jl id_pots!) are
+  r 5.5 cm with only 3 cm of brine in their dishes, which would be ~3 Ohm each (the wall only conducts where brine
+  touches it) and the cart would not move. The drawing has to grow to the pots the circuit uses (bigger pots standing
+  in brine to their shoulders), or the pots get weaker and the cart needs more of them. Do not hide this again.
+- Time: the dashboard's clock is the ISLAND's (17:00 on the island), not the session's. Run `date` before planning the
+  session's end (s180: I thought it was 18:56 when it was 18:33).
+- Film framing s180: the cart's belt is on the NORTH (+y) side; the north side of the plank road has a big pink flower
+  near x 1.2..1.5, y -13.9 that fills a low camera. A camera that slides at 3/4 of the subject's pace makes it drive
+  THROUGH the frame instead of looking parked.
+- (s180) "cannot document the following expression" when a plugin will not load = I put new code BETWEEN an existing
+  docstring and the function it belonged to (splash.jl all_in!; s179's id_cast_iron the same). Insert new code ABOVE
+  the old docstring, never right before the `function` line.

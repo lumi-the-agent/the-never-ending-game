@@ -13,8 +13,8 @@
 # these few lines; the motor, rope and soil are mine already (motor.jl, rope.jl, wheelsand.jl).
 module CartCord
 
-# Motor (motor.jl) and Rope (rope.jl) are included into the same parent module first
-import ..Motor, ..Rope
+# Motor (motor.jl), Rope (rope.jl) and PotCell (potcell.jl, s180) are included into the same parent module first
+import ..Motor, ..Rope, ..PotCell
 using LinearAlgebra
 const G = 9.81
 const RHO_CU = 1.7e-8
@@ -67,7 +67,32 @@ mutable struct Sim
     clipped::Bool; F_clip::Float64; Fmax::Float64; F::Float64; Tc::Float64; t::Float64
     F_buf::Vector{Rope.V}; events::Vector{Tuple{Float64,String}}; taut::Bool
     F_ext::Float64                     # s177: a push on the cart along the track (N, + = away from the pots)
+    pots::Vector{PotCell.Pot}          # s180: the six clay pots as cells that sag (PotCell.diffuse!) and come back at rest
 end
+
+"The drum's six big clay pots (r 9 cm, 16 cm of liquid, fired 900-950 C: ~0.6 Ohm, 0.87 V fresh each)."
+drum_pots(n) = [PotCell.layers!(PotCell.Pot(; r = 0.09, h = 0.16, Tfire = 900.0 + 10k)) for k in 1:n]
+
+"""
+The pots as the motor's battery right now: the emf at their plates (Nernst with the concentrations AT the metal, s180)
+and their resistance, into the motor's cached circuit (State.E, State.Rloop).
+"""
+function battery!(s)
+    s.st.E = sum(PotCell.emf_surface, s.pots)
+    s.st.Rloop = s.st.Rw + sum(PotCell.R, s.pots) + 2s.b.R_contact
+    s
+end
+
+"Draw I amperes from every pot (in series) for dt: the layers at the plates move (sag) and the bulk pays (Faraday)."
+function draw_pots!(s, I, dt)
+    for p in s.pots
+        PotCell.diffuse!(p, I, dt)
+        I > 0 && PotCell.run!(p, I, dt)
+    end
+    battery!(s)
+end
+"The pots resting while the cart stands: their layers relax back towards the bulk (minutes)."
+rest!(s, dt) = draw_pots!(s, 0.0, dt)
 
 function Sim(; L_cord = 4.0, F_clip = 2.5, cart = Cart(), belt = Belt(), pots = 6, n = 12, on = true)
     belt.r_a < cart.r_w - 0.02 || error("the axle pulley (r $(belt.r_a)) would scrape the ground under wheels of r $(cart.r_w)")
@@ -77,8 +102,9 @@ function Sim(; L_cord = 4.0, F_clip = 2.5, cart = Cart(), belt = Belt(), pots = 
     cord = Rope.Tether((0.0, 0.0, 0.0), (cart.x, 0.0, 0.0); n, slack = L_cord / cart.x, lin_mass = 0.03, EA = 40e3,
                        mu_ground = 0.5)
     cord.L = L_cord
-    Sim(b, st, cart, belt, cord, true, F_clip, fmax(belt), 0.0, 0.0, 0.0, Vector{Rope.V}(undef, n + 1),
-        Tuple{Float64,String}[], false, 0.0)
+    s = Sim(b, st, cart, belt, cord, true, F_clip, fmax(belt), 0.0, 0.0, 0.0, Vector{Rope.V}(undef, n + 1),
+            Tuple{Float64,String}[], false, 0.0, drum_pots(pots))
+    battery!(s)
 end
 
 function step!(s::Sim, dt)
@@ -96,6 +122,7 @@ function step!(s::Sim, dt)
         belt.δ += rate * dt
     end
     Motor.step!(st, s.b, dt; τload = F * belt.r_p / (belt.gear * (F > 0 ? belt.eta : 1 / belt.eta)))
+    draw_pots!(s, st.on ? abs(st.I) : 0.0, dt)       # s180: the pots sag under the current, rest when it stops
     # the cart: belt at the ground (grip-limited), rolling, the slope, the cord
     Fd = clamp(F * belt.r_a / cart.r_w, -cart.mu_grip * cart.rear * cart.m * G, cart.mu_grip * cart.rear * cart.m * G)
     sl = slope_at(cart)

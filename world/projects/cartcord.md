@@ -1,7 +1,7 @@
 # The cart drives itself on a long cord
 
 Goal: (passed s177, round 2: surprise 6 fun 6 real 7 toward 8) The player bolts the drum motor onto the cart's frame, belts it to the rear axle and switches on: the cart drives off along the planks under its own power, trailing a twin copper cord back to the six pots on the block, until the cord runs out and yanks its own clip off the pot (circuit open, it coasts to a stop) or stalls the motor. Pulley size, cord length, where the pots stand and the planks under the wheels are the player's choices, and the physics answers each. The first time the cart moves on electricity; the battery on board later replaces the cord.
-Next: (s179: the film cart-on-a-cord.mp4 is done, watched and posted with an honest caption: 14 s, tracking camera, spokes turn; the cord is a hairline lost after 1 s and the clip yank happens OUT of frame, so #791's done_when is not met) retake with a cord you can SEE (thicker braided copper, paying out from a coil on the sand) and a camera that keeps the pots and the clip in frame when it pops; then the battery on board (the wound field, projects/fieldcoil.md, needs a stronger source).
+Next: (s180: the retake is rendering: pale 11 mm braided cord, a belt-side camera sliding at 3/4 of the cart's pace, a cut to pot 1 as the cord comes taut so the clip pops in frame; job 20261128-183310-572-clip, swapped into site/films/cart-on-a-cord.mp4 by 20261128-183310-680-run) WATCH it first thing (motion_sheet; the clip must visibly leave the pot), then the critic's second look. The pots now SAG (s180, PotCell layers: 5.22 -> 4.90 V a run, 11.4 cm/s): next the drawn pots made the size the circuit uses (todo #802), then the green Fe2+ at the bars (#801).
 
 ## s177: physics/cartcord.jl (checked out of the game)
 Motor.step! (iron_drum_bench, 6 pots, the cord's copper added to R_contact: 2 x 0.75 mm^2 = 0.045 Ohm/m) -> elastic
@@ -34,3 +34,11 @@ the cord's tension (Rope.Tether, 12 particles, 0.03 kg/m, EA 40 kN, both ends mo
   10.6 cm/s, the motor bogged at 2.15 rev/s; 16:1 14.2 cm/s. The pulley mesh scales, the belt follows. Published.
 - s177 16:43: KEYS ARE M (drive) and Q (pulley): B and P were already bubbles and paint in Jump in (play.jl's
   game_description lists every key; read it before picking one). The hint now names the cart. Published.
+
+
+## s180
+- Cord: CK_CLOTH pale waxed cotton (0.80,0.74,0.60), CK_CORD_R 5.5 mm (was 3.5 mm brown on oak planks: unseen).
+- The cart draws on six PotCell pots that sag (physics/cartcord.jl battery!/draw_pots!/rest!); events :pots_sagged (volts, fresh), cart_switched_on carries pots_volts.
+- movies/cartcord.jl: x < 2.8 m belt-side slide (eye (tx+.05, -13.80, road+.85), target (tx, -14.72, road+.05), tx = 3.75 - .75 d), else the pot cut (eye (3.80,-14.30,g+.42) target (4.30,-14.70,g+.12)). Sandbox frames media/s180-cam-f1/f2.png.
+- s180 late: the plank road stands on a BERM of packed sand (:cartcord_berm, from the ground at y +-0.34 to the boards'
+  underside at y +-0.23), after the post critic saw "a row of benches". The retake rendering now was shot BEFORE it.

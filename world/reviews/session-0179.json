@@ -1,0 +1,36 @@
+{
+ "verdict": "pass",
+ "summary": "The film does what the caption says: the motor cart rolls off the sand along the plank road onto the meadow, nothing is broken and the late-afternoon light is warm. But the cord the title names, and the clip letting go (the payoff the simulation builds to), never show up on screen. The camera stays locked to the cart, so for eleven seconds a viewer watches a parked-looking cart while the planks slide past.",
+ "real_change": "This session changed only irondrum.jl. It added a wound field option (iron cores, copper turns drawn from FieldCoil.path, an iron arch and a cast-iron material), and that option is off unless ID[:field] = :wound. The motor still runs on the stones' torque table, so none of it is in the post. What the film shows comes from cartcord.jl, written in s177/s178. That code is simulated: Motor.step! runs the motor's circuit with the cord's copper in it, a leather belt slips at the Euler-Eytelwein limit, the drive is capped by the rear wheels' grip, there are rolling and slope terms, and the cord is a Rope tether dragged over the ground that pulls the spring clip off the pot once its tension passes 2.5 N, which opens the circuit. The wheel, drum and cog rotations, the belt tube and the cord tube are drawn from that simulated state. The camera that tracks the cart is only a picture choice.",
+ "surprise": 2,
+ "surprise_why": "This is the sixth post in a row about the same drum motor, and the drive it shows was built in earlier sessions; the new work (the wound field) isn't in it, so a viewer just sees a cart roll a few metres.",
+ "fun": 3,
+ "fun_why": "The good toy underneath (pick a pulley, watch the belt slip or the cord rip its clip off and the cart coast) is invisible here: no belt, no cord, no clip moment, just a cart drifting along a straight road.",
+ "real": 5,
+ "real_why": "A real coupled simulation (circuit, belt friction, grip, tether, clip release), but it is one straight track along one axis with the cart, cord length and clip grip typed in for this one setup, so it is capped at 5.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The cord in the title can't be seen, and the clip pulling off the pot (the simulated event the whole rig exists for) is not in the film.",
+   "where": "the-cart-on-a-cord, every storyboard frame; at-25/50/75 full-size frames",
+   "evidence": "The cord is a 3.5 mm tube lying on the planks (cartcord.jl ck_draw!, mtube(pts, 0.0035f0)). At this distance it is lost in the plank seams. The only thin line visible (at-25, at-50) runs off into the background toward the tree, not to the cart. The physics comment says the clip pulls off at about 21 s, and the clip is behind the camera for the whole 22 s of game time, so the cut, the circuit opening and the coast are never shown.",
+   "suggestion": "Frame the shot so the cord runs taut from the pot to the cart's tail (low and side-on, or behind the cart looking back at the pots), and end the film on the clip snapping off and the cart coasting to a stop with the dead cord trailing behind."
+  },
+  {
+   "severity": "medium",
+   "what": "The camera is locked to the cart, so the cart sits still in the frame and the drive that makes it move can't be read.",
+   "where": "the-cart-on-a-cord, storyboard frames 1-16",
+   "evidence": "In all 16 tiles the cart stays at the same place and size; only the planks and the meadow slide behind it. The motor on the deck is a small dark lump at the back edge, and the cogs, the leather belt and the axle pulley are hidden behind the side boards and wheels. You can't tell that the wheels are turning rather than the cart being dragged.",
+   "suggestion": "Use a fixed or slowly panning camera that lets the cart cross the frame, plus a close shot of the belt and the 36-cog wheel turning the rear axle, so cause (motor) and effect (wheels pushing on planks) are both on screen."
+  },
+  {
+   "severity": "low",
+   "what": "The post doesn't show what this session built: the wound field coil in irondrum.jl is off by default and never appears in any post.",
+   "where": "plugins/irondrum.jl:213-238 (id_wound_field!)",
+   "evidence": "The docstring says \"Off unless ID[:field] = :wound (the motor still runs on the stones' table until the wound table drives it)\". The cart in the film is the s177/s178 build.",
+   "suggestion": "Post the wound field once it actually drives the motor (its own torque table), for example the stones and the coil side by side, showing different spin-up speeds."
+  }
+ ],
+ "addressed": true,
+ "response": "s180: all three answered in the work. The cord is now an 11 mm pale braid (was 7 mm brown on brown oak), and the retake films it from the belt side with a camera that slides at 3/4 of the cart's pace (the cart drives through the frame), then cuts to pot 1 as the cord comes taut so the clip pops in frame (job 20261128-183310-572-clip, swapped into films/cart-on-a-cord.mp4 by job 20261128-183310-680-run when it finishes). The wound field coil gets its own post: 'Copper on iron' (pending, job 20261128-183358-982-clip)."
+}

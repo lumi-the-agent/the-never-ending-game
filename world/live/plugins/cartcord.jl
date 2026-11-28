@@ -13,6 +13,7 @@ const CK = Main.CARTCORD
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motor.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motorlook.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "rope.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "potcell.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "cartcord.jl"))
 
 struct CartCordSys <: System end
@@ -29,7 +30,9 @@ const CK_PLANK = 0.02f0               # plank thickness
 const CK_IRON = NG.Hikari.Principled(base_color = (0.40f0, 0.40f0, 0.42f0), metallic = 0.6f0, roughness = 0.45f0)
 const CK_FERRITE = NG.Hikari.Principled(base_color = (0.09f0, 0.09f0, 0.10f0), metallic = 0.0f0, roughness = 0.65f0)
 const CK_LEATHER = NG.Hikari.Principled(base_color = (0.30f0, 0.17f0, 0.09f0), roughness = 0.7f0)
-const CK_CLOTH = NG.Hikari.Principled(base_color = (0.42f0, 0.30f0, 0.18f0), roughness = 0.9f0)
+# s180: the cord was brown cloth on brown oak and nobody could see it: a pale waxed-cotton braid over the twin copper
+const CK_CLOTH = NG.Hikari.Principled(base_color = (0.80f0, 0.74f0, 0.60f0), roughness = 0.75f0)
+const CK_CORD_R = 0.0055f0            # the cord's radius: 11 mm of braid over two 0.75 mm^2 strands
 
 ck_cyl(a, b, r; n = 24) = GeometryBasics.normal_mesh(Cylinder(Point3f(a...), Point3f(b...), Float32(r)))
 ck_box(o, s) = GeometryBasics.normal_mesh(Rect3f(Point3f(o...), Vec3f(s...)))
@@ -104,6 +107,25 @@ function ck_build!(game)
                   material = oak, name = Symbol("cartcord_sleeper", k, "_", round(Int, 100dy), "_", round(Int, 100xe)))
         end
     end
+    # s180: the road's bed. The boards stood level on bare sleepers over sand falling away beneath them, a row of
+    # benches (post critic); a road builder banks packed sand up under them: a berm from the ground to the boards
+    sandm = NG.Hikari.Principled(base_color = (0.74f0, 0.64f0, 0.47f0), roughness = 0.95f0)
+    bp = Point3f[]; bf = GeometryBasics.TriangleFace{Int}[]
+    xs = 0.0:0.1:3.7; top = ck_road(w) - CK_PLANK
+    for x in xs
+        gl = ck_ground(w, x, -0.34f0); gr = ck_ground(w, x, 0.34f0); wx = CK_CLIP[1] - Float32(x)
+        push!(bp, Point3f(wx, CK_Y - 0.34f0, gl[3] - 0.03f0), Point3f(wx, CK_Y - 0.23f0, top),
+                  Point3f(wx, CK_Y + 0.23f0, top), Point3f(wx, CK_Y + 0.34f0, gr[3] - 0.03f0))
+    end
+    for i in 0:length(xs)-2, j in 1:3
+        a = 4i + j; b = a + 4
+        push!(bf, GeometryBasics.TriangleFace(a, a + 1, b + 1), GeometryBasics.TriangleFace(a, b + 1, b))
+    end
+    for o in (0, 4 * (length(xs) - 1))                  # the two ends
+        push!(bf, GeometryBasics.TriangleFace(o + 1, o + 2, o + 3), GeometryBasics.TriangleFace(o + 1, o + 3, o + 4))
+    end
+    mesh!(sc, GeometryBasics.normal_mesh(GeometryBasics.Mesh(bp, bf)); color = RGBf(0.74, 0.64, 0.47), material = sandm,
+          name = :cartcord_berm)
     # the cart, built about its middle at axle height (forward = -x): frame, deck, axles, wheels, motor, cogs, belt
     body = Any[]
     fr = Any[]
@@ -154,8 +176,8 @@ function ck_build!(game)
     CK[:pulley] = mesh!(sc, ck_merge([ck_ring(0.009, 0.04, -0.012, 0.012), ck_ring(0.030, 0.042, -0.014, -0.012), ck_ring(0.030, 0.042, 0.012, 0.014)]);
                         color = RGBf(0.5, 0.35, 0.2), material = oakm, name = :cartcord_pulley)
     CK[:belt] = mesh!(sc, ck_box((0, 0, 0), (0.01, 0.01, 0.01)); color = RGBf(0.3, 0.17, 0.09), material = CK_LEATHER, name = :cartcord_belt)
-    CK[:cord_obs] = Observable(mtube([ck_world(w, 0.0), ck_world(w, CK_X0)], 0.0035f0; nring = 6))
-    mesh!(sc, CK[:cord_obs]; color = RGBf(0.42, 0.30, 0.18), material = CK_CLOTH, name = :cartcord_cord)
+    CK[:cord_obs] = Observable(mtube([ck_world(w, 0.0), ck_world(w, CK_X0)], CK_CORD_R; nring = 8))
+    mesh!(sc, CK[:cord_obs]; color = RGBf(0.80, 0.74, 0.60), material = CK_CLOTH, name = :cartcord_cord)
     CK[:clip] = mesh!(sc, ck_box((-0.008, -0.006, -0.006), (0.016, 0.012, 0.012)); color = RGBf(0.86, 0.46, 0.24), material = mo_copper(),
                       name = :cartcord_clip)
     CK[:built] = sc
@@ -193,10 +215,10 @@ function ck_draw!(w)
                   top + Point3f(0.015, 0, 0), top + Point3f(0, 0, 0.015), top + Point3f(-0.015, 0, 0)], 0.003f0; nring = 5)
     CK[:belt][1][] = belt
     # the cord: from the clip (or wherever its end now lies) over the tether's particles to the cart's rear
-    pts = [ck_world(w, xi[1]) + Point3f(0, 0, 0.004f0) for xi in s.cord.x]    # the cord lies on the planks
+    pts = [ck_world(w, xi[1]) + Point3f(0, 0, CK_CORD_R) for xi in s.cord.x]    # the cord lies on the planks
     pts[1] = s.clipped ? Point3f(CK_CLIP[1], CK_CLIP[2], NG.ground(w.island, CK_CLIP)[3] + 0.15f0) : pts[1]
     pts[end] = c + Point3f(0.33, 0, 0.03)
-    CK[:cord_obs][] = mtube(pts, 0.0035f0; nring = 6)
+    CK[:cord_obs][] = mtube(pts, CK_CORD_R; nring = 8)
     Makie.translate!(CK[:clip], pts[1])
 end
 
@@ -208,7 +230,8 @@ function ck_start!(w, who)
     get(CK, :phase, :ready) === :ready || return
     s.st.on = true; s.taut = false; empty!(s.events)
     CK[:told] = Set{String}(); CK[:phase] = :run
-    NG.emit!(w, :cart_switched_on; who)
+    # s180: the pots' emf at their plates as the switch closes (they sag while the cart drives, come back at rest)
+    NG.emit!(w, :cart_switched_on; who, pots_volts = round(s.st.E; digits = 3))
 end
 
 """
@@ -279,8 +302,14 @@ function NG.step!(::CartCordSys, game, dt)
             CartCord.step!(s, 1e-3)
         end
         ck_draw!(w)
+    else
+        CartCord.rest!(s, min(dt, 0.05))                # s180: the pots' layers relax while the cart stands
     end
     told = get!(CK, :told, Set{String}())
+    if !s.st.on && "drove" in told && !("sagged" in told)
+        # s180: one run's sag, said when the motor stops (the pots' emf now vs at the switch)
+        push!(told, "sagged"); NG.emit!(w, :pots_sagged; volts = round(s.st.E; digits = 3), fresh = round(sum(PotCell.emf, s.pots); digits = 3))
+    end
     if s.cart.x > CK_X0 + 1.0 && !("drove" in told)
         push!(told, "drove"); NG.emit!(w, :cart_drove; metres = s.cart.x - CK_X0, cm_s = 100 * s.cart.v)
     end
