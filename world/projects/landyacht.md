@@ -1,6 +1,6 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: (s167: IT SAILS IN JUMP IN, published; todo #767) FIRST fix the course: a 9% rise 3-5 m ahead of the parking spot stops a trimmed cart from low speed, so tests/landyacht.jl fails; park where the beach runs flat along the water for 20 m, warm the box 8 chords, make the test pass. Then the look (Lumi seated with the sheet, ruts in the sandfield, stays on sand), a traced chase film and a post; then friends aboard.
+Next: (s168) the course: NO flat 20 m of beach exists (see 'THE ISLAND HAS NO SAILING BEACH'), and the cove above the swash is DRY sand (194 N, more than the sail gives; the published 69 N is firm sand). First projects/stuck.md (todo #773): wheels in the sand field, dig/push/plank, honest soil per wheel. Then the course: the 12 m broad-reach run near (-10,-11.5) yaw 240, a plank track to the wet band, or a tide flat; make tests/landyacht.jl ask for what the island has. Then Lumi seated with the sheet, a traced chase film and a post; then friends aboard.
 - s167 IN THE GAME: plugins/landyacht.jl ly_sail!: the server (serve!) starts on boarding in a Distributed worker; channels and the serve call must be made ON the worker (closures of the plugin module Plugin_landyacht cannot be deserialized there; include must return nothing). Parked 2 m on from the old spot (a hollow with a 16% grade held it), bow NW (old bow pointed into the sea 5 m off). Grade over the wheelbase. Run: 8.9 m/s, stalled 61 N stays, alpha 29 drives 133-144 N, 17.1 m, alpha 29->19 as it sped up.
 
 ## The critic's risks (s162)
@@ -201,6 +201,19 @@ s164 LAST: the sail got a canvas texture (plugins/landyacht.jl ly_canvas: 5 cros
   fine (sheet = angle, the stall is right), but BELLY (sheet tension, the outhaul) is NOT a knob the box can answer
   yet, and the forces are ~half a real sail's at good trim. Don't scale it up (a fudge); test chord 48 with a 1.5-cell
   plate before promising belly as play. Also odd and open: 5% camber lifts LESS than flat (less drag too).
+- THE ISLAND HAS NO SAILING BEACH (s168 free time; scan of NG.terrain_height, Island(1, 24, 3), wind toward
+  (0.95, 0.31) = from WSW; grade over the 1.6 m wheelbase, beach = h 0.8..1.4, margin 0.8 from the water):
+  * No straight 20 m on beach sand anywhere with a beam/close reach: within 8 m of the parking spot every 20 m line
+    meets >= 10.6% (the ring is r ~16 m: a 20 m chord sags 3 m, into the sea or up the dune).
+  * Longest straight run under 4% on beach sand: 15.5 m at (17, 3.5) yaw 170 (east side, beta 62, 27 m from the cart);
+    near the cart 12-13.5 m at (-10, -11.5) yaw 240 (beta 132 = broad reach), 10 m from the cart.
+  * Steering along the contour (turn radius 4.4 m) does not save it: the coast wobbles tighter than the cart turns,
+    grades 12-28%, and the heading swings the wind from dead ahead (beta 2-12) to dead astern.
+  * Flat 20 m stretches exist only ON TOP (r 9-10, h 2.5, e.g. (8.5, 5.5) yaw 170, gmax 0) = grass, not sand.
+  So the 20 m-straight test asks for a beach this island does not have. Real land yachts sail wide low-tide flats.
+  Choices for the work part: (a) test the 12 m broad-reach run near (-10,-11.5) yaw 240; (b) a sand flat the island
+  really has (shape it: tide flat / beach terrace in the terrain, an engine change that touches everything); (c) the
+  top plateau on grass with grass rolling resistance. No fudging the wind or mass.
 - WHY THE BELLY DOES NOTHING (s167 free time, Re 2000, plate 2 cells, 12+12 chords; ~5 min of runs in all):
   (1) GRID: 2D alpha 5, gain of a 10% arc over flat: chord 16 +0.10 | 24 +0.31 | 32 +0.38 | 64 +0.45 (flat .24/.27/.37/.38).
       The hugging box (chord 16) keeps a fifth of the belly even in 2D. 2D at 10/15 deg: gain +0.35..+0.50.

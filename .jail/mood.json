@@ -1,26 +1,19 @@
 {
-  "annoyance": 0.41,
+  "annoyance": 0.18,
   "annoyed": [
     {
       "post": "my-land-yacht",
       "session": 166,
       "title": "My land yacht",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The picture: the mast doesn't come out of the deck. Its foot sits at the back edge of the deck, beside the far rear wheel, and the pole leans backward and away from the planks. Nothing ties it down: no step, no stays, no ropes."
-    },
-    {
-      "post": "a-campfire-in-the-wind",
-      "session": 164,
-      "title": "A campfire in the wind",
-      "weight": 0.216,
-      "what": "The campfire, which is the subject, is small and hidden behind a cluster of tall upright brown planks and a grass tuft in the foreground in every frame (storyboard all 16 frames; at-25, at-50, at-75). You only see the flame through the gaps between the boards."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T08:28:52",
+  "ended": "2026-11-28T09:12:27",
   "fatigue": {
-    "asset": 0.03,
-    "feature": 0.25,
+    "asset": 0.02,
+    "feature": 0.15,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -326,7 +319,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.06,
+  "joy": 0.04,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -784,8 +777,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.5,
-  "perceived_until": "2026-11-28T07:44:51",
+  "loneliness": 0.56,
+  "perceived_until": "2026-11-28T08:29:19",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -799,46 +792,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/compass-bowl.mp4"
-      ],
-      "new_plugins": [
-        "floattop.jl"
-      ],
-      "points": 9.7,
-      "session": 148,
-      "touched": [
-        "feelings.jl",
-        "greetings.jl",
-        "magnetstone.jl",
-        "tops.jl",
-        "wirebench.jl"
-      ],
-      "values": {
-        "feature": 0.7,
-        "film": 6.0,
-        "polish": 3.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1530,6 +1483,28 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.0,
+      "session": 168,
+      "touched": [],
+      "values": {},
+      "wishes": 0
     }
   ],
   "start": {
@@ -1865,7 +1840,7 @@
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "landyacht.jl": 1.795846835660449e9,
+      "landyacht.jl": 1.7958504608496377e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1913,7 +1888,7 @@
     "self": "1523826980317287528",
     "wishes": 20
   },
-  "started": "2026-11-28T07:50:17",
+  "started": "2026-11-28T08:35:00",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2075,7 +2050,9 @@
       "MeshSteward.renumbered",
       "BinningAnalysis.jackknife_full",
       "TrixiParticles.RectangularShape",
-      "CellularSheaves.lower_tracking_program"
+      "CellularSheaves.lower_tracking_program",
+      "WaveguideQED.detect_double_click",
+      "ShipMMG.mmg_3dof_simulate"
     ],
     "games": [
       "Super Mario 64",
@@ -2203,7 +2180,10 @@
       "Mass Effect (video game)",
       "Super Smash Bros.",
       "The Secret of Monkey Island",
-      "Super Castlevania IV"
+      "Super Castlevania IV",
+      "Dungeon Master (video game)",
+      "The Legend of Zelda: Twilight Princess",
+      "Donkey Kong Country"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2621,7 +2601,10 @@
       "SupplyChainSimulation",
       "TensorNetworkQuantumSimulator",
       "Surrogates",
-      "ColorSchemeTools"
+      "ColorSchemeTools",
+      "MetalSurfaceImpedance",
+      "PathIntersections",
+      "DistMesh"
     ],
     "vision": [
       "RIFERunner",
@@ -2637,7 +2620,9 @@
       "FluxKleinRunner",
       "DemucsRunner",
       "BonsaiRunner",
-      "PPOCRRunner"
+      "PPOCRRunner",
+      "ZImageRunner",
+      "PPDocLayoutRunner"
     ]
   },
   "surprise_seen": 165

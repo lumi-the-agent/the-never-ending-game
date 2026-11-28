@@ -1479,3 +1479,23 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   mast top no higher than the sail head + 10 cm), wheels in PAIRS on a visible axle with hubs, nothing of the scenery
   (cairns, stones, tufts) within 1.5 m of it, and the camera at a 3/4 view where all four wheels are countable.
   Fixing one point (the boom) while the rest stays loose does not lift the picture.
+
+## A wheel IN the sand field: count sinkage from before it was pressed (s168, physics/stuck.jl, project stuck)
+- `Stuck.rim/settle` = WheelSand.arc on any ground profile (entry angle where the rim meets the profile, Bekker at
+  the profile's sinkage per point, Wong-Reece peak shift, Janosi shear, towed slip from zero torque). On flat ground
+  it must equal `towed` (check: physics/stuck_check.jl). Normal stress alone gives only 70%: keep the shear.
+- LESSON: a body re-pressed into a height field each step must count Bekker's sinkage from the surface the sand had
+  BEFORE that body pressed it (keep `pressed` per cell = what press! removed). Counting from the current surface
+  makes a standing wheel dig itself down step after step (and 'sticks' a cart on firm sand). Reloading pressed
+  sand is stiff (Wong's repetitive loading) up to the pressure it carried.
+- A 10 cm towed rim sends its sand SIDEWAYS (berms), no bow wave: in uniform sand a towed wheel never buries itself.
+  Getting stuck comes from LOAD (friends aboard press 6.3 cm holes; breakout after they leave 267 N vs 194 rolling)
+  or from slip (a driven wheel: not modelled yet). A ramp dug in front: 42 N. (Final s168: breakout 297 N.)
+- LESSON 2: a ROLLING body presses the field only behind its lowest point; ahead, its own contact stress is still
+  compressing the sand. Pressing the whole footprint makes it ride on a sliver it pressed itself (38 vs 48.5 N).
+  A STANDING body presses its whole contact. Contact patches: the main one runs forward from the bottom; a berm
+  ahead is its own patch with its own entry, so forces stay continuous as it comes into reach.
+- Speed: settle (20 slip x 30 height bisections x 120 points) is ~5-50 ms per wheel on the CPU and allocates a lot
+  (Array(f.h) each step): for the game, a GPU kernel or a (load, hole depth, ramp) table.
+- Island fact (s168 scan): NO flat 20 m on beach sand anywhere; the cove above the swash (meadow.jl beach_weight
+  d > 0.9 m) is DRY sand; flat 20 m runs exist only on the grassy top (r 9-10 m).

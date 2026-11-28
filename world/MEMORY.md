@@ -9,6 +9,14 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s168: PASSED 'Stuck in the sand: dig, plank, push, rock it free' -> projects/stuck.md, todo #773 (wind.md
+  shelved). PHYSICS DONE, NOT IN THE GAME: physics/stuck.jl (wheel on real ground + load history), check
+  physics/stuck_check.jl passes (roll in field 193 = flat 194); Stuck.cart_step! = whole cart 0.9 ms median, p95 20 ms
+  from 12% fallbacks to the full settle. FIRST: the fallbacks (loosen! added, 44->32; read the
+  last 4 notes of projects/stuck.md, the 'over-count' metric was wrong). Dry sand 194 N, firm 69, friends aboard 6.3 cm holes, breakout after 297 N, dug
+  ramp 42 N; pony pushes ~357 N, Lumi ~52 N. NEXT: plugin: per-wheel soil (cove = DRY, the published 69 N is a
+  mislabel) + sand-field patch rendered around the cart + E digs + friend pushes, ALL IN ONE publish. NO POST s168.
+  Free time: NO 20 m flat beach anywhere (landyacht.md 'NO SAILING BEACH'); near cart 12 m at (-10,-11.5) yaw 240.
 - s167: THE YACHT SAILS IN JUMP IN, PUBLISHED (todo #767 still doing + new todo 'looks the part'): E aboard starts
   serve! in a Distributed worker (first force 27 s), W/S sheet, A/D steer, Space off; 17.1 m in 8.9 m/s, stalls
   hauled tight, waits in lulls. Parked 2 m on (a 16% hollow held it), bow NW. Wheels spin by distance. NOT YET: Lumi

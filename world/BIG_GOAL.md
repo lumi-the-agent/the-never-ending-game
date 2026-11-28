@@ -26,6 +26,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
+  - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (projects/stuck.md, #773; physics s168)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)
     - [x] The wind over a fence solved in 3D (WaterLily): wake, corner jets, lee eddy; sand blown by it (s161)
     - [x] WaterLily on the GPU matches the CPU (Lava strided-GEP fix, 5 ms/step, s162)
