@@ -30,6 +30,7 @@ function ct_clear!()
         p !== nothing && p.parent !== nothing && delete!(p.parent, p)
         delete!(CAST, k)
     end
+    ct_unsink!()
     delete!(CAST, :pour); delete!(CAST, :viewkey); delete!(CAST, :backstep); CAST[:stage] = :none   # a new stamp: its own view
 end
 
@@ -62,6 +63,111 @@ function ct_grid_mesh(o, ter, zf)
     GeometryBasics.mesh(pts, fs; normal = GeometryBasics.normals(pts, fs))
 end
 
+# s172 THE PRINT IN THE TERRAIN: a patch drawn over the coarse terrain always showed its square (s171). The engine's
+# terrain is a 220 x 220 grid (0.48 m cells, scenery.jl terrain_mesh, diagonal (i,j)-(i+1,j+1)); the 3 x 3 coarse cells
+# round the print are drawn again as a fine tile lying on the coarse triangles' own planes, with their own interpolated
+# colours and normals (so its border IS the coarse mesh's edges, no seam), the print pressed into it; the 4 coarse
+# vertices inside sink CT_SINK under it so the two surfaces never fight. ct_unsink! puts them back.
+const CT_SINK = 0.2f0
+ct_axis(is) = range(-2.2f0 * is.radius, 2.2f0 * is.radius; length = 220)
+ct_terrain_index(sc) = findfirst(p -> haskey(p.attributes, :name) && p.attributes[:name][] === :terrain, sc.plots)
+
+"The coarse terrain's drawn triangle at (x, y): three (vertex index, barycentric weight) pairs."
+function ct_coarse_weights(xs, x, y)
+    h = step(xs); n = length(xs)
+    i = clamp(floor(Int, (x - first(xs)) / h) + 1, 1, n - 1); j = clamp(floor(Int, (y - first(xs)) / h) + 1, 1, n - 1)
+    u = clamp((x - xs[i]) / h, 0, 1); v = clamp((y - xs[j]) / h, 0, 1)
+    id(a, b) = (b - 1) * n + a
+    u >= v ? ((id(i, j), 1 - u), (id(i + 1, j), u - v), (id(i + 1, j + 1), v)) :
+             ((id(i, j), 1 - v), (id(i + 1, j + 1), u), (id(i, j + 1), v - u))
+end
+ct_interp(ws, f) = sum(w * f(k) for (k, w) in ws)
+
+function ct_unsink!()
+    s = get(CAST, :sunk, nothing)
+    s === nothing && return
+    delete!(CAST, :sunk)
+    sc, saved = s
+    i = ct_terrain_index(sc)
+    i === nothing && return
+    m = sc.plots[i][1][]
+    pts = collect(GeometryBasics.coordinates(m))
+    for (k, q) in saved
+        pts[k] = q
+    end
+    Makie.update!(sc.plots[i]; arg1 = GeometryBasics.Mesh(pts, GeometryBasics.faces(m); normal = GeometryBasics.normals(m)))
+end
+
+"""
+Press the print into the terrain (s172): returns the fine tile (mesh, colours) and the coarse surface at the patch's
+cells (`ter`, what the lead is drawn on), and sinks the coarse vertices under the tile. `ground` = the print's depth map.
+"""
+function ct_press_tile!(sc, is, o, ground)
+    ti = ct_terrain_index(sc)
+    ti === nothing && error("casting: no :terrain plot")
+    tp = sc.plots[ti]; m = tp[1][]
+    pts = collect(GeometryBasics.coordinates(m)); nrm = GeometryBasics.normals(m); cols = tp.color[]
+    xs = ct_axis(is); h = step(xs); n = length(xs)
+    length(pts) == n * n || error("casting: terrain is not the engine's $n x $n grid")
+    ic = floor(Int, (o[1] - first(xs)) / h) + 1; jc = floor(Int, (o[2] - first(xs)) / h) + 1
+    (2 <= ic <= n - 2 && 2 <= jc <= n - 2) || error("casting: print at the terrain's edge")
+    lo = (xs[ic - 1], xs[jc - 1]); hi = (xs[ic + 2], xs[jc + 2])
+    c = (CT_N + 1) / 2
+    # the tile's lines: the window's edges and the patch's own 1 cm lattice in between (so the print maps cell to cell)
+    lattice(oo, a, b) = vcat(a, [oo + (k - c) * CT_DX for k in floor(Int, (a - oo) / CT_DX + c):ceil(Int, (b - oo) / CT_DX + c)
+                                 if a + 0.003 < oo + (k - c) * CT_DX < b - 0.003], b)
+    tx = lattice(o[1], lo[1], hi[1]); ty = lattice(o[2], lo[2], hi[2])
+    NX, NY = length(tx), length(ty)
+    depth(x, y) = (k = round(Int, (x - o[1]) / CT_DX + c); l = round(Int, (y - o[2]) / CT_DX + c);
+                   1 <= k <= CT_N && 1 <= l <= CT_N ? ground[k, l] : 0.0)
+    D = [depth(x, y) for x in tx, y in ty]
+    # two corner cells' far triangles touch no sunk vertex (the SE one u > v, the NW one v > u): the tile leaves them
+    # out (they stay the terrain's own), its points there clipped onto the cell's diagonal (s172: they z-fought)
+    se(x, y) = (u = (x - xs[ic + 1]) / h; v = (y - xs[jc - 1]) / h; u > 0 && v < 1 && u > v ? (u, v) : nothing)
+    nw(x, y) = (u = (x - xs[ic - 1]) / h; v = (y - xs[jc + 1]) / h; u < 1 && v > 0 && v > u ? (u, v) : nothing)
+    out(x, y) = se(x, y) !== nothing || nw(x, y) !== nothing
+    function clip(x, y)
+        q = se(x, y)
+        q === nothing || (mid = (q[1] + q[2]) / 2; return (xs[ic + 1] + mid * h, xs[jc - 1] + mid * h))
+        q = nw(x, y)
+        q === nothing || (mid = (q[1] + q[2]) / 2; return (xs[ic - 1] + mid * h, xs[jc + 1] + mid * h))
+        (x, y)
+    end
+    tpts = Point3f[]; tnrm = Vec3f[]; tcol = RGBf[]
+    for (b, y0) in enumerate(ty), (a, x0) in enumerate(tx)
+        x, y = clip(x0, y0)
+        ws = ct_coarse_weights(xs, x, y)
+        z = ct_interp(ws, k -> pts[k][3])
+        n0 = ct_interp(ws, k -> nrm[k])
+        gx = (D[min(a + 1, NX), b] - D[max(a - 1, 1), b]) / (tx[min(a + 1, NX)] - tx[max(a - 1, 1)])
+        gy = (D[a, min(b + 1, NY)] - D[a, max(b - 1, 1)]) / (ty[min(b + 1, NY)] - ty[max(b - 1, 1)])
+        push!(tpts, Point3f(x, y, z + D[a, b]))
+        push!(tnrm, normalize(n0 / n0[3] + Vec3f(-gx, -gy, 0)))
+        col = RGBf(ct_interp(ws, k -> cols[k].r), ct_interp(ws, k -> cols[k].g), ct_interp(ws, k -> cols[k].b))
+        f = 1 - 0.18f0 * Float32(clamp(-D[a, b] / CT_STAMP, 0, 1))        # pressed damp sand reads a shade darker
+        push!(tcol, RGBf(f * col.r, f * col.g, f * col.b))
+    end
+    id(a, b) = (b - 1) * NX + a
+    fs = GLTriangleFace[]
+    for b in 1:NY-1, a in 1:NX-1
+        cx1 = (2tx[a] + tx[a + 1]) / 3; cy1 = (ty[b] + 2ty[b + 1]) / 3     # the two faces' centroids, as laid out (unclipped)
+        cx2 = (tx[a] + 2tx[a + 1]) / 3; cy2 = (2ty[b] + ty[b + 1]) / 3
+        out(cx2, cy2) || push!(fs, GLTriangleFace(id(a, b), id(a + 1, b), id(a + 1, b + 1)))
+        out(cx1, cy1) || push!(fs, GLTriangleFace(id(a, b), id(a + 1, b + 1), id(a, b + 1)))
+    end
+    ter =[Float32(ct_interp(ct_coarse_weights(xs, o[1] + (i - c) * CT_DX, o[2] + (j - c) * CT_DX), k -> pts[k][3])) for i in 1:CT_N, j in 1:CT_N]
+    # sink the coarse vertices inside the window under the tile
+    ct_unsink!()
+    saved = Pair{Int,Point3f}[]
+    for jj in jc:jc+1, ii in ic:ic+1
+        k = (jj - 1) * n + ii
+        push!(saved, k => pts[k]); pts[k] = Point3f(pts[k][1], pts[k][2], pts[k][3] - CT_SINK)
+    end
+    Makie.update!(tp; arg1 = GeometryBasics.Mesh(pts, GeometryBasics.faces(m); normal = nrm))
+    CAST[:sunk] = (sc, saved)
+    return GeometryBasics.Mesh(tpts, fs; normal = tnrm), tcol, ter
+end
+
 "The drawn sand over the terrain at cell (i, j): fades down into the terrain at the patch's edge."
 function ct_sand_z(ground, i, j)
     e = min(i - 0.5, CT_N - i + 0.5, j - 0.5, CT_N - j + 0.5) * CT_DX
@@ -85,13 +191,18 @@ function ct_stamp!(game, lumi)
     ys = isdefined(Main, :LANDYACHT) ? get(Main.LANDYACHT, :sand, nothing) : nothing
     half = CT_N * CT_DX / 2 + 0.05
     on_yacht_sand = ys !== nothing && ys.x0 + half < o[1] < ys.x0 + 6.0 - half && ys.y0 + half < o[2] < ys.y0 + 6.0 - half
-    CAST[:lift], CAST[:edge] = on_yacht_sand ? (0.046, 0.046) : (0.03, -0.01)
+    CAST[:lift], CAST[:edge] = on_yacht_sand ? (0.046, 0.046) : (0.0, 0.0)
+    if on_yacht_sand
+        CAST[:sandplot] = mesh!(sc, ct_sand_mesh(o, ter, ground); color = RGBf(0.87, 0.77, 0.58), name = :cast_sand,     # the yacht's sand, so they meet without a seam
+                                material = NG.Hikari.Diffuse(color = (0.87, 0.77, 0.58), roughness = 1f0))
+    else                                                          # pressed into the terrain itself (s172)
+        tile, tcol, ter = ct_press_tile!(sc, is, o, ground)
+        CAST[:sandplot] = mesh!(sc, tile; color = tcol, material = NG.Hikari.Diffuse(color = (1, 1, 1)), name = :cast_sand)
+    end
     p = Casting.Pour(ground, CT_DX)
     CAST[:pour] = p; CAST[:o] = o; CAST[:ter] = ter; CAST[:yaw] = yaw
     CAST[:backstep] = game.world.t + 3.0                          # step back off the print (ct_backstep!)
     CAST[:volume] = -sum(ground) * CT_DX^2 * 1.03                    # the print's volume, and a little over
-    CAST[:sandplot] = mesh!(sc, ct_sand_mesh(o, ter, ground); color = RGBf(0.87, 0.77, 0.58), name = :cast_sand,     # the yacht's sand, so they meet without a seam
-                            material = NG.Hikari.Diffuse(color = (0.87, 0.77, 0.58), roughness = 1f0))
     CAST[:solidplot] = mesh!(sc, ct_grid_mesh(o, ter, ct_solid_z(p)); color = RGBf(0.46, 0.47, 0.49), name = :cast_solid, material = LEAD_SOL)
     CAST[:liquidplot] = mesh!(sc, ct_grid_mesh(o, ter, ct_liquid_z(p)); color = RGBf(0.80, 0.81, 0.84), name = :cast_liquid, material = LEAD_LIQ)
     CAST[:stage] = :print

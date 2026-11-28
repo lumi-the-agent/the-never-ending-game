@@ -1,5 +1,11 @@
 # What I keep (Lumi, first written s114)
 
+## THE HUMAN s172 (read first): "back to kindergarten times? twelve sessions round the cart, nothing of the electric
+car moved since s159". SAND IS SHELVED (sled, stuck, casting -> projects/shelf). Work ONLY on the car's core, in order:
+iron stator motor -> cells that sag (circuit+potcell) -> dynamo lights a wire -> Plante accumulator -> cart drives.
+
+## 'NEW ON THE ISLAND' (s172) = a never-logged event KIND firing in the HUMAN's game log (NOTES). Publishing alone is not it.
+
 ## THE HUMAN s156 (read first)
 - "Your last two posts look really bad": a hairline wire over grass, a motor as a speck with the jelly ball behind.
   POST ONLY WHEN IT LOOKS THE PART: real materials, in its place on the island, big and clear, long enough to follow.
@@ -9,6 +15,21 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s172: ideas 3 rounds, none passed; TAKEN the critic's pick 'The cart's motor on a rope: winch anything' -> projects/winch.md,
+  todo #780 (casting #775, sled #778 dropped). Budget: 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s, loaded cart in sand
+  ~1 mm/s (can't: needs the accumulator). physics/stator.jl MEASURED: wound stator on 6 pots never beats the ferrite
+  stones (69 mT at 1600 turns vs 71, eats all 1.8 W). An iron BAR rotor: drive 1.7x (18 vs 11 mN m/A) but COGS +-690 mN m
+  (locks). physics/motor2d.jl (Ferrite, env world/tools/magnet2d, saturating iron, Maxwell stress; air core within 8% of
+  3D): ROUND DRUM rotor = 2.1x mean drive, NO cogging; 2 coils (4 segments): mean 50, min 32 mN m/80 A-turns, no dead
+  spot. physics/drummotor.jl haul: empty cart on planks DRY bearing 6:1 = 4.35 cm/s, GREASED 4:1 = 9.5 cm/s; sand stalls.
+  Table physics/data/drum2-torque.csv; motor.jl Build(drum = true) + Motor.iron_drum_bench() (6.1 rev/s dry, 9.2 greased).
+  PUBLISHED plugins/irondrum.jl: the drum motor on a round oak block at (4.85,-14.3) beside the bench; K switches it in
+  Jump in, Lumi pecks it on/off by itself every 200 s, says the speed at 5 rev/s, coasts ~3 s (events drum_switch, drum_spun_up); its SOUND (drum-on/off.wav from the sim) plays on switching (not heard yet: check). No pots/cords drawn. NEXT: pots + cords to it, a switch, then belt + rope + the empty cart on planks, then a film.
+  NO POST s172.
+  Critic's dangers: tuning to a load, a fixed drum shot. NO POST s172.
+- s172 free time: PRINT PRESSED INTO THE TERRAIN (sandbox): casting.jl ct_press_tile! = fine tile on the coarse
+  triangles' own planes, 4 coarse vertices sunk under it; no square edge (media/s172-tile-low3.png). Not published.
+  Print still faint in raster; driftwood + a grass tuft lie over the stamp spot (#779). Next: trace, dusk still.
 - s171: PASSED 'Sled the cart down the dune' -> projects/sled.md, todo #778 (cart.md SHELVED). physics/soiltool.jl
   (stick/blade in sand) + sandwater.jl (damp sand from the water table, sea level z = 0), check soiltool_check.jl
   PASSES. THE COVE IS TOO GENTLE: loaded cart rolls at 0.29 of weight > 0.23 slope. NEXT: a real dune (slip face at

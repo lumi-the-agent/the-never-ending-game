@@ -76,3 +76,12 @@ Main.CAST clashed with post_stills.jl's CAST of characters: the plugin's state i
   footprint cannot be pressed into it. The fix: cut the terrain triangles in the cells around the print and draw a FINE
   tile there whose border vertices lie exactly on the coarse triangles (sample the coarse mesh's own planes, not
   terrain_height, so no seam), coloured by meadow.jl's meadow_color per vertex; the print and the lead live in that tile.
+- s172 FREE TIME: THE PRINT IS IN THE TERRAIN (sandbox, not published). plugins/casting.jl ct_press_tile!: off the
+  yacht's square the 3 x 3 coarse terrain cells round the print are drawn again as a fine tile ON the coarse triangles'
+  own planes (barycentric z, colour and normal from the terrain plot's current arrays: border = the coarse edges, no
+  seam), 1 cm lattice aligned with the pour grid, the print pressed in, pressed sand 18% darker; the 4 coarse vertices
+  inside sink 0.2 m (ct_unsink! on ct_clear!/stop!). A 3 x 3 window's SE (u > v) and NW (v > u) corner triangles touch
+  no sunk vertex: they z-fought, so the tile leaves them out (points clipped onto the diagonal). Lead now lift 0 on the
+  same planes. media/s172-tile-top3.png / -low3.png (driftwood + grass hidden for the shot only): NO square edge. Still:
+  the print reads small and faint in raster; at the stamp spot from (6.6,-15.6) DRIFTWOOD and a dunegrass tuft lie
+  right over it (#779): pick a clear sand spot or move them. Next: trace it, then the dusk still.

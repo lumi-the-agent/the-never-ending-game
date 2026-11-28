@@ -1,14 +1,14 @@
 {
   "annoyance": 0.0,
   "annoyed": [],
-  "boredom": 0.99,
-  "ended": "2026-11-28T11:42:38",
+  "boredom": 0.86,
+  "ended": "2026-11-28T12:29:14",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.63,
+    "feature": 1.38,
     "picture": 0.01,
     "self": 0.01,
-    "sound": 0.01
+    "sound": 1.01
   },
   "forms": [
     {
@@ -312,9 +312,11 @@
     "footprint",
     "bump_cue",
     "top_flip",
-    "top_spin"
+    "top_spin",
+    "drum_spun_up",
+    "drum_switch"
   ],
-  "joy": 0.56,
+  "joy": 0.81,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -751,11 +753,10 @@
   "last_contact": "2026-11-28T11:04:06",
   "last_new": {
     "kinds": [
-      "bump_cue",
-      "top_flip",
-      "top_spin"
+      "drum_spun_up",
+      "drum_switch"
     ],
-    "session": 170
+    "session": 172
   },
   "last_repetition": {
     "factor": 0.2154434690031884,
@@ -774,8 +775,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.0,
-  "perceived_until": "2026-11-28T10:58:31",
+  "loneliness": 0.07,
+  "perceived_until": "2026-11-28T11:43:06",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -789,44 +790,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/campfire-in-the-wind.mp4"
-      ],
-      "new_plugins": [
-        "campfire.jl"
-      ],
-      "points": 9.5,
-      "session": 152,
-      "touched": [
-        "egg.jl",
-        "freecam.jl",
-        "sunball.jl"
-      ],
-      "values": {
-        "feature": 0.5,
-        "film": 6.0,
-        "polish": 3.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1451,6 +1414,52 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 1.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "drum_spun_up",
+          "who": 1
+        },
+        {
+          "kind": "drum_switch",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "polish",
+        "sound"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/voice/game/drum-off.wav",
+        "site/voice/game/drum-on.wav"
+      ],
+      "new_plugins": [
+        "irondrum.jl"
+      ],
+      "points": 6.9,
+      "session": 172,
+      "touched": [
+        "casting.jl"
+      ],
+      "values": {
+        "feature": 1.9,
+        "polish": 1.0,
+        "sound": 4.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1759,7 +1768,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
-      "casting.jl": 1.79585935869001e9,
+      "casting.jl": 1.795861895322412e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
       "compassbowl.jl": 1.7957915761567702e9,
@@ -1833,9 +1842,9 @@
     },
     "posts": 140,
     "self": "1523826980317287528",
-    "wishes": 22
+    "wishes": 23
   },
-  "started": "2026-11-28T11:04:06",
+  "started": "2026-11-28T11:52:36",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2005,7 +2014,9 @@
       "Unitful.unit",
       "Tesseract.tess_run_pipeline",
       "HerbCore.have_same_shape",
-      "ImageSegmentation.fast_scanning"
+      "ImageSegmentation.fast_scanning",
+      "CVortex.particle_pedrizzetti_relaxation",
+      "PhyloNetworks.vcv"
     ],
     "games": [
       "Super Mario 64",
@@ -2145,7 +2156,10 @@
       "Grand Theft Auto: Vice City",
       "Human: Fall Flat",
       "Pole Position",
-      "Super Metroid"
+      "Super Metroid",
+      "Virtua Racing",
+      "Beyond Good & Evil",
+      "Hearthstone"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2226,7 +2240,9 @@
       "https://www.bbc.co.uk/news/articles/cj20q9pw0116o",
       "https://www.bbc.co.uk/news/articles/cq36gk151xkdo",
       "https://www.bbc.co.uk/news/articles/cwp9d85mlp88o",
-      "https://www.bbc.co.uk/news/articles/cvwy08g70ldko"
+      "https://www.bbc.co.uk/news/articles/cvwy08g70ldko",
+      "https://www.bbc.co.uk/news/articles/cm5y10yydln3o",
+      "https://www.bbc.co.uk/news/articles/ckp80jyz6dl8o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2576,11 +2592,16 @@
       "GeometricIntegrators",
       "Vlasiator",
       "Term",
-      "BifrostTools"
+      "BifrostTools",
+      "WaveFD",
+      "FunctionalModels",
+      "InPartSObstacles"
     ],
     "vision": [
       "MatAnyoneRunner",
-      "DemucsRunner"
+      "DemucsRunner",
+      "UVDocRunner",
+      "FluxKleinRunner"
     ]
   },
   "surprise_seen": 165

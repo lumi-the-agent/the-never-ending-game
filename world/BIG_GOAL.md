@@ -15,6 +15,8 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [ ] The friends carry the pots, cords clip by contact, the motor winds their berry basket (projects/friends-battery.md)
 - [ ] The bench motor runs on four clay pots, turning the potter's wheel
 - [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
+  - [ ] A round iron drum rotor between the stones (s172 motor2d.jl: 2.1x drive, no cogging; a bar cogs, a wound stator on pots never beats ferrite); next a 2nd coil
+  - [ ] The winch: the stator motor on a rope hauls anything, the empty cart up the planks on six pots (projects/winch.md, #780)
 - [ ] The motor run backwards: a windmill generator that lights a wire
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
     - [x] Sail force from the solved flow, no lift curve: a plate swept through angle of attack stalls by itself (physics/sailflow.jl)
@@ -28,7 +30,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
   - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (#773; s169 in game: sinks, Q a friend pushes, R digs; next: planks, film)
-  - [ ] Sled the cart down the dune: stick brake, friends lean, it can tip (projects/sled.md)
+  - [ ] Sled the cart down the dune (SHELVED s172: the car's core first)
     - [x] Stick force in sand + damp sand from the water table, checked (soiltool.jl, sandwater.jl, s171)
     - [ ] A real dune (the cove is too gentle for a loaded cart: 0.29 resistance > 0.23 slope)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)

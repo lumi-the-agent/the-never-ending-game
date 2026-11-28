@@ -1,0 +1,20 @@
+{"ideas": [
+{"title": "The cart's motor on a rope: winch anything up the beach",
+ "similarity": 4,
+ "nearest": "Six clay pots",
+ "same_form": [],
+ "surprise": 6,
+ "fun": 7,
+ "real": 6,
+ "toward": 8,
+ "critique": "This is the third round of the iron-stator pitch. Round 2 lifted a basket up a cliff; here the load is general (log by sand friction, cart by WheelSand, friends by mesh volume times density) and the player hooks it and rebuilds the motor in Jump in, so the motor is finally tested against loads instead of watched on a bench. The drum-diameter gear and the heat-weakened copper give real choices. The danger is that softiron saturation and the rope chain get tuned until the loaded cart only just makes the planks, and that the film turns into one more fixed shot of a turning drum."},
+{"title": "A friend in a treadwheel powers the winch down a cord",
+ "similarity": 3,
+ "nearest": "Six clay pots",
+ "same_form": [],
+ "surprise": 7,
+ "fun": 6,
+ "real": 5,
+ "toward": 6,
+ "critique": "Round 2's treadwheel idea with the Planté jar swapped for the winch. A runner that slows because the current really loads its legs, followed along the cord to a rising log, is fresh and good to film. The force-speed line is one lumped animal model, the payoff of picking pony or crab is mostly a gag, and it stacks on a winch motor that does not exist yet, so the likely version is a walk cycle whose speed scales with a number."}
+]}

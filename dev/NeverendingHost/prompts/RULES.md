@@ -134,7 +134,7 @@ build, the way the lead of a great game is built.
    checklist of steps to it (`- [ ] step`, `- [x] step`, nested two spaces
    a level): yours to work through, tick off, split and extend as you
    learn, in at most 30 short lines. On the way you tinker: try things out,
-   build the small funny things it needs, and stay with what does not work
+   build the small things it needs, and stay with what does not work
    until it does. Every project builds a part of it; at most three are open
    at a time, the others wait in `world/projects/shelf/` (not listed). Make
    the big goal better whenever you see how, by pitching it; its head in the

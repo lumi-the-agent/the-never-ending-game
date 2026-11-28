@@ -52,10 +52,12 @@ Base.@kwdef mutable struct Build
     r_axle::Float64 = 0.0015
     mu_bearing::Float64 = 0.25
     mu_brush::Float64 = 0.3
+    drum::Bool = false             # s172: a round iron drum rotor with two coils and 4 segments (physics/motor2d.jl table)
+    coils::Int = 1                 # coils in series on the rotor (wire resistance and copper count them)
 end
 
 perimeter(t) = sum(norm(collect(t[k+1]) .- t[k]) for k in 1:length(t)-1)
-wire_length(b::Build) = b.N * perimeter(b.turn)
+wire_length(b::Build) = b.coils * b.N * perimeter(b.turn)
 wire_R(b::Build) = EM.MATERIALS[:copper].resistivity * wire_length(b) / (pi * b.rw^2)
 copper_mass(b::Build) = EM.MATERIALS[:copper].density * wire_length(b) * pi * b.rw^2
 
@@ -138,11 +140,23 @@ mutable struct State
     sparks::Vector{Tuple{Float64,Float64}}; shorts::Int
 end
 
+# s172: the iron drum's torque per ampere-turn over its 90 deg period, solved in 2D with saturating iron (physics/motor2d.jl,
+# Ferrite.jl; validated: its air core is within 8% of em.jl's 3D one), times the 3D end correction 30.4 / 27.5. The table
+# already holds the 4-segment commutation of both coils, so a drum's circuit is always closed.
+const DRUM_TABLE = joinpath(@__DIR__, "data", "drum2-torque.csv")
+const DRUM_END3D = 30.4 / 27.5
+function drum_kt(b::Build, θ)
+    rows = [parse.(Float64, split(l, ",")) for l in eachline(DRUM_TABLE) if !startswith(l, "#") && !isempty(strip(l))]
+    θt = deg2rad.(getindex.(rows, 1)); kt = getindex.(rows, 2)
+    h = θt[2] - θt[1]; x = mod(θ, pi / 2); i = clamp(floor(Int, x / h) + 1, 1, length(θt) - 1); f = (x - θt[i]) / h
+    DRUM_END3D * b.N * ((1 - f) * kt[i] + f * kt[i+1])
+end
+
 function State(b::Build; θ0 = 0.3, ω0 = 0.0, nθ = 180, on = true)
     θs = range(0, 2pi; length = nθ + 1)[1:end-1]
     kt = zeros(nθ); ke = zeros(nθ)
     for (i, θ) in enumerate(θs)
-        kt[i], ke[i] = coil_coupling(b, θ)
+        kt[i], ke[i] = b.drum ? (k = drum_kt(b, θ); (k, -k)) : coil_coupling(b, θ)   # back-EMF per rad/s = -torque per amp
     end
     Rw = wire_R(b)
     E = sum(first, b.cells; init = 0.0); Rc = sum(last, b.cells; init = 0.0)
@@ -169,7 +183,7 @@ torque -> Coulomb friction -> θ.
 function step!(st::State, b::Build, dt; h = 2e-4)
     n = max(1, ceil(Int, dt / h)); h = dt / n
     for _ in 1:n
-        s, kind = st.on ? circuit_sign(b, st.θ) : (0, :open)
+        s, kind = st.on ? (b.drum ? (1, :closed) : circuit_sign(b, st.θ)) : (0, :open)
         kind == :short && (st.shorts += 1)
         if s == 0
             st.I != 0 && push!(st.sparks, (st.t, 0.5 * st.L * st.I^2))   # the coil's energy goes into a spark
@@ -315,6 +329,18 @@ function big_bench(; s = 3.0, flip = (false, false), cells = 6)
     Build(; magnets = stator(; R = 0.012s, H = 0.012s, gap = 0.024s, flip), turn = rect_turn(; l = 0.03s, a = 0.009s),
         N = 80, rw = 0.35e-3, ring_r = 0.006s, brush_F = 0.06, gap = deg2rad(10), m_rotor = 0.012 * s^3 * 0.5,
         J_extra = 2e-6 * s^5 * 0.5, r_axle = 0.0015s, cells = [(0.75, 3.0) for _ in 1:cells])
+end
+
+"""
+The big bench motor with a round iron DRUM rotor (s172, project winch): the stones of big_bench, a 2.3 kg iron drum
+(r 3.2 cm, 9 cm long, 4 mm gap) carrying two coils of N turns in slots, 4 commutator segments, on six clay pots
+(0.78 V, 0.5 Ohm walls each). `mu_bearing` 0.25 dry wood, ~0.05 greased.
+"""
+function iron_drum_bench(; N = 80, cells = 6, mu_bearing = 0.25)
+    m_fe = 7870 * pi * 0.032^2 * 0.09
+    Build(; magnets = stator(; R = 0.036, H = 0.036, gap = 0.072, rough = false), turn = rect_turn(; l = 0.09, a = 0.027),
+        N, coils = 2, drum = true, rw = 0.35e-3, ring_r = 0.018, brush_F = 0.06, m_rotor = m_fe, J_extra = 0.5 * m_fe * 0.032^2,
+        r_axle = 0.003, mu_bearing, cells = [(0.78, 0.5) for _ in 1:cells])
 end
 
 "A bench build with sensible parts; keywords change any of them."

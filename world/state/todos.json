@@ -10633,12 +10633,12 @@
       "id": 760,
       "kind": "feature",
       "priority": 1,
-      "result": "s161: physics/groundwind.jl: 3D WaterLily wind over a fence (wake ~7 H, corner jets, lee eddy; media/s161/wind-fence-b.png), Kawamura flux + saturation length (Sauermann, ls 1 m) + Exner. One hour at 8 m/s: board fence -> drift in front (0.090 m3 vs 0.029 behind, drift-1h-b.png); 50% slat fence -> drift behind (0.185 vs 0.065 m3, drift-1h-slats.png). CPU 12 ms/step at 262k cells. Not done: not yet on the dune, in the sandbox or placeable; no traced look.",
+      "result": "s161: physics/groundwind.jl: 3D WaterLily wind over a fence (wake ~7 H, corner jets, lee eddy; media/s161/wind-fence-b.png), Kawamura flux + saturation length (Sauermann, ls 1 m) + Exner. One hour at 8 m/s: board fence -> drift in front (0.090 m3 vs 0.029 behind, drift-1h-b.png); 50% slat fence -> drift behind (0.185 vs 0.065 m3, drift-1h-slats.png). CPU 12 ms/step at 262k cells. Not done: not yet on the dune, in the sandbox or placeable; no traced look.\ns172: dropped, projects/wind.md is shelved and the human asked for the car's core, not sand.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Sand fences: the wind builds drifts the player shapes into the cart's ramp (projects/wind.md)",
-      "updated": "2026-11-28T03:05:30.028"
+      "updated": "2026-11-28T12:16:13.242"
     },
     {
       "created": "2026-11-28T03:02:55.559",
@@ -10824,17 +10824,17 @@
     },
     {
       "created": "2026-11-28T10:30:18.119",
-      "detail": "MethodError: Cannot `convert` an object of type Symbol to an object of type String\nThe function `convert` exists, but no method is defined for this combination of argument types.\n\nClosest candidates are:\n  String(::Symbol)\n   @ Base strings/string.jl:118\n  convert(::Type{String}, !Matched::LLVM.MDString)\n   @ LLVM ~/.julia/packages/LLVM/mSonp/src/core/metadata.jl:195\n  convert(::Type{String}, !Matched::String)\n   @ Base essentials.jl:461\n  ...\n\nStacktrace:\n  [1] setindex!(h::Dict{String, Tuple{String, Vararg{String}}}, v0::Symbol, key0::Symbol)\n    @ Base ./dict.jl:346\n  [2] ct_clear!()\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:33\n  [3] start!(::Main.Plugin_casting.CastingSys, game::Game)\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:243\n  [4] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [5] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [6] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [7] post_still(path::String; post::String, size::Tuple{Int64, Int64}, samples::Int64, hour::Float64, rasterize::Bool)\n    @ Main /sim/Programmieren/SimGame/world/movies/post_stills.jl:666\n  [8] post_still\n    @ /sim/Programmieren/SimGame/world/movies/post_stills.jl:657 [inlined]\n  [9] macro expansion\n    @ ./timing.jl:697 [inlined]\n [10] top-level scope\n    @ ./bt_julia_eval:2\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] include_string(mapexpr::typeof(REPL.softscope), mod::Module, code::String, filename::String)\n    @ Base ./loading.jl:2952\n [13] repl_eval\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:62 [inlined]\n [14] eval_and_format(code::String, out_dir::String, max_bytes::Int64, full_output::Bool)\n    @ Main.BonitoMCPHelper /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/helper_payload.jl:98\n [15] top-level scope\n    @ /sim/Programmieren/SimGame/dev/BonitoAgents/BonitoMCP/src/session.jl:561\n [16] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [17] (::var\"#handle##0#handle##1\"{Sockets.TCPSocket, UInt64, Bool, @Kwargs{}, Tuple{Module, Expr}, typeof(Core.eval)})()\n    @ Main ~/.julia/packages/Malt/g915M/src/worker.jl:120",
+      "detail": "UndefVarError: `ct_unsink!` not defined in `Main.Plugin_casting`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] ct_clear!()\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:33\n  [2] start!(::Main.Plugin_casting.CastingSys, game::Game)\n    @ Main.Plugin_casting /sim/Programmieren/SimGame/world/plugins/casting.jl:244\n  [3] (::NeverendingGame.var\"#step_systems!##0#step_systems!##1\"{Game, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:253\n  [6] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [7] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:409\n  [8] top-level scope\n    @ none:1\n  [9] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [10] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [11] _start()\n    @ Base ./client.jl:550",
       "est_minutes": 15.0,
       "id": 774,
       "kind": "fix",
       "priority": 1,
-      "result": "Closed at 2026-11-28T10:30:32.518: plugin casting loaded cleanly.\nHappened again at 2026-11-28T10:30:32.557.\nClosed at 2026-11-28T10:31:30.155: plugin casting loaded cleanly.\nHappened again at 2026-11-28T11:30:16.722.\nClosed at 2026-11-28T11:31:35.723: plugin casting loaded cleanly.",
+      "result": "Closed at 2026-11-28T10:30:32.518: plugin casting loaded cleanly.\nHappened again at 2026-11-28T10:30:32.557.\nClosed at 2026-11-28T10:31:30.155: plugin casting loaded cleanly.\nHappened again at 2026-11-28T11:30:16.722.\nClosed at 2026-11-28T11:31:35.723: plugin casting loaded cleanly.\nHappened again at 2026-11-28T11:54:15.369.\nClosed at 2026-11-28T11:54:34.505: plugin casting loaded cleanly.",
       "source": "system",
       "spent_minutes": 0.0,
       "status": "dropped",
       "title": "system:casting.CastingSys failed in start! and was switched off",
-      "updated": "2026-11-28T11:31:35.723"
+      "updated": "2026-11-28T11:54:34.505"
     },
     {
       "created": "2026-11-28T10:40:51.576",
@@ -10843,12 +10843,12 @@
       "id": 775,
       "kind": "feature",
       "priority": 1,
-      "result": "s170 published twice: plugins/casting.jl + physics/casting.jl (check passes), uitest tests/casting.jl passes (stamp, pour all 94.7 cm3, lead conserved, >30% frozen in 90 s). Patch now sits on the yacht's sand at its height and colour; the lifted foot reads as silver toes (media/s170-cast-lifted2.png raster; traced media/s170-cast-traced.png before the fix: dark lump). Still to do for done_when: traced dusk film, ladle, sides on the piece.\ns171: lead look fixed in the sandbox (LEAD_SOL metallic .5 rough .7; tools/leadlook.jl slab luminance 0.21 -> 0.39, grey card 0.49; media/s171-leadlook-crop.png); real cove sand at (6..7.5,-16); stamp test no longer passes lawn (bw > 0.5 or yacht square or z < 0.36). Played: stamp+pour work in the cove, but the Jump in follow camera framed the swing and the motor bench, not the cast (media/s171-play-pour.png): needs its own camera. Not published, no post yet.\ns171 camera: plugins/casting.jl ct_view (CAMERA_GROUPS 'casting', Jump in's plugin view while a cast is under way): 12 eyes round the print at 2.2 m, scored by NG.obstruction + every drawn plot's bounding box on the line (ct_boxes_in_view, catches plugin scenery like the board on a post) + Lumi's body. Better than the chase view (media/s171-castcam-pour6.png: at the cast, sea behind) but NOT done: Lumi's drawn body is far bigger than species.height and still hides the print. Next: Lumi's real drawn size (herd scale / mesh bbox) in the body test, or stand Lumi back 0.6 m to pour.\ns171 found: the print (0.35 m ahead of Lumi's feet) lies UNDER Lumi's drawn body (herd box 1.05 x 1.32 m from above, 1.8 m tall): no camera can see it while Lumi stands; Lumi must step back after the stamp (a gait step). Camera code in the sandbox, not yet published by me.\ns171 back-step: Lumi walks backwards off the print (gait reversed, keys held) to 1.0 m; the cast camera now frames all of Lumi with the sea (media/s171-castcam-pour7.png) but driftwood + beach grass hide the print (todo #779). Sandbox; frame 9.4 ms median.\ns171 post previews (media/s171-castfoot-raster.png, -raster2.png in the south cove): not post-ready, the sand patch shows as a square over the beach at any lift; next: press the print into the terrain mesh itself. movies/post_stills.jl 'castfoot' now sets up the south cove.",
+      "result": "s170 published twice: plugins/casting.jl + physics/casting.jl (check passes), uitest tests/casting.jl passes (stamp, pour all 94.7 cm3, lead conserved, >30% frozen in 90 s). Patch now sits on the yacht's sand at its height and colour; the lifted foot reads as silver toes (media/s170-cast-lifted2.png raster; traced media/s170-cast-traced.png before the fix: dark lump). Still to do for done_when: traced dusk film, ladle, sides on the piece.\ns171: lead look fixed in the sandbox (LEAD_SOL metallic .5 rough .7; tools/leadlook.jl slab luminance 0.21 -> 0.39, grey card 0.49; media/s171-leadlook-crop.png); real cove sand at (6..7.5,-16); stamp test no longer passes lawn (bw > 0.5 or yacht square or z < 0.36). Played: stamp+pour work in the cove, but the Jump in follow camera framed the swing and the motor bench, not the cast (media/s171-play-pour.png): needs its own camera. Not published, no post yet.\ns171 camera: plugins/casting.jl ct_view (CAMERA_GROUPS 'casting', Jump in's plugin view while a cast is under way): 12 eyes round the print at 2.2 m, scored by NG.obstruction + every drawn plot's bounding box on the line (ct_boxes_in_view, catches plugin scenery like the board on a post) + Lumi's body. Better than the chase view (media/s171-castcam-pour6.png: at the cast, sea behind) but NOT done: Lumi's drawn body is far bigger than species.height and still hides the print. Next: Lumi's real drawn size (herd scale / mesh bbox) in the body test, or stand Lumi back 0.6 m to pour.\ns171 found: the print (0.35 m ahead of Lumi's feet) lies UNDER Lumi's drawn body (herd box 1.05 x 1.32 m from above, 1.8 m tall): no camera can see it while Lumi stands; Lumi must step back after the stamp (a gait step). Camera code in the sandbox, not yet published by me.\ns171 back-step: Lumi walks backwards off the print (gait reversed, keys held) to 1.0 m; the cast camera now frames all of Lumi with the sea (media/s171-castcam-pour7.png) but driftwood + beach grass hide the print (todo #779). Sandbox; frame 9.4 ms median.\ns171 post previews (media/s171-castfoot-raster.png, -raster2.png in the south cove): not post-ready, the sand patch shows as a square over the beach at any lift; next: press the print into the terrain mesh itself. movies/post_stills.jl 'castfoot' now sets up the south cove.\nshelved s172: the human asked for the car's core, not sand (projects/shelf/casting.md; the print-in-terrain tile is in the sandbox plugin, unpublished)",
       "source": "agent",
       "spent_minutes": 45.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Cast a lead foot: make it look the part, then a post (projects/casting.md)",
-      "updated": "2026-11-28T11:36:35.295"
+      "updated": "2026-11-28T12:04:22.146"
     },
     {
       "created": "2026-11-28T10:40:51.800",
@@ -10885,12 +10885,12 @@
       "id": 778,
       "kind": "feature",
       "priority": 1,
-      "result": "s171: physics/soiltool.jl + sandwater.jl, check physics/soiltool_check.jl PASSES (wide blade = Rankine to 1e-9; 3 cm stick 50 N at 10 cm, 90 N at 15 cm dry; apparent cohesion 0 at the waterline, 0.8 kPa 20 cm up). Cove too gentle: loaded cart 0.29 resistance/weight > 0.23 slope -> needs a real dune. Not in the game yet.",
+      "result": "s171: physics/soiltool.jl + sandwater.jl, check physics/soiltool_check.jl PASSES (wide blade = Rankine to 1e-9; 3 cm stick 50 N at 10 cm, 90 N at 15 cm dry; apparent cohesion 0 at the waterline, 0.8 kPa 20 cm up). Cove too gentle: loaded cart 0.29 resistance/weight > 0.23 slope -> needs a real dune. Not in the game yet.\nshelved s172: the human asked for the car's core, not sand (projects/shelf/sled.md)",
       "source": "agent",
       "spent_minutes": 20.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "Sled the cart down the dune: stick brake, friends lean, it can tip (projects/sled.md)",
-      "updated": "2026-11-28T11:19:19.143"
+      "updated": "2026-11-28T12:04:22.151"
     },
     {
       "created": "2026-11-28T11:25:13.329",
@@ -10905,6 +10905,34 @@
       "status": "open",
       "title": "Cameras see every plugin's scenery: test the view line against the drawn plots, not hand-made blockers",
       "updated": "2026-11-28T11:25:13.329"
+    },
+    {
+      "created": "2026-11-28T12:04:21.859",
+      "detail": "Iron-stator motor staked in the sand, rope to anything (log, boulder, empty cart); hauls or stalls by its solved torque (softiron.jl core + em.jl + motor.jl + circuit.jl, rope in PrintSim). Done when: in Jump in the player hooks the empty cart and the motor on six pots drags it up the plank track at a speed the power budget allows (~0.1 m/s), a log in sand crawls, the loaded cart stalls; nothing tuned to a load; published; a traced film following the rope.",
+      "est_minutes": 300.0,
+      "id": 780,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.",
+      "source": "agent",
+      "spent_minutes": 35.0,
+      "status": "doing",
+      "title": "The cart's motor on a rope: winch anything up the beach (projects/winch.md)",
+      "updated": "2026-11-28T12:24:09.402"
+    },
+    {
+      "created": "2026-11-28T12:16:13.248",
+      "detail": "s172 numbers (projects/winch.md): six clay pots give ~1.8 W; the loaded cart in sand needs 550-710 W, so only stored charge moves it. Two lead sheets in dilute acid charged from the pots (later the dynamo): PbO2 grows by Faraday's law, voltage by Nernst from the acid, gassing as rising bubbles above ~2.4 V, capacity grows with each forming cycle; its low internal resistance is also what makes a wound stator worth it (stator.jl). Done when: a jar on the bench charged by the pots runs the drum motor harder than the pots alone, filmed with Lumi working at it (not a fixed jar shot).",
+      "est_minutes": 240.0,
+      "id": 781,
+      "kind": "feature",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Planté's lead accumulator: the only way the LOADED cart moves (after the winch)",
+      "updated": "2026-11-28T12:16:13.248"
     }
   ]
 }

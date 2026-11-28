@@ -1529,3 +1529,28 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   14 m out to the water at 20.3 m along bearing -1.2 rad). Before designing anything that rolls or slides down the
   island, compare its resistance/weight with the slope's tan: WheelSand.towed gives a loaded cart 0.29 in dry sand,
   more than any sandy slope the island has (cove max 0.23). physics/sandwater.jl: damp sand by height above z = 0.
+- (s172) A Julia CLOSURE that assigns to a name the enclosing function also uses REBINDS the outer variable: `clip`
+  did `m = (u + v) / 2` inside ct_press_tile!, whose `m` was the terrain mesh -> faces(m) === nothing later. Give
+  locals inside inner functions their own names (`mid`).
+- (s172) Redrawing part of a triangle grid finer: sink the vertices INSIDE the window and draw the fine tile on the
+  coarse triangles' own planes (barycentric z, colour, normal). Check every coarse triangle under the tile touches a
+  sunk vertex: in a 3 x 3 window with diagonal (i,j)-(i+1,j+1), the SE and NW corner cells each have one triangle that
+  does not (it z-fights): leave those out of the tile.
+- (s172) MOTOR FIELD, MEASURED (projects/winch.md): an air-core rotor puts its whole diameter in the magnetic circuit's
+  air gap, so iron poles and a back yoke barely help (6 mT at 160 A-turns over 72 mm). Iron in the ROTOR is what counts
+  (stones 81 -> 277 mT, free). A wound field on weak cells: NI rises with turns only until the coil's resistance
+  reaches the cells' internal resistance, then flattens (at fixed V, NI ~ V x wire section / (turn length x rho)); the
+  field coils then eat all the cells' power. Electromagnet stators need a low-resistance source (the accumulator).
+- (s172) An iron BAR in a motor's rotor between permanent magnets cogs: the reluctance torque (bar aligning with the
+  field, ~ H^2, current-independent) was 40x the current's drive torque (physics/stator.jl rotor_torque). Separate the
+  two by (tau(+I) - tau(-I)) / 2 = drive, tau(0) = cogging. Rotor iron must be ROUND (ring/drum). softiron.jl's rods
+  magnetise only along their axes: fine for bars, nails and chains; round or 2D iron needs a real magnetostatic solve.
+- (s172) 2D MAGNETOSTATICS TOOL: physics/motor2d.jl (module Motor2D) runs in its OWN env world/tools/magnet2d (Ferrite
+  1.7; not the game env): bt_julia_eval env_path = that dir, include the file. A_x on 1 mm quads, iron saturating by
+  Picard (16 passes converge; linear iron gives 17 T spikes in slot bridges = fake leakage), torque by Arkkio's
+  Maxwell stress over an air annulus in the gap. Separate drive and cogging: (tau(+NI) - tau(-NI)) / 2 and tau(0).
+  Validated vs em.jl 3D air core (27.5 vs 30.4 mN m). ~0.2 s a linear solve, ~3 s saturating.
+- (s172) WHAT THE HOST COUNTS AS 'NEW ON THE ISLAND': a happening = an event KIND (NG.emit!) in the HUMAN's game log
+  (world/log/events-*.jsonl) that the island never logged before (NeverendingHost mood.jl new_happenings). A published
+  plugin that only draws or spins counts for nothing until its events actually fire in the live game. Give new things
+  their own event kinds AND make sure they fire there (Lumi's own visits: re-send a pending visit when a chat takes it away).
