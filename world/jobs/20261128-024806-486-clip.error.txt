@@ -1,0 +1,23 @@
+LoadError: ParseError:
+# Error @ /sim/Programmieren/SimGame/world/movies/sandtest.jl:22:52
+    qrest = SandField.plank_rest(f, Array(f.h), P,      # packed sand does not spring back: it rests in its bed Tuple{Float64,Float64,Float64}[]; soil = s, bekker = WheelSand.bekker)
+    fill!(f.under, Inf32); SandField.slump!(f, 100)
+#                                                  └ ── Expected `)` or `,`
+Stacktrace:
+ [1] top-level scope
+   @ /sim/Programmieren/SimGame/world/movies/sandtest.jl:22
+ [2] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [3] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:207
+ [4] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378
+ [5] top-level scope
+   @ none:1
+ [6] eval(m::Module, e::Any)
+   @ Core ./boot.jl:489
+ [7] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:283
+ [8] _start()
+   @ Base ./client.jl:550
+in expression starting at /sim/Programmieren/SimGame/world/movies/sandtest.jl:22

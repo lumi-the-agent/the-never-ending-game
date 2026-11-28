@@ -9144,7 +9144,7 @@
     },
     {
       "created": "2026-11-27T05:56:46.738",
-      "detail": "perfectionist-0157 [wow, high]: Goal 2 has been stalled since 11-24. The physics under the motor and wire is real, but every post about them looks like placeholder art. The s157 traced take media/s157/drum-look2.mp4 is a 48-byte empty file, so the session ended with nothing to look at.\nWhere: world/releases/, site/films/\nSuggestion: Use the moment that already works: Lumi's beak flicks the stuck rotor and it spins up. Shoot it at dusk on a real bench, with the wire glowing and lighting the copper, and a friend leaning in. Trace it at a quality worth a release, with a note in Lumi's words. Check every job's output size before ending a session.\nDone when: A new world/releases/<date>-<name>/ folder whose mp4 ffprobe reads, at least 5 s, traced, with the device as the subject, plus a note.\nEvidence: ls -la media/s157/drum-look2.mp4 → 48 bytes; releases/ last 2026-11-24",
+      "detail": "perfectionist-0160 [wow, high]: Every post since 'Chipping a stone' is a small rig on grass, a static camera and a caption about the outcome. The judge already scored Six clay pots a repeat (x0.10). Lumi's mood is boredom 1.0, annoyance 1.0. No release since 2026-11-24.\nWhere: world/site, world/releases\nSuggestion: Make the next post a moment with the creatures in it: friends dragging something through the new sand and leaving ruts, filmed low at golden hour with a moving camera. Or a night piece where the copper wire's glow is the only light. Release one device film people would share.\nDone when: A post whose subject is not a static apparatus, and which the judge does not mark as a repeat; and a new folder in world/releases/.\nEvidence: Mood file 'A REPEAT: Six clay pots 6/10 like My first motor, its form in 10 of the last 10'; the last-20-posts list",
       "est_minutes": 15.0,
       "id": 654,
       "kind": "review",
@@ -9153,8 +9153,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Make one device film people would share, and release it",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "Ten bench-experiment posts in a row: post something of a different form",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-27T05:56:46.742",
@@ -9695,12 +9695,12 @@
       "id": 693,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0160: Done: 'Three paper darts' shows one dart folded three ways diving, gliding and rearing, flying by its own folds.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "done",
       "title": "A paper glider that flies by its own folds (passed ideas s147)",
-      "updated": "2026-11-27T15:12:32.418"
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-27T15:20:29.365",
@@ -10390,7 +10390,7 @@
     },
     {
       "created": "2026-11-27T23:15:34.123",
-      "detail": "perfectionist-0157 [materials, high]: The motor bench, the centre of the electric-cart arc, is two matte black cylinders with flat red end discs on brown blocks, on a plank lying on bare sand. In the traced take the copper windings are dull brown with no specular, and in the raster they read pink-silver. It looks like a debug rig, not a device someone made.\nWhere: plugins/motorbench.jl, physics/motor.jl; media/s157/drum-look.mp4, raster2-last.png\nSuggestion: Model it like a real hand-built motor. Make the lodestones rough dark iron-oxide stone (a generated rock asset, not cylinders). Give the windings many tight turns of polished copper (Hikari conductor, low roughness) with enamel thin-film colour. Use a brass or steel shaft and an oak base with chamfers and screws, set on a workbench in a corner with tools, shavings and a lamp. Keep a matching raster colour (copper orange, not pink).\nDone when: A 64+ spp traced still of the motor filling at least 40% of the frame shows copper reflecting the bench and lamp, stones that read as rock, and an oak base on a bench (not on sand). The same view in raster shows orange copper.\nEvidence: reviews/p0157/drum-look-last.png, world/media/s157/raster2-last.png",
+      "detail": "perfectionist-0160 [materials, high]: After three sessions of material work the motor, seen live and traced, is two matte black blocks with a red band, a small copper cage between them, on a slab on a four-legged box. From normal play distance it is a dark speck. The pots are plain cylinders with an opaque blue disc for the brine.\nWhere: plugins/motorbench.jl (5.6, -14.3)\nSuggestion: Use the generated basalt-slab and driftwood assets, or rough lodestone meshes with a dark metallic-flake coat, for the stones. Make the brine Hikari dielectric water with a copper-sulphate absorption tint so the light through it goes blue, and give the pots glazed clay with a wet rim. Scale the whole rig so it reads at 3 m, and stand it on a proper workbench with tools on it.\nDone when: A traced still from 2 m shows stones that read as rock (no flat black faces), translucent blue brine with visible depth, and the motor filling at least a quarter of the frame height.\nEvidence: reviews/p0160/motor-traced.png, reviews/p0160/motor-raster.png, six-clay-pots-overview.jpg frames 7-12",
       "est_minutes": 15.0,
       "id": 743,
       "kind": "review",
@@ -10399,8 +10399,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "The motor is grey-box geometry: black drums, dull copper, a slab on bare sand",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "The motor is still two black cans on a plain box table, too small to find",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -10446,7 +10446,7 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0157 [camera, high]: first-motor and first-motor-sticks put the motor in the lower-right sixth of the frame from a low, fixed angle. The trees and sky fill the rest, and a creature in a green jelly bubble walks in front and becomes the subject. drawn-wire-burns-out starts on a box and two sticks, then cuts so close that the glowing wire is a 1 px line across flat green grass.\nWhere: movies/ (motor and wire film scripts); site/films/first-motor*.mp4, drawn-wire-burns-out.mp4\nSuggestion: Shoot like a product or macro film. Use a slow push-in or orbit over the rotor at its own height, a shallow depth of field, the subject filling the frame's middle third, and a clean background (a bench, a dark workshop, dusk light). Clear creatures out of the shot's path, or stage one friend to react on purpose. Show the wire glowing big enough to see its colour shift from orange to white.\nDone when: The overview sheet of the next device film shows the device covering at least a third of every frame, with no unplanned creature crossing in front of it.\nEvidence: reviews/motion/perfectionist-0157/first-motor-overview.jpg, first-motor-steps.jpg (7.21-7.5 s), drawn-wire-burns-out-overview.jpg",
+      "detail": "perfectionist-0160 [camera, high]: In six-clay-pots, for 0-4.5 s the frame shows table legs, agave leaves and pot tops, and the motor is cut off by the top edge. After the cut, a near-black slab fills the lower third and the rotor is a small tangle behind a black can. drawn-wire-burns-out is a hairline on flat green for most of its 5 s.\nWhere: world/site/films/six-clay-pots.mp4, drawn-wire-burns-out.mp4\nSuggestion: Before any render, frame-check the subject's screen bounding box: it should fill 30-60% of the height, with the frame edges clear of it. Use one slow push-in or orbit instead of two static cuts.\nDone when: In the next device film's overview, the subject fills 30-60% of the frame height in every frame and is never cut by a frame edge.\nEvidence: reviews/motion/perfectionist-0160/six-clay-pots-overview.jpg, drawn-wire-burns-out-overview.jpg",
       "est_minutes": 30.0,
       "id": 747,
       "kind": "review",
@@ -10455,8 +10455,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Films don't frame the work: the subject is a corner or a hairline",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "Films don't frame the work: six-clay-pots crops the motor, then shows a black slab",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-28T00:18:30.351",
@@ -10474,7 +10474,7 @@
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0157 [camera, medium]: While playing Jump in, the hut's roof filled half the frame or more in four shots in a row as Lumi walked past it. The win cards of Firefly catch sit over an extreme close-up of Lumi's body filling the view. In follow mode at sunrise, Lumi stands half hidden under pines with a red ball in the foreground.\nWhere: camera rig (CAMERA_BLOCKERS / update_camera!), minigame end cards\nSuggestion: Treat roofs and canopies as camera blockers: pull in, raise the camera, or fade what's in the way. On the end card, cut to a framed hero shot of Lumi celebrating at 3-4 m.\nDone when: Over 60 s of Jump in walking around the hut, no screenshot has a prop covering more than 20% of the view, and the win card shows Lumi whole.\nEvidence: reviews/p0157/play/jump2.jpg, play/firefly-sheet.jpg, cam2-sheet.jpg (bottom middle)",
+      "detail": "perfectionist-0160 [camera, medium]: Free camera at the pier: Lumi's yellow feathers fill the left quarter. Follow camera on Pinchy: a huge pale green egg shape sits behind and over the crab and covers half the frame.\nWhere: plugins/freecam.jl, follow rig\nSuggestion: Use a near-clip sphere round the eye that hides or fades any creature or prop within 0.8 m of the lens.\nDone when: Three screenshots in each mode, 5 s apart, with no body part or prop within 1 m of the lens covering more than 5% of the frame.\nEvidence: reviews/p0160/cam-free-b.png, cam-follow-b.png",
       "est_minutes": 30.0,
       "id": 749,
       "kind": "review",
@@ -10483,12 +10483,12 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "Live follow camera: buried in the hut's roof and in Lumi's feathers",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "Free and follow cameras: Lumi's feathers fill the frame, a green egg hides the crab",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-28T00:18:30.351",
-      "detail": "perfectionist-0157 [lighting, medium]: In drawn-wire-burns-out the hot wire is an orange-yellow hairline. The copper posts, the slab and the grass around it get no light from it, so it reads as a drawn line, not a glowing filament.\nWhere: site/films/drawn-wire-burns-out.mp4; wirebench plugin\nSuggestion: Make the wire's emission come from its simulated temperature (blackbody), as an emissive tube that the tracer uses as a light. Shoot at dusk so the glow warms the posts and throws a soft shadow, as hot glass did in 'Hot glass lights the sand'.\nDone when: A traced frame of the hot wire shows a visible warm light gradient on the posts and base within 5 cm of the wire.\nEvidence: reviews/motion/perfectionist-0157/drawn-wire-burns-out-overview.jpg (frames 4-6)",
+      "detail": "perfectionist-0160 [lighting, medium]: The drawn wire glows orange, but the ground and posts under it stay unlit. The film is a near-black box on flat green.\nWhere: plugins/wirebench.jl, world/site/films/drawn-wire-burns-out.mp4\nSuggestion: Make the wire an emissive area light whose radiance follows its temperature (blackbody). Film it at dusk so its glow is the key light on the posts and the sand.\nDone when: A traced still at dusk where the ground and posts within 20 cm of the wire are visibly lit orange by it.\nEvidence: reviews/motion/perfectionist-0160/drawn-wire-burns-out-overview.jpg",
       "est_minutes": 30.0,
       "id": 750,
       "kind": "review",
@@ -10497,8 +10497,8 @@
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
-      "title": "The glowing drawn wire lights nothing: make heat real light",
-      "updated": "2026-11-28T00:18:30.351"
+      "title": "Hot wire and glowing things light nothing: make heat real light",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-28T00:43:20.946",
@@ -10507,12 +10507,12 @@
       "id": 751,
       "kind": "feature",
       "priority": 1,
-      "result": "",
+      "result": "perfectionist-0160: Duplicate of #744; the sand law for feet is built (s157) and the pull itself is #744.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "open",
+      "status": "dropped",
       "title": "One friend pulls a rope on the dune with feet planted by the sand law",
-      "updated": "2026-11-28T00:43:20.946"
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-28T00:43:20.953",
@@ -10544,17 +10544,17 @@
     },
     {
       "created": "2026-11-28T01:27:09.944",
-      "detail": "Passed-strongest idea s159 (projects/friends-battery.md). Done s159: physics/potcell.jl + six pots wired to the motor bench (published, media/s159/pots-traced-b.png, E 5.23 V, Rs 10.1 Ohm, 6.5 rev/s at 0.40 A). Next: a friend carries a pot (pannier), cords as rods with clips, the winch (300 g basket ~2-3 cm/s honest), friends choose to stay by their needs. Done when: a traced film along the line at friend height shows friends with pots joining, the basket rising, and stopping when one walks off.",
+      "detail": "perfectionist-0160 [fun, medium]: The friends dance, fish and eat berries around the motor, crane, pots and wire bench, and never look at them, touch them or react to them. Goal 1 (interactions) has not moved since s157.\nWhere: plugins/motorbench.jl, behaviour\nSuggestion: Finish #754: a friend carries a pot, clips it into the chain, and the motor speeds up while it cheers. Or a friend licks the chain, Volta-style (the taste_cell already exists), and reacts with its face.\nDone when: A screenshot or film where a creature holds or carries a pot or cord and the motor's speed visibly changes because of it.\nEvidence: cam-orbit-b.png and motor-raster.png: friends elsewhere; the 'On the island now' list has no machine activity",
       "est_minutes": 15.0,
       "id": 754,
-      "kind": "feature",
-      "priority": 1,
+      "kind": "review",
+      "priority": 2,
       "result": "",
-      "source": "agent",
+      "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
-      "title": "The friends are the battery: friends carry clay-pot cells, cords clip by contact, the motor winds their berry basket",
-      "updated": "2026-11-28T01:27:10.231"
+      "title": "No friend ever touches Lumi's machines: give them a real job with the pots",
+      "updated": "2026-11-28T02:40:47.220"
     },
     {
       "created": "2026-11-28T02:10:01.789",
@@ -10597,6 +10597,76 @@
       "status": "open",
       "title": "Truffle's tail flicks 0.39 m in one frame (11.6 m/s), Pickles' tail 0.16 m (live_motion s160)",
       "updated": "2026-11-28T02:20:45.920"
+    },
+    {
+      "created": "2026-11-28T02:40:47.220",
+      "detail": "perfectionist-0160 [world, high]: The new beachprints patch shows as a 3x3 m square of slightly different sand with straight edges on the dune. From a 3 m camera the footprints are a few faint dots. Nobody would notice that the sand remembers anything.\nWhere: plugins/beachprints.jl, dune at about (5.1, -15.9)\nSuggestion: Feather the patch's colour and height into the terrain over its last 20 cm. Darken pressed (packed, damp) sand so the prints read by colour as well as by shading. Put the patch on the path the friends actually walk, so a trail builds up over a day. Film a friend crossing it with a low raking sun.\nDone when: A screenshot from 3 m shows no patch edge, and a clear trail of at least 6 prints in a line.\nEvidence: reviews/p0160/prints-raster.png",
+      "est_minutes": 30.0,
+      "id": 758,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The footprint sand is a visible square and the prints don't read from play distance",
+      "updated": "2026-11-28T02:40:47.220"
+    },
+    {
+      "created": "2026-11-28T02:40:47.220",
+      "detail": "perfectionist-0160 [creatures, medium]: In the live creature sheet a pig fishing off the pier has its rod passing straight through its head and green hat. At the vegetable patch Lumi and the blue friend overlap, one body inside the other.\nWhere: fishing behaviour, separation plugin\nSuggestion: Hold the rod in front of the snout, raised from the forepaws. Have the separation system push apart creatures doing a shared activity at the patch.\nDone when: live_motion creatures sheet: no rod or tool intersects a head, and no two creatures overlap.\nEvidence: reviews/p0160/motion/creatures.png (bottom left; top left), motion-strip.png",
+      "est_minutes": 30.0,
+      "id": 759,
+      "kind": "review",
+      "priority": 2,
+      "result": "",
+      "source": "review",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Clipping: fishing rod through a pig's head, Lumi inside the blue friend",
+      "updated": "2026-11-28T02:40:47.220"
+    },
+    {
+      "created": "2026-11-28T03:02:55.288",
+      "detail": "Passed ideas s161. Done when: in the sandbox, a plank fence on the dune grows a visible drift BEHIND it within a few minutes of game time in a gale, from the solved wind (physics/groundwind.jl, WaterLily) moving sand in the sand field (sandfield.jl), and a traced still from 3 m shows the drift's shape. s161 done: 3D wind over a fence (wake, corner jets, lee eddy, media/s161/wind-fence-b.png), Kawamura saltation + Exner (media/s161/drift-1h-a.png). Next: saturation length (Sauermann) so sand carries through the fence into the wake; slump to repose; couple to the dune patch; fence placing in Jump in.",
+      "est_minutes": 300.0,
+      "id": 760,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s161: physics/groundwind.jl: 3D WaterLily wind over a fence (wake ~7 H, corner jets, lee eddy; media/s161/wind-fence-b.png), Kawamura flux + saturation length (Sauermann, ls 1 m) + Exner. One hour at 8 m/s: board fence -> drift in front (0.090 m3 vs 0.029 behind, drift-1h-b.png); 50% slat fence -> drift behind (0.185 vs 0.065 m3, drift-1h-slats.png). CPU 12 ms/step at 262k cells. Not done: not yet on the dune, in the sandbox or placeable; no traced look.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "Sand fences: the wind builds drifts the player shapes into the cart's ramp (projects/wind.md)",
+      "updated": "2026-11-28T03:05:30.028"
+    },
+    {
+      "created": "2026-11-28T03:02:55.559",
+      "detail": "s161: after the Lava fix (prepare_vulkan.jl store_fix: index into [1 x T] instead of an aggregate bitcast) WaterLily's kernels compile on Mantle, but the flow goes NaN within 1-6 convective times and each step takes 56 ms. Done when: a GPU run of groundwind.jl matches the CPU run's u* map within 1% after 12 time units and a step is faster than the CPU's 12 ms. Find the first kernel where GPU and CPU differ (step once, compare flow.u, flow.p, flow.σ). Note: Lava compiles in a frozen world: after editing Lava under Revise set Lava._initialization_world[] = Base.get_world_counter().",
+      "est_minutes": 90.0,
+      "id": 761,
+      "kind": "fix",
+      "priority": 2,
+      "result": "s161 lead: Mantle's KA indexing is right (offset @Const CartesianIndex, 3D, non-multiple-of-64, size-1 slices: all match the CPU). After Simulation() (ground only, 64x32x32) μ₀ matches the CPU in the middle, but at the LAST interior x layer (i = 65, the exit plane) inside the ground (z 2..5, all 3 components) the GPU has μ₀ = 1 (the initial fill) where the CPU has 0. So measure!'s fill! (@loop over inside(a.p), Body.jl:48) or BC!(μ₀, ..., false, perdir) (Body.jl:49) differs there: check which by running measure! piecewise. σ ghosts on the GPU hold leftover memory (similar), harmless; σ is scratch, never compare it after a step. NaN appears in the first mom_step! (u, p, f).\ns161 ROOT CAUSE NARROWED: every WaterLily @loop kernel on Mantle runs as if its @Const(I0) offset were 0: `WaterLily.@loop a[I] = 2f0*I[1] over I ∈ inside(a)` writes the ghost (1,1,1) and never the last interior layer (x = 65), so measure_sdf!/fill! leave the exit plane unmeasured -> NaN. inside(a) and the passed I0 = (1,1,1) are right (checked), not the persisted cache (LAVA_DUMP_KERNELS=1 compiles fresh). A hand-written twin (`@kernel function offkT(a::A, @Const(I0)) where {A}; I = @index(Global, Cartesian); I += I0; @fastmath @inbounds a[I] = ...`, workgroup 64, ndrange (64,32,32)) is CORRECT. Next: dump both (LAVA_DUMP_KERNELS=1 -> /tmp/lava_last.ll) and diff how the CartesianIndex argument is loaded; the @loop kernel is built by macro (WaterLily core.jl:125-145) inside a quote with gensym names, its wrapper computes R[1]-oneunit(R[1]).\ns161 later: the IR of WaterLily's @loop kernel and of my hand twin offkU are IDENTICAL (diff of /tmp/wl_loop.ll and /tmp/hand.ll empty), yet the hand launch is right and the @loop launch runs with I0 = 0. So the bug is on Mantle's LAUNCH side, not Lava: look at dev/Mantle/src/vulkan/array/ka_backend.jl ka_launch!/launch_plan (line ~391-460): is the launch plan or the @Const (readonly) argument buffer cached by kernel IR/hash and reused with an older launch's values (an earlier WaterLily loop over a full range has I0 = 0)? Test: launch offkU once with I0 = (0,0,0), then with (1,1,1), and see if the second keeps 0.\ns161 ruled out: launch caching (offkV with I0 = 0 then (1,1,1): second launch correct), the backend object (get_backend(σg) === Mantle.Device(), correct). Only WaterLily's macro-generated wrapper launch (`kern(σg)` calling `kern_(get_backend(σg),64)(σg, R[1]-oneunit(R[1]), ndrange=size(R))`) loses I0. Next: macroexpand `WaterLily.@loop a[I] = 3f0*I[1] over I ∈ inside(a)` and run its pieces by hand (the gensym'd kernel called with the same args) to find which part differs; check whether the @Const wrapper KA passes for a CartesianIndex (`KA.Const`?) differs when the call comes through a typed `where {T}` wrapper function.\ns161 MINIMAL REPRODUCER (the installed WaterLily 1.11.2's @loop passes the range R itself and does I = R[J]; the core.jl I0 form I read is not what runs): `@kernel function rk(a, R); J = @index(Global, Cartesian); I = @inbounds R[J]; @inbounds a[I] = 1f0*I[1] + 1000f0*I[2] + 1f6*I[3]; end` with R = CartesianIndices((2:65, 2:33, 2:33)), ndrange = size(R): CPU writes 2..65 (correct); Mantle writes 1..64, i.e. R[J] == J, the UnitRange starts are LOST. Fix it in Lava/Mantle: check how a CartesianIndices{3,NTuple{3,UnitRange{Int64}}} kernel argument is packed (6 x Int64: start, stop per dim) and how getindex compiles (LAVA_DUMP_KERNELS=1). This alone explains WaterLily's NaN on the GPU.\ns161 FIXED part 1 in Lava (dev/Lava/src/device/quirks.jl:80): the GPU overlay for CartesianIndices getindex returned CartesianIndex(I...), ignoring range starts; now each index goes through its range. Fresh process: WaterLily on Mantle runs WITHOUT NaN at 4.74 ms/step (CPU 12). Part 2 still open: μ₀ differs only at the fence's upper boards: the GPU sdf closure `for (c, h) in bx` over the captured tuple of 3 boxes (closure layout {float, [3 x [2 x [1 x [3 x float]]]]}) sees only the FIRST box. A loop with a dynamic index into a captured aggregate miscompiles in Lava (dump with LAVA_DUMP_KERNELS=1, compare with a 3-box sdf written as min(f(b1), f(b2), f(b3))). Reproducer: GW.wind_sim(n=(64,32,32), boxes=fence_boxes(...)) on CPU vs mem=tomantle, compare μ₀.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "WaterLily on Mantle gives NaN and 56 ms/step (CPU: correct, 12 ms/step on 32 threads)",
+      "updated": "2026-11-28T03:19:34.410"
+    },
+    {
+      "created": "2026-11-28T03:02:55.567",
+      "detail": "s161: job 20261128-024846-156-clip rendered media/s161/sandtest-a.mp4 (0.5 s, 4 fps) with the camera below the terrain looking up through the sea (sandtest-a-f0.png). The spot/rig in sandtest(path; spot = nothing) must sit above the ground at the beach patch. Done when a traced frame shows the sand mesh, rut and plank from 1.5 m, so I can judge whether 1 cm sand reads as sand.",
+      "est_minutes": 20.0,
+      "id": 762,
+      "kind": "fix",
+      "priority": 3,
+      "result": "s161: fallback spot fixed in movies/sandtest.jl (dune grass tuft at (3.49, -15.90) + 1.5 m; the worker has no Main.BEACH). Resubmitted as 20261128-030555-606-clip -> media/s161/sandtest-b.mp4 (after the worker restart, so 4:2:0). Look at it next session.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Sand look test films from under the island: fix movies/sandtest.jl's camera",
+      "updated": "2026-11-28T03:11:10.164"
     }
   ]
 }

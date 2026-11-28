@@ -651,6 +651,21 @@
         "plank",
         "cart"
       ]
+    },
+    {
+      "created": "2026-11-28T02:41:28.211",
+      "faces": 39932,
+      "id": "20261128-021036-051-asset",
+      "image": "/sim/Programmieren/SimGame/world/assets/20261128-021036-051-asset/image.png",
+      "mesh": "/sim/Programmieren/SimGame/world/assets/20261128-021036-051-asset/mesh.jls",
+      "prompt": "a solid wooden cart wheel made of three oak boards doweled together, iron-free, worn rim with sand stuck to it, a square hole for the axle, realistic weathered wood material, isolated on white",
+      "seconds": 901.0,
+      "tags": [
+        "prop",
+        "wood",
+        "wheel",
+        "cart"
+      ]
     }
   ]
 }

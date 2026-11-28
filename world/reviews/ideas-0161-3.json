@@ -1,0 +1,20 @@
+{"ideas": [
+{"title": "Heave! Rock the cart out of its rut",
+ "similarity": 2,
+ "nearest": "Thin ice, a take that misses",
+ "same_form": [],
+ "surprise": 7,
+ "fun": 7,
+ "real": 6,
+ "toward": 8,
+ "critique": "This is the round 2 cart again with a swing-timing game on top. The rocking finally gives the heave key a reason to exist, because it comes from rut slopes and from Bekker sinkage that deepens the rut on every rollback, and that breaks the island's long run of devices left alone. But the bodies are still the risk: IK-planted feet, a lean until the weight sits behind the frame, and per-friend reaction delays can turn into a pose with a force vector and a timer attached. 'Friends drop to their belly' is an animation beat that can easily be scripted rather than come from a foot that really slips."},
+{"title": "Sand fences: build the cart's ramp with the wind",
+ "similarity": 2,
+ "nearest": "A campfire in the wind",
+ "same_form": [],
+ "surprise": 8,
+ "fun": 7,
+ "real": 7,
+ "toward": 6,
+ "critique": "Naming WaterLily as the solver, with every body as an immersed signed-distance obstacle, answers round 2's fear of painted wake masks, and adding a purpose (a ramp the cart can take) turns the spectacle into play where the player shapes the terrain. The weak spots: a horizontal 2D slice has no real separation bubble or vertical lee eddy, and lee eddies are what actually drop sand behind a fence, so the drift may be fudged into place. 'Real time at gale speed' on an island-sized grid is a promise that may shrink to one small patch. The link to the cart works only through a ramp the cart cannot yet climb."}
+]}

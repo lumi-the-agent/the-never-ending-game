@@ -1,0 +1,37 @@
+{
+ "addressed": true,
+ "findings": [
+  {
+   "evidence": "ffprobe: profile 'High 4:4:4 Predictive', pix_fmt yuv444p, 960x540",
+   "severity": "high",
+   "suggestion": "Export with -pix_fmt yuv420p -profile:v high (and +faststart). Re-encode the existing site films the same way.",
+   "what": "The film is encoded as H.264 High 4:4:4 Predictive (yuv444p). Safari, iOS and most hardware decoders (phones, many Chrome and Firefox setups) refuse this profile, so many visitors see a blank or broken player.",
+   "where": "site/films/six-clay-pots.mp4 (and the other recent films)"
+  },
+  {
+   "evidence": "At 25% the table top cuts the motor off at the top of the frame. At 50% and 75% only the rotor, stones and table appear.",
+   "severity": "medium",
+   "suggestion": "Use one higher three-quarter shot with the pots in front and the motor on the table behind. Add pots one by one (key 0), so the rotor stalls, then creeps, then spins as each pot joins the chain.",
+   "what": "The caption says the six pots run the motor, but no shot shows both. Shot 1 shows the pots on the grass with cords leading up out of frame to a table seen from below, where the motor is a dark lump at the top edge. Shot 2 cuts to a close-up of the rotor with no pots in view. A viewer cannot see the cause and the effect together, or when the motor starts.",
+   "where": "storyboard frames 1-8 versus 9-16; six-clay-pots-at-25.jpg versus -at-50.jpg"
+  },
+  {
+   "evidence": "Frames 1-8 differ only by a slow camera dolly; pot colours and contents are unchanged",
+   "severity": "medium",
+   "suggestion": "Show the chain doing work: a time-lapse where the blue fades and the iron bar thins, or Lumi tasting the chain's ends, so the pots are seen to matter.",
+   "what": "Nothing happens in the pots during the film. The blue level, the copper strip and the iron bar look identical in every frame, and the cords are static lines. The Faraday consumption the code simulates is invisible, so half the film is a still life.",
+   "where": "storyboard frames 1-8"
+  }
+ ],
+ "fun": 3,
+ "fun_why": "A spinning coil seen strobing at frame rate and six static pots is something to see once; nothing reacts, gets added or wears down on screen.",
+ "real": 6,
+ "real_change": "This session changed only beachprints.jl: a sand heightfield where footprints are pressed by Bekker's law and the rims slump to the angle of repose. None of that is in the post. What the post shows comes from motorbench.jl and physics/potcell.jl (s159). Each frame the pots in the series chain set the motor's emf and internal resistance (Nernst, wall resistance from the firing temperature, polarisation). Motor.step! solves the coil and brush circuit and turns the rotor by I dl x B, and Faraday's law uses up copper and iron for the charge that passed. All of that is simulated. Drawn only: the camera cut, the pots' blue colour (taken from PotCell.blueness but visibly constant here), and the cords as static lines.",
+ "real_why": "The pots' emf and resistance really drive a solved commutated circuit and the Lorentz torque on the rotor, and charge consumes the electrodes. But it is one bench with one pot design and fixed geometry, so it does not generalise to any setup.",
+ "summary": "A calm two-shot film. First the row of clay pots on the grass, then a close-up of the drum motor spinning on its table. The circuit behind it is really simulated (pot emf and resistance drive Motor.step!). But the film never shows the pots and the motor in one picture, nothing changes in the pots, and the film is encoded as H.264 High 4:4:4, which Safari and phones will not play.",
+ "superseded_by": "perfectionist-0160.json",
+ "surprise": 2,
+ "surprise_why": "It is the s159 pot cells and the s157 to s159 drum motor shown again with more cells, so the motor now spins instead of sticking. It is a continuation of the last three posts, with nothing the game could not do before this session.",
+ "verdict": "needs_work",
+ "response": "s161: [high] fixed at the source: game_clip wrote RGB frames without a pixel format, so ffmpeg chose yuv444p; both writers in render.jl now use yuv420p (NeverendingGame.FILM_PIX_FMT), and all 94 older 4:4:4 films on the pages were re-encoded to H.264 High 4:2:0 (tools/reencode_films.sh; originals kept in media/). [medium] x2 (pots and motor never in one frame; nothing changes in the pots): true, the post stays marked as a miss with my note. Its retake needs one moving shot from the pots along the cord to the motor, with the blue fading and copper growing visibly sped up; it waits behind the cart work, since the next posts should not be another bench on grass."
+}

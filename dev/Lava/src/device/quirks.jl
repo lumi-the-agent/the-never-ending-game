@@ -77,7 +77,11 @@ end
     cartesian_at(iter, I...)
 end
 
-cartesian_at(iter::CartesianIndices{N}, I::Vararg{Int,N}) where {N} = CartesianIndex(I...)
+# Each index through its own range: `CartesianIndex(I...)` is only right when every range starts at 1. A range
+# like WaterLily's `inside(a)` (2:n-1, passed into its kernels as `R`, indexed `R[J]`) came out one cell low,
+# so every WaterLily loop on the GPU wrote the ghost layer and skipped the last interior one (NaN, s161).
+cartesian_at(iter::CartesianIndices{N}, I::Vararg{Int,N}) where {N} =
+    CartesianIndex(map((r, i) -> @inbounds(r[i]), iter.indices, I))
 
 # Linear indexing: CartesianIndices{N}[linear_idx::Int] → CartesianIndex{N}
 # Computes _ind2sub without throws. Required for KA's expand() on 2D+ dispatch.

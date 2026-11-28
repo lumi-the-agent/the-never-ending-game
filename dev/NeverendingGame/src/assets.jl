@@ -188,10 +188,22 @@ function run_job(::Val{:trace}, ws::WorkerState, id, params)
     return Dict{String,Any}("path" => path)
 end
 
+"""
+A fresh module for a job's script, with the `include` and `eval` a `module ... end` block would have
+(a bare `Module(name)` has neither, so `include("x.jl")` in a script failed with UndefVarError).
+"""
+function script_module(name::Symbol)
+    m = Module(name)
+    Core.eval(m, :(eval(x) = Core.eval($m, x)))
+    Core.eval(m, :(include(p::AbstractString) = Base.include($m, p)))
+    Core.eval(m, :(include(f::Function, p::AbstractString) = Base.include(f, $m, p)))
+    return m
+end
+
 function run_job(::Val{:clip}, ws::WorkerState, id, params)
     path = get(params, "path", joinpath(media_dir(ws.paths), "clips", "clip-$(stamp()).mp4"))
     if haskey(params, "script")       # a directed film: world/<script> defines `call(path; kwargs...)` (movies/cairn_release.jl)
-        m = Module(:ClipScript)
+        m = script_module(:ClipScript)
         Base.include(m, joinpath(ws.paths.world, params["script"]))
         kw = Dict{Symbol,Any}(Symbol(k) => (v isa AbstractVector ? Tuple(v) : v) for (k, v) in get(params, "kwargs", Dict()))
         f = Base.invokelatest(getglobal, m, Symbol(params["call"]))   # defined in a newer world than this call
@@ -211,7 +223,7 @@ A job that runs as long as it takes, beyond the agent's session: world/<script> 
 own (`run_worker(; kinds = ["run"])`), so the renders never wait for it.
 """
 function run_job(::Val{:run}, ws::WorkerState, id, params)
-    m = Module(:RunScript)
+    m = script_module(:RunScript)
     Base.include(m, joinpath(ws.paths.world, params["script"]))
     kw = Dict{Symbol,Any}(Symbol(k) => (v isa AbstractVector ? Tuple(v) : v) for (k, v) in get(params, "kwargs", Dict()))
     f = Base.invokelatest(getglobal, m, Symbol(params["call"]))   # defined in a newer world than this call

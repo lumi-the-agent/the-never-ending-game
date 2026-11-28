@@ -1,0 +1,42 @@
+{"posts": [
+ {"post": "six-clay-pots",
+  "verdict": "redo",
+  "problems": [
+   "Caption says six pots, but storyboard frames 1-8 and the 25% still only ever show four pots; the other two are cut off or never seen.",
+   "Caption says the pots 'run my motor', but in the second half (frames 9-16, 50% and 75% stills) the motor looks the same in every frame. Nothing visibly turns, so nothing shows that the pots drive it.",
+   "The two halves are a hard cut between unrelated views (frame 8 to 9). Nothing on screen shows the wire running from the pots under the table to the motor, so a viewer can't connect the cells to the machine.",
+   "The 'new oak table' in frames 1-8 shows only its legs and underside, with the motor up on top out of frame. In frames 9-16 the motor sits on dark blocks over sand-textured ground, and no table can be read.",
+   "The pot liquid is a flat, saturated blue disc with an orange plate stuck in it. It reads as a plastic toy rather than copper salt in clay, and the dark 'iron bar' is a thin black stick that is hard to see."
+  ],
+  "critique": "The film claims six pots powering a motor, but it shows four pots, then cuts to a motor that never moves. The caption's whole claim, cause and effect, goes unshown."},
+ {"post": "tied-together",
+  "verdict": "redo",
+  "problems": [
+   "Frames 1-2: the rope and creatures stretch out over the sea past the shore, then get yanked inland in a single step, with no walking visible.",
+   "The red rope cuts straight through the wooden fence and through the mushroom's cap and stem (25% and 50% stills, frames 5-16). That is clipping.",
+   "In the knot by the mushroom (50% still), creatures overlap and interpenetrate one another; bodies sit inside each other instead of pressing together.",
+   "At this distance the ten creatures are tiny and mostly hidden behind the giant mushroom. A viewer can't see that each one 'walks its own way'; they seem to slide along with the rope, and no legs can be seen stepping.",
+   "From frame 5 to 16 almost nothing changes, so the second half of the film is close to a still."
+  ],
+  "critique": "The idea is funny, but the rope clips through the fence and the mushroom, and the creatures overlap in the knot. The camera is too far out to see anyone actually walk."},
+ {"post": "three-paper-darts",
+  "verdict": "redo",
+  "problems": [
+   "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, 50% still). Its fold, the 'back edges bent down / a little up / a lot up', can't be seen at all.",
+   "No one sends the darts off. Each flight starts with the dart already in the air near the T-shaped post, without any hand, launch or push, and the 'rail' looks like a bare post.",
+   "The three flights can't be told apart. The camera jumps between views (frames 3-5 look down at water with the dart barely visible), and 'it glides' and 'it rears up' aren't visible as different paths.",
+   "No dart has a visible end: the dive vanishes into the water area, and the other two leave frame or just stop being shown.",
+   "Frame 11 has a yellow-orange shape clipping into the left edge of the frame."
+  ],
+  "critique": "The caption promises a clear comparison of three folds, but the film shows a speck that is hard to track, with no launch, no folds and no landings."},
+ {"post": "the-island-has-a-ring",
+  "verdict": "redo",
+  "problems": [
+   "Frames 1-6 (25% still): Pinchy is already in the air with nothing that threw it, and the orange, blue and red spheres hang mid-sky with no source or launch.",
+   "The 'pumpkin' is a plain orange ball, and the other objects are bare colored spheres. They don't read as island things.",
+   "Frames 7-11: a huge white blob (a cloud close to the camera) covers the bottom of the frame and hides part of the island.",
+   "Frames 7-10: the 'ring' starts out as a slanted streak through and across the island rather than a ring, and the pumpkins in it look as big as the island's trees.",
+   "The jump from ground level to orbit view is a hard cut, so nothing connects Pinchy's throw to the ring."
+  ],
+  "critique": "The far shot of a ring of debris around the island is striking, but nothing ever goes up for a reason, the 'everything' is mostly plain balls, and a cloud blob hides the frame."}
+]}

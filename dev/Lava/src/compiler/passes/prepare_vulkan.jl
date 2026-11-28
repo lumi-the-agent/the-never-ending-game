@@ -2871,6 +2871,18 @@ function fix_alloca_type_mismatched_stores!(mod::LLVM.Module, dl)
                             for idx in elem_gep_indices
                                 push!(idx_values, LLVM.ConstantInt(LLVM.IntType(32), idx))
                             end
+                            # An element that only wraps the stored type at offset 0 ([1 x T], {T}: a
+                            # closure captured by a KernelAbstractions kernel, s161 WaterLily): index into
+                            # it. A bitcast between aggregates is invalid LLVM and became an invalid
+                            # SPIR-V `OpBitcast %[1 x T] %T`.
+                            while store_ty != elem_ty && !(store_ty isa LLVM.PointerType)
+                                inner = elem_ty isa LLVM.ArrayType && elem_ty.length == 1 ? elem_ty.element_type :
+                                        elem_ty isa LLVM.StructType && length(elem_ty.elements) == 1 ? first(elem_ty.elements) :
+                                        nothing
+                                (inner === nothing || llvm_type_size(inner) != store_size) && break
+                                push!(idx_values, LLVM.ConstantInt(LLVM.IntType(32), 0))
+                                elem_ty = inner
+                            end
                             field_ptr = LLVM.gep!(builder, alloca_ty, alloca, idx_values, "store_fix_gep")
 
                             if store_ty == elem_ty

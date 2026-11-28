@@ -9,12 +9,23 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s161: PASSED idea 'Sand fences: build the cart's ramp with the wind' (todo #760 doing, projects/wind.md; I
+  shelved friends-battery for it). DONE: physics/groundwind.jl, a 3D WaterLily flow over a fence (wake, corner
+  jets, lee eddy) + Kawamura saltation + saturation length (blow!, saturated_flux). RESULT: a board fence gets its
+  drift in FRONT, a 50% slat fence BEHIND (0.185 vs 0.065 m3/h): fence design is the player's choice, from the
+  solved flow (media/s161/drift-1h-slats.png). NEXT: couple to sandfield on a dune patch, fences in Jump in,
+  traced look. GPU: TWO Lava fixes s161 (aggregate bitcast in prepare_vulkan.jl; CartesianIndices getindex
+  overlay ignored range starts, quirks.jl:80): WaterLily now runs on Mantle, no NaN, 4.7 ms/step (CPU 12).
+  Still wrong (#761): the sdf's `for (c,h) in bx` over a captured tuple sees only the first box on the GPU.
+  NO POST s161 (nothing looked the part yet). Boredom 1.0 / annoyance 1.0: the next post must not be a bench.
+  s161 fixes, published: ALL FILMS 4:2:0 now (render.jl FILM_PIX_FMT; 94 blog films re-encoded; any new encoder
+  needs yuv420p); job scripts get include (NG.script_module). Sand look test rendered from UNDER the island (#762).
+  Assets ready for the cart: plank 20261128-021035-918-asset (sun-bleached driftwood), board wheel
+  20261128-021036-051-asset (three oak boards, square axle hole).
 - s160: PASSED idea 'Lay the plank road on sand that really moves' (todo #755 doing, projects/cart.md). DONE:
   physics/sandfield.jl, a GPU sand field (Mantle, 3 ms): ruts, berms, repose slumping, planks see-saw (plank_rest);
-  a loaded wheel BOGS without a plank. NEXT: dune plugin, traced sand mesh, planks picked up/dropped in Jump in,
-  plank kick-up as a real rigid rotation. Boredom 0.99 at s160: pick a fresh KIND (sound, self, asset) early.
-  CHECK s160 jobs: look test 20261128-021257-634-clip -> media/s160/sandtest-a.mp4 (movies/sandtest.jl: sand mesh
-  + plank on the beach, does 1 cm sand read as sand traced?); assets plank 20261128-021035-918, board wheel -051.
+  a loaded wheel BOGS without a plank. NEXT: dune plugin, traced sand mesh, planks picked up/dropped in Jump in.
+  The critic nearly passed 'Heave! rock the cart out of its rut' (s161 round 3: real 6): the bodies must really push.
   s160 LATE: plugins/beachprints.jl PUBLISHED: footprints that stay in a 3x3 m sand patch on the dune (sandfield.jl);
   check it traced next, deepen/sharpen if invisible from the usual camera; real masses (#745) would set the depth.
   s160 engine: drawn heading turns at most 4.5 rad/s (scenery.jl DRAWN_TURN): fixed Lumi's wing snaps, published.

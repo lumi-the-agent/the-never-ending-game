@@ -18,7 +18,8 @@ function sandtest_field(; nx = 300, ny = 150, dx = 0.01)
         q = SandField.plank_rest(f, href, P, [(x, 0.75, Wl)]; soil = s, bekker = WheelSand.bekker)
         SandField.press!(f, q.under; bulb = 0.2); SandField.slump!(f, 6)
     end
-    qrest = SandField.plank_rest(f, Array(f.h), P,      # packed sand does not spring back: it rests in its bed Tuple{Float64,Float64,Float64}[]; soil = s, bekker = WheelSand.bekker)
+    # packed sand does not spring back: the unloaded plank rests in its bed
+    qrest = SandField.plank_rest(f, Array(f.h), P, Tuple{Float64,Float64,Float64}[]; soil = s, bekker = WheelSand.bekker)
     fill!(f.under, Inf32); SandField.slump!(f, 100)
     tw = WheelSand.wheel(s, Wl, 0.2, 0.05, 0.0)    # off the plank it bogs: sinks to its rim's depth
     for xc in 1.42:0.01:2.6
@@ -55,7 +56,9 @@ function sandtest(path; spot = nothing, samples = 32, size = (960, 540), hour = 
         isl = g.world.island
         dg = isdefined(Main, :BEACH) ? get(get(Main.BEACH, :things, Dict()), :dunegrass, Point3f[]) : Point3f[]
         @info "sandtest: $(length(dg)) dune grass tufts"
-        c = spot !== nothing ? Point2f(spot...) : isempty(dg) ? Point2f(0, -30) : Point2f(dg[1][1], dg[1][2]) .+ Point2f(1.5, 0)
+        # the worker has no Main.BEACH (plugins' state lives in the live game): fall back to the first dune grass
+        # tuft's place as the live game has it (s161), not (0, -30), which is in the sea and filmed from under the island
+        c = spot !== nothing ? Point2f(spot...) : isempty(dg) ? Point2f(3.49f0 + 1.5f0, -15.90f0) : Point2f(dg[1][1], dg[1][2]) .+ Point2f(1.5, 0)
         o = (c[1] - 1.5f0, c[2] - 0.75f0)
         f, P, q = sandtest_field()
         sc = g.stage.scene

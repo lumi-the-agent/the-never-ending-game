@@ -2,104 +2,104 @@
   "annoyance": 1.0,
   "annoyed": [
     {
-      "post": "lit-from-below",
-      "session": 160,
-      "title": "Lit from below",
-      "weight": 1.0,
-      "what": "The picture is almost entirely black. Shapes in the lower half and the ground can hardly be made out, so a viewer sees a dark smear, not a scene."
-    },
-    {
       "post": "six-clay-pots",
-      "session": 160,
+      "session": 161,
       "title": "Six clay pots",
       "weight": 1.0,
-      "what": "Storyboard frames 1-8 and the 25% frame: the motor the caption says the pots run is above the top of the picture. Only a dark sliver of it shows on the table top, so the first half never shows what the pots power."
+      "what": "Caption says six pots, but storyboard frames 1-8 and the 25% still only ever show four pots; the other two are cut off or never seen."
     },
     {
       "post": "the-island-has-a-ring",
-      "session": 160,
+      "session": 161,
       "title": "The island has a ring",
       "weight": 1.0,
-      "what": "Storyboard frames 1-3: Pinchy is already in the air. Nothing is seen throwing or launching him, so 'got thrown up' has no cause on screen."
+      "what": "Frames 1-6 (25% still): Pinchy is already in the air with nothing that threw it, and the orange, blue and red spheres hang mid-sky with no source or launch."
+    },
+    {
+      "post": "three-paper-darts",
+      "session": 161,
+      "title": "Three paper darts",
+      "weight": 1.0,
+      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, 50% still). Its fold, the 'back edges bent down / a little up / a lot up', can't be seen at all."
+    },
+    {
+      "post": "tied-together",
+      "session": 161,
+      "title": "Tied together",
+      "weight": 1.0,
+      "what": "Frames 1-2: the rope and creatures stretch out over the sea past the shore, then get yanked inland in a single step, with no walking visible."
+    },
+    {
+      "post": "lit-from-below",
+      "session": 160,
+      "title": "Lit from below",
+      "weight": 0.6,
+      "what": "The picture is almost entirely black. Shapes in the lower half and the ground can hardly be made out, so a viewer sees a dark smear, not a scene."
     },
     {
       "post": "my-day-falls-over",
       "session": 160,
       "title": "My day falls over",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "Storyboard frame 6 is almost completely black: the camera passes through or inside something."
+    },
+    {
+      "post": "",
+      "session": 160,
+      "title": "site/films/six-clay-pots.mp4 (and the other recent films)",
+      "weight": 0.6,
+      "what": "The film is encoded as H.264 High 4:4:4 Predictive (yuv444p). Safari, iOS and most hardware decoders (phones, many Chrome and Firefox setups) refuse this profile, so many visitors see a blank or broken player."
     },
     {
       "post": "football-with-the-sun",
       "session": 159,
       "title": "Football with the sun",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Title says 'Football', but nobody kicks or touches the sun anywhere in the storyboard. It drops in (frames 4-5) and drifts along the path (frames 9-16) with no push. The roll has no cause."
     },
     {
       "post": "my-shadow-quits-first-try",
       "session": 159,
       "title": "My shadow quits (first try)",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "A dark spotted toadstool sits frozen at the bottom centre of every frame (storyboard frames 1-16, at-25, at-50) and takes up the foreground, blocking the view."
     },
     {
       "post": "my-shadow-quits-second-try",
       "session": 159,
       "title": "My shadow quits (second try)",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The subject is a small grey patch on grass that is already crossed by tree and reed shadows (at-25 centre, at-50 left of the crab). Without the caption nobody would find it, let alone read it as a walking figure."
     },
     {
       "post": "the-camera-obscura",
       "session": 158,
       "title": "The camera obscura",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The picture is a warped, uneven quadrilateral of image floating in pure black; no hut, wall or glass lens can be seen, so 'a dark hut with a glass lens in its wall' is only claimed by the caption, not shown."
     },
     {
       "post": "the-sea-froze",
       "session": 158,
       "title": "The sea froze",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Storyboard frames 13-16 and the 75% frame: the friends walk out of the frame at the bottom-left; the last frame shows only half a blue creature cut by the left edge with a detached brown claw hanging beside it, so the film ends on cropped, half-drawn subjects instead of the friends on the sea."
     },
     {
       "post": "nobody-kicked-the-sun",
       "session": 158,
       "title": "Nobody kicked the sun",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Storyboard frames 9-16: the sun rolls away across the grass with nothing pushing it while every friend stands elsewhere; a thing moving without any cause."
-    },
-    {
-      "post": "the-island-as-a-woodcut",
-      "session": 157,
-      "title": "The island as a woodcut",
-      "weight": 0.216,
-      "what": "The island is a flat cream blob scattered with black ink splotches. Not one splotch can be recognized as a tree, house, rock or hill, so someone who doesn't know the island can't tell what they're looking at."
-    },
-    {
-      "post": "fireflies-a-take-that-misses",
-      "session": 157,
-      "title": "Fireflies, a take that misses",
-      "weight": 0.216,
-      "what": "The fireflies are flat, uniform white discs pasted over the picture. The near ones (the big blobs by the flower and lantern in the 50% frame) are as large as the flower head, so they read as lens dirt or snow, not insects."
-    },
-    {
-      "post": "the-island-answers-a-clap-a-broken-take",
-      "session": 157,
-      "title": "The island answers a clap, a broken take",
-      "weight": 0.216,
-      "what": "Caption says 'I clap hidden behind these planks', but no clapper, hands or clap shows in any frame. The storyboard is a fixed view of five upright boxes, reeds and a tree, so a viewer cannot tell who claps or where."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T02:26:32",
+  "ended": "2026-11-28T03:25:14",
   "fatigue": {
-    "asset": 1.13,
-    "feature": 1.08,
+    "asset": 0.68,
+    "feature": 0.65,
     "picture": 0.01,
-    "self": 0.08,
+    "self": 0.05,
     "sound": 0.01
   },
   "forms": [
@@ -398,7 +398,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.29,
+  "joy": 0.1,
   "judged_posts": [
     {
       "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
@@ -852,12 +852,12 @@
   },
   "last_surprise": {
     "fun": 3,
-    "score": 6.0,
-    "session": 155,
-    "why": "A wire that melts exactly where it was drawn badly, and a motor that sticks because of its own geometry, are new kinds of physics for the island, but the films show only a line that goes yellow and splits, and a motor that hardly moves."
+    "score": 4.0,
+    "session": 160,
+    "why": "It is the s159 pot cells and the s157 to s159 drum motor shown again with more cells, so the motor now spins instead of sticking. It is a continuation of the last three posts, with nothing the game could not do before this session."
   },
-  "loneliness": 0.0,
-  "perceived_until": "2026-11-28T01:44:57",
+  "loneliness": 0.08,
+  "perceived_until": "2026-11-28T02:41:08",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -871,57 +871,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.4,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 1.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 1.0
-      },
-      "happenings": [
-        {
-          "kind": "jug_fired",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "feature",
-        "film",
-        "post",
-        "wish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/first-jug.mp4"
-      ],
-      "new_plugins": [
-        "kiln.jl"
-      ],
-      "points": 5.3,
-      "repeat_factor": 0.4641588833612779,
-      "repetition": {
-        "form": "New permanent place or prop, shown quietly from a fixed or slow view",
-        "form_count": 1,
-        "nearest": "The owl listens",
-        "post": "My first glazed jar",
-        "score": 5,
-        "shared": "a new permanent prop shown in a quiet near-static view where nothing happens",
-        "similarity": 5
-      },
-      "session": 141,
-      "touched": [],
-      "values": {
-        "feature": 0.4,
-        "film": 6.0,
-        "post": 2.0,
-        "wish": 3.0
-      },
-      "wishes": 1
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1732,6 +1681,28 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.0,
+      "session": 161,
+      "touched": [],
+      "values": {},
+      "wishes": 0
     }
   ],
   "start": {
@@ -1790,7 +1761,9 @@
       "20261126-060910-427-asset",
       "20261126-083347-183-asset",
       "20261127-023850-460-asset",
-      "20261127-224908-837-asset"
+      "20261127-224908-837-asset",
+      "20261128-021035-918-asset",
+      "20261128-021036-051-asset"
     ],
     "pages": [
       "site/feed.xml",
@@ -2025,6 +1998,7 @@
       "ballplay.jl": 1.7955211366487784e9,
       "beach.jl": 1.7954424350923846e9,
       "beachhut.jl": 1.7956422945654373e9,
+      "beachprints.jl": 1.7958291154625015e9,
       "beds.jl": 1.795602278788512e9,
       "berry_race.jl": 1.795744656821812e9,
       "birdbody.jl": 1.7955211366474676e9,
@@ -2106,11 +2080,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 138,
+    "posts": 139,
     "self": "1523826980317287528",
-    "wishes": 18
+    "wishes": 19
   },
-  "started": "2026-11-28T01:50:55",
+  "started": "2026-11-28T02:46:33",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2258,7 +2232,9 @@
       "LevelSetMethods.CartesianGrid",
       "PhyloCoalSimulations.simulatecoalescent",
       "SkyCoords.offset",
-      "DataDrivenDiffEq.collocate_data"
+      "DataDrivenDiffEq.collocate_data",
+      "ImplicitGlobalGrid.y_g",
+      "MPSDynamics.onthefly"
     ],
     "games": [
       "Super Mario 64",
@@ -2365,7 +2341,10 @@
       "Psychonauts",
       "Street Fighter II",
       "Demon's Souls",
-      "Destiny (video game)"
+      "Destiny (video game)",
+      "Resident Evil 2",
+      "Monster Hunter: World",
+      "Inside (video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2441,7 +2420,9 @@
       "https://www.bbc.co.uk/news/articles/cmx2898wq2qjo",
       "https://www.bbc.co.uk/news/videos/ckvg20y511p4o",
       "https://www.bbc.co.uk/news/articles/cme3d4y094x7o",
-      "https://www.bbc.co.uk/news/articles/cr9309nyg2vno"
+      "https://www.bbc.co.uk/news/articles/cr9309nyg2vno",
+      "https://www.bbc.co.uk/news/articles/cm3vg3lkrk03o",
+      "https://www.bbc.co.uk/news/articles/cj20q9pw0116o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2758,29 +2739,15 @@
       "ShapML",
       "MPIMagneticFields",
       "ImplicitEquations",
-      "PauliPropagation"
+      "PauliPropagation",
+      "GenParticleFilters",
+      "SpeedyWeather",
+      "Tesseract"
     ],
     "vision": [
-      "DepthAnythingRunner",
-      "Hunyuan3DRunner",
-      "FluxKleinRunner",
-      "BonsaiRunner",
-      "NeuralLUTRunner",
-      "UVDocRunner",
-      "BasicVSRRunner",
-      "MatAnyoneRunner",
-      "DemucsRunner",
-      "DeepFilterRunner",
-      "HorizonRunner",
-      "QwenImageEditRunner",
-      "SAM2Runner",
-      "PPDocLayoutRunner",
-      "ProPainterRunner",
       "RIFERunner",
-      "PPOCRRunner",
-      "ZImageRunner",
-      "Qwen3EmbeddingRunner"
+      "QwenImageEditRunner"
     ]
   },
-  "surprise_seen": 155
+  "surprise_seen": 160
 }

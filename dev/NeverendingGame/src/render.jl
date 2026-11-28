@@ -24,6 +24,10 @@ follow camera turns to while nobody steers it. Set `CAMERA_FOCUS[] = f`, back to
 """
 const CAMERA_FOCUS = Ref{Any}(nothing)
 
+# Films are 4:2:0. Left alone, ffmpeg encodes RGB frames as yuv444p (H.264 High 4:4:4 Predictive), which Safari,
+# iOS and most hardware decoders refuse: 95 of 120 films on the blog did not play on phones (review s160).
+const FILM_PIX_FMT = VideoIO.AV_PIX_FMT_YUV420P
+
 # The last frame `game_clip` rendered (a matrix of colours, top row first), or `nothing`: plugins may show it in the
 # world (tv.jl: a television on the island showing the film it is in).
 const LAST_FRAME = Ref{Any}(nothing)
@@ -264,7 +268,7 @@ function record_clip(path::AbstractString, w::World, st::Stage, screen; seconds:
     first_img = Makie.colorbuffer(screen)
     h, wd = size(first_img)
     buf = Matrix{RGB{Colors.N0f8}}(undef, h, wd)
-    VideoIO.open_video_out(path, eltype(buf), (h, wd); framerate = fps,
+    VideoIO.open_video_out(path, eltype(buf), (h, wd); framerate = fps, target_pix_fmt = FILM_PIX_FMT,
                            encoder_options = (crf = 22, preset = "fast")) do writer
         for _ in 1:n
             t0 = time_ns()
@@ -468,6 +472,7 @@ function film!(g, root_scene::Scene, path::AbstractString; size, seconds, fps, s
                 if writer === nothing
                     buf = Matrix{RGB{Colors.N0f8}}(undef, Base.size(img)...)
                     writer = VideoIO.open_video_out(path, eltype(buf), Base.size(buf); framerate = fps,
+                                                    target_pix_fmt = FILM_PIX_FMT,
                                                     encoder_options = (crf = 18, preset = "slow"))
                 end
                 buf .= RGB{Colors.N0f8}.(img)

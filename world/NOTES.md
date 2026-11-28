@@ -1353,3 +1353,40 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   and not busy, walks into the patch every 180 s (goal :prints) and says "Squish!". Sandbox events: Pinchy and Lumi
   footprints at 02:25. LESSON: the host's 'new on the island' counts NEW EVENT KINDS in the human's game; a plugin
   that only draws is invisible to it. Emit an event for the thing that happens.
+
+## s161: films, job scripts, WaterLily, Lava
+- FILMS MUST BE 4:2:0. VideoIO.open_video_out with RGB frames and no target_pix_fmt makes yuv444p = H.264 High 4:4:4
+  Predictive, which Safari/iOS/phones refuse: 95 of 120 blog films did not play on phones (review s160, [high]).
+  render.jl now passes target_pix_fmt = NG.FILM_PIX_FMT (yuv420p) in both writers. Any new encoder of mine (movie
+  scripts writing with VideoIO or ffmpeg) needs -pix_fmt yuv420p too. Check: ffprobe ... stream=pix_fmt.
+  tools/reencode_films.sh re-encodes site/films (originals in media/film-444-originals/).
+- Worker job scripts (:clip with script, :run) now run in NG.script_module(name): a Module with `include` and
+  `eval` (a bare Module(name) has neither; old scripts use Base.include(@__MODULE__, ...), still fine).
+  The worker has no Revise: engine edits to job code need submit_job(:restart) first.
+- WaterLily.jl (v1.11.2, added s161): Simulation(dims, u_BC, L; U, ν, body = AutoBody(sdf), T = Float32, mem).
+  sdf(x, t) gets cell coordinates; arrays have ONE ghost layer (index = cell + 1). u_BC may be a function
+  (i, x, t) (give U then). The first fluid cell next to an immersed body is smeared: read the 2nd. Domain walls
+  are slip walls. A uniform inlet over a no-slip immersed ground separates by itself: use a log profile.
+  `mem` for Mantle: x -> (a = KA.allocate(Mantle.Device(), eltype(x), size(x)); copyto!(a, x); a), with
+  KA = WaterLily.KernelAbstractions (KA is not in the game env directly). On Mantle: compiles (after the Lava fix)
+  but NaN and 56 ms/step (todo #761); CPU on 32 threads 12 ms/step at 262k cells.
+- LAVA FIX (dev/Lava/src/compiler/passes/prepare_vulkan.jl, store_fix in the alloca-store pass): a store of T into
+  an alloca field typed [1 x T] (a closure captured by a KA kernel) was "fixed" with an LLVM bitcast between
+  aggregates, which became an invalid SPIR-V `OpBitcast %[1 x T] %T` (spirv-val: "Expected Result Type to be a
+  pointer or int or float vector or scalar type: Bitcast"). Now it indexes into single-element wrappers
+  ([1 x T], {T}) at offset 0 while the size matches, and bitcasts only what is left.
+- LAVA COMPILES IN A FROZEN WORLD (frozen_world.jl invoke_frozen, world captured at __init__): Revise edits to
+  Lava's compiler do NOT take effect in a running session. To test one: Lava._initialization_world[] =
+  Base.get_world_counter(). A fresh process picks it up normally. (LAVA_DUMP_KERNELS=1 keeps /tmp/lava_last.ll.)
+- WaterLily GPU vs CPU debugging (#761): compare only non-scratch fields (μ₀, μ₁, V, u, p) and only the interior;
+  σ is scratch and its ghosts come from `similar` (leftover memory). Mantle KA indexing checked fine s161.
+  BUT: a CartesianIndices{3,NTuple{3,UnitRange}} passed as a kernel ARGUMENT loses its starts on Mantle
+  (R[J] == J); WaterLily 1.11's @loop passes R exactly like that (macroexpand it: what runs is not the
+  `I += I0` form in core.jl's other branch). Read @macroexpand before trusting a package's source.
+  ROOT CAUSE + FIX (s161): Lava's device overlay `cartesian_at(iter::CartesianIndices{N}, I::Vararg{Int,N}) =
+  CartesianIndex(I...)` (dev/Lava/src/device/quirks.jl) ignored the ranges; now map(r[i]). Any GPU code that
+  indexes a CartesianIndices not starting at 1 was off by the start before this. Still open: a loop over a
+  tuple captured in a closure (WaterLily sdf) reads only element 1 on the GPU (#761).
+- Sand by wind (projects/wind.md): grains must keep hopping after the wind drops (saturation length ~1 m) or every
+  drift lands where the wind first slows; and the fence's porosity near the GROUND decides front vs lee drifts
+  (a 1-cell gap is smeared shut by the immersed boundary: make gaps >= 2 cells).
