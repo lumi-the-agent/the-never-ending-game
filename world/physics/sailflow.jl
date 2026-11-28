@@ -188,6 +188,40 @@ function arc2d_sim(alpha; camber = 0.1f0, chord = 32, n = (256, 128), thick = 3,
     (sim = sim, body = body, chord = chord)
 end
 
+"""
+    arc_slab_sim(alpha; camber = 0.1, chord = 16, span = 16, n = (128, 64), thick = 2, Re = 2000, mem = Array)
+
+The same arc section as `arc2d_sim`, extruded `span` cells and periodic across the span (s165): a slice of a long
+sail whose wake is free to break up in 3D. 2D slices keep a stalled vortex street coherent and overstate the
+stalled force (s165: CL 2.3-3.7 at 35-70 deg against 0.8-0.9 in the 3D box), which a slab should not.
+"""
+function arc_slab_sim(alpha; camber = 0.1f0, chord = 16, span = 16, n = (128, 64), thick = 2, Re = 2000, mem = Array)
+    f = Float32(max(camber, 1f-3) * chord); hc = Float32(chord / 2); R = (hc^2 + f^2) / (2f); yc = f - R; phi = asin(hc / R)
+    c0 = SVector{2,Float32}(n[1] * 0.3f0, n[2] / 2); ht = Float32(thick / 2)
+    ca, sa = cos(Float32(alpha)), -sin(Float32(alpha))
+    sdf(x, t) = begin
+        d = SVector(x[1], x[2]) - c0; px, py = ca * d[1] + sa * d[2], -sa * d[1] + ca * d[2]
+        ry = py - yc; r = sqrt(px^2 + ry^2); th = atan(px, ry)
+        (abs(th) <= phi ? abs(r - R) : min(sqrt((px - hc)^2 + py^2), sqrt((px + hc)^2 + py^2))) - ht
+    end
+    sim = Simulation((n[1], n[2], span), (1f0, 0f0, 0f0), Float32(chord); U = 1f0, ν = Float32(chord) / Float32(Re),
+                     body = AutoBody(sdf), perdir = (3,), T = Float32, mem)
+    (sim = sim, chord = chord, span = span)
+end
+
+"""Mean lift and drag coefficients of a slab (or a 2D slice, span = 1) over `chords` of flow after `warm`."""
+function slab_coeffs(s; warm = 10, chords = 12)
+    sim_step!(s.sim, Float32(warm); remeasure = false)
+    t1 = sim_time(s.sim) + chords; Fl = 0.0; Fd = 0.0; k = 0
+    while sim_time(s.sim) < t1
+        sim_step!(s.sim; remeasure = false)
+        f = WaterLily.pressure_force(s.sim)
+        Fl -= f[2]; Fd -= f[1]; k += 1
+    end
+    sp = hasproperty(s, :span) ? s.span : 1
+    (CL = Fl / k / (0.5 * s.chord * sp), CD = Fd / k / (0.5 * s.chord * sp), steps = k)
+end
+
 """Turn a 2D slice to angle `a` (radians) inside its running flow."""
 retrim!(s, a) = (s.sim.body = s.body(a); measure!(s.sim, sum(s.sim.flow.Δt)); s)
 
@@ -228,6 +262,61 @@ function sail_slices(alpha_geo; aspect = 4, stations = 3, chord = 32, warm = 8, 
         for j in 1:N; retrim!(slices[j], alpha_geo + twist[j] - ai[j]); end
     end
     (CL = pi * aspect * A[1], cl = copy(cl), alpha_i_deg = rad2deg.(ai), A = A)
+end
+
+"""
+The sail of a moving cart (s165): `sail_slices`' three 2D slices and lifting line, kept running. The apparent wind
+changes as the cart speeds up and turns, so the slices are never re-made: each `sail_force!` re-trims them in their
+running flow to the new angle of attack minus their induced angle, steps them by as much flow as passed over the
+sail in that time (chords = apparent speed x dt / chord), and returns the 3D lift and drag coefficients that flow
+gave. Trim lags by the flow's own time, as a real sail's does.
+"""
+mutable struct LiveSail
+    slices::Vector{Any}
+    th::Vector{Float64}
+    S::Matrix{Float64}
+    ai::Vector{Float64}
+    A::Vector{Float64}
+    cl::Vector{Float64}
+    cd::Vector{Float64}
+    aspect::Float64
+    alpha::Float64
+end
+
+function live_sail(alpha_geo; aspect = 4, stations = 3, chord = 32, camber = 0.1f0, warm = 6)
+    N = stations
+    th = [j * pi / (N + 1) for j in 1:N]
+    S = [sin(n * t) for t in th, n in 1:N]
+    slices = Any[arc2d_sim(alpha_geo; chord, camber = Float32(camber)) for _ in 1:N]
+    for s in slices; sim_step!(s.sim, Float32(warm); remeasure = false); end
+    LiveSail(slices, th, S, zeros(N), zeros(N), zeros(N), zeros(N), Float64(aspect), Float64(alpha_geo))
+end
+
+"""
+    sail_force!(ls, alpha_geo, chords; relax = 0.5) -> (; CL, CD, CDi, cl, alpha_i_deg)
+
+Advance the live sail by `chords` of flow at geometric angle `alpha_geo` (rad). CL from the lifting line (pi AR A1),
+CD = the slices' mean pressure drag + the induced drag pi AR sum n A_n^2.
+"""
+function sail_force!(ls::LiveSail, alpha_geo, chords; relax = 0.5)
+    N = length(ls.slices)
+    for j in 1:N
+        s = ls.slices[j]
+        retrim!(s, alpha_geo - ls.ai[j])
+        t1 = sim_time(s.sim) + chords; Fl = 0.0; Fd = 0.0; k = 0
+        while sim_time(s.sim) < t1 || k == 0
+            sim_step!(s.sim; remeasure = false)
+            f = WaterLily.pressure_force(s.sim)
+            Fl -= f[2]; Fd -= f[1]; k += 1                 # WaterLily gives the fluid's side: both flip (as slice_cl!)
+        end
+        ls.cl[j] = Fl / k / (0.5 * s.chord); ls.cd[j] = Fd / k / (0.5 * s.chord)
+    end
+    ls.A = ls.S \ (ls.cl ./ (4ls.aspect))
+    ainew = [sum(n * ls.A[n] * sin(n * ls.th[j]) for n in 1:N) / sin(ls.th[j]) for j in 1:N]
+    ls.ai .= (1 - relax) .* ls.ai .+ relax .* ainew
+    ls.alpha = alpha_geo
+    CDi = pi * ls.aspect * sum(n * ls.A[n]^2 for n in 1:N)
+    (CL = pi * ls.aspect * ls.A[1], CD = sum(ls.cd) / N + CDi, CDi, cl = copy(ls.cl), alpha_i_deg = rad2deg.(ls.ai))
 end
 
 """The `mem` for WaterLily on Mantle: arrays allocated on the GPU and filled from the CPU ones."""

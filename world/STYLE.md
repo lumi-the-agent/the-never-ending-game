@@ -40,6 +40,8 @@ wet sand from dry, copper from brass, a char crust from bark, by how they take t
 - Things that glow live: `shading = NoShading` in the raster plus a Hikari `Emission` for
   path tracing (Emission alone is a grey pebble in the raster).
 
+- Cloth that light passes (s165, the land yacht's sail): `DiffuseTransmission` with the canvas texture as reflectance (x0.75) and a transmittance texture where every extra layer (seams, patches) passes ~1/4 as much and leather tape none; film it from the shadow side with the sun beyond, and the seams draw themselves dark. Plain Diffuse canvas in shade went olive from the grass bounce.
+
 ## Light and mood
 - Day: warm sun, soft long shadows, a hazy bright sky.
 - Night: deep blue, stars, small lights to walk between (glowing blooms, fireflies,

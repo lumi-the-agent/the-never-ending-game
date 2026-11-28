@@ -1,0 +1,8 @@
+{"posts": [{"post": "My land yacht",
+            "what": "A still of a newly built land yacht (plank deck, four wooden wheels, mast, backlit patched canvas sail, driftwood boom) standing on the open sand at the top of the beach with the sea behind; it does not move, the only change is that the vehicle now stands on the island.",
+            "recipe": "new crafted object shown standing still",
+            "nearest": "My first glazed jar",
+            "similarity": 6,
+            "shared": "a newly crafted prop placed on the island and shown quietly in a still, nothing happens"}],
+ "forms": [{"form": "New crafted prop shown still, nothing happens", "posts": ["My land yacht"]},
+           {"form": "Physics study of simulated objects moving alone, filmed", "posts": ["Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone", "The magnet stone"]}]}

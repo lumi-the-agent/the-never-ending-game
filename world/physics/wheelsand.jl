@@ -19,6 +19,9 @@ modulus K (m). Wong, Theory of Ground Vehicles (4th ed.), Table 2.3; K from his 
 """
 const SOILS = Dict(
     :dry_sand   => (; n = 1.1, kc = 0.99e3,  kphi = 1528.43e3, c = 1.04e3, phi = deg2rad(28.0), K = 0.025),
+    # firm sand: Wong's LETE sand (compacted, Table 2.3); K about 1.2 cm, my reading of his shear data (s165) -- the
+    # wet beach below the tide line, where land yachts sail
+    :firm_sand  => (; n = 0.79, kc = 102.0e3, kphi = 5301.0e3, c = 1.3e3, phi = deg2rad(31.1), K = 0.012),
     :sandy_loam => (; n = 0.7, kc = 5.27e3,  kphi = 1515.04e3, c = 1.72e3, phi = deg2rad(29.0), K = 0.025),
     :snow       => (; n = 1.6, kc = 4.37e3,  kphi = 196.72e3,  c = 1.03e3, phi = deg2rad(19.7), K = 0.04),
     :clay       => (; n = 0.5, kc = 13.19e3, kphi = 692.15e3,  c = 4.14e3, phi = deg2rad(13.0), K = 0.06),

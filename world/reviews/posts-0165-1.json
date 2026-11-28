@@ -1,0 +1,11 @@
+{"posts": [{"post": "my-land-yacht",
+  "verdict": "redo",
+  "problems": [
+    "Caption says the sail is 'cut to the curve', but in the picture it is a flat, rigid rectangle, drawn like a board or a door with no billow, curve or sag anywhere.",
+    "The 'patched canvas' reads as a small dark square in the upper sail, which looks like a window cut in a panel, not a patch sewn onto cloth; the sail has no canvas texture, only thin horizontal lines.",
+    "The sail is far too big for the tiny deck. The mast stands at the deck's back right corner instead of being stepped through it, so the rig looks top-heavy and stuck on, as if it would tip over.",
+    "Caption says 'on the beach', but the yacht sits on a grassy mound among dune plants, not on sand. The low bottom-right of the frame is mostly grass and a mossy stump.",
+    "A tree stump in the foreground (bottom centre) blocks the lower deck and the space between the front wheels. The wheels are plain dark discs whose bottoms sink into the grass, so it is hard to see where they touch the ground.",
+    "The 'driftwood deck' is plain grey planks with no weathering, and the 'oak wheels' are flat, near-black discs with faint spokes. Neither looks like the material the caption names."
+  ],
+  "critique": "The caption promises a patched sail cut to a curve, on the beach, but the picture shows a flat board-like panel with a dark square, set on a cart on a grassy mound. The proportions and the foreground stump also make the build look stuck together rather than made by hand."}]}

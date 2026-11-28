@@ -19,11 +19,30 @@ const LY_SHEET = deg2rad(18f0)                    # boom out from the centre lin
 
 struct LandYacht <: System end
 
-"Where the cart stands: on the beach a few metres seaward of the first dune grass, or nothing before the beach exists."
+"""
+Where the cart stands: on open sand between the first dune grass and the beach hut, a little seaward of both (s165:
+the old spot, 5 m west of the grass, put the cart 1.5 m from the hut's middle, half inside it). Nothing before the
+beach exists.
+"""
 function ly_spot(game)
     dg = isdefined(Main, :BEACH) ? get(get(Main.BEACH, :things, Dict()), :dunegrass, Point3f[]) : Point3f[]
     isempty(dg) && return nothing
-    Point2f(dg[1][1], dg[1][2]) + Point2f(-5.0f0, 0.4f0)
+    Point2f(dg[1][1], dg[1][2]) + Point2f(-2.6f0, -2.2f0)
+end
+
+"""
+The cart's attitude on the sloping beach: yaw about z, then pitch (bow up) and roll from the ground under the four
+wheels; returns the rotation and the height of the cart's origin (the mean ground under the wheels).
+"""
+function ly_attitude(is, c::Point2f, yaw)
+    fwd = Vec2f(-sin(yaw), cos(yaw)); side = Vec2f(cos(yaw), sin(yaw))
+    h(a, b) = NG.terrain_height(is, (c + a * fwd + b * side)...)
+    half = 0.8f0; tr = LY_WIDE / 2 + 0.08f0
+    hfl, hfr, hbl, hbr = h(half, -tr), h(half, tr), h(-half, -tr), h(-half, tr)
+    pitch = asin(clamp(((hfl + hfr) - (hbl + hbr)) / 2 / (2half), -0.3f0, 0.3f0))
+    roll = -asin(clamp(((hfr + hbr) - (hfl + hbl)) / 2 / (2tr), -0.3f0, 0.3f0))
+    q = NG.rot_z(yaw) * Makie.qrotation(Vec3f(1, 0, 0), pitch) * Makie.qrotation(Vec3f(0, 1, 0), roll)
+    q, (hfl + hfr + hbl + hbr) / 4
 end
 
 "The sail as a two-sided sheet in cart coordinates (x across, y forward, z up): the arc, luff at the mast."
@@ -78,6 +97,32 @@ function ly_canvas(; nv = 512, nu = 256)
     img
 end
 
+"""
+The light the canvas lets through, for the path tracer (s165): one layer of cotton duck passes about a quarter of
+the light, warmed (the blue scattered out most); where cloth lies doubled (the seam overlaps, the patch) it passes
+a quarter of that again, so against the sun the panels glow and the seams and the patch stand out dark; the
+leather tape passes nothing.
+"""
+function ly_canvas_through(cloth::Matrix{RGBf})
+    nv, nu = size(cloth)
+    one = (0.30f0, 0.25f0, 0.17f0)
+    out = Matrix{RGBf}(undef, nv, nu)
+    panels = 5
+    for r in 1:nv, c in 1:nu
+        u = (c - 0.5f0) / nu; v = (r - 0.5f0) / nv
+        dv = abs(v * panels - round(v * panels))
+        layers = 1
+        dv < 0.03f0 && 0 < round(v * panels) < panels && (layers = 2)        # the double seam's overlap
+        0.52f0 < u < 0.74f0 && 0.31f0 < v < 0.43f0 && (layers += 1)          # the patch over the old tear
+        tape = u < 0.03f0 || u > 0.975f0 || v < 0.018f0 || v > 0.985f0
+        k = tape ? 0f0 : 0.27f0^(layers - 1)
+        g = 1f0 + 4f0 * (ly_lum(cloth[r, c]) - 0.75f0)                   # the weave's thin and thick threads
+        out[r, c] = RGBf((one .* (k * g))...)
+    end
+    out
+end
+ly_lum(c::RGBf) = 0.2126f0 * c.r + 0.7152f0 * c.g + 0.0722f0 * c.b
+
 function ly_models(game)
     haskey(LY, :models) && return LY[:models]
     cat = NG.load_catalog(game.paths)
@@ -89,13 +134,11 @@ function ly_build!(game)
     sc = game.stage.scene
     c = ly_spot(game); c === nothing && return false
     m = ly_models(game); m === nothing && return false
-    yaw = 0.9f0                                         # bow pointing along the beach
-    q = NG.rot_z(yaw)
-    is = game.world.island
-    g = NG.terrain_height(is, c[1], c[2])
+    yaw = Float32(pi / 2) + 0.15f0                      # bow pointing west along the beach, a little up it
+    q, g = ly_attitude(game.world.island, c, yaw)
     tocart(v) = q * Vec3f(v)                            # cart frame -> world
     at(v) = Point3f(c[1], c[2], g) + tocart(v)
-    plots = Any[]
+    plots = LY[:plots] = Any[]          # recorded as they are made: stop! clears a half-built cart too
     # deck: five planks side by side, 5 cm thick
     n = 5; w = LY_WIDE / n
     deck = [at(Vec3f(-LY_WIDE / 2 + (k - 0.5f0) * w, 0, LY_DECK_Z)) for k in 1:n]
@@ -112,15 +155,24 @@ function ly_build!(game)
     mh = LY_FOOT + LY_SAIL_H + 0.25f0
     push!(plots, NG.asset_instances!(sc, m.plank, [at(mastb + Vec3f(0, 0, mh / 2))]; rotation = [qm],
                                      markersize = [Vec3f(0.11f0 / 0.36f0, mh, 0.11f0 / 0.17f0)], name = :landyacht_mast))
+    # the boom: a spar along the sail's foot from the mast to the clew, swung out by the sheet angle (s165: without it
+    # the sail read as a banner hung on a pole)
+    bd = Vec3f(sin(LY_SHEET), -cos(LY_SHEET), 0)
+    bl = LY_CHORD + 0.12f0
+    qb = q * Makie.qrotation(Vec3f(0, 0, 1), Float32(pi) + LY_SHEET)
+    push!(plots, NG.asset_instances!(sc, m.plank, [at(mastb + bd * (bl / 2 - 0.04f0) + Vec3f(0, 0, LY_FOOT - 0.045f0))];
+                                     rotation = [qb], markersize = [Vec3f(0.075f0 / 0.36f0, bl, 0.075f0 / 0.17f0)],
+                                     name = :landyacht_boom))
     # the sail, in world coordinates
     sm = ly_sail_mesh(Point3f(0, 0, 0))
     wp = [at(Vec3f(p) + mastb) for p in GeometryBasics.coordinates(sm)]
     sw = GeometryBasics.mesh(wp, GeometryBasics.faces(sm); normal = GeometryBasics.normals(wp, GeometryBasics.faces(sm)),
                              uv = GeometryBasics.texturecoordinates(sm))
     cloth = get!(ly_canvas, LY, :canvas)
+    shine = get!(() -> ly_canvas_through(cloth), LY, :canvas_through)
     push!(plots, mesh!(sc, sw; color = cloth, name = :landyacht_sail,
-                       material = NG.Hikari.Diffuse(color = cloth, roughness = 1f0)))
-    LY[:plots] = plots; LY[:key] = objectid(sc); LY[:pos] = Point3f(c[1], c[2], g); LY[:yaw] = yaw
+                       material = NG.Hikari.DiffuseTransmission(reflectance = map(c -> RGBf(0.75f0 * c.r, 0.75f0 * c.g, 0.75f0 * c.b), cloth), transmittance = shine)))
+    LY[:key] = objectid(sc); LY[:pos] = Point3f(c[1], c[2], g); LY[:yaw] = yaw
     isdefined(Main, :EXTRA_SOLIDS) && (Main.EXTRA_SOLIDS["landyacht"] = [(c, 1.4f0)])
     true
 end
@@ -137,6 +189,13 @@ end
 function NG.stop!(::LandYacht, game)
     for p in get(LY, :plots, Any[])
         p.parent !== nothing && delete!(p.parent, p)
+    end
+    # a cart half built by an older copy of this plugin (it kept its plots only once all were made)
+    if game.stage !== nothing
+        sc = game.stage.scene
+        for p in filter(p -> startswith(string(p.attributes[:name][]), "landyacht_"), copy(sc.plots))
+            delete!(sc, p)
+        end
     end
     delete!(LY, :plots); delete!(LY, :key); delete!(LY, :tried)
     isdefined(Main, :EXTRA_SOLIDS) && delete!(Main.EXTRA_SOLIDS, "landyacht")

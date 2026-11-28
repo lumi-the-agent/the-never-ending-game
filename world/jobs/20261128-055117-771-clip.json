@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T05:51:17.771",
+  "finished": "2026-11-28T05:59:42.492",
   "id": "20261128-055117-771-clip",
   "kind": "clip",
   "params": {
@@ -16,6 +17,11 @@
     "path": "site/img/land-yacht-on-the-beach.png",
     "script": "movies/post_stills.jl"
   },
+  "result": {
+    "path": "site/img/land-yacht-on-the-beach.png",
+    "post": "landyacht"
+  },
+  "seconds": 504.2,
   "started": "2026-11-28T05:51:18.325",
-  "status": "running"
+  "status": "done"
 }

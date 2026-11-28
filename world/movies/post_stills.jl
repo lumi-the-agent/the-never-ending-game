@@ -622,12 +622,10 @@ function setup_post!(g, post)
         m = plugin(g, "landyacht")
         L = Main.LANDYACHT
         get(L, :key, nothing) == objectid(g.stage.scene) || Base.invokelatest(m.ly_build!, g) || error("landyacht: no beach yet")
-        p = L[:pos]; a = L[:yaw]
-        side = Vec3f(cos(a), sin(a), 0); fwd = Vec3f(-sin(a), cos(a), 0)
-        sd = NG.sun(w)[1]
-        sgn = (sd[1] * side[1] + sd[2] * side[2]) >= 0 ? 1f0 : -1f0
-        eye = p + 4.6f0 * sgn * side + 2.8f0 * fwd + Point3f(0, 0, 1.4)
-        return eye, p + 0.3f0 * sgn * side + Point3f(0, 0, 1.7)
+        # s165: the cart stands on open sand east of the hut; seen from the land side, the sun beyond the sail so the
+        # canvas glows and its seams and patch show dark, the sea behind (media/s165/yacht-land-traced.png)
+        p = L[:pos]
+        return p + Point3f(4.2f0, 4.6f0, 2.4f0), p + Point3f(-0.2f0, 0f0, 1.75f0)
     end
     error("post_still: no moment set up for post \"$post\"")
 end

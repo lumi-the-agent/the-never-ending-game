@@ -9,6 +9,22 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s165: PASSED 'Sail it yourself: sheet, tiller and friends leaning out, or over you go' (surprise 7 fun 8 real 7
+  toward 7; risk: scope, friends tumbling as a pratfall). Todo #767. physics/yachtrun.jl `run_yacht`: the cart rolls on
+  the LIVE sail (sailflow.jl LiveSail/sail_force!, slices kept running) vs WheelSand.towed (:firm_sand = LETE added).
+  STALL IS BACKWARDS: 2D stalled CL 1.9-2.6 > trimmed 1.5-1.7 at Re 2e3/2e4/1e5, grid-dependent; over-sheeting ran
+  4x faster. NOT the 3D wake (periodic slab same), blockage +30% (4-chord domains), Re no help (media/s165/sail-re.txt,
+  yachtrun.txt). 3D GPU BOX STALLS RIGHT (AR 4 chord 24, 112 s on Mantle): 15 deg CL .46 CD .14, 50 deg CL .54 CD .68
+  -> moving, right trim drives 2.5x more. DECISION: live sail = 3D box on the GPU (projects/landyacht.md '3D ANSWER').
+  The CPU job 20261128-062851-640-run is the same case (cross-check only). Speed: 786k-cell box chord 16 = 9.9 ms/step
+  on GPU = 0.7x real time at 6 m/s; ~400k cells hugging the sail -> real time.
+- s165 look: cart moved off the hut (it stood 1.5 m from its middle) to (0.89,-17.40), tilted to the slope, translucent
+  canvas (DiffuseTransmission, seams/patch dark against the light), a boom on the foot. PUBLISHED. Post 'my-land-yacht'
+  'my-land-yacht' got REDO (flat board sail, window-like patch, grassy mound, stump, black disc wheels). Retake s165:
+  cart now on sand at dunegrass[1]+(-2.6,-2.2), camera aft-landward; MISS note added. Still: small in frame, back wheel
+  floats (ly_attitude plane fit on a curved slope), wheels need real oak (spokes), patch needs stitching/texture.
+  2nd REDO: build it like a real cart (axles+hubs, mast step+stays, boom visible, cloth with belly), FLAT sand by the
+  water, close camera. Lesson in NOTES ('A built thing reads as BUILT').
 - s164: PASSED idea 'Wool on the sail: trim the land yacht by its telltales' (#763 doing; critic risk: box too slow ->
   threads lag -> canned table). DONE: sailflow.jl `telltales` (3D yarn angles: windward stands off 25-60 deg at 0-2.5,
   both lie at 5-10, lee lifts 14/28/40 at 20/30/40 = stall) and `sail_slices` (3 2D slices + Prandtl lifting line,

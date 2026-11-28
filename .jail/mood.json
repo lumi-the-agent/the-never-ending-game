@@ -2,93 +2,78 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "my-land-yacht",
+      "session": 165,
+      "title": "My land yacht",
+      "weight": 1.0,
+      "what": "Caption says 'a canvas sail on a boom', but the picture shows no boom: the sail's lower corner just ends in the air above the deck, attached only along a single mast."
+    },
+    {
       "post": "a-campfire-in-the-wind",
       "session": 164,
       "title": "A campfire in the wind",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The campfire, which is the subject, is small and hidden behind a cluster of tall upright brown planks and a grass tuft in the foreground in every frame (storyboard all 16 frames; at-25, at-50, at-75). You only see the flame through the gaps between the boards."
     },
     {
       "post": "my-first-motor",
       "session": 163,
       "title": "My first motor",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Caption says 'two stones', but the two big parts on the axle are flat black discs that look like rubber wheels, not stone (all frames, at-25, at-50)."
-    },
-    {
-      "post": "chipping-a-stone-to-change-its-note",
-      "session": 163,
-      "title": "Chipping a stone to change its note",
-      "weight": 0.6,
-      "what": "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move."
     },
     {
       "post": "where-i-rushed-it",
       "session": 163,
       "title": "Where I rushed it",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "Plain shapes on bare ground: a dark brown box with two orange sticks on flat green, with nothing of the island around it (frames 1-5)."
     },
     {
-      "post": "a-top-over-a-ring-of-lodestone",
-      "session": 162,
-      "title": "A top over a ring of lodestone",
+      "post": "chipping-a-stone-to-change-its-note",
+      "session": 163,
+      "title": "Chipping a stone to change its note",
       "weight": 0.36,
-      "what": "The plate moves with no hand: it lowers by itself (frames 1-6)."
+      "what": "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move."
     },
     {
       "post": "putting-past-a-magnet-stone",
       "session": 162,
       "title": "Putting past a magnet stone",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Nothing starts the balls: the three sit stacked in the far left corner (storyboard frame 1) and leave one at a time with no push, release or visible tilt of the tray, so 'roll down my sand tray' shows no cause."
     },
     {
       "post": "i-swallow-what-i-hit",
       "session": 162,
       "title": "I swallow what I hit",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The swallow is never shown: in frame 2 a green bubble wraps the yellow bird, and by frame 3 the crab has simply vanished from the left with no contact or engulfing in between."
     },
     {
-      "post": "six-clay-pots",
-      "session": 161,
-      "title": "Six clay pots",
+      "post": "a-top-over-a-ring-of-lodestone",
+      "session": 162,
+      "title": "A top over a ring of lodestone",
       "weight": 0.216,
-      "what": "Caption says six pots, but storyboard frames 1-8 and the 25% still only ever show four pots; the other two are cut off or never seen."
-    },
-    {
-      "post": "the-island-has-a-ring",
-      "session": 161,
-      "title": "The island has a ring",
-      "weight": 0.216,
-      "what": "Frames 1-6 (25% still): Pinchy is already in the air with nothing that threw it, and the orange, blue and red spheres hang mid-sky with no source or launch."
-    },
-    {
-      "post": "three-paper-darts",
-      "session": 161,
-      "title": "Three paper darts",
-      "weight": 0.216,
-      "what": "The dart is a tiny white sliver, a few pixels across in most frames (storyboard, 50% still). Its fold, the 'back edges bent down / a little up / a lot up', can't be seen at all."
-    },
-    {
-      "post": "tied-together",
-      "session": 161,
-      "title": "Tied together",
-      "weight": 0.216,
-      "what": "Frames 1-2: the rope and creatures stretch out over the sea past the shore, then get yanked inland in a single step, with no walking visible."
+      "what": "The plate moves with no hand: it lowers by itself (frames 1-6)."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T05:57:20",
+  "ended": "2026-11-28T06:47:07",
   "fatigue": {
-    "asset": 0.15,
-    "feature": 1.14,
+    "asset": 0.09,
+    "feature": 0.68,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
   },
   "forms": [
+    {
+      "form": "New crafted prop shown still, nothing happens",
+      "posts": [
+        "My land yacht"
+      ]
+    },
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
@@ -101,8 +86,7 @@
         "Iron sticks, before and after",
         "A compass in a bowl",
         "A top over a ring of lodestone",
-        "The magnet stone",
-        "Three paper darts"
+        "The magnet stone"
       ]
     }
   ],
@@ -384,15 +368,8 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.26,
+  "joy": 0.09,
   "judged_posts": [
-    {
-      "form": "Roaming world-rule zone that changes how things look or move, with a passing remark",
-      "recipe": "roaming zone that changes how things look, friends react with one-liners",
-      "session": 110,
-      "title": "The island remembers being drawn",
-      "what": "Now and then a grey patch of the island's first drafts drifts over the meadow, turning ground, trees and creatures inside it into grey boxes and pale blobs, who remark on it once."
-    },
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
       "recipe": "friends gather in a chain, pass something on, a small comic failure (mishearing) shown by spoken one-liners in a film",
@@ -805,6 +782,13 @@
       "session": 160,
       "title": "Six clay pots",
       "what": "A slow view along a row of clay pots of blue liquid wired together under a wooden table on the grass, then a cut to a close fixed view of the copper-wound motor on the table, its rotor turning steadily; nobody is there and nothing else on the island changes."
+    },
+    {
+      "form": "New crafted prop shown still, nothing happens",
+      "recipe": "new crafted object shown standing still",
+      "session": 165,
+      "title": "My land yacht",
+      "what": "A still of a newly built land yacht (plank deck, four wooden wheels, mast, backlit patched canvas sail, driftwood boom) standing on the open sand at the top of the beach with the sea behind; it does not move, the only change is that the vehicle now stands on the island."
     }
   ],
   "kinds_ever": [
@@ -826,14 +810,14 @@
     "session": 160
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 10,
-    "nearest": "My first motor",
-    "post": "Six clay pots",
-    "score": 10,
-    "session": 160,
-    "shared": "the same motor shown alone from a fixed close view; the new step is the battery of pots that makes it keep turning",
+    "factor": 0.2154434690031884,
+    "form": "New crafted prop shown still, nothing happens",
+    "form_count": 0,
+    "nearest": "My first glazed jar",
+    "post": "My land yacht",
+    "score": 6,
+    "session": 165,
+    "shared": "a newly crafted prop placed on the island and shown quietly in a still, nothing happens",
     "similarity": 6
   },
   "last_surprise": {
@@ -842,8 +826,8 @@
     "session": 160,
     "why": "It is the s159 pot cells and the s157 to s159 drum motor shown again with more cells, so the motor now spins instead of sticking. It is a continuation of the last three posts, with nothing the game could not do before this session."
   },
-  "loneliness": 0.28,
-  "perceived_until": "2026-11-28T05:08:18",
+  "loneliness": 0.36,
+  "perceived_until": "2026-11-28T05:57:48",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -857,53 +841,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "sleepwalk",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film",
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/three-logs-float.mp4"
-      ],
-      "new_plugins": [],
-      "points": 1.5,
-      "repeat_factor": 0.2154434690031884,
-      "repetition": {
-        "form": "A material is worked by a tool and its simulated state shown close up",
-        "form_count": 2,
-        "nearest": "Blowing glass",
-        "post": "A copper wire keeps its bends",
-        "score": 6,
-        "shared": "a material worked by a tool with nobody holding it, its simulated change shown in a close fixed view",
-        "similarity": 5
-      },
-      "session": 145,
-      "touched": [
-        "wirebench.jl"
-      ],
-      "values": {
-        "film": 6.0,
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1632,6 +1569,44 @@
         "wish": 3.0
       },
       "wishes": 1
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.2,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "New crafted prop shown still, nothing happens",
+        "form_count": 0,
+        "nearest": "My first glazed jar",
+        "post": "My land yacht",
+        "score": 6,
+        "shared": "a newly crafted prop placed on the island and shown quietly in a still, nothing happens",
+        "similarity": 6
+      },
+      "session": 165,
+      "touched": [
+        "landyacht.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1853,6 +1828,7 @@
       "site/img/island-woodcut.png",
       "site/img/joy-traced.png",
       "site/img/kite.png",
+      "site/img/land-yacht-on-the-beach.png",
       "site/img/lanterns.png",
       "site/img/leaves-jump.png",
       "site/img/leaves-lumi.png",
@@ -1966,6 +1942,7 @@
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
+      "landyacht.jl": 1.7958408412673323e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -2009,11 +1986,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 139,
+    "posts": 140,
     "self": "1523826980317287528",
-    "wishes": 19
+    "wishes": 20
   },
-  "started": "2026-11-28T05:13:48",
+  "started": "2026-11-28T06:07:07",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2169,7 +2146,9 @@
       "ZwickerLoudnessAudio.loudness_zwtv",
       "Jusdl.write!",
       "ImageSegmentation.region_tree",
-      "BPGates.bellmeasure!"
+      "BPGates.bellmeasure!",
+      "MissingPatterns.missingpairstats",
+      "LatinHypercubeSampling.scaleLHC"
     ],
     "games": [
       "Super Mario 64",
@@ -2288,7 +2267,10 @@
       "Marble Madness",
       "New Super Mario Bros.",
       "Battlezone (1980 video game)",
-      "Mario Kart 8 Deluxe"
+      "Mario Kart 8 Deluxe",
+      "Portal 2",
+      "Age of Empires (video game)",
+      "Street Fighter III: 3rd Strike"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2366,7 +2348,9 @@
       "https://www.bbc.co.uk/news/articles/cme3d4y094x7o",
       "https://www.bbc.co.uk/news/articles/cr9309nyg2vno",
       "https://www.bbc.co.uk/news/articles/cm3vg3lkrk03o",
-      "https://www.bbc.co.uk/news/articles/cj20q9pw0116o"
+      "https://www.bbc.co.uk/news/articles/cj20q9pw0116o",
+      "https://www.bbc.co.uk/news/articles/cq36gk151xkdo",
+      "https://www.bbc.co.uk/news/articles/cwp9d85mlp88o"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2695,7 +2679,10 @@
       "GeoEnergyIO",
       "PyThermo",
       "DispersionRelations",
-      "TikzPictures"
+      "TikzPictures",
+      "AstroNbodySim",
+      "StreamCallbacks",
+      "Molecules"
     ],
     "vision": [
       "RIFERunner",
@@ -2705,7 +2692,9 @@
       "DeepFilterRunner",
       "UVDocRunner",
       "NeuralLUTRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "MatAnyoneRunner",
+      "SAM2Runner"
     ]
   },
   "surprise_seen": 160

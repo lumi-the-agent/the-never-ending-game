@@ -1,0 +1,17 @@
+{"ideas": [
+ {"title": "Sail it yourself: sheet, tiller and friends leaning out, or over you go",
+  "goal": "The player sails Lumi's land yacht along the beach with two hands: one hauls or eases the sheet, one steers; friends climb aboard as crew and the player calls them to lean out on the windward side. Haul in too hard in a gust and the windward wheels lift; ease in time or with the crew out it lands with a thump; misjudge it and the yacht goes over and everyone tumbles into the sand. Getting it fast without tipping is the game.",
+  "toward": "The cart moving under its own power for the first time, and the friends riding it: the land yacht step of the road with the crew's real mass doing a job.",
+  "idea": "Every frame: sail lift and drag from sail_slices (3 coupled 2D flow slices on the canvas arc, real time on the CPU) at the apparent wind (gusty true wind minus cart velocity), at the sheet angle the player sets; drive force along the heading against the sandfield's Bekker rolling resistance (hard wet sand by the water fast, dry sand by the hut slow, ruts left behind); heeling moment of the sail force at its centre of effort against the weight of cart + each friend at where they sit. The cart is a PrintSim rigid body on four wheel contacts, so tipping, wheel lift and a capsize happen by themselves. Watching: a chase camera riding behind as the player sails, the canvas filling, a wheel lifting, friends scrambling to the high side.",
+  "form": "a playable mini game ('Sail the beach'), and a film recorded from a played run with a chase camera, not a device going by itself"},
+ {"title": "A traction kite pulls the cart instead of a mast",
+  "goal": "The player flies a canvas kite on two lines in front of the cart and steers it through the wind window: low and to the side it barely pulls, swooped through the middle in figure-eights it yanks the cart forward and can drag Lumi off its feet. Flying it well is a skill to learn.",
+  "toward": "Another way the island's wind moves the cart; the same solved arc gives the kite's force; the tether and cart are real bodies.",
+  "idea": "Kite = the canvas arc with sail_slices force at its apparent wind (wind minus kite velocity, which is large when it swoops: the power zone comes out by itself), two PrintSim rope lines to Lumi's hands, the steering by line length difference; the pull reaches the cart through Lumi.",
+  "form": "playable + film of a power dive pulling Lumi along"},
+ {"title": "Drawing on the wet sand with the yacht before the tide comes",
+  "goal": "The player sails loops and letters into the hard wet sand by the waterline; the ruts stay, crisp, and the rising tide washes them out wave by wave. A message to the friends, a race line, a spiral: whatever you can steer before the sea takes it.",
+  "toward": "Driving the cart well on sand, and the sand field and tide working together on the beach.",
+  "idea": "Wheel contacts press ruts into the sandfield (already keeps ruts and slumps to repose); wet sand near the water holds sharper walls (higher cohesion), swash from the waves smooths the field where it reaches; tide level rises over minutes.",
+  "form": "plugin coupling sandfield to the yacht and waves; a high film of a drawing vanishing"}
+]}

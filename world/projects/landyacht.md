@@ -1,6 +1,6 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: (s164, todo #763) READ job 20261128-053315-216-run (3D AR 4 chord 48) and settle sail_slices vs the 3D box; the cart is ON THE BEACH now (plugins/landyacht.jl, static): translucent canvas so it glows backlit, then yarns (physics/telltale.jl, 0.1 g, stepping with the slices' flow) tied at 3 heights, the sail's solved force pushing the cart over the sand (wheelsand.jl), sheet keys in Jump in; traced film from leeward for the post.
+Next: (s165, todo #767, PASSED 'Sail it yourself') THE LIVE SAIL MUST BE 3D: the 2D slices stall backwards, the 3D GPU box stalls right (alpha 15 L/D 3.3, 50 L/D 0.8, see 3D ANSWER below). Build a 3D WaterLily box hugging the sail on the GPU, stepping beside the game, re-trimmed to the apparent wind (sail_force! for the box), measure ms/step; feed physics/yachtrun.jl's cart (firm sand), then the 2D beach cart with heel vs crew weight, sheet/tiller keys in a 'Sail the beach' mini game, a chase-camera traced film of a played run for the post.
 
 ## The critic's risks (s162)
 - A frozen lookup for the sail, or a dynamo that is only a drag number with a charge bar: then it is a rig.
@@ -152,3 +152,44 @@ s164 LAST: the sail got a canvas texture (plugins/landyacht.jl ly_canvas: 5 cros
   media/s164/yacht-raster-3.png (reads as sailcloth, the belly shows). TRACED (sandbox, 25 s):
   media/s164/yacht-traced.png: the shaded side comes out OLIVE (sky + grass bounce on a Diffuse sheet facing away from
   the sun). Try a thin translucent cloth (diffuse transmission) so a backlit sail glows with its seams dark: goal 7.
+
+## s165: the yacht rolls (offline)
+- Free time: moved the cart off the hut (it stood 1.5 m from the hut's middle) to open sand at dunegrass[1] + (-2.6,-1.5),
+  tilted to the slope (ly_attitude); canvas is DiffuseTransmission (ly_canvas_through): backlit, the seams and the
+  patch go dark, olive gone. Re-rendered the posted still 'my-land-yacht' (job 20261128-061911-575-clip).
+- physics/yachtrun.jl `run_yacht`: 1D along the heading. Beam wind 6 m/s, sheet 20 deg = alpha 70 deg (stalled: a
+  player must ease out first). Firm sand: it moves off anyway (1 m/s at 1.1 s); dry sand 194 N holds it near still.
+  CL from stalled slices swings 1.9-3.7 over 0.5-chord windows (shedding period ~5 chords): a stalled sail pulses.
+  Results: media/s165/yachtrun.txt.
+- pressure_force is the fluid's side: lift AND drag flip (my first CD came out negative).
+- FOUND (s165, media/s165/yachtrun.txt, beam wind 6 m/s, firm sand, 8 s): sheet too tight (alpha 70->35 as it
+  speeds up) gives CL 2.3-3.7 and 4.2 m/s; eased to alpha 15 gives CL 1.1 and 1.0 m/s. BACKWARDS from a real sail:
+  2D slices keep the stalled vortex street coherent and overstate stalled force ~3x (my 3D AR-2 plate: CL 0.8-0.9 at
+  40-60 deg, s162). The game would reward over-sheeting. FIX BEFORE PLAY: spanwise-periodic 3D slabs (span ~1 chord,
+  chord 16-24, on the GPU) instead of 2D slices, so the wake breaks up; check stalled CL against the s162 box.
+- Speed: 8 s of beach run took ~19 s (2.4x slower than real time, 3 CPU slices, 0.1 s steps).
+- WHY (s165, arc 10% camber, alpha 50, chord 16, 2D unless said): domain 4 chords tall (the live slices' size)
+  CL 2.48 CD 3.10; 8 chords CL 2.03 CD 2.54; 16 chords CL 1.92 CD 2.37 -> BLOCKAGE adds ~30%: slices need >= 8 chords
+  of height. A spanwise-periodic slab (arc_slab_sim, span 1 chord, seeded with w noise, wrms 0.08 alive) gave
+  CL 2.53 = the 2D number: the 3D wake is NOT the cause. Left: Re 2000. Laminar, the attached flow at alpha 15 gives
+  only CL 1.1 while stalled unconfined still gives 1.9, so trimming right is not rewarded. Next try: the same arc at
+  Re 2e4-1e5 (WaterLily implicit LES, finer grid at the sail), alpha 15 vs 50, and the s162 3D box's own blockage.
+- Re test (s165, chord 32, 8 chords tall, media/s165/sail-re.txt): alpha 15: CL 1.47/1.67/1.70 at Re 2e3/2e4/1e5;
+  alpha 50: CL 2.55/2.58/2.39 (CD ~3). Re barely matters (the grid sets the effective Re), and chord 16 gave 2.03 at 50:
+  grid-dependent. Stalled 2D normal force ~4, ~2.7x Fage & Johansen's plate (~1.5): 2D deep stall is the known
+  failure (coherent shedding). The 1-chord slab did not break it up in 35 chords at 16 cells/chord. NEXT: a real 3D
+  check at 50 deg on the GPU (the s162 AR-2 box said CL 0.8-0.9) with a span of 2-4 chords and long averaging; if 3D
+  is needed for stall, the live sail = 3D slabs on the GPU, or the slices only below stall + a 3D box for the
+  stalled branch, chosen by the flow (separation at the leech), never by a table.
+- 3D check queued s165: job 20261128-062851-640-run (AR 4, chord 24, alpha 15 vs 50).
+- 3D ANSWER (s165, GPU on Mantle, AR 4 chord 24 box (192,96,160), 20 chords, 112 s for both, media/s165/sail-3d-gpu.txt):
+  alpha 15: CL 0.46 CD 0.14 (L/D 3.3); alpha 50: CL 0.54 CD 0.68 (L/D 0.8). In 3D the stall is DRAG: once moving with
+  the apparent wind at 60 off the bow, drive per q*A = CL sin b - CD cos b = 0.33 trimmed vs 0.13 stalled: right trim
+  wins, as on a real yacht. The 2D slices gave stalled/trimmed lift 1.5-2.4x and CD 3 at stall: they cannot carry the
+  game. DECISION: the live sail is the 3D box on the GPU (2.9M cells did ~20 chords/min; a box hugging the sail at
+  chord 16-24 ~ 1M cells should be near real time for a 1.2 m sail in 6 m/s = 5 chords/s -> measure ms/step first).
+  Caveat: 3D CL at 15 deg (0.46) is low for a 10% cambered AR-4 sail (~0.9 expected): the camber gain is lost at 24
+  cells/chord, 2 cells thick (s163 saw the same). Check chord 32 at 10/15/50 once the box hugs the sail.
+- SPEED (s165): 3D arc box chord 16, AR 4, (128,64,96) = 786k cells on the GPU (Mantle): 9.9 ms/step, 0.035 chords
+  a step = 3.5 chords/s = 0.7x real time for a 1.2 m sail in 6 m/s (5 chords/s). A box hugging the sail (~400k cells)
+  should reach ~1.4x. It shares the GPU with the frame: step it on its own task, the cart reads its latest force.
