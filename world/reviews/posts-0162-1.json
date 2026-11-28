@@ -1,0 +1,34 @@
+{"posts": [
+  {"post": "putting-past-a-magnet-stone",
+   "verdict": "redo",
+   "problems": [
+     "Nothing starts the balls: the three sit stacked in the far left corner (storyboard frame 1) and leave one at a time with no push, release or visible tilt of the tray, so 'roll down my sand tray' shows no cause.",
+     "The 'sunken magnet stone' reads as a black hole in the sand (all frames, at-50); nothing about it looks like stone or a magnet, so a viewer sees balls near a hole, not near a magnet.",
+     "'One swings round it' is not readable: in frames 7-8 the second ball just appears above and right of the dark spot and then stops; at storyboard scale no curved path can be seen.",
+     "'One stops on it': in frames 13-16 and at-75 the third ball sits at the edge of the dark spot, half sunk into it like a ball dropping into a hole, not resting on a stone.",
+     "Plain shapes on bare ground: a flat sand rectangle with brown rails, a loose stick lying on the grass (at-50, at-75), and half the tray in one big flat shadow that hides the left part where the balls start; the balls are tiny in the frame."
+   ],
+   "critique": "The balls move without any cause, the magnet looks like a hole, and the three paths the caption promises can't be told apart at this size."},
+  {"post": "i-swallow-what-i-hit",
+   "verdict": "redo",
+   "problems": [
+     "The swallow is never shown: in frame 2 a green bubble wraps the yellow bird, and by frame 3 the crab has simply vanished from the left with no contact or engulfing in between.",
+     "'Carried it about': inside the bubble (frames 3-12, at-25, at-75) only a blurred yellow-green smear is visible; Pinchy cannot be picked out, so a viewer cannot tell anything is being carried.",
+     "Camera framing: the bubble fills or is cut by the left edge of the frame (frames 9-13, at-75), hiding what matters.",
+     "Clipping: in frame 13 the crab sits half through the bubble's surface on top of it, neither inside nor out.",
+     "'Squashed up and hiccuped it out over my shoulder' isn't shown: no squash is visible, and between frame 13 and frame 14 the bubble disappears at once while the crab hangs in the air behind the bird, then lands in front of it (frames 15-16).",
+     "Orange dots float in the air beside the bubble (frames 7-12) with no visible source."
+   ],
+   "critique": "The swallow, the carrying and the hiccup all happen off-screen or between frames; what's left is a blurry green ball with a crab popping in and out of it."},
+  {"post": "a-top-over-a-ring-of-lodestone",
+   "verdict": "redo",
+   "problems": [
+     "The plate moves with no hand: it lowers by itself (frames 1-6).",
+     "Clipping: the glass plate sinks into the black ring and vanishes inside it (frames 5-7), instead of being taken away.",
+     "Already at frame 1 and at-25 the top hangs a clear gap above the glass, so it never reads as having been spun on the plate; it floats from the start.",
+     "The top is tiny in the middle of the frame and nothing shows it spinning: it looks identical in every frame of the storyboard and at-50 and at-75, so it reads as frozen in the air, not spinning.",
+     "The 'dark lodestone ring' is a flat matte black torus on a plain grey polygon disc (at-50); it doesn't look like stone, and the setup is bare shapes on a lawn.",
+     "A large grey animal leg walks into the right edge and stays cut off by the frame (frames 8-14)."
+   ],
+   "critique": "The plate drops through the ring with no one moving it, and the top floats from the very first frame without showing any spin, so the levitation reads as a static object hanging in the air."}
+]}

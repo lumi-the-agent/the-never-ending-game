@@ -121,6 +121,138 @@ function resolve_offset!(indices::Vector{Int}, type::LLVM.LLVMType, offset::Int,
     end
 end
 
+"""
+    strided_offset(v) -> (index, stride, constant) or nothing
+
+`v` written as `stride * index + constant` with a constant stride, from `mul`, `shl` and constant `add` /
+`or disjoint` steps; `nothing` if it is not of that form.
+"""
+function strided_offset(v::LLVM.Value)
+    v isa LLVM.Instruction || return nothing
+    op = LLVM.opcode(v)
+    ops = v.operands
+    length(ops) == 2 || return nothing
+    a, b = ops[1], ops[2]
+    if op == LLVM.API.LLVMMul
+        b isa LLVM.ConstantInt && return (a, convert(Int, b), 0)
+        a isa LLVM.ConstantInt && return (b, convert(Int, a), 0)
+    elseif op == LLVM.API.LLVMShl
+        b isa LLVM.ConstantInt && return (a, 1 << convert(Int, b), 0)
+    elseif op == LLVM.API.LLVMAdd || (op == LLVM.API.LLVMOr && LLVM.API.LLVMGetIsDisjoint(v) != 0)
+        a isa LLVM.ConstantInt && ((a, b) = (b, a))
+        b isa LLVM.ConstantInt || return nothing
+        s = strided_offset(a)
+        s === nothing && return nothing
+        return (s[1], s[2], s[3] + convert(Int, b))
+    end
+    return nothing
+end
+
+"""
+    stride_arrays(ty, stride, dl) -> [(path, base_offset, array_type)]
+
+The arrays inside `ty` (through structs and single-element wrappers) whose elements are `stride` bytes apart.
+"""
+function stride_arrays(ty::LLVM.LLVMType, stride::Int, dl::LLVM.DataLayout)
+    found = Tuple{Vector{Int},Int,LLVM.ArrayType}[]
+    walk(t, base, path) =
+        if t isa LLVM.StructType
+            for (i, mt) in enumerate(t.elements)
+                walk(mt, base + Int(LLVM.API.LLVMOffsetOfElement(dl, t, i - 1)), [path; i - 1])
+            end
+        elseif t isa LLVM.ArrayType
+            es = Int(LLVM.storage_size(dl, t.element_type))
+            if t.length > 1 && es == stride
+                push!(found, (path, base, t))
+            elseif t.length == 1
+                walk(t.element_type, base, [path; 0])
+            end
+        end
+    walk(ty, 0, Int[])
+    return found
+end
+
+"""
+    lift_strided_byte_geps!(mod)
+
+Pattern 1 with a RUNTIME offset: `gep i8, ptr %alloca, (stride * %i + C)` where the alloca holds exactly one
+array whose elements are `stride` bytes apart (a tuple of boxes captured in a closure, read in a loop LLVM kept
+rolled). Rewritten as `gep %T, ptr %alloca, 0, <path to the array>, %i + fld(C - B, stride), <leaf path of
+mod(C - B, stride)>`, B the array's offset. Left alone (as before) when the array is ambiguous or a user is
+not a plain load/store of the leaf's size. Without this the untyped byte GEP reached SPIR-V and every element
+read as element 0 (WaterLily's measure! saw only the first of a fence's slats, s162).
+"""
+const LIFT_STRIDED_GEPS = Ref(true)   # off only to compare a test run without this pass
+
+function lift_strided_byte_geps!(mod::LLVM.Module)
+    LIFT_STRIDED_GEPS[] || return mod
+    dl = mod.datalayout
+    for f in mod.functions
+        isempty(f.blocks) && continue
+        work = Tuple{LLVM.Instruction,LLVM.Instruction,LLVM.LLVMType,Vector{Int},Any,Vector{Int}}[]
+        for inst in first(f.blocks).instructions
+            inst isa LLVM.AllocaInst || continue
+            at = LLVM.LLVMType(LLVM.API.LLVMGetAllocatedType(inst))
+            (at isa LLVM.StructType || at isa LLVM.ArrayType) || continue
+            for use in inst.uses
+                g = use.user
+                g isa LLVM.GetElementPtrInst || continue
+                LLVM.LLVMType(LLVM.API.LLVMGetGEPSourceElementType(g)) == LLVM.Int8Type() || continue
+                ops = g.operands
+                (length(ops) == 2 && ops[1] == inst && !(ops[2] isa LLVM.ConstantInt)) || continue
+                so = strided_offset(ops[2])
+                so === nothing && continue
+                idx, stride, C = so
+                stride > 0 || continue
+                cands = stride_arrays(at, stride, dl)
+                length(cands) == 1 || continue
+                path, B, arr = only(cands)
+                q, r = fld(C - B, stride), Base.mod(C - B, stride)   # `mod` here is the module
+                inner = byte_offset_to_gep_indices(arr.element_type, r, dl, false)
+                inner === nothing && continue
+                leaf = arr.element_type
+                for k in inner
+                    leaf = leaf isa LLVM.StructType ? LLVM.LLVMType(LLVM.API.LLVMStructGetTypeAtIndex(leaf, k)) :
+                           leaf.element_type
+                end
+                # numbers only: a pointer slot read at a runtime index has its own pointee recovery
+                # (test_dynamic_tuple_index.jl), which a typed chain here would contradict
+                (leaf isa LLVM.FloatingPointType || leaf isa LLVM.IntegerType || leaf isa LLVM.VectorType) || continue
+                lsize = Int(LLVM.storage_size(dl, leaf))
+                ok = true
+                for u in g.uses
+                    usr = u.user
+                    if usr isa LLVM.LoadInst
+                        ok &= Int(LLVM.storage_size(dl, usr.value_type)) == lsize
+                    elseif usr isa LLVM.StoreInst
+                        ok &= usr.operands[2] == g && Int(LLVM.storage_size(dl, usr.operands[1].value_type)) == lsize
+                    else
+                        ok = false
+                    end
+                end
+                ok || continue
+                push!(work, (inst, g, at, path, (idx, q), inner))
+            end
+        end
+        for (alloca, g, at, path, (idx, q), inner) in work
+            LLVM.@dispose builder=LLVM.IRBuilder() begin
+                LLVM.position!(builder, LLVM.before(g))
+                i = q == 0 ? idx : LLVM.add!(builder, idx, LLVM.ConstantInt(idx.value_type, q), "strided_idx")
+                i32 = LLVM.Int32Type()
+                vals = LLVM.Value[LLVM.ConstantInt(i32, 0)]
+                append!(vals, [LLVM.ConstantInt(i32, p) for p in path])
+                push!(vals, i)
+                append!(vals, [LLVM.ConstantInt(i32, k) for k in inner])
+                ng = LLVM.gep!(builder, at, alloca, vals, "typed_gep_strided")
+                LLVM.API.LLVMSetIsInBounds(ng, LLVM.API.LLVMIsInBounds(g))
+                LLVM.replace_uses!(g, ng)
+            end
+            LLVM.erase!(g)
+        end
+    end
+    return mod
+end
+
 """Position IRBuilder right after `inst`, handling the case where inst is in
 the entry block (allocas). This ensures GEPs placed here dominate all uses."""
 function position_after!(builder::LLVM.IRBuilder, inst::LLVM.Instruction)
@@ -205,6 +337,7 @@ Handles four sub-patterns:
 #
 function lift_byte_geps_on_allocas!(mod::LLVM.Module)
     dl = mod.datalayout
+    lift_strided_byte_geps!(mod)
 
     for f in mod.functions
         isempty(f.blocks) && continue

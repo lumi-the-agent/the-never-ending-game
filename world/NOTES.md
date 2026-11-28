@@ -1387,6 +1387,44 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   CartesianIndex(I...)` (dev/Lava/src/device/quirks.jl) ignored the ranges; now map(r[i]). Any GPU code that
   indexes a CartesianIndices not starting at 1 was off by the start before this. Still open: a loop over a
   tuple captured in a closure (WaterLily sdf) reads only element 1 on the GPU (#761).
+  ROOT CAUSE FOUND s162 (#761): not the closure itself (a plain kernel over the same sdf, and WaterLily.measure
+  in a small kernel, both match the CPU; measure_sdf!'s sigma is right). In measure!'s big fill! kernel LLVM keeps
+  the loop rolled and reads box k with BYTE GEPs at a RUNTIME offset into the closure's alloca:
+  `%o = mul i64 %k, 24; gep i8, ptr %arg, (add %o, C)`. Lava's lift_byte_geps_on_allocas! (passes/lift_geps.jl:241)
+  lifts only CONSTANT byte offsets (`offset_val isa LLVM.ConstantInt || continue`), so the i8 GEP reaches SPIR-V
+  untyped and reads box 0. Fix: lift `S*i + C` to [path to the array of stride S, i + fld(C-B,S), inner path of
+  mod(C-B,S)]. Repro: GroundWind.slat_boxes 10 slats, compare mu0 CPU vs Mantle (only slat 1 on the GPU).
+  FIXED s162: Lava passes/lift_geps.jl lift_strided_byte_geps! (called first in lift_byte_geps_on_allocas!):
+  offsets `mul/shl` + constant `add`/`or disjoint` -> typed GEP into the ONE array of that stride (left alone if
+  ambiguous or a user is not a plain load/store of the leaf size). Test: dev/Lava/test/test_strided_byte_gep.jl
+  (IR needs Lava's datalayout: LLVM's default aligns i64 to 4 and moves fields). Result: mu0 CPU == Mantle
+  (0 of 1098 bad), 30 steps agree to float32 (mean |du| 6e-6), 5 ms/step GPU vs 8 CPU, no NaN.
+  STALE KERNELS IN A SESSION: a Revise edit to a Lava PASS does not invalidate kernels already compiled for a
+  type in that session (CodeInstance cache); test a pass fix with a FRESH closure type or a fresh process.
+  Across sessions the on-disk cache key has Lava's module_build_id, so a new precompile recompiles everything.
+  WORSE, the ON-DISK cache within a session: its key is the CANONICAL IR (names stripped) + Lava's build id, and
+  the build id does not change under Revise. So a new closure type with the same structure as one compiled BEFORE
+  the fix HITS the old broken kernel (s162: sdf4 looked unfixed, 25 hits 0 misses). Test a Lava pass fix with
+  ENV["LAVA_DUMP_KERNELS"] = "1" (disables persisted lookups) and check Lava.compile_stats() shows misses.
+  The pass skips POINTER leaves (test_dynamic_tuple_index.jl broke: a tuple of device pointers has its own
+  pointee recovery). Regression check s162: tier-1 SPIR-V + IR-pass tests with the pass on vs off
+  (Lava.LIFT_STRIDED_GEPS[] = false): nothing fails only with it on; 23 fail both ways in the game env
+  (KernelInterface/KernelAbstractions not in it, 'cannot serialize Method objects' from the session cache).
+  Running Lava's own test env needs Pkg.instantiate there (not done). Trick to `using LLVM` in the game env:
+  a temp Project.toml with LLVM's uuid pushed onto LOAD_PATH resolves to the LLVM Lava already loaded.
 - Sand by wind (projects/wind.md): grains must keep hopping after the wind drops (saturation length ~1 m) or every
   drift lands where the wind first slows; and the fence's porosity near the GROUND decides front vs lee drifts
   (a 1-cell gap is smeared shut by the immersed boundary: make gaps >= 2 cells).
+
+## Sail force from the solved flow (s162, physics/sailflow.jl, project landyacht)
+- WaterLily.pressure_force(sim) is the force on the FLUID: the force on the body is minus it (a still plate gave
+  CD < 0 before the sign flip).
+- An AutoBody sdf must not force Float32 (SVector{3,Float32}(...)): measure! differentiates it with ForwardDiff
+  Duals and the GPU compile fails with 'method lookup failure' in convert_ntuple. Build SVector(...) untyped.
+- Flat plate sweep (AR 2, 16-cell chord): stall emerges, lift slope half of theory; resolution check in the project.
+- A CURVED thin body needs resolution: a 10% arc on a 16-cell chord acted as if bent the wrong way (zero lift at
+  +5 deg); on a 32-cell chord it moved to about -5 deg. Never judge a shape's effect on a coarse grid: run it at
+  two resolutions first.
+- THE :run RUNNER IS A SEPARATE PROCESS that submit_job(:restart) does NOT restart (s162: up 12 h, older than
+  s161's script_module include fix and both Lava fixes). A :run script must use Base.include(@__MODULE__, ...),
+  and must not trust Mantle/WaterLily there until the runner has restarted: run such jobs with gpu = false.

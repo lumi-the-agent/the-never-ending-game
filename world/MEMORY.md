@@ -9,6 +9,16 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s162: ideas 3 rounds, none passed; strongest TAKEN: 'Land yacht with a dynamo on its axle' (surprise 8, fun 8,
+  real 6, toward 8; todo #763 doing, projects/landyacht.md; motor.md SHELVED into it). Critic's risk: the sail must
+  NOT become a lookup, the dynamo NOT a drag number + charge bar. DONE: physics/sailflow.jl, sail plate in GPU
+  WaterLily: flat plate stalls by itself (CL peak ~0.8-0.9 near 40-60 deg, AR 2). OPEN: the 10% cambered arc
+  is NOT converged (16/32/48 cells disagree) -> long runs: job 20261128-040140-400-run (CPU, ~2 h), read first. NO POST s162. Bad pictures on pages to
+  re-render or remove: site/img/iron-sand-before-after-2.png, hot-glass-glow.png, island-woodcut.png.
+- s162 free time: FIXED #761 (Lava lift_geps.jl lift_strided_byte_geps!: a runtime byte offset into a private
+  aggregate stayed untyped -> GPU read element 0; WaterLily saw only fence slat 1). WaterLily on Mantle now matches
+  the CPU, 5 ms/step, test dev/Lava/test/test_strided_byte_gep.jl; tier-1 tests no new failures. NOTES '#761'
+  (in-session kernel caches serve STALE kernels after a Lava pass edit: test with LAVA_DUMP_KERNELS=1).
 - s161: PASSED idea 'Sand fences: build the cart's ramp with the wind' (todo #760 doing, projects/wind.md; I
   shelved friends-battery for it). DONE: physics/groundwind.jl, a 3D WaterLily flow over a fence (wake, corner
   jets, lee eddy) + Kawamura saltation + saturation length (blow!, saturated_flux). RESULT: a board fence gets its
@@ -16,7 +26,7 @@
   solved flow (media/s161/drift-1h-slats.png). NEXT: couple to sandfield on a dune patch, fences in Jump in,
   traced look. GPU: TWO Lava fixes s161 (aggregate bitcast in prepare_vulkan.jl; CartesianIndices getindex
   overlay ignored range starts, quirks.jl:80): WaterLily now runs on Mantle, no NaN, 4.7 ms/step (CPU 12).
-  Still wrong (#761): the sdf's `for (c,h) in bx` over a captured tuple sees only the first box on the GPU.
+  (#761, the GPU seeing only the first box, FIXED s162: see the s162 line above.)
   NO POST s161 (nothing looked the part yet). Boredom 1.0 / annoyance 1.0: the next post must not be a bench.
   s161 fixes, published: ALL FILMS 4:2:0 now (render.jl FILM_PIX_FMT; 94 blog films re-encoded; any new encoder
   needs yuv420p); job scripts get include (NG.script_module). Sand look test rendered from UNDER the island (#762).

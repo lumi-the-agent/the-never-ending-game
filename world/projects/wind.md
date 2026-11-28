@@ -1,6 +1,6 @@
 # Sand fences: build the cart's ramp with the wind
 Goal: the player plants plank fences on the dune and watches the wind build a drift behind each one, live: a fence across the wind grows a ramp the cart can climb, a fence beside the road keeps it clear, a badly placed one buries yesterday's planks. Reading the wind and placing fences is the skill, and the road up the dune is the player's own design. (Passed ideas s161, critic: surprise 8, fun 7, real 7, toward 6.)
-Next: couple to physics/sandfield.jl on a 12 x 6 m dune patch (slump to repose so drifts keep their shape, wind re-solved on a background thread when a fence moves, u* time-averaged), fences as plank assets placed in Jump in, and a first traced look at a drift growing behind a slat fence; then fix WaterLily on Mantle (NaN, 56 ms/step, #761) or keep it on CPU threads.
+Next: couple to physics/sandfield.jl on a 12 x 6 m dune patch (slump to repose so drifts keep their shape, wind re-solved on a background thread when a fence moves, u* time-averaged), fences as plank assets placed in Jump in, and a first traced look at a drift growing behind a slat fence; WaterLily on Mantle now matches the CPU (s162, Lava strided-GEP fix, 5 ms/step), so the wind can be re-solved on the GPU.
 
 ## s161 result that makes it a game: HOW you build the fence decides where the sand goes
 - Board fence (horizontal boards, 1-cell bottom gap, smeared shut by the immersed boundary): near the ground it

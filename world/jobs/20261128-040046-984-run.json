@@ -1,0 +1,32 @@
+{
+  "cause": "UndefVarError: `include` not defined in `Main.RunScript`\nSuggestion: check for spelling errors or missing imports.",
+  "created": "2026-11-28T04:00:46.986",
+  "error": "LoadError: UndefVarError: `include` not defined in `Main.RunScript`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n [1] top-level scope\n   @ /sim/Programmieren/SimGame/world/tools/sail_converge.jl:4\n [2] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [3] run_job(::Val{:run}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:215\n [4] run_worker(; root::String, kinds::Vector{String}, skip::Vector{String})\n   @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:366\n [5] top-level scope\n   @ none:1\n [6] eval(m::Module, e::Any)\n   @ Core ./boot.jl:489\n [7] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:283\n [8] _start()\n   @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/tools/sail_converge.jl:4",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261128-040046-984-run.error.txt",
+  "finished": "2026-11-28T04:00:48.574",
+  "id": "20261128-040046-984-run",
+  "kind": "run",
+  "params": {
+    "call": "sail_converge",
+    "kwargs": {
+      "alphas": [
+        -10,
+        -5,
+        0,
+        5,
+        10
+      ],
+      "chords": [
+        32,
+        48
+      ],
+      "t_avg": 10,
+      "t_end": 24
+    },
+    "max_minutes": 240,
+    "script": "tools/sail_converge.jl"
+  },
+  "seconds": 0.5,
+  "started": "2026-11-28T04:00:47.550",
+  "status": "failed"
+}
