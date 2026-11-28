@@ -32,6 +32,7 @@ Base.@kwdef mutable struct Load
     mu::Float64
     x::NTuple{3,Float64}
     v::NTuple{3,Float64} = (0.0, 0.0, 0.0)
+    grade::Float64 = 0.0          # s176: the ground's rise per metre along +x (the rope's run away from the drum)
 end
 
 const V = SVector{3,Float64}
@@ -43,6 +44,15 @@ function Tether(anchor, to; n = 12, slack = 1.0, kw...)
     xs = [t3(v3(anchor) .+ (k / n) .* (v3(to) .- v3(anchor))) for k in 0:n]
     Tether(; x = xs, v = [(0.0, 0.0, 0.0) for _ in xs], L = slack * norm(v3(to) .- v3(anchor)), anchor = t3(anchor), kw...)
 end
+
+"""
+    wound_radius(r0, d, W, Lw) -> r
+
+The rope's working radius on a drum of core radius `r0` and width `W` once `Lw` metres of rope of diameter `d` are
+wound on (s176): the coil's cross-section grows by about d^2 a metre (square packing), r^2 = r0^2 + d^2 Lw / (pi W).
+A drum that fills turns slower in pull (torque / r) and faster in speed (omega r) as it fills.
+"""
+wound_radius(r0, d, W, Lw) = sqrt(r0^2 + d^2 * max(Lw, 0.0) / (pi * W))
 
 "Tension in segment k (N): pulls only."
 function tension(r::Tether, k)
@@ -114,7 +124,7 @@ function step!(r::Tether, load::Load, dt; reel = 0.0, h = 1e-4)
             r.v[i] = t3(v); r.x[i] = t3(x)
         end
         # the load at the rope's end
-        Fl = F[n+1]
+        Fl = F[n+1] + V(-load.m * G * load.grade / sqrt(1 + load.grade^2), 0.0, 0.0)   # downhill pull (s176)
         Fl += ground_friction(Fl, load.v, load.m, load.mu, h)
         Fl = V(Fl[1], Fl[2], 0.0)
         vl = slide(load.v, Fl, load.m, h)

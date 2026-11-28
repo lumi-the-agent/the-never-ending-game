@@ -1594,3 +1594,13 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - (s175 post critic) A SPARK DRAWN AS A SPHERE reads as a plastic button, whatever its colour; an emissive bowl reads as a
   puck, not clay lit by a flame. Draw light sources as what emits: a thin arc at the brush's trailing edge, a small flame
   above a clay bowl whose clay is lit (not emissive). And parts that touch must touch on screen (brush ON its segment).
+- (s176) PLUGIN RELOAD KEEPS OLD-TYPE OBJECTS: a plugin that `include`s physics files (motor.jl, rope.jl) gets NEW
+  modules and types on every reload, but objects kept in a Main dict (Main.IRONDRUM[:st], [:rope]) are of the OLD types:
+  the next call is a MethodError and the engine SWITCHES THE SYSTEM OFF (game.jl guarded) while live_status still says
+  the plugin is "ok". Check `isa Module.Type` before reusing kept state, and look for :plugin_error in
+  sandbox/log/events-*.jsonl when a system seems to do nothing. A content change (not `touch`) re-registers it.
+- (s176) bt_julia_eval keeps the cwd of an earlier `cd(...)`: joinpath(pwd(), "world", ...) then lands in world/world/.
+  Use absolute paths for screenshots.
+- (s176) COMMUTATION, make-before-break: a brush wider than the gap shorts the coil at neutral; with copper contacts
+  (0.05 Ohm) L/R >> the bridge time, so the coil reverses only at the last instant and still sparks (copper brushes
+  always sparked; carbon brushes, 1885, force the current over by their resistance). Motor.commutate! models it.

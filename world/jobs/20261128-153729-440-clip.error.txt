@@ -1,0 +1,36 @@
+KeyError: key :c not found
+Stacktrace:
+  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)
+    @ Base ./dict.jl:477
+  [2] id_winch_reset!()
+    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:386
+  [3] (::Main.ClipScript.var"#6#7")(g::Game)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/winch.jl:28
+  [4] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Int64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var"#6#7", shot::Main.ClipScript.var"#4#5"{Float64, Base.RefValue{Bool}}, fade::Float64, denoise::Bool)
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:428
+  [5] film!
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421 [inlined]
+  [6] #394
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]
+  [7] with_scratch_game(f::NeverendingGame.var"#394#395"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Int64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var"#6#7", Main.ClipScript.var"#4#5"{Float64, Base.RefValue{Bool}}, Float64, Bool, String}, root::String, size::Tuple{Int64, Int64})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:351
+  [8] #game_clip#392
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:416 [inlined]
+  [9] game_clip
+    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]
+ [10] #winch_haul#1
+    @ /sim/Programmieren/SimGame/world/movies/winch.jl:30 [inlined]
+ [11] winch_haul(path::String)
+    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/winch.jl:9
+ [12] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210
+ [13] run_worker(; root::String, kinds::Nothing, skip::Vector{String})
+    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378
+ [14] top-level scope
+    @ none:1
+ [15] eval(m::Module, e::Any)
+    @ Core ./boot.jl:489
+ [16] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:283
+ [17] _start()
+    @ Base ./client.jl:550

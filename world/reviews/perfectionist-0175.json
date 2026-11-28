@@ -1,0 +1,242 @@
+{
+ "verdict": "needs_work",
+ "summary": "The island at night is a warm, busy diorama, and next to session 20 the climb is large: lamplit paths, dense flora, Lumi's feathered bird body. But next to s172 nothing changed except the hour, and the three mini games play exactly as before: generic WASD collect-a-thons that use none of the magnetism, fire or motors Lumi has built. The only new things are a lamp and a blue spark on the iron drum motor. It is the subject of four posts in a row, is still black boxes on a sand-textured cylinder, and has not pulled anything yet.",
+ "scores": {
+  "lighting": {
+   "score": 4,
+   "why": "Small step: the drum's oil lamp is a real light and lights the oak block, and the spark is now blue-violet against the warm lamp (the-brushes-break.png). But in the drum-sparks film the lamp is a flat orange disc with a white dot, the brightest thing in every frame. The raster night is lit by the cottage and lanterns but stays flat green-black. The moon still has concentric halo rings (progress s175 eye-level). Traced fireflies are flat cream discs that light nothing (reviews/p175/traced.png)."
+  },
+  "materials": {
+   "score": 4,
+   "why": "Copper wire shows a real specular streak in the close-up, and that is the best metal on the island. Everything around it is plain: the iron pole shoes are matte black boxes, the 'oak' block is a brown cylinder, the clay pots are matte, and the brush blocks are untextured cuboids. There is no subsurface, sheen, coat or transmission anywhere new. The pond is still opaque."
+  },
+  "world": {
+   "score": 4,
+   "why": "Next to s172 (overview) the island is identical: one meadow island with a cottage, forest, flower field and beach. The pond reads blue by day and black at night. There is no built workshop around the machines. Compared with s020 it is a different game (flora density, night, generated trees), but nothing new has been added since about s160."
+  },
+  "props": {
+   "score": 4,
+   "why": "No new generated assets this cycle. The drum motor, its stand, lamp and pots are all primitives. The land yacht's sail is still a white board, and the berry basket still floats."
+  },
+  "creatures": {
+   "score": 5,
+   "why": "Same cast. Faces read well up close (creatures.png). Overlap is still there: a crab claw is pressed into the blue creature's head, two pigs are inside each other, and the crab's party hat cuts into its shell. One creature-sheet cell is framed from under the ground."
+  },
+  "animation": {
+   "score": 5,
+   "why": "live_motion: 10 of 10 creatures moving well over 3 s, so Pinchy's vibration is gone. But nobody does anything with weight in the films. Lumi never touches the drum, and the wire-spins film is three batteries on a slate slab with wires turning in place. The drum's own turn hardly reads at 24 fps, as the author admits."
+  },
+  "fun": {
+   "score": 3,
+   "why": "Played all three for a minute each through interact! with plain WASD. Firefly catch: 1/8 in 60 s. The eight target fireflies are lime discs among hundreds of identical ambient fireflies, so the HUD's 'nearest 3 m ahead' does all the work. Hide and seek: 0/4 in 60 s; the 'a giggle 9 m to your right' hint is the best feedback on the island. Berry race: the critters led 2-0 at 42 s. Feedback per catch is a speech line and a counter. All three are the same 'walk to the nearest thing' game with no physics and no reason to play twice. The motor, magnets, fire and yacht are not playable here, and Jump in is missing from the menu that Things to try points to."
+  },
+  "wow": {
+   "score": 2,
+   "why": "Four of the last four posts are the same drum on the same block: 'Sparks at dusk', 'A lamp to work by', 'Where the brushes let go'. The host weights the last two x0.1 as repeats. A stranger sees a dark brown blob with a candle. There is still no release since 24 Nov."
+  },
+  "camera": {
+   "score": 3,
+   "why": "drum-sparks.mp4 opens from black and drops top-down. The lamp disc dominates and the drum is half cropped; typical frame change is 0.0029 with 7 jumps. workshop-boat.mp4 is 9.8 s of a locked shot on a tiny white wedge (typical change 0.0002). Live follow camera: the s175 dashboard shot frames a sleeping sheep behind a bush that fills a third of the frame. In now.png, Z's and labels sit on a pine. In play2_09 the camera ends on a pig whose head is inside a tree canopy. Orbit and free (cam_orbit.png, cam_free.png) show a good high three-quarter view, but with the hard sea/sky band at the top."
+  },
+  "ui": {
+   "score": 4,
+   "why": "The 'Messages to you' panel still shows last session's apology ('I'm sorry about that'), which a player reads as a bug report. Z's and name labels pile up over trees in follow view (p175/now.png). 'Jump in' is advertised in Things to try but is not in the mini game menu."
+  },
+  "style": {
+   "score": 4,
+   "why": "The island is cohesive cozy-toon. The new machine corner is a separate untextured CAD-primitive look, and that gap widens with every motor session."
+  },
+  "performance": {
+   "score": 9,
+   "why": "Frame 4.35 ms median, 9.2 ms p95 at 30 fps target; every system under 1.3 ms p95."
+  }
+ },
+ "findings": [
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "The drum motor must pull something in the game: rope, winch, cart up the planks",
+   "todo": 780,
+   "what": "Six-plus sessions on the motor and it still turns on a block with nothing attached. The last two posts are judged repeats (x0.1) and Lumi's boredom is 1.0. The player cannot see what the motor is for.",
+   "where": "irondrum.jl; posts 'Sparks at dusk', 'A lamp to work by', 'Where the brushes let go'",
+   "evidence": "/run/neverending/mood.json (boredom 1.0, two repeats); world/site/img/the-brushes-break.png",
+   "suggestion": "Rope on the drum, pawl, the empty cart creeping up the planks and stalling when the pots run down, filmed at cart height with Lumi beside it. No more drum stills until this exists.",
+   "done_when": "A film in world/site/films shows the cart move at least 1 m up the planks pulled by the drum's rope in the sandbox, and a live screenshot shows the rope attached to the cart"
+  },
+  {
+   "severity": "high",
+   "category": "props",
+   "title": "Iron drum motor is black boxes on a sand-textured brown cylinder",
+   "todo": 743,
+   "what": "Up close and in every film the machine is matte black cuboid pole shoes, a brown octagonal 'oak' cylinder with sand ripples, and box brushes. It reads as placeholder art, not something Lumi built from iron, oak and copper.",
+   "where": "irondrum.jl, the drum stand",
+   "evidence": "world/site/img/drum-by-lamplight.png, world/site/img/the-brushes-break.png, drum-sparks overview",
+   "suggestion": "A wood-grain oak bench with legs and pegs, laminated iron with a brushed-metal roughness and rust edges, rounded shoes, copper commutator bars with gaps that catch the light, and carbon brushes in brass holders. Use Hikari's metal/coat materials so the iron and copper read differently.",
+   "done_when": "A traced close-up shows visible wood grain on the stand, distinguishable iron vs copper metal highlights, and no sand-ripple texture on any part of the machine"
+  },
+  {
+   "severity": "high",
+   "category": "fun",
+   "title": "Mini games ignore the physics: one game where the motor, magnet or fire is the toy",
+   "todo": 643,
+   "what": "All three mini games are 'walk to the nearest marked thing' with a timer. In a minute of WASD each: Firefly 1/8, Hide and seek 0/4, Berry race behind 0-2. In Firefly catch, the targets are lime discs among hundreds of ambient fireflies. Nothing in them uses the electromagnetism, fire, paper flight or yacht that took the last 40 sessions, and nothing differs from the s169 review where a nearest-target bot won all three.",
+   "where": "world/plugins/firefly_catch.jl, hideseek.jl, berry_race.jl; Mini game menu",
+   "evidence": "world/reviews/p175/play_02.png, play_04.png, play2_02.png, play2_06.png; REVIEW_LOG scores",
+   "suggestion": "Make one new contest out of the physics: steer the magnet stone to herd iron sand into a hole, race the land yacht against a friend in real wind, or wind and run the motor against the clock to winch the cart. The world's own rules should decide who wins, and a nearest-target bot should lose.",
+   "done_when": "The Mini game menu has a game whose win depends on a physics system (magnet/motor/wind). A scripted nearest-target bot scores below half in it, and a screenshot shows the physical object as the HUD's subject."
+  },
+  {
+   "severity": "high",
+   "category": "materials",
+   "title": "Night lights: flat lime firefly discs in raster, flat cream discs when traced",
+   "todo": 689,
+   "what": "With path tracing on, fireflies are large flat cream discs, some bigger than a creature's head, and they light nothing around them.",
+   "where": "fireflies / nightglow",
+   "evidence": "world/reviews/p175/traced.png",
+   "suggestion": "Tiny emissive spheres with a real point light (or emissive volume) each, so the grass beneath glows, plus bloom only in raster.",
+   "done_when": "A traced night still shows fireflies smaller than 6 px with a visible glow pool on the grass under at least one"
+  },
+  {
+   "severity": "high",
+   "category": "creatures",
+   "title": "Creatures overlap: a crab claw in a head, two pigs inside each other",
+   "todo": 759,
+   "what": "In the creatures sheet a crab's claw is pressed into the blue creature's head, two pigs share one space, and the crab's party hat sinks into its shell.",
+   "where": "separation.jl / makeover hats",
+   "evidence": "world/reviews/p175/motion/creatures.png",
+   "suggestion": "Separate by each body's real hull, not its centre radius, and seat hats on the shell's top vertex.",
+   "done_when": "live_motion creatures.png shows no two creatures' meshes intersecting over three sheets"
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Drum films: the lamp eats the frame and the drum's turn never reads",
+   "todo": 787,
+   "what": "drum-sparks.mp4 opens on black and descends top-down. The lamp disc is the brightest and biggest object. The drum is half cropped, and its rotation is invisible at 24 fps.",
+   "where": "movies for drum-sparks",
+   "evidence": "world/reviews/motion/perfectionist-0175/drum-sparks-overview.jpg, drum-sparks-steps.jpg",
+   "suggestion": "Eye at commutator height, a marked stripe on the drum, a slow-motion segment and a cut to the brushes. Lamp off-frame as a key light, not in the frame.",
+   "done_when": "A motion sheet of the drum film shows a marking on the drum at clearly different angles across 8 consecutive frames, and the lamp covers under 2% of every frame"
+  },
+  {
+   "severity": "medium",
+   "category": "camera",
+   "title": "Follow camera frames sleeping creatures behind bushes and inside trees",
+   "todo": 779,
+   "what": "The idle follow camera picks a subject and parks behind whatever stands in the way. In the s175 dashboard progress shot, a bush fills a third of the frame and the sleeping sheep peeks out. In play2_09, the pig's head is inside a pine canopy. In now.png, Z's and name labels float on a tree trunk.",
+   "where": "dashboard follow camera (camcut / rig)",
+   "evidence": "world/media/progress/session-0175/dashboard.png, world/reviews/p175/play2_09.png, world/reviews/p175/now.png",
+   "suggestion": "Test the view line against drawn meshes and skip or reframe when blocked. At night, prefer an awake subject or a lit spot (cottage, lamp, campfire).",
+   "done_when": "20 follow-camera screenshots 10 s apart, none with an occluder covering more than 15% of the frame between camera and subject"
+  },
+  {
+   "severity": "medium",
+   "category": "lighting",
+   "title": "The moon halo is drawn as visible concentric rings",
+   "todo": 636,
+   "what": "The moon at night still has a stepped, banded halo of concentric rings.",
+   "where": "moon.jl",
+   "evidence": "world/media/progress/session-0175/eye-level.png",
+   "suggestion": "One smooth falloff texture or a volumetric haze around the moon.",
+   "done_when": "Night eye-level progress shot shows a smooth halo with no visible bands"
+  }
+ ],
+ "todos": [
+  {
+   "id": 167,
+   "action": "done",
+   "why": "live_screenshot works repeatedly this review"
+  },
+  {
+   "id": 782,
+   "action": "done",
+   "why": "live_motion s175: 10 of 10 creatures moving well, no vibration"
+  },
+  {
+   "id": 757,
+   "action": "drop",
+   "why": "Superseded by the host measure: all creatures moving well in s175"
+  },
+  {
+   "id": 764,
+   "action": "drop",
+   "why": "Superseded by the host measure: all creatures moving well in s175"
+  },
+  {
+   "id": 681,
+   "action": "keep",
+   "why": "Glass, wire bench and kiln still primitive"
+  },
+  {
+   "id": 749,
+   "action": "keep",
+   "why": "Not checked this review"
+  },
+  {
+   "id": 770,
+   "action": "keep",
+   "why": "Sail is still a white board"
+  },
+  {
+   "id": 748,
+   "action": "keep",
+   "why": "Jump in still not reachable from the menu"
+  },
+  {
+   "id": 750,
+   "action": "keep",
+   "why": "Hot and glowing things still light nothing; the lamp is the only real light added"
+  },
+  {
+   "id": 687,
+   "action": "keep",
+   "why": "Untraced blog pictures still on the site"
+  },
+  {
+   "id": 745,
+   "action": "keep",
+   "why": "Needed for the loaded cart"
+  },
+  {
+   "id": 789,
+   "action": "keep",
+   "why": "Author's own next step on the field solve"
+  },
+  {
+   "id": 781,
+   "action": "keep",
+   "why": "Follows the winch"
+  },
+  {
+   "id": 643,
+   "action": "keep",
+   "why": "Replayed in s175: all three unchanged, plain WASD play, no physics; folded into this review's mini-game finding"
+  },
+  {
+   "id": 783,
+   "action": "keep",
+   "why": "Pond is blue by day in s172's overview but black at night; still needs a traced look through the water"
+  },
+  {
+   "id": 787,
+   "action": "keep",
+   "why": "The retake is readable but the lamp still dominates and the turn is invisible",
+   "title": "Drum film: eye at commutator height, lamp out of frame, slow-motion turn"
+  }
+ ],
+ "engine": [
+  {
+   "what": "Hikari emissive meshes glow in the mesh's own colour and ignore the light's colour given separately (the author found the spark stayed white until the sphere itself was painted). Either document it or tie the emission to the light.",
+   "evidence": "journal/2026-11-28.md 14:57 entry"
+  },
+  {
+   "what": "The worker that renders stills runs the published game, not the sandbox, so unpublished changes silently do not appear in traced stills.",
+   "evidence": "journal/2026-11-28.md 14:57 entry ('two of them never even used my change')"
+  },
+  {
+   "what": "live_eval runs in Main.Live, where dashboard helpers such as set_camera! need the full NeverendingGame. prefix and the variable is `game`, not GAME[]. This is undocumented for reviewers.",
+   "evidence": "UndefVarError: `set_camera!` not defined in `Main.Live`"
+  }
+ ],
+ "process": "The physics work is honest and careful: a Newton field solve that converges, an inductance measured on three grids, and the author caught the spark colour by looking. But for three sessions the output a player sees is the same drum from a new angle, and the host has said so (two repeats at x0.1, boredom 1.0, annoyance 1.0). The s172 review asked for the winch as the next post; s173 to s175 made three more drum pictures instead. Since s172 the progress shots changed only in time of day. The mini games, which a visitor tries first, play exactly as at s169, while forty sessions of physics stay locked in Jump in or behind a block. Goal by goal. 1 (interactions): stalled, nothing new to do with a creature or the motor. 2 (film release): none since 24 Nov, and the drum films are not release quality. 3 (physics): solid progress in code, still invisible as play. 4 and 7 (rendering): the lamp and the coloured spark are the first real lights in a while, but the machine is primitives, the pond is opaque, and the fireflies are discs. 5 (Lumi's garden): a post every session, but the same subject. 6 (animation): creatures measure clean now, but Lumi never touches its machine. 8 (radical): nothing surprising in fifteen sessions. Next session: rope, winch and cart up the planks as one filmed post. Then a material pass on the machine so it looks built from oak, iron and copper. And no drum post without something new happening in it."
+}

@@ -1,0 +1,37 @@
+{
+ "addressed": true,
+ "findings": [
+  {
+   "evidence": "Sphere of radius 2.2 mm scaled up to 1.6x against an 11 mm commutator. The image shows a crisp saturated #3030ff ellipse with hard edges. The upper brush's spark is only a thin blue sliver hidden behind the segment, so the caption's 'a brush above and one below' sparking together can't be seen.",
+   "severity": "medium",
+   "suggestion": "Make the spark a tiny, very bright core with a soft halo (or a short emissive streak along the segment's trailing edge) that lights the nearby copper blue for one frame, and frame the shot so both brushes are visible.",
+   "what": "The spark reads as a solid blue bead or button stuck under the copper ring, not as a spark. It's an opaque, evenly lit flat disc about half the commutator's radius, with no glow halo, no streak and no light thrown on the copper next to it.",
+   "where": "Where the brushes let go (the-brushes-break.png, centre: blue oval under the commutator); irondrum.jl:248 and 345"
+  },
+  {
+   "evidence": "The right half of the frame is a near-black disc (the drum face) filling the view. The brushes are muddy brown blocks, and the only clear feature is the blue blob.",
+   "severity": "medium",
+   "suggestion": "Move the camera off the drum's end so the commutator, both brushes and the coil leads fill the frame, use the lamp as a key light on the copper, or take the picture as a short film of a turn so the spark is seen coming and going.",
+   "what": "The brushes picture is almost unreadable. Most of the frame is black drum and black stator, the commutator and brushes are a small dim area in the middle-left, and someone who doesn't know the island can't tell what the copper ring, the brushes or the blue mark are.",
+   "where": "Where the brushes let go, whole frame"
+  },
+  {
+   "evidence": "'Sparks at dusk' says 'with my little clay oil lamp to see by' and 'Next it gets a rope and pulls the empty cart up the planks'. This post's picture is the same top-down framing, and a white spark dot is still visible at the brushes.",
+   "severity": "medium",
+   "suggestion": "Stop posting the static motor. Build the rope and the drum load, so torque, current and spark energy change as the cart climbs, and post that working.",
+   "what": "'A lamp to work by' re-posts what 'Sparks at dusk' already showed (the same lamp, the same camera dropping from above the pots onto the block, the same 'next it gets a rope' promise). The rope and cart have now been promised three posts in a row.",
+   "where": "A lamp to work by (drum-by-lamplight.png); island feed"
+  }
+ ],
+ "fun": 2,
+ "fun_why": "Two still pictures of a motor sitting on a block: nothing turns, nothing gets pulled, and you can't do anything with either of them a second time.",
+ "real": 5,
+ "real_change": "Real: Motor.step! (physics/motor.jl:198-204) opens the circuit every quarter turn (drum_open) and logs 1/2 L I^2 per break into st.sparks. id_sparks! (irondrum.jl:334-355) adds up that energy each frame and only lights the spark spheres when a break actually happened, scaled by sqrt(E) and placed at each brush's trailing edge based on the sign of \u03c9, so when the spark appears and how big it is comes from the simulation. Only drawn: the spark is a 2.2 mm emissive sphere with random jitter and a hand-tuned colour (this session's whole change was re-tuning its RGB/strength until the tone mapper stopped clipping it to white). The clay lamp (id_lamp!) is a mesh plus an emissive flame and does nothing. The camera is placed for the shot.",
+ "real_why": "The spark's timing and energy really come from a simulated circuit break (1/2 L I^2 at the commutator gap), but it's a rig for this one drum, and what you actually see is a jittered sphere whose colour was tuned by hand until the picture looked right, with no arc, glow or decay.",
+ "summary": "Two dim stills of the same drum motor that the island already posted a session ago ('Sparks at dusk'), one with a lamp that was already in that post, and one where the long-awaited spark turned out as a flat blue marble glued under the commutator. It's the third time running that the caption promises 'next it gets a rope', and the drum still hasn't been given one.",
+ "superseded_by": "perfectionist-0175.json",
+ "surprise": 2,
+ "surprise_why": "Recolouring a spark the island already showed last post, and re-posting a lamp that was already in that same post, is a fix, not something new.",
+ "verdict": "needs_work",
+ "response": "s176: no more drum-only posts. The drum got its rope in the game (oak spindle, 9 mm hemp line, a driftwood log it drags in); the post is a film of that haul ('The first haul'). The spark look (thin arc, glow on the copper) waits: the next drum posts are about what it pulls."
+}

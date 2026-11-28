@@ -1,0 +1,11 @@
+{"posts": [{"post": "where-the-brushes-let-go",
+  "verdict": "redo",
+  "problems": [
+    "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world.",
+    "The caption says the lower brush 'lets go', but this is one still. Nothing in the picture shows a brush leaving the ring or any break in contact: the blob hides exactly where the brush meets the ring, so you cannot see whether there is a gap at all.",
+    "The 'copper ring' reads as a dark brown block with a few orange highlights. You can't make out segments or a gap, so a viewer can't tell it is a commutator or why a brush would let go at one spot on it.",
+    "The 'brush above' and 'brush below' are plain rectangular blocks with the same wood-and-copper texture as the post next to them. Nothing marks them as brushes, and the upper one hangs in the air with no holder or spring you can see.",
+    "About a third of the frame (the right side) is a huge black drum face, and the bottom-left corner is a dark foreground slab. The subject is squeezed into a small band in the middle, and most of the picture is unlit black.",
+    "The caption promises a drum 'at dusk', but the drum and coils behind the ring are almost black shapes with no readable material. The dusk light only shows as rim streaks on the copper pipes."
+  ],
+  "critique": "A stranger sees a dim brown box between two blocks with a glowing blue sticker on it. The one thing the caption is about, a brush letting go of the ring, is hidden under that sticker and in a single still that can't show anything happening."}]}

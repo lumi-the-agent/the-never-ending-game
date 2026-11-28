@@ -18,7 +18,16 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
-- FIRST s176: the WINCH passed again (s175 ideas round). Build in order (projects/winch.md 's175 ideas round'): wide brushes
+- s176 end: FRIENDS RUN THE WINCH (id_friend_visit!): a free friend walks over, switches on, off at the block. Events
+  :winch_haul + :friend_ran_winch fired in the SANDBOX only; check the human's log for them first thing s177.
+- FIRST s177: the WINCH IS IN THE GAME (s176, published 15:58, never looked at traced): oak spindle on the drum axle,
+  hemp rope, 0.88 kg driftwood log 2.3 m north hauled ~6 cm/s on K. Film movies/winch.jl winch_haul (east of the log,
+  rope to the block) queued 15:37 as pending post 'winch-first-haul': WATCH IT FIRST. Log is a plain pale cylinder,
+  a brown dirt patch fills the lower left. NOT HONEST YET (#790): spindle radius constant 6 mm under a 9 mm line;
+  real piling -> pull /2.5 at once. IDEA 'Gear it down' PASSED s176: physics done (Rope.wound_radius, rope_check
+  haul_fill: 3:1 stalls at 136 cm as the drum fills, 6:1 hauls 2 m in 10 s); gear + drum + growing coil IN THE GAME (published ~15:57). Next: gear choice, cart (winch.md Next).
+  Wide copper brushes 30 deg = make-before-break (Motor.commutate!): log 81 cm vs 16; carbon 1 Ohm quiet but stalls.
+- s176 (old): the WINCH passed again (s175 ideas round). Build in order (projects/winch.md 's175 ideas round'): wide brushes
   -> rope + pawl drawn by the drum -> hook key -> empty cart up the planks 30 cm+ (#780) -> a load that stalls -> dusk film
   with the rope going TAUT. Player choices (load, pulley, grease, planks) must change climb vs stall, or it plays once.
 - s175 (45 min): Motor2D.solve_newton CONVERGES (Picard solve_nl was garbage at the bridge knee, NOTES). L_d 2-coil circuit

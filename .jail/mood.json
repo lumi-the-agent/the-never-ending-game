@@ -2,42 +2,42 @@
   "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "where-the-brushes-let-go",
+      "session": 176,
+      "title": "Where the brushes let go",
+      "weight": 1.0,
+      "what": "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world."
+    },
+    {
       "post": "sparks-at-dusk",
       "session": 175,
       "title": "Sparks at dusk",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn."
     },
     {
       "post": "a-lamp-to-work-by",
       "session": 175,
       "title": "A lamp to work by",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
-    },
-    {
-      "post": "where-the-brushes-let-go",
-      "session": 175,
-      "title": "Where the brushes let go",
-      "weight": 1.0,
-      "what": "The 'current jumps the gap' is a flat, opaque, saturated blue half-disc stuck under the commutator. It looks like a plastic cap or a sticker, not a spark: it has no glow, no thinness and casts no light on the copper or the brush around it."
     },
     {
       "post": "",
       "session": 174,
       "title": "drum-sparks storyboard, frames 1-5 and 16; drum-sparks-at-50.jpg",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "You can't read the film. Frames are almost black, the drum never visibly turns, and the last frame fades to black, so a viewer can't tell that a motor is running, let alone that the brushes break the circuit."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T15:02:03",
+  "ended": "2026-11-28T16:00:04",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.3,
-    "picture": 1.01,
+    "feature": 0.18,
+    "picture": 0.61,
     "self": 0.01,
-    "sound": 0.22
+    "sound": 0.13
   },
   "forms": [
     {
@@ -347,7 +347,7 @@
     "drum_switch",
     "commutator_spark"
   ],
-  "joy": 0.09,
+  "joy": 0.28,
   "judged_posts": [
     {
       "form": "Something the player can now do (mini game)",
@@ -800,13 +800,13 @@
     "similarity": 9
   },
   "last_surprise": {
-    "fun": 3,
-    "score": 5.0,
-    "session": 174,
-    "why": "Break-before-make sparks that come from stored coil energy are a real step for the motor line, but what the film shows is two glowing dots on a motor the island has already posted three times."
+    "fun": 2,
+    "score": 3.5,
+    "session": 175,
+    "why": "Recolouring a spark the island already showed last post, and re-posting a lamp that was already in that same post, is a fix, not something new."
   },
-  "loneliness": 0.13,
-  "perceived_until": "2026-11-28T14:19:02",
+  "loneliness": 0.21,
+  "perceived_until": "2026-11-28T15:16:53",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -820,42 +820,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 1.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "asset"
-      ],
-      "new_assets": 1,
-      "new_pages": [],
-      "new_plugins": [],
-      "points": 0.1,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "",
-        "form_count": 0,
-        "nearest": "",
-        "post": "",
-        "score": 10,
-        "shared": "nothing posted",
-        "similarity": 10
-      },
-      "session": 156,
-      "touched": [],
-      "values": {
-        "asset": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1486,6 +1450,38 @@
         "post": 4.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "film",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/winch-first-haul.mp4"
+      ],
+      "new_plugins": [],
+      "points": 7.0,
+      "session": 176,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1575,6 +1571,9 @@
       "site/films/drawn-wire-burns-out.mp4",
       "site/films/drift.mp4",
       "site/films/drift2.mp4",
+      "site/films/drum-sparks-overview.jpg",
+      "site/films/drum-sparks-steps.jpg",
+      "site/films/drum-sparks-strip.jpg",
       "site/films/drum-sparks.mp4",
       "site/films/face-hill.mp4",
       "site/films/fireflies-at-dusk.mp4",
@@ -1694,6 +1693,7 @@
       "site/img/cloud-heart.png",
       "site/img/conga.png",
       "site/img/crate-traced.png",
+      "site/img/drum-by-lamplight.png",
       "site/img/dusk-lantern.png",
       "site/img/face-hill.png",
       "site/img/freeze.png",
@@ -1728,6 +1728,7 @@
       "site/img/still-my-shadow.png",
       "site/img/stranger-ashore.png",
       "site/img/tag-traced.png",
+      "site/img/the-brushes-break.png",
       "site/img/thought-traced.png",
       "site/img/thunderstorm-zap.png",
       "site/img/tune-dance.png",
@@ -1820,7 +1821,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.795870581012196e9,
+      "irondrum.jl": 1.7958741276208289e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1870,11 +1871,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 141,
+    "posts": 143,
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T14:24:58",
+  "started": "2026-11-28T15:22:33",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2052,7 +2053,9 @@
       "SkyCoords.position_angle",
       "ABCDMatrixOptics.GaussianBeam",
       "Oceananigans.conformal_conic_scale_factor",
-      "GeometryBasics.MetaMesh"
+      "GeometryBasics.MetaMesh",
+      "CorrelationFunctions.c2",
+      "JumpProcesses.needs_depgraph"
     ],
     "games": [
       "Super Mario 64",
@@ -2204,7 +2207,10 @@
       "Star Fox 64",
       "Chrono Trigger",
       "God of War (2005 video game)",
-      "Eternal Darkness: Sanity's Requiem"
+      "Eternal Darkness: Sanity's Requiem",
+      "Pilotwings (video game)",
+      "Zork",
+      "The Elder Scrolls III: Morrowind"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2651,7 +2657,10 @@
       "Basins",
       "NeuralPDE",
       "BinningAnalysis",
-      "LevelSetMethods"
+      "LevelSetMethods",
+      "SpheroidalWaves",
+      "GadgetUnits",
+      "SmoQyDEAC"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2663,8 +2672,10 @@
       "NeuralLUTRunner",
       "ProPainterRunner",
       "RIFERunner",
-      "Hunyuan3DRunner"
+      "Hunyuan3DRunner",
+      "HorizonRunner",
+      "DepthAnythingRunner"
     ]
   },
-  "surprise_seen": 174
+  "surprise_seen": 175
 }

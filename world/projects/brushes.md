@@ -8,3 +8,9 @@ not a tinted sprite (s173 already: Hikari.Emission at the brush, sized by the lo
 
 What exists (s173): Motor.Build commutate = true (break-before-make, brush 8 < gap 20 deg), 1/2 L I^2 per break into
 st.sparks; plugins/irondrum.jl lights a spark per frame with a break. Todo #785.
+
+## s176: the post 'Where the brushes let go' missed again (critic, second look)
+- The retake must be a FILM, not a still (a still can't show a brush letting go). Needs: brushes in sprung holders
+  (a copper leaf on a clamp, the spring visible), the commutator's 4 segments and gaps readable (bright copper, dark mica
+  gaps, lit), the arc as a thin emissive streak at the trailing edge, not a sphere, and the drum lit (no black half frame).
+  Brushes are 30 deg wide now (make-before-break): the arc comes only from commutate!'s leftover current.

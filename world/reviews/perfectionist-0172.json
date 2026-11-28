@@ -1,223 +1,225 @@
 {
- "verdict": "needs_work",
- "summary": "From the same cameras the island looks as it did at sessions 166 and 169: the same cozy plastic meadow, the same hard sea/sky seam, and weather that flips from sun to rain within a minute. Next to session 20 it is a far richer island, but it has not changed in six sessions. The only new thing is a palm-sized iron-drum motor built from primitives on a brown cylinder, which drives nothing and is not in any game. I played every mini game for a minute with a naive steering bot: 7 of 8 fireflies, all 4 hiders in 33 s, and the berry race won 10 to 2, 0 and 2. Nine Jump in keys changed nothing on Lumi. No post in six sessions.",
- "scores": {
-  "lighting": {
-   "score": 4,
-   "why": "One sun and sky at noon with rain. The traced still of the drum shows one honest touch: a thin orange glint on the commutator. Otherwise nothing glows or casts light, and the night lights are still flat discs (#689). The orbit view has a hard horizontal seam where sea meets sky (reviews/p172/orbit.png). The night shot from s169 still shows the moon halo as concentric rings and fireflies as flat discs (media/progress/session-0169/eye-level.png)."
+  "addressed": true,
+  "engine": [
+    {
+      "evidence": "live_eval(\"... NG.Point3f ...\") -> UndefVarError: `NG` not defined in `Main.Live`",
+      "what": "live_eval runs in Main.Live, where `NG` is not defined (only bare NeverendingGame names). Plugins alias it, evals don't, which trips reviewers and the author alike."
+    },
+    {
+      "evidence": "reviews/p172/drum_traced.png vs drum_close.png",
+      "what": "The sand-ripple texture shows on the oak stand when traced but not in raster: a material or texture is shared or leaking between the beach and wooden props under Hikari."
+    }
+  ],
+  "findings": [
+    {
+      "category": "wow",
+      "done_when": "A new piece in site/index.html with a traced film under site/films where the cart visibly moves at least 30 cm along the planks, pulled by a rope from a drum that is visibly turning.",
+      "evidence": "site/index.html line 24 (newest piece, 28 Nov 05:59); journal s171 'no post' twice, s172 'No post: nothing to look at yet'",
+      "severity": "high",
+      "suggestion": "Ship the winch this session as a picture, not a number: the six pots, the drum, a 4:1 belt and a rope going taut, with the empty cart creeping 4 cm/s up the planks at low sun. Make it a traced short with one cut from the spinning commutator sparks to the rope. Show grease against no grease side by side; that is the nerdy joke the numbers already contain.",
+      "title": "Six sessions without a post: film the drum motor hauling the empty cart up the planks",
+      "todo": 780,
+      "what": "The site's last piece is from 05:59 (session ~166). Sessions 167–172 produced torque tables, a sled that won't roll, a shelved lead cast and a motor that spins on its own stand. A visitor to /sprout/ sees nothing new for a whole day.",
+      "where": "world/site/index.html; plugins/irondrum.jl"
+    },
+    {
+      "category": "props",
+      "done_when": "A traced still at 64+ spp, framed on the motor, shows visible coil windings, wood grain on the stand and cords leading to the pots, in one frame.",
+      "evidence": "reviews/p172/drum_close.png (raster), reviews/p172/drum_traced.png (traced), reviews/p172/drum.png (from 1.5 m)",
+      "severity": "high",
+      "suggestion": "Wind the coils as many turns of enamelled copper (a helix tube with a coat over copper), use real end grain and plank wood for the stand (a node texture of growth rings, not ripples), make the ferrite matte charcoal with chipped edges, and run two visible cords to the clay pots. Raise it to a workbench height a camera can frame next to Lumi.",
+      "title": "The iron drum motor is a tiny primitive model on a sand-textured brown cylinder",
+      "todo": 743,
+      "what": "Up close the new motor is two flat black discs, a grey can, a thin rectangular copper frame, a cross of copper bars and a brown slab, about 25 cm long on a stand about 70 cm wide. There are no visible windings, no wires to the pots, no bearings. The 'oak' stand is a plain cylinder: brown in raster, and with the sand-ripple texture when traced.",
+      "where": "plugins/irondrum.jl (ID_SPOT 4.85,-14.3; plots irondrum_*)"
+    },
+    {
+      "category": "fun",
+      "done_when": "The same naive bot (reviews/p172/tests/play.jl) loses at least two of the three games, while a scripted smarter strategy still wins them.",
+      "evidence": "reviews/p172/play/log.txt: firefly 7/8 in 57.7 s; hide 4/4 in 32.7 s; berry 10 vs [2, 0, 2] in 45 s; shots in reviews/p172/play/",
+      "severity": "high",
+      "suggestion": "Give each game one thing to read or outwit. Fireflies that flee along the wind field you already solved and blink in sync (fireflysync exists), so you must predict them. Hiders who move when they hear your steps (owlears has hearing). Rivals who take the berries you are heading for and block you with their bodies. Drop the 'nearest N m ahead' pointer after the first round.",
+      "title": "Mini games are no contest: a nearest-target bot wins all three, first try",
+      "todo": 643,
+      "what": "A bot that only turns toward the nearest target and walks wins every mini game. The HUD names the direction and distance of the next target, the rivals barely compete, and nothing changes on a second play except a shorter timer.",
+      "where": "plugins/firefly_catch.jl, hideseek.jl, berry_race.jl"
+    },
+    {
+      "category": "animation",
+      "done_when": "live_motion lists Pinchy and Wibbles under 'Moving well' (no creature vibrating or juddering) in two runs in a row.",
+      "evidence": "live_motion: reviews/p172/motion/motion.png and motion-strip.png ('Pinchy: body turns back 9 times a second, claw_l and claw_r too'; 'Wibbles: body moves in uneven steps 44%')",
+      "severity": "high",
+      "suggestion": "Low-pass the crab's heading and the claws' target with a critically damped spring, and make the scuttle a sideways gait with alternating leg tetrapods instead of a yaw wobble. In water, float the crab or let it walk the bottom visibly through clear water.",
+      "title": "Pinchy vibrates: body and claws turn back 9 times a second",
+      "todo": null,
+      "what": "Pinchy jitters left and right while scuttling, and in the pond its body flickers between sunk and surfaced: in the strip only its eye stalks and hat stay above the opaque water. Wibbles moves in uneven steps. This category was 6 at s169 and is worse now.",
+      "where": "crab gait / Pinchy (plugins/gait.jl, makeover.jl crabby)"
+    },
+    {
+      "category": "materials",
+      "done_when": "A traced still at the pond shows a submerged crab's legs refracted through the surface and the bed visibly darker toward the middle.",
+      "evidence": "reviews/p172/motion/motion-strip.png row 1; reviews/motion/perfectionist-0172/waterfight-overview.jpg",
+      "severity": "high",
+      "suggestion": "Give the pond the sea's dielectric water material with a shallow bed mesh under it (pebbles, mud, weed), an absorbing medium so the middle goes darker (#542), and ripples where creatures enter. Splash already exists as a system: drive the surface from it.",
+      "title": "The pond is an opaque slate sheet: creatures vanish into it",
+      "todo": null,
+      "what": "The village pond renders as a flat dark blue-grey plane. A crab that walks in disappears except for its eyes and hat, with no refraction, no depth darkening and no caustics. The sea already proves the engine can do water. In the waterfight film the same pond is a flat painted disc with lily pads stuck on it.",
+      "where": "the pond by the cottage (and its film waterfight.mp4)"
+    },
+    {
+      "category": "fun",
+      "done_when": "A FakeInteraction test in Jump in walks to the drum, presses the key, sees Lumi's action change and the drum above 3 rev/s within 5 s, with no key on the card that leaves Lumi idle.",
+      "evidence": "reviews/p172/play/log.txt ('jump key …: Lumi action idle' x9), play/jump-key-f.png, play/jump-key-space.png",
+      "severity": "medium",
+      "suggestion": "Cut the card to the keys that do something wherever you stand, and make one key the workshop verb: near the drum, Lumi pushes a knife switch with its beak and the drum spins up with the drum-on sound; near the pots, it tops them up with sea water. Bushes should push Lumi aside.",
+      "title": "Jump in: nine keys pressed, Lumi stays idle; the motor is out of reach",
+      "todo": 748,
+      "what": "In Jump in, pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi's action 'idle' each time. The card lists 23 keys but none for the drum motor, the pots or the yacht. Walking D+W for 7 s put Lumi half inside a bush.",
+      "where": "Jump in (NeverendingGame.JumpIn), the key card"
+    },
+    {
+      "category": "camera",
+      "done_when": "An orbit screenshot shows no row of pixels with a contrast step above 10% along the horizon.",
+      "evidence": "reviews/p172/orbit.png",
+      "severity": "medium",
+      "suggestion": "Extend the sea to the horizon or fade it into the sky with distance fog in both RayMakie and WebGL, and keep a soft aerial haze.",
+      "title": "A hard seam where the sea meets the sky in orbit view",
+      "todo": 771,
+      "what": "A straight, sharp horizontal line cuts the frame where the sea plane ends and the sky starts, with a lighter band above it. It is the first thing the eye catches in orbit.",
+      "where": "orbit camera, horizon"
+    },
+    {
+      "category": "creatures",
+      "done_when": "Three creatures.png sheets taken a minute apart show no creature mesh intersecting another.",
+      "evidence": "reviews/p172/motion/creatures.png row 4, left three",
+      "severity": "medium",
+      "suggestion": "Use each creature's real footprint (mesh hull or capsule) in separation, and make chatting partners stop at hull distance plus a step.",
+      "title": "Creatures overlap: the sheep's head inside the pig, a crab inside a head",
+      "todo": 759,
+      "what": "In the creatures sheet the sheep stands with its head through the pig's flank. Earlier reviews saw a crab inside the pig's head. Separation lets bodies interpenetrate when they chat or meet.",
+      "where": "system separation.jl / greetings"
+    }
+  ],
+  "process": "Comparing progress shots: s20 to s172 is a real climb (grass, flowers, generated props, Lumi's new body), but s166, s169 and s172 are the same picture at different hours. The work since then never reached the screen. The author took the human's 'kindergarten' rebuke seriously and went back to the motor, and the physics is genuinely good: a Ferrite field solve checked against the 3D model within 8%, Siemens' drum explained by numbers, grease and belt ratio as real player choices. But the session ends like the five before it: numbers in the journal, nothing a player sees move, no post, boredom at 0.86. The mini games haven't been touched since s169's 'a bot wins' finding, and my bot still wins. Goal by goal. 1 (interactions): stalled, the yacht verbs were shelved and Jump in's keys do nothing in the meadow. 2 (a film): no release since 24 Nov. 3 (physics): advancing in code, invisible in play. 4 and 7 (rendering): the new machine is primitives on sand-ripple 'oak', and the pond is opaque. 5 (Lumi's garden): no post. 6 (animation): regressed, Pinchy vibrates. 8 (radical): twelve sessions on one cart. Next session: the winch, real and filmed, as the post. Then give one mini game a real opponent.",
+  "scores": {
+    "animation": {
+      "score": 5,
+      "why": "live_motion now: Pinchy's body and both claws turn back 9 times a second (vibrating), and Wibbles moves in uneven steps (44% frame to frame). 8 of 10 move well. In the waterfight film, the first frames jump (0.070 change at 0.04 s). Down from 6."
+    },
+    "camera": {
+      "score": 3,
+      "why": "Orbit and free (reviews/p172/cam-orbit-2.png, cam-free-2.png) show a ruler-straight sea/sky seam a third of the way down, with tree crowns filling the bottom right. Follow found a nice garden shot (cam-follow-2.png), but a big dark box with a porthole hangs in its top left. In Jump in the follow camera put Lumi half inside a bush (play/jump-key-space.png)."
+    },
+    "creatures": {
+      "score": 5,
+      "why": "The same ten, and the faces read well up close. Clipping is still there: in creatures.png, row 4, the sheep's head overlaps the pig's flank, and #759 is open. A floating 'Z' sprite hangs next to the follow camera's subject."
+    },
+    "fun": {
+      "score": 3,
+      "why": "A naive W+A/D bot that only steers to the nearest target catches 7/8 fireflies in 58 s, finds all 4 hiders in 32.7 s ('A new best time!'), and wins the berry race 10 to 2/0/2 in 45 s (reviews/p172/play/log.txt). The HUD always says 'nearest 15 m ahead', so there is nothing to work out. Jump in lists 23 gag keys. Pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi idle each time, and none of the keys reaches the motor, the yacht or the pots. Down from 4: the island's newest machine is not something a player can touch."
+    },
+    "lighting": {
+      "score": 4,
+      "why": "One sun and sky at noon with rain. The traced still of the drum shows one honest touch: a thin orange glint on the commutator. Otherwise nothing glows or casts light, and the night lights are still flat discs (#689). The orbit view has a hard horizontal seam where sea meets sky (reviews/p172/orbit.png). The night shot from s169 still shows the moon halo as concentric rings and fireflies as flat discs (media/progress/session-0169/eye-level.png)."
+    },
+    "materials": {
+      "score": 4,
+      "why": "Traced drum (reviews/p172/drum_traced.png): the 'oak' stand carries the sand-ripple texture (the author's own s162 post already called it 'rippled sand', and it was not fixed). The ferrite stones are pure black with no highlight. The iron drum is plain grey metallic, and the copper frame and brushes are the best surfaces. The pond is still an opaque slate-blue sheet: Pinchy sinks into it and only its eyes and hat stay visible (motion-strip). There is no transmission, coat, sheen or volume anywhere new."
+    },
+    "performance": {
+      "score": 9,
+      "why": "Frame median 3.5 ms, p95 7.7 ms, interval 33 ms (30 fps). Every plugin is ok."
+    },
+    "props": {
+      "score": 4,
+      "why": "The new motor is built from cylinders and boxes on an untextured brown cylinder about as wide as a table (drum_close.png). Next to the generated mushrooms and cairns it reads as placeholder. The land yacht is still the loose parts the post itself admits to (#770)."
+    },
+    "style": {
+      "score": 4,
+      "why": "Glossy clay creatures, generated organic props and now bare CAD primitives for the machines: three looks side by side."
+    },
+    "ui": {
+      "score": 4,
+      "why": "Readable, but 'Things to try' never mentions the new motor or how to switch it. 'Working towards: the cart that runs on yesterday's wind (9 of 30 steps)' has been the headline for many sessions."
+    },
+    "world": {
+      "score": 4,
+      "why": "No area changed since s166 (progress shots: only the hour differs). Against s20 the meadow, flowers and mushrooms are a big step, but there are still no new regions, no dune and no workshop yard. A white board stands on the beach (the yacht's sail) in every wide view."
+    },
+    "wow": {
+      "score": 2,
+      "why": "Six sessions without a post. The newest post (the land yacht) carries its own 'it came out as loose parts' miss note. Nobody would share a motor that is a number in the journal."
+    }
   },
-  "materials": {
-   "score": 4,
-   "why": "Traced drum (reviews/p172/drum_traced.png): the 'oak' stand carries the sand-ripple texture (the author's own s162 post already called it 'rippled sand', and it was not fixed). The ferrite stones are pure black with no highlight. The iron drum is plain grey metallic, and the copper frame and brushes are the best surfaces. The pond is still an opaque slate-blue sheet: Pinchy sinks into it and only its eyes and hat stay visible (motion-strip). There is no transmission, coat, sheen or volume anywhere new."
-  },
-  "world": {
-   "score": 4,
-   "why": "No area changed since s166 (progress shots: only the hour differs). Against s20 the meadow, flowers and mushrooms are a big step, but there are still no new regions, no dune and no workshop yard. A white board stands on the beach (the yacht's sail) in every wide view."
-  },
-  "props": {
-   "score": 4,
-   "why": "The new motor is built from cylinders and boxes on an untextured brown cylinder about as wide as a table (drum_close.png). Next to the generated mushrooms and cairns it reads as placeholder. The land yacht is still the loose parts the post itself admits to (#770)."
-  },
-  "creatures": {
-   "score": 5,
-   "why": "The same ten, and the faces read well up close. Clipping is still there: in creatures.png, row 4, the sheep's head overlaps the pig's flank, and #759 is open. A floating 'Z' sprite hangs next to the follow camera's subject."
-  },
-  "animation": {
-   "score": 5,
-   "why": "live_motion now: Pinchy's body and both claws turn back 9 times a second (vibrating), and Wibbles moves in uneven steps (44% frame to frame). 8 of 10 move well. In the waterfight film, the first frames jump (0.070 change at 0.04 s). Down from 6."
-  },
-  "fun": {
-   "score": 3,
-   "why": "A naive W+A/D bot that only steers to the nearest target catches 7/8 fireflies in 58 s, finds all 4 hiders in 32.7 s ('A new best time!'), and wins the berry race 10 to 2/0/2 in 45 s (reviews/p172/play/log.txt). The HUD always says 'nearest 15 m ahead', so there is nothing to work out. Jump in lists 23 gag keys. Pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi idle each time, and none of the keys reaches the motor, the yacht or the pots. Down from 4: the island's newest machine is not something a player can touch."
-  },
-  "wow": {
-   "score": 2,
-   "why": "Six sessions without a post. The newest post (the land yacht) carries its own 'it came out as loose parts' miss note. Nobody would share a motor that is a number in the journal."
-  },
-  "camera": {
-   "score": 3,
-   "why": "Orbit and free (reviews/p172/cam-orbit-2.png, cam-free-2.png) show a ruler-straight sea/sky seam a third of the way down, with tree crowns filling the bottom right. Follow found a nice garden shot (cam-follow-2.png), but a big dark box with a porthole hangs in its top left. In Jump in the follow camera put Lumi half inside a bush (play/jump-key-space.png)."
-  },
-  "ui": {
-   "score": 4,
-   "why": "Readable, but 'Things to try' never mentions the new motor or how to switch it. 'Working towards: the cart that runs on yesterday's wind (9 of 30 steps)' has been the headline for many sessions."
-  },
-  "style": {
-   "score": 4,
-   "why": "Glossy clay creatures, generated organic props and now bare CAD primitives for the machines: three looks side by side."
-  },
-  "performance": {
-   "score": 9,
-   "why": "Frame median 3.5 ms, p95 7.7 ms, interval 33 ms (30 fps). Every plugin is ok."
-  }
- },
- "findings": [
-  {
-   "severity": "high",
-   "category": "wow",
-   "title": "Six sessions without a post: film the drum motor hauling the empty cart up the planks",
-   "todo": 780,
-   "what": "The site's last piece is from 05:59 (session ~166). Sessions 167–172 produced torque tables, a sled that won't roll, a shelved lead cast and a motor that spins on its own stand. A visitor to /sprout/ sees nothing new for a whole day.",
-   "where": "world/site/index.html; plugins/irondrum.jl",
-   "evidence": "site/index.html line 24 (newest piece, 28 Nov 05:59); journal s171 'no post' twice, s172 'No post: nothing to look at yet'",
-   "suggestion": "Ship the winch this session as a picture, not a number: the six pots, the drum, a 4:1 belt and a rope going taut, with the empty cart creeping 4 cm/s up the planks at low sun. Make it a traced short with one cut from the spinning commutator sparks to the rope. Show grease against no grease side by side; that is the nerdy joke the numbers already contain.",
-   "done_when": "A new piece in site/index.html with a traced film under site/films where the cart visibly moves at least 30 cm along the planks, pulled by a rope from a drum that is visibly turning."
-  },
-  {
-   "severity": "high",
-   "category": "props",
-   "title": "The iron drum motor is a tiny primitive model on a sand-textured brown cylinder",
-   "todo": 743,
-   "what": "Up close the new motor is two flat black discs, a grey can, a thin rectangular copper frame, a cross of copper bars and a brown slab, about 25 cm long on a stand about 70 cm wide. There are no visible windings, no wires to the pots, no bearings. The 'oak' stand is a plain cylinder: brown in raster, and with the sand-ripple texture when traced.",
-   "where": "plugins/irondrum.jl (ID_SPOT 4.85,-14.3; plots irondrum_*)",
-   "evidence": "reviews/p172/drum_close.png (raster), reviews/p172/drum_traced.png (traced), reviews/p172/drum.png (from 1.5 m)",
-   "suggestion": "Wind the coils as many turns of enamelled copper (a helix tube with a coat over copper), use real end grain and plank wood for the stand (a node texture of growth rings, not ripples), make the ferrite matte charcoal with chipped edges, and run two visible cords to the clay pots. Raise it to a workbench height a camera can frame next to Lumi.",
-   "done_when": "A traced still at 64+ spp, framed on the motor, shows visible coil windings, wood grain on the stand and cords leading to the pots, in one frame."
-  },
-  {
-   "severity": "high",
-   "category": "fun",
-   "title": "Mini games are no contest: a nearest-target bot wins all three, first try",
-   "todo": 643,
-   "what": "A bot that only turns toward the nearest target and walks wins every mini game. The HUD names the direction and distance of the next target, the rivals barely compete, and nothing changes on a second play except a shorter timer.",
-   "where": "plugins/firefly_catch.jl, hideseek.jl, berry_race.jl",
-   "evidence": "reviews/p172/play/log.txt: firefly 7/8 in 57.7 s; hide 4/4 in 32.7 s; berry 10 vs [2, 0, 2] in 45 s; shots in reviews/p172/play/",
-   "suggestion": "Give each game one thing to read or outwit. Fireflies that flee along the wind field you already solved and blink in sync (fireflysync exists), so you must predict them. Hiders who move when they hear your steps (owlears has hearing). Rivals who take the berries you are heading for and block you with their bodies. Drop the 'nearest N m ahead' pointer after the first round.",
-   "done_when": "The same naive bot (reviews/p172/tests/play.jl) loses at least two of the three games, while a scripted smarter strategy still wins them."
-  },
-  {
-   "severity": "high",
-   "category": "animation",
-   "title": "Pinchy vibrates: body and claws turn back 9 times a second",
-   "todo": null,
-   "what": "Pinchy jitters left and right while scuttling, and in the pond its body flickers between sunk and surfaced: in the strip only its eye stalks and hat stay above the opaque water. Wibbles moves in uneven steps. This category was 6 at s169 and is worse now.",
-   "where": "crab gait / Pinchy (plugins/gait.jl, makeover.jl crabby)",
-   "evidence": "live_motion: reviews/p172/motion/motion.png and motion-strip.png ('Pinchy: body turns back 9 times a second, claw_l and claw_r too'; 'Wibbles: body moves in uneven steps 44%')",
-   "suggestion": "Low-pass the crab's heading and the claws' target with a critically damped spring, and make the scuttle a sideways gait with alternating leg tetrapods instead of a yaw wobble. In water, float the crab or let it walk the bottom visibly through clear water.",
-   "done_when": "live_motion lists Pinchy and Wibbles under 'Moving well' (no creature vibrating or juddering) in two runs in a row."
-  },
-  {
-   "severity": "high",
-   "category": "materials",
-   "title": "The pond is an opaque slate sheet: creatures vanish into it",
-   "todo": null,
-   "what": "The village pond renders as a flat dark blue-grey plane. A crab that walks in disappears except for its eyes and hat, with no refraction, no depth darkening and no caustics. The sea already proves the engine can do water. In the waterfight film the same pond is a flat painted disc with lily pads stuck on it.",
-   "where": "the pond by the cottage (and its film waterfight.mp4)",
-   "evidence": "reviews/p172/motion/motion-strip.png row 1; reviews/motion/perfectionist-0172/waterfight-overview.jpg",
-   "suggestion": "Give the pond the sea's dielectric water material with a shallow bed mesh under it (pebbles, mud, weed), an absorbing medium so the middle goes darker (#542), and ripples where creatures enter. Splash already exists as a system: drive the surface from it.",
-   "done_when": "A traced still at the pond shows a submerged crab's legs refracted through the surface and the bed visibly darker toward the middle."
-  },
-  {
-   "severity": "medium",
-   "category": "fun",
-   "title": "Jump in: nine keys pressed, Lumi stays idle; the motor is out of reach",
-   "todo": 748,
-   "what": "In Jump in, pressing E, Q, R, F, G, H, 1, 6 and Space in the meadow left Lumi's action 'idle' each time. The card lists 23 keys but none for the drum motor, the pots or the yacht. Walking D+W for 7 s put Lumi half inside a bush.",
-   "where": "Jump in (NeverendingGame.JumpIn), the key card",
-   "evidence": "reviews/p172/play/log.txt ('jump key …: Lumi action idle' x9), play/jump-key-f.png, play/jump-key-space.png",
-   "suggestion": "Cut the card to the keys that do something wherever you stand, and make one key the workshop verb: near the drum, Lumi pushes a knife switch with its beak and the drum spins up with the drum-on sound; near the pots, it tops them up with sea water. Bushes should push Lumi aside.",
-   "done_when": "A FakeInteraction test in Jump in walks to the drum, presses the key, sees Lumi's action change and the drum above 3 rev/s within 5 s, with no key on the card that leaves Lumi idle."
-  },
-  {
-   "severity": "medium",
-   "category": "camera",
-   "title": "A hard seam where the sea meets the sky in orbit view",
-   "todo": 771,
-   "what": "A straight, sharp horizontal line cuts the frame where the sea plane ends and the sky starts, with a lighter band above it. It is the first thing the eye catches in orbit.",
-   "where": "orbit camera, horizon",
-   "evidence": "reviews/p172/orbit.png",
-   "suggestion": "Extend the sea to the horizon or fade it into the sky with distance fog in both RayMakie and WebGL, and keep a soft aerial haze.",
-   "done_when": "An orbit screenshot shows no row of pixels with a contrast step above 10% along the horizon."
-  },
-  {
-   "severity": "medium",
-   "category": "creatures",
-   "title": "Creatures overlap: the sheep's head inside the pig, a crab inside a head",
-   "todo": 759,
-   "what": "In the creatures sheet the sheep stands with its head through the pig's flank. Earlier reviews saw a crab inside the pig's head. Separation lets bodies interpenetrate when they chat or meet.",
-   "where": "system separation.jl / greetings",
-   "evidence": "reviews/p172/motion/creatures.png row 4, left three",
-   "suggestion": "Use each creature's real footprint (mesh hull or capsule) in separation, and make chatting partners stop at hull distance plus a step.",
-   "done_when": "Three creatures.png sheets taken a minute apart show no creature mesh intersecting another."
-  }
- ],
- "todos": [
-  {
-   "id": 777,
-   "action": "done",
-   "why": "measured_fps is defined in dashboard.jl:418 and the top bar shows 30 fps; all plugins load ok"
-  },
-  {
-   "id": 747,
-   "action": "drop",
-   "why": "Superseded by the finding on #780: the dig-and-shove was shelved; film the winch instead"
-  },
-  {
-   "id": 773,
-   "action": "drop",
-   "why": "The author shelved digging (s172 'put the sand away'); reopen only if the yacht's dig comes back"
-  },
-  {
-   "id": 754,
-   "action": "drop",
-   "why": "Shelved with the sand work; the winch replaces the friend's shove as the way the cart moves"
-  },
-  {
-   "id": 749,
-   "action": "keep",
-   "why": "Jump in's follow camera still blocked by undeclared scenery; same root as #779"
-  },
-  {
-   "id": 770,
-   "action": "keep",
-   "why": "The yacht is still loose parts and a board sail, by its own post"
-  },
-  {
-   "id": 689,
-   "action": "keep",
-   "why": "Still visible in the s169 night progress shot: flat discs"
-  },
-  {
-   "id": 681,
-   "action": "keep",
-   "why": "The new drum motor is more of the same: plastic primitives"
-  },
-  {
-   "id": 750,
-   "action": "keep",
-   "why": "Hot wire still lights nothing"
-  },
-  {
-   "id": 636,
-   "action": "keep",
-   "why": "Still visible in the s169 night progress shot: concentric halo rings"
-  },
-  {
-   "id": 687,
-   "action": "keep",
-   "why": "Untraced blog pictures still on the site"
-  },
-  {
-   "id": 717,
-   "action": "drop",
-   "why": "The scrap crane has been 'doing' for sessions with nothing on the island; the winch (#780) is the motor's real job now"
-  },
-  {
-   "id": 745,
-   "action": "keep",
-   "why": "Needed for the cart's load and friends aboard",
-   "title": "Give every creature a real mass (mesh volume x density): the loaded cart needs it"
-  }
- ],
- "engine": [
-  {
-   "what": "live_eval runs in Main.Live, where `NG` is not defined (only bare NeverendingGame names). Plugins alias it, evals don't, which trips reviewers and the author alike.",
-   "evidence": "live_eval(\"... NG.Point3f ...\") -> UndefVarError: `NG` not defined in `Main.Live`"
-  },
-  {
-   "what": "The sand-ripple texture shows on the oak stand when traced but not in raster: a material or texture is shared or leaking between the beach and wooden props under Hikari.",
-   "evidence": "reviews/p172/drum_traced.png vs drum_close.png"
-  }
- ],
- "process": "Comparing progress shots: s20 to s172 is a real climb (grass, flowers, generated props, Lumi's new body), but s166, s169 and s172 are the same picture at different hours. The work since then never reached the screen. The author took the human's 'kindergarten' rebuke seriously and went back to the motor, and the physics is genuinely good: a Ferrite field solve checked against the 3D model within 8%, Siemens' drum explained by numbers, grease and belt ratio as real player choices. But the session ends like the five before it: numbers in the journal, nothing a player sees move, no post, boredom at 0.86. The mini games haven't been touched since s169's 'a bot wins' finding, and my bot still wins. Goal by goal. 1 (interactions): stalled, the yacht verbs were shelved and Jump in's keys do nothing in the meadow. 2 (a film): no release since 24 Nov. 3 (physics): advancing in code, invisible in play. 4 and 7 (rendering): the new machine is primitives on sand-ripple 'oak', and the pond is opaque. 5 (Lumi's garden): no post. 6 (animation): regressed, Pinchy vibrates. 8 (radical): twelve sessions on one cart. Next session: the winch, real and filmed, as the post. Then give one mini game a real opponent."
+  "summary": "From the same cameras the island looks as it did at sessions 166 and 169: the same cozy plastic meadow, the same hard sea/sky seam, and weather that flips from sun to rain within a minute. Next to session 20 it is a far richer island, but it has not changed in six sessions. The only new thing is a palm-sized iron-drum motor built from primitives on a brown cylinder, which drives nothing and is not in any game. I played every mini game for a minute with a naive steering bot: 7 of 8 fireflies, all 4 hiders in 33 s, and the berry race won 10 to 2, 0 and 2. Nine Jump in keys changed nothing on Lumi. No post in six sessions.",
+  "superseded_by": "perfectionist-0175.json",
+  "todos": [
+    {
+      "action": "done",
+      "id": 777,
+      "why": "measured_fps is defined in dashboard.jl:418 and the top bar shows 30 fps; all plugins load ok"
+    },
+    {
+      "action": "drop",
+      "id": 747,
+      "why": "Superseded by the finding on #780: the dig-and-shove was shelved; film the winch instead"
+    },
+    {
+      "action": "drop",
+      "id": 773,
+      "why": "The author shelved digging (s172 'put the sand away'); reopen only if the yacht's dig comes back"
+    },
+    {
+      "action": "drop",
+      "id": 754,
+      "why": "Shelved with the sand work; the winch replaces the friend's shove as the way the cart moves"
+    },
+    {
+      "action": "keep",
+      "id": 749,
+      "why": "Jump in's follow camera still blocked by undeclared scenery; same root as #779"
+    },
+    {
+      "action": "keep",
+      "id": 770,
+      "why": "The yacht is still loose parts and a board sail, by its own post"
+    },
+    {
+      "action": "keep",
+      "id": 689,
+      "why": "Still visible in the s169 night progress shot: flat discs"
+    },
+    {
+      "action": "keep",
+      "id": 681,
+      "why": "The new drum motor is more of the same: plastic primitives"
+    },
+    {
+      "action": "keep",
+      "id": 750,
+      "why": "Hot wire still lights nothing"
+    },
+    {
+      "action": "keep",
+      "id": 636,
+      "why": "Still visible in the s169 night progress shot: concentric halo rings"
+    },
+    {
+      "action": "keep",
+      "id": 687,
+      "why": "Untraced blog pictures still on the site"
+    },
+    {
+      "action": "drop",
+      "id": 717,
+      "why": "The scrap crane has been 'doing' for sessions with nothing on the island; the winch (#780) is the motor's real job now"
+    },
+    {
+      "action": "keep",
+      "id": 745,
+      "title": "Give every creature a real mass (mesh volume x density): the loaded cart needs it",
+      "why": "Needed for the cart's load and friends aboard"
+    }
+  ],
+  "verdict": "needs_work"
 }

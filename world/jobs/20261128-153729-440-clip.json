@@ -1,0 +1,17 @@
+{
+  "cause": "KeyError: key :c not found",
+  "created": "2026-11-28T15:37:29.496",
+  "error": "KeyError: key :c not found\nStacktrace:\n  [1] getindex(h::Dict{Symbol, Any}, key::Symbol)\n    @ Base ./dict.jl:477\n  [2] id_winch_reset!()\n    @ Main.Plugin_irondrum /sim/Programmieren/SimGame/world/plugins/irondrum.jl:386\n  [3] (::Main.ClipScript.var\"#6#7\")(g::Game)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/winch.jl:28\n  [4] film!(g::Game, root_scene::Makie.Scene, path::String; size::Tuple{Int64, Int64}, seconds::Float64, fps::Int64, samples::Int64, max_depth::Int64, hour::Float64, warmup::Int64, rig::NeverendingGame.CameraRig, rasterize::Bool, setup::Main.ClipScript.var\"#6#7\", shot::Main.ClipScript.var\"#4#5\"{Float64, Base.RefValue{Bool}}, fade::Float64, denoise::Bool)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:428\n  [5] film!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:421 [inlined]\n  [6] #394\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:417 [inlined]\n  [7] with_scratch_game(f::NeverendingGame.var\"#394#395\"{Tuple{Int64, Int64}, Float64, Int64, Int64, Int64, Float64, Int64, NeverendingGame.CameraRig, Bool, Main.ClipScript.var\"#6#7\", Main.ClipScript.var\"#4#5\"{Float64, Base.RefValue{Bool}}, Float64, Bool, String}, root::String, size::Tuple{Int64, Int64})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:351\n  [8] #game_clip#392\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:416 [inlined]\n  [9] game_clip\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/render.jl:412 [inlined]\n [10] #winch_haul#1\n    @ /sim/Programmieren/SimGame/world/movies/winch.jl:30 [inlined]\n [11] winch_haul(path::String)\n    @ Main.ClipScript /sim/Programmieren/SimGame/world/movies/winch.jl:9\n [12] run_job(::Val{:clip}, ws::NeverendingGame.WorkerState, id::String, params::Dict{String, Any})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:210\n [13] run_worker(; root::String, kinds::Nothing, skip::Vector{String})\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/assets.jl:378\n [14] top-level scope\n    @ none:1\n [15] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [16] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [17] _start()\n    @ Base ./client.jl:550",
+  "error_file": "/sim/Programmieren/SimGame/world/jobs/20261128-153729-440-clip.error.txt",
+  "finished": "2026-11-28T15:38:05.158",
+  "id": "20261128-153729-440-clip",
+  "kind": "clip",
+  "params": {
+    "call": "winch_haul",
+    "path": "site/films/winch-first-haul.mp4",
+    "script": "movies/winch.jl"
+  },
+  "seconds": 34.2,
+  "started": "2026-11-28T15:37:30.561",
+  "status": "failed"
+}

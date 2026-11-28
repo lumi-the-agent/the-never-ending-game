@@ -12,10 +12,11 @@ const NG = NeverendingGame
 const ID = Main.IRONDRUM
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motor.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motorlook.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "rope.jl"))
 
 const ID_SPOT = (4.85f0, -14.3f0)     # 0.6 m west of the motor bench's table
 const ID_H = 0.62f0                   # the stand's top, the bench table's height
-const ID_LOOK = 10   # s174: the clay oil lamp; fine end grain on the block
+const ID_LOOK = 14   # s176: the winch: an oak spindle on the axle, a hemp rope, a driftwood log
 const ID_IRON = NG.Hikari.Principled(base_color = (0.40f0, 0.40f0, 0.42f0), metallic = 0.6f0, roughness = 0.45f0)   # soft iron, filed
 const ID_FERRITE = NG.Hikari.Principled(base_color = (0.09f0, 0.09f0, 0.10f0), metallic = 0.0f0, roughness = 0.65f0)
 # s173: the commutator spark: air breaking down at the brush's trailing edge (N2 lines, violet-blue) with a little
@@ -197,7 +198,9 @@ end
 
 function id_ensure!(game)
     sc = game.stage.scene
-    haskey(ID, :rot) && ID[:rot][1].parent === sc && get(ID, :look, 0) == ID_LOOK && return
+    # (a reload re-includes motor.jl: a build and state of the old module's types are made again)
+    haskey(ID, :rot) && ID[:rot][1].parent === sc && get(ID, :look, 0) == ID_LOOK && get(ID, :b, nothing) isa Motor.Build &&
+        get(ID, :st, nothing) isa Motor.State && return
     for p in copy(sc.plots)
         haskey(p.attributes, :name) && startswith(string(p.attributes[:name][]), "irondrum_") && delete!(sc, p)
     end
@@ -228,7 +231,10 @@ function id_ensure!(game)
     end
     rot = Any[]
     push!(rot, mesh!(sc, cyl((-0.045, 0, 0), (0.045, 0, 0), 0.032); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON, name = :irondrum_drum))
-    push!(rot, mesh!(sc, cyl((-0.085, 0, 0), (0.105, 0, 0), 0.004); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON, name = :irondrum_axle))
+    push!(rot, mesh!(sc, cyl((-0.15, 0, 0), (0.105, 0, 0), 0.004); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON, name = :irondrum_axle))
+    # s176 (idea 'Gear it down'): an oak pinion of 6 cogs on the axle's west end drives the winch's big wheel (6:1)
+    push!(rot, mesh!(sc, id_cog(ID_PINION_R, ID_PINION_N, -0.131, -0.119); color = RGBf(0.45, 0.31, 0.18), material = oak,
+                     name = :irondrum_pinion))
     # the commutator: 4 copper segments, their 20 deg gaps at the coils' neutral (every quarter turn of θ, where
     # Motor.drum_open breaks the circuit); the brushes are 8 deg wide, so both leave their segments together and spark
     half = Float32((pi / 2 - ID[:gap]) / 2)
@@ -258,6 +264,7 @@ function id_ensure!(game)
     ID[:b] = Motor.iron_drum_bench()
     old = get(ID, :st, nothing)
     ID[:st] = old isa Motor.State ? old : Motor.State(ID[:b]; θ0 = 0.3, on = false)
+    id_winch!(sc, c, game.world)                       # after the state: drawing the rope asks whether it runs
     Main.LOCAL_KEYS["irondrum"] = gm -> get(ID, :near, false) ? "K switch the iron drum motor on / off" : nothing
 end
 
@@ -298,7 +305,19 @@ function NG.step!(::IronDrum, game, dt)
             NG.emit!(w, :drum_spun_up; rev_s = st.ω / 2pi, amps = maximum(abs, st.I))
         end
     end
-    Motor.step!(st, ID[:b], min(Float64(dt), 0.05))
+    id_friend_visit!(w, st)
+    h = min(Float64(dt), 0.05)
+    θ0 = st.θ
+    rd = id_rdrum()
+    Motor.step!(st, ID[:b], h; τload = ID[:T] * rd / ID_GEAR)    # the rope's pull, through the drum and gear
+    reel = (st.θ - θ0) / ID_GEAR * rd
+    ID[:Lw] += reel
+    ID[:T] = Rope.step!(ID[:rope], ID[:load], h; reel)
+    id_rope_draw!(w)
+    for p in ID[:wheel]
+        Makie.rotate!(p, Vec3f(1, 0, 0), Float32(-st.θ / ID_GEAR))
+    end
+    r1 = Float32(id_rdrum()); Makie.scale!(ID[:coil], Vec3f(1, r1, r1))
     for p in ID[:rot]
         Makie.rotate!(p, Vec3f(1, 0, 0), Float32(st.θ))
     end
@@ -354,8 +373,160 @@ function id_sparks!(w, st)
     E > 1e-6 || (st.on || (ID[:spark_told] = false))
 end
 
+# ---- the winch (s176, project winch): oak spindle -> hemp rope (physics/rope.jl) -> a driftwood log on the sand ----
+# s176 'Gear it down': motor -> 6-cog pinion -> 36-cog wheel (6:1) -> a 20 mm oak drum the rope PILES UP on
+# (Rope.wound_radius: r^2 = r0^2 + d^2 L / (pi W)); pull = torque x ratio / r, reel = turn / ratio x r. Tested out of
+# the game (rope_check.jl haul_fill): 6:1 brings the 0.88 kg log 2 m in ~10 s, 3:1 stalls at 1.36 m as the drum fills.
+const ID_GEAR = 6.0
+const ID_PINION_N = 6; const ID_PINION_R = 0.012; const ID_WHEEL_R = 0.072
+const ID_CS = Point3f(0, 0.075, 0.038)          # the countershaft's axis from the motor axle's middle (84 mm apart)
+const ID_DRUM_X = (-0.115, -0.06)               # the rope drum's flanges along the countershaft
+const ID_DRUM_R0 = 0.02; const ID_DRUM_W = 0.055; const ID_ROPE_D = 0.009; const ID_LW0 = 0.3
+const ID_RX = -0.0875f0                         # the rope's line (x from the axle's middle): the drum's middle
+id_rdrum() = Rope.wound_radius(ID_DRUM_R0, ID_ROPE_D, ID_DRUM_W, ID[:Lw])
+
+"A wooden cog wheel about x between x0 and x1: a disc of radius r with n square cogs standing out 5 mm."
+function id_cog(r, n, x0, x1)
+    ms = Any[cyl((x0, 0, 0), (x1, 0, 0), r - 0.003)]
+    for k in 0:n-1
+        φ = 2pi * k / n
+        box = GeometryBasics.normal_mesh(Rect3f(Point3f(x0, -0.0025, r - 0.004), Vec3f(x1 - x0, 0.005, 0.009)))
+        R = [1 0 0; 0 cos(φ) -sin(φ); 0 sin(φ) cos(φ)]
+        vs = [Point3f((R * collect(p))...) for p in GeometryBasics.coordinates(box)]
+        push!(ms, GeometryBasics.Mesh(vs, GeometryBasics.faces(box)))
+    end
+    id_merge(ms)
+end
+const ID_LOG_S = 2.3                # where the log lies, metres out along the rope from the block's foot
+const ID_LOG_R = 0.04f0; const ID_LOG_L = 0.32f0
+const ID_LOG_M = 0.88               # driftwood (~550 kg/m3), 4 cm x 32 cm
+const ID_HEMP = NG.Hikari.Principled(base_color = (0.50, 0.40, 0.26), roughness = 0.92f0)
+
+"The rope's foot on the sand north of the block (local s = 0), and the ground's height s metres further on."
+id_foot(c) = Point3f(c[1] + ID_RX, c[2] + 0.20f0, 0)
+id_gz(w, c, s) = NG.ground(w.island, (c[1] + ID_RX, c[2] + 0.20f0 + Float32(s)))[3]
+
+function id_winch_reset!()
+    c = ID[:c]; w = ID[:game_w]
+    grade = (id_gz(w, c, ID_LOG_S) - id_gz(w, c, 0.0)) / ID_LOG_S
+    ID[:rope] = Rope.Tether((0.0, 0.0, 0.0), (ID_LOG_S, 0.0, 0.0); n = 12, slack = 1.04)
+    ID[:load] = Rope.Load(; m = ID_LOG_M, mu = 0.5, x = (ID_LOG_S, 0.0, 0.0), grade)
+    ID[:T] = 0.0
+    ID[:Lw] = ID_LW0                                   # a few turns already on the drum
+    ID[:redraw] = true                                 # the log and rope are drawn where they now lie, even at rest
+end
+
+function id_winch!(sc, c, w)
+    # a reload re-includes rope.jl (new types): rope and load made by the old module are made again
+    get(ID, :rope, nothing) isa Rope.Tether && get(ID, :load, nothing) isa Rope.Load && haskey(ID, :Lw) || id_winch_reset!()
+    ID[:rope_obs] = Observable(id_rope_mesh(w))
+    mesh!(sc, ID[:rope_obs]; color = RGBf(0.50, 0.40, 0.26), material = ID_HEMP, name = :irondrum_rope)
+    # sea-bleached driftwood: silver-grey, dry, the grain open (pale, rough, no bark)
+    # (s176: a lumpy procedural branch read as a grey rubber sausage; the sawn round log reads as wood when traced)
+    # the countershaft north of the motor: big cog wheel, iron shaft, oak rope drum with flanges, the rope coil on it
+    cs = c + ID_CS
+    oak = mo_wood(base = (0.56, 0.40, 0.24))
+    wheel = Any[]
+    push!(wheel, mesh!(sc, id_cog(ID_WHEEL_R, round(Int, ID_PINION_N * ID_GEAR), -0.131, -0.119); color = RGBf(0.5, 0.35, 0.2),
+                       material = oak, name = :irondrum_wheel))
+    push!(wheel, mesh!(sc, cyl((-0.16, 0, 0), (-0.05, 0, 0), 0.004); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON,
+                       name = :irondrum_cshaft))
+    push!(wheel, mesh!(sc, cyl((ID_DRUM_X[1], 0, 0), (ID_DRUM_X[2], 0, 0), ID_DRUM_R0); color = RGBf(0.5, 0.35, 0.2),
+                       material = oak, name = :irondrum_rdrum))
+    for (k, x) in enumerate(ID_DRUM_X)
+        push!(wheel, mesh!(sc, cyl((x - 0.003, 0, 0), (x + 0.003, 0, 0), 0.038); color = RGBf(0.45, 0.31, 0.18), material = oak,
+                           name = Symbol("irondrum_rflange", k)))
+    end
+    push!(wheel, mesh!(sc, GeometryBasics.normal_mesh(Rect3f(Point3f(-0.112, -0.003, -0.05), Vec3f(0.004, 0.006, 0.1)));
+                       color = RGBf(0.35, 0.24, 0.14), material = oak, name = :irondrum_rpeg))   # a peg: the turn shows
+    for p in wheel
+        Makie.translate!(p, cs)
+    end
+    ID[:wheel] = wheel
+    coil = mesh!(sc, cyl((ID_DRUM_X[1] + 0.004, 0, 0), (ID_DRUM_X[2] - 0.004, 0, 0), 1.0); color = RGBf(0.50, 0.40, 0.26),
+                 material = ID_HEMP, name = :irondrum_rcoil)          # unit radius, scaled to the wound radius
+    Makie.translate!(coil, cs)
+    ID[:coil] = coil
+    top = c[3] - 0.045f0
+    mesh!(sc, GeometryBasics.normal_mesh(Rect3f(Point3f(c[1] - 0.168f0, cs[2] - 0.009f0, top), Vec3f(0.018f0, 0.018f0, cs[3] - top + 0.01f0)));
+          color = RGBf(0.5, 0.35, 0.2), material = oak, name = :irondrum_cpost)   # the countershaft's oak post
+    lg = mesh!(sc, cyl((-ID_LOG_L / 2, 0, 0), (ID_LOG_L / 2, 0, 0), ID_LOG_R); color = RGBf(0.70, 0.62, 0.52),
+               material = mo_wood(moving = true, base = (0.72, 0.64, 0.54)), name = :irondrum_log)
+    ID[:log] = lg
+    id_rope_draw!(w; force = true)
+end
+
+"The rope as drawn: off the spindle's top, over the block's north rim, down its side, then the simulated particles."
+function id_rope_pts(w)
+    c = ID[:c]; F = id_foot(c); top = c[3] - 0.045f0
+    rd = Float32(id_rdrum())                       # off the drum's underside (it turns backwards to the motor: reels in)
+    lead = [c + ID_CS + Point3f(ID_RX, 0, -rd), c + ID_CS + Point3f(ID_RX, 0.03f0, -rd - 0.004f0),
+            Point3f(c[1] + ID_RX, c[2] + 0.172f0, top + 0.004f0), Point3f(c[1] + ID_RX, c[2] + 0.182f0, top - 0.03f0)]
+    pts = [Point3f(F[1] + Float32(x[2]), F[2] + Float32(x[1]), id_gz(w, c, x[1]) + Float32(x[3]) + 0.004f0) for x in ID[:rope].x]
+    pts[1] = Point3f(pts[1][1], pts[1][2], pts[1][3] + 0.01f0)
+    vcat(lead, pts)
+end
+id_rope_mesh(w) = mtube(id_rope_pts(w), 0.0045f0; nring = 7)   # a 9 mm hauling line
+
+function id_rope_draw!(w; force = false)
+    ld = ID[:load]
+    moving = force || get(ID, :redraw, false) || ID[:st].on || ld.v[1] != 0
+    moving || return
+    ID[:redraw] = false
+    ID[:rope_obs][] = id_rope_mesh(w)
+    c = ID[:c]; F = id_foot(c); s = ld.x[1]
+    Makie.translate!(ID[:log], Point3f(F[1], F[2] + Float32(s) + ID_LOG_R, id_gz(w, c, s) + ID_LOG_R))
+    # a new happening: the drum hauled something on its rope (once a run, after the first 20 cm)
+    if ID[:st].on && !get(ID, :haul_told, true) && get(ID, :haul_from, s) - s > 0.2
+        ID[:haul_told] = true
+        NG.emit!(w, :winch_haul; what = "driftwood log", kg = ID_LOG_M, metres = get(ID, :haul_from, s) - s, pull_N = ID[:T])
+    end
+end
+
+"""
+s176: the friends try the winch too. Every few minutes, while the drum stands idle, the
+nearest friend who is up and wandering walks over and pulls the switch, watches the log come in on the rope, and
+switches it off once the log is at the block (or after a while if it stalls).
+"""
+function id_friend_visit!(w, st)
+    if !st.on && w.t > get(ID, :friend_next, w.t + 60.0)
+        ID[:friend_next] = w.t + 180.0
+        spot = NG.ground(w.island, (ID_SPOT[1] + 0.3f0, ID_SPOT[2] + 0.35f0))
+        best = nothing; bd = 60.0
+        for cr in w.creatures
+            (cr.name == "Lumi" || cr.controlled || !(cr.goal.kind in (:wander, :idle, :sit))) && continue
+            d = hypot(cr.pos[1] - ID_SPOT[1], cr.pos[2] - ID_SPOT[2])
+            d < bd && (best = cr; bd = d)
+        end
+        best === nothing && (ID[:friend_next] = w.t + 45.0)      # nobody free: look again soon
+        if best !== nothing
+            best.goal = NG.Goal(:drum, spot, :eat, 2.5, 0.0, false, 0, false)
+            ID[:friend] = best.name; ID[:friend_on] = false
+            NG.say!(w, best, "What does Lumi's motor do?"; duration = 2.5)
+        end
+    end
+    haskey(ID, :friend) || (ID[:friend_next] = get(ID, :friend_next, w.t + 60.0); return)
+    cr = NG.creature(w, ID[:friend])
+    cr === nothing && (delete!(ID, :friend); return)
+    if !ID[:friend_on] && cr.goal.kind === :drum && cr.goal.arrived
+        ID[:friend_on] = true; ID[:friend_t] = w.t
+        st.on || id_switch!(w, cr, st, cr.name)
+        NG.emit!(w, :friend_ran_winch; who = cr.name)
+    elseif ID[:friend_on] && st.on && (ID[:load].x[1] < 0.45 || w.t - ID[:friend_t] > 40.0)
+        id_switch!(w, cr, st, cr.name)
+        NG.say!(w, cr, ID[:load].x[1] < 0.45 ? "It pulled the whole log in!" : "It got stuck!"; duration = 3.0)
+        delete!(ID, :friend)
+        cr.goal.kind === :drum && (cr.goal = NG.Goal(:wander, cr.pos, :idle, 1.0, 0.0, false, 0, false))
+    elseif !ID[:friend_on] && !(cr.goal.kind === :drum)
+        delete!(ID, :friend)                           # it got distracted on the way
+    end
+end
+
 function id_switch!(w, me, st, who)
     st.on = !st.on
+    # switched on with the log already at the block: it was walked back out along the rope first (paid out by hand)
+    st.on && ID[:load].x[1] < 0.7 && id_winch_reset!()
+    st.on && (ID[:haul_from] = ID[:load].x[1]; ID[:haul_told] = false)
     haskey(ID, :game) && id_sound!(ID[:game], st.on ? "drum-on" : "drum-off")
     ID[:told] = false
     NG.say!(w, me, st.on ? "Iron drum, on!" : "Off. Listen to it coast."; duration = 2.5)

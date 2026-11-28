@@ -16,7 +16,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] The bench motor runs on four clay pots, turning the potter's wheel
 - [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
   - [x] Round iron drum rotor: 2 coils, no cogging, its brushes SPARK (s172-173); field solved by Newton, L 8 mH (s175)
-  - [ ] The winch: the drum on a rope hauls the empty cart up the planks (#780; crate hauled; next: wide brushes, rope in game)
+  - [ ] The winch: the drum on a rope hauls the empty cart up the planks (#780; s176: wide brushes, rope, 6:1 oak gear + filling drum IN the game; next: gear choice, the cart)
     - [ ] Set the brushes for the load: Lumi's hand on the rocker (projects/brushes.md, #785)
 - [ ] The motor run backwards: a windmill generator that lights a wire
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)

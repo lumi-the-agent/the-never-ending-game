@@ -59,6 +59,8 @@ Base.@kwdef mutable struct Build
     commutate::Bool = false
     L_circuit::Float64 = 0.0       # > 0: the circuit's inductance (H) instead of the air-core Neumann one (iron cores)
     pawl::Bool = false             # s173: a ratchet on the shaft: it turns forward only (a winch holding its load)
+    # s176: the trailing contact arcs once its voltage passes this (copper's minimum arc voltage ~13 V, carbon ~20 V)
+    V_arc::Float64 = 13.0
 end
 
 perimeter(t) = sum(norm(collect(t[k+1]) .- t[k]) for k in 1:length(t)-1)
@@ -143,6 +145,7 @@ mutable struct State
     kt::Vector{Float64}; ke::Vector{Float64}
     J::Float64; L::Float64; Rw::Float64; Rloop::Float64; E::Float64; τfric::Float64
     sparks::Vector{Tuple{Float64,Float64}}; shorts::Int
+    ic::Float64; comm::Int         # s176: the shorted coil's current while a wide brush bridges (comm 1), arced (2)
 end
 
 # s172: the iron drum's torque per ampere-turn over its 90 deg period, solved in 2D with saturating iron (physics/motor2d.jl,
@@ -175,7 +178,7 @@ function State(b::Build; θ0 = 0.3, ω0 = 0.0, nθ = 180, on = true)
     τfric = b.mu_bearing * m * 9.81 * b.r_axle + 2 * b.mu_brush * b.brush_F * b.ring_r
     L = b.L_circuit > 0 ? b.L_circuit : inductance(b)
     State(θ0, ω0, 0.0, 0.0, 0, 0.0, on, kt, ke, inertia(b), L, Rw, Rc + Rw + 2b.R_contact, E, τfric,
-          Tuple{Float64,Float64}[], 0)
+          Tuple{Float64,Float64}[], 0, 0.0, 0)
 end
 
 function interp(tab, θ)
@@ -185,6 +188,37 @@ end
 
 "A flick of the beak: the rotor's spin changes by Δω (rad/s)."
 flick!(st::State, Δω) = (st.ω += Δω; st)
+
+"""
+Make-before-break (s176): brushes wider than the gaps bridge two segments for (brush_w - gap) of every quarter turn,
+so the circuit never opens, but the coil passing its neutral is SHORTED through the brush. Its current has to turn
+from +I to -I in that time: resistance commutation, L_c dic/dt = R_B (I - ic) - R_A (I + ic), each contact's
+resistance R_contact over its share of the brush (the trailing share shrinks to 0). If the trailing contact's voltage
+R_A (I + ic) passes V_arc it arcs and the rest of the mismatch, 1/2 L_c (I + ic)^2, goes into a spark; so does
+whatever is left when the brush leaves. Low-resistance copper hardly commutes in 6 ms (the coil keeps its current
+until the last moment); a carbon brush forces it over, at the price of its resistance in the circuit.
+"""
+function commutate!(st::State, b::Build, h)
+    w2 = (b.brush_w - b.gap) / 2
+    x = mod(st.θ + pi / 4, pi / 2) - pi / 4          # from the nearest neutral (where drum_open's gaps sit)
+    if abs(x) >= w2
+        if st.comm == 1                              # the brush leaves the trailing segment under current
+            push!(st.sparks, (st.t, 0.5 * (st.L / b.coils) * (st.I + st.ic)^2))
+        end
+        st.comm = 0
+        return st
+    end
+    st.comm == 0 && (st.comm = 1; st.ic = st.I)       # the coil's current as the brush starts to bridge
+    st.comm == 2 && return st                         # this window already arced
+    p = clamp(st.ω >= 0 ? (x + w2) / (2w2) : (w2 - x) / (2w2), 1e-6, 1 - 1e-6)
+    RA = b.R_contact / (1 - p); RB = b.R_contact / p
+    Lc = st.L / b.coils                               # one coil of the series
+    st.ic = (st.ic + h / Lc * (RB - RA) * st.I) / (1 + h * (RA + RB) / Lc)
+    if RA * abs(st.I + st.ic) > b.V_arc
+        push!(st.sparks, (st.t, 0.5 * Lc * (st.I + st.ic)^2)); st.ic = -st.I; st.comm = 2
+    end
+    st
+end
 
 """
     step!(st, b, dt; h = 2e-4)
@@ -207,6 +241,7 @@ function step!(st::State, b::Build, dt; h = 2e-4, τload = 0.0)
             st.I = (st.I + h / st.L * (s * st.E + emf)) / (1 + h * st.Rloop / st.L)   # implicit in I
         end
         st.s_prev = s
+        s != 0 && b.drum && b.commutate && b.brush_w > b.gap && commutate!(st, b, h)
         st.τ = interp(st.kt, st.θ) * st.I
         ω = st.ω
         τn = st.τ - τload                                  # s173: a load on the shaft (a rope's pull x drum radius / ratio)
@@ -358,7 +393,10 @@ function iron_drum_bench(; N = 80, cells = 6, mu_bearing = 0.25)
         # s173: brush 8 deg on 20 deg gaps = break-before-make. s175: both coils in series, L_d at the running ~0.64 A
         # (51 A-turns) = 7.5 / 7.7 / 8.1 mH on 1 / 0.6 / 0.5 mm grids (Motor2D.solve_newton, converged; 0.75 mm says
         # 14.7, its bridge staircase). Below 0.2 A the slot bridges are unsaturated (L_d 150-700 mH): not modelled here.
-        commutate = true, L_circuit = 8e-3)
+        commutate = true, L_circuit = 8e-3,
+        # s176: copper brushes 30 deg wide on the 20 deg gaps = make-before-break (commutate!): no dead windows, so the
+        # loaded winch never stops in one; the shorted coil's current still sparks at the trailing edge
+        brush_w = deg2rad(30))
 end
 
 "A bench build with sensible parts; keywords change any of them."

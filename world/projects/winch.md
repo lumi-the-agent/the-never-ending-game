@@ -1,6 +1,6 @@
 # The cart's motor on a rope: winch anything up the beach
 Goal: (passed s173, round 2: surprise 6 fun 8 real 7 toward 9) The player hooks the drum motor's rope to anything on the island (a log, a crate, the empty cart, a friend on the cart) and picks a pulley; the motor hauls it or stalls by what it weighs and how it rolls, and the stall shows: rope taut, drum stopped, the brushes sparking bright on the stall current. Nothing quoted or fitted: rope, cart mass (mesh volume x density) and rolling by contact, torque from the circuit each step.
-Next: (s175: field solve CONVERGED by Newton, L_circuit 8 mH in the game, ~1.3 mJ a spark; retake film swapped in.) 1) brush width as a part: make-before-break (brush wider than the gap; the shorted coil decays with L/R ~3-4 ms) so a loaded motor never sits in a dead window; 2) the rope + pawl IN THE GAME by the drum, drawn as a tube through rope.jl's particles, coiling on an oak drum; 3) the empty cart (mass from its mesh) on the planks hauled 30 cm+ = #780's done_when; film it. Also: re-sweep physics/data/drum2-torque.csv with torque(...; newton = true) (Picard tables ~7% low).
+Next: (s176 late: 'Gear it down' IS IN THE GAME, published ~15:57: 6-cog pinion on the motor axle, 36-cog oak wheel (6:1) on a countershaft (c + (0, .075, .038)) with its post, a 20 mm x 55 mm oak drum, the rope coil drawn growing (scale = Rope.wound_radius), pull = torque x 6 / r. Sandbox: log 2.3 -> 1.26 m in 12 s, 4.1 -> 2.6 rev/s as the drum grows 24.6 -> 32.7 mm; system 0.6 ms. Film take 2 (job 20261128-154338-654) should show it: WATCH.) 1) gear choice 3:1 / 6:1 / 10:1 in Jump in (3:1 stalls at ~1.36 m as the drum fills: the film the critic wants); the pinion/wheel cogs do not phase-match (draw them meshing); 2) a real hook/unhook instead of the log teleporting back; 3) the empty cart up the planks (#780).
 
 Passed s172 (round 3 of 3, the critic's pick of a non-pass: surprise 6 fun 7 real 6 toward 8). The human s172: "back to
 kindergarten times? ... nothing of the electric car itself moved since s159". This project IS the car's motor.
@@ -157,3 +157,40 @@ Critic's dangers: (1) softiron saturation and the rope tuned until the loaded ca
   the cart's first jerk), not a cart sliding along a rail.
 - Order next session: wide brushes (make-before-break) -> rope + pawl drawn in the game by the drum -> hook key in Jump
   in -> the empty cart on the planks hauled 30 cm+ (#780) -> a second load that stalls -> traced dusk film.
+
+## s176 free part: wide brushes (make-before-break) IN motor.jl
+- Motor.commutate! (called from step! when drum && commutate && brush_w > gap): the coil passing neutral is shorted by
+  the bridging brush; resistance commutation L_c dic/dt = R_B (I - ic) - R_A (I + ic), R = R_contact / contact share;
+  the trailing contact arcs when R_A |I + ic| > V_arc (new Build field, 13 V copper) -> spark 1/2 L_c (I + ic)^2.
+- Free (greased, mu 0.05): brush 8 deg 9.57 rev/s 0.22 mJ a spark; 30 deg copper 10.45 rev/s 0.07 mJ; 30 deg R 1 Ohm
+  (charcoal-like) 8.79 rev/s 0.003 mJ.
+- Hauling (pawl, 6:1, 3 cm drum, 15 s): 1.5 kg log: 8 deg 15.8 cm stall; 30 deg COPPER 81 cm still running 1.5 rev/s
+  (111 sparks, 66 mJ); 30 deg 1 Ohm 10.7 cm stall, NO sparks. 3 kg: all stall (3-5 cm).
+- So a real player choice: copper brushes haul and spark; carbon is quiet and too weak for the log. The brush is a part.
+  Not yet: the plugin's brushes are still 8 deg (Build default in iron_drum_bench); no carbon brush on the island yet.
+
+## s176: the winch in the game (published 15:58)
+- plugins/irondrum.jl id_winch!/id_rope_draw!: Motor.step!(τload = T r) then Rope.step!(reel = Δθ r), r = ID_SPOOL_R 6 mm
+  (9 mm stalled a 1.5 kg log at 5 cm: pull = torque / r, the drum's weak angle gives ~33 mN m at 0.9 A). Log 0.88 kg,
+  mu 0.5, grade from the ground (+0.08: the log lies uphill, north). Switching on with the log < 0.7 m away resets it
+  (walked back out: a puppet move, replace with the player dragging it). Event :winch_haul after 20 cm (new kind).
+- Sandbox: 2.3 -> 1.24 m in 16 s, 1.7 rev/s, 0.8 A, T 3.5-4.8 N, first snatch 6.9 N. Frame 5 ms median.
+- Reload traps (fixed): rope/state objects of the OLD included module types survive a reload (MethodError, system
+  switched off): id_ensure!/id_winch! now check `isa Motor.State/Rope.Tether` and rebuild.
+- HONESTY (todo #790): the spindle radius is a CONSTANT 6 mm while the drawn line is 9 mm thick; 2 m of it piled on a
+  4 cm bobbin would reach ~37 mm (pull /6: the log would stall at ~30 cm). First thing next: r_eff from the wound
+  length, the coil drawn growing on the bobbin, then a 6:1 wooden gear + wider drum (the real cure), then the pulley.
+- Look tried and dropped: a lumpy procedural driftwood branch (lobes, ragged end) read as a grey rubber sausage in
+  raster; the sawn round log with mo_wood(moving = true) reads as wood when traced.
+- Film: movies/winch.jl winch_haul (still camera east of the log, rope across to the block). Two takes queued to the
+  same path (20261128-154201-690 with the 3 mm rope, -154338-654 with the 9 mm one); the pending post waits for both.
+
+## s176 late: 'Gear it down' (idea passed), the physics first (rope_check.jl haul_fill, 30 s, 0.88 kg log, 2.3 m)
+- Today's spindle (1:1, 6 mm core) honestly filling (9 mm rope): 7.9 cm, stall (r 15 -> 18 mm). The game's current
+  constant-6 mm haul is TOO KIND (todo #790).
+- 3:1 on a 20 mm x 60 mm drum: 136 cm, then STALLS as the drum fills (r 23 -> 34 mm): the fill decides it.
+- 6:1: the whole 2 m in 10.5 s (6.3 rev/s, faster than today); 10:1: 13.2 s (8.7 rev/s); 6:1 with a 3 kg log: 15 cm stall;
+  6:1 with an 8 kg cart rolling (mu 0.03, flat): 2 m in 9.3 s. So gear x load x fill really changes climb vs stall.
+- s176 (flanges now 38 mm, published; media/s176-gear-ne.png from the north-east shows motor, wheel, drum, coil and rope together) traced look at the gear (media/s176-gear-traced.png, from the north-west): oak grain reads, the cog wheel and
+  peg show, but the drum's 46 mm flange in front hides half the wheel and the whole thing is chunky and dark in its own
+  shadow. Next look: flanges ~38 mm, the camera from the north-east so wheel, pinion and the growing rope coil all show.

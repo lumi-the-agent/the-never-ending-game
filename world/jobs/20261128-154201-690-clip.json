@@ -1,0 +1,12 @@
+{
+  "created": "2026-11-28T15:42:01.690",
+  "id": "20261128-154201-690-clip",
+  "kind": "clip",
+  "params": {
+    "call": "winch_haul",
+    "path": "site/films/winch-first-haul.mp4",
+    "script": "movies/winch.jl"
+  },
+  "started": "2026-11-28T15:42:02.764",
+  "status": "running"
+}
