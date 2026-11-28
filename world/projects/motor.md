@@ -1,6 +1,6 @@
 # A motor fitted by hand
 Goal: The player fits a motor together from parts on a bench (two stones, a wooden rotor wound with copper, an axle in forked sticks, a split copper ring, two springy brushes, cells) and touches the last wire: built right it kicks, maybe stalls on its dead spot until flicked with the beak, then whirs; with a stone turned round it runs backwards, with the brushes off it stalls, with the beach lodestone it is too weak. Tinkering until it runs is the game, and every fault is the real fault. Then it drives the cart (big goal).
-Next: (s158: chipped magnet stones = the field solver's own mesh, red ochre band, coils as wound bundles, published) judge the traced take media/s158/drum-look4.mp4 (drum-look3 = first pot stones; coils read as wound copper there); movies/drumlook.jl's eye was ~0.47 m off (same as the default: motor ~1/4 of frame); s158 moved it to ~0.25 m, take media/s158/drum-look5.mp4 (job 20261128-004833-337) checks it; then the review's bar (#743): an oak bench table instead of sand, copper that reads orange in raster too (Hikari.Copper draws pink-salmon there), the motor >= 40% of a 64 spp still. Then the motor goes on the cart's axle (projects/cart.md).
+Next: (s159: the bench stands on an oak table and runs on six clay-pot cells, published) a 64+ spp traced still with the motor >= 40% of the frame, copper reflecting (closes #743); then the wound iron stator (the motor turns only ~5% of the pots' power into work: NOTES 'Power budget').
 
 ## s154: physics/motor.jl (passed idea round 1: surprise 8, fun 8, real 7, toward 10)
 - Parts only: em.jl magnets (any mesh, any material), one turn of the coil as a polyline (wound N times, wire radius),
@@ -37,3 +37,8 @@ Next: (s158: chipped magnet stones = the field solver's own mesh, red ochre band
 - The human: films so far are bad (a speck with the jelly ball behind). Post only when it looks the part, and show it DOING something people care about. Plan: 3-pole rotor (self-starting, the real fix), real materials, turning something visible, camera zoom (fov).
 
 - s156 ideas: none passed in 3 rounds; strongest = 'My first motor boat' (critic: real 6, toward 8): a 3-pole self-starting motor on a raft turns a paddle wheel, clam cells aboard, a friend riding; paddle force 1/2 rho Cd A (v_blade - v_water)^2 on the real blade area below the solved waterline, buoyancy and trim from the hull mesh. Critic's warnings: the motor must truly RUN first; four new solvers in one go risks a raft nudged by a fitted constant; film it following the raft, not a lone device. ORDER: (1) 3-pole motor self-starts from every angle (test), (2) real materials + a still, (3) paddle wheel on a fixed axle in water, (4) raft buoyancy, (5) together, then film. No post before it looks the part (the human s156).
+
+- s159 close look on the table (media/s159/motor-traced-f.png / motor-raster-f.png, eye 0.5 m): traced: oak grain
+  reads, stones dark rock, copper dull red-brown (no highlight in this light); RASTER copper reads pale beige-pink, not
+  orange (the metallic Principled's raster colour): #743's 'raster shows orange copper' still fails. Try a lamp near
+  the bench for highlights and check what colour RayMakie's raster takes from a metallic Principled.

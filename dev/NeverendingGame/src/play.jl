@@ -6,7 +6,7 @@ mutable struct JumpIn <: MiniGame
 end
 JumpIn(g::Game) = JumpIn(creature(g.world, "Lumi").id)
 game_title(::Type{JumpIn}) = "Jump in (WASD)"
-game_description(::Type{JumpIn}) = "Be Lumi (WASD): by the boards east of the kiln hold 6 to float a magnet top over a stone ring (7 and 8 add or file a copper washer) or 1 to spin a top; 2 or 3 bend a copper wire (4 moves the pin); E twice for a parade; X sneeze, H hiccup, G fly, C sing, P paint, T storm, B bubble, J swallow, U throw up into orbit, K tip my day, L stomp, V shadow, Z rewind; at night F flashes a lantern for the fireflies and N claps to see the sound; on the beach Y skips a stone; O throws a boomerang (throw it with the wind)."
+game_description(::Type{JumpIn}) = "Be Lumi (WASD): by the boards east of the kiln hold 6 to float a magnet top over a stone ring (7 and 8 add or file a copper washer) or 1 to spin a top; at my motor on the oak table south of the boards 7 switches it on, 0 adds a clay-pot cell, 8 or 9 turn a stone round; 2 or 3 bend a copper wire (4 moves the pin); E twice for a parade; X sneeze, H hiccup, G fly, C sing, P paint, T storm, B bubble, J swallow, U throw up into orbit, K tip my day, L stomp, V shadow, Z rewind; at night F flashes a lantern for the fireflies and N claps to see the sound; on the beach Y skips a stone; O throws a boomerang (throw it with the wind)."
 
 "Footprint radius (at scale 1) of the props creatures cannot walk through; the Separation plugin fills it."
 const SOLID_FOOTPRINT = Dict{Symbol,Float32}()

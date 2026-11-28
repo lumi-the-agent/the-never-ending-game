@@ -228,6 +228,45 @@ function add_header!(page::AbstractString, jp::JailPaths, cfg::HostConfig)
 end
 
 """
+    lighten_page!(dir)
+
+The published front page loads what is on screen and no more: every picture lazily, every film not
+before it is played, behind a still of it (`posters/` of the published copy, one per film, made again
+when the film changes). Nov 28: the page loaded 46 MB of pictures and 96 films at once and took ages to open.
+"""
+function lighten_page!(dir::AbstractString)
+    page = joinpath(dir, "index.html")
+    html = read(page, String)
+    html = replace(html, r"<img\b(?![^>]*\bloading=)" => s"<img loading=\"lazy\" decoding=\"async\"")
+    html = replace(html, r"<video\b[^>]*>" => tag -> lazy_video(dir, tag))
+    write(page, html)
+    shown = Set(m[1] for m in eachmatch(r"poster=\"posters/([^\"]+)\"", html))
+    posters = joinpath(dir, "posters")
+    isdir(posters) && foreach(f -> f in shown || rm(joinpath(posters, f)), readdir(posters))
+    return page
+end
+
+"A film's tag that loads nothing before it is played, with a still of the film (`poster!`) unless it has one."
+function lazy_video(dir::AbstractString, tag::AbstractString)
+    occursin(r"\bpreload=", tag) && return tag
+    src = match(r"\bsrc=\"([^\"]+)\"", tag)
+    poster = occursin(r"\bposter=", tag) || src === nothing || !isfile(joinpath(dir, src[1])) ? "" :
+             " poster=\"$(poster!(dir, src[1]))\""
+    return replace(tag, r"^<video" => "<video preload=\"none\"" * poster)
+end
+
+"A still of the film `film` (relative to `dir`) in `dir/posters`, made with ffmpeg when it is missing or older than the film."
+function poster!(dir::AbstractString, film::AbstractString)
+    name = replace(splitext(film)[1], '/' => '-') * ".jpg"
+    src, jpg = joinpath(dir, film), joinpath(dir, "posters", name)
+    if !isfile(jpg) || mtime(jpg) < mtime(src)
+        mkpath(dirname(jpg))
+        run(`ffmpeg -loglevel error -y -i $src -vf thumbnail=30,scale=960:-2 -frames:v 1 -q:v 4 $jpg`)
+    end
+    return "posters/" * name
+end
+
+"""
 Whether the character's front page goes out now, during the session: it changed since it was last
 published or a picture it shows arrived since (renders come from the worker), it was left alone
 for `settle` seconds (a post is written in several edits), and everything it shows exists.
@@ -262,9 +301,10 @@ function push_pages!(host, n::Int)
     jp, repo = host.jp, host.cfg.blog_repo
     dir = working_copy!(jp, blog_dir(jp), repo)
     git(args...) = host_git(jp, dir, args...)
-    run(`rsync -a --delete --exclude .git --exclude .nojekyll $(joinpath(jp.world, "site"))/ $(dir)/`)
+    run(`rsync -a --delete --exclude .git --exclude .nojekyll --exclude /posters $(joinpath(jp.world, "site"))/ $(dir)/`)
     write(joinpath(dir, ".nojekyll"), "")                      # plain files, no Jekyll
     add_header!(joinpath(dir, "index.html"), jp, host.cfg)
+    lighten_page!(dir)
     leaked = secret_files(jp, dir)
     isempty(leaked) || error("the blog holds secrets, not published: " * join(leaked, ", "))
     run(git("add", "-A"))

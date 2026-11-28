@@ -1269,3 +1269,46 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   plugin that draws once keeps a `const X_LOOK = n` and redraws when its dict's :look differs; bump it with any change
   to how it is drawn (incl. the physics/*.jl look files it includes). Check after publish with a read-only
   `live_eval("get(Main.DICT, :look, 0)"; game = :live)`.
+
+## Power budget: can island cells move the cart? (s159 free part)
+- Cathode limit j = n F D C / δ (still water, δ 0.5 mm). Fe/Cu in SEA WATER: the only cathode reaction is dissolved O2
+  (0.21 mM): j = 0.32 A/m2 -> a 10x10 cm copper plate (both faces) gives 6.5 mA, ~1.5 mW. That is lemon-battery size.
+  circuit.jl's "brine cell 0.75 V, 3 Ohm" (used by the drum bench and the coil crane) ignores this: ~1000x too strong.
+- Copper in its OWN blue salt (CuSO4 1 M) behind a fired clay wall, iron in brine outside (Daniell's porous pot, 1836,
+  Fe version 0.78 V): j = 270 A/m2 (Cu2+ 1 M, n = 2) -> 5 A diffusion limit per plate; the pot wall (~0.5 Ohm) caps it
+  at ~0.3 W. Runs the drum bench (~1.1 W) on a handful of pots. The kiln makes the pots: the cell step should be THIS.
+- Rolling in dry sand (WheelSand.cart_climb, 4 wheels): 60 kg empty cart flat 60-92 N (18-28 W at 0.3 m/s); 510 kg
+  (3 pony-sized friends + cart) 1000-1540 N flat, 1850-2380 N on 10 deg = 550-710 W. Dry sand rolling ~0.2-0.3 x weight.
+- So: NO primary cell on the island moves three friends up the dune (380 000 sea cells or ~2000 clay pots). Real ways:
+  stored energy (lead accumulator, Plante 1859: lead from galena, acid from roasted green vitriol; ~100 W/kg, a few kg
+  of lead cells for 500 W) charged for hours by the generator (wind / water wheel), and/or a plank track (rolling
+  0.01-0.02, ~20x less). The motor too must be ~500 W: an iron-cored WOUND stator (electromagnet), lodestone is too weak.
+- Before claiming the cart in the big goal: put these steps on the road (porous pot cell, accumulator, field-wound
+  stator, track or wide wheels) and fix circuit.jl's cell to carry the O2 / Cu2+ limiting current (polarisation).
+- s159 MAIN: physics/potcell.jl `PotCell.Pot` (Fe | brine || porous pot || CuSO4 | Cu): Nernst emf 0.871 V at start
+  (Cu2+ 1 M, Fe2+ 1 mM), wall R from porosity (Archie m = 2, typical red earthenware firing curve): fired 900 C 1.2 Ohm
+  (0.16 W max), 950 C 1.42, 1000 C 1.8, 1100 C 6.9, 1180 C (vitrified) 82 Ohm: an over-fired pot is a dead cell.
+  I_lim 5.4 A (10x10 plate). `linear(pot, I)` -> (emf, R) for the solvers. `run!` = Faraday (0.5 l of 1 M blue lasts
+  ~48 h at the bench's 0.56 A). Wired into plugins/motorbench.jl (6 pots in a row beside the bench, 0 = how many in the
+  chain; st.E / st.Rs set from the pots every frame). PUBLISHED s159 (media/s159/pots-traced-b.png).
+- Drum_film on 6 pots fired 950 C (quasi-static, torque averaged over angle at fixed speed, h = Inf): net torque
+  9.0 mN m at stall, 5.4 at 24 rad/s, ~130 mW out for ~2.9 W drawn from the pots (~5%: weak ferrite-strength stones and
+  thin copper waste the rest). A 300 g berry basket on a 1 cm winch drum through 10:1 needs 4.2 mN m: rises ~2-3 cm/s.
+  NOT 'a few cm/s for 1 kg'. The drum's magnets are ferrite-strength; island lodestone would stall it: the wound
+  stator is the motor's real bottleneck, not the cells.
+- LESSON s159: a plugin dict in Main (MOTORBENCH) holding structs of a module the plugin INCLUDES (PotCell.Pot) breaks
+  on reload: the new module's methods don't match the old instances (MethodError, system switched off). Check
+  `x isa Vector{PotCell.Pot}` and rebuild, as `MB[:st] isa Motor.DrumState` already did. Plugin modules are NOT bound
+  in Main (live_eval can't reach Main.Plugin_x); test plugin functions through their keys or a Main hook.
+- s159: the motor bench stands on an oak work table (plugins/motorbench.jl MB_TABLE_H = 0.62 m, legs to the ground
+  under each corner); MB[:A] is now ~1.8 m z. Pots stand on the ground 0.62 m north of the axle, cords drape down.
+  Any film of the bench (movies/drumlook.jl draws its own motor_plots!) must add the table itself or match this height.
+- s159: MB_NEAR 1.8 -> 0.9 m: the motor bench's keys (7, 8) overlapped the levitron board's (FT_SPOT (6.0,-12.1), 1.3 m, also 7/8). Keep key zones of neighbouring benches apart: near_a + near_b < distance.
+- s159 (late, bored): Lumi TASTES the pot chain (motorbench.jl mb_taste!, event :taste_cell): both ends on a wet
+  tongue (~8 kOhm, as Volta and Sulzer tested piles), I = sum emf / (sum R + 8 kOhm): 6 pots 0.65 mA "bite", 3 pots
+  0.33 "tingle", 1 pot 0.11 "a little sour". Runs 3 s after Lumi's own switch visit and whenever 0 changes the chain.
+  Published; checked in the sandbox ("Zzzt! 6 pots bite my tongue!").
+- s159 ENGINE (dev/NeverendingGame/src/scenery.jl turn_drawn!): a frame drawn without a sim step (dt == 0) fell into
+  the `10 rad` branch, so any heading change passed in ONE frame (host motion: Pickles 131 deg in one frame). Now dt <= 0
+  gives DRAWN_FREE (0.25 rad). Sandbox live_motion after: 10 of 10 moving well (one 3 s sample; vibration items
+  (Sir Sniffsalot 10/s, Hopscotch 9/s) were not seen in that sample either, so not proven fixed). Published.

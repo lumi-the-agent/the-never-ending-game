@@ -1,0 +1,20 @@
+{"ideas": [
+  {"title": "The friends are the battery",
+   "similarity": 4,
+   "nearest": "My first motor",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 6,
+   "real": 6,
+   "toward": 8,
+   "critique": "This is the round-2 idea again, now with the mechanism the critic said was missing. The cords are rods, the network comes from what actually touches what, and a clip pulls out because of the force on it, so series or parallel can no longer be a hidden switch. The friends with a reason to stay give the motor a payoff beyond a spinning prop. The weak points are the winch and the friends. The drum motor has only lodestone in its field and has barely turned so far, so '6 pots lift 1 kg at a few cm/s' will be tuned to land unless the field solve really delivers that torque. And if the friends' need for berries is a single trigger, the line is staged, not chosen."},
+  {"title": "A kite pulls the cart across the wet sand",
+   "similarity": 3,
+   "nearest": "Three paper darts",
+   "same_form": [],
+   "surprise": 7,
+   "fun": 8,
+   "real": 6,
+   "toward": 5,
+   "critique": "A steered skill toy with friends riding is something the island has never had, and it breaks the run of watching devices left alone. You feel the crosswind pull growing with the square of the apparent wind in your hands, the eights against the overhead hold. Wet sand against dry from soil tables is a contrast you can play. But a kite is not the electric chain the big goal is about, so only the frame and wheels count toward it. Two-line steering and a tether of segments on a lifting plate are easy to fake into a cursor-driven sprite. And tipping on a turn needs real rigid-body coupling between the cart, the friends' masses and the soil forces, not a lean drawn on top."}
+]}

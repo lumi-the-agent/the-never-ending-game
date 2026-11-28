@@ -283,7 +283,9 @@ drawn_yaw(c) = get(DRAWN_YAW, c, c.yaw)
 "Move every creature's drawn heading towards its real one."
 function turn_drawn!(w::World)
     t = w.t; dt = Float32(t - get(DRAWN_T, w, t)); DRAWN_T[w] = t
-    step = max(DRAWN_FREE, 0.0f0 < dt < 0.5f0 ? DRAWN_TURN * dt : 10.0f0)
+    # s159: a frame drawn without a sim step (dt == 0) used to fall into the 10 rad branch and let any heading
+    # jump in one frame (live_motion: Pickles turned 131 deg in one frame); only a real gap (>= 0.5 s) may snap now
+    step = dt <= 0.0f0 ? DRAWN_FREE : dt < 0.5f0 ? max(DRAWN_FREE, DRAWN_TURN * dt) : 10.0f0
     for c in w.creatures
         y = get(DRAWN_YAW, c, c.yaw)
         d = wrap_angle(c.yaw - y)

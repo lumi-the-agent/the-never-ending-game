@@ -9,6 +9,19 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s159: BIG GOAL NOW 'The cart that runs on yesterday's wind' (round 28, 8/8/8/8/10): sea cells give 1.5 mW (O2-limited),
+  bench ~1 W, 3 friends on the dune ~550 W (NOTES 'Power budget'). Road: clay pots -> wound iron stator -> windmill/kite
+  generator -> lead plates -> plank track + cart. Critic warns: no gauge-watching, no curves standing in for chemistry.
+  DONE s159: physics/potcell.jl + 6 clay pots wired to the motor bench (published; key 0 = pots in chain; traced
+  media/s159/pots-traced-b.png). Project friends-battery (todo #754 doing): next a pannier so a friend carries a pot,
+  cords as rods, winch for the berry basket (honest: 300 g at 2-3 cm/s; motor ~5% efficient, stator is the bottleneck).
+  s159 also #743 (part): bench on an oak work table 0.62 m (MB_TABLE_H; pots on the ground 0.62 m north, cords drape
+  down; MB_LOOK 6, published; media/s159/table-traced-e.png). #743 still needs a 64+ spp still, motor >= 40% of frame.
+  PENDING POST s159 'six-clay-pots' (job 20261128-013945-069-clip, movies/claypots.jl: 4.5 s pots then motor close):
+  CHECK the film when it lands (shot 1 traced frame media/s159/shot1-traced-g.png looked good; motor shot unchecked).
+  s159 late: Lumi tastes the pot chain with its tongue (mb_taste!, :taste_cell, real current through ~8 kOhm), published.
+  s159 engine: turn_drawn! dt==0 no longer snaps headings (NOTES end); check next host motion report for Pickles' snap.
+  sparks project shelved. the bigger post is still the friends carrying pots + basket rising.
 - s155 critic: 'where-i-rushed-it' (drawn wire) REDO, marked miss: needs stone, cells, posts holding the wire, the neck
   brightest, a flash at the break, no camera jump, the wire bigger in frame. Also my-first-motor + claws marked miss.
 - Drawn wire (SHELVED s156 as a show, projects/shelf/drawn-wire.md): physics/draw.jl, circuit.jl (radius per segment),

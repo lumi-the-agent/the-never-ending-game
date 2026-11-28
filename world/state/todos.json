@@ -10527,6 +10527,34 @@
       "status": "dropped",
       "title": "Motor bench look: stones read as rock, coils as wound copper, bench on an oak table",
       "updated": "2026-11-28T00:43:25.663"
+    },
+    {
+      "created": "2026-11-28T01:21:14.952",
+      "detail": "UndefVarError: `MB_TABLE_H` not defined in `Main.Plugin_motorbench`\nSuggestion: check for spelling errors or missing imports.\nStacktrace:\n  [1] mb_ensure!(game::Game)\n    @ Main.Plugin_motorbench /sim/Programmieren/SimGame/world/plugins/motorbench.jl:153\n  [2] step!(::Main.Plugin_motorbench.MotorBench, game::Game, dt::Float64)\n    @ Main.Plugin_motorbench /sim/Programmieren/SimGame/world/plugins/motorbench.jl:175\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:405\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 753,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T01:21:21.379: plugin motorbench loaded cleanly.\nHappened again at 2026-11-28T01:21:26.164.\nClosed at 2026-11-28T01:21:26.341: plugin motorbench loaded cleanly.\nHappened again at 2026-11-28T01:21:31.113.\nClosed at 2026-11-28T01:21:56.342: plugin motorbench loaded cleanly.\nHappened again at 2026-11-28T01:28:44.768.\nClosed at 2026-11-28T01:28:44.948: plugin motorbench loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:motorbench.MotorBench failed in step! and was switched off",
+      "updated": "2026-11-28T01:28:44.948"
+    },
+    {
+      "created": "2026-11-28T01:27:09.944",
+      "detail": "Passed-strongest idea s159 (projects/friends-battery.md). Done s159: physics/potcell.jl + six pots wired to the motor bench (published, media/s159/pots-traced-b.png, E 5.23 V, Rs 10.1 Ohm, 6.5 rev/s at 0.40 A). Next: a friend carries a pot (pannier), cords as rods with clips, the winch (300 g basket ~2-3 cm/s honest), friends choose to stay by their needs. Done when: a traced film along the line at friend height shows friends with pots joining, the basket rising, and stopping when one walks off.",
+      "est_minutes": 15.0,
+      "id": 754,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "The friends are the battery: friends carry clay-pot cells, cords clip by contact, the motor winds their berry basket",
+      "updated": "2026-11-28T01:27:10.231"
     }
   ]
 }

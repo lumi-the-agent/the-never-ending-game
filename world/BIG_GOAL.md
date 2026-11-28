@@ -1,33 +1,22 @@
-# From beach stones to an electric cart
+# The cart that runs on yesterday's wind
 
-Lumi builds an electric cart from nothing but what the island has: copper smelted from green rock, wire pulled through a stone plate, cells of two metals in sea water, a motor wound and fitted part by part. The cart drives the friends round the island because every part works, and nothing is scripted.
+Lumi builds an electric cart from what the island has, and the island's real limits decide the build: sea-water cells give a lemon battery's milliwatts, so Lumi fires clay pots for proper cells, winds an iron-cored motor, and stores a whole windy day in lead plates; that evening the cart carries three pony-sized friends along the plank track it laid and runs out of charge on the dune where the numbers say it will.
 
-Play: Gather, smelt, draw, wind, fit, switch on, and the one field-and-circuit solver decides what happens. More turns give more torque, thin wire glows and melts, a magnet put in the wrong way round drives the rotor backwards, too few cells and the cart crawls up the hill, a loose brush makes it stutter. Every build is different because the player chooses the parts, their sizes and materials and where they sit. Then the cart gets better the way real ones did: a gear pair for the hill, a second motor, a switch to reverse, a hill run that charges the cells as it brakes.
+Play: Every part is a choice the physics answers. Copper in its own blue salt behind a kiln-fired clay wall gives 0.3 W a pot where the sea-water cell gave 1.5 mW (the motor that would not twitch now spins). Wind more turns on the iron stator and it pulls harder but heats. Turn the windmill into the wind, choose sail area, and the lead plates fizz as they charge; a stormy day charges them in an hour, a calm one never does. Lay planks where the sand is softest: on planks the cart needs a twentieth of the push it needs in dry sand. Too few charged plates and it stops halfway up with the friends aboard; braking down the far side charges them back. You come back every day to see how far yesterday's wind will carry them.
 
-The moment people share: The first cart, all wooden frame and copper coils, coughs, lurches forward with three friends on board, crawls up the dune and runs away down the other side. Or a misbuilt motor spins its own rotor out of the frame and the friends scatter.
+The moment people share: Dusk after a gale: Lumi pulls the switch, the commutator sparks blue in the dark, the cart creaks off the plank track with three friends on board and grinds up the dune, slowing, slowing, and stops one plank short of the top. The friends get off and push.
 
 ## Road
 
-- [x] Done s146-151: any magnet's field (em.jl), the homopolar wire motor, coil Biot-Savart (coilcrane.jl), the beach magnet stone
-- [ ] A circuit solver from what touches what: wires, contacts, resistance from length and section, Joule heat
-  - [x] circuit.jl s155: contacts from geometry, Holm spots, rho(T), heat, glow, melting at one spot (Preece check 10.2 vs 10.0 A)
-  - [ ] motor.jl runs on it (ring segments and brushes as wires), the live bench uses it
-- [ ] A cell from copper and iron in a clam shell of sea water: voltage, internal resistance, polarisation
-- [ ] The coil crane powered by cells: more cells lift more spikes
-- [ ] A motor fitted by hand: stator stone, wound rotor on an axle, split-ring commutator, brushes; torque only from the field solve
-  - [x] The physics: I dl x B over every turn, brush contact switching, back-EMF, L, friction (motor.jl s154; misbuilds stall or reverse)
-  - [x] Three coils on a 3-segment ring: it starts by itself from every angle, bench and film size (s157, Motor.Drum)
-  - [ ] It turns something you can see, in real copper, iron and wood, big and clear (todo #743, NEXT)
-  - [ ] A bench in Jump in where the beak places the parts and touches the last wire (todo #734)
-- [ ] The motor on the potter's wheel: it turns by itself; turned by hand it is a generator that lights a wire
-- [ ] Wheels, axle and a wooden frame as rigid bodies with rolling contact on the terrain
-  - [x] A wheel in sand: sinkage, rolling resistance, drive from slip (s157, physics/wheelsand.jl)
-  - [ ] The friends pull the cart up the dune (projects/cart.md)
-    - [x] Feet on the same sand law as the wheels: grip, creep, footprint depth, lean (wheelsand.jl foot, s158)
-    - [ ] Friends get a mass from their mesh volume, then one friend pulls a rope on the dune
-- [ ] The cart: cells and motor on the frame, a switch in Lumi's beak; it drives because the parts do
-- [ ] Gears for the hill, reverse, braking that charges the cells; friends ride along
-- [ ] Copper from green rock in the kiln, drawn into wire, so every part is made on the island
-  - [x] Drawing physics s155 (draw.jl): Sachs stress, hardening, die wear; a rushed pass necks, and the wire parts there
-  - [x] A hot wire bows by its thermal expansion between its posts, the halves droop when it parts (hotrod.jl, s156)
-  - [ ] The drawing bench: Lumi's beak hauls the wire through a stone plate (as a cart part, not a show: the human s156)
+- [x] Done: any magnet's field (em.jl), the 3-pole drum motor that starts from every angle, wheels and feet in sand (wheelsand.jl), the power budget (s159: sea cells 1.5 mW, bench 1 W, loaded cart 550 W)
+- [ ] A circuit solver from what touches what, with cells that polarise (limiting current from the ions that reach the plate)
+- [ ] The clay-pot cell: copper in blue salt inside a kiln-fired porous pot, iron in brine outside; copper grows on the plate, the blue fades
+  - [x] potcell.jl (Nernst, wall from firing, polarisation, Faraday); six pots drive the bench (s159, published)
+  - [ ] The friends carry the pots, cords clip by contact, the motor winds their berry basket (projects/friends-battery.md)
+- [ ] The bench motor runs on four clay pots, turning the potter's wheel
+- [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
+- [ ] The motor run backwards: a windmill generator that lights a wire
+- [ ] Lead plates in acid that store what the windmill makes (Plante's accumulator: charge, fizz, discharge)
+- [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
+- [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
+- [ ] Gears for the dune, braking that charges the plates, friends ride along

@@ -1,0 +1,32 @@
+{"posts": [
+ {"post": "football-with-the-sun",
+  "verdict": "redo",
+  "problems": [
+   "Title says 'Football', but nobody kicks or touches the sun anywhere in the storyboard. It drops in (frames 4-5) and drifts along the path (frames 9-16) with no push. The roll has no cause.",
+   "Caption says 'the sky went dark' after the fall, but the sky is already dark dusk in frame 1, before the sun shows up. The darkening the caption describes is not visible.",
+   "The sun is a flat white disc with no shading or surface (at-25). It reads as a hole in the picture, not as a ball of light that has weight.",
+   "While the sun lies on the meadow, the plants and figures still cast hard shadows in the old sky-light direction (at-50, the dark grass blobs lower right). They do not fall away from the glowing ball beside them.",
+   "'It lit Pinchy from below': in frames 7-8 the crab is only half lit at the edge of the glow, and by at-50 it is a back view filling the bottom of the frame. The moment is never clearly shown.",
+   "The camera keeps pushing through the scene. The blue figure and the signpost slide large and cut off across the foreground (frames 11-16, at-75 lower edge), and at at-75 a stacked-stone cairn hides the sun.",
+   "The ending is unclear. In frames 13-16 the sun sits half hidden behind rocks by the hill, not visibly 'rolled off down the path'."
+  ],
+  "critique": "A glowing sun landing on a night meadow is a lovely idea, but nothing kicks or pushes it, the light and shadows ignore it, and the camera ends up looking at foreground clutter and a cairn instead of the sun."},
+ {"post": "my-shadow-quits-second-try",
+  "verdict": "redo",
+  "problems": [
+   "The subject is a small grey patch on grass that is already crossed by tree and reed shadows (at-25 centre, at-50 left of the crab). Without the caption nobody would find it, let alone read it as a walking figure.",
+   "Cattails stand in the foreground between the camera and the shadow's path (at-50, at-75, frames 5-12) and cut through the part of the frame that matters.",
+   "'Walks ... behind Pinchy': in at-50 the shadow is beside and left of the crab, at the same depth, not behind it. In the last row (frames 13-16) I cannot find the shadow at all, so its walk has no clear end.",
+   "In frames 14-16 the camera ends on a workbench and drawer stack cut off at the lower right edge, framing furniture instead of the shadow."
+  ],
+  "critique": "A shadow with nobody casting it is a striking idea, but here it is a faint smudge lost among other shadows and behind reeds. The film does not show it to the viewer."},
+ {"post": "my-shadow-quits-first-try",
+  "verdict": "redo",
+  "problems": [
+   "A dark spotted toadstool sits frozen at the bottom centre of every frame (storyboard frames 1-16, at-25, at-50) and takes up the foreground, blocking the view.",
+   "No shadow walks anywhere visible, and the body 'hung up the sun's ray' is never shown. The only big dark shape is a static shadow lying across the path in the foreground.",
+   "The pig walks straight at the camera and ends up cut off and huge in the bottom-left corner (frames 12-14, at-75). Its body covers the crab, which overlaps it.",
+   "The crab drops out of the frame at the bottom edge (frames 14-15), and the last frame ends on a cut-off post at the right edge with no subject left."
+  ],
+  "critique": "The caption honestly calls this a miss, but what is on screen is not a readable failed experiment. It is a blocked foreground and animals walking into the lens, with nothing about shadows to see."}
+]}
