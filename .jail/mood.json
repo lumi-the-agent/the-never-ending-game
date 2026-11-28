@@ -1,25 +1,20 @@
 {
   "annoyance": 0.0,
   "annoyed": [],
-  "boredom": 0.85,
-  "ended": "2026-11-28T13:26:55",
+  "boredom": 1.0,
+  "ended": "2026-11-28T14:18:34",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.83,
+    "feature": 0.5,
     "picture": 0.01,
     "self": 0.01,
-    "sound": 0.61
+    "sound": 0.37
   },
   "forms": [
     {
-      "form": "New crafted prop shown still, nothing happens",
-      "posts": [
-        "My land yacht"
-      ]
-    },
-    {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
         "My first motor",
@@ -28,8 +23,13 @@
         "A coil on a cord",
         "Iron sticks, before and after",
         "A compass in a bowl",
-        "A top over a ring of lodestone",
-        "The magnet stone"
+        "A top over a ring of lodestone"
+      ]
+    },
+    {
+      "form": "New crafted prop shown still, nothing happens",
+      "posts": [
+        "My land yacht"
       ]
     }
   ],
@@ -317,15 +317,8 @@
     "drum_switch",
     "commutator_spark"
   ],
-  "joy": 0.87,
+  "joy": 0.41,
   "judged_posts": [
-    {
-      "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
-      "recipe": "friends gather in a chain, pass something on, a small comic failure (mishearing) shown by spoken one-liners in a film",
-      "session": 111,
-      "title": "A word goes round",
-      "what": "Four friends stand in a row in a film and pass a newly coined word along by talking, each mishearing it a little, with subtitles showing woomboo, woompoo, woompo; the game also keeps a dictionary page."
-    },
     {
       "form": "Permanent change to the island's look or places",
       "recipe": "new permanent prop plus film shot with video feedback and a camera push-in",
@@ -738,6 +731,13 @@
       "session": 165,
       "title": "My land yacht",
       "what": "A still of a newly built land yacht (plank deck, four wooden wheels, mast, backlit patched canvas sail, driftwood boom) standing on the open sand at the top of the beach with the sea behind; it does not move, the only change is that the vehicle now stands on the island."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "simulated device left alone, near-fixed close camera watches it run",
+      "session": 174,
+      "title": "Sparks at dusk",
+      "what": "A dark, slowly drifting view of the iron drum motor on a wooden block on the grass at dusk: the coils turn a little and small orange-white sparks flicker at the commutator end; nobody is there and nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -759,15 +759,15 @@
     "session": 173
   },
   "last_repetition": {
-    "factor": 0.2154434690031884,
-    "form": "New crafted prop shown still, nothing happens",
-    "form_count": 0,
-    "nearest": "My first glazed jar",
-    "post": "My land yacht",
-    "score": 6,
-    "session": 165,
-    "shared": "a newly crafted prop placed on the island and shown quietly in a still, nothing happens",
-    "similarity": 6
+    "factor": 0.1,
+    "form": "Physics study of simulated objects moving alone, filmed",
+    "form_count": 9,
+    "nearest": "Six clay pots",
+    "post": "Sparks at dusk",
+    "score": 10,
+    "session": 174,
+    "shared": "the same pot-powered copper motor running alone on a block, watched close; only the commutator sparks are new",
+    "similarity": 7
   },
   "last_surprise": {
     "fun": 1,
@@ -775,8 +775,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.0,
-  "perceived_until": "2026-11-28T12:43:31",
+  "loneliness": 0.06,
+  "perceived_until": "2026-11-28T13:27:28",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -790,38 +790,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.9583333333333334,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/first-motor.mp4"
-      ],
-      "new_plugins": [
-        "motorbench.jl"
-      ],
-      "points": 6.9,
-      "session": 154,
-      "touched": [],
-      "values": {
-        "feature": 0.9,
-        "film": 6.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1455,6 +1423,44 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 0.1,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 9,
+        "nearest": "Six clay pots",
+        "post": "Sparks at dusk",
+        "score": 10,
+        "shared": "the same pot-powered copper motor running alone on a block, watched close; only the commutator sparks are new",
+        "similarity": 7
+      },
+      "session": 174,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1544,6 +1550,7 @@
       "site/films/drawn-wire-burns-out.mp4",
       "site/films/drift.mp4",
       "site/films/drift2.mp4",
+      "site/films/drum-sparks.mp4",
       "site/films/face-hill.mp4",
       "site/films/fireflies-at-dusk.mp4",
       "site/films/first-flight.mp4",
@@ -1788,7 +1795,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958652601688304e9,
+      "irondrum.jl": 1.795867947857752e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1838,11 +1845,11 @@
       "workshop.jl": 1.7955211366517444e9,
       "workshopisle.jl": 1.7957446568297238e9
     },
-    "posts": 140,
+    "posts": 141,
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T12:49:12",
+  "started": "2026-11-28T13:33:13",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2016,7 +2023,9 @@
       "CVortex.particle_pedrizzetti_relaxation",
       "PhyloNetworks.vcv",
       "MESTI.mesti_build_channels",
-      "FITSIO.copy_section"
+      "FITSIO.copy_section",
+      "SkyCoords.position_angle",
+      "ABCDMatrixOptics.GaussianBeam"
     ],
     "games": [
       "Super Mario 64",
@@ -2162,7 +2171,10 @@
       "Hearthstone",
       "Shadow of the Colossus",
       "Resident Evil 4",
-      "Thief: The Dark Project"
+      "Thief: The Dark Project",
+      "Tom Clancy's Splinter Cell (video game)",
+      "The Legend of Zelda: The Wind Waker",
+      "Star Fox 64"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2245,7 +2257,9 @@
       "https://www.bbc.co.uk/news/articles/cwp9d85mlp88o",
       "https://www.bbc.co.uk/news/articles/cvwy08g70ldko",
       "https://www.bbc.co.uk/news/articles/cm5y10yydln3o",
-      "https://www.bbc.co.uk/news/articles/ckp80jyz6dl8o"
+      "https://www.bbc.co.uk/news/articles/ckp80jyz6dl8o",
+      "https://www.bbc.co.uk/news/articles/cm15ekqvlezeo",
+      "https://www.bbc.co.uk/news/articles/c84gnq3qq9rno"
     ],
     "packages": [
       "LorentzVectorBase",
@@ -2601,7 +2615,10 @@
       "InPartSObstacles",
       "LessUnitful",
       "MCIntegration",
-      "Octofitter"
+      "Octofitter",
+      "SpacePhysicsMakie",
+      "ReverseDiffSparse",
+      "Basins"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2609,7 +2626,9 @@
       "UVDocRunner",
       "FluxKleinRunner",
       "DeepFilterRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "NeuralLUTRunner",
+      "ProPainterRunner"
     ]
   },
   "surprise_seen": 165

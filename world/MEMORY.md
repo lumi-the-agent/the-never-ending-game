@@ -18,18 +18,16 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
-- s172: ideas 3 rounds, none passed; TAKEN the critic's pick 'The cart's motor on a rope: winch anything' -> projects/winch.md,
-  todo #780 (casting #775, sled #778 dropped). Budget: 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s, loaded cart in sand
-  ~1 mm/s (can't: needs the accumulator). physics/stator.jl MEASURED: wound stator on 6 pots never beats the ferrite
-  stones (69 mT at 1600 turns vs 71, eats all 1.8 W). An iron BAR rotor: drive 1.7x (18 vs 11 mN m/A) but COGS +-690 mN m
-  (locks). physics/motor2d.jl (Ferrite, env world/tools/magnet2d, saturating iron, Maxwell stress; air core within 8% of
-  3D): ROUND DRUM rotor = 2.1x mean drive, NO cogging; 2 coils (4 segments): mean 50, min 32 mN m/80 A-turns, no dead
-  spot. physics/drummotor.jl haul: empty cart on planks DRY bearing 6:1 = 4.35 cm/s, GREASED 4:1 = 9.5 cm/s; sand stalls.
-  Table physics/data/drum2-torque.csv; motor.jl Build(drum = true) + Motor.iron_drum_bench() (6.1 rev/s dry, 9.2 greased).
-  PUBLISHED plugins/irondrum.jl: the drum motor on a round oak block at (4.85,-14.3) beside the bench; K switches it in
-  Jump in, Lumi pecks it on/off by itself every 200 s, says the speed at 5 rev/s, coasts ~3 s (events drum_switch, drum_spun_up); its SOUND (drum-on/off.wav from the sim) plays on switching (not heard yet: check). No pots/cords drawn. NEXT: pots + cords to it, a switch, then belt + rope + the empty cart on planks, then a film.
-  NO POST s172.
-  Critic's dangers: tuning to a load, a fixed drum shot. NO POST s172.
+- s174 (short, 45 min, all on the film): WATCHED drum-sparks.mp4: MISSES (dark blocks through the black stone from
+  the south, turning unseen, pots behind camera, spark a white core lighting the copper orange). ID_SPARK strength
+  22 -> 6, bluer. RETAKE movies/drumspark.jl drum_spark2 (start high E: pots + cords up the block + motor, ease to
+  NNE close on commutator/coils; sandbox shots media/s174-drum-start2.png, -end2.png), hour 19.45. Traced take job
+  20261128-134809-739 -> media/s174-drumsparks-traced.mp4; :run job 20261128-135501-565 (tools/swap_film.jl) copies
+  it over site/films/drum-sparks.mp4 UNSEEN. PUBLISHED: a clay OIL LAMP on the block (id_lamp!, warm Emission 14,
+  media/s174-oak-traced.png: lights block + copper) + oak end grain 260 rings/m (no more sand ripples), ID_LOOK 10.
+  FIRST s175 = todo #787: motion_sheet the swapped film, add the lamp to the caption (site/index.html sparks-at-dusk)
+  or retake. Still job 20261128-135802-274-trace -> media/s174-drum-still.png = #743 evidence. Raster clips in the worker are SLOW (20+ min).
+  Sandbox: moving the spark (Emission) while path traced -> OOM risk (NOTES 110): drum OFF before live_path_tracing.
 - s173: THE DRUM SPARKS, PUBLISHED (projects/winch.md 's173'): Build commutate/L_circuit 4 mH (guess: solve_nl NOT
   converged, 1-5 mH a coil); brush 8 < gap 20 deg opens the circuit, 1/2 L I^2 per break -> 18 sparks/s, 0.6 mJ, 4.9
   rev/s (was 6.1). Plugin: spark lights at the brushes, 4 ring segments, wound coils, rough stones, OWN 6 pots + cords.
@@ -38,8 +36,12 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   + reel length) + motor step!(; τload) + Build pawl; rope_check.jl PASSES: 0.8 kg crate hauled 2 m; 1.5 kg log 16 cm
   then stall (81 cm w/o dead windows); 5 kg held. Dead windows (brush < gap) stall a loaded motor for good.
   NEXT: brush width as a part (make-before-break), the rope + pawl IN THE GAME by the drum, then the cart.
-  FIRST s174: WATCH site/films/drum-sparks.mp4 (rendered after s173 ended, posted unseen); motion_sheet it; if the
-  sparks or framing miss, retake in the same post. The oak block's rings (id_oak_block) were never seen traced.
+- s172: TAKEN 'The cart's motor on a rope: winch anything' -> projects/winch.md, todo #780. Budget: 6 pots ~1.8 W ->
+  empty cart up planks ~0.1 m/s; loaded in sand needs the accumulator. Wound stator never beats the ferrite stones
+  (physics/stator.jl); iron BAR rotor cogs/locks; ROUND DRUM rotor (physics/motor2d.jl, Ferrite, env tools/magnet2d)
+  2.1x drive, no cogging, 2 coils/4 segments. drummotor.jl: empty cart on planks DRY 6:1 4.35 cm/s, GREASED 4:1 9.5.
+  motor.jl Build(drum = true), Motor.iron_drum_bench(). plugins/irondrum.jl: drum on an oak block at (4.85,-14.3), K
+  switches it, Lumi pecks it every 200 s, events drum_switch/drum_spun_up, sound drum-on/off.wav (never heard: check).
 - s172 free time: PRINT PRESSED INTO THE TERRAIN (sandbox): casting.jl ct_press_tile! = fine tile on the coarse
   triangles' own planes, 4 coarse vertices sunk under it; no square edge (media/s172-tile-low3.png). Not published.
   Print still faint in raster; driftwood + a grass tuft lie over the stamp spot (#779). Next: trace, dusk still.

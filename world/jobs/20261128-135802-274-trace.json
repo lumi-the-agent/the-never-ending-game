@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-28T13:58:02.278",
+  "id": "20261128-135802-274-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      5.27,
+      -14.24,
+      2.0275
+    ],
+    "path": "media/s174-drum-still.png",
+    "samples": 96,
+    "size": [
+      1280,
+      720
+    ],
+    "target": [
+      4.85,
+      -14.47,
+      1.6275
+    ]
+  },
+  "status": "queued"
+}

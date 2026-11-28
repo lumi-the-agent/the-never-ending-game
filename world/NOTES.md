@@ -1566,3 +1566,9 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   sandbox screenshots + plugin reloads in traced mode (every reload re-pushes materials and textures) during a film
   render ran the sandbox out of memory (41.6 GB reserved, Lava pool_alloc). While a film renders: raster checks only,
   or trace BEFORE queuing the film.
+- Framing a film (s174): the worker's raster clip is NO quick preview (an 8 s raster take ran 20+ min, its mp4 stayed
+  48 bytes until the end). Preview in the SANDBOX instead: `live_eval("game.rig.mode = :fixed; game.rig.eye = ...;
+  game.rig.target = ...")` + `live_screenshot` at the film's start and end cameras (seconds each), then ONE traced
+  sandbox frame (`live_path_tracing(true)`, ~3 min; switch moving Emission plots like the drum's sparks OFF first).
+  A take that lands after the session goes into its post with tools/swap_film.jl (a :run job that waits for the
+  clip job and copies the film over the posted one); watch it first thing next session.

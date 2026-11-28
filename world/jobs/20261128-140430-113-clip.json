@@ -1,0 +1,14 @@
+{
+  "created": "2026-11-28T14:04:30.116",
+  "id": "20261128-140430-113-clip",
+  "kind": "clip",
+  "params": {
+    "call": "drum_still",
+    "kwargs": {
+      "samples": 128
+    },
+    "path": "site/img/drum-by-lamplight.png",
+    "script": "movies/drumspark.jl"
+  },
+  "status": "queued"
+}

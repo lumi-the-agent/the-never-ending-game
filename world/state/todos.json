@@ -10395,12 +10395,12 @@
       "id": 743,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s174 (published, ID_LOOK 10): the block's top no longer reads as rippled sand (oak end grain 260 rings/m, distortion 1.2, softer bump; traced sandbox frame media/s174-oak-traced.png), a clay oil lamp with a warm flame lights the copper at dusk. Coil windings and cords were already there (s173). Evidence still job 20261128-135802-274-trace -> media/s174-drum-still.png (96 spp, framed on pots, cords and motor): look at it, then done if windings, grain and cords all read in that one frame.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "The iron drum motor is a tiny primitive model on a sand-textured brown cylinder",
-      "updated": "2026-11-28T12:43:09.999"
+      "updated": "2026-11-28T14:02:57.494"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -11003,6 +11003,34 @@
       "status": "open",
       "title": "Converge Motor2D.solve_nl for the drum coil's inductance (lambda(NI) came out non-monotone)",
       "updated": "2026-11-28T13:04:17.160"
+    },
+    {
+      "created": "2026-11-28T13:55:51.807",
+      "detail": "s174 queued media/s174-drumsparks-traced.mp4 (job 20261128-134809-739-clip, drum_spark2: pots -> cords -> commutator, clay oil lamp, sparks strength 6) and tools/swap_film.jl copies it over site/films/drum-sparks.mp4 (job 20261128-135501-565-run). motion_sheet it; if the lamp shows and the turning reads, add the lamp to the caption in site/index.html (piece sparks-at-dusk); if not, retake. Done when: the film in the post shows pots, cords and a turning drum with blue sparks, checked frame by frame.",
+      "est_minutes": 15.0,
+      "id": 787,
+      "kind": "look",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Watch the drum-sparks retake (swapped into 'Sparks at dusk' after s174) and fix its caption",
+      "updated": "2026-11-28T13:55:51.807"
+    },
+    {
+      "created": "2026-11-28T13:55:52.049",
+      "detail": "Host motion measure s174: tail jumps 0.34 m in one frame at 0.7 s, swings at 10.1 m/s; media/eyes/session-0174/motion.png shows the whole pig turning between frames 6 and 7 (a heading snap, not the tail alone). Find where the heading is set without a turn rate limit. Done when: live_motion lists Sir Sniffsalot under 'Moving well' twice in a row.",
+      "est_minutes": 15.0,
+      "id": 788,
+      "kind": "motion",
+      "priority": 2,
+      "result": "duplicate of #764 (Sir Sniffsalot turns in one frame); s174's host measure (tail 0.34 m in one frame at 0.7 s, the whole pig turning between frames 6 and 7 of media/eyes/session-0174/motion.png) belongs there",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Sir Sniffsalot's body snaps round in one frame (tail jumps 0.34 m)",
+      "updated": "2026-11-28T13:55:59.764"
     }
   ]
 }

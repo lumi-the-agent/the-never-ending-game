@@ -15,12 +15,13 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "motorlook.jl"))
 
 const ID_SPOT = (4.85f0, -14.3f0)     # 0.6 m west of the motor bench's table
 const ID_H = 0.62f0                   # the stand's top, the bench table's height
-const ID_LOOK = 8
+const ID_LOOK = 10   # s174: the clay oil lamp; fine end grain on the block
 const ID_IRON = NG.Hikari.Principled(base_color = (0.40f0, 0.40f0, 0.42f0), metallic = 0.6f0, roughness = 0.45f0)   # soft iron, filed
 const ID_FERRITE = NG.Hikari.Principled(base_color = (0.09f0, 0.09f0, 0.10f0), metallic = 0.0f0, roughness = 0.65f0)
 # s173: the commutator spark: air breaking down at the brush's trailing edge (N2 lines, violet-blue) with a little
 # copper vapour (green) once the break carries more than copper's minimum arc current (~0.43 A; the drum breaks ~0.6 A)
-const ID_SPARK = NG.Hikari.Emission(color = (0.42f0, 0.55f0, 1.0f0), strength = 22f0, two_sided = true)
+# s174: strength 22 clipped the core to white in the traced film and lit the copper round it orange; 6 keeps it blue
+const ID_SPARK = NG.Hikari.Emission(color = (0.36f0, 0.50f0, 1.0f0), strength = 6f0, two_sided = true)
 const ID_HIDE = Point3f(0, 0, -0.35)       # a spark not burning sits inside the oak block
 
 struct IronDrum <: System end
@@ -90,11 +91,13 @@ function id_oak_block()
     TN = NG.Hikari.TextureNodes
     p = TN.texture_coordinate().object
     q = TN.mapping(p; scale = (1, 1, 0.08))
-    rings = TN.wave(q; type = :rings, scale = 55, distortion = 6, detail = 4).fac
+    # s174: scale 55 + distortion 6 drew ~9 wavy rings across the top: rippled sand when traced (perfectionist s172).
+    # Oak grows 2-4 mm a year: ~260 rings a metre, nearly round (distortion 1.2)
+    rings = TN.wave(q; type = :rings, scale = 260, distortion = 1.2, detail = 3).fac
     fine = TN.noise(p; scale = 300, detail = 3).fac
     base = (0.56, 0.40, 0.24)
     col = TN.color_ramp(rings, 0.0 => base, 0.6 => base .* 0.82, 1.0 => base .* 0.5)
-    NG.Hikari.Principled(base_color = col, roughness = 0.55 + 0.2 * fine, normal = TN.bump(rings * 0.7 + fine * 0.3; distance = 0.0008),
+    NG.Hikari.Principled(base_color = col, roughness = 0.55 + 0.2 * fine, normal = TN.bump(rings * 0.5 + fine * 0.5; distance = 0.0004),
                          coat_weight = 0.15, coat_roughness = 0.4)
 end
 
@@ -110,6 +113,24 @@ function id_lathe(prof, P; n = 36)
         push!(fcs, GLTriangleFace(a, b, c)); push!(fcs, GLTriangleFace(b, d, c))
     end
     GeometryBasics.normal_mesh(GeometryBasics.Mesh(verts, fcs))
+end
+
+"""
+s174: a clay oil lamp on the block's north-east rim, by the commutator end: a small warm flame to see the motor by at
+dusk (the s173 dusk film showed only dark blocks). The flame is an emissive drop, an area light in the tracer; it never
+moves, so path tracing keeps one light for it.
+"""
+function id_lamp!(sc, c)
+    lp = c + Point3f(0.125f0, 0.065f0, -0.045f0)                        # on the block's top
+    dish = [(0.0, 0.0), (0.020, 0.0), (0.027, 0.008), (0.028, 0.014), (0.022, 0.017), (0.007, 0.015), (0.0045, 0.021),
+            (0.0035, 0.021)]
+    mesh!(sc, id_lathe(dish, lp); color = RGBf(0.62, 0.30, 0.18), material = id_clay(), name = :irondrum_lamp)
+    flame = mesh!(sc, GeometryBasics.normal_mesh(Sphere(Point3f(0), 0.0045f0)); color = RGBf(1.0, 0.7, 0.35),
+                  material = NG.Hikari.Emission(color = (1.0f0, 0.62f0, 0.28f0), strength = 14f0, two_sided = true),
+                  name = :irondrum_lamp_flame)
+    Makie.scale!(flame, 1f0, 1f0, 2.2f0)
+    Makie.translate!(flame, lp + Point3f(0, 0, 0.031f0))
+    nothing
 end
 
 "Fired clay, grainy and dry (as motorbench.jl's mb_clay at ~950 C)."
@@ -225,6 +246,7 @@ function id_ensure!(game)
     ID[:c] = c
     ID[:game_w] = game.world
     id_pots!(sc, c)
+    id_lamp!(sc, c)
     ID[:rot] = rot; ID[:look] = ID_LOOK
     ID[:b] = Motor.iron_drum_bench()
     old = get(ID, :st, nothing)

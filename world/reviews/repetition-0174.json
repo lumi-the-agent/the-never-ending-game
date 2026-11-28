@@ -1,0 +1,10 @@
+{"posts": [{"post": "Sparks at dusk",
+            "what": "A dark, slowly drifting view of the iron drum motor on a wooden block on the grass at dusk: the coils turn a little and small orange-white sparks flicker at the commutator end; nobody is there and nothing else on the island changes.",
+            "recipe": "simulated device left alone, near-fixed close camera watches it run",
+            "nearest": "Six clay pots",
+            "similarity": 7,
+            "shared": "the same pot-powered copper motor running alone on a block, watched close; only the commutator sparks are new"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed",
+            "posts": ["Sparks at dusk", "Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone", "A coil on a cord", "Iron sticks, before and after", "A compass in a bowl", "A top over a ring of lodestone"]},
+           {"form": "New crafted prop shown still, nothing happens",
+            "posts": ["My land yacht"]}]}
