@@ -166,6 +166,7 @@ function ly_build!(game)
     tocart(v) = q * Vec3f(v)                            # cart frame -> world
     at(v) = Point3f(c[1], c[2], g) + tocart(v)
     plots = LY[:plots] = Any[]          # recorded as they are made: stop! clears a half-built cart too
+    delete!(LY, :sand); delete!(LY, :sink); delete!(LY, :sandR)   # a new scene: the sand square is made again
     # deck: five planks side by side, 5 cm thick
     n = 5; w = LY_WIDE / n
     deck = [at(Vec3f(-LY_WIDE / 2 + (k - 0.5f0) * w, 0, LY_DECK_Z)) for k in 1:n]
@@ -275,10 +276,248 @@ function ly_server_check!()
     end
 end
 
+# ---- The wheels in the sand (s169, idea 'Bogged', project stuck, todo #773) ------------------------------------------
+# The four wheels roll IN the beach's sand field (physics/stuck.jl: Bekker at every point of each rim on the ground the
+# field really has, with its load history), not on a number: dry sand above the swash holds them with ~194 N, the wet
+# band with ~69, a rut they made is easier the second time and a hole the cart stood in is harder to leave. Each wheel's
+# soil is where it stands (meadow.jl beach_weight: within 0.9 m of the water line the sand is wet and firm). The square
+# of sand under the cart is drawn, so the ruts and berms it makes stay where it went.
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "wheelsand.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "sandfield.jl"))
+Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "stuck.jl"))
+const LY_SAND = 6.0                  # m, the square of sand that follows the cart (4 cm cells)
+const LY_SAND_LIFT = 0.045f0         # the loose layer drawn above the terrain (s169: at 1.2 cm the 3 cm ruts showed the
+                                     # green terrain under them); the cart sits on it, so its height adds this too
+
+function ly_soil(game, x, y)
+    m = game.plugins["meadow"].mod
+    _, d = Base.invokelatest(m.beach_weight, game.world.island, Float32(x), Float32(y))
+    d < 0.9f0 ? WheelSand.SOILS[:firm_sand] : WheelSand.SOILS[:dry_sand]
+end
+
+function ly_sand_points!(pts, cs, ground)
+    hr = Array(cs.f.h); nx, ny = size(hr); dx = cs.f.dx; fade = 0.3
+    # drawn through a 3x3 binomial blur (the physics keeps its cells): s169, path traced, a rut on a diagonal heading
+    # read as a row of dashes, the 4 cm cells' staircase
+    h = similar(hr)
+    @inbounds for j in 1:ny, i in 1:nx
+        acc = 0f0; wsum = 0f0
+        for b in -1:1, a in -1:1
+            ii, jj = i + a, j + b
+            (1 <= ii <= nx && 1 <= jj <= ny) || continue
+            wt = (2f0 - abs(a)) * (2f0 - abs(b))
+            acc += wt * hr[ii, jj]; wsum += wt
+        end
+        h[i, j] = acc / wsum
+    end
+    k = 0
+    for j in 1:ny, i in 1:nx
+        k += 1
+        e = min(i - 0.5, nx - i + 0.5, j - 0.5, ny - j + 0.5) * dx
+        w = Float32(clamp(e / fade, 0, 1))
+        pts[k] = Point3f(cs.x0 + (i - 0.5) * dx, cs.y0 + (j - 0.5) * dx, ground[k] + w * (LY_SAND_LIFT + h[i, j]) - (1 - w) * 0.01f0)
+    end
+    pts
+end
+
+"""
+A new square of sand centred on the cart. When the cart leaves the old one, the new square snaps to the old grid and
+takes over every cell they share (surface, hard bed, compaction, load history) and the wheels' last settles: the ruts
+behind the cart stay (s169: a fresh square wiped them 1.6 m before its edge).
+"""
+function ly_sand_new!(game, c)
+    oldplot = get(LY, :sandplot, nothing)
+    oldplot !== nothing && oldplot.parent !== nothing && delete!(oldplot.parent, oldplot)
+    old = get(LY, :sand, nothing)
+    cs = Stuck.CartSand(Float64(c[1]), Float64(c[2]); size = LY_SAND)
+    n = size(cs.P, 1); dx = cs.f.dx; is = game.world.island
+    if old !== nothing
+        oi = round(Int, (cs.x0 - old.x0) / dx); oj = round(Int, (cs.y0 - old.y0) / dx)
+        cs.x0 = old.x0 + oi * dx; cs.y0 = old.y0 + oj * dx
+        for j in 1:n, i in 1:n
+            io, jo = i + oi, j + oj
+            (1 <= io <= n && 1 <= jo <= n) || continue
+            cs.f.h[i, j] = old.f.h[io, jo]; cs.f.bed[i, j] = old.f.bed[io, jo]
+            cs.f.comp[i, j] = old.f.comp[io, jo]; cs.P[i, j] = old.P[io, jo]
+        end
+        merge!(cs.last, old.last); cs.fallbacks = old.fallbacks
+    end
+    ground = [NG.terrain_height(is, Float32(cs.x0 + (i - 0.5) * dx), Float32(cs.y0 + (j - 0.5) * dx)) for j in 1:n for i in 1:n]
+    pts = ly_sand_points!(Vector{Point3f}(undef, n^2), cs, ground)
+    idx(i, j) = (j - 1) * n + i
+    fs = GLTriangleFace[]
+    for j in 1:n-1, i in 1:n-1
+        push!(fs, GLTriangleFace(idx(i, j), idx(i + 1, j), idx(i + 1, j + 1)), GLTriangleFace(idx(i, j), idx(i + 1, j + 1), idx(i, j + 1)))
+    end
+    m = GeometryBasics.mesh(pts, fs; normal = GeometryBasics.normals(pts, fs))
+    LY[:sandplot] = mesh!(game.stage.scene, m; color = RGBf(0.87, 0.77, 0.58), name = :landyacht_sand,
+                          material = NG.Hikari.Diffuse(color = (0.87, 0.77, 0.58), roughness = 1f0))
+    LY[:sand] = cs; LY[:sandground] = ground; LY[:sandfaces] = fs
+    cs
+end
+
+"Redraw the square of sand from its field."
+function ly_sand_draw!()
+    cs = LY[:sand]; p = LY[:sandplot]
+    pts = ly_sand_points!(Vector{Point3f}(undef, length(LY[:sandground])), cs, LY[:sandground])
+    p[1][] = GeometryBasics.mesh(pts, LY[:sandfaces]; normal = GeometryBasics.normals(pts, LY[:sandfaces]))
+end
+
+# Digging (R by the yacht in Jump in, s169): one scoop of Lumi's beak takes the sand from a 13 cm patch in front of it
+# (at most 4 cm deep, never below the hard bed) and drops THE SAME VOLUME in a heap behind it; the field then slumps to
+# its angle of repose. Packed sand dug away takes its load history with it, and the heap is loose. Nothing here knows
+# about wheels: a scoop in front of a wheel makes the ramp it rolls out on because the wheel then meets lower sand
+# (s168: a ramp from the hole's floor over 40 cm: breakout 297 -> 42 N), a scoop anywhere else just makes a hole.
+const LY_SCOOP_R, LY_SCOOP_D = 0.13, 0.04
+
+function ly_dig!(game, st, lumi)
+    cs = get(LY, :sand, nothing); cs === nothing && return false
+    f = cs.f; dx = f.dx; n = size(f.h, 1)
+    a = lumi.yaw + NG.species_of(lumi).heading
+    fx, fy = cos(a), sin(a)
+    s = (lumi.pos[1] + 0.35 * fx, lumi.pos[2] + 0.35 * fy)          # where the beak goes in
+    # flung to the right, a little back (s169: straight behind, digging at a rear wheel heaped it under the cart)
+    t = (lumi.pos[1] + 0.5 * fy - 0.1 * fx, lumi.pos[2] - 0.5 * fx - 0.1 * fy)
+    cell(x, y) = (round(Int, (x - cs.x0) / dx + 0.5), round(Int, (y - cs.y0) / dx + 0.5))
+    inside(i, j) = 1 <= i <= n && 1 <= j <= n
+    is_, js_ = cell(s...); inside(is_, js_) || return false
+    k = ceil(Int, LY_SCOOP_R / dx) + 1
+    vol = 0.0
+    for i in is_-k:is_+k, j in js_-k:js_+k
+        inside(i, j) || continue
+        d = hypot((i - is_) * dx, (j - js_) * dx); d < LY_SCOOP_R || continue
+        dz = min(LY_SCOOP_D * (1 - (d / LY_SCOOP_R)^2), max(f.h[i, j] - f.bed[i, j], 0f0))
+        f.h[i, j] -= dz; vol += dz * dx^2
+        cs.P[i, j] = max(cs.P[i, j] - Float32(dz), 0f0)               # the packed layer goes with the scoop
+        f.comp[i, j] = max(f.comp[i, j] - Float32(dz), 0f0)
+    end
+    vol > 0 || return false
+    it, jt = cell(t...); R2 = 1.5 * LY_SCOOP_R; kt = ceil(Int, R2 / dx) + 1
+    wsum = 0.0
+    for i in it-kt:it+kt, j in jt-kt:jt+kt
+        inside(i, j) && (d = hypot((i - it) * dx, (j - jt) * dx); d < R2) && (wsum += 1 - (d / R2)^2)
+    end
+    for i in it-kt:it+kt, j in jt-kt:jt+kt                        # the same volume, heaped (loose: no load history)
+        inside(i, j) || continue
+        d = hypot((i - it) * dx, (j - jt) * dx); d < R2 || continue
+        add = Float32(vol * (1 - (d / R2)^2) / wsum / dx^2)
+        f.h[i, j] += add; cs.P[i, j] = max(cs.P[i, j] - add, 0f0)
+    end
+    Stuck.slump!(cs, 6)
+    # the wheels meet the new ground: settle them where they stand (the standing pull back changes with the ramp)
+    ly_sand!(game, st, false)
+    NG.log_event!(game.log, game.world.t, :yacht_dig; litres = round(1000vol, digits = 2), R = round(LY[:sandR], digits = 0))
+    true
+end
+
+"Settle the four wheels in the sand (pressing ruts while `moving`); returns the sand's total pull back (N) and how deep the axles sit."
+function ly_sand!(game, st, moving)
+    c = st.P
+    cs = get(LY, :sand, nothing)
+    fresh = false
+    if cs === nothing || max(abs(c[1] - cs.x0 - LY_SAND / 2), abs(c[2] - cs.y0 - LY_SAND / 2)) > LY_SAND / 2 - 1.4
+        fresh = cs === nothing                           # the very first square: the cart first stands in it
+        cs = ly_sand_new!(game, c)
+        fresh && (moving = false)
+    end
+    fwd = (-sin(st.yaw), cos(st.yaw)); side = (cos(st.yaw), sin(st.yaw))
+    tr = LY_WIDE / 2 + 0.08
+    wheels = [(c[1] + a * fwd[1] + s * side[1], c[2] + a * fwd[2] + s * side[2]) for a in (0.8, -0.8) for s in (tr, -tr)]
+    cs.soil = ly_soil(game, c[1], c[2])
+    soils = [ly_soil(game, x, y) for (x, y) in wheels]  # each wheel where it stands: one in the wet band, one in dry sand
+    # s169: the first settle meets fresh sand (48.5 N a wheel) and presses the holes; every later one finds the wheel in
+    # its own hole (~34 N). Settled once only, any dig anywhere re-settled all four and cut the hold by 30%: settle twice.
+    fresh && Stuck.cart_step!(cs, wheels, fwd, LY_MASS * 9.81 / 4, false; r = LY_WHEEL_D / 2, soils)
+    sts = Stuck.cart_step!(cs, wheels, fwd, LY_MASS * 9.81 / 4, moving; r = LY_WHEEL_D / 2, soils)
+    Stuck.slump!(cs, 2)
+    ly_sand_draw!()
+    R = sum(s.R for s in sts)
+    sink = sum(s.zc for s in sts) / 4 - LY_WHEEL_D / 2  # the axles' height over the fresh sand minus the radius
+    LY[:sandR] = R; LY[:sink] = sink
+    R, sink
+end
+
+# A friend called to push (Q by the yacht in Jump in): it runs to the stern and leans on it. It pushes only as hard as
+# the sand under its own hooves holds (WheelSand.foot: shear under its weight + the ridge of sand each hoof shoves up,
+# s168: a 60 kg pony ~357 N in dry sand), so a friend in dry sand moves a stuck cart only if that beats what the wheels'
+# sand holds. todo #745 gives every creature its real mass; until then a pony-sized 60 kg.
+const LY_FRIEND = 60.0
+const LY_HOOF = 0.07                 # m, a hoof's side
+const LY_FRIEND_RUN = 2.5            # m/s, the fastest a pony-sized friend pushes (its push is gone at that speed)
+
+"The friend's push on the stern this frame (N, along the cart's heading); walks it over first, then keeps it there."
+function ly_pusher!(game, st, dt)
+    p = get(LY, :pusher, nothing); p === nothing && return 0.0
+    w = game.world
+    i = findfirst(c -> c.id == p.id, w.creatures)
+    if i === nothing || w.t > p.until
+        i === nothing || NG.say!(w, w.creatures[i], "Phew!"; duration = 2.0)
+        delete!(LY, :pusher); return 0.0
+    end
+    c = w.creatures[i]
+    fwd = (-sin(st.yaw), cos(st.yaw)); back = LY_LEN / 2 + 0.4
+    stern = NG.ground(w.island, (Float32(st.P[1] - back * fwd[1]), Float32(st.P[2] - back * fwd[2])))
+    gap = hypot(c.pos[1] - stern[1], c.pos[2] - stern[2])
+    if !p.leaning
+        c.goal = NG.Goal(:yacht_push, stern, :idle, 2.0, w.t + 2.0, false, 0, true)   # runs over
+        # the stern is just outside the cart's solid disc: let the friend through once it is close
+        gap < 2.5 && isdefined(Main, :EXTRA_SOLIDS) && delete!(Main.EXTRA_SOLIDS, "landyacht")
+        if w.t < p.detour_until                          # stepping round whatever blocked it
+            c.goal = NG.Goal(:yacht_push, p.detour, :idle, 2.0, w.t + 2.0, false, 0, true)
+            return 0.0
+        end
+        if gap < p.best - 0.2                            # getting there
+            LY[:pusher] = p = merge(p, (best = gap, best_t = w.t))
+        elseif w.t - p.best_t > 1.5 && p.tries < 3       # s169: friends from the north ran on the spot against a tree
+            ux, uy = (stern[1] - c.pos[1]) / gap, (stern[2] - c.pos[2]) / gap
+            sgn = isodd(p.tries) ? -1f0 : 1f0
+            dp = NG.ground(w.island, (Float32(c.pos[1] - 3sgn * uy + ux), Float32(c.pos[2] + 3sgn * ux + uy)))
+            LY[:pusher] = p = merge(p, (detour = dp, detour_until = w.t + 1.5, tries = p.tries + 1, best = Inf, best_t = w.t + 1.5))
+            return 0.0
+        elseif w.t - p.best_t > 4.0                      # s169: Pinchy ran on the spot behind the hut for 15 s
+            NG.say!(w, c, "I can't get round to it!"; duration = 3.0)
+            delete!(LY, :pusher); return 0.0
+        end
+        gap < 0.5 || return 0.0
+        LY[:pusher] = p = merge(p, (leaning = true, until = w.t + 9.0))
+        NG.say!(w, c, "Hnnngh!"; duration = 2.5)
+    end
+    # leaning on the stern it goes where the stern goes: closes in at most 3 m/s (never jumps), then stays on it
+    # (s169: only closing in, it trailed 0.6-0.8 m and the push came and went, the cart pulsing 0.1 <-> 1.2 m/s)
+    c.goal = NG.Goal(:yacht_push, stern, :idle, 1.0, w.t + 1.0, true, 0, false)
+    # the cart's solid disc (1.4 m) stood where it last stopped and shoved the friend off the stern (s169)
+    isdefined(Main, :EXTRA_SOLIDS) && delete!(Main.EXTRA_SOLIDS, "landyacht")
+    stepv = gap < 0.12 ? 1.0 : min(gap, 3.0 * dt) / max(gap, 1e-6)
+    c.pos = Point3f(c.pos[1] + stepv * (stern[1] - c.pos[1]), c.pos[2] + stepv * (stern[2] - c.pos[2]), stern[3])
+    c.yaw = Float32(atan(fwd[2], fwd[1])) - NG.species_of(c).heading
+    c.action = st.v > 0.05 ? :walk : :idle
+    gap < 0.3 || return 0.0
+    # its grip caps the push, and so does how fast it can move its legs: a pusher's force falls to nothing at its
+    # running speed (s169: grip alone ran the cart to 3.9 m/s, 15 m in 9 s; now it settles at a walk, ~1.1 m/s in dry sand)
+    grip = 2 * WheelSand.foot(ly_soil(game, stern[1], stern[2]), LY_FRIEND * 9.81 / 2, LY_HOOF, LY_HOOF, Inf).Fmax
+    grip * max(0.0, 1 - st.v / LY_FRIEND_RUN)
+end
+
+"Q by the parked yacht in Jump in: the nearest friend comes to push."
+function ly_call_friend!(game, st, lumi)
+    w = game.world
+    best = nothing; bd = 25.0
+    for c in w.creatures
+        (c.controlled || c.id == lumi.id) && continue
+        d = hypot(c.pos[1] - st.P[1], c.pos[2] - st.P[2])
+        d < bd && (best = c; bd = d)
+    end
+    best === nothing && return NG.say!(w, lumi, "Nobody near enough to help..."; duration = 3.0)
+    LY[:pusher] = (id = best.id, until = w.t + 25.0, leaning = false, best = Inf, best_t = w.t,
+                   tries = 0, detour = Point3f(0), detour_until = 0.0)
+    NG.say!(w, lumi, "$(best.name), can you give it a shove?"; duration = 3.0)
+    NG.log_event!(game.log, w.t, :yacht_push_call; friend = best.name)
+end
+
 "Move every plot of the cart to centre `st.P`, heading `st.yaw`; boom and sail also turn about the mast by the sheet."
 function ly_place!(game, st)
     c0 = Vec3f(LY[:pos]); is = game.world.island
-    z = NG.terrain_height(is, st.P[1], st.P[2])
+    z = NG.terrain_height(is, st.P[1], st.P[2]) + (haskey(LY, :sink) ? LY_SAND_LIFT + Float32(LY[:sink]) : 0f0)
     Rz = NG.rot_z(Float32(st.yaw - LY[:yaw]))
     Pn = Vec3f(st.P[1], st.P[2], z)
     Rs = NG.rot_z(Float32(st.sheet - LY_SHEET)); m = Vec3f(LY[:mast])
@@ -304,10 +543,24 @@ function ly_sail!(game, dt)
     if playing && !aboard && e_now && !get(LY, :e_was, false) && hypot(lumi.pos[1] - st.P[1], lumi.pos[2] - st.P[2]) < 2.2
         LY[:aboard] = aboard = true
         isdefined(Main, :EXTRA_SOLIDS) && delete!(Main.EXTRA_SOLIDS, "landyacht")
-        NG.say!(w, lumi, "Rigging the sail... (W haul in, S let out, A/D steer, Space hop off)"; duration = 6.0)
+        NG.say!(w, lumi, "Rigging the sail... (W haul in, S let out, A/D steer, Space hop off; stuck in soft sand? Q calls a friend to push, R by a wheel digs)"; duration = 7.0)
         NG.log_event!(game.log, w.t, :yacht_board)
     end
     LY[:e_was] = e_now
+    q_now = K.q in k
+    if playing && q_now && !get(LY, :q_was, false) && !haskey(LY, :pusher) &&
+       hypot(lumi.pos[1] - st.P[1], lumi.pos[2] - st.P[2]) < 3.0
+        ly_call_friend!(game, st, lumi)
+    end
+    LY[:q_was] = q_now
+    r_now = K.r in k                                            # R by the yacht: one scoop of the beak
+    if playing && !aboard && r_now && !get(LY, :r_was, false) && hypot(lumi.pos[1] - st.P[1], lumi.pos[2] - st.P[2]) < 3.0
+        if ly_dig!(game, st, lumi)
+            lumi.action = :eat; NG.HELD[Int(lumi.id)] = w.t + 0.5    # head down in the sand for the scoop
+        end
+    end
+    LY[:r_was] = r_now
+    shove = ly_pusher!(game, st, dt)
     if aboard && (!playing || K.space in k)                   # hop off (or the player left Jump in)
         LY[:aboard] = aboard = false
         ly_server_stop!()
@@ -318,8 +571,9 @@ function ly_sail!(game, dt)
         end
         NG.log_event!(game.log, w.t, :yacht_leave; d = round(st.d, digits = 1))
     end
-    if !aboard && st.v == 0
-        isdefined(Main, :EXTRA_SOLIDS) && !haskey(Main.EXTRA_SOLIDS, "landyacht") && (Main.EXTRA_SOLIDS["landyacht"] = [(st.P, 1.4f0)])
+    if !aboard && st.v == 0 && shove == 0
+        isdefined(Main, :EXTRA_SOLIDS) && (Main.EXTRA_SOLIDS["landyacht"] = [(st.P, 1.4f0)])   # where it stands now
+        haskey(LY, :sand) || (ly_sand!(game, st, false); ly_place!(game, st))   # parked: the wheels settle into the sand
         return
     end
     # the newest force from the flow (none while the box warms up: the cart waits, as it would for a rigged sail)
@@ -354,9 +608,12 @@ function ly_sail!(game, dt)
     hb = NG.terrain_height(is, st.P[1] - 0.8 * fwd[1], st.P[2] - 0.8 * fwd[2])     # under the back and front axles
     hf = NG.terrain_height(is, st.P[1] + 0.8 * fwd[1], st.P[2] + 0.8 * fwd[2])
     grade = LY_MASS * 9.81 * (hf - hb) / LY_BASE
-    push = drive - grade
+    push = drive - grade + shove
     v = st.v
-    net = push - (v > 1e-3 ? LY_ROLL : clamp(push, -LY_ROLL, LY_ROLL))      # the sand holds it still until the push beats it
+    # the sand's pull back: rolling, the wheels settle in the field every frame (ruts, berms, the soil they stand on);
+    # standing, what the holes they sit in hold (s168: 297 N to break out of the friends' holes, 194 rolling in dry sand)
+    roll = v > 1e-3 ? first(ly_sand!(game, st, true)) : get(LY, :sandR, LY_ROLL)
+    net = push - (v > 1e-3 ? roll : clamp(push, -roll, roll))      # the sand holds it still until the push beats it
     v = max(v + net / LY_MASS * dt, 0.0)
     nx, ny = st.P[1] + v * dt * fwd[1], st.P[2] + v * dt * fwd[2]
     if !NG.on_land(is, nx, ny; margin = 0.8f0)                 # the wet edge: the wheels dig in and it stops
@@ -364,7 +621,7 @@ function ly_sail!(game, dt)
     end
     yaw = st.yaw + v * tan(steer) / LY_BASE * dt
     LY[:st] = st = (P = Point2f(nx, ny), yaw = yaw, v = v, sheet = sheet, d = st.d + v * dt)
-    LY[:last] = (; t = w.t, v, U, beta = rad2deg(beta), alpha = rad2deg(alpha), drive, aback,
+    LY[:last] = (; t = w.t, v, U, beta = rad2deg(beta), alpha = rad2deg(alpha), drive, aback, shove, roll,
                  CL = f === nothing ? NaN : f.CL, CD = f === nothing ? NaN : f.CD, d = st.d)
     Pn = ly_place!(game, st)
     if v > 0                                                  # the wheels roll: turned by the distance over the radius
@@ -394,6 +651,9 @@ function NG.stop!(::LandYacht, game)
         end
     end
     delete!(LY, :plots); delete!(LY, :key); delete!(LY, :tried)
+    sp = pop!(LY, :sandplot, nothing); sp !== nothing && sp.parent !== nothing && delete!(sp.parent, sp)
+    delete!(LY, :pusher)
+    delete!(LY, :sand); delete!(LY, :sink); delete!(LY, :sandR)   # its CartSand type is this copy of the plugin's
     isdefined(Main, :EXTRA_SOLIDS) && delete!(Main.EXTRA_SOLIDS, "landyacht")
     return
 end

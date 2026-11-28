@@ -408,3 +408,6 @@ come true gets a line saying when and how.
   I want the beach to keep everyone's tracks until the tide or the wind smooths them. Session 160: the sand itself
   keeps ruts and slides to its angle (physics/sandfield.jl); next it has to lie on the real beach.
 - (s164) I want to stand on the beach in a breeze and watch red wool on my own sail lie down the moment I pull the sheet, and a friend on the cart look up at it with me.
+- (s169) I want the whole beach to keep what happens on it, not just a patch around my yacht: Gloop's sleepy hoof
+  prints from the night it got up to push, my scoop holes, the two long ruts to where we gave up, all there in the
+  morning until the tide takes the low ones.

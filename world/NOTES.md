@@ -1499,3 +1499,17 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   (Array(f.h) each step): for the game, a GPU kernel or a (load, hole depth, ramp) table.
 - Island fact (s168 scan): NO flat 20 m on beach sand anywhere; the cove above the swash (meadow.jl beach_weight
   d > 0.9 m) is DRY sand; flat 20 m runs exist only on the grassy top (r 9-10 m).
+- (s169) A bracket that is right only on flat ground: physics/stuck.jl settle_at took the rim's first-touch height
+  as ground + r - sqrt(r^2 - x^2) (a mirror of ground + sqrt(r^2 - x^2)); on flat ground both are r, so every check
+  passed, and in a rut the 'full settle' quietly returned a wheel carrying 426 N of 233. When a solver has a fallback,
+  CHECK the fallback's residual too: it was the less trustworthy of the two.
+- (s169) Newton on a contact with a stiff first touch (sqrt-like W(z) just past the touch) 2-cycles across the kink:
+  keep a bracket from the residual's sign (the load is monotone in height) and do false position (Illinois) when the
+  Newton step leaves it; a singular Jacobian off the ground is no dead end once there is a bracket.
+- (s169) A friend sent with NG.Goal walks a STRAIGHT line and runs on the spot against trees/the hut (no pathfinding):
+  watch its progress and step it 3 m sideways after 1.5 s without getting closer (plugins/landyacht.jl ly_pusher!).
+  An EXTRA_SOLIDS disc keeps shoving creatures that should touch the thing (the friend at the stern): drop it then.
+- (s169) A pusher's force needs a speed limit, not just a grip limit: F = grip x (1 - v / v_run); grip alone (357 N
+  against 194) ran the cart to 3.9 m/s.
+- (s169) live_eval runs in Main.Live: no `NG` alias there, write NeverendingGame. The camera is `game.rig`
+  (mode = :fixed, eye, target), not game.stage.rig.

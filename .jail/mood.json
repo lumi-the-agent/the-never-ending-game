@@ -1,19 +1,19 @@
 {
-  "annoyance": 0.18,
+  "annoyance": 0.11,
   "annoyed": [
     {
       "post": "my-land-yacht",
       "session": 166,
       "title": "My land yacht",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The picture: the mast doesn't come out of the deck. Its foot sits at the back edge of the deck, beside the far rear wheel, and the pole leans backward and away from the planks. Nothing ties it down: no step, no stays, no ropes."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T09:12:27",
+  "ended": "2026-11-28T09:59:24",
   "fatigue": {
-    "asset": 0.02,
-    "feature": 0.15,
+    "asset": 0.01,
+    "feature": 0.09,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -319,7 +319,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.04,
+  "joy": 0.18,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -777,8 +777,8 @@
     "session": 165,
     "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.56,
-  "perceived_until": "2026-11-28T08:29:19",
+  "loneliness": 0.62,
+  "perceived_until": "2026-11-28T09:12:55",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -792,58 +792,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 1.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 2.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "feature",
-        "film",
-        "polish",
-        "post"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/compass-bowl-2.mp4",
-        "site/films/compass-bowl-3.mp4",
-        "site/films/floating-top.mp4",
-        "site/films/magnet-stone-beach-3.mp4"
-      ],
-      "new_plugins": [
-        "ironsand.jl"
-      ],
-      "points": 1.2,
-      "repeat_factor": 0.1,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 5,
-        "nearest": "A wire that spins by itself",
-        "post": "A compass in a bowl",
-        "score": 10,
-        "shared": "a magnet-driven object turns by itself on a prop, unattended, fixed view",
-        "similarity": 7
-      },
-      "session": 149,
-      "touched": [
-        "egg.jl",
-        "emotes.jl"
-      ],
-      "values": {
-        "feature": 0.4,
-        "film": 6.0,
-        "polish": 2.0,
-        "post": 4.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1505,6 +1453,36 @@
       "touched": [],
       "values": {},
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 1.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish",
+        "wish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 4.0,
+      "session": 169,
+      "touched": [
+        "landyacht.jl"
+      ],
+      "values": {
+        "polish": 1.0,
+        "wish": 3.0
+      },
+      "wishes": 1
     }
   ],
   "start": {
@@ -1888,7 +1866,7 @@
     "self": "1523826980317287528",
     "wishes": 20
   },
-  "started": "2026-11-28T08:35:00",
+  "started": "2026-11-28T09:18:28",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2052,7 +2030,9 @@
       "TrixiParticles.RectangularShape",
       "CellularSheaves.lower_tracking_program",
       "WaveguideQED.detect_double_click",
-      "ShipMMG.mmg_3dof_simulate"
+      "ShipMMG.mmg_3dof_simulate",
+      "Breeze.air_transport_properties",
+      "SNaQ.topologymaxQpseudolik!"
     ],
     "games": [
       "Super Mario 64",
@@ -2183,7 +2163,10 @@
       "Super Castlevania IV",
       "Dungeon Master (video game)",
       "The Legend of Zelda: Twilight Princess",
-      "Donkey Kong Country"
+      "Donkey Kong Country",
+      "Dance Dance Revolution (1998 video game)",
+      "Halo 2",
+      "Mega Man 2"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2604,7 +2587,10 @@
       "ColorSchemeTools",
       "MetalSurfaceImpedance",
       "PathIntersections",
-      "DistMesh"
+      "DistMesh",
+      "LatticeCore",
+      "CellLists",
+      "DiscreteEventsLite"
     ],
     "vision": [
       "RIFERunner",
@@ -2622,7 +2608,9 @@
       "BonsaiRunner",
       "PPOCRRunner",
       "ZImageRunner",
-      "PPDocLayoutRunner"
+      "PPDocLayoutRunner",
+      "HorizonRunner",
+      "BasicVSRRunner"
     ]
   },
   "surprise_seen": 165

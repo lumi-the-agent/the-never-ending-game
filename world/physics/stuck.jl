@@ -87,7 +87,10 @@ end
 
 "The axle height where the sand carries `W` newtons at slip i (bisection from the rim just touching to 0.9 r down)."
 function settle_at(s, r, b, ground, W, i; xs = range(0, r; length = 40), pressed = x -> 0.0)
-    top = maximum(ground(x) + r - sqrt(max(r^2 - x^2, 0.0)) for x in xs)
+    # the highest axle at which the rim touches the ground anywhere ahead (s169: this was ground + r - sqrt(r^2 - x^2),
+    # which is right only on flat ground; in a rut lower 35 cm ahead the bracket's top had the rim 4 mm deep already,
+    # the bisection pinned there and the 'full settle' returned a wheel carrying 426 N of its 233)
+    top = maximum(ground(x) + sqrt(max(r^2 - x^2, 0.0)) for x in xs) + 0.002   # + a bump between the 9 mm samples
     lo, hi = top - 0.9r, top
     for _ in 1:30
         mid = (lo + hi) / 2
@@ -130,17 +133,43 @@ not converge in `iters` (the caller then runs the full `settle`, which always br
 function settle_from(s, r, b, ground, W, guess; pressed = x -> 0.0, iters = 12, tol = 1e-3)
     zc, i = guess.zc, guess.i
     res(z, ii) = (q = rim(s, r, b, ground, z, ii; pressed); (q.W - W, q.T, q))
+    # The load grows monotonically as the axle goes down (slip barely moves it), so every evaluation brackets the
+    # height. s169: where the rim first touches stiffly PRESSED sand (a rear wheel in the front wheel's rut, on a
+    # diagonal heading where the rut is a staircase on the grid) W(zc) has a kink: ~230 N/mm just below the touch,
+    # ~22 above, and Newton 2-cycled across it (317.5 <-> 319.7 mm, every frame) into the full settle. When Newton
+    # leaves the bracket, false position (Illinois) inside it instead.
+    zdeep, fdeep = -Inf, 0.0                         # a height where the sand carries too much: the root is above
+    zhigh, fhigh = Inf, 0.0                          # too little: the root is below
+    side = 0
     for _ in 1:iters
         fW, fT, q = res(zc, i)
         abs(fW) < tol * W && abs(fT) < tol * W * r && return (; zc, i, q...)
+        if fW > 0
+            side == 1 && (fhigh /= 2)                # Illinois: the far end stuck twice, halve its weight
+            zdeep, fdeep, side = zc, fW, 1
+        else
+            side == -1 && (fdeep /= 2)
+            zhigh, fhigh, side = zc, fW, -1
+        end
+        # a resting contact on a STEP: a rim point newly touching pressed sand adds Bekker's stress for all it carried
+        # at once (a few N), so no height carries W exactly (the full settle ends 1.9 N off there too). Bracket closed
+        # to 0.01 mm, torque zero, load within 3%: that is the wheel sitting on the step.
+        zhigh - zdeep < 1e-5 && abs(fT) < tol * W * r && abs(fW) < 0.03 * W && return (; zc, i, q...)
         hz, hi = 1e-5, 1e-4
         aW, aT, _ = res(zc + hz, i); bW, bT, _ = res(zc, i + hi)
         J11, J12, J21, J22 = (aW - fW) / hz, (bW - fW) / hi, (aT - fT) / hz, (bT - fT) / hi
         d = J11 * J22 - J12 * J21
-        abs(d) > 0 || return nothing
-        dz = (J22 * fW - J12 * fT) / d; di = (J11 * fT - J21 * fW) / d
+        bracketed = isfinite(zdeep) && isfinite(zhigh)
+        # off the ground entirely (a wheel perched on a bump overshoots into the air): W and T are flat, d = 0; with a
+        # bracket that is no dead end (s169: half the remaining fallbacks were this), keep the slip and cut the bracket
+        abs(d) > 0 || bracketed || return nothing
+        dz, di = abs(d) > 0 ? ((J22 * fW - J12 * fT) / d, (J11 * fT - J21 * fW) / d) : (Inf, 0.0)
         dz = clamp(dz, -0.01, 0.01); di = clamp(di, -0.1, 0.1)       # damped: never more than 1 cm or 0.1 slip a step
-        zc -= dz; i -= di
+        znew = abs(d) > 0 ? zc - dz : NaN
+        if bracketed && !(zdeep < znew < zhigh)
+            znew = zdeep + fdeep * (zhigh - zdeep) / (fdeep - fhigh)
+        end
+        zc = znew; i -= di
     end
     fW, fT, q = res(zc, i)
     abs(fW) < tol * W && abs(fT) < tol * W * r ? (; zc, i, q...) : nothing
@@ -214,17 +243,18 @@ All the cart's wheels in one go (the game's call): `wheels` = [(x, y), ...] worl
 `fwd` and carrying W. One read of the field, a warm-started settle per wheel, ONE footprint map for all of them and
 ONE press! (berm search radius R cells: a 10 cm rim sheds its sand sideways within 2-3 cells).
 """
-function cart_step!(cs::CartSand, wheels, fwd, W, moving; r = 0.35, b = 0.10, R = 4)
+function cart_step!(cs::CartSand, wheels, fwd, W, moving; r = 0.35, b = 0.10, R = 4, soils = nothing)
     f = cs.f; dx = f.dx; h = Array(f.h); nx, ny = size(h)
     U = fill(Inf32, nx, ny)
     sts = map(enumerate(wheels)) do (k, (x, y))
         g(ξ) = sample(cs, h, x + ξ * fwd[1], y + ξ * fwd[2])
         pr(ξ) = sample(cs, cs.P, x + ξ * fwd[1], y + ξ * fwd[2])
+        so = soils === nothing ? cs.soil : soils[k]    # s169: each wheel's own soil (the wet band vs the dry cove)
         prev = get(cs.last, k, nothing)
-        st = prev === nothing ? nothing : settle_from(cs.soil, r, b, g, W, prev; pressed = pr)
+        st = prev === nothing ? nothing : settle_from(so, r, b, g, W, prev; pressed = pr)
         if st === nothing
             prev === nothing || (cs.fallbacks += 1)
-            st = settle(cs.soil, r, b, g, W; pressed = pr)
+            st = settle(so, r, b, g, W; pressed = pr)
         end
         cs.last[k] = st
         zb = st.zc - r

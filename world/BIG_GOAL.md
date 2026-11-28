@@ -19,14 +19,14 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
     - [x] Sail force from the solved flow, no lift curve: a plate swept through angle of attack stalls by itself (physics/sailflow.jl)
     - [x] A cambered sail luffs by itself in the solved flow (2D: lift -0.2 at 0 deg, 0.6-0.95 at 5 deg, s163)
-    - [ ] Sail it yourself: sheet, tiller, friends leaning out; over-sheeting must stall (the 3D box does; s166 a 442k-cell box hugging the sail runs real time on the GPU and drives the cart; s167 SAILS IN JUMP IN: E aboard, W/S sheet, A/D steer, 17 m; next: wheels spin, Lumi seated, ruts, chase film)
+    - [ ] Sail it yourself: sheet, tiller, friends leaning out, over-sheeting stalls (sails in Jump in s167; next: Lumi seated, ruts, film)
     - [ ] Telltales: threads stream in the sail's solved flow, the player trims by them
       - [x] The threads read the trim in the solved 3D flow: windward lifts when it luffs, lee when it stalls (s164)
 - [ ] Lead plates in acid that store what the windmill makes (Plante's accumulator: charge, fizz, discharge)
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
-  - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (projects/stuck.md, #773; physics s168)
+  - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (#773; s169 in game: sinks, Q a friend pushes, R digs; next: planks, film)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)
     - [x] The wind over a fence solved in 3D (WaterLily): wake, corner jets, lee eddy; sand blown by it (s161)
     - [x] WaterLily on the GPU matches the CPU (Lava strided-GEP fix, 5 ms/step, s162)

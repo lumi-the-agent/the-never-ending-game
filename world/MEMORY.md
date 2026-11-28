@@ -9,6 +9,13 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s169: PASSED 'Bogged' (todo #773 part 1 PUBLISHED): the yacht's wheels in the real sand field (CartSand 6 m around
+  it, soil by beach_weight): parked in the dry cove 32 mm deep; the SAIL ALONE barely moves it now (8 m/s ~92 N). Q by it
+  calls the nearest friend: runs over, steps round blocks, pushes 357 N x (1 - v/2.5): 8.2 m in 9 s. R DIGS (published). Parked
+  hold is 136 N (settled twice: own holes); digging close to a tyre is a SKILL (-26 N, or +100 if it drops into a hole). Soil per wheel, heap to the side, square MOVES with the cart: done. NEXT: plank under a wheel,
+  dig/lean poses; then the dusk film (stuck, dig, shove, out) = the post. NO POST s169.
+  Free time: cart_step! slow frames only on DIAGONAL ruts; fixed settle_at's bracket BUG (426 N of 233) + bracketed
+  Newton: 40 -> 18-23 of 360; the rest are stiff-reload steps (projects/stuck.md 's169').
 - s168: PASSED 'Stuck in the sand: dig, plank, push, rock it free' -> projects/stuck.md, todo #773 (wind.md
   shelved). PHYSICS DONE, NOT IN THE GAME: physics/stuck.jl (wheel on real ground + load history), check
   physics/stuck_check.jl passes (roll in field 193 = flat 194); Stuck.cart_step! = whole cart 0.9 ms median, p95 20 ms
