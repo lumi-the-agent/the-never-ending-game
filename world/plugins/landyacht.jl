@@ -68,12 +68,32 @@ function ly_sail_mesh(mast::Point3f)
     GeometryBasics.mesh(pts, fs; normal = GeometryBasics.normals(pts, fs), uv = uvs)
 end
 
+# The patch over the old tear, in metres on the sail (x along the chord from the luff, 1.2 m; y up, 2.8 m): a hand-cut
+# square of newer canvas set 7 deg askew, its edge a little wavy, hemmed under 2 cm, sewn round with a row of stitches
+# 1.2 cm in from the edge (9 mm stitches, 6 mm gaps), over a jagged tear. s166: the old patch was a flat rectangle with a
+# dark outline and read as a window. Returns (; inside, hem, stitch, tear).
+function ly_patch(u, v)
+    x = u * LY_CHORD; y = v * LY_SAIL_H
+    th = deg2rad(7f0); dx = x - 0.756f0; dy = y - 1.036f0
+    lx = cos(th) * dx + sin(th) * dy; ly = -sin(th) * dx + cos(th) * dy
+    hx = 0.14f0 + 0.004f0 * sin(23f0 * ly) + 0.002f0 * sin(61f0 * ly)
+    hy = 0.16f0 + 0.004f0 * sin(19f0 * lx) + 0.002f0 * sin(53f0 * lx)
+    ex = hx - abs(lx); ey = hy - abs(ly); e = min(ex, ey)
+    inside = e > 0
+    along = ex < ey ? ly : lx
+    stitch = inside && abs(e - 0.012f0) < 0.0017f0 && mod(along + 1f0, 0.015f0) < 0.009f0
+    yt = 0.018f0 * sin(38f0 * lx) + 0.008f0 * sin(97f0 * lx + 1f0)
+    tear = inside && abs(lx) < 0.09f0 && abs(ly - yt) < 0.0022f0
+    (; inside, hem = inside && e < 0.02f0, stitch, tear)
+end
+
+
 """
 Sailcloth: undyed canvas (cotton duck) in crosscut panels about 0.55 m deep sewn with double seams, a leather-brown
 tape along luff, leech, foot and head, faint weave, and one patch sewn over an old tear (the big goal's patched sail).
 Rows run up the sail (v), columns along the chord from the luff (u).
 """
-function ly_canvas(; nv = 512, nu = 256)
+function ly_canvas(; nv = 1024, nu = 512)
     base = (0.84f0, 0.79f0, 0.67f0)
     img = Matrix{RGBf}(undef, nv, nu)
     rng_noise(i, j) = 0.025f0 * (sin(1.7f0 * i + 0.3f0 * j)^2 + cos(2.3f0 * j - 0.7f0 * i)^2 - 1)   # weave, no RNG
@@ -85,11 +105,12 @@ function ly_canvas(; nv = 512, nu = 256)
         col = base .* tone
         dv = abs(v * panels - round(v * panels))                     # distance to the nearest seam, in panels
         (0.004f0 < dv < 0.012f0 || 0.022f0 < dv < 0.03f0) && 0 < round(v * panels) < panels && (col = col .* 0.78f0)
-        inpatch = 0.52f0 < u < 0.74f0 && 0.31f0 < v < 0.43f0
-        if inpatch
-            col = (0.76f0, 0.69f0, 0.55f0) .* (1f0 + rng_noise(c, r))
-            e = min(u - 0.52f0, 0.74f0 - u, v - 0.31f0, 0.43f0 - v)
-            e < 0.006f0 && (col = col .* 0.75f0)
+        pt = ly_patch(u, v)
+        if pt.inside
+            col = (0.89f0, 0.86f0, 0.77f0) .* (1f0 + rng_noise(c + 7, r + 3))  # newer, less sun-faded canvas
+            pt.hem && (col = col .* 0.95f0)
+            pt.tear && (col = col .* 0.93f0)
+            pt.stitch && (col = (0.36f0, 0.27f0, 0.18f0))                    # tarred sail twine
         end
         (u < 0.03f0 || u > 0.975f0 || v < 0.018f0 || v > 0.985f0) && (col = (0.42f0, 0.3f0, 0.2f0) .* (1f0 + rng_noise(r, c)))
         img[r, c] = RGBf(col...)
@@ -113,7 +134,10 @@ function ly_canvas_through(cloth::Matrix{RGBf})
         dv = abs(v * panels - round(v * panels))
         layers = 1
         dv < 0.03f0 && 0 < round(v * panels) < panels && (layers = 2)        # the double seam's overlap
-        0.52f0 < u < 0.74f0 && 0.31f0 < v < 0.43f0 && (layers += 1)          # the patch over the old tear
+        pt = ly_patch(u, v)
+        pt.inside && (layers += pt.tear ? 0 : 1)       # the patch over the sail; where the sail is torn, the patch alone
+        pt.hem && (layers += 1)                        # the hem turned under
+        pt.stitch && (layers += 2)                     # twine passes almost nothing
         tape = u < 0.03f0 || u > 0.975f0 || v < 0.018f0 || v > 0.985f0
         k = tape ? 0f0 : 0.27f0^(layers - 1)
         g = 1f0 + 4f0 * (ly_lum(cloth[r, c]) - 0.75f0)                   # the weave's thin and thick threads
@@ -168,8 +192,8 @@ function ly_build!(game)
     wp = [at(Vec3f(p) + mastb) for p in GeometryBasics.coordinates(sm)]
     sw = GeometryBasics.mesh(wp, GeometryBasics.faces(sm); normal = GeometryBasics.normals(wp, GeometryBasics.faces(sm)),
                              uv = GeometryBasics.texturecoordinates(sm))
-    cloth = get!(ly_canvas, LY, :canvas)
-    shine = get!(() -> ly_canvas_through(cloth), LY, :canvas_through)
+    cloth = get!(ly_canvas, LY, :canvas_s166)            # versioned keys: LY outlives plugin reloads
+    shine = get!(() -> ly_canvas_through(cloth), LY, :canvas_through_s166)
     push!(plots, mesh!(sc, sw; color = cloth, name = :landyacht_sail,
                        material = NG.Hikari.DiffuseTransmission(reflectance = map(c -> RGBf(0.75f0 * c.r, 0.75f0 * c.g, 0.75f0 * c.b), cloth), transmittance = shine)))
     LY[:key] = objectid(sc); LY[:pos] = Point3f(c[1], c[2], g); LY[:yaw] = yaw

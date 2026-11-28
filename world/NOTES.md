@@ -1451,3 +1451,29 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - Plugin build that fails halfway (s165, landyacht): keep the plots list in the state dict from the first plot on, and have stop! also delete every scene plot whose name starts with the plugin's prefix; else the next build dies on 'a plot named ... is already in this scene' and the system is switched off. Revise can also load a half-saved plugin mid-edit (UndefVarError for a function you are still writing): reload again.
 - Turning path tracing on in the sandbox after a new Hikari material (DiffuseTransmission with image textures) took ~5 min the first time (kernel compile).
 - A built thing reads as BUILT only when its joints show (s165, land yacht redo twice): wheels need axles and hubs under the deck, a mast needs a step through the deck and stays, a sail needs a boom seen from the camera, cloth needs belly/sag (a rigid arc with a dark outline reads as a board), a patch needs stitching and a texture edge (a flat darker rectangle reads as a window). Stand it on FLAT ground (a slope-fit on a curved beach left a wheel hovering and the deck twisted). Check the traced still against every word of the caption before posting.
+- Poussin's box (s166 free time, his 'Extreme Unction' wash drawing, Cleveland 1983.197): he lit small wax figures in a box stage and drew the LIGHT MASSES in brown wash first; the figures are barely outlined, yet the bed, the kneeling men and the curtain read at once. My missed posts fail the other way: details everywhere, no big light/dark shape. Before a film: squint at the raster still (blur it) and ask if the subject is ONE clear light shape against a darker ground (or dark against light). If not, move the camera or the sun, not the details.
+- Revise does NOT track files I `include()` into my Julia session (physics/yachtrun.jl s166: an edited default kept its
+  old value through Revise.revise() and a whole set of runs used the old sail area). After editing such a file,
+  include it again (or use `includet`), and print one input-derived number (area, mass) in every run as a check.
+- The 3D sail box INSIDE THE GAME PROCESS (s166, sandbox live_eval, physics/sailflow.jl `sail3d`): from a
+  `Threads.@spawn` task it FAILS: "SubmitChannel is single-writer: it belongs to thread 1 and this is thread 8. Take a
+  channel per thread with `allocate_batch_queue!`" (dev/Mantle/src/graph/lifetime.jl `ownthread`; queue.jl). From
+  `@async` on thread 1 it runs: 176 steps at 6.4 ms/step (same as my session). Also: a task spawned in the SAME
+  live_eval that includes a file needs `Base.invokelatest` (world age). Next: either step the box a few steps per
+  frame on thread 1 inside the plugin's step! (budget ~10 ms/frame = 1.5 steps = ~1.5 chords/s, too slow for real
+  time) or find how a KA launch picks its channel so a worker thread can own one from allocate_batch_queue!.
+  WHY a worker thread can't just take a channel: on Vulkan every KA launch, allocation and devicearray goes to the
+  LavaDevice's own `dev.default_bq` (dev/Mantle/src/vulkan/graph.jl:572, :82, :905, `batchqueue(d) = d.default_bq`
+  :926). A box on its own thread needs a LavaDevice VIEW whose default_bq is a channel from allocate_batch_queue!
+  (an engine change in Mantle), OR the box in its own process (own Vulkan device on the same GPU) trading the sail
+  angle and the force with the game: simplest robust path for the live yacht (s166 plan).
+- SAIL SERVER (s166): physics/sailflow.jl `serve!(cmd, out)` in a Distributed worker (`addprocs(1; exeflags =
+  "--project=/sim/Programmieren/SimGame")`, `remotecall_eval(Main, pid, :(include(...)))`, RemoteChannels created ON
+  the worker, the loop called through `Base.invokelatest`): own Vulkan device, 5.5 ms/step, 4.8 chords/s, first force
+  after 28 s. The reader drains with `while isready(out); take!(out); end` each frame (median 0.8 ms). Always
+  `put!(cmd, :stop)` then `rmprocs(pid)`; a crash before that leaves a GPU process running (check `workers()`).
+- SECOND land yacht miss (s166 critic on the s165 retake): same kind as the first, so check these before any picture of
+  a built thing: every part TOUCHES what holds it (mast foot inside the deck outline, sail edge on mast and boom, the
+  mast top no higher than the sail head + 10 cm), wheels in PAIRS on a visible axle with hubs, nothing of the scenery
+  (cairns, stones, tufts) within 1.5 m of it, and the camera at a 3/4 view where all four wheels are countable.
+  Fixing one point (the boom) while the rest stays loose does not lift the picture.

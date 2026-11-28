@@ -12,22 +12,26 @@ const RHO = 1.2            # air, kg/m^3
 const G = 9.81
 
 """
-    run_yacht(; wind = 6.0, wind_from_deg = 90, sheet_deg = 20, sheet = nothing, mass = 95.0, area = 3.36,
-              chord_m = 1.2, aspect = 4, r = 0.35, b = 0.10, soil = :dry_sand, t_end = 20.0, dt = 0.1)
+    run_yacht(; wind = 6.0, wind_from_deg = 90, sheet_deg = 20, sheet = nothing, mass = 95.0, area = nothing,
+              chord_m = 1.2, aspect = 4, r = 0.35, b = 0.10, soil = :dry_sand, t_end = 20.0, dt = 0.1, sail = :box3d)
 
 The cart starts at rest heading along +x; the true wind blows from `wind_from_deg` off the bow (90: beam). The sail
 sits `sheet_deg` off the centre line, to leeward (`sheet(t, beta_deg)` overrides it each step: the player's hand).
 Returns a vector of named tuples per step: t, v, apparent speed and angle, angle of attack, CL, CD, drive, resistance.
 """
-function run_yacht(; wind = 6.0, wind_from_deg = 90, sheet_deg = 20, sheet = nothing, mass = 95.0, area = 3.36,
-                   chord_m = 1.2, aspect = 4, r = 0.35, b = 0.10, soil = :dry_sand, t_end = 20.0, dt = 0.1)
+function run_yacht(; wind = 6.0, wind_from_deg = 90, sheet_deg = 20, sheet = nothing, mass = 95.0, area = nothing,
+                   chord_m = 1.2, aspect = 4, r = 0.35, b = 0.10, soil = :dry_sand, t_end = 20.0, dt = 0.1, sail = :box3d)
+    area = something(area, aspect * chord_m^2)            # s166: the box's sail IS aspect x chord^2 (was 3.36 m2, not AR 4)
     s = WheelSand.SOILS[soil]
     roll = WheelSand.towed(s, mass * G / 4, r, b)
     R = 4 * roll.resistance                                   # rolling resistance, N (load does not change: no heel)
     wf = deg2rad(wind_from_deg)
     Wv = -wind * [cos(wf), sin(wf)]                           # true wind velocity (blowing towards)
     v = 0.0; t = 0.0
-    beta0 = wf; ls = SailFlow.live_sail(beta0 - deg2rad(sheet_deg); aspect)
+    beta0 = wf
+    # :box3d (s166) is the live sail: the 3D box stalls the right way; :slices (s165) stall backwards, kept to compare
+    ls = sail == :box3d ? SailFlow.sail3d(beta0 - deg2rad(sheet_deg); aspect) : SailFlow.live_sail(beta0 - deg2rad(sheet_deg); aspect)
+    force! = sail == :box3d ? SailFlow.sail3d_force! : SailFlow.sail_force!
     out = NamedTuple[]
     while t < t_end
         Va = Wv - [v, 0.0]                                    # apparent wind: true wind minus the cart's own motion
@@ -35,7 +39,7 @@ function run_yacht(; wind = 6.0, wind_from_deg = 90, sheet_deg = 20, sheet = not
         beta = atan(-Va[2], -Va[1])                           # where it comes from, off the bow
         sd = deg2rad(sheet === nothing ? sheet_deg : sheet(t, rad2deg(beta)))
         alpha = beta - sd                                     # angle of attack on the sail
-        f = SailFlow.sail_force!(ls, alpha, U * dt / chord_m)
+        f = force!(ls, alpha, U * dt / chord_m)
         q = 0.5 * RHO * U^2 * area
         drive = q * (f.CL * sin(beta) - f.CD * cos(beta))     # lift is square to the apparent wind, drag along it
         net = drive - (v > 1e-3 ? R : clamp(drive, 0.0, R))   # the sand holds it still until the sail beats it

@@ -3,66 +3,45 @@
   "annoyed": [
     {
       "post": "my-land-yacht",
-      "session": 165,
+      "session": 166,
       "title": "My land yacht",
       "weight": 1.0,
-      "what": "Caption says 'a canvas sail on a boom', but the picture shows no boom: the sail's lower corner just ends in the air above the deck, attached only along a single mast."
+      "what": "The picture: the mast doesn't come out of the deck. Its foot sits at the back edge of the deck, beside the far rear wheel, and the pole leans backward and away from the planks. Nothing ties it down: no step, no stays, no ropes."
     },
     {
       "post": "a-campfire-in-the-wind",
       "session": 164,
       "title": "A campfire in the wind",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The campfire, which is the subject, is small and hidden behind a cluster of tall upright brown planks and a grass tuft in the foreground in every frame (storyboard all 16 frames; at-25, at-50, at-75). You only see the flame through the gaps between the boards."
     },
     {
       "post": "my-first-motor",
       "session": 163,
       "title": "My first motor",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Caption says 'two stones', but the two big parts on the axle are flat black discs that look like rubber wheels, not stone (all frames, at-25, at-50)."
     },
     {
       "post": "where-i-rushed-it",
       "session": 163,
       "title": "Where I rushed it",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "Plain shapes on bare ground: a dark brown box with two orange sticks on flat green, with nothing of the island around it (frames 1-5)."
     },
     {
       "post": "chipping-a-stone-to-change-its-note",
       "session": 163,
       "title": "Chipping a stone to change its note",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The pebble moves with no visible cause: it hops around among the bird's toes and floats in the air beside its feet (frames 1-11). Nothing throws, drops or carries it, and the bird's feet never move."
-    },
-    {
-      "post": "putting-past-a-magnet-stone",
-      "session": 162,
-      "title": "Putting past a magnet stone",
-      "weight": 0.216,
-      "what": "Nothing starts the balls: the three sit stacked in the far left corner (storyboard frame 1) and leave one at a time with no push, release or visible tilt of the tray, so 'roll down my sand tray' shows no cause."
-    },
-    {
-      "post": "i-swallow-what-i-hit",
-      "session": 162,
-      "title": "I swallow what I hit",
-      "weight": 0.216,
-      "what": "The swallow is never shown: in frame 2 a green bubble wraps the yellow bird, and by frame 3 the crab has simply vanished from the left with no contact or engulfing in between."
-    },
-    {
-      "post": "a-top-over-a-ring-of-lodestone",
-      "session": 162,
-      "title": "A top over a ring of lodestone",
-      "weight": 0.216,
-      "what": "The plate moves with no hand: it lowers by itself (frames 1-6)."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T06:47:07",
+  "ended": "2026-11-28T07:31:05",
   "fatigue": {
-    "asset": 0.09,
-    "feature": 0.68,
+    "asset": 0.05,
+    "feature": 0.41,
     "picture": 0.01,
     "self": 0.01,
     "sound": 0.01
@@ -368,7 +347,7 @@
     "taste_cell",
     "footprint"
   ],
-  "joy": 0.09,
+  "joy": 0.04,
   "judged_posts": [
     {
       "form": "Lumi-led set-piece gag film: a prop or spell, a group romp, a spoken punchline",
@@ -821,13 +800,13 @@
     "similarity": 6
   },
   "last_surprise": {
-    "fun": 3,
-    "score": 4.0,
-    "session": 160,
-    "why": "It is the s159 pot cells and the s157 to s159 drum motor shown again with more cells, so the motor now spins instead of sticking. It is a continuation of the last three posts, with nothing the game could not do before this session."
+    "fun": 1,
+    "score": 1.5,
+    "session": 165,
+    "why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet."
   },
-  "loneliness": 0.36,
-  "perceived_until": "2026-11-28T05:57:48",
+  "loneliness": 0.42,
+  "perceived_until": "2026-11-28T06:47:36",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -841,49 +820,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 1.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "wire_bend",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "film"
-      ],
-      "new_assets": 0,
-      "new_pages": [
-        "site/films/wire-spins-itself.mp4"
-      ],
-      "new_plugins": [],
-      "points": 1.3,
-      "repeat_factor": 0.2154434690031884,
-      "repetition": {
-        "form": "Physics study of simulated objects moving alone, filmed",
-        "form_count": 2,
-        "nearest": "Two tops I turned",
-        "post": "Three logs in the sea",
-        "score": 6,
-        "shared": "simulated objects left alone side by side, fixed close view, physics comparison of shapes",
-        "similarity": 6
-      },
-      "session": 146,
-      "touched": [],
-      "values": {
-        "film": 6.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1607,6 +1543,34 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [],
+      "points": 1.0,
+      "session": 166,
+      "touched": [
+        "landyacht.jl"
+      ],
+      "values": {
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1942,7 +1906,7 @@
       "kiln.jl": 1.7957712256891387e9,
       "knock.jl": 1.795763934992228e9,
       "lamplight.jl": 1.795749092963664e9,
-      "landyacht.jl": 1.7958408412673323e9,
+      "landyacht.jl": 1.7958443338491366e9,
       "lensclear.jl": 1.7956676147046635e9,
       "longday.jl": 1.7954618152986712e9,
       "lookout.jl": 1.795521136652347e9,
@@ -1990,7 +1954,7 @@
     "self": "1523826980317287528",
     "wishes": 20
   },
-  "started": "2026-11-28T06:07:07",
+  "started": "2026-11-28T06:53:02",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2148,7 +2112,9 @@
       "ImageSegmentation.region_tree",
       "BPGates.bellmeasure!",
       "MissingPatterns.missingpairstats",
-      "LatinHypercubeSampling.scaleLHC"
+      "LatinHypercubeSampling.scaleLHC",
+      "MeshSteward.renumbered",
+      "BinningAnalysis.jackknife_full"
     ],
     "games": [
       "Super Mario 64",
@@ -2270,7 +2236,10 @@
       "Mario Kart 8 Deluxe",
       "Portal 2",
       "Age of Empires (video game)",
-      "Street Fighter III: 3rd Strike"
+      "Street Fighter III: 3rd Strike",
+      "Adventure (Atari 2600)",
+      "Metroid Prime",
+      "Mass Effect (video game)"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2682,7 +2651,10 @@
       "TikzPictures",
       "AstroNbodySim",
       "StreamCallbacks",
-      "Molecules"
+      "Molecules",
+      "CVortex",
+      "PowerLawNoise",
+      "SupplyChainSimulation"
     ],
     "vision": [
       "RIFERunner",
@@ -2694,8 +2666,10 @@
       "NeuralLUTRunner",
       "DepthAnythingRunner",
       "MatAnyoneRunner",
-      "SAM2Runner"
+      "SAM2Runner",
+      "FluxKleinRunner",
+      "DemucsRunner"
     ]
   },
-  "surprise_seen": 160
+  "surprise_seen": 165
 }

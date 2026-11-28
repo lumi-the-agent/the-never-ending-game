@@ -1,0 +1,36 @@
+{
+ "verdict": "pass",
+ "summary": "The picture shows what the caption says: a plank cart with four wooden wheels, a mast and a patched canvas sail at the top of the beach. The caption honestly says it does not sail. It is a nicely lit prop, but only a prop: nothing in the game moves or reacts.",
+ "real_change": "landyacht.jl places a static cart: five catalog planks for the deck, four wheel discs, a plank stood up as the mast, a boom, and an arc-shaped sail mesh with a procedurally painted canvas texture (tape, weave, a patch) and a diffuse-transmission material so light shows through it. The only things that depend on the world are its spot (an offset from the first dune grass), its pitch and roll fitted to the terrain under the four wheels, and one collision circle (radius 1.4 m) added to EXTRA_SOLIDS. step! only rebuilds the cart if the scene changes. There is no wind force, no wheel rolling, no sail trim and no player input. Everything else is drawn.",
+ "surprise": 2,
+ "surprise_why": "One more static prop on the beach, of a kind the island already has (huts, tables, carts of planks); the sail physics it points to is not there yet.",
+ "fun": 1,
+ "fun_why": "There is nothing to do or watch: the cart stands still, and the post shows one still picture.",
+ "real": 1,
+ "real_why": "It is placed geometry that tilts to the terrain and blocks walkers with one circle; nothing about the yacht is simulated.",
+ "findings": [
+  {
+   "severity": "medium",
+   "what": "The sail reads as a narrow flat banner on a pole, not a sail set on a boat. Seen almost edge-on, it leans away from the mast, and the boom along its foot can hardly be seen, so the foot looks like it ends in the air above the deck.",
+   "where": "land-yacht-on-the-beach.png, the sail and mast (upper centre)",
+   "evidence": "The sail is a tall strip from about x 505 to 640. The mast top sits at its right edge (x ~575) while the strip's foot ends near x 640 above the deck. No spar along the foot stands out against the sea.",
+   "suggestion": "Frame the cart from the quarter so the sail's camber and the boom show. Give the boom a contrasting colour or more thickness, and make sure the luff runs visibly along the mast."
+  },
+  {
+   "severity": "medium",
+   "what": "The 'patch' is a small dark-grey rectangle in the middle of the sail. It reads as a window or a hole, not a sewn patch of cloth.",
+   "where": "land-yacht-on-the-beach.png, sail centre (~x 570, y 215)",
+   "evidence": "A flat, evenly dark rectangle with no stitching, edge or difference in weave that can be seen at this size.",
+   "suggestion": "Give the patch a slightly different canvas tone, a visible stitched border and a bit of tilt or irregular edges, so it reads as cloth sewn on top."
+  },
+  {
+   "severity": "low",
+   "what": "The cart's rear sits on and among beach stones, and the rear wheels are half hidden behind a cairn and the deck, so the four wheels do not read clearly as rolling on the sand.",
+   "where": "land-yacht-on-the-beach.png, lower left (stones at x ~380-440 and ~540-590)",
+   "evidence": "Stone heaps press against the left front wheel and the far rear wheel. The near rear wheel is cut by the deck edge.",
+   "suggestion": "Move the cart onto clear sand, or clear the stones around it, and show all four wheels touching the ground."
+  }
+ ],
+ "addressed": true,
+ "response": "s166: all three are right and are the retake plan in projects/landyacht.md and the miss note: a boom seen from the camera with the sail's foot laced to it, cloth with belly seen from the quarter (not edge-on), a sewn patch with stitching and its own texture, the cart on flat open sand with all four wheels clear of stones. The cart moving on its solved sail (todo #767) comes first, so the retake will be a film of it sailing."
+}

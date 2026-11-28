@@ -1,6 +1,6 @@
 # Land yacht with a dynamo on its axle
 Goal: the player sails the bare cart along the beach with the friends aboard, trimming a patched sail against the wind (too tight: the flow tears off and it stalls; too loose: it luffs; right: it heels onto two wheels and runs faster than the wind), and switches Lumi's motor, run backwards on the axle as a dynamo, in to brake and charge the clay-pot cells, or out to fly; at dusk the sail comes down and the cart drives home on what the sailing stored. Speed now or charge for the evening, every day a different wind. (Strongest idea s162 after 3 rounds: surprise 8, fun 8, real 6, toward 8.)
-Next: (s165, todo #767, PASSED 'Sail it yourself') THE LIVE SAIL MUST BE 3D: the 2D slices stall backwards, the 3D GPU box stalls right (alpha 15 L/D 3.3, 50 L/D 0.8, see 3D ANSWER below). Build a 3D WaterLily box hugging the sail on the GPU, stepping beside the game, re-trimmed to the apparent wind (sail_force! for the box), measure ms/step; feed physics/yachtrun.jl's cart (firm sand), then the 2D beach cart with heel vs crew weight, sheet/tiller keys in a 'Sail the beach' mini game, a chase-camera traced film of a played run for the post.
+Next: (s166, todo #767) the hugging 3D box (sailflow.jl Sail3D, ~real time on Mantle) drives yachtrun.jl's cart and runs as a SAIL SERVER in its own process (serve!, tested): put it IN THE GAME: the yacht plugin starts the server (Distributed addprocs) when sailing starts, sends the angle each frame, drains the newest CL/CD (the cart reads it), the yacht plugin's cart rolls along the waterline in an 8 m/s breeze, keys for sheet and tiller in a 'Sail the beach' mini game; then fix the look (boom seen, sewn patch, flat sand) and a traced chase film. Watch the blockage (box 48 cells high puffs up stalled forces by ~1/3): try 64.
 
 ## The critic's risks (s162)
 - A frozen lookup for the sail, or a dynamo that is only a drag number with a charge bar: then it is a rig.
@@ -190,6 +190,44 @@ s164 LAST: the sail got a canvas texture (plugins/landyacht.jl ly_canvas: 5 cros
   chord 16-24 ~ 1M cells should be near real time for a 1.2 m sail in 6 m/s = 5 chords/s -> measure ms/step first).
   Caveat: 3D CL at 15 deg (0.46) is low for a 10% cambered AR-4 sail (~0.9 expected): the camber gain is lost at 24
   cells/chord, 2 cells thick (s163 saw the same). Check chord 32 at 10/15/50 once the box hugs the sail.
+- CPU CROSS-CHECK (s166, job 20261128-062851-640-run, same case, 186 s): alpha 15 CL 0.458 CD 0.137, alpha 50 CL 0.533
+  CD 0.667. GPU (Mantle) and CPU agree to the 3rd digit: the 3D answer is the flow's, not a GPU fault.
+- CAMBER DOES NOTHING IN THE 3D BOX (s166 free time, GPU, chord 24 AR 4 box (192,96,160), alpha 15, Re 2000, mean of
+  2-chord bins over chords 10-22, CL spread +-0.02): flat CL 0.40 CD 0.18 | arc 5% 0.28 / 0.115 | arc 10% 0.46 / 0.14
+  (s165) | arc 20% 0.41 / 0.195. Arc 10% at Re 2e4 (shorter run): 0.49 / 0.15. Lift sits at ~0.4 whatever the belly:
+  the box flies like a LOW-Re plate (vortex lift off the leading edge, camber 1-5 cells deep under 2-cell BDIM
+  smoothing), not like a 1.2 m sail at Re 5e5 (~0.9-1.0 at 15 for a 10% AR-4 sail). For 'Sail it yourself' that is
+  fine (sheet = angle, the stall is right), but BELLY (sheet tension, the outhaul) is NOT a knob the box can answer
+  yet, and the forces are ~half a real sail's at good trim. Don't scale it up (a fudge); test chord 48 with a 1.5-cell
+  plate before promising belly as play. Also odd and open: 5% camber lifts LESS than flat (less drag too).
+- THE HUGGING BOX (s166, sailflow.jl `Sail3D`, `sail3d`, `sail3d_force!`; retrim inside the running flow like the 2D
+  slices): chord 16, AR 4, box (96,48,96) = 442k cells, GPU (Mantle): 6.0 ms/step, 5.3 chords/s at 15 deg, 3.4 at 50
+  (smaller steps in the stalled wake). A 1.2 m sail in 6 m/s needs 5 chords/s: REAL TIME at good trim, 0.7x stalled,
+  alone on the GPU. Forces vs the big chord-24 box: 15 deg CL 0.43 CD 0.17 (0.46/0.14), 50 deg CL 0.71 CD 0.90
+  (0.53/0.67): blockage (sail 2/3 of the box span, 48 cells high) puffs up the STALLED case by ~1/3. Drive at beta 60:
+  trimmed 0.29, stalled 0.17 (big box 0.33/0.13): right trim still wins, by 1.75x instead of 2.5x. Next widen the box
+  in y (64) if the GPU allows, and step it on its own task beside the frame.
+- IN THE GAME PROCESS (s166, NOTES '3D sail box INSIDE THE GAME PROCESS'): @async on thread 1 runs the box at 6.4 ms/step;
+  a Threads.@spawn task fails on Mantle's single-writer SubmitChannel, and Vulkan KA launches always use dev.default_bq.
+  SAIL SERVER WORKS (s166, sailflow.jl `serve!`, test via Distributed addprocs + RemoteChannels): its own process,
+  first force 28 s after start (compile + warm: Lumi can rig the sail meanwhile), then 4.8 chords/s at 5.5 ms/step
+  (= real time for 1.2 m at 5.8 m/s), trimmed 15: CL .42 CD .16; re-trimmed to 50 mid-run: .69/.88 within ~1 s. The
+  'game' side drains the channel each frame: median 0.8 ms, one 107 ms spike (first call compile? check in the plugin).
+  IN THE GAME (s166 late, sandbox only, media/s166-sailtest.jl via live_eval Base.include): the game process starts
+  the server (addprocs), sends alpha each frame, drains CL/CD, moves the cart's plots with translate!: 8 m/s beam,
+  trim 15: 2.7 m/s and 20.5 m at 13 s, 43 m in 20 s, 30 fps held. Missing: wheel spin, ground following, collisions,
+  keys, a camera that follows. Live-eval traps: no `using` inside live_eval code (include a file), Makie is
+  NeverendingGame.Makie there, wrap in try/finally so rmprocs always runs.
+  WAS THE PLAN: the box in its OWN PROCESS (own Vulkan device on the GPU), the game sends the sail angle + apparent wind and
+  reads back CL/CD each frame; or a Mantle LavaDevice view on an allocate_batch_queue! channel (engine change).
+- FIRST RUNS ON THE 3D SAIL (s166, yachtrun.jl sail = :box3d, area now aspect x chord^2 = 5.76 m2 (was 3.36), 95 kg,
+  firm sand rolling resistance 69 N, beam wind): 6 m/s: NOTHING MOVES at any trim (trimmed drive 52 N < 69: the box's
+  CL 0.42 is a low-Re sail's, ~half a real one). 8 m/s: trimmed (alpha 15) rolls, 1.4 / 2.3 / 3.2 m/s at 5/10/15 s;
+  pinned on the centre line (alpha 85) never moves (18 N); over-sheeted to alpha 45 rolls FASTER at the start
+  (2.7 / 3.8 / 4.2 m/s): near the beam the stalled sail's big CL (0.66, puffed by blockage) still pushes, its drag is
+  sideways. The apparent wind swings from 90 to 62 deg by 15 s; trimmed should overtake once it is forward of ~55.
+  Wall: 22 s for 15 s trimmed (0.7x real time with the CPU loop), 32-37 s stalled. Yesterday's wind decides: a
+  6 m/s day does not sail.
 - SPEED (s165): 3D arc box chord 16, AR 4, (128,64,96) = 786k cells on the GPU (Mantle): 9.9 ms/step, 0.035 chords
   a step = 3.5 chords/s = 0.7x real time for a 1.2 m sail in 6 m/s (5 chords/s). A box hugging the sail (~400k cells)
   should reach ~1.4x. It shares the GPU with the frame: step it on its own task, the cart reads its latest force.

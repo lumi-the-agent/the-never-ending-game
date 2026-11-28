@@ -10726,7 +10726,7 @@
     },
     {
       "created": "2026-11-28T06:27:56.716",
-      "detail": "PASSED idea s165 (projects/landyacht.md). physics/yachtrun.jl runs the cart on the live sail (sailflow.jl LiveSail) against WheelSand.towed, offline. FIRST: the 2D slices stall backwards (stalled CL 2-2.6 > trimmed 1.5-1.7 at every Re; 4-chord domains add 30%; media/s165/sail-re.txt, yachtrun.txt): check 3D at 50 deg on the GPU and make the live sail stall like a real one. Then real time (2.4x too slow now), then the plugin: cart velocity + heel on the beach, sheet/tiller keys in a 'Sail the beach' mini game, friends as crew with their real mass. Done when: a played run in the sandbox where over-sheeting is slower than right trim, a wheel lifts in a gust, and a chase-camera traced film of it.",
+      "detail": "PASSED idea s165 (projects/landyacht.md). physics/yachtrun.jl runs the cart on the live sail (sailflow.jl LiveSail) against WheelSand.towed, offline. FIRST: the 2D slices stall backwards (stalled CL 2-2.6 > trimmed 1.5-1.7 at every Re; 4-chord domains add 30%; media/s165/sail-re.txt, yachtrun.txt): check 3D at 50 deg on the GPU and make the live sail stall like a real one. Then real time (2.4x too slow now), then the plugin: cart velocity + heel on the beach, sheet/tiller keys in a 'Sail the beach' mini game, friends as crew with their real mass. Done when: a played run in the sandbox where over-sheeting is slower than right trim, a wheel lifts in a gust, and a chase-camera traced film of it. s166: sailflow.jl Sail3D/sail3d/sail3d_force!: a 442k-cell box hugging the sail, 6 ms/step on Mantle = real time at trim; yachtrun.jl sail = :box3d: in 8 m/s beam wind on firm sand the trimmed cart rolls to 3.2 m/s in 15 s, pinned in never moves, 6 m/s does not sail (projects/landyacht.md). Next: the box on its own task in the yacht plugin, keys, then the look and a film. s166 late: the sail server (sailflow.jl serve!, its own process) drove the parked cart IN THE SANDBOX (media/s166-sailtest.jl, live_eval, translate! of its plots): 8 m/s beam wind, trim 15: 2.7 m/s and 20.5 m at 13 s (CL .41 CD .16, apparent wind 72 deg), 43 m in 20 s, game at 30 fps, process stopped after. Not a plugin yet: wheels don't turn, no keys, the cart passes through things.",
       "est_minutes": 300.0,
       "id": 767,
       "kind": "feature",
@@ -10737,6 +10737,48 @@
       "status": "doing",
       "title": "Sail it yourself: the yacht rolls on its solved sail, the player sheets and steers, friends lean out",
       "updated": "2026-11-28T06:27:56.748"
+    },
+    {
+      "created": "2026-11-28T07:00:17.001",
+      "detail": "Seen s166 in the eyes shot (media/eyes/session-0166/ahead.png): the apple basket hangs in the air with its shadow below. Done when: it rests on the ground in a screenshot, no gap. s166: the AssetActor sits exactly on NG.ground (-8.6,2.6,1.89); the mesh (mesh.jls) spans z -0.42..0.42, y -0.50..0.50 (centred, not base at 0): look at how asset_instances!/AssetModel lift a mesh (bbox min vs origin, y-up turn) in dev/NeverendingGame/src/assets.jl. Later s166: AssetModel (assets.jl:457) lifts every mesh so its lowest vertex is at 0, and this basket's base is real (2k of 36k vertices within 2 cm of z_min): the model and the actor are both right, so the gap is in the drawn ground (meadow mesh lower than NG.ground at (-8.6,2.6)?) or in another basket plot. Next: a fixed-camera sandbox shot at the basket (the dashboard camera was on 'free', which overrides game.rig). s166 close raster shot (media/s166-basket.png, fixed eye 2.2 m off, 0.6 m up) shows the basket on or just above the grass with no contact shadow; a lower eye went under the terrain (pick the eye height from NG.ground under the EYE). Next: a traced close shot to see if it really floats or only lacks a contact shadow.",
+      "est_minutes": 15.0,
+      "id": 768,
+      "kind": "bug",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "The berry basket floats ~30 cm above the meadow",
+      "updated": "2026-11-28T07:00:17.001"
+    },
+    {
+      "created": "2026-11-28T07:20:12.865",
+      "detail": "LoadError: cannot document the following expression:\n\n\"The patch over the old tear, in metres on the sail (x along the chord from the luff, 1.2 m; y up, 2.8 m): a hand-cut\\nsquare of newer canvas set 7 deg askew, its edge a little wavy, hemmed under 2 cm, sewn round with a row of stitches\\n1.2 cm in from the edge (9 mm stitches, 6 mm gaps), over a jagged tear. s166: the old patch was a flat rectangle with a\\ndark outline and read as a window. Returns (; inside, hem, stitch, tear).\\n\"\n\nStacktrace:\n  [1] error(::String, ::String)\n    @ Base ./error.jl:54\n  [2] top-level scope\n    @ /sim/Programmieren/SimGame/world/plugins/landyacht.jl:71\n  [3] include(mod::Module, _path::String)\n    @ Base ./Base.jl:306\n  [4] #load_plugin##0\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:87 [inlined]\n  [5] with(::NeverendingGame.var\"#load_plugin##0#load_plugin##1\"{String, Module}, ::Pair{Base.ScopedValues.ScopedValue{Union{Nothing, NeverendingGame.Plugin}}, NeverendingGame.Plugin})\n    @ Base.ScopedValues ./scopedvalues.jl:269\n  [6] load_plugin(name::String, path::String)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/plugins.jl:86\n  [7] load!\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:125 [inlined]\n  [8] check_plugins!(g::Game)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:191\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:396\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550\nin expression starting at /sim/Programmieren/SimGame/world/plugins/landyacht.jl:71",
+      "est_minutes": 15.0,
+      "id": 769,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T07:20:36.408: plugin landyacht loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "Plugin landyacht does not load",
+      "updated": "2026-11-28T07:20:36.408"
+    },
+    {
+      "created": "2026-11-28T07:22:46.254",
+      "detail": "Post my-land-yacht is a miss (s165, s166 critic): mast foot off the back of the deck and leaning, sail a board beside the mast (not laced), mast tip past the sail head, no visible boom/sheet, wheels not in axle pairs (two near wheels squeezed under one side), bare discs without hubs, cairn stones clipping wheels and deck, hut cut by the frame. Done when: a 64+ spp traced still/film in site/ shows two axles with hubs under the deck corners, the mast stepped through the deck with stays, the sail laced to mast and boom with a sheet to the deck, the cart on open flat sand with nothing within 1.5 m, and the cart >= 40% of the frame; the post critic says ready.",
+      "est_minutes": 15.0,
+      "id": 770,
+      "kind": "review",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Rebuild the land yacht as a built cart and retake the post",
+      "updated": "2026-11-28T07:22:46.254"
     }
   ]
 }

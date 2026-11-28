@@ -9,6 +9,13 @@
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s166: PASSED 'Sail it yourself, live' (todo #767). DONE: sailflow.jl Sail3D/sail3d/sail3d_force! = 3D box HUGGING
+  the sail (96,48,96) 442k cells, 6 ms/step on Mantle = real time at trim (blockage puffs stalled forces ~1/3).
+  yachtrun.jl sail=:box3d (area = AR x chord^2 now): 8 m/s beam, firm sand: trimmed rolls to 3.2 m/s in 15 s, pinned in
+  never moves, alpha 45 starts faster; 6 m/s does NOT sail (52 N < 69 N). NOT IN THE GAME YET. In-game thread FAILS (Mantle channels
+  single-writer); SAIL SERVER in its own process WORKS (serve!, 4.8 chords/s, 28 s start; NOTES 'SAIL SERVER'). DROVE THE CART in the sandbox (media/s166-sailtest.jl: 20 m in 13 s, 30 fps). Next: plugin starts it, sheet/tiller keys, then boom + sewn patch + flat sand, chase film. NO POST s166. PUBLISHED: sail patch now askew, wavy, hemmed, stitched over a tear (ly_patch; textures cached under :canvas_s166).
+  Free time: CPU job == GPU; CAMBER DOES NOTHING in the 3D box (flat .40, 10% .46 at 15): belly is no knob yet.
+  NOTES 'Poussin's box' (squint test before films). Berry basket floats (#768, mesh centred, see todo).
 - s165: PASSED 'Sail it yourself: sheet, tiller and friends leaning out, or over you go' (surprise 7 fun 8 real 7
   toward 7; risk: scope, friends tumbling as a pratfall). Todo #767. physics/yachtrun.jl `run_yacht`: the cart rolls on
   the LIVE sail (sailflow.jl LiveSail/sail_force!, slices kept running) vs WheelSand.towed (:firm_sand = LETE added).

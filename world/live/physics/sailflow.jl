@@ -319,6 +319,88 @@ function sail_force!(ls::LiveSail, alpha_geo, chords; relax = 0.5)
     (CL = pi * ls.aspect * ls.A[1], CD = sum(ls.cd) / N + CDi, CDi, cl = copy(ls.cl), alpha_i_deg = rad2deg.(ls.ai))
 end
 
+"""
+    Sail3D: the live 3D sail (s166, idea 'Sail it yourself, live'). The 3D box is the only flow that stalls the right
+way round (s165: 2D slices give MORE lift stalled), so the cart's sail is a small 3D WaterLily box hugging the arc,
+on the GPU, turned to each new angle inside the running flow (`retrim!`, like the 2D slices).
+"""
+mutable struct Sail3D
+    sim::Any
+    body::Any          # angle (rad) -> AutoBody; a new sdf of the same closure type per angle (kernels take no Refs)
+    chord::Int
+    span::Int
+    alpha::Float64
+end
+
+function sail3d(alpha; chord = 16, aspect = 4, n = (96, 48, 96), camber = 0.1f0, thick = 2, Re = 2000, warm = 6,
+                mem = gpu_mem())
+    span = aspect * chord
+    c0 = SVector{3,Float32}(n[1] * 0.3f0, n[2] / 2, n[3] / 2)
+    f = Float32(camber * chord); hc = Float32(chord / 2); R = (hc^2 + f^2) / (2f); yc = f - R; phi = asin(hc / R)
+    ht, hs = Float32(thick / 2), Float32(span / 2)
+    body(a) = begin
+        ca, sa = cos(Float32(a)), -sin(Float32(a))
+        sdf(x, t) = begin
+            d = x - c0
+            px, py = ca * d[1] + sa * d[2], -sa * d[1] + ca * d[2]
+            ry = py - yc; r = sqrt(px^2 + ry^2); th = atan(px, ry)
+            d2 = abs(th) <= phi ? abs(r - R) : min(sqrt((px - hc)^2 + py^2), sqrt((px + hc)^2 + py^2))
+            q1, q2 = d2 - ht, abs(d[3]) - hs
+            sqrt(max(q1, 0)^2 + max(q2, 0)^2) + min(max(q1, q2), 0)
+        end
+        AutoBody(sdf)
+    end
+    sim = Simulation(n, (1f0, 0f0, 0f0), Float32(chord); U = 1f0, ν = Float32(chord) / Float32(Re),
+                     body = body(alpha), T = Float32, mem)
+    sim_step!(sim, Float32(warm); remeasure = false)
+    Sail3D(sim, body, chord, span, Float64(alpha))
+end
+
+"""
+    sail3d_force!(s, alpha, chords) -> (; CL, CD, steps)
+
+Turn the 3D sail to `alpha` (rad; re-measured only when it moved more than 0.2 deg) and run `chords` of flow; CL and CD
+averaged over those steps (at least one), from the pressure on the sail.
+"""
+function sail3d_force!(s::Sail3D, alpha, chords)
+    if abs(alpha - s.alpha) > deg2rad(0.2)
+        s.sim.body = s.body(alpha); measure!(s.sim, sum(s.sim.flow.Δt)); s.alpha = alpha
+    end
+    t1 = sim_time(s.sim) + chords; F1 = 0.0; F2 = 0.0; k = 0
+    while sim_time(s.sim) < t1 || k == 0
+        sim_step!(s.sim; remeasure = false)
+        f = WaterLily.pressure_force(s.sim); F1 -= f[1]; F2 -= f[2]; k += 1
+    end
+    q = 0.5 * s.chord * s.span
+    (CL = F2 / k / q, CD = F1 / k / q, steps = k)
+end
+
+"""
+    serve!(cmd, out; alpha = deg2rad(15), chunk = 0.1, kw...)
+
+The live sail as a server (s166): meant to run in a process of its own (its own Vulkan device; Mantle's channels are
+single-writer per thread, so the game's thread cannot share them). Steps the 3D box `chunk` chords at a time, forever;
+before each chunk takes the newest `(alpha, rate)` from `cmd` (rad; `rate` = chords per real second the cart needs,
+used only to report how far behind it runs), `:stop` ends it. After each chunk puts `(; t, alpha, CL, CD, steps, ms)`
+into `out`; the game drains it each frame and keeps the newest, so it never waits on the flow.
+"""
+function serve!(cmd, out; alpha = deg2rad(15), chunk = 0.1, kw...)
+    s = sail3d(alpha; kw...)
+    a = Float64(alpha)
+    while true
+        while isready(cmd)
+            m = take!(cmd)
+            m === :stop && return :stopped
+            a = Float64(m[1])
+        end
+        t0 = time_ns()
+        f = sail3d_force!(s, a, chunk)
+        ms = (time_ns() - t0) / 1e6 / f.steps
+        r = (t = Float64(sim_time(s.sim)), alpha = a, CL = f.CL, CD = f.CD, steps = f.steps, ms = ms)
+        put!(out, r)               # blocks when nobody reads: the flow pauses with the game instead of running ahead
+    end
+end
+
 """The `mem` for WaterLily on Mantle: arrays allocated on the GPU and filled from the CPU ones."""
 gpu_mem() = x -> (a = KA.allocate(Mantle.Device(), eltype(x), size(x)); copyto!(a, x); a)
 
