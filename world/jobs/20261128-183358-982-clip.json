@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T18:33:58.984",
+  "finished": "2026-11-28T19:27:38.236",
   "id": "20261128-183358-982-clip",
   "kind": "clip",
   "params": {
@@ -22,5 +23,13 @@
     "path": "site/img/copper-on-iron.png",
     "script": "movies/drumspark.jl"
   },
-  "status": "queued"
+  "result": {
+    "hour": 19.4,
+    "path": "site/img/copper-on-iron.png",
+    "rev_s": 4.028466766598447,
+    "spark": true
+  },
+  "seconds": 88.6,
+  "started": "2026-11-28T19:26:09.598",
+  "status": "done"
 }

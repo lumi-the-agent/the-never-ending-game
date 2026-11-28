@@ -1,0 +1,10 @@
+{"posts": [{"post": "Copper on iron",
+            "what": "The same drum motor on its block, its lodestones swapped for two copper-wound iron cores under a cast-iron arch; fed by the six clay pots, the rebuilt motor has only about a ninth of the old pull, and nothing else on the island changes.",
+            "recipe": "existing simulated motor rebuilt with a new part, shown by itself",
+            "nearest": "Where the brushes let go",
+            "similarity": 5,
+            "shared": "same drum motor and pots, device left alone in a close view; the new step is electromagnet field coils in place of lodestones"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed",
+            "posts": ["Copper on iron", "The cart on a cord", "Where the brushes let go", "Sparks at dusk", "Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind"]},
+           {"form": "New or improved crafted prop shown, nothing happens",
+            "posts": ["A wheel you can see through", "My land yacht", "A lamp to work by"]}]}

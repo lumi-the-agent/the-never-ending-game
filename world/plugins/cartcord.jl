@@ -19,8 +19,11 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "cartcord.jl"))
 struct CartCordSys <: System end
 
 const CK_CLIP = (4.35f0, -14.72f0)    # pot 1's copper strip (irondrum.jl id_pots!: the row's west end)
+const CK_GRIP = (4.325f0, -14.70f0, 0.24f0)   # s181: where the clip bites: the west edge of pot 1's copper plate, 1 cm
+                                      # under its top (irondrum.jl ID_POT: plate 7 cm wide, top 25 cm over the sand)
 const CK_Y = -14.72f0                 # the track's line; the cart drives west (-x)
-const CK_X0 = 0.30                    # the cart's start, metres west of the clip
+const CK_X0 = 0.50                    # the cart's start, metres west of the clip (s181: 0.30 put its tail in pot 1's jar)
+const CK_ROAD0 = 0.14                 # s181: the road starts west of pot 1's brine jar (irondrum.jl ID_POT, outside r 12.9 cm)
 const CK_CORD = 3.0                   # metres of cord
 const CK_RW = 0.10f0                  # wheel radius
 const CK_KEY = Makie.Keyboard.m     # (B blows bubbles, P paints in Jump in: s177 picked free keys)
@@ -83,7 +86,7 @@ ck_ground(w, x, dy = 0.0f0) = (p = (CK_CLIP[1] - Float32(x), CK_Y + dy); Point3f
 "The plank road's top: laid LEVEL on oak sleepers at the highest ground along it (s177: following the ground's 3% rise,
 the cart stalled after 28 cm: 3 N of slope on top of 2 N of rolling is more than this motor gives at the wheels)."
 ck_road(w) = get!(CK, :roadz) do
-    maximum(NG.ground(w.island, (CK_CLIP[1] - Float32(x), CK_Y + dy))[3] for x in 0:0.1:3.7, dy in (-0.16f0, 0.16f0)) + CK_PLANK + 0.01f0
+    maximum(NG.ground(w.island, (CK_CLIP[1] - Float32(x), CK_Y + dy))[3] for x in CK_ROAD0:0.1:3.9, dy in (-0.16f0, 0.16f0)) + CK_PLANK + 0.01f0
 end
 
 function ck_build!(game)
@@ -94,7 +97,7 @@ function ck_build!(game)
     delete!(CK, :roadz); delete!(CK, :phase)
     oak = mo_wood(base = (0.56, 0.40, 0.24)); oakm = mo_wood(moving = true, base = (0.56, 0.40, 0.24))
     # the plank road: two lines of sawn oak boards under the wheels, each board on the ground where it lies
-    for (k, x) in enumerate(0.05:0.62:3.6), dy in (-0.16f0, 0.0f0, 0.16f0)
+    for (k, x) in enumerate(CK_ROAD0 + 0.03:0.62:3.75), dy in (-0.16f0, 0.0f0, 0.16f0)
         a = ck_world(w, x, dy) - Point3f(0, 0, CK_PLANK); b = ck_world(w, x + 0.6, dy) - Point3f(0, 0, CK_PLANK)
         L = norm(b - a); u = (b - a) / L
         q = Makie.qrotation(Vec3f(0, 1, 0), Float32(atan(u[3], -u[1])))
@@ -111,7 +114,7 @@ function ck_build!(game)
     # benches (post critic); a road builder banks packed sand up under them: a berm from the ground to the boards
     sandm = NG.Hikari.Principled(base_color = (0.74f0, 0.64f0, 0.47f0), roughness = 0.95f0)
     bp = Point3f[]; bf = GeometryBasics.TriangleFace{Int}[]
-    xs = 0.0:0.1:3.7; top = ck_road(w) - CK_PLANK
+    xs = CK_ROAD0:0.1:3.9; top = ck_road(w) - CK_PLANK
     for x in xs
         gl = ck_ground(w, x, -0.34f0); gr = ck_ground(w, x, 0.34f0); wx = CK_CLIP[1] - Float32(x)
         push!(bp, Point3f(wx, CK_Y - 0.34f0, gl[3] - 0.03f0), Point3f(wx, CK_Y - 0.23f0, top),
@@ -216,7 +219,7 @@ function ck_draw!(w)
     CK[:belt][1][] = belt
     # the cord: from the clip (or wherever its end now lies) over the tether's particles to the cart's rear
     pts = [ck_world(w, xi[1]) + Point3f(0, 0, CK_CORD_R) for xi in s.cord.x]    # the cord lies on the planks
-    pts[1] = s.clipped ? Point3f(CK_CLIP[1], CK_CLIP[2], NG.ground(w.island, CK_CLIP)[3] + 0.15f0) : pts[1]
+    pts[1] = s.clipped ? Point3f(CK_GRIP[1], CK_GRIP[2], NG.ground(w.island, (CK_GRIP[1], CK_GRIP[2]))[3] + CK_GRIP[3]) : pts[1]
     pts[end] = c + Point3f(0.33, 0, 0.03)
     CK[:cord_obs][] = mtube(pts, CK_CORD_R; nring = 8)
     Makie.translate!(CK[:clip], pts[1])

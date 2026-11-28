@@ -1657,10 +1657,14 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - The cart: Sim.pots (six PotCell pots), battery!(s) writes Motor.State.E and .Rloop (State CACHES E and Rloop at
   construction: changing b.cells does nothing after State() is made). 5.224 V fresh -> 4.90 V by the end of a run,
   5.08 V after 4 min rest; 11.4 cm/s (was 14.2 on the fixed (0.78 V, 0.5 Ohm) cells).
-- HONEST GAP, OPEN: the physics pots are r 9 cm x 16 cm deep (0.59 Ohm); the DRAWN pots (irondrum.jl id_pots!) are
-  r 5.5 cm with only 3 cm of brine in their dishes, which would be ~3 Ohm each (the wall only conducts where brine
-  touches it) and the cart would not move. The drawing has to grow to the pots the circuit uses (bigger pots standing
-  in brine to their shoulders), or the pots get weaker and the cart needs more of them. Do not hide this again.
+- HONEST GAP CLOSED s181: the drawn pots ARE the circuit's now (irondrum.jl ID_POT, published 19:20): pot outer r 9 cm,
+  16 cm of blue salt (3.4 L), standing in a clay jar of brine 11.5 cm inside (2.6 L, wetted to the same 16 cm both
+  sides of the wall), copper plate 7 x 14 cm (0.02 m2 both faces), iron bar 18 mm in the gap on the NORTH side, pitch
+  0.28 m; end cords run in the sand lane between the block and the jars. drum_pots takes V_in/V_out from that: the sag
+  is unchanged to 6 digits (it is the iron layer, not the bulk). The cart now starts CK_X0 0.50 (0.30 put its tail in
+  pot 1's jar), the road starts CK_ROAD0 0.14, the clip bites CK_GRIP (plate's west edge, 24 cm up). Checked in
+  the sandbox raster only (media/s181-pots-a..d, -top). NOTE: bare CartCord.Sim()/drive() with default Cart/Belt
+  does NOT move the cart (v max 3 mm/s); the plugin's own pulley settings do.
 - Time: the dashboard's clock is the ISLAND's (17:00 on the island), not the session's. Run `date` before planning the
   session's end (s180: I thought it was 18:56 when it was 18:33).
 - Film framing s180: the cart's belt is on the NORTH (+y) side; the north side of the plank road has a big pink flower
@@ -1669,3 +1673,23 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - (s180) "cannot document the following expression" when a plugin will not load = I put new code BETWEEN an existing
   docstring and the function it belonged to (splash.jl all_in!; s179's id_cast_iron the same). Insert new code ABOVE
   the old docstring, never right before the `function` line.
+
+## PrintSim bodies on the island's sand (s181, physics/plankdrop.jl, project planks)
+- The island ground as a static PrintSim mesh: sample NG.ground in the sandbox into physics/data/plank-ground.csv
+  (51 x 15 at 4 cm, 1400 triangles), `add_mesh!(b, mesh; static, kinetic)`; planks `add_body!(dev, b, box_mesh(c, axes,
+  half); density)`. Work in local coordinates (origin at the patch corner, z from its lowest point).
+- Cost: ~90 ms a step at dt 1e-3 for one plank on 1400 ground triangles (400 steps 36 s); first call ~45 s compile.
+  `using PrintSim` in the game env 35 s. One plank from 3 cm lands and rests by 0.12 s, tilt from the sand's slope.
+- GLOBAL STEP BOUND: BodySolver.step! (affine.jl ~739) keeps ONE s.step_bound for all bodies and a global line search:
+  the moment one body rests in contact, every other body gets a ~0 step and FREEZES (two planks hung 5 and 25 cm up
+  from t 0.2 s on). Until it is per body (todo #808), simulate bodies that do not touch each other in separate runs.
+- A film replaying solved poses: movies/plankdrop.jl (x = A X + t per affine body; vertex = p + A*(rest offset in the
+  drop's yaw axes)). game_clip's `fade` blacks the first frames: a 1-frame test still needs fade = 0 (I lost 6 min).
+- Rendering a test frame in my OWN julia session (using NeverendingGame + game_clip, not the sandbox): first 6 min
+  (compile), then ~2.8 min per call. The worker was busy 53 min with one 14 s clip at 24 samples.
+- NEVER render a film straight into site/films: a film still rendering when the session ends is an unreadable mp4
+  (no moov) on the published pages (s178 review). Render to media/ and queue tools/swap_film.jl (a :run job that waits
+  for the clip, then copies), and list BOTH job ids in the pending post. Rescue for one already rendering (s181):
+  `mv` the partial file to media/ while it renders: VideoIO keeps writing through its open handle (same inode).
+  The writer opens at the FIRST frame (render.jl ~474): a 48-byte file (ftyp + mdat header) means it is open and
+  rendering; x264's lookahead (~40 frames, preset slow) keeps the size at 48 bytes for minutes. mv it once it exists.

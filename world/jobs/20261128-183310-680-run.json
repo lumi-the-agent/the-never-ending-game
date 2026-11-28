@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T18:33:10.683",
+  "finished": "2026-11-28T19:26:10.329",
   "id": "20261128-183310-680-run",
   "kind": "run",
   "params": {
@@ -11,6 +12,12 @@
     },
     "script": "tools/swap_film.jl"
   },
+  "result": {
+    "bytes": 2907993,
+    "copied": "/sim/Programmieren/SimGame/world/media/s180-cart-on-a-cord.mp4",
+    "to": "/sim/Programmieren/SimGame/world/site/films/cart-on-a-cord.mp4"
+  },
+  "seconds": 3179.0,
   "started": "2026-11-28T18:33:11.318",
-  "status": "running"
+  "status": "done"
 }

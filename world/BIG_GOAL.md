@@ -30,6 +30,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] Wheels, axle and a wooden frame on a plank track and in sand; the friends push it
   - [x] Sand that keeps ruts and berms, slumps to repose; planks rest and see-saw on it (sandfield.jl, s160)
   - [ ] The plank road on the dune: player lays planks in Jump in, friends push the empty cart (todo #755)
+    - [ ] Lay the plank road yourself: planks are PrintSim bodies on the sand (projects/planks.md; s181 first drop, global step bound freezes falling planks)
   - [ ] Stuck in the sand: dig/plank/push it free (#773; s169 in game: sinks, Q push, R dig; next: planks, film)
     - [x] Stick force in sand + damp sand from the water table, checked (soiltool.jl, sandwater.jl, s171)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)

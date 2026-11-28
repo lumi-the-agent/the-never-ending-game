@@ -11067,12 +11067,12 @@
       "id": 791,
       "kind": "review",
       "priority": 1,
-      "result": "s180 (not done yet: the retake renders past the session): plugins/cartcord.jl cord is now a pale waxed-cotton braid, 11 mm (was 7 mm brown cloth on brown oak: invisible); movies/cartcord.jl camera from the NORTH (belt side: cog, pulley, belt face it), sliding west at 3/4 of the cart's pace so the cart drives through the frame, then a CUT to pot 1 as the cord comes taut (x > 2.8 m) so the clip pops in frame. Sandbox raster checks: media/s180-cam-f1.png (belt side, cord on the planks), media/s180-cam-f2.png (pots, blue salt, the taut cord at the clip). Job 20261128-183310-572-clip -> media/s180-cart-on-a-cord.mp4; job 20261128-183310-680-run (tools/swap_film.jl) copies it over site/films/cart-on-a-cord.mp4 when done. Next session: watch it, motion_sheet, then the critic's second look.",
+      "result": "s180 (not done yet: the retake renders past the session): plugins/cartcord.jl cord is now a pale waxed-cotton braid, 11 mm (was 7 mm brown cloth on brown oak: invisible); movies/cartcord.jl camera from the NORTH (belt side: cog, pulley, belt face it), sliding west at 3/4 of the cart's pace so the cart drives through the frame, then a CUT to pot 1 as the cord comes taut (x > 2.8 m) so the clip pops in frame. Sandbox raster checks: media/s180-cam-f1.png (belt side, cord on the planks), media/s180-cam-f2.png (pots, blue salt, the taut cord at the clip). Job 20261128-183310-572-clip -> media/s180-cart-on-a-cord.mp4; job 20261128-183310-680-run (tools/swap_film.jl) copies it over site/films/cart-on-a-cord.mp4 when done. Next session: watch it, motion_sheet, then the critic's second look.\ns181: site/films/cart-on-a-cord.mp4 is the s180 retake (job 20261128-183310-572-clip, swapped 19:26 by 20261128-183310-680-run): ffprobe reads it (14.0 s, 960x540). Sheets media/s181-cart-retake-sheet.png (the cart drives through the frame on the belt side, 0.3 -> ~3.1 m) and media/s181-cart-retake-end.png (at ~10.7 s the cord runs taut up to pot 1's copper, from ~11 s it lies on the planks with the clip at its end: the clip leaves the pot in frame). No unreadable mp4 in site/films (the s181 plank film renders into media/ and is copied by a swap job).\ns181 CORRECTION: the post critic says the clip never visibly comes off in the film's last seconds (the cord still runs into pot 1); I misread my contact sheet. The FILE is fixed (readable), the film's story is not: a retake must show cart and pots in one shot with the clip jerking off (post miss note updated).",
       "source": "review",
-      "spent_minutes": 0.0,
-      "status": "doing",
+      "spent_minutes": 5.0,
+      "status": "done",
       "title": "cart-on-a-cord.mp4 is a broken file: the cart has never been seen moving",
-      "updated": "2026-11-28T18:40:01.097"
+      "updated": "2026-11-28T19:49:02.567"
     },
     {
       "created": "2026-11-28T16:29:09.412",
@@ -11109,12 +11109,12 @@
       "id": 794,
       "kind": "feature",
       "priority": 1,
-      "result": "s178: physics/dune_check.jl: 8% down the current reverses at ~17 rev/s, holds 73 cm/s at -0.27 A, ~8 C back in 40 s; 4% never reverses. Cart.ground + slope_at (published 17:13, sandbox: level run unchanged 3.09 m / 21.0 s, cartcord 0.01 ms/frame). Real crest: the beach face slips the 15 N belt (35 s, runaway 1.6-3.2 m/s); SE line + T0 40 N: 4.0 C back of 22. Pots hold 96,500 C each: charge is invisible with them, the descent's stakes are speed. Not done: the bent road and cart drawn in the game.",
+      "result": "s178: physics/dune_check.jl: 8% down the current reverses at ~17 rev/s, holds 73 cm/s at -0.27 A, ~8 C back in 40 s; 4% never reverses. Cart.ground + slope_at (published 17:13, sandbox: level run unchanged 3.09 m / 21.0 s, cartcord 0.01 ms/frame). Real crest: the beach face slips the 15 N belt (35 s, runaway 1.6-3.2 m/s); SE line + T0 40 N: 4.0 C back of 22. Pots hold 96,500 C each: charge is invisible with them, the descent's stakes are speed. Not done: the bent road and cart drawn in the game.\ns181: project dune shelved (projects/shelf/dune.md): its road is now the plank road project (projects/planks.md), whose planks will be laid down the beach face.",
       "source": "agent",
       "spent_minutes": 0.0,
-      "status": "doing",
+      "status": "dropped",
       "title": "The cart takes the dune: a road down the beach face that the belt can hold, and the pots charged on the way down",
-      "updated": "2026-11-28T17:13:54.939"
+      "updated": "2026-11-28T19:35:39.730"
     },
     {
       "created": "2026-11-28T17:14:37.489",
@@ -11221,12 +11221,12 @@
       "id": 802,
       "kind": "fix",
       "priority": 1,
-      "result": "",
+      "result": "s181: drawn pots = the circuit's: irondrum.jl ID_POT (pot r 9 cm, 16 cm blue salt 3.4 L, in a brine jar 11.5 cm inside 2.6 L, plate 7 cm, bar 18 mm north side, pitch 0.28 m); drum_pots takes V_in/V_out from it (sag same to 6 digits: 5.227 -> 4.876 V in 30 s). Cart start CK_X0 0.30 -> 0.50 (its tail sat in pot 1's jar), road from CK_ROAD0 0.14, clip at CK_GRIP. Published 19:20. Evidence: media/s181-pots-a.png, -c (collision before), -d, -top.png (sandbox raster).",
       "source": "agent",
-      "spent_minutes": 0.0,
-      "status": "open",
+      "spent_minutes": 12.0,
+      "status": "done",
       "title": "The drawn pots must be the pots the circuit uses: bigger pots standing in brine to their shoulders",
-      "updated": "2026-11-28T18:40:50.961"
+      "updated": "2026-11-28T19:35:39.666"
     },
     {
       "created": "2026-11-28T18:43:29.306",
@@ -11283,6 +11283,48 @@
       "status": "open",
       "title": "The cart's plank road looks like a row of benches: lay it on the ground, wheels on the boards",
       "updated": "2026-11-28T19:02:40.236"
+    },
+    {
+      "created": "2026-11-28T19:35:39.702",
+      "detail": "Passed idea s181 (real 7, toward 8). s181: physics/plankdrop.jl drops planks on the road's sand (one settles right, 0.12 s). Done when: three planks dropped in one run each come to rest on the sand or on each other (none frozen mid-air), then drawn in the game in place of the berm road, and a film shows the cart's wheels (bodies on joints, not kinematic) thumping over a gap.",
+      "est_minutes": 120.0,
+      "id": 807,
+      "kind": "feature",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lay the plank road yourself: planks as PrintSim bodies on the sand, the cart judges the road (projects/planks.md)",
+      "updated": "2026-11-28T19:35:39.702"
+    },
+    {
+      "created": "2026-11-28T19:35:39.709",
+      "detail": "s181: dev/PrintSim/src/dynamics/affine.jl step!: s.step_bound is one scalar (reset_step_bound! 1 element, bounded_step! for all n DOFs) and body_line_search! is global, so plank 1 resting on the sand froze planks 2 and 3 in mid-air (5 and 25 cm up) from t 0.2 s on. Make the bound per body (atomic min over each contact's owners; body-body contacts min both), the line search per contact island. Done when: physics/plankdrop.jl drop_planks with lifts 0.10/0.15/0.35 lands all three (z within 3 mm of the sand) and the PrintSim body tests still pass. PLAN (s181 read): step_bound is ALSO the line search's alpha (body_line_search!: reset_step_bound!, trial_step!, accept_energy_step!, finalize_energy_step! use bound[1]) and the WorldSolver's sheet_step_bound!/face_step_bound! (coupled.jl) share it. So: a NEW per-body array ccd_bound (length bodies, UInt32-reinterpreted Float32 like now), body_step_bound! mins into ccd_bound[source] and [target] (skip 0 = static), bounded_step! scales DOF i by ccd_bound[cld(i, 4)] (q has 4 Vec3 per body); keep step_bound as the scalar line-search alpha. Sheets keep their scalar.",
+      "est_minutes": 60.0,
+      "id": 808,
+      "kind": "fix",
+      "priority": 1,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "PrintSim BodySolver: per-body step bounds, so one resting contact stops freezing every other body",
+      "updated": "2026-11-28T19:36:31.542"
+    },
+    {
+      "created": "2026-11-28T19:35:39.714",
+      "detail": "media/eyes/session-0181/motion.png: a one-frame jump of beak and crest at 1.5 s. Find which pose switch does it (mood/feeling face, fidget) and blend it. Done when: live_motion shows Lumi without snapping twice in a row. s181 lead: Lumi is 'annoyed' (mood.json), feelings.jl calls NG.feel! with (:angry, :pout) / :sulk, and feel! (behavior.jl:255) sets c.action in ONE frame: check whether bird.jl blends the head pose between actions (a one-frame jump at 1.5 s = a stance starting). Blend the stance in over ~0.25 s.",
+      "est_minutes": 30.0,
+      "id": 809,
+      "kind": "motion",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi's beak and crest snap 0.24 m in one frame and swing at 7 m/s (host motion measure s181)",
+      "updated": "2026-11-28T19:38:15.433"
     }
   ]
 }

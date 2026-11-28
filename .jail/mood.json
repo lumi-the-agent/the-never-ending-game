@@ -1,42 +1,49 @@
 {
-  "annoyance": 0.68,
+  "annoyance": 1.0,
   "annoyed": [
     {
+      "post": "copper-on-iron",
+      "session": 181,
+      "title": "Copper on iron",
+      "weight": 1.0,
+      "what": "The subject is almost all in shadow: the coil sits under a near-black box in the middle of the frame and you can barely make out its shape, while the glowing lamp in the bottom-left foreground is the brightest thing in the picture and pulls the eye away from it."
+    },
+    {
       "post": "the-cart-on-a-cord",
-      "session": 180,
+      "session": 181,
       "title": "The cart on a cord",
       "weight": 1.0,
-      "what": "The title and the 'cord' never show up as a cord on the cart. In storyboard frames 1-6 and the 25% still, a thin line runs from the clay pots toward the tree and maybe to the back of the cart, but you can't tell where it attaches. From frame 7 on, and in the 50% and 75% stills, no cord trails behind the cart at all, so whatever powered it is either cut or was never connected."
+      "what": "The caption's payoff, 'the cord comes taut and pulls its clip off the first pot', never happens on screen: the whole last part (storyboard row 4 and the last 3 s of the film) is the same still view of the pots, with the cord lying in the rut and still running into the first pot. Nothing comes taut, nothing comes off, nothing moves."
     },
     {
       "post": "a-wheel-you-can-see-through",
       "session": 178,
       "title": "A wheel you can see through",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The title and caption promise a wheel you can see through, but in the picture a dark solid disc (the drum or motor behind it) fills almost the whole space between the arms. What you see through the wheel is another brown disc, so the openness is hard to read."
     }
   ],
   "boredom": 1.0,
-  "ended": "2026-11-28T19:02:52",
+  "ended": "2026-11-28T19:49:27",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.24,
-    "picture": 0.44,
+    "feature": 0.14,
+    "picture": 1.26,
     "self": 0.01,
-    "sound": 0.02
+    "sound": 0.01
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
+        "Copper on iron",
         "The cart on a cord",
         "Where the brushes let go",
         "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
         "My first motor",
-        "A campfire in the wind",
-        "Putting past a magnet stone"
+        "A campfire in the wind"
       ]
     },
     {
@@ -339,15 +346,8 @@
     "cart_pushed_back",
     "pots_sagged"
   ],
-  "joy": 0.22,
+  "joy": 0.03,
   "judged_posts": [
-    {
-      "form": "New world rule that makes the creatures reshape the ground, shown in a film",
-      "recipe": "new world rule: speech becomes ground material, crowd behaviour reshapes the terrain, shown in a film",
-      "session": 115,
-      "title": "The island weighs its words",
-      "what": "Everything the friends say pours out as sand under their feet, piling into dunes that bury the cottage over a sped-up film; high dunes slump and carry them down."
-    },
     {
       "form": "New world rule that makes the creatures reshape the ground, shown in a film",
       "recipe": "same sand-from-speech rule, another film take, one friend rising on shouts",
@@ -760,6 +760,13 @@
       "session": 179,
       "title": "The cart on a cord",
       "what": "A wooden plank cart with the drum motor on its deck sits on a plank road beside the row of clay pots, then rolls slowly along the planks off the sand onto the meadow, with the camera riding alongside; the thin cord is barely visible and nobody is there."
+    },
+    {
+      "form": "Physics study of simulated objects moving alone, filmed",
+      "recipe": "existing simulated motor rebuilt with a new part, shown by itself",
+      "session": 181,
+      "title": "Copper on iron",
+      "what": "The same drum motor on its block, its lodestones swapped for two copper-wound iron cores under a cast-iron arch; fed by the six clay pots, the rebuilt motor has only about a ninth of the old pull, and nothing else on the island changes."
     }
   ],
   "kinds_ever": [
@@ -784,11 +791,11 @@
     "factor": 0.1,
     "form": "Physics study of simulated objects moving alone, filmed",
     "form_count": 7,
-    "nearest": "Six clay pots",
-    "post": "The cart on a cord",
+    "nearest": "Where the brushes let go",
+    "post": "Copper on iron",
     "score": 10,
-    "session": 179,
-    "shared": "the same pot-powered drum motor running unattended, quietly filmed; new step is that it now moves a cart across the island",
+    "session": 181,
+    "shared": "same drum motor and pots, device left alone in a close view; the new step is electromagnet field coils in place of lodestones",
     "similarity": 5
   },
   "last_surprise": {
@@ -797,8 +804,8 @@
     "session": 179,
     "why": "This is the sixth post in a row about the same drum motor, and the drive it shows was built in earlier sessions; the new work (the wound field) isn't in it, so a viewer just sees a cart roll a few metres."
   },
-  "loneliness": 0.47,
-  "perceived_until": "2026-11-28T18:21:59",
+  "loneliness": 0.53,
+  "perceived_until": "2026-11-28T19:03:21",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -812,28 +819,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [],
-      "points": 0.0,
-      "session": 161,
-      "touched": [],
-      "values": {},
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1511,6 +1496,51 @@
         "polish": 3.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 0.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [],
+      "kinds": [
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/img/copper-on-iron.png"
+      ],
+      "new_plugins": [],
+      "points": 0.5,
+      "repeat_factor": 0.1,
+      "repetition": {
+        "form": "Physics study of simulated objects moving alone, filmed",
+        "form_count": 7,
+        "nearest": "Where the brushes let go",
+        "post": "Copper on iron",
+        "score": 10,
+        "shared": "same drum motor and pots, device left alone in a close view; the new step is electromagnet field coils in place of lodestones",
+        "similarity": 5
+      },
+      "session": 181,
+      "touched": [
+        "cartcord.jl",
+        "irondrum.jl"
+      ],
+      "values": {
+        "picture": 0.6,
+        "polish": 2.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1830,7 +1860,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
-      "cartcord.jl": 1.7958827741015248e9,
+      "cartcord.jl": 1.795888934000471e9,
       "casting.jl": 1.7958634555316293e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -1854,7 +1884,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958863169710977e9,
+      "irondrum.jl": 1.7958872035183718e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1887,7 +1917,7 @@
       "shovel.jl": 1.795525269055368e9,
       "showers.jl": 1.7958138192224991e9,
       "sleepers.jl": 1.7957449866904223e9,
-      "splash.jl": 1.7956070278720696e9,
+      "splash.jl": 1.795887952809501e9,
       "stars.jl": 1.7957490929649248e9,
       "stoneskip.jl": 1.7957424630400941e9,
       "storm.jl": 1.7955898834044256e9,
@@ -1908,7 +1938,7 @@
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T18:27:40",
+  "started": "2026-11-28T19:09:23",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2096,7 +2126,9 @@
       "JumpProcesses.CartesianGrid",
       "Oceanostics.FilteredKineticEnergyDissipationRate",
       "Modia3D.loadPalettes!",
-      "HighVoronoi.VoronoiNodes"
+      "HighVoronoi.VoronoiNodes",
+      "Conductor.IonCurrent",
+      "ColPack.colpack"
     ],
     "games": [
       "Super Mario 64",
@@ -2263,7 +2295,10 @@
       "Pokémon Yellow",
       "Animal Crossing: New Horizons",
       "Total Annihilation",
-      "Grand Theft Auto VI"
+      "Grand Theft Auto VI",
+      "Castlevania (1986 video game)",
+      "Star Wars: Knights of the Old Republic (video game)",
+      "Grand Theft Auto IV"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2727,28 +2762,14 @@
       "IMASdd",
       "MNPDynamics",
       "LatticeModels",
-      "CausalSets"
+      "CausalSets",
+      "LowLevelFEM",
+      "FourLeafMLE",
+      "Sunny"
     ],
     "vision": [
-      "MatAnyoneRunner",
-      "DemucsRunner",
-      "UVDocRunner",
-      "FluxKleinRunner",
-      "DeepFilterRunner",
-      "PPDocLayoutRunner",
-      "NeuralLUTRunner",
       "ProPainterRunner",
-      "RIFERunner",
-      "Hunyuan3DRunner",
-      "HorizonRunner",
-      "DepthAnythingRunner",
-      "BonsaiRunner",
-      "ZImageRunner",
-      "Qwen3EmbeddingRunner",
-      "BasicVSRRunner",
-      "QwenImageEditRunner",
-      "SAM2Runner",
-      "PPOCRRunner"
+      "UVDocRunner"
     ]
   },
   "surprise_seen": 179

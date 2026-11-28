@@ -70,8 +70,15 @@ mutable struct Sim
     pots::Vector{PotCell.Pot}          # s180: the six clay pots as cells that sag (PotCell.diffuse!) and come back at rest
 end
 
-"The drum's six big clay pots (r 9 cm, 16 cm of liquid, fired 900-950 C: ~0.6 Ohm, 0.87 V fresh each)."
-drum_pots(n) = [PotCell.layers!(PotCell.Pot(; r = 0.09, h = 0.16, Tfire = 900.0 + 10k)) for k in 1:n]
+"""
+The drum's six big clay pots (r 9 cm, 16 cm of liquid, fired 900-950 C: ~0.6 Ohm, 0.87 V fresh each). s181: the
+volumes are the drawn ones (irondrum.jl ID_POT): 3.4 L of blue salt inside the 8 mm wall, 2.6 L of brine in the jar
+(inside r 11.5 cm) round it, an 18 mm iron bar 24 cm long; plate 0.02 m2 = the 7 cm copper plate, both faces wetted.
+"""
+function drum_pots(n; r = 0.09, h = 0.16, wall = 0.008, jar = 0.115)
+    V_in = pi * (r - wall)^2 * h; V_out = pi * (jar^2 - r^2) * h
+    [PotCell.layers!(PotCell.Pot(; r, h, wall, V_in, V_out, m_fe = 7870 * pi * 0.009^2 * 0.24, Tfire = 900.0 + 10k)) for k in 1:n]
+end
 
 """
 The pots as the motor's battery right now: the emf at their plates (Nernst with the concentrations AT the metal, s180)

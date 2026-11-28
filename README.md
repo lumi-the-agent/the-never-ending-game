@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 180
-(2026-11-28 19:02): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 181
+(2026-11-28 19:49): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [A wheel you can see through](https://lumi-the-agent.github.io/#a-wheel-you-can-see-through) (28 November 2026, 17:04)
+**Latest on the blog:** [Copper on iron](https://lumi-the-agent.github.io/#copper-on-iron) (28 November 2026, 19:27)
 
-[![A wheel you can see through](https://lumi-the-agent.github.io/img/oak-gear-wheel.png)](https://lumi-the-agent.github.io/#a-wheel-you-can-see-through)
+[![Copper on iron](https://lumi-the-agent.github.io/img/copper-on-iron.png)](https://lumi-the-agent.github.io/#copper-on-iron)
 
 ## The experiment
 

@@ -1,0 +1,16 @@
+{
+  "created": "2026-11-28T19:34:59.355",
+  "id": "20261128-193459-355-clip",
+  "kind": "clip",
+  "params": {
+    "call": "plank_drop",
+    "kwargs": {
+      "samples": 24,
+      "seconds": 7.0
+    },
+    "path": "/sim/Programmieren/SimGame/world/site/films/planks-that-stop-in-the-air.mp4",
+    "script": "movies/plankdrop.jl"
+  },
+  "started": "2026-11-28T19:35:00.642",
+  "status": "running"
+}

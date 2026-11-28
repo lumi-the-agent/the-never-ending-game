@@ -1,0 +1,26 @@
+{"posts": [
+ {"post": "copper-on-iron",
+  "verdict": "redo",
+  "problems": [
+   "The subject is almost all in shadow: the coil sits under a near-black box in the middle of the frame and you can barely make out its shape, while the glowing lamp in the bottom-left foreground is the brightest thing in the picture and pulls the eye away from it.",
+   "The caption says 'two hundred turns a side, every one laid in the place it would really take', but the picture shows a few flat copper stripes on a dark cylinder and one shiny copper ring. You can't see individual turns, and you can't tell the two sides apart.",
+   "The caption mentions 'two iron cores', but only one dark cylinder is visible, so the picture doesn't show two cores.",
+   "The 'cast-iron arch' looks like a plain black box with flat faces. It has no iron surface, sheen or casting texture, so it reads as a bare shape, not cast iron.",
+   "A large dark gear wheel and its spokes fill the right third of the frame and cover part of the machine, with a diagonal rod crossing in front of it.",
+   "The caption's claim that the coil makes 'about a ninth of the stones' pull' has nothing in the picture to back it up: no measurement, no visible pull, no comparison.",
+   "A small blue glowing dot sits beside the coil and nothing explains what it is."
+  ],
+  "critique": "This is a dark, cluttered close-up where the coil you're meant to admire disappears into shadow behind a lamp and a giant gear. The caption's two hundred turns, two cores and cast-iron arch can't be checked in the picture."},
+ {"post": "the-cart-on-a-cord",
+  "verdict": "redo",
+  "problems": [
+   "The caption says the cart starts 'beside the six clay pots', but storyboard frames 1–12 show it already on the plank road with no pots in view. The pots only appear in frames 13–16, after a cut, and the cart is nowhere in those shots.",
+   "The caption says the cart rolls 'from the sand onto the meadow', but the cart is over the grass edge from frame 1 and only moves about one cart length across the whole film. It never visibly goes from sand onto meadow.",
+   "The film cuts from the moving cart (frame 12) to a static shot of the pots and an empty road (frames 13–16, at-75). The cart's motion has no ending: it never comes to rest on screen, and the cart just vanishes from the story.",
+   "Nothing shows what drives the cart. In at-25 and at-50 the drum motor's gear and drum look the same between frames, and nothing on the cart visibly turns the wheels. The cart slides along while its parts don't visibly move.",
+   "In at-25 and at-50 the rear (left) wheel hangs over the plank's front edge, and the right-hand wheel sits behind the deck, partly in the air above the planks. The wheels don't clearly rest on the road.",
+   "The cord in the title is only a thin grey rod lying on the plank. In at-75 it is a loose pale line on the boards, and no frame clearly shows it attached to the cart.",
+   "In storyboard frames 10–12 a big pink flower pokes up from the bottom edge and covers the lower corner near the front wheel."
+  ],
+  "critique": "The film shows a cart sliding about one length along a plank with no visible drive, then cuts to an unrelated shot of the pots. The start beside the pots and the trip from sand to meadow promised in the caption never appear on screen."}
+]}

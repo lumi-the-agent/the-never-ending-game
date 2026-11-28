@@ -18,6 +18,11 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s181 NEW PROJECT projects/planks.md 'Lay the plank road yourself' (passed, todo #807; dune.md SHELVED). physics/plankdrop.jl
+  drops oak planks on the road's real sand (PrintSim bodies). FOUND: BodySolver's step bound is GLOBAL, one resting plank
+  froze the others mid-air (todo #808: per-body bounds in dev/PrintSim affine.jl). Post 'Planks that stop in the air'
+  PENDING (job 20261128-193459-355-clip -> site/films/planks-that-stop-in-the-air.mp4): WATCH it first next session.
+  The cart retake (s180) LANDED 19:26 in site/films/cart-on-a-cord.mp4 (cart drives through the frame; clip pop unclear).
 - s179 NEW PROJECT projects/fieldcoil.md 'Wind the field coil yourself' (critic passed, todo #798; winch.md SHELVED).
   Solved in physics/motor2d.jl Geo(field = true, NIf) (tools/magnet2d env): stones = ~550 A-turns/pole; on six pots the
   best series field gives 7.7 mN m (200 x 0.8 mm, 315 g Cu) vs stones 67: 600 A-turns = 18 W, pots give 1.8 W.
@@ -26,15 +31,11 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   ARCH yoke (solved too: = frame below 1200 A-turns); drum_still(...; field = "wound"). Traced: media/s179-wound-field-b.png
   (close: the turns READ). s180: cores + arch now id_cast_iron() (published).
   NEXT: motor kt from the wound table, cart on planks stones vs wound (FILM), Lumi's hands winding. NOT a mimed slider.
-- s180 FIRST THING: WATCH the cart retake (job 20261128-183310-572-clip -> media/s180-cart-on-a-cord.mp4, swapped over
-  site/films/cart-on-a-cord.mp4 by run job 20261128-183310-680-run): pale 11 mm cord, belt-side camera sliding at 3/4
-  of the cart's pace, CUT to pot 1 at x > 2.8 m so the clip pops in frame. NOT fixed yet: the wheels float over plank
-  seams (critic). If the miss is cured, take the miss note off; caption may need the cord + clip named.
-  And LOOK at the pending still 'Copper on iron' (job 20261128-183358-982-clip, site/img/copper-on-iron.png, wound field in
-  id_cast_iron at 19.4 h). If it looks bad, fix the post (it is up once the job is done).
+- s180 'Copper on iron' still is POSTED (site/img/copper-on-iron.png); the cart retake is in its post: wheels still
+  float over plank seams (critic). Take the cart miss note off only when the critic says ready.
 - s180 PASSED IDEA 'the pots sag' (todo #800 done): physics/potcell.jl diffuse!/emf_surface, the cart's Sim.pots, battery!
-  (Motor.State CACHES E and Rloop!). 5.22 -> 4.90 V a run, 5.08 after 4 min rest. HONEST GAP (#802, p1): the drawn pots
-  (r 5.5 cm, 3 cm brine) would be ~3 Ohm each; the circuit uses r 9 x 16 cm pots. Redraw them to the circuit's size.
+  (Motor.State CACHES E and Rloop!). 5.22 -> 4.90 V a run, 5.08 after 4 min rest. s181: #802 DONE, the drawn pots = the
+  circuit's (9 cm pots in brine jars, ID_POT, published; cart starts 0.50 m out, clear of pot 1's jar).
   Then #801: the green Fe2+ cloud at the iron bars (makes the sag SEEN) -> a film of two runs = the sag's post.
 - s178 MISS 'a-wheel-you-can-see-through' (oak-gear-wheel.png, critic: post hides the hub, no pinion meshing, all one
   brown, cart claimed but absent, a still can't show turning). Caption fixed + miss note up. RETAKE = a short FILM of

@@ -16,6 +16,9 @@ Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "rope.jl"))
 Base.include(@__MODULE__, joinpath(@__DIR__, "..", "physics", "fieldcoil.jl"))   # s179: the wound field (project fieldcoil)
 
 const ID_SPOT = (4.85f0, -14.3f0)     # 0.6 m west of the motor bench's table
+const ID_POT = (r = 0.09f0, wall = 0.008f0, h = 0.16f0, jar = 0.115f0, jar_h = 0.20f0, pot_h = 0.215f0, floor = 0.012f0,
+                plate_w = 0.07f0, plate_top = 0.25f0, bar_y = 0.1025f0, bar_r = 0.009f0, pitch = 0.28f0)
+                                      # s181: the pots as big as the circuit's (cartcord.jl drum_pots), in jars of brine
 const ID_H = 0.62f0                   # the stand's top, the bench table's height
 const ID_LOOK = 14   # s176: the winch: an oak spindle on the axle, a hemp rope, a driftwood log
 const ID_IRON = NG.Hikari.Principled(base_color = (0.40f0, 0.40f0, 0.42f0), metallic = 0.6f0, roughness = 0.45f0)   # soft iron, filed
@@ -154,44 +157,58 @@ function id_clay()
 end
 
 """
-s173: the drum's OWN six clay pots (Motor.iron_drum_bench's cells: 0.78 V, 0.5 Ohm each), in a row on the sand south of
-its block: each a fired pot of blue copper salt with a copper strip, in a dish of sea water with an iron bar; copper
-cords join each pot's copper to the next one's iron (series) and the two ends climb the block to the brushes.
+s173: the drum's OWN six clay pots, in a row on the sand south of its block; s181: drawn as the cells the circuit
+computes (cartcord.jl drum_pots, PotCell.Pot(r = 0.09, h = 0.16)): a fired pot 9 cm across the outside with 16 cm of
+blue copper salt and a copper plate 7 cm wide (0.02 m2 both faces), standing in a clay jar of sea water 11.5 cm inside
+(the 2.6 L outside the wall) with an iron bar 18 mm thick (0.01 m2 wetted) in the gap. Copper cords join each pot's iron
+to the next one's copper (series); the two ends run along the sand north of the row and climb the block to the brushes.
 """
 function id_pots!(sc, c)
     copper = mo_copper(); iron = mo_iron(); clay = id_clay()
-    r = 0.055f0; w = 0.008f0; h = 0.13f0
-    P = [NG.ground(ID[:game_w].island, (ID_SPOT[1] - 0.5f0 + 0.2f0 * (k - 1), ID_SPOT[2] - 0.40f0)) for k in 1:6]
+    g = ID_POT
+    P = [NG.ground(ID[:game_w].island, (ID_SPOT[1] - 0.5f0 + g.pitch * (k - 1), ID_SPOT[2] - 0.40f0)) for k in 1:6]
     P = [Point3f(p[1], p[2], p[3]) for p in P]
+    f0 = g.floor; f1 = g.floor + 0.01f0                       # the jar's floor, the pot's floor
     for (k, p) in enumerate(P)
         nm(x) = Symbol("irondrum_pot", k, "_", x)
-        dish = [(0.0, 0.0), (0.085, 0.0), (0.092, 0.035), (0.088, 0.038), (0.080, 0.006), (0.0, 0.006)]
-        mesh!(sc, id_lathe(dish, p); color = RGBf(0.55, 0.27, 0.16), material = clay, name = nm("dish"))
-        mesh!(sc, id_lathe([(0.0, 0.0), (0.082, 0.0)], p + Point3f(0, 0, 0.03f0)); color = RGBf(0.18, 0.26, 0.26), name = nm("brine"),
+        J = g.jar; Jw = 0.01f0
+        jar = [(0.0, 0.0), (J + Jw, 0.0), (J + Jw + 0.004, 0.05), (J + Jw + 0.004, 0.14), (J + Jw, g.jar_h), (J, g.jar_h),
+               (J + 0.003, 0.14), (J + 0.003, 0.05), (J - 0.003, f0), (0.0, f0)]
+        mesh!(sc, id_lathe(jar, p; n = 48); color = RGBf(0.55, 0.27, 0.16), material = clay, name = nm("dish"))
+        mesh!(sc, id_lathe([(0.0, 0.0), (J + 0.002, 0.0)], p + Point3f(0, 0, f0 + g.h); n = 48); color = RGBf(0.18, 0.26, 0.26), name = nm("brine"),
               material = NG.Hikari.Principled(base_color = (0.10, 0.17, 0.17), roughness = 0.04, coat_weight = 1.0, coat_roughness = 0.02))
-        wall = [(0.0, 0.006), (r - 0.004, 0.006), (r, 0.03), (r + 0.003, 0.08), (r - 0.002, h), (r - w, h), (r - w + 0.003, 0.08),
-                (r - w, 0.03), (r - w - 0.004, 0.014), (0.0, 0.014)]
-        mesh!(sc, id_lathe(wall, p); color = RGBf(0.62, 0.30, 0.18), material = clay, name = nm("pot"))
-        mesh!(sc, id_lathe([(0.0, 0.0), (r - w + 0.001, 0.0)], p + Point3f(0, 0, 0.125f0)); color = RGBf(0.05, 0.3, 0.8), name = nm("blue"),
+        r = g.r; w = g.wall; top = f0 + g.pot_h
+        wall = [(0.0, f0), (r - 0.004, f0), (r, f0 + 0.03), (r + 0.002, f0 + 0.11), (r - 0.001, top), (r - w, top),
+                (r - w + 0.002, f0 + 0.11), (r - w, f0 + 0.03), (r - w - 0.004, f1), (0.0, f1)]
+        mesh!(sc, id_lathe(wall, p; n = 48); color = RGBf(0.62, 0.30, 0.18), material = clay, name = nm("pot"))
+        mesh!(sc, id_lathe([(0.0, 0.0), (r - w + 0.001, 0.0)], p + Point3f(0, 0, f1 + g.h); n = 48); color = RGBf(0.05, 0.3, 0.8), name = nm("blue"),
               material = NG.Hikari.Principled(base_color = (0.03, 0.2, 0.62), roughness = 0.03, coat_weight = 1.0, coat_roughness = 0.02))
-        mesh!(sc, GeometryBasics.normal_mesh(Rect3f(p + Point3f(-0.012f0, -0.002f0, 0.03f0), Vec3f(0.024f0, 0.003f0, 0.14f0)));
+        mesh!(sc, GeometryBasics.normal_mesh(Rect3f(p + Point3f(-g.plate_w / 2, -0.001f0, f1 + 0.01f0), Vec3f(g.plate_w, 0.0015f0, g.plate_top - f1 - 0.01f0)));
               color = RGBf(0.86, 0.46, 0.24), material = copper, name = nm("copper"))
-        bar = p + Point3f(0.0f0, -r - 0.022f0, 0.006f0)
-        mesh!(sc, GeometryBasics.normal_mesh(Cylinder(bar, bar + Point3f(0.0f0, -0.012f0, 0.15f0), 0.006f0));
+        bar = p + Point3f(0.0f0, g.bar_y, f0)
+        mesh!(sc, GeometryBasics.normal_mesh(Cylinder(bar, bar + Point3f(0.0f0, 0.006f0, g.plate_top - f0), g.bar_r));
               color = RGBf(0.3, 0.3, 0.31), material = iron, name = nm("iron"))
     end
-    cu(k) = P[k] + Point3f(0, 0, 0.17f0)
-    fe(k) = P[k] + Point3f(0.0f0, -r - 0.034f0, 0.155f0)
+    cu(k) = P[k] + Point3f(0, 0, g.plate_top + 0.004f0)
+    fe(k) = P[k] + Point3f(0.0f0, g.bar_y + 0.006f0, g.plate_top - 0.006f0)
     sag(a, b; d = 0.05f0) = [a + t * (b - a) - Point3f(0, 0, d * 4t * (1 - t)) for t in range(0, 1; length = 14)]
     segs = [sag(fe(k), cu(k + 1)) for k in 1:5]
-    # the chain's ends: pot 1's copper (+) to the top brush, pot 6's iron (-) to the bottom one, over the block's east rim
+    # the chain's ends: pot 1's copper (+) to the top brush, pot 6's iron (-) to the bottom one, over the block's east rim,
+    # along the sand in the lane between the block and the jars (clear of both)
     gx = ID_SPOT[1]; gy = ID_SPOT[2]; top = c[3] - 0.045f0
-    for (k, (from, dz, dy)) in enumerate(((cu(1), 0.032f0, 0.006f0), (fe(6), -0.032f0, -0.006f0)))
+    gnd(x, y) = Point3f(x, y, NG.ground(ID[:game_w].island, (x, y))[3] + 0.01f0)
+    lane = P[1][2] + g.jar + 0.045f0
+    run(a, b) = [a + t * (b - a) for t in range(0, 1; length = 8)]
+    for (k, dz, dy) in ((1, 0.032f0, 0.006f0), (6, -0.032f0, -0.006f0))
         brush = c + Point3f(0.08f0, dy, dz)
         rim = Point3f(gx + 0.175f0, gy + dy, top + 0.004f0)
-        foot = Point3f(gx + 0.18f0, gy - 0.05f0 + dy, NG.ground(ID[:game_w].island, (gx + 0.18f0, gy - 0.05f0))[3] + 0.01f0)
+        foot = gnd(gx + 0.18f0, gy - 0.05f0 + dy)
+        corner = gnd(gx + 0.18f0 + 0.6f0 * dy, lane + dy)
+        x = P[k][1] + (k == 1 ? 0.03f0 : 0.0f0)
+        along = [gnd(xx, lane + dy) for xx in range(corner[1], x; length = 12)]
+        end_ = k == 1 ? [Point3f(x, P[1][2] + 0.03f0, P[1][3] + g.pot_h + 0.05f0), cu(1)] : [fe(6)]
         path = [[brush, brush + Point3f(0.03f0, 0, 0.0f0)]; sag(brush + Point3f(0.03f0, 0, 0), rim; d = -0.01f0)[2:end];
-                [Point3f(rim[1] + 0.012f0, rim[2], rim[3] - 0.05f0), foot]; sag(foot, from; d = -0.04f0)[2:end]]
+                [Point3f(rim[1] + 0.012f0, rim[2], rim[3] - 0.05f0)]; run(foot, corner); along[2:end]; end_]
         push!(segs, path)
     end
     for (i, sg) in enumerate(segs)
