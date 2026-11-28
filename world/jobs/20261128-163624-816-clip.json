@@ -1,0 +1,11 @@
+{
+  "created": "2026-11-28T16:36:24.816",
+  "id": "20261128-163624-816-clip",
+  "kind": "clip",
+  "params": {
+    "call": "cart_drive",
+    "path": "site/films/cart-on-a-cord.mp4",
+    "script": "movies/cartcord.jl"
+  },
+  "status": "queued"
+}

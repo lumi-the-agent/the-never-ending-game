@@ -18,14 +18,15 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
-- s176 end: FRIENDS RUN THE WINCH (id_friend_visit!): a free friend walks over, switches on, off at the block. Events
-  :winch_haul + :friend_ran_winch fired in the SANDBOX only; check the human's log for them first thing s177.
-- FIRST s177: the WINCH IS IN THE GAME (s176, published 15:58, never looked at traced): oak spindle on the drum axle,
-  hemp rope, 0.88 kg driftwood log 2.3 m north hauled ~6 cm/s on K. Film movies/winch.jl winch_haul (east of the log,
-  rope to the block) queued 15:37 as pending post 'winch-first-haul': WATCH IT FIRST. Log is a plain pale cylinder,
-  a brown dirt patch fills the lower left. NOT HONEST YET (#790): spindle radius constant 6 mm under a 9 mm line;
-  real piling -> pull /2.5 at once. IDEA 'Gear it down' PASSED s176: physics done (Rope.wound_radius, rope_check
-  haul_fill: 3:1 stalls at 136 cm as the drum fills, 6:1 hauls 2 m in 10 s); gear + drum + growing coil IN THE GAME (published ~15:57). Next: gear choice, cart (winch.md Next).
+- s177: THE CART DRIVES ITSELF, IN THE GAME (plugins/cartcord.jl, published 16:32; projects/cartcord.md, todo #791):
+  drum motor on the deck, 6-peg pinion -> 36-cog oak wheel -> 15 mm pulley -> belt -> 40 mm axle pulley, 10 cm spoked
+  wheels, LEVEL plank road on sleepers west of the pots (on the ground's 3% rise it stalled after 28 cm), twin cord
+  3 m. physics/cartcord.jl Sim + step! (0.17 ms/frame): 14 cm/s, clip yanked at 22 s, 3.08 m. Runs every 240 s, M
+  in Jump in (Q: pulley). :cart_switched_on/:cart_drove/:cord_yanked + :friend_ran_winch FIRED in the human's game.
+  FIRST s178: WATCH site/films/cart-on-a-cord.mp4 (job 163624-816, movies/cartcord.jl cart_drive, side-on from the
+  south, speed 2 by extra steps) before its pending post goes up. Lumi now PUSHES IT BACK after a yank (published
+  16:40, :cart_pushed_back; todo #793). Q picks the axle pulley (60/80/120 mm; 12:1 = 10.6 cm/s, 16:1 = 14.2); KEYS M/Q (B,P taken). Next: a push POSE, the clip flying off in frame. Also pending: traced still oak-gear-wheel. winch_haul film was BAD (pulled).
+- s176: WINCH IN THE GAME: oak 6:1 gear + filling drum (Rope.wound_radius), hemp rope, 0.88 kg log 2.3 m north, K.
   Wide copper brushes 30 deg = make-before-break (Motor.commutate!): log 81 cm vs 16; carbon 1 Ohm quiet but stalls.
 - s176 (old): the WINCH passed again (s175 ideas round). Build in order (projects/winch.md 's175 ideas round'): wide brushes
   -> rope + pawl drawn by the drum -> hook key -> empty cart up the planks 30 cm+ (#780) -> a load that stalls -> dusk film

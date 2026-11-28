@@ -10913,12 +10913,12 @@
       "id": 780,
       "kind": "review",
       "priority": 1,
-      "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.",
+      "result": "s172 (no game change yet, physics only): power budget (projects/winch.md): 6 pots ~1.8 W -> empty cart up planks ~0.1 m/s; loaded cart in sand ~1 mm/s (needs the accumulator). physics/stator.jl: wound stator on 6 pots never beats the ferrite stones (1600 turns 69 mT vs 71, eats 1.8 W); an iron BAR rotor drives 1.7x but cogs +-690 mN m (locks). physics/motor2d.jl (Ferrite.jl 2D magnetostatics, env world/tools/magnet2d, saturating iron, Arkkio torque): air core 27.5 mN m @90 deg vs 3D 30.4 (validates); ROUND DRUM rotor mean drive 20.8 vs 9.9 mN m per 80 A-turns, cogging <= 0.05. Stall on 6 pots ~24 mN m vs 90 needed -> 4:1 belt. Next: 2nd coil + 4 segments, table into motor.jl, the winch in the game.\nlater s172: two-coil iron drum (Siemens, 4 segments) in motor2d.jl: mean 47.8 mN m per 80 A-turns, min 32 (no dead spot), cogging 0; table physics/data/drum2-torque.csv. physics/drummotor.jl haul on six pots, empty cart on planks: dry bearing 6:1 = 4.35 cm/s, greased 4:1 = 9.5 cm/s, sand stalls. motor.jl Build(drum = true) + Motor.iron_drum_bench(): 6.1 rev/s dry, 9.2 greased from rest (old path identical to the published copy, all sandbox plugins ok, frame 3.9 ms). Not done: nothing visible in the game yet (the bench, belt, rope, cart), no film.\ns172 end: PUBLISHED plugins/irondrum.jl: the iron drum motor on a round oak block 0.6 m west of the motor bench (4.85,-14.3), spinning by Motor.step!(iron_drum_bench) on six pots (7.1 rev/s at 4.4 s), 0.06 ms/frame; media/s172-irondrum-2.png. Not yet: no pots/cords drawn to it, no switch, no belt/rope/cart, no traced look.\ns177: the motor now drives the cart ITSELF instead (todo #791, cartcord.jl): 6:1 cannot move the cart at all (1.9 N < 2.1 N rolling), a 3% rise stalls it; the winch hauling the cart up the planks stays open.",
       "source": "review",
       "spent_minutes": 35.0,
       "status": "doing",
       "title": "The drum motor must pull something in the game: rope, winch, cart up the planks",
-      "updated": "2026-11-28T15:16:32.381"
+      "updated": "2026-11-28T16:37:01.605"
     },
     {
       "created": "2026-11-28T12:16:13.248",
@@ -11059,6 +11059,48 @@
       "status": "open",
       "title": "Winch: the rope piles up on the spindle (pull falls as it fills), then a gear and a pulley block for the cart",
       "updated": "2026-11-28T15:45:49.909"
+    },
+    {
+      "created": "2026-11-28T16:24:12.118",
+      "detail": "Passed s177 round 2. Motor on the cart, belt to the rear axle, twin copper cord to the pots; the cord runs out and yanks its clip off the pot. Done when: in the human's game the cart drives >= 2 m along the planks on its own motor, the cord drawn from its tether, the clip pulls off (event :cord_yanked fires), and a path traced film shows it.",
+      "est_minutes": 120.0,
+      "id": 791,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s177: physics/cartcord.jl checked out of the game: 6:1 and 12:1 stall (1.9 N < 2.1 N rolling), 15:1 (8/120 mm) drives 15.9 cm/s, 3 m cord taut, clip off at 20.4 s, stops at 3.1 m. Not in the game yet.\ns177 IN THE GAME (plugins/cartcord.jl, published 16:32): cart (oak frame, deck, 4 spoked wheels, drum motor between two stones, 6-peg pinion -> 36-cog oak wheel, 15 mm pulley, leather belt -> 40 mm axle pulley) on a LEVEL plank road on sleepers west of the pots; copper cord drawn from the tether. Human's game: :cart_switched_on 16:33:03, :cart_drove (1 m, 13.6 cm/s) 16:33:14, :cord_yanked (2.70 m) 16:33:26. Sandbox: 14.2 cm/s, clip off at 22.3 s, 3.08 m; system 0.17 ms median. Shots: media/s177-cart-2.png, s177-cart-end.png, s177-cart-filmcam2.png. Film queued: job 20261128-163624-816-clip -> site/films/cart-on-a-cord.mp4 (pending post). Not done: the film not seen yet; the cart pops back to the start for the next run; the clip is not seen flying off (out of frame).\ns177 16:44: P in Jump in by the cart picks the axle pulley (60/80/120 mm diameter = 12/16/24:1 after the cogs), event :cart_pulley; sandbox: 12:1 drives 10.6 cm/s with the motor bogged at 2.15 rev/s vs 14.2 cm/s at 16:1. Published.\ns177 16:43: keys moved to M (drive) and Q (pulley): B and P were bubbles and paint in Jump in; the Jump in hint (play.jl) names the cart. Published. Still open: watch the film cart-on-a-cord.mp4, the clip springing off in frame.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "The cart drives itself on a long cord (projects/cartcord.md)",
+      "updated": "2026-11-28T16:43:20.967"
+    },
+    {
+      "created": "2026-11-28T16:29:09.412",
+      "detail": "MethodError: no method matching Makie.Quaternionf(::Makie.Quaternionf)\nThe type `Makie.Quaternionf` exists, but no method is defined for this combination of argument types when trying to construct it.\n\nClosest candidates are:\n  Makie.Quaternion{T}(::Any, !Matched::Any, !Matched::Any, !Matched::Any) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:29\n  Makie.Quaternion{T}(!Matched::NTuple{4, T}) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:10\n  Makie.Quaternion{T}(!Matched::NTuple{4, Any}) where T\n   @ Makie /sim/Programmieren/SimGame/dev/Makie/Makie/src/utilities/quaternions.jl:9\n\nStacktrace:\n  [1] ck_build!(game::Game)\n    @ Main.Plugin_cartcord /sim/Programmieren/SimGame/world/plugins/cartcord.jl:87\n  [2] step!(::Main.Plugin_cartcord.CartCordSys, game::Game, dt::Float64)\n    @ Main.Plugin_cartcord /sim/Programmieren/SimGame/world/plugins/cartcord.jl:196\n  [3] (::NeverendingGame.var\"#step_systems!##4#step_systems!##5\"{Game, Float64, NeverendingGame.SystemSlot})()\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [4] guarded(f::Function, g::Game, what::String, slot::NeverendingGame.SystemSlot)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:208\n  [5] #step_systems!##2\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256 [inlined]\n  [6] timed_ms\n    @ /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:248 [inlined]\n  [7] step_systems!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:256\n  [8] frame!(g::Game, dt::Float64)\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:334\n  [9] run_game(; root::String, instance::Symbol, fps::Int64, width::Int64, height::Int64, headless::Bool, window::Bool, web_port::Int64, web_url::String, revise::typeof(revise))\n    @ NeverendingGame /sim/Programmieren/SimGame/dev/NeverendingGame/src/game.jl:409\n [10] top-level scope\n    @ none:1\n [11] eval(m::Module, e::Any)\n    @ Core ./boot.jl:489\n [12] exec_options(opts::Base.JLOptions)\n    @ Base ./client.jl:283\n [13] _start()\n    @ Base ./client.jl:550",
+      "est_minutes": 15.0,
+      "id": 792,
+      "kind": "fix",
+      "priority": 1,
+      "result": "Closed at 2026-11-28T16:29:43.719: plugin cartcord loaded cleanly.\nHappened again at 2026-11-28T16:29:45.176.\nClosed at 2026-11-28T16:29:55.716: plugin cartcord loaded cleanly.\nHappened again at 2026-11-28T16:29:57.163.\nClosed at 2026-11-28T16:30:18.441: plugin cartcord loaded cleanly.",
+      "source": "system",
+      "spent_minutes": 0.0,
+      "status": "dropped",
+      "title": "system:cartcord.CartCordSys failed in step! and was switched off",
+      "updated": "2026-11-28T16:30:18.441"
+    },
+    {
+      "created": "2026-11-28T16:37:01.611",
+      "detail": "s177: after a run the cart sits at 3 m with its cord taut; the next run teleports it to the start (a pop) and clips the cord back on with no hand. Done when: Lumi or a friend pushes the cart back along the planks (it rolls by the same physics, pushed) and clips the cord onto the pot by hand, and a film frame shows the clip springing off the copper strip.",
+      "est_minutes": 60.0,
+      "id": 793,
+      "kind": "motion",
+      "priority": 2,
+      "result": "s177 half: PUSH BACK DONE and published 16:40: after the yank Lumi walks to the cart's front (goal :cart, in NG.BUSY_GOALS), pushes it back along the planks through the same physics (F_ext held to a walking pace, ~16 cm/s, -5.5 N), clips the cord on and coils it by the pot; event :cart_pushed_back fired in the sandbox (16:39). Sandbox runs: 3.08 m out, back to 0.26 m, clip on, ready. NOT YET: the clip springing off the copper strip in a film frame; Lumi's pose is her walk, not a push.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "The cart on a cord: walk it back instead of the pop, the clip flying off in frame",
+      "updated": "2026-11-28T16:40:59.627"
     }
   ]
 }

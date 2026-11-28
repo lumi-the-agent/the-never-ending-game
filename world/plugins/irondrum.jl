@@ -397,7 +397,46 @@ function id_cog(r, n, x0, x1)
     end
     id_merge(ms)
 end
-const ID_LOG_S = 2.3                # where the log lies, metres out along the rope from the block's foot
+
+"A ring about x between x0 and x1 from radius ri to ro: outer, inner and both faces with their own vertices (sharp edges)."
+function id_ring(ri, ro, x0, x1; n = 72)
+    pts = Point3f[]; fs = GeometryBasics.TriangleFace{Int}[]
+    yz(r, k) = (r * cos(2pi * k / n), r * sin(2pi * k / n))
+    function band!(a, b)                    # a, b: (x, r) of the band's two edges, swept round
+        o = length(pts)
+        for k in 0:n
+            push!(pts, Point3f(a[1], yz(a[2], k)...), Point3f(b[1], yz(b[2], k)...))
+        end
+        for k in 0:n-1
+            i = o + 2k + 1
+            push!(fs, GeometryBasics.TriangleFace(i, i + 3, i + 1), GeometryBasics.TriangleFace(i, i + 2, i + 3))   # outward
+        end
+    end
+    band!((x0, ro), (x1, ro)); band!((x1, ri), (x0, ri)); band!((x1, ro), (x1, ri)); band!((x0, ri), (x0, ro))
+    GeometryBasics.normal_mesh(GeometryBasics.Mesh(pts, fs))
+end
+
+"A box about the x axis turned by φ (its y,z rotated): x0..x1 along the axle, y0..y1 across, z0..z1 out from it."
+function id_rbox(x0, x1, y0, y1, z0, z1, φ)
+    box = GeometryBasics.normal_mesh(Rect3f(Point3f(x0, y0, z0), Vec3f(x1 - x0, y1 - y0, z1 - z0)))
+    R = [1 0 0; 0 cos(φ) -sin(φ); 0 sin(φ) cos(φ)]
+    GeometryBasics.Mesh([Point3f((R * collect(p))...) for p in GeometryBasics.coordinates(box)], GeometryBasics.faces(box))
+end
+
+"""
+s177: the big wheel built as a millwright builds one: an oak rim, four arms through a hub, and n hornbeam cogs set in
+mortises through the rim (standing 5 mm out, as id_cog's). Returns (frame, cogs): you see THROUGH it, so its turn shows.
+"""
+function id_spurwheel(r, n, x0, x1)
+    ro = r - 0.003; ri = r - 0.015
+    fr = Any[id_ring(ri, ro, x0, x1), id_ring(0.004, 0.013, x0 - 0.003, x1 + 0.003; n = 24)]
+    for φ in (0.0, pi / 2, pi, 3pi / 2)       # arms: from the hub into the rim, a little thinner than it
+        push!(fr, id_rbox(x0 + 0.0015, x1 - 0.0015, -0.004, 0.004, 0.011, ri + 0.004, φ + pi / 4))
+    end
+    cogs = Any[id_rbox(x0, x1, -0.0026, 0.0026, ri + 0.003, r + 0.005, 2pi * k / n) for k in 0:n-1]
+    id_merge(fr), id_merge(cogs)
+end
+const ID_LOG_S = 2.3               # where the log lies, metres out along the rope from the block's foot
 const ID_LOG_R = 0.04f0; const ID_LOG_L = 0.32f0
 const ID_LOG_M = 0.88               # driftwood (~550 kg/m3), 4 cm x 32 cm
 const ID_HEMP = NG.Hikari.Principled(base_color = (0.50, 0.40, 0.26), roughness = 0.92f0)
@@ -427,8 +466,10 @@ function id_winch!(sc, c, w)
     cs = c + ID_CS
     oak = mo_wood(base = (0.56, 0.40, 0.24))
     wheel = Any[]
-    push!(wheel, mesh!(sc, id_cog(ID_WHEEL_R, round(Int, ID_PINION_N * ID_GEAR), -0.131, -0.119); color = RGBf(0.5, 0.35, 0.2),
-                       material = oak, name = :irondrum_wheel))
+    frame, cogs = id_spurwheel(ID_WHEEL_R, round(Int, ID_PINION_N * ID_GEAR), -0.131, -0.119)
+    push!(wheel, mesh!(sc, frame; color = RGBf(0.5, 0.35, 0.2), material = oak, name = :irondrum_wheel))
+    push!(wheel, mesh!(sc, cogs; color = RGBf(0.68, 0.58, 0.42), material = mo_wood(base = (0.70, 0.60, 0.44)),
+                       name = :irondrum_cogs))      # hornbeam: the millwright's pale, hard cog wood
     push!(wheel, mesh!(sc, cyl((-0.16, 0, 0), (-0.05, 0, 0), 0.004); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON,
                        name = :irondrum_cshaft))
     push!(wheel, mesh!(sc, cyl((ID_DRUM_X[1], 0, 0), (ID_DRUM_X[2], 0, 0), ID_DRUM_R0); color = RGBf(0.5, 0.35, 0.2),
@@ -483,6 +524,9 @@ function id_rope_draw!(w; force = false)
     end
 end
 
+const ID_IDLE_KINDS = (:wander, :idle, :sit, :play, :social, :dance, :rain, :sunbathe, :splash)
+push!(NG.BUSY_GOALS, :drum)     # s177: on the way to the motor, a starfish to show off no longer pulls a friend away
+
 """
 s176: the friends try the winch too. Every few minutes, while the drum stands idle, the
 nearest friend who is up and wandering walks over and pulls the switch, watches the log come in on the rope, and
@@ -494,7 +538,9 @@ function id_friend_visit!(w, st)
         spot = NG.ground(w.island, (ID_SPOT[1] + 0.3f0, ID_SPOT[2] + 0.35f0))
         best = nothing; bd = 60.0
         for cr in w.creatures
-            (cr.name == "Lumi" || cr.controlled || !(cr.goal.kind in (:wander, :idle, :sit))) && continue
+            # s177: in the human's game nobody was ever just wandering (all fishing, in the rain, sunbathing): a friend
+            # at any pastime may leave it for the motor; never one asleep, at work (NG.busy) or in another plugin's job
+            (cr.name == "Lumi" || NG.busy(cr) || !(cr.goal.kind in ID_IDLE_KINDS)) && continue
             d = hypot(cr.pos[1] - ID_SPOT[1], cr.pos[2] - ID_SPOT[2])
             d < bd && (best = cr; bd = d)
         end
@@ -518,7 +564,8 @@ function id_friend_visit!(w, st)
         delete!(ID, :friend)
         cr.goal.kind === :drum && (cr.goal = NG.Goal(:wander, cr.pos, :idle, 1.0, 0.0, false, 0, false))
     elseif !ID[:friend_on] && !(cr.goal.kind === :drum)
-        delete!(ID, :friend)                           # it got distracted on the way
+        delete!(ID, :friend)                           # it got distracted on the way: ask someone else soon
+        ID[:friend_next] = min(get(ID, :friend_next, w.t + 60.0), w.t + 60.0)
     end
 end
 

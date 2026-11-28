@@ -1,0 +1,24 @@
+{
+  "created": "2026-11-28T16:25:33.125",
+  "id": "20261128-162533-070-trace",
+  "kind": "trace",
+  "params": {
+    "eye": [
+      4.45,
+      -13.96,
+      1.95
+    ],
+    "path": "site/img/oak-gear-wheel.png",
+    "samples": 128,
+    "size": [
+      1280,
+      720
+    ],
+    "target": [
+      4.74,
+      -14.23,
+      1.77
+    ]
+  },
+  "status": "queued"
+}

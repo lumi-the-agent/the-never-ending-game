@@ -16,7 +16,7 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
 - [ ] The bench motor runs on four clay pots, turning the potter's wheel
 - [ ] An iron-cored wound stator (electromagnet): the motor gets strong enough for a wheel
   - [x] Round iron drum rotor: 2 coils, no cogging, its brushes SPARK (s172-173); field solved by Newton, L 8 mH (s175)
-  - [ ] The winch: the drum on a rope hauls the empty cart up the planks (#780; s176: wide brushes, rope, 6:1 oak gear + filling drum IN the game; next: gear choice, the cart)
+  - [ ] The winch: the drum on a rope hauls the empty cart up the planks (#780; oak 6:1 gear, filling drum, friends run it)
     - [ ] Set the brushes for the load: Lumi's hand on the rocker (projects/brushes.md, #785)
 - [ ] The motor run backwards: a windmill generator that lights a wire
   - [ ] Land yacht: the cart sails on the flow around its own sail, a dynamo on its axle charges the pots (projects/landyacht.md, todo #763)
@@ -36,4 +36,5 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
     - [x] The wind over a fence solved in 3D (WaterLily): wake, corner jets, lee eddy; sand blown by it (s161)
     - [x] WaterLily on the GPU matches the CPU (Lava strided-GEP fix, 5 ms/step, s162)
 - [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
+  - [ ] The cart drives itself on a long cord (projects/cartcord.md; s177 IN THE GAME: 16:1 cogs+belt, level planks; next: push back, film)
 - [ ] Gears for the dune, braking that charges the plates, friends ride along

@@ -1604,3 +1604,14 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
 - (s176) COMMUTATION, make-before-break: a brush wider than the gap shorts the coil at neutral; with copper contacts
   (0.05 Ohm) L/R >> the bridge time, so the coil reverses only at the last instant and still sparks (copper brushes
   always sparked; carbon brushes, 1885, force the current over by their resistance). Motor.commutate! models it.
+- (s177) PASSING A MODULE AS AN ARGUMENT KILLS SPEED: CartCord.drive(Motor, Rope; ...) called Rope.tension etc. through
+  a runtime module value: every call dynamic, 209 M allocations, 7 s for 25 s of cart. `import ..Motor, ..Rope` inside
+  the module (included after them into the same parent) + a preallocated force buffer: 0.15 s, 692 k allocations.
+- (s177) A FILM CAMERA SET IN THE RASTER IS NOT A SHOT: movies/winch.jl winch_haul framed the log on flat green grass
+  with the motor a speck far back and a creature's wing sweeping across; 40 min of worker for a film that could not be
+  posted. Before queueing a clip, look at ONE path traced frame from its camera at its start AND middle (rule 14).
+- (s177) A friend-visit that only takes creatures with goal :wander/:idle never fires in the human's game: there
+  everyone is at a pastime (:fish, :rain, :sunbathe, :wirebench). Take pastimes too, skip NG.busy, and push your own
+  walk-to goal into NG.BUSY_GOALS so other plugins (present_shown) do not steal the friend on the way.
+- (s177) Before giving a plugin a Jump-in key, read play.jl's game_description(JumpIn): it lists every key in use
+  (B bubble, P paint, K tip my day...). The cart got B and P first and fired bubbles and paint with its own actions.

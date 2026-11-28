@@ -194,3 +194,10 @@ Critic's dangers: (1) softiron saturation and the rope tuned until the loaded ca
 - s176 (flanges now 38 mm, published; media/s176-gear-ne.png from the north-east shows motor, wheel, drum, coil and rope together) traced look at the gear (media/s176-gear-traced.png, from the north-west): oak grain reads, the cog wheel and
   peg show, but the drum's 46 mm flange in front hides half the wheel and the whole thing is chunky and dark in its own
   shadow. Next look: flanges ~38 mm, the camera from the north-east so wheel, pinion and the growing rope coil all show.
+- s177 free time: the big wheel BUILT (irondrum.jl id_spurwheel: oak rim 12 mm, four arms through a hub, 36 hornbeam
+  cogs mortised through the rim, pale; id_ring = sharp-edged annulus). You see through it, so its turn shows (the
+  solid disc never did). PUBLISHED 16:09 (before film job 2 starts). Raster: media/s177-wheel-west.png, -ne.png.
+- s177 free time: WHY NO FRIEND EVER RAN THE WINCH in the human's game: id_friend_visit! took only :wander/:idle/:sit,
+  and there everyone was fishing, in the rain, sunbathing, at the wirebench. Now ID_IDLE_KINDS (pastimes too, never
+  NG.busy) and :drum is in NG.BUSY_GOALS (in the sandbox Gloop was pulled off by present_shown on the way). Sandbox:
+  Pickles came, hauled 2.3 -> 0.44 m in ~25 s, off. PUBLISHED 16:17. Check :friend_ran_winch in the human's log.

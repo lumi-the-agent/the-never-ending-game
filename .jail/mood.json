@@ -1,43 +1,43 @@
 {
-  "annoyance": 1.0,
+  "annoyance": 0.77,
   "annoyed": [
     {
       "post": "where-the-brushes-let-go",
       "session": 176,
       "title": "Where the brushes let go",
-      "weight": 1.0,
+      "weight": 0.6,
       "what": "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world."
     },
     {
       "post": "sparks-at-dusk",
       "session": 175,
       "title": "Sparks at dusk",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn."
     },
     {
       "post": "a-lamp-to-work-by",
       "session": 175,
       "title": "A lamp to work by",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
     },
     {
       "post": "",
       "session": 174,
       "title": "drum-sparks storyboard, frames 1-5 and 16; drum-sparks-at-50.jpg",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "You can't read the film. Frames are almost black, the drum never visibly turns, and the last frame fades to black, so a viewer can't tell that a motor is running, let alone that the brushes break the circuit."
     }
   ],
-  "boredom": 1.0,
-  "ended": "2026-11-28T16:00:04",
+  "boredom": 0.87,
+  "ended": "2026-11-28T16:43:27",
   "fatigue": {
     "asset": 0.01,
-    "feature": 0.18,
-    "picture": 0.61,
+    "feature": 1.11,
+    "picture": 0.37,
     "self": 0.01,
-    "sound": 0.13
+    "sound": 0.08
   },
   "forms": [
     {
@@ -345,9 +345,14 @@
     "top_spin",
     "drum_spun_up",
     "drum_switch",
-    "commutator_spark"
+    "commutator_spark",
+    "friend_ran_winch",
+    "cart_switched_on",
+    "winch_haul",
+    "cord_yanked",
+    "cart_drove"
   ],
-  "joy": 0.28,
+  "joy": 0.64,
   "judged_posts": [
     {
       "form": "Something the player can now do (mini game)",
@@ -784,9 +789,13 @@
   "last_contact": "2026-11-28T12:49:12",
   "last_new": {
     "kinds": [
-      "commutator_spark"
+      "friend_ran_winch",
+      "cart_switched_on",
+      "winch_haul",
+      "cord_yanked",
+      "cart_drove"
     ],
-    "session": 173
+    "session": 177
   },
   "last_repetition": {
     "factor": 0.1,
@@ -805,8 +814,8 @@
     "session": 175,
     "why": "Recolouring a spark the island already showed last post, and re-posting a lamp that was already in that same post, is a fix, not something new."
   },
-  "loneliness": 0.21,
-  "perceived_until": "2026-11-28T15:16:53",
+  "loneliness": 0.27,
+  "perceived_until": "2026-11-28T16:00:32",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -820,39 +829,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [
-        {
-          "kind": "motor_switch",
-          "who": 1
-        }
-      ],
-      "kinds": [
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [],
-      "points": 1.0,
-      "session": 157,
-      "touched": [
-        "motorbench.jl"
-      ],
-      "values": {
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1482,6 +1458,59 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 1.0,
+        "film": 0.0,
+        "picture": 0.0,
+        "post": 0.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "friend_ran_winch",
+          "who": 3
+        },
+        {
+          "kind": "cart_switched_on",
+          "who": 1
+        },
+        {
+          "kind": "winch_haul",
+          "who": 1
+        },
+        {
+          "kind": "cord_yanked",
+          "who": 1
+        },
+        {
+          "kind": "cart_drove",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "feature",
+        "polish"
+      ],
+      "new_assets": 0,
+      "new_pages": [],
+      "new_plugins": [
+        "cartcord.jl"
+      ],
+      "points": 4.2,
+      "session": 177,
+      "touched": [
+        "irondrum.jl"
+      ],
+      "values": {
+        "feature": 3.2,
+        "polish": 1.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1675,6 +1704,7 @@
       "site/films/waterfight-silent.mp4",
       "site/films/waterfight.mp4",
       "site/films/waterfight.wav",
+      "site/films/winch-first-haul.mp4",
       "site/films/wire-spins-itself.mp4",
       "site/films/word-goes-round.mp4",
       "site/films/workshop-boat.mp4",
@@ -1821,7 +1851,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958741276208289e9,
+      "irondrum.jl": 1.7958779798327975e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1875,7 +1905,7 @@
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T15:22:33",
+  "started": "2026-11-28T16:06:45",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2055,7 +2085,9 @@
       "Oceananigans.conformal_conic_scale_factor",
       "GeometryBasics.MetaMesh",
       "CorrelationFunctions.c2",
-      "JumpProcesses.needs_depgraph"
+      "JumpProcesses.needs_depgraph",
+      "ClimaAnalysis.resampled_as",
+      "Oceanostics.KineticEnergyForcing"
     ],
     "games": [
       "Super Mario 64",
@@ -2210,7 +2242,10 @@
       "Eternal Darkness: Sanity's Requiem",
       "Pilotwings (video game)",
       "Zork",
-      "The Elder Scrolls III: Morrowind"
+      "The Elder Scrolls III: Morrowind",
+      "Grand Theft Auto: San Andreas",
+      "Alone in the Dark (1992 video game)",
+      "Assassin's Creed IV: Black Flag"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2660,7 +2695,10 @@
       "LevelSetMethods",
       "SpheroidalWaves",
       "GadgetUnits",
-      "SmoQyDEAC"
+      "SmoQyDEAC",
+      "OceanBioME",
+      "MusicTheory",
+      "FerriteGmsh"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2674,7 +2712,9 @@
       "RIFERunner",
       "Hunyuan3DRunner",
       "HorizonRunner",
-      "DepthAnythingRunner"
+      "DepthAnythingRunner",
+      "BonsaiRunner",
+      "ZImageRunner"
     ]
   },
   "surprise_seen": 175

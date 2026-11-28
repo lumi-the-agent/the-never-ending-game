@@ -7,5 +7,6 @@
     "path": "site/films/winch-first-haul.mp4",
     "script": "movies/winch.jl"
   },
-  "status": "queued"
+  "started": "2026-11-28T16:23:59.827",
+  "status": "running"
 }
