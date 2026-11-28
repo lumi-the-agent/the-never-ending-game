@@ -1,7 +1,7 @@
 # The cart drives itself on a long cord
 
 Goal: (passed s177, round 2: surprise 6 fun 6 real 7 toward 8) The player bolts the drum motor onto the cart's frame, belts it to the rear axle and switches on: the cart drives off along the planks under its own power, trailing a twin copper cord back to the six pots on the block, until the cord runs out and yanks its own clip off the pot (circuit open, it coasts to a stop) or stalls the motor. Pulley size, cord length, where the pots stand and the planks under the wheels are the player's choices, and the physics answers each. The first time the cart moves on electricity; the battery on board later replaces the cord.
-Next: (s177: IN THE GAME, published; film cart-on-a-cord queued) WATCH the film first (Lumi pushing it back after the yank is IN, s177 16:40); then Lumi's arms/pose pushing, the clip flying off seen in the shot (P picks the axle pulley: IN since s177, 60/80/120 mm), cord length a choice, then the battery on board (Plante) instead of the cord.
+Next: (s178: film cart-on-a-cord rendering since 17:04, lands ~18:00; its post is HELD in media/s178-held-pending-cart-on-a-cord.json) WATCH the mp4, then move the json back into pending/. Dune grass cleared off the road (beach.jl CLEARED). Cord copper double count fixed (21.0 s, 3.09 m). The cart's future is projects/dune.md; here only: Lumi's push pose, the clip flying off in frame.
 
 ## s177: physics/cartcord.jl (checked out of the game)
 Motor.step! (iron_drum_bench, 6 pots, the cord's copper added to R_contact: 2 x 0.75 mm^2 = 0.045 Ohm/m) -> elastic

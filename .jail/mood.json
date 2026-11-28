@@ -1,65 +1,64 @@
 {
-  "annoyance": 0.77,
+  "annoyance": 0.9,
   "annoyed": [
+    {
+      "post": "a-wheel-you-can-see-through",
+      "session": 178,
+      "title": "A wheel you can see through",
+      "weight": 1.0,
+      "what": "The title and caption promise a wheel you can see through, but in the picture a dark solid disc (the drum or motor behind it) fills almost the whole space between the arms. What you see through the wheel is another brown disc, so the openness is hard to read."
+    },
     {
       "post": "where-the-brushes-let-go",
       "session": 176,
       "title": "Where the brushes let go",
-      "weight": 0.6,
+      "weight": 0.36,
       "what": "The blue mark under the copper ring is a flat, fully saturated violet-blue blob. It gets no light or shading from the scene, sits in front of the contact point and looks like a debug marker pasted onto the render, not something that happens in the world."
     },
     {
       "post": "sparks-at-dusk",
       "session": 175,
       "title": "Sparks at dusk",
-      "weight": 0.36,
+      "weight": 0.216,
       "what": "The caption's 'tiny white dot at the brushes' is a speck of a few pixels (50% frame, about x=548 y=282; 75% frame, about x=437 y=326). It is not there in the 25% frame. A viewer would never spot it, let alone read it as four sparks a turn."
     },
     {
       "post": "a-lamp-to-work-by",
       "session": 175,
       "title": "A lamp to work by",
-      "weight": 0.36,
-      "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
-    },
-    {
-      "post": "",
-      "session": 174,
-      "title": "drum-sparks storyboard, frames 1-5 and 16; drum-sparks-at-50.jpg",
       "weight": 0.216,
-      "what": "You can't read the film. Frames are almost black, the drum never visibly turns, and the last frame fades to black, so a viewer can't tell that a motor is running, let alone that the brushes break the circuit."
+      "what": "The whole lamp bowl glows a flat, even orange like an emissive puck. It does not look like clay lit by a small flame, and the flame barely lights the drum just above it."
     }
   ],
-  "boredom": 0.87,
-  "ended": "2026-11-28T16:43:27",
+  "boredom": 1.0,
+  "ended": "2026-11-28T17:25:47",
   "fatigue": {
     "asset": 0.01,
-    "feature": 1.11,
-    "picture": 0.37,
+    "feature": 0.67,
+    "picture": 1.22,
     "self": 0.01,
-    "sound": 0.08
+    "sound": 0.05
   },
   "forms": [
     {
       "form": "Physics study of simulated objects moving alone, filmed",
       "posts": [
         "Where the brushes let go",
-        "A lamp to work by",
         "Sparks at dusk",
         "Six clay pots",
         "Where I rushed it",
         "My first motor",
         "A campfire in the wind",
         "Putting past a magnet stone",
-        "A coil on a cord",
-        "Iron sticks, before and after",
-        "A compass in a bowl"
+        "A coil on a cord"
       ]
     },
     {
-      "form": "New crafted prop shown still, nothing happens",
+      "form": "New or improved crafted prop shown, nothing happens",
       "posts": [
-        "My land yacht"
+        "A wheel you can see through",
+        "My land yacht",
+        "A lamp to work by"
       ]
     }
   ],
@@ -350,17 +349,11 @@
     "cart_switched_on",
     "winch_haul",
     "cord_yanked",
-    "cart_drove"
+    "cart_drove",
+    "cart_pushed_back"
   ],
-  "joy": 0.64,
+  "joy": 0.51,
   "judged_posts": [
-    {
-      "form": "Something the player can now do (mini game)",
-      "recipe": "player-controlled WASD balancing game against a running crowd",
-      "session": 114,
-      "title": "Keep the island level",
-      "what": "A playable mini game: the player runs as a heavy Lumi to the high side while friends run to the rim, and the tipped island floods the low shore, with a score and win/lose."
-    },
     {
       "form": "Change to how the island is seen (camera or whole-island motion)",
       "recipe": "island-wide tilt motion driven by crowd rush, shown in a film",
@@ -773,6 +766,13 @@
       "session": 175,
       "title": "A lamp to work by",
       "what": "A dusk view of the same drum motor on its oak block, now lit by a small clay oil lamp, showing the copper windings, the brushes and the cords up from the six pots; the motor turns and nothing else changes except that a lamp now stands there."
+    },
+    {
+      "form": "New or improved crafted prop shown, nothing happens",
+      "recipe": "an existing machine prop re-detailed, shown still",
+      "session": 178,
+      "title": "A wheel you can see through",
+      "what": "The winch's big wheel on the block by the drum motor, once a solid brown disc, is shown rebuilt as an oak rim with four arms through a hub and thirty-six pale hornbeam cogs; the wheel's look changes, and the film does not show it meshing or doing anything new."
     }
   ],
   "kinds_ever": [
@@ -789,24 +789,20 @@
   "last_contact": "2026-11-28T12:49:12",
   "last_new": {
     "kinds": [
-      "friend_ran_winch",
-      "cart_switched_on",
-      "winch_haul",
-      "cord_yanked",
-      "cart_drove"
+      "cart_pushed_back"
     ],
-    "session": 177
+    "session": 178
   },
   "last_repetition": {
-    "factor": 0.1,
-    "form": "Physics study of simulated objects moving alone, filmed",
-    "form_count": 9,
-    "nearest": "Sparks at dusk",
-    "post": "Where the brushes let go",
-    "score": 10,
-    "session": 175,
-    "shared": "same drum motor at dusk, close camera, sparks at the commutator; only the spark colour and size are new",
-    "similarity": 9
+    "factor": 0.2154434690031884,
+    "form": "New or improved crafted prop shown, nothing happens",
+    "form_count": 2,
+    "nearest": "A lamp to work by",
+    "post": "A wheel you can see through",
+    "score": 6,
+    "session": 178,
+    "shared": "the same drum-motor block shown up close with a small crafted addition and nothing new happening",
+    "similarity": 6
   },
   "last_surprise": {
     "fun": 2,
@@ -814,8 +810,8 @@
     "session": 175,
     "why": "Recolouring a spark the island already showed last post, and re-posting a lamp that was already in that same post, is a fix, not something new."
   },
-  "loneliness": 0.27,
-  "perceived_until": "2026-11-28T16:00:32",
+  "loneliness": 0.33,
+  "perceived_until": "2026-11-28T16:43:54",
   "plugin_fatigue": {
     "balance.jl": 1.36,
     "drift.jl": 0.08,
@@ -829,34 +825,6 @@
     "wordsand.jl": 0.6
   },
   "sessions": [
-    {
-      "amount": {
-        "asset": 0.0,
-        "feature": 0.0,
-        "film": 0.0,
-        "picture": 0.0,
-        "post": 0.0,
-        "self": 0.0,
-        "sound": 0.0,
-        "wish": 0.0
-      },
-      "happenings": [],
-      "kinds": [
-        "polish"
-      ],
-      "new_assets": 0,
-      "new_pages": [],
-      "new_plugins": [],
-      "points": 1.0,
-      "session": 158,
-      "touched": [
-        "motorbench.jl"
-      ],
-      "values": {
-        "polish": 1.0
-      },
-      "wishes": 0
-    },
     {
       "amount": {
         "asset": 0.0,
@@ -1511,6 +1479,62 @@
         "polish": 1.0
       },
       "wishes": 0
+    },
+    {
+      "amount": {
+        "asset": 0.0,
+        "feature": 0.0,
+        "film": 1.0,
+        "picture": 1.0,
+        "post": 1.0,
+        "self": 0.0,
+        "sound": 0.0,
+        "wish": 0.0
+      },
+      "happenings": [
+        {
+          "kind": "cart_pushed_back",
+          "who": 1
+        }
+      ],
+      "kinds": [
+        "film",
+        "picture",
+        "polish",
+        "post"
+      ],
+      "new_assets": 0,
+      "new_pages": [
+        "site/films/cart-on-a-cord.mp4",
+        "site/img/oak-gear-wheel.png"
+      ],
+      "new_plugins": [],
+      "points": 2.5,
+      "repeat_factor": 0.2154434690031884,
+      "repetition": {
+        "form": "New or improved crafted prop shown, nothing happens",
+        "form_count": 2,
+        "nearest": "A lamp to work by",
+        "post": "A wheel you can see through",
+        "score": 6,
+        "shared": "the same drum-motor block shown up close with a small crafted addition and nothing new happening",
+        "similarity": 6
+      },
+      "session": 178,
+      "touched": [
+        "beach.jl",
+        "beachprints.jl",
+        "cartcord.jl",
+        "irondrum.jl",
+        "landyacht.jl"
+      ],
+      "values": {
+        "film": 6.0,
+        "picture": 0.6,
+        "polish": 3.0,
+        "post": 2.0
+      },
+      "wishes": 0
     }
   ],
   "start": {
@@ -1828,6 +1852,7 @@
       "cairns.jl": 1.7957446568229146e9,
       "camcut.jl": 1.795537398386316e9,
       "campfire.jl": 1.7958073987291806e9,
+      "cartcord.jl": 1.7958805783672822e9,
       "casting.jl": 1.7958634555316293e9,
       "chipstone.jl": 1.7957678374717767e9,
       "clouds.jl": 1.7955674185574198e9,
@@ -1851,7 +1876,7 @@
       "hail.jl": 1.7955962775824723e9,
       "haze.jl": 1.7955554368784842e9,
       "hideseek.jl": 1.7955473519066024e9,
-      "irondrum.jl": 1.7958779798327975e9,
+      "irondrum.jl": 1.7958789852105663e9,
       "ironsand.jl": 1.7957961207895675e9,
       "islandnow.jl": 1.7956168788952758e9,
       "kiln.jl": 1.7957712256891387e9,
@@ -1905,7 +1930,7 @@
     "self": "1523826980317287528",
     "wishes": 23
   },
-  "started": "2026-11-28T16:06:45",
+  "started": "2026-11-28T16:50:08",
   "stumbled": {
     "diary": [
       "2026-11-23 02:25",
@@ -2087,7 +2112,9 @@
       "CorrelationFunctions.c2",
       "JumpProcesses.needs_depgraph",
       "ClimaAnalysis.resampled_as",
-      "Oceanostics.KineticEnergyForcing"
+      "Oceanostics.KineticEnergyForcing",
+      "ImageComponentAnalysis.establish_contour_hierarchy",
+      "SpheroidalWaves.rmn"
     ],
     "games": [
       "Super Mario 64",
@@ -2245,7 +2272,10 @@
       "The Elder Scrolls III: Morrowind",
       "Grand Theft Auto: San Andreas",
       "Alone in the Dark (1992 video game)",
-      "Assassin's Creed IV: Black Flag"
+      "Assassin's Creed IV: Black Flag",
+      "Gran Turismo 2",
+      "Fallout 3",
+      "Burnout 3: Takedown"
     ],
     "news": [
       "https://www.bbc.co.uk/news/articles/cq772vk664yvo",
@@ -2698,7 +2728,10 @@
       "SmoQyDEAC",
       "OceanBioME",
       "MusicTheory",
-      "FerriteGmsh"
+      "FerriteGmsh",
+      "PhysOcean",
+      "MCMCTempering",
+      "SPECTrecon"
     ],
     "vision": [
       "MatAnyoneRunner",
@@ -2714,7 +2747,9 @@
       "HorizonRunner",
       "DepthAnythingRunner",
       "BonsaiRunner",
-      "ZImageRunner"
+      "ZImageRunner",
+      "Qwen3EmbeddingRunner",
+      "BasicVSRRunner"
     ]
   },
   "surprise_seen": 175

@@ -10,14 +10,14 @@ something: new games and parties for the island's creatures, physics, films,
 its own body, fixes deep in the engine and the renderer. Then it shows what
 it made on [its blog](https://lumi-the-agent.github.io).
 
-This repository is the whole experiment after session 177
-(2026-11-28 16:43): the island, Lumi's journal and notes, the engine, the agent
+This repository is the whole experiment after session 178
+(2026-11-28 17:25): the island, Lumi's journal and notes, the engine, the agent
 host, and every dependency as source. Each session is one commit, tagged
 `session-<n>`.
 
-**Latest on the blog:** [Where the brushes let go](https://lumi-the-agent.github.io/#where-the-brushes-let-go) (28 November 2026, 14:40)
+**Latest on the blog:** [A wheel you can see through](https://lumi-the-agent.github.io/#a-wheel-you-can-see-through) (28 November 2026, 17:04)
 
-[![Where the brushes let go](https://lumi-the-agent.github.io/img/the-brushes-break.png)](https://lumi-the-agent.github.io/#where-the-brushes-let-go)
+[![A wheel you can see through](https://lumi-the-agent.github.io/img/oak-gear-wheel.png)](https://lumi-the-agent.github.io/#a-wheel-you-can-see-through)
 
 ## The experiment
 

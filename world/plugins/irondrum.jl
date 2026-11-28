@@ -35,6 +35,8 @@ const ID_HIDE = Point3f(0, 0, -0.35)       # a spark not burning sits inside the
 struct IronDrum <: System end
 
 cyl(a, b, r) = GeometryBasics.normal_mesh(Cylinder(Point3f(a...), Point3f(b...), Float32(r)))
+"A rounder cylinder (`n` sides): the default tessellation drew the 34 cm oak block as an octagon (s178 critic)."
+cyl(a, b, r, n) = GeometryBasics.normal_mesh(GeometryBasics.Tessellation(Cylinder(Point3f(a...), Point3f(b...), Float32(r)), n))
 
 "Several meshes as one (vertices and faces appended)."
 function id_merge(ms)
@@ -208,7 +210,7 @@ function id_ensure!(game)
     g = NG.ground(game.world.island, ID_SPOT)
     top = g[3] + ID_H
     oak = mo_wood(base = (0.56, 0.40, 0.24))
-    stand = mesh!(sc, cyl((0, 0, -0.05f0 - ID_H), (0, 0, 0), 0.17); color = RGBf(0.56, 0.40, 0.24), material = id_oak_block(),
+    stand = mesh!(sc, cyl((0, 0, -0.05f0 - ID_H), (0, 0, 0), 0.17, 64); color = RGBf(0.56, 0.40, 0.24), material = id_oak_block(),
                   name = :irondrum_stand)               # a round oak chopping block, drawn about its own axis (its rings)
     Makie.translate!(stand, Point3f(g[1], g[2], top))
     c = Point3f(g[1], g[2], top + 0.045f0)              # the axle's middle
@@ -465,15 +467,20 @@ function id_winch!(sc, c, w)
     # the countershaft north of the motor: big cog wheel, iron shaft, oak rope drum with flanges, the rope coil on it
     cs = c + ID_CS
     oak = mo_wood(base = (0.56, 0.40, 0.24))
+    # s178: the turning parts carry their grain with them (moving = true: object space), or a turning wheel's grain
+    # stands still in the world and the turn does not read
+    oakm = mo_wood(moving = true, base = (0.56, 0.40, 0.24))
     wheel = Any[]
     frame, cogs = id_spurwheel(ID_WHEEL_R, round(Int, ID_PINION_N * ID_GEAR), -0.131, -0.119)
-    push!(wheel, mesh!(sc, frame; color = RGBf(0.5, 0.35, 0.2), material = oak, name = :irondrum_wheel))
-    push!(wheel, mesh!(sc, cogs; color = RGBf(0.68, 0.58, 0.42), material = mo_wood(base = (0.70, 0.60, 0.44)),
-                       name = :irondrum_cogs))      # hornbeam: the millwright's pale, hard cog wood
+    push!(wheel, mesh!(sc, frame; color = RGBf(0.5, 0.35, 0.2), material = oakm, name = :irondrum_wheel))
+    # hornbeam: the millwright's pale, hard cog wood, near cream; mo_wood's grain darkens its base to 0.45-0.8x, so the
+    # base is set pale (s178 critic: at (0.70, 0.60, 0.44) the cogs traced the same dull brown as the oak rim)
+    push!(wheel, mesh!(sc, cogs; color = RGBf(0.86, 0.80, 0.66), material = mo_wood(moving = true, base = (0.95, 0.89, 0.75)),
+                       name = :irondrum_cogs))
     push!(wheel, mesh!(sc, cyl((-0.16, 0, 0), (-0.05, 0, 0), 0.004); color = RGBf(0.40, 0.40, 0.42), material = ID_IRON,
                        name = :irondrum_cshaft))
     push!(wheel, mesh!(sc, cyl((ID_DRUM_X[1], 0, 0), (ID_DRUM_X[2], 0, 0), ID_DRUM_R0); color = RGBf(0.5, 0.35, 0.2),
-                       material = oak, name = :irondrum_rdrum))
+                       material = oakm, name = :irondrum_rdrum))
     for (k, x) in enumerate(ID_DRUM_X)
         push!(wheel, mesh!(sc, cyl((x - 0.003, 0, 0), (x + 0.003, 0, 0), 0.038); color = RGBf(0.45, 0.31, 0.18), material = oak,
                            name = Symbol("irondrum_rflange", k)))

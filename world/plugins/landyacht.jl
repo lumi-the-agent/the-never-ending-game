@@ -25,9 +25,9 @@ the old spot, 5 m west of the grass, put the cart 1.5 m from the hut's middle, h
 beach exists.
 """
 function ly_spot(game)
-    dg = isdefined(Main, :BEACH) ? get(get(Main.BEACH, :things, Dict()), :dunegrass, Point3f[]) : Point3f[]
-    isempty(dg) && return nothing
-    Point2f(dg[1][1], dg[1][2]) + Point2f(-2.6f0, -2.2f0)
+    a = isdefined(Main, :BEACH) ? get(Main.BEACH, :anchor, nothing) : nothing   # the first dune grass spot (beach.jl)
+    a === nothing && return nothing
+    a + Point2f(-2.6f0, -2.2f0)
 end
 
 """

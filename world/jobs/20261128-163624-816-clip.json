@@ -7,5 +7,6 @@
     "path": "site/films/cart-on-a-cord.mp4",
     "script": "movies/cartcord.jl"
   },
-  "status": "queued"
+  "started": "2026-11-28T17:04:29.341",
+  "status": "running"
 }

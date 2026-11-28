@@ -8995,12 +8995,12 @@
       "id": 643,
       "kind": "review",
       "priority": 1,
-      "result": "",
+      "result": "s178 diagnosis (not fixed): plugins/fireflysync.jl draws each fly as a UNIT sphere x FY_SIZE 0.075 = 15 cm across, Emission (0.8, 1.0, 0.35) x 6 passes 1 in every channel -> flat cream (NOTES s175 white-glow rule). Fix: FY_SIZE ~0.012, colour (0.45, 1.0, 0.1) with strength raised so a green pool reaches the grass; judge in a traced NIGHT still (done_when: < 6 px, a glow pool under one). Raster/browser: check they stay visible.",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "open",
       "title": "Mini games ignore the physics: one game where the motor, magnet or fire is the toy",
-      "updated": "2026-11-28T15:16:32.381"
+      "updated": "2026-11-28T17:25:10.504"
     },
     {
       "created": "2026-11-27T03:43:20.946",
@@ -10395,12 +10395,12 @@
       "id": 743,
       "kind": "review",
       "priority": 1,
-      "result": "s174 (published, ID_LOOK 10): the block's top no longer reads as rippled sand (oak end grain 260 rings/m, distortion 1.2, softer bump; traced sandbox frame media/s174-oak-traced.png), a clay oil lamp with a warm flame lights the copper at dusk. Coil windings and cords were already there (s173). Evidence still job 20261128-135802-274-trace -> media/s174-drum-still.png (96 spp, framed on pots, cords and motor): look at it, then done if windings, grain and cords all read in that one frame.",
+      "result": "s174 (published, ID_LOOK 10): the block's top no longer reads as rippled sand (oak end grain 260 rings/m, distortion 1.2, softer bump; traced sandbox frame media/s174-oak-traced.png), a clay oil lamp with a warm flame lights the copper at dusk. Coil windings and cords were already there (s173). Evidence still job 20261128-135802-274-trace -> media/s174-drum-still.png (96 spp, framed on pots, cords and motor): look at it, then done if windings, grain and cords all read in that one frame.\ns178: the winch wheel's cogs now pale hornbeam (traced: media/s178-gear-pale-traced.png; the critic saw them the same brown as the oak), and the turning wheel, cogs and rope drum carry their grain with them (mo_wood moving = true). Published 17:22. Still open: the octagonal block's grain, iron vs copper highlights in a close-up.\ns178: cogs pale hornbeam + grain turns with the wheel (media/s178-gear-pale-traced.png, published 17:22); the oak block round (64 sides, was the default octagon-looking tessellation; media/s178-block-round-raster.png, published 17:24). Still open: a traced close-up judged against done_when (grain on the stand, iron vs copper highlights).",
       "source": "review",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "Iron drum motor is black boxes on a sand-textured brown cylinder",
-      "updated": "2026-11-28T15:16:32.381"
+      "updated": "2026-11-28T17:24:06.072"
     },
     {
       "created": "2026-11-27T23:41:03.582",
@@ -11067,12 +11067,12 @@
       "id": 791,
       "kind": "feature",
       "priority": 1,
-      "result": "s177: physics/cartcord.jl checked out of the game: 6:1 and 12:1 stall (1.9 N < 2.1 N rolling), 15:1 (8/120 mm) drives 15.9 cm/s, 3 m cord taut, clip off at 20.4 s, stops at 3.1 m. Not in the game yet.\ns177 IN THE GAME (plugins/cartcord.jl, published 16:32): cart (oak frame, deck, 4 spoked wheels, drum motor between two stones, 6-peg pinion -> 36-cog oak wheel, 15 mm pulley, leather belt -> 40 mm axle pulley) on a LEVEL plank road on sleepers west of the pots; copper cord drawn from the tether. Human's game: :cart_switched_on 16:33:03, :cart_drove (1 m, 13.6 cm/s) 16:33:14, :cord_yanked (2.70 m) 16:33:26. Sandbox: 14.2 cm/s, clip off at 22.3 s, 3.08 m; system 0.17 ms median. Shots: media/s177-cart-2.png, s177-cart-end.png, s177-cart-filmcam2.png. Film queued: job 20261128-163624-816-clip -> site/films/cart-on-a-cord.mp4 (pending post). Not done: the film not seen yet; the cart pops back to the start for the next run; the clip is not seen flying off (out of frame).\ns177 16:44: P in Jump in by the cart picks the axle pulley (60/80/120 mm diameter = 12/16/24:1 after the cogs), event :cart_pulley; sandbox: 12:1 drives 10.6 cm/s with the motor bogged at 2.15 rev/s vs 14.2 cm/s at 16:1. Published.\ns177 16:43: keys moved to M (drive) and Q (pulley): B and P were bubbles and paint in Jump in; the Jump in hint (play.jl) names the cart. Published. Still open: watch the film cart-on-a-cord.mp4, the clip springing off in frame.",
+      "result": "s177: physics/cartcord.jl checked out of the game: 6:1 and 12:1 stall (1.9 N < 2.1 N rolling), 15:1 (8/120 mm) drives 15.9 cm/s, 3 m cord taut, clip off at 20.4 s, stops at 3.1 m. Not in the game yet.\ns177 IN THE GAME (plugins/cartcord.jl, published 16:32): cart (oak frame, deck, 4 spoked wheels, drum motor between two stones, 6-peg pinion -> 36-cog oak wheel, 15 mm pulley, leather belt -> 40 mm axle pulley) on a LEVEL plank road on sleepers west of the pots; copper cord drawn from the tether. Human's game: :cart_switched_on 16:33:03, :cart_drove (1 m, 13.6 cm/s) 16:33:14, :cord_yanked (2.70 m) 16:33:26. Sandbox: 14.2 cm/s, clip off at 22.3 s, 3.08 m; system 0.17 ms median. Shots: media/s177-cart-2.png, s177-cart-end.png, s177-cart-filmcam2.png. Film queued: job 20261128-163624-816-clip -> site/films/cart-on-a-cord.mp4 (pending post). Not done: the film not seen yet; the cart pops back to the start for the next run; the clip is not seen flying off (out of frame).\ns177 16:44: P in Jump in by the cart picks the axle pulley (60/80/120 mm diameter = 12/16/24:1 after the cogs), event :cart_pulley; sandbox: 12:1 drives 10.6 cm/s with the motor bogged at 2.15 rev/s vs 14.2 cm/s at 16:1. Published.\ns177 16:43: keys moved to M (drive) and Q (pulley): B and P were bubbles and paint in Jump in; the Jump in hint (play.jl) names the cart. Published. Still open: watch the film cart-on-a-cord.mp4, the clip springing off in frame.\ns177: in the game (cart_drove fired in the human's game). s178: dune grass cleared off the road and the film camera (beach.jl CLEARED, published 16:54, media/s178-cartcam-end-traced.png); cord copper double count fixed (clip off 21.0 s, 3.09 m, published 17:09). Film cart-on-a-cord rendering (job 163624-816, started 17:04), post held in media/s178-held-pending-cart-on-a-cord.json until watched. Open until the film is watched and posted.",
       "source": "agent",
       "spent_minutes": 0.0,
       "status": "doing",
       "title": "The cart drives itself on a long cord (projects/cartcord.md)",
-      "updated": "2026-11-28T16:43:20.967"
+      "updated": "2026-11-28T17:11:00.795"
     },
     {
       "created": "2026-11-28T16:29:09.412",
@@ -11101,6 +11101,34 @@
       "status": "doing",
       "title": "The cart on a cord: walk it back instead of the pop, the clip flying off in frame",
       "updated": "2026-11-28T16:40:59.627"
+    },
+    {
+      "created": "2026-11-28T17:11:00.750",
+      "detail": "projects/dune.md. s178: the motor charges the pots by itself downhill (8%: -0.27 A, holds 73 cm/s; physics/dune_check.jl), Cart.ground + slope_at drive the real crest. On the real 12-20% beach face the leather belt slips at 35 s and the cart runs to the sea; T0 60 N holds but gives back only 0.57 C of 20.7. Next: a diagonal road (half the grade), a belt tensioner the player sets, the bent road drawn in cartcord.jl. Done when: in the sandbox the cart crosses the bend, goes down the face without the belt slipping and the pots' charge count rises on the way down, with a screenshot of the cart on the bent road.",
+      "est_minutes": 90.0,
+      "id": 794,
+      "kind": "feature",
+      "priority": 1,
+      "result": "s178: physics/dune_check.jl: 8% down the current reverses at ~17 rev/s, holds 73 cm/s at -0.27 A, ~8 C back in 40 s; 4% never reverses. Cart.ground + slope_at (published 17:13, sandbox: level run unchanged 3.09 m / 21.0 s, cartcord 0.01 ms/frame). Real crest: the beach face slips the 15 N belt (35 s, runaway 1.6-3.2 m/s); SE line + T0 40 N: 4.0 C back of 22. Pots hold 96,500 C each: charge is invisible with them, the descent's stakes are speed. Not done: the bent road and cart drawn in the game.",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "doing",
+      "title": "The cart takes the dune: a road down the beach face that the belt can hold, and the pots charged on the way down",
+      "updated": "2026-11-28T17:13:54.939"
+    },
+    {
+      "created": "2026-11-28T17:14:37.489",
+      "detail": "s178: host measure: wing_l/wing_r jump 0.30 m at 0.2 s and swing at 9.1 m/s; sandbox live_motion(): crest jumps 0.27 m at 0.1 s, 8.2 m/s. Once, at the start, a different part each time: a pose/action switch without blending, or the measure's own start (camera/controlled set). Look at Lumi's action log and birdbody pose at that frame. Done when: three live_motion() runs in the sandbox list no snapping for Lumi.",
+      "est_minutes": 40.0,
+      "id": 795,
+      "kind": "motion",
+      "priority": 2,
+      "result": "",
+      "source": "agent",
+      "spent_minutes": 0.0,
+      "status": "open",
+      "title": "Lumi's crest/wings jump 0.3 m in one frame once, 0.1-0.2 s into every motion measure",
+      "updated": "2026-11-28T17:14:37.489"
     }
   ]
 }

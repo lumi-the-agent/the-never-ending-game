@@ -18,9 +18,9 @@ const BP_MASS = 150.0            # kg, a pony-sized friend (todo #745: real mass
 struct BeachPrints <: System end
 
 function bp_spot()
-    dg = isdefined(Main, :BEACH) ? get(get(Main.BEACH, :things, Dict()), :dunegrass, Point3f[]) : Point3f[]
-    isempty(dg) && return nothing
-    Point2f(dg[1][1], dg[1][2]) .+ Point2f(1.6f0, 0f0)
+    a = isdefined(Main, :BEACH) ? get(Main.BEACH, :anchor, nothing) : nothing   # the first dune grass spot (beach.jl)
+    a === nothing && return nothing
+    a + Point2f(1.6f0, 0f0)
 end
 
 function bp_points!(pts, f, isl, o)

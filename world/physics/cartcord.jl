@@ -25,7 +25,10 @@ Base.@kwdef mutable struct Cart
     crr::Float64 = 0.02               # rolling resistance on planks (oak rim on oak plank)
     mu_grip::Float64 = 0.45           # oak rim on a dry plank: the most the driven wheels push
     rear::Float64 = 0.55              # share of the weight on the driven rear axle (the motor sits over it)
-    slope::Float64 = 0.0              # rise per metre along the track
+    slope::Float64 = 0.0              # rise per metre along the track (when `ground` is empty)
+    ground::Vector{Float64} = Float64[]   # s178: the road's height every `dg` m of its length from the pots (a bent road
+    dg::Float64 = 0.1                     # over real ground); the slope is then taken between the axles
+    wheelbase::Float64 = 0.5
     x::Float64 = 0.3                  # metres from the pots along the track
     v::Float64 = 0.0
 end
@@ -45,6 +48,16 @@ Base.@kwdef mutable struct Belt
 end
 fmax(b::Belt) = (e = exp(b.mu * b.wrap); 2b.T0 * (e - 1) / (e + 1))
 
+"The road's height `s` metres along it from the pots (linear between samples, held past the ends)."
+function road_h(c::Cart, s)
+    g = c.ground
+    u = clamp(s / c.dg, 0.0, length(g) - 1.0)
+    i = min(floor(Int, u), length(g) - 2)
+    g[i+1] + (u - i) * (g[i+2] - g[i+1])
+end
+"Rise per metre under the cart: the track's own `slope`, or the ground between its axles."
+slope_at(c::Cart) = isempty(c.ground) ? c.slope : (road_h(c, c.x + c.wheelbase / 2) - road_h(c, c.x - c.wheelbase / 2)) / c.wheelbase
+
 "Twin cord: two 0.75 mm^2 copper conductors there and back, in cloth."
 cord_ohm(L; A = 0.75e-6) = 2RHO_CU * L / A
 
@@ -59,7 +72,7 @@ end
 function Sim(; L_cord = 4.0, F_clip = 2.5, cart = Cart(), belt = Belt(), pots = 6, n = 12, on = true)
     belt.r_a < cart.r_w - 0.02 || error("the axle pulley (r $(belt.r_a)) would scrape the ground under wheels of r $(cart.r_w)")
     b = Motor.iron_drum_bench(; cells = pots)
-    b.R_contact += cord_ohm(L_cord)
+    b.R_contact += cord_ohm(L_cord) / 2    # the motor counts R_contact twice (one per brush); cord_ohm is both conductors
     st = Motor.State(b; θ0 = 0.3, on)
     cord = Rope.Tether((0.0, 0.0, 0.0), (cart.x, 0.0, 0.0); n, slack = L_cord / cart.x, lin_mass = 0.03, EA = 40e3,
                        mu_ground = 0.5)
@@ -85,7 +98,8 @@ function step!(s::Sim, dt)
     Motor.step!(st, s.b, dt; τload = F * belt.r_p / (belt.gear * (F > 0 ? belt.eta : 1 / belt.eta)))
     # the cart: belt at the ground (grip-limited), rolling, the slope, the cord
     Fd = clamp(F * belt.r_a / cart.r_w, -cart.mu_grip * cart.rear * cart.m * G, cart.mu_grip * cart.rear * cart.m * G)
-    Fs = -cart.m * G * cart.slope / sqrt(1 + cart.slope^2)
+    sl = slope_at(cart)
+    Fs = -cart.m * G * sl / sqrt(1 + sl^2)
     Tc, Tclip = cord_step!(s.cord, cart, s.clipped, dt, s.F_buf)
     Fn = Fd + Fs - Tc + s.F_ext
     roll = cart.crr * cart.m * G

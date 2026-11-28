@@ -1,3 +1,4 @@
+# (s178: physics/cartcord.jl counted the cord's copper twice; fixed: the clip now pulls off at 21.0 s, 3.09 m. Cart.ground: a road over real ground, project dune)
 # The cart drives itself on a long cord (s177, project cartcord). The iron drum motor's twin sits on the cart's rear
 # deck; through the winch's oak cogs (6:1) and a leather belt (15 -> 40 mm) it turns the rear axle, and a twin copper
 # cord runs back to the first of the six clay pots by the drum's block, held there by a spring clip. Nothing sets a
@@ -146,7 +147,7 @@ function ck_build!(game)
     CK[:cog] = mesh!(sc, ck_merge(vcat([ck_ring(0.030, 0.040, -0.006, 0.006), ck_ring(0.004, 0.015, 0.014, 0.03; n = 20)],
                                        [ck_box((-0.003, -0.005, 0.006), (0.006, 0.01, 0.026))])); color = RGBf(0.5, 0.35, 0.2),
                      material = oakm, name = :cartcord_cog)
-    CK[:pegs] = mesh!(sc, ck_merge(pegs(0.043, 36, -0.006, 0.006)); color = RGBf(0.68, 0.58, 0.42), material = mo_wood(base = (0.70, 0.60, 0.44)),
+    CK[:pegs] = mesh!(sc, ck_merge(pegs(0.043, 36, -0.006, 0.006)); color = RGBf(0.86, 0.80, 0.66), material = mo_wood(moving = true, base = (0.95, 0.89, 0.75)),
                       name = :cartcord_pegs)
     CK[:pinion] = mesh!(sc, ck_merge(vcat([ck_ring(0.002, 0.006, -0.006, 0.006; n = 12)], pegs(0.007, 6, -0.006, 0.006)));
                         color = RGBf(0.5, 0.35, 0.2), material = oakm, name = :cartcord_pinion)

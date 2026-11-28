@@ -1615,3 +1615,23 @@ Use hour = 11.0 (sun ~64° high, nothing scheduled). Check a fresh game: `Main.S
   walk-to goal into NG.BUSY_GOALS so other plugins (present_shown) do not steal the friend on the way.
 - (s177) Before giving a plugin a Jump-in key, read play.jl's game_description(JumpIn): it lists every key in use
   (B bubble, P paint, K tip my day...). The cart got B and P first and fired bubbles and paint with its own actions.
+- (s178) A DUPLICATE QUEUED FILM holds the worker for its whole length: s177 queued winch_haul twice (15:42, 15:43),
+  the second ran 16:23-17:05 after the first was judged bad, and the cart film waited behind it. Jobs cannot be
+  cancelled: before submit_job(:clip), grep jobs/*.json for a queued job with the same path.
+- (s178) SCENERY THROUGH A BUILD: beach.jl's 60 dune grass clumps were placed before the cart road and the drum block;
+  one grew up through the planks and one through the block. beach.jl CLEARED lists yards kept free of grass; add a
+  rectangle there when a new build goes onto the cove (other plugins anchor on Main.BEACH[:anchor], not dunegrass[1]).
+- (s178) Motor.State COPIES the loop resistance at construction (Rloop = Rc + Rw + 2 R_contact): changing b.R_contact
+  after Sim()/State() changes nothing. The first downhill runs of s178 silently kept a 40 m cord's 1.8 Ohm. Set it
+  before, or rebuild the State. And R_contact counts twice (one per brush): a series resistance R goes in as R/2.
+- (s178) The todo list is NG.todos_file(GamePaths(game_root())) = world/state/todos.json. add_todo!(path) on a wrong
+  path CREATES a fresh list with id 1 (it did: world/todos.json, deleted).
+- (s178) A geared-down drum is a flywheel: J (1.2e-3 kg m^2) x (ratio / r_wheel)^2 = 31 kg at the rim through 16:1,
+  3x the cart. Any coasting/runaway/braking number must count it (and its Coulomb friction x ratio / r_wheel).
+- (s178) Makie.boundingbox(plot) of a ROTATED plot is the rotated local box's corners: up to sqrt(2) too big. The oak
+  wheel (cogs to r .077) read as r .108 and I nearly 'fixed' a gear that meshed. Measure radii from the builder's
+  constants or the mesh's own coordinates, never from a rotated plot's bbox.
+- (s178) mo_wood's grain ramp darkens its base to 0.8x and 0.45x: a base of (0.70, 0.60, 0.44) traced as dull
+  grey-olive, the same as the oak (critic). For a pale wood (hornbeam, ash) set the base near cream (0.95, 0.89, 0.75).
+  And every TURNING wooden part needs mo_wood(moving = true) (object-space grain), or the grain stands still in the
+  world while the part turns and the turn does not read on film (the winch wheel and rope drum had it wrong).

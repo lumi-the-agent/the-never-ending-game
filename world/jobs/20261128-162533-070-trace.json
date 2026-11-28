@@ -1,5 +1,6 @@
 {
   "created": "2026-11-28T16:25:33.125",
+  "finished": "2026-11-28T17:04:29.335",
   "id": "20261128-162533-070-trace",
   "kind": "trace",
   "params": {
@@ -20,5 +21,10 @@
       1.77
     ]
   },
-  "status": "queued"
+  "result": {
+    "path": "site/img/oak-gear-wheel.png"
+  },
+  "seconds": 175.9,
+  "started": "2026-11-28T17:01:33.457",
+  "status": "done"
 }

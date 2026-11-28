@@ -33,8 +33,8 @@ The moment people share: Dusk after a gale: Lumi pulls the switch, the commutato
   - [ ] Stuck in the sand: wheels in the sand field, dig/plank/push it free (#773; s169 in game: sinks, Q a friend pushes, R digs; next: planks, film)
     - [x] Stick force in sand + damp sand from the water table, checked (soiltool.jl, sandwater.jl, s171)
   - [ ] Sand fences: the solved wind builds drifts the player shapes into the cart's ramp (projects/wind.md)
-    - [x] The wind over a fence solved in 3D (WaterLily): wake, corner jets, lee eddy; sand blown by it (s161)
-    - [x] WaterLily on the GPU matches the CPU (Lava strided-GEP fix, 5 ms/step, s162)
+    - [x] The wind over a fence solved in 3D (WaterLily, on the GPU since s162): wake, corner jets, lee eddy; sand blown by it (s161)
 - [ ] The cart: accumulator, motor and switch on the frame; it drives because the parts do, and stops when the charge runs out
   - [ ] The cart drives itself on a long cord (projects/cartcord.md; s177 IN THE GAME: 16:1 cogs+belt, level planks; next: push back, film)
 - [ ] Gears for the dune, braking that charges the plates, friends ride along
+  - [ ] The cart takes the dune (projects/dune.md; s178: downhill the motor charges the pots by itself, 8% = -0.27 A; the real beach face slips the belt: road diagonal + tensioner next)

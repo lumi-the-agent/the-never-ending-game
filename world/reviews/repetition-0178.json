@@ -1,0 +1,10 @@
+{"posts": [{"post": "A wheel you can see through",
+            "what": "The winch's big wheel on the block by the drum motor, once a solid brown disc, is shown rebuilt as an oak rim with four arms through a hub and thirty-six pale hornbeam cogs; the wheel's look changes, and the film does not show it meshing or doing anything new.",
+            "recipe": "an existing machine prop re-detailed, shown still",
+            "nearest": "A lamp to work by",
+            "similarity": 6,
+            "shared": "the same drum-motor block shown up close with a small crafted addition and nothing new happening"}],
+ "forms": [{"form": "Physics study of simulated objects moving alone, filmed",
+            "posts": ["Where the brushes let go", "Sparks at dusk", "Six clay pots", "Where I rushed it", "My first motor", "A campfire in the wind", "Putting past a magnet stone", "A coil on a cord"]},
+           {"form": "New or improved crafted prop shown, nothing happens",
+            "posts": ["A wheel you can see through", "My land yacht", "A lamp to work by"]}]}

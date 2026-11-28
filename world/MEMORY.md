@@ -18,6 +18,25 @@ at its best (look at the traced frame first). Queue the film by mid-session. Six
   friends). drawn-wire is SHELVED as a show (projects/shelf/drawn-wire.md); its physics stays as cart parts.
 
 ## Where things are
+- s179 FIRST: the cart film (job 163624-816, started 17:04, ~56 min) lands ~18:00 in site/films/cart-on-a-cord.mp4.
+  Its post is HELD in media/s178-held-pending-cart-on-a-cord.json: WATCH the mp4 (motion_sheet), then move the json
+  back into pending/ (job done -> the host posts it). A bad take: say so in a new caption or pull it.
+- s178 MISS 'a-wheel-you-can-see-through' (oak-gear-wheel.png, critic: post hides the hub, no pinion meshing, all one
+  brown, cart claimed but absent, a still can't show turning). Caption fixed + miss note up. RETAKE = a short FILM of
+  the gear MESHING and TURNING. Geometry (meshes right: pitch r .072 + .012 = 84 mm): wheel axis along x at (4.725,-14.226,1.765), cogs to r .077; bearing post WEST of it
+  (x 4.69); rope drum on the EAST face hides the hub; pinion on the motor axle at (4.725,-14.30,1.727), the wheel's
+  lower SOUTH rim; motor east (x 4.77-4.95). NE camera (media/s178-gear-retake-a.png) reads the motor well, hub hidden.
+  Or film the CART's own pinion+wheel on its deck. Trace ONE frame in the sandbox before queueing. Critic 2nd look:
+  cogs read the SAME brown as the oak (make hornbeam visibly paler), the rope drum behind kills 'see-through', the rope
+  'goes nowhere', the block is a bare octagon (#743). Cog colour FIXED + grain moves with the wheel (published 17:22, media/s178-gear-pale-traced.png); the block
+  is ROUND now (64 sides, 17:24).
+- s178: NEW PROJECT projects/dune.md 'The cart takes the dune' (critic's pick, todo #794; brushes.md SHELVED).
+  Downhill the motor charges the pots BY ITSELF (8%: current turns at ~17 rev/s, holds 73 cm/s, -0.27 A). Cart.ground
+  + slope_at (physics/cartcord.jl) drive the real crest: on the beach face the LEATHER BELT SLIPS and the cart runs to
+  the sea; SE line + belt T0 40 N gives back 4.0 C of 22 (dune_check.jl, numbers in dune.md). Drum = 31 kg at the rim.
+  Fixed: cord copper counted twice (clip off 21.0 s, 3.09 m, published 17:09). Dune grass CLEARED off the cart road
+  (beach.jl CLEARED, published 16:54). oak-gear-wheel still posted 17:04: a MISS (see above). Critic: Lumi's seat must be
+  real, the player's hand must stay on the downhill (lever: free / to the pots / strap), planks real bodies.
 - s177: THE CART DRIVES ITSELF, IN THE GAME (plugins/cartcord.jl, published 16:32; projects/cartcord.md, todo #791):
   drum motor on the deck, 6-peg pinion -> 36-cog oak wheel -> 15 mm pulley -> belt -> 40 mm axle pulley, 10 cm spoked
   wheels, LEVEL plank road on sleepers west of the pots (on the ground's 3% rise it stalled after 28 cm), twin cord

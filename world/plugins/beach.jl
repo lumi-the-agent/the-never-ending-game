@@ -7,7 +7,16 @@ isdefined(Main, :BEACH) || Core.eval(Main, :(const BEACH = Dict{Symbol,Any}()))
 using Serialization
 
 const NG = NeverendingGame
-const BEACH_VERSION = 8
+const BEACH_VERSION = 9
+
+"""
+Ground Lumi has cleared of dune grass, as (xmin, xmax, ymin, ymax): the yard round the six clay pots, the drum's
+oak block and the cart's plank road (cartcord.jl: x 0.65..4.35 on y -14.72) with room on its south side to stand
+and watch (s178: one clump grew up through the planks, one stood through the drum's block, and two stood between
+the film camera and the cart). Ten of the sixty clumps.
+"""
+const CLEARED = ((0.3f0, 5.1f0, -16.25f0, -14.2f0),)
+cleared(q) = any(r -> r[1] <= q[1] <= r[2] && r[3] <= q[2] <= r[4], CLEARED)
 
 # asset => (count, metres inland (min, max), longest side (m) min..max, texture gain)
 const THINGS = (
@@ -97,11 +106,15 @@ function build!(game)
         ext = maximum(maximum(p[i] for p in ps) - minimum(p[i] for p in ps) for i in 1:3)
         qs = spots(game, n, band, 900 + 37j; taken = name === :dunegrass ? Point2f[] : taken)
         name === :dunegrass || append!(taken, qs)
+        # the land yacht and the beach prints stand relative to the FIRST clump: keep that spot when it is cleared
+        name === :dunegrass && !isempty(qs) && (Main.BEACH[:anchor] = Point2f(qs[1][1], qs[1][2]))
         rng = Random.Xoshiro(17j)
-        pos = [Point3f(q[1], q[2], NG.terrain_height(game.world.island, q[1], q[2]) - 0.02f0) for q in qs]
+        rot = [NG.rot_z(2f0pi * rand(rng, Float32)) for _ in qs]     # drawn for every spot, so the clumps that stay
+        scl = [Vec3f((len[1] + (len[2] - len[1]) * rand(rng, Float32)) / ext) for _ in qs]   # keep their turn and size
+        keep = name === :dunegrass ? findall(!cleared, qs) : eachindex(qs)
+        pos = [Point3f(q[1], q[2], NG.terrain_height(game.world.island, q[1], q[2]) - 0.02f0) for q in qs[keep]]
         things[name] = pos
-        push!(plots, NG.asset_instances!(sc, model, pos; rotation = [NG.rot_z(2f0pi * rand(rng, Float32)) for _ in qs],
-            markersize = [Vec3f((len[1] + (len[2] - len[1]) * rand(rng, Float32)) / ext) for _ in qs], name = Symbol("beach_", name)))
+        push!(plots, NG.asset_instances!(sc, model, pos; rotation = rot[keep], markersize = scl[keep], name = Symbol("beach_", name)))
     end
     Main.BEACH[:plots] = plots
     Main.BEACH[:things] = things
